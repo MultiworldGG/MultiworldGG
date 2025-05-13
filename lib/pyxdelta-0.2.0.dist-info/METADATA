@@ -1,0 +1,25 @@
+Metadata-Version: 2.1
+Name: pyxdelta
+Version: 0.2.0
+Summary: Python interface for xdelta.
+Home-page: https://github.com/Illidanz/pyxdelta
+Author: Illidan
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# pyxdelta
+Python interface for xdelta.
+
+## Installation
+`pip install pyxdelta`
+
+## Usage
+```
+import pyxdelta
+
+pyxdelta.run("source.bin", "target.bin", "patch.xdelta")
+
+pyxdelta.decode("source.bin", "patch.xdelta", "target.bin")
+```

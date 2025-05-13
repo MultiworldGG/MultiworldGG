@@ -100,6 +100,8 @@ def download_slot_file(room_id, player_id: int):
             fname = f"AP+{app.jinja_env.filters['suuid'](room_id)}_P{slot_data.player_id}_{slot_data.player_name}.aplm"
         elif slot_data.game == "gzDoom":
             fname = f"AP+{app.jinja_env.filters['suuid'](room_id)}_P{slot_data.player_id}_{slot_data.player_name}.pk3"
+        elif slot_data.game == "Donkey Kong 64":
+            fname = f"AP+{app.jinja_env.filters['suuid'](room_id)}_P{slot_data.player_id}_{slot_data.player_name}.lanky"
         else:
             return "Game download not supported."
         return send_file(io.BytesIO(slot_data.data), as_attachment=True, download_name=fname)
