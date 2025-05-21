@@ -179,6 +179,7 @@ class Context:
                       "release_mode": str,
                       "remaining_mode": str,
                       "collect_mode": str,
+                      "hint_mode": str,
                       "item_cheat": bool,
                       "compatibility": int}
     # team -> slot id -> list of clients authenticated to slot.
@@ -207,7 +208,7 @@ class Context:
     logger: logging.Logger
 
     def __init__(self, host: str, port: int, server_password: str, password: str, location_check_points: int,
-                 hint_cost: int, item_cheat: bool, release_mode: str = "disabled", collect_mode="disabled",
+                 hint_cost: int, item_cheat: bool, release_mode: str = "disabled", collect_mode="disabled", hint_mode: str = "default",
                  remaining_mode: str = "disabled", auto_shutdown: typing.SupportsFloat = 0, compatibility: int = 2,
                  log_network: bool = False, logger: logging.Logger = logging.getLogger()):
         self.logger = logger
@@ -242,6 +243,7 @@ class Context:
         self.release_mode: str = release_mode
         self.remaining_mode: str = remaining_mode
         self.collect_mode: str = collect_mode
+        self.hint_mode: str = hint_mode
         self.item_cheat = item_cheat
         self.exit_event = asyncio.Event()
         self.client_activity_timers: typing.Dict[
@@ -620,8 +622,8 @@ class Context:
             "stored_data": self.stored_data,
             "game_options": {"hint_cost": self.hint_cost, "location_check_points": self.location_check_points,
                              "server_password": self.server_password, "password": self.password,
-                             "release_mode": self.release_mode,
-                             "remaining_mode": self.remaining_mode, "collect_mode": self.collect_mode,
+                             "release_mode": self.release_mode, "hint_mode": self.hint_mode,
+                             "remaining_mode": self.remaining_mode, "collect_mode": self.collect_mode, 
                              "item_cheat": self.item_cheat, "compatibility": self.compatibility}
 
         }
@@ -656,6 +658,7 @@ class Context:
             self.release_mode = savedata["game_options"]["release_mode"]
             self.remaining_mode = savedata["game_options"]["remaining_mode"]
             self.collect_mode = savedata["game_options"]["collect_mode"]
+            self.hint_mode = savedata["game_options"]["hint_mode"]
             self.item_cheat = savedata["game_options"]["item_cheat"]
             self.compatibility = savedata["game_options"]["compatibility"]
 
@@ -1146,13 +1149,16 @@ def collect_hints(ctx: Context, team: int, slot: int, item: typing.Union[int, st
         else:
             found = location_id in ctx.location_checks[team, finding_player]
             entrance = ctx.er_hint_data.get(finding_player, {}).get(location_id, "")
+            hidden_display = False
+            if int(ctx.hint_mode) == 1 and receiving_player == finding_player and not found:
+                hidden_display = True
             new_status = auto_status
             if found:
                 new_status = HintStatus.HINT_FOUND
             elif item_flags & ItemClassification.trap:
                 new_status = HintStatus.HINT_AVOID
             hints.append(Hint(receiving_player, finding_player, location_id, item_id, found, entrance,
-                                       item_flags, new_status))
+                                       item_flags, new_status, hidden_display))
 
     return hints
 
@@ -2386,7 +2392,7 @@ class ServerCommandProcessor(CommonCommandProcessor):
         self.output(f"Set option {option_name} to {getattr(self.ctx, option_name)}")
         if option_name in {"release_mode", "remaining_mode", "collect_mode"}:
             self.ctx.broadcast_all([{"cmd": "RoomUpdate", 'permissions': get_permissions(self.ctx)}])
-        elif option_name in {"hint_cost", "location_check_points"}:
+        elif option_name in {"hint_mode", "hint_cost", "location_check_points"}:
             self.ctx.broadcast_all([{"cmd": "RoomUpdate", option_name: getattr(self.ctx, option_name)}])
         return True
 
@@ -2469,6 +2475,12 @@ def parse_args() -> argparse.Namespace:
                              disabled: !remaining is never available
                              goal:     !remaining can be used after goal completion
                              ''')
+    parser.add_argument('--hint_mode', default=defaults["hint_mode"], nargs='?',
+                    choices=['default', 'limited'], help='''\
+                            Select hint display for hints in player's own worlds. (default: %(default)s)
+                            default: hints show up in full, no matter the world
+                            limited: hints in the hinting player's world do not display their full location
+                            ''')
     parser.add_argument('--auto_shutdown', default=defaults["auto_shutdown"], type=int,
                         help="automatically shut down the server after this many minutes without new location checks. "
                              "0 to keep running. Not yet implemented.")
@@ -2527,7 +2539,7 @@ async def main(args: argparse.Namespace):
 
     ctx = Context(args.host, args.port, args.server_password, args.password, args.location_check_points,
                   args.hint_cost, not args.disable_item_cheat, args.release_mode, args.collect_mode,
-                  args.remaining_mode,
+                  args.remaining_mode, args.hint_mode,
                   args.auto_shutdown, args.compatibility, args.log_network)
     data_filename = args.multidata
 

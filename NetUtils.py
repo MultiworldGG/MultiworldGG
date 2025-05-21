@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import typing
 import enum
 import warnings
@@ -355,6 +354,7 @@ class Hint(typing.NamedTuple):
     entrance: str = ""
     item_flags: int = 0
     status: HintStatus = HintStatus.HINT_UNSPECIFIED
+    hidden: bool = False
 
     def re_check(self, ctx, team) -> Hint:
         if self.found and self.status == HintStatus.HINT_FOUND:
@@ -380,15 +380,21 @@ class Hint(typing.NamedTuple):
         add_json_text(parts, self.receiving_player, type="player_id")
         add_json_text(parts, "'s ")
         add_json_item(parts, self.item, self.receiving_player, self.item_flags)
-        add_json_text(parts, " is at ")
-        add_json_location(parts, self.location, self.finding_player)
-        add_json_text(parts, " in ")
-        add_json_text(parts, self.finding_player, type="player_id")
-        if self.entrance:
-            add_json_text(parts, "'s World at ")
-            add_json_text(parts, self.entrance, type="entrance_name")
-        else:
-            add_json_text(parts, "'s World")
+
+        if self.hidden:
+            add_json_text(parts, " is in ")
+            add_json_text(parts, self.receiving_player, type="player_id")
+            add_json_text(parts, "'s own World")
+        else: 
+            add_json_text(parts, " is at ")
+            add_json_location(parts, self.location, self.finding_player)
+            add_json_text(parts, " in ")
+            add_json_text(parts, self.finding_player, type="player_id")
+            if self.entrance:
+                add_json_text(parts, "'s World at ")
+                add_json_text(parts, self.entrance, type="entrance_name")
+            else:
+                add_json_text(parts, "'s World")
         add_json_text(parts, ". ")
         add_json_text(parts, status_names.get(self.status, "(unknown)"), type="color",
                       color=status_colors.get(self.status, "red"))

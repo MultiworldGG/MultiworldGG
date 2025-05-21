@@ -570,6 +570,14 @@ class ServerOptions(Group):
         "goal" -> collect is allowed after goal completion
         """
 
+    class HintMode(str):
+        """
+        Hint modes
+        Decides if hints pointing towards a player's own world display the exact location
+        "default" -> hints are shown in full no matter which world
+        "limited" -> hints pointing towards the hinting player's world do not expose the exact location
+        """
+
     class RemainingMode(str):
         """
         Remaining modes
@@ -612,6 +620,7 @@ class ServerOptions(Group):
     hint_cost: HintCost = HintCost(10)
     release_mode: ReleaseMode = ReleaseMode("auto")
     collect_mode: CollectMode = CollectMode("auto")
+    hint_mode: HintMode = HintMode("default")
     remaining_mode: RemainingMode = RemainingMode("goal")
     auto_shutdown: AutoShutdown = AutoShutdown(0)
     compatibility: Compatibility = Compatibility(2)
