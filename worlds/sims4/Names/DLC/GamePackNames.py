@@ -1,0 +1,13 @@
+# Game Pack Names
+outdoor_retreat = "Outdoor Retreat"
+spa_day = "Spa Day"
+dine_out = "Dine Out"
+vampires = "Vampires"
+parenthood = "Parenthood"
+jungle_adventure = "Jungle Adventure"
+stranger_ville = "StrangerVille"
+realm_of_magic = "Realm of Magic"
+# star_wars_journey_to_batuu = "Star Wars Journey To Batuu"
+dream_home_decorator = "Dream Home Decorator"
+my_wedding_stories = "My Wedding Stories"
+werewolves = "Werewolves"
