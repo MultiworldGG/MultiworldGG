@@ -3,8 +3,8 @@
 ## Required Software
 - [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases/latest)
 - [The Sims 4](https://store.steampowered.com/app/1222670/The_Sims_4/)
-- [sims4.apworld](https://github.com/meaomeaomeaoo/Archipelago/releases) (included in MWGG)
-- [The .ts4script and the .package files](https://github.com/meaomeaomeaoo/Sims4ArchipelagoMod/releases)
+- [sims4.apworld](https://github.com/benny-dreamly/Archipelago/releases) (included in MWGG)
+- [The .ts4script and the .package files](https://github.com/benny-dreamly/Sims4ArchipelagoMod/releases)
 - [The mod files from Sims 4 community library](https://github.com/ColonolNutty/Sims4CommunityLibrary/releases)
 
 ## Instillation
