@@ -1,4 +1,12 @@
 /* High Contrast Accessibility Theme */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+.high-contrast-mode html,
+.high-contrast-mode body,
+.high-contrast-mode * {
+    font-family: 'Lexend', 'Trebuchet MS', sans-serif !important;
+}
+
 .high-contrast-mode html,
 .high-contrast-mode body {
     background-color: #1a1a1a !important;
