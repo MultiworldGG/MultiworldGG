@@ -1,0 +1,124 @@
+/* High Contrast Accessibility Theme */
+.high-contrast-mode html,
+.high-contrast-mode body {
+    background-color: #1a1a1a !important;
+    background-image: none !important;
+    color: #ffffff !important;
+}
+
+.high-contrast-mode #base-header {
+    background-color: #2d2d2d !important;
+    margin-bottom: 10px;
+}
+
+.high-contrast-mode a {
+    color: #ffffff !important;
+}
+
+.high-contrast-mode h1,
+.high-contrast-mode h2,
+.high-contrast-mode h3,
+.high-contrast-mode h4,
+.high-contrast-mode h5,
+.high-contrast-mode h6 {
+    color: #ffffff !important;
+    text-shadow: 2px 2px 4px #000000 !important;
+}
+
+.high-contrast-mode h2 {
+    color: #ffff00 !important;
+}
+
+.high-contrast-mode .grass-island a,
+.high-contrast-mode .markdown a {
+    color: #87ceeb !important;
+}
+
+.high-contrast-mode pre,
+.high-contrast-mode code {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+.high-contrast-mode button,
+.high-contrast-mode input[type=submit] {
+    background-color: #404040 !important;
+    color: #ffffff !important;
+}
+
+.high-contrast-mode button:hover,
+.high-contrast-mode input[type=submit]:hover {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+.high-contrast-mode #base-header a,
+.high-contrast-mode #base-header-mobile-menu a {
+    color: #ffffff !important;
+}
+
+.high-contrast-mode #base-header {
+    filter: brightness(0.7) contrast(1.2) !important;
+}
+
+.high-contrast-mode #far-left-button,
+.high-contrast-mode #mid-left-button,
+.high-contrast-mode #mid-button,
+.high-contrast-mode #mid-right-button,
+.high-contrast-mode #far-right-button {
+    filter: brightness(0.8) contrast(1.2) !important;
+}
+
+.high-contrast-mode #landing-clouds {
+    opacity: 0.3 !important;
+}
+
+.high-contrast-mode .background-pattern,
+.high-contrast-mode [style*="background-image"] {
+    filter: brightness(0.7) contrast(1.1) !important;
+}
+
+.high-contrast-mode #base-header-popover-menu,
+.high-contrast-mode #base-header-popover-menu-2 {
+    background-color: #2a2a2a !important;
+    border: 1px solid #ffffff !important;
+    filter: none !important;
+}
+
+.high-contrast-mode #base-header-popover-menu a,
+.high-contrast-mode #base-header-popover-menu-2 a {
+    color: #ffffff !important;
+    border-top: 1px solid #555555 !important;
+}
+
+.high-contrast-mode #base-header-popover-menu a:link,
+.high-contrast-mode #base-header-popover-menu a:visited,
+.high-contrast-mode #base-header-popover-menu a:hover,
+.high-contrast-mode #base-header-popover-menu a:active,
+.high-contrast-mode #base-header-popover-menu-2 a:link,
+.high-contrast-mode #base-header-popover-menu-2 a:visited,
+.high-contrast-mode #base-header-popover-menu-2 a:hover,
+.high-contrast-mode #base-header-popover-menu-2 a:active {
+    color: #ffffff !important;
+}
+
+.high-contrast-mode #base-header-popover-text,
+.high-contrast-mode #base-header-popover-text-2 {
+    color: #ffffff !important;
+}
+
+.high-contrast-mode #base-header-popover-icon {
+    filter: brightness(0) invert(1) !important;
+}
+
+.high-contrast-mode footer a,
+.high-contrast-mode .footer a {
+    color: #ffffff !important;
+}
+
+.high-contrast-mode .grass-island,
+.high-contrast-mode .markdown {
+    background: linear-gradient(0deg, #4a1a4a 0%, #2d1a2d 50%, #1a1a2d 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #6a3a6a !important;
+}
