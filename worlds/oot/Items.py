@@ -3,13 +3,13 @@ import typing
 from BaseClasses import Item, ItemClassification
 
 
-def oot_data_to_ap_id(data, event): 
-    if event or data[2] is None or data[0] == 'Shop': 
+def oot_data_to_ap_id(data, event):
+    if event or data[2] is None or data[0] == 'Shop':
         return None
     offset = 66000
-    if data[0] in ['Item', 'BossKey', 'Compass', 'Map', 'SmallKey', 'Token', 'GanonBossKey', 'HideoutSmallKey', 'Song']:
+    if data[0] in ['Item', 'BossKey', 'Compass', 'Map', 'SmallKey', 'Token', 'GanonBossKey', 'HideoutSmallKey', 'Song', 'TCGSmallKey', 'SilverRupee']:
         return offset + data[2]
-    else: 
+    else:
         raise Exception(f'Unexpected OOT item type found: {data[0]}')
 
 
@@ -56,7 +56,7 @@ class OOTItem(Item):
 
     @property
     def dungeonitem(self) -> bool:
-        return self.type in ['SmallKey', 'HideoutSmallKey', 'BossKey', 'GanonBossKey', 'Map', 'Compass']
+        return self.type in ['SmallKey', 'HideoutSmallKey', 'BossKey', 'GanonBossKey', 'Map', 'Compass', 'TCGSmallKey']
 
 
 # Progressive: True  -> Advancement
@@ -64,6 +64,7 @@ class OOTItem(Item):
 #              None  -> Normal
 #    Item:                                            (type, Progressive, GetItemID, special),
 item_table = {
+    'Bomb (1)':                                        ('Item',     None,  0x65, {'junk': -1}),
     'Bombs (5)':                                       ('Item',     None,  0x01, {'junk': 8}),
     'Deku Nuts (5)':                                   ('Item',     None,  0x02, {'junk': 5}),
     'Bombchus (10)':                                   ('Item',     True,  0x03, None),
@@ -73,6 +74,7 @@ item_table = {
     'Megaton Hammer':                                  ('Item',     True,  0x0D, None),
     'Cojiro':                                          ('Item',     True,  0x0E, {'trade': True}),
     'Bottle':                                          ('Item',     True,  0x0F, {'bottle': float('Inf')}),
+    'Blue Potion':                                     ('Item',     True,  0x12, None),
     'Bottle with Milk':                                ('Item',     True,  0x14, {'bottle': float('Inf')}),
     'Rutos Letter':                                    ('Item',     True,  0x15, None),
     'Deliver Letter':                                  ('Item',     True,  None, {'bottle': float('Inf')}),
@@ -202,6 +204,62 @@ item_table = {
     'Magic Bean Pack':                                 ('Item',     True,  0xC9, {'alias': ('Magic Bean', 10), 'progressive': 10}),
     'Triforce Piece':                                  ('Item',     True,  0xCA, {'progressive': float('Inf')}),
     'Zeldas Letter':                                   ('Item',     True,  0x0B, {'trade': True}),
+    'Small Key (Treasure Chest Game)':                 ('TCGSmallKey', True,  0x0071, {'progressive': float('Inf')}),
+    'Rupee (Treasure Chest Game) (1)':                 ('Item',     None,  0x0072, None),
+    'Rupees (Treasure Chest Game) (5)':                ('Item',     None,  0x0073, None),
+    'Rupees (Treasure Chest Game) (20)':               ('Item',     None,  0x0074, None),
+    'Rupees (Treasure Chest Game) (50)':               ('Item',     None,  0x0075, None),
+    'Piece of Heart (Treasure Chest Game)':            ('Item',     True,  0x0076, {'alias': ('Piece of Heart', 1), 'progressive': float('Inf')}),
+    'Small Key Ring (Treasure Chest Game)':            ('TCGSmallKey', True,  0x00D7, {'alias': ('Small Key (Treasure Chest Game)', 10), 'progressive': float('Inf')}),
+    'Silver Rupee (Dodongos Cavern Staircase)':                 ('SilverRupee', True,  0x00D8, {'progressive': 5}),
+    'Silver Rupee (Ice Cavern Spinning Scythe)':                ('SilverRupee', True,  0x00D9, {'progressive': 5}),
+    'Silver Rupee (Ice Cavern Push Block)':                     ('SilverRupee', True,  0x00DA, {'progressive': 5}),
+    'Silver Rupee (Bottom of the Well Basement)':               ('SilverRupee', True,  0x00DB, {'progressive': 5}),
+    'Silver Rupee (Shadow Temple Scythe Shortcut)':             ('SilverRupee', True,  0x00DC, {'progressive': 5}),
+    'Silver Rupee (Shadow Temple Invisible Blades)':            ('SilverRupee', True,  0x00DD, {'progressive': 10}),
+    'Silver Rupee (Shadow Temple Huge Pit)':                    ('SilverRupee', True,  0x00DE, {'progressive': 5}),
+    'Silver Rupee (Shadow Temple Invisible Spikes)':            ('SilverRupee', True,  0x00DF, {'progressive': 10}),
+    'Silver Rupee (Gerudo Training Ground Slopes)':             ('SilverRupee', True,  0x00E0, {'progressive': 5}),
+    'Silver Rupee (Gerudo Training Ground Lava)':               ('SilverRupee', True,  0x00E1, {'progressive': 6}),
+    'Silver Rupee (Gerudo Training Ground Water)':              ('SilverRupee', True,  0x00E2, {'progressive': 5}),
+    'Silver Rupee (Spirit Temple Child Early Torches)':         ('SilverRupee', True,  0x00E3, {'progressive': 5}),
+    'Silver Rupee (Spirit Temple Adult Boulders)':              ('SilverRupee', True,  0x00E4, {'progressive': 5}),
+    'Silver Rupee (Spirit Temple Lobby and Lower Adult)':       ('SilverRupee', True,  0x00E5, {'progressive': 5}),
+    'Silver Rupee (Spirit Temple Sun Block)':                   ('SilverRupee', True,  0x00E6, {'progressive': 5}),
+    'Silver Rupee (Spirit Temple Adult Climb)':                 ('SilverRupee', True,  0x00E7, {'progressive': 5}),
+    'Silver Rupee (Ganons Castle Spirit Trial)':                ('SilverRupee', True,  0x00E8, {'progressive': 5}),
+    'Silver Rupee (Ganons Castle Light Trial)':                 ('SilverRupee', True,  0x00E9, {'progressive': 5}),
+    'Silver Rupee (Ganons Castle Fire Trial)':                  ('SilverRupee', True,  0x00EA, {'progressive': 5}),
+    'Silver Rupee (Ganons Castle Shadow Trial)':                ('SilverRupee', True,  0x00EB, {'progressive': 5}),
+    'Silver Rupee (Ganons Castle Water Trial)':                 ('SilverRupee', True,  0x00EC, {'progressive': 5}),
+    'Silver Rupee (Ganons Castle Forest Trial)':                ('SilverRupee', True,  0x00ED, {'progressive': 5}),
+    'Silver Rupee Pouch (Dodongos Cavern Staircase)':           ('SilverRupee', True,  0x00EE, {'alias': ('Silver Rupee (Dodongos Cavern Staircase)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Ice Cavern Spinning Scythe)':          ('SilverRupee', True,  0x00EF, {'alias': ('Silver Rupee (Ice Cavern Spinning Scythe)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Ice Cavern Push Block)':               ('SilverRupee', True,  0x00F0, {'alias': ('Silver Rupee (Ice Cavern Push Block)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Bottom of the Well Basement)':         ('SilverRupee', True,  0x00F1, {'alias': ('Silver Rupee (Bottom of the Well Basement)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Shadow Temple Scythe Shortcut)':       ('SilverRupee', True,  0x00F2, {'alias': ('Silver Rupee (Shadow Temple Scythe Shortcut)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Shadow Temple Invisible Blades)':      ('SilverRupee', True,  0x00F3, {'alias': ('Silver Rupee (Shadow Temple Invisible Blades)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Shadow Temple Huge Pit)':              ('SilverRupee', True,  0x00F4, {'alias': ('Silver Rupee (Shadow Temple Huge Pit)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Shadow Temple Invisible Spikes)':      ('SilverRupee', True,  0x00F5, {'alias': ('Silver Rupee (Shadow Temple Invisible Spikes)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Gerudo Training Ground Slopes)':       ('SilverRupee', True,  0x00F6, {'alias': ('Silver Rupee (Gerudo Training Ground Slopes)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Gerudo Training Ground Lava)':         ('SilverRupee', True,  0x00F7, {'alias': ('Silver Rupee (Gerudo Training Ground Lava)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Gerudo Training Ground Water)':        ('SilverRupee', True,  0x00F8, {'alias': ('Silver Rupee (Gerudo Training Ground Water)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Spirit Temple Child Early Torches)':   ('SilverRupee', True,  0x00F9, {'alias': ('Silver Rupee (Spirit Temple Child Early Torches)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Spirit Temple Adult Boulders)':        ('SilverRupee', True,  0x00FA, {'alias': ('Silver Rupee (Spirit Temple Adult Boulders)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Spirit Temple Lobby and Lower Adult)': ('SilverRupee', True,  0x00FB, {'alias': ('Silver Rupee (Spirit Temple Lobby and Lower Adult)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Spirit Temple Sun Block)':             ('SilverRupee', True,  0x00FC, {'alias': ('Silver Rupee (Spirit Temple Sun Block)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Spirit Temple Adult Climb)':           ('SilverRupee', True,  0x00FD, {'alias': ('Silver Rupee (Spirit Temple Adult Climb)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Ganons Castle Spirit Trial)':          ('SilverRupee', True,  0x00FE, {'alias': ('Silver Rupee (Ganons Castle Spirit Trial)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Ganons Castle Light Trial)':           ('SilverRupee', True,  0x00FF, {'alias': ('Silver Rupee (Ganons Castle Light Trial)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Ganons Castle Fire Trial)':            ('SilverRupee', True,  0x0100, {'alias': ('Silver Rupee (Ganons Castle Fire Trial)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Ganons Castle Shadow Trial)':          ('SilverRupee', True,  0x0101, {'alias': ('Silver Rupee (Ganons Castle Shadow Trial)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Ganons Castle Water Trial)':           ('SilverRupee', True,  0x0102, {'alias': ('Silver Rupee (Ganons Castle Water Trial)', 10), 'progressive': 1}),
+    'Silver Rupee Pouch (Ganons Castle Forest Trial)':          ('SilverRupee', True,  0x0103, {'alias': ('Silver Rupee (Ganons Castle Forest Trial)', 10), 'progressive': 1}),
+    'Ocarina A Button':                                ('Item',     True,  0x0104, {'ocarina_button': True}),
+    'Ocarina C up Button':                             ('Item',     True,  0x0105, {'ocarina_button': True}),
+    'Ocarina C down Button':                           ('Item',     True,  0x0106, {'ocarina_button': True}),
+    'Ocarina C left Button':                           ('Item',     True,  0x0107, {'ocarina_button': True}),
+    'Ocarina C right Button':                          ('Item',     True,  0x0108, {'ocarina_button': True}),
     'Time Travel':                                     ('Event',    True,  None, None),
     'Scarecrow Song':                                  ('Event',    True,  None, None),
     'Triforce':                                        ('Event',    True,  None, None),

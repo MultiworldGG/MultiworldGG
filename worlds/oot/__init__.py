@@ -40,6 +40,31 @@ from worlds.LauncherComponents import launch as launch_componenent, components, 
 # OoT's generate_output doesn't benefit from more than 2 threads, instead it uses a lot of memory.
 i_o_limiter = threading.Semaphore(2)
 
+class _StartingItemRecord:
+    def __init__(self, count: int):
+        self.count = count
+
+
+class _OOTDistribution:
+    def __init__(self, world: "OOTWorld"):
+        self.world = world
+
+    @property
+    def effective_starting_items(self):
+        records = {}
+        for item_name, count in self.world.starting_items.items():
+            records[item_name] = _StartingItemRecord(count)
+        for item in self.world.multiworld.precollected_items[self.world.player]:
+            record = records.get(item.name)
+            if record is None:
+                records[item.name] = _StartingItemRecord(1)
+            else:
+                record.count += 1
+        return records
+
+    def configure_gossip(self, stone_ids):
+        return
+
 
 def launch_client(*args):
     from .Client import main
@@ -78,11 +103,23 @@ class OOTCollectionState(metaclass=AutoLogicRegister):
                                          self.child_blocked_connections}
         ret.adult_blocked_connections = {player: copy.copy(self.adult_blocked_connections[player]) for player in
                                          self.adult_blocked_connections}
-        ret.day_reachable_regions = {player: copy.copy(self.adult_reachable_regions[player]) for player in
+        ret.day_reachable_regions = {player: copy.copy(self.day_reachable_regions[player]) for player in
                                      self.day_reachable_regions}
-        ret.dampe_reachable_regions = {player: copy.copy(self.adult_reachable_regions[player]) for player in
+        ret.dampe_reachable_regions = {player: copy.copy(self.dampe_reachable_regions[player]) for player in
                                        self.dampe_reachable_regions}
         return ret
+
+    def has_medallions(self, count: int, player: int) -> bool:
+        """Returns True if the player has at least 'count' medallions."""
+        return self.has_group("medallions", player, count)
+
+    def has_stones(self, count: int, player: int) -> bool:
+        """Returns True if the player has at least 'count' spiritual stones."""
+        return self.has_group("stones", player, count)
+
+    def has_dungeon_rewards(self, count: int, player: int) -> bool:
+        """Returns True if the player has at least 'count' dungeon rewards (stones + medallions)."""
+        return self.has_group("rewards", player, count)
 
 
 class OOTSettings(settings.Group):
@@ -269,6 +306,9 @@ class OOTWorld(World):
             self.owl_drops = False
             self.warp_songs = False
 
+        # Set skip_child_zelda boolean for logic
+        self.skip_child_zelda = (self.shuffle_child_trade == 'skip_child_zelda')
+
         # Fix spawn positions option
         new_sp = []
         if self.spawn_positions in {'child', 'both'}:
@@ -367,12 +407,6 @@ class OOTWorld(World):
         self.mq_dungeons_random = self.options.mq_dungeons_count.randomized
         self.easier_fire_arrow_entry = self.fae_torch_count < 24
 
-        if self.misc_hints:
-            self.misc_hints = ['ganondorf', 'altar', 'warp_songs', 'dampe_diary',
-                '10_skulltulas', '20_skulltulas', '30_skulltulas', '40_skulltulas', '50_skulltulas']
-        else:
-            self.misc_hints = []
-
         # Hint stuff
         self.clearer_hints = True  # this is being enforced since non-oot items do not have non-clear hint text
         self.gossip_hints = {}
@@ -398,6 +432,9 @@ class OOTWorld(World):
         )
         self.disable_trade_revert = (self.shuffle_interior_entrances != 'off') or self.shuffle_overworld_entrances
         self.shuffle_special_interior_entrances = self.shuffle_interior_entrances == 'all'
+        # adult_trade_shuffle is not implemented in AP - set to False
+        # This is referenced in Overworld.json logic for trade sequences
+        self.adult_trade_shuffle = False
 
         # Convert the double option used by shopsanity into a single option
         if self.shopsanity == 'random_number':
@@ -468,9 +505,12 @@ class OOTWorld(World):
 
         # Convert adult trade option to expected Set
         self.adult_trade_start = {self.adult_trade_start.title().replace('_', ' ')}
+        # Set selected_adult_trade_item for logic rules (used before ItemPool runs)
+        self.selected_adult_trade_item = next(iter(self.adult_trade_start))
 
         # Get hint distribution
         self.hint_dist_user = read_json(data_path('Hints', f'{self.hint_dist}.json'))
+        self.distribution = _OOTDistribution(self)
 
         self.added_hint_types = {}
         self.item_added_hint_types = {}
@@ -814,6 +854,9 @@ class OOTWorld(World):
         if self.start_with_rupees:
             self.starting_items['Rupees'] = 999
 
+        # NOTE: Silver rupees in vanilla mode are handled by ItemPool.py which places them
+        # at their vanilla locations. No need to precollect here.
+
         # Divide itempool into prefill and main pools
         self.itempool, self.pre_fill_items = self.divide_itempools()
 
@@ -994,9 +1037,15 @@ class OOTWorld(World):
             while tries:
                 try:
                     self.random.shuffle(song_locations)
-                    fill_restrictive(self.multiworld, prefill_state(state), song_locations[:], songs[:],
+                    # Create state with songs for accessibility checks (songs are needed to reach some song locations)
+                    song_state = prefill_state(state)
+                    for song in songs:
+                        self.collect(song_state, song)
+                    song_state.sweep_for_advancements(locations=self.get_locations())
+
+                    fill_restrictive(self.multiworld, song_state, song_locations[:], songs[:],
                                      single_player_placement=True, lock=True, allow_excluded=True)
-                    logger.debug(f"Successfully placed songs for player {self.player} after {6 - tries} attempt(s)")
+                    logger.debug(f"Successfully placed songs for player {self.player} after {11 - tries} attempt(s)")
                 except FillError as e:
                     tries -= 1
                     if tries == 0:
@@ -1150,11 +1199,11 @@ class OOTWorld(World):
             for player in barren_hint_players:
                 items_by_region[player] = {}
                 for r in multiworld.worlds[player].regions:
-                    items_by_region[player][r._hint_text] = {'dungeon': False, 'weight': 0, 'is_barren': True}
+                    if r.hint:
+                        items_by_region[player][r.hint] = {'dungeon': False, 'weight': 0, 'is_barren': True}
                 for d in multiworld.worlds[player].dungeons:
-                    items_by_region[player][d.hint_text] = {'dungeon': True, 'weight': 0, 'is_barren': True}
-                del (items_by_region[player]["Link's pocket"])
-                del (items_by_region[player][None])
+                    items_by_region[player][HintArea.for_dungeon(d.name)] = {'dungeon': True, 'weight': 0, 'is_barren': True}
+                items_by_region[player].pop(HintArea.ROOT, None)
 
             if item_hint_players:  # loop once over all locations to gather major items. Check oot locations for barren/woth if needed
                 for loc in multiworld.get_locations():
@@ -1420,6 +1469,14 @@ class OOTWorld(World):
         # If free_scarecrow give Scarecrow Song
         if self.free_scarecrow:
             all_state.collect(self.create_item("Scarecrow Song"), prevent_sweep=True)
+        if not self.shuffle_ocarinas:
+            all_state.collect(self.create_item("Ocarina"), prevent_sweep=True)
+        if self.shuffle_child_trade == 'vanilla':
+            all_state.collect(self.create_item("Weird Egg"), prevent_sweep=True)
+        if self.shuffle_child_trade in {'vanilla', 'shuffle'}:
+            all_state.collect(self.create_item("Zeldas Letter"), prevent_sweep=True)
+        if not self.open_door_of_time:
+            all_state.collect(self.create_item("Song of Time"), prevent_sweep=True)
         all_state._oot_stale[self.player] = True
 
         return all_state
@@ -1429,14 +1486,17 @@ class OOTWorld(World):
 
 
 def valid_dungeon_item_location(world: OOTWorld, option: str, dungeon: str, loc: OOTLocation) -> bool:
+    # loc.parent_region.dungeon is a Dungeon object (after Dungeon.__init__ runs), so compare .name
+    loc_dungeon = loc.parent_region.dungeon
+    loc_dungeon_name = loc_dungeon.name if loc_dungeon else None
     if option == 'dungeon':
-        return (getattr(loc.parent_region.dungeon, 'name', None) == dungeon
+        return (loc_dungeon_name == dungeon
             and (world.shuffle_song_items != 'dungeon' or loc.name not in dungeon_song_locations))
     elif option == 'any_dungeon':
-        return (loc.parent_region.dungeon is not None
+        return (loc_dungeon is not None
             and (world.shuffle_song_items != 'dungeon' or loc.name not in dungeon_song_locations))
     elif option == 'overworld':
-        return (loc.parent_region.dungeon is None
+        return (loc_dungeon is None
             and (loc.type != 'Shop' or loc.name in world.shop_prices)
             and (world.shuffle_song_items != 'song' or loc.type != 'Song')
             and (world.shuffle_song_items != 'dungeon' or loc.name not in dungeon_song_locations))
@@ -1482,4 +1542,3 @@ def gather_locations(multiworld: MultiWorld,
         locations += filter(condition, multiworld.get_unfilled_locations(player=player))
 
     return locations
-

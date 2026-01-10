@@ -53,6 +53,51 @@ class OOTLogic(LogicMixin):
     def _oot_region_has_shortcuts(self, player, regionname):
         return self.multiworld.worlds[player].region_has_shortcuts(regionname)
 
+    def _oot_has_all_notes_for_song(self, player, song):
+        world = self.multiworld.worlds[player]
+
+        # Scarecrow Song needs at least 2 different notes
+        if song == 'Scarecrow Song' or song == 'Scarecrow_Song':
+            # Count how many ocarina buttons we have
+            button_count = 0
+            if self.has("Ocarina A Button", player):
+                button_count += 1
+            if self.has("Ocarina C up Button", player):
+                button_count += 1
+            if self.has("Ocarina C down Button", player):
+                button_count += 1
+            if self.has("Ocarina C left Button", player):
+                button_count += 1
+            if self.has("Ocarina C right Button", player):
+                button_count += 1
+            return button_count >= 2
+
+        # Check if we have song_notes defined on the world
+        if not hasattr(world, 'song_notes'):
+            # If shuffle_individual_ocarina_notes is off, we have all notes
+            return not world.shuffle_individual_ocarina_notes
+
+        # Get the notes required for this song
+        song_key = song.replace('_', ' ')
+        if song_key not in world.song_notes:
+            return True  # Unknown song, assume no notes needed
+
+        notes = str(world.song_notes[song_key])
+
+        # Check each note type
+        if 'A' in notes and not self.has("Ocarina A Button", player):
+            return False
+        if '<' in notes and not self.has("Ocarina C left Button", player):
+            return False
+        if '^' in notes and not self.has("Ocarina C up Button", player):
+            return False
+        if 'v' in notes and not self.has("Ocarina C down Button", player):
+            return False
+        if '>' in notes and not self.has("Ocarina C right Button", player):
+            return False
+
+        return True
+
 
     # This function operates by assuming different behavior based on the "level of recursion", handled manually. 
     # If it's called while self.age[player] is None, then it will set the age variable and then attempt to reach the region. 

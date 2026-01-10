@@ -4,6 +4,7 @@
         "dungeon": "Spirit Temple",
         "locations": {
             "Spirit Temple MQ Entrance Front Left Chest": "True",
+            "Spirit Temple MQ Entrance Front Right Chest": "(Silver_Rupee_Spirit_Temple_Lobby_and_Lower_Adult, 5)",
             "Spirit Temple MQ Entrance Back Left Chest": "
                 here(can_blast_or_smash) and (can_use(Slingshot) or can_use(Bow))",
             "Spirit Temple MQ Entrance Back Right Chest": "
@@ -12,14 +13,17 @@
             "Spirit Temple MQ Lobby Pot 1": "True",
             "Spirit Temple MQ Lobby Pot 2": "True",
             "Spirit Temple MQ Lobby Pot 3": "True",
-            "Spirit Temple MQ Lobby Pot 4": "True"
+            "Spirit Temple MQ Lobby Pot 4": "True",
+            "Spirit Temple MQ Lobby and Lower Adult Silver Rupee Right Boulder": "can_blast_or_smash",
+            "Spirit Temple MQ Lobby and Lower Adult Silver Rupee Left Boulder": "can_blast_or_smash"
         },
         "exits": {
             "Desert Colossus From Spirit Lobby": "True",
             "Child Spirit Temple": "is_child",
             "Adult Spirit Temple": "
                 can_use(Longshot) and
-                ((can_use(Silver_Gauntlets) and has_bombchus) or spirit_temple_shortcuts)"
+                ((can_use(Silver_Gauntlets) and has_bombchus) or spirit_temple_shortcuts)",
+            "Farores Wind Warp": "can_use(Farores_Wind)"
         }
     },
     {
@@ -53,7 +57,10 @@
                 has_bottle and (Sticks or Kokiri_Sword) and has_bombchus and Slingshot"
         },
         "exits": {
-            "Spirit Temple Shared": "has_bombchus and (Small_Key_Spirit_Temple, 2)"
+            "Spirit Temple Shared": "
+                (Small_Key_Spirit_Temple, 2) and
+                (has_bombchus or at('Adult Spirit Temple', (Small_Key_Spirit_Temple, 7) and
+                    logic_rusted_switches and Megaton_Hammer))"
         }
     },
     {
@@ -70,7 +77,7 @@
                 Mirror_Shield and
                 (can_use(Fire_Arrows) or (logic_spirit_mq_lower_adult and can_use(Dins_Fire)))",
             "Spirit Temple Beamos Room": "(Small_Key_Spirit_Temple, 5)",
-            "Spirit Temple Boss Door": "spirit_temple_shortcuts"
+            "Spirit Temple Before Boss": "spirit_temple_shortcuts"
         }
     },
     {
@@ -119,7 +126,7 @@
                 is_adult"
         },
         "exits": {
-            "Desert Colossus": "
+            "Desert Colossus Hands": "
                 ((Small_Key_Spirit_Temple, 7) and
                     (can_play(Song_of_Time) or logic_spirit_mq_sun_block_sot or is_adult)) or
                 ((Small_Key_Spirit_Temple, 4) and can_play(Song_of_Time) and (has_explosives or Nuts) and
@@ -132,15 +139,21 @@
         "locations": {
             "Spirit Temple MQ Leever Room Chest": "True",
             "Spirit Temple MQ Symphony Room Chest": "
-                (Small_Key_Spirit_Temple, 7) and Megaton_Hammer and Ocarina and
-                Song_of_Time and Eponas_Song and Suns_Song and Song_of_Storms and Zeldas_Lullaby",
-            "Spirit Temple MQ Entrance Front Right Chest": "Megaton_Hammer",
+                (Small_Key_Spirit_Temple, 7) and Megaton_Hammer and
+                can_play(Song_of_Time) and can_play(Eponas_Song) and can_play(Suns_Song) and
+                can_play(Song_of_Storms) and can_play(Zeldas_Lullaby)",
             "Spirit Temple MQ Below 4 Wallmasters Pot 1": "True",
             "Spirit Temple MQ Below 4 Wallmasters Pot 2": "True",
+            "Spirit Temple MQ Lobby and Lower Adult Silver Rupee Near Door": "True",
+            "Spirit Temple MQ Lobby and Lower Adult Silver Rupee Behind Water Jet": "True",
+            "Spirit Temple MQ Lobby and Lower Adult Silver Rupee Water Jet": "
+                Megaton_Hammer or
+                (logic_spirit_mq_water_rupee and (Silver_Rupee_Spirit_Temple_Lobby_and_Lower_Adult, 5))",
             "Spirit Temple MQ GS Leever Room": "True",
             "Spirit Temple MQ GS Symphony Room": "
-                (Small_Key_Spirit_Temple, 7) and Megaton_Hammer and Ocarina and
-                Song_of_Time and Eponas_Song and Suns_Song and Song_of_Storms and Zeldas_Lullaby"
+                (Small_Key_Spirit_Temple, 7) and Megaton_Hammer and
+                can_play(Song_of_Time) and can_play(Eponas_Song) and can_play(Suns_Song) and
+                can_play(Song_of_Storms) and can_play(Zeldas_Lullaby)"
         }
     },
     {
@@ -169,6 +182,20 @@
         "locations": {
             "Spirit Temple MQ Shifting Wall Pot 1": "True",
             "Spirit Temple MQ Shifting Wall Pot 2": "True",
+            "Spirit Temple MQ Adult Climb Silver Rupee 1": "True",
+            "Spirit Temple MQ Adult Climb Silver Rupee 2": "True",
+            "Spirit Temple MQ Adult Climb Silver Rupee 3": "True",
+            "Spirit Temple MQ Adult Climb Silver Rupee 4": "True",
+            "Spirit Temple MQ Adult Climb Silver Rupee 5": "True"
+        },
+        "exits": {
+            "Spirit Temple After Shifting Wall": "(Silver_Rupee_Spirit_Temple_Adult_Climb, 5)"
+        }
+    },
+    {
+        "region_name": "Spirit Temple After Shifting Wall",
+        "dungeon": "Spirit Temple",
+        "locations": {
             "Spirit Temple MQ After Shifting Wall Room Pot 1": "True",
             "Spirit Temple MQ After Shifting Wall Room Pot 2": "True",
             "Spirit Temple MQ GS Nine Thrones Room West": "(Small_Key_Spirit_Temple, 7)",
@@ -202,7 +229,15 @@
             "Spirit Temple MQ Mirror Puzzle Invisible Chest": "logic_lens_spirit_mq or can_use(Lens_of_Truth)"
         },
         "exits": {
-            "Spirit Temple Boss Door": "Mirror_Shield"
+            "Spirit Temple Before Boss": "Mirror_Shield"
+        }
+    },
+    {
+        "region_name": "Spirit Temple Before Boss",
+        "dungeon": "Spirit Temple",
+        "savewarp": "Desert Colossus -> Spirit Temple Lobby",
+        "exits": {
+            "Twinrova Boss Room": "Boss_Key_Spirit_Temple"
         }
     }
 ]

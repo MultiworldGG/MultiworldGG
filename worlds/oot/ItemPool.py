@@ -618,6 +618,18 @@ def get_pool_core(world):
                 elif dungeon.name in world.key_rings:
                     item = get_junk_item(world.random)[0]
                     shuffle_item = True
+            # Silver Rupees in dungeons
+            elif location.type == 'SilverRupee':
+                if world.shuffle_silver_rupees == 'vanilla':
+                    shuffle_item = False
+                    location.show_in_spoiler = False
+                elif world.shuffle_silver_rupees == 'remove':
+                    item = IGNORE_LOCATION
+                    shuffle_item = False
+                    location.show_in_spoiler = False
+                else:
+                    # dungeon, overworld, any_dungeon, regional, anywhere
+                    shuffle_item = True
             # Any other item in a dungeon.
             elif location.type in ["Chest", "NPC", "Song", "Collectable", "Cutscene", "BossHeart"]:
                 shuffle_item = True
@@ -632,6 +644,48 @@ def get_pool_core(world):
                     shuffle_item = True
                 elif shuffle_setting in ['any_dungeon', 'overworld', 'regional']:
                     dungeon_collection[-1].priority = True
+
+        elif location.type == 'SilverRupee':
+            # This handles non-dungeon silver rupees (if any exist)
+            if world.shuffle_silver_rupees == 'vanilla':
+                shuffle_item = False
+                location.show_in_spoiler = False
+            elif world.shuffle_silver_rupees == 'remove':
+                item = IGNORE_LOCATION
+                shuffle_item = False
+                location.show_in_spoiler = False
+            else:
+                # dungeon, overworld, any_dungeon, regional, anywhere
+                shuffle_item = True
+
+        # Mask Shop items - always vanilla (masks are not shuffled)
+        elif location.type == 'MaskShop':
+            shuffle_item = False
+            location.show_in_spoiler = False
+
+        elif location.type == 'TCGSmallKey' or (location.vanilla_item and 'Treasure Chest Game' in location.vanilla_item):
+            if world.shuffle_tcgkeys == 'vanilla':
+                shuffle_item = False
+                location.show_in_spoiler = False
+            elif world.shuffle_tcgkeys == 'remove':
+                if 'Key' in location.vanilla_item:
+                    item = IGNORE_LOCATION
+                shuffle_item = False
+                location.show_in_spoiler = False
+            else:
+                shuffle_item = True
+
+        elif location.vanilla_item and location.vanilla_item.startswith('Ocarina') and 'Button' in location.vanilla_item:
+            shuffle_item = world.shuffle_individual_ocarina_notes
+            if not shuffle_item:
+                item = IGNORE_LOCATION
+                shuffle_item = False
+                location.show_in_spoiler = False
+
+        elif location.name == 'LH Hyrule Loach':
+            shuffle_item = world.shuffle_loach_reward
+            if not shuffle_item:
+                location.show_in_spoiler = False
 
         # The rest of the overworld items.
         elif location.type in ["Chest", "NPC", "Song", "Collectable", "Cutscene", "BossHeart"]:
@@ -675,6 +729,12 @@ def get_pool_core(world):
     if world.no_epona_race:
         world.multiworld.push_precollected(world.create_item('Epona', allow_arbitrary_name=True))
         world.remove_from_start_inventory.append('Epona')
+
+    if not world.shuffle_individual_ocarina_notes:
+        for button in ['Ocarina A Button', 'Ocarina C up Button', 'Ocarina C down Button',
+                       'Ocarina C left Button', 'Ocarina C right Button']:
+            world.multiworld.push_precollected(world.create_item(button))
+            world.remove_from_start_inventory.append(button)
 
     if world.shuffle_smallkeys == 'vanilla':
         # Logic cannot handle vanilla key layout in some dungeons

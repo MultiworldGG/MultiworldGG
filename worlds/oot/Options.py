@@ -201,6 +201,16 @@ class OverworldEntrances(Toggle):
     display_name = "Shuffle Overworld Entrances"
 
 
+class ShuffleHideoutEntrances(Toggle):
+    """Shuffles the 4 interior entrances to different rooms within Gerudo Fortress (v8.0)."""
+    display_name = "Shuffle Hideout Entrances"
+
+
+class ShuffleGerudoValleyRiverExit(Toggle):
+    """Shuffles the river exit from Gerudo Valley that drops you at Lake Hylia (v8.0)."""
+    display_name = "Shuffle Gerudo Valley River Exit"
+
+
 class OwlDrops(Toggle):
     """Randomizes owl drops from Lake Hylia or Death Mountain Trail as child."""
     display_name = "Randomize Owl Drops"
@@ -259,11 +269,18 @@ class ExtraTriforces(Range):
 
 
 class LogicalChus(Toggle):
-    """Bombchus are properly considered in logic.
-    The first found pack will always have 20 chus. 
-    Kokiri Shop and Bazaar will sell refills at reduced cost.
+    """Bombchus are properly considered in logic (v8.0 renamed to 'Add Bombchu Bag and Drops').
+
+    The first Bombchu pack found becomes a Bombchu Bag, giving the same amount of bombchus
+    as the original pack (e.g., finding Bombchus (5) first gives Bombchu Bag with 5 bombchus).
+
+    After finding the bag, bombchu refills drop from grass, pots, crates, and enemies.
+    Bombchus can be purchased from shops for 60/99/180 rupees.
     Bombchus open Bombchu Bowling."""
-    display_name = "Bombchus Considered in Logic"
+    display_name = "Add Bombchu Bag and Drops"
+    # Note: This option was called 'free_bombchu_drops' in upstream v8.0, but we keep
+    # the internal name 'bombchus_in_logic' for backwards compatibility with existing
+    # AP worlds that reference this option
 
 
 class DungeonShortcuts(Choice):
@@ -368,6 +385,8 @@ world_options: typing.Dict[str, type(Option)] = {
     "shuffle_grotto_entrances": GrottoEntrances,
     "shuffle_dungeon_entrances": DungeonEntrances,
     "shuffle_overworld_entrances": OverworldEntrances,
+    "shuffle_hideout_entrances": ShuffleHideoutEntrances,  # v8.0
+    "shuffle_gerudo_valley_river_exit": ShuffleGerudoValleyRiverExit,  # v8.0
     "owl_drops": OwlDrops,
     "warp_songs": WarpSongs,
     "spawn_positions": SpawnPositions,
@@ -441,7 +460,7 @@ bridge_options: typing.Dict[str, type(Option)] = {
 }
 
 
-class SongShuffle(Choice): 
+class SongShuffle(Choice):
     """Set where songs can appear.
     Song: Songs are shuffled into other song locations.
     Dungeon: Songs are placed into end-of-dungeon locations:
@@ -455,6 +474,7 @@ class SongShuffle(Choice):
     option_song = 0
     option_dungeon = 1
     option_any = 2
+    default = 0
 
 
 class ShopShuffle(Choice): 
@@ -609,6 +629,74 @@ class ShuffleFrogRupees(Toggle):
     display_name = "Shuffle Frog Song Rupees"
 
 
+class ShuffleSilverRupees(Choice):
+    """Shuffles the Silver Rupee puzzles into the item pool.
+    Remove: Silver rupees are removed and puzzles are pre-solved.
+    Vanilla: Silver rupees remain in their vanilla locations.
+    Dungeon: Silver rupees are shuffled within their own dungeon.
+    Overworld: Silver rupees are shuffled to overworld locations only.
+    Any Dungeon: Silver rupees are shuffled across any dungeon.
+    Regional: Silver rupees are shuffled within their region.
+    Anywhere: Silver rupees can be anywhere in the multiworld."""
+    display_name = "Shuffle Silver Rupees"
+    option_vanilla = 0
+    option_remove = 1
+    option_dungeon = 2
+    option_overworld = 3
+    option_any_dungeon = 4
+    option_regional = 5
+    option_anywhere = 6
+    default = 0
+
+
+class ShuffleTCGKeys(Choice):
+    """Shuffle Treasure Chest Game keys outside the minigame.
+    Vanilla: Keys remain in the Treasure Chest Game.
+    Shuffle: Keys are shuffled into the item pool.
+    Remove: Keys are removed and chests are unlocked."""
+    display_name = "Shuffle TCG Keys"
+    option_vanilla = 0
+    option_shuffle = 1
+    option_remove = 2
+    default = 0
+
+
+class ShuffleIndividualOcarinaNotes(Toggle):
+    """Locks all Ocarina inputs and adds 5 new items (A, C-up, C-down, C-left, C-right)
+    that each unlock one of the 5 Ocarina notes."""
+    display_name = "Shuffle Individual Ocarina Notes"
+
+
+class TCGRequiresLens(Toggle):
+    """Treasure Chest Game requires Lens of Truth to see which chests contain keys (v8.0)."""
+    display_name = "TCG Requires Lens of Truth"
+
+
+class ShuffleLoachReward(Toggle):
+    """Shuffle the Hyrule Loach reward from the Fishing Pond (v8.0)."""
+    display_name = "Shuffle Loach Reward"
+
+
+class KeyRingsGiveBossKeys(Toggle):
+    """When enabled, obtaining a key ring also grants the corresponding boss key (v8.0)."""
+    display_name = "Key Rings Give Boss Keys"
+
+
+class KeyAppearanceMatchesDungeon(Toggle):
+    """Small key models match their dungeon (v8.0). Requires keysanity or key ring shuffle."""
+    display_name = "Key Appearance Matches Dungeon"
+
+
+class RutoAlreadyAtF1(Toggle):
+    """Ruto starts at the first switch in Jabu instead of needing to be carried (v8.0)."""
+    display_name = "Ruto Already at F1"
+
+
+class MaintainMaskEquips(Toggle):
+    """Equipped masks stay equipped when using ocarina or picking up items (v8.0)."""
+    display_name = "Maintain Mask Equips"
+
+
 shuffle_options: typing.Dict[str, type(Option)] = {
     "shuffle_song_items": SongShuffle,
     "shopsanity": ShopShuffle,
@@ -628,6 +716,11 @@ shuffle_options: typing.Dict[str, type(Option)] = {
     "shuffle_beans": ShuffleBeans,
     "shuffle_medigoron_carpet_salesman": ShuffleMedigoronCarpet,
     "shuffle_frog_song_rupees": ShuffleFrogRupees,
+    "shuffle_silver_rupees": ShuffleSilverRupees,
+    "shuffle_tcgkeys": ShuffleTCGKeys,
+    "shuffle_individual_ocarina_notes": ShuffleIndividualOcarinaNotes,
+    "tcg_requires_lens": TCGRequiresLens,
+    "shuffle_loach_reward": ShuffleLoachReward,
 }
 
 
@@ -822,8 +915,8 @@ class KeyRingList(OptionSet):
 
 
 dungeon_items_options: typing.Dict[str, type(Option)] = {
-    "shuffle_mapcompass": ShuffleMapCompass, 
-    "shuffle_smallkeys": ShuffleKeys, 
+    "shuffle_mapcompass": ShuffleMapCompass,
+    "shuffle_smallkeys": ShuffleKeys,
     "shuffle_hideoutkeys": ShuffleGerudoKeys,
     "shuffle_bosskeys": ShuffleBossKeys,
     "enhance_map_compass": EnhanceMC,
@@ -835,6 +928,7 @@ dungeon_items_options: typing.Dict[str, type(Option)] = {
     "ganon_bosskey_hearts": GanonBKHearts,
     "key_rings": KeyRings,
     "key_rings_list": KeyRingList,
+    "key_rings_give_bosskeys": KeyRingsGiveBossKeys
 }
 
 
@@ -981,9 +1075,41 @@ class Hints(Choice):
     default = 3
 
 
-class MiscHints(DefaultOnToggle):
-    """The Temple of Time altar hints dungeon rewards, bridge info, and Ganon BK info; Ganondorf hints the Light Arrows; Dampe's diary hints a local Hookshot if one exists; Skulltula House locations hint their item."""
+class MiscHints(OptionSet):
+    """Choose which miscellaneous hints are enabled.
+
+    Temple of Time Altar hints dungeon rewards, bridge info, and Ganon BK info.
+    Ganondorf hints the Light Arrows.
+    Dampe's Diary hints a local Hookshot if one exists.
+    Skulltula House locations hint their item at various token counts.
+    Frogs Ocarina Game hints the final reward."""
     display_name = "Misc Hints"
+    valid_keys = {
+        "altar",
+        "dampe_diary",
+        "ganondorf",
+        "warp_songs_and_owls",
+        "10_skulltulas",
+        "20_skulltulas",
+        "30_skulltulas",
+        "40_skulltulas",
+        "50_skulltulas",
+        "frogs2",
+        "mask_shop",
+        "unique_merchants",
+    }
+    default = {
+        "altar",
+        "dampe_diary",
+        "ganondorf",
+        "warp_songs_and_owls",
+        "10_skulltulas",
+        "20_skulltulas",
+        "30_skulltulas",
+        "40_skulltulas",
+        "50_skulltulas",
+        "frogs2",
+    }
 
 
 class HintDistribution(Choice):
@@ -1082,6 +1208,9 @@ misc_options: typing.Dict[str, type(Option)] = {
     "minor_items_as_major_chest": MinorInMajor,
     "invisible_chests": InvisibleChests,
     "correct_potcrate_appearances": CorrectPotCrateAppearance,
+    "key_appearance_matches_dungeon": KeyAppearanceMatchesDungeon,  # v8.0
+    "ruto_already_at_f1": RutoAlreadyAtF1,  # v8.0
+    "maintain_mask_equips": MaintainMaskEquips,  # v8.0
     "hints": Hints,
     "misc_hints": MiscHints,
     "hint_dist": HintDistribution,
@@ -1092,7 +1221,7 @@ misc_options: typing.Dict[str, type(Option)] = {
     "starting_tod": StartingToD,
     "blue_fire_arrows": BlueFireArrows,
     "fix_broken_drops": FixBrokenDrops,
-    "start_with_consumables": ConsumableStart, 
+    "start_with_consumables": ConsumableStart,
     "start_with_rupees": RupeeStart,
 }
 
@@ -1356,6 +1485,14 @@ class OoTOptions(PerGameCommonOptions):
     shuffle_beans: ShuffleBeans
     shuffle_medigoron_carpet_salesman: ShuffleMedigoronCarpet
     shuffle_frog_song_rupees: ShuffleFrogRupees
+    shuffle_silver_rupees: ShuffleSilverRupees
+    shuffle_tcgkeys: ShuffleTCGKeys
+    shuffle_individual_ocarina_notes: ShuffleIndividualOcarinaNotes
+    tcg_requires_lens: TCGRequiresLens
+    shuffle_loach_reward: ShuffleLoachReward
+    shuffle_hideout_entrances: ShuffleHideoutEntrances
+    shuffle_gerudo_valley_river_exit: ShuffleGerudoValleyRiverExit
+    key_rings_give_bosskeys: KeyRingsGiveBossKeys
     no_escape_sequence: SkipEscape
     no_guard_stealth: SkipStealth
     no_epona_race: SkipEponaRace
@@ -1373,6 +1510,9 @@ class OoTOptions(PerGameCommonOptions):
     minor_items_as_major_chest: MinorInMajor
     invisible_chests: InvisibleChests
     correct_potcrate_appearances: CorrectPotCrateAppearance
+    key_appearance_matches_dungeon: KeyAppearanceMatchesDungeon
+    ruto_already_at_f1: RutoAlreadyAtF1
+    maintain_mask_equips: MaintainMaskEquips
     hints: Hints
     misc_hints: MiscHints
     hint_dist: HintDistribution

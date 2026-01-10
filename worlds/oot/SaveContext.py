@@ -320,6 +320,44 @@ class SaveContext():
                         'total_keys.gc': 3 if world.dungeon_mq[dungeon] else 2,
                     },
                 }[dungeon]
+
+            elif item.startswith('Silver Rupee (') or item.startswith('Silver Rupee Pouch ('):
+                # Convert Pouch to regular Silver Rupee item name for mapping
+                puzzle_item = item
+                needed_count = None
+                if item.startswith('Silver Rupee Pouch ('):
+                    puzzle_item = item.replace('Silver Rupee Pouch (', 'Silver Rupee (')
+                    # Pouch sets the count, individual silver rupee increments
+                    needed_count = 5  # Default, overridden below for specific puzzles
+
+                # Map puzzle names to save writes (both count and scene flags)
+                puzzle_map = {
+                    "Dodongos Cavern Staircase":           {'silver_rupee_counts.dc_staircase': needed_count, 'scene_flags.dodongo.swch.silver_rupees_staircase': True},
+                    "Ice Cavern Spinning Scythe":          {'silver_rupee_counts.ice_scythe': needed_count, 'scene_flags.ice.swch.silver_rupees_scythe': True},
+                    "Ice Cavern Push Block":               {'silver_rupee_counts.ice_block': needed_count, 'scene_flags.ice.swch.silver_rupees_block': True},
+                    "Bottom of the Well Basement":         {'silver_rupee_counts.botw_basement': needed_count, 'scene_flags.botw.swch.silver_rupees_basement': True},
+                    "Shadow Temple Scythe Shortcut":       {'silver_rupee_counts.shadow_scythe': needed_count, 'scene_flags.shadow.swch.silver_rupees_scythe': True},
+                    "Shadow Temple Invisible Blades":      {'silver_rupee_counts.shadow_blades': needed_count if needed_count != 5 else 10, 'scene_flags.shadow.swch.silver_rupees_blades': True},
+                    "Shadow Temple Huge Pit":              {'silver_rupee_counts.shadow_pit': needed_count, ('scene_flags.shadow.swch.silver_rupees_mq_pit' if world.dungeon_mq["Shadow Temple"] else 'scene_flags.shadow.swch.silver_rupees_vanilla_pit'): True},
+                    "Shadow Temple Invisible Spikes":      {'silver_rupee_counts.shadow_spikes': needed_count if needed_count != 5 else 10, 'scene_flags.shadow.swch.silver_rupees_spikes': True},
+                    "Gerudo Training Ground Slopes":       {'silver_rupee_counts.gtg_slopes': needed_count, 'scene_flags.gtg.swch.silver_rupees_slopes': True, 'scene_flags.gtg.clear.slopes_room': True},
+                    "Gerudo Training Ground Lava":         {'silver_rupee_counts.gtg_lava': needed_count if needed_count != 5 else 6, 'scene_flags.gtg.swch.silver_rupees_lava': True},
+                    "Gerudo Training Ground Water":        {'silver_rupee_counts.gtg_water': needed_count, 'scene_flags.gtg.swch.silver_rupees_water': True},
+                    "Spirit Temple Child Early Torches":   {'silver_rupee_counts.spirit_torches': needed_count, 'scene_flags.spirit.swch.silver_rupees_torches': True},
+                    "Spirit Temple Adult Boulders":        {'silver_rupee_counts.spirit_boulders': needed_count, 'scene_flags.spirit.swch.silver_rupees_boulders': True},
+                    "Spirit Temple Lobby and Lower Adult": {'silver_rupee_counts.spirit_lobby': needed_count, 'scene_flags.spirit.swch.silver_rupees_lobby': True},
+                    "Spirit Temple Sun Block":             {'silver_rupee_counts.spirit_sun': needed_count, 'scene_flags.spirit.swch.silver_rupees_sun': True},
+                    "Spirit Temple Adult Climb":           {'silver_rupee_counts.spirit_adult_climb': needed_count, 'scene_flags.spirit.swch.silver_rupees_adult_climb': True},
+                    "Ganons Castle Spirit Trial":          {'silver_rupee_counts.trials_spirit': needed_count, 'scene_flags.gc.swch.silver_rupees_shadow_spirit': True},
+                    "Ganons Castle Light Trial":           {'silver_rupee_counts.trials_light': needed_count, 'scene_flags.gc.swch.silver_rupees_light': True},
+                    "Ganons Castle Fire Trial":            {'silver_rupee_counts.trials_fire': needed_count, ('scene_flags.gc.swch.silver_rupees_mq_fire' if world.dungeon_mq["Ganons Castle"] else 'scene_flags.gc.swch.silver_rupees_vanilla_fire'): True},
+                    "Ganons Castle Shadow Trial":          {'silver_rupee_counts.trials_shadow': needed_count, 'scene_flags.gc.swch.silver_rupees_shadow_spirit': True},
+                    "Ganons Castle Water Trial":           {'silver_rupee_counts.trials_water': needed_count, 'scene_flags.gc.swch.silver_rupees_water': True},
+                    "Ganons Castle Forest Trial":          {'silver_rupee_counts.trials_forest': needed_count, 'scene_flags.gc.swch.silver_rupees_forest': True},
+                }
+                # Extract puzzle name from item
+                puzzle_name = puzzle_item[:-1].split(' (', 1)[1]
+                save_writes = puzzle_map.get(puzzle_name, SaveContext.save_writes_table[item])
             else:
                 save_writes = SaveContext.save_writes_table[item]
             for address, value in save_writes.items():
@@ -1129,6 +1167,57 @@ class SaveContext():
             'keys.gc': 3,
             'total_keys.gc': 3,
         },
+
+        "Ocarina A Button"          : {'Ocarina_A_Button': True},
+        "Ocarina C up Button"       : {'Ocarina_C_up_Button': True},
+        "Ocarina C down Button"     : {'Ocarina_C_down_Button': True},
+        "Ocarina C left Button"     : {'Ocarina_C_left_Button': True},
+        "Ocarina C right Button"    : {'Ocarina_C_right_Button': True},
+
+        "Silver Rupee (Dodongos Cavern Staircase)":            {'silver_rupee_counts.dc_staircase': None},
+        "Silver Rupee (Ice Cavern Spinning Scythe)":           {'silver_rupee_counts.ice_scythe': None},
+        "Silver Rupee (Ice Cavern Push Block)":                {'silver_rupee_counts.ice_block': None},
+        "Silver Rupee (Bottom of the Well Basement)":          {'silver_rupee_counts.botw_basement': None},
+        "Silver Rupee (Shadow Temple Scythe Shortcut)":        {'silver_rupee_counts.shadow_scythe': None},
+        "Silver Rupee (Shadow Temple Invisible Blades)":       {'silver_rupee_counts.shadow_blades': None},
+        "Silver Rupee (Shadow Temple Huge Pit)":               {'silver_rupee_counts.shadow_pit': None},
+        "Silver Rupee (Shadow Temple Invisible Spikes)":       {'silver_rupee_counts.shadow_spikes': None},
+        "Silver Rupee (Gerudo Training Ground Slopes)":        {'silver_rupee_counts.gtg_slopes': None},
+        "Silver Rupee (Gerudo Training Ground Lava)":          {'silver_rupee_counts.gtg_lava': None},
+        "Silver Rupee (Gerudo Training Ground Water)":         {'silver_rupee_counts.gtg_water': None},
+        "Silver Rupee (Spirit Temple Child Early Torches)":    {'silver_rupee_counts.spirit_torches': None},
+        "Silver Rupee (Spirit Temple Adult Boulders)":         {'silver_rupee_counts.spirit_boulders': None},
+        "Silver Rupee (Spirit Temple Lobby and Lower Adult)":  {'silver_rupee_counts.spirit_lobby': None},
+        "Silver Rupee (Spirit Temple Sun Block)":              {'silver_rupee_counts.spirit_sun': None},
+        "Silver Rupee (Spirit Temple Adult Climb)":            {'silver_rupee_counts.spirit_adult_climb': None},
+        "Silver Rupee (Ganons Castle Spirit Trial)":           {'silver_rupee_counts.trials_spirit': None},
+        "Silver Rupee (Ganons Castle Light Trial)":            {'silver_rupee_counts.trials_light': None},
+        "Silver Rupee (Ganons Castle Fire Trial)":             {'silver_rupee_counts.trials_fire': None},
+        "Silver Rupee (Ganons Castle Shadow Trial)":           {'silver_rupee_counts.trials_shadow': None},
+        "Silver Rupee (Ganons Castle Water Trial)":            {'silver_rupee_counts.trials_water': None},
+        "Silver Rupee (Ganons Castle Forest Trial)":           {'silver_rupee_counts.trials_forest': None},
+        "Silver Rupee Pouch (Dodongos Cavern Staircase)":            {'silver_rupee_counts.dc_staircase': 5},
+        "Silver Rupee Pouch (Ice Cavern Spinning Scythe)":           {'silver_rupee_counts.ice_scythe': 5},
+        "Silver Rupee Pouch (Ice Cavern Push Block)":                {'silver_rupee_counts.ice_block': 5},
+        "Silver Rupee Pouch (Bottom of the Well Basement)":          {'silver_rupee_counts.botw_basement': 5},
+        "Silver Rupee Pouch (Shadow Temple Scythe Shortcut)":        {'silver_rupee_counts.shadow_scythe': 5},
+        "Silver Rupee Pouch (Shadow Temple Invisible Blades)":       {'silver_rupee_counts.shadow_blades': 10},
+        "Silver Rupee Pouch (Shadow Temple Huge Pit)":               {'silver_rupee_counts.shadow_pit': 5},
+        "Silver Rupee Pouch (Shadow Temple Invisible Spikes)":       {'silver_rupee_counts.shadow_spikes': 10},
+        "Silver Rupee Pouch (Gerudo Training Ground Slopes)":        {'silver_rupee_counts.gtg_slopes': 5},
+        "Silver Rupee Pouch (Gerudo Training Ground Lava)":          {'silver_rupee_counts.gtg_lava': 6},
+        "Silver Rupee Pouch (Gerudo Training Ground Water)":         {'silver_rupee_counts.gtg_water': 5},
+        "Silver Rupee Pouch (Spirit Temple Child Early Torches)":    {'silver_rupee_counts.spirit_torches': 5},
+        "Silver Rupee Pouch (Spirit Temple Adult Boulders)":         {'silver_rupee_counts.spirit_boulders': 5},
+        "Silver Rupee Pouch (Spirit Temple Lobby and Lower Adult)":  {'silver_rupee_counts.spirit_lobby': 5},
+        "Silver Rupee Pouch (Spirit Temple Sun Block)":              {'silver_rupee_counts.spirit_sun': 5},
+        "Silver Rupee Pouch (Spirit Temple Adult Climb)":            {'silver_rupee_counts.spirit_adult_climb': 5},
+        "Silver Rupee Pouch (Ganons Castle Spirit Trial)":           {'silver_rupee_counts.trials_spirit': 5},
+        "Silver Rupee Pouch (Ganons Castle Light Trial)":            {'silver_rupee_counts.trials_light': 5},
+        "Silver Rupee Pouch (Ganons Castle Fire Trial)":             {'silver_rupee_counts.trials_fire': 5},
+        "Silver Rupee Pouch (Ganons Castle Shadow Trial)":           {'silver_rupee_counts.trials_shadow': 5},
+        "Silver Rupee Pouch (Ganons Castle Water Trial)":            {'silver_rupee_counts.trials_water': 5},
+        "Silver Rupee Pouch (Ganons Castle Forest Trial)":           {'silver_rupee_counts.trials_forest': 5},
     }
 
 
@@ -1199,5 +1288,93 @@ class SaveContext():
             'boots' : [
                 'kokiri_boots',
             ],
-        }
+        },
+
+        'Ocarina_A_Button'           : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x01),
+        'Ocarina_C_up_Button'        : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x02),
+        'Ocarina_C_down_Button'      : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x04),
+        'Ocarina_C_left_Button'      : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x08),
+        'Ocarina_C_right_Button'     : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x10),
+
+        'silver_rupee_counts' : {
+            'dc_staircase'       : Address(0x1450, size=1, max=5),
+            'ice_scythe'         : Address(0x1451, size=1, max=5),
+            'ice_block'          : Address(0x1452, size=1, max=5),
+            'botw_basement'      : Address(0x1453, size=1, max=5),
+            'shadow_scythe'      : Address(0x1454, size=1, max=5),
+            'shadow_blades'      : Address(0x1455, size=1, max=10),
+            'shadow_pit'         : Address(0x1456, size=1, max=5),
+            'shadow_spikes'      : Address(0x1457, size=1, max=10),
+            'gtg_slopes'         : Address(0x1458, size=1, max=5),
+            'gtg_lava'           : Address(0x1459, size=1, max=6),
+            'gtg_water'          : Address(0x145A, size=1, max=5),
+            'spirit_torches'     : Address(0x145B, size=1, max=5),
+            'spirit_boulders'    : Address(0x145C, size=1, max=5),
+            'spirit_lobby'       : Address(0x145D, size=1, max=5),
+            'spirit_sun'         : Address(0x145E, size=1, max=5),
+            'spirit_adult_climb' : Address(0x145F, size=1, max=5),
+            'trials_spirit'      : Address(0x1460, size=1, max=5),
+            'trials_light'       : Address(0x1461, size=1, max=5),
+            'trials_fire'        : Address(0x1462, size=1, max=5),
+            'trials_shadow'      : Address(0x1463, size=1, max=5),
+            'trials_water'       : Address(0x1464, size=1, max=5),
+            'trials_forest'      : Address(0x1465, size=1, max=5),
+        },
+
+        'scene_flags' : {
+            'dodongo' : {
+                'swch' : {
+                    'silver_rupees_staircase': Address(0xD4 + 0x1C * 0x01 + 0x04, mask=0x80000000),
+                },
+            },
+            'spirit' : {
+                'swch' : {
+                    'silver_rupees_adult_climb': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000001),
+                    'silver_rupees_boulders': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000004),
+                    'silver_rupees_torches': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000020),
+                    'silver_rupees_sun': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000400),
+                    'silver_rupees_lobby': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x80000000),
+                },
+            },
+            'shadow' : {
+                'swch' : {
+                    'silver_rupees_scythe': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000002),
+                    'silver_rupees_blades': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000008),
+                    'silver_rupees_spikes': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000100),
+                    'silver_rupees_vanilla_pit': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000200),
+                    'silver_rupees_mq_pit': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00020000),
+                },
+            },
+            'botw' : {
+                'swch' : {
+                    'silver_rupees_basement': Address(0xD4 + 0x1C * 0x08 + 0x04, mask=0x80000000),
+                },
+            },
+            'ice' : {
+                'swch' : {
+                    'silver_rupees_scythe': Address(0xD4 + 0x1C * 0x09 + 0x04, mask=0x00000100),
+                    'silver_rupees_block': Address(0xD4 + 0x1C * 0x09 + 0x04, mask=0x00000200),
+                },
+            },
+            'gtg' : {
+                'swch' : {
+                    'silver_rupees_lava': Address(0xD4 + 0x1C * 0x0B + 0x04, mask=0x00001000),
+                    'silver_rupees_water': Address(0xD4 + 0x1C * 0x0B + 0x04, mask=0x08000000),
+                    'silver_rupees_slopes': Address(0xD4 + 0x1C * 0x0B + 0x04, mask=0x10000000),
+                },
+                'clear' : {
+                    'slopes_room': Address(0xD4 + 0x1C * 0x0B + 0x08, mask=0x10000000),
+                },
+            },
+            'gc' : {
+                'swch' : {
+                    'silver_rupees_mq_fire': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000002),
+                    'silver_rupees_water': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000004),
+                    'silver_rupees_vanilla_fire': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000200),
+                    'silver_rupees_shadow_spirit': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000800),
+                    'silver_rupees_forest': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00004000),
+                    'silver_rupees_light': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00040000),
+                },
+            },
+        },
     }

@@ -6,7 +6,8 @@
             "Death Mountain": "True",
             "Dodongos Cavern Lobby": "
                 here(can_blast_or_smash or Progressive_Strength_Upgrade) or
-                dodongos_cavern_shortcuts"
+                dodongos_cavern_shortcuts",
+            "Farores Wind Warp": "can_use(Farores_Wind)"
         }
     },
     {
@@ -39,26 +40,41 @@
             "Dodongos Cavern MQ Staircase Pot 2": "True",
             "Dodongos Cavern MQ Staircase Pot 3": "True",
             "Dodongos Cavern MQ Staircase Pot 4": "True",
+            # Entering the staircase room requires strength, hammer, or explosives.
+            # Strength can be used for the bottom crates near the staircase bomb flowers.
+            # The other crates above the staircase require another way to destroy with one bonk ko.
             "Dodongos Cavern MQ Staircase Crate Bottom Left": "True",
             "Dodongos Cavern MQ Staircase Crate Bottom Right": "True",
             "Dodongos Cavern MQ Staircase Crate Mid Left": "can_break_crate",
             "Dodongos Cavern MQ Staircase Crate Mid Right": "can_break_crate",
             "Dodongos Cavern MQ Staircase Crate Top Left": "can_break_crate",
             "Dodongos Cavern MQ Staircase Crate Top Right": "can_break_crate",
+            "Dodongos Cavern MQ Staircase Silver Rupee Beamos": "True",
+            "Dodongos Cavern MQ Staircase Silver Rupee Lower Crate": "True",
+            "Dodongos Cavern MQ Staircase Silver Rupee Mid Left Crate": "can_break_crate",
+            "Dodongos Cavern MQ Staircase Silver Rupee Top Right Crate": "can_break_crate",
             "Dodongos Cavern MQ GS Song of Time Block Room": "
                 can_play(Song_of_Time) and (can_child_attack or is_adult)",
             "Deku Baba Sticks": "is_adult or Kokiri_Sword or Boomerang"
         },
         "exits": {
-            "Dodongos Cavern Torch Puzzle Lower": "
-                (deadly_bonks != 'ohko' or can_use(Nayrus_Love) or can_blast_or_smash) and
-                (is_adult or can_child_attack or Nuts)",
+            "Dodongos Cavern Above Staircase": "is_adult or can_child_attack or Nuts",
             "Dodongos Cavern Torch Puzzle Upper": "
                 here(can_blast_or_smash or can_use(Dins_Fire)) or
                 at('Dodongos Cavern Torch Puzzle Upper', Progressive_Strength_Upgrade)",
             "Dodongos Cavern Poes Room": "
                 logic_dc_mq_child_bombs and (Kokiri_Sword or Sticks) and can_take_damage",
             "Dodongos Cavern Mouth": "has_explosives"
+        }
+    },
+    {
+        "region_name": "Dodongos Cavern Above Staircase",
+        "dungeon": "Dodongos Cavern",
+        "locations": {
+            "Dodongos Cavern MQ Staircase Silver Rupee Vines": "True"
+        },
+        "exits": {
+            "Dodongos Cavern Torch Puzzle Lower": "(Silver_Rupee_Dodongos_Cavern_Staircase, 5)"
         }
     },
     {
@@ -71,6 +87,7 @@
                 can_use(Boomerang) or at('Dodongos Cavern Torch Puzzle Upper', True)"
         },
         "exits": {
+            "Dodongos Cavern Above Staircase": "True",
             "Dodongos Cavern Larvae Room": "has_fire_source_with_torch",
             "Dodongos Cavern Before Upper Lizalfos": "has_fire_source_with_torch",
             "Dodongos Cavern Torch Puzzle Upper": "
@@ -189,6 +206,7 @@
     {
         "region_name": "Dodongos Cavern Mouth",
         "dungeon": "Dodongos Cavern",
+        "savewarp": "Death Mountain -> Dodongos Cavern Beginning",
         "locations": {
             "Dodongos Cavern MQ Under Grave Chest": "True",
             "Dodongos Cavern MQ Room Before Boss Pot 1": "True",
@@ -203,10 +221,12 @@
                     Progressive_Strength_Upgrade)"
         },
         "exits": {
+            "Dodongos Cavern Lobby": "True",
             # The final line of this exit is for using an Armos to explode the bomb flowers.
+            # This should really be a separate trick, but it's only relevant in mixed pools.
             "Dodongos Cavern Before Boss": "
                 is_adult or has_explosives or can_use(Dins_Fire) or dodongos_cavern_shortcuts or
-                Sticks or ((Nuts or Boomerang) and (Kokiri_Sword or Slingshot))"
+                (logic_dc_mq_eyes_child and (Sticks or ((Nuts or Boomerang) and (Kokiri_Sword or Slingshot))))"
         }
     },
     {
@@ -217,7 +237,7 @@
             "Fairy Pot": "has_bottle"
         },
         "exits": {
-            "Dodongos Cavern Boss Door": "True"
+            "King Dodongo Boss Room": "True"
         }
     }
 ]

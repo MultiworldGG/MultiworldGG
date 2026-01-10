@@ -40,3 +40,32 @@ class OOTEntrance(Entrance):
             self.assumed = self.get_new_target(pool_type)
             self.disconnect()
         return self.assumed
+
+    def can_reach(self, state):
+        # If age is already set, use default behavior
+        if hasattr(state, 'age') and state.age.get(self.player) is not None:
+            return super().can_reach(state)
+
+        # When age is None (during sweep), check if entrance is passable as either child or adult
+        from .Regions import TimeOfDay
+
+        # First check if parent region is reachable (without setting age)
+        if not self.parent_region.can_reach(state):
+            return False
+
+        # Helper to call access_rule with or without kwargs
+        def call_access_rule(age):
+            try:
+                return self.access_rule(state, spot=self, age=age, tod=TimeOfDay.NONE)
+            except TypeError:
+                return self.access_rule(state)
+
+        # Try adult
+        if call_access_rule('adult'):
+            return True
+
+        # Try child
+        if call_access_rule('child'):
+            return True
+
+        return False

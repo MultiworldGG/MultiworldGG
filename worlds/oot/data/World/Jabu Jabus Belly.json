@@ -4,7 +4,8 @@
         "dungeon": "Jabu Jabus Belly",
         "exits": {
             "Zoras Fountain": "True",
-            "Jabu Jabus Belly Main": "can_use_projectile"
+            "Jabu Jabus Belly Main": "can_use_projectile",
+            "Farores Wind Warp": "can_use(Farores_Wind)"
         }
     },
     {
@@ -13,7 +14,8 @@
         "locations": {
             "Jabu Jabus Belly Boomerang Chest": "True",
             "Jabu Jabus Belly Deku Scrub": "
-                can_dive or is_child or logic_jabu_alcove_jump_dive or can_use(Iron_Boots)",
+                can_stun_deku and
+                (can_dive or is_child or logic_jabu_alcove_jump_dive or can_use(Iron_Boots))",
             "Jabu Jabus Belly Small Wooden Crate": "True",
             "Jabu Jabus Belly Basement 2 Octoroks Pot 1": "can_use(Boomerang) or can_use(Hover_Boots)",
             "Jabu Jabus Belly Basement 2 Octoroks Pot 2": "can_use(Boomerang) or can_use(Hover_Boots)",
@@ -59,11 +61,14 @@
     {
         "region_name": "Jabu Jabus Belly Before Boss",
         "dungeon": "Jabu Jabus Belly",
+        "savewarp": "Zoras Fountain -> Jabu Jabus Belly Beginning",
         "locations": {
-            "Jabu Jabus Belly GS Near Boss": "True"
+            # Could have a trick to allow (is_adult or can_child_attack) for hitting the skulltula through the wall
+            "Jabu Jabus Belly GS Near Boss": "can_use_projectile or can_use(Dins_Fire)"
         },
         "exits": {
-            "Jabu Jabus Belly Boss Door": "
+            "Jabu Jabus Belly Main": "True",
+            "Barinade Boss Room": "
                 can_use(Boomerang) or
                 (logic_jabu_near_boss_ranged and
                     (can_use(Hookshot) or can_use(Bow) or can_use(Slingshot))) or

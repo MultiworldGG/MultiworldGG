@@ -11,12 +11,13 @@
         "exits": {
             "DMC Fire Temple Entrance": "True",
             "Fire Temple Near Boss": "
-                is_adult and has_fire_source and
-                (logic_fewer_tunic_requirements or can_use(Goron_Tunic))",
+                (is_adult or logic_fire_mq_child_flame) and has_fire_source and
+                (logic_fewer_tunic_requirements or Goron_Tunic)",
             "Fire Temple Lower Locked Door": "
                 (Small_Key_Fire_Temple, 5) and (is_adult or Kokiri_Sword)",
             "Fire Temple Big Lava Room": "
-                is_adult and Megaton_Hammer and (logic_fewer_tunic_requirements or Goron_Tunic)"
+                is_adult and Megaton_Hammer and (logic_fewer_tunic_requirements or Goron_Tunic)",
+            "Farores Wind Warp": "can_use(Farores_Wind)"
         }
     },
     {
@@ -45,8 +46,17 @@
                 (can_use(Hookshot) or can_use(Hover_Boots)) and can_break_heated_crate"
         },
         "exits": {
-            "Fire Temple Boss Door": "
+            "Fire Temple Before Boss": "
                 is_adult and (fire_temple_shortcuts or logic_fire_boss_door_jump or Hover_Boots)"
+        }
+    },
+    {
+        "region_name": "Fire Temple Before Boss",
+        "dungeon": "Fire Temple",
+        "savewarp": "DMC Fire Temple Entrance -> Fire Temple Lower",
+        "exits": {
+            "Fire Temple Near Boss": "is_adult and (logic_fewer_tunic_requirements or Goron_Tunic)",
+            "Volvagia Boss Room": "Boss_Key_Fire_Temple"
         }
     },
     {
@@ -200,7 +210,7 @@
             "Fire Temple Flame Maze Side Room": "
                 can_play(Song_of_Time) or Hover_Boots or logic_fire_mq_flame_maze",
             "Fire Temple Upper": "Hookshot or logic_fire_mq_flame_maze",
-            "Fire Temple Boss Door": "True"
+            "Fire Temple Before Boss": "True"
         }
     },
     {

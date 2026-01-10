@@ -1,5 +1,10 @@
-from BaseClasses import LocationProgressType
-from .Items import OOTItem
+from __future__ import annotations
+import random
+from collections.abc import Callable, Collection
+from typing import TYPE_CHECKING, Optional, Any
+
+if TYPE_CHECKING:
+    from World import World
 
 #   Abbreviations
 #       DMC     Death Mountain Crater
@@ -21,57 +26,74 @@ from .Items import OOTItem
 #       ZF      Zora's Fountain
 #       ZR      Zora's River
 
-class Hint(object):
-    name = ""
-    text = ""
-    type = []
 
-    def __init__(self, name, text, type, rand, choice=None):
-        self.name = name
-        self.type = [type] if not isinstance(type, list) else type
+class Hint:
+    def __init__(self, name: str, text: str | list[str], hint_type: str | list[str], choice: Optional[int] = None) -> None:
+        self.name: str = name
+        self.type: list[str] = [hint_type] if not isinstance(hint_type, list) else hint_type
 
+        self.text: str
         if isinstance(text, str):
             self.text = text
         else:
-            if choice == None:
-                self.text = rand.choice(text)
+            if choice is None:
+                self.text = random.choice(text)
             else:
                 self.text = text[choice]
 
 
-def getHint(item, rand, clearer_hint=False):
-    if item in hintTable:
-        textOptions, clearText, hintType = hintTable[item]
-        if clearer_hint:
-            if clearText == None:
-                return Hint(item, textOptions, hintType, rand, 0)
-            return Hint(item, clearText, hintType, rand)
-        else:
-            return Hint(item, textOptions, hintType, rand)
-    elif isinstance(item, str):
-        return Hint(item, item, 'generic', rand)
-    else: # is an Item
-        return Hint(item.name, item.hint_text, 'item', rand)
+class Multi:
+    def __init__(self, name: str, locations: list[str]) -> None:
+        self.name: str = name
+        self.locations: list[str] = locations
 
 
-def getHintGroup(group, world):
+def get_hint(name: str, clearer_hint: bool = False) -> Hint:
+    text_options, clear_text, hint_type = hintTable[name]
+    if clearer_hint:
+        if clear_text is None:
+            return Hint(name, text_options, hint_type, 0)
+        return Hint(name, clear_text, hint_type)
+    else:
+        return Hint(name, text_options, hint_type)
+
+
+def get_multi(name: str) -> Multi:
+    locations = multiTable[name]
+    return Multi(name, locations)
+
+
+def get_hint_group(group: str, world: World) -> list[Hint]:
     ret = []
     for name in hintTable:
 
-        hint = getHint(name, world.random, world.clearer_hints)
+        hint = get_hint(name, True)  # clearer_hints is always True in AP
 
         if hint.name in world.always_hints and group == 'always':
             hint.type = 'always'
 
+        if group == 'dual_always' and hint.name in conditional_dual_always and conditional_dual_always[hint.name](world):
+            hint.type = 'dual_always'
+
+        if group == 'entrance_always' and hint.name in conditional_entrance_always and conditional_entrance_always[hint.name](world):
+            hint.type = 'entrance_always'
+
+        conditional_keep = True
+        type_append = False
+        if group in ['overworld', 'dungeon', 'sometimes', 'dual', 'entrance'] and hint.name in conditional_sometimes.keys():
+            conditional_keep = conditional_sometimes[hint.name](world)
+
         # Hint inclusion override from distribution
-        if group in world.added_hint_types or group in world.item_added_hint_types:
+        if (group in world.added_hint_types or group in world.item_added_hint_types):
             if hint.name in world.added_hint_types[group]:
                 hint.type = group
-            if nameIsLocation(name, hint.type, world):
+                type_append = True
+            if name_is_location(name, hint.type, world):
                 location = world.get_location(name)
                 for i in world.item_added_hint_types[group]:
                     if i == location.item.name:
                         hint.type = group
+                        type_append = True
                 for i in world.item_hint_type_overrides[group]:
                     if i == location.item.name:
                         hint.type = []
@@ -80,94 +102,195 @@ def getHintGroup(group, world):
             if name in world.hint_type_overrides[group]:
                 type_override = True
         if group in world.item_hint_type_overrides:
-            if nameIsLocation(name, hint.type, world):
+            if name_is_location(name, hint.type, world):
                 location = world.get_location(name)
                 if location.item.name in world.item_hint_type_overrides[group]:
                     type_override = True
+            elif name in multiTable.keys():
+                multi = get_multi(name)
+                for locationName in multi.locations:
+                    if locationName not in hint_exclusions(world):
+                        location = world.get_location(locationName)
+                        if location.item.name in world.item_hint_type_overrides[group]:
+                            type_override = True
 
-        if group in hint.type and (name not in hintExclusions(world)) and not type_override:
+        if group in hint.type and (name not in hint_exclusions(world)) and not type_override and (conditional_keep or type_append):
             ret.append(hint)
     return ret
 
 
-def getRequiredHints(world):
+def get_required_hints(world: World) -> list[Hint]:
     ret = []
     for name in hintTable:
-        hint = getHint(name, world.random)
+        hint = get_hint(name)
         if 'always' in hint.type or hint.name in conditional_always and conditional_always[hint.name](world):
             ret.append(hint)
     return ret
 
 
+# Get the multi hints containing the list of locations for a possible hint upgrade.
+def get_upgrade_hint_list(world: World, locations: list[str]) -> list[Hint]:
+    ret = []
+    for name in multiTable:
+        if name not in hint_exclusions(world):
+            hint = get_hint(name, True)  # clearer_hints is always True in AP
+            multi = get_multi(name)
+
+            if len(locations) < len(multi.locations) and all(location in multi.locations for location in locations) and (hint.name not in conditional_sometimes.keys() or conditional_sometimes[hint.name](world)):
+                accepted_type = False
+
+                for hint_type in hint.type:
+                    type_override = False
+                    if hint_type in world.hint_type_overrides:
+                        if name in world.hint_type_overrides[hint_type]:
+                            type_override = True
+                    if hint_type in world.item_hint_type_overrides:
+                        for locationName in multi.locations:
+                            if locationName not in hint_exclusions(world):
+                                location = world.get_location(locationName)
+                                if location.item.name in world.item_hint_type_overrides[hint_type]:
+                                    type_override = True
+
+                    if world.hint_dist_user['upgrade_hints'] == 'limited':
+                        if world.hint_dist_user['distribution'][hint_type]['copies'] > 0:
+                            accepted_type = True
+                    if not type_override:
+                        accepted_type = True
+
+                if accepted_type:
+                    ret.append(hint)
+    return ret
+
+
 # Helpers for conditional always hints
-def stones_required_by_settings(world):
+# TODO: Make these properties of World or Settings.
+def stones_required_by_settings(world: World) -> int:
     stones = 0
-    if world.bridge == 'stones':
-        stones = max(stones, world.bridge_stones)
-    if world.shuffle_ganon_bosskey == 'on_lacs' and world.lacs_condition == 'stones':
-        stones = max(stones, world.lacs_stones)
-    if world.bridge == 'dungeons':
-        stones = max(stones, world.bridge_rewards - 6)
-    if world.shuffle_ganon_bosskey == 'on_lacs' and world.lacs_condition == 'dungeons':
-        stones = max(stones, world.lacs_rewards - 6)
+    if world.options.bridge.value == 2 and not world.shuffle_special_dungeon_entrances:  # 2 = stones
+        stones = max(stones, world.options.bridge_stones.value)
+    # lacs_condition not implemented in AP - on_lacs always requires Shadow + Spirit medallions
+    if world.options.shuffle_ganon_bosskey.value == 9:  # 9 = stones
+        stones = max(stones, world.options.ganon_bosskey_stones.value)
+    if world.options.bridge.value == 4 and not world.shuffle_special_dungeon_entrances:  # 4 = dungeons
+        stones = max(stones, world.options.bridge_rewards.value - 6)
+    # lacs_condition not implemented in AP
+    if world.options.shuffle_ganon_bosskey.value == 11:  # 11 = dungeons
+        stones = max(stones, world.options.ganon_bosskey_rewards.value - 6)
 
     return stones
 
 
-def medallions_required_by_settings(world):
+def medallions_required_by_settings(world: World) -> int:
     medallions = 0
-    if world.bridge == 'medallions':
-        medallions = max(medallions, world.bridge_medallions)
-    if world.shuffle_ganon_bosskey == 'on_lacs' and world.lacs_condition == 'medallions':
-        medallions = max(medallions, world.lacs_medallions)
-    if world.bridge == 'dungeons':
-        medallions = max(medallions, max(world.bridge_rewards - 3, 0))
-    if world.shuffle_ganon_bosskey == 'on_lacs' and world.lacs_condition == 'dungeons':
-        medallions = max(medallions, max(world.lacs_rewards - 3, 0))
+    if world.options.bridge.value == 3 and not world.shuffle_special_dungeon_entrances:  # 3 = medallions
+        medallions = max(medallions, world.options.bridge_medallions.value)
+    # lacs_condition not implemented in AP - on_lacs always requires Shadow + Spirit medallions
+    if world.options.shuffle_ganon_bosskey.value == 10:  # 10 = medallions
+        medallions = max(medallions, world.options.ganon_bosskey_medallions.value)
+    if world.options.bridge.value == 4 and not world.shuffle_special_dungeon_entrances:  # 4 = dungeons
+        medallions = max(medallions, max(world.options.bridge_rewards.value - 3, 0))
+    # lacs_condition not implemented in AP
+    if world.options.shuffle_ganon_bosskey.value == 11:  # 11 = dungeons
+        medallions = max(medallions, max(world.options.ganon_bosskey_rewards.value - 3, 0))
 
     return medallions
 
 
-def tokens_required_by_settings(world):
+def tokens_required_by_settings(world: World) -> int:
     tokens = 0
-    if world.bridge == 'tokens':
-        tokens = max(tokens, world.bridge_tokens)
-    if world.shuffle_ganon_bosskey == 'on_lacs' and world.lacs_condition == 'tokens':
-        tokens = max(tokens, world.lacs_tokens)
+    if world.options.bridge.value == 5 and not world.shuffle_special_dungeon_entrances:  # 5 = tokens
+        tokens = max(tokens, world.options.bridge_tokens.value)
+    # lacs_condition not implemented in AP - on_lacs always requires Shadow + Spirit medallions
+    if world.options.shuffle_ganon_bosskey.value == 12:  # 12 = tokens
+        tokens = max(tokens, world.options.ganon_bosskey_tokens.value)
 
     return tokens
 
 
 # Hints required under certain settings
-conditional_always = {
-    'Market 10 Big Poes':           lambda world: world.big_poe_count > 3,
-    'Deku Theater Mask of Truth':   lambda world: not world.complete_mask_quest,
+conditional_always: dict[str, Callable[[World], bool]] = {
+    'Market 10 Big Poes':           lambda world: world.options.big_poe_count.value > 3,
+    'Deku Theater Mask of Truth':   lambda world: not world.options.complete_mask_quest.value and world.options.shuffle_child_trade.value != 2,  # 2 = skip_child_zelda
     'Song from Ocarina of Time':    lambda world: stones_required_by_settings(world) < 2,
     'HF Ocarina of Time Item':      lambda world: stones_required_by_settings(world) < 2,
     'Sheik in Kakariko':            lambda world: medallions_required_by_settings(world) < 5,
-    'DMT Biggoron':                 lambda world: world.adult_trade_start != {'Claim Check'},
-    'Kak 30 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 30 and '30_skulltulas' not in world.misc_hints,
-    'Kak 40 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 40 and '40_skulltulas' not in world.misc_hints,
-    'Kak 50 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 50 and '50_skulltulas' not in world.misc_hints,
+    'DMT Biggoron':                 lambda world: world.options.adult_trade_start.value != 9,  # 9 = claim_check; adult_trade_shuffle not in AP
+    'Kak 30 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 30 and '30_skulltulas' not in world.options.misc_hints.value,
+    'Kak 40 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 40 and '40_skulltulas' not in world.options.misc_hints.value,
+    'Kak 50 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 50 and '50_skulltulas' not in world.options.misc_hints.value,
+    'ZR Frogs Ocarina Game':        lambda world: 'frogs2' not in world.options.misc_hints.value,
+    'LH Loach Fishing':             lambda world: not world.options.shuffle_loach_reward.value,  # 0 = off (vanilla)
 }
 
 # Entrance hints required under certain settings
-conditional_entrance_always = {
-    'Ganons Castle Grounds -> Ganons Castle Lobby': lambda world: (world.bridge != 'open'
-        and (world.bridge != 'stones' or world.bridge_stones > 1)
-        and (world.bridge != 'medallions' or world.bridge_medallions > 1)
-        and (world.bridge != 'dungeons' or world.bridge_rewards > 2)
-        and (world.bridge != 'tokens' or world.bridge_tokens > 20)
-        and (world.bridge != 'hearts' or world.bridge_hearts > world.starting_hearts + 1)),
+conditional_entrance_always: dict[str, Callable[[World], bool]] = {
+    'Ganons Castle Grounds -> Ganons Castle Lobby': lambda world: (world.options.bridge.value != 0  # 0 = open
+        and (world.options.bridge.value != 2 or world.options.bridge_stones.value > 1)  # 2 = stones
+        and (world.options.bridge.value != 3 or world.options.bridge_medallions.value > 1)  # 3 = medallions
+        and (world.options.bridge.value != 4 or world.options.bridge_rewards.value > 2)  # 4 = dungeons
+        and (world.options.bridge.value != 5 or world.options.bridge_tokens.value > 20)  # 5 = tokens
+        and (world.options.bridge.value != 6 or world.options.bridge_hearts.value > 4)),  # 6 = hearts; starting_hearts is always 3 in AP
 }
 
+# Dual hints required under certain settings
+conditional_dual_always: dict[str, Callable[[World], bool]] = {
+    'HF Ocarina of Time Retrieval': lambda world: stones_required_by_settings(world) < 2,
+    'Deku Theater Rewards':         lambda world: not world.options.complete_mask_quest.value,
+    'ZR Frogs Rewards':             lambda world: not world.options.shuffle_frog_song_rupees.value and 'frogs2' not in world.options.misc_hints.value,
+}
 
-# table of hints, format is (name, hint text, clear hint text, type of hint) there are special characters that are read for certain in game commands:
+# Some sometimes, dual, and entrance hints should only be enabled under certain settings
+conditional_sometimes: dict[str, Callable[[World], bool]] = {
+    # Conditional sometimes hints
+    'HC Great Fairy Reward':                    lambda world: world.options.shuffle_interior_entrances.value == 0,  # 0 = off
+    'OGC Great Fairy Reward':                   lambda world: world.options.shuffle_interior_entrances.value == 0,  # 0 = off
+    'ZR Frogs in the Rain':                     lambda world: not world.options.shuffle_frog_song_rupees.value,
+    'ZD King Zora Thawed':                      lambda world: world.options.adult_trade_start.value != 7,  # 7 = eyeball_frog; adult_trade_shuffle not in AP
+
+    # Conditional dual hints
+    'GV Pieces of Heart Ledges':                lambda world: not world.options.shuffle_cows.value and world.options.tokensanity.value not in [2, 3],  # 2 = overworld, 3 = all
+    'LH Adult Bean Destination Checks':         lambda world: world.options.shuffle_interior_entrances.value == 0,  # 0 = off
+    'Castle Fairy Checks':                      lambda world: world.options.shuffle_interior_entrances.value == 0,  # 0 = off
+    'King Zora Items':                          lambda world: world.options.adult_trade_start.value == 7,  # 7 = eyeball_frog; adult_trade_shuffle not in AP
+
+    'Fire Temple Lower Loop':                   lambda world: world.options.tokensanity.value not in [1, 3],  # 1 = dungeons, 3 = all
+    'Water Temple River Loop Chests':           lambda world: world.options.tokensanity.value not in [1, 3],  # 1 = dungeons, 3 = all
+    'Water Temple MQ Lower Checks':             lambda world: world.options.tokensanity.value not in [1, 3],  # 1 = dungeons, 3 = all
+    'Spirit Temple Child Lower':                lambda world: world.options.tokensanity.value not in [1, 3],  # 1 = dungeons, 3 = all
+    'Spirit Temple Adult Lower':                lambda world: world.options.tokensanity.value not in [1, 3],  # 1 = dungeons, 3 = all
+    'Shadow Temple Invisible Blades Chests':    lambda world: world.options.tokensanity.value not in [1, 3],  # 1 = dungeons, 3 = all
+
+    # Conditional entrance hints
+    'Ganons Castle Grounds -> Ganons Castle Lobby': lambda world: (world.options.bridge.value != 0  # 0 = open
+        and (world.options.bridge.value != 4 or world.options.bridge_rewards.value > 1)  # 4 = dungeons
+        and (world.options.bridge.value != 5 or world.options.bridge_tokens.value > 10)  # 5 = tokens
+        and (world.options.bridge.value != 6 or world.options.bridge_hearts.value > 3)),  # 6 = hearts; starting_hearts is always 3 in AP
+}
+
+# Table of hints, format is (name, hint text, clear hint text, type of hint) there are special characters that are read for certain in game commands:
 # ^ is a box break
 # & is a new line
 # @ will print the player name
 # # sets color to white (currently only used for dungeon reward hints).
-hintTable = {
+#
+# sfx IDs (see junk hints 1090 and 1174 for examples of how to use them): https://wiki.cloudmodding.com/oot/Sound_Effect_Ids
+# Some sound effects loop infinitely, like child link drinking from a bottle, so make sure you test them.
+#
+# How to use button icons in hints (see junk hint 1180 for an example):
+#   \u009F      A
+#   \u00A0      B
+#   \u00A1      C
+#   \u00A2      L
+#   \u00A3      R
+#   \u00A4      Z
+#   \u00A5      C-Up
+#   \u00A6      C-Down
+#   \u00A7      C-Left
+#   \u00A8      C-Right
+#   \u00A9      Down arrow
+#   \u00AA      Joystick
+
+hintTable: dict[str, tuple[list[str] | str, Optional[str], str | list[str]]] = {
     'Kokiri Emerald':                                           (["a tree's farewell", "the Spiritual Stone of the Forest"], "the Kokiri Emerald", 'item'),
     'Goron Ruby':                                               (["the Gorons' hidden treasure", "the Spiritual Stone of Fire"], "the Goron Ruby", 'item'),
     'Zora Sapphire':                                            (["an engagement ring", "the Spiritual Stone of Water"], "the Zora Sapphire", 'item'),
@@ -202,6 +325,7 @@ hintTable = {
     'Dins Fire':                                                (["an inferno", "a heat wave", "a red ball"], "Din's Fire", 'item'),
     'Fire Arrows':                                              (["the furnace firearm", "the burning bolts", "a magma missile"], "the Fire Arrows", 'item'),
     'Ice Arrows':                                               (["the refrigerator rocket", "the frostbite bolts", "an iceberg maker"], "the Ice Arrows", 'item'),
+    'Blue Fire Arrows':                                         (["the icy hot rocket", "the blue bolts", "an iceberg destroyer"], "the Blue Fire Arrows", 'item'),
     'Light Arrows':                                             (["the shining shot", "the luminous launcher", "Ganondorf's bane", "the lighting bolts"], "the Light Arrows", 'item'),
     'Lens of Truth':                                            (["a lie detector", "a ghost tracker", "true sight", "a detective's tool"], "the Lens of Truth", 'item'),
     'Ocarina':                                                  (["a flute", "a music maker"], "an Ocarina", 'item'),
@@ -241,7 +365,10 @@ hintTable = {
     'Piece of Heart':                                           (["a little love", "a broken heart"], "a Piece of Heart", 'item'),
     'Piece of Heart (Treasure Chest Game)':                     ("a victory valentine", "a Piece of Heart", 'item'),
     'Recovery Heart':                                           (["a free heal", "a hearty meal", "a Band-Aid"], "a Recovery Heart", 'item'),
-    'Rupee (Treasure Chest Game)':                              ("the dollar of defeat", 'a Green Rupee', 'item'),
+    'Rupee (Treasure Chest Game) (1)':                          ("the green gem of grief", 'a Green Rupee', 'item'),
+    'Rupees (Treasure Chest Game) (5)':                         ("the blue gem of blunder", 'a Blue Rupee', 'item'),
+    'Rupees (Treasure Chest Game) (20)':                        ("the red gem of regret", 'a Red Rupee', 'item'),
+    'Rupees (Treasure Chest Game) (50)':                        ("the purple gem of punishment", 'a Purple Rupee', 'item'),
     'Deku Stick (1)':                                           ("a breakable branch", 'a Deku Stick', 'item'),
     'Rupee (1)':                                                (["a unique coin", "a penny", "a green gem"], "a Green Rupee", 'item'),
     'Rupees (5)':                                               (["a common coin", "a blue gem"], "a Blue Rupee", 'item'),
@@ -249,7 +376,16 @@ hintTable = {
     'Rupees (50)':                                              (["big bucks", "a purple gem", "wealth"], "a Purple Rupee", 'item'),
     'Rupees (200)':                                             (["a juicy jackpot", "a yellow gem", "a giant gem", "great wealth"], "a Huge Rupee", 'item'),
     'Weird Egg':                                                (["a chicken dilemma"], "the Weird Egg", 'item'),
+    'Chicken':                                                  (["a chicken dilemma"], "the Chicken",'item'),
     'Zeldas Letter':                                            (["an autograph", "royal stationery", "royal snail mail"], "Zelda's Letter", 'item'),
+    'Keaton Mask':                                              (["the famous façade"], "the Keaton Mask", 'item'),
+    'Skull Mask':                                               (["the fleshless façade"], "the Skull Mask", 'item'),
+    'Spooky Mask':                                              (["the frightening façade"], "the Spooky Mask", 'item'),
+    'Bunny Hood':                                               (["the fast façade"], "the Bunny Hood", 'item'),
+    'Goron Mask':                                               (["the fraternal façade"], "the Goron Mask", 'item'),
+    'Zora Mask':                                                (["the fishy façade"], "the Zora Mask", 'item'),
+    'Gerudo Mask':                                              (["the feminine façade"], "the Gerudo Mask", 'item'),
+    'Mask of Truth':                                            (["the factual façade"], "the Mask of Truth", 'item'),
     'Pocket Egg':                                               (["a Cucco container", "a Cucco, eventually", "a fowl youth"], "the Pocket Egg", 'item'),
     'Pocket Cucco':                                             (["a little clucker"], "the Pocket Cucco", 'item'),
     'Cojiro':                                                   (["a cerulean capon"], "Cojiro", 'item'),
@@ -287,12 +423,14 @@ hintTable = {
     'GanonBossKey':                                             (["a master of unlocking", "a dungeon's master pass"], "a Boss Key", 'item'),
     'SmallKey':                                                 (["a tool for unlocking", "a dungeon pass", "a lock remover", "a lockpick"], "a Small Key", 'item'),
     'HideoutSmallKey':                                          (["a get out of jail free card"], "a Jail Key", 'item'),
+    'TCGSmallKey':                                              (["a key to becoming a winner"], "a Game Key", 'item'),
+    'SilverRupee':                                              (["an entry fee", "a priced artifact"], "a Silver Rupee", 'item'),
     'Boss Key (Forest Temple)':                                 (["a master of unlocking for a deep forest", "a master pass for a deep forest"], "the Forest Temple Boss Key", 'item'),
     'Boss Key (Fire Temple)':                                   (["a master of unlocking for a high mountain", "a master pass for a high mountain"], "the Fire Temple Boss Key", 'item'),
     'Boss Key (Water Temple)':                                  (["a master of unlocking for under a vast lake", "a master pass for under a vast lake"], "the Water Temple Boss Key", 'item'),
     'Boss Key (Shadow Temple)':                                 (["a master of unlocking for the house of the dead", "a master pass for the house of the dead"], "the Shadow Temple Boss Key", 'item'),
     'Boss Key (Spirit Temple)':                                 (["a master of unlocking for a goddess of the sand", "a master pass for a goddess of the sand"], "the Spirit Temple Boss Key", 'item'),
-    'Boss Key (Ganons Castle)':                                 (["an master of unlocking", "a floating dungeon's master pass"], "Ganon's Castle Boss Key", 'item'),
+    'Boss Key (Ganons Castle)':                                 (["a master of unlocking for a conquered citadel", "a floating dungeon's master pass"], "Ganon's Castle Boss Key", 'item'),
     'Small Key (Forest Temple)':                                (["a tool for unlocking a deep forest", "a dungeon pass for a deep forest", "a lock remover for a deep forest", "a lockpick for a deep forest"], "a Forest Temple Small Key", 'item'),
     'Small Key (Fire Temple)':                                  (["a tool for unlocking a high mountain", "a dungeon pass for a high mountain", "a lock remover for a high mountain", "a lockpick for a high mountain"], "a Fire Temple Small Key", 'item'),
     'Small Key (Water Temple)':                                 (["a tool for unlocking a vast lake", "a dungeon pass for under a vast lake", "a lock remover for under a vast lake", "a lockpick for under a vast lake"], "a Water Temple Small Key", 'item'),
@@ -302,6 +440,7 @@ hintTable = {
     'Small Key (Gerudo Training Ground)':                       (["a tool for unlocking the test of thieves", "a dungeon pass for the test of thieves", "a lock remover for the test of thieves", "a lockpick for the test of thieves"], "a Gerudo Training Ground Small Key", 'item'),
     'Small Key (Ganons Castle)':                                (["a tool for unlocking a conquered citadel", "a dungeon pass for a conquered citadel", "a lock remover for a conquered citadel", "a lockpick for a conquered citadel"], "a Ganon's Castle Small Key", 'item'),
     'Small Key (Thieves Hideout)':                              (["a get out of jail free card"], "a Jail Key", 'item'),
+    'Small Key (Treasure Chest Game)':                          (["a key to becoming a winner"], "a Game Key", 'item'),
     'Small Key Ring (Forest Temple)':                           (["a toolbox for unlocking a deep forest", "a dungeon season pass for a deep forest", "a jingling ring for a deep forest", "a skeleton key for a deep forest"], "a Forest Temple Small Key Ring", 'item'),
     'Small Key Ring (Fire Temple)':                             (["a toolbox for unlocking a high mountain", "a dungeon season pass for a high mountain", "a jingling ring for a high mountain", "a skeleton key for a high mountain"], "a Fire Temple Small Key Ring", 'item'),
     'Small Key Ring (Water Temple)':                            (["a toolbox for unlocking a vast lake", "a dungeon season pass for under a vast lake", "a jingling ring for under a vast lake", "a skeleton key for under a vast lake"], "a Water Temple Small Key Ring", 'item'),
@@ -311,6 +450,51 @@ hintTable = {
     'Small Key Ring (Gerudo Training Ground)':                  (["a toolbox for unlocking the test of thieves", "a dungeon season pass for the test of thieves", "a jingling ring for the test of thieves", "a skeleton key for the test of thieves"], "a Gerudo Training Ground Small Key Ring", 'item'),
     'Small Key Ring (Ganons Castle)':                           (["a toolbox for unlocking a conquered citadel", "a dungeon season pass for a conquered citadel", "a jingling ring for a conquered citadel", "a skeleton key for a conquered citadel"], "a Ganon's Castle Small Key Ring", 'item'),
     'Small Key Ring (Thieves Hideout)':                         (["a deck of get out of jail free cards"], "a Jail Key Ring", 'item'),
+    'Small Key Ring (Treasure Chest Game)':                     (["an abundance of keys to becoming a winner"], "a Game Key Ring", 'item'),
+    'Silver Rupee (Dodongos Cavern Staircase)':                 (["an entry fee for an immense cavern", "a priced artifact from an immense cavern"], "a Silver Rupee for Dodongo's Cavern", 'item'),
+    'Silver Rupee (Ice Cavern Spinning Scythe)':                (["an entry fee for a frozen maze", "a priced artifact from a frozen maze"], "a Silver Rupee for the Ice Cavern", 'item'),
+    'Silver Rupee (Ice Cavern Push Block)':                     (["an entry fee for a frozen maze", "a priced artifact from a frozen maze"], "a Silver Rupee for the Ice Cavern", 'item'),
+    'Silver Rupee (Bottom of the Well Basement)':               (["an entry fee for a shadow's prison", "a priced artifact from a shadow's prison"], "a Silver Rupee for the Bottom of the Well", 'item'),
+    'Silver Rupee (Shadow Temple Scythe Shortcut)':             (["an entry fee for the house of the dead", "a priced artifact from the house of the dead"], "a Silver Rupee for the Shadow Temple", 'item'),
+    'Silver Rupee (Shadow Temple Invisible Blades)':            (["an entry fee for the house of the dead", "a priced artifact from the house of the dead"], "a Silver Rupee for the Shadow Temple", 'item'),
+    'Silver Rupee (Shadow Temple Huge Pit)':                    (["an entry fee for the house of the dead", "a priced artifact from the house of the dead"], "a Silver Rupee for the Shadow Temple", 'item'),
+    'Silver Rupee (Shadow Temple Invisible Spikes)':            (["an entry fee for the house of the dead", "a priced artifact from the house of the dead"], "a Silver Rupee for the Shadow Temple", 'item'),
+    'Silver Rupee (Gerudo Training Ground Slopes)':             (["an entry fee for the test of thieves", "a priced artifact from the test of thieves"], "a Silver Rupee for the Gerudo Training Ground", 'item'),
+    'Silver Rupee (Gerudo Training Ground Lava)':               (["an entry fee for the test of thieves", "a priced artifact from the test of thieves"], "a Silver Rupee for the Gerudo Training Ground", 'item'),
+    'Silver Rupee (Gerudo Training Ground Water)':              (["an entry fee for the test of thieves", "a priced artifact from the test of thieves"], "a Silver Rupee for the Gerudo Training Ground", 'item'),
+    'Silver Rupee (Spirit Temple Child Early Torches)':         (["an entry fee for a goddess of the sand", "a priced artifact from a goddess of the sand"], "a Silver Rupee for the Spirit Temple", 'item'),
+    'Silver Rupee (Spirit Temple Adult Boulders)':              (["an entry fee for a goddess of the sand", "a priced artifact from a goddess of the sand"], "a Silver Rupee for the Spirit Temple", 'item'),
+    'Silver Rupee (Spirit Temple Lobby and Lower Adult)':       (["an entry fee for a goddess of the sand", "a priced artifact from a goddess of the sand"], "a Silver Rupee for the Spirit Temple", 'item'),
+    'Silver Rupee (Spirit Temple Sun Block)':                   (["an entry fee for a goddess of the sand", "a priced artifact from a goddess of the sand"], "a Silver Rupee for the Spirit Temple", 'item'),
+    'Silver Rupee (Spirit Temple Adult Climb)':                 (["an entry fee for a goddess of the sand", "a priced artifact from a goddess of the sand"], "a Silver Rupee for the Spirit Temple", 'item'),
+    'Silver Rupee (Ganons Castle Spirit Trial)':                (["an entry fee for a conquered citadel", "a priced artifact from a conquered citadel"], "a Silver Rupee for Ganon's Castle", 'item'),
+    'Silver Rupee (Ganons Castle Light Trial)':                 (["an entry fee for a conquered citadel", "a priced artifact from a conquered citadel"], "a Silver Rupee for Ganon's Castle", 'item'),
+    'Silver Rupee (Ganons Castle Fire Trial)':                  (["an entry fee for a conquered citadel", "a priced artifact from a conquered citadel"], "a Silver Rupee for Ganon's Castle", 'item'),
+    'Silver Rupee (Ganons Castle Shadow Trial)':                (["an entry fee for a conquered citadel", "a priced artifact from a conquered citadel"], "a Silver Rupee for Ganon's Castle", 'item'),
+    'Silver Rupee (Ganons Castle Water Trial)':                 (["an entry fee for a conquered citadel", "a priced artifact from a conquered citadel"], "a Silver Rupee for Ganon's Castle", 'item'),
+    'Silver Rupee (Ganons Castle Forest Trial)':                (["an entry fee for a conquered citadel", "a priced artifact from a conquered citadel"], "a Silver Rupee for Ganon's Castle", 'item'),
+    'Silver Rupee Pouch (Dodongos Cavern Staircase)':           (["a silver lining for an immense cavern", "a stash of silver shekels for an immense cavern"], "a Pouch of Silver Rupees for Dodongo's Cavern", 'item'),
+    'Silver Rupee Pouch (Ice Cavern Spinning Scythe)':          (["a silver lining for a frozen maze", "a stash of silver shekels for a frozen maze"], "a Pouch of Silver Rupees for the Ice Cavern", 'item'),
+    'Silver Rupee Pouch (Ice Cavern Push Block)':               (["a silver lining for a frozen maze", "a stash of silver shekels for a frozen maze"], "a Pouch of Silver Rupees for the Ice Cavern", 'item'),
+    'Silver Rupee Pouch (Bottom of the Well Basement)':         (["a silver lining for a shadow's prison", "a stash of silver shekels for a shadow's prison"], "a Pouch of Silver Rupees for the Bottom of the Well", 'item'),
+    'Silver Rupee Pouch (Shadow Temple Scythe Shortcut)':       (["a silver lining for the house of the dead", "a stash of silver shekels for the house of the dead"], "a Pouch of Silver Rupees for the Shadow Temple", 'item'),
+    'Silver Rupee Pouch (Shadow Temple Invisible Blades)':      (["a silver lining for the house of the dead", "a stash of silver shekels for the house of the dead"], "a Pouch of Silver Rupees for the Shadow Temple", 'item'),
+    'Silver Rupee Pouch (Shadow Temple Huge Pit)':              (["a silver lining for the house of the dead", "a stash of silver shekels for the house of the dead"], "a Pouch of Silver Rupees for the Shadow Temple", 'item'),
+    'Silver Rupee Pouch (Shadow Temple Invisible Spikes)':      (["a silver lining for the house of the dead", "a stash of silver shekels for the house of the dead"], "a Pouch of Silver Rupees for the Shadow Temple", 'item'),
+    'Silver Rupee Pouch (Gerudo Training Ground Slopes)':       (["a silver lining for the test of thieves", "a stash of silver shekels for the test of thieves"], "a Pouch of Silver Rupees for the Gerudo Training Ground", 'item'),
+    'Silver Rupee Pouch (Gerudo Training Ground Lava)':         (["a silver lining for the test of thieves", "a stash of silver shekels for the test of thieves"], "a Pouch of Silver Rupees for the Gerudo Training Ground", 'item'),
+    'Silver Rupee Pouch (Gerudo Training Ground Water)':        (["a silver lining for the test of thieves", "a stash of silver shekels for the test of thieves"], "a Pouch of Silver Rupees for the Gerudo Training Ground", 'item'),
+    'Silver Rupee Pouch (Spirit Temple Child Early Torches)':   (["a silver lining for a goddess of the sand", "a stash of silver shekels for a goddess of the sand"], "a Pouch of Silver Rupees for the Spirit Temple", 'item'),
+    'Silver Rupee Pouch (Spirit Temple Adult Boulders)':        (["a silver lining for a goddess of the sand", "a stash of silver shekels for a goddess of the sand"], "a Pouch of Silver Rupees for the Spirit Temple", 'item'),
+    'Silver Rupee Pouch (Spirit Temple Lobby and Lower Adult)': (["a silver lining for a goddess of the sand", "a stash of silver shekels for a goddess of the sand"], "a Pouch of Silver Rupees for the Spirit Temple", 'item'),
+    'Silver Rupee Pouch (Spirit Temple Sun Block)':             (["a silver lining for a goddess of the sand", "a stash of silver shekels for a goddess of the sand"], "a Pouch of Silver Rupees for the Spirit Temple", 'item'),
+    'Silver Rupee Pouch (Spirit Temple Adult Climb)':           (["a silver lining for a goddess of the sand", "a stash of silver shekels for a goddess of the sand"], "a Pouch of Silver Rupees for the Spirit Temple", 'item'),
+    'Silver Rupee Pouch (Ganons Castle Spirit Trial)':          (["a silver lining for a conquered citadel", "a stash of silver shekels for a conquered citadel"], "a Pouch of Silver Rupees for Ganon's Castle", 'item'),
+    'Silver Rupee Pouch (Ganons Castle Light Trial)':           (["a silver lining for a conquered citadel", "a stash of silver shekels for a conquered citadel"], "a Pouch of Silver Rupees for Ganon's Castle", 'item'),
+    'Silver Rupee Pouch (Ganons Castle Fire Trial)':            (["a silver lining for a conquered citadel", "a stash of silver shekels for a conquered citadel"], "a Pouch of Silver Rupees for Ganon's Castle", 'item'),
+    'Silver Rupee Pouch (Ganons Castle Shadow Trial)':          (["a silver lining for a conquered citadel", "a stash of silver shekels for a conquered citadel"], "a Pouch of Silver Rupees for Ganon's Castle", 'item'),
+    'Silver Rupee Pouch (Ganons Castle Water Trial)':           (["a silver lining for a conquered citadel", "a stash of silver shekels for a conquered citadel"], "a Pouch of Silver Rupees for Ganon's Castle", 'item'),
+    'Silver Rupee Pouch (Ganons Castle Forest Trial)':          (["a silver lining for a conquered citadel", "a stash of silver shekels for a conquered citadel"], "a Pouch of Silver Rupees for Ganon's Castle", 'item'),
     'KeyError':                                                 (["something mysterious", "an unknown treasure"], "An Error (Please Report This)", 'item'),
     'Arrows (5)':                                               (["a few danger darts", "a few sharp shafts"], "Arrows (5 pieces)", 'item'),
     'Arrows (10)':                                              (["some danger darts", "some sharp shafts"], "Arrows (10 pieces)", 'item'),
@@ -330,24 +514,29 @@ hintTable = {
     'Deku Nuts (10)':                                           (["lots-o-nuts", "plenty of flashbangs", "plenty of scrub spit"], "Deku Nuts (10 pieces)", 'item'),
     'Deku Seeds (30)':                                          (["catapult ammo", "lots-o-seeds"], "Deku Seeds (30 pieces)", 'item'),
     'Gold Skulltula Token':                                     (["proof of destruction", "an arachnid chip", "spider remains", "one percent of a curse"], "a Gold Skulltula Token", 'item'),
+    'Ocarina A Button':                                         (["a blue note"], "the Ocarina A Button", 'item'),
+    'Ocarina C up Button':                                      (["a high note"], "the Ocarina C up Button", 'item'),
+    'Ocarina C down Button':                                    (["a low note"], "the Ocarina C down Button", 'item'),
+    'Ocarina C left Button':                                    (["a somewhat high note"], "the Ocarina C left Button", 'item'),
+    'Ocarina C right Button':                                   (["a middle note"], "the Ocarina C right Button", 'item'),
 
-    'ZR Frogs Ocarina Game':                                       (["an #amphibian feast# yields", "the #croaking choir's magnum opus# awards", "the #froggy finale# yields"], "the final reward from the #Frogs of Zora's River# is", 'always'),
+    'ZR Frogs Ocarina Game':                                       (["an #amphibian feast# yields", "the #croaking choir's magnum opus# awards", "the #froggy finale# yields"], "the final reward from the #Frogs of Zora's River# is", ['overworld', 'sometimes']),
     'KF Links House Cow':                                          ("the #bovine bounty of a horseback hustle# gifts", "#Malon's obstacle course# leads to", 'always'),
 
-    'Song from Ocarina of Time':                                   ("the #Ocarina of Time# teaches", None, ['song', 'sometimes']),
-    'Song from Royal Familys Tomb':                                (["#ReDead in the royal tomb# guard", "the #Composer Brothers wrote#"], None, ['song', 'sometimes']),
-    'Sheik in Forest':                                             ("#in a meadow# Sheik teaches", None, ['song', 'sometimes']),
-    'Sheik at Temple':                                             ("Sheik waits at a #monument to time# to teach", None, ['song', 'sometimes']),
-    'Sheik in Crater':                                             ("the #crater's melody# is", None, ['song', 'sometimes']),
-    'Sheik in Ice Cavern':                                         ("the #frozen cavern# echoes with", None, ['song', 'sometimes']),
-    'Sheik in Kakariko':                                           ("a #ravaged village# mourns with", None, ['song', 'sometimes']),
-    'Sheik at Colossus':                                           ("a hero ventures #beyond the wasteland# to learn", None, ['song', 'sometimes']),
+    'Song from Ocarina of Time':                                   ("the #Ocarina of Time# teaches", "the song taught by the #Ocarina of Time# is", ['song', 'sometimes']),
+    'Song from Royal Familys Tomb':                                (["#ReDead in the royal tomb# guard", "the #Composer Brothers wrote#"], "the song written in the #royal tomb# is", ['song', 'sometimes']),
+    'Sheik in Forest':                                             ("#in a meadow# Sheik teaches", "in the #Sacred Forest Meadow#, Sheik teaches", ['song', 'sometimes']),
+    'Sheik at Temple':                                             ("Sheik waits at a #monument to time# to teach", "the #Temple of Time# chimes with the music of", ['song', 'sometimes']),
+    'Sheik in Crater':                                             ("the #crater's melody# is", "Sheik waits in the #Death Mountain Crater# to teach", ['song', 'sometimes']),
+    'Sheik in Ice Cavern':                                         ("the #frozen cavern# echoes with", "the #Ice Cavern# corridors ring with", ['song', 'sometimes']),
+    'Sheik in Kakariko':                                           ("a #ravaged village# mourns with", "amidst flames in #Kakariko Village#, Sheik gives", ['song', 'sometimes']),
+    'Sheik at Colossus':                                           ("a hero ventures #beyond the wasteland# to learn", "the #Desert Colossus# sands echo with", ['song', 'sometimes']),
 
     'Market 10 Big Poes':                                          ("#ghost hunters# will be rewarded with", "catching #Big Poes# leads to", ['overworld', 'sometimes']),
-    'Deku Theater Skull Mask':                                     ("the #Skull Mask# yields", None, ['overworld', 'sometimes']),
-    'Deku Theater Mask of Truth':                                  ("showing a #truthful eye to the crowd# rewards", "the #Mask of Truth# yields", ['overworld', 'sometimes']),
+    'Deku Theater Skull Mask':                                     ("the #Skull Mask# yields", "wearing the #Skull Mask in the Deku Theater# rewards", ['overworld', 'sometimes']),
+    'Deku Theater Mask of Truth':                                  ("showing a #truthful eye to the crowd# rewards", "showing the #Mask of Truth in the Deku Theater# rewards", ['overworld', 'sometimes']),
     'HF Ocarina of Time Item':                                     ("the #treasure thrown by Princess Zelda# is", None, ['overworld', 'sometimes']),
-    'DMT Biggoron':                                                ("#Biggoron# crafts", None, ['overworld', 'sometimes']),
+    'DMT Biggoron':                                                ("#Biggoron# crafts", "showing the #Claim Check to Biggoron# rewards", ['overworld', 'sometimes']),
     'Kak 50 Gold Skulltula Reward':                                (["#50 bug badges# rewards", "#50 spider souls# yields", "#50 auriferous arachnids# lead to"], "slaying #50 Gold Skulltulas# reveals", ['overworld', 'sometimes']),
     'Kak 40 Gold Skulltula Reward':                                (["#40 bug badges# rewards", "#40 spider souls# yields", "#40 auriferous arachnids# lead to"], "slaying #40 Gold Skulltulas# reveals", ['overworld', 'sometimes']),
     'Kak 30 Gold Skulltula Reward':                                (["#30 bug badges# rewards", "#30 spider souls# yields", "#30 auriferous arachnids# lead to"], "slaying #30 Gold Skulltulas# reveals", ['overworld', 'sometimes']),
@@ -356,7 +545,7 @@ hintTable = {
     'GC Darunias Joy':                                             ("a #groovin' goron# gifts", "#Darunia's dance# leads to", ['overworld', 'sometimes']),
     'LW Skull Kid':                                                ("the #Skull Kid# grants", None, ['overworld', 'sometimes']),
     'LH Sun':                                                      ("staring into #the sun# grants", "shooting #the sun# grants", ['overworld', 'sometimes']),
-    'Market Treasure Chest Game Reward':                           (["#gambling# grants", "there is a #1/32 chance# to win"], "the #treasure chest game# grants", ['overworld', 'sometimes']),
+    'Market Treasure Chest Game Reward':                           (["#gambling in the market# grants", "there is a #1/32 chance# to win"], "winning the #treasure chest game# rewards", ['overworld', 'sometimes']),
     'GF HBA 1500 Points':                                          ("mastery of #horseback archery# grants", "scoring 1500 in #horseback archery# grants", ['overworld', 'sometimes']),
     'Graveyard Heart Piece Grave Chest':                           ("playing #Sun's Song# in a grave spawns", None, ['overworld', 'sometimes']),
     'GC Maze Left Chest':                                          ("in #Goron City# the hammer unlocks", None, ['overworld', 'sometimes']),
@@ -366,17 +555,17 @@ hintTable = {
     'HF GS Cow Grotto':                                            ("a #spider behind webs# in a grotto holds", None, ['overworld', 'sometimes']),
     'HF Cow Grotto Cow':                                           ("the #cobwebbed cow# gifts", "a #cow behind webs# in a grotto gifts", ['overworld', 'sometimes']),
     'ZF GS Hidden Cave':                                           ("a spider high #above the icy waters# holds", None, ['overworld', 'sometimes']),
-    'Wasteland Chest':                                             (["#deep in the wasteland# is", "beneath #the sands#, flames reveal"], None, ['overworld', 'sometimes']),
+    'Wasteland Chest':                                             (["#deep in the wasteland# is", "beneath #the sands#, flames reveal"], "the #Haunted Wasteland torches# reveal", ['overworld', 'sometimes']),
     'Wasteland GS':                                                ("a #spider in the wasteland# holds", None, ['overworld', 'sometimes']),
-    'Graveyard Royal Familys Tomb Chest':                          (["#flames in the royal tomb# reveal", "the #Composer Brothers hid#"], None, ['overworld', 'sometimes']),
-    'ZF Bottom Freestanding PoH':                                  ("#under the icy waters# lies", None, ['overworld', 'sometimes']),
-    'GC Pot Freestanding PoH':                                     ("spinning #Goron pottery# contains", None, ['overworld', 'sometimes']),
+    'Graveyard Royal Familys Tomb Chest':                          (["#flames in the royal tomb# reveal", "the #Composer Brothers hid#"], "#lighting flames in the royal tomb# rewards", ['overworld', 'sometimes']),
+    'ZF Bottom Freestanding PoH':                                  ("#under the icy waters# lies", "at the #bottom of Zora's Fountain# lies", ['overworld', 'sometimes']),
+    'GC Pot Freestanding PoH':                                     ("spinning #Goron pottery# contains", "the #Goron Pot's happy face# spits out", ['overworld', 'sometimes']),
     'ZD King Zora Thawed':                                         ("a #defrosted dignitary# gifts", "unfreezing #King Zora# grants", ['overworld', 'sometimes']),
-    'DMC Deku Scrub':                                              ("a single #scrub in the crater# sells", None, ['overworld', 'sometimes']),
+    'DMC Deku Scrub':                                              ("a single #scrub in the crater# sells", "a lone #scrub in Death Mountain Crater# sells", ['overworld', 'sometimes']),
     'DMC GS Crate':                                                ("a spider under a #crate in the crater# holds", None, ['overworld', 'sometimes']),
     'LW Target in Woods':                                          ("shooting a #target in the woods# grants", None, ['overworld', 'sometimes']),
-    'ZR Frogs in the Rain':                                        ("#frogs in a storm# gift", None, ['overworld', 'sometimes']),
-    'LH Lab Dive':                                                 ("a #diving experiment# is rewarded with", None, ['overworld', 'sometimes']),
+    'ZR Frogs in the Rain':                                        ("#frogs in a storm# gift", "playing #Song of Storms to Frogs# rewards", ['overworld', 'sometimes']),
+    'LH Lab Dive':                                                 ("a #diving experiment# is rewarded with", "a #lakeside lab diving experiment# rewards", ['overworld', 'sometimes']),
     'HC Great Fairy Reward':                                       ("the #fairy of fire# holds", "a #fairy outside Hyrule Castle# holds", ['overworld', 'sometimes']),
     'OGC Great Fairy Reward':                                      ("the #fairy of strength# holds", "a #fairy outside Ganon's Castle# holds", ['overworld', 'sometimes']),
 
@@ -398,17 +587,17 @@ hintTable = {
     'Water Temple MQ Freestanding Key':                            ("hidden in a #box under the lake# lies", "hidden in a #box in the Water Temple# lies", ['dungeon', 'sometimes']),
     'Water Temple MQ GS Freestanding Key Area':                    ("the #locked spider under the lake# holds", "the #locked spider in the Water Temple# holds", ['dungeon', 'sometimes']),
     'Water Temple MQ GS Triple Wall Torch':                        ("a spider behind a #gate under the lake# holds", "a spider behind a #gate in the Water Temple# holds", ['dungeon', 'sometimes']),
-    'Gerudo Training Ground Underwater Silver Rupee Chest':        (["those who seek #sunken silver rupees# will find", "the #thieves' underwater training# rewards"], None, ['dungeon', 'sometimes']),
-    'Gerudo Training Ground MQ Underwater Silver Rupee Chest':     (["those who seek #sunken silver rupees# will find", "the #thieves' underwater training# rewards"], None, ['dungeon', 'sometimes']),
-    'Gerudo Training Ground Maze Path Final Chest':                ("the final prize of #the thieves' training# is", None, ['dungeon', 'sometimes']),
-    'Gerudo Training Ground MQ Ice Arrows Chest':                  ("the final prize of #the thieves' training# is", None, ['dungeon', 'sometimes']),
+    'Gerudo Training Ground Underwater Silver Rupee Chest':        (["those who seek #sunken silver rupees# will find", "the #thieves' underwater training# rewards"], "obtaining the #underwater silver rupees in Gerudo Training Ground# rewards", ['dungeon', 'sometimes']),
+    'Gerudo Training Ground MQ Underwater Silver Rupee Chest':     (["those who seek #sunken silver rupees# will find", "the #thieves' underwater training# rewards"], "obtaining the #underwater silver rupees in Gerudo Training Ground# rewards", ['dungeon', 'sometimes']),
+    'Gerudo Training Ground Maze Path Final Chest':                ("the final prize of #the thieves' training# is", "#Gerudo Training Ground final reward# contains", ['dungeon', 'sometimes']),
+    'Gerudo Training Ground MQ Ice Arrows Chest':                  ("the final prize of #the thieves' training# is", "#Gerudo Training Ground final reward# contains", ['dungeon', 'sometimes']),
     'Spirit Temple Silver Gauntlets Chest':                        ("the treasure #sought by Nabooru# is", "upon the #Colossus's right hand# is", ['dungeon', 'sometimes']),
     'Spirit Temple Mirror Shield Chest':                           ("upon the #Colossus's left hand# is", None, ['dungeon', 'sometimes']),
     'Spirit Temple MQ Child Hammer Switch Chest':                  ("a #temporal paradox in the Colossus# yields", "a #temporal paradox in the Spirit Temple# yields", ['dungeon', 'sometimes']),
     'Spirit Temple MQ Symphony Room Chest':                        ("a #symphony in the Colossus# yields", "a #symphony in the Spirit Temple# yields", ['dungeon', 'sometimes']),
     'Spirit Temple MQ GS Symphony Room':                           ("a #spider's symphony in the Colossus# yields", "a #spider's symphony in the Spirit Temple# yields", ['dungeon', 'sometimes']),
     'Shadow Temple Freestanding Key':                              ("a #burning skull in the house of the dead# holds", "a #giant pot in the Shadow Temple# holds", ['dungeon', 'sometimes']),
-    'Shadow Temple MQ Bomb Flower Chest':                          ("shadows in an #invisible maze# guard", None, ['dungeon', 'sometimes']),
+    'Shadow Temple MQ Bomb Flower Chest':                          ("a #grasping ghoul surrounded by Bomb Flowers# guards", "the #Dead Hand surrounded by Bomb Flowers# guards", ['dungeon', 'sometimes']),
     'Shadow Temple MQ Stalfos Room Chest':                         ("near an #empty pedestal within the house of the dead# lies", "#stalfos in the Shadow Temple# guard", ['dungeon', 'sometimes']),
     'Ice Cavern Iron Boots Chest':                                 ("a #monster in a frozen cavern# guards", "the #final treasure of Ice Cavern# is", ['dungeon', 'sometimes']),
     'Ice Cavern MQ Iron Boots Chest':                              ("a #monster in a frozen cavern# guards", "the #final treasure of Ice Cavern# is", ['dungeon', 'sometimes']),
@@ -420,6 +609,7 @@ hintTable = {
     'HF Valley Grotto':                                            ("in a grotto with a #spider and a cow# you will find...^", None, 'dual'),
     'Market Bombchu Bowling Rewards':                              ("at the #Bombchu Bowling Alley#, you will be rewarded with...^", None, 'dual'),
     'ZR Frogs Rewards':                                            ("the #Frogs of Zora River# will reward you with...^", None, 'dual'),
+    'ZD Child Checks':                                             ("the Zora's Domain #diving game and torch run# lead to...^", None, 'dual'),
     'LH Lake Lab Pool':                                            ("inside the #lakeside lab# a person and a spider hold...^", None, 'dual'),
     'LH Adult Bean Destination Checks':                            ("#riding the bean in Lake Hylia# leads to...^", None, 'dual'),
     'GV Pieces of Heart Ledges':                                   ("within the #valley#, the crate and waterfall conceal...^", None, 'dual'),
@@ -429,6 +619,8 @@ hintTable = {
     'Graveyard Royal Family Tomb Contents':                        ("inside the #Royal Family Tomb#, you will find...^", None, 'dual'),
     'DMC Child Upper Checks':                                      ("in the #crater, a spider in a crate and a single scrub# guard...^", None, 'dual'),
     'Haunted Wasteland Checks':                                    ("deep in the #wasteland a spider and a chest# hold...^", None, 'dual'),
+    'Castle Fairy Checks':                                         ("Great Fairies outside #Hyrule and Ganon's castles# reward...^", None, 'dual'),
+    'King Zora Items':                                             ("#unfreezing King Zora and giving him the Prescription# rewards...^", None, 'dual'),
 
     'Deku Tree MQ Basement GS':                                    ("in the back of the #basement of the Great Deku Tree# two spiders hold...^", None, 'dual'),
     'Dodongos Cavern Upper Business Scrubs':                       ("deep in #Dodongo's Cavern a pair of scrubs# sell...^", None, 'dual'),
@@ -502,6 +694,7 @@ hintTable = {
     'ZD Diving Minigame':                                          ("an #unsustainable business model# gifts", "those who #dive for Zora rupees# will find", 'exclude'),
     'LH Child Fishing':                                            ("#fishing in youth# bestows", None, 'exclude'),
     'LH Adult Fishing':                                            ("#fishing in maturity# bestows", None, 'exclude'),
+    'LH Loach Fishing':                                            ("#catching the legendary fish# bestows", None, 'exclude'),
     'GC Rolling Goron as Adult':                                   ("#comforting yourself# provides", "#reassuring a young Goron# is rewarded with", 'exclude'),
     'Market Bombchu Bowling First Prize':                          ("the #first explosive prize# is", None, 'exclude'),
     'Market Bombchu Bowling Second Prize':                         ("the #second explosive prize# is", None, 'exclude'),
@@ -709,7 +902,7 @@ hintTable = {
     'Shadow Temple After Wind Enemy Chest':                        ("#mummies guarding a ferry# hide", None, 'exclude'),
     'Shadow Temple After Wind Hidden Chest':                       ("#mummies guarding a ferry# hide", None, 'exclude'),
     'Shadow Temple Spike Walls Left Chest':                        ("#walls consumed by a ball of fire# reveal", None, 'exclude'),
-    'Shadow Temple Invisible Floormaster Chest':                   ("shadows in an #invisible maze# guard", None, 'exclude'),
+    'Shadow Temple Invisible Floormaster Chest':                   ("the #Floormaster in the house of the dead# guards", "the #Floormaster in the Shadow Temple# guards", 'exclude'),
     'Shadow Temple Boss Key Chest':                                ("#walls consumed by a ball of fire# reveal", None, 'exclude'),
 
     'Shadow Temple MQ Compass Chest':                              ("the #Eye of Truth# pierces a hall of faces to reveal", None, 'exclude'),
@@ -833,8 +1026,8 @@ hintTable = {
     'Forest Temple Phantom Ganon Heart':                           ("the #Evil Spirit from Beyond# holds", "#Phantom Ganon# holds", 'exclude'),
     'Fire Temple Volvagia Heart':                                  ("the #Subterranean Lava Dragon# holds", "#Volvagia# holds", 'exclude'),
     'Water Temple Morpha Heart':                                   ("the #Giant Aquatic Amoeba# holds", "#Morpha# holds", 'exclude'),
-    'Spirit Temple Twinrova Heart':                                ("the #Sorceress Sisters# hold", "#Twinrova# holds", 'exclude'),
     'Shadow Temple Bongo Bongo Heart':                             ("the #Phantom Shadow Beast# holds", "#Bongo Bongo# holds", 'exclude'),
+    'Spirit Temple Twinrova Heart':                                ("the #Sorceress Sisters# hold", "#Twinrova# holds", 'exclude'),
 
     'Queen Gohma':                                                 ("the #Parasitic Armored Arachnid# holds", "#Queen Gohma# holds", 'exclude'),
     'King Dodongo':                                                ("the #Infernal Dinosaur# holds", "#King Dodongo# holds", 'exclude'),
@@ -842,8 +1035,8 @@ hintTable = {
     'Phantom Ganon':                                               ("the #Evil Spirit from Beyond# holds", "#Phantom Ganon# holds", 'exclude'),
     'Volvagia':                                                    ("the #Subterranean Lava Dragon# holds", "#Volvagia# holds", 'exclude'),
     'Morpha':                                                      ("the #Giant Aquatic Amoeba# holds", "#Morpha# holds", 'exclude'),
-    'Bongo Bongo':                                                 ("the #Sorceress Sisters# hold", "#Twinrova# holds", 'exclude'),
-    'Twinrova':                                                    ("the #Phantom Shadow Beast# holds", "#Bongo Bongo# holds", 'exclude'),
+    'Bongo Bongo':                                                 ("the #Phantom Shadow Beast# holds", "#Bongo Bongo# holds", 'exclude'),
+    'Twinrova':                                                    ("the #Sorceress Sisters# hold", "#Twinrova# holds", 'exclude'),
     'Links Pocket':                                                ("#@'s pocket# holds", "@ already has", 'exclude'),
 
     'Deku Tree GS Basement Back Room':                             ("a #spider deep within the Deku Tree# hides", None, 'exclude'),
@@ -1250,11 +1443,11 @@ hintTable = {
     'ZD Storms Grotto':                                         ("a small #Fairy Fountain#", None, 'region'),
     'GF Storms Grotto':                                         ("a small #Fairy Fountain#", None, 'region'),
 
-    # Junk hints must satisfy all of the following conditions:
+    # Junk hints must satisfy all the following conditions:
     # - They aren't inappropriate.
     # - They aren't absurdly long copy pastas.
     # - They aren't quotes or references that are simply not funny when out-of-context.
-    # To elaborate on this last point: junk hints need to be able to be understood 
+    # To elaborate on this last point: junk hints need to be able to be understood
     # by everyone, and not just those who get the obscure references.
     # Zelda references are considered fair game.
 
@@ -1277,7 +1470,7 @@ hintTable = {
     '1026':                                                     ("I've heard Sploosh Kaboom is a tricky game.", None, 'junk'), # ref: Wind Waker
     '1028':                                                     ("I bet you'd like to have more bombs.", None, 'junk'),
     '1029':                                                     ("When all else fails, use Fire.", None, 'junk'),
-    # '1030':                                                     ("Here's a hint, @. Don't be bad.", None, 'junk'),
+    '1030':                                                     ("Here's a hint, @. Don't be bad.", None, 'junk'),
     '1031':                                                     ("Game Over. Return of Ganon.", None, 'junk'), # ref: Zelda II
     '1032':                                                     ("May the way of the Hero lead to the Triforce.", None, 'junk'),
     '1033':                                                     ("Can't find an item? Scan an Amiibo.", None, 'junk'),
@@ -1292,10 +1485,10 @@ hintTable = {
     '1044':                                                     ("They say all toasters toast toast.", None, 'junk'), # ref: Hotel Mario
     '1045':                                                     ("They say that Okami is the best Zelda game.", None, 'junk'), # ref: people often say that Okami feels and plays like a Zelda game
     '1046':                                                     ("They say that quest guidance can be found at a talking rock.", None, 'junk'),
-    # '1047':                                                     ("They say that the final item you're looking for can be found somewhere in Hyrule.", None, 'junk'),
+    '1047':                                                     ("They say that the final item you're looking for can be found somewhere in Hyrule.", None, 'junk'),
     '1048':                                                     ("${12 68 7a}Mweep${07 04 51}", None, 'junk'), # Mweep
     '1049':                                                     ("They say that Barinade fears Deku Nuts.", None, 'junk'),
-    '1050':                                                     ("They say that Flare Dancers do not fear Goron-crafted blades.", None, 'junk'), 
+    '1050':                                                     ("They say that Flare Dancers do not fear Goron-crafted blades.", None, 'junk'),
     '1051':                                                     ("They say that Morpha is easily trapped in a corner.", None, 'junk'),
     '1052':                                                     ("They say that Bongo Bongo really hates the cold.", None, 'junk'),
     '1053':                                                     ("They say that crouch stabs mimic the effects of your last attack.", None, 'junk'),
@@ -1310,7 +1503,7 @@ hintTable = {
     '1062':                                                     ("Open your eyes.^Open your eyes.^Wake up, @.", None, 'junk'), # ref: Breath of the Wild
     '1063':                                                     ("They say that arbitrary code execution leads to the credits sequence.", None, 'junk'),
     '1064':                                                     ("They say that Twinrova always casts the same spell the first three times.", None, 'junk'),
-    # '1065':                                                     ("They say that the Development branch may be unstable.", None, 'junk'),
+    '1065':                                                     ("They say that the Development branch may be unstable.", None, 'junk'),
     '1066':                                                     ("You're playing a Randomizer. I'm randomized!^${12 48 31}Here's a random number:  #4#.&Enjoy your Randomizer!", None, 'junk'), # ref: xkcd comic / sfx: get small item from chest
     '1067':                                                     ("They say Ganondorf's bolts can be reflected with glass or steel.", None, 'junk'),
     '1068':                                                     ("They say Ganon's tail is vulnerable to nuts, arrows, swords, explosives, hammers...^...sticks, seeds, boomerangs...^...rods, shovels, iron balls, angry bees...", None, 'junk'), # ref: various Zelda games
@@ -1334,7 +1527,7 @@ hintTable = {
     '1085':                                                     ("They say that the castle guards' routes have major security vulnerabilities.", None, 'junk'),
     '1086':                                                     ("They say that Epona is an exceptional horse. Able to clear canyons in a single bound.", None, 'junk'),
     '1087':                                                     ("They say only one heart piece in all of Hyrule will declare the holder a winner.", None, 'junk'),
-    # '1088':                                                     ("Are you stuck? Try asking for help in our Discord server or check out our Wiki!", None, 'junk'),
+    '1088':                                                     ("Are you stuck? Try asking for help in our Discord server or check out our Wiki!", None, 'junk'),
     '1089':                                                     ("You would be surprised at all the things you can Hookshot in the Spirit Temple!", None, 'junk'),
     '1090':                                                     ("I once glued a set of false teeth to the Boomerang.^${12 39 c7}That came back to bite me.", None, 'junk'), # sfx: Ganondorf laugh
     '1091':                                                     ("They say that most of the water in Hyrule flows through King Zora's buttocks.", None, 'junk'),
@@ -1411,7 +1604,7 @@ hintTable = {
     '1170':                                                     ("They say that there is an alcove with a Recovery Heart behind the lava wall in Dodongo's Cavern.", None, 'junk'),
     '1171':                                                     ("Having regrets? Reset without saving!", None, 'junk'),
     '1172':                                                     ("Did you know that Gorons understood SRM long before speedrunners did?", None, 'junk'), # ref: Goron City murals
-    # '1173':                                                     ("Did you know that the Discord server has a public Plandomizer library?", None, 'junk'),
+    '1173':                                                     ("Did you know that the Discord server has a public Plandomizer library?", None, 'junk'),
     '1174':                                                     ("${12 28 DF}Moo!", None, 'junk'), # sfx: cow
     '1175':                                                     ("${12 28 D8}Woof!", None, 'junk'), # sfx: dog
     '1176':                                                     ("${12 68 08}Aah! You startled me!", None, 'junk'), # sfx: adult Link scream (when falling)
@@ -1428,7 +1621,7 @@ hintTable = {
     '1188':                                                     ("Where did Anju meet her lover?^${12 39 C7}At a Kafei.", None, 'junk'), # ref: Majora's Mask / sfx: Ganondorf laugh
     '1189':                                                     ("Did you know that you can access the Fire Temple boss door without dropping the pillar by using the Hover boots?", None, 'junk'),
     '1190':                                                     ("Key-locked in Fire Temple? Maybe Volvagia has your Small Key.", None, 'junk'),
-    # '1191':                                                     ("Expired Spoiler Log? Don't worry! The OoTR Discord staff can help you out.", None, 'junk'),
+    '1191':                                                     ("Expired Spoiler Log? Don't worry! The OoTR Discord staff can help you out.", None, 'junk'),
     '1192':                                                     ("Try holding a D-pad button on the item screen.", None, 'junk'),
     '1193':                                                     ("Did you know that in the Forest Temple you can reach the alcove in the block push room with Hover Boots?", None, 'junk'),
     '1194':                                                     ("Dodongo's Cavern is much easier and faster to clear as Adult.", None, 'junk'),
@@ -1467,7 +1660,7 @@ hintTable = {
     '1227':                                                     ("Did you know that Barinade is allergic to bananas?", None, 'junk'),
     '1228':                                                     ("Have you seen my dodongo? Very large, eats everything, responds to \"King\".^Call Darunia in Goron City if found. Huge rupee reward!", None, 'junk'),
     '1229':                                                     ("Having trouble breathing underwater?^Have you tried wearing more BLUE?", None, 'junk'),
-    # '1230':                                                     ("Hi! I'm currently on an exchange program from Termina.^They say that East Clock Town is on the way of the hero.", None, 'junk'), # ref: Majora's Mask
+    '1230':                                                     ("Hi! I'm currently on an exchange program from Termina.^They say that East Clock Town is on the way of the hero.", None, 'junk'), # ref: Majora's Mask
     '1231':                                                     ("Why are you asking me? I don't have any answers! I'm just as confused as you are!", None, 'junk'),
     '1232':                                                     ("What do you call a group of Gorons?^${12 39 C7}A rock band.", None, 'junk'), # sfx: Ganondorf laugh
     '1233':                                                     ("When the moon hits Termina like a big pizza pie that's game over.", None, 'junk'), # ref: That's Amore by Dean Martin + Majora's Mask
@@ -1490,13 +1683,6 @@ hintTable = {
     'Gerudo Training Ground':                                   ("the test of thieves", "the Gerudo Training Ground", 'dungeonName'),
     'Ganons Castle':                                            ("a conquered citadel", "inside Ganon's Castle", 'dungeonName'),
 
-    'bridge_vanilla':                                           ("the #Shadow and Spirit Medallions# as well as the #Light Arrows#", None, 'bridge'),
-    'bridge_stones':                                            ("Spiritual Stones", None, 'bridge'),
-    'bridge_medallions':                                        ("Medallions", None, 'bridge'),
-    'bridge_dungeons':                                          ("Spiritual Stones and Medallions", None, 'bridge'),
-    'bridge_tokens':                                            ("Gold Skulltula Tokens", None, 'bridge'),
-    'bridge_hearts':                                            ("hearts", None, 'bridge'),
-
     'ganonBK_dungeon':                                          ("hidden somewhere #inside its castle#", None, 'ganonBossKey'),
     'ganonBK_regional':                                         ("hidden somewhere #inside or nearby its castle#", None, 'ganonBossKey'),
     'ganonBK_vanilla':                                          ("kept in a big chest #inside its tower#", None, 'ganonBossKey'),
@@ -1504,18 +1690,6 @@ hintTable = {
     'ganonBK_any_dungeon':                                      ("hidden #inside a dungeon# in Hyrule", None, 'ganonBossKey'),
     'ganonBK_keysanity':                                        ("hidden #anywhere in Hyrule#", None, 'ganonBossKey'),
     'ganonBK_triforce':                                         ("given to the Hero once the #Triforce# is completed", None, 'ganonBossKey'),
-    'ganonBK_medallions':                                       ("Medallions", None, 'ganonBossKey'),
-    'ganonBK_stones':                                           ("Spiritual Stones", None, 'ganonBossKey'),
-    'ganonBK_dungeons':                                         ("Spiritual Stones and Medallions", None, 'ganonBossKey'),
-    'ganonBK_tokens':                                           ("Gold Skulltula Tokens", None, 'ganonBossKey'),
-    'ganonBK_hearts':                                           ("hearts", None, 'ganonBossKey'),
-
-    'lacs_vanilla':                                             ("the #Shadow and Spirit Medallions#", None, 'lacs'),
-    'lacs_medallions':                                          ("Medallions", None, 'lacs'),
-    'lacs_stones':                                              ("Spiritual Stones", None, 'lacs'),
-    'lacs_dungeons':                                            ("Spiritual Stones and Medallions", None, 'lacs'),
-    'lacs_tokens':                                              ("Gold Skulltula Tokens", None, 'lacs'),
-    'lacs_hearts':                                              ("hearts", None, 'lacs'),
 
     'Spiritual Stone Text Start':                               ("3 Spiritual Stones found in Hyrule...", None, 'altar'),
     'Child Altar Text End':                                     ("\x13\x07Ye who may become a Hero...&Stand with the Ocarina and&play the Song of Time.", None, 'altar'),
@@ -1538,12 +1712,13 @@ hintTable = {
 
 # Table containing the groups of locations for the multi hints (dual, etc.)
 # The is used in order to add the locations to the checked list
-multiTable = {
+multiTable: dict[str, list[str]] = {
     'Deku Theater Rewards':                                     ['Deku Theater Skull Mask', 'Deku Theater Mask of Truth'],
     'HF Ocarina of Time Retrieval':                             ['HF Ocarina of Time Item', 'Song from Ocarina of Time'],
     'HF Valley Grotto':                                         ['HF Cow Grotto Cow', 'HF GS Cow Grotto'],
     'Market Bombchu Bowling Rewards':                           ['Market Bombchu Bowling First Prize', 'Market Bombchu Bowling Second Prize'],
     'ZR Frogs Rewards':                                         ['ZR Frogs in the Rain', 'ZR Frogs Ocarina Game'],
+    'ZD Child Checks':                                          ['ZD Diving Minigame', 'ZD Chest'],
     'LH Lake Lab Pool':                                         ['LH Lab Dive', 'LH GS Lab Crate'],
     'LH Adult Bean Destination Checks':                         ['LH Freestanding PoH', 'LH Adult Fishing'],
     'GV Pieces of Heart Ledges':                                ['GV Crate Freestanding PoH', 'GV Waterfall Freestanding PoH'],
@@ -1553,6 +1728,8 @@ multiTable = {
     'Graveyard Royal Family Tomb Contents':                     ['Graveyard Royal Familys Tomb Chest', 'Song from Royal Familys Tomb'],
     'DMC Child Upper Checks':                                   ['DMC GS Crate', 'DMC Deku Scrub'],
     'Haunted Wasteland Checks':                                 ['Wasteland Chest', 'Wasteland GS'],
+    'Castle Fairy Checks':                                      ['HC Great Fairy Reward', 'OGC Great Fairy Reward'],
+    'King Zora Items':                                          ['ZD King Zora Thawed', 'ZD Trade Prescription'],
 
     'Deku Tree MQ Basement GS':                                 ['Deku Tree MQ GS Basement Graves Room','Deku Tree MQ GS Basement Back Room'],
     'Dodongos Cavern Upper Business Scrubs':                    ['Dodongos Cavern Deku Scrub Near Bomb Bag Left', 'Dodongos Cavern Deku Scrub Near Bomb Bag Right'],
@@ -1586,20 +1763,35 @@ multiTable = {
     'Ganons Castle Spirit Trial Chests':                        ['Ganons Castle Spirit Trial Crystal Switch Chest', 'Ganons Castle Spirit Trial Invisible Chest'],
 }
 
-misc_item_hint_table = {
+# TODO: Make these a type of some sort instead of a dict.
+misc_item_hint_table: dict[str, dict[str, Any]] = {
     'dampe_diary': {
         'id': 0x5003,
         'hint_location': 'Dampe Diary Hint',
         'default_item': 'Progressive Hookshot',
-        'default_item_text': "Whoever reads this, please enter {area}. I will let you have my stretching, shrinking keepsake.^I'm waiting for you.&--Dampé",
-        'custom_item_text': "Whoever reads this, please enter {area}. I will let you have {item}.^I'm waiting for you.&--Dampé",
+        'default_item_text': "Whoever reads this, please visit {area}. I will let you have my stretching, shrinking keepsake.^I'm waiting for you.&--Dampé",
+        'custom_item_text': "Whoever reads this, please visit {area}. I will let you have {item}.^I'm waiting for you.&--Dampé",
         'default_item_fallback': "Whoever reads this, I'm sorry, but I seem to have #misplaced# my stretching, shrinking keepsake.&--Dampé",
         'custom_item_fallback': "Whoever reads this, I'm sorry, but I seem to have #misplaced# {item}.&--Dampé",
         'replace': {
-            "enter #your pocket#. I will let you have": "check #your pocket#. You will find",
+            "visit #your pocket#. I will let you have": "check #your pocket#. You will find",
+            "visit #the Temple of Time#": "enter #the Temple of Time#",
+            "visit #outside Ganon's Castle#": "visit #the outside of Ganon's Castle#",
+            "visit #inside Ganon's Castle#": "#enter Ganon's Castle#",
+            "visit #the Deku Tree#": "enter #the Deku Tree#",
+            "visit #the Forest Temple#": "enter #the Forest Temple#",
+            "visit #Dodongo's Cavern#": "enter #Dodongo's Cavern#",
+            "visit #the Fire Temple#": "enter #the Fire Temple#",
+            "visit #Jabu Jabu's Belly#": "enter #Jabu Jabu's Belly#",
+            "visit #the Ice Cavern#": "enter #the Ice Cavern#",
+            "visit #the Water Temple#": "enter #the Water Temple#",
+            "visit #the Bottom of the Well#": "enter #the Bottom of the Well#",
+            "visit #the Shadow Temple#": "enter #the Shadow Temple#",
+            "visit #the Thieves' Hideout#": "enter #the Thieves' Hideout#",
+            "visit #the Gerudo Training Ground#": "enter #the Gerudo Training Ground#",
+            "visit #the Spirit Temple#": "enter #the Spirit Temple#",
         },
         'use_alt_hint': False,
-        'local_only': True,
     },
     'ganondorf': {
         'id': 0x70CC,
@@ -1613,11 +1805,10 @@ misc_item_hint_table = {
             "from #Ganondorf's Chamber#": "from #those pots over there#",
         },
         'use_alt_hint': True,
-        'local_only': False,
     },
 }
 
-misc_location_hint_table = {
+misc_location_hint_table: dict[str, dict[str, Any]] = {
     '10_skulltulas': {
         'id': 0x9004,
         'hint_location': '10 Skulltulas Reward Hint',
@@ -1653,12 +1844,19 @@ misc_location_hint_table = {
         'location_text': "Yeaaarrgh! I'm cursed!! Please save me by destroying \x05\x4150 Spiders of the Curse\x05\x40 and I will give you \x05\x42{item}\x05\x40.",
         'location_fallback': "Yeaaarrgh! I'm cursed!!",
     },
+    'frogs2': {
+        'id': 0x022E,
+        'hint_location': 'ZR Frogs Ocarina Minigame Hint',
+        'item_location': 'ZR Frogs Ocarina Game',
+        'location_text': "Some frogs holding \x05\x42{item}\x05\x40 are looking at you from underwater...",
+        'location_fallback': "Some frogs are looking at you from underwater...",
+    },
 }
 
 # Separate table for goal names to avoid duplicates in the hint table.
 # Link's Pocket will always be an empty goal, but it's included here to
 # prevent key errors during the dungeon reward lookup.
-goalTable = {
+goalTable: dict[str, tuple[str, str, str]] = {
     'Queen Gohma':                                              ("path to the #Spider#", "path to #Queen Gohma#", "Green"),
     'King Dodongo':                                             ("path to the #Dinosaur#", "path to #King Dodongo#", "Red"),
     'Barinade':                                                 ("path to the #Tentacle#", "path to #Barinade#", "Blue"),
@@ -1672,23 +1870,26 @@ goalTable = {
 
 
 # This specifies which hints will never appear due to either having known or known useless contents or due to the locations not existing.
-def hintExclusions(world, clear_cache=False):
-    if not clear_cache and world.hint_exclusions is not None:
-        return world.hint_exclusions
+def hint_exclusions(world: World, clear_cache: bool = False) -> list[str]:
+    exclusions: dict[int, list[str]] = hint_exclusions.exclusions
 
-    world.hint_exclusions = []
+    if not clear_cache and world.id in exclusions:
+        return exclusions[world.id]
+
+    exclusions[world.id] = []
+    # disabled_locations not implemented in AP - users cannot exclude specific locations from hints
 
     for location in world.get_locations():
-        if (location.locked and ((isinstance(location.item, OOTItem) and location.item.type != 'Song') or world.shuffle_song_items != 'song')) or location.progress_type == LocationProgressType.EXCLUDED:
-            world.hint_exclusions.append(location.name)
+        if location.locked:
+            exclusions[world.id].append(location.name)
 
     world_location_names = [
         location.name for location in world.get_locations()]
 
     location_hints = []
     for name in hintTable:
-        hint = getHint(name, world.random, world.clearer_hints)
-        if any(item in hint.type for item in 
+        hint = get_hint(name, True)  # clearer_hints is always True in AP
+        if any(item in hint.type for item in
                 ['always',
                  'dual_always',
                  'sometimes',
@@ -1700,18 +1901,43 @@ def hintExclusions(world, clear_cache=False):
             location_hints.append(hint)
 
     for hint in location_hints:
-        if hint.name not in world_location_names and hint.name not in world.hint_exclusions:
-            world.hint_exclusions.append(hint.name)
+        if any(item in hint.type for item in
+                ['dual',
+                 'dual_always']):
+            multi = get_multi(hint.name)
+            exclude_hint = False
+            for location in multi.locations:
+                if location not in world_location_names or world.get_location(location).locked:
+                    exclude_hint = True
+            if exclude_hint:
+                exclusions[world.id].append(hint.name)
+        else:
+            if hint.name not in world_location_names and hint.name not in exclusions[world.id]:
+                exclusions[world.id].append(hint.name)
+    return exclusions[world.id]
 
-    return world.hint_exclusions
 
-def nameIsLocation(name, hint_type, world):
+hint_exclusions.exclusions = {}
+
+
+def name_is_location(name: str, hint_type: str | Collection[str], world: World) -> bool:
     if isinstance(hint_type, (list, tuple)):
         for htype in hint_type:
-            if htype in ['sometimes', 'song', 'overworld', 'dungeon', 'always', 'exclude'] and name not in hintExclusions(world):
+            if htype in ['sometimes', 'song', 'overworld', 'dungeon', 'always', 'exclude'] and name not in hint_exclusions(
+                    world):
                 return True
-    elif hint_type in ['sometimes', 'song', 'overworld', 'dungeon', 'always', 'exclude'] and name not in hintExclusions(world):
+    elif hint_type in ['sometimes', 'song', 'overworld', 'dungeon', 'always', 'exclude'] and name not in hint_exclusions(
+            world):
         return True
     return False
 
-hintExclusions.exclusions = None
+
+def clear_hint_exclusion_cache() -> None:
+    hint_exclusions.exclusions.clear()
+
+
+# AP compatibility aliases (camelCase for existing imports)
+getRequiredHints = get_required_hints
+
+# AP compatibility: add getHint alias
+getHint = get_hint

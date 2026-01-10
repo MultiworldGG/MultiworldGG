@@ -11,7 +11,8 @@
         },
         "exits": {
             "Zoras Fountain": "True",
-            "Jabu Jabus Belly Elevator Room": "here(can_use(Slingshot)) or jabu_shortcuts"
+            "Jabu Jabus Belly Elevator Room": "here(can_use(Slingshot)) or jabu_shortcuts",
+            "Farores Wind Warp": "can_use(Farores_Wind)"
         }
     },
     {
@@ -19,10 +20,6 @@
         "dungeon": "Jabu Jabus Belly",
         "locations": {
             "Jabu Jabus Belly MQ Second Room Lower Chest": "True",
-            "Jabu Jabus Belly MQ Second Room Upper Chest": "
-                here(can_use(Slingshot)) and
-                (can_use(Hover_Boots) or can_use(Hookshot) or
-                'Jabu Jabus Belly Floor Lowered' or jabu_shortcuts)",
             "Jabu Jabus Belly MQ Compass Chest": "
                 (is_child or can_dive or Iron_Boots or logic_jabu_alcove_jump_dive) and
                 (can_use(Slingshot) or has_bombchus or can_use(Bow) or can_use(Hookshot) or
@@ -40,10 +37,9 @@
         "exits": {
             "Jabu Jabus Belly Main": "
                 here(is_child or can_dive or Iron_Boots or logic_jabu_alcove_jump_dive)",
-            "Jabu Jabus Belly Before Boss": "
-                jabu_shortcuts or 'Jabu Jabus Belly Floor Lowered' or
-                ('Jabu Jabus Belly Parasitic Tentacle Cleared' and
-                    (can_use(Hover_Boots) or can_use(Hookshot)))"
+            "Jabu Jabus Belly Before Slimy Thing": "
+                can_use(Hover_Boots) or can_use(Hookshot) or
+                'Jabu Jabus Belly Floor Lowered' or jabu_shortcuts"
         }
     },
     {
@@ -62,7 +58,7 @@
                 (logic_jabu_mq_sot_gs and can_use(Boomerang))",
             "Jabu Jabus Belly MQ GS Invisible Enemies Room": "
                 (at('Jabu Jabus Belly Depths', True) or jabu_shortcuts) and
-                ((can_use(Hookshot) and can_use(Hover_Boots)) or
+                ((can_use(Hookshot) and (Hover_Boots or (can_use(Fire_Arrows) and (Longshot or Iron_Boots)))) or
                     (here((logic_lens_jabu_mq or can_use(Lens_of_Truth)) and
                             (can_use(Slingshot) or can_use(Bow) or can_use(Longshot) or
                             (can_use(Hookshot) and can_use(Iron_Boots) and logic_lens_jabu_mq))) and
@@ -101,8 +97,20 @@
         }
     },
     {
+        "region_name": "Jabu Jabus Belly Before Slimy Thing",
+        "dungeon": "Jabu Jabus Belly",
+        "locations": {
+            "Jabu Jabus Belly MQ Second Room Upper Chest": "at('Jabu Jabus Belly Elevator Room', can_use(Slingshot))"
+        },
+        "exits": {
+            "Jabu Jabus Belly Elevator Room": "True",
+            "Jabu Jabus Belly Before Boss": "jabu_shortcuts or 'Jabu Jabus Belly Parasitic Tentacle Cleared'"
+        }
+    },
+    {
         "region_name": "Jabu Jabus Belly Before Boss",
         "dungeon": "Jabu Jabus Belly",
+        "savewarp": "Zoras Fountain -> Jabu Jabus Belly Beginning",
         "locations": {
             "Jabu Jabus Belly MQ Near Boss Chest": "can_use(Slingshot)",
             "Jabu Jabus Belly MQ GS Near Boss": "
@@ -110,7 +118,9 @@
             "Fairy Pot": "has_bottle"
         },
         "exits": {
-            "Jabu Jabus Belly Boss Door": "here(can_use(Slingshot)) or jabu_shortcuts"
+            "Jabu Jabus Belly Before Slimy Thing": "'Jabu Jabus Belly Parasitic Tentacle Cleared'",
+            "Jabu Jabus Belly Elevator Room": "can_take_damage",
+            "Barinade Boss Room": "here(can_use(Slingshot)) or jabu_shortcuts"
         }
     }
 ]

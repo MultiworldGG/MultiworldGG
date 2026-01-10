@@ -4,7 +4,8 @@
         "dungeon": "Bottom of the Well",
         "exits": {
             "Kakariko Village": "True",
-            "Bottom of the Well Main Area": "is_child and (can_child_attack or Nuts)"
+            "Bottom of the Well Main Area": "is_child and (can_child_attack or Nuts)",
+            "Farores Wind Warp": "can_use(Farores_Wind)"
         }
     },
     {
@@ -43,13 +44,16 @@
             "Bottom of the Well Basement Pot 10": "True",
             "Bottom of the Well Basement Pot 11": "True",
             "Bottom of the Well Basement Pot 12": "True",
-            "Bottom of the Well Left Side Pot 1": "True",
-            "Bottom of the Well Left Side Pot 2": "True",
-            "Bottom of the Well Left Side Pot 3": "True",
+            "Bottom of the Well Basement Silver Rupee Wood Beam Front": "True",
+            "Bottom of the Well Basement Silver Rupee Wood Beam Back": "True",
+            "Bottom of the Well Basement Silver Rupee Ladders Bottom": "True",
+            "Bottom of the Well Basement Silver Rupee Ladders Middle": "True",
+            "Bottom of the Well Basement Silver Rupee Ladders Top": "True",
             "Stick Pot": "True",
             "Nut Pot": "True"
         },
         "exits": {
+            "Bottom of the Well Left Side": "(Silver_Rupee_Bottom_of_the_Well_Basement, 5)",
             "Bottom of the Well Behind Fake Walls": "logic_lens_botw or can_use(Lens_of_Truth)"
         }
     },
@@ -69,7 +73,17 @@
             "Bottom of the Well Center Room Pit Fall Blue Rupee 5": "True"
         },
         "exits": {
+            "Bottom of the Well Left Side": "True",
             "Bottom of the Well Behind Locked Doors": "(Small_Key_Bottom_of_the_Well, 3)"
+        }
+    },
+    {
+        "region_name": "Bottom of the Well Left Side",
+        "dungeon": "Bottom of the Well",
+        "locations": {
+            "Bottom of the Well Left Side Pot 1": "True",
+            "Bottom of the Well Left Side Pot 2": "True",
+            "Bottom of the Well Left Side Pot 3": "True"
         }
     },
     {

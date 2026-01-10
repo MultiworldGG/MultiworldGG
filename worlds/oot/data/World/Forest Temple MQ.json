@@ -11,7 +11,8 @@
         "exits": {
             "SFM Forest Temple Entrance Ledge": "True",
             "Forest Temple Central Area": "
-                (Small_Key_Forest_Temple, 1) and (is_adult or can_child_attack or Nuts)"
+                (Small_Key_Forest_Temple, 1) and (is_adult or can_child_attack or Nuts)",
+            "Farores Wind Warp": "can_use(Farores_Wind)"
         }
     },
     {
@@ -35,7 +36,7 @@
             "Forest Temple NW Outdoors": "can_use(Bow) or can_use(Slingshot)",
             "Forest Temple NE Outdoors": "can_use(Bow) or can_use(Slingshot)",
             "Forest Temple Before Block Puzzle": "here(is_adult or Kokiri_Sword)",
-            "Forest Temple Before Boss": "
+            "Forest Temple Basement": "
                 (Forest_Temple_Jo_and_Beth and Forest_Temple_Amy_and_Meg) or forest_temple_shortcuts"
         }
     },
@@ -89,13 +90,11 @@
         "region_name": "Forest Temple Outside Upper Ledge",
         "dungeon": "Forest Temple",
         "locations": {
-            "Forest Temple MQ Redead Chest": "True",
-            "Forest Temple MQ Courtyard Recovery Heart 1": "True",
-            "Forest Temple MQ Courtyard Recovery Heart 2": "True",
-            "Forest Temple MQ Courtyard Recovery Heart 3": "True"
+            "Forest Temple MQ Redead Chest": "True"
         },
         "exits": {
-            "Forest Temple NW Outdoors": "True"
+            "Forest Temple NW Outdoors": "True",
+            "Forest Temple NW Outdoors Freestandings": "True"
         }
     },
     {
@@ -108,7 +107,17 @@
             "Forest Temple NE Outdoors": "
                 can_use(Iron_Boots) or can_use(Longshot) or
                 (Progressive_Scale, 2) or (logic_forest_well_swim and can_use(Hookshot))",
-            "Forest Temple Outdoors High Balconies": "can_use(Fire_Arrows)"
+            "Forest Temple Outdoors High Balconies": "can_use(Fire_Arrows)",
+            "Forest Temple NW Outdoors Freestandings": "logic_forest_courtyard_hearts and can_use(Boomerang)"
+        }
+    },
+    {
+        "region_name": "Forest Temple NW Outdoors Freestandings",
+        "dungeon": "Forest Temple",
+        "locations": {
+            "Forest Temple MQ Courtyard Recovery Heart 1": "True",
+            "Forest Temple MQ Courtyard Recovery Heart 2": "True",
+            "Forest Temple MQ Courtyard Recovery Heart 3": "True"
         }
     },
     {
@@ -132,7 +141,7 @@
         },
         "exits": {
             "Forest Temple Outdoors High Balconies": "
-                can_use(Hookshot) and 
+                can_use(Hookshot) and
                 (can_use(Longshot) or can_use(Hover_Boots) or can_play(Song_of_Time) or
                     logic_forest_vines)",
             "Forest Temple NE Outdoors Ledge": "can_use(Longshot)"
@@ -203,7 +212,7 @@
         }
     },
     {
-        "region_name": "Forest Temple Before Boss",
+        "region_name": "Forest Temple Basement",
         "dungeon": "Forest Temple",
         "locations": {
             "Forest Temple MQ Basement Chest": "True",
@@ -213,7 +222,17 @@
             "Forest Temple MQ Basement Pot 4": "True"
         },
         "exits": {
-            "Forest Temple Boss Door": "True"
+            "Forest Temple Before Boss": "True"
+            # exit to Forest Temple Central Area requires changes to key logic
+        }
+    },
+    {
+        "region_name": "Forest Temple Before Boss",
+        "dungeon": "Forest Temple",
+        "savewarp": "SFM Forest Temple Entrance Ledge -> Forest Temple Lobby",
+        "exits": {
+            "Forest Temple Basement": "forest_temple_shortcuts",
+            "Phantom Ganon Boss Room": "Boss_Key_Forest_Temple"
         }
     }
 ]

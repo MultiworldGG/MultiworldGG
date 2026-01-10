@@ -511,3 +511,12 @@ class Rule_AST_Transformer(ast.NodeTransformer):
 
     def region_has_shortcuts(self, node):
         return ast.parse(f"state._oot_region_has_shortcuts({self.player}, '{node.args[0].value}')", mode='eval').body
+
+    def has_all_notes_for_song(self, node):
+        if isinstance(node.args[0], ast.Name):
+            song = node.args[0].id
+        elif isinstance(node.args[0], ast.Str):
+            song = node.args[0].s
+        else:
+            song = node.args[0].value
+        return ast.parse(f"state._oot_has_all_notes_for_song({self.player}, '{song}')", mode='eval').body

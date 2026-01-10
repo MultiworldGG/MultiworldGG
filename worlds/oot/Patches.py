@@ -80,44 +80,77 @@ def patch_rom(world, rom):
         keatonBytes = bytearray([a ^ b for a, b in zip(keatonBytesDiff, originalBytes)])
         rom.write_bytes(writeAddress, keatonBytes)
 
-    # Load Triforce model into a file
-    triforce_obj_file = File({ 'Name': 'object_gi_triforce' })
-    triforce_obj_file.copy(rom)
-    with open(data_path('Triforce.zobj'), 'rb') as stream:
-        obj_data = stream.read()
-        rom.write_bytes(triforce_obj_file.start, obj_data)
-        triforce_obj_file.end = triforce_obj_file.start + len(obj_data)
-    update_dmadata(rom, triforce_obj_file)
-    # Add it to the extended object table
-    add_to_extended_object_table(rom, 0x193, triforce_obj_file)
+    # Load models into the extended object table.
+    zobj_imports = [
+        ('object_gi_triforce',    data_path('items/Triforce.zobj'),             0x193),  # Triforce Piece
+        ('object_gi_keyring',     data_path('items/KeyRing.zobj'),              0x195),  # Key Rings
+        ('object_gi_warpsong',    data_path('items/Note.zobj'),                 0x196),  # Inverted Music Note
+        ('object_gi_chubag',      data_path('items/ChuBag.zobj'),               0x197),  # Bombchu Bag
+        ('object_gi_skeyforest',  data_path('items/SmallForest.zobj'),          0x199),  # Small Key (Forest)
+        ('object_gi_skeyfire',    data_path('items/SmallFire.zobj'),            0x19A),  # Small Key (Fire)
+        ('object_gi_skeywater',   data_path('items/SmallWater.zobj'),           0x19B),  # Small Key (Water)
+        ('object_gi_skeyspirit',  data_path('items/SmallSpirit.zobj'),          0x19C),  # Small Key (Spirit)
+        ('object_gi_skeyshadow',  data_path('items/SmallShadow.zobj'),          0x19D),  # Small Key (Shadow)
+        ('object_gi_skeywell',    data_path('items/SmallWell.zobj'),            0x19E),  # Small Key (Well)
+        ('object_gi_skeygtg',     data_path('items/SmallGTG.zobj'),             0x19F),  # Small Key (GTG)
+        ('object_gi_skeythieves', data_path('items/SmallThieves.zobj'),         0x1A0),  # Small Key (Thieves)
+        ('object_gi_skeyganon',   data_path('items/SmallGanon.zobj'),           0x1A1),  # Small Key (Ganon)
+        ('object_gi_skeyTCG',     data_path('items/SmallTCG.zobj'),             0x1A2),  # Small Key (Chest Game)
+        ('object_gi_bkforest',    data_path('items/BossForest.zobj'),           0x1A3),  # Boss Key (Forest)
+        ('object_gi_bkfire',      data_path('items/BossFire.zobj'),             0x1A4),  # Boss Key (Fire)
+        ('object_gi_bkwater',     data_path('items/BossWater.zobj'),            0x1A5),  # Boss Key (Water)
+        ('object_gi_bkspirit',    data_path('items/BossSpirit.zobj'),           0x1A6),  # Boss Key (Spirit)
+        ('object_gi_bkshadow',    data_path('items/BossShadow.zobj'),           0x1A7),  # Boss Key (Shadow)
+        ('object_gi_abutton',     data_path('items/A_Button.zobj'),             0x1A8),  # A button
+        ('object_gi_cbutton',     data_path('items/C_Button_Horizontal.zobj'),  0x1A9),  # C button Horizontal
+        ('object_gi_cbutton',     data_path('items/C_Button_Vertical.zobj'),    0x1AA),  # C button Vertical
+    ]
 
-    # Build a Double Defense model from the Heart Container model
-    dd_obj_file = File({
-        'Name': 'object_gi_hearts',
-        'Start': '014D9000',
-        'End': '014DA590',
-    })
-    dd_obj_file.copy(rom)
-    # Update colors for the Double Defense variant
-    rom.write_bytes(dd_obj_file.start + 0x1294, [0xFF, 0xCF, 0x0F]) # Exterior Primary Color
-    rom.write_bytes(dd_obj_file.start + 0x12B4, [0xFF, 0x46, 0x32]) # Exterior Env Color
-    rom.write_int32s(dd_obj_file.start + 0x12A8, [0xFC173C60, 0x150C937F]) # Exterior Combine Mode
-    rom.write_bytes(dd_obj_file.start + 0x1474, [0xFF, 0xFF, 0xFF]) # Interior Primary Color
-    rom.write_bytes(dd_obj_file.start + 0x1494, [0xFF, 0xFF, 0xFF]) # Interior Env Color
-    update_dmadata(rom, dd_obj_file)
-    # Add it to the extended object table
-    add_to_extended_object_table(rom, 0x194, dd_obj_file)
+    if world.key_appearance_matches_dungeon:
+        rom.write_byte(rom.sym('CUSTOM_KEY_MODELS'), 0x01)
 
-    # Load Key Ring model into a file
-    keyring_obj_file = File({ 'Name': 'object_gi_keyring' })
-    keyring_obj_file.copy(rom)
-    with open(data_path('KeyRing.zobj'), 'rb') as stream:
-        obj_data = stream.read()
-        rom.write_bytes(keyring_obj_file.start, obj_data)
-        keyring_obj_file.end = keyring_obj_file.start + len(obj_data)
-    update_dmadata(rom, keyring_obj_file)
-    # Add it to the extended object table
-    add_to_extended_object_table(rom, 0x195, keyring_obj_file)
+    extended_objects_start = start_address = rom.dma.free_space()
+    for (name, zobj_path, object_id) in zobj_imports:
+        with open(zobj_path, 'rb') as stream:
+            obj_data = stream.read()
+            rom.write_bytes(start_address, obj_data)
+        # Add it to the extended object table
+        end_address = ((start_address + len(obj_data) + 0x0F) >> 4) << 4
+        add_to_extended_object_table(rom, object_id, start_address, end_address)
+        start_address = end_address
+
+    # Make new models by applying patches to existing ones
+    zobj_patches = [
+        ('object_gi_hearts', 0x014D9000, 0x014DA590, 0x194, # Heart Container -> Double Defense
+        [
+            (0x1294, [0xFF, 0xCF, 0x0F]), # Exterior Primary Color
+            (0x12B4, [0xFF, 0x46, 0x32]), # Exterior Env Color
+            (0x1474, [0xFF, 0xFF, 0xFF]), # Interior Primary Color
+            (0x1494, [0xFF, 0xFF, 0xFF]), # Interior Env Color
+            (0x12A8, [0xFC, 0x17, 0x3C, 0x60, 0x15, 0x0C, 0x93, 0x7F]), # Exterior Combine Mode
+        ]),
+        ('object_gi_rupy', 0x01914000, 0x01914800, 0x198, # Huge Rupee -> Silver Rupee
+        [
+            (0x052C, [0xAA, 0xAA, 0xAA]), # Inner Primary Color?
+            (0x0534, [0x5A, 0x5A, 0x5A]), # Inner Env Color?
+            (0x05CC, [0xFF, 0xFF, 0xFF]), # Outer Primary Color?
+            (0x05D4, [0xFF, 0xFF, 0xFF]), # Outer Env Color?
+        ]),
+    ]
+
+    # Add the new models to the extended object file.
+    for name, start, end, object_id, patches in zobj_patches:
+        end_address = start_address + end - start
+        rom.buffer[start_address:end_address] = rom.buffer[start:end]
+        # Apply patches
+        for offset, patch in patches:
+            rom.write_bytes(start_address + offset, patch)
+        # Add it to the extended object table
+        add_to_extended_object_table(rom, object_id, start_address, end_address)
+        start_address = end_address
+
+    # Add the extended objects data to the DMA table.
+    rom.update_dmadata_record_by_key(None, extended_objects_start, end_address)
 
     # Create the textures for pots/crates. Note: No copyrighted material can be distributed w/ the randomizer. Because of this, patch files are used to create the new textures from the original texture in ROM.
     # Apply patches for custom textures for pots and crates and add as new files in rom
@@ -141,7 +174,21 @@ def patch_rom(world, rom):
         (10, 'texture_smallcrate_gold',     0xF7ECA0,      None,            2048,   rgba16_patch,               'textures/crate/smallcrate_gold_rgba16_patch.bin' ),
         (11, 'texture_smallcrate_key',      0xF7ECA0,      None,            2048,   rgba16_patch,               'textures/crate/smallcrate_key_rgba16_patch.bin'),
         (12, 'texture_smallcrate_skull',    0xF7ECA0,      None,            2048,   rgba16_patch,               'textures/crate/smallcrate_skull_rgba16_patch.bin'),
-        (13, 'texture_smallcrate_bosskey',  0xF7ECA0,      None,            2048,   rgba16_patch,               'textures/crate/smallcrate_bosskey_rgba16_patch.bin')
+        (13, 'texture_smallcrate_bosskey',  0xF7ECA0,      None,            2048,   rgba16_patch,               'textures/crate/smallcrate_bosskey_rgba16_patch.bin'),
+
+        (18, "texture_chest_front_gilded",  0xFEC798,      None,            4096,   rgba16_patch,               'textures/chest/chest_front_gilded_rgba16_patch.bin'),
+        (19, "texture_chest_base_gilded",   0xFED798,      None,            2048,   rgba16_patch,               'textures/chest/chest_base_gilded_rgba16_patch.bin'),
+        (20, "texture_chest_front_silver",  0xFEC798,      None,            4096,   rgba16_patch,               'textures/chest/chest_front_silver_rgba16_patch.bin'),
+        (21, "texture_chest_base_silver",   0xFED798,      None,            2048,   rgba16_patch,               'textures/chest/chest_base_silver_rgba16_patch.bin'),
+        (22, "texture_chest_front_skull",   0xFEC798,      None,            4096,   rgba16_patch,               'textures/chest/chest_front_skull_rgba16_patch.bin'),
+        (23, "texture_chest_base_skull",    0xFED798,      None,            2048,   rgba16_patch,               'textures/chest/chest_base_skull_rgba16_patch.bin'),
+
+        (24, "texture_chest_front_heart",   0xFEC798,      None,            4096,   rgba16_patch,               'textures/chest/chest_front_heart_rgba16_patch.bin'),
+        (25, "texture_chest_base_heart",    0xFED798,      None,            2048,   rgba16_patch,               'textures/chest/chest_base_heart_rgba16_patch.bin'),
+        (26, 'texture_pot_side_heart',      0x01738000,    None,            2048,   rgba16_patch,               'textures/pot/pot_side_heart_rgba16_patch.bin'),
+        (27, 'texture_pot_top_heart',       0x01739000,    None,            256,    rgba16_patch,               'textures/pot/pot_top_heart_rgba16_patch.bin'),
+        (28, 'texture_crate_heart',         0x18B6020,     0x018B6000,      4096,   ci4_rgba16patch_to_ci8,     'textures/crate/crate_heart_rgba16_patch.bin'),
+        (29, 'texture_smallcrate_heart',    0xF7ECA0,      None,            2048,   rgba16_patch,               'textures/crate/smallcrate_heart_rgba16_patch.bin'),
     ]
 
     # Loop through the textures and apply the patch. Add the new texture as a new file in rom.
@@ -158,27 +205,6 @@ def patch_rom(world, rom):
         entry['file_vrom_start'] = texture_file.start
         entry['file_size'] = texture_file.end - texture_file.start
         write_rom_texture(rom, texture_id, entry)
-
-    # Apply chest texture diffs to vanilla wooden chest texture for Chest Texture Matches Content setting
-    # new texture, vanilla texture, num bytes
-    textures = [(rom.sym('SILVER_CHEST_FRONT_TEXTURE'), 0xFEC798, 4096),
-                (rom.sym('SILVER_CHEST_BASE_TEXTURE'), 0xFED798, 2048),
-                (rom.sym('GILDED_CHEST_FRONT_TEXTURE'), 0xFEC798, 4096),
-                (rom.sym('GILDED_CHEST_BASE_TEXTURE'), 0xFED798, 2048),
-                (rom.sym('SKULL_CHEST_FRONT_TEXTURE'), 0xFEC798, 4096),
-                (rom.sym('SKULL_CHEST_BASE_TEXTURE'), 0xFED798, 2048)]
-    # Diff texture is the new texture minus the vanilla texture with byte overflow.
-    # This is done to avoid distributing copyrighted material with the randomizer,
-    # as the new textures are derivations of the wood chest textures.
-    # The following rebuilds the texture from the diff.
-    for diff_tex, vanilla_tex, size in textures:
-        db = rom.read_bytes(diff_tex, size)
-        vb = rom.read_bytes(vanilla_tex, size)
-        # bytes are immutable in python, can't edit in place
-        new_tex = bytearray(size)
-        for i in range(len(vb)):
-            new_tex[i] = (db[i] + vb[i]) & 0xFF
-        rom.write_bytes(diff_tex, new_tex)
 
     # Create an option so that recovery hearts no longer drop by changing the code which checks Link's health when an item is spawned.
     if world.no_collectible_hearts:
@@ -248,7 +274,7 @@ def patch_rom(world, rom):
         rom.write_byte(0x25B8197, 0x3F)
 
     if world.bombchus_in_logic:
-        rom.write_int32(rom.sym('BOMBCHUS_IN_LOGIC'), 1)
+        rom.write_int32(rom.sym('FREE_BOMBCHU_DROPS'), 1)
 
     # show seed info on file select screen
     def makebytes(txt, size):
@@ -316,6 +342,9 @@ def patch_rom(world, rom):
 
     if songs_as_items:
         rom.write_byte(rom.sym('SONGS_AS_ITEMS'), 1)
+
+    if world.shuffle_individual_ocarina_notes:
+        rom.write_byte(rom.sym('SHUFFLE_OCARINA_BUTTONS'), 1)
 
     # Speed learning Zelda's Lullaby
     rom.write_int32s(0x02E8E90C, [0x000003E8, 0x00000001]) # Terminator Execution
@@ -1085,6 +1114,9 @@ def patch_rom(world, rom):
         # Purge temp flags on entrance to spirit from colossus through the front door.
         rom.write_byte(0x021862E3, 0xC2)
 
+    if world.shuffle_hideout_entrances:
+        rom.write_byte(rom.sym('HIDEOUT_SHUFFLED'), 1)
+
     if (world.shuffle_overworld_entrances or world.shuffle_dungeon_entrances
         or world.shuffle_bosses != 'off'):
         # Remove deku sprout and drop player at SFM after forest completion
@@ -1233,6 +1265,10 @@ def patch_rom(world, rom):
     save_context.write_bits(0x0F21, 0x04) # "Ruto in JJ (M3) Talk First Time"
     save_context.write_bits(0x0F21, 0x02) # "Ruto in JJ (M2) Meet Ruto"
 
+
+    if world.ruto_already_at_f1 and not world.dungeon_mq['Jabu Jabus Belly']:
+        save_context.write_bits(0x0F21, 0x80) # Ruto in JJ, Spawns on F1 instead of B1
+
     save_context.write_bits(0x0EE2, 0x01) # "Began Ganondorf Battle"
     save_context.write_bits(0x0EE3, 0x80) # "Began Bongo Bongo Battle"
     save_context.write_bits(0x0EE3, 0x40) # "Began Barinade Battle"
@@ -1287,6 +1323,9 @@ def patch_rom(world, rom):
 
     if world.complete_mask_quest:
         rom.write_byte(rom.sym('COMPLETE_MASK_QUEST'), 1)
+
+    if world.maintain_mask_equips:
+        rom.write_byte(rom.sym('CFG_MASK_AUTOEQUIP'), 0x01)
 
     if world.shuffle_child_trade == 'skip_child_zelda':
         save_context.give_item(world, 'Zeldas Letter')
@@ -1370,6 +1409,10 @@ def patch_rom(world, rom):
     else:
         rom.write_byte(symbol, 0)
         rom.write_int16(count_symbol, 0)
+
+    symbol = rom.sym('KEYRING_BOSSKEY_CONDITION')
+    if world.key_rings_give_bosskeys:
+        rom.write_byte(symbol, 1)
 
     # Set up LACS conditions.
     symbol = rom.sym('LACS_CONDITION')
@@ -2040,6 +2083,22 @@ def patch_rom(world, rom):
         update_message_by_id(messages, 0x304C, "I have something cool right here.\x01How about it...\x07\x30\x4F\x02")
         update_message_by_id(messages, 0x304D, "How do you like it?\x02")
         update_message_by_id(messages, 0x304F, "How about buying this cool item for \x01200 Rupees?\x01\x1B\x05\x42Buy\x01Don't buy\x05\x40\x02")
+
+    if hasattr(world, 'adult_trade_shuffle') and world.adult_trade_shuffle:
+        rom.write_int16(rom.sym('CFG_ADULT_TRADE_SHUFFLE'), 0x0001)
+    if hasattr(world, 'shuffle_child_trade') and world.shuffle_child_trade != 'vanilla':
+        rom.write_int16(rom.sym('CFG_CHILD_TRADE_SHUFFLE'), 0x0001)
+
+    if world.shuffle_silver_rupees != 'vanilla':
+        rom.write_byte(rom.sym('SHUFFLE_SILVER_RUPEES'), 1)
+        if world.shuffle_silver_rupees != 'remove':
+            rom.write_byte(rom.sym('CFG_DUNGEON_INFO_SILVER_RUPEES'), 1)
+
+    if world.shuffle_tcgkeys != 'vanilla':
+        if world.shuffle_tcgkeys == 'remove':
+            rom.write_byte(rom.sym('SHUFFLE_CHEST_GAME'), 0x02)
+        else:
+            rom.write_byte(rom.sym('SHUFFLE_CHEST_GAME'), 0x01)
 
     if world.shuffle_pots != 'off': # Update the first BK door in ganon's castle to use a separate flag so it can be unlocked to get to the pots
         patch_ganons_tower_bk_door(rom, 0x15) # Using flag 0x15 for the door. GBK doors normally use 0x14.

@@ -2,29 +2,36 @@
     {
         "region_name": "Fire Temple Lower",
         "dungeon": "Fire Temple",
-        "locations": {
-            "Fire Temple Near Boss Chest": "
-                logic_fewer_tunic_requirements or can_use(Goron_Tunic)",
-            "Fire Temple Near Boss Pot 1": "
-                is_adult and (Hover_Boots or Hookshot) and
-                (logic_fewer_tunic_requirements or Goron_Tunic)",
-            "Fire Temple Near Boss Pot 2": "
-                is_adult and (Hover_Boots or Hookshot) and
-                (logic_fewer_tunic_requirements or Goron_Tunic)",
-            "Fairy Pot": "
-                is_adult and has_bottle and (Hover_Boots or Hookshot) and
-                (logic_fewer_tunic_requirements or Goron_Tunic)"
-        },
         "exits": {
             "DMC Fire Temple Entrance": "True",
+            "Fire Temple Near Boss": "logic_fewer_tunic_requirements or can_use(Goron_Tunic)",
             "Fire Temple Big Lava Room": "
                 (Small_Key_Fire_Temple, 2) and
                 (logic_fewer_tunic_requirements or can_use(Goron_Tunic))",
             "Fire Temple Lower Locked Door": "
-                ((Small_Key_Fire_Temple, 8) or not keysanity) and can_use(Megaton_Hammer)",
-            "Fire Temple Boss Door": "
-                is_adult and (logic_fewer_tunic_requirements or Goron_Tunic) and
-                (fire_temple_shortcuts or logic_fire_boss_door_jump or Hover_Boots)"
+                ((Small_Key_Fire_Temple, 8) or (not keysanity)) and can_use(Megaton_Hammer)",
+            "Farores Wind Warp": "can_use(Farores_Wind)"
+        }
+    },
+    {
+        "region_name": "Fire Temple Near Boss",
+        "dungeon": "Fire Temple",
+        "locations": {
+            "Fire Temple Near Boss Chest": "True",
+            "Fire Temple Near Boss Pot 1": "is_adult and (Hover_Boots or Hookshot)",
+            "Fire Temple Near Boss Pot 2": "is_adult and (Hover_Boots or Hookshot)",
+            "Fairy Pot": "is_adult and has_bottle and (Hover_Boots or Hookshot)"
+        },
+        "exits": {
+            "Fire Temple Before Boss": "is_adult and (fire_temple_shortcuts or logic_fire_boss_door_jump or Hover_Boots)"
+        }
+    },
+    {
+        "region_name": "Fire Temple Before Boss",
+        "dungeon": "Fire Temple",
+        "savewarp": "DMC Fire Temple Entrance -> Fire Temple Lower",
+        "exits": {
+            "Volvagia Boss Room": "Boss_Key_Fire_Temple"
         }
     },
     {
@@ -144,7 +151,7 @@
             "Fire Temple Flame Maze Right Side Pot 4": "True"
         },
         "exits": {
-            "Fire Temple Boss Door": "
+            "Fire Temple Before Boss": "
                 Megaton_Hammer and (can_play(Song_of_Time) or has_explosives)"
         }
     }

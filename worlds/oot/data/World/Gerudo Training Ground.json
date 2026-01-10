@@ -20,26 +20,66 @@
         },
         "exits": {
             "Gerudo Fortress": "True",
-            "Gerudo Training Ground Lava Room": "
+            "Gerudo Training Ground Lava Room Front": "
                 here(has_explosives and (is_adult or Kokiri_Sword))",
             "Gerudo Training Ground Central Maze Right": "(Small_Key_Gerudo_Training_Ground, 9)",
-            "Gerudo Training Ground Heavy Block Room": "
-                (is_adult or Kokiri_Sword) and
-                (can_use(Hookshot) or logic_gtg_without_hookshot)"
+            "Gerudo Training Ground Boulder Room": "is_adult or Kokiri_Sword",
+            "Farores Wind Warp": "can_use(Farores_Wind)"
         }
     },
     {
-        "region_name": "Gerudo Training Ground Lava Room",
+        "region_name": "Gerudo Training Ground Lava Room Front",
+        "dungeon": "Gerudo Training Ground",
+        "locations": {
+            "Gerudo Training Ground Lava Room Silver Rupee Front Left": "True",
+            "Gerudo Training Ground Lava Room Silver Rupee Front Right": "True",
+            "Gerudo Training Ground Lava Room Silver Rupee Flame Circle": "
+                is_child or can_play(Song_of_Time) or Hover_Boots"
+        },
+        "exits": {
+            "Gerudo Training Ground Central Maze Right": "is_child or can_play(Song_of_Time)",
+            "Gerudo Training Ground Lava Room Back": "can_use(Hover_Boots)",
+            "Gerudo Training Ground Hammer Room": "can_use(Longshot)",
+            "Gerudo Training Ground Water Room": "(Silver_Rupee_Gerudo_Training_Ground_Lava, 5)"
+        }
+    },
+    {
+        "region_name": "Gerudo Training Ground Lava Room Back",
+        "dungeon": "Gerudo Training Ground",
+        "locations": {
+            "Gerudo Training Ground Lava Room Silver Rupee Center Right": "True"
+        },
+        "exits": {
+            "Gerudo Training Ground Central Maze Right": "can_play(Song_of_Time)",
+            "Gerudo Training Ground Lava Room Front": "can_use(Hover_Boots) or can_use(Hookshot)",
+            "Gerudo Training Ground Hammer Room": "can_use(Hookshot)"
+        }
+    },
+    {
+        "region_name": "Gerudo Training Ground Water Room",
         "dungeon": "Gerudo Training Ground",
         "locations": {
             "Gerudo Training Ground Underwater Silver Rupee Chest": "
-                is_adult and Hookshot and can_play(Song_of_Time) and
-                Iron_Boots and (logic_fewer_tunic_requirements or Zora_Tunic)"
+                (Silver_Rupee_Gerudo_Training_Ground_Water, 5)",
+            "Gerudo Training Ground Underwater Silver Rupee Top": "
+                can_play(Song_of_Time) and
+                (can_use(Iron_Boots) or (logic_gtg_underwater_highest and (Progressive_Scale, 2))) and
+                (logic_fewer_tunic_requirements or can_use(Zora_Tunic))"
         },
         "exits": {
-            "Gerudo Training Ground Central Maze Right": "can_play(Song_of_Time) or is_child",
-            "Gerudo Training Ground Hammer Room": "
-                is_adult and (Longshot or (Hookshot and Hover_Boots))"
+            "Gerudo Training Ground Underwater": "
+                can_play(Song_of_Time) and can_use(Iron_Boots) and
+                (logic_fewer_tunic_requirements or can_use(Zora_Tunic))"
+        }
+    },
+    {
+        "region_name": "Gerudo Training Ground Underwater",
+        "dungeon": "Gerudo Training Ground",
+        "locations": {
+            "Gerudo Training Ground Underwater Silver Rupee Bottom Center": "True",
+            "Gerudo Training Ground Underwater Silver Rupee Bottom Back Left": "True",
+            "Gerudo Training Ground Underwater Silver Rupee Middle": "True",
+            "Gerudo Training Ground Underwater Silver Rupee Bottom Front Right": "True"
         }
     },
     {
@@ -51,8 +91,25 @@
             "Gerudo Training Ground Freestanding Key": "True"
         },
         "exits": {
-            "Gerudo Training Ground Lava Room": "True",
-            "Gerudo Training Ground Hammer Room": "can_use(Hookshot)"
+            "Gerudo Training Ground Lava Room Front": "True",
+            "Gerudo Training Ground Lava Room Back": "True"
+        }
+    },
+    {
+        "region_name": "Gerudo Training Ground Boulder Room",
+        "dungeon": "Gerudo Training Ground",
+        "locations": {
+            "Gerudo Training Ground Boulder Room Silver Rupee Bottom Right": "True",
+            "Gerudo Training Ground Boulder Room Silver Rupee Bottom Left": "True",
+            "Gerudo Training Ground Boulder Room Silver Rupee Ledge": "True",
+            "Gerudo Training Ground Boulder Room Silver Rupee Top Left": "True",
+            "Gerudo Training Ground Boulder Room Silver Rupee Ceiling": "
+                can_use(Hookshot) or logic_gtg_without_hookshot"
+        },
+        "exits": {
+            "Gerudo Training Ground Heavy Block Room": "
+                (Silver_Rupee_Gerudo_Training_Ground_Slopes, 5) and
+                (can_use(Hookshot) or logic_gtg_flame_wall)"
         }
     },
     {
@@ -103,10 +160,11 @@
         "dungeon": "Gerudo Training Ground",
         "locations": {
             "Gerudo Training Ground Hammer Room Clear Chest": "True",
-            "Gerudo Training Ground Hammer Room Switch Chest": "Megaton_Hammer"
+            "Gerudo Training Ground Hammer Room Switch Chest": "Megaton_Hammer",
+            "Gerudo Training Ground Lava Room Silver Rupee Hookshot Target": "Hookshot"
         },
         "exits": {
-            "Gerudo Training Ground Lava Room": "True",
+            "Gerudo Training Ground Lava Room Back": "True",
             "Gerudo Training Ground Eye Statue Lower": "Megaton_Hammer and Bow"
         }
     }
