@@ -423,6 +423,7 @@ def lobby_upload_yaml(lobby: UUID):
     from worlds.AutoWorld import AutoWorldRegister
     standard_options: dict[str, bytes] = {}
     custom_info: dict[str, tuple[str, str]] = {}  # filename -> (player_name, game)
+    upgrade_info: dict[str, tuple[str, str]] = {}  # filename -> (player_name, game) for version upgrades
     requires_versions: dict[str, str | None] = {}  # filename -> requires_game_version JSON
     for filename, content in options.items():
         player_name, game, requires_version = _extract_game_info(content)
@@ -445,8 +446,7 @@ def lobby_upload_yaml(lobby: UUID):
             direction = _version_mismatch_direction(requires_version, server_wv)
 
             if direction == "newer":
-                # YAML needs a newer world than the server has — accept as standard but warn.
-                # If custom APWorlds are enabled, the player gets an optional upgrade button.
+                # YAML needs a newer world than the server has
                 if not lobby.allow_custom_apworlds:
                     req_label = _required_version_label(requires_version)
                     return jsonify({
@@ -454,7 +454,12 @@ def lobby_upload_yaml(lobby: UUID):
                                  f"v{server_wv.as_simple_string()}. The lobby owner must enable "
                                  f"custom APWorlds so you can upload the matching world."
                     }), 400
-                standard_options[filename] = content
+                # Custom APWorlds enabled: skip validation to avoid the version exception.
+                # Store in upgrade_info so it can be saved without validation.
+                # The upgrade prompt will be shown by the status endpoint.
+                if not player_name:
+                    return jsonify({"error": f"Could not find player name in '{filename}'"}), 400
+                upgrade_info[filename] = (player_name, game)
 
             elif direction == "older":
                 # YAML was built for an older world than the server has — accept it either way,
@@ -491,6 +496,12 @@ def lobby_upload_yaml(lobby: UUID):
         new_names[filename] = player_name
         new_games[filename] = game
         new_custom[filename] = True
+        new_requires[filename] = requires_versions.get(filename)
+
+    for filename, (player_name, game) in upgrade_info.items():
+        new_names[filename] = player_name
+        new_games[filename] = game
+        new_custom[filename] = False  # Not truly custom, just needs version upgrade
         new_requires[filename] = requires_versions.get(filename)
 
     # Check for duplicates within the uploaded batch
