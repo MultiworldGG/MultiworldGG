@@ -1225,13 +1225,15 @@ def collect_hints(ctx: Context, team: int, slot: int, item: typing.Union[int, st
 
 
 def collect_hint_location_name(ctx: Context, team: int, slot: int, location: str,
-                               status: HintStatus | None = HintStatus.HINT_UNSPECIFIED) -> typing.List[Hint]:
+                               status: HintStatus | None = HintStatus.HINT_UNSPECIFIED,
+                               allow_hidden: bool = True) -> typing.List[Hint]:
     """
     Collect a new hint for a given location name, with a given status (defaults to "unspecified").
     If None is passed for the status, then an automatic status will be determined from the item's quality.
+    If allow_hidden is False, the hint will always be fully visible.
     """
     seeked_location: int = ctx.location_names_for_game(ctx.games[slot])[location]
-    return collect_hint_location_id(ctx, team, slot, seeked_location, status)
+    return collect_hint_location_id(ctx, team, slot, seeked_location, status, allow_hidden)
 
 
 def collect_hint_location_id(ctx: Context, team: int, slot: int, seeked_location: int,
@@ -1278,13 +1280,20 @@ status_names: typing.Dict[HintStatus, str] = {
 }
 def format_hint(ctx: Context, team: int, hint: Hint) -> str:
     text = f"[Hint]: {ctx.player_names[team, hint.receiving_player]}'s " \
-           f"{ctx.item_names[ctx.slot_info[hint.receiving_player].game][hint.item]} is " \
-           f"at {ctx.location_names[ctx.slot_info[hint.finding_player].game][hint.location]} " \
-           f"in {ctx.player_names[team, hint.finding_player]}'s World"
+           f"{ctx.item_names[ctx.slot_info[hint.receiving_player].game][hint.item]} "
 
-    if hint.entrance:
-        text += f" at {hint.entrance}"
-    
+    if hint.hidden:
+        text += "is in "
+        if hint.receiving_player == hint.finding_player:
+            text += f"{ctx.player_names[team, hint.receiving_player]}'s own World"
+        else:
+            text += f"{ctx.player_names[team, hint.finding_player]}'s World"
+    else:
+        text += f"is at {ctx.location_names[ctx.slot_info[hint.finding_player].game][hint.location]} " \
+                f"in {ctx.player_names[team, hint.finding_player]}'s World"
+        if hint.entrance:
+            text += f" at {hint.entrance}"
+
     return text + ". " + status_names.get(hint.status, "(unknown)")
 
 
@@ -1731,7 +1740,8 @@ class ClientMessageProcessor(CommonCommandProcessor):
             elif not for_location:
                 hints = collect_hints(self.ctx, self.client.team, self.client.slot, hint_id)
             else:
-                hints = collect_hint_location_id(self.ctx, self.client.team, self.client.slot, hint_id)
+                hints = collect_hint_location_id(self.ctx, self.client.team, self.client.slot, hint_id,
+                                                 allow_hidden=False)
 
         else:
             game = self.ctx.games[self.client.slot]
@@ -1759,10 +1769,12 @@ class ClientMessageProcessor(CommonCommandProcessor):
                     for loc_name in self.ctx.location_name_groups[game][hint_name]:
                         if loc_name in self.ctx.location_names_for_game(game):
                             hints.extend(
-                                collect_hint_location_name(self.ctx, self.client.team, self.client.slot, loc_name)
+                                collect_hint_location_name(self.ctx, self.client.team, self.client.slot, loc_name,
+                                                          allow_hidden=False)
                             )
                 else:  # location name
-                    hints = collect_hint_location_name(self.ctx, self.client.team, self.client.slot, hint_name)
+                    hints = collect_hint_location_name(self.ctx, self.client.team, self.client.slot, hint_name,
+                                                       allow_hidden=False)
 
             else:
                 self.output(response)
@@ -2518,14 +2530,15 @@ class ServerCommandProcessor(CommonCommandProcessor):
 
             if usable:
                 if isinstance(location, int):
-                    hints = collect_hint_location_id(self.ctx, team, slot, location)
+                    hints = collect_hint_location_id(self.ctx, team, slot, location, allow_hidden=False)
                 elif game in self.ctx.location_name_groups and location in self.ctx.location_name_groups[game]:
                     hints = []
                     for loc_name_from_group in self.ctx.location_name_groups[game][location]:
                         if loc_name_from_group in self.ctx.location_names_for_game(game):
-                            hints.extend(collect_hint_location_name(self.ctx, team, slot, loc_name_from_group))
+                            hints.extend(collect_hint_location_name(self.ctx, team, slot, loc_name_from_group,
+                                                                   allow_hidden=False))
                 else:
-                    hints = collect_hint_location_name(self.ctx, team, slot, location)
+                    hints = collect_hint_location_name(self.ctx, team, slot, location, allow_hidden=False)
                 if hints:
                     self.ctx.notify_hints(team, hints)
                 else:
