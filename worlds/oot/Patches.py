@@ -2481,10 +2481,10 @@ def add_to_extended_object_table(rom, object_id, object_file_or_start, object_en
     rom.write_int32s(extended_object_table + extended_id * 8, [object_start, object_end])
 
 
-item_row_struct = struct.Struct('>BBHHBBIIhhBxxx') # Match item_row_t in item_table.h
+item_row_struct = struct.Struct('>BBHHBBIIhhBxxxI') # Match item_row_t in item_table.h
 item_row_fields = [
     'base_item_id', 'action_id', 'text_id', 'object_id', 'graphic_id', 'chest_type',
-    'upgrade_fn', 'effect_fn', 'effect_arg1', 'effect_arg2', 'collectible'
+    'upgrade_fn', 'effect_fn', 'effect_arg1', 'effect_arg2', 'collectible', 'alt_text_fn'
 ]
 
 
