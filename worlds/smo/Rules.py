@@ -55,7 +55,7 @@ def set_rules(self, options : SMOOptions) -> None:
 
 
     # Outfit Moons
-    if self.options.goal > 5:
+    if self.options.goal > self.options.goal.option_lake:
         set_rule(self.multiworld.get_location("Mechanic Cap", self.player),
                  lambda state: state.has("Mechanic Cap", self.player) or
                 (count_moons(self, state, "Lake", self.player) >= self.moon_counts["lake"] and
@@ -73,7 +73,7 @@ def set_rules(self, options : SMOOptions) -> None:
                 (count_moons(self, state, "Lake", self.player) >= self.moon_counts["lake"] and
                 count_moons(self, state, "Wooded", self.player) >= self.moon_counts["wooded"]))
 
-    if self.options.goal > 9:
+    if self.options.goal > self.options.goal.option_metro:
         set_rule(self.multiworld.get_location("Pirate Hat", self.player),
              lambda state: state.has("Pirate Hat", self.player) or
             (count_moons(self, state, "Seaside", self.player) >= self.moon_counts["seaside"] and
@@ -96,7 +96,7 @@ def set_rules(self, options : SMOOptions) -> None:
         #         count_moons(self, state, "", self.player)))
 
 
-    if self.options.goal > 14:
+    if self.options.goal > self.options.goal.option_moon:
         set_rule(self.multiworld.get_location("Cascade Kingdom - Caveman Cave-Fan", self.player),
                  lambda state: state.has("Caveman Headwear", self.player) and state.has("Caveman Outfit", self.player))
         set_rule(self.multiworld.get_location("Lake Kingdom - That Trendy “Pirate” Look", self.player),
@@ -120,7 +120,7 @@ def set_rules(self, options : SMOOptions) -> None:
 
     # if options.goal > 15 or (options.shops != 0 and options.shops != 3):
     set_rule(self.multiworld.get_location("Sand Kingdom - Dancing with New Friends", self.player), lambda state: (state.has("Sombrero", self.player) and state.has("Poncho", self.player)) or state.has("Skeleton Suit", self.player))
-    if self.options.goal > 5:
+    if self.options.goal > self.options.goal.option_lake:
         set_rule(self.multiworld.get_location("Lake Kingdom - I Feel Underdressed", self.player), lambda state: (state.has(
             "Swim Goggles", self.player) and state.has("Swimwear", self.player)) or state.has("Boxer Shorts",
                                                                                                       self.player))
@@ -128,7 +128,7 @@ def set_rules(self, options : SMOOptions) -> None:
                  lambda state: state.has("Explorer Hat", self.player) and state.has("Explorer Outfit", self.player))
 
 
-    if self.options.goal > 9:
+    if self.options.goal > self.options.goal.option_metro:
         set_rule(self.multiworld.get_location("Metro Kingdom - Rewiring the Neighborhood", self.player),
                  lambda state: state.has("Builder Helmet", self.player) and state.has("Builder Outfit", self.player))
         set_rule(self.multiworld.get_location("Seaside Kingdom - A Relaxing Dance", self.player),
@@ -140,27 +140,27 @@ def set_rules(self, options : SMOOptions) -> None:
         set_rule(self.multiworld.get_location("Snow Kingdom - I'm Not Cold!", self.player),
                  lambda state: state.has("Boxer Shorts", self.player))
 
-    if self.options.goal > 12:
+    if self.options.goal > self.options.goal.option_metro:
         set_rule(self.multiworld.get_location("Luncheon Kingdom - A Strong Simmer", self.player),
                  lambda state: state.has("Chef Hat", self.player) and state.has("Chef Suit", self.player))
         set_rule(self.multiworld.get_location("Luncheon Kingdom - An Extreme Simmer", self.player),
                  lambda state: state.has("Chef Hat", self.player) and state.has("Chef Suit", self.player))
 
-    if self.options.goal > 14:
+    if self.options.goal > self.options.goal.option_luncheon:
         set_rule(self.multiworld.get_location("Bowser Kingdom - Scene of Crossing the Poison Swamp", self.player),
                  lambda state: state.has("Samurai Helmet", self.player) and state.has("Samurai Armor", self.player))
         set_rule(self.multiworld.get_location("Bowser Kingdom - Taking Notes: In the Folding Screen", self.player),
                  lambda state: state.has("Samurai Helmet", self.player) and state.has("Samurai Armor", self.player))
 
     # Post Game Outfits
-    if self.options.goal > 14:
+    if self.options.goal > self.options.goal.option_moon:
         for outfit in self.outfit_moon_counts.keys():
-            if self.options.goal == 16:
+            if self.options.goal > self.options.goal.option_dark:
                 if self.outfit_moon_counts[outfit] < self.moon_counts["dark"]:
                     set_rule(self.multiworld.get_location(outfit, self.player),
                          lambda state: total_moons(self, state, self.player) >= self.outfit_moon_counts[
                              outfit] or state.has(outfit, self.player))
-            elif self.options.goal == 17:
+            elif self.options.goal > self.options.goal.option_darker:
                 if self.outfit_moon_counts[outfit] < self.moon_counts["darker"]:
                     set_rule(self.multiworld.get_location(outfit, self.player),
                              lambda state: total_moons(self, state, self.player) >= self.outfit_moon_counts[
@@ -279,21 +279,21 @@ def set_rules(self, options : SMOOptions) -> None:
         set_rule(self.multiworld.get_location("Sand Kingdom - The Hole in the Desert", self.player),
                  lambda state: state.has("Bullet Bill", self.player) and state.has("Knucklotec's Fist", self.player))
 
-        if self.options.goal > 4:
+        if self.options.goal > self.options.goal.option_lake:
             # Wooded Story
             set_rule(self.multiworld.get_location("Wooded Kingdom - Path to the Secret Flower Field", self.player),
                      lambda state: state.has("Sherm", self.player))
             set_rule(self.multiworld.get_location("Wooded Kingdom - Defend the Secret Flower Field!", self.player),
                      lambda state: state.has("Uproot", self.player) and state.has("Sherm", self.player))
 
-        if self.options.goal > 5:
+        if self.options.goal > self.options.goal.option_lake:
             # Metro Story
             set_rule(self.multiworld.get_location("Metro Kingdom - New Donk City's Pest Problem", self.player),
                      lambda state: state.has("Sherm", self.player))
             set_rule(self.multiworld.get_location("Metro Kingdom - Powering Up the Station", self.player),
                      lambda state: state.has("Manhole", self.player))
 
-        if self.options.goal > 9:
+        if self.options.goal > self.options.goal.option_metro:
             # Seaside Story
             set_rule(self.multiworld.get_location("Seaside Kingdom - The Hot Spring Seal", self.player),
                      lambda state: state.has("Gushen", self.player))
@@ -312,7 +312,7 @@ def set_rules(self, options : SMOOptions) -> None:
             set_rule(self.multiworld.get_location("Luncheon Kingdom - Cookatiel Showdown!", self.player),
                      lambda state: state.has("Lava Bubble", self.player))
 
-        if self.options.goal > 12:
+        if self.options.goal > self.options.goal.option_luncheon:
             # Ruined Story
             set_rule(self.multiworld.get_location("Ruined Kingdom - Battle with the Lord of Lightning!", self.player),
                      lambda state: state.has("Spark Pylon", self.player))
@@ -351,8 +351,7 @@ def set_rules(self, options : SMOOptions) -> None:
         set_rule(self.multiworld.get_location("Cascade Kingdom - Very Nice Shot with the Chain Chomp!", self.player),
                  lambda state: state.has("Chain Chomp", self.player))
         set_rule(self.multiworld.get_location("Cascade Kingdom - Behind the Waterfall", self.player),
-                 lambda state: state.has("Big Chain Chomp", self.player) or state.has("T-Rex", self.player)
-                               or state.has("Broode's Chain Chomp", self.player))
+                 lambda state: state.has("Big Chain Chomp", self.player) or state.has("T-Rex", self.player))
 
         # Sand
         set_rule(self.multiworld.get_location("Sand Kingdom - Wandering Cactus", self.player),
@@ -376,7 +375,7 @@ def set_rules(self, options : SMOOptions) -> None:
         set_rule(self.multiworld.get_location("Inverted Pyramid Model", self.player),
                  lambda state: state.has("Mini Rocket", self.player) and state.has("Bullet Bill", self.player) and state.has("Knucklotec's Fist", self.player))
 
-        if self.options.goal > 4:
+        if self.options.goal > self.options.goal.option_lake:
             # Wooded
             set_rule(self.multiworld.get_location("Wooded Kingdom - By the Babbling Brook in the Deep Woods", self.player),
                      lambda state: state.has("Coin Coffer", self.player) or state.has("T-Rex", self.player))
@@ -421,7 +420,7 @@ def set_rules(self, options : SMOOptions) -> None:
                      lambda state: state.has("Zipper", self.player))
 
 
-        if self.options.goal > 5:
+        if self.options.goal > self.options.goal.option_lake:
             # Cloud
             set_rule(self.multiworld.get_location("Cloud Kingdom - Picture Match: Basically a Goomba", self.player),
                      lambda state: state.has("Picture Match Part (Goomba)", self.player))
@@ -459,7 +458,7 @@ def set_rules(self, options : SMOOptions) -> None:
             set_rule(self.multiworld.get_location("Pauline Statue", self.player),
                      lambda state: state.has("Manhole", self.player) and state.has("Mini Rocket", self.player))
 
-        if self.options.goal > 9:
+        if self.options.goal > self.options.goal.option_metro:
             # Seaside
             set_rule(self.multiworld.get_location("Seaside Kingdom - Love by the Seaside", self.player),
                      lambda state: state.has("Goomba", self.player))
@@ -529,7 +528,7 @@ def set_rules(self, options : SMOOptions) -> None:
             set_rule(self.multiworld.get_location("Luncheon Kingdom - Fork Flickin' Detour", self.player),
                      lambda state: state.has("Volbonan", self.player))
 
-        if self.options.goal > 12:
+        if self.options.goal > self.options.goal.option_luncheon:
             # Bowser
             set_rule(self.multiworld.get_location("Bowser Kingdom - Stack up above the wall", self.player),
                      lambda state: state.has("Goomba", self.player))
@@ -553,7 +552,7 @@ def set_rules(self, options : SMOOptions) -> None:
                      lambda state: state.has("Spark Pylon", self.player))
 
             # Moon
-            #if self.options.goal > 14:
+            #if self.options.goal > self.options.goal.option_moon:
             set_rule(self.multiworld.get_location("Moon Kingdom - Under the Bowser Statue", self.player),
                     lambda state: state.has("Bowser statue", self.player))
             set_rule(self.multiworld.get_location("Moon Kingdom - In a Hole in the Magma", self.player),
@@ -567,5 +566,5 @@ def set_rules(self, options : SMOOptions) -> None:
 # for debugging purposes, you may want to visualize the layout of your world. Uncomment the following code to
 # write a PlantUML diagram to the file "my_world.puml" that can help you see whether your regions and locations
 # are connected and placed as desired
-#    from Utils import visualize_regions
-#    visualize_regions(self.multiworld.get_region("Menu", self.player), "my_world.puml")
+#     from Utils import visualize_regions
+#     visualize_regions(self.multiworld.get_region("Menu", self.player), "my_world.puml")

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from Options import Choice, OptionGroup, Range, Toggle, PerGameCommonOptions, StartInventoryPool
+from Options import Choice, OptionGroup, OptionSet, Range, Toggle, PerGameCommonOptions, StartInventoryPool
 
 class WordChecks(Range):
     """How many words you have to get right to hit you goal"""
@@ -72,6 +72,19 @@ class YellowUnlocked(Toggle):
     """Whether you start with yellow letters unlocked at the start of the game."""
     display_name = "Yellow Unlocked"
 
+class EarlyYellow(Toggle):
+    """Whether Yellow Letters is pushed to early locations."""
+    display_name = "Early Yellow"
+    
+class GrassSanity(Toggle):
+    """Adds a check for spelling the word 'Grass'."""
+    display_name = "Grasssanity"
+    
+class KeyWords(OptionSet):
+    """Adds checks for spelling specified words. (max 20)"""
+    display_name = "Key Words"
+    default = []
+
 class UnusedLettersUnlocked(Toggle):
     """Whether you start with keyboard letters fading out when discovered not to be in the current word."""
     display_name = "Unused Letters Unlocked"   
@@ -82,22 +95,40 @@ class LogicDifficulty(Choice):
     normal: easier to get checks, but still restrictive in some ways.
     hard: bare minimum required to achive checks."""
     display_name = "Logic Difficulty"
-    option_easy = 0
-    option_normal = 1
-    option_hard = 2
-    default = 1
+    option_very_easy = 1
+    option_easy = 2
+    option_normal = 3
+    option_hard = 4
+    option_very_hard = 5
+    default = 3
+    
+    
+class PointShopLogicLevel(Choice):
+    """When logic expects you to be able to buy shop items.
+    one: Matches 1x green letter logic, point generation expected to be very low.
+    two: Matches 2x green letter logic.
+    three: Matches 3x green letter logic, default level, reasonable level of point generation.
+    four: Matches 4x green letter logic.
+    five: Matches 5x green letter logic, point generation expected to be much higher."""
+    display_name = "Point Shop Logic Level"
+    option_one = 1
+    option_two = 2
+    option_three = 3
+    option_four = 4
+    option_five = 5
+    default = 3
     
 class WordWeighting(Range): 
     """How likely new words fit with the letters you have unlocked."""
     display_name = "Word Weighting"
-    range_start = 0
+    range_start = 1
     default = 3
     range_end = 10
     
 class MinimumPointShopChecks(Range):
     """How many items are present in the point shop."""
     display_name = "Point Shop Checks"
-    range_start = 1
+    range_start = 10
     default = 10
     range_end = 50
     
@@ -117,7 +148,7 @@ class GreenChecks(Choice):
     composition: checks for every configuration of green letters.
     complete: Best and composition combined."""
     display_name = "Green Checks"
-    option_none = 0
+    # option_none = 0
     option_best = 1
     option_composition = 2
     option_complete = 3
@@ -139,7 +170,7 @@ class LetterChecks(Choice):
     common: Checks for using vowels and common consonants.
     all: Checks for using all letters."""
     display_name = "Letter Checks"
-    option_none = 0
+    # option_none = 0
     option_vowels = 1
     option_common = 2
     option_all = 3
@@ -180,25 +211,21 @@ class ShopPointsItemSize(Range):
     range_start = 0
     range_end = 1000
     default = 100
-    
-class ShopPointsItemDefaultFiller(Toggle):
-    """Whether the default filler item is point shop points, extra fillers are Suggestions otherwise."""
-    display_name = "Shop Points as Default Filler"
-   
+
 class BadGuessTrapPercent(Range):
     """What percentage of filler items will be replaced with Bad Guess traps."""
     display_name = "Bad Guess Trap Reward Percent"
     range_start = 0
     range_end = 100
     default = 0
-    
+
 class RandomGuessTrapPercent(Range):
     """What percentage of filler items will be replaced with Random Guess traps."""
     display_name = "Random Guess Trap Reward Percent"
     range_start = 0
     range_end = 100
     default = 10
-    
+
 class ExtraCooldownTrapPercent(Range):
     """What percentage of filler items will be replaced with Extra Cooldown traps."""
     display_name = "Extra Cooldown Trap Percent"
@@ -221,11 +248,13 @@ class WordipelagoOptions(PerGameCommonOptions):
     additional_guesses: AdditionalGuesses
     starting_cooldown: StartingCooldown
     yellow_unlocked: YellowUnlocked
+    early_yellow: EarlyYellow
     unused_letters_unlocked: UnusedLettersUnlocked
     shuffle_typing: ShuffleTyping
     
     # difficulty
     logic_difficulty: LogicDifficulty
+    point_shop_logic_level: PointShopLogicLevel
     word_weighting: WordWeighting
     
     # Win Conditions
@@ -239,6 +268,8 @@ class WordipelagoOptions(PerGameCommonOptions):
     green_checks: GreenChecks
     yellow_checks: YellowChecks
     letter_checks: LetterChecks
+    grass_sanity: GrassSanity
+    key_words: KeyWords
     
     # Items
     time_reward_count: TimeRewardCount
@@ -246,7 +277,6 @@ class WordipelagoOptions(PerGameCommonOptions):
     extra_time_reward_percent: ExtraTimeRewardPercent
     shop_points_item_reward_percent: ShopPointsItemRewardPercent
     shop_points_item_size: ShopPointsItemSize
-    shop_points_item_default_filler: ShopPointsItemDefaultFiller
     
     #Traps
     bad_guess_trap_percent: BadGuessTrapPercent
@@ -263,6 +293,7 @@ option_groups = [
         AdditionalGuesses,
         StartingCooldown,
         YellowUnlocked,
+        EarlyYellow,
         UnusedLettersUnlocked,
         ShuffleTyping
     ]),
@@ -273,6 +304,7 @@ option_groups = [
     ]),
     OptionGroup("Difficulty", [
         LogicDifficulty,
+        PointShopLogicLevel,
         WordWeighting
     ]),
     OptionGroup("Locations", [
@@ -280,7 +312,9 @@ option_groups = [
         PointShopCheckPrice,
         GreenChecks,
         YellowChecks,
-        LetterChecks
+        LetterChecks,
+        GrassSanity,
+        KeyWords
     ]),
     OptionGroup("Items", [
         TimeRewardCount,
@@ -288,7 +322,6 @@ option_groups = [
         ExtraTimeRewardPercent,
         ShopPointsItemRewardPercent,
         ShopPointsItemSize,
-        ShopPointsItemDefaultFiller
     ]),
     OptionGroup("Traps", [
         BadGuessTrapPercent,

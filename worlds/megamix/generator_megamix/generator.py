@@ -2,6 +2,7 @@ import os
 import pkgutil
 import re
 from pathlib import Path
+from textwrap import dedent
 
 from kvui import ThemedApp, ScrollBox, MDTextField, MDBoxLayout, MDLabel
 from kivy.core.clipboard import Clipboard
@@ -39,25 +40,41 @@ class DivaJSONGenerator(ThemedApp):
     filter_input: MDTextField = ObjectProperty(None)
 
     mods_folder = game_paths().get("mods")
-    self_mod_name = "ArchipelagoMod" # Hardcoded. Fetch from Client or something.
+    self_mod_name = game_paths().get("modname")
     labels = []
+
+    def find_db_folder(self, dbs: set[str]) -> list:
+        found = []
+
+        for root, _, files in os.walk(self.mods_folder):
+            if not any(f in dbs for f in files):
+                continue
+
+            folder_name = str(Path(root).parent.relative_to(Path(self.mods_folder)))
+            if self.self_mod_name and folder_name.startswith(self.self_mod_name):
+                continue
+
+            found.append((root, folder_name))
+
+        return sorted(found)
 
     def create_pack_list(self):
         self.labels = []
         self.pack_list_scroll.layout.clear_widgets()
-        mods_folder = Path(self.mods_folder)
 
-        for root, _, files in os.walk(self.mods_folder):
-            if not 'mod_pv_db.txt' in files:
-                continue
-
-            folder_name = str(Path(root).parent.relative_to(mods_folder))
-
-            if folder_name.startswith(self.self_mod_name):
-                continue
-
+        for _, folder_name in self.find_db_folder({'mod_pv_db.txt', 'mod_nc_pv_db.txt'}):
             self.pack_list_scroll.layout.add_widget(self.create_pack_line(folder_name))
 
+    def find_nc_db_ids(self):
+        nc_db_ids = set()
+
+        for pack, _ in self.find_db_folder({'nc_db.toml'}):
+            with open(os.path.join(pack, 'nc_db.toml'), 'r') as nc_db:
+                # The power of not vendoring TOML
+                nc_ids = [int(i) for i in re.findall("^id\s*=\s*(\d+)$", nc_db.read(), re.MULTILINE)]
+                nc_db_ids.update(nc_ids)
+
+        print(sorted(nc_db_ids))
 
     def create_pack_line(self, name: str):
         box = MDBoxLayoutHover()
@@ -117,7 +134,7 @@ class DivaJSONGenerator(ThemedApp):
 
     def process_to_clipboard(self):
         checked_packs = [str(os.path.join(self.mods_folder, label.text)) for label in self.labels if label.associate.active]
-        mod_pv_db_paths_list = [os.path.join(folder_path, "rom", "mod_pv_db.txt") for folder_path in checked_packs]
+        mod_pv_db_paths_list = [folder_path for folder_path in checked_packs]
 
         if not mod_pv_db_paths_list:
             self.show_snackbar("No song packs selected")
@@ -130,7 +147,12 @@ class DivaJSONGenerator(ThemedApp):
 
             dialog_conflict = Factory.DialogGeneric()
             dialog_conflict.title = "Conflicting IDs prevent generating"
-            dialog_conflict.desc = "This is common for packs that target the base game or add covers.\nThis is not for use in the YAML.\n"
+            dialog_conflict.desc = dedent("""\
+                                        [b]This is not for use in the YAML.[/b]
+                                        
+                                        This is common for packs that target the base game or add covers.
+                                        Listed below are conflicting packs and IDs. Uncheck some or all of them.
+                                        """)
             dialog_conflict.field = str(e)
             dialog_conflict.open()
 
@@ -175,7 +197,7 @@ class DivaJSONGenerator(ThemedApp):
             file.write(content + "\n")
 
     def process_restore_originals(self):
-        mod_pv_dbs = [f"{self.mods_folder}/{pack}/rom/mod_pv_db.txt" for pack in [label.text for label in self.labels] + [self.self_mod_name]]
+        mod_pv_dbs = [f"{self.mods_folder}/{pack}/rom/mod_pv_db.txt" for pack in [label.text for label in self.labels]]
         try:
             restore_originals(mod_pv_dbs)
             self.show_snackbar("Song packs restored")

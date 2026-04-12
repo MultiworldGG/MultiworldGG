@@ -1568,7 +1568,9 @@
     "expansion": "IronRig",
     "can_catch": [
       "Coastal",
-      "Shallow"
+      "Shallow",
+      "Infused Coastal",
+      "Infused Shallow"
     ],
     "size": 3
   },
@@ -1580,7 +1582,10 @@
     "can_catch": [
       "Coastal",
       "Shallow",
-      "Oceanic"
+      "Oceanic",
+      "Infused Coastal",
+      "Infused Shallow",
+      "Infused Oceanic"
     ],
     "size": 4
   },
@@ -1592,7 +1597,10 @@
     "can_catch": [
       "Oceanic",
       "Abyssal",
-      "Hadal"
+      "Hadal",
+      "Infused Oceanic",
+      "Infused Abyssal",
+      "Infused Hadal"
     ],
     "size": 4
   },
@@ -1603,7 +1611,9 @@
     "expansion": "IronRig",
     "can_catch": [
       "Mangrove",
-      "Coastal"
+      "Coastal",
+      "Infused Mangrove",
+      "Infused Coastal"
     ],
     "size": 3
   },
@@ -1614,7 +1624,9 @@
     "expansion": "IronRig",
     "can_catch": [
       "Volcanic",
-      "Shallow"
+      "Shallow",
+      "Infused Volcanic",
+      "Infused Shallow"
     ],
     "size": 3
   },
@@ -1745,7 +1757,6 @@
     "item_group": "Crab Pot",
     "expansion": "IronRig",
     "can_catch": [
-      "Crab"
     ],
     "size": 4
   },
@@ -2243,5 +2254,107 @@
     "classification": "progression",
     "item_group": "Boat Upgrade",
     "expansion": "PaleReach"
-  }
+  },
+  "Flexible Fishing Pole Researched":{
+	"base_id_offset": 338 ,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Heat-Resistant Line Researched":{
+	"base_id_offset": 339,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Anti-Tangle Line Researched":{
+	"base_id_offset": 340,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Versatile Rod Researched":{
+	"base_id_offset": 341,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Hydraulic Rod Researched":{
+	"base_id_offset": 342,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Bottomless Lines Researched":{
+	"base_id_offset": 343,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Improved Outboard Engine Researched":{
+	"base_id_offset": 344,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Twin Prop Engine Researched":{
+	"base_id_offset": 345,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Refined Outboard Engine Researched":{
+	"base_id_offset": 346,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Twin Jet Drive Engine Researched":{
+	"base_id_offset": 347,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Efficient Crab Pot Researched":{
+	"base_id_offset": 348,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Hardy Crab Pot Researched":{
+	"base_id_offset": 349,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Large Crab Pot Researched":{
+	"base_id_offset": 350,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Complex Crab Pot Researched":{
+	"base_id_offset": 351,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Massive Crab Pot Researched":{
+	"base_id_offset": 352,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Improved Trawl Net Researched":{
+	"base_id_offset": 353,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "Large Trawl Net Researched":{
+	"base_id_offset": 354,
+	"classification": "progression",
+	"item_group": "Research",
+	"expansion": "Base"
+ }
 }

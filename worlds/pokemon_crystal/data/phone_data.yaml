@@ -650,7 +650,7 @@ call_your_mother:
       advice…
     - |
       Brush your teeth,
-      be kind to to one
+      be kind to one
       another
     - |
       Take 10 minutes to
@@ -1352,41 +1352,52 @@ sphere1:
       recent studies
       showed that about
     - |
-      TEN PERCENT of 
+      TEN PERCENT of
       SPHERE 1 checks
       aren't collected
     - |
       within 3 hours?
+    - |
       What? You don't
       know what SPHERE 1
+      is?
     - |
-      is? You prefer 
-      CUBES? SPHERE 1 
-      contains every-
+      …you prefer CUBES?
     - |
-      thing you can get
-      with your START
-      INVENTORY! Such as
+      SPHERE 1 contains
+      everything you can
+      get with your
+    - |
+      START INVENTORY!
+      Locations such as:
     - |
       LH: CHILD FISHING,
       ITEM IN COMPUTER,
-      CELESTIAL RESORT B
     - |
-      - ROOM BACK BINO-
-      CULARS, BEANBEAN
-      OUTSKIRTS SURF
+      CELESTIAL RESORT
+      B - ROOM BACK
+      BINOCULARS,
     - |
-      BEACH BLOCK,
+      BEANBEAN OUTSKIRTS
+      SURF BEACH BLOCK,
+    - |
       DIRTMOUTH_STAG,
+    - |
       FS - SKULL RING -
+      KILL LUDLETH,
     - |
-      KILL LUDLETH, (AT)
-      UNDERSEA KINGDOM
-      MAP, OLDALE TOWN
+      (AT) UNDERSEA
+      KINGDOM MAP,
     - |
-      - GIFT FROM SHOP
-      TUTORIAL, and many
-      more!
+      OLDALE TOWN -
+      GIFT FROM SHOP
+      TUTORIAL,
+    - |
+      KAKARIKO VILLAGE
+      MALO MART
+      HYLIAN SHIELD,
+    - |
+      and many more!
     - |
       SPHERE 1 is more
       likely to contain
@@ -1427,3 +1438,239 @@ image:
     - |
       https://youtu.be
       /dly9z-mPQ4Q
+
+
+spineraks:
+  caller: withheld
+  script:
+    - |
+      Don't forget to
+      thank APWorld
+      devs!
+    - |
+      Spineraks
+      in particular
+      really wants
+    - |
+      to hear this:
+      Wow Spineraks
+      that's amazing!
+    - |
+      Thank you for
+      all the work
+    - |
+      you're putting
+      in this project!
+    - |
+      I'm looking
+      forward to all
+      of the
+    - |
+      new features
+      and new options
+      you have added!
+
+miss_chief:
+  caller: withheld
+  script:
+    - |
+      Did you know that
+      in Generation 1
+      of <POKE>MON
+    - |
+      there is a cut
+      trainer class
+      called CHIEF?
+    - |
+      He was supposed to
+      appear in SILPHCO.
+    - |
+      In <POKE>MON
+      CRYSTAL there's
+      actually also a
+    - |
+      female counterpart
+      of this class,
+      called MISS CHIEF!
+
+regular_guy:
+  caller: out_of_area
+  script:
+    - |
+      YOU ARE A REGULAR
+      GUY! You can enter
+      a space
+    - |
+      YOU ARE A REGULAR
+      GUY! You can enter
+      a room
+    - |
+      YOU ARE A REGULAR
+      GUY! You can do
+      that transaction
+    - |
+      YOU ARE A REGULAR
+      GUY! You know
+      how to answer
+    - |
+      the phone
+    - |
+      YOU ARE A REGULAR
+      GUY! You know what
+      sleep is
+    - |
+      YOU ARE A REGULAR
+      GUY! You know how
+      to wake up
+    - |
+      YOU ARE A REGULAR
+      GUY! You know how
+      to move through
+    - |
+      space
+    - |
+      YOU ARE A REGULAR
+      GUY! You know what
+      it means to be you
+
+butterfree:
+  caller: withheld
+  script:
+    - |
+      Moomoo farms
+      presents its new
+      vegan butter:
+    - |
+      BUTTERFREE!
+    - |
+      So deliciously
+      smooth, even
+      Ash can't say
+    - |
+      Bye Bye to it!
+
+scawwy:
+  caller: mom
+  script:
+    - |
+      Hi sweetie! I
+      heard that
+      recently you did
+    - |
+      not enter a DARK
+      CAVE because it
+      was too 'scawwy'.
+    - |
+      But didn't you
+      just spend like
+      10 hours in the
+    - |
+      WHIRL ISLANDS and
+      TIN TOWER to farm
+      for Glitzies?
+    - |
+      Oh, well. I guess
+      everyone has stuff
+      they can and can't
+    - |
+      do. I am just
+      glad you know your
+      limits, my little
+    - |
+      Apricorn :)
+
+hyper_beam_compensation:
+  caller: out_of_area
+  script:
+    - |
+      Have you or a
+      loved one been hit
+      by a HYPER BEAM?
+    - |
+      You may be entit-
+      led to financial
+      compensation!
+    - |
+      Please don't wait.
+    - |
+      Call us for free
+      legal consultation
+      and information.
+    - |
+      Disclaimer!
+      We are unable to
+      handle cases that
+    - |
+      involve CHAMPION
+      LANCE's DRAGONITE.
+
+#l_plus_ratio:
+#  caller: withheld
+#  script:
+#    - |
+#      L + ratio + no
+#      BADGES + CUT grass
+#      + mischief +
+#    - |
+#      low HP + bad DVs +
+#      don't care +
+#      extra ROM byte +
+#    - |
+#      CIANWOOD jail
+#      start + cope +
+#      no checks +
+#    - |
+#      parafused + full
+#      BOX + no shinies +
+#      cry about it +
+#    - |
+#      WEAST + MOM spent
+#      money + no FLY +
+#      chrisGrin +
+#    - |
+#      BK + cringe +
+#      no hint points +
+#      long PHONE TRAP +
+#    - |
+#      tracker is wrong +
+#      MOUNT MORTAR +
+#      ratio again +
+#    - |
+#      POKéMON disobeys +
+#      gen 1 miss +
+#      skill issue +
+#    - |
+#      bad moves +
+#      you lost battles +
+#      deathlink +
+#    - |
+#      REPEL ran out +
+#      invalid YAML +
+#      didn't ask +
+#    - |
+#      learn logic +
+#      pay ROCKET toll +
+#      infinite fake EXP
+
+question:
+  caller: withheld
+  script:
+    - |
+      Hey <player>,
+      i have a question
+    - |
+      ...       
+    - |
+      ...      
+    - |
+      ...     
+    - |
+      ...    
+    - |
+      ...   
+    - |
+      ...  
+    - |
+      ... 
+    - |
+      ...

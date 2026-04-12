@@ -216,7 +216,8 @@ def set_location_rules(world: MZMWorld, locations):
                     Missiles
                 ),
                 Trick("Kraid Quad Ball Cannon No Bombs"),
-                Trick("Kraid Quad Ball Cannon Crumble Grip"),
+                Trick("Kraid Quad Ball Cannon Crumble Grip Hi-Jump"),
+                Trick("Kraid Quad Ball Cannon Crumble Grip Space Jump")
             ),
             "Kraid Unknown Item Statue": all(
                 any(
@@ -308,7 +309,8 @@ def set_location_rules(world: MZMWorld, locations):
     norfair_upper_right = {
             "Norfair Ice Beam": all(
                 any(
-                    CanFly,
+                    SpaceJump,
+                    CanHorizontalIBJ,
                     PowerGrip,
                     all(
                         HazardRuns,
@@ -452,7 +454,9 @@ def set_location_rules(world: MZMWorld, locations):
                         CanHiGrip,
                         CanWallJump
                     ),
-                    Trick("Norfair Behind Super Door Left Enemy Freeze"),
+                    Trick("Norfair Behind Lower Super Missile Door - Left Enemy Freeze"),
+                    Trick("Norfair Behind Lower Super Missile Door - Left Damage Boost"),
+                    Trick("Rising Midair Morph With Space Jump"),
                     all(
                         HazardRuns,
                         Trick("Balljump to IBJ From Acid"),
@@ -631,18 +635,19 @@ def set_location_rules(world: MZMWorld, locations):
     ridley_central = {
             "Ridley Upper Ball Cannon Puzzle": all(
                 any(
-                    CanHiSpringBall,
                     CanIBJ,
                     all(
                         PowerGrip,
                         any(
                             CanWallJump,
                             SpaceJump,
-                            all(  # A well-placed balljump and well-timed unmorph will grab the ledge
-                                NormalLogic,
-                                CanBallJump
-                            )
+                            PowerBombs,
+                            NormalLogic
                         )
+                    ),
+                    all(
+                        CanHiSpringBall,
+                        NormalLogic
                     )
                 ),
                 any(
@@ -669,6 +674,7 @@ def set_location_rules(world: MZMWorld, locations):
                         any(
                             HiJump,
                             SpaceJump,
+                            PowerGrip,
                             CanWallJump
                         )
                     )
@@ -776,7 +782,7 @@ def set_location_rules(world: MZMWorld, locations):
                 PowerBombs,
                 any(
                     GravitySuit,
-                    CanReachEntrance("Brinstar -> Crateria Ballcannon")  # Room load weirdness
+                    CanReachEntrance("Crateria Left -> Landing Site")
                 )
             ),
             "Crateria Moat": None,
@@ -848,11 +854,11 @@ def set_location_rules(world: MZMWorld, locations):
                         NormalLogic
                     ),
                     all(  # Skips both but still only PBs
-                        Trick("Chozo Ghost Access Reverse"),
                         any(
                             ScrewAttack,
                             WaveBeam
                         ),
+                        CanFlyWall,
                         any(
                             PowerBombCount(5),
                             all(
@@ -889,7 +895,7 @@ def set_location_rules(world: MZMWorld, locations):
                             NormalLogic  # Skipping the screw attack wall with the missile tunnel
                         )
                     ),
-                    Trick("Chozo Ghost Access Reverse"),
+                    CanFlyWall,  # Access up through the long shaft
                 )
             ),
             "Chozodia Chozo Ghost Area Underwater": all(
@@ -1172,16 +1178,11 @@ def brinstar_top_to_varia():
     )
 
 
-# this works for now. it's kind of tricky, cause all you need just to get there is PBs and bombs,
-# but to actually do anything (including get to ship) you need IBJ/speed/sj. it only checks for speed
-# for now since the only thing you'd potentially need this entrance for is Landing Site Ballspark
-# (this assumption changes if/when entrance/elevator rando happens)
 def brinstar_crateria_ballcannon():
     return all(
          PowerBombs,
          CanBallCannon,
          CanVerticalWall,
-         SpeedBooster
      )
 
 
@@ -1235,7 +1236,7 @@ def kraid_left_shaft_access():
                 NormalLogic,
                 CanHiSpringBall
             ),
-            Trick("Kraid Left Shaft Access Space Jump Only")
+            Trick("Rising Midair Morph With Space Jump")
         ),
         CanBallJump,
         CanBombTunnelBlock,
@@ -1289,7 +1290,13 @@ def norfair_right_shaft_access():
 def norfair_upper_right_shaft():
     return any(
         CanVerticalWall,
-        IceBeam
+        all(
+            IceBeam,
+            any(
+                NormalLogic,
+                HardMode
+            )
+        )
     )
 
 
@@ -1301,6 +1308,19 @@ def norfair_behind_ice_beam():
             WaveBeam
         ),
         MorphBall,
+        any(  # Climbing the ripper shaft and getting to the statue
+            SpaceJump,
+            CanHorizontalIBJ,
+            CanWallJump,  # TODO if the Chozo statues ever stand up, this WallJump rule needs to change for Hard
+            all(
+                IceBeam,
+                any(
+                    NormalMode,
+                    CanVertical,
+                    Trick("Behind Ice Beam Shaft Hard Mode Enemy Freeze")
+                )
+            )
+        ),
         any(
             all(
                 PowerGrip,
@@ -1314,11 +1334,6 @@ def norfair_behind_ice_beam():
             all(
                 IceBeam,
                 CanHiSpringBall,
-                any(
-                    NormalMode,
-                    CanWallJump,
-                    Trick("Behind Ice Beam Shaft Hard Mode Enemy Freeze")
-                )
             )
         )
     )
@@ -1470,7 +1485,11 @@ def norfair_lower_right_shaft_to_lower_norfair():
                 )
             ),
             all(
-                CanSingleBombBlock,
+                any(
+                    Bomb,
+                    PowerBombCount(2),  # One PB is needed to get to this room, then another to clear the runway
+                    ScrewAttack
+                ),
                 SpeedBooster
             )
         )
@@ -1779,6 +1798,21 @@ def tourian_to_chozodia():
     )
 
 
+# Getting across the acid pits in post-MB Tourian
+# Left of MB is not in this region because it requires building speed before the acid pits
+def tourian_to_escape_shaft():
+    return all(
+        MotherBrainBoss,
+        ChozoGhostBoss,
+        any(
+            SpaceJump,
+            SpeedBooster,
+            Trick("Tourian Acid Dive - Normal"),
+            Trick("Tourian Acid Dive - Minimal")
+        )
+    )
+
+
 # From elevator to above the Unknown Item block by the Chozo statue
 def crateria_lower_to_crateria_upper_right():
     return any(
@@ -1885,6 +1919,25 @@ def crateria_upper_to_chozo_ruins():
     )
 
 
+def crateria_left_to_landing_site():
+    return any(
+        SpeedBooster,
+        CanFly,
+        all(
+            NormalLogic,
+            CanHiWallJump
+        )
+    )
+
+
+def crateria_to_tourian():
+    return all(
+        MotherBrainBoss,
+        ChozoGhostBoss,
+        SuperMissiles
+    )
+
+
 # Ruins to Chozo Ghost, the three items in that general area, and the lava dive item
 def chozo_ruins_to_ruins_test():
     return all(
@@ -1928,7 +1981,7 @@ def chozo_ruins_to_ruins_test():
                 CanFlyWall,
                 MissileCount(3),
                 Missiles,
-                Trick("Chozo Ghost Access Reverse")
+                CanFlyWall
             ),
             all(  # Skips everything possible, but still only PBs
                 CanFlyWall,
@@ -1939,7 +1992,7 @@ def chozo_ruins_to_ruins_test():
                 Missiles,
                 PowerBombCount(4),  # technically should be 3 on Normal, but Normal can't have 3 max without having 4
                 NormalLogic,
-                Trick("Chozo Ghost Access Reverse")
+                CanFlyWall
             )
         ),
         CanVerticalWall,
@@ -2067,8 +2120,13 @@ def chozodia_tube_to_mothership_central():
         ChozodiaCombat,
         any(
             CanFly,
-            CanHiWallJump,
-            Trick("Chozodia Pirates Enemy Freezes")
+            all(
+                CanWallJump,
+                any(
+                    HiJump,
+                    Trick("Chozodia Pirates Enemy Freezes")
+                )
+            )
         )
     )
 

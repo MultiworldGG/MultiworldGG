@@ -765,6 +765,10 @@ class GameController:
         if self.game_location not in game_location_to_region:
             return
 
+        # Only register White House - Interior if the player is there as Brog
+        if self.game_location == "sg10" and not self._player_is_brog():
+            return
+
         if self._player_is_at_for_at_least(self.game_location, 1000):
             self.discovered_regions.add(game_location_to_region[self.game_location].value)
 
@@ -1454,6 +1458,7 @@ class GameController:
 
         if not self.option_wild_voxam and not force_wild:
             self._apply_starting_location(force=True)
+            return None
 
         voxam_roll: int = random.randint(1, 100)
 

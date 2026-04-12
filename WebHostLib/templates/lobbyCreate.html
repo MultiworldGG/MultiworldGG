@@ -1,0 +1,319 @@
+{% extends 'pageWrapper.html' %}
+
+{% block head %}
+    <title>Create Lobby</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename="styles/lobby.css") }}" />
+{% endblock %}
+
+{% block body %}
+    {% include 'header/oceanIslandHeader.html' %}
+    <div id="lobby-create-wrapper">
+        <div id="lobby-create" class="grass-island">
+            <h1>Create Lobby</h1>
+            <p>
+                Create a lobby for players to join and upload their YAML configs.
+                Once everyone is ready, you can generate the seed directly from the lobby.
+            </p>
+            <form method="post" id="lobby-create-form">
+                <div id="lobby-create-tables-container">
+                    <div class="table-wrapper">
+                        <h3>Lobby Settings</h3>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><label for="title">Lobby Title:</label></td>
+                                    <td><input type="text" id="title" name="title" required maxlength="48" placeholder="My Game Lobby"></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="player_name">Your Name:</label></td>
+                                    <td><input type="text" id="player_name" name="player_name" required maxlength="32" placeholder="Player name"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="password">Password:
+                                            <span class="interactive" data-tooltip="Optional. If set, players will need this password to join.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td><input type="password" id="password" name="password" placeholder="Leave empty for open lobby"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="timeout_minutes">Inactivity Timeout:
+                                            <span class="interactive" data-tooltip="Lobby will expire after this much time of no activity (player joining/leaving, chat, yaml changes). Max 4 weeks.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select name="timeout_minutes" id="timeout_minutes">
+                                            <option value="15">15 minutes</option>
+                                            <option value="30">30 minutes</option>
+                                            <option value="60">1 hour</option>
+                                            <option value="120">2 hours</option>
+                                            <option selected value="360">6 hours</option>
+                                            <option value="720">12 hours</option>
+                                            <option value="1440">1 day</option>
+                                            <option value="2880">2 days</option>
+                                            <option value="4320">3 days</option>
+                                            <option value="10080">7 days</option>
+                                            <option value="20160">2 weeks</option>
+                                            <option value="40320">4 weeks</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="max_yamls_per_player">Max YAMLs per Player:
+                                            <span class="interactive" data-tooltip="Maximum number of YAML files each player can upload.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="max_yamls_per_player" name="max_yamls_per_player"
+                                               min="1" max="20" value="1" style="width:80px">
+                                        <span style="font-size:0.8rem;color:#aaa">(max. 20)</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="max_players">Max Players:
+                                            <span class="interactive" data-tooltip="Maximum number of players allowed to join. 0 means unlimited.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="max_players" name="max_players"
+                                               min="0" max="100" value="0" style="width:80px">
+                                        <span style="font-size:0.8rem;color:#aaa">(0 = unlimited)</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label for="race">Race Mode:
+                                            <span class="interactive" data-tooltip="Race games are generated without a spoiler log and game specific protections will be in place, like ROM encryption or cheat mode removal">
+                                            (?)
+                                            </span>
+                                    </label></td>
+                                    <td>
+                                        <input type="checkbox" id="race" name="race" value="1">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="allow_custom_apworlds">Allow Custom APWorlds:
+                                            <span class="interactive" data-tooltip="Allows players to upload YAMLs for games not bundled with the server. Requires manual local generation. This can also be enabled later from lobby settings, but cannot be disabled once on.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="allow_custom_apworlds" name="allow_custom_apworlds" value="1">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <h3>Generation Settings</h3>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="release_mode">Release Permission:
+                                            <span class="interactive" data-tooltip="Permissions on when players are able to release all remaining items from their world.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select name="release_mode" id="release_mode">
+                                            <option value="auto">Automatic on goal completion</option>
+                                            <option value="goal">Allow !release after goal completion</option>
+                                            <option value="auto-enabled">Automatic + manual !release</option>
+                                            <option selected value="enabled">Manual !release</option>
+                                            <option value="disabled">Disabled</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="collect_mode">Collect Permission:
+                                            <span class="interactive" data-tooltip="Permissions on when players are able to collect all their remaining items.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select name="collect_mode" id="collect_mode">
+                                            <option value="auto">Automatic on goal completion</option>
+                                            <option selected value="goal">Allow !collect after goal completion</option>
+                                            <option value="auto-enabled">Automatic + manual !collect</option>
+                                            <option value="enabled">Manual !collect</option>
+                                            <option value="disabled">Disabled</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="remaining_mode">Remaining Permission:
+                                            <span class="interactive" data-tooltip="Remaining lists all items still in your world by name only.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select name="remaining_mode" id="remaining_mode">
+                                            <option value="goal">Allow !remaining after goal completion</option>
+                                            <option selected value="enabled">Manual !remaining</option>
+                                            <option value="disabled">Disabled</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="countdown_mode">Countdown Permission:
+                                            <span class="interactive" data-tooltip="Who is allowed to use the !countdown command.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select name="countdown_mode" id="countdown_mode">
+                                            <option selected value="auto">Auto (enabled under 30 slots)</option>
+                                            <option value="disabled">Disabled for clients</option>
+                                            <option value="enabled">Enabled for clients</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="item_cheat">Item Cheat:
+                                            <span class="interactive" data-tooltip="Allows players to use the !getitem command.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select name="item_cheat" id="item_cheat">
+                                            <option value="1">Enabled</option>
+                                            <option selected value="0">Disabled</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="spoiler">Spoiler Log:
+                                            <span class="interactive" data-tooltip="Generates a text listing all randomized elements.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select name="spoiler" id="spoiler">
+                                            <option value="3">Enabled with playthrough and traversal</option>
+                                            <option value="2">Enabled with playthrough</option>
+                                            <option value="1">Enabled</option>
+                                            <option selected value="0">Disabled</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="hint_mode">Hint Mode:
+                                            <span class="interactive" data-tooltip="Decide if hints include exact location data or just reference the respective world. Rehint to see full location">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select name="hint_mode" id="hint_mode">
+                                            <option value="all">Hide All locations</option>
+                                            <option value="own">Hide Own World locations</option>
+                                            <option selected value="default">Default (show full location)</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="hint_cost">Hint Cost:
+                                            <span class="interactive" data-tooltip="After gathering this many checks, players can !hint to get item locations.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select name="hint_cost" id="hint_cost">
+                                            {% for n in range(0, 110, 5) %}
+                                                <option {% if n == 5 %}selected{% endif %} value="{{ n }}">
+                                                    {% if n > 100 %}Off{% else %}{{ n }}%{% endif %}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <h3>Server Settings</h3>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="server_password">Server Password:
+                                            <span class="interactive" data-tooltip="Allows issuing server console commands using !admin.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <input id="server_password" name="server_password">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Plando Options:
+                                        <span class="interactive" data-tooltip="Allows players to plan some of the randomization.">(?)
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="plando_items" name="plando_items" value="items">
+                                        <label for="plando_items">Items</label><br>
+                                        <input type="checkbox" id="plando_bosses" name="plando_bosses" value="bosses" checked>
+                                        <label for="plando_bosses">Bosses</label><br>
+                                        <input type="checkbox" id="plando_connections" name="plando_connections" value="connections" checked>
+                                        <label for="plando_connections">Connections</label><br>
+                                        <input type="checkbox" id="plando_texts" name="plando_texts" value="texts" checked>
+                                        <label for="plando_texts">Text</label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="lobby-create-submit">
+                    <button type="submit" id="create-lobby-button">Create Lobby</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+    (function () {
+        const raceCheckbox = document.getElementById("race");
+        const spoilerSelect = document.getElementById("spoiler");
+        const remainingSelect = document.getElementById("remaining_mode");
+        const itemCheatSelect = document.getElementById("item_cheat");
+
+        const RACE_FORCED = { spoiler: "0", remaining_mode: "disabled", item_cheat: "0" };
+        const savedValues = {};
+
+        function applyRaceMode(isRace) {
+            [spoilerSelect, remainingSelect, itemCheatSelect].forEach(el => {
+                if (isRace) {
+                    savedValues[el.name] = el.value;
+                    el.value = RACE_FORCED[el.name];
+                    el.disabled = true;
+                } else {
+                    el.disabled = false;
+                    if (el.name in savedValues) el.value = savedValues[el.name];
+                }
+            });
+        }
+
+        raceCheckbox.addEventListener("change", () => applyRaceMode(raceCheckbox.checked));
+    })();
+    </script>
+    {% include 'islandFooter.html' %}
+{% endblock %}

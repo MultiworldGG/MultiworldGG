@@ -214,7 +214,3 @@ data/sprites/remote/*.zspr
 
 # SMO
 /atmosphere
-
-# gzDoom
-gzdoom/
-gzdoom/cache/

@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
+
 from BaseClasses import Region, CollectionState
 from worlds.generic.Rules import set_rule, CollectionRule
 
@@ -54,7 +55,7 @@ def spike_tank(state: CollectionState, world: "UFO50World") -> bool:
     return state.has(shield_upgrade, player, shield_upgrades_required)
 
 
-def create_rules(world: "UFO50World", regions: Dict[str, Region]) -> None:
+def create_rules(world: "UFO50World", regions: dict[str, Region]) -> None:
     player = world.player
 
     # name regions for convenience

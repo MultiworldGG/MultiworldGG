@@ -108,6 +108,12 @@ loc_Cascade_Revisit = {
     "Cascade Kingdom - Shopping in Fossil Falls": 211,
 }
 
+loc_Cascade_Full = {
+    **loc_Cascade,
+    **loc_Cascade_Peace,
+    **loc_Cascade_Revisit
+}
+
 sub_area_chain_chomp = {
     "Nice Shot with the Chain Chomp!": 225,
     "Very Nice Shot with the Chain Chomp!": 226,
@@ -245,6 +251,13 @@ loc_Sand_Peace = {
     "Sand Kingdom - Under the Mummy's Curse": 995,
     "Sand Kingdom - Strange Neighborhood": 570,
     "Sand Kingdom - Above a Strange Neighborhood": 571
+}
+
+loc_Sand_Full = {
+    **loc_Sand,
+    **loc_Sand_Pyramid,
+    **loc_Sand_Underground,
+    **loc_Sand_Peace
 }
 
 sub_area_invisible_maze = {
@@ -715,7 +728,7 @@ loc_Lost = {
 }
 
 loc_Lost_Revisit = {
-    "Caught Hopping in the Jungle!": 390
+    "Lost Kingdom - Caught Hopping in the Jungle!": 390
 }
 
 loc_Lost_Captures = {
@@ -2081,11 +2094,11 @@ post_game_locations_list = [
 ]
 
 goals_table = {
-    4 : "Sand Kingdom - The Hole in the Desert",
-    5 : "Lake Kingdom - Broodals Over the Lake",
-    9 : "Metro Kingdom - A Traditional Festival!",
-    12 : "Luncheon Kingdom - Cookatiel Showdown!",
-    14 : "Beat the Game",
-    16 : "Dark Side - Arrival at Rabbit Ridge!",
-    17 : "Darker Side - A Long Journey's End!"
+    2 : "Sand Kingdom - The Hole in the Desert",
+    4 : "Lake Kingdom - Broodals Over the Lake",
+    7 : "Metro Kingdom - A Traditional Festival!",
+    10 : "Luncheon Kingdom - Cookatiel Showdown!",
+    13 : "Beat the Game",
+    15 : "Dark Side - Arrival at Rabbit Ridge!",
+    16 : "Darker Side - A Long Journey's End!"
 }

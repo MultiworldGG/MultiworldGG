@@ -19,7 +19,7 @@ from Utils import VersionException, __version__
 from worlds.Files import AutoPatchRegister
 from worlds.AutoWorld import data_package_checksum
 from . import app
-from .models import Seed, Room, Slot, GameDataPackage
+from .models import Seed, Room, Slot, GameDataPackage, Lobby
 
 banned_extensions = (".sfc", ".z64", ".n64", ".nes", ".smc", ".sms", ".gb", ".gbc", ".gba")
 allowed_options_extensions = (".yaml", ".json", ".yml", ".txt", ".zip")
@@ -55,7 +55,6 @@ def process_multidata(compressed_multidata, files={}):
     slots: typing.Set[Slot] = set()
     if "datapackage" in decompressed_multidata:
         # strip datapackage from multidata, leaving only the checksums
-        game_data_packages: typing.List[GameDataPackage] = []
         for game, game_data in decompressed_multidata["datapackage"].items():
             if game_data.get("checksum"):
                 original_checksum = game_data.pop("checksum")
@@ -67,18 +66,18 @@ def process_multidata(compressed_multidata, files={}):
                                     f"calculated checksum {game_data['checksum']} "
                                     f"for game {game}.")
 
-                game_data_package = GameDataPackage(checksum=game_data["checksum"],
-                                                    data=pickle.dumps(game_data))
                 decompressed_multidata["datapackage"][game] = {
                     "version": game_data.get("version", 0),
                     "checksum": game_data["checksum"],
                 }
-                try:
-                    commit()  # commit game data package
-                    game_data_packages.append(game_data_package)
-                except TransactionIntegrityError:
-                    del game_data_package
-                    rollback()
+                if not GameDataPackage.get(checksum=game_data["checksum"]):
+                    game_data_package = GameDataPackage(checksum=game_data["checksum"],
+                                                        data=pickle.dumps(game_data))
+                    try:
+                        commit()  # commit game data package
+                    except TransactionIntegrityError:
+                        del game_data_package
+                        rollback()
 
     if "slot_info" in decompressed_multidata:
         for slot, slot_info in decompressed_multidata["slot_info"].items():
@@ -214,7 +213,8 @@ def uploads():
 def user_content():
     rooms = select(room for room in Room if room.owner == session["_id"])
     seeds = select(seed for seed in Seed if seed.owner == session["_id"])
-    return render_template("userContent.html", rooms=rooms, seeds=seeds)
+    lobbies = select(l for l in Lobby if l.owner == session["_id"] and l.state >= 0).order_by(lambda l: l.last_activity)[::]
+    return render_template("userContent.html", rooms=rooms, seeds=seeds, lobbies=lobbies)
 
 
 @app.route("/disown_seed/<suuid:seed>", methods=["GET"])

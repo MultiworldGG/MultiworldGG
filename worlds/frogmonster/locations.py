@@ -215,7 +215,7 @@ location_data_table: Dict[str, FrogmonsterLocationData] = {
     l.health_3: FrogmonsterLocationData(
         region=r.hive,
         id=BASE_ID + 46,
-        access_rule=lambda player, dif, state: can_fight_all([c.foraz, c.hive_general], player, dif, state)
+        access_rule=lambda player, dif, state: state.has(i.tongue_swing, player) and can_fight_all([c.foraz, c.hive_general], player, dif, state)
     ),
     l.health_4: FrogmonsterLocationData(
         region=r.yellow_forest_town,
@@ -323,7 +323,7 @@ location_data_table: Dict[str, FrogmonsterLocationData] = {
     l.hive: FrogmonsterLocationData(
         region=r.hive,
         id=BASE_ID + 69,
-        access_rule=lambda player, dif, state: state.has(i.tongue_swing, player) and state.can_reach(r.city, None, player) and can_fight(c.hive_general, player, dif, state)
+        access_rule=lambda player, dif, state: state.has(i.tongue_swing, player) and state.can_reach(r.city, None, player) and can_fight(c.foraz, player, dif, state)
     ),
     l.puff: FrogmonsterLocationData(
         region=r.treetops_key,
@@ -555,6 +555,7 @@ location_data_table: Dict[str, FrogmonsterLocationData] = {
     l.square_rock_5: FrogmonsterLocationData(
         region=r.hive,
         id=BASE_ID + 118,
+        access_rule=lambda player, dif, state: can_fight(c.hive_general, player, dif, state)
     ),
     l.square_rock_6: FrogmonsterLocationData(
         region=r.city,

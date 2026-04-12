@@ -1,16 +1,17 @@
 import json
 from pathlib import Path
 
-from typing_extensions import Any
+from typing import Any
 
 import Utils
-from worlds.tloz_oos.patching.RomData import RomData
-from worlds.tloz_oos.patching.text import normalize_text
-from worlds.tloz_oos.patching.text.decoding import parse_dict_seasons, parse_all_texts
+from ...common.patching.RomData import RomData
+from ...common.patching.Util import simple_hex
+from ...common.patching.data_manager.text import get_text_data
+from ...common.patching.text import normalize_text
 
 
 def load_modded_seasons_text_data() -> None | tuple[dict[str, str], dict[str, str]]:
-    from worlds.tloz_oos import OracleOfSeasonsWorld
+    from ...World import OracleOfSeasonsWorld
     text_dir = Path(Utils.cache_path("oos_ooa/text"))
     dict_file = text_dir.joinpath(f"seasons_dict.json")
     if not dict_file.is_file():
@@ -28,29 +29,12 @@ def load_modded_seasons_text_data() -> None | tuple[dict[str, str], dict[str, st
         return None
     texts = json.load(open(vanilla_text_file, encoding="utf-8"))
     apply_text_edits(texts)
-    save_edited_text_data(texts)
+    save_seasons_edited_text_data(texts)
     return json.load(open(dict_file, encoding="utf-8")), texts
 
 
-def save_vanilla_text_data(dictionary: dict[str, str],
-                           texts: dict[str, str],
-                           seasons: bool = True) -> None:
-    text_dir = Path(Utils.cache_path("oos_ooa/text"))
-    text_dir.mkdir(parents=True, exist_ok=True)
-
-    game_name = "seasons" if seasons else "ages"
-    dict_file = text_dir.joinpath(f"{game_name}_dict.json")
-    text_file = text_dir.joinpath(f"{game_name}_texts_vanilla.json")
-
-    with dict_file.open("w", encoding="utf-8") as f:
-        json.dump(dictionary, f, ensure_ascii=False)
-
-    with text_file.open("w", encoding="utf-8") as f:
-        json.dump(texts, f, ensure_ascii=False)
-
-
-def save_edited_text_data(texts: dict[str, str]) -> None:
-    from worlds.tloz_oos import OracleOfSeasonsWorld
+def save_seasons_edited_text_data(texts: dict[str, str]) -> None:
+    from ...World import OracleOfSeasonsWorld
     texts["version"] = OracleOfSeasonsWorld.version()
 
     text_dir = Path(Utils.cache_path("oos_ooa/text"))
@@ -63,6 +47,8 @@ def save_edited_text_data(texts: dict[str, str]) -> None:
 
 
 def apply_text_edits(texts: dict[str, str]) -> None:
+    texts_to_blank = []
+
     # New items
     # Replace ring box 1
     texts["TX_0034"] = ("You got 🟥Ember\n"
@@ -125,37 +111,15 @@ def apply_text_edits(texts: dict[str, str]) -> None:
 
     # Cross items
     # Obtain text
-    texts["TX_003b"] = ("You got the\n"
-                        "🟥Switch Hook⬜!\n"
-                        "Shoot at an\n"
-                        "object to switch\n"
-                        "places with it.\n")  # Strange flute
-    texts["TX_0051"] = ("You got the 🟥Long\n"
-                        "Switch⬜! Switch\n"
-                        "places with\n"
-                        "objects from a\n"
-                        "distance.")  # Warrior child heart
-    texts["TX_0053"] = ("You got the\n"
-                        "🟥Cane of Somaria⬜!\n"
-                        "Use it to create\n"
-                        "blocks.")  # Warrior child heart refill
-    texts["TX_0054"] = ("You got the\n"
-                        "🟥Seed Shooter⬜!\n"
-                        "Pick your 🟥seeds⬜,\n"
-                        "fire, then watch\n"
-                        "them ricochet.")  # Unappraised ring
-    texts["TX_091d"] = ("Cane of Somaria\n"
-                        "Used to create\n"
-                        "blocks.")  # Replaces ring box 1
-    texts["TX_091e"] = ("Switch Hook\n"
-                        "User and target\n"
-                        "trade places.")  # Replaces ring box 2
-    texts["TX_0917"] = ("Long Hook\n"
-                        "Switches places\n"
-                        "from a distance.")  # Replaces unappraised ring
-    texts["TX_092e"] = ("Seed Shooter\n"
-                        "Used to bounce\n"
-                        "seeds around.")  # Replaces strange flute
+    texts_to_blank.append("TX_003b")  # Strange flute
+    texts_to_blank.append("TX_0051")  # Warrior child heart
+    texts_to_blank.append("TX_0053")  # Warrior child heart refill
+    texts_to_blank.append("TX_0054")  # Unappraised ring
+    # Inventory text
+    texts_to_blank.append("TX_091d")  # Replaces ring box 1
+    texts_to_blank.append("TX_091e")  # Replaces ring box 2
+    texts_to_blank.append("TX_0917")  # Replaces unappraised ring
+    texts_to_blank.append("TX_092e")  # Replaces strange flute
     # Note: 3 other seemingly unused seeds follow
 
     # Map stuff, replaces the group 05 since it's all linked game dialogues
@@ -192,10 +156,6 @@ def apply_text_edits(texts: dict[str, str]) -> None:
                         "🟩30 Rupees⬜ only.\n"
                         "  \\optOK \\optNo thanks")
 
-    # Impa refills
-    texts["TX_2503"] = ("Come see me if\n"
-                        "you need a\n"
-                        "refill!")
     # Change D8 introduction text to “Sword & Shield Dungeon” from “Sword & Shield Maze”,
     # since every other mention of it was using “Dungeon” naming
     texts["TX_0208"] = texts["TX_0208"].replace("Maze", "Dungeon")
@@ -203,17 +163,116 @@ def apply_text_edits(texts: dict[str, str]) -> None:
     # Now unused text from Maku talking
     texts["TX_1700"] = texts["TX_1701"] = ""
 
+    texts["TX_020b"] = "Linked\nHero's Cave"
     texts["TX_0602"] = "Unknown Dungeon"
 
+    # FAQ room
+    texts["TX_5300"] = ("Welcome to the\n"
+                        "OoS randomizer\n"
+                        "for Archipelago!\n"
+                        "Did you read\n"
+                        "the FAQ?\n"
+                        "  \\optYes \\optNo")
+    texts["TX_5301"] = ("Reading the FAQ\n"
+                        "is important, as\n"
+                        "rando mechanics\n"
+                        "are in it.\n"
+                        "Please read it\n"
+                        "\\optYes \\optWhere?")
+    texts["TX_5302"] = ("It is linked\n"
+                        "in the setup.\n"
+                        "If you don't\n"
+                        "have it, check\n"
+                        "tinyurl.com\n"
+                        "/2cb35snu\n")
+    texts["TX_5303"] = ("How do you\n"
+                        "refill your\n"
+                        "satchel and\n"
+                        "shield?\n"
+                        "\\optShop \\optImpa")
+    texts["TX_5304"] = ("Wrong. Please\n"
+                        "check the FAQ,\n"
+                        "you will get\n"
+                        "stuck otherwise.")
+    texts["TX_5305"] = ("Right! You can\n"
+                        "get out of\n"
+                        "here by warping\n"
+                        "to the start")
+    texts["TX_5306"] = ("Just warp to\n"
+                        "start, you\n"
+                        "can do it\n"
+                        "everywhere")
 
-def get_text_data(rom_data: RomData, seasons: bool = True) -> tuple[dict[str, str], dict[str, str]]:
+    # Temple of seasons cutscene
+    texts_to_blank.append("TX_0800")
+    texts_to_blank.append("TX_0801")
+    texts_to_blank.append("TX_0802")
+    texts_to_blank.append("TX_0803")
+
+    # Onox intro monologue
+    texts_to_blank.append("TX_1e06")
+    # Impa monologue
+    texts["TX_2500"] = ("Come see me if\n"
+                        "you need a\n"
+                        "refill!")
+    for i in range(0x2501, 0x2512):
+        del texts[f"TX_{simple_hex(i, 4)}"]
+    # Vasu appraising
+    texts_to_blank.append("TX_3013")
+    # Remove ring fortune
+    texts_to_blank.append("TX_300a")
+    texts_to_blank.append("TX_300b")
+    texts_to_blank.append("TX_300c")
+    texts_to_blank.append("TX_300f")
+    texts_to_blank.append("TX_3018")
+    texts_to_blank.append("TX_3019")
+    texts_to_blank.append("TX_301a")
+    texts["TX_301f"] = normalize_text("Ring fortunes are disabled in randomizer.")
+    texts_to_blank.append("TX_3020")
+    texts_to_blank.append("TX_3023")
+    texts_to_blank.append("TX_3024")
+    texts_to_blank.append("TX_3026")
+    texts_to_blank.append("TX_302a")
+    texts_to_blank.append("TX_302e")
+    texts_to_blank.append("TX_3025")
+    texts_to_blank.append("TX_3031")
+    texts_to_blank.append("TX_303d")
+    # There is probably more
+    texts_to_blank.append("TX_5200") # Prophet interupting when going first to suburb
+
+    # Maku tree talking texts are too big to be left there (unused)
+    texts_to_blank.append("TX_1704")
+    for i in range(0x1706, 0x1716):
+        texts_to_blank.append(f"TX_{simple_hex(i, 4)}")
+    for i in range(0x1719, 0x173a):
+        texts_to_blank.append(f"TX_{simple_hex(i, 4)}")
+
+    for text in texts_to_blank:
+        texts[text] = ""
+
+
+def apply_ages_edits(seasons_texts: dict[str, str], ages_rom: RomData) -> None:
+    _, ages_texts = get_text_data(ages_rom, False, False)
+    # Cross items
+    # Obtain text
+    seasons_texts["TX_0053"] = ages_texts["TX_0073"]  # Cane
+    seasons_texts["TX_003b"] = ages_texts["TX_0030"]  # Hook 1
+    seasons_texts["TX_0051"] = ages_texts["TX_0028"]  # Hook 2
+    seasons_texts["TX_0054"] = ages_texts["TX_002e"]  # Shooter
+    # Inventory text
+    seasons_texts["TX_091d"] = ages_texts["TX_093c"]  # Cane
+    seasons_texts["TX_091e"] = ages_texts["TX_093d"]  # Hook 1
+    seasons_texts["TX_0917"] = ages_texts["TX_093e"]  # Hook 2
+    seasons_texts["TX_092e"] = ages_texts["TX_0940"]  # Shooter
+    save_seasons_edited_text_data(seasons_texts)
+
+
+def get_modded_seasons_text_data(rom_data: RomData) -> tuple[dict[str, str], dict[str, str]]:
     result = load_modded_seasons_text_data()
     if result is not None:
         return result
 
-    dictionary = parse_dict_seasons(rom_data, seasons)
-    texts = parse_all_texts(rom_data, dictionary, seasons)
-    save_vanilla_text_data(dictionary, texts, texts)
+    dictionary, texts = get_text_data(rom_data, True, True)
     apply_text_edits(texts)
-    save_edited_text_data(texts)
+    save_seasons_edited_text_data(texts)
     return dictionary, texts

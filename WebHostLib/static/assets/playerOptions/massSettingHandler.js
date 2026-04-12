@@ -169,10 +169,6 @@
         input.value = val;
         input.setAttribute("data-name", name);
 
-        if (isChecked) {
-          input.checked = true;
-        }
-
         const label = document.createElement("label");
         label.htmlFor = `${container.dataset.optionName}-${name}-qty`;
         label.textContent = name;

@@ -59,7 +59,45 @@ html{
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
         margin-top: 15px;
+
+        .lobby-picker-menu{
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            margin-bottom: 6px;
+            min-width: 200px;
+            background: hsla(0, 0%, 15%, 0.95);
+            border: 1px solid hsla(0, 0%, 40%, 0.5);
+            border-radius: 6px;
+            padding: 4px 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+            &.visible{
+                display: flex;
+                flex-direction: column;
+            }
+
+            .lobby-picker-item{
+                background: none;
+                border: none;
+                color: #fff;
+                padding: 8px 12px;
+                text-align: left;
+                font-size: 14px;
+                cursor: pointer;
+                white-space: nowrap;
+
+                &:hover{
+                    background: hsla(0, 0%, 100%, 0.15);
+                }
+            }
+        }
     }
 
     #user-message{
@@ -231,6 +269,38 @@ html{
         .range-value{
             min-width: 20px;
             margin-left: 0.25rem;
+
+            &[type="number"]{
+                border: none;
+                border-bottom: 1px dashed transparent;
+                background: transparent;
+                color: inherit;
+                font: inherit;
+                padding: 0;
+                text-align: right;
+                cursor: text;
+
+                &:hover:not(:disabled){
+                    border-bottom-color: currentColor;
+                }
+
+                &:focus{
+                    outline: none;
+                    border-bottom: 1px solid currentColor;
+                }
+
+                &:disabled{
+                    cursor: default;
+                }
+
+                &::-webkit-inner-spin-button,
+                &::-webkit-outer-spin-button{
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+
+                -moz-appearance: textfield;
+            }
         }
     }
 

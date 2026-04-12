@@ -136,9 +136,14 @@ class WeaponRandomizer():
     # CrossScenarioWeapons == "All Ammo"
     ###
     def all_ammo(self):
-        self.mode = "all_ammo"
+        self.mode = self.mode or "all_ammo"
         self.all(include_ammo=False)
         self._split_ammo_randomly()
+
+    # Since Troll also calls All Ammo, we need to set the correct mode before calling it
+    def all_ammo_troll(self):
+        self.mode = "troll"
+        self.all_ammo()
 
     ###
     # CrossScenarioWeapons == "Troll"
@@ -386,7 +391,8 @@ class WeaponRandomizer():
      
     def _smooth_ammo_counts(self):
         # we only want to smooth ammo counts for weapon rando modes that can change the weapon power density
-        if self.mode == "starting" or self.mode == "match":
+        #   (also, we exclude "troll" and troll adjacent because unfair ammo splits is part of the appeal)
+        if self.mode == "starting" or self.mode == "match" or "troll" in self.mode:
             return
 
         # if we're also swapping ammo, let's check the ammo pools for a stark difference between highest qty and lowest

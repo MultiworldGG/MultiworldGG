@@ -17,7 +17,7 @@ class Celeste64WebWorld(WebWorld):
 
     setup_en = Tutorial(
         tutorial_name="Start Guide",
-        description="A guide to playing Celeste 64 in MultiworldGG.",
+        description="A guide to playing Celeste 64 in Archipelago.",
         language="English",
         file_name="guide_en.md",
         link="guide/en",
@@ -35,7 +35,6 @@ class Celeste64World(World):
 
     # Class Data
     game = "Celeste 64"
-    author: str = "PoryGone"
     options_dataclass = Celeste64Options
     options: Celeste64Options
     web = Celeste64WebWorld()

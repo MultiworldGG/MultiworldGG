@@ -1,7 +1,7 @@
 import logging
 import re
 from random import sample
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Optional
 
 from BaseClasses import CollectionState, MultiWorld, Region, Tutorial
 
@@ -58,7 +58,8 @@ class AgainstTheStormWorld(World):
                                  (2 if self.options.enable_keepers_dlc else 0) +
                                  (2 if self.options.enable_nightwatchers_dlc else 0)) +
                                 self.options.extra_trade_locations.value +
-                                (self.options.grove_expedition_locations if self.options.enable_keepers_dlc else 0))
+                                (self.options.grove_expedition_locations if self.options.enable_keepers_dlc else 0)
+                                - len(self.options.exclude_locations.value))
         total_item_count = len([name for (name, (_class, classification, _item_group)) in item_dict.items() if
                                 classification == ATSItemClassification.good or
                                 classification == ATSItemClassification.guardian_part and self.options.seal_items or
@@ -70,16 +71,14 @@ class AgainstTheStormWorld(World):
                                     self.options.enable_keepers_dlc and self.options.enable_biome_keys or
                                 classification == ATSItemClassification.nightwatchers_dlc_biome_key and
                                     self.options.enable_nightwatchers_dlc and self.options.enable_biome_keys])
-        if self.options.enable_biome_keys:
-            total_item_count -= 1 # One biome will get pulled for starting inventory
         if total_location_count < total_item_count:
             while total_location_count < total_item_count:
                 self.options.reputation_locations_per_biome.value += 1
                 total_location_count += (6 + (2 if self.options.enable_keepers_dlc else 0) +
                                          (2 if self.options.enable_nightwatchers_dlc else 0))
-            logging.warning("[Against the Storm] Fewer locations than items detected in options, increased"
-                            f"reputation_locations_per_biome to {self.options.reputation_locations_per_biome.value}"
-                            " to fit all items")
+            logging.warning(f"[Against the Storm] Fewer locations than items detected in player #{self.player} "
+                            "options, increased reputation_locations_per_biome to "
+                            f"{self.options.reputation_locations_per_biome.value} to fit all items")
 
         self.included_location_indices.append(1)
         # This evenly spreads the option's number of locations between 2 and 17
@@ -92,53 +91,60 @@ class AgainstTheStormWorld(World):
         all_production: dict[str, list[Recipe]] = {}
         all_production.update(blueprint_recipes)
         all_production.update(nonitem_blueprint_recipes)
-        if self.options.recipe_shuffle != "vanilla":
-            skip_cws = (self.options.recipe_shuffle.value == RecipeShuffle.option_exclude_crude_ws or
-                self.options.recipe_shuffle.value == RecipeShuffle.option_exclude_crude_ws_and_ms_post)
-            skip_msp = (self.options.recipe_shuffle.value == RecipeShuffle.option_exclude_ms_post or
-                self.options.recipe_shuffle.value == RecipeShuffle.option_exclude_crude_ws_and_ms_post)
+        if hasattr(self.multiworld, "re_gen_passthrough"):
+            prod_recipes = getattr(self.multiworld, "re_gen_passthrough")["Against the Storm"]['production_recipes']
+            self.production_recipes = {building: [Recipe(recipe[0], recipe[1]) for recipe in recipes]
+                                       for building, recipes in prod_recipes.items()}
+            pass
+        else:
+            if self.options.recipe_shuffle != "vanilla":
+                skip_cws = (self.options.recipe_shuffle.value == RecipeShuffle.option_exclude_crude_ws or
+                    self.options.recipe_shuffle.value == RecipeShuffle.option_exclude_crude_ws_and_ms_post)
+                skip_msp = (self.options.recipe_shuffle.value == RecipeShuffle.option_exclude_ms_post or
+                    self.options.recipe_shuffle.value == RecipeShuffle.option_exclude_crude_ws_and_ms_post)
 
-            all_recipes: dict[str, list[Recipe]] = {}
-            for blueprint, recipes in all_production.items():
-                if blueprint == "Crude Workstation" and skip_cws or blueprint == "Makeshift Post" and skip_msp:
-                    continue
-                for recipe in recipes:
-                    if recipe.product not in all_recipes:
-                        all_recipes[recipe.product] = []
-                    all_recipes[recipe.product].append(recipe)
+                # Store as a dict from product -> Recipe, to iterate one of each product for logical reachability
+                all_recipes: dict[str, list[Recipe]] = {}
+                for blueprint, recipes in all_production.items():
+                    if blueprint == "Crude Workstation" and skip_cws or blueprint == "Makeshift Post" and skip_msp:
+                        continue
+                    for recipe in recipes:
+                        if recipe.product not in all_recipes:
+                            all_recipes[recipe.product] = []
+                        all_recipes[recipe.product].append(recipe)
 
-            valid_blueprints = list(blueprint_recipes.keys())
-            if not skip_cws:
-                valid_blueprints.append("Crude Workstation")
-            if not skip_msp:
-                valid_blueprints.append("Makeshift Post")
-            # First, add one recipe for each resource to a non-glade event bp to ensure they are all logically reachable
-            for _product, recipes in all_recipes.items():
-                blueprint = self.random.choice(valid_blueprints)
-                if blueprint not in self.production_recipes:
-                    self.production_recipes[blueprint] = []
-                recipe_index = self.random.randint(0, len(recipes)-1)
-                self.production_recipes[blueprint].append(recipes[recipe_index])
-                recipes.pop(recipe_index)
-                if len(self.production_recipes[blueprint]) >= len(all_production[blueprint]):
-                    valid_blueprints.remove(blueprint)
-
-            valid_blueprints.extend([bp for bp in list(nonitem_blueprint_recipes.keys()) if
-                                     bp != "Crude Workstation" and bp != "Makeshift Post"])
-            # Now, we distribute the remaining recipes among all production buildings
-            for _product, recipes in all_recipes.items():
-                for recipe in recipes:
-                    filtered_blueprints = [bp for bp in valid_blueprints if bp not in self.production_recipes
-                                    or not any(recipe.product == rec.product for rec in self.production_recipes[bp])]
-                    blueprint = self.random.choice(filtered_blueprints if len(filtered_blueprints) > 0 else
-                                                   valid_blueprints)
+                valid_blueprints = list(blueprint_recipes.keys())
+                if not skip_cws:
+                    valid_blueprints.append("Crude Workstation")
+                if not skip_msp:
+                    valid_blueprints.append("Makeshift Post")
+                # First, add one recipe for each resource to a non-glade event bp to ensure they are all logically reachable
+                for _product, recipes in all_recipes.items():
+                    blueprint = self.random.choice(valid_blueprints)
                     if blueprint not in self.production_recipes:
                         self.production_recipes[blueprint] = []
-                    self.production_recipes[blueprint].append(recipe)
+                    recipe_index = self.random.randint(0, len(recipes)-1)
+                    self.production_recipes[blueprint].append(recipes[recipe_index])
+                    recipes.pop(recipe_index)
                     if len(self.production_recipes[blueprint]) >= len(all_production[blueprint]):
                         valid_blueprints.remove(blueprint)
-        else:
-            self.production_recipes = all_production
+
+                valid_blueprints.extend([bp for bp in list(nonitem_blueprint_recipes.keys()) if
+                                        bp != "Crude Workstation" and bp != "Makeshift Post"])
+                # Now, we distribute the remaining recipes among all production buildings
+                for _product, recipes in all_recipes.items():
+                    for recipe in recipes:
+                        filtered_blueprints = [bp for bp in valid_blueprints if bp not in self.production_recipes
+                                        or not any(recipe.product == rec.product for rec in self.production_recipes[bp])]
+                        blueprint = self.random.choice(filtered_blueprints if len(filtered_blueprints) > 0 else
+                                                    valid_blueprints)
+                        if blueprint not in self.production_recipes:
+                            self.production_recipes[blueprint] = []
+                        self.production_recipes[blueprint].append(recipe)
+                        if len(self.production_recipes[blueprint]) >= len(all_production[blueprint]):
+                            valid_blueprints.remove(blueprint)
+            else:
+                self.production_recipes = all_production
 
     def get_filler_item_name(self):
         choice = self.random.choices(self.filler_items)[0]
@@ -178,10 +184,13 @@ class AgainstTheStormWorld(World):
                         biome_keys.append(item_key)
 
         if self.options.enable_biome_keys:
-            # Pick a random biome to be the starting biome
-            starting_biome = self.random.choice(biome_keys)
-            biome_keys.remove(starting_biome)
-            self.multiworld.push_precollected(self.create_item(starting_biome))
+            biome_precollected = any(key in [item.name for item in self.multiworld.precollected_items[self.player]]
+                                     for key in biome_keys)
+            # Pick a random biome to be the starting biome, IF the player hasn't for us
+            if not biome_precollected:
+                starting_biome = self.random.choice(biome_keys)
+                biome_keys.remove(starting_biome)
+                self.multiworld.push_precollected(self.create_item(starting_biome))
             itempool.extend(biome_keys)
 
         # Fill remaining itempool space with filler
@@ -229,7 +238,10 @@ class AgainstTheStormWorld(World):
                         if expedition_index <= self.options.grove_expedition_locations:
                             location_pool[name] = self.location_name_to_id[name]
 
-        trade_locations = sample(trade_locations, self.options.extra_trade_locations.value)
+        # Samples a number of trade locations based on yaml setting (or doesn't for UT, so all locations exist for it)
+        if not getattr(self.multiworld, "generation_is_fake", False):
+            trade_locations = sample(trade_locations, self.options.extra_trade_locations.value)
+            
         for location in trade_locations:
             location_pool[location] = self.location_name_to_id[location]
 
@@ -285,6 +297,12 @@ class AgainstTheStormWorld(World):
                     lambda state: state.has("Trapper's Camp", self.player))
             add_rule(self.get_location("The Marshlands - Harvest from a Giant Proto Fungus"),
                     lambda state: state.has("Herbalist's Camp", self.player))
+            
+    def interpret_slot_data(self, slot_data: Optional[dict[str, Any]]) -> Optional[dict[str, Any]]:
+        if slot_data is not None:
+            self.production_recipes = {building: [Recipe(recipe[0], recipe[1]) for recipe in recipes]
+                                   for building, recipes in slot_data["production_recipes"].items()}
+        return slot_data
 
     def fill_slot_data(self) -> dict[str, Any]:
         # Convert Recipes into list[Any]s for storing in slot data

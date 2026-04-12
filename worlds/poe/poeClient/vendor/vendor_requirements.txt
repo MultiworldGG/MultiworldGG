@@ -1,4 +1,7 @@
-# Dependencies for Path of Exile Archipelago Client
+# Dependencies for Path of Exile Archipelago Client (SOURCE INSTALLATIONS ONLY)
+# For frozen builds, dependencies are bundled via worlds/poe/requirements.txt
+# This file + vendor_modules.zip are only used when running from source.
+#
 # HTTP client for async requests
 httpx>=0.28.1
 
@@ -12,7 +15,7 @@ pyttsx3==2.99
 pywinctl>=0.4.01
 
 # Windows COM/Win32 wrappers (native extension)
-pywin32==311 ; sys_platform == "win32"
+pywin32==313 ; sys_platform == "win32"
 
 #    #!/usr/bin/env bash
 #    set -euo pipefail

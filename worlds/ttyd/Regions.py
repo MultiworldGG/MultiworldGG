@@ -47,7 +47,7 @@ def get_region_connections_dict(world: "TTYDWorld") -> dict[tuple[str, str], typ
     Returns a dictionary mapping region connections (source, target) to their access rules.
     If a rule is None, the connection is always available.
     """
-    return {
+    connections = {
         ("Menu", "Rogueport"): None,
         ("Menu", "Rogueport (Westside)"): None,
         ("Menu", "Tattlesanity"): None,
@@ -66,15 +66,13 @@ def get_region_connections_dict(world: "TTYDWorld") -> dict[tuple[str, str], typ
         ("Rogueport Sewers", "Pit of 100 Trials"):
             lambda state: StateLogic.pit(state, world.player),
         ("Rogueport", "Shadow Queen"):
-            lambda state: StateLogic.palace(state, world, world.options.goal_stars.value),
+            lambda state, star_shuffle=world.options.star_shuffle.value: StateLogic.palace(state, world.player, world.options.goal_stars.value, star_shuffle),
         ("Rogueport", "Palace of Shadow"):
-            lambda state: StateLogic.palace(state, world, world.options.palace_stars.value),
+            lambda state, star_shuffle=world.options.star_shuffle.value: StateLogic.palace(state, world.player, world.options.palace_stars.value, star_shuffle),
         ("Palace of Shadow", "Palace of Shadow (Post-Riddle Tower)"):
             lambda state: StateLogic.riddle_tower(state, world.player),
         ("Palace of Shadow (Post-Riddle Tower)", "Shadow Queen"):
             lambda state: state.can_reach("Palace of Shadow Final Staircase: Ultra Shroom", "Location", world.player) and state.has("stars", world.player, world.options.goal_stars.value),
-        ("Rogueport", "Poshley Heights"):
-            lambda state: StateLogic.ultra_hammer(state, world.player) and StateLogic.super_boots(state, world.player),
         ("Rogueport", "Fahr Outpost"):
             lambda state: StateLogic.fahr_outpost(state, world.player),
         ("Rogueport", "Keelhaul Key"):
@@ -101,8 +99,6 @@ def get_region_connections_dict(world: "TTYDWorld") -> dict[tuple[str, str], typ
             lambda state: StateLogic.twilight_trail(state, world.player),
         ("Twilight Trail", "Creepy Steeple"):
             lambda state: StateLogic.steeple(state, world.player),
-        ("Rogueport Sewers", "Petal Meadows (Right)"):
-            lambda state: StateLogic.petal_right(state, world.player),
         ("Petal Meadows (Left)", "Petal Meadows (Right)"): None,
         ("Petal Meadows (Left)", "Hooktail's Castle"):
             lambda state: StateLogic.hooktails_castle(state, world.player),
@@ -111,6 +107,15 @@ def get_region_connections_dict(world: "TTYDWorld") -> dict[tuple[str, str], typ
         ("Fahr Outpost", "X-Naut Fortress"):
             lambda state: StateLogic.moon(state, world.player)
     }
+
+    if world.options.blue_pipe_toggle:
+        connections[("Rogueport Sewers", "Petal Meadows (Right)")] = lambda state: StateLogic.super_blue_pipes(state, world.player)
+        connections[("Rogueport Sewers", "Boggly Woods")] = lambda state: StateLogic.super_blue_pipes(state, world.player)
+        connections[("Rogueport Sewers", "Keelhaul Key")] = lambda state: StateLogic.ultra_blue_pipes(state, world.player)
+        connections[("Rogueport Sewers", "Poshley Heights")] = lambda state: StateLogic.ultra_blue_pipes(state, world.player)
+
+    return connections
+
 
 
 def create_regions(world: "TTYDWorld"):
@@ -149,8 +154,6 @@ def connect_regions(world: "TTYDWorld"):
             world.multiworld.get_region(target, world.player)
             connect(world, names, source, target, rule)
         except Exception:
-            # Skip connections where the region doesn't exist
-            # This could happen if one region was excluded by a different mechanism
             continue
 
 

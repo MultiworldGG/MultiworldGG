@@ -336,6 +336,11 @@
     },
     { 
         "from": "Side Stairs",
+        "to": "Observation Room Hallway",
+        "condition": {}
+    },
+    { 
+        "from": "Observation Room Hallway",
         "to": "Observation Room",
         "condition": {
             "items": [ 
@@ -345,7 +350,7 @@
         }
     },
     { 
-        "from": "Side Stairs",
+        "from": "Observation Room Hallway",
         "to": "Interrogation Room",
         "condition": {
             "items": ["Heart Key"]

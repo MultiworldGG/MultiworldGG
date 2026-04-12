@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 
 from .data import data as crystal_data, PokemonData, EvolutionData, GrowthRate, EvolutionType, LogicalAccess
 from .options import RandomizeEvolution, ConvergentEvolution
-from .utils import pokemon_convert_friendly_to_ids
 
 __ALL_KEY = "all"
 __FINAL_KEY = "final"
@@ -74,7 +73,7 @@ def randomize_evolution(world: "PokemonCrystalWorld") -> dict[str, list[str]]:
 
 
 def generate_pokemon_groupings(world: "PokemonCrystalWorld") -> dict[str, dict[str, PokemonData]]:
-    blocklist = pokemon_convert_friendly_to_ids(world, world.options.evolution_blocklist.value)
+    blocklist = world.options.evolution_blocklist.get_ids(world)
     blocklist.add("UNOWN")
     unblocked_pkmn: dict[str, PokemonData] = dict(
         (name, data) for name, data in world.generated_pokemon.items() if name not in blocklist
@@ -183,7 +182,7 @@ def __handle_no_valid_evolution(world: "PokemonCrystalWorld",
     else:
         # Last resort: Evolve into the blocklist
         # Because there are more final evolutions than evolving Pokemon, only a large blocklist can get here
-        blocklist = pokemon_convert_friendly_to_ids(world, world.options.evolution_blocklist.value)
+        blocklist = world.options.evolution_blocklist.get_ids(world)
         blocked_final_evolutions = (
             name for name, data in world.generated_pokemon.items() if
             name in blocklist and not data.evolutions and name != "UNOWN"
@@ -193,21 +192,27 @@ def __handle_no_valid_evolution(world: "PokemonCrystalWorld",
 
 def get_logically_available_evolutions(world: "PokemonCrystalWorld") -> set[str]:
     evolution_pokemon = set()
+    for evolver in world.logic.evolution.keys():
+        world.logic.evolution[evolver] = []
 
-    def recursive_evolution_add(evolving_pokemon):
+    for evolving_pokemon in world.logic.available_pokemon:
         for evo in world.generated_pokemon[evolving_pokemon].evolutions:
             logical_access = LogicalAccess.InLogic if evolution_in_logic(world, evo) else LogicalAccess.OutOfLogic
             if not world.is_universal_tracker and logical_access is LogicalAccess.OutOfLogic: continue
             world.logic.evolution[evolving_pokemon].append((evo, logical_access))
-            if evo.pokemon not in evolution_pokemon:
-                if logical_access is LogicalAccess.InLogic:
-                    evolution_pokemon.add(evo.pokemon)
-                recursive_evolution_add(evo.pokemon)
-
-    for pokemon in world.logic.available_pokemon:
-        recursive_evolution_add(pokemon)
+            if logical_access is LogicalAccess.InLogic: evolution_pokemon.add(evo.pokemon)
 
     return evolution_pokemon
+
+
+def get_pokemon_evolutions(world: "PokemonCrystalWorld", pokemon: str, explored: set[str] | None = None) -> set[str]:
+    if explored is None:
+        explored = {pokemon}
+    for evo in world.generated_pokemon[pokemon].evolutions:
+        if evo.pokemon not in explored:
+            explored.add(evo.pokemon)
+            get_pokemon_evolutions(world, evo.pokemon, explored)
+    return explored
 
 
 def get_random_pokemon_evolution(random: Random, pkmn_name: str, pkmn_data: PokemonData):

@@ -1,8 +1,7 @@
 from .Items import SongData
-from typing import Dict
 
 
-SONG_DATA: Dict[str, SongData] = {
+SONG_DATA: dict[str, SongData] = {
     "Love is War [1]": SongData(10, 1, {'Hatsune Miku'}, False, False, [2.0, 4.0, 6.0, 8.0, 8.5]),
     "The World is Mine [2]": SongData(20, 2, {'Hatsune Miku'}, False, False, [4.0, 5.5, 6.0, 7.5, 8.0]),
     "That One Second in Slow Motion [3]": SongData(30, 3, {'Hatsune Miku'}, True, False, [4.0, 5.0, 6.5, 7.0, 7.5]),

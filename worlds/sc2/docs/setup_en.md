@@ -108,25 +108,54 @@ the mission in the 'StarCraft 2 Launcher' tab in the client.
 
 ## How do I join a MultiWorld game?
 
-1. Run the Starcraft II Client from the MultiworldGG Launcher
-   - macOS users should instead follow the instructions found at ["Running in macOS"](#running-in-macos) for this step 
-   only.
-2. Type `/connect [server ip]`.
+1. Run MultiworldGGLauncher.exe.
+2. Search for the Starcraft 2 Client in the launcher to open the game-specific client
+   - Alternatively, steps 1 and 2 can be combined by providing the `"Starcraft 2 Client"` launch argument to the launcher.
+3. In the Archipelago tab, type `/connect [server IP]`.
    - If you're running through the website, the server IP should be displayed near the top of the room page.
-3. Type your slot name from your YAML when prompted.
-4. If the server has a password, enter that when prompted.
-5. Once connected, switch to the 'StarCraft 2 Launcher' tab in the client. There, you can see all the missions in your 
-world. 
-Unreachable missions will have greyed-out text. Just click on an available mission to start it!
+   - The server IP may also be typed into the top bar, and then clicking "Connect"
+4. Type your slot name from your YAML when prompted.
+5. If the server has a password, enter that when prompted.
+6. Once connected, switch to the 'StarCraft 2 Launcher' tab in the client. There, you can see all the missions in your 
+world.
 
-## The game isn't launching when I try to start a mission.
+Unreachable missions will have greyed-out text. Completed missions (all locations collected) will have white text.
+Accessible but incomplete missions will have blue text. Goal missions will have a gold border.
+Mission buttons will have a color corresponding to the faction you play as in that mission.
 
-First, check the log file for issues (stored at `[MultiworldGG Directory]/logs/SC2Client.txt`). 
+Click on an available mission to start it.
+
+## Troubleshooting
+
+### I can't connect to my seed.
+
+Rooms on the MultiworldGG website go to sleep after two hours of inactivity; reload or refresh the room page
+to start them back up.
+When restarting the room, the connection port may change (the numbers after "multiworld.gg:"),
+make sure that is accurate.
+Your slot name should be displayed on the room page as well; make sure that exactly matches the slot name you
+type into your client, and note that it is case-sensitive.
+
+If none of these things solve the problem, visit the [Discord](https://discord.com/invite/8Z65BR2) and check
+the #software-announcements channel to see if there's a listed outage, or visit the #starcraft-2 channel for
+tech support.
+
+### The game isn't launching when I try to start a mission.
+
+Usually, this is caused by the mod files not being downloaded.
+Make sure you have run `/download_data` in the Archipelago tab before playing.
+You should only have to run `/download_data` again to pick up bugfixes and updates.
+
+Make sure that you are running an up-to-date version of the client.
+Check the [MultiworldGG Releases Page](https://github.com/MultiworldGG/MultiworldGG/releases) to
+look up what the latest version is.
+
+If these things are in order, check the log file for issues (stored at `[MultiworldGG Directory]/logs/SC2Client_<date>.txt`).
 If you can't figure out the log file, visit our [Discord's](https://discord.com/invite/8Z65BR2) tech-support channel 
 for help. 
 Please include a specific description of what's going wrong and attach your log file to your message.
 
-## My keyboard shortcuts profile is not available when I play *StarCraft 2 Archipelago*.
+### My keyboard shortcuts profile is not available when I play *StarCraft 2 Archipelago*.
 
 For your keyboard shortcuts profile to work in MultiworldGG, you need to copy your shortcuts file from 
 `Documents/StarCraft II/Accounts/######/Hotkeys` to `Documents/StarCraft II/Hotkeys`. 

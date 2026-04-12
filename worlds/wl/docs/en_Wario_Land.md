@@ -2,7 +2,7 @@
 
 ## Where is the settings page?
 
-You can read through all the settings and generate a YAML [here](../player-settings).
+You can read through all the settings and generate a YAML [here](../player-options).
 
 ## Important things to note
 

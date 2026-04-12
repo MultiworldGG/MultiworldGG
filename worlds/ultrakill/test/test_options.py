@@ -3,6 +3,14 @@ from ..Items import item_list, fire2_weapons, item_groups, ItemType
 from ..Locations import location_list, LocationType
 
 
+class TestNotPerfectGoal(UltrakillTestBase):
+    options = { "perfect_goal": "false" }
+
+
+class TestPerfectGoal(UltrakillTestBase):
+    options = { "perfect_goal": "true" }
+
+
 class TestUnlockLevels(UltrakillTestBase):
     options = { "unlock_type": "levels" }
 
@@ -29,18 +37,52 @@ class TestUnlockLayers(UltrakillTestBase):
             self.assertNotIn(item, item_names)
 
 
-class TestNotPerfectGoal(UltrakillTestBase):
-    options = { "perfect_goal": "false" }
+class TestSecretUnlockExits(UltrakillTestBase):
+    options = { "secret_mission_unlock_type": "secret_exits" }
+
+    def test_unlock_secret_exits(self) -> None:
+        item_names = [i.name for i in self.multiworld.get_items()]
+
+        for item in item_groups["secret_missions"]:
+            self.assertNotIn(item, item_names)
 
 
-class TestPerfectGoal(UltrakillTestBase):
-    options = { "perfect_goal": "true" }
+class TestSecretUnlockItems(UltrakillTestBase):
+    options = { "secret_mission_unlock_type": "items" }
+
+    def test_unlock_secret_items(self) -> None:
+        item_names = [i.name for i in self.multiworld.get_items()]
+
+        for item in item_groups["secret_missions"]:
+            self.assertIn(item, item_names)
+
+
+class TestSecretExitStandard(UltrakillTestBase):
+    options = { "secret_exit_behavior": "standard" }
+
+    def test_secret_exit_standard(self) -> None:
+        exit_locations = [l.name for l in location_list if l.type == LocationType.SecretExit]
+
+        location_names = [l.name for l in self.multiworld.get_locations()]
+
+        for location in exit_locations:
+            self.assertNotIn(location, location_names)
+
+
+class TestSecretExitRewards(UltrakillTestBase):
+    options = { "secret_exit_behavior": "add_rewards" }
+
+    def test_secret_exit_rewards(self) -> None:
+        exit_locations = [l.name for l in location_list if l.type == LocationType.SecretExit]
+
+        location_names = [l.name for l in self.multiworld.get_locations()]
+
+        for location in exit_locations:
+            self.assertIn(location, location_names)
 
 
 class TestEnemyDisabled(UltrakillTestBase):
-    options = {
-        "enemy_rewards": "disabled",
-    }
+    options = { "enemy_rewards": "disabled" }
 
     def test_enemy_disabled(self) -> None:
         all_enemy_locations = [l.name for l in location_list if l.type == LocationType.Boss or l.type == LocationType.BossExt or l.type == LocationType.Enemy]
@@ -52,9 +94,7 @@ class TestEnemyDisabled(UltrakillTestBase):
 
 
 class TestEnemyBosses(UltrakillTestBase):
-    options = {
-        "enemy_rewards": "bosses",
-    }
+    options = { "enemy_rewards": "bosses" }
 
     def test_enemy_bosses(self) -> None:
         boss_locations = [l.name for l in location_list if l.type == LocationType.Boss]
@@ -71,9 +111,7 @@ class TestEnemyBosses(UltrakillTestBase):
 
 
 class TestEnemyExtra(UltrakillTestBase):
-    options = {
-        "enemy_rewards": "extra",
-    }
+    options = { "enemy_rewards": "extra" }
 
     def test_enemy_extra(self) -> None:
         extra_locations = [l.name for l in location_list if l.type == LocationType.Boss or l.type == LocationType.BossExt]
@@ -350,7 +388,7 @@ class TestNotStartArm(UltrakillTestBase):
     options = { "start_with_arm": "false" }
     
     def test_not_start_arm(self) -> None:
-        self.assertIn("Feedbacker", [i.name for i in self.multiworld.get_items()])
+        self.assertEqual(1, [i.name for i in self.multiworld.get_items()].count("Feedbacker"))
 
 
 class TestStartArm(UltrakillTestBase):

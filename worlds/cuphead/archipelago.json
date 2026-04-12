@@ -1,0 +1,8 @@
+{
+  "version": 6,
+  "compatible_version": 5,
+  "game": "Cuphead",
+  "world_version": "0.2.1",
+  "world_version_full": "alpha02i.1",
+  "minimum_ap_version": "0.6.0"
+}

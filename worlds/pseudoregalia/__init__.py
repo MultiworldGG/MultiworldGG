@@ -14,26 +14,27 @@ from .constants.versions import FULL_GOLD
 
 
 class PseudoregaliaWebWorld(WebWorld):
-    tutorials = [
-        Tutorial(
-            tutorial_name="Multiworld Setup Guide",
-            description="A guide to setting up the Pseudoregalia Randomizer for MultiworldGG multiworld games.",
-            language="English",
-            file_name="setup_en.md",
-            link="setup/en",
-            authors=["qwint"]
-        )
-    ]
+    setup_en = Tutorial(
+        "Setup Guide",
+        "A guide for setting up Pseudoregalia to be played in MultiworldGG.",
+        "English",
+        "setup_en.md",
+        "setup/en",
+        ["highrow623"]
+    )
+    tutorials = [setup_en]
+    
+
 class PseudoregaliaWorld(World):
     """
-    Pseudoregalia is a 3D metroidvania/platform game hybrid, where the player character, Sybil, is tasked with making 
-    her way through the Castle Sansa. The gameplay emphasizes fluidity and responsiveness, with a focus on running and jumping.
+    Pseudoregalia is a wide-open 3D metroidvania with plenty of cool movement abilities to find and a sprawling
+    dream-like castle to explore.
     """
-    game = "Pseudoregalia"
-    author: str = "LittleMeowMeow & qwint"
-    required_client_version = (0, 7, 0)
-    apworld_version = (0, 10, 0)
 
+    game = "Pseudoregalia"
+    author: str = "LittleMeowMeow, qwint, & highrow623"
+    required_client_version = (0, 7, 0)
+ 
     item_name_to_id = {name: data.code for name, data in item_table.items() if data.code is not None}
     location_name_to_id = {name: data.code for name, data in location_table.items() if data.code is not None}
     item_name_groups = item_groups
@@ -156,7 +157,7 @@ class PseudoregaliaWorld(World):
 
     def fill_slot_data(self) -> Dict[str, Any]:
         slot_data = {
-            "apworld_version": self.apworld_version,
+            "apworld_version": self.world_version,
             "game_version": self.options.game_version.value,
             "logic_level": self.options.logic_level.value,
             "spawn_point": self.options.spawn_point.value,

@@ -5,8 +5,8 @@ from ..client.links.link_base import LinkBase
 from ..client.links.network_engine import ArchipelagoNetworkEngine
 
 class _MockNetworkEngine(ArchipelagoNetworkEngine):
-    def __init__(self, tags = [ ], player_name = "rando-player"):
-        self.tags = tags
+    def __init__(self, tags=tuple(), player_name = "rando-player"):
+        self.tags = list(tags)
         self.player_name = player_name
 
     def update_tags_async(self, enable_tag: bool, tag_name:str):

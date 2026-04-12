@@ -13,7 +13,6 @@ from ..client import ZorkGrandInquisitorContext
 from ..data.entrance_randomizer_data import randomizable_entrances, randomizable_entrances_subway
 from ..data.location_data import ZorkGrandInquisitorLocationData, location_data
 from ..data.mapping_data import entrance_names, entrance_names_reverse, hotspots_for_regional_hotspot
-from ..data_funcs import is_location_in_logic
 
 from ..enums import (
     ZorkGrandInquisitorDeathsanity,
@@ -35,7 +34,7 @@ class NotConnectedLayout(BoxLayout):
         self.ctx = ctx
 
         self.add_widget(
-            Label(text="Please connect to a MultiworldGG server first to view this tab.", font_size="24dp")
+            Label(text="Please connect to an Archipelago server first to view this tab.", font_size="24dp")
         )
 
     def show(self):
@@ -67,7 +66,6 @@ class TrackerLocationLabel(Label):
     region: ZorkGrandInquisitorRegions
     location: ZorkGrandInquisitorLocations
 
-    in_logic: bool
     checked: bool
 
     def __init__(
@@ -91,25 +89,21 @@ class TrackerLocationLabel(Label):
         self.region = region
         self.location = location
 
-        self.in_logic = False
         self.checked = False
 
         self.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-    def update(
-        self,
-        discovered_regions: Set[ZorkGrandInquisitorRegions],
-        received_items: Set[ZorkGrandInquisitorItems],
-    ) -> None:
+    def update(self, discovered_regions: Set[ZorkGrandInquisitorRegions]) -> None:
+        if self.region not in discovered_regions:
+            self.opacity = 0.1
+            return
+
         self.checked = self.location in self.ctx.ui_locations_checked
-        self.in_logic = is_location_in_logic(self.location, discovered_regions, received_items)
 
         if self.checked:
             self.opacity = 0.1
-        elif self.in_logic:
-            self.opacity = 1.0
         else:
-            self.opacity = 0.3
+            self.opacity = 1.0
 
 
 class TrackerLocationsLayout(ScrollView):
@@ -145,10 +139,10 @@ class TrackerLocationsLayout(ScrollView):
         self.layout.add_widget(self.title_label)
 
         note_label: Label = Label(
-            text="This location tracker does not spoil region access.\nYou will need to gain access to each region in-game to discover which of its locations are in logic for the rest of the seed.\nWild VOXAM and Teleport Traps may falsify which regions you have discovered in-game.\n\nIf you prefer more traditional tracker behavior, the Zork APWorld is fully compatible with Universal Tracker, including map tracking.",
+            text="This location tracker does not spoil region access.\nYou will need to gain access to each region in-game to activate its location checks below.\nWild VOXAM and Teleport Traps may falsify which regions you have discovered in-game.\n\nThe tracker isn't able to determine what is in logic at a given time\nIf you require such functionality, the Zork APWorld is fully compatible with Universal Tracker, including map tracking.",
             font_size="12dp",
             size_hint_y=None,
-            height="86 dp",
+            height="100dp",
             halign="left",
             valign="top",
             opacity=0.5,
@@ -509,17 +503,12 @@ class TrackerLocationsLayout(ScrollView):
             if network_item.item in self.ctx.id_to_items:
                 received_items.add(self.ctx.id_to_items[network_item.item])
 
-        in_logic_count: int = 0
-
         location_label: TrackerLocationLabel
         for location_label in self.location_labels.values():
-            location_label.update(discovered_regions, received_items)
-
-            if location_label.in_logic and not location_label.checked:
-                in_logic_count += 1
+            location_label.update(discovered_regions)
 
         self.title_label.text = (
-            f"[b]Locations  ({len(self.ctx.checked_locations)} / {len(self.ctx.server_locations)}, {in_logic_count} in Logic, {len(discovered_regions) - 1} Region(s) Discovered)[/b]"
+            f"[b]Locations  ({len(self.ctx.checked_locations)} / {len(self.ctx.server_locations)}, {len(discovered_regions) - 1} Region(s) Discovered)[/b]"
         )
 
 

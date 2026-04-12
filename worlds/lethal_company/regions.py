@@ -1,6 +1,6 @@
 from BaseClasses import MultiWorld, Region, Location, ItemClassification
 from .locations import generate_bestiary_moons, generate_scrap_moons, locations, generate_scrap_moons_alt
-from .rules import check_item_accessible
+from .rules import check_item_accessible, can_buy
 from .options import LCOptions
 from typing import TYPE_CHECKING
 
@@ -50,10 +50,10 @@ def create_regions(options: LCOptions, world: "LethalCompanyWorld"):
 
     terminal.connect(company_building, rule=lambda state: (state.has("Company Building", player)
                                                            or options.randomize_company_building == 0))
-    company_building.connect(quotas, rule=lambda state: ((state.has("Inventory Slot", player)
+    company_building.connect(quotas, rule=lambda state: ((state.has("Inventory Slot", player, 2)
                                                           or options.starting_inventory_slots.value >= 2)
                                                          and (state.has("Stamina Bar", player)
-                                                              or options.starting_stamina_bars.value >= 1)))
+                                                              or options.starting_stamina_bars.value > 0)))
 
     bestiary_moons = generate_bestiary_moons(world, options.min_monster_chance.value/100.0)
     scrap_moons = generate_scrap_moons(world, options.min_scrap_chance.value/100.0) if options.modify_scrap_spawns.value == 0 \
@@ -82,19 +82,27 @@ def create_regions(options: LCOptions, world: "LethalCompanyWorld"):
                                                                       rule=lambda state, s_name=scrap_name:
                                                                       ((state.has("Stamina Bar", player)
                                                                         or options.starting_stamina_bars.value > 0)
-                                                                       and (check_item_accessible(state, "Shovel",
+                                                                        and ((check_item_accessible(state, "Shovel",
                                                                                                   player, options)
+                                                                                and (state.has("Stamina Bar", player, 3)
+                                                                                    or options.starting_stamina_bars.value >= 3
+                                                                                    or (s_name != "Sapsucker Egg")))
                                                                             or (s_name != "Shotgun"
-                                                                                and s_name != "Kitchen knife"))))
+                                                                                and s_name != "Kitchen knife"
+                                                                                and s_name != "Sapsucker Egg"))))
                 elif moon != "excluded":
                     multiworld.get_region(moon, player).connect(multiworld.get_region(scrap_name, player),
                                                                 rule=lambda state, s_name=scrap_name:
                                                                 ((state.has("Stamina Bar", player)
-                                                                  or options.starting_stamina_bars.value > 0)
-                                                                 and (check_item_accessible(state, "Shovel",
-                                                                                            player, options)
-                                                                      or (s_name != "Shotgun"
-                                                                          and s_name != "Kitchen knife"))))
+                                                                    or options.starting_stamina_bars.value > 0)
+                                                                    and ((check_item_accessible(state, "Shovel",
+                                                                                                player, options)
+                                                                            and (state.has("Stamina Bar", player, 3)
+                                                                                or options.starting_stamina_bars.value >= 3
+                                                                                or (s_name != "Sapsucker Egg")))
+                                                                        or (s_name != "Shotgun"
+                                                                            and s_name != "Kitchen knife"
+                                                                            and s_name != "Sapsucker Egg"))))
 
     logs.append(Region("Sound Behind the Wall", player, multiworld))
     multiworld.regions.append(logs[-1])
@@ -109,7 +117,7 @@ def create_regions(options: LCOptions, world: "LethalCompanyWorld"):
     multiworld.regions.append(logs[-1])
     multiworld.get_region("41 Experimentation", player).connect(logs[3],
                                                              rule=lambda state: (state.has("Stamina Bar", player)
-                                                                                 or options.starting_stamina_bars >= 1))
+                                                                                 or options.starting_stamina_bars > 0))
     logs.append(Region("Golden Planet", player, multiworld))
     multiworld.regions.append(logs[-1])
     multiworld.get_region("85 Rend", player).connect(logs[4])
@@ -132,20 +140,16 @@ def create_regions(options: LCOptions, world: "LethalCompanyWorld"):
     multiworld.regions.append(logs[-1])
     multiworld.get_region("8 Titan", player).connect(logs[10],
                                                    rule=lambda state:
-                                                   (state.has_any(["Extension Ladder", "Jetpack"], player)
+                                                   ((state.has("Stamina Bar", player)
+                                                        or options.starting_stamina_bars > 0)  
                                                     and (state.has("Terminal", player)
-                                                         or options.randomize_terminal == 0)
-                                                    and (state.has("Company Building", player)
-                                                         or options.randomize_company_building == 0)))
+                                                         or options.randomize_terminal == 0)))
     logs.append(Region("Desmond", player, multiworld))
     multiworld.regions.append(logs[-1])
     multiworld.get_region("8 Titan", player).connect(logs[11],
                                                    rule=lambda state:
-                                                   (state.has_any(["Extension Ladder", "Jetpack"], player)
-                                                    and (state.has("Terminal", player)
-                                                         or options.randomize_terminal == 0)
-                                                    and (state.has("Company Building", player)
-                                                         or options.randomize_company_building == 0)))
+                                                   (state.has("Jetpack", player)  
+                                                    and can_buy(state, player, options)))
     logs.append(Region("Team Synergy", player, multiworld))
     multiworld.regions.append(logs[-1])
     multiworld.get_region("20 Adamance", player).connect(logs[12])

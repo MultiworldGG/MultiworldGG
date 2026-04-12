@@ -237,7 +237,7 @@ def _set_rules(world: 'SpireWorld', player: int, config: 'CharacterConfig'):
         add_rule(multiworld.get_location(f"{prefix} Sapphire Key", player),
                  SpireHasPower(world, prefix, PowerLevel(draw=1)))
 
-        add_rule(multiworld.get_entrance(f"{prefix} Act 4", player),
+        add_rule(multiworld.get_entrance(f"{prefix} Act 3 Boss Arena", player),
                  lambda state: state.has(f"{prefix} Sapphire Key", player) and
                                state.has(f"{prefix} Ruby Key", player) and
                                state.has(f"{prefix} Emerald Key", player))

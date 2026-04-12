@@ -67,7 +67,7 @@ def create_regions_locations_connections(world: "MK64World"):
                 add_location(player, loc_name, code, course_regions[-1])
         for spot in spot_data_clusters:
             spot_location = add_location(player, spot.name, spot.code, course_regions[-1])
-            if spot.access is not None:
+            if opt.fences and spot.access:
                 spot_location.access_rule = lambda state, access=spot.access: state.has_any(access, player)
 
     # Shared Hazard Regions & Locations & Connections
@@ -101,7 +101,9 @@ def create_regions_locations_connections(world: "MK64World"):
                 course_regions[c-1].connect(
                     course_regions[c],
                     entrance_names[c],
-                    lambda state, qualify_rule=course_qualify_rules[order[c-1]]: qualify_rule(state, player, opt.logic))
+                    lambda state, qualify_rule=course_qualify_rules[order[c-1]]:
+                        qualify_rule(state, player, opt.logic, opt)
+                )
             else:
                 menu_region.connect(course_regions[c], entrance_names[c],
                                     lambda state, count=c//4: state.has("Progressive Cup Unlock", player, count))

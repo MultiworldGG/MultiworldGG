@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Set
 from pathlib import Path
 from importlib import resources
 from importlib.resources.abc import Traversable
@@ -10,12 +10,13 @@ import re
 import os
 import shutil
 
-sm64hack_items: Tuple[str] = (
+sm64hack_items: Tuple[str, ...] = (
     "Key 1", 
     "Key 2", 
     "Wing Cap", 
     "Vanish Cap", 
     "Metal Cap", 
+    "Castle Moat",
     "Power Star",
     "Progressive Key", 
     "Course 1 Cannon",
@@ -57,17 +58,168 @@ sm64hack_items: Tuple[str] = (
     "Mario Choir",
     "Heave-Ho Trap",
     "Squish Trap",
-    "Castle Moat" 
+    "Spin Trap",
+    "Tempo Trap",
+    "Course 1 Ticket",
+    "Course 2 Ticket",
+    "Course 3 Ticket",
+    "Course 4 Ticket",
+    "Course 5 Ticket",
+    "Course 6 Ticket",
+    "Course 7 Ticket",
+    "Course 8 Ticket",
+    "Course 9 Ticket",
+    "Course 10 Ticket",
+    "Course 11 Ticket",
+    "Course 12 Ticket",
+    "Course 13 Ticket",
+    "Course 14 Ticket",
+    "Course 15 Ticket",
+    "Bowser 1 Ticket",
+    "Bowser 2 Ticket",
+    "Bowser 3 Ticket",
+    "Slide Ticket",
+    "Secret 1 Ticket",
+    "Secret 2 Ticket",
+    "Secret 3 Ticket",
+    "Metal Cap Ticket",
+    "Wing Cap Ticket",
+    "Vanish Cap Ticket",
+    "Overworld Ticket",
+    "Progressive Jump",
+    "Backflip",
+    "Sideflip",
+    "Wallkick",
+    "Long Jump",
+    "Dive",
+    "Ground Pound",
+    "Kick",
+    "Punch",
+    "Slidekick",
+    "Shell",
+    "Star Bundle",
+    "Blue Star",
+    "Blue Star Bundle",
+    "Gray Switch",
+    "1-Up Mushroom",
+    "5% 100-coin star discount",
+    "Cap Timer Extension",
+    "Temporary Metal Cap",
+    "Temporary Vanish Cap",
+    "Cap Timer Extension",
+    "+1 Wallkick Frame",
+    "Steve"
+)
+tickets: Set[str] = {
+    "Course 1 Cannon",
+    "Course 2 Cannon",
+    "Course 3 Cannon",
+    "Course 4 Cannon",
+    "Course 5 Cannon",
+    "Course 6 Cannon",
+    "Course 7 Cannon",
+    "Course 8 Cannon",
+    "Course 9 Cannon",
+    "Course 10 Cannon",
+    "Course 11 Cannon",
+    "Course 12 Cannon",
+    "Course 13 Cannon",
+    "Course 14 Cannon",
+    "Course 15 Cannon",
+    "Bowser 1 Cannon",
+    "Bowser 2 Cannon",
+    "Bowser 3 Cannon",
+    "Slide Cannon",
+    "Secret 1 Cannon",
+    "Secret 2 Cannon",
+    "Secret 3 Cannon",
+    "Metal Cap Cannon",
+    "Wing Cap Cannon",
+    "Vanish Cap Cannon",
+    "Overworld Cannon"
+}
+fullmoves: Set[str] = {
+    "Progressive Jump",
+    "Backflip",
+    "Sideflip",
+    "Wallkick",
+    "Long Jump",
+    "Dive",
+    "Ground Pound",
+    "Kick",
+    "Punch",
+    "Slidekick",
+    "Shell"
+}
+cannons: Set[str] = {
+    "Course 1 Cannon",
+    "Course 2 Cannon",
+    "Course 3 Cannon",
+    "Course 4 Cannon",
+    "Course 5 Cannon",
+    "Course 6 Cannon",
+    "Course 7 Cannon",
+    "Course 8 Cannon",
+    "Course 9 Cannon",
+    "Course 10 Cannon",
+    "Course 11 Cannon",
+    "Course 12 Cannon",
+    "Course 13 Cannon",
+    "Course 14 Cannon",
+    "Course 15 Cannon",
+    "Bowser 1 Cannon",
+    "Bowser 2 Cannon",
+    "Bowser 3 Cannon",
+    "Slide Cannon",
+    "Secret 1 Cannon",
+    "Secret 2 Cannon",
+    "Secret 3 Cannon",
+    "Metal Cap Cannon",
+    "Wing Cap Cannon",
+    "Vanish Cap Cannon",
+    "Overworld Cannon",
+}
+badge_items: Set[str] = {
+    "Progressive Stomp Badge",
+    "Wall Badge",
+    "Triple Jump Badge",
+    "Lava Badge"
+}
+
+
+moves: Tuple[str, ...] = (
+    "Backflip",
+    "Sideflip",
+    "Long Jump",
+    "Dive",
+    "Ground Pound",
+    "Kick",
+    "Punch",
+    "Slidekick",
+    "Shell"
 )
 
-traps: Tuple[str] = (
+traps: Tuple[str, ...] = (
     "Green Demon Trap",
     "Mario Choir",
     "Heave-Ho Trap",
-    "Squish Trap"
+    "Squish Trap",
+    "Spin Trap",
+    "Tempo Trap"
 )
 
-badges: Tuple[str] = (
+junk: Tuple[str, ...] = (
+    "Coin",
+    "1-Up Mushroom"
+)
+
+useful: Tuple[str, ...] = (
+    "5% 100-coin star discount",
+    "Cap Timer Extension",
+    "+1 Wallkick Frame"
+)
+
+badges: Tuple[str, ...] = (
     "Super Badge",
     "Ultra Badge",
     "Wall Badge",
@@ -75,7 +227,7 @@ badges: Tuple[str] = (
     "Lava Badge"
 )
 
-star_like: Tuple[str] = (
+star_like: Tuple[str, ...] = (
     "Power Star",
     "Overworld Cannon Star",
     "Bowser 2 Cannon Star"
@@ -133,10 +285,8 @@ def find_json_files(directory: Traversable):
     if directory.is_dir():
         ret = []
 
-    print("gay", list(directory.iterdir()))
-
 def create_json_folders(auto_update):
-    json_dir = os.path.join(Utils.local_path("data", "sm64hacks"))
+    json_dir = os.path.join(Utils.user_path(), "sm64hack_jsons")
     custom_json_dir = os.path.join(json_dir, "custom_jsons")
     downloaded_json_dir = os.path.join(json_dir, "downloaded_jsons")
     os.makedirs(json_dir, exist_ok=True)
@@ -186,13 +336,10 @@ class Data:
     }
 
 
-    def import_json(self, file_name, auto_update):
-        json_dir = os.path.join(Utils.local_path("data", "sm64hacks"))
+    def import_json(self, file_name):
+        json_dir = os.path.join(Utils.user_path(), "sm64hack_jsons")
         custom_json_dir = os.path.join(json_dir, "custom_jsons")
         downloaded_json_dir = os.path.join(json_dir, "downloaded_jsons")
-
-        if(auto_update):
-            update_jsons()
 
         json_file = list(Path(custom_json_dir).rglob(file_name)) #custom takes priority over downloaded
         if json_file == []:
@@ -205,5 +352,9 @@ class Data:
         #print(json_file)
         with open(json_file, 'r') as infile:
             filetext = infile.read()
-            self.maxstarcount = max(int(i) for i in re.findall("\"StarRequirement\": *\"(\\d+)\"", filetext))
+            self.maxstarcount = max(int(i) for i in re.findall(r"\|Stars:(\d+)\|", filetext))
             self.locations = json.loads(filetext)
+            if self.locations["Other"]["Settings"].get("Entrances"):
+                self.progression_courses = set() 
+                for entrance in self.locations["Other"]["Entrances"]:
+                    self.progression_courses |= set((entrance[0], entrance[2]))

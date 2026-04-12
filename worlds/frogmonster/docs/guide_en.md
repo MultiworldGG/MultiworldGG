@@ -1,3 +1,5 @@
+# Setup for Frogmonster for MultiworldGG
+
 ## Required software
 1. Frogmonster, as available [on Steam](https://store.steampowered.com/app/1853760/Frogmonster/).
 

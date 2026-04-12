@@ -84,6 +84,15 @@ cmd_line_size = {
 }
 
 
+def process_apostrophes(line: str) -> int:
+    apostrophe_specials = {'d', 'l', 'm', 'r', 's', 't', 'v'}
+    num_specials = 0
+    for i in range(len(line) - 1):
+        if line[i] == "'" and line[i+1] in apostrophe_specials:
+            num_specials += 1
+    return num_specials
+
+
 def script_line_to_blocks(first_cmd: int, line: str):
     blocks = [first_cmd]
     size = 0
@@ -96,7 +105,7 @@ def script_line_to_blocks(first_cmd: int, line: str):
             # append the string up until the command placeholder
             if placeholder_start > 0:
                 blocks.append(line[:placeholder_start])
-                size += placeholder_start
+                size += placeholder_start - process_apostrophes(line[:placeholder_start])
 
             # extract the command
             cmd_string = line[placeholder_start:placeholder_end + 1]
@@ -175,7 +184,8 @@ def template_call_remote(location: Location, world):
         "POKEMON BLACK AND WHITE": "UNOVA",
         "VOLTORB FLIP": "the GAME CORNER",
         "POKEMON PINBALL": "KANTO GAME CORNER",
-        "POKEMON MYSTERY DUNGEON EXPLORERS OF SKY": "GRASS CONTINENT"
+        "POKEMON MYSTERY DUNGEON EXPLORERS OF SKY": "GRASS CONTINENT",
+        "POKEMON RANGER (QUEST)": "FIORE"
     }
 
     raw_game_name = location.item.game.upper()

@@ -20,6 +20,7 @@ TAG_WIN_COMBO = "Win With Certain Characters"
 TAG_TT = "Time Trial"
 TAG_TT_GOOD = "Time Trial Good Time"
 TAG_TT_GHOST = "Time Trial Staff Ghost"
+TAG_ITEM_BOX = "Item Box"
 
 
 class MkddLocation(Location):
@@ -32,6 +33,15 @@ class MkddLocationData(NamedTuple):
     region: str = "Menu"
     required_items: dict[str, int] = {}
     tags: set[str] = {}
+
+BOX_NAMES = {
+    "Mushroom Bridge": ["Pipe", "Sidewalk", "Bridge"],
+    "Peach Beach": ["Hidden Pipe", "Beach Jump", "Fountain"],
+    "Luigi Circuit": ["Chomp Shortcut", "Last Curve Shortcut"],
+    "Wario Colosseum": ["Great Jump"],
+    "Daisy Cruiser": ["Cargo Area"],
+    "Dino Dino Jungle": ["Bridge Side"]
+}
 
 def get_loc_name_cup(cup: str, ranking: int, vehicle_class: int) -> str:
     try:
@@ -82,6 +92,9 @@ def get_loc_name_win_course_char(course: game_data.Course) -> str:
     else:
         return f"Win in {course.name} With {characters[0]} and {characters[1]}"
 
+def get_loc_name_item_box(course: str, box_id: int) -> str:
+    names = BOX_NAMES.get(course, [])
+    return f"{course} - {names[box_id]} Box"
 
 data_table: list[MkddLocationData] = [MkddLocationData("", 0)] # Id 0 is reserved.
 
@@ -115,7 +128,7 @@ for course in game_data.RACE_COURSES:
     data_table.append(MkddLocationData(get_loc_name_finish(course.name), 0, course.name, tags = {course.name, TAG_COURSE_FINISH}))
     data_table.append(MkddLocationData(get_loc_name_lead(course.name), 30, course.name + " GP", tags = {course.name, TAG_COURSE_LEAD}))
     data_table.append(MkddLocationData(get_loc_name_first(course.name), 40, course.name + " GP", tags = {course.name, TAG_COURSE_FIRST}))
-    data_table.append(MkddLocationData(get_loc_name_good_time(course), 60, course.name + " TT", tags = {course.name, TAG_TT, TAG_TT_GOOD}))
+    data_table.append(MkddLocationData(get_loc_name_good_time(course), 70, course.name + " TT", tags = {course.name, TAG_TT, TAG_TT_GOOD}))
     data_table.append(MkddLocationData(get_loc_name_ghost(course.name), 100, course.name + " TT", tags = {course.name, TAG_TT, TAG_TT_GHOST}))
 
 # Win with default character pairs.
@@ -148,6 +161,15 @@ data_table.append(MkddLocationData(GOLD_HEAVY, 0))
 data_table.append(MkddLocationData(GOLD_PARADE, 40, required_items = {"Parade Kart":1}))
 data_table.append(MkddLocationData(TROPHY_GOAL, 0))
 data_table.append(MkddLocationData(WIN_ALL_CUP_TOUR, 0, game_data.CUPS[game_data.CUP_ALL_CUP_TOUR]))
+
+# Box in course related locations.
+for course in game_data.RACE_COURSES:
+    boxes = BOX_NAMES.get(course.name, [])
+    for i, box_nickname in enumerate(boxes):
+        if course.name == "Luigi Circuit":
+            data_table.append(MkddLocationData(get_loc_name_item_box(course.name, i), 0, f"{course.name} GP", {items.PROGRESSIVE_CLASS:1}, tags={course.name, TAG_ITEM_BOX}))
+        else:
+            data_table.append(MkddLocationData(get_loc_name_item_box(course.name, i), 0, f"{course.name} GP", tags={course.name, TAG_ITEM_BOX}))
 
 name_to_id: dict[str, int] = {data.name:id for (id, data) in enumerate(data_table) if id > 0}
 

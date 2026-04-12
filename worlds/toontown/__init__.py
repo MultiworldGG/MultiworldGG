@@ -16,6 +16,7 @@ from .options import ToontownOptions, TPSanity, StartingTaskOption, GagTrainingC
 from .regions import REGION_DEFINITIONS, ToontownRegionName
 from .ruledefs import test_location, test_entrance, test_item_location
 from .fish import FishProgression, FishChecks
+import math
 
 DEBUG_MODE = False
 
@@ -121,7 +122,7 @@ class ToontownWorld(World):
         # Save as attributes so we can reference this later in fill_slot_data()
         self.startingTracks = startingTracks
 
-        #Randomize win conditions
+        # Randomize win conditions
         if "randomized" in self.options.win_condition.value:
             self.options.win_condition.value = self.randomize_win_condition(self.options.win_condition.value)
 
@@ -145,7 +146,7 @@ class ToontownWorld(World):
 
         # Fishing settings to remove specific bounties
         # Non-species logic
-        if self.options.fish_checks.value in [1, 2]:
+        if self.options.fish_checks.value in [1, 2, 3]:
             for bounty in locations.FISH_SPECIES_BOUNTIES:
                 self.valid_bounties.remove(bounty)
         # Species logic
@@ -153,7 +154,7 @@ class ToontownWorld(World):
             for bounty in locations.FISH_ALBUM_BOUNTIES:
                 self.valid_bounties.remove(bounty)
         # No fishing
-        if self.options.fish_checks.value == 3:
+        if self.options.fish_checks.value == 4:
             for bounty in locations.ALL_FISH_BOUNTIES:
                 self.valid_bounties.remove(bounty)
 
@@ -435,12 +436,58 @@ class ToontownWorld(World):
                     if itemName in (ToontownItemName.SBHQ_ACCESS, ToontownItemName.CBHQ_ACCESS, ToontownItemName.LBHQ_ACCESS, ToontownItemName.BBHQ_ACCESS):
                         pool.append(self.create_item(itemName.value))
 
+        # Dynamically generate damage increase items.
+        start_dmg = self.options.start_damage_multiplier.value
+        max_dmg = self.options.max_damage_multiplier.value
+        if start_dmg > max_dmg:
+            self.options.max_damage_multiplier.value = start_dmg
+            max_dmg = start_dmg
+        DMG_TO_GIVE = max_dmg - start_dmg
+        useful_threshold = 140
+        dmg_given = 0
+        FOUR_BOOSTS = round(consts.FOUR_DMG_RATIO * DMG_TO_GIVE)
+        while FOUR_BOOSTS > 0 and DMG_TO_GIVE > 4:
+            FOUR_BOOSTS -= 1
+            DMG_TO_GIVE -= 4
+            if (start_dmg + dmg_given) >= useful_threshold:
+                pool.append(self.create_useful_item(ToontownItemName.DMG_BOOST_4.value))
+            else:
+                pool.append(self.create_item(ToontownItemName.DMG_BOOST_4.value))
+            dmg_given += 4
+        THREE_BOOSTS = round(consts.THREE_DMG_RATIO * DMG_TO_GIVE)
+        while THREE_BOOSTS > 0 and DMG_TO_GIVE > 3:
+            THREE_BOOSTS -= 1
+            DMG_TO_GIVE -= 3
+            if (start_dmg + dmg_given) >= useful_threshold:
+                pool.append(self.create_useful_item(ToontownItemName.DMG_BOOST_3.value))
+            else:
+                pool.append(self.create_item(ToontownItemName.DMG_BOOST_3.value))
+            dmg_given += 3
+        TWO_BOOSTS = round(consts.TWO_DMG_RATIO * DMG_TO_GIVE)
+        while TWO_BOOSTS > 0 and DMG_TO_GIVE > 2:
+            TWO_BOOSTS -= 1
+            DMG_TO_GIVE -= 2
+            if (start_dmg + dmg_given) >= useful_threshold:
+                pool.append(self.create_useful_item(ToontownItemName.DMG_BOOST_2.value))
+            else:
+                pool.append(self.create_item(ToontownItemName.DMG_BOOST_2.value))
+            dmg_given += 2
+        for _ in range(DMG_TO_GIVE):
+            if (start_dmg + dmg_given) >= useful_threshold:
+                pool.append(self.create_useful_item(ToontownItemName.DMG_BOOST_1.value))
+            else:
+                pool.append(self.create_item(ToontownItemName.DMG_BOOST_1.value))
+            dmg_given += 1
+
         # Dynamically generate laff boosts.
         max_laff = self.options.max_laff.value
         start_laff = self.options.starting_laff.value
         if start_laff > max_laff:
             self.options.max_laff.value = start_laff
             max_laff = self.options.max_laff.value
+        # The threshold (90% of our max laff) where our laff is generated as useful
+        useful_threshold = math.ceil(max_laff * 0.9)
+        laff_given = 0
         if "laff-o-lympics" in self.options.win_condition.value:  # Our goal is laff-o-lympics, only progressive +1 Boost items
             # Lets make sure our goal isn't more than our max_laff
             # If it is, make our max the same as our goal
@@ -452,7 +499,11 @@ class ToontownWorld(World):
             LAFF_TO_GIVE = max_laff - start_laff
 
             for _ in range(LAFF_TO_GIVE):
-                pool.append(self.create_item(ToontownItemName.LAFF_BOOST_1.value))
+                if (start_laff + laff_given) >= useful_threshold:
+                    pool.append(self.create_progression_deprioritized_skip_balancing(ToontownItemName.LAFF_BOOST_1.value))
+                else:
+                    pool.append(self.create_item(ToontownItemName.LAFF_BOOST_1.value))
+                laff_given += 1
         else:  # If our goal isn't laff-o-lypics, generate laff items normally
             LAFF_TO_GIVE = max_laff - start_laff
             if LAFF_TO_GIVE < 0:
@@ -460,27 +511,48 @@ class ToontownWorld(World):
                 LAFF_TO_GIVE = 0
             FIVE_LAFF_BOOSTS = round(consts.FIVE_LAFF_BOOST_RATIO * LAFF_TO_GIVE)
             while FIVE_LAFF_BOOSTS > 0 and LAFF_TO_GIVE > 5:
+
                 FIVE_LAFF_BOOSTS -= 1
                 LAFF_TO_GIVE -= 5
-                pool.append(self.create_item(ToontownItemName.LAFF_BOOST_5.value))
+                if (start_laff + laff_given) >= useful_threshold:
+                    pool.append(self.create_useful_item(ToontownItemName.LAFF_BOOST_5.value))
+                else:
+                    pool.append(self.create_item(ToontownItemName.LAFF_BOOST_5.value))
+                laff_given += 5
             FOUR_LAFF_BOOSTS = round(consts.FOUR_LAFF_BOOST_RATIO * LAFF_TO_GIVE)
             while FOUR_LAFF_BOOSTS > 0 and LAFF_TO_GIVE > 4:
                 FOUR_LAFF_BOOSTS -= 1
                 LAFF_TO_GIVE -= 4
-                pool.append(self.create_item(ToontownItemName.LAFF_BOOST_4.value))
+                if (start_laff + laff_given) >= useful_threshold:
+                    pool.append(self.create_useful_item(ToontownItemName.LAFF_BOOST_4.value))
+                else:
+                    pool.append(self.create_item(ToontownItemName.LAFF_BOOST_4.value))
+                laff_given += 4
             THREE_LAFF_BOOSTS = round(consts.THREE_LAFF_BOOST_RATIO * LAFF_TO_GIVE)
             while THREE_LAFF_BOOSTS > 0 and LAFF_TO_GIVE > 3:
                 THREE_LAFF_BOOSTS -= 1
                 LAFF_TO_GIVE -= 3
-                pool.append(self.create_item(ToontownItemName.LAFF_BOOST_3.value))
+                if (start_laff + laff_given) >= useful_threshold:
+                    pool.append(self.create_useful_item(ToontownItemName.LAFF_BOOST_3.value))
+                else:
+                    pool.append(self.create_item(ToontownItemName.LAFF_BOOST_3.value))
+                laff_given += 3
             TWO_LAFF_BOOSTS = round(consts.TWO_LAFF_BOOST_RATIO * LAFF_TO_GIVE)
             while TWO_LAFF_BOOSTS > 0 and LAFF_TO_GIVE > 2:
                 TWO_LAFF_BOOSTS -= 1
                 LAFF_TO_GIVE -= 2
-                pool.append(self.create_item(ToontownItemName.LAFF_BOOST_2.value))
-
+                if (start_laff + laff_given) >= useful_threshold:
+                    pool.append(self.create_useful_item(ToontownItemName.LAFF_BOOST_2.value))
+                else:
+                    pool.append(self.create_item(ToontownItemName.LAFF_BOOST_2.value))
+                laff_given += 2
+            # All that's left is +1s
             for _ in range(LAFF_TO_GIVE):
-                pool.append(self.create_item(ToontownItemName.LAFF_BOOST_1.value))
+                if (start_laff + laff_given) >= useful_threshold:
+                    pool.append(self.create_useful_item(ToontownItemName.LAFF_BOOST_1.value))
+                else:
+                    pool.append(self.create_item(ToontownItemName.LAFF_BOOST_1.value))
+                laff_given += 1
 
         # Dynamically generate training frames.
         OMITTABLE_ITEMS = [
@@ -615,6 +687,7 @@ class ToontownWorld(World):
             ToontownItemName.UNITE_REWARD_GAG.value: (self.options.unite_weight/2),
             ToontownItemName.UNITE_REWARD_TOONUP.value: (self.options.unite_weight/2),
             ToontownItemName.PINK_SLIP_REWARD.value: self.options.fire_weight,
+            ToontownItemName.SUMMON_REWARD.value: self.options.summon_weight,
             ToontownItemName.HEAL_10.value: (self.options.heal_weight/2),
             ToontownItemName.HEAL_20.value: (self.options.heal_weight/2),
             ToontownItemName.FISH.value: self.options.fish_weight,
@@ -662,7 +735,7 @@ class ToontownWorld(World):
         return {
             "seed": self.multiworld.seed,
             "team": self.options.team.value,
-            "game_version": "v0.18.5",
+            "game_version": "v0.19.4",
             "seed_generation_type": self.options.seed_generation_type.value,
             "starting_laff": self.options.starting_laff.value,
             "max_laff": self.options.max_laff.value,
@@ -671,7 +744,8 @@ class ToontownWorld(World):
             "starting_task_capacity": self.options.starting_task_capacity.value,
             "max_task_capacity": self.options.max_task_capacity.value,
             "base_global_gag_xp": self.options.base_global_gag_xp.value,
-            "damage_multiplier": self.options.damage_multiplier.value,
+            "start_damage_multiplier": self.options.start_damage_multiplier.value,
+            "max_damage_multiplier": self.options.max_damage_multiplier.value,
             "overflow_mod": self.options.overflow_mod.value,
             "win_condition": int(win_condition),
             "cog_bosses_required": self.options.cog_bosses_required.value,
@@ -693,6 +767,7 @@ class ToontownWorld(World):
             "bean_tax_weight": self.options.bean_tax_weight.value,
             "gag_shuffle_weight": self.options.gag_shuffle_weight.value,
             "bean_weight": self.options.bean_weight.value,
+            "summon_weight": self.options.summon_weight.value,
             "exp_weight": self.options.exp_weight.value,
             "sos_weight": self.options.sos_weight.value,
             "unite_weight": self.options.unite_weight.value,
@@ -704,6 +779,7 @@ class ToontownWorld(World):
             "facility_locking": self.options.facility_locking.value,
             "death_link": self.options.death_link.value,
             "ring_link": self.options.ring_link.value,
+            "cog_dmg_rando": self.options.cog_dmg_rando.value,
             "slot_sync_jellybeans": self.options.slot_sync_jellybeans.value,
             "slot_sync_gag_experience": self.options.slot_sync_gag_experience.value,
             "pet_shop_display": self.options.pet_shop_display.value,
@@ -921,6 +997,12 @@ class ToontownWorld(World):
         golf = self.options.minigolf_logic.value
         if not golf:
             forbidden_location_types.add(ToontownLocationType.GOLF)
+
+        bosses_condition = "cog-bosses" in self.options.win_condition.value
+        if not bosses_condition and self.options.checks_per_boss.value == 0:
+            # Bosses aren't relevant to the seed, remove the level 13 and 14 checks
+            logging.warning(f"WARNING: [{self.multiworld.player_name[self.player]}] has nothing on bosses. Removing the Level 13 and Level 14 Cog checks.")
+            forbidden_location_types.add(ToontownLocationType.HIGH_COG_LEVELS)
 
         GAG_LOCATION_TYPES = [
             ToontownLocationType.SUPPORT_GAG_TRAINING,

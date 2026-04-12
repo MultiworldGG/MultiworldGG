@@ -3,14 +3,6 @@ from dataclasses import dataclass
 
 from Options import PerGameCommonOptions, Choice, Range, Toggle, DeathLink
 
-class OpenMode(Toggle):
-    """
-    Gain access to Chapter 1 areas without needing to complete the prologue.
-    It is highly recommended to leave this enabled.
-    """
-    display_name = "Open Mode"
-    default = True
-
 class ApplyBeginnerMod(Toggle):
     """
     If set to true, applies an accessibility mod for new players.
@@ -18,14 +10,6 @@ class ApplyBeginnerMod(Toggle):
     Additionally, the mod fixes a few areas to prevent softlocks.
     """
     display_name = "Apply Beginner Mod"
-
-class RandomizeHammer(Toggle):
-    """If set to false, Piko Hammer is at the default location"""
-    display_name = "Randomize Hammer"
-
-class RandomizeGiftItems(Toggle):
-    """If set to false, items given by NPCs (Speed Boost, Bunny Strike, P Hairpin) are at their default locations"""
-    display_name = "Randomize Gift Items"
 
 class CarrotShooterInLogic(Toggle):
     """
@@ -36,10 +20,10 @@ class CarrotShooterInLogic(Toggle):
 
 class RainbowShotInLogic(Toggle):
     """
-    If set to false, Rainbow Shot will not be considered as a collectable magic type
+    If set to false, Rainbow Egg will not be considered as a collectable magic type
     to enable the item menu.
     """
-    display_name = "Rainbow Shot In Logic"
+    display_name = "Rainbow Egg In Logic"
 
 class MaxNumberOfEasterEggs(Range):
     """
@@ -186,7 +170,7 @@ class IncludePostGame(Toggle):
 
 class IncludePostIrisu(Toggle):
     """
-    If this flag is true, locations after beating Irisu are included in the pool.
+    If this flag is true, locations only reachable after beating Irisu are included in the pool.
     """
     display_name = "Include Post Irisu"
 
@@ -218,22 +202,22 @@ class AttackMode(Choice):
     option_normal = 0
     option_super = 1
     option_hyper = 2
-    default = option_normal
-
-class EnableConstraintChanges(Toggle):
-    """
-    If this flag is true, the randomizer will choose a number of predefined map
-    edits to restrict access to areas.
-    """
-    display_name = "Enable Map Constraints"
+    default = option_hyper
 
 class NumberOfConstraintChanges(Range):
     """
     Sets the total number of map constraint changes to be added.
+
+    A map constraint is an predefined edit to the map to restrict access to parts of Rabi Rabi Island with various obstacles.
+    By restricting access to certain areas of the map, the amount of checks opened per sphere is kept more uniform, allowing for better game flow.
+
+    These constraints are enabled by default, as not only can the main game of Rabi-Ribi be completed without any items,
+    but over half of the item locations can be reached without items as well.
     """
     display_name = "Number of Map Constraint Changes"
     range_start = 0
     range_end = 70
+    default = 20
 
 class ShuffleMapTransitions(Toggle):
     """
@@ -250,9 +234,23 @@ class ShuffleMusic(Toggle):
 class ShuffleBackgrounds(Toggle):
     """
     If this flag is true, the randomizer will shuffle the room backgrounds in each area.
-    Note that some backgrounds that introduce lag or make tricks difficult to perform are disabled.
+    By default, some backgrounds that introduce lag or make tricks difficult to perform are disabled.
     """
     display_name = "Shuffle Backgrounds"
+
+class AllowLaggyBackgrounds(Toggle):
+    """
+    If this flag is true, the randomizer will add backgrounds that introduce lag
+    to the pool of backgrounds to choose from when shuffling backgrounds.
+    """
+    display_name = "Allow Difficult Backgrounds"
+
+class AllowDifficultBackgrounds(Toggle):
+    """
+    If this flag is true, the randomizer will add backgrounds that can make tricks difficult to perform
+    to the pool of backgrounds to choose from when shuffling backgrounds.
+    """
+    display_name = "Allow Difficult Backgrounds"
 
 class ShuffleStartLocation(Toggle):
     """
@@ -268,7 +266,6 @@ class RabiRibiOptions(PerGameCommonOptions):
     percentage_of_easter_eggs: PercentageOfEasterEggs
     encourage_eggs_in_late_spheres: EncourageEggsInLateSpheres
 
-    open_mode: OpenMode
     apply_beginner_mod: ApplyBeginnerMod
     attack_mode: AttackMode
     knowledge: Knowledge
@@ -284,9 +281,6 @@ class RabiRibiOptions(PerGameCommonOptions):
     rainbow_shot_in_logic: RainbowShotInLogic
     event_warps_in_logic: EventWarpsInLogic
 
-    randomize_hammer: RandomizeHammer
-    randomize_gift_items: RandomizeGiftItems
-
     include_plurkwood: IncludePlurkwood
     include_warp_destination: IncludeWarpDestination
     include_post_game: IncludePostGame
@@ -298,4 +292,6 @@ class RabiRibiOptions(PerGameCommonOptions):
     shuffle_start_location: ShuffleStartLocation
     shuffle_music: ShuffleMusic
     shuffle_backgrounds: ShuffleBackgrounds
+    allow_laggy_backgrounds: AllowLaggyBackgrounds
+    allow_difficult_backgrounds: AllowDifficultBackgrounds
     death_link: DeathLink

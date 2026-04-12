@@ -3,7 +3,7 @@
 import logging
 import dolphin_memory_engine as dme
 
-from ..constants import AP_LOGGER_NAME, MEMORY_CONSTANTS
+from ..constants import AP_LOGGER_NAME
 from .network_engine import ArchipelagoNetworkEngine, TrapNetworkRequest
 from .link_base import LinkBase
 from ...Items import *
@@ -75,8 +75,8 @@ class TrapLink(LinkBase):
             TrapNetworkRequest(tags=[ TrapLinkConstants.FRIENDLY_NAME ],
             trap_name=trap_name))
 
-    def check_vac_trap_active(self) -> bool:
-        is_trap_active: int = int.from_bytes(dme.read_bytes(MEMORY_CONSTANTS.TRAP_CONSTANTS.VAC_TRAP_IS_ACTIVE, 4), signed=True)
+    def check_vac_trap_active(self, vac_trap_address: int) -> bool:
+        is_trap_active: int = int.from_bytes(dme.read_bytes(vac_trap_address, 4), signed=True)
         return is_trap_active != -1
 
     def on_bounced(self, args, vac_count: int):

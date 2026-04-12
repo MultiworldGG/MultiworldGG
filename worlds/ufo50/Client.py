@@ -273,7 +273,7 @@ def launch(*args: str) -> Any:
         parser.add_argument("url", type=str, nargs="?", help="Archipelago Webhost uri to auto connect to.")
         args = parser.parse_args(args)
 
-        # handle if text client is launched using the "archipelago/mwgg://name:pass@host:port" url from webhost
+        # handle if text client is launched using the "archipelago://name:pass@host:port" url from webhost
         if args.url:
             url = urllib.parse.urlparse(args.url)
             if url.scheme == "archipelago" or url.scheme == "mwgg":

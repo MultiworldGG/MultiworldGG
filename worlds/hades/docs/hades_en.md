@@ -9,7 +9,7 @@ Install the game through Steam. Then install the following mods:
 - [StyxScribe without the REPL](https://github.com/NaixGames/StyxScribeWithoutREPL).
 - [Polycosmos](https://github.com/Naix99/Polycosmos/tree/main/Polycosmos)
 
-Put the hades.apworld file in your custom_worlds folder (inside MultiworldGG installation, preinstalled with MWGG release)
+Unless you use MultiworldGG: Put the hades.apworld file in your custom_worlds folder (inside MultiworldGG installation)
 
 ## Configuring your YAML file
 

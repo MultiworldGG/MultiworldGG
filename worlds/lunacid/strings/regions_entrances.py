@@ -237,6 +237,12 @@ class LunacidEntrance:
     castle_main_halls_to_queen_path = "Castle Main Halls Green Door (Front)"
     castle_queen_path_to_main_halls = "Castle Main Halls Green Door (Back)"
     castle_queen_path_to_throne_room = "Queen's Throne Door (Castle Le Fanu Side)"
+    rock_castle_le_fanu_upper_bridge = "Rock Bridge to Upper Castle Le Fanu"
+    rock_castle_le_fanu_past_door = "Rock Bridge Past Top Door"
+    rock_castle_le_fanu_queen_door = "Rock Bridge Past Queen Door"
+    rock_castle_le_fanu_spell_skip = "Rock Bridge Past Sealed Door"
+    rock_castle_le_fanu_cattle_deeper_skip = "Rock Bridge Past Blood Spells"
+    rock_castle_le_fanu_secret_skips = "Rock Bridge Past Blood Secrets"
 
     holy_battle_to_castle_entrance = "Climb Rope Out Of Battlefield"
 
@@ -319,6 +325,44 @@ class LunacidEntrance:
     chamber_to_grave = "Dreamer Door (Chamber of Fate Side)"
 
     grave_to_chamber = "Dreamer Door (Grave of the Sleeper Side)"
+
+    randoable_entrances = {rest_to_start: "Found",
+                           basin_to_surface: surface_to_basin,
+                           surface_to_basin: basin_to_surface,
+                           basin_to_archives_2f: archives_2f_to_basin,
+                           archives_2f_to_basin: basin_to_archives_2f,
+                           temple_lower_to_forest: forest_to_temple_lower,
+                           forest_to_temple_lower: temple_sewers_to_mire,
+                           temple_sewers_to_mire: mire_to_temple_sewers,
+                           mire_to_temple_sewers: temple_sewers_to_mire,
+                           mire_to_sea: sea_to_mire,
+                           sea_to_mire: mire_to_sea,
+                           chasm_to_archives_vampire: archives_vampire_to_chasm,
+                           archives_vampire_to_chasm: chasm_to_archives_vampire,
+                           chasm_upper_to_surface: surface_to_chasm_upper,
+                           surface_to_chasm_upper: chasm_upper_to_surface,
+                           canopy_to_canopy_path: canopy_path_to_canopy,
+                           canopy_path_to_canopy: canopy_to_canopy_path,
+                           accursed_tomb_to_forest_tomb: forest_tomb_to_accursed_tomb,
+                           forest_tomb_to_accursed_tomb: accursed_tomb_to_forest_tomb,
+                           accursed_tomb_to_sea: sea_to_accursed_tomb,
+                           sea_to_accursed_tomb: accursed_tomb_to_sea,
+                           castle_entrance_to_sea: sea_to_castle_entrance,
+                           sea_to_castle_entrance: castle_entrance_to_sea,
+                           castle_entrance_to_battlefield: holy_battle_to_castle_entrance,
+                           holy_battle_to_castle_entrance: castle_entrance_to_battlefield,
+                           sealed_ballroom_to_forbidden_entry: castle_forbidden_to_sealed_ballroom,
+                           castle_forbidden_to_sealed_ballroom: sealed_ballroom_to_forbidden_entry,
+                           boiling_grotto_to_castle_cattle_back: castle_cattle_back_to_boiling_grotto,
+                           castle_cattle_back_to_boiling_grotto: boiling_grotto_to_castle_cattle_back,
+                           castle_queen_path_to_throne_room: throne_room_to_castle_queen_path,
+                           throne_room_to_castle_queen_path: castle_queen_path_to_throne_room,
+                           terminus_prison_3f_to_throne_room: throne_room_to_prison,
+                           throne_room_to_prison: terminus_prison_3f_to_throne_room,
+                           labyrinth_of_ash_to_terminus_prison: terminus_prison_basement_to_ash,
+                           terminus_prison_basement_to_ash: labyrinth_of_ash_to_terminus_prison,
+                           forlorn_arena_to_terminus_prison: terminus_prison_1f_to_arena,
+                           terminus_prison_1f_to_arena: forlorn_arena_to_terminus_prison}
 
 
 starting_location_to_region = {

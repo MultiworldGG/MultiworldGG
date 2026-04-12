@@ -6,6 +6,8 @@ import pkgutil
 
 from BaseClasses import MultiWorld, Tutorial, ItemClassification, CollectionState
 from worlds.AutoWorld import World, WebWorld
+from worlds.LauncherComponents import launch as launch_component, components, Component, Type
+
 from .Items import DKCItem, item_table, misc_table, item_groups, STARTING_ID, option_name_to_world_name, items_that_open_checks
 from .Locations import setup_locations, all_locations, location_groups
 from .Regions import create_regions, connect_regions
@@ -17,6 +19,12 @@ from .Rules import DKCStrictRules, DKCLooseRules, DKCExpertRules
 from .Rom import patch_rom, DKCProcedurePatch, HASH_US
 
 from typing import Dict, Set, List, ClassVar
+
+def launch_manager(*args):
+    from .Manager import launch
+    launch_component(launch, "DKC Manager")
+
+components.append(Component(display_name="DKC Manager", component_type=Type.ADJUSTER, func=launch_manager))
 
 class DKCSettings(settings.Group):
     class RomFile(settings.SNESRomPath):
@@ -68,7 +76,7 @@ class DKCWorld(World):
     options_dataclass = DKCOptions
     options: DKCOptions
     
-    required_client_version = (0, 6, 3)
+    required_client_version = (0, 6, 5)
     
     using_ut: bool
     ut_can_gen_without_yaml = True
@@ -98,8 +106,6 @@ class DKCWorld(World):
         
         connect_regions(self)
        
-
-    def set_rules(self):
         logic = self.options.logic
         if logic == Logic.option_loose:
             DKCLooseRules(self).set_dkc_rules()
@@ -113,7 +119,7 @@ class DKCWorld(World):
         
         if not self.using_ut:
             # Test if sphere 1 has at least 2 reachable locations
-            state = CollectionState(self.multiworld)
+            state = CollectionState(self.multiworld, allow_partial_entrances=True)
             initial_world = option_name_to_world_name[self.options.starting_world.current_option_name]
             available_items = items_that_open_checks[initial_world].copy()
             self.random.shuffle(available_items)
@@ -124,11 +130,9 @@ class DKCWorld(World):
                     available_items.append(ItemName.kongo_jungle)
                 selected_item = available_items.pop()
                 item = self.create_item(selected_item)
-                state.collect(item, True)
+                state.collect(item)
                 loc_count = self.test_starting_world(state)
                 self.multiworld.push_precollected(item)
-            
-            self.create_item_late()
 
         # Universal Tracker: If we're using UT, scan the rules again to build "glitched logic" during the regen
         else:
@@ -151,10 +155,6 @@ class DKCWorld(World):
     
  
     def create_items(self) -> None:
-        return 
-    
-
-    def create_item_late(self) -> None:
         itempool: List[DKCItem] = []
 
         self.total_required_locations = 106
@@ -179,16 +179,18 @@ class DKCWorld(World):
             self.multiworld.push_precollected(self.create_item(ItemName.diddy))
 
         # Submit item pool
-        for world_ in item_groups["Worlds"]:
-            if world_ in self.multiworld.precollected_items[self.player]:
+        precollected_items_by_name = [item.name for item in self.multiworld.precollected_items[self.player]]
+        for item in sorted(item_groups["Worlds"]):
+            if item in precollected_items_by_name:
                 continue
             else:
-                itempool.append(self.create_item(world_))
-                
-        for item in item_groups["Abilities"]:
-            if item in self.multiworld.precollected_items[self.player]:
+                itempool.append(self.create_item(item))
+
+        shuffle_abilities = sorted(self.options.shuffle_abilities.value)
+        for item in sorted(item_groups["Abilities"]):
+            if item in precollected_items_by_name:
                 continue
-            elif item in self.options.shuffle_abilities.value:
+            elif item in shuffle_abilities:
                 classification = False
                 if self.options.banana_checks.value and item == ItemName.slap:
                     classification = ItemClassification.progression | ItemClassification.useful
@@ -196,14 +198,20 @@ class DKCWorld(World):
             else:
                 self.multiworld.push_precollected(self.create_item(item))
 
-        for item in item_groups["Animals"]:
-            if item in self.options.shuffle_animals.value:
+        shuffle_animals = sorted(self.options.shuffle_animals.value)
+        for item in sorted(item_groups["Animals"]):
+            if item in precollected_items_by_name:
+                continue
+            elif item in shuffle_animals:
                 itempool += [self.create_item(item)]
             else:
                 self.multiworld.push_precollected(self.create_item(item))
                 
-        for item in item_groups["Objects"]:
-            if item in self.options.shuffle_objects.value:
+        shuffle_objects = sorted(self.options.shuffle_objects.value)
+        for item in sorted(item_groups["Objects"]):
+            if item in precollected_items_by_name:
+                continue
+            elif item in shuffle_objects:
                 itempool += [self.create_item(item)]
             else:
                 self.multiworld.push_precollected(self.create_item(item))

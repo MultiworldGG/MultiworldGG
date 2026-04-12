@@ -1,7 +1,7 @@
 from Options import DeathLink, ProgressionBalancing, Accessibility, OptionGroup
-from .Options import (Ending, Class, EntranceRandomization, Experience, WeaponExperience, RandomElements,
+from .Options import (Ending, Class, EntranceRandomization, RandomElements,
                       RequiredStrangeCoins, TotalStrangeCoins, Shopsanity, Dropsanity, Quenchsanity, EtnasPupil,
-                      NormalizedDrops, SecretDoorLock, SwitchLocks, DoorLocks, TrapPercent, ItemColors, CustomClass,
+                      SecretDoorLock, SwitchLocks, DoorLocks, TrapPercent, CustomClass,
                       Filler, Traps, Grasssanity, Breakables, StartingArea, Levelsanity, Bookworm)
 
 lunacid_option_groups = [
@@ -30,15 +30,11 @@ lunacid_option_groups = [
         SecretDoorLock
     ]),
     OptionGroup("Tweaks", [
-        Experience,
-        WeaponExperience,
-        NormalizedDrops,
         Filler,
         Traps,
         TrapPercent
     ]),
     OptionGroup("Advanced Options", [
-        ItemColors,
         CustomClass,
         DeathLink,
         ProgressionBalancing,

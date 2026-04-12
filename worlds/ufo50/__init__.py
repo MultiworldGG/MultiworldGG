@@ -1,10 +1,11 @@
-from typing import ClassVar, Any, Union, List
+from typing import ClassVar, Any, Union
 
 import Utils
 from BaseClasses import Tutorial, Region, Item, ItemClassification, Location
 from Options import OptionError
 from settings import Group, UserFilePath, LocalFolderPath, Bool
 from worlds.AutoWorld import World, WebWorld
+from worlds.generic.Rules import add_rule
 from worlds.LauncherComponents import components, Component, launch_subprocess, Type as ComponentType
 
 from .constants import *
@@ -12,11 +13,12 @@ from . import options
 
 from .general_items import cartridge_items, cartridge_item_group
 
-from .games import barbuta, porgy, vainger, night_manor
+from .games import barbuta, porgy, vainger, night_manor, party_house
 from .games.barbuta import items, locations, regions
 from .games.porgy import items, locations, regions
 from .games.vainger import items, locations, regions
 from .games.night_manor import items, locations, regions
+from .games.party_house import items, locations, regions
 
 
 def launch_client(*args: str):
@@ -81,18 +83,19 @@ class UFO50Web(WebWorld):
 # games with an actual implementation
 # add to this list as part of your PR
 # try to keep them in the same order as on the main menu
-ufo50_games: Dict = {
+ufo50_games: dict = {
     "Barbuta": barbuta,
     "Porgy": porgy,
     "Vainger": vainger,
     "Night Manor": night_manor,
+    "Party House": party_house,
 }
 
 allowable_unimplemented: set[str] = {"Ninpek", "Magic Garden", "Velgress", "Waldorf's Journey"}
 
 
 # for the purpose of generically making the gift, gold, and cherry locations
-unimplemented_ufo50_games: List[str] = [name for name in game_ids.keys() if name not in ufo50_games.keys()]
+unimplemented_ufo50_games: list[str] = [name for name in game_ids.keys() if name not in ufo50_games.keys()]
 
 # doing something like this in the world class itself led to weird errors
 temp_ufo50_location_name_to_id = {k: v for game in ufo50_games.values() for k, v in game.locations.get_locations().items()}
@@ -108,10 +111,9 @@ class UFO50World(World):
     UFO 50 is a collection of 50 single and multiplayer games from the creators of Spelunky, Downwell, Air Land & Sea,
     Skorpulac, Catacomb Kids, and Madhouse.
     Jump in and explore a variety of genres, from platformers and shoot 'em ups to puzzle games and RPGs.
-    Our goal is to combine a familiar 8-bit aesthetic with new ideas and modern game design sensibilities.
+    Their goal is to combine a familiar 8-bit aesthetic with new ideas and modern game design sensibilities.
     """  # Excerpt from https://50games.fun/
     game = GAME_NAME
-    author: str = "LeonarthCG & ScipioWright"
     web = UFO50Web()
     required_client_version = (0, 5, 0)
     topology_present = False
@@ -132,16 +134,16 @@ class UFO50World(World):
 
     # for universal tracker support
     using_ut: bool
-    ut_passthrough: Dict[str, Any]
+    ut_passthrough: dict[str, Any]
     ut_can_gen_without_yaml = True  # class var that tells it to ignore the player yaml
 
-    included_games: List[str]  # list of games that are going to be played by this player
-    included_unimplemented_games: List[str]  # list of included unimplemented games being played by this player
+    included_games: list[str]  # list of games that are going to be played by this player
+    included_unimplemented_games: list[str]  # list of included unimplemented games being played by this player
 
-    starting_games: List[str]  # the games you start with unlocked
-    goal_games: List[str]  # the games that are your goals
+    starting_games: list[str]  # the games you start with unlocked
+    goal_games: list[str]  # the games that are your goals
 
-    porgy_lantern_and_radar_slots_req: Dict[str, int]
+    porgy_lantern_and_radar_slots_req: dict[str, int]
 
     def generate_early(self) -> None:
         if not self.player_name.isascii():
@@ -205,21 +207,7 @@ class UFO50World(World):
                                   f"Please select at least one game that has an actual implementation, or have the "
                                   f"host enable the host.yaml setting to allow them.\n"
                                   f"The following games have actual implementations: {[name for name in ufo50_games]}")
-
-        if self.options.starting_game_amount >= len(included_game_names):
-            self.starting_games = included_game_names
-        else:
-            # need at least one game to be a fully implemented game
-            self.starting_games = self.random.choices(included_game_names, k=self.options.starting_game_amount.value)
-            for game_name in self.starting_games:
-                if game_name in ufo50_games.keys():
-                    break
-            else:
-                # remove a game, add an implemented game, unless none are implemented
-                if self.included_games:
-                    self.starting_games.pop()
-                    self.starting_games.append(self.random.choice(self.included_games))
-
+        self.options.goal_games.value = [game_name for game_name in self.options.goal_games if game_name in included_game_names]
         potential_goal_games = [game_name for game_name in included_game_names if game_name in self.options.goal_games]
         if self.options.goal_game_amount >= len(potential_goal_games):
             self.goal_games = potential_goal_games
@@ -234,6 +222,12 @@ class UFO50World(World):
         victory_location.place_locked_item(Item("Victory", ItemClassification.progression, None, self.player))
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
         menu.locations.append(victory_location)
+
+        for game_name in self.goal_games:
+            string_end = " - Gold"
+            if game_name in self.options.cherry_allowed_games:
+                string_end = " - Cherry"
+            add_rule(victory_location, lambda state: state.can_reach_location(game_name + string_end, self.player))
 
         for game_name in self.included_games:
             game = ufo50_games[game_name]
@@ -266,15 +260,45 @@ class UFO50World(World):
         return Item(name, item_class or ItemClassification.filler, self.item_name_to_id[name], self.player)
 
     def create_items(self) -> None:
-        created_items: List[Item] = []
+        created_items: list[Item] = []
         for game_name in self.included_games:
             game = ufo50_games[game_name]
             created_items += game.items.create_items(self)
 
+        included_game_names = self.included_games + self.included_unimplemented_games
+        # check precollected items for cartridges, add them to the starting games list
+        precollected_cartridges = set()
+        self.starting_games = []
+        for item in self.multiworld.precollected_items[self.player]:
+            if item.name.endswith("Cartridge"):
+                game_name = item.name.split(" Cartridge")[0]
+                if game_name not in self.starting_games and game_name in included_game_names:
+                    self.starting_games.append(game_name)
+                    precollected_cartridges.add(game_name)
+
+        # if your starting game amount is higher than included games, then they're all starting games
+        if self.options.starting_game_amount >= len(included_game_names):
+            self.starting_games = included_game_names
+        else:
+            addtl_games_to_start_with = max(self.options.starting_game_amount.value - len(self.starting_games), 0)
+            self.starting_games += self.random.choices(
+                [game for game in included_game_names if game not in self.starting_games],
+                k=addtl_games_to_start_with)
+            for game_name in self.starting_games:
+                if game_name in ufo50_games.keys():
+                    break
+            else:
+                # remove a game, add an implemented game, unless none are implemented
+                # since we're popping, we don't need to worry about removing a precollected cartridge
+                if self.included_games and addtl_games_to_start_with > 0:
+                    self.starting_games.pop()
+                    self.starting_games.append(self.random.choice(self.included_games))
+
         all_games = self.included_games + self.included_unimplemented_games
         for game_name in all_games:
-            cartridge = self.create_item(f"{game_name} Cartridge", ItemClassification.progression)
-            if game_name in self.starting_games:
+            cartridge = self.create_item(f"{game_name} Cartridge",
+                                         ItemClassification.progression | ItemClassification.useful)
+            if game_name in self.starting_games and game_name not in precollected_cartridges:
                 self.multiworld.push_precollected(cartridge)
             else:
                 created_items.append(cartridge)
@@ -291,12 +315,18 @@ class UFO50World(World):
 
         self.multiworld.itempool += created_items
 
+    # games where the filler is a nothing item, so let's just exclude these where we can
+    bad_filler_games: set[str] = {"Night Manor"}
+
     def get_filler_item_name(self) -> str:
         if not self.included_games:
             return "Intentional Nothing Filler Item"
-        return ufo50_games[self.random.choice(self.included_games)].items.get_filler_item_name(self)
+        good_filler_item_games = [game for game in self.included_games if game not in self.bad_filler_games]
+        if not good_filler_item_games:
+            good_filler_item_games = self.included_games
+        return ufo50_games[self.random.choice(good_filler_item_games)].items.get_filler_item_name(self)
 
-    def fill_slot_data(self) -> Dict[str, Any]:
+    def fill_slot_data(self) -> dict[str, Any]:
         included_games = [game_ids[game_name] for game_name in self.included_games]
         included_games += [game_ids[game_name] for game_name in self.included_unimplemented_games]
         goal_games = [game_ids[game_name] for game_name in self.goal_games]
@@ -316,6 +346,6 @@ class UFO50World(World):
     # for the universal tracker, doesn't get called in standard gen
     # docs: https://github.com/FarisTheAncient/Archipelago/blob/tracker/worlds/tracker/docs/re-gen-passthrough.md
     @staticmethod
-    def interpret_slot_data(slot_data: Dict[str, Any]) -> Dict[str, Any]:
+    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:
         # returning slot_data so it regens, giving it back in multiworld.re_gen_passthrough
         return slot_data

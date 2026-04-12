@@ -1,7 +1,16 @@
 import typing
 from dataclasses import dataclass
-from Options import DefaultOnToggle, Toggle, Choice, PerGameCommonOptions, StartInventoryPool, NamedRange, Range, \
-    DeathLink, OptionSet
+from Options import (
+    DefaultOnToggle,
+    Toggle,
+    Choice,
+    PerGameCommonOptions,
+    StartInventoryPool,
+    NamedRange,
+    Range,
+    DeathLink,
+    OptionSet,
+)
 
 
 class Goal(Choice):
@@ -9,6 +18,7 @@ class Goal(Choice):
     Dialga - Get X relic fragment shards to unlock hidden land. Find Temporal Tower location
             then go through hidden land via Lapras on the beach to beat dialga
     Darkrai - Beat Dialga (all the same requirements), then get X instruments to unlock Dark Crater"""
+
     display_name = "Goal"
     option_dialga = 0
     option_darkrai = 1
@@ -16,144 +26,104 @@ class Goal(Choice):
 
 
 class FragmentShards(NamedRange):
-    """ How many Relic Fragment Shards should be required in the game (Macguffins)
-     that you must get to unlock Hidden Land"""
+    """How many Relic Fragment Shards should be required in the game (Macguffins)
+    that you must get to unlock Hidden Land"""
+
     range_start = 4
     range_end = 15
-    special_range_names = {
-        "easy": 4,
-        "normal": 6,
-        "hard": 8,
-        "extreme": 10
-    }
+    special_range_names = {"easy": 4, "normal": 6, "hard": 8, "extreme": 10}
     default = 6
 
 
 class ExtraShards(NamedRange):
-    """ How many total Fragment Shards should be in the game?
+    """How many total Fragment Shards should be in the game?
     If the total shards is less than required shards, the total shard amount is equal to the required shard amount"""
+
     range_start = 0
     range_end = 20
-    special_range_names = {
-        "easy": 16,
-        "normal": 12,
-        "hard": 8,
-        "extreme": 0
-    }
+    special_range_names = {"easy": 16, "normal": 12, "hard": 8, "extreme": 0}
     default = 12
 
 
 class RequiredInstruments(NamedRange):
-    """ How many Instruments should be required in the game (Macguffins)
-     that you must get to unlock Dark Crater if victory condition is Darkrai
-     Instruments are not added to the item pool if the goal is Dialga"""
+    """How many Instruments should be required in the game (Macguffins)
+    that you must get to unlock Dark Crater if victory condition is Darkrai
+    Instruments are not added to the item pool if the goal is Dialga"""
+
     range_start = 4
     range_end = 15
-    special_range_names = {
-        "easy": 4,
-        "normal": 6,
-        "hard": 8,
-        "extreme": 10
-    }
+    special_range_names = {"easy": 4, "normal": 6, "hard": 8, "extreme": 10}
     default = 6
 
 
 class ExtraInstruments(NamedRange):
-    """ How many total Instruments should be in the game?
+    """How many total Instruments should be in the game?
     If the total instruments is less than required instruments,
      the total instrument amount is equal to the required instrument amount"""
+
     range_start = 0
     range_end = 20
-    special_range_names = {
-        "easy": 16,
-        "normal": 12,
-        "hard": 8,
-        "extreme": 0
-    }
+    special_range_names = {"easy": 16, "normal": 12, "hard": 8, "extreme": 0}
     default = 12
 
 
 class EarlyMissionChecks(NamedRange):
-    """ How many Missions per dungeon pre dialga should be checks?
-        0 equals missions are not checks"""
+    """How many Missions per dungeon pre dialga should be checks?
+    0 equals missions are not checks"""
+
     range_start = 0
     range_end = 31
-    special_range_names = {
-        "off": 0,
-        "some": 4,
-        "lots": 10,
-        "insanity": 31
-    }
+    special_range_names = {"off": 0, "some": 4, "lots": 10, "insanity": 31}
     default = 4
 
 
 class LateMissionChecks(NamedRange):
-    """ How many Missions per dungeon post-dialga (including Hidden Land
+    """How many Missions per dungeon post-dialga (including Hidden Land
     and Temporal Tower) should be checks? 0 equals missions are not checks"""
+
     range_start = 0
     range_end = 31
-    special_range_names = {
-        "off": 0,
-        "some": 4,
-        "lots": 10,
-        "insanity": 31
-    }
+    special_range_names = {"off": 0, "some": 4, "lots": 10, "insanity": 31}
     default = 4
 
 
 class EarlyOutlawChecks(NamedRange):
-    """ How many outlaws per dungeon pre dialga should be checks?
-        0 equals outlaws are not checks"""
+    """How many outlaws per dungeon pre dialga should be checks?
+    0 equals outlaws are not checks"""
+
     range_start = 0
     range_end = 31
-    special_range_names = {
-        "off": 0,
-        "some": 2,
-        "lots": 10,
-        "insanity": 31
-    }
+    special_range_names = {"off": 0, "some": 2, "lots": 10, "insanity": 31}
     default = 2
 
 
 class LateOutlawChecks(NamedRange):
-    """ How many Missions per dungeon post-dialga (including Hidden Land
+    """How many Missions per dungeon post-dialga (including Hidden Land
     and Temporal Tower) should be checks? 0 equals outlaws are not checks"""
+
     range_start = 0
     range_end = 31
-    special_range_names = {
-        "off": 0,
-        "some": 2,
-        "lots": 10,
-        "insanity": 31
-    }
+    special_range_names = {"off": 0, "some": 2, "lots": 10, "insanity": 31}
     default = 2
 
 
 class SpindaDrinkEvents(NamedRange):
     """How many drink events should be checks?"""
+
     default_name = "Spinda Drink Events"
     range_start = 0
     range_end = 20
-    special_range_names = {
-        "few": 5,
-        "some": 10,
-        "lots": 15,
-        "all": 20
-    }
+    special_range_names = {"few": 5, "some": 10, "lots": 15, "all": 20}
     default = 5
 
 
 class SpindaBasicDrinks(NamedRange):
     """How many Spinda Drinks should be checks?"""
+
     display_name = "Spinda Drinks"
     range_start = 0
     range_end = 20
-    special_range_names = {
-        "few": 5,
-        "some": 10,
-        "lots": 15,
-        "all": 20
-    }
+    special_range_names = {"few": 5, "some": 10, "lots": 15, "all": 20}
     default = 5
 
 
@@ -167,12 +137,14 @@ class StartWithBag(DefaultOnToggle):
 class Recruitment(DefaultOnToggle):
     """Start with recruitment enabled?
     If false, recruitment will be an item available in game"""
+
     display_name = "Recruitment Enable"
 
 
 class RecruitmentEvolution(DefaultOnToggle):
     """Start with Recruitment Evolution Enabled?
     If false, evolution will be an item available in game"""
+
     display_name = "Recruitment Evolution Enable"
 
 
@@ -181,13 +153,15 @@ class HeroEvolution(DefaultOnToggle):
     If false, hero evolution will be an item available in game.
     Note: hero evolution does nothing until recruitment
     evolution has been unlocked"""
+
     display_name = "Partner/Hero Evolution Enable"
 
 
 class FullTeamFormationControl(DefaultOnToggle):
-    """ Start with full team formation control?
+    """Start with full team formation control?
     If false, full team formation control will be an item
     available in game"""
+
     display_name = "Formation Control Enable"
 
 
@@ -199,6 +173,7 @@ class LevelScaling(Choice):
     Easy: Enemies will be bumped down to the highest party level if they're above it.
     Difficult: Enemies will be bumped either down or up to match the party level regardless of their vanilla level
     Regardless of your choice, bosses at the end of dungeons will NOT scale."""
+
     display_name = "Level Scaling"
     option_off = 0
     option_easy = 1
@@ -208,7 +183,8 @@ class LevelScaling(Choice):
 
 class GuestScaling(DefaultOnToggle):
     """Makes the dungeon guests (Bidoof in Cragy Coast, Grovyle in Hidden Land, etc.) scale to your party level
-        Does nothing if Level scaling is off"""
+    Does nothing if Level scaling is off"""
+
     display_name = "Guest Scaling"
 
 
@@ -221,6 +197,7 @@ class StarterOption(Choice):
     Choose: Skip the quiz and go straight to choosing your starter and partner
     For both Choose and Override you will be able to pick partner exclusive pokemon for your starter as well as gender
     exclusive pokemon regardless of gender"""
+
     display_name = "Starter Choice Option"
     option_vanilla = 0
     option_random_starter = 1
@@ -230,23 +207,26 @@ class StarterOption(Choice):
 
 
 class TypeSanity(Toggle):
-    """ Allow for your partner to share a type with your main character
+    """Allow for your partner to share a type with your main character
     WARNING: The game is not balanced around this, and we have not done anything to change that.
     Use at your own risk
     """
+
     display_name = "Type Sanity"
 
 
 class SpecialEpisodeSanity(Toggle):
-    """ Start the game with one of the special episodes and NOT the main game.
+    """Start the game with one of the special episodes and NOT the main game.
     Unlock the main game through an item
     Overridden by Excluding Special Episodes"""
+
     display_name = "Special Episode Sanity"
 
 
 class ExcludeSpecialEpisodes(Toggle):
-    """ No special episode items will be added to the game
+    """No special episode items will be added to the game
     Overrides Special Episode Sanity"""
+
     display_name = "Exclude Special Episodes"
 
 
@@ -277,6 +257,7 @@ class SkyPeakType(Choice):
     1: Progressive (unlock dungeons sequentially when you pick up a sky peak item)
     2. All Random (unlock sky peak dungeons completely at random based on which sky peak item you pick up)
     3: All unlocked from one item (there will be one sky peak item that unlocks all sky peak checks)"""
+
     display_name = "Sky Peak Type"
     option_progressive = 1
     option_all_random = 2
@@ -286,6 +267,7 @@ class SkyPeakType(Choice):
 
 class DojoDungeons(NamedRange):
     """How many dojo dungeons should be accessible at start?"""
+
     display_name = "Dojo Dungeons Randomized"
     range_start = 0
     range_end = 10
@@ -300,9 +282,9 @@ class DojoDungeons(NamedRange):
 
 class LegendariesInPool(Range):
     """How many Legendary Pokemon should be in the item pool for you to recruit?
-        The Legendary will only come post-dialga if you get it early
-        Legendaries are disabled if you are going for a dialga goal
-        """
+    The Legendary will only come post-dialga if you get it early
+    Legendaries are disabled if you are going for a dialga goal
+    """
 
     display_name = "Legendaries in Item Pool"
     range_start = 0
@@ -311,9 +293,10 @@ class LegendariesInPool(Range):
 
 
 class AllowedLegendaries(OptionSet):
-    """ Set which Legendaries will be available for the item pool as recruits.
+    """Set which Legendaries will be available for the item pool as recruits.
     NOTE: legendaries normally found in dungeons are not yet randomized. This only includes legendary recruits at the ends of dungeons
     """
+
     display_name = "Allowed Legendary Recruits"
     valid_keys = [
         "Regirock",
@@ -355,6 +338,7 @@ class AllowTraps(Choice):
     1: regular traps allowed, nothing too crazy
     2: mean traps allowed (possibility of getting two traps at the same time *unown sentry duty*)
     MEAN TRAPS NOT CURRENTLY IMPLEMENTED CURRENTLY 1 AND 2 DO THE SAME THING WHICH IS JUST ENABLE TRAPS"""
+
     display_name = "Allow Traps"
     option_disabled = 0
     option_regular = 1
@@ -365,11 +349,13 @@ class InvisibleTraps(Toggle):
     """Make all traps invisible so when they come in from the client you don't know what happens until you get the trap
     activated
     NOT YET IMPLEMENTED"""
+
     display_name = "Invisible Traps"
 
 
 class TrapPercentage(Range):
     """What percentage of filler items should be traps? Range from 0 to 100 (affected by allowed traps)"""
+
     display_name = "Trap Percentage"
     range_start = 0
     range_end = 100
@@ -378,29 +364,34 @@ class TrapPercentage(Range):
 
 class CursedAegisCave(Toggle):
     """Do you want Aegis cave to logically require you to beat a regi you don't have a seal for?"""
+
     display_name = "Cursed Aegis Cave"
 
 
 class LongLocationsInclusion(Toggle):
     """Include Rule dungeons, clearing all dojos, final dojo, ludicolo dance,
     and duskull bank checks over 20k in logic"""
+
     display_name = "Long Locations"
 
 
 class EarlyMissionFloors(DefaultOnToggle):
     """Allow missions to start on floor 2 of dungeons instead on (floors/2)"""
+
     display_name = "Mission on Early Floors"
 
 
 class MoveShortcutMenu(DefaultOnToggle):
     """Enable the Move Shortcut Menu by holding (default L button)
     Disabling this current is not implemented ROMSide"""
+
     display_name = "Move Shortcut Menu"
 
 
 class MaxRequiredRank(Choice):
     """What is the maximum required rank you want to be logically necessary
     If your goal is dialga and your max rank is above master rank, your max will be set to master rank"""
+
     display_name = "Max Required Rank"
     option_disabled = 0
     option_bronze = 1

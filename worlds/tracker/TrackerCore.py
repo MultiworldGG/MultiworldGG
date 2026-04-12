@@ -52,7 +52,7 @@ class TrackerCore():
         self.location_alias_map: dict[int, str] = {}
         self.hints = {}
         self.tracker_items_received = []
-        self.manual_items = []
+        self.manual_items: list[str] = []
         self.player_folder_override = None
         self.gen_error:str = ""
 
@@ -63,7 +63,8 @@ class TrackerCore():
         self.re_gen_passthrough = None
         self.player_id = None
         self.multiworld = None
-        self.manual_items.clear()
+        self.manual_items = []
+        self.ignored_locations = set()
         self.player_folder_override = None
         self.location_alias_map = {}
 
@@ -306,14 +307,16 @@ class TrackerCore():
         item_id_to_name = self.multiworld.worlds[self.player_id].item_id_to_name
         location_id_to_name = self.multiworld.worlds[self.player_id].location_id_to_name
 
-        invalid_items = [str(item.item) for item in self.tracker_items_received if item.item not in item_id_to_name]
+        invalid_items = [str(item.item) for item in self.tracker_items_received if item.item not in item_id_to_name and item.item > 0]
         if invalid_items:
             print(invalid_items)
             self.logger.error("Your datapackage is incorrect, please correct the apworld for "+str(self.game))
             self.logger.error("The Following items are unknown [" + ",".join(invalid_items)+"]")
             raise Exception("Your datapackage is incorrect, please correct the apworld for "+str(self.game))
 
-        for item_name, item_flags, item_loc, item_player in [(item_id_to_name[item.item],item.flags,item.location, item.player) for item in self.tracker_items_received] + [(name,ItemClassification.progression,-1,-1) for name in self.manual_items]:
+        self.clear_page()
+
+        for item_name, item_flags, item_loc, item_player in [(item_id_to_name[item.item],item.flags,item.location, item.player) for item in self.tracker_items_received if item.item > 0] + [(name,ItemClassification.progression,-1,-1) for name in self.manual_items]:
             try:
                 world_item = self.multiworld.create_item(item_name, self.player_id)
                 if item_loc>0 and item_player == self.slot and item_loc in location_id_to_name:
@@ -325,11 +328,10 @@ class TrackerCore():
                 if world_item.code is not None:
                     all_items[world_item.name] += 1
             except Exception:
-                self.log_to_tab("Item id " + str(item_name) + " not able to be created", False)
+                self.log_to_tab("[color="+self.get_ut_color("error")+"]Item name " + str(item_name) + " not able to be created[/color]", False)
         state.sweep_for_advancements(
             locations=[location for location in self.multiworld.get_locations(self.player_id) if (not location.address)])
 
-        self.clear_page()
         regions = []
         locations = []
         readable_locations = []
@@ -384,13 +386,14 @@ class TrackerCore():
         unconnected_entrances = [entrance for region in state.reachable_regions[self.player_id] for entrance in region.exits if entrance.can_reach(state) and entrance.connected_region is None]
         self.locations_available = locations
         glitches_item_name = getattr(self.multiworld.worlds[self.player_id],"glitches_item_name","")
-        glitches_state = state.copy()
+        glitches_state = None
         if glitches_item_name:
+            glitches_state = state.copy()
             try:
                 world_item = self.multiworld.create_item(glitches_item_name, self.player_id)
                 glitches_state.collect(world_item, True)
             except Exception:
-                self.log_to_tab("Item id " + str(glitches_item_name) + " not able to be created", False)
+                self.log_to_tab("Item name " + str(glitches_item_name) + " not able to be created", False)
             else:
                 glitches_state.sweep_for_advancements(
                     locations=[location for location in self.multiworld.get_locations(self.player_id) if (not location.address)])

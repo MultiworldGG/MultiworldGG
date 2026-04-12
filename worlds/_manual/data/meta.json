@@ -20,7 +20,7 @@
             "tutorials": [
                 {
                     "name": "Multiworld Setup Guide",
-                    "description": "A guide to setting up manual game integration for MultiworldGG multiworld games.",
+                    "description": "A guide to setting up manual game integration for Archipelago multiworld games.",
                     "language": "English",
                     "file_name": "setup_en.md",
                     "link": "setup/en",
@@ -35,7 +35,5 @@
                 }
             }
         }
-    },
-    "_comment_":"Enable the generation of puml diagram of your apworld region and locations for debug purposes",
-    "enable_region_diagram": false
+    }
 }

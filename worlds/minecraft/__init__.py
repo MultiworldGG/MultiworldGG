@@ -38,10 +38,19 @@ class MinecraftSettings(settings.Group):
         """
         pass
 
+    class JavaPath(str):
+        """
+        Java path.
+        For Linux/Mac or if you wanna simply use an exisiting install.
+        Example: "/usr/lib/jvm/default/bin/java"
+        """
+        pass
+
     forge_directory: ForgeDirectory = ForgeDirectory("Minecraft Forge server")
     max_heap_size: str = "2G"
     release_channel: ReleaseChannel = ReleaseChannel("release")
     mc_launch: MCLaunch = MCLaunch("")
+    java: JavaPath = JavaPath("")
 
 
 class MinecraftWebWorld(WebWorld):
@@ -252,3 +261,4 @@ def mc_update_output(data: dict, server: str, port: int) -> dict:
     data["server"] = server
     data["port"] = port
     return data
+

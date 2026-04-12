@@ -1,0 +1,195 @@
+{% extends 'pageWrapper.html' %}
+
+{% block head %}
+    <title>Game Lobbies</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename="styles/lobby.css") }}" />
+{% endblock %}
+
+{% block body %}
+{%- macro fmt_timeout(m) -%}
+{%- if m < 60 -%}{{ m }} min{%- elif m < 1440 -%}{{ (m // 60) }} hr{%- else -%}{{ (m // 1440) }} days{%- endif -%}
+{%- endmacro -%}
+    {% include 'header/oceanIslandHeader.html' %}
+    <div id="lobby-list-wrapper">
+        <div id="lobby-list" class="grass-island">
+            <h1>Game Lobbies</h1>
+            <p>
+                Lobbies let you gather a group before generating a multiworld.
+                Instead of collecting everyone's YAML files yourself, create a lobby and share the link - 
+                each player joins, uploads their own config, and the host generates the seed once everyone is ready.
+                Lobbies include a chat so you can coordinate settings and sort out any issues before rolling.
+                Depending on the host's choice, custom worlds not hosted on this website will be allowed or not.
+            </p>
+            <div id="lobby-actions">
+                <a href="{{ url_for('lobby_create') }}">
+                    <button id="create-lobby-button">Create Lobby</button>
+                </a>
+            </div>
+        </div>
+        {% if my_lobbies %}
+        <div id="my-lobbies" class="grass-island">
+            <h2>My Active Lobbies</h2>
+            <table id="my-lobby-table" class="lobby-table-shared">
+                <thead>
+                    <tr>
+                        <th>Lobby</th>
+                        <th>Host</th>
+                        <th>Players</th>
+                        <th>YAMLs</th>
+                        <th>Status</th>
+                        <th>Password</th>
+                        <th>Custom</th>
+                        <th>Settings</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lobby in my_lobbies %}
+                        {% set meta = my_lobby_metas.get(lobby.id, {}) %}
+                        {% set s = meta.get('server_options', {}) %}
+                        {% set g = meta.get('generator_options', {}) %}
+                        {% set hm = s.get('hint_mode', 'default') %}
+                        {% set hc = s.get('hint_cost', 10) %}
+                        <tr>
+                            <td data-label="Lobby">{{ lobby.title }}</td>
+                            <td data-label="Host">{{ my_owner_names.get(lobby.id, '?') }}</td>
+                            <td data-label="Players">
+                                {{ my_player_counts.get(lobby.id, 0) }}{% if lobby.max_players > 0 %}/{{ lobby.max_players }}{% endif %}
+                            </td>
+                            <td data-label="YAMLs">{{ my_yaml_counts.get(lobby.id, 0) }}</td>
+                            <td data-label="Status">
+                                {% if lobby.state == 0 %}
+                                    <span class="status-open">Open</span>
+                                {% elif lobby.state == 1 %}
+                                    <span class="status-generating">Generating...</span>
+                                {% elif lobby.state == 2 %}
+                                    <span class="status-done">Done</span>
+                                {% elif lobby.state == 3 %}
+                                    <span class="status-locked">Locked</span>
+                                {% endif %}
+                            </td>
+                            <td data-label="Password">{{ 'Yes' if lobby.password_hash else 'No' }}</td>
+                            <td data-label="Custom APWorlds">{{ 'Yes' if lobby.allow_custom_apworlds else 'No' }}</td>
+                            <td class="lobby-settings-td">
+                                <span class="settings-tip">Hover for settings
+                                    <div class="settings-tip-content">
+                                        <div>Release: {{ s.get('release_mode', 'auto') }}</div>
+                                        <div>Collect: {{ s.get('collect_mode', 'auto') }}</div>
+                                        <div>Remaining: {{ s.get('remaining_mode', 'goal') }}</div>
+                                        <div>Hints: {% if hm == 'default' %}Full{% elif hm == 'own' %}Hide Own{% elif hm == 'all' %}Hide All{% else %}{{ hm }}{% endif %} @ {% if hc > 100 %}Off{% else %}{{ hc }}%{% endif %}</div>
+                                        <div>Item Cheat: {{ 'On' if s.get('item_cheat', True) else 'Off' }}</div>
+                                        <div>Spoiler: {% set sp = g.get('spoiler', 3) %}{% if sp == 0 %}Off{% elif sp == 1 %}On{% elif sp == 2 %}+Playthrough{% else %}Full{% endif %}</div>
+                                        <div>Max YAMLs/player: {{ lobby.max_yamls_per_player }}</div>
+                                        <div>Expires: <time class="lobby-expiry-time" datetime="{{ my_lobby_expiries.get(lobby.id, '') }}"></time></div>
+                                        <div>Mode: {{ 'Race' if lobby.race else 'Standard' }}</div>
+                                    </div>
+                                </span>
+                            </td>
+                            <td class="lobby-join-td">
+                                <a href="{{ url_for('lobby_view', lobby=lobby.id) }}">Open</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        <div id="lobby-list-table" class="grass-island">
+            <h2>Open Lobbies</h2>
+            {% if lobbies %}
+                <table id="lobby-table">
+                    <thead>
+                        <tr>
+                            <th>Lobby</th>
+                            <th>Host</th>
+                            <th>Players</th>
+                            <th>YAMLs</th>
+                            <th>Status</th>
+                            <th>Password</th>
+                            <th>Custom</th>
+                            <th>Settings</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lobby in lobbies %}
+                            {% set meta = lobby_metas.get(lobby.id, {}) %}
+                            {% set s = meta.get('server_options', {}) %}
+                            {% set g = meta.get('generator_options', {}) %}
+                            {% set hm = s.get('hint_mode', 'default') %}
+                            {% set hc = s.get('hint_cost', 10) %}
+                            <tr>
+                                <td data-label="Lobby">{{ lobby.title }}</td>
+                                <td data-label="Host">{{ owner_names.get(lobby.id, '?') }}</td>
+                                <td data-label="Players">
+                                    {{ player_counts.get(lobby.id, 0) }}{% if lobby.max_players > 0 %}/{{ lobby.max_players }}{% endif %}
+                                </td>
+                                <td data-label="YAMLs">{{ yaml_counts.get(lobby.id, 0) }}</td>
+                                <td data-label="Status">
+                                    {% if lobby.state == 0 %}
+                                        <span class="status-open">Open</span>
+                                    {% elif lobby.state == 1 %}
+                                        <span class="status-generating">Generating...</span>
+                                    {% elif lobby.state == 2 %}
+                                        <span class="status-done">Done</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Password">{{ 'Yes' if lobby.password_hash else 'No' }}</td>
+                                <td data-label="Custom APWorlds">{{ 'Yes' if lobby.allow_custom_apworlds else 'No' }}</td>
+                                <td class="lobby-settings-td">
+                                    <span class="settings-tip">Hover for settings
+                                        <div class="settings-tip-content">
+                                            <div>Release: {{ s.get('release_mode', 'auto') }}</div>
+                                            <div>Collect: {{ s.get('collect_mode', 'auto') }}</div>
+                                            <div>Remaining: {{ s.get('remaining_mode', 'goal') }}</div>
+                                            <div>Hints: {% if hm == 'default' %}Full{% elif hm == 'own' %}Hide Own{% elif hm == 'all' %}Hide All{% else %}{{ hm }}{% endif %} @ {% if hc > 100 %}Off{% else %}{{ hc }}%{% endif %}</div>
+                                            <div>Item Cheat: {{ 'On' if s.get('item_cheat', True) else 'Off' }}</div>
+                                            <div>Spoiler: {% set sp = g.get('spoiler', 3) %}{% if sp == 0 %}Off{% elif sp == 1 %}On{% elif sp == 2 %}+Playthrough{% else %}Full{% endif %}</div>
+                                            <div>Max YAMLs/player: {{ lobby.max_yamls_per_player }}</div>
+                                            <div>Expires: <time class="lobby-expiry-time" datetime="{{ lobby_expiries.get(lobby.id, '') }}"></time></div>
+                                            <div>Mode: {{ 'Race' if lobby.race else 'Standard' }}</div>
+                                        </div>
+                                    </span>
+                                </td>
+                                <td class="lobby-join-td">
+                                    <a href="{{ url_for('lobby_view', lobby=lobby.id) }}">Join</a>
+                                    {% if lobby.password_hash %}
+                                        <a href="{{ url_for('lobby_view', lobby=lobby.id) }}?view=1" class="lobby-view-link">View</a>
+                                    {% else %}
+                                        <form method="post" action="{{ url_for('lobby_view_auth', lobby=lobby.id) }}" style="display:inline">
+                                            <button type="submit" class="lobby-view-link lobby-view-btn">View</button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-lobbies">No active lobbies. Create one to get started!</p>
+            {% endif %}
+        </div>
+        <div id="lobby-credits">
+            <p>
+                Our lobby feature was inspired by the <a href="https://ap-lobby.bananium.fr/">Bananium AP Lobby</a>
+                created by <a href="https://github.com/Eijebong/Archipelago-lobby">Eijebong</a>. Thanks for the great work!
+            </p>
+        </div>
+    </div>
+    {% include 'islandFooter.html' %}
+    <script>
+        document.querySelectorAll(".settings-tip").forEach(function(tip) {
+            tip.addEventListener("mouseenter", function() {
+                const content = tip.querySelector(".settings-tip-content");
+                if (!content) return;
+                const rect = content.getBoundingClientRect();
+                const spaceBelow = window.innerHeight - tip.getBoundingClientRect().bottom;
+                tip.classList.toggle("tip-upward", spaceBelow < rect.height + 16);
+            });
+        });
+        document.querySelectorAll("time.lobby-expiry-time").forEach(function(el) {
+            const iso = el.getAttribute("datetime");
+            if (iso) el.textContent = new Date(iso).toLocaleString();
+        });
+    </script>
+{% endblock %}

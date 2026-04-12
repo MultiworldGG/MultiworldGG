@@ -78,7 +78,7 @@ class YachtDiceWorld(World):
 
     item_name_groups = item_groups
     
-    apworld_version = "2.3.1"
+    apworld_version = "2.3.3"
 
     def _get_yachtdice_data(self):
         return {
@@ -156,7 +156,7 @@ class YachtDiceWorld(World):
             normal_categories = sorted(self.options.allowed_normal_categories.value)
         alternative_categories = []
         if self.options.percentage_alternative_categories.value > 0:
-            sorted(self.options.allowed_alternative_categories.value)
+            alternative_categories = sorted(self.options.allowed_alternative_categories.value)
         all_candidate_categories = normal_categories + alternative_categories
 
         if not all_candidate_categories:  # no categories chosen at all, just use all categories

@@ -1,0 +1,250 @@
+{
+    "Overworld": {
+        "connections": {
+            "Welcome to Hyland Point": true,
+            "Northtown" : true
+        }
+    },
+    "Northtown": {
+        "connections": {"Westville": {"randomize_level_unlocks&!randomize_customers" : {"has": "Westville Region Unlock"}},
+                        "Weed Recipe Checks": {"randomize_level_unlocks" : {"has": "Mixing Station Unlock"}}}
+    },
+    "Westville": {
+        "connections": {"Downtown": {"randomize_cartel_influence&!randomize_customers" : {"has_all_counts": {"Cartel Influence, Westville": 2}}},
+                        "Meth Recipe Checks": {"randomize_level_unlocks" : {"has_any": [["Mixing Station Mk II Unlock",  "Mixing Station Unlock"]],
+                                                                            "has_all" : ["Acid Unlock",
+                                                                                         "Phosphorus Unlock",
+                                                                                         "Chemistry Station Unlock",
+                                                                                         "Lab Oven Unlock",
+                                                                                         "Warehouse Access"]},
+                                               "randomize_suppliers" : {"has": "Shirley Watts Unlocked"},
+                                               "randomize_customers&!randomize_suppliers" : {"has_any" : [["Meg Cooley Unlocked", "Jerry Montero Unlocked"]]}}}
+    },
+    "Downtown": {
+        "connections": {"Docks": {"randomize_cartel_influence&!randomize_customers" : {"has_all_counts": {"Cartel Influence, Downtown": 7}},
+                                  "randomize_level_unlocks" : {"has": "Fertilizer Unlock"}},
+                        "Vibin' on the 'Cybin": {"randomize_level_unlocks" : {"has" : "Warehouse Access"},
+                                                 "randomize_suppliers" : {"has": "Fungal Phil Unlocked"},
+                                                 "randomize_customers&!randomize_suppliers" : {"has_any" : [["Elizabeth Homley Unlocked", "Kevin Oakley Unlocked"]]}}}
+    },
+    "Docks": {
+        "connections": {"Suburbia": {"randomize_cartel_influence&!randomize_customers" : {"has_all_counts": {"Cartel Influence, Docks": 7}}},
+                        "Cocaine Recipe Checks": {"randomize_level_unlocks" : {"has_any": [["Mixing Station Mk II Unlock",  "Mixing Station Unlock"]],
+                                                               "has_all" : ["Cauldron Unlock", "Lab Oven Unlock", "Gasoline Unlock", "Warehouse Access"]},
+                                  "randomize_suppliers" : {"has": "Salvador Moreno Unlocked"},
+                                  "randomize_customers&!randomize_suppliers" : {"has_any" : [["Mac Cooper Unlocked", "Javier Pérez Unlocked"]]}}}
+    },
+    "Suburbia": {
+        "connections": {"Uptown": {"randomize_cartel_influence&!randomize_customers" : {"has_all_counts": {"Cartel Influence, Suburbia": 7}},
+                                  "randomize_level_unlocks" : {"has": "Drying Rack Unlock"}}}
+    },
+    "Uptown": {
+        "connections": {}
+    },
+    "Weed Recipe Checks": {
+        "connections": {}
+    },
+    "Meth Recipe Checks": {
+        "connections": {}
+    },
+    "Shrooms Recipe Checks": {
+        "connections": {}
+    },
+    "Cocaine Recipe Checks": {
+        "connections": {}
+    },
+    "Welcome to Hyland Point": {
+        "connections": {
+            "Getting Started": true
+        }
+    },
+    "Getting Started": {
+        "connections": {
+            "Money Management": true
+        }
+    },
+    "Money Management": {
+        "connections": {
+            "Gearing Up|1": true,
+            "Clean Cash": true
+        }
+    },
+    "Clean Cash": {
+        "connections": {
+            
+        }
+    },
+    "Gearing Up|1": {
+        "connections": {
+            "Gearing Up|2": true,
+            "Packin'": true,
+            "Keeping it Fresh": true
+        }
+    },
+    "Keeping it Fresh": {
+        "connections": {
+            
+        }
+    },
+    "Packin'": {
+        "connections": {
+            
+        }
+    },
+    "Gearing Up|2": {
+        "connections": {
+            "On the Grind|1": true
+        }
+    },
+    "On the Grind|1": {
+        "connections": {
+            "Moving Up": true,
+            "On the Grind|2": true
+        }
+    },
+    "On the Grind|2": {
+        "connections": {
+            
+        }
+    },
+    "Moving Up": {
+        "connections": {
+            "Dodgy Dealing": {"randomize_customers": {"has_from_list": 
+            {"Austin Steiner Unlocked": 10,
+            "Beth Penn Unlocked": 10,
+            "Chloe Bowers Unlocked": 10,
+            "Donna Martin Unlocked": 10,
+            "Geraldine Poon Unlocked": 10,
+            "Jessi Waters Unlocked": 10,
+            "Kathy Henderson Unlocked": 10,
+            "Kyle Cooley Unlocked": 10,
+            "Ludwig Meyer Unlocked": 10,
+            "Mick Lubbin Unlocked": 10,
+            "Mrs. Ming Unlocked": 10,
+            "Peggy Myers Unlocked": 10,
+            "Peter File Unlocked": 10,
+            "Sam Thompson Unlocked": 10,
+            "Charles Rowland Unlocked": 10,
+            "Dean Webster Unlocked": 10,
+            "Doris Lubbin Unlocked": 10,
+            "George Greene Unlocked": 10,
+            "Jerry Montero Unlocked": 10,
+            "Joyce Ball Unlocked": 10,
+            "Keith Wagner Unlocked": 10,
+            "Kim Delaney Unlocked": 10,
+            "Meg Cooley Unlocked": 10,
+            "Trent Sherman Unlocked": 10,
+            "Bruce Norton Unlocked": 10,
+            "Elizabeth Homley Unlocked": 10,
+            "Eugene Buckley Unlocked": 10,
+            "Greg Figgle Unlocked": 10,
+            "Jeff Gilmore Unlocked": 10,
+            "Jennifer Rivera Unlocked": 10,
+            "Kevin Oakley Unlocked": 10,
+            "Louis Fourier Unlocked": 10,
+            "Philip Wentworth Unlocked": 10,
+            "Randy Caulfield Unlocked": 10,
+            "Lucy Pennington Unlocked": 10,
+            "Anna Chesterfield Unlocked": 10,
+            "Billy Kramer Unlocked": 10,
+            "Cranky Frank Unlocked": 10,
+            "Genghis Barn Unlocked": 10,
+            "Javier Pérez Unlocked": 10,
+            "Kelly Reynolds Unlocked": 10,
+            "Lisa Gardener Unlocked": 10,
+            "Mac Cooper Unlocked": 10,
+            "Marco Barone Unlocked": 10,
+            "Melissa Wood Unlocked": 10,
+            "Sherman Giles Unlocked": 10,
+            "Alison Knight Unlocked": 10,
+            "Carl Bundy Unlocked": 10,
+            "Chris Sullivan Unlocked": 10,
+            "Dennis Kennedy Unlocked": 10,
+            "Hank Stevenson Unlocked": 10,
+            "Harold Colt Unlocked": 10,
+            "Jack Knight Unlocked": 10,
+            "Jackie Stevenson Unlocked": 10,
+            "Jeremy Wilkinson Unlocked": 10,
+            "Karen Kennedy Unlocked": 10,
+            "Fiona Hancock Unlocked": 10,
+            "Herbert Bleuball Unlocked": 10,
+            "Irene Meadows Unlocked": 10,
+            "Jen Heard Unlocked": 10,
+            "Lily Turner Unlocked": 10,
+            "Michael Boog Unlocked": 10,
+            "Pearl Moore Unlocked": 10,
+            "Ray Hoffman Unlocked": 10,
+            "Tobias Wentworth Unlocked": 10,
+            "Walter Cussler Unlocked": 10}}}
+        }
+    },
+    "Dodgy Dealing": {
+        "connections": {
+            "Mixing Mania": {"randomize_customers": {"has_any" : [["Chloe Bowers Unlocked", "Ludwig Meyer Unlocked", "Beth Penn Unlocked"]]}}
+        }
+    },
+    "Mixing Mania": {
+        "connections": {
+            "Making the Rounds": {"randomize_level_unlocks" : {"has": "Mixing Station Unlock"}}
+        }
+    },
+    "Making the Rounds": {
+        "connections": {
+            "Needin' the Green": true
+        }
+    },
+    "Needin' the Green": {
+        "connections": {
+            "Wretched Hive of Scum and Villainy": true
+        }
+    },
+    "Vibin' on the 'Cybin": {
+        "connections": {
+            "Shrooms Recipe Checks": {"randomize_level_unlocks": {"has_any": [["Mixing Station Mk II Unlock",  "Mixing Station Unlock"]]}}
+        }
+    },
+    "Wretched Hive of Scum and Villainy": {
+        "connections": {
+            "We Need To Cook|1": {"randomize_level_unlocks": {"has": "Warehouse Access"}}
+        }
+    },
+    "We Need To Cook|1": {
+        "connections": {
+            "We Need To Cook|2": {"randomize_customers": {"has_any": [["Meg Cooley Unlocked", "Jerry Montero Unlocked"]]},
+                                    "randomize_suppliers": {"has": "Shirley Watts Unlocked"}}
+        }
+    },
+    "We Need To Cook|2": {
+        "connections": {
+            "Unfavourable Agreements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
+                                                                                "Lab Oven Unlock",
+                                                                                "Acid Unlock",
+                                                                                "Phosphorus Unlock"]},
+                                        "randomize_customers": {"has_from_list": {
+                                        "Charles Rowland Unlocked": 5,
+                                        "Dean Webster Unlocked": 5,
+                                        "Doris Lubbin Unlocked": 5,
+                                        "George Greene Unlocked": 5,
+                                        "Jerry Montero Unlocked": 5,
+                                        "Joyce Ball Unlocked": 5,
+                                        "Kim Delaney Unlocked": 5,
+                                        "Meg Cooley Unlocked": 5,
+                                        "Trent Sherman Unlocked": 5,
+                                        "Keith Wagner Unlocked": 5}}}
+        }
+    },
+    "Unfavourable Agreements": {
+        "connections": {
+            "Finishing the Job": true,
+            "Cartel Influence": true
+        }
+    },
+    "Cartel Influence": {
+        "connections": {}
+    },
+    "Finishing the Job": {
+        "connections": {
+            
+        }
+    }
+}

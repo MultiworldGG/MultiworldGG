@@ -103,7 +103,7 @@ class WhichImage(Range):
     
     display_name = "Which image"
     range_start = 1
-    range_end = 54
+    range_end = 55
     default = "random"
     
 class PercentageOfExtraPieces(Range):
@@ -328,6 +328,8 @@ class GridTypeAndRotations(Choice):
     """
     The type of grid used for the jigsaw puzzle, along with the rotation options.
     The "meme" options create really long or wide pieces in just one row or one column.
+    How to rotate:
+    While dragging a piece, rotate by: 1) scroll wheel, 2) R/spacebar, 3) tap on screen with second body part.
     """
 
     display_name = "Grid type and rotations"

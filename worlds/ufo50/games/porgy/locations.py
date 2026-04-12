@@ -1,5 +1,6 @@
-from typing import TYPE_CHECKING, Dict, NamedTuple, Set
 from enum import IntEnum
+from typing import TYPE_CHECKING, NamedTuple
+
 from BaseClasses import Region, Location, Item, ItemClassification
 from worlds.generic.Rules import add_rule
 
@@ -29,15 +30,15 @@ class EventInfo(NamedTuple):
     item_name: str
 
 
-location_table: Dict[str, LocationInfo] = {
+location_table: dict[str, LocationInfo] = {
     # Shallows
-    "Shallows Upper Left - Ceiling Torpedo Upgrade": LocationInfo(20, "Shallows", 1, 2, Hidden.no_tell),
+    "Shallows Upper Left - Ceiling Torpedo Upgrade": LocationInfo(20, "Shallows", 1, 2, Hidden.no_tell),  # no missile
     "Shallows Upper Left - Fuel Tank next to Coral": LocationInfo(1, "Shallows", 2, 3),
     "Shallows Lower Left - Fuel Tank between some Coral": LocationInfo(10, "Shallows", 1, 2),
     "Shallows Lower Left - Fuel Tank above Breakable Rocks": LocationInfo(8, "Shallows - Missile", 1, 2),  # missile
     "Shallows Upper Mid - Torpedo Upgrade at Surface": LocationInfo(27, "Shallows - Buster", 2, 4),  # buster
     "Shallows Upper Mid - Fuel Tank on Coral": LocationInfo(9, "Shallows", 1, 1),
-    "Shallows Uppper Mid - Fuel Tank behind ! Blocks": LocationInfo(6, "Shallows - Buster", 2, 3),  # buster
+    "Shallows Upper Mid - Fuel Tank behind ! Blocks": LocationInfo(6, "Shallows - Buster", 2, 3),  # buster
     "Shallows Upper Mid - Egg at Surface": LocationInfo(52, "Shallows - Buster", 1, 2),  # buster
     "Shallows Upper Mid - Fuel Tank in Floor at Surface": LocationInfo(11, "Shallows - Buster", 1, 2, Hidden.has_tell),  # buster, depth
     "Shallows Mid - Torpedo Upgrade above Breakable Rocks": LocationInfo(24, "Shallows - Missile", 3, 5),  # missile
@@ -78,7 +79,7 @@ location_table: Dict[str, LocationInfo] = {
     "Deeper Upper Left - Fuel Tank on Coral": LocationInfo(100, "Deeper", 4, 7),
     "Deeper Upper Left - Fuel Tank behind ! Blocks": LocationInfo(103, "Deeper", 4, 6),
     "Deeper Upper Mid - Torpedo Upgrade in Coral": LocationInfo(124, "Deeper", 3, 5, Hidden.no_tell),
-    "Deeper Upper Mid - Torpedo Upgrade in Ceiling": LocationInfo(125, "Deeper", 3, 6, Hidden.has_tell),
+    "Deeper Upper Mid - Torpedo Upgrade in Ceiling": LocationInfo(125, "Deeper", 3, 6, Hidden.has_tell),  # depth or missile
     "Deeper Upper Mid - Egg in Dirt": LocationInfo(154, "Deeper", Hidden.no_tell),  # drill, 3/5
     "Deeper Upper Mid - Spotlight Module": LocationInfo(192, "Deeper", 3, 5),  # depth
     "Deeper Upper Mid - Fuel Tank in Collapsed Structure": LocationInfo(102, "Deeper", 2, 5),
@@ -88,7 +89,7 @@ location_table: Dict[str, LocationInfo] = {
     "Deeper Right - Torpedo Upgrade on Coral": LocationInfo(123, "Deeper", 5, 8),  # same speed to blow up rocks
     "Deeper Upper Right - Targeting System Module": LocationInfo(190, "Deeper", 5, 9),
     "Deeper Lower Right - Egg behind Urchins": LocationInfo(152, "Deeper", 3, 5, Hidden.no_tell),
-    "Deeper Lower Right - Fuel Tank in Ceiling": LocationInfo(105, "Deeper", 4, 7, Hidden.no_tell),
+    "Deeper Lower Right - Fuel Tank in Ceiling": LocationInfo(105, "Deeper", 4, 7, Hidden.no_tell),  # depth or missile
     "Deeper Lower Right - Egg on Coral": LocationInfo(151, "Deeper", 5, 8),
     "Deeper Lower Mid - Missile System Module": LocationInfo(191, "Deeper", 4, 7),
     "Deeper Lower Mid - Torpedo Upgrade on Coral": LocationInfo(120, "Deeper", 4, 7),
@@ -114,8 +115,8 @@ location_table: Dict[str, LocationInfo] = {
     "Abyss Upper Right - Torpedo Upgrade in Wall": LocationInfo(224, "Abyss", 4, 8, Hidden.has_tell),
     "Abyss Lower Right - Fuel Tank in Floor": LocationInfo(202, "Abyss", Hidden.no_tell),  # technically has a tell but eh
     "Abyss Lower Right - Egg by Skull": LocationInfo(250, "Abyss"),
-    "Abyss Lower Right - Radar System Module": LocationInfo(292, "Abyss"),
-    "Abyss Lower Right - Armor Plating Module": LocationInfo(291, "Abyss"),
+    "Abyss Lower Right - Radar System Module": LocationInfo(291, "Abyss"),
+    "Abyss Lower Right - Armor Plating Module": LocationInfo(292, "Abyss"),
 
     # Bosses
     # combat logic is weird cause you can save damage done to a boss
@@ -131,11 +132,11 @@ location_table: Dict[str, LocationInfo] = {
 
     "Garden": LocationInfo(997, "Menu"),
     "Gold": LocationInfo(998, "Abyss"),
-    "Cherry": LocationInfo(999, "Boss Area")
+    "Cherry": LocationInfo(999, "Abyss")
 }
 
 
-event_table: Dict[str, EventInfo] = {
+event_table: dict[str, EventInfo] = {
     "Sunken Ship": EventInfo("Shallows", "Bombed Open the Ship"),
     "Rock at Buster Urchin Path": EventInfo("Deeper", "Bombed the Buster Urchin Path Exit Rock"),
     "Rock at Leftmost Abyss Entrance": EventInfo("Deeper", "Bombed the Leftmost Abyss Entrance Rock"),
@@ -145,19 +146,19 @@ event_table: Dict[str, EventInfo] = {
 
 
 # this is for filling out location_name_to_id, it should be static regardless of yaml options
-def get_locations() -> Dict[str, int]:
+def get_locations() -> dict[str, int]:
     return {f"Porgy - {name}": data.id_offset + get_game_base_id("Porgy") for name, data in location_table.items()}
 
 
 # this should return the location groups for this game, independent of yaml options
 # you should include a group that contains all location for this game that is called the same thing as the game
-def get_location_groups() -> Dict[str, Set[str]]:
-    location_groups: Dict[str, Set[str]] = {"Porgy": {f"Porgy - {loc_name}" for loc_name in location_table.keys()}}
+def get_location_groups() -> dict[str, set[str]]:
+    location_groups: dict[str, set[str]] = {"Porgy": {f"Porgy - {loc_name}" for loc_name in location_table.keys()}}
     return location_groups
 
 
 # this is not a required function, but a recommended one -- the world class does not call this function
-def create_locations(world: "UFO50World", regions: Dict[str, Region]) -> None:
+def create_locations(world: "UFO50World", regions: dict[str, Region]) -> None:
     for loc_name, loc_data in location_table.items():
         if loc_name == "Cherry" and "Porgy" not in world.options.cherry_allowed_games:
             break

@@ -277,7 +277,7 @@ class SMOContext(CommonContext):
     def forward_shine_data(self):
         world_id = world_prefixes.index(self.player_data.current_home_stage)
         self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ShineReplace,
-                                     packet_data=[self.slot_data["shine_replace_data"][str(world_id)]]))
+                                         packet_data=[self.slot_data["shine_replace_data"][str(world_id)]]))
         # Items
         #print(self.slot_data["shine_replace_data"][str(world_id)])
         for i in range(0, len(self.slot_data["shine_items"][str(world_id)]), 3):
@@ -551,7 +551,8 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
                             break
                     if len(ctx.slot_data) > 0 and needs_slot_data:
                         ctx.forward_slot_data()
-                        ctx.forward_shine_data()
+                        if ctx.player_data.current_home_stage in world_prefixes:
+                            ctx.forward_shine_data()
                     ctx.server_msgs.append({"cmd": "Sync"})
 
                 case PacketType.Disconnect:
@@ -564,7 +565,7 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
                         ctx.player_data.current_home_stage = stage[0:stage.index("World")]
                         print(f"Player Changed Home Stage to {ctx.player_data.current_home_stage}")
 
-                        if ctx.is_connected() and len(ctx.player_data.current_home_stage) > 0:
+                        if ctx.is_connected() and ctx.player_data.current_home_stage in world_prefixes:
                             ctx.forward_shine_data()
 
                 case PacketType.Check:

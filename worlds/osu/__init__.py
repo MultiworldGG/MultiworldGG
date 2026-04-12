@@ -53,8 +53,7 @@ class OsuWorld(World):
     """
 
     # Lots of code is taken from Mushdash, Clique, and various other APworlds
-    game: str = "osu!"
-    author: str = "Kanave"
+    game = "osu!"
     options_dataclass = OsuOptions
     options: OsuOptions
     data_version = 3
@@ -192,6 +191,8 @@ class OsuWorld(World):
         if str(beatmapset["id"]) in self.options.include_songs.value.union(self.options.exclude_songs.value):
             return False  # Included Songs are handled elsewhere, and we don't want duplicates
         if beatmapset["length"] > self.options.maximum_length:
+            return False
+        if beatmapset["length"] < self.options.minimum_length:
             return False
         if (not self.options.explicit_lyrics) and beatmapset["nsfw"]:
             return False

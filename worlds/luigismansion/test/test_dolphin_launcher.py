@@ -2,18 +2,20 @@ import unittest
 
 from unittest.mock import patch, MagicMock
 from ..client.dolphin_launcher import DolphinLauncher
-from ..client.luigismansion_settings import LuigisMansionSettings, EmulatorSettings
+from ..client.luigismansion_settings import LuigisMansionSettings, EmulatorSettings, EmulatorExecutable
+
 
 class _TestSettings:
     luigismansion_options: LuigisMansionSettings = LuigisMansionSettings
     luigismansion_options.dolphin_settings = EmulatorSettings
+
 
 class TestDolphinLauncher(unittest.TestCase):
     @patch('settings.get_settings')
     def test_init_settings_populate(self, mock_settings_get_settings):
         """ Verifies that the DolphinLauncher is able to resolve init args from the AP settings object if no arg is presented. """
         test_settings = _TestSettings()
-        test_settings.luigismansion_options.dolphin_settings.path = "this is a test path"
+        test_settings.luigismansion_options.dolphin_settings.path = EmulatorExecutable("this is a test path")
         test_settings.luigismansion_options.dolphin_settings.auto_start = False
         mock_settings_get_settings.return_value = test_settings
 
@@ -27,7 +29,7 @@ class TestDolphinLauncher(unittest.TestCase):
         """ Verifies that the DolphinLauncher's init allows consumers to override settings value. """
         lm_settings = LuigisMansionSettings()
         lm_settings.dolphin_settings.auto_start = True
-        lm_settings.dolphin_settings.path = "this is a test path"
+        lm_settings.dolphin_settings.path = EmulatorExecutable("this is a test path")
 
         dolphin_launcher = DolphinLauncher(lm_settings)
 
@@ -43,7 +45,7 @@ class TestAsyncDolphinLauncher(unittest.IsolatedAsyncioTestCase):
         with patch('worlds.luigismansion.client.dolphin_launcher._check_emulator_process_open', mock_process_check):
             lm_settings = LuigisMansionSettings()
             lm_settings.dolphin_settings.auto_start = True
-            lm_settings.dolphin_settings.path = "this is a test path"
+            lm_settings.dolphin_settings.path = EmulatorExecutable("this is a test path")
 
             dolphin_launcher = DolphinLauncher(lm_settings)
             await dolphin_launcher.launch_dolphin_async("")
@@ -58,7 +60,7 @@ class TestAsyncDolphinLauncher(unittest.IsolatedAsyncioTestCase):
         with patch('worlds.luigismansion.client.dolphin_launcher._check_emulator_process_open', mock_process_check):
             lm_settings = LuigisMansionSettings()
             lm_settings.dolphin_settings.auto_start = True
-            lm_settings.dolphin_settings.path = "this is a test path"
+            lm_settings.dolphin_settings.path = EmulatorExecutable("this is a test path")
 
             dolphin_launcher = DolphinLauncher(lm_settings)
             await dolphin_launcher.launch_dolphin_async("")
@@ -76,7 +78,7 @@ class TestAsyncDolphinLauncher(unittest.IsolatedAsyncioTestCase):
         with patch('worlds.luigismansion.client.dolphin_launcher._check_emulator_process_open', mock_process_check):
             lm_settings = LuigisMansionSettings()
             lm_settings.dolphin_settings.auto_start = True
-            lm_settings.dolphin_settings.path = "this is a test path"
+            lm_settings.dolphin_settings.path = EmulatorExecutable("this is a test path")
 
             rom_name = "luigis_mansion.rom"
 
@@ -97,7 +99,7 @@ class TestAsyncDolphinLauncher(unittest.IsolatedAsyncioTestCase):
         with patch('worlds.luigismansion.client.dolphin_launcher._check_emulator_process_open', mock_process_check):
             lm_settings = LuigisMansionSettings()
             lm_settings.dolphin_settings.auto_start = False
-            lm_settings.dolphin_settings.path = "this is a test path"
+            lm_settings.dolphin_settings.path = EmulatorExecutable("this is a test path")
 
             dolphin_launcher = DolphinLauncher(lm_settings)
             await dolphin_launcher.launch_dolphin_async("")

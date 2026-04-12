@@ -36,7 +36,7 @@ class SMWWeb(WebWorld):
 
     setup_en = Tutorial(
         "Multiworld Setup Guide",
-        "A guide to setting up the Super Mario World randomizer connected to a MultiworldGG world.",
+        "A guide to setting up the Super Mario World randomizer connected to an Archipelago world.",
         "English",
         "setup_en.md",
         "setup/en",
@@ -56,7 +56,6 @@ class SMWWorld(World):
     lost all of his abilities. Can he get them back in time to save the Princess?
     """
     game: str = "Super Mario World"
-    author: str = "PoryGone"
     settings: typing.ClassVar[SMWSettings]
 
     options_dataclass = SMWOptions

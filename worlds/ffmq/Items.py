@@ -291,7 +291,7 @@ def create_items(self) -> None:
     for item, count in fillers.items():
         filler_items += [self.create_item(item) for _ in range(count)]
     if self.options.sky_coin_mode == "shattered_sky_coin":
-        self.random.shuffle(filler_items)
+        self.multiworld.random.shuffle(filler_items)
         filler_items = filler_items[39:]
     items += filler_items[1:]
 
@@ -308,7 +308,10 @@ class FFMQItem(Item):
     type = None
 
     def __init__(self, name, player: int = None):
-        item_data = item_table.get(name, ItemData(None, ItemClassification.progression))
+        if name in item_table:
+            item_data = item_table[name]
+        else:
+            item_data = ItemData(None, ItemClassification.progression)
         super(FFMQItem, self).__init__(
             name,
             item_data.classification,

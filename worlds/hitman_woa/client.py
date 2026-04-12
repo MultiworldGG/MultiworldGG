@@ -78,7 +78,7 @@ class HitmanContext(CommonContext):
             case "PrintJSON"| "Retrieved" |  "Bounced" | "SetReply" | "DataPackage":
                 pass
             case "RoomInfo":
-                self.current_seed = args["seed_name"]
+                self.current_seed = args["seed_name"].removeprefix("W")
             case _:
                 print("Not implemented cmd: "+cmd+", with args: "+str(args))
 

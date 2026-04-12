@@ -44,9 +44,16 @@
                 value="{{ option.default | default(option.range_start) if option.default != "random" else option.range_start }}"
                 {{ "disabled" if option.default == "random" }}
         />
-        <span id="{{ option_name }}-value" class="range-value js-required">
-            {{ option.default | default(option.range_start) if option.default != "random" else option.range_start }}
-        </span>
+        <input
+                type="number"
+                id="{{ option_name }}-value"
+                class="range-value js-required"
+                min="{{ option.range_start }}"
+                max="{{ option.range_end }}"
+                value="{{ option.default | default(option.range_start) if option.default != "random" else option.range_start }}"
+                style="width: {{ ([option.range_end | string | length, option.range_start | string | length] | max) + 2 }}ch"
+                {{ "disabled" if option.default == "random" }}
+        />
         {{ RandomizeButton(option_name, option) }}
     </div>
 {% endmacro %}
@@ -55,6 +62,9 @@
     {{ OptionTitle(option_name, option) }}
     <div class="named-range-container">
         <select id="{{ option_name }}-select" name="{{ option_name }}" data-option-name="{{ option_name }}" {{ "disabled" if option.default == "random" }}>
+            {% if option.default not in option.special_range_names.values() %}
+                <option value="{{ option.default }}" selected>Default ({{ option.default }})</option>
+            {% endif %}
             {% for key, val in option.special_range_names.items() %}
                 {% if option.default == val %}
                     <option value="{{ val }}" selected>{{ key|replace("_", " ")|title }} ({{ val }})</option>
@@ -94,6 +104,9 @@
     <div class="text-choice-container">
         <div class="text-choice-wrapper">
             <select id="{{ option_name }}" name="{{ option_name }}" {{ "disabled" if option.default == "random" }}>
+            {% if option.default not in option.options.values()  %}
+                <option value="{{ option.default }}" selected>Default ({{ option.default }})</option>
+            {% endif %}
             {% for id, name in option.name_lookup.items()|sort %}
                 {% if name != "random" %}
                     {% if option.default == id %}
@@ -230,15 +243,14 @@
 
   {% set relevant_list = (option.valid_keys|sort if option.valid_keys|length > 0 else world.location_names|sort) %}
 
+  {% set filtered_location_groups = world.location_name_groups.items()|selectattr("0", "ne", "Everywhere")|list|sort(attribute="0") %}
   <div class="option-container multi-selector"
        data-option-name="{{ option_name }}"
        data-defaults='{{ option.default|list|tojson }}'
        data-names='{{ relevant_list|tojson }}'
        data-groups='{
-         {%- for g,members in world.location_name_groups.items()|sort(attribute="0") %}
-           {%- if g!="Everywhere" -%}
-             "{{ g }}": {{ members|list|sort|tojson }}{{ "," if not loop.last }}
-           {%- endif %}
+         {%- for g,members in filtered_location_groups %}
+           "{{ g }}": {{ members|list|sort|tojson }}{{ "," if not loop.last }}
          {%- endfor %}
        }'>
 
@@ -253,15 +265,14 @@
 
   {% set relevant_list = (option.valid_keys|sort if option.valid_keys|length > 0 else world.item_names|sort) %}
 
+  {% set filtered_item_groups = world.item_name_groups.items()|selectattr("0", "ne", "Everything")|list|sort(attribute="0") %}
   <div class="option-container multi-selector item-selector"
        data-option-name="{{ option_name }}"
        data-defaults='{{ option.default|list|tojson }}'
        data-names='{{ relevant_list|tojson }}'
        data-groups='{
-         {%- for g,members in world.item_name_groups.items()|sort(attribute="0") %}
-           {%- if g!="Everything" -%}
-             "{{ g }}": {{ members|list|sort|tojson }}{{ "," if not loop.last }}
-           {%- endif %}
+         {%- for g,members in filtered_item_groups %}
+           "{{ g }}": {{ members|list|sort|tojson }}{{ "," if not loop.last }}
          {%- endfor %}
        }'>
 

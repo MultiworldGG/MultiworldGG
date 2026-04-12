@@ -58,8 +58,24 @@ class LevelLocRuleData:
             base_region: str,
             base_rule: LevelRule | None,
             loc_rules: dict[str, LRule | None],
+            register_loc: bool = True,
             debug: bool = False
         ):
         self.base_region = base_region
         self.base_rule = base_rule
         self.loc_rules = self._get_loc_rules(loc_rules, debug)
+
+        if register_loc:
+            register_level_loc_rules(base_region, base_rule, loc_rules)
+
+level_loc_rule_locs: set[str] = set()
+
+def register_level_loc_rules(
+        base_region: str,
+        base_rule: lr.LevelRule | None,
+        loc_rules: dict[str, LRule | None]
+    ) -> LevelLocRuleData:
+    res = LevelLocRuleData(base_region, base_rule, loc_rules, False)
+    for loc in loc_rules.keys():
+        level_loc_rule_locs.union(loc)
+    return res

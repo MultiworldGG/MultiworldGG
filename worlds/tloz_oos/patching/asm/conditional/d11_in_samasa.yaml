@@ -1,0 +1,18 @@
+11/5ce9/: db $ee ; remove both sinkhole interactions
+
+04/748f/: |
+  ; replace a bad warp placed on 00 pointing to linked hero's
+  db $40,$cf
+  dw warpSourceDesert
+
+04//warpSourceDesert: |
+  ; Main entrance
+  db $00,$55,$04,$54
+  ; Side entrance
+  db $80,$58,$52,$59
+
+04/6d7c/group0WarpDestTable0a: |
+  ; There's an unused dest here
+  db $cf,$55,$01
+
+04/7b35/: db $0a ; use the above dest

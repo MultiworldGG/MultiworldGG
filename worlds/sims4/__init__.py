@@ -56,6 +56,7 @@ class Sims4World(World):
     """
 
     game = "The Sims 4"
+    author: str = "bennydreamly"
     topology_present = False
     web = Sims4Web()
 

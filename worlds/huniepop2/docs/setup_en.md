@@ -3,7 +3,7 @@
 ## Required Software
 * HuniePop 2
 * [BepInEx](https://github.com/BepInEx/BepInEx/releases) (v5, 64Bit)
-* [HuniePop 2 AP Plugin](https://github.com/DotsofdarknessArchipelago/HunniePop2-Archipelago-Client/releases)
+* [HuniePop 2 AP Plugin](https://github.com/DotsofdarknessArchipelago/HuniePop2Archipelago/releases)
 
 ## How to join a Multiworld Room
 * Extract and copy the contents of BepInEx to the directory where "HuniePop 2 - Double Date.exe" is

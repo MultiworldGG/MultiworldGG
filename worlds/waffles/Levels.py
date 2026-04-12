@@ -634,7 +634,7 @@ def generate_level_list(world: "WaffleWorld"):
     special_zone_levels_copy = special_zone_levels.copy()
 
     # Move levels to another list depending on certain settings
-    if world.options.game_logic_difficulty == "easy":
+    if world.options.game_logic_difficulty != "hard":
         # Move Butter Bridge 2 to hard levels on easy logic
         swap_level(0x0D, easy_single_levels_copy, hard_single_levels_copy)
     
@@ -710,6 +710,7 @@ def generate_level_list(world: "WaffleWorld"):
     starting_location = possible_starting_entrances[world.options.starting_location.value]
     check_next_exits = [starting_location]
     path_count = 0
+
     while len(remaining_exits) != 0:
         cache_exits = check_next_exits.copy()
         for exit in cache_exits:
@@ -738,7 +739,10 @@ def generate_level_list(world: "WaffleWorld"):
                 if level_id in single_levels:
                     shuffled_level_dict[level_id] = single_levels_copy.pop(0)
                 elif level_id in double_levels:
-                    shuffled_level_dict[level_id] = double_levels_copy.pop(0)
+                    level_pop = double_levels_copy.pop(0)
+                    shuffled_level_dict[level_id] = level_pop
+                    if level_pop not in world.ordered_double_exits:
+                        world.ordered_double_exits.append(level_pop)
                 elif level_id in castle_levels:
                     shuffled_level_dict[level_id] = castle_fortress_levels_copy.pop(0)
 
@@ -751,30 +755,52 @@ def generate_level_list(world: "WaffleWorld"):
 
 def generate_swapped_exits(world: "WaffleWorld"):
     if world.options.swap_exit_count.value:
-        double_levels_copy = easy_double_levels.copy() + hard_double_levels.copy()
-        double_levels_copy.remove(0x5A)
-        double_levels_copy.remove(0x13)
-        world.random.shuffle(double_levels_copy)
-        for _ in range(world.options.swap_exit_count.value):
-            level_id = double_levels_copy.pop(0)
-            world.swapped_exits.append(level_id)
+        if len(world.ordered_double_exits) == 0:
+            level_list = easy_double_levels + hard_double_levels
+        else:
+            level_list = world.ordered_double_exits.copy()
+        level_list.remove(0x5A)
+        level_list.remove(0x13)
+        level_list.reverse()
+        level_weights = [100-((x+1)*15) if 100-((x+1)*15) >= 45 else 45 for x in range(len(level_list))]
+        remaining = world.options.swap_exit_count.value
+        while remaining > 0:
+            chance = level_weights.pop(0)
+            level_id = level_list.pop(0)
+            if world.random.randint(0, 100) <= chance:
+                world.swapped_exits.append(level_id)
+                remaining -= 1
+            else:
+                level_weights.append(chance+10)
+                level_list.append(level_id)
+
     if world.options.swap_donut_gh_exits and 0x04 not in world.swapped_exits:
-            world.swapped_exits.append(0x04)
+        world.swapped_exits.append(0x04)
 
 
 def generate_carryless_exits(world: "WaffleWorld"):
     if world.options.carryless_exits.value:
-        double_levels_copy = easy_double_levels.copy() + hard_double_levels.copy()
-        double_levels_copy.remove(0x04)
-        double_levels_copy.remove(0x13)
-        double_levels_copy.remove(0x2D)
-        double_levels_copy.remove(0x0F)
-        double_levels_copy.remove(0x41)
-        double_levels_copy.remove(0x23)
-        world.random.shuffle(double_levels_copy)
-        for _ in range(world.options.carryless_exits.value):
-            level_id = double_levels_copy.pop(0)
-            world.carryless_exits.append(level_id)
+        if len(world.ordered_double_exits) == 0:
+            level_list = easy_double_levels + hard_double_levels
+        else:
+            level_list = world.ordered_double_exits.copy()
+        level_list.remove(0x04)
+        level_list.remove(0x13)
+        level_list.remove(0x2D)
+        level_list.remove(0x0F)
+        level_list.remove(0x41)
+        level_list.remove(0x23)
+        level_weights = [100-((x+2)*8) if 100-((x+2)*8) >= 50 else 50 for x in range(len(level_list))]
+        remaining = world.options.carryless_exits.value
+        while remaining > 0:
+            chance = level_weights.pop(0)
+            level_id = level_list.pop(0)
+            if world.random.randint(0, 100) <= chance:
+                world.carryless_exits.append(level_id)
+                remaining -= 1
+            else:
+                level_weights.append(chance+10)
+                level_list.append(level_id)
 
 
 def swap_level(level_id: int, source: list[int], destination: list[int]):

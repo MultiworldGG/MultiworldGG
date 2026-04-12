@@ -284,7 +284,7 @@
         "from": "Generator Room",
         "to": "Break Room Hallway",
         "condition": {
-            "items": ["Fuse - Break Room Hallway"]
+            "items": ["Square Crank"]
         }
     },
     { 
@@ -324,8 +324,8 @@
         "to": "Interrogation Room",
         "condition": {
             "items": [
-                ["Spade Key", "Club Key", "Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank", "Fuse - Break Room Hallway"],
-                ["Spade Key", "Club Key", "Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Mechanic Jack Handle", "Fuse - Break Room Hallway"]
+                ["Spade Key", "Club Key", "Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"],
+                ["Spade Key", "Club Key", "Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Mechanic Jack Handle"]
             ]
         }
     },
@@ -339,8 +339,8 @@
         "to": "Roof",
         "condition": {
             "items": [
-                ["Spade Key", "Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Fuse - Break Room Hallway", "Square Crank"],
-                ["Spade Key", "Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Fuse - Break Room Hallway", "Mechanic Jack Handle"]
+                ["Spade Key", "Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"],
+                ["Spade Key", "Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Mechanic Jack Handle"]
             ]
         }
     },
@@ -386,9 +386,7 @@
     { 
         "from": "Water Gate",
         "to": "Upper Waterway",
-        "condition": {
-            "items": ["Rook Plug"]
-        }
+        "condition": {}
     },
     { 
         "from": "Upper Waterway",

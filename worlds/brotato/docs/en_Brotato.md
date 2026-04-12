@@ -2,7 +2,7 @@
 
 ## Where is the settings page?
 
-The [player settings page](../player-settings) contains the options needed to configure
+The [player settings page](../player-options) contains the options needed to configure
 your game session.
 
 ## What does randomization do to this game?

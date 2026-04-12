@@ -75,7 +75,6 @@ non_apworlds: set[str] = {
     "Overcooked! 2",
     "Raft",
     "Slay the Spire",
-    "Sudoku",
     "Super Mario 64",
     "VVVVVV",
 }
@@ -320,6 +319,10 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
         # need to finish download before copying
         sni_thread.join()
 
+        # overridden buildfolders are not given as a path so below path concatenation won't work
+        if not isinstance(self.buildfolder, Path):
+            self.buildfolder = Path(self.buildfolder)
+
         # include_files seems to not be done automatically. implement here
         for src, dst in self.include_files:
             print(f"copying {src} -> {self.buildfolder / dst}")
@@ -395,7 +398,9 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
                 apworld.manifest_path = f"{file_name}/archipelago.json"
                 with zipfile.ZipFile(zip_path, "x", zipfile.ZIP_DEFLATED,
                                      compresslevel=9) as zf:
-                    for path in world_directory.rglob("*.*"):
+                    for path in world_directory.rglob("*"):
+                        if not path.is_file():
+                            continue
                         relative_path = os.path.join(*path.parts[path.parts.index("worlds")+1:])
                         if not relative_path.endswith("archipelago.json"):
                             zf.write(path, relative_path)
@@ -677,11 +682,11 @@ cx_Freeze.setup(
     options={
         "build_exe": {
             "packages": ["worlds", "kivy", "cymem", "websockets", "kivymd", "werkzeug"],
-            "includes": [],
+            "includes": ["rule_builder.cached_world"],
             "excludes": ["Cython", "PySide2"],
             "zip_includes": [],
             "zip_include_packages": ["*"],
-            "zip_exclude_packages": ["worlds", "sc2", "kivymd", "clr_loader", "pythonnet"], # clr_loader and pythonnet use absolute paths
+            "zip_exclude_packages": ["worlds", "sc2", "kivymd", "clr_loader", "pythonnet", "charset_normalizer"], # clr_loader and pythonnet use absolute paths
             "include_files": [],  # broken in cx 6.14.0, we use more special sauce now
             "include_msvcr": False,
             "replace_paths": ["*."],

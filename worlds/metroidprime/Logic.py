@@ -1,3 +1,5 @@
+import math
+
 from BaseClasses import CollectionState
 from .data.RoomNames import RoomName
 from .Items import ProgressiveUpgrade, SuitUpgrade, get_progressive_upgrade_for_item
@@ -237,7 +239,8 @@ def can_phazon(world: "MetroidPrimeWorld", state: CollectionState) -> bool:
 def has_energy_tanks(
     world: "MetroidPrimeWorld", state: CollectionState, count: int
 ) -> bool:
-    return state.has(SuitUpgrade.Energy_Tank.value, world.player, count)
+    normalized_count = int(math.ceil((count * 100) / world.options.etank_capacity.value))
+    return state.count(SuitUpgrade.Energy_Tank.value, world.player) >= normalized_count
 
 
 def can_infinite_speed(world: "MetroidPrimeWorld", state: CollectionState) -> bool:

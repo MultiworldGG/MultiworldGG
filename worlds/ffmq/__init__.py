@@ -27,7 +27,7 @@ from .Client import FFMQClient
 class FFMQWebWorld(WebWorld):
     setup_en = Tutorial(
         "Multiworld Setup Guide",
-        "A guide to playing Final Fantasy Mystic Quest with MultiworldGG.",
+        "A guide to playing Final Fantasy Mystic Quest with Archipelago.",
         "English",
         "setup_en.md",
         "setup/en",
@@ -55,6 +55,7 @@ class FFMQWorld(World):
 
     game = "Final Fantasy Mystic Quest"
     author: str = "Alchav"
+
     item_name_to_id = {name: data.id for name, data in item_table.items() if data.id is not None}
     location_name_to_id = location_table
     options_dataclass = FFMQOptions

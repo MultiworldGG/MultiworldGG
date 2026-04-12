@@ -1,4 +1,5 @@
-from typing import Dict, NamedTuple, TYPE_CHECKING, List
+from typing import NamedTuple, TYPE_CHECKING
+
 from BaseClasses import Region
 
 from .locations import create_locations
@@ -20,7 +21,7 @@ class RegionInfo(NamedTuple):
 # of logic. item rules will be based on getting to the item and back using at most two clones.
 #
 # based on a map at https://steamcommunity.com/sharedfiles/filedetails/?id=3341323146
-regions: List[str] = [
+regions: list[str] = [
     "Menu",
 
     "LatomR6C3 Genepod",
@@ -51,8 +52,8 @@ regions: List[str] = [
 ]
 
 
-def create_regions_and_rules(world: "UFO50World") -> Dict[str, Region]:
-    vainger_regions: Dict[str, Region] = {}
+def create_regions_and_rules(world: "UFO50World") -> dict[str, Region]:
+    vainger_regions: dict[str, Region] = {}
     for region_name in regions:
         vainger_regions[f"Vainger - {region_name}"] = Region(f"Vainger - {region_name}", world.player, world.multiworld)
 

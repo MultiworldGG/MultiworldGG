@@ -69,113 +69,6 @@ class TestLogicTopGrade(CupheadTestBase):
         test.collect_by_name(ItemNames.item_ability_dash)
         test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_forest_agrade))
 
-class TestLogicChaliced(CupheadTestBase):
-    options = {
-        "use_dlc": True,
-        "mode": "dlc_beat_both",
-        "dlc_chalice": "randomized",
-        "freemove_isles": "true",
-        "dlc_boss_chalice_checks": "enabled",
-        "dlc_rungun_chalice_checks": "enabled"
-    }
-
-    def test_chaliced(self):
-        test = TestLogicChaliced()
-        test.world_setup()
-        test.assertBeatable(False)
-
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
-        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.remove_by_name(ItemNames.item_charm_dlc_cookie)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_ability_dash)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
-        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-
-class TestLogicChalicedGradeRequired(CupheadTestBase):
-    options = {
-        "use_dlc": True,
-        "mode": "dlc_beat_both",
-        "dlc_chalice": "randomized",
-        "freemove_isles": "true",
-        "dlc_boss_chalice_checks": "grade_required",
-        "dlc_rungun_chalice_checks": "grade_required"
-    }
-
-    def test_chaliced_grade_required(self):
-        test = TestLogicChalicedGradeRequired()
-        test.world_setup()
-        test.assertBeatable(False)
-
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_ability_parry)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_ability_dash)
-        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.remove_by_name([ItemNames.item_charm_dlc_cookie, ItemNames.item_ability_dash])
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-
-        test.collect_by_name(ItemNames.item_plane_gun)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_ability_plane_parry)
-        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
-        test.remove_by_name(ItemNames.item_charm_dlc_cookie)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
-
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_ability_dash)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
-        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
-
-class TestLogicChalicedGradeRequiredSeparate(CupheadTestBase):
-    options = {
-        "use_dlc": True,
-        "mode": "dlc_beat_both",
-        "dlc_chalice": "randomized",
-        "freemove_isles": "true",
-        "dlc_boss_chalice_checks": "separate_grade_required",
-        "dlc_rungun_chalice_checks": "separate_grade_required"
-    }
-
-    def test_chaliced_grade_required_separate(self):
-        test = TestLogicChalicedGradeRequiredSeparate()
-        test.world_setup()
-        test.assertBeatable(False)
-
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_ability_parry)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_ability_dash)
-        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-        test.remove_by_name([ItemNames.item_charm_dlc_cookie, ItemNames.item_ability_dash])
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
-
-        test.collect_by_name(ItemNames.item_plane_gun)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_ability_plane_parry)
-        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
-        test.remove_by_name(ItemNames.item_charm_dlc_cookie)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
-
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_ability_dash)
-        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
-        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
-        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
-
 class TestLogicProgressiveWeapons(CupheadTestBase):
     options = {
         "use_dlc": True,
@@ -315,3 +208,195 @@ class TestLogicWeaponEXExceptStart(CupheadTestBase):
         test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_topgrade))
         test.collect_by_name(ItemNames.item_ability_parry)
         test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_veggies_topgrade))
+
+class TestLogicParry(CupheadTestBase):
+    options = {
+        "use_dlc": True,
+        "mode": "dlc_beat_both",
+        "dlc_chalice": "randomized",
+        "start_weapon": "peashooter",
+        "freemove_isles": "true",
+        "randomize_abilities": "true",
+        "boss_grade_checks": "a_minus_grade",
+        "rungun_grade_checks": "a_minus_grade"
+    }
+
+    def test_parry(self):
+        test = TestLogicParry()
+        test.world_setup()
+        test.assertBeatable(False)
+
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_topgrade))
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_event_agrade))
+        test.collect_by_name(ItemNames.item_ability_dash)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_agrade))
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_event_agrade))
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_tree_agrade))
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_tree_event_agrade))
+        test.collect_by_name(ItemNames.item_ability_parry)
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_veggies_topgrade))
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_veggies_event_agrade))
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_forest_agrade))
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_forest_event_agrade))
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_tree_agrade))
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_tree_event_agrade))
+
+class TestLogicDash(CupheadTestBase):
+    options = {
+        "use_dlc": True,
+        "mode": "dlc_beat_both",
+        "dlc_chalice": "randomized",
+        "start_weapon": "peashooter",
+        "freemove_isles": "true",
+        "randomize_abilities": "true",
+        "boss_grade_checks": "a_minus_grade",
+        "rungun_grade_checks": "a_minus_grade"
+    }
+
+    def test_dash(self):
+        test = TestLogicDash()
+        test.world_setup()
+        test.assertBeatable(False)
+
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest))
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_coin4))
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_tree))
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_tree_coin4))
+        test.collect_by_name(ItemNames.item_ability_dash)
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_forest))
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_forest_coin4))
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_tree))
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_tree_coin4))
+
+class TestLogicChalice(CupheadTestBase):
+    options = {
+        "use_dlc": True,
+        "mode": "dlc_beat_both",
+        "dlc_chalice": "randomized",
+        "freemove_isles": "true",
+        "randomize_abilities": "true",
+        "boss_grade_checks": "a_minus_grade",
+        "rungun_grade_checks": "a_minus_grade",
+        "dlc_boss_chalice_checks": "enabled",
+        "dlc_rungun_chalice_checks": "enabled"
+    }
+
+    def test_chalice(self):
+        test = TestLogicChalice()
+        test.world_setup()
+        test.assertBeatable(False)
+
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+        test.remove_by_name(ItemNames.item_charm_dlc_cookie)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_ability_dash)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
+
+class TestLogicChaliceStart(CupheadTestBase):
+    options = {
+        "use_dlc": True,
+        "mode": "dlc_beat_both",
+        "dlc_chalice": "start",
+        "freemove_isles": "true",
+        "randomize_abilities": "true",
+        "boss_grade_checks": "a_minus_grade",
+        "rungun_grade_checks": "a_minus_grade",
+        "dlc_boss_chalice_checks": "enabled",
+        "dlc_rungun_chalice_checks": "enabled"
+    }
+
+    def test_chalice_start(self):
+        test = TestLogicChaliceStart()
+        test.world_setup()
+        test.assertBeatable(False)
+
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_ability_dash)
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
+
+class TestLogicChalicedGradeRequired(CupheadTestBase):
+    options = {
+        "use_dlc": True,
+        "mode": "dlc_beat_both",
+        "dlc_chalice": "randomized",
+        "freemove_isles": "true",
+        "dlc_boss_chalice_checks": "grade_required",
+        "dlc_rungun_chalice_checks": "grade_required"
+    }
+
+    def test_chaliced_grade_required(self):
+        test = TestLogicChalicedGradeRequired()
+        test.world_setup()
+        test.assertBeatable(False)
+
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_ability_parry)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_ability_dash)
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+        test.remove_by_name([ItemNames.item_charm_dlc_cookie, ItemNames.item_ability_dash])
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+
+        test.collect_by_name(ItemNames.item_plane_gun)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_ability_plane_parry)
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
+        test.remove_by_name(ItemNames.item_charm_dlc_cookie)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
+
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_ability_dash)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
+
+class TestLogicChalicedGradeRequiredSeparate(CupheadTestBase):
+    options = {
+        "use_dlc": True,
+        "mode": "dlc_beat_both",
+        "dlc_chalice": "randomized",
+        "freemove_isles": "true",
+        "dlc_boss_chalice_checks": "separate_grade_required",
+        "dlc_rungun_chalice_checks": "separate_grade_required"
+    }
+
+    def test_chaliced_grade_required_separate(self):
+        test = TestLogicChalicedGradeRequiredSeparate()
+        test.world_setup()
+        test.assertBeatable(False)
+
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_ability_parry)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_ability_dash)
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+        test.remove_by_name([ItemNames.item_charm_dlc_cookie, ItemNames.item_ability_dash])
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_veggies_dlc_chaliced))
+
+        test.collect_by_name(ItemNames.item_plane_gun)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_ability_plane_parry)
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
+        test.remove_by_name(ItemNames.item_charm_dlc_cookie)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_boss_plane_blimp_dlc_chaliced))
+
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_ability_dash)
+        test.assertFalse(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))
+        test.collect_by_name(ItemNames.item_charm_dlc_cookie)
+        test.assertTrue(test.can_reach_location(LocationNames.loc_level_rungun_forest_dlc_chaliced))

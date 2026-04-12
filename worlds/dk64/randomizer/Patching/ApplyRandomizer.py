@@ -666,7 +666,7 @@ def patching_response(spoiler):
     randomize_bananaport(spoiler, ROM_COPY)
     randomize_kasplat_locations(spoiler, ROM_COPY)
     randomize_enemies(spoiler, ROM_COPY)
-    apply_kongrando_cosmetic(spoiler, ROM_COPY)
+    apply_kongrando_cosmetic(ROM_COPY)
     randomize_setup(spoiler, ROM_COPY)
     randomize_puzzles(spoiler, ROM_COPY)
     randomize_cbs(spoiler, ROM_COPY)
@@ -731,9 +731,8 @@ def patching_response(spoiler):
         showWinCondition(spoiler.settings, ROM_COPY)
 
         patchAssembly(ROM_COPY, spoiler)
+        calculateInitFileScreen(spoiler, ROM_COPY)
         ApplyMirrorMode(spoiler.settings, ROM_COPY)
-
-    calculateInitFileScreen(spoiler, ROM_COPY)
 
     # Apply Hash
     order = 0

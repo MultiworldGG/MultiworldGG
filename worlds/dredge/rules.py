@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import CollectionState, Location
 from worlds.generic.Rules import set_rule, add_rule
-from .items import item_table
-from .locations import location_table, DREDGELocationData
+from .items import item_table, CATCH_TOOL_INDEX
+from .locations import location_table, DREDGELocationData, ItemsReq, CatchTypeReq, ResearchReq, IronRigPhaseReq
 from .options import DREDGEOptions
 
 if TYPE_CHECKING:
@@ -41,32 +41,44 @@ def set_location_rules(world: "DREDGEWorld") -> None:
         if world_location.name == "The Collector":
             continue
         location = location_table[world_location.name]
-        match location.location_group:
-            case "Encyclopedia":
-                set_fish_rule(world_location, location, player, world.options)
-            case "Research":
-                set_research_rule(world_location, location, player)
-            case "Dredge":
-                set_dredge_rule(world_location, location, player)
-            case "Relic" | "Shop" | "World" | "Pursuit":
-                world_location.item_rule = lambda item: not item.advancement
-            case _:
-                set_rule(world_location, lambda state: True)
+        for requirement in location.requirements:
+            match requirement:
+                case ItemsReq():
+                    add_item_rules(requirement, world_location, player)
+                case CatchTypeReq():
+                    add_catch_type_rule(world_location, location, player, world.options)
+                case ResearchReq():
+                    add_research_rule(requirement, world_location, player)
+                case IronRigPhaseReq():
+                    add_iron_rig_phase_rule(requirement, world_location, player)
+                case _:
+                    set_rule(world_location, lambda state: True)
 
-def set_dredge_rule(world_location: Location, location: DREDGELocationData, player: int) -> None:
-    add_rule(world_location, lambda state: state.has("Dredge Crane", player))
-    match location.requirement:
-        case "explosives":
-            add_rule(world_location, lambda state: state.has("Packed Explosives", player))
-        case "icebreaker":
-            add_rule(world_location, lambda state: state.has("Icebreaker", player))
-        case "":
-            return
-        case _:
-            #maybe log here
-            return
+def add_iron_rig_phase_rule(requirement, world_location, player) -> None:
+    if requirement.value > 4:
+        add_rule(world_location, lambda state: state.has_any(tools_for("Infused Mangrove", "Rod"), player))
+    if requirement.value > 3:
+        add_rule(world_location, lambda state: state.has_any(tools_for("Infused Hadal", "Rod"), player))
+        add_rule(world_location, lambda state: state.has_any(tools_for("Infused Abyssal", "Rod"), player))
+    if requirement.value > 2:
+        add_rule(world_location, lambda state: state.has_any(tools_for("Infused Oceanic", "Rod"), player))
+        add_rule(world_location, lambda state: state.has("Siphon Trawler", player))
+    if requirement.value > 1:
+        add_rule(world_location, lambda state: state.has_any(tools_for("Infused Shallow", "Rod"), player))
+        add_rule(world_location, lambda state: state.has_any(tools_for("Infused Coastal", "Rod"), player))
+    if requirement.value > 0:
+        add_rule(world_location, lambda state: state.has("Dredge Crane", player))
+
+def add_research_rule(requirement, world_location, player) -> None:
+    add_rule(world_location, lambda state: state.has("Research Part", player, requirement.cost))
     return
 
+def add_item_rules(requirement, world_location, player) -> None:
+    if requirement.all_of:
+        add_rule(world_location, lambda state: state.has_all(requirement.all_of, player))
+    if requirement.any_of:
+        add_rule(world_location, lambda state: state.has_any(requirement.any_of, player))
+    return
 
 def has_engines(distance: int, state: CollectionState, player: int) -> bool:
     valid_engines = [name for name, item in item_table.items() if item.item_value >= distance]
@@ -79,75 +91,55 @@ def has_relics(state: CollectionState, player: int) -> bool:
         and state.has("Shimmering Necklace", player) \
         and state.has("Antique Pocket Watch", player)
 
-def set_research_rule(world_location: Location, location: DREDGELocationData, player: int) -> None:
-    set_rule(world_location,
-             lambda state, requirement=location.requirement: can_research(state, requirement, player))
+def get_catch_type(location: DREDGELocationData) -> str | None:
+    for req in location.requirements:
+        match req:
+            case CatchTypeReq(value=v):
+                return v
+    return None
 
-def can_research(state: CollectionState, requirement: str, player: int) -> bool:
-    match requirement:
-        case "Early":
-            return state.count("Research Part", player) >= 3
-        case "Mid":
-            return state.count("Research Part", player) >= 7
-        case "Late":
-            return state.count("Research Part", player) >= 10
-        case "All":
-            return state.count("Research Part", player) >= 13
-        case _:
-            return True
+def tools_for(catch_type: str, tool_group: str) -> tuple[str, ...]:
+    return CATCH_TOOL_INDEX.get((catch_type, tool_group))
 
-def set_fish_rule(world_location: Location, location: DREDGELocationData, player: int, options: DREDGEOptions) -> None:
-    set_rule(
-        world_location,
-        lambda state, is_iron_rig=(location.expansion == "IronRig"): can_catch(location, is_iron_rig, state, player, options),
-    )
 
-def can_catch(location: DREDGELocationData, is_iron_rig: bool, state: CollectionState, player: int, options: DREDGEOptions) -> bool:
-    if location.is_behind_debris and not state.has("Packed Explosives", player):
+def add_catch_type_rule(world_location: Location, location: DREDGELocationData, player: int, options: DREDGEOptions) -> None:
+    add_rule(world_location, lambda state: can_catch_location(location, state, player, options))
+
+
+def can_catch_location(location: DREDGELocationData, state: CollectionState, player: int, options: DREDGEOptions) -> bool:
+    catch_type = get_catch_type(location)
+    if catch_type is None:
         return False
 
-    if location.requirement == "Crab":
-        return state.has_any(get_harvest_tool_by_requirement(location.requirement, "Crab Pot"), player)
-    else:
-        if is_iron_rig and location.iron_rig_phase > 2:
-            return can_catch_fish(is_iron_rig, location, player, state, options) \
-                and state.has("Siphon Trawler", player)
+    if catch_type == "Crab":
+        return state.has_any(tools_for("Crab", "Crab Pot"), player)
 
-        return can_catch_fish(is_iron_rig, location, player, state, options)
+    return can_catch_fish(catch_type, location, state, player, options)
 
 
-def can_catch_fish(is_iron_rig: bool, location: DREDGELocationData, player: int, state: CollectionState, options: DREDGEOptions) -> bool:
-    has_rod = False
-    has_net = False
-    if location.can_catch_rod:
-        if location.is_exotic and not state.has("Exotic Bait", player):
-                return False
+def can_catch_fish(
+    catch_type: str,
+    location: DREDGELocationData,
+    state: CollectionState,
+    player: int,
+    options: DREDGEOptions,
+) -> bool:
 
-        has_rod = state.has_any(get_harvest_tool_by_requirement(location.requirement, "Rod"), player) or (
-                is_iron_rig and state.has_any(get_harvest_tool_by_requirement(location.requirement, "Rod", is_iron_rig),
-                                              player))
-    if location.can_catch_net:
-        if location.can_catch_rod and not options.logical_nets:
-            has_net = False
-        else:
-            has_net = state.has_any(get_harvest_tool_by_requirement(location.requirement, "Net"), player) or (
-                    is_iron_rig and state.has_any(
-                get_harvest_tool_by_requirement(location.requirement, "Net", is_iron_rig), player))
+    fish_expansion = location.expansion
+
+    has_rod = (
+        location.can_catch_rod
+        and state.has_any(tools_for(catch_type, "Rod"), player)
+    )
+
+    allow_net_logic = location.can_catch_net and (not location.can_catch_rod or options.logical_nets)
+    has_net = (
+        allow_net_logic
+        and state.has_any(tools_for(catch_type, "Net"), player)
+    )
+
     return has_rod or has_net
 
-
-def get_harvest_tool_by_requirement(requirement: str, tool_type: str, is_iron_rig: bool = False) -> list:
-    excluded_names = {"Tendon Rod", "Viscera Crane", "Bottomless Lines"}
-
-    return [
-        name
-        for name, item in item_table.items()
-        if requirement in item.can_catch
-        and item.item_group == tool_type
-        and (not is_iron_rig or item.expansion == "IronRig")
-        and item.size <= 4
-        and name not in excluded_names
-    ]
 
 def set_completion_condition(world: DREDGEWorld) -> None:
     world.multiworld.completion_condition[world.player] = lambda state: state.has("Victory", world.player)

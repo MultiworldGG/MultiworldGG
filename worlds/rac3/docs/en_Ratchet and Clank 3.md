@@ -1,0 +1,50 @@
+# Ratchet and Clank 3 Up your Arsenal (PS2)
+
+A MultiworldGG implementation for Ratchet and Clank 3
+
+## Setup Guide
+
+To get started,
+see [the Setup Guide](/tutorial/Ratchet%20&%20Clank%203/setup_en).
+
+## Where is the options page?
+
+The [player options page for this game](../player-options) contains all the options you need to configure and export a
+config file.
+
+## What does randomization do to this game?
+
+Weapons, Planets, Gadgets, Titanium bolts, Trophies, Weapon upgrades, Sewer Crystals are all randomized
+
+## What items and locations get shuffled?
+
+20 different weapons, 4 progressive upgrades per weapon are available, 10 different gadgets, 17 infobots
+that unlock other planets, up to 8 progressive armors, 35 titanium bolts, 15 trophies, and Bolts/Weapon EXP along with Inferno
+Mode and Jackpot get shuffled in as filler. If enabled, a good variety of traps will also be included.
+Additional locations may be included through .yaml options: Annihilation Nation missions, The Ranger missions, Phoenix VR
+missions, Sewer Crystals and Nanotech Levels.
+
+## Which items can be in another player's world?
+
+Any of the items which can be shuffled may also be placed into another player's world. It is possible to choose to limit
+certain items to your own world.
+
+## When the player receives an item, what happens?
+
+You will be able to visit the planets with whatever post-planet you receive, receiving Post Marcadia will unlock Aquatos
+for travel within Ratchet's Ship. Upon receiving a weapon it unlocks in ratchet's inventory, which will let you equip it
+and use to fire on enemy troops. Progressive upgrades will upgrade your weapons from V1 up to V5 increasing their
+firepower. Receiving Jackpot Mode filler item acts like you just broke the corresponding crate.
+When you receive a trap, you will get its effect for 10 seconds and then it expires.
+For 1-Hit KO Trap and No Ammo Trap, the effects are instant and will not revert after 10 seconds.
+Receiving the Inferno Mode trap will not change your armor, but you will still receive the full effect for a random amount of time rather than 10 seconds.
+
+## What does the randomizer change from the vanilla game?
+- **Ship teleport/respawn feature:** Teleports Ratchet back to the ship. If used in an unusual place,
+forces a respawn instead. You can pause the game and hold Square on the pause menu to run this command from in-game
+or use the `/respawn` command in the Ratchet & Clank 3 client.
+- **Homewarp feature:** Loads Ratchet back on the Phoenix. Does nothing if used during the intro before reaching the Phoenix.
+It can be activated with the following button combo: `L2 + R2 + L1 + R1 + SELECT` or using the `/homewarp` command in the
+Ratchet & Clank 3 client.
+- **RY3N0 level limit:** Toggles the maximum upgrade level for the RY3N0 between lv5 and lv4. Use the `/ryno` command
+in the Ratchet & Clank 3 client to change between the two modes.

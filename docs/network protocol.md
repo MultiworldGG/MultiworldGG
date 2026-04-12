@@ -225,7 +225,7 @@ Sent to clients after a client requested this message be sent to them, more info
 | games | list\[str\] | Optional. Game names this message is targeting |
 | slots | list\[int\] | Optional. Player slot IDs that this message is targeting |
 | tags | list\[str\] | Optional. Client [Tags](#Tags) this message is targeting |
-| data | dict | The data in the [Bounce](#Bounce) package copied |
+| data | dict | Optional. The data in the [Bounce](#Bounce) package copied |
 
 ### InvalidPacket
 Sent to clients if the server caught a problem with a packet. This only occurs for errors that are explicitly checked for.
@@ -295,7 +295,7 @@ Sent by the client to initiate a connection to a MultiworldGG game session.
 | password       | str                               | If the game session requires a password, it should be passed here.                           |
 | game           | str                               | The name of the game the client is playing. Example: `A Link to the Past`                    |
 | name           | str                               | The player name for this client.                                                             |
-| uuid           | str                               | Unique identifier for player. Cached in the user cache \Archipelago\Cache\common.json        |
+| uuid           | str                               | Unique identifier for player. Cached in the user cache \MultiworldGG\Cache\common.json        |
 | version        | [NetworkVersion](#NetworkVersion) | An object representing the MultiworldGG version this client supports.                         |
 | items_handling | int                               | Flags configuring which items should be sent by the server. Read below for individual flags. |
 | tags           | list\[str\]                       | Denotes special features or capabilities that the sender is capable of. [Tags](#Tags)        |
@@ -425,7 +425,7 @@ the server will forward the message to all those targets to which any one requir
 | games | list\[str\] | Optional. Game names that should receive this message |
 | slots | list\[int\] | Optional. Player IDs that should receive this message |
 | tags | list\[str\] | Optional. Client tags that should receive this message |
-| data | dict | Any data you want to send |
+| data | dict | Optional. Any data you want to send |
 
 ### Get
 Used to request a single or multiple values from the server's data storage, see the [Set](#Set) package for how to write values to the data storage. A Get package will be answered with a [Retrieved](#Retrieved) package.
@@ -647,7 +647,7 @@ class Version(NamedTuple):
     build: int
 ```
 
-If constructing version information as a dict for a custom client rather than as a NamedTuple built into the CommonClient, you must add the `class` key to allow Archipelago to compare version support.
+If constructing version information as a dict for a custom client rather than as a NamedTuple built into the CommonClient, you must add the `class` key to allow MultiworldGG to compare version support.
 ```
 "version": {
       "class": "Version",

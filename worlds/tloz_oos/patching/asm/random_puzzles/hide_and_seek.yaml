@@ -1,0 +1,12 @@
+09/6a96/: |
+  dw brother1_screen1
+  dw brother1_screen2
+  dw brother1_screen3
+  dw brother1_screen4
+  dw $696e ; finish screen, brother 1
+09/6aa4/: |
+  dw brother2_screen1
+  dw brother2_screen2
+  dw brother2_screen3
+  dw brother2_screen4
+  dw $69fa ; finish screen, brother 2

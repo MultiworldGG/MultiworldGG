@@ -69,6 +69,8 @@ class Upgrade:
     demon_wings = "Demon Wings"
     angel_feathers = "Angel Feathers"
     mermaid_scale = "Mermaid Scale"
+    rose_ribbon = "Rose Ribbon"  # Use Rose Cutters
+    orb_of_avoidance = "Orb of Avoidance"  # Use Arcane Cannon
 
 
 class Coin:
@@ -100,6 +102,18 @@ class Warp:
     slimy_depths = "Slimy Depths Teleport"
     umi_umi = "Umi Umi Teleport"
     chaos_castle = "Chaos Castle Teleport"
+
+    area_to_warp = {
+        0: sensei,
+        1: goblin,
+        2: spirit,
+        3: ghost_castle,
+        4: jigoku,
+        5: club_demon,
+        6: tengoku,
+        7: slime_citadel,
+        8: umi_umi,
+    }
 
 
 class GachaItem:
@@ -203,8 +217,53 @@ class Key:
     forgotten_fungal = "Forgotten Fungal Door Key"
 
 
-class Goal:
+class GoalItem:
     chaos_piece = "Chaos Key Piece"
+
+
+class QuestEventItem:
+    goblin_model_1 = "Given Photo"
+    goblin_model_2 = "Given Card"
+    goblin_model_3 = "Goblin Model Complete"
+    queen_defeat = "Goblin Queen Defeated"
+    gobliana_luggage_2 = "Got Gobliana's Luggage"
+
+    # SpC
+    rover_1 = "Dogs Out Complete"
+    rover_3 = "Chewtoy Complete"
+    belle_1 = "Cowbell Complete"
+    belle_2_a = "Given Milkshake"
+    belle_2_b = "Milkshake Complete"
+    belle_3 = "Apartment Complete"
+    cat_girls_3_a = "Told Ghost Off"
+    cat_girls_3_b = "Haunted Bathroom Complete"
+    bunny_1 = "Booze Bunny Complete"
+    bunny_2 = "Help Wanted Complete"
+    kyoni_1 = "Devilicious Complete"
+    gobliana_luggage_1 = "Given Apartment Key"
+    gobliana_luggage_3 = "Gobliana's Luggage Complete"
+    tatil_1 = "Given Tatil Key"
+
+    # GC
+    cat_girls_1 = "Panty Raid Complete"
+
+    # Jigoku
+    cat_statue_start = "Cat Statue Started"
+    cat_statue_1 = "Prayed At Statue 1"
+    cat_statue_2 = "Prayed At Statue 2"
+    cat_statue_3 = "Prayed At Statue 3"
+    goat_guy = "Given Goat Guy Letter"
+
+    # Tengoku
+    angel_letter = "Angel Letter Item Given"
+    gobliana_photographer = "Hired the Photographer"
+
+    # Fungal Forest
+    tatil_2 = "Given Deed"
+    stone_start = "Summoning Stone Start"
+    stone_1 = "Summoning Stone 1 Item"
+    stone_2 = "Summoning Stone 2 Item"
+    stone_3 = "Summoning Stone 3 Item"
 
 
 class Trap:

@@ -1,6 +1,7 @@
 # Spicy Mycena Waffles Setup Guide
 
 ## Detailed Guide and updates
+
 [Refer to this guide.](https://thelx5.github.io/smw/#setup)
 
 ## Required Software

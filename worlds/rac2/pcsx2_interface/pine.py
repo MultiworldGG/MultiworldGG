@@ -71,30 +71,33 @@ class Pine:
         # self._init_socket()
 
     def _init_socket(self) -> None:
-        if system() == "Windows":
-            socket_family = socket.AF_INET
-            socket_name = ("127.0.0.1", self._slot)
-        elif system() == "Linux":
-            socket_family = socket.AF_UNIX
-            socket_name = os.environ.get("XDG_RUNTIME_DIR", "/tmp")
-            socket_name += "/pcsx2.sock"
-        elif system() == "Darwin":
-            socket_family = socket.AF_UNIX
-            socket_name = os.environ.get("TMPDIR", "/tmp")
-            socket_name += "/pcsx2.sock"
-        else:
-            socket_family = socket.AF_UNIX
-            socket_name = "/tmp/pcsx2.sock"
-
+        system_name = system()
         try:
+            if system_name == "Windows":
+                socket_family = socket.AF_INET
+                socket_name = ("127.0.0.1", self._slot)
+            elif system_name in ("Linux", "Darwin"):
+                socket_family = socket.AF_UNIX
+                # Use XDG_RUNTIME_DIR or fallback to /tmp
+                base_dir = os.environ.get("XDG_RUNTIME_DIR") or os.environ.get("TMPDIR") or "/tmp"
+                # PCSX2 uses `.sock` for 28011, otherwise `.sock.<PORT>`
+                if self._slot == 28011:
+                    socket_name = os.path.join(base_dir, "pcsx2.sock")
+                else:
+                    socket_name = os.path.join(base_dir, f"pcsx2.sock.{self._slot}")
+            else:
+                # Fallback for unknown UNIX-like systems
+                socket_family = socket.AF_UNIX
+                socket_name = f"/tmp/pcsx2.sock.{self._slot}" if self._slot != 28011 else "/tmp/pcsx2.sock"
+    
             self._sock = socket.socket(socket_family, socket.SOCK_STREAM)
             self._sock.settimeout(5.0)
             self._sock.connect(socket_name)
-        except socket.error:
+        except socket.error as e:
             self._sock.close()
             self._sock_state = False
             return
-
+    
         self._sock_state = True
 
     def connect(self) -> None:

@@ -55,7 +55,7 @@ class PokemonFRLGWebWorld(WebWorld):
     """
     setup_en = Tutorial(
         "Multiworld Setup Guide",
-        "A guide to playing Pokémon FireRed and LeafGreen with MultiworldGG.",
+        "A guide to playing Pokémon FireRed and LeafGreen with Archipelago.",
         "English",
         "setup_en.md",
         "setup/en",

@@ -1,241 +1,250 @@
+## New collisions
+07/78f0/ENEMYCOLLISION_SWITCHHOOK_DAMAGE_ENEMY_0x73: |
+  db $02,$10,$0f,$0f,$08,$09,$09,$0a,$0a,$08,$08,$0a,$0d,$0d,$08,$25
+  db $00,$00,$00,$2f,$09,$22,$22,$0a,$09,$09,$1c,$27,$08,$28,$29,$00
+3f/5e5a/ENEMY_TEKTITE_0x3a_collision: db $f3
+# Piranha jumping out of water
+0c/5b05/: db $73
+
 ## edit somaria block
 # objectCollisionTable
 # copy ENEMYCOLLISION_PROJECTILE 0x06 (seasons) from ENEMYCOLLISION_PROJECTILE 0x06 (ages)
-07/6b63/: /copy a,$07,$2ddf,$01
+07/6b63/: /copy o,$07,$2ddf,$01
 # copy ENEMYCOLLISION_PROJECTILE_WITH_RING_MOD 0x07 (seasons) from ENEMYCOLLISION_PROJECTILE_WITH_RING_MOD 0x07 (ages)
-07/6b83/: /copy a,$07,$2dff,$01
+07/6b83/: /copy o,$07,$2dff,$01
 # copy ENEMYCOLLISION_MERGED_TWINROVA 0x08 (seasons) from ENEMYCOLLISION_MERGED_TWINROVA 0x08 (ages)
-07/6ba3/: /copy a,$07,$2e1f,$01
+07/6ba3/: /copy o,$07,$2e1f,$01
 # copy ENEMYCOLLISION_TWINROVA 0x0a (seasons) from ENEMYCOLLISION_TWINROVA 0x0a (ages)
-07/6be3/: /copy a,$07,$2e5f,$01
+07/6be3/: /copy o,$07,$2e5f,$01
 # copy ENEMYCOLLISION_GANON 0x0b (seasons) from ENEMYCOLLISION_GANON 0x0b (ages)
-07/6c03/: /copy a,$07,$2e7f,$01
+07/6c03/: /copy o,$07,$2e7f,$01
 # copy ENEMYCOLLISION_KING_MOBLIN 0x0e (seasons) from ENEMYCOLLISION_KING_MOBLIN 0x50 (ages)
-07/6c63/: /copy a,$07,$371f,$01
+07/6c63/: /copy o,$07,$371f,$01
 # copy ENEMYCOLLISION_MOTIONLESS_ENEMY 0x0f (seasons) from ENEMYCOLLISION_MOTIONLESS_ENEMY 0x0f (ages)
-07/6c83/: /copy a,$07,$2eff,$01
+07/6c83/: /copy o,$07,$2eff,$01
 # copy ENEMYCOLLISION_STANDARD_ENEMY 0x10 (seasons) from ENEMYCOLLISION_STANDARD_ENEMY 0x10 (ages)
-07/6ca3/: /copy a,$07,$2f1f,$01
+07/6ca3/: /copy o,$07,$2f1f,$01
 # copy ENEMYCOLLISION_BURNABLE_ENEMY 0x11 (seasons) from ENEMYCOLLISION_BURNABLE_ENEMY 0x11 (ages)
-07/6cc3/: /copy a,$07,$2f3f,$01
+07/6cc3/: /copy o,$07,$2f3f,$01
 # copy ENEMYCOLLISION_LYNEL 0x12 (seasons) from ENEMYCOLLISION_LYNEL 0x12 (ages)
-07/6ce3/: /copy a,$07,$2f5f,$01
+07/6ce3/: /copy o,$07,$2f5f,$01
 # copy ENEMYCOLLISION_BLADE_TRAP 0x13 (seasons) from ENEMYCOLLISION_BLADE_TRAP 0x13 (ages)
-07/6d03/: /copy a,$07,$2f7f,$01
+07/6d03/: /copy o,$07,$2f7f,$01
 # copy ENEMYCOLLISION_GIBDO 0x15 (seasons) from ENEMYCOLLISION_GIBDO 0x16 (ages)
-07/6d43/: /copy a,$07,$2fdf,$01
+07/6d43/: /copy o,$07,$2fdf,$01
 # copy ENEMYCOLLISION_SPARK 0x16 (seasons) from ENEMYCOLLISION_SPARK 0x17 (ages)
-07/6d63/: /copy a,$07,$2fff,$01
+07/6d63/: /copy o,$07,$2fff,$01
 # copy ENEMYCOLLISION_SPIKED_BEETLE 0x17 (seasons) from ENEMYCOLLISION_SPIKED_BEETLE 0x18 (ages)
-07/6d83/: /copy a,$07,$301f,$01
+07/6d83/: /copy o,$07,$301f,$01
 # copy ENEMYCOLLISION_BUBBLE 0x18 (seasons) from ENEMYCOLLISION_BUBBLE 0x19 (ages)
-07/6da3/: /copy a,$07,$303f,$01
+07/6da3/: /copy o,$07,$303f,$01
 # copy ENEMYCOLLISION_GHINI 0x19 (seasons) from ENEMYCOLLISION_GHINI 0x1a (ages)
-07/6dc3/: /copy a,$07,$305f,$01
+07/6dc3/: /copy o,$07,$305f,$01
 # copy ENEMYCOLLISION_BUZZBLOB 0x1a (seasons) from ENEMYCOLLISION_BUZZBLOB 0x1b (ages)
-07/6de3/: /copy a,$07,$307f,$01
+07/6de3/: /copy o,$07,$307f,$01
 # copy ENEMYCOLLISION_WHISP 0x1b (seasons) from ENEMYCOLLISION_WHISP 0x1c (ages)
-07/6e03/: /copy a,$07,$309f,$01
+07/6e03/: /copy o,$07,$309f,$01
 # copy ENEMYCOLLISION_IRON_MASK 0x1c (seasons) from ENEMYCOLLISION_IRON_MASK 0x1d (ages)
-07/6e23/: /copy a,$07,$30bf,$01
+07/6e23/: /copy o,$07,$30bf,$01
 # copy ENEMYCOLLISION_ACTIVE_RED_ARMOS 0x1d (seasons) from ENEMYCOLLISION_ACTIVE_RED_ARMOS 0x1e (ages)
-07/6e43/: /copy a,$07,$30df,$01
+07/6e43/: /copy o,$07,$30df,$01
 # copy ENEMYCOLLISION_DARKNUT 0x1f (seasons) from ENEMYCOLLISION_DARKNUT 0x20 (ages)
-07/6e83/: /copy a,$07,$311f,$01
+07/6e83/: /copy o,$07,$311f,$01
 # copy ENEMYCOLLISION_BURNABLE_UNDEAD 0x20 (seasons) from ENEMYCOLLISION_BURNABLE_ENEMY 0x11 (ages)
-07/6ea3/: /copy a,$07,$2f3f,$01
+07/6ea3/: /copy o,$07,$2f3f,$01
 # copy ENEMYCOLLISION_POLS_VOICE 0x21 (seasons) from ENEMYCOLLISION_POLS_VOICE 0x21 (ages)
-07/6ec3/: /copy a,$07,$313f,$01
+07/6ec3/: /copy o,$07,$313f,$01
 # copy ENEMYCOLLISION_LIKE_LIKE 0x22 (seasons) from ENEMYCOLLISION_LIKE_LIKE 0x22 (ages)
-07/6ee3/: /copy a,$07,$315f,$01
+07/6ee3/: /copy o,$07,$315f,$01
 # copy ENEMYCOLLISION_GOPONGA_FLOWER 0x23 (seasons) from ENEMYCOLLISION_GOPONGA_FLOWER 0x23 (ages)
-07/6f03/: /copy a,$07,$317f,$01
+07/6f03/: /copy o,$07,$317f,$01
 # copy ENEMYCOLLISION_WALLMASTER 0x24 (seasons) from ENEMYCOLLISION_WALLMASTER 0x25 (ages)
-07/6f23/: /copy a,$07,$31bf,$01
+07/6f23/: /copy o,$07,$31bf,$01
 # copy ENEMYCOLLISION_GIANT_BLADE_TRAP 0x25 (seasons) from ENEMYCOLLISION_GIANT_BLADE_TRAP 0x26 (ages)
-07/6f43/: /copy a,$07,$31df,$01
+07/6f43/: /copy o,$07,$31df,$01
 # copy ENEMYCOLLISION_THWIMP 0x26 (seasons) from ENEMYCOLLISION_THWIMP 0x27 (ages)
-07/6f63/: /copy a,$07,$31ff,$01
+07/6f63/: /copy o,$07,$31ff,$01
 # copy ENEMYCOLLISION_THWOMP 0x27 (seasons) from ENEMYCOLLISION_THWOMP 0x28 (ages)
-07/6f83/: /copy a,$07,$321f,$01
+07/6f83/: /copy o,$07,$321f,$01
 # copy ENEMYCOLLISION_UNDEAD 0x28 (seasons) from ENEMYCOLLISION_STANDARD_ENEMY 0x10 (ages)
-07/6fa3/: /copy a,$07,$2f1f,$01
+07/6fa3/: /copy o,$07,$2f1f,$01
 # copy ENEMYCOLLISION_KEESE 0x29 (seasons) from ENEMYCOLLISION_KEESE 0x1f (ages)
-07/6fc3/: /copy a,$07,$30ff,$01
+07/6fc3/: /copy o,$07,$30ff,$01
 # copy ENEMYCOLLISION_ZOL 0x2a (seasons) from ENEMYCOLLISION_ZOL 0x29 (ages)
-07/6fe3/: /copy a,$07,$323f,$01
+07/6fe3/: /copy o,$07,$323f,$01
 # copy ENEMYCOLLISION_CUCCO 0x2b (seasons) from ENEMYCOLLISION_CUCCO 0x2a (ages)
-07/7003/: /copy a,$07,$325f,$01
+07/7003/: /copy o,$07,$325f,$01
 # copy ENEMYCOLLISION_FIRE_KEESE 0x2c (seasons) from ENEMYCOLLISION_FIRE_KEESE 0x2b (ages)
-07/7023/: /copy a,$07,$327f,$01
+07/7023/: /copy o,$07,$327f,$01
 # copy ENEMYCOLLISION_GIANT_CUCCO 0x2d (seasons) from ENEMYCOLLISION_GIANT_CUCCO 0x2c (ages)
-07/7043/: /copy a,$07,$329f,$01
+07/7043/: /copy o,$07,$329f,$01
 # copy ENEMYCOLLISION_PEAHAT_VULNERABLE 0x2e (seasons) from ENEMYCOLLISION_PEAHAT_VULNERABLE 0x2e (ages)
-07/7063/: /copy a,$07,$32df,$01
+07/7063/: /copy o,$07,$32df,$01
 # copy ENEMYCOLLISION_CROW 0x30 (seasons) from ENEMYCOLLISION_CROW 0x31 (ages)
-07/70a3/: /copy a,$07,$333f,$01
+07/70a3/: /copy o,$07,$333f,$01
 # copy ENEMYCOLLISION_GEL 0x31 (seasons) from ENEMYCOLLISION_GEL 0x33 (ages)
-07/70c3/: /copy a,$07,$337f,$01
+07/70c3/: /copy o,$07,$337f,$01
 # copy ENEMYCOLLISION_PINCER 0x32 (seasons) from ENEMYCOLLISION_PINCER 0x34 (ages)
-07/70e3/: /copy a,$07,$339f,$01
+07/70e3/: /copy o,$07,$339f,$01
 # copy ENEMYCOLLISION_GOHMA_GEL 0x33 (seasons) from ENEMYCOLLISION_GOHMA_GEL 0x35 (ages)
-07/7103/: /copy a,$07,$33bf,$01
+07/7103/: /copy o,$07,$33bf,$01
 # copy ENEMYCOLLISION_SWORD_MASKED_MOBLIN 0x34 (seasons) from ENEMYCOLLISION_SWORD_MASKED_MOBLIN 0x36 (ages)
-07/7123/: /copy a,$07,$33df,$01
+07/7123/: /copy o,$07,$33df,$01
 # copy ENEMYCOLLISION_BALL_AND_CHAIN_SOLDIER 0x35 (seasons) from ENEMYCOLLISION_BALL_AND_CHAIN_SOLDIER 0x37 (ages)
-07/7143/: /copy a,$07,$33ff,$01
+07/7143/: /copy o,$07,$33ff,$01
 # copy ENEMYCOLLISION_HARDHAT_BEETLE 0x36 (seasons) from ENEMYCOLLISION_HARDHAT_BEETLE 0x38 (ages)
-07/7163/: /copy a,$07,$341f,$01
+07/7163/: /copy o,$07,$341f,$01
 # copy ENEMYCOLLISION_ARM_MIMIC 0x37 (seasons) from ENEMYCOLLISION_ARM_MIMIC 0x39 (ages)
-07/7183/: /copy a,$07,$343f,$01
+07/7183/: /copy o,$07,$343f,$01
 # copy ENEMYCOLLISION_MOLDORM 0x38 (seasons) from ENEMYCOLLISION_MOLDORM 0x3a (ages)
-07/71a3/: /copy a,$07,$345f,$01
+07/71a3/: /copy o,$07,$345f,$01
 # copy ENEMYCOLLISION_BEETLE 0x39 (seasons) from ENEMYCOLLISION_BEETLE 0x3b (ages)
-07/71c3/: /copy a,$07,$347f,$01
+07/71c3/: /copy o,$07,$347f,$01
 # copy ENEMYCOLLISION_TWINROVA_BAT 0x3f (seasons) from ENEMYCOLLISION_TWINROVA_BAT 0x41 (ages)
-07/7283/: /copy a,$07,$353f,$01
+07/7283/: /copy o,$07,$353f,$01
 # copy ENEMYCOLLISION_VIRE 0x45 (seasons) from ENEMYCOLLISION_VIRE 0x46 (ages)
-07/7343/: /copy a,$07,$35df,$01
+07/7343/: /copy o,$07,$35df,$01
 # copy ENEMYCOLLISION_SPIKED_BEETLE_FLIPPED 0x4e (seasons) from ENEMYCOLLISION_SPIKED_BEETLE_FLIPPED 0x51 (ages)
-07/7463/: /copy a,$07,$373f,$01
+07/7463/: /copy o,$07,$373f,$01
 # copy ENEMYCOLLISION_UNMASKED_IRON_MASK 0x50 (seasons) from ENEMYCOLLISION_UNMASKED_IRON_MASK 0x53 (ages)
-07/74a3/: /copy a,$07,$377f,$01
+07/74a3/: /copy o,$07,$377f,$01
 # copy ENEMYCOLLISION_ACTIVE_BLUE_ARMOS 0x51 (seasons) from ENEMYCOLLISION_ACTIVE_BLUE_ARMOS 0x54 (ages)
-07/74c3/: /copy a,$07,$379f,$01
+07/74c3/: /copy o,$07,$379f,$01
 # copy ENEMYCOLLISION_STALFOS_BLOCKED_WITH_SWORD 0x52 (seasons) from ENEMYCOLLISION_STALFOS_BLOCKED_WITH_SWORD 0x55 (ages)
-07/74e3/: /copy a,$07,$37bf,$01
+07/74e3/: /copy o,$07,$37bf,$01
 # copy ENEMYCOLLISION_DARKNUT_BLOCKED_WITH_SWORD 0x53 (seasons) from ENEMYCOLLISION_DARKNUT_BLOCKED_WITH_SWORD 0x56 (ages)
-07/7503/: /copy a,$07,$37df,$01
+07/7503/: /copy o,$07,$37df,$01
 # copy ENEMYCOLLISION_BIG_GOPONGA_FLOWER 0x54 (seasons) from ENEMYCOLLISION_BIG_GOPONGA_FLOWER 0x57 (ages)
-07/7523/: /copy a,$07,$37ff,$01
+07/7523/: /copy o,$07,$37ff,$01
 # copy ENEMYCOLLISION_SPIKED_BALL 0x6b (seasons) from ENEMYCOLLISION_SPIKED_BALL 0x74 (ages)
-07/7803/: /copy a,$07,$3b9f,$01
+07/7803/: /copy o,$07,$3b9f,$01
 # copy ENEMYCOLLISION_GANON_TRIDENT 0x70 (seasons) from ENEMYCOLLISION_GANON_TRIDENT 0x7b (ages)
-07/78a3/: /copy a,$07,$3c7f,$01
+07/78a3/: /copy o,$07,$3c7f,$01
 
 # Switch hook
 # copy ENEMYCOLLISION_ITEM 0x01 (seasons) from ENEMYCOLLISION_ITEM 0x01 (ages)
-07/6abe/: /copy a,$07,$6d37,$01
+07/6abe/: /copy o,$07,$6d37,$01
 # copy ENEMYCOLLISION_PROJECTILE 0x06 (seasons) from ENEMYCOLLISION_PROJECTILE 0x06 (ages)
-07/6b5e/: /copy a,$07,$6dd7,$01
+07/6b5e/: /copy o,$07,$6dd7,$01
 # copy ENEMYCOLLISION_PROJECTILE_WITH_RING_MOD 0x07 (seasons) from ENEMYCOLLISION_PROJECTILE_WITH_RING_MOD 0x07 (ages)
-07/6b7e/: /copy a,$07,$6df7,$01
+07/6b7e/: /copy o,$07,$6df7,$01
 # copy ENEMYCOLLISION_MERGED_TWINROVA 0x08 (seasons) from ENEMYCOLLISION_MERGED_TWINROVA 0x08 (ages)
-07/6b9e/: /copy a,$07,$6e17,$01
+07/6b9e/: /copy o,$07,$6e17,$01
 # copy ENEMYCOLLISION_TWINROVA 0x0a (seasons) from ENEMYCOLLISION_TWINROVA 0x0a (ages)
-07/6bde/: /copy a,$07,$6e57,$01
+07/6bde/: /copy o,$07,$6e57,$01
 # copy ENEMYCOLLISION_GANON 0x0b (seasons) from ENEMYCOLLISION_GANON 0x0b (ages)
-07/6bfe/: /copy a,$07,$6e77,$01
+07/6bfe/: /copy o,$07,$6e77,$01
 # copy ENEMYCOLLISION_KING_MOBLIN 0x0e (seasons) from ENEMYCOLLISION_KING_MOBLIN 0x50 (ages)
-07/6c5e/: /copy a,$07,$7717,$01
+07/6c5e/: /copy o,$07,$7717,$01
 # copy ENEMYCOLLISION_MOTIONLESS_ENEMY 0x0f (seasons) from ENEMYCOLLISION_MOTIONLESS_ENEMY 0x0f (ages)
-07/6c7e/: /copy a,$07,$6ef7,$01
+07/6c7e/: /copy o,$07,$6ef7,$01
 # copy ENEMYCOLLISION_STANDARD_ENEMY 0x10 (seasons) from ENEMYCOLLISION_STANDARD_ENEMY 0x10 (ages)
-07/6c9e/: /copy a,$07,$6f17,$01
+07/6c9e/: /copy o,$07,$6f17,$01
 # copy ENEMYCOLLISION_BURNABLE_ENEMY 0x11 (seasons) from ENEMYCOLLISION_BURNABLE_ENEMY 0x11 (ages)
-07/6cbe/: /copy a,$07,$6f37,$01
+07/6cbe/: /copy o,$07,$6f37,$01
 # copy ENEMYCOLLISION_LYNEL 0x12 (seasons) from ENEMYCOLLISION_LYNEL 0x12 (ages)
-07/6cde/: /copy a,$07,$6f57,$01
+07/6cde/: /copy o,$07,$6f57,$01
 # copy ENEMYCOLLISION_BLADE_TRAP 0x13 (seasons) from ENEMYCOLLISION_BLADE_TRAP 0x13 (ages)
-07/6cfe/: /copy a,$07,$6f77,$01
+07/6cfe/: /copy o,$07,$6f77,$01
 # copy ENEMYCOLLISION_GIBDO 0x15 (seasons) from ENEMYCOLLISION_GIBDO 0x16 (ages)
-07/6d3e/: /copy a,$07,$6fd7,$01
+07/6d3e/: /copy o,$07,$6fd7,$01
 # copy ENEMYCOLLISION_SPARK 0x16 (seasons) from ENEMYCOLLISION_SPARK 0x17 (ages)
-07/6d5e/: /copy a,$07,$6ff7,$01
+07/6d5e/: /copy o,$07,$6ff7,$01
 # copy ENEMYCOLLISION_SPIKED_BEETLE 0x17 (seasons) from ENEMYCOLLISION_SPIKED_BEETLE 0x18 (ages)
-07/6d7e/: /copy a,$07,$7017,$01
+07/6d7e/: /copy o,$07,$7017,$01
 # copy ENEMYCOLLISION_BUBBLE 0x18 (seasons) from ENEMYCOLLISION_BUBBLE 0x19 (ages)
-07/6d9e/: /copy a,$07,$7037,$01
+07/6d9e/: /copy o,$07,$7037,$01
 # copy ENEMYCOLLISION_GHINI 0x19 (seasons) from ENEMYCOLLISION_GHINI 0x1a (ages)
-07/6dbe/: /copy a,$07,$7057,$01
+07/6dbe/: /copy o,$07,$7057,$01
 # copy ENEMYCOLLISION_BUZZBLOB 0x1a (seasons) from ENEMYCOLLISION_BUZZBLOB 0x1b (ages)
-07/6dde/: /copy a,$07,$7077,$01
+07/6dde/: /copy o,$07,$7077,$01
 # copy ENEMYCOLLISION_WHISP 0x1b (seasons) from ENEMYCOLLISION_WHISP 0x1c (ages)
-07/6dfe/: /copy a,$07,$7097,$01
+07/6dfe/: /copy o,$07,$7097,$01
 # copy ENEMYCOLLISION_IRON_MASK 0x1c (seasons) from ENEMYCOLLISION_IRON_MASK 0x1d (ages)
-07/6e1e/: /copy a,$07,$70b7,$01
+07/6e1e/: /copy o,$07,$70b7,$01
 # copy ENEMYCOLLISION_ACTIVE_RED_ARMOS 0x1d (seasons) from ENEMYCOLLISION_ACTIVE_RED_ARMOS 0x1e (ages)
-07/6e3e/: /copy a,$07,$70d7,$01
+07/6e3e/: /copy o,$07,$70d7,$01
 # copy ENEMYCOLLISION_DARKNUT 0x1f (seasons) from ENEMYCOLLISION_DARKNUT 0x20 (ages)
-07/6e7e/: /copy a,$07,$7117,$01
+07/6e7e/: /copy o,$07,$7117,$01
 # copy ENEMYCOLLISION_BURNABLE_UNDEAD 0x20 (seasons) from ENEMYCOLLISION_BURNABLE_UNDEAD 0x7e (ages)
-07/6e9e/: /copy a,$07,$7cd7,$01
+07/6e9e/: /copy o,$07,$7cd7,$01
 # copy ENEMYCOLLISION_POLS_VOICE 0x21 (seasons) from ENEMYCOLLISION_POLS_VOICE 0x21 (ages)
-07/6ebe/: /copy a,$07,$7137,$01
+07/6ebe/: /copy o,$07,$7137,$01
 # copy ENEMYCOLLISION_LIKE_LIKE 0x22 (seasons) from ENEMYCOLLISION_LIKE_LIKE 0x22 (ages)
-07/6ede/: /copy a,$07,$7157,$01
+07/6ede/: /copy o,$07,$7157,$01
 # copy ENEMYCOLLISION_GOPONGA_FLOWER 0x23 (seasons) from ENEMYCOLLISION_GOPONGA_FLOWER 0x23 (ages)
-07/6efe/: /copy a,$07,$7177,$01
+07/6efe/: /copy o,$07,$7177,$01
 # copy ENEMYCOLLISION_WALLMASTER 0x24 (seasons) from ENEMYCOLLISION_WALLMASTER 0x25 (ages)
-07/6f1e/: /copy a,$07,$71b7,$01
+07/6f1e/: /copy o,$07,$71b7,$01
 # copy ENEMYCOLLISION_GIANT_BLADE_TRAP 0x25 (seasons) from ENEMYCOLLISION_GIANT_BLADE_TRAP 0x26 (ages)
-07/6f3e/: /copy a,$07,$71d7,$01
+07/6f3e/: /copy o,$07,$71d7,$01
 # copy ENEMYCOLLISION_THWIMP 0x26 (seasons) from ENEMYCOLLISION_THWIMP 0x27 (ages)
-07/6f5e/: /copy a,$07,$71f7,$01
+07/6f5e/: /copy o,$07,$71f7,$01
 # copy ENEMYCOLLISION_THWOMP 0x27 (seasons) from ENEMYCOLLISION_THWOMP 0x28 (ages)
-07/6f7e/: /copy a,$07,$7217,$01
+07/6f7e/: /copy o,$07,$7217,$01
 # copy ENEMYCOLLISION_UNDEAD 0x28 (seasons) from ENEMYCOLLISION_UNDEAD 0x7d (ages)
-07/6f9e/: /copy a,$07,$7cb7,$01
+07/6f9e/: /copy o,$07,$7cb7,$01
 # copy ENEMYCOLLISION_KEESE 0x29 (seasons) from ENEMYCOLLISION_KEESE 0x1f (ages)
-07/6fbe/: /copy a,$07,$70f7,$01
+07/6fbe/: /copy o,$07,$70f7,$01
 # copy ENEMYCOLLISION_ZOL 0x2a (seasons) from ENEMYCOLLISION_ZOL 0x29 (ages)
-07/6fde/: /copy a,$07,$7237,$01
+07/6fde/: /copy o,$07,$7237,$01
 # copy ENEMYCOLLISION_CUCCO 0x2b (seasons) from ENEMYCOLLISION_CUCCO 0x2a (ages)
-07/6ffe/: /copy a,$07,$7257,$01
+07/6ffe/: /copy o,$07,$7257,$01
 # copy ENEMYCOLLISION_FIRE_KEESE 0x2c (seasons) from ENEMYCOLLISION_FIRE_KEESE 0x2b (ages)
-07/701e/: /copy a,$07,$7277,$01
+07/701e/: /copy o,$07,$7277,$01
 # copy ENEMYCOLLISION_GIANT_CUCCO 0x2d (seasons) from ENEMYCOLLISION_GIANT_CUCCO 0x2c (ages)
-07/703e/: /copy a,$07,$7297,$01
+07/703e/: /copy o,$07,$7297,$01
 # copy ENEMYCOLLISION_PEAHAT_VULNERABLE 0x2e (seasons) from ENEMYCOLLISION_PEAHAT_VULNERABLE 0x2e (ages)
-07/705e/: /copy a,$07,$72d7,$01
+07/705e/: /copy o,$07,$72d7,$01
 # copy ENEMYCOLLISION_WIZZROBE 0x2f (seasons) from ENEMYCOLLISION_WIZZROBE 0x30 (ages)
-07/707e/: /copy a,$07,$7317,$01
+07/707e/: /copy o,$07,$7317,$01
 # copy ENEMYCOLLISION_CROW 0x30 (seasons) from ENEMYCOLLISION_CROW 0x31 (ages)
-07/709e/: /copy a,$07,$7337,$01
+07/709e/: /copy o,$07,$7337,$01
 # copy ENEMYCOLLISION_GEL 0x31 (seasons) from ENEMYCOLLISION_GEL 0x33 (ages)
-07/70be/: /copy a,$07,$7377,$01
+07/70be/: /copy o,$07,$7377,$01
 # copy ENEMYCOLLISION_PINCER 0x32 (seasons) from ENEMYCOLLISION_PINCER 0x34 (ages)
-07/70de/: /copy a,$07,$7397,$01
+07/70de/: /copy o,$07,$7397,$01
 # copy ENEMYCOLLISION_GOHMA_GEL 0x33 (seasons) from ENEMYCOLLISION_GOHMA_GEL 0x35 (ages)
-07/70fe/: /copy a,$07,$73b7,$01
+07/70fe/: /copy o,$07,$73b7,$01
 # copy ENEMYCOLLISION_SWORD_MASKED_MOBLIN 0x34 (seasons) from ENEMYCOLLISION_SWORD_MASKED_MOBLIN 0x36 (ages)
-07/711e/: /copy a,$07,$73d7,$01
+07/711e/: /copy o,$07,$73d7,$01
 # copy ENEMYCOLLISION_BALL_AND_CHAIN_SOLDIER 0x35 (seasons) from ENEMYCOLLISION_BALL_AND_CHAIN_SOLDIER 0x37 (ages)
-07/713e/: /copy a,$07,$73f7,$01
+07/713e/: /copy o,$07,$73f7,$01
 # copy ENEMYCOLLISION_HARDHAT_BEETLE 0x36 (seasons) from ENEMYCOLLISION_HARDHAT_BEETLE 0x38 (ages)
-07/715e/: /copy a,$07,$7417,$01
+07/715e/: /copy o,$07,$7417,$01
 # copy ENEMYCOLLISION_ARM_MIMIC 0x37 (seasons) from ENEMYCOLLISION_ARM_MIMIC 0x39 (ages)
-07/717e/: /copy a,$07,$7437,$01
+07/717e/: /copy o,$07,$7437,$01
 # copy ENEMYCOLLISION_MOLDORM 0x38 (seasons) from ENEMYCOLLISION_MOLDORM 0x3a (ages)
-07/719e/: /copy a,$07,$7457,$01
+07/719e/: /copy o,$07,$7457,$01
 # copy ENEMYCOLLISION_BEETLE 0x39 (seasons) from ENEMYCOLLISION_BEETLE 0x3b (ages)
-07/71be/: /copy a,$07,$7477,$01
+07/71be/: /copy o,$07,$7477,$01
 # copy ENEMYCOLLISION_FLYING_TILE 0x3a (seasons) from ENEMYCOLLISION_FLYING_TILE 0x3c (ages)
-07/71de/: /copy a,$07,$7497,$01
+07/71de/: /copy o,$07,$7497,$01
 # copy ENEMYCOLLISION_3f 0x3d (seasons) from ENEMYCOLLISION_3f 0x3f (ages)
-07/723e/: /copy a,$07,$74f7,$01
+07/723e/: /copy o,$07,$74f7,$01
 # copy ENEMYCOLLISION_BUSH 0x3e (seasons) from ENEMYCOLLISION_BUSH 0x40 (ages)
-07/725e/: /copy a,$07,$7517,$01
+07/725e/: /copy o,$07,$7517,$01
 # copy ENEMYCOLLISION_TWINROVA_BAT 0x3f (seasons) from ENEMYCOLLISION_TWINROVA_BAT 0x41 (ages)
-07/727e/: /copy a,$07,$7537,$01
+07/727e/: /copy o,$07,$7537,$01
 # copy ENEMYCOLLISION_VIRE 0x45 (seasons) from ENEMYCOLLISION_VIRE 0x46 (ages)
-07/733e/: /copy a,$07,$75d7,$01
+07/733e/: /copy o,$07,$75d7,$01
 # copy ENEMYCOLLISION_SPIKED_BEETLE_FLIPPED 0x4e (seasons) from ENEMYCOLLISION_SPIKED_BEETLE_FLIPPED 0x51 (ages)
-07/745e/: /copy a,$07,$7737,$01
+07/745e/: /copy o,$07,$7737,$01
+# Disabled that copy, don't know why Ages has a hook collision on rock
 # copy ENEMYCOLLISION_ROCK 0x4f (seasons) from ENEMYCOLLISION_ROCK 0x52 (ages)
-07/747e/: /copy a,$07,$7757,$01
+# 07/747e/: /copy o,$07,$7757,$01
 # copy ENEMYCOLLISION_UNMASKED_IRON_MASK 0x50 (seasons) from ENEMYCOLLISION_UNMASKED_IRON_MASK 0x53 (ages)
-07/749e/: /copy a,$07,$7777,$01
+07/749e/: /copy o,$07,$7777,$01
 # copy ENEMYCOLLISION_ACTIVE_BLUE_ARMOS 0x51 (seasons) from ENEMYCOLLISION_ACTIVE_BLUE_ARMOS 0x54 (ages)
-07/74be/: /copy a,$07,$7797,$01
+07/74be/: /copy o,$07,$7797,$01
 # copy ENEMYCOLLISION_STALFOS_BLOCKED_WITH_SWORD 0x52 (seasons) from ENEMYCOLLISION_STALFOS_BLOCKED_WITH_SWORD 0x55 (ages)
-07/74de/: /copy a,$07,$77b7,$01
+07/74de/: /copy o,$07,$77b7,$01
 # copy ENEMYCOLLISION_DARKNUT_BLOCKED_WITH_SWORD 0x53 (seasons) from ENEMYCOLLISION_DARKNUT_BLOCKED_WITH_SWORD 0x56 (ages)
-07/74fe/: /copy a,$07,$77d7,$01
+07/74fe/: /copy o,$07,$77d7,$01
 # copy ENEMYCOLLISION_BIG_GOPONGA_FLOWER 0x54 (seasons) from ENEMYCOLLISION_BIG_GOPONGA_FLOWER 0x57 (ages)
-07/751e/: /copy a,$07,$77f7,$01
+07/751e/: /copy o,$07,$77f7,$01
 # copy ENEMYCOLLISION_PEAHAT 0x55 (seasons) from ENEMYCOLLISION_PEAHAT 0x58 (ages)
-07/753e/: /copy a,$07,$7817,$01
+07/753e/: /copy o,$07,$7817,$01
 
 # edit the active collision data (using Stewmat's active collision tables)
 # enemyActiveCollisions

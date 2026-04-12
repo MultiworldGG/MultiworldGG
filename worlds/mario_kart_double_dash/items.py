@@ -13,6 +13,13 @@ USEF = ItemClassification.useful
 SKIP = ItemClassification.progression_skip_balancing
 TRAP = ItemClassification.trap
 
+TAG_CUPS = "Cups"
+TAG_TT_COURSES = "TT Courses"
+TAG_CHARACTERS = "Characters"
+TAG_KARTS = "Karts"
+TAG_ITEMS = "Items"
+TAG_KART_UPGRADES = "Kart Upgrades"
+
 class ItemType(Enum):
     OTHER = 0
     CHARACTER = 1
@@ -33,6 +40,7 @@ class MkddItemData(NamedTuple):
     address: int = 0
     count: int = 1
     meta: Any = None
+    tags: set[str] = {}
 
 
 PROGRESSIVE_CLASS = "Progressive CC"
@@ -67,31 +75,42 @@ data_table: list[MkddItemData] = [
     MkddItemData(TROPHY, PROG, count = 0),
     MkddItemData(VICTORY, PROG, count = 0),
 ]
-data_table.extend([MkddItemData(char.name, PROG, ItemType.CHARACTER, id) for id, char in enumerate(game_data.CHARACTERS)])
-data_table.extend([MkddItemData(name, PROG, ItemType.CUP, id, 1 if id != game_data.CUP_ALL_CUP_TOUR else 0) for id, name in enumerate(game_data.CUPS)])
-data_table.extend([MkddItemData(get_item_name_tt_course(course.name), PROG, ItemType.TT_COURSE, id) for id, course in enumerate(game_data.RACE_COURSES)])
+data_table.extend([MkddItemData(char.name, PROG, ItemType.CHARACTER, id, tags = {TAG_CHARACTERS}) for id, char in enumerate(game_data.CHARACTERS)])
+data_table.extend([MkddItemData(name, PROG, ItemType.CUP, id, 1 if id != game_data.CUP_ALL_CUP_TOUR else 0, tags = {TAG_CUPS}) for id, name in enumerate(game_data.CUPS)])
+data_table.extend([MkddItemData(get_item_name_tt_course(course.name), PROG, ItemType.TT_COURSE, id, tags = {TAG_TT_COURSES}) for id, course in enumerate(game_data.RACE_COURSES)])
 
 for id, kart in enumerate(game_data.KARTS):
-    data_table.append(MkddItemData(kart.name, PROG, ItemType.KART, id))
-    data_table.extend([
-        MkddItemData(get_item_name_kart_upgrade(upgrade.name, kart.name), PROG, ItemType.KART_UPGRADE, id, 0, upgrade)
-        for upgrade in game_data.KART_UPGRADES
-    ])
+    data_table.append(MkddItemData(kart.name, PROG, ItemType.KART, id, tags = {TAG_KARTS}))
+    for upgrade in game_data.KART_UPGRADES:
+        name = get_item_name_kart_upgrade(upgrade.name, kart.name)
+        TAG_KART_UPGRADES_FOR_X = {TAG_KART_UPGRADES, f"Kart upgrades for {kart.name}"}
+        data_table.append(MkddItemData(name, PROG, ItemType.KART_UPGRADE, id, 0, upgrade, tags = TAG_KART_UPGRADES_FOR_X))
 
 for item in game_data.ITEMS:
     classification = PROG if item.usefulness > 0 else FILL
     if item != game_data.ITEM_NONE:
         data_table.append(MkddItemData(
             get_item_name_character_item(None, item.name), classification,
-            ItemType.ITEM_UNLOCK, count = 0, meta = {"character":None, "item":item}
+            ItemType.ITEM_UNLOCK, count = 0, meta = {"character":None, "item":item},
+            tags = {TAG_ITEMS}
             ))
         for character in game_data.CHARACTERS:
+            name = get_item_name_character_item(character.name, item.name)
+            TAG_ITEMS_FOR_X = {TAG_ITEMS, f"Items for {character.name}"}
             data_table.append(MkddItemData(
-                get_item_name_character_item(character.name, item.name), classification,
-                ItemType.ITEM_UNLOCK, count = 0, meta = {"character":character, "item":item}
-                ))
+                name, classification, ItemType.ITEM_UNLOCK, count = 0,
+                meta = {"character": character, "item": item}, tags = TAG_ITEMS_FOR_X
+            ))
 
 # Used by Universal Tracker glitched logic.
 data_table.append(MkddItemData(SKIP_DIFFICULTY, PROG, count = 0))
 
 name_to_id: dict[str, int] = {item.name:id for (id, item) in enumerate(data_table) if id > 0}
+
+group_names: set[str] = set()
+for data in data_table:
+    group_names.update(data.tags)
+groups: dict[str: set[str]] = {
+    group:{data.name for data in data_table if group in data.tags}
+    for group in group_names
+}

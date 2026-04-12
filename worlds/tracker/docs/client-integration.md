@@ -107,6 +107,21 @@ For example
 python .\Launcher.py "Universal Tracker" -- --nogui --list Player1:None@localhost
 ```
 
+## Automating getting logic counts
+
+Thanks to digiholic we have an example Powershell script that will use UT to connect to each specified slot and get the in logic counts
+
+```powershell
+Clear-Content count.txt
+Get-Content -Path "slots.txt" | ForEach-Object {
+    .\ArchipelagoLauncherDebug.exe "Universal Tracker" -- --nogui --name "$_" --connect localhost:38281 --count | Select-Object -Last 4 >> count.txt
+    echo "-----------------------------------------" >> count.txt
+}
+PAUSE
+```
+
+This script requires a `slots.txt` that contains each slot name on it's own line, and correct the address in the script, it will then create a `counts.txt` file that can be parsed further.
+
 ## Adding In-Logic Callbacks
 
 To be filled out later

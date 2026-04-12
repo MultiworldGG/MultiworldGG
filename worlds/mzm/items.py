@@ -18,7 +18,7 @@ skip_balancing = ItemClassification.progression_skip_balancing
 
 
 class MZMItem(Item):
-    game: str = "Metroid Zero Mission"
+    game: str = "Metroid: Zero Mission"
 
 
 class ItemData:

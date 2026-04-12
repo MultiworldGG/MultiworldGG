@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
-from Options import Choice, Range, Toggle, DeathLink, DefaultOnToggle, OptionSet, OptionGroup, PerGameCommonOptions, Visibility
+from Options import Choice, Range, Toggle, DeathLink, DefaultOnToggle, OptionSet, OptionGroup, PerGameCommonOptions, Visibility, StartInventoryPool
 
+from .Tricks import logic_tricks
 
 class Goal(Choice):
     """
@@ -387,11 +388,45 @@ class GameLogicDifficulty(Choice):
     default = 0
 
 
+class AlternateLogic(OptionSet):
+    """
+    Alternate logic for certain locations.
+    """
+    display_name = "Alternate Logic"
+    default = logic_tricks
+    valid_keys = logic_tricks
+
+
 class InventoryYoshiLogic(Toggle):
     """
-    Whether being able to use Yoshi inventory items is considered in logic or not for Blue Yoshi logic
+    Whether being able to use Yoshi inventory items is considered in logic or not for Yoshi related logic
+    If disabled, you need to reach a level with a Yoshi block on it in order to have Yoshi related checks in logic.
     """
     display_name = "Inventory Yoshi Logic"
+
+
+class DecoupledYoshiCarry(DefaultOnToggle):
+    """
+    Whether Yoshi's Tongue requires an additional Progressive Yoshi item to be unlocked or not.
+    If disabled, Yoshi will be able to use his tongue immediately after unlocking him.
+    """
+    display_name = "Decoupled Yoshi Carry"
+
+
+class DecoupledWallRun(DefaultOnToggle):
+    """
+    Whether Wall Run Anywhere requires an additional Progressive Run item or not.
+    If disabled, Mario will gain the ability right after getting a Run item.
+    """
+    display_name = "Decoupled Wall Run Anywhere"
+
+
+class DecoupledFastSwim(DefaultOnToggle):
+    """
+    Whether Fast Swimming requires an additional Progressive Swim item or not.
+    If disabled, Mario will gain the ability right after getting a Swim item.
+    """
+    display_name = "Decoupled Fast Swimming"
 
 
 class DisplayReceivedItemPopups(Choice):
@@ -633,10 +668,11 @@ class TrapLink(Toggle):
 
 class UngoldenEggs(DefaultOnToggle):
     """
-    Does exactly what you're thinking of.
+    Does exactly what you're thinking of. If you're watching this you're very likely a power user lol.
+    (Removes Useful Tag from eggs and nothing else)
     """
     display_name = "No mas huevos dorados"
-    visibility = Visibility.template | Visibility.simple_ui | Visibility.complex_ui
+    visibility = Visibility.none
 
 
 waffle_option_groups = [
@@ -649,7 +685,11 @@ waffle_option_groups = [
     OptionGroup("Logic", [
         AbilityItemShuffle,
         GameLogicDifficulty,
+        AlternateLogic,
         InventoryYoshiLogic,
+        DecoupledYoshiCarry,
+        DecoupledWallRun,
+        DecoupledFastSwim,
     ]),
     OptionGroup("Location Options", [
         DragonCoinChecks,
@@ -707,13 +747,18 @@ waffle_option_groups = [
 
 @dataclass
 class WaffleOptions(PerGameCommonOptions):
+    start_inventory_from_pool: StartInventoryPool
     death_link: DeathLink
     ring_link: RingLink
     trap_link: TrapLink
     energy_link: EnergyLink
     ability_shuffle: AbilityItemShuffle
     game_logic_difficulty: GameLogicDifficulty
+    alternate_logic: AlternateLogic
     inventory_yoshi_logic: InventoryYoshiLogic
+    decoupled_yoshi_carry: DecoupledYoshiCarry
+    decoupled_wall_run_anywhere: DecoupledWallRun
+    decoupled_fast_swimming: DecoupledFastSwim
     goal: Goal
     yoshi_egg_count: NumberOfYoshiEggs
     percentage_of_yoshi_eggs: PercentageOfYoshiEggs

@@ -3,6 +3,9 @@ class GenericItem:
     light_urn = "Light Urn"
     cloth_bandage = "Cloth Bandage"
     dark_urn = "Dark Urn"
+    nothing = "The Weight of the Dream (Nothing)"
+    demi_gift = "Demi's Gift for a Stranger"
+    patchouli_gift = "Patchouli's Gift for a Stranger"
 
 
 class Alchemy:
@@ -72,9 +75,14 @@ class UniqueItem:
     dried_rat = "Dried Rat"
     dusty_crystal_orb = "Dusty Crystal Orb"
     skeleton_rattle = "Skeletal Rattle"
+    vampiric_symbol_a = "Vampiric Symbol (A)"
+    vampiric_symbol_e = "Vampiric Symbol (E)"
+    vampiric_symbol_w = "Vampiric Symbol (W)"
 
     completion_important = [white_tape, vhs_tape, black_book, enchanted_key, corrupted_key, terminus_prison_key, water_talisman, earth_talisman, dusty_crystal_orb,
                             skeleton_egg, skull_of_josiah]
+
+    vampiric_symbols = [vampiric_symbol_a, vampiric_symbol_e, vampiric_symbol_w]
 
 
 class RareDrops:
@@ -109,9 +117,11 @@ class Trap:
     bleed_trap = "Bleed Trap"
     eggnog = "Eggnog"
     coal = "Coal"
+    rat = "Rat Gang"
+    timeout = "Date With Death Trap"
 
     all_traps = [health_viai, slowness_trap, bleed_trap, curse_trap, blindness_trap, mana_drain_trap,
-                 xp_drain_trap, poison_trap
+                 xp_drain_trap, poison_trap, rat, timeout
                  ]
 
     christmas_gifts = [eggnog, coal]

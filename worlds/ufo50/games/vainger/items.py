@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict, NamedTuple, List, Set
+from typing import TYPE_CHECKING, NamedTuple
+
 from BaseClasses import ItemClassification as IC, Item
 from ...constants import get_game_base_id
 
@@ -14,7 +15,7 @@ class ItemInfo(NamedTuple):
     quantity: int
 
 
-item_table: Dict[str, ItemInfo] = {
+item_table: dict[str, ItemInfo] = {
     "Heat Mod": ItemInfo(0, IC.progression | IC.useful, 1),
     "Multi Mod": ItemInfo(1, IC.progression | IC.useful, 1),
     "Pulse Mod": ItemInfo(2, IC.progression | IC.useful, 1),
@@ -30,12 +31,12 @@ item_table: Dict[str, ItemInfo] = {
 }
 
 
-def get_items() -> Dict[str, int]:
+def get_items() -> dict[str, int]:
     return {f"Vainger - {name}": data.id_offset + get_game_base_id("Vainger") for name, data in item_table.items()}
 
 
-def get_item_groups() -> Dict[str, Set[str]]:
-    item_groups: Dict[str, Set[str]] = {"Vainger": {f"Vainger - {item_name}" for item_name in item_table.keys()},
+def get_item_groups() -> dict[str, set[str]]:
+    item_groups: dict[str, set[str]] = {"Vainger": {f"Vainger - {item_name}" for item_name in item_table.keys()},
                                         "Vainger - Mods": {f"Vainger - {item_name}" for item_name in ["Heat Mod", "Multi Mod", "Pulse Mod", "Force Mod"]},
                                         "Vainger - Key Codes": {f"Vainger - Key Code {letter}" for letter in ["A", "B", "C", "D"]}}
     return item_groups
@@ -49,9 +50,9 @@ def create_item(item_name: str, world: "UFO50World", item_class: IC = None) -> I
                 item_data.id_offset + get_game_base_id("Vainger"), world.player)
 
 
-def create_items(world: "UFO50World") -> List[Item]:
-    items_to_create: Dict[str, int] = {item_name: data.quantity for item_name, data in item_table.items()}
-    vainger_items: List[Item] = []
+def create_items(world: "UFO50World") -> list[Item]:
+    items_to_create: dict[str, int] = {item_name: data.quantity for item_name, data in item_table.items()}
+    vainger_items: list[Item] = []
     for item_name, quantity in items_to_create.items():
         for _ in range(quantity):
             vainger_items.append(create_item(item_name, world))

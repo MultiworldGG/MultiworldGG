@@ -12,7 +12,7 @@ else:
     DiddyKongRacingWorld = object
 
 ENTRANCE_NAME_SUFFIX: str = " Door"
-DATASTORAGE_KEY_PREFIX: str = "Diddy_Kong_Racing_{player}_"
+DATASTORAGE_KEY_PREFIX: str = "Diddy_Kong_Racing_{team}_{player}_"
 
 DIDDY_KONG_RACING_REGIONS: dict[str, list[str]] = {
     RegionName.TIMBERS_ISLAND: [
@@ -288,7 +288,7 @@ def is_entrance_order_valid(entrance_order: list[int]) -> bool:
 
 
 def connect_track_regions(world: DiddyKongRacingWorld) -> None:
-    use_ut_deferred_entrances = (world.options.shuffle_race_entrances.value
+    use_ut_deferred_entrances = (world.options.shuffle_race_entrances
                                  and hasattr(world.multiworld, "generation_is_fake")
                                  and hasattr(world.multiworld, "enforce_deferred_connections")
                                  and world.multiworld.enforce_deferred_connections in ("on", "default"))
@@ -321,7 +321,7 @@ def connect_track_regions(world: DiddyKongRacingWorld) -> None:
             end_region = world.get_region(end_region_name)
             entrance.connect(end_region)
 
-            if world.options.shuffle_race_entrances.value:
+            if world.options.shuffle_race_entrances:
                 world.multiworld.spoiler.set_entrance(entrance_name, end_region_name, "entrance", world.player)
 
 

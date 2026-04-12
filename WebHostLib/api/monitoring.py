@@ -6,7 +6,7 @@ from uuid import UUID
 from flask import jsonify, request, abort
 from pony.orm import db_session, select
 
-from Utils import restricted_loads
+from Utils import restricted_loads, utcnow
 from WebHostLib import app, to_url
 
 from ..models import Room, Command
@@ -37,7 +37,7 @@ def is_room_active(room: Room) -> bool:
     # Only consider rooms with a valid port (> 0)
     if not room.last_port or room.last_port <= 0:
         return False
-    now = datetime.utcnow()
+    now = utcnow()
     time_since_activity = now - room.last_activity
     return time_since_activity <= timedelta(seconds=room.timeout + 5)
 
@@ -81,7 +81,7 @@ def monitoring_rooms() -> Dict[str, Any]:
     """Get a list of all active rooms with port and last activity time."""
     require_admin_token()
     with db_session:
-        now = datetime.utcnow()
+        now = utcnow()
         rooms = select(
             room for room in Room if
             room.last_activity >= now - timedelta(days=3)
@@ -124,7 +124,7 @@ def monitoring_games() -> Dict[str, Any]:
     """Get a list of all games with port and time of last action."""
     require_admin_token()
     with db_session:
-        now = datetime.utcnow()
+        now = utcnow()
         rooms = select(
             room for room in Room if
             room.last_activity >= now - timedelta(days=3)
@@ -186,7 +186,7 @@ def broadcast() -> Dict[str, Any]:
     room_ids = data.get("rooms") # optional
     
     with db_session:
-        now = datetime.utcnow()
+        now = utcnow()
         
         if room_ids:
             try:

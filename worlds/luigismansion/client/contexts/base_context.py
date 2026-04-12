@@ -90,7 +90,8 @@ class BaseContext(UniversalContext):
         # This appears to be occurring if a spawned process does not have a UI element when importing kvui/kivymd.
         from .lm_tab import build_gui, GameManager, MDLabel, MDLinearProgressIndicator
 
-        ui: GameManager = super().make_gui()
+        ui: type[GameManager] = super().make_gui()
+        ui.important_labels = {}
         class LMGuiWrapper(ui):
             wallet_ui: MDLabel
             boo_count: MDLabel
@@ -112,22 +113,28 @@ class BaseContext(UniversalContext):
                 if self.ctx.check_ingame():
                     current_worth = self.ctx.wallet.get_wallet_worth()
 
-                self.wallet_ui.text = f"{format(current_worth, ',d')}/{format(total_worth, ',d')}"
+                self.wallet_ui.text = f"{format(current_worth, ',d')} / Required Money: {format(total_worth, ',d')}"
                 if total_worth != 0:
-                    self.wallet_progress_bar.value = current_worth/total_worth
+                    self.wallet_progress_bar.value = current_worth / total_worth
                 else:
                     self.wallet_progress_bar.value = 100
 
             def update_boo_count_label(self, item_count: int):
                 boo_total = 50
-                self.boo_count.text = f"{item_count}/{boo_total}"
-                self.boo_progress_bar.value = item_count/boo_total
+                self.boo_count.text = f"{item_count} / {boo_total}"
+                self.boo_progress_bar.value = item_count / boo_total
 
             def update_flower_label(self, count: int):
                 self.flower_label.text = f"{count}"
 
             def update_vacuum_label(self, item_count: int):
                 self.vacuum_label.text = f"{item_count}"
+
+            def update_king_boo_label(self, count: int):
+                self.king_boo_label.text = f"{count}"
+
+            def update_balcony_boo_label(self, count: int):
+                self.balcony_boo_label.text = f"{count}"
 
         return LMGuiWrapper
 
@@ -142,6 +149,8 @@ class BaseContext(UniversalContext):
 
         # Check for current room so we know which hint(s) we need to look at, since they mostly all use the same flags
         current_room = dme.read_word(dme.follow_pointers(ROOM_ID_ADDR, [ROOM_ID_OFFSET]))
+        if current_room == 73:
+            return
         player_id = 0
         location_id = 0
 

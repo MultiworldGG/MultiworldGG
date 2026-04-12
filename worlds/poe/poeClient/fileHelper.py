@@ -48,7 +48,13 @@ def load_vendor_modules():
     import atexit
     import shutil
     import pkgutil
-    
+    from Utils import is_frozen
+
+    # In frozen builds, dependencies are already in library.zip via requirements.txt
+    # Only load vendor modules when running from source
+    if is_frozen():
+        return
+
     # Import version after other imports to avoid circular imports
     try:
         from ..Version import POE_VERSION

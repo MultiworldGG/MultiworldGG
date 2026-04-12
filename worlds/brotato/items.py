@@ -99,6 +99,7 @@ class ItemName(Enum):
     CHARACTER_VAGABOND = "Vagabond"
     CHARACTER_TECHNOMAGE = "Technomage"
     CHARACTER_VAMPIRE = "Vampire"
+    CHARACTER_BEAST_MASTER = "Beast Master"
     CHARACTER_SAILOR = "Sailor"
     CHARACTER_CURIOUS = "Curious"
     CHARACTER_BUILDER = "Builder"

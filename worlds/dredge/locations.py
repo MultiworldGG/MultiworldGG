@@ -3,12 +3,12 @@ from __future__ import annotations
 import json
 import pkgutil
 
-from typing import Dict, Set, TYPE_CHECKING
+from typing import Dict, Set, TYPE_CHECKING, Literal, Sequence, Union
 
-from BaseClasses import Location
+from BaseClasses import Location, Region
 from BaseClasses import LocationProgressType as LPT
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from .options import DREDGEOptions
 
@@ -20,20 +20,43 @@ if TYPE_CHECKING:
 class DREDGELocation(Location):
     game: str = "DREDGE"
 
+CatchType = Literal["Coastal", "Shallow", "Oceanic", "Abyssal", "Hadal", "Mangrove", "Volcanic", "Ice", "Crab"]
+IronRigPhase = Literal[0,1,2,3,4,5]
+
+@dataclass(frozen=True)
+class ItemsReq:
+    type: Literal["items"] = "items"
+    any_of: Sequence[str] = field(default_factory=list)
+    all_of: Sequence[str] = field(default_factory=list)
+
+@dataclass(frozen=True)
+class ResearchReq:
+    type: Literal["research"] = "research"
+    cost: int = 0
+
+@dataclass(frozen=True)
+class CatchTypeReq:
+    type: Literal["catch_type"] = "catch_type"
+    value: CatchType = "Coastal"
+
+@dataclass(frozen=True)
+class IronRigPhaseReq:
+    type: Literal["iron_rig_phase"] = "iron_rig_phase"
+    value:IronRigPhase = 0
+
+Requirement = Union[ItemsReq, ResearchReq, CatchTypeReq, IronRigPhaseReq]
+
 @dataclass
 class DREDGELocationData:
     base_id_offset: int
     region: str
     location_group: str
     expansion: str
-    requirement: str = ""
+    requirements: list[Requirement] = field(default_factory=list)
     can_catch_rod: bool = True
     can_catch_net: bool = False
     progress_type: LPT = LPT.DEFAULT
     is_aberration: bool = False
-    is_exotic: bool = False
-    iron_rig_phase: int = 0
-    is_behind_debris: bool = False
 
 
 location_base_id = 3459028911689314
@@ -42,18 +65,51 @@ def load_data_file(*args) -> dict:
     fname = "/".join(["data", *args])
     return json.loads(pkgutil.get_data(__name__, fname).decode())
 
+def parse_requirement(obj: dict) -> Requirement:
+    t = obj["type"]  # required
+    if t == "items":
+        return ItemsReq(
+            any_of=obj.get("any_of", []),
+            all_of=obj.get("all_of", []),
+        )
+    if t == "research":
+        cost = obj.get("cost", 0)
+        if not isinstance(cost, int) or cost < 0:
+            raise ValueError(f"Invalid research cost: {cost!r}")
+        return ResearchReq(cost=cost)
+    if t == "catch_type":
+        return CatchTypeReq(value=obj["value"])
+    if t == "iron_rig_phase":
+        value = obj["value"]
+        if value not in (0, 1, 2, 3, 4, 5):
+            raise ValueError(f"Invalid iron_rig_phase value: {value!r}")
+        return IronRigPhaseReq(value=value)
+    raise ValueError(f"Unknown requirement type: {t!r} ({obj})")
+
+
+def parse_requirements(raw) -> list[Requirement]:
+    # If you want to allow omission of the key:
+    if raw is None:
+        return []
+
+    if not isinstance(raw, list):
+        raise TypeError(
+            f"`requirement` must be a list of objects, got {type(raw).__name__}: {raw!r}"
+        )
+
+    return [parse_requirement(r) for r in raw]
+
 location_table = {
     name: DREDGELocationData(
         base_id_offset=entry["base_id_offset"],
         region=entry["region"],
         location_group=entry["location_group"],
         expansion=entry["expansion"],
-        requirement=entry.get("requirement", ""),
+        requirements=parse_requirements(entry.get("requirements")),
         can_catch_rod=entry.get("can_catch_rod", True),
         can_catch_net=entry.get("can_catch_net", False),
         progress_type=entry.get("progress_type", LPT.DEFAULT),
-        is_aberration=entry.get("is_aberration", False),
-        iron_rig_phase=entry.get("iron_rig_phase", 0),
+        is_aberration=entry.get("is_aberration", False)
     )
     for name, entry in load_data_file("locations.json").items()
 }
@@ -92,8 +148,6 @@ def get_player_location_table(options: DREDGEOptions) -> Dict[str, bool]:
 
 LOCATION_NAME_GROUPS: Dict[str, Set[str]] = {}
 for loc_name, loc_data in location_table.items():
-    loc_group_name = loc_name.split(" - ", 1)[0]
-    LOCATION_NAME_GROUPS.setdefault(loc_group_name, set()).add(loc_name)
     if loc_data.location_group:
         LOCATION_NAME_GROUPS.setdefault(loc_data.location_group, set()).add(loc_name)
 
@@ -109,7 +163,13 @@ def create_locations(world: DREDGEWorld) -> None:
         if is_aberration and not world.options.include_aberrations:
             location.progress_type = LPT.EXCLUDED
         region.locations.append(location)
+        if location_table[location_name].location_group == "Research Unlock":
+            add_research_unlock_item(world, location)
 
 def create_victory_event_location(world: DREDGEWorld) -> None:
     victory_region = world.get_region("Insanity")
     victory_region.add_event("The Collector", "Victory", location_type=DREDGELocation, item_type=items.DREDGEItem)
+
+def add_research_unlock_item(world: DREDGEWorld, location: DREDGELocation) -> None:
+    research_unlock_item = world.create_item(location.name)
+    location.place_locked_item(research_unlock_item)

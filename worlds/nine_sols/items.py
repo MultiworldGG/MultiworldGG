@@ -1,3 +1,4 @@
+import json
 import typing
 from typing import NamedTuple
 
@@ -17,20 +18,10 @@ class NineSolsItem(Item):
 class NineSolsItemData(NamedTuple):
     name: str = None
     code: int | None = None
-    type: str = None
+    type: str | typing.Any = None
     category: str | None = None
+    count: int | typing.Any = 1
 
-
-item_types_default_map = {
-    "progression": ItemClassification.progression,
-    "useful": ItemClassification.useful,
-    "filler": ItemClassification.filler,
-    "trap": ItemClassification.trap,
-    "progression_skip_balancing": ItemClassification.progression_skip_balancing,
-    # most of our skip_balancing/deprioritized use cases are just "low value" progression where both flags make sense
-    "weak_progression": ItemClassification.progression_deprioritized_skip_balancing,
-    "progression_if_medium_logic": ItemClassification.useful,
-}
 
 item_data_table: dict[str, NineSolsItemData] = {}
 for items_data_entry in items_data:
@@ -39,6 +30,7 @@ for items_data_entry in items_data:
         code=(items_data_entry["code"] if "code" in items_data_entry else None),
         type=items_data_entry["type"],
         category=(items_data_entry["category"] if "category" in items_data_entry else None),
+        count=(items_data_entry["count"] if "count" in items_data_entry else 1),
     )
 
 all_non_event_items_table = {name: data.code for name, data in item_data_table.items() if data.code is not None}
@@ -46,7 +38,7 @@ all_non_event_items_table = {name: data.code for name, data in item_data_table.i
 item_names: set[str] = set(entry["name"] for entry in items_data)
 
 prog_items = set(entry["name"] for entry in items_data
-                 if "progression" in entry["type"] and entry["code"] is not None)
+                 if "progression" in str(entry["type"]) and entry["code"] is not None)
 
 arrow_items = set(entry["name"] for entry in items_data
                  if entry["name"].startswith("Arrow: "))
@@ -67,6 +59,7 @@ item_name_groups = {
     "Recyclables": set(entry["name"] for entry in items_data if entry["name"].startswith("(Recyclable) ")),
     "Poisons": set(entry["name"] for entry in items_data if entry["name"].startswith("(Poison) ")),
     "Database Entries": set(entry["name"] for entry in items_data if entry["name"].startswith("(Database) ")),
+    "Root Nodes": set(entry["name"] for entry in items_data if entry["name"].endswith(" Root Node")),
 
     "Arrows": arrow_items,
     "Azure Bow": arrow_items,
@@ -75,14 +68,24 @@ item_name_groups = {
 
 def get_item_classification(name: str, world: "NineSolsWorld") -> ItemClassification:
     item_type = item_data_table[name].type
-    classification = item_types_default_map[item_type]
 
-    if item_type == "progression_if_medium_logic":
-        classification = ItemClassification.useful
-        if world.options.logic_difficulty >= LogicDifficulty.option_medium or world.using_ut:
-            classification = ItemClassification.progression
+    while isinstance(item_type, dict):
+        option_name = item_type["option"]
+        option_str_value = getattr(world.options, option_name).current_key
+        if option_str_value in item_type:
+            item_type = item_type[option_str_value]
+        elif "default" in item_type:
+            item_type = item_type["default"]
+        else:
+            raise ValueError(f"Item type {item_type} could not be evaluated for {option_name}->{option_str_value}")
 
-    return classification
+    if isinstance(item_type, str):
+        # most of our skip_balancing/deprioritized use cases are just "low value" progression where both flags make sense
+        if item_type == "weak_progression":
+            return ItemClassification.progression_deprioritized_skip_balancing
+        return ItemClassification[item_type]
+    else:
+        raise ValueError(f"Unknown item type: {item_type}")
 
 
 def create_item(world: "NineSolsWorld", name: str) -> NineSolsItem:
@@ -90,18 +93,6 @@ def create_item(world: "NineSolsWorld", name: str) -> NineSolsItem:
         return NineSolsItem(name, ItemClassification.progression, None, world.player)
     return NineSolsItem(name, get_item_classification(name, world), item_data_table[name].code, world.player)
 
-
-# All progression and useful item types have a hardcoded number of instances regardless of options.
-# It's almost always 1, so we only have to write down the number in this map when it's not 1.
-repeated_prog_useful_items = {
-    "Herb Catalyst": 8,
-    "Pipe Vial": 2,  # with shop items, 5(???)
-    "Tao Fruit": 13,
-    "Greater Tao Fruit": 4,
-    "Computing Unit": 4,  # with shop items, 8
-    "Dark Steel": 6,
-    "(Artifact) GM Fertilizer": 2,
-}
 
 # I doubt I counted these correctly, but they should be close enough to "feel right".
 repeatable_filler_weights = {
@@ -131,6 +122,8 @@ def create_items(world: "NineSolsWorld") -> None:
             multiworld.get_location(name, player).place_locked_item(create_item(world, name))
         elif name.startswith("Seal of ") and not options.shuffle_sol_seals:
             continue  # we'll place these as a group later
+        elif name.endswith(" Root Node"):
+            continue  # handled by the node_items code
         elif name == "Grapple":
             if options.shuffle_grapple:
                 g = create_item(world, name)
@@ -159,10 +152,15 @@ def create_items(world: "NineSolsWorld") -> None:
             if name not in repeatable_filler_weights:
                 unique_filler.append(create_item(world, name))
         elif classification != ItemClassification.trap:
-            instances = 1
-            if name in repeated_prog_useful_items:
-                instances = repeated_prog_useful_items[name]
-            for _ in range(0, instances):
+            count = item.count
+            if isinstance(count, dict):
+                if "option" in count:
+                    option_name = count["option"]
+                    option_str_value = getattr(options, option_name).current_key
+                    count = count[option_str_value]
+                else:
+                    raise ValueError("Unable to evaluate item count: " + json.dumps(count))
+            for _ in range(0, count):
                 prog_and_useful_items.append(create_item(world, name))
 
     if not options.shuffle_sol_seals:
@@ -177,6 +175,10 @@ def create_items(world: "NineSolsWorld") -> None:
             ["Nuwa's Vital Sanctum", "Seal of Nuwa"],
         ]:
             multiworld.get_location(location, player).place_locked_item(create_item(world, item))
+
+    if world.node_items:
+        for item_name in world.node_items:
+            prog_and_useful_items.append(create_item(world, item_name))
 
     # unique_filler_with_traps = unique_filler
 

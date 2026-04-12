@@ -9,6 +9,7 @@ from Utils import visualize_regions
 from worlds.AutoWorld import World, WebWorld
 from . import Options
 from .OptionGroups import lunacid_option_groups
+from .Tracker import disconnect_entrances, reconnect_found_entrance
 from .data.enemy_positions import (base_enemy_placement, EnemyPlacement, construct_flag_data_for_mod,
                                    construct_enemy_dictionary)
 from .data.location_data import grass_location_names, breakable_location_names
@@ -41,6 +42,16 @@ class LunacidItem(Item):
     game: str = "Lunacid"
 
 
+#class LunacidSettings(Group):
+
+    #class UTPoptrackerPath(FilePath):
+    #    """Path to the user's Lunacid's Poptracker Pack."""
+    #    description = "Lunacid's Poptracker Pack zip file"
+    #    required = False
+
+    #ut_poptracker_path: UTPoptrackerPath | str = UTPoptrackerPath()
+
+
 class LunacidWeb(WebWorld):
     theme = "partyTime"
     tutorials = [Tutorial(
@@ -49,7 +60,7 @@ class LunacidWeb(WebWorld):
         "English",
         "setup_en.md",
         "setup/en",
-        ["Albrekka", "Tesseract (Advice/Direction)", "Scipio (UT Help)", "Miracee (Tracker)"]
+        ["Albrekka", "Tesseract (Advice/Direction)", "Scipio (UT Help)", "Miracee/Scipio (Tracker)"]
     )]
 
 
@@ -105,6 +116,7 @@ class LunacidWorld(World):
     local_alchemy: List[Item] = []
     local_filler: List[Item] = []
     locations_for_filler: List[Location] = []
+    #settings: ClassVar[LunacidSettings]
     weapon_elements: Dict[str, str] = {}
     world_entrances = dict[str, Entrance]
     randomized_entrances: Dict[str, str] = {}
@@ -119,15 +131,18 @@ class LunacidWorld(World):
     glitches_item_name = "Glitched Item"
 
     passthrough: Dict[str, Any]
-    using_ut: bool
+    using_ut: bool = False
     tracker_world: ClassVar = Tracker.TRACKER_WORLD
     ut_can_gen_without_yaml = True  # class var that tells it to ignore the player yaml
+    disconnected_entrances: dict[Entrance, Region]
+    found_entrances_datastorage_key = "Slot:{player}:TraversedEntrances"
 
     def __init__(self, multiworld, player):
         super(LunacidWorld, self).__init__(multiworld, player)
         slot_data = getattr(multiworld, "re_gen_passthrough", {}).get("Lunacid")
         if slot_data:
             self.seed = slot_data.get("ut_seed")
+            self.using_ut = True
         else:
             self.seed = self.random.getrandbits(64)
         self.random = Random(self.seed)
@@ -136,16 +151,17 @@ class LunacidWorld(World):
         self.custom_class_stats = {}
 
     def generate_early(self) -> None:
+        Tracker.setup_options_from_slot_data(self)
         self.package_custom_class()
         self.level = self.determine_starting_level()
-        self.verify_item_colors()
         self.enemy_random_data, enemy_regions = self.randomize_enemies()
         slot_data = getattr(self.multiworld, "re_gen_passthrough", {}).get("Lunacid")
         if slot_data:
             self.enemy_regions = slot_data.get("enemy_regions")
         else:
             self.enemy_regions = enemy_regions
-        Tracker.setup_options_from_slot_data(self)
+        if self.options.challenges == self.options.challenges.option_exp:
+            self.options.levelsanity.value = self.options.levelsanity.option_false
 
     def create_item(self, name: str, override_classification: ItemClassification = None) -> "LunacidItem":
         if name == self.glitches_item_name:
@@ -164,6 +180,9 @@ class LunacidWorld(World):
         return self.random.choice(all_filler_items)
 
     def set_rules(self):
+        if self.options.challenges == self.options.challenges.option_logic:
+            logger.info(f"WARNING: Player {self.player} has chosen NO LOGIC for Lunacid.  If not intended reroll and smack them.")
+            return
         LunacidRules(self).set_lunacid_rules(self.weapon_elements, self.enemy_regions)
 
     def create_items(self):
@@ -205,10 +224,10 @@ class LunacidWorld(World):
 
         if self.options.etnas_pupil and self.options.dropsanity == self.options.dropsanity.option_randomized:
             alchemy_items = []
-            for alchemy_item in Alchemy.necessary_alchemy_items:
-                alchemy_items.append(Item(alchemy_item, ItemClassification.progression | ItemClassification.useful,
-                                          self.item_name_to_id[alchemy_item], self.player))
-            alchemy_items *= 5  # make sure there's enough of them to go around
+            for _ in range(5):  # make sure there's enough of them to go around
+                for alchemy_item in Alchemy.necessary_alchemy_items:
+                    alchemy_items.append(Item(alchemy_item, ItemClassification.progression | ItemClassification.useful,
+                                              self.item_name_to_id[alchemy_item], self.player))
             self.local_alchemy = alchemy_items
 
         if self.multiworld.players == 1:
@@ -288,8 +307,15 @@ class LunacidWorld(World):
 
                     e_dict[connection].connected_region = e_dict[entrances[connection]].parent_region
                 self.randomized_entrances = slot_data["entrances"]
+            if self.using_ut and self.multiworld.enforce_deferred_connections in ("on", "default"):
+                disconnect_entrances(self)
         # self.visualize_regions()
         # hi = True
+
+    def reconnect_found_entrances(self, found_key: str, data_storage_value: Any) -> None:
+        if not data_storage_value:
+            return
+        reconnect_found_entrance(self, data_storage_value)
 
     def visualize_regions(self):
         multiworld = self.multiworld
@@ -361,23 +387,6 @@ class LunacidWorld(World):
             return self.custom_class_stats["Level"]
         return -1
 
-    def verify_item_colors(self) -> None:
-        self.fix_colors("ProgUseful", DefaultColors.progression)
-        self.fix_colors("Progression", DefaultColors.progression)
-        self.fix_colors("Useful", DefaultColors.useful)
-        self.fix_colors("Trap", DefaultColors.trap)
-        self.fix_colors("Filler", DefaultColors.filler)
-        self.fix_colors("Gift", DefaultColors.gift)
-        self.fix_colors("Cheat", DefaultColors.cheat)
-
-    def fix_colors(self, name: str, default_color: str) -> None:
-        if name not in self.options.item_colors:
-            self.options.item_colors.value[name] = default_color
-        elif not self.is_hex(self.options.item_colors.value[name]):
-            self.options.item_colors.value[name] = default_color
-        elif "#" not in self.options.item_colors.value[name]:
-            self.options.item_colors.value[name] = "#" + self.options.item_colors.value[name]
-
     @staticmethod
     def total_points_given_starting_level(starting_level: int):
         if starting_level <= 5:
@@ -386,18 +395,6 @@ class LunacidWorld(World):
             return 300 - 4 * starting_level
         else:
             return 200 - 2 * starting_level
-
-    @staticmethod
-    def is_hex(possible_hex: str) -> bool:
-        pure_hex = possible_hex.replace("#", "")
-        # We sin in this bitch
-        try:
-            if len(pure_hex) != 6:
-                return False
-            int(pure_hex, 16)
-            return True
-        except ValueError:
-            return False
 
     def randomize_enemies(self) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
         chosen_enemies = []
@@ -491,35 +488,47 @@ class LunacidWorld(World):
             self.multiworld.spoiler.set_entrance(original_entrance, replaced_entrance, "entrance", self.player)
 
     def important_item_locations(self):
-        item_spots = {}
-        location_info = [self.multiworld.player_name[data.player] + "'s " + data.name
-                         for data in self.multiworld.find_item_locations(Progressives.vampiric_symbol, self.player)]
-        item_spots[Progressives.vampiric_symbol] = location_info
-        location_info = [self.multiworld.player_name[data.player] + "'s " + data.name
+        item_spots: Dict[str, List[List[str]]] = {}
+        if self.options.progressive_symbols:
+            location_info = [[self.multiworld.player_name[data.player] + "'s " + data.name, data.player, data.address]
+                            for data in self.multiworld.find_item_locations(Progressives.vampiric_symbol, self.player)]
+            item_spots[Progressives.vampiric_symbol] = location_info
+        else:
+            location_info = [[self.multiworld.player_name[data.player] + "'s " + data.name, data.player, data.address] for data in self.multiworld.find_item_locations(
+                UniqueItem.vampiric_symbol_w, self.player)]
+            item_spots[UniqueItem.vampiric_symbol_w] = location_info
+            location_info = [[self.multiworld.player_name[data.player] + "'s " + data.name, data.player, data.address] for data in self.multiworld.find_item_locations(
+                UniqueItem.vampiric_symbol_a, self.player)]
+            item_spots[UniqueItem.vampiric_symbol_a] = location_info
+            location_info = [[self.multiworld.player_name[data.player] + "'s " + data.name, data.player, data.address] for data in self.multiworld.find_item_locations(
+                UniqueItem.vampiric_symbol_e, self.player)]
+            item_spots[UniqueItem.vampiric_symbol_e] = location_info
+
+        location_info = [[self.multiworld.player_name[data.player] + "'s " + data.name, data.player, data.address]
                          for data in self.multiworld.find_item_locations(Weapon.lucid_blade, self.player)]
         item_spots[Weapon.lucid_blade] = location_info
         for item in UniqueItem.completion_important:
-            location_info = [self.multiworld.player_name[data.player] + "'s " + data.name
+            location_info = [[self.multiworld.player_name[data.player] + "'s " + data.name, data.player, data.address]
                              for data in self.multiworld.find_item_locations(item, self.player)]
             item_spots[item] = location_info
         if self.options.door_locks == self.options.door_locks.option_true:
             for key in Door.all_door_keys:
-                location_info = [self.multiworld.player_name[data.player] + "'s " + data.name
+                location_info = [[self.multiworld.player_name[data.player] + "'s " + data.name, data.player, data.address]
                                  for data in self.multiworld.find_item_locations(key, self.player)]
                 item_spots[key] = location_info
         if self.options.switch_locks == self.options.switch_locks.option_true:
             for key in Switch.switches:
-                location_info = [self.multiworld.player_name[data.player] + "'s " + data.name
+                location_info = [[self.multiworld.player_name[data.player] + "'s " + data.name, data.player, data.address]
                                  for data in self.multiworld.find_item_locations(key, self.player)]
                 item_spots[key] = location_info
         if self.options.ending == self.options.ending.option_ending_e:
             for spell in Spell.base_spells:
-                location_info = [self.multiworld.player_name[data.player] + "'s " + data.name
+                location_info = [[self.multiworld.player_name[data.player] + "'s " + data.name, data.player, data.address]
                                  for data in self.multiworld.find_item_locations(spell, self.player)]
                 item_spots[spell] = location_info
             if self.options.dropsanity != self.options.dropsanity.option_off:
                 for spell in MobSpell.drop_spells:
-                    location_info = [self.multiworld.player_name[data.player] + "'s " + data.name
+                    location_info = [[self.multiworld.player_name[data.player] + "'s " + data.name, data.player, data.address]
                                      for data in self.multiworld.find_item_locations(spell, self.player)]
                     item_spots[spell] = location_info
         return item_spots
@@ -529,7 +538,7 @@ class LunacidWorld(World):
         slot_data = {
             "ut_seed": self.seed,
             "seed": self.random.randrange(1000000000),  # Seed should be max 9 digits
-            "client_version": "0.9.9",
+            "client_version": "1.0.9",
             "rolled_month": self.rolled_month,
             "starting_weapon": self.starting_weapon.name,
             "elements": self.weapon_elements,
@@ -539,12 +548,14 @@ class LunacidWorld(World):
             "enemy_placement": self.enemy_random_data,
             "item_spots": item_spots,
             "enemy_regions": self.enemy_regions,
-            **self.options.as_dict("ending", "entrance_randomization", "experience", "weapon_experience",
+            "force_no_exp": self.options.challenges == self.options.challenges.option_exp,
+            **self.options.as_dict("ending", "entrance_randomization",
                                    "required_strange_coin", "enemy_randomization", "shopsanity", "dropsanity",
                                    "quenchsanity", "etnas_pupil", "switch_locks", "door_locks", "random_elements",
-                                   "secret_door_lock", "death_link", "starting_class", "normalized_drops",
-                                   "item_colors", "custom_music", "starting_area", "levelsanity", "bookworm",
-                                   "grasssanity", "breakables", "total_strange_coin"),
+                                   "secret_door_lock", "death_link", "starting_class",
+                                   "starting_area", "levelsanity", "bookworm",
+                                   "grasssanity", "breakables", "total_strange_coin", "random_equip_stats", "silver_link",
+                                   "challenges", "tricks_and_glitches"),
             "entrances": self.randomized_entrances
         }
 

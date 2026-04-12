@@ -1,25 +1,47 @@
+from enum import StrEnum
 import itertools
 import typing
 from pathlib import Path
-from collections import Counter
 from typing import Any, ClassVar, Dict, List, Optional
 import settings
 
 from BaseClasses import CollectionState, Item, ItemClassification, MultiWorld, Tutorial
 from Fill import fill_restrictive
+from Options import Option
 from worlds.AutoWorld import WebWorld, World
 
-from .client import MZMClient
+from .client import MZMClient as MZMClient  # Fix unused import warning
 from .items import item_data_table, major_item_data_table, mzm_item_name_groups, MZMItem
 from .locations import full_location_table, location_count, mzm_location_name_groups
-from .options import FullyPoweredSuit, Goal, LayoutPatches, MZMOptions, MorphBallPlacement, SpringBall, mzm_option_groups, \
-    CombatLogicDifficulty, GameDifficulty, WallJumps, LogicDifficulty, HazardRuns
-from .patch import MZMProcedurePatch, write_json_data
+from .options import (
+    FullyPoweredSuit,
+    Goal,
+    LayoutPatches,
+    MZMOptions,
+    MorphBallPlacement,
+    SpringBall,
+    mzm_option_groups,
+    CombatLogicDifficulty,
+    GameDifficulty,
+    WallJumps,
+    LogicDifficulty,
+    HazardRuns,
+)
+from .patch import DIFFICULTY_TO_CONFIG_NAME, GOAL_TO_CONFIG_NAME, MZMProcedurePatch, write_json_data
 from .patcher import MD5_US, MD5_US_VC
 from .patcher.layout_patches import LAYOUT_PATCH_MAPPING
 from .regions import create_regions_and_connections
 from .rules import set_location_rules
-from .tricks import tricks_normal, tricks_advanced, tricky_shinesparks, hazard_runs_normal, hazard_runs_minimal
+from .tricks import (
+    tricks_normal,
+    tricks_advanced,
+    tricks_ludicrous,
+    tricky_shinesparks,
+    hazard_runs_normal,
+    hazard_runs_minimal,
+    trick_groups,
+    all_tricks
+)
 
 
 class MZMSettings(settings.Group):
@@ -35,8 +57,23 @@ class MZMSettings(settings.Group):
         Set it to true to have the operating system default program open the rom
         Alternatively, set it to a path to a program to open the .gba file with
         """
+
+    class TrackerSettings(settings.Group):
+        class TrickLogic(StrEnum):
+            """
+            Controls what tricks will show as Glitched accessible in Universal Tracker.
+            Set this to "next_level" to show locations reachable with tricks set one
+            level above the selected difficulty. Set it to "all" to show locations
+            reachable with any tricks that aren't already in logic.
+            """
+            NEXT_LEVEL = "next_level"
+            ALL = "all"
+
+        show_tricks: TrickLogic = TrickLogic.NEXT_LEVEL
+
     rom_file: RomFile = RomFile(RomFile.copy_to)
     rom_start: typing.Union[RomStart, bool] = True
+    universal_tracker_setings: TrackerSettings = TrackerSettings()
 
 class MZMWeb(WebWorld):
     theme = "ice"
@@ -59,7 +96,7 @@ class MZMWorld(World):
     new areas, items, enemies, and story! Logic based on Metroid: Zero Mission Randomizer by Biosp4rk and Dragonfangs,
     used with permission.
     """
-    game: str = "Metroid Zero Mission"
+    game: str = "Metroid: Zero Mission"
     options_dataclass = MZMOptions
     options: MZMOptions
     topology_present = True
@@ -82,20 +119,26 @@ class MZMWorld(World):
 
     enabled_layout_patches: list[str]
     trick_allow_list: list[str]
+    sequence_break_tricks: list[str]
 
     junk_fill_items: list[str]
     junk_fill_cdf: list[int]
 
     def generate_early(self):
+        if self.is_universal_tracker():
+            self.set_options_from_slot_data()
+
         self.starting_items = []
         self.locked_items = []
         self.pre_fill_items = []
         self.removed_items = []
+        if not self.options.junk_fill_weights.value:
+            self.options.junk_fill_weights.value = self.options.junk_fill_weights.default
         self.junk_fill_items = list(self.options.junk_fill_weights.value.keys())
         self.junk_fill_cdf = list(itertools.accumulate(self.options.junk_fill_weights.value.values()))
 
         if self.options.metroid_dna_available.value < self.options.metroid_dna_required.value:
-            self.options.metroid_dna_available = self.options.metroid_dna_required
+            self.options.metroid_dna_available.value = self.options.metroid_dna_required.value
 
         if self.options.layout_patches.value == LayoutPatches.option_true:
             self.enabled_layout_patches = list(LAYOUT_PATCH_MAPPING.keys())
@@ -104,28 +147,61 @@ class MZMWorld(World):
         else:
             self.enabled_layout_patches = []
 
-        if self.options.logic_difficulty.value == LogicDifficulty.option_normal:
-            self.trick_allow_list = list(tricks_normal.keys())
-        elif self.options.logic_difficulty.value == LogicDifficulty.option_advanced:
-            self.trick_allow_list = list(tricks_normal.keys())
-            self.trick_allow_list.extend(tricks_advanced.keys())
+        allowed_tricks = set()
+        if self.settings.universal_tracker_setings.show_tricks == MZMSettings.TrackerSettings.TrickLogic.ALL:
+            sequence_break_tricks = set(all_tricks.keys())
         else:
-            self.trick_allow_list = []
+            sequence_break_tricks = set()
 
-        if self.options.hazard_runs == HazardRuns.option_normal:
-            self.trick_allow_list.extend(hazard_runs_normal.keys())
-        elif self.options.hazard_runs == HazardRuns.option_minimal:
-            self.trick_allow_list.extend(hazard_runs_minimal.keys())
+        match self.options.logic_difficulty.value:
+            case LogicDifficulty.option_simple:
+                sequence_break_tricks.update(tricks_normal.keys())
+            case LogicDifficulty.option_normal:
+                allowed_tricks.update(tricks_normal.keys())
+                sequence_break_tricks.update(tricks_advanced.keys())
+                sequence_break_tricks.update(tricky_shinesparks.keys())
+            case LogicDifficulty.option_advanced:
+                allowed_tricks.update(tricks_normal.keys())
+                allowed_tricks.update(tricks_advanced.keys())
+                sequence_break_tricks.update(tricky_shinesparks.keys())
+                sequence_break_tricks.update(tricks_ludicrous.keys())
+
+        match self.options.hazard_runs.value:
+            case HazardRuns.option_disabled:
+                if self.options.logic_difficulty.value != LogicDifficulty.option_simple:
+                    sequence_break_tricks.update(hazard_runs_normal.keys())
+            case HazardRuns.option_normal:
+                allowed_tricks.update(hazard_runs_normal.keys())
+                sequence_break_tricks.update(hazard_runs_minimal.keys())
+            case HazardRuns.option_minimal:
+                allowed_tricks.update(hazard_runs_minimal.keys())
 
         if self.options.tricky_shinesparks.value:
-            self.trick_allow_list.extend(tricky_shinesparks.keys())
+            allowed_tricks.update(tricky_shinesparks.keys())
 
         for allowed_trick in self.options.tricks_allowed.value:
-            self.trick_allow_list.append(allowed_trick)
+            if allowed_trick in trick_groups:
+                allowed_tricks.update(trick_groups[allowed_trick])
+            else:
+                allowed_tricks.add(allowed_trick)
+
+        denied_tricks = set()
         for denied_trick in self.options.tricks_denied.value:
-            # If a player has put the same trick in both allow and deny, the trick will not be used
-            if denied_trick in self.trick_allow_list:
-                self.trick_allow_list.remove(denied_trick)
+            if denied_trick in trick_groups:
+                denied_tricks.update(trick_groups[denied_trick])
+            else:
+                denied_tricks.add(denied_trick)
+
+        # If a player has put the same trick in both allow and deny, the trick will be out of logic but shown in UT
+        # If the trick is only denied, then remove it from sequence break logic
+        denied_allowed_tricks = denied_tricks.intersection(allowed_tricks)
+        allowed_tricks.difference_update(denied_tricks)
+        sequence_break_tricks.difference_update(allowed_tricks)
+        sequence_break_tricks.difference_update(denied_tricks)
+        sequence_break_tricks.update(denied_allowed_tricks)
+
+        self.trick_allow_list = sorted(allowed_tricks)
+        self.sequence_break_tricks = sorted(sequence_break_tricks)
 
         if "Morph Ball" in self.options.start_inventory_from_pool:
             self.options.morph_ball = MorphBallPlacement(MorphBallPlacement.option_normal)
@@ -245,7 +321,7 @@ class MZMWorld(World):
             multiworld.random.shuffle(locations)
             fill_restrictive(multiworld, all_state, locations, items,
                              single_player_placement=True, lock=True, allow_partial=False, allow_excluded=True,
-                             name='Metroid Zero Mission Early Morph Balls')
+                             name='Metroid: Zero Mission Early Morph Balls')
 
     def generate_output(self, output_directory: str):
         output_path = Path(output_directory)
@@ -257,11 +333,14 @@ class MZMWorld(World):
         patch.write(output_path / f"{output_filename}{patch.patch_file_ending}")
 
     def fill_slot_data(self) -> Dict[str, Any]:
+        # Using names for backwards compatibility with PopTracker pack. This will be removed next major version.
         return {
-            "goal": self.options.goal.value,
+            "goal": GOAL_TO_CONFIG_NAME[self.options.goal.value],
             "metroid_dna_required": self.options.metroid_dna_required.value,
-            "game_difficulty": self.options.game_difficulty.value,
-            "unknown_items_usable": self.options.fully_powered_suit.to_slot_data(),
+            "metroid_dna_available": self.options.metroid_dna_available.value,
+            "game_difficulty": DIFFICULTY_TO_CONFIG_NAME[self.options.game_difficulty.value],
+            "unknown_items_usable": self.options.fully_powered_suit.to_slot_data(),  # Backwards compatibility
+            "fully_powered_suit": self.options.fully_powered_suit.value,
             "walljumps": self.options.walljumps.value,
             "spring_ball": self.options.spring_ball.value,
             "layout_patches": self.options.layout_patches.value,
@@ -279,9 +358,12 @@ class MZMWorld(World):
         }
 
     def get_filler_item_name(self) -> str:
-        return self.multiworld.random.choices(self.junk_fill_items, cum_weights=self.junk_fill_cdf)[0]
+        return self.random.choices(self.junk_fill_items, cum_weights=self.junk_fill_cdf)[0]
 
     def create_item(self, name: str, force_classification: Optional[ItemClassification] = None) -> MZMItem:
+        if self.is_universal_tracker() and name == self.glitches_item_name:
+            return MZMItem(name, ItemClassification.progression, None, self.player)
+
         return MZMItem(name,
                        force_classification if force_classification is not None else item_data_table[name].progression,
                        self.item_name_to_id[name],
@@ -330,3 +412,48 @@ class MZMWorld(World):
         assert location.address is None
         location.place_locked_item(item)
         location.show_in_spoiler = True
+
+    # UT integration
+
+    ut_can_gen_without_yaml = True
+    glitches_item_name = "SEQUENCE BREAKS"
+
+    def is_universal_tracker(self):
+        return hasattr(self.multiworld, "generation_is_fake")
+
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str, Any]):
+        # Trigger a re-gen instead
+        return slot_data
+
+    def set_options_from_slot_data(self):
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if not re_gen_passthrough or self.game not in re_gen_passthrough:
+            return
+        slot_data: dict[str, Any] = re_gen_passthrough[self.game]
+
+        def set_option(option_name: str):
+            if option_name is None:
+                option_name = option_name
+            option: Option | None = getattr(self.options, option_name, None)
+            value = slot_data.get(option_name)
+            if option is not None and value is not None:
+                setattr(self.options, option_name, option.from_any(value))
+
+        set_option("goal")
+        set_option("metroid_dna_required")
+        set_option("game_difficulty")
+        set_option("fully_powered_suit")
+        set_option("walljumps")
+        set_option("spring_ball")
+        set_option("layout_patches")
+        set_option("selected_patches")
+        set_option("logic_difficulty")
+        set_option("combat_logic_difficulty")
+        set_option("ibj_in_logic")
+        set_option("hazard_runs")
+        set_option("tricks_allowed")
+        set_option("tricks_denied")
+        set_option("tricky_shinesparks")
+        set_option("chozodia_access")
+

@@ -287,7 +287,7 @@ location_gsw_info = {
     78780292: (GSWType.GSWF, 2521, 1),
     78780293: (GSWType.GSWF, 5547, 1),
     78780294: (GSWType.GSWF, 5626, 1),
-    78780295: (GSWType.GSWF, 2378, 1),
+    78780295: (GSWType.GSW, 1703, 14),
     78780296: (GSWType.GSWF, 2524, 1),
     78780297: (GSWType.GSWF, 6036, 1),
     78780298: (GSWType.GSWF, 6079, 1),
@@ -1079,149 +1079,52 @@ location_to_unit = {
     78780973: [0x94, 0x96, 0x97, 0x98, 0x95]  # Tattle: Shadow Queen -> unit_boss_black_peach
 }
 
-
-limit_one = [
-    # petal_right
-    78780161, 78780162, 78780185, 78780163, 78780164, 78780165, 78780166,
-    78780167, 78780800, 78780801, 78780802, 78780803, 78780169, 78780170,
-    78780171, 78780172, 78780173, 78780174, 78780175, 78780176, 78780177,
-    78780178, 78780179, 78780180, 78780181,
-
-    # petal_left
-    78780182, 78780183, 78780184, 78780186, 78780160, 78780187, 78780188,
-    78780189, 78780190, 78780191,
-
-    # hooktails_castle
-    78780192, 78780193, 78780194, 78780195, 78780196, 78780197, 78780198,
-    78780199, 78780200, 78780201, 78780202, 78780203, 78780204, 78780205,
-    78780206, 78780207, 78780208, 78780210, 78780211, 78780212,
-    78780213, 78780214
-]
-
-limit_two = [
-    # boggly_woods
-    78780215, 78780216, 78780217, 78780218, 78780219, 78780220, 78780221,
-    78780222, 78780223, 78780224, 78780225, 78780226, 78780227, 78780228,
-    78780229, 78780230,
-
-    # great_tree
-    78780231, 78780233, 78780234, 78780235, 78780236, 78780237,
-    78780238, 78780239, 78780240, 78780241, 78780242, 78780243, 78780244,
-    78780245, 78780246, 78780247, 78780248, 78780249, 78780250, 78780251,
-    78780252, 78780253, 78780254, 78780255, 78780256, 78780257, 78780258,
-    78780259, 78780260, 78780261, 78780262, 78780263, 78780264, 78780265,
-    78780266
-]
-
-limit_three = [
-    #glitzville
-    78780267, 78780268, 78780269, 78780270, 78780271, 78780272, 78780273,
-    78780274, 78780275, 78780276, 78780277, 78780278, 78780279, 78780280,
-    78780281, 78780282, 78780283, 78780284, 78780285, 78780286,
-    78780288, 78780289, 78780290, 78780291, 78780292, 78780293, 78780294,
-    78780295, 78780296, 78780297, 78780298, 78780299
-]
-
-limit_four = [
-    # twilight_town
-    78780300, 78780301, 78780302, 78780303, 78780304, 78780305, 78780306,
-    78780307, 78780308, 78780309, 78780310, 78780311, 78780312, 78780313,
-    78780314, 78780315, 78780316, 78780317, 78780318, 78780319, 78780320,
-    78780321, 78780322, 78780323, 78780324,
-
-    # twilight_trail
-    78780325, 78780326, 78780327, 78780328, 78780329, 78780330, 78780331,
-    78780332, 78780333,
-
-    # creepy_steeple
-    78780434, 78780435, 78780436, 78780805, 78780438, 78780439,
-    78780440, 78780441, 78780442, 78780443, 78780444, 78780445, 78780446,
-    78780447, 78780448, 78780449, 78780450, 78780451, 78780452
-]
-
-limit_five = [
-    # keelhaul_key
-    78780453, 78780454, 78780455, 78780456, 78780457, 78780458, 78780459,
-    78780460, 78780806, 78780461, 78780462, 78780463, 78780464, 78780465,
-    78780466, 78780467, 78780468, 78780469, 78780470, 78780471, 78780472,
-    78780473, 78780474, 78780475, 78780476, 78780477, 78780478, 78780479,
-    78780480, 78780481, 78780482, 78780483, 78780484, 78780485, 78780486,
-    78780487, 78780488, 78780489, 78780490, 78780491, 78780492,
-
-    # pirates_grotto
-    78780493, 78780494, 78780495, 78780496, 78780497, 78780498, 78780499,
-    78780500, 78780501, 78780502, 78780503, 78780504, 78780505, 78780506,
-    78780507, 78780508, 78780509, 78780510,
-
-    # Train Ticket
-    78780070
-]
-
-limit_six = [
-    # excess_express
-    78780512, 78780513, 78780514, 78780515, 78780516, 78780517, 78780518,
-    78780519, 78780520, 78780521, 78780522, 78780523, 78780524, 78780525,
-    78780526, 78780527, 78780528, 78780529, 78780530, 78780531, 78780532,
-    78780533, 78780534, 78780535,
-
-    # riverside
-    78780536, 78780537, 78780538, 78780539, 78780540, 78780541, 78780542,
-    78780543, 78780544, 78780545, 78780546, 78780547,
-
-    # poshley_heights
-    78780548, 78780549, 78780550, 78780551, 78780552, 78780553,
-    78780555, 78780556, 78780557, 78780558, 78780559, 78780560
-]
-
-limit_seven = [
-    # fahr_outpost
-    78780561, 78780562, 78780563, 78780564, 78780565, 78780566, 78780567,
-    78780568, 78780569, 78780570, 78780571, 78780572, 78780573, 78780574,
-    78780575, 78780576, 78780577, 78780578,
-
-    # xnaut_fortress
-    78780579, 78780807, 78780580, 78780581, 78780582, 78780583, 78780584,
-    78780585, 78780586, 78780587, 78780588, 78780589, 78780590, 78780591,
-    78780592, 78780593, 78780594, 78780595, 78780596, 78780597, 78780598,
-    78780599, 78780600, 78780601, 78780702, 78780602, 78780603
-]
-
-limit_eight = [
-    # palace
-    78780605, 78780606, 78780607, 78780608, 78780610, 78780611,
-    78780612, 78780613,
-
-    # riddle_tower
-    78780622, 78780623, 78780624, 78780625, 78780627, 78780628,
-    78780630, 78780631, 78780632, 78780633, 78780635,
-    78780636, 78780637
-]
-
 limit_pit = [
     78780638, 78780639, 78780640, 78780641, 78780642, 78780643,
     78780644, 78780645, 78780646, 78780647
 ]
 
-limited_location_ids = [
-    limit_one,
-    limit_two,
-    limit_three,
-    limit_four,
-    limit_five,
-    limit_six,
-    limit_seven,
-    limit_eight,
-]
+limited_tags = {
+    1: ["petal_left", "petal_right", "hooktails_castle"],
+    2: ["boggly_woods", "great_tree"],
+    3: ["glitzville"],
+    4: ["twilight_town", "twilight_trail", "creepy_steeple"],
+    5: ["keelhaul_key", "pirates_grotto"],
+    6: ["excess_express", "riverside", "poshley_heights"],
+    7: ["fahr_outpost", "xnaut_fortress"],
+    8: ["palace", "riddle_tower"]
+}
 
-stars = [
-    "Diamond Star",
-    "Emerald Star",
-    "Gold Star",
-    "Ruby Star",
-    "Sapphire Star",
-    "Garnet Star",
-    "Crystal Star"
-]
+limited_tag_items = {
+    "petal_left": [],
+    "petal_right": ["Sun Stone", "Moon Stone"],
+    "hooktails_castle": ["Castle Key", "Black Key (Paper)"],
+    "boggly_woods": ["Necklace"],
+    "great_tree": ["Red Key", "Blue Key", "Puni Orb"],
+    "glitzville": ["Storage Key 1", "Storage Key 2"],
+    "twilight_town": ["Shop Key", "Superbombomb"],
+    "twilight_trail": [],
+    "creepy_steeple": ["Black Key (Tube)", "Steeple Key",  "The Letter \"p\""],
+    "keelhaul_key": ["Chuckola Cola", "Skull Gem", "Wedding Ring", "Coconut"],
+    "pirates_grotto": ["Gate Handle", "Black Key (Boat)", "Grotto Key"],
+    "excess_express": ["Autograph", "Shell Earrings", "Gold Ring", "Briefcase", "Galley Pot", "Vital Paper", "Blanket", "Ragged Diary"],
+    "riverside": ["Elevator Key (Station)", "Station Key 1", "Station Key 2"],
+    "poshley_heights": [],
+    "fahr_outpost": ["Goldbob Guide"],
+    "xnaut_fortress": ["Elevator Key 1", "Elevator Key 2", "Cog", "Card Key 1", "Card Key 2", "Card Key 3", "Card Key 4"],
+    "palace": [],
+    "riddle_tower": []
+}
+
+stars = {
+    1: "Diamond Star",
+    2: "Emerald Star",
+    3: "Gold Star",
+    4: "Ruby Star",
+    5: "Sapphire Star",
+    6: "Garnet Star",
+    7: "Crystal Star"
+}
 
 star_locations = [
     "Hooktail's Castle Hooktail's Room: Diamond Star",
@@ -1255,15 +1158,26 @@ dazzle_counts = [
     1, 3, 6, 10, 14, 18, 23, 29, 35, 42, 50, 60, 70, 85, 100
 ]
 
-chapter_items = {
-    1: ["Castle Key", "Sun Stone", "Moon Stone", "Black Key (Paper)"],
-    2: ["Puni Orb", "Necklace", "Red Key", "Blue Key"],
-    3: ["Storage Key 1", "Storage Key 2"],
-    4: ["Shop Key", "Black Key (Tube)", "Steeple Key", "The Letter \"p\"", "Superbombomb"],
-    5: ["Chuckola Cola", "Skull Gem", "Gate Handle", "Grotto Key", "Wedding Ring", "Coconut", "Black Key (Boat)"],
-    6: ["Elevator Key (Station)", "Ragged Diary", "Blanket", "Autograph", "Shell Earrings", "Gold Ring", "Briefcase", "Galley Pot", "Vital Paper", "Station Key 1", "Station Key 2"],
-    7: ["Goldbob Guide", "Elevator Key 1", "Elevator Key 2", "Cog", "Card Key 1", "Card Key 2", "Card Key 3", "Card Key 4"],
-    8: ["Palace Key", "Palace Key (Tower)", "Star Key"],
+chapter_keys = {
+    1: ["Black Key (Paper)", "Castle Key"],
+    2: ["Blue Key", "Red Key"],
+    3: ["Storage Key 2", "Storage Key 1"],
+    4: ["Steeple Key", "Black Key (Tube)", "Shop Key"],
+    5: ["Black Key (Boat)", "Grotto Key"],
+    6: ["Elevator Key (Station)", "Station Key 2", "Station Key 1"],
+    7: [ "Card Key 4", "Card Key 3", "Card Key 2", "Card Key 1", "Elevator Key 2", "Elevator Key 1"],
+    8: ["Star Key", "Palace Key (Tower)", "Palace Key"],
+}
+
+chapter_keysanity_tags = {
+    1: "hooktails_castle",
+    2: "great_tree",
+    3: "glitzville",
+    4: "creepy_steeple",
+    5: "pirates_grotto",
+    6: "riverside",
+    7: "xnaut_fortress",
+    8: "palace"
 }
 
 pit_exclusive_tattle_stars_required = {
@@ -1295,13 +1209,6 @@ pit_exclusive_tattle_stars_required = {
         "Tattle: Bob-ulk",
         "Tattle: Bonetail"
     ]
-}
-
-classification_to_color = {
-    ItemClassification.filler: "00d6d6",
-    ItemClassification.useful: "6d8be8",
-    ItemClassification.progression: "af99ef",
-    ItemClassification.trap: "fa8072"
 }
 
 item_classifications: typing.Dict[str, ItemClassification] = {

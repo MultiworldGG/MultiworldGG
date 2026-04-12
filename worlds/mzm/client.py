@@ -159,7 +159,7 @@ class ZMConstants:
 
     # Variable addresses
     gMainGameMode = get_symbol("gMainGameMode")
-    gGameModeSub1 = get_symbol("gGameModeSub1")
+    gSubGameMode1 = get_symbol("gSubGameMode1")
     gPreventMovementTimer = get_symbol("gPreventMovementTimer")
     gDifficulty = get_symbol("gDifficulty")
     gSamusData = get_symbol("gSamusData")
@@ -172,7 +172,7 @@ class ZMConstants:
 
 
 class MZMClient(BizHawkClient):
-    game = "Metroid Zero Mission"
+    game = "Metroid: Zero Mission"
     system = "GBA"
     patch_suffix = ".apmzm"
 
@@ -373,7 +373,7 @@ class MZMClient(BizHawkClient):
                 ))
             await bizhawk.guarded_write(client_ctx.bizhawk_ctx, write_list, [
                 guard16(ZMConstants.gMainGameMode, ZMConstants.GM_INGAME),
-                guard16(ZMConstants.gGameModeSub1, ZMConstants.SUB_GAME_MODE_PLAYING),
+                guard16(ZMConstants.gSubGameMode1, ZMConstants.SUB_GAME_MODE_PLAYING),
                 guard32(get_symbol("gIncomingMessage"), 0),  # Null text data pointer
             ])
         except bizhawk.RequestFailedError:
@@ -547,17 +547,17 @@ class MZMClient(BizHawkClient):
         try:
             read_result = iter(await bizhawk.read(bizhawk_ctx, [
                 read16(ZMConstants.gMainGameMode),
-                read16(ZMConstants.gGameModeSub1),
+                read16(ZMConstants.gSubGameMode1),
             ]))
         except bizhawk.RequestFailedError:
             return
 
         gMainGameMode = next_int(read_result)
-        gGameModeSub1 = next_int(read_result)
+        gSubGameMode1 = next_int(read_result)
 
-        gameplay_state = (gMainGameMode, gGameModeSub1)
+        gameplay_state = (gMainGameMode, gSubGameMode1)
 
-        if not self.is_state_read_safe(gMainGameMode, gGameModeSub1):
+        if not self.is_state_read_safe(gMainGameMode, gSubGameMode1):
             return
 
         await self.send_game_state(client_ctx, gameplay_state)
@@ -573,13 +573,13 @@ class MZMClient(BizHawkClient):
             else:
                 self.death_link.sent_this_death = False
 
-        if not self.is_state_write_safe(gMainGameMode, gGameModeSub1):
+        if not self.is_state_write_safe(gMainGameMode, gSubGameMode1):
             return
 
         guard_list = [
             # Ensure game state hasn't changed
             guard16(ZMConstants.gMainGameMode, gMainGameMode),
-            guard16(ZMConstants.gGameModeSub1, gGameModeSub1),
+            guard16(ZMConstants.gSubGameMode1, gSubGameMode1),
         ]
 
         # Receive death link

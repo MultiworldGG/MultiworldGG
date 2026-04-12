@@ -393,6 +393,7 @@ class ApeEscapeClient(BizHawkClient):
     watercatchState = 0
     bizhawk_itemdisplay = False
     bizhawk_display_set = False
+    MM_Completed = False
     PPM_Completed = False
     gotDatastorage = False
     mailboxTextReplaced = False
@@ -450,6 +451,7 @@ class ApeEscapeClient(BizHawkClient):
         self.gotDatastorage = False
         self.initDatastorage = False
         self.ForceTransition = False
+        self.ChangeRoom = False
         self.ER_phase = 1
         self.allowcollect = 0
         self.forcecollect = False
@@ -859,9 +861,10 @@ class ApeEscapeClient(BizHawkClient):
                 "currentLevel": (RAM.currentLevelAddress, 1, "MainRAM"),  # Current Level
                 "gameRunning": (RAM.gameRunningAddress, 1, "MainRAM"),
                 "jakeVictory": (RAM.jakeVictoryAddress, 1, "MainRAM"), # Jake Races Victory state
-                "transitionPhase": (RAM.transitionPhaseAddress, 1, "MainRAM"),  # Jake Races Victory state
-                "Transition_Screen_Progress": (RAM.Transition_Screen_Progress, 1, "MainRAM"),  # Jake Races Victory state
-                "localLevelState": (RAM.localLevelState, 1, "MainRAM"),  # Jake Races Victory state
+                "transitionPhase": (RAM.transitionPhaseAddress, 1, "MainRAM"),
+                "Transition_Screen_Progress": (RAM.Transition_Screen_Progress, 1, "MainRAM"),
+                "LoadingState": (RAM.LoadingState, 1, "MainRAM"),
+                "localLevelState": (RAM.localLevelState, 1, "MainRAM"),
                 # Locations (Coins, Monkeys, Mailboxes)
                 "previousCoinStateRoom": (self.currentCoinAddress - 2, 1, "MainRAM"),  # Previous Coin State Room
                 "currentCoinStateRoom": (self.currentCoinAddress, 1, "MainRAM"),  # Current New Coin State Room
@@ -904,6 +907,7 @@ class ApeEscapeClient(BizHawkClient):
                 "Spike_X_Pos": (RAM.Spike_X_PosAddress, 4, "MainRAM"),
                 "Spike_Y_Pos": (RAM.Spike_Y_PosAddress, 4, "MainRAM"),
                 "Spike_Z_Pos": (RAM.Spike_Z_PosAddress, 4, "MainRAM"),
+                "Spike_CanMove": (RAM.Spike_CanMove, 1, "MainRAM"),
                 # Gadgets
                 "gadgets": (RAM.unlockedGadgetsAddress, 1, "MainRAM"),  # Gadget unlocked states
                 "gadgetStateFromServer": (RAM.gadgetStateFromServer, 2, "MainRAM"),
@@ -932,6 +936,7 @@ class ApeEscapeClient(BizHawkClient):
                 "GA_Completed": (RAM.GA_CompletedAddress, 1, "MainRAM"),
                 "temp_GA_Completed": (RAM.temp_GA_CompletedAddress, 1, "MainRAM"),
                 "worldIsScrollingRight": (RAM.worldIsScrollingRight, 2, "MainRAM"),
+                "Specter1CompleteAddress": (RAM.Specter1CompleteAddress, 1, "MainRAM"),
                 "Specter2CompleteAddress": (RAM.Specter2CompleteAddress, 1, "MainRAM"),
                 # Water Net
                 "canDive": (RAM.canDiveAddress, 4, "MainRAM"),
@@ -1012,6 +1017,7 @@ class ApeEscapeClient(BizHawkClient):
             jakeVictory = readValues["jakeVictory"]
             transitionPhase = readValues["transitionPhase"]
             Transition_Screen_Progress = readValues["Transition_Screen_Progress"]
+            LoadingState = readValues["LoadingState"]
             localLevelState = readValues["localLevelState"]
             # Locations
             previousCoinStateRoom = readValues["previousCoinStateRoom"]
@@ -1055,6 +1061,7 @@ class ApeEscapeClient(BizHawkClient):
             Spike_X_Pos = readValues["Spike_X_Pos"]
             Spike_Y_Pos = readValues["Spike_Y_Pos"]
             Spike_Z_Pos = readValues["Spike_Z_Pos"]
+            Spike_CanMove = readValues["Spike_CanMove"]
 
             # Gadgets
             gadgets = readValues["gadgets"]
@@ -1085,6 +1092,7 @@ class ApeEscapeClient(BizHawkClient):
             GA_Completed = readValues["GA_Completed"]
             temp_GA_Completed = readValues["temp_GA_Completed"]
             worldIsScrollingRight = readValues["worldIsScrollingRight"]
+            Specter1CompleteAddress = readValues["Specter1CompleteAddress"]
             Specter2CompleteAddress = readValues["Specter2CompleteAddress"]
 
             # Water net shuffle
@@ -1189,11 +1197,22 @@ class ApeEscapeClient(BizHawkClient):
             if MM_Natalie_Rescued > 0x01:
                 MM_Natalie_Rescued = 0
 
+            #if Specter1CompleteAddress == 0:
+                #Specter1CompleteAddress = 0
+                #S1_writes += [(RAM.Specter1CompleteAddress, Specter1CompleteAddress.to_bytes(1, "little"), "MainRAM")]
+                #S1_writes += [(RAM.tempSpecter1CompleteAddress, Specter1CompleteAddress.to_bytes(1, "little"), "MainRAM")]
+                #await bizhawk.write(ctx.bizhawk_ctx, S1_writes)
+
             if Specter2CompleteAddress == 255:
                 Specter2CompleteAddress = 0
                 S2_writes += [(RAM.Specter2CompleteAddress, Specter2CompleteAddress.to_bytes(1, "little"), "MainRAM")]
                 S2_writes += [(RAM.tempSpecter2CompleteAddress, Specter2CompleteAddress.to_bytes(1, "little"), "MainRAM")]
                 await bizhawk.write(ctx.bizhawk_ctx, S2_writes)
+
+            if Specter1CompleteAddress == 0:
+                self.MM_Completed = False
+            else:
+                self.MM_Completed = True
 
             if Specter2CompleteAddress == 0:
                 self.PPM_Completed = False
@@ -1264,12 +1283,9 @@ class ApeEscapeClient(BizHawkClient):
                                     "status": ClientStatus.CLIENT_GOAL
                                 }])
                                 await self.send_bizhawk_message(ctx, "You have completed your goal o[8(|)", "Passthrough", "")
-                        elif (item.item - self.offset) == RAM.items["Victory"]:
-                            await ctx.send_msgs([{
-                                "cmd": "StatusUpdate",
-                                "status": ClientStatus.CLIENT_GOAL
-                            }])
-                            await self.send_bizhawk_message(ctx, "You have completed your goal o[8(|)", "Passthrough", "")
+                                ctx.finished_game = True
+                        #elif (item.item - self.offset) == ["Victory"]:
+                            #pass
                         elif (item.item - self.offset) == RAM.items["WaterNet"]:
                             waternetState = 2
                             watercatchState = 1
@@ -1468,6 +1484,9 @@ class ApeEscapeClient(BizHawkClient):
                 GadgetTrainingsUnlock = 0x8C63FDCC
                 trainingRoomProgress = 0xFF
 
+            InFastTokenWarp = RAM.gameState["TimeStation"] == gameState and boolActivateFastGoalWarp and currentRoom in {83,86,87}
+            if InFastTokenWarp:
+                writes += [(RAM.gameStateAddress, RAM.gameState["InLevel"].to_bytes(1, "little"), "MainRAM")]
             writes += [(RAM.GadgetTrainingsUnlockAddress, GadgetTrainingsUnlock.to_bytes(4, "little"), "MainRAM")]
             writes += [(RAM.trainingRoomProgressAddress, trainingRoomProgress.to_bytes(1, "little"), "MainRAM")]
 
@@ -1517,6 +1536,13 @@ class ApeEscapeClient(BizHawkClient):
                         writes += [(RAM.temp_GA_CompletedAddress, 0x00.to_bytes(1, "little"), "MainRAM")]
                 if localLevelState != 0x00:
                     writes += [(RAM.localLevelState, 0x00.to_bytes(1, "little"), "MainRAM")]
+
+            # Flag to mark MM as completed for goal check if needed
+            if self.MM_Completed == True and Specter1CompleteAddress == 0:
+                Specter1CompleteAddress = 1
+                #print(f"Wrote value to Specter2CompleteAddress : 1")
+                writes += [(RAM.Specter1CompleteAddress, Specter1CompleteAddress.to_bytes(1, "little"), "MainRAM")]
+                writes += [(RAM.tempSpecter1CompleteAddress, Specter1CompleteAddress.to_bytes(1, "little"), "MainRAM")]
 
             # PPM_Completed flag for "100% Complete" label on PPM level
             if self.PPM_Completed == True and Specter2CompleteAddress == 0:
@@ -1653,7 +1679,7 @@ class ApeEscapeClient(BizHawkClient):
 
             # == Entrance Randomization Handling ===
             # For all things related to ER and Room Rando
-            ER_Reads = [gameState, status_currentWorld, status_currentLevel, currentLevel, transitionPhase, Spike_X_Pos, Spike_Y_Pos, Spike_Z_Pos, spikeState2, currentRoom,gameRunning, InputListener,Warp_State,Transition_Screen_Progress]
+            ER_Reads = [gameState, status_currentWorld, status_currentLevel, currentLevel, transitionPhase, Spike_X_Pos, Spike_Y_Pos, Spike_Z_Pos, spikeState2, currentRoom,gameRunning, InputListener,Warp_State,Transition_Screen_Progress,LoadingState,Spike_CanMove]
             await self.ER_Handling(ctx, ER_Reads)
 
 
@@ -2019,7 +2045,7 @@ class ApeEscapeClient(BizHawkClient):
         # Check if in level select or in time hub, then read global monkeys
 
         temp_counter = currentApes
-        if gameState == RAM.gameState["LevelSelect"] or currentLevel == RAM.levels["Time"] or (level == 0x18 and gameState == RAM.gameState["InLevel"]) or self.forcecollect:
+        if gameState == RAM.gameState["LevelSelect"] or currentLevel == RAM.levels["Time"] or (level == 0x18 and gameState == RAM.gameState["InLevel"]) or self.forcecollect and transitionPhase != 0x06:
             for i in range(len(globalMonkeys)):
                 MonkeyID = keyList[i]
                 MonkeyAddress = valList[i]
@@ -2072,10 +2098,13 @@ class ApeEscapeClient(BizHawkClient):
                     GlobalMonkeyAddress = RAM.monkeyListGlobal.get(MonkeyID)
                     iscaughtglobal = int.from_bytes(GlobalIDToValueTable[MonkeyID], byteorder='little') in (RAM.caughtStatus["Caught"],RAM.caughtStatus["PrevCaught"])
                     if inRoom:
-                        iscaughtlocal = int.from_bytes(localmonkeys[x], byteorder='little') in (RAM.caughtStatus["Caught"], RAM.caughtStatus["PrevCaught"])
+                        if transitionPhase != 0x06:
+                            iscaughtlocal = int.from_bytes(localmonkeys[x], byteorder='little') in (RAM.caughtStatus["Caught"], RAM.caughtStatus["PrevCaught"])
+                        else:
+                            iscaughtlocal = False
                         if iscaughtlocal:
                             # If the Monkey is not already in the sent locations list, add it to an array to send location
-                            if (MonkeyID + self.offset) not in self.locations_list and transitionPhase != 0x06 and currentRoom == self.roomglobal:
+                            if (MonkeyID + self.offset) not in self.locations_list and currentRoom == self.roomglobal:
                                 monkeysToSend.add(MonkeyID + self.offset)
                                 locationWrites += [(GlobalMonkeyAddress, 0x02.to_bytes(1, "little"), "MainRAM")]
                                 GlobalIDToValueTable[MonkeyID] = 0x02.to_bytes(1, "little")
@@ -2083,7 +2112,7 @@ class ApeEscapeClient(BizHawkClient):
                         else:
                             if allowcollect:
                                 # If the location ID is in the list and they are not caught, sync them
-                                if (MonkeyID + self.offset) in self.locations_list:
+                                if (MonkeyID + self.offset) in self.locations_list and transitionPhase != 0x06:
                                     #MonkeyID = key_list[x]
                                     MonkeyAddress = val_list[x]
                                     levels_containing_monkey = [level for level, monkeys in RAM.monkeysperlevel.items() if MonkeyID in monkeys]
@@ -2139,7 +2168,7 @@ class ApeEscapeClient(BizHawkClient):
         ClientCoinTable.sort(reverse=True)
 
         # List of coins in the server that the client does not have
-        ServerCoinTable = [(item - self.offset - 300) for item in self.locations_list if (300 < (item - self.offset) <= 382) and (item - self.offset - 300) not in FormattedCoinTable]
+        ServerCoinTable = [(item - self.offset - 300) for item in self.locations_list if (300 < (item - self.offset) <= 385) and (item - self.offset - 300) not in FormattedCoinTable]
         ServerCoinTable.sort(reverse=True)
 
         # Assemble the 2 coin table (Client and MissingFromServer)
@@ -2275,16 +2304,33 @@ class ApeEscapeClient(BizHawkClient):
         # Check for victory conditions
         specter1Condition = (currentRoom == 86 and S1_P2_State == 1 and S1_P2_Life == 0)
         specter2Condition = (currentRoom == 87 and S2_isCaptured == 1)
+        currentgoal = ctx.slot_data["goal"]
         if RAM.gameState["InLevel"] == gameState and specter1Condition:
             bossesToSend.add(self.offset + 205)
-
+            if currentgoal in (GoalOption.option_mm, GoalOption.option_mmtoken) and not ctx.finished_game:
+                    await ctx.send_msgs([{
+                        "cmd": "StatusUpdate",
+                        "status": ClientStatus.CLIENT_GOAL
+                    }])
+                    await self.send_bizhawk_message(ctx, "You have completed your goal o[8(|)", "Passthrough", "")
+            self.MM_Completed = True
+            ctx.finished_game = True
         if RAM.gameState["InLevel"] == gameState and specter2Condition:
             bossesToSend.add(self.offset + 206)
+
+            if currentgoal in (GoalOption.option_ppm, GoalOption.option_ppmtoken) and not ctx.finished_game:
+                    await ctx.send_msgs([{
+                        "cmd": "StatusUpdate",
+                        "status": ClientStatus.CLIENT_GOAL
+                    }])
+                    await self.send_bizhawk_message(ctx, "You have completed your goal o[8(|)", "Passthrough", "")
             self.PPM_Completed = True
+            ctx.finished_game = True
 
         locationsToSend = monkeysToSend | coinsToSend | mailToSend | bossesToSend | racesToSend
         if locationsToSend != "" and locationsToSend != set():
             await ctx.check_locations(locationsToSend)
+
         if self.forcecollect == True:
             msg = f"=================================\n"
             msg += f"Synced progress into the game:\n"
@@ -3433,6 +3479,8 @@ class ApeEscapeClient(BizHawkClient):
         InputListener = ER_Reads[11]
         Warp_State = ER_Reads[12]
         Transition_Screen_Progress = ER_Reads[13]
+        LoadingState = ER_Reads[14]
+        Spike_CanMove = ER_Reads[15]
 
         ER_writes = []
         ER_guards = []
@@ -3477,33 +3525,18 @@ class ApeEscapeClient(BizHawkClient):
             levelrooms = list(RAM.roomsperlevel[targetLevel])
             levelrooms.sort()
 
+            ER_writes += [(RAM.currentRoomIdAddress, targetRoom.to_bytes(1, "little"), "MainRAM")]
+            ER_writes += [(RAM.currentLevelAddress, targetLevel.to_bytes(1, "little"), "MainRAM")]
             if baselevelidtofirstroom.get(targetLevel) == currentlevelidtofirstroom[targetLevel]:
                 VanillaRoom = True
             else:
                 VanillaRoom = False
 
             if VanillaRoom == False:
-                # Monkey Madness special rule
-                # This spawns the player in the correct Sub-Level, then the warp will happen (If not already in the right room)
-                if targetLevel == 0x18:
-                    BaseRoom = targetRoom
-                    targetRoom = RAM.MM_SubLevels_Rooms_Spawns.get(targetRoom)
-                    if BaseRoom == targetRoom:
-                        self.ForceTransition = False
-                    else:
-                        self.ForceTransition = True
-                else:
-                    # Put the vanilla entrance for the level, we will redirect it later if RandomizeFirstRoom is on
-                    targetRoom = levelrooms[0]
-                    self.ForceTransition = False
-                if transitionPhase == RAM.transitionPhase["NotSpawned"] and gameState == RAM.gameState["LevelIntro"] and InputListener == 0x02:
-                    # Deactivate the Start/Select input to prevent player from messing with ER teleportation
-                    ER_writes += [(RAM.ControlsUpdate_DPAD_STARTSELECT_L3R3, 0x00000000.to_bytes(4, "little"), "MainRAM")]
-                    #print("Remove control from player")
-            # Actually send Spike to the desired level!
-            ER_writes += [(RAM.currentRoomIdAddress, targetRoom.to_bytes(1, "little"), "MainRAM")]
-            ER_writes += [(RAM.currentLevelAddress, targetLevel.to_bytes(1, "little"), "MainRAM")]
-
+                if InputListener == 0x02 and self.ChangeRoom == False:
+                    #print("Disable Event_Load_Block")
+                    ER_writes += [(RAM.Event_Load_Block, RAM.Event_Load_Block_Off.to_bytes(4, "little"), "MainRAM")]
+                    self.ChangeRoom = True
         # Code to send Spike to the right transition (If needed)
         if gameState in (RAM.gameState["InLevel"], RAM.gameState["InLevelTT"]):
 
@@ -3519,107 +3552,18 @@ class ApeEscapeClient(BizHawkClient):
             else:
                 VanillaRoom = False
 
+            if self.ChangeRoom == True and gameRunning == 0x01:
+                #print(InputListener)
+                self.ChangeRoom = False
+                #print("Replace the Event_Load_Block back to default")
+                ER_writes += [(RAM.Event_Load_Block, RAM.Event_Load_Block_On.to_bytes(4, "little"), "MainRAM")]
+
             LevelStartRoom = currentlevelidtofirstroom[level]
 
             TR_writes = []
             TR_guards = []
-            # If the level's first room is not vanilla, check for where Spike should be warped to after initial spawn.
+            # If the level's first room is not vanilla,validate some conditions
             if VanillaRoom == False:
-                # TODO IDEA : 3 Phases ->
-                #  Also put a self.ER_phase variable to track which phase we in and set the phase to 1 after phase 3
-                #  1: Set Transition Above Spike
-                #  2: Validate a state (Transition = 0x06) and change a variable
-                #  3: Change the state variable to get control, then regive control?
-
-                # If the game is running but ER_Phase is 1, it need to reset the player state
-                if gameRunning == 0x01 and InputListener != 0x02:
-                    if self.ER_phase != 3:
-                        TR_writes.clear()
-                        TR_guards.clear()
-                        TR_guards += [(RAM.ControlsUpdate_DPAD_STARTSELECT_L3R3, 0x00000000.to_bytes(4, "little"), "MainRAM")]
-                        TR_writes += [(RAM.ControlsUpdate_DPAD_STARTSELECT_L3R3, 0xA0720000.to_bytes(4, "little"), "MainRAM")]
-                        if await bizhawk.guarded_write(ctx.bizhawk_ctx,TR_writes,TR_guards):
-                            pass
-                            #print("Give control back to player")
-                        if self.ER_phase != 1:
-                            self.ER_phase = 1
-                        if self.ForceTransition == True:
-                            self.ForceTransition = False
-                    else:
-                        TR_guards.clear()
-                        TR_writes.clear()
-                        #print("Phase 3(Extra)")
-                        TR_guards += [(RAM.transitionPhaseAddress, RAM.transitionPhase["Nearby"].to_bytes(1, "little"),"MainRAM")]
-                        TR_writes += [(RAM.transitionPhaseAddress, RAM.transitionPhase["Loaded"].to_bytes(1, "little"),"MainRAM")]
-                        if await bizhawk.guarded_write(ctx.bizhawk_ctx, TR_writes, TR_guards):
-                            pass
-                            #print("P3-Fix#1(Extra)")
-                        TR_guards.clear()
-                        TR_writes.clear()
-                        TR_guards += [(RAM.transitionPhaseAddress, RAM.transitionPhase["Loaded"].to_bytes(1, "little"),"MainRAM")]
-                        TR_writes += [(RAM.transitionPhaseAddress, RAM.transitionPhase["Nearby"].to_bytes(1, "little"),"MainRAM")]
-                        if await bizhawk.guarded_write(ctx.bizhawk_ctx, TR_writes, TR_guards):
-                            pass
-                            #print("P3-Fix#2(Extra)")
-
-                        self.ER_phase = 1
-                        if self.ForceTransition == True:
-                            self.ForceTransition = False
-                elif gameRunning == 0x00:
-                    if self.ER_phase == 1:
-                        if (transitionPhase == RAM.transitionPhase["Spawning"] and currentRoom == baselevelidtofirstroom.get(level)) or (self.ForceTransition and currentRoom != LevelStartRoom and transitionPhase in (RAM.transitionPhase["Spawning"],RAM.transitionPhase["Playing"],RAM.transitionPhase["Nearby"])):
-                            #print("Phase 1")
-                            # Change TR1_Position to overlap Spike, and change targetRoom/targetDoor
-                            targetRoom = currentlevelidtofirstroom.get(level)
-                            targetRoomName = RAM.roomstostring.get(targetRoom)
-                            targetDoor = list(doorTransitions.get(targetRoomName))[1]
-                            TR1_Adresses = list(RAM.transitionAddresses.get(1))
-                            ER_writes += [(TR1_Adresses[0], targetRoom.to_bytes(1, "little"), "MainRAM")]
-                            ER_writes += [(TR1_Adresses[1], targetDoor.to_bytes(1, "little"), "MainRAM")]
-
-                            # Move the first transition into Spike's position (And apply transition)
-                            ER_writes += [(RAM.Transition1_X, Spike_X_Pos.to_bytes(4, "little"), "MainRAM")]
-                            ER_writes += [(RAM.Transition1_Y, Spike_Y_Pos.to_bytes(4, "little"), "MainRAM")]
-                            ER_writes += [(RAM.Transition1_Z, Spike_Z_Pos.to_bytes(4, "little"), "MainRAM")]
-                            ER_writes += [(RAM.spikeSuperFlyerUseState, 0x00.to_bytes(1, "little"), "MainRAM")]
-                            await bizhawk.write(ctx.bizhawk_ctx, TR_writes)
-                            self.ER_phase = 2
-                    elif (self.ER_phase == 2):
-                        TR_guards.clear()
-                        TR_writes.clear()
-                        #print("Phase 2")
-                        TR_guards += [(RAM.transitionPhaseAddress, RAM.transitionPhase["Spawning"].to_bytes(1, "little"),"MainRAM")]
-                        TR_writes += [(RAM.transitionPhaseAddress, RAM.transitionPhase["Nearby"].to_bytes(1, "little"),"MainRAM")]
-                        if await bizhawk.guarded_write(ctx.bizhawk_ctx, TR_writes, TR_guards):
-                            pass
-                            #print("Wrote for Phase 2")
-                        self.ER_phase = 3
-                        #self.ER_phase = 1
-
-                    # TODO Detection of error phase is good, but the correction is not good?
-                    #elif (self.ER_phase == 3):
-                    elif (self.ER_phase == 3):
-                        TR_guards.clear()
-                        TR_writes.clear()
-                        #print("Phase 3")
-
-                        TR_guards += [(RAM.transitionPhaseAddress, RAM.transitionPhase["Nearby"].to_bytes(1, "little"),"MainRAM")]
-                        TR_writes += [(RAM.transitionPhaseAddress, RAM.transitionPhase["Loaded"].to_bytes(1, "little"),"MainRAM")]
-                        if await bizhawk.guarded_write(ctx.bizhawk_ctx, TR_writes, TR_guards):
-                            pass
-                            #print("P3-Fix#1")
-                        TR_guards.clear()
-                        TR_writes.clear()
-                        TR_guards += [(RAM.transitionPhaseAddress, RAM.transitionPhase["Loaded"].to_bytes(1, "little"),"MainRAM")]
-                        TR_writes += [(RAM.transitionPhaseAddress, RAM.transitionPhase["Nearby"].to_bytes(1, "little"),"MainRAM")]
-                        if await bizhawk.guarded_write(ctx.bizhawk_ctx, TR_writes, TR_guards):
-                            ER_writes += [(RAM.gameRunningAddress, 0x01.to_bytes(1, "little"), "MainRAM")]
-                            #print("P3-Fix#2")
-                        self.ER_phase = 1
-                        if self.ForceTransition == True:
-                            self.ForceTransition = False
-
-
                 # Special code handling for TVT Water Room Spawn
                 if currentLevel == 22 and LevelStartRoom == 64:
                     # Drain the water if you are starting in the TVT - Water Room as part of Randomize First Rooms

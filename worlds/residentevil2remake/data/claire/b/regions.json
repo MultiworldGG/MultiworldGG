@@ -155,6 +155,10 @@
         "name": "Side Stairs",
         "zone_id": 1
     },
+    {
+        "name": "Observation Room Hallway",
+        "zone_id": 1
+    },
 	{
         "name": "Observation Room",
         "zone_id": 1

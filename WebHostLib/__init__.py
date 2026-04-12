@@ -4,17 +4,21 @@ import socket
 import typing
 import uuid
 
-from flask import Flask
+from flask import Flask, session
 from flask_caching import Cache
 from flask_compress import Compress
+from flask_limiter import Limiter
 from pony.flask import Pony
 from werkzeug.routing import BaseConverter
 
 from Utils import title_sorted, get_file_safe_name,world_list_sorted
+from .cli import CLI
 
 UPLOAD_FOLDER = os.path.relpath('uploads')
 LOGS_FOLDER = os.path.relpath('logs')
 os.makedirs(LOGS_FOLDER, exist_ok=True)
+LOBBY_APWORLD_FOLDER = os.path.join(UPLOAD_FOLDER, "lobby_apworlds")                                                   
+os.makedirs(LOBBY_APWORLD_FOLDER, exist_ok=True)
 
 app = Flask(__name__)
 Pony(app)
@@ -27,11 +31,13 @@ app.jinja_env.filters['get_file_safe_name'] = get_file_safe_name
 app.config["DEBUG"] = False
 app.config["PORT"] = 80
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["LOBBY_APWORLD_PATH"] = os.path.abspath(LOBBY_APWORLD_FOLDER)
 app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024  # 64 megabyte limit
 # if you want to deploy, make sure you have a non-guessable secret key
 app.config["SECRET_KEY"] = bytes(socket.gethostname(), encoding="utf-8")
 app.config["SESSION_PERMANENT"] = True
 app.config["MAX_FORM_MEMORY_SIZE"] = 2 * 1024 * 1024  # 2 MB, needed for large option pages such as SC2
+app.config["MAX_FORM_PARTS"] = 10_000  # Werkzeug 3.x default is 1000; games with many items can exceed this
 
 # custom config
 app.config["SELFHOST"] = True  # application process is in charge of running the websites
@@ -45,6 +51,8 @@ app.config["SELFGEN"] = True  # application process is in charge of scheduling G
 app.config["JOB_THRESHOLD"] = 1
 # after what time in seconds should generation be aborted, freeing the queue slot. Can be set to None to disable.
 app.config["JOB_TIME"] = 600
+# maximum time in seconds since last activity for a room to be hosted
+app.config["MAX_ROOM_TIMEOUT"] = 259200
 # memory limit for generator processes in bytes
 app.config["GENERATOR_MEMORY_LIMIT"] = 4294967296
 app.config['SESSION_PERMANENT'] = True
@@ -70,7 +78,15 @@ app.config["MONITORING_ADMIN_TOKEN"] = None  # Admin token for monitoring API en
 
 cache = Cache()
 Compress(app)
+CLI(app)
 
+# Basic Rate Limiter for lobbies
+limiter = Limiter(
+    key_func=lambda s=session: s.get("_id", "") or "",
+    app=app,
+    default_limits=[],
+    storage_uri="memory://",
+)
 
 def to_python(value: str) -> uuid.UUID:
     return uuid.UUID(bytes=base64.urlsafe_b64decode(value + '=='))

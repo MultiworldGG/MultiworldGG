@@ -4,17 +4,20 @@ from typing import ClassVar, Dict, Tuple, Any, List
 import settings, typing, os
 from worlds.AutoWorld import WebWorld, World
 from BaseClasses import Tutorial, MultiWorld, ItemClassification, Item
-from Options import AssembleOptions
+from dataclasses import dataclass
+from collections.abc import Mapping
 
-from .Items import SotnItem, items, relic_table, item_id_to_name
-from .Locations import locations, SotnLocation
+import orjson
+
+from .Items import SotnItem, items, relic_table, item_id_to_name, ITEM_GROUPS
+from .Locations import locations, SotnLocation, LOCATION_GROUPS
 from .Regions import create_regions, create_regions_no_logic
 from .Rules import set_rules, set_no_logic_rules
 from .Options import SOTNOptions, sotn_option_groups
 from .Rom import SotnProcedurePatch, write_tokens
 from .client import SotNClient
-#from .test_client import SotNTestClient
 
+#from .test_client import SotNTestClient
 
 # Thanks for Fuzzy for Archipelago Manual it all started there
 # Thanks for Wild Mouse for it´s randomizer and a lot of stuff over here
@@ -54,6 +57,11 @@ class SotnWeb(WebWorld):
     tutorials = [setup]
     option_groups = sotn_option_groups
 
+@dataclass(frozen=True)
+class ManifestData:
+    game: str
+    world_version: str
+    sotn_version: str | None
 
 class SotnWorld(World):
     """
@@ -61,21 +69,33 @@ class SotnWorld(World):
     and released for Sony Playstation and Sega Saturn in 1997.
     """
     game: ClassVar[str] = "Symphony of the Night"
-    author: ClassVar[str] = "Lockmau"
     web: ClassVar[WebWorld] = SotnWeb()
     settings_key = "sotn_settings"
     settings: ClassVar[SotnSettings]
     options_dataclass = SOTNOptions
     options: SOTNOptions
     data_version: ClassVar[int] = 1
-    required_client_version: Tuple[int, int, int] = (0, 4, 5)
     extra_add = ["Duplicator", "Crissaegrim", "Ring of varda", "Mablung sword", "Masamune", "Marsil", "Yasutsuna"]
-
+    manifest: ManifestData
     item_name_to_id: ClassVar[Dict[str, int]] = {name: data["id"] for name, data in items.items()}
     location_name_to_id: ClassVar[Dict[str, int]] = {name: data["ap_id"] for name, data in locations.items()}
+    item_name_groups = ITEM_GROUPS  # item_groups
+    location_name_groups = LOCATION_GROUPS  # location groups
 
     def __init__(self, world: MultiWorld, player: int):
         super().__init__(world, player)
+
+
+    def load_manifest() -> list[Any] | Mapping[str, Any]:
+        return orjson.loads(pkgutil.get_data(__name__, "archipelago.json").decode('utf-8-sig'))
+
+    manifest_json = load_manifest()
+
+    manifest = ManifestData(
+        game=manifest_json["game"],
+        world_version=manifest_json["world_version"],
+        sotn_version=manifest_json.get("sotn_version", manifest_json["world_version"])
+    )
 
     @classmethod
     def stage_assert_generate(cls, _multiworld: MultiWorld) -> None:

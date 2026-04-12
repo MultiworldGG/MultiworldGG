@@ -1,8 +1,7 @@
 # An Untitled Story
 ## Where is the settings page?
 
-The [player options page for this game](../player-options) contains all the options you need to configure and export a
-config file.
+The [player options page for this game](../player-options) contains all the options you need to configure and export a config file.
 
 ## What is different from the vanilla game?
 * Blue orbs (abilities), hearts, gold orbs, flowers, and money bundles (from bosses and flower/RainbowDive rewards) are all randomized.

@@ -1,0 +1,5751 @@
+[
+  {
+    "name": "btlgrp_aji_aji_zako",
+    "rel": "aji",
+    "location_id": 78780584,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x78",
+      "0x78"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_01_01_off_1",
+    "rel": "aji",
+    "location_id": 78780584,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x78",
+      "0x78"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_01_02_off_1",
+    "rel": "aji",
+    "location_id": 78780584,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1C",
+      "0x1C",
+      "0x78"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_01_03_off_1",
+    "rel": "aji",
+    "location_id": 78780584,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x78",
+      "0x1C",
+      "0x1C",
+      "0x1C"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_01_04_off_1",
+    "rel": "aji",
+    "location_id": 78780584,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x77",
+      "0x78"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_01_05_off_1",
+    "rel": "aji",
+    "location_id": 78780584,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x73",
+      "0x77"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_01_06_off_1",
+    "rel": "aji",
+    "location_id": 78780584,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x78",
+      "0x78",
+      "0x78",
+      "0x78"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_01_07_off_1",
+    "rel": "aji",
+    "location_id": 78780584,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1C",
+      "0x73",
+      "0x73"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_01_08_off_1",
+    "rel": "aji",
+    "location_id": 78780584,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x1C",
+      "0x1C",
+      "0x77",
+      "0x78"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_04_01_off_1",
+    "rel": "aji",
+    "location_id": 78780595,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x75",
+      "0x75"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_06_01_off_1",
+    "rel": "aji",
+    "location_id": 78780596,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x77",
+      "0x77"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_08_01_off_1",
+    "rel": "aji",
+    "location_id": 78780599,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x77",
+      "0x1D",
+      "0x73"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_09_01_off_1",
+    "rel": "aji",
+    "location_id": 78780598,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x1C",
+      "0x1C",
+      "0x1C",
+      "0x1C",
+      "0x77"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_10_01_off_1",
+    "rel": "aji",
+    "location_id": 78780600,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x75"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_13_01_off_1",
+    "rel": "aji",
+    "location_id": 78780602,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x77",
+      "0x77",
+      "0x77",
+      "0x77"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_13_02_off_1",
+    "rel": "aji",
+    "location_id": 78780602,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x73",
+      "0x73"
+    ]
+  },
+  {
+    "name": "btlgrp_aji_aji_15_01_off_1",
+    "rel": "aji",
+    "location_id": 78780601,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x78"
+    ]
+  },
+  {
+    "name": "btlgrp_bom_bom_00_01_off_1",
+    "rel": "bom",
+    "location_id": 78780561,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x1"
+    ]
+  },
+  {
+    "name": "btlgrp_bom_bom_03_01_off_1",
+    "rel": "bom",
+    "location_id": 78780575,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x70",
+      "0x70"
+    ]
+  },
+  {
+    "name": "btlgrp_bom_bom_03_01_off_2",
+    "rel": "bom",
+    "location_id": 78780575,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x70",
+      "0x70",
+      "0x70"
+    ]
+  },
+  {
+    "name": "btlgrp_bom_bom_03_03_off_1",
+    "rel": "bom",
+    "location_id": 78780575,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x71",
+      "0x71"
+    ]
+  },
+  {
+    "name": "btlgrp_bom_bom_03_03_off_2",
+    "rel": "bom",
+    "location_id": 78780575,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x71",
+      "0x71",
+      "0x71"
+    ]
+  },
+  {
+    "name": "btlgrp_bom_bom_04_01_off_1",
+    "rel": "bom",
+    "location_id": 78780577,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x71",
+      "0x70"
+    ]
+  },
+  {
+    "name": "btlgrp_bom_bom_04_01_off_2",
+    "rel": "bom",
+    "location_id": 78780577,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x71",
+      "0x71",
+      "0x70"
+    ]
+  },
+  {
+    "name": "btlgrp_bom_bom_04_02_off_1",
+    "rel": "bom",
+    "location_id": 78780577,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x70",
+      "0x71"
+    ]
+  },
+  {
+    "name": "btlgrp_bom_bom_04_02_off_2",
+    "rel": "bom",
+    "location_id": 78780577,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x70",
+      "0x71",
+      "0x70"
+    ]
+  },
+  {
+    "name": "btlgrp_bom_bom_04_03_off_1",
+    "rel": "bom",
+    "location_id": 78780577,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x71",
+      "0x71",
+      "0x71",
+      "0x71"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_00_01_off_1",
+    "rel": "dou",
+    "location_id": 78780493,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1",
+      "0x1",
+      "0x1"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_01_01_off_01",
+    "rel": "dou",
+    "location_id": 78780493,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x54",
+      "0x54",
+      "0x54"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_02_01_off_01",
+    "rel": "dou",
+    "location_id": 78780494,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x55",
+      "0x55"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_02_02_off_01",
+    "rel": "dou",
+    "location_id": 78780494,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x55",
+      "0x55",
+      "0x55",
+      "0x55"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_03_01_off_01",
+    "rel": "dou",
+    "location_id": 78780497,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5A",
+      "0x5C"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_03_99_off_01",
+    "rel": "dou",
+    "location_id": 78780497,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5B",
+      "0x5B"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_03_02_off_01",
+    "rel": "dou",
+    "location_id": 78780497,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5C",
+      "0x5C"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_03_03_off_01",
+    "rel": "dou",
+    "location_id": 78780497,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x5C",
+      "0x5C",
+      "0x5C"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_05_01_off_01",
+    "rel": "dou",
+    "location_id": 78780501,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x54",
+      "0x54"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_05_02_off_01",
+    "rel": "dou",
+    "location_id": 78780501,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x59",
+      "0x59"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_06_01_off_01",
+    "rel": "dou",
+    "location_id": 78780504,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x59",
+      "0x59",
+      "0x59"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_06_02_off_01",
+    "rel": "dou",
+    "location_id": 78780504,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x59",
+      "0x59",
+      "0x55",
+      "0x59"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_06_03_off_01",
+    "rel": "dou",
+    "location_id": 78780504,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x59"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_07_01_off_01",
+    "rel": "dou",
+    "location_id": 78780505,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x54",
+      "0x54",
+      "0x54"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_08_01_off_01",
+    "rel": "dou",
+    "location_id": 78780505,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x5C",
+      "0x5C",
+      "0x5C",
+      "0x5C"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_09_01_off_01",
+    "rel": "dou",
+    "location_id": 78780508,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x55",
+      "0x55",
+      "0x54"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_09_02_off_01",
+    "rel": "dou",
+    "location_id": 78780508,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x54",
+      "0x54",
+      "0x55"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_12_01_off_01",
+    "rel": "dou",
+    "location_id": 78780510,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5A",
+      "0x5A"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_12_99_off_01",
+    "rel": "dou",
+    "location_id": 78780510,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5B",
+      "0x5B"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_13_01_off_01",
+    "rel": "dou",
+    "location_id": 78780510,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5A",
+      "0x5A"
+    ]
+  },
+  {
+    "name": "btlgrp_dou_dou_13_99_off_01",
+    "rel": "dou",
+    "location_id": 78780510,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5B",
+      "0x5B"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_06_01_off_1",
+    "rel": "eki",
+    "location_id": 78780547,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1",
+      "0x1",
+      "0x1"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_02_01_off_1",
+    "rel": "eki",
+    "location_id": 78780538,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x67",
+      "0x67"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_02_02_off_1",
+    "rel": "eki",
+    "location_id": 78780538,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x67",
+      "0x67",
+      "0x67"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_02_03_off_1",
+    "rel": "eki",
+    "location_id": 78780538,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x69",
+      "0x69"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_03_01_off_1",
+    "rel": "eki",
+    "location_id": 78780540,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x68",
+      "0x68"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_03_02_off_1",
+    "rel": "eki",
+    "location_id": 78780540,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x68",
+      "0x68",
+      "0x68"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_03_03_off_1",
+    "rel": "eki",
+    "location_id": 78780540,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x68",
+      "0x67",
+      "0x68"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_03_05_off_1",
+    "rel": "eki",
+    "location_id": 78780540,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x67",
+      "0x68"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_03_07_off_1",
+    "rel": "eki",
+    "location_id": 78780540,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x67",
+      "0x68",
+      "0x68",
+      "0x67"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_04_01_off_1",
+    "rel": "eki",
+    "location_id": 78780543,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x69",
+      "0x69",
+      "0x69"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_04_02_off_1",
+    "rel": "eki",
+    "location_id": 78780543,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x69",
+      "0x69",
+      "0x68"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_04_06_off_1",
+    "rel": "eki",
+    "location_id": 78780543,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x69",
+      "0x69"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_04_03_off_1",
+    "rel": "eki",
+    "location_id": 78780543,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x68",
+      "0x68"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_04_04_off_1",
+    "rel": "eki",
+    "location_id": 78780543,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x68",
+      "0x68",
+      "0x68",
+      "0x68"
+    ]
+  },
+  {
+    "name": "btlgrp_eki_eki_04_05_off_1",
+    "rel": "eki",
+    "location_id": 78780543,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x68",
+      "0x69"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_02_02_off_1",
+    "rel": "gon",
+    "location_id": 78780193,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xF",
+      "0xF",
+      "0xF"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_02_03_off_1",
+    "rel": "gon",
+    "location_id": 78780193,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xE",
+      "0xF"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_02_04_off_1",
+    "rel": "gon",
+    "location_id": 78780193,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xF",
+      "0xE",
+      "0xE"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_03_01_off_1",
+    "rel": "gon",
+    "location_id": 78780194,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x16",
+      "0x11",
+      "0x11",
+      "0x11",
+      "0x11"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_04_01_off_1",
+    "rel": "gon",
+    "location_id": 78780196,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x11",
+      "0x11"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_04_02_off_1",
+    "rel": "gon",
+    "location_id": 78780196,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x11",
+      "0x11",
+      "0x11",
+      "0x11"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_04_03_off_1",
+    "rel": "gon",
+    "location_id": 78780196,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x11",
+      "0x11",
+      "0x11"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_06_03_off_1",
+    "rel": "gon",
+    "location_id": 78780204,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x2",
+      "0xF",
+      "0xF"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_06_04_off_1",
+    "rel": "gon",
+    "location_id": 78780204,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x11",
+      "0x2",
+      "0x2"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_08_01_off_1",
+    "rel": "gon",
+    "location_id": 78780207,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x11",
+      "0x11"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_08_03_off_1",
+    "rel": "gon",
+    "location_id": 78780207,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x11",
+      "0x3"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_08_05_off_1",
+    "rel": "gon",
+    "location_id": 78780207,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x2",
+      "0xF"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_09_01_off_1",
+    "rel": "gon",
+    "location_id": 78780208,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xE",
+      "0x11",
+      "0xE"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_09_02_off_1",
+    "rel": "gon",
+    "location_id": 78780208,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x11",
+      "0xE",
+      "0x11"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_09_04_off_1",
+    "rel": "gon",
+    "location_id": 78780208,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x11",
+      "0x11",
+      "0xE",
+      "0xE"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_10_01_off_1",
+    "rel": "gon",
+    "location_id": 78780210,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x3",
+      "0xE",
+      "0xF",
+      "0x3"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_10_02_off_1",
+    "rel": "gon",
+    "location_id": 78780210,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xF",
+      "0xF",
+      "0xF"
+    ]
+  },
+  {
+    "name": "btlgrp_gon_gon_10_03_off_1",
+    "rel": "gon",
+    "location_id": 78780210,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xE",
+      "0x3",
+      "0x2",
+      "0xF"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_01_off_1",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x42",
+      "0x42",
+      "0x42"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_01_on_1",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x42",
+      "0x42",
+      "0x42"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_01_on_2",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x42",
+      "0x43",
+      "0x45"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_01_on_3",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x42",
+      "0x44",
+      "0x45"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_03_off_1",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x43",
+      "0x43",
+      "0x43"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_03_on_1",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x43",
+      "0x43",
+      "0x43"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_03_on_2",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x43",
+      "0x43",
+      "0x43",
+      "0x43"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_03_on_3",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x43",
+      "0x43",
+      "0x45",
+      "0x45"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_04_off_1",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x44",
+      "0x44",
+      "0x44"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_04_on_1",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x44",
+      "0x44",
+      "0x44"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_04_on_2",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x44",
+      "0x44",
+      "0x43",
+      "0x43"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_01_04_on_3",
+    "rel": "gra",
+    "location_id": 78780321,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x44",
+      "0x42",
+      "0x45"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_03_01_off_1",
+    "rel": "gra",
+    "location_id": 78780327,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x43",
+      "0x43"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_03_01_off_2",
+    "rel": "gra",
+    "location_id": 78780327,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x43",
+      "0x43",
+      "0x45"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_03_04_off_1",
+    "rel": "gra",
+    "location_id": 78780327,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x45",
+      "0x45"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_03_04_off_2",
+    "rel": "gra",
+    "location_id": 78780327,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x45",
+      "0x45",
+      "0x46"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_03_04_off_3",
+    "rel": "gra",
+    "location_id": 78780327,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x45",
+      "0x44",
+      "0x43"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_03_05_off_1",
+    "rel": "gra",
+    "location_id": 78780327,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x45",
+      "0x45",
+      "0x45",
+      "0x45"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_03_05_off_2",
+    "rel": "gra",
+    "location_id": 78780327,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x45",
+      "0x45",
+      "0x46"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_03_05_off_3",
+    "rel": "gra",
+    "location_id": 78780327,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x45",
+      "0x45",
+      "0x43",
+      "0x44"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_04_02_off_1",
+    "rel": "gra",
+    "location_id": 78780329,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x45",
+      "0x47",
+      "0x45"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_04_02_off_2",
+    "rel": "gra",
+    "location_id": 78780329,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x45",
+      "0x47"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_04_02_off_3",
+    "rel": "gra",
+    "location_id": 78780329,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x45",
+      "0x45",
+      "0x46"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_05_01_off_1",
+    "rel": "gra",
+    "location_id": 78780330,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x47",
+      "0x47"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_05_01_off_2",
+    "rel": "gra",
+    "location_id": 78780330,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x47",
+      "0x47",
+      "0x46"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_05_03_off_1",
+    "rel": "gra",
+    "location_id": 78780330,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x47",
+      "0x47",
+      "0x47"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_05_03_off_2",
+    "rel": "gra",
+    "location_id": 78780330,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x47",
+      "0x47",
+      "0x46"
+    ]
+  },
+  {
+    "name": "btlgrp_gra_gra_05_03_off_3",
+    "rel": "gra",
+    "location_id": 78780330,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x47",
+      "0x45",
+      "0x45",
+      "0x47"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_01_01_off_1",
+    "rel": "hei",
+    "location_id": 78780161,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x1",
+      "0x1",
+      "0x3",
+      "0x2"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_02_02_off_1",
+    "rel": "hei",
+    "location_id": 78780163,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x2",
+      "0xE"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_02_03_off_1",
+    "rel": "hei",
+    "location_id": 78780163,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xE",
+      "0x1"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_02_04_off_1",
+    "rel": "hei",
+    "location_id": 78780163,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x3",
+      "0xE"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_03_01_off_1",
+    "rel": "hei",
+    "location_id": 78780163,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x12",
+      "0x12"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_04_01_off_1",
+    "rel": "hei",
+    "location_id": 78780166,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x2",
+      "0x2",
+      "0x2"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_04_01_off_2",
+    "rel": "hei",
+    "location_id": 78780166,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x2",
+      "0xE"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_04_02_off_1",
+    "rel": "hei",
+    "location_id": 78780166,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xE",
+      "0xE"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_04_02_off_2",
+    "rel": "hei",
+    "location_id": 78780166,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xE",
+      "0xE",
+      "0xE"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_05_01_off_1",
+    "rel": "hei",
+    "location_id": 78780166,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x13",
+      "0x13"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_06_02_off_1",
+    "rel": "hei",
+    "location_id": 78780801,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xE",
+      "0x3"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_06_03_off_1",
+    "rel": "hei",
+    "location_id": 78780801,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x2",
+      "0xE",
+      "0xE"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_06_03_off_2",
+    "rel": "hei",
+    "location_id": 78780801,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x2",
+      "0x2",
+      "0xE"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_07_01_off_1",
+    "rel": "hei",
+    "location_id": 78780161,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x1A",
+      "0x1A",
+      "0x1A",
+      "0x1A"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_08_01_off_1",
+    "rel": "hei",
+    "location_id": 78780169,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x10",
+      "0x10",
+      "0x10",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_09_01_off_1",
+    "rel": "hei",
+    "location_id": 78780170,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x10",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_09_01_off_2",
+    "rel": "hei",
+    "location_id": 78780170,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x10",
+      "0x10",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_09_03_off_1",
+    "rel": "hei",
+    "location_id": 78780170,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x10",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_09_03_off_2",
+    "rel": "hei",
+    "location_id": 78780170,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x10",
+      "0x10",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_11_01_off_1",
+    "rel": "hei",
+    "location_id": 78780170,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x10",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_11_01_off_2",
+    "rel": "hei",
+    "location_id": 78780170,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x10",
+      "0x10",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_11_03_off_1",
+    "rel": "hei",
+    "location_id": 78780170,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x10",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_11_03_off_2",
+    "rel": "hei",
+    "location_id": 78780170,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x10",
+      "0x10",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_12_01_off_1",
+    "rel": "hei",
+    "location_id": 78780171,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x10",
+      "0x10",
+      "0x10",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_13_02_off_1",
+    "rel": "hei",
+    "location_id": 78780182,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1",
+      "0x3"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_13_02_on_1",
+    "rel": "hei",
+    "location_id": 78780182,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1",
+      "0x1",
+      "0x1"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_13_02_on_2",
+    "rel": "hei",
+    "location_id": 78780182,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x1",
+      "0x1",
+      "0x1",
+      "0x1"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_13_02_on_3",
+    "rel": "hei",
+    "location_id": 78780182,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x1",
+      "0x1",
+      "0x1",
+      "0x1",
+      "0x1"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_13_03_off_1",
+    "rel": "hei",
+    "location_id": 78780182,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x3",
+      "0x3"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_13_03_on_1",
+    "rel": "hei",
+    "location_id": 78780182,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x3",
+      "0x3"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_13_03_on_2",
+    "rel": "hei",
+    "location_id": 78780182,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x3",
+      "0x3",
+      "0x3"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_13_04_off_1",
+    "rel": "hei",
+    "location_id": 78780182,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x2",
+      "0x2"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_13_04_on_1",
+    "rel": "hei",
+    "location_id": 78780182,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x2",
+      "0x2"
+    ]
+  },
+  {
+    "name": "btlgrp_hei_hei_13_04_on_2",
+    "rel": "hei",
+    "location_id": 78780182,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x2",
+      "0x2",
+      "0x2",
+      "0x2"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_00_01_off_1",
+    "rel": "jin",
+    "location_id": 78780434,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_00_01_off_2",
+    "rel": "jin",
+    "location_id": 78780434,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4B",
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_00_01_off_3",
+    "rel": "jin",
+    "location_id": 78780434,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x4B",
+      "0x4B",
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_00_01_off_4",
+    "rel": "jin",
+    "location_id": 78780434,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x4B",
+      "0x4B",
+      "0x4B",
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_01_01_off_1",
+    "rel": "jin",
+    "location_id": 78780436,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4A",
+      "0x4A"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_01_01_off_2",
+    "rel": "jin",
+    "location_id": 78780436,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x4A",
+      "0x4A",
+      "0x4A"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_01_01_off_3",
+    "rel": "jin",
+    "location_id": 78780436,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x4A",
+      "0x4B",
+      "0x4A"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_01_03_off_1",
+    "rel": "jin",
+    "location_id": 78780436,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4A",
+      "0x4A"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_01_03_off_2",
+    "rel": "jin",
+    "location_id": 78780436,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x4A",
+      "0x4A",
+      "0x4A",
+      "0x4A"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_01_03_off_3",
+    "rel": "jin",
+    "location_id": 78780436,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4A",
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_03_01_off_1",
+    "rel": "jin",
+    "location_id": 78780805,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4A",
+      "0x4A"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_03_02_off_1",
+    "rel": "jin",
+    "location_id": 78780805,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4A",
+      "0x4A"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_07_01_off_1",
+    "rel": "jin",
+    "location_id": 78780443,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4B",
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_07_01_off_2",
+    "rel": "jin",
+    "location_id": 78780443,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x4B",
+      "0x4B",
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_07_02_off_1",
+    "rel": "jin",
+    "location_id": 78780443,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4B",
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_07_02_off_2",
+    "rel": "jin",
+    "location_id": 78780443,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x4B",
+      "0x4B",
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_09_01_off_1",
+    "rel": "jin",
+    "location_id": 78780450,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x48"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_10_01_off_1",
+    "rel": "jin",
+    "location_id": 78780451,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x48",
+      "0x48"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_10_02_off_1",
+    "rel": "jin",
+    "location_id": 78780451,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x49"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_10_03_off_1",
+    "rel": "jin",
+    "location_id": 78780451,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x48"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_10_04_off_1",
+    "rel": "jin",
+    "location_id": 78780451,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x48",
+      "0x48",
+      "0x48",
+      "0x48"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_10_05_off_1",
+    "rel": "jin",
+    "location_id": 78780451,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x49",
+      "0x49"
+    ]
+  },
+  {
+    "name": "btlgrp_jin_jin_10_06_off_1",
+    "rel": "jin",
+    "location_id": 78780451,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x48",
+      "0x48",
+      "0x49"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_01_off_1",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x99"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_01_off_2",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x99",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_01_off_3",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x99",
+      "0x11"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_02_off_1",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x4",
+      "0x4",
+      "0x4",
+      "0x4",
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_02_off_2",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4",
+      "0x99"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_02_off_3",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x4",
+      "0x5",
+      "0x4",
+      "0x5",
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_03_off_1",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x5",
+      "0x5",
+      "0x5",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_03_off_2",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5",
+      "0x99"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_03_off_3",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x5",
+      "0x10",
+      "0x5",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_04_off_1",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x11",
+      "0x11",
+      "0x11",
+      "0x11"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_04_off_2",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x11",
+      "0x99"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_04_off_3",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x11",
+      "0x4",
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_05_off_1",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x10",
+      "0x10",
+      "0x10",
+      "0x10",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_05_off_2",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x10",
+      "0x99",
+      "0x10"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_01_05_off_3",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x10",
+      "0x11",
+      "0x10",
+      "0x11"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_01_off_1",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x9A",
+      "0x9A"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_01_off_2",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9A",
+      "0x1B",
+      "0x1B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_01_off_3",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9A",
+      "0x27",
+      "0x27"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_02_off_1",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x1A",
+      "0x1A",
+      "0x1A",
+      "0x1A"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_02_off_2",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1A",
+      "0x1A",
+      "0x9A"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_02_off_3",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1A",
+      "0x1B",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_03_off_1",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x27",
+      "0x27",
+      "0x27",
+      "0x27"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_03_off_2",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x27",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_03_off_3",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x27",
+      "0x1B",
+      "0x1B",
+      "0x27"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_04_off_1",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x18",
+      "0x18",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_04_off_2",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x18",
+      "0x27",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_04_off_3",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x18",
+      "0x9A"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_05_off_1",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x1B",
+      "0x1B",
+      "0x1B",
+      "0x1B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_05_off_2",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1B",
+      "0x9A"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_11_05_off_3",
+    "rel": "jon",
+    "location_id": 78780638,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x1B",
+      "0x27",
+      "0x1B",
+      "0x27"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_01_off_1",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9B",
+      "0x9B",
+      "0x9B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_01_off_2",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x9B",
+      "0x9B",
+      "0x2B",
+      "0x2C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_01_off_3",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x9B",
+      "0x9B",
+      "0x4B",
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_02_off_1",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x2C",
+      "0x2C",
+      "0x2C",
+      "0x2C",
+      "0x2C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_02_off_2",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x2C",
+      "0x9B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_02_off_3",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x2C",
+      "0x4B",
+      "0x2C",
+      "0x4B",
+      "0x2C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_03_off_1",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x28",
+      "0x28",
+      "0x28",
+      "0x28"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_03_off_2",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x28",
+      "0x9B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_03_off_3",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x28",
+      "0x2B",
+      "0x2B",
+      "0x28"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_04_off_1",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x2B",
+      "0x2B",
+      "0x2B",
+      "0x2B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_04_off_2",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x2B",
+      "0x9B",
+      "0x2B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_04_off_3",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x2B",
+      "0x4B",
+      "0x2B",
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_05_off_1",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x4B",
+      "0x4B",
+      "0x4B",
+      "0x4B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_05_off_2",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x4B",
+      "0x4B",
+      "0x9B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_21_05_off_3",
+    "rel": "jon",
+    "location_id": 78780639,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x4B",
+      "0x4B",
+      "0x2C",
+      "0x2C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_01_off_1",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x9C",
+      "0x9C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_01_off_2",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9C",
+      "0x59",
+      "0x59"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_01_off_3",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9C",
+      "0x57",
+      "0x57"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_02_off_1",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x47",
+      "0x47",
+      "0x47"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_02_off_2",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x47",
+      "0x2F",
+      "0x47"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_02_off_3",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x47",
+      "0x47",
+      "0x59"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_03_off_1",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x59",
+      "0x59",
+      "0x59",
+      "0x59"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_03_off_2",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x59",
+      "0x2F",
+      "0x59",
+      "0x2F"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_03_off_3",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x59",
+      "0x57"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_04_off_1",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x2F",
+      "0x2F",
+      "0x2F",
+      "0x2F"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_04_off_2",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x2F",
+      "0x9C",
+      "0x2F"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_04_off_3",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x2F",
+      "0x2F",
+      "0x59"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_05_off_1",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x57",
+      "0x57",
+      "0x57",
+      "0x57",
+      "0x57"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_05_off_2",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x57",
+      "0x57",
+      "0x9C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_31_05_off_3",
+    "rel": "jon",
+    "location_id": 78780640,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x57",
+      "0x47"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_01_off_1",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x9D",
+      "0x9D",
+      "0x9D",
+      "0x9D"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_01_off_2",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9D",
+      "0x9D",
+      "0x69"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_01_off_3",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9D",
+      "0x9D",
+      "0x5C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_02_off_1",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x5C",
+      "0x5C",
+      "0x5C",
+      "0x5C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_02_off_2",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5C",
+      "0x5C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_02_off_3",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x5C",
+      "0x68",
+      "0x69"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_03_off_1",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x55",
+      "0x55",
+      "0x55"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_03_off_2",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x55",
+      "0x55",
+      "0x9D"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_03_off_3",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x55",
+      "0x68",
+      "0x55",
+      "0x5C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_04_off_1",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x68",
+      "0x68",
+      "0x68",
+      "0x68"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_04_off_2",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x68",
+      "0x69",
+      "0x68",
+      "0x69"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_04_off_3",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x68",
+      "0x9D"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_05_off_1",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x69",
+      "0x69"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_05_off_2",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x69",
+      "0x69",
+      "0x69",
+      "0x69"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_41_05_off_3",
+    "rel": "jon",
+    "location_id": 78780641,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x69",
+      "0x69",
+      "0x55",
+      "0x55"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_01_off_1",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9E",
+      "0x9E",
+      "0x9E"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_01_off_2",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9E",
+      "0x9E",
+      "0x70"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_01_off_3",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9E",
+      "0x9E",
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_02_off_1",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x70",
+      "0x70",
+      "0x70",
+      "0x70"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_02_off_2",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x70",
+      "0x6A",
+      "0x70"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_02_off_3",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x70",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_03_off_1",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x6A",
+      "0x6A",
+      "0x6A",
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_03_off_2",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x6A",
+      "0x9E",
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_03_off_3",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x6A",
+      "0x6A",
+      "0x3B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_04_off_1",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x3B",
+      "0x3B",
+      "0x3B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_04_off_2",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x3B",
+      "0x6A",
+      "0x3B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_04_off_3",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x3B",
+      "0x70",
+      "0x70"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_05_off_1",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_05_off_2",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x3B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_51_05_off_3",
+    "rel": "jon",
+    "location_id": 78780642,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x72",
+      "0x6A",
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_01_off_1",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9F",
+      "0x9F",
+      "0x9F"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_01_off_2",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x9F",
+      "0x9F",
+      "0x37"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_01_off_3",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x9F",
+      "0x80"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_02_off_1",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x82",
+      "0x82",
+      "0x82",
+      "0x82"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_02_off_2",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x82",
+      "0x37"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_02_off_3",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x82",
+      "0x71",
+      "0x71"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_03_off_1",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x80",
+      "0x80",
+      "0x80"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_03_off_2",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x80",
+      "0x37",
+      "0x80"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_03_off_3",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x80",
+      "0x82",
+      "0x82"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_04_off_1",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x71",
+      "0x71",
+      "0x71",
+      "0x71"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_04_off_2",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x71",
+      "0x9F",
+      "0x9F"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_04_off_3",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x71",
+      "0x37"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_05_off_1",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x37",
+      "0x37",
+      "0x37"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_05_off_2",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x37",
+      "0x9F"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_61_05_off_3",
+    "rel": "jon",
+    "location_id": 78780643,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x37",
+      "0x37"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_01_off_1",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA1",
+      "0xA1",
+      "0xA1"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_01_off_2",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA1",
+      "0x3C",
+      "0xA1"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_01_off_3",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA1",
+      "0x7F",
+      "0x7F"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_02_off_1",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x3C",
+      "0x3C",
+      "0x3C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_02_off_2",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x3C",
+      "0x7F",
+      "0x7F"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_02_off_3",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x3C",
+      "0x3C",
+      "0xA1"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_03_off_1",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x7C",
+      "0x7C",
+      "0x7C",
+      "0x7C",
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_03_off_2",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x7C",
+      "0x7C",
+      "0x7C",
+      "0xA1"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_03_off_3",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x7C",
+      "0x7B",
+      "0x7F",
+      "0x3C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_04_off_1",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x7B",
+      "0x7B",
+      "0x7B",
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_04_off_2",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x7B",
+      "0x7B",
+      "0xA1",
+      "0xA1"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_04_off_3",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x7B",
+      "0x3C",
+      "0x7B",
+      "0x3C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_05_off_1",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x7F",
+      "0x7F",
+      "0x7F",
+      "0x7F"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_05_off_2",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x7F",
+      "0x3C",
+      "0x3C"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_71_05_off_3",
+    "rel": "jon",
+    "location_id": 78780644,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x7F",
+      "0x7F",
+      "0xA1"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_01_off_1",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA3",
+      "0xA3",
+      "0xA3",
+      "0xA3"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_01_off_2",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA3",
+      "0xA4",
+      "0xA3",
+      "0xA4"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_01_off_3",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA3",
+      "0xA2",
+      "0xA5"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_02_off_1",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xA5",
+      "0xA5"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_02_off_2",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA5",
+      "0xA4",
+      "0xA4",
+      "0xA4"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_02_off_3",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA5",
+      "0xA5",
+      "0xA3"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_03_off_1",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA4",
+      "0xA4",
+      "0xA4",
+      "0xA4"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_03_off_2",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA4",
+      "0xA2",
+      "0xA4"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_03_off_3",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA4",
+      "0xA4",
+      "0xA5"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_04_off_1",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA2",
+      "0xA2",
+      "0xA2",
+      "0xA2"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_04_off_2",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA2",
+      "0xA5",
+      "0xA2"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_04_off_3",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA2",
+      "0xA3",
+      "0xA3",
+      "0xA3"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_05_off_1",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA3",
+      "0xA3",
+      "0xA3",
+      "0xA3"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_05_off_2",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA3",
+      "0xA3",
+      "0xA3"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_81_05_off_3",
+    "rel": "jon",
+    "location_id": 78780645,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0xA3",
+      "0xA3",
+      "0xA3",
+      "0xA3",
+      "0xA3"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_01_off_1",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0xA9",
+      "0xA9",
+      "0xA9",
+      "0xA9",
+      "0xA9"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_01_off_2",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA9",
+      "0xA6",
+      "0xA6"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_01_off_3",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA9",
+      "0xA9",
+      "0xA7"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_02_off_1",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA6",
+      "0xA6",
+      "0xA6",
+      "0xA6"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_02_off_2",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA6",
+      "0xA6",
+      "0xA6",
+      "0xA8"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_02_off_3",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA6",
+      "0xA7",
+      "0xA6",
+      "0x46"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_03_off_1",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA8",
+      "0xA8",
+      "0xA8",
+      "0xA8"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_03_off_2",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA8",
+      "0xA8",
+      "0xA9"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_03_off_3",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA8",
+      "0xA8",
+      "0xA8",
+      "0x46"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_04_off_1",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0xA7",
+      "0xA7",
+      "0xA7",
+      "0xA7",
+      "0xA7"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_04_off_2",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0xA7",
+      "0xA6",
+      "0xA6"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_04_off_3",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0xA7",
+      "0xA9",
+      "0x46",
+      "0x46"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_05_off_1",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x46",
+      "0x46",
+      "0x46",
+      "0x46",
+      "0x46"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_05_off_2",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x46",
+      "0x46",
+      "0x46",
+      "0x46",
+      "0x46"
+    ]
+  },
+  {
+    "name": "btlgrp_jon_jon_91_05_off_3",
+    "rel": "jon",
+    "location_id": 78780646,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x46",
+      "0x46",
+      "0x46",
+      "0x46",
+      "0x46"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_05_01",
+    "rel": "las",
+    "location_id": 78780609,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x82",
+      "0x82",
+      "0x83",
+      "0x82",
+      "0x82"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_17_01_off_1",
+    "rel": "las",
+    "location_id": 78780620,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x11"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_17_02_off_1",
+    "rel": "las",
+    "location_id": 78780620,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x16"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_17_03_off_1",
+    "rel": "las",
+    "location_id": 78780620,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x82"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_17_04_off_1",
+    "rel": "las",
+    "location_id": 78780620,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x83"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_01_01_off_1",
+    "rel": "las",
+    "location_id": 78780605,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7B",
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_01_02_off_1",
+    "rel": "las",
+    "location_id": 78780605,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x7B",
+      "0x7B",
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_01_03_off_1",
+    "rel": "las",
+    "location_id": 78780605,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x7B",
+      "0x7B",
+      "0x7B",
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_01_01_off_2",
+    "rel": "las",
+    "location_id": 78780605,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7B",
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_01_02_off_2",
+    "rel": "las",
+    "location_id": 78780605,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x7B",
+      "0x7B",
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_01_03_off_2",
+    "rel": "las",
+    "location_id": 78780605,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x7B",
+      "0x7B",
+      "0x7B",
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_02_01_off_1",
+    "rel": "las",
+    "location_id": 78780606,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x82",
+      "0x82"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_02_02_off_1",
+    "rel": "las",
+    "location_id": 78780606,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x7B",
+      "0x82",
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_02_03_off_1",
+    "rel": "las",
+    "location_id": 78780606,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x82",
+      "0x82",
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_02_04_off_1",
+    "rel": "las",
+    "location_id": 78780606,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x82",
+      "0x82",
+      "0x82",
+      "0x82"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_02_05_off_1",
+    "rel": "las",
+    "location_id": 78780606,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7D",
+      "0x7D"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_02_06_off_1",
+    "rel": "las",
+    "location_id": 78780606,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7D",
+      "0x7D"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_02_99_off_1",
+    "rel": "las",
+    "location_id": 78780606,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7E",
+      "0x7E"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_03_01_off_1",
+    "rel": "las",
+    "location_id": 78780607,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_03_02_off_1",
+    "rel": "las",
+    "location_id": 78780607,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_03_03_off_1",
+    "rel": "las",
+    "location_id": 78780607,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_03_01_off_2",
+    "rel": "las",
+    "location_id": 78780607,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_03_02_off_2",
+    "rel": "las",
+    "location_id": 78780607,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_03_03_off_2",
+    "rel": "las",
+    "location_id": 78780607,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x7B"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_04_01_off_1",
+    "rel": "las",
+    "location_id": 78780608,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_06_01_off_1",
+    "rel": "las",
+    "location_id": 78780610,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7D",
+      "0x7D"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_06_02_off_1",
+    "rel": "las",
+    "location_id": 78780610,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7D",
+      "0x7D"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_06_03_off_1",
+    "rel": "las",
+    "location_id": 78780610,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7C",
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_06_04_off_1",
+    "rel": "las",
+    "location_id": 78780610,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x7C",
+      "0x7C",
+      "0x7C",
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_06_05_off_1",
+    "rel": "las",
+    "location_id": 78780610,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7D",
+      "0x7D"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_06_06_off_1",
+    "rel": "las",
+    "location_id": 78780610,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7D",
+      "0x7D"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_06_99_off_1",
+    "rel": "las",
+    "location_id": 78780610,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7E",
+      "0x7E"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_07_01_off_1",
+    "rel": "las",
+    "location_id": 78780611,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x7C",
+      "0x7C",
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_07_02_off_1",
+    "rel": "las",
+    "location_id": 78780611,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x82",
+      "0x82",
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_07_03_off_1",
+    "rel": "las",
+    "location_id": 78780611,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x82",
+      "0x82",
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_09_01_off_1",
+    "rel": "las",
+    "location_id": 78780614,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7F",
+      "0x7F"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_09_02_off_1",
+    "rel": "las",
+    "location_id": 78780614,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x7F",
+      "0x7F",
+      "0x7F"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_19_01_off_1",
+    "rel": "las",
+    "location_id": 78780622,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x80"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_19_02_off_1",
+    "rel": "las",
+    "location_id": 78780622,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x80",
+      "0x80"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_19_03_off_1",
+    "rel": "las",
+    "location_id": 78780622,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x80",
+      "0x80",
+      "0x80"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_20_01_off_1",
+    "rel": "las",
+    "location_id": 78780623,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x80"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_21_01_off_1",
+    "rel": "las",
+    "location_id": 78780625,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7F",
+      "0x7F"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_21_02_off_1",
+    "rel": "las",
+    "location_id": 78780625,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7F",
+      "0x7F"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_22_01_off_1",
+    "rel": "las",
+    "location_id": 78780625,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x80",
+      "0x80"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_22_02_off_1",
+    "rel": "las",
+    "location_id": 78780625,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x7C",
+      "0x7C",
+      "0x7C",
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_22_03_off_1",
+    "rel": "las",
+    "location_id": 78780625,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7F",
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_24_01_off_1",
+    "rel": "las",
+    "location_id": 78780628,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7F",
+      "0x80"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_25_01_off_1",
+    "rel": "las",
+    "location_id": 78780631,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_25_02_off_1",
+    "rel": "las",
+    "location_id": 78780631,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x7C",
+      "0x7C",
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_25_03_off_1",
+    "rel": "las",
+    "location_id": 78780631,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x7C",
+      "0x7C",
+      "0x7C",
+      "0x80"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_25_04_off_1",
+    "rel": "las",
+    "location_id": 78780631,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x7C",
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_25_05_off_1",
+    "rel": "las",
+    "location_id": 78780631,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x7C",
+      "0x7C",
+      "0x80"
+    ]
+  },
+  {
+    "name": "btlgrp_las_las_25_06_off_1",
+    "rel": "las",
+    "location_id": 78780631,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x7C",
+      "0x7C",
+      "0x7C"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_00_01_off_1",
+    "rel": "moo",
+    "location_id": 78780579,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1",
+      "0x1",
+      "0x1"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_01_01_off_1",
+    "rel": "moo",
+    "location_id": 78780807,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_01_02_off_1",
+    "rel": "moo",
+    "location_id": 78780807,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_01_02_off_2",
+    "rel": "moo",
+    "location_id": 78780807,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_01_03_off_1",
+    "rel": "moo",
+    "location_id": 78780807,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_01_04_off_1",
+    "rel": "moo",
+    "location_id": 78780807,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_01_04_off_2",
+    "rel": "moo",
+    "location_id": 78780807,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_01_04_off_3",
+    "rel": "moo",
+    "location_id": 78780807,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_01_05_off_1",
+    "rel": "moo",
+    "location_id": 78780807,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_02_01_off_1",
+    "rel": "moo",
+    "location_id": 78780580,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x73",
+      "0x73"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_02_02_off_1",
+    "rel": "moo",
+    "location_id": 78780580,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x73",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_02_03_off_1",
+    "rel": "moo",
+    "location_id": 78780580,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x73",
+      "0x73"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_02_04_off_1",
+    "rel": "moo",
+    "location_id": 78780580,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x72",
+      "0x73",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_02_05_off_1",
+    "rel": "moo",
+    "location_id": 78780580,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x72",
+      "0x73"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_05_01_off_1",
+    "rel": "moo",
+    "location_id": 78780582,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_05_01_off_2",
+    "rel": "moo",
+    "location_id": 78780582,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_05_01_off_3",
+    "rel": "moo",
+    "location_id": 78780582,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_05_02_off_1",
+    "rel": "moo",
+    "location_id": 78780582,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_05_03_off_1",
+    "rel": "moo",
+    "location_id": 78780582,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_05_03_off_2",
+    "rel": "moo",
+    "location_id": 78780582,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_05_04_off_1",
+    "rel": "moo",
+    "location_id": 78780582,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_05_05_off_1",
+    "rel": "moo",
+    "location_id": 78780582,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_05_05_off_2",
+    "rel": "moo",
+    "location_id": 78780582,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_moo_moo_05_05_off_3",
+    "rel": "moo",
+    "location_id": 78780582,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x72",
+      "0x72",
+      "0x72",
+      "0x72"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_01_01",
+    "rel": "mri",
+    "location_id": 78780231,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1C",
+      "0x1C"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_04_01",
+    "rel": "mri",
+    "location_id": 78780237,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x1C"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_05_01",
+    "rel": "mri",
+    "location_id": 78780241,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1C",
+      "0x1C"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_06_2F_02",
+    "rel": "mri",
+    "location_id": 78780243,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1B",
+      "0x1B",
+      "0x1B"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_06_2F_03",
+    "rel": "mri",
+    "location_id": 78780243,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x1B",
+      "0x1B",
+      "0x1B",
+      "0x1B"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_12_01",
+    "rel": "mri",
+    "location_id": 78780256,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x19",
+      "0x19"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_12_02",
+    "rel": "mri",
+    "location_id": 78780256,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x19",
+      "0x19",
+      "0x19",
+      "0x19"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_15_01",
+    "rel": "mri",
+    "location_id": 78780259,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1C",
+      "0x1C"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_17_01",
+    "rel": "mri",
+    "location_id": 78780263,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1B",
+      "0x1B"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_18_02",
+    "rel": "mri",
+    "location_id": 78780264,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1C",
+      "0x1C",
+      "0x1D"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_18_03",
+    "rel": "mri",
+    "location_id": 78780264,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1D",
+      "0x1D",
+      "0x1D"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_19_01",
+    "rel": "mri",
+    "location_id": 78780265,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1B",
+      "0x1B"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_19_02",
+    "rel": "mri",
+    "location_id": 78780265,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x19",
+      "0x1B"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_19_04",
+    "rel": "mri",
+    "location_id": 78780265,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x19",
+      "0x1B",
+      "0x19",
+      "0x1B"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_20_02",
+    "rel": "mri",
+    "location_id": 78780266,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1C",
+      "0x1D"
+    ]
+  },
+  {
+    "name": "btlgrp_mri_mri_20_03",
+    "rel": "mri",
+    "location_id": 78780266,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1D",
+      "0x1D",
+      "0x1C"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_01_01",
+    "rel": "muj",
+    "location_id": 78780461,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x54",
+      "0x54",
+      "0x54"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_05_01",
+    "rel": "muj",
+    "location_id": 78780488,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x54",
+      "0x54",
+      "0x54"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_05_02",
+    "rel": "muj",
+    "location_id": 78780488,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x54",
+      "0x54",
+      "0x54"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_00_01",
+    "rel": "muj",
+    "location_id": 78780453,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1",
+      "0x1",
+      "0x1"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_02_01_off_01",
+    "rel": "muj",
+    "location_id": 78780470,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x56"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_02_01_off_02",
+    "rel": "muj",
+    "location_id": 78780470,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x56",
+      "0x56"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_02_01_off_03",
+    "rel": "muj",
+    "location_id": 78780470,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x56",
+      "0x56",
+      "0x56"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_02_01_off_04",
+    "rel": "muj",
+    "location_id": 78780470,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x56",
+      "0x56",
+      "0x56",
+      "0x56"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_02_04_off_01",
+    "rel": "muj",
+    "location_id": 78780470,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x57"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_02_04_off_02",
+    "rel": "muj",
+    "location_id": 78780470,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x57",
+      "0x57"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_02_04_off_03",
+    "rel": "muj",
+    "location_id": 78780470,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x57",
+      "0x57",
+      "0x57"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_02_07_off_01",
+    "rel": "muj",
+    "location_id": 78780470,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x56",
+      "0x57"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_02_07_off_02",
+    "rel": "muj",
+    "location_id": 78780470,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x56",
+      "0x57",
+      "0x56"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_02_07_off_03",
+    "rel": "muj",
+    "location_id": 78780470,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x56",
+      "0x57",
+      "0x56",
+      "0x57"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_03_01_off_01",
+    "rel": "muj",
+    "location_id": 78780475,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x58",
+      "0x58"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_03_01_off_02",
+    "rel": "muj",
+    "location_id": 78780475,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x58",
+      "0x58",
+      "0x56"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_03_01_off_03",
+    "rel": "muj",
+    "location_id": 78780475,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x58",
+      "0x58",
+      "0x58"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_03_02_off_01",
+    "rel": "muj",
+    "location_id": 78780475,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x58",
+      "0x58"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_03_02_off_02",
+    "rel": "muj",
+    "location_id": 78780475,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x58",
+      "0x58",
+      "0x57"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_03_02_off_03",
+    "rel": "muj",
+    "location_id": 78780475,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x58",
+      "0x58",
+      "0x58"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_03_04_off_01",
+    "rel": "muj",
+    "location_id": 78780475,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x57",
+      "0x58"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_03_04_off_02",
+    "rel": "muj",
+    "location_id": 78780475,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x57",
+      "0x58",
+      "0x56"
+    ]
+  },
+  {
+    "name": "btlgrp_muj_muj_03_04_off_03",
+    "rel": "muj",
+    "location_id": 78780475,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x57",
+      "0x58",
+      "0x57"
+    ]
+  },
+  {
+    "name": "btlgrp_pik_pik_06_01_off_1",
+    "rel": "pik",
+    "location_id": 78780553,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x6A",
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_pik_pik_06_02_off_1",
+    "rel": "pik",
+    "location_id": 78780553,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x6A",
+      "0x6A",
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_pik_pik_06_03_off_1",
+    "rel": "pik",
+    "location_id": 78780553,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_pik_pik_06_04_off_1",
+    "rel": "pik",
+    "location_id": 78780553,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x6A",
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_pik_pik_06_05_off_1",
+    "rel": "pik",
+    "location_id": 78780553,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x6A",
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_pik_pik_06_06_off_1",
+    "rel": "pik",
+    "location_id": 78780553,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x6A",
+      "0x6A",
+      "0x6A",
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_pik_pik_06_07_off_1",
+    "rel": "pik",
+    "location_id": 78780553,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_pik_pik_06_08_off_1",
+    "rel": "pik",
+    "location_id": 78780553,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x6A",
+      "0x6A",
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_pik_pik_06_09_off_1",
+    "rel": "pik",
+    "location_id": 78780553,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x6A",
+      "0x6A",
+      "0x6A",
+      "0x6A"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_01_02_off_1",
+    "rel": "tik",
+    "location_id": 78780132,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x3",
+      "0x3"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_01_off_1",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_01_on_1",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_01_on_2",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4",
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_02_off_1",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4",
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_02_on_1",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x4",
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_02_on_2",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x4",
+      "0x4",
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_03_off_1",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xC",
+      "0xF"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_03_off_2",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xC",
+      "0xC"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_03_off_3",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xC",
+      "0xB"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_04_off_1",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xB",
+      "0x3"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_04_off_2",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xB",
+      "0xB"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_04_04_off_3",
+    "rel": "tik",
+    "location_id": 78780136,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xB",
+      "0xC"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_07_01_off_1",
+    "rel": "tik",
+    "location_id": 78780144,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x5",
+      "0x5",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_07_01_off_2",
+    "rel": "tik",
+    "location_id": 78780144,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5",
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_07_02_off_1",
+    "rel": "tik",
+    "location_id": 78780144,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_07_02_off_2",
+    "rel": "tik",
+    "location_id": 78780144,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x5",
+      "0x4",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_07_03_off_1",
+    "rel": "tik",
+    "location_id": 78780144,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xB",
+      "0xE"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_07_03_off_2",
+    "rel": "tik",
+    "location_id": 78780144,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xB",
+      "0xB"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_07_03_off_3",
+    "rel": "tik",
+    "location_id": 78780144,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xB",
+      "0x38"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_07_04_off_1",
+    "rel": "tik",
+    "location_id": 78780144,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x38",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_07_04_off_2",
+    "rel": "tik",
+    "location_id": 78780144,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x38",
+      "0x38"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_07_04_off_3",
+    "rel": "tik",
+    "location_id": 78780144,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x38",
+      "0xB"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_15_01_off_1",
+    "rel": "tik",
+    "location_id": 78780147,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x1"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_15_02_off_1",
+    "rel": "tik",
+    "location_id": 78780147,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x2"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_15_03_off_1",
+    "rel": "tik",
+    "location_id": 78780147,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x3"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_15_04_off_1",
+    "rel": "tik",
+    "location_id": 78780147,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x38",
+      "0x1"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_15_04_off_2",
+    "rel": "tik",
+    "location_id": 78780147,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x38",
+      "0x38"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_15_04_off_3",
+    "rel": "tik",
+    "location_id": 78780147,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x38",
+      "0xC"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_15_05_off_1",
+    "rel": "tik",
+    "location_id": 78780147,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xC",
+      "0x2"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_15_05_off_2",
+    "rel": "tik",
+    "location_id": 78780147,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xC",
+      "0xC"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_15_05_off_3",
+    "rel": "tik",
+    "location_id": 78780147,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xC",
+      "0x38"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_18_01_off_1",
+    "rel": "tik",
+    "location_id": 78780151,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_18_01_off_2",
+    "rel": "tik",
+    "location_id": 78780151,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x5",
+      "0x4",
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_18_02_off_1",
+    "rel": "tik",
+    "location_id": 78780151,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x5",
+      "0x5",
+      "0x5",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_18_02_off_2",
+    "rel": "tik",
+    "location_id": 78780151,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x5",
+      "0x4"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_18_03_off_1",
+    "rel": "tik",
+    "location_id": 78780151,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xC",
+      "0x2"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_18_03_off_2",
+    "rel": "tik",
+    "location_id": 78780151,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xC",
+      "0xC"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_18_03_off_3",
+    "rel": "tik",
+    "location_id": 78780151,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xC",
+      "0xB"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_18_04_off_1",
+    "rel": "tik",
+    "location_id": 78780151,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xB",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_18_04_off_2",
+    "rel": "tik",
+    "location_id": 78780151,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xB",
+      "0xB"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_18_04_off_3",
+    "rel": "tik",
+    "location_id": 78780151,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0xB",
+      "0xC"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_20_01_off_1",
+    "rel": "tik",
+    "location_id": 78780155,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x5",
+      "0x5",
+      "0x5",
+      "0x5",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_20_02_off_1",
+    "rel": "tik",
+    "location_id": 78780155,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x5",
+      "0x5",
+      "0x5",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_20_03_off_1",
+    "rel": "tik",
+    "location_id": 78780155,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x5",
+      "0x5",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_20_04_off_1",
+    "rel": "tik",
+    "location_id": 78780155,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x5",
+      "0x5",
+      "0x5",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_20_05_off_1",
+    "rel": "tik",
+    "location_id": 78780155,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x5",
+      "0x5",
+      "0x5",
+      "0x5",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tik_tik_20_06_off_1",
+    "rel": "tik",
+    "location_id": 78780155,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0xA3",
+      "0x5",
+      "0x5",
+      "0x5",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_19",
+    "rel": "tou",
+    "location_id": 78780267,
+    "enemy_count": 5,
+    "enemy_ids": [
+      "0x24",
+      "0x24",
+      "0x24",
+      "0x24",
+      "0x24"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_18",
+    "rel": "tou",
+    "location_id": 78780267,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x25",
+      "0x25",
+      "0x26"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_17",
+    "rel": "tou",
+    "location_id": 78780267,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x27",
+      "0x27",
+      "0x27"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_16",
+    "rel": "tou",
+    "location_id": 78780267,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x11",
+      "0x11",
+      "0x11"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_15",
+    "rel": "tou",
+    "location_id": 78780267,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x29",
+      "0x29",
+      "0x28"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_14",
+    "rel": "tou",
+    "location_id": 78780267,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x19",
+      "0x18",
+      "0x1B"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_13",
+    "rel": "tou",
+    "location_id": 78780267,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x2A",
+      "0x2A",
+      "0x2A"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_12",
+    "rel": "tou",
+    "location_id": 78780267,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x2B",
+      "0x2B",
+      "0x2B",
+      "0x2B"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_11",
+    "rel": "tou",
+    "location_id": 78780267,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x2C",
+      "0x2C",
+      "0x2D",
+      "0x2D"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_9",
+    "rel": "tou",
+    "location_id": 78780296,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x2E",
+      "0x2E"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_8",
+    "rel": "tou",
+    "location_id": 78780296,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x13",
+      "0x13"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_7",
+    "rel": "tou",
+    "location_id": 78780296,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x2F",
+      "0x30",
+      "0x2F"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_6",
+    "rel": "tou",
+    "location_id": 78780296,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x10",
+      "0x56",
+      "0x57"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_5",
+    "rel": "tou",
+    "location_id": 78780296,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x31",
+      "0x33",
+      "0x35"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_4",
+    "rel": "tou",
+    "location_id": 78780296,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x37"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_3",
+    "rel": "tou",
+    "location_id": 78780296,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x38",
+      "0x3A",
+      "0x39"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_2",
+    "rel": "tou",
+    "location_id": 78780296,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x3B",
+      "0x3B"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_rank_1",
+    "rel": "tou",
+    "location_id": 78780296,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x3C"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_add_1",
+    "rel": "tou",
+    "location_id": 78780296,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x4A",
+      "0x4A",
+      "0x4A",
+      "0x4A"
+    ]
+  },
+  {
+    "name": "btlgrp_tou_tou_add_2",
+    "rel": "tou",
+    "location_id": 78780267,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x4",
+      "0x5",
+      "0x4",
+      "0x5"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_00_01_off_1",
+    "rel": "win",
+    "location_id": 78780215,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x18",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_00_01_on_1",
+    "rel": "win",
+    "location_id": 78780215,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x18",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_00_01_on_2",
+    "rel": "win",
+    "location_id": 78780215,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x18",
+      "0x18",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_00_01_on_3",
+    "rel": "win",
+    "location_id": 78780215,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x18",
+      "0x18",
+      "0x18",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_00_02_off_1",
+    "rel": "win",
+    "location_id": 78780215,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1A",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_00_02_on_1",
+    "rel": "win",
+    "location_id": 78780215,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1A",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_00_02_on_2",
+    "rel": "win",
+    "location_id": 78780215,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1A",
+      "0x18",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_00_03_off_1",
+    "rel": "win",
+    "location_id": 78780215,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x18",
+      "0x1A",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_00_03_on_1",
+    "rel": "win",
+    "location_id": 78780215,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x18",
+      "0x18"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_00_03_on_2",
+    "rel": "win",
+    "location_id": 78780215,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x18",
+      "0x1A"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_02_01_off_1",
+    "rel": "win",
+    "location_id": 78780220,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1A",
+      "0x19"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_02_01_on_1",
+    "rel": "win",
+    "location_id": 78780220,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x1A",
+      "0x19"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_02_01_on_2",
+    "rel": "win",
+    "location_id": 78780220,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1A",
+      "0x19",
+      "0x19"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_02_01_on_3",
+    "rel": "win",
+    "location_id": 78780220,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x1A",
+      "0x1A",
+      "0x19"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_02_02_off_1",
+    "rel": "win",
+    "location_id": 78780220,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x19",
+      "0x1A"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_02_02_on_1",
+    "rel": "win",
+    "location_id": 78780220,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x19",
+      "0x1A"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_02_02_on_2",
+    "rel": "win",
+    "location_id": 78780220,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x19",
+      "0x19",
+      "0x1A"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_02_02_on_3",
+    "rel": "win",
+    "location_id": 78780220,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x19",
+      "0x1A",
+      "0x1A"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_03_01_off_1",
+    "rel": "win",
+    "location_id": 78780224,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x19",
+      "0x19",
+      "0x19",
+      "0x19"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_03_01_on_1",
+    "rel": "win",
+    "location_id": 78780224,
+    "enemy_count": 2,
+    "enemy_ids": [
+      "0x19",
+      "0x19"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_03_01_on_2",
+    "rel": "win",
+    "location_id": 78780224,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x19",
+      "0x19",
+      "0x19"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_03_01_on_3",
+    "rel": "win",
+    "location_id": 78780224,
+    "enemy_count": 3,
+    "enemy_ids": [
+      "0x19",
+      "0x18",
+      "0x1A"
+    ]
+  },
+  {
+    "name": "btlgrp_win_win_03_01_on_4",
+    "rel": "win",
+    "location_id": 78780224,
+    "enemy_count": 4,
+    "enemy_ids": [
+      "0x19",
+      "0x19",
+      "0x19",
+      "0x19"
+    ]
+  }
+]

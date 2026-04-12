@@ -34,24 +34,9 @@ class ObscureLogic(Toggle):
 class SpawnPoint(Choice):
     """
     Determines where you will spawn into the game when creating a new file.
-
-    castle_main: The save point near Memento in Castle Sansa.
-    castle_gazebo: The save point in the gazebo in the Castle Sansa courtyard.
-    dungeon_mirror: The vanilla starting point in Dilapidated Dungeon. If this option is selected, start_with_breaker
-        will be forced on and you will most likely be expected to leave through the dark rooms to The Underbelly. See
-        this video for a guide on how to do that: https://youtu.be/Z_a9l2wzd8c
-    library: The save point at the start of Listless Library. If this option is selected, either start_with_breaker or
-        randomize_books must also be turned on. If both options are off at the start of generation, start_with_breaker
-        will be forced on. If just randomize_books is turned on, your sphere one will have a lot of checks but will be
-        very short, so keep that in mind if you are playing in a multiworld with other people.
-    underbelly_south: The save point near the building at the south of The Underbelly.
-    underbelly_big_room: The save point in the big room in the middle of The Underbelly.
-    bailey_main: The save point in Empty Bailey.
-    keep_main: The save point in the main hallway in Sansa Keep.
-    keep_north: The north save point in Sansa Keep.
-    theatre_main: The save point in the auditorium in Twilight Theatre. If this option is selected, your starting
-        inventory will include Cling Gem/one Cling Shard on normal, or Heliacal Power/one Air Kick on hard+. You will be
-        able to leave Twilight Theatre through the big pillar room to the south.
+    
+    Some spawns have special behaviors if they are selected or randomly chosen which can affect starting inventory and
+    logic. Refer to the game page or the readme in the github repo for more information.
     """
     display_name = "Spawn Point"
     option_castle_main = PlayerStarts.CastleWestSave.value

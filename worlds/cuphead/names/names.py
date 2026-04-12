@@ -239,6 +239,7 @@ class LocationNames:
     loc_level_dlc_boss_snowcult_event_agrade = _loc_event_ + loc_level_dlc_boss_snowcult_topgrade
     loc_level_dlc_boss_snowcult_event_dlc_chaliced = _loc_event_ + loc_level_dlc_boss_snowcult_dlc_chaliced
     loc_level_dlc_boss_airplane = level_dlc_boss_airplane + " Complete"
+    loc_level_dlc_boss_airplane_secret = level_dlc_boss_airplane + " Secret Complete"
     loc_level_dlc_boss_airplane_topgrade = level_dlc_boss_airplane + " Top Grade"
     loc_level_dlc_boss_airplane_dlc_chaliced = level_dlc_boss_airplane + " Chalice Complete"
     loc_level_dlc_boss_airplane_event_defeat = _loc_event_ + level_dlc_boss_airplane + " Defeated"

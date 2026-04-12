@@ -1,337 +1,291 @@
-
-from typing import Dict, TYPE_CHECKING
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, override
 if TYPE_CHECKING:
     from . import WaffleWorld
 
-from .Names import LocationName, ItemName
-from .Options import Goal
+from .Options import EnemyShuffle, InventoryYoshiLogic, GameLogicDifficulty
 from .Levels import level_info_dict, hard_gameplay_levels, very_hard_gameplay_levels
+from .Tricks import logic_tricks
 
-from worlds.generic.Rules import CollectionRule, add_rule
-from BaseClasses import CollectionState
+from .enums import Locations, Regions, Items
+
+from rule_builder.options import OptionFilter
+from rule_builder.rules import Has, HasAny, HasAnyCount, HasAll, Rule, True_, CanReachRegion, WrapperRule
+from rule_builder.field_resolvers import FromOption, FromWorldAttr
+from BaseClasses import CollectionState, Entrance, Location
+from NetUtils import JSONMessagePart
+
+GAME_NAME = "SMW: Spicy Mycena Waffles"
+
+@dataclass()
+class Macro(WrapperRule["WaffleWorld"], game=GAME_NAME):
+    name: str
+    description: str = ""
+
+    @override
+    def _instantiate(self, world: "WaffleWorld") -> Rule.Resolved:
+        if rule := world.rule_macros.get(self.name):
+            return rule
+        rule = self.Resolved(
+            self.child.resolve(world),
+            self.name,
+            self.description,
+            player=world.player,
+            caching_enabled=getattr(world, "rule_caching_enabled", False),
+        )
+        world.rule_macros[self.name] = rule
+        return rule
+
+    @override
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}[{self.child}]"
+
+    class Resolved(WrapperRule.Resolved):
+        name: str
+        description: str = ""
+
+        @override
+        def explain_json(self, state: CollectionState | None = None) -> list[JSONMessagePart]:
+            if state is None:
+                return [{"type": "text", "text": str(self)}]
+            return [{"type": "color", "color": "green" if self(state) else "salmon", "text": str(self)}]
+
+        @override
+        def explain_str(self, state: CollectionState | None = None) -> str:
+            suffix = ""
+            if state is not None:
+                suffix = " ✓" if self(state) else " ✕"
+            return f"{self.name}{suffix}"
+
+        @override
+        def __str__(self) -> str:
+            return self.name
+        
+CanCarry: Rule = Has(Items.carry)
+CanRun: Macro = Macro(
+    HasAny(Items.run, Items.progressive_run),
+    "Can run",
+    "Can run freely",
+)
+CanWallRun: Macro = Macro(
+    HasAnyCount({Items.run: 1, Items.progressive_run: 2}),
+    "Can wall run anywhere",
+    "Can perform a wall run anywhere",
+)
+CanSwim: Macro = Macro(
+    HasAny(Items.swim, Items.progressive_swim),
+    "Can swim",
+    "Can swim freely underwater"
+)
+CanClimb: Rule = Has(Items.climb)
+CanSpinJump: Rule = Has(Items.spin_jump)
+
+HasMushroom: Macro = Macro(
+    Has(Items.progressive_powerup, 1),
+    "Has mushrooms",
+    "Can be Big Mario",
+)
+HasFireFlower: Macro = Macro(
+    Has(Items.progressive_powerup, 2),
+    "Has fire flowers",
+    "Can throw fireballs at enemies",
+)
+HasFeather: Macro = Macro(
+    Has(Items.progressive_powerup, 3),
+    "Has feathers",
+    "Has a cape",
+)
+HasSuperStar: Macro = Macro(
+    Has(Items.super_star_active, 2),
+    "Has super star",
+    "Can be invincible for a period of time",
+)
+HasPBalloon: Rule = Has(Items.p_balloon)
+HasPSwitch: Rule = Has(Items.p_switch)
+
+HasYSP: Rule = Has(Items.yellow_switch_palace)
+HasGSP: Rule = Has(Items.green_switch_palace)
+HasRSP: Rule = Has(Items.red_switch_palace)
+HasBSP: Rule = Has(Items.blue_switch_palace)
+
+HasMidway: Rule = Has(Items.midway_point)
+HasItemBox: Rule = Has(Items.item_box)
+HasExtraDefense: Rule = Has(Items.extra_defense)
+
+CanBreakTurnBlocks: Macro = Macro(
+    HasAll(Items.progressive_powerup, Items.spin_jump),
+    "Can break turn blocks",
+    "Can break yellow blocks as Big Mario"
+)
+CanCapeFly: Macro = Macro(
+    HasFeather & CanRun,
+    "Can cape fly",
+    "Can fly with a cape",
+)
+
+CanGetGreenYoshi: Macro = Macro(
+        CanReachRegion(Regions.donut_plains_top_secret) |
+        CanReachRegion(Regions.yoshis_island_2_region) |
+        CanReachRegion(Regions.yoshis_island_3_region) |
+        CanReachRegion(Regions.donut_plains_1_region) |
+        CanReachRegion(Regions.donut_plains_4_region) |
+        CanReachRegion(Regions.vanilla_dome_3_region) |
+        CanReachRegion(Regions.vanilla_secret_2_region) |
+        (CanReachRegion(Regions.butter_bridge_2_region) & CanCarry) |
+        (CanReachRegion(Regions.cookie_mountain_region) & HasRSP) |
+        CanReachRegion(Regions.forest_of_illusion_1_region) |
+        CanReachRegion(Regions.forest_of_illusion_3_region) |
+        CanReachRegion(Regions.chocolate_island_1_region) |
+        CanReachRegion(Regions.chocolate_island_2_region) |
+        (CanReachRegion(Regions.valley_of_bowser_4_region) & CanClimb) |
+        CanReachRegion(Regions.special_zone_5_region) |
+        #CanReachRegion(Regions.special_zone_7_region) |
+        (CanReachRegion(Regions.special_zone_8_region) & HasPSwitch & CanCarry),
+    "Can get Green Yoshi",
+    "Can get a Green Yoshi in any level",
+    options=[OptionFilter(InventoryYoshiLogic, 0)],
+    filtered_resolution=True,
+)
+
+CanGetRedYoshi: Macro = Macro(
+        (CanReachRegion(Regions.star_road_1_region) & CanBreakTurnBlocks) |
+        CanReachRegion(Regions.star_road_4_region),
+    "Can get Red Yoshi",
+    "Can get a Red Yoshi in any level",
+    options=[OptionFilter(InventoryYoshiLogic, 0)],
+    filtered_resolution=True,
+)
+
+CanGetYellowYoshi: Macro = Macro(
+        CanReachRegion(Regions.star_road_3_region) |
+        (CanReachRegion(Regions.star_road_5_region) & CanCapeFly | HasPSwitch),
+    "Can get Yellow Yoshi",
+    "Can get a Yellow Yoshi in any level",
+    options=[OptionFilter(InventoryYoshiLogic, 0)],
+    filtered_resolution=True,
+)
+
+CanGetBlueYoshi: Macro = Macro(
+        CanReachRegion(Regions.star_road_2_region) | (
+            (CanGetGreenYoshi | CanGetRedYoshi | CanGetYellowYoshi) & (
+                    CanReachRegion(Regions.cheese_bridge_region) | 
+                    CanReachRegion(Regions.special_zone_3_region) | 
+                    CanReachRegion(Regions.valley_of_bowser_2_region)
+            )
+        ),
+    "Can get Blue Yoshi",
+    "Can get a Blue Yoshi in any level",
+    options=[OptionFilter(InventoryYoshiLogic, 0)],
+    filtered_resolution=True,
+)
+
+CanGetAnyYoshi: Macro = Macro(
+    (
+        CanGetGreenYoshi | CanGetRedYoshi | CanGetBlueYoshi | CanGetYellowYoshi
+    ),
+    "Can get Yoshi",
+    "Can get a Yoshi of any color in any levels"
+)
+
+CanYoshiCarry: Macro = Macro(
+    HasAnyCount({Items.yoshi: 1, Items.progressive_yoshi: 2}) & (
+        CanGetGreenYoshi | CanGetBlueYoshi | CanGetYellowYoshi
+    ),
+    "Can carry with Yoshi",
+    "Can maintain any item in Yoshi's mouth"
+)
+
+CanCarryOrYoshiTongue: Macro = Macro(
+    CanCarry | CanYoshiCarry,
+    "Can carry or use Yoshi's tongue",
+    "Can carry objects with Mario's hands or Yoshi's tongue"
+)
+
+CanYoshiFly: Macro = Macro(
+    CanYoshiCarry & CanGetBlueYoshi,
+    "Can Yoshi fly",
+    "Can fly with Yoshi",
+)
+CanFly: Macro = Macro(
+    CanCapeFly | CanYoshiFly,
+    "Can fly",
+    "Can fly with either Yoshi or Cape",
+)
+
+HasYoshi: Macro = Macro(
+    HasAny(Items.yoshi, Items.progressive_yoshi) & CanGetAnyYoshi,
+    "Has Yoshi",
+    "Can get a Yoshi from either a level or the inventory (if that setting is enabled)"
+)
+
 
 class WaffleRules:
     player: int
     world: "WaffleWorld"
-    connection_rules: Dict[str, CollectionRule]
-    carryless_exit_rules: Dict[str, CollectionRule]
-    region_rules: Dict[str, CollectionRule]
-    location_rules: Dict[str, CollectionRule]
+    carryless_exit_rules: dict[str, Rule]
+    connection_rules: dict[str, Rule]
+    region_rules: dict[str, Rule]
+    location_rules: dict[str, Rule]
+    enemy_shuffle: int
+    required_egg_count: int
+    inventory_yoshi_logic: int
 
     def __init__(self, world: "WaffleWorld") -> None:
         self.player = world.player
         self.world = world
+        self.enemy_shuffle = world.options.enemy_shuffle.value
+        self.required_egg_count = world.required_egg_count
+        self.inventory_yoshi_logic = world.options.inventory_yoshi_logic.value
 
-    def can_carry(self, state: CollectionState) -> bool:
-        return state.has(ItemName.mario_carry, self.player)
+        options = self.world.options.alternate_logic.value
+        self.glitched_options = []
+        if self.world.is_ut:
+            options = logic_tricks
+            self.glitched_options = logic_tricks
+        self.alternate_logic(self, options)
 
-    def can_carry_or_yoshi_tongue(self, state: CollectionState) -> bool:
-        return self.can_carry(state) or self.has_yoshi_carry(state)
-    
-    def can_run(self, state: CollectionState) -> bool:
-        return state.has(ItemName.mario_run, self.player)
-    
-    def can_wall_run(self, state: CollectionState) -> bool:
-        return state.has(ItemName.mario_run, self.player, 2)
-    
-    def can_swim(self, state: CollectionState) -> bool:
-        return state.has(ItemName.mario_swim, self.player)
-    
-    def can_climb(self, state: CollectionState) -> bool:
-        return state.has(ItemName.mario_climb, self.player)
-    
-    def can_spin_jump(self, state: CollectionState) -> bool:
-        return state.has(ItemName.mario_spin_jump, self.player)
-    
-    def has_mushroom(self, state: CollectionState) -> bool:
-        return state.has(ItemName.progressive_powerup, self.player, 1)
-    
-    def has_fire_flower(self, state: CollectionState) -> bool:
-        return state.has(ItemName.progressive_powerup, self.player, 2)
-    
-    def has_feather(self, state: CollectionState) -> bool:
-        return state.has(ItemName.progressive_powerup, self.player, 3)
-    
-    def has_super_star(self, state: CollectionState) -> bool:
-        return state.has(ItemName.super_star_active, self.player, 2)
-    
-    def has_p_balloon(self, state: CollectionState) -> bool:
-        return state.has(ItemName.p_balloon, self.player)
-    
-    def has_p_switch(self, state: CollectionState) -> bool:
-        return state.has(ItemName.p_switch, self.player)
-    
-    def has_yoshi(self, state: CollectionState) -> bool:
-        return state.has(ItemName.yoshi, self.player) and self.can_get_green_yoshi(state)
-    
-    def has_yoshi_carry(self, state: CollectionState) -> bool:
-        return state.has(ItemName.yoshi, self.player, 2) and self.can_get_green_yoshi(state)
-    
-    def has_special_world(self, state: CollectionState) -> bool:
-        return state.has(ItemName.special_world_clear, self.player)
-    
-    def has_ysp(self, state: CollectionState) -> bool:
-        return state.has(ItemName.yellow_switch_palace, self.player)
-    
-    def has_gsp(self, state: CollectionState) -> bool:
-        return state.has(ItemName.green_switch_palace, self.player)
-
-    def has_rsp(self, state: CollectionState) -> bool:
-        return state.has(ItemName.red_switch_palace, self.player)
-
-    def has_bsp(self, state: CollectionState) -> bool:
-        return state.has(ItemName.blue_switch_palace, self.player)
-    
-    def has_midway_points(self, state: CollectionState) -> bool:
-        return state.has(ItemName.midway_point, self.player)
-    
-    def has_item_box(self, state: CollectionState) -> bool:
-        return state.has(ItemName.item_box, self.player)
-    
-    def has_extra_defense(self, state: CollectionState) -> bool:
-        return state.has(ItemName.extra_defense, self.player)
-
-    def has_tokens(self, state: CollectionState) -> bool:
-        return state.has(ItemName.yoshi_egg, self.player, self.world.required_egg_count)
-
-
-    def can_cape_fly(self, state: CollectionState) -> bool:
-        return self.has_feather(state) and self.can_run(state)
-    
-    def can_yoshi_fly(self, state: CollectionState) -> bool:
-        return self.has_yoshi_carry(state) and (self.has_special_world(state) or self.can_get_blue_yoshi(state))
-    
-    def can_fly(self, state: CollectionState) -> bool:
-        return self.can_cape_fly(state) or self.can_yoshi_fly(state)
-    
-    def butter_bridge_special_case(self, state: CollectionState) -> bool:
-        if self.world.options.enemy_shuffle.value:
-            return self.has_rsp(state)
-        else:
-            return True
-        
-    def twin_bridges_castle_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.can_climb(state) or (
-                state.has(ItemName.glitched, self.player) and self.can_wall_run(state)
-            )
-        else:
-            return self.can_climb(state)
-        
-    def forest_ghost_house_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.has_p_switch(state) or (
-                state.has(ItemName.glitched, self.player) and self.can_wall_run(state)
-            )
-        else:
-            return self.has_p_switch(state)
-        
-    def vanilla_dome_1_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.can_run(state) and (
-                self.has_super_star(state) or self.has_mushroom(state)
-            ) or state.has(ItemName.glitched, self.player)
-        else:
-            return self.can_run(state) and (
-                self.has_super_star(state) or self.has_mushroom(state)
-            )
-
-    def vanilla_dome_4_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.can_carry(state) or (state.has(ItemName.glitched, self.player) and (
-                self.has_feather(state) or self.has_yoshi(state))
-            )
-        else:
-            return True
-
-    def vanilla_secret_1_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.can_climb(state) or (
-                state.has(ItemName.glitched, self.player) and self.can_wall_run(state)
-            )
-        else:
-            return self.can_climb(state)
-        
-    def vanilla_secret_3_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.can_swim(state) or state.has(ItemName.glitched, self.player)
-        else:
-            return self.can_swim(state)
-        
-    def cheese_bridge_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.can_cape_fly(state) or (state.has(ItemName.glitched, self.player) and self.has_yoshi(state))
-        else:
-            return self.can_cape_fly(state)
-    
-    def cookie_mountain_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.can_swim(state) or (
-                state.has(ItemName.glitched, self.player) and self.can_wall_run(state)
-            )
-        else:
-            return self.can_swim(state)
-        
-    def forest_of_illusion_1_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.has_p_balloon(state) or (
-                state.has(ItemName.glitched, self.player) and self.has_yoshi(state)
-            )
-        else:
-            return self.has_p_balloon(state)
-        
-    def forest_of_illusion_2_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut and self.world.options.enemy_shuffle.value:
-            return state.has(ItemName.super_star_active, self.player, 3) or state.has(ItemName.glitched, self.player)
-        elif self.world.options.enemy_shuffle.value:
-            return state.has(ItemName.super_star_active, self.player, 3)
-        else:
-            return True
-        
-    def forest_of_illusion_3_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return (self.can_carry_or_yoshi_tongue(state) and self.can_break_turn_blocks(state)) or (
-                state.has(ItemName.glitched, self.player) and self.has_yoshi_carry(state)
-            )
-        else:
-            return self.can_carry_or_yoshi_tongue(state) and self.can_break_turn_blocks(state)
-        
-    def forest_secret_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.has_bsp(state) or state.has(ItemName.glitched, self.player)
-        else:
-            return self.has_bsp(state)
-        
-    def chocolate_island_1_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.has_yoshi(state) or (state.has(ItemName.glitched, self.player) and self.can_pass_munchers(state))
-        else:
-            return self.has_yoshi(state)
-        
-    def chocolate_secret_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.can_run(state) or state.has(ItemName.glitched, self.player)
-        else:
-            return self.can_run(state)
-        
-    def valley_of_bowser_3_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.can_carry(state) or (state.has(ItemName.glitched, self.player) and self.has_yoshi(state))
-        else:
-            return self.can_carry(state)
-        
-    def valley_of_bowser_4_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return self.can_climb(state) or (state.has(ItemName.glitched, self.player) and self.has_yoshi(state))
-        else:
-            return self.can_climb(state)
-        
-    def special_zone_4_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            return state.has(ItemName.glitched, self.player) or (
-                (self.can_carry(state) or self.has_p_switch(state)) and self.has_super_star(state)
-            )
-        else:
-            return (self.can_carry(state) or self.has_p_switch(state)) and self.has_super_star(state)
-        
-    def special_zone_6_special_case(self, state: CollectionState) -> bool:
-        if self.world.using_ut:
-            if self.world.options.enemy_shuffle:
-                return self.can_swim(state) or (state.has(ItemName.glitched, self.player) and state.has(ItemName.super_star_active, self.player, 2))
-            else:
-                return self.can_swim(state) or state.has(ItemName.glitched, self.player)
-        else:
-            return self.can_swim(state)
-
-    def can_break_turn_blocks(self, state: CollectionState) -> bool:
-        return self.has_mushroom(state) and self.can_spin_jump(state)
-    
-    def can_pass_munchers(self, state: CollectionState) -> bool:
-        return self.has_mushroom(state) or self.has_yoshi(state)
-    
-    def can_get_green_yoshi(self, state: CollectionState) -> bool:
-        if self.world.options.inventory_yoshi_logic.value:
-            return True
-        else:
-            return (
-                state.can_reach_region(LocationName.yoshis_island_2_region, self.player) or \
-                state.can_reach_region(LocationName.yoshis_island_3_region, self.player) or \
-                state.can_reach_region(LocationName.donut_plains_1_region, self.player) or \
-                state.can_reach_region(LocationName.donut_plains_4_region, self.player) or \
-                state.can_reach_region(LocationName.vanilla_dome_3_region, self.player) or \
-                state.can_reach_region(LocationName.vanilla_secret_2_region, self.player) or \
-                (state.can_reach_region(LocationName.butter_bridge_2_region, self.player) and self.can_carry(state)) or \
-                (state.can_reach_region(LocationName.cookie_mountain_region, self.player) and self.has_rsp(state)) or \
-                state.can_reach_region(LocationName.forest_of_illusion_1_region, self.player) or \
-                state.can_reach_region(LocationName.forest_of_illusion_3_region, self.player) or \
-                state.can_reach_region(LocationName.chocolate_island_1_region, self.player) or \
-                state.can_reach_region(LocationName.chocolate_island_2_region, self.player) or \
-                (state.can_reach_region(LocationName.valley_of_bowser_4_region, self.player) and self.can_climb(state)) or \
-                state.can_reach_region(LocationName.special_zone_5_region, self.player) or \
-                state.can_reach_region(LocationName.special_zone_7_region, self.player) or \
-                state.can_reach_region(LocationName.special_zone_8_region, self.player)
-            )
-        
-    def can_get_blue_yoshi(self, state: CollectionState) -> bool:
-        if self.world.options.inventory_yoshi_logic.value:
-            return True
-        else:
-            return ((
-                    self.can_get_green_yoshi(state) or \
-                    self.can_get_red_yoshi(state) or \
-                    self.can_get_yellow_yoshi(state)
-                ) and (
-                    state.can_reach_region(LocationName.cheese_bridge_region, self.player) or \
-                    state.can_reach_region(LocationName.special_zone_3_region, self.player) or \
-                    state.can_reach_region(LocationName.valley_of_bowser_2_region, self.player)
-            )) or state.can_reach_region(LocationName.star_road_2_region, self.player)
-
-    
-    def can_get_red_yoshi(self, state: CollectionState) -> bool:
-        if self.world.options.inventory_yoshi_logic.value:
-            return True
-        else:
-            return (
-                state.can_reach_region(LocationName.star_road_1_region, self.player) or \
-                state.can_reach_region(LocationName.star_road_4_region, self.player)
-            ) and self.can_carry(state)
-
-    def can_get_yellow_yoshi(self, state: CollectionState) -> bool:
-        if self.world.options.inventory_yoshi_logic.value:
-            return True
-        else:
-            return (
-                state.can_reach_region(LocationName.star_road_3_region, self.player) or \
-                (state.can_reach_region(LocationName.star_road_5_region, self.player) and self.can_cape_fly(state) or self.has_p_switch(state))
-            )
-
-    def can_beat_hard_level(self, state: CollectionState, difficulty: int) -> bool:
-        if difficulty == 0:
-            return self.has_mushroom(state) and (self.has_item_box(state) or self.has_midway_points(state))
-        elif difficulty == 1:
-            return self.has_mushroom(state)
-        else:
-            return True
-
-    def can_beat_very_hard_level(self, state: CollectionState, difficulty: int) -> bool:
-        if difficulty == 0:
-            return self.has_fire_flower(state) and (self.has_midway_points(state) or self.has_item_box(state) or self.has_extra_defense(state))
-        elif difficulty == 1:
-            return self.has_mushroom(state) and (self.has_midway_points(state) or self.has_item_box(state))
-        else:
-            return True
-
-    def true(self, state: CollectionState) -> bool:
-        return True
-    
     def set_smw_rules(self) -> None:
         world = self.world
         multiworld = self.world.multiworld
-        game_difficulty = world.options.game_logic_difficulty.value
 
-        # Swap exit rules and use carryless rules if needed
+        if self.world.is_ut:
+            CanBeatHardLevel: Macro = Macro(
+                (OptionFilter(GameLogicDifficulty, 0) & HasMushroom & (HasItemBox | HasMidway)) |
+                (OptionFilter(GameLogicDifficulty, 1) & HasMushroom) |
+                OptionFilter(GameLogicDifficulty, 2) |
+                Has(Items.glitched),
+                "Can clear hard levels",
+                "Can clear hard levels depending on game_logic_difficulty",
+            )
+
+            CanBeatVeryHardLevel: Macro = Macro(
+                (OptionFilter(GameLogicDifficulty, 0) & HasFireFlower & (HasMidway | HasItemBox | HasExtraDefense)) |
+                (OptionFilter(GameLogicDifficulty, 1) & HasMushroom & (HasItemBox | HasMidway)) |
+                OptionFilter(GameLogicDifficulty, 2) |
+                Has(Items.glitched),
+                "Can clear very hard levels",
+                "Can clear very hard levels depending on game_logic_difficulty",
+            )
+        else:
+            CanBeatHardLevel: Macro = Macro(
+                (OptionFilter(GameLogicDifficulty, 0) & HasMushroom & (HasItemBox | HasMidway)) |
+                (OptionFilter(GameLogicDifficulty, 1) & HasMushroom) |
+                OptionFilter(GameLogicDifficulty, 2),
+                "Can clear hard levels",
+                "Can clear hard levels depending on game_logic_difficulty",
+            )
+
+            CanBeatVeryHardLevel: Macro = Macro(
+                (OptionFilter(GameLogicDifficulty, 0) & HasFireFlower & (HasMidway | HasItemBox | HasExtraDefense)) |
+                (OptionFilter(GameLogicDifficulty, 1) & HasMushroom & (HasItemBox | HasMidway)) |
+                OptionFilter(GameLogicDifficulty, 2),
+                "Can clear very hard levels",
+                "Can clear very hard levels depending on game_logic_difficulty",
+            )
+
+        # Swap exit rules & use carryless rules if needed
         for level_id, level_info in level_info_dict.items():
-            # Process carryless firstD
+            # Process carryless first
             if level_id in world.carryless_exits:
                 level_name = level_info.levelName
                 entrance = f"{level_name} -> {level_name} - Secret Exit"
@@ -349,2053 +303,2566 @@ class WaffleRules:
 
         # Build entrance rules
         for entrance_name, rule in self.connection_rules.items():
-            entrance = multiworld.get_entrance(entrance_name, self.player)
-            entrance.access_rule = rule
+            entrance: Entrance = multiworld.get_entrance(entrance_name, self.player)
             if entrance.parent_region.name in hard_gameplay_levels:
-                add_rule(entrance, lambda state: self.can_beat_hard_level(state, game_difficulty))
+                rule = rule & CanBeatHardLevel
             elif entrance.parent_region.name in very_hard_gameplay_levels:
-                add_rule(entrance, lambda state: self.can_beat_very_hard_level(state, game_difficulty))
+                rule = rule & CanBeatVeryHardLevel
+            self.world.set_rule(entrance, rule)
+
+            #if self.world.is_ut and world.multiworld.enforce_deferred_connections in ("on", "default"):
+            #    try:
+            #        glitched_entrance = multiworld.get_entrance(f"{entrance_name} (Glitched)", self.player)
+            #    except KeyError:
+            #        continue
+            #    glitched_rule = rule & Has(Items.glitched)
+            #    self.world.set_rule(glitched_entrance, glitched_rule)
+
+        # Build glitched entrances
+        if self.world.is_ut and world.multiworld.enforce_deferred_connections in ("on", "default"):
+            for entrance in multiworld.get_entrances(self.player):
+                if entrance.name.endswith("(Glitched)"):
+                    self.world.set_rule(entrance, Has(Items.glitched))
 
         # Build location rules
         for loc in multiworld.get_locations(self.player):
+            rule = True_()
             if loc.name in self.location_rules:
-                loc.access_rule = self.location_rules[loc.name]
+                rule = self.location_rules[loc.name]
             
             if loc.parent_region.name in hard_gameplay_levels:
-                add_rule(loc, lambda state: self.can_beat_hard_level(state, game_difficulty))
+                rule = rule & CanBeatHardLevel
             elif loc.parent_region.name in very_hard_gameplay_levels:
-                add_rule(loc, lambda state: self.can_beat_very_hard_level(state, game_difficulty))
+                rule = rule & CanBeatVeryHardLevel
             # Add generic rules for valid locations
             if "- Midway Point" in loc.name:
-                add_rule(loc, lambda state: self.has_midway_points(state))
+                rule = rule & HasMidway
             elif " - Green Switch Palace Block" in loc.name:
-                add_rule(loc, lambda state: self.has_gsp(state))
+                rule = rule & HasGSP
             elif " - Yellow Switch Palace Block" in loc.name:
-                add_rule(loc, lambda state: self.has_ysp(state))
+                rule = rule & HasYSP
+
+            self.world.set_rule(loc, rule)
 
         # Handle goals
-        if world.options.goal == Goal.option_yoshi_house:
-            add_rule(world.multiworld.get_location(LocationName.yoshis_house, world.player),
-                    lambda state: state.has(ItemName.yoshi_egg, world.player, world.required_egg_count))
-        elif world.options.goal == Goal.option_bowser:
-            add_rule(world.multiworld.get_location(LocationName.bowser, world.player), 
-                     lambda state: state.has(ItemName.mario_carry, world.player) and self.has_tokens(state))
+        self.world.set_completion_rule(Has(Items.victory))
 
-        multiworld.completion_condition[self.player] = lambda state: state.has(ItemName.victory, self.player)
-
-
-    def set_glitched_rules(self) -> None:
-        multiworld = self.world.multiworld
-
-        # Build entrance rules
-        # Basically skips adding the hard/very hard item requirements
-        for entrance_name, rule in self.connection_rules.items():
-            entrance = multiworld.get_entrance(entrance_name, self.player)
-            add_rule(entrance, lambda state, r=rule: r(state) and state.has(ItemName.glitched, self.player), combine="or")
-
-        # Build location rules
-        # Only process this for hard/very hard levels
-        for loc in multiworld.get_locations(self.player):
-            if loc.parent_region.name in hard_gameplay_levels or loc.parent_region.name in very_hard_gameplay_levels:
-                if loc.name in self.location_rules:
-                    glitched_rule = self.location_rules[loc.name]
-                else:
-                    glitched_rule = lambda state: self.true
-                    
-                # Add generic rules for valid locations
-                if "- Midway Point" in loc.name:
-                    glitched_rule = lambda state, rule=glitched_rule: self.has_midway_points(state) and rule(state)
-                elif " - Green Switch Palace Block" in loc.name:
-                    glitched_rule = lambda state, rule=glitched_rule: self.has_gsp(state) and rule(state)
-                elif " - Yellow Switch Palace Block" in loc.name:
-                    glitched_rule = lambda state, rule=glitched_rule: self.has_ysp(state) and rule(state)
-
-                add_rule(loc, lambda state, r=glitched_rule: r(state) and state.has(ItemName.glitched, self.player), combine="or")
+    
+    def alternate_logic(self) -> None:
+        return
 
 
 class WaffleBasicRules(WaffleRules):
     def __init__(self, world: "WaffleWorld") -> None:
-        super().__init__(world)
-
-
         self.connection_rules = {
-            f"{LocationName.yoshis_island_1_region} -> {LocationName.yoshis_island_1_exit_1}": 
-                self.true,
-            f"{LocationName.yoshis_island_2_region} -> {LocationName.yoshis_island_2_exit_1}": 
-                self.true,
-            f"{LocationName.yoshis_island_3_region} -> {LocationName.yoshis_island_3_exit_1}": 
-                self.true,
-            f"{LocationName.yoshis_island_4_region} -> {LocationName.yoshis_island_4_exit_1}": 
-                self.true,
-            f"{LocationName.yoshis_island_castle_region} -> {LocationName.yoshis_island_castle}": 
-                self.can_climb,
+            f"{Regions.yoshis_island_1_region} -> {Locations.yoshis_island_1_exit_1}": 
+                True_(),
+            f"{Regions.yoshis_island_2_region} -> {Locations.yoshis_island_2_exit_1}": 
+                True_(),
+            f"{Regions.yoshis_island_3_region} -> {Locations.yoshis_island_3_exit_1}": 
+                True_(),
+            f"{Regions.yoshis_island_4_region} -> {Locations.yoshis_island_4_exit_1}": 
+                True_(),
+            f"{Regions.yoshis_island_castle_region} -> {Locations.yoshis_island_castle}": 
+                CanClimb,
                 
-            f"{LocationName.donut_plains_1_region} -> {LocationName.donut_plains_1_exit_1}": 
-                self.true,
-            f"{LocationName.donut_plains_1_region} -> {LocationName.donut_plains_1_exit_2}": 
-                lambda state: (
-                    self.can_carry(state) and (
-                        self.has_gsp(state) or
-                        self.can_cape_fly(state)
+            f"{Regions.donut_plains_1_region} -> {Locations.donut_plains_1_exit_1}": 
+                True_(),
+            f"{Regions.donut_plains_1_region} -> {Locations.donut_plains_1_exit_2}": 
+                (
+                    CanCarry & (
+                        HasGSP |
+                        CanCapeFly
                     )
-                ) or self.has_yoshi_carry(state),
-            f"{LocationName.donut_plains_2_region} -> {LocationName.donut_plains_2_exit_1}": 
-                self.true,
-            f"{LocationName.donut_plains_2_region} -> {LocationName.donut_plains_2_exit_2}": 
-                lambda state: self.has_yoshi_carry(state) or (
-                    self.can_carry(state) and self.can_climb(state) and (
-                        self.can_break_turn_blocks(state) or self.has_yoshi(state)
-                    )
+                ) | CanYoshiCarry,
+            f"{Regions.donut_plains_2_region} -> {Locations.donut_plains_2_exit_1}": 
+                True_(),
+            f"{Regions.donut_plains_2_region} -> {Locations.donut_plains_2_exit_2}": 
+                CanYoshiCarry | (CanClimb & (
+                    (CanCarry & CanBreakTurnBlocks) | HasYoshi)
                 ),
-            f"{LocationName.donut_plains_3_region} -> {LocationName.donut_plains_3_exit_1}": 
-                self.true,
-            f"{LocationName.donut_plains_4_region} -> {LocationName.donut_plains_4_exit_1}": 
-                self.true,
-            f"{LocationName.donut_secret_1_region} -> {LocationName.donut_secret_1_exit_1}": 
-                self.can_swim,
-            f"{LocationName.donut_secret_1_region} -> {LocationName.donut_secret_1_exit_2}": 
-                lambda state: self.can_swim(state) and self.can_carry_or_yoshi_tongue(state) and self.has_p_switch(state),
-            f"{LocationName.donut_secret_2_region} -> {LocationName.donut_secret_2_exit_1}": 
-                self.true,
-            f"{LocationName.donut_ghost_house_region} -> {LocationName.donut_ghost_house_exit_1}": 
-                self.can_cape_fly,
-            f"{LocationName.donut_ghost_house_region} -> {LocationName.donut_ghost_house_exit_2}": 
-                lambda state: self.can_climb(state) or self.can_cape_fly(state),
-            f"{LocationName.donut_secret_house_region} -> {LocationName.donut_secret_house_exit_1}": 
-                self.has_p_switch,
-            f"{LocationName.donut_secret_house_region} -> {LocationName.donut_secret_house_exit_2}": 
-                lambda state: self.has_p_switch(state) and self.can_carry(state) and (
-                    self.can_climb(state) or self.can_cape_fly(state)
+            f"{Regions.donut_plains_3_region} -> {Locations.donut_plains_3_exit_1}": 
+                True_(),
+            f"{Regions.donut_plains_4_region} -> {Locations.donut_plains_4_exit_1}": 
+                True_(),
+            f"{Regions.donut_secret_1_region} -> {Locations.donut_secret_1_exit_1}": 
+                CanSwim,
+            f"{Regions.donut_secret_1_region} -> {Locations.donut_secret_1_exit_2}": 
+                CanSwim & CanCarryOrYoshiTongue & HasPSwitch,
+            f"{Regions.donut_secret_2_region} -> {Locations.donut_secret_2_exit_1}": 
+                True_(),
+            f"{Regions.donut_ghost_house_region} -> {Locations.donut_ghost_house_exit_1}": 
+                CanCapeFly,
+            f"{Regions.donut_ghost_house_region} -> {Locations.donut_ghost_house_exit_2}": 
+                CanClimb | CanCapeFly,
+            f"{Regions.donut_secret_house_region} -> {Locations.donut_secret_house_exit_1}": 
+                HasPSwitch,
+            f"{Regions.donut_secret_house_region} -> {Locations.donut_secret_house_exit_2}": 
+                HasPSwitch & CanCarry & (
+                    CanClimb | CanCapeFly
                 ),
-            f"{LocationName.donut_plains_castle_region} -> {LocationName.donut_plains_castle}": 
-                self.true,
+            f"{Regions.donut_plains_castle_region} -> {Locations.donut_plains_castle}": 
+                True_(),
 
-            f"{LocationName.vanilla_dome_1_region} -> {LocationName.vanilla_dome_1_exit_1}": 
-                self.vanilla_dome_1_special_case,
-            f"{LocationName.vanilla_dome_1_region} -> {LocationName.vanilla_dome_1_exit_2}": 
-                lambda state: self.can_climb(state) and self.can_carry(state) and (
-                    self.has_yoshi(state) or self.has_rsp(state)
+            f"{Regions.vanilla_dome_1_region} -> {Locations.vanilla_dome_1_exit_1}": 
+                CanRun & (HasSuperStar | HasMushroom),
+            f"{Regions.vanilla_dome_1_region} -> {Locations.vanilla_dome_1_exit_2}": 
+                CanClimb & CanCarry & (
+                    HasYoshi | HasRSP
                 ),
-            f"{LocationName.vanilla_dome_2_region} -> {LocationName.vanilla_dome_2_exit_1}": 
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            f"{Regions.vanilla_dome_2_region} -> {Locations.vanilla_dome_2_exit_1}": 
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
-            f"{LocationName.vanilla_dome_2_region} -> {LocationName.vanilla_dome_2_exit_2}": 
-                lambda state: self.can_swim(state) and self.can_carry(state) and self.has_p_switch(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            f"{Regions.vanilla_dome_2_region} -> {Locations.vanilla_dome_2_exit_2}": 
+                CanSwim & CanCarry & HasPSwitch & (
+                    CanClimb | HasYoshi
                 ),
-            f"{LocationName.vanilla_dome_3_region} -> {LocationName.vanilla_dome_3_exit_1}": 
-                self.true,
-            f"{LocationName.vanilla_dome_4_region} -> {LocationName.vanilla_dome_4_exit_1}": 
-                self.true,
-            f"{LocationName.vanilla_secret_1_region} -> {LocationName.vanilla_secret_1_exit_1}": 
-                self.vanilla_secret_1_special_case,
-            f"{LocationName.vanilla_secret_1_region} -> {LocationName.vanilla_secret_1_exit_2}": 
-                lambda state: self.vanilla_secret_1_special_case(state) and self.can_carry(state) and self.has_bsp(state),
-            f"{LocationName.vanilla_secret_2_region} -> {LocationName.vanilla_secret_2_exit_1}": 
-                self.true,
-            f"{LocationName.vanilla_secret_3_region} -> {LocationName.vanilla_secret_3_exit_1}": 
-                self.vanilla_secret_3_special_case,
-            f"{LocationName.vanilla_ghost_house_region} -> {LocationName.vanilla_ghost_house_exit_1}": 
-                self.has_p_switch,
-            f"{LocationName.vanilla_fortress_region} -> {LocationName.vanilla_fortress}": 
-                self.can_swim,
-            f"{LocationName.vanilla_dome_castle_region} -> {LocationName.vanilla_dome_castle}": 
-                self.true,
+            f"{Regions.vanilla_dome_3_region} -> {Locations.vanilla_dome_3_exit_1}": 
+                True_(),
+            f"{Regions.vanilla_dome_4_region} -> {Locations.vanilla_dome_4_exit_1}": 
+                True_(),
+            f"{Regions.vanilla_secret_1_region} -> {Locations.vanilla_secret_1_exit_1}": 
+                CanClimb,
+            f"{Regions.vanilla_secret_1_region} -> {Locations.vanilla_secret_1_exit_2}": 
+                CanClimb & CanCarry & HasBSP,
+            f"{Regions.vanilla_secret_2_region} -> {Locations.vanilla_secret_2_exit_1}": 
+                True_(),
+            f"{Regions.vanilla_secret_3_region} -> {Locations.vanilla_secret_3_exit_1}": 
+                CanSwim,
+            f"{Regions.vanilla_ghost_house_region} -> {Locations.vanilla_ghost_house_exit_1}": 
+                HasPSwitch,
+            f"{Regions.vanilla_fortress_region} -> {Locations.vanilla_fortress}": 
+                CanSwim,
+            f"{Regions.vanilla_dome_castle_region} -> {Locations.vanilla_dome_castle}": 
+                True_(),
 
-            f"{LocationName.butter_bridge_1_region} -> {LocationName.butter_bridge_1_exit_1}": 
-                self.butter_bridge_special_case,
-            f"{LocationName.butter_bridge_2_region} -> {LocationName.butter_bridge_2_exit_1}": 
-                self.true,
-            f"{LocationName.cheese_bridge_region} -> {LocationName.cheese_bridge_exit_1}": 
-                lambda state: self.can_climb(state) or self.has_yoshi(state),
-            f"{LocationName.cheese_bridge_region} -> {LocationName.cheese_bridge_exit_2}": 
-                self.cheese_bridge_special_case,
-            f"{LocationName.soda_lake_region} -> {LocationName.soda_lake_exit_1}": 
-                self.can_swim,
-            f"{LocationName.cookie_mountain_region} -> {LocationName.cookie_mountain_exit_1}": 
-                self.true,
-            f"{LocationName.twin_bridges_castle_region} -> {LocationName.twin_bridges_castle}": 
-                self.twin_bridges_castle_special_case,
+            f"{Regions.butter_bridge_1_region} -> {Locations.butter_bridge_1_exit_1}": 
+                True_(options=[OptionFilter(EnemyShuffle, 0)]) | 
+                Has(Items.red_switch_palace, options=[OptionFilter(EnemyShuffle, 1)]),
+            f"{Regions.butter_bridge_2_region} -> {Locations.butter_bridge_2_exit_1}": 
+                True_(),
+            f"{Regions.cheese_bridge_region} -> {Locations.cheese_bridge_exit_1}": 
+                CanClimb | HasYoshi,
+            f"{Regions.cheese_bridge_region} -> {Locations.cheese_bridge_exit_2}": 
+                CanCapeFly,
+            f"{Regions.soda_lake_region} -> {Locations.soda_lake_exit_1}": 
+                CanSwim,
+            f"{Regions.cookie_mountain_region} -> {Locations.cookie_mountain_exit_1}": 
+                True_(),
+            f"{Regions.twin_bridges_castle_region} -> {Locations.twin_bridges_castle}": 
+                CanRun & CanClimb,
 
-            f"{LocationName.forest_of_illusion_1_region} -> {LocationName.forest_of_illusion_1_exit_1}": 
-                self.true,
-            f"{LocationName.forest_of_illusion_1_region} -> {LocationName.forest_of_illusion_1_exit_2}": 
-                lambda state: self.can_carry(state) and self.forest_of_illusion_1_special_case(state),
-            f"{LocationName.forest_of_illusion_2_region} -> {LocationName.forest_of_illusion_2_exit_1}": 
-                lambda state: self.can_swim(state) and self.forest_of_illusion_2_special_case(state),
-            f"{LocationName.forest_of_illusion_2_region} -> {LocationName.forest_of_illusion_2_exit_2}": 
-                lambda state: self.can_carry_or_yoshi_tongue(state) and self.can_swim(state) and self.forest_of_illusion_2_special_case(state),
-            f"{LocationName.forest_of_illusion_3_region} -> {LocationName.forest_of_illusion_3_exit_1}": 
-                lambda state: self.can_carry_or_yoshi_tongue(state),
-            f"{LocationName.forest_of_illusion_3_region} -> {LocationName.forest_of_illusion_3_exit_2}": 
-                self.forest_of_illusion_3_special_case,
-            f"{LocationName.forest_of_illusion_4_region} -> {LocationName.forest_of_illusion_4_exit_1}": 
-                self.true,
-            f"{LocationName.forest_of_illusion_4_region} -> {LocationName.forest_of_illusion_4_exit_2}":
-                lambda state: self.can_run(state) and self.can_carry_or_yoshi_tongue(state),
-            f"{LocationName.forest_ghost_house_region} -> {LocationName.forest_ghost_house_exit_1}": 
-                self.forest_ghost_house_special_case,
-            f"{LocationName.forest_ghost_house_region} -> {LocationName.forest_ghost_house_exit_2}": 
-                self.forest_ghost_house_special_case,
-            f"{LocationName.forest_secret_region} -> {LocationName.forest_secret_exit_1}": 
-                self.true,
-            f"{LocationName.forest_fortress_region} -> {LocationName.forest_fortress}": 
-                self.true,
-            f"{LocationName.forest_castle_region} -> {LocationName.forest_castle}": 
-                self.true,
+            f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_1}": 
+                True_(),
+            f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
+                CanCarry & HasPBalloon,
+            f"{Regions.forest_of_illusion_2_region} -> {Locations.forest_of_illusion_2_exit_1}": 
+                CanSwim & 
+                Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
+            f"{Regions.forest_of_illusion_2_region} -> {Locations.forest_of_illusion_2_exit_2}": 
+                CanCarryOrYoshiTongue & CanSwim & 
+                Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
+            f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_1}": 
+                CanCarry | HasYoshi,
+            f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}": 
+                (CanCarry | HasYoshi) & CanCarryOrYoshiTongue & CanBreakTurnBlocks,
+            f"{Regions.forest_of_illusion_4_region} -> {Locations.forest_of_illusion_4_exit_1}": 
+                True_(),
+            f"{Regions.forest_of_illusion_4_region} -> {Locations.forest_of_illusion_4_exit_2}":
+                CanRun & CanCarryOrYoshiTongue,
+            f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_1}": 
+                HasPSwitch,
+            f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_2}": 
+                HasPSwitch,
+            f"{Regions.forest_secret_region} -> {Locations.forest_secret_exit_1}": 
+                True_(),
+            f"{Regions.forest_fortress_region} -> {Locations.forest_fortress}": 
+                True_(),
+            f"{Regions.forest_castle_region} -> {Locations.forest_castle}": 
+                True_(),
 
-            f"{LocationName.chocolate_island_1_region} -> {LocationName.chocolate_island_1_exit_1}": 
-                lambda state: self.has_p_switch(state) or self.chocolate_island_1_special_case(state),
-            f"{LocationName.chocolate_island_2_region} -> {LocationName.chocolate_island_2_exit_1}": 
-                self.true,
-            f"{LocationName.chocolate_island_2_region} -> {LocationName.chocolate_island_2_exit_2}": 
-                self.can_carry_or_yoshi_tongue,
-            f"{LocationName.chocolate_island_3_region} -> {LocationName.chocolate_island_3_exit_1}": 
-                lambda state: self.can_climb(state) or self.has_yoshi(state),
-            f"{LocationName.chocolate_island_3_region} -> {LocationName.chocolate_island_3_exit_2}": 
-                self.can_fly,
-            f"{LocationName.chocolate_island_4_region} -> {LocationName.chocolate_island_4_exit_1}": 
-                self.true,
-            f"{LocationName.chocolate_island_5_region} -> {LocationName.chocolate_island_5_exit_1}": 
-                self.true,
-            f"{LocationName.chocolate_ghost_house_region} -> {LocationName.chocolate_ghost_house_exit_1}": 
-                self.true,
-            f"{LocationName.chocolate_fortress_region} -> {LocationName.chocolate_fortress}": 
-                self.true,
-            f"{LocationName.chocolate_secret_region} -> {LocationName.chocolate_secret_exit_1}": 
-                self.chocolate_secret_special_case,
-            f"{LocationName.chocolate_castle_region} -> {LocationName.chocolate_castle}": 
-                self.true,
-            f"{LocationName.sunken_ghost_ship_region} -> {LocationName.sunken_ghost_ship}": 
-                self.can_swim,
+            f"{Regions.chocolate_island_1_region} -> {Locations.chocolate_island_1_exit_1}": 
+                HasPSwitch | HasYoshi,
+            f"{Regions.chocolate_island_2_region} -> {Locations.chocolate_island_2_exit_1}": 
+                True_(),
+            f"{Regions.chocolate_island_2_region} -> {Locations.chocolate_island_2_exit_2}": 
+                CanCarryOrYoshiTongue,
+            f"{Regions.chocolate_island_3_region} -> {Locations.chocolate_island_3_exit_1}": 
+                CanClimb | HasYoshi,
+            f"{Regions.chocolate_island_3_region} -> {Locations.chocolate_island_3_exit_2}": 
+                CanFly,
+            f"{Regions.chocolate_island_4_region} -> {Locations.chocolate_island_4_exit_1}": 
+                True_(),
+            f"{Regions.chocolate_island_5_region} -> {Locations.chocolate_island_5_exit_1}": 
+                True_(),
+            f"{Regions.chocolate_ghost_house_region} -> {Locations.chocolate_ghost_house_exit_1}": 
+                True_(),
+            f"{Regions.chocolate_fortress_region} -> {Locations.chocolate_fortress}": 
+                True_(),
+            f"{Regions.chocolate_secret_region} -> {Locations.chocolate_secret_exit_1}": 
+                True_(),
+            f"{Regions.chocolate_castle_region} -> {Locations.chocolate_castle}": 
+                True_(),
+            f"{Regions.sunken_ghost_ship_region} -> {Locations.sunken_ghost_ship}": 
+                CanSwim,
 
-            f"{LocationName.valley_of_bowser_1_region} -> {LocationName.valley_of_bowser_1_exit_1}": 
-                self.true,
-            f"{LocationName.valley_of_bowser_2_region} -> {LocationName.valley_of_bowser_2_exit_1}": 
-                self.true,
-            f"{LocationName.valley_of_bowser_2_region} -> {LocationName.valley_of_bowser_2_exit_2}": 
-                self.can_carry,
-            f"{LocationName.valley_of_bowser_3_region} -> {LocationName.valley_of_bowser_3_exit_1}": 
-                self.true,
-            f"{LocationName.valley_of_bowser_4_region} -> {LocationName.valley_of_bowser_4_exit_1}": 
-                self.valley_of_bowser_4_special_case,
-            f"{LocationName.valley_of_bowser_4_region} -> {LocationName.valley_of_bowser_4_exit_2}": 
-                lambda state: self.has_yoshi_carry(state) and self.valley_of_bowser_4_special_case(state),
-            f"{LocationName.valley_ghost_house_region} -> {LocationName.valley_ghost_house_exit_1}": 
-                self.has_p_switch,
-            f"{LocationName.valley_ghost_house_region} -> {LocationName.valley_ghost_house_exit_2}": 
-                lambda state: self.has_p_switch(state) and self.can_carry(state) and self.can_run(state),
-            f"{LocationName.valley_fortress_region} -> {LocationName.valley_fortress}": 
-                self.true,
-            f"{LocationName.valley_castle_region} -> {LocationName.valley_castle}": 
-                self.true,
-            f"{LocationName.front_door} -> {LocationName.bowser_region}": 
-                lambda state: self.can_climb(state) and self.can_run(state) and self.can_swim(state) and 
-                    self.has_tokens(state),
-            f"{LocationName.back_door} -> {LocationName.bowser_region}": 
-                self.has_tokens,
+            f"{Regions.valley_of_bowser_1_region} -> {Locations.valley_of_bowser_1_exit_1}": 
+                True_(),
+            f"{Regions.valley_of_bowser_2_region} -> {Locations.valley_of_bowser_2_exit_1}": 
+                True_(),
+            f"{Regions.valley_of_bowser_2_region} -> {Locations.valley_of_bowser_2_exit_2}": 
+                CanCarry,
+            f"{Regions.valley_of_bowser_3_region} -> {Locations.valley_of_bowser_3_exit_1}": 
+                True_(),
+            f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_1}": 
+                CanClimb,
+            f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
+                CanYoshiCarry & CanClimb,
+            f"{Regions.valley_ghost_house_region} -> {Locations.valley_ghost_house_exit_1}": 
+                HasPSwitch,
+            f"{Regions.valley_ghost_house_region} -> {Locations.valley_ghost_house_exit_2}": 
+                HasPSwitch & CanCarry & CanRun,
+            f"{Regions.valley_fortress_region} -> {Locations.valley_fortress}": 
+                True_(),
+            f"{Regions.valley_castle_region} -> {Locations.valley_castle}": 
+                True_(),
+            f"{Locations.front_door} -> {Regions.bowser_region}": 
+                CanCarry & CanClimb & CanRun & CanSwim & Has(Items.yoshi_egg, count=FromWorldAttr("required_egg_count")),
+            f"{Locations.back_door} -> {Regions.bowser_region}": 
+                CanCarry & Has(Items.yoshi_egg, count=FromWorldAttr("required_egg_count")),
 
-            f"{LocationName.star_road_1_region} -> {LocationName.star_road_1_exit_1}": 
-                self.can_break_turn_blocks,
-            f"{LocationName.star_road_1_region} -> {LocationName.star_road_1_exit_2}": 
-                lambda state: self.can_break_turn_blocks(state) and self.can_carry_or_yoshi_tongue(state),
-            f"{LocationName.star_road_2_region} -> {LocationName.star_road_2_exit_1}": 
-                self.can_swim,
-            f"{LocationName.star_road_2_region} -> {LocationName.star_road_2_exit_2}": 
-                lambda state: self.can_swim(state) and self.can_carry_or_yoshi_tongue(state),
-            f"{LocationName.star_road_3_region} -> {LocationName.star_road_3_exit_1}": 
-                self.true,
-            f"{LocationName.star_road_3_region} -> {LocationName.star_road_3_exit_2}": 
-                lambda state: self.can_carry(state) or (self.has_fire_flower(state) and self.has_yoshi_carry(state)),
-            f"{LocationName.star_road_4_region} -> {LocationName.star_road_4_exit_1}": 
-                self.true,
-            f"{LocationName.star_road_4_region} -> {LocationName.star_road_4_exit_2}": 
-                lambda state: self.can_yoshi_fly(state) or (
-                    self.can_carry(state) and self.has_gsp(state) and self.has_rsp(state)
+            f"{Regions.star_road_1_region} -> {Locations.star_road_1_exit_1}": 
+                CanBreakTurnBlocks,
+            f"{Regions.star_road_1_region} -> {Locations.star_road_1_exit_2}": 
+                CanBreakTurnBlocks & CanCarryOrYoshiTongue,
+            f"{Regions.star_road_2_region} -> {Locations.star_road_2_exit_1}": 
+                CanSwim,
+            f"{Regions.star_road_2_region} -> {Locations.star_road_2_exit_2}": 
+                CanSwim & CanCarryOrYoshiTongue,
+            f"{Regions.star_road_3_region} -> {Locations.star_road_3_exit_1}": 
+                True_(),
+            f"{Regions.star_road_3_region} -> {Locations.star_road_3_exit_2}": 
+                CanCarry | (HasFireFlower & CanYoshiCarry),
+            f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_1}": 
+                True_(),
+            f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_2}": 
+                CanYoshiFly | (CanCarry & HasGSP & HasRSP),
+            f"{Regions.star_road_5_region} -> {Locations.star_road_5_exit_1}": 
+                HasPSwitch | CanFly,
+            f"{Regions.star_road_5_region} -> {Locations.star_road_5_exit_2}": 
+                CanYoshiFly | (
+                    CanCarry & CanClimb & HasPSwitch & 
+                    HasYSP & HasGSP & HasRSP & HasBSP
+                ) | (
+                    CanFly & CanCarry & CanSpinJump
                 ),
-            f"{LocationName.star_road_5_region} -> {LocationName.star_road_5_exit_1}": 
-                lambda state: self.has_p_switch(state) or self.can_fly(state),
-            f"{LocationName.star_road_5_region} -> {LocationName.star_road_5_exit_2}": 
-                lambda state: self.can_yoshi_fly(state) or (
-                    self.can_carry(state) and self.can_climb(state) and self.has_p_switch(state) and 
-                    self.has_ysp(state) and self.has_gsp(state) and self.has_rsp(state) and self.has_bsp(state)
-                ) or (
-                    self.can_fly(state) and self.can_carry(state) and self.can_spin_jump(state)
+            f"{Regions.special_zone_1_region} -> {Locations.special_zone_1_exit_1}": 
+                CanClimb & (
+                    HasPSwitch | CanCapeFly
                 ),
-            f"{LocationName.special_zone_1_region} -> {LocationName.special_zone_1_exit_1}": 
-                lambda state: self.can_climb(state) and (
-                    self.has_p_switch(state) or self.can_cape_fly(state)
-                ),
-            f"{LocationName.special_zone_2_region} -> {LocationName.special_zone_2_exit_1}": 
-                self.has_p_balloon,
-            f"{LocationName.special_zone_3_region} -> {LocationName.special_zone_3_exit_1}": 
-                lambda state: self.can_climb(state) or self.has_yoshi(state),
-            f"{LocationName.special_zone_4_region} -> {LocationName.special_zone_4_exit_1}": 
-                self.special_zone_4_special_case,
-            f"{LocationName.special_zone_5_region} -> {LocationName.special_zone_5_exit_1}": 
-                self.true,
-            f"{LocationName.special_zone_6_region} -> {LocationName.special_zone_6_exit_1}": 
-                self.special_zone_6_special_case,
-            f"{LocationName.special_zone_7_region} -> {LocationName.special_zone_7_exit_1}": 
-                self.true,
-            f"{LocationName.special_zone_8_region} -> {LocationName.special_zone_8_exit_1}": 
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
+            f"{Regions.special_zone_2_region} -> {Locations.special_zone_2_exit_1}": 
+                HasPBalloon,
+            f"{Regions.special_zone_3_region} -> {Locations.special_zone_3_exit_1}": 
+                CanClimb | HasYoshi,
+            f"{Regions.special_zone_4_region} -> {Locations.special_zone_4_exit_1}": 
+                (CanCarry | HasPSwitch) & HasSuperStar,
+            f"{Regions.special_zone_5_region} -> {Locations.special_zone_5_exit_1}": 
+                True_(),
+            f"{Regions.special_zone_6_region} -> {Locations.special_zone_6_exit_1}": 
+                True_(),
+            f"{Regions.special_zone_7_region} -> {Locations.special_zone_7_exit_1}": 
+                CanCarryOrYoshiTongue,
+            f"{Regions.special_zone_8_region} -> {Locations.special_zone_8_exit_1}": 
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
         }
     
     
         self.carryless_exit_rules = {
-            f"{LocationName.donut_plains_1_region} -> {LocationName.donut_plains_1_exit_2}": 
-                lambda state: self.has_gsp(state) or self.can_cape_fly(state) or self.has_yoshi_carry(state),
-            f"{LocationName.donut_plains_2_region} -> {LocationName.donut_plains_2_exit_2}": 
-                lambda state: self.has_yoshi_carry(state) or (
-                    self.can_carry(state) and self.can_climb(state) and (
-                        self.can_break_turn_blocks(state) or self.has_yoshi(state)
-                    )
+            f"{Regions.donut_plains_1_region} -> {Locations.donut_plains_1_exit_2}": 
+                HasGSP | CanCapeFly | CanYoshiCarry,
+            f"{Regions.donut_plains_2_region} -> {Locations.donut_plains_2_exit_2}": 
+                CanYoshiCarry | (CanClimb & (
+                    (CanCarry & CanBreakTurnBlocks) | HasYoshi)
                 ),
-            f"{LocationName.donut_secret_1_region} -> {LocationName.donut_secret_1_exit_2}": 
-                lambda state: self.can_swim(state),
+            f"{Regions.donut_secret_1_region} -> {Locations.donut_secret_1_exit_2}": 
+                CanSwim,
 
-            f"{LocationName.vanilla_dome_1_region} -> {LocationName.vanilla_dome_1_exit_2}": 
-                lambda state: self.can_climb(state) and (
-                    self.has_yoshi(state) or self.has_rsp(state)
+            f"{Regions.vanilla_dome_1_region} -> {Locations.vanilla_dome_1_exit_2}": 
+                CanClimb & (
+                    HasYoshi | HasRSP
                 ),
-            f"{LocationName.vanilla_dome_2_region} -> {LocationName.vanilla_dome_2_exit_2}": 
-                lambda state: self.can_swim(state) and self.has_p_switch(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            f"{Regions.vanilla_dome_2_region} -> {Locations.vanilla_dome_2_exit_2}": 
+                CanSwim & CanCarry & HasPSwitch & (
+                    CanClimb | HasYoshi
                 ),
 
-            f"{LocationName.forest_of_illusion_1_region} -> {LocationName.forest_of_illusion_1_exit_2}": 
-                self.forest_of_illusion_1_special_case,
-            f"{LocationName.forest_of_illusion_2_region} -> {LocationName.forest_of_illusion_2_exit_2}": 
-                lambda state: self.can_swim(state) and self.forest_of_illusion_2_special_case(state),
-            f"{LocationName.forest_of_illusion_3_region} -> {LocationName.forest_of_illusion_3_exit_2}": 
-                self.forest_of_illusion_3_special_case,
-            f"{LocationName.forest_of_illusion_4_region} -> {LocationName.forest_of_illusion_4_exit_2}":
-                lambda state: self.can_run(state) or self.has_yoshi(state),
+            f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
+                HasPBalloon,
+            f"{Regions.forest_of_illusion_2_region} -> {Locations.forest_of_illusion_2_exit_2}": 
+                CanSwim & 
+                Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
+            f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}": 
+                (CanCarry | HasYoshi) & CanCarryOrYoshiTongue & CanBreakTurnBlocks,
+            f"{Regions.forest_of_illusion_4_region} -> {Locations.forest_of_illusion_4_exit_2}":
+                CanRun | HasYoshi,
 
-            f"{LocationName.chocolate_island_2_region} -> {LocationName.chocolate_island_2_exit_2}": 
-                self.true,
+            f"{Regions.chocolate_island_2_region} -> {Locations.chocolate_island_2_exit_2}": 
+                True_(),
 
-            f"{LocationName.valley_of_bowser_2_region} -> {LocationName.valley_of_bowser_2_exit_2}": 
-                self.true,
-            f"{LocationName.valley_of_bowser_4_region} -> {LocationName.valley_of_bowser_4_exit_2}": 
-                self.valley_of_bowser_4_special_case,
-            f"{LocationName.valley_ghost_house_region} -> {LocationName.valley_ghost_house_exit_2}": 
-                lambda state: self.has_p_switch(state) and self.can_run(state),
+            f"{Regions.valley_of_bowser_2_region} -> {Locations.valley_of_bowser_2_exit_2}": 
+                True_(),
+            f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
+                CanClimb,
+            f"{Regions.valley_ghost_house_region} -> {Locations.valley_ghost_house_exit_2}": 
+                HasPSwitch & CanCarry & CanRun,
 
-            f"{LocationName.star_road_1_region} -> {LocationName.star_road_1_exit_2}": 
-                self.can_break_turn_blocks,
-            f"{LocationName.star_road_2_region} -> {LocationName.star_road_2_exit_2}": 
-                self.can_swim,
-            f"{LocationName.star_road_3_region} -> {LocationName.star_road_3_exit_2}": 
-                lambda state: self.can_carry(state) or self.has_fire_flower(state),
-            f"{LocationName.star_road_4_region} -> {LocationName.star_road_4_exit_2}": 
-                lambda state: self.can_yoshi_fly(state) or (
-                    self.has_gsp(state) and self.has_rsp(state) and (
-                        self.can_carry(state) or self.has_feather(state)
-                    )
-                ),
-            f"{LocationName.star_road_5_region} -> {LocationName.star_road_5_exit_2}": 
-                lambda state: self.can_yoshi_fly(state) or (
-                    self.can_climb(state) and self.has_p_switch(state) and 
-                    self.has_ysp(state) and self.has_gsp(state) and self.has_rsp(state) and self.has_bsp(state)
-                ) or (
-                    self.can_fly(state) and self.can_spin_jump(state)
+            f"{Regions.star_road_1_region} -> {Locations.star_road_1_exit_2}": 
+                CanBreakTurnBlocks,
+            f"{Regions.star_road_2_region} -> {Locations.star_road_2_exit_2}": 
+                CanSwim,
+            f"{Regions.star_road_3_region} -> {Locations.star_road_3_exit_2}": 
+                CanCarry | HasFireFlower,
+            f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_2}": 
+                CanYoshiFly | (HasGSP & HasRSP & (CanCarry | HasFeather)),
+            f"{Regions.star_road_5_region} -> {Locations.star_road_5_exit_2}": 
+                CanYoshiFly | (
+                    CanClimb & HasPSwitch & 
+                    HasYSP & HasGSP & HasRSP & HasBSP
+                ) | (
+                    CanFly & CanSpinJump
                 ),
         }
     
         self.location_rules = {
-            LocationName.yoshis_island_1_dragon:
-                self.can_break_turn_blocks,
-            LocationName.yoshis_island_1_moon:
-                lambda state: self.can_cape_fly(state),
-            LocationName.yoshis_island_1_midway:
-                self.true,
-            LocationName.yoshis_island_1_flying_block_1:
-                self.true,
-            LocationName.yoshis_island_1_yellow_block_1:
-                self.true,
-            LocationName.yoshis_island_1_life_block_1:
-                self.true,
-            LocationName.yoshis_island_1_powerup_block_1:
-                self.true,
-            LocationName.yoshis_island_1_room_2:
-                self.can_break_turn_blocks,
+            Locations.yoshis_island_1_dragon:
+                CanBreakTurnBlocks,
+            Locations.yoshis_island_1_moon:
+                CanCapeFly,
+            Locations.yoshis_island_1_midway:
+                True_(),
+            Locations.yoshis_island_1_flying_block_1:
+                True_(),
+            Locations.yoshis_island_1_yellow_block_1:
+                True_(),
+            Locations.yoshis_island_1_life_block_1:
+                True_(),
+            Locations.yoshis_island_1_powerup_block_1:
+                True_(),
+            Locations.yoshis_island_1_room_2:
+                CanBreakTurnBlocks,
 
-            LocationName.yoshis_island_2_dragon:
-                lambda state: self.has_yoshi(state) or self.can_climb(state),
-            LocationName.yoshis_island_2_midway:
-                self.true,
-            LocationName.yoshis_island_2_flying_block_1:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_2_flying_block_2:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_2_flying_block_3:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_2_flying_block_4:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_2_flying_block_5:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_2_flying_block_6:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_2_coin_block_1:
-                self.true,
-            LocationName.yoshis_island_2_yellow_block_1:
-                self.true,
-            LocationName.yoshis_island_2_coin_block_2:
-                self.true,
-            LocationName.yoshis_island_2_coin_block_3:
-                self.true,
-            LocationName.yoshis_island_2_yoshi_block_1:
-                self.true,
-            LocationName.yoshis_island_2_coin_block_4:
-                self.true,
-            LocationName.yoshis_island_2_yoshi_block_2:
-                self.true,
-            LocationName.yoshis_island_2_coin_block_5:
-                self.true,
-            LocationName.yoshis_island_2_vine_block_1:
-                self.true,
-            LocationName.yoshis_island_2_yellow_block_2:
-                self.true,
+            Locations.yoshis_island_2_dragon:
+                HasYoshi | CanClimb,
+            Locations.yoshis_island_2_midway:
+                True_(),
+            Locations.yoshis_island_2_flying_block_1:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_2_flying_block_2:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_2_flying_block_3:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_2_flying_block_4:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_2_flying_block_5:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_2_flying_block_6:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_2_coin_block_1:
+                True_(),
+            Locations.yoshis_island_2_yellow_block_1:
+                True_(),
+            Locations.yoshis_island_2_coin_block_2:
+                True_(),
+            Locations.yoshis_island_2_coin_block_3:
+                True_(),
+            Locations.yoshis_island_2_yoshi_block_1:
+                True_(),
+            Locations.yoshis_island_2_coin_block_4:
+                True_(),
+            Locations.yoshis_island_2_yoshi_block_2:
+                True_(),
+            Locations.yoshis_island_2_coin_block_5:
+                True_(),
+            Locations.yoshis_island_2_vine_block_1:
+                True_(),
+            Locations.yoshis_island_2_yellow_block_2:
+                True_(),
 
-            LocationName.yoshis_island_3_dragon:
-                self.has_p_switch,
-            LocationName.yoshis_island_3_prize:
-                self.true,
-            LocationName.yoshis_island_3_midway:
-                self.true,
-            LocationName.yoshis_island_3_yellow_block_1:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_2:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_3:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_4:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_5:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_6:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_7:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_8:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_9:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_10:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_11:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_12:
-                self.true,
-            LocationName.yoshis_island_3_yellow_block_13:
-                self.true,
-            LocationName.yoshis_island_3_yellow_block_14:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_3_yellow_block_15:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_3_yellow_block_16:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_3_yellow_block_17:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_3_yellow_block_18:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_3_yellow_block_19:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_3_yellow_block_20:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.yoshis_island_3_yellow_block_21:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_22:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_23:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_24:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_25:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_26:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_27:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_28:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_29:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_coin_block_1:
-                self.true,
-            LocationName.yoshis_island_3_yoshi_block_1:
-                self.true,
-            LocationName.yoshis_island_3_yellow_block_30:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_31:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_32:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_33:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_34:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_35:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_36:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_37:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_38:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_39:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_40:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_41:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_42:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_43:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_44:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_45:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_46:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_47:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_48:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_49:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_50:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_51:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_coin_block_2:
-                self.true,
-            LocationName.yoshis_island_3_powerup_block_1:
-                self.true,
-            LocationName.yoshis_island_3_yellow_block_52:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_53:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_54:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_55:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_56:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_57:
-                self.true,
-            LocationName.yoshis_island_3_yellow_block_58:
-                self.true,
-            LocationName.yoshis_island_3_yellow_block_59:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_60:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_61:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_62:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_63:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_64:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_65:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_66:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_67:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_68:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_69:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_70:
-                self.true,
-            LocationName.yoshis_island_3_yellow_block_71:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_72:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_73:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_74:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_75:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_76:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_77:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_78:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_79:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_80:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_81:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_82:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_83:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_84:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_85:
-                self.can_yoshi_fly,
-            LocationName.yoshis_island_3_yellow_block_86:
-                self.can_yoshi_fly,
+            Locations.yoshis_island_3_dragon:
+                HasPSwitch,
+            Locations.yoshis_island_3_prize:
+                True_(),
+            Locations.yoshis_island_3_midway:
+                True_(),
+            Locations.yoshis_island_3_yellow_block_1:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_2:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_3:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_4:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_5:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_6:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_7:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_8:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_9:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_10:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_11:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_12:
+                True_(),
+            Locations.yoshis_island_3_yellow_block_13:
+                True_(),
+            Locations.yoshis_island_3_yellow_block_14:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_3_yellow_block_15:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_3_yellow_block_16:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_3_yellow_block_17:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_3_yellow_block_18:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_3_yellow_block_19:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_3_yellow_block_20:
+                CanCarry | HasYoshi,
+            Locations.yoshis_island_3_yellow_block_21:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_22:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_23:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_24:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_25:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_26:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_27:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_28:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_29:
+                CanYoshiFly,
+            Locations.yoshis_island_3_coin_block_1:
+                True_(),
+            Locations.yoshis_island_3_yoshi_block_1:
+                True_(),
+            Locations.yoshis_island_3_yellow_block_30:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_31:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_32:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_33:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_34:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_35:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_36:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_37:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_38:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_39:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_40:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_41:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_42:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_43:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_44:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_45:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_46:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_47:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_48:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_49:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_50:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_51:
+                CanYoshiFly,
+            Locations.yoshis_island_3_coin_block_2:
+                True_(),
+            Locations.yoshis_island_3_powerup_block_1:
+                True_(),
+            Locations.yoshis_island_3_yellow_block_52:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_53:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_54:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_55:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_56:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_57:
+                True_(),
+            Locations.yoshis_island_3_yellow_block_58:
+                True_(),
+            Locations.yoshis_island_3_yellow_block_59:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_60:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_61:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_62:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_63:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_64:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_65:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_66:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_67:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_68:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_69:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_70:
+                True_(),
+            Locations.yoshis_island_3_yellow_block_71:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_72:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_73:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_74:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_75:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_76:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_77:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_78:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_79:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_80:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_81:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_82:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_83:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_84:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_85:
+                CanYoshiFly,
+            Locations.yoshis_island_3_yellow_block_86:
+                CanYoshiFly,
 
-            LocationName.yoshis_island_4_dragon:
-                lambda state: self.has_yoshi(state) or self.can_swim(state) or self.has_p_switch(state),
-            LocationName.yoshis_island_4_hidden_1up:
-                lambda state: self.has_yoshi(state) or self.can_cape_fly(state),
-            LocationName.yoshis_island_4_yellow_block_1:
-                self.true,
-            LocationName.yoshis_island_4_powerup_block_1:
-                self.true,
-            LocationName.yoshis_island_4_multi_coin_block_1:
-                self.true,
-            LocationName.yoshis_island_4_star_block_1:
-                self.true,
+            Locations.yoshis_island_4_dragon:
+                HasYoshi | CanSwim | HasPSwitch,
+            Locations.yoshis_island_4_hidden_1up:
+                HasYoshi | CanCapeFly,
+            Locations.yoshis_island_4_yellow_block_1:
+                True_(),
+            Locations.yoshis_island_4_powerup_block_1:
+                True_(),
+            Locations.yoshis_island_4_multi_coin_block_1:
+                True_(),
+            Locations.yoshis_island_4_star_block_1:
+                True_(),
                 
-            LocationName.yoshis_island_castle_midway:
-                self.can_climb,
-            LocationName.yoshis_island_castle_coin_block_1:
-                lambda state: self.can_carry(state) or self.can_climb(state),
-            LocationName.yoshis_island_castle_coin_block_2:
-                lambda state: self.can_carry(state) or self.can_climb(state),
-            LocationName.yoshis_island_castle_powerup_block_1:
-                lambda state: self.can_carry(state) or self.can_climb(state),
-            LocationName.yoshis_island_castle_coin_block_3:
-                lambda state: self.can_carry(state) or self.can_climb(state),
-            LocationName.yoshis_island_castle_coin_block_4:
-                lambda state: self.can_carry(state) or self.can_climb(state),
-            LocationName.yoshis_island_castle_flying_block_1:
-                self.can_climb,
-            LocationName.yoshis_island_castle_room_2:
-                self.can_climb,
+            Locations.yoshis_island_castle_midway:
+                CanClimb,
+            Locations.yoshis_island_castle_coin_block_1:
+                CanCarry | CanClimb,
+            Locations.yoshis_island_castle_coin_block_2:
+                CanCarry | CanClimb,
+            Locations.yoshis_island_castle_powerup_block_1:
+                CanCarry | CanClimb,
+            Locations.yoshis_island_castle_coin_block_3:
+                CanCarry | CanClimb,
+            Locations.yoshis_island_castle_coin_block_4:
+                CanCarry | CanClimb,
+            Locations.yoshis_island_castle_flying_block_1:
+                CanClimb,
+            Locations.yoshis_island_castle_room_2:
+                CanClimb,
 
-            LocationName.yellow_switch_palace:
-                self.true,
+            Locations.yellow_switch_palace:
+                True_(),
 
-            LocationName.donut_plains_1_dragon:
-                lambda state: self.can_climb(state) or self.has_yoshi(state) or self.can_cape_fly(state),
-            LocationName.donut_plains_1_hidden_1up:
-                self.true,
-            LocationName.donut_plains_1_midway:
-                self.true,
-            LocationName.donut_plains_1_coin_block_1:
-                self.true,
-            LocationName.donut_plains_1_coin_block_2:
-                self.true,
-            LocationName.donut_plains_1_yoshi_block_1:
-                self.true,
-            LocationName.donut_plains_1_vine_block_1:
-                self.true,
-            LocationName.donut_plains_1_green_block_1:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_2:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_3:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_4:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_5:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_6:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_7:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_8:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_9:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_10:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_11:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_12:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_13:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_14:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_15:
-                self.has_feather,
-            LocationName.donut_plains_1_green_block_16:
-                self.has_feather,
-            LocationName.donut_plains_1_yellow_block_1:
-                self.true,
-            LocationName.donut_plains_1_yellow_block_2:
-                self.true,
-            LocationName.donut_plains_1_yellow_block_3:
-                self.true,
-            LocationName.donut_plains_1_room_2:
-                self.has_ysp,
+            Locations.donut_plains_1_dragon:
+                CanClimb | HasYoshi | CanCapeFly,
+            Locations.donut_plains_1_hidden_1up:
+                True_(),
+            Locations.donut_plains_1_midway:
+                True_(),
+            Locations.donut_plains_1_coin_block_1:
+                True_(),
+            Locations.donut_plains_1_coin_block_2:
+                True_(),
+            Locations.donut_plains_1_yoshi_block_1:
+                True_(),
+            Locations.donut_plains_1_vine_block_1:
+                True_(),
+            Locations.donut_plains_1_green_block_1:
+                HasFeather,
+            Locations.donut_plains_1_green_block_2:
+                HasFeather,
+            Locations.donut_plains_1_green_block_3:
+                HasFeather,
+            Locations.donut_plains_1_green_block_4:
+                HasFeather,
+            Locations.donut_plains_1_green_block_5:
+                HasFeather,
+            Locations.donut_plains_1_green_block_6:
+                HasFeather,
+            Locations.donut_plains_1_green_block_7:
+                HasFeather,
+            Locations.donut_plains_1_green_block_8:
+                HasFeather,
+            Locations.donut_plains_1_green_block_9:
+                HasFeather,
+            Locations.donut_plains_1_green_block_10:
+                HasFeather,
+            Locations.donut_plains_1_green_block_11:
+                HasFeather,
+            Locations.donut_plains_1_green_block_12:
+                HasFeather,
+            Locations.donut_plains_1_green_block_13:
+                HasFeather,
+            Locations.donut_plains_1_green_block_14:
+                HasFeather,
+            Locations.donut_plains_1_green_block_15:
+                HasFeather,
+            Locations.donut_plains_1_green_block_16:
+                HasFeather,
+            Locations.donut_plains_1_yellow_block_1:
+                True_(),
+            Locations.donut_plains_1_yellow_block_2:
+                True_(),
+            Locations.donut_plains_1_yellow_block_3:
+                True_(),
+            Locations.donut_plains_1_room_2:
+                HasYSP,
 
-            LocationName.donut_plains_2_dragon:
-                self.true,
-            LocationName.donut_plains_2_coin_block_1:
-                self.true,
-            LocationName.donut_plains_2_coin_block_2:
-                self.true,
-            LocationName.donut_plains_2_coin_block_3:
-                self.true,
-            LocationName.donut_plains_2_yellow_block_1:
-                self.true,
-            LocationName.donut_plains_2_powerup_block_1:
-                self.true,
-            LocationName.donut_plains_2_multi_coin_block_1:
-                self.true,
-            LocationName.donut_plains_2_flying_block_1:
-                self.true,
-            LocationName.donut_plains_2_green_block_1:
-                self.true,
-            LocationName.donut_plains_2_yellow_block_2:
-                self.true,
-            LocationName.donut_plains_2_vine_block_1:
-                lambda state: (self.can_break_turn_blocks(state) and self.can_carry(state)) or self.has_yoshi(state),
+            Locations.donut_plains_2_dragon:
+                True_(),
+            Locations.donut_plains_2_coin_block_1:
+                True_(),
+            Locations.donut_plains_2_coin_block_2:
+                True_(),
+            Locations.donut_plains_2_coin_block_3:
+                True_(),
+            Locations.donut_plains_2_yellow_block_1:
+                True_(),
+            Locations.donut_plains_2_powerup_block_1:
+                True_(),
+            Locations.donut_plains_2_multi_coin_block_1:
+                True_(),
+            Locations.donut_plains_2_flying_block_1:
+                True_(),
+            Locations.donut_plains_2_green_block_1:
+                True_(),
+            Locations.donut_plains_2_yellow_block_2:
+                True_(),
+            Locations.donut_plains_2_vine_block_1:
+                (CanBreakTurnBlocks & CanCarry) | HasYoshi,
 
-            LocationName.donut_plains_3_dragon:
-                lambda state: (self.can_break_turn_blocks(state) and self.can_climb(state)) or self.has_yoshi(state) or
-                    self.can_cape_fly(state),
-            LocationName.donut_plains_3_prize:
-                lambda state: (self.can_break_turn_blocks(state) and self.can_climb(state)) or self.has_yoshi(state) or
-                    self.can_cape_fly(state),
-            LocationName.donut_plains_3_midway:
-                self.true,
-            LocationName.donut_plains_3_green_block_1:
-                self.true,
-            LocationName.donut_plains_3_coin_block_1:
-                self.true,
-            LocationName.donut_plains_3_coin_block_2:
-                self.true,
-            LocationName.donut_plains_3_vine_block_1:
-                self.can_break_turn_blocks,
-            LocationName.donut_plains_3_powerup_block_1:
-                self.true,
+            Locations.donut_plains_3_dragon:
+                (CanBreakTurnBlocks & CanClimb) | HasYoshi |
+                    CanCapeFly,
+            Locations.donut_plains_3_prize:
+                (CanBreakTurnBlocks & CanClimb) | HasYoshi |
+                    CanCapeFly,
+            Locations.donut_plains_3_midway:
+                True_(),
+            Locations.donut_plains_3_green_block_1:
+                True_(),
+            Locations.donut_plains_3_coin_block_1:
+                True_(),
+            Locations.donut_plains_3_coin_block_2:
+                True_(),
+            Locations.donut_plains_3_vine_block_1:
+                CanBreakTurnBlocks,
+            Locations.donut_plains_3_powerup_block_1:
+                True_(),
 
-            LocationName.donut_plains_4_dragon:
-                self.true,
-            LocationName.donut_plains_4_moon:
-                self.can_cape_fly,
-            LocationName.donut_plains_4_hidden_1up:
-                self.can_cape_fly,
-            LocationName.donut_plains_4_midway:
-                self.true,
-            LocationName.donut_plains_4_coin_block_1:
-                self.true,
-            LocationName.donut_plains_4_powerup_block_1:
-                self.true,
-            LocationName.donut_plains_4_coin_block_2:
-                self.true,
-            LocationName.donut_plains_4_yoshi_block_1:
-                self.true,
+            Locations.donut_plains_4_dragon:
+                True_(),
+            Locations.donut_plains_4_moon:
+                CanCapeFly,
+            Locations.donut_plains_4_hidden_1up:
+                CanCapeFly,
+            Locations.donut_plains_4_midway:
+                True_(),
+            Locations.donut_plains_4_coin_block_1:
+                True_(),
+            Locations.donut_plains_4_powerup_block_1:
+                True_(),
+            Locations.donut_plains_4_coin_block_2:
+                True_(),
+            Locations.donut_plains_4_yoshi_block_1:
+                True_(),
 
-            LocationName.donut_secret_1_dragon:
-                self.can_swim,
-            LocationName.donut_secret_1_coin_block_1:
-                self.can_swim,
-            LocationName.donut_secret_1_coin_block_2:
-                self.can_swim,
-            LocationName.donut_secret_1_powerup_block_1:
-                self.can_swim,
-            LocationName.donut_secret_1_coin_block_3:
-                self.can_swim,
-            LocationName.donut_secret_1_powerup_block_2:
-                self.can_swim,
-            LocationName.donut_secret_1_powerup_block_3:
-                lambda state: self.can_swim(state) and self.has_p_balloon(state),
-            LocationName.donut_secret_1_life_block_1:
-                lambda state: self.can_swim(state) and self.has_p_balloon(state),
-            LocationName.donut_secret_1_powerup_block_4:
-                lambda state: self.can_swim(state) and self.has_p_balloon(state),
-            LocationName.donut_secret_1_powerup_block_5:
-                self.can_swim,
-            LocationName.donut_secret_1_key_block_1:
-                lambda state: self.can_swim(state) and self.can_carry(state) and self.has_p_switch(state),
-            LocationName.donut_secret_1_room_2:
-                self.can_swim,
+            Locations.donut_secret_1_dragon:
+                CanSwim,
+            Locations.donut_secret_1_coin_block_1:
+                CanSwim,
+            Locations.donut_secret_1_coin_block_2:
+                CanSwim,
+            Locations.donut_secret_1_powerup_block_1:
+                CanSwim,
+            Locations.donut_secret_1_coin_block_3:
+                CanSwim,
+            Locations.donut_secret_1_powerup_block_2:
+                CanSwim,
+            Locations.donut_secret_1_powerup_block_3:
+                CanSwim & HasPBalloon,
+            Locations.donut_secret_1_life_block_1:
+                CanSwim & HasPBalloon,
+            Locations.donut_secret_1_powerup_block_4:
+                CanSwim & HasPBalloon,
+            Locations.donut_secret_1_powerup_block_5:
+                CanSwim,
+            Locations.donut_secret_1_key_block_1:
+                CanSwim & CanCarry & HasPSwitch,
+            Locations.donut_secret_1_room_2:
+                CanSwim,
 
-            LocationName.donut_secret_2_dragon:
-                lambda state: self.can_climb(state) or self.has_yoshi(state),
-            LocationName.donut_secret_2_directional_coin_block_1:
-                self.true,
-            LocationName.donut_secret_2_vine_block_1:
-                self.true,
-            LocationName.donut_secret_2_star_block_1:
-                lambda state: self.can_climb(state) or self.has_yoshi(state),
-            LocationName.donut_secret_2_powerup_block_1:
-                self.true,
-            LocationName.donut_secret_2_star_block_2:
-                self.true,
+            Locations.donut_secret_2_dragon:
+                CanClimb | HasYoshi,
+            Locations.donut_secret_2_directional_coin_block_1:
+                True_(),
+            Locations.donut_secret_2_vine_block_1:
+                True_(),
+            Locations.donut_secret_2_star_block_1:
+                CanClimb | HasYoshi,
+            Locations.donut_secret_2_powerup_block_1:
+                True_(),
+            Locations.donut_secret_2_star_block_2:
+                True_(),
 
-            LocationName.donut_ghost_house_vine_block_1:
-                self.true,
-            LocationName.donut_ghost_house_directional_coin_block_1:
-                self.has_p_switch,
-            LocationName.donut_ghost_house_life_block_1:
-                self.can_cape_fly,
-            LocationName.donut_ghost_house_life_block_2:
-                self.can_cape_fly,
-            LocationName.donut_ghost_house_life_block_3:
-                self.can_cape_fly,
-            LocationName.donut_ghost_house_life_block_4:
-                self.can_cape_fly,
-            LocationName.donut_ghost_house_room_2:
-                self.can_cape_fly,
-            LocationName.donut_ghost_house_room_5:
-                self.has_p_switch,
-            LocationName.donut_ghost_house_room_6:
-                self.can_climb,
+            Locations.donut_ghost_house_vine_block_1:
+                True_(),
+            Locations.donut_ghost_house_directional_coin_block_1:
+                HasPSwitch,
+            Locations.donut_ghost_house_life_block_1:
+                CanCapeFly,
+            Locations.donut_ghost_house_life_block_2:
+                CanCapeFly,
+            Locations.donut_ghost_house_life_block_3:
+                CanCapeFly,
+            Locations.donut_ghost_house_life_block_4:
+                CanCapeFly,
+            Locations.donut_ghost_house_room_2:
+                CanCapeFly,
+            Locations.donut_ghost_house_room_5:
+                HasPSwitch,
+            Locations.donut_ghost_house_room_6:
+                CanClimb,
 
-            LocationName.donut_secret_house_powerup_block_1:
-                self.true,
-            LocationName.donut_secret_house_multi_coin_block_1:
-                self.true,
-            LocationName.donut_secret_house_life_block_1:
-                self.has_p_switch,
-            LocationName.donut_secret_house_vine_block_1:
-                self.has_p_switch,
-            LocationName.donut_secret_house_directional_coin_block_1:
-                self.has_p_switch,
-            LocationName.donut_secret_house_room_3:
-                self.has_p_switch,
-            LocationName.donut_secret_house_room_4:
-                self.has_p_switch,
-            LocationName.donut_secret_house_room_5:
-                lambda state: self.has_p_switch(state) and (
-                    self.can_climb(state) or self.can_cape_fly(state)
+            Locations.donut_secret_house_powerup_block_1:
+                True_(),
+            Locations.donut_secret_house_multi_coin_block_1:
+                True_(),
+            Locations.donut_secret_house_life_block_1:
+                HasPSwitch,
+            Locations.donut_secret_house_vine_block_1:
+                HasPSwitch,
+            Locations.donut_secret_house_directional_coin_block_1:
+                HasPSwitch,
+            Locations.donut_secret_house_room_3:
+                HasPSwitch,
+            Locations.donut_secret_house_room_4:
+                HasPSwitch,
+            Locations.donut_secret_house_room_5:
+                HasPSwitch & (
+                    CanClimb | CanCapeFly
                 ),
 
-            LocationName.donut_plains_castle_hidden_1up:
-                self.true,
-            LocationName.donut_plains_castle_yellow_block_1:
-                self.true,
-            LocationName.donut_plains_castle_coin_block_1:
-                self.true,
-            LocationName.donut_plains_castle_powerup_block_1:
-                self.true,
-            LocationName.donut_plains_castle_coin_block_2:
-                self.true,
-            LocationName.donut_plains_castle_vine_block_1:
-                self.true,
-            LocationName.donut_plains_castle_invis_life_block_1:
-                self.can_climb,
-            LocationName.donut_plains_castle_coin_block_3:
-                self.true,
-            LocationName.donut_plains_castle_coin_block_4:
-                self.true,
-            LocationName.donut_plains_castle_coin_block_5:
-                self.true,
-            LocationName.donut_plains_castle_green_block_1:
-                self.true,
-            LocationName.donut_plains_castle_room_2:
-                self.can_cape_fly,
+            Locations.donut_plains_castle_hidden_1up:
+                True_(),
+            Locations.donut_plains_castle_yellow_block_1:
+                True_(),
+            Locations.donut_plains_castle_coin_block_1:
+                True_(),
+            Locations.donut_plains_castle_powerup_block_1:
+                True_(),
+            Locations.donut_plains_castle_coin_block_2:
+                True_(),
+            Locations.donut_plains_castle_vine_block_1:
+                True_(),
+            Locations.donut_plains_castle_invis_life_block_1:
+                CanClimb,
+            Locations.donut_plains_castle_coin_block_3:
+                True_(),
+            Locations.donut_plains_castle_coin_block_4:
+                True_(),
+            Locations.donut_plains_castle_coin_block_5:
+                True_(),
+            Locations.donut_plains_castle_green_block_1:
+                True_(),
+            Locations.donut_plains_castle_room_2:
+                CanCapeFly,
 
-            LocationName.green_switch_palace:
-                self.true,
+            Locations.green_switch_palace:
+                True_(),
 
-            LocationName.vanilla_dome_1_dragon:
-                lambda state: self.can_carry(state) and self.vanilla_dome_1_special_case(state),
-            LocationName.vanilla_dome_1_midway:
-                self.vanilla_dome_1_special_case,
-            LocationName.vanilla_dome_1_flying_block_1:
-                self.true,
-            LocationName.vanilla_dome_1_powerup_block_1:
-                self.true,
-            LocationName.vanilla_dome_1_powerup_block_2:
-                self.true,
-            LocationName.vanilla_dome_1_coin_block_1:
-                self.true,
-            LocationName.vanilla_dome_1_life_block_1:
-                self.true,
-            LocationName.vanilla_dome_1_powerup_block_3:
-                self.true,
-            LocationName.vanilla_dome_1_vine_block_1:
-                lambda state: self.has_rsp(state) or self.can_carry(state) or self.has_yoshi(state),
-            LocationName.vanilla_dome_1_star_block_1:
-                self.true,
-            LocationName.vanilla_dome_1_powerup_block_4:
-                self.vanilla_dome_1_special_case,
-            LocationName.vanilla_dome_1_coin_block_2:
-                self.vanilla_dome_1_special_case,
+            Locations.vanilla_dome_1_dragon:
+                CanCarry & CanRun & (HasSuperStar | HasMushroom),
+            Locations.vanilla_dome_1_midway:
+                CanRun & (HasSuperStar | HasMushroom),
+            Locations.vanilla_dome_1_flying_block_1:
+                True_(),
+            Locations.vanilla_dome_1_powerup_block_1:
+                True_(),
+            Locations.vanilla_dome_1_powerup_block_2:
+                True_(),
+            Locations.vanilla_dome_1_coin_block_1:
+                True_(),
+            Locations.vanilla_dome_1_life_block_1:
+                True_(),
+            Locations.vanilla_dome_1_powerup_block_3:
+                True_(),
+            Locations.vanilla_dome_1_vine_block_1:
+                HasRSP | CanCarry | HasYoshi,
+            Locations.vanilla_dome_1_star_block_1:
+                True_(),
+            Locations.vanilla_dome_1_powerup_block_4:
+                CanRun & (HasSuperStar | HasMushroom),
+            Locations.vanilla_dome_1_coin_block_2:
+                CanRun & (HasSuperStar | HasMushroom),
 
-            LocationName.vanilla_dome_2_dragon:
-                lambda state: self.can_swim(state) and self.has_p_switch(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_dragon:
+                CanSwim & HasPSwitch & CanCarry & (
+                    CanClimb | HasYoshi
                 ),
-            LocationName.vanilla_dome_2_midway:
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_midway:
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
-            LocationName.vanilla_dome_2_coin_block_1:
-                self.can_swim,
-            LocationName.vanilla_dome_2_powerup_block_1:
-                self.can_swim,
-            LocationName.vanilla_dome_2_coin_block_2:
-                self.can_swim,
-            LocationName.vanilla_dome_2_coin_block_3:
-                self.can_swim,
-            LocationName.vanilla_dome_2_vine_block_1:
-                self.can_swim,
-            LocationName.vanilla_dome_2_invis_life_block_1:
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_coin_block_1:
+                CanSwim,
+            Locations.vanilla_dome_2_powerup_block_1:
+                CanSwim,
+            Locations.vanilla_dome_2_coin_block_2:
+                CanSwim,
+            Locations.vanilla_dome_2_coin_block_3:
+                CanSwim,
+            Locations.vanilla_dome_2_vine_block_1:
+                CanSwim,
+            Locations.vanilla_dome_2_invis_life_block_1:
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
-            LocationName.vanilla_dome_2_coin_block_4:
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_coin_block_4:
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
-            LocationName.vanilla_dome_2_coin_block_5:
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_coin_block_5:
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
-            LocationName.vanilla_dome_2_powerup_block_2:
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_powerup_block_2:
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
-            LocationName.vanilla_dome_2_powerup_block_3:
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_powerup_block_3:
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
-            LocationName.vanilla_dome_2_powerup_block_4:
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_powerup_block_4:
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
-            LocationName.vanilla_dome_2_powerup_block_5:
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_powerup_block_5:
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
-            LocationName.vanilla_dome_2_multi_coin_block_1:
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_multi_coin_block_1:
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
-            LocationName.vanilla_dome_2_multi_coin_block_2:
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_multi_coin_block_2:
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
-            LocationName.vanilla_dome_2_room_2:
-                lambda state: self.can_swim(state) and (
-                    self.can_climb(state) or self.has_yoshi(state)
+            Locations.vanilla_dome_2_room_2:
+                CanSwim & (
+                    CanClimb | HasYoshi
                 ),
 
-            LocationName.vanilla_dome_3_dragon:
-                self.true,
-            LocationName.vanilla_dome_3_moon:
-                self.can_cape_fly,
-            LocationName.vanilla_dome_3_midway:
-                self.true,
-            LocationName.vanilla_dome_3_coin_block_1:
-                self.true,
-            LocationName.vanilla_dome_3_flying_block_1:
-                self.true,
-            LocationName.vanilla_dome_3_flying_block_2:
-                self.true,
-            LocationName.vanilla_dome_3_powerup_block_1:
-                self.true,
-            LocationName.vanilla_dome_3_flying_block_3:
-                self.true,
-            LocationName.vanilla_dome_3_invis_coin_block_1:
-                self.true,
-            LocationName.vanilla_dome_3_powerup_block_2:
-                self.true,
-            LocationName.vanilla_dome_3_multi_coin_block_1:
-                self.true,
-            LocationName.vanilla_dome_3_powerup_block_3:
-                self.true,
-            LocationName.vanilla_dome_3_yoshi_block_1:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.vanilla_dome_3_powerup_block_4:
-                self.true,
-            LocationName.vanilla_dome_3_pswitch_coin_block_1:
-                lambda state: self.can_cape_fly(state) and self.has_p_switch(state),
-            LocationName.vanilla_dome_3_pswitch_coin_block_2:
-                lambda state: self.can_cape_fly(state) and self.has_p_switch(state),
-            LocationName.vanilla_dome_3_pswitch_coin_block_3:
-                lambda state: self.can_cape_fly(state) and self.has_p_switch(state),
-            LocationName.vanilla_dome_3_pswitch_coin_block_4:
-                lambda state: self.can_cape_fly(state) and self.has_p_switch(state),
-            LocationName.vanilla_dome_3_pswitch_coin_block_5:
-                lambda state: self.can_cape_fly(state) and self.has_p_switch(state),
-            LocationName.vanilla_dome_3_pswitch_coin_block_6:
-                lambda state: self.can_cape_fly(state) and self.has_p_switch(state),
-            LocationName.vanilla_dome_3_room_2:
-                self.can_cape_fly,
+            Locations.vanilla_dome_3_dragon:
+                True_(),
+            Locations.vanilla_dome_3_moon:
+                CanCapeFly,
+            Locations.vanilla_dome_3_midway:
+                True_(),
+            Locations.vanilla_dome_3_coin_block_1:
+                True_(),
+            Locations.vanilla_dome_3_flying_block_1:
+                True_(),
+            Locations.vanilla_dome_3_flying_block_2:
+                True_(),
+            Locations.vanilla_dome_3_powerup_block_1:
+                True_(),
+            Locations.vanilla_dome_3_flying_block_3:
+                True_(),
+            Locations.vanilla_dome_3_invis_coin_block_1:
+                True_(),
+            Locations.vanilla_dome_3_powerup_block_2:
+                True_(),
+            Locations.vanilla_dome_3_multi_coin_block_1:
+                True_(),
+            Locations.vanilla_dome_3_powerup_block_3:
+                True_(),
+            Locations.vanilla_dome_3_yoshi_block_1:
+                CanCarry | HasYoshi,
+            Locations.vanilla_dome_3_powerup_block_4:
+                True_(),
+            Locations.vanilla_dome_3_pswitch_coin_block_1:
+                CanCapeFly & HasPSwitch,
+            Locations.vanilla_dome_3_pswitch_coin_block_2:
+                CanCapeFly & HasPSwitch,
+            Locations.vanilla_dome_3_pswitch_coin_block_3:
+                CanCapeFly & HasPSwitch,
+            Locations.vanilla_dome_3_pswitch_coin_block_4:
+                CanCapeFly & HasPSwitch,
+            Locations.vanilla_dome_3_pswitch_coin_block_5:
+                CanCapeFly & HasPSwitch,
+            Locations.vanilla_dome_3_pswitch_coin_block_6:
+                CanCapeFly & HasPSwitch,
+            Locations.vanilla_dome_3_room_2:
+                CanCapeFly,
 
-            LocationName.vanilla_dome_4_dragon:
-                self.true,
-            LocationName.vanilla_dome_4_hidden_1up:
-                self.true,
-            LocationName.vanilla_dome_4_powerup_block_1:
-                self.true,
-            LocationName.vanilla_dome_4_powerup_block_2:
-                self.true,
-            LocationName.vanilla_dome_4_coin_block_1:
-                self.true,
-            LocationName.vanilla_dome_4_coin_block_2:
-                self.true,
-            LocationName.vanilla_dome_4_coin_block_3:
-                self.true,
-            LocationName.vanilla_dome_4_life_block_1:
-                self.true,
-            LocationName.vanilla_dome_4_coin_block_4:
-                self.true,
-            LocationName.vanilla_dome_4_coin_block_5:
-                self.true,
-            LocationName.vanilla_dome_4_coin_block_6:
-                self.true,
-            LocationName.vanilla_dome_4_coin_block_7:
-                self.true,
-            LocationName.vanilla_dome_4_coin_block_8:
-                self.vanilla_dome_4_special_case,
+            Locations.vanilla_dome_4_dragon:
+                True_(),
+            Locations.vanilla_dome_4_hidden_1up:
+                True_(),
+            Locations.vanilla_dome_4_powerup_block_1:
+                True_(),
+            Locations.vanilla_dome_4_powerup_block_2:
+                True_(),
+            Locations.vanilla_dome_4_coin_block_1:
+                True_(),
+            Locations.vanilla_dome_4_coin_block_2:
+                True_(),
+            Locations.vanilla_dome_4_coin_block_3:
+                True_(),
+            Locations.vanilla_dome_4_life_block_1:
+                True_(),
+            Locations.vanilla_dome_4_coin_block_4:
+                True_(),
+            Locations.vanilla_dome_4_coin_block_5:
+                True_(),
+            Locations.vanilla_dome_4_coin_block_6:
+                True_(),
+            Locations.vanilla_dome_4_coin_block_7:
+                True_(),
+            Locations.vanilla_dome_4_coin_block_8:
+                CanCarry,
 
-            LocationName.vanilla_secret_1_dragon:
-                lambda state: self.vanilla_secret_1_special_case(state) and self.can_carry(state),
-            LocationName.vanilla_secret_1_coin_block_1:
-                self.true,
-            LocationName.vanilla_secret_1_powerup_block_1:
-                self.true,
-            LocationName.vanilla_secret_1_multi_coin_block_1:
-                self.true,
-            LocationName.vanilla_secret_1_vine_block_1:
-                self.true,
-            LocationName.vanilla_secret_1_vine_block_2:
-                self.vanilla_secret_1_special_case,
-            LocationName.vanilla_secret_1_coin_block_2:
-                self.vanilla_secret_1_special_case,
-            LocationName.vanilla_secret_1_coin_block_3:
-                self.vanilla_secret_1_special_case,
-            LocationName.vanilla_secret_1_powerup_block_2:
-                self.vanilla_secret_1_special_case,
-            LocationName.vanilla_secret_1_room_2:
-                self.vanilla_secret_1_special_case,
-            LocationName.vanilla_secret_1_room_3:
-                lambda state: self.vanilla_secret_1_special_case(state) and self.can_carry(state) and self.has_bsp(state),
+            Locations.vanilla_secret_1_dragon:
+                CanClimb & CanCarry,
+            Locations.vanilla_secret_1_coin_block_1:
+                True_(),
+            Locations.vanilla_secret_1_powerup_block_1:
+                True_(),
+            Locations.vanilla_secret_1_multi_coin_block_1:
+                True_(),
+            Locations.vanilla_secret_1_vine_block_1:
+                True_(),
+            Locations.vanilla_secret_1_vine_block_2:
+                CanClimb,
+            Locations.vanilla_secret_1_coin_block_2:
+                CanClimb,
+            Locations.vanilla_secret_1_coin_block_3:
+                CanClimb,
+            Locations.vanilla_secret_1_powerup_block_2:
+                CanClimb,
+            Locations.vanilla_secret_1_room_2:
+                CanClimb,
+            Locations.vanilla_secret_1_room_3:
+                CanClimb & CanCarry & HasBSP,
 
-            LocationName.vanilla_secret_2_dragon:
-                self.can_cape_fly,
-            LocationName.vanilla_secret_2_yoshi_block_1:
-                self.true,
-            LocationName.vanilla_secret_2_green_block_1:
-                self.true,
-            LocationName.vanilla_secret_2_powerup_block_1:
-                self.true,
-            LocationName.vanilla_secret_2_powerup_block_2:
-                self.true,
-            LocationName.vanilla_secret_2_multi_coin_block_1:
-                self.true,
-            LocationName.vanilla_secret_2_gray_pow_block_1:
-                self.true,
-            LocationName.vanilla_secret_2_coin_block_1:
-                self.true,
-            LocationName.vanilla_secret_2_coin_block_2:
-                self.true,
-            LocationName.vanilla_secret_2_coin_block_3:
-                self.true,
-            LocationName.vanilla_secret_2_coin_block_4:
-                self.true,
-            LocationName.vanilla_secret_2_coin_block_5:
-                self.true,
-            LocationName.vanilla_secret_2_coin_block_6:
-                self.true,
+            Locations.vanilla_secret_2_dragon:
+                CanCapeFly,
+            Locations.vanilla_secret_2_yoshi_block_1:
+                True_(),
+            Locations.vanilla_secret_2_green_block_1:
+                True_(),
+            Locations.vanilla_secret_2_powerup_block_1:
+                True_(),
+            Locations.vanilla_secret_2_powerup_block_2:
+                True_(),
+            Locations.vanilla_secret_2_multi_coin_block_1:
+                True_(),
+            Locations.vanilla_secret_2_gray_pow_block_1:
+                True_(),
+            Locations.vanilla_secret_2_coin_block_1:
+                True_(),
+            Locations.vanilla_secret_2_coin_block_2:
+                True_(),
+            Locations.vanilla_secret_2_coin_block_3:
+                True_(),
+            Locations.vanilla_secret_2_coin_block_4:
+                True_(),
+            Locations.vanilla_secret_2_coin_block_5:
+                True_(),
+            Locations.vanilla_secret_2_coin_block_6:
+                True_(),
 
-            LocationName.vanilla_secret_3_dragon:
-                self.vanilla_secret_3_special_case,
-            LocationName.vanilla_secret_3_powerup_block_1:
-                self.vanilla_secret_3_special_case,
-            LocationName.vanilla_secret_3_powerup_block_2:
-                self.vanilla_secret_3_special_case,
-            LocationName.vanilla_secret_3_room_2:
-                self.vanilla_secret_3_special_case,
+            Locations.vanilla_secret_3_dragon:
+                CanSwim,
+            Locations.vanilla_secret_3_powerup_block_1:
+                CanSwim,
+            Locations.vanilla_secret_3_powerup_block_2:
+                CanSwim,
+            Locations.vanilla_secret_3_room_2:
+                CanSwim,
 
-            LocationName.vanilla_ghost_house_dragon:
-                self.can_climb,
-            LocationName.vanilla_ghost_house_hidden_1up:
-                self.true,
-            LocationName.vanilla_ghost_house_powerup_block_1:
-                self.true,
-            LocationName.vanilla_ghost_house_vine_block_1:
-                self.true,
-            LocationName.vanilla_ghost_house_powerup_block_2:
-                self.true,
-            LocationName.vanilla_ghost_house_multi_coin_block_1:
-                self.true,
-            LocationName.vanilla_ghost_house_blue_pow_block_1:
-                self.true,
-            LocationName.vanilla_ghost_house_room_3:
-                self.has_p_switch,
+            Locations.vanilla_ghost_house_dragon:
+                CanClimb,
+            Locations.vanilla_ghost_house_hidden_1up:
+                True_(),
+            Locations.vanilla_ghost_house_powerup_block_1:
+                True_(),
+            Locations.vanilla_ghost_house_vine_block_1:
+                True_(),
+            Locations.vanilla_ghost_house_powerup_block_2:
+                True_(),
+            Locations.vanilla_ghost_house_multi_coin_block_1:
+                True_(),
+            Locations.vanilla_ghost_house_blue_pow_block_1:
+                True_(),
+            Locations.vanilla_ghost_house_room_3:
+                HasPSwitch,
                 
-            LocationName.vanilla_fortress_hidden_1up:
-                self.can_swim,
-            LocationName.vanilla_fortress_powerup_block_1:
-                self.can_swim,
-            LocationName.vanilla_fortress_powerup_block_2:
-                self.can_swim,
-            LocationName.vanilla_fortress_yellow_block_1:
-                self.can_swim,
-            LocationName.vanilla_fortress_room_2:
-                self.can_swim,
+            Locations.vanilla_fortress_hidden_1up:
+                CanSwim,
+            Locations.vanilla_fortress_powerup_block_1:
+                CanSwim,
+            Locations.vanilla_fortress_powerup_block_2:
+                CanSwim,
+            Locations.vanilla_fortress_yellow_block_1:
+                CanSwim,
+            Locations.vanilla_fortress_room_2:
+                CanSwim,
 
-            LocationName.vanilla_dome_castle_life_block_1:
-                self.has_mushroom,
-            LocationName.vanilla_dome_castle_life_block_2:
-                self.has_mushroom,
-            LocationName.vanilla_dome_castle_powerup_block_1:
-                self.true,
-            LocationName.vanilla_dome_castle_life_block_3:
-                self.has_p_switch,
-            LocationName.vanilla_dome_castle_midway:
-                self.has_p_switch,
-            LocationName.vanilla_dome_castle_room_2:
-                self.has_p_switch,
+            Locations.vanilla_dome_castle_life_block_1:
+                HasMushroom,
+            Locations.vanilla_dome_castle_life_block_2:
+                HasMushroom,
+            Locations.vanilla_dome_castle_powerup_block_1:
+                True_(),
+            Locations.vanilla_dome_castle_life_block_3:
+                HasPSwitch,
+            Locations.vanilla_dome_castle_midway:
+                HasPSwitch,
+            Locations.vanilla_dome_castle_room_2:
+                HasPSwitch,
 
-            LocationName.red_switch_palace:
-                self.true,
+            Locations.red_switch_palace:
+                True_(),
 
-            LocationName.butter_bridge_1_dragon:
-                self.butter_bridge_special_case,
-            LocationName.butter_bridge_1_prize:
-                self.butter_bridge_special_case,
-            LocationName.butter_bridge_1_powerup_block_1:
-                self.butter_bridge_special_case,
-            LocationName.butter_bridge_1_multi_coin_block_1:
-                self.butter_bridge_special_case,
-            LocationName.butter_bridge_1_multi_coin_block_2:
-                self.butter_bridge_special_case,
-            LocationName.butter_bridge_1_multi_coin_block_3:
-                self.butter_bridge_special_case,
-            LocationName.butter_bridge_1_life_block_1:
-                self.butter_bridge_special_case,
-            LocationName.butter_bridge_1_room_2:
-                self.butter_bridge_special_case,
+            Locations.butter_bridge_1_dragon:
+                True_(options=[OptionFilter(EnemyShuffle, 0)]) | 
+                Has(Items.red_switch_palace, options=[OptionFilter(EnemyShuffle, 1)]),
+            Locations.butter_bridge_1_prize:
+                True_(options=[OptionFilter(EnemyShuffle, 0)]) | 
+                Has(Items.red_switch_palace, options=[OptionFilter(EnemyShuffle, 1)]),
+            Locations.butter_bridge_1_powerup_block_1:
+                True_(options=[OptionFilter(EnemyShuffle, 0)]) | 
+                Has(Items.red_switch_palace, options=[OptionFilter(EnemyShuffle, 1)]),
+            Locations.butter_bridge_1_multi_coin_block_1:
+                True_(options=[OptionFilter(EnemyShuffle, 0)]) | 
+                Has(Items.red_switch_palace, options=[OptionFilter(EnemyShuffle, 1)]),
+            Locations.butter_bridge_1_multi_coin_block_2:
+                True_(options=[OptionFilter(EnemyShuffle, 0)]) | 
+                Has(Items.red_switch_palace, options=[OptionFilter(EnemyShuffle, 1)]),
+            Locations.butter_bridge_1_multi_coin_block_3:
+                True_(options=[OptionFilter(EnemyShuffle, 0)]) | 
+                Has(Items.red_switch_palace, options=[OptionFilter(EnemyShuffle, 1)]),
+            Locations.butter_bridge_1_life_block_1:
+                True_(options=[OptionFilter(EnemyShuffle, 0)]) | 
+                Has(Items.red_switch_palace, options=[OptionFilter(EnemyShuffle, 1)]),
+            Locations.butter_bridge_1_room_2:
+                True_(options=[OptionFilter(EnemyShuffle, 0)]) | 
+                Has(Items.red_switch_palace, options=[OptionFilter(EnemyShuffle, 1)]),
 
-            LocationName.butter_bridge_2_dragon:
-                self.can_fly,
-            LocationName.butter_bridge_2_powerup_block_1:
-                self.can_carry,
-            LocationName.butter_bridge_2_green_block_1:
-                self.true,
-            LocationName.butter_bridge_2_yoshi_block_1:
-                self.can_carry,
+            Locations.butter_bridge_2_dragon:
+                CanFly,
+            Locations.butter_bridge_2_powerup_block_1:
+                CanCarry,
+            Locations.butter_bridge_2_green_block_1:
+                True_(),
+            Locations.butter_bridge_2_yoshi_block_1:
+                CanCarry,
 
-            LocationName.cheese_bridge_dragon:
-                lambda state: self.can_climb(state) or self.has_yoshi(state),
-            LocationName.cheese_bridge_moon:
-                self.cheese_bridge_special_case,
-            LocationName.cheese_bridge_powerup_block_1:
-                self.true,
-            LocationName.cheese_bridge_powerup_block_2:
-                self.true,
-            LocationName.cheese_bridge_wings_block_1:
-                self.true,
-            LocationName.cheese_bridge_powerup_block_3:
-                self.true,
-            LocationName.cheese_bridge_room_3:
-                self.has_yoshi,
+            Locations.cheese_bridge_dragon:
+                CanClimb | HasYoshi,
+            Locations.cheese_bridge_moon:
+                CanCapeFly,
+            Locations.cheese_bridge_powerup_block_1:
+                True_(),
+            Locations.cheese_bridge_powerup_block_2:
+                True_(),
+            Locations.cheese_bridge_wings_block_1:
+                True_(),
+            Locations.cheese_bridge_powerup_block_3:
+                True_(),
+            Locations.cheese_bridge_room_3:
+                HasYoshi,
 
-            LocationName.cookie_mountain_dragon:
-                lambda state: self.can_climb(state) or self.has_yoshi(state),
-            LocationName.cookie_mountain_hidden_1up:
-                self.cookie_mountain_special_case,
-            LocationName.cookie_mountain_coin_block_1:
-                self.true,
-            LocationName.cookie_mountain_coin_block_2:
-                self.true,
-            LocationName.cookie_mountain_coin_block_3:
-                self.true,
-            LocationName.cookie_mountain_coin_block_4:
-                self.true,
-            LocationName.cookie_mountain_coin_block_5:
-                self.true,
-            LocationName.cookie_mountain_coin_block_6:
-                self.true,
-            LocationName.cookie_mountain_coin_block_7:
-                self.true,
-            LocationName.cookie_mountain_coin_block_8:
-                self.true,
-            LocationName.cookie_mountain_coin_block_9:
-                self.true,
-            LocationName.cookie_mountain_powerup_block_1:
-                self.true,
-            LocationName.cookie_mountain_life_block_1:
-                self.can_climb,
-            LocationName.cookie_mountain_vine_block_1:
-                self.true,
-            LocationName.cookie_mountain_yoshi_block_1:
-                self.has_rsp,
-            LocationName.cookie_mountain_coin_block_10:
-                self.true,
-            LocationName.cookie_mountain_coin_block_11:
-                self.true,
-            LocationName.cookie_mountain_powerup_block_2:
-                self.true,
-            LocationName.cookie_mountain_coin_block_12:
-                self.true,
-            LocationName.cookie_mountain_coin_block_13:
-                self.true,
-            LocationName.cookie_mountain_coin_block_14:
-                self.true,
-            LocationName.cookie_mountain_coin_block_15:
-                self.true,
-            LocationName.cookie_mountain_coin_block_16:
-                self.true,
-            LocationName.cookie_mountain_coin_block_17:
-                self.true,
-            LocationName.cookie_mountain_coin_block_18:
-                self.true,
-            LocationName.cookie_mountain_coin_block_19:
-                self.true,
-            LocationName.cookie_mountain_coin_block_20:
-                self.true,
-            LocationName.cookie_mountain_coin_block_21:
-                self.true,
-            LocationName.cookie_mountain_coin_block_22:
-                self.true,
-            LocationName.cookie_mountain_coin_block_23:
-                self.true,
-            LocationName.cookie_mountain_coin_block_24:
-                self.true,
-            LocationName.cookie_mountain_coin_block_25:
-                self.true,
-            LocationName.cookie_mountain_coin_block_26:
-                self.true,
-            LocationName.cookie_mountain_coin_block_27:
-                self.true,
-            LocationName.cookie_mountain_coin_block_28:
-                self.true,
-            LocationName.cookie_mountain_coin_block_29:
-                self.true,
-            LocationName.cookie_mountain_coin_block_30:
-                self.true,
+            Locations.cookie_mountain_dragon:
+                CanClimb | HasYoshi,
+            Locations.cookie_mountain_hidden_1up:
+                CanSwim | CanWallRun,
+            Locations.cookie_mountain_coin_block_1:
+                True_(),
+            Locations.cookie_mountain_coin_block_2:
+                True_(),
+            Locations.cookie_mountain_coin_block_3:
+                True_(),
+            Locations.cookie_mountain_coin_block_4:
+                True_(),
+            Locations.cookie_mountain_coin_block_5:
+                True_(),
+            Locations.cookie_mountain_coin_block_6:
+                True_(),
+            Locations.cookie_mountain_coin_block_7:
+                True_(),
+            Locations.cookie_mountain_coin_block_8:
+                True_(),
+            Locations.cookie_mountain_coin_block_9:
+                True_(),
+            Locations.cookie_mountain_powerup_block_1:
+                True_(),
+            Locations.cookie_mountain_life_block_1:
+                CanClimb,
+            Locations.cookie_mountain_vine_block_1:
+                True_(),
+            Locations.cookie_mountain_yoshi_block_1:
+                HasRSP,
+            Locations.cookie_mountain_coin_block_10:
+                True_(),
+            Locations.cookie_mountain_coin_block_11:
+                True_(),
+            Locations.cookie_mountain_powerup_block_2:
+                True_(),
+            Locations.cookie_mountain_coin_block_12:
+                True_(),
+            Locations.cookie_mountain_coin_block_13:
+                True_(),
+            Locations.cookie_mountain_coin_block_14:
+                True_(),
+            Locations.cookie_mountain_coin_block_15:
+                True_(),
+            Locations.cookie_mountain_coin_block_16:
+                True_(),
+            Locations.cookie_mountain_coin_block_17:
+                True_(),
+            Locations.cookie_mountain_coin_block_18:
+                True_(),
+            Locations.cookie_mountain_coin_block_19:
+                True_(),
+            Locations.cookie_mountain_coin_block_20:
+                True_(),
+            Locations.cookie_mountain_coin_block_21:
+                True_(),
+            Locations.cookie_mountain_coin_block_22:
+                True_(),
+            Locations.cookie_mountain_coin_block_23:
+                True_(),
+            Locations.cookie_mountain_coin_block_24:
+                True_(),
+            Locations.cookie_mountain_coin_block_25:
+                True_(),
+            Locations.cookie_mountain_coin_block_26:
+                True_(),
+            Locations.cookie_mountain_coin_block_27:
+                True_(),
+            Locations.cookie_mountain_coin_block_28:
+                True_(),
+            Locations.cookie_mountain_coin_block_29:
+                True_(),
+            Locations.cookie_mountain_coin_block_30:
+                True_(),
 
-            LocationName.soda_lake_dragon:
-                self.can_swim,
-            LocationName.soda_lake_powerup_block_1:
-                self.can_swim,
-            LocationName.soda_lake_room_2:
-                self.can_swim,
+            Locations.soda_lake_dragon:
+                CanSwim,
+            Locations.soda_lake_powerup_block_1:
+                CanSwim,
+            Locations.soda_lake_room_2:
+                CanSwim,
 
-            LocationName.twin_bridges_castle_powerup_block_1:
-                self.twin_bridges_castle_special_case,
+            Locations.twin_bridges_castle_powerup_block_1:
+                CanRun & CanClimb,
 
-            LocationName.forest_of_illusion_1_powerup_block_1:
-                self.true,
-            LocationName.forest_of_illusion_1_yoshi_block_1:
-                self.true,
-            LocationName.forest_of_illusion_1_powerup_block_2:
-                self.true,
-            LocationName.forest_of_illusion_1_key_block_1:
-                self.forest_of_illusion_1_special_case,
-            LocationName.forest_of_illusion_1_life_block_1:
-                self.true,
+            Locations.forest_of_illusion_1_powerup_block_1:
+                True_(),
+            Locations.forest_of_illusion_1_yoshi_block_1:
+                True_(),
+            Locations.forest_of_illusion_1_powerup_block_2:
+                True_(),
+            Locations.forest_of_illusion_1_key_block_1:
+                HasPBalloon,
+            Locations.forest_of_illusion_1_life_block_1:
+                True_(),
 
-            LocationName.forest_of_illusion_2_dragon:
-                lambda state: self.can_swim(state) and self.forest_of_illusion_2_special_case(state),
-            LocationName.forest_of_illusion_2_green_block_1:
-                lambda state: self.can_swim(state) and self.forest_of_illusion_2_special_case(state),
-            LocationName.forest_of_illusion_2_powerup_block_1:
-                lambda state: self.can_swim(state) and self.forest_of_illusion_2_special_case(state),
-            LocationName.forest_of_illusion_2_invis_coin_block_1:
-                lambda state: self.can_swim(state) and self.forest_of_illusion_2_special_case(state),
-            LocationName.forest_of_illusion_2_invis_coin_block_2:
-                lambda state: self.can_swim(state) and self.forest_of_illusion_2_special_case(state),
-            LocationName.forest_of_illusion_2_invis_life_block_1:
-                lambda state: self.can_swim(state) and self.forest_of_illusion_2_special_case(state),
-            LocationName.forest_of_illusion_2_invis_coin_block_3:
-                lambda state: self.can_swim(state) and self.forest_of_illusion_2_special_case(state),
-            LocationName.forest_of_illusion_2_yellow_block_1:
-                lambda state: self.can_swim(state) and self.forest_of_illusion_2_special_case(state),
+            Locations.forest_of_illusion_2_dragon:
+                CanSwim & 
+                Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
+            Locations.forest_of_illusion_2_green_block_1:
+                CanSwim & 
+                Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
+            Locations.forest_of_illusion_2_powerup_block_1:
+                CanSwim & 
+                Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
+            Locations.forest_of_illusion_2_invis_coin_block_1:
+                CanSwim & 
+                Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
+            Locations.forest_of_illusion_2_invis_coin_block_2:
+                CanSwim & 
+                Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
+            Locations.forest_of_illusion_2_invis_life_block_1:
+                CanSwim & 
+                Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
+            Locations.forest_of_illusion_2_invis_coin_block_3:
+                CanSwim & 
+                Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
+            Locations.forest_of_illusion_2_yellow_block_1:
+                CanSwim & 
+                Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
 
-            LocationName.forest_of_illusion_3_dragon:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_hidden_1up:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_yoshi_block_1:
-                self.true,
-            LocationName.forest_of_illusion_3_coin_block_1:
-                self.true,
-            LocationName.forest_of_illusion_3_multi_coin_block_1:
-                self.true,
-            LocationName.forest_of_illusion_3_coin_block_2:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_multi_coin_block_2:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_3:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_4:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_5:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_6:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_7:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_8:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_9:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_10:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_11:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_12:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_13:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_14:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_15:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_16:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_17:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_18:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_19:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_20:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_21:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_22:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_23:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.forest_of_illusion_3_coin_block_24:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
+            Locations.forest_of_illusion_3_dragon:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_hidden_1up:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_yoshi_block_1:
+                True_(),
+            Locations.forest_of_illusion_3_coin_block_1:
+                True_(),
+            Locations.forest_of_illusion_3_multi_coin_block_1:
+                True_(),
+            Locations.forest_of_illusion_3_coin_block_2:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_multi_coin_block_2:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_3:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_4:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_5:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_6:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_7:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_8:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_9:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_10:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_11:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_12:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_13:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_14:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_15:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_16:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_17:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_18:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_19:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_20:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_21:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_22:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_23:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_coin_block_24:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_midway:
+                CanCarry | HasYoshi,
+            Locations.forest_of_illusion_3_room_1:
+                True_(),
+            Locations.forest_of_illusion_3_room_2:
+                True_(),
+            Locations.forest_of_illusion_3_room_3:
+                CanCarry | HasYoshi,
 
-            LocationName.forest_of_illusion_4_dragon:
-                lambda state: self.has_yoshi(state) or self.can_carry(state) or 
-                    self.has_p_switch(state) or self.has_fire_flower(state),
-            LocationName.forest_of_illusion_4_multi_coin_block_1:
-                self.true,
-            LocationName.forest_of_illusion_4_coin_block_1:
-                self.true,
-            LocationName.forest_of_illusion_4_coin_block_2:
-                self.true,
-            LocationName.forest_of_illusion_4_coin_block_3:
-                self.true,
-            LocationName.forest_of_illusion_4_coin_block_4:
-                self.true,
-            LocationName.forest_of_illusion_4_powerup_block_1:
-                self.true,
-            LocationName.forest_of_illusion_4_coin_block_5:
-                self.true,
-            LocationName.forest_of_illusion_4_coin_block_6:
-                self.true,
-            LocationName.forest_of_illusion_4_coin_block_7:
-                self.true,
-            LocationName.forest_of_illusion_4_powerup_block_2:
-                self.true,
-            LocationName.forest_of_illusion_4_coin_block_8:
-                self.true,
-            LocationName.forest_of_illusion_4_coin_block_9:
-                self.true,
-            LocationName.forest_of_illusion_4_coin_block_10:
-                self.true,
-            LocationName.forest_of_illusion_4_room_2:
-                self.can_run,
+            Locations.forest_of_illusion_4_dragon:
+                HasYoshi | CanCarry | 
+                    HasPSwitch | HasFireFlower,
+            Locations.forest_of_illusion_4_multi_coin_block_1:
+                True_(),
+            Locations.forest_of_illusion_4_coin_block_1:
+                True_(),
+            Locations.forest_of_illusion_4_coin_block_2:
+                True_(),
+            Locations.forest_of_illusion_4_coin_block_3:
+                True_(),
+            Locations.forest_of_illusion_4_coin_block_4:
+                True_(),
+            Locations.forest_of_illusion_4_powerup_block_1:
+                True_(),
+            Locations.forest_of_illusion_4_coin_block_5:
+                True_(),
+            Locations.forest_of_illusion_4_coin_block_6:
+                True_(),
+            Locations.forest_of_illusion_4_coin_block_7:
+                True_(),
+            Locations.forest_of_illusion_4_powerup_block_2:
+                True_(),
+            Locations.forest_of_illusion_4_coin_block_8:
+                True_(),
+            Locations.forest_of_illusion_4_coin_block_9:
+                True_(),
+            Locations.forest_of_illusion_4_coin_block_10:
+                True_(),
+            Locations.forest_of_illusion_4_room_2:
+                CanRun | HasYoshi,
 
-            LocationName.forest_ghost_house_dragon:
-                self.forest_ghost_house_special_case,
-            LocationName.forest_ghost_house_moon:
-                self.forest_ghost_house_special_case,
-            LocationName.forest_ghost_house_coin_block_1:
-                self.true,
-            LocationName.forest_ghost_house_powerup_block_1:
-                self.true,
-            LocationName.forest_ghost_house_flying_block_1:
-                self.true,
-            LocationName.forest_ghost_house_powerup_block_2:
-                self.true,
-            LocationName.forest_ghost_house_life_block_1:
-                self.true,
-            LocationName.forest_ghost_house_room_3:
-                self.forest_ghost_house_special_case,
-            LocationName.forest_ghost_house_room_4:
-                self.forest_ghost_house_special_case,
+            Locations.forest_ghost_house_dragon:
+                HasPSwitch,
+            Locations.forest_ghost_house_moon:
+                HasPSwitch,
+            Locations.forest_ghost_house_coin_block_1:
+                True_(),
+            Locations.forest_ghost_house_powerup_block_1:
+                True_(),
+            Locations.forest_ghost_house_flying_block_1:
+                True_(),
+            Locations.forest_ghost_house_powerup_block_2:
+                True_(),
+            Locations.forest_ghost_house_life_block_1:
+                True_(),
+            Locations.forest_ghost_house_room_3:
+                HasPSwitch,
+            Locations.forest_ghost_house_room_4:
+                HasPSwitch,
 
-            LocationName.forest_secret_dragon:
-                self.true,
-            LocationName.forest_secret_powerup_block_1:
-                self.true,
-            LocationName.forest_secret_powerup_block_2:
-                self.true,
-            LocationName.forest_secret_life_block_1:
-                self.forest_secret_special_case,
+            Locations.forest_secret_dragon:
+                True_(),
+            Locations.forest_secret_powerup_block_1:
+                True_(),
+            Locations.forest_secret_powerup_block_2:
+                True_(),
+            Locations.forest_secret_life_block_1:
+                HasBSP,
 
-            LocationName.forest_fortress_yellow_block_1:
-                self.true,
-            LocationName.forest_fortress_powerup_block_1:
-                self.true,
-            LocationName.forest_fortress_life_block_1:
-                self.can_cape_fly,
-            LocationName.forest_fortress_life_block_2:
-                self.can_cape_fly,
-            LocationName.forest_fortress_life_block_3:
-                self.can_cape_fly,
-            LocationName.forest_fortress_life_block_4:
-                self.can_cape_fly,
-            LocationName.forest_fortress_life_block_5:
-                self.can_cape_fly,
-            LocationName.forest_fortress_life_block_6:
-                self.can_cape_fly,
-            LocationName.forest_fortress_life_block_7:
-                self.can_cape_fly,
-            LocationName.forest_fortress_life_block_8:
-                self.can_cape_fly,
-            LocationName.forest_fortress_life_block_9:
-                self.can_cape_fly,
+            Locations.forest_fortress_yellow_block_1:
+                True_(),
+            Locations.forest_fortress_powerup_block_1:
+                True_(),
+            Locations.forest_fortress_life_block_1:
+                CanCapeFly,
+            Locations.forest_fortress_life_block_2:
+                CanCapeFly,
+            Locations.forest_fortress_life_block_3:
+                CanCapeFly,
+            Locations.forest_fortress_life_block_4:
+                CanCapeFly,
+            Locations.forest_fortress_life_block_5:
+                CanCapeFly,
+            Locations.forest_fortress_life_block_6:
+                CanCapeFly,
+            Locations.forest_fortress_life_block_7:
+                CanCapeFly,
+            Locations.forest_fortress_life_block_8:
+                CanCapeFly,
+            Locations.forest_fortress_life_block_9:
+                CanCapeFly,
 
-            LocationName.forest_castle_dragon:
-                self.true,
-            LocationName.forest_castle_green_block_1:
-                self.true,
+            Locations.forest_castle_dragon:
+                True_(),
+            Locations.forest_castle_green_block_1:
+                True_(),
 
-            LocationName.blue_switch_palace:
-                self.true,
+            Locations.blue_switch_palace:
+                True_(),
 
-            LocationName.chocolate_island_1_dragon:
-                lambda state: self.has_p_switch(state) or self.chocolate_island_1_special_case(state),
-            LocationName.chocolate_island_1_moon:
-                lambda state: self.can_cape_fly(state) or self.chocolate_island_1_special_case(state),
-            LocationName.chocolate_island_1_flying_block_1:
-                self.true,
-            LocationName.chocolate_island_1_flying_block_2:
-                lambda state: self.has_p_switch(state) or self.chocolate_island_1_special_case(state),
-            LocationName.chocolate_island_1_yoshi_block_1:
-                lambda state: self.has_p_switch(state) or self.chocolate_island_1_special_case(state),
-            LocationName.chocolate_island_1_green_block_1:
-                lambda state: self.has_p_switch(state) or self.chocolate_island_1_special_case(state) and (
-                    (self.has_gsp(state) and self.has_bsp(state)) or
-                    (self.has_ysp(state) and self.has_bsp(state))
+            Locations.chocolate_island_1_dragon:
+                HasPSwitch | HasYoshi,
+            Locations.chocolate_island_1_moon:
+                CanCapeFly,
+            Locations.chocolate_island_1_flying_block_1:
+                True_(),
+            Locations.chocolate_island_1_flying_block_2:
+                HasPSwitch | HasYoshi,
+            Locations.chocolate_island_1_yoshi_block_1:
+                HasPSwitch | HasYoshi,
+            Locations.chocolate_island_1_green_block_1:
+                (HasPSwitch | HasYoshi) & (
+                    (HasGSP & HasBSP) |
+                    (HasYSP & HasBSP)
                 ),
-            LocationName.chocolate_island_1_life_block_1:
-                lambda state: self.has_p_switch(state) or self.chocolate_island_1_special_case(state),
-            LocationName.chocolate_island_1_room_2:
-                lambda state: self.has_p_switch(state) or self.chocolate_island_1_special_case(state),
+            Locations.chocolate_island_1_life_block_1:
+                HasPSwitch | HasYoshi,
+            Locations.chocolate_island_1_room_2:
+                HasPSwitch | HasYoshi,
                 
-            LocationName.chocolate_island_2_dragon:
-                lambda state: self.has_bsp(state) and (
-                    self.has_p_switch(state) or self.has_gsp(state) or self.has_yoshi(state) or (
-                        self.has_ysp(state) and self.has_rsp(state)
+            Locations.chocolate_island_2_dragon:
+                HasBSP & (
+                    HasPSwitch | HasGSP | HasYoshi | (
+                        HasYSP & HasRSP
                     )),
-            LocationName.chocolate_island_2_hidden_1up:
-                self.true,
-            LocationName.chocolate_island_2_multi_coin_block_1:
-                self.true,
-            LocationName.chocolate_island_2_invis_coin_block_1:
-                self.true,
-            LocationName.chocolate_island_2_yoshi_block_1:
-                self.true,
-            LocationName.chocolate_island_2_coin_block_1:
-                self.true,
-            LocationName.chocolate_island_2_coin_block_2:
-                self.true,
-            LocationName.chocolate_island_2_multi_coin_block_2:
-                self.true,
-            LocationName.chocolate_island_2_powerup_block_1:
-                self.true,
-            LocationName.chocolate_island_2_blue_pow_block_1:
-                self.true,
-            LocationName.chocolate_island_2_yellow_block_1:
-                self.true,
-            LocationName.chocolate_island_2_yellow_block_2:
-                self.true,
-            LocationName.chocolate_island_2_green_block_1:
-                self.true,
-            LocationName.chocolate_island_2_green_block_2:
-                self.true,
-            LocationName.chocolate_island_2_green_block_3:
-                self.true,
-            LocationName.chocolate_island_2_green_block_4:
-                self.true,
-            LocationName.chocolate_island_2_green_block_5:
-                self.true,
-            LocationName.chocolate_island_2_green_block_6:
-                self.true,
+            Locations.chocolate_island_2_hidden_1up:
+                True_(),
+            Locations.chocolate_island_2_multi_coin_block_1:
+                True_(),
+            Locations.chocolate_island_2_invis_coin_block_1:
+                True_(),
+            Locations.chocolate_island_2_yoshi_block_1:
+                True_(),
+            Locations.chocolate_island_2_coin_block_1:
+                True_(),
+            Locations.chocolate_island_2_coin_block_2:
+                True_(),
+            Locations.chocolate_island_2_multi_coin_block_2:
+                True_(),
+            Locations.chocolate_island_2_powerup_block_1:
+                True_(),
+            Locations.chocolate_island_2_blue_pow_block_1:
+                True_(),
+            Locations.chocolate_island_2_yellow_block_1:
+                True_(),
+            Locations.chocolate_island_2_yellow_block_2:
+                True_(),
+            Locations.chocolate_island_2_green_block_1:
+                True_(),
+            Locations.chocolate_island_2_green_block_2:
+                True_(),
+            Locations.chocolate_island_2_green_block_3:
+                True_(),
+            Locations.chocolate_island_2_green_block_4:
+                True_(),
+            Locations.chocolate_island_2_green_block_5:
+                True_(),
+            Locations.chocolate_island_2_green_block_6:
+                True_(),
 
-            LocationName.chocolate_island_3_dragon:
-                self.true,
-            LocationName.chocolate_island_3_prize:
-                self.true,
-            LocationName.chocolate_island_3_powerup_block_1:
-                self.true,
-            LocationName.chocolate_island_3_powerup_block_2:
-                self.true,
-            LocationName.chocolate_island_3_powerup_block_3:
-                self.true,
-            LocationName.chocolate_island_3_green_block_1:
-                self.true,
-            LocationName.chocolate_island_3_vine_block_1:
-                self.true,
-            LocationName.chocolate_island_3_life_block_1:
-                self.can_fly,
-            LocationName.chocolate_island_3_life_block_2:
-                self.can_fly,
-            LocationName.chocolate_island_3_life_block_3:
-                self.can_fly,
+            Locations.chocolate_island_3_dragon:
+                True_(),
+            Locations.chocolate_island_3_prize:
+                True_(),
+            Locations.chocolate_island_3_powerup_block_1:
+                True_(),
+            Locations.chocolate_island_3_powerup_block_2:
+                True_(),
+            Locations.chocolate_island_3_powerup_block_3:
+                True_(),
+            Locations.chocolate_island_3_green_block_1:
+                True_(),
+            Locations.chocolate_island_3_vine_block_1:
+                True_(),
+            Locations.chocolate_island_3_life_block_1:
+                CanFly,
+            Locations.chocolate_island_3_life_block_2:
+                CanFly,
+            Locations.chocolate_island_3_life_block_3:
+                CanFly,
 
-            LocationName.chocolate_island_4_dragon:
-                lambda state: self.has_p_switch(state) and self.has_feather(state),
-            LocationName.chocolate_island_4_yellow_block_1:
-                self.has_bsp,
-            LocationName.chocolate_island_4_blue_pow_block_1:
-                self.true,
-            LocationName.chocolate_island_4_powerup_block_1:
-                self.true,
-            LocationName.chocolate_island_4_room_2:
-                self.has_p_switch,
+            Locations.chocolate_island_4_dragon:
+                HasPSwitch & HasFeather,
+            Locations.chocolate_island_4_yellow_block_1:
+                HasBSP,
+            Locations.chocolate_island_4_blue_pow_block_1:
+                True_(),
+            Locations.chocolate_island_4_powerup_block_1:
+                True_(),
+            Locations.chocolate_island_4_room_2:
+                HasPSwitch,
 
-            LocationName.chocolate_island_5_dragon:
-                self.true,
-            LocationName.chocolate_island_5_yoshi_block_1:
-                self.true,
-            LocationName.chocolate_island_5_powerup_block_1:
-                self.has_p_switch,
-            LocationName.chocolate_island_5_life_block_1:
-                self.has_p_switch,
-            LocationName.chocolate_island_5_yellow_block_1:
-                self.has_p_switch,
-            LocationName.chocolate_island_5_room_2:
-                self.has_p_switch,
+            Locations.chocolate_island_5_dragon:
+                True_(),
+            Locations.chocolate_island_5_yoshi_block_1:
+                True_(),
+            Locations.chocolate_island_5_powerup_block_1:
+                HasPSwitch,
+            Locations.chocolate_island_5_life_block_1:
+                HasPSwitch & (CanCarry | HasFeather),
+            Locations.chocolate_island_5_yellow_block_1:
+                HasPSwitch,
+            Locations.chocolate_island_5_room_2:
+                HasPSwitch,
 
-            LocationName.chocolate_ghost_house_powerup_block_1:
-                self.true,
-            LocationName.chocolate_ghost_house_powerup_block_2:
-                self.true,
-            LocationName.chocolate_ghost_house_life_block_1:
-                self.true,
+            Locations.chocolate_ghost_house_powerup_block_1:
+                True_(),
+            Locations.chocolate_ghost_house_powerup_block_2:
+                True_(),
+            Locations.chocolate_ghost_house_life_block_1:
+                True_(),
 
-            LocationName.chocolate_secret_powerup_block_1:
-                self.true,
-            LocationName.chocolate_secret_powerup_block_2:
-                self.chocolate_secret_special_case,
-            LocationName.chocolate_secret_room_5:
-                self.chocolate_secret_special_case,
+            Locations.chocolate_secret_powerup_block_1:
+                True_(),
+            Locations.chocolate_secret_powerup_block_2:
+                True_(),
+            Locations.chocolate_secret_room_5:
+                True_(),
                 
-            LocationName.chocolate_fortress_powerup_block_1:
-                self.true,
-            LocationName.chocolate_fortress_powerup_block_2:
-                self.true,
-            LocationName.chocolate_fortress_coin_block_1:
-                self.true,
-            LocationName.chocolate_fortress_coin_block_2:
-                self.true,
-            LocationName.chocolate_fortress_green_block_1:
-                self.true,
+            Locations.chocolate_fortress_powerup_block_1:
+                True_(),
+            Locations.chocolate_fortress_powerup_block_2:
+                True_(),
+            Locations.chocolate_fortress_coin_block_1:
+                True_(),
+            Locations.chocolate_fortress_coin_block_2:
+                True_(),
+            Locations.chocolate_fortress_green_block_1:
+                True_(),
 
-            LocationName.chocolate_castle_hidden_1up:
-                self.true,
-            LocationName.chocolate_castle_yellow_block_1:
-                self.true,
-            LocationName.chocolate_castle_yellow_block_2:
-                self.true,
-            LocationName.chocolate_castle_green_block_1:
-                self.true,
+            Locations.chocolate_castle_hidden_1up:
+                True_(),
+            Locations.chocolate_castle_yellow_block_1:
+                True_(),
+            Locations.chocolate_castle_yellow_block_2:
+                True_(),
+            Locations.chocolate_castle_green_block_1:
+                True_(),
 
-            LocationName.sunken_ghost_ship_dragon:
-                self.can_swim,
-            LocationName.sunken_ghost_ship_powerup_block_1:
-                self.can_swim,
-            LocationName.sunken_ghost_ship_star_block_1:
-                self.can_swim,
-            LocationName.sunken_ghost_ship_room_2:
-                self.can_swim,
-            LocationName.sunken_ghost_ship_room_3:
-                self.can_swim,
+            Locations.sunken_ghost_ship_dragon:
+                CanSwim,
+            Locations.sunken_ghost_ship_powerup_block_1:
+                CanSwim,
+            Locations.sunken_ghost_ship_star_block_1:
+                CanSwim,
+            Locations.sunken_ghost_ship_room_2:
+                CanSwim,
+            Locations.sunken_ghost_ship_room_3:
+                CanSwim,
 
-            LocationName.valley_of_bowser_1_dragon:
-                self.true,
-            LocationName.valley_of_bowser_1_moon:
-                self.true,
-            LocationName.valley_of_bowser_1_green_block_1:
-                self.true,
-            LocationName.valley_of_bowser_1_invis_coin_block_1:
-                self.true,
-            LocationName.valley_of_bowser_1_invis_coin_block_2:
-                self.true,
-            LocationName.valley_of_bowser_1_invis_coin_block_3:
-                self.true,
-            LocationName.valley_of_bowser_1_yellow_block_1:
-                self.has_feather,
-            LocationName.valley_of_bowser_1_yellow_block_2:
-                self.has_feather,
-            LocationName.valley_of_bowser_1_yellow_block_3:
-                self.has_feather,
-            LocationName.valley_of_bowser_1_yellow_block_4:
-                self.has_feather,
-            LocationName.valley_of_bowser_1_vine_block_1:
-                self.true,
-            LocationName.valley_of_bowser_1_room_2:
-                self.can_climb,
+            Locations.valley_of_bowser_1_dragon:
+                True_(),
+            Locations.valley_of_bowser_1_moon:
+                True_(),
+            Locations.valley_of_bowser_1_green_block_1:
+                True_(),
+            Locations.valley_of_bowser_1_invis_coin_block_1:
+                True_(),
+            Locations.valley_of_bowser_1_invis_coin_block_2:
+                True_(),
+            Locations.valley_of_bowser_1_invis_coin_block_3:
+                True_(),
+            Locations.valley_of_bowser_1_yellow_block_1:
+                HasFeather,
+            Locations.valley_of_bowser_1_yellow_block_2:
+                HasFeather,
+            Locations.valley_of_bowser_1_yellow_block_3:
+                HasFeather,
+            Locations.valley_of_bowser_1_yellow_block_4:
+                HasFeather,
+            Locations.valley_of_bowser_1_vine_block_1:
+                True_(),
+            Locations.valley_of_bowser_1_room_2:
+                CanClimb,
 
-            LocationName.valley_of_bowser_2_dragon:
-                self.has_yoshi,
-            LocationName.valley_of_bowser_2_hidden_1up:
-                self.true,
-            LocationName.valley_of_bowser_2_powerup_block_1:
-                self.true,
-            LocationName.valley_of_bowser_2_yellow_block_1:
-                self.true,
-            LocationName.valley_of_bowser_2_powerup_block_2:
-                self.true,
-            LocationName.valley_of_bowser_2_wings_block_1:
-                self.true,
+            Locations.valley_of_bowser_2_dragon:
+                HasYoshi,
+            Locations.valley_of_bowser_2_hidden_1up:
+                True_(),
+            Locations.valley_of_bowser_2_powerup_block_1:
+                True_(),
+            Locations.valley_of_bowser_2_yellow_block_1:
+                True_(),
+            Locations.valley_of_bowser_2_powerup_block_2:
+                True_(),
+            Locations.valley_of_bowser_2_wings_block_1:
+                True_(),
 
-            LocationName.valley_of_bowser_3_dragon:
-                self.true,
-            LocationName.valley_of_bowser_3_powerup_block_1:
-                self.true,
-            LocationName.valley_of_bowser_3_powerup_block_2:
-                self.valley_of_bowser_3_special_case,
+            Locations.valley_of_bowser_3_dragon:
+                True_(),
+            Locations.valley_of_bowser_3_powerup_block_1:
+                True_(),
+            Locations.valley_of_bowser_3_powerup_block_2:
+                CanCarry,
 
-            LocationName.valley_of_bowser_4_yellow_block_1:
-                self.true,
-            LocationName.valley_of_bowser_4_powerup_block_1:
-                self.true,
-            LocationName.valley_of_bowser_4_vine_block_1:
-                self.true,
-            LocationName.valley_of_bowser_4_yoshi_block_1:
-                self.valley_of_bowser_4_special_case,
-            LocationName.valley_of_bowser_4_life_block_1:
-                lambda state: self.valley_of_bowser_4_special_case(state) and self.can_break_turn_blocks(state),
-            LocationName.valley_of_bowser_4_powerup_block_2:
-                lambda state: self.valley_of_bowser_4_special_case(state) and self.has_ysp(state),
+            Locations.valley_of_bowser_4_yellow_block_1:
+                True_(),
+            Locations.valley_of_bowser_4_powerup_block_1:
+                True_(),
+            Locations.valley_of_bowser_4_vine_block_1:
+                True_(),
+            Locations.valley_of_bowser_4_yoshi_block_1:
+                CanClimb,
+            Locations.valley_of_bowser_4_life_block_1:
+                CanClimb & CanBreakTurnBlocks,
+            Locations.valley_of_bowser_4_powerup_block_2:
+                CanClimb & HasYSP,
+            Locations.valley_of_bowser_4_midway:
+                CanClimb,
 
-            LocationName.valley_ghost_house_dragon:
-                self.has_p_switch,
-            LocationName.valley_ghost_house_pswitch_coin_block_1:
-                self.has_p_switch,
-            LocationName.valley_ghost_house_multi_coin_block_1:
-                self.has_p_switch,
-            LocationName.valley_ghost_house_powerup_block_1:
-                self.true,
-            LocationName.valley_ghost_house_directional_coin_block_1:
-                self.has_p_switch,
-            LocationName.valley_ghost_house_room_3:
-                self.has_p_switch,
-            LocationName.valley_ghost_house_room_4:
-                self.has_p_switch,
+            Locations.valley_ghost_house_dragon:
+                HasPSwitch,
+            Locations.valley_ghost_house_pswitch_coin_block_1:
+                HasPSwitch,
+            Locations.valley_ghost_house_multi_coin_block_1:
+                HasPSwitch,
+            Locations.valley_ghost_house_powerup_block_1:
+                True_(),
+            Locations.valley_ghost_house_directional_coin_block_1:
+                HasPSwitch,
+            Locations.valley_ghost_house_room_3:
+                HasPSwitch,
+            Locations.valley_ghost_house_room_4:
+                HasPSwitch,
 
-            LocationName.valley_fortress_green_block_1:
-                self.true,
-            LocationName.valley_fortress_yellow_block_1:
-                self.true,
+            Locations.valley_fortress_green_block_1:
+                True_(),
+            Locations.valley_fortress_yellow_block_1:
+                True_(),
                 
-            LocationName.valley_castle_dragon:
-                self.true,
-            LocationName.valley_castle_hidden_1up:
-                self.true,
-            LocationName.valley_castle_yellow_block_1:
-                self.true,
-            LocationName.valley_castle_yellow_block_2:
-                self.true,
-            LocationName.valley_castle_green_block_1:
-                self.true,
+            Locations.valley_castle_dragon:
+                True_(),
+            Locations.valley_castle_hidden_1up:
+                True_(),
+            Locations.valley_castle_yellow_block_1:
+                True_(),
+            Locations.valley_castle_yellow_block_2:
+                True_(),
+            Locations.valley_castle_green_block_1:
+                True_(),
 
-            LocationName.star_road_1_dragon:
-                self.can_break_turn_blocks,
-            LocationName.star_road_1_room_2:
-                self.can_break_turn_blocks,
+            Locations.star_road_1_dragon:
+                CanBreakTurnBlocks,
+            Locations.star_road_1_room_2:
+                CanBreakTurnBlocks,
 
-            LocationName.star_road_2_star_block_1:
-                self.can_swim,
-            LocationName.star_road_2_room_2:
-                self.can_swim,
+            Locations.star_road_2_star_block_1:
+                CanSwim,
+            Locations.star_road_2_room_2:
+                CanSwim,
 
-            LocationName.star_road_3_key_block_1:
-                lambda state: self.can_carry(state) or self.has_fire_flower(state),
+            Locations.star_road_3_key_block_1:
+                CanCarry | HasFireFlower,
 
-            LocationName.star_road_4_powerup_block_1:
-                self.true,
-            LocationName.star_road_4_green_block_1:
-                self.can_yoshi_fly,
-            LocationName.star_road_4_green_block_2:
-                self.can_yoshi_fly,
-            LocationName.star_road_4_green_block_3:
-                self.can_yoshi_fly,
-            LocationName.star_road_4_green_block_4:
-                self.can_yoshi_fly,
-            LocationName.star_road_4_green_block_5:
-                self.can_yoshi_fly,
-            LocationName.star_road_4_green_block_6:
-                self.can_yoshi_fly,
-            LocationName.star_road_4_green_block_7:
-                self.can_yoshi_fly,
-            LocationName.star_road_4_key_block_1:
-                lambda state: self.can_yoshi_fly(state) or (
-                    self.can_carry(state) and self.has_gsp(state) and self.has_rsp(state)
+            Locations.star_road_4_powerup_block_1:
+                True_(),
+            Locations.star_road_4_green_block_1:
+                CanYoshiFly,
+            Locations.star_road_4_green_block_2:
+                CanYoshiFly,
+            Locations.star_road_4_green_block_3:
+                CanYoshiFly,
+            Locations.star_road_4_green_block_4:
+                CanYoshiFly,
+            Locations.star_road_4_green_block_5:
+                CanYoshiFly,
+            Locations.star_road_4_green_block_6:
+                CanYoshiFly,
+            Locations.star_road_4_green_block_7:
+                CanYoshiFly,
+            Locations.star_road_4_key_block_1:
+                CanYoshiFly | (
+                    CanCarry & HasGSP & HasRSP
                 ),
 
-            LocationName.star_road_5_directional_coin_block_1:
-                self.true,
-            LocationName.star_road_5_life_block_1:
-                self.has_p_switch,
-            LocationName.star_road_5_vine_block_1:
-                self.has_p_switch,
-            LocationName.star_road_5_yellow_block_1:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_2:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_3:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_4:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_5:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_6:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_7:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_8:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_9:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_10:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_11:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_12:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_13:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_14:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_15:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_16:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_17:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_18:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_yellow_block_19:
-                lambda state: self.can_yoshi_fly(state) and self.has_gsp(state),
-            LocationName.star_road_5_yellow_block_20:
-                lambda state: self.can_yoshi_fly(state) and self.has_gsp(state),
-            LocationName.star_road_5_green_block_1:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_2:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_3:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_4:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_5:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_6:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_7:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_8:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_9:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_10:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_11:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_12:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_13:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_14:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_15:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_16:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_17:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_18:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_19:
-                self.can_yoshi_fly,
-            LocationName.star_road_5_green_block_20:
-                self.can_yoshi_fly,
+            Locations.star_road_5_directional_coin_block_1:
+                True_(),
+            Locations.star_road_5_life_block_1:
+                HasPSwitch,
+            Locations.star_road_5_vine_block_1:
+                CanFly,
+            Locations.star_road_5_yellow_block_1:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_2:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_3:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_4:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_5:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_6:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_7:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_8:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_9:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_10:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_11:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_12:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_13:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_14:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_15:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_16:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_17:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_18:
+                CanYoshiFly,
+            Locations.star_road_5_yellow_block_19:
+                CanYoshiFly & HasGSP,
+            Locations.star_road_5_yellow_block_20:
+                CanYoshiFly & HasGSP,
+            Locations.star_road_5_green_block_1:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_2:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_3:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_4:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_5:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_6:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_7:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_8:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_9:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_10:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_11:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_12:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_13:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_14:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_15:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_16:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_17:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_18:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_19:
+                CanYoshiFly,
+            Locations.star_road_5_green_block_20:
+                CanYoshiFly,
 
 
-            LocationName.special_zone_1_dragon:
-                self.can_climb,
-            LocationName.special_zone_1_hidden_1up:
-                self.can_climb,
-            LocationName.special_zone_1_vine_block_1:
-                self.true,
-            LocationName.special_zone_1_vine_block_2:
-                self.true,
-            LocationName.special_zone_1_vine_block_3:
-                self.true,
-            LocationName.special_zone_1_vine_block_4:
-                self.true,
-            LocationName.special_zone_1_life_block_1:
-                self.can_climb,
-            LocationName.special_zone_1_vine_block_5:
-                self.can_climb,
-            LocationName.special_zone_1_blue_pow_block_1:
-                self.can_climb,
-            LocationName.special_zone_1_vine_block_6:
-                self.can_climb,
-            LocationName.special_zone_1_powerup_block_1:
-                self.can_climb,
-            LocationName.special_zone_1_pswitch_coin_block_1:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_2:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_3:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_4:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_5:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_6:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_7:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_8:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_9:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_10:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_11:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_12:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_pswitch_coin_block_13:
-                lambda state: self.can_climb(state) and self.has_p_switch(state) and self.has_feather(state),
-            LocationName.special_zone_1_room_2:
-                self.can_climb,
+            Locations.special_zone_1_dragon:
+                CanClimb,
+            Locations.special_zone_1_hidden_1up:
+                CanClimb,
+            Locations.special_zone_1_vine_block_1:
+                True_(),
+            Locations.special_zone_1_vine_block_2:
+                True_(),
+            Locations.special_zone_1_vine_block_3:
+                True_(),
+            Locations.special_zone_1_vine_block_4:
+                True_(),
+            Locations.special_zone_1_life_block_1:
+                CanClimb,
+            Locations.special_zone_1_vine_block_5:
+                CanClimb,
+            Locations.special_zone_1_blue_pow_block_1:
+                CanClimb,
+            Locations.special_zone_1_vine_block_6:
+                CanClimb,
+            Locations.special_zone_1_powerup_block_1:
+                CanClimb,
+            Locations.special_zone_1_pswitch_coin_block_1:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_2:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_3:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_4:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_5:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_6:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_7:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_8:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_9:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_10:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_11:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_12:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_pswitch_coin_block_13:
+                CanClimb & HasPSwitch & HasFeather,
+            Locations.special_zone_1_room_2:
+                CanClimb,
 
-            LocationName.special_zone_2_dragon:
-                self.has_p_balloon,
-            LocationName.special_zone_2_powerup_block_1:
-                self.true,
-            LocationName.special_zone_2_coin_block_1:
-                self.has_p_balloon,
-            LocationName.special_zone_2_coin_block_2:
-                self.has_p_balloon,
-            LocationName.special_zone_2_powerup_block_2:
-                self.has_p_balloon,
-            LocationName.special_zone_2_coin_block_3:
-                self.has_p_balloon,
-            LocationName.special_zone_2_coin_block_4:
-                self.has_p_balloon,
-            LocationName.special_zone_2_powerup_block_3:
-                self.has_p_balloon,
-            LocationName.special_zone_2_multi_coin_block_1:
-                self.has_p_balloon,
-            LocationName.special_zone_2_coin_block_5:
-                self.has_p_balloon,
-            LocationName.special_zone_2_coin_block_6:
-                self.has_p_balloon,
+            Locations.special_zone_2_dragon:
+                HasPBalloon,
+            Locations.special_zone_2_powerup_block_1:
+                True_(),
+            Locations.special_zone_2_coin_block_1:
+                HasPBalloon,
+            Locations.special_zone_2_coin_block_2:
+                HasPBalloon,
+            Locations.special_zone_2_powerup_block_2:
+                HasPBalloon,
+            Locations.special_zone_2_coin_block_3:
+                HasPBalloon,
+            Locations.special_zone_2_coin_block_4:
+                HasPBalloon,
+            Locations.special_zone_2_powerup_block_3:
+                HasPBalloon,
+            Locations.special_zone_2_multi_coin_block_1:
+                HasPBalloon,
+            Locations.special_zone_2_coin_block_5:
+                HasPBalloon,
+            Locations.special_zone_2_coin_block_6:
+                HasPBalloon,
 
-            LocationName.special_zone_3_dragon:
-                self.has_yoshi,
-            LocationName.special_zone_3_powerup_block_1:
-                self.true,
-            LocationName.special_zone_3_yoshi_block_1:
-                self.true,
-            LocationName.special_zone_3_wings_block_1:
-                self.true,
-            LocationName.special_zone_3_room_3:
-                self.has_yoshi,
+            Locations.special_zone_3_dragon:
+                HasYoshi,
+            Locations.special_zone_3_powerup_block_1:
+                True_(),
+            Locations.special_zone_3_yoshi_block_1:
+                True_(),
+            Locations.special_zone_3_wings_block_1:
+                True_(),
+            Locations.special_zone_3_room_3:
+                HasYoshi,
 
-            LocationName.special_zone_4_dragon:
-                self.special_zone_4_special_case,
-            LocationName.special_zone_4_powerup_block_1:
-                self.special_zone_4_special_case,
-            LocationName.special_zone_4_star_block_1:
-                lambda state: self.can_carry(state) or self.has_p_switch(state),
+            Locations.special_zone_4_dragon:
+                (CanCarry | HasPSwitch) & HasSuperStar,
+            Locations.special_zone_4_star_block_1:
+                CanCarry | HasPSwitch,
 
-            LocationName.special_zone_5_dragon:
-                self.true,
-            LocationName.special_zone_5_yoshi_block_1:
-                self.true,
+            Locations.special_zone_5_dragon:
+                True_(),
+            Locations.special_zone_5_yoshi_block_1:
+                True_(),
 
-            LocationName.special_zone_6_dragon:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_powerup_block_1:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_1:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_2:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_yoshi_block_1:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_life_block_1:
-                self.can_swim,
-            LocationName.special_zone_6_multi_coin_block_1:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_3:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_4:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_5:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_6:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_7:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_8:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_9:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_10:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_11:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_12:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_13:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_14:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_15:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_16:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_17:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_18:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_19:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_20:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_21:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_22:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_23:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_24:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_25:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_26:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_27:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_28:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_powerup_block_2:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_29:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_30:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_31:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_32:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_coin_block_33:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_room_2:
-                self.special_zone_6_special_case,
-            LocationName.special_zone_6_room_3:
-                self.special_zone_6_special_case,
+            Locations.special_zone_6_dragon:
+                CanSwim,
+            Locations.special_zone_6_powerup_block_1:
+                CanSwim,
+            Locations.special_zone_6_coin_block_1:
+                CanSwim,
+            Locations.special_zone_6_coin_block_2:
+                CanSwim,
+            Locations.special_zone_6_yoshi_block_1:
+                CanSwim,
+            Locations.special_zone_6_life_block_1:
+                CanSwim,
+            Locations.special_zone_6_multi_coin_block_1:
+                CanSwim,
+            Locations.special_zone_6_coin_block_3:
+                CanSwim,
+            Locations.special_zone_6_coin_block_4:
+                CanSwim,
+            Locations.special_zone_6_coin_block_5:
+                CanSwim,
+            Locations.special_zone_6_coin_block_6:
+                CanSwim,
+            Locations.special_zone_6_coin_block_7:
+                CanSwim,
+            Locations.special_zone_6_coin_block_8:
+                CanSwim,
+            Locations.special_zone_6_coin_block_9:
+                CanSwim,
+            Locations.special_zone_6_coin_block_10:
+                CanSwim,
+            Locations.special_zone_6_coin_block_11:
+                CanSwim,
+            Locations.special_zone_6_coin_block_12:
+                CanSwim,
+            Locations.special_zone_6_coin_block_13:
+                CanSwim,
+            Locations.special_zone_6_coin_block_14:
+                CanSwim,
+            Locations.special_zone_6_coin_block_15:
+                CanSwim,
+            Locations.special_zone_6_coin_block_16:
+                CanSwim,
+            Locations.special_zone_6_coin_block_17:
+                CanSwim,
+            Locations.special_zone_6_coin_block_18:
+                CanSwim,
+            Locations.special_zone_6_coin_block_19:
+                CanSwim,
+            Locations.special_zone_6_coin_block_20:
+                CanSwim,
+            Locations.special_zone_6_coin_block_21:
+                CanSwim,
+            Locations.special_zone_6_coin_block_22:
+                CanSwim,
+            Locations.special_zone_6_coin_block_23:
+                CanSwim,
+            Locations.special_zone_6_coin_block_24:
+                CanSwim,
+            Locations.special_zone_6_coin_block_25:
+                CanSwim,
+            Locations.special_zone_6_coin_block_26:
+                CanSwim,
+            Locations.special_zone_6_coin_block_27:
+                CanSwim,
+            Locations.special_zone_6_coin_block_28:
+                CanSwim,
+            Locations.special_zone_6_powerup_block_2:
+                CanSwim,
+            Locations.special_zone_6_coin_block_29:
+                CanSwim,
+            Locations.special_zone_6_coin_block_30:
+                CanSwim,
+            Locations.special_zone_6_coin_block_31:
+                CanSwim,
+            Locations.special_zone_6_coin_block_32:
+                CanSwim,
+            Locations.special_zone_6_coin_block_33:
+                CanSwim,
+            Locations.special_zone_6_room_2:
+                CanSwim,
+            Locations.special_zone_6_room_3:
+                CanSwim,
 
-            LocationName.special_zone_7_dragon:
-                self.true,
-            LocationName.special_zone_7_powerup_block_1:
-                self.true,
-            LocationName.special_zone_7_yoshi_block_1:
-                self.true,
-            LocationName.special_zone_7_coin_block_1:
-                self.true,
-            LocationName.special_zone_7_powerup_block_2:
-                self.true,
-            LocationName.special_zone_7_coin_block_2:
-                self.true,
+            Locations.special_zone_7_dragon:
+                CanCarryOrYoshiTongue,
+            Locations.special_zone_7_powerup_block_1:
+                True_(),
+            Locations.special_zone_7_yoshi_block_1:
+                CanCarryOrYoshiTongue,
+            Locations.special_zone_7_coin_block_1:
+                CanCarryOrYoshiTongue,
+            Locations.special_zone_7_powerup_block_2:
+                CanCarryOrYoshiTongue,
+            Locations.special_zone_7_coin_block_2:
+                CanCarryOrYoshiTongue,
 
-            LocationName.special_zone_8_dragon:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_yoshi_block_1:
-                lambda state: self.can_carry(state) or self.has_yoshi(state),
-            LocationName.special_zone_8_coin_block_1:
-                self.true,
-            LocationName.special_zone_8_coin_block_2:
-                self.true,
-            LocationName.special_zone_8_coin_block_3:
-                self.true,
-            LocationName.special_zone_8_coin_block_4:
-                self.true,
-            LocationName.special_zone_8_coin_block_5:
-                self.true,
-            LocationName.special_zone_8_blue_pow_block_1:
-                self.true,
-            LocationName.special_zone_8_powerup_block_1:
-                self.true,
-            LocationName.special_zone_8_star_block_1:
-                self.true,
-            LocationName.special_zone_8_coin_block_6:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_7:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_8:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_9:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_10:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_11:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_12:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_13:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_14:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_15:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_16:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_17:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_18:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_multi_coin_block_1:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_19:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_20:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_21:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_22:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_coin_block_23:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_powerup_block_2:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
-            LocationName.special_zone_8_flying_block_1:
-                lambda state: self.can_break_turn_blocks(state) or self.has_feather(state) or
-                    self.has_yoshi(state) or self.can_carry(state),
+            Locations.special_zone_8_dragon:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_yoshi_block_1:
+                CanCarry | HasYoshi,
+            Locations.special_zone_8_coin_block_1:
+                True_(),
+            Locations.special_zone_8_coin_block_2:
+                True_(),
+            Locations.special_zone_8_coin_block_3:
+                True_(),
+            Locations.special_zone_8_coin_block_4:
+                True_(),
+            Locations.special_zone_8_coin_block_5:
+                True_(),
+            Locations.special_zone_8_blue_pow_block_1:
+                True_(),
+            Locations.special_zone_8_powerup_block_1:
+                True_(),
+            Locations.special_zone_8_star_block_1:
+                True_(),
+            Locations.special_zone_8_coin_block_6:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_7:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_8:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_9:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_10:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_11:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_12:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_13:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_14:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_15:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_16:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_17:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_18:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_multi_coin_block_1:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_19:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_20:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_21:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_22:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_coin_block_23:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_powerup_block_2:
+                CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
+            Locations.special_zone_8_flying_block_1:
+                CanCarry | HasYoshi,
         }
+
+        super().__init__(world)
+
+
+    def alternate_logic(self, world: "WaffleWorld", options: list[str] = []) -> None:
+        if "Mondo - Swimless" in options:
+            is_glitched = "Mondo - Swimless" in self.glitched_options
+            connection_rules = {
+                f"{Regions.special_zone_6_region} -> {Locations.special_zone_6_exit_1}": 
+                    True_(),
+            }
+            location_rules = {
+                Locations.special_zone_6_dragon:
+                    True_(),
+                Locations.special_zone_6_powerup_block_1:
+                    True_(),
+                Locations.special_zone_6_coin_block_1:
+                    True_(),
+                Locations.special_zone_6_coin_block_2:
+                    True_(),
+                Locations.special_zone_6_yoshi_block_1:
+                    True_(),
+                Locations.special_zone_6_multi_coin_block_1:
+                    True_(),
+                Locations.special_zone_6_coin_block_3:
+                    True_(),
+                Locations.special_zone_6_coin_block_4:
+                    True_(),
+                Locations.special_zone_6_coin_block_5:
+                    True_(),
+                Locations.special_zone_6_coin_block_6:
+                    True_(),
+                Locations.special_zone_6_coin_block_7:
+                    True_(),
+                Locations.special_zone_6_coin_block_8:
+                    True_(),
+                Locations.special_zone_6_coin_block_9:
+                    True_(),
+                Locations.special_zone_6_coin_block_10:
+                    True_(),
+                Locations.special_zone_6_coin_block_11:
+                    True_(),
+                Locations.special_zone_6_coin_block_12:
+                    True_(),
+                Locations.special_zone_6_coin_block_13:
+                    True_(),
+                Locations.special_zone_6_coin_block_14:
+                    True_(),
+                Locations.special_zone_6_coin_block_15:
+                    True_(),
+                Locations.special_zone_6_coin_block_16:
+                    True_(),
+                Locations.special_zone_6_coin_block_17:
+                    True_(),
+                Locations.special_zone_6_coin_block_18:
+                    True_(),
+                Locations.special_zone_6_coin_block_19:
+                    True_(),
+                Locations.special_zone_6_coin_block_20:
+                    True_(),
+                Locations.special_zone_6_coin_block_21:
+                    True_(),
+                Locations.special_zone_6_coin_block_22:
+                    True_(),
+                Locations.special_zone_6_coin_block_23:
+                    True_(),
+                Locations.special_zone_6_coin_block_24:
+                    True_(),
+                Locations.special_zone_6_coin_block_25:
+                    True_(),
+                Locations.special_zone_6_coin_block_26:
+                    True_(),
+                Locations.special_zone_6_coin_block_27:
+                    True_(),
+                Locations.special_zone_6_coin_block_28:
+                    True_(),
+                Locations.special_zone_6_powerup_block_2:
+                    True_(),
+                Locations.special_zone_6_coin_block_29:
+                    True_(),
+                Locations.special_zone_6_coin_block_30:
+                    True_(),
+                Locations.special_zone_6_coin_block_31:
+                    True_(),
+                Locations.special_zone_6_coin_block_32:
+                    True_(),
+                Locations.special_zone_6_coin_block_33:
+                    True_(),
+                Locations.special_zone_6_room_2:
+                    True_(),
+                Locations.special_zone_6_room_3:
+                    True_(),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+        if "Vanilla Dome 1 - Itemless Sinking Platform" in options:
+            is_glitched = "Vanilla Dome 1 - Itemless Sinking Platform" in self.glitched_options
+            connection_rules = {
+                f"{Regions.vanilla_dome_1_region} -> {Locations.vanilla_dome_1_exit_1}": 
+                    True_(),
+            }
+            location_rules = {
+                Locations.vanilla_dome_1_dragon:
+                    CanCarry,
+                Locations.vanilla_dome_1_midway:
+                    True_(),
+                Locations.vanilla_dome_1_powerup_block_4:
+                    True_(),
+                Locations.vanilla_dome_1_coin_block_2:
+                    True_(),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+        if "Vanilla Secret 1 - Wall Running" in options:
+            is_glitched = "Vanilla Secret 1 - Wall Running" in self.glitched_options
+            connection_rules = {
+                f"{Regions.vanilla_secret_1_region} -> {Locations.vanilla_secret_1_exit_1}": 
+                    CanClimb | CanWallRun,
+                f"{Regions.vanilla_secret_1_region} -> {Locations.vanilla_secret_1_exit_2}": 
+                    (CanClimb | CanWallRun) & CanCarry & HasBSP,
+            }
+            location_rules = {
+                Locations.vanilla_secret_1_dragon:
+                    (CanClimb | CanWallRun) & CanCarry,
+                Locations.vanilla_secret_1_vine_block_2:
+                    CanClimb | CanWallRun,
+                Locations.vanilla_secret_1_coin_block_2:
+                    CanClimb | CanWallRun,
+                Locations.vanilla_secret_1_coin_block_3:
+                    CanClimb | CanWallRun,
+                Locations.vanilla_secret_1_powerup_block_2:
+                    CanClimb | CanWallRun,
+                Locations.vanilla_secret_1_room_2:
+                    CanClimb | CanWallRun,
+                Locations.vanilla_secret_1_room_3:
+                    CanClimb | CanWallRun & CanCarry & HasBSP,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+        if "Vanilla Secret 3 - Swimless" in options:
+            is_glitched = "Vanilla Secret 3 - Swimless" in self.glitched_options
+            connection_rules = {
+                f"{Regions.vanilla_secret_3_region} -> {Locations.vanilla_secret_3_exit_1}": 
+                    True_(),
+            }
+            location_rules = {
+                Locations.vanilla_secret_3_dragon:
+                    True_(),
+                Locations.vanilla_secret_3_powerup_block_1:
+                    True_(),
+                Locations.vanilla_secret_3_powerup_block_2:
+                    True_(),
+                Locations.vanilla_secret_3_room_2:
+                    True_(),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+
+        if "Cheese Bridge Area - Secret Exit with Yoshi" in options:
+            is_glitched = "Cheese Bridge Area - Secret Exit with Yoshi" in self.glitched_options
+            connection_rules = {
+                f"{Regions.cheese_bridge_region} -> {Locations.cheese_bridge_exit_2}": 
+                    CanCapeFly | HasYoshi,
+            }
+            location_rules = {
+                Locations.cheese_bridge_moon:
+                    CanCapeFly | HasYoshi,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+
+        if "Vanilla Dome 4 - Sacrifice for Coin Block #8" in options:
+            is_glitched = "Vanilla Dome 4 - Sacrifice for Coin Block #8" in self.glitched_options
+            location_rules = {
+                Locations.vanilla_dome_4_coin_block_8:
+                    CanCarry | HasFeather | HasYoshi,
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+
+
+        if "Butter Bridge 1 - No Red Switch Palace" in options:
+            is_glitched = "Butter Bridge 1 - No Red Switch Palace" in self.glitched_options
+            connection_rules = {
+                f"{Regions.butter_bridge_1_region} -> {Locations.butter_bridge_1_exit_1}": 
+                    True_(),
+            }
+            location_rules = {
+                Locations.butter_bridge_1_dragon:
+                    True_(),
+                Locations.butter_bridge_1_prize:
+                    True_(),
+                Locations.butter_bridge_1_powerup_block_1:
+                    True_(),
+                Locations.butter_bridge_1_multi_coin_block_1:
+                    True_(),
+                Locations.butter_bridge_1_multi_coin_block_2:
+                    True_(),
+                Locations.butter_bridge_1_multi_coin_block_3:
+                    True_(),
+                Locations.butter_bridge_1_life_block_1:
+                    True_(),
+                Locations.butter_bridge_1_room_2:
+                    True_(),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+
+        if "Ludwig's Castle - Runless" in options:
+            is_glitched = "Ludwig's Castle - Runless" in self.glitched_options
+            connection_rules = {
+                f"{Regions.twin_bridges_castle_region} -> {Locations.twin_bridges_castle}": 
+                    CanClimb,
+            }
+            location_rules = {
+                Locations.twin_bridges_castle_powerup_block_1:
+                    CanClimb,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+
+        if "Ludwig's Castle - Climbless" in options:
+            is_glitched = "Ludwig's Castle - Climbless" in self.glitched_options
+            connection_rules = {
+                f"{Regions.twin_bridges_castle_region} -> {Locations.twin_bridges_castle}": 
+                    CanWallRun,
+            }
+            location_rules = {
+                Locations.twin_bridges_castle_powerup_block_1:
+                    CanWallRun,
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+
+
+        if "Forest of Illusion 1 - Secret Exit with Yoshi" in options:
+            is_glitched = "Forest of Illusion 1 - Secret Exit with Yoshi" in self.glitched_options
+            connection_rules = {
+                f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
+                    CanCarry & (HasYoshi | HasPBalloon),
+            }
+            carryless_exit_rules = {
+                f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
+                    HasYoshi | HasPBalloon,
+            }
+            location_rules = {
+                Locations.forest_of_illusion_1_key_block_1:
+                    HasYoshi | HasPBalloon,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules,
+                              location_rules=location_rules)
+
+
+        if "Forest of Illusion 3 - Can pass big pipe itemless" in options:
+            is_glitched = "Forest of Illusion 3 - Can pass big pipe itemless" in self.glitched_options
+            connection_rules = {
+                f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_1}": 
+                    True_(),
+                f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}": 
+                    CanCarryOrYoshiTongue & CanBreakTurnBlocks,
+            }
+            carryless_exit_rules = {
+                f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}": 
+                    CanCarryOrYoshiTongue & CanBreakTurnBlocks,
+            }
+            location_rules = {
+                Locations.forest_of_illusion_3_dragon:
+                    True_(),
+                Locations.forest_of_illusion_3_hidden_1up:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_2:
+                    True_(),
+                Locations.forest_of_illusion_3_multi_coin_block_2:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_3:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_4:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_5:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_6:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_7:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_8:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_9:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_10:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_11:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_12:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_13:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_14:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_15:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_16:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_17:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_18:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_19:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_20:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_21:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_22:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_23:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_24:
+                    True_(),
+                Locations.forest_of_illusion_3_midway:
+                    True_(),
+                Locations.forest_of_illusion_3_room_3:
+                    True_(),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules,
+                              location_rules=location_rules)
+
+
+        if "Forest of Illusion 3 - Secret Exit with Yoshi" in options:
+            is_glitched = "Forest of Illusion 3 - Secret Exit with Yoshi" in self.glitched_options
+            self.add_connection_rule(is_glitched,
+                                     f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}", 
+                                     CanYoshiCarry, "or")
+            self.add_carryless_rule(is_glitched,
+                                    f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}", 
+                                    CanYoshiCarry, "or")
+
+
+        if "Forest Ghost House - Skip second room" in options:
+            is_glitched = "Forest Ghost House - Skip second room" in self.glitched_options
+            connection_rules = {
+                f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_1}": 
+                    HasPSwitch | CanWallRun | CanCapeFly,
+                f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_2}": 
+                    HasPSwitch | CanWallRun | CanCapeFly,
+            }
+            location_rules = {
+                Locations.forest_ghost_house_dragon:
+                    HasPSwitch | CanWallRun | CanCapeFly,
+                Locations.forest_ghost_house_moon:
+                    HasPSwitch | CanWallRun | CanCapeFly,
+                Locations.forest_ghost_house_room_3:
+                    HasPSwitch | CanWallRun | CanCapeFly,
+                Locations.forest_ghost_house_room_4:
+                    HasPSwitch | CanWallRun | CanCapeFly,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+
+        if "Valley of Bowser 4 - Yoshi Climb" in options:
+            is_glitched = "Valley of Bowser 4 - Yoshi Climb" in self.glitched_options
+            connection_rules = {
+                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_1}": 
+                    CanClimb | HasYoshi,
+                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
+                    CanYoshiCarry & (CanClimb | HasYoshi),
+            }
+            carryless_exit_rules = {
+                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
+                    CanClimb | HasYoshi,
+            }
+            location_rules = {
+                Locations.valley_of_bowser_4_yoshi_block_1:
+                    CanClimb | HasYoshi,
+                Locations.valley_of_bowser_4_life_block_1:
+                    (CanClimb | HasYoshi) & CanBreakTurnBlocks,
+                Locations.valley_of_bowser_4_powerup_block_2:
+                    (CanClimb | HasYoshi) & HasYSP,
+                Locations.valley_of_bowser_4_midway:
+                    CanClimb | HasYoshi,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules,
+                              location_rules=location_rules)
+
+
+        if "Awesome - Itemless" in options:
+            is_glitched = "Awesome - Itemless" in self.glitched_options
+            connection_rules = {
+                f"{Regions.special_zone_4_region} -> {Locations.special_zone_4_exit_1}": 
+                    True_(),
+            }
+            location_rules = {
+                Locations.special_zone_4_dragon:
+                    True_(),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+
+        if "Forest Secret Area - Itemless 1-Up block" in options:
+            is_glitched = "Forest Secret Area - Itemless 1-Up block" in self.glitched_options
+            location_rules = {
+                Locations.forest_secret_life_block_1:
+                    True_(),
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+
+
+        if "Valley of Bowser 3 - Itemless Powerup block" in options:
+            is_glitched = "Valley of Bowser 3 - Itemless Powerup block" in self.glitched_options
+            location_rules = {
+                Locations.valley_of_bowser_3_powerup_block_2:
+                    True_(),
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+
+
+        if "Outrageous - Wall Run pipe" in options:
+            is_glitched = "Outrageous - Wall Run pipe" in self.glitched_options
+            connection_rules = {
+                f"{Regions.special_zone_7_region} -> {Locations.special_zone_7_exit_1}": 
+                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+            }
+            location_rules = {
+                Locations.special_zone_7_dragon:
+                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+                Locations.special_zone_7_yoshi_block_1:
+                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+                Locations.special_zone_7_coin_block_1:
+                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+                Locations.special_zone_7_powerup_block_2:
+                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+                Locations.special_zone_7_coin_block_2:
+                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+
+        if "Lemmy's Castle - Itemless 1-Up blocks" in options:
+            is_glitched = "Lemmy's Castle - Itemless 1-Up blocks" in self.glitched_options
+            location_rules = {
+                Locations.vanilla_dome_castle_life_block_1:
+                    True_(),
+                Locations.vanilla_dome_castle_life_block_2:
+                    True_(),
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+
+
+        if "Star World 4 - Carryless Secret Exit with Yoshi sacrifice" in options:
+            is_glitched = "Star World 4 - Carryless Secret Exit with Yoshi sacrifice" in self.glitched_options
+            carryless_exit_rules = {
+                f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_2}": 
+                    HasYoshi | (HasGSP & HasRSP & (CanCarry | HasFeather)),
+            }
+            self.update_rules(is_glitched, carryless_exit_rules=carryless_exit_rules)
+
+
+        if "Star World 3 - Top area with a Star" in options:
+            is_glitched = "Star World 3 - Top area with a Star" in self.glitched_options
+            self.add_carryless_rule(is_glitched, 
+                                    f"{Regions.star_road_3_region} -> {Locations.star_road_3_exit_2}",
+                                    Has(Items.super_star_active, 1), 
+                                    union="or")
+            self.add_location_rule(is_glitched, 
+                                    Locations.star_road_3_key_block_1,
+                                    Has(Items.super_star_active, 1), 
+                                    union="or")
+
+
+        if "Valley Ghost House - True Carryless Secret Exit" in options:
+            is_glitched = "Valley Ghost House - True Carryless Secret Exit" in self.glitched_options
+            carryless_exit_rules = {
+                f"{Regions.valley_ghost_house_region} -> {Locations.valley_ghost_house_exit_2}": 
+                    HasPSwitch & CanRun,
+            }
+            self.update_rules(is_glitched, carryless_exit_rules=carryless_exit_rules)
+
+
+        super().alternate_logic()
+
+
+    def update_rules(self, 
+                     is_glitched: bool,
+                     connection_rules: dict[str, Rule] = None, 
+                     carryless_exit_rules: dict[str, Rule] = None, 
+                     location_rules: dict[str, Rule] = None) -> None:
+        if is_glitched:
+            if carryless_exit_rules is not None:
+                for connection, rule in carryless_exit_rules.items():
+                    self.add_carryless_rule(is_glitched, connection, rule, union="or")
+            if connection_rules is not None:
+                for connection, rule in connection_rules.items():
+                    self.add_connection_rule(is_glitched, connection, rule, union="or")
+            if location_rules is not None:
+                for location, rule in location_rules.items():
+                    self.add_location_rule(is_glitched, location, rule, union="or")
+        else:
+            if carryless_exit_rules is not None:
+                self.carryless_exit_rules.update(carryless_exit_rules)
+            if connection_rules is not None:
+                self.connection_rules.update(connection_rules)
+            if location_rules is not None:
+                self.location_rules.update(location_rules)
+
+    def add_connection_rule(self, is_glitched, connection, rule, union = "and"):
+        if is_glitched:
+            union = "or"
+            rule = rule & Has(Items.glitched)
+        original_rule = self.connection_rules[connection]
+        if union == "and":
+            modified_rule = original_rule & rule
+        else:
+            modified_rule = original_rule | rule
+        self.connection_rules[connection] = modified_rule
+
+    def add_location_rule(self, is_glitched, location, rule, union = "and"):
+        if is_glitched:
+            union = "or"
+            rule = rule & Has(Items.glitched)
+        original_rule = self.location_rules[location]
+        if union == "and":
+            modified_rule = original_rule & rule
+        else:
+            modified_rule = original_rule | rule
+        self.location_rules[location] = modified_rule
+
+    def add_carryless_rule(self, is_glitched, connection, rule, union = "and"):
+        if is_glitched:
+            union = "or"
+            rule = rule & Has(Items.glitched)
+        original_rule = self.carryless_exit_rules[connection]
+        if union == "and":
+            modified_rule = original_rule & rule
+        else:
+            modified_rule = original_rule | rule
+        self.carryless_exit_rules[connection] = modified_rule
+

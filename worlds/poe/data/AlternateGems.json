@@ -193,5 +193,16 @@
 "Summon Skeletons of Archers":{"name":"Summon Skeletons of Archers", "baseGem":"Summon Skeletons"},
 "Summon Skeletons of Mages":{"name":"Summon Skeletons of Mages", "baseGem":"Summon Skeletons"},
 "Void Sphere of Rending":{"name":"Void Sphere of Rending", "baseGem":"Void Sphere"},
-"Vortex of Projection":{"name":"Vortex of Projection", "baseGem":"Vortex"}
+"Vortex of Projection":{"name":"Vortex of Projection", "baseGem":"Vortex"},
+"Shockwave Totem of Authority": {"name":"Shockwave Totem of Authority", "baseGem":"Shockwave Totem"},
+"Static Strike of Gathering Lightning": {"name":"Static Strike of Gathering Lightning", "baseGem":"Static Strike"},
+"Charged Dash of Projection": {"name":"Charged Dash of Projection", "baseGem":"Charged Dash"},
+"Flamethrower Trap of Stability": {"name":"Flamethrower Trap of Stability", "baseGem":"Flamethrower Trap"},
+"Kinetic Fusillade of Detonation": {"name":"Kinetic Fusillade of Detonation", "baseGem":"Kinetic Fusillade"},
+"Orb of Storms of Squalls": {"name":"Orb of Storms of Squalls", "baseGem":"Orb of Storms"},
+"Shock Nova of Procession": {"name":"Shock Nova of Procession", "baseGem":"Shock Nova"},
+"Storm Burst of Repulsion": {"name":"Storm Burst of Repulsion", "baseGem":"Storm Burst"},
+"Siphoning Trap of Pain": {"name":"Siphoning Trap of Pain", "baseGem":"Siphoning Trap"},
+"Creeping Frost of Floes": {"name":"Creeping Frost of Floes", "baseGem":"Creeping Frost"},
+"Searing Bond of Detonation": {"name":"Searing Bond of Detonation", "baseGem":"Searing Bond"}
 }

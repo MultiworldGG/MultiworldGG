@@ -72,7 +72,7 @@ def ini_locations(
 
     scores += [max_score]
 
-    if "Everything" in include_scores and False:
+    if include_scores == {"Everything"}:
         include_scores = [str(i) for i in range(1, max_score)]
     else:
         include_scores = [x for x in include_scores if x != "Everything"]

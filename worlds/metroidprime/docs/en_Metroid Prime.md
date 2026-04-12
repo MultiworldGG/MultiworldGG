@@ -1,5 +1,7 @@
 # Metroid Prime MultiworldGG
 
+An AP/MWGG implementation of Metroid Prime multiworld randomizer using [randomprime](https://github.com/randovania/randomprime/)
+
 ## Where is the options page?
 
 The [player options page for this game](../player-options) contains all the options you need to configure and export a
@@ -51,6 +53,17 @@ To warp to the starting location,
 ## What happens to my own collected items at Game Over or if the game is reset without saving?
 As long as the game is connected to the Client and the Client is connected to the server, items you collected before the Game Over or reset will be kept and returned to you when you re-enter the game, even if you did not save.  
 (The item dot indicators on the map will still show the item location as not collected, even if the Client gives the items back to you.)
+
+## What Metroid Prime mods/tools does this work with?
+
+It is recommended to use a vanilla ISO with the latest release of [Dolphin](https://dolphin-emu.org/download/#).
+
+- Not thoroughly tested; but some users report that these tools and mods work
+  - [PrimeHack](https://forums.dolphin-emu.org/Thread-fork-primehack-fps-controls-and-more-for-metroid-prime)
+  - [Widescreen HUD Mod](<https://wiki.dolphin-emu.org/index.php?title=Metroid_Prime_(GC)#16:9_HUD_Mod>) (Revision 0 "0-00" only)
+  - [MPItemTracker](https://github.com/UltiNaruto/MPItemTracker)
+- Not compatible
+  - Practice Mod (The AP client is unable to connect to the game with this mod present.)
 
 ## Aside from item locations being shuffled, how does this differ from the vanilla game?
 

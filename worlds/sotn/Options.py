@@ -261,6 +261,29 @@ class NoLogic(Toggle):
     display_name = "No logic rules"
 
 
+class AutoHeal(Toggle):
+    """
+        Entering a save room heal Alucard
+    """
+    display_name = "Heal when enter a save room"
+
+
+class ColorRandomizer(Toggle):
+    """Randomize various color paletter. Ex: Cape colors, gravity boots trail, hydrostorm"""
+    display_name = "Color randomizer"
+
+
+class RandomizeDrop(Choice):
+    """Randomize enemy drops
+    simple: Only randomize between each enemy drop
+    simple_global: Only randomize between each enemy drop including global drops"""
+    option_off = 0
+    option_simple = 1
+    option_simple_global = 2
+    default = 0
+    display_name = "Randomize enemy drops"
+
+
 @dataclass
 class SOTNOptions(PerGameCommonOptions):
     accessibility: ItemsAccessibility
@@ -297,6 +320,9 @@ class SOTNOptions(PerGameCommonOptions):
     random_music: RandomizeMusic
     skip_nz1: SkipClockTowerPuzzle
     no_logic: NoLogic
+    auto_heal: AutoHeal
+    color_randomizer: ColorRandomizer
+    randomize_drop: RandomizeDrop
 
 
 sotn_option_groups = [
@@ -305,14 +331,14 @@ sotn_option_groups = [
     ]),
     OptionGroup("Gameplay Tweaks", [
         OpenedNO4NO3, OpenedDAIARE,  RandomizeNonLocations, EnemyScroll, Difficult, EnemyModifier, DropModifier,
-        RandomStartGear, DeathLink, RandomShopStock, UnlockedMode, RelicSurprise, EnemyStats, ShopPrices, StartingZone,
-        ReverseLibraryCard, NoLogic
+        RandomizeDrop, RandomStartGear, DeathLink, RandomShopStock, UnlockedMode, RelicSurprise, EnemyStats, ShopPrices,
+        StartingZone, ReverseLibraryCard, NoLogic
     ]),
     OptionGroup("QOL", [
-        InfiniteWing,  RemovePrologue,  MagicVessels, AntiFreeze, MyPurse, FastWarp, SkipClockTowerPuzzle
+        InfiniteWing,  RemovePrologue,  MagicVessels, AntiFreeze, MyPurse, FastWarp, SkipClockTowerPuzzle, AutoHeal
     ]),
     OptionGroup("Cosmetics", [
-        MapColor, AlucardPalette, AlucardLiner, RandomizeMusic,
+        MapColor, AlucardPalette, AlucardLiner, RandomizeMusic, ColorRandomizer
     ])
 ]
 

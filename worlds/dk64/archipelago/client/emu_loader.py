@@ -7,6 +7,7 @@ import glob
 from typing import Optional, Set, Tuple, List, Dict, Any
 from enum import IntEnum, auto
 from archipelago.client.common import DK64MemoryMap
+from archipelago.client.ptrace import check_and_fix_ptrace_scope
 
 try:
     from CommonClient import logger
@@ -161,7 +162,7 @@ class ProcessMemory:
         self.process_name = process_name
         self.process_handle = None
         self.process_id = None
-        self.mem_file = None  # For Linux /proc/pid/mem
+        self.mem_fd = None  # File descriptor for Linux /proc/pid/mem
         self._attach_to_process()
 
     def _attach_to_process(self):
@@ -177,11 +178,25 @@ class ProcessMemory:
                     if not self.process_handle:
                         raise Exception(f"Failed to open process {self.process_name}")
                 elif IS_LINUX:
-                    # On Linux, we'll open /proc/pid/mem for memory access
+                    # On Linux, proactively check ptrace scope before attempting to attach
+                    check_and_fix_ptrace_scope()
+
+                    # Open /proc/pid/mem as a file descriptor for atomic pread/pwrite operations
                     try:
-                        self.mem_file = open(f"/proc/{self.process_id}/mem", "r+b")
+                        self.mem_fd = os.open(f"/proc/{self.process_id}/mem", os.O_RDWR)
                     except (OSError, IOError) as e:
-                        raise Exception(f"Failed to open memory file for process {self.process_name}: {e}")
+                        # Check if this is a permission issue (errno 1=EPERM, errno 13=EACCES)
+                        if e.errno in (1, 13):
+                            # Try one more time after fixing ptrace scope
+                            if check_and_fix_ptrace_scope():
+                                try:
+                                    self.mem_fd = os.open(f"/proc/{self.process_id}/mem", os.O_RDWR)
+                                except (OSError, IOError) as retry_e:
+                                    raise Exception(f"Failed to open memory file for process {self.process_name} after fixing ptrace: {retry_e}")
+                            else:
+                                raise Exception(f"Failed to open memory file for process {self.process_name}: {e}. Ptrace restrictions may be blocking access.")
+                        else:
+                            raise Exception(f"Failed to open memory file for process {self.process_name}: {e}")
                 return
         raise Exception(f"Process {self.process_name} not found")
 
@@ -278,12 +293,11 @@ class ProcessMemory:
 
     def _read_bytes_linux(self, address: int, size: int) -> bytes:
         """Read bytes from process memory on Linux."""
-        if not self.mem_file:
+        if self.mem_fd is None:
             raise Exception("Process not attached")
 
         try:
-            self.mem_file.seek(address)
-            data = self.mem_file.read(size)
+            data = os.pread(self.mem_fd, size, address)
             if len(data) != size:
                 raise Exception(f"Failed to read {size} bytes at address 0x{address:08x}")
             return data
@@ -314,13 +328,11 @@ class ProcessMemory:
 
     def _write_bytes_linux(self, address: int, data: bytes, size: int):
         """Write bytes to process memory on Linux."""
-        if not self.mem_file:
+        if self.mem_fd is None:
             raise Exception("Process not attached")
 
         try:
-            self.mem_file.seek(address)
-            written = self.mem_file.write(data[:size])
-            self.mem_file.flush()
+            written = os.pwrite(self.mem_fd, data[:size], address)
             if written != size:
                 raise Exception(f"Failed to write {size} bytes at address 0x{address:08x}")
         except (OSError, IOError) as e:
@@ -341,9 +353,9 @@ class ProcessMemory:
         if IS_WINDOWS and self.process_handle:
             ctypes.windll.kernel32.CloseHandle(self.process_handle)
             self.process_handle = None
-        elif IS_LINUX and self.mem_file:
-            self.mem_file.close()
-            self.mem_file = None
+        elif IS_LINUX and self.mem_fd is not None:
+            os.close(self.mem_fd)
+            self.mem_fd = None
 
 
 class Emulators(IntEnum):
@@ -355,6 +367,7 @@ class Emulators(IntEnum):
     RMG = auto()
     Simple64 = auto()
     ParallelLauncher = auto()
+    ParallelLauncher903 = auto()
     RetroArch = auto()
 
 
@@ -503,7 +516,7 @@ class EmulatorInfo:
             if test_value == 0x52414D42:
                 self.connected_process = pm
                 self.connected_offset = read_address + self.extra_offset
-                self.writeBytes(0x807ED6A4, 4, 1)  # Connection validation
+                self.writeBytes(0x807ED6A0, 4, 1)  # Connection validation
                 return (pm, read_address + self.extra_offset)
 
         if not has_seen_nonzero:
@@ -629,6 +642,9 @@ EMULATOR_CONFIGS = {
     Emulators.Simple64: EmulatorInfo(Emulators.Simple64, "simple64", "simple64-gui", True, "libmupen64plus.dll", True, 0x1380000, 0x29C95D8, linux_dll_name="libmupen64plus.so"),
     Emulators.ParallelLauncher: EmulatorInfo(
         Emulators.ParallelLauncher, "Parallel Launcher", "retroarch", True, "parallel_n64_next_libretro.dll", True, 0x845000, 0xD56000, linux_dll_name="parallel_n64_next_libretro.so"
+    ),
+    Emulators.ParallelLauncher903: EmulatorInfo(
+        Emulators.ParallelLauncher903, "Parallel Launcher (9.0.3+)", "retroarch", True, "parallel_n64_next_libretro.dll", True, 0x1400000, 0x1800000, linux_dll_name="parallel_n64_next_libretro.so"
     ),
     Emulators.RetroArch: EmulatorInfo(
         Emulators.RetroArch, "RetroArch", "retroarch", True, "mupen64plus_next_libretro.dll", True, 0, 0xFFFFFF, range_step=4, linux_dll_name="mupen64plus_next_libretro.so"

@@ -2,7 +2,7 @@ from enum import IntEnum
 import math
 from typing import NamedTuple
 from BaseClasses import Item
-from .Options import MoneybagsOptions, SparxUpgradeOptions, GemsanityOptions, GoalOptions, SparxForGemsOptions, LevelLockOptions
+from .Options import MoneybagsOptions, SparxUpgradeOptions, GemsanityOptions, GoalOptions, SparxForGemsOptions, LevelLockOptions, PowerupLockOptions
 from Options import OptionError
 
 
@@ -19,7 +19,9 @@ class Spyro3ItemCategory(IntEnum):
     SPARX_POWERUP = 13,
     WORLD_KEY = 14,
     LEVEL_KEY = 15,
-    UT_ITEM = 99  # Ultimate tracker
+    TYPE_POWERUP = 16,
+    INDIVIDUAL_POWERUP = 17,
+    UT_ITEM = 99  # Universal tracker
 
 
 class Spyro3ItemData(NamedTuple):
@@ -42,7 +44,7 @@ key_item_names = {
 }
 
 
-_all_items = [Spyro3ItemData(row[0], row[1], row[2]) for row in [    
+_all_items = [Spyro3ItemData(row[0], row[1], row[2]) for row in [
     ("Sunny Villa Complete", 2000, Spyro3ItemCategory.EVENT),
     ("Cloud Spires Complete", 2001, Spyro3ItemCategory.EVENT),
     ("Molten Crater Complete", 2002, Spyro3ItemCategory.EVENT),
@@ -50,7 +52,7 @@ _all_items = [Spyro3ItemData(row[0], row[1], row[2]) for row in [
     ("Sheila's Alp Complete", 2004, Spyro3ItemCategory.EVENT),
     ("Buzz Defeated", 2005, Spyro3ItemCategory.EVENT),
     ("Crawdad Farm Complete", 2006, Spyro3ItemCategory.EVENT),
-    
+
     ("Icy Peak Complete", 2007, Spyro3ItemCategory.EVENT),
     ("Enchanted Towers Complete", 2008, Spyro3ItemCategory.EVENT),
     ("Spooky Swamp Complete", 2009, Spyro3ItemCategory.EVENT),
@@ -58,7 +60,7 @@ _all_items = [Spyro3ItemData(row[0], row[1], row[2]) for row in [
     ("Sgt. Byrd's Base Complete", 2011, Spyro3ItemCategory.EVENT),
     ("Spike Defeated", 2012, Spyro3ItemCategory.EVENT),
     ("Spider Town Complete", 2013, Spyro3ItemCategory.EVENT),
-    
+
     ("Frozen Altars Complete", 2014, Spyro3ItemCategory.EVENT),
     ("Lost Fleet Complete", 2015, Spyro3ItemCategory.EVENT),
     ("Fireworks Factory Complete", 2016, Spyro3ItemCategory.EVENT),
@@ -66,7 +68,7 @@ _all_items = [Spyro3ItemData(row[0], row[1], row[2]) for row in [
     ("Bentley's Outpost Complete", 2018, Spyro3ItemCategory.EVENT),
     ("Scorch Defeated", 2019, Spyro3ItemCategory.EVENT),
     ("Starfish Reef Complete", 2020, Spyro3ItemCategory.EVENT),
-    
+
     ("Crystal Islands Complete", 2021, Spyro3ItemCategory.EVENT),
     ("Desert Ruins Complete", 2022, Spyro3ItemCategory.EVENT),
     ("Haunted Tomb Complete", 2023, Spyro3ItemCategory.EVENT),
@@ -76,8 +78,8 @@ _all_items = [Spyro3ItemData(row[0], row[1], row[2]) for row in [
     ("Bugbot Factory Complete", 2027, Spyro3ItemCategory.EVENT),
     ("Super Bonus Round Complete", 2028, Spyro3ItemCategory.EVENT),
     ("Moneybags Chase Complete", 2029, Spyro3ItemCategory.EVENT),
-    
-    
+
+
     ("Egg", 1000, Spyro3ItemCategory.EGG),
     ("Extra Life", 1001, Spyro3ItemCategory.MISC),
     ("Lag Trap", 1002, Spyro3ItemCategory.TRAP),
@@ -128,6 +130,8 @@ _all_items = [Spyro3ItemData(row[0], row[1], row[2]) for row in [
     ("Hint 9", 4008, Spyro3ItemCategory.HINT),
     ("Hint 10", 4009, Spyro3ItemCategory.HINT),
     ("Hint 11", 4010, Spyro3ItemCategory.HINT),
+    ("Hint 12", 4011, Spyro3ItemCategory.HINT),
+    ("Hint 13", 4012, Spyro3ItemCategory.HINT),
 
     ("Sunrise Spring 100 Gems", 5000, Spyro3ItemCategory.GEMSANITY),
     ("Sunny Villa 100 Gems", 5001, Spyro3ItemCategory.GEMSANITY),
@@ -183,6 +187,20 @@ _all_items = [Spyro3ItemData(row[0], row[1], row[2]) for row in [
     ("Crystal Islands Unlock", 6018, Spyro3ItemCategory.LEVEL_KEY),
     ("Desert Ruins Unlock", 6019, Spyro3ItemCategory.LEVEL_KEY),
 
+    ("Superfly Powerup", 7000, Spyro3ItemCategory.TYPE_POWERUP),
+    ("Fireball Powerup", 7001, Spyro3ItemCategory.TYPE_POWERUP),
+    ("Invincibility Powerup", 7002, Spyro3ItemCategory.TYPE_POWERUP),
+    ("Sunrise Superfly Powerup", 7003, Spyro3ItemCategory.INDIVIDUAL_POWERUP),
+    ("Cloud Superfly Powerup", 7004, Spyro3ItemCategory.INDIVIDUAL_POWERUP),
+    ("Midday Fireball Powerup", 7005, Spyro3ItemCategory.INDIVIDUAL_POWERUP),
+    ("Bamboo Fireball Powerup", 7006, Spyro3ItemCategory.INDIVIDUAL_POWERUP),
+    ("Evening Invincibility Powerup", 7007, Spyro3ItemCategory.INDIVIDUAL_POWERUP),
+    ("Fireworks Combo Powerup", 7008, Spyro3ItemCategory.INDIVIDUAL_POWERUP),
+    ("Fleet Invincibility Powerup", 7009, Spyro3ItemCategory.INDIVIDUAL_POWERUP),
+    ("Charmed Fireball Powerup", 7010, Spyro3ItemCategory.INDIVIDUAL_POWERUP),
+    ("Crystal Superfly Powerup", 7011, Spyro3ItemCategory.INDIVIDUAL_POWERUP),
+    ("Super Bonus Round Combo Powerup", 7012, Spyro3ItemCategory.INDIVIDUAL_POWERUP),
+
     ("Glitched Item", 9000, Spyro3ItemCategory.UT_ITEM)
 ]]
 
@@ -203,27 +221,27 @@ def BuildItemPool(world, count, preplaced_eggs, options, locked_levels):
             included_itemcount = included_itemcount + 1
     remaining_count = count - included_itemcount
     eggs_to_place = 150
-    if options.goal == GoalOptions.EGG_HUNT:
-        eggs_to_place = math.ceil(options.egg_count * (1.0 + options.percent_extra_eggs / 100.0))
+    if world.generation_options["goal"] == GoalOptions.EGG_HUNT:
+        eggs_to_place = math.ceil(world.generation_options["egg_count"] * (1.0 + world.generation_options["percent_extra_eggs"] / 100.0))
         # Game caps egg count at 150 and can encounter issues above this number.
         if eggs_to_place > 150:
             eggs_to_place = 150
     eggs_to_place = eggs_to_place - preplaced_eggs
     # Portals with egg requirements can't be set to require 0, so start with 1 egg to ensure level unlocks
     # work correctly when unlocks are not vanilla or keys and eggs.
-    if options.level_lock_option.value not in [LevelLockOptions.VANILLA]:
+    if world.generation_options["level_lock_option"] not in [LevelLockOptions.VANILLA]:
         multiworld.push_precollected(world.create_item("Egg"))
         eggs_to_place = eggs_to_place - 1
     for i in range(eggs_to_place):
         item_pool.append(item_dictionary["Egg"])
     remaining_count = remaining_count - eggs_to_place
 
-    if options.enable_gemsanity.value == GemsanityOptions.PARTIAL:
+    if world.generation_options["enable_gemsanity"] in [GemsanityOptions.PARTIAL, GemsanityOptions.FULL_BUNDLES]:
         for i in range(4):
             item_pool.append(item_dictionary["Crawdad Farm 50 Gems"])
             item_pool.append(item_dictionary["Spider Town 50 Gems"])
             item_pool.append(item_dictionary["Starfish Reef 50 Gems"])
-            if options.goal != GoalOptions.EGG_HUNT or options.egg_count > 100:
+            if world.generation_options["goal"] != GoalOptions.EGG_HUNT or world.generation_options["egg_count"] > world.generation_options["sorceress_door_requirement"]:
                 item_pool.append(item_dictionary["Bugbot Factory 50 Gems"])
             else:
                 remaining_count = remaining_count + 1
@@ -261,13 +279,13 @@ def BuildItemPool(world, count, preplaced_eggs, options, locked_levels):
             item_pool.append(item_dictionary["Agent 9's Lab 100 Gems"])
         remaining_count -= 158
 
-    if options.moneybags_settings.value in [MoneybagsOptions.COMPANIONSANITY, MoneybagsOptions.MONEYBAGSSANITY]:
+    if world.generation_options["moneybags_settings"] in [MoneybagsOptions.COMPANIONSANITY, MoneybagsOptions.MONEYBAGSSANITY]:
         item_pool.append(item_dictionary["Moneybags Unlock - Sheila"])
         item_pool.append(item_dictionary["Moneybags Unlock - Sgt. Byrd"])
         item_pool.append(item_dictionary["Moneybags Unlock - Bentley"])
         item_pool.append(item_dictionary["Moneybags Unlock - Agent 9"])
         remaining_count = remaining_count - 4
-    if options.moneybags_settings.value == MoneybagsOptions.MONEYBAGSSANITY:
+    if world.generation_options["moneybags_settings"] == MoneybagsOptions.MONEYBAGSSANITY:
         item_pool.append(item_dictionary["Moneybags Unlock - Cloud Spires Bellows"])
         item_pool.append(item_dictionary["Moneybags Unlock - Spooky Swamp Door"])
         item_pool.append(item_dictionary["Moneybags Unlock - Icy Peak Nancy Door"])
@@ -277,20 +295,20 @@ def BuildItemPool(world, count, preplaced_eggs, options, locked_levels):
         item_pool.append(item_dictionary["Moneybags Unlock - Frozen Altars Cat Hockey Door"])
         item_pool.append(item_dictionary["Moneybags Unlock - Crystal Islands Bridge"])
         remaining_count = remaining_count - 8
-    
-    if options.enable_progressive_sparx_health in [SparxUpgradeOptions.BLUE, SparxUpgradeOptions.GREEN, SparxUpgradeOptions.SPARXLESS]:
+
+    if world.generation_options["enable_progressive_sparx_health"] in [SparxUpgradeOptions.BLUE, SparxUpgradeOptions.GREEN, SparxUpgradeOptions.SPARXLESS]:
         item_pool.append(item_dictionary["Progressive Sparx Health Upgrade"])
         remaining_count = remaining_count - 1
-    if options.enable_progressive_sparx_health in [SparxUpgradeOptions.GREEN, SparxUpgradeOptions.SPARXLESS]:
+    if world.generation_options["enable_progressive_sparx_health"] in [SparxUpgradeOptions.GREEN, SparxUpgradeOptions.SPARXLESS]:
         item_pool.append(item_dictionary["Progressive Sparx Health Upgrade"])
         remaining_count = remaining_count - 1
-    if options.enable_progressive_sparx_health in [SparxUpgradeOptions.SPARXLESS]:
+    if world.generation_options["enable_progressive_sparx_health"] in [SparxUpgradeOptions.SPARXLESS]:
         item_pool.append(item_dictionary["Progressive Sparx Health Upgrade"])
         remaining_count = remaining_count - 1
 
-    if options.sparx_power_settings.value:
+    if world.generation_options["sparx_power_settings"]:
         item_pool.append(item_dictionary["Increased Sparx Range"])
-        if options.enable_progressive_sparx_logic.value and options.require_sparx_for_max_gems.value == SparxForGemsOptions.SPARX_FINDER:
+        if world.generation_options["enable_progressive_sparx_logic"] and world.generation_options["require_sparx_for_max_gems"] == SparxForGemsOptions.SPARX_FINDER:
             multiworld.push_precollected(world.create_item("Sparx Gem Finder"))
             remaining_count = remaining_count + 1
         else:
@@ -300,7 +318,7 @@ def BuildItemPool(world, count, preplaced_eggs, options, locked_levels):
         item_pool.append(item_dictionary["Progressive Sparx Basket Break"])
         remaining_count = remaining_count - 5
 
-    if options.level_lock_option.value == LevelLockOptions.KEYS:
+    if world.generation_options["level_lock_option"] == LevelLockOptions.KEYS:
         possible_locked_levels = [
             "Sunny Villa", "Cloud Spires", "Molten Crater", "Seashell Shore", "Mushroom Speedway",
             "Icy Peak", "Enchanted Towers", "Spooky Swamp", "Bamboo Terrace", "Country Speedway",
@@ -315,7 +333,25 @@ def BuildItemPool(world, count, preplaced_eggs, options, locked_levels):
             else:
                 multiworld.push_precollected(world.create_item(f"{level} Unlock"))
 
-    if options.enable_world_keys.value:
+    if world.generation_options["powerup_lock_settings"] == PowerupLockOptions.TYPE:
+        item_pool.append(item_dictionary["Superfly Powerup"])
+        item_pool.append(item_dictionary["Fireball Powerup"])
+        item_pool.append(item_dictionary["Invincibility Powerup"])
+        remaining_count = remaining_count - 3
+    elif world.generation_options["powerup_lock_settings"] == PowerupLockOptions.INDIVIDUAL:
+        item_pool.append(item_dictionary["Sunrise Superfly Powerup"])
+        item_pool.append(item_dictionary["Cloud Superfly Powerup"])
+        item_pool.append(item_dictionary["Midday Fireball Powerup"])
+        item_pool.append(item_dictionary["Bamboo Fireball Powerup"])
+        item_pool.append(item_dictionary["Evening Invincibility Powerup"])
+        item_pool.append(item_dictionary["Fireworks Combo Powerup"])
+        item_pool.append(item_dictionary["Fleet Invincibility Powerup"])
+        item_pool.append(item_dictionary["Charmed Fireball Powerup"])
+        item_pool.append(item_dictionary["Crystal Superfly Powerup"])
+        item_pool.append(item_dictionary["Super Bonus Round Combo Powerup"])
+        remaining_count = remaining_count - 10
+
+    if world.generation_options["enable_world_keys"]:
         for i in range(3):
             item_pool.append(item_dictionary["World Key"])
         remaining_count = remaining_count - 3
@@ -351,19 +387,29 @@ def BuildItemPool(world, count, preplaced_eggs, options, locked_levels):
             for i in range(0, 4):
                 allowed_misc_items.append(item)
 
-    if remaining_count > 0 and options.trap_filler_percent.value > 0 and len(allowed_trap_items) == 0:
-        raise OptionError(f"Trap percentage is set to {options.trap_filler_percent.value}, but none have been turned on.")
-    if remaining_count > 0 and options.trap_filler_percent.value < 100 and len(allowed_misc_items) == 0:
-        raise OptionError(f"{100 - options.trap_filler_percent.value} percent of filler items are meant to be non-traps, but no non-trap items have been turned on.")
+    if remaining_count > 0 and world.generation_options["trap_filler_percent"] > 0 and len(allowed_trap_items) == 0:
+        # Likely user error, but causes problems during UT generation with random settings.
+        world.generation_options["trap_filler_percent"] = 0
 
     # Get the correct blend of traps and filler items.
     for i in range(remaining_count):
-        if multiworld.random.random() * 100 < options.trap_filler_percent.value:
+        if multiworld.random.random() * 100 < world.generation_options["trap_filler_percent"]:
             itemList = [item for item in allowed_trap_items]
         else:
             itemList = [item for item in allowed_misc_items]
         item = multiworld.random.choice(itemList)
         item_pool.append(item)
-    
+
     multiworld.random.shuffle(item_pool)
     return item_pool
+
+item_name_groups = {"Moneybags Unlocks": set(), "Level Unlocks": set(), "Gems": set(), "Powerups": set()}
+for item in item_dictionary.keys():
+    if "Moneybags Unlock" in item:
+        item_name_groups["Moneybags Unlocks"].add(item)
+    if item.endswith(" Unlock"):
+        item_name_groups["Level Unlocks"].add(item)
+    if item.endswith(" Gems"):
+        item_name_groups["Gems"].add(item)
+    if item.endswith(" Powerup"):
+        item_name_groups["Powerups"].add(item)

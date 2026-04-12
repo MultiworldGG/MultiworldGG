@@ -288,11 +288,8 @@ async def game_watcher(ctx: KH1Context):
         await asyncio.sleep(0.1)
 
 
-def main(*launcher_args: str):
-    async def main():
-        parser = get_base_parser(description="KH1 Client, for text interfacing.")
-        args = parser.parse_args(launcher_args)
-
+def launch():
+    async def main(args):
         ctx = KH1Context(args.connect, args.password)
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
         if gui_enabled:
@@ -310,6 +307,9 @@ def main(*launcher_args: str):
 
     import colorama
 
+    parser = get_base_parser(description="KH1 Client, for text interfacing.")
+
+    args, rest = parser.parse_known_args()
     colorama.just_fix_windows_console()
-    asyncio.run(main())
+    asyncio.run(main(args))
     colorama.deinit()

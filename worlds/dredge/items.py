@@ -4,7 +4,7 @@ import json
 import pkgutil
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, DefaultDict
 
 from BaseClasses import Item, ItemClassification
 
@@ -13,6 +13,13 @@ if TYPE_CHECKING:
 
 class DREDGEItem(Item):
     game: str = "DREDGE"
+
+
+CATCH_TOOL_GROUPS = {"Rod", "Net", "Crab Pot"}
+EXCLUDED_CATCH_TOOLS = {"Tendon Rod", "Viscera Crane"}
+
+ToolIndexKey = tuple[str, str]  # (catch_type, tool_group, expansion)
+ToolIndex = dict[ToolIndexKey, tuple[str, ...]]
 
 @dataclass
 class DREDGEItemData:
@@ -80,7 +87,7 @@ def create_all_items(world: DREDGEWorld) -> None:
 
     progression_classes = {ItemClassification.progression, ItemClassification.progression_skip_balancing}
     for item, data in item_table.items():
-        if data.classification not in progression_classes:
+        if data.classification not in progression_classes or data.item_group == "Research":
             continue
 
         for index in range(data.classification):
@@ -114,3 +121,25 @@ def create_all_items(world: DREDGEWorld) -> None:
             item_pool.append(world.create_item(get_random_filler_item_name(world)))
 
     world.multiworld.itempool += item_pool
+
+def build_catch_tool_index() -> ToolIndex:
+    idx: DefaultDict[ToolIndexKey, list[str]] = defaultdict(list)
+
+    for name, item in item_table.items():
+        if getattr(item, "item_group", None) not in CATCH_TOOL_GROUPS:
+            continue
+
+        can_catch = getattr(item, "can_catch", None)
+        if not can_catch:
+            continue
+
+        if name in EXCLUDED_CATCH_TOOLS:
+            continue
+
+        for catch_type in can_catch:
+            idx[(catch_type, item.item_group)].append(name)
+
+
+    return {k: tuple(v) for k, v in idx.items()}
+
+CATCH_TOOL_INDEX: ToolIndex = build_catch_tool_index()

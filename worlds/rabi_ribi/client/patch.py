@@ -4,8 +4,9 @@ This is done on the client side upon connect to allow for a smoother setup exper
 """
 import os
 import struct
-from typing import List
+from typing import Any, List, Optional
 
+from Options import Option
 from worlds.rabi_ribi import RabiRibiWorld
 from worlds.rabi_ribi.client.client import RabiRibiContext
 from worlds.rabi_ribi.existing_randomizer.dataparser import RandomizerData
@@ -29,7 +30,7 @@ from worlds.rabi_ribi.existing_randomizer.utility import to_index
 from worlds.rabi_ribi.items import lookup_item_id_to_name
 from worlds.rabi_ribi.locations import lookup_location_id_to_name
 from worlds.rabi_ribi.names import LocationName
-from worlds.rabi_ribi.options import AttackMode
+from worlds.rabi_ribi.options import AttackMode, RabiRibiOptions
 from worlds.rabi_ribi.utility import convert_ap_name_to_existing_rando_name
 
 class Allocation():
@@ -77,19 +78,7 @@ def patch_map_files(ctx: RabiRibiContext):
 
     map_source_dir = f"{RabiRibiWorld.settings.game_installation_path}/data/area"
     grab_original_maps(map_source_dir, ctx.custom_seed_subdir)
-    settings = parse_args()
-    settings.open_mode = ctx.slot_data["openMode"]
-    settings.num_hard_to_reach = ctx.slot_data["required_egg_count"]
-    settings.shuffle_gift_items = ctx.slot_data["randomize_gift_items"]
-
-    # Need a unique seed to ensure that the background and music shuffles can be regenerated if needed.
-    settings.random_seed = ctx.seed_player
-    settings.shuffle_music = ctx.slot_data["shuffle_music"]
-    settings.shuffle_backgrounds = ctx.slot_data["shuffle_backgrounds"]
-    settings.shuffle_start_location = True # Always apply start location shuffle to enable start room.
-    settings.apply_beginner_mod = ctx.slot_data["apply_beginner_mod"]
-    settings.no_laggy_backgrounds = True
-    settings.no_difficult_backgrounds = True
+    settings = initialize_settings(ctx)
     attack_mode = ctx.slot_data["attackMode"]
     picked_templates = ctx.slot_data["picked_templates"]
     if attack_mode == AttackMode.option_hyper:
@@ -118,6 +107,22 @@ def patch_map_files(ctx: RabiRibiContext):
 
     embed_seed_player_into_mapdata(ctx, item_modifier)
     create_custom_text_file(ctx)
+
+def initialize_settings(ctx: RabiRibiContext):
+    settings = parse_args()
+    settings.open_mode = True
+    settings.num_hard_to_reach = ctx.slot_data["required_egg_count"]
+    settings.shuffle_gift_items = True
+
+    # Need a unique seed to ensure that the background and music shuffles can be regenerated if needed.
+    settings.random_seed = ctx.seed_player
+    settings.shuffle_music = ctx.slot_data["shuffle_music"]
+    settings.shuffle_backgrounds = ctx.slot_data["shuffle_backgrounds"]
+    settings.shuffle_start_location = True # Always apply start location shuffle to enable start room.
+    settings.apply_beginner_mod = ctx.slot_data["apply_beginner_mod"]
+    settings.no_laggy_backgrounds = True if "allow_laggy_backgrounds" not in ctx.slot_data else not ctx.slot_data["allow_laggy_backgrounds"]
+    settings.no_difficult_backgrounds = True if "allow_difficult_backgrounds" not in ctx.slot_data else not ctx.slot_data["allow_difficult_backgrounds"]
+    return settings
 
 def remove_exclamation_point_from_map(ctx: RabiRibiContext, area_id: int, x: int, y: int):
     """

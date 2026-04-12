@@ -1,9 +1,10 @@
+import json
 from typing import Dict, List, Any, Union
 from BaseClasses import Region, Location, Item, Tutorial, ItemClassification
 from Options import OptionError
 from worlds.AutoWorld import World, WebWorld
 from .Items import ItemType, base_id, item_list, fire2_weapons, item_groups
-from .Locations import LocationType, location_list, start_weapon_locations, location_groups
+from .Locations import LocationType, UKEnemyLocation, location_list, start_weapon_locations, location_groups
 from .Regions import Regions, SecretRegion
 from .Rules import UltrakillRules
 from .Options import UltrakillOptions
@@ -26,7 +27,6 @@ class UltrakillWorld(World):
     """MANKIND IS DEAD. BLOOD IS FUEL. HELL IS FULL."""
 
     game = "ULTRAKILL"
-    author: str = "TRPG"
     web = UltrakillWeb()
 
     item_name_to_id = {item.name: (base_id + index) for index, item in enumerate(item_list)}
@@ -65,6 +65,7 @@ class UltrakillWorld(World):
         self.item_classifications[ItemType.ShoAlt] = ItemClassification.progression
         self.item_classifications[ItemType.NaiStd] = ItemClassification.progression
         self.item_classifications[ItemType.NaiAlt] = ItemClassification.progression
+        self.item_classifications[ItemType.SecretMission] = ItemClassification.progression
 
         self.event_names: List[str] = []
         self.game_id_to_long: Dict[str, int] = {}
@@ -149,15 +150,17 @@ class UltrakillWorld(World):
         self.start_location = self.random.choice(start_weapon_locations[self.start_level.short_name])
 
         level_leads_to_secret: List[int] = [ 2, 6, 12, 17, 20, 28 ]
-        if self.options.goal_requirement.value == self.options.goal_requirement.range_end \
-            and self.options.goal_level.value in level_leads_to_secret:
-                print(f"[ULTRAKILL - '{self.player_name}'] "
-                      f"Goal requirement cannot be {self.options.goal_requirement.range_end} because goal level "
-                      f"{self.goal_level.short_name} leads to an inaccessible secret mission. Lowering goal "
-                      f"requirement to {self.options.goal_requirement.range_end-1}.")
-                self.options.goal_requirement.value = self.options.goal_requirement.range_end-1
-
         included_levels: int = self.options.goal_requirement.range_end - len(self.options.skipped_levels.value)
+
+        if self.options.goal_requirement.value >= included_levels \
+            and self.options.goal_level.value in level_leads_to_secret \
+            and self.options.secret_mission_unlock_type == "secret_exits":
+                print(f"[ULTRAKILL - '{self.player_name}'] "
+                      f"Goal requirement cannot be {self.options.goal_requirement.value} because goal level "
+                      f"{self.goal_level.short_name} leads to an inaccessible secret mission. Lowering goal "
+                      f"requirement to {included_levels - 1}.")
+                self.options.goal_requirement.value = included_levels - 1
+
         if self.options.goal_requirement.value > included_levels:
             raise OptionError(f"[ULTRAKILL - '{self.player_name}'] "
                             f"Goal requirement ({self.options.goal_requirement.value}) "
@@ -171,7 +174,7 @@ class UltrakillWorld(World):
         
         start_weapons: Dict[str, int] = {k: v for k, v in self.options.starting_weapon_pool.value.items() if v > 0}
 
-        if self.start_level.short_name == "2-3":
+        if self.start_level.short_name in {"2-3", "8-2", "8-3"}:
             remove_from_dict(start_weapons, "Feedbacker")
             remove_from_dict(start_weapons, "Knuckleblaster")
             remove_from_dict(start_weapons, "Whiplash")
@@ -205,6 +208,12 @@ class UltrakillWorld(World):
 
         if self.options.start_with_slam:
             self.item_classifications[ItemType.Slam] = None
+
+        if self.options.secret_mission_unlock_type == "secret_exits":
+            self.item_classifications[ItemType.SecretMission] = None
+
+        if self.options.secret_exit_behavior == "standard":
+            self.skipped_location_types.append(LocationType.SecretExit)
 
         if self.options.unlock_type == "levels":
             self.item_classifications[ItemType.Layer] = None
@@ -333,7 +342,7 @@ class UltrakillWorld(World):
         for item in item_list:
             if self.item_classifications[item.type] == None:
                 continue
-            elif item.type == ItemType.Level and item.name in {self.start_level.full_name, self.goal_level.full_name}:
+            elif (item.type == ItemType.Level or item.type == ItemType.SecretMission) and item.name in {self.start_level.full_name, self.goal_level.full_name}:
                 continue
             elif item.type == ItemType.Filler or item.type == ItemType.Trap:
                 continue
@@ -343,10 +352,10 @@ class UltrakillWorld(World):
                 count = 3 - self.options.starting_stamina.value
             elif item.type == ItemType.WallJump:
                 count = 3 - self.options.starting_walljumps.value
-            elif item.name == "Feedbacker":
-                count = count - self.options.start_with_arm
             elif item.name == self.start_weapon:
                 count = 0
+            elif item.name == "Feedbacker":
+                count = count - self.options.start_with_arm.value
 
             if item.type == ItemType.Weapon and item.name in fire2_weapons and self.options.randomize_secondary_fire == "progressive":
                 if item.name == self.start_weapon:
@@ -374,23 +383,33 @@ class UltrakillWorld(World):
         self.multiworld.itempool += pool
 
 
+    def get_filler_item_name(self):
+        num: int = self.random.randint(0, 99)
+        is_trap: bool = num < self.options.trap_percent
+
+        if is_trap:
+            return self.random.choices(list(self.options.trap_weights.value.keys()), list(self.options.trap_weights.value.values()))[0]
+        else:
+            return self.random.choices(list(self.options.filler_weights.value.keys()), list(self.options.filler_weights.value.values()))[0]
+
+
     def pre_fill(self):
-        world = self.multiworld
+        multiworld = self.multiworld
         player = self.player
 
-        first_loc = world.get_location(self.start_location, player)
+        first_loc = multiworld.get_location(self.start_location, player)
 
         if first_loc.item != None:
             if not first_loc.item.name in item_groups["start_weapons"]:
-                raise Exception(f"[ULTRAKILL - {world.get_player_name(player)}] "
+                raise Exception(f"[ULTRAKILL - {multiworld.get_player_name(player)}] "
                                 f"'{first_loc.item.name}' is not a valid starting weapon.")
             
             # plando check
             if first_loc.item.name != self.start_weapon:
-                print(f"[ULTRAKILL - '{world.get_player_name(player)}'] An item already exists at \"{self.start_location}\". "
+                print(f"[ULTRAKILL - '{multiworld.get_player_name(player)}'] An item already exists at \"{self.start_location}\". "
                     "Selected starting weapon is being returned to the item pool.")
                 
-                world.itempool.append(self.create_item(self.start_weapon))
+                multiworld.itempool.append(self.create_item(self.start_weapon))
         else:
             first_loc.place_locked_item(self.create_item(self.start_weapon))
 
@@ -404,23 +423,31 @@ class UltrakillWorld(World):
         for r in Regions.all_regions:
             multiworld.regions += [Region(r.full_name, player, multiworld)]
             if isinstance(r, SecretRegion):
-                multiworld.get_region(r.parent_level.full_name, player).add_exits({r.full_name})
+                if self.options.secret_mission_unlock_type == "secret_exits":
+                    multiworld.get_region(r.parent_level.full_name, player).add_exits({r.full_name})
+                else:
+                    menu.add_exits({r.full_name})
             else:
                 menu.add_exits({r.full_name})
 
         multiworld.regions.append(menu)
 
+        skipped = self.options.skipped_levels.value
         for index, loc in enumerate(location_list):
             if loc.type in self.skipped_location_types:
                 continue
             self.game_id_to_long[loc.game_id] = (base_id + index)
-            
+
             region: Region = self.get_region(loc.region.full_name)
             location: UltrakillLocation = UltrakillLocation(player, loc.name, (base_id + index), region)
             region.locations.append(location)
 
-            if self.options.auto_exclude_skipped_locations and loc.region.short_name in self.options.skipped_levels.value:
-                self.options.exclude_locations.value.add(loc.name)
+            if loc.region.short_name in skipped:
+                if self.options.auto_exclude_skipped_locations or isinstance(loc, UKEnemyLocation):
+                    self.options.exclude_locations.value.add(loc.name)
+            elif isinstance(loc, UKEnemyLocation):
+                if loc.applicable_levels.issubset(skipped):
+                    self.options.exclude_locations.value.add(loc.name)
 
         # create events for level completion
         for r in [r for r in Regions.all_regions if not (r.short_name == "shop" or r.short_name == "museum")]:
@@ -445,12 +472,14 @@ class UltrakillWorld(World):
 
     def fill_slot_data(self) -> Dict[str, Any]:
         slot_data: Dict[str, Any] = {
-            "version": "3.2.6",
+            "version": self.world_version.as_simple_string(),
             "locations": self.game_id_to_long,
             "start": self.start_level.short_name,
             "goal": self.goal_level.short_name,
             "goal_requirement": self.options.goal_requirement.value,
             "perfect_goal": bool(self.options.perfect_goal),
+            "secret_mission_unlock_type": bool(self.options.secret_mission_unlock_type.value),
+            "secret_exit_behavior": bool(self.options.secret_exit_behavior.value),
             "skipped_levels": self.options.skipped_levels.value,
             "enemy_rewards": self.options.enemy_rewards.value,
             "challenge_rewards": bool(self.options.challenge_rewards),
@@ -480,8 +509,28 @@ class UltrakillWorld(World):
             "music": self.music,
             "cybergrind_hints": bool(self.options.cybergrind_hints),
             "death_link": bool(self.options.death_link),
+            "death_link_amnesty": self.options.death_link_amnesty.value
         }
+
+        #self.export_lua()
+
         return slot_data
+    
+
+    def export_lua(self) -> None:
+        with open("item_mapping.lua", "w") as item_map:
+            item_map.write(f"-- Generated from apworld version {self.world_version.as_simple_string()}\n\nITEM_MAPPING = " + "{\n")
+            for item in item_list:
+                if item.tracker_strings == None:
+                    continue
+                item_map.write("    [" + str(self.item_name_to_id[item.name]) + "] = {\"" + "\", \"".join(item.tracker_strings) + "\"},\n")
+            item_map.write("}")
+
+        with open("location_mapping.lua", "w") as location_map:
+            location_map.write(f"-- Generated from apworld version {self.world_version.as_simple_string()}\n\nLOCATION_MAPPING = " + "{\n")
+            for location in location_list:
+                location_map.write("    [" + str(self.location_name_to_id[location.name]) + "] = {\"" + location.tracker_string + "\"},\n")
+            location_map.write("}")
 
 
 class UltrakillItem(Item):

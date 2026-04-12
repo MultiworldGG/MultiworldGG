@@ -74,7 +74,8 @@
     ],
     "events": [
       "EVENT_RIVAL_AZALEA_TOWN",
-      "EVENT_BEAT_AZALEA_RIVAL"
+      "EVENT_BEAT_AZALEA_RIVAL",
+      "EVENT_WHT_APRICORN"
     ],
     "signs": [
       "AzaleaTown",
@@ -1020,7 +1021,7 @@
     "johto": false,
     "exits": [
       "REGION_CINNABAR_POKECENTER_1F",
-      "REGION_ROUTE_21",
+      "REGION_ROUTE_21:SOUTH",
       "REGION_ROUTE_20"
     ],
     "locations": [
@@ -1465,13 +1466,15 @@
       "REGION_NEW_BARK_TOWN"
     ],
     "locations": [
+      "EVERSTONE_FROM_ELM",
       "MASTER_BALL_FROM_ELM",
       "SS_TICKET_FROM_ELM",
       "POTION_FROM_ELMS_AIDE",
       "POKE_BALL_FROM_ELMS_AIDE"
     ],
     "events": [
-      "EVENT_GOT_A_POKEMON_FROM_ELM"
+      "EVENT_GOT_A_POKEMON_FROM_ELM",
+      "EVENT_GAVE_MYSTERY_EGG_TO_ELM"
     ]
   },
   "REGION_FAST_SHIP_1F": {
@@ -2993,10 +2996,12 @@
     ],
     "locations": [
       "MYSTERY_EGG",
-      "EXP_SHARE"
+      "EXP_SHARE",
+      "POKEDEX"
     ],
     "events": [
-      "EVENT_GOT_MYSTERY_EGG_FROM_MR_POKEMON"
+      "EVENT_GOT_MYSTERY_EGG_FROM_MR_POKEMON",
+      "EVENT_GOT_POKEDEX"
     ]
   },
   "REGION_MR_PSYCHICS_HOUSE": {
@@ -3363,7 +3368,7 @@
     "johto": false,
     "exits": [
       "REGION_ROUTE_1",
-      "REGION_ROUTE_21",
+      "REGION_ROUTE_21:NORTH",
       "REGION_REDS_HOUSE_1F",
       "REGION_BLUES_HOUSE",
       "REGION_OAKS_LAB"
@@ -4357,10 +4362,25 @@
       "fishing": "Ocean"
     }
   },
-  "REGION_ROUTE_21": {
+  "REGION_ROUTE_21:NORTH": {
     "johto": false,
     "exits": [
       "REGION_PALLET_TOWN",
+      "REGION_ROUTE_21:SOUTH"
+    ],
+    "trainers": [],
+    "locations": [],
+    "events": [],
+    "wild_encounters": {
+      "grass": "ROUTE_21",
+      "surfing": "ROUTE_21",
+      "fishing": "Ocean"
+    }
+  },
+  "REGION_ROUTE_21:SOUTH": {
+    "johto": false,
+    "exits": [
+      "REGION_ROUTE_21:NORTH",
       "REGION_CINNABAR_ISLAND"
     ],
     "trainers": [
@@ -4375,7 +4395,6 @@
     ],
     "events": [],
     "wild_encounters": {
-      "grass": "ROUTE_21",
       "surfing": "ROUTE_21",
       "fishing": "Ocean"
     }
@@ -4955,7 +4974,7 @@
     ],
     "wild_encounters": {
       "grass": "ROUTE_33",
-      "headbutt": "Route"
+      "headbutt": "Town"
     }
   },
   "REGION_ROUTE_34": {
@@ -5231,7 +5250,11 @@
       "FRUITTREE_ROUTE_37_2",
       "FRUITTREE_ROUTE_37_3"
     ],
-    "events": [],
+    "events": [
+      "EVENT_BLK_APRICORN",
+      "EVENT_RED_APRICORN",
+      "EVENT_BLU_APRICORN"
+    ],
     "signs": [
       "Route37",
       "Route36TrainerTips2"
@@ -5367,7 +5390,9 @@
       "ITEM_FROM_PICNICKER_HOPE",
       "ITEM_FROM_PICNICKER_SHARON"
     ],
-    "events": [],
+    "events": [
+      "EVENT_CLEARED_ROUTE_4"
+    ],
     "signs": [
       "Route4MtMoonSquare"
     ]
@@ -5492,6 +5517,7 @@
     "johto": true,
     "exits": [
       "REGION_ROUTE_42_ECRUTEAK_GATE",
+      "REGION_ROUTE_42:HEADBUTT",
       "REGION_MOUNT_MORTAR_1F_OUTSIDE:WEST:ENTRANCE"
     ],
     "locations": [
@@ -5504,7 +5530,15 @@
     ],
     "wild_encounters": {
       "surfing": "ROUTE_42",
-      "fishing": "Lake",
+      "fishing": "Lake"
+    }
+  },
+  "REGION_ROUTE_42:HEADBUTT": {
+    "johto": true,
+    "exits": [],
+    "locations": [],
+    "events": [],
+    "wild_encounters": {
       "headbutt": "Town"
     }
   },
@@ -5526,7 +5560,8 @@
   "REGION_ROUTE_42:CENTERFRUIT": {
     "johto": true,
     "exits": [
-      "REGION_ROUTE_42:CENTER"
+      "REGION_ROUTE_42:CENTER",
+      "REGION_ROUTE_42:HEADBUTT"
     ],
     "locations": [
       "FRUITTREE_ROUTE_42_1",
@@ -5534,11 +5569,11 @@
       "FRUITTREE_ROUTE_42_3"
     ],
     "events": [
-      "EVENT_SAW_SUICUNE_ON_ROUTE_42"
-    ],
-    "wild_encounters": {
-      "headbutt": "Town"
-    }
+      "EVENT_SAW_SUICUNE_ON_ROUTE_42",
+      "EVENT_YLW_APRICORN",
+      "EVENT_PNK_APRICORN",
+      "EVENT_GRN_APRICORN"
+    ]
   },
   "REGION_ROUTE_42:EAST": {
     "johto": true,
@@ -6929,9 +6964,21 @@
   "REGION_TRAINER_HOUSE_B1F": {
     "johto": false,
     "exits": [
-      "REGION_TRAINER_HOUSE_1F"
+      "REGION_TRAINER_HOUSE_1F",
+      "REGION_TRAINER_HOUSE_B1F:CAL"
     ],
     "locations": [],
+    "events": []
+  },
+  "REGION_TRAINER_HOUSE_B1F:CAL": {
+    "johto": false,
+    "exits": [],
+    "trainers": [
+      "CAL_3"
+    ],
+    "locations": [
+      "ITEM_FROM_CAL_3"
+    ],
     "events": []
   },
   "REGION_UNDERGROUND_PATH": {

@@ -69,7 +69,7 @@ These commands are to be used in-game by using ``Ctrl + Alt + ` `` and then typi
  - `archipelago_reconnect` Reconnect to MWGG.
  - `archipelago_connect <url> <port> <slot> [password]` example: "archipelago_connect multiworld.gg 38281 SlotName".
  - `archipelago_deathlink true/false` Toggle deathlink.
- - `archipelago_disconnect` Disconnect from AP.
+ - `archipelago_disconnect` Disconnect from MWGG.
  - `archipelago_final_stage_death true/false` Toggle final stage death.
 
 Explore Mode only

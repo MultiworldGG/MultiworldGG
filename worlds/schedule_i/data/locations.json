@@ -1,0 +1,1761 @@
+{
+    "Welcome to Hyland Point|Open your phone and read your messages": {
+        "region": "Welcome to Hyland Point",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 1
+    },
+    "Welcome to Hyland Point|Talk to 'U.N.' at a payphone": {
+        "region": "Welcome to Hyland Point",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 2
+    },
+    "Welcome to Hyland Point|Collect the stash near the fountain": {
+        "region": "Welcome to Hyland Point",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 3
+    },
+    "Welcome to Hyland Point|Collect the stash near the canal": {
+        "region": "Welcome to Hyland Point",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 4
+    },
+    "Welcome to Hyland Point|Collect the stash behind the supermarket": {
+        "region": "Welcome to Hyland Point",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 5
+    },
+    "Welcome to Hyland Point|Head back to the RV": {
+        "region": "Welcome to Hyland Point",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 6
+    },
+    "Welcome to Hyland Point|Investigate the explosion": {
+        "region": "Welcome to Hyland Point",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 7
+    },
+    "Welcome to Hyland Point|Read the note": {
+        "region": "Welcome to Hyland Point",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 8
+    },
+    "Welcome to Hyland Point|Talk to Uncle Nelson at a payphone": {
+        "region": "Welcome to Hyland Point",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 9
+    },
+    "Getting Started|Talk to the manager in the motel office": {
+        "region": "Getting Started",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 10
+    },
+    "Getting Started|Rent a motel room": {
+        "region": "Getting Started",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 11
+    },
+    "Getting Started|Check out your motel room": {
+        "region": "Getting Started",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 12
+    },
+    "Gearing Up|Go to the hardware store": {
+        "region": "Gearing Up|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 13
+    },
+    "Gearing Up|Buy 1x grow tent": {
+        "region": "Gearing Up|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 14
+    },
+    "Gearing Up|Buy 1x soil": {
+        "region": "Gearing Up|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 15
+    },
+    "Gearing Up|Buy 1x watering can": {
+        "region": "Gearing Up|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 16
+    },
+    "Gearing Up|Head back to the motel room": {
+        "region": "Gearing Up|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 17
+    },
+    "Gearing Up|Place the grow tent and fill it with soil": {
+        "region": "Gearing Up|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 18
+    },
+    "Gearing Up|Talk to Uncle Nelson at a payphone": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 19
+    },
+    "Gearing Up|Order 1x OG Kush Seed from Albert Hoover": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 20
+    },
+    "Gearing Up|Wait for the dead drop": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 21
+    },
+    "Gearing Up|Collect the dead drop": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 22
+    },
+    "Gearing Up|Sow a weed seed": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 23
+    },
+    "Gearing Up|Water the weed plant": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 24
+    },
+    "Gearing Up|Harvest the weed plant once fully grown": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 25
+    },
+    "Gearing Up|Package at least 3x weed": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 26
+    },
+    "Gearing Up|List OG Kush for sale in the product manager app": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 27
+    },
+    "Packin'|Buy 1x plant trimmers": {
+        "region": "Packin'",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 28
+    },
+    "Packin'|Buy 1x packaging station": {
+        "region": "Packin'",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 29
+    },
+    "Packin'|Buy 10x baggies": {
+        "region": "Packin'",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 30
+    },
+    "Packin'|Place the packaging station in the motel room": {
+        "region": "Packin'",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 31
+    },
+    "Keeping it Fresh|Place the soil bag and seed vial in the motel room trash can": {
+        "region": "Keeping it Fresh",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 32
+    },
+    "Keeping it Fresh|Buy a trash bag from the hardware store": {
+        "region": "Keeping it Fresh",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 33
+    },
+    "Keeping it Fresh|Bag the contents of the trash can": {
+        "region": "Keeping it Fresh",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 34
+    },
+    "Keeping it Fresh|Dispose of the trash bag": {
+        "region": "Keeping it Fresh",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 35
+    },
+    "On the Grind|Wait for a message from a customer": {
+        "region": "On the Grind|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 36
+    },
+    "On the Grind|Schedule your first deal": {
+        "region": "On the Grind|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 37
+    },
+    "On the Grind|Complete your first deal": {
+        "region": "On the Grind|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 38
+    },
+    "On the Grind|Buy and place another grow tent": {
+        "region": "On the Grind|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 39
+    },
+    "On the Grind|Complete 3 deals": {
+        "region": "On the Grind|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 40
+    },
+    "On the Grind|Talk to Uncle Nelson at a payphone": {
+        "region": "On the Grind|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 41
+    },
+    "On the Grind|Open the map app to see your potential customers": {
+        "region": "On the Grind|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 44
+    },
+    "On the Grind|Offer a free sample to a potential customer": {
+        "region": "On the Grind|2",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 45
+    },
+    "Moving Up|Save $800 for a new property": {
+        "region": "Moving Up",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 46
+    },
+    "Moving Up|Talk to Mrs. Ming at the Chinese restaurant": {
+        "region": "Moving Up",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 47
+    },
+    "Moving Up|Purchase the room above the Chinese Restaurant": {
+        "region": "Moving Up",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 48
+    },
+    "Moving Up|Move the grow tents and packaging station to the new room": {
+        "region": "Moving Up",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 49
+    },
+    "Moving Up|Unlock 10 customers": {
+        "region": "Moving Up",
+        "requirements": {"randomize_customers": {"has_from_list": 
+            {"Austin Steiner Unlocked": 10,
+            "Beth Penn Unlocked": 10,
+            "Chloe Bowers Unlocked": 10,
+            "Donna Martin Unlocked": 10,
+            "Geraldine Poon Unlocked": 10,
+            "Jessi Waters Unlocked": 10,
+            "Kathy Henderson Unlocked": 10,
+            "Kyle Cooley Unlocked": 10,
+            "Ludwig Meyer Unlocked": 10,
+            "Mick Lubbin Unlocked": 10,
+            "Mrs. Ming Unlocked": 10,
+            "Peggy Myers Unlocked": 10,
+            "Peter File Unlocked": 10,
+            "Sam Thompson Unlocked": 10,
+            "Charles Rowland Unlocked": 10,
+            "Dean Webster Unlocked": 10,
+            "Doris Lubbin Unlocked": 10,
+            "George Greene Unlocked": 10,
+            "Jerry Montero Unlocked": 10,
+            "Joyce Ball Unlocked": 10,
+            "Keith Wagner Unlocked": 10,
+            "Kim Delaney Unlocked": 10,
+            "Meg Cooley Unlocked": 10,
+            "Trent Sherman Unlocked": 10,
+            "Bruce Norton Unlocked": 10,
+            "Elizabeth Homley Unlocked": 10,
+            "Eugene Buckley Unlocked": 10,
+            "Greg Figgle Unlocked": 10,
+            "Jeff Gilmore Unlocked": 10,
+            "Jennifer Rivera Unlocked": 10,
+            "Kevin Oakley Unlocked": 10,
+            "Louis Fourier Unlocked": 10,
+            "Philip Wentworth Unlocked": 10,
+            "Randy Caulfield Unlocked": 10,
+            "Lucy Pennington Unlocked": 10,
+            "Anna Chesterfield Unlocked": 10,
+            "Billy Kramer Unlocked": 10,
+            "Cranky Frank Unlocked": 10,
+            "Genghis Barn Unlocked": 10,
+            "Javier Pérez Unlocked": 10,
+            "Kelly Reynolds Unlocked": 10,
+            "Lisa Gardener Unlocked": 10,
+            "Mac Cooper Unlocked": 10,
+            "Marco Barone Unlocked": 10,
+            "Melissa Wood Unlocked": 10,
+            "Sherman Giles Unlocked": 10,
+            "Alison Knight Unlocked": 10,
+            "Carl Bundy Unlocked": 10,
+            "Chris Sullivan Unlocked": 10,
+            "Dennis Kennedy Unlocked": 10,
+            "Hank Stevenson Unlocked": 10,
+            "Harold Colt Unlocked": 10,
+            "Jack Knight Unlocked": 10,
+            "Jackie Stevenson Unlocked": 10,
+            "Jeremy Wilkinson Unlocked": 10,
+            "Karen Kennedy Unlocked": 10,
+            "Fiona Hancock Unlocked": 10,
+            "Herbert Bleuball Unlocked": 10,
+            "Irene Meadows Unlocked": 10,
+            "Jen Heard Unlocked": 10,
+            "Lily Turner Unlocked": 10,
+            "Michael Boog Unlocked": 10,
+            "Pearl Moore Unlocked": 10,
+            "Ray Hoffman Unlocked": 10,
+            "Tobias Wentworth Unlocked": 10,
+            "Walter Cussler Unlocked": 10}}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 50
+    },
+    "Dodgy Dealing|Talk to Uncle Nelson at a payphone": {
+        "region": "Dodgy Dealing",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 51
+    },
+    "Dodgy Dealing|Unlock Chloe, Ludwig, or Beth as customers": {
+        "region": "Dodgy Dealing",
+        "requirements": {"randomize_customers": {"has_any" : [["Chloe Bowers Unlocked", "Ludwig Meyer Unlocked", "Beth Penn Unlocked"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 52
+    },
+    "Dodgy Dealing|Reach 'friendly' relationship status with Chloe, Ludwig, or Beth": {
+        "region": "Dodgy Dealing",
+        "requirements": {"randomize_customers": {"has_any" : [["Chloe Bowers Unlocked", "Ludwig Meyer Unlocked", "Beth Penn Unlocked"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 53
+    },
+    "Dodgy Dealing|Talk to Benji Coleman in Motel Room #2": {
+        "region": "Dodgy Dealing",
+        "requirements": {"randomize_customers": {"has_any" : [["Chloe Bowers Unlocked", "Ludwig Meyer Unlocked", "Beth Penn Unlocked"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 54
+    },
+    "Dodgy Dealing|Recruit Benji Coleman as a dealer": {
+        "region": "Dodgy Dealing",
+        "requirements": {"randomize_customers": {"has_any" : [["Chloe Bowers Unlocked", "Ludwig Meyer Unlocked", "Beth Penn Unlocked"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 55
+    },
+    "Dodgy Dealing|Provide Benji with at least 10x Weed": {
+        "region": "Dodgy Dealing",
+        "requirements": {"randomize_customers": {"has_any" : [["Chloe Bowers Unlocked", "Ludwig Meyer Unlocked", "Beth Penn Unlocked"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 56
+    },
+    "Dodgy Dealing|Assign at least 3 customers to Benji": {
+        "region": "Dodgy Dealing",
+        "requirements": {"randomize_customers": {"has_any" : [["Chloe Bowers Unlocked", "Ludwig Meyer Unlocked", "Beth Penn Unlocked"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 57
+    },
+    "Dodgy Dealing|Wait for Benji to complete a deal": {
+        "region": "Dodgy Dealing",
+        "requirements": {"randomize_customers": {"has_any" : [["Chloe Bowers Unlocked", "Ludwig Meyer Unlocked", "Beth Penn Unlocked"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 58
+    },
+    "Dodgy Dealing|Collect the cash from Benji": {
+        "region": "Dodgy Dealing",
+        "requirements": {"randomize_customers": {"has_any" : [["Chloe Bowers Unlocked", "Ludwig Meyer Unlocked", "Beth Penn Unlocked"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 59
+    },
+    "Mixing Mania|Talk to Uncle Nelson at a payphone": {
+        "region": "Mixing Mania",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 60
+    },
+    "Mixing Mania|Purchase a mixing station from the hardware store": {
+        "region": "Mixing Mania",
+        "requirements": {"randomize_level_unlocks" : {"has": "Mixing Station Unlock"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 61
+    },
+    "Mixing Mania|Place the mixing station": {
+        "region": "Mixing Mania",
+        "requirements": {"randomize_level_unlocks" : {"has": "Mixing Station Unlock"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 62
+    },
+    "Mixing Mania|Go to Gas-Mart": {
+        "region": "Mixing Mania",
+        "requirements": {"randomize_level_unlocks" : {"has": "Mixing Station Unlock"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 63
+    },
+    "Mixing Mania|Purchase at least one mixing ingredient": {
+        "region": "Mixing Mania",
+        "requirements": {"randomize_level_unlocks" : {"has": "Mixing Station Unlock"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 64
+    },
+    "Mixing Mania|Start a new mix at the mixing station": {
+        "region": "Mixing Mania",
+        "requirements": {"randomize_level_unlocks" : {"has": "Mixing Station Unlock"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 65
+    },
+    "Mixing Mania|Wait for the mix to complete": {
+        "region": "Mixing Mania",
+        "requirements": {"randomize_level_unlocks" : {"has": "Mixing Station Unlock"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 66
+    },
+    "Mixing Mania|Collect the new product": {
+        "region": "Mixing Mania",
+        "requirements": {"randomize_level_unlocks" : {"has": "Mixing Station Unlock"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 67
+    },
+    "Mixing Mania|Mix a strain worth at least $60": {
+        "region": "Mixing Mania",
+        "requirements": {"randomize_level_unlocks" : {"has": "Mixing Station Unlock"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 69
+    },
+    "Making the Rounds|Talk to the real estate agent": {
+        "region": "Making the Rounds",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 70
+    },
+    "Making the Rounds|Talk to the dealership manager": {
+        "region": "Making the Rounds",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 71
+    },
+    "Making the Rounds|Talk to the mechanic": {
+        "region": "Making the Rounds",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 72
+    },
+    "Needin' the Green|Earn $10,000": {
+        "region": "Needin' the Green",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 73
+    },
+    "Wretched Hive of Scum and Villainy|Talk to Uncle Nelson at a payphone": {
+        "region": "Wretched Hive of Scum and Villainy",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 74
+    },
+    "Wretched Hive of Scum and Villainy|Gain access to the warehouse": {
+        "region": "Wretched Hive of Scum and Villainy",
+        "requirements": {"randomize_level_unlocks": {"has": "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 75
+    },
+    "Wretched Hive of Scum and Villainy|Talk to the merchant": {
+        "region": "Wretched Hive of Scum and Villainy",
+        "requirements": {"randomize_level_unlocks": {"has": "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 76
+    },
+    "Wretched Hive of Scum and Villainy|Talk to the arms dealer": {
+        "region": "Wretched Hive of Scum and Villainy",
+        "requirements": {"randomize_level_unlocks": {"has": "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 77
+    },
+    "Wretched Hive of Scum and Villainy|Talk to the fixer": {
+        "region": "Wretched Hive of Scum and Villainy",
+        "requirements": {"randomize_level_unlocks": {"has": "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 78
+    },
+    "We Need To Cook|Talk to Uncle Nelson at a payphone": {
+        "region": "We Need To Cook|1",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 79
+    },
+    "We Need To Cook|Unlock the pseudo supplier in Westville": {
+        "region": "We Need To Cook|1",
+        "requirements": {"randomize_customers" : {"has_any" : [["Meg Cooley Unlocked", "Jerry Montero Unlocked"]]},
+                        "randomize_suppliers": {"has": "Shirley Watts Unlocked"}},
+        "tags": ["Mission", "Permanent", "Customers Unlocked Required"],
+        "modern_id": 80
+    },
+    "We Need To Cook|Purchase a chemistry station from Oscar": {
+        "region": "We Need To Cook|2",
+        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
+                                                                "Lab Oven Unlock",
+                                                                "Acid Unlock",
+                                                                "Phosphorus Unlock"]}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 81
+    },
+    "We Need To Cook|Purchase a lab oven from Oscar": {
+        "region": "We Need To Cook|2",
+        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
+                                                                "Lab Oven Unlock",
+                                                                "Acid Unlock",
+                                                                "Phosphorus Unlock"]}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 82
+    },
+    "We Need To Cook|Purchase acid from Oscar": {
+        "region": "We Need To Cook|2",
+        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
+                                                                "Lab Oven Unlock",
+                                                                "Acid Unlock",
+                                                                "Phosphorus Unlock"]}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 83
+    },
+    "We Need To Cook|Purchase phosphorus from Oscar": {
+        "region": "We Need To Cook|2",
+        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
+                                                                "Lab Oven Unlock",
+                                                                "Acid Unlock",
+                                                                "Phosphorus Unlock"]}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 84
+    },
+    "We Need To Cook|Message Shirley about buying some pseudo": {
+        "region": "We Need To Cook|2",
+        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
+                                                                "Lab Oven Unlock",
+                                                                "Acid Unlock",
+                                                                "Phosphorus Unlock"]}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 85
+    },
+    "We Need To Cook|Cook liquid meth at the chemistry station": {
+        "region": "We Need To Cook|2",
+        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
+                                                                "Lab Oven Unlock",
+                                                                "Acid Unlock",
+                                                                "Phosphorus Unlock"]}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 86
+    },
+    "We Need To Cook|Bake the liquid meth with the lab oven": {
+        "region": "We Need To Cook|2",
+        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
+                                                                "Lab Oven Unlock",
+                                                                "Acid Unlock",
+                                                                "Phosphorus Unlock"]}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 87
+    },
+    "Money Management|Deposit cash at an ATM": {
+        "region": "Money Management",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 88
+    },
+    "Clean Cash|Talk to Uncle Nelson at a payphone": {
+        "region": "Clean Cash",
+        "requirements": {"randomize_business_properties" : {"has_any" : [["Car Wash", "Laundromat", "Post Office", "Taco Ticklers"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 89
+    },
+    "Clean Cash|Purchase a business at Ray's Realty": {
+        "region": "Clean Cash",
+        "requirements": {"randomize_business_properties" : {"has_any" : [["Car Wash", "Laundromat", "Post Office", "Taco Ticklers"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 90
+    },
+    "Clean Cash|Go to your new business": {
+        "region": "Clean Cash",
+        "requirements": {"randomize_business_properties" : {"has_any" : [["Car Wash", "Laundromat", "Post Office", "Taco Ticklers"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 91
+    },
+    "Clean Cash|Use the laundering station to start a new laundering operation": {
+        "region": "Clean Cash",
+        "requirements": {"randomize_business_properties" : {"has_any" : [["Car Wash", "Laundromat", "Post Office", "Taco Ticklers"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 92
+    },
+    "Clean Cash|Wait for the laundering operation to complete": {
+        "region": "Clean Cash",
+        "requirements": {"randomize_business_properties" : {"has_any" : [["Car Wash", "Laundromat", "Post Office", "Taco Ticklers"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 93
+    },
+    "Vibin' on the 'Cybin|Purchase a grain bag from Fungal Phil": {
+        "region": "Vibin' on the 'Cybin",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 94
+    },
+    "Vibin' on the 'Cybin|Purchase a spore syringe from Fungal Phil": {
+        "region": "Vibin' on the 'Cybin",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 95
+    },
+    "Vibin' on the 'Cybin|Purchase a mushroom spawn station from Oscar": {
+        "region": "Vibin' on the 'Cybin",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 96
+    },
+    "Vibin' on the 'Cybin|Use the mushroom spawn station to inocculate a grain bag": {
+        "region": "Vibin' on the 'Cybin",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 97
+    },
+    "Vibin' on the 'Cybin|Purchase a mushroom bed from Oscar": {
+        "region": "Vibin' on the 'Cybin",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 98
+    },
+    "Vibin' on the 'Cybin|Purchase mushroom substrate from Fungal Phil": {
+        "region": "Vibin' on the 'Cybin",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 99
+    },
+    "Vibin' on the 'Cybin|Mix the shroom spawn into a mushroom bed": {
+        "region": "Vibin' on the 'Cybin",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 100
+    },
+    "Vibin' on the 'Cybin|Purchase an AC unit from a hardware store": {
+        "region": "Vibin' on the 'Cybin",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 101
+    },
+    "Vibin' on the 'Cybin|Use the AC unit to cool the mushroom bed": {
+        "region": "Vibin' on the 'Cybin",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 102
+    },
+    "Vibin' on the 'Cybin|Harvest the shrooms once fully grown": {
+        "region": "Vibin' on the 'Cybin",
+        "requirements": true,
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 103
+    },
+    "Cleaners|Use the management clipboard to assign the cleaner to a locker": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 104
+    },
+    "Cleaners|Assign a trash can to the cleaner": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 105
+    },
+    "Cleaners|Place cash in the cleaner's locker": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 106
+    },
+    "Botanists|Use the management clipboard to assign the botanist to a locker": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 107
+    },
+    "Botanists|Assign a supplies source to the botanist": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 108
+    },
+    "Botanists|Assign a pot or grow tent to the botanist": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 109
+    },
+    "Botanists|Set the pot/grow tent destination": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 110
+    },
+    "Botanists|Place cash in the botanist's locker": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 111
+    },
+    "Handlers|Use the management clipboard to assign the handler to a locker": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 112
+    },
+    "Handlers|Assign a packaging station to the handler": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 113
+    },
+    "Handlers|Place cash in the handler's locker": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 114
+    },
+    "Chemists|Use the management clipboard to assign the chemist to a locker": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 115
+    },
+    "Chemists|Assign a station to the chemist": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access", "has_any" : [["Mixing Station Mk II Unlock",  "Mixing Station Unlock"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 116
+    },
+    "Chemists|Place cash in the chemist's locker": {
+        "region": "Overworld",
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access", "has_any" : [["Mixing Station Mk II Unlock",  "Mixing Station Unlock"]]}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 117
+    },
+    "Unfavourable Agreements|Read the message from the unknown contact": {
+        "region": "Unfavourable Agreements",
+        "requirements": {"randomize_customers": {"has_from_list": {
+            "Charles Rowland Unlocked": 5,
+            "Dean Webster Unlocked": 5,
+            "Doris Lubbin Unlocked": 5,
+            "George Greene Unlocked": 5,
+            "Jerry Montero Unlocked": 5,
+            "Joyce Ball Unlocked": 5,
+            "Kim Delaney Unlocked": 5,
+            "Meg Cooley Unlocked": 5,
+            "Trent Sherman Unlocked": 5,
+            "Keith Wagner Unlocked": 5}}},
+        "tags": ["Mission", "Permanent", "Customers Unlocked Required"],
+        "modern_id": 118
+    },
+    "Unfavourable Agreements|Meet the stranger at the parking lot next to Taco Ticklers": {
+        "region": "Unfavourable Agreements",
+        "requirements": {"randomize_customers": {"has_from_list": {
+            "Charles Rowland Unlocked": 5,
+            "Dean Webster Unlocked": 5,
+            "Doris Lubbin Unlocked": 5,
+            "George Greene Unlocked": 5,
+            "Jerry Montero Unlocked": 5,
+            "Joyce Ball Unlocked": 5,
+            "Kim Delaney Unlocked": 5,
+            "Meg Cooley Unlocked": 5,
+            "Trent Sherman Unlocked": 5,
+            "Keith Wagner Unlocked": 5}}},
+        "tags": ["Mission", "Permanent", "Customers Unlocked Required"],
+        "modern_id": 119
+    },
+    "Finishing the Job|Talk to Uncle Nelson at a payphone": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_cartel_influence" : {"has_all_counts": {"Cartel Influence, Suburbia" : 7}}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 120
+    },
+    "Finishing the Job|Talk to Billy at the chemical plant about buying explosives": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_cartel_influence" : {"has_all_counts": {"Cartel Influence, Suburbia" : 7}}},
+        "tags": ["Mission", "Permanent"],
+        "modern_id": 121
+    },
+    "Finishing the Job|Trade Billy 20x cocaine in return for RDX": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_cartel_influence" : {"has_all_counts": {"Cartel Influence, Suburbia" : 7}},
+                        "randomize_customers": {"has_any": [["Mac Cooper Unlocked", "Javier Pérez Unlocked"]],
+                                                "has_all": ["Billy Kramer Unlocked", "Sam Thompson Unlocked"]},
+                        "randomize_level_unlocks": {"has_all" : ["Cauldron Unlock", "Gasoline Unlock"]},
+                        "randomize_suppliers": {"has":"Salvador Moreno Unlocked"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 122
+    },
+    "Finishing the Job|Get Sam to dig access to the tunnel under Hyland Manor": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_cartel_influence" : {"has_all_counts": {"Cartel Influence, Suburbia" : 7}},
+                        "randomize_customers": {"has_any": [["Mac Cooper Unlocked", "Javier Pérez Unlocked"]],
+                                                "has_all": ["Billy Kramer Unlocked", "Sam Thompson Unlocked"]},
+                        "randomize_level_unlocks": {"has_all" : ["Cauldron Unlock", "Gasoline Unlock"]},
+                        "randomize_suppliers": {"has":"Salvador Moreno Unlocked"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 123
+    },
+    "Finishing the Job|Wait for Sam to dig access to the tunnel": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_cartel_influence" : {"has_all_counts": {"Cartel Influence, Suburbia" : 7}},
+                        "randomize_customers": {"has_any": [["Mac Cooper Unlocked", "Javier Pérez Unlocked"]],
+                                                "has_all": ["Billy Kramer Unlocked", "Sam Thompson Unlocked"]},
+                        "randomize_level_unlocks": {"has_all" : ["Cauldron Unlock", "Gasoline Unlock"]},
+                        "randomize_suppliers": {"has":"Salvador Moreno Unlocked"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 124
+    },
+    "Finishing the Job|Talk to Stan about turning the RDX into a bomb": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_cartel_influence" : {"has_all_counts": {"Cartel Influence, Suburbia" : 7}},
+                        "randomize_customers": {"has_any": [["Mac Cooper Unlocked", "Javier Pérez Unlocked"]],
+                                                "has_all": ["Billy Kramer Unlocked", "Sam Thompson Unlocked"]},
+                        "randomize_level_unlocks": {"has_all" : ["Cauldron Unlock", "Gasoline Unlock"]},
+                        "randomize_suppliers": {"has":"Salvador Moreno Unlocked"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 125
+    },
+    "Finishing the Job|Kill the thief who keeps stealing Stan's supplies. He is often seen at the docks at night.": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_cartel_influence" : {"has_all_counts": {"Cartel Influence, Suburbia" : 7}},
+                        "randomize_customers": {"has_any": [["Mac Cooper Unlocked", "Javier Pérez Unlocked"]],
+                                                "has_all": ["Billy Kramer Unlocked", "Sam Thompson Unlocked"]},
+                        "randomize_level_unlocks": {"has_all" : ["Cauldron Unlock", "Gasoline Unlock"]},
+                        "randomize_suppliers": {"has":"Salvador Moreno Unlocked"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 126
+    },
+    "Finishing the Job|Get Stan to turn the RDX into a bomb": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_cartel_influence" : {"has_all_counts": {"Cartel Influence, Suburbia" : 7}},
+                        "randomize_customers": {"has_any": [["Mac Cooper Unlocked", "Javier Pérez Unlocked"]],
+                                                "has_all": ["Billy Kramer Unlocked", "Sam Thompson Unlocked"]},
+                        "randomize_level_unlocks": {"has_all" : ["Cauldron Unlock", "Gasoline Unlock"]},
+                        "randomize_suppliers": {"has":"Salvador Moreno Unlocked"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 127
+    },
+    "Finishing the Job|Plant the bomb under Hyland Manor": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_cartel_influence" : {"has_all_counts": {"Cartel Influence, Suburbia" : 7}},
+                        "randomize_customers": {"has_any": [["Mac Cooper Unlocked", "Javier Pérez Unlocked"]],
+                                                "has_all": ["Billy Kramer Unlocked", "Sam Thompson Unlocked"]},
+                        "randomize_level_unlocks": {"has_all" : ["Cauldron Unlock", "Gasoline Unlock"]},
+                        "randomize_suppliers": {"has":"Salvador Moreno Unlocked"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 128
+    },
+    "Finishing the Job|Wait for the bomb to detonate": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_cartel_influence" : {"has_all_counts": {"Cartel Influence, Suburbia" : 7}},
+                        "randomize_customers": {"has_any": [["Mac Cooper Unlocked", "Javier Pérez Unlocked"]],
+                                                "has_all": ["Billy Kramer Unlocked", "Sam Thompson Unlocked"]},
+                        "randomize_level_unlocks": {"has_all" : ["Cauldron Unlock", "Gasoline Unlock"]},
+                        "randomize_suppliers": {"has":"Salvador Moreno Unlocked"}},
+        "tags": ["Mission", "Permanent", "Level Up Reward Required"],
+        "modern_id": 129
+    },
+    "Rank Street Rat III": {
+        "region": "Overworld",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 130
+    },
+    "Rank Street Rat IV": {
+        "region": "Overworld",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 131
+    },
+    "Rank Street Rat V": {
+        "region": "Overworld",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 132
+    },
+    "Rank Hoodlum I": {
+        "region": "Overworld",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 133
+    },
+    "Rank Hoodlum II": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 134
+    },
+    "Rank Hoodlum III": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 135
+    },
+    "Rank Hoodlum IV": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 136
+    },
+    "Rank Hoodlum V": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 137
+    },
+    "Rank Peddler I": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 138
+    },
+    "Rank Peddler II": {
+        "region": "Gearing Up|2",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 139
+    },
+    "Rank Peddler III": {
+        "region": "Dodgy Dealing",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 140
+    },
+    "Rank Peddler IV": {
+        "region": "Dodgy Dealing",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 141
+    },
+    "Rank Peddler V": {
+        "region": "Dodgy Dealing",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 142
+    },
+    "Rank Hustler I": {
+        "region": "Mixing Mania",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 143
+    },
+    "Rank Hustler II": {
+        "region": "Mixing Mania",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 144
+    },
+    "Rank Hustler III": {
+        "region": "Wretched Hive of Scum and Villainy",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 145
+    },
+    "Rank Bagman I": {
+        "region": "We Need To Cook|1",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 378
+    },
+    "Rank Bagman III": {
+        "region": "We Need To Cook|1",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 379
+    },
+    "Rank Bagman V": {
+        "region": "We Need To Cook|2",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 146
+    },
+    "Rank Enforcer I": {
+        "region": "Unfavourable Agreements",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 147
+    },
+    "Rank Shot Caller I": {
+        "region": "Unfavourable Agreements",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 380
+    },
+    "Rank Block Boss I": {
+        "region": "Finishing the Job",
+        "requirements": true,
+        "tags": ["Level Up Reward"],
+        "modern_id": 148
+    },
+    "Westville cartel influence 1": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 149
+    },
+    "Westville cartel influence 2": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 150
+    },
+    "Downtown cartel influence 1": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 156
+    },
+    "Downtown cartel influence 2": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 157
+    },
+    "Downtown cartel influence 3": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 158
+    },
+    "Downtown cartel influence 4": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 159
+    },
+    "Downtown cartel influence 5": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 160
+    },
+    "Downtown cartel influence 6": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 161
+    },
+    "Downtown cartel influence 7": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 162
+    },
+    "Docks cartel influence 1": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 163
+    },
+    "Docks cartel influence 2": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 164
+    },
+    "Docks cartel influence 3": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 165
+    },
+    "Docks cartel influence 4": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 166
+    },
+    "Docks cartel influence 5": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 167
+    },
+    "Docks cartel influence 6": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 168
+    },
+    "Docks cartel influence 7": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 169
+    },
+    "Suburbia cartel influence 1": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 170
+    },
+    "Suburbia cartel influence 2": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 171
+    },
+    "Suburbia cartel influence 3": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 172
+    },
+    "Suburbia cartel influence 4": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 173
+    },
+    "Suburbia cartel influence 5": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 174
+    },
+    "Suburbia cartel influence 6": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 175
+    },
+    "Suburbia cartel influence 7": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 176
+    },
+    "Uptown cartel influence 1": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 177
+    },
+    "Uptown cartel influence 2": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 178
+    },
+    "Uptown cartel influence 3": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 179
+    },
+    "Uptown cartel influence 4": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 180
+    },
+    "Uptown cartel influence 5": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 181
+    },
+    "Uptown cartel influence 6": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 182
+    },
+    "Uptown cartel influence 7": {
+        "region": "Cartel Influence",
+        "requirements": true,
+        "tags": ["Cartel Influence"],
+        "modern_id": 183
+    },
+    "Realtor Purchase, Barn": {
+        "region": "We Need To Cook|2",
+        "requirements": {"randomize_business_properties" : {"has" : "Car Wash"}},
+        "tags": ["Drug Making Property"],
+        "modern_id": 184
+    },
+    "Realtor Purchase, Bungalow": {
+        "region": "Overworld",
+        "requirements": true,
+        "tags": ["Drug Making Property"],
+        "modern_id": 185
+    },
+    "Realtor Purchase, Docks Warehouse": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_business_properties" : {"has" : "Taco Ticklers"}},
+        "tags": ["Drug Making Property"],
+        "modern_id": 186
+    },
+    "Realtor Purchase, Storage Unit": {
+        "region": "Overworld",
+        "requirements": true,
+        "tags": ["Drug Making Property"],
+        "modern_id": 189
+    },
+    "Realtor Purchase, Car Wash": {
+        "region": "Wretched Hive of Scum and Villainy",
+        "requirements": {"randomize_business_properties" : {"has" : "Car Wash"}},
+        "tags": ["Business Property"],
+        "modern_id": 191
+    },
+    "Realtor Purchase, Laundromat": {
+        "region": "Overworld",
+        "requirements": true,
+        "tags": ["Business Property"],
+        "modern_id": 192
+    },
+    "Realtor Purchase, Post Office": {
+        "region": "Mixing Mania",
+        "requirements": {"randomize_business_properties" : {"has" : "Post Office"}},
+        "tags": ["Business Property"],
+        "modern_id": 193
+    },
+    "Realtor Purchase, Taco Ticklers": {
+        "region": "Finishing the Job",
+        "requirements": {"randomize_business_properties" : {"has" : "Taco Ticklers"}},
+        "tags": ["Business Property"],
+        "modern_id": 194
+    },
+    "Successful Sample: Kyle Cooley": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Kyle Cooley Unlocked", "Jessi Waters Unlocked", "Austin Steiner Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 300
+    },
+    "Successful Sample: Austin Steiner": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Austin Steiner Unlocked", "Kyle Cooley Unlocked", "Kathy Henderson Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 301
+    },
+    "Successful Sample: Kathy Henderson": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Kathy Henderson Unlocked", "Austin Steiner Unlocked", "Donna Martin Unlocked", "Geraldine Poon Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 302
+    },
+    "Successful Sample: Jessi Waters": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Jessi Waters Unlocked", "Kyle Cooley Unlocked", "Sam Thompson Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 303
+    },
+    "Successful Sample: Sam Thompson": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Sam Thompson Unlocked", "Jessi Waters Unlocked", "Mick Lubbin Unlocked", "Chloe Bowers Unlocked", "Peter File Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 304
+    },
+    "Successful Sample: Mick Lubbin": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Mick Lubbin Unlocked", "Sam Thompson Unlocked", "Geraldine Poon Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 305
+    },
+    "Successful Sample: Beth Penn": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Beth Penn Unlocked", "Peggy Myers Unlocked", "Mrs. Ming Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 306
+    },
+    "Successful Sample: Chloe Bowers": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Chloe Bowers Unlocked", "Sam Thompson Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 307
+    },
+    "Successful Sample: Donna Martin": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Donna Martin Unlocked", "Kathy Henderson Unlocked", "Peggy Myers Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 308
+    },
+    "Successful Sample: Geraldine Poon": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Geraldine Poon Unlocked", "Kathy Henderson Unlocked", "Mick Lubbin Unlocked", "Peggy Myers Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 309
+    },
+    "Successful Sample: Ludwig Meyer": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Ludwig Meyer Unlocked", "Peter File Unlocked", "Mrs. Ming Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 313
+    },
+    "Successful Sample: Mrs. Ming": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Mrs. Ming Unlocked", "Beth Penn Unlocked", "Ludwig Meyer Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 315
+    },
+    "Successful Sample: Peggy Myers": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Peggy Myers Unlocked", "Beth Penn Unlocked", "Donna Martin Unlocked", "Geraldine Poon Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 316
+    },
+    "Successful Sample: Peter File": {
+        "region": "Northtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Peter File Unlocked", "Sam Thompson Unlocked", "Ludwig Meyer Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 317
+    },
+    "Successful Sample: Charles Rowland": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["Charles Rowland Unlocked", "Kim Delaney Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Molly Presley Recruited"}},
+        "tags": ["Customer"],
+        "modern_id": 319
+    },
+    "Successful Sample: Dean Webster": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["Dean Webster Unlocked", "Jerry Montero Unlocked", "George Greene Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 320
+    },
+    "Successful Sample: Doris Lubbin": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["Doris Lubbin Unlocked", "Joyce Ball Unlocked", "Kim Delaney Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 321
+    },
+    "Successful Sample: George Greene": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["George Greene Unlocked", "Dean Webster Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Molly Presley Recruited"}},
+        "tags": ["Customer"],
+        "modern_id": 322
+    },
+    "Successful Sample: Jerry Montero": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["Jerry Montero Unlocked", "Dean Webster Unlocked", "Keith Wagner Unlocked", "Kim Delaney Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Molly Presley Recruited"},
+                         "randomize_suppliers" : {"has" : "Shirley Watts Unlocked"}},
+        "tags": ["Customer"],
+        "modern_id": 323
+    },
+    "Successful Sample: Joyce Ball": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["Joyce Ball Unlocked", "Doris Lubbin Unlocked", "Trent Sherman Unlocked", "Keith Wagner Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 324
+    },
+    "Successful Sample: Keith Wagner": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["Keith Wagner Unlocked", "Jerry Montero Unlocked", "Joyce Ball Unlocked", "Meg Cooley Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 325
+    },
+    "Successful Sample: Kim Delaney": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["Kim Delaney Unlocked", "Charles Rowland Unlocked", "Doris Lubbin Unlocked", "Jerry Montero Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 326
+    },
+    "Successful Sample: Meg Cooley": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["Meg Cooley Unlocked", "Keith Wagner Unlocked", "Trent Sherman Unlocked"]]},
+         "randomize_suppliers" : {"has" : "Shirley Watts Unlocked"}},
+        "tags": ["Customer"],
+        "modern_id": 327
+    },
+    "Befriend Supplier: Shirley Watts": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["Jerry Montero Unlocked", "Meg Cooley Unlocked"]]}},
+        "tags": ["Supplier"],
+        "modern_id": 400
+    },
+    "Successful Sample: Trent Sherman": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["Trent Sherman Unlocked", "Joyce Ball Unlocked", "Meg Cooley Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 328
+    },
+    "Befriend Supplier: Fungal Phil": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Elizabeth Homley Unlocked", "Kevin Oakley Unlocked"]]}},
+        "tags": ["Supplier"],
+        "modern_id": 401
+    },
+    "Successful Sample: Bruce Norton": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Bruce Norton Unlocked", "Jeff Gilmore Unlocked", "Philip Wentworth Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 329
+    },
+    "Successful Sample: Elizabeth Homley": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Elizabeth Homley Unlocked", "Jennifer Rivera Unlocked", "Louis Fourier Unlocked"]]},
+                         "randomize_suppliers" : {"has" : "Fungal Phil Unlocked"}},
+        "tags": ["Customer"],
+        "modern_id": 330
+    },
+    "Successful Sample: Eugene Buckley": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Eugene Buckley Unlocked", "Louis Fourier Unlocked", "Greg Figgle Unlocked", "Lucy Pennington Unlocked", "Philip Wentworth Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Brad Crosby Recruited"}},
+        "tags": ["Customer"],
+        "modern_id": 331
+    },
+    "Successful Sample: Greg Figgle": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Greg Figgle Unlocked", "Eugene Buckley Unlocked", "Lucy Pennington Unlocked", "Philip Wentworth Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 332
+    },
+    "Successful Sample: Jeff Gilmore": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Jeff Gilmore Unlocked", "Bruce Norton Unlocked", "Greg Figgle Unlocked", "Randy Caulfield Unlocked", "Philip Wentworth Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 333
+    },
+    "Successful Sample: Jennifer Rivera": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Jennifer Rivera Unlocked", "Elizabeth Homley Unlocked", "Lucy Pennington Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 334
+    },
+    "Successful Sample: Kevin Oakley": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Kevin Oakley Unlocked", "Louis Fourier Unlocked", "Randy Caulfield Unlocked"]]},
+                         "randomize_suppliers" : {"has" : "Fungal Phil Unlocked"}},
+        "tags": ["Customer"],
+        "modern_id": 335
+    },
+    "Successful Sample: Louis Fourier": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Louis Fourier Unlocked", "Elizabeth Homley Unlocked", "Eugene Buckley Unlocked", "Kevin Oakley Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 336
+    },
+    "Successful Sample: Philip Wentworth": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Philip Wentworth Unlocked", "Bruce Norton Unlocked", "Eugene Buckley Unlocked", "Jeff Gilmore Unlocked", "Lucy Pennington Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 337
+    },
+    "Successful Sample: Randy Caulfield": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Randy Caulfield Unlocked", "Jeff Gilmore Unlocked", "Kevin Oakley Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Brad Crosby Recruited"}},
+        "tags": ["Customer"],
+        "modern_id": 338
+    },
+    "Successful Sample: Lucy Pennington": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Lucy Pennington Unlocked", "Eugene Buckley Unlocked", "Jennifer Rivera Unlocked", "Philip Wentworth Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 339
+    },
+    "Successful Sample: Anna Chesterfield": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Anna Chesterfield Unlocked", "Lisa Gardener Unlocked", "Cranky Frank Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 340
+    },
+    "Successful Sample: Billy Kramer": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Billy Kramer Unlocked", "Mac Cooper Unlocked", "Sherman Giles Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Jane Lucero Recruited"},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 341
+    },
+    "Successful Sample: Cranky Frank": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Cranky Frank Unlocked", "Anna Chesterfield Unlocked", "Genghis Barn Unlocked", "Marco Barone Unlocked", "Melissa Wood Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 342
+    },
+    "Successful Sample: Genghis Barn": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Genghis Barn Unlocked", "Cranky Frank Unlocked", "Javier Pérez Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 343
+    },
+    "Successful Sample: Javier Pérez": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Javier Pérez Unlocked", "Genghis Barn Unlocked", "Marco Barone Unlocked", "Lisa Gardener Unlocked"]]},
+                         "randomize_suppliers" : {"has" : "Salvador Moreno Unlocked"},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 344
+    },
+    "Befriend Supplier: Salvador Moreno": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Javier Pérez Unlocked", "Kelly Reynolds Unlocked", "Mac Cooper Unlocked"]]},
+                         "randomize_suppliers" : {"has" : "Salvador Moreno Unlocked"},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Supplier"],
+        "modern_id": 402
+    },
+    "Successful Sample: Kelly Reynolds": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Kelly Reynolds Unlocked", "Lisa Gardener Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 345
+    },
+    "Successful Sample: Lisa Gardener": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Lisa Gardener Unlocked", "Anna Chesterfield Unlocked", "Javier Pérez Unlocked", "Kelly Reynolds Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 346
+    },
+    "Successful Sample: Mac Cooper": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Mac Cooper Unlocked", "Billy Kramer Unlocked", "Marco Barone Unlocked"]]},
+                         "randomize_suppliers" : {"has" : "Salvador Moreno Unlocked"},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 347
+    },
+    "Successful Sample: Marco Barone": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Marco Barone Unlocked", "Cranky Frank Unlocked", "Javier Pérez Unlocked", "Mac Cooper Unlocked", "Sherman Giles Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 348
+    },
+    "Successful Sample: Melissa Wood": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Melissa Wood Unlocked", "Cranky Frank Unlocked", "Sherman Giles Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Jane Lucero Recruited"},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 349
+    },
+    "Successful Sample: Sherman Giles": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Sherman Giles Unlocked", "Billy Kramer Unlocked", "Marco Barone Unlocked", "Melissa Wood Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 350
+    },
+    "Successful Sample: Alison Knight": {
+        "region": "Suburbia",
+        "requirements": {"randomize_customers" : {"has_any" : [["Alison Knight Unlocked", "Carl Bundy Unlocked", "Jeremy Wilkinson Unlocked", "Chris Sullivan Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 351
+    },
+    "Successful Sample: Carl Bundy": {
+        "region": "Suburbia",
+        "requirements": {"randomize_customers" : {"has_any" : [["Carl Bundy Unlocked", "Alison Knight Unlocked", "Harold Colt Unlocked", "Jack Knight Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 352
+    },
+    "Successful Sample: Chris Sullivan": {
+        "region": "Suburbia",
+        "requirements": {"randomize_customers" : {"has_any" : [["Chris Sullivan Unlocked", "Alison Knight Unlocked", "Karen Kennedy Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 353
+    },
+    "Successful Sample: Dennis Kennedy": {
+        "region": "Suburbia",
+        "requirements": {"randomize_customers" : {"has_any" : [["Dennis Kennedy Unlocked", "Harold Colt Unlocked", "Jackie Stevenson Unlocked", "Jack Knight Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 354
+    },
+    "Successful Sample: Hank Stevenson": {
+        "region": "Suburbia",
+        "requirements": {"randomize_customers" : {"has_any" : [["Hank Stevenson Unlocked", "Jackie Stevenson Unlocked", "Karen Kennedy Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 355
+    },
+    "Successful Sample: Harold Colt": {
+        "region": "Suburbia",
+        "requirements": {"randomize_customers" : {"has_any" : [["Harold Colt Unlocked", "Carl Bundy Unlocked", "Dennis Kennedy Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Wei Long Recruited"}},
+        "tags": ["Customer"],
+        "modern_id": 356
+    },
+    "Successful Sample: Jack Knight": {
+        "region": "Suburbia",
+        "requirements": {"randomize_customers" : {"has_any" : [["Jack Knight Unlocked", "Carl Bundy Unlocked", "Dennis Kennedy Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 357
+    },
+    "Successful Sample: Jackie Stevenson": {
+        "region": "Suburbia",
+        "requirements": {"randomize_customers" : {"has_any" : [["Jackie Stevenson Unlocked", "Dennis Kennedy Unlocked", "Hank Stevenson Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Wei Long Recruited"}},
+        "tags": ["Customer"],
+        "modern_id": 358
+    },
+    "Successful Sample: Jeremy Wilkinson": {
+        "region": "Suburbia",
+        "requirements": {"randomize_customers" : {"has_any" : [["Jeremy Wilkinson Unlocked", "Alison Knight Unlocked", "Karen Kennedy Unlocked"]]},
+                        "randomize_dealers" : {"has" : "Wei Long Recruited"}},
+        "tags": ["Customer"],
+        "modern_id": 359
+    },
+    "Successful Sample: Karen Kennedy": {
+        "region": "Suburbia",
+        "requirements": {"randomize_customers" : {"has_any" : [["Karen Kennedy Unlocked", "Chris Sullivan Unlocked", "Hank Stevenson Unlocked", "Jeremy Wilkinson Unlocked"]]}},
+        "tags": ["Customer"],
+        "modern_id": 360
+    },
+    "Successful Sample: Fiona Hancock": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Fiona Hancock Unlocked", "Walter Cussler Unlocked", "Lily Turner Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Drying Rack Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 361
+    },
+    "Successful Sample: Herbert Bleuball": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Herbert Bleuball Unlocked", "Pearl Moore Unlocked", "Tobias Wentworth Unlocked", "Jen Heard Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Drying Rack Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 362
+    },
+    "Successful Sample: Irene Meadows": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Irene Meadows Unlocked", "Ray Hoffman Unlocked", "Michael Boog Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Drying Rack Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 363
+    },
+    "Successful Sample: Jen Heard": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Jen Heard Unlocked", "Herbert Bleuball Unlocked", "Walter Cussler Unlocked", "Ray Hoffman Unlocked", "Lily Turner Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Drying Rack Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 364
+    },
+    "Successful Sample: Lily Turner": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Lily Turner Unlocked", "Fiona Hancock Unlocked", "Jen Heard Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Drying Rack Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 365
+    },
+    "Successful Sample: Michael Boog": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Michael Boog Unlocked", "Irene Meadows Unlocked", "Tobias Wentworth Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Leo Rivers Recruited"},
+                         "randomize_level_unlocks": {"has" : "Drying Rack Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 366
+    },
+    "Successful Sample: Pearl Moore": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Pearl Moore Unlocked", "Herbert Bleuball Unlocked", "Tobias Wentworth Unlocked", "Walter Cussler Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Drying Rack Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 367
+    },
+    "Successful Sample: Ray Hoffman": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Ray Hoffman Unlocked", "Irene Meadows Unlocked", "Jen Heard Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Leo Rivers Recruited"},
+                         "randomize_level_unlocks": {"has" : "Drying Rack Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 368
+    },
+    "Successful Sample: Tobias Wentworth": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Tobias Wentworth Unlocked", "Herbert Bleuball Unlocked", "Pearl Moore Unlocked", "Michael Boog Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Drying Rack Unlock"}},
+        "tags": ["Customer"],
+        "modern_id": 369
+    },
+    "Successful Sample: Walter Cussler": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Walter Cussler Unlocked", "Fiona Hancock Unlocked", "Jen Heard Unlocked", "Pearl Moore Unlocked"]]},
+                         "randomize_level_unlocks": {"has" : "Drying Rack Unlock"}},
+        "tags": [""],
+        "modern_id": 370
+    },
+    "Recruit Westville Dealer: Molly Presley": {
+        "region": "Westville",
+        "requirements": {"randomize_customers" : {"has_any" : [["Jerry Montero Unlocked", "Charles Rowland Unlocked", "George Greene Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Molly Presley Recruited"}},
+        "tags": ["Dealer"],
+        "modern_id": 372
+    },
+    "Recruit Downtown Dealer: Brad Crosby": {
+        "region": "Downtown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Eugene Buckley Unlocked", "Greg Figgle Unlocked", "Randy Caulfield Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Brad Crosby Recruited"}},
+        "tags": ["Dealer"],
+        "modern_id": 373
+    },
+    "Recruit Docks Dealer: Jane Lucero": {
+        "region": "Docks",
+        "requirements": {"randomize_customers" : {"has_any" : [["Melissa Wood Unlocked", "Billy Kramer Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Jane Lucero Recruited"}},
+        "tags": ["Dealer"],
+        "modern_id": 374
+    },
+    "Recruit Suburbia Dealer: Wei Long": {
+        "region": "Suburbia",
+        "requirements": {"randomize_customers" : {"has_any" : [["Jeremy Wilkinson Unlocked", "Harold Colt Unlocked", "Jack Stevenson Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Wei Long Recruited"}},
+        "tags": ["Dealer"],
+        "modern_id": 375
+    },
+    "Recruit Uptown Dealer: Leo Rivers": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has_any" : [["Ray Hoffman Unlocked", "Michael Boog Unlocked"]]},
+                         "randomize_dealers" : {"has" : "Leo Rivers Recruited"}},
+        "tags": ["Dealer"],
+        "modern_id": 376
+    },
+    "Jen Heard Sewer Key Purchase": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has" : "Jen Heard Unlocked"}},
+        "tags": ["Sewer"],
+        "modern_id": 403
+    },
+    "Sewer Office Key Pad": {
+        "region": "Uptown",
+        "requirements": {"randomize_customers" : {"has" : "Jen Heard Unlocked"},
+                         "randomize_sewer_key": {"has" : "Sewer Key"}},
+        "tags": ["Sewer"],
+        "modern_id": 404
+    }
+} 

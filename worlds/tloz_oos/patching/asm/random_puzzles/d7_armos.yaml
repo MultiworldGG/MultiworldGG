@@ -1,0 +1,18 @@
+09/55f0/: |
+  ; Edit the room cache to say what's under the armoses
+  ld hl,@under_armos
+  @loop:
+  ldi a,(hl)
+  or a
+  jr z,@endloop
+  ld c,a
+  ldi a,(hl)
+  ld (bc),a
+  jr @loop
+  @endloop:
+  ld ($ff70),a ; a is 0 if we've reached here
+  ret
+  
+  @under_armos:
+  /include under_armos
+  ; 7 free bytes

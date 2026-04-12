@@ -1,12 +1,12 @@
 import unittest
 
 from unittest.mock import patch
-from ..client.links.trap_link import TrapLink, TrapLinkType
+from ..client.links.trap_link import TrapLink, TrapLinkType, TrapLinkConstants
 from ..client.links.network_engine import ArchipelagoNetworkEngine
 
 class MockNetworkEngine(ArchipelagoNetworkEngine):
-    def __init__(self, tags = [ "TrapLink" ], player_name = "rando-player"):
-        self.tags = tags
+    def __init__(self, tags = tuple(["TrapLink"]), player_name = "rando-player"):
+        self.tags = list(tags)
         self.player_name = player_name
 
     def update_tags_async(self, enable_tag: bool, tag_name:str):
@@ -115,7 +115,7 @@ class TestTrapLink(unittest.TestCase):
 
     def test_on_bounced_trap_link_disabled(self):
         """ Verifies when client TrapLink tag is not present we don't send a trap. """
-        net_engine = MockNetworkEngine(tags=[])
+        net_engine = MockNetworkEngine(tags=tuple())
         trap_link = TrapLink(net_engine)
 
         args = {

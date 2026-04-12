@@ -134,6 +134,8 @@ def setup_locations(wconf: WorldConfig) -> dict[str,LocationData]:
 
     if wconf.boss_secret_checks:
         locations.update(ld.location_level_boss_secret)
+        if use_dlc:
+            locations.update(ld.location_level_dlc_boss_secret)
 
     setup_quest_locations(locations, wconf)
 

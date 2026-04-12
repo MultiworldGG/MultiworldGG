@@ -271,19 +271,78 @@ class PreventWeakenedPrisonState(Toggle):
     This is a .yaml/generation option because it changes the logic for unlocking Prison."""
 
 
+class ShuffleSomeRootNodes(Toggle):
+    """
+    Creates a few items representing root nodes. When you receive one of these items in-game,
+    the root node will be immediately unlocked so you can teleport to it.
+
+    The idea is to prevent a slot from being blocked early, and then opening up all at once,
+    by ensuring there are multiple paths to each side of the map.
+    In particular, this option will always choose nodes in a different part of the map from your first_root_node.
+
+    If you would rather e.g. use start_inventory or plando on specific node items,
+    currently the following node items are defined:
+        - "Outer Warehouse Root Node"
+        - "Factory (Great Hall) Root Node"
+        - "Apeman Facility (Depths) Root Node"
+        - "Power Reservoir (East) Root Node"
+        - "Radiant Pagoda Root Node"
+        - "Lake Yaochi Ruins Root Node"
+        - "Grotto of Scriptures (East) Root Node"
+    And there is a "Root Nodes" item name group to make e.g. local_items or start_hints easier to apply.
+
+    It is intentional that not every first_root_node choice has a node item, and vice versa.
+    Especially since some first_root_nodes are only viable because they early-place certain items.
+    """
+
+
+class RandomizeShops(Toggle):
+    """
+    Randomizes (most of) the content in Kuafu's shop, Chiyou's shop, and the 3D printer in Four Seasons Pavilion.
+    Shop purchases become 43 new AP locations, and the vanilla shop items are added to the AP item pool.
+    See also shop_unlocks.
+
+    Item details:
+    - Azure Sand Magazines, Pipe Upgrades, Transmute Unto Wealth/Life/Qi, the 8 jades sold by Chiyou and the 3D Printer,
+    and the 7 poisons sold by Chiyou are all added to the item pool by this option.
+    - The unique Arrow: Cloud Piercer item is replaced with 3 Progressive Cloud Piercer items.
+    Same for the other two arrow types.
+
+    Logic details:
+    - Kuafu's Jin-only shop locations are available as soon as you unlock him and his "extra inventory".
+    The 6 Dark Steel locations and the 8 Herb Catalyst locations still each require 1 DS or HC to purchase.
+    The Nth DS/HC location becomes "in logic" when you receive the Nth DS/HC item.
+    - Chiyou and 3D Printer shop locations are grouped into low, medium and high cost.
+    They'll become "in logic" as you gain access to more of the game world.
+    Depending on your first_root_node, low cost locations may be in logic immediately.
+    """
+
+
 # actual Option Groups are specified in the WebWorld in __init__.py for some reason
 @dataclass
 class NineSolsGameOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
 
-    # General Progression
+    # Sol Seals
     shuffle_sol_seals: ShuffleSolSeals
     seals_for_eigong: SealsForEigong
     seals_for_prison: SealsForPrison
-    prevent_weakened_prison_state: PreventWeakenedPrisonState
     seals_for_ethereal: SealsForEthereal
+
+    # Logic & Skips
+    prevent_weakened_prison_state: PreventWeakenedPrisonState
     skip_soulscape_platforming: SkipSoulscapePlatforming
     prevent_annoying_runbacks: PreventAnnoyingRunbacks
+    logic_difficulty: LogicDifficulty
+
+    # Root Nodes
+    first_root_node: FirstRootNode
+    shuffle_some_root_nodes: ShuffleSomeRootNodes
+
+    # Shuffle Starting Abilities
+    shuffle_grapple: ShuffleGrapple
+    shuffle_wall_climb: ShuffleWallClimb
+    shuffle_ledge_grab: ShuffleLedgeGrab
 
     # Jade Costs
     randomize_jade_costs: RandomizeJadeCosts
@@ -298,11 +357,6 @@ class NineSolsGameOptions(PerGameCommonOptions):
     kuafu_extra_inventory_unlock_sol_seals: KuafuExtraInventoryUnlockSolSeals
 
     # Additional Randomizations
-    first_root_node: FirstRootNode
-    shuffle_grapple: ShuffleGrapple
-    shuffle_wall_climb: ShuffleWallClimb
-    shuffle_ledge_grab: ShuffleLedgeGrab
+    randomize_shops: RandomizeShops
     # skill_tree_randomization
-    # shop_randomization
-    logic_difficulty: LogicDifficulty
     # entrance_randomization

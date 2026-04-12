@@ -140,6 +140,7 @@ class FileGenerator:
 
         item_pools_complete = template.render(
             item_pools=self.lists.item_pools,
+            item_groups=self.lists.item_groups,
             **self.common_args
         )
 
@@ -174,6 +175,7 @@ class FileGenerator:
         regions_complete = template.render(
             modes_string=", ".join([f'"{x}"' for x in self.ctx.rando_data["modes"]]),
             region_packs=self.regions_data,
+            region_botanics_amounts={key: val.items() for key, val in self.lists.region_botanics_amounts.items()},
             **self.common_args
         )
 

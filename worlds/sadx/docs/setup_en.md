@@ -19,6 +19,10 @@
 5. Disable the "Steam Achievements Mod" if enabled.
 6. Disable the "Fixes, Adds, and Beta Restores" if enabled.
 
+## Installation Procedures (Linux/Steam Deck)
+
+- Follow the [Mod Loader guide](https://gitlab.com/PiKeyAr/sadx-mod-installer/-/wikis/SteamDeck).
+
 ## Generating the player configuration
 
 1. Download the sadx.apworld from the release page and double click it to install it and restart the Archipelago

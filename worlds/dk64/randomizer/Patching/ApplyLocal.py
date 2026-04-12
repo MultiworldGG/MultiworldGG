@@ -94,16 +94,14 @@ async def patching_response(data, from_patch_gen=False, lanky_from_history=False
     #     js.save_text_as_file(data, f"dk64r-patch-{seed_id}.lanky")
     #     return
     elif from_patch_gen is True:
-        if (js.document.getElementById("download_patch_file").checked or js.document.getElementById("load_patch_file").checked) and js.document.getElementById(
-            "generate_seed"
-        ).value != "Download Seed":
+        if js.document.getElementById("download_patch_file").checked or js.document.getElementById("load_patch_file").checked:
             js.save_text_as_file(data, f"dk64r-patch-{seed_id}.lanky")
-            await js.apply_patch(data)
         # gif_fairy = get_hash_images("browser", "loading-fairy")
         # gif_dead = get_hash_images("browser", "loading-dead")
         # js.document.getElementById("progress-fairy").src = "data:image/jpeg;base64," + gif_fairy[0]
         # js.document.getElementById("progress-dead").src = "data:image/jpeg;base64," + gif_dead[0]
         # Apply the base patch
+        await js.apply_patch(data)
         if gen_history is False:
             js.write_seed_history(seed_id, str(data), json.dumps(settings.seed_hash))
             js.load_old_seeds()
@@ -127,6 +125,7 @@ async def patching_response(data, from_patch_gen=False, lanky_from_history=False
             f"This patch was generated with version {patch_major}.{patch_minor}.{patch_patch} of the randomizer, but you are using version {major}.{minor}.{patch}. Cosmetic packs have been disabled for this patch."
         )
         fixLankyIncompatibility(ROM_COPY)
+        truncateFiles(ROM_COPY)
     elif from_patch_gen is True:
         sav = settings.rom_data
         if from_patch_gen:
@@ -337,8 +336,8 @@ async def patching_response(data, from_patch_gen=False, lanky_from_history=False
                 ROM_COPY.seek(sav + 0x1ED)
                 ROM_COPY.write(1)
 
-            # truncateFiles(ROM_COPY)
             spoiler = updateJSONCosmetics(spoiler, settings, music_data, int(unix), head_sizes)
+        truncateFiles(ROM_COPY)
 
         # Apply Hash
         order = 0

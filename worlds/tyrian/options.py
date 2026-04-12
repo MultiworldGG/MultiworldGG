@@ -354,7 +354,7 @@ class LogicDifficulty(Choice):
     If 'beginner', most secret locations will be excluded by default, and additional leeway will be provided when calculating damage to ensure you can destroy things required to obtain checks.
     If 'standard', only a few incredibly obscure locations will be excluded by default. There will always logically be a weapon loadout you can use to obtain checks that your current generator can handle (shields notwithstanding).
     If 'expert', almost all locations will be in logic, and it will be expected that you can manage a weapon loadout that creates a power drain on your current generator.
-    If 'master', all locations will always be in logic, and you will also be expected to know technical things like specific triggers for secrets and other minute details. Little to no leeway will be provided with damage calculation.
+    If 'master', all locations will always be in logic, and you will also be expected to know technical things like specific triggers for secrets and other minute details. You will be expected to use twiddles if available, and little to no leeway will be provided with damage calculation.
     If 'no_logic', all locations within a level will be assumed attainable if you can access that level at all, with zero regard for loadout or anything else. This is *extremely* dangerous and should be used with caution.
     """
     display_name = "Logic Difficulty"

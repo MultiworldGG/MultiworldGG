@@ -118,6 +118,7 @@ useful_table = {
     "Speed Upgrade":                ItemData(76031, ItemClassification.useful),
     "Scoutmaster's Bugle":          ItemData(77100, ItemClassification.useful),
     "Napberry":                     ItemData(77096, ItemClassification.useful),
+    "Blowgun":                      ItemData(77122, ItemClassification.useful),
 }
 
 filler_table = {

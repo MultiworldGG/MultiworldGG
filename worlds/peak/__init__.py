@@ -113,7 +113,7 @@ class PeakWorld(World):
             # Each excluded ascent has 6 badge locations (Beachcomber, Trailblazer, Alpinist, Volcanology, Nomad, Forestry)
             # Plus 1 Scout Sashe location
             # Plus 1 Ascent Completed event
-            locations_per_ascent = 6 + 1 + 1  # 8 total
+            locations_per_ascent = 7
             total_locations -= (excluded_ascent_count * locations_per_ascent)
             
             logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Excluding {excluded_ascent_count} ascent levels, removing {excluded_ascent_count * locations_per_ascent} locations")
@@ -170,7 +170,42 @@ class PeakWorld(World):
         for item_name in useful_table.keys():
             if item_name != "Progressive Stamina Bar":  # Skip stamina bar since we handled it above
                 item_pool.append(self.create_item(item_name))
-        
+                # Ensure all items needed for acquire locations are in the pool (one each)
+        acquire_required_items = [
+            "Rope Spool", "Rope Cannon", "Anti-Rope Spool", "Anti-Rope Cannon",
+            "Chain Launcher", "Piton", "Rescue Claw", "Scout Cannon", "Flying Disc",
+            "Guidebook", "Portable Stove", "Checkpoint Flag", "Compass", "Pirate's Compass",
+            "Binoculars", "Parasol", "Balloon", "Balloon Bunch",
+            "Lantern", "Flare", "Torch", "Faerie Lantern",
+            "Bandages", "First-Aid Kit", "Antidote", "Heat Pack", "Cure-All",
+            "Remedy Fungus", "Medicinal Root", "Aloe Vera", "Sunscreen",
+            "Marshmallow", "Glizzy", "Fortified Milk", "Trail Mix", "Granola Bar",
+            "Scout Cookies", "Airline Food", "Energy Drink", "Sports Drink", "Big Lollipop",
+            "Big Egg", "Egg", "Cooked Bird", "Honeycomb", "Beehive", "Bing Bong",
+            "Magic Bean", "Blowgun", "Cactus", "Scout Effigy", "Cursed Skull",
+            "Pandora's Lunchbox", "Ancient Idol", "Strange Gem", "Book of Bones",
+            "Bugle of Friendship", "Bugle", "Scoutmaster's Bugle", "Conch", "Dynamite",
+            "Scorpion", "Tick", "Mandrake",
+            "Cloud Fungus", "Shelf Shroom", "Bounce Shroom", "Button Shroom",
+            "Bugle Shroom", "Cluster Shroom", "Chubby Shroom",
+            "Red Crispberry", "Green Crispberry", "Yellow Crispberry",
+            "Coconut", "Coconut Half",
+            "Brown Berrynana", "Blue Berrynana", "Pink Berrynana", "Yellow Berrynana",
+            "Orange Winterberry", "Yellow Winterberry", "Napberry",
+            "Red Prickleberry", "Gold Prickleberry",
+            "Red Shroomberry", "Blue Shroomberry", "Green Shroomberry",
+            "Yellow Shroomberry", "Purple Shroomberry",
+            "Purple Kingberry", "Yellow Kingberry", "Green Kingberry",
+            "Black Clusterberry", "Red Clusterberry", "Yellow Clusterberry",
+        ]
+
+        for item_name in acquire_required_items:
+            if item_name in item_table:
+                item_pool.append(self.create_item(item_name, ItemClassification.progression))
+            else:
+                logging.warning(f"[Player {self.multiworld.player_name[self.player]}] Acquire item '{item_name}' not found in item_table")
+
+        logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Added {len(acquire_required_items)} acquire-required items")
         # Calculate how many slots are left for traps and fillers
         remaining_slots = total_locations - len(item_pool)
         
@@ -471,7 +506,8 @@ class PeakWorld(World):
             return  # Unsupported goal type, exit early
 
         # Ensure item pool matches number of locations
-        final_locations = [loc for loc in self.multiworld.get_locations() if loc.player == self.player]
+        final_locations = [loc for loc in self.multiworld.get_locations() 
+                   if loc.player == self.player and loc.address is not None]
         current_items = [item for item in self.multiworld.itempool if item.player == self.player]
         missing = len(final_locations) - len(current_items)
 
@@ -496,6 +532,17 @@ class PeakWorld(World):
         # Respect the option but clamp to what's actually available
         requested_badge_count = self.options.badge_count.value
         actual_badge_count = min(requested_badge_count, max_badges_available)
+
+        mountain_hints = []
+        for location in self.multiworld.get_locations():
+            if location.item and location.item.name == "Progressive Mountain" and location.item.player == self.player:
+                mountain_hints.append({
+                    "location": location.name,
+                    "player": self.multiworld.get_player_name(location.player),
+                    "game": self.multiworld.game[location.player],
+                    "location_id": location.address,
+                    "player_slot": location.player
+                })
         
         slot_data = {
             "goal": self.options.goal.value,
@@ -513,6 +560,7 @@ class PeakWorld(World):
             "death_link_send_behavior": self.options.death_link_send_behavior.value,
             "active_traps": self.output_active_traps(),
             "session_id": session_id,
+            "mountain_hints": mountain_hints
         }
         
         # Log what we're sending

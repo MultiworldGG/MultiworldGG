@@ -1799,13 +1799,13 @@ class RAM:
         # "S_Western Land": 0x1C,
         77 : 77,
         # "S_Castle": 0x1D,
-        78 : 79,
-        79 : 79,
-        80 : 79,
-        81 : 79,
-        82 : 79,
-        84 : 79,
-        85 : 79,
+        78 : 78,
+        79 : 78,
+        80 : 78,
+        81 : 78,
+        82 : 78,
+        84 : 78,
+        85 : 78,
     }
 
     levelAddresses = {
@@ -2034,6 +2034,12 @@ class RAM:
         87: AEDoor.PPM_ENTRY.value
     }
     PPMShowCoins = 0x139966 # 0 = no coin icon, 2 = Have coin
+    Event_Load_Block = 0x0967E8 # Stops loading some base level's data (Monkey/coins count,events,etc.) if Start room != Vanilla start room
+    Event_Load_Block_On = 0x1697015C
+    Event_Load_Block_Off = 0x00000000
+    # 0x1697015C = Will branch off and ignore loading some base level's data if Start room != Vanilla start room
+    # 0x00000000 = Ignore the branch off and load all of the level's meta data (Monkey/coins count,events,etc.) even if Start room != Vanilla start room
+
 # ========================= Lamps / Doors =========================
 
     lockCamera = 0x162057  # Lock Camera (WsW Gong Room) Locked = 0x80, Free = 0x60
@@ -2459,6 +2465,7 @@ class RAM:
     Transition_Screen_Progress = 0x0F4482 #0x18 = Full black screen, 0x00 is normal
     TransitionFlag = 0x0E3893 # Different stage of processing the transitions
     Screen_Fading = 0x0E0930
+    LoadingState = 0x0E38B0
 
     # To translate Transition ID from doorTransitions Table to which address we need to change for the room
     transitionAddresses = {
@@ -2476,7 +2483,7 @@ class RAM:
 
     TR4_TransitionEnabled = 0x1542BC # For CrC_Boss_Door -> Blocked value: 0x03, Opened Value: 0x00
 
-    transitionPhaseAddress = 0x0F447C # TheDragon Note: If you set Nearby_RoomIDAddress and Nearby_DoorIDAddress   = 0x0E38A4
+    transitionPhaseAddress = 0x0F447C # TheDragon Note: If you set Nearby_RoomIDAddress and Nearby_DoorIDAddress
     transitionPhase ={
         "Spawning" : 0x01,      # 0x01 = ?? Maybe spawning
         "DeathScreen": 0x02,    # 0x02 = Black screen fading out
@@ -2776,4 +2783,6 @@ class RAM:
     # S1_LArm_Life = 0x14474E
     # S1_RArm_Life = 0x1446B6
     tempSpecter2CompleteAddress = 0x0DFBEE
+    tempSpecter1CompleteAddress = 0x0DFBEF
     Specter2CompleteAddress = 0x0E00FE
+    Specter1CompleteAddress = 0x0E00FF

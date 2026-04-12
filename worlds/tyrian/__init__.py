@@ -85,7 +85,7 @@ class TyrianWorld(World):
     location_name_groups = LevelLocationData.get_location_groups()
 
     # Raise this to force outdated clients to update.
-    aptyrian_net_version = 6
+    aptyrian_net_version = 7
 
     # --------------------------------------------------------------------------------------------
 
@@ -149,8 +149,6 @@ class TyrianWorld(World):
         return item_list
 
     def get_junk_items(self, total_checks: int, total_money: int, allow_superbombs: bool = True) -> list[str]:
-        total_money = int(total_money * (self.options.money_pool_scale / 100))
-
         valid_money_amounts = [int(name.removesuffix(" Credits"))
                                for name in LocalItemData.other_items if name.endswith(" Credits")]
 
@@ -278,6 +276,7 @@ class TyrianWorld(World):
             "Episodes": sum(1 << (i - 1) for i in self.play_episodes),
             "Goal": sum(1 << (i - 1) for i in self.goal_episodes),
             "Difficulty": int(self.options.difficulty),
+            "LogicDifficulty": int(self.options.logic_difficulty),  # For trackers
         }
 
         # The following settings are only added if their values are truthy or non-zero
@@ -476,7 +475,7 @@ class TyrianWorld(World):
             slot_data["LocationMax"] = self.output_location_count()
 
         if self.options.twiddles:
-            slot_data["TwiddleData"] = self.obfuscate_object(self.output_twiddles())
+            slot_data["TwiddleData"] = self.output_twiddles()
         if self.options.shop_mode != "none":
             slot_data["ShopData"] = self.obfuscate_object(self.output_shop_data())
 
@@ -651,7 +650,7 @@ class TyrianWorld(World):
         if self.options.shop_mode != "none":
             # One of the "always_x" choices, add each level shop exactly x times
             if self.options.shop_item_count <= -1:
-                times_to_add = abs(self.options.shop_item_count)
+                times_to_add = abs(self.options.shop_item_count.value)
                 items_per_shop = dict.fromkeys(self.all_levels, times_to_add)
 
             # Not enough items for one in every shop
@@ -823,11 +822,9 @@ class TyrianWorld(World):
         def toss_from_itempool(num_to_toss: int) -> int:
             tossable_items = [name for name in self.local_itempool if LocalItemData.get(name).tossable]
 
-            # Excess data cubes can be tossed too, though we try to restrict this to really excessive numbers.
-            # Consider anything trimmable past 400% of the requirement, or 198 cubes, whichever is lower.
+            # Any data cubes that are more than the total required are tossable, too.
             if self.options.data_cube_hunt:
-                tossable_cube_count = (self.options.data_cubes_total.value -
-                                       min(198, self.options.data_cubes_required.value * 4))
+                tossable_cube_count = (self.options.data_cubes_total.value - self.options.data_cubes_required.value)
                 if tossable_cube_count > 0:
                     tossable_items.extend(["Data Cube"] * tossable_cube_count)
 
@@ -843,13 +840,20 @@ class TyrianWorld(World):
 
             return len(self.multiworld.get_unfilled_locations(self.player)) - len(self.local_itempool)
 
-        # Subtract what we start with.
+        # Subtract what we start with, and then scale as requested.
+        # Catch negative money needed (because we start with more than we need) and set to zero.
         self.total_money_needed -= self.options.starting_money.value
+        self.total_money_needed = max(0, int(self.total_money_needed * (self.options.money_pool_scale / 100)))
 
         # Shops-only mode junk fill
         if self.options.shop_mode == "shops_only":
             # Warn on currently unsupported option combinations (that we still allow generation of, for the daring)
             if self.options.logic_difficulty != "no_logic" and self.options.logic_difficulty != "master":
+                if self.multiworld.players == 1:
+                    raise OptionError(f"Cowardly refusing to generate a solo 'shops_only' game for "
+                                      f"{self.multiworld.get_player_name(self.player)} "
+                                      f"due to improper logic difficulty settings. "
+                                      f"A logic difficulty of 'master' or 'no logic' is required.")
                 logging.warning(f"{self.multiworld.get_player_name(self.player)}:"
                                 f" Shop mode 'shops_only' is not designed for these logic settings."
                                 f" You may experience an empty sphere 1, or failed generations in solo play.")
@@ -882,8 +886,7 @@ class TyrianWorld(World):
             rest_item_count = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.local_itempool)
 
             # Don't spam the seed with SuperBombs; lower limit to 200 credits per base item in the junk pool.
-            # If the junk pool size and total money needed are both negative, the 0 is there to catch that.
-            self.total_money_needed = max(0, 200 * rest_item_count, self.total_money_needed)
+            self.total_money_needed = max(200 * rest_item_count, self.total_money_needed)
 
             # We want to at least have SOME variety of credit items in the pool regardless of settings.
             # We also don't want to leave ourselves with a situation where, say,

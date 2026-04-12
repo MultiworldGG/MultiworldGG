@@ -18,7 +18,7 @@
             <a href="/tutorial" id="mid-left-button">Setup Guides</a>
             <a href="/start-playing" id="mid-button">Start<br />Playing</a>
             <a href="/faq/en/" id="mid-right-button">F.A.Q.</a>
-            <a href="https://discord.gg/zsr" id="far-right-button" target="_blank">Join<br />Discord</a>
+            <a href="https://discord.multiworld.gg" id="far-right-button" target="_blank">Join<br />Discord</a>
         </div>
         <div id="landing-clouds">
             <img id="cloud1" src="/static/static/backgrounds/clouds/cloud-0001.png"/>
@@ -38,12 +38,11 @@
                 </p>
                 <p>
                     This project is based on <a href="https://github.com/ArchipelagoMW/Archipelago">Archipelago</a>, a cumulative effort of many
-                    <a href="https://github.com/ArchipelagoMW/Archipelago/graphs/contributors">talented people.</a><br />We also host a few amazing third party open source clients and tracking tools created by amazing contributors. Thank you all for your hard work!
-                </p>
+                    <a href="https://github.com/ArchipelagoMW/Archipelago/graphs/contributors">talented people.</a><br />We also link to or include a few amazing third party open source clients and tracking tools created by amazing contributors, like the <a href="https://cheesetrackers.theincrediblewheelofchee.se/">Cheese Trackers</a> by <a href="https://github.com/cdhowie/cheese-trackers">Cheese</a>, the <a href="https://drawesome4333.github.io/ap-tracker/">AP checklist tracker</a> by <a href="https://github.com/DrAwesome4333/ap-tracker">DrAwesome4333</a>, the <a href="https://archipelago.miraheze.org/wiki/Main_Page">AP Wiki</a>  maintained by Flit, Rooby, and others, or the <a href="https://ap-lobby.bananium.fr/">Bananium AP Lobby</a> by <a href="https://github.com/Eijebong/Archipelago-lobby">Eijebong</a>, who inspired our current lobby system.
                 <p>
-                    Multiworld.GG is an unofficial project, incorporating many tweaks and additional worlds of many 3rd party developers
-                    that cannot be part of the original project. We also offer worlds that are still in early and potentially unstable development stages.
-                    Should you stumble across bugs, please contact <b>us</b> first through <a href="https://discord.gg/zsr">Discord</a>, as we want to minimize the support load for the developers.
+                    Multiworld.GG is a fork, incorporating many tweaks and additional worlds of many 3rd party developers
+                    that cannot be part of the original project. We also offer worlds that are still in earlier stages of development.
+                    Found a bug? Please contact <b>us</b> first through <a href="https://discord.multiworld.gg">Discord</a> to minimize support load for the developers.
                 </p>
 
                 <p>
@@ -51,6 +50,10 @@
                     games were generated and
                     <a href="{{ url_for("stats") }}">{{ rooms }}</a>
                     were hosted in the last 7 days.
+                    <br />
+                    <a href="{{ url_for("lobby_list") }}">{{ open_lobbies }}</a> 
+                    {% if open_lobbies == 1 %}lobby is{% else %}lobbies are{% endif %} 
+                    open right now.
                 </p>
             </div>
         </div>

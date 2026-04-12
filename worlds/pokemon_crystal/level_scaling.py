@@ -51,11 +51,14 @@ def perform_level_scaling(multiworld: MultiWorld):
         "EVENT_SOUL_BADGE_FROM_JANINE",
         # "EVENT_BEAT_POKEFANM_JOSHUA", # Fred
         # "EVENT_BEAT_COOLTRAINERM_KEVIN", # Fabulous Prize
+        "EVENT_CLEARED_ROUTE_4",
         "EVENT_CASCADE_BADGE_FROM_MISTY",
         "EVENT_BOULDER_BADGE_FROM_BROCK",
         "EVENT_VOLCANO_BADGE_FROM_BLAINE",
         "EVENT_EARTH_BADGE_FROM_BLUE",
+        "EVENT_VIRIDIAN_GYM_BLUE",
         "EVENT_BEAT_RIVAL_IN_MT_MOON",
+        "EVENT_RESTORED_POWER_TO_KANTO",
         # "EVENT_RIVAL_INDIGO_PLATEAU_POKECENTER", # this is the league rematch, wed and fri only; requires mt. moon rival
         "EVENT_KOJI_ALLOWS_YOU_PASSAGE_TO_TIN_TOWER",  # 3rd of Wise Trio.
         "EVENT_BEAT_RED",  # Either Red is the final boss, or he's not lol.  Either way, might as well have a roof.
@@ -195,11 +198,6 @@ def perform_level_scaling(multiworld: MultiWorld):
             for trainer_location in trainer_locations:
                 new_base_level = world.trainer_level_list.pop(0)
                 old_base_level = world.trainer_name_level_dict[trainer_location.name]
-
-                # if trainer_location.name in ["WILL_1", "KOGA_1", "BRUNO_1", "KAREN_1", "CHAMPION_1"]:
-                #     e4_base_level = new_base_level
-                # elif trainer_location.name == "RED_1":
-                #     new_base_level = max(new_base_level, round(e4_base_level * red_goal_adjustment))
 
                 trainer_data = world.generated_trainers[trainer_location.name]
                 new_pokemon = []

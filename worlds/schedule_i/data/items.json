@@ -1,0 +1,1289 @@
+{
+    "Jar Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 1
+    },
+    "PGR Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 2
+    },
+    "Speed Grow Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 3
+    },
+    "Long-Life Soil Unlock": {
+        "classification": {"default" : ["PROGRESSION"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 4
+    },
+    "Fertilizer Unlock": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 5
+    },
+    "Sour Diesel Seed Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Level Up Reward"],
+        "modern_id": 6
+    },
+    "Pot Sprinkler Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 7
+    },
+    "Electric Plant Trimmers Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 8
+    },
+    "Westville Region Unlock": {
+        "classification": {"!randomize_customers" : ["PROGRESSION", "USEFUL"],
+                           "default" : ["USEFUL"]},
+        "tags": ["Level Up Reward"],
+        "modern_id": 9
+    },
+    "Mixing Station Unlock": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 11
+    },
+    "Soil Pourer Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 12
+    },
+    "Green Crack Seed Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Level Up Reward"],
+        "modern_id": 13
+    },
+    "Viagor Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 14
+    },
+    "Extra Long-Life Soil Unlock": {
+        "classification": {"default" : ["PROGRESSION"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 15
+    },
+    "Mouth Wash Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 16
+    },
+    "Granddaddy Purple Seed Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Level Up Reward"],
+        "modern_id": 17
+    },
+    "Flu Medicine Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 18
+    },
+    "Packaging Station Mk II Unlock": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 19
+    },
+    "Gasoline Unlock": {
+        "classification": {"default" : ["PROGRESSION"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 20
+    },
+    "Energy Drink Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 21
+    },
+    "Acid Unlock": {
+        "classification": {"default" : ["PROGRESSION"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 22
+    },
+    "Phosphorus Unlock": {
+        "classification": {"default" : ["PROGRESSION"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 23
+    },
+    "Chemistry Station Unlock": {
+        "classification": {"default" : ["PROGRESSION"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 24
+    },
+    "Lab Oven Unlock": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 25
+    },
+    "Mixing Station Mk2 Unlock": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 26
+    },
+    "Motor Oil Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 27
+    },
+    "Mega Bean Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 28
+    },
+    "Air Pot Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 29
+    },
+    "Chili Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 30
+    },
+    "Full Spectrum Grow Light Unlock": {
+        "classification": {"default" : ["PROGRESSION"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 31
+    },
+    "Warehouse Access": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Level Up Reward"],
+        "modern_id": 32
+    },
+    "Battery Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 33
+    },
+    "Iodine Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 34
+    },
+    "Addy Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 35
+    },
+    "Drying Rack Unlock": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 36
+    },
+    "Pseudo Unlock": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Level Up Reward"],
+        "modern_id": 37
+    },
+    "Horse Semen Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Gas Mart", "Level Up Reward"],
+        "modern_id": 38
+    },
+    "Revolver Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 39
+    },
+    "Revolver Cylinder Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 40
+    },
+    "Brick Press Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 41
+    },
+    "High-Quality Pseudo Unlock": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Level Up Reward"],
+        "modern_id": 42
+    },
+    "Cauldron Unlock": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 43
+    },
+    "M1911 Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 45
+    },
+    "M1911 Mag Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 46
+    },
+    "Pump Shotgun Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 47
+    },
+    "Shotgun Shell Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 48
+    },
+    "Small Storage Closet Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 225
+    },
+    "Medium Storage Closet Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 226
+    },
+    "Large Storage Closet Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 227
+    },
+    "Huge Storage Closet Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Hardware Store", "Level Up Reward"],
+        "modern_id": 228
+    },
+    "Suspension Rack Unlock": {
+        "classification": {"default" : ["PROGRESSION"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 229
+    },
+    "Moisture-Preserving Pot Unlock": {
+        "classification": {"default" : ["PROGRESSION"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 230
+    },
+    "Plastic Pot Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 231
+    },
+    "LED Grow Light Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Warehouse", "Level Up Reward"],
+        "modern_id": 232
+    },
+    "Barn": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Drug Making Property"],
+        "modern_id": 54
+    },
+    "Bungalow": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Drug Making Property"],
+        "modern_id": 55
+    },
+    "Docks Warehouse": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Drug Making Property"],
+        "modern_id": 56
+    },
+    "Storage Unit": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Drug Making Property"],
+        "modern_id": 59
+    },
+    "Car Wash": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Business Property"],
+        "modern_id": 61
+    },
+    "Laundromat": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Business Property"],
+        "modern_id": 62
+    },
+    "Post Office": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Business Property"],
+        "modern_id": 63
+    },
+    "Taco Ticklers": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Business Property"],
+        "modern_id": 64
+    },
+    "Austin Steiner Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Northtown", "Customer", "default"],
+        "modern_id": 65
+    },
+    "Beth Penn Unlocked": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Northtown", "Customer"],
+        "modern_id": 66
+    },
+    "Chloe Bowers Unlocked": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Northtown", "Customer"],
+        "modern_id": 67
+    },
+    "Donna Martin Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Northtown", "Customer"],
+        "modern_id": 68
+    },
+    "Geraldine Poon Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Northtown", "Customer"],
+        "modern_id": 69
+    },
+    "Jessi Waters Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Northtown", "Customer", "default"],
+        "modern_id": 70
+    },
+    "Kathy Henderson Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Northtown", "Customer", "default"],
+        "modern_id": 71
+    },
+    "Kyle Cooley Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Northtown", "Customer", "default"],
+        "modern_id": 72
+    },
+    "Ludwig Meyer Unlocked": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Northtown", "Customer"],
+        "modern_id": 73
+    },
+    "Mick Lubbin Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Northtown", "Customer", "default"],
+        "modern_id": 74
+    },
+    "Mrs. Ming Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Northtown", "Customer"],
+        "modern_id": 75
+    },
+    "Peggy Myers Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Northtown", "Customer"],
+        "modern_id": 76
+    },
+    "Peter File Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Northtown", "Customer"],
+        "modern_id": 77
+    },
+    "Sam Thompson Unlocked": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Northtown", "Customer", "default"],
+        "modern_id": 78
+    },
+    "Charles Rowland Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Westville", "Customer"],
+        "modern_id": 79
+    },
+    "Dean Webster Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Westville", "Customer"],
+        "modern_id": 80
+    },
+    "Doris Lubbin Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Westville", "Customer"],
+        "modern_id": 81
+    },
+    "George Greene Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Westville", "Customer"],
+        "modern_id": 82
+    },
+    "Jerry Montero Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Westville", "Customer"],
+        "modern_id": 83
+    },
+    "Joyce Ball Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Westville", "Customer"],
+        "modern_id": 84
+    },
+    "Keith Wagner Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Westville", "Customer"],
+        "modern_id": 85
+    },
+    "Kim Delaney Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Westville", "Customer"],
+        "modern_id": 86
+    },
+    "Meg Cooley Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Westville", "Customer"],
+        "modern_id": 87
+    },
+    "Trent Sherman Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Westville", "Customer"],
+        "modern_id": 88
+    },
+    "Bruce Norton Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Downtown", "Customer"],
+        "modern_id": 89
+    },
+    "Elizabeth Homley Unlocked": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Downtown", "Customer"],
+        "modern_id": 90
+    },
+    "Eugene Buckley Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Downtown", "Customer"],
+        "modern_id": 91
+    },
+    "Greg Figgle Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Downtown", "Customer"],
+        "modern_id": 92
+    },
+    "Jeff Gilmore Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Downtown", "Customer"],
+        "modern_id": 93
+    },
+    "Jennifer Rivera Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Downtown", "Customer"],
+        "modern_id": 94
+    },
+    "Kevin Oakley Unlocked": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Downtown", "Customer"],
+        "modern_id": 95
+    },
+    "Louis Fourier Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Downtown", "Customer"],
+        "modern_id": 96
+    },
+    "Philip Wentworth Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Downtown", "Customer"],
+        "modern_id": 97
+    },
+    "Randy Caulfield Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Downtown", "Customer"],
+        "modern_id": 98
+    },
+    "Lucy Pennington Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Downtown", "Customer"],
+        "modern_id": 99
+    },
+    "Anna Chesterfield Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Docks", "Customer"],
+        "modern_id": 100
+    },
+    "Billy Kramer Unlocked": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Docks", "Customer"],
+        "modern_id": 101
+    },
+    "Cranky Frank Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Docks", "Customer"],
+        "modern_id": 102
+    },
+    "Genghis Barn Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Docks", "Customer"],
+        "modern_id": 103
+    },
+    "Javier Pérez Unlocked": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Docks", "Customer"],
+        "modern_id": 104
+    },
+    "Kelly Reynolds Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Docks", "Customer"],
+        "modern_id": 105
+    },
+    "Lisa Gardener Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Docks", "Customer"],
+        "modern_id": 106
+    },
+    "Mac Cooper Unlocked": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Docks", "Customer"],
+        "modern_id": 107
+    },
+    "Marco Barone Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Docks", "Customer"],
+        "modern_id": 108
+    },
+    "Melissa Wood Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Docks", "Customer"],
+        "modern_id": 109
+    },
+    "Sherman Giles Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Docks", "Customer"],
+        "modern_id": 110
+    },
+    "Alison Knight Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Suburbia", "Customer"],
+        "modern_id": 111
+    },
+    "Carl Bundy Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Suburbia", "Customer"],
+        "modern_id": 112
+    },
+    "Chris Sullivan Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Suburbia", "Customer"],
+        "modern_id": 113
+    },
+    "Dennis Kennedy Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Suburbia", "Customer"],
+        "modern_id": 114
+    },
+    "Hank Stevenson Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Suburbia", "Customer"],
+        "modern_id": 115
+    },
+    "Harold Colt Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Suburbia", "Customer"],
+        "modern_id": 116
+    },
+    "Jack Knight Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Suburbia", "Customer"],
+        "modern_id": 117
+    },
+    "Jackie Stevenson Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Suburbia", "Customer"],
+        "modern_id": 118
+    },
+    "Jeremy Wilkinson Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Suburbia", "Customer"],
+        "modern_id": 119
+    },
+    "Karen Kennedy Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Suburbia", "Customer"],
+        "modern_id": 120
+    },
+    "Fiona Hancock Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Uptown", "Customer"],
+        "modern_id": 121
+    },
+    "Herbert Bleuball Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Uptown", "Customer"],
+        "modern_id": 122
+    },
+    "Irene Meadows Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Uptown", "Customer"],
+        "modern_id": 123
+    },
+    "Jen Heard Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"],
+                           "randomize_sewer_key" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Uptown", "Customer"],
+        "modern_id": 124
+    },
+    "Lily Turner Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Uptown", "Customer"],
+        "modern_id": 125
+    },
+    "Michael Boog Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Uptown", "Customer"],
+        "modern_id": 126
+    },
+    "Pearl Moore Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Uptown", "Customer"],
+        "modern_id": 127
+    },
+    "Ray Hoffman Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING", "USEFUL"]},
+        "tags": ["Uptown", "Customer"],
+        "modern_id": 128
+    },
+    "Tobias Wentworth Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Uptown", "Customer"],
+        "modern_id": 129
+    },
+    "Walter Cussler Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Uptown", "Customer"],
+        "modern_id": 130
+    },
+    "Shirley Watts Unlocked": {
+        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
+        "tags": ["Westville", "Supplier"],
+        "modern_id": 218
+    },
+    "Salvador Moreno Unlocked": {
+        "classification": {"default" : ["PROGRESSION"]},
+        "tags": ["Docks", "Supplier"],
+        "modern_id": 219
+    },
+    "Fungal Phil Unlocked": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Suburbia", "Supplier"],
+        "modern_id": 220
+    },
+    "Molly Presley Recruited": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Westville", "Dealer"],
+        "modern_id": 131
+    },
+    "Brad Crosby Recruited": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Downtown", "Dealer"],
+        "modern_id": 132
+    },
+    "Jane Lucero Recruited": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Docks", "Dealer"],
+        "modern_id": 133
+    },
+    "Wei Long Recruited": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Suburbia", "Dealer"],
+        "modern_id": 134
+    },
+    "Leo Rivers Recruited": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Uptown", "Dealer"],
+        "modern_id": 135
+    },
+    "Cuke": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 138
+    },
+    "Banana": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 139
+    },
+    "Paracetamol": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 140
+    },
+    "Donut": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 141
+    },
+    "Viagra": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 142
+    },
+    "Mouth Wash": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 143
+    },
+    "Flu Medicine": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 144
+    },
+    "Gasoline": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 145
+    },
+    "Energy Drink": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 146
+    },
+    "Motor Oil": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 147
+    },
+    "Mega Bean": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 148
+    },
+    "Chili": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 149
+    },
+    "Battery": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 150
+    },
+    "Iodine": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 151
+    },
+    "Addy": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 152
+    },
+    "Horse Semen": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 153
+    },
+    "Baggie": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 154
+    },
+    "Jar": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 155
+    },
+    "Coffee Table": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 156
+    },
+    "Wood Square Table": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 157
+    },
+    "Metal Square Table": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 158
+    },
+    "Floor Lamp": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 159
+    },
+    "TV": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 160
+    },
+    "Display Cabinet": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 161
+    },
+    "Trash Bag": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 162
+    },
+    "Trash Can": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 163
+    },
+    "Plastic Table": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 164
+    },
+    "Toilet": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 165
+    },
+    "Spray Bottle": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 166
+    },
+    "OG Kush Seed": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Better Filler"],
+        "modern_id": 167
+    },
+    "PGR": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 168
+    },
+    "Speed Grow": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 169
+    },
+    "Grow Tent": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 170
+    },
+    "Soil": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 171
+    },
+    "Small Storage Rack": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 172
+    },
+    "Medium Storage Rack": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 173
+    },
+    "Fertilizer": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 174
+    },
+    "Pot Sprinkler": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 175
+    },
+    "Mixing Station": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 176
+    },
+    "Soil Pourer": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 177
+    },
+    "Extra Long Life Soil": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Better Filler"],
+        "modern_id": 178
+    },
+    "Plastic Pot": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 179
+    },
+    "Moisture Preserving Pot": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 180
+    },
+    "Air Pot": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 181
+    },
+    "Packaging Station": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Better Filler"],
+        "modern_id": 182
+    },
+    "Large Storage Rack": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 183
+    },
+    "Long Life Soil": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 184
+    },
+    "Suspension Rack": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Better Filler"],
+        "modern_id": 185
+    },
+    "Halogen Grow Light": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 186
+    },
+    "LED Grow Light": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Better Filler"],
+        "modern_id": 187
+    },
+    "Packaging Station Mk2": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 188
+    },
+    "AC Unit": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 189
+    },
+    "Mixing Station Mk2": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 190
+    },
+    "Brick Press": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 191
+    },
+    "Pseudo": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 193
+    },
+    "High Quality Pseudo": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 194
+    },
+    "Grain Bag": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 195
+    },
+    "Spore Syringe": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 196
+    },
+    "Mushroom Substrate": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 197
+    },
+    "Acid": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 198
+    },
+    "Phosphorus": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 199
+    },
+    "Chemistry Station": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 200
+    },
+    "Mushroom Spawn Station": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 201
+    },
+    "Mushroom Bed": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 202
+    },
+    "Drying Rack": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 203
+    },
+    "Lab Oven": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 204
+    },
+    "Cauldron": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler" , "Progression Skip Filler"],
+        "modern_id": 205
+    },
+    "Revolver": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 207
+    },
+    "Revolver Cylinder": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 208
+    },
+    "M1911": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 209
+    },
+    "M1911 Mag": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 210
+    },
+    "Pump Shotgun": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 211
+    },
+    "Shotgun Shell": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 212
+    },
+    "Machete": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 213
+    },
+    "Frying Pan": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 214
+    },
+    "Baseball Bat": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 215
+    },
+    "Small Storage Closet": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Better Filler"],
+        "modern_id": 221
+    },
+    "Medium Storage Closet": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Better Filler"],
+        "modern_id": 222
+    },
+    "Large Storage Closet": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 223
+    },
+    "Huge Storage Closet": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 224
+    },
+    "Full Spectrum Grow Light": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 234
+    },
+    "Golden Skateboard": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 235
+    },
+    "Cruiser": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 236
+    },
+    "Cheap Skateboard": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 237
+    },
+    "Skateboard": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 238
+    },
+    "Wooden Sign": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 239
+    },
+    "Metal Sign": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 240
+    },
+    "Safe": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Basic Filler"],
+        "modern_id": 241
+    },
+    "Modern Wall Lamp": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 242
+    },
+    "Antique Wall Lamp": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Bad Filler"],
+        "modern_id": 243
+    },
+    "Jukebox": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 244
+    },
+    "Grandfather Clock": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 245
+    },
+    "Silver Chain": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 246
+    },
+    "Gold Chain": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 247
+    },
+    "Gold Bar": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 248
+    },
+    "Artwork Beach Day": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 249
+    },
+    "Artwork Millie": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 250
+    },
+    "Artwork Rapscallion": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 251
+    },
+    "Artwork Lines": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 252
+    },
+    "Artwork Offer": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 253
+    },
+    "Artwork Menace": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 254
+    },
+    "Golden Toilet": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 255
+    },
+    "Sewer Office": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Drug Making Property"],
+        "modern_id": 256
+    },
+    "Sewer Key": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Sewer", "Progression Skip Filler"],
+        "modern_id": 257
+    },
+    "Golden M1911": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Amazing Filler"],
+        "modern_id": 258
+    },
+    "Golden M1911 Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Level Up Reward"],
+        "modern_id": 259
+    },
+    "Big Sprinkler": {
+        "classification": {"default" : ["FILLER"]},
+        "tags": ["Better Filler"],
+        "modern_id": 260
+    },
+    "Big Sprinkler Unlock": {
+        "classification": {"default" : ["USEFUL"]},
+        "tags": ["Level Up Reward"],
+        "modern_id": 261
+    },
+    "Cartel Influence, Westville": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Cartel Influence", "Westville"],
+        "modern_id": 400
+    },
+    "Cartel Influence, Downtown": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Cartel Influence", "Downtown"],
+        "modern_id": 401
+    },
+    "Cartel Influence, Docks": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Cartel Influence", "Docks"],
+        "modern_id": 402
+    },
+    "Cartel Influence, Suburbia": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Cartel Influence", "Suburbia"],
+        "modern_id": 403
+    },
+    "Cartel Influence, Uptown": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Cartel Influence", "Uptown"],
+        "modern_id": 404
+    },
+    "XP Bundle": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Bundle", "XP"],
+        "modern_id": 500
+    },
+    "Cash Bundle": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["Bundle", "Cash"],
+        "modern_id": 501
+    },
+    "Heat Trap": {
+        "classification": {"default" : ["TRAP"]},
+        "tags": ["Trap"],
+        "modern_id": 651
+    },
+    "Slippery Trap": {
+        "classification": {"default" : ["TRAP"]},
+        "tags": ["Trap"],
+        "modern_id": 652
+    },
+    "Trash Trap": {
+        "classification": {"default" : ["TRAP"]},
+        "tags": ["Trap"],
+        "modern_id": 653
+    },
+    "Pan Trap": {
+        "classification": {"default" : ["TRAP"]},
+        "tags": ["Trap"],
+        "modern_id": 654
+    },
+    "TimeScale Trap": {
+        "classification": {"default" : ["TRAP"]},
+        "tags": ["Trap"],
+        "modern_id": 655
+    },
+    "Sleep Trap": {
+        "classification": {"default" : ["TRAP"]},
+        "tags": ["Trap"],
+        "modern_id": 656
+    }
+}

@@ -168,7 +168,7 @@ for the generated games.
 After a seed page has been created on the website, clicking on `Create Room` will create a new server instance, and a
 page that can be linked to the other players, so they can all see the connection info, obtain their data files, and
 connect to the multiworld. Simply click on the url in the title bar, copy the link, and send it to your friends. Room
-servers will shut down after 2 hours of inactivity, saving the multiworld progress. By returning to the room page, the
+servers will shut down after 4 hours of inactivity, saving the multiworld progress. By returning to the room page, the
 room server can be started back up, and the multiworld can continue to be played. If the link to the room is lost, the
 creator of the room can find it on their [User Content Page](/user-content). The person who created the room becomes the
 "owner" of the room, and as such has access to the server console. Clearing cookies will remove access to this console,
@@ -177,7 +177,7 @@ privileges may be gained by entering `!admin <password>` from the `MultiworldGGT
 
 #### The room page
 
-![Screenshot of Room Page](/static/generated/docs/Archipelago/example_room.png)
+![Screenshot of Room Page](example_room.png)
 1. Server/Host Name
 2. Port
 3. Slot Name

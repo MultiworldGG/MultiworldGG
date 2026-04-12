@@ -1,4 +1,4 @@
-# Sonic Heroes for MultiWorld.GG
+# Sonic Heroes for Multiworld.gg
 
 ## Where is the options page?
 

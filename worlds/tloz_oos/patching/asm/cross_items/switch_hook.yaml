@@ -5,22 +5,22 @@
 # then editing the bank 47 redirect to use that sprite
 
 46/4b16/parentItemCode_switchHook_46: |
-  /copy a,$06,$0b16,$51
+  /copy o,$06,$0b16,$51
 
 # itemCode0bPost from 07:5791 to 07:57db (switch hook chain)
-47/5791/itemCode0bPost_47: /copy a,$07,$1791,$4b
+47/5791/itemCode0bPost_47: /copy o,$07,$1791,$4b
 
 # itemCode0b from 07:57dc to 07:57f1 (switch hook chain)
-47/57dc/itemCode0b_47: /copy a,$07,$17dc,$16
+47/57dc/itemCode0b_47: /copy o,$07,$17dc,$16
 
 # itemCode0aPost from 07:57f2 to 07:57ff (switch hook)
-47/57f2/itemCode0aPost_47: /copy a,$07,$17f2,$0e
+47/57f2/itemCode0aPost_47: /copy o,$07,$17f2,$0e
 
 # itemCode0a from 07:5800 to 07:5abf (switch hook)
-47/5800/itemCode0a_47: /copy a,$07,$1800,$2bf
+47/5800/itemCode0a_47: /copy o,$07,$1800,$2bf
 
 # itemCode09 from 07:5ac0 to 07:5af4 (switch hook helper)
-47/5ac0/itemCode09_47: /copy a,$07,$1ac0,$35
+47/5ac0/itemCode09_47: /copy o,$07,$1ac0,$35
 
 06//parentItemCode_switchHook: |
   ld hl,parentItemCode_switchHook_46
@@ -147,9 +147,6 @@
 # treasureCollectionBehaviourTable
 3f/6c49/: db <wSwitchHookLevel,$08
 
-3f/6dca/: db text.hook1.treasure
-3f/6dd1/: db text.hook2.treasure
-
 # treasureObjectData
 15/5151/: |
   db $80
@@ -159,20 +156,21 @@
 07/6379/: db $8e
 
 # Overwrite snd_unknown_8e since it's unused anyway and happens to be where switch 2 sound is
-39/561e/sndSwitch2: /copy a,$39,$5720,$1
-3b/7f7c/sndSwitch2Channel2: /copy a,$3a,$7ada,17
+39/561e/sndSwitch2: /copy o,$39,$5720,$1
+3b/7f7c/sndSwitch2Channel2: /copy o,$3a,$7ada,17
 
 # replacing the standard dummy datas of sword and boomerang
-3f/6dc4/treasureDisplayData_switchHook: /copy a,$3f,$313e,$0e
+3f/6dc4/treasureDisplayData_switchHook: |
+  db TREASURE_SWITCH_HOOK,$a6,$04,$00,$00,$00,text.hook1.inventory
+  db TREASURE_SWITCH_HOOK,$a6,$04,$00,$00,$00,text.hook2.inventory
 # gfx
-1b/7ae0/: /copy a,$19,$03e0,$20
-# Apply the sprite to the inventory item by changing the treasureDisplayData
-3f/6dc5/: db $a6
+1b/7ae0/: /copy o,$19,$03e0,$20
 
 # Add the gfx entry to the interactionData
 3f/6814/: db $61,$0c,$40 ; GFX_68
 
 07/6010/: call getMimicData
+# TODO: In Moosh's screen hooking the flowers glitches visually, to be investigated
 07//getMimicData: |
   call $3a25 ; getTileMappingData
   ld a,c
@@ -184,7 +182,7 @@
   push de
   cp $26 ; normal flower
   ld a,$3b ; flower sprite
-  jr @end
+  jr z,@end
   inc a ; stone flower instead
   
   @end:

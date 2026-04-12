@@ -369,8 +369,8 @@ class IncludeScores(OptionSet):
     Scores in this set will always be included.
     Note that if you put many scores here, there will be many filler items too.
     You can put numbers 1 up to (including) 1000. Note that scores above last check don't count.
-    You can also add 'Everything' to the list, which adds all possible scores to the pool (up to last check).
-    Note: only the first 10 entries in your list are considered ('Everything' adds all scores anyway though).
+    You can also set this option to just ['Everything'], this adds all possible scores to the pool (up to last check).
+    Note: only the 10 lowest entries in your list are considered ('Everything' adds all scores anyway though).
     """
 
     display_name = "Guaranteed included scores as locations"

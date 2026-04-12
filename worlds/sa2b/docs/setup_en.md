@@ -14,7 +14,7 @@
 	- PopTracker from: [PopTracker Releases Page](https://github.com/black-sliver/PopTracker/releases/)
 	- Sonic Adventure 2: Battle Archipelago PopTracker pack from: [SA2B AP Tracker Releases Page](https://github.com/PoryGone/SA2B_AP_Tracker/releases/)
 - Quality of life mods
-	- SA2 Volume Controls from: [SA2 Volume Controls Release Page](https://gamebanana.com/mods/381193)
+	- SA2 Volume Controls from: [SA2 Volume Controls Release Page] (https://gamebanana.com/mods/381193)
 - Sonic Adventure DX from: [Sonic Adventure DX Steam Store Page](https://store.steampowered.com/app/71250/Sonic_Adventure_DX/)
 	- For setting up the `SADX Music` option (See Additional Options for instructions).
 
@@ -60,7 +60,7 @@ Note: Ensure that you launch Sonic Adventure 2 from Steam directly on Linux, rat
 
 1. Before launching the game, run the `SAModManager.exe`, select the SA2B_Archipelago mod, and hit the `Configure Mod` button.
 
-2. For the `Server IP` field under `AP Settings`, enter the address of the server, such as multiworld.gg:38281, your server host should be able to tell you this.
+2. For the `Server IP` field under `AP Settings`, enter the address of the server, such as archipelago.gg:38281, your server host should be able to tell you this.
 
 3. For the `PlayerName` field under `AP Settings`, enter your "name" field from the yaml, or website config.
 
@@ -76,7 +76,7 @@ Some additional settings related to the Archipelago messages in game can be adju
 
 - Message Display Count: This is the maximum number of Archipelago messages that can be displayed on screen at any given time.
 - Message Display Duration: This dictates how long Archipelago messages are displayed on screen (in seconds).
-- Message Font Size: The is the size of the font used to display the messages from MultiworldGG.
+- Message Font Size: The is the size of the font used to display the messages from Archipelago.
 
 If you wish to use the `SADX Music` option of the Randomizer, you must own a copy of `Sonic Adventure DX` on Steam, and follow these steps:
 
@@ -115,7 +115,7 @@ If you wish to use the `SADX Music` option of the Randomizer, you must own a cop
 
 - Game crashes after display logos.
 	- This may be caused by a high monitor refresh rate.
-		- Change the monitor refresh rate to 60 Hz [Change display refresh rate on Windows](https://support.microsoft.com/en-us/windows/change-your-display-refresh-rate-in-windows-c8ea729e-0678-015c-c415-f806f04aae5a)
+		- Change the monitor refresh rate to 60 Hz [Change display refresh rate on Windows] (https://support.microsoft.com/en-us/windows/change-your-display-refresh-rate-in-windows-c8ea729e-0678-015c-c415-f806f04aae5a)
 	- This may also be fixed by setting Windows 7 compatibility mode on the sonic app:
 		1. Right click on the sonic2app.exe and select `Properties`.
 		2. Select the `Compatibility` tab.

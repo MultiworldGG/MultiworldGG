@@ -7,7 +7,7 @@ class TestDLC(OuterWildsTestBase):
     }
 
     def test_eote_dlc(self):
-        self.assertEqual(self.getLocationCount(), 127)  # 87(+2V) base game + 34(+4V) DLC locations
+        self.assertEqual(self.getLocationCount(), 128)  # 87(+3V) base game + 34(+4V) DLC locations
 
         self.assertNotReachableWith("EotE: River Lowlands Workshop", [])
         self.assertReachableWith("EotE: River Lowlands Workshop", [
@@ -18,8 +18,8 @@ class TestDLC(OuterWildsTestBase):
         # With DLC enabled there are more victory events, but "only 'Song of' goals need Coordinates" remains true
         self.assertAccessDependency(
             [
-                "Victory - Song of Five", "Victory - Song of the Nomai", "Victory - Song of the Stranger",
-                "Victory - Song of Six", "Victory - Song of Seven"
+                "Victory - Song of Five", "Victory - Song of the Nomai", "Victory - Song of the Universe",
+                "Victory - Song of the Stranger", "Victory - Song of Six", "Victory - Song of Seven"
             ],
             [["Coordinates"]]
         )
@@ -78,9 +78,9 @@ class TestDLCWithLogsanity(OuterWildsTestBase):
     }
 
     def test_eote_dlc_with_logsanity(self):
-        # 87(+2V) base game default locations + 176 base game logsanity locations +
+        # 87(+3V) base game default locations + 176 base game logsanity locations +
         # 34(+4V) DLC default locations + 72 DLC logsanity locations
-        self.assertEqual(self.getLocationCount(), 375)
+        self.assertEqual(self.getLocationCount(), 376)
 
         # Routes to Shrouded Woodlands
 
@@ -183,3 +183,20 @@ class TestDLCOnlyLogsanity(OuterWildsTestBase):
 
     def test_dlc_only_logsanity(self):
         self.assertEqual(self.getLocationCount(), 107)  # 34(+1V) DLC default locations + 72 DLC logsanity locations
+
+
+# dlc_only should turn the story mod options into no-ops
+class TestDLCOnlyWithStoryMods(OuterWildsTestBase):
+    options = {
+        "dlc_only": 1,
+        "enable_hn1_mod": 1,
+        "enable_outsider_mod": 1,
+        "enable_ac_mod": 1,
+        "enable_hn2_mod": 1,
+        "enable_fq_mod": 1,
+        "enable_fc_mod": 1,
+        "enable_eh_mod": 1,
+    }
+
+    def test_default(self):
+        self.assertEqual(self.getLocationCount(), 35)  # 34(+1V) DLC default locations

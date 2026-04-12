@@ -83,7 +83,12 @@ def generate_locations(world: "LethalCompanyWorld"):
         "Letter of Resignation"
     ]
 
-    world.bestiary_names = [[key for key in monster.keys() if any(moon["chance"] > 0 for moon in monster[key])][0] for monster in world.imported_data["bestiary"]]
+    #world.bestiary_names = [[key for key in monster.keys() if any(moon["chance"] > 0 for moon in monster[key])][0] for monster in world.imported_data["bestiary"]]
+    world.bestiary_names = []
+    for monster in world.imported_data["bestiary"]:
+        key = [key for key in monster.keys()][0]
+        if any(moon["chance"] > 0 for moon in monster[key]):
+            world.bestiary_names.append(key)
 
     moons = [moon for moon in world.imported_data.get("moons")]
 

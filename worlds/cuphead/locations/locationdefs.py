@@ -9,7 +9,7 @@ def lid(i: int): return base_id+i
 def dlc_lid(i: int): return base_dlc_id+i
 
 # Locations
-# Next ids: 128, 77
+# Next ids: 128, 78
 # Level Locations
 location_level_tutorial: dict[str, LocationData] = {
     LocationNames.loc_level_tutorial: LocationData(lid(0)),
@@ -377,6 +377,9 @@ location_level_boss_secret: dict[str, LocationData] = {
     LocationNames.loc_level_boss_plane_genie_secret: LocationData(lid(126)),
     LocationNames.loc_level_boss_sallystageplay_secret: LocationData(lid(127)),
 }
+location_level_dlc_boss_secret: dict[str, LocationData] = {
+    LocationNames.loc_level_dlc_boss_airplane_secret: LocationData(dlc_lid(77)),
+}
 location_dlc_world: dict[str, LocationData] = {
     LocationNames.loc_dlc_npc_newscat: LocationData(dlc_lid(72)),
     LocationNames.loc_dlc_coin_isle4_secret: LocationData(dlc_lid(73)),
@@ -478,6 +481,7 @@ locations_all: dict[str, LocationData] = {
     **locations_dlc,
     **location_level_dlc_tutorial,
     **location_level_dlc_boss_final, # Final
+    **location_level_dlc_boss_secret,
     **locations_dlc_topgrade,
     **location_level_dlc_boss_final_topgrade, # Final
     **locations_dlc_boss_chaliced,

@@ -1,11 +1,11 @@
 from typing import Dict, Any
-from BaseClasses import ItemClassification, Region,Tutorial
+from BaseClasses import ItemClassification, Region, Tutorial
 from worlds.AutoWorld import World, WebWorld
 
-from .Items import OriBlindForestItem, base_items, keystone_items, mapstone_items, filler_items, item_dict, item_alias_list
+from .Items import OriBlindForestItem, skills, world_events, keystone_items, mapstone_items, filler_items, teleporters, base_items, item_dict, item_alias_list
 from .Locations import location_dict, tagged_locations_dict, area_tags, event_location_list
-from .Options import OriBlindForestOptions, LogicDifficulty, KeystoneLogic, MapstoneLogic, Goal, slot_data_options
-from .Rules import apply_location_rules, apply_connection_rules, create_progressive_maps
+from .Options import OriBlindForestOptions, LogicDifficulty, KeystoneLogic, MapstoneLogic, SeinLogic, Goal, slot_data_options
+from .Rules import apply_location_rules, apply_connection_rules, create_progressive_maps, get_goal_condition
 from .Regions import region_list
 from ..generic.Rules import add_item_rule
 
@@ -42,15 +42,13 @@ class OriBlindForestWorld(World):
 
     def generate_early(self):
         self.logic_sets: set[str] = {"casual"} # always include at least casual
-        self.location_exclusion_list: list[str] = []
         self.world_tour_areas: list[str] = []
         self.world_tour_areas_unused: list[str] = area_tags.copy()
+        self.fragments_available = 0
 
-        if self.options.logic_difficulty == LogicDifficulty.option_glitched:
-            self.logic_sets.add("glitched")
-            self.logic_sets.add("expert")
-            self.logic_sets.add("standard")
-        
+        # list of locations to not be included in the multiworld at all
+        self.location_exclusion_list: list[str] = []
+
         if self.options.logic_difficulty == LogicDifficulty.option_master:
             self.logic_sets.add("master")
             self.logic_sets.add("expert")
@@ -62,6 +60,9 @@ class OriBlindForestWorld(World):
 
         if self.options.logic_difficulty == LogicDifficulty.option_standard:
             self.logic_sets.add("standard")
+
+        if "Glitches" in self.options.logic_modifiers.value:
+            self.logic_sets.add("glitched")
 
         if self.options.mapstone_logic == MapstoneLogic.option_progressive:
             self.location_exclusion_list.extend(tagged_locations_dict["Map"])
@@ -118,21 +119,38 @@ class OriBlindForestWorld(World):
         else:
             item_list = { **item_list, **mapstone_items["Anywhere"] }
 
+        if self.options.include_teleporters == True:
+            item_list = { **item_list, **teleporters }
+
         for item_key, item_value in item_list.items():
             # override the item values for counts that come from options
-            if item_key == "WarmthFragment" and self.options.goal == Goal.option_warmth_fragments:
-                item_value = (item_value[0], self.options.warmth_fragments_available.value)
-            if item_key == "Relic" and self.options.goal == Goal.option_world_tour:
+            if item_key == "WarmthFragment" and "WarmthFragments" in self.options.goal.value:
+                # ensures there is always enough warmth fragments, even if required is greater than available
+                self.fragments_available: int = max(self.options.warmth_fragments_available.value, self.options.warmth_fragments_required.value)
+                item_value = (item_value[0], self.fragments_available)
+            if item_key == "Relic" and "WorldTour" in self.options.goal.value:
                 item_value = (item_value[0], self.options.relic_count.value)
             if item_key == "MapStone":
                 item_value = (item_value[0], item_value[1] + self.options.extra_mapstones.value)
+            if item_key in keystone_items["Anywhere"] or item_key in keystone_items["AreaSpecific"]:
+                item_value = (item_value[0], int(item_value[1] * (1 + self.options.extra_keystones / 100)))
+            if (item_key in skills or item_key in world_events) and self.options.extra_skills:
+                item_value = (item_value[0], item_value[1] + 1)
 
             for count in range(item_value[1]):
                 item = self.create_item(item_key)
 
-                # place the first energy cell at its normal location so the player can save right away
-                if item_key == "EnergyCell" and not placed_first_energy_cell:
-                    self.get_location("FirstEnergyCell").place_locked_item(item)
+                # place Sein either in the normal location or in the starting inventory based on options
+                if item_key == "SpiritFlame":
+                    if self.options.sein_logic == SeinLogic.option_vanilla:
+                        self.get_location("Sein").place_locked_item(item)
+                    else: # if SeinLogic.option_start
+                        self.multiworld.push_precollected(item)
+                    # if Sein ever gets randomized, it would be done here with another SeinLogic option
+
+                # add the first energy cell to the starting inventory to allow the player to save right away
+                elif item_key == "EnergyCell" and not placed_first_energy_cell:
+                    self.multiworld.push_precollected(item)
                     placed_first_energy_cell = True
                 
                 # place relics in a random location from a random area
@@ -143,8 +161,8 @@ class OriBlindForestWorld(World):
                     self.world_tour_areas.append(random_area)
 
                     random_location: str = self.random.choice(tagged_locations_dict[random_area])
-                    # the random location can't be an excluded location or "FirstEnergyCell" (since this was locked above)
-                    while random_location in self.location_exclusion_list or random_location == "FirstEnergyCell":
+                    # the random location can't be an excluded location or "Sein" (since this was locked above if vanilla Sein logic is on)
+                    while random_location in self.location_exclusion_list or (self.options.sein_logic == SeinLogic.option_vanilla and random_location == "Sein"):
                         random_location = self.random.choice(tagged_locations_dict[random_area])
                     self.get_location(random_location).place_locked_item(item)
 
@@ -163,37 +181,9 @@ class OriBlindForestWorld(World):
         # most of the rules are set above in create_regions
 
         # set the goal condition
-        if self.options.goal == Goal.option_all_skill_trees:
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                state.can_reach_region("HoruEscapeInnerDoor", self.player) and \
-                all(state.can_reach_location(skill_tree, self.player) for skill_tree in tagged_locations_dict["Skill"])
-            
-        elif self.options.goal == Goal.option_all_maps:
-            location_tag: str = ""
-            if self.options.mapstone_logic == MapstoneLogic.option_progressive:
-                location_tag = "ProgressiveMap"
-            else:
-                location_tag = "Map"
-
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                state.can_reach_region("HoruEscapeInnerDoor", self.player) and \
-                all(state.can_reach_location(area_map, self.player) for area_map in tagged_locations_dict[location_tag])
-            
-        elif self.options.goal == Goal.option_warmth_fragments:
-            # in case the required value is larger than the available, make the actual amount required equal to the available
-            fragments_required: int = min(self.options.warmth_fragments_available.value, self.options.warmth_fragments_required.value)
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                state.can_reach_region("HoruEscapeInnerDoor", self.player) and \
-                state.has("WarmthFragment", self.player, fragments_required)
-            
-        elif self.options.goal == Goal.option_world_tour:
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                state.can_reach_region("HoruEscapeInnerDoor", self.player) and \
-                state.has("Relic", self.player, self.options.relic_count.value)
-            
-        else: # self.options.goal == Goal.option_none
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                state.can_reach_region("HoruEscapeInnerDoor", self.player)
+        self.multiworld.completion_condition[self.player] = lambda state: \
+            all(get_goal_condition(self, state, goal) for goal in self.options.goal.value) and \
+            state.can_reach_region("HoruEscapeInnerDoor", self.player) if self.options.require_final_escape else True
 
     def fill_slot_data(self) -> Dict[str, Any]:
         slot_data: Dict[str, Any] = {}
@@ -202,6 +192,7 @@ class OriBlindForestWorld(World):
             slot_data[option_name] = option_value
 
         slot_data["world_tour_areas"] = self.world_tour_areas
+        slot_data["warmth_fragments_available"] = self.fragments_available
 
         return slot_data
 

@@ -32,6 +32,20 @@ somewhere else in the multiworld. In the former, the Golden Diva's chamber is lo
 instead escape with the treasure by entering the Sound Room on the north side of the pyramid. The
 number of treasures you have and what you need is displayed in the top center of the screen.
 
+Wario's shuffled abilities are displayed in the bottom left corner of the screen when selecting a
+stage within a passage. From top to bottom and left to right, these moves are as follows:
+
+- Progressive Ground Pound, which let you break blocks and attack enemies below you by landing on
+them. The second level lets you ground pound from a great height to break green blocks.
+- Progressive Grab, which lets you lift and throw enemies and objects. The second level lets you
+lift heavy things that limit Wario's movement when carried.
+- Dash Attack, which lets you run through enemies and blocks by holding L or R. You also need this
+ability to break green blocks by rolling into them.
+- Swim, which lets you move underwater. Without this ability, you will float to the surface of the
+water and be otherwise unable to move.
+- Head Smash, which lets you break blocks by jumping into them from below.
+- Stomp Jump, which lets you jump high by holding A as you land on an enemy.
+
 ## What is the goal of Wario Land 4 when randomized?
 
 Defeat the Golden Diva and steal the Golden Pyramid's treasure!
@@ -71,6 +85,8 @@ expect you to use those strategies.
 
 A full list of these strategies is as follows:
 
+- In Monsoon Jungle, you can reach the CD box by throwing an enemy into the brown block and floating
+in as Puffy Wario.
 - In 40 Below Fridge, you can ground pound the switches in the maze puzzle room by getting a running
 start and stomp jumping on the glass ball right after the glass bird spits it out.
 - In The Toxic Landfill, you can lure the Ringosuki toward the water and grab the apple in midair to
@@ -84,6 +100,10 @@ gray blocks. The Normal version of that room doesn't have any enemies you can th
 - In Domino Row, you can open the way down the red tower by either breaking the blocks with Head
 Smash or by throwing a Toy Car from the top of the room. You need to do one of these things to
 escape without Ground Pound.
+- Also in Domino Row's red tower, you can get the diamond at the top by going up the left path and
+using invulnerability frames to break one of the blocks and collect it from above.
+- In the switch room in Domino Row, you can ground pound the hard block without dash attacking the
+block above the ladder if you ground pound immediately after dropping off.
 - In Arabian Night, you can reach the bottom of the room full of mummy enemies by throwing them at
 the wooden boxes if you have Grab.
 - In Hotel Horror, you can access the frog switch on Hard without carrying the Ringosuki by throwing

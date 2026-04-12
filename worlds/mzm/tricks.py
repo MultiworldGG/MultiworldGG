@@ -68,11 +68,6 @@ tricks_normal = {
             CanEnterHighMorphTunnel
         ),
 
-    # Not quite a trick, but a rando-exclusive path.
-    # Climb up a tall shaft in the Chozo Ruins to access the Chozo Ghost area from the right side instead of the left
-    "Chozo Ghost Access Reverse":
-        CanFlyWall,
-
     # Less a trick, more a secret path.
     # An invisible tunnel in the ceiling of a room by the cockpit allows you to go around the Power Bomb blocks
     # that otherwise block your path to Mecha Ridley
@@ -165,7 +160,7 @@ tricks_normal = {
 
     # Get in the morph tunnel to Norfair Behind Lower Super Missile Door - Left using a well-timed enemy freeze
     # from the center platform, then a precise jump or balljump off the enemy
-    "Norfair Behind Super Door Left Enemy Freeze":
+    "Norfair Behind Lower Super Missile Door - Left Enemy Freeze":
         all(
             CanReachLocation("Norfair Behind Lower Super Missile Door - Right"),
             IceBeam,
@@ -221,6 +216,11 @@ tricks_advanced = {
             CanSpringBall
         ),
 
+    # Enter a morph tunnel one tile below a ceiling using a frame-perfect midair morph with Space Jump
+    # Applicable for Kraid left shaft access and Norfair Behind Super Door Left
+    "Rising Midair Morph With Space Jump":
+        SpaceJump,
+
     # Dislodge a Zoomer with a Super Missile then freeze it along the wall to grip, springball, or bomb jump up
     "Brinstar Ripper Climb Zoomer Freeze":
         all(
@@ -264,10 +264,6 @@ tricks_advanced = {
     "Kraid Right Shaft Balljump Climb":
         CanHiSpringBall,
 
-    # Get into the high morph tunnel leading to the left shaft of Kraid with a space jump into very tight midair morph
-    "Kraid Left Shaft Access Space Jump Only":
-        SpaceJump,
-
     # Access Kraid's left shaft without ziplines by using some precise grips and jump extends. Harder than it sounds!
     "Acid Worm Skip Grip Only":
         PowerGrip,
@@ -281,14 +277,11 @@ tricks_advanced = {
         ),
 
     # Climb into the tunnel of crumble blocks, then repeatedly jump up and quickly grip the next one
-    "Kraid Quad Ball Cannon Crumble Grip":
+    "Kraid Quad Ball Cannon Crumble Grip Hi-Jump":
         all(
             Missiles,
             PowerGrip,
-            any(
-                HiJump,
-                SpaceJump
-            )
+            HiJump
         ),
 
     # Use a spaceboost to break one of the bomb blocks leading down to the Unknown Item Statue, saving a PB
@@ -345,6 +338,19 @@ tricks_advanced = {
         all(
             IceBeam,
             HiJump
+        ),
+
+    # Freeze the flying enemy in a position where its unfreezing will knock back morphed Samus into the tunnel
+    "Norfair Behind Lower Super Missile Door - Left Damage Boost":
+        all(
+            IceBeam,
+            any(
+                SpaceJump,
+                all(
+                    GravitySuit,
+                    CanHiWallJump
+                )
+            )
         ),
 
     # Use Long Beam to destroy the top row of blocks, then place bombs along the top of the other row to clear out
@@ -435,6 +441,14 @@ tricks_ludicrous = {
         all(
             Bomb,
             CanHorizontalIBJ
+        ),
+
+    # Same as the version with Hi-Jump, but requires much more precision to control Space Jumps and the timing is harder
+    "Kraid Quad Ball Cannon Crumble Grip Space Jump":
+        all(
+            Missiles,
+            PowerGrip,
+            SpaceJump
         ),
 
     # Set up a clip into the floor to get a speed boost to the right with less space
@@ -625,6 +639,34 @@ hazard_runs_normal = {
             PlasmaBeam,
             Energy(199)
         ),
+    "Tourian Acid Dive - Normal":
+        any(
+            all(
+                any(
+                    CanWallJump,
+                    CanHiGrip
+                ),
+                Energy(449)
+            ),
+            all(
+                VariaSuit,
+                any(
+                    CanWallJump,
+                    CanHiGrip
+                ),
+                Energy(249)
+            ),
+            # This acid still damages Samus even with Gravity Suit
+            all(
+                GravitySuit,
+                any(
+                    CanWallJump,
+                    PowerGrip,
+                    HiJump,
+                    CanIBJ
+                )
+            )
+        ),
     # This is for collecting the item and getting out
     "Chozodia Lava Dive Item - Normal":
         all(
@@ -751,6 +793,34 @@ hazard_runs_minimal = {
             MissileCount(6),
             PlasmaBeam
         ),
+    "Tourian Acid Dive - Minimal":
+        any(
+            all(
+                any(
+                    CanWallJump,
+                    CanHiGrip
+                ),
+                Energy(249)
+            ),
+            all(
+                VariaSuit,
+                any(
+                    CanWallJump,
+                    CanHiGrip
+                ),
+                Energy(149)
+            ),
+            # This acid still damages Samus even with Gravity Suit
+            all(
+                GravitySuit,
+                any(
+                    CanWallJump,
+                    PowerGrip,
+                    HiJump,
+                    CanIBJ
+                )
+            )
+        ),
     # This is for collecting the item and getting out
     "Chozodia Lava Dive Item - Minimal":
         all(
@@ -777,3 +847,16 @@ hazard_runs_minimal = {
 
 all_tricks = {**tricks_normal, **tricks_advanced, **tricks_ludicrous, **tricky_shinesparks,
               **hazard_runs_normal, **hazard_runs_minimal}
+
+# These are the names of groups that can be entered in your yaml for tricks_allowed or tricks_denied as shorthand.
+# TODO more groups?
+trick_groups = {
+    "Intended Sequence Breaks": [
+        "Norfair-Ridley Shortcut",
+        "Kraid-Norfair Shortcut",
+        "Ridley Right Shaft Shortcut",
+        "Mecha Ridley Hall PB Skip",
+    ],
+    "Tricky Shinesparks": tricky_shinesparks.keys(),
+    "Ludicrous Tricks": tricks_ludicrous.keys(),
+}

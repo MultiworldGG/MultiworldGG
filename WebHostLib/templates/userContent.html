@@ -32,6 +32,37 @@
             Below is a list of all the content you have generated on this site. Rooms and seeds are listed separately.<br/>
             Sessions can be saved or synced across devices using the <a href="{{url_for('show_session')}}">Sessions Page.</a>
 
+            <h2>Your Lobbies</h2>
+            {% if lobbies %}
+                <table id="lobbies-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Players</th>
+                            <th>Last Activity (UTC)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lobby in lobbies | sort(attribute='last_activity', reverse=True) %}
+                            <tr>
+                                <td><a href="{{ url_for('lobby_view', lobby=lobby.id) }}">{{ lobby.title }}</a></td>
+                                <td>
+                                    {% if lobby.state == 0 %}<span class="status-open">Open</span>
+                                    {% elif lobby.state == 1 %}<span class="status-generating">Generating…</span>
+                                    {% elif lobby.state == 2 %}<span class="status-done">Seed created</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ lobby.players | length }}</td>
+                                <td>{{ lobby.last_activity.strftime("%Y-%m-%d %H:%M") }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                You have not created any lobbies yet!
+            {% endif %}
+
             <h2>Your Rooms</h2>
             {% if rooms %}
                 <table id="rooms-table" class="table">

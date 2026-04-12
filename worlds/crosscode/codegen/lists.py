@@ -52,6 +52,7 @@ class ListInfo:
     dynamic_items: dict[str, ItemData]
 
     item_pools: dict[str, list[ItemPoolEntry]]
+    item_groups: dict[str, list[ItemData]]
 
     reward_amounts: dict[str, int]
 
@@ -64,6 +65,8 @@ class ListInfo:
     shop_unlock_by_shop: dict[str, ItemData]
     shop_unlock_by_shop_and_id: dict[tuple[str, int], ItemData]
     global_slot_region_conditions_list: dict[str, list[Condition]]
+
+    region_botanics_amounts: dict[str, dict[str, int]] # { mode => { region => number of plants } }
 
     progressive_chains: dict[str, ProgressiveItemChain]
     progressive_items: dict[str, ItemData]
@@ -96,6 +99,7 @@ class ListInfo:
         self.dynamic_items = {}
 
         self.item_pools = {}
+        self.item_groups = {}
 
         self.reward_amounts = {}
 
@@ -106,6 +110,8 @@ class ListInfo:
         self.shop_unlock_by_shop = {}
         self.shop_unlock_by_shop_and_id = {}
         self.global_slot_region_conditions_list = {}
+
+        self.region_botanics_amounts = defaultdict(lambda: defaultdict(lambda: 0))
 
         self.json_parser = JsonParser(self.ctx)
         self.json_parser.single_items_dict = self.single_items_dict
@@ -152,6 +158,10 @@ class ListInfo:
             self.items_dict[name, 1] = ItemData(data, 1, BASE_ID + RESERVED_ITEM_IDS + data.item_id)
 
         self.__add_progressive_chains(file["progressiveChains"])
+
+        self.__add_item_group_list(self.ctx.rando_data["itemGroups"])
+
+        self.__add_botanics(file["botanics"])
 
         self.__add_vars(self.ctx.rando_data["vars"])
 
@@ -344,6 +354,14 @@ class ListInfo:
             "en_US": f"Unlocks \\c[3]all item slots\\c[0] in the shop \\c[3]{real_name}\\c[0]."
         }
 
+        shop_unlocks = self.item_groups.setdefault(f"Shop Unlocks", [])
+        if by_shop_item not in shop_unlocks:
+            shop_unlocks.append(by_shop_item)
+
+        global_item_group = self.item_groups.setdefault("Global Slot Unlocks", [])
+        slots_item_group = self.item_groups.setdefault("Slot Unlocks", [])
+        this_shop_item_group = self.item_groups.setdefault(f"Slot Unlocks: {shop_base_name}", [])
+
         for item_name in raw_shop["slots"]:
             item_data = self.ctx.rando_data["items"][item_name]
 
@@ -375,6 +393,9 @@ class ListInfo:
             by_shop_and_id_name = f"Slot Unlock: {item_name} ({shop_display_name})"
             by_shop_and_id_item = self.__add_shop_unlock_item(by_shop_and_id_name)
             self.shop_unlock_by_shop_and_id[shop_name, item_id] = by_shop_and_id_item
+
+            slots_item_group.append(by_shop_and_id_item)
+            this_shop_item_group.append(by_shop_and_id_item)
 
             self.descriptions[by_shop_and_id_item.combo_id] = {
                 "en_US": f"Unlocks the slot selling \\c[3]{item_name}\\c[0] in \\c[3]{real_name}\\c[0]."
@@ -409,6 +430,8 @@ class ListInfo:
                 self.shop_unlock_by_id[item_id] = by_id_item
                 self.global_shop_locations[item_id] = global_location
 
+                global_item_group.append(by_id_item)
+
                 self.locations_data[global_location.name] = global_location
 
                 self.descriptions[by_id_item.combo_id] = {
@@ -441,10 +464,15 @@ class ListInfo:
         for name, raw_item in item_list.items():
             self.__add_item_data(name, raw_item)
 
-    def __add_item_pool(self, name: str, raw: list[dict[str, typing.Any]]):
+    def __add_item_pool(self, name: str, raw: dict[str, typing.Any] | list[dict[str, typing.Any]], make_group: bool = True):
         """
         Add an item pool to the list of item pools.
         """
+
+        if isinstance(raw, dict):
+            self.__add_item_pool(name, raw["items"], raw.get("group", True))
+            return
+
         pool: list[ItemPoolEntry] = []
         for data in raw:
             item = self.__add_reward(data["item"])
@@ -456,12 +484,27 @@ class ListInfo:
 
         self.item_pools[name] = pool
 
-    def __add_item_pool_list(self, raw: dict[str, list[dict[str, typing.Any]]]):
+        if make_group:
+            self.item_groups[name] = [e.item for e in pool]
+
+    def __add_item_pool_list(self, raw: dict[str, dict[str, typing.Any] | list[dict[str, typing.Any]]]):
         """
         Add a list of item pools to the list of item pools.
         """
         for name, pool in raw.items():
             self.__add_item_pool(name, pool)
+
+    def __add_item_group(self, name: str, raw: list[list[typing.Any]]):
+        self.item_groups[name] = [self.__add_reward(item) for item in raw]
+
+    def __add_item_group_list(self, raw: dict[str, list[list[typing.Any]]]):
+        for name, pool in raw.items():
+            self.__add_item_group(name, pool)
+
+    def __add_botanics(self, raw: dict[str, dict[str, typing.Any]]):
+        for plant in raw.values():
+            for mode, region in plant["region"].items():
+                self.region_botanics_amounts[mode][region] += 1
 
     def __add_reward(self, reward: list[dict[str, typing.Any]]) -> ItemData:
         """
@@ -497,6 +540,13 @@ class ListInfo:
         raw["reserved"] = True
         _, item = self.__add_item_data(f"Progressive {chain.display_name}", raw)
         self.progressive_items[name] = item
+        if raw.get("group", False) and isinstance(chain, ProgressiveItemChainSingle):
+            if isinstance(raw["group"], str):
+                group_name = raw["group"]
+            else:
+                group_name = chain.display_name
+            self.item_groups[group_name] = [entry.item for entry in chain.items]
+            self.item_groups[group_name].append(item)
 
     def __add_progressive_chains(self, raw: dict[str, dict[str, typing.Any]]):
         """

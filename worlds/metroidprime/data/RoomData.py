@@ -7,7 +7,8 @@ from BaseClasses import (
     LocationProgressType,
     Region,
 )
-from ..PrimeOptions import DoorColorRandomization
+
+from ..PrimeOptions import DisplayNonLocalItems, DoorColorRandomization
 from ..BlastShieldRando import BlastShieldType
 from ..DoorRando import DoorLockType
 from ..Items import ProgressiveUpgrade, SuitUpgrade
@@ -28,6 +29,7 @@ from ..Locations import MetroidPrimeLocation, every_location
 from .RoomNames import RoomName
 from .Tricks import TrickInfo
 from .DoorData import DoorData
+from .OffworldModels import get_offworld_model
 
 if typing.TYPE_CHECKING:
     from .. import MetroidPrimeWorld
@@ -51,7 +53,9 @@ def get_config_item_text(world: "MetroidPrimeWorld", location: str) -> str:
 def get_config_item_model(world: "MetroidPrimeWorld", location: str) -> str:
     loc = world.get_location(location)
     assert loc.item
-    if loc.native_item:
+    is_local_prime_item = loc.item.player == world.player and loc.item.game == world.game
+    display_nonlocal_items = world.options.display_nonlocal_items
+    if is_local_prime_item or (loc.native_item and display_nonlocal_items != DisplayNonLocalItems.option_none):
         name = loc.item.name
         if name == SuitUpgrade.Missile_Expansion.value:
             return "Missile"
@@ -71,11 +75,8 @@ def get_config_item_model(world: "MetroidPrimeWorld", location: str) -> str:
         if name == ProgressiveUpgrade.Progressive_Plasma_Beam.value:
             return "Plasma Beam"
         return name
-    if loc.item.advancement:
-        return "Cog"
-    if loc.item.useful or loc.item.trap:
-        return "Zoomer"
-    return "Nothing"
+    else:
+        return get_offworld_model(loc.item, display_nonlocal_items == DisplayNonLocalItems.option_match_series)
 
 
 @dataclass

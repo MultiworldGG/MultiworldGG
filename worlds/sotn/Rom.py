@@ -16,6 +16,8 @@ from .Locations import locations
 from .Enemies import enemy_dict, enemy_stats_list, enemy_atk_type_list, enemy_weak_type_list
 from .data.Constants import (RELIC_NAMES, SLOT, slots, equip_id_offset, equip_inv_id_offset, CURRENT_VERSION,
                              faerie_scroll_force_addresses, shop_item_data, start_room_data, music, music_by_area)
+from .data.io_items import io_items, tile_filter, io_item_name
+
 
 from .data.Zones import zones, ZONE
 import hashlib
@@ -1363,6 +1365,8 @@ def write_tokens(world: "SotnWorld", patch: SotnProcedurePatch):
         sanity |= (1 << 0)
     if options_dict["enemy_scroll"]:
         sanity |= (1 << 1)
+    if options_dict["auto_heal"]:
+        sanity |= (1 << 6)
     if options_dict["death_link"]:
         sanity |= (1 << 7)
 
@@ -1460,8 +1464,21 @@ def write_tokens(world: "SotnWorld", patch: SotnProcedurePatch):
     if options_dict["random_music"]:
         randomize_music(world, patch)
 
+    # Thanks DerDrach to point me where to find those on SOTN.IO
+    if options_dict["color_randomizer"]:
+        randomize_cape_colors(world, patch)
+        randomize_grav_boot_colors(world, patch)
+        randomize_hydro_storm_color(world, patch)
+        randomize_wing_smash_color(world, patch)
+        randomize_richter_color(world, patch)
+        randomize_dracula_cape(world, patch)
+        randomize_maria_color(world, patch)
+
     if options_dict["skip_nz1"]:
         disable_nz1_puzzle(patch)
+
+    if options_dict["randomize_drop"]:
+        randomize_drop(options_dict["randomize_drop"], world, patch)
 
     apply_acessibility_patches(patch)
     rando_func_master(0, patch)
@@ -1470,6 +1487,308 @@ def write_tokens(world: "SotnWorld", patch: SotnProcedurePatch):
 
     patch.write_file("options.json", json.dumps(options_dict).encode("utf-8"))
     patch.write_file("token_data.bin", patch.get_token_binary())
+
+
+def random_color(world: "SotnWorld") -> int:
+    return 0x8000 | math.floor(world.random.random() * 0x10000)
+
+
+def cape_color(world: "SotnWorld", lining_address: int, outer_address: int, opts: dict, patch: SotnProcedurePatch):
+    if "liningColor1" in opts:
+        lining_color_1 = opts["liningColor1"]
+    else:
+        lining_color_1 = random_color(world)
+
+    if "liningColor2" in opts:
+        lining_color_2 = opts["liningColor2"]
+    else:
+        lining_color_2 = random_color(world)
+
+    if "outerColor1" in opts:
+        outer_color_1 = opts["outerColor1"]
+    else:
+        outer_color_1 = random_color(world)
+
+    if "outerColor2" in opts:
+        outer_color_2 = opts["outerColor2"]
+    else:
+        outer_color_2 = random_color(world)
+
+    patch.write_token(APTokenTypes.WRITE, lining_address + 0x00, lining_color_1.to_bytes(2, "little"))
+    patch.write_token(APTokenTypes.WRITE, lining_address + 0x02, lining_color_2.to_bytes(2, "little"))
+    patch.write_token(APTokenTypes.WRITE, outer_address + 0x00, outer_color_1.to_bytes(2, "little"))
+    patch.write_token(APTokenTypes.WRITE, outer_address + 0x02, outer_color_2.to_bytes(2, "little"))
+
+
+def randomize_josephs_cloak(world: "SotnWorld", patch: SotnProcedurePatch):
+    colors = [
+        math.floor(world.random.random() * 32),
+        math.floor(world.random.random() * 32),
+        math.floor(world.random.random() * 32),
+        math.floor(world.random.random() * 32),
+        math.floor(world.random.random() * 32),
+        math.floor(world.random.random() * 32)
+    ]
+    # Write the jump to injected code
+    rom_address = 0x158c98
+    ram_address = 0x136c00
+    patch.write_token(APTokenTypes.WRITE, 0x0fa97c, (0x0c000000 + (ram_address >> 2)).to_bytes(4, "little"))
+    # Write the color setting instructions
+    address = rom_address
+    for i in range(len(colors)):
+        patch.write_token(APTokenTypes.WRITE, address, (0x3c020003).to_bytes(4, "little"))
+        address += 4
+        patch.write_token(APTokenTypes.WRITE, address, (0x3442caa8 + 4 * i).to_bytes(4, "little"))
+        address += 4
+        patch.write_token(APTokenTypes.WRITE, address, (0x24030000 + colors[i]).to_bytes(4, "little"))
+        address += 4
+        patch.write_token(APTokenTypes.WRITE, address, (0xa0430000).to_bytes(4, "little"))
+        address += 4
+
+    # Write the jump from injected code
+    patch.write_token(APTokenTypes.WRITE, address, (0x0803924f).to_bytes(4, "little"))
+
+
+def randomize_cape_colors(world: "SotnWorld", patch: SotnProcedurePatch):
+    # Cloth Cape
+    cape_color(world, 0x0afb84, 0x0afb88, {}, patch)
+    # Reverse Cloak & Inverted Cloak
+    lining_1 = random_color(world)
+    lining_2 = random_color(world)
+    outer_1 = random_color(world)
+    outer_2 = random_color(world)
+    cape_color(world, 0x0afb7c, 0x0afb80,
+               {"liningColor1": lining_1, "liningColor2": lining_2, "outerColor1": outer_1, "outerColor2": outer_2},
+               patch)
+    cape_color(world, 0x0afbb8, 0x0afbbc,
+               {"liningColor1": lining_1, "liningColor2": lining_2, "outerColor1": outer_1, "outerColor2": outer_2},
+               patch)
+    # Elven Cloak
+    cape_color(world, 0x0afb94, 0x0afb98, {}, patch)
+    # Crystal Cloak
+    cape_color(world, 0x0afba4, 0x0afba8, {"outerColor1": 0x0000}, patch)
+    # Royal Cloak
+    cape_color(world, 0x0afb8c, 0x0afb90, {}, patch)
+    # Blood Cloak
+    cape_color(world, 0x0afb9c, 0x0afba0, {}, patch)
+    # Joseph's Cloak is disabled on SOTN.IO conflits with preset preloaders
+    randomize_josephs_cloak(world, patch)
+    # Twilight Cloak
+    cape_color(world, 0x0afa44, 0x0afbac, {}, patch)
+    # DOP10 Cloak. - MottZilla
+    cape_color(world, 0x627984c, 0x6279850, {}, patch)
+    # DOP40 Cloak. - MottZilla
+    cape_color(world, 0x6894054, 0x6894058, {}, patch)
+
+
+def randomize_dracula_cape(world: "SotnWorld", patch: SotnProcedurePatch):
+    dracula_cape_pallete_count = 8
+    color_dc = math.floor(world.random.random() * dracula_cape_pallete_count)
+    offset = 0x535d4ea
+    palettes_dracula_cape = [
+        [0x9c21, 0xbc42, 0xd0a1],  # Blue
+        [0x8d03, 0x8a23, 0x82e7],  # Green
+        [0x8008, 0x8011, 0x801C],  # Default red
+        [0x9448, 0xd492, 0xd93b],  # Pink
+        [0x8d2d, 0x9a36, 0x9bbd],  # Yellow
+        [0xa129, 0xb231, 0xdb39],  # Gray
+        [0x9422, 0xa826, 0xb867],  # Purple
+        [0x8000, 0x8821, 0x8c63]   # Black
+    ]
+    if color_dc >= dracula_cape_pallete_count:
+        color_dc = 0
+    for i in range(3):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_dracula_cape[color_dc][i].to_bytes(2, "little"))
+        offset += 2
+
+
+def randomize_hydro_storm_color(world: "SotnWorld", patch: SotnProcedurePatch):
+    color_1 = math.floor(world.random.random() * 0x100)
+    color_2 = math.floor(world.random.random() * 0x100)
+    color_3 = math.floor(world.random.random() * 0x100)
+    color_4 = math.floor(world.random.random() * 0x100)
+    color_5 = math.floor(world.random.random() * 0x100)
+    patch.write_token(APTokenTypes.WRITE, 0x3A19544, struct.pack("<B", color_1))
+    patch.write_token(APTokenTypes.WRITE, 0x3A19550, struct.pack("<B", color_2))
+    patch.write_token(APTokenTypes.WRITE, 0x3A19558, struct.pack("<B", color_3))
+    patch.write_token(APTokenTypes.WRITE, 0x3A19560, struct.pack("<B", color_4))
+    patch.write_token(APTokenTypes.WRITE, 0x3A19568, struct.pack("<B", color_5))
+
+
+def randomize_grav_boot_colors(world: "SotnWorld", patch: SotnProcedurePatch):
+    # Base game has 2 bytes that it can set for a0 and a1
+    # set at 0x8011e1ac and 0x8011e1b0
+    color_1 = math.floor(world.random.random() * 0x100)
+    patch.write_token(APTokenTypes.WRITE, 0x13C814, struct.pack("<B", color_1))
+    color_2 = math.floor(world.random.random() * 0x100)
+    patch.write_token(APTokenTypes.WRITE, 0x13C818, struct.pack("<B", color_2))
+    prim_write_address_start = 0x13C82A
+    # Iterate through 12 values (r,g,and b for 4 prim corners)
+    for i in range(12):
+        # Select one color. 0x60 means 0, 0x64 is color1, 0x65 is color2
+        selection_index = math.floor(world.random.random() * 3)
+        selection_bytes = [0x60, 0x64, 0x65][selection_index]
+        # Go to the proper byte within the sb instruction and change which register writes
+        target_address = prim_write_address_start + i * 4
+        patch.write_token(APTokenTypes.WRITE, target_address, struct.pack("<B", selection_bytes))
+
+
+# Wing smash uses a palette pulled from the GPU
+# By default, this is palette #0x8102 (see EntityWingSmashTrail in decomp)
+# Keep the 0x8100, but change the lower byte to pick a random palette
+# This write is to 8011e438 at runtime
+def randomize_wing_smash_color(world: "SotnWorld", patch: SotnProcedurePatch):
+    # Index 0 in most cluts is transparent. In some it is not. In these non-transparent cluts, we won't
+    # get a recolored wing smash outline and will instead get an ugly rectangle, since all the pixels
+    # that are supposed to be transparent won't be. These CLUTS were identified by python script as having
+    # a non-transparent index 0. If we get one of them, we will re-roll the palette
+
+    # Dev note: The bad palettes were not "removed" by that Python script. This has been revised to use a
+    # combination of the two methods. -eldri7ch
+    good_cluts = [
+        0, 1, 3, 4, 5, 6, 7, 9, 13, 28, 40, 80, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104,
+        105, 106, 107, 108, 109, 110, 111, 112, 118, 129, 130, 131, 132, 133, 134, 135, 136, 151, 152, 154, 156, 160,
+        163, 168, 174, 241, 242, 243, 245, 249, 254
+    ]
+
+    new_palette = math.floor(world.random.random() * 0x100)
+    new_outline = math.floor(world.random.random() * 0x10000)
+
+    if new_palette in good_cluts:
+        # define new palette if it's a good palette
+        patch.write_token(APTokenTypes.WRITE, 0x13caa0, struct.pack("<B", new_palette))
+    else:
+        # otherwise use a new color for the outline
+        patch.write_token(APTokenTypes.WRITE, 0xef990, new_outline.to_bytes(2, "little"))
+
+
+def randomize_richter_color(world: "SotnWorld", patch: SotnProcedurePatch):
+    richter_palette_count = 5
+    color_r = math.floor(world.random.random() * richter_palette_count)
+    richter_offset = [  # Offsets for the pause UI during Prologue
+        0x38BE9EA, 0x38BEA0A, 0x38BEA2A, 0x38BEA4A, 0x38BEA6A, 0x38BEAAA, 0x38BEACA, 0x38BEAEA, 0x38BEB0A, 0x38BEB2A,
+        0x38BEB4A, 0x38BEB6A
+    ]
+    palettes_richter = [
+        [0x0000, 0x8000, 0xb185, 0xc210, 0xd294, 0xf39c, 0xfd80, 0xb000, 0x80ac, 0x9556, 0xb21c, 0xc29c, 0xd33c, 0x8194,
+         0xfc00, 0x801f],  # Blue
+        [0x0000, 0x8000, 0xb185, 0xc210, 0xd294, 0xf39c, 0xaa80, 0x8080, 0x80ac, 0x9556, 0xb21c, 0xc29c, 0xd33c, 0x8194,
+         0x8180, 0xfc1f],  # Green
+        [0x0000, 0x8000, 0xa906, 0xbd8d, 0xdab6, 0xffff, 0x801e, 0x8009, 0x80cd, 0x9956, 0xbe7f, 0xcedf, 0xdb7f, 0x81f2,
+         0x8013, 0x83e0],  # Red
+        [0x0000, 0x8000, 0xa906, 0xbd8d, 0xdab6, 0xffff, 0xa4e9, 0x9402, 0x80cd, 0x9956, 0xbe7f, 0xcedf, 0xdb7f, 0x81f2,
+         0x94a2, 0xff80],  # Black
+        [0x0000, 0x8000, 0xB185, 0xC210, 0xD294, 0xF39C, 0xFD97, 0xB007, 0xB04C, 0x9556, 0xB21C, 0xC29C, 0xD33C, 0x8194,
+         0xFC10, 0x801F]  # Purple (MottZilla)
+    ]
+    if color_r >= richter_palette_count:
+        color_r = 0
+    offset = 0x38BED78  # Richter's main palette
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x38BEED8  # Richter's alternate palettes when using item crash
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x436BA9C  # Richter's palette for ending cutscene
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x562266C  # Richter's palette for saving Richter cutscene
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x63CD658  # Richter's palette for his Boss Fight
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x63CD7B8  # Richter's alternate paletts when using item crashes during Boss Fight
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x6113772  # Richter's Colosseum cutscene
+    patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][14].to_bytes(2, "little"))
+    offset += 2
+    patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][7].to_bytes(2, "little"))
+    offset += 2
+    patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][6].to_bytes(2, "little"))
+    offset = 0x38BE9EA  # Richter's pause UI
+    for i in range(12):
+        patch.write_token(APTokenTypes.WRITE, richter_offset[i], palettes_richter[color_r][14].to_bytes(2, "little"))
+    offset = 0x38BEA1A  # Richter's Health Bar
+    patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][6].to_bytes(2, "little"))
+    offset += 2
+    patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][14].to_bytes(2, "little"))
+    offset += 2
+    patch.write_token(APTokenTypes.WRITE, offset, palettes_richter[color_r][7].to_bytes(2, "little"))
+
+
+def randomize_maria_color(world: "SotnWorld", patch: SotnProcedurePatch):
+    maria_palette_count = 6
+    color_m = math.floor(world.random.random() * maria_palette_count)
+    palettes_maria = [
+        [0x0000, 0x84c9, 0x8d53, 0xa1f9, 0xb6fc, 0x8180, 0x8280, 0xab2a, 0x9218, 0x931f, 0x9463, 0x9ce7, 0xb148, 0xca2e,
+         0xe2f6, 0xef7b],  # Default
+        [0x0000, 0x84c9, 0x8d53, 0xa1f9, 0xb6fc, 0xb0a0, 0xd120, 0xe62a, 0x9218, 0x931f, 0x9463, 0x9ce7, 0xb148, 0xca2e,
+         0xe2f6, 0xef7b],  # Blue
+        [0x0000, 0xb04c, 0x8d53, 0xb1f9, 0xcafd, 0xb4f3, 0xbd9a, 0xd1de, 0x9218, 0x931f, 0xa488, 0x9ce7, 0xb1a7, 0xca2e,
+         0xe2f6, 0xef7b],  # Pink
+        [0x0000, 0xb50a, 0x8d53, 0xa1f9, 0xb6fc, 0xde04, 0xd6e3, 0xeb49, 0x9218, 0x931f, 0xb486, 0xb50a, 0xbd69, 0xd26d,
+         0xe2f6, 0xef7b],  # Light blue
+        [0x0000, 0x84c9, 0x950f, 0xa1f9, 0xb6fc, 0x9c64, 0x98c8, 0xa906, 0x9218, 0x931f, 0x9463, 0x9ce7, 0xa906, 0xb9ac,
+         0xd6b2, 0xef7b],  # Black
+        [0x0000, 0xb04c, 0x8d53, 0xa9b8, 0xc29c, 0xbc49, 0xd06f, 0xf8b1, 0x9218, 0x931f, 0x9463, 0x9ce7, 0xb1a7, 0xca2e,
+         0xe2f6, 0xef7b]   # Purple
+    ]
+    if color_m >= maria_palette_count:
+        color_m = 0
+    offset = 0x436BA7C  # Ending Cutscene
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_maria[color_m][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x45638F4  # Holy Glasses Cutscene
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_maria[color_m][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x4690EE4  # Silver Ring Cutscene
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_maria[color_m][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x54CA704
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_maria[color_m][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x562220C  # Save Richter Cutscene
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_maria[color_m][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x631620C  # Hippogriff Cutscene
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_maria[color_m][i].to_bytes(2, "little"))
+        offset += 2
+    offset = 0x650E768  # Clock Room Cutscene
+    for i in range(16):
+        patch.write_token(APTokenTypes.WRITE, offset, palettes_maria[color_m][i].to_bytes(2, "little"))
+        offset += 2
 
 
 def disable_nz1_puzzle(patch: SotnProcedurePatch):
@@ -2933,6 +3252,36 @@ def surprise_patches(patch: SotnProcedurePatch):
             offset += 0x140
         else:
             offset += 0x10
+
+
+def randomize_drop(option: int, world: "SotnWorld", patch: SotnProcedurePatch):
+    if option == 1 or option == 2:
+        items = tile_filter(io_items, ["enemy"])
+        dropped_items = []
+        # Collect every drop
+        for item in items:
+            for tile in item["tiles"]:
+                if option == 1 and tile["enemy"] == "GLOBAL_DROP":
+                    continue
+
+                total = len(tile["addresses"])
+                for _ in range(total):
+                    dropped_items.append(item["name"])
+        # Randomize the drops
+        world.random.shuffle(dropped_items)
+        # Write on the ROM
+        for item in items:
+            for tile in item["tiles"]:
+                if option == 1 and tile["enemy"] == "GLOBAL_DROP":
+                    continue
+
+                for address in tile["addresses"]:
+                    tile_options = {}
+                    if "noOffset" in tile:
+                        tile_options = {"no_offset": True}
+                    new_drop = io_item_name[dropped_items.pop()]
+                    new_tile = tile_value(new_drop, tile_options)
+                    patch.write_token(APTokenTypes.WRITE, address, new_tile.to_bytes(2, "little"))
 
 
 def get_base_rom_bytes(audio: bool = False) -> bytes:

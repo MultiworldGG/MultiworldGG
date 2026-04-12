@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 from .data import data as crystal_data, TrainerPokemon
 from .items import get_random_filler_item
 from .moves import get_random_move_from_learnset
-from .options import RandomizeTrainerParties, RandomizeLearnsets, BoostTrainerPokemonLevels
+from .options import RandomizeTrainerParties, RandomizeLearnsets, BoostTrainerPokemonLevels, LevelCurve, LevelScaling
+from .utils import bound
 from .pokemon import get_random_pokemon, get_random_nezumi
-from .utils import pokemon_convert_friendly_to_ids
 
 if TYPE_CHECKING:
     from .world import PokemonCrystalWorld
@@ -40,7 +40,7 @@ def randomize_trainers(world: "PokemonCrystalWorld"):
             vanilla_trainer_movesets(world)
         return
 
-    trainer_party_blocklist = pokemon_convert_friendly_to_ids(world, world.options.trainer_party_blocklist)
+    trainer_party_blocklist = world.options.trainer_party_blocklist.get_ids(world)
 
     for trainer_name, trainer_data in world.generated_trainers.items():
         new_party = []
@@ -122,3 +122,21 @@ def boost_trainer_pokemon(world: "PokemonCrystalWorld"):
             world.generated_trainers[trainer_name],
             pokemon=new_party
         )
+
+
+def scale_red_levels(world: "PokemonCrystalWorld"):
+    if (world.options.level_scaling == LevelScaling.option_off
+            or world.options.level_curve == LevelCurve.option_vanilla):
+        return
+    vanilla_red = crystal_data.trainers["RED_1"]
+    new_base_level = world.options.level_curve_max_level.value
+    old_base_level = min(p.level for p in vanilla_red.pokemon)
+    red_data = world.generated_trainers["RED_1"]
+    new_pokemon = [
+        replace(p, level=bound(round(min(
+            new_base_level * vanilla_p.level / old_base_level,
+            new_base_level + vanilla_p.level - old_base_level
+        )), 1, 100))
+        for p, vanilla_p in zip(red_data.pokemon, vanilla_red.pokemon)
+    ]
+    world.generated_trainers["RED_1"] = replace(red_data, pokemon=new_pokemon)

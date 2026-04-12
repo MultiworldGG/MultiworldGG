@@ -4,18 +4,25 @@ from BaseClasses import Item, ItemClassification
 class OriBlindForestItem(Item):
     game: str = "Ori and the Blind Forest"
 
-
-base_items = {
+base_pickups = {
     "AbilityCell": (ItemClassification.progression, 33),
     "HealthCell": (ItemClassification.progression, 12),
     "EnergyCell": (ItemClassification.progression, 14),
+    "SpiritFlame": (ItemClassification.progression, 1)
+}
 
+dungeon_keys = {
     "GinsoKey": (ItemClassification.progression, 1),
     "ForlornKey": (ItemClassification.progression, 1),
-    "HoruKey": (ItemClassification.progression, 1),
-    "CleanWater": (ItemClassification.progression, 1),
-    "Wind": (ItemClassification.progression, 1),
+    "HoruKey": (ItemClassification.progression, 1)
+}
 
+world_events = {
+    "CleanWater": (ItemClassification.progression, 1),
+    "Wind": (ItemClassification.progression, 1)
+}
+
+skills = {
     "WallJump": (ItemClassification.progression, 1),
     "ChargeFlame": (ItemClassification.progression, 1),
     "DoubleJump": (ItemClassification.progression, 1),
@@ -25,8 +32,10 @@ base_items = {
     "Climb": (ItemClassification.progression, 1),
     "ChargeJump": (ItemClassification.progression, 1),
     "Dash": (ItemClassification.progression, 1),
-    "Grenade": (ItemClassification.progression, 1),
+    "Grenade": (ItemClassification.progression, 1)
+}
 
+teleporters = {
     "TPGlades": (ItemClassification.progression, 1),
     "TPGrove": (ItemClassification.progression, 1),
     "TPSwamp": (ItemClassification.progression, 1),
@@ -36,8 +45,10 @@ base_items = {
     "TPForlorn": (ItemClassification.progression, 1),
     "TPSorrow": (ItemClassification.progression, 1),
     "TPHoru": (ItemClassification.progression, 1),
-    "TPBlackroot": (ItemClassification.progression, 1),
+    "TPBlackroot": (ItemClassification.progression, 1)
+}
 
+goal_items = {
     "WarmthFragment": (ItemClassification.progression, 0),
     "Relic": (ItemClassification.progression, 0)
 }
@@ -74,6 +85,11 @@ mapstone_items = {
     }
 }
 
+bonus_items = {
+    "HealthRegen": (ItemClassification.useful, 3),
+    "EnergyRegen": (ItemClassification.useful, 3)
+}
+
 filler_items = {
     # since filler is added dynamically at the end of item generation, the numbers here don't correspond
     # with how many are in the multiworld. Rather they are weights relative to each other
@@ -83,12 +99,29 @@ filler_items = {
     "EX200": (ItemClassification.filler, 2)
 }
 
+# dictionary of items that will always be in the item pool
+base_items = {
+    **base_pickups,
+    **dungeon_keys,
+    **world_events,
+    **skills,
+    **goal_items, # since warmth fragments and relics are 0 by default, they can be here
+    **bonus_items
+}
+
+# dictionary of every potential item that could be in the pool
 item_dict = {
-    **base_items,
+    **base_pickups,
+    **dungeon_keys,
+    **world_events,
+    **skills,
+    **teleporters,
+    **goal_items,
     **keystone_items["Anywhere"],
     **keystone_items["AreaSpecific"],
     **mapstone_items["Anywhere"],
     **mapstone_items["AreaSpecific"],
+    **bonus_items,
     **filler_items
 }
 

@@ -44,6 +44,8 @@ def randomize_mischief(world: "PokemonCrystalWorld"):
         safe_remove_mischief(MiscOption.SaffronGym)
         safe_remove_mischief(MiscOption.FanClubChairman)
         safe_remove_mischief(MiscOption.VermilionGym)
+        safe_remove_mischief(MiscOption.Fuschia)
+        safe_remove_mischief(MiscOption.BlueBlue)
 
     if not world.options.dexsanity or ("Land" not in world.options.wild_encounter_methods_required and
                                        "Surfing" not in world.options.wild_encounter_methods_required):

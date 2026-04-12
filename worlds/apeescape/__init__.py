@@ -78,6 +78,7 @@ class ApeEscapeWorld(World):
         self.requiredtokens: Optional[int] = 0
         self.totaltokens: Optional[int] = 0
         self.tokenlocations: Optional[int] = 0
+        self.fasttokengoal: Optional[int] = 0
         self.logic: Optional[int] = 0
         self.infinitejump: Optional[int] = 0
         self.superflyer: Optional[int] = 0
@@ -106,6 +107,7 @@ class ApeEscapeWorld(World):
         self.requiredtokens = self.options.requiredtokens.value
         self.totaltokens = self.options.totaltokens.value
         self.tokenlocations = self.options.tokenlocations.value
+        self.fasttokengoal = self.options.fasttokengoal.value
         self.logic = self.options.logic.value
         self.infinitejump = self.options.infinitejump.value
         self.superflyer = self.options.superflyer.value
@@ -203,6 +205,12 @@ class ApeEscapeWorld(World):
         item = ApeEscapeItem(name, classification, item_id, self.player)
         return item
 
+    def create_event_item(self, name: str) -> ApeEscapeItem:
+        classification = ItemClassification.progression
+
+        item = ApeEscapeItem(name, classification, None, self.player)
+        return item
+
     def create_items(self):
         reservedlocations = 0
 
@@ -214,7 +222,7 @@ class ApeEscapeWorld(World):
         flyer = self.create_item(AEItem.Flyer.value)
         car = self.create_item(AEItem.Car.value)
         punch = self.create_item(AEItem.Punch.value)
-        victory = self.create_item(AEItem.Victory.value)
+        victory = self.create_event_item("Victory")
 
         waternet = self.create_item(AEItem.WaterNet.value)
         # progwaternet = self.create_item(AEItem.ProgWaterNet.value)

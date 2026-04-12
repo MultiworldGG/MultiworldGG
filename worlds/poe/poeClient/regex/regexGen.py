@@ -1011,7 +1011,7 @@ if __name__ == "__main__":
         "Hypothermia Support",
         "Ice Bite Support",
         "Impale Support",
-        "Lesser Multiple Projectiles Support",
+        "Multiple Projectiles Support",
         "Locus Mine Support",
         "Mana Leech Support",
         "Manaforged Arrows Support",

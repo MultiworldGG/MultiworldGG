@@ -34,7 +34,7 @@ If several locations are unreachable, this is larger issue than the one above. I
 ## AP Client Issues
 
 ### My client won't open
-See [this guide](https://github.com/Battlecats59/SS_APWorld/releases/tag/DME) to install DME for Python in your Archipelago installation.
+See [this guide](https://github.com/Battlecats59/SS_APWorld/releases/tag/DME) to install DME for Python in your MultiworldGG installation.
 
 If your issue persists after installing DME, please report your problem to the Discord so we can help you further.
 

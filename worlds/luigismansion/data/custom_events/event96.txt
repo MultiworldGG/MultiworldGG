@@ -5,13 +5,13 @@
 ------------------------------------
 <CASE>"CheckBoos"
 <CLEARCOUNT>
-<CHECKTELESA>({Count0})({Count1})({Count2})({Count3})({Count4})
-<COUNTJMP>"{Case0}""{Case1}""{Case2}""{Case3}""{Case4}""boos_captured"
+<CHECKTELESA>{Count0}{Count1}{Count2}{Count3}{Count4}
+<COUNTJMP>{Case0}{Case1}{Case2}{Case3}{Case4}"boos_captured"
 ------------------------------------
 <CASE>"not_enough"
 <SE>(95)
 <WINDOW>(0)<COLOR>(4)
-<SAY><COLOR>(3)You require {Count4} boo(s) before\nyou can open this door...
+<SAY><COLOR>(3)You require {ReqCount} boo(s) before\nyou can open this door...
 <ANYKEY>
 <CLOSEWINDOW>(0)
 <RAMDOMJMP>"{MoveType}"

@@ -78,7 +78,7 @@ The groups you can use for The Messenger are:
 ## What do I do if I have a problem?
 
 If you believe something happened that isn't intended, please get the `log.txt` from the folder of your game
-installation and send a bug report either on GitHub or the [ZSR Discord Server](http://multiworld.gg/discord)
+installation and send a bug report either on GitHub or the [Unofficial AP Discord Server](http://multiworld.gg/discord)
 
 ## FAQ
 

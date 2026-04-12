@@ -61,10 +61,12 @@ def create_regions_and_connections(world: MZMWorld):
     create_region(multiworld, player, "Central Ridley", "in Ridley's lair")
     create_region(multiworld, player, "Ridley Room", "in Ridley's lair")
     create_region(multiworld, player, "Tourian", "in Tourian")
+    create_region(multiworld, player, "Tourian Escape Shaft", "in Tourian")
     create_region(multiworld, player, "Lower Crateria", "in Crateria")
     create_region(multiworld, player, "Upper Right Crateria", "in Crateria")
     create_region(multiworld, player, "Upper Left Crateria", "in Crateria")
     create_region(multiworld, player, "Crateria Power Grip", "in Crateria")
+    create_region(multiworld, player, "Crateria Left", "in Crateria")
     create_region(multiworld, player, "Chozodia Ruins", "in the Chozo Ruins")
     create_region(multiworld, player, "Chozodia Ruins Test Area", "in the Chozo Ruins")
     create_region(multiworld, player, "Chozodia Glass Tube", "in the Chozo Ruins")
@@ -88,7 +90,7 @@ def create_regions_and_connections(world: MZMWorld):
     connect(multiworld, player, "Brinstar -> Kraid Elevator", "Brinstar Start", "Kraid Main", CanSingleBombBlock.create_rule(world))
     connect(multiworld, player, "Brinstar -> Norfair Elevator", "Brinstar Main", "Norfair Main", CanBombTunnelBlock.create_rule(world))
     connect(multiworld, player, "Brinstar -> Tourian Elevator", "Brinstar Main", "Tourian", all(MorphBall, KraidBoss, RidleyBoss).create_rule(world))
-    connect(multiworld, player, "Brinstar -> Crateria Ballcannon", "Brinstar Start", "Lower Crateria", brinstar_crateria_ballcannon().create_rule(world))
+    connect(multiworld, player, "Brinstar -> Crateria Ballcannon", "Brinstar Start", "Crateria Left", brinstar_crateria_ballcannon().create_rule(world))
 
     # Kraid connections
     connect(multiworld, player, "Kraid Main -> Acid Worm Area", "Kraid Main", "Kraid Acid Worm Area", kraid_upper_right().create_rule(world))
@@ -132,6 +134,7 @@ def create_regions_and_connections(world: MZMWorld):
 
     # Tourian connections
     #connect(multiworld, player, "Tourian Escape -> Chozodia", "Tourian", "Chozodia Ruins Test Area", tourian_to_chozodia().create_rule(world))
+    connect(multiworld, player, "Tourian -> Escape Shaft", "Tourian", "Tourian Escape Shaft", tourian_to_escape_shaft().create_rule(world))
 
     # Crateria connections
     connect(multiworld, player, "Lower Crateria -> Upper Right Crateria", "Lower Crateria", "Upper Right Crateria", crateria_lower_to_crateria_upper_right().create_rule(world))
@@ -139,8 +142,11 @@ def create_regions_and_connections(world: MZMWorld):
     connect(multiworld, player, "Upper Right Crateria -> Power Grip", "Upper Right Crateria", "Crateria Power Grip", crateria_upper_to_powergrip().create_rule(world))
     connect(multiworld, player, "Upper Left Crateria -> Power Grip", "Upper Left Crateria", "Crateria Power Grip", crateria_upper_to_powergrip().create_rule(world))
     connect(multiworld, player, "Upper Left Crateria -> Upper Right Crateria", "Upper Left Crateria", "Upper Right Crateria", crateria_upper_leftright_connection().create_rule(world))
-    connect(multiworld, player, "Crateria -> Chozodia Upper Door", "Lower Crateria", "Chozodia Under Tube", crateria_to_under_tube().create_rule(world))
-    connect(multiworld, player, "Crateria -> Chozodia Lower Door", "Upper Right Crateria", "Chozodia Ruins", crateria_upper_to_chozo_ruins().create_rule(world))
+    connect(multiworld, player, "Crateria -> Chozodia Lower Door", "Lower Crateria", "Chozodia Under Tube", crateria_to_under_tube().create_rule(world))
+    connect(multiworld, player, "Crateria -> Chozodia Upper Door", "Upper Right Crateria", "Chozodia Ruins", crateria_upper_to_chozo_ruins().create_rule(world))
+    # TODO: add an extra Landing Site region for pathfinding when necessary (start/area/elevator rando)
+    connect(multiworld, player, "Crateria Left -> Landing Site", "Crateria Left", "Lower Crateria", crateria_left_to_landing_site().create_rule(world))
+    connect(multiworld, player, "Crateria -> Tourian", "Crateria Left", "Tourian Escape Shaft", crateria_to_tourian().create_rule(world))
 
     # Chozodia connections
     connect(multiworld, player, "Chozo Ruins -> Chozo Ruins Test", "Chozodia Ruins", "Chozodia Ruins Test Area", chozo_ruins_to_ruins_test().create_rule(world))

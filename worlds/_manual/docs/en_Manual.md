@@ -4,7 +4,7 @@
 A Manual game is a custom game that you've set an item list and location list for so that any game can be included in a multiworld game. You'll manually mark locations checked, and you'll manually restrict what items you use based on the items you've been sent. 
 
 ## Where is the settings page?
-The player settings page for this game is located <a href="../player-settings">here</a>. It contains all the options
+The player settings page for this game is located <a href="../player-options">here</a>. It contains all the options
 you need to configure and export a config file.
 
 ## What does randomization do to this game?

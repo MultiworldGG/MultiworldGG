@@ -21,6 +21,7 @@ import time
 import typing
 import weakref
 import zlib
+from signal import SIGINT, SIGTERM, signal
 
 import ModuleUpdate
 
@@ -224,6 +225,7 @@ class Context:
                       "remaining_mode": str,
                       "collect_mode": str,
                       "countdown_mode": str,
+                      "hint_mode": str,
                       "item_cheat": bool,
                       "compatibility": int}
     # team -> slot id -> list of clients authenticated to slot.
@@ -252,7 +254,7 @@ class Context:
     logger: logging.Logger
 
     def __init__(self, host: str, port: int, server_password: str, password: str, location_check_points: int,
-                 hint_cost: int, item_cheat: bool, release_mode: str = "disabled", collect_mode="disabled",
+                 hint_cost: int, item_cheat: bool, release_mode: str = "disabled", collect_mode="disabled", hint_mode: str = "default",
                  countdown_mode: str = "auto", remaining_mode: str = "disabled", auto_shutdown: typing.SupportsFloat = 0, 
                  compatibility: int = 2, log_network: bool = False, logger: logging.Logger = logging.getLogger()):
         self.logger = logger
@@ -288,6 +290,7 @@ class Context:
         self.remaining_mode: str = remaining_mode
         self.collect_mode: str = collect_mode
         self.countdown_mode: str = countdown_mode
+        self.hint_mode: str = hint_mode
         self.item_cheat = item_cheat
         self.exit_event = asyncio.Event()
         self.client_activity_timers: typing.Dict[
@@ -496,7 +499,8 @@ class Context:
 
         self.read_data = {}
         # there might be a better place to put this.
-        self.read_data["race_mode"] = lambda: decoded_obj.get("race_mode", 0)
+        race_mode = decoded_obj.get("race_mode", 0)
+        self.read_data["race_mode"] = lambda: race_mode
         mdata_ver = decoded_obj["minimum_versions"]["server"]
         if mdata_ver > version_tuple:
             raise RuntimeError(f"Supplied Multidata (.archipelago) requires a server of at least version {mdata_ver}, "
@@ -673,7 +677,7 @@ class Context:
                              "server_password": self.server_password, "password": self.password,
                              "release_mode": self.release_mode,
                              "remaining_mode": self.remaining_mode, "collect_mode": self.collect_mode,
-                             "countdown_mode": self.countdown_mode,
+                             "countdown_mode": self.countdown_mode, "hint_mode": self.hint_mode,
                              "item_cheat": self.item_cheat, "compatibility": self.compatibility}
 
         }
@@ -709,6 +713,7 @@ class Context:
             self.remaining_mode = savedata["game_options"]["remaining_mode"]
             self.collect_mode = savedata["game_options"]["collect_mode"]
             self.countdown_mode = savedata["game_options"].get("countdown_mode", self.countdown_mode)
+            self.hint_mode = savedata["game_options"].get("hint_mode", self.hint_mode)
             self.item_cheat = savedata["game_options"]["item_cheat"]
             self.compatibility = savedata["game_options"]["compatibility"]
 
@@ -917,12 +922,6 @@ async def server(websocket: "ServerConnection", path: str = "/", ctx: Context = 
 
 
 async def on_client_connected(ctx: Context, client: Client):
-    players = []
-    for team, clients in ctx.clients.items():
-        for slot, connected_clients in clients.items():
-            if connected_clients:
-                name = ctx.player_names[team, slot]
-                players.append(NetworkPlayer(team, slot, ctx.name_aliases.get((team, slot), name), name))
     games = {ctx.games[x] for x in range(1, len(ctx.games) + 1)}
     games.add("Archipelago")
     await ctx.send_msgs(client, [{
@@ -1205,7 +1204,10 @@ def collect_hints(ctx: Context, team: int, slot: int, item: typing.Union[int, st
         else:
             found = location_id in ctx.location_checks[team, finding_player]
             entrance = ctx.er_hint_data.get(finding_player, {}).get(location_id, "")
-
+            hidden_display = (
+                ((ctx.hint_mode == "own" and receiving_player == finding_player) or ctx.hint_mode == "all")
+                and not found
+            )
             hint_status = status  # Assign again because we're in a for loop
             if found:
                 hint_status = HintStatus.HINT_FOUND
@@ -1216,7 +1218,7 @@ def collect_hints(ctx: Context, team: int, slot: int, item: typing.Union[int, st
                     hint_status = HintStatus.HINT_PRIORITY
 
             hints.append(
-                Hint(receiving_player, finding_player, location_id, item_id, found, entrance, item_flags, hint_status)
+                Hint(receiving_player, finding_player, location_id, item_id, found, entrance, item_flags, hint_status, hidden_display)
             )
 
     return hints
@@ -1233,10 +1235,12 @@ def collect_hint_location_name(ctx: Context, team: int, slot: int, location: str
 
 
 def collect_hint_location_id(ctx: Context, team: int, slot: int, seeked_location: int,
-                             status: HintStatus | None = HintStatus.HINT_UNSPECIFIED) -> typing.List[Hint]:
+                             status: HintStatus | None = HintStatus.HINT_UNSPECIFIED,
+                             allow_hidden: bool = True) -> typing.List[Hint]:
     """
     Collect a new hint for a given location id, with a given status (defaults to "unspecified").
     If None is passed for the status, then an automatic status will be determined from the item's quality.
+    If allow_hidden is False, the hint will always be fully visible (used for externally triggered hints).
     """
     prev_hint = ctx.get_hint(team, slot, seeked_location)
     if prev_hint:
@@ -1247,6 +1251,11 @@ def collect_hint_location_id(ctx: Context, team: int, slot: int, seeked_location
 
         found = seeked_location in ctx.location_checks[team, slot]
         entrance = ctx.er_hint_data.get(slot, {}).get(seeked_location, "")
+        hidden_display = (
+            allow_hidden
+            and ((ctx.hint_mode == "own" and slot == receiving_player) or ctx.hint_mode == "all")
+            and not found
+        )
 
         if found:
             status = HintStatus.HINT_FOUND
@@ -1256,7 +1265,7 @@ def collect_hint_location_id(ctx: Context, team: int, slot: int, seeked_location
             else:
                 status = HintStatus.HINT_PRIORITY
 
-        return [Hint(receiving_player, slot, seeked_location, item_id, found, entrance, item_flags, status)]
+        return [Hint(receiving_player, slot, seeked_location, item_id, found, entrance, item_flags, status, hidden_display)]
     return []
 
 
@@ -1307,6 +1316,13 @@ class CommandMeta(type):
             commands.update(base.commands)
         commands.update({command_name[5:]: method for command_name, method in attrs.items() if
                          command_name.startswith("_cmd_")})
+        for command_name, method in commands.items():
+            # wrap async def functions so they run on default asyncio loop
+            if inspect.iscoroutinefunction(method):
+                def _wrapper(self, *args, _method=method, **kwargs):
+                    return async_start(_method(self, *args, **kwargs))
+                functools.update_wrapper(_wrapper, method)
+                commands[command_name] = _wrapper
         return super(CommandMeta, cls).__new__(cls, name, bases, attrs)
 
 
@@ -1370,7 +1386,10 @@ class CommandProcessor(metaclass=CommandMeta):
                         argname += "=" + parameter.default
                 argtext += argname
                 argtext += " "
-            doctext = '\n    '.join(inspect.getdoc(method).split('\n'))
+            method_doc = inspect.getdoc(method)
+            if method_doc is None:
+                method_doc = "(missing help text)"
+            doctext = "\n    ".join(method_doc.split("\n"))
             s += f"{self.marker}{command} {argtext}\n    {doctext}\n"
         return s
 
@@ -1752,12 +1771,21 @@ class ClientMessageProcessor(CommonCommandProcessor):
         if hints:
             new_hints = set(hints) - self.ctx.hints[self.client.team, self.client.slot]
             old_hints = list(set(hints) - new_hints)
-            if old_hints and not new_hints:
-                self.ctx.notify_hints(self.client.team, old_hints)
+            hidden_old_hints = [hint for hint in old_hints if hint.hidden]
+            truly_old_hints = [hint for hint in old_hints if not hint.hidden]
+            if truly_old_hints and not new_hints and not hidden_old_hints:
+                self.ctx.notify_hints(self.client.team, truly_old_hints)
                 self.output("Hint was previously used, no points deducted.")
-            if new_hints:
+            if new_hints or hidden_old_hints:
+                # Remove hidden old hints from store so they can be re-added as fully revealed
+                for hint in hidden_old_hints:
+                    self.ctx.hints[self.client.team, hint.finding_player].discard(hint)
+                    for player in self.ctx.slot_set(hint.receiving_player):
+                        self.ctx.hints[self.client.team, player].discard(hint)
+                revealed_hints = [hint._replace(hidden=False) for hint in hidden_old_hints]
+
                 found_hints = [hint for hint in new_hints if hint.found]
-                not_found_hints = [hint for hint in new_hints if not hint.found]
+                not_found_hints = [hint for hint in new_hints if not hint.found] + revealed_hints
                 if not not_found_hints:  # everything's been found, no need to pay
                     can_pay = 1000
                 elif cost:
@@ -1772,7 +1800,7 @@ class ClientMessageProcessor(CommonCommandProcessor):
                 not_found_hints.sort(key=lambda hint: self.ctx.get_sphere(hint.finding_player, hint.location),
                                      reverse=True)
 
-                hints = found_hints + old_hints
+                hints = found_hints + truly_old_hints
                 while can_pay > 0:
                     if not not_found_hints:
                         break
@@ -2021,7 +2049,8 @@ async def process_client_cmd(ctx: Context, client: Client, args: dict):
 
                 target_item, target_player, flags = ctx.locations[client.slot][location]
                 if create_as_hint:
-                    hints.extend(collect_hint_location_id(ctx, client.team, client.slot, location))
+                    hints.extend(collect_hint_location_id(ctx, client.team, client.slot, location,
+                                                          allow_hidden=False))
                 locs.append(NetworkItem(target_item, location, target_player, flags))
             ctx.notify_hints(client.team, hints, only_new=create_as_hint == 2, persist_even_if_found=True)
             if locs and create_as_hint:
@@ -2074,7 +2103,8 @@ async def process_client_cmd(ctx: Context, client: Client, args: dict):
                                                       "text": error_text, "original_cmd": cmd}])
                         return
 
-                hints += collect_hint_location_id(ctx, client.team, location_player, location, status)
+                hints += collect_hint_location_id(ctx, client.team, location_player, location, status,
+                                                    allow_hidden=False)
 
             # As of writing this code, only_new=True does not update status for existing hints
             ctx.notify_hints(client.team, hints, only_new=True, persist_even_if_found=True)
@@ -2528,6 +2558,11 @@ class ServerCommandProcessor(CommonCommandProcessor):
             if option_value.lower() not in valid_values:
                 self.output(f"Unrecognized {option_name} value '{option_value}', known: {', '.join(valid_values)}")
                 return False
+        elif option_name == "hint_mode":
+            valid_values = {"default", "own", "all"}
+            if option_value.lower() not in valid_values:
+                self.output(f"Unrecognized {option_name} value '{option_value}', known: {', '.join(valid_values)}")
+                return False
         elif value_type == str and option_name.endswith("mode"):
             valid_values = {"goal", "enabled", "disabled"}
             valid_values.update(("auto", "auto_enabled") if option_name != "remaining_mode" else [])
@@ -2539,7 +2574,7 @@ class ServerCommandProcessor(CommonCommandProcessor):
         self.output(f"Set option {option_name} to {getattr(self.ctx, option_name)}")
         if option_name in {"release_mode", "remaining_mode", "collect_mode"}:
             self.ctx.broadcast_all([{"cmd": "RoomUpdate", 'permissions': get_permissions(self.ctx)}])
-        elif option_name in {"hint_cost", "location_check_points"}:
+        elif option_name in {"hint_mode", "hint_cost", "location_check_points"}:
             self.ctx.broadcast_all([{"cmd": "RoomUpdate", option_name: getattr(self.ctx, option_name)}])
         return True
 
@@ -2571,6 +2606,8 @@ async def console(ctx: Context):
             input_text = await queue.get()
             queue.task_done()
             ctx.commandprocessor(input_text)
+        except asyncio.exceptions.CancelledError:
+            ctx.logger.info("ConsoleTask cancelled")
         except:
             import traceback
             traceback.print_exc()
@@ -2629,6 +2666,13 @@ def parse_args() -> argparse.Namespace:
                              disabled: !remaining is never available
                              goal:     !remaining can be used after goal completion
                              ''')
+    parser.add_argument('--hint_mode', default=defaults["hint_mode"], nargs='?',
+                    choices=['default', 'own', 'all'], help='''\
+                            Select hint detail display for hints (default: %(default)s)
+                            default: hints show up in full, no matter the world
+                            own: hints in the hinting player's world do not display their full location
+                            all: hints in all worlds do not display their full location
+                            ''')
     parser.add_argument('--auto_shutdown', default=defaults["auto_shutdown"], type=int,
                         help="automatically shut down the server after this many minutes without new location checks. "
                              "0 to keep running. Not yet implemented.")
@@ -2687,7 +2731,7 @@ async def main(args: argparse.Namespace):
 
     ctx = Context(args.host, args.port, args.server_password, args.password, args.location_check_points,
                   args.hint_cost, not args.disable_item_cheat, args.release_mode, args.collect_mode,
-                  args.countdown_mode, args.remaining_mode,
+                  args.countdown_mode, args.remaining_mode, args.hint_mode,
                   args.auto_shutdown, args.compatibility, args.log_network)
     data_filename = args.multidata
 
@@ -2737,6 +2781,26 @@ async def main(args: argparse.Namespace):
     console_task = asyncio.create_task(console(ctx))
     if ctx.auto_shutdown:
         ctx.shutdown_task = asyncio.create_task(auto_shutdown(ctx, [console_task]))
+
+    def stop():
+        try:
+            for remove_signal in [SIGINT, SIGTERM]:
+                asyncio.get_event_loop().remove_signal_handler(remove_signal)
+        except NotImplementedError:
+            pass
+        ctx.commandprocessor._cmd_exit()
+
+    def shutdown(signum, frame):
+        stop()
+
+    try:
+        for sig in [SIGINT, SIGTERM]:
+            asyncio.get_event_loop().add_signal_handler(sig, stop)
+    except NotImplementedError:
+        # add_signal_handler is only implemented for UNIX platforms
+        for sig in [SIGINT, SIGTERM]:
+            signal(sig, shutdown)
+
     await ctx.exit_event.wait()
     console_task.cancel()
     if ctx.shutdown_task:

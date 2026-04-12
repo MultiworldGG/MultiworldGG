@@ -287,7 +287,8 @@ def dobbo_facility_terminal_rule(state: CollectionState, player: int) -> bool:
     options = get_options(state, player)
 
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_MEDIUM:
-        return True
+        return (can_glide(state, player)
+                and can_electrolyze(state, player))
 
     return (can_swingshot(state, player)
             and can_glide(state, player)
@@ -302,7 +303,8 @@ def dobbo_spiderbot_room_pb_rule(state: CollectionState, player: int) -> bool:
         return can_swingshot(state, player)
 
     return (can_swingshot(state, player)
-            and can_dynamo(state, player))
+            and can_dynamo(state, player)
+            and can_spiderbot(state, player))
 
 
 def dobbo_facility_glide_pb_rule(state: CollectionState, player: int) -> bool:
@@ -567,7 +569,7 @@ def aranos_omniwrench_12000_rule(state: CollectionState, player: int) -> bool:
 def snivelak_rescue_angelak_rule(state: CollectionState, player: int) -> bool:
     options = get_options(state, player)
 
-    if options.first_person_mode_glitch_in_logic >+ FIRST_PERSON_EASY:
+    if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
         return can_swingshot(state, player)
 
     return (can_swingshot(state, player)
@@ -656,7 +658,7 @@ def smolg_warehouse_pb_rule(state: CollectionState, player: int) -> bool:
         return True
 
     return (can_dynamo(state, player)
-            or can_improved_jump(state, player))
+            and can_improved_jump(state, player))
 
 
 def damosel_hypnotist_rule(state: CollectionState, player: int) -> bool:

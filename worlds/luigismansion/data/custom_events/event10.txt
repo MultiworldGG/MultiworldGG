@@ -1,4 +1,3 @@
-
 <CHECKFLAG>(58)"angry""normal"
 ---
 <CASE>"angry"
@@ -136,7 +135,7 @@
 <GENOFF>"step1_1"
 
 <FLAGON>(189)
-<FLAGON>(58)���m��{�点��t���O
+<FLAGON>(58)
 <GENON>"step1_1"
 
 <EVENTWAIT>(87)

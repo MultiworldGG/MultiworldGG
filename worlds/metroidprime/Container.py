@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 class MetroidPrimeContainer(APPlayerContainer):
     game: str = "Metroid Prime"  # type: ignore
+    patch_file_ending = ".apmp1"
 
     def __init__(
         self,
@@ -29,7 +30,7 @@ class MetroidPrimeContainer(APPlayerContainer):
         self.config_path = "config.json"
         self.options_path = "options.json"
         self.options_json = options_json
-        container_path = os.path.join(output_directory, outfile_name + ".apmp1")
+        container_path = os.path.join(output_directory, f"{outfile_name}{self.patch_file_ending}")
         super().__init__(container_path, player, player_name, server)
 
     def write_contents(self, opened_zipfile: zipfile.ZipFile) -> None:

@@ -7,14 +7,14 @@ class Goal(Choice):
     """Sets the completion goal. This is the kingdom you must get the last story multi moon in to win the game.
     Valid options: Metro (A Traditional Festival), Luncheon (Cookatiel Showdown), Moon (Beat the game), Dark (Arrival at Rabbit Ridge), Darker (A Long Journey's End)"""
     display_name = "Goal"
-    option_sand = 4
-    option_lake = 5
-    option_metro = 9
-    option_luncheon = 12
-    option_moon = 14
-    option_dark = 16
-    option_darker = 17
-    default = 14  # default to moon
+    option_sand = 2
+    option_lake = 4
+    option_metro = 7
+    option_luncheon = 10
+    option_moon = 13
+    option_dark = 15
+    option_darker = 16
+    default = 13  # default to moon
 
 class StorySanity(Choice):
     """Adds story progression moons to the pool."""

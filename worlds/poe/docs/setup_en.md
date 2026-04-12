@@ -106,7 +106,7 @@ I want to use my own end-game character, and go from nothing to mapping to a bos
 ## 1) Prerequisites
 
 - Path of Exile installed and playable.
-- Python 3.13 installed.
+- Python 3.13 installed (unless you use the downloadable release of MWGG)
 - MultiworldGG (latest release).
 - Except with MWGG: The Path of Exile `.apworld` file from the Path of Exile APWorld release page. 
   - [github.com/stubobis1/Archipelago/releases](https://github.com/stubobis1/Archipelago/releases)
@@ -117,17 +117,17 @@ I want to use my own end-game character, and go from nothing to mapping to a bos
 
 1. Download the latest MultiworldGG release:
    - [github.com/MultiworldGG/MultiworldGG/releases](https://github.com/MultiworldGG/MultiworldGG/releases)
-2. Install Python if needed:
+2. Install Python if needed (unless you use the downloadable release of MWGG):
    - [python.org/downloads/release/python-31311/](https://www.python.org/downloads/release/python-31311/)
 3. Extract the MultiworldGG release to a folder of your choice (e.g., `C:\Games\MultiworldGG` or `~/MultiworldGG`).
 
 ---
 
-## 3) Add the Path of Exile .apworld
+## 3) Add the Path of Exile .apworld (not needed with MultiworldGG)
 
 1. Download the `.apworld`:
    - [github.com/stubobis1/Archipelago/releases](https://github.com/stubobis1/Archipelago/releases)
-2. Except with MWGG: Place the `.apworld` file into the `MultiworldGG/custom_worlds/` folder.
+2. Place the `.apworld` file into the `MultiworldGG/custom_worlds/` folder.
 
 ---
 

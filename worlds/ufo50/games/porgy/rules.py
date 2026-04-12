@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
+
 from BaseClasses import Region, CollectionState, Location
 from worlds.generic.Rules import add_rule
 
@@ -175,7 +176,7 @@ def set_fuel_and_radar_reqs(world: "UFO50World", on_touch: bool) -> None:
 
 
 # there's going to be a lot of parentheses containing and/or that don't need them, it's for sanity purposes
-def create_rules(world: "UFO50World", regions: Dict[str, Region]) -> None:
+def create_rules(world: "UFO50World", regions: dict[str, Region]) -> None:
     player = world.player
     check_on_touch = bool(world.options.porgy_check_on_touch)
     set_fuel_and_radar_reqs(world, check_on_touch)
@@ -228,6 +229,30 @@ def create_rules(world: "UFO50World", regions: Dict[str, Region]) -> None:
     add_rule(get_porgy_location("Deeper Upper Mid - Spotlight Module", world),
              lambda state: state.has(depth_charge, player))
 
+    add_rule(get_porgy_location("Deeper Upper Left - Fuel Tank behind ! Blocks", world),
+             lambda state: state.has(buster, player))
+
+    # bosses
+    add_rule(get_porgy_location("Lamia", world),
+             lambda state: (has_fuel_opt_eff(7, state, world) and can_combat(5, state, player))
+             or (state.has(depth_charge, player) and has_fuel_opt_eff(5, state, world)))
+
+    add_rule(get_porgy_location("Iku Turso", world),
+             lambda state: (has_fuel_opt_eff(7, state, world) and can_combat(5, state, player))
+             or (state.has(depth_charge, player) and has_fuel_opt_eff(5, state, world)))
+
+    add_rule(get_porgy_location("Bakunawa", world),
+             lambda state: (has_fuel_opt_eff(10, state, world) and can_combat(12, state, player))
+             or (state.has(depth_charge, player) and has_fuel_opt_eff(8, state, world)))
+
+    add_rule(get_porgy_location("Neptune", world),
+             lambda state: (has_fuel_opt_eff(10, state, world) and can_combat(12, state, player))
+             or (state.has(depth_charge, player) and has_fuel_opt_eff(8, state, world)))
+
+    add_rule(get_porgy_location("Dracula", world),
+             lambda state: (has_fuel_opt_eff(13, state, world) and can_combat(20, state, player))
+             or (state.has(depth_charge, player) and has_fuel_opt_eff(13, state, world)))
+
     if check_on_touch:
         # shallows coral maze, buster covered by region
         loc = "Shallows Upper Right - Fuel Tank in Coral Maze"
@@ -251,6 +276,11 @@ def create_rules(world: "UFO50World", regions: Dict[str, Region]) -> None:
                  or (state.has(depth_charge, player)
                      and has_fuel_and_slots(3, loc, 1, state, world)))
 
+        loc = "Deeper Upper Mid - Torpedo Upgrade in Ceiling"
+        add_rule(get_porgy_location(loc, world),
+                 rule=lambda state: has_bomb(state, player)
+                 and has_fuel_and_slots(3, loc, 1, state, world))
+
         loc = "Deeper Upper Mid - Egg in Dirt"
         add_rule(get_porgy_location(loc, world),
                  rule=lambda state: state.has(drill, player)
@@ -259,6 +289,11 @@ def create_rules(world: "UFO50World", regions: Dict[str, Region]) -> None:
         loc = "Deeper Lower Mid - Fuel Tank in Floor"
         add_rule(get_porgy_location(loc, world),
                  lambda state: state.has(depth_charge, player)
+                 and has_fuel_and_slots(4, loc, 1, state, world))
+
+        loc = "Deeper Lower Right - Fuel Tank in Ceiling"
+        add_rule(get_porgy_location(loc, world),
+                 lambda state: has_bomb(state, player)
                  and has_fuel_and_slots(4, loc, 1, state, world))
 
         # abyss
@@ -377,8 +412,9 @@ def create_rules(world: "UFO50World", regions: Dict[str, Region]) -> None:
                  # drill only: 5/10
                  rule=lambda state:
                  state.has(drill, player)
-                 and has_fuel_and_slots(5, loc, 1, state, world)
-                 or (state.has_any((buster, depth_charge), player) and has_fuel_and_slots(4, loc, 2, state, world)))
+                 and (has_fuel_and_slots(5, loc, 1, state, world)
+                      or (state.has_any((buster, depth_charge), player)
+                          and has_fuel_and_slots(4, loc, 2, state, world))))
 
         loc = "Abyss Upper Mid - Egg on Seaweed"
         add_rule(get_porgy_location(loc, world),
@@ -475,6 +511,11 @@ def create_rules(world: "UFO50World", regions: Dict[str, Region]) -> None:
                  rule=lambda state: has_fuel_opt_eff(8, state, world)
                  or (state.has(ship_rocks, player) and has_fuel_opt_eff(5, state, world)))
 
+        loc = "Deeper Upper Mid - Torpedo Upgrade in Ceiling"
+        add_rule(get_porgy_location(loc, world),
+                 rule=lambda state: has_bomb(state, player)
+                 and has_fuel_and_slots(6, loc, 1, state, world))
+
         loc = "Deeper Upper Mid - Egg in Dirt"
         add_rule(get_porgy_location(loc, world),
                  rule=lambda state: state.has(drill, player)
@@ -483,6 +524,11 @@ def create_rules(world: "UFO50World", regions: Dict[str, Region]) -> None:
         loc = "Deeper Lower Mid - Fuel Tank in Floor"
         add_rule(get_porgy_location(loc, world),
                  lambda state: state.has(depth_charge, player)
+                 and has_fuel_and_slots(7, loc, 1, state, world))
+
+        loc = "Deeper Lower Right - Fuel Tank in Ceiling"
+        add_rule(get_porgy_location(loc, world),
+                 lambda state: has_bomb(state, player)
                  and has_fuel_and_slots(7, loc, 1, state, world))
 
         # abyss

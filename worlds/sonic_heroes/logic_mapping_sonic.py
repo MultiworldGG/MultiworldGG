@@ -11,9 +11,9 @@ from .logicfunctions import *
 def create_logic_mapping_dict_seaside_hill_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,  # No rules
+        #"": lambda state: True,  # No rules
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicSH": lambda state: can_break_key_cage(world, SONIC, SEASIDEHILL, state),
 
@@ -95,9 +95,9 @@ def create_logic_mapping_dict_seaside_hill_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_ocean_palace_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicOP": lambda state: can_break_key_cage(world, SONIC, OCEANPALACE, state),
 
@@ -163,9 +163,9 @@ def create_logic_mapping_dict_ocean_palace_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_grand_metropolis_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicGM": lambda state: can_break_key_cage(world, SONIC, GRANDMETROPOLIS, state),
 
@@ -243,9 +243,9 @@ def create_logic_mapping_dict_grand_metropolis_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_power_plant_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicPP": lambda state: can_break_key_cage(world, SONIC, POWERPLANT, state),
 
@@ -363,9 +363,9 @@ def create_logic_mapping_dict_power_plant_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_casino_park_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicCP": lambda state: can_break_key_cage(world, SONIC, CASINOPARK, state),
 
@@ -425,9 +425,9 @@ def create_logic_mapping_dict_casino_park_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_bingo_highway_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicBH": lambda state: can_break_key_cage(world, SONIC, BINGOHIGHWAY, state),
 
@@ -498,9 +498,9 @@ def create_logic_mapping_dict_bingo_highway_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_rail_canyon_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicRC": lambda state: can_break_key_cage(world, SONIC, RAILCANYON, state),
 
@@ -569,9 +569,9 @@ def create_logic_mapping_dict_rail_canyon_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_bullet_station_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicBS": lambda state: can_break_key_cage(world, SONIC, BULLETSTATION, state),
 
@@ -658,9 +658,9 @@ def create_logic_mapping_dict_bullet_station_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_frog_forest_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicFrog": lambda state: can_break_key_cage(world, SONIC, FROGFOREST, state),
 
@@ -751,9 +751,9 @@ def create_logic_mapping_dict_frog_forest_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_lost_jungle_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicLJ": lambda state: can_break_key_cage(world, SONIC, LOSTJUNGLE, state),
 
@@ -831,9 +831,9 @@ def create_logic_mapping_dict_lost_jungle_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_hang_castle_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicHC": lambda state: can_break_key_cage(world, SONIC, HANGCASTLE, state),
 
@@ -851,7 +851,7 @@ def create_logic_mapping_dict_hang_castle_sonic(world: SonicHeroesWorld):
 
         "TripleSpringSonicHC": lambda state: can_triple_spring(world, SONIC, HANGCASTLE, state),
 
-        "FireDunkSonicHC": lambda state: can_fire_dunk(world, SONIC, HANGCASTLE, state),
+        "BreakInGroundWoodContainerSonicHC": lambda state: can_break_in_ground_wood_container(world, SONIC, HANGCASTLE, state),
 
         "FlameTorchSonicHC": lambda state: can_flame_torch(world, SONIC, HANGCASTLE, state),
 
@@ -892,9 +892,9 @@ def create_logic_mapping_dict_hang_castle_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_mystic_mansion_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicMM": lambda state: can_break_key_cage(world, SONIC, MYSTICMANSION, state),
 
@@ -903,7 +903,7 @@ def create_logic_mapping_dict_mystic_mansion_sonic(world: SonicHeroesWorld):
 
         "KillGroundEnemySpearSonicMM": lambda state: can_kill_ground_enemy(world, SONIC, MYSTICMANSION, state, spear=True),
 
-        "FireDunkSonicMM": lambda state: can_fire_dunk(world, SONIC, MYSTICMANSION, state),
+        "BreakInGroundIronContainerSonicMM": lambda state: can_break_in_ground_iron_container(world, SONIC, MYSTICMANSION, state),
 
         "TPSwitchSonicMM": lambda state: can_tp_switch(world, SONIC, MYSTICMANSION, state),
 
@@ -950,9 +950,9 @@ def create_logic_mapping_dict_mystic_mansion_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_egg_fleet_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicEF": lambda state: can_break_key_cage(world, SONIC, EGGFLEET, state),
 
@@ -1029,9 +1029,9 @@ def create_logic_mapping_dict_egg_fleet_sonic(world: SonicHeroesWorld):
 def create_logic_mapping_dict_final_fortress_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
+        #"": lambda state: True,
 
-        "NOTPOSSIBLE": lambda state: False,
+        #"NOTPOSSIBLE": lambda state: False,
 
         "BreakKeyCageSonicFinal": lambda state: can_break_key_cage(world, SONIC, FINALFORTRESS, state),
 
@@ -1132,12 +1132,14 @@ def create_logic_mapping_dict_final_fortress_sonic(world: SonicHeroesWorld):
     }
 
 
+"""
 def create_logic_mapping_dict_placeholder_sonic(world: SonicHeroesWorld):
     return \
     {
-        "": lambda state: True,
-        "NOTPOSSIBLE": lambda state: False,
+        #"": lambda state: True,
+        #"NOTPOSSIBLE": lambda state: False,
     }
+"""
 
 
 

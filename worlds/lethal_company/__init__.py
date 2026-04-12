@@ -84,7 +84,6 @@ class LethalCompanyWorld(World):
     As employees of "The Company", players must sell enough scrap to meet a series of increasing profit quotas until they inevitably fail and the game starts over.
     """
     game = f"Lethal Company{name}"
-    author: str = "T0r1nn"
     options_dataclass = LCOptions
     options: LCOptions
     topology_present = False

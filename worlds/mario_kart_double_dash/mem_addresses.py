@@ -13,6 +13,8 @@ class MkddMemAddresses():
     """Cup selection. 0 Mushroom Cup - 4 All Cup Tour."""
     menu_course_w: int
     """Currently selected course inside a cup. Doesn't update in midst of a gp. 0-3."""
+    human_players_b: int
+    """Amount of human players. Used to check if actually playing or in attraction mode."""
     vehicle_class_w: int
     """Currently selected class. Updated after select character screen. 0 = 50cc, 3 = Mirror."""
     current_course_w: int
@@ -91,6 +93,8 @@ class MkddMemAddresses():
     """Items for driver and rider in time trials (size 2)."""
     gp_next_items_bx: int
     """Item for player in grand prix. Offset by character's special item id (size 22)."""
+    item_box_p: int
+    """Pointer for last gotten item box data."""
     text_sx: int
     """Text to print."""
     text_size: int
@@ -101,12 +105,17 @@ class MkddMemAddresses():
     """Offset from text, y coordinate for the text."""
     text_amount: int
     """Size of the text table."""
+    menu_pointer_to_char_icons: dict[int, list[int]]
+    """Pointers of the menu character icons"""
+    item_box_target_pointer: dict[str, list[list[int]]]
+    """The pointers of reference of some boxes"""
 
 class MkddMemAddressesUsa(MkddMemAddresses):
     # Vanilla addresses:
     mode_w = 0x803b1464
     cup_w = 0x803cb7a8
     menu_course_w = 0x803cb7ac
+    human_players_b = 0x803b147b
     vehicle_class_w = 0x803b146c
     current_course_w = 0x803cbd44
     current_lap_wx = 0x8037ff60
@@ -188,9 +197,127 @@ class MkddMemAddressesUsa(MkddMemAddresses):
     available_cups_bx = 0x8000103c
     tt_items_bx = 0x80001041
     gp_next_items_bx = 0x80001043
+    item_box_p = 0x80001060
 
     text_sx = 0x80000da4
     text_size = 0x30
     text_x_offset_h = -4
     text_y_offset_h = -2
     text_amount = 5
+
+    menu_pointer_to_char_icons = {
+        0x812BFACC: [
+            0x813FE760,  # Mario
+            0x813FDDE0,  # Luigi
+            0x81401DDC,  # Peach
+            0x8140145C,  # Daisy
+            0x81405458,  # Yoshi
+            0x81404AD8,  # Birdo
+            0x81408AD4,  # Baby Mario
+            0x81408154,  # Baby Luigi
+            0x8140C150,  # Toad
+            0x8140B7D0,  # Toadette
+            0x8140F7CC,  # Koopa
+            0x8140EE4C,  # Red Koopa
+            0x81412E48,  # Donkey Kong
+            0x814124C8,  # Diddy Kong
+            0x814164C4,  # Bowser
+            0x81415B44,  # Bowser Jr.
+            0x81419B40,  # Wario
+            0x814191C0,  # Waluigi
+            0x8141D1BC,  # Petey Piranha
+            0x8141C83C  # King Boo
+        ],
+        0x811D9BCC: [
+            0x81318880,  # Mario
+            0x81317F00,  # Luigi
+            0x8131BEFC,  # Peach
+            0x8131B57C,  # Daisy
+            0x8131F578,  # Yoshi
+            0x8131EBF8,  # Birdo
+            0x81322BF4,  # Baby Mario
+            0x81322274,  # Baby Luigi
+            0x81326270,  # Toad
+            0x813258F0,  # Toadette
+            0x813298EC,  # Koopa
+            0x81328F6C,  # Red Koopa
+            0x8132CF68,  # Donkey Kong
+            0x8132C5E8,  # Diddy Kong
+            0x813305E4,  # Bowser
+            0x8132FC64,  # Bowser Jr.
+            0x81333C60,  # Wario
+            0x813332E0,  # Waluigi
+            0x813372DC,  # Petey Piranha
+            0x8133695C  # King Boo
+        ],
+        0x8132380C: [
+            0x8145D6D8,  # Mario
+            0x8145CD58,  # Luigi
+            0x81460D54,  # Peach
+            0x814603D4,  # Daisy
+            0x814643D0,  # Yoshi
+            0x81463A50,  # Birdo
+            0x81467A4C,  # Baby Mario
+            0x814670CC,  # Baby Luigi
+            0x8146B0C8,  # Toad
+            0x8146A748,  # Toadette
+            0x8146E744,  # Koopa
+            0x8146DDC4,  # Red Koopa
+            0x81471DC0,  # Donkey Kong
+            0x81471440,  # Diddy Kong
+            0x8147543C,  # Bowser
+            0x81474ABC,  # Bowser Jr.
+            0x81478AB8,  # Wario
+            0x81478138,  # Waluigi
+            0x8147C134,  # Petey Piranha
+            0x8147B7B4  # King Boo
+        ],
+        0x812BFAEC: [
+            0x813FE780,  # Mario
+            0x813FDE00,  # Luigi
+            0x81401DFC,  # Peach
+            0x8140147C,  # Daisy
+            0x81405478,  # Yoshi
+            0x81404AF8,  # Birdo
+            0x81408AF4,  # Baby Mario
+            0x81408174,  # Baby Luigi
+            0x8140C170,  # Toad
+            0x8140B7F0,  # Toadette
+            0x8140F7EC,  # Koopa
+            0x8140EE6C,  # Red Koopa
+            0x81412E68,  # Donkey Kong
+            0x814124E8,  # Diddy Kong
+            0x814164E4,  # Bowser
+            0x81415B64,  # Bowser Jr.
+            0x81419B60,  # Wario
+            0x814191E0,  # Waluigi
+            0x8141D1DC,  # Petey Piranha
+            0x8141C85C  # King Boo
+        ]
+    }
+
+    item_box_target_pointer = {
+        "Mushroom Bridge": [
+            [0x80D86338],  # Pipe
+            [0x80D863B8],  # Sidewalk
+            [0x80D85F38, 0x80D85F78]  # Bridge boxes
+        ],
+        "Wario Colosseum": [
+            [0x80D9A1E4]  # Great jump
+        ],
+        "Daisy Cruiser": [
+            [0x80D4F064]  # Cargo area
+        ],
+        "Luigi Circuit": [  # Those are for above 50cc in Luigi Circuit
+            [0x80D684E8, 0x80D683E8],  # Chomp shortcut boxes
+            [0x80D686A8, 0x80D68668]  # Last curve shortcut boxes
+        ],
+        "Peach Beach": [
+            [0x80D8B390],  # Hidden pipe
+            [0x80D8A850, 0x80D8A2D0],  # Beach jump boxes
+            [0x80D8A750, 0x80D8A790]  # Fountain hidden boxes
+        ],
+        "Dino Dino Jungle": [
+            [0x80D6E7f8, 0x80D6E878]  # Bridge side dual boxes
+        ]
+    }

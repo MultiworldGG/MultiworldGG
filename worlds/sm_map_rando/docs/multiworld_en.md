@@ -2,7 +2,7 @@
 
 ## Required Software
 
-- [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases). Make sure to check the box for `SNI Client - Super Metroid Patch Setup`
+- [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases). Make sure to check the box for `SNI Client`
   
   
 - Hardware or software capable of loading and playing SNES ROM files
@@ -44,7 +44,7 @@ guide: [Basic Multiworld Setup Guide](/tutorial/Archipelago/setup/en)
 ### Where do I get a config file?
 
 The Player Settings page on the website allows you to configure your personal settings and export a config file from
-them. Player settings page: [Super Metroid Player Settings Page](/games/Super%20Metroid%20Map%20Rando/player-settings)
+them. Player settings page: [Super Metroid Player Settings Page](/games/Super%20Metroid%20Map%20Rando/player-options)
 
 ### Verifying your config file
 
@@ -54,7 +54,7 @@ validator page: [YAML Validation page](/mysterycheck)
 ## Generating a Single-Player Game
 
 1. Navigate to the Player Settings page, configure your options, and click the "Generate Game" button.
-    - Player Settings page: [Super Metroid Map Rando Player Settings Page](/games/Super%20Metroid%20Map%20Rando/player-settings)
+    - Player Settings page: [Super Metroid Map Rando Player Settings Page](/games/Super%20Metroid%20Map%20Rando/player-options)
 2. You will be presented with a "Seed Info" page.
 3. Click the "Create New Room" link.
 4. You will be presented with a server page, from which you can download your patch file.

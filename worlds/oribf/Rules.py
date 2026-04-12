@@ -86,38 +86,38 @@ def oribf_has(world: World, state: CollectionState, item: str | tuple[str, int])
             return True
         
         elif item == "Lure":
-            return options.enable_lure == True
+            return "Lure" in options.logic_modifiers.value
         
         elif item == "DoubleBash":
-            return options.enable_double_bash == True and state.has("Bash", world.player)
+            return "DoubleBash" in options.logic_modifiers.value and state.has("Bash", world.player)
         
         elif item == "GrenadeJump":
-            return options.enable_grenade_jump == True and state.has_all(["Climb", "ChargeJump", "Grenade"], world.player)
+            return "GrenadeJump" in options.logic_modifiers.value and state.has_all(["Climb", "ChargeJump", "Grenade"], world.player)
         
         elif item == "ChargeFlameBurn":
-            return options.enable_charge_flame_burn == True and \
+            return "ChargeFlameBurn" in options.logic_modifiers.value and \
                 state.has("ChargeFlame", world.player) and state.has("AbilityCell", world.player, 3)
         
         elif item in ["ChargeDash", "RocketJump"]:
-            return options.enable_charge_dash == True and \
+            return "ChargeDash" in options.logic_modifiers.value and \
                 state.has("Dash", world.player) and state.has("AbilityCell", world.player, 6)
         
         elif item == "AirDash": 
-            return options.enable_air_dash == True and \
+            return "AirDash" in options.logic_modifiers.value and \
                 state.has("Dash", world.player) and state.has("AbilityCell", world.player, 3)
         
         elif item == "TripleJump":
-            return options.enable_triple_jump == True and \
+            return "TripleJump" in options.logic_modifiers.value and \
                 state.has("DoubleJump", world.player) and state.has("AbilityCell", world.player, 12)
         
         elif item == "UltraDefense":
-            return options.enable_damage_boost == True and state.has("AbilityCell", world.player, 12)
+            return "DamageBoost" in options.logic_modifiers.value and state.has("AbilityCell", world.player, 12)
         
         elif item == "BashGrenade":
             return state.has_all(["Bash", "Grenade"], world.player)
         
         elif item == "Rekindle":
-            return options.enable_rekindle == True
+            return "Rekindle" in options.logic_modifiers.value
         
         elif item == "Open":
             # closed dungeons not implemented
@@ -131,7 +131,7 @@ def oribf_has(world: World, state: CollectionState, item: str | tuple[str, int])
     else:
         # if item isnt a string its a tuple (check for number of health, keystones, etc.)
         # if item is a health cell, only add it if damage boost is enabled
-        if (item[0] == "HealthCell" and options.enable_damage_boost == True) or item[0] != "HealthCell":
+        if (item[0] == "HealthCell" and "DamageBoost" in options.logic_modifiers.value) or item[0] != "HealthCell":
             return state.has(item[0], world.player, int(item[1]))
 
     return False
@@ -167,4 +167,28 @@ def at_least(conditions: list[bool], amount: int) -> bool:
     for flag in conditions:
         if flag:
             count += 1
-    return count >= amount                                 
+    return count >= amount        
+
+def get_goal_condition(world: World, state: CollectionState, goal: str):
+    options: OriBlindForestOptions = cast(OriBlindForestOptions, world.options)
+
+    if goal == "HoruEscape":
+        return state.can_reach_region("HoruEscapeInnerDoor", world.player)
+
+    elif goal == "AllSkillTrees":
+        return all(state.can_reach_location(skill_tree, world.player) for skill_tree in tagged_locations_dict["Skill"])
+
+    elif goal == "AllMaps":
+        location_tag: str = ""
+        if options.mapstone_logic == MapstoneLogic.option_progressive:
+            location_tag = "ProgressiveMap"
+        else:
+            location_tag = "Map"
+
+        return all(state.can_reach_location(area_map, world.player) for area_map in tagged_locations_dict[location_tag])
+
+    elif goal == "WarmthFragments":
+        return state.has("WarmthFragment", world.player, options.warmth_fragments_required.value)
+
+    elif goal == "WorldTour":
+        return state.has("Relic", world.player, options.relic_count.value)

@@ -23,8 +23,8 @@ from .locations import location_table, create_locations, LocationData, locations
 from .logic.combat_logic import valid_weapons
 from .logic.logic import StardewLogic
 from .options import StardewValleyOptions, SeasonRandomization, Goal, BundleRandomization, EnabledFillerBuffs, \
-    NumberOfMovementBuffs, BuildingProgression, EntranceRandomization, FarmType, ToolProgression, BackpackProgression, TrapDistribution, BundlePrice, \
-    BundleWhitelist, BundleBlacklist, BundlePerRoom
+    NumberOfMovementBuffs, BuildingProgression, EntranceRandomization, ToolProgression, BackpackProgression, TrapDistribution, BundlePrice, \
+    BundleWhitelist, BundleBlacklist, BundlePerRoom, FarmType
 from .options.forced_options import force_change_options_if_incompatible, force_change_options_if_banned
 from .options.jojapocalypse_options import JojaAreYouSure
 from .options.option_groups import sv_option_groups
@@ -117,7 +117,7 @@ class StardewValleyWorld(World):
     befriend villagers, and uncover dark secrets.
     """
     game = STARDEW_VALLEY
-    topology_present = False
+    topology_present = True
 
     item_name_to_id = {name: data.code for name, data in item_table.items()}
     location_name_to_id = {name: data.code for name, data in location_table.items()}
@@ -173,6 +173,21 @@ class StardewValleyWorld(World):
         seed = slot_data.get(UNIVERSAL_TRACKER_SEED_PROPERTY)
         if seed is None:
             logger.warning(f"World was generated before Universal Tracker support. Tracker might not be accurate.")
+        for option_name in slot_data:
+            if option_name in self.options_dataclass.type_hints:
+                option_value = slot_data[option_name]
+                option_type = self.options_dataclass.type_hints[option_name]
+                if isinstance(option_value, option_type):
+                    self.options.__setattr__(option_name, option_value)
+                    continue
+                parsed_option_value = option_type.from_any(option_value)
+                if isinstance(parsed_option_value, option_type):
+                    self.options.__setattr__(option_name, parsed_option_value)
+                    continue
+                logger.warning(f"Option {option_name} was found in slot data, but could not be automatically parsed to be used in generation.\n"
+                               f"Slot Data Value: {option_value}"
+                               f"Parsed Value: {parsed_option_value}"
+                               f"Yaml Value: {self.options.__getattribute__(option_name)}")
         return seed
 
     def generate_early(self):
@@ -490,7 +505,7 @@ class StardewValleyWorld(World):
             for bundle in room.bundles:
                 bundles[room.name][bundle.name] = {"number_required": bundle.number_required}
                 for i, item in enumerate(bundle.items):
-                    bundles[room.name][bundle.name][i] = f"{item.get_item()}|{item.amount}|{item.quality}"
+                    bundles[room.name][bundle.name][str(i)] = f"{item.get_item()}|{item.amount}|{item.quality}"
 
         excluded_options = [BundleRandomization, BundlePerRoom, NumberOfMovementBuffs,
                             EnabledFillerBuffs, TrapDistribution, BundleWhitelist, BundleBlacklist, JojaAreYouSure]

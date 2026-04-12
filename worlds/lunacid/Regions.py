@@ -1,8 +1,6 @@
 from entrance_rando import EntranceType
 from dataclasses import dataclass, field
-from enum import IntFlag
-from random import Random
-from typing import List, Tuple, Dict, Optional, Protocol, Iterable, Set
+from typing import List, Tuple, Dict, Optional, Protocol, Iterable
 
 from BaseClasses import MultiWorld, Region, Entrance
 
@@ -96,7 +94,10 @@ lunacid_regions = [
     RegionData(LunacidRegion.accursed_well, [LunacidEntrance.accursed_well_to_accursed, LunacidEntrance.accursed_tomb_to_forest_tomb]),
 
     RegionData(LunacidRegion.castle_le_fanu_entrance, [LunacidEntrance.castle_entrance_to_sea, LunacidEntrance.castle_entrance_to_battlefield,
-                                                       LunacidEntrance.castle_entrance_to_main_halls, LunacidEntrance.castle_to_cattle]),
+                                                       LunacidEntrance.castle_entrance_to_main_halls, LunacidEntrance.castle_to_cattle,
+                                                       LunacidEntrance.rock_castle_le_fanu_secret_skips, LunacidEntrance.rock_castle_le_fanu_spell_skip,
+                                                       LunacidEntrance.rock_castle_le_fanu_past_door, LunacidEntrance.rock_castle_le_fanu_queen_door,
+                                                       LunacidEntrance.rock_castle_le_fanu_upper_bridge, LunacidEntrance.rock_castle_le_fanu_cattle_deeper_skip]),
     RegionData(LunacidRegion.castle_le_fanu_cattle_prison, [LunacidEntrance.cattle_to_castle, LunacidEntrance.cattle_to_deeper]),
     RegionData(LunacidRegion.castle_le_fanu_cattle_prison_deep, [LunacidEntrance.cattle_to_secret]),
     RegionData(LunacidRegion.castle_le_fanu_cattle_prison_secret),
@@ -312,6 +313,12 @@ lunacid_entrances = [
     EntranceData(LunacidEntrance.castle_entrance_to_battlefield, LunacidRegion.holy_battleground, True, type=EntranceType.TWO_WAY),
     EntranceData(LunacidEntrance.castle_to_cattle, LunacidRegion.castle_le_fanu_cattle_prison),
     EntranceData(LunacidEntrance.castle_entrance_to_main_halls, LunacidRegion.castle_le_fanu_main_halls),
+    EntranceData(LunacidEntrance.rock_castle_le_fanu_secret_skips, LunacidRegion.castle_le_fanu_cattle_prison_secret),
+    EntranceData(LunacidEntrance.rock_castle_le_fanu_past_door, LunacidRegion.castle_le_fanu_throne_path),
+    EntranceData(LunacidEntrance.rock_castle_le_fanu_spell_skip, LunacidRegion.castle_le_fanu_upstairs_forbidden_entry),
+    EntranceData(LunacidEntrance.rock_castle_le_fanu_upper_bridge, LunacidRegion.castle_le_fanu_upstairs_area),
+    EntranceData(LunacidEntrance.rock_castle_le_fanu_queen_door, LunacidRegion.castle_le_fanu_upstairs_queens_rest),
+    EntranceData(LunacidEntrance.rock_castle_le_fanu_cattle_deeper_skip, LunacidRegion.castle_le_fanu_cattle_prison_back),
 
     # castle le fanu cattle prison.  We split off the deeper area since it also requires a symbol possibly.
     EntranceData(LunacidEntrance.cattle_to_castle, LunacidRegion.castle_le_fanu_entrance),

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List
 from BaseClasses import ItemClassification
 
-from ..strings.items import QuestItem, Upgrade, Coin, GachaItem, Unlock, Key, Costume, Power, Warp, Goal, Accessory, Custom, Trap
+from ..strings.items import QuestItem, Upgrade, Coin, GachaItem, Unlock, Key, Costume, Power, Warp, GoalItem, Accessory, Custom, Trap
 
 
 @dataclass(frozen=True)
@@ -43,7 +43,7 @@ base_items = [
     create_item(ITEM_CODE_START + base_start_id + 8, Upgrade.health, ItemClassification.useful),
     create_item(ITEM_CODE_START + base_start_id + 9, Upgrade.mana, ItemClassification.useful),
     create_item(ITEM_CODE_START + base_start_id + 10, Upgrade.wand, ItemClassification.useful),
-    create_item(ITEM_CODE_START + base_start_id + 11, Upgrade.peachy_peach, ItemClassification.useful),
+    create_item(ITEM_CODE_START + base_start_id + 11, Upgrade.peachy_peach, ItemClassification.progression),
     create_item(ITEM_CODE_START + base_start_id + 12, Upgrade.bewitched_bubble, ItemClassification.progression | ItemClassification.useful),
     # create_item(ITEM_CODE_START + base_start_id + 13, Upgrade.goblin_crystal, ItemClassification.useful),
     create_item(ITEM_CODE_START + base_start_id + 14, Upgrade.demon_wings, ItemClassification.progression | ItemClassification.useful),
@@ -74,7 +74,7 @@ base_items = [
     create_item(ITEM_CODE_START + base_start_id + 41, Key.demon_club, ItemClassification.progression | ItemClassification.useful),
     create_item(ITEM_CODE_START + base_start_id + 42, Key.slime_boss, ItemClassification.progression | ItemClassification.useful),
     create_item(ITEM_CODE_START + base_start_id + 43, Key.forgotten_fungal, ItemClassification.progression | ItemClassification.useful),
-    create_item(ITEM_CODE_START + base_start_id + 45, Goal.chaos_piece, ItemClassification.progression | ItemClassification.useful),
+    create_item(ITEM_CODE_START + base_start_id + 45, GoalItem.chaos_piece, ItemClassification.progression | ItemClassification.useful),
     create_item(ITEM_CODE_START + base_start_id + 46, Custom.hp_heal, ItemClassification.filler),
     create_item(ITEM_CODE_START + base_start_id + 47, Custom.mp_heal, ItemClassification.filler),
     create_item(ITEM_CODE_START + base_start_id + 48, Custom.peach_recharge, ItemClassification.filler),
@@ -84,52 +84,52 @@ base_items = [
 
 gacha_item_id = 100
 gacha_items = [
-    create_item(ITEM_CODE_START + gacha_item_id + 1, GachaItem.special_promotion, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 2, GachaItem.animal_girl_1, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 3, GachaItem.animal_girl_2, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 4, GachaItem.animal_girl_3, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 5, GachaItem.animal_girl_4, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 6, GachaItem.animal_girl_5, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 7, GachaItem.animal_girl_6, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 8, GachaItem.animal_girl_7, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 9, GachaItem.animal_girl_8, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 10, GachaItem.animal_girl_9, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 11, GachaItem.animal_girl_10, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 12, GachaItem.bunny_girl_1, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 13, GachaItem.bunny_girl_2, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 14, GachaItem.bunny_girl_3, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 15, GachaItem.bunny_girl_4, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 16, GachaItem.bunny_girl_5, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 17, GachaItem.bunny_girl_6, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 18, GachaItem.bunny_girl_7, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 19, GachaItem.bunny_girl_8, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 20, GachaItem.bunny_girl_9, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 21, GachaItem.bunny_girl_10, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 22, GachaItem.angel_demon_1, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 23, GachaItem.angel_demon_2, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 24, GachaItem.angel_demon_3, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 25, GachaItem.angel_demon_4, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 26, GachaItem.angel_demon_5, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 27, GachaItem.angel_demon_6, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 28, GachaItem.angel_demon_7, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 29, GachaItem.angel_demon_8, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 30, GachaItem.angel_demon_9, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 31, GachaItem.angel_demon_10, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 32, GachaItem.monster_girl_1, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 33, GachaItem.monster_girl_2, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 34, GachaItem.monster_girl_3, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 35, GachaItem.monster_girl_4, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 36, GachaItem.monster_girl_5, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 37, GachaItem.monster_girl_6, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 38, GachaItem.monster_girl_7, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 39, GachaItem.monster_girl_8, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 40, GachaItem.monster_girl_9, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 41, GachaItem.monster_girl_10, ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 42, Coin.animal_coin, ItemClassification.progression | ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 43, Coin.bunny_coin, ItemClassification.progression | ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 44, Coin.angel_demon_coin, ItemClassification.progression | ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 45, Coin.monster_coin, ItemClassification.progression | ItemClassification.useful),
-    create_item(ITEM_CODE_START + gacha_item_id + 46, Coin.promotional_coin, ItemClassification.progression | ItemClassification.useful),
+    create_item(ITEM_CODE_START + gacha_item_id + 1, GachaItem.special_promotion, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 2, GachaItem.animal_girl_1, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 3, GachaItem.animal_girl_2, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 4, GachaItem.animal_girl_3, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 5, GachaItem.animal_girl_4, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 6, GachaItem.animal_girl_5, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 7, GachaItem.animal_girl_6, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 8, GachaItem.animal_girl_7, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 9, GachaItem.animal_girl_8, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 10, GachaItem.animal_girl_9, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 11, GachaItem.animal_girl_10, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 12, GachaItem.bunny_girl_1, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 13, GachaItem.bunny_girl_2, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 14, GachaItem.bunny_girl_3, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 15, GachaItem.bunny_girl_4, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 16, GachaItem.bunny_girl_5, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 17, GachaItem.bunny_girl_6, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 18, GachaItem.bunny_girl_7, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 19, GachaItem.bunny_girl_8, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 20, GachaItem.bunny_girl_9, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 21, GachaItem.bunny_girl_10, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 22, GachaItem.angel_demon_1, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 23, GachaItem.angel_demon_2, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 24, GachaItem.angel_demon_3, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 25, GachaItem.angel_demon_4, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 26, GachaItem.angel_demon_5, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 27, GachaItem.angel_demon_6, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 28, GachaItem.angel_demon_7, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 29, GachaItem.angel_demon_8, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 30, GachaItem.angel_demon_9, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 31, GachaItem.angel_demon_10, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 32, GachaItem.monster_girl_1, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 33, GachaItem.monster_girl_2, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 34, GachaItem.monster_girl_3, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 35, GachaItem.monster_girl_4, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 36, GachaItem.monster_girl_5, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 37, GachaItem.monster_girl_6, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 38, GachaItem.monster_girl_7, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 39, GachaItem.monster_girl_8, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 40, GachaItem.monster_girl_9, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 41, GachaItem.monster_girl_10, ItemClassification.filler),
+    create_item(ITEM_CODE_START + gacha_item_id + 42, Coin.animal_coin, ItemClassification.progression_deprioritized),
+    create_item(ITEM_CODE_START + gacha_item_id + 43, Coin.bunny_coin, ItemClassification.progression_deprioritized),
+    create_item(ITEM_CODE_START + gacha_item_id + 44, Coin.angel_demon_coin, ItemClassification.progression_deprioritized),
+    create_item(ITEM_CODE_START + gacha_item_id + 45, Coin.monster_coin, ItemClassification.progression_deprioritized),
+    create_item(ITEM_CODE_START + gacha_item_id + 46, Coin.promotional_coin, ItemClassification.progression_deprioritized),
 ]
 
 shop_item_id = 150
@@ -193,7 +193,7 @@ quest_items = [
     create_item(ITEM_CODE_START + quest_item_id + 23, QuestItem.mimic_chest, ItemClassification.progression | ItemClassification.useful),
     create_item(ITEM_CODE_START + quest_item_id + 24, QuestItem.fungal, ItemClassification.progression | ItemClassification.useful),
     create_item(ITEM_CODE_START + quest_item_id + 25, QuestItem.goblin_apartment, ItemClassification.progression | ItemClassification.useful),
-    create_item(ITEM_CODE_START + quest_item_id + 26, Custom.sex_experience, ItemClassification.progression | ItemClassification.useful),
+    create_item(ITEM_CODE_START + quest_item_id + 26, Custom.sex_experience, ItemClassification.progression_deprioritized),
     create_item(ITEM_CODE_START + quest_item_id + 27, Costume.bunny, ItemClassification.progression | ItemClassification.useful),
     create_item(ITEM_CODE_START + quest_item_id + 28, Key.abandoned_apartment, ItemClassification.progression | ItemClassification.useful),
 ]
@@ -215,7 +215,13 @@ warp_items = [
     create_item(ITEM_CODE_START + warp_item_id + 13, Warp.slime_citadel, ItemClassification.progression | ItemClassification.useful),
     create_item(ITEM_CODE_START + warp_item_id + 14, Warp.slimy_depths, ItemClassification.progression | ItemClassification.useful),
     create_item(ITEM_CODE_START + warp_item_id + 15, Warp.umi_umi, ItemClassification.progression | ItemClassification.useful),
-    create_item(ITEM_CODE_START + warp_item_id + 16, Warp.chaos_castle, ItemClassification.progression | ItemClassification.useful),
+    # create_item(ITEM_CODE_START + warp_item_id + 16, Warp.chaos_castle, ItemClassification.progression | ItemClassification.useful),
+]
+
+ability_item_id = 275
+ability_items = [
+    create_item(ITEM_CODE_START + ability_item_id + 1, Upgrade.rose_ribbon, ItemClassification.progression | ItemClassification.useful),
+    create_item(ITEM_CODE_START + ability_item_id + 2, Upgrade.orb_of_avoidance, ItemClassification.progression | ItemClassification.useful),
 ]
 
 trap_item_id = 300
@@ -224,7 +230,8 @@ trap_items = [
     create_item(ITEM_CODE_START + trap_item_id + 2, Trap.sexual_thoughts, ItemClassification.trap)
 ]
 
+
 item_name_to_item = {item.name: item for item in all_items}
 
-filler_items = [item for item in all_items if item.classification == ItemClassification.filler]
+filler_items = [item for item in all_items if item.classification == ItemClassification.filler and item not in gacha_items]
 

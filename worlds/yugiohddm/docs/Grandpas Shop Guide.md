@@ -13,7 +13,7 @@ Level 4 - 240 / 120
 Each time you get a Shop Progression item Grandpa's Shop inventory increases as follows:
 
 0 Shop Progression:
-    Ryu-Kishin, Mushroom Man, Shadow Specter, R Leg of Forbidden, L Leg of Forbidden, R Arm of Forbidden, L Arm of Forbidden, Beaver Warrior, Karbonala Warrior, Sangan, Kuriboh, Clown Zombie, Beautiful Headhuntress, Stuffed Animal, Flying Penguin, Fiend's Mirror, Man-Eater Bug, Hane-Hane, Penguin Soldier, Withc's Apprentice, Red Archery Girl, Jinzo, Trap Bandit, Decleration of Despair
+    Ryu-Kishin, Mushroom Man, Shadow Specter, R Leg of Forbidden, L Leg of Forbidden, R Arm of Forbidden, L Arm of Forbidden, Beaver Warrior, Karbonala Warrior, Sangan, Kuriboh, Clown Zombie, Beautiful Headhuntress, Stuffed Animal, Flying Penguin, Fiend's Mirror, Man-Eater Bug, Hane-Hane, Penguin Soldier, Witch's Apprentice, Red Archery Girl, Jinzo, Trap Bandit, Decleration of Despair
 
 1 Shop Progression:
     Celtic Guardian, Killer Needle, Aqua Madoor, Yaranzo, Kanan the Swordmistress, Three-Legged Zombies, Millennium Shield, Jirai Gumo, Twin-Headed Dragon,

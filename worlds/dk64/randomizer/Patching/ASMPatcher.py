@@ -86,8 +86,8 @@ KLAPTRAPS_IN_SEARCHLIGHT_SEEK = 1
 CAMERA_RESET_REDUCTION = True
 PAL_DOGADON_REMATCH_FIRE = True
 REMOVE_CS_BARS = False
-JP_TEXTBOX_SIZES = False  # Temp
-FRAMEBUFFER_STORE_FIX = False  # Temp
+JP_TEXTBOX_SIZES = True
+FRAMEBUFFER_STORE_FIX = True
 BLOCK_FILE_DELETION_ON_CHECKSUM_MISMATCH = False
 HARDER_CRUSHERS = True
 BOULDERS_DONT_DESTROY = True
@@ -588,6 +588,11 @@ def patchAssembly(ROM_COPY, spoiler):
         0x18C,  # FLAG_FIRST_COIN_COLLECTION
         0x164,  # BBlast first time cutscene
     ]
+
+    writeValue(ROM_COPY, 0x8068ABEA, Overlay.Static, getHiSym("replacement_lobbies_array"), offset_dict)
+    writeValue(ROM_COPY, 0x8068ABEE, Overlay.Static, getLoSym("replacement_lobbies_array"), offset_dict)
+    writeValue(ROM_COPY, 0x8060005A, Overlay.Static, getHiSym("replacement_lobbies_array"), offset_dict)
+    writeValue(ROM_COPY, 0x8060006E, Overlay.Static, getLoSym("replacement_lobbies_array"), offset_dict)
 
     ACTOR_DEF_START = getSym("actor_defs")
     ACTOR_MASTER_TYPE_START = getSym("actor_master_types")
@@ -1480,6 +1485,9 @@ def patchAssembly(ROM_COPY, spoiler):
         writeValue(ROM_COPY, 0x80751A2C, Overlay.Static, 0x806E2F3C, offset_dict, 4)  # Make it so that you can use Z to enter aim
         # Flags
         file_init_flags.append(0x309)  # Cranky FTT
+        # Fix Widescreen FOV - Set ratio to 1.3333 instead of 1.2
+        writeValue(ROM_COPY, 0x80758168, Overlay.Static, 0x3FF55555, offset_dict, 4)
+        writeValue(ROM_COPY, 0x8075816C, Overlay.Static, 0x55555546, offset_dict, 4)
 
     writeLabelValue(ROM_COPY, 0x80748014, Overlay.Static, "spawnWrinklyWrapper", offset_dict)  # Change function to include setFlag call
     updateActorFunctionInt(ROM_COPY, 212, 0x806AD54C)  # Set Gold Beaver as Blue Beaver Code
@@ -1491,6 +1499,7 @@ def patchAssembly(ROM_COPY, spoiler):
     writeFunction(ROM_COPY, 0x806A89C4, Overlay.Static, "helmTime_exitLevel", offset_dict)  # Modify Function Call
     writeFunction(ROM_COPY, 0x806A89B4, Overlay.Static, "helmTime_exitBoss", offset_dict)  # Modify Function Call
     writeFunction(ROM_COPY, 0x806A8988, Overlay.Static, "helmTime_exitKRool", offset_dict)  # Modify Function Call
+    writeHook(ROM_COPY, 0x806A88C8, Overlay.Static, "ExitMapHook", offset_dict)
     if isQoLEnabled(spoiler, MiscChangesSelected.hint_textbox_hold):
         writeHook(ROM_COPY, 0x8070E83C, Overlay.Static, "TextHandler", offset_dict)
     if isQoLEnabled(spoiler, MiscChangesSelected.brighten_mad_maze_maul_enemies):
@@ -1693,6 +1702,15 @@ def patchAssembly(ROM_COPY, spoiler):
     writeValue(ROM_COPY, 0x80600DA2, Overlay.Static, 0x38, offset_dict)
     writeValue(ROM_COPY, 0x80600DA6, Overlay.Static, 0x70, offset_dict)
 
+    # Make music uncompressed
+    writeValue(ROM_COPY, 0x8060A2A8, Overlay.Static, 0x00001025, offset_dict, 4)  # or v0, zero, zero
+    writeValue(ROM_COPY, 0x8060A32C, Overlay.Static, 0, offset_dict, 4)  # nop
+    writeValue(ROM_COPY, 0x8060A31E, Overlay.Static, 0, offset_dict)
+    writeValue(ROM_COPY, 0x8060A30A, Overlay.Static, 0, offset_dict)
+
+    # Make music not interrupt itself
+    writeFunction(ROM_COPY, 0x8060A378, Overlay.Static, "playMusicDontStop", offset_dict)
+
     # Soundplayer Fix
     writeValue(ROM_COPY, 0x80735C9E, Overlay.Static, 0xFFFF, offset_dict)  # initSoundPlayer creates the event
     writeValue(ROM_COPY, 0x80735D0E, Overlay.Static, 0xFFFF, offset_dict)  # __sndpVoiceHandler checks for the event
@@ -1834,7 +1852,7 @@ def patchAssembly(ROM_COPY, spoiler):
     # Pause Carousel
     check_term = getEnum("CHECK_TERMINATOR")
     writeValue(ROM_COPY, 0x806AB3F6, Overlay.Static, check_term, offset_dict)
-    file_item_end = getSym("file_items") + (2 * check_term)
+    file_item_end = getSym("pause_items") + (8 * (check_term - 1)) + 6
     writeValue(ROM_COPY, 0x806AB2CE, Overlay.Static, getHi(file_item_end), offset_dict)
     writeValue(ROM_COPY, 0x806AB2D6, Overlay.Static, getLo(file_item_end), offset_dict)
 
@@ -1928,9 +1946,12 @@ def patchAssembly(ROM_COPY, spoiler):
     writeFunction(ROM_COPY, 0x806BBAC8, Overlay.Static, "playBossSong", offset_dict)
     writeFunction(ROM_COPY, 0x805FED60, Overlay.Static, "playSongWCheck", offset_dict)
     writeFunction(ROM_COPY, 0x8061E280, Overlay.Static, "playSongWCheck", offset_dict)
-    writeFunction(ROM_COPY, 0x80629014, Overlay.Static, "playSongWCheck", offset_dict)
+    writeFunction(ROM_COPY, 0x80629014, Overlay.Static, "playSongWCheck", offset_dict)  # also cancels Chunky Phase music
     writeFunction(ROM_COPY, 0x8064142C, Overlay.Static, "playSongWCheck", offset_dict)
     writeFunction(ROM_COPY, 0x8064143C, Overlay.Static, "playSongWCheck", offset_dict)
+    writeFunction(ROM_COPY, 0x80628E40, Overlay.Static, "stopBossSong", offset_dict)  # Dogadon1, Mad Jack, Dillo2, Dillo1, Pufftoss, Dogadon2
+    writeFunction(ROM_COPY, 0x80032788, Overlay.Boss, "playNotBossSong", offset_dict)  # King Kut Out, because who needs consistency, right?
+    writeFunction(ROM_COPY, 0x80605600, Overlay.Static, "resetBossSong", offset_dict)  # Prevent assumption "current_boss_music != 0, so boss music is playing" from being incorrect
 
     writeHook(ROM_COPY, 0x806E563C, Overlay.Static, "AnyInsPadCheck", offset_dict)
 
@@ -1938,14 +1959,14 @@ def patchAssembly(ROM_COPY, spoiler):
     writeValue(ROM_COPY, 0x8074564E, Overlay.Static, 0x7FFF, offset_dict)
     writeValue(ROM_COPY, 0x807457B6, Overlay.Static, 0x925, offset_dict)
     MUSIC_MIDI_OFFSET = 0x807FFA00
-    SONG_COUNT = 175
+    SONG_COUNT = 176
     writeValue(ROM_COPY, 0x8060A2B6, Overlay.Static, getHi(MUSIC_MIDI_OFFSET), offset_dict)
     writeValue(ROM_COPY, 0x8060A2BA, Overlay.Static, getLo(MUSIC_MIDI_OFFSET), offset_dict)
     writeValue(ROM_COPY, 0x806010B2, Overlay.Static, getHi(MUSIC_MIDI_OFFSET), offset_dict)
     writeValue(ROM_COPY, 0x806010BA, Overlay.Static, getLo(MUSIC_MIDI_OFFSET), offset_dict)
     writeValue(ROM_COPY, 0x806010DA, Overlay.Static, getHi(MUSIC_MIDI_OFFSET), offset_dict)
     writeValue(ROM_COPY, 0x806010DE, Overlay.Static, getLo(MUSIC_MIDI_OFFSET), offset_dict)
-    writeValue(ROM_COPY, 0x806010EE, Overlay.Static, (SONG_COUNT + 2) * 4, offset_dict)
+    writeValue(ROM_COPY, 0x806010EE, Overlay.Static, (SONG_COUNT + 1) * 4, offset_dict)
 
     #
     writeHook(ROM_COPY, 0x806C3260, Overlay.Static, "fixLankyPhaseHandState", offset_dict)  # Ensures K Rool has a head in the end cutscene if in Lanky Phase
@@ -2190,6 +2211,8 @@ def patchAssembly(ROM_COPY, spoiler):
         RemovedBarriersSelected.caves_ice_walls: [266, 267, 265],  # Entrance, Snide, Giant Boulder
         RemovedBarriersSelected.galleon_treasure_room: [0xA2],
         RemovedBarriersSelected.aztec_tiny_temple_ice: [0x45],
+        RemovedBarriersSelected.helm_punch_gates: [0x2A2, 0x2A3, 0x2A4, 0x2A5],
+        RemovedBarriersSelected.helm_star_gates: [0x2A1],
     }
     for barrier in barrier_flags:
         if IsDDMSSelected(settings.remove_barriers_selected, barrier):

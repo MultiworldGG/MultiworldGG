@@ -12,7 +12,7 @@
 ### Generating a Celeste game (online)
 
 1. Follow the instructions in the [MultiworldGG Setup Guide](tutorial/Archipelago/setup/en#on-the-website) to generate a
-`.yaml` file using the [Celeste Player Settings Page](/games/celeste/player-settings).
+`.yaml` file using the [Celeste Player Settings Page](/games/celeste/player-options).
 1. If playing multiplayer, follow the instructions in the [MultiworldGG Setup Guide](tutorial/Archipelago/setup/en#generating-a-multiplayer-game) to complete the generation and hosting steps.
 
 ### Generating a Celeste game (offline)

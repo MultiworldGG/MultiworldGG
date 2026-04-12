@@ -31,7 +31,6 @@ class WordipelagoWorld(World):
     """A brand new take on the world famous word guessing game."""
 
     game = "Wordipelago"
-    author: str = "ProfDeCube"
     web = WordipelagoWebWorld()
     options: WordipelagoOptions
     options_dataclass = WordipelagoOptions
@@ -42,6 +41,12 @@ class WordipelagoWorld(World):
 
     def generate_early(self):
         location_count = self.options.word_checks + self.options.word_streak_checks + self.options.minimum_point_shop_checks
+        
+        key_words = [word.upper() for word in self.options.key_words.value if len(word) == 5 and word.isalpha()]
+        self.multiworld.random.shuffle(key_words)
+        self.options.key_words.value = key_words[:20]
+        
+
         if(self.options.letter_checks >= 1):
             location_count += 6
         if(self.options.letter_checks >= 2):
@@ -54,6 +59,10 @@ class WordipelagoWorld(World):
             location_count += 31
         if(self.options.yellow_checks == 1):
             location_count += 31
+        if(self.options.grass_sanity.value):
+            location_count += 1
+        location_count += len(self.options.key_words.value)
+            
         
         item_count = (26 - self.options.starting_letters) + (6 - self.options.starting_guesses) + self.options.additional_guesses
         if not self.options.yellow_unlocked: 
@@ -76,7 +85,7 @@ class WordipelagoWorld(World):
                 checks_needed += 1
 
             can_reach_words = self.options.starting_letters >= 8 and self.options.yellow_unlocked and self.options.starting_guesses >= 4
-            yellow_checks_available = self.options.yellow_checks == 1 and (self.options.green_checks != 0 or self.options.letter_checks != 0)
+            yellow_checks_available = self.options.yellow_checks == 1 and (self.options.green_checks.value != 0 or self.options.letter_checks.value != 0)
             enough_checks = self.options.letter_checks >= 2 or self.options.green_checks >= 2
             if(not can_reach_words and not yellow_checks_available and not enough_checks):
                 if(not enough_checks):
@@ -105,12 +114,17 @@ class WordipelagoWorld(World):
                 "extra_cooldown_trap_size",
                 "shop_points_item_size",
                 "point_shop_check_price",
-                "word_weighting"
+                "word_weighting",
+                "grass_sanity",
+                "key_words"
             )
+            game_rule_logic = dict(rule_logic[self.options.logic_difficulty.value])
+            game_rule_logic["pointShop"] = rule_logic[self.options.logic_difficulty.value]["green"][str(self.options.point_shop_logic_level.value)]
+            
             return {
                 **wordipelago_options,
                 "world_version": "1.0.0",
-                "rule_logic": rule_logic[self.options.logic_difficulty.value],
+                "rule_logic": game_rule_logic,
                 "letter_scores" : letter_scores
             }
             
@@ -160,10 +174,14 @@ class WordipelagoWorld(World):
             self.starting_items.append(weighted_letter)
             self.multiworld.push_precollected(self.create_item('Letter ' + weighted_letter))
         
-        for i in range(self.options.starting_guesses):
+        for i in range(self.options.starting_guesses.value):
             self.multiworld.push_precollected(self.create_item('Guess'))
+        if(self.options.starting_guesses.value < 2):
+            self.multiworld.early_items[self.player]["Guess"] = 1 
         if(self.options.yellow_unlocked): 
             self.multiworld.push_precollected(self.create_item('Yellow Letters'))
+        elif(self.options.early_yellow):
+            self.multiworld.early_items[self.player]["Yellow Letters"] = 1 
         if(self.options.unused_letters_unlocked): 
             self.multiworld.push_precollected(self.create_item('Unused Letters'))
 
@@ -191,6 +209,9 @@ class WordipelagoWorld(World):
             location_count += 31
         if(self.options.yellow_checks == 1):
             location_count += 31
+        if(self.options.grass_sanity.value):
+            location_count += 1
+        location_count += len(self.options.key_words.value)
 
 
         item_count = (26 - self.options.starting_letters) + (6 - self.options.starting_guesses) + self.options.time_reward_count + self.options.additional_guesses
@@ -245,10 +266,14 @@ class WordipelagoWorld(World):
             location_count += 31
         if(self.options.yellow_checks == 1):
             location_count += 31
+        if(self.options.grass_sanity.value):
+            location_count += 1
+        location_count += len(self.options.key_words.value)
 
         item_count = (26 - self.options.starting_letters) + (6 - self.options.starting_guesses) + self.options.time_reward_count + self.options.additional_guesses
         if not self.options.yellow_unlocked: 
             item_count += 1
+
         if not self.options.unused_letters_unlocked: 
             item_count += 1
 
@@ -295,6 +320,16 @@ class WordipelagoWorld(World):
                     locs = locs + 1
                     name = "Point Shop Purchase " + str(i + 1)
                     region.add_locations({name: 3001 + i})
+                    
+            if(region_name == 'Key Words'):
+                if self.options.grass_sanity.value:
+                    locs = locs + 1
+                    name = "Grass"
+                    region.add_locations({name: 4000})
+                for i in range(len(self.options.key_words.value)):
+                    locs = locs + 1
+                    name = "Key Word " + str(i + 1)
+                    region.add_locations({name: 4001 + i})
 
 
     
@@ -325,6 +360,4 @@ class WordipelagoWorld(World):
         create_rules(self)
 
     def get_filler_item_name(self) -> str:
-        if self.options.shop_points_item_default_filler:
-            return "Shop Points"
         return "Suggestion"

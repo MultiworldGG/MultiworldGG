@@ -20,27 +20,29 @@ class FMAccessData(NamedTuple):
 
 def parse_access_rule_group(world: "FrogmonsterWorld", group: dict[str, dict[str, FMAccessData]]) -> None:
 
-    for location_data in group["locations"].items():
-        name = location_data[0]
-        access_data = location_data[1]
-        location = world.multiworld.get_location(name, world.player)
-        if access_data.op == "replace":
-            location.access_rule = partial(access_data.rule, world.player, world.difficulty)
-        elif access_data.op in ["or", "and"]:
-            add_rule(location, partial(access_data.rule, world.player, world.difficulty), combine=access_data.op)
-        else:
-            raise ValueError(f"Invalid access rule type {access_data.op} for location {name}.")
-        
-    for entrance_data in group["entrances"].items():
-        name = entrance_data[0]
-        access_data = entrance_data[1]
-        entrance = world.multiworld.get_entrance(name, world.player)
-        if access_data.op == "replace":
-            entrance.access_rule = partial(access_data.rule, world.player, world.difficulty)
-        elif access_data.op in ["or", "and"]:
-            add_rule(entrance, partial(access_data.rule, world.player, world.difficulty), combine=access_data.op)
-        else:
-            raise ValueError(f"Invalid access rule type {access_data.op} for entrance {name}.") 
+    if "locations" in group:
+        for location_data in group["locations"].items():
+            name = location_data[0]
+            access_data = location_data[1]
+            location = world.multiworld.get_location(name, world.player)
+            if access_data.op == "replace":
+                location.access_rule = partial(access_data.rule, world.player, world.difficulty)
+            elif access_data.op in ["or", "and"]:
+                add_rule(location, partial(access_data.rule, world.player, world.difficulty), combine=access_data.op)
+            else:
+                raise ValueError(f"Invalid access rule type {access_data.op} for location {name}.")
+            
+    if "entrances" in group:
+        for entrance_data in group["entrances"].items():
+            name = entrance_data[0]
+            access_data = entrance_data[1]
+            entrance = world.multiworld.get_entrance(name, world.player)
+            if access_data.op == "replace":
+                entrance.access_rule = partial(access_data.rule, world.player, world.difficulty)
+            elif access_data.op in ["or", "and"]:
+                add_rule(entrance, partial(access_data.rule, world.player, world.difficulty), combine=access_data.op)
+            else:
+                raise ValueError(f"Invalid access rule type {access_data.op} for entrance {name}.") 
 
 access_rule_groups = {
     "parkour_rules": {
@@ -56,10 +58,14 @@ access_rule_groups = {
         }
     },
     "deathlink_rules": {
-        "locations": {},
         "entrances": {
             f"{r.anywhere} -> Soul Frog": FMAccessData(op="replace", rule=lambda player, dif, state: False),
             f"{r.anywhere} -> Soul Fish": FMAccessData(op="replace", rule=lambda player, dif, state: False),
+        }
+    },
+    "goal_eye_chest_rules": {
+        "locations": {
+            l.goal: FMAccessData(op="replace", rule=lambda player, dif, state: True)
         }
     }
 }

@@ -37,7 +37,7 @@
 0b//removeIronPot: |
   db loseitem,TREASURE_IRON_POT
   db loadscript,$14
-  dw $4b8e  ; lavaSoupSubrosianScript_fillPot
+  dw $4b8e  ; lavaSoupSubrosianScript_fillPot, script reference, not a jump
 0b/6568/: dwbe removeIronPot
 
 0b//removeLavaSoup: |

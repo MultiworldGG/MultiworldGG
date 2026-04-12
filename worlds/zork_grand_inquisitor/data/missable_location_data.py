@@ -63,7 +63,7 @@ missable_location_grant_conditions_data: Dict[
     ,
     ZorkGrandInquisitorLocations.DEATH_SLICED_UP_BY_THE_INVISIBLE_GUARD:
         ZorkGrandInquisitorMissableLocationGrantConditionsData(
-            game_location_condition="tp1e",
+            game_location_condition="tp10",
             location_condition=(ZorkGrandInquisitorLocations.YOU_GAINED_86_EXPERIENCE_POINTS,),
             item_conditions=None,
         )
@@ -147,7 +147,7 @@ missable_location_grant_conditions_data: Dict[
     ,
     ZorkGrandInquisitorLocations.I_SPIT_ON_YOUR_FILTHY_COINAGE:
         ZorkGrandInquisitorMissableLocationGrantConditionsData(
-            game_location_condition="tp1e",
+            game_location_condition="tp10",
             location_condition=(ZorkGrandInquisitorLocations.YOU_GAINED_86_EXPERIENCE_POINTS,),
             item_conditions=(ZorkGrandInquisitorItems.POUCH_OF_ZORKMIDS,),
         )
@@ -249,7 +249,7 @@ missable_location_grant_conditions_data: Dict[
     ,
     ZorkGrandInquisitorLocations.YOU_DONT_GO_MESSING_WITH_A_MANS_ZIPPER:
         ZorkGrandInquisitorMissableLocationGrantConditionsData(
-            game_location_condition="tp1e",
+            game_location_condition="tp10",
             location_condition=(ZorkGrandInquisitorLocations.YOU_GAINED_86_EXPERIENCE_POINTS,),
             item_conditions=(ZorkGrandInquisitorItems.SPELL_REZROV,),
         )

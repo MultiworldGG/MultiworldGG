@@ -126,5 +126,5 @@ class MK64World(World):
 
     def modify_multidata(self, multidata: dict) -> None:
         player_name = self.multiworld.player_name[self.player]
-        slot_name = player_name + "_" + self.multiworld.seed_name
+        slot_name = player_name + "_" + self.multiworld.seed_name[:20]
         multidata["connect_names"][slot_name] = multidata["connect_names"][player_name]

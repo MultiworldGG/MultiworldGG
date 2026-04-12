@@ -1,10 +1,10 @@
-import random
+import logging
 
 from BaseClasses import ItemClassification, Region, LocationProgressType, Tutorial
 from worlds.AutoWorld import World, WebWorld
-from worlds.huniepop.Items import HPItem, girl_unlock_table, item_table, panties_item_table, gift_item_table, \
-    unique_item_table, girl_gift, progressive_token_item_table, itemgen_to_name
-from worlds.huniepop.Locations import HPLocation, location_table, locationgen_to_name
+from worlds.huniepop.Data import girllist, rand_girl_data, gift_id_to_name
+from worlds.huniepop.Items import item_table, HPItem, panties_item, gift_item, girl_unlock, token_item, junk_item, item_datapackage, filler_items
+from worlds.huniepop.Locations import location_table, HPLocation, loc_datapackage
 from worlds.huniepop.Options import HPOptions
 from worlds.huniepop.Rules import set_rules
 
@@ -26,55 +26,20 @@ class HuniePop(World):
     It's a gameplay first approach that's part dating sim, part puzzle game, with light RPG elements.
     """
     game = "Hunie Pop"
-    author: str = "dotsofdarkness"
-    worldversion = {
-        "major":1,
-        "minor":1,
-        "build":0
-    }
 
     item_name_to_id = item_table
-    item_id_to_name = {item_table[name]: name for name in item_table}
     location_name_to_id = location_table
-
+    web = HuniePopWeb()
     options_dataclass = HPOptions
     options: HPOptions
-
-    web = HuniePopWeb()
-
-    girllist = (
-        "tiffany",
-        "aiko",
-        "kyanna",
-        "audrey",
-        "lola",
-        "nikki",
-        "jessie",
-        "beli",
-        "kyu",
-        "momo",
-        "celeste",
-        "venus"
-    )
-
-    #giftsets = {
-    #    "academy":0,
-    #    "toys":0,
-    #    "fitness":0,
-    #    "rave":0,
-    #    "sports":0,
-    #    "artist":0,
-    #    "baking":0,
-    #    "yoga":0,
-    #    "dancer":0,
-    #    "aquarium":0,
-    #    "scuba":0,
-    #    "garden":0,
-    #}
 
     startgirls = []
     startgirl = -1
     enabledgirls = []
+    girldata = {}
+
+    totalloc = 0
+    totalitem = 0
 
     trashitems = 0
     shopslots = 0
@@ -82,20 +47,21 @@ class HuniePop(World):
     def generate_early(self):
         self.startgirls = []
         self.startgirl = -1
+        self.girldata = {}
+        self.totalloc = 0
+        self.totalitem = 0
 
-        if "kyu" not in self.options.enabled_girls.value and self.options.goal.value:
+        if "kyu" not in self.options.enabled_girls.value and self.options.goal.value==1:
+            logging.warning(f"""(Hunie Pop) Adding "kyu" to "enabled_girls" for Player:"{self.player_name}" since goal is "Give kyu all available panties\"""")
             self.options.enabled_girls.value.add("kyu")
 
-        tmpgirls = list(self.options.enabled_girls.value.copy())
-        #tmpgirls.add("kyu")
-        self.enabledgirls = tmpgirls.copy()
-        self.startgirls = random.sample(tmpgirls, self.options.number_of_starting_girls.value)
-        self.startgirl = self.girllist.index(random.sample(self.startgirls, 1)[0])+1
 
-        print(f"girls unlocked: {self.startgirls}")
-        print(f"starting girl: {self.girllist[(self.startgirl-1)]}")
+        self.enabledgirls = list(self.options.enabled_girls.value.copy())
+        self.startgirls = self.random.sample(self.enabledgirls, self.options.number_of_starting_girls.value)
+        self.startgirl = girllist.index(self.random.sample(self.startgirls, 1)[0])+1
 
 
+        self.girldata = rand_girl_data(self.options, self.random)
 
         totallocations = 0
         totalitems = 0
@@ -103,9 +69,9 @@ class HuniePop(World):
         #total locations
         if True: #date locations
             totallocations += (4*len(self.enabledgirls))
-        if True: #pantie locations
+        if True: #sleep with locations
             totallocations += len(self.enabledgirls)
-        if True: #pantie turnin locations
+        if "kyu" in self.enabledgirls: #pantie turn in locations
             totallocations += len(self.enabledgirls)
         if True: #gift locations
             totallocations += (24*len(self.enabledgirls))
@@ -121,36 +87,30 @@ class HuniePop(World):
         if True: #pantie items
             totalitems += len(self.enabledgirls)
         if True: #gift items
-            if "tiffany" in self.enabledgirls or "nikki" in self.enabledgirls or "celeste" in self.enabledgirls: totalitems +=6 #academy
-            if "aiko" in self.enabledgirls or "audrey" in self.enabledgirls or "momo" in self.enabledgirls: totalitems +=6 #toys
-            if "kyanna" in self.enabledgirls or "jessie" in self.enabledgirls or "celeste" in self.enabledgirls: totalitems +=6 #fitness
-            if "tiffany" in self.enabledgirls or "audrey" in self.enabledgirls or "kyu" in self.enabledgirls: totalitems +=6 #rave
-            if "lola" in self.enabledgirls or "beli" in self.enabledgirls or "momo" in self.enabledgirls: totalitems +=6 #sports
-            if "aiko" in self.enabledgirls or "nikki" in self.enabledgirls or "kyu" in self.enabledgirls: totalitems +=6 #artist
-            if "lola" in self.enabledgirls or "jessie" in self.enabledgirls or "venus" in self.enabledgirls: totalitems +=6 #baking
-            if "kyanna" in self.enabledgirls or "beli" in self.enabledgirls or "venus" in self.enabledgirls: totalitems +=6 #yoga
-            if "kyanna" in self.enabledgirls or "jessie" in self.enabledgirls or "kyu" in self.enabledgirls: totalitems +=6 #dancer
-            if "audrey" in self.enabledgirls or "nikki" in self.enabledgirls or "momo" in self.enabledgirls: totalitems +=6 #aquarium
-            if "tiffany" in self.enabledgirls or "lola" in self.enabledgirls or "celeste" in self.enabledgirls: totalitems +=6 #scuba
-            if "aiko" in self.enabledgirls or "beli" in self.enabledgirls or "venus" in self.enabledgirls: totalitems +=6 #garden
-        if True: #unique gift items
-            totalitems += (len(self.enabledgirls) * 6)
+            totalitems += (len(self.enabledgirls) * 24)
         if True: #token items
             totalitems += (8*6)
 
-        print(f"totalitems: {totalitems}")
-        print(f"totallocations: {totallocations}")
 
         if totallocations != totalitems:
             if totallocations > totalitems:
                 self.trashitems = totallocations-totalitems
                 self.shopslots = self.options.number_shop_items.value
+                totalitems = totallocations
             else:
                 self.shopslots = totalitems - (totallocations - self.options.number_shop_items.value)
+                totallocations = totalitems
+
+        self.totalloc = totallocations
+        self.totalitem = totalitems
 
 
     def create_regions(self):
         hub_region = Region("Menu", self.player, self.multiworld)
+
+        if self.options.goal.value == 0:
+            hub_region.add_locations({"Sleep with all girls":self.location_name_to_id["Sleep with all girls"]}, HPLocation)
+
         self.multiworld.regions.append(hub_region)
 
 
@@ -162,7 +122,7 @@ class HuniePop(World):
                 f"{girl} date 2": self.location_name_to_id[f"{girl} date 2"],
                 f"{girl} date 3": self.location_name_to_id[f"{girl} date 3"],
                 f"{girl} date 4": self.location_name_to_id[f"{girl} date 4"],
-                f"received {girl}'s panties": self.location_name_to_id[f"received {girl}'s panties"],
+                f"Slept with {girl}": self.location_name_to_id[f"Slept with {girl}"],
                 f"{girl}'s Last Name": self.location_name_to_id[f"{girl}'s Last Name"],
                 f"{girl}'s Age": self.location_name_to_id[f"{girl}'s Age"],
                 f"{girl}'s Height": self.location_name_to_id[f"{girl}'s Height"],
@@ -174,30 +134,31 @@ class HuniePop(World):
                 f"{girl}'s Favourite Color": self.location_name_to_id[f"{girl}'s Favourite Color"],
                 f"{girl}'s Favourite Season": self.location_name_to_id[f"{girl}'s Favourite Season"],
                 f"{girl}'s Favourite Hangout": self.location_name_to_id[f"{girl}'s Favourite Hangout"],
-                locationgen_to_name[f"{girl} gift location 1"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 1"]],
-                locationgen_to_name[f"{girl} gift location 2"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 2"]],
-                locationgen_to_name[f"{girl} gift location 3"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 3"]],
-                locationgen_to_name[f"{girl} gift location 4"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 4"]],
-                locationgen_to_name[f"{girl} gift location 5"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 5"]],
-                locationgen_to_name[f"{girl} gift location 6"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 6"]],
-                locationgen_to_name[f"{girl} gift location 7"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 7"]],
-                locationgen_to_name[f"{girl} gift location 8"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 8"]],
-                locationgen_to_name[f"{girl} gift location 9"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 9"]],
-                locationgen_to_name[f"{girl} gift location 10"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 10"]],
-                locationgen_to_name[f"{girl} gift location 11"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 11"]],
-                locationgen_to_name[f"{girl} gift location 12"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 12"]],
-                locationgen_to_name[f"{girl} gift location 13"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 13"]],
-                locationgen_to_name[f"{girl} gift location 14"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 14"]],
-                locationgen_to_name[f"{girl} gift location 15"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 15"]],
-                locationgen_to_name[f"{girl} gift location 16"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 16"]],
-                locationgen_to_name[f"{girl} gift location 17"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 17"]],
-                locationgen_to_name[f"{girl} gift location 18"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 18"]],
-                locationgen_to_name[f"{girl} gift location 19"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 19"]],
-                locationgen_to_name[f"{girl} gift location 20"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 20"]],
-                locationgen_to_name[f"{girl} gift location 21"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 21"]],
-                locationgen_to_name[f"{girl} gift location 22"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 22"]],
-                locationgen_to_name[f"{girl} gift location 23"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 23"]],
-                locationgen_to_name[f"{girl} gift location 24"]: self.location_name_to_id[locationgen_to_name[f"{girl} gift location 24"]]
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift1"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift1"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift2"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift2"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift3"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift3"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift4"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift4"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift5"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift5"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift6"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift6"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift7"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift7"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift8"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift8"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift9"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift9"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift10"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift10"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift11"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift11"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift12"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift12"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift13"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift13"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift14"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift14"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift15"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift15"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift16"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift16"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift17"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift17"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift18"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift18"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift19"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift19"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift20"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift20"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift21"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift21"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift22"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift22"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift23"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift23"]]}"],
+                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift24"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift24"]]}"],
+
             }, HPLocation)
 
             if girl == "kyu" or girl == "momo" or girl == "celeste" or girl == "venus":
@@ -231,28 +192,26 @@ class HuniePop(World):
                 if "venus" in self.enabledgirls:
                     girlregion.add_locations({"given kyu venus's panties": self.location_name_to_id["given kyu venus's panties"]}, HPLocation)
 
+                if self.options.goal.value == 1:
+                    girlregion.add_locations({"Give kyu all available panties": self.location_name_to_id["Give kyu all available panties"]}, HPLocation)
+
+
             hub_region.connect(girlregion, f"hub-{girl}")
 
-        bossregion = Region("boss", self.player, self.multiworld)
-        bossregion.add_locations({"boss": self.location_name_to_id["boss"]}, HPLocation)
-        hub_region.connect(bossregion, "hub-boss")
 
         if self.shopslots > 0:
             shop_region = Region("shop", self.player, self.multiworld)
             for i in range(self.shopslots):
-                #self.location_name_to_id[f"shop_location: {i+1}"] = 69420506+i
-                shop_region.add_locations({f"shop_location: {i+1}" : 42069511+i}, HPLocation)
+                shop_region.add_locations({f"shop_location: {i+1}" : self.location_name_to_id[f"shop_location: {i+1}"]}, HPLocation)
             hub_region.connect(shop_region, "hub-shop")
 
 
 
 
     def create_item(self, name: str) -> HPItem:
-        if (name ==  "victory"):
-            return HPItem(name, ItemClassification.progression, 42069999, self.player)
-        if name in girl_unlock_table or name in panties_item_table or name in girl_unlock_table or name in gift_item_table or name in unique_item_table:
+        if name in girl_unlock or name in panties_item or name in gift_item or name == "Goal Achieved":
             return HPItem(name, ItemClassification.progression, self.item_name_to_id[name], self.player)
-        if name in progressive_token_item_table:
+        if name in token_item:
             return HPItem(name, ItemClassification.useful, self.item_name_to_id[name], self.player)
 
         return HPItem(name, ItemClassification.filler, self.item_name_to_id[name], self.player)
@@ -267,99 +226,34 @@ class HuniePop(World):
                 self.multiworld.itempool.append(self.create_item(f"Unlock Girl({girl})"))
             self.multiworld.itempool.append((self.create_item(f"{girl}'s panties")))
 
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name[f"{girl} unique item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name[f"{girl} unique item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name[f"{girl} unique item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name[f"{girl} unique item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name[f"{girl} unique item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name[f"{girl} unique item 6"])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift1"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift2"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift3"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift4"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift5"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift6"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift7"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift8"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift9"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift10"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift11"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift12"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift13"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift14"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift15"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift16"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift17"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift18"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift19"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift20"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift21"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift22"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift23"]])))
+            self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift24"]])))
 
-        if "tiffany" in self.enabledgirls or "nikki" in self.enabledgirls or "celeste" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["academy gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["academy gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["academy gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["academy gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["academy gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["academy gift item 6"])))
-        if "aiko" in self.enabledgirls or "audrey" in self.enabledgirls or "momo" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["toys gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["toys gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["toys gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["toys gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["toys gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["toys gift item 6"])))
-        if "kyanna" in self.enabledgirls or "jessie" in self.enabledgirls or "celeste" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["fitness gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["fitness gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["fitness gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["fitness gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["fitness gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["fitness gift item 6"])))
-        if "tiffany" in self.enabledgirls or "audrey" in self.enabledgirls or "kyu" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["rave gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["rave gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["rave gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["rave gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["rave gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["rave gift item 6"])))
-        if "lola" in self.enabledgirls or "beli" in self.enabledgirls or "momo" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["sports gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["sports gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["sports gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["sports gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["sports gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["sports gift item 6"])))
-        if "aiko" in self.enabledgirls or "nikki" in self.enabledgirls or "kyu" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["artist gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["artist gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["artist gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["artist gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["artist gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["artist gift item 6"])))
-        if "lola" in self.enabledgirls or "jessie" in self.enabledgirls or "venus" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["baking gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["baking gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["baking gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["baking gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["baking gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["baking gift item 6"])))
-        if "kyanna" in self.enabledgirls or "beli" in self.enabledgirls or "venus" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["yoga gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["yoga gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["yoga gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["yoga gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["yoga gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["yoga gift item 6"])))
-        if "kyanna" in self.enabledgirls or "jessie" in self.enabledgirls or "kyu" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["dancer gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["dancer gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["dancer gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["dancer gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["dancer gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["dancer gift item 6"])))
-        if "audrey" in self.enabledgirls or "nikki" in self.enabledgirls or "momo" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["aquarium gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["aquarium gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["aquarium gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["aquarium gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["aquarium gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["aquarium gift item 6"])))
-        if "tiffany" in self.enabledgirls or "lola" in self.enabledgirls or "celeste" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["scuba gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["scuba gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["scuba gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["scuba gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["scuba gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["scuba gift item 6"])))
-        if "aiko" in self.enabledgirls or "beli" in self.enabledgirls or "venus" in self.enabledgirls:
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["garden gift item 1"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["garden gift item 2"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["garden gift item 3"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["garden gift item 4"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["garden gift item 5"])))
-            self.multiworld.itempool.append((self.create_item(itemgen_to_name["garden gift item 6"])))
 
-        for t in progressive_token_item_table:
+
+        for t in token_item:
             self.multiworld.itempool.append(self.create_item(t))
             self.multiworld.itempool.append(self.create_item(t))
             self.multiworld.itempool.append(self.create_item(t))
@@ -369,99 +263,73 @@ class HuniePop(World):
 
 
         if self.trashitems > 0:
-            if self.options.filler_item.value == 1:
+            if self.options.filler_item.value == 0:
                 for i in range(self.trashitems):
-                    self.multiworld.itempool.append(self.create_item("nothing"))
+                    self.multiworld.itempool.append(self.create_item("Nothing"))
             else:
                 for i in range(self.trashitems):
-                    r = random.randint(42069177, 42069260)
-                    self.multiworld.itempool.append(self.create_item(self.item_id_to_name[r]))
+                    self.multiworld.itempool.append(self.create_item(self.random.choice([*filler_items])))
 
 
     def set_rules(self):
-        self.multiworld.get_location("boss", self.player).place_locked_item(self.create_item("victory"))
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("victory", self.player)
+        if self.options.goal.value == 1:
+            self.multiworld.get_location("Give kyu all available panties", self.player).place_locked_item(self.create_item("Goal Achieved"))
+        else:
+            self.multiworld.get_location("Sleep with all girls", self.player).place_locked_item(self.create_item("Goal Achieved"))
 
-        set_rules(self.multiworld, self.player, self.enabledgirls, self.startgirls, self.options.goal.value)
+        self.multiworld.completion_condition[self.player] = lambda state: state.has("Goal Achieved", self.player)
+
+        set_rules(self.multiworld, self.player, self.enabledgirls, self.girldata, self.options.goal.value)
 
         if self.shopslots > self.options.exclude_shop_items:
             for i in range(self.shopslots):
                 if i>=self.options.exclude_shop_items:
                     self.multiworld.get_location(f"shop_location: {i + 1}", self.player).progress_type = LocationProgressType.EXCLUDED
 
+    #something to stop warnings happening in console when running tests
+    def get_filler_item_name(self) -> str:
+        return self.random.choice(list(filler_items.keys()))
 
     def fill_slot_data(self) -> dict:
         returndict = {
             "start_girl": self.startgirl,
+
             "number_of_shop_items": self.shopslots,
-            "shop_item_cost": self.options.shop_item_cost.value,
-            "shop_gift_cost": self.options.shop_gift_cost.value,
-            "hunie_gift_cost": self.options.hunie_gift_cost.value,
+            "shop_item_cost": self.options.shop_item_cost.val,
+            "shop_gift_cost": self.options.shop_gift_cost.val,
+            "shop_date_gift_cost": self.options.shop_date_gift_cost.val,
+            "hunie_gift_cost": self.options.hunie_gift_cost.val,
+
             "puzzle_moves": self.options.puzzle_moves.value,
             "puzzle_affection_base": self.options.puzzle_affection_base.value,
             "puzzle_affection_add": self.options.puzzle_affection_add.value,
-            "world_version": self.worldversion,
-            "goal": self.options.goal.value
+
+            "girldata": self.girldata,
+
+            "total_loc": self.totalloc,
+            "total_item": self.totalitem,
+
+            "world_version": self.world_version,
+            "goal": self.options.goal.value,
+
+            "deathlink": self.options.deathlink.value,
+
+            "tiffany_enabled": "tiffany" in self.options.enabled_girls.value,
+            "aiko_enabled": "aiko" in self.options.enabled_girls.value,
+            "kyanna_enabled": "kyanna" in self.options.enabled_girls.value,
+            "audrey_enabled": "audrey" in self.options.enabled_girls.value,
+            "lola_enabled": "lola" in self.options.enabled_girls.value,
+            "nikki_enabled": "nikki" in self.options.enabled_girls.value,
+            "jessie_enabled": "jessie" in self.options.enabled_girls.value,
+            "beli_enabled": "beli" in self.options.enabled_girls.value,
+            "kyu_enabled": "kyu" in self.options.enabled_girls.value,
+            "momo_enabled": "momo" in self.options.enabled_girls.value,
+            "celeste_enabled": "celeste" in self.options.enabled_girls.value,
+            "venus_enabled": "venus" in self.options.enabled_girls.value,
+
+            **item_datapackage,
+
+            **loc_datapackage,
         }
-
-        if "tiffany" in self.options.enabled_girls:
-            returndict["tiffany_enabled"] = 1
-        else:
-            returndict["tiffany_enabled"] = 0
-
-        if "aiko" in self.options.enabled_girls:
-            returndict["aiko_enabled"] = 1
-        else:
-            returndict["aiko_enabled"] = 0
-
-        if "kyanna" in self.options.enabled_girls:
-            returndict["kyanna_enabled"] = 1
-        else:
-            returndict["kyanna_enabled"] = 0
-
-        if "audrey" in self.options.enabled_girls:
-            returndict["audrey_enabled"] = 1
-        else:
-            returndict["audrey_enabled"] = 0
-
-        if "lola" in self.options.enabled_girls:
-            returndict["lola_enabled"] = 1
-        else:
-            returndict["lola_enabled"] = 0
-
-        if "nikki" in self.options.enabled_girls:
-            returndict["nikki_enabled"] = 1
-        else:
-            returndict["nikki_enabled"] = 0
-
-        if "jessie" in self.options.enabled_girls:
-            returndict["jessie_enabled"] = 1
-        else:
-            returndict["jessie_enabled"] = 0
-
-        if "beli" in self.options.enabled_girls:
-            returndict["beli_enabled"] = 1
-        else:
-            returndict["beli_enabled"] = 0
-
-        if "kyu" in self.options.enabled_girls:
-            returndict["kyu_enabled"] = 1
-        else:
-            returndict["kyu_enabled"] = 0
-
-        if "momo" in self.options.enabled_girls:
-            returndict["momo_enabled"] = 1
-        else:
-            returndict["momo_enabled"] = 0
-
-        if "celeste" in self.options.enabled_girls:
-            returndict["celeste_enabled"] = 1
-        else:
-            returndict["celeste_enabled"] = 0
-
-        if "venus" in self.options.enabled_girls:
-            returndict["venus_enabled"] = 1
-        else:
-            returndict["venus_enabled"] = 0
 
         return returndict

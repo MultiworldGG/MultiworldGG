@@ -5,9 +5,7 @@
 The [player options page for this game](../player-options) contains all the options you need to configure and export a config file.
 
 ## Can I play this randomzier with Risk of Rain Returns?
-Yes!  Both Returns and the original 2013 versions of Risk of Rain are fully compatible, and you can find setup guides for either of them on their respecitive setup guides.
-[Risk of rain (2013)](./setup_RoR1_en.md)
-[Risk of rain Returns](./setup_RoRR_en.md)
+Yes!  Both Returns and the original 2013 versions of Risk of Rain are fully compatible.
 
 ## What does randomization do to this game?
 All item pickups count as an item check.  When picking up an item, it will be removed and a location will be sent out.  With the `item_pickup_step` yaml option (and ingame setting), you can set an interval for how many items you want to pickup normally before one is sent to the multiworld.  Total number of checks can be set in the yaml settings.

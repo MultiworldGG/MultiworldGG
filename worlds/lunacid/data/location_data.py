@@ -126,6 +126,7 @@ yosei_forest = [
     create_location(LOCATION_CODE_START + base_location_start + 101, BaseLocation.yosei_room_defended_by_blood_plant, LunacidRegion.yosei_lower),
     create_location(LOCATION_CODE_START + base_location_start + 102, BaseLocation.yosei_patchouli_key, LunacidRegion.yosei_lower),
     create_location(LOCATION_CODE_START + base_location_start + 103, BaseLocation.yosei_patchouli_quest, LunacidRegion.yosei_lower),
+    create_location(LOCATION_CODE_START + base_location_start + 104, BaseLocation.yosei_rusted_sword, LunacidRegion.yosei_forest),
 ]
 
 forest_canopy = [
@@ -193,7 +194,7 @@ laetus_chasm = [
 ]
 
 great_well_surface = [
-    create_location(LOCATION_CODE_START + base_location_start + 188, BaseLocation.surface_demi_gift, LunacidRegion.great_well_surface)
+    create_location(LOCATION_CODE_START + base_location_start + 188, BaseLocation.surface_demi_gift, LunacidRegion.great_well_surface),
 ]
 
 throne_room = [

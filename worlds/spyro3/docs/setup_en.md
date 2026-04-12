@@ -44,13 +44,14 @@ You may upload this to [the MultiworldGG website](https://multiworld.gg/uploads)
 
 ## Setting Up Spyro 3 for MultiworldGG
 
-1. Download the S3AP.zip and spyro3.apworld (if you are not on MWGG) from the GitHub page linked above.
-2. Unless you use MWGG, double click the apworld to install to your Archipelago installation.
+1. Unless you use MWGG, download the S3AP.zip and spyro3.apworld from the GitHub page linked above.
+2. Double click the apworld to install to your Archipelago installation.
 3. Extract S3AP.zip and note where S3AP.exe is.
 4. Open Duckstation and load into Spyro: Year of the Dragon.
-5. Start a new game (or if continuing an existing seed, load into that save file).
-6. Open S3AP.exe, the Spyro 3 client.  You will likely want to do so as an administrator.
-7. In the top left of the Spyro 3 client, click the "burger" menu to open the settings page.
-8. Enter your host, slot, and optionally your password. 
-9. Click Connect. The first time you connect, a few error messages may appear - these are okay.
-10. Start playing!
+5. In Duckstation, navigate to Settings > Game Properties > Console and select "Interpreter" under "Execution Mode".
+6. Start a new game (or if continuing an existing seed, load into that save file).
+7. Open S3AP.exe, the Spyro 3 client.  You will likely want to do so as an administrator.
+8. In the top left of the Spyro 3 client, click the "burger" menu to open the settings page.
+9. Enter your host, slot, and optionally your password. 
+10. Click Connect. The first time you connect, a few error messages may appear - these are okay.
+11. Start playing!

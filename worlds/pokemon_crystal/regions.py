@@ -6,7 +6,7 @@ from .data import data, RegionData, EncounterMon, StaticPokemon, LogicalAccess, 
     TreeRarity, EncounterType
 from .items import PokemonCrystalItem
 from .locations import PokemonCrystalLocation
-from .options import FreeFlyLocation, JohtoOnly, BlackthornDarkCaveAccess, Goal, FlyCheese, Route42Access
+from .options import FreeFlyLocation, JohtoOnly, BlackthornDarkCaveAccess, Goal, FlyCheese, Route42Access, LevelCurve
 from .utils import get_fly_regions, should_include_region
 
 if TYPE_CHECKING:
@@ -70,6 +70,26 @@ LOGIC_EXCLUDE_STATICS = [
 
 E4_LOCKED = list(set(CHAMPION_LOCKED + KANTO_LOCKED))
 REMATCHES = list(set(MAP_LOCKED + ROCKETHQ_LOCKED + RADIO_LOCKED + E4_LOCKED + KANTO_LOCKED))
+
+
+def _generate_curve_levels(n: int, min_level: int, max_level: int, shape: int) -> list[int]:
+    if n == 0:
+        return []
+    if n == 1:
+        return [min_level]
+    lo, hi = min(min_level, max_level), max(min_level, max_level)
+    span = hi - lo
+    levels = []
+    for i in range(n):
+        t = i / (n - 1)
+        if shape == LevelCurve.option_sqrt:
+            t = t ** 0.5
+        elif shape == LevelCurve.option_quadratic:
+            t = t ** 2
+        elif shape == LevelCurve.option_s_curve:
+            t = t * t * (3 - 2 * t)  # smoothstep
+        levels.append(round(lo + span * t))
+    return levels
 
 
 def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
@@ -263,23 +283,21 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
                         "Static Pokemon", ItemClassification.filler, None, world.player))
                     new_region.locations.append(scaling_event)
 
-                min_level = 100
                 # Create a new list of all the Trainer Pokemon and their levels
                 for trainer in region_data.trainers:
                     if exclude_scaling(trainer.name):
                         continue
+                    min_level = 100
                     for pokemon in trainer.pokemon:
                         min_level = min(min_level, pokemon.level)
                     # We grab the level and add it to our custom list.
                     trainer_name_level_list.append((trainer.name, min_level))
                     world.trainer_name_level_dict[trainer.name] = min_level
 
-                min_level = 100
                 # Now we do the same for statics.
                 for static_id in region_data.statics:
                     static = world.generated_static[static_id]
-                    min_level = min(min_level, static.level)
-                    static_name_level_list.append((static.name, min_level))
+                    static_name_level_list.append((static.name, static.level))
 
             if world.options.grasssanity and region_name in data.grass_tiles:
                 grass_region = Region(f"{region_name}:GRASS", world.player, world.multiworld)
@@ -304,7 +322,7 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
 
     regions["Menu"].connect(regions["REGION_FLY"], "Fly")
 
-    if world.options.randomize_fly_unlocks:
+    if world.options.randomize_fly_unlocks or world.options.remote_items:
         fly_region = regions["REGION_FLY"]
         for region in get_fly_regions(world):
             fly_region.connect(regions[region.exit_region])
@@ -353,14 +371,25 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
     if world.options.level_scaling and not world.is_universal_tracker:
         trainer_name_level_list.sort(key=lambda i: i[1])
         world.trainer_name_list = [i[0] for i in trainer_name_level_list]
-        world.trainer_level_list = [i[1] for i in trainer_name_level_list]
         static_name_level_list.sort(key=lambda i: i[1])
         world.static_name_list = [i[0] for i in static_name_level_list]
-        world.static_level_list = [i[1] for i in static_name_level_list]
         wild_name_level_list.sort(key=lambda i: max(i[1]))
         world.encounter_region_name_list = [i[0] for i in wild_name_level_list]
-        world.encounter_region_levels_list = [j for i in wild_name_level_list for j in i[1]]
-        world.encounter_region_levels_list.sort()
+        flat_wild_levels = [j for i in wild_name_level_list for j in i[1]]
+        flat_wild_levels.sort()
+
+        if world.options.level_curve != LevelCurve.option_vanilla:
+            min_level = world.options.level_curve_min_level.value
+            max_level = world.options.level_curve_max_level.value
+            shape = world.options.level_curve.value
+            wild_static_max = max(min_level, round(max_level * 2 / 3))
+            world.trainer_level_list = _generate_curve_levels(len(trainer_name_level_list), min_level, max_level, shape)
+            world.static_level_list = _generate_curve_levels(len(static_name_level_list), min_level, wild_static_max, shape)
+            world.encounter_region_levels_list = _generate_curve_levels(len(flat_wild_levels), min_level, wild_static_max, shape)
+        else:
+            world.trainer_level_list = [i[1] for i in trainer_name_level_list]
+            world.static_level_list = [i[1] for i in static_name_level_list]
+            world.encounter_region_levels_list = flat_wild_levels
     return regions
 
 

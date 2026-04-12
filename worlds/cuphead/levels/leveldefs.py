@@ -176,6 +176,7 @@ level_dlc_boss_regular: dict[str, LevelData] = {
     LocationNames.level_dlc_boss_airplane: LevelData(LocationNames.world_dlc_inkwell_4, [
         LocationNames.loc_level_dlc_boss_airplane,
         LocationNames.loc_level_dlc_boss_airplane_topgrade,
+        LocationNames.loc_level_dlc_boss_airplane_secret,
         #LocationNames.loc_level_dlc_boss_airplane_event_agrade,
         LocationNames.loc_level_dlc_boss_airplane_dlc_chaliced,
         LocationNames.loc_level_dlc_boss_airplane_event_dlc_chaliced,

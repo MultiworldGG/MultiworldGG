@@ -11,10 +11,13 @@ class LMLocationData(NamedTuple):
     access: List[str] = []  # items required to access location, many special cases
     floor: int = 0
     locked_item: Optional[str] = None
-    remote_only: bool = None
+    remote_only: bool = False
     update_ram_addr: Optional[list[LMRamData]] = None
     require_poltergust: bool = True
-    map_id: list[int] = [2]
+    map_id: list[int] = [2] # Allows various locations to be triggered across maps, like boss captures for example.
+    hide_boo: bool = True # If extra boo spots are turned on,
+    all_true: bool = False # All Ram Addresses must be true to send this check
+    health_addr_offset: int = None
 
 
 class LMLocation(Location):
@@ -71,7 +74,7 @@ BASE_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Hidden Room Small Chest L Floor": LMLocationData("Hidden Room", 14, "Furniture", 246, [],
         update_ram_addr=[LMRamData(in_game_room_id=1)], require_poltergust=False),
     "Rec Room Treadmill Key": LMLocationData("Rec Room", 18, "Furniture", 106, [],
-        update_ram_addr=[LMRamData(in_game_room_id=23)], require_poltergust=False),
+        update_ram_addr=[LMRamData(in_game_room_id=23)], require_poltergust=False, hide_boo=False),
     "Courtyard Birdhouse": LMLocationData("Courtyard", 20, "Furniture", 146, [],
         update_ram_addr=[LMRamData(in_game_room_id=24)], require_poltergust=False),
     "Sealed Room NW Shelf Chest": LMLocationData("Sealed Room", 29, "Furniture", 532, [],
@@ -119,7 +122,7 @@ BASE_LOCATION_TABLE: dict[str, LMLocationData] = {
                                                      update_ram_addr=[LMRamData(in_game_room_id=53)], require_poltergust=False),
     "Telephone Room R1 Chest": LMLocationData("Telephone Room", 44, "Furniture", 681, [], remote_only=True,
                                                      update_ram_addr=[LMRamData(in_game_room_id=53)], require_poltergust=False),
-    "Visit E. Gadd's Gallery": LMLocationData("Foyer", 925, "Map", 0, [], remote_only=True,
+    "Visit E. Gadd's Gallery": LMLocationData("Gallery", 925, "Map", 0, [], remote_only=True,
                                       update_ram_addr=[LMRamData(0x804D80A4)], require_poltergust=False, map_id=[6]),
     "Complete Training": LMLocationData("Training Room", 926, "Special", 0, [], remote_only=True,
                        update_ram_addr=[LMRamData(0x803D33B2, bit_position=0, in_game_room_id=0)], map_id=[3]),
@@ -140,7 +143,7 @@ BASE_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Shivers Spawn": LMLocationData("1F Hallway", None, "Event", -1, [], locked_item="Shivers Spawn")
 }
 
-FREESTANDING_KEY_TABLE = {
+FREESTANDING_KEY_TABLE: dict[str, LMLocationData] = {
     "Ghost Foyer Key": LMLocationData("Foyer", 713, "Freestanding", 1, [], remote_only=True,
         update_ram_addr=[LMRamData(0x803D3399, bit_position=3, in_game_room_id=2)], require_poltergust=False),
     "Fortune Teller Candles": LMLocationData("Fortune-Teller's Room", 6, "Freestanding", 4, ["Fire Element Medal"],
@@ -195,7 +198,7 @@ CLEAR_GHOST_LOCATION_TABLE: dict[str, LMLocationData] = {
         update_ram_addr=[LMRamData(0x803CDFD4, bit_position=2, in_game_room_id=68, ram_byte_size=2)]),
 }
 
-CLEAR_LOCATION_TABLE = {**CLEAR_GHOST_LOCATION_TABLE, **FREESTANDING_KEY_TABLE}
+CLEAR_LOCATION_TABLE: dict[str, LMLocationData] = {**CLEAR_GHOST_LOCATION_TABLE, **FREESTANDING_KEY_TABLE}
 
 # Ghost Affected Clear Chests. Rules applied to region entrances
 ENEMIZER_LOCATION_TABLE: dict[str, LMLocationData] = {
@@ -237,7 +240,7 @@ ENEMIZER_LOCATION_TABLE: dict[str, LMLocationData] = {
             update_ram_addr=[LMRamData(0x803D5DAC, bit_position=0, in_game_room_id=26)], map_id=[2,10]),
     "Defeat Bogmire": LMLocationData("Graveyard", 923, "Portrait", 0, [], remote_only=True,
             update_ram_addr=[LMRamData(0x803D5DBE, bit_position=5, in_game_room_id=15)], map_id=[2,13]),
-    "Defeat Boolussus": LMLocationData("Balcony", 922, "Portrait", 56, ["Ice Element Medal"],
+    "Defeat Boolossus": LMLocationData("Balcony", 922, "Portrait", 56, ["Ice Element Medal"],
                     remote_only=True, update_ram_addr=[LMRamData(0x803D5DBF, bit_position=4, in_game_room_id=62)], map_id=[2,11]),
     "Storage Room Cage Button": LMLocationData("Storage Room", 712, "Special", 256, [], remote_only=True,
         update_ram_addr=[LMRamData(0x803D33A2, bit_position=0, in_game_room_id=14)]),
@@ -283,7 +286,7 @@ PLANT_LOCATION_TABLE: dict[str, LMLocationData] = {
         update_ram_addr=[LMRamData(in_game_room_id=62)]),
     "Balcony Plant E Railing": LMLocationData("Balcony", 76, "Plant", 605, ["Water Element Medal"], 3,
         update_ram_addr=[LMRamData(in_game_room_id=62)]),
-    "Balcony Plant NE Near Bench": LMLocationData("Balcony", 77, "Plant", 606, ["Water Element Medal"], 3,
+    "Balcony Plant NW Near Bench": LMLocationData("Balcony", 77, "Plant", 606, ["Water Element Medal"], 3,
         update_ram_addr=[LMRamData(in_game_room_id=62)]),
     "Balcony Plant NE Corner Near Bench": LMLocationData("Balcony", 78, "Plant", 607, ["Water Element Medal"], 3,
         update_ram_addr=[LMRamData(in_game_room_id=62)]),
@@ -315,7 +318,7 @@ PLANT_LOCATION_TABLE: dict[str, LMLocationData] = {
         update_ram_addr=[LMRamData(in_game_room_id=29)]),
 }
 
-CEILING_LOCATION_TABLE ={
+CEILING_LOCATION_TABLE: dict[str, LMLocationData] ={
     "Heart Door Lamp": LMLocationData("Foyer", 94, "Furniture", 270, [], 1,
                                       update_ram_addr=[LMRamData(in_game_room_id=2)]),
     "Foyer Chandelier": LMLocationData("Foyer", 95, "Furniture", 101, [], 1,
@@ -415,10 +418,10 @@ CEILING_LOCATION_TABLE ={
     "Secret Altar R Chandelier": LMLocationData("Secret Altar", 612, "Furniture", 40, [],
                                                      update_ram_addr=[LMRamData(in_game_room_id=73)]),
     "Secret Altar L Chandelier": LMLocationData("Secret Altar", 614, "Furniture", 39, [],
-                                                     update_ram_addr=[LMRamData(in_game_room_id=1)]),
+                                                     update_ram_addr=[LMRamData(in_game_room_id=73)]),
 }
 
-DECOR_LOCATION_TABLE = {
+DECOR_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Foyer Mirror": LMLocationData("Foyer", 96, "Furniture", 208, [], 1,
                                    update_ram_addr=[LMRamData(in_game_room_id=2)], require_poltergust=False),
     "Upper Foyer R Vase": LMLocationData("Foyer", 97, "Furniture", 336, [], 2,
@@ -530,7 +533,7 @@ DECOR_LOCATION_TABLE = {
     "Dining Room Table Mess L (underneath Table)": LMLocationData("Dining Room", 304, "Furniture", 215, [], 1,
                                                                   update_ram_addr=[LMRamData(in_game_room_id=8)]),
     "Kitchen Oven": LMLocationData("Kitchen", 307, "Furniture", 80, ["Fire Element Medal"], 1,
-                                   update_ram_addr=[LMRamData(in_game_room_id=7)]),
+        update_ram_addr=[LMRamData(in_game_room_id=7)], hide_boo=False),
     "Kitchen Dishwasher": LMLocationData("Kitchen", 314, "Furniture", 82, [], 1, remote_only=True,
                                          update_ram_addr=[LMRamData(in_game_room_id=7)], require_poltergust=False),
     "Spooky's Dog Bowl (Boneyard)": LMLocationData("Boneyard", 317, "Furniture", 97, [], 1,
@@ -579,17 +582,17 @@ DECOR_LOCATION_TABLE = {
                                               update_ram_addr=[LMRamData(in_game_room_id=50)]),
     "Tea Room R Stored China": LMLocationData("Tea Room", 362, "Furniture", 398, [], 2,
                                               update_ram_addr=[LMRamData(in_game_room_id=50)]),
-    "2F Rear Hallway Vase L": LMLocationData("2F Rear Hallway", 370, "Furniture", 518, [], 2,
+    "2F Rear Hallway Vase L (near Guest Room)": LMLocationData("2F Rear Hallway", 370, "Furniture", 518, [], 2,
                                              update_ram_addr=[LMRamData(in_game_room_id=32)]),
-    "2F Rear Hallway Vase R": LMLocationData("2F Rear Hallway", 371, "Furniture", 519, [], 2,
+    "2F Rear Hallway Vase R (near Guest Room)": LMLocationData("2F Rear Hallway", 371, "Furniture", 519, [], 2,
                                              update_ram_addr=[LMRamData(in_game_room_id=32)]),
-    "2F Rear Hallway Vase 3": LMLocationData("2F Rear Hallway", 372, "Furniture", 521, [], 2,
+    "2F Rear Hallway Vase Furthest Left": LMLocationData("2F Rear Hallway", 372, "Furniture", 521, [], 2,
                                              update_ram_addr=[LMRamData(in_game_room_id=46)]),
-    "2F Rear Hallway Vase 4": LMLocationData("2F Rear Hallway", 373, "Furniture", 522, [], 2,
+    "2F Rear Hallway Vase Second from Left": LMLocationData("2F Rear Hallway", 373, "Furniture", 522, [], 2,
                                              update_ram_addr=[LMRamData(in_game_room_id=46)]),
-    "2F Rear Hallway Vase 5": LMLocationData("2F Rear Hallway", 374, "Furniture", 523, [], 2,
+    "2F Rear Hallway Vase near Astral Hall": LMLocationData("2F Rear Hallway", 374, "Furniture", 523, [], 2,
                                              update_ram_addr=[LMRamData(in_game_room_id=46)]),
-    "2F Rear Hallway Vase 6": LMLocationData("2F Rear Hallway", 375, "Furniture", 524, [], 2,
+    "2F Rear Hallway Vase near 2F Stairwell": LMLocationData("2F Rear Hallway", 375, "Furniture", 524, [], 2,
                                              update_ram_addr=[LMRamData(in_game_room_id=46)]),
     "2F Washroom Water Tank (above Toilet)": LMLocationData("2F Washroom", 376, "Furniture", 445, [], 2,
         update_ram_addr=[LMRamData(in_game_room_id=45)], remote_only=True),
@@ -731,19 +734,19 @@ DECOR_LOCATION_TABLE = {
     #        LMLocationData('Ceramics Studio', 'Ceramics Studio Vase 12', 555),
     #        LMLocationData('Ceramics Studio', 'Ceramics Studio Vase 13', 556),
     "Artist's Studio Gold Ghost Easel": LMLocationData("Artist's Studio", 603, "Furniture", 691, [], 3, remote_only=True,
-                                                    update_ram_addr=[LMRamData(in_game_room_id=60)]),
+        update_ram_addr=[LMRamData(in_game_room_id=60)], hide_boo=False),
     "Artist's Studio Pink Ghost Easel": LMLocationData("Artist's Studio", 604, "Furniture", 692, [], 3, remote_only=True,
-                                                    update_ram_addr=[LMRamData(in_game_room_id=60)]),
+        update_ram_addr=[LMRamData(in_game_room_id=60)], hide_boo=False),
     "Artist's Studio Blue Ghost Easel": LMLocationData("Artist's Studio", 605, "Furniture", 693, [], 3, remote_only=True,
-                                                    update_ram_addr=[LMRamData(in_game_room_id=60)]),
+        update_ram_addr=[LMRamData(in_game_room_id=60)], hide_boo=False),
     "Artist's Studio Red Ghost Easel": LMLocationData("Artist's Studio", 606, "Furniture", 694, [], 3, remote_only=True,
-                                                    update_ram_addr=[LMRamData(in_game_room_id=60)]),
+        update_ram_addr=[LMRamData(in_game_room_id=60)], hide_boo=False),
     "Artist's Studio Shy Guy Ghost Easel": LMLocationData("Artist's Studio", 607, "Furniture", 695, [], 3, remote_only=True,
-                                                    update_ram_addr=[LMRamData(in_game_room_id=60)]),
-    "Artist's Studio Green Ghost Easel": LMLocationData("Artist's Studio", 608, "Furniture", 696, [], 3, remote_only=True,
-                                                    update_ram_addr=[LMRamData(in_game_room_id=60)]),
+        update_ram_addr=[LMRamData(in_game_room_id=60)], hide_boo=False),
+    "Artist's Studio Banana Boys Squad Easel": LMLocationData("Artist's Studio", 608, "Furniture", 696, [], 3, remote_only=True,
+        update_ram_addr=[LMRamData(in_game_room_id=60)], hide_boo=False),
     "Artist's Studio Purple Ghost Easel": LMLocationData("Artist's Studio", 609, "Furniture", 697, [], 3, remote_only=True,
-                                                    update_ram_addr=[LMRamData(in_game_room_id=60)]),
+        update_ram_addr=[LMRamData(in_game_room_id=60)], hide_boo=False),
     "Safari Room C Deer Head": LMLocationData("Safari Room", 439, "Furniture", 630, [], 3, remote_only=True,
                                                 update_ram_addr=[LMRamData(in_game_room_id=55)]),
     "Kitchen Refrigerator": LMLocationData("Kitchen", 308, "Furniture", 78, [], 1, remote_only=True,
@@ -756,7 +759,7 @@ DECOR_LOCATION_TABLE = {
                                                     update_ram_addr=[LMRamData(in_game_room_id=45)], require_poltergust=False),
 }
 
-CANDLES_LOCATION_TABLE = {
+CANDLES_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Mirror Room West Candlestick": LMLocationData("Mirror Room", 236, "Furniture", 306, [], 1,
                                                    update_ram_addr=[LMRamData(in_game_room_id=4)], require_poltergust=False),
     "Mirror Room East Candlestick": LMLocationData("Mirror Room", 237, "Furniture", 307, [], 1,
@@ -815,7 +818,7 @@ CANDLES_LOCATION_TABLE = {
                                              update_ram_addr=[LMRamData(in_game_room_id=73)]),
 }
 
-HANGABLES_LOCATION_TABLE = {
+HANGABLES_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Parlor Painting L (closer to 4th Wall)": LMLocationData("Parlor", 112, "Furniture", 344, [], 2,
                                                              update_ram_addr=[LMRamData(in_game_room_id=36)]),
     "Parlor Painting L (near China Cabinet)": LMLocationData("Parlor", 113, "Furniture", 343, [], 2,
@@ -892,9 +895,9 @@ HANGABLES_LOCATION_TABLE = {
                                              update_ram_addr=[LMRamData(in_game_room_id=22)]),
     "Conservatory Picture C": LMLocationData("Conservatory", 274, "Furniture", 125, [], 1,
                                              update_ram_addr=[LMRamData(in_game_room_id=22)]),
-    "Conservatory Picture R (hangs Higher)": LMLocationData("Conservatory", 275, "Furniture", 135, [], 1,
+    "Conservatory Picture R (hangs Lower)": LMLocationData("Conservatory", 275, "Furniture", 135, [], 1,
                                                             update_ram_addr=[LMRamData(in_game_room_id=22)]),
-    "Conservatory Picture R (hangs Lower)": LMLocationData("Conservatory", 276, "Furniture", 136, [], 1,
+    "Conservatory Picture R (hangs Higher)": LMLocationData("Conservatory", 276, "Furniture", 136, [], 1,
                                                            update_ram_addr=[LMRamData(in_game_room_id=22)]),
     "Dining Room Picture": LMLocationData("Dining Room", 298, "Furniture", 315, [], 1,
                                           update_ram_addr=[LMRamData(in_game_room_id=8)]),
@@ -938,6 +941,8 @@ HANGABLES_LOCATION_TABLE = {
                                               update_ram_addr=[LMRamData(in_game_room_id=55)]),
     "Safari Room R Deer Head": LMLocationData("Safari Room", 440, "Furniture", 634, [], 3,
                                               update_ram_addr=[LMRamData(in_game_room_id=55)]),
+    "Safari Room C Deer Head": LMLocationData("Safari Room", 439, "Furniture", 630, [], 3, remote_only=True,
+                                              update_ram_addr=[LMRamData(in_game_room_id=55)]),
     "Sealed Room Mirror": LMLocationData("Sealed Room", 558, "Furniture", 557, [], 2,
                                          update_ram_addr=[LMRamData(in_game_room_id=37)]),
     "Sealed Room Picture": LMLocationData("Sealed Room", 559, "Furniture", 526, [], 2,
@@ -950,7 +955,7 @@ HANGABLES_LOCATION_TABLE = {
                                                    update_ram_addr=[LMRamData(in_game_room_id=67)]),
 }
 
-SEATING_LOCATION_TABLE = {
+SEATING_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Parlor Chair": LMLocationData("Parlor", 100, "Furniture", 338, [], 2,
                                    update_ram_addr=[LMRamData(in_game_room_id=36)], require_poltergust=False),
     "Parlor Couch": LMLocationData("Parlor", 102, "Furniture", 341, [], 2,
@@ -999,7 +1004,7 @@ SEATING_LOCATION_TABLE = {
                                           update_ram_addr=[LMRamData(in_game_room_id=8)], require_poltergust=False),
     "Dining Room R Chair": LMLocationData("Dining Room", 293, "Furniture", 87, [], 1,
                                           update_ram_addr=[LMRamData(in_game_room_id=8)]),
-    "Mr' Lugg's Stool (Dining Room)": LMLocationData("Dining Room", 852, "Furniture", 167, [], 1,
+    "Mr Lugg's Stool (Dining Room)": LMLocationData("Dining Room", 852, "Furniture", 167, [], 1,
                                                      update_ram_addr=[LMRamData(in_game_room_id=8)], require_poltergust=False),
     "Tea Room Chair (left table, left side near Door)": LMLocationData("Tea Room", 353, "Furniture", 389, [], 2,
                                                                        update_ram_addr=[LMRamData(in_game_room_id=50)], require_poltergust=False),
@@ -1068,7 +1073,7 @@ SEATING_LOCATION_TABLE = {
                                          update_ram_addr=[LMRamData(in_game_room_id=14)], require_poltergust=False),
 }
 
-SURFACES_LOCATION_TABLE = {
+SURFACES_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Parlor Wine Table": LMLocationData("Parlor", 101, "Furniture", 339, [], 2,
                                         update_ram_addr=[LMRamData(in_game_room_id=36)], require_poltergust=False),
     "Parlor Table": LMLocationData("Parlor", 103, "Furniture", 340, [], 2,
@@ -1132,7 +1137,7 @@ SURFACES_LOCATION_TABLE = {
                                          update_ram_addr=[LMRamData(in_game_room_id=69)]),
 }
 
-STORAGE_LOCATION_TABLE = {
+STORAGE_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Study Hat Rack": LMLocationData("Study", 139, "Furniture", 348, [], 2,
                                      update_ram_addr=[LMRamData(in_game_room_id=35)], require_poltergust=False),
     "Wardrobe Shoe Rack": LMLocationData("Wardrobe", 124, "Furniture", 453, [], 2,
@@ -1307,7 +1312,7 @@ STORAGE_LOCATION_TABLE = {
                                                     update_ram_addr=[LMRamData(in_game_room_id=66)], require_poltergust=False),
 }
 
-DRAWERS_LOCATION_TABLE = {
+DRAWERS_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Foyer Dresser": LMLocationData("Foyer", 93, "Furniture", 207, [], 1,
                                     update_ram_addr=[LMRamData(in_game_room_id=2)], require_poltergust=False),
     "Parlor China Cabinet": LMLocationData("Parlor", 105, "Furniture", 337, [], 2,
@@ -1399,18 +1404,23 @@ FURNITURE_LOCATION_TABLE: dict[str, LMLocationData] = {
     **DECOR_LOCATION_TABLE
 }
 
-BASEMENT_LOCS = dict((name, loc_data) for (name, loc_data) in FURNITURE_LOCATION_TABLE.items() if loc_data.floor == 0)
+BASEMENT_LOCS: dict[str, LMLocationData] = (
+    dict((name, loc_data) for (name, loc_data) in FURNITURE_LOCATION_TABLE.items() if loc_data.floor == 0))
 
-FIRST_FLOOR_LOCS = dict((name, loc_data) for (name, loc_data) in FURNITURE_LOCATION_TABLE.items() if loc_data.floor == 1)
+FIRST_FLOOR_LOCS: dict[str, LMLocationData] = (
+    dict((name, loc_data) for (name, loc_data) in FURNITURE_LOCATION_TABLE.items() if loc_data.floor == 1))
 
-SECOND_FLOOR_LOCS = dict((name, loc_data) for (name, loc_data) in FURNITURE_LOCATION_TABLE.items() if loc_data.floor == 2)
+SECOND_FLOOR_LOCS: dict[str, LMLocationData] = (
+    dict((name, loc_data) for (name, loc_data) in FURNITURE_LOCATION_TABLE.items() if loc_data.floor == 2))
 
-ATTIC_LOCS = dict((name, loc_data) for (name, loc_data) in FURNITURE_LOCATION_TABLE.items() if loc_data.floor == 3)
+ATTIC_LOCS: dict[str, LMLocationData] = (
+    dict((name, loc_data) for (name, loc_data) in FURNITURE_LOCATION_TABLE.items() if loc_data.floor == 3))
 
-ROOF_LOCS = dict((name, loc_data) for (name, loc_data) in FURNITURE_LOCATION_TABLE.items() if loc_data.floor == 4)
+ROOF_LOCS: dict[str, LMLocationData] = (
+    dict((name, loc_data) for (name, loc_data) in FURNITURE_LOCATION_TABLE.items() if loc_data.floor == 4))
 
 
-TREASURES_LOCATION_TABLE = {
+TREASURES_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Heart Door Lamp": LMLocationData("Foyer", 94, "Furniture", 270, [],
         update_ram_addr=[LMRamData(in_game_room_id=2)]),
     "Foyer Chandelier": LMLocationData("Foyer", 95, "Furniture", 101, [],
@@ -1517,13 +1527,13 @@ TREASURES_LOCATION_TABLE = {
                                           update_ram_addr=[LMRamData(in_game_room_id=50)]),
     "Tea Room R Drawers": LMLocationData("Tea Room", 364, "Furniture", 517, [],
                                          update_ram_addr=[LMRamData(in_game_room_id=50)], require_poltergust=False),
-    "2F Rear Hallway Vase R": LMLocationData("2F Rear Hallway", 371, "Furniture", 519, [],
+    "2F Rear Hallway Vase R (near Guest Room)": LMLocationData("2F Rear Hallway", 371, "Furniture", 519, [],
                                              update_ram_addr=[LMRamData(in_game_room_id=32)]),
-    "2F Rear Hallway Vase 3": LMLocationData("2F Rear Hallway", 372, "Furniture", 521, [],
+    "2F Rear Hallway Vase Furthest Left": LMLocationData("2F Rear Hallway", 372, "Furniture", 521, [],
                                              update_ram_addr=[LMRamData(in_game_room_id=46)]),
-    "2F Rear Hallway Vase 5": LMLocationData("2F Rear Hallway", 374, "Furniture", 523, [],
+    "2F Rear Hallway Vase near Astral Hall": LMLocationData("2F Rear Hallway", 374, "Furniture", 523, [],
                                              update_ram_addr=[LMRamData(in_game_room_id=46)]),
-    "2F Rear Hallway Vase 6": LMLocationData("2F Rear Hallway", 375, "Furniture", 524, [],
+    "2F Rear Hallway Vase near 2F Stairwell": LMLocationData("2F Rear Hallway", 375, "Furniture", 524, [],
                                              update_ram_addr=[LMRamData(in_game_room_id=46)]),
     "Nana's Room Dresser": LMLocationData("Nana's Room", 390, "Furniture", 482, [],
                                           update_ram_addr=[LMRamData(in_game_room_id=49)], require_poltergust=False),
@@ -1640,7 +1650,7 @@ TREASURES_LOCATION_TABLE = {
                                                       update_ram_addr=[LMRamData(in_game_room_id=62)]),
     "Balcony Plant E Railing": LMLocationData("Balcony", 76, "Plant", 605, ["Water Element Medal"],
                                               update_ram_addr=[LMRamData(in_game_room_id=62)]),
-    "Balcony Plant NE Near Bench": LMLocationData("Balcony", 77, "Plant", 606, ["Water Element Medal"],
+    "Balcony Plant NW Near Bench": LMLocationData("Balcony", 77, "Plant", 606, ["Water Element Medal"],
                                                   update_ram_addr=[LMRamData(in_game_room_id=62)]),
     "Balcony Plant SW Corner": LMLocationData("Balcony", 81, "Plant", 610, ["Water Element Medal"],
                                               update_ram_addr=[LMRamData(in_game_room_id=62)]),
@@ -1672,84 +1682,118 @@ TREASURES_LOCATION_TABLE = {
 
 
 # Map Visits, furniture items in maps, other stuff?
-WDYM_LOCATION_TABLE ={
+WDYM_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Roof Entry Hut": LMLocationData("Roof", 854, "Furniture", 716, [],
-                                                              update_ram_addr=[LMRamData(in_game_room_id=63)], require_poltergust=False),
-    "Graveyard West Tree": LMLocationData("Graveyard", 855, "Furniture", 184, ["Water Element Medal"],
-                                                              update_ram_addr=[LMRamData(in_game_room_id=15)]),
-    "Graveyard East Tree": LMLocationData("Graveyard", 856, "Furniture", 185, ["Water Element Medal"],
-                                                              update_ram_addr=[LMRamData(in_game_room_id=15)]),
-    "Courtyard Far West Tree": LMLocationData("Courtyard", 857, "Plant", 139, ["Water Element Medal"],
-                                         update_ram_addr=[LMRamData(in_game_room_id=24)]),
+        update_ram_addr=[LMRamData(in_game_room_id=63)], require_poltergust=False),
+    "Graveyard East Tree": LMLocationData("Graveyard", 855, "Furniture", 184, ["Water Element Medal"],
+        update_ram_addr=[LMRamData(in_game_room_id=15)]),
+    "Graveyard West Tree": LMLocationData("Graveyard", 856, "Furniture", 185, ["Water Element Medal"],
+        update_ram_addr=[LMRamData(in_game_room_id=15)]),
+    "Courtyard Tree by Woman Statue": LMLocationData("Courtyard", 857, "Plant", 139, ["Water Element Medal"],
+        update_ram_addr=[LMRamData(in_game_room_id=24)]),
     "Courtyard Tree by Fountain": LMLocationData("Courtyard", 858, "Plant", 140, ["Water Element Medal"],
-                                         update_ram_addr=[LMRamData(in_game_room_id=24)]),
+        update_ram_addr=[LMRamData(in_game_room_id=24)]),
     "Courtyard Tree by Well": LMLocationData("Courtyard", 859, "Plant", 138, ["Water Element Medal"],
-                                         update_ram_addr=[LMRamData(in_game_room_id=24)]),
-    "Courtyard Tree by Woman Statue": LMLocationData("Courtyard", 860, "Plant", 141, ["Water Element Medal"],
-                                         update_ram_addr=[LMRamData(in_game_room_id=24)]),
+        update_ram_addr=[LMRamData(in_game_room_id=24)]),
+    "Courtyard Far West Tree": LMLocationData("Courtyard", 860, "Plant", 141, ["Water Element Medal"],
+        update_ram_addr=[LMRamData(in_game_room_id=24)]),
     "Courtyard Laundry Bar": LMLocationData("Courtyard", 861, "Furniture", 314, [],
-                                                     update_ram_addr=[LMRamData(in_game_room_id=24)]),
+        update_ram_addr=[LMRamData(in_game_room_id=24)]),
     "Cellar Fence": LMLocationData("Cellar", 864, "Furniture", 9, [],
-                                     update_ram_addr=[LMRamData(in_game_room_id=66)], require_poltergust=False),
+        update_ram_addr=[LMRamData(in_game_room_id=66)], require_poltergust=False),
     "Pipe Room Fence": LMLocationData("Pipe Room", 865, "Furniture", 23, [],
-                                       update_ram_addr=[LMRamData(in_game_room_id=68)], require_poltergust=False),
+        update_ram_addr=[LMRamData(in_game_room_id=68)], require_poltergust=False),
     "Safari Room L Cheetah Carpet": LMLocationData("Safari Room", 866, "Furniture", 628, [],
-                                                  update_ram_addr=[LMRamData(in_game_room_id=55)]),
+        update_ram_addr=[LMRamData(in_game_room_id=55)]),
     "Safari Room R Cheetah Carpet": LMLocationData("Safari Room", 867, "Furniture", 629, [],
-                                                   update_ram_addr=[LMRamData(in_game_room_id=55)]),
+        update_ram_addr=[LMRamData(in_game_room_id=55)]),
     "Safari Room C Cheetah Carpet": LMLocationData("Safari Room", 868, "Furniture", 683, [],
-                                                   update_ram_addr=[LMRamData(in_game_room_id=55)]),
+        update_ram_addr=[LMRamData(in_game_room_id=55)]),
+    "Left Gallery Angel": LMLocationData("Gallery", 930, "Furniture", 7, [],
+        update_ram_addr=[LMRamData(in_game_room_id=0)], map_id=[6],require_poltergust=False, remote_only=True),
+    "Right Gallery Angel": LMLocationData("Gallery", 931, "Furniture", 8, [],
+        update_ram_addr=[LMRamData(in_game_room_id=0)], map_id=[6], require_poltergust=False, remote_only=True),
+    "Right Gallery Chandelier": LMLocationData("Gallery", 932, "Furniture", 1, [],
+        update_ram_addr=[LMRamData(in_game_room_id=3)], map_id=[6], remote_only=True),
+    "Right Gallery Angel Altar": LMLocationData("Gallery", 933, "Furniture", 4, [],
+        update_ram_addr=[LMRamData(in_game_room_id=3)], map_id=[6], require_poltergust=False, remote_only=True),
+    "Right Gallery Dresser": LMLocationData("Gallery", 934, "Furniture", 6, [],
+        update_ram_addr=[LMRamData(in_game_room_id=3)], map_id=[6], require_poltergust=False, remote_only=True),
+    "Left Gallery Chandelier": LMLocationData("Gallery", 935, "Furniture", 0, [],
+        update_ram_addr=[LMRamData(in_game_room_id=3)], map_id=[6], remote_only=True),
+    "Left Gallery Angel Altar": LMLocationData("Gallery", 936, "Furniture", 3, [],
+        update_ram_addr=[LMRamData(in_game_room_id=3)], map_id=[6], require_poltergust=False, remote_only=True),
+    "Left Gallery Dresser": LMLocationData("Gallery", 937, "Furniture", 5, [],
+        update_ram_addr=[LMRamData(in_game_room_id=3)], map_id=[6], require_poltergust=False, remote_only=True),
+    "Basement Stairwell Wall Rails": LMLocationData("Basement Stairwell", 938, "Furniture", 61, [],
+        update_ram_addr=[LMRamData(in_game_room_id=67)]),
+    "Pipe Room Metal Rail": LMLocationData("Pipe Room", 939, "Furniture", 69, ["Ice Element Medal"],
+        update_ram_addr=[LMRamData(in_game_room_id=68)]),
+    "Fortune Teller Canopy": LMLocationData("Fortune-Teller's Room", 940, "Furniture", 118, [],
+        update_ram_addr=[LMRamData(in_game_room_id=3)]),
+    "Hidden Room Upper Chandelier": LMLocationData("Hidden Room", 942, "Furniture", 303, [],
+        update_ram_addr=[LMRamData(in_game_room_id=1)]),
+    "Telephone Room Central A Frame": LMLocationData("Telephone Room", 944, "Furniture", 698, [],
+        update_ram_addr=[LMRamData(in_game_room_id=53)]),
+    "Kitchen 4th wall painting near Table": LMLocationData("Kitchen", 945, "Furniture", 321, [],
+        update_ram_addr=[LMRamData(in_game_room_id=7)]),
+    "Kitchen 4th wall painting across from Sink": LMLocationData("Kitchen", 946, "Furniture", 322, [],
+        update_ram_addr=[LMRamData(in_game_room_id=7)]),
+    "Kitchen 4th wall painting near Dining Room Door": LMLocationData("Kitchen", 947, "Furniture", 323, [],
+        update_ram_addr=[LMRamData(in_game_room_id=7)]),
+    "Breaker Room 4th Wall Mirror": LMLocationData("Breaker Room", 948, "Furniture", 75, [], remote_only=True,
+        update_ram_addr=[LMRamData(in_game_room_id=69)])
 }
 
 
 # Adds Portrait Ghosts as locations
-# Certain Ghosts such as Extra Clockwork soliders don't have a jmp entry to check against.
+# Certain Ghosts such as Extra Clockwork soldiers don't have a jmp entry to check against.
 # Bosses do NOT have entries in map2, but we can check their bit addresses if they are captured.
 PORTRAIT_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Neville, the Bookish Father": LMLocationData("Study", 621, "Portrait", 70, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DA9, bit_position=6, in_game_room_id=35)]),
+        update_ram_addr=[LMRamData(0x803D5DA9, bit_position=6, in_game_room_id=35)], health_addr_offset=0),
     "Lydia, the Mirror-Gazing Mother": LMLocationData("Master Bedroom", 622, "Portrait", 71, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DA9, bit_position=7, in_game_room_id=34)]),
+        update_ram_addr=[LMRamData(0x803D5DA9, bit_position=7, in_game_room_id=34)], health_addr_offset=2),
     "Chauncey, the Spoiled Baby": LMLocationData("Nursery", 623, "Portrait", 77, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DAC, bit_position=0, in_game_room_id=26)], map_id=[2,10]),
+        update_ram_addr=[LMRamData(0x803D5DAC, bit_position=0, in_game_room_id=26)], map_id=[2,10], health_addr_offset=4),
     "Henry and Orville, the Twin Brothers": LMLocationData("Twins' Room", 624, "Portrait", 79, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DAA, bit_position=1, in_game_room_id=27)]),
+        update_ram_addr=[LMRamData(0x803D5DAA, bit_position=1, in_game_room_id=27)], health_addr_offset=28),
     "The Floating Whirlindas": LMLocationData("Ballroom", 625, "Portrait", 34, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DBE, bit_position=2, in_game_room_id=9)]),
+        update_ram_addr=[LMRamData(0x803D5DBE, bit_position=2, in_game_room_id=9)], health_addr_offset=6),
     "Shivers, the Wandering Butler": LMLocationData("Butler's Room", 626, "Portrait", 29, ["Fire Element Medal", "Shivers Spawn"],
-        remote_only=True, update_ram_addr=[LMRamData(0x803D5DA5, bit_position=6, in_game_room_id=0)]),
+        remote_only=True, update_ram_addr=[LMRamData(0x803D5DA5, bit_position=6, in_game_room_id=0)], health_addr_offset=10),
     "Madame Clairvoya, the Freaky Fortune-Teller": LMLocationData("Fortune-Teller's Room", 627, "Portrait", 31, [],
-        remote_only=True, update_ram_addr=[LMRamData(0x803D5DBB, bit_position=2, in_game_room_id=3)]),
+        remote_only=True, update_ram_addr=[LMRamData(0x803D5DBB, bit_position=2, in_game_room_id=3)], health_addr_offset=8),
     "Melody Pianissima, the Beautiful Pianist": LMLocationData("Conservatory", 628, "Portrait", 24, [],
-        remote_only=True, update_ram_addr=[LMRamData(0x803D5DA8, bit_position=6, in_game_room_id=22)]),
+        remote_only=True, update_ram_addr=[LMRamData(0x803D5DA8, bit_position=6, in_game_room_id=22)], health_addr_offset=12),
     "Mr. Luggs, the Glutton": LMLocationData("Dining Room", 629, "Portrait", 27, ["Fire Element Medal"],
-        remote_only=True, update_ram_addr=[LMRamData(0x803D5DA9, bit_position=4, in_game_room_id=8)]),
+        remote_only=True, update_ram_addr=[LMRamData(0x803D5DA9, bit_position=4, in_game_room_id=8)], health_addr_offset=14),
     "Spooky, the Guard Dog": LMLocationData("Boneyard", 630, "Portrait", 23, ["Water Element Medal"], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DB3, bit_position=0, in_game_room_id=11)]),
+        update_ram_addr=[LMRamData(0x803D5DB3, bit_position=0, in_game_room_id=11)], health_addr_offset=16),
     "Bogmire, the Cemetary Shadow": LMLocationData("Graveyard", 631, "Portrait", 0, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DBE, bit_position=5, in_game_room_id=15)], map_id=[2,13]),
+        update_ram_addr=[LMRamData(0x803D5DBE, bit_position=5, in_game_room_id=15)], map_id=[2,13], health_addr_offset=18),
     "Biff Atlas, the Bodybuilder": LMLocationData("Rec Room", 632, "Portrait", 32, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DAA, bit_position=6, in_game_room_id=23)]),
+        update_ram_addr=[LMRamData(0x803D5DAA, bit_position=6, in_game_room_id=23)], health_addr_offset=20),
     "Slim Bankshot, the Lonely Poolshark": LMLocationData("Billiards Room", 633, "Portrait", 26, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DAA, bit_position=7, in_game_room_id=12)]),
+        update_ram_addr=[LMRamData(0x803D5DAA, bit_position=7, in_game_room_id=12)], health_addr_offset=22),
     "Miss Petunia, the Bathing Beauty": LMLocationData("2F Bathroom", 634, "Portrait", 83, ["Ice Element Medal"],
-        remote_only=True, update_ram_addr=[LMRamData(0x803D5DA9, bit_position=5, in_game_room_id=48)]),
+        remote_only=True, update_ram_addr=[LMRamData(0x803D5DA9, bit_position=5, in_game_room_id=48)], health_addr_offset=24),
     "Nana, the Scarf-Knitting Granny": LMLocationData("Nana's Room", 635, "Portrait", 76, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DAA, bit_position=0, in_game_room_id=49)]),
+        update_ram_addr=[LMRamData(0x803D5DAA, bit_position=0, in_game_room_id=49)], health_addr_offset=26),
     "Sue Pea, the Dozing Girl": LMLocationData("Guest Room", 636, "Portrait", 78, ["Water Element Medal"],
-        remote_only=True, update_ram_addr=[LMRamData(0x803D5DB9, bit_position=5, in_game_room_id=29)]),
+        remote_only=True, update_ram_addr=[LMRamData(0x803D5DB9, bit_position=5, in_game_room_id=29)], health_addr_offset=34),
     "Uncle Grimmly, Hermit of the Darkness": LMLocationData("Wardrobe", 637, "Portrait", 16, ["Blackout"],
-        remote_only=True, update_ram_addr=[LMRamData(0x803D5DBB, bit_position=3, in_game_room_id=41)]),
+        remote_only=True, update_ram_addr=[LMRamData(0x803D5DBB, bit_position=3, in_game_room_id=41)], health_addr_offset=38),
     "Boolossus, the Jumbo Ghost": LMLocationData("Balcony", 638, "Portrait", 56, ["Ice Element Medal"],
         remote_only=True, update_ram_addr=[LMRamData(0x803D5DBF, bit_position=4, in_game_room_id=62)], map_id=[2,11]),
     "Jarvis, the Jar Collector": LMLocationData("Ceramics Studio", 639, "Portrait", 0, ["Ice Element Medal"],
-        remote_only=True, update_ram_addr=[LMRamData(0x803D5DA8, bit_position=5, in_game_room_id=58)]),
+        remote_only=True, update_ram_addr=[LMRamData(0x803D5DA8, bit_position=5, in_game_room_id=58)], health_addr_offset=32),
     "Clockwork Soldiers, the Toy Platoon": LMLocationData("Clockwork Room", 640, "Portrait", 115, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DAB, bit_position=1, in_game_room_id=59)]),
+        update_ram_addr=[LMRamData(0x803D5DAB, bit_position=1, in_game_room_id=59)], health_addr_offset=40),
     "Vincent van Gore, the Starving Artist": LMLocationData("Artist's Studio", 641, "Portrait", 107, [],
-        remote_only=True, update_ram_addr=[LMRamData(0x803D5DAA, bit_position=5, in_game_room_id=60)]),
+        remote_only=True, update_ram_addr=[LMRamData(0x803D5DAA, bit_position=5, in_game_room_id=60)], health_addr_offset=36),
     "Sir Weston, the Chilly Climber": LMLocationData("Cold Storage", 642, "Portrait", 1, ["Fire Element Medal"], remote_only=True,
-        update_ram_addr=[LMRamData(0x803D5DBF, bit_position=1, in_game_room_id=64)]),
+        update_ram_addr=[LMRamData(0x803D5DBF, bit_position=1, in_game_room_id=64)], health_addr_offset=42),
 }
 
 # Adds Blue Speedy Spirits as Loacations
@@ -1917,8 +1961,7 @@ BOOLOSSUS_LOCATION_TABLE: dict[str, LMLocationData] = {
         update_ram_addr=[LMRamData(0x803D5E0A, bit_position=1, in_game_room_id=62)], map_id=[2,11]),
 }
 
-BOO_LOCATION_TABLE = {**ROOM_BOO_LOCATION_TABLE,
-                      **BOOLOSSUS_LOCATION_TABLE}
+BOO_LOCATION_TABLE: dict[str, LMLocationData] = {**ROOM_BOO_LOCATION_TABLE, **BOOLOSSUS_LOCATION_TABLE}
 
 LIGHT_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Butler's Room Light On": LMLocationData("Butler's Room", 743, "KingdomHearts", 0, ["Fire Element Medal", "Shivers Spawn"],
@@ -1927,7 +1970,7 @@ LIGHT_LOCATION_TABLE: dict[str, LMLocationData] = {
         update_ram_addr=[LMRamData(0x803CDF52, bit_position=1, in_game_room_id=1, ram_byte_size=2)]),
     "Foyer Light On": LMLocationData("Foyer", 771, "KingdomHearts", 0, [], remote_only=True,
         update_ram_addr=[LMRamData(0x803CDF54, bit_position=1, in_game_room_id=2, ram_byte_size=2),
-                         LMRamData(0x803CDF8C, bit_position=1, in_game_room_id=31, ram_byte_size=2)]),
+                         LMRamData(0x803CDF8C, bit_position=1, in_game_room_id=31, ram_byte_size=2)], require_poltergust=False),
     "Fortune-Teller's Room Light On": LMLocationData("Fortune-Teller's Room", 745, "KingdomHearts", 0, [],
         remote_only=True, update_ram_addr=[LMRamData(0x803CDF56, bit_position=1, in_game_room_id=3, ram_byte_size=2)]),
     "Mirror Room Light On": LMLocationData("Mirror Room", 746, "KingdomHearts", 0, [], remote_only=True,
@@ -1955,7 +1998,7 @@ LIGHT_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Graveyard Light On": LMLocationData("Graveyard", 780, "KingdomHearts", 0, [], remote_only=True,
         update_ram_addr=[LMRamData(0x803CDF70, bit_position=1, in_game_room_id=15, ram_byte_size=2)]),
     "1F Washroom Light On": LMLocationData("1F Washroom", 776, "KingdomHearts", 0, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803CDF72, bit_position=1, in_game_room_id=16, ram_byte_size=2)]),
+        update_ram_addr=[LMRamData(0x803CDF72, bit_position=1, in_game_room_id=16, ram_byte_size=2)], require_poltergust=False),
     "2F Stairwell Light On": LMLocationData("2F Stairwell", 778, "KingdomHearts", 0, [], remote_only=True,
         update_ram_addr=[LMRamData(0x803CDF76, bit_position=1, in_game_room_id=18, ram_byte_size=2)]),
     "1F Bathroom Light On": LMLocationData("1F Bathroom", 777, "KingdomHearts", 0, [], remote_only=True,
@@ -1988,7 +2031,7 @@ LIGHT_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Sealed Room Light On": LMLocationData("Sealed Room", 788, "KingdomHearts", 0, [], remote_only=True,
         update_ram_addr=[LMRamData(0x803CDF98, bit_position=1, in_game_room_id=37, ram_byte_size=2)]),
     "Wardrobe Balcony Light On": LMLocationData("Wardrobe Balcony", 775, "KingdomHearts", 0, [], remote_only=True,
-        update_ram_addr=[LMRamData(0x803CDF9A, bit_position=1, in_game_room_id=40, ram_byte_size=2)]),
+        update_ram_addr=[LMRamData(0x803CDF9A, bit_position=1, in_game_room_id=40, ram_byte_size=2)], require_poltergust=False),
     "Wardrobe Light On": LMLocationData("Wardrobe", 737, "KingdomHearts", 0, [], remote_only=True,
         update_ram_addr=[LMRamData(0x803CDF9C, bit_position=1, in_game_room_id=41, ram_byte_size=2)]),
     "Anteroom Light On": LMLocationData("Anteroom", 736, "KingdomHearts", 0, [], remote_only=True,
@@ -2193,7 +2236,7 @@ WALK_LOCATION_TABLE: dict[str, LMLocationData] = {
         update_ram_addr=[LMRamData(0x803CDFDA, bit_position=0, in_game_room_id=72, ram_byte_size=2)], require_poltergust=False),
 }
 
-MEME_LOCATION_TABLE = {
+MEME_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Touch Courtyard Grass": LMLocationData("Courtyard", 880, "Walk", 0, [], remote_only=True,
         update_ram_addr=[LMRamData(0x803CDF7E, bit_position=0, in_game_room_id=24, ram_byte_size=2)], require_poltergust=False),
     "Touch Boneyard Grass":  LMLocationData("Boneyard", 881, "Walk", 0, [], remote_only=True,
@@ -2202,7 +2245,123 @@ MEME_LOCATION_TABLE = {
         update_ram_addr=[LMRamData(0x803CDF70, bit_position=0, in_game_room_id=15, ram_byte_size=2)]),
 }
 
-ALL_LOCATION_TABLE = {**BASE_LOCATION_TABLE,
+SILVER_PORTRAIT_TABLE: dict[str, LMLocationData] = {
+    "Catch Neville - Silver": LMLocationData("Study", 975, "Portrait", 70, [], remote_only=True,
+        update_ram_addr=[LMRamData(0x803CFA84, bit_position=1)]),
+    "Catch Lydia - Silver": LMLocationData("Master Bedroom", 976, "Portrait", 71, [], remote_only=True,
+        update_ram_addr=[LMRamData(0x803CFA84, bit_position=3)]),
+    "Catch Chauncey - Silver": LMLocationData("Nursery", 977, "Portrait", 77, [], remote_only=True,
+        update_ram_addr=[LMRamData(0x803CFA84, bit_position=5)]),
+    "Catch Henry and Orville - Silver": LMLocationData("Twins' Room", 978, "Portrait", 79, [], remote_only=True,
+        update_ram_addr=[LMRamData(0x803cfa87, bit_position=5)]),
+    "Catch The Floating Whirlindas - Silver": LMLocationData("Ballroom", 979, "Portrait", 34, [], remote_only=True,
+        update_ram_addr=[LMRamData(0x803CFA84, bit_position=7)]),
+    "Catch Shivers - Silver": LMLocationData("Butler's Room", 980, "Portrait", 29, ["Fire Element Medal", "Shivers Spawn"],
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa85, bit_position=3)]),
+    "Catch Clairvoya - Silver": LMLocationData("Fortune-Teller's Room", 981, "Portrait", 31, [],
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa85, bit_position=1)]),
+    "Catch Melody - Silver": LMLocationData("Conservatory", 982, "Portrait", 24, [],
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa85, bit_position=5)]),
+    "Catch Mr. Luggs - Silver": LMLocationData("Dining Room", 983, "Portrait", 27, ["Fire Element Medal"],
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa85, bit_position=7)]),
+    "Catch Spooky - Silver": LMLocationData("Boneyard", 984, "Portrait", 23, ["Water Element Medal"], remote_only=True,
+        update_ram_addr=[LMRamData(0x803cfa86, bit_position=1)]),
+    "Catch Bogmire - Silver": LMLocationData("Graveyard", 985, "Portrait", 0, [], remote_only=True,
+        update_ram_addr=[LMRamData(0x803cfa86, bit_position=3)]),
+    "Catch Biff Atlas - Silver": LMLocationData("Rec Room", 986, "Portrait", 32, [], remote_only=True,
+        update_ram_addr=[LMRamData(0x803cfa86, bit_position=5)]),
+    "Catch Slim Bankshot - Silver": LMLocationData("Billiards Room", 987, "Portrait", 26, [], remote_only=True,
+        update_ram_addr=[LMRamData(0x803cfa86, bit_position=7)]),
+    "Catch Miss Petunia - Silver": LMLocationData("2F Bathroom", 988, "Portrait", 83, ["Ice Element Medal"],
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa87, bit_position=1)]),
+    "Catch Nana - Silver": LMLocationData("Nana's Room", 989, "Portrait", 76, [], remote_only=True,
+        update_ram_addr=[LMRamData(0x803cfa87, bit_position=3)]),
+    "Catch Sue Pea - Silver": LMLocationData("Guest Room", 990, "Portrait", 78, ["Water Element Medal"],
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa88, bit_position=3)]),
+    "Catch Grimmly - Silver": LMLocationData("Wardrobe", 991, "Portrait", 16, ["Blackout"],
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa88, bit_position=7)]),
+    "Catch Boolossus - Silver": LMLocationData("Balcony", 992, "Portrait", 56, ["Ice Element Medal"],
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa87, bit_position=7)]),
+    "Catch Jarvis - Silver": LMLocationData("Ceramics Studio", 993, "Portrait", 0, ["Ice Element Medal"],
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa88, bit_position=1)]),
+    "Catch Clockwork Soldiers - Silver": LMLocationData("Clockwork Room", 994, "Portrait", 115, [], remote_only=True,
+        update_ram_addr=[LMRamData(0x803cfa89, bit_position=1)]),
+    "Catch Vincent van Gore - Silver": LMLocationData("Artist's Studio", 995, "Portrait", 107, [],
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa88, bit_position=5)]),
+    "Catch Sir Weston - Silver": LMLocationData("Cold Storage", 996, "Portrait", 1, ["Fire Element Medal"], remote_only=True,
+        update_ram_addr=[LMRamData(0x803cfa89, bit_position=3)]),
+}
+
+GOLD_PORTRAIT_TABLE: dict[str, LMLocationData] = {
+    "Catch Neville - Gold": LMLocationData("Study", 950, "Portrait", 70, [], remote_only=True, all_true=True,
+        update_ram_addr=[LMRamData(0x803CFA84, bit_position=1),
+                         LMRamData(0x803CFA84, bit_position=0)]),
+    "Catch Lydia - Gold": LMLocationData("Master Bedroom", 951, "Portrait", 71, [], remote_only=True, all_true=True,
+        update_ram_addr=[LMRamData(0x803CFA84, bit_position=2),
+                         LMRamData(0x803CFA84, bit_position=3)]),
+    "Catch Chauncey - Gold": LMLocationData("Nursery", 952, "Portrait", 77, [], remote_only=True, all_true=True,
+        update_ram_addr=[LMRamData(0x803CFA84, bit_position=4),
+                         LMRamData(0x803CFA84, bit_position=5)]),
+    "Catch Henry and Orville - Gold": LMLocationData("Twins' Room", 953, "Portrait", 79, [], remote_only=True, all_true=True,
+        update_ram_addr=[LMRamData(0x803cfa87, bit_position=5),
+                         LMRamData(0x803cfa87, bit_position=4)]),
+    "Catch The Floating Whirlindas - Gold": LMLocationData("Ballroom", 954, "Portrait", 34, [], remote_only=True, all_true=True,
+        update_ram_addr=[LMRamData(0x803CFA84, bit_position=6),
+                         LMRamData(0x803CFA84, bit_position=7)]),
+    "Catch Shivers - Gold": LMLocationData("Butler's Room", 955, "Portrait", 29, ["Fire Element Medal", "Shivers Spawn"],
+        remote_only=True,  all_true=True, update_ram_addr=[LMRamData(0x803cfa85, bit_position=3),
+                                           LMRamData(0x803cfa85, bit_position=2)]),
+    "Catch Clairvoya - Gold": LMLocationData("Fortune-Teller's Room", 956, "Portrait", 31, [],
+        remote_only=True, all_true=True, update_ram_addr=[LMRamData(0x803cfa85, bit_position=1),
+                                           LMRamData(0x803cfa85, bit_position=0)]),
+    "Catch Melody - Gold": LMLocationData("Conservatory", 957, "Portrait", 24, [],
+        remote_only=True, all_true=True, update_ram_addr=[LMRamData(0x803cfa85, bit_position=5),
+                                           LMRamData(0x803cfa85, bit_position=4)]),
+    "Catch Mr. Luggs - Gold": LMLocationData("Dining Room", 958, "Portrait", 27, ["Fire Element Medal"],
+        remote_only=True, all_true=True, update_ram_addr=[LMRamData(0x803cfa85, bit_position=7),
+                                           LMRamData(0x803cfa85, bit_position=6)]),
+    "Catch Spooky - Gold": LMLocationData("Boneyard", 959, "Portrait", 23, ["Water Element Medal"], remote_only=True,
+        all_true=True, update_ram_addr=[LMRamData(0x803cfa86, bit_position=1),
+                         LMRamData(0x803cfa86, bit_position=0)]),
+    "Catch Bogmire - Gold": LMLocationData("Graveyard", 960, "Portrait", 0, [], remote_only=True,
+        all_true=True, update_ram_addr=[LMRamData(0x803cfa86, bit_position=3),
+                         LMRamData(0x803cfa86, bit_position=2)]),
+    "Catch Biff Atlas - Gold": LMLocationData("Rec Room", 961, "Portrait", 32, [], remote_only=True, all_true=True,
+        update_ram_addr=[LMRamData(0x803cfa86, bit_position=5),
+                         LMRamData(0x803cfa86, bit_position=4)]),
+    "Catch Slim Bankshot - Gold": LMLocationData("Billiards Room", 962, "Portrait", 26, [], remote_only=True,
+        all_true=True, update_ram_addr=[LMRamData(0x803cfa86, bit_position=7),
+                         LMRamData(0x803cfa86, bit_position=6)]),
+    "Catch Miss Petunia - Gold": LMLocationData("2F Bathroom", 963, "Portrait", 83, ["Ice Element Medal"], all_true=True,
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa87, bit_position=1),
+                                           LMRamData(0x803cfa87, bit_position=0)]),
+    "Catch Nana - Gold": LMLocationData("Nana's Room", 964, "Portrait", 76, [], remote_only=True, all_true=True,
+        update_ram_addr=[LMRamData(0x803cfa87, bit_position=3),
+                         LMRamData(0x803cfa87, bit_position=2)]),
+    "Catch Sue Pea - Gold": LMLocationData("Guest Room", 965, "Portrait", 78, ["Water Element Medal"], all_true=True,
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa88, bit_position=3),
+                                           LMRamData(0x803cfa88, bit_position=3)]),
+    "Catch Grimmly - Gold": LMLocationData("Wardrobe", 966, "Portrait", 16, ["Blackout"], all_true=True,
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa88, bit_position=7),
+                                           LMRamData(0x803cfa88, bit_position=6)]),
+    "Catch Boolossus - Gold": LMLocationData("Balcony", 967, "Portrait", 56, ["Ice Element Medal"], all_true=True,
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa87, bit_position=7),
+                                           LMRamData(0x803cfa87, bit_position=6)]),
+    "Catch Jarvis - Gold": LMLocationData("Ceramics Studio", 968, "Portrait", 0, ["Ice Element Medal"], all_true=True,
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa88, bit_position=1),
+                                           LMRamData(0x803cfa88, bit_position=0)]),
+    "Catch Clockwork Soldiers - Gold": LMLocationData("Clockwork Room", 969, "Portrait", 115, [], remote_only=True,
+        all_true=True, update_ram_addr=[LMRamData(0x803cfa89, bit_position=1),
+                         LMRamData(0x803cfa89, bit_position=0)]),
+    "Catch Vincent van Gore - Gold": LMLocationData("Artist's Studio", 970, "Portrait", 107, [], all_true=True,
+        remote_only=True, update_ram_addr=[LMRamData(0x803cfa88, bit_position=5),
+                                           LMRamData(0x803cfa88, bit_position=4)]),
+    "Catch Sir Weston - Gold": LMLocationData("Cold Storage", 971, "Portrait", 1, ["Fire Element Medal"], remote_only=True,
+        all_true=True, update_ram_addr=[LMRamData(0x803cfa89, bit_position=3),
+                         LMRamData(0x803cfa89, bit_position=2)]),
+}
+
+ALL_LOCATION_TABLE: dict[str, LMLocationData] = {**BASE_LOCATION_TABLE,
                       **CLEAR_LOCATION_TABLE,
                       **ENEMIZER_LOCATION_TABLE,
                       **FURNITURE_LOCATION_TABLE,
@@ -2213,13 +2372,16 @@ ALL_LOCATION_TABLE = {**BASE_LOCATION_TABLE,
                       **PORTRAIT_LOCATION_TABLE,
                       **WALK_LOCATION_TABLE,
                       **LIGHT_LOCATION_TABLE,
-                      **MEME_LOCATION_TABLE}
+                      **WDYM_LOCATION_TABLE,
+                      **MEME_LOCATION_TABLE,
+                      **SILVER_PORTRAIT_TABLE,
+                      **GOLD_PORTRAIT_TABLE}
 
 
 
 SELF_LOCATIONS_TO_RECV: list[int] = [
     LMLocation.get_apid(value.code) for value in ALL_LOCATION_TABLE.values() if value.remote_only]
 
-BOOLOSSUS_AP_ID_LIST = [LMLocation.get_apid(value.code) for value in BOOLOSSUS_LOCATION_TABLE.values()]
+BOOLOSSUS_AP_ID_LIST: list[int] = [LMLocation.get_apid(value.code) for value in BOOLOSSUS_LOCATION_TABLE.values()]
 
-FLIP_BALCONY_BOO_EVENT_LIST = ["Clockwork Room", "Telephone Room", "Armory", "Ceramics Studio"]
+FLIP_BALCONY_BOO_EVENT_LIST: list[str] = ["Clockwork Room", "Telephone Room", "Armory", "Ceramics Studio"]

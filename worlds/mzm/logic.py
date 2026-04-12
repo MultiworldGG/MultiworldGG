@@ -13,6 +13,12 @@ if TYPE_CHECKING:
     from . import MZMWorld
 
 
+# Not set up for toggle options but we're moving away from setting logic up this way
+normal_difficulty_sequence_breaks = {
+    "ibj_in_logic",
+    "hazard_runs",
+}
+
 class Requirement(NamedTuple):
     rule: Callable[[MZMWorld, CollectionState], bool]
 
@@ -40,8 +46,24 @@ class Requirement(NamedTuple):
         return cls(lambda world, _: getattr(world.options, setting) == value)
 
     @classmethod
-    def setting_atleast(cls, setting: str, value: int):
-        return cls(lambda world, _: getattr(world.options, setting) >= value)
+    def difficulty_option(cls, setting: str, value: int):
+        def resolve_rule(world: MZMWorld, state: CollectionState):
+            in_logic = getattr(world.options, setting) >= value
+            if (
+                not world.is_universal_tracker()
+                or not state.has(world.glitches_item_name, world.player)
+            ):
+                return in_logic
+
+            from . import MZMSettings
+
+            if world.settings.universal_tracker_setings.show_tricks == MZMSettings.TrackerSettings.TrickLogic.ALL:
+                return True
+            if setting in normal_difficulty_sequence_breaks and world.options.logic_difficulty.value < 1:
+                return in_logic
+            return getattr(world.options, setting) >= value - 1
+
+        return cls(resolve_rule)
 
     @classmethod
     def setting_contains(cls, setting: str, value: Any):
@@ -53,7 +75,13 @@ class Requirement(NamedTuple):
 
     @classmethod
     def trick_enabled(cls, trick: str):
-        return cls(lambda world, _: trick in world.trick_allow_list)
+        return any(
+            cls(lambda world, _: trick in world.trick_allow_list),
+            all(
+                SequenceBreaks,
+                cls(lambda world, _: trick in world.sequence_break_tricks),
+            )
+        )
 
     @classmethod
     def trick_rule(cls, trick: str):
@@ -94,6 +122,7 @@ Trick = lambda n: all(
     Requirement.trick_enabled(n),
     Requirement.trick_rule(n)
 )
+SequenceBreaks = Requirement.item("SEQUENCE BREAKS")
 
 NormalMode = Requirement.setting_is("game_difficulty", "normal")
 HardMode = Requirement.setting_is("game_difficulty", "hard")
@@ -213,30 +242,29 @@ CanLongBeam = lambda n: any(
 )
 
 # Logic option rules
-NormalLogic = Requirement.setting_atleast("logic_difficulty", 1)
-AdvancedLogic = Requirement.setting_atleast("logic_difficulty", 2)
-NormalCombat = Requirement.setting_atleast("combat_logic_difficulty", 1)
-MinimalCombat = Requirement.setting_atleast("combat_logic_difficulty", 2)
+NormalLogic = Requirement.difficulty_option("logic_difficulty", 1)
+NormalCombat = Requirement.difficulty_option("combat_logic_difficulty", 1)
+MinimalCombat = Requirement.difficulty_option("combat_logic_difficulty", 2)
 CanIBJ = all(
-    Requirement.setting_atleast("ibj_in_logic", 1),
+    Requirement.difficulty_option("ibj_in_logic", 1),
     CanRegularBomb,
 )
 CanHorizontalIBJ = all(
     CanIBJ,
-    Requirement.setting_atleast("ibj_in_logic", 2)
+    Requirement.difficulty_option("ibj_in_logic", 2)
 )
 CanWallJump = all(
     Requirement.item("Wall Jump"),
     any(
         Requirement.setting_is("walljumps", 1),  # Shuffled
-        Requirement.setting_is("walljumps", 3)   # Enabled
-    )
+        Requirement.setting_is("walljumps", 3),  # Enabled
+        all(
+            SequenceBreaks,
+            Requirement.setting_is("walljumps", 2),  # Not logical
+        ),
+    ),
 )
-CanTrickySparks = all(
-    Requirement.setting_enabled("tricky_shinesparks"),
-    SpeedBooster,
-)
-HazardRuns = Requirement.setting_atleast("hazard_runs", 1)
+HazardRuns = Requirement.difficulty_option("hazard_runs", 1)
 
 # Miscellaneous rules
 CanFly = any(  # infinite vertical

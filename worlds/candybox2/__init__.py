@@ -11,7 +11,7 @@ from worlds.AutoWorld import WebWorld, World
 
 from .component import setup_candy_box_2_component
 from .expected_client_version import EXPECTED_CLIENT_VERSION
-from .items import CandyBox2Item, CandyBox2ItemName, candy_box_2_base_id, filler_items, items
+from .items import CandyBox2Item, CandyBox2ItemName, candy_box_2_base_id, filler_items, items, item_groups
 from .locations import CandyBox2LocationName, location_descriptions, locations
 from .options import CandyBox2Options, candy_box_2_options_groups
 from .regions import can_reach_room, connect_entrances, create_regions
@@ -44,6 +44,7 @@ class CandyBox2World(World):
     base_id = 1
     location_name_to_id = {name.value: location.id for name, location in locations.items()}
     item_name_to_id = {name.value: data.code for name, data in items.items() if data.code is not None}
+    item_name_groups = item_groups
     options_dataclass = CandyBox2Options
     options: CandyBox2Options
     topology_present = True
@@ -176,16 +177,7 @@ class CandyBox2World(World):
         self.rules_package.apply_location_rules(self, self.player)
 
     def completion_rule(self, state: CollectionState):
-        return can_reach_room(state, CandyBox2Room.TOWER, self.player) and state.has_all(
-            [
-                CandyBox2ItemName.P_STONE,
-                CandyBox2ItemName.L_STONE,
-                CandyBox2ItemName.A_STONE,
-                CandyBox2ItemName.Y_STONE,
-                CandyBox2ItemName.LOCKED_CANDY_BOX,
-            ],
-            self.player,
-        )
+        return self.rules_package.goal_rule.evaluate(self, state, self.player)
 
     def write_spoiler(self, spoiler_handle: TextIO) -> None:
         spoiler_handle.write(f"\nCandy Box 2 Entrance randomisation for {self.player_name}:\n")

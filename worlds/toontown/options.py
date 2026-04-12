@@ -138,12 +138,23 @@ class MaxGlobalGagXPRange(Range):
     default = 30
 
 
-class DamageMultiplierRange(Range):
+class StartDamageMultiplierRange(Range):
     """
-    The percentage of damage that will be done when battling Cogs.
+    The percentage of damage that will be done when battling Cogs at the start of the run.
     75 -> 75%/0.75x damage, 200 -> 200%/2x damage, etc.
     """
-    display_name = "Damage Multiplier"
+    display_name = "Starting Damage Percentage"
+    range_start = 50
+    range_end = 200
+    default = 100
+
+
+class MaxDamageMultiplierRange(Range):
+    """
+    The percentage of damage that can be reached at max.
+    75 -> 75%/0.75x damage, 200 -> 200%/2x damage, etc.
+    """
+    display_name = "Maximum Damage Percentage"
     range_start = 70
     range_end = 200
     default = 100
@@ -154,7 +165,7 @@ class OverflowModRange(Range):
     The percentage multiplier that will given with exp overflow.
     50 -> 50%/Half overflow rate, 200 -> 200%/2x overflow rate, etc.
     """
-    display_name = "Overflow Modifier"
+    display_name = "Overflow Rate Modifier"
     range_start = 25
     range_end = 300
     default = 100
@@ -233,7 +244,7 @@ class OmitRandomWinConditions(OptionList):
     valid keys: ["cog-bosses", "bounties", "total-tasks", "hood-tasks", "gag-tracks",
                  "fish-species", "laff-o-lympics"]
 
-    Examples: ["cog-bosses", "hood-tasks"] | ["randomized", "randomized", "gag-tracks"]
+    Examples: ["cog-bosses", "hood-tasks"] | ["gag-tracks"]
     """
     display_name = "Win Conditions Omitted when Randomized"
     valid_keys = {
@@ -373,11 +384,11 @@ class BountiesRequired(Range):
     """
     How many bounties we must have before being able to talk to Flippy to complete the game
     Unused if win_condition is not bounty
-    Range 0 to 33
+    Range 0 to 34
     """
     display_name = "Bounties Required"
     range_start = 0
-    range_end = 33
+    range_end = 34
     default = 7
 
 
@@ -386,11 +397,11 @@ class TotalBounties(Range):
     How many bounties are in the pool.
     Unused if win_condition is not bounty
     Must be equal to or above bounties_required
-    Range 1 to 33
+    Range 1 to 34
     """
     display_name = "Total Bounties"
     range_start = 1
-    range_end = 33
+    range_end = 34
     default = 15
 
 
@@ -584,13 +595,15 @@ class FishChecks(Choice):
     - all_species: All 70 species will have an item.
     - all_gallery_and_genus: Every 10 species and unique genus will have an item.
     - all_gallery: Every 10 species will have an item.
+    - everything: Every 10 species, every species, and every genus will have an item.
     - none: There are no items in fishing.
     """
     display_name = "Fish Checks"
     option_all_species = 0
     option_all_gallery_and_genus = 1
     option_all_gallery = 2
-    option_none = 3
+    option_everything = 3
+    option_none = 4
     default = 0
 
 
@@ -824,7 +837,7 @@ class SOSWeightOption(Range):
     display_name = "SOS Card Weight"
     range_start = 0
     range_end = 100
-    default = 65
+    default = 60
 
 
 class UniteWeightOption(Range):
@@ -835,7 +848,7 @@ class UniteWeightOption(Range):
     display_name = "Unite Weight"
     range_start = 0
     range_end = 100
-    default = 65
+    default = 60
 
 
 class FireWeightOption(Range):
@@ -846,7 +859,18 @@ class FireWeightOption(Range):
     display_name = "Pink Slip Weight"
     range_start = 0
     range_end = 100
-    default = 65
+    default = 60
+
+
+class SummonWeightOption(Range):
+    """
+    Weight of Cog Summon items in the junk pool.
+    """
+
+    display_name = "Cog Summon Weight"
+    range_start = 0
+    range_end = 100
+    default = 50
 
 
 class HealWeightOption(Range):
@@ -896,6 +920,16 @@ class RingLinkOption(Toggle):
     display_name = "Ring Link"
     default = False
 
+
+class DamageRandoOption(Toggle):
+    """
+    Toggle this option to give cogs a random damage range throughout a run (0.9x-1.3x)
+    """
+
+    display_name = "Cog Damage Randomization"
+    default = False
+
+
 @dataclass
 class ToontownOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -908,7 +942,8 @@ class ToontownOptions(PerGameCommonOptions):
     web_random_gags: StartGagRandomWeb
     base_global_gag_xp: BaseGlobalGagXPRange
     max_global_gag_xp: MaxGlobalGagXPRange
-    damage_multiplier: DamageMultiplierRange
+    start_damage_multiplier: StartDamageMultiplierRange
+    max_damage_multiplier: MaxDamageMultiplierRange
     overflow_mod: OverflowModRange
     starting_money: StartMoneyOption
     starting_task_capacity: StartingTaskCapacityOption
@@ -964,10 +999,12 @@ class ToontownOptions(PerGameCommonOptions):
     sos_weight: SOSWeightOption
     unite_weight: UniteWeightOption
     fire_weight: FireWeightOption
+    summon_weight: SummonWeightOption
     heal_weight: HealWeightOption
     fish_weight: FishWeightOption
     death_link: DeathLinkOption
     ring_link: RingLinkOption
+    cog_dmg_rando: DamageRandoOption
     pet_shop_display: PetShopRewardDisplayOption
     task_reward_display: TaskRewardDisplayOption
     random_prices: RandomShopCostToggle
@@ -981,8 +1018,8 @@ toontown_option_groups: list[OptionGroup] = [
     OptionGroup("Toon Settings", [
         TeamOption, MaxLaffOption, StartLaffOption, StartingTaskOption,
         StartGagOption, StartGagOptionWeb, StartGagRandomWeb, OmitGagOption,
-        BaseGlobalGagXPRange, MaxGlobalGagXPRange, 
-        DamageMultiplierRange, OverflowModRange, StartMoneyOption, 
+        BaseGlobalGagXPRange, MaxGlobalGagXPRange, DamageRandoOption,
+        StartDamageMultiplierRange, MaxDamageMultiplierRange, OverflowModRange, StartMoneyOption,
         StartingTaskCapacityOption, MaxTaskCapacityOption, DeathLinkOption,
         RingLinkOption, RandomShopCostToggle
     ]),
@@ -1004,7 +1041,7 @@ toontown_option_groups: list[OptionGroup] = [
         JokesPerStreet, JokeBookToggle
     ], False),
     OptionGroup("Junk Weights", [
-        BeanWeightOption, GagExpWeightOption, SOSWeightOption, UniteWeightOption, FireWeightOption, HealWeightOption, FishWeightOption
+        BeanWeightOption, GagExpWeightOption, SOSWeightOption, UniteWeightOption, SummonWeightOption, FireWeightOption, HealWeightOption, FishWeightOption
     ], True),
     OptionGroup("Trap Weights", [
         UberWeightOption, DripWeightOption, TaxWeightOption, ShuffleWeightOption, DamageWeightOption

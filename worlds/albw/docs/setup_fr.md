@@ -14,6 +14,11 @@
 3. Dans l'emulateur, sélectionner `Fichier > Ouvrier dossier <nom de l'émulateur>` (ou `File > Open <émulateur> Folder` en anglais). Créer un dossier `load` dans le dossier de l'émulateur et un dossier `mods` dans le dossier `load`.
 4. (Pour les utilisateurs de Azahar uniquement): Sélectionner `Émulation > Configuration` (ou `Emulation > Configure` en anglais). Puis sélectionner l'onglet `Debug` et tout en bas cochez (si c'est pas dajà fait) l'option `Activer le serveur RPC` (ou `Enable RPC Server` en anglais).
 
+## Mise à jour
+
+1. Supprimer le dossier albwrandomizer du dossier `MultiworldGG/lib/`.
+2. Faire les étapes 2 et 3 de l'[Installation](#installation) 
+
 ## Générer une partie
 
 1. Créer le fichier YAML d'option du joueur. Un exemple est inclus et peut être généré avec le bouton `Generate Yaml Templates` dans le launcher de MultiworldGG.

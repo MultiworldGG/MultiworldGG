@@ -971,8 +971,8 @@ def PareWoth(spoiler: Spoiler, PlaythroughLocations: List[Sphere]) -> List[Union
         # Don't want constant locations in woth and we can filter out some types of items as not being essential to the woth
         for loc in [
             loc
-            for loc in sphere.locations  # If Keys are constant, we may still want path hints for them.
-            if (not spoiler.LocationList[loc].constant or ItemList[spoiler.LocationList[loc].item].type == Types.Key or IsBeanLocWithBeanWincon(spoiler, loc))
+            for loc in sphere.locations  # If Kongs or Keys are constant, we may still want path hints for them. They are critical enough to still potentially be WotH (as well as their prerequisites!)
+            if (not spoiler.LocationList[loc].constant or ItemList[spoiler.LocationList[loc].item].type in (Types.Kong, Types.Key) or IsBeanLocWithBeanWincon(spoiler, loc))
             and ItemList[spoiler.LocationList[loc].item].type
             not in (
                 Types.Banana,
@@ -1424,7 +1424,10 @@ def CalculateFoolish(spoiler: Spoiler, WothLocations: List[Union[Locations, int]
                     "shuffled_locations": [
                         loc
                         for loc in locations
-                        if loc.type not in (Types.TrainingBarrel, Types.PreGivenMove, Types.Climbing) and loc.item in itemTypesThatAreInShuffledPools and loc.item in regionCountHintableItems
+                        if loc.item is not None
+                        and loc.type not in (Types.TrainingBarrel, Types.PreGivenMove, Types.Climbing)
+                        and ItemList[loc.item].type in itemTypesThatAreInShuffledPools
+                        and loc.item in regionCountHintableItems
                     ],
                 }
             ]
@@ -1511,7 +1514,10 @@ def CalculateFoolish(spoiler: Spoiler, WothLocations: List[Union[Locations, int]
                             "shuffled_locations": [
                                 loc
                                 for loc in locations
-                                if loc.type not in (Types.TrainingBarrel, Types.PreGivenMove, Types.Climbing) and loc.item in itemTypesThatAreInShuffledPools and loc.item in data["items"]
+                                if loc.item is not None
+                                and loc.type not in (Types.TrainingBarrel, Types.PreGivenMove, Types.Climbing)
+                                and ItemList[loc.item].type in itemTypesThatAreInShuffledPools
+                                and loc.item in data["items"]
                             ],
                         }
                     )
@@ -1607,10 +1613,10 @@ def RandomFill(spoiler: Spoiler, itemsToPlace: List[Items], inOrder: bool = Fals
             empty.append(id)
     # Place item in random locations
     while len(itemsToPlace) > 0:
-        item = itemsToPlace.pop()
+        item = itemsToPlace.pop(0)
         validLocations = settings.GetValidLocationsForItem(item)
-        itemEmpty = [x for x in empty if x in validLocations and spoiler.LocationList[x].item is None and not spoiler.LocationList[x].inaccessible]
-        if len(itemEmpty) == 0:
+        itemEmpty = [x for x in empty if spoiler.LocationList[x].item is None and not spoiler.LocationList[x].inaccessible]
+        if len(itemEmpty) == 0:  # If we're entirely out of empty locations, mission accomplished
             if settings.extreme_debugging:
                 # Debugging variables: they are unaccessed but certainly useful. Do not touch!
                 invalid_empty_reachable = [x for x in itemEmpty if x not in validLocations]
@@ -1618,8 +1624,13 @@ def RandomFill(spoiler: Spoiler, itemsToPlace: List[Items], inOrder: bool = Fals
                 accessible_empty_locations = [x for x in empty_locations if not x.inaccessible]
                 noitem_locations = [x for x in spoiler.LocationList.values() if x.type != Types.Shop and x.item is Items.NoItem]
             return len(itemsToPlace) + 1
-        spoiler.settings.random.shuffle(itemEmpty)
-        locationId = itemEmpty.pop()
+        validItemEmpty = [x for x in itemEmpty if x in validLocations]
+        if len(validItemEmpty) == 0:  # If this item can't be put in any of these locations, we can skip it and try again
+            # Remove all copies of this item from the list of items to be placed to avoid repeatedly trying to place it again
+            itemsToPlace = [x for x in itemsToPlace if x != item]
+            continue
+        spoiler.settings.random.shuffle(validItemEmpty)
+        locationId = validItemEmpty.pop()
         spoiler.LocationList[locationId].PlaceItem(spoiler, item)
 
         # In minimal logic, verify placement doesn't violate minimal logic rules
@@ -2357,7 +2368,7 @@ def Fill(spoiler: Spoiler) -> None:
             ItemPool.GetItemsNeedingToBeAssumed(spoiler.settings, placed_types, placed_items=preplaced_items),
         )
         if unplaced > 0:
-            raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: BIG-" + str(unplaced))
+            raise Ex.ItemPlacementException(f"Unable to find all locations during the fill. Couldn't place {unplaced} critical items.")
         if spoiler.settings.extreme_debugging:
             DebugCheckAllReachable(
                 spoiler,
@@ -2402,7 +2413,7 @@ def Fill(spoiler: Spoiler) -> None:
                 ItemPool.GetItemsNeedingToBeAssumed(spoiler.settings, placed_types, placed_items=preplaced_items),
             )
             if miscUnplaced > 0:
-                raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: MI-" + str(miscUnplaced))
+                raise Ex.ItemPlacementException("Unable to find all locations during the fill. Couldn't place the bean")
 
         # Then place the pearls
         if Types.Pearl in spoiler.settings.shuffled_location_types:
@@ -2419,7 +2430,7 @@ def Fill(spoiler: Spoiler) -> None:
                 ItemPool.GetItemsNeedingToBeAssumed(spoiler.settings, placed_types, placed_items=preplaced_items),
             )
             if miscUnplaced > 0:
-                raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: MI-" + str(miscUnplaced))
+                raise Ex.ItemPlacementException(f"Unable to find all locations during the fill. Couldn't place {miscUnplaced} pearls")
         if spoiler.settings.extreme_debugging:
             DebugCheckAllReachable(
                 spoiler,
@@ -2477,7 +2488,7 @@ def Fill(spoiler: Spoiler) -> None:
             ItemPool.GetItemsNeedingToBeAssumed(spoiler.settings, placed_types, placed_items=preplaced_items),
         )
         if blueprintsUnplaced > 0:
-            raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: BP-" + str(blueprintsUnplaced))
+            raise Ex.ItemPlacementException(f"Unable to find all locations during the fill. Couldn't place {blueprintsUnplaced} blueprints")
     if spoiler.settings.extreme_debugging:
         DebugCheckAllReachable(
             spoiler,
@@ -2500,7 +2511,7 @@ def Fill(spoiler: Spoiler) -> None:
                 ItemPool.GetItemsNeedingToBeAssumed(spoiler.settings, placed_types, placed_items=preplaced_items),
             )
             if coinsUnplaced > 0:
-                raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: CC-" + str(coinsUnplaced))
+                raise Ex.ItemPlacementException(f"Unable to find all locations during the fill. Couldn't place {coinsUnplaced} company coins.")
     if spoiler.settings.extreme_debugging:
         DebugCheckAllReachable(
             spoiler,
@@ -2527,7 +2538,7 @@ def Fill(spoiler: Spoiler) -> None:
             doubleTime=True,
         )
         if crownsUnplaced > 0:
-            raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: CR-" + str(crownsUnplaced))
+            raise Ex.ItemPlacementException(f"Unable to find all locations during the fill. Couldn't place {crownsUnplaced} crowns.")
     if spoiler.settings.extreme_debugging:
         DebugCheckAllReachable(
             spoiler,
@@ -2547,7 +2558,7 @@ def Fill(spoiler: Spoiler) -> None:
         jetpacRequiredMedals = medalsToBePlaced[: spoiler.settings.logical_medal_requirement]
         medalsUnplaced = PlaceItems(spoiler, spoiler.settings.algorithm, jetpacRequiredMedals, medalAssumedItems)
         if medalsUnplaced > 0:
-            raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: LM-" + str(medalsUnplaced))
+            raise Ex.ItemPlacementException(f"Unable to find all locations during the fill. Couldn't place {medalsUnplaced} logical medals")
         # The remaining medals can be placed randomly
         medalsUnplaced = PlaceItems(
             spoiler,
@@ -2556,7 +2567,7 @@ def Fill(spoiler: Spoiler) -> None:
             medalAssumedItems,
         )
         if medalsUnplaced > 0:
-            raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: RM-" + str(medalsUnplaced))
+            raise Ex.ItemPlacementException(f"Unable to find all locations during the fill. Couldn't place {medalsUnplaced} misc medals")
     if spoiler.settings.extreme_debugging:
         DebugCheckAllReachable(
             spoiler,
@@ -2576,7 +2587,7 @@ def Fill(spoiler: Spoiler) -> None:
         rarewareRequiredFairies = fairiesToBePlaced[: spoiler.settings.logical_fairy_requirement]
         fairyUnplaced = PlaceItems(spoiler, spoiler.settings.algorithm, rarewareRequiredFairies, fairyAssumedItems)
         if fairyUnplaced > 0:
-            raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: LF-" + str(fairyUnplaced))
+            raise Ex.ItemPlacementException(f"Unable to find all locations during the fill. Couldn't place {fairyUnplaced} logical fairies")
         # The remaining fairies can be placed randomly
         fairyUnplaced = PlaceItems(
             spoiler,
@@ -2585,7 +2596,7 @@ def Fill(spoiler: Spoiler) -> None:
             fairyAssumedItems,
         )
         if fairyUnplaced > 0:
-            raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: RF-" + str(fairyUnplaced))
+            raise Ex.ItemPlacementException(f"Unable to find all locations during the fill. Couldn't place {fairyUnplaced} miscellaneous fairies")
     if spoiler.settings.extreme_debugging:
         DebugCheckAllReachable(
             spoiler,
@@ -2608,7 +2619,7 @@ def Fill(spoiler: Spoiler) -> None:
             preplaced_items.remove(item)
         gbsUnplaced = PlaceItems(spoiler, FillAlgorithm.careful_random, gbsToBePlaced, [])
         if gbsUnplaced > 0:
-            raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: GB-" + str(gbsUnplaced))
+            raise Ex.ItemPlacementException(f"Unable to find all locations during the fill. Couldn't place {gbsUnplaced} Golden Bananas")
     if spoiler.settings.extreme_debugging:
         DebugCheckAllReachable(
             spoiler,
@@ -2625,7 +2636,7 @@ def Fill(spoiler: Spoiler) -> None:
                 hintItemsToBePlaced.remove(item)
         hintsUnplaced = PlaceItems(spoiler, FillAlgorithm.careful_random, hintItemsToBePlaced, [])
         if hintsUnplaced > 0:
-            raise Ex.ItemPlacementException("Unable to find all locations during the fill. Error code: HN-" + str(hintsUnplaced))
+            raise Ex.ItemPlacementException(f"Unable to find all locations during the fill. Couldn't place {hintsUnplaced} hints")
     if spoiler.settings.extreme_debugging:
         DebugCheckAllReachable(
             spoiler,
@@ -2659,7 +2670,7 @@ def Fill(spoiler: Spoiler) -> None:
     if len(filler_types_in_pool) > 0:
         placed_types.extend(filler_types_in_pool)
         spoiler.Reset()
-        PlaceItems(spoiler, FillAlgorithm.random, ItemPool.FillerItems(spoiler.settings), [])
+        PlaceItems(spoiler, FillAlgorithm.random, ItemPool.FillerItems(spoiler.settings), [], inOrder=True)
     if Types.CrateItem in spoiler.settings.shuffled_location_types:
         placed_types.append(Types.CrateItem)
         # Crates hold nothing, so leave this one empty
@@ -3069,13 +3080,6 @@ def FillKongs(spoiler: Spoiler, placedTypes: List[Types], placedItems: List[Item
         # Plando causes problems here. Let's just not.
         if any([item for item in placedItems if ItemList[item].type == Types.Kong]):
             raise Ex.PlandoIncompatibleException("Cannot plando Kong placement if Kongs are not in the pool.")
-        if spoiler.settings.enable_plandomizer and (
-            spoiler.settings.plandomizer_dict["plando_kong_rescue_diddy"] != -1
-            or spoiler.settings.plandomizer_dict["plando_kong_rescue_lanky"] != -1
-            or spoiler.settings.plandomizer_dict["plando_kong_rescue_tiny"] != -1
-            or spoiler.settings.plandomizer_dict["plando_kong_rescue_chunky"] != -1
-        ):
-            raise Ex.PlandoIncompatibleException("Cannot plando Kong cage openers if Kongs are not in the pool.")
         # Determine what locations the kong items need to be placed in
         if any(spoiler.settings.kong_locations):
             emptyKongLocations = [location for location in [Locations.DiddyKong, Locations.LankyKong, Locations.TinyKong, Locations.ChunkyKong] if location not in spoiler.settings.kong_locations]
@@ -4290,10 +4294,6 @@ def CheckForIncompatibleSettings(settings: Settings) -> None:
                 all_zero_weights = False
         if all_zero_weights:
             found_incompatibilities += "All Ice Traps have a zero weight, meaning it can't place anything. "
-    total_item_counts = settings.total_gbs + settings.total_crowns + settings.total_fairies + settings.total_medals + settings.total_pearls + settings.total_rainbow_coins
-    max_item_counts = 201 + 10 + 20 + 45 + 5 + 16
-    if total_item_counts > max_item_counts:
-        found_incompatibilities += f"Total amounts of GBs, Crowns, Fairies, Medals, Pearls, and Rainbow coins exceeds {max_item_counts}. "
     custom_item_count_data = {
         "Golden Bananas": {
             "value": settings.total_gbs,

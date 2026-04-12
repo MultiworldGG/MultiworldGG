@@ -71,22 +71,12 @@ class EntranceRandomization(Toggle):
     display_name = "Entrance Randomization"
 
 
-class Experience(Range):
-    """Multiplier for gained experience as a percent.  Ranges from 25% to 400%."""
-    internal_name = "experience"
-    display_name = "Experience Modifier"
-    range_start = 25
-    range_end = 400
-    default = 100
-
-
-class WeaponExperience(Range):
-    """Multiplier for gained weapon experience as a percent.  Ranges from 25% to 400%"""
-    internal_name = "weapon_experience"
-    display_name = "Weapon Experience Modifier"
-    range_start = 25
-    range_end = 400
-    default = 100
+class ProgressiveSymbols(Toggle):
+    """Whether the Vampiric Symbols you acquire are split or progressive.  Setting to false is good on entrance randomization, otherwise
+    can be annoying."""
+    internal_name = "progressive_symbols"
+    display_name = "Progressive Symbols"
+    default = True
 
 
 class RequiredStrangeCoins(Range):
@@ -110,10 +100,21 @@ class TotalStrangeCoins(Range):
 
 class RandomElements(Toggle):
     """Randomizes the elements of almost all weapons and spells.  Guaranteed Poison ranged option.
-    Lucid Blade and Wand of Power are not randomized (either due to limitation, or to guarantee victory)"""
+    Wand of Power is not randomized (its randomly every element and tied to its function)."""
     internal_name = "random_elements"
     display_name = "Random Elements"
 
+class RandomEquipStats(Choice):
+    """Determines how the stats of weapons and spells are changed.
+    Off: The setting is off, and all stats are vanilla.
+    Shuffled: The weapon stats are shuffled amongst each other.
+    Randomize: A random stat value given the existing stats is chosen."""
+    internal_name = "random_equip_stats"
+    display_name = "Random Equipment Stats"
+    option_off = 0
+    option_shuffle = 1
+    option_randomize = 2
+    default = 0
 
 class EnemyRandomization(Toggle):
     """Shuffles the in-game enemies around. Each enemy in the game is replaced by some other enemy.
@@ -183,14 +184,6 @@ class Breakables(Toggle):
     display_name = "Breakables"
 
 
-class NormalizedDrops(Toggle):
-    """Every enemy drop is normalized against the chance of dropping nothing.  Specifically, if an enemy
-    has a weight of X to drop nothing, everything else also has a weight of X, and is split evenly for every
-    item it could drop.  Helps with the sin of the Angel Feather."""
-    internal_name = "normalized_drops"
-    display_name = "Normalized Drops"
-
-
 class SwitchLocks(Toggle):
     """All physical switches (not mirages) are locked, and cannot be flipped without their relevant item.
     Note: Removes filler at random to compensate."""
@@ -211,9 +204,39 @@ class SecretDoorLock(Toggle):
     display_name = "Secret Door Lock"
 
 
+class TricksAndGlitches(OptionSet):
+    """Which tricks or glitches are considered in-logic.
+    Lightless: All light source items are not necessary for dark areas.
+    Rock Bridge Skip: Skipping the Vampiric Symbol doors in Castle Le Fanu with Rock Bridge is logical.
+    Early Surface: Removes logic for reaching the surface entrances from Wing's Rest and Hollow Basin (requires about 20 DEX only).
+    Barrier Skip: Skips requiring the Earth and Water Talismans.
+    """
+    internal_name = "tricks_and_glitches"
+    display_name = "Tricks & Glitches"
+    valid_keys = ["Lightless", "Rock Bridge Skip", "Early Surface", "Barrier Skip"]
+    default = []
+
+
+class Challenges(Choice):
+    """These are optional challenges to make your run harder.  These may not be winnable.  If you turn these on in a public game, don't blame me, blame yourself.
+    No EXP: You cannot level.  This trumps Levelsanity and turns it off.
+    No Logic: There is no logic.  You will probably not win.  You've been warned.  But good to try and find skips.
+    """
+    internal_name = "challenges"
+    display_name = "Challenges"
+    option_off = 0
+    option_exp = 1
+    option_logic = 2
+    default = 0
+
 class Filler(OptionDict):
     """Lets you decide which filler are added to the game and their weights.  If the set is empty or all values are zero,
-    Silver and Deep Knowledge will be forced included with weights of 1. Amount received in game is a random value between 1~5, favoring 1~2."""
+    Silver and Deep Knowledge will be forced included with weights of 1. Amount received in game is a random value between 1~5, favoring 1~2.
+    Most filler is self-explanatory save the following:
+    Deep Knowledge: You get 1 level.
+    Weight of the Dream (Nothing): Is a nothing item.  Useful if you feel like other items make the game too easy.
+    Demi's Gift for a Stranger: Attempts to give a random player a random gift.  If it fails or is a solo game, does nothing."""
+
     internal_name = "filler"
     display_name = "Filler"
     valid_keys = [item for item in default_filler_weights]
@@ -233,7 +256,14 @@ class FillerLocalPercent(Range):
 class Traps(OptionDict):
     """Lets you decide which traps are in your game and their weights.  If empty or all values are zero, same as having 0 Trap Percent.
     Certain joyous traps are allowed during Christmas, otherwise are ignored.
-    Acceptable Traps: "Bleed Trap", "Poison Trap", "Curse Trap", "Slowness Trap", "Blindness Trap", "Mana Drain Trap", "XP Drain Trap", Coal, Eggnog."""
+    Most traps are self-explanatory save:
+    Rat Gang: Spawns 5 rats, and "We're the rats" plays.
+    Health ViaI: It's the fake health vial item Patchouli sells you.  Drink it.  For her.
+    Date With Death: Sent to DETHLAND map where Death will instantly kill you if you don't teleport out fast enough.
+    This won't trigger unless you have Spirit Warp so you can actually have a chance to escape.
+    Patchouli's Gift for a Stranger: Attempts to send a random player a random trap.  If it fails or is a solo game, does nothing.
+    Acceptable Traps: "Bleed Trap", "Poison Trap", "Curse Trap", "Slowness Trap", "Blindness Trap", "Mana Drain Trap",
+    "Health ViaI", "XP Drain Trap", "Rat Gang", "Date With Death Trap", Coal, Eggnog."""
     internal_name = "traps"
     display_name = "Traps"
     valid_keys = [trap for trap in default_trap_weights]
@@ -247,30 +277,6 @@ class TrapPercent(Range):
     range_start = 0
     range_end = 100
     default = 20
-
-
-class CustomMusic(Toggle):
-    """Lets you use custom music.  If on, will read from a CustomMusic folder in the game's base directory.  Only accepts mp3 files.
-    If no music is supplied, will be the same as if this setting was off."""
-    internal_name = "custom_music"
-    display_name = "Custom Music"
-
-
-class ItemColors(OptionDict):
-    """Lets you determine the colors of items in-game using hexadecimal.  This includes Progression, Useful, Trap, Filler, Gifts, and
-    Cheated (!getitem, starting inventory, etc)."""
-    internal_name = "item_colors"
-    valid_keys = ["ProgUseful", "Progression", "Useful", "Trap", "Filler", "Gift", "Cheat"]
-    display_name = "Item Colors"
-    default = {
-        "ProgUseful": "#FF8000",
-        "Progression": "#A335EE",
-        "Useful": "#0070DD",
-        "Trap": "#FA8072",
-        "Filler": "#1EFF00",
-        "Gift": "#FF8DA1",
-        "Cheat": "#FF0000",
-    }
 
 
 class CustomClass(OptionDict):
@@ -302,15 +308,21 @@ class CustomClass(OptionDict):
     }
 
 
+class SilverLink(Toggle):
+    """Silver is linked into the RingLink system.  Watch as Luigi's Mansion gets too much money and mimics beat your ass."""
+    internal_name = "silver_link"
+    display_name = "Silver Link"
+
+
 @dataclass
 class LunacidOptions(PerGameCommonOptions):
     ending: Ending
     starting_class: Class
     starting_area: StartingArea
     entrance_randomization: EntranceRandomization
-    experience: Experience
-    weapon_experience: WeaponExperience
+    progressive_symbols: ProgressiveSymbols
     random_elements: RandomElements
+    random_equip_stats: RandomEquipStats
     enemy_randomization: EnemyRandomization
     required_strange_coin: RequiredStrangeCoins
     total_strange_coin: TotalStrangeCoins
@@ -322,15 +334,15 @@ class LunacidOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
     grasssanity: Grasssanity
     breakables: Breakables
-    normalized_drops: NormalizedDrops
     secret_door_lock: SecretDoorLock
     switch_locks: SwitchLocks
     door_locks: DoorLocks
+    tricks_and_glitches: TricksAndGlitches
+    challenges: Challenges
     filler: Filler
     filler_local_percent: FillerLocalPercent
     traps: Traps
     trap_percent: TrapPercent
-    custom_music: CustomMusic
-    item_colors: ItemColors
     custom_class: CustomClass
+    silver_link: SilverLink
     death_link: DeathLink

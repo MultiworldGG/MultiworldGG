@@ -322,7 +322,7 @@ screen in your team. The sprite can't be flipped if the option is ticked, otherw
 format `<move>: <level>`, with `<move>` a known Pokémon move from this generation, and `<level>` a number between 1
 and 100.
 
-<u><b>Warning:</b></u> Some of these values may overwrite randomization options selected in MultiworldGG: if the
+<u><b>Warning:</b></u> Some of these values may overwrite randomization options selected in Archipelago: if the
 Pokémon's base stats or level up move pool have been randomized, the adjuster will replace the randomized values
 with its values.
 
@@ -337,7 +337,7 @@ the file should not be modified manually.
 Once both a ROM (or AP patch) and a sprite pack have been passed to the adjuster, you can press the `Adjust ROM`
 button and a new ROM will be made from the patch application, whih is usable as-is.
 
-In order to use this ROM instead of the standard AP-patched ROM with MultiworldGG, once BizHawk or any other
+In order to use this ROM instead of the standard AP-patched ROM with Archipelago, once BizHawk or any other
 emulator is running, you should open the ROM made from the adjuster instead of the original one. Normally, the ROM
 made by the adjuster should have the same name as the ROM or AP patch you passed to it, with `-adjusted` added at
 the end of its name.

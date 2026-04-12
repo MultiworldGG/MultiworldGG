@@ -35,7 +35,8 @@ items = {
             "id": 4,
             "type": "WEAPON1",
             "address": 0x09798e,
-            "classification": ItemClassification.useful
+            "classification": ItemClassification.useful,
+            "tag": "Weapon",
         },
     "Leather shield":
         {
@@ -2031,3 +2032,116 @@ armor = {k: v for k, v in items.items() if v["type"] == "ARMOR"}
 helmet = {k: v for k, v in items.items() if v["type"] == "HELMET"}
 cloak = {k: v for k, v in items.items() if v["type"] == "CLOAK"}
 accessory = {k: v for k, v in items.items() if v["type"] == "ACCESSORY"}
+
+ITEM_GROUPS: dict[str, set[str]] = {
+    "Power up": {
+        "Heart Vessel", "Life Vessel"
+    },
+    
+    "Weapon": {
+        "Shield rod", "Sword of dawn", "Basilard", "Short sword", "Combat knife",
+        "Nunchaku", "Were bane", "Rapier", "Red rust", "Takemitsu", "Shotel",
+        "Tyrfing", "Namakura", "Knuckle duster", "Gladius", "Scimitar", "Cutlass",
+        "Saber", "Falchion", "Broadsword", "Bekatowa", "Damascus sword",
+        "Hunter sword", "Estoc", "Bastard sword", "Jewel knuckles", "Claymore",
+        "Talwar", "Katana", "Flamberge", "Iron fist", "Zwei hander",
+        "Sword of hador", "Luminus", "Harper", "Obsidian sword", "Gram",
+        "Jewel sword", "Mormegil", "Firebrand", "Thunderbrand", "Icebrand",
+        "Stone sword", "Holy sword", "Terminus est", "Marsil", "Dark blade",
+        "Heaven sword", "Fist of tulkas", "Gurthang", "Mourneblade",
+        "Alucard sword", "Mablung sword", "Badelaire", "Sword familiar",
+        "Great sword", "Mace", "Morningstar", "Holy rod", "Star flail",
+        "Moon rod", "Chakram", "Holbein dagger", "Blue knuckles",
+        "Osafune katana", "Masamune", "Muramasa", "Runesword", "Vorpal blade",
+        "Crissaegrim", "Yasutsuna", "Alucart sword"
+    },
+
+    "Weapon 1H": {
+        "Shield rod", "Sword of dawn", "Basilard", "Short sword", "Combat knife",
+        "Nunchaku", "Were bane", "Rapier", "Red rust", "Takemitsu", "Shotel",
+        "Tyrfing", "Namakura", "Knuckle duster", "Gladius", "Scimitar", "Cutlass",
+        "Saber", "Falchion", "Broadsword", "Bekatowa", "Damascus sword",
+        "Hunter sword", "Estoc", "Talwar", "Katana", "Iron fist", "Luminus",
+        "Harper", "Obsidian sword", "Jewel sword", "Firebrand", "Thunderbrand",
+        "Icebrand", "Stone sword", "Holy sword", "Terminus est", "Marsil",
+        "Dark blade", "Heaven sword", "Fist of tulkas", "Alucard sword",
+        "Mablung sword", "Badelaire", "Sword familiar", "Mace", "Holy rod",
+        "Star flail", "Moon rod", "Chakram", "Holbein dagger",
+        "Blue knuckles", "Crissaegrim", "Alucart sword"
+    },
+
+    "Weapon 2H": {
+        "Bastard sword", "Claymore", "Flamberge", "Zwei hander",
+        "Sword of hador", "Gram", "Mormegil", "Gurthang", "Mourneblade",
+        "Great sword", "Morningstar", "Osafune katana", "Masamune",
+        "Muramasa", "Runesword", "Vorpal blade", "Yasutsuna"
+    },
+
+    "Shield": {
+        "Leather shield", "Knight shield", "Iron shield", "AxeLord shield",
+        "Herald shield", "Dark shield", "Goddess shield", "Shaman shield",
+        "Medusa shield", "Skull shield", "Fire shield", "Alucard shield",
+        "Alucart shield"
+    },
+
+    "Armor": {
+        "Cloth tunic", "Hide cuirass", "Bronze cuirass", "Iron cuirass",
+        "Steel cuirass", "Silver plate", "Gold plate", "Platinum mail",
+        "Diamond plate", "Fire mail", "Lightning mail", "Ice mail",
+        "Mirror cuirass", "Spike breaker", "Alucard mail", "Dark armor",
+        "Healing mail", "Holy mail", "Walk armor", "Brilliant mail",
+        "Mojo mail", "Fury plate", "Dracula tunic", "God's Garb",
+        "Axe Lord armor", "Alucart mail"
+    },
+
+    "Helmet": {
+        "Sunglasses", "Ballroom mask", "Bandanna", "Felt hat", "Velvet hat",
+        "Goggles", "Leather hat", "Holy glasses", "Steel helm", "Stone mask",
+        "Circlet", "Gold circlet", "Ruby circlet", "Opal circlet",
+        "Topaz circlet", "Beryl circlet", "Cat-eye circl.", "Coral circlet",
+        "Dragon helm", "Silver crown", "Wizard hat"
+    },
+
+    "Cloak": {
+        "Cloth cape", "Reverse cloak", "Elven cloak", "Crystal cloak",
+        "Royal cloak", "Blood cloak", "Joseph's cloak", "Twilight cloak"
+    },
+
+    "Accessory": {
+        "Moonstone", "Sunstone", "Bloodstone", "Staurolite", "Ring of pales",
+        "Zircon", "Aquamarine", "Turquoise", "Onyx", "Garnet", "Opal",
+        "Diamond", "Lapis lazuli", "Ring of ares", "Gold ring", "Silver ring",
+        "Ring of varda", "Ring of arcana", "Mystic pendant", "Heart broach",
+        "Necklace of j", "Gauntlet", "Ankh of life", "Ring of feanor",
+        "Medal", "Talisman", "Duplicator", "King's stone", "Covenant stone",
+        "Nauglamir", "Secret boots"
+    },
+
+    "Consumable": {
+        "Monster vial 1", "Monster vial 2", "Monster vial 3", "Karma coin",
+        "Magic missile", "Orange", "Apple", "Banana", "Grapes", "Strawberry",
+        "Pineapple", "Peanuts", "Toadstool", "Shiitake", "Cheesecake",
+        "Shortcake", "Tart", "Parfait", "Pudding", "Ice cream",
+        "Frankfurter", "Hamburger", "Pizza", "Cheese", "Ham and eggs",
+        "Omelette", "Morning set", "Lunch A", "Lunch B", "Curry rice",
+        "Gyros plate", "Spaghetti", "Grape juice", "Barley tea", "Green tea",
+        "Natou", "Ramen", "Miso soup", "Sushi", "Pork bun", "Red bean bun",
+        "Chinese bun", "Dim sum set", "Pot roast", "Sirloin", "Turkey",
+        "Meal ticket", "Neutron bomb", "Power of sire", "Pentagram",
+        "Bat pentagram", "Shuriken", "Cross shuriken", "Buffalo star",
+        "Flame star", "TNT", "Bwaka knife", "Boomerang", "Javelin",
+        "Fire boomerang", "Iron ball", "Dynamite", "Heart refresh",
+        "Antivenom", "Uncurse", "Life apple", "Hammer", "Str. potion",
+        "Luck potion", "Smart potion", "Attack potion", "Shield potion",
+        "Resist fire", "Resist thunder", "Resist ice", "Resist stone",
+        "Resist holy", "Resist dark", "Potion", "High potion", "Elixir",
+        "Manna prism", "Library card"
+    },
+
+    "Relic": {
+        "Soul of bat", "Fire of bat", "Echo of bat", "Force of echo",
+        "Soul of wolf", "Power of wolf", "Skill of wolf", "Form of mist",
+        "Power of mist", "Gas cloud", "Cube of zoe", "Spirit orb",
+        "Gravity boots"
+    },
+}

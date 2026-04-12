@@ -1,4 +1,3 @@
-
 from typing import List, NamedTuple
 
 common_weight = 40

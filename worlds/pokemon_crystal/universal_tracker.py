@@ -83,7 +83,7 @@ def load_ut_slot_data(world: "PokemonCrystalWorld"):
             evolutions.append(EvolutionData(
                 evo_type=evo_type,
                 level=level,
-                condition=condition if condition is str else None,
+                condition=condition if isinstance(condition, str) else None,
                 pokemon=into
             ))
 

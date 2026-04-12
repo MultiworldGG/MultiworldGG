@@ -26,7 +26,7 @@ def create_soul_regions(world):
     multiworld.get_region("Wizardry Lab West Gate", player).add_exits(["Great Axe Armor Soul", "Heart Eater Soul"])
     multiworld.get_region("Wizardry Lab East Gate", player).add_exits(["Cave Troll Soul", "Mimic Soul"])
     multiworld.get_region("Wizardry Lab Sunken", player).add_exits(["Homunculus Soul", "Killer Fish Soul", "Larva Soul", "Mimic Soul"])  # Should this mimic be here? ghosts aren't? Hmmm
-    multiworld.get_region("Wizardry Lab Sunken West Door", player).add_exits(["Iron Golem Soul"])
+    multiworld.get_region("Wizardry Lab Sunken West Door", player).add_exits(["Iron Golem Soul", "Ghost Soul"])
 
     ####### GARDEN OF MADNESS ######
 
@@ -52,14 +52,14 @@ def create_soul_regions(world):
 
     multiworld.get_region("Dark Chapel", player).add_exits(["Guillotiner Soul", "Witch Soul", "Mini Devil Soul", "Amalaric Sniper Soul", "Ghost Dancer Soul", "Hell Boar Soul",
                                                             "White Dragon Soul", "Great Armor Soul", "Quetzalcoatl Soul", "Ghoul Soul", "The Creature Soul", "Bone Pillar Soul",
-                                                            "Barbariccia Soul", "Valkyrie Soul", "Ghost Soul", "Tombstone Soul"],
-                        {"Quetzalcoatl Soul": lambda state: state.has("Magic Seal 2", player)})
+                                                            "Barbariccia Soul", "Valkyrie Soul", "Ghost Soul", "Tombstone Soul"], # Is ghost here? double check this
+                        {"Quetzalcoatl Soul": lambda state: state.has(world.magic_seal_table["Dark Chapel"], player)})
 
     multiworld.get_region("Dark Chapel Big Room", player).add_exits(["Mini Devil Soul", "Quetzalcoatl Soul", "Valkyrie Soul"])
     multiworld.get_region("Dark Chapel Catacombs Exit", player).add_exits(["Catoblepas Soul"])
     #####CONDEMNED TOWER #####
     multiworld.get_region("Condemned Tower Bottom", player).add_exits(["Draghignazzo Soul", "Skeleton Ape Soul", "Great Axe Armor Soul"])
-    multiworld.get_region("Condemned Tower Top", player).add_exits(["Buer Soul", "Disc Armor Soul", "Werewolf Soul", "Fleaman Soul"])
+    multiworld.get_region("Condemned Tower Main", player).add_exits(["Buer Soul", "Disc Armor Soul", "Werewolf Soul", "Fleaman Soul"])
 
     ##### CURSED CLOCK TOWER ######
     multiworld.get_region("Cursed Clock Tower Entrance", player).add_exits(["Harpy Soul", "Catoblepas Soul", "Imp Soul", "Malachi Soul", "Dead Pirate Soul",
@@ -71,7 +71,7 @@ def create_soul_regions(world):
     ##### SUBTERRANEAN HELL #####
 
     multiworld.get_region("Subterranean Hell Top Entrance", player).add_exits(["Cave Troll Soul", "Decarabia Soul", "Une Soul", "Dead Pirate Soul"],
-    {"Decarabia Soul": lambda state: state.has("Magic Seal 3", player)})
+    {"Decarabia Soul": lambda state: state.has(world.magic_seal_table["Subterranean Hell"], player)})
 
     multiworld.get_region("Subterranean Hell East", player).add_exits(["Decarabia Soul", "Merman Soul", "Fish Head Soul", "Needles Soul", "Frozen Shade Soul", "Killer Fish Soul",
                                                                        "Mimic Soul", "Procel Soul"],
@@ -93,9 +93,10 @@ def create_soul_regions(world):
 
     ####S ILENCED RUINS #####
     multiworld.get_region("Silenced Ruins", player).add_exits(["Dead Mate Soul", "Skeleton Soul", "Bat Soul", "Skull Archer Soul", "Devil Soul", "Larva Soul", "Skelerang Soul",
-                                                               "Ghoul Soul", "Peeping Eye Soul", "Dead Crusader Soul", "Bone Ark Soul"],
+                                                               "Ghoul Soul", "Dead Crusader Soul", "Bone Ark Soul"],
     {"Devil Soul": lambda state: state.has("Balore Soul", player)})
-    multiworld.get_region("Silenced Ruins Back Exit", player).add_exits(["Waiter Skeleton Soul", "Gorgon Soul"])
+    multiworld.get_region("Silenced Ruins Back Exit", player).add_exits(["Waiter Skeleton Soul"])
+    multiworld.get_region("Silenced Ruins Upper Entrance", player).add_exits(["Waiter Skeleton Soul", "Peeping Eye Soul", "Gorgon Soul"])
 
     ##### PINNACLE #####
     multiworld.get_region("The Pinnacle", player).add_exits(["Guillotiner Soul", "Mothman Soul", "Werewolf Soul", "Mushussu Soul", "Alastor Soul",
@@ -104,7 +105,7 @@ def create_soul_regions(world):
     multiworld.get_region("The Pinnacle Lower", player).add_exits(["Guillotiner Soul", "Succubus Soul", "Malachi Soul", "Mushussu Soul", "Werewolf Soul", "Flame Demon Soul",
                                                                    "Bugbear Soul", "Dead Warrior Soul", "Erinys Soul"])
 
-    if world.options.goal:
+    if world.mine_status != "Disabled":
         multiworld.get_region("Mine of Judgment", player).add_exits(["Slogra Soul", "Ripper Soul", "Gaibon Soul", "Tanjelly Soul", "Giant Slug Soul", "Bugbear Soul"])
         multiworld.get_region("The Abyss", player).add_exits(["Alastor Soul", "Mud Demon Soul", "Frozen Shade Soul", "Malachi Soul", "White Dragon Soul", "Malacoda Soul",
                                                               "Arc Demon Soul", "Erinys Soul", "Heart Eater Soul", "Stolas Soul", "Final Guard Soul"])

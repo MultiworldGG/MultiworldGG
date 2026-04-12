@@ -5,13 +5,24 @@ from typing import Any, NamedTuple
 
 from BaseClasses import CollectionState, Location, Region
 from Utils import restricted_loads
-from worlds.generic.Rules import CollectionRule, set_rule
+from worlds.generic.Rules import set_rule
 from .options import FirstRootNode, LogicDifficulty, NineSolsGameOptions
 from .should_generate import should_generate
+
+# AP 0.6.7 moves CollectionRule to BaseClasses
+try:
+    from BaseClasses import CollectionRule
+except ImportError:
+    from worlds.generic.Rules import CollectionRule
 
 if typing.TYPE_CHECKING:
     from . import NineSolsWorld
 
+from worlds.generic.Rules import CollectionRule
+
+rule_table: dict[str, CollectionRule] = {
+    "sword": lambda state: state.has("Sword"),
+}
 
 class NineSolsLocation(Location):
     game = "Nine Sols"
@@ -142,6 +153,27 @@ location_name_groups = {
 }
 
 
+first_root_node_to_region_name: dict[int, str] = {
+    FirstRootNode.option_apeman_facility_monitoring: "AF (Monitoring) - Root Node",
+    FirstRootNode.option_galactic_dock: "Galactic Dock - Root Node & Right Exit",
+    FirstRootNode.option_power_reservoir_east: "PR (East) - Root Node",
+    FirstRootNode.option_lake_yaochi_ruins: "LYR - Root Node",
+    FirstRootNode.option_yinglong_canal: "Yinglong Canal - Root Node",
+    FirstRootNode.option_factory_great_hall: "Factory (GH) - Lower Levels & Root Node",
+    FirstRootNode.option_outer_warehouse: "OW - Root Node & Middle Exits",
+    FirstRootNode.option_grotto_of_scriptures_entry: "GoS (Entry) - Root Node",
+    FirstRootNode.option_grotto_of_scriptures_east: "GoS (East) - Root Node",
+    FirstRootNode.option_grotto_of_scriptures_west: "GoS (West) - Root Node",
+    FirstRootNode.option_agrarian_hall: "Agrarian Hall - Root Node",
+    FirstRootNode.option_radiant_pagoda: "Radiant Pagoda - Root Node",
+    FirstRootNode.option_apeman_facility_depths: "AF (Depths) - Root Node",
+    FirstRootNode.option_central_transport_hub: "CTH - Root Node",
+    FirstRootNode.option_factory_underground: "Factory (U) - Root Node & Lower Elevator",
+    FirstRootNode.option_inner_warehouse: "IW - Root Node",
+    FirstRootNode.option_power_reservoir_west: "PR (West) - Root Node",
+}
+
+
 region_data_table: dict[str, NineSolsRegionData] = {}
 
 
@@ -172,7 +204,7 @@ def create_regions(world: "NineSolsWorld") -> None:
     for region_name in region_data_table.keys():
         mw.regions.append(Region(region_name, p, mw))
 
-    # add locations and connections to each region
+    # add locations to each region
     for region_name, region_data in region_data_table.items():
         region = mw.get_region(region_name, p)
         region.add_locations({
@@ -180,61 +212,84 @@ def create_regions(world: "NineSolsWorld") -> None:
             if location_data.region == region_name
         }, NineSolsLocation)
 
-        exit_connections = [cd for cd in connections_to_create if cd["from"] == region_name]
-        for connection in exit_connections:
-            rule, indirect_region_names = get_combined_access_rule(connection, world)
-            entrance = region.connect(mw.get_region(connection["to"], p), None, rule)
-            for indirect_region_name in indirect_region_names:
-                mw.register_indirect_condition(mw.get_region(indirect_region_name, p), entrance)
+    try:
+        from rule_builder.rules import Has  # we don't use it yet, this is just to branch on whether it's available
 
-    # add access rules to the created locations
-    for ld in locations_data:
-        if ld["name"] in locations_to_create:
-            rule, _ = get_combined_access_rule(ld, world)
-            set_rule(mw.get_location(ld["name"], p), rule)
+        # add connections to each region
+        for region_name, region_data in region_data_table.items():
+            region = mw.get_region(region_name, p)
+            exit_connections = [cd for cd in connections_to_create if cd["from"] == region_name]
+            for connection in exit_connections:
+                rule = get_combined_rb_rule(connection, world)
+                world.create_entrance(region, mw.get_region(connection["to"], p), rule)
+
+        # add access rules to the created locations
+        for ld in locations_data:
+            if ld["name"] in locations_to_create:
+                rule = get_combined_rb_rule(ld, world)
+                world.set_rule(mw.get_location(ld["name"], p), rule)
+
+    except ImportError: # use our pre-RB code instead
+        # add connections to each region
+        for region_name, region_data in region_data_table.items():
+            region = mw.get_region(region_name, p)
+            exit_connections = [cd for cd in connections_to_create if cd["from"] == region_name]
+            for connection in exit_connections:
+                rule, indirect_region_names = get_combined_access_rule(connection, world)
+                entrance = region.connect(mw.get_region(connection["to"], p), None, rule)
+                for indirect_region_name in indirect_region_names:
+                    mw.register_indirect_condition(mw.get_region(indirect_region_name, p), entrance)
+
+        # add access rules to the created locations
+        for ld in locations_data:
+            if ld["name"] in locations_to_create:
+                rule, _ = get_combined_access_rule(ld, world)
+                set_rule(mw.get_location(ld["name"], p), rule)
 
     world.origin_region_name = "FSP - Root Node"
-    if options.first_root_node == FirstRootNode.option_apeman_facility_monitoring:
-        first_node_region = "AFM - Root Node"
-    elif options.first_root_node == FirstRootNode.option_galactic_dock:
-        first_node_region = "GD - Root Node & Right Exit"
-    elif options.first_root_node == FirstRootNode.option_power_reservoir_east:
-        first_node_region = "PRE - Root Node"
-    elif options.first_root_node == FirstRootNode.option_lake_yaochi_ruins:
-        first_node_region = "LYR - Root Node"
-    elif options.first_root_node == FirstRootNode.option_yinglong_canal:
-        first_node_region = "YC - Root Node"
-    elif options.first_root_node == FirstRootNode.option_factory_great_hall:
-        first_node_region = "FGH - Lower Levels & Root Node"
-    elif options.first_root_node == FirstRootNode.option_outer_warehouse:
-        first_node_region = "OW - Root Node & Middle Exits"
-    elif options.first_root_node == FirstRootNode.option_grotto_of_scriptures_entry:
-        first_node_region = "GoSY - Root Node"
-    elif options.first_root_node == FirstRootNode.option_grotto_of_scriptures_east:
-        first_node_region = "GoSE - Root Node"
-    elif options.first_root_node == FirstRootNode.option_grotto_of_scriptures_west:
-        first_node_region = "GoSW - Root Node"
-    elif options.first_root_node == FirstRootNode.option_agrarian_hall:
-        first_node_region = "AH - Root Node"
-    elif options.first_root_node == FirstRootNode.option_radiant_pagoda:
-        first_node_region = "RP - Root Node"
-    elif options.first_root_node == FirstRootNode.option_apeman_facility_depths:
-        first_node_region = "AFD - Root Node"
-    elif options.first_root_node == FirstRootNode.option_central_transport_hub:
-        first_node_region = "CTH - Root Node"
-    elif options.first_root_node == FirstRootNode.option_factory_underground:
-        first_node_region = "FU - Root Node & Lower Elevator"
-    elif options.first_root_node == FirstRootNode.option_inner_warehouse:
-        first_node_region = "IW - Root Node"
-    elif options.first_root_node == FirstRootNode.option_power_reservoir_west:
-        first_node_region = "PRW - Root Node"
-    else:
-        raise Exception("Unrecognized first_root_node")
+    first_node_region = first_root_node_to_region_name[options.first_root_node.value]
 
-    mw.get_region(world.origin_region_name, p).add_exits([first_node_region])
+    # if this is one of the root nodes with a corresponding node item,
+    # then we want to change the logic from has(node item) to just True
+    try:
+        e = mw.get_entrance(world.origin_region_name + " -> " + first_node_region, p)
+        e.access_rule = lambda state: True  # on 0.6.7: from BaseClasses import DEFAULT_COLLECTION_RULE
+    # otherwise, there won't be an existing connection; we can just add a new one with no rule
+    except KeyError:
+        mw.get_region(world.origin_region_name, p).add_exits([first_node_region])
 
 # `logic` can be a location or a connection
+def get_combined_rb_rule(logic: Any, world: "NineSolsWorld") -> Any:  # TODO: proper return type when 0.6.7 is the minimum
+    all_requires_levels = get_all_requires_levels(logic, world)
+    if len(all_requires_levels) == 0:
+        from rule_builder.rules import False_
+        return False_()
+    elif all(len(r) == 0 for r in all_requires_levels):
+        from rule_builder.rules import True_
+        return True_()
+    else:
+        requires = all_requires_levels[0] if len(all_requires_levels) == 1 else [{"anyOf": all_requires_levels}]
+        # RB could do this optimization, but I've already implemented it here, so that's easier that porting to OptionFilters
+        requires = pre_eval_option_criteria_in_rule(world.options, requires)
+        return eval_rb_rule(requires, world.options)
+
+
 def get_combined_access_rule(logic: Any, world: "NineSolsWorld") -> tuple[CollectionRule, list[str]]:
+    all_requires_levels = get_all_requires_levels(logic, world)
+    if len(all_requires_levels) == 0:
+        return lambda state: False, []
+    elif all(len(r) == 0 for r in all_requires_levels):
+        return lambda state: True, []
+    else:
+        requires = all_requires_levels[0] if len(all_requires_levels) == 1 else [{"anyOf": all_requires_levels}]
+        requires = pre_eval_option_criteria_in_rule(world.options, requires)
+        return (
+            lambda state, r=requires: eval_rule(state, world.player, world.options, r),  # noqa
+            regions_referenced_by_rule(requires)
+        )
+
+
+def get_all_requires_levels(logic: Any, world: "NineSolsWorld") -> Any:
     vanilla_requires = logic["requires"] if "requires" in logic else None
 
     medium_requires = None
@@ -251,18 +306,7 @@ def get_combined_access_rule(logic: Any, world: "NineSolsWorld") -> tuple[Collec
         elif world.using_ut and world.options.logic_difficulty == LogicDifficulty.option_medium:
             ls_requires = [{"item": world.glitches_item_name}] + logic["ls_requires"]
 
-    all_requires_levels = [x for x in [vanilla_requires, medium_requires, ls_requires] if x is not None]
-    if len(all_requires_levels) == 0:
-        return lambda state: False, []
-    elif all(len(r) == 0 for r in all_requires_levels):
-        return lambda state: True, []
-    else:
-        requires = all_requires_levels[0] if len(all_requires_levels) == 1 else [{"anyOf": all_requires_levels}]
-        requires = pre_eval_option_criteria_in_rule(world.options, requires)
-        return (
-            lambda state, r=requires: eval_rule(state, world.player, world.options, r),  # noqa
-            regions_referenced_by_rule(requires)
-        )
+    return [x for x in [vanilla_requires, medium_requires, ls_requires] if x is not None]
 
 
 # In the .jsonc files we use, a location or region connection's "access rule" is defined
@@ -272,6 +316,52 @@ def get_combined_access_rule(logic: Any, world: "NineSolsWorld") -> tuple[Collec
 
 # In particular: this eval_rule() function is the main piece of code which will have to
 # be implemented in both languages, so it's important we keep the implementations in sync
+def eval_rb_rule(rule: list[Any], options: NineSolsGameOptions) -> Any:  # TODO: proper return type when 0.6.7 is the minimum
+    from rule_builder.rules import True_
+
+    rb_rule = True_()
+    for criterion in rule:
+        rb_rule &= eval_rb_criterion(criterion, options)
+    return rb_rule
+
+
+def eval_rb_criterion(criterion: Any, options: NineSolsGameOptions) -> Any:  # TODO: proper return type when 0.6.7 is the minimum
+    from rule_builder.rules import Has, HasGroup, CanReachLocation, CanReachRegion, True_, False_
+
+    if isinstance(criterion, list):
+        rule = True_()
+        for sub_criterion in criterion:
+            rule &= eval_rb_criterion(sub_criterion, options)
+        return rule
+
+    if isinstance(criterion, dict):
+        # we can ignore "option" criteria here, because those should have been "pre-eval"ed already
+        key, value = next(iter(criterion.items()))
+        if (key == "item" or key == "item_group") and isinstance(value, str):
+            count = 1
+            if "count" in criterion:
+                count = criterion["count"]
+            if "count_option" in criterion:
+                count = getattr(options, criterion["count_option"]).value
+
+            if key == "item_group":
+                return HasGroup(value, count)
+            return Has(value, count)
+        elif key == "count":
+            raise ValueError("Apparently dict iteration can hit 'count' first?: " + json.dumps(criterion))
+        elif key == "anyOf" and isinstance(value, list):
+            rule = False_()
+            for sub_criterion in value:
+                rule |= eval_rb_criterion(sub_criterion, options)
+            return rule
+        elif key == "location" and isinstance(value, str):
+            return CanReachLocation(value)
+        elif key == "region" and isinstance(value, str):
+            return CanReachRegion(value)
+
+    raise ValueError("Unable to evaluate rule criterion: " + json.dumps(criterion))
+
+
 def eval_rule(state: CollectionState, p: int, options: NineSolsGameOptions, rule: list[Any]) -> bool:
     return all(eval_criterion(state, p, options, criterion) for criterion in rule)
 

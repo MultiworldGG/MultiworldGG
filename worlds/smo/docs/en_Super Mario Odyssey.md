@@ -1,5 +1,5 @@
 # Super Mario Odyssey
-A mod adding Archipelago Multi World support to Super Mario Odyssey
+A mod adding MultiworldGG Multi World support to Super Mario Odyssey
 
 ## Note
 Please note that this is a very early implementation and you are likely to encounter bugs. Please be advised.

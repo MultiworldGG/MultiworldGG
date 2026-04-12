@@ -1239,7 +1239,7 @@
     ]
   },
   "FOG_BADGE_FROM_MORTY": {
-    "label": "Ecruteak City - Fog Badge from Morty",
+    "label": "Ecruteak Gym - Fog Badge from Morty",
     "flag": "EVENT_FOG_BADGE_FROM_MORTY",
     "type": "giveitem",
     "tags": [
@@ -6014,9 +6014,9 @@
       "Pokedex",
       "Route 30"
     ],
-    "default_item": "POKE_DEX",
+    "default_item": "POKEDEX",
     "scripts": [
-      "AP_NPC_MrPokemonsHouse_POKE_DEX"
+      "AP_NPC_MrPokemonsHouse_POKEDEX"
     ]
   },
   "ITEM_FROM_YOUNGSTER_JOEY": {
@@ -10396,6 +10396,18 @@
     "default_item": "TM_42",
     "scripts": [
       "AP_NPC_ViridianCity_TM_DREAM_EATER"
+    ]
+  },
+  "ITEM_FROM_CAL_3": {
+    "label": "Trainer House - Cal",
+    "flag": "EVENT_ITEM_FROM_CAL_3",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity"
+    ],
+    "default_item": "NO_ITEM",
+    "scripts": [
+      "AP_NPC_TrainerHouseB1F_Cal_NO_ITEM"
     ]
   },
   "EARTH_BADGE_FROM_BLUE": {

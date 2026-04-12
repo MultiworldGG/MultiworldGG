@@ -122,7 +122,7 @@
   inc hl
   jp getUpgradedTreasure
 
-# load fianl treasure ID, param, and text into b, c, and e.
+# load final treasure ID, param, and text into b, c, and e.
 15//getTreasureDataBCE: |
   call getTreasureData_body
   ld c,(hl)
@@ -182,7 +182,10 @@
   call interBankCall
   pop hl
   ld a,b
-  jp giveTreasure
+  push bc
+  call giveTreasure
+  pop bc
+  ret
 
 # gives the treasure, plays its sound, and shows its text.
 00//giveTreasureCustom: |
@@ -196,7 +199,13 @@
   cp $ff
   ret z
   ld c,a
+
+  ld a,b
   ld b,$00
+  cp TREASURE_ARCHIPELAGO_ITEM
+  jr nz,@end
+  ld b,$0c ; Change the high byte of text to 0c where foreign items are stored
+  @end:
   call showText
   xor a
   ret

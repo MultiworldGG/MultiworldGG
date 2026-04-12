@@ -31,6 +31,11 @@ body.dark-mode .chart-container {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
+.full-width {
+    width: 100%;
+}
+
+
 /* Responsive design for mobile */
 @media (max-width: 768px) {
     .chart-container {
@@ -38,4 +43,3 @@ body.dark-mode .chart-container {
         min-width: auto;
     }
 }
-

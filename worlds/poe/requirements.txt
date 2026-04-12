@@ -1,0 +1,15 @@
+# Dependencies for Path of Exile Archipelago Client
+# These are bundled into library.zip during freeze.
+# For source installations, see poeClient/vendor/vendor_requirements.txt
+
+# HTTP client for async requests
+httpx>=0.28.1
+
+# Cross-platform input control and monitoring
+pynput>=1.8.1
+
+# Text-to-speech conversion library
+pyttsx3==2.99
+
+# Window control library for Windows/Linux/macOS
+pywinctl>=0.4.01

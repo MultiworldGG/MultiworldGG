@@ -1,6 +1,8 @@
 {
+    "version": 7,
+    "compatible_version": 7,
     "game": "Phoenotopia: Awakening",
     "authors": [ "Lenamphy" ],
-    "minimum_ap_version": "0.6.3",
-    "world_version": "0.1.0"
+    "minimum_ap_version": "0.6.1",
+    "world_version": "0.2.0"
 }

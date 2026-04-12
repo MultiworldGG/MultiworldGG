@@ -19,12 +19,6 @@ class DolphinLauncher:
     exclusion_dolphin_process_name: list[str] = ["dolphinmemoryengine"]
 
     def __init__(self, luigismansion_settings: LuigisMansionSettings = None):
-        """
-        :param launch_path: The path to the dolphin executable.
-            Handled by the ArchipelagoLauncher in the host.yaml file.
-        :param auto_start: Determines if the the consumer should launch dolphin.
-            Handled by the ArchipelagoLauncher in the host.yaml file.
-        """
         if luigismansion_settings is None:
             self.emulator_settings: EmulatorSettings = settings.get_settings().luigismansion_options.dolphin_settings
         else:
@@ -65,8 +59,8 @@ class DolphinLauncher:
 
 def _check_emulator_process_open(dl: DolphinLauncher) -> bool:
     for proc in psutil.process_iter():
-        if (dl.dolphin_process_name in proc.name().lower() and
-            proc.name().lower() not in dl.exclusion_dolphin_process_name):
+        if (dl.dolphin_process_name in proc.name().lower() and not any(
+            exclude_name for exclude_name in dl.exclusion_dolphin_process_name if exclude_name in proc.name().lower())):
             logger.info("Located existing Dolphin process: %s, skipping.", proc.name())
             return True
     logger.info("No existing Dolphin processes, continuing.")

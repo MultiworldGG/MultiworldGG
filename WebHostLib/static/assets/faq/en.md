@@ -38,7 +38,7 @@ software set up. You can use that guide to learn how to generate multiworlds. Th
 including multiple games, and hosting multiworlds on the website for ease and convenience.
 
 If you are ready to start randomizing games, or want to start playing your favorite randomizer with others, please join
-the [ZSR Discord](https://discord.gg/zsr). There are always people ready to answer
+the [Unofficial AP Discord](https://discord.multiworld.gg). There are always people ready to answer
 any questions you might have.
 
 ## What are some common terms I should know?

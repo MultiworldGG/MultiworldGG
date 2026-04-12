@@ -26,7 +26,10 @@ class GenericWeb(WebWorld):
                      'English', 'setup_en.md', 'setup/en', ['alwaysintreble'])
     triggers = Tutorial('MultiworldGG Triggers Guide', 'A guide to setting up and using triggers in your game settings.',
                         'English', 'triggers_en.md', 'triggers/en', ['alwaysintreble'])
-    tutorials = [setup,  commands, advanced_settings, triggers, plando]
+    other_games = Tutorial('Other Games and Tools',
+                           'A guide to additional games and tools that can be used with MultiworldGG.',
+                           'English', 'other_en.md', 'other/en', ['Berserker', 'TreZ'])
+    tutorials = [setup, commands, advanced_settings, triggers, plando, other_games]
 
 
 class GenericWorld(World):

@@ -1,1277 +1,1437 @@
-from worlds.tloz_oos.data.logic.LogicPredicates import *
+from ...Options import OracleOfSeasonsLinkedHerosCave, OracleOfSeasonsOptions
+from .LogicPredicates import *
 
 
-def make_d0_logic(player: int):
+def make_d0_logic():
     return [
         # 0 keys
         ["enter d0", "d0 key chest", False, None],
-        ["enter d0", "d0 rupee chest", False, lambda state:
-            # If hole is removed, stairs are added inside dungeon to make the chest reachable
-            oos_option_no_d0_alt_entrance(state, player)
+        ["enter d0", "d0 rupee chest", False,
+         # If hole is removed, stairs are added inside dungeon to make the chest reachable
+         oos_option_no_d0_alt_entrance()
          ],
         ["d0 rupee chest", "enter d0", False, None],
-        ["enter d0", "d0 hidden 2d section", False, lambda state: any([
-            oos_can_kill_normal_enemy(state, player),
-            oos_has_boomerang(state, player),
-            oos_has_switch_hook(state, player)
-        ])],
+        ["enter d0", "d0 hidden 2d section", False, Or(
+            oos_can_kill_normal_enemy(),
+            oos_has_boomerang(),
+            oos_has_switch_hook()
+        )],
 
         # 1 key
-        ["enter d0", "d0 sword chest", False, lambda state: any([
-            oos_has_small_keys(state, player, 0, 1),
-            oos_self_locking_small_key(state, player, "d0 sword chest", 0),
-            oos_self_locking_item(state, player, "d0 sword chest", "Master Key (Hero's Cave)")
-        ])],
+        ["enter d0", "d0 sword chest", False, Or(
+            oos_has_small_keys(0, 1),
+            oos_self_locking_small_key("Hero's Cave: Final Chest", 0),
+            oos_self_locking_item("Hero's Cave: Final Chest", "Master Key (Hero's Cave)")
+        )],
     ]
 
 
-def make_d1_logic(player: int):
+def make_d1_logic():
     return [
         # 0 keys
-        ["enter d1", "d1 stalfos drop", False, lambda state: any([
-            oos_can_kill_stalfos(state, player),
-            all([
+        ["enter d1", "d1 stalfos drop", False, Or(
+            oos_can_kill_stalfos(),
+            And(
                 # Medium logic expects the player to be able to use bushes
-                oos_option_medium_logic(state, player),
-                oos_has_bracelet(state, player)
-            ])
-        ])],
+                oos_option_medium_logic(),
+                oos_has_bracelet()
+            )
+        )],
 
-        ["enter d1", "d1 floormaster room", False, lambda state: oos_can_use_ember_seeds(state, player, True)],
+        ["enter d1", "d1 floormaster room", False, oos_can_use_ember_seeds(True)],
 
-        ["d1 floormaster room", "d1 boss", False, lambda state: all([
-            oos_has_boss_key(state, player, 1),
-            oos_can_kill_armored_enemy(state, player, False, False)
-        ])],
+        ["d1 floormaster room", "d1 boss", False, And(
+            oos_has_boss_key(1),
+            oos_can_kill_armored_enemy(False, False)
+        )],
 
         # 1 key
-        ["enter d1", "d1 stalfos chest", False, lambda state: all([
-            oos_has_small_keys(state, player, 1, 1),
-            oos_can_kill_stalfos(state, player)
-        ])],
+        ["enter d1", "d1 stalfos chest", False, And(
+            oos_has_small_keys(1, 1),
+            oos_can_kill_stalfos()
+        )],
 
-        ["d1 stalfos chest", "d1 goriya chest", False, lambda state: all([
-            oos_can_use_ember_seeds(state, player, True),
-            oos_can_kill_normal_enemy(state, player, True)
-        ])],
+        ["d1 stalfos chest", "d1 goriya chest", False, And(
+            oos_can_use_ember_seeds(True),
+            oos_can_kill_normal_enemy(True)
+        )],
 
         ["d1 stalfos chest", "d1 lever room", False, None],
 
-        ["d1 stalfos chest", "d1 block-pushing room", False, lambda state: any([
-            oos_can_kill_normal_enemy(state, player),
-            all([
-                oos_option_hard_logic(state, player),
-                oos_has_bracelet(state, player)
-            ])
-        ])],
+        ["d1 stalfos chest", "d1 block-pushing room", False, Or(
+            oos_can_kill_normal_enemy(),
+            And(
+                oos_option_hard_logic(),
+                oos_has_bracelet()
+            )
+        )],
 
-        ["d1 stalfos chest", "d1 railway chest", False, lambda state: any([
-            oos_can_trigger_lever(state, player),
-            all([
-                oos_option_hard_logic(state, player),
-                oos_has_bracelet(state, player)
-            ])
-        ])],
+        ["d1 stalfos chest", "d1 railway chest", False, Or(
+            oos_can_trigger_lever(),
+            And(
+                oos_option_hard_logic(),
+                oos_has_bracelet()
+            )
+        )],
 
         ["d1 railway chest", "d1 button chest", False, None],
 
         # 2 keys
-        ["d1 railway chest", "d1 basement", False, lambda state: any([
-            oos_self_locking_small_key(state, player, "d1 basement", 1),
-            all([
-                oos_can_remove_rockslide(state, player, False),
-                oos_has_small_keys(state, player, 1, 2),
-                oos_can_kill_armored_enemy(state, player, False, True)
-            ])
-        ])],
+        ["d1 railway chest", "d1 basement", False, Or(
+            oos_self_locking_small_key("Gnarled Root Dungeon: Item in Basement", 1),
+            And(
+                oos_can_remove_rockslide(False),
+                oos_has_small_keys(1, 2),
+                oos_can_kill_armored_enemy(False, True)
+            )
+        )],
     ]
 
 
-def make_d2_logic(player: int):
+def make_d2_logic():
     return [
         # 0 keys
         ["enter d2", "d2 torch room", True, None],
         ["d2 torch room", "d2 left from entrance", False, None],
-        ["d2 torch room", "d2 rope drop", False, lambda state: any([
-            oos_can_kill_normal_enemy(state, player),
-            oos_has_switch_hook(state, player)
-        ])],
-        ["d2 torch room", "d2 arrow room", False, lambda state: oos_can_use_ember_seeds(state, player, True)],
+        ["d2 torch room", "d2 rope drop", False, Or(
+            oos_can_kill_normal_enemy(),
+            oos_has_switch_hook()
+        )],
+        ["d2 torch room", "d2 arrow room", False, oos_can_use_ember_seeds(True)],
 
-        ["d2 arrow room", "d2 torch room", False, lambda state: oos_can_kill_normal_enemy(state, player)],
-        ["d2 arrow room", "d2 rupee room", False, lambda state: oos_can_remove_rockslide(state, player, False)],
-        ["d2 arrow room", "d2 rope chest", False, lambda state: any([
-            oos_can_kill_normal_enemy(state, player),
-            oos_has_switch_hook(state, player)
-        ])],
-        ["d2 arrow room", "d2 blade chest", False, lambda state: oos_can_kill_normal_enemy(state, player)],
+        ["d2 arrow room", "d2 torch room", False, oos_can_kill_normal_enemy()],
+        ["d2 arrow room", "d2 rupee room", False, oos_can_remove_rockslide(False)],
+        ["d2 arrow room", "d2 rope chest", False, Or(
+            oos_can_kill_normal_enemy(),
+            oos_has_switch_hook()
+        )],
+        ["d2 arrow room", "d2 blade chest", False, oos_can_kill_normal_enemy()],
 
         ["d2 blade chest", "d2 arrow room", False, None],  # Backwards path
-        ["d2 blade chest", "d2 alt entrances", True, lambda state: oos_has_bracelet(state, player)],
-        ["d2 blade chest", "d2 roller chest", False, lambda state: all([
-            oos_can_remove_rockslide(state, player, False),
-            oos_has_bracelet(state, player),
-        ])],
-        ["d2 alt entrances", "d2 spiral chest", False, lambda state: all([
-            oos_can_break_bush(state, player, False, True),
-            any([
-                oos_has_bombs(state, player),
-                all([
+        ["d2 blade chest", "d2 alt entrances", True, oos_has_bracelet()],
+        ["d2 blade chest", "d2 roller chest", False, And(
+            oos_can_remove_rockslide(False),
+            oos_has_bracelet(),
+        )],
+        ["d2 alt entrances", "d2 spiral chest", False, And(
+            oos_can_break_bush(False, True),
+            Or(
+                oos_has_bombs_for_tiles(),
+                And(
                     # It's tight but doable
-                    oos_option_medium_logic(state, player),
-                    oos_can_use_pegasus_seeds(state, player),
-                    oos_has_bombchus(state, player, 5)
-                ])
-            ])
-        ])],
-        ["d2 alt entrances", "d2 scrub", False, lambda state: oos_has_rupees_for_shop(state, player, "d2Scrub")],
+                    oos_option_medium_logic(),
+                    oos_can_use_pegasus_seeds(),
+                    oos_has_bombchus_for_tiles()
+                )
+            )
+        )],
+        ["d2 alt entrances", "d2 scrub", False, oos_has_rupees_for_shop("d2Scrub")],
 
         # 2 keys
-        ["d2 roller chest", "d2 spinner", False, lambda state: all([
-            oos_has_small_keys(state, player, 2, 2),
-            oos_can_kill_facade(state, player)
-        ])],
+        ["d2 roller chest", "d2 spinner", False, And(
+            oos_has_small_keys(2, 2),
+            oos_can_kill_facade()
+        )],
         # terrace self-locking rules
-        ["d2 arrow room", "d2 terrace chest", False, lambda state: all([
-            oos_has_small_keys(state, player, 2, 2),
-            oos_self_locking_small_key(state, player, "d2 terrace chest", 2)
-        ])],
+        ["d2 arrow room", "d2 terrace chest", False, And(
+            oos_has_small_keys(2, 2),
+            oos_self_locking_small_key("Snake's Remains: Chest on Terrace", 2)
+        )],
         # You can take the Facade miniboss teleporter to reach dungeon entrance, even if you entered the dungeon
         # through the alt-entrance
+        ["d2 spinner", "d2 wild bombs", False, And(
+            Or(
+                oos_can_remove_rockslide(False),
+                oos_has_small_keys(2, 3)  # spin the spinner to access the pol's voice room
+            ),
+            Or(
+                oos_can_harvest_regrowing_bush(),
+                oos_has_bombs()  # Bombs for more bombs is ok in any amount
+            )
+        )],
         ["d2 spinner", "d2 torch room", False, None],
-        ["d2 spinner", "dodongo owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
-        ["d2 spinner", "d2 boss", False, lambda state: all([
-            oos_has_boss_key(state, player, 2),
-            oos_has_bombs(state, player),
-            oos_has_bracelet(state, player)
-        ])],
+        ["d2 spinner", "dodongo owl", False, oos_can_use_mystery_seeds()],
+        ["d2 spinner", "d2 boss", False, And(
+            oos_has_boss_key(2),
+            oos_has_bombs(),  # regrowable there
+            oos_has_bracelet()
+        )],
 
         # 3 keys
-        ["d2 arrow room", "d2 hardhat room", False, lambda state: oos_has_small_keys(state, player, 2, 3)],
-        ["d2 hardhat room", "d2 pot chest", False, lambda state: oos_can_break_pot(state, player)],
-        ["d2 hardhat room", "d2 moblin chest", False, lambda state: any([
-            all([
-                oos_can_kill_d2_hardhat(state, player),
-                oos_can_kill_d2_far_moblin(state, player)
-            ])
-        ])],
-        ["d2 spinner", "d2 terrace chest", False, lambda state: oos_has_small_keys(state, player, 2, 3)],
+        ["d2 arrow room", "d2 hardhat room", False, oos_has_small_keys(2, 3)],
+        ["d2 hardhat room", "d2 pot chest", False, oos_can_break_pot()],
+        ["d2 hardhat room", "d2 moblin chest", False, And(
+            oos_can_kill_d2_hardhat(),
+            Or(
+                oos_can_kill_d2_far_moblin(),
+                oos_can_harvest_regrowing_bush(),
+                oos_has_bombs()  # Bombs for more bombs is ok in any amount
+            )
+        )],
+        ["d2 hardhat room", "d2 wild bombs", False, And(
+            oos_can_kill_d2_hardhat(),
+            oos_can_harvest_regrowing_bush()
+        )],
+        ["d2 spinner", "d2 terrace chest", False, oos_has_small_keys(2, 3)],
     ]
 
 
-def make_d3_logic(player: int):
+def make_d3_logic():
     return [
         # 0 keys
-        ["enter d3", "spiked beetles owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
-        ["enter d3", "d3 center", False, lambda state: any([
-            oos_can_kill_spiked_beetle(state, player),
-            all([
-                oos_option_medium_logic(state, player),
-                oos_can_flip_spiked_beetle(state, player),
-                oos_has_bracelet(state, player)
-            ])
-        ])],
+        ["enter d3", "spiked beetles owl", False, oos_can_use_mystery_seeds()],
+        ["enter d3", "d3 center", False, Or(
+            oos_can_kill_spiked_beetle(),
+            And(
+                # Break pots to refill mysteries, and use them on the beetles to gale them away
+                oos_option_medium_logic(),
+                oos_can_use_mystery_seeds(),
+                oos_can_break_pot()
+            ),
+            And(
+                oos_option_medium_logic(),
+                oos_can_flip_spiked_beetle(),
+                oos_has_bracelet()
+            )
+        )],
 
-        ["d3 center", "d3 water room", False, lambda state: oos_has_feather(state, player)],
-        ["d3 center", "d3 mimic stairs", False, lambda state: any([
-            oos_has_bracelet(state, player),
-            all([
-                oos_can_break_pot(state, player),
-                oos_has_cane(state, player)
-            ])
-        ])],
-        ["d3 center", "trampoline owl", False, lambda state: all([
-            oos_has_feather(state, player),
-            oos_can_use_mystery_seeds(state, player)
-        ])],
-        ["d3 center", "d3 trampoline chest", False, lambda state: oos_has_feather(state, player)],
-        ["d3 center", "d3 zol chest", False, lambda state: oos_has_feather(state, player)],
+        ["d3 center", "d3 water room", False, oos_has_feather()],
+        ["d3 center", "d3 mimic stairs", False, Or(
+            oos_has_bracelet(),
+            And(
+                oos_can_break_pot(),
+                oos_has_cane()
+            )
+        )],
+        ["d3 center", "trampoline owl", False, And(
+            oos_has_feather(),
+            oos_can_use_mystery_seeds()
+        )],
+        ["d3 center", "d3 trampoline chest", False, oos_has_feather()],
+        ["d3 center", "d3 zol chest", False, oos_has_feather()],
 
         ["d3 mimic stairs", "d3 water room", True, None],
-        ["d3 mimic stairs", "d3 roller chest", False, lambda state: oos_has_bracelet(state, player)],
-        ["d3 mimic stairs", "d3 quicksand terrace", False, lambda state: oos_has_feather(state, player)],
-        ["d3 quicksand terrace", "omuai owl", False, lambda state: all([
-            oos_can_use_mystery_seeds(state, player)
-        ])],
-        ["d3 mimic stairs", "d3 moldorm chest", False, lambda state: oos_can_kill_moldorm(state, player)],
-        ["d3 mimic stairs", "d3 bombed wall chest", False, lambda state: oos_can_remove_rockslide(state, player, False)],
+        ["d3 mimic stairs", "d3 roller chest", False, oos_has_bracelet()],
+        ["d3 mimic stairs", "d3 quicksand terrace", False, oos_has_feather()],
+        ["d3 quicksand terrace", "omuai owl", False, And(
+            oos_can_use_mystery_seeds()
+        )],
+        ["d3 mimic stairs", "d3 moldorm chest", False, oos_can_kill_moldorm()],
+        ["d3 mimic stairs", "d3 bombed wall chest", False, oos_can_remove_rockslide(False)],
 
         # 2 keys
-        ["d3 water room", "d3 mimic chest", False, lambda state: all([
-            any([
-                oos_has_small_keys(state, player, 3, 2),
-                oos_self_locking_small_key(state, player, "d3 mimic chest", 3)
-            ]),
-            oos_can_kill_normal_enemy(state, player)
-        ])],
-        ["d3 mimic stairs", "d3 omuai stairs", False, lambda state: all([
-            any([
-                oos_has_feather(state, player),
+        ["d3 water room", "d3 mimic chest", False, And(
+            Or(
+                oos_has_small_keys(3, 2),
+                oos_self_locking_small_key("Poison Moth's Lair (1F): Chest in Mimics Room", 3)
+            ),
+            oos_can_kill_normal_enemy()
+        )],
+        ["d3 mimic stairs", "d3 omuai stairs", False, And(
+            Or(
+                oos_has_feather(),
 
                 # With switch hook, even with pegasus, you can barely see the pots, so it's not casual friendly
-                all([
-                    oos_option_medium_logic(state, player),
-                    oos_has_switch_hook(state, player, 2)
-                ]),
-                all([
-                    oos_option_medium_logic(state, player),
-                    oos_can_use_pegasus_seeds(state, player),
-                    oos_has_switch_hook(state, player)
-                ])
-            ]),
-            oos_has_small_keys(state, player, 3, 2),
-            oos_has_bracelet(state, player),
-            oos_can_kill_armored_enemy(state, player, False, False)
-        ])],
+                And(
+                    oos_option_medium_logic(),
+                    oos_has_switch_hook(2)
+                ),
+                And(
+                    oos_option_medium_logic(),
+                    oos_can_use_pegasus_seeds(),
+                    oos_has_switch_hook()
+                )
+            ),
+            oos_has_small_keys(3, 2),
+            oos_has_bracelet(),
+            oos_can_kill_armored_enemy(False, False)
+        )],
         ["d3 omuai stairs", "d3 quicksand terrace", False, None],
-        ["d3 omuai stairs", "d3 giant blade room", False, lambda state: any([
-            oos_has_feather(state, player),
-            oos_option_hard_logic(state, player)
-        ])],
-        ["d3 omuai stairs", "d3 boss", False, lambda state: oos_has_boss_key(state, player, 3)],
+        ["d3 omuai stairs", "d3 giant blade room", False, Or(
+            oos_has_feather(),
+            oos_option_hard_logic()
+        )],
+        ["d3 omuai stairs", "d3 boss", False, oos_has_boss_key(3)],
     ]
 
 
-def make_d4_logic(player: int):
+def make_d4_logic():
     return [
         # 0 keys
-        ["enter d4", "d4 north of entrance", False, lambda state: any([
-            oos_has_flippers(state, player),
-            oos_has_cape(state, player)
-        ])],
-        ["d4 north of entrance", "d4 pot puzzle", False, lambda state: all([
-            oos_can_remove_rockslide(state, player, False),
-            oos_has_bracelet(state, player)
-        ])],
-        ["d4 north of entrance", "d4 maze chest", False, lambda state: any([
-            oos_can_trigger_lever_from_minecart(state, player),
-            all([
-                oos_option_hard_logic(state, player),
-                oos_has_bracelet(state, player)
-            ])
-        ])],
-        ["d4 maze chest", "d4 dark room", False, lambda state: oos_has_feather(state, player)],
+        ["enter d4", "d4 north of entrance", False, Or(
+            oos_has_flippers(),
+            oos_has_cape()
+        )],
+        ["d4 north of entrance", "d4 pot puzzle", False, And(
+            oos_can_remove_rockslide(False),
+            oos_has_bracelet()
+        )],
+        ["d4 north of entrance", "d4 maze chest", False, Or(
+            oos_can_trigger_lever_from_minecart(),
+            And(
+                oos_option_hard_logic(),
+                oos_has_bracelet()
+            )
+        )],
+        ["d4 maze chest", "d4 dark room", False, oos_has_feather()],
 
         # 1 key
-        ["enter d4", "d4 water ring room", False, lambda state: all([
-            oos_has_small_keys(state, player, 4, 1),
-            any([
-                oos_has_cape(state, player),
-                all([
+        ["enter d4", "d4 water ring room", False, And(
+            oos_has_small_keys(4, 1),
+            Or(
+                oos_has_cape(),
+                And(
                     # Feather is required to jump above spike lines
-                    oos_has_feather(state, player),
-                    oos_has_flippers(state, player)
-                ])
-            ]),
-            oos_can_remove_rockslide(state, player, False),
-            any([
-                oos_can_kill_normal_enemy(state, player),
-                all([  # killing enemies with pots
-                    oos_option_medium_logic(state, player),
-                    oos_has_bracelet(state, player),
-                ]),
-                all([  # pushing enemies in the water
-                    oos_has_rod(state, player),
-                    any([
-                        oos_has_boomerang(state, player),
-                        oos_has_switch_hook(state, player)
-                    ])
-                ])
-            ])
-        ])],
+                    oos_has_feather(),
+                    oos_has_flippers()
+                )
+            ),
+            oos_can_remove_rockslide(False),
+            Or(
+                oos_can_kill_normal_enemy(),
+                And(  # killing enemies with pots
+                    oos_option_medium_logic(),
+                    oos_has_bracelet(),
+                ),
+                And(  # pushing enemies in the water
+                    oos_can_push_enemy(),
+                    Or(
+                        oos_has_boomerang(),
+                        oos_has_switch_hook()
+                    )
+                )
+            )
+        )],
 
-        ["enter d4", "d4 roller minecart", False, lambda state: all([
-            oos_has_small_keys(state, player, 4, 1),
-            oos_has_feather(state, player),
-            any([
-                oos_has_flippers(state, player),
-                all([
-                    oos_option_hell_logic(state, player),
-                    oos_has_cape(state, player),
-                    oos_can_use_pegasus_seeds(state, player),
-                    oos_has_bombs(state, player)
-                ])
-            ])
-        ])],
+        ["enter d4", "d4 roller minecart", False, And(
+            oos_has_small_keys(4, 1),
+            oos_has_feather(),
+            Or(
+                oos_has_flippers(),
+                And(
+                    oos_option_hell_logic(),
+                    oos_has_cape(),
+                    oos_can_use_pegasus_seeds(),
+                    oos_has_bombs_for_bombjump()
+                )
+            )
+        )],
 
-        ["d4 roller minecart", "d4 pool", False, lambda state: all([
-            any([
-                oos_has_flippers(state, player),
-                oos_option_medium_logic(state, player)
-            ]),
-            any([
-                oos_can_kill_normal_enemy(state, player),
-                all([
-                    oos_option_medium_logic(state, player),
-                    oos_has_bracelet(state, player)
-                ])
-            ]),
-            any([
-                oos_can_trigger_lever_from_minecart(state, player),
-                all([
-                    oos_option_hard_logic(state, player),
-                    oos_has_bracelet(state, player)
-                ])
-            ])
-        ])],
+        ["d4 roller minecart", "d4 pool", False, And(
+            Or(
+                oos_has_flippers(),
+                oos_option_medium_logic()
+            ),
+            Or(
+                oos_can_kill_normal_enemy(),
+                And(
+                    oos_option_medium_logic(),
+                    oos_has_bracelet()
+                ),
+                And(
+                    oos_can_push_enemy(),
+                    oos_has_switch_hook()
+                )
+            ),
+            Or(
+                oos_can_trigger_lever_from_minecart(),
+                And(
+                    oos_option_hard_logic(),
+                    oos_has_bracelet()
+                )
+            )
+        )],
 
         # 2 keys
-        ["d4 roller minecart", "greater distance owl", False, lambda state: all([
-            oos_has_small_keys(state, player, 4, 2),
-            oos_can_use_mystery_seeds(state, player)
-        ])],
+        ["d4 roller minecart", "greater distance owl", False, And(
+            oos_has_small_keys(4, 2),
+            oos_can_use_mystery_seeds()
+        )],
 
-        ["d4 roller minecart", "d4 stalfos stairs", False, lambda state: all([
-            oos_has_small_keys(state, player, 4, 2),
-            any([
-                oos_can_kill_stalfos(state, player),
-                all([
+        ["d4 roller minecart", "d4 stalfos stairs", False, And(
+            oos_has_small_keys(4, 2),
+            Or(
+                oos_can_kill_stalfos(),
+                And(
                     # Kill Stalfos by using pots in the room
-                    oos_option_medium_logic(state, player),
-                    oos_has_bracelet(state, player)
-                ])
-            ]),
-            oos_can_jump_2_wide_pit(state, player)
-        ])],
+                    oos_option_medium_logic(),
+                    oos_has_bracelet()
+                )
+            ),
+            oos_can_jump_2_wide_pit()
+        )],
 
         ["d4 stalfos stairs", "d4 terrace", False, None],
-        ["d4 terrace", "d4 scrub", False, lambda state: oos_has_rupees_for_shop(state, player, "d4Scrub")],
+        ["d4 terrace", "d4 scrub", False, oos_has_rupees_for_shop("d4Scrub")],
 
-        ["d4 stalfos stairs", "d4 torch chest", False, lambda state: all([
-            oos_has_seed_thrower(state, player),
-            oos_has_ember_seeds(state, player)
-        ])],
+        ["d4 stalfos stairs", "d4 torch chest", False, And(
+            oos_has_seed_thrower(),
+            oos_has_ember_seeds()
+        )],
 
         ["d4 stalfos stairs", "d4 miniboss room", False, None],
-        ["d4 miniboss room", "d4 miniboss room wild embers", False, lambda state: \
-            oos_can_harvest_regrowing_bush(state, player)],
+        ["d4 miniboss room", "d4 miniboss room wild embers", False, oos_can_harvest_regrowing_bush()],
 
-        ["d4 miniboss room", "d4 final minecart", False, lambda state: all([
-            oos_can_use_ember_seeds(state, player, False),
-            oos_can_kill_armored_enemy(state, player, False, False)
-        ])],
+        ["d4 miniboss room", "d4 final minecart", False, And(
+            oos_can_use_ember_seeds(False),
+            oos_can_kill_armored_enemy(False, False)
+        )],
 
         # 5 keys
-        ["d4 final minecart", "d4 cracked floor room", False, lambda state: any([
-            oos_has_small_keys(state, player, 4, 5),
-            oos_self_locking_small_key(state, player, "d4 cracked floor room", 4)
-        ])],
-        ["d4 final minecart", "d4 dive spot", False, lambda state: all([
-            any([
-                all([
-                    any([  # hit distant levers
-                        oos_has_magic_boomerang(state, player),
-                        oos_has_seed_thrower(state, player)
-                    ]),
+        ["d4 final minecart", "d4 cracked floor room", False, Or(
+            oos_has_small_keys(4, 5),
+            oos_self_locking_small_key("Dancing Dragon Dungeon (1F): Crumbling Room Chest", 4)
+        )],
+        ["d4 final minecart", "d4 dive spot", False, And(
+            Or(
+                And(
+                    Or(  # hit distant levers
+                        oos_has_magic_boomerang(),
+                        oos_has_seed_thrower()
+                    ),
                     # In medium, switch is also valid, but a feather is required to get there anyway
-                    oos_can_jump_2_wide_pit(state, player),
-                    oos_has_small_keys(state, player, 4, 5),
-                ]),
+                    oos_can_jump_2_wide_pit(),
+                    oos_has_small_keys(4, 5),
+                ),
                 # For self-locking, we don't need to check if the player is able to
                 # waste the key first to then get it back, only to get it back if they waste it
-                oos_self_locking_small_key(state, player, "d4 dive spot", 4)
-            ]),
-            oos_has_flippers(state, player)
-        ])],
+                oos_self_locking_small_key("Dancing Dragon Dungeon (1F): Eye Diving Spot Item", 4)
+            ),
+            oos_has_flippers()
+        )],
 
-        ["d4 final minecart", "d4 basement stairs", False, lambda state: all([
-            oos_has_small_keys(state, player, 4, 5),
-            any([
-                oos_has_boomerang(state, player),
-                oos_has_seed_thrower(state, player),
-                oos_has_switch_hook(state, player),
-                oos_option_hard_logic(state, player)
-            ])
-        ])],
+        ["d4 final minecart", "d4 basement stairs", False, And(
+            oos_has_small_keys(4, 5),
+            Or(
+                oos_has_boomerang(),
+                oos_has_seed_thrower(),
+                oos_has_switch_hook(),
+                oos_option_hard_logic()
+            )
+        )],
 
-        ["d4 basement stairs", "gohma owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
+        ["d4 basement stairs", "gohma owl", False, oos_can_use_mystery_seeds()],
 
-        ["d4 basement stairs", "enter gohma", False, lambda state: all([
-            oos_has_boss_key(state, player, 4),
-            any([
-                all([
-                    oos_has_seed_thrower(state, player),
-                    oos_can_use_ember_seeds(state, player, True)
-                ]),
-                oos_can_jump_3_wide_pit(state, player),
-                all([  # throw seeds using satchel during a jump
-                    oos_option_hard_logic(state, player),
-                    oos_has_feather(state, player),
-                    oos_can_use_ember_seeds(state, player, False)
-                ])
-            ])
-        ])],
+        ["d4 basement stairs", "enter gohma", False, And(
+            oos_has_boss_key(4),
+            Or(
+                And(
+                    oos_has_seed_thrower(),
+                    oos_can_use_ember_seeds(True)
+                ),
+                oos_can_jump_3_wide_pit(),
+                And(  # throw seeds using satchel during a jump
+                    oos_option_hard_logic(),
+                    oos_has_feather(),
+                    oos_can_use_ember_seeds(False)
+                )
+            )
+        )],
 
-        ["enter gohma", "d4 boss", False, lambda state: any([
-            all([
+        ["enter gohma", "d4 boss", False, Or(
+            And(
                 # Kill Gohma without breaking its pincer
-                oos_option_medium_logic(state, player),
-                any([
-                    oos_has_seed_thrower(state, player),
-                    oos_option_hard_logic(state, player)  # You can kill Gohma with the satchel. Yup...
-                ]),
-                any([
-                    oos_has_scent_seeds(state, player),
-                    oos_has_ember_seeds(state, player)
-                ])
-            ]),
-            all([
+                oos_option_medium_logic(),
+                Or(
+                    oos_has_seed_thrower(),
+                    oos_option_hard_logic()  # You can kill Gohma with the satchel. Yup...
+                ),
+                Or(
+                    oos_has_scent_seeds(),
+                    oos_has_ember_seeds()
+                )
+            ),
+            And(
                 # Kill Gohma with sword beams (Gohma's minions give enough hearts to justify it)
-                oos_option_medium_logic(state, player),
-                any([
-                    oos_has_noble_sword(state, player),
-                    oos_shoot_beams(state, player)
-                ])
-            ]),
-            all([
+                oos_option_medium_logic(),
+                Or(
+                    oos_has_noble_sword(),
+                    oos_shoot_beams()
+                )
+            ),
+            And(
                 # Kill Gohma traditionally (break pincer, then spam seeds)
-                any([
-                    oos_has_sword(state, player),
-                    oos_has_fools_ore(state, player)
-                ]),
-                any([
-                    oos_can_use_ember_seeds(state, player, False),
-                    oos_can_use_scent_seeds(state, player),
-                    all([
-                        oos_option_medium_logic(state, player),
-                        oos_has_satchel(state, player, 2),  # It may require quite a bunch of mystery seeds...
-                        oos_can_use_mystery_seeds(state, player)
-                    ])
-                ])
-            ])
-        ])],
+                Or(
+                    oos_has_sword(),
+                    oos_has_fools_ore()
+                ),
+                Or(
+                    oos_can_use_ember_seeds(False),
+                    oos_can_use_scent_seeds(),
+                    And(
+                        oos_option_medium_logic(),
+                        oos_has_satchel(2),  # It may require quite a bunch of mystery seeds...
+                        oos_can_use_mystery_seeds()
+                    )
+                )
+            )
+        )],
     ]
 
 
-def make_d5_logic(player: int):
+def make_d5_logic():
     return [
         # 0 keys
-        ["enter d5", "d5 left chest", False, lambda state: any([
-            oos_has_magnet_gloves(state, player),
-            oos_has_cape(state, player),
-            all([
+        ["enter d5", "d5 left chest", False, Or(
+            oos_has_magnet_gloves(),
+            oos_has_cape(),
+            And(
                 # Tight bomb jump to reach the chest
-                oos_option_hell_logic(state, player),
-                oos_can_jump_3_wide_liquid(state, player),
-            ])
-        ])],
+                oos_option_hell_logic(),
+                oos_can_jump_3_wide_liquid(),
+            )
+        )],
 
-        ["enter d5", "d5 spiral chest", False, lambda state: all([
-            oos_can_kill_moldorm(state, player, True),
-            oos_can_kill_normal_enemy(state, player, True)
-        ])],
+        ["enter d5", "d5 spiral chest", False, And(
+            oos_can_kill_moldorm(True),
+            oos_can_kill_normal_enemy(True)
+        )],
 
-        ["enter d5", "d5 terrace chest", False, lambda state: oos_has_magnet_gloves(state, player)],
+        ["enter d5", "d5 terrace chest", False, oos_has_magnet_gloves()],
 
-        ["d5 terrace chest", "armos knights owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
-        ["d5 terrace chest", "d5 armos chest", False, lambda state: all([
-            oos_can_kill_moldorm(state, player),
-            oos_can_kill_normal_enemy(state, player)
-        ])],
+        ["d5 terrace chest", "armos knights owl", False, oos_can_use_mystery_seeds()],
+        ["d5 terrace chest", "d5 armos chest", False, And(
+            oos_can_kill_moldorm(),
+            oos_can_kill_normal_enemy()
+        )],
 
-        ["enter d5", "d5 cart bay", False, lambda state: any([
-            oos_has_flippers(state, player),
-            oos_can_jump_2_wide_liquid(state, player)
-        ])],
+        ["enter d5", "d5 cart bay", False, Or(
+            oos_has_flippers(),
+            oos_can_jump_2_wide_liquid()
+        )],
 
-        ["d5 cart bay", "d5 terrace chest", False, lambda state: all([
-            oos_has_feather(state, player),
-            oos_can_remove_rockslide(state, player, False)  # Bombchus can be thrown from the middle platform
-        ])],
+        ["d5 cart bay", "d5 terrace chest", False, And(
+            oos_has_feather(),
+            oos_can_remove_rockslide(False)  # Bombchus can be thrown from the middle platform
+        )],
 
-        ["d5 cart bay", "d5 cart chest", False, lambda state: oos_can_trigger_lever_from_minecart(state, player)],
+        ["d5 cart bay", "d5 cart chest", False, oos_can_trigger_lever_from_minecart()],
 
-        ["d5 cart bay", "d5 spinner chest", False, lambda state: any([
-            oos_has_magnet_gloves(state, player),
-            oos_can_jump_5_wide_pit(state, player),
-            all([
+        ["d5 cart bay", "d5 spinner chest", False, Or(
+            oos_has_magnet_gloves(),
+            oos_can_jump_5_wide_pit(),
+            And(
                 # Switch with the pots on the bottom left
-                oos_option_medium_logic(state, player),
-                oos_has_switch_hook(state, player, 2)
-            ]),
-            all([
+                oos_option_medium_logic(),
+                oos_has_switch_hook(2)
+            ),
+            And(
                 # Wait for le helmasaur to be on the left side of the hole.
                 # By being on the right border, you can see pixels of it and switch hook 1 with it
-                oos_option_hell_logic(state, player),
-                oos_has_switch_hook(state, player)
-            ])
-        ])],
+                oos_option_hell_logic(),
+                oos_has_switch_hook()
+            )
+        )],
 
-        ["d5 cart bay", "d5 drop ball", False, lambda state: all([
-            oos_can_trigger_lever_from_minecart(state, player),
-            any([
-                oos_can_kill_armored_enemy(state, player, True, True),
-                oos_has_shield(state, player),
-                all([
-                    oos_option_medium_logic(state, player),
-                    oos_has_shovel(state, player)
-                ]),
-                all([
-                    oos_option_medium_logic(state, player),
+        ["d5 cart bay", "d5 drop ball", False, And(
+            oos_can_trigger_lever_from_minecart(),
+            Or(
+                oos_can_kill_armored_enemy(True, True),
+                oos_has_shield(),
+                And(
+                    oos_option_medium_logic(),
+                    oos_has_shovel()
+                ),
+                And(
+                    oos_option_medium_logic(),
                     # Pull the darknut in the water
-                    oos_has_magnet_gloves(state, player)
-                ])
-            ])
-        ])],
+                    oos_has_magnet_gloves()
+                )
+            )
+        )],
 
-        ["enter d5", "d5 pot room", False, lambda state: all([
-            oos_has_magnet_gloves(state, player),
-            oos_can_remove_rockslide(state, player, False),
-            oos_has_feather(state, player)
-        ])],
+        ["enter d5", "d5 pot room", False, And(
+            oos_has_magnet_gloves(),
+            oos_can_remove_rockslide(False),
+            oos_has_feather()
+        )],
 
-        ["d5 cart bay", "d5 pot room", False, lambda state: any([
-            oos_has_feather(state, player),
-            all([
-                oos_option_hard_logic(state, player),
-                oos_can_use_pegasus_seeds(state, player)
-            ])
-        ])],
+        ["d5 cart bay", "d5 pot room", False, Or(
+            oos_has_feather(),
+            And(
+                oos_option_hard_logic(),
+                oos_can_use_pegasus_seeds()
+            )
+        )],
 
-        ["d5 pot room", "d5 gibdo/zol chest", False, lambda state: oos_can_kill_normal_enemy(state, player)],
+        ["d5 pot room", "d5 gibdo/zol chest", False, oos_can_kill_normal_enemy()],
 
-        ["d5 cart bay", "d5 syger lobby", False, lambda state: any([
-            oos_has_magnet_gloves(state, player),
-            oos_has_cape(state, player),
-        ])],
-        ["d5 pot room", "d5 syger lobby", False, lambda state: any([
-            oos_has_magnet_gloves(state, player),
-            oos_has_cape(state, player),
-        ])],
+        ["d5 cart bay", "d5 syger lobby", False, Or(
+            oos_has_magnet_gloves(),
+            oos_has_cape(),
+        )],
+        ["d5 pot room", "d5 syger lobby", False, Or(
+            oos_has_magnet_gloves(),
+            oos_has_cape(),
+        )],
 
         ["d5 syger lobby", "d5 stalfos room", False, None],
 
         # 5 keys
-        ["d5 syger lobby", "d5 post syger", False, lambda state: all([
-            oos_has_small_keys(state, player, 5, 3),
-            oos_can_kill_armored_enemy(state, player, False, False)
-        ])],
+        ["d5 syger lobby", "d5 post syger", False, And(
+            oos_has_small_keys(5, 3),
+            oos_can_kill_armored_enemy(False, False)
+        )],
 
-        ["enter d5", "d5 magnet ball chest", False, lambda state: \
-            oos_self_locking_small_key(state, player, "d5 magnet ball chest", 5)],
-        ["enter d5", "d5 basement", False, lambda state: all([
-            oos_self_locking_small_key(state, player, "d5 basement", 5),
-            state.has("_dropped_d5_magnet_ball", player),
-            oos_has_small_keys(state, player, 5, 3),
-            oos_has_magnet_gloves(state, player),
-            any([
-                oos_can_kill_magunesu(state, player),
-                all([
-                    oos_option_medium_logic(state, player),
-                    oos_has_feather(state, player)
-                ])
-            ])
-        ])],
+        ["enter d5", "d5 magnet ball chest", False,
+         oos_self_locking_small_key("Unicorn's Cave: Magnet Gloves Chest", 5)],
+        ["enter d5", "d5 basement", False, And(
+            oos_self_locking_small_key("Unicorn's Cave: Treadmills Basement Item", 5),
+            CanReachRegion("d5 drop ball"),
+            oos_has_small_keys(5, 3),
+            oos_has_magnet_gloves(),
+            Or(
+                oos_can_kill_magunesu(),
+                And(
+                    oos_option_medium_logic(),
+                    oos_has_feather()
+                )
+            )
+        )],
 
-        ["d5 pot room", "d5 magnet ball chest", False, lambda state: all([
-            any([
-                oos_has_flippers(state, player),
-                all([
+        ["d5 pot room", "d5 magnet ball chest", False, And(
+            Or(
+                oos_has_flippers(),
+                And(
                     # Lower route pushing secret blocks requires knowledge, therefore is medium+.
                     # Going there requires jumping a 3.2 wide liquid gap which corresponds the best to a "4 wide pit"
                     # in terms of logic requirements.
-                    oos_can_jump_4_wide_pit(state, player),
-                    oos_option_medium_logic(state, player),
+                    oos_can_jump_4_wide_pit(),
+                    oos_option_medium_logic(),
                     # Upper route would require 6 wide liquid that can only be jumped above with a bomb jump,
                     # which makes the lower route always better when in medium+.
-                ])
-            ]),
-            oos_has_small_keys(state, player, 5, 5),
-        ])],
+                )
+            ),
+            oos_has_small_keys(5, 5),
+        )],
 
-        ["d5 post syger", "d5 basement", False, lambda state: all([
-            any([
-                oos_has_small_keys(state, player, 5, 5),
-                oos_self_locking_small_key(state, player, "d5 basement", 5)
-            ]),
+        ["d5 post syger", "d5 basement", False, And(
+            Or(
+                oos_has_small_keys(5, 5),
+                oos_self_locking_small_key("Unicorn's Cave: Treadmills Basement Item", 5)
+            ),
 
             # Magnet ball button
-            any([
-                all([
-                    state.has("_dropped_d5_magnet_ball", player),
-                    oos_has_magnet_gloves(state, player),
-                ]),
-                oos_has_cane(state, player)
-            ]),
+            Or(
+                And(
+                    CanReachRegion("d5 drop ball"),
+                    oos_has_magnet_gloves(),
+                ),
+                oos_has_cane()
+            ),
 
             # Flamme wall
-            any([
-                all([
-                    oos_has_magnet_gloves(state, player),
-                    oos_can_kill_magunesu(state, player),
-                ]),
-                all([
-                    oos_option_medium_logic(state, player),
-                    oos_has_feather(state, player)
-                ])
-            ]),
+            Or(
+                And(
+                    oos_has_magnet_gloves(),
+                    oos_can_kill_magunesu(),
+                ),
+                And(
+                    oos_option_medium_logic(),
+                    oos_has_feather()
+                )
+            ),
 
             # Basement
-            any([
-                oos_has_magnet_gloves(state, player),
-                all([
-                    oos_has_cane(state, player),
-                    oos_can_jump_3_wide_pit(state, player)
-                ])
-            ])
-        ])],
+            Or(
+                oos_has_magnet_gloves(),
+                And(
+                    oos_has_cane(),
+                    oos_can_jump_3_wide_pit()
+                )
+            )
+        )],
 
-        ["d5 post syger", "d5 boss", False, lambda state: all([
-            oos_has_small_keys(state, player, 5, 5),
-            oos_has_magnet_gloves(state, player),
-            oos_has_boss_key(state, player, 5),
-            any([
-                oos_option_medium_logic(state, player),
-                oos_has_feather(state, player)
-            ]),
-        ])],
+        ["d5 post syger", "d5 boss", False, And(
+            oos_has_small_keys(5, 5),
+            oos_has_magnet_gloves(),
+            oos_has_boss_key(5),
+            Or(
+                oos_option_medium_logic(),
+                oos_has_feather()
+            ),
+        )],
     ]
 
 
-def make_d6_logic(player: int):
+def make_d6_logic():
     return [
         # 0 keys
-        ["enter d6", "d6 1F east", False, lambda state: any([
-            oos_has_feather(state, player),
-            oos_has_sword(state, player),
-            oos_has_bombs(state, player),
-            oos_option_hard_logic(state, player)
-        ])],
+        ["enter d6", "d6 1F east", False, Or(
+            # In room 4b3:
+            # jump over the hole
+            oos_has_feather(),
 
-        ["d6 1F east", "d6 rupee room", False, lambda state: oos_can_remove_rockslide(state, player, False)],
+            # Break the crystals (with crumbling floor)
+            oos_has_sword(),
+            oos_has_bombs_for_tiles(),
+            And(
+                oos_option_medium_logic(),
+                Has("Expert's Ring")
+            ),
+
+            # Walk through the holes
+            oos_option_hard_logic()
+        )],
+
+        ["d6 1F east", "d6 rupee room", False, oos_can_remove_rockslide(False)],
 
         ["d6 1F east", "d6 1F terrace", False, None],
-        ["enter d6", "d6 1F terrace", False, lambda state: all([
-            oos_has_small_keys(state, player, 6, 2),
-            any([
-                oos_has_magnet_gloves(state, player),
-                oos_has_cane(state, player)
-            ])
-        ])],
+        ["enter d6", "d6 1F terrace", False, And(
+            oos_has_small_keys(6, 2),
+            Or(
+                oos_has_magnet_gloves(),
+                oos_has_cane()
+            )
+        )],
 
-        ["d6 1F terrace", "d6 magnet ball drop", False, lambda state: any([
-            all([
-                oos_has_feather(state, player),
-                oos_has_magnet_gloves(state, player)
-            ]),
-            oos_can_jump_4_wide_pit(state, player),
-            all([
+        ["d6 1F terrace", "d6 magnet ball drop", False, Or(
+            And(
+                oos_has_feather(),
+                oos_has_magnet_gloves()
+            ),
+            oos_can_jump_4_wide_pit(),
+            And(
                 # Cane through the block
-                oos_option_medium_logic(state, player),
-                oos_has_cane(state, player)
-            ])
-        ])],
+                oos_option_medium_logic(),
+                oos_has_cane()
+            )
+        )],
         ["d6 1F terrace", "d6 crystal trap room", False, None],
-        ["d6 1F terrace", "d6 U-room", False, lambda state: all([
-            oos_can_break_crystal(state, player),
-            any([
-                oos_has_magic_boomerang(state, player),
-                all([
+        ["d6 1F terrace", "d6 U-room", False, And(
+            oos_can_break_crystal(),
+            Or(
+                oos_has_magic_boomerang(),
+                And(
                     # Clip into the right statues for the first orb,
                     # then manipulate the position to clip into the bottom right of the opening for the second one
-                    oos_option_hell_logic(state, player),
-                    oos_has_shooter(state, player),
-                ]),
-                all([
+                    oos_option_hell_logic(),
+                    oos_has_shooter(),
+                    oos_has_sword(False),
+                    oos_can_use_pegasus_seeds()
+                ),
+                And(
                     # Just do the first one in hard, then use bombchus to kill the keese then hit the orb
-                    oos_option_hard_logic(state, player),
-                    oos_has_shooter(state, player),
-                    oos_has_bombchus(state, player, 2),
-                ])
-            ])
-        ])],
-        ["d6 U-room", "d6 torch stairs", False, lambda state: all([
-            any([
+                    oos_option_hard_logic(),
+                    oos_has_shooter(),
+                    oos_has_bombchus_to_fight(),
+                )
+            )
+        )],
+        ["d6 U-room", "d6 torch stairs", False, And(
+            Or(
                 # In easy, logic expects slingshot, but medium+ can expect satchel
                 # as well since the distance between platforms & torches is a half-tile
-                oos_has_seed_thrower(state, player),
-                oos_option_medium_logic(state, player)
-            ]),
-            oos_can_use_ember_seeds(state, player, False)
-        ])],
+                oos_has_seed_thrower(),
+                oos_option_medium_logic()
+            ),
+            oos_can_use_ember_seeds(False)
+        )],
 
-        ["d6 torch stairs", "d6 escape room", False, lambda state: oos_has_feather(state, player)],
-        ["d6 escape room", "d6 vire chest", False, lambda state: oos_can_kill_stalfos(state, player)],
+        ["d6 torch stairs", "d6 escape room", False, oos_has_feather()],
+        ["d6 escape room", "d6 vire chest", False, oos_can_kill_stalfos()],
 
         # 3 keys
-        ["enter d6", "d6 beamos room", False, lambda state: oos_has_small_keys(state, player, 6, 3)],
+        ["enter d6", "d6 beamos room", False, oos_has_small_keys(6, 3)],
         ["d6 beamos room", "d6 2F gibdo chest", False, None],
-        ["d6 beamos room", "d6 2F armos chest", False, lambda state: oos_can_remove_rockslide(state, player, False)],
-        ["d6 2F armos chest", "d6 armos hall", False, lambda state: oos_has_feather(state, player)],
+        ["d6 beamos room", "d6 2F armos chest", False, oos_can_remove_rockslide(False)],
+        ["d6 2F armos chest", "d6 armos hall", False, oos_has_feather()],
 
-        ["enter d6", "d6 spinner north", False, lambda state: all([
-            oos_can_break_crystal(state, player),
-            any([
-                oos_has_magnet_gloves(state, player),
-                all([  # Clip into the blocks to place the somaria block on the button
-                    oos_option_hard_logic(state, player),
-                    oos_has_cane(state, player)
-                ])
-            ]),
-            any([
-                oos_option_medium_logic(state, player),  # Iframes through the spikes
-                oos_has_feather(state, player)
-            ]),
-            any([
-                all([
-                    oos_has_small_keys(state, player, 6, 1),
+        ["enter d6", "d6 spinner north", False, And(
+            oos_can_break_crystal(),
+            Or(
+                oos_has_magnet_gloves(),
+                And(  # Clip into the blocks to place the somaria block on the button
+                    oos_option_hard_logic(),
+                    oos_has_cane()
+                )
+            ),
+            Or(
+                oos_option_medium_logic(),  # Iframes through the spikes
+                oos_has_feather()
+            ),
+            Or(
+                And(
+                    oos_has_small_keys(6, 1),
 
                     # Go through beamos room
-                    all([
-                        oos_can_remove_rockslide(state, player, False),
-                        oos_has_feather(state, player)
-                    ]),
+                    And(
+                        oos_can_remove_rockslide(False),
+                        oos_has_feather()
+                    ),
 
-                    any([
+                    Or(
                         # Kill Vire (the rest doesn't matter because we don't care about not being able to not spend a key somewhere)
-                        oos_has_sword(state, player, False),
-                        oos_has_fools_ore(state, player),
-                        all([
-                            oos_option_medium_logic(state, player),
-                            oos_has_bombs(state, player, 4)
-                        ]),
-                        all([
+                        oos_has_sword(False),
+                        oos_has_fools_ore(),
+                        And(
+                            oos_option_medium_logic(),
+                            oos_has_bombs_to_fight()
+                        ),
+                        And(
                             # Fist Ring doesn't damage Vire
-                            state.has("expert's ring", player),
-                            oos_option_medium_logic(state, player)
-                        ])
-                    ])
-                ]),
-                all([
-                    oos_has_small_keys(state, player, 6, 2),
-                    any([
+                            Has("expert's ring"),
+                            oos_option_medium_logic()
+                        )
+                    )
+                ),
+                And(
+                    oos_has_small_keys(6, 2),
+                    Or(
                         # Go through beamos room
-                        all([
-                            oos_can_remove_rockslide(state, player, False),
-                            oos_has_feather(state, player)
-                        ]),
+                        And(
+                            oos_can_remove_rockslide(False),
+                            oos_has_feather()
+                        ),
 
                         # Kill Vire
-                        oos_has_sword(state, player, False),
-                        oos_has_fools_ore(state, player),
-                        all([
-                            oos_option_medium_logic(state, player),
-                            oos_has_bombs(state, player, 4)
-                        ]),
-                        all([
+                        oos_has_sword(False),
+                        oos_has_fools_ore(),
+                        And(
+                            oos_option_medium_logic(),
+                            oos_has_bombs_to_fight()
+                        ),
+                        And(
                             # Fist Ring doesn't damage Vire
-                            state.has("expert's ring", player),
-                            oos_option_medium_logic(state, player)
-                        ])
-                    ])
-                ]),
-                oos_has_small_keys(state, player, 6, 3),
-            ])
-        ])],
+                            Has("expert's ring"),
+                            oos_option_medium_logic()
+                        )
+                    )
+                ),
+                oos_has_small_keys(6, 3),
+            )
+        )],
 
-        ["d6 vire chest", "d6 enter vire", False, lambda state: all([
-            oos_has_small_keys(state, player, 6, 3),
-            any([
+        ["d6 vire chest", "d6 enter vire", False, And(
+            oos_has_small_keys(6, 3),
+            Or(
                 # Kill Vire
-                oos_has_sword(state, player, False),
-                oos_has_fools_ore(state, player),
-                all([
-                    oos_option_medium_logic(state, player),
-                    oos_has_bombs(state, player, 4)
-                ]),
-                all([
+                oos_has_sword(False),
+                oos_has_fools_ore(),
+                And(
+                    oos_option_medium_logic(),
+                    oos_has_bombs_to_fight()
+                ),
+                And(
                     # Fist Ring doesn't damage Vire
-                    state.has("expert's ring", player),
-                    oos_option_medium_logic(state, player)
-                ])
-            ])
-        ])],
-        ["d6 enter vire", "d6 pre-boss room", False, lambda state: all([
-            oos_has_small_keys(state, player, 6, 3),
-            any([
+                    Has("expert's ring"),
+                    oos_option_medium_logic()
+                )
+            )
+        )],
+        ["d6 enter vire", "d6 pre-boss room", False, And(
+            oos_has_small_keys(6, 3),
+            Or(
                 # Kill hardhats
-                oos_has_magnet_gloves(state, player),
-                all([
-                    oos_option_medium_logic(state, player),
-                    oos_has_gale_seeds(state, player),
-                    any([
-                        oos_has_seed_thrower(state, player),
-                        all([
-                            oos_option_hard_logic(state, player),
-                            oos_has_satchel(state, player)
-                        ])
-                    ])
-                ])
-            ]),
-            oos_has_feather(state, player)  # jump on trampoline
+                oos_has_magnet_gloves(),
+                And(
+                    oos_option_medium_logic(),
+                    oos_has_gale_seeds(),
+                    Or(
+                        oos_has_seed_thrower(),
+                        And(
+                            oos_option_hard_logic(),
+                            oos_has_satchel()
+                        )
+                    )
+                )
+            ),
+            oos_has_feather()  # jump on trampoline
             # Switches here are considered trivial since we'll need magic boomerang for
             # Manhandla anyway
-        ])],
+        )],
 
-        ["d6 pre-boss room", "d6 boss", False, lambda state: all([
-            oos_has_boss_key(state, player, 6),
-            oos_has_magic_boomerang(state, player),
-            any([
-                oos_has_sword(state, player),
-                oos_has_fools_ore(state, player),
-                oos_has_seed_thrower(state, player),
-                # state.has("expert's ring", player)
-            ])
-        ])],
+        ["d6 pre-boss room", "d6 boss", False, And(
+            oos_has_boss_key(6),
+            oos_has_magic_boomerang(),
+            Or(
+                oos_has_sword(),
+                oos_has_fools_ore(),
+                oos_has_seed_thrower(),
+                # Has("expert's ring")
+            )
+        )],
     ]
 
 
-def make_d7_logic(player: int):
+def make_d7_logic():
     return [
         # 0 keys
-        ["enter d7", "poe curse owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
-        ["enter d7", "d7 wizzrobe chest", False, lambda state: oos_can_kill_normal_enemy_no_cane(state, player)],
-        ["enter d7", "d7 bombed wall chest", False, lambda state: oos_can_break_crystal(state, player)],
-        ["enter d7", "d7 entrance wild embers", False, lambda state: oos_can_harvest_regrowing_bush(state, player)],
+        ["enter d7", "poe curse owl", False, oos_can_use_mystery_seeds()],
+        ["enter d7", "d7 wizzrobe chest", False, oos_can_kill_normal_enemy_no_cane()],
+        ["enter d7", "d7 bombed wall chest", False, oos_can_break_crystal()],
+        ["enter d7", "d7 entrance wild embers", False, oos_can_harvest_regrowing_bush()],
 
         # 1 key
-        ["enter d7", "enter poe A", False, lambda state: all([
-            oos_has_small_keys(state, player, 7, 1),
-            oos_has_seed_thrower(state, player),
-            oos_can_use_ember_seeds(state, player, True)
-        ])],
+        ["enter d7", "enter poe A", False, And(
+            oos_has_small_keys(7, 1),
+            oos_has_seed_thrower(),
+            oos_can_use_ember_seeds(True)
+        )],
 
-        ["enter poe A", "d7 pot room", False, lambda state: all([
-            any([
+        ["enter poe A", "d7 pot room", False, And(
+            Or(
                 # Kill poe sister
-                oos_can_kill_armored_enemy(state, player, False, False),
-                all([
-                    oos_option_medium_logic(state, player),
-                    oos_has_rod(state, player),
-                ]),
-                all([
+                oos_can_kill_armored_enemy(False, False),
+                And(
+                    oos_option_medium_logic(),
+                    oos_has_rod(),
+                ),
+                And(
                     # Mystery isn't reasonable due to having only ~8.8% chance of not getting a gale before killing the sister
-                    oos_has_ember_seeds(state, player),
-                    any([
-                        oos_option_medium_logic(state, player),
-                        oos_has_satchel(state, player, 2)
-                    ])
-                ])
-            ]),
-            oos_has_bracelet(state, player)
-        ])],
-        ["enter d7", "d7 pot room", False, lambda state: all([
+                    oos_has_ember_seeds(),
+                    Or(
+                        oos_option_medium_logic(),
+                        oos_has_satchel(2)
+                    )
+                )
+            ),
+            oos_has_bracelet()
+        )],
+        ["enter d7", "d7 pot room", False, And(
             # Poe skip
-            oos_option_hell_logic(state, player),
-            oos_can_remove_rockslide(state, player, False),
-            oos_can_use_pegasus_seeds(state, player),
-            oos_has_feather(state, player),
-            oos_has_bracelet(state, player),
-        ])],
+            oos_option_hell_logic(),
+            oos_can_remove_rockslide(False),
+            oos_can_use_pegasus_seeds(),
+            oos_has_feather(),
+            oos_has_bracelet(),
+        )],
 
-        ["d7 pot room", "d7 zol button", False, lambda state: oos_has_feather(state, player)],
-        ["d7 pot room", "d7 armos puzzle", False, lambda state: any([
-            oos_can_jump_3_wide_pit(state, player),
-            oos_has_magnet_gloves(state, player)
-        ])],
-        ["d7 pot room", "d7 magunesu chest", False, lambda state: oos_has_cane(state, player)],
+        ["d7 pot room", "d7 zol button", False, oos_has_feather()],
+        ["d7 pot room", "d7 armos puzzle", False, Or(
+            oos_can_jump_3_wide_pit(),
+            oos_has_magnet_gloves()
+        )],
+        ["d7 pot room", "d7 magunesu chest", False, oos_has_cane()],
 
-        ["d7 armos puzzle", "d7 magunesu chest", False, lambda state: all([
-            oos_can_kill_magunesu(state, player),
-            oos_has_magnet_gloves(state, player),
-            any([
-                oos_can_jump_3_wide_pit(state, player),
-                all([
+        ["d7 armos puzzle", "d7 magunesu chest", False, And(
+            oos_can_kill_magunesu(),
+            oos_has_magnet_gloves(),
+            Or(
+                oos_can_jump_3_wide_pit(),
+                And(
                     # Really precise bomb jumps to cross the 3-holes
-                    oos_option_hell_logic(state, player),
-                    oos_can_jump_2_wide_liquid(state, player)
-                ])
-            ])
-        ])],
+                    oos_option_hell_logic(),
+                    oos_can_jump_2_wide_liquid()
+                )
+            )
+        )],
 
         # 2 keys
-        ["d7 pot room", "d7 quicksand chest", False, lambda state: all([
-            oos_has_small_keys(state, player, 7, 2),
-            oos_has_feather(state, player)
-        ])],
-        ["d7 pot room", "d7 water stairs", False, lambda state: all([
+        ["d7 pot room", "d7 quicksand chest", False, And(
+            oos_has_small_keys(7, 2),
+            oos_has_feather()
+        )],
+        ["d7 pot room", "d7 water stairs", False, And(
             # poe skip 2 : https://youtu.be/MIMm6q_yGyQ
-            oos_option_hell_logic(state, player),
-            oos_has_small_keys(state, player, 7, 2),
-            oos_has_bombs(state, player),
-            oos_has_cape(state, player),
-            oos_can_use_pegasus_seeds(state, player),
-            oos_has_flippers(state, player),
-            state.has("Swimmer's Ring", player)
-        ])],
+            oos_option_hell_logic(),
+            oos_has_small_keys(7, 2),
+            oos_has_bombs_for_bombjump(),
+            oos_has_cape(),
+            oos_can_use_pegasus_seeds(),
+            oos_has_flippers(),
+            Has("Swimmer's Ring")
+        )],
 
         # 3 keys
-        ["d7 pot room", "enter poe B", False, lambda state: all([
-            oos_has_small_keys(state, player, 7, 3),
-            oos_can_use_ember_seeds(state, player, False),
-            any([
-                oos_can_use_pegasus_seeds(state, player),
+        ["d7 pot room", "enter poe B", False, And(
+            oos_has_small_keys(7, 3),
+            oos_can_use_ember_seeds(False),
+            Or(
+                oos_can_use_pegasus_seeds(),
                 # Hard logic can do it without pegasus, it's very tight but doable
-                oos_option_hard_logic(state, player)
-            ])
-        ])],
+                oos_option_hard_logic()
+            )
+        )],
 
-        ["enter poe B", "d7 water stairs", False, lambda state: oos_has_flippers(state, player)],
+        ["enter poe B", "d7 water stairs", False, oos_has_flippers()],
 
-        ["d7 water stairs", "d7 darknut bridge trampolines", False, lambda state: any([
-            all([
+        ["d7 water stairs", "d7 darknut bridge trampolines", False, Or(
+            And(
                 # Boomerang to activate the switch then magnet gloves to go to the trampolines
-                oos_has_magnet_gloves(state, player),
-                oos_has_magic_boomerang(state, player)
-            ]),
-            all([
-                oos_option_hard_logic(state, player),
-                oos_has_feather(state, player),
-                oos_has_magnet_gloves(state, player)
-            ]),
-        ])],
-        ["d7 water stairs", "d7 past darknut bridge", False, lambda state: any([
+                oos_has_magnet_gloves(),
+                oos_has_magic_boomerang()
+            ),
+            And(
+                oos_option_hard_logic(),
+                oos_has_feather(),
+                oos_has_magnet_gloves()
+            ),
+        )],
+        ["d7 water stairs", "d7 past darknut bridge", False, Or(
             # Just jump to the other side directly
-            oos_can_jump_4_wide_pit(state, player),
-            oos_has_tight_switch_hook(state, player),  # or hook to the other side
+            oos_can_jump_4_wide_pit(),
+            oos_has_tight_switch_hook(),  # or hook to the other side
 
-            all([
-                oos_has_seed_thrower(state, player),
-                oos_has_scent_seeds(state, player)
-            ]),
-            all([
+            And(
+                oos_has_seed_thrower(),
+                oos_has_scent_seeds()
+            ),
+            And(
                 # Kill one darknut then pull the others
-                oos_has_magnet_gloves(state, player),
-                any([
-                    oos_can_kill_armored_enemy(state, player, True, True),
-                    oos_has_shield(state, player),  # To push the darknut, the rod not really working
+                oos_has_magnet_gloves(),
+                Or(
+                    oos_can_kill_armored_enemy(True, True),
+                    oos_has_shield(),  # To push the darknut, the rod not really working
                     # Pull the right darknut by just going and stalling in the hole
-                    oos_option_medium_logic(state, player),
-                ])
-            ]),
-            oos_shoot_beams(state, player)
-        ])],
-        ["d7 past darknut bridge", "d7 darknut bridge trampolines", False, lambda state: any([
+                    oos_option_medium_logic(),
+                )
+            ),
+            oos_shoot_beams()
+        )],
+        ["d7 past darknut bridge", "d7 darknut bridge trampolines", False, Or(
             # Reach trampolines directly
-            oos_can_jump_3_wide_pit(state, player),
+            oos_can_jump_3_wide_pit(),
 
-            all([
-                any([
+            And(
+                Or(
                     # Trigger the spinner switch
-                    oos_has_sword(state, player),
-                    oos_has_fools_ore(state, player),
-                    oos_has_rod(state, player),
-                    oos_has_bombs(state, player),
-                    oos_has_bombchus(state, player, 5)
-                ]),
+                    oos_has_sword(),
+                    oos_has_fools_ore(),
+                    oos_has_rod(),
+                    oos_has_bombs_for_tiles(),
+                    oos_has_bombchus_for_tiles()
+                ),
                 # Reach trampolines using the magnet gloves
-                oos_has_feather(state, player),
-                oos_has_magnet_gloves(state, player)
-            ])
-        ])],
+                oos_has_feather(),
+                oos_has_magnet_gloves()
+            )
+        )],
 
-        ["d7 darknut bridge trampolines", "d7 spike chest", False, lambda state: oos_can_kill_stalfos(state, player)],
+        ["d7 darknut bridge trampolines", "d7 spike chest", False, oos_can_kill_stalfos()],
 
         # 4 keys
-        ["d7 water stairs", "d7 maze chest", False, lambda state: all([
-            oos_has_small_keys(state, player, 7, 4),
-            any([
-                oos_can_kill_armored_enemy(state, player, False, False),
-                all([
-                    oos_can_kill_moldorm(state, player,
-                                         pit_available=oos_option_medium_logic(state, player)),
-                    any([
+        ["d7 water stairs", "d7 maze chest", False, And(
+            oos_has_small_keys(7, 4),
+            Or(
+                oos_can_kill_armored_enemy(False, False),
+                And(
+                    Or(
+                        oos_option_medium_logic() & oos_can_kill_moldorm(True),
+                        oos_can_kill_moldorm()
+                    ),
+                    Or(
                         # Kill poe sisters
-                        oos_has_rod(state, player),
-                        all([
+                        oos_has_rod(),
+                        And(
                             # 18 embers are needed to kill the boss
-                            oos_has_ember_seeds(state, player),
-                            any([
-                                oos_option_hard_logic(state, player),
-                                oos_can_harvest_regrowing_bush(state, player),  # refill embers in the middle
-                                oos_has_satchel(state, player, 2)
-                            ])
-                        ])
-                    ]),
-                ])
-            ]),
-            any([
-                oos_can_jump_3_wide_liquid(state, player),  # Technically not a liquid but a diagonal pit
-                all([
+                            oos_has_ember_seeds(),
+                            Or(
+                                oos_option_hard_logic(),
+                                oos_can_harvest_regrowing_bush(),  # refill embers in the middle
+                                oos_has_satchel(2)
+                            )
+                        )
+                    ),
+                )
+            ),
+            Or(
+                oos_can_jump_3_wide_liquid(),  # Technically not a liquid but a diagonal pit
+                And(
                     # Switch hook from above with the pot next to the button then jump in the hole
-                    oos_option_medium_logic(state, player),
-                    oos_has_switch_hook(state, player)
-                ])
+                    oos_option_medium_logic(),
+                    oos_has_switch_hook(),
+                    oos_can_jump_3_wide_pit()  # To pass the flying tiles room
+                )
                 # Casual could switch 2 from the left, but they'd have to jump in the hole to move out
                 # which is against casual logic's spirit
-            ])
-        ])],
+            )
+        )],
 
-        ["d7 maze chest", "d7 B2F drop", False, lambda state: any([
-            oos_has_magnet_gloves(state, player),
-            all([
+        ["d7 maze chest", "d7 B2F drop", False, Or(
+            oos_has_magnet_gloves(),
+            And(
                 # The jumps in this room being pretty intricate, precise and counterintuitive,
                 # we chose to put that in hard logic only.
-                oos_option_hard_logic(state, player),
-                oos_can_jump_6_wide_pit(state, player)
-            ])
-        ])],
+                oos_option_hard_logic(),
+                oos_can_jump_6_wide_pit()
+            )
+        )],
 
         # 5 keys
-        ["enter d7", "d7 stalfos chest", False, lambda state: all([
-            oos_has_small_keys(state, player, 7, 4),
-            oos_self_locking_small_key(state, player, "d7 stalfos chest", 7),
-            any([
-                oos_can_jump_5_wide_pit(state, player),
-                all([
-                    oos_option_hard_logic(state, player),
-                    oos_can_jump_1_wide_pit(state, player, False)
-                ])
-            ]),
-            oos_can_kill_stalfos(state, player),
-        ])],
-        ["d7 maze chest", "d7 stalfos chest", False, lambda state: all([
-            oos_has_small_keys(state, player, 7, 5),
-            any([
-                oos_can_jump_5_wide_pit(state, player),
-                all([
-                    oos_option_hard_logic(state, player),
-                    oos_can_jump_1_wide_pit(state, player, False)
-                ])
-            ]),
-            oos_can_kill_stalfos(state, player),
-        ])],
+        ["enter d7", "d7 stalfos chest", False, And(
+            oos_has_small_keys(7, 4),
+            oos_self_locking_small_key("Explorer's Crypt (B1F): Chest in Jumping Stalfos Room", 7),
+            Or(
+                oos_can_jump_5_wide_pit(),
+                And(
+                    oos_option_hard_logic(),
+                    oos_can_jump_1_wide_pit(False)
+                )
+            ),
+            oos_can_kill_stalfos(),
+        )],
+        ["d7 maze chest", "d7 stalfos chest", False, And(
+            oos_has_small_keys(7, 5),
+            Or(
+                oos_can_jump_5_wide_pit(),
+                And(
+                    oos_option_hard_logic(),
+                    oos_can_jump_1_wide_pit(False)
+                )
+            ),
+            oos_can_kill_stalfos(),
+        )],
 
-        ["d7 stalfos chest", "shining blue owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
+        ["d7 stalfos chest", "shining blue owl", False, oos_can_use_mystery_seeds()],
 
-        ["enter d7", "d7 right of entrance", False, lambda state: all([
-            oos_can_kill_normal_enemy(state, player),
-            any([
-                oos_has_small_keys(state, player, 7, 5),
-                all([
-                    oos_has_small_keys(state, player, 7, 1),
-                    oos_self_locking_small_key(state, player, "d7 right of entrance", 7)
-                ])
-            ])
-        ])],
+        ["enter d7", "d7 right of entrance", False, And(
+            oos_can_kill_normal_enemy(),
+            Or(
+                oos_has_small_keys(7, 5),
+                And(
+                    oos_has_small_keys(7, 1),
+                    oos_self_locking_small_key("Explorer's Crypt (1F): Chest Right of Entrance", 7)
+                )
+            )
+        )],
 
-        ["d7 maze chest", "d7 boss", False, lambda state: all([
-            oos_has_boss_key(state, player, 7),
-            any([
-                oos_has_sword(state, player),
-                oos_has_fools_ore(state, player),
-                # oos_can_punch(state, player)
-            ])
-        ])]
+        ["d7 maze chest", "d7 boss", False, And(
+            oos_has_boss_key(7),
+            Or(
+                oos_has_sword(),
+                oos_has_fools_ore(),
+                # oos_can_punch()
+            )
+        )]
     ]
 
 
-def make_d8_logic(player: int):
+def make_d8_logic():
     return [
         # 0 keys
-        ["enter d8", "d8 eye drop", False, lambda state: all([
-            oos_can_break_pot(state, player),
-            any([
-                oos_has_seed_thrower(state, player),
-                all([
-                    oos_option_medium_logic(state, player),
-                    oos_has_feather(state, player),
-                    any([
-                        oos_can_use_ember_seeds(state, player, False),
-                        oos_can_use_scent_seeds(state, player),
-                        oos_can_use_mystery_seeds(state, player),
-                    ])
-                ])
-            ])
-        ])],
+        ["enter d8", "d8 eye drop", False, And(
+            oos_can_break_pot(),
+            Or(
+                oos_has_seed_thrower(),
+                And(
+                    oos_option_medium_logic(),
+                    oos_has_feather(),
+                    Or(
+                        oos_can_use_ember_seeds(False),
+                        oos_can_use_scent_seeds(),
+                        oos_can_use_mystery_seeds(),
+                    )
+                )
+            )
+        )],
 
-        ["enter d8", "d8 three eyes chest", False, lambda state: all([
-            oos_has_feather(state, player),
-            any([
-                oos_has_hyper_slingshot(state, player),
-                all([
-                    oos_option_hell_logic(state, player),
-                    any([
-                        oos_has_satchel(state, player),
-                    ]),
-                    any([
-                        oos_can_use_ember_seeds(state, player, False),
-                        oos_can_use_scent_seeds(state, player),
-                        oos_can_use_mystery_seeds(state, player),
-                    ])
-                ]),
-                all([
-                    oos_option_hell_logic(state, player),
-                    oos_has_slingshot(state, player),
-                    any([
-                        oos_can_use_ember_seeds(state, player, False),
-                        oos_can_use_scent_seeds(state, player),
-                        oos_can_use_pegasus_seeds(state, player),
-                        oos_can_use_mystery_seeds(state, player),
-                    ])
-                ]),
-                all([
-                    oos_option_hell_logic(state, player),
-                    oos_has_shooter(state, player),
-                    any([
-                        oos_can_use_ember_seeds(state, player, False),
-                        oos_can_use_scent_seeds(state, player),
-                        oos_can_use_pegasus_seeds(state, player),
-                        oos_can_use_mystery_seeds(state, player),
-                    ])
-                ])
-            ])
-        ])],
+        ["enter d8", "d8 three eyes chest", False, And(
+            oos_has_feather(),
+            Or(
+                oos_has_hyper_slingshot(),
+                And(
+                    oos_option_hell_logic(),
+                    Or(
+                        oos_has_satchel(),
+                    ),
+                    Or(
+                        oos_can_use_ember_seeds(False),
+                        oos_can_use_scent_seeds(),
+                        oos_can_use_mystery_seeds(),
+                    )
+                ),
+                And(
+                    oos_option_hell_logic(),
+                    oos_has_slingshot(),
+                    Or(
+                        oos_can_use_ember_seeds(False),
+                        oos_can_use_scent_seeds(),
+                        oos_can_use_pegasus_seeds(),
+                        oos_can_use_mystery_seeds(),
+                    )
+                ),
+                And(
+                    oos_option_hell_logic(),
+                    oos_has_shooter(),
+                    Or(
+                        oos_can_use_ember_seeds(False),
+                        oos_can_use_scent_seeds(),
+                        oos_can_use_pegasus_seeds(),
+                        oos_can_use_mystery_seeds(),
+                    )
+                )
+            )
+        )],
 
-        ["enter d8", "d8 hardhat room", False, lambda state: oos_can_kill_magunesu(state, player)],
+        ["enter d8", "d8 hardhat room", False, oos_can_kill_magunesu()],
 
-        ["d8 hardhat room", "d8 hardhat drop", False, lambda state: any([
-            all([
-                oos_can_remove_rockslide(state, player, False),  # For the bombchus, leave the hardhat stuck in the upper line to guide the bombchus
-                oos_has_magnet_gloves(state, player)
-            ]),
-            oos_can_use_gale_seeds_offensively(state, player)
-        ])],
+        ["d8 hardhat room", "d8 hardhat drop", False, Or(
+            And(
+                oos_can_remove_rockslide(False),  # For the bombchus, leave the hardhat stuck in the upper line to guide the bombchus
+                oos_has_magnet_gloves()
+            ),
+            oos_can_use_gale_seeds_offensively()
+        )],
 
         # 1 key
-        ["d8 hardhat room", "d8 spike room", False, lambda state: all([
-            oos_has_small_keys(state, player, 8, 1),
-            any([
-                oos_has_cape(state, player),
-                all([  # Tight 2D section jump is hard mode without cape
-                    oos_option_hard_logic(state, player),
-                    oos_has_feather(state, player),
-                    oos_can_use_pegasus_seeds(state, player)
-                ])
-            ])
-        ])],
+        ["d8 hardhat room", "d8 spike room", False, And(
+            oos_has_small_keys(8, 1),
+            Or(
+                oos_has_cape(),
+                And(  # Tight 2D section jump is hard mode without cape
+                    oos_option_hard_logic(),
+                    oos_has_feather(),
+                    oos_can_use_pegasus_seeds()
+                )
+            )
+        )],
 
         # 2 keys
-        ["d8 spike room", "d8 spinner", False, lambda state: oos_has_small_keys(state, player, 8, 2)],
-        ["d8 spinner", "silent watch owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
+        ["d8 spike room", "d8 spinner", False, oos_has_small_keys(8, 2)],
+        ["d8 spinner", "silent watch owl", False, oos_can_use_mystery_seeds()],
         ["d8 spinner", "d8 magnet ball room", False, None],
-        ["d8 spinner", "d8 armos chest", False, lambda state: any([
-            oos_has_magnet_gloves(state, player),
-            all([
+        ["d8 spinner", "d8 armos chest", False, Or(
+            oos_has_magnet_gloves(),
+            And(
                 # Clip into the block right of staircase with pegasus seeds and use the cane of somaria to activate the bridge, save&exit and redo the whole dungeon to get to the other side
-                oos_option_hard_logic(state, player),
-                oos_can_use_pegasus_seeds(state, player),
-                oos_has_cane(state, player)
-            ])
-        ])],
-        ["d8 armos chest", "d8 spinner chest", False, None],
-        ["d8 spinner chest", "frypolar entrance", False, lambda state: oos_has_magnet_gloves(state, player)],
-        ["frypolar entrance", "frypolar owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
-        ["frypolar entrance", "d8 darknut chest", False, lambda state: all([
-            any([
-                oos_has_hyper_slingshot(state, player),
-                all([
-                    oos_option_hell_logic(state, player),
-                    any([
-                        oos_has_satchel(state, player),
-                    ]),
-                    any([
-                        oos_can_use_ember_seeds(state, player, False),
-                        oos_can_use_scent_seeds(state, player),
-                        oos_can_use_mystery_seeds(state, player),
-                    ])
-                ]),
-                all([
-                    oos_option_hell_logic(state, player),
-                    oos_has_slingshot(state, player),
-                    any([
-                        oos_can_use_ember_seeds(state, player, False),
-                        oos_can_use_scent_seeds(state, player),
-                        oos_can_use_pegasus_seeds(state, player),
-                        oos_can_use_mystery_seeds(state, player),
-                    ])
-                ]),
-                all([
+                oos_option_hard_logic(),
+                oos_can_use_pegasus_seeds(),
+                oos_has_cane()
+            )
+        )],
+        ["d8 spinner", "d8 spinner chest", False,
+         oos_has_magnet_gloves()
+         # Jump 2 liquid also, but this is covered earlier
+         ],
+        ["d8 spinner", "frypolar entrance", False, Or(
+            oos_has_magnet_gloves(),
+            And(
+                oos_option_hell_logic(),
+                oos_can_use_pegasus_seeds(),
+                oos_has_cape(),
+                oos_has_bombs_for_bombjump()
+            )
+        )],
+        ["frypolar entrance", "frypolar owl", False, oos_can_use_mystery_seeds()],
+        ["frypolar entrance", "d8 darknut chest", False, And(
+            Or(
+                oos_has_hyper_slingshot(),
+                And(
+                    oos_option_hell_logic(),
+                    Or(
+                        oos_has_satchel(),
+                    ),
+                    Or(
+                        oos_can_use_ember_seeds(False),
+                        oos_can_use_scent_seeds(),
+                        oos_can_use_mystery_seeds(),
+                    )
+                ),
+                And(
+                    oos_option_hell_logic(),
+                    oos_has_slingshot(),
+                    Or(
+                        oos_can_use_ember_seeds(False),
+                        oos_can_use_scent_seeds(),
+                        oos_can_use_pegasus_seeds(),
+                        oos_can_use_mystery_seeds(),
+                    )
+                ),
+                And(
                     # This one is way easier to time by just bouncing on the left
                     # then going down as the seed spawns in the eye
-                    oos_option_hard_logic(state, player),
-                    oos_has_shooter(state, player),
-                    any([
-                        oos_can_use_ember_seeds(state, player, False),
-                        oos_can_use_scent_seeds(state, player),
-                        oos_can_use_pegasus_seeds(state, player),
-                        oos_can_use_mystery_seeds(state, player),
-                    ])
-                ])
-            ]),
-            # oos_can_kill_armored_enemy(state, player),
-            oos_can_remove_rockslide(state, player, False),
-        ])],
-        ["frypolar entrance", "frypolar room", False, lambda state: oos_has_small_keys(state, player, 8, 3)],
-        ["frypolar room", "frypolar room wild mystery", False, lambda state: \
-            oos_can_harvest_regrowing_bush(state, player)],
+                    oos_option_hard_logic(),
+                    oos_has_shooter(),
+                    Or(
+                        oos_can_use_ember_seeds(False),
+                        oos_can_use_scent_seeds(),
+                        oos_can_use_pegasus_seeds(),
+                        oos_can_use_mystery_seeds(),
+                    )
+                )
+            ),
+            # oos_can_kill_armored_enemy(),
+            oos_can_remove_rockslide(False),
+        )],
 
         # 3 keys
-        ["frypolar room", "d8 ice puzzle room", False, lambda state: all([
-            # Hard-require HSS since we need it in the room right after Frypolar to hit the torches anyway
-            oos_has_hyper_slingshot(state, player),
-
+        ["frypolar entrance", "frypolar room", False, oos_has_small_keys(8, 3)],
+        ["frypolar room", "frypolar room wild mystery", False, oos_can_harvest_regrowing_bush()],
+        ["frypolar room", "beat frypolar", False, Or(
             # Requirements to kill Frypolar
-            any([
-                all([
-                    # Casual logic: mystery seeds method is considered mandatory since it's the easiest one
-                    oos_has_mystery_seeds(state, player),
-                    oos_has_bracelet(state, player)
-                ]),
-                all([
-                    # Medium logic: allow killing Frypolar with ember only, but with at least a Lv2 satchel
-                    # (the miniboss require 15 embers to die, so 20 max is a bit tight)
-                    oos_option_medium_logic(state, player),
-                    oos_can_use_ember_seeds(state, player, False),
-                    oos_has_satchel(state, player, 2),
-                ]),
-                all([
-                    # Hard logic: yolo
-                    oos_option_hard_logic(state, player),
-                    oos_can_use_ember_seeds(state, player, False)
-                ]),
-            ]),
+            And(
+                # Casual logic: mystery seeds method is considered mandatory since it's the easiest one
+                oos_has_mystery_seeds(),
+                oos_has_bracelet()
+            ),
+            And(
+                # Medium logic: allow killing Frypolar with ember only, but with at least a Lv2 satchel
+                # (the miniboss require 15 embers to die, so 20 max is a bit tight)
+                oos_option_medium_logic(),
+                oos_can_use_ember_seeds(False),
+                oos_has_satchel(2),
+            ),
+            And(
+                # Hard logic: yolo
+                oos_option_hard_logic(),
+                oos_can_use_ember_seeds(False)
+            )
+            # The means of throwing the seeds do not matter:
+            # beat frypolar only leads to d8 ice puzzle room in hard-, which requires a HSS.
+            # In hell, this is the only place where this region is used without HSS, but then, even satchel is enough
+            # (In all honesty, hell players are probably doing HSS skip to come here, so the route is not *that* bad)
+        )],
+        ["beat frypolar", "d8 spinner chest", False, None],
+        ["beat frypolar", "d8 ice puzzle room", False, And(
+            oos_has_hyper_slingshot(),
+            oos_can_use_ember_seeds(False),
+        )],
 
-            # Requirements to pass the room after Frypolar
-            oos_can_use_ember_seeds(state, player, False),
-        ])],
-
-        ["d8 ice puzzle room", "d8 pols voice chest", False, lambda state: any([
-            oos_has_magic_boomerang(state, player),
-            oos_can_jump_6_wide_pit(state, player),
-            oos_has_shooter(state, player),
-            all([
-                oos_option_medium_logic(state, player),
-                oos_has_bombchus(state, player, 2)
-            ])
-        ])],
+        ["d8 ice puzzle room", "d8 pols voice chest", False, Or(
+            oos_has_magic_boomerang(),
+            oos_can_jump_6_wide_pit(),
+            oos_has_shooter(),
+            And(
+                oos_option_medium_logic(),
+                oos_has_bombchus_to_fight()
+            )
+        )],
 
         # 4 keys
-        ["d8 ice puzzle room", "d8 crystal room", False, lambda state: oos_has_small_keys(state, player, 8, 4)],
-        ["d8 crystal room", "magical ice owl", False, lambda state: oos_can_use_mystery_seeds(state, player)],
-        ["d8 crystal room", "d8 ghost armos drop", False, lambda state: oos_can_remove_rockslide(state, player, False)],
-        ["d8 crystal room", "d8 NE crystal", False, lambda state: all([
-            oos_has_bracelet(state, player),
-            oos_can_trigger_lever(state, player)
-        ])],
-        ["d8 crystal room", "d8 SE crystal", False, lambda state: oos_has_bracelet(state, player)],
+        ["d8 ice puzzle room", "d8 crystal room", False, oos_has_small_keys(8, 4)],
+        ["d8 crystal room", "magical ice owl", False, oos_can_use_mystery_seeds()],
+        ["d8 crystal room", "d8 ghost armos drop", False, oos_can_remove_rockslide(False)],
+        ["d8 crystal room", "d8 NE crystal", False, And(
+            oos_has_bracelet(),
+            oos_can_trigger_lever()
+        )],
+        ["d8 crystal room", "d8 SE crystal", False, oos_has_bracelet()],
         ["d8 crystal room", "d8 SW lava chest", False, None],
         ["d8 SE crystal", "d8 SE lava chest", False, None],
 
         ["d8 SE crystal", "d8 spark chest", False, None],
-        ["d8 ice puzzle room", "d8 spark chest", False, lambda state: all([
+        ["d8 ice puzzle room", "d8 spark chest", False, And(
             # Switch hook from the ice puzzle, then s&q
-            oos_option_medium_logic(state, player),
-            oos_has_switch_hook(state, player)
-        ])],
+            oos_option_medium_logic(),
+            oos_has_switch_hook()
+        )],
 
         # 6 keys
-        ["d8 crystal room", "d8 NW crystal", False, lambda state: all([
-            oos_has_bracelet(state, player),
-            oos_has_small_keys(state, player, 8, 6)
-        ])],
-        ["d8 crystal room", "d8 SW crystal", False, lambda state: all([
-            oos_has_bracelet(state, player),
-            oos_has_small_keys(state, player, 8, 6)
-        ])],
+        ["d8 crystal room", "d8 NW crystal", False, And(
+            oos_has_bracelet(),
+            oos_has_small_keys(8, 6)
+        )],
+        ["d8 crystal room", "d8 SW crystal", False, And(
+            oos_has_bracelet(),
+            oos_has_small_keys(8, 6)
+        )],
 
         # 7 keys
-        ["d8 NW crystal", "d8 boss", False, lambda state: all([
-            oos_has_small_keys(state, player, 8, 7),
-            oos_has_boss_key(state, player, 8),
-            any([
-                oos_has_sword(state, player),
-                oos_has_fools_ore(state, player)
-            ])
-        ])],
+        ["d8 NW crystal", "d8 boss", False, And(
+            oos_has_small_keys(8, 7),
+            oos_has_boss_key(8),
+            Or(
+                oos_has_sword(),
+                oos_has_fools_ore()
+            )
+        )],
     ]
+
+
+def make_d11_logic(options: OracleOfSeasonsOptions):
+    if not options.linked_heros_cave.value:
+        return []
+    logic = [
+        ["enter d11", "d11 floor 1 chest", False, oos_has_bracelet()],
+        ["d11 floor 1 chest", "d11 floor 2 keydrop", False, oos_can_jump_2_wide_pit()],
+        ["d11 floor 2 keydrop", "d11 floor 2 chest", False, oos_has_small_keys(11)],
+        ["d11 floor 2 chest", "d11 floor 3 torch keydrop", False, And(
+            Or(
+                oos_can_swim(False),
+                And(
+                    # Jump and break the pot
+                    oos_option_hell_logic(),
+                    oos_can_jump_5_wide_liquid(),
+                    Or(
+                        oos_has_noble_sword(),
+                        Has("Biggoron's Sword"),
+                    )
+                )
+            ),
+            oos_can_use_ember_seeds(True),
+        )],
+        ["d11 floor 2 chest", "d11 floor 3 flooded room", False, And(
+            oos_can_swim(False),
+            oos_has_small_keys(11, 2),
+            oos_can_use_ember_seeds(True),
+            oos_has_seed_thrower()
+        )],
+        ["d11 floor 3 flooded room", "d11 floor 3 flooded keydrop", False, Or(
+            oos_can_kill_normal_enemy(),
+            oos_has_switch_hook()
+        )],
+        ["d11 floor 3 flooded room", "d11 floor 3 chest", False, And(
+            oos_can_remove_rockslide(False),
+            oos_has_small_keys(11, 3)
+        )],
+        ["d11 floor 3 chest", "d11 floor 4 chest", False, oos_has_magnet_gloves()],
+        ["d11 floor 4 chest", "d11 floor 5 gauntlet", False, And(
+            oos_can_jump_3_wide_pit(),
+            Or(
+                And(
+                    Or(
+                        oos_has_flute(),
+                        oos_has_bombs_to_fight(),
+                        oos_has_bombchus_to_fight()
+                    ),
+                    oos_can_kill_magunesu(),
+                    oos_can_kill_spiked_beetle()
+                ),
+                And(
+                    # Use the cane press a button at the same time Link is on the button to skip the lowest wave
+                    # Counting starts at the top and goes clockwise, waves are:
+                    # 0- Spiked Beetle
+                    # 1- Gibdo
+                    # 2- Arrow Darknut
+                    # 3- Magunesu
+                    # 4- Lynel
+                    # 5- Iron Mask
+                    # 6- Pol's Voice
+                    # 7- Stalfos
+
+                    # We need to fight at least 5 of these 8 waves, minimal requirement is oos_can_kill_normal_enemy_no_cane
+                    # Waves 1, 5 and 7 can be beaten by it
+                    # oos_can_kill_armored_enemy can clear waves 2 and 4, skipping 0, 3 and 6
+                    # Otherwise, since we know we have embers already, we can also beat 4, but we need more seeds
+                    # (only the seeds aren't in oos_can_kill_armored_enemy)
+                    # Skip waves 0, 3 and 6 while finishing the waves 1, 5 and 7 with embers
+                    # Now there are two waves left, 4 and 2, which can be beaten by cane
+                    # A route can be wave 4 -> wave 5 (skip 3) -> wave 7 (skip 6) -> wave 1 (skip 0) -> wave 2
+                    # (With enough bombs left, it's probably easier to switch wave 6 and wave 4 as lynels hurt a lot)
+
+                    oos_option_hard_logic(),
+                    oos_has_cane(),
+                    Or(
+                        oos_can_kill_armored_enemy(False, True),
+                        oos_has_satchel(2)
+                    )
+                )
+            )
+        )],
+        ["d11 floor 4 chest", "d11 floor 5 boomerang maze", False, And(
+            oos_can_jump_3_wide_pit(),
+            oos_has_small_keys(11, 4),
+            Or(
+                oos_has_magic_boomerang(),
+                oos_has_bombchus_to_fight(),
+                And(
+                    oos_option_medium_logic(),
+                    oos_has_sword(True),
+                )
+            )
+        )],
+        ["d11 floor 4 chest", "d11 final chest", False, And(
+            oos_can_jump_3_wide_pit(),
+            oos_has_small_keys(11, 5),
+            # oos_has_rupees(80),
+            oos_can_complete_d11_puzzle()
+        )]
+    ]
+    if options.linked_heros_cave.value & OracleOfSeasonsLinkedHerosCave.no_alt_entrance:
+        logic.append(["enter d11", "d11 alt entrance", False, None])
+    else:
+        logic.append(["d11 alt entrance", "enter d11", False, None])
+    if options.linked_heros_cave.value & OracleOfSeasonsLinkedHerosCave.heros_cave:
+        logic.append(["enter d0", "enter d11", False, None])
+    return logic

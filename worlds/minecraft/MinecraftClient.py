@@ -484,7 +484,7 @@ def update_mod(forge_dir, url: str):
                     logging.info(f"Removed old mod file from {old_ap_mod}")
             else:
                 logging.error(f"Error retrieving the randomizer mod (status code {apmod_resp.status_code}).")
-                logging.error(f"Please report this issue on the ZSR Discord server.")
+                logging.error(f"Please report this issue on the Unofficial AP Discord server.")
                 sys.exit(1)
 
 
@@ -586,7 +586,7 @@ def download_java(java: str):
         progress.append_text(f"ERROR: Download failed with status code {resp.status_code}")
         progress.close()
         print(f"Error downloading Java (status code {resp.status_code}).")
-        print(f"If this was not expected, please report this issue on the ZSR Discord server.")
+        print(f"If this was not expected, please report this issue on the Unofficial AP Discord server.")
         if not show_yes_no_simple("Download Error", f"Error downloading Java (status code {resp.status_code}).\n\nContinue anyways?"):
             sys.exit(0)
 

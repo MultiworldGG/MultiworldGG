@@ -5,7 +5,6 @@ from .MegaMixSongData import SONG_DATA, base_game_ids, dlc_ids
 from .DataHandler import extract_mod_data_to_json
 
 # Python
-from typing import Dict, List
 from collections import ChainMap
 import logging
 
@@ -18,27 +17,26 @@ class MegaMixCollections:
     LEEK_NAME: str = "Leek"
     LEEK_CODE: int = 1
 
-    song_items: Dict[str, SongData] = {}
-    song_locations: Dict[str, int] = {}
-    
-    filler_item_names: Dict[str, int] = {
-        "SAFE": 2,
-    }
-    filler_item_weights: Dict[str, int] = {
-        "SAFE": 1,
-    }
+    FILLER_NAME: str = "SAFE"
+    FILLER_CODE: int = 2
+
+    PROG_HP_NAME: str = "Progressive HP"
+    PROG_HP_CODE: int = 3
+
+    song_items: dict[str, SongData] = {}
+    song_locations: dict[str, int] = {}
 
     # IDs 3-9 available. 10 is "Love is War [1]".
     trap_items: dict[str, int] = {
-        #"High Speed Trap": 3,
         "Hidden Trap": 4,
         "Sudden Trap": 5,
+        # "High Speed Trap": 6,
         "Icon Trap": 9,
     }
 
     def __init__(self) -> None:
-        self.item_names_to_id = ChainMap({self.LEEK_NAME: self.LEEK_CODE}, self.filler_item_names, self.song_items,
-                                         self.trap_items)
+        self.item_names_to_id = ChainMap({self.LEEK_NAME: self.LEEK_CODE}, {self.FILLER_NAME: self.FILLER_CODE},
+                                         {self.PROG_HP_NAME: self.PROG_HP_CODE}, self.song_items, self.trap_items)
         self.location_names_to_id = ChainMap(self.song_locations)
 
         self.song_items = SONG_DATA
@@ -53,8 +51,12 @@ class MegaMixCollections:
             for data_dict in mod_data:
                 for pack, songs in data_dict.items():
                     for song in songs:
-                        if not isinstance(song, list) or not list(map(type, song)) == [str, int, int]:
-                            logger.warning("Skipping", pack, song)
+                        if (
+                            not isinstance(song, list)
+                            or not list(map(type, song)) == [str, int, int]
+                            or song[1] <= 0 or song[2] <= 0
+                        ):
+                            logger.warning(f"Skipping {pack} {song}")
                             continue
 
                         song_id = song[1]
@@ -108,7 +110,7 @@ class MegaMixCollections:
             for i in range(2):
                 self.song_locations[f"{song_name}-{i}"] = (song_data.code + i)
 
-    def get_songs_with_settings(self, dlc: bool, mod_ids: List[int], allowed_diff: List[int], diff_lower: float, diff_higher: float) -> List[str]:
+    def get_songs_with_settings(self, dlc: bool, mod_ids: list[int], allowed_diff: list[int], diff_lower: float, diff_higher: float) -> list[str]:
         """Gets a list of all songs that match the filter settings. Difficulty thresholds are inclusive."""
         filtered_list = []
 

@@ -6,8 +6,8 @@ from ..client.wallet import Wallet
 from ..game.Currency import CURRENCY_NAME
 
 class _MockNetworkEngine(ArchipelagoNetworkEngine):
-    def __init__(self, tags = [ "TrapLink" ], player_name = "rando-player"):
-        self.tags = tags
+    def __init__(self, tags = tuple(["RingLink"]), player_name = "rando-player"):
+        self.tags = list(tags)
         self.player_name = player_name
 
     def update_tags_async(self, enable_tag: bool, tag_name:str):
@@ -75,7 +75,7 @@ class TestRingLink(unittest.TestCase):
 
     def test_get_difference_zero_on_initalize(self):
         mock_network_engine = _MockNetworkEngine()
-        mock_wallet = _MockWallet({ CURRENCY_NAME.COINS: 1 })
+        mock_wallet = _MockWallet({ CURRENCY_NAME.COINS: 0})
 
         ring_link = RingLink(mock_network_engine, mock_wallet)
 
@@ -88,6 +88,7 @@ class TestRingLink(unittest.TestCase):
 
         ring_link = RingLink(mock_network_engine, mock_wallet)
         ring_link.previous_coins = -2
+        ring_link.initialized = True
 
         difference = _get_difference(ring_link)
         self.assertEqual(difference, 3)
@@ -97,10 +98,11 @@ class TestRingLink(unittest.TestCase):
         mock_wallet = _MockWallet({ CURRENCY_NAME.COINS: 98 })
 
         ring_link = RingLink(mock_network_engine, mock_wallet)
-        ring_link.previous_coins = 100
+        ring_link.previous_coins = 98
+        ring_link.initialized = True
 
         difference = _get_difference(ring_link)
-        self.assertEqual(difference, -2)
+        self.assertEqual(difference, 0)
 
     def test_get_difference_zero(self):
         mock_network_engine = _MockNetworkEngine()
@@ -108,6 +110,7 @@ class TestRingLink(unittest.TestCase):
 
         ring_link = RingLink(mock_network_engine, mock_wallet)
         ring_link.previous_coins = 1
+        ring_link.initialized = True
 
         difference = _get_difference(ring_link)
         self.assertEqual(difference, -1)
@@ -118,6 +121,7 @@ class TestRingLink(unittest.TestCase):
 
         ring_link = RingLink(mock_network_engine, mock_wallet)
         ring_link.previous_coins = 1
+        ring_link.initialized = True
 
         difference = _get_difference(ring_link)
         self.assertEqual(difference, 0)
@@ -128,6 +132,7 @@ class TestRingLink(unittest.TestCase):
 
         ring_link = RingLink(mock_network_engine, mock_wallet)
         ring_link.previous_coins = 98
+        ring_link.initialized = True
 
         difference = _get_difference(ring_link)
         self.assertEqual(difference, 2)

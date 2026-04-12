@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict, NamedTuple, List, Set
+from typing import TYPE_CHECKING, NamedTuple
+
 from BaseClasses import ItemClassification as IC, Item
 
 from ...constants import get_game_base_id
@@ -15,7 +16,7 @@ class ItemInfo(NamedTuple):
 
 
 # TODO: Add conditional item classification based on if victory type needed is gift, gold, cherry.
-item_table: Dict[str, ItemInfo] = {
+item_table: dict[str, ItemInfo] = {
     "Spoon": ItemInfo(0, IC.progression),
     "Bowl": ItemInfo(1, IC.progression),
     "Yellow Note": ItemInfo(2, IC.filler),
@@ -91,12 +92,12 @@ item_table: Dict[str, ItemInfo] = {
 }
 
 
-def get_items() -> Dict[str, int]:
+def get_items() -> dict[str, int]:
     return {f"Night Manor - {name}": data.id_offset + get_game_base_id("Night Manor") for name, data in item_table.items()}
 
 
-def get_item_groups() -> Dict[str, Set[str]]:
-    item_groups: Dict[str, Set[str]] = {"Night Manor": {
+def get_item_groups() -> dict[str, set[str]]:
+    item_groups: dict[str, set[str]] = {"Night Manor": {
         f"Night Manor - {item_name}" for item_name in item_table.keys()}}
     item_groups.update({
         "Night Manor - Journal Entries": {
@@ -118,10 +119,18 @@ def get_item_groups() -> Dict[str, Set[str]]:
             "Night Manor - Journal Entry 16",
             "Night Manor - Journal Entry 17"},
         "Night Manor - Gems": {
-            "Night Manor - Red Gemstone",
-            "Night Manor - Green Gemstone",
-            "Night Manor - Yellow Gemstone",
-            "Night Manor - White Gemstone"},
+            "Night Manor - Ruby",
+            "Night Manor - Emerald",
+            "Night Manor - Topaz",
+            "Night Manor - Diamond"},
+        "Night Manor - Red Gemstone": {
+            "Night Manor - Ruby"},
+        "Night Manor - Green Gemstone": {
+            "Night Manor - Emerald"},
+        "Night Manor - Yellow Gemstone": {
+            "Night Manor - Topaz"},
+        "Night Manor - White Gemstone": {
+            "Night Manor - Diamond"},
         "Night Manor - Keys": {
             "Night Manor - Copper Key",
             "Night Manor - Bronze Key",
@@ -144,9 +153,9 @@ def create_item(item_name: str, world: "UFO50World", item_class: IC = None) -> I
                 base_id + item_data.id_offset, world.player)
 
 
-def create_items(world: "UFO50World") -> List[Item]:
-    items_to_create: Dict[str, int] = {item_name: data.quantity for item_name, data in item_table.items()}
-    night_manor_items: List[Item] = []
+def create_items(world: "UFO50World") -> list[Item]:
+    items_to_create: dict[str, int] = {item_name: data.quantity for item_name, data in item_table.items()}
+    night_manor_items: list[Item] = []
     if world.options.nm_early_pin:
         items_to_create["Hairpin"] = 0
         hairpin = create_item("Hairpin", world)

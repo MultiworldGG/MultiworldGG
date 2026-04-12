@@ -3,7 +3,8 @@ from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from .data import data as crystal_data, LearnsetData, TMHMData, MoveCategory, TypeMatchup
-from .options import RandomizeLearnsets, RandomizeMoveValues, PhysicalSpecialSplit, RandomizeTypeChart
+from .move_data import MODERN_MOVE_CHANGES
+from .options import RandomizeLearnsets, PhysicalSpecialSplit, RandomizeTypeChart, RandomizeMoves, ModerniseMovesType
 
 if TYPE_CHECKING:
     from .world import PokemonCrystalWorld
@@ -119,13 +120,18 @@ def get_random_move(world: "PokemonCrystalWorld", blocklist: Iterable[str], move
         return get_random_move(world, blocklist=[])
 
 
-def get_tmhm_compatibility(world: "PokemonCrystalWorld", pkmn_name):
+def get_tmhm_compatibility(world: "PokemonCrystalWorld", pkmn_name) -> list[str]:
     pkmn_data = world.generated_pokemon[pkmn_name]
     tm_value = world.options.tm_compatibility.value
     hm_value = world.options.hm_compatibility.value
     tmhms = []
     for tm_name, tm_data in sorted(world.generated_tms.items(), key=lambda x: x[0]):
-        use_value = hm_value if tm_data.is_hm or tm_name in HM_COMPAT_TMS else tm_value
+        if tm_data.is_hm or tm_name in HM_COMPAT_TMS:
+            use_value = world.options.hm_compatibility_override.get(
+                crystal_data.moves[tm_data.id].name.title(),
+                hm_value)
+        else:
+            use_value = tm_value
         # if the value is -1, use vanilla compatibility
         if use_value == -1:
             if tm_name in pkmn_data.tm_hm:
@@ -136,6 +142,7 @@ def get_tmhm_compatibility(world: "PokemonCrystalWorld", pkmn_name):
             use_value = use_value * 2
         if world.random.randint(0, 99) < use_value:
             tmhms.append(tm_name)
+
     return tmhms
 
 
@@ -195,36 +202,47 @@ def get_random_move_from_learnset(world: "PokemonCrystalWorld", pokemon: str, le
 
 
 def randomize_move_values(world: "PokemonCrystalWorld"):
-    if world.options.randomize_move_values:
+    if world.options.randomize_moves:
+
+        power_restricted = RandomizeMoves.power_restricted in world.options.randomize_moves.value
+        power_full = RandomizeMoves.power_full in world.options.randomize_moves.value
+        pp_restricted = RandomizeMoves.pp_restricted in world.options.randomize_moves.value
+        pp_full = RandomizeMoves.pp_full in world.options.randomize_moves.value
+        accuracy = RandomizeMoves.accuracy in world.options.randomize_moves.value
 
         acc100 = 70  # Moves have a 70% chance to get 100% accuracy
         for move_name, move_data in world.generated_moves.items():
             if move_name in ("NO_MOVE", "CURSE", "DRAGON_RAGE", "SONICBOOM"):
                 continue
+
+            if not move_data.power: continue
             new_power = move_data.power
             new_acc = move_data.accuracy
             new_pp = move_data.pp
-            if new_power > 1:
-                if world.options.randomize_move_values == RandomizeMoveValues.option_restricted:
-                    new_power = int(new_power * (world.random.random() + 0.5))
-                    if new_power > 255: new_power = 255
-                    new_pp = new_pp + world.random.choice((-10, -5, 0, 5, 10))
-                    if new_pp < 5: new_pp = 5
-                    if new_pp > 40: new_pp = 40
+
+            if power_full:
+                new_power = world.random.randint(20, 150)
+                new_power //= MOVE_POWER_RATIO.get(move_name, 1)
+            elif power_restricted:
+                new_power = int(new_power * (world.random.random() + 0.5))
+                if new_power > 255: new_power = 255
+
+            if pp_full:
+                new_pp = world.random.randint(5, 40)
+            elif pp_restricted:
+                new_pp = new_pp + world.random.choice((-10, -5, 0, 5, 10))
+                if new_pp < 5: new_pp = 5
+                if new_pp > 40: new_pp = 40
+
+            if accuracy:
+                if world.random.randint(1, 100) <= acc100:
+                    new_acc = 100
                 else:
-                    new_power = world.random.randint(20, 150)
-                    new_power //= MOVE_POWER_RATIO.get(move_name, 1)
-                    new_pp = world.random.randint(5, 40)
+                    # 30 is 76,5 so actual lowest accuracy is a bit lower than 30
+                    new_acc = world.random.randint(30, 100)
 
-                if world.options.randomize_move_values == RandomizeMoveValues.option_full:
-                    if world.random.randint(1, 100) <= acc100:
-                        new_acc = 100
-                    else:
-                        # 30 is 76,5 so actual lowest accuracy is a bit lower than 30
-                        new_acc = world.random.randint(30, 100)
-
-                if move_name in DAMAGING_STATUS_MOVES and new_acc > 75:
-                    new_acc = 75
+            if move_name in DAMAGING_STATUS_MOVES and new_acc > 75:
+                new_acc = 75
 
             world.generated_moves[move_name] = replace(
                 world.generated_moves[move_name],
@@ -274,9 +292,9 @@ def cap_hm_move_power(world: "PokemonCrystalWorld"):
 
 
 def randomize_move_types(world: "PokemonCrystalWorld"):
-    if not world.options.randomize_move_types: return
+    if RandomizeMoves.type not in world.options.randomize_moves.value: return
 
-    all_types = list(crystal_data.types.keys())
+    all_types = sorted(crystal_data.types.keys())
 
     for move_name, move_data in world.generated_moves.items():
         if move_name in ("NO_MOVE", "CURSE"):
@@ -305,6 +323,27 @@ def randomize_type_chart(world: "PokemonCrystalWorld"):
         world.generated_types[type_id] = replace(type_data,
                                                  matchups={matchup_type: matchup_pool.pop() for matchup_type in
                                                            type_data.matchups.keys()})
+
+
+def modernise_moves(world: "PokemonCrystalWorld"):
+    if not world.options.modernise_moves_generation: return
+
+    generation = world.options.modernise_moves_generation.value
+    apply_buffs = world.options.modernise_moves_type != ModerniseMovesType.option_nerfs_only
+    apply_nerfs = world.options.modernise_moves_type != ModerniseMovesType.option_buffs_only
+
+    move_changes = sorted((change for change in MODERN_MOVE_CHANGES if change.generation <= generation
+                           and ((apply_buffs and change.is_buff) or (apply_nerfs and change.is_nerf))),
+                          key=lambda change: change.generation)
+
+    for change in move_changes:
+        move = world.generated_moves[change.move_name]
+
+        world.generated_moves[change.move_name] = (
+            replace(move,
+                    power=change.power if change.power is not None else move.power,
+                    accuracy=change.accuracy if change.accuracy is not None else move.accuracy,
+                    pp=change.pp if change.pp is not None else move.pp))
 
 
 def moves_convert_friendly_to_ids(world: "PokemonCrystalWorld", moves: Iterable[str]) -> set[str]:

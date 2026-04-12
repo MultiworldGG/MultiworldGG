@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from NetUtils import ClientStatus
-from .in_game_data import location_ram_table, global_soul_table, world_version
+from .in_game_data import location_ram_table, global_soul_table, world_version, button_item_table
 from .static_location_data import location_ids
 import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
@@ -34,6 +34,8 @@ class DoSClient(BizHawkClient):
             base_rom_name = validation_data[0].decode("ascii") # AP ROM name
 
             if not base_rom_name.startswith("CASTLEVANIA1ACVEA4"):
+                print("A!!!!")
+                print(base_rom_name)
                 return False
 
             # This is a DoS ROM
@@ -111,6 +113,7 @@ class DoSClient(BizHawkClient):
         death_state = int.from_bytes(read_state[5])
 
         soul_flag_table = list(ap_data[:0x10])
+        button_items = ap_data[0x13]
         current_received_item = ap_data[0x10]
         total_items_received = int.from_bytes(ap_data[0x1E:0x20], "little")
         if "DeathLink" in ctx.tags:
@@ -132,6 +135,9 @@ class DoSClient(BizHawkClient):
                     bit = 1 << (index % 8)
                     offset = int(index / 8)
                     location = soul_flag_table[offset]
+                elif location_name in button_item_table:
+                    bit = 1 << button_item_table.index(location_name)
+                    location = button_items
                 else:
                     pointer = location_ram_table[location_name][0]
                     bit = location_ram_table[location_name][1]

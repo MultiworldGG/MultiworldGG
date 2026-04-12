@@ -19,10 +19,22 @@
 
         <div id="charts-wrapper">
         {% for chart in charts %}
-            <div class="chart-container">
+            <div class="chart-container{% if loop.index0 < 2 %} full-width{% endif %}">
                 {{ chart|indent(16)|safe }}
             </div>
         {% endfor %}
         </div>
+
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="{{ url_for('stats', page=page-1) }}">&laquo; Previous</a>
+            {% endif %}
+            <span>Page {{ page }} of {{ total_pages }}</span>
+            {% if page < total_pages %}
+                <a href="{{ url_for('stats', page=page+1) }}">Next &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 {% endblock %}

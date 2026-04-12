@@ -50,7 +50,41 @@ html {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-top: 15px;
+}
+#player-options #player-options-button-row .lobby-picker-menu {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 6px;
+  min-width: 200px;
+  background: hsla(0, 0%, 15%, 0.95);
+  border: 1px solid hsla(0, 0%, 40%, 0.5);
+  border-radius: 6px;
+  padding: 4px 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+#player-options #player-options-button-row .lobby-picker-menu.visible {
+  display: flex;
+  flex-direction: column;
+}
+#player-options #player-options-button-row .lobby-picker-menu .lobby-picker-item {
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+#player-options #player-options-button-row .lobby-picker-menu .lobby-picker-item:hover {
+  background: hsla(0, 0%, 100%, 0.15);
 }
 #player-options #user-message {
   display: none;
@@ -252,6 +286,7 @@ html {
   max-width: 1.5rem;
   max-height: 1rem;
   margin-left: 0.125rem;
+  margin-right: 0.125rem;
   text-align: center;
   /* Hide arrows on input[type=number] fields */
   -moz-appearance: textfield;

@@ -412,6 +412,7 @@ default_locations = {
     **northern_tundra_egg_locations,
     **eastern_highlands_locations,
     **eastern_highlands_egg_locations,
+    **shufflable_gift_item_town_locations,
     **rabi_rabi_town_egg_locations,
     **subterranean_area_locations,
     **subterranean_area_egg_locations,
@@ -439,12 +440,8 @@ def setup_locations(options: RabiRibiOptions):
         **default_locations
     }
 
-    if options.randomize_gift_items:
-        location_table.update(**shufflable_gift_item_town_locations)
-        if options.include_plurkwood:
-            location_table.update(**shufflable_gift_item_plurkwood_locations)
-
     if options.include_plurkwood:
+        location_table.update(**shufflable_gift_item_plurkwood_locations)
         location_table.update(**plurkwood_egg_locations)
 
     if options.include_warp_destination:

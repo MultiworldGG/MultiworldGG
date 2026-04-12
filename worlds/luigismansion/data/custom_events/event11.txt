@@ -1,7 +1,9 @@
 <MENUOFF>
+<ALLSTOP>
 ---
 <LUIGISTOP3>
 <WAIT>(24)
+<ALLSTOP>
 <ACTOR>"demo_luigi"<STOP>
 <ACTOR>"demo_luigi"<ACT>"WAIT0"
 ---
@@ -35,6 +37,7 @@
 <ANYKEY>
 <CLOSEWINDOW>(0)
 <ALLSTART>
+<FLAGON>(53)
 <WAIT>(15)
 <LUIGIFREE2>
 <CAMERAEND>

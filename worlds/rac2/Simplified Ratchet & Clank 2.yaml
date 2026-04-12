@@ -6,8 +6,8 @@
 # A. This is a .yaml file. You are allowed to use most characters.
 #    To test if your yaml is valid or not, you can use this website:
 #        http://www.yamllint.com/
-#    You can also verify that your MultiworldGG options are valid at this site:
-#        https://multiworld.gg/check
+#    You can also verify that your Archipelago options are valid at this site:
+#        https://archipelago.gg/check
 
 # Your name in-game, limited to 16 characters.
 #     {player} will be replaced with the player's slot number.
@@ -107,7 +107,7 @@ Ratchet & Clank 2:
   # - Medium: harder climbs and basic lateral movement (e.g. Getting to the Notak Worker Bots without the Heli-pack nor the Thermanator)
   # - Hard: full navigation following walls (e.g. Getting to the Mutated Protopet only with the Infiltrator)
   # Can be disabled with value disabled.
-  first_person_mode_glitch_in_logic: no
+  first_person_mode_glitch_in_logic: disabled
 
   # Item & Location Options
   local_items:

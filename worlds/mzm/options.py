@@ -10,7 +10,7 @@ from Options import (
 )
 
 from .patcher.layout_patches import LAYOUT_PATCH_MAPPING
-from .tricks import all_tricks
+from .tricks import all_tricks, trick_groups
 
 
 class Goal(Choice):
@@ -22,11 +22,16 @@ class Goal(Choice):
     Metroid DNA: The door to Mecha Ridley is locked until you find enough Metroid DNA.
     """
     display_name = "goal"
-    option_mecha_ridley = "vanilla"
-    option_bosses = "bosses"
-    option_metroid_dna = "metroid_dna"
+    option_mecha_ridley = 0
+    option_bosses = 1
+    option_metroid_dna = 2
     default = option_metroid_dna
 
+    @classmethod
+    def from_text(cls, text: str) -> "Goal":
+        if text.lower() == "vanilla":
+            return cls(cls.option_mecha_ridley)
+        return super().from_text(text)
 
 class MetroidDNAAvailable(Range):
     display_name = "Metroid DNA Available"
@@ -57,9 +62,9 @@ class GameDifficulty(Choice):
     logic and hazard runs more lenient if you play on Normal.
     """
     display_name = "Game Difficulty"
-    option_normal = "normal"
-    option_hard = "hard"
-    option_either = "either"
+    option_normal = 0
+    option_hard = 1
+    option_either = 2
     default = option_either
 
 
@@ -225,21 +230,23 @@ class WalljumpsInLogic(Removed):
 class TricksAllowed(OptionSet):
     """
     List of paths/tricks/hazard runs to always allow in logic, regardless of logic difficulty setting.
-    The names of valid tricks can be found in the tricks.py file here:
+    The names of valid tricks and trick groups can be found in the tricks.py file here:
     https://github.com/lilDavid/Archipelago-Metroid-Zero-Mission/blob/main/tricks.py
     """
     display_name = "Trick Allow List"
     valid_keys = all_tricks
+    valid_keys.update(trick_groups)
 
 
 class TricksDenied(OptionSet):
     """
     List of paths/tricks/hazard runs to never allow in logic, regardless of logic difficulty setting.
-    The names of valid tricks can be found in the tricks.py file here:
+    The names of valid tricks and trick groups can be found in the tricks.py file here:
     https://github.com/lilDavid/Archipelago-Metroid-Zero-Mission/blob/main/tricks.py
     """
     display_name = "Trick Deny List"
     valid_keys = all_tricks
+    valid_keys.update(trick_groups)
 
 
 class TrickyShinesparks(Toggle):
@@ -339,6 +346,7 @@ class JunkFillWeights(ItemDict):
     """
     Specify the distribution of extra capacity expansions that should be used to fill vacancies in the pool.
     This option only has any effect if there are unfilled locations, e.g. when some items are removed.
+    If no weights are provided, the defaults will be used.
     """
     display_name = "Junk Fill Weights"
     visibility = Visibility.template | Visibility.complex_ui | Visibility.spoiler

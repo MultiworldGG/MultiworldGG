@@ -5,24 +5,32 @@ from ..enums import LevelShuffleMode
 from . import leveldefs as ldef
 from . import levelids as lmap
 
-def get_level_shuffle_lists(use_dlc: bool, mode: LevelShuffleMode) -> list[tuple[list[str],list[str]]]:
+def get_level_shuffle_lists(
+        use_dlc: bool,
+        mode: LevelShuffleMode,
+        shuffle_kingdice: bool
+    ) -> list[tuple[list[str],list[str]]]:
+    enabled = mode > 0
     separate_plane = mode == LevelShuffleMode.PLANE_SEPARATE
 
-    level_lists: list[tuple[list[str],list[str]]]
-
-    if separate_plane:
+    if not enabled:
+        level_lists: list[tuple[list[str],list[str]]] = []
+    elif separate_plane:
         level_lists: list[tuple[list[str],list[str]]] = [
             (list(ldef.level_boss_regular.keys()), [LocationNames.level_boss_kingdice]),
             (list(ldef.level_boss_plane.keys()), []),
             (list(ldef.level_rungun.keys()), []),
-            (list(ldef.level_dicepalace_boss.keys()), [])
         ]
     else:
         level_lists: list[tuple[list[str],list[str]]] = [
             (list(ldef.level_boss.keys()), [LocationNames.level_boss_kingdice]),
             (list(ldef.level_rungun.keys()), []),
         ]
-    if use_dlc:
+
+    if shuffle_kingdice:
+        level_lists.append((list(ldef.level_dicepalace_boss.keys()), []))
+
+    if enabled and use_dlc:
         level_lists[0][0].extend(ldef.level_dlc_boss_regular.keys() if separate_plane else ldef.level_dlc_boss.keys())
         if separate_plane:
             level_lists[1][0].extend(ldef.level_dlc_boss_plane.keys())
@@ -30,11 +38,11 @@ def get_level_shuffle_lists(use_dlc: bool, mode: LevelShuffleMode) -> list[tuple
 
     return level_lists
 
-def get_level_shuffle_map(rand: Random, use_dlc: bool, mode: LevelShuffleMode) -> dict[int,int]:
+def get_level_shuffle_map(rand: Random, use_dlc: bool, mode: LevelShuffleMode, shuffle_kingdice: bool) -> dict[int,int]:
     level_shuffle_map: dict[int,int] = {}
 
     # level_lists format: (level_list, exclude_list)
-    level_lists = get_level_shuffle_lists(use_dlc, mode)
+    level_lists = get_level_shuffle_lists(use_dlc, mode, shuffle_kingdice)
 
     for level_list in level_lists:
         _shuffled_levels = shuffle_levels(rand, level_list[0], level_list[1])

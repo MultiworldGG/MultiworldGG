@@ -1,4 +1,5 @@
 .idea
+.claude
 .vscode
 
 *_Spoiler.txt
@@ -49,6 +50,7 @@ EnemizerCLI/
 /SNI/
 /sni-*/
 /appimagetool*
+/VC_redist.x64.exe
 /host.yaml
 /options.yaml
 /config.yaml
@@ -72,6 +74,8 @@ Output Logs/
 /custom_worlds
 /certs
 /temp
+# stubgen output
+/out/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -221,13 +225,6 @@ data/sprites/remote/*.zspr
 # SMO
 /atmosphere
 
-# gzDoom
-gzdoom/*
-gzdoom/cache/*
-data/gzdoom/cache/*
-data/gzdoom/ipc/*
-data/gzdoom/gzdoom.log
-
 # Minecraft
 minecraft_versions.json
 
@@ -239,4 +236,7 @@ Minecraft Forge server/*
 jdk*/*
 
 # SM64Hacks
-data/sm64hacks/**/*
+sm64hack_jsons
+
+# lobby uploads
+uploads

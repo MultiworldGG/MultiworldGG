@@ -1,7 +1,8 @@
-from BaseClasses import Entrance, MultiWorld, Region
-from .Helpers import is_category_enabled, is_location_enabled
+from BaseClasses import Entrance, MultiWorld, Region, ItemClassification
+from .Helpers import is_category_enabled, is_location_enabled, is_event_enabled
 from .Data import region_table
 from .Locations import ManualLocation, location_name_to_location
+from .Items import ManualItem
 from worlds.AutoWorld import World
 
 
@@ -70,3 +71,13 @@ def create_region(world: World, multiworld: MultiWorld, player: int, name: str, 
 
 def getConnectionName(entranceName: str, exitName: str):
     return entranceName + "To" + exitName
+
+def create_events(world: World, multiworld: MultiWorld, player: int):
+    for name, event in world.event_name_to_event.items():
+        if not is_event_enabled(multiworld, player, event):
+            continue
+        region = multiworld.get_region(event.get("region", "Manual"), player)
+        item = ManualItem(event["name"], ItemClassification.progression, None, player=player)
+        location = ManualLocation(player, name, None, region)
+        region.locations.append(location)
+        location.place_locked_item(item)

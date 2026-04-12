@@ -16,8 +16,8 @@ from .client import YGODDMClient
 from .utils import Constants
 from .items import YGODDMItem, item_name_to_item_id, create_item as fabricate_item, create_victory_event, create_victory_event_tournament
 from .locations import YGODDMLocation, DuelistLocation, Duelist2ndLocation, location_name_to_id as location_map, TournamentLocation, Tournament2ndLocation, Tournament3rdLocation, DiceLocation
-from .dice import Dice, all_dice
-from .options import YGODDMOptions, FreeDuelRewards, Progression, BonusItemMode
+from .dice import Dice, all_dice, id_to_dice
+from .options import YGODDMOptions, FreeDuelRewards, Progression, BonusItemMode, RandomizeStartingDice
 from .duelists import Duelist, all_duelists, map_duelists_to_ids, all_duelists_test
 from .tournament import Tournament, all_tournaments, name_to_tournament
 from .version import __version__
@@ -58,7 +58,7 @@ class YGODDMWorld(World):
 
     duelist_unlock_order: typing.List[Duelist]
     starting_unlocked_duelists: typing.List[Duelist]
-    starting_unlocked_duelists_str: typing.List[str]
+    starting_randomized_dice: typing.List[Dice]
 
     location_name_to_id = location_map
     item_name_to_id = item_name_to_item_id
@@ -95,7 +95,7 @@ class YGODDMWorld(World):
         available_dice: typing.List[Dice] = []
         for d in all_dice:
             if d.name != "D. Magician Girl": #Exclude Dark Magician Girl
-                if state.count(Constants.SHOP_PROGRESSION_ITEM_NAME, self.player) >= (d.shop_level + 2) // 3:
+                if state.count(Constants.SHOP_PROGRESSION_ITEM_NAME, self.player) >= (d.shop_level + 2) // 3 or state.has(d.name, self.player):
                     #Hardcoded to be 6 groups of 3 for shop progression
                     available_dice.append(d)
         return available_dice
@@ -104,13 +104,28 @@ class YGODDMWorld(World):
         self.duelist_unlock_order = all_duelists
         self.tournament_locations = all_tournaments
         self.starting_unlocked_duelists = [Duelist.YUGI_MOTO]
+        self.starting_randomized_dice = []
         # Figure out which other duelists will start unlocked
         start_duelists: typing.List[Duelist] = [duelist for duelist in all_duelists]
         start_duelists.remove(Duelist.YUGI_MOTO)
         start_duelists.remove(Duelist.YAMI_YUGI)
         self.random.shuffle(start_duelists)
         self.starting_unlocked_duelists += start_duelists[0:self.options.starting_duelists.value - 1]
-        self.starting_unlocked_duelists_str = [duelist.name for duelist in self.starting_unlocked_duelists]
+        # Add all starting unlocked duelists to starting item pool, if you're on free duel progression
+        if (self.options.progression.value == Progression.option_free_duel):
+            for d in self.starting_unlocked_duelists:
+                self.options.start_inventory.value[d.name] = 1
+        # Given the option, get a random set of starting dice
+        if (self.options.randomize_starting_dice.value):
+            rando_dice_ids: typing.Set[int] = set()
+            while (len(rando_dice_ids) < 15):
+                new_dice_id = self.random.randint(0, 200)
+                while ((new_dice_id in rando_dice_ids) or (new_dice_id not in id_to_dice)):
+                    new_dice_id = (new_dice_id + 1) % 201
+                rando_dice_ids.add(new_dice_id)
+                self.starting_randomized_dice.append(id_to_dice[new_dice_id])
+                # Put the Randomized dice into the start inventory
+                self.options.start_inventory.value[id_to_dice[new_dice_id].name] = 1
 
 
     def create_item(self, name: str) -> YGODDMItem:
@@ -130,8 +145,7 @@ class YGODDMWorld(World):
             for duelist in self.duelist_unlock_order:
                 if duelist is not Duelist.YAMI_YUGI:
                     duelist_location: DuelistLocation = DuelistLocation(free_duel_region, self.player, duelist)
-                    set_rule(duelist_location, (lambda state, d=duelist_location:
-                                                d.duelist in self.get_available_duelists(state)))
+                    set_rule(duelist_location, (lambda state, d=duelist_location, duelist_name = duelist.name: state.has(duelist_name, self.player)))
                     free_duel_region.locations.append(duelist_location)
 
             # If enabled, add Duelist 2nd locations
@@ -139,8 +153,7 @@ class YGODDMWorld(World):
                 for duelist in self.duelist_unlock_order:
                     if duelist is not Duelist.YAMI_YUGI:
                         duelist_2nd_location: Duelist2ndLocation = Duelist2ndLocation(free_duel_region, self.player, duelist)
-                        set_rule(duelist_2nd_location, (lambda state, d=duelist_2nd_location:
-                                                    d.duelist in self.get_available_duelists(state)))
+                        set_rule(duelist_2nd_location, (lambda state, d=duelist_2nd_location, duelist_name = duelist.name: state.has(duelist_name, self.player)))
                         free_duel_region.locations.append(duelist_2nd_location)
                 
             
@@ -295,6 +308,5 @@ class YGODDMWorld(World):
         return {
             Constants.GENERATED_WITH_KEY: __version__,
             Constants.DUELIST_UNLOCK_ORDER_KEY: map_duelists_to_ids(self.duelist_unlock_order),
-            Constants.GAME_OPTIONS_KEY: self.options.serialize(),
-            Constants.DUELIST_START_UNLOCKED_KEY: self.starting_unlocked_duelists_str
+            Constants.GAME_OPTIONS_KEY: self.options.serialize()
         }

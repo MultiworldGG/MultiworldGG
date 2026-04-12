@@ -96,6 +96,10 @@
     "zone_id": 1
   },
   {
+    "name": "Demolition Site 2nd Floor",
+    "zone_id": 1
+  },
+  {
     "name": "Demolition Site Storage",
     "zone_id": 1
   },
@@ -124,6 +128,10 @@
     "zone_id": 1
   },
   {
+    "name": "Adjoining Alley",
+    "zone_id": 1
+  },
+  {
     "name": "Scaffolding",
     "zone_id": 1
   },
@@ -145,7 +153,7 @@
     "zone_id": 2
   },
   {
-    "name": "East Tunnel",
+    "name": "South East Tunnel",
     "zone_id": 2
   },
   {
@@ -157,11 +165,11 @@
     "zone_id": 2
   },
   {
-    "name": "West Tunnel",
+    "name": "Central Tunnel",
     "zone_id": 2
   },
   {
-    "name": "Northwest Tunnel",
+    "name": "North West Tunnel",
     "zone_id": 2
   },
   {
@@ -206,6 +214,10 @@
     "zone_id": 3
   },
   {
+    "name": "North West Hallway",
+    "zone_id": 3
+  },
+  {
     "name": "Operations Room",
     "zone_id": 3
   },
@@ -218,7 +230,7 @@
     "zone_id": 3
   },
   {
-    "name": "Safety Deposit Room",
+    "name": "Dark Room",
     "zone_id": 3
   },
   {
@@ -226,7 +238,7 @@
     "zone_id": 3
   },
   {
-    "name": "Darkroom",
+    "name": "West Hallway 2F",
     "zone_id": 3
   },
   {
@@ -234,11 +246,15 @@
     "zone_id": 3
   },
   {
+    "name": "Safety Deposit Room",
+    "zone_id": 3
+  },
+  {
     "name": "Shower Room",
     "zone_id": 3
   },
   {
-    "name": "West Hallway 2F",
+    "name": "STARS Hallway",
     "zone_id": 3
   },
   {
@@ -255,6 +271,10 @@
     "zone_id": 4
   },
   {
+    "name": "Shelter Tunnels",
+    "zone_id": 4
+  },
+  {
     "name": "Promenade",
     "zone_id": 4
   },
@@ -264,7 +284,7 @@
   },
 
   {
-    "name": "Makeshift Sickroom",
+    "name": "Makeshift Sick Room",
     "zone_id": 5
   },
   {
@@ -324,7 +344,11 @@
     "zone_id": 5
   },
   {
-    "name": "Sickroom",
+    "name": "Observation Corridor",
+    "zone_id": 5
+  },
+  {
+    "name": "Sick Room",
     "zone_id": 5
   },
   {
@@ -337,6 +361,10 @@
   },
   {
     "name": "Sample Room",
+    "zone_id": 5
+  },
+  {
+    "name": "Hospital Defense",
     "zone_id": 5
   },
   {
@@ -389,7 +417,7 @@
     "zone_id": 6
   },
   {
-    "name": "Server Room",
+    "name": "Server Room 1F",
     "zone_id": 6
   },
   {
@@ -417,11 +445,11 @@
     "zone_id": 6
   },
   {
-    "name": "Disposable Chamber Walkway",
+    "name": "Disposal Chamber Walkway",
     "zone_id": 6
   },
   {
-    "name": "Disposable Chamber",
+    "name": "Disposal Chamber",
     "zone_id": 6
   },
   {

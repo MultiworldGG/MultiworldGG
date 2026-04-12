@@ -1,4 +1,6 @@
-from typing import Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING, List
+
+from .strings.regions_entrances import LunacidEntrance
 
 if TYPE_CHECKING:
     from . import LunacidWorld
@@ -12,8 +14,6 @@ def setup_options_from_slot_data(world: "LunacidWorld"):
             world.options.starting_class.value = world.passthrough["starting_class"]
             world.options.starting_area.value = world.passthrough["starting_area"]
             world.options.entrance_randomization.value = world.passthrough["entrance_randomization"]
-            world.options.experience.value = world.passthrough["experience"]
-            world.options.weapon_experience.value = world.passthrough["weapon_experience"]
             world.options.random_elements.value = world.passthrough["random_elements"]
             world.options.enemy_randomization.value = world.passthrough["enemy_randomization"]
             world.options.required_strange_coin.value = world.passthrough["required_strange_coin"]
@@ -26,10 +26,11 @@ def setup_options_from_slot_data(world: "LunacidWorld"):
             world.options.levelsanity.value = world.passthrough["levelsanity"]
             world.options.grasssanity.value = world.passthrough["grasssanity"]
             world.options.breakables.value = world.passthrough["breakables"]
-            world.options.normalized_drops.value = world.passthrough["normalized_drops"]
             world.options.secret_door_lock.value = world.passthrough["secret_door_lock"]
             world.options.switch_locks.value = world.passthrough["switch_locks"]
             world.options.door_locks.value = world.passthrough["door_locks"]
+            world.options.challenges.value = world.passthrough["challenges"]
+            world.options.tricks_and_glitches.value = world.passthrough["tricks_and_glitches"]
             world.starting_weapon = world.passthrough["starting_weapon"]
             world.weapon_elements = world.passthrough["elements"]
             stats = world.passthrough["created_class_stats"]
@@ -456,6 +457,32 @@ poptracker_data: dict[str, int] = {
 }
 
 
+def disconnect_entrances(world: "LunacidWorld") -> None:
+    world.disconnected_entrances = {}
+    randoable_entrances = LunacidEntrance.randoable_entrances
+    for entrance in world.get_entrances():
+        if entrance.name in randoable_entrances:
+            world.disconnected_entrances[entrance] = entrance.connected_region
+            entrance.connected_region = None
+
+
+def reconnect_found_entrance(world: "LunacidWorld", value: Any) -> None:
+    entrance_connected = False
+    traversed_entrances = {entry["Key"]: entry["Value"] for entry in value}
+    for entrance, region in world.disconnected_entrances.items():
+        if entrance.name in traversed_entrances:
+                entrance.connect(region)
+                entrance_connected = True
+                if entrance.name != "Move to Starting Area":
+                    reverse_entrance_name = traversed_entrances[entrance.name]
+                    reverse_entrance = world.get_entrance(reverse_entrance_name)
+                    reverse_region = world.disconnected_entrances[reverse_entrance]
+                    reverse_entrance.connect(reverse_region)
+    if not entrance_connected:
+        raise Exception(f"Some entrance in {traversed_entrances} not found for reconnect_found_entrance method.")
+
+
+
 def map_page_index(data: Any) -> int:
     if not isinstance(data, str):
         return 0
@@ -487,7 +514,7 @@ def map_page_index(data: Any) -> int:
 
 TRACKER_WORLD = {
     "map_page_folder": "tracker",
-    "map_page_maps": "maps/maps.json",
+    "map_page_maps": ["maps/maps.json"],
     "map_page_locations": ["locations/locations.json", "locations/Accursed Tomb.json", "locations/A Holy Battlefield.json", "locations/Boiling Grotto.json",
                            "locations/Castle Le Fanu.json", "locations/Chamber of Fate.json", "locations/Forbidden Archives.json", "locations/Forest Canopy.json",
                            "locations/Forlorn Arena.json", "locations/Great Well Surface.json", "locations/Hollow Basin.json", "locations/Labyrinth of Ash.json",
@@ -497,5 +524,6 @@ TRACKER_WORLD = {
                            "locations/misc/Etna's Pupil.json", ],
     "map_page_setting_key": "Slot:{player}:currentScene",
     "map_page_index": map_page_index,
+    #"external_pack_key": "ut_poptracker_path",
     "poptracker_name_mapping": poptracker_data
 }

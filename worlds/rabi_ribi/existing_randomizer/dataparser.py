@@ -46,6 +46,7 @@ def define_config_flags():
         "WARP_DESTINATION_REACHABLE": False,
         "DARKNESS_WITHOUT_LIGHT_ORB": True,
         "UNDERWATER_WITHOUT_WATER_ORB": True,
+        "EXPLOSIVES_WITH_CARROT_SHOOTER": True,
         "EVENT_WARPS_REQUIRED": True,
     }
     return d
@@ -202,6 +203,7 @@ def define_default_expressions(variable_names_set):
         "HAMMER_ROLL_LV3": "HAMMER_ROLL_LV3 & BUNNY_WHIRL & PIKO_HAMMER",
         "DARKNESS": "DARKNESS_WITHOUT_LIGHT_ORB | LIGHT_ORB",
         "UNDERWATER": "UNDERWATER_WITHOUT_WATER_ORB | WATER_ORB",
+        "CARROT_SHOOTER": "CARROT_SHOOTER & EXPLOSIVES_WITH_CARROT_SHOOTER",
         "EVENT_WARP": "EVENT_WARPS_REQUIRED",
         "PROLOGUE_TRIGGER": "CHAPTER_1 | OPEN_MODE",
         #"RIBBON": "TRUE",
@@ -704,6 +706,7 @@ def read_ap_config_settings(config_settings, ap_options):
     """Updates the default configuration settings with the player options from Archipelago."""
     config_settings['DARKNESS_WITHOUT_LIGHT_ORB'] = bool(ap_options.darkness_without_light_orb.value)
     config_settings['UNDERWATER_WITHOUT_WATER_ORB'] = bool(ap_options.underwater_without_water_orb.value)
+    config_settings['EXPLOSIVES_WITH_CARROT_SHOOTER'] = bool(ap_options.carrot_shooter_in_logic.value)
     config_settings['ZIP_REQUIRED'] = bool(ap_options.zips_required.value)
     config_settings['SEMISOLID_CLIPS_REQUIRED'] = bool(ap_options.semi_solid_clips_required.value)
     config_settings['BLOCK_CLIPS_REQUIRED'] = bool(ap_options.block_clips_required.value)

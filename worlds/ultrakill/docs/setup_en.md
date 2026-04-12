@@ -8,9 +8,9 @@ Optionally, you can also download [NoTutorial](https://thunderstore.io/c/ultraki
 
 1. Download and install [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases).
 
-2. Download `ultrakill.apworld` from the mod's [releases page](https://github.com/TRPG0/ArchipelagoULTRAKILL/releases) and add it to your `worlds` folder. (Default path: `C:\Program Files\MultiworldGG\lib\worlds`)
+2. Unless you are using MWGG: Download `ultrakill.apworld` from the mod's [releases page](https://github.com/TRPG0/ArchipelagoULTRAKILL/releases) and add it to your `worlds` folder. (Default path: `C:\ProgramData\Archipelago\lib\worlds`)
 
-3. Set up all `.yaml` files for each player in the multiworld, then add them to the `Players` folder. A template can be downloaded for ULTRAKILL from the mod's [releases page.](https://github.com/TRPG0/ArchipelagoULTRAKILL/releases) A guide for advanced settings can be found [here.](https://multiworld.gg/tutorial/MultiworldGG/advanced_settings/en)
+3. Set up all `.yaml` files for each player in the multiworld, then add them to the `Players` folder. A template can be downloaded for ULTRAKILL from the mod's [releases page.](https://github.com/TRPG0/ArchipelagoULTRAKILL/releases) A guide for advanced settings can be found [here.](/tutorial/Archipelago/advanced_settings/en)
 
 4. Run `MultiworldGGGenerate.exe` to generate a game, which will appear in the `output` folder.
 

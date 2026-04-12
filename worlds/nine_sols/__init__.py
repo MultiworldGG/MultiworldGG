@@ -7,6 +7,7 @@ from .items import NineSolsItem, all_non_event_items_table, item_name_groups, cr
 from .locations_and_regions import all_non_event_locations_table, location_name_groups, create_regions
 from .ut_map_page.map_page_index import map_page_index
 from .jade_costs import generate_random_jade_costs
+from .node_items import select_node_item_names
 from .options import *
 
 
@@ -23,14 +24,26 @@ class NineSolsWebWorld(WebWorld):
         )
     ]
     option_groups = [
-        OptionGroup("General Progression", [
+        OptionGroup("Sol Seals", [
             ShuffleSolSeals,
             SealsForEigong,
             SealsForPrison,
-            PreventWeakenedPrisonState,
             SealsForEthereal,
+        ]),
+        OptionGroup("Logic & Skips", [
+            PreventWeakenedPrisonState,
             SkipSoulscapePlatforming,
             PreventAnnoyingRunbacks,
+            LogicDifficulty,
+        ]),
+        OptionGroup("Root Nodes", [
+            FirstRootNode,
+            ShuffleSomeRootNodes,
+        ]),
+        OptionGroup("Shuffle Starting Abilities", [
+            ShuffleGrapple,
+            ShuffleWallClimb,
+            ShuffleLedgeGrab,
         ]),
         OptionGroup("Jade Cost Randomization", [
             RandomizeJadeCosts,
@@ -45,11 +58,9 @@ class NineSolsWebWorld(WebWorld):
             KuafuExtraInventoryUnlockSolSeals,
         ]),
         OptionGroup("Additional Randomizations", [
-            FirstRootNode,
-            ShuffleGrapple,
-            ShuffleWallClimb,
-            ShuffleLedgeGrab,
-            LogicDifficulty,
+            RandomizeShops,
+            # skill_tree_randomization
+            # entrance_randomization
         ]),
     ]
 
@@ -62,11 +73,6 @@ class NineSolsWorld(World):
     game = "Nine Sols"
     author: str = "Ixrec"
     web = NineSolsWebWorld()
-
-    # this is how we tell the Universal Tracker we want to use re_gen_passthrough
-    @staticmethod
-    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:
-        return slot_data
 
     # Universal Tracker configuration
     ut_can_gen_without_yaml = True
@@ -81,6 +87,7 @@ class NineSolsWorld(World):
 
     using_ut: bool
     jade_costs: dict[str, int] | str
+    node_items: list[str]
 
     def __init__(self, multiworld, player):
         super(NineSolsWorld, self).__init__(multiworld, player)
@@ -88,6 +95,7 @@ class NineSolsWorld(World):
         # initial values of instance attributes (*not* class attributes)
         self.jade_costs = 'vanilla'
         self.using_ut = False
+        self.node_items = []
 
     def generate_early(self) -> None:
         if self.options.jade_cost_max < self.options.jade_cost_min:
@@ -99,22 +107,34 @@ class NineSolsWorld(World):
                 if "Nine Sols" in self.multiworld.re_gen_passthrough:
                     self.using_ut = True
                     slot_data = self.multiworld.re_gen_passthrough["Nine Sols"]
+
+                    self.node_items = slot_data.get('node_items', [])  # in normal gen this only affects start inventory, but UT needs this for /next_progression
+                    self.options.first_root_node = FirstRootNode.from_text(slot_data['first_root_node_name'])
+
                     self.options.seals_for_eigong.value = slot_data['seals_for_eigong']
                     self.options.seals_for_prison.value = slot_data['seals_for_prison']
+                    self.options.prevent_weakened_prison_state.value = slot_data.get('prevent_weakened_prison_state', 0)
                     self.options.seals_for_ethereal.value = slot_data['seals_for_ethereal']
                     self.options.skip_soulscape_platforming.value = slot_data['skip_soulscape_platforming']
-                    self.options.first_root_node = FirstRootNode.from_text(slot_data['first_root_node_name'])
+                    self.options.prevent_annoying_runbacks.value = slot_data.get('prevent_annoying_runbacks', 0)
                     self.options.logic_difficulty.value = slot_data.get('logic_difficulty', 0)
                     self.options.shop_unlocks.value = slot_data.get('shop_unlocks', 0)
+                    self.options.shuffle_grapple.value = slot_data.get('shuffle_grapple', 0)
+                    self.options.shuffle_wall_climb.value = slot_data.get('shuffle_wall_climb', 0)
+                    self.options.shuffle_ledge_grab.value = slot_data.get('shuffle_ledge_grab', 0)
                     self.options.kuafu_shop_unlock_sol_seals.value = slot_data.get('kuafu_shop_unlock_sol_seals', 0)
                     self.options.chiyou_shop_unlock_sol_seals.value = slot_data.get('chiyou_shop_unlock_sol_seals', 0)
                     self.options.kuafu_extra_inventory_unlock_sol_seals.value = (
                         slot_data.get('kuafu_extra_inventory_unlock_sol_seals', 0))
+                    self.options.randomize_shops.value = slot_data.get('randomize_shops', 0)
             return
 
         # generate game-specific randomizations separate from AP items/locations
         self.jade_costs = generate_random_jade_costs(self.random, self.options) \
             if self.options.randomize_jade_costs else "vanilla"
+
+        self.node_items = select_node_item_names(self.random, self.options) \
+            if self.options.shuffle_some_root_nodes else []
 
     # members and methods implemented by locations_and_regions.py, locations.jsonc and connections.jsonc
 
@@ -157,20 +177,25 @@ class NineSolsWorld(World):
 
     def fill_slot_data(self):
         slot_data = self.options.as_dict(
-            'skip_soulscape_platforming',  # implemented by client/mod code, and affects logic/trackers
+            'skip_soulscape_platforming',
             'seals_for_eigong',
             'seals_for_prison',
             'seals_for_ethereal',
             'logic_difficulty',
+            'shuffle_grapple',
+            'shuffle_wall_climb',
+            'shuffle_ledge_grab',
             'shop_unlocks',
             'kuafu_shop_unlock_sol_seals',
             'chiyou_shop_unlock_sol_seals',
             'kuafu_extra_inventory_unlock_sol_seals',
+            'prevent_annoying_runbacks',
             'prevent_weakened_prison_state',
+            'randomize_shops',
         )
         slot_data["first_root_node_name"] = self.options.first_root_node.current_key  # we want strings instead of ints
-        # more client/mod features, these are only in the apworld because we want them fixed per-slot/at gen time
         slot_data["jade_costs"] = self.jade_costs
+        slot_data["node_items"] = self.node_items
         # APWorld versions are not (yet?) exposed by AP servers, so the client/mod needs us to put it in slot_data
         slot_data["apworld_version"] = self.world_version.as_simple_string()
         return slot_data

@@ -31,7 +31,8 @@ item_table = {
 
     # Keys
     AEItem.Key.value: RAM.items["Key"],
-    AEItem.Victory.value: RAM.items["Victory"],
+    # No longer needed since we made it an event item
+    #AEItem.Victory.value: RAM.items["Victory"],
 
     # Monkey Lamps
     AEItem.CB_Lamp.value: RAM.items["CB_Lamp"],

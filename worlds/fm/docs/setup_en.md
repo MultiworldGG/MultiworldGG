@@ -1,11 +1,11 @@
 # Yu-Gi-Oh! Forbidden Memories Setup Guide
 
 ## Required Software
-- Yu-Gi-Oh! Forbidden Memories NTSC: ISO or BIN/CUE. Card-drop mods are expressly supported. The Archipelago
+- Yu-Gi-Oh! Forbidden Memories NTSC: ISO or BIN/CUE. Card-drop mods are expressly supported. The MultiworldGG
 implementation tries to be agnostic toward mods, but mods that alter drop tables will create unsupported logic. You do
-not have to patch your ROM with Archipelago for it to work. Just make sure you launch a "New Game" for each seed.
+not have to patch your ROM with MultiworldGG for it to work. Just make sure you launch a "New Game" for each seed.
 - [BizHawk](https://tasvideos.org/BizHawk/ReleaseHistory) 2.7 or later. Other emulators are not supported.
-- The latest `fm.apworld` file. You can find this on the [Releases page](https://github.com/sg4e/Archipelago/releases/latest). Put this in your `Archipelago/lib/worlds` folder.
+- Unless you use MultiworldGG: The latest `fm.apworld` file. You can find this on the [Releases page](https://github.com/sg4e/Archipelago/releases/latest). Put this in your `Archipelago/lib/worlds` folder.
 
 ### Configuring BizHawk
 
@@ -22,8 +22,8 @@ clear it.
 
 ## Generating a Game
 
-1. Create your options file (YAML). After installing the `fm.apworld` file, you can generate a template within the Archipelago Launcher by clicking `Generate Template Settings`.
-2. Follow the general Archipelago instructions for [generating a game](https://multiworld.gg/tutorial/Archipelago/setup/en#generating-a-game).
+1. Create your options file (YAML). After installing the `fm.apworld` file, you can generate a template within the MultiworldGG Launcher by clicking `Generate Template Settings`.
+2. Follow the general MultiworldGG instructions for [generating a game](/tutorial/Archipelago/setup/en#generating-a-game).
 3. Open `MultiworldGGLauncher.exe`
 4. Select "BizHawk Client" in the right-side column. On your first time opening BizHawk Client, you will also be asked to
 locate `EmuHawk.exe` in your BizHawk install.

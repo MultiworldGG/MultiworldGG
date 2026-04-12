@@ -7,12 +7,10 @@ from .Items import soul_filler_table
 class Goal(Choice):
     """The goal for your game.
        Throne Room: Get to the Throne Room and defeat Menace there.
-       Abyss: Open the path to the Mine of Judgment, then defeat Menace in the Abyss.
-       Abyss Plus: Defeat Aguni at the throne room, then open the path to the Mine of Judgment and defeat Menace in the Abyss."""
+       Abyss: Open the path to the Mine of Judgment, then defeat Menace in the Abyss."""
     display_name = "Goal"
     option_throne_room = 0
     option_abyss = 1
-    option_abyss_plus = 2
     default = 0
 
 class ReplaceMenaceWithSoma(Toggle):
@@ -43,6 +41,7 @@ class StartingWeapon(TextChoice):
     option_random_base = 0
     option_random_any = 1
     default = "Knife"
+    display_name = "Starting Weapon"
 
 class FixLuck(DefaultOnToggle):
     """Fixes how the Luck stat is applied.
@@ -71,6 +70,7 @@ class SoulRandomizer(Choice):
     option_shuffled = 1
     option_soulsanity = 2
     default = 0
+    display_name = "Soul Randomizer"
 
 class SoulsanityLevel(Choice):
     """The maximum tier of soul rarity that have Locations on them.
@@ -79,6 +79,7 @@ class SoulsanityLevel(Choice):
     option_medium = 1
     option_rare = 2
     default = 0
+    display_name = "Soulsanity Level"
 
 class GuaranteedSouls(OptionSet):
     """The specified Souls will be guaranteed to have at least one copy in the item pool. Unspecified souls can still be randomly selected from the soul pool.
@@ -150,6 +151,78 @@ class FreeBat(Toggle):
     """Removes Bat Company's MP cost"""
     display_name = "Free Bat"
 
+class PassiveSoulEaterRing(Toggle):
+    """If enabled, you will gain the bonus from the Soul Eater Ring without needing to equip it
+       as long as you have at least one in your inventory."""
+    display_name = "Passive Soul Eater Ring"
+
+class GateItems(Choice):
+    """Defines how the 4 metal switch gates act.
+       Normal: Normal behavior. Gates can only be opened by pressing the respective button.
+       Add Keys: The same as normal behavior, but also adds keys to the item pool that can open the gate from the other side.
+       Buttonsanity: Adds keys to each gate, and the corresponding button will grant a check."""
+    option_normal = 0
+    option_add_keys = 1
+    option_buttonsanity = 2
+    default = 0
+    display_name = "Gate Items"
+
+class HardMode(Toggle):
+    """Puts the game in Hard Mode. Enemies are tougher, sometimes have additional properties, but drop rates are increased.
+       There are no checks exclusive to Hard Mode."""
+    display_name = "Hard Mode"
+
+class BossShuffle(Toggle):
+    """Randomizes boss fights."""
+    display_name = "Boss Shuffle"
+
+class SealShuffle(Toggle):
+    """Randomizes which seal is required for each boss/door.
+       Early Seal 1 will guarantee Flying Armor to always use Seal 1."""
+    display_name = "Seal Shuffle"
+
+class RandomizeSealPatterns(Toggle):
+    """Randomizes the drawn pattern for Magic Seals, as well as their rotation."""
+    display_name = "Randomize Seal Patterns"
+
+class MenaceCondition(Choice):
+    """This Condition is required to be met before you can fight Menace.
+       None: None
+       Throne Room: Defeat Aguni in the Throne Room (If Goal is set to throne room, this will be set to None.)
+       Garden: Avoid the bad ending in the Garden of Madness
+       Bosses: Defeat all available bosses"""
+    display_name = "Menace Condition"
+    option_none = 0
+    option_throne_room = 1
+    option_garden = 2
+    option_bosses = 3
+    default = 0
+
+class MineCondition(Choice):
+    """This Condition is required to be met before you can enter the Mine of Judgment.
+       None: None
+       Throne Room: Defeat Aguni in the Throne Room (If Goal is set to throne room, the mine and the Abyss will be inaccessible.)
+       Garden: Avoid the bad ending in the Garden of Madness
+       Bosses: Defeat all available bosses"""
+    display_name = "Mine Condition"
+    option_none = 0
+    option_throne_room = 1
+    option_garden = 2
+    option_bosses = 3
+    default = 2
+
+class GardenCondition(Choice):
+    """This Condition is required to be met before Celia appears in the Garden of Madness.
+       None: None
+       Throne Room: Defeat Aguni in the Throne Room (This condition is considered unreachable if Goal is set to throne room)
+       Bosses: Defeat all available bosses"""
+    display_name = "Garden Condition"
+    option_none = 0
+    option_throne_room = 1
+    option_bosses = 2
+    default = 0
+    display_name = "Garden Condition"
+
 #class RevealBreakableWalls(Choice):
  #   """Controls how breakable walls act.
   #     Normal: Breakable walls are breakable, you are assumed to already know where they are.
@@ -190,10 +263,22 @@ class DoSOptions(PerGameCommonOptions):
     randomize_red_soul_walls: SoulWallRandomizer
     randomize_synthesis_souls: RandomizeSynthSouls
     no_mp_bat: FreeBat
+    passive_soul_eater_ring: PassiveSoulEaterRing
+    gate_items: GateItems
+    hard_mode: HardMode
+    boss_shuffle: BossShuffle
+    seal_shuffle: SealShuffle
+    randomize_seal_patterns: RandomizeSealPatterns
+    menace_condition: MenaceCondition
+    mine_condition: MineCondition
+    garden_condition: GardenCondition
 
 dos_option_groups = [
     OptionGroup("Goal Options", [
         Goal,
+        MenaceCondition,
+        MineCondition,
+        GardenCondition,
         ReplaceMenaceWithSoma
 
     ]),
@@ -208,9 +293,16 @@ dos_option_groups = [
 
     OptionGroup("Item Options", [
         StartingWeapon,
-        EarlySeal1,
-        ShopRandomizer
+        ShopRandomizer,
+        GateItems
 
+    ]),
+
+    OptionGroup("Seal Settings", [
+        DisableBossSeals,
+        EarlySeal1,
+        SealShuffle,
+        RandomizeSealPatterns
     ]),
 
     OptionGroup("Weapon Synth Settings", [
@@ -221,25 +313,27 @@ dos_option_groups = [
     OptionGroup("World Settings", [
         RandomizeStartingWarp,
         OpenDrawbridge,
-        SoulWallRandomizer,
+        SoulWallRandomizer
 
     ]),
 
     OptionGroup("Enemy Settings", [
         ShuffleDrops,
-        ExperiencePercent
+        ExperiencePercent,
+        HardMode,
+        BossShuffle
 
     ]),
 
     OptionGroup("Quality of Life", [
         RemoveMoneyGates,
-        DisableBossSeals,
         RevealMap,
         RevealBreakableWalls,
         FixLuck,
         BoostSpeed,
         OneScreenMode,
-        FreeBat
+        FreeBat,
+        PassiveSoulEaterRing
     ]),
 
     OptionGroup("Music Randomizer", [

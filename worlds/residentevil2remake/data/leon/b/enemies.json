@@ -1,0 +1,1089 @@
+[
+    {
+            "name": "Police Zombie",
+            "region": "East Courtyard",
+            "original_item": "",
+            "item_object": "emZombie_OutdoorRushKnock1",
+            "parent_object": "16-219-2-0-ID210",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Overweight Police Zombie",
+            "region": "East Courtyard",
+            "original_item": "",
+            "item_object": "emZombie_OutdoorRushKnock2",
+            "parent_object": "16-219-2-2-ID002",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Female Zombie Red Shirt",
+            "region": "East Courtyard",
+            "original_item": "",
+            "item_object": "emZombie_OutdoorRushKnock3",
+            "parent_object": "16-219-2-1-ID001",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Female Zombie Grey Clothes",
+            "region": "East Courtyard",
+            "original_item": "",
+            "item_object": "2ndOutdoorSouthF",
+            "parent_object": "16-219-2-1-ID002",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Overweight Zombie near Stairs",
+            "region": "East Courtyard",
+            "original_item": "",
+            "item_object": "2ndOutdoorSouthB",
+            "parent_object": "16-219-2-2-ID202",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Zombie Elliot",
+            "region": "East Hallway 1F",
+            "original_item": "",
+            "item_object": "emZombie_1FEEliot",
+            "parent_object": "16-238-0-0-ID903",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "2nd Zombie from Elliot's Window",
+            "region": "East Hallway 1F",
+            "original_item": "",
+            "item_object": "emZombie1FE2Window2nd",
+            "parent_object": "16-239-0-0-ID003",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Zombie from Window",
+            "region": "East Office",
+            "original_item": "",
+            "item_object": "emZombie_1FEOffice_Window",
+            "parent_object": "16-230-0-0-ID207",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Standing Police Zombie",
+            "region": "East Office",
+            "original_item": "",
+            "item_object": "emZombie_1FEOffice2",
+            "parent_object": "16-230-0-0-ID203",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Dark-Haired Zombie",
+            "region": "Main Hall",
+            "original_item": "",
+            "item_object": "emZombie_Depot1",
+            "parent_object": "16-112-0-0-ID006",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Zombie Marvin",
+            "region": "Main Hall",
+            "original_item": "",
+            "item_object": "emZombie_2ndMarvin",
+            "parent_object": "16-112-5-0-ID902",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Female Zombie East Rail",
+            "region": "Main Hall",
+            "original_item": "",
+            "item_object": "emZombie_1FECorridor_DepotZombies",
+            "parent_object": "16-112-2-1-ID007",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Licker",
+            "region": "West Hallway 1F",
+            "original_item": "",
+            "item_object": "emLicker_1FW",
+            "parent_object": "16-125-0-3-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Overweight Zombie at Vending Machine",
+            "region": "West Hallway 1F",
+            "original_item": "",
+            "item_object": "emZombie_1FWjihanki",
+            "parent_object": "16-431-0-2-ID200",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Sleeping Desk Zombie",
+            "region": "West Office",
+            "original_item": "",
+            "item_object": "emZombie_1FWestOffice2",
+            "parent_object": "16-119-0-0-ID200",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Sitting Zombie near Safe",
+            "region": "West Office",
+            "original_item": "",
+            "item_object": "emZombie_1FWestOffice",
+            "parent_object": "16-119-0-0-ID208",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "One-Armed Police Zombie outside West Office",
+            "region": "East Hallway 1F",
+            "original_item": "",
+            "item_object": "emZombie_1FW_TrapZombie",
+            "parent_object": "16-431-0-0-ID213",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Zombie from Window at Stairs",
+            "region": "West Hallway 1F",
+            "original_item": "",
+            "item_object": "emZombie_1FW1Window2nd",
+            "parent_object": "16-226-0-0-ID014",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Sitting Police Zombie at top of stairs",
+            "region": "West Hallway 2F",
+            "original_item": "",
+            "item_object": "emZombie_2FW",
+            "parent_object": "16-252-0-1-ID204",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Zombie at end of corridor",
+            "region": "West Hallway 2F",
+            "original_item": "",
+            "item_object": "emZombie_2FW_CorriderB",
+            "parent_object": "16-253-0-0-ID200",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Zombie at top of stairs",
+            "region": "West Hallway 3F",
+            "original_item": "",
+            "item_object": "2ndPlaySpadekeyZombie",
+            "parent_object": "16-270-0-0-ID216",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Female Zombie",
+            "region": "Library",
+            "original_item": "",
+            "item_object": "emZombie_Library_4",
+            "parent_object": "16-249-0-1-ID003",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Zombie eating Zombie",
+            "region": "Library",
+            "original_item": "",
+            "item_object": "emZombie_Library3",
+            "parent_object": "16-249-0-0-ID013",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Overweight Zombie near Spade Key Door",
+            "region": "Library",
+            "original_item": "",
+            "item_object": "emZombie_Library2",
+            "parent_object": "16-249-0-2-ID001",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Helicopter Crash Zombie 1",
+            "region": "East Hallway 2F",
+            "original_item": "",
+            "item_object": "emZombie_2FECorrider",
+            "parent_object": "16-255-0-0-ID216",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Helicopter Crash Zombie 2",
+            "region": "East Hallway 2F",
+            "original_item": "",
+            "item_object": "emZombie_2FECorrider",
+            "parent_object": "16-255-0-0-ID012",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Police Zombie from first window",
+            "region": "Southwest Hallway",
+            "original_item": "",
+            "item_object": "emZombie_1FW4Window",
+            "parent_object": "16-125-0-0-ID211",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Jumpsuit Zombie",
+            "region": "Southwest Hallway",
+            "original_item": "",
+            "item_object": "emZombie_1FW3Window",
+            "parent_object": "16-225-0-0-ID008",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Overweight Zombie wearing Vest",
+            "region": "Southwest Hallway",
+            "original_item": "",
+            "item_object": "emZombie_1FWAdd",
+            "parent_object": "16-225-0-2-ID004",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "type": "Boss",
+            "name": "G1 Boss Fight",
+            "region": "Machinery Room",
+            "original_item": "",
+            "item_object": "G1",
+            "parent_object": "29-353-1-12-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Dog in Cage 3",
+            "region": "Kennel",
+            "original_item": "",
+            "item_object": "dog_East_Cage01Leon",
+            "parent_object": "29-279-0-4-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Dog in Cage 2",
+            "region": "Kennel",
+            "original_item": "",
+            "item_object": "dog_East_Cage02Leon",
+            "parent_object": "29-279-0-4-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Dog in Cage 1",
+            "region": "Kennel",
+            "original_item": "",
+            "item_object": "dog_East_Cage03Leon",
+            "parent_object": "29-279-0-4-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Overweight Zombie",
+            "region": "Firing Range",
+            "original_item": "",
+            "item_object": "zombie_shootingRange01",
+            "parent_object": "29-275-0-2-ID201",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Female Zombie",
+            "region": "Firing Range",
+            "original_item": "",
+            "item_object": "zombie_shootingRange04",
+            "parent_object": "29-275-0-1-ID201",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Zombie at Door",
+            "region": "Morgue",
+            "original_item": "",
+            "item_object": "Zombie_01_OutSide",
+            "parent_object": "29-273-0-2-ID004",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Sleepy Zombie at Diamond Key",
+            "region": "Morgue",
+            "original_item": "",
+            "item_object": "Zombie_02_JumpUp",
+            "parent_object": "29-273-0-0-ID008",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Diamond Key"]
+            }
+    },
+    {
+            "name": "Action Dog behind fence",
+            "region": "Generator Room",
+            "original_item": "",
+            "item_object": "FenceClimbDog",
+            "parent_object": "29-274-0-4-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Action Dog under fence outside door",
+            "region": "Generator Room",
+            "original_item": "",
+            "item_object": "dog_East_twinsBlue1",
+            "parent_object": "29-273-0-4-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Action Dog jumping over debris outside doors",
+            "region": "Kennel",
+            "original_item": "",
+            "item_object": "BaricadeJumpDog",
+            "parent_object": "29-272-0-4-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Square Crank"]
+            }
+    },
+    {
+            "name": "Action Dog from vent",
+            "region": "Kennel",
+            "original_item": "",
+            "item_object": "dog_East_twinsBlue2",
+            "parent_object": "29-272-0-4-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Square Crank"]
+            }
+    },
+    {
+            "name": "Dark Police Zombie from Window",
+            "region": "Break Room Hallway",
+            "original_item": "",
+            "item_object": "emZombie_1FECorridorC_Window",
+            "parent_object": "16-229-0-0-ID207",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": [
+                    ["Small Gear", "Large Gear", "Square Crank"],
+                    ["Small Gear", "Large Gear", "Mechanic Jack Handle"]
+                ]
+            }
+    },
+    {
+            "name": "Dark Police Zombie",
+            "region": "Break Room Hallway",
+            "original_item": "",
+            "item_object": "emZombie_1FECorridorC",
+            "parent_object": "16-229-0-0-ID209",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Plaid Shirt Zombie",
+            "region": "Break Room Hallway",
+            "original_item": "",
+            "item_object": "emZombie_1FECorridorC",
+            "parent_object": "16-229-0-0-ID011",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Munching Zombie",
+            "region": "Break Room Hallway",
+            "original_item": "",
+            "item_object": "emZombie_1FECorridorC",
+            "parent_object": "16-229-0-0-ID208",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Female Zombie from window",
+            "region": "East Hallway 1F",
+            "original_item": "",
+            "item_object": "emZombie1FEWindow3rd",
+            "parent_object": "16-239-0-1-ID002",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"]
+            }
+    },
+    {
+            "name": "Zombie hitting door",
+            "region": "Press Room",
+            "original_item": "",
+            "item_object": "emZombie_1FECorriderB",
+            "parent_object": "16-232-0-0-ID011",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Plain Clothes Zombie",
+            "region": "Main Hall 3F",
+            "original_item": "",
+            "item_object": "emZombie_Hall3F",
+            "parent_object": "16-112-0-0-ID002",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"]
+            }
+    },
+    {
+            "name": "Police Zombie",
+            "region": "Main Hall 3F",
+            "original_item": "",
+            "item_object": "emZombie_Hall3F",
+            "parent_object": "16-112-0-0-ID200",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"]
+            }
+    },
+    {
+            "name": "Jumpsuit Zombie from office or window",
+            "region": "East Office",
+            "original_item": "",
+            "item_object": "emZombie_1FEOffice_Window",
+            "parent_object": "16-230-0-0-ID007",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"]
+            }
+    },
+    {
+            "name": "Short-Haired Police Zombie",
+            "region": "East Storage Room",
+            "original_item": "",
+            "item_object": "emZombie_ArtRoom3F",
+            "parent_object": "16-269-0-0-ID214",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"]
+            }
+    },
+    {
+            "name": "Dark Police Zombie",
+            "region": "East Storage Room",
+            "original_item": "",
+            "item_object": "emZombie_ArtRoom3F",
+            "parent_object": "16-269-0-0-ID211",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"]
+            }
+    },
+    {
+            "name": "Bald Police Zombie window",
+            "region": "Observation Room Hallway",
+            "original_item": "",
+            "item_object": "emZombie1FE1Window",
+            "parent_object": "16-240-0-0-ID213",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"]
+            }
+    },
+    {
+            "name": "Female Zombie",
+            "region": "Boiler Room",
+            "original_item": "",
+            "item_object": "emZombie_OutdoorNorth_F",
+            "parent_object": "16-123-0-1-ID000",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Male Zombie",
+            "region": "Boiler Room",
+            "original_item": "",
+            "item_object": "emZombie_OutdoorNorth",
+            "parent_object": "16-123-0-0-ID002",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Licker",
+            "region": "Southwest Hallway",
+            "original_item": "",
+            "item_object": "emLicker_1FW-2",
+            "parent_object": "16-125-0-3-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"]
+            }
+    },
+    {
+            "name": "Plain Clothes Zombie from first Window",
+            "region": "Southwest Hallway",
+            "original_item": "",
+            "item_object": "emZombie1FW4Window3rd",
+            "parent_object": "16-125-0-0-ID012",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"]
+            }
+    },
+    {
+            "name": "Plain Clothes Zombie from mid Window",   
+            "region": "Southwest Hallway",
+            "original_item": "",
+            "item_object": "emZombie1FW3Window3rd",
+            "parent_object": "16-225-0-0-ID011",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"]
+            }
+    },
+    {
+            "name": "Licker",
+            "region": "West Hallway 1F",
+            "original_item": "",
+            "item_object": "emLicker_1FW-2",
+            "parent_object": "16-431-0-3-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Lion Medallion", "Unicorn Medallion", "Maiden Medallion", "Square Crank"]
+            }
+    },
+    {
+            "name": "Dog Before Jailbreak 1",
+            "region": "Parking Garage",
+            "original_item": "",
+            "item_object": "dog05_parking",
+            "parent_object": "29-277-0-4-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Square Crank"]
+            }
+    },
+    {
+            "name": "Dog Before Jailbreak 2",
+            "region": "Parking Garage",
+            "original_item": "",
+            "item_object": "dog02_parking",
+            "parent_object": "29-277-0-4-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Square Crank"]
+            }
+    },
+    {
+            "name": "Dog Before Jailbreak 3",
+            "region": "Parking Garage",
+            "original_item": "",
+            "item_object": "dog01_parking",
+            "parent_object": "29-277-0-4-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Square Crank"]
+            }
+    },
+    {
+            "name": "Licker near Maiden Statue",
+            "region": "West Storage Room",
+            "original_item": "",
+            "item_object": "emLicker_3FW2-2",
+            "parent_object": "16-265-0-3-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Square Crank"]
+            },
+            "excluded": 1
+    },
+    {
+            "name": "Hanging Zombie After It Drops",
+            "region": "West Storage Room",
+            "original_item": "",
+            "item_object": "DeadZombie",
+            "parent_object": "16-265-0-0-ID000",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Battery", "Electronic Gadget"]
+            }
+    },
+    {
+            "name": "Plain Zombie from window",
+            "region": "Break Room Hallway",
+            "original_item": "",
+            "item_object": "emZombie_1FECorridorC_Window",
+            "parent_object": "16-229-0-0-ID018",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": [
+                    ["Small Gear", "Large Gear", "Square Crank"],
+                    ["Small Gear", "Large Gear", "Mechanic Jack Handle"]
+                ]
+            }
+    },
+    {
+            "name": "Blue Jumpsuit Zombie",
+            "region": "Waterway Overpass",
+            "original_item": "",
+            "item_object": "Zombie_Waste02_03",
+            "parent_object": "17-315-1-0-ID025",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Gray Zombie across bridge",
+            "region": "Waterway Overpass",
+            "original_item": "",
+            "item_object": "Zombie_Waste02_04",
+            "parent_object": "17-317-0-0-ID023",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Overweight Vest Zombie at bridge",
+            "region": "Waterway Overpass",
+            "original_item": "",
+            "item_object": "Zombie_Waste02_05",
+            "parent_object": "17-317-0-2-ID006",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "G-Adult before Monitor Room",
+            "region": "Lower Waterway",
+            "original_item": "",
+            "item_object": "em6000_04_EnemyContextController",
+            "parent_object": "17-323-0-8-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Sitting Plain Zombie by safe",
+            "region": "Treatment Pool Room",
+            "original_item": "",
+            "item_object": "Zombie_Waste01_02",
+            "parent_object": "17-330-0-0-ID026",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Standing Overweight Vest Zombie",
+            "region": "Central Hub",
+            "original_item": "",
+            "item_object": "Zombie_WasteGAdultArea_fat01",
+            "parent_object": "17-323-0-2-ID004",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Blue Jumpsuit Short Hair Zombie",
+            "region": "Central Hub",
+            "original_item": "",
+            "item_object": "Zombie_WasteGAdultArea_man01",
+            "parent_object": "17-323-0-0-ID024",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Downed Overweight Vest Zombie",
+            "region": "Central Hub",
+            "original_item": "",
+            "item_object": "Zombie_WasteGAdultArea_fat01",
+            "parent_object": "17-323-0-2-ID005",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "G-Adult before Workroom",
+            "region": "Lower Waterway",
+            "original_item": "",
+            "item_object": "em6000_08",
+            "parent_object": "17-317-0-8-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Falling Overweight Zombie",
+            "region": "Waterway Overpass",
+            "original_item": "",
+            "item_object": "Zombie_Waste02_Fall",
+            "parent_object": "17-315-0-2-ID001",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["T-Bar Handle"]
+            },
+            "excluded": 1
+    },
+    {
+            "name": "Dark shirt Female Zombie",
+            "region": "Upper Waterway",
+            "original_item": "",
+            "item_object": "Zombie_Waste02_woman",
+            "parent_object": "17-429-0-1-ID006",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["T-Bar Handle"]
+            }
+    },
+    {
+            "name": "Dark Jumpsuit Zombie",
+            "region": "Upper Waterway",
+            "original_item": "",
+            "item_object": "Zombie_Waste02_03_01",
+            "parent_object": "17-429-0-0-ID004",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["T-Bar Handle"]
+            }
+    },
+    {
+            "name": "White shirt Female Zombie",
+            "region": "Upper Waterway",
+            "original_item": "",
+            "item_object": "Zombie_Waste02_woman_01_01",
+            "parent_object": "17-429-0-1-ID002",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["T-Bar Handle"]
+            }
+    },
+    {
+            "name": "Downed Plain Zombie",
+            "region": "Workroom",
+            "original_item": "",
+            "item_object": "Zombie_Waste02_05_01",
+            "parent_object": "17-316-0-2-ID008",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "First G-Adult",
+            "region": "Bottom Waterway",
+            "original_item": "",
+            "item_object": "em6000_04_EnemyContextController",
+            "parent_object": "17-325-0-8-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Second G-Adult",
+            "region": "Bottom Waterway",
+            "original_item": "",
+            "item_object": "em6000_Walk",
+            "parent_object": "17-325-0-8-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Third G-Adult from sewer hole",
+            "region": "Bottom Waterway",
+            "original_item": "",
+            "item_object": "em6000_Hole",
+            "parent_object": "17-325-0-8-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Overweight Vest Zombie near ledge to Storage",
+            "region": "Bottom Waterway",
+            "original_item": "",
+            "item_object": "Zombie_WasteGAdultArea_fat01",
+            "parent_object": "17-325-0-2-ID004",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Blue Jumpsuit Zombie on ledge near entrance ladder",
+            "region": "Bottom Waterway",
+            "original_item": "",
+            "item_object": "Zombie_WasteGAdultArea_man01",
+            "parent_object": "17-325-0-0-ID024",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Zombie hanging near King Plug",
+            "region": "Supplies Storage Room",
+            "original_item": "",
+            "item_object": "Zombie_Waste01_02",
+            "parent_object": "17-327-0-0-ID007",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Sleeping Overweight Zombie",
+            "region": "Supplies Storage Room",
+            "original_item": "",
+            "item_object": "Zombie_WasteGAdultArea_fat01",
+            "parent_object": "17-327-0-0-ID008",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Fourth G-Adult before ladder",
+            "region": "Bottom Waterway",
+            "original_item": "",
+            "item_object": "em6000_Swim",
+            "parent_object": "17-325-0-8-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "type": "Boss",
+            "name": "G2 Boss Fight",
+            "region": "Proposed Water Purification Room",
+            "original_item": "",
+            "item_object": "G2",
+            "parent_object": "17-335-0-13-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Jumpsuit Zombie",
+            "region": "Cafeteria",
+            "original_item": "",
+            "item_object": "ZombieNorth03",
+            "parent_object": "3-129-0-0-ID007",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Munching Lab Coat Zombie",
+            "region": "Cafeteria",
+            "original_item": "",
+            "item_object": "ZombieNorth01",
+            "parent_object": "3-129-0-1-ID303",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Blonde Lab Coat Zombie",
+            "region": "Cafeteria",
+            "original_item": "",
+            "item_object": "ZombieNorth02",
+            "parent_object": "3-129-0-1-ID301",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Lab Coat Zombie by Ladder",
+            "region": "Cafeteria",
+            "original_item": "",
+            "item_object": "ZombieNorth06",
+            "parent_object": "3-129-0-0-ID305",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Zombie outside Nap Room",
+            "region": "Nap Room",
+            "original_item": "",
+            "item_object": "ZombieNorth04",
+            "parent_object": "3-129-0-0-ID400",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Sleeping Zombie",
+            "region": "Nap Room",
+            "original_item": "",
+            "item_object": "ZombieNorth01",
+            "parent_object": "3-131-0-0-ID934",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Signal Modulator"]
+            }
+    },
+    {
+            "name": "First Ivy before puzzle",
+            "region": "Greenhouse Control Room",
+            "original_item": "",
+            "item_object": "IvyZombie_First",
+            "parent_object": "3-411-0-7-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Second Ivy before puzzle",
+            "region": "Greenhouse Control Room",
+            "original_item": "",
+            "item_object": "IvyZombie_FirstHang",
+            "parent_object": "3-411-0-7-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "First Ivy near basement ladder",
+            "region": "Greenhouse",
+            "original_item": "",
+            "item_object": "IvyZombie_AfterFall",
+            "parent_object": "3-410-0-7-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },    
+    {
+            "name": "Second Ivy near basement ladder",
+            "region": "Greenhouse",
+            "original_item": "",
+            "item_object": "IvyZombie_Idle",
+            "parent_object": "3-410-0-7-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Ivy in the middle",
+            "region": "Greenhouse",
+            "original_item": "",
+            "item_object": "IvyZombie_Fall2",
+            "parent_object": "3-410-0-7-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Ivy the Fourth",
+            "region": "Greenhouse",
+            "original_item": "",
+            "item_object": "IvyZombie_Fall1",
+            "parent_object": "3-410-0-7-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Ivy No. 5",
+            "region": "Greenhouse",
+            "original_item": "",
+            "item_object": "IvyZombie_AfterFall",
+            "parent_object": "3-410-0-7-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Short Hair Lab Coat Zombie",
+            "region": "Lounge - Labs",
+            "original_item": "",
+            "item_object": "RestAreaZombie03",
+            "parent_object": "3-415-0-1-ID300",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Very Short Hair Lab Coat Zombie",
+            "region": "Lounge - Labs",
+            "original_item": "",
+            "item_object": "RestAreaZombie01",
+            "parent_object": "3-415-0-0-ID301",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Jumpsuit Zombie",
+            "region": "Lounge - Labs",
+            "original_item": "",
+            "item_object": "RestAreaZombie02",
+            "parent_object": "3-415-0-0-ID023",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Licker from ceiling 1",
+            "region": "Lounge - Labs",
+            "original_item": "",
+            "item_object": "Licker01",
+            "parent_object": "3-415-0-3-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Licker from ceiling 2",
+            "region": "Lounge - Labs",
+            "original_item": "",
+            "item_object": "Licker02",
+            "parent_object": "3-415-0-3-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Hunched over Lab Coat Zombie",
+            "region": "Low-Temp Testing Lab",
+            "original_item": "",
+            "item_object": "ZombieTAreaLowTemperature",
+            "parent_object": "3-414-0-1-ID304",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Lab Coat Zombie at bottom of stairs",
+            "region": "Lobby Storage",
+            "original_item": "",
+            "item_object": "ZombieTArea01",
+            "parent_object": "3-413-1-0-ID302",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Ivy at the top of the stairs",
+            "region": "Lobby Storage",
+            "original_item": "",
+            "item_object": "IvyZombie_RasenKaidan",
+            "parent_object": "3-413-0-7-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy",
+            "condition": {
+                "items": ["Signal Modulator"]
+            }
+    },
+    {
+            "name": "Stunt Zombie from stairs above",
+            "region": "Lobby Storage",
+            "original_item": "",
+            "item_object": "ZombieTArea01",
+            "parent_object": "3-413-0-0-ID301",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Female Lab Coat Zombie",
+            "region": "Lobby Storage",
+            "original_item": "",
+            "item_object": "ZombieTArea01",
+            "parent_object": "3-413-0-1-ID302",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "type": "Boss",
+            "name": "G3 Boss Fight",
+            "region": "Bioreactors Room",
+            "original_item": "",
+            "item_object": "G3",
+            "parent_object": "3-419-0-15-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Ivy 1 after elevator",
+            "region": "Path to Super Tyrant",
+            "original_item": "",
+            "item_object": "Ivy_03",
+            "parent_object": "21-134-0-7-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Ivy 2 after elevator",
+            "region": "Path to Super Tyrant",
+            "original_item": "",
+            "item_object": "Ivy_01",
+            "parent_object": "21-134-0-7-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Ivy 3 after elevator",
+            "region": "Path to Super Tyrant",
+            "original_item": "",
+            "item_object": "Ivy_02",
+            "parent_object": "21-134-0-7-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "That Random Escape Zombie",
+            "region": "Path to Super Tyrant",
+            "original_item": "",
+            "item_object": "EscpZombie01",
+            "parent_object": "21-136-0-0-ID302",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "type": "Boss",
+            "name": "Super Tyrant Boss Fight",
+            "region": "Path to Super Tyrant",
+            "original_item": "",
+            "item_object": "NakedTyrant",
+            "parent_object": "21-373-0-11-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Rocket Target Practice Zombie 1",
+            "region": "Path to Super Tyrant",
+            "original_item": "",
+            "item_object": "EscpZombie05",
+            "parent_object": "21-422-0-2-ID006",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Rocket Target Practice Zombie 2",
+            "region": "Path to Super Tyrant",
+            "original_item": "",
+            "item_object": "EscpZombie03",
+            "parent_object": "21-422-0-0-ID023",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Rocket Target Practice Zombie 3",
+            "region": "Path to Super Tyrant",
+            "original_item": "",
+            "item_object": "EscpZombie06",
+            "parent_object": "21-422-0-0-ID025",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Rocket Target Practice Zombie 4",
+            "region": "Path to Super Tyrant",
+            "original_item": "",
+            "item_object": "EscpZombie02",
+            "parent_object": "21-422-0-2-ID005",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Rocket Target Practice Zombie 5",
+            "region": "Path to Super Tyrant",
+            "original_item": "",
+            "item_object": "EscpZombie04",
+            "parent_object": "21-422-0-0-ID024",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "name": "Rocket Target Practice Zombie 6",
+            "region": "Path to Super Tyrant",
+            "original_item": "",
+            "item_object": "EscpZombie01",
+            "parent_object": "21-422-0-0-ID004",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    },
+    {
+            "type": "Boss",
+            "name": "G5 Boss Fight",
+            "region": "G5 Ending",
+            "original_item": "",
+            "item_object": "G5",
+            "parent_object": "21-423-0-17-nil",
+            "folder_path": "RopewayManagers/TemporaryObjects/Enemy"
+    }
+]
+

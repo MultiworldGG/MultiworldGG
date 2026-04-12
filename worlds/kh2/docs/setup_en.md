@@ -20,7 +20,7 @@ Kingdom Hearts II Final Mix from the [Epic Games Store](https://store.epicgames.
        1. Do Note that if you have `KH2FM-Mods-equations19/auto-save` OR `KH2FM-Mods-equations19/soft-reset` you should download `TopazTK/KH2-ArchipelagoEnablersLITE` instead
        2. This mod overwrites slot 99 with an autosave. Make sure to copy your save data to another slot before installing.
     4. AP Randomizer Seed
-- Optional Quality of Life Mods for MultiworldGG
+- Optional Quality of Life Mods for Archipelago / MWGG
     1. Optionally Install the Archipelago Quality Of Life mod from `JaredWeakStrike/AP_QOL` using OpenKH Mod Manager
     2. Optionally Install the Quality Of Life mod from `shananas/BearSkip` using OpenKH Mod Manager
 

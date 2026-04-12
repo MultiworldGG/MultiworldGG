@@ -922,9 +922,15 @@ def create_regions(world: "ApeEscapeWorld"):
     L91R16T15 = Region(AEDoor.MM_OUTSIDE_CLIMB_INSIDE_CLIMB.value, player, multiworld)
     L91R16T13E = Region(AEDoor.MM_OUTSIDE_CLIMB_CASTLE_MAIN.value, player, multiworld)
     L91R17T13X = Region(AEDoor.MM_SPECTER1_ROOM.value, player, multiworld)
-    
+
     L91BOSS = Region(AELocation.Specter.value, player, multiworld)
-    L91BOSS.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], L91BOSS) for loc_name in get_array([205])]
+
+    if options.goal not in ("mm","mmtoken"):
+        # Normal location if the goal is not MM related
+        L91BOSS.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], L91BOSS) for loc_name in get_array([205])]
+    else:
+        # Create event location to prevent players to send_location or send the Victory item
+        L91BOSS.locations += [ApeEscapeLocation(player, loc_name, None, L91BOSS) for loc_name in get_array([205])]
     L91PROF = Region(AELocation.W9L1Professor.value, player, multiworld)
     L91PROF.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], L91PROF) for loc_name in get_array([502])]
     L91JAKE = Region(AELocation.W9L1Jake.value, player, multiworld)
@@ -1003,19 +1009,24 @@ def create_regions(world: "ApeEscapeWorld"):
                L82R7T71E, L82R7T71X, L82R7T72E, L82R7T72X, L82R7T73E, L82R7T73X, L82R7T74E, L82R7T74X,L82R7T75E, L82R7T75X, L82R7T76E, L82R7T76X, L82R7T77E,
                bigshow, dreos, reznor, urkel, vanillas, radd, shimbo, hurt, strung, khamo,
                L83, L83R1T2, L83R2T1, L83R2T3, L83R2T4, L83R3T2, L83R4T2, L83R4T5, L83R4T6, L83R5T4, L83R6T4, L83BOSS, fredo, charlee, mach3, tortuss, manic, ruptdis, eighty7, danio, roosta, tellis, whack, frostee,
-               L91, L91R1T2, L91R1T3, L91R1T4, L91R1T5, L91R1T10, L91R2T1, L91R3T1, L91R3T6E, L91R3T9X, L91R4T1, L91R5T1, L91R6T3X, L91R6T7E, L91R7T6X, L91R7T8E, L91R8T7X, L91R8T9, L91R9T3E, L91R9T8, L91R10T1, L91R10T11, L91R11T10, L91R11T12, L91R11T13, L91R12T11, L91R13T11, L91R13T14, L91R13T15, L91R13T16X, L91R13T17E, L91R14T13, L91R15T13, L91R15T16, L91R16T15, L91R16T13E, L91R17T13X, L91BOSS, L91PROF, L91JAKE, 
+               L91, L91R1T2, L91R1T3, L91R1T4, L91R1T5, L91R1T10, L91R2T1, L91R3T1, L91R3T6E, L91R3T9X, L91R4T1, L91R5T1, L91R6T3X, L91R6T7E, L91R7T6X, L91R7T8E, L91R8T7X, L91R8T9, L91R9T3E, L91R9T8, L91R10T1, L91R10T11, L91R11T10, L91R11T12, L91R11T13, L91R12T11, L91R13T11, L91R13T14, L91R13T15, L91R13T16X, L91R13T17E, L91R14T13, L91R15T13, L91R15T16, L91R16T15, L91R16T13E, L91R17T13X, L91BOSS, L91PROF, L91JAKE,
                goopo, porto, slam, junk, crib, nak, cloy, shaw, flea, schafette, donovan, laura, uribe, gordo, raeski, poopie, teacup, shine, wrench, bronson, bungee, carro, carlito, bg]
     
 
     # Don't create Specter 2 location if it would be guaranteed to be post-goal.
+
     if options.goal != "mm":
         # 9-2
         L92 = Region(AEDoor.PPM_ENTRY.value, player, multiworld)
 
         L92BOSS = Region(AELocation.Specter2.value, player, multiworld)
-        L92BOSS.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], L92BOSS) for loc_name in get_array([206])]
+        # Normal location
+        if options.goal not in ("ppm","ppmtoken"):
+            L92BOSS.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], L92BOSS) for loc_name in get_array([206])]
+        else:
+            # Create event location to prevent players to send_location or send the Victory item
+            L92BOSS.locations += [ApeEscapeLocation(player, loc_name, None, L92BOSS) for loc_name in get_array([206])]
         regions += [L92, L92BOSS]
-
 
     if options.coin == "true":
         coin1 = Region(AELocation.Coin1.value, player, multiworld)

@@ -1,4 +1,6 @@
-def copy_gfx_tiles(original: bytearray, order: list[int], size: list[int]) -> bytearray:
+from typing import List
+
+def copy_gfx_tiles(original: bytearray, order: List[int], size: List[int]) -> bytearray:
     result = bytearray([])
     for x in range(len(order)):
         z = order[x] << size[0]

@@ -3,8 +3,10 @@ import pkgutil
 import typing
 
 from worlds.generic.Rules import add_rule, forbid_items_for_player
-from . import StateLogic, location_id_to_name, Goal, PitItems, pit_exclusive_tattle_stars_required, \
-    get_locations_by_tags, stars
+from . import StateLogic, location_table, EnemyRandomizer
+from .Options import Goal, PitItems
+from .Data import stars, pit_exclusive_tattle_stars_required, location_to_unit
+from .Locations import get_location_ids, get_locations_by_tags, location_id_to_name
 from .Options import PalaceSkip
 
 if typing.TYPE_CHECKING:
@@ -23,7 +25,7 @@ def set_rules(world: "TTYDWorld"):
     for location in get_locations_by_tags("shop"):
         if location.name in world.disabled_locations:
             continue
-        forbid_items_for_player(world.get_location(location.name), set([item for item in stars]), world.player)
+        forbid_items_for_player(world.get_location(location.name), set([item for item in stars.values()]), world.player)
 
     for location in get_locations_by_tags("dazzle"):
         if location.name in world.disabled_locations:
@@ -35,7 +37,10 @@ def set_tattle_rules(world: "TTYDWorld"):
         if location.name in world.disabled_locations:
             continue
         add_rule(world.get_location(location.name), lambda state: state.has("Goombella", world.player))
-    for location_name, locations in get_tattle_rules_dict().items():
+    rules_dict = get_random_enemy_tattle_rules_dict(world) \
+        if world.options.enemy_randomizer != EnemyRandomizer.option_vanilla \
+        else get_tattle_rules_dict()
+    for location_name, locations in rules_dict.items():
         if location_name in world.disabled_locations:
             continue
         if len(locations) == 0:
@@ -49,7 +54,7 @@ def set_tattle_rules(world: "TTYDWorld"):
         else:
             # Require access to any of the listed locations
             if world.options.pit_items != PitItems.option_all and location_name not in pit_exclusive_tattle_stars_required:
-                locations = [loc for loc in locations if loc not in get_locations_by_tags("pit_floor")]
+                locations = [loc for loc in locations if loc not in get_location_ids(get_locations_by_tags("pit_floor"))]
                 if len(locations) == 0:
                     continue
             valid_locations = [
@@ -77,11 +82,9 @@ def _build_single_lambda(req: typing.Dict, world: "TTYDWorld") -> typing.Callabl
         if "or" in r:
             conditions = [build_expression(condition) for condition in r["or"]]
             return f"({' or '.join(conditions)})"
-
         elif "and" in r:
             conditions = [build_expression(condition) for condition in r["and"]]
             return f"({' and '.join(conditions)})"
-
         elif "has" in r:
             has_value = r["has"]
 
@@ -102,16 +105,28 @@ def _build_single_lambda(req: typing.Dict, world: "TTYDWorld") -> typing.Callabl
                 return f'state.has({escaped_item}, world.player)'
             else:
                 return f'state.has({escaped_item}, world.player, {count})'
-
         elif "function" in r:
-            function_name = r["function"]
-            count = 0
-            if isinstance(function_name, dict):
-                count = function_name.get("count", 0)
-                function_name = function_name.get("name", "")
-            if count > 0:
-                return f'StateLogic.{function_name}(state, world.player, {count})'
-            return f'StateLogic.{function_name}(state, world.player)'
+            fn = r["function"]
+            if isinstance(fn, dict):
+                function_name = fn.get("name", "")
+                count = fn.get("count", None)
+            else:
+                function_name = fn
+                count = None
+
+            # Require count for chapter_completions (and validate it)
+            if function_name == "chapter_completions":
+                if count is None:
+                    raise ValueError("chapter_completions requires 'count'")
+                count = int(count)
+                if count <= 0:
+                    raise ValueError(f"chapter_completions count must be > 0, got {count}")
+                return f"StateLogic.{function_name}(state, world.player, {count})"
+
+            # For other functions, only pass count if provided
+            if count is not None:
+                return f"StateLogic.{function_name}(state, world.player, {int(count)})"
+            return f"StateLogic.{function_name}(state, world.player)"
 
         elif "can_reach" in r:
             location = r["can_reach"]
@@ -246,3 +261,28 @@ def get_tattle_rules_dict() -> dict[str, typing.List[int]]:
         "Tattle: Bob-ulk": [78780647],
         "Tattle: Bonetail": [78780647]
     }
+
+def get_random_enemy_tattle_rules_dict(world: "TTYDWorld") -> dict[str, list[int]]:
+    base_rules = get_tattle_rules_dict()
+
+    encounter_enemy_sets = [
+        (enc.location_id, set(enc.enemy_ids))
+        for enc in world.encounters
+    ]
+
+    result: dict[str, list[int]] = {}
+
+    for key in base_rules:
+        tattle_ids = set(location_to_unit[location_table[key]])  # <-- FIX
+
+        matching_locations = [
+            loc_id
+            for loc_id, enemy_set in encounter_enemy_sets
+            if enemy_set & tattle_ids
+        ]
+
+        # fallback to base rule if random finds nothing
+        result[key] = matching_locations if matching_locations else list(base_rules[key])
+
+    return result
+

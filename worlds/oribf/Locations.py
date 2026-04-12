@@ -9,6 +9,7 @@ location_dict: dict[str, list[str]] = {
 	"FirstPickup": ["ExpSmall", "Glades"],
 	"FirstEnergyCell": ["EnergyCell", "Glades"],
 	"FronkeyFight": ["ExpSmall", "Glades"],
+    "Sein": ["SeinSkill", "Glades"],
 	"GladesKeystone1": ["Keystone", "Glades"],
 	"GladesKeystone2": ["Keystone", "Glades"],
 	"GladesGrenadePool": ["ExpLarge", "Glades"],

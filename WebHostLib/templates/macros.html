@@ -32,12 +32,6 @@
                             {% elif patch.game == "Super Mario 64" and room.seed.slots|length == 1 %}
                             <a href="{{ url_for("download_slot_file", room_id=room.id, player_id=patch.player_id) }}" download>
                                 Download APSM64EX File...</a>
-                            {% elif patch.game == "Metroid Prime" %}
-                            <a href="{{ url_for("download_slot_file", room_id=room.id, player_id=patch.player_id) }}" download>
-                                Download APMP1 File...</a>
-                            {% elif patch.game == "gzDoom" %}
-                            <a href="{{ url_for("download_slot_file", room_id=room.id, player_id=patch.player_id) }}" download>
-                                Download PK3 File...</a>
                             {% elif patch.game == "Factorio" or patch.game == "Factorio - Space Age Without Space" %}
                             <a href="{{ url_for("download_slot_file", room_id=room.id, player_id=patch.player_id) }}" download>
                                 Download Factorio Mod...</a>
@@ -62,7 +56,10 @@
                                 Join game on mariomantaw.github.io/jspaint</a>
                             {% elif patch.game == "Wordipelago" %}
                             <a href="https://apworlds.com/wordipelago">
-                                Join game on apworlds.com/wordipelago</a>                                    
+                                Join game on apworlds.com/wordipelago</a> 
+                            {% elif patch.game == "Yacht Dice" %}
+                            <a href="https://yacht-dice-ap.netlify.app/?hostport={{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&name={{ patch.player_name | e}}&go=LS">
+                                Join game on yacht-dice-ap.netlify.app</a>                                   
                             {% else %}
                                 No file to download for this game.
                             {% endif %}

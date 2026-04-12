@@ -6,10 +6,10 @@ from BaseClasses import ItemClassification
 from typing import Dict
 
 from .Characters import character_list
-from .Constants import NUM_CUSTOM
+from .Constants import NUM_CUSTOM, CHAR_ITEM_OFFSET
 
 
-CHAR_OFFSET = 100
+CHAR_OFFSET = CHAR_ITEM_OFFSET
 
 class ItemType(Enum):
     CARD_REWARD = auto()

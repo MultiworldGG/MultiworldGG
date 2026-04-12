@@ -10,10 +10,10 @@ logger = logging.getLogger("SM64 Romhack")
 
 tarpath = "https://api.github.com/repos/DNVIC/sm64hack-archipelago-jsons/tarball"
 requestpath = "https://api.github.com/repos/DNVIC/sm64hack-archipelago-jsons/branches/main"
-localpath = os.path.join(Utils.local_path("data", "sm64hacks", "downloaded_jsons.tar.gz"))
-tempfolderpath = os.path.join(Utils.local_path("data", "sm64hacks", "tempfolder")) #should probably use tempfile library for this but cba
-folderpath = os.path.join(Utils.local_path("data", "sm64hacks", "downloaded_jsons"))
-jsonpath = os.path.join(Utils.local_path("data", "sm64hacks", "last_updated.json"))
+localpath = os.path.join(Utils.user_path(), "sm64hack_jsons", "downloaded_jsons.tar.gz")
+tempfolderpath = os.path.join(Utils.user_path(), "sm64hack_jsons", "tempfolder") #should probably use tempfile library for this but cba
+folderpath = os.path.join(Utils.user_path(), "sm64hack_jsons", "downloaded_jsons")
+jsonpath = os.path.join(Utils.user_path(), "sm64hack_jsons", "last_updated.json")
 
 def strip_members(tar):
     for member in tar.getmembers():
@@ -44,8 +44,8 @@ def update_jsons():
 
     returnval = False #need to still delete temporary folder if version file is outdated
     with open(os.path.join(tempfolderpath, "version.txt"), 'r') as versionfile:
-        if versionfile.read() != "0.4.0":
-            print("Outdated APWorld version - Please update if you want to use the lastest JSON files")
+        if versionfile.read() != "1.1.0":
+            logger.warning("Outdated APWorld version - Please update if you want to use the lastest JSON files")
             returnval = True
 
     try:

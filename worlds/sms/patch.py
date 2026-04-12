@@ -12,7 +12,7 @@ SMS_PLAYER_NAME_BYTE_LENGTH = 64
 # class SMSTest:
 
 def update_dol_offsets(gcm: GCM, dol: DOL, seed: str, slot_name: str, starting_nozzle: int, level_access: bool,
-    coin_shines: bool, blue_rando: int) -> (GCM, DOL):
+    coin_shines: bool, blue_rando: int, all_shines_selectable: int) -> (GCM, DOL):
 
     random.seed(seed)
 
@@ -30,6 +30,7 @@ def update_dol_offsets(gcm: GCM, dol: DOL, seed: str, slot_name: str, starting_n
     nozzle_rando_value4 = "4814e6cc"
     plaza_darkness1_value = "4800006C"
     plaza_darkness2_value = "4E800020"
+    all_episodes_unlocked_value = "38000008"
 
     # Changing Game ID and Game Name from boot.bin
     bin_data = gcm.read_file_data("sys/boot.bin")
@@ -129,6 +130,18 @@ def update_dol_offsets(gcm: GCM, dol: DOL, seed: str, slot_name: str, starting_n
     dol.data.write(bytes.fromhex(plaza_darkness1_value))
     dol.data.seek(plaza_darkness2_offset)
     dol.data.write(bytes.fromhex(plaza_darkness2_value))
+
+    # Unlocks all episodes in Shine Select screen
+    if all_shines_selectable:
+        all_episodes_unlocked_offset1 = dol.convert_address_to_offset(0x80174e60)
+        all_episodes_unlocked_offset2 = dol.convert_address_to_offset(0x80174e74)
+
+        # Changes branch to jump to 0x80174E74 so all Shines are loaded on Episode Select properly
+        dol.data.seek(all_episodes_unlocked_offset1)
+        dol.data.write(bytes.fromhex("41820015"))
+
+        dol.data.seek(all_episodes_unlocked_offset2)
+        dol.data.write(bytes.fromhex(all_episodes_unlocked_value))
 
     # If Ticketed mode, set Noki requirement to 0 so it opens whenever ticket is acquired
     if level_access is True:

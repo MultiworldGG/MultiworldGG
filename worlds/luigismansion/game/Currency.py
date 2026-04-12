@@ -18,7 +18,7 @@ class CURRENCY_NAME:
 
 class Currency:
     """Memory representation of type and worth of currency Luigi can obtain."""
-    def __init__(self, name: str, mem_loc: str,  calc_value: int):
+    def __init__(self, name: str, mem_loc: int,  calc_value: int):
         """
         Default ctor for a currency type.
 
@@ -37,7 +37,6 @@ class Currency:
         """
         Adds an amount of currency based upon the currency_type.
 
-        :param currency_type: The memory location for the currency type to be added.
         :param amount: The amount of currency to be added based upon the currency_type.
         """
         current_currency = self.get()
@@ -47,7 +46,6 @@ class Currency:
         """
         Gets the current currency value based upon the currency_type.
 
-        :param currency_type: The memory location for the currency type to be retreived.
         :return: Returns the current amount of the given currency in Luigi's wallet.
         :rtype: int
         """

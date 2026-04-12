@@ -9,13 +9,14 @@ from Utils import local_path
 def setup_lib():
     # clean up any files from old versions of the apworld
     for path in [local_path("."), local_path("lib")]:
-        for entry in os.scandir(path):
-            if entry.name.startswith("albwrandomizer"):
-                fullpath = os.path.join(path, entry.name)
-                if entry.is_dir():
-                    shutil.rmtree(fullpath)
-                else:
-                    os.remove(fullpath)
+        if os.path.exists(path):
+            for entry in os.scandir(path):
+                if entry.name.startswith("albwrandomizer"):
+                    fullpath = os.path.join(path, entry.name)
+                    if entry.is_dir():
+                        shutil.rmtree(fullpath)
+                    else:
+                        os.remove(fullpath)
 
     apworld_path = os.path.dirname(os.path.dirname(__file__))
     if apworld_path.endswith(".apworld"):
@@ -24,9 +25,9 @@ def setup_lib():
                 manifest = orjson.loads(manifest_file.read())
             version = manifest["world_version"]
             tmp_path = os.path.join(tempfile.gettempdir(), f"albwrandomizer_{version}")
-            if os.getenv("ALBW_DEBUG", 0):
-                shutil.rmtree(tmp_path)
-            if not os.path.exists(tmp_path):
+            try:
+                if os.path.exists(tmp_path):
+                    shutil.rmtree(tmp_path)
                 os.mkdir(tmp_path)
                 randomizer_path = os.path.join(tmp_path, "albwrandomizer")
                 os.mkdir(randomizer_path)
@@ -34,6 +35,8 @@ def setup_lib():
                     if not info.is_dir() and info.filename.startswith("albw/albwrandomizer/"):
                         info.filename = os.path.basename(info.filename)
                         apworld.extract(info, randomizer_path)
+            except:
+                pass
             if not tmp_path in sys.path:
                 sys.path.append(tmp_path)
     else:

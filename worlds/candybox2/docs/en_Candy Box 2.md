@@ -1,8 +1,7 @@
 # Candy Box 2
 
 ## What is this game?
-Candy Box 2 is a text based RPG that runs in all modern browsers. You can play the original game (without MultiworldGG
-support) at [https://candybox2.github.io](https://candybox2.github.io)
+Candy Box 2 is a text based RPG that runs in all modern browsers. You can play the original game (without MultiworldGG support) at [https://candybox2.github.io](https://candybox2.github.io)
 
 ## Where is the options page?
 The [player options page for this game](../player-options) contains all the options you need to configure

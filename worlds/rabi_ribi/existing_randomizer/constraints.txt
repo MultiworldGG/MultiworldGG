@@ -170,13 +170,13 @@
 "exit_prereq": "PIKO_HAMMER | EXPLOSIVES | (CARROT_SHOOTER_ENTRY & OBS_VHARD)",
 
 "alternate_entries": {
-    "FOREST_COCOA_ROOM": "EXPLOSIVES_ENEMY",
+    "FOREST_BEFORE_COCOA_ROOM": "EXPLOSIVES_ENEMY",
     },
 
 "alternate_exits": {
     // only relevant if boost is not obtained
-    "FOREST_COCOA_ROOM": "
-        CARROT_SHOOTER_ENTRY & (
+    "FOREST_BEFORE_COCOA_ROOM": "
+        CARROT_SHOOTER_ENTRY & BACKTRACK_1 & (
             AIR_JUMP | (ITM & RABI_SLIPPERS & WALL_JUMP & (SPEED1 | HARD))
         )",
     },
@@ -2034,8 +2034,8 @@
     | (ITM_HARD & SPEED5)
     | (RABI_SLIPPERS & WALL_JUMP)
     | (ADV_VHARD &
-        (WALL_JUMP & SPEED1) // quickdrop jump
-        | WALL_JUMP_LV2 // buffered wimpy launch
+        ((WALL_JUMP & SPEED1) // quickdrop jump
+        | WALL_JUMP_LV2) // buffered wimpy launch
     )
 ",
 "exit_prereq": "NONE",

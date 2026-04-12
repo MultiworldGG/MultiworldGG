@@ -1,36 +1,36 @@
-# Dredge Setup Guide
+# DREDGE Setup Guide
 
-## Install using Dredge Mod Manager
+## Install using DREDGE Mod Manager
 
-### Install Dredge Mod Manager
+### Install DREDGE Mod Manager
 
-Head on over to the Dredge Mod Manager page and follow the installation instructions.
+Head on over to the DREDGE Mod Manager page and follow the installation instructions.
 
-[Dredge Mod Manager Page](https://dredgemods.com/manager/)
+[DREDGE Mod Manager Page](https://dredgemods.com/manager/)
 
-### Install Archipelago Mod and dependencies using Dredge Mod Manager
+### Install Archipelago Mod and dependencies using DREDGE Mod Manager
 
-In the `Dredge Mod Manager` interface.    
+In the `DREDGE Mod Manager` interface.    
 Search for and install "Winch"  
-Search for and install "Archipelago Dredge" 
+Search for and install "Archipelago DREDGE" 
 
 ## Running the Modded Game
 
 At present checks can only be sent with DREDGE set to the English language
-Click on the `Play` button in the bottom left in `Dredge Mod Manager` to start the game with the Archipelago mod installed.
+Click on the `Play` button in the bottom left in `DREDGE Mod Manager` to start the game with the Archipelago mod installed.
 
 ## Configuring your YAML File
 ### What is a YAML and why do I need one?
 You can see the [basic multiworld setup guide](/tutorial/Archipelago/setup/en) here on the MultiworldGG website to learn 
 about why MultiworldGG uses YAML files and what they're for.
 
-### Where do I get a YAML?
-You can use the [game options page](/games/Dredge/player-options) here on the MultiworldGG 
+## Where do I get a YAML?
+You can use the [game options page](/games/DREDGE/player-options) here on the MultiworldGG 
 website to generate a YAML using a graphical interface.
 
 ## Gameplay
 
-Dredge players send checks by fishing new fish and unlocking research.  
+DREDGE players send checks by fishing new fish and unlocking research.  
 Game is completed upon turning all the relics into The Collector
 
 ## Joining a MultiworldGG Session

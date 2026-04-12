@@ -111,7 +111,7 @@ ridley_location_table = {
 
 tourian_location_table = {
     "Tourian Left of Mother Brain": LocationData("Tourian", 73),
-    "Tourian Under Mother Brain": LocationData("Tourian", 74),
+    "Tourian Under Mother Brain": LocationData("Tourian Escape Shaft", 74),
     "Mother Brain": LocationData("Tourian", None)
 }
 

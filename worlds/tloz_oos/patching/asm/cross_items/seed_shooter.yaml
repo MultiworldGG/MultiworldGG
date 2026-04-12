@@ -2,11 +2,11 @@
  # bit 0 when slingshot is used
  # bit 7 when shooter is used
 
-46/4e66/parentItemCode_shooter_46: /copy a,$06,$4e66,$c7
+46/4e66/parentItemCode_shooter_46: /copy o,$06,$4e66,$c7
 
-47/5b51/itemCode0f_47: /copy a,$07,$5b51,$19
+47/5b51/itemCode0f_47: /copy o,$07,$5b51,$19
 
-47/5b6a/itemCode0fPost_47: /copy a,$07,$5b6a,$22
+47/5b6a/itemCode0fPost_47: /copy o,$07,$5b6a,$22
 
 # parentItemCode_shooter_46 adjustments
 46/4e75/: call $2aab ; updateLinkDirectionFromAngle
@@ -90,7 +90,7 @@
   ld hl,$ccf1 ; (wIsSeedShooterInUse)
   set 7,(hl)
   ret
-47/4d37/item_seed@shooter: /copy a,$07,$4d37,$4e
+47/4d37/item_seed@shooter: /copy o,$07,$4d37,$4e
 47/4d49/: |
   call $2215 ; objectCopyPositionWithOffset
   call setShooterFlag
@@ -110,12 +110,12 @@
   ld a,$47
   jp safeInterBankCallReady
 
-47/5035/seedItemUpdateBouncing: /copy a,$07,$5035,$64
+47/5035/seedItemUpdateBouncing: /copy o,$07,$5035,$64
 47/5035/: call $1432 ; objectGetTileAtPosition
 47/503b/: call $1de7 ; findByteInCollisionTable
 47/5057/: call $14b5 ; objectCheckTileCollision_allowHoles
 
-47/5099/seedItemCheckDiagonalCollision: /copy a,$07,$5099,$5b
+47/5099/seedItemCheckDiagonalCollision: /copy o,$07,$5099,$5b
 47/50b5/: call $14bf ; checkTileCollisionAt_allowHoles
 47/50ba/: call $1435 ; getTileAtPosition
 47/50c0/: call $1de7 ; findByteInCollisionTable
@@ -204,7 +204,7 @@
 # gfx
 # inv icon
 # spr_item_icons_1 verion
-1b/7760/: /copy a,$19,$4020,$20
+1b/7760/: /copy o,$19,$4020,$20
 # spr_item_icons_1_spr version, moved to spr_item_icons_3 for convenience
 # TODO: If read/write of compressed sprites is implemented, this should be replaced
 1b/7b00/: db $ff,$ff,$b9,$c7,$7e,$7e,$52,$6e,$34,$2C,$34,$2c,$3c,$3c,$4e,$7e,$b7,$cf,$b7,$cf,$cf,$ff,$ff,$ff,$7e,$7e,$52,$6e,$3c,$3c,$00,$00
@@ -215,31 +215,31 @@
   ; ember
   db $20
   db $a7
-  /copy a,$3f,$703d,$04
+  /copy o,$3f,$703d,$04
   db text.shooter.inventory
   
   ; scent
   db $21
   db $a7
-  /copy a,$3f,$7044,$04
+  /copy o,$3f,$7044,$04
   db text.shooter.inventory
   
   ; pegasus
   db $22
   db $a7
-  /copy a,$3f,$704b,$04
+  /copy o,$3f,$704b,$04
   db text.shooter.inventory
   
   ; gale
   db $23
   db $a7
-  /copy a,$3f,$7052,$04
+  /copy o,$3f,$7052,$04
   db text.shooter.inventory
   
   ; mystery
   db $24
   db $a7
-  /copy a,$3f,$7059,$04
+  /copy o,$3f,$7059,$04
   db text.shooter.inventory
 
 02/52fa/: call changeShooterPalette

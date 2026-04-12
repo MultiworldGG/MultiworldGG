@@ -112,7 +112,7 @@ else:
     context_type = object
 
 remove_between_brackets = re.compile(r"\[.*?]")
-Window.clearcolor = (0, 0, 0.169, 1)
+Window.clearcolor = (0.118, 0.004, 0.133, 1)
 
 kivycolors = {"basecolor": [0.031, 0.024, 0.102, 1], #darker
               "secondarycolor": [0, 0, 0.169, 1], #lighter
@@ -127,6 +127,7 @@ class ThemedApp(MDApp):
         self.theme_cls.primary_palette = text_colors.primary_palette
         self.theme_cls.dynamic_scheme_name = text_colors.dynamic_scheme_name
         self.theme_cls.dynamic_scheme_contrast = text_colors.dynamic_scheme_contrast
+        self.theme_cls.backgroundColor = [0.118, 0.004, 0.133, 1]
 
 
 class ImageIcon(MDButtonIcon, AsyncImage):
@@ -1270,10 +1271,11 @@ class HintLog(MDRecycleView):
                     "type": "location_id",
                     "text": hint["location"],
                     "player": hint["finding_player"],
-                })},
+                }) if not hint.get("hidden") else "Hidden"},
                 "entrance": {"text": self.parser.handle_node({"type": "color" if hint["entrance"] else "text",
                                                               "color": 'entrancecolor', "text": hint["entrance"]
-                                                              if hint["entrance"] else "Vanilla"})},
+                                                              if hint["entrance"] else "Vanilla"})
+                             if not hint.get("hidden") else "Hidden"},
                 "status": {
                     "text": hint_status_node,
                     "hint": hint,

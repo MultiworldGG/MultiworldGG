@@ -18,6 +18,7 @@ from .Locations import ZONE_LOCATIONS, locations, AP_ID_TO_NAME, ENEMY_LOCATIONS
 #  Progression items https://discord.com/channels/731205301247803413/1108439196156317818/1359352832322572290
 #  Death link stuck at death
 #  Find a way to prevent using wrong version yaml on generate
+#  Deathlink mid wingsmash softlock the game
 
 
 # Ideas:
@@ -118,7 +119,6 @@ class SotNClient(BizHawkClient):
                 room_id = await self.read_int(ctx, 0x073084, 2, "MainRAM")
                 area_value = (await bizhawk.read(ctx.bizhawk_ctx, [(0x03c774, 2, "MainRAM")]))[0]
                 entered_cutscene = (await bizhawk.read(ctx.bizhawk_ctx, [(0x03be20, 1, "MainRAM")]))[0]
-
                 dracula_dead = False
 
                 try:
@@ -790,6 +790,16 @@ class SotNClient(BizHawkClient):
                                     save_value |= 0x80
                                     await bizhawk.write(ctx.bizhawk_ctx, [(0x03bee1, save_value.to_bytes(), "MainRAM")])
                             await bizhawk.write(ctx.bizhawk_ctx, [(address, value.to_bytes(), "MainRAM")])
+
+                    # Write new client stuff here! REMEMBER TO DELETE THIS COMMENT ON THE FUTURE
+                    if self.seed_options["sanity"] & (1 << 6):
+                        can_save = await self.read_int(ctx, 0x03c708, 1, "MainRAM")
+                        # Are we at a save room?
+                        if can_save & 0x20 == 0x20:
+                            max_hp = await self.read_int(ctx, 0x097ba4, 4, "MainRAM")
+                            await bizhawk.write(ctx.bizhawk_ctx, [(0x97ba0, max_hp.to_bytes(4, "little"), "MainRAM")])
+                            max_mp = await self.read_int(ctx, 0x097bb4, 4, "MainRAM")
+                            await bizhawk.write(ctx.bizhawk_ctx, [(0x97bb0, max_mp.to_bytes(4, "little"), "MainRAM")])
 
                     # Did we kill dracula?
                     if not ctx.finished_game:

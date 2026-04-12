@@ -62,6 +62,7 @@
 
 
 #:import Type worlds.LauncherComponents.Type
+#:import local_path Utils.local_path
 MDFloatLayout:
     id: top_screen
 
@@ -140,6 +141,11 @@ MDFloatLayout:
 
             MDNavigationDrawerDivider:
 
+            ApAsyncImage:
+                source: local_path("data/launcher-logo.png")
+                size_hint: 1, None
+                height: self.width
+                fit_mode: "contain"
 
         MDGridLayout:
             id: main_layout

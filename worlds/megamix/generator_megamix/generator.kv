@@ -67,6 +67,13 @@ MDBoxLayout:
                 MDButtonText:
                     text: "Generate mod string"
 
+            #MDButton:
+            #    on_release: app.find_nc_db_ids()
+            #    MDButtonIcon:
+            #        icon: "gamepad"
+            #    MDButtonText:
+            #        text: "New Classics"
+
             MDNavigationDrawerDivider:
                 spacing: "5dp"
                 padding: ["10dp", "15dp"]
@@ -126,6 +133,7 @@ MDBoxLayout:
 
     MDDialogContentContainer:
         MDDialogSupportingText:
+            markup: True
             height: self.texture_size[1] if self.text else 0
             text: root.desc
 

@@ -6,20 +6,23 @@
 - [Bizhawk 2.10 (x64)](https://tasvideos.org/BizHawk/ReleaseHistory)
 - Your legally obtained Oracle of Seasons US ROM file
 
+## Other important guides
+- [Setup guide for MultiworldGG](../../generic/docs/setup_en.md#installing-the-archipelago-software), required in order to install the apworld
+- [FAQ for Oracle of Seasons](en_The%20Legend%20of%20Zelda%20-%20Oracle%20of%20Seasons.md#frequently-asked-questions)
+
 ## Installation Instructions
 
-1. Put your **Oracle of Seasons US ROM** inside your MultiworldGG install folder (named "Legend of Zelda, The - Oracle of Seasons (USA).gbc")
-2. Download the **Oracle of Seasons .apworld file** and double-click it to install it the "custom_worlds/" subdirectory of your MultiworldGG install directory (not needed with MWGG)
-3. Generate a seed using your .yaml settings file (see below if you don't know how to get the template)
-4. Download the .apoos patch file that was built by the server while generating, this will be used to generate your modified ROM
-5. Open this patch file using the MultiworldGG Launcher
-6. If everything went fine, the patched ROM was built in the same directory as the .apoos file, and both Bizhawk and the client launched
-7. Connect the Client to the AP Server of your choice, and you can start playing!
+1. Unless you use MWGG: Download the **Oracle of Seasons .apworld file** and double-click it to install it the "custom_worlds/" subdirectory of your Archipelago install directory
+2. Generate a seed using your .yaml settings file (see below if you don't know how to get the template)
+3. Download the .apoos patch file that was built by the server while generating, this will be used to generate your modified ROM
+4. Open this patch file using the MultiworldGG Launcher
+5. If everything went fine, the patched ROM was built in the same directory as the .apoos file, and both Bizhawk and the client launched
+6. Connect the Client to the AP Server of your choice, and you can start playing!
 
 ## Create a Config (.yaml) File
 
 To get the template YAML file:
-1. Install the .apworld file as instructed above (not needed with MWGG)
+1. Install the .apworld file as instructed above
 2. If MultiworldGG Launcher was running on your computer, close it 
 3. Run the MultiworldGG launcher
 4. Click on "Generate Template Settings"

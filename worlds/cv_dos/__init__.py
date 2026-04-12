@@ -25,7 +25,7 @@ class DoSWeb(WebWorld):
 
     setup_en = Tutorial(
         "Multiworld Setup Guide",
-        "A guide to setting up the Dawn of Sorrow randomizer "
+        "A guide to setting up the Dawn of Sorrow randomizer"
         "and connecting to a MultiworldGG server.",
         "English",
         "setup_en.md",
@@ -332,6 +332,7 @@ class DoSWorld(World):
         }
 
         self.red_soul_walls = []
+        self.magic_seal_table = []
 
         self.important_souls = {
             "Bone Ark Soul",
@@ -358,6 +359,11 @@ class DoSWorld(World):
            self.options.open_drawbridge = passthrough["open_drawbridge"]
            self.options.boost_speed = passthrough["speed_boost"]
            self.red_soul_walls = passthrough["soul_walls"]
+           self.options.gate_items = passthrough["buttonsanity"]
+           self.magic_seal_table = passthrough["seals"]
+           self.options.menace_condition.value = passthrough["menace_condition"]
+           self.options.mine_condition.value = passthrough["mine_condition"]
+           self.options.garden_condition.value = passthrough["garden_condition"]
         setup_game(self)
 
         self.auth_id = self.random.getrandbits(32)
@@ -405,7 +411,12 @@ class DoSWorld(World):
             "soulsanity_level": self.options.soulsanity_level.value,
             "open_drawbridge": self.options.open_drawbridge.value,
             "speed_boost": self.options.boost_speed.value,
-            "soul_walls": self.red_soul_walls
+            "soul_walls": self.red_soul_walls,
+            "buttonsanity": self.options.gate_items.value,
+            "seals": self.magic_seal_table,
+            "menace_condition": self.options.menace_condition.value,
+            "garden_condition": self.options.garden_condition.value,
+            "mine_condition": self.options.mine_condition.value
         }
 
     def modify_multidata(self, multidata: dict) -> None:
@@ -420,11 +431,24 @@ class DoSWorld(World):
             spoiler_handle.write(f"Default Warp Room:    {self.starting_warp_room}\n")
 
         if self.options.randomize_red_soul_walls:
-            spoiler_handle.write(f"Soul Barriers:\n")
+            spoiler_handle.write(f"\nSoul Barriers:\n")
             spoiler_handle.write(f" Paranoia 1:  {self.red_soul_walls[1]}\n")
             spoiler_handle.write(f" Paranoia 2:  {self.red_soul_walls[0]}\n")
             spoiler_handle.write(f" Paranoia 3:  {self.red_soul_walls[3]}\n")
             spoiler_handle.write(f" Dark Chapel Catacombs:  {self.red_soul_walls[2]}\n")
+
+        if self.options.boss_shuffle:
+            spoiler_handle.write(f"\nBosses:\n")
+            for boss in self.boss_slots:
+                spoiler_handle.write(f" {boss}:  {self.boss_slots[boss].new_boss}\n")
+
+        if self.options.seal_shuffle:
+            spoiler_handle.write(f"\nMagic Seals:\n")
+            for seal in self.magic_seal_table:
+                if seal in ["Mine of Judgment", "The Abyss"] and self.mine_status == "Disabled":  # Ignore Magic Seals that are past the endgame trigger
+                    continue
+                else:
+                    spoiler_handle.write(f" {seal}:  {self.magic_seal_table[seal]}\n")
 
     def create_item(self, name: str) -> CVDoSItem:
         data = self.set_classifications(name)

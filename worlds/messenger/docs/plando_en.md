@@ -2,7 +2,7 @@
 
 This guide details the usage of the game-specific plando options that The Messenger has. The Messenger also supports the
 generic item plando. For more information on what plando is and for information covering item plando, refer to the
-[generic Archipelago plando guide](/tutorial/MultiworldGG/plando/en). The Messenger also uses the generic connection
+[generic Archipelago plando guide](/tutorial/Archipelago/plando/en). The Messenger also uses the generic connection
 plando system, but with specific behaviors that will be covered in this guide along with the other options.
 
 ## Shop Price Plando

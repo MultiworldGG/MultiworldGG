@@ -1,7 +1,9 @@
-import unittest
-import Utils
+import json
 import os
+import pathlib
+import unittest
 
+import Utils
 from werkzeug.utils import secure_filename
 
 import WebHost
@@ -30,11 +32,22 @@ class TestDocs(unittest.TestCase):
     def test_has_game_author(self):
         for game_name, world_type in AutoWorldRegister.world_types.items():
             if not world_type.hidden:
+                with self.subTest(game_name):
+                    # Check if world has author attribute set (old format)
+                    if getattr(world_type, "author", None) is not None:
+                        continue
 
-                if world_type.author is None:
-                    self.assertTrue(
-                        f'{game_name} missing game author information.'
-                    )
+                    # If no author attribute, check for authors in archipelago.json (new format)
+                    world_dir = pathlib.Path(world_type.__file__).parent
+                    archipelago_json_path = world_dir / "archipelago.json"
+
+                    if archipelago_json_path.exists():
+                        with open(archipelago_json_path, "r", encoding="utf-8") as f:
+                            data = json.load(f)
+                            if "authors" in data and isinstance(data["authors"], list) and len(data["authors"]) > 0:
+                                continue
+
+                    self.fail(f'{game_name} missing game author information.')
               
     def test_has_game_info(self):
         for game_name, world_type in AutoWorldRegister.world_types.items():

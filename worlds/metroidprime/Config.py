@@ -1,10 +1,10 @@
 import os
 from typing import TYPE_CHECKING, Dict, Any, List
 
-from .Items import ProgressiveUpgrade, SuitUpgrade
+from .Items import PROGRESSIVE_ITEM_EXCLUSION_LIST, ProgressiveUpgrade, SuitUpgrade, artifact_table
 
 
-from .PrimeOptions import HudColor, MetroidPrimeOptions
+from .PrimeOptions import ArtifactHints, HudColor, MetroidPrimeOptions
 from .data.RoomData import MetroidPrimeArea
 from .data.Transports import get_transport_data
 
@@ -70,24 +70,32 @@ def color_options_to_value(world: "MetroidPrimeWorld") -> List[float]:
     return HudColor.DEFAULT.value
 
 
+def style(text: str, **kwargs: str):
+    return (
+        "&push;"
+        + "".join(f"&{k.replace('_', '-')}={v};" for k, v in kwargs.items())
+        + text
+        + "&pop;"
+    )
+
+
 def make_artifact_hints(world: "MetroidPrimeWorld") -> Dict[str, str]:
     def make_artifact_hint(item: str) -> str:
+        item_string = style(item, main_color="#c300ff")
         try:
-            if world.options.artifact_hints:
+            if world.options.artifact_hints.value != ArtifactHints.option_disable:
                 location = world.multiworld.find_item(item, world.player)
                 player_string = (
                     f"{world.multiworld.player_name[location.player]}'s"
                     if location.player != world.player
                     else "your"
                 )
-                return f"The &push;&main-color=#c300ff;{item}&pop; can be found in &push;&main-color=#d4cc33;{player_string}&pop; &push;&main-color=#89a1ff;{location.name}&pop;."
+                return f"The {item_string} can be found in {style(player_string, main_color='#d4cc33')} {style(location.name, main_color='#89a1ff')}."
             else:
-                return (
-                    f"The &push;&main-color=#c300ff;{item}&pop; has not been collected."
-                )
+                return f"The {item_string} has not been collected."
             # This will error when trying to find an artifact that does not have a location since was pre collected
         except:
-            return f"The &push;&main-color=#c300ff;{item}&pop; does not need to be collected."
+            return f"The {item_string} does not need to be collected."
 
     return {
         "Artifact of Chozo": make_artifact_hint("Artifact of Chozo"),
@@ -103,6 +111,60 @@ def make_artifact_hints(world: "MetroidPrimeWorld") -> Dict[str, str]:
         "Artifact of Lifegiver": make_artifact_hint("Artifact of Lifegiver"),
         "Artifact of Warrior": make_artifact_hint("Artifact of Warrior"),
     }
+
+
+def make_credits(world: "MetroidPrimeWorld") -> str:
+    def spoil_location(item: str):
+        spoiler = f"{style(item, font='C29C51F1', main_color='#89a1ff')}\n"
+        locations = world.multiworld.find_item_locations(item, world.player, True)
+        if not locations:
+            return spoiler + "<Not Placed>\n"
+        for location in locations:
+            if world.multiworld.players == 1:
+                spoiler += f"{location.name}\n"
+            else:
+                player_string = (
+                    f"{world.multiworld.player_name[location.player]}'s"
+                    if location.player != world.player
+                    else "Your"
+                )
+                spoiler += f"{style(player_string, main_color='#d4cc33')} {location.name}\n"
+        return spoiler
+
+    excluded_items = {
+        SuitUpgrade.Missile_Expansion,
+        SuitUpgrade.Power_Bomb_Expansion,
+        SuitUpgrade.Energy_Tank,
+        SuitUpgrade.Power_Suit,
+        SuitUpgrade.Combat_Visor,
+        SuitUpgrade.Power_Charge_Beam,
+        SuitUpgrade.Wave_Charge_Beam,
+        SuitUpgrade.Ice_Charge_Beam,
+        SuitUpgrade.Plasma_Charge_Beam,
+    }
+    if world.starting_beam is None:
+        excluded_items.add(SuitUpgrade.Power_Beam)
+    else:
+        excluded_items.add(SuitUpgrade(world.starting_beam))
+    if world.options.progressive_beam_upgrades.value:
+        excluded_items.update(PROGRESSIVE_ITEM_EXCLUSION_LIST)
+    if not world.options.shuffle_scan_visor.value:
+        excluded_items.add(SuitUpgrade.Scan_Visor)
+    if not world.options.missile_launcher.value:
+        excluded_items.add(SuitUpgrade.Missile_Launcher)
+    if not world.options.main_power_bomb.value:
+        excluded_items.add(SuitUpgrade.Main_Power_Bomb)
+
+    spoilers = [f"{style('Major Item Locations', font='C29C51F1', main_color='#89D6FF')}\n"]
+    if world.options.progressive_beam_upgrades.value:
+        for upgrade in ProgressiveUpgrade:
+            spoilers.append(spoil_location(upgrade.value))
+    for upgrade in SuitUpgrade:
+        if upgrade not in excluded_items:
+            spoilers.append(spoil_location(upgrade.value))
+    for artifact in artifact_table.keys():
+        spoilers.append(spoil_location(artifact))
+    return "\n".join(spoilers)
 
 
 def get_tweaks(world: "MetroidPrimeWorld") -> Dict[str, List[float]]:
@@ -198,7 +260,7 @@ def make_config(world: "MetroidPrimeWorld") -> Dict[str, Any]:
         },
         "tweaks": get_tweaks(world),
         "gameConfig": {
-            "mainMenuMessage": "MultiworldGG Metroid Prime",
+            "mainMenuMessage": "Archipelago Metroid Prime",
             "startingRoom": f"{world.starting_room_data.area.value}:{world.starting_room_data.name}",
             "springBall": bool(options.spring_ball.value),
             "warpToStart": True,
@@ -212,7 +274,6 @@ def make_config(world: "MetroidPrimeWorld") -> Dict[str, Any]:
             "autoEnabledElevators": bool(options.pre_scan_elevators.value),
             "skipRidley": skip_ridley(options.final_bosses.value),
             "removeHiveMecha": bool(options.remove_hive_mecha.value),
-            "multiworldDolPatches": False,
             "startingItems": {
                 "combatVisor": True,
                 "powerSuit": True,
@@ -340,6 +401,7 @@ def make_config(world: "MetroidPrimeWorld") -> Dict[str, Any]:
             "powerBombArboretumSandstone": bool(world.options.flaahgra_power_bombs),
             "artifactHints": make_artifact_hints(world),
             "requiredArtifactCount": world.options.required_artifacts.value,
+            "creditsString": make_credits(world),
         },
         "levelData": make_level_data(world),
     }

@@ -4,7 +4,7 @@ import typing
 from typing import Dict, Any, TextIO
 from Utils import visualize_regions
 
-from BaseClasses import ItemClassification, Item, Location, Region, CollectionState, Tutorial
+from BaseClasses import ItemClassification, Item, Location, Region, CollectionState, LocationProgressType, Tutorial
 from worlds.AutoWorld import World, WebWorld
 from ..generic.Rules import set_rule
 from Fill import fill_restrictive
@@ -55,7 +55,7 @@ class ResidentEvil2Remake(World):
 
     data_version = 2
     required_client_version = (0, 5, 0)
-    apworld_release_version = "0.3.0" # defined to show in spoiler log
+    apworld_release_version = "0.3.3" # defined to show in spoiler log
 
     item_id_to_name = { item['id']: item['name'] for item in Data.item_table }
     item_name_to_id = { item['name']: item['id'] for item in Data.item_table }
@@ -155,6 +155,10 @@ class ResidentEvil2Remake(World):
             if self.options.starting_weapon.current_key != "default":
                 raise RE2ROptionError("Cannot apply 'Starting Weapon' options alongside 'Oops All' options. Please fix your yaml.")
 
+            # also check for double weapons, which is incompatible with Oops! options
+            if self._format_option_text(self.options.double_weapons) == 'True':
+                raise RE2ROptionError("Cannot use 'Double Weapons' option alongside 'Oops All' options. Please fix your yaml.")
+
             return
 
         weapon_rando = self._format_option_text(self.options.cross_scenario_weapons).lower()
@@ -183,7 +187,8 @@ class ResidentEvil2Remake(World):
         # all ammo and troll are identical, except there's a step after upgrades are placed for all weapons to remove all but a few weapons
         # so just do all_ammo here, then call the actual troll option after upgrades + gunpowder + whatever else
         elif weapon_rando == "all ammo" or weapon_rando == "troll" or weapon_rando == "troll starting": 
-            weapon_randomizer.all_ammo()
+            if weapon_rando == "all ammo": weapon_randomizer.all_ammo()
+            else: weapon_randomizer.all_ammo_troll()
         else:
             raise RE2ROptionError("Invalid weapon randomizer value!")
 
@@ -198,6 +203,20 @@ class ResidentEvil2Remake(World):
     def create_regions(self): # and create locations
         scenario_locations = { l['id']: l for _, l in self.source_locations[self.player].items() }
         scenario_regions = self._get_region_table_for_scenario(self._get_character(), self._get_scenario())
+
+        # used below if killsanity is on
+        has_fire_weapon = False
+        fire_weapons = ['GM 79', 'Chemical Flamethrower']
+
+        if self._format_option_text(self.options.oops_all_rockets) == 'True':
+            has_fire_weapon = True
+        elif self._get_starting_weapon() in fire_weapons:
+            has_fire_weapon = True
+        else: # check the remaining weapons
+            has_fire_weapon = len([
+                location['original_item'] 
+                    for _, location in scenario_locations.items() if location.get('original_item') in fire_weapons
+            ]) > 0
 
         regions = [
             Region(region['name'], self.player, self.multiworld) 
@@ -226,7 +245,14 @@ class ResidentEvil2Remake(World):
                 # we check for zone id > 3 because 3 is typically Sewers, and anything beyond that is Labs / endgame stuff
                 elif self._format_option_text(self.options.allow_progression_in_labs) == 'False' and region_data['zone_id'] > 3:
                     location.item_rule = lambda item: not item.advancement
+                elif self._format_option_text(self.options.allow_progression_in_labs) == 'True' and re.match(r'^Treatment Pool Room \(\w+?\) - Cable Car Table$', location.name):
+                    location.place_locked_item(self.create_item("Sewers Key"))
                 # END if
+
+                # if the player doesn't have a fire weapon or rocket launchers in their item pool, make all Ivy enemy drops give filler / be useless
+                if self._enemy_kill_rando() and "Ivy" in location.name and not has_fire_weapon:
+                    location.progress_type = LocationProgressType.EXCLUDED
+                    location.place_locked_item(self.create_item("Pink Scissors"))
 
                 if 'forbid_item' in location_data and location_data['forbid_item']:
                     current_item_rule = location.item_rule or None
@@ -408,20 +434,30 @@ class ResidentEvil2Remake(World):
         # add extras for Clock Tower items or Medallions, if configured
         # doing this before "oops all X" to make use of extra Handgun Ammo spots, too
         if self._format_option_text(self.options.extra_clock_tower_items) == 'True':
-            replaceables = [item for item in pool if 'Boards' in item.name or item.name == 'Handgun Ammo' or item.name == 'Large-Caliber Handgun Ammo']
+            replaceables = [
+                item for item in pool if 
+                    'Boards' in item.name or item.name == 'Handgun Ammo' or item.name == 'Large-Caliber Handgun Ammo' or item.name == "Gunpowder" or 
+                    item.name == "Damage Trap" or item.name == "Poison Trap"
+            ]
             
             for x in range(3):
-                pool.remove(replaceables[x])
+                if len(replaceables) == 0: break
+                pool.remove(replaceables.pop())
 
             pool.append(self.create_item('Mechanic Jack Handle'))
             pool.append(self.create_item('Small Gear'))
             pool.append(self.create_item('Large Gear'))
 
         if self._format_option_text(self.options.extra_medallions) == 'True':
-            replaceables = [item for item in pool if 'Boards' in item.name or item.name == 'Handgun Ammo' or item.name == 'Large-Caliber Handgun Ammo']
-            
+            replaceables = replaceables = [
+                item for item in pool if 
+                    'Boards' in item.name or item.name == 'Handgun Ammo' or item.name == 'Large-Caliber Handgun Ammo' or item.name == "Gunpowder" or 
+                    item.name == "Damage Trap" or item.name == "Poison Trap"
+            ]       
+
             for x in range(2):
-                pool.remove(replaceables[x])
+                if len(replaceables) == 0: break
+                pool.remove(replaceables.pop())
 
             pool.append(self.create_item('Lion Medallion'))
             pool.append(self.create_item('Unicorn Medallion'))
@@ -429,7 +465,9 @@ class ResidentEvil2Remake(World):
             # The A scenarios have Maiden forced to the Bolt Cutters vanilla location, which is guaranteed to be accessible.
             # B scenarios have it randomized, so add a second randomized Maiden.
             if self._get_scenario().lower() == 'b':
-                pool.remove(replaceables[2]) # remove the 3rd item to make room for a 3rd medallion
+                if len(replaceables) > 0:
+                    pool.remove(replaceables.pop()) # remove the 3rd item to make room for a 3rd medallion
+
                 pool.append(self.create_item('Maiden Medallion'))
 
         if self._format_option_text(self.options.early_medallions) == 'True':
@@ -509,12 +547,46 @@ class ResidentEvil2Remake(World):
             if item_qty > 0:
                 self.multiworld.early_items[self.player][item_name] = item_qty
 
+        all_weapon_names = [
+            item['name'] for item in self.item_name_to_item.values() 
+                if item.get('type') == "Weapon"
+        ]
+
         local_items = {}       
         local_items["Fuse - Main Hall"] = len([i for i in pool if i.name == "Fuse - Main Hall"])
+
+        if self._format_option_text(self.options.local_weapons) == 'True':
+            for weapon_name in all_weapon_names:
+                count = len([i for i in pool if i.name == weapon_name])
+
+                if count:
+                    local_items[weapon_name] = count
 
         for item_name, item_qty in local_items.items():
             if item_qty > 0:
                 self.options.local_items.value.add(item_name)
+
+        # if double weapons is on, add copies in the place of less useful items
+        if self._format_option_text(self.options.double_weapons) == 'True':
+            for weapon_name in all_weapon_names:            
+                count = len([i for i in pool if i.name == weapon_name])
+
+                # if the weapon isn't in the pool at all, or already has a duplicate, skip it
+                if not count or count > 1:
+                    continue
+
+                eligible_items = [i for i in pool if i.classification == ItemClassification.filler]
+
+                if len(eligible_items) == 0:
+                    eligible_items = [i for i in pool if i.name in ["Wooden Boards", "Blue Herb", "Gunpowder"]]
+
+                if len(eligible_items) == 0:
+                    eligible_items = [i for i in pool if i.name in ["Handgun Ammo"]]
+
+                if len(eligible_items) == 0: break # no more items to replace out, give up
+
+                pool.append(self.create_item(weapon_name))
+                pool.remove(eligible_items[0])
 
         # Check the item count against the location count, and remove items until they match
         extra_items = len(pool) - len(self.multiworld.get_unfilled_locations(self.player))
@@ -568,7 +640,9 @@ class ResidentEvil2Remake(World):
             "scenario": self._get_scenario(),
             "difficulty": self._get_difficulty(),
             "unlocked_typewriters": self._format_option_text(self.options.unlocked_typewriters).split(", "),
+            "weapon_rando": self._format_option_text(self.options.cross_scenario_weapons),
             "starting_weapon": self._get_starting_weapon(),
+            "all_weapons": self._get_all_weapons(),
             "ammo_pack_modifier": self._format_option_text(self.options.ammo_pack_modifier),
             "damage_traps_can_kill": self._format_option_text(self.options.damage_traps_can_kill) == 'True',
             "death_link": self._format_option_text(self.options.death_link) == 'Yes' # why is this yes? lol
@@ -734,6 +808,17 @@ class ResidentEvil2Remake(World):
     def _get_starting_weapon(self) -> str:
         return self.starting_weapon[self.player] if self.player in self.starting_weapon else None
 
+    def _get_all_weapons(self) -> list[str] | None:
+        if self.player not in self.replacement_weapons:
+            return None
+
+        weapons_list = list(self.replacement_weapons[self.player].values())
+
+        if weapons_list and isinstance(weapons_list[0], list):
+            weapons_list = weapons_list[0]
+
+        return [self._get_starting_weapon(), *weapons_list]
+
     # not private because used by weapon rando file
     def get_starting_weapon_name_from_option_value(self) -> str:
         lookups: dict = {
@@ -780,7 +865,7 @@ class ResidentEvil2Remake(World):
         return self._format_option_text(self.options.add_enemy_kills_as_locations) != "None"
 
     def _can_enemy_kill_rando(self) -> bool:
-        return self._get_character() == "leon" and self._get_scenario() == "a" and self._get_difficulty() in ["assisted", "standard"]
+        return True # should be supported for all scenarios now thanks to contributions
 
     # def _output_items_and_locations_as_text(self):
     #     my_locations = [

@@ -12,7 +12,7 @@ This guide contains instructions on how to install and troubleshoot the Ender Li
 
 ## How do I install this randomizer?
 
-1. Install Archipelago and LiveSplit using the first two links above. 
+1. Install MultiworldGG and LiveSplit using the first two links above. 
 2. Extract EnderLilies.Randomizer.zip **in** the "Components" folder of your LiveSplit installation. 
 3. To make the randomizer available in LiveSplit: right click on LiveSplit -> "Edit Layout" -> "( + )" -> "Control" -> "Randomizer Ender Lilies" -> "Ok"
 4. To keep the randomizer available in LiveSplit, right click on LiveSplit -> "Save Layout"
@@ -20,15 +20,15 @@ This guide contains instructions on how to install and troubleshoot the Ender Li
 
 ## Where do I get a config file (aka "YAML") for this game?
 
-The [Player Settings](/games/Ender%20Lilies/player-settings) page on this website allows you to choose your personal settings for the randomizer and download them into a config file. 
+The [Player Settings](/games/Ender%20Lilies/player-options) page on this website allows you to choose your personal settings for the randomizer and download them into a config file. 
 Remember the name you type in the `Player Name` box; that's the "slot name" the client will ask you for when you attempt to connect!
 
 
 ### And why do I need a config file?
 
-Config files tell Archipelago how you'd like your game to be randomized, even if you're only using default settings.
+Config files tell MultiworldGG how you'd like your game to be randomized, even if you're only using default settings.
 When you're setting up a multiworld, every world needs its own config file.
-Check out [Creating a YAML](https://multiworld.gg/tutorial/Archipelago/setup/en#creating-a-yaml) for more information.
+Check out [Creating a YAML](/tutorial/Archipelago/setup/en#creating-a-yaml) for more information.
 
 
 ## How do I join a MultiWorld game?
@@ -37,7 +37,7 @@ Check out [Creating a YAML](https://multiworld.gg/tutorial/Archipelago/setup/en#
 2. Either load the layout where you included Ender Lilies randomizer or repeat line 3 of Installation.
 3. "Edit Layout" -> Double click on "Randomizer Ender Lilies"
     - Ignore all other sub-tabs of "Ender Lilies Randomizer". 
-    They are only relevant for the standalone randomizer and ignored when playing via Archipelago.  
+    They are only relevant for the standalone randomizer and ignored when playing via MultiworldGG.  
 4. In the "Archipelago" sub-tab, fill the Server/Port, Password (if any) and Slot name.
 5. Click Connect. 
    A green message will indicate if it worked.  

@@ -8,34 +8,19 @@ This has only been tested on Windows, but feel free to let us know if you get th
 The following are required in order to play _Metroid Prime_ in MultiworldGG:
 
 - [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases)
-   For older Archipelago versionsa 5.0/5.1, see the Note about Python versions in [APWorld Installation](#apworld-installation)
 - [Dolphin Emulator](https://dolphin-emu.org/download/). We recommend the latest Release version.
 - A _Metroid Prime_ (GameCube version) ISO file
   - Any official release copy of the GameCube version will work. (All region versions are compatible, including all three versions of NTSC-USA)
   - The Wii and Switch version of the game are _not_ supported.
 
 ## APWorld Installation
+* These steps are not required if you are using MultiworldGG.
 
 1. Download the latest version of the [Metroid Prime AP](https://github.com/Electro1512/MetroidAPrime/releases/latest)
 2. Unzip the downloaded Metroid Prime APWorld zip file and extract its files.
-3. In the MultiworldGG Launcher, select `Install APWorld`, and then select `metroidprime.apworld` file from the previous step.
+3. In the AP Launcher, select `Install APWorld`, and then select `metroidprime.apworld` file from the previous step.
 
->[!NOTE]
-> Because MultiworldGG 5.1 on Windows transitioned to using Python 3.12, [Metroid Prime AP version 0.4.8](https://github.com/Electro1512/MetroidAPrime/releases/tag/v0.4.8) has two versions:
-> | MultiworldGG Version (Windows) |                                              |
-> |-----------------------------------|----------------------------------------------|
-> | Archipelago 5.0 or earlier        | Download APWorld file ending with `3.11.zip`.|
-> | MWGG or Archipelago 5.1 or later  | Download APWorld file ending with `3.12.zip`.|
->
->  Future versions after Metroid Prime AP 0.4.8 will likely target only Python 3.12 and will only work on MultiworldGG 5.1.
 
->[!IMPORTANT]
-> If you have used a previous version of Metroid Prime AP that required copying folders into the `/lib` folder, go to your `MultiworldGG/lib` folder and delete the following directories:
-> - `dolphin_memory_engine` (This may be kept if another APWorld depends on this folder, but may cause issues if versions are mismatched.)
-> - `ppc_asm`
-> - `py_randomprime`
->
-> These are now included in the APWorld file.
 
 ## Setting Up Player Options YAML File
 
@@ -45,16 +30,13 @@ A sample YAML file for _Metroid Prime_ is supplied in the Metroid Prime APWorld 
 Once complete, provide the person generating with your YAML file.
 
 ## Generating a Multiworld
-As usual, randomized MultiworldGG games with custom worlds must be generated locally - see [MultiworldGG Setup Guide: Generating a game - On your local installation](https://multiworld.gg/tutorial/Archipelago/setup/en#on-your-local-installation)
+As usual, randomized MultiworldGG games with custom worlds must be generated locally - see [MultiworldGG Setup Guide: Generating a game - On your local installation](/tutorial/Archipelago/setup/en#on-your-local-installation)
 
 ## Hosting a Room
 
 If you're generating the multiworld, follow the instructions in the previous section.
-Once you have the zip file corresponding to your multiworld, follow [MultiworldGG Setup Guide: Hosting a MultiworldGG Server](https://multiworld.gg/tutorial/Archipelago/setup/en#hosting-an-archipelago-server) to host a room.
+Once you have the zip file corresponding to your multiworld, follow [MultiworldGG Setup Guide: Hosting a MultiworldGG Server](/tutorial/Archipelago/setup/en#hosting-an-archipelago-server) to host a room.
 
-> [!NOTE]
-> When hosting with the MultiworldGG website, the website will *not* host patch files from imported custom worlds, such as Metroid Prime AP.
-> The person generating must manually distribute the `.apmp1` patch files to the corresponding players.
 
 ## Starting the Game and Connecting to a Room
 
@@ -110,7 +92,7 @@ Once you do, follow these steps to connect to the room:
 ### Connection Troubleshooting
 - I have the randomized game open in Dolphin, but the Metroid Prime client says it can't connect to it!
   - Make Sure the ISO is Randomized
-    - On the Main Menu, "MultiworldGG Metroid Prime" text should appear. ([image example](https://i.imgur.com/W6172zf.png))
+    - On the Main Menu, "Archipelago Metroid Prime" text should appear. ([image example](https://i.imgur.com/W6172zf.png))
   - Ensure Only One Instance of Dolphin is Running
     - Check Task Manager to see if there's multiple emulator instances running.
     - You can also just restart your computer to be sure.
@@ -136,3 +118,8 @@ Once you do, follow these steps to connect to the room:
 - In Dolphin, when fighting Ridley my screen keeps changing width
   - This is an issue with Dolphin's widescreen detection heuristic.
   - In Dolphin, go to Graphics > General tab, and then set Aspect Ratio to `Force 4:3`
+
+## Feedback
+
+In the offical [Archipelago Discord](https://discord.com/invite/8Z65BR2) under the `future-game-design` channel, there is a [_Metroid Prime_ thread](https://discord.com/channels/731205301247803413/1172631093837570068).
+Feel free to ping `@Electro15` or `@hesto2` with any bugs/thoughts/complaints/wishes/jokes you may have!

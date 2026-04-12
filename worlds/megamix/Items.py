@@ -1,4 +1,4 @@
-from typing import NamedTuple, Optional, List
+from typing import NamedTuple, Optional
 from BaseClasses import Item, ItemClassification
 
 
@@ -10,7 +10,7 @@ class SongData(NamedTuple):
     singers: set[str]
     DLC: bool
     modded: bool
-    difficulties: List[float]
+    difficulties: list[float]
 
 
 class MegaMixSongItem(Item):

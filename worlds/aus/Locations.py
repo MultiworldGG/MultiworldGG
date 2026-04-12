@@ -69,7 +69,7 @@ coldkeep_location_table = {
 }
 
 the_curtain_location_table = {
-    L_THE_CURTAIN_FLOWER: LocData(72351, A_THE_CURTAIN),
+    L_THE_CURTAIN_FLOWER: LocData(72351, A_MOUNTSIDE),
     L_THE_CURTAIN_KILL: LocData(72161, A_THE_CURTAIN),
     L_THE_CURTAIN_BREAKABLE: LocData(72159, A_THE_CURTAIN),
     L_THE_CURTAIN_BOSS: LocData(72414, A_THE_CURTAIN),
@@ -111,8 +111,8 @@ deeptower_location_table = {
 }
 
 farfall_location_table = {
-    L_FARFALL_KILL: LocData(72118, A_FARFALL),
-    L_FARFALL_CHEST: LocData(72147, A_FARFALL),
+    L_FARFALL_KILL: LocData(72118, R_START_REGION),
+    L_FARFALL_CHEST: LocData(72147, R_START_REGION),
     L_FARFALL_5BALLOONS: LocData(72134, A_FARFALL),
     L_FARFALL_SPECIALBALLOON: LocData(72130, A_THE_BOTTOM),
     L_FARFALL_PITDOOR: LocData(72005, A_FARFALL),
@@ -226,7 +226,7 @@ skylands_location_table = {
 skysand_location_table = {
     L_SKYSAND_LEFTSTATUE: LocData(72138, A_SKYSAND),
     L_SKYSAND_FLOWER: LocData(72368, A_SKYSAND),
-    L_SKYSAND_BOTTOMSAVE: LocData(72011, A_SKYSAND),
+    L_SKYSAND_BOTTOMSAVE: LocData(72011, A_NIGHTCLIMB),
     L_SKYSAND_POSTBOSS: LocData(72204, A_SKYSAND),
     L_SKYSAND_BOSS: LocData(72410, A_SKYSAND),
     L_SKYSAND_UPPERDOOR: LocData(72140, A_SKYSAND),
@@ -282,7 +282,7 @@ undertomb_location_table = {
     L_UNDERTOMB_RIGHTDOOR: LocData(72193, A_LONGBEACH),
 }
 
-full_location_table = {
+base_location_table = {
     **blackcastle_location_table,
     **blancland_location_table,
     **bonus_location_table,
@@ -311,7 +311,5 @@ full_location_table = {
     **stonecastle_location_table,
     **strangecastle_location_table,
     **undertomb_location_table,
-
-    # Must go at the end for Reasons.
-    **final_climb_location_table,
+    #arcade and final climb are now added in init
 }

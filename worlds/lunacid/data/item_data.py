@@ -106,6 +106,11 @@ core_items = [
     create_item(ITEM_CODE_START + base_start_id + 71, CustomItem.experience, ItemClassification.filler),
     create_item(ITEM_CODE_START + base_start_id + 72, Upgrade.drop_chance, ItemClassification.useful),
     create_item(ITEM_CODE_START + base_start_id + 73, CustomItem.bestial_mastery, ItemClassification.useful),
+    create_item(ITEM_CODE_START + base_start_id + 74, GenericItem.nothing, ItemClassification.filler),
+    create_item(ITEM_CODE_START + base_start_id + 75, UniqueItem.vampiric_symbol_w, ItemClassification.progression),
+    create_item(ITEM_CODE_START + base_start_id + 76, UniqueItem.vampiric_symbol_a, ItemClassification.progression),
+    create_item(ITEM_CODE_START + base_start_id + 77, UniqueItem.vampiric_symbol_e, ItemClassification.progression),
+    create_item(ITEM_CODE_START + base_start_id + 78, GenericItem.demi_gift, ItemClassification.filler),
     ]
 
 trap_start_id = 100
@@ -119,6 +124,9 @@ trap_items = [
     create_item(ITEM_CODE_START + trap_start_id + 6, Trap.xp_drain_trap, ItemClassification.trap),
     create_item(ITEM_CODE_START + trap_start_id + 7, Trap.curse_trap, ItemClassification.trap),
     create_item(ITEM_CODE_START + trap_start_id + 8, Trap.bleed_trap, ItemClassification.trap),
+    create_item(ITEM_CODE_START + trap_start_id + 9, Trap.rat, ItemClassification.trap),
+    create_item(ITEM_CODE_START + trap_start_id + 10, Trap.timeout, ItemClassification.trap),
+    create_item(ITEM_CODE_START + trap_start_id + 11, GenericItem.patchouli_gift, ItemClassification.trap),
 ]
 
 all_traps = {trap.name: trap for trap in trap_items}
@@ -345,7 +353,6 @@ base_unique_items = [
 ]
 
 base_special_item_counts = {
-    Progressives.vampiric_symbol: 3,
     UniqueItem.ocean_elixir: 7,
     UniqueItem.earth_elixir: 10,
     UniqueItem.black_book: 3,
@@ -430,18 +437,22 @@ default_filler_weights = {
     CustomItem.experience: 1,
     Creation.bomb: 1,
     RareDrops.angel_feather: 1,
+    GenericItem.nothing: 0,
+    GenericItem.demi_gift: 0,
 }
 
 default_trap_weights = {
-    Trap.health_viai: 1,
-    Trap.blindness_trap: 1,
-    Trap.slowness_trap: 1,
-    Trap.mana_drain_trap: 1,
-    Trap.xp_drain_trap: 1,
-    Trap.curse_trap: 1,
-    Trap.poison_trap: 1,
-    Trap.bleed_trap: 1,
-    Trap.eggnog: 1,
-    Trap.coal: 1,
-
+    Trap.health_viai: 4,
+    Trap.blindness_trap: 2,
+    Trap.slowness_trap: 2,
+    Trap.mana_drain_trap: 2,
+    Trap.xp_drain_trap: 2,
+    Trap.curse_trap: 2,
+    Trap.poison_trap: 2,
+    Trap.bleed_trap: 2,
+    Trap.rat: 1,
+    Trap.timeout: 0,
+    Trap.eggnog: 4,
+    Trap.coal: 4,
+    GenericItem.patchouli_gift: 0,
 }

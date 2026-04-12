@@ -37,7 +37,7 @@ html{
 #landing-links{
     margin-left: auto;
     margin-right: auto;
-    height: 190px;
+    height: 175px;
 }
 
 #landing-links a{
@@ -161,7 +161,7 @@ html{
 #landing #first-line{
     font-family: Inter-Light, sans-serif;
     font-size: 25px;
-    margin: 20px 0;
+    margin: 8px 0;
     text-transform: uppercase;
 }
 

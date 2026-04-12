@@ -137,9 +137,17 @@ class PathOfExileWorld(World):
             item_objs.append(item_obj)
         return item_objs
 
+    # This is only used for plando and start inventory, where we want to create an item by name,
+    # but also remove it from the items to place, so it doesn't get placed again later.
+    # This will remove a single instance of the item.
     def remove_and_create_item_by_name(self, item_name: str) -> Item:
         item_id = self.item_name_to_id[item_name]
-        item_to_place = self.items_to_place.pop(item_id)  # Remove from items to place
+        item_to_place = self.items_to_place[item_id]
+        item_count = item_to_place.get("count", 1)
+        if item_count <= 1:
+            self.items_to_place.pop(item_id)  # Remove from items to place when last copy is taken
+        else:
+            item_to_place["count"] = item_count - 1
         item_obj = Items.PathOfExileItem(item_to_place["name"], ItemClassification.progression, item_id, self.player)
         return item_obj
 
@@ -225,7 +233,7 @@ class PathOfExileWorld(World):
     def generate_output(self, output_directory: str):
         if self._debug:
             logger.debug(f"Generating output for {self.game} in {output_directory}")
-            visualize_regions(self.multiworld.get_region(self.origin_region_name, self.player), f"Player{self.player}.puml",
+            visualize_regions(self.multiworld.get_region(self.origin_region_name, self.player), f"PathOfExile-Player{self.player}.puml",
                             show_entrance_names=True,
                             regions_to_highlight=self.multiworld.get_all_state(self.player).reachable_regions[
                                 self.player])

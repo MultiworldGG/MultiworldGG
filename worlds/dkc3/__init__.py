@@ -34,7 +34,7 @@ class DKC3Web(WebWorld):
 
     setup_en = Tutorial(
         "Multiworld Setup Guide",
-        "A guide to setting up the Donkey Kong Country 3 randomizer connected to a MultiworldGG Multiworld.",
+        "A guide to setting up the Donkey Kong Country 3 randomizer connected to an Archipelago Multiworld.",
         "English",
         "setup_en.md",
         "setup/en",
@@ -53,7 +53,6 @@ class DKC3World(World):
     mystery of why Donkey Kong and Diddy disappeared while on vacation.
     """
     game: str = "Donkey Kong Country 3"
-    author: str = "PoryGone"
     settings: typing.ClassVar[DK3Settings]
 
     options_dataclass = DKC3Options

@@ -91,6 +91,7 @@ class BaseLocation:
     yosei_room_defended_by_blood_plant = "YF: Room Defended by Blood Plant"
     yosei_patchouli_key = "YF: Patchouli's Canopy Offer"
     yosei_patchouli_quest = "YF: Patchouli's Reward"
+    yosei_rusted_sword = "YF: Remains Of Adventurer in Blood Plant's Insides"
 
     canopy_branch_edge = "FC: Branch Lower Edge"
     branch_cave = "FC: Branch Cave"
@@ -257,7 +258,9 @@ class BaseLocation:
     fate_lucid_blade = "CF: Calamis' Weapon of Choice"
 
     abyss_locations = [abyss_prize, abyss_floor_50, abyss_floor_45, abyss_floor_40, abyss_floor_35, abyss_floor_30, abyss_floor_25, abyss_floor_20,
-                       abyss_floor_15, abyss_floor_10, abyss_floor_5]
+                       abyss_floor_15, abyss_floor_10, abyss_floor_5, abyss_heal_5, abyss_heal_10, abyss_heal_15, abyss_heal_20, abyss_heal_25,
+                       abyss_heal_30, abyss_heal_35, abyss_heal_40, abyss_heal_45, abyss_heal_50, abyss_crystal_5, abyss_crystal_10, abyss_crystal_15,
+                       abyss_crystal_20, abyss_crystal_25, abyss_crystal_30, abyss_crystal_35, abyss_crystal_40, abyss_crystal_45, abyss_crystal_50]
     coin_locations = [sea_kill_jotunn, mausoleum_kill_death, temple_blood_altar]
     daedalus_locations = [archives_daedalus_third, archives_daedalus_one, archives_daedalus_two]
 

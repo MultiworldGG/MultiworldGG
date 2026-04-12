@@ -1,7 +1,8 @@
 <LUIGISTOP>
 <MENUOFF>
 <WAIT>(5)
-<WINDOW>(0)<COLOR>(12)<SPEAK>(0)
+<WINDOW>(0)<COLOR>(12)
+<SAY><COLOR>(5)Oooookay you can come in now!
 <SE>(97)
 <FLAGON>(37)
 <WAIT>(50)

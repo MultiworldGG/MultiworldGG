@@ -56,6 +56,25 @@ def ApplyMirrorMode(settings: Settings, ROM_COPY: LocalROM):
             FlipDisplayList(ROM_COPY, data, dl_start, dl_end, tbl, file_index)
 
 
+def trimData(data: bytes, alignment: int = 0x10) -> bytes:
+    """Trim a bytes object to remove trailing null bytes, and then align the size of the object to a certain modulo."""
+    if alignment <= 0:
+        raise ValueError("alignment must be positive")
+
+    i = len(data) - 1
+    while i >= 0 and data[i] == 0:
+        i -= 1
+    if i < 0:
+        return b""
+    trimmed = data[: i + 1]
+
+    pad = (-len(trimmed)) % alignment
+    if pad:
+        trimmed += b"\x00" * pad
+
+    return trimmed
+
+
 def truncateFiles(ROM_COPY: ROM):
     """Truncate the size of compressed files."""
     start = time.perf_counter()
@@ -78,11 +97,15 @@ def truncateFiles(ROM_COPY: ROM):
         if table_id in uncompressed_tables:
             # These tables are always uncompressed, ignore
             continue
+        if table_id in (TableNames.MapWalls, TableNames.MapFloors):
+            # messing with these tables causes the game to take a hard angry nap
+            continue
         ROM_COPY.seek(POINTER_OFFSET + (32 * 4) + (table_id * 4))
         entry_count = int.from_bytes(ROM_COPY.readBytes(4), "big")
         files = []
         ROM_COPY.seek(POINTER_OFFSET + (table_id * 4))
         table_start = POINTER_OFFSET + int.from_bytes(ROM_COPY.readBytes(4), "big")
+        please_shift = False
         for entry in range(entry_count):
             ROM_COPY.seek(table_start + (entry * 4))
             file_start = POINTER_OFFSET + (int.from_bytes(ROM_COPY.readBytes(4), "big") & 0x7FFFFFFF)
@@ -97,27 +120,33 @@ def truncateFiles(ROM_COPY: ROM):
             indicator = int.from_bytes(ROM_COPY.readBytes(2), "big")
             if indicator == 0x1F8B:
                 truncated_data = gzip.compress(zlib.decompress(data, (15 + 32)), compresslevel=9)
+                if len(data) != len(truncated_data):
+                    please_shift = True
+            elif table_id == TableNames.MusicMIDI:
+                truncated_data = trimData(data, 0x10)
+                please_shift = True
             else:
                 truncated_data = data
             files.append(truncated_data)
-        ROM_COPY.seek(table_start)
-        head = POINTER_OFFSET + (int.from_bytes(ROM_COPY.readBytes(4), "big") & 0x7FFFFFFF)
-        total_offset = 0
-        for entry in range(entry_count):
-            ROM_COPY.seek(table_start + (entry * 4) + 4)
-            entry_size = len(files[entry])
-            append_byte = False
-            if (entry_size % 2) == 1:
-                entry_size += 1
-                append_byte = True
-            file_head = head + total_offset
-            new_location = (head + total_offset + entry_size) - POINTER_OFFSET
-            ROM_COPY.writeMultipleBytes(new_location, 4)
-            ROM_COPY.seek(file_head)
-            ROM_COPY.writeBytes(files[entry])
-            if append_byte:
-                ROM_COPY.write(0)
-            total_offset += entry_size
-            total_bytes_overwritten += entry_size + 4
+        if please_shift:
+            ROM_COPY.seek(table_start)
+            head = POINTER_OFFSET + (int.from_bytes(ROM_COPY.readBytes(4), "big") & 0x7FFFFFFF)
+            total_offset = 0
+            for entry in range(entry_count):
+                ROM_COPY.seek(table_start + (entry * 4) + 4)
+                entry_size = len(files[entry])
+                append_byte = False
+                if (entry_size % 2) == 1:
+                    entry_size += 1
+                    append_byte = True
+                file_head = head + total_offset
+                new_location = (head + total_offset + entry_size) - POINTER_OFFSET
+                ROM_COPY.writeMultipleBytes(new_location, 4)
+                ROM_COPY.seek(file_head)
+                ROM_COPY.writeBytes(files[entry])
+                if append_byte:
+                    ROM_COPY.write(0)
+                total_offset += entry_size
+                total_bytes_overwritten += entry_size + 4
     end = time.perf_counter()
     print(f"File truncating took {end - start:.6f} seconds. Processed {hex(total_bytes_overwritten)} bytes")

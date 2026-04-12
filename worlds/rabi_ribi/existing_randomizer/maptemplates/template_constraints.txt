@@ -71,7 +71,7 @@
 "changes": [
     {
     "edge": "AQUARIUM_BOMB_WALLED_AREA -> AQUARIUM_BEACH_ENTRANCE",
-    "prereq": "UNDERWATER & (FIRE_ORB | (ADV_STUPID & SLIDE_ZIP))",
+    "prereq": "UNDERWATER & (FIRE_ORB | (SLIDE_ZIP & HARD & BORING))",
     }
     {
     "edge": "AQUARIUM_BEACH_ENTRANCE -> AQUARIUM_BOMB_WALLED_AREA",
@@ -99,7 +99,7 @@
 "changes": [
     {
     "edge": "AQUARIUM_BOMB_WALLED_AREA -> AQUARIUM_BEACH_ENTRANCE",
-    "prereq": "UNDERWATER & (BUNNY_WHIRL | EXPLOSIVES | (ADV_STUPID & SLIDE_ZIP))",
+    "prereq": "UNDERWATER & (BUNNY_WHIRL | EXPLOSIVES | (SLIDE_ZIP & HARD & BORING))",
     }
     {
     "edge": "AQUARIUM_BEACH_ENTRANCE -> AQUARIUM_BOMB_WALLED_AREA",
@@ -843,17 +843,12 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "FOREST_COCOA_ROOM -> FOREST_WARP",
-    "prereq": "
-        FIRE_ORB | (
-            SLIDING_POWDER | AIR_JUMP | AIR_DASH | WHIRL_BONK
-            | (SPEED5 & ADV_HARD)
-            | (ADV_EXT & (
-                SPEED3 // quick drop jump
-                | (BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
-            ))
-        )
-        ",
+    "edge": "FOREST_BEFORE_COCOA_ROOM -> FOREST_COCOA_ROOM",
+    "prereq": "FIRE_ORB",
+    }
+    {
+    "edge": "FOREST_COCOA_ROOM -> FOREST_BEFORE_COCOA_ROOM",
+    "prereq": "FIRE_ORB",
     }
 ]}
 
@@ -862,17 +857,12 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "FOREST_COCOA_ROOM -> FOREST_WARP",
-    "prereq": "
-        PIKO_HAMMER | (
-            SLIDING_POWDER | AIR_JUMP
-            | (SPEED5 & ADV_HARD)
-            | (ADV_EXT & (
-                SPEED3 // quick drop jump
-                | (BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
-            ))
-        )
-        ",
+    "edge": "FOREST_BEFORE_COCOA_ROOM -> FOREST_COCOA_ROOM",
+    "prereq": "PIKO_HAMMER | EXPLOSIVES_ENEMY",
+    }
+    {
+    "edge": "FOREST_COCOA_ROOM -> FOREST_BEFORE_COCOA_ROOM",
+    "prereq": "PIKO_HAMMER | EXPLOSIVES",
     }
 ]}
 

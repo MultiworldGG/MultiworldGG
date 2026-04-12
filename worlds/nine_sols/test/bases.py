@@ -13,6 +13,9 @@ class NineSolsTestBase(WorldTestBase):
     def getLocationCount(self) -> int:
         return sum(1 for _ in self.multiworld.get_locations(1))
 
+    def getNonEventLocationCount(self) -> int:
+        return sum(1 for location in self.multiworld.get_locations(1) if not location.is_event)
+
     def isReachableWith(self, location_name: str, item_names: list[str]) -> bool:
         state = self.makeStateWith(item_names)
         return state.can_reach_location(location_name, 1)
@@ -76,3 +79,7 @@ class NineSolsTestBase(WorldTestBase):
                     f"location '{location}' was not one of the locations being asserted on, "
                     f"but it requires exactly {item_names} to reach, so it should be"
                 )
+
+    def locationsReachableWith(self, item_names: list[str]):
+        state = self.makeStateWith(item_names)
+        return [location for location in self.multiworld.get_locations() if location.can_reach(state)]

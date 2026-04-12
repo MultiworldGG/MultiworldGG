@@ -2,7 +2,7 @@
 
 ## Où se trouve la page des paramètres ?
 
-La [page des paramètres du joueur pour ce jeu](../player-settings) contient la plupart des options dont vous avez besoin pour configurer et exporter un fichier de configuration. 
+La [page des paramètres du joueur pour ce jeu](../player-options) contient la plupart des options dont vous avez besoin pour configurer et exporter un fichier de configuration. 
 
 ## Qu'apporte la randomisation à ce jeu ?
 
@@ -18,6 +18,19 @@ Celui-ci sera bleu si l'objet n'est pas forcément utile, et rouge s'il s'agit d
 Lorsque vous le collectez, le jeu vous informe que vous venez d'envoyer un item à un autre monde, et vous pouvez regarder sur la fenêtre du client de quel item il s'agit. 
 
 ## Foire aux questions
+
+**Je suis bloqué et je ne peux pas remonter!**
+
+**Comment est-ce que je peux me téléporter au point de départ?**
+
+> Vous pouver retourner au point de départ en appuyant sur A et B en même temps pendant que l'écran est en train de fondre vers le blanc lors de la transition vers un menu (par exemple, après avoir appuyé sur START ou SELECT)
+
+**J'ai perdu mon bouclier, comment le récupérer?**
+
+**J'ai utilisé tous mes objets limités, suis-je bloqué?**
+
+> Impa, présente au point de départ, peut vous rendre une partie de tous vos consommables ainsi que votre bouclier.
+> Pour en avoir plus, les business scrubs vendent un remplissage complet des consommables
 
 **Qu'est-ce que la logique medium / hard attend de moi?**
 
@@ -39,10 +52,6 @@ Lorsque vous le collectez, le jeu vous informe que vous venez d'envoyer un item 
 > En solo en revanche, après avoir patché le jeu, vous pouvez jouer sur n'importe quel émulateur ou même une console originale. Cependant, puisque vous ne pourrez pas vous connecter, Vous n'aurez accès ni au système d'indice, ni au journal des derniers objets obtenus, ni à un tracker, à moins de repasser à Bizhawk en apportant votre sauvegarde.
 > 
 > \*Zunawe a aussi créé un connecteur pour utiliser mgba à la place. Les instructions (en anglais) sur comment le télécharger sont [ici](https://discord.com/channels/731205301247803413/1192236871468711966/1193963132377374762), sur le serveur Discord d'Archipelago
-
-**Comment est-ce que je peux me téléporter au point de départ?**
-
-> Vous devez appuyer sur A et B en même temps pendant que l'écran est en train de fondre vers le blanc lors de la transition vers un menu (par exemple, après avoir appuyé sur START ou SELECT)
 
 **Comment est-ce que je peux directement changer la saison pour une saison particulière plutôt que de devoir faire le cycle complet à chaque fois?**
 

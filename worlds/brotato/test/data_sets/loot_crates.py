@@ -381,6 +381,7 @@ LOOT_CRATE_GROUP_DATA_SETS: list[BrotatoLootCrateTestDataSet] = [
             BrotatoLootCrateGroup(46, 1, 45),
             BrotatoLootCrateGroup(47, 1, 46),
             BrotatoLootCrateGroup(48, 1, 47),
+            BrotatoLootCrateGroup(49, 1, 48),
         ],
         expected_legendary_groups=[
             BrotatoLootCrateGroup(1, 1, 0),
@@ -431,6 +432,7 @@ LOOT_CRATE_GROUP_DATA_SETS: list[BrotatoLootCrateTestDataSet] = [
             BrotatoLootCrateGroup(46, 1, 45),
             BrotatoLootCrateGroup(47, 1, 46),
             BrotatoLootCrateGroup(48, 1, 47),
+            BrotatoLootCrateGroup(49, 1, 48),
         ],
     ),
     BrotatoLootCrateTestDataSet(

@@ -452,10 +452,16 @@ def planet_by_id(planet_id) -> Optional[Rac2Planet]:
 #     current_amount: int
 #     current_capacity: int
 
+pcsx2_interface: Pine | None = None
+
+def create_pine_interface(slot: int = 28011):
+    global pcsx2_interface
+    pcsx2_interface = Pine(slot=slot)
 
 class Rac2Interface:
     """Interface sitting in front of the pcsx2_interface to provide higher level functions for interacting with RAC2"""
-    pcsx2_interface: Pine = Pine()
+    # Pass the dynamic port if available
+    pcsx2_interface: Pine | None = None  # This will be set via create_pine_interface()
     addresses: Addresses = None
     vendor: Vendor = None
     connection_status: str
@@ -469,6 +475,8 @@ class Rac2Interface:
     def __init__(self, logger) -> None:
         self.logger = logger
         self.vendor = Vendor(self)
+        global pcsx2_interface
+        self.pcsx2_interface = pcsx2_interface
 
     def give_equipment_to_player(self, equipment: EquipmentData):
         if isinstance(equipment, WeaponData) and equipment.base_weapon_offset is not None:

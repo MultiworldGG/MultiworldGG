@@ -1,6 +1,8 @@
 from dataclasses import dataclass
+
 from Options import (StartInventoryPool, Range, OptionSet, PerGameCommonOptions, OptionGroup, Choice, Toggle,
-                     DefaultOnToggle)
+                     DefaultOnToggle, Visibility)
+
 from .constants import game_ids
 
 
@@ -9,6 +11,7 @@ class AlwaysOnGames(OptionSet):
     Choose which games you would like to enable.
 
     The following games have full implementations: Barbuta, Vainger, Night Manor, and Porgy.
+    Party House has a more minor implementation, and counts as an implemented game.
     There is a host.yaml setting that you must enable to include unimplemented games.
     Unimplemented games will only have Garden, Gold, and/or Cherry checks.
     The host.yaml setting is not required for the following games due to their short length:
@@ -41,6 +44,8 @@ class RandomChoiceGameCount(Range):
     range_start = 0
     range_end = 50
     default = 0
+    # this is super unnecessary to show in the spoiler, so just hide it
+    visibility = Visibility.template | Visibility.simple_ui | Visibility.complex_ui
 
 
 class StartingGameAmount(Range):
@@ -78,6 +83,8 @@ class GoalGameAmount(Range):
     range_start = 1
     range_end = 50
     default = 50
+    # this is super unnecessary to show in the spoiler, so just hide it
+    visibility = Visibility.template | Visibility.simple_ui | Visibility.complex_ui
 
 
 class CherryAllowed(OptionSet):
@@ -150,7 +157,7 @@ class NMEarlyPin(DefaultOnToggle):
     If enabled, the Hairpin will be on the floor in the starting room on either the Bowl or Spoon checks.
     """
     internal_name = "nm_early_pin"
-    display_name = "Night Manor Early Hairpin"
+    display_name = "Night Manor - Early Hairpin"
 
 
 @dataclass

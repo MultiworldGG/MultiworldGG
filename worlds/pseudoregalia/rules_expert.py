@@ -262,7 +262,8 @@ class PseudoregaliaExpertRules(PseudoregaliaHardRules):
                 self.has_slide(state)
                 and (
                     self.can_bounce(state)
-                    or self.get_kicks(state, 1)))
+                    or self.get_kicks(state, 1)
+                    or self.get_clings(state, 2)))
             region_clauses["Dungeon => Castle -> Dungeon Strong Eyes"] = (lambda state:
                 self.has_breaker(state) and self.has_slide(state))
             region_clauses["Dungeon Strong Eyes -> Dungeon => Castle"] = (lambda state:

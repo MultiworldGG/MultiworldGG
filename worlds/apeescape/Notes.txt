@@ -1,0 +1,6 @@
+Thick Jungle :
+Random Starting Room to Fish Room not giving control back to player
+
+Dark Ruins :
+
+RSR fails sometimes ?

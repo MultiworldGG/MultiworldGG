@@ -1,8 +1,8 @@
 # Shared Cache
 
-Archipelago maintains a shared folder of information that can be persisted for a machine and reused across Libraries.
-It can be found at the User Cache Directory for appname `Archipelago` in the `Cache` subfolder
-(ex. `%LOCALAPPDATA%/Archipelago/Cache`).
+MultiworldGG maintains a shared folder of information that can be persisted for a machine and reused across Libraries.
+It can be found at the User Cache Directory for appname `MultiworldGG` in the `Cache` subfolder
+(ex. `%LOCALAPPDATA%/MultiworldGG/Cache`).
 
 ## Common Cache
 

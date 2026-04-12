@@ -506,6 +506,7 @@ def CanReachCogTier(state: CollectionState, locentr: LocEntrDef, world: MultiWor
     tier_to_info = {
         3: {
             "pgs": [
+                ToontownRegionName.TTC,
                 ToontownRegionName.DD,
                 ToontownRegionName.DG,
                 ToontownRegionName.MML,
@@ -525,6 +526,7 @@ def CanReachCogTier(state: CollectionState, locentr: LocEntrDef, world: MultiWor
         },
         5: {
             "pgs": [
+                ToontownRegionName.DD,
                 ToontownRegionName.DG,
                 ToontownRegionName.MML,
                 ToontownRegionName.TB,
@@ -559,6 +561,187 @@ def CanReachCogTier(state: CollectionState, locentr: LocEntrDef, world: MultiWor
                and passes_rule(Rule.Has20PercentMax, state, locentr, world, player, options)
     return any(state.can_reach(pg.value, None, player) for pg in pgs) \
            and passes_rule(gag_rule, state, locentr, world, player, options)
+
+@rule(Rule.LevelOneCogs, 1)
+@rule(Rule.LevelTwoCogs, 2)
+@rule(Rule.LevelThreeCogs, 3)
+@rule(Rule.LevelFourCogs, 4)
+@rule(Rule.LevelFiveCogs, 5)
+@rule(Rule.LevelSixCogs, 6)
+@rule(Rule.LevelSevenCogs, 7)
+@rule(Rule.LevelEightCogs, 8)
+@rule(Rule.LevelNineCogs, 9)
+@rule(Rule.LevelTenCogs, 10)
+@rule(Rule.LevelElevenCogs, 11)
+@rule(Rule.LevelTwelveCogs, 12)
+@rule(Rule.LevelThirteenCogs, 13)
+@rule(Rule.LevelFourteenCogs, 14)
+def CanReachHighCogTier(state: CollectionState, locentr: LocEntrDef, world: MultiWorld, player: int, options, argument: Tuple = None):
+    args = (state, locentr, world, player, options)
+
+    CanTier1 = passes_rule(Rule.TierOneCogs, *args)
+    CanTier2 = passes_rule(Rule.TierTwoCogs, *args)
+    CanTier3 = passes_rule(Rule.TierThreeCogs, *args)
+    CanTier4 = passes_rule(Rule.TierFourCogs, *args)
+    CanTier5 = passes_rule(Rule.TierFiveCogs, *args)
+    CanTier6 = passes_rule(Rule.TierSixCogs, *args)
+    CanTier8Boss = passes_rule(Rule.TierEightBossbot, *args)
+    CanTier8Law =  passes_rule(Rule.TierEightLawbot,  *args)
+    CanTier8Cash = passes_rule(Rule.TierEightCashbot, *args)
+    CanTier8Sell = passes_rule(Rule.TierEightSellbot, *args)
+    CanDDL = state.can_reach(ToontownRegionName.DDL.value, None, player)
+    CanCBHQ = state.can_reach(ToontownRegionName.CBHQ.value, None, player)
+    CanLBHQ = state.can_reach(ToontownRegionName.LBHQ.value, None, player)
+    CanBBHQ = state.can_reach(ToontownRegionName.BBHQ.value, None, player)
+    CanBullion = passes_rule(Rule.BullionMintKey, *args) \
+                 and passes_rule(Rule.HasLevelSixOffenseGag, *args) \
+                 and passes_rule(Rule.Has60PercentMax, *args)
+    CanDOffice = passes_rule(Rule.OfficeDKey, *args) \
+                 and passes_rule(Rule.HasLevelSevenOffenseGag, *args) \
+                 and passes_rule(Rule.Has60PercentMax, *args)
+    CanBackThree = passes_rule(Rule.BackThreeKey, *args) \
+                   and passes_rule(Rule.HasLevelSevenOffenseGag, *args) \
+                   and passes_rule(Rule.Has60PercentMax, *args)
+    CanFiveStory = passes_rule(Rule.FiveStory, *args)
+    CanCFO = passes_rule(Rule.CanFightCFO, *args)
+    CanCJ = passes_rule(Rule.CanFightCJ, *args)
+    CanCEO = passes_rule(Rule.CanFightCEO, *args)
+
+    tier_to_info = {
+        1: {
+            "gags": None,
+            "laff": None,
+            "rules": [
+                CanTier1,
+            ]
+        },
+        2: {
+            "gags": None,
+            "laff": None,
+            "rules": [
+                CanTier2,
+            ]
+        },
+        3: {
+            "gags": None,
+            "laff": None,
+            "rules": [
+                CanTier3,
+            ]
+        },
+        4: {
+            "gags": None,
+            "laff": None,
+            "rules": [
+                CanTier4,
+            ]
+        },
+        5: {
+            "gags": None,
+            "laff": None,
+            "rules": [
+                CanTier5,
+            ]
+        },
+        6: {
+            "gags": None,
+            "laff": None,
+            "rules": [
+                CanTier6,
+            ]
+        },
+        7: {
+            "gags": Rule.HasLevelFourOffenseGag,
+            "laff": Rule.Has20PercentMax,
+            "rules": [
+                CanTier8Boss,
+                CanTier8Law,
+                CanTier8Cash,
+                CanTier8Sell,
+            ]
+        },
+        8: {
+            "gags": Rule.HasLevelFourOffenseGag,
+            "laff": Rule.Has20PercentMax,
+            "rules": [
+                CanTier8Boss,
+                CanTier8Law,
+                CanTier8Cash,
+                CanTier8Sell,
+            ]
+        },
+        9: {
+            "gags": Rule.HasLevelFiveOffenseGag,
+            "laff": Rule.Has20PercentMax,
+            "rules": [
+                CanDDL,
+                CanFiveStory,
+                CanCBHQ,
+                CanLBHQ,
+                CanBBHQ,
+            ]
+        },
+        10: {
+            "gags": Rule.HasLevelFiveOffenseGag,
+            "laff": Rule.Has40PercentMax,
+            "rules": [
+                CanFiveStory,
+                CanBullion,
+                CanCFO,
+                CanLBHQ,
+                CanBBHQ,
+            ]
+        },
+        11: {
+            "gags": Rule.HasLevelFiveOffenseGag,
+            "laff": Rule.Has60PercentMax,
+            "rules": [
+                CanCJ,
+                CanBBHQ,
+            ]
+        },
+        12: {
+            "gags": None,
+            "laff": None,
+            "rules": [
+                CanDOffice,
+                CanCJ,
+                CanBackThree,
+                CanCEO,
+            ]
+        },
+        13: {
+            "gags": None,
+            "laff": None,
+            "rules": [
+                CanCEO,
+            ]
+        },
+        14: {
+            "gags": None,
+            "laff": None,
+            "rules": [
+                CanCEO,
+            ]
+        },
+    }
+
+    tier = argument[0]
+    tier_info = tier_to_info[tier]
+    if tier_info["gags"] is not None:
+        gag_rule = passes_rule(tier_info["gags"], *args)
+    else:
+        gag_rule = True
+    if tier_info["laff"] is not None:
+        laff_rule = passes_rule(tier_info["laff"], *args)
+    else:
+        laff_rule = True
+    if len(tier_info["rules"]) >= 1:
+        gen_rule = any(rule for rule in tier_info["rules"])
+    else:
+        gen_rule = True
+
+    return gag_rule and laff_rule and gen_rule
 
 
 @rule(Rule.CanMaxTierOneSellbot, 1, ToontownRegionName.SBHQ)
@@ -821,7 +1004,6 @@ def CanMaxCogTier(state: CollectionState, locentr: LocEntrDef, world: MultiWorld
         rules.extend(tier_info[argument[1]])
     return any(rules)
 
-
 @rule(Rule.CanAnyFacility)
 def CanDoAnyFacility(state: CollectionState, locentr: LocEntrDef, world: MultiWorld, player: int, options, argument: Tuple = None):
     CanFrontFactory = passes_rule(Rule.FrontFactoryKey, state, locentr, world, player, options) \
@@ -934,10 +1116,81 @@ def hasDamageGag(state: CollectionState, locentr: LocEntrDef, world: MultiWorld,
 @rule(Rule.HasLevelSevenOffenseGag, 7)
 @rule(Rule.HasLevelEightOffenseGag, 7)
 def HasOffensiveLevel(state: CollectionState, locentr: LocEntrDef, world: MultiWorld, player: int, options, argument: Tuple = None):
+    if isinstance(options, ToontownOptions):
+        start_dmg = options.start_damage_multiplier.value
+        max_dmg = options.max_damage_multiplier.value
+    else:
+        start_dmg = options.get("start_damage_multiplier", 100)
+        max_dmg = options.get("max_damage_multiplier", 100)
     LEVEL = argument[0]
     OVERLEVEL = min(argument[0] + 1, 8)
     UNDERLEVEL = max(0, argument[0] - 1)
     LUREMIN = max(0, argument[0] - 2)
+
+
+    # The ratio of Gag Capacity items required to reach a given gag level.
+    DMG_RATIOS_FOR_GAG_TRACKS = {
+        ToontownItemName.TOONUP_FRAME.value: {
+            1: 0.25,
+            2: 0.30,
+            3: 0.35,
+            4: 0.45,
+            5: 0.60,
+            6: 0.75,
+            7: 0.90,
+            8: 0.90
+        },
+        ToontownItemName.TRAP_FRAME.value: {
+            1: 0.25,
+            2: 0.30,
+            3: 0.35,
+            4: 0.45,
+            5: 0.55,
+            6: 0.70,
+            7: 0.80,
+            8: 0.90
+        },
+        ToontownItemName.SOUND_FRAME.value: {
+            1: 0.30,
+            2: 0.40,
+            3: 0.50,
+            4: 0.60,
+            5: 0.70,
+            6: 0.80,
+            7: 0.90,
+            8: 0.90
+        },
+        ToontownItemName.THROW_FRAME.value: {
+            1: 0.25,
+            2: 0.30,
+            3: 0.35,
+            4: 0.45,
+            5: 0.60,
+            6: 0.75,
+            7: 0.90,
+            8: 0.90
+        },
+        ToontownItemName.SQUIRT_FRAME.value: {
+            1: 0.25,
+            2: 0.35,
+            3: 0.45,
+            4: 0.55,
+            5: 0.65,
+            6: 0.75,
+            7: 0.90,
+            8: 0.90
+        },
+        ToontownItemName.DROP_FRAME.value: {
+            1: 0.25,
+            2: 0.30,
+            3: 0.35,
+            4: 0.45,
+            5: 0.55,
+            6: 0.70,
+            7: 0.80,
+            8: 0.90
+        },
+    }
 
     # To pass the check, we must have:
     # - Two of the following methods of damage
@@ -945,24 +1198,45 @@ def HasOffensiveLevel(state: CollectionState, locentr: LocEntrDef, world: MultiW
     # - + Sufficient Lure (Lure @ level - 2)
     # - + EXP + Capacity required at level
 
+    def calc_wanted_damage_for_track(track, level):
+        base_dmg_ratio = start_dmg / max_dmg
+        # Our difference in base and max dmg mult is too low, always true
+        if base_dmg_ratio >= 0.9:
+            return True
+        wanted_ratio = DMG_RATIOS_FOR_GAG_TRACKS[track][level]
+        dmg = start_dmg
+        dmg += state.count(ToontownItemName.DMG_BOOST_1.value, player)
+        dmg += (2 * state.count(ToontownItemName.DMG_BOOST_2.value, player))
+        dmg += (3 * state.count(ToontownItemName.DMG_BOOST_3.value, player))
+        dmg += (4 * state.count(ToontownItemName.DMG_BOOST_4.value, player))
+        final_ratio = dmg / max_dmg
+        # Second case here is for the case of gags are just always going to be powerful enough anyways and we don't need to restrict logic
+        return (final_ratio >= wanted_ratio) or (dmg >= 120)
+
     minimum_lure = state.has(ToontownItemName.LURE_FRAME.value, player, LUREMIN)
     powerful_squirt_knockback = state.has(ToontownItemName.SQUIRT_FRAME.value, player, LEVEL) \
-                                and state.has(ToontownItemName.LURE_FRAME.value, player, LEVEL)
+                                and state.has(ToontownItemName.LURE_FRAME.value, player, LEVEL) \
+                                and calc_wanted_damage_for_track(ToontownItemName.SQUIRT_FRAME.value, LEVEL)
     powerful_throw_knockback = state.has(ToontownItemName.THROW_FRAME.value, player, LEVEL) \
-                               and state.has(ToontownItemName.LURE_FRAME.value, player, LEVEL)
-    powerful_drop = state.has(ToontownItemName.DROP_FRAME.value, player, LEVEL)
+                               and state.has(ToontownItemName.LURE_FRAME.value, player, LEVEL) \
+                               and calc_wanted_damage_for_track(ToontownItemName.THROW_FRAME.value, LEVEL)
+    powerful_drop = state.has(ToontownItemName.DROP_FRAME.value, player, LEVEL) and calc_wanted_damage_for_track(ToontownItemName.DROP_FRAME.value, LEVEL)
     powerful_trap = state.has(ToontownItemName.TRAP_FRAME.value, player, LEVEL) \
-                    and state.has(ToontownItemName.LURE_FRAME.value, player, UNDERLEVEL)
-    powerful_sound = state.has(ToontownItemName.SOUND_FRAME.value, player, OVERLEVEL)
+                    and state.has(ToontownItemName.LURE_FRAME.value, player, UNDERLEVEL) \
+                    and calc_wanted_damage_for_track(ToontownItemName.TRAP_FRAME.value, LEVEL)
+    powerful_sound = state.has(ToontownItemName.SOUND_FRAME.value, player, OVERLEVEL) and calc_wanted_damage_for_track(ToontownItemName.SOUND_FRAME.value, OVERLEVEL)
 
     def two_powerful_tracks():
         powerful_tracks = 0
-        for track in (powerful_drop, powerful_trap, powerful_sound, powerful_throw_knockback, powerful_squirt_knockback):
+        # only trap or drop count for one powerful track
+        if (powerful_trap or powerful_drop):
+            powerful_tracks += 1
+        for track in (powerful_sound, powerful_throw_knockback, powerful_squirt_knockback):
             if track:
                 powerful_tracks += 1
         return powerful_tracks >= 2
 
-    sufficient_healing = state.has(ToontownItemName.TOONUP_FRAME.value, player, UNDERLEVEL)
+    sufficient_healing = state.has(ToontownItemName.TOONUP_FRAME.value, player, UNDERLEVEL) and calc_wanted_damage_for_track(ToontownItemName.TOONUP_FRAME.value, UNDERLEVEL)
     can_obtain_exp_required = has_collected_items_for_gag_level(state, player, options, LEVEL)
     return two_powerful_tracks() and sufficient_healing and minimum_lure and can_obtain_exp_required
 

@@ -3,6 +3,8 @@ A list of Constant Vars used by the APWorld.
 Can be used by multiple worlds in a generation (no instance vars allowed here)
 """
 from __future__ import annotations
+
+import enum
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 import BaseClasses
@@ -13,6 +15,21 @@ if TYPE_CHECKING:
 
 #from .sanity import *
 #from .sanitykey import *
+
+
+class RejectDictionaryReturnToMonke(dict):
+    """
+    This is an awful idea.
+    """
+    def __setitem__(self, key, value):
+        try:
+            self.__getitem__(key)
+            #if value != self.__getitem__(key):
+            raise ValueError(f"Key ({key}: {self.__getitem__(key)}) is already present in dictionary. New Value: {value}")
+            #else:
+                #return super(RejectDictionaryReturnToMonke, self).__setitem__(key, value)
+        except KeyError:
+            return super(RejectDictionaryReturnToMonke, self).__setitem__(key, value)
 
 
 @dataclass
@@ -59,7 +76,6 @@ class EntranceData:
 class RegionData:
     name: str
     numberofObjChecks: int
-    
 """
 
 
@@ -112,6 +128,9 @@ class LocationCSVData:
     def __lt__(self, other):
         return self.code < other.code
 
+    def __repr__(self):
+        return f"<{self.name} 0x{self.code:x} {self.team} {self.level} {self.act} {self.region} {self.rulestr} {self.loc_type} {self.hint_info} {self.notes}>"
+
 
 #class StrConst:
 SONICHEROES: str = "Sonic Heroes"
@@ -130,7 +149,7 @@ SONIC: str = "Sonic"
 DARK: str = "Dark"
 ROSE: str = "Rose"
 CHAOTIX: str = "Chaotix"
-SUPERHARD: str = "SuperHard"
+SUPERHARDMODE: str = "Super Hard Mode"
 
 ANYTEAM: str = "Any Team"
 
@@ -156,9 +175,9 @@ CHARBIG: str = "Big"
 CHARESPIO: str = "Espio"
 CHARCHARMY: str = "Charmy"
 CHARVECTOR: str = "Vector"
-CHARSUPERHARDSONIC: str = "SuperHard Sonic"
-CHARSUPERHARDTAILS: str = "SuperHard Tails"
-CHARSUPERHARDKNUCKLES: str = "SuperHard Knuckles"
+CHARSUPERHARDSONIC: str = f"{SUPERHARDMODE} Sonic"
+CHARSUPERHARDTAILS: str = f"{SUPERHARDMODE} Tails"
+CHARSUPERHARDKNUCKLES: str = f"{SUPERHARDMODE} Knuckles"
 
 SEASIDEHILL: str = "Seaside Hill"
 OCEANPALACE: str = "Ocean Palace"
@@ -184,6 +203,219 @@ EGGEMPEROR: str = "Egg Emperor"
 METALMADNESS: str = "Metal Madness"
 METALOVERLORD: str = "Metal Overlord"
 
+
+
+bonus_keys_per_team_level: dict[str, dict[str, tuple[int, int]]] = \
+{
+    SONIC:
+        {
+            SEASIDEHILL: (3, 3),
+            OCEANPALACE: (3, 3),
+            GRANDMETROPOLIS: (2, 3),
+            POWERPLANT: (3, 3),
+            CASINOPARK: (3, 3),
+            BINGOHIGHWAY: (3, 3),
+            RAILCANYON: (3, 3),
+            BULLETSTATION: (3, 3),
+            FROGFOREST: (3, 3),
+            LOSTJUNGLE: (3, 3),
+            HANGCASTLE: (3, 3),
+            MYSTICMANSION: (3, 3),
+            EGGFLEET: (3, 3),
+            FINALFORTRESS: (3, 3),
+        },
+    DARK:
+        {
+            SEASIDEHILL: (3, 3),
+            OCEANPALACE: (3, 3),
+            GRANDMETROPOLIS: (3, 3),
+            POWERPLANT: (3, 3),
+            CASINOPARK: (3, 3),
+            BINGOHIGHWAY: (3, 3),
+            RAILCANYON: (3, 3),
+            BULLETSTATION: (3, 3),
+            FROGFOREST: (3, 3),
+            LOSTJUNGLE: (3, 3),
+            HANGCASTLE: (3, 3),
+            MYSTICMANSION: (3, 3),
+            EGGFLEET: (3, 3),
+            FINALFORTRESS: (3, 3),
+        },
+    ROSE:
+        {
+            SEASIDEHILL: (2, 2),
+            OCEANPALACE: (3, 3),
+            GRANDMETROPOLIS: (3, 3),
+            POWERPLANT: (3, 3),
+            CASINOPARK: (3, 3), #super secret hidden
+            BINGOHIGHWAY: (3, 3),
+            RAILCANYON: (3, 3),
+            BULLETSTATION: (3, 3),
+            FROGFOREST: (3, 3),
+            LOSTJUNGLE: (3, 3),
+            HANGCASTLE: (3, 3),
+            MYSTICMANSION: (3, 3),
+            EGGFLEET: (3, 3),
+            FINALFORTRESS: (3, 3),
+        },
+    CHAOTIX:
+        {
+            SEASIDEHILL: (3, 3),
+            OCEANPALACE: (3, 3),
+            GRANDMETROPOLIS: (3, 3),
+            POWERPLANT: (3, 3),
+            CASINOPARK: (3, 3),
+            BINGOHIGHWAY: (3, 3),
+            RAILCANYON: (2, 2),
+            BULLETSTATION: (3, 3),
+            FROGFOREST: (3, 3),
+            LOSTJUNGLE: (3, 3),
+            HANGCASTLE: (3, 3),
+            MYSTICMANSION: (3, 3),
+            EGGFLEET: (3, 3),
+            FINALFORTRESS: (3, 3),
+        },
+    SUPERHARDMODE:
+        {
+            SEASIDEHILL: (0, 0),
+            OCEANPALACE: (0, 0),
+            GRANDMETROPOLIS: (0, 0),
+            POWERPLANT: (0, 0),
+            CASINOPARK: (0, 0),
+            BINGOHIGHWAY: (0, 0),
+            RAILCANYON: (0, 0),
+            BULLETSTATION: (0, 0),
+            FROGFOREST: (0, 0),
+            LOSTJUNGLE: (0, 0),
+            HANGCASTLE: (0, 0),
+            MYSTICMANSION: (0, 0),
+            EGGFLEET: (0, 0),
+            FINALFORTRESS: (0, 0),
+        },
+}
+"""
+number of bonus keys in specific team and level
+has a tuple with first value being normal and second being with secret locations
+"""
+
+checkpoints_per_team_level: dict[str, dict[str, tuple[int, int]]] = \
+{
+    SONIC:
+        {
+            SEASIDEHILL: (5, 5),
+            OCEANPALACE: (4, 4),
+            GRANDMETROPOLIS: (4, 5),
+            POWERPLANT: (4, 4),
+            CASINOPARK: (3, 3),
+            BINGOHIGHWAY: (4, 4),
+            RAILCANYON: (6, 6),
+            BULLETSTATION: (4, 4),
+            FROGFOREST: (3, 3),
+            LOSTJUNGLE: (5, 5),
+            HANGCASTLE: (3, 3),
+            MYSTICMANSION: (4, 4),
+            EGGFLEET: (5, 5),
+            FINALFORTRESS: (3, 3),
+        },
+    DARK:
+        {
+            SEASIDEHILL: (4, 4),
+            OCEANPALACE: (5, 5),
+            GRANDMETROPOLIS: (4, 4),
+            POWERPLANT: (4, 4),
+            CASINOPARK: (3, 3),
+            BINGOHIGHWAY: (4, 4),
+            RAILCANYON: (6, 6),
+            BULLETSTATION: (5, 5),
+            FROGFOREST: (3, 3),
+            LOSTJUNGLE: (5, 5),
+            HANGCASTLE: (3, 3),
+            MYSTICMANSION: (4, 4),
+            EGGFLEET: (5, 5),
+            FINALFORTRESS: (3, 3),
+        },
+    ROSE:
+        {
+            SEASIDEHILL: (2, 2),
+            OCEANPALACE: (2, 2),
+            GRANDMETROPOLIS: (3, 3),
+            POWERPLANT: (2, 2),
+            CASINOPARK: (1, 1), #super secret hidden
+            BINGOHIGHWAY: (3, 3),
+            RAILCANYON: (4, 4),
+            BULLETSTATION: (2, 2),
+            FROGFOREST: (2, 2),
+            LOSTJUNGLE: (2, 2),
+            HANGCASTLE: (2, 2),
+            MYSTICMANSION: (2, 2),
+            EGGFLEET: (3, 3),
+            FINALFORTRESS: (2, 2),
+        },
+    CHAOTIX:
+        {
+            SEASIDEHILL: (4, 4),
+            OCEANPALACE: (2, 2),
+            GRANDMETROPOLIS: (4, 4),
+            POWERPLANT: (3, 3),
+            CASINOPARK: (3, 3),
+            BINGOHIGHWAY: (2, 2),
+            RAILCANYON: (5, 5),
+            BULLETSTATION: (4, 4),
+            FROGFOREST: (3, 3),
+            LOSTJUNGLE: (2, 2),
+            HANGCASTLE: (2, 2),
+            MYSTICMANSION: (4, 4),
+            EGGFLEET: (4, 4),
+            FINALFORTRESS: (3, 3),
+        },
+    SUPERHARDMODE:
+        {
+            SEASIDEHILL: (4, 4),
+            OCEANPALACE: (5, 5),
+            GRANDMETROPOLIS: (4, 4),
+            POWERPLANT: (4, 4),
+            CASINOPARK: (3, 3),
+            BINGOHIGHWAY: (4, 4),
+            RAILCANYON: (6, 6),
+            BULLETSTATION: (4, 4),
+            FROGFOREST: (3, 3),
+            LOSTJUNGLE: (5, 5),
+            HANGCASTLE: (3, 3),
+            MYSTICMANSION: (5, 5),
+            EGGFLEET: (5, 5),
+            FINALFORTRESS: (3, 3),
+        },
+}
+"""
+number of checkpoints in specific team and level
+has a tuple with first value being normal and second being with secret locations
+"""
+
+
+chaotix_obj_sanity_checks_per_level_act: dict[str, tuple[int, int]] = \
+{
+    SEASIDEHILL: (5, 10),
+    OCEANPALACE: (0, 0),
+    GRANDMETROPOLIS: (85, 85),
+    POWERPLANT: (3, 5),
+    CASINOPARK: (200, 500),
+    BINGOHIGHWAY: (10, 20),
+    RAILCANYON: (0, 0),
+    BULLETSTATION: (30, 50),
+    FROGFOREST: (3, 10),
+    LOSTJUNGLE: (10, 20),
+    HANGCASTLE: (10, 10),
+    MYSTICMANSION: (60, 46),
+    EGGFLEET: (0, 0),
+    FINALFORTRESS: (5, 10),
+}
+"""
+number of sanity checks for the specific Chaotix level
+has a tuple with first value being Act A and the second being Act B
+"""
+
+
+
 BONUSSTAGE: str = "Bonus Stage"
 EMERALDSTAGE: str = "Emerald Stage"
 SEASIDEHILLBONUSSTAGE: str = f"{SEASIDEHILL} {BONUSSTAGE}"
@@ -201,7 +433,7 @@ MYSTICMANSIONEMERALDSTAGE: str = f"{MYSTICMANSION} {EMERALDSTAGE}"
 EGGFLEETBONUSSTAGE: str = f"{EGGFLEET} {BONUSSTAGE}"
 FINALFORTRESSEMERALDSTAGE: str = f"{FINALFORTRESS} {EMERALDSTAGE}"
 
-bonus_and_emerald_stages = \
+bonus_and_emerald_stages: list[str] = \
 [
     SEASIDEHILLBONUSSTAGE,
     OCEANPALACEEMERALDSTAGE,
@@ -219,7 +451,7 @@ bonus_and_emerald_stages = \
     FINALFORTRESSEMERALDSTAGE,
 ]
 
-emerald_levels = \
+emerald_levels: list[str] = \
 [
     OCEANPALACE,
     POWERPLANT,
@@ -278,16 +510,129 @@ CYANCHAOSEMERALD: str = f"{CYAN} {CHAOSEMERALD}"
 PURPLECHAOSEMERALD: str = f"{PURPLE} {CHAOSEMERALD}"
 REDCHAOSEMERALD: str = f"{RED} {CHAOSEMERALD}"
 
+
+
+
+EMBLEMS: str = "Emblems"
+EMERALDS: str = "Emeralds"
+LEVELCOMPLETIONSALLTEAMS: str = "Level Completions All Teams"
+UNIQUELEVELCCOMPLETIONS: str = "Unique Level Completions"
+LEVELCOMPLETIONSPERSTORY: str = "Level Completions Per Story"
+
+goal_unlock_options: list[str] = \
+[
+    EMBLEMS,
+    EMERALDS,
+    LEVELCOMPLETIONSALLTEAMS,
+    #UNIQUELEVELCCOMPLETIONS,
+    LEVELCOMPLETIONSPERSTORY,
+]
+
+
+SONICACTA: str = "Sonic Act A"
+SONICACTB: str = "Sonic Act B"
+SONICKEYSANITY1SET: str = "Sonic KeySanity 1 Set"
+SONICKEYSANITYBOTHACTS: str = "Sonic KeySanity Both Acts"
+SONICCHECKPOINTSANITY1SET: str = "Sonic CheckpointSanity 1 Set"
+SONICCHECKPOINTSANITYBOTHACTS: str = "Sonic CheckpointSanity Both Acts"
+
+DARKACTA: str = "Dark Act A"
+DARKACTB: str = "Dark Act B"
+DARKOBJSANITY: str = "Dark ObjSanity"
+DARKKEYSANITY1SET: str = "Dark KeySanity 1 Set"
+DARKKEYSANITYBOTHACTS: str = "Dark KeySanity Both Acts"
+DARKCHECKPOINTSANITY1SET: str = "Dark CheckpointSanity 1 Set"
+DARKCHECKPOINTSANITYBOTHACTS: str = "Dark CheckpointSanity Both Acts"
+
+ROSEACTA: str = "Rose Act A"
+ROSEACTB: str = "Rose Act B"
+ROSEOBJSANITY: str = "Rose ObjSanity"
+ROSEKEYSANITY1SET: str = "Rose KeySanity 1 Set"
+ROSEKEYSANITYBOTHACTS: str = "Rose KeySanity Both Acts"
+ROSECHECKPOINTSANITY1SET: str = "Rose CheckpointSanity 1 Set"
+ROSECHECKPOINTSANITYBOTHACTS: str = "Rose CheckpointSanity Both Acts"
+
+CHAOTIXACTA: str = "Chaotix Act A"
+CHAOTIXACTB: str = "Chaotix Act B"
+CHAOTIXOBJSANITY: str = "Chaotix ObjSanity"
+CHAOTIXKEYSANITY1SET: str = "Chaotix KeySanity 1 Set"
+CHAOTIXKEYSANITYBOTHACTS: str = "Chaotix KeySanity Both Acts"
+CHAOTIXCHECKPOINTSANITY1SET: str = "Chaotix CheckpointSanity 1 Set"
+CHAOTIXCHECKPOINTSANITYBOTHACTS: str = "Chaotix CheckpointSanity Both Acts"
+
+#SUPERHARDMODE: str = "Super Hard Mode"
+SUPERHARDCHECKPOINTSANITY: str = "Super Hard CheckpointSanity"
+
+
+features_in_rando: list[str] = \
+[
+    SONICACTA,
+    SONICACTB,
+    SONICKEYSANITY1SET,
+    SONICKEYSANITYBOTHACTS,
+    SONICCHECKPOINTSANITY1SET,
+    SONICCHECKPOINTSANITYBOTHACTS,
+
+    DARKACTA,
+    DARKACTB,
+    DARKOBJSANITY,
+    DARKKEYSANITY1SET,
+    DARKKEYSANITYBOTHACTS,
+    DARKCHECKPOINTSANITY1SET,
+    DARKCHECKPOINTSANITYBOTHACTS,
+
+    ROSEACTA,
+    ROSEACTB,
+    ROSEOBJSANITY,
+    ROSEKEYSANITY1SET,
+    ROSEKEYSANITYBOTHACTS,
+    ROSECHECKPOINTSANITY1SET,
+    ROSECHECKPOINTSANITYBOTHACTS,
+
+    CHAOTIXACTA,
+    CHAOTIXACTB,
+    CHAOTIXOBJSANITY,
+    CHAOTIXKEYSANITY1SET,
+    CHAOTIXKEYSANITYBOTHACTS,
+    CHAOTIXCHECKPOINTSANITY1SET,
+    CHAOTIXCHECKPOINTSANITYBOTHACTS,
+
+    SUPERHARDMODE,
+    SUPERHARDCHECKPOINTSANITY,
+]
+
+features_in_rando_default: list[str] = \
+[
+    SONICACTA,
+    SONICKEYSANITY1SET,
+    SONICCHECKPOINTSANITY1SET,
+]
+
+features_in_rando_story_options: list[str] = \
+[
+    SONICACTA,
+    SONICACTB,
+    DARKACTA,
+    DARKACTB,
+    ROSEACTA,
+    ROSEACTB,
+    CHAOTIXACTA,
+    CHAOTIXACTB,
+    SUPERHARDMODE,
+]
+
+
+
 emeralds: list[str] = \
-    [
-        GREENCHAOSEMERALD,
-        BLUECHAOSEMERALD,
-        YELLOWCHAOSEMERALD,
-        WHITECHAOSEMERALD,
-        CYANCHAOSEMERALD,
-        PURPLECHAOSEMERALD,
-        REDCHAOSEMERALD,
-    ]
+[
+    GREENCHAOSEMERALD,
+    BLUECHAOSEMERALD,
+    YELLOWCHAOSEMERALD,
+    WHITECHAOSEMERALD,
+    CYANCHAOSEMERALD,
+    PURPLECHAOSEMERALD,
+    REDCHAOSEMERALD,
+]
 
 #CHECKPOINT: str = "Checkpoint" <- defined below
 #BONUSKEY: str = "Bonus Key" <- defined below
@@ -377,7 +722,7 @@ GROUNDENEMY: str = "Ground Enemy"
 
 SECRET: str = "Secret"
 #NORMAL: str = "Normal"
-LEVEL: str = "Level"
+#LEVEL: str = "Level"
 BOSS: str = "Boss"
 EMERALD: str = "Emerald"
 EMERALDLOCATION: str = "Emerald Location"
@@ -531,16 +876,16 @@ team_char_names: dict[str, list[str]] = \
         SONIC:
             [
                 CHARSONIC,
-                CHARTAILS,
                 CHARKNUCKLES,
-            ]
+                CHARTAILS,
+            ],
     }
 
 char_name_to_formation: dict[str, str] = \
     {
         CHARSONIC: SPEED,
-        CHARTAILS: FLYING,
         CHARKNUCKLES: POWER,
+        CHARTAILS: FLYING,
     }
 
 csv_file_headers: dict[str, list[str]] = \
@@ -583,26 +928,55 @@ sonic_heroes_story_names: dict[int, str] = \
         1: DARK,
         2: ROSE,
         3: CHAOTIX,
-        4: SUPERHARD,
+        4: SUPERHARDMODE,
     }
 
+team_code_to_team: dict[str, str] = \
+{
+    'S': SONIC,
+    'D': DARK,
+    'R': ROSE,
+    'C': CHAOTIX,
+}
+
 sonic_heroes_level_names: dict[int, str] = \
-    {
-        1: SEASIDEHILL,
-        2: OCEANPALACE,
-        3: GRANDMETROPOLIS,
-        4: POWERPLANT,
-        5: CASINOPARK,
-        6: BINGOHIGHWAY,
-        7: RAILCANYON,
-        8: BULLETSTATION,
-        9: FROGFOREST,
-        10: LOSTJUNGLE,
-        11: HANGCASTLE,
-        12: MYSTICMANSION,
-        13: EGGFLEET,
-        14: FINALFORTRESS,
-    }
+{
+    1: SEASIDEHILL,
+    2: OCEANPALACE,
+    3: GRANDMETROPOLIS,
+    4: POWERPLANT,
+    5: CASINOPARK,
+    6: BINGOHIGHWAY,
+    7: RAILCANYON,
+    8: BULLETSTATION,
+    9: FROGFOREST,
+    10: LOSTJUNGLE,
+    11: HANGCASTLE,
+    12: MYSTICMANSION,
+    13: EGGFLEET,
+    14: FINALFORTRESS,
+}
+
+sonic_heroes_regular_levels_index: dict[str, int] = \
+{
+    SEASIDEHILL: 0,
+    OCEANPALACE: 1,
+    GRANDMETROPOLIS: 2,
+    POWERPLANT: 3,
+    CASINOPARK: 4,
+    BINGOHIGHWAY: 5,
+    RAILCANYON: 6,
+    BULLETSTATION: 7,
+    FROGFOREST: 8,
+    LOSTJUNGLE: 9,
+    HANGCASTLE: 10,
+    MYSTICMANSION: 11,
+    EGGFLEET: 12,
+    FINALFORTRESS: 13,
+}
+
+
+
 
 
 bonus_key_amounts: dict[str, dict[str, tuple[int, int]]] = \
@@ -624,6 +998,74 @@ bonus_key_amounts: dict[str, dict[str, tuple[int, int]]] = \
                 EGGFLEET: (3, 3),
                 FINALFORTRESS: (3, 3),
             },
+        DARK:
+            {
+                SEASIDEHILL: (3, 3),
+                OCEANPALACE: (3, 3),
+                GRANDMETROPOLIS: (3, 3),
+                POWERPLANT: (3, 3),
+                CASINOPARK: (3, 3),
+                BINGOHIGHWAY: (3, 3),
+                RAILCANYON: (3, 3),
+                BULLETSTATION: (3, 3),
+                FROGFOREST: (3, 3),
+                LOSTJUNGLE: (3, 3),
+                HANGCASTLE: (3, 3),
+                MYSTICMANSION: (3, 3),
+                EGGFLEET: (3, 3),
+                FINALFORTRESS: (3, 3),
+            },
+        ROSE:
+            {
+                SEASIDEHILL: (2, 2), #1 before start of level
+                OCEANPALACE: (3, 3),
+                GRANDMETROPOLIS: (3, 3),
+                POWERPLANT: (3, 3),
+                CASINOPARK: (3, 3), #1 after (VIP table)
+                BINGOHIGHWAY: (3, 3),
+                RAILCANYON: (3, 3),
+                BULLETSTATION: (3, 3),
+                FROGFOREST: (3, 3),
+                LOSTJUNGLE: (3, 3),
+                HANGCASTLE: (3, 3),
+                MYSTICMANSION: (3, 3),
+                EGGFLEET: (3, 3),
+                FINALFORTRESS: (3, 3),
+            },
+        CHAOTIX:
+            {
+                SEASIDEHILL: (3, 3),
+                OCEANPALACE: (3, 3),
+                GRANDMETROPOLIS: (3, 3),
+                POWERPLANT: (3, 3),
+                CASINOPARK: (3, 3),
+                BINGOHIGHWAY: (3, 3),
+                RAILCANYON: (2, 2), #1 way OOB (last)
+                BULLETSTATION: (3, 3),
+                FROGFOREST: (3, 3),
+                LOSTJUNGLE: (3, 3),
+                HANGCASTLE: (3, 3),
+                MYSTICMANSION: (3, 3),
+                EGGFLEET: (3, 3),
+                FINALFORTRESS: (3, 3),
+            },
+        SUPERHARDMODE:
+            {
+                SEASIDEHILL: (0, 0),
+                OCEANPALACE: (0, 0),
+                GRANDMETROPOLIS: (0, 0),
+                POWERPLANT: (0, 0),
+                CASINOPARK: (0, 0),
+                BINGOHIGHWAY: (0, 0),
+                RAILCANYON: (0, 0),
+                BULLETSTATION: (0, 0),
+                FROGFOREST: (0, 0),
+                LOSTJUNGLE: (0, 0),
+                HANGCASTLE: (0, 0),
+                MYSTICMANSION: (0, 0),
+                EGGFLEET: (0, 0),
+                FINALFORTRESS: (0, 0),
+            },
     }
 """
 The Mapping of Team and Level to number of bonus keys.
@@ -641,6 +1083,18 @@ sonic_heroes_extra_names: dict[int, str] = \
         6: EGGEMPEROR,
     }
 
+boss_name_to_slot_data_id: dict[str, int] = \
+    {
+        EGGHAWK: 16,
+        TEAMFIGHT1: 17,
+        ROBOTCARNIVAL: 18,
+        EGGALBATROSS: 19,
+        TEAMFIGHT2: 20,
+        ROBOTSTORM: 21,
+        EGGEMPEROR: 22,
+        METALMADNESS: 23,
+    }
+
 item_teams: list[str] = \
     [
         ANYTEAM,
@@ -648,7 +1102,7 @@ item_teams: list[str] = \
         DARK,
         ROSE,
         CHAOTIX,
-        SUPERHARD,
+        SUPERHARDMODE,
     ]
 
 item_regions: list[str] = \
@@ -953,9 +1407,9 @@ def get_char_name_from_team(team: str, speed=False, flying=False, power=False):
         return ""
     if speed:
         return team_char_names[team][0]
-    if flying:
-        return team_char_names[team][1]
     if power:
+        return team_char_names[team][1]
+    if flying:
         return team_char_names[team][2]
     return ""
 

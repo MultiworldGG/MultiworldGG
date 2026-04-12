@@ -134,8 +134,6 @@ class YGODDMOptions(PerGameCommonOptions):
     randomize_starting_dice: RandomizeStartingDice
     bonus_item_mode: BonusItemMode
     gold_reward_amount: GoldRewardAmount
-
-    
-
+      
     def serialize(self) -> typing.Dict[str, int]:
         return {field.name: getattr(self, field.name).value for field in dataclasses.fields(self)}

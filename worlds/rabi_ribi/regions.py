@@ -30,6 +30,7 @@ logger = logging.getLogger("Rabi-Ribi")
 # TODO: Move these region names
 plurkwood_regions: Set[str] = {
     "Plurkwood Main",
+    "Item P Hairpin",
     "Item Egg Plurk East",
     "Item Egg Plurk Cave",
     "Item Egg Plurk Cats"
@@ -125,7 +126,7 @@ class RegionHelper:
         self.location_table = setup_locations(self.options)
 
     def generate_seed(self):
-        generator: MapGenerator = MapGenerator(self.randomizer_data, self.existing_randomizer_args, set(self.location_table.keys()), self.world.random)
+        generator: MapGenerator = MapGenerator(self.randomizer_data, self.existing_randomizer_args, set(self.location_table.keys()), self.world)
         self.allocation, _ = generator.generate_seed()
 
         self.picked_templates = self.allocation.picked_templates
@@ -282,18 +283,6 @@ class RegionHelper:
 
             region.locations.append(ap_location)
             total_locations += 1
-
-        if not self.options.randomize_gift_items:
-            self.add_event(ItemName.speed_boost, LocationName.town_shop)
-            self.add_event(ItemName.bunny_strike, LocationName.town_shop,
-                           lambda state: state.has(ItemName.cicini_recruit, self.player) and state.has(ItemName.sliding_powder, self.player))
-
-            total_locations += 2
-
-            if self.options.include_plurkwood:
-                self.add_event(ItemName.p_hairpin, LocationName.plurkwood_main,
-                               lambda state: state.has(ItemName.keke_bunny_recruit, self.player))
-                total_locations += 1
 
         return total_locations
 

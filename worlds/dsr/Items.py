@@ -1,23 +1,44 @@
 from enum import IntEnum
 from typing import NamedTuple
-import random
 from BaseClasses import Item
+from worlds.AutoWorld import World
 
 
 class DSRItemCategory(IntEnum):
     SKIP = 0,
     EVENT = 1,
-    CONSUMABLE = 2
-    KEY_ITEM = 3
-    RING = 4
-    UPGRADE_MATERIAL = 5
-    SPELL = 6
-    ARMOR = 7
-    WEAPON = 8
+    CONSUMABLE = 2,
+    KEY_ITEM = 3,
+    RING = 4,
+    UPGRADE_MATERIAL = 5,
+    SPELL = 6,
+    ARMOR = 7,
+    WEAPON = 8,
     SHIELD = 9,
     TRAP = 10,
-    BOSS_SOUL = 11
+    BOSS_SOUL = 11,
+    EMBER = 12,
+    FOGWALL = 13,
+    BOSSFOGWALL = 14,
+    FILLER = 15,
+    NOTHING = 16,
+    BONFIREWARP = 17
 
+class DSRWeaponType(IntEnum):
+    Melee = 1,
+    Ranged = 2,
+    RangedAmmunition = 3,
+    SpellTool = 4,
+    Shield = 5
+
+class DSRUpgradeType(IntEnum):
+    NotUpgradable = 0,
+    Unique = 1,
+    Armor = 2,
+    Infusable = 3,
+    InfusableRestricted = 4,
+    PyroFlame = 5,
+    PyroFlameAscended = 6
 
 class DSRItemData(NamedTuple):
     name: str
@@ -34,11 +55,12 @@ class DSRItem(Item):
         return {item_data.name: (base_id + item_data.dsr_code if item_data.dsr_code is not None else None) for item_data in _all_items}
 
 key_item_names = {
-"Covenant of Artorias","Orange Charred Ring", "Pendant", "Skull Lantern", "Fire Keeper Soul (Anastacia of Astora)", "Fire Keeper Soul (Darkmoon Knightess)", "Fire Keeper Soul (Daughter of Chaos)", "Fire Keeper Soul (New Londo)", "Fire Keeper Soul (Blighttown)", "Fire Keeper Soul (Duke's Archives)", "Fire Keeper Soul (Undead Parish)"
+"Covenant of Artorias","Orange Charred Ring", "Skull Lantern", 
+"Fire Keeper Soul (Anastacia of Astora)", "Fire Keeper Soul (Darkmoon Knightess)", "Fire Keeper Soul (Daughter of Chaos)",
+"Fire Keeper Soul (New Londo)", "Fire Keeper Soul (Blighttown)", "Fire Keeper Soul (Duke's Archives)", "Fire Keeper Soul (Undead Parish)"
 }
 
-_all_items = [DSRItemData(row[0], row[1], row[2]) for row in [    
-   
+_all_items_base = [    
     ("Asylum Demon Defeated", 1000, DSRItemCategory.EVENT),
     ("Taurus Demon Defeated", 1001, DSRItemCategory.EVENT),
     ("Bell Gargoyles Defeated", 1002, DSRItemCategory.EVENT),
@@ -138,7 +160,79 @@ _all_items = [DSRItemData(row[0], row[1], row[2]) for row in [
     ("Oolacile - Township lit", 1095, DSRItemCategory.EVENT),
     ("Bell of Awakening #1", 1096, DSRItemCategory.EVENT),
     ("Bell of Awakening #2", 1097, DSRItemCategory.EVENT),
+    ("Dusk Rescued", 1098, DSRItemCategory.EVENT),
+    ("Lordvessel Placed", 1099, DSRItemCategory.EVENT),
+    ("Undead Merchant Access", 1100, DSRItemCategory.EVENT),
+    ("Andre Access", 1101, DSRItemCategory.EVENT),
 
+
+
+
+    ("Fog Wall Key - Northern Undead Asylum", 1200, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Undead Burg", 1201, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Undead Parish", 1202, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Darkroot Garden", 1203, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Depths Rat Room", 1204, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Lower Blighttown Entrance", 1205, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Ash Lake Entrance", 1206, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Sen's Fortress #1 (Outside Stairs)", 1207, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Sen's Fortress #2 (Upper Entrance)", 1208, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Anor Londo #1 (Rafters)", 1209, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Anor Londo #2 (Archers)", 1210, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Duke's Archives Courtyard Entrance", 1211, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Catacombs", 1212, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Tomb of the Giants", 1213, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - New Londo (Upper)", 1214, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - New Londo (Lower)", 1215, DSRItemCategory.FOGWALL),
+    ("Fog Wall Key - Painted World", 1216, DSRItemCategory.FOGWALL),
+    
+
+    ("Boss Fog Wall Key - Taurus Demon", 1230, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Capra Demon", 1231, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Gaping Dragon", 1232, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Quelaag", 1233, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Bell Gargoyles", 1234, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Iron Golem", 1235, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Ornstein and Smough", 1236, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Seath First Encounter", 1237, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Pinwheel", 1238, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Nito", 1239, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Four Kings", 1240, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Ceaseless Discharge", 1241, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Demon Firesage", 1242, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Centipede Demon", 1243, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Bed of Chaos", 1244, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Gwyn", 1245, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Sanctuary Guardian", 1246, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Artorias", 1247, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Manus", 1248, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Gwyndolin", 1249, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Moonlight Butterfly", 1250, DSRItemCategory.BOSSFOGWALL),
+    ("Boss Fog Wall Key - Crossbreed Priscilla", 1251, DSRItemCategory.BOSSFOGWALL),
+
+    ("Bonfire Warp Unlock - Firelink Shrine", 1300, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Sunlight Altar", 1301, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Undead Parish", 1302, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Depths", 1303, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Daughter of Chaos", 1304, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Stone Dragon", 1305, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Anor Londo", 1306, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Darkmoon Tomb", 1307, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Chamber of the Princess", 1308, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Painted World", 1309, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Duke's Archives", 1310, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Crystal Cave", 1311, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Catacombs", 1312, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Tomb of the Giants", 1313, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Altar of the Gravelord", 1314, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - The Abyss", 1315, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Sanctuary Garden", 1316, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Oolacile Sanctuary", 1317, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Oolacile Township", 1318, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Oolacile Township Dungeon", 1319, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Chasm of the Abyss", 1320, DSRItemCategory.BONFIREWARP),
+
+    
     ("Eye of Death", 2000, DSRItemCategory.CONSUMABLE),
     ("Cracked Red Eye Orb", 2001, DSRItemCategory.CONSUMABLE),
     ("Elizabeth's Mushroom", 2002, DSRItemCategory.CONSUMABLE),
@@ -195,7 +289,7 @@ _all_items = [DSRItemData(row[0], row[1], row[2]) for row in [
     ("Soul of Gwyn, Lord of Cinder", 2053, DSRItemCategory.BOSS_SOUL),
     ("Core of an Iron Golem", 2054, DSRItemCategory.BOSS_SOUL),
     ("Soul of Ornstein", 2055, DSRItemCategory.BOSS_SOUL),
-    ("Soul of Moonlight Butterfly", 2056, DSRItemCategory.BOSS_SOUL),
+    ("Soul of the Moonlight Butterfly", 2056, DSRItemCategory.BOSS_SOUL),
     ("Soul of Smough", 2057, DSRItemCategory.BOSS_SOUL),
     ("Soul of Priscilla", 2058, DSRItemCategory.BOSS_SOUL),
     ("Soul of Gwyndolin", 2059, DSRItemCategory.BOSS_SOUL),
@@ -224,6 +318,26 @@ _all_items = [DSRItemData(row[0], row[1], row[2]) for row in [
     ("Binoculars", 2082, DSRItemCategory.CONSUMABLE),
     ("Dragon Head Stone", 2083, DSRItemCategory.CONSUMABLE),
     ("Dragon Torso Stone", 2084, DSRItemCategory.CONSUMABLE),
+    
+    # Items with more than 1 quantity below
+    ("Firebomb x6", 2100, DSRItemCategory.CONSUMABLE),
+    ("Humanity x3", 2101, DSRItemCategory.CONSUMABLE),
+    ("Cracked Red Eye Orb x4", 2102, DSRItemCategory.CONSUMABLE),
+    ("Homeward Bone x6", 2103, DSRItemCategory.CONSUMABLE),
+    ("Lloyd's Talisman x4", 2104, DSRItemCategory.CONSUMABLE),
+    ("Throwing Knife x10", 2105, DSRItemCategory.CONSUMABLE),
+    ("Black Firebomb x5", 2106, DSRItemCategory.CONSUMABLE),
+    ("Gold Pine Resin x3", 2107, DSRItemCategory.CONSUMABLE),
+    ("Alluring Skull x4", 2108, DSRItemCategory.CONSUMABLE),
+    ("Blooming Purple Moss Clump x3", 2109, DSRItemCategory.CONSUMABLE),
+    ("Sunlight Medal x3", 2110, DSRItemCategory.CONSUMABLE),
+    ("Silver Coin x5", 2111, DSRItemCategory.CONSUMABLE),
+    ("Transient Curse x2", 2112, DSRItemCategory.CONSUMABLE),
+    ("Cracked Red Eye Orb x6", 2113, DSRItemCategory.CONSUMABLE),
+    ("Prism Stone x20", 2114, DSRItemCategory.CONSUMABLE),
+    ("Eye of Death x3", 2115, DSRItemCategory.CONSUMABLE),
+    ("Humanity x2", 2116, DSRItemCategory.CONSUMABLE),
+    
 
     ("Peculiar Doll", 3000, DSRItemCategory.KEY_ITEM),
     ("Basement Key", 3001, DSRItemCategory.KEY_ITEM),
@@ -304,16 +418,17 @@ _all_items = [DSRItemData(row[0], row[1], row[2]) for row in [
     ("Darkmoon Seance Ring", 4039, DSRItemCategory.RING),
     ("Calamity Ring", 4040, DSRItemCategory.RING),
 
-    ("Large Ember", 5000, DSRItemCategory.UPGRADE_MATERIAL),
-    ("Very Large Ember", 5001, DSRItemCategory.UPGRADE_MATERIAL),
-    ("Crystal Ember", 5002, DSRItemCategory.UPGRADE_MATERIAL),
-    ("Large Magic Ember", 5003, DSRItemCategory.UPGRADE_MATERIAL),
-    ("Enchanted Ember", 5004, DSRItemCategory.UPGRADE_MATERIAL),
-    ("Divine Ember", 5005, DSRItemCategory.UPGRADE_MATERIAL),
-    ("Large Divine Ember", 5006, DSRItemCategory.UPGRADE_MATERIAL),
-    ("Dark Ember", 5007, DSRItemCategory.UPGRADE_MATERIAL),
-    ("Large Flame Ember", 5008, DSRItemCategory.UPGRADE_MATERIAL),
-    ("Chaos Flame Ember", 5009, DSRItemCategory.UPGRADE_MATERIAL),
+    ("Large Ember", 5000, DSRItemCategory.EMBER),
+    ("Very Large Ember", 5001, DSRItemCategory.EMBER),
+    ("Crystal Ember", 5002, DSRItemCategory.EMBER),
+    ("Large Magic Ember", 5003, DSRItemCategory.EMBER),
+    ("Enchanted Ember", 5004, DSRItemCategory.EMBER),
+    ("Divine Ember", 5005, DSRItemCategory.EMBER),
+    ("Large Divine Ember", 5006, DSRItemCategory.EMBER),
+    ("Dark Ember", 5007, DSRItemCategory.EMBER),
+    ("Large Flame Ember", 5008, DSRItemCategory.EMBER),
+    ("Chaos Flame Ember", 5009, DSRItemCategory.EMBER),
+
     ("Titanite Shard", 5010, DSRItemCategory.UPGRADE_MATERIAL),
     ("Large Titanite Shard", 5011, DSRItemCategory.UPGRADE_MATERIAL),
     ("Green Titanite Shard", 5012, DSRItemCategory.UPGRADE_MATERIAL),
@@ -328,6 +443,11 @@ _all_items = [DSRItemData(row[0], row[1], row[2]) for row in [
     ("Dragon Scale", 5021, DSRItemCategory.UPGRADE_MATERIAL),
     ("Demon Titanite", 5022, DSRItemCategory.UPGRADE_MATERIAL),
     ("Twinkling Titanite", 5023, DSRItemCategory.UPGRADE_MATERIAL),
+
+    ("Large Titanite Shard x2", 5100, DSRItemCategory.UPGRADE_MATERIAL),
+    ("Demon Titanite x2", 5101, DSRItemCategory.UPGRADE_MATERIAL),
+    ("Green Titanite Shard x2", 5102, DSRItemCategory.UPGRADE_MATERIAL),
+
 
     ("Sorcery: Soul Arrow", 6000, DSRItemCategory.SPELL),
     ("Sorcery: Great Soul Arrow", 6001, DSRItemCategory.SPELL),
@@ -485,7 +605,7 @@ _all_items = [DSRItemData(row[0], row[1], row[2]) for row in [
     ("Sorcerer Boots", 7080, DSRItemCategory.ARMOR),
     ("Tattered Cloth Hood", 7081, DSRItemCategory.ARMOR),
     ("Tattered Cloth Robe", 7082, DSRItemCategory.ARMOR),
-    ("Tattered Cloth Machette", 7083, DSRItemCategory.ARMOR),
+    ("Tattered Cloth Manchette", 7083, DSRItemCategory.ARMOR),
     ("Heavy Boots", 7084, DSRItemCategory.ARMOR),
     ("Pharis's Hat", 7085, DSRItemCategory.ARMOR),
     ("Leather Armor", 7086, DSRItemCategory.ARMOR),
@@ -638,278 +758,365 @@ _all_items = [DSRItemData(row[0], row[1], row[2]) for row in [
     ("Bloated Head", 7239, DSRItemCategory.ARMOR),
     ("Bloated Sorcerer Head", 7240, DSRItemCategory.ARMOR),
 
-    ("Dagger", 8000, DSRItemCategory.WEAPON),
-    ("Parrying Dagger", 8001, DSRItemCategory.WEAPON),
-    ("Ghost Blade", 8002, DSRItemCategory.WEAPON),
-    ("Bandit's Knife", 8003, DSRItemCategory.WEAPON),
-    ("Priscilla's Dagger", 8004, DSRItemCategory.WEAPON),
-    ("Shortsword", 8005, DSRItemCategory.WEAPON),
-    ("Longsword", 8006, DSRItemCategory.WEAPON),
-    ("BroadSword", 8007, DSRItemCategory.WEAPON),
-    ("Broken Straight Sword", 8008, DSRItemCategory.WEAPON),
-    ("Balder Side Sword", 8009, DSRItemCategory.WEAPON),
-    ("Crystal Straight Sword", 8010, DSRItemCategory.WEAPON),
-    ("Sunlight Straight Sword", 8123, DSRItemCategory.WEAPON),
-    ("Barbed Straight Sword", 8011, DSRItemCategory.WEAPON),
-    ("Silver Knight Straight Sword", 8012, DSRItemCategory.WEAPON),
-    ("Astora's Straight Sword", 8013, DSRItemCategory.WEAPON),
-    ("Darksword", 8014, DSRItemCategory.WEAPON),
-    ("Drake Sword", 8015, DSRItemCategory.WEAPON),
-    ("Straight Sword Hilt", 8016, DSRItemCategory.WEAPON),
-    ("Bastard Sword", 8017, DSRItemCategory.WEAPON),
-    ("Claymore", 8018, DSRItemCategory.WEAPON),
-    ("Man-Serpent Greatsword", 8019, DSRItemCategory.WEAPON),
-    ("Flamberge", 8020, DSRItemCategory.WEAPON),
-    ("Crystal Greatsword", 8021, DSRItemCategory.WEAPON),
-    ("Stone Greatsword", 8022, DSRItemCategory.WEAPON),
-    ("Greatsword of Artorias", 8023, DSRItemCategory.WEAPON),
-    ("Moonlight Greatsword", 8024, DSRItemCategory.WEAPON),
-    ("Black Knight Sword", 8025, DSRItemCategory.WEAPON),
-    ("Greatsword of Artorias (Cursed)", 8124, DSRItemCategory.WEAPON),
-    ("Great Lord Greatsword", 8026, DSRItemCategory.WEAPON),
-    ("Zweihander", 8027, DSRItemCategory.WEAPON),
-    ("Greatsword", 8028, DSRItemCategory.WEAPON),
-    ("Demon Great Machete", 8029, DSRItemCategory.WEAPON),
-    ("Dragon Greatsword", 8030, DSRItemCategory.WEAPON),
-    ("Black Knight Greatsword", 8031, DSRItemCategory.WEAPON),
-    ("Scimitar", 8032, DSRItemCategory.WEAPON),
-    ("Falchion", 8033, DSRItemCategory.WEAPON),
-    ("Shotel", 8034, DSRItemCategory.WEAPON),
-    ("Jagged Ghost Blade", 8035, DSRItemCategory.WEAPON),
-    ("Painting Guardian Sword", 8036, DSRItemCategory.WEAPON),
-    ("Quelaag's Furysword", 8037, DSRItemCategory.WEAPON),
-    ("Server", 8038, DSRItemCategory.WEAPON),
-    ("Murakumo", 8039, DSRItemCategory.WEAPON),
-    ("Gravelord Sword", 8040, DSRItemCategory.WEAPON),
-    ("Uchigatana", 8041, DSRItemCategory.WEAPON),
-    ("Washing Pole", 8042, DSRItemCategory.WEAPON),
-    ("Iaito", 8043, DSRItemCategory.WEAPON),
-    ("Chaos Blade", 8044, DSRItemCategory.WEAPON),
-    ("Mail Breaker", 8045, DSRItemCategory.WEAPON),
-    ("Rapier", 8046, DSRItemCategory.WEAPON),
-    ("Estoc", 8047, DSRItemCategory.WEAPON),
-    ("Velka's Rapier", 8048, DSRItemCategory.WEAPON),
-    ("Ricard's Rapier", 8049, DSRItemCategory.WEAPON),
-    ("Hand Axe", 8050, DSRItemCategory.WEAPON),
-    ("Battle Axe", 8051, DSRItemCategory.WEAPON),
-    ("Crescent Axe", 8052, DSRItemCategory.WEAPON),
-    ("Butcher Knife", 8053, DSRItemCategory.WEAPON),
-    ("Golem Axe", 8054, DSRItemCategory.WEAPON),
-    ("Gargoyle Tail Axe", 8055, DSRItemCategory.WEAPON),
-    ("Greataxe", 8056, DSRItemCategory.WEAPON),
-    ("Demon's Greataxe", 8057, DSRItemCategory.WEAPON),
-    ("Dragon King Greataxe", 8125, DSRItemCategory.WEAPON), #
-    ("Black Knight Greataxe", 8126, DSRItemCategory.WEAPON), #
-    ("Club", 8058, DSRItemCategory.WEAPON),
-    ("Mace", 8059, DSRItemCategory.WEAPON),
-    ("Morning Star", 8060, DSRItemCategory.WEAPON),
-    ("Warpick", 8061, DSRItemCategory.WEAPON),
-    ("Pickaxe", 8062, DSRItemCategory.WEAPON),
-    ("Reinforced Club", 8063, DSRItemCategory.WEAPON),
-    ("Blacksmith Hammer", 8064, DSRItemCategory.WEAPON),
-    ("Blacksmith Giant Hammer", 8127, DSRItemCategory.WEAPON),
-    ("Hammer of Vamos", 8065, DSRItemCategory.WEAPON),
-    ("Great Club", 8066, DSRItemCategory.WEAPON),
-    ("Grant", 8067, DSRItemCategory.WEAPON),
-    ("Demon's Great Hammer", 8068, DSRItemCategory.WEAPON),
-    ("Dragon Tooth", 8069, DSRItemCategory.WEAPON),
-    ("Large Club", 8070, DSRItemCategory.WEAPON),
-    ("Smough's Hammer", 8071, DSRItemCategory.WEAPON),
-    ("Caestus", 8072, DSRItemCategory.WEAPON),
-    ("Claw", 8073, DSRItemCategory.WEAPON),
-    ("Dragon Bone Fist", 8074, DSRItemCategory.WEAPON),
-    ("Dark Hand", 8075, DSRItemCategory.WEAPON),
-    ("Spear", 8076, DSRItemCategory.WEAPON),
-    ("Winged Spear", 8077, DSRItemCategory.WEAPON),
-    ("Partizan", 8078, DSRItemCategory.WEAPON),
-    ("Demon's Spear", 8079, DSRItemCategory.WEAPON),
-    ("Channeler's Trident", 8080, DSRItemCategory.WEAPON),
-    ("Silver Knight Spear", 8081, DSRItemCategory.WEAPON),
-    ("Pike", 8082, DSRItemCategory.WEAPON),
-    ("Dragonslayer Spear", 8083, DSRItemCategory.WEAPON),
-    ("Moonlight Butterfly Horn", 8084, DSRItemCategory.WEAPON),
-    ("Halberd", 8085, DSRItemCategory.WEAPON),
-    ("Giant's Halberd", 8086, DSRItemCategory.WEAPON),
-    ("Titanite Catch Pole", 8087, DSRItemCategory.WEAPON),
-    ("Gargoyles's Halberd", 8088, DSRItemCategory.WEAPON),
-    ("Black Knight Halberd", 8089, DSRItemCategory.WEAPON),
-    ("Lucerne", 8090, DSRItemCategory.WEAPON),
-    ("Scythe", 8091, DSRItemCategory.WEAPON),
-    ("Great Scythe", 8092, DSRItemCategory.WEAPON),
-    ("Lifehunt Scythe", 8093, DSRItemCategory.WEAPON),
-    ("Whip", 8094, DSRItemCategory.WEAPON),
-    ("Notched Whip", 8095, DSRItemCategory.WEAPON),
-    ("Gold Tracer", 8128, DSRItemCategory.WEAPON),
-    ("Dark Silver Tracer", 8129, DSRItemCategory.WEAPON),
-    ("Abyss Greatsword", 8130, DSRItemCategory.WEAPON),
-    ("Stone Greataxe", 8131, DSRItemCategory.WEAPON),
-    ("Four-pronged Plow", 8132, DSRItemCategory.WEAPON),
-    ("Guardian Tail", 8133, DSRItemCategory.WEAPON),
-    ("Obsidian Greatsword", 8134, DSRItemCategory.WEAPON),
+    ("Dagger", 8000, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Parrying Dagger", 8001, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Ghost Blade", 8002, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Bandit's Knife", 8003, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Priscilla's Dagger", 8004, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Shortsword", 8005, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Longsword", 8006, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("BroadSword", 8007, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Broken Straight Sword", 8008, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Balder Side Sword", 8009, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Crystal Straight Sword", 8010, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.NotUpgradable),
+    ("Sunlight Straight Sword", 8123, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Barbed Straight Sword", 8011, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Silver Knight Straight Sword", 8012, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Astora's Straight Sword", 8013, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Darksword", 8014, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Drake Sword", 8015, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Straight Sword Hilt", 8016, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Bastard Sword", 8017, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Claymore", 8018, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Man-Serpent Greatsword", 8019, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Flamberge", 8020, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Crystal Greatsword", 8021, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.NotUpgradable),
+    ("Stone Greatsword", 8022, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Greatsword of Artorias", 8023, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Moonlight Greatsword", 8024, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Black Knight Sword", 8025, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Greatsword of Artorias (Cursed)", 8124, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Great Lord Greatsword", 8026, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Zweihander", 8027, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Greatsword", 8028, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Demon Great Machete", 8029, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Dragon Greatsword", 8030, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Black Knight Greatsword", 8031, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Scimitar", 8032, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Falchion", 8033, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Shotel", 8034, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Jagged Ghost Blade", 8035, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Painting Guardian Sword", 8036, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Quelaag's Furysword", 8037, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Server", 8038, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Murakumo", 8039, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Gravelord Sword", 8040, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Uchigatana", 8041, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Washing Pole", 8042, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Iaito", 8043, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Chaos Blade", 8044, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Mail Breaker", 8045, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Rapier", 8046, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Estoc", 8047, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Velka's Rapier", 8048, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Ricard's Rapier", 8049, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Hand Axe", 8050, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Battle Axe", 8051, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Crescent Axe", 8052, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Butcher Knife", 8053, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Golem Axe", 8054, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Gargoyle Tail Axe", 8055, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Greataxe", 8056, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Demon's Greataxe", 8057, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Dragon King Greataxe", 8125, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Black Knight Greataxe", 8126, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Club", 8058, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Mace", 8059, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Morning Star", 8060, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Warpick", 8061, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Pickaxe", 8062, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Reinforced Club", 8063, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Blacksmith Hammer", 8064, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Blacksmith Giant Hammer", 8127, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Hammer of Vamos", 8065, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Great Club", 8066, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Grant", 8067, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Demon's Great Hammer", 8068, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Dragon Tooth", 8069, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Large Club", 8070, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Smough's Hammer", 8071, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Caestus", 8072, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Claw", 8073, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Dragon Bone Fist", 8074, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+# Dark hand 8075 moved to shields
+    ("Spear", 8076, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Winged Spear", 8077, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Partizan", 8078, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Demon's Spear", 8079, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Channeler's Trident", 8080, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Silver Knight Spear", 8081, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Pike", 8082, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Dragonslayer Spear", 8083, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Moonlight Butterfly Horn", 8084, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Halberd", 8085, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Giant's Halberd", 8086, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Titanite Catch Pole", 8087, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Gargoyles's Halberd", 8088, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Black Knight Halberd", 8089, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Lucerne", 8090, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Scythe", 8091, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Great Scythe", 8092, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Lifehunt Scythe", 8093, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Whip", 8094, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Notched Whip", 8095, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Gold Tracer", 8128, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Dark Silver Tracer", 8129, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Abyss Greatsword", 8130, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Stone Greataxe", 8131, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
+    ("Four-pronged Plow", 8132, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Guardian Tail", 8133, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Obsidian Greatsword", 8134, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
 
-    ("Short Bow", 8096, DSRItemCategory.WEAPON),
-    ("Longbow", 8097, DSRItemCategory.WEAPON),
-    ("Black Bow of Pharis", 8098, DSRItemCategory.WEAPON),
-    ("Dragonslayer Greatbow", 8099, DSRItemCategory.WEAPON),
-    ("Composite Bow", 8100, DSRItemCategory.WEAPON),
-    ("Darkmoon Bow", 8101, DSRItemCategory.WEAPON),
-    ("Light Crossbow", 8102, DSRItemCategory.WEAPON),
-    ("Heavy Crossbow", 8103, DSRItemCategory.WEAPON),
-    ("Avelyn", 8104, DSRItemCategory.WEAPON),
-    ("Sniper Crossbow", 8105, DSRItemCategory.WEAPON),
-    ("Gough's Greatbow", 8135, DSRItemCategory.WEAPON),
-    ("Standard Arrow", 8136, DSRItemCategory.WEAPON),
-    ("Large Arrow", 8137, DSRItemCategory.WEAPON),
-    ("Feather Arrow", 8138, DSRItemCategory.WEAPON),
-    ("Fire Arrow", 8139, DSRItemCategory.WEAPON),
-    ("Poison Arrow", 8140, DSRItemCategory.WEAPON),
-    ("Moonlight Arrow", 8141, DSRItemCategory.WEAPON),
-    ("Wooden Arrow", 8142, DSRItemCategory.WEAPON),
-    ("Dragonslayer Arrow", 8143, DSRItemCategory.WEAPON),
-    ("Gough's Great Arrow", 8144, DSRItemCategory.WEAPON),
-    ("Standard Bolt", 8145, DSRItemCategory.WEAPON),
-    ("Heavy Bolt", 8146, DSRItemCategory.WEAPON),
-    ("Sniper Bolt", 8147, DSRItemCategory.WEAPON),
-    ("Wood Bolt", 8148, DSRItemCategory.WEAPON),
-    ("Lightning Bolt", 8149, DSRItemCategory.WEAPON),
+    ("Lightning Spear", 8300, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.NotUpgradable),
+    ("Enchanted Falchion", 8301, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.NotUpgradable),
+    ("Occult Club", 8302, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.NotUpgradable),
+    ("Crystal Halberd", 8303, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.NotUpgradable),
 
-    ("Sorcerer's Catalyst", 8106, DSRItemCategory.WEAPON),
-    ("Beatrice's Catalyst", 8107, DSRItemCategory.WEAPON),
-    ("Tin Banishment Catalyst", 8108, DSRItemCategory.WEAPON),
-    ("Logan's Catalyst", 8109, DSRItemCategory.WEAPON),
-    ("Tin Darkmoon Catalyst", 8110, DSRItemCategory.WEAPON),
-    ("Oolacile Ivory Catalyst", 8111, DSRItemCategory.WEAPON),
-    ("Tin Crystallization Catalyst", 8112, DSRItemCategory.WEAPON),
-    ("Demon's Catalyst", 8113, DSRItemCategory.WEAPON),
-    ("Izalith Catalyst", 8114, DSRItemCategory.WEAPON),
-    ("Pyromancy Flame", 8115, DSRItemCategory.WEAPON),
-    ("Pyromancy Flame (Ascended)", 8150, DSRItemCategory.WEAPON),
-    ("Talisman", 8116, DSRItemCategory.WEAPON),
-    ("Canvas Talisman", 8117, DSRItemCategory.WEAPON),
-    ("Thorolund Talisman", 8118, DSRItemCategory.WEAPON),
-    ("Ivory Talisman", 8119, DSRItemCategory.WEAPON),
-    ("Sunlight Talisman", 8120, DSRItemCategory.WEAPON),
-    ("Darkmoon Talisman", 8121, DSRItemCategory.WEAPON),
-    ("Velka's Talisman", 8122, DSRItemCategory.WEAPON),
-    ("Manus Catalyst", 8151, DSRItemCategory.WEAPON),
-    ("Oolacile Catalyst", 8152, DSRItemCategory.WEAPON),
+    ("Short Bow", 8096, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.Infusable),
+    ("Longbow", 8097, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.Infusable),
+    ("Black Bow of Pharis", 8098, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.Infusable),
+    ("Dragonslayer Greatbow", 8099, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.Unique),
+    ("Composite Bow", 8100, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.Infusable),
+    ("Darkmoon Bow", 8101, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.Unique),
+    ("Light Crossbow", 8102, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.InfusableRestricted),
+    ("Heavy Crossbow", 8103, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.InfusableRestricted),
+    ("Avelyn", 8104, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.InfusableRestricted),
+    ("Sniper Crossbow", 8105, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.InfusableRestricted),
+    ("Gough's Greatbow", 8135, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.Unique),
+
+    ("Standard Arrow", 8136, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Large Arrow", 8137, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Feather Arrow", 8138, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Fire Arrow", 8139, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Poison Arrow", 8140, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Moonlight Arrow", 8141, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Wooden Arrow", 8142, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Dragonslayer Arrow", 8143, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Gough's Great Arrow", 8144, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Standard Bolt", 8145, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Heavy Bolt", 8146, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Sniper Bolt", 8147, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Wood Bolt", 8148, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Lightning Bolt", 8149, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+
+    # Bigger quantities of arrows
+    ("Standard Bolt x16", 8200, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Heavy Bolt x11", 8201, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Sniper Bolt x12", 8202, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Feather Arrow x16", 8203, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Large Arrow x16", 8204, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Gough's Great Arrow x8", 8205, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+    ("Gough's Great Arrow x3", 8206, DSRItemCategory.WEAPON, DSRWeaponType.RangedAmmunition, DSRUpgradeType.NotUpgradable),
+
+
+    ("Sorcerer's Catalyst", 8106, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Beatrice's Catalyst", 8107, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Tin Banishment Catalyst", 8108, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Logan's Catalyst", 8109, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Tin Darkmoon Catalyst", 8110, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Oolacile Ivory Catalyst", 8111, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Tin Crystallization Catalyst", 8112, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Demon's Catalyst", 8113, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Izalith Catalyst", 8114, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Pyromancy Flame", 8115, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.PyroFlame),
+    ("Pyromancy Flame (Ascended)", 8150, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.PyroFlameAscended),
+    ("Talisman", 8116, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Canvas Talisman", 8117, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Thorolund Talisman", 8118, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Ivory Talisman", 8119, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Sunlight Talisman", 8120, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Darkmoon Talisman", 8121, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Velka's Talisman", 8122, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Manus Catalyst", 8151, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
+    ("Oolacile Catalyst", 8152, DSRItemCategory.WEAPON, DSRWeaponType.SpellTool, DSRUpgradeType.NotUpgradable),
     
-    ("Skull Lantern", 9000, DSRItemCategory.SHIELD),
-    ("East-West Shield", 9001, DSRItemCategory.SHIELD),
-    ("Wooden Shield", 9002, DSRItemCategory.SHIELD),
-    ("Large Leather Shield", 9003, DSRItemCategory.SHIELD),
-    ("Small Leather Shield", 9004, DSRItemCategory.SHIELD),
-    ("Target Shield", 9005, DSRItemCategory.SHIELD),
-    ("Buckler", 9006, DSRItemCategory.SHIELD),
-    ("Cracked Round Shield", 9007, DSRItemCategory.SHIELD),
-    ("Leather Shield", 9008, DSRItemCategory.SHIELD),
-    ("Plank Shield", 9009, DSRItemCategory.SHIELD),
-    ("Caduceus Round Shield", 9010, DSRItemCategory.SHIELD),
-    ("Crystal Ring Shield", 9011, DSRItemCategory.SHIELD),
-    ("Heater Shield", 9012, DSRItemCategory.SHIELD),
-    ("Knight Shield", 9013, DSRItemCategory.SHIELD),
-    ("Tower Kite Shield", 9014, DSRItemCategory.SHIELD),
-    ("Grass Crest Shield", 9015, DSRItemCategory.SHIELD),
-    ("Hollow Soldier Shield", 9016, DSRItemCategory.SHIELD),
-    ("Balder Shield", 9017, DSRItemCategory.SHIELD),
-    ("Crest Shield", 9018, DSRItemCategory.SHIELD),
-    ("Dragon Crest Shield", 9019, DSRItemCategory.SHIELD),
-    ("Warrior's Round Shield", 9020, DSRItemCategory.SHIELD),
-    ("Iron Round Shield", 9021, DSRItemCategory.SHIELD),
-    ("Spider Shield", 9022, DSRItemCategory.SHIELD),
-    ("Spiked Shield", 9023, DSRItemCategory.SHIELD),
-    ("Crystal Shield", 9024, DSRItemCategory.SHIELD),
-    ("Sunlight Shield", 9025, DSRItemCategory.SHIELD),
-    ("Silver Knight Shield", 9026, DSRItemCategory.SHIELD),
-    ("Black Knight Shield", 9027, DSRItemCategory.SHIELD),
-    ("Pierce Shield", 9028, DSRItemCategory.SHIELD),
-    ("Red and White Round Shield", 9029, DSRItemCategory.SHIELD),
-    ("Caduceus Kite Shield", 9030, DSRItemCategory.SHIELD),
-    ("Gargoyle's Shield", 9031, DSRItemCategory.SHIELD),
-    ("Eagle Shield", 9032, DSRItemCategory.SHIELD),
-    ("Tower Shield", 9033, DSRItemCategory.SHIELD),
-    ("Giant Shield", 9034, DSRItemCategory.SHIELD),
-    ("Stone Greatshield", 9035, DSRItemCategory.SHIELD),
-    ("Havel's Greatshield", 9036, DSRItemCategory.SHIELD),
-    ("Bonewheel Shield", 9037, DSRItemCategory.SHIELD),
-    ("Greatshield of Artorias", 9038, DSRItemCategory.SHIELD),
-    ("Effigy Shield", 9039, DSRItemCategory.SHIELD),
-    ("Sanctus", 9040, DSRItemCategory.SHIELD),
-    ("Bloodshield", 9041, DSRItemCategory.SHIELD),
-    ("Black Iron Greatshield", 9042, DSRItemCategory.SHIELD),
-    ("Cleansing Greatshield", 9043, DSRItemCategory.SHIELD),
+    ("Dark Hand", 8075, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.NotUpgradable),
+    ("Skull Lantern", 9000, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.NotUpgradable),
+    ("East-West Shield", 9001, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Wooden Shield", 9002, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Large Leather Shield", 9003, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Small Leather Shield", 9004, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Target Shield", 9005, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Buckler", 9006, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Cracked Round Shield", 9007, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Leather Shield", 9008, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Plank Shield", 9009, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Caduceus Round Shield", 9010, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Crystal Ring Shield", 9011, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.Unique),
+    ("Heater Shield", 9012, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Knight Shield", 9013, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Tower Kite Shield", 9014, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Grass Crest Shield", 9015, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Hollow Soldier Shield", 9016, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Balder Shield", 9017, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Crest Shield", 9018, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.Unique),
+    ("Dragon Crest Shield", 9019, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.Unique),
+    ("Warrior's Round Shield", 9020, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Iron Round Shield", 9021, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Spider Shield", 9022, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Spiked Shield", 9023, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Crystal Shield", 9024, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.NotUpgradable),
+    ("Sunlight Shield", 9025, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Silver Knight Shield", 9026, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.Unique),
+    ("Black Knight Shield", 9027, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.Unique),
+    ("Pierce Shield", 9028, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Red and White Round Shield", 9029, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Caduceus Kite Shield", 9030, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Gargoyle's Shield", 9031, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Eagle Shield", 9032, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Tower Shield", 9033, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Giant Shield", 9034, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Stone Greatshield", 9035, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.Unique),
+    ("Havel's Greatshield", 9036, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.Unique),
+    ("Bonewheel Shield", 9037, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Greatshield of Artorias", 9038, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.Unique),
+    ("Effigy Shield", 9039, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Sanctus", 9040, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Bloodshield", 9041, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Black Iron Greatshield", 9042, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.InfusableRestricted),
+    ("Cleansing Greatshield", 9043, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.Unique),
     
-    
+    ("Door Filler", 9900, DSRItemCategory.FILLER),
+    ("Fogwall Filler", 9901, DSRItemCategory.FILLER),
+    ("Nothing", 9902, DSRItemCategory.NOTHING),
+
     ("Lag Trap", 10000, DSRItemCategory.TRAP),
-]]
+]
+
+_all_items = [DSRItemData(row[0], row[1], row[2]) for row in _all_items_base]
 
 item_descriptions = {
 }
 
+# Type, id, max level
+infusion_types = [
+    ("Normal", 0, 15, 0),
+    ("Crystal", 1, 5, 10),
+    ("Lightning", 2, 5, 10),
+    ("Raw", 3, 5, 5),
+    ("Magic", 4, 10, 5),
+    ("Enchanted", 5, 5, 10),
+    ("Divine", 6, 10, 5),
+    ("Occult", 7, 5, 10),
+    ("Fire", 8, 10, 5),
+    ("Chaos", 9, 5, 10)
+    ]
+
+# No raw, occult, enchanted, or chaos (for shields, crossbow, etc)
+restricted_infusion_types = [
+    ("Normal", 0, 15, 0),
+    ("Crystal", 1, 5, 10),
+    ("Lightning", 2, 5, 10),
+    ("Magic", 4, 10, 5),
+    ("Divine", 6, 10, 5),
+    ("Fire", 8, 10, 5),
+    ]
+
+# Unique only
+unique_infusion_types = [
+        ("Normal", 0, 5, 0)
+    ]
+
+
 item_dictionary = {item_data.name: item_data for item_data in _all_items}
 
-def BuildItemPool(count, options):
+def BuildRequiredItemPool(world, count):
     item_pool = []
-    included_itemcount = 0
+    remaining_count = count
 
-    if options.guaranteed_items.value:
-        for item_name, item_quant in options.guaranteed_items.value.items():
-            item = item_dictionary[item_name]
-            item_pool += [item] * item_quant
-            included_itemcount += item_quant
-    remaining_count = count - included_itemcount
-    
     key_items = [item for item in _all_items if item.name in key_item_names or item.category == DSRItemCategory.KEY_ITEM]
     for item in key_items:
         if item.name not in ["Dungeon Cell Key", "Estus Flask", "Undead Asylum F2 East Key", "Big Pilgrim's Key", "Master Key"]:
             item_pool.append(item)
             remaining_count = remaining_count - 1
-    
-    if(options.enable_masterkey.value == True):
-        masterKey = item_dictionary["Master Key"]
-        item_pool.append(masterKey)
-        remaining_count = remaining_count - 1
-    
-    filler_items = [item for item in _all_items if item.category not in [DSRItemCategory.EVENT, DSRItemCategory.KEY_ITEM]]
-    
-    pool_size = remaining_count
-    
 
-    
-    bossList = [item for item in filler_items if item.category in [DSRItemCategory.BOSS_SOUL]]
-    consumableList = [item for item in filler_items if item.category in [DSRItemCategory.CONSUMABLE] and "soul" not in item.name.lower() and "fire keeper" not in item.name.lower()]
-    soulList = [item for item in filler_items if "soul" in item.name.lower() and "fire keeper" not in item.name.lower() and item.category not in [DSRItemCategory.BOSS_SOUL]]
-    
-    materialList = [item for item in filler_items if item.category in [DSRItemCategory.UPGRADE_MATERIAL]]
-    
-    if (options.unique_souls.value == True):
-        for item in bossList:
+    if(world.options.fogwall_sanity.value == True):
+        fogwalls = [item for item in _all_items if item.category in [DSRItemCategory.FOGWALL] and item.name != "Fog Wall Key - Northern Undead Asylum"]
+        for item in fogwalls:
             item_pool.append(item)
             remaining_count = remaining_count - 1
-    else:
-        soulList.extend(bossList)
-        
-    consumable_count = int(pool_size * 0.2)
-    for i in range(consumable_count):        
-        item = random.choice(consumableList)
-        item_pool.append(item)        
-    remaining_count = remaining_count - consumable_count
-    
-    soul_count = int(pool_size * 0.3)    
-    for i in range(soul_count):        
-        item = random.choice(soulList)
-        item_pool.append(item)        
-    remaining_count = remaining_count - soul_count
-    
-    material_count = int(pool_size * 0.2)
-    for i in range(material_count):        
-        item = random.choice(materialList)
-        item_pool.append(item)        
-    remaining_count = remaining_count - material_count
-    
-    itemList = [item for item in filler_items if item.category in [DSRItemCategory.WEAPON, DSRItemCategory.ARMOR, DSRItemCategory.SHIELD, DSRItemCategory.SPELL, DSRItemCategory.RING]]
-    for i in range(remaining_count):        
-        item = random.choice(itemList)
-        item_pool.append(item)    
-    random.shuffle(item_pool)
+
+    if (world.options.boss_fogwall_sanity.value == True):
+        bossfogwalls = [item for item in _all_items if item.category in [DSRItemCategory.BOSSFOGWALL]]
+        for item in bossfogwalls:
+            item_pool.append(item)
+            remaining_count = remaining_count - 1
+
+    useful_items = [item for item in _all_items if item.category == DSRItemCategory.EMBER]
+    for item in useful_items:
+        item_pool.append(item)
+        remaining_count = remaining_count - 1
+
+    world.random.shuffle(item_pool)
     return item_pool
+
+def BuildGuaranteedItemPool(world):
+    item_pool = []
+    if world.options.guaranteed_items.value:
+        for item_name, item_quant in world.options.guaranteed_items.value.items():
+            item = item_dictionary[item_name]
+            item_pool += [item] * item_quant
+    world.random.shuffle(item_pool)
+    return item_pool
+
+def UpgradeEquipment(itemcode, options, world):
+    upg = None
+    if itemcode == None:
+        return upg
+    # Find the weapon by getting matching row from base
+    for row in _all_items_base:
+        if itemcode == row[1] + 11110000: 
+            if (row[2] != DSRItemCategory.WEAPON and row[2] != DSRItemCategory.SHIELD): # Item found but not a weapon
+                break
+            if (world.random.randint(1,100) > options.upgraded_weapons_percentage): # Didn't roll RNG well enough
+                break
+            # print(f'upgrading, itemcode = {itemcode} name={row[0]}')
+            # print(f'row {row[0]} {row[1]} {row[2]}')
+            if row[4] == DSRUpgradeType.Infusable: 
+                itype = world.random.choice([typ for typ in infusion_types if typ[0] in options.upgraded_weapons_allowed_infusions])
+            elif row[4] == DSRUpgradeType.InfusableRestricted:
+                allowed_types = [typ for typ in restricted_infusion_types if typ[0] in options.upgraded_weapons_allowed_infusions]
+                if len(allowed_types) == 0: # Can't upgrade restricted items because none of its types are allowed
+                    break;
+                itype = world.random.choice(allowed_types)
+            elif row[4] == DSRUpgradeType.Unique: 
+                if "Normal" not in options.upgraded_weapons_allowed_infusions:
+                    break
+                itype = unique_infusion_types[0]
+            else:
+                break  # an unhandled infusion type - done with item
+
+            # Normal types - exclude +0 weapon, and don't include name prefix
+            if (itype[0] == "Normal"):
+                minlvl = max(1, options.upgraded_weapons_min_level.value)
+                # If min level > normal max, skip upg (happens for unique items))
+                if options.upgraded_weapons_min_level.value > itype[2]:
+                    break;
+                maxlvl = min(itype[2], options.upgraded_weapons_max_level.value)
+                
+                if maxlvl < minlvl:  # could never use this infusion
+                    break;  #done with item
+
+                lvl = world.random.randint(minlvl, maxlvl)
+                
+                upg = f'{itype[0]}:{lvl}'
+                # print(f"{upg}")
+                return upg
+            # Everything else - Include +0 weapon, and add prefix to name
+            else:
+                adj = options.upgraded_weapons_adjusted_levels
+
+                # Min level is greater of "0" or "user specified min level minus potential adjustment"
+                minlvl = max(0, options.upgraded_weapons_min_level.value - (itype[3] if adj else 0))
+                # Min level is lesser of "type max level" or "user specified max level minus potential adjustment"
+                maxlvl = min(itype[2], options.upgraded_weapons_max_level.value - (itype[3] if adj else 0))
+                
+                if maxlvl < minlvl:  # could never use this infusion
+                    break;  #done with item
+                lvl = world.random.randint(minlvl, maxlvl)
+                
+                upg = f'{itype[0]}:{lvl}'
+                # print(f"{upg}")
+                return upg
+            break;
+    return upg

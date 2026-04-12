@@ -4,51 +4,53 @@
 - [Hatsune Miku Project DIVA Mega Mix+](https://store.steampowered.com/app/1761390/Hatsune_Miku_Project_DIVA_Mega_Mix/) (Steam)
   - [Extra Song Pack](https://store.steampowered.com/app/1887030/Hatsune_Miku_Project_DIVA_Mega_Mix_Extra_Song_Pack/) (optional, recommended, cheaper bundled)
   - The game can be played in MultiworldGG without the Extra Song Pack DLC.
+- Without MWGG: [The APWorld](https://github.com/Cynichill/DivaAPworld/releases/latest)
 - [DivaModLoader](https://github.com/blueskythlikesclouds/DivaModLoader?tab=readme-ov-file#installation)
 - [[GB]](https://gamebanana.com/mods/514140) [[DMA]](https://divamodarchive.com/post/279) Archipelago Mod
 
 ## First Time Setup
-This is a minimal setup to get started. Mod managers exist that may make certain steps easier, but you use them at your discretion.
+This is a minimal setup to get started. [Mod managers are used at your discretion.](#game-crashes-on-entering-song-list--im-missing-the-archipelago-song)
 
 1. If not already installed, [follow DivaModLoader's installation steps.](https://github.com/blueskythlikesclouds/DivaModLoader?tab=readme-ov-file#installation)
    - See below for locating `DivaMegaMix.exe`
-2. Install the Archipelago Mod listed under [Requirements.](#requirements)
-3. Start the **Mega Mix Client** from the MultiworldGG Launcher
-4. You may be prompted to select `DivaMegaMix.exe`:
-   - If you are not prompted, skip these steps
+2. Download and extract the Archipelago Mod listed under [Requirements.](#requirements)
+   - Place the `ArchipelagoMod` folder into the `mods` folder.
+   - Verify `-Archipelago Randomizer Enabled-` is on the song list. [If not, fix it.](#game-crashes-on-entering-song-list--im-missing-the-archipelago-song)
+3. Unless you use MultiworldGG: Install the APWorld listed under [Requirements.](#requirements)
+   - [Archipelago Setup: Playing with custom worlds](/tutorial/Archipelago/setup_en#playing-with-custom-worlds)
+4. Start the **Mega Mix Client** from the MultiworldGG Launcher
+5. If prompted to select `DivaMegaMix.exe`:
+   - **If not prompted, skip this step**
    - Right-click the game entry in Steam, **Manage > Browse local files**
    - `DivaMegaMix.exe` (extension may be hidden) is what you will need to navigate to and select
-   - You may be able to ***Ctrl+C*** the game EXE and paste its path into the original prompt's text input
-5. Play! (requires a [YAML and generation](/tutorial/Archipelago/setup_en))
+6. Play! ([MultiworldGG Setup: Generating a game](/tutorial/Archipelago/setup_en#generating-a-game))
 
 ### Resulting basic file structure
 ```
 Hatsune Miku Project DIVA Mega Mix Plus\
 ├ DivaMegaMix.exe   <─ game, select if prompted by Client/JSON generator
 ├ dinput8.dll       <─ mod loader
-├ config.toml       <─ mod loader config (no need to edit)
+├ config.toml       <─ mod loader config
 └ mods\
-  └ ArchipelagoMod\ <─ AP mod, currently required to be this name
+  └ ArchipelagoMod\ <─ AP mod folder
     └ config.toml   <─ AP mod config
 ```
 
 ## Optional Quality of Life Mods 
 Please read descriptions before installing. These may not be relevant to you or may require additional files.
 
-| Mod                  | Sources                                                                                                                                           |
-|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| ExPatch              | [[GB]](https://gamebanana.com/mods/388083) [[DMA]](https://divamodarchive.com/post/371) [[GH]](https://github.com/nastys/ExPatch/releases/latest) |
-| High Frame Rate      | [[GB]](https://gamebanana.com/mods/380955)                                                                                                        |
-| IntroPatch           | [[GB]](https://gamebanana.com/mods/449088) [[DMA]](https://divamodarchive.com/post/193)                                                           |
-| KeepFocus            | [[GB]](https://gamebanana.com/mods/427425)                                                                                                        |
-| Reach LV39 Instantly | [[GB]](https://gamebanana.com/mods/397158)                                                                                                        |
-| ThumbnailSplitter    | [[GB]](https://gamebanana.com/mods/625557)                                                                                                        |
+| Mod             | Sources                                                                                                                                              |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ExPatch         | [[GB]](https://gamebanana.com/mods/388083) [[DMA]](https://divamodarchive.com/post/371) [[GH]](https://github.com/nastys/ExPatch/releases/latest)    |
+| High Frame Rate | [[GB]](https://gamebanana.com/mods/380955)                                                                                                           |
+| IntroPatch      | [[GB]](https://gamebanana.com/mods/449088) [[DMA]](https://divamodarchive.com/post/193) [[GH]](https://github.com/nastys/IntroPatch/releases/latest) |
+| Window Thing    | [[GH]](https://github.com/vixen256/window_thing/releases/latest)                                                                                     |
 
 ## Mod Songs
 **Note: Currently, using mod songs requires the seed to be [generated locally](/tutorial/Archipelago/setup_en#generating-a-multiplayer-game), not on the website. Hosting on the website afterwards is fine.**
 
 1. Open the **Mega Mix JSON Generator** from the MultiworldGG Launcher.
-2. Check song packs you would like to appear in your song selection pool. Unchecked packs will remain visible in game unless manually disabled.
+2. Check song packs you would like to appear in your song selection pool.
 3. When done checking packs click **Generate Mod String**.
 4. In your YAML on the line for `megamix_mod_data` paste and format it as such:
    - `megamix_mod_data: '{"MyFirstSongPack":[["MyFirstSong",144,224]]}'`
@@ -94,4 +96,4 @@ Install [ExPatch](#optional-quality-of-life-mods). Modded songs are commonly Ext
 Similar to the [mod's config](#resulting-basic-file-structure), ensure `enabled = true` in a pack's `config.toml`.
 
 ### Songs still aren't appearing
-Run `/restore_songs` in the **Mega Mix Client**, reload, and play manually (honor system).
+Run `/safe_mode` in the **Mega Mix Client** and follow its instructions.

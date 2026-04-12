@@ -91,14 +91,14 @@
     pop af
     ret
 
-# Add a "remove item" script command attached to unused byte 0xdc
-0b//scriptCmd_removeItem: |
+# Add a "lose item" script command attached to unused byte 0xdc
+0b//scriptCmd_loseItem: |
     pop hl
     inc hl
     ldi a,(hl)
     call loseTreasure
     ret
-0b/40c1/: dw scriptCmd_removeItem
+0b/40c1/: dw scriptCmd_loseItem
 
 # Puts the current amount of essences possessed into a
 00//getEssenceCount: |

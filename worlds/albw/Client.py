@@ -377,11 +377,11 @@ async def game_watcher(ctx: ALBWClientContext) -> None:
             ctx.show_citra_connect_message = True
         await asyncio.sleep(0.25)
 
-def launch() -> None:
+def launch(*launch_args) -> None:
     async def main():
         parser = get_base_parser()
         parser.add_argument("patch_file", default="", type=str, nargs="?", help="Path to an Archipelago patch file")
-        args = parser.parse_args()
+        args = parser.parse_args(launch_args)
 
         if args.patch_file != "":
             create_rom_file(args.patch_file)

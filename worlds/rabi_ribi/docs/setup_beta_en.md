@@ -6,6 +6,10 @@ Additionally, the logic assumes that the player knows of hidden paths throughout
 ## To Install
 1. Download and install the latest MultiworldGG release from the [MultiworldGG Releases page](https://github.com/MultiworldGG/MultiworldGG/releases).
 
+If you are not using MultiworldGG:
+2. Download `rabi_ribi.apworld` from the latest release on the [Archipelago Rabi-Ribi Releases page](https://github.com/tdkollins/Archipelago-Rabi-Ribi/releases)
+3. Open `rabi_ribi.apworld` with Archipelago Launcher; it will be automatically installed to Archipelago's `custom_world` folder.
+
 ## To Generate a Game
 1. Download `Rabi-Ribi.yaml` from the latest release on the [Archipelago Rabi-Ribi Releases page](https://github.com/tdkollins/Archipelago-Rabi-Ribi/releases)
 2. Edit the file to have your desired settings.

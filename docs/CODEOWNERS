@@ -20,6 +20,9 @@
 # A Link to the Past
 /worlds/alttp/ @Berserker66
 
+# AM2R
+/worlds/am2r/ @Ehseezed
+
 # Animal Well
 /worlds/animal_well @ScipioWright
 
@@ -33,8 +36,6 @@
 # NewSoupVi is acting maintainer, but world belongs to core with the exception of the music
 /worlds/apquest/ @NewSoupVi
 
-# Sudoku (APSudoku)
-/worlds/apsudoku/ @EmilyV99
 
 # Archipela-Go!
 /worlds/apgo/ @agilbert1412 @aki665
@@ -50,6 +51,9 @@
 
 # Banjo Tooie
 /worlds/banjo_tooie/ @jjjj12212
+
+# BK Simulator
+/worlds/bksim/ @EmilyV99
 
 # Blasphemous
 /worlds/blasphemous/ @TRPG0
@@ -178,6 +182,9 @@
 # Final Fantasy 4: Free Enterprise
 /worlds/ff4fe/ @Rosalie-A
 
+# Final Fantasy 5: Career Day
+/worlds/ff5cd/ @junglechief87
+
 # Final Fantasy (1)
 /worlds/ff1/ @Rosalie-A
 
@@ -198,9 +205,6 @@
 
 # Golden Sun: The Lost Age
 /worlds/gstla/ @cjmang
-
-# GZDoom
-/worlds/gzdoom/ @ToxicFrog
 
 # Hades
 /worlds/hades/ @Naixgames
@@ -269,7 +273,7 @@
 /worlds/lingo/ @hatkirby
 
 # Links Awakening DX
-/worlds/ladx/ @threeandthreee
+/worlds/ladx_beta/ @threeandthreee
 
 # Lufia II Ancient Cave
 /worlds/lufia2ac/ @el-u
@@ -299,6 +303,7 @@
 # Mega Man 2
 /worlds/mm2/ @Silvris
 
+# Mega Man 3
 /worlds/mm3/ @Silvris
 
 # MegaMan Battle Network 3
@@ -385,11 +390,20 @@
 # Peaks of Yore
 /worlds/peaks_of_yore/ @c0der23
 
+# Peggle Deluxe
+/worlds/peggle_deluxe/ @SerpentAI
+
+# Peggle Nights
+/worlds/peggle_nights/ @SerpentAI
+
 # Phantom Hourglass
 /worlds/tloz_ph/ @carrotinator
 
 # Phoenotopia
 /worlds/phoa/ @Amphyros
+
+# Pinball FX3
+/worlds/pinball_fx3/ @SerpentAI
 
 # Placid Plastic Duck Simulator
 /worlds/placidplasticducksim/ @SWCreeperKing
@@ -409,6 +423,9 @@
 # Pokemon Red and Blue
 /worlds/pokemon_rb/ @Alchav
 
+# Portal 2
+/worlds/portal2/ @GlassToadstool
+
 # Powerwash Simulator
 /worlds/powerwashsimulator/ @SWCreeperKing
 
@@ -426,6 +443,9 @@
 
 # Ratchet & Clank 2
 /worlds/rac2/ @evilwb
+
+# Ratchet & Clank 3: Up Your Arsenal
+/worlds/rac3/ @Taoshix
 
 # Refunct
 /worlds/refunct/ @spinerak
@@ -457,8 +477,8 @@
 # Saving Princess
 /worlds/saving_princess/ @LeonarthCG
 
-# Sea of Thieves
-/worlds/seaofthieves/ @EthanSteidl
+# Schedule 1
+/worlds/schedule_i/ @MacH8s
 
 # Shapez
 /worlds/shapez/ @BlastSlimey
@@ -489,6 +509,9 @@
 
 # Sonic Heroes
 /worlds/sonic_heroes/ @xMcacutt
+
+# Sonic Robo Blast 2
+/worlds/srb2/ @GraymonDgt
 
 # Spongebob Squarepants: Battle for Bikini Bottom
 /worlds/bfbb/ @Cyb3RGER
@@ -575,6 +598,9 @@
 
 # Undertale
 /worlds/undertale/ @jonloveslegos
+
+# Vampire Survivors
+/worlds/vampire_survivors @SWCreeperKing
 
 # VVVVVV
 /worlds/v6/ @N00byKing

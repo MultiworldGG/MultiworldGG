@@ -31,7 +31,7 @@ A: BizHawk is a crappy emulator for SM64 hacks, it is not good at all for them, 
 
 Q: Why aren't objects randomized?
 
-A: The current "best" object randomizer for SM64 hacks is like 6 years old and super janky. If you want an object randomizer, put your rom through [this](https://github.com/aGlitch/Mario-64-Randomizer) after you apply the ASM patch. I'm planning on making a better one as part of this project, but it's not done yet.
+A: The current "best" object randomizer for SM64 hacks is like 6 years old and super janky. If you want an object randomizer, put your rom through [this](https://github.com/aGlitch/Mario-64-Randomizer) after you apply the ASM patch. I'm planning on making a better one as part of this project, but it's a lot of effort.
 
 Q: Can you randomize X?
 
@@ -39,6 +39,9 @@ A: Feel free to pitch ideas to me, but reminder that this world is meant to be g
 
 ## Future ideas (in approximate order of greatest to least priority)
 
+* Better/more functional JSON editor
+* Level tickets
+* Move rando
 * Better object and music shuffler
 * Custom items for specific hacks (Badges in sr7/7.5/8, sm64oot, probably others im not thinking of)
 * Ideas I have for dynamic locations that could be interesting

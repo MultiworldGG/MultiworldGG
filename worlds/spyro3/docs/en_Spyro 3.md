@@ -43,7 +43,7 @@ Any of the items which can be shuffled may also be placed into another player's 
 
 ## What does another world's item look like in Spyro 3?
 
-The visuals of the game are unchanged by the MultiworldGG randomization.  The Spyro 3 MultiworldGG Client
+The visuals of the game are unchanged by the MultiworldGG randomization. The Spyro 3 MultiworldGG Client
 will display the obtained item and to whom it belongs.
 
 ## When the player receives an item, what happens?
@@ -66,7 +66,7 @@ The following command (without a slash or exclamation point) is available when u
 - `clearSpyroGameState` Resync your save file's received items with the server.  This may result in duplicate filler items.
 If playing on a new save file, you will still need to get to the end of each level and defeat the bosses to progress in the game.
 - `useQuietHints` Suppresses hints for found locations to make the client easier to read. On by default.
-- `useVerboseHints` Include found locations in hint lists. Due to Archipelago MultiworldGG limitations, only applies to hints requested after this change.
+- `useVerboseHints` Include found locations in hint lists. Due to MWGG/AP Server limitations, only applies to hints requested after this change.
 - `showGoal` Show what your completion goal is.
 
 ## Are There Any Bugs?

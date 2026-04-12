@@ -16,8 +16,8 @@ json = require("json")
 REQUIRED_BIZHAWK_MAJOR_VERSION = 2
 MINIMUM_BIZHAWK_MINOR_VERSION = 10
 VANILLA_ROM_HASH = "0CB115D8716DBBC2922FDA38E533B9FE63BB9670"
-PATCHED_ROM_HASH = "9A2135E2F96B68BA392FAA2D6714A33BB5C7F3D8"
-APWORLD_VERSION = "DKRv1.1.2"
+PATCHED_ROM_HASH = "70317F5C9B130B948C6257E0F4835C5C067380D5"
+APWORLD_VERSION = "DKRv1.1.4"
 
 STATE_OK = "Ok"
 STATE_TENTATIVELY_CONNECTED = "Tentatively Connected"
@@ -188,7 +188,6 @@ RomHack = {
       SHUFFLE_WIZPIG_AMULET = 0x2,
       SHUFFLE_TT_AMULET = 0x3,
       DOOR_PROGRESSION = 0x4,
-      MAX_DOOR_REQUIREMENT = 0x5,
       SHUFFLE_DOOR_REQUIREMENTS = 0x6,
       BOSS_1_REGIONAL_BALLOONS = 0x7,
       BOSS_2_REGIONAL_BALLOONS = 0x8,
@@ -646,7 +645,6 @@ function handle_frame()
         if frame % 10 == 1 then
             check_if_in_save_file()
             if slot_loaded and in_save_file then
-                update_in_game_totals()
                 dpad_stats()
 
                 if not save_file_init_complete then
@@ -829,10 +827,6 @@ function process_slot(slot)
         door_requirement_progression = slot["slot_door_requirement_progression"]
     end
 
-    if slot["slot_maximum_door_requirement"] and slot["slot_maximum_door_requirement"] ~= "" then
-        slot_maximum_door_requirement = slot["slot_maximum_door_requirement"]
-    end
-
     if slot["slot_shuffle_door_requirements"] and slot["slot_shuffle_door_requirements"] == "true" then
         shuffle_door_requirements = true
     else
@@ -916,7 +910,6 @@ function pass_settings_to_romhack()
     RomHack:set_value(RomHack.SETTINGS + RomHack.SHUFFLE_WIZPIG_AMULET, shuffle_wizpig_amulet and 1 or 0)
     RomHack:set_value(RomHack.SETTINGS + RomHack.SHUFFLE_TT_AMULET, shuffle_tt_amulet and 1 or 0)
     RomHack:set_value(RomHack.SETTINGS + RomHack.DOOR_PROGRESSION, door_requirement_progression)
-    RomHack:set_value(RomHack.SETTINGS + RomHack.MAX_DOOR_REQUIREMENT, maximum_door_requirement)
     RomHack:set_value(RomHack.SETTINGS + RomHack.SHUFFLE_DOOR_REQUIREMENTS, shuffle_door_requirements and 1 or 0)
     RomHack:set_value(RomHack.SETTINGS + RomHack.BOSS_1_REGIONAL_BALLOONS, boss_1_regional_balloons)
     RomHack:set_value(RomHack.SETTINGS + RomHack.BOSS_2_REGIONAL_BALLOONS, boss_2_regional_balloons)
@@ -1066,24 +1059,17 @@ function process_client_response(response)
 end
 
 function process_items(items)
-    local new_item_received_item_ids = {}
+    local new_item_received = false
     for ap_id, item_id in pairs(items) do
         local ap_id_string = tostring(ap_id)
         if not receive_map[ap_id_string] then
             receive_map[ap_id_string] = tostring(item_id)
-            new_item_received_item_ids[item_id] = true
-
-            local index = ITEM_ID_TO_ROMHACK_ITEM_INDEX[item_id]
-            RomHack:increment_counter(RomHack.RECEIVED_ITEM_COUNTS + index)
+            new_item_received = true
         end
     end
 
-    if next(new_item_received_item_ids) ~= nil then
-        for item_id, _ in pairs(new_item_received_item_ids) do
-            set_boss_1_completion_if_boss_2_unlocked(item_id)
-        end
-
-        client.saveram()
+    if new_item_received then
+        update_in_game_totals()
     end
 end
 
@@ -1160,21 +1146,25 @@ end
 
 function update_in_game_totals()
     for item_id, romhack_item_index in pairs(ITEM_ID_TO_ROMHACK_ITEM_INDEX) do
-        local received_item_count = get_received_item_count(item_id)
-        RomHack:set_value(RomHack.RECEIVED_ITEM_COUNTS + romhack_item_index, received_item_count)
+        local item_count_to_set = get_received_item_count(item_id)
+
+        if item_id >= 1616001 and item_id <= 1616004 then -- Regional balloons
+            item_count_to_set = math.min(item_count_to_set, 8)
+
+            if item_count_to_set >= boss_2_regional_balloons then
+                local boss_1_completion_address = BALLOON_ITEM_ID_TO_BOSS_1_COMPLETION_ADDRESS[item_id]
+                Ram:set_flag(boss_1_completion_address[BYTE], boss_1_completion_address[BIT])
+            end
+        elseif item_id >= 1616006 and item_id <= 1616009 then -- Keys
+            item_count_to_set = math.min(item_count_to_set, 1)
+        elseif item_id >= 1616010 and item_id <= 1616011 then -- Amulets
+            item_count_to_set = math.min(item_count_to_set, 4)
+        end
+
+        RomHack:set_value(RomHack.RECEIVED_ITEM_COUNTS + romhack_item_index, item_count_to_set)
     end
 
-    set_boss_1_completion_if_boss_2_unlocked(ITEM_IDS.DINO_DOMAIN_BALLOON)
-    set_boss_1_completion_if_boss_2_unlocked(ITEM_IDS.SNOWFLAKE_MOUNTAIN_BALLOON)
-    set_boss_1_completion_if_boss_2_unlocked(ITEM_IDS.SHERBET_ISLAND_BALLOON)
-    set_boss_1_completion_if_boss_2_unlocked(ITEM_IDS.DRAGON_FOREST_BALLOON)
-end
-
-function set_boss_1_completion_if_boss_2_unlocked(item_id)
-    if BALLOON_ITEM_ID_TO_BOSS_1_COMPLETION_ADDRESS[item_id] and get_received_item_count(item_id) >= boss_2_regional_balloons then
-        local boss_1_completion_address = BALLOON_ITEM_ID_TO_BOSS_1_COMPLETION_ADDRESS[item_id]
-        Ram:set_flag(boss_1_completion_address[BYTE], boss_1_completion_address[BIT])
-    end
+    client.saveram()
 end
 
 function dpad_stats()

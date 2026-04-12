@@ -1,0 +1,61 @@
+# Add a new subid for an unconditional portal with special warp data
+09/4869/: dw interactionCode7e@subid00
+
+09/486f/: |
+  dw interactionCode7e@subid03
+  ; 0xb free bytes
+
+09//interactionCode7e@subid00: /copy s,$09,$486f,$0c
+
+09//interactionCode7e@subid03: |
+  ld e,$44 ; Interaction.state
+  ld a,(de)
+  rst 00 ; jumpTable
+  dw $4897 ; @commonState0
+  dw $48ad ; @state1
+  dw $48e1 ; @state2
+  dw @warpState
+  
+  @warpState:
+  ld hl,$d000 ; w1Link
+  call objectCopyPosition
+  call $492e ; @spinLink
+  ret nz
+  
+  ld hl,wWarpDestGroup
+  ld (hl),$85 ; group
+  inc l
+  ld (hl),$30 ; room
+  inc l
+  ld (hl),$03 ; dest transition
+  inc l
+  ld (hl),$f7 ; dest pos
+  inc l
+  ld (hl),$03 ; source transition
+  ret
+
+08/4164/: call create_d11_warp
+08//create_d11_warp: |
+  ld a,(wActiveRoom)
+  cp $04 ; hero's cave entrance
+  jr nz,@end
+  call getFreeInteractionSlot
+  jr nz,@end
+  ld (hl),$7e ; warp pad
+  inc hl
+  ld (hl),$03 ; subid 3
+  ld l,$4b ; yh
+  ld (hl),$58
+  ld l,$4d ; xh
+  ld (hl),$78
+  @end:
+  cp $30 ; linked hero's cave entrance
+  jr nz,@normalArg
+  ld a,($d008) ; link's direction
+  or a
+  jr nz,@normalArg
+  ld a,$02 ; Lie to the dungeon init to make sure it stays, as you cannot come from below the room without anyway
+  ret
+  @normalArg:
+  ld a,(wScrollMode)
+  ret

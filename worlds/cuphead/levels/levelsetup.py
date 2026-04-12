@@ -28,10 +28,9 @@ def setup_level_map(wconf: WorldConfig) -> dict[int,int]:
     rand = Random(wconf.level_shuffle_seed)
     level_map: dict[int,int] = {}
 
-    if wconf.level_shuffle:
-        level_map.update(
-            levelshuffle.get_level_shuffle_map(rand, wconf.use_dlc, wconf.level_shuffle)
-        )
+    level_map.update(
+        levelshuffle.get_level_shuffle_map(rand, wconf.use_dlc, wconf.level_shuffle, wconf.level_shuffle_kingdice)
+    )
 
     for k,v in wconf.level_placements.items():
         level_map[levelids.level_to_id[k]] = levelids.level_to_id[v]

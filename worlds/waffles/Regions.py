@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from . import WaffleWorld
 
 GREEN_YOSHI_LEVELS = [
+    LocationName.donut_plains_top_secret,
     LocationName.yoshis_island_2_region,
     LocationName.yoshis_island_3_region,
     LocationName.donut_plains_1_region,
@@ -2012,22 +2013,54 @@ def connect_regions(world: "WaffleWorld", level_to_tile_dict):
     for entrance, exit in world.transition_pairs.items():
         connect(world, entrance, exit)
 
+    # I'm lazy
+    world.explicit_indirect_conditions = False
+    return
+
     # Connect potential yoshi findings if applicable
     if not world.options.inventory_yoshi_logic:
-        connect_blue_yoshi_levels(world, f"{LocationName.star_road_4_region} -> {LocationName.star_road_4_exit_2}")
+        if 0x59 in world.swapped_exits:
+            connect_blue_yoshi_levels(world, f"{LocationName.star_road_4_region} -> {LocationName.star_road_4_exit_1}")
+        else:
+            connect_blue_yoshi_levels(world, f"{LocationName.star_road_4_region} -> {LocationName.star_road_4_exit_2}")
+
         connect_blue_yoshi_levels(world, f"{LocationName.star_road_5_region} -> {LocationName.star_road_5_exit_1}")
         connect_blue_yoshi_levels(world, f"{LocationName.star_road_5_region} -> {LocationName.star_road_5_exit_2}")
+
+        connect_blue_yoshi_levels(world, f"{LocationName.chocolate_island_3_region} -> {LocationName.chocolate_island_3_exit_1}")
         connect_blue_yoshi_levels(world, f"{LocationName.chocolate_island_3_region} -> {LocationName.chocolate_island_3_exit_2}")
 
-        connect_green_yoshi_levels(world, f"{LocationName.donut_plains_1_region} -> {LocationName.donut_plains_1_exit_2}")
-        connect_green_yoshi_levels(world, f"{LocationName.donut_plains_2_region} -> {LocationName.donut_plains_2_exit_2}")
-        connect_green_yoshi_levels(world, f"{LocationName.vanilla_dome_1_region} -> {LocationName.vanilla_dome_1_exit_2}")
+        if 0x15 in world.swapped_exits:
+            connect_green_yoshi_levels(world, f"{LocationName.donut_plains_1_region} -> {LocationName.donut_plains_1_exit_1}")
+        else:
+            connect_green_yoshi_levels(world, f"{LocationName.donut_plains_1_region} -> {LocationName.donut_plains_1_exit_2}")
+
+        if 0x09 in world.swapped_exits:
+            connect_green_yoshi_levels(world, f"{LocationName.donut_plains_2_region} -> {LocationName.donut_plains_2_exit_1}")
+        else:
+            connect_green_yoshi_levels(world, f"{LocationName.donut_plains_2_region} -> {LocationName.donut_plains_2_exit_2}")
+
+        if 0x3E in world.swapped_exits:
+            connect_green_yoshi_levels(world, f"{LocationName.vanilla_dome_1_region} -> {LocationName.vanilla_dome_1_exit_1}")
+        else:
+            connect_green_yoshi_levels(world, f"{LocationName.vanilla_dome_1_region} -> {LocationName.vanilla_dome_1_exit_2}")
+        
         connect_green_yoshi_levels(world, f"{LocationName.vanilla_dome_2_region} -> {LocationName.vanilla_dome_2_exit_1}")
         connect_green_yoshi_levels(world, f"{LocationName.vanilla_dome_2_region} -> {LocationName.vanilla_dome_2_exit_2}")
+
         connect_green_yoshi_levels(world, f"{LocationName.cheese_bridge_region} -> {LocationName.cheese_bridge_exit_1}")
-        connect_green_yoshi_levels(world, f"{LocationName.chocolate_island_3_region} -> {LocationName.chocolate_island_3_exit_1}")
-        connect_green_yoshi_levels(world, f"{LocationName.valley_of_bowser_4_region} -> {LocationName.valley_of_bowser_4_exit_2}")
-        connect_green_yoshi_levels(world, f"{LocationName.star_road_3_region} -> {LocationName.star_road_3_exit_2}")
+        connect_green_yoshi_levels(world, f"{LocationName.cheese_bridge_region} -> {LocationName.cheese_bridge_exit_2}")
+        
+        if 0x33 in world.swapped_exits:
+            connect_green_yoshi_levels(world, f"{LocationName.valley_of_bowser_4_region} -> {LocationName.valley_of_bowser_4_exit_1}")
+        else:
+            connect_green_yoshi_levels(world, f"{LocationName.valley_of_bowser_4_region} -> {LocationName.valley_of_bowser_4_exit_2}")
+
+        if 0x56 in world.swapped_exits:
+            connect_green_yoshi_levels(world, f"{LocationName.star_road_3_region} -> {LocationName.star_road_3_exit_1}")
+        else:
+            connect_green_yoshi_levels(world, f"{LocationName.star_road_3_region} -> {LocationName.star_road_3_exit_2}")
+        
         connect_green_yoshi_levels(world, f"{LocationName.special_zone_3_region} -> {LocationName.special_zone_3_exit_1}")
         connect_green_yoshi_levels(world, f"{LocationName.special_zone_8_region} -> {LocationName.special_zone_8_exit_1}")
 
@@ -2087,6 +2120,11 @@ def add_event_to_region(world: "WaffleWorld", region_name: str, event_name: str,
 
 
 def connect(world: "WaffleWorld", source: str, target: str) -> None:
-    source_region: Region = world.get_region(source)
-    target_region: Region = world.get_region(target)
+    source_region = world.get_region(source)
+    target_region = world.get_region(target)
     source_region.connect(target_region)
+
+    if world.is_ut and " Exit" in target_region.name and world.multiworld.enforce_deferred_connections in ("on", "default"):
+        glitched_entrance = source_region.create_exit(f"{source_region.name} -> {target_region.name} (Glitched)")
+        glitched_entrance.connect(target_region)
+        #print (f"Glitched Entrance: {glitched_entrance.name} ({glitched_entrance.connected_region})")

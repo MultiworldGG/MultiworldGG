@@ -28,10 +28,10 @@ class TestVanillaLogic(NineSolsTestBase):
 
     def test_afe_afd_regression(self):
         prereq_items = ["Wall Climb", "Grapple"]
-        self.assertRegionReachableWith("AFE - Lower Root Node", prereq_items + ["Air Dash", "Cloud Leap"])
-        self.assertRegionReachableWith("AFE - Below Root Node", prereq_items + ["Air Dash", "Cloud Leap"])
-        self.assertRegionNotReachableWith("AFE - Lower Left Exit", prereq_items)
-        self.assertRegionReachableWith("AFE - Lower Left Exit", prereq_items + ["Air Dash", "Cloud Leap"])
+        self.assertRegionReachableWith("AF (Elevator) - Lower Root Node", prereq_items + ["Air Dash", "Cloud Leap"])
+        self.assertRegionReachableWith("AF (Elevator) - Below Root Node", prereq_items + ["Air Dash", "Cloud Leap"])
+        self.assertRegionNotReachableWith("AF (Elevator) - Lower Left Exit", prereq_items)
+        self.assertRegionReachableWith("AF (Elevator) - Lower Left Exit", prereq_items + ["Air Dash", "Cloud Leap"])
         self.assertNotReachableWith("AF (Depths): Lower Level", prereq_items)
         self.assertReachableWith("AF (Depths): Lower Level", prereq_items + ["Air Dash", "Cloud Leap"])
 
@@ -65,10 +65,10 @@ class TestMediumLogic(NineSolsTestBase):
 
     def test_afe_afd_regression(self):
         prereq_items = ["Wall Climb", "Grapple"]
-        self.assertRegionReachableWith("AFE - Lower Root Node", prereq_items + ["Air Dash"])
-        self.assertRegionReachableWith("AFE - Below Root Node", prereq_items + ["Air Dash"])
-        self.assertRegionNotReachableWith("AFE - Lower Left Exit", prereq_items)
-        self.assertRegionReachableWith("AFE - Lower Left Exit", prereq_items + ["Air Dash"])
+        self.assertRegionReachableWith("AF (Elevator) - Lower Root Node", prereq_items + ["Air Dash"])
+        self.assertRegionReachableWith("AF (Elevator) - Below Root Node", prereq_items + ["Air Dash"])
+        self.assertRegionNotReachableWith("AF (Elevator) - Lower Left Exit", prereq_items)
+        self.assertRegionReachableWith("AF (Elevator) - Lower Left Exit", prereq_items + ["Air Dash"])
         self.assertNotReachableWith("AF (Depths): Lower Level", prereq_items)
         self.assertReachableWith("AF (Depths): Lower Level", prereq_items + ["Air Dash"])
 
@@ -227,3 +227,119 @@ class TestMediumFULogic(NineSolsTestBase):
         self.assertReachableWith("Factory (U): Find Broken Shanhai 9000", ["Air Dash"])
         # this is the medium logic change: combining AD and T-dash lets you cross both hazards
         self.assertReachableWith("Factory (U): Examine Evacuation Notice", ["Air Dash"])
+
+
+class TestPRWGuardedChestVanillaLogic(NineSolsTestBase):
+    options = {
+        "logic_difficulty": "vanilla",
+        "first_root_node": "power_reservoir_west",
+        "shuffle_grapple": True,
+        "shuffle_wall_climb": True,
+        "shuffle_ledge_grab": True,
+    }
+
+    def test_default(self):
+        self.assertNotReachableWith("PR (West): Guarded By Turret", [])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Cloud Leap"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Tai-Chi Kick"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Wall Climb"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Mystic Nymph: Scout Mode"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Unbounded Counter"])
+        # even if you can reach the chest, you still need nymph or UC to safely open it
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Cloud Leap", "Tai-Chi Kick"])
+
+        # we'll check nymph just this once
+        self.assertReachableWith("PR (West): Guarded By Turret", [
+            "Cloud Leap", "Tai-Chi Kick", "Mystic Nymph: Scout Mode"
+        ])
+        # but mostly we'll use UC for the location logic, since it's the connection we really want to test
+        self.assertReachableWith("PR (West): Guarded By Turret", [
+            "Cloud Leap", "Tai-Chi Kick", "Unbounded Counter"
+        ])
+        self.assertReachableWith("PR (West): Guarded By Turret", [
+            "Wall Climb", "Cloud Leap", "Air Dash", "Unbounded Counter"
+        ])
+        self.assertReachableWith("PR (West): Guarded By Turret", [
+            "Wall Climb", "Grapple", "Tai-Chi Kick", "Unbounded Counter"
+        ])
+
+        # medium strats are out of logic in vanilla
+        self.assertNotReachableWith("PR (West): Guarded By Turret", [
+            "Wall Climb", "Cloud Leap", "Unbounded Counter"
+        ])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", [
+            "Wall Climb", "Grapple", "Air Dash", "Unbounded Counter"
+        ])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", [
+            "Wall Climb", "Grapple", "Charged Strike", "Unbounded Counter"
+        ])
+        # LS strats are out of logic in vanilla
+        self.assertNotReachableWith("PR (West): Guarded By Turret", [
+            "Ledge Grab", "Cloud Leap", "Unbounded Counter"
+        ])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", [
+            "Ledge Grab", "Grapple", "Unbounded Counter"
+        ])
+
+
+class TestPRWGuardedChestMediumLogic(NineSolsTestBase):
+    options = {
+        "logic_difficulty": "medium",
+        "first_root_node": "power_reservoir_west",
+        "shuffle_grapple": True,
+        "shuffle_wall_climb": True,
+        "shuffle_ledge_grab": True,
+    }
+
+    def test_default(self):
+        self.assertNotReachableWith("PR (West): Guarded By Turret", [])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Cloud Leap"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Tai-Chi Kick"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Wall Climb"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Mystic Nymph: Scout Mode"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Unbounded Counter"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Cloud Leap", "Tai-Chi Kick"])
+
+        self.assertReachableWith("PR (West): Guarded By Turret", [
+            "Wall Climb", "Cloud Leap", "Unbounded Counter"
+        ])
+        self.assertReachableWith("PR (West): Guarded By Turret", [
+            "Wall Climb", "Grapple", "Air Dash", "Unbounded Counter"
+        ])
+        self.assertReachableWith("PR (West): Guarded By Turret", [
+            "Wall Climb", "Grapple", "Charged Strike", "Unbounded Counter"
+        ])
+
+        # LS strats are out of logic in medium
+        self.assertNotReachableWith("PR (West): Guarded By Turret", [
+            "Ledge Grab", "Cloud Leap", "Unbounded Counter"
+        ])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", [
+            "Ledge Grab", "Grapple", "Unbounded Counter"
+        ])
+
+
+class TestPRWGuardedChestLedgeStorageLogic(NineSolsTestBase):
+    options = {
+        "logic_difficulty": "ledge_storage",
+        "first_root_node": "power_reservoir_west",
+        "shuffle_grapple": True,
+        "shuffle_wall_climb": True,
+        "shuffle_ledge_grab": True,
+    }
+
+    def test_default(self):
+        self.assertNotReachableWith("PR (West): Guarded By Turret", [])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Cloud Leap"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Tai-Chi Kick"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Wall Climb"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Mystic Nymph: Scout Mode"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Unbounded Counter"])
+        self.assertNotReachableWith("PR (West): Guarded By Turret", ["Cloud Leap", "Tai-Chi Kick"])
+
+        self.assertReachableWith("PR (West): Guarded By Turret", [
+            "Ledge Grab", "Cloud Leap", "Unbounded Counter"
+        ])
+        self.assertReachableWith("PR (West): Guarded By Turret", [
+            "Ledge Grab", "Grapple", "Unbounded Counter"
+        ])

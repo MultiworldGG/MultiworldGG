@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict, NamedTuple, List, Set, Optional
+from typing import TYPE_CHECKING, NamedTuple, Optional
+
 from BaseClasses import ItemClassification as IC, Item
 
 from ...constants import get_game_base_id
@@ -15,7 +16,7 @@ class ItemInfo(NamedTuple):
     group: Optional[str] = None
 
 
-item_table: Dict[str, ItemInfo] = {
+item_table: dict[str, ItemInfo] = {
     "Torpedo Upgrade": ItemInfo(300, IC.progression, 20),
     "Fuel Tank": ItemInfo(301, IC.progression, 20),
     "Fish Gratitude": ItemInfo(302, IC.progression, 20),
@@ -37,13 +38,13 @@ item_table: Dict[str, ItemInfo] = {
 
 
 # this is for filling out item_name_to_id, it should be static regardless of yaml options
-def get_items() -> Dict[str, int]:
+def get_items() -> dict[str, int]:
     return {f"Porgy - {name}": data.id_offset + get_game_base_id("Porgy") for name, data in item_table.items()}
 
 
 # this should return the item groups for this game, independent of yaml options
-def get_item_groups() -> Dict[str, Set[str]]:
-    item_groups: Dict[str, Set[str]] = {"Porgy": {f"Porgy - {item_name}" for item_name in item_table.keys()}}
+def get_item_groups() -> dict[str, set[str]]:
+    item_groups: dict[str, set[str]] = {"Porgy": {f"Porgy - {item_name}" for item_name in item_table.keys()}}
     return item_groups
 
 
@@ -58,9 +59,9 @@ def create_item(item_name: str, world: "UFO50World", item_class: IC = None) -> I
 
 
 # for when the world is getting the items to place into the multiworld's item pool
-def create_items(world: "UFO50World") -> List[Item]:
-    items_to_create: Dict[str, int] = {item_name: data.quantity for item_name, data in item_table.items()}
-    porgy_items: List[Item] = []
+def create_items(world: "UFO50World") -> list[Item]:
+    items_to_create: dict[str, int] = {item_name: data.quantity for item_name, data in item_table.items()}
+    porgy_items: list[Item] = []
     if world.options.porgy_radar == PorgyRadar.option_always_on:
         items_to_create["Radar System Module"] = 0
     for item_name, quantity in items_to_create.items():

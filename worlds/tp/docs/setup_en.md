@@ -6,6 +6,10 @@ get started.
 
 Unfortunately, Mac OS is not officially supported at this time.
 
+## Note
+
+Please note that player names with most special characters are currently not supported.
+
 ## Requirements
 
 You'll need the following components to be able to play/generate with Twilight Princess:

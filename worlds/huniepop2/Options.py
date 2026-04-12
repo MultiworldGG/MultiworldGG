@@ -109,6 +109,21 @@ class enabled_girls(OptionSet):
     ]
     default = valid_keys.copy()
 
+class randomise_girl_token(Toggle):
+    """randomise tokens girls like/dislike"""
+    display_name = "randomise girl token"
+    default = True
+
+class randomise_girl_baggage(Toggle):
+    """randomise girls baggage"""
+    display_name = "randomise girl baggage"
+    default = False
+
+class randomise_girl_gifts(Toggle):
+    """randomise unique/shoe gifts for each girl"""
+    display_name = "randomise girl gifts"
+    default = False
+
 class puzzle_goal_start(Range):
     """Starting affection goal for date puzzles"""
     display_name = "goal start"
@@ -195,6 +210,9 @@ class HP2Options(PerGameCommonOptions):
     enable_questions: enable_question_locations
     disable_baggage: disable_baggage
     enabled_girls: enabled_girls
+    randomise_girl_token:randomise_girl_token
+    randomise_girl_baggage:randomise_girl_baggage
+    randomise_girl_gifts:randomise_girl_gifts
     lovers_instead_wings: lovers_instead_wings
     puzzle_goal_start: puzzle_goal_start
     puzzle_goal_add: puzzle_goal_add

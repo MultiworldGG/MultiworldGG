@@ -1,10 +1,10 @@
-# Setup Guide for Mario Kart: Double Dash!! Archipelago
+# Setup Guide for Mario Kart: Double Dash!! MultiworldGG
 
 ## Requirements
 
 You'll need the following components to be able to play MKDD AP:
 * [MultiworldGG](https://multiworld.gg/tutorial/Archipelago/setup/en) 0.7.100 or newer
-    * If you are new to Archipelago it is recommended to read the guide above.
+    * If you are new to MultiworldGG it is recommended to read the guide above.
 * [Mario Kart Double Dash APWorld](https://github.com/aXu-AP/archipelago-double-dash/releases)
     * Not needed if you use MWGG
     * The apworld should install simply by double clicking it if you have Archipelago installed.

@@ -167,8 +167,8 @@ starting_items_table = {
     },
     "Templar": {
 		"weapon": "Sceptre",
-        "gem": "Glacial Hammer",
-        "support": "Elemental Proliferation Support"
+        "gem": "Holy Strike",
+        "support": "Hallow Support"
     },
 }
 

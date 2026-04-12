@@ -38,7 +38,6 @@ class CelesteOpenWorld(World):
 
     # Class Data
     game = "Celeste (Open World)"
-    author: str = "PoryGone"
     web = CelesteOpenWebWorld()
     options_dataclass = CelesteOptions
     options: CelesteOptions

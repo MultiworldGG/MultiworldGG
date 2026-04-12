@@ -6,11 +6,8 @@ Much of the content on the website is generated automatically, but there are som
 that need a personal touch. For those things, we rely on contributions from both the core
 team and the community. The current primary maintainer of the website is TreZc0_.
 
-### Small Changes
-Little changes like adding a button or a couple new select elements are perfectly fine.
-Tweaks to style specific to a PR's content are also probably not a problem. For example, if
-you build a new page which needs two side by side tables, and you need to write a CSS file
-specific to your page, that is perfectly reasonable.
+Pages should preferably be rendered on the server side with Jinja. Features should work with noscript if feasible.
+Design changes have to fit the overall design.
 
 ### Content Additions
 Once you develop a new feature or add new content the website, make a pull request. It will

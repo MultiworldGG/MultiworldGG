@@ -106,6 +106,9 @@ def check_item_accessible(state: CollectionState, item: string, player: int, opt
     return (state.has(item, player) and (state.has("Terminal", player) or options.randomize_terminal.value == 0)
             and (state.has("Company Building", player) or options.randomize_company_building.value == 0))
 
+def can_buy(state: CollectionState, player: int, options: LCOptions):
+    return ((state.has("Terminal", player) or options.randomize_terminal.value == 0) 
+            and (state.has("Company Building", player) or options.randomize_company_building.value == 0))
 
 def check_moon_accessible(state: CollectionState, moon: string, player: int,
                           options: LCOptions, world):

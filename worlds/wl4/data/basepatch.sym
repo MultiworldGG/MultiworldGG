@@ -4,6 +4,7 @@
 03000008 gmedalcount
 03000010 ucworldnumbak
 03000013 ucsaveflg
+03000018 gresetsavefile
 03000024 currentroomid
 03000044 ucflashloop
 03000047 uctimeup
@@ -11,9 +12,11 @@
 03000104 gspritedata
 03000564 gpersistentspritedata
 03000A24 gcurrentsprite
+03000A51 ucthit2
 03000A68 w4itemstatus
 03000A73 warioabilities
 03000A76 receiveditemcount
+03000AE8 gingametime
 03000BE0 gcurrentsecondarysprite
 03000BF4 igmtotalscore
 03000BF8 igmstagescore
@@ -47,6 +50,7 @@
 03001940 wariolift
 030019F6 uswarstopflg
 030019F8 ucwaroffflg
+03002C60 slocalseq
 03003C08 ucselectvector
 03003C34 ucdoraflg
 03003C39 ucseldemoseq
@@ -74,15 +78,16 @@
 0878F9BC playerid
 0878F9BE seedname
 0878FA00 itemlocationtable
-0878FC1C multiworlddatatable
-0879048C startinginventoryitemstatus
-087904B0 startinginventoryjunkcounts
-087904B6 startinginventorywarioabilities
-087904B7 sendmultiworlditemsimmediately
-087904B8 goaltype
-087904B9 goldentreasuresneeded
-087904BA trapbehavior
-087904BB diamondshuffle
-08794294 minigamecointiles
-0879476C multiworldstringdump
+0878FC3C multiworlddatatable
+08790524 startinginventoryitemstatus
+08790548 startinginventoryjunkcounts
+0879054E startinginventorywarioabilities
+08790550 slocationcount
+08790552 sendmultiworlditemsimmediately
+08790553 goaltype
+08790554 goldentreasuresneeded
+08790555 trapbehavior
+08790556 diamondshuffle
+087947BC minigamecointiles
+087956A8 multiworldstringdump
 

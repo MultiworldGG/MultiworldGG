@@ -149,8 +149,9 @@ class TPCommandProcessor(ClientCommandProcessor):
             name = name[:16]
 
         # Normalize Unicode characters and encode to target encoding, ignoring any characters that can't be encoded
-        encoded_name = unicodedata.normalize("NFKD", name).encode(STRING_ENCODING, "ignore")
-        write_string(SLOT_NAME_ADDR, encoded_name)
+        # Then decode back to str since write_string expects a string
+        clean_name = unicodedata.normalize("NFKD", name).encode(STRING_ENCODING, "ignore").decode(STRING_ENCODING)
+        write_string(SLOT_NAME_ADDR, clean_name)
         return
 
 

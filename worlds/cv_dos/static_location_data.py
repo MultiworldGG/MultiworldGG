@@ -236,5 +236,9 @@ location_ids = {
     "Stolas Soul": 0xDF,
     "Wakwak Tree Soul": 0xE0,
     "Procel Soul": 0xE1,
-    "Mud Demon Soul": 0xE2
+    "Mud Demon Soul": 0xE2,
+    "Wizardry Lab: West Gate Button": 0xE3,
+    "Wizardry Lab: East Gate Button": 0xE4,
+    "Garden of Madness: Gate Button": 0xE5,
+    "Subterranean Hell: Gate Button": 0xE6
 }

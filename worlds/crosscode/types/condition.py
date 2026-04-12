@@ -18,6 +18,7 @@ class LogicDict(typing.TypedDict):
     shop_unlock_by_id: dict[int, ItemData]
     shop_unlock_by_shop: dict[str, ItemData]
     shop_unlock_by_shop_and_id: dict[tuple[str, int], ItemData]
+    region_botanics_amounts: dict[str, int]
 
 class Condition(abc.ABC):
     @abc.abstractmethod
@@ -116,6 +117,17 @@ class VariableCondition(Condition):
         return True
 
 @dataclass
+class VariableEntryCondition(Condition):
+    name: str
+    value: str
+    desired: bool
+
+    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
+        variables = args["variables"]
+
+        return (self.value in variables[self.name]) == self.desired
+
+@dataclass
 class ChestKeyCondition(Condition):
     default_level: str
 
@@ -154,6 +166,19 @@ class ShopSlotCondition(Condition):
             return state.has(args["shop_unlock_by_shop_and_id"][self.shop_name, self.item_id].name, player)
         return True
 
+@dataclass
+class BotanicsCompletionCondition(Condition):
+    amount: int
+
+    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
+        collected = sum([
+            amount
+            for region, amount in args["region_botanics_amounts"].items()
+            if state.can_reach_region(region, player)
+        ])
+
+        return collected >= self.amount
+
 class NeverCondition(Condition):
     def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
         return False
@@ -168,7 +193,9 @@ __all__ = [
     "OrCondition",
     "AndCondition",
     "VariableCondition",
+    "VariableEntryCondition",
     "ChestKeyCondition",
     "ShopSlotCondition",
+    "BotanicsCompletionCondition",
     "NeverCondition"
 ]

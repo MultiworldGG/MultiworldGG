@@ -40,7 +40,6 @@ class BalatroWorld(World):
     Source: https://en.wikipedia.org/wiki/Balatro_(video_game)
     """
     game = "Balatro"
-    author: str = "Burndi"
     web = BalatroWebWorld()
 
     topology_present = False

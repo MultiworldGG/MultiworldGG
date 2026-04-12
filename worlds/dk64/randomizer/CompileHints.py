@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 import json
 from math import ceil, floor, sqrt
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Union
@@ -99,7 +100,7 @@ class StartingSpoiler:
                 settings.level_order[8],
             ]
 
-    def toJSON(self):
+    def toCleanJSON(self):
         """Convert this object to JSON for the purposes of the spoiler log."""
         return json.dumps(self, default=lambda o: o.__dict__)
 
@@ -115,9 +116,11 @@ class LevelSpoiler:
         self.level_items = []
         self.woth_count = 0
 
-    def toJSON(self):
+    def toCleanJSON(self):
         """Convert this object to JSON for the purposes of the spoiler log."""
-        return json.dumps(self, default=lambda o: o.__dict__)
+        sanitized_copy = deepcopy(self)
+        sanitized_copy.level_items = []  # This info is far too detailed to be in a spoiler log
+        return json.dumps(sanitized_copy, default=lambda o: o.__dict__)
 
 
 # Hint distribution that will be adjusted based on settings
@@ -138,13 +141,13 @@ hint_distribution_default = {
     HintType.RequiredKeyHint: -1,  # Fixed number based on the number of keys to be obtained over the seed
     HintType.RequiredWinConditionHint: 0,  # Fixed number based on what K. Rool phases you must defeat
     HintType.RequiredHelmDoorHint: 0,  # Fixed number based on how many Helm doors have random requirements
-    HintType.WothLocation: 8,
+    HintType.WothLocation: 7,
     HintType.FullShopWithItems: 8,
     # HintType.FoolishMove: 0,  # Used to be 2, added to FoolishRegion when it was removed
     HintType.FoolishRegion: 3,
     HintType.ForeseenPathless: 0,
     HintType.Multipath: 0,
-    HintType.RegionItemCount: 2,  # Also known as scouring hints
+    HintType.RegionItemCount: 3,  # Also known as scouring hints
     HintType.ItemHinting: 0,
     HintType.Plando: 0,
     HintType.RequiredSlamHint: 1,  # Essentially the slam microhint placed on a door
@@ -743,11 +746,13 @@ def compileHints(spoiler: Spoiler) -> bool:
     if hintset.expectedDistribution[HintType.RequiredSlamHint] > 0:
         # If we're using hint doors, put it on a random hint door
         hint_location = hintset.getRandomHintLocation(random=spoiler.settings.random)
-        # If we're using progressive hints, put it on the last hint
-        if spoiler.settings.progressive_hint_item != ProgressiveHintItem.off:
-            hint_location = [hint for hint in hintset.hints if hint.level == Levels.CreepyCastle and hint.kong == Kongs.chunky][0]
-            if hint_location.hint_type == HintType.Plando:
-                hint_location = hintset.getRandomHintLocation(random=spoiler.settings.random)
+
+        # # If we're using progressive hints, put it on the last hint -- DEPRECATED: Many settings need the slam hint sooner than the last hint
+        # if spoiler.settings.progressive_hint_item != ProgressiveHintItem.off:
+        #     hint_location = [hint for hint in hintset.hints if hint.level == Levels.CreepyCastle and hint.kong == Kongs.chunky][0]
+        #     if hint_location.hint_type == HintType.Plando:
+        #         hint_location = hintset.getRandomHintLocation(random=spoiler.settings.random)
+
         # If hint_location is none, then there's no room for the slam hint. This is very likely plando's fault and intentionally done.
         if hint_location is not None:
             # Loop through locations looking for the slams - from prior calculations we can guarantee there are at least two in non-starting move locations
@@ -1808,6 +1813,8 @@ def compileHints(spoiler: Spoiler) -> bool:
                 continue
             region_name_to_hint = None
 
+            # Try to find a scouring-hintable region that actually contains useful info
+            valid_region_found = False
             if use_hint_score:
                 hintset.CalculateHintScores(spoiler, multipath_dict_goals)
                 # If we still have ugly unhinted locations, we should prioritize hinting those where possible
@@ -1827,8 +1834,8 @@ def compileHints(spoiler: Spoiler) -> bool:
                             if candidate_region_name in hintable_region_names:
                                 region_name_to_hint = candidate_region_name
                                 hintable_region_names.remove(candidate_region_name)
-            # Try to find a scouring-hintable region that actually contains useful info
-            valid_region_found = False
+                                valid_region_found = True
+            # If we're not leveraging the score, we need to at least ensure the region has useful info
             while not valid_region_found:
                 # If we somehow run out, kick back to the start of the loop - it handles that case there (RARE)
                 if len(hintable_region_names) == 0:
@@ -2158,6 +2165,8 @@ def compileHints(spoiler: Spoiler) -> bool:
         if score > 0.25:
             location = spoiler.LocationList[loc_id]
             spoiler.poor_scoring_locations[location.name + " (" + ItemList[location.item].name + ")"] = score
+    if hintset.expectedDistribution[HintType.Multipath] <= 0:
+        spoiler.poor_scoring_locations = {"Non-multipath hints are not scored": 0}
 
     # Dim hints - these are only useful (and doable) if item rando is on
     if spoiler.settings.dim_solved_hints and spoiler.settings.shuffle_items:
@@ -2435,7 +2444,7 @@ def CategorizeItem(item):
     elif item.type == Types.Key:
         return "Key"
     elif item.type == Types.Bean:
-        return "Bean"
+        return "Clear Vial"
     elif item.kong == Kongs.donkey:
         return "Yellow Vial"
     elif item.kong == Kongs.diddy:
@@ -2746,7 +2755,7 @@ def getNumberOfCutoffCharacters(message, number):
 def AssociateHintsWithFlags(spoiler, hintset):
     """Associate hints with the related flag at their related location as applicable."""
     for hint in hintset.hints:
-        if hint.related_location is not None:
+        if hint.related_location is not None and hint.related_location not in TrainingBarrelLocations and hint.related_location not in PreGivenLocations:
             for location_selection in spoiler.item_assignment:
                 if location_selection.location == hint.related_location:
                     hint.related_flag = location_selection.old_flag

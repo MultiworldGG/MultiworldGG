@@ -1,3 +1,5 @@
+# This file contains the logic for item placement and progression in the Path of Exile world.
+
 from typing import Dict, Set
 from worlds.LauncherComponents import components, Component, launch_subprocess, Type, icon_paths
 from BaseClasses import Region, MultiWorld, Item, Location, LocationProgressType, ItemClassification
@@ -303,7 +305,7 @@ def setup_character_items(world: "PathOfExileWorld"):
                     "Scion"] if options.allow_unlock_of_other_characters.value else [starting_character]
     if world.goal_act >= 3:
         for char_class in char_classes:
-            sample_size = max(min(1 if char_class == "Scion" else 3, options.ascendancies_available_per_class.value), 0)
+            sample_size = max(min(2 if char_class == "Scion" else 3, options.ascendancies_available_per_class.value), 0)
             logger.debug(
                 f"{sample_size} Adding ascendancy items for {char_class}. "
                 f"There are {len(Items.get_ascendancy_class_items(char_class, table=world.items_to_place))} items available.")

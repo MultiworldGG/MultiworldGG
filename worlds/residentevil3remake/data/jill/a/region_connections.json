@@ -155,31 +155,31 @@
     },
 	{ 
         "from": "Overpass",
-        "to": "East Tunnel",
+        "to": "South East Tunnel",
         "condition": {}
     },
 	{ 
-        "from": "East Tunnel",
+        "from": "South East Tunnel",
         "to": "South Office",
         "condition": {}
     },
 	{ 
-        "from": "East Tunnel",
-        "to": "West Tunnel",
+        "from": "South East Tunnel",
+        "to": "Central Tunnel",
         "condition": {}
     },
 	{ 
-        "from": "West Tunnel",
-        "to": "Northwest Tunnel",
+        "from": "Central Tunnel",
+        "to": "North West Tunnel",
         "condition": {}
     },
 	{ 
-        "from": "West Tunnel",
+        "from": "Central Tunnel",
         "to": "Sewer Laboratory",
         "condition": {}
     },
 	{ 
-        "from": "East Tunnel",
+        "from": "South East Tunnel",
         "to": "Circular Stairs",
         "condition": {}
     },
@@ -226,6 +226,11 @@
     },
 	{ 
         "from": "Demolition Site 1st Floor",
+        "to": "Demolition Site 2nd Floor",
+        "condition": {}
+    },
+	{ 
+        "from": "Demolition Site 2nd Floor",
         "to": "Demolition Site Roof",
         "condition": {}
     },
@@ -239,41 +244,49 @@
         "to": "Outside Gun Shop",
         "condition": {}
     },
-	{ 
+    { 
         "from": "Outside Gun Shop",
         "to": "Gun Shop",
         "condition": {}
     },
-	{ 
+    { 
         "from": "Outside Gun Shop",
         "to": "Small Alley",
         "condition": {
-            "items": ["Lock Pick", "Bolt Cutters", "Fire Hose", "Battery Pack", "Kendo Gate Key"]
+        "items": ["Lock Pick", "Bolt Cutters", "Fire Hose", "Battery Pack", "Kendo Gate Key"]
         }
     },
-	{ 
+    { 
         "from": "Small Alley",
         "to": "House",
         "condition": {}
     },
-	{ 
+    { 
         "from": "House",
+        "to": "Adjoining Alley",
+        "condition": {}
+    },
+    { 
+        "from": "Adjoining Alley",
         "to": "Scaffolding",
         "condition": {}
     },
-	{ 
+    { 
         "from": "Scaffolding",
         "to": "Subway Station",
         "limitation": "ONE_SIDED_DOOR"
     },
-	{ 
+    { 
         "from": "Subway Station",
         "to": "West Courtyard",
         "condition": {
-            "items": ["Lock Pick", "Bolt Cutters", "Fire Hose", "Battery Pack", "Kendo Gate Key"]
+            "items": [
+            "Lock Pick", "Bolt Cutters", "Fire Hose", "Battery Pack", "Kendo Gate Key", "Red Jewel", "Blue Jewel", "Green Jewel"
+        ]
         }
     },
-	{ 
+
+    { 
         "from": "West Courtyard",
         "to": "Guard Room",
         "condition": {}
@@ -296,10 +309,17 @@
 	{ 
         "from": "Main Lobby",
         "to": "RPD Reception",
-        "condition": {}
+        "condition": {
+            "items": ["ID Card"]
+        }
     },
 	{ 
         "from": "RPD Reception",
+        "to": "North West Hallway",
+        "condition": {}
+    },
+	{ 
+        "from": "North West Hallway",
         "to": "Operations Room",
         "condition": {}
     },
@@ -327,28 +347,33 @@
     },
 	{ 
         "from": "West Hallway 1F",
-        "to": "Darkroom",
+        "to": "Dark Room",
         "condition": {}
     },
 	{ 
         "from": "West Hallway 1F",
+        "to": "West Hallway 2F",
+        "condition": {}
+    },
+    { 
+        "from": "West Hallway 2F",
         "to": "West Hallway 3F",
         "condition": {}
     },
-	{ 
-        "from": "West Hallway 1F",
+    { 
+        "from": "West Hallway 2F",
         "to": "Shower Room",
         "condition": {}
     },
     { 
         "from": "Shower Room",
-        "to": "West Hallway 2F",
+        "to": "STARS Hallway",
         "condition": {
             "items": ["Safety Deposit Key", "Battery"]
         }
     },
     { 
-        "from": "West Hallway 2F",
+        "from": "STARS Hallway",
         "to": "STARS Office",
         "condition": {}
     },
@@ -364,6 +389,11 @@
     },
 	{ 
         "from": "Dilapidated Shelter",
+        "to": "Shelter Tunnels",
+        "condition": {}
+    },
+	{ 
+        "from": "Shelter Tunnels",
         "to": "Promenade",
         "condition": {}
     },
@@ -374,11 +404,11 @@
     },
 	{ 
         "from": "Plaza",
-        "to": "Makeshift Sickroom",
+        "to": "Makeshift Sick Room",
         "condition": {}
     },
 	{ 
-        "from": "Makeshift Sickroom",
+        "from": "Makeshift Sick Room",
         "to": "Hospital Lobby",
         "condition": {}
     },
@@ -462,7 +492,7 @@
     },
 	{ 
         "from": "Nurse Station",
-        "to": "Sickroom",
+        "to": "Sick Room",
         "condition": {}
     },
 	{ 
@@ -472,6 +502,11 @@
     },
 	{ 
         "from": "Linen Room",
+        "to": "Observation Corridor",
+        "condition": {}
+    },
+	{ 
+        "from": "Observation Corridor",
         "to": "Treatment Room",
         "condition": {}
     },
@@ -489,9 +524,16 @@
     },
 	{ 
         "from": "Hospital Reception",
+        "to": "Hospital Defense",
+        "condition": {
+            "items": ["Vaccine Sample"]
+        }
+    },
+	{ 
+        "from": "Hospital Reception",
         "to": "Generator Room",
         "condition": {
-            "items": ["Vaccine Sample", "Lock Pick"]
+            "items": ["Detonator"]
         }
     },
 	{ 
@@ -565,11 +607,11 @@
     },
 	{ 
         "from": "Server Room 2F",
-        "to": "Server Room",
+        "to": "Server Room 1F",
         "condition": {}
     },
 	{ 
-        "from": "Server Room",
+        "from": "Server Room 1F",
         "to": "Bioweapon Incubation Room",
         "condition": {}
     },
@@ -597,16 +639,16 @@
     },
 	{ 
         "from": "Worker's Break Room",
-        "to": "Disposable Chamber Walkway",
+        "to": "Disposal Chamber Walkway",
         "condition": {}
     },
 	{ 
-        "from": "Disposable Chamber Walkway",
-        "to": "Disposable Chamber",
+        "from": "Disposal Chamber Walkway",
+        "to": "Disposal Chamber",
         "condition": {}
     },
 	{ 
-        "from": "Disposable Chamber",
+        "from": "Disposal Chamber",
         "to": "Staff Break Room",
         "condition": {}
     },

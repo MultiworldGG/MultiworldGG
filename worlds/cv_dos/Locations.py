@@ -1,5 +1,6 @@
 from typing import List, Optional, NamedTuple, TYPE_CHECKING
 from .static_location_data import location_ids
+from .Options import GateItems, SoulsanityLevel, SoulRandomizer
 
 if TYPE_CHECKING:
     from . import DoSWorld
@@ -11,7 +12,7 @@ class LocationData(NamedTuple):
     code: Optional[int]
 
 
-def get_locations(world: "DosWorld") -> List[LocationData]:
+def get_locations(world: "DoSWorld") -> List[LocationData]:
 
     location_table: List[LocationData] = [
         LocationData("Lost Village Upper", "Lost Village: Above Entrance", 0x01),
@@ -22,6 +23,7 @@ def get_locations(world: "DosWorld") -> List[LocationData]:
         LocationData("Lost Village Upper", "Lost Village: Above Drawbridge", 0x06),
         LocationData("Lost Village Upper", "Lost Village: In Moat", 0x07),
         LocationData("Lost Village Upper", "Flying Armor Soul", 0x08),
+        LocationData("Lost Village Upper", "Lost Village: Boss Room", None),
         LocationData("Lost Village Courtyard", "Lost Village: Above Guest House Entrance", 0x15),
 
         LocationData("Lost Village Lower", "Lost Village: Flying Armor Indoor Room", 0x09),
@@ -46,6 +48,7 @@ def get_locations(world: "DosWorld") -> List[LocationData]:
         LocationData("Wizardry Lab West Gate", "Wizardry Lab: Behind West Gate", 0x1B),
         LocationData("Wizardry Lab Main", "Wizardry Lab: Ceiling Secret Room", 0x1C),
         LocationData("Wizardry Lab Main", "Balore Soul", 0x1D),
+        LocationData("Wizardry Lab Main", "Wizardry Lab: Boss Room", None),
         LocationData("Wizardry Lab East Gate", "Wizardry Lab: East Gate", 0x1E),
         LocationData("Wizardry Lab Sunken", "Wizardry Lab: Money Gate", 0x1F),
         LocationData("Wizardry Lab Sunken", "Wizardry Lab: Underwater Left", 0x20),
@@ -61,7 +64,7 @@ def get_locations(world: "DosWorld") -> List[LocationData]:
         LocationData("Garden of Madness Lower", "Garden of Madness: Money Gate", 0x29),
         LocationData("Garden of Madness Water Blocked", "Garden of Madness: Underground Room", 0x2A),
         LocationData("Garden of Madness East Gate", "Garden of Madness: East Alcove", 0x2B),
-        LocationData("Garden of Madness Lower", "Garden of Madness: Central Chamber", None),
+        LocationData("Garden of Madness Post-Boss", "Garden of Madness: Boss Room", None),
 
         LocationData("Demon Guest House Main", "Demon Guest House: Secret Room", 0x2C),
         LocationData("Demon Guest House Main", "Demon Guest House: Antechamber", 0x2D),
@@ -80,6 +83,7 @@ def get_locations(world: "DosWorld") -> List[LocationData]:
         LocationData("Demon Guest House West Wing", "Demon Guest House: West Wing Left", 0x38),
         LocationData("Demon Guest House West Wing", "Demon Guest House: West Wing Right", 0x39),
         LocationData("Demon Guest House West Wing", "Puppet Master Soul", 0x3A),
+        LocationData("Demon Guest House West Wing", "Demon Guest House: Boss Room", None),
         LocationData("Demon Guest House West Wing", "Demon Guest House: Ice Block Room Left", 0x3B),
         LocationData("Demon Guest House West Wing", "Demon Guest House: Ice Block Room Right", 0x3C),
 
@@ -88,6 +92,7 @@ def get_locations(world: "DosWorld") -> List[LocationData]:
         LocationData("Demon Guest House Main", "Demon Guest House: Central Main Chamber Top Room", 0x3F),
 
         LocationData("Demon Guest House Upper", "Paranoia Soul", 0x40),
+        LocationData("Demon Guest House Upper", "Upper Guest House: Boss Room", None),
         LocationData("Demon Guest House Upper", "Demon Guest House: Beyond Paranoia", 0x41),
         LocationData("Demon Guest House Upper", "Demon Guest House: Paranoia Mirror", 0x42),
 
@@ -104,6 +109,8 @@ def get_locations(world: "DosWorld") -> List[LocationData]:
         LocationData("Dark Chapel", "Dark Chapel: Bell Room Right", 0x4D),
         LocationData("Dark Chapel", "Dark Chapel: Post-Dimitrii Room", 0x60),
         LocationData("Dark Chapel", "Malphas Soul", 0x61),
+        LocationData("Dark Chapel", "Dark Chapel: Inner Chapel Boss Room", None),
+        LocationData("Dark Chapel", "Dark Chapel: Boss Room", None),
 
         LocationData("Dark Chapel Big Room", "Dark Chapel: Big Room Top Right", 0x4E),
         LocationData("Dark Chapel Big Room", "Dark Chapel: Big Room Central", 0x4F),
@@ -112,10 +119,11 @@ def get_locations(world: "DosWorld") -> List[LocationData]:
         LocationData("Condemned Tower Bottom", "Condemned Tower: 1F West", 0x51),
         LocationData("Condemned Tower Bottom", "Condemned Tower: 1F East", 0x52),
         LocationData("Condemned Tower Bottom", "Condemned Tower: 2F East", 0x53),
-        LocationData("Condemned Tower Top", "Condemned Tower: 5F West", 0x54),
-        LocationData("Condemned Tower Top", "Condemned Tower: 7F West", 0x55),
+        LocationData("Condemned Tower Main", "Condemned Tower: 5F West", 0x54),
+        LocationData("Condemned Tower Main", "Condemned Tower: 7F West", 0x55),
         LocationData("Condemned Tower Top", "Condemned Tower: Top of the Tower", 0x56),
-        LocationData("Condemned Tower Top", "Gergoth Soul", 0x57),
+        LocationData("Condemned Tower Main", "Gergoth Soul", 0x57),
+        LocationData("Condemned Tower Main", "Condemned Tower: Boss Room", None),
 
         LocationData("Cursed Clock Tower Entrance", "Cursed Clock Tower: Money Gate", 0x58),
         LocationData("Cursed Clock Tower Entrance", "Cursed Clock Tower: Lower Corner Room", 0x59),
@@ -125,15 +133,17 @@ def get_locations(world: "DosWorld") -> List[LocationData]:
         LocationData("Cursed Clock Tower Central", "Cursed Clock Tower: East Gear Room", 0x5D),
         LocationData("Cursed Clock Tower Central", "Cursed Clock Tower: Spike Room Secret", 0x5E),
         LocationData("Cursed Clock Tower Boss Area", "Zephyr Soul", 0x5F),
+        LocationData("Cursed Clock Tower Boss Area", "Cursed Clock Tower: Boss Room", None),
 
         LocationData("Subterranean Hell Top Entrance", "Rahab Soul", 0x62),
+        LocationData("Subterranean Hell Top Entrance", "Subterranean Hell: Boss Room", None),
         LocationData("Subterranean Hell East", "Subterranean Hell: Giant Underwater Room Center Left", 0x63),
         LocationData("Subterranean Hell East", "Subterranean Hell: Giant Underwater Room Center Right", 0x64),
         LocationData("Subterranean Hell East", "Subterranean Hell: Giant Underwater Room Top Left", 0x65),
         LocationData("Subterranean Hell East", "Subterranean Hell: Giant Underwater Room Bottom Right", 0x66),
         LocationData("Subterranean Hell Central Exit", "Subterranean Hell: Near Save Room", 0x67),
         LocationData("Subterranean Hell Central Lower", "Subterranean Hell: Central Lower Room", 0x68),
-        LocationData("Subterranean Hell Central Lower", "Subterranean Hell: Central Upper Room", 0x69),
+        LocationData("Subterranean Hell Central Upper", "Subterranean Hell: Central Upper Room", 0x69),
         LocationData("Subterranean Hell Shaft Middle", "Subterranean Hell: Behind Waterfall", 0x6A),
         LocationData("Subterranean Hell Shaft Bottom Stairs", "Subterranean Hell: Waterfall Room Lower", 0x6B),
         LocationData("Subterranean Hell Shaft Middle", "Subterranean Hell: Waterfall Room Middle", 0x6C),
@@ -141,6 +151,7 @@ def get_locations(world: "DosWorld") -> List[LocationData]:
 
         LocationData("Silenced Ruins", "Silenced Ruins: Ice Block Room", 0x6E),
         LocationData("Silenced Ruins", "Bat Company Soul", 0x6F),
+        LocationData("Silenced Ruins", "Silenced Ruins: Boss Room", None),
         LocationData("Silenced Ruins Back Exit", "Silenced Ruins: Mirror Room", 0x70),
         LocationData("Silenced Ruins Back Exit", "Silenced Ruins: Mirror World", 0x71),
 
@@ -153,23 +164,40 @@ def get_locations(world: "DosWorld") -> List[LocationData]:
         LocationData("The Pinnacle Throne Room", "The Pinnacle: Before Throne Room Secret Right", 0x77),
     ]
 
-    if world.options.goal:
+    if world.options.goal:  # Add the checks in the Throne Room and the Abyss
         location_table += [
             LocationData("The Pinnacle Throne Room", "The Pinnacle: Beyond Throne Room", 0x78),
             LocationData("The Pinnacle Throne Room", "Aguni Soul", 0x79),
-            LocationData("Mine of Judgment", "Death Soul", 0x7A),
-            LocationData("The Abyss", "The Abyss: Sand Area", 0x7B),
-            LocationData("The Abyss", "The Abyss: Ice Area", 0x7C),
-            LocationData("The Abyss Beyond Abaddon", "Abaddon Soul", 0x7D),
             LocationData("The Pinnacle Throne Room", "The Pinnacle: Throne Room", None),
-            LocationData("The Abyss Beyond Abaddon", "Abyss Center", None),
+            LocationData("The Abyss Beyond Abaddon", "Abyss Center", None)
         ]
     else:
         location_table += [
             LocationData("The Pinnacle Throne Room", "Abyss Center", None),
         ]
 
-    if world.options.soul_randomizer == 2:
+    if world.garden_chamber_available:
+        location_table += [
+            LocationData("Garden of Madness Lower", "Garden of Madness: Central Chamber", None),
+        ]
+
+    if world.mine_status != "Disabled":  # Add the Mine/Abyss checks
+        location_table += [
+            LocationData("Mine of Judgment", "Death Soul", 0x7A),
+            LocationData("Mine of Judgment", "Mine of Judgment: Boss Room", None),
+            LocationData("The Abyss", "The Abyss: Sand Area", 0x7B),
+            LocationData("The Abyss", "The Abyss: Ice Area", 0x7C),
+            LocationData("The Abyss Beyond Abaddon", "Abaddon Soul", 0x7D),
+            LocationData("The Abyss Beyond Abaddon", "The Abyss: Boss Room", None)]
+
+    if world.options.gate_items == GateItems.option_buttonsanity:
+        location_table += [
+        LocationData("Wizardry Lab West Gate", "Wizardry Lab: West Gate Button", 0xE3),
+        LocationData("Wizardry Lab East Gate", "Wizardry Lab: East Gate Button", 0xE4),
+        LocationData("Garden of Madness East Gate", "Garden of Madness: Gate Button", 0xE5),
+        LocationData("Silenced Ruins Back Exit", "Subterranean Hell: Gate Button", 0xE6)]
+
+    if world.options.soul_randomizer == SoulRandomizer.option_soulsanity:
         for soul in world.common_souls:
             location_table.append(
              LocationData(soul, soul, location_ids[soul]))
@@ -181,7 +209,7 @@ def get_locations(world: "DosWorld") -> List[LocationData]:
         else:
             location_table.append(LocationData("Imp Soul", "Imp Soul", None))
 
-        if world.options.soulsanity_level == 2:
+        if world.options.soulsanity_level == SoulsanityLevel.option_rare:
             for soul in world.rare_souls:
                 location_table.append(
                  LocationData(soul, soul, location_ids[soul]))

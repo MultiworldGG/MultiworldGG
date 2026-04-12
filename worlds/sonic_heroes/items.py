@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 from BaseClasses import Item, ItemClassification
 from .constants import *
-from .options import GoalUnlockCondition, SonicStoryStartingCharacter, AbilityUnlocks
+from .options import *
 
 
 class SonicHeroesItem(Item):
@@ -19,13 +19,13 @@ def create_item(world: SonicHeroesWorld, name: str, classification: ItemClassifi
         world.multiworld.itempool.append(SonicHeroesItem(name, classification, world.item_name_to_id[name], world.player))
 
 def create_filler_items(world: SonicHeroesWorld, amount: int):
-    filler_list = world.multiworld.random.choices(list(filler_items_to_weights.keys()), weights=list(filler_items_to_weights.values()), k=amount)
+    filler_list = world.random.choices(list(filler_items_to_weights.keys()), weights=list(filler_items_to_weights.values()), k=amount)
 
     for name in filler_list:
         create_item(world, name, ItemClassification.filler)
 
 def create_trap_items(world: SonicHeroesWorld, amount: int):
-    trap_list = world.multiworld.random.choices(list(trap_items_to_weights.keys()), weights=list(trap_items_to_weights.values()), k=amount)
+    trap_list = world.random.choices(list(trap_items_to_weights.keys()), weights=list(trap_items_to_weights.values()), k=amount)
 
     for name in trap_list:
         create_item(world, name, ItemClassification.trap)
@@ -34,10 +34,18 @@ def create_trap_items(world: SonicHeroesWorld, amount: int):
 def create_items(world: SonicHeroesWorld):
     total_location_count = len(world.multiworld.get_unfilled_locations(world.player))
 
+    trap_items_to_weights[STEALTHTRAP] = world.options.stealth_trap_weight.value
+    trap_items_to_weights[FREEZETRAP] = world.options.freeze_trap_weight.value
+    trap_items_to_weights[NOSWAPTRAP] = world.options.no_swap_trap_weight.value
+    trap_items_to_weights[RINGTRAP] = world.options.ring_trap_weight.value
+    trap_items_to_weights[CHARMYTRAP] = world.options.charmy_trap_weight.value
+
+
+
     #create_item(world, EMBLEM, ItemClassification.progression)
     #total_location_count -= 1
 
-    if world.options.goal_unlock_condition != GoalUnlockCondition.option_level_completions:
+    if EMERALDS in world.options.goal_unlock_conditions:
         create_item(world, GREENCHAOSEMERALD, ItemClassification.progression)
         create_item(world, BLUECHAOSEMERALD, ItemClassification.progression)
         create_item(world, YELLOWCHAOSEMERALD, ItemClassification.progression)
@@ -47,32 +55,12 @@ def create_items(world: SonicHeroesWorld):
         create_item(world, REDCHAOSEMERALD, ItemClassification.progression)
         total_location_count -= 7
 
-    if world.options.sonic_story_starting_character != SonicStoryStartingCharacter.option_sonic:
-        create_item(world, get_playable_char_item_name(CHARSONIC), ItemClassification.progression)
-        total_location_count -= 1
 
-    if world.options.sonic_story_starting_character != SonicStoryStartingCharacter.option_tails:
-        create_item(world, get_playable_char_item_name(CHARTAILS), ItemClassification.progression)
-        total_location_count -= 1
+    if world.options.unlock_type == UnlockType.option_legacy_level_gates:
+        total_location_count = create_legacy_gate_items(world, total_location_count)
 
-    if world.options.sonic_story_starting_character != SonicStoryStartingCharacter.option_knuckles:
-        create_item(world, get_playable_char_item_name(CHARKNUCKLES), ItemClassification.progression)
-        total_location_count -= 1
-
-
-    if world.options.ability_unlocks == AbilityUnlocks.option_all_regions_separate:
-        for region in world.regular_regions:
-            for team in world.enabled_teams:
-                for ability in get_all_abilities_for_team(team):
-                    create_item(world, get_ability_item_name_without_world(team, region, ability), ItemClassification.progression)
-                    total_location_count -= 1
-
-
-    elif world.options.ability_unlocks == AbilityUnlocks.option_entire_story:
-        for team in world.enabled_teams:
-            for ability in get_all_abilities_for_team(team):
-                create_item(world, get_ability_item_name_without_world(team, ALLREGIONS, ability), ItemClassification.progression)
-                total_location_count -= 1
+    else:
+        total_location_count = create_ability_character_items(world, total_location_count)
 
 
 
@@ -91,6 +79,59 @@ def create_items(world: SonicHeroesWorld):
 
 
 
+def create_legacy_gate_items(world: SonicHeroesWorld, loc_count: int) -> int:
+
+    create_item(world, EMBLEM, ItemClassification.progression, world.emblems_to_create)
+    loc_count -= world.emblems_to_create
+
+    return loc_count
+
+
+def create_ability_character_items(world: SonicHeroesWorld, loc_count: int) -> int:
+    if world.options.sonic_story_starting_character != SonicStoryStartingCharacter.option_sonic:
+        create_item(world, get_playable_char_item_name(CHARSONIC), ItemClassification.progression)
+        loc_count -= 1
+
+    if world.options.sonic_story_starting_character != SonicStoryStartingCharacter.option_knuckles:
+        create_item(world, get_playable_char_item_name(CHARKNUCKLES), ItemClassification.progression)
+        loc_count -= 1
+
+    if world.options.sonic_story_starting_character != SonicStoryStartingCharacter.option_tails:
+        create_item(world, get_playable_char_item_name(CHARTAILS), ItemClassification.progression)
+        loc_count -= 1
+
+
+    if world.options.ability_unlocks == AbilityUnlocks.option_all_regions_separate:
+        for region in world.regular_regions:
+            for team in world.enabled_teams:
+                for ability in get_all_abilities_for_team(team):
+                    create_item(world, get_ability_item_name_without_world(team, region, ability), ItemClassification.progression)
+                    loc_count -= 1
+
+
+    elif world.options.ability_unlocks == AbilityUnlocks.option_entire_story:
+        for team in world.enabled_teams:
+            for ability in get_all_abilities_for_team(team):
+                create_item(world, get_ability_item_name_without_world(team, ALLREGIONS, ability), ItemClassification.progression)
+                loc_count -= 1
+
+
+    return loc_count
+
+def change_filler_weights_for_legacy_level_gates(world: SonicHeroesWorld):
+    for itemData in itemList:
+        if itemData.name == RINGS5:
+            itemData.fillerweight = 15
+        if itemData.name == RINGS10:
+            itemData.fillerweight = 10
+        if itemData.name == RINGS20:
+            itemData.fillerweight = 5
+        if itemData.name == SPEEDLEVELUP or itemData.name == POWERLEVELUP or itemData.name == FLYINGLEVELUP:
+            itemData.fillerweight = 25
+        if itemData.name == TEAMLEVELUP:
+            itemData.fillerweight = 15
+
+
 itemList: list[ItemData] = \
 [
     ItemData(0x93930000, EMBLEM, ItemClassification.progression),
@@ -103,17 +144,17 @@ itemList: list[ItemData] = \
     ItemData(0x93930007, REDCHAOSEMERALD, ItemClassification.progression),
 
     ItemData(0x93930008, get_playable_char_item_name(CHARSONIC), ItemClassification.progression),
-    ItemData(0x93930009, get_playable_char_item_name(CHARTAILS), ItemClassification.progression),
-    ItemData(0x9393000A, get_playable_char_item_name(CHARKNUCKLES), ItemClassification.progression),
+    ItemData(0x93930009, get_playable_char_item_name(CHARKNUCKLES), ItemClassification.progression),
+    ItemData(0x9393000A, get_playable_char_item_name(CHARTAILS), ItemClassification.progression),
     ItemData(0x9393000B, get_playable_char_item_name(CHARSHADOW), ItemClassification.progression),
-    ItemData(0x9393000C, get_playable_char_item_name(CHARROUGE), ItemClassification.progression),
-    ItemData(0x9393000D, get_playable_char_item_name(CHAROMEGA), ItemClassification.progression),
+    ItemData(0x9393000C, get_playable_char_item_name(CHAROMEGA), ItemClassification.progression),
+    ItemData(0x9393000D, get_playable_char_item_name(CHARROUGE), ItemClassification.progression),
     ItemData(0x9393000E, get_playable_char_item_name(CHARAMY), ItemClassification.progression),
-    ItemData(0x9393000F, get_playable_char_item_name(CHARCREAM), ItemClassification.progression),
-    ItemData(0x93930010, get_playable_char_item_name(CHARBIG), ItemClassification.progression),
+    ItemData(0x9393000F, get_playable_char_item_name(CHARBIG), ItemClassification.progression),
+    ItemData(0x93930010, get_playable_char_item_name(CHARCREAM), ItemClassification.progression),
     ItemData(0x93930011, get_playable_char_item_name(CHARESPIO), ItemClassification.progression),
-    ItemData(0x93930012, get_playable_char_item_name(CHARCHARMY), ItemClassification.progression),
-    ItemData(0x93930013, get_playable_char_item_name(CHARVECTOR), ItemClassification.progression),
+    ItemData(0x93930012, get_playable_char_item_name(CHARVECTOR), ItemClassification.progression),
+    ItemData(0x93930013, get_playable_char_item_name(CHARCHARMY), ItemClassification.progression),
     ItemData(0x93930014, get_playable_char_item_name(CHARSUPERHARDSONIC), ItemClassification.progression),
     ItemData(0x93930015, get_playable_char_item_name(CHARSUPERHARDTAILS), ItemClassification.progression),
     ItemData(0x93930016, get_playable_char_item_name(CHARSUPERHARDKNUCKLES), ItemClassification.progression),
@@ -144,7 +185,7 @@ itemList: list[ItemData] = \
     #go to 0x1C00-ish
 
 
-    ItemData(0x93931000, get_stage_obj_item_name_without_world(ANYTEAM, ALLREGIONS, ALLSTAGEOBJS), ItemClassification.progression),
+    #ItemData(0x93931000, get_stage_obj_item_name_without_world(ANYTEAM, ALLREGIONS, ALLSTAGEOBJS), ItemClassification.progression),
 
 
 
@@ -160,10 +201,10 @@ itemList: list[ItemData] = \
     ItemData(0x93938003, RINGS20, ItemClassification.filler),
     ItemData(0x93938004, SHIELD, ItemClassification.filler),
     ItemData(0x93938005, INVINCIBILITY, ItemClassification.filler, fillerweight=0),
-    #ItemData(0x93938006, SPEEDLEVELUP, ItemClassification.filler),
-    #ItemData(0x93938007, FLYINGLEVELUP, ItemClassification.filler),
-    #ItemData(0x93938008, POWERLEVELUP, ItemClassification.filler),
-    #ItemData(0x93938009, TEAMLEVELUP, ItemClassification.filler, fillerweight=25),
+    ItemData(0x93938006, SPEEDLEVELUP, ItemClassification.filler, fillerweight=0),
+    ItemData(0x93938007, POWERLEVELUP, ItemClassification.filler, fillerweight=0),
+    ItemData(0x93938008, FLYINGLEVELUP, ItemClassification.filler, fillerweight=0),
+    ItemData(0x93938009, TEAMLEVELUP, ItemClassification.filler, fillerweight=0),
     ItemData(0x9393800A, TEAMBLASTREFILL, ItemClassification.filler),
     ItemData(0x93938100, STEALTHTRAP, ItemClassification.trap),
     ItemData(0x93938101, FREEZETRAP, ItemClassification.trap),
@@ -224,7 +265,7 @@ for item_team in item_teams:
         item_id += (16 - hex_mod)
 
 
-"""
+""""""
 item_id = 0x93930FFF
 
 for item_team in item_teams:
@@ -247,4 +288,4 @@ for item_team in item_teams:
 
         hex_mod = item_id % 256
         item_id += (256 - hex_mod)
-"""
+""""""

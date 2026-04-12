@@ -3,13 +3,13 @@ import pkgutil
 from typing import Any, TextIO
 
 from BaseClasses import Tutorial
-from Options import OptionError
+from Options import OptionError, OptionGroup
 from worlds.AutoWorld import WebWorld, World
 from .coordinates import coordinate_description, generate_random_coordinates
 from .db_layout import generate_random_db_layout
 from .items import OuterWildsItem, all_non_event_items_table, item_name_groups, create_item, create_items
 from .locations_and_regions import all_non_event_locations_table, location_name_groups, create_regions
-from .options import EarlyKeyItem, OuterWildsGameOptions, RandomizeDarkBrambleLayout, Spawn, Goal, EnableEchoesOfTheEyeDLC
+from .options import *
 from .orbits import generate_random_orbits, generate_random_rotations
 from .warp_platforms import generate_random_warp_platform_mapping
 
@@ -25,6 +25,42 @@ class OuterWildsWebWorld(WebWorld):
             link="guide/en",
             authors=["Ixrec"]
         )
+    ]
+    option_groups = [
+        OptionGroup("Goal", [
+            Goal,
+            RequiredFriends,
+        ]),
+        OptionGroup("Spawn & General Progression", [
+            Spawn,
+            EarlyKeyItem,
+            RandomizeWarpPlatforms,
+            SplitTranslator,
+            Logsanity,
+            ShuffleSpacesuit,
+        ]),
+        OptionGroup("Content", [
+            EnableEchoesOfTheEyeDLC,
+            DLCOnly,
+            EnableAstralCodecMod,
+            EnableEchoHikeMod,
+            EnableForgottenCastawaysMod,
+            EnableFretsQuestMod,
+            EnableHearthsNeighborMod,
+            EnableHearthsNeighbor2MagistariumMod,
+            EnableTheOutsiderMod,
+        ]),
+        OptionGroup("Additional Non-Logical Randomizations", [
+            RandomizeCoordinates,
+            RandomizeOrbits,
+            RandomizeRotations,
+            RandomizeDarkBrambleLayout,
+        ]),
+        OptionGroup("(Non-Progression) Item Options", [
+            TrapChance,
+            TrapTypeWeights,
+            UpgradeCounts,
+        ]),
     ]
 
 
@@ -44,12 +80,7 @@ class OuterWildsWorld(World):
     rotation_axes = 'vanilla'
     warps = 'vanilla'
 
-    # this is how we tell the Universal Tracker we want to use re_gen_passthrough
-    @staticmethod
-    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:
-        return slot_data
-
-    # and this is how we tell Universal Tracker we don't need the yaml
+    # this is how we tell Universal Tracker we don't need the yaml
     ut_can_gen_without_yaml = True
 
     def generate_early(self) -> None:
@@ -58,6 +89,13 @@ class OuterWildsWorld(World):
             self.options.enable_eote_dlc = EnableEchoesOfTheEyeDLC(1)
             self.options.spawn = Spawn(Spawn.option_stranger)
             self.options.goal = Goal(Goal.option_echoes_of_the_eye)
+            self.options.enable_ac_mod = EnableAstralCodecMod(0)
+            self.options.enable_fq_mod = EnableFretsQuestMod(0)
+            self.options.enable_hn1_mod = EnableHearthsNeighborMod(0)
+            self.options.enable_hn2_mod = EnableHearthsNeighbor2MagistariumMod(0)
+            self.options.enable_outsider_mod = EnableTheOutsiderMod(0)
+            self.options.enable_fc_mod = EnableForgottenCastawaysMod(0)
+            self.options.enable_eh_mod = EnableEchoHikeMod(0)
 
         if self.options.spawn == Spawn.option_random_non_vanilla:
             max_spawn = Spawn.option_stranger if self.options.enable_eote_dlc else Spawn.option_giants_deep
@@ -75,25 +113,46 @@ class OuterWildsWorld(World):
             ]:
                 raise OptionError('Incompatible options: goal %s requires enable_eote_dlc to be true', self.options.goal)
 
+        if self.options.goal == Goal.option_song_of_the_universe:
+            max_friends = sum([
+                self.options.enable_eote_dlc,
+                self.options.enable_hn1_mod,
+                self.options.enable_outsider_mod,
+                self.options.enable_ac_mod,
+                self.options.enable_hn2_mod,
+                self.options.enable_fq_mod,
+                self.options.enable_fc_mod,
+                self.options.enable_eh_mod,
+            ], 1) # Solanum always counts
+            if self.options.required_friends > max_friends:
+                raise OptionError(f'Incompatible options: required_friends is ({self.options.required_friends}), but the other options only make {max_friends} available')
+
         if self.options.shuffle_spacesuit and self.options.spawn != Spawn.option_vanilla:
             raise OptionError('Incompatible options: shuffle_spacesuit is true and spawn is non-vanilla (%s)', self.options.spawn)
+
+        if self.options.spawn == Spawn.option_deep_bramble and not self.options.enable_fc_mod:
+            raise OptionError('Incompatible options: deep bramble spawn requires enable_fc_mod to be true')
 
         # implement .yaml-less Universal Tracker support
         if hasattr(self.multiworld, "generation_is_fake"):
             if hasattr(self.multiworld, "re_gen_passthrough"):
                 if "Outer Wilds" in self.multiworld.re_gen_passthrough:
                     slot_data = self.multiworld.re_gen_passthrough["Outer Wilds"]
-                    self.warps = slot_data["warps"]
-                    self.options.spawn = slot_data["spawn"]
-                    self.options.logsanity.value = slot_data["logsanity"]
-                    self.options.enable_eote_dlc.value = slot_data["enable_eote_dlc"]
-                    self.options.dlc_only.value = slot_data["dlc_only"]
-                    self.options.enable_hn1_mod.value = slot_data["enable_hn1_mod"]
-                    self.options.enable_hn2_mod.value = slot_data["enable_hn2_mod"]
-                    self.options.enable_outsider_mod.value = slot_data["enable_outsider_mod"]
-                    self.options.enable_ac_mod.value = slot_data["enable_ac_mod"]
-                    self.options.enable_fq_mod.value = slot_data["enable_fq_mod"]
-                    self.options.split_translator.value = slot_data["split_translator"]
+                    self.warps = slot_data["warps"] # is always set
+                    self.options.goal.value = slot_data.get("goal", 0)
+                    self.options.spawn.value = slot_data.get("spawn", 0)
+                    self.options.logsanity.value = slot_data.get("logsanity", 0)
+                    self.options.enable_eote_dlc.value = slot_data.get("enable_eote_dlc", 0)
+                    self.options.dlc_only.value = slot_data.get("dlc_only", 0)
+                    self.options.enable_hn1_mod.value = slot_data.get("enable_hn1_mod", 0)
+                    self.options.enable_hn2_mod.value = slot_data.get("enable_hn2_mod", 0)
+                    self.options.enable_outsider_mod.value = slot_data.get("enable_outsider_mod", 0)
+                    self.options.enable_ac_mod.value = slot_data.get("enable_ac_mod", 0)
+                    self.options.enable_fq_mod.value = slot_data.get("enable_fq_mod", 0)
+                    self.options.enable_fc_mod.value = slot_data.get("enable_fc_mod", 0)
+                    self.options.enable_eh_mod.value = slot_data.get("enable_eh_mod", 0)
+                    self.options.split_translator.value = slot_data.get("split_translator", 0)
+                    self.options.shuffle_spacesuit.value = slot_data.get("shuffle_spacesuit", 0)
             return
 
         # generate game-specific randomizations separate from AP items/locations
@@ -121,12 +180,16 @@ class OuterWildsWorld(World):
                     relevant_translator = "Translator (Brittle Hollow)"
                 if self.options.spawn == Spawn.option_giants_deep:
                     relevant_translator = "Translator (Giant's Deep)"
+                if self.options.spawn == Spawn.option_deep_bramble:
+                    relevant_translator = "Translator (Deep Bramble)"
                 # ignore stranger spawn since it won't offer a Translator at all
 
             key_item = None
             if self.options.early_key_item == EarlyKeyItem.option_any:
                 if self.options.spawn == Spawn.option_stranger:
                     key_item = self.random.choice(["Launch Codes", "Stranger Light Modulator"])
+                if self.options.spawn == Spawn.option_deep_bramble:
+                    key_item = self.random.choice([relevant_translator, "Signalscope", "Launch Codes"])
                 else:
                     key_item = self.random.choice([relevant_translator, "Nomai Warp Codes", "Launch Codes"])
             elif self.options.early_key_item == EarlyKeyItem.option_translator:
@@ -182,6 +245,7 @@ class OuterWildsWorld(World):
             'song_of_six':          "Victory - Song of Six",
             'song_of_seven':        "Victory - Song of Seven",
             'echoes_of_the_eye':    "Victory - Echoes of the Eye",
+            'song_of_the_universe': "Victory - Song of the Universe",
         }
 
         goal_item = option_key_to_item_name[self.options.goal.current_key]
@@ -190,11 +254,12 @@ class OuterWildsWorld(World):
     def fill_slot_data(self):
         slot_data = self.options.as_dict(
             "death_link",                   # a client/mod feature
-            "goal", "spawn",                             # affects tons of stuff, but also a client/mod faeture
+            "goal", "required_friends", "spawn",         # affects tons of stuff, but also a client/mod faeture
             "logsanity", "enable_eote_dlc", "dlc_only",  # changes AP locations, needed by in-game tracker
             "enable_hn1_mod", "enable_hn2_mod",
-            "enable_outsider_mod", "enable_ac_mod", "enable_fq_mod",
-            "split_translator"                           # changes AP items, and how client/mod implements Translator
+            "enable_outsider_mod", "enable_ac_mod", "enable_fq_mod", "enable_fc_mod", "enable_eh_mod",
+            "split_translator",                          # changes AP items, and how client/mod implements Translator
+            "shuffle_spacesuit",
         )
         # more client/mod features, these are only in the apworld because we want them fixed per-slot/at gen time
         slot_data["eotu_coordinates"] = self.eotu_coordinates

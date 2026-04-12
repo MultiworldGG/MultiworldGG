@@ -67,9 +67,9 @@ def has_party_ticket(state: CollectionState, player, world):
         return state.can_reach_region("Home", player)
 
 
-def can_restore_garden(state: CollectionState, player, world):
+def has_enough_seeds(state: CollectionState, player, world, count: int):
     if world.options.goal_completion.value == 3:
-        return state.has("Gary's Garden Seed", player, 10)
+        return state.has("Gary's Garden Seed", player, count)
     else:
         return True
 
@@ -306,7 +306,7 @@ def get_location_rules(player, world):
         "Coin Collector!":
             lambda state: has_enough_coins(state, player, world.custom_goal_required),
         "Restored Gary's Garden!":
-            lambda state: can_restore_garden(state, player, world),
+            lambda state: has_enough_seeds(state, player, world, 10),
         "Helped Everyone!":
             lambda state: has_helped_everyone(state, player, world),
 
@@ -339,7 +339,8 @@ def get_location_rules(player, world):
                           and state.has("Public Pool Ticket", player)
                           and state.has("Bathhouse Ticket", player)
                           and state.has("Tadpole HQ Ticket", player)
-                          and has_enough_coins(state, player, world.kiosk_cost["Elevator"]),
+                          and has_enough_coins(state, player, world.kiosk_cost["Elevator"])
+                          and (options.soda_cans.value != 1 or state.has("Soda Repair", player)),
         "Achievement - Hopeless Romantic":
             lambda state: state.has("Hairball City Ticket", player)
                           and state.has("Turbine Town Ticket", player)
@@ -1101,7 +1102,8 @@ def get_location_rules(player, world):
         "Salmon Creek Forest - Inside Boxes (Waterfall Cave)":
             lambda state: (options.bonk_permit.value != 1 or state.has("Safety Helmet", player)),
         "Public Pool - Breakable Boxes Near Frogtective":
-            lambda state: (options.bonk_permit.value != 1 or state.has("Safety Helmet", player)),
+            lambda state: (options.bonk_permit.value != 1 or state.has("Safety Helmet", player))
+                          and (options.swimming.value != 1 or state.has("Swim Course", player)),
         "Public Pool - Above Small Island":
             lambda state: (options.bonk_permit.value != 1 or state.has("Safety Helmet", player))
                           and (options.ac_repair.value != 1 or state.has("AC Repair", player)),
@@ -1742,7 +1744,8 @@ def get_location_rules(player, world):
         "Chatsanity - Biki":
             lambda state: state.has("Bathhouse Ticket", player),
         "Chatsanity - Bird":
-            lambda state: has_access_garden(state, player, world),
+            lambda state: has_access_garden(state, player, world)
+                          and has_enough_seeds(state, player, world, 4),
         "Chatsanity - Blessley":
             lambda state: state.has("Party Invitation", player)
                           or state.has("Hairball City Ticket", player)
@@ -1820,15 +1823,18 @@ def get_location_rules(player, world):
         "Chatsanity - Coffee Frog":
             lambda state: state.has("Tadpole HQ Ticket", player),
         "Chatsanity - Conspiracy Frog":
-            lambda state: has_access_garden(state, player, world),
+            lambda state: has_access_garden(state, player, world)
+                          and has_enough_seeds(state, player, world, 2),
         "Chatsanity - Culley":
             lambda state: state.has("Public Pool Ticket", player),
         "Chatsanity - Culture Gull":
             lambda state: state.has("Turbine Town Ticket", player),
         "Chatsanity - Dance Frog":
-            lambda state: has_access_garden(state, player, world),
+            lambda state: has_access_garden(state, player, world)
+                          and has_enough_seeds(state, player, world, 8),
         "Chatsanity - Danger Frog":
-            lambda state: has_access_garden(state, player, world),
+            lambda state: has_access_garden(state, player, world)
+                          and has_enough_seeds(state, player, world, 5),
         "Chatsanity - David D. Carota":
             lambda state: state.has("Public Pool Ticket", player),
         "Chatsanity - Dirk":
@@ -1838,7 +1844,9 @@ def get_location_rules(player, world):
         "Chatsanity - Doe of Darkness":
             lambda state: state.has("Salmon Creek Forest Ticket", player),
         "Chatsanity - Dream Frog":
-            lambda state: has_access_garden(state, player, world),
+            lambda state: has_access_garden(state, player, world)
+                          and has_enough_seeds(state, player, world, 3)
+                          and (options.ac_repair.value != 1 or state.has("AC Repair", player)),
         "Chatsanity - Dustan":
             lambda state: state.has("Party Invitation", player)
                           or has_access_to(state, player, "Dustan - Meeting First Time"),
@@ -1847,7 +1855,8 @@ def get_location_rules(player, world):
         "Chatsanity - Fear Deer":
             lambda state: state.has("Salmon Creek Forest Ticket", player),
         "Chatsanity - Fear Frog":
-            lambda state: has_access_garden(state, player, world),
+            lambda state: has_access_garden(state, player, world)
+                          and has_enough_seeds(state, player, world, 7),
         "Chatsanity - Fischer":
             lambda state: state.has("Party Invitation", player)
                           or state.has("Hairball City Ticket", player)
@@ -1869,7 +1878,8 @@ def get_location_rules(player, world):
                            or state.has("Salmon Creek Forest Ticket", player))
                           and has_access_to(state, player, "Bathhouse - Poppy"),
         "Chatsanity - Flower Frog":
-            lambda state: has_access_garden(state, player, world),
+            lambda state: has_access_garden(state, player, world)
+                          and has_enough_seeds(state, player, world, 1),
         "Chatsanity - Flowery Frog":
             lambda state: state.has("Hairball City Ticket", player),
         "Chatsanity - Friendly Gull":
@@ -1923,13 +1933,18 @@ def get_location_rules(player, world):
                           or state.has("Public Pool Ticket", player)
                           or state.has("Bathhouse Ticket", player)
                           or state.has("Tadpole HQ Ticket", player)
-                          or has_access_garden(state, player, world),
+                          or (has_access_garden(state, player, world)
+                              and has_enough_seeds(state, player, world, 2)),
         "Chatsanity - Hasselhop":
-            lambda state: (options.swimming.value != 1 or state.has("Swim Course", player)),
+            lambda state: (options.swimming.value != 1 or state.has("Swim Course", player))
+                          or (has_access_garden(state, player, world)
+                              and has_enough_seeds(state, player, world, 10)),
         "Chatsanity - Hat Kid":
             lambda state: state.has("Public Pool Ticket", player),
         "Chatsanity - Hungry Frog":
-            lambda state: has_access_garden(state, player, world),
+            lambda state: has_access_garden(state, player, world)
+                          and has_enough_seeds(state, player, world, 9)
+                          and (options.soda_cans.value != 1 or state.has("Soda Repair", player)),
         "Chatsanity - Impatient Frog":
             lambda state: state.has("Hairball City Ticket", player),
         "Chatsanity - Jess":
@@ -2151,7 +2166,8 @@ def get_location_rules(player, world):
         "Chatsanity - Tough Frog":
             lambda state: state.has("Hairball City Ticket", player),
         "Chatsanity - Tourist Frog":
-            lambda state: has_access_garden(state, player, world),
+            lambda state: has_access_garden(state, player, world)
+                          and has_enough_seeds(state, player, world, 6),
         "Chatsanity - Train Frog":
             lambda state: state.has("Hairball City Ticket", player)
                           or state.has("Turbine Town Ticket", player)
@@ -2236,8 +2252,6 @@ def get_location_rules(player, world):
             lambda state: has_enough_coins(state, player, world.kiosk_cost["Elevator"]),
         "Tadpole HQ - Pepper (Chatsanity)":
             lambda state: has_enough_coins(state, player, world.kiosk_cost["Elevator"]),
-        "Gary's Garden - Hasselhop (Chatsanity)":
-            lambda state: (options.goal_completion.value != 3 or state.has("Gary's Garden Seed", player, 10)),
         "Chatsanity - Bone Dog":
             lambda state: (state.has("Hairball City Ticket", player)
                               and (state.has("Contact List 1", player)
@@ -2283,13 +2297,20 @@ def get_location_rules(player, world):
                           or (state.has("Turbine Town Ticket", player)
                               and (state.has("Contact List 2", player)
                                    or state.has("Progressive Contact List", player, 2))),
+        "Tadpole HQ - Niko has nightmares(Thought)":
+            lambda state: has_enough_coins(state, player, world.kiosk_cost["Elevator"]),
+        "Tadpole HQ - Inbetween Four Skyscrapers":
+            lambda state: (options.swimming.value != 1
+                           or options.precisejumps.value == 1
+                           or state.has("Swim Course", player)),
         # Gary's Garden Seeds
         "Gary's Garden - Seed 2":
             lambda state: state.has("Gary's Garden Seed", player, 1),
         "Gary's Garden - Seed 3":
             lambda state: state.has("Gary's Garden Seed", player, 2),
         "Gary's Garden - Seed 4":
-            lambda state: state.has("Gary's Garden Seed", player, 3),
+            lambda state: state.has("Gary's Garden Seed", player, 3)
+                          and (options.ac_repair.value != 1 or state.has("AC Repair", player)),
         "Gary's Garden - Seed 5":
             lambda state: state.has("Gary's Garden Seed", player, 4),
         "Gary's Garden - Seed 6":
@@ -2301,5 +2322,55 @@ def get_location_rules(player, world):
         "Gary's Garden - Seed 9":
             lambda state: state.has("Gary's Garden Seed", player, 8),
         "Gary's Garden - Seed 10":
-            lambda state: state.has("Gary's Garden Seed", player, 9),
+            lambda state: state.has("Gary's Garden Seed", player, 9)
+                          and (options.soda_cans.value != 1 or state.has("Soda Repair", player)),
+
+        "Gary's Garden - Flower Frog (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 1),
+        "Gary's Garden - Small Rocks In Water":
+            lambda state: has_enough_seeds(state, player, world, 1),
+        "Gary's Garden - Handsome Frog":
+            lambda state: has_enough_seeds(state, player, world, 2),
+        "Gary's Garden - Handsome Frog (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 2),
+        "Gary's Garden - Conspiracy Frog (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 2),
+        "Gary's Garden - Dream Frog (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 3)
+                          and (options.ac_repair.value != 1 or state.has("AC Repair", player)),
+        "Gary's Garden - Behind Large Rock":
+            lambda state: has_enough_seeds(state, player, world, 3)
+                          and (options.ac_repair.value != 1 or state.has("AC Repair", player)),
+        "Gary's Garden - Bird (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 4),
+        "Gary's Garden - On Tree Branch":
+            lambda state: has_enough_seeds(state, player, world, 4),
+        "Gary's Garden - Danger Frog (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 5),
+        "Gary's Garden - Next To Smaller Tree":
+            lambda state: has_enough_seeds(state, player, world, 5),
+        "Gary's Garden - Tourist Frog (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 6),
+        "Gary's Garden - Next Garden Seed On Rocks":
+            lambda state: has_enough_seeds(state, player, world, 6),
+        "Gary's Garden - Fear Frog (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 7),
+        "Gary's Garden - Beginning Of Giant Gold Scissor":
+            lambda state: has_enough_seeds(state, player, world, 7),
+        "Gary's Garden - Near End Of Giant Gold Scissor":
+            lambda state: has_enough_seeds(state, player, world, 7),
+        "Gary's Garden - Dance Frog (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 8),
+        "Gary's Garden - Tree Branch Near Gold Scissor Row":
+            lambda state: has_enough_seeds(state, player, world, 8),
+        "Gary's Garden - Hungry Frog (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 9)
+                          and (options.soda_cans.value != 1 or state.has("Soda Repair", player)),
+        "Gary's Garden - Tree Branch Near The Top":
+            lambda state: has_enough_seeds(state, player, world, 9)
+                          and (options.soda_cans.value != 1 or state.has("Soda Repair", player)),
+        "Gary's Garden - Gunter (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 10),
+        "Gary's Garden - Hasselhop (Chatsanity)":
+            lambda state: has_enough_seeds(state, player, world, 10),
     }

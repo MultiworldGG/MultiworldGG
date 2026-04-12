@@ -6,19 +6,20 @@
 
 // Configure generation flags here
 "settings": {
-    "DARKNESS_WITHOUT_LIGHT_ORB": false,
-    "UNDERWATER_WITHOUT_WATER_ORB": false,
-    "ZIP_REQUIRED": false,
-    "BUNSTRIKE_ZIP_REQUIRED": false,
-    "BORING_TRICKS_REQUIRED": false,
-    "SEMISOLID_CLIPS_REQUIRED": false,
-    "BLOCK_CLIPS_REQUIRED": false,
+    "DARKNESS_WITHOUT_LIGHT_ORB": true,
+    "UNDERWATER_WITHOUT_WATER_ORB": true,
+    "EXPLOSIVES_WITH_CARROT_SHOOTER": true,
+    "ZIP_REQUIRED": true,
+    "BUNSTRIKE_ZIP_REQUIRED": true,
+    "BORING_TRICKS_REQUIRED": true,
+    "SEMISOLID_CLIPS_REQUIRED": true,
+    "BLOCK_CLIPS_REQUIRED": true,
     "PLURKWOOD_REACHABLE": true,
-    "POST_GAME_ALLOWED": false,
-    "POST_IRISU_ALLOWED": false,
-    "HALLOWEEN_REACHABLE": false,
-    "WARP_DESTINATION_REACHABLE": false,
-    "EVENT_WARPS_REQUIRED": false,
+    "POST_GAME_ALLOWED": true,
+    "POST_IRISU_ALLOWED": true,
+    "HALLOWEEN_REACHABLE": true,
+    "WARP_DESTINATION_REACHABLE": true,
+    "EVENT_WARPS_REQUIRED": true,
 },
 
 "additional_items": [

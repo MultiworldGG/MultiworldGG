@@ -91,21 +91,6 @@ class YGODDMClient(BizHawkClient):
         randomized_int = int.from_bytes(randomized_byte)
         # if randomized = 0, randomize. Then set to 1. Otherwise, it is already randomized.
         if randomized_int == 0:
-            # Randomize
-            rando_dice_ids: typing.Set[int] = set()
-            while (len(rando_dice_ids) < 15):
-                new_dice_id = random.randint(0, 200)
-                while ((new_dice_id in rando_dice_ids) or (new_dice_id not in id_to_dice)):
-                    new_dice_id = (new_dice_id + 1) % 201
-                rando_dice_ids.add(new_dice_id)
-            # Put the Randomized dice into the players collection
-            number_of_dice = 1
-            for count, dice_id in enumerate(rando_dice_ids):
-                await bizhawk.write(ctx.bizhawk_ctx, [(
-                    Constants.DICE_COLLECTION_OFFSET + dice_id,
-                    number_of_dice.to_bytes(1, "little"),
-                    COMBINED_WRAM
-                )])
             # We have to obliterate the players real starting dice pool
             removed_dice_id = 0
             for count in range(15):
@@ -247,18 +232,6 @@ class YGODDMClient(BizHawkClient):
                 duelist_bitflag_index: int
                 duelist_count: int = 0
 
-                # Unlock initially unlocked duelists
-
-                for duelist_name in ctx.slot_data[Constants.DUELIST_START_UNLOCKED_KEY]:
-                    duelist_count = duelist_count + 1
-                    duelist_bitflag = name_to_duelist[duelist_name].bitflag
-                    duelist_bitflag_index = 0
-                    while duelist_bitflag >= 256:
-                        duelist_bitflag = duelist_bitflag >> 8
-                        duelist_bitflag_index = duelist_bitflag_index + 1
-                    unlocked_duelist_bitflags[duelist_bitflag_index] |= duelist_bitflag
-
-
                 # Unlock duelists based on who has been received
                 
                 for item in ctx.items_received:
@@ -384,7 +357,7 @@ class YGODDMClient(BizHawkClient):
                     
 
             # Give out received Dice
-            if (ctx.slot_data[Constants.GAME_OPTIONS_KEY]['bonus_item_mode'] == BonusItemMode.option_random_dice):
+            if (ctx.slot_data[Constants.GAME_OPTIONS_KEY]['bonus_item_mode'] == BonusItemMode.option_random_dice or ctx.slot_data[Constants.GAME_OPTIONS_KEY]['randomize_starting_dice']):
                 last_dice_received_count: int = int.from_bytes(
                     (await bizhawk.read(ctx.bizhawk_ctx, [(Constants.RECEIVED_DICE_COUNT_OFFSET, 1, COMBINED_WRAM)]))[0]
                 )

@@ -5,7 +5,7 @@ from BaseClasses import Location, Region, Entrance
 from worlds.generic.Rules import set_rule, add_rule, forbid_item, forbid_items_for_player
 from . import rulebase as rb
 from .rulebase import Rule
-from ..levels import levelrules as lr, levellocruledefs as llrdef
+from ..levels import levelrules as lr, levellocrules as llrules, levellocruledefs as llrdefs
 from ..items import itemdefs as idef
 from ..locations import locationsets, locationdefs as ld
 from ..names import ItemNames, LocationNames
@@ -81,7 +81,7 @@ def add_level_chalice_rules(world: CupheadWorld, locs: Iterable[str], exclude: s
     if not exclude:
         exclude = set()
     for loc in locs:
-        if (loc not in exclude and loc not in llrdef.level_loc_rule_locs):
+        if (loc not in exclude and loc not in llrules.level_loc_rule_locs):
             add_level_chalice_rule(world, loc)
 
 def set_dlc_rules(world: CupheadWorld):
@@ -155,12 +155,12 @@ def add_level_grade_rules(world: CupheadWorld, locs: Iterable[str], exclude: set
     if not exclude:
         exclude = set()
     for loc in locs:
-        if (loc not in exclude and loc not in llrdef.level_loc_rule_locs):
+        if (loc not in exclude and loc not in llrules.level_loc_rule_locs):
             add_level_grade_rule(world, loc)
 
 def set_level_loc_rules(world: CupheadWorld):
     w = world
-    loc_rules = llrdef.level_loc_rules
+    loc_rules = llrdefs.level_loc_rules
     for _loc_rule in loc_rules:
         for loc, rule in _loc_rule.loc_rules.items():
             if loc in w.active_locations:

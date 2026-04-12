@@ -28,7 +28,7 @@ clear it.
 ## Generating and Patching a Game
 
 1. Create your options file (YAML). You can make one on
-[The Minish Cap options page](../../../games/The%20Minish%20Cap/player-options).
+[The Minish Cap options page](/games/The%20Minish%20Cap/player-options).
 2. Follow the general MultiworldGG instructions for [generating a game](../../Archipelago/setup/en#generating-a-game).
 This will generate an output file for you. Your patch file will have the `.aptmc` file extension.
 3. Open `MultiworldGGLauncher.exe`

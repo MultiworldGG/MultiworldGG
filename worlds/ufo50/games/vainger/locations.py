@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, NamedTuple, Set, Optional
+from typing import TYPE_CHECKING, NamedTuple
 from BaseClasses import Region, ItemClassification, Item, Location
 from worlds.generic.Rules import add_rule
 
@@ -11,14 +11,14 @@ if TYPE_CHECKING:
 
 
 class LocationInfo(NamedTuple):
-    id_offset: Optional[int]
+    id_offset: int | None
     region_name: str
 
 
 # the letter is the column (left to right), the number is the row (top to bottom)
 # based on a map at https://steamcommunity.com/sharedfiles/filedetails/?id=3341323146
 # except numbering each sector from 1 to 10.
-location_table: Dict[str, LocationInfo] = {
+location_table: dict[str, LocationInfo] = {
     "LatomR4C1 - Shield Upgrade": LocationInfo(0, "LatomR3C4 Genepod"),
     "LatomR7C1 - Shield Upgrade": LocationInfo(1, "LatomR3C4 Genepod"),
     "LatomR9C1 - Shield Upgrade": LocationInfo(2, "LatomR9C3 Genepod"),
@@ -84,18 +84,18 @@ location_table: Dict[str, LocationInfo] = {
 }
 
 
-def get_locations() -> Dict[str, int]:
+def get_locations() -> dict[str, int]:
     return {f"Vainger - {name}": data.id_offset + get_game_base_id("Vainger") for name, data in location_table.items()
             if data.id_offset is not None}
 
 
-def get_location_groups() -> Dict[str, Set[str]]:
-    location_groups: Dict[str, Set[str]] = {"Vainger": {f"Vainger - {loc_name}" for loc_name, loc_data in location_table.items()
+def get_location_groups() -> dict[str, set[str]]:
+    location_groups: dict[str, set[str]] = {"Vainger": {f"Vainger - {loc_name}" for loc_name, loc_data in location_table.items()
                                                         if loc_data.id_offset is not None}}
     return location_groups
 
 
-def create_locations(world: "UFO50World", regions: Dict[str, Region]) -> None:
+def create_locations(world: "UFO50World", regions: dict[str, Region]) -> None:
     for loc_name, loc_data in location_table.items():
         if loc_name == "Cherry" and "Vainger" not in world.options.cherry_allowed_games:
             break

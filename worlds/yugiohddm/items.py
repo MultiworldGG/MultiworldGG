@@ -2,7 +2,7 @@ import typing
 
 from BaseClasses import Item, ItemClassification
 from .utils import Constants
-from .dice import all_dice
+from .dice import all_dice, name_to_dice
 from .duelists import all_duelists, name_to_duelist
 from .tournament import name_to_tournament
 
@@ -34,7 +34,7 @@ class YGODDMItem(Item):
     game: str = Constants.GAME_NAME
 
 def create_item(name: str, player_id: int) -> YGODDMItem:
-    return YGODDMItem(name, ItemClassification.progression if (name in name_to_duelist) or (name in [Constants.DIVISION_2_ITEM_NAME, Constants.DIVISION_3_ITEM_NAME] or (name is Constants.SHOP_PROGRESSION_ITEM_NAME))
+    return YGODDMItem(name, ItemClassification.progression if (name in name_to_duelist) or (name in [Constants.DIVISION_2_ITEM_NAME, Constants.DIVISION_3_ITEM_NAME] or (name is Constants.SHOP_PROGRESSION_ITEM_NAME) or (name in name_to_dice))
                       else ItemClassification.filler, item_name_to_item_id[name], player_id)
 
 def create_victory_event(player_id: int) -> YGODDMItem:

@@ -28,7 +28,7 @@ class LocalItem:
         self.local_id = local_id
         self.count = count
         self.item_class = item_class
-        self.tossable = (item_class != IClass.progression and item_class != IClass.progression_skip_balancing)
+        self.tossable = (IClass.progression not in item_class)
 
 
 class LocalLevel(LocalItem):
@@ -142,54 +142,54 @@ class LocalItemData:
     # All Front and Rear port weapons are progression, some specific specials are too
     # All other specials and sidekicks are useful at most
     front_ports: dict[str, LocalWeapon] = {
-        "Pulse-Cannon":                   LocalWeapon(500, item_class=IClass.progression),  # Default starting weapon
+        "Pulse-Cannon":                   LocalWeapon(500, item_class=IClass.progression, tossable=False),
         "Multi-Cannon (Front)":           LocalWeapon(501, item_class=IClass.progression),
         "Mega Cannon":                    LocalWeapon(502, item_class=IClass.progression),
-        "Laser":                          LocalWeapon(503, item_class=IClass.progression),
+        "Laser":                          LocalWeapon(503, item_class=IClass.progression, tossable=False),
         "Zica Laser":                     LocalWeapon(504, item_class=IClass.progression),
         "Protron Z":                      LocalWeapon(505, item_class=IClass.progression),
         "Vulcan Cannon (Front)":          LocalWeapon(506, item_class=IClass.progression),
-        "Lightning Cannon":               LocalWeapon(507, item_class=IClass.progression),
+        "Lightning Cannon":               LocalWeapon(507, item_class=IClass.progression, tossable=False),
         "Protron (Front)":                LocalWeapon(508, item_class=IClass.progression),
         "Missile Launcher":               LocalWeapon(509, item_class=IClass.progression),
         "Mega Pulse (Front)":             LocalWeapon(510, item_class=IClass.progression),
         "Heavy Missile Launcher (Front)": LocalWeapon(511, item_class=IClass.progression),
-        "Banana Blast (Front)":           LocalWeapon(512, item_class=IClass.progression),
+        "Banana Blast (Front)":           LocalWeapon(512, item_class=IClass.progression, tossable=False),
         "HotDog (Front)":                 LocalWeapon(513, item_class=IClass.progression),
         "Hyper Pulse":                    LocalWeapon(514, item_class=IClass.progression),
         "Guided Bombs":                   LocalWeapon(515, item_class=IClass.progression),
-        "Shuriken Field":                 LocalWeapon(516, item_class=IClass.progression),
-        "Poison Bomb":                    LocalWeapon(517, item_class=IClass.progression),
+        "Shuriken Field":                 LocalWeapon(516, item_class=IClass.progression, tossable=False),
+        "Poison Bomb":                    LocalWeapon(517, item_class=IClass.progression, tossable=False),
         "Protron Wave":                   LocalWeapon(518, item_class=IClass.progression),
         "The Orange Juicer":              LocalWeapon(519, item_class=IClass.progression),
         "NortShip Super Pulse":           LocalWeapon(520, item_class=IClass.progression),
-        "Atomic RailGun":                 LocalWeapon(521, item_class=IClass.progression),
+        "Atomic RailGun":                 LocalWeapon(521, item_class=IClass.progression, tossable=False),
         "Widget Beam":                    LocalWeapon(522, item_class=IClass.progression),
         "Sonic Impulse":                  LocalWeapon(523, item_class=IClass.progression, tossable=False),
         "RetroBall":                      LocalWeapon(524, item_class=IClass.progression),
         # ---------- TYRIAN 2000 LINE ----------
-        "Needle Laser":                   LocalWeapon(525, count=0, item_class=IClass.progression),
+        "Needle Laser":                   LocalWeapon(525, count=0, item_class=IClass.progression, tossable=False),
         "Pretzel Missile":                LocalWeapon(526, count=0, item_class=IClass.progression),
         "Dragon Frost":                   LocalWeapon(527, count=0, item_class=IClass.progression),
         "Dragon Flame":                   LocalWeapon(528, count=0, item_class=IClass.progression),
     }
 
     rear_ports: dict[str, LocalWeapon] = {
-        "Starburst":                     LocalWeapon(600, item_class=IClass.progression),
+        "Starburst":                     LocalWeapon(600, item_class=IClass.progression, tossable=False),
         "Multi-Cannon (Rear)":           LocalWeapon(601, item_class=IClass.progression),
         "Sonic Wave":                    LocalWeapon(602, item_class=IClass.progression, tossable=False),
         "Protron (Rear)":                LocalWeapon(603, item_class=IClass.progression),
         "Wild Ball":                     LocalWeapon(604, item_class=IClass.progression),
         "Vulcan Cannon (Rear)":          LocalWeapon(605, item_class=IClass.progression),
-        "Fireball":                      LocalWeapon(606, item_class=IClass.progression),
+        "Fireball":                      LocalWeapon(606, item_class=IClass.progression, tossable=False),
         "Heavy Missile Launcher (Rear)": LocalWeapon(607, item_class=IClass.progression),
-        "Mega Pulse (Rear)":             LocalWeapon(608, item_class=IClass.progression),
-        "Banana Blast (Rear)":           LocalWeapon(609, item_class=IClass.progression),
+        "Mega Pulse (Rear)":             LocalWeapon(608, item_class=IClass.progression, tossable=False),
+        "Banana Blast (Rear)":           LocalWeapon(609, item_class=IClass.progression, tossable=False),
         "HotDog (Rear)":                 LocalWeapon(610, item_class=IClass.progression),
         "Guided Micro Bombs":            LocalWeapon(611, item_class=IClass.progression),
         "Heavy Guided Bombs":            LocalWeapon(612, item_class=IClass.progression),
         "Scatter Wave":                  LocalWeapon(613, item_class=IClass.progression),
-        "NortShip Spreader":             LocalWeapon(614, item_class=IClass.progression),
+        "NortShip Spreader":             LocalWeapon(614, item_class=IClass.progression, tossable=False),
         "NortShip Spreader B":           LocalWeapon(615, item_class=IClass.progression),
         # ---------- TYRIAN 2000 LINE ----------
         "People Pretzels":               LocalWeapon(616, count=0, item_class=IClass.progression),
@@ -289,7 +289,7 @@ class LocalItemData:
         "SuperBomb":             LocalItem(910, count=1),  # More can be added in junk fill
 
         # Goal collectible item for Data Cube Hunt mode
-        "Data Cube":             LocalItem(911, item_class=IClass.progression_skip_balancing),
+        "Data Cube":             LocalItem(911, item_class=IClass.progression_deprioritized_skip_balancing),
 
         # All Credits items have their count set dynamically.
         "50 Credits":            LocalItem(980),

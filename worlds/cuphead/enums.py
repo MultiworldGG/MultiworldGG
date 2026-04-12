@@ -3,7 +3,7 @@ from enum import IntEnum, IntFlag
 class GameMode(IntEnum):
     BEAT_DEVIL = 1
     COLLECT_CONTRACTS = 2
-    BUY_OUT_SHOP = 3
+    BUY_OUT_SHOP = 4
     DLC_BEAT_SALTBAKER = 8
     DLC_BEAT_BOTH = 9
     DLC_COLLECT_INGREDIENTS = 16

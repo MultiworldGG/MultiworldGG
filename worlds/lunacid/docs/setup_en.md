@@ -10,11 +10,11 @@ You will need:
 - Download and unpackage the downloaded mod into your main Lunacid install folder.  Should include LUNACID.exe.
 - **LINUX ONLY**: Right click Lunacid in Steam, go to Properties, and in Launch Options put `WINEDLLOVERRIDES="winhttp.dll=n,b" %command%`.
 - Launch the game at least once, close.
-- Install MultiworldGG Client.  Documentation is [here](https://multiworld.gg/tutorial/Archipelago/setup/en).
+- Install MultiworldGG Client.  Documentation is [here](/tutorial/Archipelago/setup/en).
 - Once installed, go to where your client is installed, go to custom_worlds, drop the attached .apworld here.
 - Run MultiworldGGLauncher, hit Generate Template Settings, in order for the Lunacid.yaml to be generated.
 
-Hosting a game locally is simply taking the Lunacid.yaml file, editing it to suit the settings you want, putting the file in the Players folder, and hitting Generate in MultiworldGGLauncher.  For yaml formatting help, look [here](https://multiworld.gg/tutorial/Archipelago/advanced_settings/en).
+Hosting a game locally is simply taking the Lunacid.yaml file, editing it to suit the settings you want, putting the file in the Players folder, and hitting Generate in MultiworldGGLauncher.  For yaml formatting help, look [here](/tutorial/Archipelago/advanced_settings/en).
 
 ## In-game setup
 
@@ -26,11 +26,11 @@ Hosting a game locally is simply taking the Lunacid.yaml file, editing it to sui
 
 *Q: My server's port changed and I can't connect.  How do I fix this?*
 
-**A: Open the .json file for your related save, and change the port in the save directly.**
+**A: In-game, open the options menu at the start screen and change your port.**
 
-*Q: Nothing is sending and when I pick stuff up I get a lot of red.
+*Q: Nothing is sending and when I pick stuff up I get a lot of red.*
 
-**A: Currently a bug; you likely started the game because your game actually connected.
+**A: You are likely in a game state in which the game thinks its connected, but it isn't.  Bug report this!**
 
 *Q: I was sent a key to open a door, but it won't open.*
 

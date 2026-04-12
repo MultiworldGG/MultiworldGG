@@ -121,7 +121,7 @@ and different players in the same multiworld can all have different options.
 
 The Player Settings page on the website
 allows you to configure your personal settings and export a config file from them.
-Satisfactory player settings page: [Satisfactory Settings Page](/games/Satisfactory/player-settings)
+Satisfactory player settings page: [Satisfactory Settings Page](/games/Satisfactory/player-options)
 
 #### Verifying Your Config File
 

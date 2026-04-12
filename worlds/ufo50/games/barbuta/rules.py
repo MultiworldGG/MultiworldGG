@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
+
 from BaseClasses import Region, CollectionState
 from worlds.generic.Rules import set_rule
 
@@ -29,7 +30,7 @@ def has_money(amount: int, state: CollectionState, player: int) -> bool:
     return False
 
 
-def create_rules(world: "UFO50World", regions: Dict[str, Region]) -> None:
+def create_rules(world: "UFO50World", regions: dict[str, Region]) -> None:
     player = world.player
 
     def has_wand(state: CollectionState) -> bool:

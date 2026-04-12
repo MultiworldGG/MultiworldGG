@@ -3,18 +3,6 @@ from ..names import LocationNames
 from .levellocrulebase import LevelLocRuleData, LRule, LevelRuleModes
 from . import levelrules as lr
 
-level_loc_rule_locs: set[str] = set()
-
-def register_level_loc_rules(
-        base_region: str,
-        base_rule: lr.LevelRule | None,
-        loc_rules: dict[str, LRule | None]
-    ) -> LevelLocRuleData:
-    res = LevelLocRuleData(base_region, base_rule, loc_rules)
-    for loc in loc_rules.keys():
-        level_loc_rule_locs.union(loc)
-    return res
-
 level_loc_rules_boss: list[LevelLocRuleData] = [
     LevelLocRuleData(LocationNames.level_boss_frogs, lr.lrule_parry_or_psugar, {
         LocationNames.loc_level_boss_frogs_dlc_chaliced: LRule(lr.lrule_dlc_boss_chaliced_parry),

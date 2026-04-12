@@ -1,6 +1,6 @@
 import typing, random
 from dataclasses import dataclass
-from Options import T, Choice, Range, OptionSet, Toggle, DefaultOnToggle, ItemDict, DeathLink, PerGameCommonOptions, Removed
+from Options import T, Choice, Range, OptionSet, Toggle, DefaultOnToggle, ItemDict, DeathLink, PerGameCommonOptions, StartInventoryPool, Removed, Visibility
 from .Regions import Regions
 from .Items import item_groups
 
@@ -14,7 +14,7 @@ class UKLevelChoice(Choice):
 
     @classmethod
     def get_option_name(cls, value: T) -> str:
-        return cls.name_lookup[value].replace("_", "-")
+        return cls.name_lookup[value].replace("_", "-").upper()
     
     @classmethod
     def from_text(cls, text: str) -> Choice:
@@ -51,6 +51,8 @@ class StartLevel(UKLevelChoice):
     option_2_3 = 12
     option_3_1 = 14
     option_4_2 = 17
+    option_8_2 = 31
+    option_8_3 = 32
     default = 1
 
 
@@ -94,11 +96,15 @@ class GoalLevel(UKLevelChoice):
     option_7_3 = 28
     option_7_4 = 29
     option_7_S = -7
+    option_8_1 = 30
+    option_8_2 = 31
+    option_8_3 = 32
+    option_8_4 = 33
     option_0_E = 100
     option_1_E = 101
     option_P_1 = 666
     option_P_2 = 667
-    default = 29
+    default = 33
 
 
 class GoalRequirement(Range):
@@ -107,7 +113,7 @@ class GoalRequirement(Range):
     """
     display_name = "Goal Requirement"
     range_start = 5
-    range_end = 38
+    range_end = 42
     default = 15
 
 
@@ -121,6 +127,8 @@ class PerfectGoal(Toggle):
 class SkipLevels(OptionSet):
     """
     List as many levels as you would like to skip completing for the goal.
+
+    Skipped levels will still exist in the item pool, and can still be completed to add progress towards unlocking the goal, but will not be considered in logic.
     """
     display_name = "Skipped Levels"
     valid_keys = {r.short_name for r in Regions.all_regions if not (r.short_name == "shop" or r.short_name == "museum")}
@@ -142,6 +150,29 @@ class UnlockType(Choice):
     option_levels = 0
     option_layers = 1
     default = 0
+
+
+class SecretUnlockType(Choice):
+    """
+    Choose if secret missions should be unlocked by using their secret exits, or by finding items in the multiworld.
+    """
+    display_name = "Secret Mission Unlock Type"
+    option_secret_exits = 1
+    option_items = 0
+    default = 1
+
+
+class SecretExitType(Choice):
+    """
+    Choose if using secret exits should count the current level as completed, or if secret exits should NOT count the 
+    current level as completed, and instead add rewards for using each secret exit.
+
+    Does not affect secret exits leading to prime sanctums.
+    """
+    display_name = "Secret Exit Behavior"
+    option_standard = 1
+    option_add_rewards = 0
+    default = 1
 
 
 class TrapPercent(Range):
@@ -247,6 +278,8 @@ class StartingWeaponPool(ItemWeights):
     Choose a pool of possible starting weapons and their weights of being selected.
 
     Some weapons will not be considered valid depending on other options:
+
+    If the start level is 2-3, 8-2, or 8-3, all arms will be removed from the pool.
 
     If choosing to start with Feedbacker, it will be removed from the pool.
 
@@ -419,6 +452,7 @@ class MusicRando(Toggle):
     Music randomizer is temporarily disabled.
     """
     display_name = "Music Randomizer"
+    visibility = Visibility.none
 
 
 class CybergrindHints(DefaultOnToggle):
@@ -438,6 +472,16 @@ class UltrakillDeathLink(DeathLink):
     """
 
 
+class DeathLinkAmnesty(Range):
+    """
+    Choose how many deaths must happen before a death link is sent to the multiworld.
+    """
+    display_name = "Death Link Amnesty"
+    range_start = 1
+    range_end = 10
+    default = 1
+
+
 @dataclass
 class UltrakillOptions(PerGameCommonOptions):
     start_level: StartLevel
@@ -447,6 +491,8 @@ class UltrakillOptions(PerGameCommonOptions):
     skipped_levels: SkipLevels
     auto_exclude_skipped_locations: AutoExcludeSkip
     unlock_type: UnlockType
+    secret_mission_unlock_type: SecretUnlockType
+    secret_exit_behavior: SecretExitType
     trap_percent: TrapPercent
     filler_weights: FillerWeights
     trap_weights: TrapWeights
@@ -478,6 +524,9 @@ class UltrakillOptions(PerGameCommonOptions):
     music_randomizer: MusicRando
     cybergrind_hints: CybergrindHints
     death_link: UltrakillDeathLink
+    death_link_amnesty: DeathLinkAmnesty
+
+    start_inventory_from_pool: StartInventoryPool
 
     goal: Removed
     include_secret_mission_completion: Removed

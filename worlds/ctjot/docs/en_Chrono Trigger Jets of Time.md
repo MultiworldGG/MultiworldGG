@@ -6,7 +6,7 @@ Settings for Jets of Time are handled by a multiworld variant of the main Jet of
 Game modes and settings are documented in depth on the Jet of Time wiki.
 
 The ROM and YAML generated from the multiworld site are a pair and must be used together.  Unlike most other
-Archipelago games, a new YAML/ROM pair must be generated for each multiworld session.  If one of the files is 
+AP/MWGG games, a new YAML/ROM pair must be generated for each multiworld session.  If one of the files is 
 accidentally lost or deleted, they can be re-downloaded from `https://multiworld.ctjot.com/share/share_id` 
 where share_id is the fifteen character ID located in the filename.
 

@@ -153,7 +153,7 @@ def _create_regions(world: 'SpireWorld', player: int, config: 'CharacterConfig',
                                                 *_create_combat_check(22, 25),
                                             ], ['Act 3 Boss Arena']))
 
-    acension_mod = 1 if config.ascension >= 20 else 0
+    acension_mod = 1 if config.ascension >= 20 and config.ascension_down == 0 else 0
 
     multiworld.regions.append(world.create_region(player, prefix, 'Act 3 Boss Arena', config,
                                             [

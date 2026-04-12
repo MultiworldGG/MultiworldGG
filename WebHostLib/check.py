@@ -7,7 +7,7 @@ from flask import request, flash, redirect, url_for, render_template
 from markupsafe import Markup
 
 from WebHostLib import app
-from WebHostLib.upload import allowed_options, allowed_options_extensions, banned_file
+from WebHostLib.upload import allowed_options, banned_file
 
 from Generate import roll_settings, PlandoOptions
 from Utils import parse_yamls
@@ -43,6 +43,34 @@ def mysterycheck():
     return redirect(url_for("check"), 301)
 
 
+def _is_valid_yaml_content(content: bytes, filename: str) -> tuple[bool, str | None]:
+    """Check if content is valid YAML with required fields.
+
+    Returns (is_valid, error_message).
+    """
+    # Block .apworld files — these should use the APWorld upload button, not the YAML checker.
+    if filename.endswith('.apworld'):
+        return False, f"'{filename}' is an APWorld file. In a lobby, use the APWorld upload button instead."
+
+    try:
+        yaml_datas = tuple(parse_yamls(content))
+        if not yaml_datas:
+            return False, f"'{filename}' contains no valid YAML documents"
+
+        for yaml_data in yaml_datas:
+            if yaml_data is None:
+                continue
+            # Check for required fields: 'name' and 'game'
+            if 'game' not in yaml_data:
+                return False, f"'{filename}' is missing required field 'game'"
+            if 'name' not in yaml_data:
+                return False, f"'{filename}' is missing required field 'name'"
+
+        return True, None
+    except Exception as e:
+        return False, f"'{filename}' is not valid YAML: {e}"
+
+
 def get_yaml_data(files) -> dict[str, str] | str | Markup:
     options = {}
     for uploaded_file in files:
@@ -54,7 +82,7 @@ def get_yaml_data(files) -> dict[str, str] | str | Markup:
             return "No selected file."
         elif uploaded_file.filename in options:
             return f"Conflicting files named {uploaded_file.filename} submitted."
-        elif uploaded_file and allowed_options(uploaded_file.filename):
+        elif uploaded_file:
             if uploaded_file.filename.endswith(".zip"):
                 if not zipfile.is_zipfile(uploaded_file):
                     return f"Uploaded file {uploaded_file.filename} is not a valid .zip file and cannot be opened."
@@ -77,10 +105,16 @@ def get_yaml_data(files) -> dict[str, str] | str | Markup:
                         elif not base_filename.startswith(".") and allowed_options(base_filename):
                             options[file.filename] = zfile.open(file, "r").read()
             else:
-                options[uploaded_file.filename] = uploaded_file.read()
+                # Accept any file extension - validate by content
+                content = uploaded_file.read()
+                is_valid, error = _is_valid_yaml_content(content, uploaded_file.filename)
+                if is_valid:
+                    options[uploaded_file.filename] = content
+                elif error:
+                    return error
 
     if not options:
-        return f"Did not find any valid files to process. Accepted formats: {allowed_options_extensions}"
+        return "Did not find any valid YAML files with required fields 'name' and 'game'"
     return options
 
 

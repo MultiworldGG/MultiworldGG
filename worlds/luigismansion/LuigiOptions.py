@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
 from Options import Toggle, Range, PerGameCommonOptions, Choice, StartInventoryPool, DeathLinkMixin, OptionSet, \
-    DefaultOnToggle
-
+    DefaultOnToggle, OptionCounter
+from .Items import trap_filler_items
 
 class LuigiWalkSpeed(Choice):
     """Choose how fast Luigi moves. Speeds above normal may cause OoB issues"""
@@ -51,105 +51,6 @@ class ShowSelfReceivedItems(Choice):
     option_progression_items_only = 1
     option_nothing = 2
     default = 0
-
-class BundleWeight(Range):
-    """Set the weight for how often coin & bill bundles get chosen as filler."""
-    display_name = "Money Bundle Weight"
-    internal_name = "bundle_weight"
-    range_start = 0
-    range_end = 100
-    default = 10
-
-
-class CoinWeight(Range):
-    """Set the weight for how often coins get chosen as filler."""
-    display_name = "Coin Weight"
-    internal_name = "coin_weight"
-    range_start = 0
-    range_end = 100
-    default = 15
-
-
-class BillWeight(Range):
-    """Set the weight for how often bills get chosen as filler."""
-    display_name = "Bill Weight"
-    internal_name = "bill_weight"
-    range_start = 0
-    range_end = 100
-    default = 10
-
-
-class BarsWeight(Range):
-    """Set the weight for how often gold bars get chosen as filler."""
-    display_name = "Gold Bars Weight"
-    internal_name = "bars_weight"
-    range_start = 0
-    range_end = 100
-    default = 10
-
-
-class GemsWeight(Range):
-    """Set the weight for how often gemstones get chosen as filler."""
-    display_name = "Gems Weight"
-    internal_name = "gems_weight"
-    range_start = 0
-    range_end = 100
-    default = 5
-
-
-class PoisonTrapWeight(Range):
-    """Set the weight for how often poison mushrooms get chosen as traps."""
-    display_name = "Poison Trap Weight"
-    internal_name = "poison_trap_weight"
-    range_start = 0
-    range_end = 100
-    default = 15
-
-
-class BombWeight(Range):
-    """Set the weight for how often bombs get chosen as traps."""
-    display_name = "Bomb Weight"
-    internal_name = "bomb_trap_weight"
-    range_start = 0
-    range_end = 100
-    default = 15
-
-
-class IceTrapWeight(Range):
-    """Set the weight for how often ice traps get chosen as traps."""
-    display_name = "Ice Trap Weight"
-    internal_name = "ice_trap_weight"
-    range_start = 0
-    range_end = 100
-    default = 15
-
-
-class BananaTrapWeight(Range):
-    """Set the weight for how often bananas get chosen as traps."""
-    display_name = "Banana Trap Weight"
-    internal_name = "banana_trap_weight"
-    range_start = 0
-    range_end = 100
-    default = 15
-
-
-class NothingWeight(Range):
-    """Set the weight for how often dust is chosen as filler."""
-    display_name = "Dust Weight"
-    internal_name = "dust_weight"
-    range_start = 0
-    range_end = 100
-    default = 40
-
-
-class HeartWeight(Range):
-    """Set the weight for how often hearts get chosen as filler."""
-    display_name = "Heart Weight"
-    internal_name = "heart_weight"
-    range_start = 0
-    range_end = 100
-    default = 10
-
 
 class BetterVacuum(Range):
     """
@@ -212,7 +113,21 @@ class PortraitHints(Toggle):
 
 
 class HintDistribution(Choice):
-    """Choose the level of hint from in-game hints. Will affect Portrait Ghost hints if the option is on."""
+    """
+    Choose the level of hint from in-game hints. Will affect Portrait Ghost hints if the option is on.
+
+    Junk hints will  not hint any items and instead provide funny lines
+
+    Strong hints will favor hinting progression items when choosing hints
+
+    Balanced will pick between progression items or other items to hint, but slightly favor progression items
+
+    Chaos wil pick items completely at random, with no favoring of progression or not
+
+    Vague hints will tell you the game the item is in, but not where
+
+    Disabled hints disables hint text completely
+    """
     display_name = "Hint Distribution"
     internal_name = "hint_distribution"
     option_balanced = 0
@@ -274,7 +189,7 @@ class Furnisanity(OptionSet):
 
     "Treasures" turns on only locations that contain treasure (including all plants) in the vanilla game. Does not create duplicate locations
 
-    "Basement, 1st Floor, 2nd FLoor, Attic, and Roof can be used to turn on all furniture pieces on that level.
+    "Basement, 1st Floor, 2nd Floor, Attic, and Roof can be used to turn on all furniture pieces on that level.
 
     "Full" turns on all furniture locations and will override any other specified groups
     """
@@ -310,6 +225,10 @@ class MarioItems(Range):
     range_end = 5
     default = 5
 
+class WhatDoYouMean(Toggle):
+    """Adds locations you would never expect."""
+    display_name = "What do you mean these are locations?"
+    internal_name = "WDYM_checks"
 
 # class WashroomBooCount(Range):
 #     """Set the number of Boos required to reach the 1F Washroom. 0 = Starts Open"""
@@ -321,11 +240,15 @@ class MarioItems(Range):
 
 
 class BalconyBooCount(Range):
-    """Set the number of Boos required to reach the Balcony. 0 = Starts Open"""
+    """
+    Set the number of Boos required to reach the Balcony. 0 = Starts Open
+
+    If Boosanity is off, this count may be reduced to make the seed viable, based on spawn location
+    """
     display_name = "Balcony Boo Count"
     internal_name = "balcony_boo_count"
     range_start = 0
-    range_end = 36
+    range_end = 50
     default = 20
 
 
@@ -358,6 +281,21 @@ class Portrification(Toggle):
     display_name = "Portrification"
     internal_name = "portrification"
 
+class SilverPortrait(Toggle):
+    """
+    Adds locations on getting a Silver border for catching a portrait ghost.
+    Increasing Portrait Ghost health values will require Vacuum Upgrades in varying amounts
+    """
+    display_name = "Silver Border Portrait Ghosts"
+    internal_name = "silver_ghosts"
+
+class GoldPortrait(Toggle):
+    """
+    Adds locations on getting a Gold border for catching a portrait ghost
+    Increasing Portrait Ghost health values will require Vacuum Upgrades in varying amounts
+    """
+    display_name = "Gold Border Portrait Ghosts"
+    internal_name = "gold_ghosts"
 
 class Enemizer(Choice):
     """
@@ -611,46 +549,6 @@ class LuigiMaxHealth(Range):
     range_end = 1000
     default = 100
 
-class FearWeight(Range):
-    """
-    Set the weight for how often fear traps get chosen as traps.
-    """
-    display_name = "Fear Trap Weight"
-    internal_name = "fear_weight"
-    range_start = 0
-    range_end = 100
-    default = 25
-
-class SpookyWeight(Range):
-    """
-    Set the weight for how often spooky time gets chosen as a trap.
-    """
-    display_name = "Spooky Time Weight"
-    internal_name = "spooky_weight"
-    range_start = 0
-    range_end = 100
-    default = 25
-
-class SquashWeight(Range):
-    """
-    Set the weight for how often Squash traps get chosen as traps.
-    """
-    display_name = "Squash Trap Weight"
-    internal_name = "squash_weight"
-    range_start = 0
-    range_end = 100
-    default = 15
-
-class VacTrapWeight(Range):
-    """
-    Set the weight for how often No Vac traps get chosen as traps.
-    """
-    display_name = "No Vac Trap Weight"
-    internal_name = "vac_trap_weight"
-    range_start = 0
-    range_end = 100
-    default = 5
-
 class BoolossusDifficulty(Choice):
     """
     Alter the difficulty of the mini-boos in the Boolossus fight. Easy slows them down, Hard speeds them up.
@@ -661,36 +559,6 @@ class BoolossusDifficulty(Choice):
     option_normal = 1
     option_hard = 2
     default = 1
-
-class PossTrapWeight(Range):
-    """
-    Set the weight for how often possession traps get chosen as traps.
-    """
-    display_name = "Possession Trap Weight"
-    internal_name = "poss_trap_weight"
-    range_start = 0
-    range_end = 100
-    default = 5
-
-class BonkTrapWeight(Range):
-    """
-    Set the weight for how often bonk traps get chosen as traps.
-    """
-    display_name = "Bonk Trap Weight"
-    internal_name = "bonk_trap_weight"
-    range_start = 0
-    range_end = 100
-    default = 15
-
-class GhostTrapWeight(Range):
-    """
-    Set the weight for how often ghosts get chosen as traps.
-    """
-    display_name = "Ghost Weight"
-    internal_name = "ghost_weight"
-    range_start = 0
-    range_end = 100
-    default = 15
 
 class CallMario(Toggle):
     """
@@ -707,6 +575,47 @@ class DoorModelRando(Toggle):
     display_name = "Randomized Door Model"
     internal_name = "door_model_rando"
 
+class TrapWeights(OptionCounter):
+    """
+    Set Trap Weights for traps chosen as filler items, if Trap Percentage is greater than 0
+    Each weight represents a number of balls in a lottery roller with that trap on it.
+    So if you had Banana Trap set to 3, and Ice Trap set to 7, and the rest set to 0,
+    you would have a 3/10 for a Banana Trap to be chosen when rolling for trap fillers
+    Must be between 0 and 100
+    """
+    display_name = "Trap Weights"
+    internal_name = "trap_weights"
+    min = 0
+    max = 100
+    valid_keys = trap_filler_items.keys()
+    default = {item: data.default_weight for item, data in trap_filler_items.items()}
+    all_on_dict = {item: 100 for item in trap_filler_items.keys()}
+    all_off_dict = {item: 0 for item in trap_filler_items.keys()}
+
+class FillerWeights(OptionCounter):
+    """
+    Set filler weights for filler items.
+    Each weight represents a number of balls in a lottery roller with that trap on it.
+    So if you had Banana Trap set to 3, and Ice Trap set to 7, and the rest set to 0,
+    you would have a 3/10 for a Banana Trap to be chosen when rolling for trap fillers
+    Must be between 0 and 100
+    """
+    display_name = "Filler Weights"
+    internal_name = "filler_weights"
+    min = 0
+    max = 100
+    valid_keys = ["Bundles", "Coins", "Bills", "Bars", "Gems", "Dust", "Hearts"]
+    default = {
+        "Bundles": 10,
+        "Coins": 15,
+        "Bills": 10,
+        "Bars": 10,
+        "Gems": 5,
+        "Dust": 40,
+        "Hearts": 10
+    }
+    all_on_dict = {item: 100 for item in valid_keys}
+    all_off_dict = {item: 0 for item in valid_keys}
 
 class TrapPercentage(Range):
     """
@@ -739,6 +648,43 @@ class Grassanity(Toggle):
     display_name = "Grassanity"
     internal_name = "grassanity"
 
+class PortraitHealthOption(Choice):
+    """
+    Choose how Portrait Ghost Health is determined. Gold and Silver border locations will require upgrades if turned on
+    and Health is above certain values
+
+    Choice: Use Portrait Health Value to set all boos to the specified value
+
+    Random Values: Every Portrait Ghost has a different, randomly chosen health value between 1 and the value set in Boo Health Value
+
+    Portrait Health by Sphere: Portrait Ghosts will receive health values based on the spheres they are in. Portrait
+    Health Value will determine the highest health a Boo can have - this is capped by Vacuum upgrades in the pool
+
+    Vanilla: No changes are made to Portrait Ghosts from the base game.
+    """
+    display_name = "Portrait Health Option"
+    internal_name = "portrait_health_option"
+    option_choice = 0
+    option_random_values = 1
+    option_Portrait_health_by_sphere = 2
+    option_vanilla = 3
+    default = 0
+
+class PortraitHealthValue(Range):
+    """
+    Choose the health value all Portrait Ghosts will have if the Portrait Health Option is Choice. Range between 1 and 999
+    If portrait_health_option is set to random_values, if you set this to "100: 50", the max value used will be 100 instead.
+    If you want a custom range, use a random range function: https://archipelago.gg/tutorial/Archipelago/advanced_settings_en#random-numbers
+
+    Higher values will require increasing amounts of vacuum upgrades. These will be forced on
+    """
+    display_name = "Portrait Health Value"
+    internal_name = "portrait_health_value"
+    range_start = 1
+    range_end = 650
+    default = 100
+
+
 @dataclass
 class LMOptions(DeathLinkMixin, PerGameCommonOptions):
     rank_requirement: RankRequirement
@@ -765,9 +711,12 @@ class LMOptions(DeathLinkMixin, PerGameCommonOptions):
     furnisanity: Furnisanity
     boosanity: Boosanity
     portrification: Portrification
+    silver_ghosts: SilverPortrait
+    gold_ghosts: GoldPortrait
     lightsanity: Lightsanity
     walksanity: Walksanity
     speedy_spirits: SpeedySpirits
+    WDYM_checks: WhatDoYouMean
     grassanity: Grassanity
     boo_gates: BooGates
     self_item_messages: ShowSelfReceivedItems
@@ -782,6 +731,8 @@ class LMOptions(DeathLinkMixin, PerGameCommonOptions):
     boo_speed: BooSpeed
     boo_escape_time: BooEscapeTime
     boo_anger: BooAnger
+    portrait_health_option: PortraitHealthOption
+    portrait_health_value: PortraitHealthValue
     extra_boo_spots: ExtraBooSpots
     chest_types: ChestTypes
     trap_chests: TrapChestType
@@ -792,23 +743,7 @@ class LMOptions(DeathLinkMixin, PerGameCommonOptions):
     energy_link: EnergyLink
     ring_link: RingLink
     enable_ring_client_msg: RingLinkClientMsgs
+    filler_weights: FillerWeights
     trap_percentage: TrapPercentage
-    bundle_weight: BundleWeight
-    coin_weight: CoinWeight
-    bill_weight: BillWeight
-    bars_weight: BarsWeight
-    gems_weight: GemsWeight
-    poison_trap_weight: PoisonTrapWeight
-    bomb_trap_weight: BombWeight
-    ice_trap_weight: IceTrapWeight
-    banana_trap_weight: BananaTrapWeight
-    poss_trap_weight: PossTrapWeight
-    bonk_trap_weight: BonkTrapWeight
-    ghost_weight: GhostTrapWeight
-    fear_weight: FearWeight
-    spooky_weight: SpookyWeight
-    squash_weight: SquashWeight
-    vac_trap_weight: VacTrapWeight
-    dust_weight: NothingWeight
-    heart_weight: HeartWeight
+    trap_weights: TrapWeights
     start_inventory_from_pool: StartInventoryPool

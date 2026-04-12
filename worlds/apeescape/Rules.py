@@ -91,7 +91,9 @@ def set_entrances(self, logic):
 
     # If the goal is not token hunt, then there is a victory item on the worlds' final boss.
     if self.options.goal != "tokenhunt":
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player, 1)
+        # Redundant, but maybe relevant if we get more goals in the future
+        if self.options.goal in ("mm","mmtoken","ppm","ppmtoken"):
+            self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
     else:
         self.multiworld.completion_condition[self.player] = lambda state: Tokens(state, self, min(self.options.requiredtokens, self.options.totaltokens))
 

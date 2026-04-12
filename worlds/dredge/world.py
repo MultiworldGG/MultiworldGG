@@ -28,6 +28,8 @@ class DREDGEWorld(World):
         rules.set_all_rules(self)
 
     def create_items(self) -> None:
+        self.multiworld.push_precollected(self.create_item("Starting Gear - Basic Fishing Pole"))
+        self.multiworld.push_precollected(self.create_item("Starting Gear - Peculiar Engine"))
         items.create_all_items(self)
 
     def create_item(self, name: str) -> items.DREDGEItem:

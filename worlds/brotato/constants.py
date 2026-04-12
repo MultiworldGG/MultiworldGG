@@ -99,6 +99,7 @@ BASE_GAME_CHARACTERS = CharacterGroup(
         "Vagabond",
         "Technomage",
         "Vampire",
+        "Beast Master",
     ),
     default_characters=("Well Rounded", "Brawler", "Crazy", "Ranger", "Mage"),
 )

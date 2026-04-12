@@ -2335,21 +2335,7 @@
     ]
   },
   "Rogueport Sewers Boggly Woods Pipe: Star Piece": {
-    "and": [
-      {
-        "function": "super_boots"
-      },
-      {
-        "or": [
-          {
-            "has": "Paper Mode"
-          },
-          {
-            "function": "super_hammer"
-          }
-        ]
-      }
-    ]
+    "function": "super_boots"
   },
   "Rogueport Sewers Boggly Woods Pipe: Damage Dodge": {
     "has": "Paper Mode"
@@ -2501,25 +2487,25 @@
   "Twilight Town Rightside: Jammin' Jelly": {
     "has": "Shop Key"
   },
-  "Twilight Town Rightside: Life Shroom 1": {
+  "Twilight Town Rightside Shop: Life Shroom": {
     "has": "Shop Key"
   },
-  "Twilight Town Rightside: Life Shroom 2": {
+  "Twilight Town Rightside: Life Shroom": {
     "has": "Shop Key"
   },
-  "Twilight Town Rightside: Maple Syrup": {
+  "Twilight Town Rightside Shop: Maple Syrup": {
     "has": "Shop Key"
   },
-  "Twilight Town Rightside: Spite Pouch": {
+  "Twilight Town Rightside Shop: Spite Pouch": {
     "has": "Shop Key"
   },
-  "Twilight Town Rightside: Stopwatch": {
+  "Twilight Town Rightside Shop: Stopwatch": {
     "has": "Shop Key"
   },
-  "Twilight Town Rightside: Super Shroom": {
+  "Twilight Town Rightside Shop: Super Shroom": {
     "has": "Shop Key"
   },
-  "Twilight Town Rightside: Thunder Rage": {
+  "Twilight Town Rightside Shop: Thunder Rage": {
     "has": "Shop Key"
   },
   "Twilight Town Rightside: Tube Mode": {

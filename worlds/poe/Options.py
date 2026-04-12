@@ -328,6 +328,7 @@ poe_options_groups = [
 
 all_characters = {
     "Ascendant" : 1,
+    "Reliquarian": 1,
     "Berserker" : 1,
     "Chieftain" : 1,
     "Juggernaut" : 1,

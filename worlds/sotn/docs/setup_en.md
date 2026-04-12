@@ -5,7 +5,7 @@
 [0.81 changes](https://youtu.be/w-Y_4slbMtA)
 [0.82 changes](https://www.youtube.com/watch?v=F_yL3QM4qYw&t=8s)
 
-[GRAB THE LAST RELEASE HERE](https://github.com/fdelduque/Archipelago/releases)
+[GRAB THE LAST RELEASE HERE](https://github.com/fdelduque/Archipelago/releases) (ships with MultiworldGG)
 
 ## Symphony of the Night
 Symphony of the Night is a metroidvania from playstation 1
@@ -49,5 +49,5 @@ Items on breakable walls could be an secret boots, that means is an offworld ite
 Items on the floor could be your item or a bag of gold. The color of the bag is red for useful items, yellow for filler ones and blue for progression.  
 
 # Troubleshooting
-If you choose the wrong file ROM or audio during patching you can delete both Castlevania - Symphony of the Night (USA) from your archipelago main folder and the patched ones also, you be asked again during the patch process.  
+If you choose the wrong file ROM or audio during patching you can delete both Castlevania - Symphony of the Night (USA) from your MultiworldGG main folder and the patched ones also, you be asked again during the patch process.  
 

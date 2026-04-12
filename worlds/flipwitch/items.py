@@ -6,7 +6,7 @@ from typing import Dict, List, Union, Protocol, Tuple
 
 from worlds.flipwitch import FlipwitchOptions
 from worlds.flipwitch.data.items import FlipwitchItemData, all_items, base_items, gacha_items, filler_items, shop_items, quest_items, warp_items
-from worlds.flipwitch.strings.items import Coin, Upgrade, Goal, QuestItem, Custom, hint_base_items
+from worlds.flipwitch.strings.items import Coin, Upgrade, GoalItem, QuestItem, Custom, hint_base_items, Warp
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +50,8 @@ def create_flipwitch_items(item_factory: FlipwitchItemFactory, options: Flipwitc
     create_gacha_items(item_factory, options, items, random)
     create_shop_items(item_factory, options, hints_lookup, items)
     create_quest_items(item_factory, options, hints_lookup, items)
+    create_warp_items(item_factory, options, items)
+    create_extra_movement_items(item_factory, options, items)
     return items
 
 
@@ -63,8 +65,7 @@ def create_base_items(item_factory: FlipwitchItemFactory, options: FlipwitchOpti
             if options.stat_shuffle == options.stat_shuffle.option_false:
                 continue
             upgrade_name = item.name
-            items.extend([item_factory(stat, ItemClassification.progression | ItemClassification.useful) for stat in [upgrade_name]*8])
-            items.extend([item_factory(stat) for stat in [upgrade_name]*2])
+            items.extend([item_factory(stat) for stat in [upgrade_name]*10])
         elif item.name == Upgrade.mana:
             if options.stat_shuffle == options.stat_shuffle.option_false:
                 continue
@@ -79,11 +80,11 @@ def create_base_items(item_factory: FlipwitchItemFactory, options: FlipwitchOpti
             if options.quest_for_sex == options.quest_for_sex.option_off:
                 continue
             items.extend([item_factory(weapon) for weapon in [Upgrade.wand]*2])
-        elif item.name == Goal.chaos_piece:
+        elif item.name == GoalItem.chaos_piece:
             if options.shuffle_chaos_pieces == options.shuffle_chaos_pieces.option_false:
                 continue
             count = 1
-            for piece in [Goal.chaos_piece] * 6:
+            for piece in [GoalItem.chaos_piece] * 6:
                 chaos_item = item_factory(piece)
                 items.append(chaos_item)
                 hints_lookup[piece + " " + str(count)] = chaos_item
@@ -137,7 +138,7 @@ def create_shop_items(item_factory: FlipwitchItemFactory, options: FlipwitchOpti
 
 
 def create_quest_items(item_factory: FlipwitchItemFactory, options: FlipwitchOptions, hints_lookup: Dict[str, Item], items: List[Item]) -> List[Item]:
-    if options.quest_for_sex == options.quest_for_sex.option_off:
+    if options.quest_for_sex == options.quest_for_sex.option_off or options.quest_for_sex == options.quest_for_sex.option_sensei:
         return items
     for item in quest_items:
         if item.name == Custom.sex_experience:
@@ -169,7 +170,17 @@ def create_warp_items(item_factory: FlipwitchItemFactory, options: FlipwitchOpti
     if options.crystal_teleports == options.crystal_teleports.option_false:
         return items
     for item in warp_items:
+        if item.name == Warp.area_to_warp[options.starting_area.value]:
+            continue
         items.append(item_factory(item.name))
+    return items
+
+
+def create_extra_movement_items(item_factory: FlipwitchItemFactory, options: FlipwitchOptions, items: List[Item]):
+    if options.shuffle_double_jump:
+        items.append(item_factory(Upgrade.rose_ribbon))
+    if options.shuffle_dodge:
+        items.append(item_factory(Upgrade.orb_of_avoidance))
     return items
 
 

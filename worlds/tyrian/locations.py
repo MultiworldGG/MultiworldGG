@@ -794,7 +794,7 @@ class LevelLocationData:
 
                 "LAVA EXIT (Episode 4) @ Items with Fixed Health": {
                     "LAVA EXIT (Episode 4) - DESERTRUN Warp Orb": 441,
-                    "LAVA EXIT (Episode 4) - Counter-Clockwise Orb Wheel": 442,
+                    "LAVA EXIT (Episode 4) - Clockwise Orb Wheel": 442,
                     "LAVA EXIT (Episode 4) - Final Lava Bubble Assault, Right": 443,
                     "LAVA EXIT (Episode 4) - Final Lava Bubble Assault, Left": 444,
                 },

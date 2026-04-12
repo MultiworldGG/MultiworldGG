@@ -14,7 +14,7 @@ from worlds.Files import APPatchExtension, APProcedurePatch
 
 from .items import item_data_table, tank_data_table, major_item_data_table
 from .locations import full_location_table as location_table
-from .options import ChozodiaAccess, DisplayNonLocalItems, Goal, LayoutPatches
+from .options import ChozodiaAccess, DisplayNonLocalItems, GameDifficulty, Goal, LayoutPatches
 from .patcher import MD5_US, patch_rom
 from .patcher.text import LINE_WIDTH, SPACE, Message, get_width_of_encoded_character
 from .item_sprites import Sprite, get_zero_mission_sprite, unknown_item_alt_sprites
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
 
 class MZMPatchExtensions(APPatchExtension):
-    game = "Metroid Zero Mission"
+    game = "Metroid: Zero Mission"
 
     @staticmethod
     def apply_json(caller: APProcedurePatch, rom: bytes, file_name: str) -> bytes:
@@ -32,7 +32,7 @@ class MZMPatchExtensions(APPatchExtension):
 
 
 class MZMProcedurePatch(APProcedurePatch):
-    game = "Metroid Zero Mission"
+    game = "Metroid: Zero Mission"
     hash = MD5_US
     patch_file_ending = ".apmzm"
     result_file_ending = ".gba"
@@ -113,6 +113,18 @@ def split_text(text: str):
     return lines
 
 
+GOAL_TO_CONFIG_NAME = {
+    Goal.option_mecha_ridley: "vanilla",
+    Goal.option_bosses: "bosses",
+    Goal.option_metroid_dna: "metroid_dna"
+}
+
+DIFFICULTY_TO_CONFIG_NAME = {
+    GameDifficulty.option_normal: "normal",
+    GameDifficulty.option_hard: "hard",
+    GameDifficulty.option_either: "either",
+}
+
 def write_json_data(world: MZMWorld, patch: MZMProcedurePatch):
     multiworld = world.multiworld
     player = world.player
@@ -122,8 +134,8 @@ def write_json_data(world: MZMWorld, patch: MZMProcedurePatch):
     }
 
     config = {
-        "goal": world.options.goal.value,
-        "difficulty": world.options.game_difficulty.value,
+        "goal": GOAL_TO_CONFIG_NAME[world.options.goal.value],
+        "difficulty": DIFFICULTY_TO_CONFIG_NAME[world.options.game_difficulty.value],
         "remove_gravity_heat_resistance": True,
         "power_bombs_without_bomb": True,
         "buff_power_bomb_drops": bool(world.options.buff_pb_drops),

@@ -69,39 +69,12 @@ class MessageDisplayHandler:
 
     def should_display_item(self, item_data: dict, send_mode: int) -> bool:
         """Determine if an item should be displayed based on send mode."""
-        if send_mode == 7:
-            return False  # Send nothing
-        elif send_mode == 6:
+        if send_mode == 3:  # display_nothing
+            return False
+        elif send_mode == 2:  # display_only_progression
             return item_data.get("progression", False)
-        elif send_mode == 5:
-            return item_data.get("progression", False) or item_data.get("extended_whitelist", False)
-        else:
-            return item_data.get("progression", False) or item_data.get("extended_whitelist", False)
-
-    def calculate_speed(self, send_mode: int, item_data: dict, pending_count: int, index: int) -> int:
-        """Calculate appropriate text display speed."""
-        if send_mode in [5, 6, 7]:
-            return NORMAL_TEXT_SPEED
-
-        if send_mode == 4:
-            return FAST_TEXT_SPEED if item_data.get("extended_whitelist", False) else NORMAL_TEXT_SPEED
-
-        if send_mode == 3:
-            return FAST_TEXT_SPEED
-
-        # Modes 1 and 2: dynamic speed based on queue length
-        remaining_items = pending_count - index
-        if remaining_items <= MIN_ITEMS_FOR_SPEED_SCALING:
-            return NORMAL_TEXT_SPEED
-
-        speed = round(NORMAL_TEXT_SPEED - (80 / remaining_items))
-        return max(speed, FAST_TEXT_SPEED)
-
-    def update_speed_if_needed(self, new_speed: int):
-        """Update text speed if it has changed."""
-        if self.client.current_speed != new_speed:
-            self.client.current_speed = new_speed
-            self.client.set_speed(new_speed)
+        elif send_mode == 1:  # display_all_items
+            return True
 
 
 class IceTrapHandler:
@@ -307,8 +280,7 @@ class DK64Client:
 
     async def validate_client_connection(self):
         """Validate the client connection."""
-        if not self.memory_pointer:
-            self.memory_pointer = self.n64_client.read_u32(DK64MemoryMap.memory_pointer)
+        self.memory_pointer = self.n64_client.read_u32(DK64MemoryMap.memory_pointer)
         self.n64_client.write_u8(self.memory_pointer + DK64MemoryMap.connection, 0xFF)
         if self.n64_client.read_u8(DK64MemoryMap.eeprom_determined) == 1:
             if self.n64_client.read_u32(DK64MemoryMap.save_type) != 2:
@@ -388,8 +360,7 @@ class DK64Client:
 
         should_display = self._message_handler.should_display_item(item_data, self.send_mode)
         if should_display:
-            speed = self._message_handler.calculate_speed(self.send_mode, item_data, len(self.pending_checks), index)
-            self._message_handler.update_speed_if_needed(speed)
+            self.set_speed(FAST_TEXT_SPEED)
             self.send_message(item_name, from_player, "from")
 
     async def _process_item_data(self, item_data: dict, item_name: str):

@@ -58,7 +58,7 @@ Insert Hint Here
 Darkness{BreakHere}Darkness{BreakHere}Darkness{BreakHere}Keyblade{BreakHere}Darkness{BreakHere}Light{BreakHere}Keyblade
 If you bother me too much,{BreakHere} I have more specialized{BreakHere} kinds of mushrooms.{BreakHere}They're not all friendly
 The Entire Script of Bee Movie
-Hello, Luigi. {BreakHere}What do you want?{BreakHere}If you are looking for ransom, {BreakHere}I can tell you I don't have money,{BreakHere}but what I do have are a very{BreakHere}particular set of items.{BreakHere}Items I have acquired over a very long career.{BreakHere}Items that make me a nightmare{BreakHere}for annoyances like you.{BreakHere}If you leave me be now,{BreakHere}that'll be the end of it.{BreakHere}I will not hurt you,{BreakHere}I will not mushroom you,{BreakHere}but if you don't,{BreakHere}I will look for you,{BreakHere}I will find you{BreakHere}and I will kill you.
+Hello, Luigi. {BreakHere}What do you want?{BreakHere}If you are looking for ransom, {BreakHere}I can tell you I don't have money,{BreakHere}but what I do have are a very{BreakHere}particular set of items.{BreakHere}Items I have acquired over{BreakHere}a very long career.{BreakHere}Items that make me a nightmare{BreakHere}for annoyances like you.{BreakHere}If you leave me be now,{BreakHere}that'll be the end of it.{BreakHere}I will not hurt you,{BreakHere}I will not mushroom you,{BreakHere}but if you don't,{BreakHere}I will look for you,{BreakHere}I will find you{BreakHere}and I will kill you.
 Wizards, man.
 Pssst, hey, Luigi!{BreakHere}Have you seen that lady in{BreakHere}the 2nd Floor bathroom?{BreakHere}Hoo baby!{BreakHere}Do you think she's single?
 NOT THE BEES!

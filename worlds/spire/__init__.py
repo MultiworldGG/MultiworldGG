@@ -6,6 +6,7 @@ from typing import Optional, List, Set, Any
 
 from BaseClasses import Item, ItemClassification, Location, MultiWorld, Region, Tutorial
 from Options import OptionError
+from . import Constants
 from .Characters import character_list, CharacterConfig, character_offset_map, NUM_CUSTOM
 from .Items import event_item_pairs, item_table, ItemType, chars_to_items, base_event_item_pairs, item_groups
 from .Locations import location_table, loc_ids_to_data, LocationData, LocationType, CARD_REWARD_COUNT, location_groups, \
@@ -19,7 +20,7 @@ from ..AutoWorld import WebWorld, World
 class SpireWeb(WebWorld):
     tutorials = [Tutorial(
         "Multiworld Setup Guide",
-        "A guide to setting up Slay the Spire for Archipelago. "
+        "A guide to setting up Slay the Spire for MultiworldGG. "
         "This guide covers single-player, multiworld, and related software.",
         "English",
         "slay-the-spire_en.md",
@@ -96,6 +97,7 @@ class SpireWorld(World):
         else:
             self.options.trap_chance.value = 0
 
+
     def _get_unlocked_char(self, characters: List[str]) -> Optional[str]:
         if len(characters) <= 0:
             raise OptionError("At least one character must be selected.")
@@ -171,13 +173,17 @@ class SpireWorld(World):
             else:
                 selected_chars = self.random.sample(selected_chars, k=num_rand_chars)
             modded_num = 0
+            modded_chars = []
             for char in selected_chars:
                 if character_offset_map.get(char.lower(), None) is None:
                     modded_num += 1
+                    modded_chars.append(char)
             if modded_num > NUM_CUSTOM:
-                supported_chars = sorted({x for x in char_options if x.lower() in character_offset_map})
+                supported_chars = sorted({x for x in char_options if x.lower() in character_offset_map and x not in selected_chars})
                 replace_num = modded_num - NUM_CUSTOM
-                remove_me = self.random.sample(selected_chars, k=replace_num)
+                if unlocked_char in modded_chars:
+                    modded_chars.remove(unlocked_char)
+                remove_me = self.random.sample(modded_chars, k=replace_num)
                 for remove in remove_me:
                     selected_chars.remove(remove)
                 selected_chars += self.random.sample(supported_chars, k=min(replace_num, len(supported_chars)))
@@ -274,14 +280,15 @@ class SpireWorld(World):
 
                 if config.final_act:
                     remaining_checks += 4
-                if config.ascension >= 20:
+                if config.ascension >= 20 and config.ascension_down == 0:
                     remaining_checks += 1
 
                 traps: list[bool] = [self.random.randint(0, 100) < self.options.trap_chance for _ in range(remaining_checks)]
                 trap_num = traps.count(True)
                 filler_num = len(traps) - trap_num
-                for name in self.random.choices(list(self.options.trap_weights.keys()), weights=list(self.options.trap_weights.values()),k=trap_num):
-                    pool.append(SpireItem(name, self.player))
+                if trap_num > 0:
+                    for name in self.random.choices(list(self.options.trap_weights.keys()), weights=list(self.options.trap_weights.values()),k=trap_num):
+                        pool.append(SpireItem(name, self.player))
 
                 # Char specific 1 Gold and 5 Gold, in that order
                 filler_pool = [key for key, val in chars_to_items[char_lookup].items()
@@ -331,7 +338,7 @@ class SpireWorld(World):
                 "costs": self.options.shop_sanity_costs.value,
             },
             "mod_version": self.mod_version,
-            "item_window": Items.CHAR_OFFSET,
+            "item_window": Constants.CHAR_ITEM_OFFSET,
         }
         slot_data.update(self.options.as_dict(
             "ascension",
@@ -398,6 +405,7 @@ class SpireWorld(World):
         return slot_data
 
     def _setup_ut(self, slot_data: dict[str, Any]) -> None:
+        self.options.shop_card_slots.value = slot_data["shop_sanity_options"]["card_slots"]
         self.options.shop_remove_slots.value = slot_data["shop_sanity_options"]["card_remove"]
         self.options.shop_neutral_card_slots.value = slot_data["shop_sanity_options"]["neutral_slots"]
         self.options.shop_relic_slots.value = slot_data["shop_sanity_options"]["relic_slots"]

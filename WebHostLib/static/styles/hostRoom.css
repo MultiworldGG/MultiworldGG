@@ -83,3 +83,15 @@
   50%{background-size:calc(100%/3) 100%,calc(100%/3) 0   ,calc(100%/3) 100%}
   66%{background-size:calc(100%/3) 100%,calc(100%/3) 100%,calc(100%/3) 0   }
 }
+
+@media (max-width: 767px) {
+    #host-room {
+        width: 99%;
+    }
+    #base-header-right-mobile {
+        margin-right: 35px !important;
+    }
+    #base-header-mobile-menu {
+        margin-right: 45px !important;
+    }
+}

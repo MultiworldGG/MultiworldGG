@@ -7,19 +7,23 @@ from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes, APPatchEx
 from typing import Sequence
 from .in_game_data import (global_weapon_table, base_weapons, valid_random_starting_weapons, global_soul_table,
                            base_check_address_table, easter_egg_table, warp_room_bits, world_version, global_item_table, common_filler_pool,
-                           boss_list, enemy_table)
+                           boss_list, enemy_table, button_item_table)
 from .music_randomizer import area_music_randomizer, boss_music_randomizer
+from .boss_randomizer import write_bosses
 from .synthesis_randomizer import write_synthesis
 from .bullet_wall_randomizer import apply_souls_and_gfx
 from Options import OptionError
-from .Options import StartingWeapon, SoulRandomizer, SoulsanityLevel
+from .Options import StartingWeapon, SoulRandomizer, SoulsanityLevel, GateItems
 from .Items import soul_filler_table
+from .seal_shuffle import write_seals, randomize_seal_patterns
+from .set_goals import write_goal_triggers
 from BaseClasses import ItemClassification
 
 hash_us = "cc0f25b8783fb83cb4588d1c111bdc18"
 
 base_enemy_address = 0x7CCAC
 soul_check_table = 0x2F6DC50
+button_check_table = 0x2F6DE0C
 
 
 class LocalRom(object):
@@ -45,7 +49,10 @@ def patch_rom(world, rom, player: int, code_patch):
     # This is the entirety of the patched code
     rom.write_bytes(0x2F6DC50, code_patch)
 
+    write_goal_triggers(world, rom)
+
     weapon = world.options.starting_weapon.value
+
 
     if isinstance(weapon, str):
         if weapon not in global_weapon_table:
@@ -65,7 +72,7 @@ def patch_rom(world, rom, player: int, code_patch):
     rom.write_bytes(0x2F6DD4E, struct.pack("H", warp_room))  # The initial warp room bit
 
     if world.options.replace_menace_with_soma:
-        rom.write_bytes(0xC2418, bytearray([0x03]))
+        rom.copy_bytes(0x158C3C, 8, 0x158C34)  # Replace the menace warp coords with soma's
 
     if world.options.remove_money_gates:
         rom.write_bytes(0xAD661, bytearray([0x00]))
@@ -111,18 +118,27 @@ def patch_rom(world, rom, player: int, code_patch):
         rom.write_bytes(0xB84A9, bytearray([0x00]))
 
     if not world.options.goal:  # Remove the better ending trigger and replace Dario with Menace
-        rom.write_bytes(0xBD508, bytearray([0x60, 0xDC]))
+        rom.write_bytes(0xBD508, bytearray([0x60, 0xDC])) #  ???
         rom.write_bytes(0xBD50E, bytearray([0xFF, 0xFE, 0xD0, 0xFF]))
         rom.write_bytes(0xC1C30, bytearray([0xD4, 0x94]))
         rom.write_bytes(0xC1C38, bytearray([0xD0]))
-        rom.write_bytes(0xB05A1, bytearray([0x00]))
+        #rom.write_bytes(0xB05A1, bytearray([0x00]))
+
+        ####  Wall off the final boss door in the Abyss
+        rom.write_bytes(0x2DE0DC, bytearray([0x2F]))
+        rom.write_bytes(0x2DE11C, bytearray([0x3F]))
+        rom.write_bytes(0x2DE15C, bytearray([0x4F]))
+        rom.write_bytes(0x2DE19C, bytearray([0x5F]))
+        rom.write_bytes(0x2DE1DC, bytearray([0x5F]))
+        rom.write_bytes(0x2DE21C, bytearray([0x41]))
+        ######
 
         rom.write_bytes(0x2F6DDFD, bytearray([0xFF])) # Remove Death, Abaddon, and Aguni from the Soulstiary
-        rom.write_bytes(0x2F6DDFE, bytearray([0xFF]))
+        rom.write_bytes(0x2F6DDFE, bytearray([0xFF])) # IF MINE IS REMOVED!!!!
         rom.write_bytes(0x2F6DE02, bytearray([0xFF]))
 
-    if world.options.goal == 2:
-        rom.write_bytes(0x2F6DD48, bytearray([0x01]))
+    #if world.options.goal == 2:
+        #rom.write_bytes(0x2F6DD48, bytearray([0x01]))  # Abyss plus mode, flags the Garden event as requiring Aguni to be defeated
 
     if world.options.one_screen_mode:
         rom.write_bytes(0x2F6DD4C, bytearray([0x01]))
@@ -135,6 +151,9 @@ def patch_rom(world, rom, player: int, code_patch):
 
     if world.options.no_mp_bat:
         rom.write_bytes(0xA1782, bytearray([0x00])) # Zero the Bat's MP cost
+        
+    if world.options.randomize_seal_patterns:
+        randomize_seal_patterns(world, rom)
 
     rom.write_bytes(0x2F6DD8E, struct.pack("H", world.options.experience_percentage))
 
@@ -217,6 +236,10 @@ def patch_rom(world, rom, player: int, code_patch):
             rom.write_bytes(rare_drop_address, bytearray([rare_item]))
 
     write_synthesis(world, rom)
+    write_seals(world, rom)
+
+    if world.options.boss_shuffle:
+        write_bosses(world, rom)
 
     if world.options.area_music_randomizer:
         area_music_randomizer(world, rom)
@@ -225,12 +248,21 @@ def patch_rom(world, rom, player: int, code_patch):
         boss_music_randomizer(world, rom)
 
     if world.options.randomize_red_soul_walls:
-        rom.write_bytes(0x2F6DE06, bytearray([0x01])) #Tell the rom we have this on
+        rom.write_bytes(0x2F6DE08, bytearray([0x01])) # Tell the rom we have this on
 
         rom.write_bytes(0x158BC0, bytearray([global_soul_table.index(world.red_soul_walls[0])]))
         rom.write_bytes(0x158BBA, bytearray([global_soul_table.index(world.red_soul_walls[1])]))
         rom.write_bytes(0x158BB4, bytearray([global_soul_table.index(world.red_soul_walls[2])]))
         rom.write_bytes(0x158BC6, bytearray([global_soul_table.index(world.red_soul_walls[3])]))
+
+    if world.options.gate_items == GateItems.option_buttonsanity:
+        rom.write_bytes(0x2F6DE09, bytearray([0x01])) # Enables Button Check Mode
+
+    if world.options.hard_mode:
+        rom.write_bytes(0x2F6DE0A, bytearray([0x01])) # Hard mode set
+
+    if world.options.passive_soul_eater_ring:
+        rom.write_bytes(0x2F6DE0B, bytearray([0x01])) # Passive souls
 
     for location in world.multiworld.get_locations(player):
         item_type = 0
@@ -266,6 +298,12 @@ def patch_rom(world, rom, player: int, code_patch):
                     item_id = item_id & 0xFF
                 rom.write_bytes(easter_egg_table[location.name][0], bytearray([item_type]))
                 rom.write_bytes(easter_egg_table[location.name][1], bytearray([item_id]))
+            elif location.name in button_item_table:
+                address = button_check_table + (button_item_table.index(location.name) * 4) # Set the address
+                item_color = item_id >> 8
+                item_id = item_id & 0xFF
+                rom.write_bytes(address, bytearray([item_type, item_id, item_color]))
+
             else:
                 # Regular item checks
                 address = base_check_address_table[location.name]
@@ -364,7 +402,7 @@ class DoSPatchExtensions(APPatchExtension):
     @staticmethod
     def modify_soulwall_gfx(caller: APProcedurePatch, rom: bytes) -> bytes:
         rom = LocalRom(rom)
-        soul_wall_randomizer = int.from_bytes(rom.read_bytes(0x2F6DE06, 1))
+        soul_wall_randomizer = int.from_bytes(rom.read_bytes(0x2F6DE08, 1))
         if soul_wall_randomizer:
             apply_souls_and_gfx(rom)
         return rom.get_bytes()
@@ -380,7 +418,7 @@ def get_base_rom_bytes(file_name: str = "") -> bytes:
         basemd5 = hashlib.md5()
         basemd5.update(base_rom_bytes)
         if hash_us != basemd5.hexdigest():
-            raise Exception('Supplied Base Rom does not match known MD5 for US(1.0) release. '
+            raise Exception('Supplied Base Rom does not match known MD5 for US release. '
                             'Get the correct game and version, then dump it')
         get_base_rom_bytes.base_rom_bytes = base_rom_bytes
     return base_rom_bytes

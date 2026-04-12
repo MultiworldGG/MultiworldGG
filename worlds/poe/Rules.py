@@ -43,7 +43,7 @@ def get_ascendancy_amount_for_act(act, world: "PathOfExileWorld"):
     return (
         min(
             world.options.ascendancies_available_per_class.value,
-            3 if world.options.starting_character.value != world.options.starting_character.option_scion else 1
+            3 if world.options.starting_character.value != world.options.starting_character.option_scion else 2
         )
     ) if act >= 3 else 0
 
@@ -97,22 +97,42 @@ def can_reach(act: int, world: "PathOfExileWorld", state: CollectionState) -> bo
 
     # make a list of valid weapon types, based on the state
 
+    
+    ascedancy_count = state.count_from_list([item['name'] for item in Items.get_ascendancy_class_items(opt.starting_character.current_option_name)], world.player)
+    if not _debug:
+        if ascedancy_count < ascendancy_amount:
+            return False
+    gear_count = state.count_from_list([item['name'] for item in Items.get_gear_items()], world.player)
+    if not _debug:
+        if gear_count < gear_amount:
+            return False
+    flask_count = state.count_from_list([item['name'] for item in Items.get_flask_items() if 'Unique' not in item.get('category', '')], world.player) # unique flasks are not logically required
+    if not _debug:
+        if flask_count < flask_amount:
+            return False
+    support_gem_count = state.count_from_list([item['name'] for item in Items.get_support_gem_items()], world.player)
+    if not _debug:
+        if support_gem_count < support_gem_amount:
+            return False
+    gem_slot_count = state.count_from_list([item['name'] for item in Items.get_max_links_items()], world.player)
+    if not _debug:
+        if gem_slot_count < gem_link_amount:
+            return False
+    passive_count = state.count("Progressive passive point", world.player)
+    if not _debug:
+        if passive_count < passive_amount:
+            return False
+    movement_gems_count = state.count_from_list(
+        [item['name'] for item in Items.get_by_has_every_category({"EarlyMovement"})],world.player)
+    if not _debug:
+        if movement_gems_count < movement_gems_amount:
+            return False
+
     valid_weapon_types = {
         item for item in weapon_categories
         if state.has_from_list([i["name"] for i in Items.get_by_category(item)], world.player, 1)
     }
     valid_weapon_types.add("Unarmed")  # every character can use unarmed, so we add it as a valid type, for gems
-    
-    ascedancy_count = state.count_from_list([item['name'] for item in Items.get_ascendancy_class_items(opt.starting_character.current_option_name)], world.player)
-    gear_count = state.count_from_list([item['name'] for item in Items.get_gear_items()], world.player)
-    flask_count = state.count_from_list([item['name'] for item in Items.get_flask_items() if 'Unique' not in item.get('category', '')], world.player) # unique flasks are not logically required
-    support_gem_count = state.count_from_list([item['name'] for item in Items.get_support_gem_items()], world.player)
-    gem_slot_count = state.count_from_list([item['name'] for item in Items.get_max_links_items()], world.player)
-    passive_count = state.count("Progressive passive point", world.player)
-
-    movement_gems_count = state.count_from_list(
-        [item['name'] for item in Items.get_by_has_every_category({"EarlyMovement"})],world.player)
-
     gems_for_our_weapons = [item['name'] for item in Items.get_main_skill_gems_by_required_level_and_useable_weapon(
             available_weapons= valid_weapon_types, level_minimum=1, level_maximum=acts[act].get("maxMonsterLevel", 0) )]
     usable_skill_gem_count = (state.count_from_list(gems_for_our_weapons, world.player))

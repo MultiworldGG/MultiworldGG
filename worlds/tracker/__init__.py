@@ -20,7 +20,7 @@ def launch_client(*args):
     from .TrackerClient import launch as TCMain
     launch(TCMain, name="Universal Tracker client", args=args)
 
-UT_VERSION = "v0.2.24.1"
+UT_VERSION = "v0.2.28"
 
 class CurrentTrackerState(NamedTuple):
     all_items: Counter
@@ -77,6 +77,11 @@ class TrackerSettings(Group):
         off: Force worlds to connect all entrances
         """
 
+    class SaveEnteredCommands(Bool):
+        """Enable saving which locations you've ignored and which items you've manually collected using the commands.
+        These will be saved per seed and slot.
+        """
+
     player_files_path: TrackerPlayersPath = TrackerPlayersPath("Players")
     include_region_name: RegionNameBool | bool = False
     include_location_name: LocationNameBool | bool = True
@@ -84,6 +89,7 @@ class TrackerSettings(Group):
     use_split_map_icons: UseSplitMapIcons | bool = True
     enforce_deferred_entrances: SettingDeferredEntranceMode | str = "default"
     display_glitched_logic: DisplayGlitchedLogic | bool = True
+    save_entered_commands: SaveEnteredCommands | bool = True
 
 
 class TrackerWorld(World):

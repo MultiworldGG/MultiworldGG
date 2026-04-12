@@ -1,6 +1,6 @@
 from __future__ import annotations
 from .names import ItemNames, LocationNames
-from .options import CupheadOptions, optiondefs as odefs
+from .options import CupheadOptions, options as odefs
 from . import enums as e
 
 # These are settings stored and accessed by other classes
@@ -12,6 +12,7 @@ class WorldConfig:
     start_weapon: int
     weapon_mode: e.WeaponMode
     level_shuffle: e.LevelShuffleMode
+    level_shuffle_kingdice: bool
     level_shuffle_seed: str
     level_placements: dict[str, str]
     freemove_isles: bool
@@ -62,6 +63,7 @@ class WorldConfig:
         self.start_weapon = int(options.start_weapon.value)
         self.weapon_mode = e.WeaponMode(options.weapon_mode.value)
         self.level_shuffle = e.LevelShuffleMode(options.level_shuffle.value)
+        self.level_shuffle_kingdice = bool(options.level_shuffle_kingdice)
         self.level_shuffle_seed = options.level_shuffle_seed.value
         self.level_placements = options.level_placements.value
         self.freemove_isles = bool(options.freemove_isles.value)
@@ -112,6 +114,7 @@ class WorldConfig:
         self.start_weapon = 0
         self.weapon_mode = e.WeaponMode(odefs.WeaponMode.default)
         self.level_shuffle = e.LevelShuffleMode(odefs.LevelShuffle.default)
+        self.level_shuffle_kingdice = bool(odefs.LevelShuffleDicePalace.default)
         self.level_shuffle_seed = "0"
         self.level_placements = odefs.LevelPlacements.default
         self.freemove_isles = bool(odefs.FreeMoveIsles.default)
@@ -171,9 +174,8 @@ class WorldConfig:
     def _get_contract_requirements(self, options: CupheadOptions | None) -> tuple[int, int, int]:
         max_contracts = (5, 10, 17)
         total_req = options.contract_requirements.value if options else odefs.ContractRequirements.default
-        distrib = total_req // 3
-        die1 = min(distrib, max_contracts[0])
-        die2 = die1 + min(distrib, max_contracts[1])
+        die1 = min(total_req // 3, max_contracts[0])
+        die2 = min((die1 + total_req) // 2, max_contracts[1])
 
         return (die1, die2, total_req)
 

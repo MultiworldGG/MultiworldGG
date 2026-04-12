@@ -10,11 +10,12 @@ from pony.orm import count, commit, db_session
 from werkzeug.utils import secure_filename
 from Utils import __version__
 
+
 from worlds.AutoWorld import AutoWorldRegister, World
 from . import app, cache
 from .markdown import render_markdown
 from .models import Seed, Room, Command, UUID, uuid4
-from Utils import title_sorted
+from Utils import title_sorted, utcnow
 
 class WebWorldTheme(StrEnum):
     DIRT = "dirt"
@@ -54,7 +55,7 @@ def get_world_version(world: type(World)) -> str:
     try:
         import json
         import pkgutil
-        
+
         # Get the world's module path
         world_module = world.__module__
         if world_module.startswith('worlds.'):
@@ -63,7 +64,10 @@ def get_world_version(world: type(World)) -> str:
                 manifest_data = pkgutil.get_data(world_module, 'archipelago.json')
                 if manifest_data:
                     manifest = json.loads(manifest_data.decode('utf-8-sig'))
-                    if 'world_version' in manifest and manifest['world_version']:
+                    # Prefer world_version_full if it exists
+                    if 'world_version_full' in manifest and manifest['world_version_full']:
+                        return f"{manifest['world_version_full']}"
+                    elif 'world_version' in manifest and manifest['world_version']:
                         world_version = manifest['world_version']
                         # Don't show version if it's 0.0.0
                         if world_version != "0.0.0":
@@ -72,7 +76,7 @@ def get_world_version(world: type(World)) -> str:
                 pass
     except (ImportError, AttributeError, OSError):
         pass
-    
+
     return ""
 
 
@@ -335,11 +339,12 @@ def host_room(room: UUID):
     if room is None:
         return abort(404)
 
-    now = datetime.datetime.utcnow()
+    now = utcnow()
     # indicate that the page should reload to get the assigned port
-    should_refresh = ((not room.last_port and now - room.creation_time < datetime.timedelta(seconds=3))
-                      or room.last_activity < now - datetime.timedelta(seconds=room.timeout))
-
+    should_refresh = (
+        (not room.last_port and now - room.creation_time < datetime.timedelta(seconds=3))
+        or room.last_activity < now - datetime.timedelta(seconds=room.timeout)
+    )
     if now - room.last_activity > datetime.timedelta(minutes=1):
         # we only set last_activity if needed, otherwise parallel access on /room will cause an internal server error
         # due to "pony.orm.core.OptimisticCheckError: Object Room was updated outside of current transaction"
@@ -378,7 +383,7 @@ def favicon():
 
 @app.route('/discord')
 def discord():
-    return redirect("https://discord.gg/zsr")
+    return redirect("https://discord.multiworld.gg")
 
 
 @app.route('/datapackage')

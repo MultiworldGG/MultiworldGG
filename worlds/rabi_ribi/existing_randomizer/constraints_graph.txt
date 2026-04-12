@@ -25,13 +25,31 @@
 }
 
 {
-"edge": "FOREST_WARP -> FOREST_COCOA_ROOM",
+"edge": "FOREST_WARP -> FOREST_BEFORE_COCOA_ROOM",
 "prereq": "NONE",
 }
 
 {
-"edge": "FOREST_COCOA_ROOM -> FOREST_WARP",
+"edge": "FOREST_BEFORE_COCOA_ROOM -> FOREST_COCOA_ROOM",
 "prereq": "NONE",
+}
+
+{
+"edge": "FOREST_COCOA_ROOM -> FOREST_BEFORE_COCOA_ROOM",
+"prereq": "NONE",
+}
+
+{
+"edge": "FOREST_BEFORE_COCOA_ROOM -> FOREST_WARP",
+"prereq": "NONE",
+// Ribbon assumed to always be reachable
+// "prereq": "
+//     RIBBON | SLIDING_POWDER | AIR_JUMP | AIR_DASH | WHIRL_BONK
+//     | (SPEED5 & ADV_HARD)
+//     | (ADV_EXT & (
+//         SPEED3 // quick drop jump
+//         | (BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
+//     ))",
 }
 
 {
@@ -849,7 +867,7 @@ PROLOGUE_TRIGGER & (
 "edge": "SKY_ISLAND_UPPER -> SKY_ISLAND_OOB",
 "prereq": "
     // 1st oob wall
-    ADV_VHARD & (
+    ADV_VHARD & BUNNY_AMULET_LV2 & (
         (AIR_JUMP & WALL_JUMP_LV2 & (RABI_SLIPPERS | AIR_DASH))
         | (RABI_SLIPPERS & AIR_JUMP & AIR_DASH)
         | (SLIDE_JUMP_BUNSTRIKE_CANCEL & AIR_JUMP)
@@ -915,7 +933,10 @@ PROLOGUE_TRIGGER & (
 "prereq": "
     (POST_GAME | POST_IRISU)
     // library open flag
-    & UPRPRC_LOWER & PARK_WARP & (4TILE_ZIP | SYSINT2_END)
+    & (UPRPRC_LOWER & PARK_WARP & (
+        (ADV & 4TILE_ZIP) // zip to Irisu in UPRPRC base
+        | SYSINT2_END
+        ))
     // entering library
     & ((15TM & TM_MIRIAM & TM_RUMI & CHAPTER_6) | 3TILE_ZIP)
 ",
@@ -1442,7 +1463,7 @@ ADV_VHARD & (
 {
 "edge": "RAVINE_LOWER -> RAVINE_CHOCOLATE",
 "prereq": "
-    (AIR_JUMP & ((ITM & SPEED1) | AIR_DASH | ADV_VHARD))
+    (AIR_JUMP & ((ITM & SPEED1) | (AIR_DASH & (RABI_SLIPPERS | HARD)) | AIR_DASH_LV3 | ADV_VHARD))
     | WHIRL_BONK
     | (ADV_HARD & RABI_SLIPPERS & WALL_JUMP & AIR_DASH & (SLIDING_POWDER | SPEED5))
     | (ADV_VHARD & RABI_SLIPPERS & WALL_JUMP_LV2) // buffered wimpy
@@ -2205,7 +2226,7 @@ ITM & (
 
 {
 "edge": "AQUARIUM_BOMB_WALLED_AREA -> AQUARIUM_BEACH_ENTRANCE",
-"prereq": "EXPLOSIVES | (ADV_STUPID & SLIDE_ZIP)",
+"prereq": "EXPLOSIVES | (SLIDE_ZIP & HARD & BORING)",
 }
 
 {
@@ -2766,7 +2787,7 @@ ITM & (
     (ITM_HARD & WALL_JUMP & AIR_JUMP & AIR_DASH)
     | (ADV_VHARD & RABI_SLIPPERS & BUNNY_AMULET & (
         (WALL_JUMP & AIR_JUMP)
-        | (WALL_JUMP_LV2 & AIR_DASH)
+        // | (WALL_JUMP_LV2 & AIR_DASH) // Removed due to requiring -bettercontrols?
     ))
     | (AIR_JUMP & BUNNY_AMULET_LV2 & (
         (ADV_EXT & WALL_JUMP_LV2)

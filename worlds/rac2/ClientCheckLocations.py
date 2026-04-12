@@ -151,7 +151,7 @@ async def handle_checked_location(ctx: 'Rac2Context'):
     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared_locations}])
     for location_id in cleared_locations:
         location = next(loc for loc in all_active_locations if loc.location_id == location_id)
-        ctx.game_interface.logger.info(f"Location checked: {location.name}")
+        #ctx.game_interface.logger.info(f"Location checked: {location.name}")
         if location.is_vendor:
             ctx.game_interface.vendor.notify_item_bought(location_id)
             item_was_bought = True

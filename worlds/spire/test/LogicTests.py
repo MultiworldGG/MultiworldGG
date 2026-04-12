@@ -122,13 +122,9 @@ logic_map: dict[PowerLevel, List[str]] = {
         "Relic 10",
         *_create_combat_check(24, 25),
     ],
-    PowerLevel(draw=10,relic=7,boss_relic=2,rest=3,smith=3, shop=10,shop_remove=3, gold=9): [
+    PowerLevel(draw=10,relic=7,boss_relic=2,rest=3,smith=3, shop=10,shop_remove=3, gold=9, keys=1): [
         "Act 3 Boss",
-        * _create_floor_check(50, 51)
-    ],
-    PowerLevel(draw=10, relic=7, boss_relic=2, rest=3, smith=3, shop=10, shop_remove=3, gold=9, keys=1): [
-        "Heart Room",
-        *_create_floor_check(52, 55)
+        * _create_floor_check(50, 55)
     ],
 }
 
@@ -242,6 +238,7 @@ class LogicTestBase(SpireTestBase):
             golds.pop()
         elif type == "Keys":
             keys.pop()
+
 
         for list in [draws, relics, boss_relics, rests, smiths, shops, removes, golds, keys]:
             for item in list:

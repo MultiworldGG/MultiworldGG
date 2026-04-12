@@ -1,12 +1,17 @@
+import random
 from collections.abc import Hashable
 from dataclasses import dataclass
-from typing import Type, override
+from typing import Type, override, Any
 
-from BaseClasses import PlandoOptions
+from schema import Schema, And, Optional, Use, Or
+
+from BaseClasses import PlandoOptions, ItemClassification
 from Options import Toggle, Choice, DefaultOnToggle, Range, PerGameCommonOptions, NamedRange, OptionSet, \
-    StartInventoryPool, OptionDict, Visibility, DeathLink, OptionGroup, OptionList, FreeText, OptionError
+    StartInventoryPool, OptionDict, Visibility, DeathLink, OptionGroup, OptionList, FreeText, OptionError, OptionCounter
+from Utils import is_iterable_except_str
 from .data import data, MapPalette, MiscOption
 from .maps import FLASH_MAP_GROUPS
+from .pokemon_data import LEGENDARY_POKEMON, NON_LEGENDARY_POKEMON
 from ..AutoWorld import World
 
 
@@ -19,12 +24,52 @@ class EnhancedOptionSet(OptionSet):
             if "_All" in value:
                 value = [k for k in self.valid_keys if not k.startswith("_")]
 
-        super().__init__(value)
+            if "_Random" in value:
+                value = [v for v in value if v != "_Random"]
+                value += [k for k in sorted(self.valid_keys) if not k.startswith("_") and random.getrandbits(1)]
 
+        super().__init__(set(value))
+
+
+class PokemonSet(OptionSet):
     def __init_subclass__(cls, **kwargs):
-        super.__init_subclass__()
-        cls.valid_keys += ["_Random", "_All"]
-        cls._valid_keys = frozenset(set(cls.valid_keys) | {"_Random", "_All"})
+        cls.__doc__ = cls.__doc__ + (
+            "You can use _Legendaries or _Non-Legendaries as shortcuts, "
+            "or _<Type> (e.g. _Fire, _Water) to include all Pokemon of that type."
+        )
+
+    type_shortcuts = sorted(f"_{"Psychic" if t == "PSYCHIC_TYPE" else t.title()}" for t in data.types)
+
+    valid_keys = sorted(pokemon.friendly_name for pokemon in data.pokemon.values()) + [
+        "_Legendaries", "_Non-Legendaries"
+    ] + type_shortcuts
+
+    def get_ids(self, world) -> set[str]:
+        if not self.value: return set()
+
+        pokemon = set(self.value)
+        if "_Legendaries" in pokemon:
+            pokemon.discard("_Legendaries")
+            pokemon.update(LEGENDARY_POKEMON)
+        if "_Non-Legendaries" in pokemon:
+            pokemon.discard("_Non-Legendaries")
+            pokemon.update(NON_LEGENDARY_POKEMON)
+        for type_shortcut in self.type_shortcuts:
+            if type_shortcut in pokemon:
+                pokemon.discard(type_shortcut)
+                type_name = type_shortcut[1:].upper()  # strip leading _, match internal type key casing
+                if type_name == "PSYCHIC":
+                    type_name = "PSYCHIC_TYPE"
+                pokemon.update(
+                    pkmn_data.friendly_name
+                    for pkmn_data in world.generated_pokemon.values()
+                    if type_name in pkmn_data.types
+                )
+
+        pokemon_ids = {pokemon_id for pokemon_id, pokemon_data in world.generated_pokemon.items() if
+                       pokemon_data.friendly_name in pokemon}
+
+        return pokemon_ids
 
 
 class Goal(Choice):
@@ -465,6 +510,39 @@ class SSAquaAccess(Choice):
     option_lighthouse_and_ticket = 1
 
 
+class Route30Access(Choice):
+    """
+    Sets the requirement to end the Pokemon battle on Route 30
+    - Mr. Pokemon: Visit Mr. Pokemon in his house
+    - Mystery Egg: Return the Mystery Egg to Professor Elm
+    """
+    display_name = "Route 30 Access"
+    default = 0
+    option_mr_pokemon = 0
+    option_mystery_egg = 1
+
+
+class SouthKantoAccess(Choice):
+    """
+    Sets where the landslide that is normally south of Fuchsia City is located
+    """
+    display_name = "South Kanto Access"
+    default = 0
+    option_route_19 = 0
+    option_route_21 = 1
+    option_neither = 2
+
+
+class SouthKantoCondition(Choice):
+    """
+    Sets the condition which clears the south Kanto landslide
+    """
+    display_name = "South Kanto Condition"
+    default = 0
+    option_enter_south_kanto = 0
+    option_power_restored = 1
+
+
 class Route30Battle(Choice):
     """
     Sets which directions the battle on Route 30 blocks
@@ -657,6 +735,13 @@ class BreedingMethodsRequired(Choice):
     option_any = 2
 
 
+class EnforceBreedingMethodsLogic(Toggle):
+    """
+    Sets whether the game will prevent the breeding of Pokemon that do not match the selected breeding logic
+    """
+    display_name = "Enforce Breeding Methods Logic"
+
+
 class EvolutionGymLevels(Range):
     """
     Sets how many levels each accessible gym puts into logic for level (and Tyrogue) evolutions
@@ -784,6 +869,19 @@ class RandomizeBerryTrees(Toggle):
     display_name = "Randomize Berry Trees"
 
 
+class RandomizePokedex(Choice):
+    """
+    Sets whether the Pokedex is shuffled into the pool
+
+    The Pokedex is required for Dexsanity, Dexcountsanity, trades and Pokemon request locations.
+    """
+    display_name = "Randomize Pokedex"
+    default = 0
+    option_vanilla = 0
+    option_start_with = 1
+    option_randomize = 2
+
+
 class RandomizePokemonRequests(Choice):
     """
     Shuffles the items given by Bill's Grandpa after showing him specific Pokemon into the pool, as well as the reward
@@ -863,15 +961,13 @@ class RandomizeStarters(Choice):
     option_base_stat_mode = 4
 
 
-class StarterBlocklist(OptionSet):
+class StarterBlocklist(PokemonSet):
     """
     These Pokemon will not be chosen as starter Pokemon
     Does nothing if starter Pokemon are not randomized
-    You can use "_Legendaries" as a shortcut for all legendary Pokemon
     Blocklists are best effort, other constraints may cause them to be ignored
     """
     display_name = "Starter Blocklist"
-    valid_keys = sorted(pokemon.friendly_name for pokemon in data.pokemon.values()) + ["_Legendaries"]
 
 
 class StarterBST(NamedRange):
@@ -906,16 +1002,14 @@ class RandomizeWilds(Choice):
     option_catch_em_all = 4
 
 
-class WildEncounterBlocklist(OptionSet):
+class WildEncounterBlocklist(PokemonSet):
     """
     These Pokemon will not appear in the wild
     Does nothing if wild Pokemon are not randomized
-    You can use "_Legendaries" as a shortcut for all legendary Pokemon
     Blocklists are best effort, other constraints may cause them to be ignored
     This setting does not affect the bug catching contest.
     """
     display_name = "Wild Encounter Blocklist"
-    valid_keys = sorted(pokemon.friendly_name for pokemon in data.pokemon.values()) + ["_Legendaries"]
 
 
 class EncounterGrouping(Choice):
@@ -989,15 +1083,13 @@ class RandomizeStaticPokemon(Toggle):
     display_name = "Randomize Static Pokemon"
 
 
-class StaticBlocklist(OptionSet):
+class StaticBlocklist(PokemonSet):
     """
     These Pokemon will not appear as static overworld encounters, gift eggs or gift Pokemon
     Does nothing if static Pokemon are not randomized
-    You can use "_Legendaries" as a shortcut for all legendary Pokemon
     Blocklists are best effort, other constraints may cause them to be ignored
     """
     display_name = "Static Blocklist"
-    valid_keys = sorted(pokemon.friendly_name for pokemon in data.pokemon.values()) + ["_Legendaries"]
 
 
 class RandomizeTrades(Choice):
@@ -1023,15 +1115,13 @@ class RandomizeTrainerParties(Choice):
     option_completely_random = 2
 
 
-class TrainerPartyBlocklist(OptionSet):
+class TrainerPartyBlocklist(PokemonSet):
     """
     These Pokemon will not appear in enemy trainer parties
     Does nothing if trainer parties are not randomized
-    You can use "_Legendaries" as a shortcut for all legendary Pokemon
     Blocklists are best effort, other constraints may cause them to be ignored
     """
     display_name = "Trainer Party Blocklist"
-    valid_keys = sorted(pokemon.friendly_name for pokemon in data.pokemon.values()) + ["_Legendaries"]
 
 
 class LevelScaling(Choice):
@@ -1049,9 +1139,53 @@ class LevelScaling(Choice):
     option_spheres_and_distance = 2
 
 
+class LevelCurve(Choice):
+    """
+    When level scaling is enabled, use a custom level curve instead of deriving levels from vanilla data.
+    The curve distributes levels from min to max across all scaled levels (trainers, statics, and wild encounters).
+
+    - Vanilla: Use vanilla levels as the basis for scaling.
+    - Linear: Levels increase at a constant rate from min to max.
+    - Sqrt: Levels rise quickly early then taper off. Harder early game, compressed late game.
+    - Quadratic: Levels stay low early then rise steeply. Easier early game, rapid late-game growth.
+    - S Curve: Slow start, fast middle, slow finish.
+    """
+    display_name = "Level Curve"
+    default = 0
+    option_vanilla = 0
+    option_linear = 1
+    option_sqrt = 2
+    option_quadratic = 3
+    option_s_curve = 4
+
+
+class LevelCurveMinLevel(Range):
+    """
+    The starting level for the custom level curve. Only used when Level Curve is not vanilla.
+    """
+    display_name = "Level Curve Min Level"
+    default = 2
+    range_start = 1
+    range_end = 100
+
+
+class LevelCurveMaxLevel(Range):
+    """
+    The ending level for the custom level curve. Only used when Level Curve is not vanilla.
+
+    Red will be scaled so his lowest level matches this value. Wilds and statics will be scaled up to 2/3 of this value.
+
+    NOTE: Trainers are scaled based on their lowest level party member, so they can have levels above this value.
+    """
+    display_name = "Level Curve Max Level"
+    default = 73
+    range_start = 1
+    range_end = 100
+
+
 class LockKantoGyms(Choice):
     """
-    Logically lock entering all Kanto gyms and Mt. Moon behind access to a high level Pokemon, included locations:
+    Logically lock entering all Kanto gyms, Mt. Moon and Trainer House behind access to a high level Pokemon, included locations:
     - Snorlax
     - Ho-oh
     - Lugia
@@ -1059,9 +1193,9 @@ class LockKantoGyms(Choice):
     - Silver Cave entrance
     - Victory Road
 
-    You can still enter gyms and Mt. Moon without access to any of these.
+    You can still enter gyms, Mt. Moon and Trainer House without access to any of these.
 
-    NOTE: It's not recommended to use this option with Level Scaling, as the Gym and wild Pokemon levels will be scaled
+    NOTE: This option is automatically disabled when Level Scaling is enabled.
     """
     display_name = "Lock Kanto Gyms"
     option_off = 0
@@ -1120,40 +1254,74 @@ class LearnsetTypeBias(NamedRange):
     """
     This option will have an effect only if Randomize Learnset option is enabled.
 
-    Percent chance of each move in a Pokemon's learnset to match its type.
-    Default value is vanilla (-1). This means there will be no bias.
-    The lowest possible type matching value is 0. There will be no STAB moves in a Pokemon's learnset
-    If set to 100 all moves that a Pokemon will learn by leveling up will match one of its types
+    Percentage chance of each move in a Pokemon's learnset to match one of its types.
+    Default value is none (-1). This means there will be no bias.
+    The lowest possible type matching value is 0. This means there will be no STAB moves in a Pokemon's learnset.
+    If set to 100 all moves that a Pokemon will learn by levelling up will match one of its types.
     """
     display_name = "Move Learnset Type Bias"
     default = -1
     range_start = -1
     range_end = 100
     special_range_names = {
-        "vanilla": -1,
+        "none": -1,
     }
 
+    @classmethod
+    def from_text(cls, text: str) -> Range:
+        if text == "vanilla":
+            text = "none"
+        return super().from_text(text)
 
-class RandomizeMoveValues(Choice):
+
+class RandomizeMoves(OptionSet):
     """
-    - Restricted: Generates values based on vanilla move values
-    Multiplies the power of each move by a random number between 0.5 and 1.5
-    Adds or subtracts 0, 5 or 10 from original PP | Min 5, Max 40
+    Randomizes the properties of moves.
 
-    - Full Exclude Accuracy: Fully randomizes move Power and PP
-    Randomizes each move's Power [20-150], PP [5-40] linearly. All possible values have the same weight.
-    Multi-hit moves have their power divided by their average hit count.
+    The following options can be provided:
+    - Power Restricted: Multiplies the power of each move by a random number between 0.5 and 1.5
+    - PP Restricted: Adds or subtracts 0, 5 or 10 from original move PP. Base PP is limited to 5-40.
+    - Power Full: Randomizes the power of each move in the range 20-150.
+      Multi hit moves have their power divided by average hit count.
+    - PP Full: Randomizes the PP of each move in the range 5-40.
+    - Accuracy: Randomizes the accuracy of each move. Accuracy has a 70% chance to be 100% for each move,
+      otherwise it is linearly distributed in the range 30-100.
+    - Type: Randomizes the type of each move.
 
-    - Full: Previous + also randomizes accuracy.
-    Accuracy has a flat chance of 70% to be 100%, if not it is linearly distributed between 30-100.
-    Does not randomize accuracy of OHKO moves, status moves (e.g. Toxic) and unique damage moves (e.g. Seismic Toss)
+    Full options override Restricted options.
     """
-    display_name = "Randomize Move Values"
-    default = 0
-    option_vanilla = 0
-    option_restricted = 1
-    option_full_exclude_accuracy = 2
-    option_full = 3
+    display_name = "Randomize Moves"
+    default = []
+
+    power_restricted = "Power Restricted"
+    power_full = "Power Full"
+    pp_restricted = "PP Restricted"
+    pp_full = "PP Full"
+    accuracy = "Accuracy"
+    type = "Type"
+
+    valid_keys = [power_restricted, power_full, pp_restricted, pp_full, accuracy, type]
+
+    @classmethod
+    def from_any(cls, data: Any):
+        key_map = {k.replace(" ", "_").lower(): k for k in cls.valid_keys}
+        if isinstance(data, dict):
+            return cls([key_map.get(k, k) for k, v in data.items() if v != 0])
+        if is_iterable_except_str(data):
+            return cls([key_map.get(item, item) for item in data])
+        return cls.from_text(str(data))
+
+    @classmethod
+    def from_text(cls, text: str):
+        if text in ("vanilla", "0"):
+            return cls([])
+        elif text in ("restricted", "1"):
+            return cls(["Power Restricted", "PP Restricted"])
+        elif text in ("full_exclude_accuracy", "2"):
+            return cls(["Power Full", "PP Full"])
+        elif text in ("full", "3"):
+            return cls(["Power Full", "PP Full", "Accuracy"])
+        return super().from_text(text)
 
 
 class RandomizeMoveTypes(Toggle):
@@ -1161,6 +1329,7 @@ class RandomizeMoveTypes(Toggle):
     Randomizes each move's Type
     """
     display_name = "Randomize Move Types"
+    visibility = Visibility.none
 
 
 class RandomizeTypeChart(Choice):
@@ -1200,6 +1369,10 @@ class RandomizeTMMoves(Toggle):
     display_name = "Randomize TM Moves"
 
 
+_ignored_tm_moves = ("NO_MOVE", "STRUGGLE", "HEADBUTT", "ROCK_SMASH", "CUT", "FLY", "SURF", "STRENGTH", "FLASH",
+                     "WHIRLPOOL", "WATERFALL")
+
+
 class TMPlando(OptionDict):
     """
     Specify what move a TM will contain.
@@ -1207,30 +1380,46 @@ class TMPlando(OptionDict):
     If Dexsanity or Dexcountsanity are enabled, and Sweet Scent hasn't been plandoed, it will be forced to TM12.
     This option takes priority over the TM Blocklist and vanilla TMs, and is ignored in Metronome Only mode.
 
-    Uses the following format:
+    A single move or a weighted dict of moves can be provided per TM:
     tm_plando:
       1: Dynamicpunch
       3: Curse
-      10: Hidden Power
-      ...
+      10:
+        Ice Beam: 50
+        Blizzard: 50
     """
     display_name = "TM Plando"
-    valid_keys = set(range(1, 51)) - {2, 8}
-    valid_values = set(sorted(move.name.title() for id, move in data.moves.items() if id not in ("NO_MOVE", "STRUGGLE",
-                                                                                                 "HEADBUTT",
-                                                                                                 "ROCK_SMASH", "CUT",
-                                                                                                 "FLY", "SURF",
-                                                                                                 "STRENGTH", "FLASH",
-                                                                                                 "WHIRLPOOL",
-                                                                                                 "WATERFALL")))
+    valid_keys = {str(i) for i in range(1, 51)} - {"2", "8"}
+
+    valid_values = set(
+        sorted(move.name.title() for id, move in data.moves.items() if id not in _ignored_tm_moves))
+
+    def __init__(self, value):
+        normalized = {}
+        for k, v in sorted(value.items()):
+            if isinstance(v, dict):
+                invalid = set(v.keys()) - self.valid_values
+                if invalid:
+                    raise OptionError(
+                        f"Found unexpected move(s) {', '.join(sorted(invalid))} in {self.display_name}. "
+                        f"Move names should be in Title Case, e.g. 'Ice Beam'."
+                    )
+                normalized[int(k)] = random.choices(list(v.keys()), weights=list(v.values()))[0]
+            else:
+                normalized[int(k)] = v
+        super().__init__(normalized)
 
     def verify_keys(self) -> None:
-        super(OptionDict, self).verify_keys()
-        data = set(self.value.values())
-        extra = data - self.valid_values
-        if extra:
+        extra_keys = {str(k) for k in self.value.keys()} - self._valid_keys
+        if extra_keys:
             raise OptionError(
-                f"Found unexpected value {', '.join(extra)} in {getattr(self, 'display_name', self)}. "
+                f"Found unexpected key {', '.join(extra_keys)} in {self.display_name}. "
+                f"Allowed keys: {self._valid_keys}."
+            )
+        extra_values = set(self.value.values()) - self.valid_values
+        if extra_values:
+            raise OptionError(
+                f"Found unexpected value {', '.join(extra_values)} in {self.display_name}. "
                 f"Allowed values: {self.valid_values}."
             )
 
@@ -1271,6 +1460,28 @@ class HMCompatibility(NamedRange):
     }
 
 
+class HMCompatibilityOverride(OptionDict):
+    """
+    Allows overriding compatibility percentage for specific HMs
+
+    Uses the following format:
+    hm_compatibility_override:
+      Headbutt: 10
+      Fly: 100
+      Flash: 0
+
+    Headbutt and Rock Smash are considered HMs for this setting.
+    """
+    display_name = "HM Compatibility Override"
+    default = {}
+    schema = Schema(
+        {
+            Optional(move.name.title()): And(Use(int), lambda n: 0 < n <= 100) for move in
+            data.moves.values() if move.is_hm
+        },
+    )
+
+
 class HMPowerCap(NamedRange):
     """
     Lowers the power of damaging HM moves that exceed the set power down to match it.
@@ -1305,6 +1516,12 @@ class RandomizeBaseStats(Choice):
     option_keep_bst = 1
     option_completely_random = 2
 
+class BaseStatsMultiplesOfFive(Toggle):
+    """
+    When randomizing base stats, aim to make the new base stats multiples of 5.
+    When using Keep BST, any remainder will be added to one stat.
+    """
+    display_name = "Make Random Base Stats Multiples of 5"
 
 class RandomizeTypes(Choice):
     """
@@ -1375,14 +1592,25 @@ class ConvergentEvolution(Choice):
     option_allow = 1
 
 
-class EvolutionBlocklist(OptionSet):
+class EvolutionBlocklist(PokemonSet):
     """
     No Pokemon will evolve into these Pokemon. Does nothing if evolution is not randomized.
-    You can use "_Legendaries" as a shortcut for all legendary Pokemon.
     Blocklists are best effort, other constraints may cause them to be ignored.
     """
     display_name = "Evolution Blocklist"
-    valid_keys = sorted(pokemon.friendly_name for pokemon in data.pokemon.values()) + ["_Legendaries"]
+
+
+class MaximumEvolutionLevel(NamedRange):
+    """
+    Reduces all level-based evolution levels to at most the specified level.
+    """
+    display_name = "Maximum Evolution Level"
+    default = 100
+    range_start = 1
+    range_end = 100
+    special_range_names = {
+        "disabled": 100
+    }
 
 
 class RandomizeBreeding(Choice):
@@ -1402,14 +1630,12 @@ class RandomizeBreeding(Choice):
     option_completely_random = 4
 
 
-class BreedingBlocklist(OptionSet):
+class BreedingBlocklist(PokemonSet):
     """
     No Pokemon will produce eggs containing these Pokemon.
-    You can use "_Legendaries" as a shortcut for all legendary Pokemon.
     Blocklists are best effort, other constraints may cause them to be ignored.
     """
     display_name = "Breeding Blocklist"
-    valid_keys = sorted(pokemon.friendly_name for pokemon in data.pokemon.values()) + ["_Legendaries"]
 
 
 class RandomizePalettes(Choice):
@@ -1588,15 +1814,15 @@ class SkipEliteFour(Toggle):
 
 class BetterMarts(Toggle):
     """
-    Improves the selection of items at Pokemarts
+    If this option is enabled then the Pokcenter 2F mart will not upgrade as you beat gyms.
+    Instead, it will always be the final upgrade.
     """
     display_name = "Better Marts"
 
 
 class BuildAMart(OptionList):
     """
-    Create a custom shop in place of the better mart with your own item selection, this also affects the final upgraded
-    Pokecenter 2F mart.
+    Create a custom shop in place of the final upgraded Pokecenter 2F mart.
     The first two shop items will always be Poke Ball and Escape Rope.
     Maximum of 14 items, any extra items will be discarded.
     
@@ -1668,69 +1894,53 @@ class TrapWeight(Range):
     range_end = 100
 
 
-class PhoneTrapWeight(Range):
-    """
-    Adds random Pokegear calls that acts as traps
-    Specifies the weight at which traps become Phone Traps
-
-    NOTE: Phone traps will loop after you receive 32 of them
-    """
-    display_name = "Phone Trap Weight"
-    default = 0
-    range_start = 0
-    range_end = 100
+_trap_weight_min = 0
+_trap_weight_max = 100
 
 
-class SleepTrapWeight(Range):
+class TrapWeights(OptionCounter):
     """
-    Trap that causes Sleep status on your party
-    Specifies the weight at which traps become Sleep Traps
+    Specifies the weights at which traps become each trap type
+
+    - Burn, Paralysis, Sleep, Poison and Freeze traps afflict the corresponding status on your party
+    - Phone Traps trigger random Pokegear calls (NOTE: Phone Traps loop after you receive 32 of them)
+    - Tutorial Traps trigger the catch tutorial
+    - Teleport Traps use the move Teleport (both in battle and out of battle)
+    - Whirlpool Traps spin you around in the overworld or trap you in Whirlpool for 99 turns in battle
+    - Ice Traps make the overworld slippery for 40-60 steps
+    - Explosion Traps faint a party member in the overworld or use Explosion in battle
+    - Sandstorm Traps slow you in the overworld for 20-40 steps or activate Sandstorm for 99 turns in battle
+    - Metronome Traps trigger a random other move trap in the overworld or use Metronome in battle
     """
-    display_name = "Sleep Trap Weight"
-    default = 0
-    range_start = 0
-    range_end = 100
+    min = _trap_weight_min
+    max = _trap_weight_max
+    default = {
+        trap.label: 0 for trap in data.items.values() if trap.classification & ItemClassification.trap
+    }
+    schema = Schema(
+        {
+            Optional(trap): Or(int, str) for trap in default.keys()
+        }
+    )
+
+    class _TrapWeightsRange(Range):
+        range_start = _trap_weight_min
+        range_end = _trap_weight_max
+
+    @classmethod
+    def from_any(cls, data: dict[str, Any]) -> OptionCounter:
+        resolved_data = {
+            key: cls._TrapWeightsRange.from_any(value).value for key, value in sorted(data.items())
+        }
+        return super().from_any(resolved_data)
 
 
-class PoisonTrapWeight(Range):
+class _TrapWeight(Range):
     """
-    Trap that causes Poison status on your party
-    Specifies the weight at which traps become Poison Traps
+    Backwards compatibility for trap weights
     """
-    display_name = "Poison Trap Weight"
-    default = 0
-    range_start = 0
-    range_end = 100
-
-
-class BurnTrapWeight(Range):
-    """
-    Trap that causes Burn status on your party
-    Specifies the weight at which traps become Burn Traps
-    """
-    display_name = "Burn Trap Weight"
-    default = 0
-    range_start = 0
-    range_end = 100
-
-
-class FreezeTrapWeight(Range):
-    """
-    Trap that causes Freeze status on your party
-    Specifies the weight at which traps become Freeze Traps
-    """
-    display_name = "Freeze Trap Weight"
-    default = 0
-    range_start = 0
-    range_end = 100
-
-
-class ParalysisTrapWeight(Range):
-    """
-    Trap that causes Paralysis status on your party
-    Specifies the weight at which traps become Paralysis Traps
-    """
-    display_name = "Paralysis Trap Weight"
+    display_name = "Trap Weight"
+    visibility = Visibility.none
     default = 0
     range_start = 0
     range_end = 100
@@ -1810,6 +2020,32 @@ class TMBlocklist(OptionSet):
     valid_keys = sorted(move.name.title() for id, move in data.moves.items() if id not in ("NO_MOVE", "STRUGGLE"))
 
 
+class ModerniseMovesGeneration(NamedRange):
+    """
+    Selects the generation to update moves to.
+    This affects power, PP and accuracy only and is applied before any randomization.
+    """
+    display_name = "Modernise Moves"
+    default = 0
+    range_start = 3
+    range_end = 9
+    special_range_names = {
+        "disabled": 0
+    }
+
+
+class ModerniseMovesType(Choice):
+    """
+    Selects whether generational buffs, nerfs or both are applied to moves.
+    Only has an effect if a generation is selected to modernise moves to.
+    """
+    display_name = "Modernise Moves Type"
+    default = 0
+    option_buffs_and_nerfs = 0
+    option_buffs_only = 1
+    option_nerfs_only = 2
+
+
 class FlyLocationBlocklist(OptionSet):
     """
     These locations won't be given to you as fly locations, either as your free one or from receiving the map card.
@@ -1874,11 +2110,12 @@ class GameOptions(OptionDict):
         no_exp: EXP is disabled
     fast_egg_hatch: off/on - Sets whether eggs take a single cycle to hatch
     fast_egg_make: off/on - Sets whether eggs are guaranteed after one cycle at the day care
+    fast_surf: off/on - Sets whether Surfing is bike speed
     guaranteed_catch: off/on - Sets whether balls have a 100% success rate
     hms_require_teaching: on/off - Sets whether it is required to teach field moves to use them in the field
     item_notification: popup/sound/none - Sets how Trainersanity, Dex(count)sanity and Grasssanity locations show item notifications
     low_hp_beep: on/off - Sets whether the low HP beep is played in battle
-    menu_account: on/off - Sets whether your start menu selection is remembered
+    menu_account: on/off - Sets whether extra information is shown on the Start menu
     more_uncaught_encounters: on/off - Sets whether wild encounters of Pokemon you have not caught are more likely
     poison_flicker: on/off - Sets whether the overworld poison flash effect is played
     rods_always_work: off/on - Sets whether the fishing rods always succeed
@@ -1895,6 +2132,7 @@ class GameOptions(OptionDict):
     text_frame: 1-8 - Sets the textbox frame, "random" will pick a random frame
     text_speed: mid/slow/fast/instant - Sets the speed at which text advances
     time_of_day: auto/morn/day/nite - Sets a time of day override, auto follows the clock, "random" will pick a random time
+    tracker_slot: 0-255 - Sets which tracker slot is used for map tracking, used for co-op seeds
     trainersanity_indication: off/on - Sets whether Trainersanity trainers have grayscale sprites until they are beaten
     turbo_button: none/a/b/a_or_b - Sets which buttons auto advance text when held
     """
@@ -1932,6 +2170,8 @@ class GameOptions(OptionDict):
         "auto_hms": "off",
         "hms_require_teaching": "on",
         "item_notification": "popup",
+        "tracker_slot": 0,
+        "fast_surf": "off"
     }
 
     @override
@@ -1969,6 +2209,33 @@ class ExcludePostGoalLocations(DefaultOnToggle):
     Excludes locations which require becoming champion when goal is becoming champion
     """
     display_name = "Exclude Post Goal Locations"
+
+
+class RandomizeItemValues(Toggle):
+    """
+    Randomizes the base value of items, this affects sell price and can affect buy price depending on other options
+    """
+    display_name = "Randomize Item Values"
+
+
+class MinimumItemValue(Range):
+    """
+    Sets the minimum value of items when Randomize Item Values is enabled
+    """
+    display_name = "Minimum Item Value"
+    default = 0
+    range_start = 0
+    range_end = 10000
+
+
+class MaximumItemValue(Range):
+    """
+    Sets the maximum value of items when Randomize Item Values is enabled
+    """
+    display_name = "Maximum Item Value"
+    default = 10000
+    range_start = 0
+    range_end = 10000
 
 
 class Grasssanity(Choice):
@@ -2070,7 +2337,10 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     mount_mortar_access: MountMortarAccess
     route_12_access: Route12Access
     ss_aqua_access: SSAquaAccess
+    route_30_access: Route30Access
     route_30_battle: Route30Battle
+    south_kanto_access: SouthKantoAccess
+    south_kanto_condition: SouthKantoCondition
     johto_trainersanity: JohtoTrainersanity
     kanto_trainersanity: KantoTrainersanity
     rematchsanity: Rematchsanity
@@ -2087,6 +2357,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     evolution_methods_required: EvolutionMethodsRequired
     evolution_gym_levels: EvolutionGymLevels
     breeding_methods_required: BreedingMethodsRequired
+    enforce_breeding_methods_logic: EnforceBreedingMethodsLogic
     shopsanity: Shopsanity
     shopsanity_prices: ShopsanityPrices
     shopsanity_minimum_price: MinimumShopsanityPrice
@@ -2096,6 +2367,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     shopsanity_x_items: ShopsanityXItems
     randomize_pokegear: RandomizePokegear
     randomize_berry_trees: RandomizeBerryTrees
+    randomize_pokedex: RandomizePokedex
     randomize_pokemon_requests: RandomizePokemonRequests
     randomize_phone_call_items: RandomizePhoneCalls
     randomize_fly_unlocks: RandomizeFlyUnlocks
@@ -2110,6 +2382,9 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     randomize_static_pokemon: RandomizeStaticPokemon
     static_blocklist: StaticBlocklist
     level_scaling: LevelScaling
+    level_curve: LevelCurve
+    level_curve_min_level: LevelCurveMinLevel
+    level_curve_max_level: LevelCurveMaxLevel
     lock_kanto_gyms: LockKantoGyms
     randomize_trades: RandomizeTrades
     randomize_trainer_parties: RandomizeTrainerParties
@@ -2119,7 +2394,7 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     randomize_learnsets: RandomizeLearnsets
     metronome_only: MetronomeOnly
     learnset_type_bias: LearnsetTypeBias
-    randomize_move_values: RandomizeMoveValues
+    randomize_moves: RandomizeMoves
     randomize_move_types: RandomizeMoveTypes
     randomize_type_chart: RandomizeTypeChart
     physical_special_split: PhysicalSpecialSplit
@@ -2127,14 +2402,17 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     tm_plando: TMPlando
     tm_compatibility: TMCompatibility
     hm_compatibility: HMCompatibility
+    hm_compatibility_override: HMCompatibilityOverride
     hm_power_cap: HMPowerCap
     field_moves_always_usable: FieldMovesAlwaysUsable
     randomize_base_stats: RandomizeBaseStats
+    base_stats_multiples_of_five: BaseStatsMultiplesOfFive
     randomize_types: RandomizeTypes
     shared_primary_type: SharedPrimaryType
     randomize_evolution: RandomizeEvolution
     convergent_evolution: ConvergentEvolution
     evolution_blocklist: EvolutionBlocklist
+    maximum_evolution_level: MaximumEvolutionLevel
     randomize_breeding: RandomizeBreeding
     breeding_blocklist: BreedingBlocklist
     randomize_palettes: RandomizePalettes
@@ -2161,12 +2439,13 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     starting_money: StartingMoney
     all_pokemon_seen: AllPokemonSeen
     filler_trap_percentage: TrapWeight
-    phone_trap_weight: PhoneTrapWeight
-    sleep_trap_weight: SleepTrapWeight
-    poison_trap_weight: PoisonTrapWeight
-    burn_trap_weight: BurnTrapWeight
-    freeze_trap_weight: FreezeTrapWeight
-    paralysis_trap_weight: ParalysisTrapWeight
+    trap_weights: TrapWeights
+    phone_trap_weight: _TrapWeight
+    sleep_trap_weight: _TrapWeight
+    poison_trap_weight: _TrapWeight
+    burn_trap_weight: _TrapWeight
+    freeze_trap_weight: _TrapWeight
+    paralysis_trap_weight: _TrapWeight
     remote_items: RemoteItems
     game_options: GameOptions
     field_move_menu_order: FieldMoveMenuOrder
@@ -2185,6 +2464,11 @@ class PokemonCrystalOptions(PerGameCommonOptions):
     require_pokegear_for_phone_numbers: RequirePokegearForPhoneNumbers
     trainer_palette: TrainerPalette
     progressive_rods: ProgressiveRods
+    randomize_item_values: RandomizeItemValues
+    minimum_item_value: MinimumItemValue
+    maximum_item_value: MaximumItemValue
+    modernise_moves_generation: ModerniseMovesGeneration
+    modernise_moves_type: ModerniseMovesType
 
 
 OPTION_GROUPS = [
@@ -2220,7 +2504,10 @@ OPTION_GROUPS = [
          Route12Access,
          MagnetTrainAccess,
          SSAquaAccess,
-         Route30Battle]
+         Route30Access,
+         Route30Battle,
+         SouthKantoAccess,
+         SouthKantoCondition]
     ),
     OptionGroup(
         "Items",
@@ -2228,6 +2515,7 @@ OPTION_GROUPS = [
          RandomizePokegear,
          RandomizeHiddenItems,
          RandomizeBerryTrees,
+         RandomizePokedex,
          RandomizePokemonRequests,
          RandomizeFlyUnlocks,
          RandomizeBugCatchingContest,
@@ -2237,7 +2525,10 @@ OPTION_GROUPS = [
          ItemPoolFill,
          AddMissingUsefulItems,
          ExcludePostGoalLocations,
-         Grasssanity]
+         Grasssanity,
+         RandomizeItemValues,
+         MinimumItemValue,
+         MaximumItemValue]
     ),
     OptionGroup(
         "Shopsanity",
@@ -2252,6 +2543,7 @@ OPTION_GROUPS = [
     OptionGroup(
         "HMs",
         [HMCompatibility,
+         HMCompatibilityOverride,
          HMBadgeRequirements,
          RemoveBadgeRequirement,
          RequireFlash,
@@ -2268,11 +2560,13 @@ OPTION_GROUPS = [
          RandomizeStaticPokemon,
          StaticBlocklist,
          RandomizeBaseStats,
+         BaseStatsMultiplesOfFive,
          RandomizeTypes,
          SharedPrimaryType,
          RandomizeEvolution,
          ConvergentEvolution,
          EvolutionBlocklist,
+         MaximumEvolutionLevel,
          RandomizeBreeding,
          BreedingBlocklist,
          RandomizeTrades,
@@ -2290,8 +2584,7 @@ OPTION_GROUPS = [
         [RandomizeLearnsets,
          LearnsetTypeBias,
          MetronomeOnly,
-         RandomizeMoveTypes,
-         RandomizeMoveValues,
+         RandomizeMoves,
          RandomizeTypeChart,
          PhysicalSpecialSplit,
          HMPowerCap,
@@ -2300,7 +2593,9 @@ OPTION_GROUPS = [
          TMCompatibility,
          ReusableTMs,
          MoveBlocklist,
-         TMBlocklist]
+         TMBlocklist,
+         ModerniseMovesGeneration,
+         ModerniseMovesType]
     ),
     OptionGroup(
         "Trainers",
@@ -2331,23 +2626,22 @@ OPTION_GROUPS = [
          TradesRequired,
          EvolutionMethodsRequired,
          EvolutionGymLevels,
-         BreedingMethodsRequired]
+         BreedingMethodsRequired,
+         EnforceBreedingMethodsLogic]
     ),
     OptionGroup(
         "Traps",
         [TrapWeight,
-         PhoneTrapWeight,
-         SleepTrapWeight,
-         PoisonTrapWeight,
-         BurnTrapWeight,
-         FreezeTrapWeight,
-         ParalysisTrapWeight,
+         TrapWeights,
          TrapLink]
     ),
     OptionGroup(
         "Quality of Life",
         [GameOptions,
          LevelScaling,
+         LevelCurve,
+         LevelCurveMinLevel,
+         LevelCurveMaxLevel,
          LockKantoGyms,
          AllPokemonSeen,
          StartingMoney,

@@ -184,11 +184,11 @@ def dragon_forest(world: DiddyKongRacingWorld) -> Callable[[object], bool]:
 
 def future_fun_land(world: DiddyKongRacingWorld) -> Callable[[object], bool]:
     return lambda state: (
-            world.options.open_worlds.value
+            world.options.open_worlds
             or (
                     wizpig_1(world)(state)
                     and (
-                            world.options.skip_trophy_races.value
+                            world.options.skip_trophy_races
                             or (
                                     tricky_2(world)(state)
                                     and bluey_2(world)(state)

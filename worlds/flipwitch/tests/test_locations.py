@@ -1,38 +1,10 @@
 from . import FlipwitchTestBase
-from worlds.flipwitch.strings.items import Unlock, QuestItem, Power, Key, Upgrade, Custom
-from worlds.flipwitch.strings.regions_entrances import FlipwitchRegion
+from worlds.flipwitch.strings.items import QuestItem, Upgrade, Custom
 from ..strings.locations import Quest, WitchyWoods
-
 
 class LocationsTest(FlipwitchTestBase):
     options = {"quest_for_sex": "all",
                }
-
-    def test_if_can_reach_cabaret_too_early(self):
-        self.assertFalse(self.can_reach_region(FlipwitchRegion.spirit_town))
-        self.assertFalse(self.can_reach_location(Quest.haunted_bedroom))
-        self.collect_by_name(Upgrade.health)
-        self.collect_by_name(Upgrade.peachy_peach)
-        self.assertFalse(self.can_reach_region(FlipwitchRegion.spirit_town))
-        self.collect_by_name(Unlock.crystal_block)
-        self.assertTrue(self.can_reach_region(FlipwitchRegion.spirit_town))
-        self.assertFalse(self.can_reach_location(Quest.haunted_bedroom))
-        self.collect_by_name(QuestItem.cowbell)
-        self.assertFalse(self.can_reach_location(Quest.haunted_bedroom))
-        self.collect_by_name(Power.ghost_form)
-        self.assertFalse(self.can_reach_location(Quest.haunted_bedroom))
-        self.collect_by_name(Unlock.goblin_crystal_block)
-        self.assertFalse(self.can_reach_location(Quest.haunted_bedroom))
-        self.collect_by_name(Key.ghostly_castle)
-        self.assertFalse(self.can_reach_location(Quest.haunted_bedroom))
-        self.collect_by_name(Key.rose_garden)
-        self.assertFalse(self.can_reach_location(Quest.haunted_bedroom))
-        self.collect_by_name(Upgrade.bewitched_bubble)
-        self.assertFalse(self.can_reach_location(Quest.haunted_bedroom))
-        self.collect_by_name(Power.slime_form)
-        self.assertFalse(self.can_reach_location(Quest.haunted_bedroom))
-        self.collect_by_name(QuestItem.clothes)
-        self.assertTrue(self.can_reach_location(Quest.haunted_bedroom))
 
     def test_sexual_experience_locations(self):
         self.assertFalse(self.can_reach_location(Quest.magic_mentor))

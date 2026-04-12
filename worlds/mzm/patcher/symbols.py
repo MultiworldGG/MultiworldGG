@@ -4,8 +4,8 @@ import json
 import pkgutil
 
 
-ram_symbols = None
-rom_symbols = None
+ram_symbols: dict[str, int] = None
+rom_symbols: dict[str, int] = None
 
 
 def _get_symbols():
@@ -14,7 +14,7 @@ def _get_symbols():
     symbol_data = pkgutil.get_data(__name__, "data/extracted_symbols.json")
     symbols = json.loads(symbol_data.decode("utf-8"))
     ram_symbols = symbols["ewram"] | symbols["iwram"]
-    rom_symbols = symbols["rom"]
+    rom_symbols = symbols[".rodata"] | symbols[".data"] | symbols["rando_data"]
 
 
 _get_symbols()

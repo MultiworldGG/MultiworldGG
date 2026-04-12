@@ -1,121 +1,141 @@
-@font-face{
-    font-family: Inter-ExtraLight;
-    src: url("../../static/static/fonts/Inter-ExtraLight.ttf");
+@font-face {
+  font-family: Inter-ExtraLight;
+  src: url("../../static/static/fonts/Inter-ExtraLight.ttf");
 }
 
-@font-face{
-    font-family: Inter-Light;
-    src: url("../../static/static/fonts/Inter-Light.ttf");
+@font-face {
+  font-family: Inter-Light;
+  src: url("../../static/static/fonts/Inter-Light.ttf");
 }
 
-@font-face{
-    font-family: Inter-Regular;
-    src: url("../../static/static/fonts/Inter-Regular.ttf");
+@font-face {
+  font-family: Inter-Regular;
+  src: url("../../static/static/fonts/Inter-Regular.ttf");
 }
 
-@font-face{
-    font-family: Inter-Medium;
-    src: url("../../static/static/fonts/Inter-Medium.ttf");
+@font-face {
+  font-family: Inter-Medium;
+  src: url("../../static/static/fonts/Inter-Medium.ttf");
 }
 
-html{
-    font-family: Inter-ExtraLight, sans-serif;
-    font-size: 1.1rem;
-    color: #000000;
+html {
+  font-family: Inter-ExtraLight, sans-serif;
+  font-size: 1.1rem;
+  color: #000000;
 }
 
-body{
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 110px);
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 110px);
 }
 
 main {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
-a{
-    color: #ea166c;
-    text-decoration: none;
-    font-family: Inter-Regular, sans-serif;
+a {
+  color: #ea166c;
+  text-decoration: none;
+  font-family: Inter-Regular, sans-serif;
 }
 
-button, input[type=submit]{
-    font-weight: 500;
-    font-size: 0.9rem;
-    padding: 10px 17px 11px 16px; /* top right bottom left */
-    border-radius: 4px;
-    border-top: 1px solid rgba(0, 0, 0, 0.5);
-    border-left: 1px solid rgba(0, 0, 0, 0.5);
-    border-right: 2px solid rgba(0, 0, 0, 0.5);
-    border-bottom: 2px solid rgba(0, 0, 0, 0.5);
-    font-kerning: auto;
-    cursor: pointer;
+button,
+input[type="submit"] {
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 10px 17px 11px 16px; /* top right bottom left */
+  border-radius: 4px;
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
+  border-left: 1px solid rgba(0, 0, 0, 0.5);
+  border-right: 2px solid rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+  font-kerning: auto;
+  cursor: pointer;
 }
 
-button:active, input[type=submit]:active{
-    border-right: 1px solid rgba(0, 0, 0, 0.5);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-    padding-right: 16px;
-    margin-right: 2px;
-    padding-bottom: 10px;
-    margin-bottom: 2px;
+button:active,
+input[type="submit"]:active {
+  border-right: 1px solid rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  padding-right: 16px;
+  margin-right: 2px;
+  padding-bottom: 10px;
+  margin-bottom: 2px;
 }
 
-button.button-grass, input[type=submit].button-grass{
-    border: 1px solid black;
+button.button-grass,
+input[type="submit"].button-grass {
+  border: 1px solid black;
 }
 
-button.button-dirt, input[type=submit].button-dirt{
-    border: 1px solid black;
+button.button-dirt,
+input[type="submit"].button-dirt {
+  border: 1px solid black;
 }
 
-h1, h2, h3, h4, h5, h6{
-    font-weight: normal;
-    margin: 0;
-    color: #618d63;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: normal;
+  margin: 0;
+  color: #618d63;
 }
 
-h1{ font-size: 3rem; }
-h2{ font-size: 2rem; }
-h3{ font-size: 1.5rem; }
-h4{
-    font-size: 1.25rem;
-    margin-bottom:0.5rem;
+h1 {
+  font-size: 3rem;
 }
-h5, h6{
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
+h2 {
+  font-size: 2rem;
 }
-
-.user-message{
-    width: 50%;
-    min-width: 500px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    color: #000000;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    background-color: #ffff00;
+h3 {
+  font-size: 1.5rem;
 }
-.user-message a{
-    color: #ff7700;
+h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+h5,
+h6 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-.interactive{
-    color: #b44ad9;
+.user-message {
+  width: 50%;
+  min-width: 500px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  color: #000000;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  background-color: #ffff00;
+}
+.user-message a {
+  color: #ff7700;
 }
 
-#generate-game-button, #host-game-button, input[name="intent-export"], input[name="intent-generate"] {
+.interactive {
+  color: #b44ad9;
+}
+
+#generate-game-button,
+#host-game-button,
+input[name="intent-export"],
+input[name="intent-generate"],
+input[name="intent-add-to-lobby"] {
   align-items: center;
   background-color: #652895;
   border-radius: 42px;
   border-width: 0;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
   font-size: 18px;
   font-weight: 700;
@@ -125,144 +145,180 @@ h5, h6{
   padding: 8px 8px;
   text-align: center;
   text-decoration: none;
-  text-shadow: rgba(255, 255, 255, 0.4) 0 0 4px,rgba(255, 255, 255, 0.2) 0 0 12px,rgba(57, 31, 91, 0.6) 1px 1px 4px,rgba(57, 31, 91, 0.32) 4px 4px 16px;
+  text-shadow:
+    rgba(255, 255, 255, 0.4) 0 0 4px,
+    rgba(255, 255, 255, 0.2) 0 0 12px,
+    rgba(57, 31, 91, 0.6) 1px 1px 4px,
+    rgba(57, 31, 91, 0.32) 4px 4px 16px;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
   vertical-align: baseline;
 }
 
-#generate-game-button:hover, #host-game-button:hover, input[name="intent-export"]:hover, input[name="intent-generate"]:hover {
+#generate-game-button:hover,
+#host-game-button:hover,
+input[name="intent-export"]:hover,
+input[name="intent-generate"]:hover,
+input[name="intent-add-to-lobby"]:hover {
   background-image: linear-gradient(#652895, #b44ad9 50%);
 }
 
 @media (min-width: 768px) {
-  #generate-game-button, #host-game-button, input[name="intent-export"], input[name="intent-generate"] {
+  #generate-game-button,
+  #host-game-button,
+  input[name="intent-export"],
+  input[name="intent-generate"],
+  input[name="intent-add-to-lobby"] {
     font-size: 21px;
     padding: 18px 34px;
   }
 }
 
 input[type="checkbox"] {
-    accent-color: #b44ad9;
+  accent-color: #b44ad9;
 }
 
-input[type=range] {
-    -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-    width: 50%; /* Specific width is required for Firefox. */
-    background: transparent; /* Otherwise white in Chrome */
-  }
-
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
+input[type="range"] {
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 50%; /* Specific width is required for Firefox. */
+  background: transparent; /* Otherwise white in Chrome */
 }
 
-input[type=range]:focus {
-    outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
 }
 
-input[type=range]::-ms-track {
-    width: 65%;
-    cursor: pointer;
+input[type="range"]:focus {
+  outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
 
-    /* Hides the slider so custom styles can be added */
-    background: transparent; 
-    border-color: transparent;
-    color: transparent;
+input[type="range"]::-ms-track {
+  width: 65%;
+  cursor: pointer;
+
+  /* Hides the slider so custom styles can be added */
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
 }
 
 /* Special styling for WebKit/Blink */
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border: 1px solid #000000;
-    height: 22px;
-    width: 16px;
-    border-radius: 3px;
-    background: #ffffff;
-    cursor: pointer;
-    margin-top: -8px;
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: 1px solid #000000;
+  height: 22px;
+  width: 16px;
+  border-radius: 3px;
+  background: #ffffff;
+  cursor: pointer;
+  margin-top: -8px;
+  box-shadow:
+    1px 1px 1px #000000,
+    0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+}
+
+/* All the same stuff for Firefox */
+input[type="range"]::-moz-range-thumb {
+  box-shadow:
+    1px 1px 1px #000000,
+    0px 0px 1px #0d0d0d;
+  border: 1px solid #000000;
+  height: 22px;
+  width: 16px;
+  border-radius: 3px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+/* All the same stuff for IE */
+input[type="range"]::-ms-thumb {
+  box-shadow:
+    1px 1px 1px #000000,
+    0px 0px 1px #0d0d0d;
+  border: 1px solid #000000;
+  height: 22px;
+  width: 16px;
+  border-radius: 3px;
+  background: #ffffff;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 65%;
+  height: 8.4px;
+  cursor: pointer;
+  box-shadow:
+    1px 1px 1px #000000,
+    0px 0px 1px #0d0d0d;
+  background: #b44ad9;
+  border-radius: 1.3px;
+  border: 0.2px solid #010101;
+}
+
+input[type="range"]:focus::-webkit-slider-runnable-track {
+  background: #b44ad9;
+}
+
+input[type="range"]::-moz-range-track {
+  width: 90%;
+  height: 8.4px;
+  cursor: pointer;
+  box-shadow:
+    1px 1px 1px #000000,
+    0px 0px 1px #0d0d0d;
+  background: #b44ad9;
+  border-radius: 1.3px;
+  border: 0.2px solid #010101;
+}
+
+input[type="range"]::-ms-track {
+  width: 65%;
+  height: 8.4px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  border-width: 16px 0;
+  color: transparent;
+}
+input[type="range"]::-ms-fill-lower {
+  background: #b44ad9;
+  border: 0.2px solid #010101;
+  border-radius: 2.6px;
+  box-shadow:
+    1px 1px 1px #000000,
+    0px 0px 1px #0d0d0d;
+}
+input[type="range"]:focus::-ms-fill-lower {
+  background: #b44ad9;
+}
+input[type="range"]::-ms-fill-upper {
+  background: #b44ad9;
+  border: 0.2px solid #010101;
+  border-radius: 2.6px;
+  box-shadow:
+    1px 1px 1px #000000,
+    0px 0px 1px #0d0d0d;
+}
+input[type="range"]:focus::-ms-fill-upper {
+  background: #b44ad9;
+}
+.author_credit,
+.world_version {
+  font-size: smaller;
+  font-style: italic;
+}
+.author_credit {
+  margin-bottom: 8px;
+}
+.author_credit_link {
+  font-size: 19px !important;
+}
+.world_version {
+  margin-bottom: 4px;
+}
+
+@media (max-width: 767px) {
+  h1 {
+    font-size: 2rem;
   }
-  
-  /* All the same stuff for Firefox */
-  input[type=range]::-moz-range-thumb {
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-    border: 1px solid #000000;
-    height: 22px;
-    width: 16px;
-    border-radius: 3px;
-    background: #ffffff;
-    cursor: pointer;
-  }
-  
-  /* All the same stuff for IE */
-  input[type=range]::-ms-thumb {
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-    border: 1px solid #000000;
-    height: 22px;
-    width: 16px;
-    border-radius: 3px;
-    background: #ffffff;
-    cursor: pointer;
-  }
-  input[type=range]::-webkit-slider-runnable-track {
-    width: 65%;
-    height: 8.4px;
-    cursor: pointer;
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-    background: #b44ad9;
-    border-radius: 1.3px;
-    border: 0.2px solid #010101;
-  }
-  
-  input[type=range]:focus::-webkit-slider-runnable-track {
-    background: #b44ad9;
-  }
-  
-  input[type=range]::-moz-range-track {
-    width: 90%;
-    height: 8.4px;
-    cursor: pointer;
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-    background: #b44ad9;
-    border-radius: 1.3px;
-    border: 0.2px solid #010101;
-  }
-  
-  input[type=range]::-ms-track {
-    width: 65%;
-    height: 8.4px;
-    cursor: pointer;
-    background: transparent;
-    border-color: transparent;
-    border-width: 16px 0;
-    color: transparent;
-  }
-  input[type=range]::-ms-fill-lower {
-    background: #b44ad9;
-    border: 0.2px solid #010101;
-    border-radius: 2.6px;
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  }
-  input[type=range]:focus::-ms-fill-lower {
-    background: #b44ad9;
-  }
-  input[type=range]::-ms-fill-upper {
-    background: #b44ad9;
-    border: 0.2px solid #010101;
-    border-radius: 2.6px;
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  }
-  input[type=range]:focus::-ms-fill-upper {
-    background: #b44ad9;
-  }
-  .author_credit, .world_version {
-    font-size: smaller;
-    font-style: italic;
-  }
-  .author_credit {
-    margin-bottom: 8px;
-  }
-  .world_version {
-    margin-bottom: 4px;
-  }
+}

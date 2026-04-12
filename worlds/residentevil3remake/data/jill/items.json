@@ -36,13 +36,6 @@
   },
   {
     "type": "Key",
-    "name": "ID Card",
-    "decimal": "164",
-    "count": 1,
-    "progression": 1
-  },
-  {
-    "type": "Key",
     "name": "Safety Deposit Key",
     "decimal": "162",
     "count": 1,
@@ -172,6 +165,13 @@
     "type": "Gating",
     "name": "Red Jewel",
     "decimal": "189",
+    "count": 1,
+    "progression": 1
+  },
+  {
+    "type": "Gating",
+    "name": "ID Card",
+    "decimal": "164",
     "count": 1,
     "progression": 1
   },
@@ -369,6 +369,20 @@
     "count": 1,
     "progression": 0
   },
+  {
+    "type": "Upgrade",
+    "name": "Supply Case - Shotgun Shells",
+    "decimal": "313",
+    "count": 1,
+    "progression": 0
+  },
+  {
+    "type": "Upgrade",
+    "name": "Supply Case - Flame Rounds",
+    "decimal": "315",
+    "count": 1,
+    "progression": 0
+  },
 
   {
     "type": "Ammo",
@@ -414,30 +428,16 @@
   },
   {
     "type": "Ammo",
-    "name": "Flame Rounds",
+    "name": "Acid Rounds",
     "decimal": "38",
     "count": 3,
     "progression": 0
   },
   {
     "type": "Ammo",
-    "name": "Acid Rounds",
+    "name": "Flame Rounds",
     "decimal": "39",
     "count": 3,
-    "progression": 0
-  },
-  {
-    "type": "Ammo",
-    "name": "Supply Case - Shotgun Shells",
-    "decimal": "313",
-    "count": 1,
-    "progression": 0
-  },
-  {
-    "type": "Ammo",
-    "name": "Supply Case - Flame Rounds",
-    "decimal": "314",
-    "count": 1,
     "progression": 0
   },
 

@@ -1,6 +1,7 @@
 import io
 import json
 import pkgutil
+import struct
 
 import bsdiff4
 import random
@@ -10,7 +11,7 @@ from BaseClasses import Location, ItemClassification
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension, AutoPatchExtensionRegister
 from .Items import items_by_id, ItemData
 from .Locations import locationName_to_data, location_table, location_id_to_name
-from .Data import Rels, shop_items, item_prices, rel_filepaths, location_to_unit, shop_names, classification_to_color
+from .Data import Rels, shop_items, item_prices, rel_filepaths, location_to_unit, shop_names
 from .TTYDPatcher import TTYDPatcher
 
 if TYPE_CHECKING:
@@ -22,26 +23,23 @@ class TTYDPatchExtension(APPatchExtension):
 
     @staticmethod
     def patch_mod(caller: "TTYDProcedurePatch") -> None:
+        manifest_data = pkgutil.get_data(__name__, "archipelago.json")
+        if manifest_data is None:
+            raise Exception("TTYD APWorld is missing manifest file (archipelago.json)")
+        manifest = json.loads(manifest_data.decode("utf-8"))
+        current_version = manifest.get("world_version")
+        if current_version is None:
+            raise Exception("TTYD APWorld manifest is missing world_version")
+
         seed_options = json.loads(caller.get_file("options.json").decode("utf-8"))
+        patch_version = seed_options.get("world_version")
+        if patch_version is None:
+            raise Exception("Patch file is missing world_version - regenerate with a newer APWorld")
+        if patch_version != current_version:
+            raise Exception(f"Patch version ({patch_version}) does not match APWorld version ({current_version}). "
+                            f"Please regenerate your patch file or use the matching APWorld version.")
+
         name_length = min(len(seed_options["player_name"]), 0x10)
-        palace_skip = seed_options.get("palace_skip", None)
-        open_westside = seed_options.get("westside", None)
-        peekaboo = seed_options.get("peekaboo", None)
-        intermissions = seed_options.get("intermissions", None)
-        starting_hp = seed_options.get("starting_hp", 10)
-        starting_fp = seed_options.get("starting_fp", 5)
-        starting_bp = seed_options.get("starting_bp", 3)
-        full_run_bar = seed_options.get("full_run_bar", None)
-        required_chapters = seed_options.get("required_chapters", None)
-        tattlesanity = seed_options.get("tattlesanity", None)
-        fast_travel = seed_options.get("fast_travel", None)
-        succeed_conditions = seed_options.get("succeed_conditions", None)
-        cutscene_skip = seed_options.get("cutscene_skip", None)
-        experience_multiplier = seed_options.get("experience_multiplier", 1)
-        starting_level = seed_options.get("starting_level", 1)
-        first_attack = seed_options.get("first_attack", None)
-        music = seed_options.get("music", 0)
-        block_visibility = seed_options.get("block_visibility", 0)
         random.seed(seed_options["seed"] + seed_options["player"])
         caller.patcher.dol.data.seek(0x1FF)
         caller.patcher.dol.data.write(name_length.to_bytes(1, "big"))
@@ -59,57 +57,43 @@ class TTYDPatchExtension(APPatchExtension):
         caller.patcher.dol.data.write((1).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x224)
         caller.patcher.dol.data.write((0x80003260).to_bytes(4, "big"))
-        if palace_skip is not None:
-            caller.patcher.dol.data.seek(0x229)
-            caller.patcher.dol.data.write(palace_skip.to_bytes(1, "big"))
-        if open_westside is not None:
-            caller.patcher.dol.data.seek(0x22A)
-            caller.patcher.dol.data.write(open_westside.to_bytes(1, "big"))
-        if peekaboo is not None:
-            caller.patcher.dol.data.seek(0x22B)
-            caller.patcher.dol.data.write(peekaboo.to_bytes(1, "big"))
-        if intermissions is not None:
-            caller.patcher.dol.data.seek(0x22C)
-            caller.patcher.dol.data.write(intermissions.to_bytes(1, "big"))
-        if starting_hp is not None:
-            caller.patcher.dol.data.seek(0x22D)
-            caller.patcher.dol.data.write(starting_hp.to_bytes(1, "big"))
-        if starting_fp is not None:
-            caller.patcher.dol.data.seek(0x22E)
-            caller.patcher.dol.data.write(starting_fp.to_bytes(1, "big"))
-        if starting_bp is not None:
-            caller.patcher.dol.data.seek(0x22F)
-            caller.patcher.dol.data.write(starting_bp.to_bytes(1, "big"))
-        if full_run_bar is not None:
-            caller.patcher.dol.data.seek(0x230)
-            caller.patcher.dol.data.write(full_run_bar.to_bytes(1, "big"))
-        if required_chapters is not None:
-            caller.patcher.dol.data.seek(0x231)
-            for star in required_chapters:
-                caller.patcher.dol.data.write(star.to_bytes(1, "big"))
-        if tattlesanity is not None:
-            caller.patcher.dol.data.seek(0x238)
-            caller.patcher.dol.data.write(tattlesanity.to_bytes(1, "big"))
-        if fast_travel is not None:
-            caller.patcher.dol.data.seek(0x239)
-            caller.patcher.dol.data.write(fast_travel.to_bytes(1, "big"))
-        if succeed_conditions is not None:
-            caller.patcher.dol.data.seek(0x23A)
-            caller.patcher.dol.data.write(succeed_conditions.to_bytes(1, "big"))
-        if cutscene_skip is not None:
-            caller.patcher.dol.data.seek(0x23C)
-            caller.patcher.dol.data.write(cutscene_skip.to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x229)
+        caller.patcher.dol.data.write(seed_options["palace_skip"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x22A)
+        caller.patcher.dol.data.write(seed_options["westside"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x22B)
+        caller.patcher.dol.data.write(seed_options["peekaboo"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x22C)
+        caller.patcher.dol.data.write(seed_options["intermissions"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x22D)
+        caller.patcher.dol.data.write(seed_options["starting_hp"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x22E)
+        caller.patcher.dol.data.write(seed_options["starting_fp"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x22F)
+        caller.patcher.dol.data.write(seed_options["starting_bp"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x230)
+        caller.patcher.dol.data.write(seed_options["full_run_bar"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x231)
+        for star in seed_options["required_chapters"]:
+            caller.patcher.dol.data.write(star.to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x238)
+        caller.patcher.dol.data.write(seed_options["tattlesanity"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x239)
+        caller.patcher.dol.data.write(seed_options["fast_travel"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x23A)
+        caller.patcher.dol.data.write(seed_options["succeed_conditions"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x23C)
+        caller.patcher.dol.data.write(seed_options["cutscene_skip"].to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x23D)
-        caller.patcher.dol.data.write(experience_multiplier.to_bytes(1, "big"))
+        caller.patcher.dol.data.write(seed_options["experience_multiplier"].to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x23E)
-        caller.patcher.dol.data.write(starting_level.to_bytes(1, "big"))
+        caller.patcher.dol.data.write(seed_options["starting_level"].to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x241)
-        caller.patcher.dol.data.write(music.to_bytes(1, "big"))
+        caller.patcher.dol.data.write(seed_options["music"].to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x242)
-        caller.patcher.dol.data.write(block_visibility.to_bytes(1, "big"))
-        if first_attack is not None:
-            caller.patcher.dol.data.seek(0x243)
-            caller.patcher.dol.data.write(first_attack.to_bytes(1, "big"))
+        caller.patcher.dol.data.write(seed_options["block_visibility"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x243)
+        caller.patcher.dol.data.write(seed_options["first_attack"].to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x244)
         caller.patcher.dol.data.write(random.randbytes(4))
         caller.patcher.dol.data.seek(0x248)
@@ -120,6 +104,28 @@ class TTYDPatchExtension(APPatchExtension):
         caller.patcher.dol.data.write(seed_options["star_shuffle"].to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x24B)
         caller.patcher.dol.data.write(seed_options["dazzle_rewards"].to_bytes(1, "big"))
+        # caller.patcher.dol.data.seek(0x24C)
+        # caller.patcher.dol.data.write() RESERVED
+        caller.patcher.dol.data.seek(0x24D)
+        caller.patcher.dol.data.write(seed_options["shop_purchase_limit"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x24E)
+        caller.patcher.dol.data.write(seed_options["grubba_bribe_direction"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x24F)
+        caller.patcher.dol.data.write(seed_options["grubba_bribe_cost"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x250)
+        caller.patcher.dol.data.write(seed_options["blue_pipe_toggle"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x251)
+        caller.patcher.dol.data.write(seed_options["enemy_randomizer"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x252)
+        caller.patcher.dol.data.write(seed_options["enemy_stat_scaling"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x253)
+        caller.patcher.dol.data.write(seed_options["shuffle_chapter_stats"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x258)
+        caller.patcher.dol.data.write(seed_options["badge_bp"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x259)
+        caller.patcher.dol.data.write(seed_options["badge_fp"].to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x25A)
+        caller.patcher.dol.data.write(seed_options["partner_fp"].to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x260)
         caller.patcher.dol.data.write(seed_options["yoshi_name"].encode("utf-8")[0:8] + b"\x00")
         caller.patcher.dol.data.seek(0xEB6B6)
@@ -128,11 +134,15 @@ class TTYDPatchExtension(APPatchExtension):
         caller.patcher.dol.data.write(pkgutil.get_data(__name__, "data/US.bin"))
         caller.patcher.dol.data.seek(0x6CE38)
         caller.patcher.dol.data.write(int.to_bytes(0x4BF94A50, 4, "big"))
+        caller.patcher.dol.data.seek(0x3C25FC)
+        caller.patcher.dol.data.write(int.to_bytes(0x2198, 4, "big"))
         caller.patcher.iso.add_new_directory("files/mod")
         caller.patcher.iso.add_new_directory("files/mod/subrels")
         for file in [file for file in rel_filepaths if file != "mod"]:
             caller.patcher.iso.add_new_file(f"files/mod/subrels/{file}.rel", io.BytesIO(pkgutil.get_data(__name__, f"data/{file}.rel")))
         caller.patcher.iso.add_new_file("files/mod/mod.rel", io.BytesIO(pkgutil.get_data(__name__, f"data/mod.rel")))
+        caller.patcher.iso.add_new_file("files/mod/custom.rel", io.BytesIO(pkgutil.get_data(__name__, f"data/custom.rel")))
+        caller.patcher.iso.add_new_file("files/mod/enemies.bin", io.BytesIO(caller.get_file("enemies.bin")))
         caller.patcher.iso.add_new_file("files/msg/US/mod.txt", io.BytesIO(pkgutil.get_data(__name__, f"data/mod.txt")))
         caller.patcher.iso.add_new_file("files/msg/US/desc.txt", io.BytesIO(caller.get_file("desc.txt")))
 
@@ -239,7 +249,16 @@ class TTYDProcedurePatch(APProcedurePatch, APTokenMixin):
                 extension(self, *args)
 
 def write_files(world: "TTYDWorld", patch: TTYDProcedurePatch) -> None:
+    manifest_data = pkgutil.get_data(__name__, "archipelago.json")
+    if manifest_data is None:
+        raise Exception("TTYD APWorld is missing manifest file (archipelago.json)")
+    manifest = json.loads(manifest_data.decode("utf-8"))
+    world_version = manifest.get("world_version")
+    if world_version is None:
+        raise Exception("TTYD APWorld manifest is missing world_version")
+
     options_dict = {
+        "world_version": world_version,
         "seed": world.multiworld.seed,
         "seed_name": world.multiworld.seed_name,
         "player": world.player,
@@ -270,33 +289,53 @@ def write_files(world: "TTYDWorld", patch: TTYDProcedurePatch) -> None:
         "block_visibility": world.options.block_visibility.value,
         "goal": world.options.goal.value,
         "star_shuffle": world.options.star_shuffle.value,
-        "dazzle_rewards": world.options.dazzle_rewards.value
+        "dazzle_rewards": world.options.dazzle_rewards.value,
+        "shop_purchase_limit": world.options.shop_purchase_limit.value,
+        "grubba_bribe_direction": world.options.grubba_bribe_direction.value,
+        "grubba_bribe_cost": world.options.grubba_bribe_cost.value,
+        "blue_pipe_toggle": world.options.blue_pipe_toggle.value,
+        "enemy_randomizer": world.options.enemy_randomizer.value,
+        "enemy_stat_scaling": world.options.enemy_stat_scaling.value,
+        "shuffle_chapter_stats": world.options.shuffle_chapter_stats.value,
+        "badge_bp": world.options.badge_bp.value,
+        "badge_fp": world.options.badge_fp.value,
+        "partner_fp": world.options.partner_fp.value
     }
 
     buffer = io.BytesIO()
     for i in range(len(shop_items)):
         location = world.get_location(location_id_to_name[shop_items[i]])
-        player_name = world.multiworld.player_name[location.item.player] if location.item is not None else "Unknown Player"
+        player_name = sanitize_string(world.multiworld.player_name[location.item.player]) if location.item is not None else "Unknown Player"
+        item_name = sanitize_string(location.item.name)
         buffer.write(f"ap_{shop_names[i // 6]}_{i % 6}".encode('utf-8'))
         buffer.write(b'\x00')
-        buffer.write(f"{player_name}'s\n<col {classification_to_color[get_base_classification(location.item.classification)]}ff>{location.item.name}</col>".encode('utf-8'))
+        buffer.write(f"{player_name}'s\n<col {classification_to_color(location.item.classification)}ff>{item_name}</col>".encode('utf-8'))
         buffer.write(b'\x00')
     buffer.write(b'\x00')  # null terminator for the end of the table
+
+    enemy_buffer = io.BytesIO()
+    encounters = world.encounters
+    enemy_buffer.write(struct.pack(">H", len(encounters)))
+    for entry in encounters:
+        ids = entry.enemy_ids
+        enemy_buffer.write(struct.pack("B", len(ids)))
+        for eid in ids:
+            enemy_buffer.write(struct.pack("B", eid))
 
     patch.write_file("desc.txt", buffer.getvalue())
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
     patch.write_file(f"locations.json", json.dumps(locations_to_dict(world.multiworld.get_locations(world.player))).encode("UTF-8"))
+    patch.write_file("enemies.bin", enemy_buffer.getvalue())
 
-def get_base_classification(classification: ItemClassification = ItemClassification.filler) -> ItemClassification:
-    """Extract the primary classification for color mapping"""
+def classification_to_color(classification: ItemClassification = ItemClassification.filler) -> str:
     if classification & ItemClassification.progression:
-        return ItemClassification.progression
+        return "6838c6"
     elif classification & ItemClassification.trap:
-        return ItemClassification.trap
+        return "b1130f"
     elif classification & ItemClassification.useful:
-        return ItemClassification.useful
+        return "3d4f84"
     else:
-        return ItemClassification.filler
+        return "005858"
 
 
 def locations_to_dict(locations: Iterable[Location]) -> Dict[str, Tuple]:
@@ -312,3 +351,10 @@ def locations_to_dict(locations: Iterable[Location]) -> Dict[str, Tuple]:
         else:
             result[location.name] = (0, 0, 0)
     return result
+
+def sanitize_string(input_string) -> str:
+    input_string = input_string.replace('\\', '\\\\') # Use the built in heart symbol and make sure escape sequences don't happen
+    allowed_chars = ' !"#$%&\'()=~|-^\\[]P{};:+*/?_,.@`abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789‘’‚“”„Œœ¡¤ª«²³º»¼½¾¿ÀÁÂÄÇÈÉÊËÌÍÎÏÐÑÒÓÔÖ×ØÙÚÛÜÞßàáâäçèéêëìíîïñòóôöùúûü'
+    filtered_chars = [char for char in input_string if char in allowed_chars]
+    return "".join(filtered_chars)
+    

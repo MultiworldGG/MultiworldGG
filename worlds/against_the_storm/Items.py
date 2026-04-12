@@ -109,6 +109,7 @@ item_dict: dict[str, tuple[ItemClassification, ATSItemClassification, str | None
     "Forester's Hut": (ItemClassification.useful, ATSItemClassification.blueprint, "Fertile Soil Blueprint"),
     "Greenhouse": (ItemClassification.useful, ATSItemClassification.blueprint, "Fertile Soil Blueprint"),
     "Herb Garden": (ItemClassification.useful, ATSItemClassification.blueprint, "Fertile Soil Blueprint"),
+    "Brineworks": (ItemClassification.useful, ATSItemClassification.blueprint, "Fertile Soil Blueprint"),
     "Plantation": (ItemClassification.useful, ATSItemClassification.blueprint, "Fertile Soil Blueprint"),
     "Small Farm": (ItemClassification.useful, ATSItemClassification.blueprint, "Fertile Soil Blueprint"),
     "Advanced Rain Collector": (ItemClassification.useful, ATSItemClassification.blueprint, None),

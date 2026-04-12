@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict, NamedTuple, Set, List
+from typing import TYPE_CHECKING, NamedTuple
+
 from BaseClasses import Region, Location, Item, ItemClassification
 from worlds.generic.Rules import add_rule
 
@@ -13,7 +14,7 @@ class LocationInfo(NamedTuple):
     region_name: str
 
 
-location_table: Dict[str, LocationInfo] = {
+location_table: dict[str, LocationInfo] = {
     "Starting Room - Spoon": LocationInfo(0, "Starting Room"),
     "Starting Room - Bowl": LocationInfo(1, "Starting Room"),
     # in vent after you open with spoon
@@ -124,24 +125,24 @@ location_table: Dict[str, LocationInfo] = {
 }
 
 
-sphere_1_locs: List[str] = ["Starting Room - Spoon", "Starting Room - Bowl"]
+sphere_1_locs: list[str] = ["Starting Room - Spoon", "Starting Room - Bowl"]
 
 
 # this is for filling out location_name_to_id, it should be static regardless of yaml options
-def get_locations() -> Dict[str, int]:
+def get_locations() -> dict[str, int]:
     return {f"Night Manor - {name}": data.id_offset + get_game_base_id("Night Manor") for name, data in location_table.items()}
 
 
 # this should return the location groups for this game, independent of yaml options
 # you should include a group that contains all location for this game that is called the same thing as the game
-def get_location_groups() -> Dict[str, Set[str]]:
-    location_groups: Dict[str, Set[str]] = {"Night Manor": {f"Night Manor - {loc_name}"
+def get_location_groups() -> dict[str, set[str]]:
+    location_groups: dict[str, set[str]] = {"Night Manor": {f"Night Manor - {loc_name}"
                                                             for loc_name in location_table.keys()}}
     return location_groups
 
 
 # this is not a required function, but a recommended one -- the world class does not call this function
-def create_locations(world: "UFO50World", regions: Dict[str, Region]) -> None:
+def create_locations(world: "UFO50World", regions: dict[str, Region]) -> None:
     for loc_name, loc_data in location_table.items():
         if loc_name == "Cherry" and "Night Manor" not in world.options.cherry_allowed_games:
             break

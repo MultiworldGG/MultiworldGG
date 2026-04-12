@@ -17,7 +17,11 @@ Run the emulator at least once to make sure it is working.
 
 ![img.png](Dolphin_Disabled_MMU.png)
 
-4. Note for Mac users: Due to additional security hardening that Apple added to MacOS, the steps from [here](https://github.com/aldelaro5/dolphin-memory-engine?tab=readme-ov-file#macos-code-signing) relating to Code Signing must be performed. Not doing so will prevent your MultiworldGG Client from connecting to the game appropriately.
+5. Additionally, make sure that Emulated Memory Size Override on the same screen is disabled.
+
+![img.png](Emulated_Memory_Size_Override.png)
+
+6. Note for Windows users: you may experience some issues with patching the ISO if your file is stored on OneDrive.
 
 ## Create a Config (.yaml) File
 
@@ -34,7 +38,7 @@ Run the MultiworldGGLauncher.exe from your MultiworldGG install and click `Gener
 This will produce a `/Players/Templates` folder in your MultiworldGG install, which contains default config files for 
 every game in your `custom_worlds` and `lib/worlds` folder. You can manually edit the config file using a text editor of your choice.
 
-Alternately, the [Player Settings](../player-settings) page on the website allows you to configure
+Alternately, the [Player Settings](../player-options) page on the website allows you to configure
 your personal settings and export a config file from them.
 
 ### Verifying your config file
@@ -45,7 +49,7 @@ If you would like to validate your config file to make sure it works, you may do
 ## Generating a Single-Player Game
 
 1. After modifying your yaml, place it into your MultiworldGG/player folder
-   - Alternately, navigate to the [Player Settings](../player-settings) page, configure your options,
+   - Alternately, navigate to the [Player Settings](../player-options) page, configure your options,
       and click the "Generate Game" button.
 2. Open the MultiworldGG Launcher and click "Generate". This will create a zip file in MultiworldGG/output
    - You will need to open this .zip to get your .aplm patch file if you are not using the MultiworldGG website
@@ -56,7 +60,7 @@ If you would like to validate your config file to make sure it works, you may do
 You will be prompted to locate your Luigi's Mansion ISO the first time you do this.
    - This action will automatically run the Luigi's Mansion Client (and connect to the webhost if the patch was downloaded from there).
    - The patch will be placed in the same folder as your patch file by default.
-   - You will ***not*** need to patch the game every time, and can simply run the `Luigis Mansion Client` from the list on the right of the MultiworldGG Launcher
+   - You will ***not*** need to patch the game every time, and can simply run the `Luigis Mansion Client` from the list of the MultiworldGG Launcher
 to continue later.
 7. Open Dolphin and from Dolphin, open your newly patched Luigi's Mansion ISO. Load all the way into a brand new save file, and pause.
    - Ensure that "Enable GPU Overclock" and "Emulated Memory Size Override" are both off in your Dolphin settings
@@ -65,8 +69,7 @@ to continue later.
    - The field should read `multiworld.gg:<port number>`
 9. Once you have loaded into the game, click the `Connect` button at the top of the LMClient. You are now connected and ready to play!
    - The client takes around 10 seconds to finish connecting, and only connects once you are actually in the mansion
-   - Unfortunately, due to the nature of some checks, you must be connected to a server while playing 
-   - Please keep a link to the webpage on hand
+   - Unfortunately, due to the nature of some checks, you must be connected to a server while playing. Please keep a link to the webpage on hand
 10. To rejoin the room later, you need to open the webpage, open the LM Client through the MultiworldGG Launcher, and open the patched ISO with Dolphin.
 Then you can click connect on the LM Client so long as the port matches what is shown on the webpage.
 

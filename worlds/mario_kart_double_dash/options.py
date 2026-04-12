@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from Options import Choice, DefaultOnToggle, NamedRange, OptionDict, PerGameCommonOptions, Range, StartInventoryPool, Toggle, Visibility
+from schema import And, Schema
 
 class Goal(Choice):
     """Victory condition for the game.
@@ -34,7 +35,7 @@ class LogicDifficulty(NamedRange):
     """Balances the difficulty modeling, how many upgrades you are presumed to have to win races.
     Use normal (0) if you can comfortably win 100cc races.
     Unrestricted places locations in logic as soon as they are technically possible."""
-    display_name = "Logic Difficulty."  
+    display_name = "Logic Difficulty"  
     range_start = -50
     range_end = 100
     default = 0
@@ -87,9 +88,12 @@ class ShorterCourses(Toggle):
 
 class CustomLapCounts(OptionDict):
     """Set custom amount of laps on each course.
-    Write each course on its own line, followed by : and number of laps."""
+    Write each course on its own line, followed by : and number of laps(max 9)."""
     display_name = "Custom Lap Counts"
     default = {"Wario Colosseum": 2}
+    schema = Schema({
+        str: And(int, lambda n: 1 <= n <= 9)
+    })
     
 class ItemsForEverybody(Range):
     """How many global item unlocks there are."""
@@ -127,6 +131,14 @@ class SpeedUpgrades(DefaultOnToggle):
     Disabling this sets logic difficulty on hard if it's lower."""
     display_name = "Speed Upgrades"
 
+class ItemBoxesAsLocations(Choice):
+    """Makes some item boxes count as checks."""
+    display_name = "Item Boxes as Locations"
+    option_disabled = 0
+    option_interesting_locations = 1
+    #option_boxsanity = 2
+    default = 1
+
 @dataclass
 class MkddOptions(PerGameCommonOptions):
     goal: Goal
@@ -150,5 +162,7 @@ class MkddOptions(PerGameCommonOptions):
 
     kart_upgrades: KartUpgrades
     speed_upgrades: SpeedUpgrades
+
+    item_boxes_as_locations: ItemBoxesAsLocations
 
     start_inventory_from_pool: StartInventoryPool

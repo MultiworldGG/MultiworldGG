@@ -9,6 +9,7 @@ from BaseClasses import MultiWorld, Tutorial, ItemClassification, LocationProgre
 from Options import OptionError
 from worlds.LauncherComponents import launch as launch_component, components, Component, Type
 from worlds.AutoWorld import WebWorld, World
+from rule_builder.rules import Rule
 
 from .Client import WaffleSNIClient
 from .Items import WaffleItem, item_table, junk_table, option_name_to_item_unlock
@@ -22,7 +23,7 @@ from .Regions import create_regions, connect_regions, add_location_to_region
 from .Rom import patch_rom, WaffleProcedurePatch, USHASH
 from .Rules import WaffleBasicRules
 from .Teleports import generate_entrance_rando
-from .Tracker import setup_options_from_slot_data, reconnect_found_entrance, disconnect_entrances
+from .Tracker import reconnect_found_entrance, disconnect_entrances, create_glitched_entrances
 
 def launch_manager(*args):
     from .Manager import launch
@@ -42,6 +43,13 @@ class WaffleSetings(settings.Group):
         File name of the graphics pack to be used.
         Preferably point it to a .zip file in /data/sprites/smw/
         """
+
+    class UTPoptrackerPath(settings.FilePath):
+        """Path to the user's Donkey Kong Country 2 Poptracker Pack."""
+        description = "Donkey Kong Country 2 Poptracker Pack zip file"
+        required = False
+
+    ut_poptracker_path: typing.Union[UTPoptrackerPath, str] = UTPoptrackerPath()
 
     rom_file: RomFile = RomFile(RomFile.copy_to)
     graphics_file: GraphicsPath = "data/sprites/smw/"
@@ -65,7 +73,7 @@ class WaffleWeb(WebWorld):
     options_presets = waffle_options_presets
 
 
-class WaffleWorld(World):
+class WaffleWorld(Tracker.UTMxin, World):
     """
     Spicy Mycena Waffles (SMW) is an extension of the original Super Mario World AP/MWGG implementation
     that features several core changes for better or for worse.
@@ -78,17 +86,13 @@ class WaffleWorld(World):
     options: WaffleOptions
 
     topology_present = False
-    required_client_version = (0, 6, 5)
+    required_client_version = (0, 6, 7)
 
     item_name_to_id = {name: data.code for name, data in item_table.items()}
     location_name_to_id = all_locations
     location_name_groups = location_groups
 
-    using_ut: bool
-    ut_can_gen_without_yaml = True
-    glitches_item_name = ItemName.glitched
-    disconnected_entrances: dict[Entrance, Region]
-    found_entrances_datastorage_key: list[str]
+    rule_macros: dict[str, Rule.Resolved]
 
     active_level_dict: typing.Dict[int,int]
     active_location_table: typing.Dict[str,int]
@@ -97,10 +101,11 @@ class WaffleWorld(World):
     
     def __init__(self, multiworld: MultiWorld, player: int):
         self.rom_name_available_event = threading.Event()
+        self.rule_macros = {}
         super().__init__(multiworld, player)
     
     def generate_early(self):
-        
+        self.ordered_double_exits = list()
         self.teleport_data = dict()
         self.teleport_pairs = dict()
         self.reverse_teleport_pairs = dict()
@@ -137,28 +142,13 @@ class WaffleWorld(World):
         }
 
         # Handle UT support
-        setup_options_from_slot_data(self)
+        super().generate_early()
 
-        if not self.using_ut:
+        if not self.is_ut:
             # Bonk non level shuffle users trying to do something weird
             if self.options.starting_location.value != 0 and not self.options.level_shuffle.value:
-                raise OptionError(f"{self.player_name} has a very weird combination of settings that will result in a failed generation.\n"
-                                f"  Please enable level_shuffle if you desire to change the starting location.")
-            if self.options.starting_location.value == 0x04 and self.options.map_teleport_shuffle != "on_both_mix":
-                raise OptionError(f"{self.player_name} has a very weird combination of settings that will result in a failed generation.\n"
-                                f"  Please enable map_teleport_shuffle with the option 'on_both_mix'.")
-            if self.options.starting_location.value == 0x02 and self.options.map_teleport_shuffle != "on_both_mix":
-                raise OptionError(f"{self.player_name} has a very weird combination of settings that will result in a failed generation.\n"
-                                f"  Please enable map_teleport_shuffle with the option 'on_both_mix'.")
-
-            # Bonk "minimal" accesibility users if they go full derp with their settings
-            if self.options.accessibility == "minimal" and self.options.percentage_of_yoshi_eggs.value < 90:
-                self.options.percentage_of_yoshi_eggs.value = 90
-                valid_loc_count = int(self.count_locations()/10) 
-                egg_count = min(self.count_egg_locations() + self.options.yoshi_egg_count.value, 255)
-                if valid_loc_count < egg_count:
-                    raise OptionError(f"{self.player_name} has a very weird combination of settings that will result in a failed generation.\n"
-                                    f"  Please set less Yoshi Eggs your YAML file or DON'T use minimal accessibility.")
+                print (f"Enforcing Yoshi's Island as a starting world for \"{self.player_name}\" as they don't have Level Shuffle enabled.")
+                self.options.starting_location.value = 0
                 
             # Enforce disabling DeathLink for now
             if self.options.death_link:
@@ -171,12 +161,12 @@ class WaffleWorld(World):
                 self.options.ring_link.value = False
 
             if self.options.early_climb:
-                self.multiworld.local_early_items[self.player][ItemName.mario_climb] = 1
+                self.multiworld.local_early_items[self.player][ItemName.climb] = 1
 
             # Only randomize data if not using UT
             generate_entrance_rando(self)
-            generate_swapped_exits(self)
             self.active_level_dict = dict(zip(generate_level_list(self), full_level_list))
+            generate_swapped_exits(self)
             generate_carryless_exits(self)
 
         self.reverse_teleport_pairs = {y: x for x, y in self.teleport_pairs.items()}
@@ -226,10 +216,15 @@ class WaffleWorld(World):
                             self.special_zone_egg_locations.append(egg_loc_name)
 
 
-    # UT Stuff, will be worked on later lol
+    # UT Stuff
     def connect_entrances(self):
-        if self.using_ut and self.multiworld.enforce_deferred_connections in ("on", "default"):
-            disconnect_entrances(self)
+        if self.is_ut:
+            self.disconnected_entrances = {}
+            self.found_entrances_datastorage_key = []
+            if self.multiworld.enforce_deferred_connections in ("on", "default"):
+                create_glitched_entrances(self)
+            if self.multiworld.enforce_deferred_connections in ("on"):
+                disconnect_entrances(self)
 
     def reconnect_found_entrances(self, key: str, value: typing.Any) -> None:
         if not value:
@@ -242,24 +237,16 @@ class WaffleWorld(World):
         rules = WaffleBasicRules(self)
         rules.set_smw_rules()
 
-        if self.using_ut:
-            game_difficulty = self.options.game_logic_difficulty.value
-            if game_difficulty != 2:
-                rules.set_glitched_rules()
-
         return     
         # Debug
         from Utils import visualize_regions
-        state = CollectionState(self.multiworld)
+        state = CollectionState(self.multiworld, allow_partial_entrances=True)
         state.update_reachable_regions(self.player)
         visualize_regions(self.get_region("Menu"), "my_world.puml", show_entrance_names=True,
                         regions_to_highlight=state.reachable_regions[self.player])
 
     
     def create_items(self):
-        if self.using_ut:
-            return
-        
         itempool: typing.List[WaffleItem] = []
 
         total_required_locations = self.count_locations()
@@ -272,37 +259,55 @@ class WaffleWorld(World):
             self.multiworld.push_precollected(self.create_item(ItemName.progressive_powerup))
 
         if "Yoshi" in self.options.ability_shuffle.value:
-            itempool += [self.create_item(ItemName.yoshi) for _ in range(2)]
+            if self.options.decoupled_yoshi_carry:
+                itempool += [self.create_item(ItemName.progressive_yoshi) for _ in range(2)]
+            else:
+                itempool += [self.create_item(ItemName.yoshi)]
         else:
-            self.multiworld.push_precollected(self.create_item(ItemName.yoshi))
-            self.multiworld.push_precollected(self.create_item(ItemName.yoshi))
+            if self.options.decoupled_yoshi_carry:
+                self.multiworld.push_precollected(self.create_item(ItemName.progressive_yoshi))
+                self.multiworld.push_precollected(self.create_item(ItemName.progressive_yoshi))
+            else:
+                self.multiworld.push_precollected(self.create_item(ItemName.yoshi))
 
         if "Run" in self.options.ability_shuffle.value:
-            itempool += [self.create_item(ItemName.mario_run) for _ in range(2)]
+            if self.options.decoupled_wall_run_anywhere:
+                itempool += [self.create_item(ItemName.progressive_run) for _ in range(2)]
+            else:
+                itempool += [self.create_item(ItemName.run)]
         else:
-            itempool += [self.create_item(ItemName.mario_run)]
-            self.multiworld.push_precollected(self.create_item(ItemName.mario_run))
+            if self.options.decoupled_wall_run_anywhere:
+                itempool += [self.create_item(ItemName.progressive_run)]
+                self.multiworld.push_precollected(self.create_item(ItemName.progressive_run))
+            else:
+                self.multiworld.push_precollected(self.create_item(ItemName.run))
 
         if "Carry" in self.options.ability_shuffle.value:
-            itempool += [self.create_item(ItemName.mario_carry)]
+            itempool += [self.create_item(ItemName.carry)]
         else:
-            self.multiworld.push_precollected(self.create_item(ItemName.mario_carry))
+            self.multiworld.push_precollected(self.create_item(ItemName.carry))
 
         if "Swim" in self.options.ability_shuffle.value:
-            itempool += [self.create_item(ItemName.mario_swim) for _ in range(2)]
+            if self.options.decoupled_fast_swimming:
+                itempool += [self.create_item(ItemName.progressive_swim) for _ in range(2)]
+            else:
+                itempool += [self.create_item(ItemName.swim)]
         else:
-            itempool += [self.create_item(ItemName.mario_swim)]
-            self.multiworld.push_precollected(self.create_item(ItemName.mario_swim))
+            if self.options.decoupled_fast_swimming:
+                itempool += [self.create_item(ItemName.progressive_swim)]
+                self.multiworld.push_precollected(self.create_item(ItemName.progressive_swim))
+            else:
+                self.multiworld.push_precollected(self.create_item(ItemName.swim))
 
         if "Spin Jump" in self.options.ability_shuffle.value:
-            itempool += [self.create_item(ItemName.mario_spin_jump)]
+            itempool += [self.create_item(ItemName.spin_jump)]
         else:
-            self.multiworld.push_precollected(self.create_item(ItemName.mario_spin_jump))
+            self.multiworld.push_precollected(self.create_item(ItemName.spin_jump))
 
         if "Climb" in self.options.ability_shuffle.value:
-            itempool += [self.create_item(ItemName.mario_climb)]
+            itempool += [self.create_item(ItemName.climb)]
         else:
-            self.multiworld.push_precollected(self.create_item(ItemName.mario_climb))
+            self.multiworld.push_precollected(self.create_item(ItemName.climb))
 
         if "P-Switch" in self.options.ability_shuffle.value:
             itempool += [self.create_item(ItemName.p_switch)]
@@ -652,6 +657,7 @@ class WaffleWorld(World):
                 spoiler_handle.write(f"    {original_level.levelName} -> {shuffled_level.levelName}\n")
         
         spoiler_handle.write(f"\nStarting Location: {possible_starting_entrances[self.options.starting_location.value]}\n")
+        spoiler_handle.write(f"\nRequired eggs: {self.required_egg_count} of {self.actual_egg_count}\n")
 
         if self.options.map_teleport_shuffle.value != 0:
             spoiler_handle.write(f"\nMap Teleport Shuffle Results:\n")
@@ -687,6 +693,7 @@ class WaffleWorld(World):
             "yoshi_egg_placement",
             "starting_location",
             "ability_shuffle",
+            "alternate_logic",
         )
         slot_data["active_levels"] = self.active_level_dict
         slot_data["teleport_pairs"] = self.teleport_pairs
@@ -720,6 +727,7 @@ class WaffleWorld(World):
 
         return trap_data
     
+
     @staticmethod
     def interpret_slot_data(slot_data):
         # Thesse are meant to be a Dict[int, int], not Dict[str, int]
@@ -729,3 +737,44 @@ class WaffleWorld(World):
         slot_data["active_levels"] = local_active_levels
 
         return slot_data
+
+    # Borrowed from Mysteryem's Lego Star Wars world
+    @classmethod
+    def stage_fill_hook(cls,
+                        multiworld: MultiWorld,
+                        progitempool: list[WaffleItem],
+                        usefulitempool: list[WaffleItem],
+                        filleritempool: list[WaffleItem],
+                        fill_locations: list[Location],
+                        ) -> None:
+        game_players = multiworld.get_game_players(cls.game)
+        # Get all player IDs that have progression classification minikits.
+        egg_player_ids = {player for player in game_players if multiworld.worlds[player].options.yoshi_egg_count.value > 0}
+        # Get the player IDs of those that are using minimal accessibility.
+        egg_minimal_player_ids = {player for player in game_players
+                                      if multiworld.worlds[player].options.accessibility == "minimal"}
+
+        def sort_func(item: WaffleItem):
+            if item.player in egg_player_ids and item.name == ItemName.yoshi_egg:
+                if item.player in egg_minimal_player_ids:
+                    # For minimal players, place goal macguffins first. This helps prevent fill from dumping logically
+                    # relevant items into unreachable locations and reducing the number of reachable locations to fewer
+                    # than the number of items remaining to be placed.
+                    #
+                    # Placing only the non-required goal macguffins first or slightly more than the number of
+                    # non-required goal macguffins first was also tried, but placing all goal macguffins first seems to
+                    # give fill the best chance of succeeding.
+                    #
+                    # All sizes of minikit bundles, are given the *deprioritized* classification for minimal players,
+                    # which avoids them being placed on priority locations, which would otherwise occur due to them
+                    # being sorted to be placed first.
+                    return 1
+                else:
+                    # For non-minimal players, place goal macguffins last. The helps prevent fill from filling most/all
+                    # reachable locations with the goal macguffins that are only required for the goal.
+                    return -1
+            else:
+                # Python sorting is stable, so this will leave everything else in its original order.
+                return 0
+
+        progitempool.sort(key=sort_func)

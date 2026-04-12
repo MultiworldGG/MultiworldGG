@@ -9,7 +9,6 @@
 }
 
 #games h1, #games details summary.h1{
-    font-size: 60px;
     cursor: unset;
 }
 
@@ -36,6 +35,7 @@
 #games .page-controls{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     margin-top: 0.25rem;
 }
 

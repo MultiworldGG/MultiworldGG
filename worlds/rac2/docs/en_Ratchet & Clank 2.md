@@ -1,9 +1,9 @@
-# Ratchet & Clank 2 Archipelago
-An Archipelago implementation for Ratchet & Clank 2
+# Ratchet & Clank 2 MultiworldGG
+A MultiworldGG implementation for Ratchet & Clank 2
 
 
 ## Setup Guide
-To get started or for troubleshooting, see [the Setup Guide](https://github.com/evilwb/APRac2/blob/main/docs/setup_en.md).
+To get started or for troubleshooting, see [the Setup Guide](/tutorial/Ratchet%20&%20Clank%202/setup_en).
 ### Installation video tutorial by Scyker
 https://www.youtube.com/watch?v=hRCuEQVgzPE
 

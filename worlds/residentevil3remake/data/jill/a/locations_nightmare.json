@@ -79,7 +79,7 @@
         "folder_path": "RopewayContents/World/Location_DownTown/LocationLevel_DownTown/LocationFsm_DownTown/S03_1000/ES_S03_1000/Item/ES_S03_1000/I_200_T-Junction_Area/Nightmare"
     },
     {
-        "name": "Box By Donut Shop",
+        "name": "Box by Donut Shop",
         "region": "Shopping Plaza",
         "original_item": "High-Grade Gunpowder",
         "condition": {},
@@ -97,7 +97,7 @@
         "folder_path": "RopewayContents/World/Location_DownTown/LocationLevel_DownTown/LocationFsm_DownTown/S03_1000/ES_S03_1000/Item/ES_S03_1000/KeyItem/Nightmare"
     },
     {
-        "name": "Downed Zombie By Entrance",
+        "name": "Downed Zombie by Entrance",
         "region": "Subway Office",
         "original_item": "Hand Grenade",
         "condition": {},
@@ -124,7 +124,7 @@
         "folder_path": "RopewayContents/World/Location_DownTown/LocationLevel_DownTown/LocationFsm_DownTown/S03_1000/ES_S03_1000/Item/ES_S03_1000/KeyItem/Nightmare"
     },
     {
-        "name": "Power Panel By Scaffolding",
+        "name": "Power Panel by Scaffolding",
         "region": "Power Maze",
         "original_item": "Red Jewel",
         "condition": {},
@@ -171,7 +171,7 @@
         ]
     },
     {
-        "name": "Near Door On Box",
+        "name": "Near Door on Box",
         "region": "Guard Room",
         "original_item": "ID Card",
         "condition": {},
@@ -179,10 +179,6 @@
         "parent_object": "sm73_203",
         "folder_path": "RopewayContents/World/Location_RPD/LocationLevel_RPD/Item/common/ES_common/NIGHTMARE",
         "allow_item": [
-            "Red Jewel",
-            "Blue Jewel",
-            "Green Jewel",
-            "ID Card",
             "Locker Room Key",
             "Tape Player",
             "Fuse 1",
@@ -206,10 +202,6 @@
         "parent_object": "Attache_MagnumBullet",
         "folder_path": "RopewayContents/World/Location_Hospital/LocationLevel_Hospital/Item/common/LockerItem",
         "allow_item": [
-            "Red Jewel",
-            "Blue Jewel",
-            "Green Jewel",
-            "ID Card",
             "Fuse 1",
             "Fuse 2",
             "Fuse 3",
@@ -227,7 +219,7 @@
         "folder_path": "RopewayContents/World/Location_Laboratory/LocationLevel_Laboratory/Item/common/ES_Common/04_Room02"
     },
     {
-        "name": "Counter By Door",
+        "name": "Counter by Door",
         "region": "Supermarket",
         "remove": true
     },
@@ -248,7 +240,7 @@
     },
     {
         "name": "Supply Cart",
-        "region": "Sickroom",
+        "region": "Sick Room",
         "remove": true
     },
     {

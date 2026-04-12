@@ -27,3 +27,10 @@ unlock_everything = [
 gp_course_selection = [
     0x04169E94, 0x41820050,
 ]
+
+# Red & Green Fireball Item Limit [Ralf]
+fireball_limit = [
+    0x0435567C, 0x00000014,
+    0x00355651, 0x00000014,
+    0x00355641, 0x00000014,
+]

@@ -7,48 +7,58 @@ config file.
 
 ## What This Mod Changes
 
-- The MultiworldGG/AP items and locations are Yi's core movement abilities, almost every chest in the game (including the jin-only chests), every enemy drop, most of the objects you can examine for "database" entries, and several of the item-granting NPC interactions in FSP.
-	- For now, none of the "post-PonR" content is randomized (except that the goal is defeating Eigong).
-	- For now, none of the "post-all poisons" / Shennong questline / True Ending content is randomized.
-	- For now, no shop items or skill tree upgrades are randomized.
-- Starting a New Game will prompt you for MultiworldGG connection info, then put you immediately into the Four Seasons Pavilion (with power already on) instead of the usual intro sequence.
-	- Teleport is immediately unlocked, along with one other root node for you to teleport too.
-		- For now, this "first node" is always Apeman Facility (Monitoring).
-		- This randomizer also depends on the TeleportFromAnywhere mod because you may need it to escape from a "dead end" with an important item.
-	- The FSP's front door is "jammed" (i.e. the exit load zone is disabled), so you won't have immediate access to Central Hall.
-	- Shuanshuan and Shennong are there immediately.
-	- For now, Chiyou will move to FSP after checking the "Factory (GH): Raise the Bridge for Chiyou" location.
-		- In vanilla it's triggered by escaping Prison and being rescued by Chiyou, which in randomizer would be too easy to skip over, and IMO would push too many things into a fixed/non-random order.
-	- Like in vanilla, Kuafu will move to FSP after checking the "Kuafu's Vital Sanctum" location.
-- Many scripted events are now either triggered by sol seal counts, unlocked immediately and forever, or skipped entirely.
-	- The Jiequan 1 fight and Prison sequence become available after collecting (for now) 3 sol seals and Mystic Nymph: Scout Mode. Unlike the vanilla game, that's *any* 3 sol seals.
-	- The Lady Ethereal Soulscape entrance appears after collecting (for now) any 4 sol seals.
-	- For now, the New Kunlun Control Hub entrance opens after collecting 8 sol seals, instead of the Point of no Return cutscenes. This does make Tianhou Research Institute completely optional, but it should also ensure you have to do a lot more than find the SMB item to reach the final Eigong fight.
-	- The Peach Blossom Village rescue can be done as soon as you find the Abandoned Mines Access Token and can reach the gate it unlocks. It's no longer tied to escaping Prison and being rescued by Chiyou.
-	- All "Limitless Realm" segments are disabled/skipped for now.
-	- Ji remains at Daybreak Tower to give you the Ancient Sheet Music even if he's supposed to be somewhere else.
-	- Chiyou remains at the Factory (Great Hall) bridge until you check the "Factory (GH): Raise the Bridge for Chiyou" location, even if you do Boundless Repository first.
+Instead of the usual intro sequence in Peach Blossom Village, the randomizer will put you immediately into the Four Seasons Pavilion, with power already on and Shuanshuan and Shennong already there. The FSP's front door will be "jammed" (i.e. the exit load zone is disabled), so you won't have immediate access to Central Hall. Instead, Teleport will be immediately unlocked, along with one other root node for you to teleport to.
 
-## Roadmap
+Many more details can be found in the .yaml options file and the randomizer's loading screen tips. Since the loading screen tips are hard to read if you have good load times, and some first-time players may prefer to read them all now, here they are:
 
-High-priority big features:
-- randomize Wall Climb, Grapple and Ledge Grab starting abilities
-- hard/glitch/trick logic
-- random "spawn" / first root node
+<details>
+<summary>Randomizer Loading Screen Tips</summary>
 
-These are the priorities because they are heavily interconnected, and prerequisites for many other features.
+"Press F1 to access settings for all your Nine Sols mods, including this randomizer."
 
-Major features I'll probably do later:
-- entrance randomization
-- randomizing shop items
-- randomizing the skill tree
+"Reaching Eigong requires only Sol Seal items. There's no need to visit Tianhuo Research Institute."
 
-Smaller features I haven't made up my mind on:
-- trap items (Sniper Trap? Prison State Trap? Internal Damage Trap? etc)
-- turning root node unlocks into items, like HK's shuffle stag stations option
-- decide on additional goals, how to handle post-PonR content, and whether to do anything with the Chien/Chiyou/Shennong quests and True Ending
-- in-game hints from the Shanhai 9000s
-- randomize BGM
+"This randomizer depends on the TeleportFromAnywhere mod because an important item may end up randomly placed in a \"dead end\" you can only escape by teleporting."
+
+"Shennong will become sick only after you acquire your first poison item."
+
+"The randomizer's \"logic\" assumes:<br>- Jiequan requires Charged Strike<br>- Lady Ethereal requires Air Dash<br>- Ji requires Tai-Chi Kick<br>- Eigong requires Air Dash or Cloud Leap"
+
+"There are 5 mutants who drop an item when permanently killed with Super Mutant Buster. 2 in ED (Living Area), 2 in ED (Sanctum), and 1 in TRC."
+
+"The Peach Blossom Village rescue can be done as soon as you find the Abandoned Mines Access Token. It's no longer tied to escaping Prison and being rescued by Chiyou."
+
+"Since talking to Ji at Daybreak Tower is a location, in this randomizer Ji becomes one of the few NPCs who can talk to you after his own death. I consider this a feature."
+
+"All \"Limitless Realm\" segments are disabled and skipped in this randomizer."
+
+"If Apeman Facility (Monitoring) was not your first root node, then that node will be automatically unlocked when you enter AF(M), because the upper part of AF(M) is unreachable without it."
+
+"The large spike ball in Grotto (East) will never land in Grotto (Entry) in this randomizer, since it would block critical paths if we let it."
+
+"This randomizer doesn't touch the items that are only reachable after the \"Point of no Return\", or after giving Shennong all poisons. You're free to replay that content or ignore it."
+
+</details>
+
+## Other Suggested Mods and Tools
+
+Universal Tracker is fully supported by nine_sols.apworld, including yaml-less support, Map Pages, auto-switching between Map Pages, and glitched logic.
+
+![UniversalTrackerShowcase](UniversalTrackerShowcase.png)
+
+For now, UT is also the only supported tracker, so it's very highly recommended. See the pinned messages [in its Discord thread](https://discord.com/channels/731205301247803413/1170094879142051912) for details.
+
+[My CutsceneSkip mod](https://thunderstore.io/c/nine-sols/p/Ixrec/CutsceneSkip/) does exactly what it sounds like.
+
+[N00byKing's NineSolsTracker mod](https://thunderstore.io/c/nine-sols/p/N00byKing/NineSolsTracker/) may help with finding items and chests in-game.
+
+If you're good enough at the combat to want harder-than-vanilla fights, it's worth noting that [Gogas1's BossChallengeMod](https://thunderstore.io/c/nine-sols/p/Gogas1/BossChallengeMod/) offers "random modifiers" on bosses, minibosses and regular enemies.
+
+Players have also reported the following mods work perfectly fine with the randomizer:
+- CustomSols
+- HPNumbers
+- PromisedEigong
+- YiXPNumber
 
 ## Credits
 

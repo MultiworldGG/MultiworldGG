@@ -31,8 +31,9 @@ def get_latest_release_info() -> tuple:
     tag = normalize_tag(data["tag_name"])
     installer = select_installer_asset(data["assets"])
     download_url = installer["browser_download_url"]
+    changelog = data.get("body") or "No changelog available."
     logging.info(f"latest release {tag} under url {download_url}")
-    return tuplize_version(tag), download_url
+    return tuplize_version(tag), download_url, changelog
 
 def download_and_install_win(url: str):
     fd, path = tempfile.mkstemp(suffix=".exe")

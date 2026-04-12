@@ -1,7 +1,7 @@
 # RimWorld
 
 ## What does randomization do to this game?
-The primary element that's randomized is research. All research that AP knows about will be turned into items that grant the player with that technology. In order to get that research, the player must research special technology or craft items (and soon, more!)
+The primary element that's randomized is research. All research that AP/MWGG knows about will be turned into items that grant the player with that technology. In order to get that research, the player must research special technology or craft items (and soon, more!)
 
 ## What RimWorld items are randomized?
 There are several types of item in RimWorld:

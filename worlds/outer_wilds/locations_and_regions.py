@@ -5,8 +5,8 @@ from typing import Any, NamedTuple
 
 from BaseClasses import CollectionState, Location, Region
 from Utils import restricted_loads
-from worlds.generic.Rules import set_rule
-from .options import Spawn
+from worlds.generic.Rules import add_rule, set_rule
+from .options import Goal, Spawn
 from .should_generate import should_generate, should_generate_location
 from .warp_platforms import warp_platform_to_logical_region, warp_platform_required_items
 
@@ -157,6 +157,27 @@ def create_regions(world: "OuterWildsWorld") -> None:
         menu.add_exits(["Giant's Deep"])
     elif options.spawn == Spawn.option_stranger:
         menu.add_exits(["Stranger Sunside Hangar"])
+    elif options.spawn == Spawn.option_deep_bramble:
+        menu.add_exits(["Deep Bramble"])
+        mw.get_entrance("Menu -> Space", p).access_rule = lambda state: state.has_all(["Launch Codes", "Deep Bramble Coordinates"], p)
+        mw.get_region("Deep Bramble", p).add_exits(["Deep Bramble via Warp Drive"], {"Deep Bramble via Warp Drive": lambda state: state.has("Launch Codes", p)})
+
+    if options.goal == Goal.option_song_of_the_universe:
+        friend_list = [
+            ("QM: Explore the Sixth Location", True),                                    # Solanum
+            ("DW: Sealed Vault", options.enable_eote_dlc),                               # Prisoner
+            ("HN1: Scan Derelict Ship Cockpit Signal", options.enable_hn1_mod),          # Hearth's Neighbor
+            ("TO: Cliffside Home Explanation (Text Wall)", options.enable_outsider_mod), # The Outsider
+            ("AC: The Astral Codec", options.enable_ac_mod),                             # Astral Codec
+            ("HN2: Activate The Device", options.enable_hn2_mod),                        # Hearth's Neighbor 2 Magistarium
+            ("FQ: Tuner's Song", options.enable_fq_mod),                                 # Fret's Quest
+            ("FC: Conclusion", options.enable_fc_mod),                                   # Forgotten Castaways
+            ("EH: Meet The Phosphors", options.enable_eh_mod),                           # Echo Hike
+        ]
+        available_friend_locations = [location for (location, enabled) in friend_list if enabled]
+        required_count = options.required_friends
+        add_rule(mw.get_location("Victory - Song of the Universe", p),
+                 lambda state: sum([state.can_reach_location(friend, p) for friend in available_friend_locations]) >= required_count)
 
     if world.warps == 'vanilla':
         def has_codes(state): return state.has("Nomai Warp Codes", p)
@@ -207,13 +228,13 @@ def create_regions(world: "OuterWildsWorld") -> None:
             required_items.extend(warp_platform_required_items.get(platform_1, []))
             required_items.extend(warp_platform_required_items.get(platform_2, []))
 
-            def rule(state: CollectionState) -> bool:
-                return state.has_all(required_items, p)
+            def rule(state: CollectionState, items=required_items) -> bool:  # noqa
+                return state.has_all(items, p)
             r1 = mw.get_region(region_name_1, p)
             r2 = mw.get_region(region_name_2, p)
             r1.connect(r2, "%s->%s warp" % (region_name_1, region_name_2), rule)
             r2.connect(r1, "%s->%s warp" % (region_name_2, region_name_1), rule)
-        
+
         # To access the Black Hole Forge without the Launch Codes, there needs to be
         # a path from Brittle Hollow proper to the Hanging City Ceiling. This path
         # exists if the BHF warp is connected to one of the other two warps accessible
@@ -247,14 +268,14 @@ def eval_criterion(state: CollectionState, p: int, criterion: Any, split_transla
             return False
         key, value = next(iter(criterion.items()))
 
-        # { "item": "..." } and { "anyOf": [ ... ] } and { "location": "foo" } and { "region": "bar" }
-        # mean exactly what they sound like, and those are the only kinds of criteria.
         if key == "item" and isinstance(value, str):
             if not split_translator and value.startswith("Translator ("):
                 return state.has("Translator", p)
             return state.has(value, p)
         elif key == "anyOf" and isinstance(value, list):
             return any(eval_criterion(state, p, sub_criterion, split_translator) for sub_criterion in value)
+        elif key == "allOf" and isinstance(value, list):
+            return all(eval_criterion(state, p, sub_criterion, split_translator) for sub_criterion in value)
         elif key == "location" and isinstance(value, str):
             return state.can_reach(value, "Location", p)
         elif key == "region" and isinstance(value, str):
@@ -280,7 +301,7 @@ def regions_referenced_by_criterion(criterion: Any) -> list[str]:
         key, value = next(iter(criterion.items()))
         if key == "item":
             return []
-        elif key == "anyOf":
+        elif key == "anyOf" or key == "allOf":
             return [region for sub_criterion in value for region in regions_referenced_by_criterion(sub_criterion)]
         elif key == "location":
             return [location_data_table[value].region]

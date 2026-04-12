@@ -2,9 +2,10 @@ import asyncio
 import json
 import multiprocessing
 import os
+import struct
 import subprocess
 import traceback
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, DefaultDict, Dict, List, Optional, Tuple, cast
 import zipfile
 import py_randomprime  # type: ignore
 
@@ -16,7 +17,8 @@ from CommonClient import (
     server_loop,
     gui_enabled,
 )
-from NetUtils import ClientStatus
+from NetUtils import ClientStatus, HintStatus
+from settings import get_settings
 import Utils
 apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 from .Config import make_version_specific_changes
@@ -107,6 +109,22 @@ status_messages = {
     ConnectionState.IN_MENU: "Connected to game, waiting for game to start",
     ConnectionState.DISCONNECTED: "Unable to connect to the Dolphin instance, attempting to reconnect...",
     ConnectionState.MULTIPLE_DOLPHIN_INSTANCES: "Warning: Multiple Dolphin instances detected, client may not function correctly.",
+}
+
+
+artifact_hint_scans: Dict[str, int] = {
+    "Artifact of Truth": 852090318,
+    "Artifact of Strength": 3026038624,
+    "Artifact of Elder": 2130803909,
+    "Artifact of Wild": 1644448893,
+    "Artifact of Lifegiver": 2841157592,
+    "Artifact of Warrior": 801959286,
+    "Artifact of Chozo": 3834658515,
+    "Artifact of Nature": 365333510,
+    "Artifact of Sun": 3734658979,
+    "Artifact of World": 4223573402,
+    "Artifact of Spirit": 820137535,
+    "Artifact of Newborn": 3061202065,
 }
 
 
@@ -254,6 +272,22 @@ async def handle_tracker_level(ctx: MetroidPrimeContext):
     }])
 
 
+async def handle_artifact_hints(ctx: MetroidPrimeContext, scans: Dict[int, bool]):
+    artifact_locations: Optional[Dict[str, Tuple[int, int]]] = ctx.slot_data.get("artifact_locations")
+    if not artifact_locations:
+        return
+
+    scanned_hints: DefaultDict[int, List[int]] = DefaultDict(list)
+    for artifact_name, asset_id in artifact_hint_scans.items():
+        if scans.get(asset_id):
+            location, player = artifact_locations[artifact_name]
+            scanned_hints[player].append(location)
+    await ctx.send_msgs([
+        {"cmd": "CreateHints", "locations": locations, "player": player, "status": HintStatus.HINT_PRIORITY}
+        for player, locations in scanned_hints.items()
+    ])
+
+
 async def handle_check_deathlink(ctx: MetroidPrimeContext):
     health = ctx.game_interface.get_current_health()
     if health <= 0 and ctx.is_pending_death_link_reset == False and ctx.slot:
@@ -276,6 +310,8 @@ async def _handle_game_ready(ctx: MetroidPrimeContext):
         await handle_checked_location(ctx, current_inventory)
         await handle_check_goal_complete(ctx)
         await handle_tracker_level(ctx)
+        scans = ctx.game_interface.get_scans()
+        await handle_artifact_hints(ctx, scans)
 
         if ctx.death_link_enabled:
             await handle_check_deathlink(ctx)
@@ -298,7 +334,8 @@ async def _handle_game_not_ready(ctx: MetroidPrimeContext):
 
 
 async def run_game(romfile: str):
-    auto_start: bool = Utils.get_options()["metroidprime_options"].get(
+    metroidprime_options = get_settings()["metroidprime_options"]
+    auto_start: bool = metroidprime_options.get(
         "rom_start", True
     )
 
@@ -315,42 +352,55 @@ async def run_game(romfile: str):
         )
 
 
+_GC_GAME_VERSIONS: dict[tuple[str, int], str] = {
+    ("E", 0): "0-00",
+    ("E", 1): "0-01",
+    ("E", 2): "0-02",
+    ("E", 48): "kor",
+    ("P", 0): "pal",
+    ("J", 0): "jpn",
+}
+
 def get_version_from_iso(path: str) -> str:
     if not os.path.exists(path):
         raise FileNotFoundError(f"Couldn't get version for iso {path}!")
+
     with open(path, "rb") as f:
+        # detecting any non-ISO format
+        f.seek(0x200, 0)
+        if f.read(4).decode("utf-8") == "NKIT":
+            raise Exception("NKit format is not supported! Please dump your ISO from your disc.")
+
+        f.seek(0, 0)
+        file_format = f.read(3).decode("utf-8")
+        if file_format in ["RVZ", "WIA"]:
+            raise Exception(f"{file_format} format is not supported! Please dump your ISO from your disc.")
+
+        f.seek(0, 0)
+        gcz_magic = struct.unpack('<H', f.read(2))[0]
+        if gcz_magic == 0xB10B:
+            raise Exception("GCZ format is not supported! Please dump your ISO from your disc.")
+
+        f.seek(0, 0)
+        if f.read(3).decode("utf-8") == "CISO":
+            raise Exception("CISO format is not supported! Please dump your ISO from your disc.")
+
+        # detecting game infos
+        f.seek(0, 0)
         game_id = f.read(6).decode("utf-8")
         f.read(1)
         game_rev = f.read(1)[0]
         if game_id[:3] != "GM8":
             raise Exception("This is not Metroid Prime GC")
-        if game_id[3] == "E":
-            if game_rev == 0:
-                return "0-00"
-            if game_rev == 1:
-                return "0-01"
-            if game_rev == 2:
-                return "0-02"
-            if game_rev == 48:
-                return "kor"
+
+        result = _GC_GAME_VERSIONS.get((game_id[3], game_rev), None)
+
+        if result is None:
             raise Exception(
-                f"Unknown revision of Metroid Prime GC US (game_rev : {game_rev})"
+                f"Unknown version of Metroid Prime GC (game_id : {game_id} | game_rev : {game_rev})"
             )
-        if game_id[3] == "J":
-            if game_rev == 0:
-                return "jpn"
-            raise Exception(
-                f"Unknown revision of Metroid Prime GC JPN (game_rev : {game_rev})"
-            )
-        if game_id[3] == "P":
-            if game_rev == 0:
-                return "pal"
-            raise Exception(
-                f"Unknown revision of Metroid Prime GC PAL (game_rev : {game_rev})"
-            )
-        raise Exception(
-            f"Unknown version of Metroid Prime GC (game_id : {game_id} | game_rev : {game_rev})"
-        )
+
+        return result
 
 
 def get_options_from_apmp1(apmp1_file: str) -> Dict[str, Any]:
@@ -370,11 +420,11 @@ def get_randomprime_config_from_apmp1(apmp1_file: str) -> Dict[str, Any]:
 
 
 async def patch_and_run_game(apmp1_file: str):
+    metroidprime_options = get_settings()["metroidprime_options"]
     apmp1_file = os.path.abspath(apmp1_file)
-    input_iso_path = Utils.get_options()["metroidprime_options"]["rom_file"]
-    game_version = get_version_from_iso(input_iso_path)
+    input_iso_path = metroidprime_options["rom_file"]
     base_name = os.path.splitext(apmp1_file)[0]
-    output_path = base_name + ".iso"
+    output_path = f"{base_name}.iso"
 
     if not os.path.exists(output_path):
         if not zipfile.is_zipfile(apmp1_file):
@@ -388,6 +438,8 @@ async def patch_and_run_game(apmp1_file: str):
             build_progressive_beam_patch = options_json["progressive_beam_upgrades"]
 
         try:
+            game_version = get_version_from_iso(input_iso_path)
+
             config_json["gameConfig"]["updateHintStateReplacement"] = (
                 construct_hook_patch(game_version, build_progressive_beam_patch)
             )

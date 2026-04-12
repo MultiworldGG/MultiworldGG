@@ -1,5 +1,9 @@
 # Rabi-Ribi
 
+## Where is the settings page?
+
+The [player settings page for this game](../player-options) contains all the options you need to configure and export a config file.
+
 ## What does randomization do to this game?
 
 Items which the player would normally acquire throughout the game have been moved around. Logic remains, so the game is

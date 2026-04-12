@@ -2,7 +2,7 @@ from hashlib import md5
 from typing import Any
 import shutil
 import json, logging, sys, os, zipfile, tempfile
-import urllib.request
+import requests, ssl, certifi, urllib.request
 
 from worlds.Files import APPatch, APPlayerContainer, AutoPatchRegister
 from settings import get_settings, Settings
@@ -177,8 +177,19 @@ class SMSPatch(APPatch, metaclass=AutoPatchRegister):
         download_path = f"{lib_path_base}/{lib_path}{version_info.major}-{version_info.minor}.zip"
 
         temp_zip_path = os.path.join(tmp_dir_path, "temp.zip")
-        with urllib.request.urlopen(download_path) as response, open(temp_zip_path, 'wb') as created_zip:
-            created_zip.write(response.read())
+        try:
+            with requests.get(download_path, stream=True) as response:
+                response.raise_for_status()
+                with open(temp_zip_path, 'wb') as created_zip:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        created_zip.write(chunk)
+        except Exception as downloadEx:
+            logger.error("While trying to download SMS dependencies from the release page, an unexpected error " +
+                f"occurred while using the requests library. Additional details: {str(downloadEx)}")
+            ssl_context = ssl.create_default_context(cafile=certifi.where())
+            with urllib.request.urlopen(download_path, context=ssl_context) as response, \
+                open(temp_zip_path, 'wb') as created_zip:
+                created_zip.write(response.read())
 
         with zipfile.ZipFile(temp_zip_path) as z:
             z.extractall(tmp_dir_path)

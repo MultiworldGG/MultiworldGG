@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from BaseClasses import Location, Region, LocationProgressType
 from .data import data, LogicalAccess, GrassTile
 from .evolution import evolution_location_name
-from .item_data import POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET, FLY_UNLOCK_OFFSET, GRASS_OFFSET
+from .item_data import POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET, GRASS_OFFSET, FLAG_ITEM_OFFSET
 from .items import item_const_name_to_id
 from .options import Goal, DexsanityStarters, Grasssanity, RandomizeBugCatchingContest
 from .pokemon import get_priority_dexsanity, get_excluded_dexsanity
@@ -43,11 +43,11 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
     exclude = set()
     if not world.options.randomize_hidden_items:
         exclude.add("Hidden")
-    if not world.options.randomize_pokegear:
+    if not world.options.randomize_pokegear and not world.options.remote_items:
         exclude.add("Pokegear")
     if not world.options.randomize_badges:
         exclude.add("Badge")
-    if not world.options.randomize_berry_trees:
+    if not world.options.randomize_berry_trees and not world.options.remote_items:
         exclude.add("BerryTree")
     if not world.options.saffron_gatehouse_tea:
         exclude.add("RequiresSaffronGatehouses")
@@ -62,6 +62,8 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
         exclude.add("Trainersanity")
     if not world.options.randomize_phone_call_items:
         exclude.add("Phone Calls")
+    if not world.options.randomize_pokedex:
+        exclude.add("Pokedex")
 
     exclude.add("Contest")
 
@@ -224,7 +226,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
     if world.options.breeding_methods_required or world.is_universal_tracker:
         breeding_region = regions["Breeding"]
         for pokemon_id, children_access in sorted(world.logic.breeding.items(), key=lambda x: x[0]):
-            accesses = [access for _, access in children_access]
+            accesses = [access for _, access, _ in children_access]
             if LogicalAccess.InLogic not in accesses and not world.is_universal_tracker: continue
             new_location = PokemonCrystalLocation(
                 world.player,
@@ -262,7 +264,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                     new_location.price = item.price
                     region.locations.append(new_location)
 
-    if world.options.randomize_fly_unlocks:
+    if world.options.randomize_fly_unlocks or world.options.remote_items:
 
         for fly_region in get_fly_regions(world):
             parent_region = regions[data.regions[fly_region.unlock_region].name]
@@ -274,7 +276,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                 tags=frozenset({"fly"}),
                 flag=data.event_flags[f"EVENT_VISITED_{fly_region.base_identifier}"],
                 rom_addresses=[data.rom_addresses[f"AP_FlyUnlock_{fly_region.base_identifier}"]],
-                default_item_value=FLY_UNLOCK_OFFSET + fly_region.id
+                default_item_value=FLAG_ITEM_OFFSET + fly_region.id
             )
 
             parent_region.locations.append(location)
@@ -434,3 +436,8 @@ for location in data.locations.values():
         if tag not in LOCATION_GROUPS:
             LOCATION_GROUPS[tag] = set()
         LOCATION_GROUPS[tag].add(location.label)
+
+for pokemon in data.pokemon.values():
+    location = f"Pokedex - {pokemon.friendly_name}"
+    if location in DEXSANITY_LOCATIONS:
+        LOCATION_GROUPS[pokemon.friendly_name] = {location}

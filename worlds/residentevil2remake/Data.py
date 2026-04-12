@@ -201,6 +201,6 @@ class Data:
                 # since enemy kills don't give items themselves, just randomize more combat-related items into the pool
                 'original_item': "__Enemy Kill Drop Placeholder__"
             }
-            for key, enemy in enumerate(enemy_table)
+            for key, enemy in enumerate(enemy_table) if not enemy.get('excluded', 0)
         ])
 

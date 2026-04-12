@@ -9,17 +9,12 @@ from ..client import ZorkGrandInquisitorContext
 
 from .client_gui_layouts import TrackerTabLayout, EntrancesTabLayout
 
-try:
-    from Utils import instance_name as apname
-except ImportError:
-    apname = "Archipelago"
-
 
 class ZorkGrandInquisitorManager(GameManager):
     ctx: ZorkGrandInquisitorContext
 
     logging_pairs: List[Tuple[str, str]] = [("Client", "Archipelago")]
-    base_title: str = f"{apname} Zork Grand Inquisitor Client"
+    base_title: str = "Archipelago Zork Grand Inquisitor Client"
 
     tracker_tab_layout: TrackerTabLayout
     entrances_tab_layout: EntrancesTabLayout

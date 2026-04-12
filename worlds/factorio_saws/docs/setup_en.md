@@ -13,7 +13,7 @@
 
 - Factorio: [Factorio Official Website](https://factorio.com)
     - Needed by Players and Hosts
-- Archipelago: [Archipelago Releases Page](https://github.com/ArchipelagoMW/Archipelago/releases)
+- MultiworldGG: [MultiworldGG Releases Page](https://github.com/MultiworldGG/MultiworldGG/releases)
     - Needed by Hosts
 
 ## Create a Config (.yaml) File
@@ -37,7 +37,7 @@ Validator page: [Yaml Validation Page](/check)
 
 ## Connecting to Someone Else's Factorio Game
 
-Connecting to someone else's game is the simplest way to play Factorio with Archipelago. It allows multiple people to
+Connecting to someone else's game is the simplest way to play Factorio with MultiworldGG. It allows multiple people to
 play in a single world, all contributing to the completion of the seed.
 
 1. Acquire the Archipelago mod for this seed. It should be named `AP_*.zip`, where `*` is the seed number.
@@ -54,26 +54,26 @@ play in a single world, all contributing to the completion of the seed.
 
 ### Defining Some Terms
 
-In Archipelago, multiple Factorio worlds may be played simultaneously. Each of these worlds must be hosted by a Factorio
-server, which is connected to the Archipelago Server via middleware.
+In MultiworldGG, multiple Factorio worlds may be played simultaneously. Each of these worlds must be hosted by a Factorio
+server, which is connected to the MultiworldGG Server via middleware.
 
 This guide uses the following terms to refer to the software:
 
 - **Factorio Client** - The Factorio instance which will be used to play the game.
 - **Factorio Server** - The Factorio instance which will be used to host the Factorio world. Any number of Factorio
   Clients may connect to this server.
-- **Archipelago Client** - The middleware software used to connect the Factorio Server to the Archipelago Server.
-- **Archipelago Server** - The central Archipelago server, which connects all games to each other.
+- **MultiworldGG Client** - The middleware software used to connect the Factorio Server to the MultiworldGG Server.
+- **MultiworldGG Server** - The central MultiworldGG server, which connects all games to each other.
 
 ### What a Playable State Looks Like
 
-- An Archipelago Server
-- The generated Factorio Mod, created as a result of running `ArchipelagoGenerate.exe`
-- One running instance of `ArchipelagoFactorioClient.exe` (the Archipelago Client) per Factorio world
-- A running modded Factorio Server, which should have been started by the Archipelago Client automatically
+- An MultiworldGG Server
+- The generated Factorio Mod, created as a result of running `MultiworldGGGenerate.exe`
+- One running instance of the Factorio MultiworldGG Client per Factorio world
+- A running modded Factorio Server, which should have been started by the MultiworldGG Client automatically
 - A running modded Factorio Client
 
-#### Configure your Archipelago Installation
+#### Configure your MultiworldGG Installation
 
 :exclamation: This is different from regular AP Factorio
 

@@ -25,6 +25,14 @@
                 If you have already generated a game and just need to host it, this site can<br />
                 <a href="uploads">host a pre-generated game</a> for you.
             </p>
+            <p>
+                <strong>Playing with others?</strong> Use a <a href="{{ url_for('lobby_create') }}">Lobby</a>
+                to coordinate your group &mdash; each player joins and uploads their own config file, and the
+                host generates the game once everyone is ready. This avoids the need to collect all YAML files
+                yourself before generating.
+                You can also <a href="{{ url_for('lobby_list') }}">browse open lobbies</a> to join an existing
+                group that is looking for players.
+            </p>
         </div>
     </div>
 {% endblock %}

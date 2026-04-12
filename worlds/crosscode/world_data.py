@@ -4,12 +4,12 @@ Provides the default WorldData instance based on the generated data.
 
 from .common import BASE_ID, DATA_VERSION
 from .types.world import WorldData
-from .regions import region_packs
+from .regions import region_packs, region_botanics_amounts
 from .items import single_items_dict, items_dict, items_by_full_name, keyring_items
 from .shops import shop_dict, per_shop_locations, global_shop_locations, shop_unlock_by_id, shop_unlock_by_shop, \
     shop_unlock_by_shop_and_id
 from .locations import locations_dict, events_dict, locked_locations, pool_locations, location_groups
-from .item_pools import item_pools_template
+from .item_pools import item_pools_template, item_groups
 from .prog_items import progressive_chains, progressive_items
 from .vars import variable_definitions
 
@@ -17,6 +17,7 @@ static_world_data = WorldData(
     data_version=DATA_VERSION,
     base_id=BASE_ID,
     region_packs=region_packs,
+    region_botanics_amounts=region_botanics_amounts,
     locations_dict=locations_dict,
     events_dict=events_dict,
     locked_locations=locked_locations,
@@ -33,6 +34,7 @@ static_world_data = WorldData(
     shop_unlock_by_shop=shop_unlock_by_shop,
     shop_unlock_by_shop_and_id=shop_unlock_by_shop_and_id,
     item_pools_template=item_pools_template,
+    item_groups=item_groups,
     progressive_chains=progressive_chains,
     progressive_items=progressive_items,
     variable_definitions=variable_definitions

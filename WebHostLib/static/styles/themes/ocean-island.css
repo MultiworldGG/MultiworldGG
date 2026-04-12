@@ -23,6 +23,7 @@ h1{
     font-family: Inter-Light, sans-serif;
     text-transform: uppercase;
     color: #ffffff;
+    line-height: 50px;
     margin-top: 10px;
     margin-bottom: 30px;
 }

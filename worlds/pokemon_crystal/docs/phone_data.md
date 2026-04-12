@@ -3,6 +3,7 @@
 ## Technical Guidelines
 - Every phone call can only be a max of 1024 bytes (1kib). This will be assured via unit test. Just be aware there is a limit.
 - A line is max 18 characters long. This will be assured via unit test and validated during generation. Just be aware of the limit when writing it.
+  - Note: Contractions and possessives (`'d`, `'l`, `'m`, `'r`, `'s`, `'t`, `'v`) use a special in-game character and count as one character instead of two.
 - Each section (paragraph) is up to 3 lines long. The text box will reset after each section.
 - When using RIVAL or PLAYER variables, assume they are the max of 7 characters.
 - We cannot add new callers. The available callers are:

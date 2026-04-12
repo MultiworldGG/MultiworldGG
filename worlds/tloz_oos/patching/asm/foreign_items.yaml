@@ -1,0 +1,16 @@
+15/522e/: |
+  # Redirect treasureObjectData
+  dw treasureObjectData41
+
+15//treasureObjectData41: /include archipelago_items
+
+09/42f9/: call showForeignItemText
+
+09//showForeignItemText: |
+  ld e,$70 ; Interaction.var30
+  ld a,(de)
+  cp TREASURE_ARCHIPELAGO_ITEM
+  jr nz,@end
+  ld b,$0c ; Change the high byte of text to 0c where foreign items are stored
+  @end:
+  jp showText

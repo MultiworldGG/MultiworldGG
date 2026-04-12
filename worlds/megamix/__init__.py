@@ -1,7 +1,7 @@
 #AP
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, Type, launch_subprocess
-from BaseClasses import Region, Item, ItemClassification, Entrance, Tutorial, MultiWorld
+from BaseClasses import Region, Item, ItemClassification, Tutorial
 from Options import PerGameCommonOptions, OptionError
 import settings
 
@@ -13,8 +13,7 @@ from .MegaMixCollection import MegaMixCollections
 from .DataHandler import get_player_specific_ids
 
 #Python
-import typing
-from typing import List
+from typing import ClassVar, TextIO
 from math import floor
 
 
@@ -78,8 +77,8 @@ class MegaMixWorld(World):
     # World Options
     game = "Hatsune Miku Project Diva Mega Mix+"
 
-    settings: typing.ClassVar[MegaMixSettings]
-    options_dataclass: typing.ClassVar[PerGameCommonOptions] = MegaMixOptions
+    settings: ClassVar[MegaMixSettings]
+    options_dataclass: ClassVar[PerGameCommonOptions] = MegaMixOptions
     options: MegaMixOptions
 
     topology_present = False
@@ -88,42 +87,42 @@ class MegaMixWorld(World):
 
     # Necessary Data
     mm_collection = MegaMixCollections()
-    filler_item_names = list(mm_collection.filler_item_weights.keys())
-    filler_item_weights = list(mm_collection.filler_item_weights.values())
 
     item_name_to_id = {name: code for name, code in mm_collection.item_names_to_id.items()}
     location_name_to_id = {name: code for name, code in mm_collection.location_names_to_id.items()}
     item_name_groups = mm_collection.get_item_name_groups()
 
-    # Working Data
-    player_mod_data = {}
-    player_mod_ids = {}
-    player_mod_remap = {}
-    victory_song_name: str = ""
-    victory_song_id: int
-    starting_songs: List[str] = []
-    included_songs: List[str]
-    final_song_ids: set[int] = set()
-    needed_token_count: int
-    location_count: int
+    def __init__(self, multiworld, player):
+        super().__init__(multiworld, player)
+        # Working Data
+        self.player_mod_data = {}
+        self.player_mod_ids = {}
+        self.player_mod_remap = {}
+        self.victory_song_name: str = ""
+        self.victory_song_id: int = 10
+        self.starting_songs: list[str] = []
+        self.included_songs: list[str] = []
+        self.final_song_ids: set[int] = set()
+        self.prog_hp_added: int = 0
 
     def generate_early(self):
         re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
         if re_gen_passthrough and self.game in re_gen_passthrough:
             slot_data: dict[str, any] = re_gen_passthrough[self.game]
 
+            self.options.progressive_hp.value = int(slot_data.get("progHP", 0)) + 1
+
             # Inject mod data, remap as needed
             from .SymbolFixer import format_song_name
             from .Items import SongData
+            remap = slot_data.get("modRemap", {})
             for pack, items in slot_data.get("modData", {}).items():
                 for item in items: # for name, song_id in items
                     # Temporary back-compat for testing on older world gens
-                    name = item[0] if len(item) == 2 else "Modded Song"
-                    song_id = item[-1]
+                    name = "Modded Song" if isinstance(item, int) else item[0]
+                    song_id = item if isinstance(item, int) else item[-1]
 
                     formatted_name = format_song_name(name, song_id)
-
-                    remap = slot_data.get("modRemap", {})
                     item_id = remap.get(str(song_id), song_id * 10)
 
                     self.mm_collection.song_items[formatted_name] = SongData(item_id, song_id, set(), False, True, [])
@@ -134,7 +133,6 @@ class MegaMixWorld(World):
             if "finalSongIDs" in slot_data:
                 final = slot_data.get("finalSongIDs", [])
                 self.included_songs = [key for key, song in self.mm_collection.song_items.items() if song.songID in final]
-                self.location_count = len(self.included_songs) * 2
             return
 
         # Initial search criteria
@@ -181,7 +179,7 @@ class MegaMixWorld(World):
         for song in self.starting_songs:
             self.multiworld.push_precollected(self.create_item(song))
 
-    def handle_plando(self, available_song_keys: List[str]) -> List[str]:
+    def handle_plando(self, available_song_keys: list[str]) -> list[str]:
         # The ModdedSongs group is shared across all players. Limit to own songs (base, DLC, modded).
         dlc = self.options.allow_megamix_dlc_songs.value
         song_items = {s for s, v in self.mm_collection.song_items.items() if
@@ -210,7 +208,7 @@ class MegaMixWorld(World):
 
         return sorted(pool)
 
-    def create_song_pool(self, available_song_keys: List[str]):
+    def create_song_pool(self, available_song_keys: list[str]):
         starting_song_count = self.options.starting_song_count.value
         additional_song_count = self.options.additional_song_count.value
         self.random.shuffle(available_song_keys)
@@ -256,81 +254,65 @@ class MegaMixWorld(World):
         victory_song = self.mm_collection.song_items.get(self.victory_song_name)
         self.victory_song_id = (victory_song.code // 10) * 10
         self.final_song_ids.add(victory_song.songID)
-        self.location_count = 2 * (len(self.starting_songs) + len(self.included_songs))
 
     def create_item(self, name: str) -> Item:
 
         if name == self.mm_collection.LEEK_NAME:
             return MegaMixFixedItem(name, ItemClassification.progression_skip_balancing, self.mm_collection.LEEK_CODE, self.player)
 
-        if name in self.mm_collection.filler_item_names:
-            return MegaMixFixedItem(name, ItemClassification.filler, self.mm_collection.filler_item_names.get(name), self.player)
+        elif name == self.mm_collection.FILLER_NAME:
+            return MegaMixFixedItem(name, ItemClassification.filler, self.mm_collection.FILLER_CODE, self.player)
 
-        if name in self.mm_collection.trap_items:
+        elif name in self.mm_collection.trap_items:
             return MegaMixFixedItem(name, ItemClassification.trap, self.mm_collection.trap_items.get(name), self.player)
+
+        elif name == "Progressive HP":
+            return MegaMixFixedItem(name, ItemClassification.progression | ItemClassification.useful, 3, self.player)
 
         song = self.mm_collection.song_items.get(name)
         self.final_song_ids.add(song.songID)
         return MegaMixSongItem(name, self.player, song)
 
     def create_items(self) -> None:
-        song_keys_in_pool = self.included_songs.copy()
+        items_left = len(self.multiworld.get_unfilled_locations(self.player))
 
-        # Note: Item count will be off if plando is involved.
-        item_count = self.get_leek_count()
-
-        # First add all goal song tokens
-        for _ in range(0, item_count):
+        for _ in range(0, self.get_leek_count()):
             self.multiworld.itempool.append(self.create_item(self.mm_collection.LEEK_NAME))
 
-        # Then add 1 copy of every song
-        item_count += len(self.included_songs)
-        for song in self.included_songs:
-            self.multiworld.itempool.append(self.create_item(song))
+        self.multiworld.itempool.extend(self.create_item(song) for song in self.included_songs)
 
-        # At this point, if a player is using traps, it's possible that they have filled all locations
-        items_left = self.location_count - item_count
+        items_left -= self.get_leek_count() + len(self.included_songs)
         if items_left <= 0:
             return
-          
-        # Fill given percentage of remaining slots as Useful/non-progression dupes.
+
+        # N-1 prog HP
+        for _ in range(1, min(items_left, self.options.progressive_hp.value)):
+            self.prog_hp_added += 1
+            self.multiworld.itempool.append(self.create_item("Progressive HP"))
+            items_left -= 1
+
+        # Add duplicates based on user percentage
         dupe_count = items_left * self.options.duplicate_song_percentage // 100
         items_left -= dupe_count
 
-        # This is for the extraordinary case of needing to fill a lot of items.
-        while dupe_count > len(song_keys_in_pool):
-            for key in song_keys_in_pool:
-                item = self.create_item(key)
-                item.classification = ItemClassification.useful
-                self.multiworld.itempool.append(item)
-
-            dupe_count -= len(song_keys_in_pool)
-            continue
-
+        song_keys_in_pool = self.included_songs.copy()
         self.random.shuffle(song_keys_in_pool)
         for i in range(0, dupe_count):
-            item = self.create_item(song_keys_in_pool[i])
+            item = self.create_item(song_keys_in_pool[i % len(song_keys_in_pool) - 1])
             item.classification = ItemClassification.useful
             self.multiworld.itempool.append(item)
 
-        # Traps after dupes, contrary to MD
+        # Add traps based on user percentage and unfilled by dupes
         trap_count = items_left * self.options.trap_percentage // 100
-        enabled_traps = list(self.options.traps_enabled.value)
+        enabled_traps = sorted(self.options.traps_enabled.value)
 
-        if enabled_traps and trap_count:
+        if trap_count and enabled_traps:
+            items_left -= trap_count
             for _ in range(0, trap_count):
-                trap = self.create_item(self.random.choice(enabled_traps))
-                self.multiworld.itempool.append(trap)
+                self.multiworld.itempool.append(self.create_item(self.random.choice(enabled_traps)))
 
-            items_left -= trap_count  # subtract only if there are enabled traps
-
-        # Generic filler. Anything dupes and traps didn't cover.
-        filler_count = items_left
-        items_left -= filler_count
-
-        for _ in range(0, filler_count):
-            filler_item = self.create_item(self.random.choices(self.filler_item_names, self.filler_item_weights)[0])
-            self.multiworld.itempool.append(filler_item)
+        for _ in range(0, items_left):
+            self.multiworld.itempool.append(self.create_item(self.mm_collection.FILLER_NAME))
 
     def create_regions(self) -> None:
         menu_region = Region("Menu", self.player, self.multiworld)
@@ -347,19 +329,26 @@ class MegaMixWorld(World):
 
     def set_rules(self) -> None:
         self.multiworld.completion_condition[self.player] = lambda state: \
-            state.has(self.mm_collection.LEEK_NAME, self.player, self.get_leek_win_count())
+            state.has(self.mm_collection.LEEK_NAME, self.player, self.get_leek_win_count()) \
+            and state.has("Progressive HP", self.player, self.prog_hp_added)
 
     def get_leek_count(self) -> int:
+        """Number of Leeks to be placed in the item pool based on user option and final song count."""
         multiplier = self.options.leek_count_percentage.value / 100.0
         song_count = len(self.starting_songs) + len(self.included_songs)
         return max(1, floor(song_count * multiplier))
 
     def get_leek_win_count(self) -> int:
+        """Number of Leeks out of all in the item pool needed to goal."""
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            return re_gen_passthrough[self.game].get("leekWinCount")
+
         multiplier = self.options.leek_win_count_percentage.value / 100.0
         leek_count = self.get_leek_count()
         return max(1, floor(leek_count * multiplier))
 
-    def get_difficulty_range(self) -> List[float]:
+    def get_difficulty_range(self) -> list[float]:
 
         # Generate the number_to_option_value dictionary using the formula
         number_to_option_value = {i: 1 + i * 0.5 if i % 2 != 0 else int(1 + i * 0.5) for i in range(19)}
@@ -370,11 +359,12 @@ class MegaMixWorld(World):
 
         return difficulty_bounds
 
-    def write_spoiler_header(self, spoiler_handle: typing.TextIO):
-        spoiler_handle.write(f"Selected Goal Song:              {self.victory_song_name}")
+    def write_spoiler_header(self, spoiler_handle: TextIO):
+        spoiler_handle.write(f"Selected Goal Song:              {self.victory_song_name}\n")
+        spoiler_handle.write(f"Final Progressive HP:            {self.prog_hp_added}\n")
 
     @staticmethod
-    def get_available_difficulties(song_difficulty_min: int, song_difficulty_max: int) -> List[int]:
+    def get_available_difficulties(song_difficulty_min: int, song_difficulty_max: int) -> list[int]:
         min_diff = min(song_difficulty_min, song_difficulty_max)
         max_diff = max(song_difficulty_min, song_difficulty_max)
 
@@ -397,4 +387,5 @@ class MegaMixWorld(World):
             "modData": {pack: [[song[0], song[1]] for song in songs if song[1] in self.final_song_ids]
                         for pack, songs in self.player_mod_data.items()},
             "modRemap": self.player_mod_remap,
+            "progHP": self.prog_hp_added,
         }

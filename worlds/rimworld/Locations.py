@@ -27,6 +27,17 @@ anomaly_victory_requirements = [["Void Provocation"],
                                 ["Entity Containment"],
                                 ["Proximity Detector"],
                                 ["Bioferrite Harvester"]]
+raid_tiers = 4
+simple_raid_tier_requirements = ["Smithing",
+                                    ["Recurve Bow", "Long Blades"],
+                                    ["Plate Armor", "Complex Clothing"]]
+gun_raid_tier_requirements = ["Electricity", "Machining", "AnyElectricity",
+                                ["Gunsmithing", "Blowback Operation", "Gas Operation"],
+                                ["Flak Armor", "Gun Turrets", "Basic Mechtech"]]
+better_gun_raid_tier_requirements = [["Precision Rifling", "Multibarrel Weapons"],
+                                        ["Shields", "Turret Pack", "Autocannon Turret", "Standard Mechtech"]]
+spacer_raid_tier_requirements = ["Fabrication", "Advanced Fabrication",
+                                    ["Recon Armor", "Marine Armor", "Cataphract Armor", "High Mechtech", "Ultra Mechtech"]]
 
 class RimworldLocation(Location):
     game: str = "Rimworld"

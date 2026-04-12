@@ -338,6 +338,26 @@ region_boss_token_additions = {
     LocationName.valley_chocolate_entrance_pipe: 0,
 }
 
+region_excluded_destinations_without_shuffled_pipes: Dict[str, List[str]] = {
+        LocationName.yi_to_ysp: [
+            LocationName.sr_from_foi,
+            LocationName.vob_from_ci,
+        ],
+        LocationName.yi_to_dp: [
+            LocationName.sr_from_foi,
+            LocationName.vob_from_ci,
+        ],
+        LocationName.foi_to_ci: [
+            LocationName.foi_from_tw,
+        ],
+        LocationName.foi_to_sr: [
+            LocationName.foi_from_tw,
+        ],
+        LocationName.ci_to_vob: [
+            LocationName.ci_from_foi,
+        ]
+}
+
 
 def generate_entrance_rando(world: "WaffleWorld"):
     # This shuffle method walks through every valid exit (starting from YI house) to assign new exits to unconnected entrances
@@ -354,10 +374,23 @@ def generate_entrance_rando(world: "WaffleWorld"):
     used_exits = []
     local_region_mapping = {**region_mapping}
 
+    if world.options.map_teleport_shuffle == "off" or not world.options.map_transition_shuffle:
+        local_mapping = {**smw_pipe_pairs, **smw_star_pairs, **smw_transition_pairs}
+        for entrance, exit in local_mapping.items():
+            world.local_mapping[entrance] = exit
+            if "Transition - " in entrance:
+                world.transition_pairs[entrance] = exit
+            else:
+                world.teleport_pairs[entrance] = exit
+
+        for exit, entrance in local_region_mapping.items():
+            world.local_region_mapping[exit] = entrance
+        
+        return
+
     # Exclude destinations
-    local_excluded_destinations = {**region_excluded_destinations}
     exclusions = region_excluded_destinations_per_starting_location[world.options.starting_location.value]
-    local_excluded_destinations.update(exclusions)
+    local_excluded_destinations = {**region_excluded_destinations, **exclusions}
 
     prefilled_exits: Dict[str, str] = {}
     boss_token_requirements = {
@@ -430,12 +463,16 @@ def generate_entrance_rando(world: "WaffleWorld"):
         prefilled_exits[LocationName.foi_to_sr] = LocationName.sr_from_foi
         prefilled_exits[LocationName.ci_to_vob] = LocationName.vob_from_ci
 
+    if world.options.map_teleport_shuffle in ["off", "on_only_stars"] and world.options.map_transition_shuffle:
+        local_excluded_destinations = {**local_excluded_destinations, **region_excluded_destinations_without_shuffled_pipes}
+
     for entrance, exit in prefilled_exits.items():
         local_mapping[entrance] = exit
 
     used_exits = list(prefilled_exits.values())
 
     swap_count = 0
+    reset_count = 0
 
     while len(processed_exits) != len(local_region_mapping.keys()):
         if len(next_exits) == 0:
@@ -451,6 +488,9 @@ def generate_entrance_rando(world: "WaffleWorld"):
                 processed_exits = []
                 used_exits = list(prefilled_exits.values())
                 swap_count = 0
+                if reset_count == 10:
+                    local_mapping = {**smw_pipe_pairs, **smw_star_pairs, **smw_transition_pairs}
+                    break
                 continue
             unreached_candidate = world.random.choice(unreached_exits)
             if "Transition - " in unreached_candidate:

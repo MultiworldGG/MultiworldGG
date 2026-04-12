@@ -22,15 +22,9 @@ ACTOR>"dkopahead"LOOK>"look_khead"
 <ACTOR>"dkopabody"<ACTIVE>
 <ACTOR>"dkopabody"<ACT>"DM_DEATH"
 <ACTOR>"dkopabody"<LOOK>"look_kbody"
-
-<GCAMERA>"death.cmn"
-
-<WAIT>(299)
-
 <FRAMEEND>
 
 <FRAMESTART>
-<ACTOR>"demo_luigi"<SHADOWON>
 <WIPETIME>(50)
 <WIPEKIND>(3)
 <SETLUIGI>(9)

@@ -16,9 +16,9 @@ from .GenerateJSON import generate_json
 from .Data import VANILLA_KEYBLADE_STATS, VANILLA_PUPPY_LOCATIONS, CHAR_TO_KH, VANILLA_ABILITY_AP_COSTS, WORLD_KEY_ITEMS, VANILLA_SPELL_COSTS_LVL, VANILLA_SPELL_COSTS_SPELL, POSSIBLE_SPELL_COSTS
 from worlds.LauncherComponents import Component, components, Type, launch_subprocess
 
-def launch_client(*args: str):
-    from .Client import main
-    launch_component(main, name="KH1 Client", args=args)
+def launch_client():
+    from .Client import launch
+    launch_component(launch, name="KH1 Client")
 
 
 components.append(Component("KH1 Client", func=launch_client, component_type=Type.CLIENT, icon="kh1_heart"))

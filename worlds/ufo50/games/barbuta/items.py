@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict, NamedTuple, List, Set
+from typing import TYPE_CHECKING, NamedTuple
+
 from BaseClasses import ItemClassification as IC, Item
 
 from ...constants import get_game_base_id
@@ -13,7 +14,7 @@ class ItemInfo(NamedTuple):
     quantity: int
 
 
-item_table: Dict[str, ItemInfo] = {
+item_table: dict[str, ItemInfo] = {
     "$50": ItemInfo(0, IC.progression, 5),
     "$100": ItemInfo(1, IC.progression, 5),
     "Umbrella": ItemInfo(2, IC.progression, 1),
@@ -31,14 +32,14 @@ item_table: Dict[str, ItemInfo] = {
 
 
 # this is for filling out item_name_to_id, it should be static regardless of yaml options
-def get_items() -> Dict[str, int]:
+def get_items() -> dict[str, int]:
     return {f"Barbuta - {name}": data.id_offset + get_game_base_id("Barbuta") for name, data in item_table.items()}
 
 
 # this should return the item groups for this game, independent of yaml options
 # you should include a group that contains all items for this game that is called the same thing as the game
-def get_item_groups() -> Dict[str, Set[str]]:
-    item_groups: Dict[str, Set[str]] = {"Barbuta": {f"Barbuta - {item_name}" for item_name in item_table.keys()}}
+def get_item_groups() -> dict[str, set[str]]:
+    item_groups: dict[str, set[str]] = {"Barbuta": {f"Barbuta - {item_name}" for item_name in item_table.keys()}}
     return item_groups
 
 
@@ -58,9 +59,9 @@ def create_item(item_name: str, world: "UFO50World", item_class: IC = None) -> I
 
 # for when the world is getting the items to place into the multiworld's item pool
 # you must pass in the world class as the argument
-def create_items(world: "UFO50World") -> List[Item]:
-    items_to_create: Dict[str, int] = {item_name: data.quantity for item_name, data in item_table.items()}
-    barbuta_items: List[Item] = []
+def create_items(world: "UFO50World") -> list[Item]:
+    items_to_create: dict[str, int] = {item_name: data.quantity for item_name, data in item_table.items()}
+    barbuta_items: list[Item] = []
     for item_name, quantity in items_to_create.items():
         for _ in range(quantity):
             barbuta_items.append(create_item(item_name, world))

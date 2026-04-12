@@ -60,7 +60,30 @@ def generateHints(player_slot, number_of_hints, s3_world):
         "Zoe says that it is possible to rescue Farley in Enchanted Towers without ever using his rubber ball.",
         "Zoe says that it is possible to skip paying Moneybags entirely.",
         "Zoe says that it is possible to skip talking to her in this location.",
-        "Zoe says that the maximum flying speed is different in each speedway."
+        "Zoe says that the maximum flying speed is different in each speedway.",
+        "Zoe says that there were 2 different versions of this game released in North America.",
+        "Zoe says that it seems you are playing on a fun version of this game.",
+        "Zoe says that Outside Ganon's Castle is barren of treasure (probably).",
+        "Zoe says that the progression item you are looking for is in another castle.",
+        "Zoe says that talking to this Zoe gives a hint.",
+        "Zoe says that shorts are comfy and easy to wear.",
+        "Zoe says technology is incredible. Now you can play randomizers with other people.",
+        "Zoe says that it is possible to beat this game carpetless.",
+        "Zoe says that Toasty is a sheep on stilts.",
+        "Zoe says that Metalhead is a pun.",
+        "Zoe says that this might be a good spot to find some ingredients.",
+        "Zoe says that you should pet the dog in The Witness' town.",
+        "Zoe says that it is possible to crash Spyro 3 in many ways. Please use a memory card!",
+        "Zoe says that Zombie is when the game thinks Spyro is dead but the player retains control.",
+        "Zoe says that walls in Sparx levels are just a suggestion.",
+        "Zoe says that Aladdin for SNES would make an interesting Archipelago integration.",
+        "Zoe says that Spyro shares no dialogue with the Sorceress in this game.",
+        "Zoe says that Enter the Dragonfly has a better frame rate on emulator than console.",
+        "Zoe says that it is possible to swim in the air in at least 8 levels.",
+        "Zoe says that you can defeat the Sorceress in Super Bonus Round without letting her attack once.",
+        "Zoe says that there are no Burger Kings in the Forgotten Realm.",
+        "Zoe says that when fighting Bluto, be sure to stay away from the shark end.",
+        "Zoe says that Saltwater Sportfishing has more realistic fishing than Spyro 2's Idol Springs."
     ]
 
     for location in s3_world.multiworld.get_filled_locations():

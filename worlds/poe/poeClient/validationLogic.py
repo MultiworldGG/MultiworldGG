@@ -320,6 +320,7 @@ def validate_char_equipment(character: gggAPI.Character, ctx: "PathOfExileContex
                 magic_flask_count += 1
             elif flask_rarity == "Unique":
                 unique_flask_count += 1
+        logger.debug(f"Equipped flasks: normal_flask_count: {normal_flask_count}, magic_flask_count: {magic_flask_count}, unique_flask_count: {unique_flask_count}")
                 
     # get count of items.name that match the progressive unlocks
 

@@ -3,6 +3,7 @@
 ## Required Software
 * Ori and the Blind Forest: Definitive Edition
 * [BepInEx x86](https://github.com/BepInEx/BepInEx/releases)
+* [OriBFArchipelago Plugin](https://github.com/c-ostic/Archipelago/releases)
 
 ## Initial Setup
 

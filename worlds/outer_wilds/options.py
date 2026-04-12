@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from schema import Schema, And
+from schema import Schema, And, Optional
 
-from Options import Choice, DefaultOnToggle, OptionDict, PerGameCommonOptions, Range, StartInventoryPool, Toggle
+from Options import Choice, DefaultOnToggle, PerGameCommonOptions, Range, StartInventoryPool, Toggle, OptionCounter
 
 
 class Goal(Choice):
@@ -14,6 +14,7 @@ class Goal(Choice):
     Song of Six:          Reach the Eye after meeting either Solanum or the Prisoner
     Song of Seven:        Reach the Eye after meeting both Solanum and the Prisoner
     Echoes of the Eye:    Meet the Prisoner and complete the DLC
+    Song of the Universe: Reach the Eye after meeting the specified number of friends
     """
     display_name = "Goal"
     option_song_of_five = 0
@@ -22,6 +23,24 @@ class Goal(Choice):
     option_song_of_six = 3
     option_song_of_seven = 4
     option_echoes_of_the_eye = 5
+    option_song_of_the_universe = 6
+
+
+class RequiredFriends(Range):
+    """The number of "friends" you have to meet before reaching the Eye
+    (not counting the five Hearthian travelers who always join you there).
+    Only used with the `song_of_the_universe` goal option.
+    Each enabled story mod adds a potential "friend," as does the DLC. Solanum is, of course, always enabled.
+    
+    For example, setting this to `0` is the same as the `song_of_five` goal.
+    Enabling the DLC, no story mods, and setting this to `1` is equivalent to the `song_of_six` goal.
+
+    Enabling the DLC & all 7 story mods allows a maximum of 9 "friends."
+    """
+    display_name = "Required Friends"
+    range_start = 0
+    range_end = 9
+    default = 1
 
 
 class RandomizeCoordinates(DefaultOnToggle):
@@ -40,20 +59,20 @@ class TrapChance(Range):
     default = 15
 
 
-class TrapTypeWeights(OptionDict):
+class TrapTypeWeights(OptionCounter):
     """When a filler item is replaced with a trap, these weights determine the
     odds for each trap type to be selected.
-    If you don't want a specific trap type, set its weight to 0.
+    If you don't want a specific trap type, omit it or set its weight to 0.
     Setting all weights to 0 is the same as setting trap_chance to 0."""
     schema = Schema({
-        "Ship Damage Trap": And(int, lambda n: n >= 0),
-        "Nap Trap": And(int, lambda n: n >= 0),
-        "Audio Trap": And(int, lambda n: n >= 0),
-        "Suit Puncture Trap": And(int, lambda n: n >= 0),
-        "Map Disable Trap": And(int, lambda n: n >= 0),
-        "HUD Corruption Trap": And(int, lambda n: n >= 0),
-        "Ice Physics Trap": And(int, lambda n: n >= 0),
-        "Supernova Trap": And(int, lambda n: n >= 0),
+        Optional("Ship Damage Trap"): lambda n: n >= 0,
+        Optional("Nap Trap"): lambda n: n >= 0,
+        Optional("Audio Trap"): lambda n: n >= 0,
+        Optional("Suit Puncture Trap"): lambda n: n >= 0,
+        Optional("Map Disable Trap"): lambda n: n >= 0,
+        Optional("HUD Corruption Trap"): lambda n: n >= 0,
+        Optional("Ice Physics Trap"): lambda n: n >= 0,
+        Optional("Supernova Trap"): lambda n: n >= 0,
     })
     display_name = "Trap Type Weights"
     default = {
@@ -68,14 +87,14 @@ class TrapTypeWeights(OptionDict):
     }
 
 
-class UpgradeCounts(OptionDict):
+class UpgradeCounts(OptionCounter):
     """Choose the number of upgrades shuffled into the item pool.
     The default in-game settings start you with 50% of each, bringing you to 200% once all upgrades are acquired.
     You'll probably want to adjust them if you change these too drastically."""
     schema = Schema({
-        "Oxygen Capacity Upgrade": And(int, lambda n: n >= 0),
-        "Fuel Capacity Upgrade": And(int, lambda n: n >= 0),
-        "Boost Duration Upgrade": And(int, lambda n: n >= 0),
+        Optional("Oxygen Capacity Upgrade"): lambda n: n >= 0,
+        Optional("Fuel Capacity Upgrade"): lambda n: n >= 0,
+        Optional("Boost Duration Upgrade"): lambda n: n >= 0,
     })
     display_name = "Upgrade Counts"
     default = {
@@ -148,7 +167,8 @@ class Spawn(Choice):
 
     'vanilla' is the same as the base game: you wake up in TH Village, talk to Hornfels to get the Launch Codes, then walk by the Nomai statue to start the time loop.
     All other options (including timber_hearth) will spawn you in your spacesuit, with the time loop already started, and the Launch Codes item placed randomly like any other AP item.
-    stranger of course requires enable_eotc_dlc to be true.
+    `stranger` of course requires `enable_eotc_dlc` to be true
+    `deep_bramble` requires `enable_fc_mod` to be true
 
     The idea is that non-vanilla spawns will require you to play "shipless" for a while, possibly using Nomai Warp Codes to visit other planets. The ship will still spawn nearby, so you can use the ship log/tracker right away.
     When playing with non-vanilla spawns, we recommend:
@@ -164,6 +184,7 @@ class Spawn(Choice):
     option_giants_deep = 4
     option_stranger = 5
     option_random_non_vanilla = 6
+    option_deep_bramble = 7
     default = 0
 
 
@@ -272,10 +293,32 @@ class EnableFretsQuestMod(Toggle):
     display_name = "Enable Fret's Quest Story Mod"
 
 
+class EnableForgottenCastawaysMod(Toggle):
+    """
+    Incorporates Forgotten Castaways story mod content into the randomizer with an additional 13 items and 54 locations.
+    If logsanity is enabled, that will add another 118 locations, for a total of 172 FC locations.
+    """
+    display_name = "Enable Forgotten Castaways Story Mod"
+
+
+class EnableEchoHikeMod(Toggle):
+    """
+    Incorporates Echo Hike story mod content into the randomizer with an additional 1 item and 3 locations.
+    If logsanity is enabled, that will add another 8 locations, for a total of 11 EH locations.
+    The main appeal of this mod is the unique "Threader" item, which is a grapple beam/hook that works on any
+    surface in the game.
+    When this is enabled, using the Threader will be in-logic for multiple base game, DLC and story mod
+    locations outside of Echo Hike itself, and receiving the "Threader" AP item will spawn Threaders
+    on all the base game, DLC and story mod planets/areas where you might need one.
+    """
+    display_name = "Enable Echo Hike Story Mod"
+
+
 @dataclass
 class OuterWildsGameOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     goal: Goal
+    required_friends: RequiredFriends
     spawn: Spawn
     early_key_item: EarlyKeyItem
     enable_eote_dlc: EnableEchoesOfTheEyeDLC
@@ -297,6 +340,8 @@ class OuterWildsGameOptions(PerGameCommonOptions):
     enable_ac_mod: EnableAstralCodecMod
     enable_hn2_mod: EnableHearthsNeighbor2MagistariumMod
     enable_fq_mod: EnableFretsQuestMod
+    enable_fc_mod: EnableForgottenCastawaysMod
+    enable_eh_mod: EnableEchoHikeMod
 
 
 def get_creation_settings(options: OuterWildsGameOptions) -> set[str]:

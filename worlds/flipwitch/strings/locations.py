@@ -130,38 +130,38 @@ class WitchyWoods:
     fairy_reward = add_witchy_woods_location("WW: Great Fairy's Reward")
 
 
-class SpiritTown:
-    fairy_bubble = add_spirit_town_location("ST: Outside Shop Item")
-    city_hp = add_spirit_town_location("ST: Women's Bathroom HP Upgrade")
-    city_mp = add_spirit_town_location("ST: Men's Bathroom MP Upgrade")
-    toilet_coin = add_spirit_town_location("ST: Coin Above Restrooms")
-    cabaret_girl_chest = add_spirit_town_location("ST: Cabaret Cafe Girls Room Chest")
-    cabaret_delicious_milk = add_spirit_town_location("ST: Cabaret Cafe Delicious Milk")
-    cabaret_cherry_key = add_spirit_town_location("ST: Cabaret Cafe Cherry Apartment Key")
-    cabaret_vip_chest = add_spirit_town_location("ST: Cabaret Cafe VIP Chest")
-    shop_1 = add_spirit_town_location("ST: Shop Item 1")
-    shop_2 = add_spirit_town_location("ST: Shop Item 2")
-    shop_3 = add_spirit_town_location("ST: Shop Item 3")
-    shop_4 = add_spirit_town_location("ST: Shop Item 4")
-    shop_roof = add_spirit_town_location("ST: Shop Roof Chest")
-    fashion_1 = add_spirit_town_location("ST: Fashion Shop 1")
-    fashion_2 = add_spirit_town_location("ST: Fashion Shop 2")
-    ancient_chest = add_spirit_town_location("ST: Ancient Being Chest")
-    ghost_key = add_spirit_town_location("ST: Ghostly Castle Key Chest")
-    cemetery = add_spirit_town_location("ST: Below Cemetery")
-    chaos = add_spirit_town_location("ST: Chaos Fight")
-    apartment_key = add_spirit_town_location("ST: Leg's Office Goblin Apartment Key")
-    password = add_spirit_town_location("ST: MomoRobo Server Password")
-    banana = add_spirit_town_location("ST: Banana Apartment")
-    alley = add_spirit_town_location("ST: Behind Alley")
-    home_2 = add_spirit_town_location("ST: Abandoned Homes 02 House Chest")
-    home_1 = add_spirit_town_location("ST: Abandoned Homes 01 House Coin")
-    home_6 = add_spirit_town_location("ST: Abandoned Homes 6 House Coin")
-    green_house = add_spirit_town_location("ST: Abandoned Homes Green House Chest")
-    lone_house = add_spirit_town_location("ST: Lone House Chest")
-    fungal_key = add_spirit_town_location("ST: Pig Mansion Fungal Key")
-    maid_contract = add_spirit_town_location("ST: Pig Mansion Maid Contract")
-    special_milkshake = add_spirit_town_location("ST: Special Milkshake")
+class SpiritCity:
+    fairy_bubble = add_spirit_town_location("SpC: Outside Shop Item")
+    city_hp = add_spirit_town_location("SpC: Women's Bathroom HP Upgrade")
+    city_mp = add_spirit_town_location("SpC: Men's Bathroom MP Upgrade")
+    toilet_coin = add_spirit_town_location("SpC: Coin Above Restrooms")
+    cabaret_girl_chest = add_spirit_town_location("SpC: Cabaret Cafe Girls Room Chest")
+    cabaret_delicious_milk = add_spirit_town_location("SpC: Cabaret Cafe Delicious Milk")
+    cabaret_cherry_key = add_spirit_town_location("SpC: Cabaret Cafe Cherry Apartment Key")
+    cabaret_vip_chest = add_spirit_town_location("SpC: Cabaret Cafe VIP Chest")
+    shop_1 = add_spirit_town_location("SpC: Shop Item 1")
+    shop_2 = add_spirit_town_location("SpC: Shop Item 2")
+    shop_3 = add_spirit_town_location("SpC: Shop Item 3")
+    shop_4 = add_spirit_town_location("SpC: Shop Item 4")
+    shop_roof = add_spirit_town_location("SpC: Shop Roof Chest")
+    fashion_1 = add_spirit_town_location("SpC: Fashion Shop 1")
+    fashion_2 = add_spirit_town_location("SpC: Fashion Shop 2")
+    ancient_chest = add_spirit_town_location("SpC: Ancient Being Chest")
+    ghost_key = add_spirit_town_location("SpC: Ghostly Castle Key Chest")
+    cemetery = add_spirit_town_location("SpC: Below Cemetery")
+    chaos = add_spirit_town_location("SpC: Chaos Fight")
+    apartment_key = add_spirit_town_location("SpC: Leg's Office Goblin Apartment Key")
+    password = add_spirit_town_location("SpC: MomoRobo Server Password")
+    banana = add_spirit_town_location("SpC: Banana Apartment")
+    alley = add_spirit_town_location("SpC: Behind Alley")
+    home_2 = add_spirit_town_location("SpC: Abandoned Homes 02 House Chest")
+    home_1 = add_spirit_town_location("SpC: Abandoned Homes 01 House Coin")
+    home_6 = add_spirit_town_location("SpC: Abandoned Homes 6 House Coin")
+    green_house = add_spirit_town_location("SpC: Abandoned Homes Green House Chest")
+    lone_house = add_spirit_town_location("SpC: Lone House Chest")
+    fungal_key = add_spirit_town_location("SpC: Pig Mansion Fungal Key")
+    maid_contract = add_spirit_town_location("SpC: Pig Mansion Maid Contract")
+    special_milkshake = add_spirit_town_location("SpC: Special Milkshake")
 
 
 class ShadySewers:
@@ -312,27 +312,27 @@ class FungalForest:
 
 
 class SlimeCitadel:
-    citadel_entrance = add_slime_citadel_location("SC: Citadel Entrance")
-    secret_room = add_slime_citadel_location("SC: Secret Room")
-    lone_room = add_slime_citadel_location("SC: Lone Room")
-    silky_slime_chest = add_slime_citadel_location("SC: Silky Slime Chest")
-    silky_slime_stone = add_slime_citadel_location("SC: Silky Slime Summoning Stone")
-    small_detour = add_slime_citadel_location("SC: Small Detour")
-    slimy_sub_chest = add_slime_citadel_location("SC: Slimy Sub Boss Key Chest")
-    across_key = add_slime_citadel_location("SC: Across the Key")
-    thimble_1 = add_slime_citadel_location("SC: Thimble Costume 1")
-    thimble_2 = add_slime_citadel_location("SC: Thimble Costume 2")
-    slimy_gauntlet = add_slime_citadel_location("SC: Slimy Gauntlet")
-    near_stone = add_slime_citadel_location("SC: Near Stone Chest")
-    secret_spring_coin = add_slime_citadel_location("SC: Secret Room Past Spring Coin")
-    secret_spring_stone = add_slime_citadel_location("SC: Secret Room Past Spring Summoning Stone")
-    hidden_tunnel = add_slime_citadel_location("SC: Hidden Tunnel")
-    elf_1 = add_slime_citadel_location("SC: Elf Merchant Item 1")
-    elf_2 = add_slime_citadel_location("SC: Elf Merchant Item 2")
-    slurp_chest = add_slime_citadel_location("SC: Slurp Slime Boss Key Chest")
-    slurp_stone = add_slime_citadel_location("SC: Slurp Summoning Stone")
-    slimy_princess_chaos = add_slime_citadel_location("SC: Slimy Princess Chaos Key Piece")
-    slimy_princess_mp = add_slime_citadel_location("SC: Slimy Princess MP Upgrade")
+    citadel_entrance = add_slime_citadel_location("SlC: Citadel Entrance")
+    secret_room = add_slime_citadel_location("SlC: Secret Room")
+    lone_room = add_slime_citadel_location("SlC: Lone Room")
+    silky_slime_chest = add_slime_citadel_location("SlC: Silky Slime Chest")
+    silky_slime_stone = add_slime_citadel_location("SlC: Silky Slime Summoning Stone")
+    small_detour = add_slime_citadel_location("SlC: Small Detour")
+    slimy_sub_chest = add_slime_citadel_location("SlC: Slimy Sub Boss Key Chest")
+    across_key = add_slime_citadel_location("SlC: Across the Key")
+    thimble_1 = add_slime_citadel_location("SlC: Thimble Costume 1")
+    thimble_2 = add_slime_citadel_location("SlC: Thimble Costume 2")
+    slimy_gauntlet = add_slime_citadel_location("SlC: Slimy Gauntlet")
+    near_stone = add_slime_citadel_location("SlC: Near Stone Chest")
+    secret_spring_coin = add_slime_citadel_location("SlC: Secret Room Past Spring Coin")
+    secret_spring_stone = add_slime_citadel_location("SlC: Secret Room Past Spring Summoning Stone")
+    hidden_tunnel = add_slime_citadel_location("SlC: Hidden Tunnel")
+    elf_1 = add_slime_citadel_location("SlC: Elf Merchant Item 1")
+    elf_2 = add_slime_citadel_location("SlC: Elf Merchant Item 2")
+    slurp_chest = add_slime_citadel_location("SlC: Slurp Slime Boss Key Chest")
+    slurp_stone = add_slime_citadel_location("SlC: Slurp Summoning Stone")
+    slimy_princess_chaos = add_slime_citadel_location("SlC: Slimy Princess Chaos Key Piece")
+    slimy_princess_mp = add_slime_citadel_location("SlC: Slimy Princess MP Upgrade")
 
 
 class UmiUmi:
@@ -460,45 +460,280 @@ class Quest:
     whorus = add_spirit_town_location("Cult of Whorus: Priestess of Whorus")
     priest = add_spirit_town_location("Cult of Whorus: A Priest's Duties")
 
-    fuck_points = {
-        magic_mentor: 0,
-        need_my_cowbell: 1,
-        giant_chest_key: 1,
-        model_goblin: 1,
-        fairy_mushroom: 1,
-        goblin_stud: 1,
-        out_of_service: 2,
-        bunny_club: 1,
-        silky_slime: 1,
-        panty_raid: 1,
-        unlucky_cat: 1,
-        harvest_season: 1,
-        long_distance: 1,
-        summoning_stones: 1,
-        semen_with_a: 1,
-        cardio_day: 1,
-        stop_democracy: 1,
-        medical_emergency: 1,
-        let_the_dog_out: 1,
-        rat_problem: 1,
-        ghost_hunters: 1,
-        haunted_bedroom: 1,
-        ectogasm: 1,
-        jelly_mushroom: 1,
-        booze_bunny: 1,
-        help_wanted: 1,
-        deluxe_milkshake: 1,
-        boned: 1,
-        legendary_chewtoy: 1,
-        tatils_tale: 1,
-        signing_bonus: 1,
-        emotional_baggage: 1,
-        dirty_debut: 1,
-        devilicious: 1,
-        daikon: 1,
-        alley_cat: 1,
-        whorus: 1,
-        priest: 1,
-    }
+
+class SexEventsLocation:
+    # This is purely so that we can more accurately do a sex event count.
+    # WW
+    beatrice_1 = "Beatrice Sex Scene 1"
+    beatrice_2 = "Beatrice Sex Scene 2"
+    belle_1 = "Belle Sex Scene 1"
+    gobliana_1 = "Gobliana Sex Scene 1"
+    mimic = "Mimic Sex Scene"
+    fairy = "Fairy Sex Scene"
+    goblin_princess = "Goblin Princess Sex Scene"
+    #SpC
+    bottom_ghost = "Bottom Ghost Sex Scene"
+    rover_1 = "Rover Sex Scene 1"
+    rover_2 = "Rover Sex Scene 2"
+    rover_3 = "Rover Sex Scene 3"
+    belle_2 = "Belle Sex Scene 2"
+    belle_3 = "Belle Sex Scene 3"
+    cat_girls_2 = "Cat Girls Sex Scene 2"
+    cat_girls_3 = "Cat Girls Sex Scene 3"
+    bunny_owner_1 = "Bunny Owner Sex Scene 1"
+    bunny_owner_2 = "Bunny Owner Sex Scene 2"
+    merchant = "Merchant Sex Scene"
+    ghost = "Ghost Sex Scene"
+    patient = "Patient Sex Scene"
+    bunny_girls = "Bunny Girls Sex Scene"
+    bunny_boys = "Bunny Boys Sex Scene"
+    momo_boy = "Momobot Boy Sex Scene"
+    momo_girl = "Momobot Girl Sex Scene"
+    cult_boy = "Cult Priestess Sex Scene"
+    cult_girl = "Cult Priests Sex Scene"
+    cat = "Alley Cat Sex Scene"
+    tatil = "Tatil Sex Scene"
+    pig = "Pig Owner Sex Scene"
+    kyoni_1 = "Kyoni Sex Scene 1"
+    kyoni_2 = "Kyoni Sex Scene 2"
+    gobliana_2 = "Gobliana Sex Scene 2"
+    gobliana_3 = "Gobliana Sex Scene 3"
+    rat = "Rat Sex Scene"
+    # GC
+    cat_girls_1 = "Cat Girls Sex Scene 1"
+    #JG
+    cat_statue = "Evil Cat Sex Scene"
+    goat = "Goat Sex Scene"
+    # FF
+    natasha = "Natasha Sex Scene"
+    # TG
+    angel = "Angel Sex Scene"
+    # UU
+    frog = "Frog Sex Scene"
 
 
+class QuestEventLocation:
+    # This is to track in-game quest completion without doing can_reach calls on regions and locations.
+    # The only ones that need tracking are the ones that lead to some other quest, or scene (as above).
+    # WW
+    goblin_model_1 = "Photo Item Check"
+    goblin_model_2 = "Card Item Check"
+    goblin_model_3 = "Goblin Model Ending"
+    queen_defeat = "Goblin Queen Fight"
+    gobliana_luggage_2 = "Luggage Item Check"
+    # SpC
+    rover_1 = "Dogs Out Ending"
+    rover_3 = "Chewtoy Ending"
+    belle_1 = "Cowbell Ending"
+    belle_2_a = "Kyoni Item Check"
+    belle_2_b = "Milkshake Ending"
+    belle_3 = "Apartment Ending"
+    cat_girls_3_a = "Ghost Watching Bathroom"
+    cat_girls_3_b = "Haunted Bathroom Ending"
+    bunny_1 = "Booze Bunny Ending"
+    bunny_2 = "Help Wanted Ending"
+    kyoni_1 = "Devilicious Ending"
+    tatil_1 = "Fungal Key Check"
+    gobliana_luggage_1 = "Apartment Key Check"
+    gobliana_luggage_3 = "Gobliana's Belongings Ending"
+
+    # Ghost Castle
+    cat_girls_1 = "Panty Raid Ending"
+
+    #JG
+    cat_statue_start = "Big Cat Statue"
+    cat_statue_1 = "Statue 1"
+    cat_statue_2 = "Statue 2"
+    cat_statue_3 = "Statue 3"
+    goat_guy = "Goat Guy"
+
+    # Tengoku
+    angel_letter = "Angel's Request"
+    gobliana_photographer = "Gobliana's Photographer"
+
+    # Fungal Forest
+    tatil_2 = "Deed Item Check"
+    stone_start = "Big Fuggin Rock"
+    stone_1 = "Summoning Stone 1 Spot"
+    stone_2 = "Summoning Stone 2 Spot"
+    stone_3 = "Summoning Stone 3 Spot"
+
+class WarpLocation:
+    sensei = "Sensei's Hut Crystal Teleporter"
+    witchy = "Witchy Woods Crystal Teleporter"
+    goblin = "Goblin Caves Crystal Teleporter"
+    spirit = "Spirit City Crystal Teleporter"
+    shady = "Shady Alley Crystal Teleporter"
+    ghost_entrance = "Ghost Castle Entrance Crystal Teleporter"
+    ghost_castle = "Ghost Castle Crystal Teleporter"
+    jigoku = "Jigoku Teleport"
+    club_demon = "Club Demon Crystal Teleporter"
+    tengoku = "Tengoku Crystal Teleporter"
+    angelic_hallway = "Angelic Hallway Crystal Teleporter"
+    fungal_forest = "Fungal Forest Crystal Teleporter"
+    slime_citadel = "Slime Citadel Crystal Teleporter"
+    slimy_depths = "Slimy Depths Crystal Teleporter"
+    umi_umi = "Umi Umi Crystal Teleporter"
+
+
+class Potsanity:
+    ww_goblin_start_1 = "WW: Goblin Camp Pot 1"
+    ww_goblin_start_2 = "WW: Goblin Camp Pot 2"
+    ww_goblin_tower_1 = "WW: Goblin Tower Pot 1"
+    ww_goblin_tower_2 = "WW: Goblin Tower Pot 2"
+    ww_goblin_tower_3 = "WW: Goblin Tower Pot 3"
+    ww_goblin_tower_4 = "WW: Goblin Tower Pot 4"
+    ww_goblin_tower_stairwell_1 = "WW: Goblin Stairwell Pot 1"
+    ww_goblin_tower_stairwell_2 = "WW: Goblin Stairwell Pot 2"
+    ww_goblin_tower_stairwell_3 = "WW: Goblin Stairwell Pot 3"
+    ww_man_cave_entrance_1 = "WW: Man Cave Entrance Pot 1"
+    ww_man_cave_entrance_2 = "WW: Man Cave Entrance Pot 2"
+    ww_cavern_stairs_1 = "WW: Cavern Stairs Pot 1"
+    ww_cavern_stairs_2 = "WW: Cavern Stairs Pot 2"
+    ww_cavern_stairs_3 = "WW: Cavern Stairs Pot 3"
+    ww_cavern_stairs_4 = "WW: Cavern Stairs Pot 4"
+    ww_cavern_stairs_5 = "WW: Cavern Stairs Pot 5"
+    ww_cavern_stairs_6 = "WW: Cavern Stairs Pot 6"
+    ww_ramp_1 = "WW: Ramp Pot 1"
+    ww_ramp_2 = "WW: Ramp Pot 2"
+    ww_ramp_3 = "WW: Ramp Pot 3"
+    ww_ramp_4 = "WW: Ramp Pot 4"
+    ww_descent_1 = "WW: Descent Pot 1"
+    ww_descent_2 = "WW: Descent Pot 2"
+    ww_descent_3 = "WW: Descent Pot 3"
+    ww_descent_4 = "WW: Descent Pot 4"
+    ww_descent_5 = "WW: Descent Pot 5"
+    ww_descent_6 = "WW: Descent Pot 6"
+    ww_goblin_queen_1 = "WW: Goblin Queen Pot 1"
+    ww_goblin_queen_2 = "WW: Goblin Queen Pot 2"
+    ww_goblin_queen_3 = "WW: Goblin Queen Pot 3"
+    ww_goblin_queen_4 = "WW: Goblin Queen Pot 4"
+    ww_fairy_entrance_1 = "WW: Fairy Entrance Pot 1"
+    ww_fairy_entrance_2 = "WW: Fairy Entrance Pot 2"
+    ww_fairy_entrance_3 = "WW: Fairy Entrance Pot 3"
+    ww_fairy_entrance_4 = "WW: Fairy Entrance Pot 4"
+    ww_spirit_bridge_1 = "WW: Spirit City Bridge Pot 1"
+    ww_spirit_bridge_2 = "WW: Spirit City Bridge Pot 2"
+    ww_spirit_bridge_3 = "WW: Spirit City Bridge Pot 3"
+
+    spc_water_tomb_1 = "SpC: Waterfall Tomb Pot 1"
+    spc_water_tomb_2 = "SpC: Waterfall Tomb Pot 2"
+    spc_water_tomb_3 = "SpC: Waterfall Tomb Pot 3"
+    spc_water_tomb_4 = "SpC: Waterfall Tomb Pot 4"
+    spc_wizard_toilet_1 = "SpC: Cabaret Wizard Toilet Pot 1"
+    spc_wizard_toilet_2 = "SpC: Cabaret Wizard Toilet Pot 2"
+    spc_wizard_toilet_3 = "SpC: Cabaret Wizard Toilet Pot 3"
+    spc_green_house_1 = "SpC: Green House Pot 1"
+    spc_green_house_2 = "SpC: Green House Pot 2"
+    spc_green_house_3 = "SpC: Green House Pot 3"
+    spc_green_house_4 = "SpC: Green House Pot 4"
+
+    gc_crypt_1 = "GC: Crypt Pot 1"
+    gc_crypt_2 = "GC: Crypt Pot 2"
+    gc_crypt_3 = "GC: Crypt Pot 3"
+    gc_gardens_three_1 = "GC: Three Gardens Pot 1"
+    gc_gardens_three_2 = "GC: Three Gardens Pot 2"
+    gc_stairwell_lower_1 = "GC: Ghost Stairwell Lower Pot 1"
+    gc_stairwell_lower_2 = "GC: Ghost Stairwell Lower Pot 2"
+    gc_stairwell_mid_1 = "GC: Ghost Stairwell Mid Pot 1"
+    gc_stairwell_mid_2 = "GC: Ghost Stairwell Mid Pot 2"
+    gc_stairwell_mid_3 = "GC: Ghost Stairwell Mid Pot 3"
+    gc_stairwell_mid_4 = "GC: Ghost Stairwell Mid Pot 4"
+    gc_stairwell_mid_5 = "GC: Ghost Stairwell Mid Pot 5"
+    gc_large_gardens_1 = "GC: Large Gardens Pot 1"
+    gc_large_gardens_2 = "GC: Large Gardens Pot 2"
+    gc_large_gardens_3 = "GC: Large Gardens Pot 3"
+    gc_large_gardens_4 = "GC: Large Gardens Pot 4"
+    gc_large_gardens_5 = "GC: Large Gardens Pot 5"
+    gc_large_gardens_6 = "GC: Large Gardens Pot 6"
+    gc_ladder_room_1 = "GC: Ladder Room Pot 1"
+    gc_ladder_room_2 = "GC: Ladder Room Pot 2"
+    gc_ladder_room_3 = "GC: Ladder Room Pot 3"
+    gc_drop_down_lower_1 = "GC: Drop Down Lower Pot 1"
+    gc_drop_down_lower_2 = "GC: Drop Down Lower Pot 2"
+    gc_drop_down_lower_3 = "GC: Drop Down Lower Pot 3"
+    gc_large_hallway_1 = "GC: Large Hallway Pot 1"
+    gc_large_hallway_2 = "GC: Large Hallway Pot 2"
+    gc_tall_tower_1 = "GC: Tall Tower Pot 1"
+    gc_tall_tower_2 = "GC: Tall Tower Pot 2"
+    gc_tall_tower_3 = "GC: Tall Tower Pot 3"
+    gc_tall_tower_4 = "GC: Tall Tower Pot 4"
+    gc_crumbling_room_1 = "GC: Crumbling Room Pot 1"
+    gc_crumbling_room_2 = "GC: Crumbling Room Pot 2"
+    gc_sniff_1 = "GC: Willow the Whiff Room Pot 1"
+    gc_sniff_2 = "GC: Willow the Whiff Room Pot 2"
+    gc_sniff_3 = "GC: Willow the Whiff Room Pot 3"
+    gc_sniff_4 = "GC: Willow the Whiff Room Pot 4"
+    gc_sniff_5 = "GC: Willow the Whiff Room Pot 5"
+    gc_sniff_6 = "GC: Willow the Whiff Room Pot 6"
+
+    jg_mound_1 = "JG: The Mound Room Pot 1"
+    jg_mound_2 = "JG: The Mound Room Pot 2"
+    jg_mound_3 = "JG: The Mound Room Pot 3"
+    jg_mound_4 = "JG: The Mound Room Pot 4"
+    jg_mound_5 = "JG: The Mound Room Pot 5"
+    jg_long_hallway_1 = "JG: Long Hallway Pot 1"
+    jg_long_hallway_2 = "JG: Long Hallway Pot 2"
+    jg_long_hallway_3 = "JG: Long Hallway Pot 3"
+    jg_long_hallway_4 = "JG: Long Hallway Pot 4"
+    jg_long_hallway_5 = "JG: Long Hallway Pot 5"
+    jg_long_hallway_6 = "JG: Long Hallway Pot 6"
+    jg_long_hallway_7 = "JG: Long Hallway Pot 7"
+    jg_first_drop_1 = "JG: First Drop Pot 1"
+    jg_first_drop_2 = "JG: First Drop Pot 2"
+    jg_first_drop_3 = "JG: First Drop Pot 3"
+    jg_first_drop_4 = "JG: First Drop Pot 4"
+    jg_first_drop_5 = "JG: First Drop Pot 5"
+    jg_first_drop_6 = "JG: First Drop Pot 6"
+    jg_boxy_1 = "JG: Boxy Drop Pot 1"
+    jg_boxy_2 = "JG: Boxy Drop Pot 2"
+    jg_green_stairwell_1 = "JG: Green Stairwell Pot 1"
+    jg_green_stairwell_2 = "JG: Green Stairwell Pot 2"
+
+    ff_double_bananas_1 = "SlC: Double Bananas Pot 1"
+    ff_double_bananas_2 = "SlC: Double Bananas Pot 2"
+    ff_pillars_1 = "SlC: Pillars Pot 1"
+    ff_pillars_2 = "SlC: Pillars Pot 2"
+    ff_pillars_3 = "SlC: Pillars Pot 3"
+    ff_reward_1 = "SlC: Reward Pot 1"
+    ff_reward_2 = "SlC: Reward Pot 2"
+    ff_reward_3 = "SlC: Reward Pot 3"
+    ff_reward_4 = "SlC: Reward Pot 4"
+    ff_reward_5 = "SlC: Reward Pot 5"
+    ff_reward_6 = "SlC: Reward Pot 6"
+    ff_reward_7 = "SlC: Reward Pot 7"
+    ff_reward_8 = "SlC: Reward Pot 8"
+
+    tg_cloudia_entrance_1 = "TG: Cloudia Entrance Pot 1"
+    tg_cloudia_entrance_2 = "TG: Cloudia Entrance Pot 2"
+    tg_cloudia_entrance_3 = "TG: Cloudia Entrance Pot 3"
+    tg_cloudia_entrance_4 = "TG: Cloudia Entrance Pot 4"
+    tg_cloudia_entrance_5 = "TG: Cloudia Entrance Pot 5"
+    tg_cloudia_entrance_6 = "TG: Cloudia Entrance Pot 6"
+    tg_cloudia_entrance_7 = "TG: Cloudia Entrance Pot 7"
+    tg_cloud_ramp_1 = "TG: Cloud Ramp Pot 1"
+    tg_cloud_ramp_2 = "TG: Cloud Ramp Pot 2"
+    tg_cloud_ramp_3 = "TG: Cloud Ramp Pot 3"
+    tg_cloud_ramp_4 = "TG: Cloud Ramp Pot 4"
+    tg_cloud_ramp_5 = "TG: Cloud Ramp Pot 5"
+    tg_flower_garden_1 = "TG: Flower Garden Pot 1"
+    tg_flower_garden_2 = "TG: Flower Garden Pot 2"
+    tg_flower_garden_3 = "TG: Flower Garden Pot 3"
+    tg_flower_garden_4 = "TG: Flower Garden Pot 4"
+    tg_flower_garden_5 = "TG: Flower Garden Pot 5"
+    tg_flower_garden_6 = "TG: Flower Garden Pot 6"
+    tg_flower_garden_7 = "TG: Flower Garden Pot 7"
+
+    uu_surfacing_1 = "UU: Surfacing Pot 1"
+    uu_surfacing_2 = "UU: Surfacing Pot 2"
+    uu_diving_deeper_1 = "UU: Diving Deeper Pot 1"
+    uu_diving_deeper_2 = "UU: Diving Deeper Pot 2"
+    uu_diving_deeper_3 = "UU: Diving Deeper Pot 3"
+    uu_diving_deeper_4 = "UU: Diving Deeper Pot 4"
+    uu_diving_1 = "UU: Diving Pot 1"
+    uu_diving_2 = "UU: Diving Pot 2"
+
+    ww_goblin_camp_lower_1 = "WW: Goblin Camp Lower Pot 1"
+    ww_goblin_camp_lower_2 = "WW: Goblin Camp Lower Pot 2"
+    ww_goblin_camp_lower_3 = "WW: Goblin Camp Lower Pot 3"
+    jg_green_stairwell_3 = "JG: Green Stairwell Pot 3"

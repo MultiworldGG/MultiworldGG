@@ -33,13 +33,38 @@ SHOP_POINTER = 0x8041EB60
 SHOP_ITEM_OFFSET = 0x2F
 SHOP_ITEM_PURCHASED = 0xD7
 
+# GameCube disc header Game ID - used to verify DME is hooked to the correct process
+GAME_ID_ADDRESS = 0x80000000
+EXPECTED_GAME_ID = b"G8ME01"
+
+def _check_universal_tracker_version() -> bool:
+    import re
+    if tracker_loaded:
+        match = re.search(r"v\d+.(\d+).(\d+)", UT_VERSION)
+        if len(match.groups()) < 2:
+            return False
+        if int(match.groups()[0]) < 2:
+            return False
+        if int(match.groups()[1]) < 12:
+            return False
+        return True
+    return False
+
 tracker_loaded = False
 try:
-    from worlds.tracker.TrackerClient import TrackerGameContext as cmmCtx
+    from worlds.tracker.TrackerClient import TrackerGameContext as cmmCtx, UT_VERSION
     tracker_loaded = True
 except ModuleNotFoundError:
     from CommonClient import CommonContext as cmmCtx
     tracker_loaded = False
+
+def validate_connection() -> bool:
+    """Verify DME is hooked to TTYD by checking the GameCube disc Game ID in memory."""
+    try:
+        game_id = dolphin.read_bytes(GAME_ID_ADDRESS, 6)
+        return game_id == EXPECTED_GAME_ID
+    except Exception:
+        return False
 
 def read_string(address: int, length: int):
     try:
@@ -159,17 +184,26 @@ class TTYDContext(cmmCtx):
         self.seed_verified = False
 
     def make_gui(self) -> "type[kvui.GameManager]":
-        ui = super().make_gui()
-        ui.logging_pairs = [("Client", "Archipelago")]
-        ui.base_title = f"{apname} TTYD Client"
-
-        return ui
+        from kvui import GameManager
+        class TTYDManager(GameManager):
+            logging_pairs = [("Client", "Archipelago")]
+            base_title = f"{apname} TTYD Client"
+        if not _check_universal_tracker_version():
+            return TTYDManager
+        class TrackerManager(super().make_gui()):
+            logging_pairs = [("Client", "Archipelago")]
+            base_title = f"{apname} TTYD Client with {UT_VERSION}"
+        return TrackerManager
 
     async def receive_items(self):
         current_length = dolphin.read_word(RECEIVED_LENGTH)
+        if current_length > 255:
+            return  # Garbage data, skip
         if current_length > 0:
             return
         index = dolphin.read_word(RECEIVED_INDEX)
+        if index > len(self.items_received):
+            return  # Garbage data, skip
         items = min(len(self.items_received) - index, 255)
         if items <= 0:
             return
@@ -202,7 +236,10 @@ class TTYDContext(cmmCtx):
             logger.error(traceback.format_exc())
 
     async def check_death(self):
-        if dolphin.read_byte(0x80003240) == 1:
+        death_byte = dolphin.read_byte(0x80003240)
+        if death_byte > 1:
+            return  # Garbage data, skip
+        if death_byte == 1:
             dolphin.write_byte(0x80003240, 0)
             if not self.death_sent:
                 await self.send_death(self.player_names[self.slot] + " had no life shrooms.")
@@ -210,6 +247,8 @@ class TTYDContext(cmmCtx):
 
     def save_loaded(self) -> bool:
         value = dolphin.read_byte(0x80003228)
+        if value > 1:
+            return False  # Garbage data
         return value > 0
 
 
@@ -245,6 +284,13 @@ async def ttyd_sync_task(ctx: TTYDContext):
         if dolphin.is_hooked() and ctx.dolphin_connected:
             if ctx.slot:
                 try:
+                    if not validate_connection():
+                        logger.info("TTYD is no longer running. Disconnecting from Dolphin.")
+                        dolphin.un_hook()
+                        ctx.dolphin_connected = False
+                        ctx.seed_verified = False
+                        await asyncio.sleep(3)
+                        continue
                     if not ctx.seed_verified:
                         logger.info("Checking ROM seed...")
                         seed = read_string(SEED, 0x10)
@@ -278,7 +324,8 @@ async def ttyd_sync_task(ctx: TTYDContext):
                         if not ctx.finished_game and gsw_check(1708) >= 18:
                             await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
                     elif goal == 2: # Crystal Stars
-                        if not ctx.finished_game and dolphin.read_byte(0x8000323B) >= ctx.slot_data["goal_stars"]:
+                        star_count = dolphin.read_byte(0x8000323B)
+                        if not ctx.finished_game and star_count <= 7 and star_count >= ctx.slot_data["goal_stars"]:
                             await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
                     else:
                         if not ctx.finished_game and gswf_check(5085):
@@ -301,7 +348,14 @@ async def ttyd_sync_task(ctx: TTYDContext):
                     await ctx.disconnect()
                     await asyncio.sleep(3)
                     continue
-                logger.info("Dolphin connected")
+                if not validate_connection():
+                    logger.info("Dolphin hooked but TTYD is not running. "
+                                "Please load Paper Mario: The Thousand-Year Door.")
+                    dolphin.un_hook()
+                    ctx.dolphin_connected = False
+                    await asyncio.sleep(5)
+                    continue
+                logger.info("Dolphin connected successfully.")
                 ctx.dolphin_connected = True
             except Exception as e:
                 dolphin.un_hook()
@@ -313,7 +367,7 @@ async def ttyd_sync_task(ctx: TTYDContext):
                 continue
 
 def trigger_death(ctx: TTYDContext):
-    if ctx.slot is not None and dolphin.is_hooked() and ctx.dolphin_connected:
+    if ctx.slot is not None and dolphin.is_hooked() and ctx.dolphin_connected and validate_connection():
         ctx.death_sent = True
         dolphin.write_byte(0x8000323F, 1)
 

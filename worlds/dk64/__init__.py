@@ -15,7 +15,6 @@ import sys
 import tempfile
 from typing import Any, TypedDict
 
-
 baseclasses_loaded = False
 try:
     # DO NOT DO IMPORTS FOR AP BEFORE THIS OR IN THIS BLOCK
@@ -26,6 +25,104 @@ try:
 except ImportError:
     pass
 if baseclasses_loaded:
+    import Utils
+
+    def display_error_box(title: str, text: str) -> bool | None:
+        """Display an error message box."""
+        from tkinter import Tk, messagebox
+
+        root = Tk()
+        root.withdraw()
+        ret = messagebox.showerror(title, text)
+        root.update()
+
+    def copy_dependencies(zip_path, file):
+        """Copy a ZIP file from the package to a temporary directory, extracts its contents.
+
+        Ensures the temporary directory exists.
+        Args:
+            zip_path (str): The relative path to the ZIP file within the package.
+        Behavior:
+            - Creates a temporary directory if it does not exist.
+            - Reads the ZIP file from the package using `pkgutil.get_data`.
+            - Writes the ZIP file to the temporary directory if it does not already exist.
+            - Extracts the contents of the ZIP file into the temporary directory.
+        Prints:
+            - A message if the ZIP file could not be read.
+            - A message when the ZIP file is successfully copied.
+            - A message when the ZIP file is successfully extracted.
+        """
+        # Create a temporary directory
+        temp_dir = tempfile.mkdtemp()
+
+        zip_dest = os.path.join(temp_dir, file)
+        try:
+            # Load the ZIP file from the package
+            zip_data = pkgutil.get_data(__name__, zip_path)
+            # Check if the zip already exists in the destination
+            if not os.path.exists(zip_dest):
+                if zip_data is None:
+                    print(f"Failed to read {zip_path}")
+                else:
+                    # Write the ZIP file to the destination
+                    with open(zip_dest, "wb") as f:
+                        f.write(zip_data)
+
+                    # Extract the ZIP file
+                    with zipfile.ZipFile(zip_dest, "r") as zip_ref:
+                        zip_ref.extractall(temp_dir)
+
+        except PermissionError:
+            display_error_box("Permission Error", "Unable to install Dependencies to AP, please try to install AP as an admin.")
+            raise PermissionError("Permission Error: Unable to install Dependencies to AP, please try to install AP as an admin.")
+
+        # Add the temporary directory to sys.path
+        if temp_dir not in sys.path:
+            sys.path.insert(0, temp_dir)
+
+    if not Utils.is_frozen() and not Utils.is_webhost_mode():
+        platform_type = sys.platform
+        python_version = f"{sys.version_info.major}{sys.version_info.minor}"
+        baseclasses_path = os.path.dirname(os.path.dirname(BaseClasses.__file__))
+        if not baseclasses_path.endswith("lib"):
+            baseclasses_path = os.path.join(baseclasses_path, "lib")
+        # Remove ANY PIL folders from the baseclasses_path
+        # Or Pyxdelta or pillow folders
+        try:
+            for folder in os.listdir(baseclasses_path):
+                if folder.startswith("PIL") or folder.startswith("pyxdelta") or folder.startswith("pillow"):
+                    folder_path = os.path.join(baseclasses_path, folder)
+                    if os.path.isdir(folder_path):
+                        shutil.rmtree(folder_path)
+                    elif os.path.isfile(folder_path):
+                        os.remove(folder_path)
+                # Also if its windows.zip or linux.zip, remove it
+                if folder.startswith("windows.zip") or folder.startswith("linux.zip"):
+                    os.remove(os.path.join(baseclasses_path, folder))
+        except Exception as e:
+            pass
+
+        if platform_type == "win32":
+            zip_path = "vendor/windows.zip"  # Path inside the package
+            copy_dependencies(zip_path, "windows.zip")
+        elif platform_type == "linux":
+            # Try version-specific zip first, fall back to generic
+            version_zip = f"vendor/linux_{python_version}.zip"
+            generic_zip = "vendor/linux.zip"
+            try:
+                copy_dependencies(version_zip, f"linux_{python_version}.zip")
+            except (FileNotFoundError, KeyError):
+                try:
+                    copy_dependencies(generic_zip, "linux.zip")
+                except (FileNotFoundError, KeyError):
+                    raise Exception(f"Could not find vendor dependencies for Linux Python {python_version}")
+        else:
+            raise Exception(f"Unsupported platform: {platform_type}")
+
+    # Add paths for APWorld context - use __file__ to get the correct base path
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    if current_dir not in sys.path:
+        sys.path.insert(0, current_dir)
 
     sys.path.append("worlds/dk64/")
     sys.path.append("worlds/dk64/archipelago/")
@@ -85,6 +182,7 @@ if baseclasses_loaded:
     from worlds.LauncherComponents import Component, SuffixIdentifier, components, Type, icon_paths
     import randomizer.ShuffleExits as ShuffleExits
     from archipelago.FillSettings import fillsettings
+    from archipelago.Prices import generate_prices
     from Utils import open_filename
     import shutil
     import zlib
@@ -177,14 +275,22 @@ if baseclasses_loaded:
             If you want a specific version, you can set it to a AP version number eg: v1.0.45
             """
 
+        class EnableMinimalLogic(settings.Bool):
+            """Enable minimal logic for DK64.
+
+            If disabled, any player YAML with minimal logic enabled will be forced to use glitchless logic instead.
+            This allows hosts to disable the minimal logic option if they don't want it on their server.
+            """
+
         release_branch: ReleaseVersion = ReleaseVersion("master")
+        enable_minimal_logic_dk64: EnableMinimalLogic | bool = False
 
     class DK64Web(WebWorld):
         """WebWorld for DK64."""
 
         theme = "jungle"
 
-        setup_en = Tutorial("Multiworld Setup Guide", "A guide to setting up the Donkey Kong 64 randomizer connected to a MultiworldGG Multiworld.", "English", "setup_en.md", "setup/en", ["PoryGone"])
+        setup_en = Tutorial("Multiworld Setup Guide", "A guide to setting up the Donkey Kong 64 randomizer connected to an Archipelago Multiworld.", "English", "setup_en.md", "setup/en", ["PoryGone"])
 
         tutorials = [setup_en]
         option_groups = dk64_option_groups
@@ -197,14 +303,7 @@ if baseclasses_loaded:
         randomize_blocker_required_amounts: bool  # whether to randomize B. Lockers
         blocker_max: int  # maximum B. Locker value
         maximize_helm_blocker: bool  # whether to maximize Helm B. Locker (enabled if any player has it on)
-        level1_blocker: int  # manual B. Locker values (if not randomized)
-        level2_blocker: int
-        level3_blocker: int
-        level4_blocker: int
-        level5_blocker: int
-        level6_blocker: int
-        level7_blocker: int
-        level8_blocker: int
+        level_blockers: typing.Dict[str, int]  # manual B. Locker values (if not randomized)
         generated_blockers: typing.Optional[typing.List[int]]  # actual blocker values after generation (shared across group)
         logic_type: int  # logic type: 1=glitchless, 0=advanced_glitchless, 2=glitched
         tricks_selected: typing.Set[str]  # intersection of tricks enabled by all players
@@ -587,275 +686,25 @@ if baseclasses_loaded:
                     raise FileNotFoundError("Invalid DK64 ROM file, please make sure your ROM is a vanilla DK64 file in big endian.")
             check_version()
 
-        def _get_slot_data(self):
-            """Get the slot data."""
-            return {
-                # "death_link": self.options.death_link.value,
-            }
-
-        def _get_shared_shop_vendors(self, Kongs, Types):
-            """Identify vendor/level combinations that have shared shops."""
-            from randomizer.Lists.Location import SharedShopLocations
-
-            shared_shop_vendors = set()
-
-            if not self.options.enable_shared_shops.value:
-                if not hasattr(self.spoiler.settings, "selected_shared_shops"):
-                    self.spoiler.settings.selected_shared_shops = set()
-                return shared_shop_vendors, set()
-
-            # Get or create the set of available shared shops
-            if hasattr(self.spoiler.settings, "selected_shared_shops") and self.spoiler.settings.selected_shared_shops:
-                available_shared_shops = self.spoiler.settings.selected_shared_shops
-            else:
-                all_shared_shops = list(SharedShopLocations)
-                self.random.shuffle(all_shared_shops)
-                available_shared_shops = set(all_shared_shops[:10])
-                self.spoiler.settings.selected_shared_shops = available_shared_shops
-
-            # Build set of vendor/level combinations
-            for location_id, location in self.spoiler.LocationList.items():
-                if location.type == Types.Shop and location.kong == Kongs.any:
-                    if location_id in available_shared_shops:
-                        shared_shop_vendors.add((location.level, location.vendor))
-
-            return shared_shop_vendors, available_shared_shops
-
-        def _categorize_shop_locations(self, shared_shop_vendors, available_shared_shops, Kongs, Types):
-            """Categorize shops into included and excluded based on settings."""
-            shop_locations = []
-            excluded_shop_locations = []
-            shops_per_kong = {kong: 0 for kong in Kongs}
-
-            for location_id, location in self.spoiler.LocationList.items():
-                if location.type != Types.Shop:
-                    continue
-
-                # Check if shop is excluded by smaller_shops setting
-                if hasattr(location, "smallerShopsInaccessible") and location.smallerShopsInaccessible and self.options.smaller_shops.value:
-                    excluded_shop_locations.append(location_id)
-                    continue
-
-                # Check if shared shop is excluded
-                if location.kong == Kongs.any:
-                    if not self.options.enable_shared_shops.value or location_id not in available_shared_shops:
-                        excluded_shop_locations.append(location_id)
-                        continue
-
-                # Check if kong shop is blocked by a shared shop at same vendor/level
-                if location.kong != Kongs.any and self.options.enable_shared_shops.value:
-                    if (location.level, location.vendor) in shared_shop_vendors:
-                        excluded_shop_locations.append(location_id)
-                        continue
-
-                # Shop is included
-                shop_locations.append(location_id)
-                if location.kong != Kongs.any:
-                    shops_per_kong[location.kong] += 1
-
-            return shop_locations, excluded_shop_locations, shops_per_kong
-
-        def _calculate_kong_averages(self, shops_per_kong, max_coins, percentage, min_max_coins, Kongs):
-            """Calculate average price per shop for each kong."""
-            avg_prices_per_kong = {}
-
-            for kong in Kongs:
-                if kong == Kongs.any or shops_per_kong[kong] == 0:
-                    continue
-
-                # Calculate budget based on max coins available to this kong
-                kong_budget = max_coins[kong] * percentage
-
-                # Use higher safety margins: 80% for easy/medium, 95% for hard mode
-                safety_margin = 0.80 if percentage < 0.85 else 0.95
-                target = max(1, kong_budget * safety_margin)
-                avg_prices_per_kong[kong] = target / shops_per_kong[kong]
-
-            return avg_prices_per_kong
-
-        def _generate_individual_prices(self, shop_locations, avg_prices_per_kong, progressive_avg_price, progressive_stddev, shopprices, DK64RItems, Kongs):
-            """Generate random individual prices for shops and progressive items."""
-            individual_prices = {}
-
-            # Generate shop prices
-            for location_id in shop_locations:
-                location = self.spoiler.LocationList[location_id]
-
-                if shopprices == 0:
-                    individual_prices[location_id] = 0
-                    continue
-
-                # Determine average and stddev for this shop
-                if location.kong == Kongs.any:
-                    kong_avg = progressive_avg_price
-                    kong_stddev = progressive_stddev
-                else:
-                    kong_avg = avg_prices_per_kong.get(location.kong, progressive_avg_price)
-                    kong_stddev = kong_avg * 0.3
-
-                price = round(self.random.normalvariate(kong_avg, kong_stddev))
-                price = max(1, min(price, int(kong_avg * 2)))
-                individual_prices[location_id] = price
-
-            progressive_moves = {
-                DK64RItems.ProgressiveSlam: 3,
-                DK64RItems.ProgressiveAmmoBelt: 2,
-                DK64RItems.ProgressiveInstrumentUpgrade: 3,
-            }
-
-            for item, count in progressive_moves.items():
-                individual_prices[item] = []
-                for _ in range(count):
-                    if shopprices == 0:
-                        individual_prices[item].append(0)
-                    else:
-                        price = round(self.random.normalvariate(progressive_avg_price, progressive_stddev))
-                        price = max(1, min(price, int(progressive_avg_price * 2)))
-                        individual_prices[item].append(price)
-
-            return individual_prices
-
-        def _convert_to_cumulative_prices(self, individual_prices, shop_locations, max_cumulative_per_kong, Kongs):
-            """Convert individual prices to cumulative running totals per kong.
-
-            This mimics the logic from determineFinalPriceAssortment:
-            - Progressive items add to all kongs' totals, price stored is average of all totals
-            - Kong-specific shops add to that kong's total only
-            - Cumulative prices are capped at max_cumulative_per_kong to ensure accessibility
-            """
-            price_assignment = []
-
-            # Build list of price assignments
-            for key, value in individual_prices.items():
-                if isinstance(value, list):
-                    # Progressive move - add multiple entries
-                    for price in value:
-                        price_assignment.append({"is_prog": True, "cost": price, "item": key, "kong": Kongs.any})
-                elif key in shop_locations:
-                    # Shop location
-                    location = self.spoiler.LocationList[key]
-                    price_assignment.append({"is_prog": False, "cost": value, "item": key, "kong": location.kong})
-
-            # Shuffle and calculate cumulative prices
-            self.random.shuffle(price_assignment)
-            total_cost = [0] * 5
-            cumulative_prices = {}
-
-            for assignment in price_assignment:
-                kong = assignment["kong"]
-                written_price = assignment["cost"]
-
-                if kong == Kongs.any:
-                    # Progressive item - add to all kongs, price is average of current totals
-                    current_kong_total = 0
-                    for kong_index in range(5):
-                        current_kong_total += total_cost[kong_index]
-                        total_cost[kong_index] += written_price
-                        # Cap at maximum affordable amount
-                        total_cost[kong_index] = min(total_cost[kong_index], max_cumulative_per_kong[kong_index])
-                    written_price = int(current_kong_total / 5)
-                else:
-                    # Kong-specific shop - add to that kong's total
-                    total_cost[kong] += written_price
-                    # Cap at maximum affordable amount
-                    total_cost[kong] = min(total_cost[kong], max_cumulative_per_kong[kong])
-                    written_price = total_cost[kong]
-
-                # Store cumulative price
-                key = assignment["item"]
-                if assignment["is_prog"]:
-                    if key not in cumulative_prices:
-                        cumulative_prices[key] = []
-                    cumulative_prices[key].append(written_price)
-                else:
-                    cumulative_prices[key] = written_price
-
-            return cumulative_prices
-
-        def _generate_archipelago_prices(self):
-            """Generate custom shop prices for Archipelago.
-
-            Generates individual prices for each shop and progressive item, then converts them
-            to cumulative prices (running totals) per kong. Excluded shops are set to 0 cost.
-            """
-            from randomizer.Enums.Items import Items as DK64RItems
-            from randomizer.Lists.Item import ItemList as DK64RItemList
-            from randomizer.Enums.Kongs import Kongs
-
-            # Constants
-            MAX_COINS = {
-                Kongs.donkey: 179,
-                Kongs.diddy: 183,
-                Kongs.lanky: 190,
-                Kongs.tiny: 198,
-                Kongs.chunky: 224,
-            }
-
-            PRICE_PERCENTAGES = {
-                0: 0.0,  # free
-                1: 0.35,  # easy
-                2: 0.55,  # medium
-                3: 0.85,  # hard
-            }
-
-            # Get settings
-            shopprices = self.options.shop_prices.value
-            percentage = PRICE_PERCENTAGES[shopprices]
-            min_max_coins = min(MAX_COINS.values())
-            # Cap cumulative prices at actual max coins (rainbow coins are tracked separately as collectibles)
-            max_cumulative_per_kong = {kong: MAX_COINS[kong] for kong in MAX_COINS}
-
-            # Categorize shops
-            shared_shop_vendors, available_shared_shops = self._get_shared_shop_vendors(Kongs, Types)
-            shop_locations, excluded_shop_locations, shops_per_kong = self._categorize_shop_locations(shared_shop_vendors, available_shared_shops, Kongs, Types)
-
-            # Calculate pricing averages
-            avg_prices_per_kong = self._calculate_kong_averages(shops_per_kong, MAX_COINS, percentage, min_max_coins, Kongs)
-            # Progressive items use 25% of budget, divided among 8 total progressive items
-            progressive_avg_price = (min_max_coins * percentage * 0.25) / 8 if shopprices > 0 else 0
-            progressive_stddev = progressive_avg_price * 0.3
-
-            # Generate individual prices
-            individual_prices = self._generate_individual_prices(shop_locations, avg_prices_per_kong, progressive_avg_price, progressive_stddev, shopprices, DK64RItems, Kongs)
-
-            # Add 0 prices for non-shop items and excluded shops
-            for item_id in DK64RItemList.keys():
-                if item_id not in individual_prices:
-                    individual_prices[item_id] = 0
-
-            for location_id in excluded_shop_locations:
-                individual_prices[location_id] = 0
-
-            # Store and finalize prices
-            self.spoiler.settings.original_prices = individual_prices.copy()
-
-            if shopprices > 0:
-                # Convert to cumulative prices
-                cumulative_prices = self._convert_to_cumulative_prices(individual_prices, shop_locations, max_cumulative_per_kong, Kongs)
-
-                # Add 0 prices for items not in shops
-                for item_id in DK64RItemList.keys():
-                    if item_id not in cumulative_prices:
-                        cumulative_prices[item_id] = 0
-
-                # Add 0 prices for all location IDs not already priced
-                for location_id in self.spoiler.LocationList.keys():
-                    if location_id not in cumulative_prices:
-                        cumulative_prices[location_id] = 0
-
-                for location_id in excluded_shop_locations:
-                    cumulative_prices[location_id] = 0
-
-                self.spoiler.settings.prices = cumulative_prices
-            else:
-                # Free prices - ensure all locations exist with 0 cost
-                for location_id in self.spoiler.LocationList.keys():
-                    if location_id not in individual_prices:
-                        individual_prices[location_id] = 0
-                self.spoiler.settings.prices = individual_prices.copy()
-
         def generate_early(self):
             """Generate the world."""
+            # Check host setting for minimal logic and force glitchless if disabled
+            if not self.settings.enable_minimal_logic_dk64:
+                dk64_worlds_for_minimal_check: tuple[DK64World] = self.multiworld.get_game_worlds("Donkey Kong 64")
+                affected_players = []
+                for world in dk64_worlds_for_minimal_check:
+                    if world.options.logic_type.value == 4:  # 4 = minimal logic
+                        affected_players.append(world.player_name)
+                        world.options.logic_type.value = 1  # Force to glitchless
+
+                if affected_players:
+                    import logging
+
+                    logging.warning(
+                        f"DK64: Minimal logic is DISABLED in host.yaml. "
+                        f"The following player(s) have tried to sneak Minimal Logic in: {', '.join(affected_players)}. As such, they have been forced to use glitchless logic."
+                    )
+
             # Handle seed group synchronization for custom LZR seed groups
             # We need to process ALL DK64 worlds to build/update seed groups before any player applies settings
             dk64_worlds: tuple[DK64World] = self.multiworld.get_game_worlds("Donkey Kong 64")
@@ -872,15 +721,17 @@ if baseclasses_loaded:
                                 enable_chaos_blockers=bool(world.options.enable_chaos_blockers.value),
                                 randomize_blocker_required_amounts=bool(world.options.randomize_blocker_required_amounts.value),
                                 blocker_max=int(world.options.blocker_max.value),
-                                maximize_helm_blocker=bool(world.options.maximize_helm_blocker.value),
-                                level1_blocker=int(world.options.level1_blocker.value),
-                                level2_blocker=int(world.options.level2_blocker.value),
-                                level3_blocker=int(world.options.level3_blocker.value),
-                                level4_blocker=int(world.options.level4_blocker.value),
-                                level5_blocker=int(world.options.level5_blocker.value),
-                                level6_blocker=int(world.options.level6_blocker.value),
-                                level7_blocker=int(world.options.level7_blocker.value),
-                                level8_blocker=int(world.options.level8_blocker.value),
+                                maximize_helm_blocker=bool(world.options.maximize_level8_blocker.value),
+                                level_blockers={
+                                    "level_1": int(world.options.level_blockers.value.get("level_1", 0)),
+                                    "level_2": int(world.options.level_blockers.value.get("level_2", 0)),
+                                    "level_3": int(world.options.level_blockers.value.get("level_3", 0)),
+                                    "level_4": int(world.options.level_blockers.value.get("level_4", 0)),
+                                    "level_5": int(world.options.level_blockers.value.get("level_5", 0)),
+                                    "level_6": int(world.options.level_blockers.value.get("level_6", 0)),
+                                    "level_7": int(world.options.level_blockers.value.get("level_7", 0)),
+                                    "level_8": int(world.options.level_blockers.value.get("level_8", 64)),
+                                },
                                 generated_blockers=None,  # will be filled after first player generates
                                 logic_type=int(world.options.logic_type.value),
                                 tricks_selected=set(world.options.tricks_selected.value),
@@ -904,14 +755,14 @@ if baseclasses_loaded:
                             self.seed_groups[group]["blocker_max"] = min(self.seed_groups[group]["blocker_max"], int(world.options.blocker_max.value))
 
                             # maximize_helm_blocker: if any player has it enabled, enable it for the group
-                            if world.options.maximize_helm_blocker.value:
+                            if world.options.maximize_level8_blocker.value:
                                 self.seed_groups[group]["maximize_helm_blocker"] = True
 
                             # level blockers: use the lowest value in the group for each
                             for level_num in range(1, 9):
-                                blocker_key = f"level{level_num}_blocker"
-                                option_key = blocker_key
-                                self.seed_groups[group][blocker_key] = min(self.seed_groups[group][blocker_key], int(getattr(world.options, option_key).value))
+                                blocker_key = f"level_{level_num}"
+                                option_key = "level_blockers"
+                                self.seed_groups[group][option_key][blocker_key] = min(self.seed_groups[group][option_key][blocker_key], int(getattr(world.options, option_key)[blocker_key]))
 
                             # logic_type: use most restrictive (glitchless=1 > advanced_glitchless=0 > glitched=2)
                             # Priority order: glitchless (1) is most restrictive, then advanced_glitchless (0), then glitched (2)
@@ -946,15 +797,8 @@ if baseclasses_loaded:
                         self.options.enable_chaos_blockers.value = int(self.seed_groups[group]["enable_chaos_blockers"])
                         self.options.randomize_blocker_required_amounts.value = int(self.seed_groups[group]["randomize_blocker_required_amounts"])
                         self.options.blocker_max.value = self.seed_groups[group]["blocker_max"]
-                        self.options.maximize_helm_blocker.value = int(self.seed_groups[group]["maximize_helm_blocker"])
-                        self.options.level1_blocker.value = self.seed_groups[group]["level1_blocker"]
-                        self.options.level2_blocker.value = self.seed_groups[group]["level2_blocker"]
-                        self.options.level3_blocker.value = self.seed_groups[group]["level3_blocker"]
-                        self.options.level4_blocker.value = self.seed_groups[group]["level4_blocker"]
-                        self.options.level5_blocker.value = self.seed_groups[group]["level5_blocker"]
-                        self.options.level6_blocker.value = self.seed_groups[group]["level6_blocker"]
-                        self.options.level7_blocker.value = self.seed_groups[group]["level7_blocker"]
-                        self.options.level8_blocker.value = self.seed_groups[group]["level8_blocker"]
+                        self.options.maximize_level8_blocker.value = int(self.seed_groups[group]["maximize_helm_blocker"])
+                        self.options.level_blockers.value = self.seed_groups[group]["level_blockers"]
 
                         # Create group random for LZR seed synchronization and replace self.random
                         combined_seed = f"{self.multiworld.seed}_{group}"
@@ -1021,14 +865,14 @@ if baseclasses_loaded:
                             self.seed_groups[group]["blocker_max"] = min(self.seed_groups[group]["blocker_max"], int(world.options.blocker_max.value))
 
                             # maximize_helm_blocker: if any player has it enabled, enable it for the group
-                            if world.options.maximize_helm_blocker.value:
+                            if world.options.maximize_level8_blocker.value:
                                 self.seed_groups[group]["maximize_helm_blocker"] = True
 
                             # level blockers: use the lowest value in the group for each
                             for level_num in range(1, 9):
-                                blocker_key = f"level{level_num}_blocker"
-                                option_key = blocker_key
-                                self.seed_groups[group][blocker_key] = min(self.seed_groups[group][blocker_key], int(getattr(world.options, option_key).value))
+                                blocker_key = f"level_{level_num}"
+                                option_key = "level_blockers"
+                                self.seed_groups[group][option_key][blocker_key] = min(self.seed_groups[group][option_key][blocker_key], int(getattr(world.options, option_key)[blocker_key]))
 
             # Apply seed group settings and create group random if using a custom seed group BEFORE fillsettings
             self.group_random = None
@@ -1042,15 +886,8 @@ if baseclasses_loaded:
                         self.options.enable_chaos_blockers.value = int(self.seed_groups[group]["enable_chaos_blockers"])
                         self.options.randomize_blocker_required_amounts.value = int(self.seed_groups[group]["randomize_blocker_required_amounts"])
                         self.options.blocker_max.value = self.seed_groups[group]["blocker_max"]
-                        self.options.maximize_helm_blocker.value = int(self.seed_groups[group]["maximize_helm_blocker"])
-                        self.options.level1_blocker.value = self.seed_groups[group]["level1_blocker"]
-                        self.options.level2_blocker.value = self.seed_groups[group]["level2_blocker"]
-                        self.options.level3_blocker.value = self.seed_groups[group]["level3_blocker"]
-                        self.options.level4_blocker.value = self.seed_groups[group]["level4_blocker"]
-                        self.options.level5_blocker.value = self.seed_groups[group]["level5_blocker"]
-                        self.options.level6_blocker.value = self.seed_groups[group]["level6_blocker"]
-                        self.options.level7_blocker.value = self.seed_groups[group]["level7_blocker"]
-                        self.options.level8_blocker.value = self.seed_groups[group]["level8_blocker"]
+                        self.options.maximize_level8_blocker.value = int(self.seed_groups[group]["maximize_helm_blocker"])
+                        self.options.level_blockers.value = self.seed_groups[group]["level_blockers"]
 
                         # Apply synchronized logic and glitch settings
                         self.options.logic_type.value = self.seed_groups[group]["logic_type"]
@@ -1119,7 +956,9 @@ if baseclasses_loaded:
             else:
                 self.spoiler.settings.selected_shared_shops = set()
 
-            self._generate_archipelago_prices()
+            # Generate custom shop prices for Archipelago
+            generate_prices(self.spoiler, self.options, self.random)
+
             # Handle Loading Zones - this will handle LO and (someday?) LZR appropriately
             if self.spoiler.settings.shuffle_loading_zones != ShuffleLoadingZones.none:
                 if self.spoiler.settings.level_randomization != LevelRandomization.loadingzone:
@@ -1313,16 +1152,14 @@ if baseclasses_loaded:
 
         def get_archipelago_item_type_by_classification(self, item_classification: ItemClassification) -> DK64RItems:
             """Get the appropriate DK64R Archipelago item type based on the ItemClassification."""
-            if item_classification in [ItemClassification.progression, ItemClassification.progression_skip_balancing]:
+            if item_classification & ItemClassification.progression:
                 return DK64RItems.ArchipelagoItem
-            elif item_classification == ItemClassification.useful:
+            elif item_classification & ItemClassification.useful:
                 return DK64RItems.SpecialArchipelagoItem
-            elif item_classification == ItemClassification.trap:
+            elif item_classification & ItemClassification.trap:
                 return DK64RItems.TrapArchipelagoItem
-            elif item_classification == ItemClassification.filler:
-                return DK64RItems.ArchipelagoItem.FoolsArchipelagoItem
             else:
-                return DK64RItems.ArchipelagoItem
+                return DK64RItems.ArchipelagoItem.FoolsArchipelagoItem
 
         def generate_output(self, output_directory: str):
             """Generate the output."""

@@ -1,5 +1,5 @@
 from Options import Range, StartInventoryPool, PerGameCommonOptions, Choice, FreeText, Toggle, DeathLink, \
-    DefaultOnToggle
+    DefaultOnToggle, OptionList
 from dataclasses import dataclass
 
 
@@ -36,6 +36,37 @@ class PalaceStars(Range):
     range_start = 0
     range_end = 7
     default = 7
+
+
+class RequiredStarsToggle(Toggle):
+    """
+    Toggles the Required Stars setting.
+    This will force the stars selected in Required Stars to be needed to enter the Palace of Shadow.
+    Leaving this off will cause the stars needed to be chosen randomly.
+    """
+    display_name = "Required Stars Selection"
+
+
+class RequiredStars(OptionList):
+    """
+    Select which stars are required to enter the Palace of Shadow.
+    If you do not toggle this option the stars will be chosen randomly.
+    If this has more stars in it than goal stars required, it will use the ones that come first in the list.
+    If this has fewer stars in it than goal stars required, it will fill the rest in randomly.
+    """
+    display_name = "Required Stars"
+    valid_keys = ["Diamond Star", "Emerald Star", "Gold Star", "Ruby Star", "Sapphire Star", "Garnet Star", "Crystal Star"]
+    default = valid_keys
+
+    def verify(self, world, player_name: str, plando_options) -> None:
+        super().verify(world, player_name, plando_options)
+        seen = set()
+        unique = []
+        for star in self.value:
+            if star not in seen:
+                seen.add(star)
+                unique.append(star)
+        self.value = unique
 
 
 class StarShuffle(Choice):
@@ -96,11 +127,35 @@ class Shopsanity(DefaultOnToggle):
     display_name = "Shopsanity"
 
 
+class ShopPurchaseLimit(Choice):
+    """
+    This determines which items in the shop will be replenished infinitely when purchasing.
+    infinite: All non-progression items in shops can be purchased infinitely.
+    consumables_only: Only consumable items can be purchased infinitely.
+    badges_only: Only badges can be purchased infinitely.
+    limited: No items can be purchased infinitely.
+    """
+    display_name = "Shop Purchase Limit"
+    option_infinite = 0
+    option_consumables_only = 1
+    option_badges_only = 2
+    option_limited = 3
+    default = 1
+
+
 class Shinesanity(DefaultOnToggle):
     """
     Shine Sprites will be randomized.
     """
     display_name = "Shinesanity"
+
+
+class Keysanity(DefaultOnToggle):
+    """
+    Chapter specific keys will be added to the item pool.
+    Disabling this will place the keys in their own chapters dungeon.
+    """
+    display_name = "Keysanity"
 
 
 class DazzleRewards(Choice):
@@ -117,6 +172,36 @@ class DazzleRewards(Choice):
     default = 3
 
 
+class PartnerShuffle(Choice):
+    """
+    This determines how partners are shuffled.
+    vanilla: Partners will be in their original locations.
+    shuffled: Partners will be shuffled among each other, but not with other items.
+    full_random: Partners can be shuffled into any location.
+    """
+    display_name = "Partner Shuffle"
+    option_vanilla = 1
+    option_shuffled = 2
+    option_full_random = 3
+    default = 1
+
+
+class StartingPartner(Choice):
+    """
+    Choose the partner that you start with.
+    This settings will not be applied if partner shuffle is set to Vanilla.
+    """
+    display_name = "Starting Partner"
+    option_goombella = 1
+    option_koops = 2
+    option_bobbery = 3
+    option_yoshi = 4
+    option_flurrie = 5
+    option_vivian = 6
+    option_ms_mowz = 7
+    default = 1
+
+
 class LimitChapterLogic(Toggle):
     """
     Progression items will only appear in required chapters, and in common areas. You will not need to
@@ -131,6 +216,14 @@ class LimitChapterEight(Toggle):
     All other locations will have local non-progression items.
     """
     display_name = "Limit Chapter 8"
+
+
+class BluePipeToggle(DefaultOnToggle):
+    """
+    Toggle whether the blue pipes in Rogueport Sewers are usable.
+    Disabling this will remove the blue switches and the pipes will become inaccessible.
+    """
+    display_name = "Blue Pipe Warp"
 
 
 class PalaceSkip(Toggle):
@@ -153,6 +246,77 @@ class OpenWestside(Toggle):
     Rogueport Westside is open from the start.
     """
     display_name = "Open West Side"
+
+
+class GrubbaBribeDirection(Choice):
+    """
+    Sets how bribing grubba behaves in-game.
+    Set if you want grubba to require coins for moving up or down the rankings respectively.
+    up_rank_only: Grubba accepts coins to move up the rankings. (20 -> 1). Moving down is free.
+    down_rank_only: Grubba accepts coins bribes to move down the rankings. (1 -> 20). Moving up is free.
+    both_directions: Grubba accepts coins for moving both up and down the rankings.
+    """
+    display_name = "Grubba Bribe Direction"
+    option_up_rank_only = 0
+    option_down_rank_only = 1
+    option_both_directions = 2
+    default = 2
+
+
+class GrubbaBribeCost(Range):
+    """
+    Sets the cost to bribe Grubba to move up the rankings.
+    Grubba can be found in his office after your first battle in the glitz pit.
+    """
+    display_name = "Grubba Bribe Cost"
+    range_start = 0
+    range_end = 50
+    default = 20
+
+
+class EnemyRandomizer(Choice):
+    """
+    Toggles the randomization of enemies in battles.
+    vanilla: Enemies will be the same as the original game.
+    within_chapter: Enemy encounters will be shuffled with other encounters that appear in the same chapter.
+    random: Enemy encounters will be shuffled with any other encounter in the game.
+    """
+    display_name = "Enemy Randomizer"
+    option_vanilla = 0
+    option_within_chapter = 1
+    option_randomize = 2
+    default = 0
+
+
+class EncounterShuffleType(Choice):
+    """
+    This determines how enemies are grouped when randomizing.
+    Enemy randomizer must be set to either within_chapter or random for this option to have an effect.
+    vanilla_groups: Enemies will be grouped by encounter, and shuffled as a group.
+    custom_groups: Enemies will be shuffled individually, and grouped into new encounters based on their new enemy count.
+    """
+    display_name = "Enemy Randomizer Grouping"
+    option_vanilla_groups = 0
+    option_custom_groups = 1
+    default = 0
+
+
+class EnemyStatScaling(Toggle):
+    """
+    Enemies will have their stats scaled based on the chapter they appear in.
+    This option is independent of the Enemy Randomizer option, and will scale enemies even if they are not randomized.
+    """
+    display_name = "Enemy Stat Scaling"
+
+
+class ShuffleChapterStats(Toggle):
+    """
+    Chapter stat scaling values will be shuffled between each other.
+    EnemyStatScaling must be enabled for this option to have an effect.
+    ie. Chapter 1 enemies could have scaled stats based on chapter 5,
+    Chapter 2 enemies could have scaled stats based on chapter 3, etc.
+    """
+    display_name = "Shuffle Chapter Stats"
 
 
 class PermanentPeekaboo(Toggle):
@@ -198,6 +362,51 @@ class ZeroBPFirstAttack(Toggle):
     The First Attack badge costs 0 BP, just like the remake.
     """
     display_name = "0 BP First Attack"
+
+
+class BadgeBP(Choice):
+    """
+    Change the BP cost of all badges.
+    This will not affect badges with unique costs such as First Attack, Power Bounce, etc.
+    vanilla: All badges will have their normal BP cost.
+    shuffled: All badges will have their BP cost shuffled among each other.
+    random_costs: All badges will have a random BP cost between 0 and 6.
+    """
+    display_name = "Badge BP Cost"
+    option_vanilla = 0
+    option_shuffled = 1
+    option_random_costs = 2
+    default = 0
+
+
+class BadgeFP(Choice):
+    """
+    Change the FP cost of all badges.
+    This will not affect badges with unique costs such as Refresh, etc.
+    vanilla: All badges will have their normal FP cost.
+    shuffled: All badges will have their FP cost shuffled among each other.
+    random_costs: All badges will have a random FP cost between 0 and 6.
+    """
+    display_name = "Badge FP Cost"
+    option_vanilla = 0
+    option_shuffled = 1
+    option_random_costs = 2
+    default = 0
+
+
+class PartnerFP(Choice):
+    """
+    Change the FP cost of all partners.
+    This will not affect partners with unique costs such as Vivian, etc.
+    vanilla: All partner abilities will have their normal FP cost.
+    shuffled: All partner abilities will have their FP cost shuffled among each other.
+    random_costs: All partner abilities will have a random FP cost between 0 and 6.
+    """
+    display_name = "Partner FP Cost"
+    option_vanilla = 0
+    option_shuffled = 1
+    option_random_costs = 2
+    default = 0
 
 
 class MusicSettings(Choice):
@@ -286,21 +495,6 @@ class StartingCoins(Range):
     default = 100
 
 
-class StartingPartner(Choice):
-    """
-    Choose the partner that you start with.
-    """
-    display_name = "Starting Partner"
-    option_goombella = 1
-    option_koops = 2
-    option_bobbery = 3
-    option_yoshi = 4
-    option_flurrie = 5
-    option_vivian = 6
-    option_ms_mowz = 7
-    default = 1
-
-
 class YoshiColor(Choice):
     """
     Select the color of your Yoshi partner.
@@ -332,24 +526,39 @@ class TTYDOptions(PerGameCommonOptions):
     goal: Goal
     goal_stars: GoalStars
     palace_stars: PalaceStars
+    required_stars_toggle: RequiredStarsToggle
+    required_stars: RequiredStars
     star_shuffle: StarShuffle
     tattlesanity: TattleSanityOption
     piecesanity: Piecesanity
     shopsanity: Shopsanity
+    shop_purchase_limit: ShopPurchaseLimit
     shinesanity: Shinesanity
+    keysanity: Keysanity
     dazzle_rewards: DazzleRewards
     pit_items: PitItems
     limit_chapter_logic: LimitChapterLogic
     limit_chapter_eight: LimitChapterEight
+    blue_pipe_toggle: BluePipeToggle
     palace_skip: PalaceSkip
+    #partner_shuffle: PartnerShuffle
     cutscene_skip: CutsceneSkip
     disable_intermissions: DisableIntermissions
     fast_travel: FastTravel
     succeed_conditions: AlwaysSucceedConditions
     open_westside: OpenWestside
+    grubba_bribe_direction: GrubbaBribeDirection
+    grubba_bribe_cost: GrubbaBribeCost
+    enemy_randomizer: EnemyRandomizer
+    encounter_shuffle_type: EncounterShuffleType
+    enemy_stat_scaling: EnemyStatScaling
+    shuffle_chapter_stats: ShuffleChapterStats
     permanent_peekaboo: PermanentPeekaboo
     full_run_bar: FullRunBar
     first_attack: ZeroBPFirstAttack
+    badge_bp: BadgeBP
+    badge_fp: BadgeFP
+    partner_fp: PartnerFP
     music_settings: MusicSettings
     block_visibility: BlockVisibility
     experience_multiplier: ExperienceMultiplier

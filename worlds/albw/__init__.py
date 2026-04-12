@@ -24,7 +24,7 @@ albw_base_id = 6242624000
 
 def launch_client(*args):
     from .Client import launch
-    launch_subprocess(launch, name="ALBWClient")
+    launch_subprocess(launch, name="ALBWClient", args=args)
 
 components.append(
     Component(

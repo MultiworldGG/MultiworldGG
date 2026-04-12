@@ -2,7 +2,7 @@
 
 ## Where is the settings page?
 
-The [player settings page for this game](../player-settings) contains most of the options you need to 
+The [player settings page for this game](../player-options) contains most of the options you need to 
 configure and export a config file.
 
 ## What does randomization do to this game?
@@ -17,6 +17,19 @@ Items belonging to other worlds use an easily recognizable Archipelago sprite, w
 When collecting it, the game will inform you that you just sent an item to another player, and you can check on the client window to see which item was actually sent.
 
 ## Frequently Asked Questions
+
+**I am stuck in some place and I can't get back up!**
+
+**How can I warp to start?**
+
+> You can warp to start by pressing A+B while the screen is fading to white into any menu (e.g. after pressing START or SELECT)
+
+**I lost my shield, where do I get it back?**
+
+**I don't have any of some consumable and no way to refill them, am I softlocked?**
+
+> You can talk to Impa to refill your inventory of all consumables up to a certain amount (including any lost shield)
+> If you want to refill more of your consumable, talk to a business deku to refill them entirely
 
 **What does medium / hard logic expects from me?**
 
@@ -38,17 +51,6 @@ When collecting it, the game will inform you that you just sent an item to anoth
 > In solo however, after patching your game, you can play it on any emulator or even original hardware. However, since you will be unable to connect, you will not have access to the hint system, a log of what you collected previously and a tracker, unless you switch emulator back to Bizhawk, bringing your save.
 > 
 > \*Zunawe also made a connector to use mgba instead. Instructions on how to download and use it are [here](https://discord.com/channels/731205301247803413/1192236871468711966/1193963132377374762) on the Archipelago Discord server
-
-**I lost my shield, where do I get it back?**
-
-**I don't have any of some consumable and no way to refill them, am I softlocked?**
-
-> You can talk to Impa to refill your inventory of all consumables up to a certain amount (including any lost shield)
-> If you want to refill more of your consumable, talk to a business deku to refill them entirely
-
-**How can I warp to start?**
-
-> You need to press A+B while the screen is fading to white into any menu (e.g. after pressing START or SELECT)
 
 **How can I switch directly to a specific season instead of cycling all seasons everytime?**
 

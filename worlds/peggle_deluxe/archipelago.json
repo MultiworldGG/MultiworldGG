@@ -1,0 +1,10 @@
+{
+    "authors": ["SerpentAI"],
+    "compatible_version": 7,
+    "flags": [],
+    "game": "Peggle Deluxe",
+    "idgb_id": 28975,
+    "minimum_ap_version": "0.6.5",
+    "version": 7,
+    "world_version": "1.1.2"
+}

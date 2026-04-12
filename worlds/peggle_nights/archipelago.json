@@ -1,0 +1,10 @@
+{
+    "authors": ["SerpentAI"],
+    "compatible_version": 7,
+    "flags": [],
+    "game": "Peggle Nights",
+    "idgb_id": 14813,
+    "minimum_ap_version": "0.6.5",
+    "version": 7,
+    "world_version": "1.0.2"
+}

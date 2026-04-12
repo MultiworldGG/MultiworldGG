@@ -12,8 +12,14 @@
         <div id="generate-game" class="grass-island">
             <h1>Generate Game{% if race %} (Race Mode){% endif %}</h1>
             <p>
-                This page allows you to generate a game by uploading a config file or a zip file containing config
-                files. If you do not have a config (.yaml) file yet, you may create one on the game's settings page,
+                <strong>Playing with others?</strong> If you don't have everyone's YAML files yet, consider using a
+                <a href="{{ url_for('lobby_create') }}">Lobby</a> instead &mdash; players can join, upload their own
+                configs, and you can generate once everyone is ready.
+                You can also <a href="{{ url_for('lobby_list') }}">browse open lobbies</a> to join an existing group.
+            </p>
+            <p>
+                This page allows you to generate a game if you already have all config files collected.
+                If you do not have a config (.yaml) file yet, you may create one on the game's settings page,
                 which you can find on the <a href="{{ url_for("games") }}">supported games list</a>.
             </p>
             <p>
@@ -154,6 +160,22 @@ Warning: playthrough can take a significant amount of time for larger multiworld
                                                 <option value="1">Enabled</option>
                                                 <option selected="selected" value="0">Disabled</option>
                                             {%- endif -%}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="hint_mode">Hint Mode:
+                                            <span class="interactive" data-tooltip="Decide if hints include exact location data or just reference the respective world.">
+                                                (?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select name="hint_mode" id="hint_mode">
+                                                <option value="all">Hide All (hide full location in all worlds unless rehinted)</option>
+                                                <option value="own">Hide Own (hide full location in own world unless rehinted)</option>
+                                                <option selected="selected" value="default">Default (show full location)</option>
                                         </select>
                                     </td>
                                 </tr>

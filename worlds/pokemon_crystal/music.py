@@ -19,13 +19,17 @@ def randomize_music(world: "PokemonCrystalWorld"):
                           music_name not in EXCLUDED_MUSIC and not music_data.loop]
 
     if world.options.randomize_music == RandomizeMusic.option_completely_random:
+        scripts = {script_name: world.random.choice(
+            music_pool_loop if data.music.consts[script_music].loop else music_pool_no_loop) for
+            script_name, script_music in world.generated_music.scripts.items()}
+        # audio and overworld bicycle are two init points for the same track; keep them in sync
+        if "audio__MUSIC_BICYCLE" in scripts and "overworld__MUSIC_BICYCLE" in scripts:
+            scripts["overworld__MUSIC_BICYCLE"] = scripts["audio__MUSIC_BICYCLE"]
         world.generated_music = replace(
             world.generated_music,
             maps={map_name: world.random.choice(music_pool_loop) for map_name in world.generated_music.maps.keys()},
             encounters=[world.random.choice(music_pool_no_loop) for _ in world.generated_music.encounters],
-            scripts={script_name: world.random.choice(
-                music_pool_loop if data.music.consts[script_music].loop else music_pool_no_loop) for
-                script_name, script_music in world.generated_music.scripts.items()},
+            scripts=scripts,
         )
     else:
 

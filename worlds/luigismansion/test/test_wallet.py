@@ -6,7 +6,7 @@ class _MockCurrency(Currency):
     """
     Testable Currency object, mocking functionality which normally relies upon external dependencies.
     """
-    def __init__(self, name: str, mem_loc: str,  calc_value: int, current_amount: int):
+    def __init__(self, name: str, mem_loc: int,  calc_value: int, current_amount: int):
         super().__init__(name, mem_loc, calc_value)
 
         self.current_amount = current_amount

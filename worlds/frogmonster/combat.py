@@ -93,7 +93,7 @@ combat_data = [
     CombatType(name=c.tymbal,                  score_easy=X, score_normal=X, score_hard=5,  score_very_hard=0, need=[i.dash], want=[i.sticky_hands], tags=["swarm"]),
     CombatType(name=c.foraz,                   score_easy=X, score_normal=X, score_hard=6,  score_very_hard=X, need=[i.dash]),
     CombatType(name=c.hedgeward,               score_easy=X, score_normal=X, score_hard=6,  score_very_hard=X, need=[i.dash]),
-    CombatType(name=c.runi,                    score_easy=X, score_normal=X, score_hard=6,  score_very_hard=X,),
+    CombatType(name=c.runi,                    score_easy=X, score_normal=X, score_hard=6,  score_very_hard=X, need=[i.dash]),
     CombatType(name=c.barge,                   score_easy=X, score_normal=X, score_hard=0,  score_very_hard=X,),
     CombatType(name=c.door_crab,               score_easy=X, score_normal=X, score_hard=8,  score_very_hard=X, need=[i.dash]),
     CombatType(name=c.lazaro,                  score_easy=X, score_normal=X, score_hard=8,  score_very_hard=X, need=[i.dash]),

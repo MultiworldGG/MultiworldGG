@@ -66,16 +66,19 @@ gauntlet_gb_locations = [
     Locations.AztecTinyKlaptrapRoom,
     Locations.AztecChunkyKlaptrapRoom,
     Locations.FactoryDiddyRandD,
+    Locations.FactoryChunkyRandD,
     Locations.ForestLankyAttic,
     Locations.ForestTinyAnthill,
     Locations.ForestTinySpiderBoss,
     Locations.ForestChunkyApple,
     Locations.CavesDonkey5DoorCabin,
     Locations.CavesDiddy5DoorCabinLower,
+    Locations.CavesDiddy5DoorCabinUpper,
     Locations.CavesLanky5DoorIgloo,
     Locations.CavesTiny5DoorCabin,
     Locations.CavesChunky5DoorIgloo,
     Locations.CastleDonkeyLibrary,
+    Locations.CastleDiddyBallroom,
     Locations.CastleTinyTrashCan,
     Locations.CastleChunkyShed,
 ]
@@ -231,6 +234,7 @@ def AllItemsUnrestricted(settings):
     allItems.extend(FunkyItems())
     allItems.extend(CandyItems())
     allItems.extend(SnideItems())
+    allItems.extend(Photos())
     return allItems
 
 
@@ -489,6 +493,55 @@ def ClimbingAbilities():
     return [Items.Climbing]
 
 
+def Photos():
+    """Return all photo items."""
+    return [
+        Items.PhotoBeaverBlue,
+        Items.PhotoBook,
+        Items.PhotoZingerCharger,
+        Items.PhotoKlobber,
+        Items.PhotoKlump,
+        Items.PhotoKaboom,
+        Items.PhotoKlaptrapGreen,
+        Items.PhotoZingerLime,
+        Items.PhotoKlaptrapPurple,
+        Items.PhotoKlaptrapRed,
+        Items.PhotoBeaverGold,
+        Items.PhotoFireball,
+        Items.PhotoMushroomMan,
+        Items.PhotoRuler,
+        Items.PhotoRoboKremling,
+        Items.PhotoKremling,
+        Items.PhotoKasplatDK,
+        Items.PhotoKasplatDiddy,
+        Items.PhotoKasplatLanky,
+        Items.PhotoKasplatTiny,
+        Items.PhotoKasplatChunky,
+        Items.PhotoZingerRobo,
+        Items.PhotoKrossbones,
+        Items.PhotoShuri,
+        Items.PhotoGimpfish,
+        Items.PhotoMrDice0,
+        Items.PhotoSirDomino,
+        Items.PhotoMrDice1,
+        Items.PhotoBat,
+        Items.PhotoGhost,
+        Items.PhotoPufftup,
+        Items.PhotoKosha,
+        Items.PhotoSpider,
+        Items.PhotoFireball,
+        Items.PhotoBug,
+        Items.PhotoKop,
+        Items.PhotoTomato,
+        Items.PhotoBFI,
+        Items.PhotoIceTomato,
+        Items.PhotoMermaid,
+        Items.PhotoLlama,
+        Items.PhotoMechfish,
+        Items.PhotoSeal,
+    ]
+
+
 def Upgrades(settings):
     """Return all upgrade items."""
     upgrades = []
@@ -566,7 +619,7 @@ def GoldenBananaItems(settings):
     decrease = 0
     decrease_values = {
         Types.RaceBanana: 11,
-        Types.GauntletBanana: 16,
+        Types.GauntletBanana: 19,
         Types.BlueprintBanana: 40,
     }
     for item_type, value in decrease_values.items():
@@ -677,7 +730,7 @@ def FillerItems(settings):
         Items.FillerBanana: {
             # Don't think we need to worry about the 8 bit limit, but just to be safe
             "count": 255 - settings.total_gbs,
-            "weight": 10,
+            "weight": 5,
         },
         Items.FillerCrown: {
             "count": 255 - settings.total_crowns,
@@ -685,7 +738,7 @@ def FillerItems(settings):
         },
         Items.FillerFairy: {
             "count": 255 - settings.total_fairies,
-            "weight": 4,
+            "weight": 3,
         },
         Items.FillerPearl: {
             "count": 255 - settings.total_pearls,
@@ -693,13 +746,13 @@ def FillerItems(settings):
         },
         Items.FillerMedal: {
             "count": 255 - settings.total_medals,
-            "weight": 6,
+            "weight": 4,
         },
         Items.FillerRainbowCoin: {
             "count": 255 - settings.total_rainbow_coins,
             "weight": 3,
         },
-        Items.JunkMelon: {"count": 1000, "weight": 2},
+        Items.JunkMelon: {"count": 1000, "weight": 4},
     }
     max_weight = max([x["weight"] for x in list(filler_mapping_allowances.values())])
     filler_types_in_pool = [x for x in list(filler_mapping.keys()) if x in settings.shuffled_location_types]

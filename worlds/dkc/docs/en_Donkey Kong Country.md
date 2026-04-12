@@ -1,5 +1,8 @@
 # Donkey Kong Country
 
+## Detailed Guide
+A detailed guide can be found [here](https://thelx5.github.io/dkc/)
+
 ## Where is the options page?
 
 The [player options page for this game](../player-options) contains all the options you need to configure and export a 
