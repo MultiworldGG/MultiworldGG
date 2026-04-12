@@ -430,11 +430,9 @@ class OOTWorld(World):
             or self.owl_drops
             or self.warp_songs
         )
-        self.disable_trade_revert = (self.shuffle_interior_entrances != 'off') or self.shuffle_overworld_entrances
+        self.adult_trade_shuffle = bool(self.options.adult_trade_shuffle)
+        self.disable_trade_revert = (self.shuffle_interior_entrances != 'off') or self.shuffle_overworld_entrances or self.adult_trade_shuffle
         self.shuffle_special_interior_entrances = self.shuffle_interior_entrances == 'all'
-        # adult_trade_shuffle is not implemented in AP - set to False
-        # This is referenced in Overworld.json logic for trade sequences
-        self.adult_trade_shuffle = False
 
         # Convert the double option used by shopsanity into a single option
         if self.shopsanity == 'random_number':
@@ -505,8 +503,12 @@ class OOTWorld(World):
 
         # Convert adult trade option to expected Set
         self.adult_trade_start = {self.adult_trade_start.title().replace('_', ' ')}
-        # Set selected_adult_trade_item for logic rules (used before ItemPool runs)
-        self.selected_adult_trade_item = next(iter(self.adult_trade_start))
+        # Set selected_adult_trade_item for logic rules (used before ItemPool runs).
+        # When shuffling all trade items there is no single fixed start, so leave it None.
+        if not self.adult_trade_shuffle:
+            self.selected_adult_trade_item = next(iter(self.adult_trade_start))
+        else:
+            self.selected_adult_trade_item = None
 
         # Get hint distribution
         self.hint_dist_user = read_json(data_path('Hints', f'{self.hint_dist}.json'))
@@ -1037,11 +1039,7 @@ class OOTWorld(World):
             while tries:
                 try:
                     self.random.shuffle(song_locations)
-                    # Create state with songs for accessibility checks (songs are needed to reach some song locations)
                     song_state = prefill_state(state)
-                    for song in songs:
-                        self.collect(song_state, song)
-                    song_state.sweep_for_advancements(locations=self.get_locations())
 
                     fill_restrictive(self.multiworld, song_state, song_locations[:], songs[:],
                                      single_player_placement=True, lock=True, allow_excluded=True)
@@ -1166,7 +1164,7 @@ class OOTWorld(World):
                 patch_rom(self, rom)
                 patch_cosmetics(self, rom)
             except Exception as e:
-                logger.error(e)
+                logger.exception("Failed while generating OoT output for player %s.", self.player)
                 raise e
             finally:
                 self.collectible_flags_available.set()

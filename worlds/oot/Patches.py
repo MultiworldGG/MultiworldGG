@@ -109,7 +109,7 @@ def patch_rom(world, rom):
     if world.key_appearance_matches_dungeon:
         rom.write_byte(rom.sym('CUSTOM_KEY_MODELS'), 0x01)
 
-    extended_objects_start = start_address = rom.dma.free_space()
+    extended_objects_start = start_address = rom.free_space()
     for (name, zobj_path, object_id) in zobj_imports:
         with open(zobj_path, 'rb') as stream:
             obj_data = stream.read()
@@ -150,7 +150,7 @@ def patch_rom(world, rom):
         start_address = end_address
 
     # Add the extended objects data to the DMA table.
-    rom.update_dmadata_record_by_key(None, extended_objects_start, end_address)
+    rom.update_dmadata_record(None, extended_objects_start, end_address)
 
     # Create the textures for pots/crates. Note: No copyrighted material can be distributed w/ the randomizer. Because of this, patch files are used to create the new textures from the original texture in ROM.
     # Apply patches for custom textures for pots and crates and add as new files in rom
@@ -213,7 +213,8 @@ def patch_rom(world, rom):
 
     # Remove color commands inside certain object display lists
     rom.write_int32s(0x1455818, [0x00000000, 0x00000000, 0x00000000, 0x00000000]) # Small Key
-    rom.write_int32s(0x14B9F20, [0x00000000, 0x00000000, 0x00000000, 0x00000000]) # Boss Key
+    rom.write_int32s(0x14B9CB8, [0x00000000, 0x00000000, 0x00000000, 0x00000000]) # Boss Key (Key)
+    rom.write_int32s(0x14B9F20, [0x00000000, 0x00000000, 0x00000000, 0x00000000]) # Boss Key (Gem)
 
     # Set default targeting option to Hold. I got fed up enough with this that I made it a main option
     if world.default_targeting == 'hold':
@@ -1646,7 +1647,16 @@ def patch_rom(world, rom):
     if world.logic_rules == 'glitched':
         location = world.get_location('Barinade')
     else:
-        jabu_reward_regions = {world.get_entrance('Jabu Jabus Belly Boss Door -> Barinade Boss Room').connected_region}
+        jabu_boss_entrance = next((
+            entrance for entrance in world.get_entrances()
+            if entrance.connected_region is not None
+            and entrance.connected_region.name == 'Barinade Boss Room'
+            and (
+                (getattr(entrance.parent_region, 'dungeon', None) == 'Jabu Jabus Belly')
+                or (getattr(getattr(entrance.parent_region, 'dungeon', None), 'name', None) == 'Jabu Jabus Belly')
+            )
+        ), None)
+        jabu_reward_regions = {jabu_boss_entrance.connected_region} if jabu_boss_entrance is not None else set()
         already_checked = set()
         location = None
         while jabu_reward_regions:
@@ -1676,10 +1686,10 @@ def patch_rom(world, rom):
         reward_text = None
     elif getattr(location.item, 'looks_like_item', None) is not None:
         jabu_item = location.item.looks_like_item
-        reward_text = create_fake_name(getHint(getItemGenericName(location.item.looks_like_item), world.hint_rng, True).text)
+        reward_text = create_fake_name(getHint(getItemGenericName(location.item.looks_like_item), True).text)
     else:
         jabu_item = location.item
-        reward_text = getHint(getItemGenericName(location.item), world.hint_rng, True).text
+        reward_text = getHint(getItemGenericName(location.item), True).text
 
     # Update "Princess Ruto got the Spiritual Stone!" text before the midboss in Jabu
     if reward_text is None:
@@ -2086,6 +2096,7 @@ def patch_rom(world, rom):
 
     if hasattr(world, 'adult_trade_shuffle') and world.adult_trade_shuffle:
         rom.write_int16(rom.sym('CFG_ADULT_TRADE_SHUFFLE'), 0x0001)
+        move_fado_in_lost_woods(rom)
     if hasattr(world, 'shuffle_child_trade') and world.shuffle_child_trade != 'vanilla':
         rom.write_int16(rom.sym('CFG_CHILD_TRADE_SHUFFLE'), 0x0001)
 
@@ -2446,20 +2457,28 @@ def patch_rom(world, rom):
     elif world.zora_fountain == 'closed':
         rom.write_byte(rom.sym('OPEN_FOUNTAIN'), 0x02)
 
-    rom.write_bytes(rom.sym('SHOP_SLOTS'), [
+    shop_slots = [
         sum(f'{shop} Item {idx}' in world.shop_prices for idx in ('7', '5', '8', '6'))
-        for shop in ('KF Shop', 'Market Bazaar', 'Market Potion Shop', 'Market Bombchu Shop', 
+        for shop in ('KF Shop', 'Market Bazaar', 'Market Potion Shop', 'Market Bombchu Shop',
             'Kak Bazaar', 'Kak Potion Shop', 'GC Shop', 'ZD Shop')
-    ])
+    ]
+
+    shop_slots_addr = rom.sym('SPECIAL_DEAL_COUNTS')
+    rom.write_bytes(shop_slots_addr, shop_slots)
 
     return rom
 
 
 NUM_VANILLA_OBJECTS = 0x192
-def add_to_extended_object_table(rom, object_id, object_file):
+def add_to_extended_object_table(rom, object_id, object_file_or_start, object_end=None):
+    if object_end is None:
+        object_start = object_file_or_start.start
+        object_end = object_file_or_start.end
+    else:
+        object_start = object_file_or_start
     extended_id = object_id - NUM_VANILLA_OBJECTS - 1
     extended_object_table = rom.sym('EXTENDED_OBJECT_TABLE')
-    rom.write_int32s(extended_object_table + extended_id * 8, [object_file.start, object_file.end])
+    rom.write_int32s(extended_object_table + extended_id * 8, [object_start, object_end])
 
 
 item_row_struct = struct.Struct('>BBHHBBIIhhBxxx') # Match item_row_t in item_table.h
@@ -2502,7 +2521,7 @@ def get_override_table(world):
     return list(filter(lambda val: val != None, map(partial(get_override_entry, world), world.multiworld.get_filled_locations(world.player))))
 
 
-override_struct = struct.Struct('>BBHHBB') # match override_t in get_items.c
+override_struct = struct.Struct('>BBHxxxxHBxHxx') # match override_t in get_items.c
 def get_override_table_bytes(override_table):
     return b''.join(sorted(itertools.starmap(override_struct.pack, override_table)))
 
@@ -2661,6 +2680,18 @@ def get_override_itemid(override_table, scene, type, flags):
         if entry[0] == scene and (entry[1] & 0x07) == type and entry[2] == flags:
             return entry[4]
     return None
+
+def move_fado_in_lost_woods(rom):
+    def move_fado(rom, actor_id, actor, scene):
+        if actor_id == 0x163 and scene == 0x5B:  # move Fado to short stump
+            rom.write_int16(actor + 2, 0xFBA6)
+            rom.write_int16(actor + 4, 0x0000)
+            rom.write_int16(actor + 6, 0xFFA1)
+            rom.write_int16(actor + 8, 0x0000)
+            rom.write_int16(actor + 10, 0x25A4)
+            rom.write_int16(actor + 12, 0x0000)
+    get_actor_list(rom, move_fado)
+
 
 def remove_entrance_blockers(rom):
     def remove_entrance_blockers_do(rom, actor_id, actor, scene):

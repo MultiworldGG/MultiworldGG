@@ -1280,10 +1280,16 @@ class AdultTradeStart(Choice):
     default = 9
 
 
+class AdultTradeShuffleOption(Toggle):
+    """Shuffle all adult trade sequence items into the item pool."""
+    display_name = "Shuffle All Adult Trade Items"
+
+
 itempool_options: typing.Dict[str, type(Option)] = {
-    "item_pool_value": ItemPoolValue, 
+    "item_pool_value": ItemPoolValue,
     "junk_ice_traps": IceTraps,
-    "ice_trap_appearance": IceTrapVisual, 
+    "ice_trap_appearance": IceTrapVisual,
+    "adult_trade_shuffle": AdultTradeShuffleOption,
     "adult_trade_start": AdultTradeStart,
 }
 
@@ -1528,6 +1534,7 @@ class OoTOptions(PerGameCommonOptions):
     item_pool_value: ItemPoolValue
     junk_ice_traps: IceTraps
     ice_trap_appearance: IceTrapVisual
+    adult_trade_shuffle: AdultTradeShuffleOption
     adult_trade_start: AdultTradeStart
     default_targeting: Targeting
     display_dpad: DisplayDpad

@@ -405,6 +405,13 @@ def get_pool_core(world):
         triforce_count = int((Decimal(100 + world.extra_triforce_percentage)/100 * world.triforce_goal).to_integral_value(rounding=ROUND_HALF_UP))
         pending_junk_pool.extend(['Triforce Piece'] * triforce_count)
 
+    if world.adult_trade_shuffle:
+        pending_junk_pool.extend(world.adult_trade_start)
+        # Pocket Egg is always chosen if both Egg and Pocket Cucco are selected to be shuffled.
+        # Make the duplicate item consistent with that.
+        if 'Pocket Egg' in world.adult_trade_start and 'Pocket Cucco' in world.adult_trade_start:
+            pending_junk_pool.remove('Pocket Cucco')
+
     # Use the vanilla items in the world's locations when appropriate.
     for location in world.get_locations():
         if location.vanilla_item is None:
@@ -523,12 +530,24 @@ def get_pool_core(world):
             if not shuffle_item:
                 location.show_in_spoiler = False
 
-        # Adult Trade Item
-        elif location.vanilla_item == 'Pocket Egg':
-            potential_trade_items = world.adult_trade_start if world.adult_trade_start else trade_items
-            item = world.random.choice(sorted(potential_trade_items))
-            world.selected_adult_trade_item = item
-            shuffle_item = True
+        # Adult Trade Quest Items
+        elif location.vanilla_item in trade_items:
+            if not world.adult_trade_shuffle:
+                if location.vanilla_item == 'Pocket Egg':
+                    potential_trade_items = world.adult_trade_start if world.adult_trade_start else trade_items
+                    item = world.random.choice(sorted(potential_trade_items))
+                    world.selected_adult_trade_item = item
+                    shuffle_item = True
+                else:
+                    shuffle_item = False
+            elif location.vanilla_item in world.adult_trade_start:
+                shuffle_item = True
+            else:
+                if location.vanilla_item == 'Pocket Egg' and 'Pocket Cucco' in world.adult_trade_start:
+                    item = 'Pocket Cucco'
+                    shuffle_item = True
+                else:
+                    shuffle_item = False
 
         # Thieves' Hideout
         elif location.vanilla_item == 'Small Key (Thieves Hideout)':

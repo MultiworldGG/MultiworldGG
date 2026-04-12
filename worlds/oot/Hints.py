@@ -14,7 +14,7 @@ from urllib.error import URLError, HTTPError
 
 from .HintList import Hint, get_hint, get_multi, get_hint_group, get_upgrade_hint_list, hint_exclusions, \
     misc_item_hint_table, misc_location_hint_table
-from .Items import OOTItem as Item
+from .Items import OOTItem as Item, item_table
 from .Messages import COLOR_MAP, update_message_by_id
 from BaseClasses import Region
 # TODO: Port Search.py from upstream or implement AP-native reachability
@@ -162,10 +162,29 @@ gossipLocations_reversemap: dict[str, int] = {
 
 
 def get_item_generic_name(item: Item) -> str:
-    if item.unshuffled_dungeon_item:
+    if getattr(item, "unshuffled_dungeon_item", False):
         return item.type
     else:
         return item.name
+
+
+def get_item_hint_text(item: Item, world: 'OOTWorld') -> str:
+    item_name = get_item_generic_name(item)
+    try:
+        return get_hint(item_name, world.clearer_hints).text
+    except KeyError:
+        # Cross-world items may not exist in OoT's hint table.
+        return item_name.replace('_', ' ')
+
+
+def get_remote_world_display(local_player: int, other_player: Optional[int]) -> Optional[int]:
+    if other_player is None or other_player == local_player:
+        return None
+    return other_player + 1
+
+
+def is_major_item(item: Item) -> bool:
+    return bool(getattr(item, "majoritem", getattr(item, "advancement", False)))
 
 
 def is_restricted_dungeon_item(item: Item) -> bool:
@@ -232,17 +251,25 @@ def add_hint(world: 'OOTWorld', groups: list[list[int]], gossip_text: GossipText
 
             if any(map(lambda id: gossipLocations[id].reachable, group)):
                 stone_names = [gossipLocations[id].location for id in group]
-                stone_locations = [world.multiworld.get_location(stone_name, world.player) for stone_name in stone_names]
+                stone_locations = []
+                for stone_name in stone_names:
+                    try:
+                        stone_locations.append(world.multiworld.get_location(stone_name, world.player))
+                    except KeyError:
+                        # AP does not currently create HintStone locations in the world graph.
+                        # Skip stone-location dependent logic in that mode.
+                        stone_locations = []
+                        break
 
                 reachable = True
-                if locations:
+                if locations and stone_locations:
                     for location in locations:
                         worlds = [world.multiworld.worlds[player] for player in world.multiworld.get_all_ids() if world.multiworld.worlds[player].game == "Ocarina of Time"]
                         if not any(map(lambda stone_location: can_reach_hint(worlds, stone_location, location), stone_locations)):
                             reachable = False
 
                 if not first or reachable:
-                    if first and locations:
+                    if first and locations and stone_locations:
                         # just name the event item after the gossip stone directly
                         event_item = None
                         for i, stone_name in enumerate(stone_names):
@@ -697,7 +724,7 @@ def get_goal_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
     goal.weight = 0
 
     location_text = HintArea.at(location).text(world.clearer_hints)
-    if world_id == world.player:
+    if world_id is None or world_id == world.player:
         player_text = "the"
         goal_text = goal.hint_text
     else:
@@ -777,7 +804,7 @@ def is_not_checked(locations: Iterable[Location], checked: set[HintArea | str]) 
 def get_good_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
     locations = list(filter(lambda location:
         is_not_checked([location], checked)
-        and ((location.item.majoritem
+        and ((is_major_item(location.item)
             and location.item.name not in unHintableWothItems)
                 or location.name in world.added_hint_types['item']
                 or location.item.name in world.item_added_hint_types['item'])
@@ -792,7 +819,7 @@ def get_good_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
     location = random.choice(locations)
     checked.add(location.name)
 
-    item_text = get_hint(get_item_generic_name(location.item), world.clearer_hints).text
+    item_text = get_item_hint_text(location.item, world)
     hint_area = HintArea.at(location)
     if hint_area.is_dungeon:
         location_text = hint_area.text(world.clearer_hints)
@@ -847,7 +874,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
 
         location = random.choice(locations)
         checked.add(location.name)
-        item_text = get_hint(get_item_generic_name(location.item), world.clearer_hints).text
+        item_text = get_item_hint_text(location.item, world)
 
         hint_area = HintArea.at(location)
         if world.hint_dist_user.get('vague_named_items', False):
@@ -928,17 +955,18 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
 
         location = random.choice(locations)
         checked.add(location.name)
-        item_text = get_hint(get_item_generic_name(location.item), world.clearer_hints).text
+        item_text = get_item_hint_text(location.item, world)
+        remote_world = get_remote_world_display(world.player, location.player)
 
         hint_area = HintArea.at(location)
         if world.hint_dist_user.get('vague_named_items', False):
-            location_text = hint_area.text(world.clearer_hints, world=location.player + 1)
+            location_text = hint_area.text(world.clearer_hints, world=remote_world)
             return GossipText('%s may be on the hero\'s path.' % location_text, ['Green'], [location.name], [location.item.name]), [location]
         elif hint_area.is_dungeon:
-            location_text = hint_area.text(world.clearer_hints, world=location.player + 1)
+            location_text = hint_area.text(world.clearer_hints, world=remote_world)
             return GossipText('%s hoards #%s#.' % (location_text, item_text), ['Red', 'Green'], [location.name], [location.item.name]), [location]
         else:
-            location_text = hint_area.text(world.clearer_hints, preposition=True, world=location.player + 1)
+            location_text = hint_area.text(world.clearer_hints, preposition=True, world=remote_world)
             return GossipText('#%s# can be found %s.' % (item_text, location_text), ['Green', 'Red'], [location.name], [location.item.name]), [location]
 
 
@@ -957,7 +985,7 @@ def get_random_location_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn
 
     location = random.choice(locations)
     checked.add(location.name)
-    item_text = get_hint(get_item_generic_name(location.item), world.clearer_hints).text
+    item_text = get_item_hint_text(location.item, world)
 
     hint_area = HintArea.at(location)
     if hint_area.is_dungeon:
@@ -976,7 +1004,7 @@ def get_specific_hint(world: 'OOTWorld', checked: set[str], hint_type: str) -> H
 
     hint = random.choice(hint_group)
 
-    if world.hint_dist_user['upgrade_hints'] in ['on', 'limited']:
+    if world.hint_dist_user.get('upgrade_hints', 'off') in ['on', 'limited']:
         upgrade_list = get_upgrade_hint_list(world, [hint.name])
         upgrade_list = list(filter(lambda upgrade: is_not_checked([world.multiworld.get_location(location, world.player) for location in get_multi(
             upgrade.name).locations], checked), upgrade_list))
@@ -1003,7 +1031,7 @@ def get_specific_hint(world: 'OOTWorld', checked: set[str], hint_type: str) -> H
         location_text = hint.text
     if '#' not in location_text:
         location_text = '#%s#' % location_text
-    item_text = get_hint(get_item_generic_name(location.item), world.clearer_hints).text
+    item_text = get_item_hint_text(location.item, world)
 
     return GossipText('%s #%s#.' % (location_text, item_text), ['Red', 'Green'], [location.name], [location.item.name]), [location]
 
@@ -1034,7 +1062,7 @@ def get_random_multi_hint(world: 'OOTWorld', checked: set[str], hint_type: str) 
 
     hint = random.choice(multi_hints)
 
-    if world.hint_dist_user['upgrade_hints'] in ['on', 'limited']:
+    if world.hint_dist_user.get('upgrade_hints', 'off') in ['on', 'limited']:
         multi = get_multi(hint.name)
 
         upgrade_list = get_upgrade_hint_list(world, multi.locations)
@@ -1077,7 +1105,7 @@ def get_specific_multi_hint(world: 'OOTWorld', checked: set[str], hint: Hint) ->
             gossip_string = gossip_string + '#%s# '
 
     items = [location.item for location in locations]
-    text_segments = [multi_text] + [get_hint(get_item_generic_name(item), world.clearer_hints).text for item in items]
+    text_segments = [multi_text] + [get_item_hint_text(item, world) for item in items]
     return GossipText(gossip_string % tuple(text_segments), colors, [location.name for location in locations], [item.name for item in items]), locations
 
 
@@ -1145,7 +1173,7 @@ def get_important_check_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn
     for location in world.multiworld.get_filled_locations(world.player):
         region = HintArea.at(location).text(world.clearer_hints)
         if region == hint_loc:
-            if (location.item.majoritem
+            if (is_major_item(location.item)
                 # exclude locked items
                 and not location.locked
                 # exclude triforce pieces as it defeats the idea of a triforce hunt
@@ -1282,19 +1310,21 @@ def build_gossip_hints(worlds: list['OOTWorld']) -> None:
     checked_locations = dict()
     # Add misc. item hint locations to "checked" locations if the respective hint is reachable without the hinted item.
     for world in worlds:
+        misc_hint_item_locations = getattr(world, 'misc_hint_item_locations', {})
+        misc_hint_location_items = getattr(world, 'misc_hint_location_items', {})
         for location in world.hinted_dungeon_reward_locations.values():
             if 'altar' in world.misc_hints and not world.enhance_map_compass and can_reach_hint(worlds, world.multiworld.get_location('ToT Child Altar Hint' if location.item.info.stone else 'ToT Adult Altar Hint', world.player), location):
                 item_world = location.world
                 if item_world.player not in checked_locations:
                     checked_locations[item_world.player] = set()
                 checked_locations[item_world.player].add(location.name)
-        for hint_type, location in world.misc_hint_item_locations.items():
+        for hint_type, location in misc_hint_item_locations.items():
             if hint_type in world.misc_hints and can_reach_hint(worlds, world.multiworld.get_location(misc_item_hint_table[hint_type]['hint_location'], world.player), location):
                 item_world = location.world
                 if item_world.player not in checked_locations:
                     checked_locations[item_world.player] = set()
                 checked_locations[item_world.player].add(location.name)
-        for hint_type in world.misc_hint_location_items.keys():
+        for hint_type in misc_hint_location_items.keys():
             location = world.multiworld.get_location(misc_location_hint_table[hint_type]['item_location'], world.player)
             if hint_type in world.misc_hints and can_reach_hint(worlds, world.multiworld.get_location(misc_location_hint_table[hint_type]['hint_location'], world.player), location):
                 item_world = location.world
@@ -1366,8 +1396,12 @@ def build_world_gossip_hints(world: 'OOTWorld', checked_locations: Optional[set[
 
     random.shuffle(stone_groups)
 
-    # Create list of items for which we want hints. If Bingosync URL is supplied, include items specific to that bingo.
-    # If not (or if the URL is invalid), use generic bingo hints
+    # Create list of items for which we want named-item hints.
+    # AP does not expose upstream's item_hints setting, so seed from distribution additions.
+    world.item_hints = list(world.item_added_hint_types['named-item'])
+
+    # If Bingosync URL is supplied, include items specific to that bingo.
+    # If not (or if the URL is invalid), use generic bingo hints.
     if world.hint_dist == "bingo":
         with open(data_path('Bingo/generic_bingo_hints.json'), 'r') as bingoFile:
             bingo_defaults = json.load(bingoFile)
@@ -1383,6 +1417,14 @@ def build_world_gossip_hints(world: 'OOTWorld', checked_locations: Optional[set[
 
         if world.shopsanity != "off" and "Progressive Wallet" not in world.item_hints:
             world.item_hints.append("Progressive Wallet")
+
+        # Apply custom additions on top of bingo defaults.
+        world.item_hints.extend(world.item_added_hint_types['named-item'])
+
+    # Apply distribution removals for named-item hints.
+    for itemname in world.item_hint_type_overrides['named-item']:
+        if itemname in world.item_hints:
+            world.item_hints.remove(itemname)
 
     # Removes items from item_hints list if they are included in starting gear.
     # This method ensures that the right number of copies are removed, e.g.
@@ -1455,8 +1497,8 @@ def build_world_gossip_hints(world: 'OOTWorld', checked_locations: Optional[set[
                 location_text = get_hint(hint.name, world.clearer_hints).text
             if '#' not in location_text:
                 location_text = '#%s#' % location_text
-            first_item_text = get_hint(get_item_generic_name(first_location.item), world.clearer_hints).text
-            second_item_text = get_hint(get_item_generic_name(second_location.item), world.clearer_hints).text
+            first_item_text = get_item_hint_text(first_location.item, world)
+            second_item_text = get_item_hint_text(second_location.item, world)
             add_hint(world,stone_groups, GossipText('%s #%s# and #%s#.' % (location_text, first_item_text, second_item_text), ['Red', 'Green', 'Green'], [first_location.name, second_location.name], [first_location.item.name, second_location.item.name]), hint_dist['dual_always'][1], [first_location, second_location], force_reachable=True, hint_type='dual_always')
             logging.getLogger('').debug('Placed dual_always hint for %s.', hint.name)
 
@@ -1476,7 +1518,7 @@ def build_world_gossip_hints(world: 'OOTWorld', checked_locations: Optional[set[
                 location_text = get_hint(location.name, world.clearer_hints).text
             if '#' not in location_text:
                 location_text = '#%s#' % location_text
-            item_text = get_hint(get_item_generic_name(location.item), world.clearer_hints).text
+            item_text = get_item_hint_text(location.item, world)
             add_hint(world,stone_groups, GossipText('%s #%s#.' % (location_text, item_text), ['Red', 'Green'], [location.name], [location.item.name]), hint_dist['always'][1], [location], force_reachable=True, hint_type='always')
             logging.getLogger('').debug('Placed always hint for %s.', location.name)
 
@@ -1504,7 +1546,7 @@ def build_world_gossip_hints(world: 'OOTWorld', checked_locations: Optional[set[
                 add_hint(world,stone_groups, GossipText('%s %s.' % (entrance_text, region_text), ['Green', 'Light Blue']), hint_dist['entrance_always'][1], None, force_reachable=True, hint_type='entrance_always')
 
     # Add trial hints, only if hint copies > 0
-    if hint_dist['trial'][1] > 0:
+    if hint_dist.get('trial', (0, 0))[1] > 0:
         if world.trials_random and world.trials == 6:
             add_hint(world,stone_groups, GossipText("#Ganon's Tower# is protected by a powerful barrier.", ['Pink']), hint_dist['trial'][1], force_reachable=True, hint_type='trial')
         elif world.trials_random and world.trials == 0:
@@ -1663,7 +1705,9 @@ def build_altar_hints(world: 'OOTWorld', messages: list[Message], include_reward
 
 # pulls text string from hintlist for reward after sending the location to hintlist.
 def build_boss_string(reward: str, color: str, world: 'OOTWorld') -> str:
-    item_icon = chr(Item(reward).special['item_id'])
+    reward_data = item_table.get(reward)
+    reward_special = reward_data[3] if reward_data else {}
+    item_icon = chr(reward_special.get('item_id', 0))
     if reward in world.distribution.effective_starting_items and world.distribution.effective_starting_items[reward].count > 0:
         if world.clearer_hints:
             text = GossipText(f"\x08\x13{item_icon}One #@ already has#...", [color], prefix='')
@@ -1747,21 +1791,25 @@ def build_ganon_text(world: 'OOTWorld', messages: list[Message]) -> None:
 
 
 def build_misc_item_hints(world: 'OOTWorld', messages: list[Message]) -> None:
+    misc_hint_items = getattr(world, 'misc_hint_items', {})
+    misc_hint_item_locations = getattr(world, 'misc_hint_item_locations', {})
     for hint_type, data in misc_item_hint_table.items():
         if hint_type in world.misc_hints:
-            item = world.misc_hint_items[hint_type]
+            item = misc_hint_items.get(hint_type, data['default_item'])
             if item in world.distribution.effective_starting_items and world.distribution.effective_starting_items[item].count > 0:
                 if item == data['default_item']:
                     text = data['default_item_text'].format(area='#your pocket#')
                 else:
                     text = data['custom_item_text'].format(area='#your pocket#', item=item)
-            elif hint_type in world.misc_hint_item_locations:
-                location = world.misc_hint_item_locations[hint_type]
-                area = HintArea.at(location, use_alt_hint=data['use_alt_hint']).text(world.clearer_hints, world=None if location.player == world.player else location.player + 1)
+            elif hint_type in misc_hint_item_locations:
+                location = misc_hint_item_locations[hint_type]
+                area = HintArea.at(location, use_alt_hint=data['use_alt_hint']).text(
+                    world.clearer_hints,
+                    world=get_remote_world_display(world.player, location.player))
                 if item == data['default_item']:
                     text = data['default_item_text'].format(area=area)
                 else:
-                    text = data['custom_item_text'].format(area=area, item=get_hint(get_item_generic_name(location.item), world.clearer_hints).text)
+                    text = data['custom_item_text'].format(area=area, item=get_item_hint_text(location.item, world))
             elif 'custom_item_fallback' in data:
                 if 'default_item_fallback' in data and item == data['default_item']:
                     text = data['default_item_fallback']
@@ -1771,7 +1819,7 @@ def build_misc_item_hints(world: 'OOTWorld', messages: list[Message]) -> None:
                 text = get_hint('Validation Line', world.clearer_hints).text
                 for location in world.multiworld.get_filled_locations(world.player):
                     if location.name == 'Ganons Tower Boss Key Chest':
-                        text += f"#{get_hint(get_item_generic_name(location.item), world.clearer_hints).text}#"
+                        text += f"#{get_item_hint_text(location.item, world)}#"
                         break
             for find, replace in data.get('replace', {}).items():
                 text = text.replace(find, replace)
@@ -1780,13 +1828,13 @@ def build_misc_item_hints(world: 'OOTWorld', messages: list[Message]) -> None:
 
 
 def build_misc_location_hints(world: 'OOTWorld', messages: list[Message]) -> None:
+    misc_hint_location_items = getattr(world, 'misc_hint_location_items', {})
     for hint_type, data in misc_location_hint_table.items():
         text = data['location_fallback']
         if hint_type in world.misc_hints:
-            if hint_type in world.misc_hint_location_items:
-                item = world.misc_hint_location_items[hint_type]
-                text = data['location_text'].format(item=get_hint(get_item_generic_name(item),
-                                                                  world.clearer_hints).text)
+            if hint_type in misc_hint_location_items:
+                item = misc_hint_location_items[hint_type]
+                text = data['location_text'].format(item=get_item_hint_text(item, world))
 
         update_message_by_id(messages, data['id'], str(GossipText(text, ['Green'], prefix='')), 0x23)
 

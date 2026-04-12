@@ -214,7 +214,7 @@ conditional_always: dict[str, Callable[[World], bool]] = {
     'Song from Ocarina of Time':    lambda world: stones_required_by_settings(world) < 2,
     'HF Ocarina of Time Item':      lambda world: stones_required_by_settings(world) < 2,
     'Sheik in Kakariko':            lambda world: medallions_required_by_settings(world) < 5,
-    'DMT Biggoron':                 lambda world: world.options.adult_trade_start.value != 9,  # 9 = claim_check; adult_trade_shuffle not in AP
+    'DMT Biggoron':                 lambda world: world.options.adult_trade_start.value != 9 and not world.adult_trade_shuffle,  # 9 = claim_check
     'Kak 30 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 30 and '30_skulltulas' not in world.options.misc_hints.value,
     'Kak 40 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 40 and '40_skulltulas' not in world.options.misc_hints.value,
     'Kak 50 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 50 and '50_skulltulas' not in world.options.misc_hints.value,
@@ -245,13 +245,13 @@ conditional_sometimes: dict[str, Callable[[World], bool]] = {
     'HC Great Fairy Reward':                    lambda world: world.options.shuffle_interior_entrances.value == 0,  # 0 = off
     'OGC Great Fairy Reward':                   lambda world: world.options.shuffle_interior_entrances.value == 0,  # 0 = off
     'ZR Frogs in the Rain':                     lambda world: not world.options.shuffle_frog_song_rupees.value,
-    'ZD King Zora Thawed':                      lambda world: world.options.adult_trade_start.value != 7,  # 7 = eyeball_frog; adult_trade_shuffle not in AP
+    'ZD King Zora Thawed':                      lambda world: not world.adult_trade_shuffle or 'Eyeball Frog' not in world.adult_trade_start,
 
     # Conditional dual hints
     'GV Pieces of Heart Ledges':                lambda world: not world.options.shuffle_cows.value and world.options.tokensanity.value not in [2, 3],  # 2 = overworld, 3 = all
     'LH Adult Bean Destination Checks':         lambda world: world.options.shuffle_interior_entrances.value == 0,  # 0 = off
     'Castle Fairy Checks':                      lambda world: world.options.shuffle_interior_entrances.value == 0,  # 0 = off
-    'King Zora Items':                          lambda world: world.options.adult_trade_start.value == 7,  # 7 = eyeball_frog; adult_trade_shuffle not in AP
+    'King Zora Items':                          lambda world: world.adult_trade_shuffle and 'Eyeball Frog' in world.adult_trade_start,
 
     'Fire Temple Lower Loop':                   lambda world: world.options.tokensanity.value not in [1, 3],  # 1 = dungeons, 3 = all
     'Water Temple River Loop Chests':           lambda world: world.options.tokensanity.value not in [1, 3],  # 1 = dungeons, 3 = all
@@ -1872,16 +1872,19 @@ goalTable: dict[str, tuple[str, str, str]] = {
 # This specifies which hints will never appear due to either having known or known useless contents or due to the locations not existing.
 def hint_exclusions(world: World, clear_cache: bool = False) -> list[str]:
     exclusions: dict[int, list[str]] = hint_exclusions.exclusions
+    cache_key = getattr(world, "id", None)
+    if cache_key is None:
+        cache_key = getattr(world, "player", id(world))
 
-    if not clear_cache and world.id in exclusions:
-        return exclusions[world.id]
+    if not clear_cache and cache_key in exclusions:
+        return exclusions[cache_key]
 
-    exclusions[world.id] = []
+    exclusions[cache_key] = []
     # disabled_locations not implemented in AP - users cannot exclude specific locations from hints
 
     for location in world.get_locations():
         if location.locked:
-            exclusions[world.id].append(location.name)
+            exclusions[cache_key].append(location.name)
 
     world_location_names = [
         location.name for location in world.get_locations()]
@@ -1910,11 +1913,11 @@ def hint_exclusions(world: World, clear_cache: bool = False) -> list[str]:
                 if location not in world_location_names or world.get_location(location).locked:
                     exclude_hint = True
             if exclude_hint:
-                exclusions[world.id].append(hint.name)
+                exclusions[cache_key].append(hint.name)
         else:
-            if hint.name not in world_location_names and hint.name not in exclusions[world.id]:
-                exclusions[world.id].append(hint.name)
-    return exclusions[world.id]
+            if hint.name not in world_location_names and hint.name not in exclusions[cache_key]:
+                exclusions[cache_key].append(hint.name)
+    return exclusions[cache_key]
 
 
 hint_exclusions.exclusions = {}
