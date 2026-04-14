@@ -151,7 +151,9 @@ end
 -- checked on each big poe turn in.
 local big_poe_bottle_check = function()
     local nearby_memory = mainmemory.read_u32_be(big_poe_points_offset)
-    local points_required = 100*NUM_BIG_POES_REQUIRED
+    local poe_count = NUM_BIG_POES_REQUIRED
+    if poe_count == 0 then return false end  -- not yet loaded from ROM
+    local points_required = 100 * poe_count
     return (nearby_memory >= points_required)
 end
 
@@ -1572,8 +1574,9 @@ local ootSocket = nil
 local frame = 0
 
 -- Various useful values
-local rando_context = mainmemory.read_u32_be(0x1C6E90 + 0x15D4) - 0x80000000
-local coop_context = mainmemory.read_u32_be(rando_context + 0x0000) - 0x80000000
+-- OoT Randomizer 8.0: GLOBAL_CONTEXT moved to 0x801C84A0 (was 0x801C6E90).
+local rando_context = 0x00400000  -- 0x80400000 - 0x80000000
+local coop_context = rando_context + 0x20
 
 local player_id_addr        = coop_context + 4
 
@@ -1586,28 +1589,19 @@ local outgoing_player_addr  = coop_context + 18
 
 local player_names_address  = coop_context + 20
 local player_name_length    = 8 -- 8 bytes
-local rom_name_location     = player_names_address + 0x800 + 0x5 -- 0x800 player names, 0x5 CFG_FILE_SELECT_HASH
+local file_hash_location    = player_names_address + 0x800 -- CFG_FILE_SELECT_HASH (5 bytes)
 
--- TODO: load dynamically from slot data
-local master_quest_table_address = rando_context + (mainmemory.read_u32_be(rando_context + 0x0E9F) - 0x03480000)
+local master_quest_table_address = rando_context + 0x1352
 
 local save_context_addr = 0x11A5D0
 local internal_count_addr = save_context_addr + 0x90
 local item_queue = {}
 
 local first_connect = true
+local player_names_initialized = false
 local game_complete = false
 
-NUM_BIG_POES_REQUIRED = mainmemory.read_u8(rando_context + 0x0EAD)
-
-local bytes_to_string = function(bytes)
-    local string = ''
-    for i=0,#(bytes) do
-        if bytes[i] == 0 then return string end
-        string = string .. string.char(bytes[i])
-    end
-    return string
-end
+NUM_BIG_POES_REQUIRED = mainmemory.read_u8(rando_context + 0x001E)  -- BIG_POE_COUNT in AP tracking header
 
 -- ROM reading and writing functions
 
@@ -1687,8 +1681,17 @@ function item_receivable()
 end
 
 function get_player_name()
-    local rom_name_bytes = mainmemory.readbyterange(rom_name_location, 16)
-    return bytes_to_string(rom_name_bytes)
+    local hash_bytes = mainmemory.readbyterange(file_hash_location, 5)
+    local player_id = mainmemory.read_u8(player_id_addr)
+    return string.format(
+        "OOT%03d-%02x%02x%02x%02x%02x",
+        player_id,
+        hash_bytes[0] or 0,
+        hash_bytes[1] or 0,
+        hash_bytes[2] or 0,
+        hash_bytes[3] or 0,
+        hash_bytes[4] or 0
+    )
 end
 
 function setPlayerName(id, name)
@@ -1718,6 +1721,37 @@ function setPlayerName(id, name)
             name_index = name_index + 1
             if name_index >= 8 then
                 break
+            end
+        end
+    end
+
+    -- Prevent all-space names; message control code 0xF2 expects at least one
+    -- non-space character in a player name slot.
+    if name_index == 0 then
+        name = "Player"
+        for _,c in pairs({string.byte(name, 1, 8)}) do
+            if c >= string.byte('0') and c <= string.byte('9') then
+                c = c - string.byte('0')
+            elseif c >= string.byte('A') and c <= string.byte('Z') then
+                c = c + 0x6A
+            elseif c >= string.byte('a') and c <= string.byte('z') then
+                c = c + 0x64
+            elseif c == string.byte('.') then
+                c = 0xEA
+            elseif c == string.byte('-') then
+                c = 0xE4
+            elseif c == string.byte(' ') then
+                c = 0xDF
+            else
+                c = nil
+            end
+
+            if c ~= nil then
+                mainmemory.write_u8(name_address + name_index, c)
+                name_index = name_index + 1
+                if name_index >= 8 then
+                    break
+                end
             end
         end
     end
@@ -1775,6 +1809,15 @@ function kill_link()
 end
 
 function process_block(block)
+    -- Prevent all-0xDF name slots, which can break outgoing-item message decoding.
+    if not player_names_initialized then
+        local index = 0
+        while index <= 255 do
+            setPlayerName(index, 'APPlayer')
+            index = index + 1
+        end
+        player_names_initialized = true
+    end
     -- Sometimes the block is nothing, if this is the case then quietly stop processing
     if block == nil then
         return
@@ -1800,7 +1843,9 @@ function process_block(block)
     if received_items_count < #item_queue then
         -- There are items to send: remember lua tables are 1-indexed!
         if item_receivable() then
-            mainmemory.write_u16_be(incoming_player_addr, 0x00)
+            -- Co-op context expects a real 1-based player ID for received items.
+            -- PLAYER_ID is a single byte at coop_context+4.
+            mainmemory.write_u16_be(incoming_player_addr, mainmemory.read_u8(player_id_addr))
             mainmemory.write_u16_be(incoming_item_addr, item_queue[received_items_count+1])
         end
     end

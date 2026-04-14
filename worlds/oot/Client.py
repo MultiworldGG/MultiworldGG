@@ -283,10 +283,19 @@ async def n64_sync_task(ctx: OoTContext):
 
 
 async def run_game(romfile):
+    import settings as ap_settings
     auto_start = OOTWorld.settings.rom_start
     if auto_start is True:
-        import webbrowser
-        webbrowser.open(romfile)
+        emuhawk_path = ap_settings.get_settings().bizhawkclient_options.emuhawk_path
+        subprocess.Popen(
+            [
+                emuhawk_path,
+                f"--lua={Utils.local_path('data', 'lua', 'connector_oot.lua')}",
+                os.path.realpath(romfile),
+            ],
+            cwd=Utils.local_path("."),
+            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
     elif os.path.isfile(auto_start):
         subprocess.Popen([auto_start, romfile],
                          stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

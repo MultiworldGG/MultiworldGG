@@ -47,6 +47,28 @@ def patch_dpad_info(rom, ootworld, symbols):
         rom.write_byte(symbols['CFG_DPAD_DUNGEON_INFO_ENABLE'], 0x00)
 
 
+def patch_music_changes(rom, ootworld, symbols):
+    if 'CFG_SPEEDUP_MUSIC_FOR_LAST_TRIFORCE_PIECE' in symbols and hasattr(ootworld, 'speedup_music_for_last_triforce_piece'):
+        rom.write_byte(symbols['CFG_SPEEDUP_MUSIC_FOR_LAST_TRIFORCE_PIECE'], int(bool(ootworld.speedup_music_for_last_triforce_piece)))
+    if 'CFG_SLOWDOWN_MUSIC_WHEN_LOWHP' in symbols and hasattr(ootworld, 'slowdown_music_when_lowhp'):
+        rom.write_byte(symbols['CFG_SLOWDOWN_MUSIC_WHEN_LOWHP'], int(bool(ootworld.slowdown_music_when_lowhp)))
+
+
+def patch_correct_model_colors(rom, ootworld, symbols):
+    if 'CFG_CORRECT_MODEL_COLORS' in symbols and hasattr(ootworld, 'correct_model_colors'):
+        rom.write_byte(symbols['CFG_CORRECT_MODEL_COLORS'], int(bool(ootworld.correct_model_colors)))
+
+
+def patch_yaxis(rom, ootworld, symbols):
+    if 'CFG_UNINVERT_YAXIS_IN_FIRST_PERSON_CAMERA' in symbols and hasattr(ootworld, 'uninvert_y_axis_in_first_person_camera'):
+        rom.write_byte(symbols['CFG_UNINVERT_YAXIS_IN_FIRST_PERSON_CAMERA'], int(bool(ootworld.uninvert_y_axis_in_first_person_camera)))
+
+
+def patch_dpad_left(rom, ootworld, symbols):
+    if 'CFG_DPAD_ON_THE_LEFT' in symbols and hasattr(ootworld, 'dpad_on_the_left'):
+        rom.write_byte(symbols['CFG_DPAD_ON_THE_LEFT'], int(bool(ootworld.dpad_on_the_left)))
+
+
 def patch_music(rom, ootworld, symbols):
     # patch music
     if ootworld.background_music != 'normal' or ootworld.fanfares != 'normal':
@@ -59,10 +81,10 @@ def patch_music(rom, ootworld, symbols):
 
 
 def patch_model_colors(rom, color, model_addresses):
-    main_addresses, dark_addresses = model_addresses
+    main_addresses, dark_addresses, light_addresses = model_addresses
 
     if color is None:
-        for address in main_addresses + dark_addresses:
+        for address in main_addresses + dark_addresses + light_addresses:
             original = rom.original.read_bytes(address, 3)
             rom.write_bytes(address, original)
         return
@@ -73,6 +95,10 @@ def patch_model_colors(rom, color, model_addresses):
     darkened_color = list(map(lambda light: int(max((light - 0x32) * 0.6, 0)), color))
     for address in dark_addresses:
         rom.write_bytes(address, darkened_color)
+
+    lightened_color = list(map(lambda main_color: int(min((main_color / 0.6) + 0x32, 255)), color))
+    for address in light_addresses:
+        rom.write_bytes(address, lightened_color)
 
 
 def patch_tunic_icon(rom, tunic, color):
@@ -93,10 +119,11 @@ def patch_tunic_icon(rom, tunic, color):
 
 def patch_tunic_colors(rom, ootworld, symbols):
     # patch tunic colors
+    tunic_address = symbols.get('CFG_TUNIC_COLORS', 0x00B6DA38)
     tunics = [
-        ('Kokiri Tunic', 'kokiri_color', 0x00B6DA38),
-        ('Goron Tunic',  'goron_color',  0x00B6DA3B),
-        ('Zora Tunic',   'zora_color',   0x00B6DA3E),
+        ('Kokiri Tunic', 'kokiri_color', tunic_address),
+        ('Goron Tunic',  'goron_color',  tunic_address + 3),
+        ('Zora Tunic',   'zora_color',   tunic_address + 6),
     ]
     tunic_color_list = get_tunic_colors()
 
@@ -382,9 +409,9 @@ def patch_gauntlet_colors(rom, ootworld, symbols):
     # patch gauntlet colors
     gauntlets = [
         ('Silver Gauntlets', 'silver_gauntlets_color', 0x00B6DA44,
-            ([0x173B4CC], [0x173B4D4, 0x173B50C, 0x173B514])), # GI Model DList colors
+            ([0x173B4CC], [0x173B4D4, 0x173B50C, 0x173B514], [])), # GI Model DList colors
         ('Gold Gauntlets', 'golden_gauntlets_color',  0x00B6DA47,
-            ([0x173B4EC], [0x173B4F4, 0x173B52C, 0x173B534])), # GI Model DList colors
+            ([0x173B4EC], [0x173B4F4, 0x173B52C, 0x173B534], [])), # GI Model DList colors
     ]
     gauntlet_color_list = get_gauntlet_colors()
 
@@ -415,7 +442,7 @@ def patch_shield_frame_colors(rom, ootworld, symbols):
     shield_frames = [
         ('Mirror Shield Frame', 'mirror_shield_frame_color',
             [0xFA7274, 0xFA776C, 0xFAA27C, 0xFAC564, 0xFAC984, 0xFAEDD4],
-            ([0x1616FCC], [0x1616FD4])),
+            ([0x1616FCC], [0x1616FD4], [])),
     ]
     shield_frame_color_list = get_shield_frame_colors()
 
@@ -447,9 +474,10 @@ def patch_heart_colors(rom, ootworld, symbols):
     # patch heart colors
     hearts = [
         ('Heart Color', 'heart_color', symbols['CFG_HEART_COLOR'], 0xBB0994,
-            ([0x14DA474, 0x14DA594, 0x14B701C, 0x14B70DC],
+            ([0x14DA474, 0x14DA594, 0x14B701C, 0x14B70DC, 0x160929C, 0x1609304, 0x160939C],
              [0x14B70FC, 0x14DA494, 0x14DA5B4, 0x14B700C, 0x14B702C, 0x14B703C, 0x14B704C, 0x14B705C,
-              0x14B706C, 0x14B707C, 0x14B708C, 0x14B709C, 0x14B70AC, 0x14B70BC, 0x14B70CC])), # GI Model DList colors
+              0x14B706C, 0x14B707C, 0x14B708C, 0x14B709C, 0x14B70AC, 0x14B70BC, 0x14B70CC, 0x16092A4],
+             [0x16092FC, 0x1609394])), # GI Model and Potion DList colors
     ]
     heart_color_list = get_heart_colors()
 
@@ -487,7 +515,9 @@ def patch_magic_colors(rom, ootworld, symbols):
     # patch magic colors
     magic = [
         ('Magic Meter Color', 'magic_color', symbols["CFG_MAGIC_COLOR"],
-            ([0x154C654, 0x154CFB4], [0x154C65C, 0x154CFBC])), # GI Model DList colors
+            ([0x154C654, 0x154CFB4, 0x160927C, 0x160927C, 0x16092E4, 0x1609344],
+             [0x154C65C, 0x154CFBC, 0x1609284],
+             [0x16092DC, 0x160933C])), # GI Model and Potion DList colors
     ]
     magic_color_list = get_magic_colors()
 
@@ -763,6 +793,85 @@ patch_sets[0x1F073FD9] = {
     "symbols": {
         **patch_sets[0x1F073FD8]["symbols"],
         "CFG_DPAD_DUNGEON_INFO_ENABLE": 0x0055,
+    }
+}
+
+# 7.1.79
+patch_sets[0x1F073FDA] = {
+    "patches": patch_sets[0x1F073FD9]["patches"] + [
+        patch_sfx,
+    ],
+    "symbols": {
+        **patch_sets[0x1F073FD9]["symbols"],
+        "GET_ITEM_SEQ_ID": 0x0056,
+    }
+}
+
+# 7.1.96
+patch_sets[0x1F073FDB] = {
+    "patches": patch_sets[0x1F073FDA]["patches"] + [
+        patch_tunic_colors,
+    ],
+    "symbols": {
+        **patch_sets[0x1F073FDA]["symbols"],
+        "CFG_RAINBOW_TUNIC_ENABLED": 0x005A,
+        "CFG_TUNIC_COLORS": 0x005B,
+    }
+}
+
+# 7.1.110
+patch_sets[0x1F073FDC] = {
+    "patches": patch_sets[0x1F073FDB]["patches"] + [
+        patch_music_changes,
+    ],
+    "symbols": {
+        **patch_sets[0x1F073FDB]["symbols"],
+        "CFG_SPEEDUP_MUSIC_FOR_LAST_TRIFORCE_PIECE": 0x0058,
+        "CFG_SLOWDOWN_MUSIC_WHEN_LOWHP": 0x0059,
+    }
+}
+
+# 7.1.123
+patch_sets[0x1F073FDD] = {
+    "patches": patch_sets[0x1F073FDC]["patches"] + [
+        patch_music,  # Versioned after custom instrument-set support.
+    ],
+    "symbols": {
+        **patch_sets[0x1F073FDC]["symbols"],
+        "CFG_AUDIOBANK_TABLE_EXTENDED_ADDR": 0x0064,
+    }
+}
+
+# 7.1.134
+patch_sets[0x1F073FDE] = {
+    "patches": patch_sets[0x1F073FDD]["patches"] + [
+        patch_correct_model_colors,
+    ],
+    "symbols": {
+        **patch_sets[0x1F073FDD]["symbols"],
+        "CFG_CORRECT_MODEL_COLORS": 0x0068,
+    }
+}
+
+# 7.1.144
+patch_sets[0x1F073FDF] = {
+    "patches": patch_sets[0x1F073FDE]["patches"] + [
+        patch_yaxis,
+    ],
+    "symbols": {
+        **patch_sets[0x1F073FDE]["symbols"],
+        "CFG_UNINVERT_YAXIS_IN_FIRST_PERSON_CAMERA": 0x0069,
+    }
+}
+
+# 8.0
+patch_sets[0x1F073FE0] = {
+    "patches": patch_sets[0x1F073FDF]["patches"] + [
+        patch_dpad_left,
+    ],
+    "symbols": {
+        **patch_sets[0x1F073FDF]["symbols"],
+        "CFG_DPAD_ON_THE_LEFT": 0x006A,
     }
 }
 

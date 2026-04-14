@@ -6,7 +6,6 @@ import settings
 import typing
 from typing import Optional, List, AbstractSet, Union  # remove when 3.8 support is dropped
 from collections import Counter, deque
-from string import printable
 
 logger = logging.getLogger("Ocarina of Time")
 
@@ -291,7 +290,8 @@ class OOTWorld(World):
         self.starting_items = Counter()
         self.songs_as_items = False
         self.file_hash = [self.random.randint(0, 31) for i in range(5)]
-        self.connect_name = ''.join(self.random.choices(printable, k=16))
+        player_id = min(self.player, 255)
+        self.connect_name = f"OOT{player_id:03d}-" + ''.join(f"{value:02x}" for value in self.file_hash)
         self.collectible_flag_addresses = {}
 
         # Incompatible option handling

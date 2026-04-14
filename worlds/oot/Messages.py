@@ -49,6 +49,9 @@ CONTROL_CODES = {
     0x1D: ('fish', 0, lambda _: '<fish weight>' ),
     0x1E: ('high-score', 1, lambda d: '<high-score ' + "{:02x}".format(d) + '>' ),
     0x1F: ('time', 0, lambda _: '<current time>' ),
+    0xF0: ('silver-rupee-count', 1, lambda d: '<silver rupee count ' + "{:02x}".format(d) + '>'),
+    0xF1: ('small-key-count', 1, lambda d: '<small key count ' + "{:02x}".format(d) + '>'),
+    0xF2: ('player-name', 0, lambda _: '<player name>'),
 }
 
 # Maps unicode characters to corresponding bytes in OOTR's character set.
@@ -255,8 +258,8 @@ ITEM_MESSAGES = {
     0x90FA: "\x08\x06\x49\x05\x41WINNER\x05\x40!\x04\x08\x13\x73You got a \x05\x41Piece of Heart\x05\x40!\x01You are already at\x01maximum health.",
     0x9002: "\x08You are a \x05\x43FOOL\x05\x40!",
     0x9003: "\x08You found a piece of the \x05\x41Triforce\x05\x40!",
-    0x9097: "\x08You got an \x05\x41MWGG item\x05\x40!\x01It seems \x05\x41important\x05\x40!",
-    0x9098: "\x08You got an \x05\x43MWGG item\x05\x40!\x01Doesn't seem like it's needed.",
+    0x9019: "\x08You found an \x05\x41important MWGG item\x05\x40\x01for \x05\x42\xF2\x05\x40!",
+    0x901A: "\x08You found a \x05\x43filler MWGG item\x05\x40\x01for \x05\x42\xF2\x05\x40!",
 }
 
 KEYSANITY_MESSAGES = {

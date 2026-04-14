@@ -36,6 +36,30 @@ AP_PROGRESSION = 0xD4
 AP_JUNK = 0xD5
 
 
+def encode_oot_player_name(name: str, max_length: int = 8) -> bytearray:
+    encoded = bytearray()
+    for c in name:
+        b = ord(c)
+        if ord('0') <= b <= ord('9'):
+            encoded.append(b - ord('0'))
+        elif ord('A') <= b <= ord('Z'):
+            encoded.append(b + 0x6A)
+        elif ord('a') <= b <= ord('z'):
+            encoded.append(b + 0x64)
+        elif c == '.':
+            encoded.append(0xEA)
+        elif c == '-':
+            encoded.append(0xE4)
+        elif c == ' ':
+            encoded.append(0xDF)
+        else:
+            continue
+        if len(encoded) >= max_length:
+            break
+    encoded.extend([0xDF] * (max_length - len(encoded)))
+    return encoded
+
+
 class OoTContainer(APPatch):
     game: str = 'Ocarina of Time'
     patch_file_ending = ".apz5"
@@ -1604,6 +1628,14 @@ def patch_rom(world, rom):
     # Update DMA Table
     update_dmadata(rom, shop_item_file)
 
+    # Relocate audiobank table to AUDIOBANK_TABLE_EXTENDED (required by 8.0 ASM which patches
+    # the audio bank lookup to use this extended table instead of the original location)
+    audiobank_table_addr = 0xB896A0
+    audiobank_table_header = rom.read_bytes(audiobank_table_addr, 0x10)
+    num_entries = (audiobank_table_header[0] << 8) + audiobank_table_header[1]
+    audiobank_table_bytes = rom.read_bytes(audiobank_table_addr, (num_entries + 1) * 0x10)
+    rom.write_bytes(rom.sym('AUDIOBANK_TABLE_EXTENDED'), audiobank_table_bytes)
+
     # Create 2nd Bazaar Room
     bazaar_room_file = File({
             'Name':'shop1_room_1',
@@ -1802,7 +1834,14 @@ def patch_rom(world, rom):
         raise(RuntimeError(f'Exceeded override table size: {len(override_table)}'))
     rom.write_bytes(rom.sym('cfg_item_overrides'), get_override_table_bytes(override_table))
     rom.write_byte(rom.sym('PLAYER_ID'), min(world.player, 255)) # Write player ID
-    rom.write_bytes(rom.sym('AP_PLAYER_NAME'), bytearray(world.connect_name, encoding='ascii'))
+    placeholder_name = encode_oot_player_name('APPlayer')
+    all_player_names = bytearray()
+    for _ in range(256):
+        all_player_names.extend(placeholder_name)
+    own_name = encode_oot_player_name(world.multiworld.get_player_name(world.player))
+    own_slot = min(world.player, 255) * 8
+    all_player_names[own_slot:own_slot + 8] = own_name
+    rom.write_bytes(rom.sym('PLAYER_NAMES'), all_player_names)
 
     if world.death_link:
         rom.write_byte(rom.sym('DEATH_LINK'), 0x01)
@@ -2124,6 +2163,7 @@ def patch_rom(world, rom):
     SILVER_CHEST = 13
     SKULL_CHEST_SMALL = 14
     SKULL_CHEST_BIG =  15
+
     if world.bombchus_in_logic or world.minor_items_as_major_chest:
         bombchu_ids = [0x6A, 0x03, 0x6B]
         for i in bombchu_ids:
@@ -2149,6 +2189,15 @@ def patch_rom(world, rom):
         item = read_rom_item(rom, 0x2A)
         item['chest_type'] = GILDED_CHEST
         write_rom_item(rom, 0x2A, item)
+
+    for item_id in (AP_PROGRESSION, AP_JUNK):
+        item = read_rom_item(rom, item_id)
+        # Use vanilla Bombchu visuals for AP outgoing placeholders.
+        # This avoids crashes from custom/extended model layout mismatches.
+        item['object_id'] = 0x00D9
+        item['graphic_id'] = 0x0028
+        item['text_id'] = 0x9019 if item_id == AP_PROGRESSION else 0x901A
+        write_rom_item(rom, item_id, item)
 
     # Update chest type appearance
     if world.correct_chest_appearances == 'textures':
@@ -2533,7 +2582,7 @@ def get_override_entry(ootworld, location):
 
     scene = location.scene
     default = location.default
-    player_id = 0 if ootworld.player == location.item.player else min(location.item.player, 255)
+    player_id = max(1, min(int(location.item.player), 255))
     if location.item.game != 'Ocarina of Time': 
         # This is an AP sendable. It's guaranteed to not be None. 
         if location.item.advancement:
