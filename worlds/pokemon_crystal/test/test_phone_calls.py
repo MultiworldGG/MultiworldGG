@@ -17,7 +17,7 @@ class PhoneCallsTest(TestCase):
         question_mark_byte = convert_to_ingame_text("?")[0]
 
         phone_scripts = yaml.safe_load(
-            pkgutil.get_data("worlds.pokemon_crystal_prerelease", "data/phone_data.yaml").decode('utf-8-sig'))
+            pkgutil.get_data("worlds.pokemon_crystal", "data/phone_data.yaml").decode('utf-8-sig'))
 
         failures = []
         seen = set()

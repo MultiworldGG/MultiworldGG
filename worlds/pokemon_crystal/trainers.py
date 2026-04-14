@@ -7,6 +7,7 @@ from .moves import get_random_move_from_learnset
 from .options import RandomizeTrainerParties, RandomizeLearnsets, BoostTrainerPokemonLevels, LevelCurve, LevelScaling
 from .utils import bound
 from .pokemon import get_random_pokemon, get_random_nezumi
+from .pokemon_data import VANILLA_STARTERS
 
 if TYPE_CHECKING:
     from .world import PokemonCrystalWorld
@@ -29,6 +30,30 @@ def get_last_evolution(world: "PokemonCrystalWorld", pokemon):
         return pokemon
 
     return get_last_evolution(world, world.random.choice(pkmn_data.evolutions).pokemon)
+
+
+def set_rival_starter_pokemon(world: "PokemonCrystalWorld"):
+    """Update rival trainer parties to use randomized starter species and moves."""
+    if not world.options.randomize_starters:
+        return
+
+    for evo_line, vanilla_line in zip(world.generated_starters, VANILLA_STARTERS):
+        for vanilla_name, new_pokemon in zip(vanilla_line, evo_line):
+            for trainer_name, trainer_data in world.generated_trainers.items():
+                if not trainer_name.startswith("RIVAL_" + vanilla_name):
+                    continue
+
+                rival_pkmn = trainer_data.pokemon[-1]
+                new_moves = rival_pkmn.moves
+                if rival_pkmn.moves:
+                    new_moves = []
+                    for _ in rival_pkmn.moves:
+                        new_moves.append(get_random_move_from_learnset(
+                            world, new_pokemon, rival_pkmn.level, exclude=new_moves))
+
+                new_pkmn = replace(rival_pkmn, pokemon=new_pokemon, moves=new_moves)
+                new_party = trainer_data.pokemon[:-1] + [new_pkmn]
+                world.generated_trainers[trainer_name] = replace(trainer_data, pokemon=new_party)
 
 
 def randomize_trainers(world: "PokemonCrystalWorld"):
@@ -97,7 +122,7 @@ def randomize_trainer_pokemon_moves(world: "PokemonCrystalWorld", pkmn_data: Tra
     for move in pkmn_data.moves:
         # fill out all four moves if start_with_four_moves, else append NO_MOVE
         if move != "NO_MOVE" or world.options.randomize_learnsets == RandomizeLearnsets.option_start_with_four_moves:
-            new_move = get_random_move_from_learnset(world, new_pokemon, pkmn_data.level)
+            new_move = get_random_move_from_learnset(world, new_pokemon, pkmn_data.level, exclude=new_moves)
             new_moves.append(new_move)
         else:
             new_moves.append("NO_MOVE")

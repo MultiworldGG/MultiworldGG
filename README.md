@@ -58,7 +58,7 @@ Currently, the following games are supported:
 * Digimon World
 * Donkey Kong Country
 * Donkey Kong Country 2
-* Donkey Kong Country 3
+* Donkey Kong Country 3 (Toluca)
 * Donkey Kong 64
 * DLC Quest
 * Don't Starve Together

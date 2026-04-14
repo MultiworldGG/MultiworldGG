@@ -64,6 +64,7 @@ def show_java_prompt_simple(java_version):
 
         root = tk.Tk()
         root.withdraw()  # Hide the main window
+        root.attributes('-topmost', True)
 
         result = messagebox.askyesno(
             "Java Required",
@@ -90,6 +91,7 @@ def show_forge_prompt_simple(forge_version):
 
         root = tk.Tk()
         root.withdraw()  # Hide the main window
+        root.attributes('-topmost', True)
 
         result = messagebox.askyesno(
             "Forge Installation Required",
@@ -116,6 +118,7 @@ def show_yes_no_simple(title, message):
 
         root = tk.Tk()
         root.withdraw()  # Hide the main window
+        root.attributes('-topmost', True)
 
         result = messagebox.askyesno(title, message)
 
@@ -136,6 +139,7 @@ def show_progress_dialog(title, message):
 
         root = tk.Tk()
         root.withdraw()  # Hide the main window
+        root.attributes('-topmost', True)
 
         # Show info dialog (non-blocking)
         messagebox.showinfo(title, message)

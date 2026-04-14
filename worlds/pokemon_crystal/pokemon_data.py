@@ -9,3 +9,9 @@ LEGENDARY_POKEMON = {"Articuno", "Zapdos", "Moltres", "Mewtwo", "Mew", "Entei", 
 
 NON_LEGENDARY_POKEMON = {pokemon.friendly_name for pokemon in data.pokemon.values() if
                          pokemon.friendly_name not in LEGENDARY_POKEMON}
+
+VANILLA_STARTERS = (
+    ("CYNDAQUIL", "QUILAVA", "TYPHLOSION"),
+    ("TOTODILE", "CROCONAW", "FERALIGATR"),
+    ("CHIKORITA", "BAYLEEF", "MEGANIUM"),
+)

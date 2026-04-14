@@ -187,7 +187,7 @@ def create_region(region: SmsRegion, world: "SmsWorld"):
 
     # Add Entrance to the parent region and set the requirements to be used later on
     new_entrance: Entrance = world.get_region(region.parent_region).connect(curr_region)
-    new_entrance.requirements = region.requirements
+    new_entrance.requirements = get_correct_requirements(region, world.options.difficulty)
 
     # If the user is fludd-less or access is in ticket mode, change the PLAZA entrance requirements to nothing.
     if region.name == SmsRegionName.PLAZA and (
@@ -198,6 +198,7 @@ def create_region(region: SmsRegion, world: "SmsWorld"):
 
     # Require that the player has the ticket required for the region when ticket mode is enabled
     if world.options.level_access.value == 1 and region.ticketed:
+        new_entrance.requirements = []
         curr_region.ticket_str = region.ticketed
         add_rule(
             new_entrance,

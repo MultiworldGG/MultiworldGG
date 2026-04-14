@@ -24,6 +24,7 @@ from .options import UndergroundsRequirePower, RequireItemfinder, Goal, Route2Ac
     RandomizePokegear, BreedingMethodsRequired, RandomizePokedex, Route30Access, SouthKantoAccess, SouthKantoCondition
 from .phone_data import done_cmd
 from .pokemon_data import ALL_UNOWN
+from .rom_patches import ROM_PATCHES
 from .utils import convert_to_ingame_text, rom_offset_to_address, write_appp_tokens, write_rom_bytes, replace_map_tiles
 
 if TYPE_CHECKING:
@@ -49,6 +50,13 @@ class PokemonCrystalAPPatchExtension(APPatchExtension):
 
     @staticmethod
     def apply_overrides(caller: APProcedurePatch, rom: bytes) -> bytes:
+        overridden_rom = bytearray(rom)
+        write_bytes = lambda data, address: write_rom_bytes(overridden_rom, data, address)
+
+        for patch in ROM_PATCHES:
+            for entry in patch.entries:
+                write_bytes(entry.data, entry.rom_offset)
+
         if "world_data.json" not in caller.files:
             world_data = {}
         else:
@@ -58,14 +66,14 @@ class PokemonCrystalAPPatchExtension(APPatchExtension):
 
         if "skip_elite_four" in option_overrides:
             for trainer_name in ("WILL", "KOGA", "BRUNO", "KAREN"):
-                if rom[data.rom_addresses[f"AP_AdhocTrainersanity_ITEM_FROM_ELITE_4_{trainer_name}"]] != 0:
+                if overridden_rom[data.rom_addresses[f"AP_AdhocTrainersanity_ITEM_FROM_ELITE_4_{trainer_name}"]] != 0:
                     logging.warning("Pokemon Crystal: One or more Elite 4 trainers is a trainersanity location. "
                                     "Ignoring skip_elite_four override.")
                     option_overrides.pop("skip_elite_four", None)
                     break
 
         if not option_overrides:
-            return rom
+            return overridden_rom
 
         wrapped_overrides = {
             "game": data.manifest.game,
@@ -73,8 +81,6 @@ class PokemonCrystalAPPatchExtension(APPatchExtension):
         }
         rolled_options = roll_settings(wrapped_overrides)
 
-        overridden_rom = bytearray(rom)
-        write_bytes = lambda data, address: write_rom_bytes(overridden_rom, data, address)
         must_write_option = lambda option_key: option_key in option_overrides
 
         if must_write_option("game_options"):
@@ -925,7 +931,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
             # script music is 2 bytes LE
             write_bytes(world.generated_music.consts[script_music].id.to_bytes(2, "little"), music_address)
 
-    for hm in [hm for hm in world.options.remove_badge_requirement.valid_keys]:
+    for hm in [hm for hm in world.options.remove_badge_requirement.valid_keys if not hm.startswith("_")]:
         hm_address = data.rom_addresses[f"AP_Setting_HMBadges_{hm}"] + 1
         requirement = world.options.hm_badge_requirements.value
         if hm in world.options.remove_badge_requirement:
@@ -1205,7 +1211,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
         write_bytes([1], data.rom_addresses["AP_Setting_FlyUnlocksShuffled"] + 2)
 
     if world.options.enforce_wild_encounter_methods_logic:
-        valid_methods = [key for key in WildEncounterMethodsRequired.valid_keys if key != "Bug Catching Contest"]
+        valid_methods = [key for key in WildEncounterMethodsRequired.valid_keys if key != "Bug Catching Contest" and not key.startswith("_")]
         assert len(valid_methods) == 5
         methods = [method in world.options.wild_encounter_methods_required.value for method in valid_methods]
 
@@ -1241,7 +1247,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     if world.options.always_unlock_fly_destinations:
         write_bytes([1], data.rom_addresses["AP_Setting_FlyUnlocksQoLEnabled"] + 2)
 
-    for map_group in [key for key in world.options.dark_areas.valid_keys]:
+    for map_group in [key for key in world.options.dark_areas.valid_keys if not key.startswith("_")]:
         maps = FLASH_MAP_GROUPS[map_group]
         for map in maps:
             map_data = data.maps[map]

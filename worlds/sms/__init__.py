@@ -48,6 +48,8 @@ class SmsWebWorld(WebWorld):
     option_groups = [
         Options.OptionGroup("SMS Basic", [
             options.LevelAccess,
+            options.Difficulty,
+            options.AllShinesSelectable,
             options.StartingNozzle,
             options.EnableCoinShines,
             options.NozzleBoxes,

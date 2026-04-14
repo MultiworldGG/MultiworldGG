@@ -52,7 +52,9 @@ class BlueCoinMaximum(Range):
     """How many Blue Coins to include in the pool if Blue Coinsanity is on.
     Does nothing if Blue Coinsanity full_shuffle is off.
     Corresponding trade shines will be removed from locations.
-    Removed Blue Coins will be replaced by extra Shine Sprites or other filler items."""
+    Removed Blue Coins will be replaced by other items in the pool, such as filler, to fill the
+        remaining Blue Coin locations.
+    Example: You only want 220 of the 240 possible blue coins, the other 20 spots will be filled by other items."""
     display_name = "Blue Coin Maximum"
     range_start = 0
     range_end = 240

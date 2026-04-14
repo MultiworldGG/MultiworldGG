@@ -191,13 +191,18 @@ def randomize_tms(world: "PokemonCrystalWorld"):
         world.generated_tms[tm_name] = TMHMData(new_move.id, tm_data.tm_num, new_move.type, False, new_move.rom_id)
 
 
-def get_random_move_from_learnset(world: "PokemonCrystalWorld", pokemon: str, level: int):
+def get_random_move_from_learnset(world: "PokemonCrystalWorld", pokemon: str, level: int,
+                                  exclude: list[str] | None = None):
     move_pool = [learn_move.move for learn_move in world.generated_pokemon[pokemon].learnset if
                  learn_move.level <= level and learn_move.move != "NO_MOVE"]
     # double learnset pool to dilute HMs slightly
     # exclude beat up as it can softlock the game if an enemy trainer uses it
     move_pool.extend(world.generated_tms[tm].id for tm in world.generated_pokemon[pokemon].tm_hm if
                      world.generated_tms[tm].id != "BEAT_UP")
+    if exclude:
+        filtered = [m for m in move_pool if m not in exclude]
+        if filtered:
+            move_pool = filtered
     return world.random.choice(move_pool)
 
 

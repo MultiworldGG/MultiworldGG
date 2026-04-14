@@ -2,9 +2,10 @@ from .sms_region_helper import *
 
 RICCO_HARBOR_ENTRANCE: SmsRegion = SmsRegion(
     SmsRegionName.RICCO_ENTRANCE,
-    requirements=[
-        Requirements(ANY_SPLASHER, shines=3),
-    ],
+    requirements=[Requirements(SPRAY_OR_HOVER, shines=3)],
+    hard=[],
+    advanced=[],
+    tears=[],
     ticketed="Ricco Harbor Ticket",
     parent_region=SmsRegionName.PLAZA,
 )

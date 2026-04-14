@@ -210,7 +210,7 @@ def __adjust_options_restrictive_region_travel(world: "PokemonCrystalWorld") -> 
 def __adjust_options_gyarados(world: "PokemonCrystalWorld"):
     if (world.options.red_gyarados_access
             and world.options.randomize_badges.value == RandomizeBadges.option_vanilla
-            and "Whirlpool" and not world.options.hm_badge_requirements == HMBadgeRequirements.option_no_badges
+            and world.options.hm_badge_requirements != HMBadgeRequirements.option_no_badges
             and "Whirlpool" not in world.options.remove_badge_requirement):
         world.options.red_gyarados_access.value = RedGyaradosAccess.option_vanilla
         logging.warning("Pokemon Crystal: Red Gyarados access requires Whirlpool and Vanilla Badges are not "

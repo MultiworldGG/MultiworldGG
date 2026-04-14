@@ -3,6 +3,9 @@ from .sms_region_helper import *
 PINNA_PARK_ENTRANCE: SmsRegion = SmsRegion(
     SmsRegionName.PINNA_ENTRANCE,
     requirements=[Requirements(shines=10)],
+    hard=[],
+    advanced=[],
+    tears=[],
     ticketed="Pinna Park Ticket",
     parent_region=SmsRegionName.PLAZA,
 )

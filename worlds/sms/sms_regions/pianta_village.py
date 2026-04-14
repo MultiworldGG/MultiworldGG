@@ -3,9 +3,12 @@ from .sms_region_helper import *
 # Pianta Village
 PIANTA_VILLAGE_ENTRANCE: SmsRegion = SmsRegion(
     SmsRegionName.PIANTA_ENTRANCE,
-    requirements=[
-        Requirements([[NozzleType.rocket]], shines=10)
-    ],
+    requirements=[Requirements([[NozzleType.rocket]])],
+    hard=[Requirements([[NozzleType.rocket]]), Requirements([[NozzleType.yoshi]], shines=5),
+        Requirements([[NozzleType.yoshi]], skip_forward=True)],
+    advanced=[Requirements([[NozzleType.rocket]]), Requirements([[NozzleType.yoshi]], shines=5),
+        Requirements([[NozzleType.yoshi]], skip_forward=True), Requirements([[NozzleType.hover]])],
+    tears=[Requirements()],
     ticketed="Pianta Village Ticket",
     parent_region=SmsRegionName.PLAZA,
 )

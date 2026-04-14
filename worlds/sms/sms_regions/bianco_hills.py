@@ -2,7 +2,10 @@ from .sms_region_helper import *
 
 BIANCO_HILLS_ENTRANCE: SmsRegion = SmsRegion(
     SmsRegionName.BIANCO_ENTRANCE,
-    requirements=[Requirements(ANY_SPLASHER), Requirements(skip_forward=True)],
+    requirements=[Requirements(SPRAY_OR_HOVER)],
+    hard=[],
+    advanced=[],
+    tears=[],
     ticketed="Bianco Hills Ticket",
     parent_region=SmsRegionName.PLAZA,
 )

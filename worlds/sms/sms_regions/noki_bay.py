@@ -3,6 +3,9 @@ from .sms_region_helper import *
 NOKI_BAY_ENTRANCE: SmsRegion = SmsRegion(
     SmsRegionName.NOKI_ENTRANCE,
     requirements=[Requirements(shines=20)],
+    hard=[],
+    advanced=[],
+    tears=[],
     ticketed="Noki Bay Ticket",
     parent_region=SmsRegionName.PLAZA,
 )

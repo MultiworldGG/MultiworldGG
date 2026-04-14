@@ -2244,7 +2244,6 @@
     ],
     "events": [],
     "wild_encounters": {
-      "rock_smash": true,
       "grass": "ICE_PATH_B3F"
     }
   },

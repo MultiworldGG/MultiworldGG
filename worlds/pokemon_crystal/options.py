@@ -17,6 +17,15 @@ from ..AutoWorld import World
 
 class EnhancedOptionSet(OptionSet):
 
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if cls.valid_keys:
+            keys = list(cls.valid_keys)
+            for meta in ("_All", "_Random"):
+                if meta not in keys:
+                    keys.append(meta)
+            cls.valid_keys = keys
+
     def __init__(self, value):
         if isinstance(value, list):
             value = [x.title() if x.title() in ('_All', '_Random') else x for x in value]
@@ -1274,7 +1283,7 @@ class LearnsetTypeBias(NamedRange):
         return super().from_text(text)
 
 
-class RandomizeMoves(OptionSet):
+class RandomizeMoves(EnhancedOptionSet):
     """
     Randomizes the properties of moves.
 
@@ -1287,6 +1296,8 @@ class RandomizeMoves(OptionSet):
     - Accuracy: Randomizes the accuracy of each move. Accuracy has a 70% chance to be 100% for each move,
       otherwise it is linearly distributed in the range 30-100.
     - Type: Randomizes the type of each move.
+    - _All includes all options.
+    - _Random has a 50% chance to include each option that is not already included.
 
     Full options override Restricted options.
     """

@@ -23,6 +23,7 @@ def perform_level_scaling(multiworld: MultiWorld):
         "EVENT_PLAIN_BADGE_FROM_WHITNEY",
         # "EVENT_RIVAL_BURNED_TOWER",
         # "EVENT_BEAT_KIMONO_GIRL_MIKI", # final girl
+        "EVENT_BURNED_TOWER_MORTY",
         "EVENT_FOG_BADGE_FROM_MORTY",
         "EVENT_BEAT_POKEFANM_DEREK",  # Route 39
         "EVENT_STORM_BADGE_FROM_CHUCK",

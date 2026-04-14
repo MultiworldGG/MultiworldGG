@@ -19,6 +19,12 @@ def load_ut_slot_data(world: "PokemonCrystalWorld"):
         except AttributeError:
             pass
 
+    # Correct slot_data keys that collide with option names but store derived values
+    world.options.free_fly_location.value = world.ut_slot_data["free_fly_location_option"]
+    world.options.dexcountsanity.value = world.ut_slot_data["dexcountsanity_option"]
+    world.options.enable_mischief.value = world.ut_slot_data["enable_mischief_option"]
+    world.options.trap_weights.value = world.ut_slot_data["trap_weights_option"]
+
     world.generated_dexcountsanity = world.ut_slot_data["dexcountsanity_counts"]
     world.generated_dexsanity = {get_pokemon_id_by_rom_id(id) for id in world.ut_slot_data["dexsanity_pokemon"]}
 
@@ -27,7 +33,6 @@ def load_ut_slot_data(world: "PokemonCrystalWorld"):
         world.starting_town = next(
             town for town in crystal_data.starting_towns if town.id == starting_town_id)
 
-    world.options.free_fly_location.value = world.ut_slot_data["free_fly_location_option"]
     free_fly_location_id = world.ut_slot_data["free_fly_location"]
     if free_fly_location_id:
         world.free_fly_location = next(

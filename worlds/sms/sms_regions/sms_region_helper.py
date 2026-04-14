@@ -181,6 +181,9 @@ class NozzleBox(NamedTuple):
 class SmsRegion(NamedTuple):
     name: str
     requirements: Optional[list[Requirements]] | None = None
+    hard: Optional[list[Requirements]] | None = None
+    advanced: Optional[list[Requirements]] | None = None
+    tears: Optional[list[Requirements]] | None = None
     shines: Optional[list[Shine]] | None = []
     blue_coins: Optional[list[BlueCoin]] | None = []
     nozzle_boxes: Optional[list[NozzleBox]] | None = []
@@ -190,8 +193,11 @@ class SmsRegion(NamedTuple):
 
 
 def get_correct_requirements(
-    item: Shine | BlueCoin | NozzleBox, difficulty: Difficulty
+    item: Shine | BlueCoin | NozzleBox | SmsRegion, difficulty: Difficulty
 ):
+    if not hasattr(item, "requirements"):
+        return []
+
     match difficulty.value:
         case 0:
             return item.requirements
