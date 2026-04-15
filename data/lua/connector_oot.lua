@@ -25,6 +25,7 @@ local item_get_inf_offset = save_context_offset + 0xEF0 --0x11B4C0
 local inf_table_offset = save_context_offset + 0xEF8 -- 0x11B4C8
 
 local temp_context = nil
+local big_poe_count_addr = 0x0040001E  -- BIG_POE_COUNT in AP tracking header (0x8040001E - 0x80000000)
 
 local collectibles_overrides = nil
 local collectible_offsets = nil
@@ -151,7 +152,12 @@ end
 -- checked on each big poe turn in.
 local big_poe_bottle_check = function()
     local nearby_memory = mainmemory.read_u32_be(big_poe_points_offset)
-    local poe_count = NUM_BIG_POES_REQUIRED
+    local poe_count = mainmemory.read_u8(big_poe_count_addr)
+    if poe_count ~= 0 then
+        NUM_BIG_POES_REQUIRED = poe_count
+    else
+        poe_count = NUM_BIG_POES_REQUIRED
+    end
     if poe_count == 0 then return false end  -- not yet loaded from ROM
     local points_required = 100 * poe_count
     return (nearby_memory >= points_required)
@@ -1601,7 +1607,7 @@ local first_connect = true
 local player_names_initialized = false
 local game_complete = false
 
-NUM_BIG_POES_REQUIRED = mainmemory.read_u8(rando_context + 0x001E)  -- BIG_POE_COUNT in AP tracking header
+NUM_BIG_POES_REQUIRED = mainmemory.read_u8(big_poe_count_addr)
 
 -- ROM reading and writing functions
 
