@@ -27,7 +27,7 @@ from .SceneFlags import get_alt_list_bytes, get_collectible_flag_table, get_coll
         get_collectible_flag_addresses
 from .TextBox import character_table, NORMAL_LINE_WIDTH, rom_safe_text
 from .texture_util import ci4_rgba16patch_to_ci8, rgba16_patch
-from .Utils import __version__
+from .Utils import data_path
 
 from worlds.Files import APPatch
 from Utils import __version__ as ap_version
@@ -312,9 +312,9 @@ def patch_rom(world, rom):
         return txt
 
     line_len = 21
-    version_str = "version " + __version__
+    version_str = "version " + world.world_version.as_simple_string()
     if len(version_str) > line_len:
-        version_str = "ver. " + __version__
+        version_str = "ver. " + world.world_version.as_simple_string()
     rom.write_bytes(rom.sym('VERSION_STRING_TXT'), makebytes(version_str, 25))
 
     if world.multiworld.players > 1:
@@ -1701,7 +1701,7 @@ def patch_rom(world, rom):
             if locations:
                 # Location types later in the list will be preferred over earlier ones or ones not in the list.
                 # This ensures that if the region behind the boss door is a boss arena, the medallion or stone will be used.
-                priority_types = ("GS Token", "GrottoScrub", "Scrub", "Shop", "NPC", "Collectable", "Freestanding", "ActorOverride", "RupeeTower", "Pot", "Crate", "FlyingPot", "SmallCrate", "Beehive", "Chest", "Cutscene", "Song", "BossHeart", "Boss")
+                priority_types = ("GS Token", "GrottoScrub", "Scrub", "Shop", "NPC", "Collectable", "Freestanding", "ActorOverride", "RupeeTower", "Pot", "Crate", "FlyingPot", "SmallCrate", "Beehive", "Wonderitem", "Chest", "Cutscene", "Song", "BossHeart", "Boss")
                 best_type = max((location.type for location in locations), key=lambda type: priority_types.index(type) if type in priority_types else -1)
                 location = world.hint_rng.choice(list(filter(lambda loc: loc.type == best_type, locations)))
                 break
@@ -1818,8 +1818,8 @@ def patch_rom(world, rom):
     rom.write_bytes(rom.sym('collectible_scene_flags_table'), collectible_flag_table_bytes)
     num_collectible_flags += num_collectible_flags % 8
     rom.write_bytes(rom.sym('num_override_flags'), num_collectible_flags.to_bytes(2, 'big'))
-    if(len(alt_list) > 64):
-        raise(RuntimeError(f'Exceeded alt override table size: {len(alt_list)}'))
+    if len(alt_list) >= 90:
+        raise RuntimeError(f'Exceeded alt override table size: {len(alt_list)}')
     rom.write_bytes(rom.sym('alt_overrides'), alt_list_bytes)
 
     # Gather addresses and bitflags for client
@@ -2164,7 +2164,7 @@ def patch_rom(world, rom):
     SKULL_CHEST_SMALL = 14
     SKULL_CHEST_BIG =  15
 
-    if world.bombchus_in_logic or world.minor_items_as_major_chest:
+    if world.bombchus_in_logic or 'bombchus' in world.minor_items_as_major_chest:
         bombchu_ids = [0x6A, 0x03, 0x6B]
         for i in bombchu_ids:
             item = read_rom_item(rom, i)
@@ -2180,7 +2180,7 @@ def patch_rom(world, rom):
             item = read_rom_item(rom, i)
             item['chest_type'] = GILDED_CHEST
             write_rom_item(rom, i, item)
-    if world.minor_items_as_major_chest:
+    if 'shields' in world.minor_items_as_major_chest:
         # Deku
         item = read_rom_item(rom, 0x29)
         item['chest_type'] = GILDED_CHEST
@@ -2189,6 +2189,15 @@ def patch_rom(world, rom):
         item = read_rom_item(rom, 0x2A)
         item['chest_type'] = GILDED_CHEST
         write_rom_item(rom, 0x2A, item)
+    if 'capacity' in world.minor_items_as_major_chest:
+        # Nuts
+        item = read_rom_item(rom, 0x87)
+        item['chest_type'] = GILDED_CHEST
+        write_rom_item(rom, 0x87, item)
+        # Sticks
+        item = read_rom_item(rom, 0x88)
+        item['chest_type'] = GILDED_CHEST
+        write_rom_item(rom, 0x88, item)
 
     for item_id in (AP_PROGRESSION, AP_JUNK):
         item = read_rom_item(rom, item_id)
@@ -2462,6 +2471,9 @@ def patch_rom(world, rom):
         torch_count = world.fae_torch_count
         rom.write_byte(0xCA61E3, torch_count)
 
+    # Fix crash when hitting white bubble enemies with Din's Fire
+    rom.write_byte(0xCB4397, 0x00)
+
     if world.blue_fire_arrows:
         rom.write_byte(0xC230C1, 0x29) #Adds AT_TYPE_OTHER to arrows to allow collision with red ice
         rom.write_byte(0xDB38FE, 0xEF) #disables ice arrow collision on secondary cylinder for red ice crystals
@@ -2577,7 +2589,7 @@ def get_override_table_bytes(override_table):
 
 def get_override_entry(ootworld, location):
     # Don't add freestanding items, pots/crates, beehives to the override table if they're disabled. We use this check to determine how to draw and interact with them
-    if location.type in ["ActorOverride", "Freestanding", "RupeeTower", "Pot", "Crate", "FlyingPot", "SmallCrate", "Beehive"] and location.disabled != DisableType.ENABLED:
+    if location.type in ["ActorOverride", "Freestanding", "RupeeTower", "Pot", "Crate", "FlyingPot", "SmallCrate", "Beehive", "Wonderitem"] and location.disabled != DisableType.ENABLED:
         return None
 
     scene = location.scene
@@ -2605,7 +2617,7 @@ def get_override_entry(ootworld, location):
     elif location.type == 'Chest':
         type = 1
         default &= 0x1F
-    elif location.type in ['Freestanding', 'Pot', 'Crate', 'FlyingPot', 'SmallCrate', 'RupeeTower', 'Beehive']:
+    elif location.type in ['Freestanding', 'Pot', 'Crate', 'FlyingPot', 'SmallCrate', 'RupeeTower', 'Beehive', 'Wonderitem']:
         type = 6
         if not (isinstance(location.default, list) or isinstance(location.default, tuple)):
             raise Exception("Not right")
@@ -2929,7 +2941,7 @@ def place_shop_items(rom, world, shop_items, messages, locations, init_shop_id=F
                 purchase_text = '\x08%s  %d Rupees\x09\x01%s\x01\x1B\x05\x42Buy\x01Don\'t buy\x05\x40\x02' % (split_item_name[0], location.price, split_item_name[1])
             else:
                 if item_display.game == "Ocarina of Time":
-                    shop_item_name = getSimpleHintNoPrefix(item_display, world.random)
+                    shop_item_name = getSimpleHintNoPrefix(item_display)
                 else:
                     shop_item_name = item_display.name
 

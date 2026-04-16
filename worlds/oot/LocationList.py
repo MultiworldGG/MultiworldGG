@@ -2219,6 +2219,256 @@ location_table = OrderedDict([
     ("Gerudo Training Ground MQ Maze Right Side Chest",              ("Chest",        0x0B,  0x08, None,                            'Rupee (Treasure Chest Game) (1)',       ("Gerudo Training Ground MQ", "Master Quest", "Chests",))),
     ("Gerudo Training Ground MQ Maze Path Third Chest",              ("Chest",        0x0B,  0x09, None,                            'Rupee (Treasure Chest Game) (1)',       ("Gerudo Training Ground MQ", "Master Quest", "Chests",))),
 
+    # Wonderitems
+    # Kokiri Forest Wonderitems
+    ("KF Child Stepping Stones Wonderitem",                          ("Wonderitem",   0x55, (0,0,39), None,                       'Rupees (5)',                          ("Kokiri Forest", "Forest", "Wonderitem"))),
+    ("KF Child Water Wonderitem",                                    ("Wonderitem",   0x55, (0,0,34), None,                       'Rupees (5)',                          ("Kokiri Forest", "Forest", "Wonderitem"))),
+    ("KF Child Sign Wonderitem",                                     ("Wonderitem",   0x55, (0,0,33), None,                       'Rupees (5)',                          ("Kokiri Forest", "Forest", "Wonderitem"))),
+    ("KF Child Training Wonderitem 1",                               ("Wonderitem",   0x55, (0,0,40), None,                       'Rupees (5)',                          ("Kokiri Forest", "Forest", "Wonderitem"))),
+    ("KF Child Training Wonderitem 2",                               ("Wonderitem",   0x55, (0,0,41), None,                       'Rupees (5)',                          ("Kokiri Forest", "Forest", "Wonderitem"))),
+    ("KF Child Training Wonderitem 3",                               ("Wonderitem",   0x55, (0,0,42), None,                       'Rupees (5)',                          ("Kokiri Forest", "Forest", "Wonderitem"))),
+    ("KF Child Maze Grass Wonderitem 1",                             ("Wonderitem",   0x55, (2,0,6),  None,                       'Rupees (5)',                          ("Kokiri Forest", "Forest", "Wonderitem"))),
+    ("KF Child Maze Grass Wonderitem 2",                             ("Wonderitem",   0x55, (2,0,7),  None,                       'Rupees (5)',                          ("Kokiri Forest", "Forest", "Wonderitem"))),
+    ("KF Shop Wonderitem",                                           ("Wonderitem",   0x2D, (0,0,5),  None,                       'Rupees (5)',                          ("Kokiri Forest", "Forest", "Wonderitem"))),
+
+    # Lost Woods Wonderitems
+    ("LW Near Ocarina Game Wonderitem 1",                            ("Wonderitem",   0x5B, (1,0,6),  None,                       'Rupees (5)',                              ("Lost Woods", "Forest Area", "Wonderitem"))),
+    ("LW Near Ocarina Game Wonderitem 2",                            ("Wonderitem",   0x5B, (1,0,7),  None,                       'Rupees (5)',                              ("Lost Woods", "Forest Area", "Wonderitem"))),
+    ("LW Near Ocarina Game Wonderitem 3",                            ("Wonderitem",   0x5B, (1,0,8),  None,                       'Rupees (5)',                              ("Lost Woods", "Forest Area", "Wonderitem"))),
+
+    # Sacred Forest Meadow Wonderitems
+    ("SFM Near Lost Woods Wonderitem",                               ("Wonderitem",   0x56, [(0,0,16),
+                                                                                             (0,2,19)],   None,                       'Rupees (5)',                          ("Sacred Forest Meadow", "Forest Area", "Wonderitem"))),
+    ("SFM Maze Wonderitem 1",                                        ("Wonderitem",   0x56, [(0,0,13),
+                                                                                             (0,2,16)],   None,                       'Rupees (5)',                          ("Sacred Forest Meadow", "Forest Area", "Wonderitem"))),
+    ("SFM Maze Wonderitem 2",                                        ("Wonderitem",   0x56, [(0,0,14),
+                                                                                             (0,2,17)],   None,                       'Rupees (5)',                          ("Sacred Forest Meadow", "Forest Area", "Wonderitem"))),
+    ("SFM Maze Wonderitem 3",                                        ("Wonderitem",   0x56, [(0,0,15),
+                                                                                             (0,2,18)],   None,                       'Rupees (5)',                          ("Sacred Forest Meadow", "Forest Area", "Wonderitem"))),
+    ("SFM Maze Wonderitem 4",                                        ("Wonderitem",   0x56, [(0,0,17),
+                                                                                             (0,2,20)],   None,                       'Rupees (5)',                          ("Sacred Forest Meadow", "Forest Area", "Wonderitem"))),
+    ("SFM Maze Wonderitem 5",                                        ("Wonderitem",   0x56, [(0,0,18),
+                                                                                             (0,2,21)],   None,                       'Rupees (5)',                          ("Sacred Forest Meadow", "Forest Area", "Wonderitem"))),
+
+    # Hyrule Field Wonderitems
+    ("HF Child Above Drawbridge Wonderitem 1",                       ("Wonderitem",   0x51, [(0,0,53),(0,1,51)], None,              'Rupees (20)',                           ("Hyrule Field", "Wonderitem"))),
+    ("HF Child Above Drawbridge Wonderitem 2",                       ("Wonderitem",   0x51, [(0,0,54),(0,1,52)], None,              'Rupees (20)',                           ("Hyrule Field", "Wonderitem"))),
+    ("HF Child Above Drawbridge Wonderitem 3",                       ("Wonderitem",   0x51, [(0,0,55),(0,1,53)], None,              'Rupees (20)',                           ("Hyrule Field", "Wonderitem"))),
+
+    # Market Wonderitems
+    ("Market Daytime Balcony Wonderitem 1",                          ("Wonderitem",   0x20, (0,0,16),  None,                       'Rupees (5)',                             ("Market", "Wonderitem"))),
+    ("Market Daytime Balcony Wonderitem 2",                          ("Wonderitem",   0x20, (0,0,17),  None,                       'Rupees (5)',                             ("Market", "Wonderitem"))),
+    ("Market Daytime Balcony Wonderitem 3",                          ("Wonderitem",   0x20, (0,0,18),  None,                       'Rupees (5)',                             ("Market", "Wonderitem"))),
+    ("Market Daytime Balcony Wonderitem 4",                          ("Wonderitem",   0x20, (0,0,19),  None,                       'Rupees (5)',                             ("Market", "Wonderitem"))),
+    ("Market Daytime Balcony Wonderitem 5",                          ("Wonderitem",   0x20, (0,0,20),  None,                       'Rupees (5)',                             ("Market", "Wonderitem"))),
+    ("Market Night Balcony Wonderitem 1",                            ("Wonderitem",   0x21, (0,0,6),   None,                       'Rupees (5)',                             ("Market", "Wonderitem"))),
+    ("Market Night Balcony Wonderitem 2",                            ("Wonderitem",   0x21, (0,0,7),   None,                       'Rupees (5)',                             ("Market", "Wonderitem"))),
+
+    # Hyrule Castle Wonderitems
+    ("HC Castle Torch Wonderitem 1",                                 ("Wonderitem",   0x5F,  (0,0,13), None,                        'Rupees (20)',                           ("Hyrule Castle", "Wonderitem"))),
+    ("HC Castle Torch Wonderitem 2",                                 ("Wonderitem",   0x5F,  (0,0,14), None,                        'Rupees (20)',                           ("Hyrule Castle", "Wonderitem"))),
+    ("HC Castle Moat Wonderitem 1",                                  ("Wonderitem",   0x5F,  (0,0,33), None,                        'Rupee (1)',                             ("Hyrule Castle", "Wonderitem"))),
+    ("HC Castle Moat Wonderitem 2",                                  ("Wonderitem",   0x5F,  (0,0,34), None,                        'Rupee (1)',                             ("Hyrule Castle", "Wonderitem"))),
+    ("HC Castle Moat Wonderitem 3",                                  ("Wonderitem",   0x5F,  (0,0,35), None,                        'Rupee (1)',                             ("Hyrule Castle", "Wonderitem"))),
+    ("HC Castle Moat Wonderitem 4",                                  ("Wonderitem",   0x5F,  (0,0,36), None,                        'Rupee (1)',                             ("Hyrule Castle", "Wonderitem"))),
+    ("HC Castle Moat Wonderitem 5",                                  ("Wonderitem",   0x5F,  (0,0,37), None,                        'Rupee (1)',                             ("Hyrule Castle", "Wonderitem"))),
+    ("HC Castle Moat Wonderitem 6",                                  ("Wonderitem",   0x5F,  (0,0,38), None,                        'Rupee (1)',                             ("Hyrule Castle", "Wonderitem"))),
+    ("HC Castle Moat Wonderitem 7",                                  ("Wonderitem",   0x5F,  (0,0,39), None,                        'Rupee (1)',                             ("Hyrule Castle", "Wonderitem"))),
+    ("HC Castle Moat Wonderitem 8",                                  ("Wonderitem",   0x5F,  (0,0,40), None,                        'Rupee (1)',                             ("Hyrule Castle", "Wonderitem"))),
+    ("HC Castle Moat Wonderitem 9",                                  ("Wonderitem",   0x5F,  (0,0,41), None,                        'Rupee (1)',                             ("Hyrule Castle", "Wonderitem"))),
+    ("HC Castle Moat Wonderitem 10",                                 ("Wonderitem",   0x5F,  (0,0,42), None,                        'Rupee (1)',                             ("Hyrule Castle", "Wonderitem"))),
+    ("HC Zeldas Courtyard Mario Wonderitem",                         ("Wonderitem",   0x4A,  (0,0,6),  None,                        'Rupees (20)',                           ("Hyrule Castle", "Wonderitem"))),
+
+    # Lon Lon Ranch Wonderitems
+    ("LLR Epona Hurdle Wonderitem 1",                                ("Wonderitem",   0x63, [(0,2,25),(0,3,9)], None,           'Rupees (5)',                            ("Lon Lon Ranch", "Wonderitem"))),
+    ("LLR Epona Hurdle Wonderitem 2",                                ("Wonderitem",   0x63, [(0,2,26),(0,3,10)], None,           'Rupees (5)',                            ("Lon Lon Ranch", "Wonderitem"))),
+
+    # Kakariko Village Wonderitems
+    ("Kak Child Construction Wonderitem",                            ("Wonderitem",   0x52,  [(0,0,56), (0,1,49)], None,        'Rupees (20)',                               ("Kakariko Village", "Wonderitem"))),
+    ("Kak Impas House Wonderitem",                                   ("Wonderitem",   0x37,  (0,0,7), None,                     'Rupees (20)',                               ("Kakariko Village", "Wonderitem"))),
+
+    # Graveyard Wonderitems
+    ("Graveyard Dampe Race Wonderitem 1",                            ("Wonderitem",   0x48, (1,0,6), None,                       'Rupees (5)',                               ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 2",                            ("Wonderitem",   0x48, (1,0,7), None,                       'Rupees (5)',                               ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 3",                            ("Wonderitem",   0x48, (1,0,8), None,                       'Rupees (5)',                               ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 4",                            ("Wonderitem",   0x48, (1,0,9), None,                       'Rupees (5)',                               ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 5",                            ("Wonderitem",   0x48, (1,0,10), None,                       'Rupees (5)',                              ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 6",                            ("Wonderitem",   0x48, (2,0,8), None,                       'Rupees (5)',                               ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 7",                            ("Wonderitem",   0x48, (2,0,9), None,                       'Rupees (5)',                               ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 8",                            ("Wonderitem",   0x48, (2,0,10), None,                       'Rupees (5)',                              ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 9",                            ("Wonderitem",   0x48, (2,0,11), None,                       'Rupees (5)',                              ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 10",                           ("Wonderitem",   0x48, (2,0,12), None,                       'Rupees (5)',                              ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 11",                           ("Wonderitem",   0x48, (3,0,9), None,                       'Rupees (5)',                               ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 12",                           ("Wonderitem",   0x48, (3,0,10), None,                       'Rupees (5)',                              ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 13",                           ("Wonderitem",   0x48, (3,0,11), None,                       'Rupees (5)',                              ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 14",                           ("Wonderitem",   0x48, (3,0,12), None,                       'Rupees (5)',                              ("Graveyard", "Grottos", "Wonderitem"))),
+    ("Graveyard Dampe Race Wonderitem 15",                           ("Wonderitem",   0x48, (3,0,13), None,                       'Rupees (5)',                              ("Graveyard", "Grottos", "Wonderitem"))),
+
+    # Zora's River Wonderitems
+    ("ZR Child Front River Wonderitem 1",                            ("Wonderitem",   0x54, (0,0,17), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child Front River Wonderitem 2",                            ("Wonderitem",   0x54, (0,0,18), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child Front River Wonderitem 3",                            ("Wonderitem",   0x54, (0,0,19), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child Front River Wonderitem 4",                            ("Wonderitem",   0x54, (0,0,20), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 1",                                  ("Wonderitem",   0x54, (1,0,6),  None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 2",                                  ("Wonderitem",   0x54, (1,0,7),  None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 3",                                  ("Wonderitem",   0x54, (1,0,8),  None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 4",                                  ("Wonderitem",   0x54, (1,0,9),  None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 5",                                  ("Wonderitem",   0x54, (0,0,16), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 6",                                  ("Wonderitem",   0x54, (0,0,21), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 7",                                  ("Wonderitem",   0x54, (0,0,22), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 8",                                  ("Wonderitem",   0x54, (0,0,23), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 9",                                  ("Wonderitem",   0x54, (0,0,24), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 10",                                 ("Wonderitem",   0x54, (0,0,25), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 11",                                 ("Wonderitem",   0x54, (0,0,26), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 12",                                 ("Wonderitem",   0x54, (0,0,27), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 13",                                 ("Wonderitem",   0x54, (0,0,28), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 14",                                 ("Wonderitem",   0x54, (0,0,29), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 15",                                 ("Wonderitem",   0x54, (0,0,30), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 16",                                 ("Wonderitem",   0x54, (0,0,31), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 17",                                 ("Wonderitem",   0x54, (0,0,32), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 18",                                 ("Wonderitem",   0x54, (0,0,33), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 19",                                 ("Wonderitem",   0x54, (0,0,34), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 20",                                 ("Wonderitem",   0x54, (0,0,35), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 21",                                 ("Wonderitem",   0x54, (0,0,36), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 22",                                 ("Wonderitem",   0x54, (0,0,37), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 23",                                 ("Wonderitem",   0x54, (0,0,38), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 24",                                 ("Wonderitem",   0x54, (0,0,39), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 25",                                 ("Wonderitem",   0x54, (0,0,40), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 26",                                 ("Wonderitem",   0x54, (0,0,41), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+    ("ZR Child River Wonderitem 27",                                 ("Wonderitem",   0x54, (0,0,42), None,                       'Rupees (5)',                              ("Zora's River", "Wonderitem"))),
+
+    # Gerudo Valley Wonderitems
+    ("GV Adult Upper Waterfall Wonderitem",                          ("Wonderitem",   0x5A, (0,2,41), None,                         'Rupees (20)',                           ("Gerudo Valley", "Wonderitem"))),
+    ("GV Adult Lower Waterfall Wonderitem",                          ("Wonderitem",   0x5A, (0,2,42), None,                         'Rupees (20)',                           ("Gerudo Valley", "Wonderitem"))),
+
+    # Gerudo's Fortress Wonderitems
+    ("GF Sign Wonderitem Near Entrance",                             ("Wonderitem",   0x5D,  [(0,2,6),(0,3,6)], None,               'Rupees (20)',                           ("Gerudo's Fortress", "Wonderitem"))),
+    ("GF Sign Wonderitem Near HBA",                                  ("Wonderitem",   0x5D,  [(0,2,7),(0,3,7)], None,               'Rupees (20)',                           ("Gerudo's Fortress", "Wonderitem"))),
+
+    # Thieves Hideout Wonderitems
+    ("Hideout Break Room Wonderitem",                                ("Wonderitem",   0x0C,  (0,0,3), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+    ("Hideout Break Room Hall to Balcony Wonderitem",                ("Wonderitem",   0x0C,  (0,0,4), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+    ("Hideout 3 Torch Jail Wonderitem 1",                            ("Wonderitem",   0x0C,  (1,0,4), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+    ("Hideout 3 Torch Jail Wonderitem 2",                            ("Wonderitem",   0x0C,  (1,0,5), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+    ("Hideout 1 Torch Jail Wonderitem 1",                            ("Wonderitem",   0x0C,  (2,0,3), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+    ("Hideout 1 Torch Jail Wonderitem 2",                            ("Wonderitem",   0x0C,  (2,0,4), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+    ("Hideout Kitchen Stove Wonderitem",                             ("Wonderitem",   0x0C,  (3,0,4), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+    ("Hideout Kitchen Wonderitem",                                   ("Wonderitem",   0x0C,  (3,0,5), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+    ("Hideout 4 Torch Jail Wonderitem 1",                            ("Wonderitem",   0x0C,  (4,0,3), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+    ("Hideout 4 Torch Jail Wonderitem 2",                            ("Wonderitem",   0x0C,  (4,0,4), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+    ("Hideout 2 Torch Jail Wonderitem 1",                            ("Wonderitem",   0x0C,  (5,0,3), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+    ("Hideout 2 Torch Jail Wonderitem 2",                            ("Wonderitem",   0x0C,  (5,0,4), None,                                 'Rupees (5)',                    ("Thieves' Hideout", "Wonderitem"))),
+
+    # Colossus Wonderitems
+    ("Colossus Tree Wonderitem 1",                                   ("Wonderitem",   0x5C, [(0,0,20),(0,2,23)], None,                         'Rupees (5)',                            ("Desert Colossus", "Wonderitem"))),
+    ("Colossus Tree Wonderitem 2",                                   ("Wonderitem",   0x5C, [(0,0,22),(0,2,24)], None,                         'Rupees (5)',                            ("Desert Colossus", "Wonderitem"))),
+    ("Colossus Tree Wonderitem 3 Child",                                   ("Wonderitem",   0x5C, (0,0,23), None,                         'Rupees (5)',                            ("Desert Colossus", "Wonderitem"))),
+    ("Colossus Tree Wonderitem 4",                                   ("Wonderitem",   0x5C, [(0,0,21),(0,2,25)], None,                         'Rupees (5)',                            ("Desert Colossus", "Wonderitem"))),
+    ("Colossus Tree Wonderitem 5",                                   ("Wonderitem",   0x5C, [(0,0,24),(0,2,26)], None,                         'Rupees (20)',                           ("Desert Colossus", "Wonderitem"))),
+
+    # Deku Tree MQ Wonderitems
+    ("Deku Tree MQ Basement Graves Wonderitem 1",                    ("Wonderitem",   0x00,  (7,0,10), None,                        'Recovery Heart',                        ("Deku Tree", "Master Quest", "Wonderitem"))),
+    ("Deku Tree MQ Basement Graves Wonderitem 2",                    ("Wonderitem",   0x00,  (7,0,11), None,                        'Recovery Heart',                        ("Deku Tree", "Master Quest", "Wonderitem"))),
+    ("Deku Tree MQ Basement Graves Wonderitem 3",                    ("Wonderitem",   0x00,  (7,0,12), None,                        'Recovery Heart',                        ("Deku Tree", "Master Quest", "Wonderitem"))),
+    ("Deku Tree MQ Basement Graves Wonderitem 4",                    ("Wonderitem",   0x00,  (7,0,13), None,                        'Recovery Heart',                        ("Deku Tree", "Master Quest", "Wonderitem"))),
+
+    # Jabu Jabu's Belly MQ Wonderitems
+    ("Jabu Jabus Belly MQ Entryway Left Cow Wonderitem",             ("Wonderitem",   0x02,  (0,0,15), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Entryway Right Cow Wonderitem",            ("Wonderitem",   0x02,  (0,0,14), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Elevator Room Cow Wonderitem",             ("Wonderitem",   0x02,  (1,0,20), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+
+    #("Jabu Jabus Belly MQ Pit Room Cow Wonderitem",                  ("Wonderitem",   0x02,  (2,0,14), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Basement Right Cow Wonderitem 1",          ("Wonderitem",   0x02,  (3,0,14), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Basement Right Cow Wonderitem 2",          ("Wonderitem",   0x02,  (3,0,15), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Basement Right Cow Wonderitem 3",          ("Wonderitem",   0x02,  (3,0,16), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Basement Left Cow Wonderitem 1",           ("Wonderitem",   0x02,  (3,0,17), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Basement Left Cow Wonderitem 2",           ("Wonderitem",   0x02,  (3,0,18), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Basement Left Cow Wonderitem 3",           ("Wonderitem",   0x02,  (3,0,19), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Wiggler Platforms Cow Wonderitem",         ("Wonderitem",   0x02,  (4,0,14), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Before Boss Right Cow Wonderitem 1",       ("Wonderitem",   0x02,  (5,0,10), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Before Boss Right Cow Wonderitem 2",       ("Wonderitem",   0x02,  (5,0,11), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Before Boss Left Cow Wonderitem",          ("Wonderitem",   0x02,  (5,0,12), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ After Big Octo Cow Wonderitem",            ("Wonderitem",   0x02,  (6,0,8), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Falling Like-Like Room Right Cow Wonderitem 1", ("Wonderitem",0x02,(11,0,20), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Falling Like-Like Room Right Cow Wonderitem 2", ("Wonderitem",0x02,(11,0,21), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Falling Like-Like Room Right Cow Wonderitem 3", ("Wonderitem",0x02,(11,0,22), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Falling Like-Like Room Left Cow Wonderitem 1", ("Wonderitem",0x02, (11,0,23), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Falling Like-Like Room Left Cow Wonderitem 2", ("Wonderitem",0x02, (11,0,24), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+    ("Jabu Jabus Belly MQ Falling Like-Like Room Left Cow Wonderitem 3", ("Wonderitem",0x02, (11,0,25), None,                        'Recovery Heart',                        ("Jabu Jabu's Belly", "Master Quest", "Wonderitem"))),
+
+    # Bottom of the Well MQ Wonderitems
+    ("Bottom of the Well MQ Main Area Left Slingshot Wonderitem 1",  ("Wonderitem",   0x08,  (0,0,6), None,                         'Rupees (20)',                           ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+    ("Bottom of the Well MQ Main Area Left Slingshot Wonderitem 2",  ("Wonderitem",   0x08,  (0,0,7), None,                         'Rupees (20)',                           ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+    ("Bottom of the Well MQ Main Area Left Slingshot Wonderitem 3",  ("Wonderitem",   0x08,  (0,0,9), None,                         'Deku Seeds (30)',                           ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+    ("Bottom of the Well MQ Main Area Left Slingshot Wonderitem 4",  ("Wonderitem",   0x08,  (0,0,11), None,                         'Rupees (20)',                           ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+    ("Bottom of the Well MQ Main Area Right Slingshot Wonderitem 1", ("Wonderitem",   0x08,  (0,0,8), None,                         'Rupees (20)',                           ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+    ("Bottom of the Well MQ Main Area Right Slingshot Wonderitem 2", ("Wonderitem",   0x08,  (0,0,10), None,                        'Deku Seeds (30)',                       ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+    ("Bottom of the Well MQ Main Area Right Slingshot Wonderitem 3", ("Wonderitem",   0x08,  (0,0,12), None,                        'Rupees (20)',                       ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+    ("Bottom of the Well MQ Main Area Right Slingshot Wonderitem 4", ("Wonderitem",   0x08,  (0,0,13), None,                        'Rupees (20)',                       ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+    ("Bottom of the Well MQ East Inner Room Slingshot Wonderitem 1", ("Wonderitem",   0x08,  (5,0,1), None,                        'Rupees (20)',                       ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+    ("Bottom of the Well MQ East Inner Room Slingshot Wonderitem 2", ("Wonderitem",   0x08,  (5,0,2), None,                        'Rupees (20)',                       ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+    ("Bottom of the Well MQ East Inner Room Slingshot Wonderitem 3", ("Wonderitem",   0x08,  (5,0,3), None,                        'Rupees (20)',                       ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+    ("Bottom of the Well MQ East Inner Room Slingshot Wonderitem 4", ("Wonderitem",   0x08,  (5,0,4), None,                        'Rupees (20)',                       ("Bottom of the Well", "Master Quest", "Wonderitem"))),
+
+    # Fire Temple MQ Wonderitems
+    ("Fire Temple MQ Shortcut Room Hammer Wonderitem 1",             ("Wonderitem",   0x04,  (4,0,7), None,                         'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Shortcut Room Hammer Wonderitem 2",             ("Wonderitem",   0x04,  (4,0,8), None,                         'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Shortcut Room Hammer Wonderitem 3",             ("Wonderitem",   0x04,  (4,0,9), None,                         'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Maze Face On Wall Hookshot Wonderitem",         ("Wonderitem",   0x04,  (5,0,20), None,                         'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Elevator Above Maze Hookshot Wonderitem 1",     ("Wonderitem",   0x04,  (7,0,5), None,                         'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Elevator Above Maze Hookshot Wonderitem 2",     ("Wonderitem",   0x04,  (7,0,6), None,                         'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Elevator Above Maze Hookshot Wonderitem 3",     ("Wonderitem",   0x04,  (7,0,7), None,                         'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Elevator Above Maze Hookshot Wonderitem 4",     ("Wonderitem",   0x04,  (7,0,8), None,                         'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Flame Maze Hookshot Wonderitem",                ("Wonderitem",   0x04,  (10,0,43), None,                       'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ After Upper Flare Dancer Hookshot Wonderitem",  ("Wonderitem",   0x04,  (12,0,1), None,                        'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Hammer Steps Hookshot Wonderitem",              ("Wonderitem",   0x04,  (14,0,2), None,                        'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Shoot Torch on Wall Room Hookshot Wonderitem",  ("Wonderitem",   0x04,  (16,0,1), None,                        'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Boss Key Hookshot Wonderitem",                  ("Wonderitem",   0x04,  (19,0,10), None,                        'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+    ("Fire Temple MQ Boss Key Arrow Wonderitem",                     ("Wonderitem",   0x04,  (19,0,11), None,                        'Rupees (20)',                           ("Fire Temple", "Master Quest", "Wonderitem"))),
+
+    # Water Temple MQ Wonderitems
+    ("Water Temple MQ Below Central Pillar Hookshot Wonderitem",     ("Wonderitem",   0x05,  (2,0,25), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Triple Wall Torch Hookshot/Bow Wonderitem",    ("Wonderitem",   0x05,  (3,0,4), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Hookshot Waterfall Left Hookshot Wonderitem 1",("Wonderitem",   0x05,  (5,0,10), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Hookshot Waterfall Left Hookshot Wonderitem 2",("Wonderitem",   0x05,  (5,0,11), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Hookshot Waterfall Left Hookshot Wonderitem 3",("Wonderitem",   0x05,  (5,0,12), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Hookshot Waterfall Right Hookshot Wonderitem 1",("Wonderitem",   0x05,  (5,0,3), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Hookshot Waterfall Right Hookshot Wonderitem 2",("Wonderitem",   0x05,  (5,0,4), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Hookshot Waterfall Right Hookshot Wonderitem 3",("Wonderitem",   0x05,  (5,0,5), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ After Dark Link Hookshot Wonderitem",          ("Wonderitem",   0x05,  (7,0,1), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Dragon Statue Eyes Hookshot Wonderitem 1",     ("Wonderitem",   0x05,  (8,0,5), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Dragon Statue Eyes Hookshot Wonderitem 2",     ("Wonderitem",   0x05,  (8,0,7), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Dragon Statue Crates Hookshot Wonderitem",     ("Wonderitem",   0x05,  (8,0,6), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Upper Water Switch Hookshot Wonderitem",       ("Wonderitem",   0x05,  (10,0,2), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Boss Hallway Hookshot Wonderitem 1",           ("Wonderitem",   0x05,  (11,0,1), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Boss Hallway Hookshot Wonderitem 2",           ("Wonderitem",   0x05,  (11,0,2), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ 3 Water Spouts Proximity Wonderitem 1",        ("Wonderitem",   0x05,  (15,0,1), None,                        'Rupees (5)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ 3 Water Spouts Proximity Wonderitem 2",        ("Wonderitem",   0x05,  (15,0,2), None,                        'Arrows (10)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Freestanding Key Hookshot Wonderitem",         ("Wonderitem",   0x05,  (16,0,1), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Longshot Chest Hookshot Wonderitem",           ("Wonderitem",   0x05,  (17,0,8), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Compass Chest Hookshot Wonderitem",            ("Wonderitem",   0x05,  (18,0,4), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Map Chest Hookshot Wonderitem",                ("Wonderitem",   0x05,  (19,0,6), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+    ("Water Temple MQ Lizalfos Hallway Hookshot Wonderitem",         ("Wonderitem",   0x05,  (20,0,3), None,                        'Rupees (20)',                           ("Water Temple", "Master Quest", "Wonderitem"))),
+
+    # Shadow Temple Wonderitems
+    ("Shadow Temple 3 Spinning Pots Wonderitem",                     ("Wonderitem",   0x07, (12,0,2), None,                         'Arrows (10)',                           ("Shadow Temple", "Vanilla", "Wonderitem"))),
+
+    # Shadow Temple MQ Wonderitems
+    ("Shadow Temple MQ 3 Spinning Pots Wonderitem",                  ("Wonderitem",   0x07,  (12,0,2), None,                        'Arrows (10)',                           ("Shadow Temple", "Master Quest", "Wonderitem"))),
+
+    # Spirit Temple MQ Wonderitems
+    ("Spirit Temple MQ Chest Switch Sword Wonderitem",               ("Wonderitem",   0x06,  (18,0,10), None,                       'Recovery Heart',                        ("Spirit Temple", "Master Quest", "Wonderitem"))),
+    ("Spirit Temple MQ Chest Switch Hammer Wonderitem",              ("Wonderitem",   0x06,  (18,0,9), None,                        'Recovery Heart',                        ("Spirit Temple", "Master Quest", "Wonderitem"))),
+
+    # Gerudo Training Ground Wonderitems
+    ("Gerudo Training Ground Eye Statue Wonderitem",                 ("Wonderitem",   0x0B,  (4,0,3), None,                         'Arrows (10)',                           ("Shadow Temple", "Vanilla", "Wonderitem"))),
+    ("Gerudo Training Ground Hammer Room Wonderitem",                ("Wonderitem",   0x0B,  (5,0,17), None,                         'Arrows (10)',                           ("Shadow Temple", "Vanilla", "Wonderitem"))),
+    ("Gerudo Training Ground Beamos Wonderitem",                     ("Wonderitem",   0x0B,  (7,0,13), None,                         'Arrows (10)',                           ("Shadow Temple", "Vanilla", "Wonderitem"))),
+
+    # Gerudo Training Ground MQ Wonderitems
+    ("Gerudo Training Ground MQ Eye Statue Proximity Wonderitem",    ("Wonderitem",   0x0B,  (4,0,5), None,                         'Rupees (20)',                           ("Gerudo Training Ground", "Master Quest", "Wonderitem"))),
+    ("Gerudo Training Ground MQ Dinolfos Arrow Wonderitem",          ("Wonderitem",   0x0B,  (7,0,9), None,                         'Rupees (20)',                           ("Gerudo Training Ground", "Master Quest", "Wonderitem"))), # One of the actors in this room appears to have been deleted so this actor is #9. The 0x185 Checkable Spot actor is missing in MQU.json
+
     # Hints
     ("ZR Frogs Ocarina Minigame Hint",                               ("Hint",         None,  None, None,                            None,                                    None)),
 ])
@@ -2251,9 +2501,9 @@ location_groups = {
     'Boss': [name for (name, data) in location_table.items() if data[0] == 'Boss'],
     'ActorOverride': [name for (name, data) in location_table.items() if data[0] == 'ActorOverride'],
     'BossHeart': [name for (name, data) in location_table.items() if data[0] == 'BossHeart'],
-    'CollectableLike': [name for (name, data) in location_table.items() if data[0] in ('Collectable', 'BossHeart', 'GS Token')],
+    'CollectableLike': [name for (name, data) in location_table.items() if data[0] in ('Collectable', 'BossHeart', 'GS Token', 'SilverRupee')],
     'CanSee': [name for (name, data) in location_table.items()
-               if data[0] in ('Collectable', 'BossHeart', 'GS Token', 'Shop', 'Freestanding', 'ActorOverride', 'RupeeTower', 'Pot', 'Crate', 'FlyingPot', 'SmallCrate', 'Beehive')
+               if data[0] in ('Collectable', 'BossHeart', 'GS Token', 'Shop', 'MaskShop', 'Freestanding', 'ActorOverride', 'RupeeTower', 'Pot', 'Crate', 'FlyingPot', 'SmallCrate', 'Beehive', 'SilverRupee')
                # Treasure Box Shop, Bombchu Bowling, Hyrule Field (OoT), Lake Hylia (RL/FA)
                or data[0:2] in [('Chest', 0x10), ('NPC', 0x4B), ('NPC', 0x51), ('NPC', 0x57)]],
     'Dungeon': [name for (name, data) in location_table.items() if data[5] is not None and any(dungeon in data[5] for dungeon in dungeons)],

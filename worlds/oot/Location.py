@@ -14,8 +14,10 @@ locnames_pre_70 = {
     "ZR Frogs Song of Time",
 }
 loctypes_70 = {'Beehive', 'Pot', 'FlyingPot', 'Crate', 'SmallCrate', 'RupeeTower', 'Freestanding', 'ActorOverride'}
+loctypes_81 = {'Wonderitem'}
 new_name_order = sorted(location_table.keys(),
-    key=lambda name: 2 if location_table[name][0] in loctypes_70
+    key=lambda name: 3 if location_table[name][0] in loctypes_81
+                else 2 if location_table[name][0] in loctypes_70
                 else 1 if name in locnames_pre_70
                 else 0)
 
@@ -111,15 +113,15 @@ def build_location_name_groups() -> dict:
     }
 
     # Delete tags which are a combination of other tags
-    del ret['Death Mountain']
-    del ret['Forest']
-    del ret['Gerudo']
-    del ret['Kakariko']
-    del ret['Market']
+    ret.pop('Death Mountain', None)
+    ret.pop('Forest', None)
+    ret.pop('Gerudo', None)
+    ret.pop('Kakariko', None)
+    ret.pop('Market', None)
 
     # Delete Vanilla and MQ tags because they are just way too broad
-    del ret['Vanilla']
-    del ret['Master Quest']
+    ret.pop('Vanilla', None)
+    ret.pop('Master Quest', None)
 
     rename(ret, 'Beehive', 'Beehives')
     rename(ret, 'Cow', 'Cows')
@@ -133,6 +135,8 @@ def build_location_name_groups() -> dict:
     rename(ret, 'the Market', 'Market')
     rename(ret, 'the Graveyard', 'Graveyard')
     rename(ret, 'the Lost Woods', 'Lost Woods')
+    if 'Wonderitem' in ret:
+        rename(ret, 'Wonderitem', 'Wonderitems')
 
     return ret
 

@@ -512,6 +512,8 @@ class OOTWorld(World):
 
         # Get hint distribution
         self.hint_dist_user = read_json(data_path('Hints', f'{self.hint_dist}.json'))
+        if 'combine_trial_hints' not in self.hint_dist_user:
+            self.hint_dist_user['combine_trial_hints'] = False
         self.distribution = _OOTDistribution(self)
 
         self.added_hint_types = {}
@@ -1279,7 +1281,7 @@ class OOTWorld(World):
             "logic_rules", "logic_no_night_tokens_without_suns_song", "logic_tricks",
             "warp_songs", "shuffle_song_items","shuffle_medigoron_carpet_salesman", "shuffle_frog_song_rupees",
             "shuffle_scrubs", "shuffle_child_trade", "shuffle_freestanding_items", "shuffle_pots", "shuffle_crates",
-            "shuffle_cows", "shuffle_beehives", "shuffle_kokiri_sword", "shuffle_ocarinas", "shuffle_gerudo_card",
+            "shuffle_cows", "shuffle_beehives", "shuffle_wonderitems", "shuffle_kokiri_sword", "shuffle_ocarinas", "shuffle_gerudo_card",
             "shuffle_beans", "starting_age", "bombchus_in_logic", "spawn_positions", "owl_drops",
             "no_epona_race", "skip_some_minigame_phases", "complete_mask_quest", "free_scarecrow", "plant_beans",
             "chicken_count", "big_poe_count", "fae_torch_count", "blue_fire_arrows",

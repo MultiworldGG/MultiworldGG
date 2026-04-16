@@ -1,5 +1,5 @@
 {
-    "name":                  "important checks",
+    "name":                  "important_checks",
     "gui_name":              "Important Checks",
     "description":           "Hint Distribution important check hints. 6 Path hints 1 each and 34 important check hints at 1 each telling you how many major items are in an area.",
     "add_locations":         [],

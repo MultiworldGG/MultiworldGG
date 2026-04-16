@@ -1,11 +1,9 @@
-from .Utils import data_path, __version__
+from .Utils import data_path
 from .Colors import *
 import logging
 from . import Music as music
 from . import Sounds as sfx
 from . import IconManip as icon
-from .JSONDump import dump_obj, CollapseList, CollapseDict, AlignedDict, SortedDict
-import json
 
 logger = logging.getLogger('')
 

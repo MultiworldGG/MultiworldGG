@@ -624,6 +624,11 @@ class ShuffleBeehives(Toggle):
     display_name = "Shuffle Beehives"
 
 
+class ShuffleWonderitems(Toggle):
+    """Shuffles Wonderitems into the item pool."""
+    display_name = "Shuffle Wonderitems"
+
+
 class ShuffleFrogRupees(Toggle):
     """Shuffles the purple rupees received from the Zora's River frogs."""
     display_name = "Shuffle Frog Song Rupees"
@@ -710,6 +715,7 @@ shuffle_options: typing.Dict[str, type(Option)] = {
     "shuffle_crates": ShuffleCrates,
     "shuffle_cows": ShuffleCows,
     "shuffle_beehives": ShuffleBeehives,
+    "shuffle_wonderitems": ShuffleWonderitems,
     "shuffle_kokiri_sword": ShuffleSword,
     "shuffle_ocarinas": ShuffleOcarinas,
     "shuffle_gerudo_card": ShuffleCard,
@@ -1038,9 +1044,21 @@ class CorrectChestAppearance(Choice):
     option_classic = 3
 
 
-class MinorInMajor(Toggle):
-    """Hylian Shield, Deku Shield, and Bombchus appear in big/gold chests."""
+class MinorInMajor(OptionSet):
+    """Minor items appear in big/gold chests.
+    bombchus: Bombchus appear in big/gold chests.
+    shields: Hylian Shield and Deku Shield appear in big/gold chests.
+    capacity: Deku Stick and Deku Nut capacity upgrades appear in big/gold chests."""
     display_name = "Minor Items in Big/Gold Chests"
+    valid_keys = {"bombchus", "shields", "capacity"}
+
+    @classmethod
+    def from_any(cls, data) -> "MinorInMajor":
+        if data is True or data == 1:
+            return cls.from_any({"bombchus", "shields", "capacity"})
+        if data is False or data == 0:
+            return cls.from_any(set())
+        return super().from_any(data)
 
 
 class InvisibleChests(Toggle):
@@ -1485,6 +1503,7 @@ class OoTOptions(PerGameCommonOptions):
     shuffle_crates: ShuffleCrates
     shuffle_cows: ShuffleCows
     shuffle_beehives: ShuffleBeehives
+    shuffle_wonderitems: ShuffleWonderitems
     shuffle_kokiri_sword: ShuffleSword
     shuffle_ocarinas: ShuffleOcarinas
     shuffle_gerudo_card: ShuffleCard

@@ -198,6 +198,15 @@ def set_rules(ootworld):
             location.price = ootworld.shop_prices[location.name]
         add_rule(location, create_shop_rule(location, ootworld.parser))
 
+    if ootworld.shuffle_silver_rupees and ootworld.shuffle_silver_rupees != 'vanilla':
+        # Collecting the final BotW basement silver rupee and activating the cutscene of the door
+        # unlocking while on the ladder causes a softlock.
+        # Vanilla bug: https://github.com/OoTRandomizer/OoT-Randomizer/issues/2004
+        location = multiworld.get_location('Bottom of the Well Basement Silver Rupee Ladders Middle', player)
+        if location:
+            forbid_item(location, 'Silver Rupee (Bottom of the Well Basement)', ootworld.player)
+            forbid_item(location, 'Silver Rupee Pouch (Bottom of the Well Basement)', ootworld.player)
+
     if (ootworld.dungeon_mq['Forest Temple'] and ootworld.shuffle_bosskeys == 'dungeon'
         and ootworld.shuffle_smallkeys == 'dungeon' and ootworld.tokensanity == 'off'):
         # First room chest needs to be a small key. Make sure the boss key isn't placed here.

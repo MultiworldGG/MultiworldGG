@@ -3,7 +3,8 @@ import os
 import subprocess
 from functools import lru_cache
 
-__version__ = '8.0.0'
+with open(os.path.join(os.path.dirname(__file__), 'archipelago.json')) as _f:
+    __version__: str = json.load(_f)['world_version']
 
 
 def data_path(*args):

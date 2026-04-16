@@ -20,12 +20,8 @@ from BaseClasses import Region
 # TODO: Port Search.py from upstream or implement AP-native reachability
 # from .Search import Search
 from .TextBox import line_wrap, rom_safe_text
-from .Utils import data_path, read_json
-
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias
-else:
-    TypeAlias = str
+from .Utils import data_path
+from typing import TypeAlias
 
 if TYPE_CHECKING:
     from BaseClasses import Location, MultiWorld
@@ -95,22 +91,6 @@ class GossipText:
     def __str__(self) -> str:
         return get_raw_text(line_wrap(color_text(self)))
 
-
-#   Abbreviations
-#       DMC     Death Mountain Crater
-#       DMT     Death Mountain Trail
-#       GC      Goron City
-#       GV      Gerudo Valley
-#       HC      Hyrule Castle
-#       HF      Hyrule Field
-#       KF      Kokiri Forest
-#       LH      Lake Hylia
-#       LW      Lost Woods
-#       SFM     Sacred Forest Meadow
-#       ToT     Temple of Time
-#       ZD      Zora's Domain
-#       ZF      Zora's Fountain
-#       ZR      Zora's River
 
 gossipLocations: dict[int, GossipStone] = {
     0x0405: GossipStone('DMC (Bombable Wall)',              'DMC Gossip Stone'),
@@ -187,15 +167,18 @@ def is_major_item(item: Item) -> bool:
     return bool(getattr(item, "majoritem", getattr(item, "advancement", False)))
 
 
-def is_restricted_dungeon_item(item: Item) -> bool:
-    if item.world is None:
+def is_restricted_dungeon_item(item: Item, world: Optional['OOTWorld'] = None) -> bool:
+    item_world = getattr(item, 'world', None)
+    if item_world is None and world is not None:
+        item_world = world.multiworld.worlds.get(item.player)
+    if item_world is None:
         return False
     return (
-        ((item.map or item.compass) and item.world.shuffle_mapcompass == 'dungeon') or
-        (item.type == 'SmallKey' and item.world.shuffle_smallkeys == 'dungeon') or
-        (item.type == 'BossKey' and item.world.shuffle_bosskeys == 'dungeon') or
-        (item.type == 'GanonBossKey' and item.world.shuffle_ganon_bosskey == 'dungeon') or
-        (item.type == 'SilverRupee' and item.world.shuffle_silver_rupees == 'dungeon')
+        ((getattr(item, 'map', False) or getattr(item, 'compass', False)) and item_world.shuffle_mapcompass == 'dungeon') or
+        (getattr(item, 'type', None) == 'SmallKey' and item_world.shuffle_smallkeys == 'dungeon') or
+        (getattr(item, 'type', None) == 'BossKey' and item_world.shuffle_bosskeys == 'dungeon') or
+        (getattr(item, 'type', None) == 'GanonBossKey' and item_world.shuffle_ganon_bosskey == 'dungeon') or
+        (getattr(item, 'type', None) == 'SilverRupee' and item_world.shuffle_silver_rupees == 'dungeon')
     )
 
 
@@ -372,14 +355,17 @@ hintPrefixes: list[str] = [
 
 
 def get_simple_hint_no_prefix(item: Item) -> Hint:
-    hint = get_hint(item.name, True).text
+    try:
+        hint = get_hint(item.name, True).text
+    except KeyError:
+        return item.name
 
     for prefix in hintPrefixes:
         if hint.startswith(prefix):
             # return without the prefix
             return hint[len(prefix):]
 
-    # no prefex
+    # no prefix
     return hint
 
 
@@ -974,7 +960,7 @@ def get_random_location_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn
     locations = list(filter(lambda location:
         is_not_checked([location], checked)
         and location.item.type not in ('Drop', 'Event', 'Shop', 'DungeonReward')
-        and not is_restricted_dungeon_item(location.item)
+        and not is_restricted_dungeon_item(location.item, world)
         and not location.locked
         and location.name not in world.hint_exclusions
         and location.name not in world.hint_type_overrides['item']
@@ -1166,7 +1152,7 @@ def get_important_check_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn
     for location in world.multiworld.get_filled_locations(world.player):
         if (HintArea.at(location).text(world.clearer_hints) not in top_level_locations
                 and (HintArea.at(location).text(world.clearer_hints) + ' Important Check') not in checked
-                and "pocket" not in HintArea.at(location).text(world.clearer_hints)):
+                and HintArea.at(location) != HintArea.ROOT):
             top_level_locations.append(HintArea.at(location).text(world.clearer_hints))
     hint_loc = random.choice(top_level_locations)
     item_count = 0
@@ -1230,25 +1216,7 @@ hint_func: dict[str, HintFunc | BarrenFunc] = {
     'important_check':  get_important_check_hint
 }
 
-hint_dist_keys: set[str] = {
-    'trial',
-    'always',
-    'dual_always',
-    'entrance_always',
-    'woth',
-    'goal',
-    'barren',
-    'item',
-    'song',
-    'overworld',
-    'dungeon',
-    'entrance',
-    'sometimes',
-    'dual',
-    'random',
-    'junk',
-    'named-item'
-}
+hint_dist_keys: set[str] = set(hint_func)
 
 
 def build_bingo_hint_list(board_url: str) -> list[str]:
@@ -1304,6 +1272,19 @@ def always_named_item(world: 'OOTWorld', locations: Iterable['Location']):
             always_item = location.item.name
         if always_item in world.named_item_pool and oot_world_count == 1:
             world.named_item_pool.remove(always_item)
+
+
+def natjoin(elements: Iterable[str], conjunction: str = 'and') -> Optional[str]:
+    elements = list(elements)
+    if len(elements) == 0:
+        return None
+    elif len(elements) == 1:
+        return elements[0]
+    elif len(elements) == 2:
+        return f'{elements[0]} {conjunction} {elements[1]}'
+    else:
+        *rest, last = elements
+        return f'{", ".join(rest)}, {conjunction} {last}'
 
 
 def build_gossip_hints(worlds: list['OOTWorld']) -> None:
@@ -1469,7 +1450,6 @@ def build_world_gossip_hints(world: 'OOTWorld', checked_locations: Optional[set[
             fixed_num = world.hint_dist_user['distribution'][hint_type]['fixed']
             hint_weight = world.hint_dist_user['distribution'][hint_type]['weight']
         else:
-            logging.getLogger('').warning("Hint copies is zero for type %s. Assuming this hint type should be disabled.", hint_type)
             fixed_num = 0
             hint_weight = 0
         hint_dist[hint_type] = (hint_weight, world.hint_dist_user['distribution'][hint_type]['copies'])
@@ -1552,13 +1532,19 @@ def build_world_gossip_hints(world: 'OOTWorld', checked_locations: Optional[set[
         elif world.trials_random and world.trials == 0:
             add_hint(world,stone_groups, GossipText("Sheik dispelled the barrier around #Ganon's Tower#.", ['Yellow']), hint_dist['trial'][1], force_reachable=True, hint_type='trial')
         elif 3 < world.trials < 6:
-            for trial, skipped in world.skipped_trials.items():
-                if skipped:
-                    add_hint(world,stone_groups, GossipText("the #%s Trial# was dispelled by Sheik." % trial, ['Yellow']), hint_dist['trial'][1], force_reachable=True, hint_type='trial')
+            if world.hint_dist_user.get('combine_trial_hints', False) and world.trials < 5:
+                add_hint(world,stone_groups, GossipText("the #%s Trials# were dispelled by Sheik." % natjoin(trial for trial, skipped in world.skipped_trials.items() if skipped), ['Yellow']), hint_dist['trial'][1], force_reachable=True, hint_type='trial')
+            else:
+                for trial, skipped in world.skipped_trials.items():
+                    if skipped:
+                        add_hint(world,stone_groups, GossipText("the #%s Trial# was dispelled by Sheik." % trial, ['Yellow']), hint_dist['trial'][1], force_reachable=True, hint_type='trial')
         elif 0 < world.trials <= 3:
-            for trial, skipped in world.skipped_trials.items():
-                if not skipped:
-                    add_hint(world,stone_groups, GossipText("the #%s Trial# protects Ganon's Tower." % trial, ['Pink']), hint_dist['trial'][1], force_reachable=True, hint_type='trial')
+            if world.hint_dist_user.get('combine_trial_hints', False) and world.trials > 1:
+                add_hint(world,stone_groups, GossipText("the #%s Trials# protect Ganon's Tower." % natjoin(trial for trial, skipped in world.skipped_trials.items() if not skipped), ['Pink']), hint_dist['trial'][1], force_reachable=True, hint_type='trial')
+            else:
+                for trial, skipped in world.skipped_trials.items():
+                    if not skipped:
+                        add_hint(world,stone_groups, GossipText("the #%s Trial# protects Ganon's Tower." % trial, ['Pink']), hint_dist['trial'][1], force_reachable=True, hint_type='trial')
 
     # Add user-specified hinted item locations if using a built-in hint distribution
     # Raise error if hint copies is zero
@@ -1721,7 +1707,7 @@ def build_boss_string(reward: str, color: str, world: 'OOTWorld') -> str:
 
 
 def build_bridge_reqs_string(world: 'OOTWorld') -> str:
-    string = "\x13\x12" # Light Arrow Icon
+    string = "\x13\x3C" # Master Sword icon
     if world.bridge == 'open':
         string += "The awakened ones will have #already created a bridge# to the castle where the evil dwells."
     else:
@@ -1736,7 +1722,10 @@ def build_bridge_reqs_string(world: 'OOTWorld') -> str:
                 'hearts':     (world.bridge_hearts,     "#heart#",                        "#hearts#"),
             }[world.bridge]
             item_req_string = f'{count} {singular if count == 1 else plural}'
-        string += f"The awakened ones will await for the Hero to collect {item_req_string}."
+        if world.clearer_hints:
+            string += f"The rainbow bridge will be built once the Hero collects {item_req_string}."
+        else:
+            string += f"The awakened ones will await for the Hero to collect {item_req_string}."
     return str(GossipText(string, ['Green'], prefix=''))
 
 

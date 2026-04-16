@@ -1,5 +1,3 @@
-from collections import namedtuple
-from itertools import chain
 from .Items import item_table
 from .Location import DisableType
 from .LocationList import location_groups
@@ -602,6 +600,15 @@ def get_pool_core(world):
         # Beehives
         elif location.type == 'Beehive':
             if world.shuffle_beehives:
+                shuffle_item = True
+            else:
+                shuffle_item = False
+                location.disabled = DisableType.DISABLED
+                location.show_in_spoiler = False
+
+        # Wonderitems
+        elif location.type == 'Wonderitem':
+            if world.shuffle_wonderitems:
                 shuffle_item = True
             else:
                 shuffle_item = False

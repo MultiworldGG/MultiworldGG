@@ -1543,6 +1543,261 @@ known_logic_tricks = {
                     In this case to do it without taking damage is
                     especially precise.
                     '''},
+    'Adult Kokiri Forest GS with Hover Boots': {
+        'name'    : 'logic_adult_kokiri_gs_hovers',
+        'tags'    : ("Kokiri Forest", "Gold Skulltulas", "Overworld", "Adult",),
+        'tooltip' : '''\
+                    The Skulltula can be obtained without Hookshot
+                    by using the Hover Boots off of one of the roots.
+                    '''},
+    'Adult Kokiri Forest GS with Nothing': {
+        'name'    : 'logic_adult_kokiri_gs_nothing',
+        'tags'    : ("Kokiri Forest", "Gold Skulltulas", "Overworld", "Adult",),
+        'tooltip' : '''\
+                    The Skulltula can be obtained without Hookshot by
+                    using a precise jump off of one of the roots.
+                    '''},
+    'Boulder Freestandings with Boomerang': {
+        'name'    : 'logic_boomerang_boulders',
+        'tags'    : ("General", "Freestandings", "Lost Woods", "Death Mountain Trail", "Ice Cavern", "Ganon's Castle MQ", "Vanilla Dungeons", "Master Quest", "Overworld", "Entrance Shuffle", "Child",),
+        'tooltip' : '''\
+                    Obtain freestandings inside boulders or red ice
+                    without having to remove the boulder first.
+                    Applies to:
+                    - LW Under Boulder Blue Rupee
+                    - DMT Rock Blue Rupee
+                    - DMT Rock Red Rupee
+                    - Ice Cavern Frozen Blue Rupee
+                    - Ganons Castle MQ Water Trial Recovery Heart
+                    '''},
+    "Dodongo's Cavern Bombchu the Eyes from Below": {
+        'name'    : 'logic_dc_chu_eyes',
+        'tags'    : ("Dodongo's Cavern", "Vanilla Dungeons", "Child", "Adult",),
+        'tooltip' : '''\
+                    You can use Bombchus to skip needing
+                    to go through the dungeon, allowing
+                    immediate access to the back areas.
+                    '''},
+    'Fire Temple MQ Entrance Flame Wall Skip as Child': {
+        'name'    : 'logic_fire_mq_child_flame',
+        'tags'    : ("Fire Temple MQ", "Master Quest", "Child", "Entrance Shuffle", "Crates"),
+        'tooltip' : '''\
+                    If you move quickly you can sneak past the edge of
+                    a flame wall before it can rise up to block you.
+                    To do it without taking damage is more precise.
+                    Allows child to reach two crates in the room before
+                    the boss. This trick is only relevant if both dungeon
+                    entrances and dungeon crates are shuffled, and the
+                    trick "Fewer Tunic Requirements" is also enabled.
+                    '''},
+    'Fire Trial Torch Slug Silver Rupee as Child': {
+        'name'    : 'logic_fire_trial_slug_rupee',
+        'tags'    : ("Ganon's Castle", "Entrance Shuffle", "Vanilla Dungeons", "Silver Rupees", "Child"),
+        'tooltip' : '''\
+                    To jump to the platform with the Torch Slug as child requires
+                    that the sinking platform be almost as high as possible. This
+                    trick is only relevant if Silver Rupees and the Ganon\'s Castle
+                    entrance are both shuffled, and the Fewer Tunic Requirements
+                    trick is also enabled.
+                    '''},
+    'Forest Temple West Courtyard Hearts with Boomerang': {
+        'name'    : 'logic_forest_courtyard_hearts',
+        'tags'    : ("Forest Temple", "Forest Temple MQ", "Entrance Shuffle", "Vanilla Dungeons", "Master Quest", "Child", "Freestandings"),
+        'tooltip' : '''\
+                    The recovery hearts in the western courtyard can be
+                    obtained from below with a precise Boomerang throw.
+                    Only relevant if dungeon Freestandings are shuffled.
+                    Applies in both Vanilla and Master Quest.
+                    '''},
+    "Gerudo's Fortress Break Room Entrance with Precise Jump": {
+        'name'    : 'logic_gf_break_room_jump',
+        'tags'    : ("Gerudo's Fortress", "Overworld", "Adult", "Entrance Shuffle", "Pots", "Crates",),
+        'tooltip' : '''\
+                    With a precise jump from the ledge below the
+                    Gold Skullula, Adult can access the break room
+                    entrance with no additional items. This trick
+                    is only relevant if Thieves\' Hideout entrances,
+                    overworld pots, or overworld crates are shuffled.
+                    '''},
+    'Gerudo Training Ground Eye Statue Room Wonderitem with Jump Slash': {
+        'name'    : 'logic_gtg_eye_statue_wonderitem',
+        'tags'    : ("Gerudo Training Ground", "Gerudo Training Ground MQ", "Wonderitems", "Master Quest", "Vanilla Dungeons", "Adult",),
+        'tooltip' : '''\
+                    The wonderitem on top of the eye statue can be reached
+                    with a precise jump slash.
+                    '''},
+    'Gerudo Training Ground Boulder Room Flame Wall Skip': {
+        'name'    : 'logic_gtg_flame_wall',
+        'tags'    : ("Gerudo Training Ground", "Vanilla Dungeons", "Silver Rupees", "Child", "Adult",),
+        'tooltip' : '''\
+                    If you move quickly you can sneak past the edge of a flame wall
+                    before it can rise up to block you. To do so without taking damage
+                    is more precise. This trick is only relevant if Silver Rupees are
+                    shuffled, or if "Gerudo Training Ground Left Side Ceiling Silver
+                    Rupee without Hookshot" is also enabled.
+                    '''},
+    'Gerudo Training Ground MQ Eye Statue Room Switch with Jump Slash': {
+        'name'    : 'logic_gtg_mq_eye_statue_jumpslash',
+        'tags'    : ("Gerudo Training Ground MQ", "Silver Rupees", "Master Quest", "Adult",),
+        'tooltip' : '''\
+                    The switch that unbars the door to the Ice Arrows chest
+                    can be hit with a precise jump slash. This trick is
+                    only relevant if Silver Rupees are shuffled, or if
+                    "Gerudo Training Ground Left Side Ceiling Silver Rupee
+                    without Hookshot" is also enabled.
+                    '''},
+    'Gerudo Training Ground MQ Central Maze Right to Dinolfos Room with Hookshot': {
+        'name'    : 'logic_gtg_mq_maze_right',
+        'tags'    : ("Gerudo Training Ground MQ", "Silver Rupees", "Master Quest", "Adult",),
+        'tooltip' : '''\
+                    You can stand next to the flame circle to the right of
+                    the entrance into the lava room from central maze right.
+                    From there, Hookshot can reach the torch to access the
+                    Dinolfos room without Bow. This trick is only relevant
+                    if Silver Rupees are shuffled or if one of the two tricks
+                    to collect the ceiling Silver Rupee without Longshot
+                    is enabled.
+                    '''},
+    'Gerudo Training Ground Highest Underwater Rupee with Gold Scale': {
+        'name'    : 'logic_gtg_underwater_highest',
+        'tags'    : ("Gerudo Training Ground", "Vanilla Dungeons", "Silver Rupees", "Child", "Adult",),
+        'tooltip' : '''\
+                    The camera is a menance while attempting to do this,
+                    though, as least as Adult, you will be automatically
+                    pulled by the current into the rupee. This trick is
+                    only relevant if Silver Rupees are shuffled.
+                    '''},
+    'Ice Cavern Frozen Pot with No Additional Items': {
+        'name'    : 'logic_ice_frozen_pot',
+        'tags'    : ("Ice Cavern", "Vanilla Dungeons", "Pots", "Adult",),
+        'tooltip' : '''\
+                    A spin attack can slash the
+                    pot through the red ice.
+                    '''},
+    'Ice Cavern Frozen Rupee with Nothing': {
+        'name'    : 'logic_ice_frozen_rupee',
+        'tags'    : ("Ice Cavern", "Vanilla Dungeons", "Freestandings", "Child", "Adult",),
+        'tooltip' : '''\
+                    This rupee can be obtained with no items by
+                    side-hopping into the corner behind the ice.
+                    '''},
+    "Ganon's Castle MQ Shadow Trial without Lens of Truth": {
+        'name'    : 'logic_lens_shadow_trial_mq',
+        'tags'    : ("Lens of Truth", "Ganon's Castle MQ", "Master Quest", "Adult",),
+        'tooltip' : '''\
+                    Removes the requirements for the Lens of Truth
+                    in the Shadow Trial in Ganon\'s Castle MQ.
+                    Be sure to also enable "Ganon\'s Castle MQ Except
+                    Shadow Trial without Lens of Truth" to remove
+                    the Lens requirement for the rest of the Castle.
+                    '''},
+    'Shadow Temple MQ After Boat GS without Hookshot': {
+        'name'    : 'logic_shadow_mq_after_boat_gs',
+        'tags'    : ("Shadow Temple MQ", "Master Quest", "Adult", "Gold Skulltulas", "Shortcuts",),
+        'tooltip' : '''\
+                    To obtain this Skulltula Token without the Hookshot
+                    entails falling into the chasm. Any projectile or
+                    Din\'s Fire can be used to kill the Skulltula, and
+                    you can also use a nearby pot. However, with the
+                    statue down, any trajectory to throw a pot is
+                    blocked, so you must jump above the Skulltula and
+                    shield-drop the pot onto it. This trick is only
+                    relevant if Shadow dungeon shortcuts are enabled.
+                    '''},
+    'Shadow Temple Triple Spinning Pots with Bombchus': {
+        'name'    : 'logic_shadow_triple_pots',
+        'tags'    : ("Shadow Temple", "Shadow Temple MQ", "Vanilla Dungeons", "Master Quest", "Adult", "Freestandings"),
+        'tooltip' : '''\
+                    Release the Bombchus with good timing so that
+                    they explode near the bottoms of the pots.
+                    This trick is only relevant if dungeon
+                    freestandings are shuffled.
+                    '''},
+    'Spirit Temple Climb to Adult Side with Hover Boots': {
+        'name'    : 'logic_spirit_adult_side_hovers',
+        'tags'    : ("Spirit Temple", "Vanilla Dungeons", "Adult", "Shortcuts",),
+        'tooltip' : '''\
+                    With some help from the nearby Armos, Adult
+                    can use the Hover Boots to climb to the Adult
+                    side of the dungeon. Relevant only when
+                    Spirit Temple boss shortcuts are on.
+                    '''},
+    'Spirit Temple Collect Metal Fence GS Through the Fence': {
+        'name'    : 'logic_spirit_fence_gs',
+        'tags'    : ("Spirit Temple", "Silver Rupees", "Vanilla Dungeons", "Child",),
+        'tooltip' : '''\
+                    After killing the Skulltula through the fence, the token
+                    can be collected from the wrong side of the fence by
+                    moving against the fence in a certain way. Also, the
+                    Skulltula can be defeated using the Kokiri Sword, by
+                    jump slashing into it after letting go from the fence.
+                    This trick is only relevant if Silver Rupees are shuffled.
+                    '''},
+    'Spirit Temple MQ Water Jet Silver Rupee without Hammer': {
+        'name'    : 'logic_spirit_mq_water_rupee',
+        'tags'    : ("Spirit Temple MQ", "Master Quest", "Adult", "Silver Rupees"),
+        'tooltip' : '''\
+                    You can obtain the Silver Rupee inside the water
+                    jet by Longshotting through it to a chest in the
+                    first room. Because this is the very chest that
+                    collecting this rupee normally spawns, this trick
+                    is only relevant when Silver Rupees are shuffled.
+                    '''},
+    'Spirit Temple Sun Block Room Chest with Bow': {
+        'name'    : 'logic_spirit_sun_chest_bow',
+        'tags'    : ("Spirit Temple", "Vanilla Dungeons", "Adult",),
+        'tooltip' : '''\
+                    Using the blocks in the room as platforms you can
+                    get lines of sight to all three torches. The timer
+                    on the torches is quite short so you must move
+                    quickly in order to light all three.
+                    '''},
+    'Spirit Temple Sun Block Room Chest with Sticks without Silver Rupees': {
+        'name'    : 'logic_spirit_sun_chest_no_rupees',
+        'tags'    : ("Spirit Temple", "Silver Rupees", "Vanilla Dungeons", "Child",),
+        'tooltip' : '''\
+                    With lightning fast movement, the chest can
+                    be spawned using a lit stick brought in from
+                    the main room. This trick is only relevant
+                    if Silver Rupees are shuffled.
+                    '''},
+    'Death Mountain Trail Lower Red Rock GS with Jump Slash': {
+        'name'    : 'logic_trail_gs_lower',
+        'tags'    : ("Death Mountain Trail", "Gold Skulltulas", "Overworld", "Adult",),
+        'tooltip' : '''\
+                    After killing the Skulltula, the token can be fished
+                    out of the rock without needing to destroy it, by
+                    jumpslashing into it from a precise position.
+                    '''},
+    'Water Temple Morpha without Hookshot': {
+        'name'    : 'logic_water_morpha',
+        'tags'    : ("Water Temple", "Water Temple MQ", "Entrance Shuffle", "Vanilla Dungeons", "Master Quest", "Child", "Adult",),
+        'tooltip' : '''\
+                    Morpha sometimes bounces out of the water,
+                    and during that time it is possible to hit
+                    it with a sword. This is only relevant in
+                    conjunction with shuffled boss entrances.
+                    '''},
+    'Water Temple MQ Reach Dark Link without Longshot': {
+        'name'    : 'logic_water_mq_dark_link',
+        'tags'    : ("Water Temple MQ", "Master Quest", "Adult",),
+        'tooltip' : '''\
+                    The chasm before Dark Link can be crossed
+                    with precise use of the Hover Boots and
+                    the Hookshot.
+                    '''},
+    'Water Temple North Basement with Hover Boots': {
+        'name'    : 'logic_water_north_basement',
+        'tags'    : ("Water Temple", "Water Temple MQ", "Vanilla Dungeons", "Master Quest", "Adult",),
+        'tooltip' : '''\
+                    With precise Hover Boots movement it is possible to reach
+                    the northern basement region without needing the Longshot.
+                    It is not necessary to take damage from the spikes. In
+                    Vanilla, the Gold Skulltula Token in the following room can
+                    also be obtained with just the Hover Boots. In Master Quest,
+                    this trick is only relevant if "Water Temple MQ Reach Dark
+                    Link without Longshot" is also enabled.
+                    '''},
 }
 
 normalized_name_tricks = {trick.casefold(): info for (trick, info) in known_logic_tricks.items()}
