@@ -9,6 +9,7 @@ Additional components can be added to worlds.LauncherComponents.components.
 """
 
 import argparse
+import importlib
 import logging
 import re
 import logging.handlers
@@ -17,6 +18,8 @@ import os
 import shlex
 import subprocess
 import sys
+import threading
+import time
 import urllib.parse
 import webbrowser
 from collections.abc import Callable, Sequence
@@ -39,7 +42,15 @@ from Updater import get_latest_release_info, download_and_install_win
 if __name__ == "__main__":
     init_logging('Launcher')
 
-from worlds.LauncherComponents import Component, components, icon_paths, SuffixIdentifier, Type
+from worlds.LauncherComponents import (
+    Component,
+    components,
+    has_world_components,
+    icon_paths,
+    resolve_icon_path,
+    SuffixIdentifier,
+    Type,
+)
 
 apname = "Archipelago" if not Utils.instance_name else Utils.instance_name
 
@@ -77,6 +88,18 @@ def open_patch():
             exe = get_exe(component)
             if exe is None or not isfile(exe[-1]):
                 exe = get_exe("Launcher")
+
+            try:
+                from kivymd.uix.snackbar import MDSnackbar, MDSnackbarText
+                from kivy.metrics import dp
+                MDSnackbar(
+                    MDSnackbarText(text="Patching file now..."),
+                    y=dp(24),
+                    pos_hint={"center_x": 0.5},
+                    size_hint_x=0.5,
+                ).open()
+            except ImportError:
+                pass
 
             launch([*exe, file], component.cli)
 
@@ -117,6 +140,22 @@ def open_folder(folder_path):
 def update_settings():
     from settings import get_settings
     get_settings().save()
+
+
+def precache_world_data() -> None:
+    """Build launcher cache (called post-install to warm cache)."""
+    import worlds
+    worlds.ensure_worlds_loaded()
+    worlds.rebuild_world_caches()
+
+
+
+def ensure_launcher_components_available() -> None:
+    if has_world_components():
+        return
+
+    import worlds
+    worlds.ensure_worlds_loaded()
 
 
 components.extend([
@@ -196,6 +235,34 @@ def get_exe(component: str | Component) -> Sequence[str] | None:
         return [local_path(f"{component.frozen_name}{suffix}")] if component.frozen_name else None
     else:
         return [sys.executable, local_path(f"{component.script_name}.py")] if component.script_name else None
+
+
+def _resolve_component_callable(module_name: str, qualname: str):
+    module = importlib.import_module(module_name)
+    target = module
+    for part in qualname.split("."):
+        if part == "<locals>":
+            raise AttributeError(f"Unable to resolve nested local callable: {module_name}.{qualname}")
+        target = getattr(target, part)
+    if not callable(target):
+        raise TypeError(f"Resolved target is not callable: {module_name}.{qualname}")
+    return target
+
+
+def run_component_callable(module_name: str, qualname: str, *args: str) -> None:
+    target = _resolve_component_callable(module_name, qualname)
+    # Reset sys.argv so client launch functions that call parse_args() without
+    # explicit args don't see the --run_component_callable launcher flags.
+    sys.argv = [sys.argv[0], *args]
+    target(*args)
+
+
+def launch_component_callable(module_name: str, qualname: str, launch_args: Sequence[str] = ()) -> bool:
+    launcher_exe = get_exe("Launcher")
+    if not launcher_exe:
+        return False
+    subprocess.Popen([*launcher_exe, "--run_component_callable", module_name, qualname, "--", *launch_args])
+    return True
 
 
 def launch(exe: Sequence[str], in_terminal: bool = False) -> bool:
@@ -301,6 +368,9 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
             self.launch_args = args
             self.cards = []
             self.current_filter = (Type.CLIENT, Type.TOOL, Type.ADJUSTER, Type.MISC)
+            self._loading_overlay = None
+            self._loading_overlay_label = None
+            self._cache_refresh_started = False
             persistent = Utils.persistent_load()
             if "launcher" in persistent:
                 if "favorites" in persistent["launcher"]:
@@ -332,8 +402,9 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
 
                 :return: The created Card Widget.
                 """
+            image_path = resolve_icon_path(icon_paths.get(component.icon, local_path("data", "icon.png")))
             button_card = LauncherCard(component=component,
-                                       image_path=icon_paths[component.icon])
+                                       image_path=image_path)
 
             def open_menu(caller):
                 caller.menu.open()
@@ -349,6 +420,101 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
             button_card.context_button.bind(on_release=open_menu)
 
             return button_card
+
+        def _rebuild_cards_from_components(self) -> None:
+            self.cards.clear()
+            for component in components:
+                self.cards.append(self.build_card(component))
+
+            if self.search_box and self.search_box.text:
+                self.filter_clients_by_name(self.search_box, self.search_box.text)
+            else:
+                self._refresh_components(self.current_filter)
+
+
+        def _show_loading_overlay(self, text: str = "Validating APWorld info...") -> None:
+            if self._loading_overlay is not None:
+                if self._loading_overlay_label is not None:
+                    self._loading_overlay_label.text = text
+                return
+            overlay = BoxLayout(
+                orientation="vertical",
+                pos_hint={"center_x": 0.625, "center_y": 0.5},
+                size_hint=(0.52, None),
+                height=dp(110),
+                padding=(dp(16), dp(14)),
+            )
+            with overlay.canvas.before:
+                Color(0.12, 0.12, 0.12, 0.82)
+                rect = Rectangle(pos=overlay.pos, size=overlay.size)
+            overlay.bind(pos=lambda inst, val: setattr(rect, "pos", val))
+            overlay.bind(size=lambda inst, val: setattr(rect, "size", val))
+            label = Label(
+                text=text,
+                halign="center",
+                valign="middle",
+                font_size="18sp",
+                color=(0.95, 0.95, 0.95, 1.0),
+            )
+            label.bind(size=lambda inst, val: setattr(inst, "text_size", val))
+            overlay.add_widget(label)
+            self.top_screen.add_widget(overlay)
+            self._loading_overlay = overlay
+            self._loading_overlay_label = label
+
+        def _dismiss_loading_overlay(self) -> None:
+            if self._loading_overlay is not None:
+                self.top_screen.remove_widget(self._loading_overlay)
+                self._loading_overlay = None
+                self._loading_overlay_label = None
+
+        def _background_refresh_worker(self) -> None:
+            import worlds
+            import os
+            import shutil
+
+            # If frozen, check for cache in install dir and copy to user dir
+            if is_frozen():
+                from worlds.LauncherComponents import _LAUNCHER_CACHE_PATH
+                install_cache = local_path("data", "world_launcher_cache.json.gz")
+                if not os.path.isfile(_LAUNCHER_CACHE_PATH) and os.path.isfile(install_cache):
+                    try:
+                        os.makedirs(os.path.dirname(_LAUNCHER_CACHE_PATH), exist_ok=True)
+                        shutil.copy2(install_cache, _LAUNCHER_CACHE_PATH)
+                    except Exception as exc:
+                        logging.warning(f"Failed to copy cache from install dir: {exc}")
+
+            cache_exists = worlds.has_launcher_cache()
+
+            if not cache_exists:
+                # Load worlds in the worker thread so launcher UI stays responsive.
+                load_ok = False
+                try:
+                    worlds.ensure_worlds_loaded()
+                    load_ok = True
+                except Exception as exc:
+                    logging.warning("World loading failed: %s", exc)
+                finally:
+                    def _finish_on_main(dt):
+                        if load_ok:
+                            self._rebuild_cards_from_components()
+                        self._dismiss_loading_overlay()
+
+                    Clock.schedule_once(_finish_on_main, 0)
+            else:
+                # Cache exists, just dismiss overlay
+                Clock.schedule_once(lambda dt: self._dismiss_loading_overlay(), 0)
+
+        def _start_background_cache_refresh(self) -> None:
+            if self._cache_refresh_started:
+                return
+
+            self._cache_refresh_started = True
+            threading.Thread(
+                target=self._background_refresh_worker,
+                name="LauncherCacheRefresh",
+                daemon=True,
+            ).start()
 
         def _refresh_components(self, type_filter: Sequence[str | Type] | None = None) -> None:
             if not type_filter:
@@ -402,14 +568,13 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
 
             global refresh_components
             refresh_components = self._refresh_components
+            from worlds import LauncherComponents as _lc
+            _lc._rebuild_launcher_ui = self._rebuild_cards_from_components
             Window.size = (1100, 920)
             Window.bind(on_drop_file=self._on_drop_file)
             Window.bind(on_keyboard=self._on_keyboard)
 
-            for component in components:
-                self.cards.append(self.build_card(component))
-
-            self._refresh_components(self.current_filter)
+            self._rebuild_cards_from_components()
 
             # Uncomment to re-enable the Kivy console/live editor
             # Ctrl-E to enable it, make sure numlock/capslock is disabled
@@ -419,19 +584,27 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
             return self.top_screen
 
         def on_start(self):
+            self._show_loading_overlay("Validating APWorld info...")
+
             if self.launch_components:
                 build_uri_popup(self.launch_components, self.launch_args)
                 self.launch_components = None
                 self.launch_args = None
 
             if is_frozen() and is_windows:
-                Clock.schedule_once(self._maybe_show_update_dialog, 1.0)
+                # Check for updates first, then start cache refresh after user responds
+                Clock.schedule_once(self._maybe_show_update_dialog, 0.2)
+            else:
+                # No update check, start cache refresh immediately
+                Clock.schedule_once(lambda dt: self._start_background_cache_refresh(), 0.2)
 
         def _maybe_show_update_dialog(self, dt):
             try:
                 latest_ver, download_url, changelog = get_latest_release_info()
             except Exception as e:
                 logging.warning("Launcher update check failed: %s", e)
+                # Update check failed, proceed with cache refresh
+                self._start_background_cache_refresh()
                 return
 
             if latest_ver > Utils.version_tuple:
@@ -570,9 +743,18 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
                     size_hint=(0.85, 0.62),
                     auto_dismiss=False,
                 )
-                later_btn.bind(on_release=popup.dismiss)
+
+                def _on_later(*args):
+                    popup.dismiss()
+                    # User declined update, proceed with cache refresh
+                    self._start_background_cache_refresh()
+
+                later_btn.bind(on_release=_on_later)
                 update_btn.bind(on_release=lambda *a: self._on_user_requested_update(popup, download_url))
                 popup.open()
+            else:
+                # No update available, proceed with cache refresh
+                self._start_background_cache_refresh()
 
         def _on_user_requested_update(self, dialog, download_url):
             dialog.dismiss()
@@ -595,23 +777,100 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
             self.stop()
 
         @staticmethod
-        def component_action(button):
-            open_text = "Opening in a new window..."
-            if button.component.func:
-                # Note: if we want to draw the Snackbar before running func, func needs to be wrapped in schedule_once
-                button.component.func()
-            else:
-                # if launch returns False, it started the process in background (not in a new terminal)
-                if not launch(get_exe(button.component), button.component.cli) and button.component.cli:
-                    open_text = "Running in the background..."
+        def _show_launch_toast(text: str = "Opening in a new window...", persist: bool = False):
+            snackbar = MDSnackbar(
+                MDSnackbarText(text=text),
+                y=dp(24),
+                pos_hint={"center_x": 0.5},
+                size_hint_x=0.5,
+            )
+            if persist:
+                snackbar.auto_dismiss = False
+            snackbar.open()
+            return snackbar
 
-            MDSnackbar(MDSnackbarText(text=open_text), y=dp(24), pos_hint={"center_x": 0.5},
-                       size_hint_x=0.5).open()
+        def component_action(self, button):
+            button.disabled = True
+            component = button.component
+            is_cached_stub = getattr(component, "_mwgg_component_origin", None) == "cache_stub"
+            launch_toast = self._show_launch_toast(persist=True)
+            launch_toast_started = time.perf_counter()
+            min_toast_seconds = 0.7
+
+            def _dismiss_launch_toast() -> None:
+                if not launch_toast:
+                    return
+
+                elapsed = time.perf_counter() - launch_toast_started
+                remaining = max(0.0, min_toast_seconds - elapsed)
+
+                def _do_dismiss(dt: float) -> None:
+                    try:
+                        launch_toast.dismiss()
+                    except Exception:
+                        pass
+
+                if remaining > 0:
+                    Clock.schedule_once(_do_dismiss, remaining)
+                else:
+                    _do_dismiss(0.0)
+
+            def _execute_launch() -> str | None:
+                if component.func:
+                    component.func()
+                    return None
+                # if launch returns False, it started the process in background (not in a new terminal)
+                if not launch(get_exe(component), component.cli) and component.cli:
+                    return "Running in the background..."
+                return None
+
+            if is_cached_stub:
+                def _worker() -> None:
+                    post_toast: str | None = None
+                    try:
+                        post_toast = _execute_launch()
+                    except Exception as exc:
+                        logging.exception("Failed to launch component %s: %s", component.display_name, exc)
+                        post_toast = "Failed to open component."
+                    finally:
+                        def _finish(dt) -> None:
+                            _dismiss_launch_toast()
+                            button.disabled = False
+                            if post_toast:
+                                self._show_launch_toast(post_toast)
+
+                        Clock.schedule_once(_finish, 0)
+
+                threading.Thread(
+                    target=_worker,
+                    name=f"LaunchComponent:{component.display_name}",
+                    daemon=True,
+                ).start()
+                return
+
+            def _do_action(dt):
+                post_toast: str | None = None
+                try:
+                    post_toast = _execute_launch()
+                except Exception as exc:
+                    logging.exception("Failed to launch component %s: %s", component.display_name, exc)
+                    post_toast = "Failed to open component."
+                finally:
+                    _dismiss_launch_toast()
+                    button.disabled = False
+                if post_toast:
+                    self._show_launch_toast(post_toast)
+
+            def _show_toast_and_launch(dt):
+                Clock.schedule_once(_do_action, 0)
+
+            Clock.schedule_once(_show_toast_and_launch, 0)
 
         def _on_drop_file(self, window: Window, filename: bytes, x: int, y: int) -> None:
             """ When a patch file is dropped into the window, run the associated component. """
             file, component = identify(filename.decode())
             if file and component:
+                self._show_launch_toast("Patching file now...")
                 run_component(component, file)
             else:
                 logging.warning(f"unable to identify component for {filename}")
@@ -643,6 +902,8 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
     # and don't try to do something with widgets after window closed
     global refresh_components
     refresh_components = None
+    from worlds import LauncherComponents as _lc
+    _lc._rebuild_launcher_ui = None
 
 
 def run_component(component: Component, *args):
@@ -662,18 +923,38 @@ def main(args: argparse.Namespace | dict | None = None):
     elif not args:
         args = {}
 
+    args.setdefault("update_settings", False)
+    args.setdefault("precache", False)
+    args.setdefault("run_component_callable", None)
+    args.setdefault("args", ())
+
+    if args["precache"]:
+        precache_world_data()
+        return
+
+    if args["run_component_callable"]:
+        module_name, qualname = args["run_component_callable"]
+        run_component_callable(module_name, qualname, *args["args"])
+        return
+
     path = args.get("Patch|Game|Component|url", None)
     if path is not None:
         if path.startswith("archipelago://") or path.startswith("mwgg://"):
             args["args"] = (path, *args.get("args", ()))
             # add the url arg to the passthrough args
-            components, text_client_component = handle_uri(path)
-            if not components:
+            launch_components, text_client_component = handle_uri(path)
+            if not launch_components:
+                ensure_launcher_components_available()
+                launch_components, text_client_component = handle_uri(path)
+            if not launch_components:
                 args["component"] = text_client_component
             else:
-                args['launch_components'] = [text_client_component, *components]
+                args['launch_components'] = [text_client_component, *launch_components]
         else:
             file, component = identify(path)
+            if not component:
+                ensure_launcher_components_available()
+                file, component = identify(path)
             if file:
                 args['file'] = file
             if component:
@@ -696,11 +977,15 @@ if __name__ == '__main__':
     multiprocessing.set_start_method("spawn")  # if launched process uses kivy, fork won't work
     parser = argparse.ArgumentParser(
         description=f'{apname} Launcher',
-        usage="[-h] [--update_settings] [Patch|Game|Component] [-- component args here]"
+        usage="[-h] [--update_settings] [--precache] [Patch|Game|Component] [-- component args here]"
     )
     run_group = parser.add_argument_group("Run")
     run_group.add_argument("--update_settings", action="store_true",
                            help="Update host.yaml and exit.")
+    run_group.add_argument("--precache", action="store_true",
+                           help="Build launcher cache and exit.")
+    run_group.add_argument("--run_component_callable", nargs=2, metavar=("MODULE", "QUALNAME"),
+                           help=argparse.SUPPRESS)
     run_group.add_argument("Patch|Game|Component|url", type=str, nargs="?",
                            help="Pass either a patch file, a generated game, the component name to run, or a url to "
                                 "connect with.")

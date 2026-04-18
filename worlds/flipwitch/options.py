@@ -46,6 +46,8 @@ class ShuffleDoubleJump(Toggle):
 class ShuffleDodge(Toggle):
     """Shuffle the ability to dodge.
     Some logic requires a dodge-jump, so it is possible to be stuck early without it."""
+    internal_name = "shuffle_dodge"
+    display_name = "Shuffle Dodge"
 
 
 class ShuffleChaosPieces(Toggle):

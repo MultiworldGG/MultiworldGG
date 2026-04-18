@@ -21,7 +21,6 @@ from .constants import ItemNames, ConnectionNames, game_name
 
 
 def run_client(*args):
-    print('running bfbb client', args)
     from worlds.LauncherComponents import launch
     from worlds.bfbb.BfBBClient import launch as bfbb_launch  # lazy import
     launch(bfbb_launch, f"{game_name} Client", args=args)

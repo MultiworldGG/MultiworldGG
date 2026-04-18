@@ -1,17 +1,10 @@
-from ..Items import SuitUpgrade
-from ..DoorRando import DoorLockType
-from ..LogicCombat import (
-    can_combat_beam_pirates,
-    can_combat_mines,
-    can_combat_omega_pirate,
-)
-from .Tricks import Tricks
-from .RoomNames import RoomName
-from .AreaNames import MetroidPrimeArea
-from .RoomData import AreaData, PickupData, RoomData
 from .DoorData import DoorData
+from .RoomData import AreaData, PickupData, RoomData
+from .Tricks import Tricks
+from ..Enum import DoorLockType, MetroidPrimeArea, RoomName, SuitUpgrade
 from ..Logic import (
     can_backwards_lower_mines,
+    can_ball_jump,
     can_bomb,
     can_boost,
     can_grapple,
@@ -27,6 +20,11 @@ from ..Logic import (
     can_thermal,
     can_wave_beam,
     can_xray,
+)
+from ..LogicCombat import (
+    can_combat_beam_pirates,
+    can_combat_mines,
+    can_combat_omega_pirate,
 )
 
 
@@ -324,7 +322,7 @@ class PhazonMinesAreaData(AreaData):
                         "Phazon Mines: Main Quarry",
                         rule_func=lambda world, state: can_morph_ball(world, state)
                         and can_spider(world, state)
-                        and can_bomb(world, state)
+                        and (can_bomb(world, state) or can_ball_jump(world, state))
                         and can_thermal(world, state)
                         and can_wave_beam(world, state)
                         and can_scan(world, state)
@@ -371,7 +369,7 @@ class PhazonMinesAreaData(AreaData):
                         rule_func=lambda world, state: can_combat_mines(world, state)
                         and can_scan(world, state)
                         and can_spider(world, state)
-                        and can_bomb(world, state)
+                        and (can_bomb(world, state) or can_ball_jump(world, state))
                         and can_space_jump(world, state)
                         and can_xray(world, state),
                         tricks=[Tricks.metroid_quarantine_a_no_spider],
@@ -555,13 +553,15 @@ class PhazonMinesAreaData(AreaData):
                 doors={
                     0: DoorData(
                         RoomName.Fungal_Hall_B,
-                        rule_func=lambda world, state: can_bomb(world, state)
+                        rule_func=lambda world, state: (can_bomb(world, state) or can_ball_jump(world, state))
+                        and can_boost(world, state) # Required for the disappearing platforms
                         and can_power_bomb(world, state),
                         defaultLock=DoorLockType.Plasma,
                     ),
                     1: DoorData(
                         RoomName.Fungal_Hall_A,
-                        rule_func=lambda world, state: can_bomb(world, state)
+                        rule_func=lambda world, state: (can_bomb(world, state) or can_ball_jump(world, state))
+                        and can_boost(world, state) # Required for the disappearing platforms
                         and can_power_bomb(world, state),
                         defaultLock=DoorLockType.Plasma,
                     ),
@@ -570,7 +570,8 @@ class PhazonMinesAreaData(AreaData):
                     PickupData(
                         "Phazon Mines: Phazon Mining Tunnel",
                         rule_func=lambda world, state: can_phazon(world, state)
-                        and can_bomb(world, state),
+                        and can_boost(world, state) # Required for the disappearing platforms
+                        and (can_bomb(world, state) or can_ball_jump(world, state)),
                         tricks=[],
                     ),
                 ],
@@ -582,7 +583,7 @@ class PhazonMinesAreaData(AreaData):
                         destination_area=MetroidPrimeArea.Phazon_Mines,
                         defaultLock=DoorLockType.Ice,
                         rule_func=lambda world, state: can_spider(world, state)
-                        and can_bomb(world, state)
+                        and (can_bomb(world, state) or can_ball_jump(world, state))
                         and can_space_jump(world, state),
                         tricks=[Tricks.climb_phazon_processing_center_no_spider],
                     ),
@@ -590,7 +591,7 @@ class PhazonMinesAreaData(AreaData):
                         RoomName.Maintenance_Tunnel,
                         defaultLock=DoorLockType.Ice,
                         rule_func=lambda world, state: can_spider(world, state)
-                        and can_bomb(world, state)
+                        and (can_bomb(world, state) or can_ball_jump(world, state))
                         and can_space_jump(world, state),
                         tricks=[Tricks.climb_phazon_processing_center_no_spider],
                     ),
@@ -605,7 +606,7 @@ class PhazonMinesAreaData(AreaData):
                     PickupData(
                         "Phazon Mines: Phazon Processing Center",
                         rule_func=lambda world, state: can_spider(world, state)
-                        and can_bomb(world, state)
+                        and (can_bomb(world, state) or can_ball_jump(world, state))
                         and can_space_jump(world, state)
                         and can_power_bomb(world, state),
                         tricks=[Tricks.phazon_processing_center_item_no_spider],
@@ -808,12 +809,12 @@ class PhazonMinesAreaData(AreaData):
                     0: DoorData(
                         RoomName.Main_Quarry,
                         defaultLock=DoorLockType.Ice,
-                        rule_func=can_bomb,
+                        rule_func=lambda world, state: can_bomb(world, state) or can_ball_jump(world, state),
                     ),
                     1: DoorData(
                         RoomName.Ore_Processing,
                         defaultLock=DoorLockType.Ice,
-                        rule_func=can_bomb,
+                        rule_func=lambda world, state: can_bomb(world, state) or can_ball_jump(world, state),
                     ),
                 }
             ),

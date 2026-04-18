@@ -1,29 +1,28 @@
-from enum import Enum
 import math
+from typing import TYPE_CHECKING, Any, Dict, List
 
+from .Enum import BlastShieldType, RoomName, MetroidPrimeArea
+from .PrimeOptions import BlastShieldAvailableTypes, BlastShieldRandomization
 from .WorldMapping import AreaMapping, AreaMappingDict, WorldMapping
 from .data.DoorData import get_door_data_by_room_names
 from .data.BlastShieldRegions import get_valid_blast_shield_regions_by_area
-from .data.RoomNames import RoomName
-from .PrimeOptions import BlastShieldAvailableTypes, BlastShieldRandomization
-from .data.AreaNames import MetroidPrimeArea
-from typing import TYPE_CHECKING, Any, Dict, List
 
 if TYPE_CHECKING:
     from . import MetroidPrimeWorld
 
 
-class BlastShieldType(Enum):
-    Bomb = "Bomb"
-    Charge_Beam = "Charge Beam"
-    Flamethrower = "Flamethrower"
-    Ice_Spreader = "Ice Spreader"
-    Wavebuster = "Wavebuster"
-    Power_Bomb = "Power Bomb"
-    Super_Missile = "Super Missile"
-    Missile = "Missile"
-    Disabled = "Disabled"  # This is technically a door type, but functionally we want to add it the way that shields are added
-    No_Blast_Shield = "None"
+DoorShieldFromBlastShieldType: dict[BlastShieldType, str] = {
+    BlastShieldType.Bomb: "Bomb",
+    BlastShieldType.Charge_Beam: "Blue",
+    BlastShieldType.Flamethrower: "Plasma Beam",
+    BlastShieldType.Ice_Spreader: "Ice Beam",
+    BlastShieldType.Wavebuster: "Wave Beam",
+    BlastShieldType.Power_Bomb: "Blue",
+    BlastShieldType.Super_Missile: "Power Beam Only",
+    BlastShieldType.Missile: "Blue",
+    BlastShieldType.Disabled: "Disabled",
+    BlastShieldType.No_Blast_Shield: "Blue",
+}
 
 
 class BlastShieldMapping(Dict[str, Dict[int, BlastShieldType]]):

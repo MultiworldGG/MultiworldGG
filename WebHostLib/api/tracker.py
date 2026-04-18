@@ -50,6 +50,7 @@ class PlayerStatus(TypedDict):
     team: int
     player: int
     status: ClientStatus
+    goal_override: bool
 
 
 class PlayerLocationsTotal(TypedDict):
@@ -148,12 +149,15 @@ def tracker_data(tracker: UUID) -> dict[str, Any]:
                 entry["time"] = datetime.fromtimestamp(timestamp, timezone.utc)
                 break
 
+    goal_overrides = tracker_data.get_room_goal_overrides()
+
     player_status: list[PlayerStatus] = []
     """The current client status for each player."""
     for team, players in all_players.items():
         for player in players:
             player_status.append(
-                {"team": team, "player": player, "status": tracker_data.get_player_client_status(team, player)})
+                {"team": team, "player": player, "status": tracker_data.get_player_client_status(team, player),
+                 "goal_override": (team, player) in goal_overrides})
 
     return {
         "aliases": player_aliases,

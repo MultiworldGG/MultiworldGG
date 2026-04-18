@@ -59,6 +59,9 @@ class TextId(IntEnum):
     # The "Paused" text displayed below the name of the player that paused the game. Goal information is appended here.
     PAUSED = 705
 
+    # Unused in the PC version. Being overwritten in locked_cantina_door_display.py.
+    WII_MOTION_CONTROL_HINT_1 = 1675
+
 
 logger = logging.getLogger("Client")
 debug_logger = logging.getLogger("TCS Debug")

@@ -3,6 +3,7 @@ from typing import Dict, Any, List
 import logging
 from BaseClasses import Region, Entrance, Location, Item, Tutorial, ItemClassification, CollectionState, MultiWorld
 from Utils import visualize_regions
+from rule_builder.rules import Has
 from worlds.AutoWorld import World, WebWorld
 from . import options, tracker
 from .data.locations import all_locations, FlipwitchLocation, stat_locations, shop_locations, quest_locations, sex_experience_locations, \
@@ -120,7 +121,8 @@ class FlipwitchWorld(World):
 
     def set_rules(self):
         self.determine_gacha_order(self.multiworld, self.random)
-        FlipwitchRules(self).set_flipwitch_rules(self.animal_order, self.bunny_order, self.monster_order, self.angel_order)
+        FlipwitchRules(self).set_flipwitch_rules()
+
 
     def create_items(self):
         locations_count = len([location
@@ -156,7 +158,7 @@ class FlipwitchWorld(World):
         ending_region = world.get_region(ChaosCastleRegion.cc_chaos_witch, player)
         ending_region.add_event("Defeat the Chaos Queen", "Victory", show_in_spoiler=True)
 
-        world.completion_condition[self.player] = lambda state: state.has("Victory", player)
+        self.set_completion_rule(Has("Victory"))
 
     def place_event_items_in_event_locations(self, event_locations_from_settings: Dict[str, List[FlipwitchLocation]], region_lookup: Dict[str, Region]):
         show_spoiler = self.options.quest_for_sex != self.options.quest_for_sex.option_off
@@ -268,7 +270,7 @@ class FlipwitchWorld(World):
         slot_data = {
             "ut_seed": self.seed,
             "seed": self.random.randrange(1000000000),  # Seed should be max 9 digits
-            "client_version": "1.0.5",
+            "client_version": "1.1.0",
             "animal_order": self.animal_order,
             "bunny_order": self.bunny_order,
             "monster_order": self.monster_order,

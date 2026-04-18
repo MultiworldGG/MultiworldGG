@@ -39,7 +39,7 @@ you may do so on the YAML Validator page. YAML validator page: [YAML Validation 
 Run `MultiworldGGGenerate.exe` to build a world from the YAML files in your `players` folder.  This places
 a `.zip` file in the `output` folder.
 
-You may upload this to [the MultiworldGG website](https://multiworld.gg/uploads) or host the game locally with
+You may upload this to [the MultiworldGG website](/uploads) or host the game locally with
 `MultiworldGGHost.exe`.
 
 ## Setting Up Spyro 3 for MultiworldGG

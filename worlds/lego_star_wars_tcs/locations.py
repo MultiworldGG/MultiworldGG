@@ -715,6 +715,7 @@ LOCATION_NAME_TO_ID = {
     "Purchase Silhouettes": 655,
     "Purchase Beep Beep": 656,
     "Level Completion - Unlock Naboo Starfighter": 657,
+    "Ride B'omarr Monk": 658,
 }
 
 

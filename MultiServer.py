@@ -312,6 +312,7 @@ class Context:
         self.seed_name = ""
         self.groups = {}
         self.group_collected: typing.Dict[int, typing.Set[int]] = {}
+        self.goal_overrides: typing.Set[typing.Tuple[int, int]] = set()
         self.random = random.Random()
         self.stored_data = {}
         self.stored_data_notification_clients = collections.defaultdict(weakref.WeakSet)
@@ -336,6 +337,7 @@ class Context:
     # Data package retrieval
     def _load_game_data(self):
         import worlds
+        worlds.ensure_worlds_loaded()
         self.gamespackage = worlds.network_data_package["games"]
 
         self.item_name_groups = {world_name: world.item_name_groups for world_name, world in
@@ -672,6 +674,7 @@ class Context:
                 (key, value.timestamp()) for key, value in self.client_connection_timers.items()),
             "random_state": self.random.getstate(),
             "group_collected": dict(self.group_collected),
+            "goal_overrides": list(self.goal_overrides),
             "stored_data": self.stored_data,
             "game_options": {"hint_cost": self.hint_cost, "location_check_points": self.location_check_points,
                              "server_password": self.server_password, "password": self.password,
@@ -719,6 +722,9 @@ class Context:
 
         if "group_collected" in savedata:
             self.group_collected = savedata["group_collected"]
+
+        if "goal_overrides" in savedata:
+            self.goal_overrides = set(tuple(x) for x in savedata["goal_overrides"])
 
         if "stored_data" in savedata:
             self.stored_data = savedata["stored_data"]
@@ -2371,6 +2377,42 @@ class ServerCommandProcessor(CommonCommandProcessor):
             return True
 
         self.output(f"Could not find player {player_name} to release")
+        return False
+
+    @mark_raw
+    def _cmd_goal(self, player_name: str) -> bool:
+        """Mark a player as having completed their goal."""
+        player = self.resolve_player(player_name)
+        if player:
+            team, slot, name = player
+            if self.ctx.client_game_state[team, slot] == ClientStatus.CLIENT_GOAL:
+                self.output(f"Player {name} has already completed their goal.")
+                return False
+
+            self.ctx.goal_overrides.add((team, slot))
+            self.ctx.client_game_state[team, slot] = ClientStatus.CLIENT_GOAL
+
+            finished_msg = (f'{self.ctx.get_aliased_name(team, slot)} (Team #{team + 1})'
+                            f' has been marked as completed by an admin.')
+            self.ctx.broadcast_text_all(finished_msg, {"type": "Goal", "team": team, "slot": slot})
+
+            if "auto" in self.ctx.collect_mode:
+                collect_player(self.ctx, team, slot)
+            if "auto" in self.ctx.release_mode:
+                release_player(self.ctx, team, slot)
+
+            if all(p in self.ctx.client_game_state and
+                   self.ctx.client_game_state[p] == ClientStatus.CLIENT_GOAL
+                   for p in self.ctx.player_names
+                   if p[0] == team and p[1] != slot):
+                self.ctx.broadcast_text_all(
+                    f"Team #{team + 1} has completed all of their games! Congratulations!")
+
+            self.ctx.on_client_status_change(team, slot)
+            self.ctx.save()
+            return True
+
+        self.output(f"Could not find player {player_name} to goal")
         return False
 
     @mark_raw

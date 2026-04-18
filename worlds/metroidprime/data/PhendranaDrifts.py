@@ -1,12 +1,12 @@
+from typing import TYPE_CHECKING
+
 from BaseClasses import CollectionState
-from ..BlastShieldRando import BlastShieldType
-from ..DoorRando import DoorLockType
-from ..LogicCombat import can_combat_labs, can_combat_thardus
-from .Tricks import Tricks
-from .AreaNames import MetroidPrimeArea
-from .RoomData import AreaData, PickupData, RoomData
 from .DoorData import DoorData
+from .RoomData import AreaData, PickupData, RoomData
+from .Tricks import Tricks
+from ..Enum import BlastShieldType, DoorLockType, MetroidPrimeArea, RoomName
 from ..Logic import (
+    can_ball_jump,
     can_bomb,
     can_boost,
     can_charge_beam,
@@ -26,8 +26,7 @@ from ..Logic import (
     can_wave_beam,
     can_xray,
 )
-from .RoomNames import RoomName
-from typing import TYPE_CHECKING
+from ..LogicCombat import can_combat_labs, can_combat_thardus
 
 if TYPE_CHECKING:
     from .. import MetroidPrimeWorld
@@ -107,11 +106,17 @@ class PhendranaDriftsAreaData(AreaData):
                 doors={
                     0: DoorData(
                         RoomName.Chapel_of_the_Elders,
-                        rule_func=lambda world, state: can_bomb(world, state),
+                        rule_func=lambda world, state: (
+                            can_bomb(world, state) or
+                            (can_power_bomb(world, state, 2) or can_ball_jump(world, state))
+                        ),
                     ),
                     1: DoorData(
                         RoomName.Chozo_Ice_Temple,
-                        rule_func=lambda world, state: can_bomb(world, state),
+                        rule_func=lambda world, state: (
+                            can_bomb(world, state) or
+                            (can_power_bomb(world, state, 2) or can_ball_jump(world, state))
+                        ),
                     ),
                 }
             ),
@@ -120,7 +125,10 @@ class PhendranaDriftsAreaData(AreaData):
                     0: DoorData(RoomName.Temple_Entryway),
                     1: DoorData(
                         RoomName.Chapel_Tunnel,
-                        rule_func=lambda world, state: can_bomb(world, state)
+                        rule_func=lambda world, state: (
+                            can_bomb(world, state) or
+                            (can_power_bomb(world, state, 2) or can_ball_jump(world, state))
+                        )
                         and can_space_jump(world, state)
                         and can_missile(world, state),
                         tricks=[Tricks.ice_temple_to_chapel_no_sj],
@@ -155,7 +163,7 @@ class PhendranaDriftsAreaData(AreaData):
                         and can_space_jump(world, state)
                         and can_missile(world, state)
                         and can_melt_ice(world, state)
-                        and can_bomb(world, state),
+                        and (can_bomb(world, state) or can_ball_jump(world, state)),
                         tricks=[Tricks.control_tower_item_no_plasma],
                     ),
                 ],
@@ -181,12 +189,12 @@ class PhendranaDriftsAreaData(AreaData):
                     0: DoorData(
                         RoomName.Frozen_Pike,
                         defaultLock=DoorLockType.Wave,
-                        rule_func=can_bomb,
+                        rule_func=can_morph_ball,
                     ),
                     1: DoorData(
                         RoomName.Frost_Cave,
                         defaultLock=DoorLockType.Wave,
-                        rule_func=can_bomb,
+                        rule_func=can_morph_ball,
                     ),
                 }
             ),
@@ -231,7 +239,7 @@ class PhendranaDriftsAreaData(AreaData):
                         RoomName.Transport_Access,
                         defaultLock=DoorLockType.Wave,
                         destination_area=MetroidPrimeArea.Phendrana_Drifts,
-                        rule_func=lambda world, state: can_bomb(world, state)
+                        rule_func=lambda world, state: (can_bomb(world, state) or can_ball_jump(world, state))
                         and can_space_jump(world, state),
                         tricks=[Tricks.frozen_pike_no_bombs],
                     ),
@@ -498,8 +506,7 @@ class PhendranaDriftsAreaData(AreaData):
                     ),
                     PickupData(
                         "Phendrana Drifts: Phendrana Shorelines - Spider Track",
-                        rule_func=lambda world, state: can_bomb(world, state)
-                        and can_spider(world, state)
+                        rule_func=lambda world, state: can_spider(world, state)
                         and can_super_missile(world, state)
                         and can_scan(world, state)
                         and can_space_jump(world, state),
@@ -675,8 +682,8 @@ class PhendranaDriftsAreaData(AreaData):
                     PickupData(
                         "Phendrana Drifts: Research Lab Aether - Morph Track",
                         rule_func=lambda world, state: can_combat_labs(world, state)
-                        and can_bomb(world, state)
                         and can_space_jump(world, state),
+                        tricks=[Tricks.research_lab_aether_item_dbj]
                     ),
                 ],
             ),
@@ -803,10 +810,13 @@ class PhendranaDriftsAreaData(AreaData):
             RoomName.South_Quarantine_Tunnel: RoomData(
                 doors={
                     0: DoorData(
-                        RoomName.Quarantine_Cave, defaultLock=DoorLockType.Wave
+                        RoomName.Quarantine_Cave, 
+                        rule_func=can_morph_ball,
+                        defaultLock=DoorLockType.Wave
                     ),
                     1: DoorData(
                         RoomName.Transport_to_Magmoor_Caverns_South,
+                        rule_func=can_morph_ball,
                         defaultLock=DoorLockType.Wave,
                         destination_area=MetroidPrimeArea.Phendrana_Drifts,
                     ),

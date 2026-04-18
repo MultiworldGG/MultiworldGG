@@ -1,3 +1,4 @@
+import itertools
 import re
 from dataclasses import dataclass, field
 from typing import Optional, ClassVar, Literal, Mapping, AbstractSet
@@ -617,14 +618,11 @@ ITEM_DATA: list[GenericItemData] = [
 
 # Programmatically add Chapter Unlock items, starting from ID 1000 so that they avoid clashing with manually defined
 # items.
-def _add_chapter_unlock_item_data():
-    import itertools
-    for i, (episode, chapter) in enumerate(itertools.product(range(1, 7), range(1, 7)), start=1000):
-        ITEM_DATA.append(_generic(i, f"{episode}-{chapter} Unlock"))
-
-
-_add_chapter_unlock_item_data()
-del _add_chapter_unlock_item_data
+CHAPTER_UNLOCKS: list[GenericItemData] = [
+    _generic(i, f"{episode}-{chapter} Unlock") for i, (episode, chapter)
+    in enumerate(itertools.product(range(1, 7), range(1, 7)), start=1000)
+]
+ITEM_DATA.extend(CHAPTER_UNLOCKS)
 
 
 USEFUL_NON_PROGRESSION_CHARACTERS: set[str] = {

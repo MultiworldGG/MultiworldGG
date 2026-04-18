@@ -1,5 +1,6 @@
 import typing
 
+from .Enum import RoomName
 from .Logic import (
     can_ice_beam,
     can_missile,
@@ -14,7 +15,6 @@ from .Logic import (
     has_required_artifact_count,
 )
 from .LogicCombat import can_combat_prime, can_combat_ridley
-from .data.RoomNames import RoomName
 from BaseClasses import CollectionState, Region
 
 if typing.TYPE_CHECKING:

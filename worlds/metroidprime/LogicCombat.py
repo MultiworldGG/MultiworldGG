@@ -1,7 +1,6 @@
-from enum import Enum
-
 from BaseClasses import CollectionState
-from .Items import SuitUpgrade, get_item_for_options
+from .Enum import CombatLogicDifficulty, RoomName, SuitUpgrade
+from .Items import get_item_for_options
 from .Logic import (
     can_charge_beam,
     can_plasma_beam,
@@ -10,17 +9,10 @@ from .Logic import (
     can_xray,
     has_energy_tanks,
 )
-from .data.RoomNames import RoomName
 import typing
 
 if typing.TYPE_CHECKING:
     from . import MetroidPrimeWorld
-
-
-class CombatLogicDifficulty(Enum):
-    NO_LOGIC = -1
-    NORMAL = 0
-    MINIMAL = 1
 
 
 def _can_combat_generic(

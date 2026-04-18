@@ -1413,7 +1413,7 @@ class BeanPatcher:
     def apply_seeded_save_patch(self) -> bool:
         if self.save_seed is None or self.save_team is None or self.save_slot is None or not self.attached_to_process:
             return False
-        seeded_save_file = f"{base36(int(self.save_seed, 10)):>010.10}-{self.save_team}-{self.save_slot}.aps"  # use different extension to bypass steam cloud, we don't want these there
+        seeded_save_file = f"{base36(int(self.save_seed.lstrip('W'), 10)):>010.10}-{self.save_team}-{self.save_slot}.aps"  # use different extension to bypass steam cloud, we don't want these there
         if self.log_debug_info:
             self.log_info(f"Save file for this seed is '{seeded_save_file}'")
         if seeded_save_file != self.save_file:

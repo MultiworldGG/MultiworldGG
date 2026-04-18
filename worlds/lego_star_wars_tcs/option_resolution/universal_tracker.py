@@ -1,4 +1,7 @@
+from collections import Counter
 from typing import TYPE_CHECKING, Any
+
+from Options import OptionSet, OptionCounter
 
 from ..items import MINIKITS_BY_COUNT
 from ..levels import SHORT_NAME_TO_CHAPTER_AREA, BONUS_NAME_TO_BONUS_AREA
@@ -29,6 +32,7 @@ DIRECT_SLOT_DATA_OPTIONS = (
     "ridesanity",
     "enable_starting_extras_locations",
     "chapter_unlock_requirement",
+    "chapter_unlock_story_characters_not_required",
 )
 assert all(option_name in LegoStarWarsTCSOptions.type_hints for option_name in DIRECT_SLOT_DATA_OPTIONS)
 
@@ -39,7 +43,14 @@ def _direct_slot_data_options(self: LegoStarWarsTCSWorld, passthrough: dict[str,
     for option_name in DIRECT_SLOT_DATA_OPTIONS:
         # For example:
         # `options.minikit_goal_amount.value = passthrough["minikit_goal_amount"]`
-        getattr(options, option_name).value = passthrough[option_name]
+        option = getattr(options, option_name)
+        value = passthrough[option_name]
+        # Collection values from json are always list/dict
+        if isinstance(option, OptionSet):
+            value = set(value)
+        elif isinstance(option, OptionCounter):
+            value = Counter(value)
+        option.value = value
 
 
 def _derived_attributes_from_options(self: LegoStarWarsTCSWorld, passthrough: dict[str, Any]):
@@ -52,6 +63,14 @@ def _derived_attributes_from_options(self: LegoStarWarsTCSWorld, passthrough: di
     self.starting_chapter = SHORT_NAME_TO_CHAPTER_AREA[passthrough["starting_chapter"]]
     assert self.starting_episode == passthrough["starting_episode"], ("Starting episode from slot_data did not match "
                                                                       "the starting chapter from slot_data.")
+
+    # Derived Chapter Unlock requirements.
+    self.chapters_requiring_alt_characters = set(passthrough.get("chapters_requiring_alt_characters", ()))
+    self.chapter_required_character_counts = passthrough.get("chapter_required_character_counts", {})
+    self.chapter_random_character_requirements = {
+        chapter: [self.item_id_to_name[c] for c in characters]
+        for chapter, characters in passthrough.get("chapter_random_character_requirements", {}).items()
+    }
 
     # Derived Goal attributes.
     self.enabled_bosses = set(passthrough["enabled_bosses"])

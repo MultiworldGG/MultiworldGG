@@ -28,7 +28,8 @@ import typing
 import webbrowser
 import re
 from urllib.parse import urlparse
-from worlds.AutoWorld import AutoWorldRegister, World
+from worlds import AutoWorldRegister, ensure_worlds_loaded
+from worlds.AutoWorld import World
 from Options import (Option, Toggle, TextChoice, Choice, FreeText, NamedRange, Range, OptionSet, OptionList,
                      OptionCounter, Visibility)
 apname = Utils.instance_name if Utils.instance_name else "Archipelago"
@@ -654,6 +655,7 @@ class OptionsCreator(ThemedApp):
             ) if not panel.is_open else panel.set_chevron_up(chevron)
 
     def build(self):
+        ensure_worlds_loaded()
         self.set_colors()
         self.options = {}
         self.container = Builder.load_file(Utils.local_path("data/optionscreator.kv"))

@@ -1,31 +1,13 @@
 import copy
-from enum import Enum
 
-from .PrimeOptions import DoorColorRandomization
-
-from .WorldMapping import AreaMapping, WorldMapping
-
-from .data.RoomNames import RoomName
-
-from .Items import SuitUpgrade
-
-from .data.AreaNames import MetroidPrimeArea
 from typing import TYPE_CHECKING, Any, Callable, Dict, List
 
+from .Enum import DoorLockType, RoomName, MetroidPrimeArea, SuitUpgrade
+from .PrimeOptions import DoorColorRandomization
+from .WorldMapping import AreaMapping, WorldMapping
 
 if TYPE_CHECKING:
     from . import MetroidPrimeWorld
-
-
-class DoorLockType(Enum):
-    Blue = "Blue"
-    Wave = "Wave Beam"
-    Ice = "Ice Beam"
-    Plasma = "Plasma Beam"
-    Missile = "Missile"
-    Power_Beam = "Power Beam Only"
-    Bomb = "Bomb"
-    None_ = "None"
 
 
 COLOR_LOCK_TYPES = [
@@ -134,7 +116,7 @@ def get_world_door_mapping(world: "MetroidPrimeWorld") -> WorldDoorColorMapping:
 
 
 def get_available_lock_types(
-    world: "MetroidPrimeWorld", area: MetroidPrimeArea
+    world: "MetroidPrimeWorld", _area: MetroidPrimeArea
 ) -> List[DoorLockType]:
     locks = COLOR_LOCK_TYPES[:]
     # If start beam is randomized, we replace whatever the mapping to starting beam is with Power Beam Only
@@ -159,7 +141,7 @@ def remap_doors_to_power_beam_if_necessary(world: "MetroidPrimeWorld"):
             assert world.starting_room_data
             for area, mapping in world.door_color_mapping.items():
                 if (
-                    area == world.starting_room_data.area.value
+                    area == world.starting_room_data.area
                     and world.starting_room_data.no_power_beam_door_on_starting_level
                 ):
                     continue

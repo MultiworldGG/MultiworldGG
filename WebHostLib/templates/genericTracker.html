@@ -85,6 +85,12 @@
                     </tbody>
                 </table>
             </div>
+            <div class="table-options">
+                <label>
+                    <input type="checkbox" id="hide-found-hints">
+                    Hide found hints
+                </label>
+            </div>
             <div class="table-wrapper">
                 <table id="hints-table" class="table non-unique-item-table">
                     <thead>
@@ -100,7 +106,7 @@
                     </thead>
                     <tbody>
                     {%- for hint in hints -%}
-                        <tr>
+                        <tr data-found="{% if hint.found %}true{% else %}false{% endif %}">
                             <td>
                                 {% if hint.finding_player == player %}
                                     <b>{{ player_names_with_alias[(team, hint.finding_player)] }}</b>

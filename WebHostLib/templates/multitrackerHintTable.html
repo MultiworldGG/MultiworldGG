@@ -1,4 +1,10 @@
 {% for team, hints in hints.items() %}
+    <div class="table-options">
+        <label>
+            <input type="checkbox" id="hide-found-hints">
+            Hide found hints
+        </label>
+    </div>
     <div class="table-wrapper">
         <table id="hints-table" class="table non-unique-item-table" data-order='[[5, "asc"], [0, "asc"]]'>
             <thead>
@@ -20,7 +26,7 @@
                         games[(team, hint.receiving_player)] == current_tracker
                     )
                 -%}
-                    <tr>
+                    <tr data-found="{% if hint.found %}true{% else %}false{% endif %}">
                         <td>
                             {% if get_slot_info(hint.finding_player).type == 2 %}
                                 <i>{{ player_names_with_alias[(team, hint.finding_player)] }}</i>

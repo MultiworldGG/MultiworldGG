@@ -26,7 +26,6 @@ def _ensure_module_certs() -> None:
     try:
         import certifi
         os.environ.setdefault("SSL_CERT_FILE", certifi.where())
-        logger.debug("AM2R: using certifi CA bundle %s", certifi.where())
     except Exception:
         logger.debug("AM2R: certifi not available; will try per-request contexts")
 

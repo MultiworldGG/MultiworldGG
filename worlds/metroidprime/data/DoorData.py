@@ -1,14 +1,14 @@
 from dataclasses import dataclass, field
 from typing import Callable, List, Optional, Tuple, TYPE_CHECKING
-from .Tricks import TrickInfo
+
 from BaseClasses import CollectionState
-from .AreaNames import MetroidPrimeArea
-from .RoomNames import RoomName
-from ..DoorRando import DoorLockType
+
+from .Tricks import TrickInfo
+from ..Enum import DoorLockType, MetroidPrimeArea, RoomName
 
 if TYPE_CHECKING:
     from .. import MetroidPrimeWorld
-    from ..BlastShieldRando import BlastShieldType
+    from ..Enum import BlastShieldType
 
 
 @dataclass

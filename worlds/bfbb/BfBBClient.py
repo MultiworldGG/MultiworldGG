@@ -1571,6 +1571,8 @@ def launch(*args):
     if not args.patch_file:
         file_types = (('BfBB Patch File', ('.apbfbb',)), ('NGC iso', ('.gcm',)),)
         args.patch_file = Utils.open_filename("Select .apbfbb", file_types) or ""
+        if not args.patch_file:
+            return
 
     Utils.init_logging("BfBBClient")
 

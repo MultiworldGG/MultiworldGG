@@ -19,13 +19,12 @@ You also need to have [MultiworldGG](https://github.com/MultiworldGG/MultiworldG
 
 Install Thunderstore Mod Manager and open it.
 Choose Schedule I and make a profile for MultiworldGG, name it whatever you like.
-Search for 'Narcopelago' in the mod search and install it.
+Search for 'Narcopelago' in the mod search and install it, also install Melonloader 0.7.1 from the mod search.
 From there you can launch the game as Modded on the top right and your install has been complete! You must launch the game this way every time you want to play MultiworldGG.
 
 ### Joining Game
 
-Use In-Game UI to connect to server. Once connected, Create a new world and skip the prologue.
-Make sure to save as often as you can, and you are able to rejoin. Restart your game if you need to rejoin the world!
+Use In-Game UI to connect to server. Once connected, Create a new world and skip the prologue. Make sure to save as often as you can, and you are able to rejoin. Restart your game if you need to rejoin the world! 
 If you want to play with friends (Untested): Invite them to your lobby. All of you connect as same MultiworldGG Info, Load into world.
 
 ## Switching Rooms

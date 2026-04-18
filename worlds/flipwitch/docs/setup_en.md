@@ -3,7 +3,7 @@
 
 You will need:
 - [MultiworldGG Client](https://github.com/MultiworldGG/MultiworldGG/releases)
-- The [Latest Flipwitch AP Client](https://github.com/Witchybun/FlipwitchAPClient/releases).
+- The [Latest Flipwitch AP Client](https://github.com/Witchybun/FlipwitchAPClient/releases)
 
 Optional:
 - [Poptracker Autotracker Bundle](https://github.com/SomeLazyGamer/flipwitch_tracker/releases)

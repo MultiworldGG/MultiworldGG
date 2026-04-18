@@ -17,10 +17,11 @@ import typing
 from pymem import pymem
 from pymem.exception import ProcessNotFound, ProcessError, PymemError, WinAPIError
 
-from CommonClient import server_loop, gui_enabled
+from CommonClient import server_loop, gui_enabled, get_base_parser
 
-from .. import options
+from .. import options, TCSUniversalTrackerAPWorldVersionMismatchError
 from ..constants import GAME_NAME, AP_WORLD_VERSION
+from ..items import CHARACTERS_AND_VEHICLES_BY_NAME
 from ..levels import SHORT_NAME_TO_CHAPTER_AREA, CHAPTER_AREAS, ChapterArea
 from ..locations import LOCATION_NAME_TO_ID
 from .client_text import ClientText, clean_string
@@ -46,6 +47,7 @@ from .game_state_modifiers.death_link_manager import DeathLinkManager
 from .game_state_modifiers.generic import AcquiredGeneric
 from .game_state_modifiers.goal_manager import GoalManager
 from .game_state_modifiers.levels import UnlockedChapterManager
+from .game_state_modifiers.locked_cantina_door_display import LockedCantinaDoorDisplay
 from .game_state_modifiers.minikits import AcquiredMinikits
 from .game_state_modifiers.power_ups import PowerUpReceiver
 from .game_state_modifiers.shop_names_replacer import ShopNamesReplacer
@@ -53,6 +55,7 @@ from .game_state_modifiers.studs import STUDS_AP_ID_TO_VALUE, give_studs_item
 from .game_state_modifiers.text_display import InGameTextDisplay
 from .game_state_modifiers.text_replacer import TextReplacer
 from .game_state_modifiers.uncap_high_jump import UncapHighJump
+from .game_state_modifiers.level_specific_fixes import LevelSpecificFixes
 
 apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 
@@ -368,6 +371,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
     acquired_minikits: AcquiredMinikits
     unlocked_chapter_manager: UnlockedChapterManager
     text_display: InGameTextDisplay
+    locked_cantina_door_info: LockedCantinaDoorDisplay
     goal_manager: GoalManager
     power_up_receiver: PowerUpReceiver
     client_expected_idx: int
@@ -417,9 +421,17 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
 
         self.client_text = ClientText()
         self.text_display = InGameTextDisplay()
+        self.locked_cantina_door_info = LockedCantinaDoorDisplay()
         self.uncap_high_jump = UncapHighJump()
         self.cantina_reloader = CantinaReloader()
-        self.permanent_components = (self.text_display, self.uncap_high_jump, self.cantina_reloader)
+        self.level_specific_fixes = LevelSpecificFixes()
+        self.permanent_components = (
+            self.text_display,
+            self.uncap_high_jump,
+            self.cantina_reloader,
+            self.locked_cantina_door_info,
+            self.level_specific_fixes,
+        )
 
         self.death_link_manager = DeathLinkManager()
         self.shop_names_replacer = ShopNamesReplacer()
@@ -592,7 +604,20 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         self.client_expected_idx = 0
 
     def on_package(self, cmd: str, args: dict):
-        super().on_package(cmd, args)
+        warn_universal_tracker_is_disabled = False
+        if UNIVERSAL_TRACKER_LOADED and cmd == "Connected":
+            try:
+                super().on_package(cmd, args)
+            except TCSUniversalTrackerAPWorldVersionMismatchError:
+                # If the multiworld apworld version does not match the client apworld version, TCS's Universal Tracker
+                # support raises this exception to reject Universal Tracker usage when the apworld versions do not match
+                # because there could be logic differences between apworld versions.
+                # The client, however, is allowed to connect to older versions that it has backwards compatibility for,
+                # so if the player has Universal Tracker installed, connecting should be allowed to continue, even if
+                # Universal Tracker will not be usable.
+                warn_universal_tracker_is_disabled = True
+        else:
+            super().on_package(cmd, args)
 
         if cmd == "RoomInfo":
             new_seed_name = args["seed_name"]
@@ -626,6 +651,9 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                     self.last_connected_seed_name = None
                     Utils.async_start(self.disconnect())
                     return
+                if warn_universal_tracker_is_disabled:
+                    logger.info("Universal Tracker features are disabled due to the client APWorld version not matching"
+                                " the APWorld version that generated the multiworld.")
             else:
                 logger.error("Error: slot_data missing from Connected message, something is probably broken.")
 
@@ -682,6 +710,31 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                     }
                 ]
             ))
+
+            # todo: Move this somewhere else.
+            # Give 4-LOM and IG-88 the Protocol flag so that if the player has no Protocol Droid, but does have 4-LOM or
+            # IG-88, the game will pick 4-LOM or IG-88 for the Free Play character selection.
+            # While 4-LOM and IG-88 can also use Astromech panels, the Astromech flag (0x40) also tells the game that
+            # the characters can hover, and can traverse Dagobah's swamps, which neither 4-LOM nor IG-88 can do, so they
+            # should not be given the Astromech flag.
+            # Character data is loaded once when the game starts, so the changes made here are permanent until the game
+            # is restarted.
+            # UnknownLoadedCharacterData* _CDataList
+            addr_p_c_data_list = 0x0093b274
+            addr_c_data_list = self.read_uint(addr_p_c_data_list)
+            # sizeof(UnknownLoadedCharacterData)
+            unknown_loaded_character_data_size = 0x4c
+            # UnknownLoadedCharacterData.data_flag3
+            character_data_flag_3_field_offset = 0x4
+            # CharacterDataFlag3.Protocol
+            protocol_droid_flag = 0x20
+            for character in ("IG-88", "4-LOM"):
+                character_index = CHARACTERS_AND_VEHICLES_BY_NAME[character].character_index
+                addr_character_data = addr_c_data_list + unknown_loaded_character_data_size * character_index
+                addr_character_data_flag_3 = addr_character_data + character_data_flag_3_field_offset
+                character_data_flag_3 = self.read_uint(addr_character_data_flag_3, raw=True)
+                new_flag = character_data_flag_3 | protocol_droid_flag
+                self.write_uint(addr_character_data_flag_3, new_flag, raw=True)
         elif cmd == "SetReply":
             key: str = args["key"]
             if self._is_datastorage_key(key, COMPLETED_FREE_PLAY_KEY_PREFIX):
@@ -756,8 +809,9 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
             text = f"DeathLink: {text}"
         else:
             text = f"DeathLink: Received from {data['source']}"
-        self.death_link_manager.on_deathlink(self, text)
+        previous_death = self.last_death_link
         super().on_deathlink(data)
+        self.death_link_manager.on_deathlink(previous_death, self.last_death_link, text)
 
     def _update_datastorage_area_ids(self, key_prefix: str, area_ids: list[int], log_name: str):
         if self.server_version < (0, 6, 2):
@@ -942,6 +996,9 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         else:
             return address + self._overall_memory_offset
 
+    def read_int(self, address: int, raw=False) -> int:
+        return self._game_process.read_int(address if raw else self._adjust_address(address))
+
     def read_uint(self, address: int, raw=False) -> int:
         return self._game_process.read_uint(address if raw else self._adjust_address(address))
 
@@ -961,8 +1018,14 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         return self._game_process.read_uchar(address if raw else self._adjust_address(address))
         #return self._game_process.read_bytes(address if raw else self._adjust_address(address), 1)[0]
 
+    def write_int(self, address: int, value: int, raw=False) -> None:
+        self._game_process.write_int(address if raw else self._adjust_address(address), value)
+
     def write_uint(self, address: int, value: int, raw=False) -> None:
         self._game_process.write_uint(address if raw else self._adjust_address(address), value)
+
+    def write_ushort(self, address: int, value: int, raw=False) -> None:
+        self._game_process.write_ushort(address if raw else self._adjust_address(address), value)
 
     def write_byte(self, address: int, value: int, raw=False) -> None:
         self._game_process.write_uchar(address if raw else self._adjust_address(address), value)
@@ -1626,7 +1689,6 @@ async def game_watcher(ctx: LegoStarWarsTheCompleteSagaContext):
                     # each game watcher tick.
                     ctx.update_current_level_id()
 
-                    await ctx.free_play_completion_checker.initialize(ctx)
                     await give_items(ctx)
 
                     # Check for changes to the current AreaData pointer, firing an event if it changes.
@@ -1719,10 +1781,13 @@ async def game_watcher(ctx: LegoStarWarsTheCompleteSagaContext):
             ctx.auth_status = AuthStatus.NOT_AUTHENTICATED
 
 
-async def main():
+async def main(*launch_args: str):
     Utils.init_logging("LegoStarWarsTheCompleteSagaClient", exception_logger="ClientException")
 
-    ctx = LegoStarWarsTheCompleteSagaContext()
+    parser = get_base_parser()
+    args = parser.parse_args(launch_args)
+
+    ctx = LegoStarWarsTheCompleteSagaContext(args.connect, args.password)
     ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
 
     if UNIVERSAL_TRACKER_LOADED:
@@ -1748,7 +1813,7 @@ async def main():
     await ctx.shutdown()
 
 
-def launch():
+def launch(*launch_args: str):
     colorama.just_fix_windows_console()
-    asyncio.run(main())
+    asyncio.run(main(*launch_args))
     colorama.deinit()

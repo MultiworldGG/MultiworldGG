@@ -517,8 +517,8 @@ pot_locations = [
     create_location(pot_location_start + 50, Potsanity.gc_crypt_1, GhostCastleRegion.crypt),
     create_location(pot_location_start + 51, Potsanity.gc_crypt_2, GhostCastleRegion.crypt),
     create_location(pot_location_start + 52, Potsanity.gc_crypt_3, GhostCastleRegion.crypt),
-    create_location(pot_location_start + 53, Potsanity.gc_gardens_three_1, GhostCastleRegion.four_gardens),  # Not really but the logic to be there etc etc
-    create_location(pot_location_start + 54, Potsanity.gc_gardens_three_2, GhostCastleRegion.four_gardens),
+    create_location(pot_location_start + 53, Potsanity.gc_gardens_three_1, GhostCastleRegion.three_gardens),
+    create_location(pot_location_start + 54, Potsanity.gc_gardens_three_2, GhostCastleRegion.three_gardens),
     create_location(pot_location_start + 55, Potsanity.gc_stairwell_lower_1, GhostCastleRegion.ghost_stairwell_mid),
     create_location(pot_location_start + 56, Potsanity.gc_stairwell_lower_2, GhostCastleRegion.ghost_stairwell_mid),
     create_location(pot_location_start + 57, Potsanity.gc_stairwell_mid_1, GhostCastleRegion.ghost_stairwell_mid),
@@ -603,7 +603,7 @@ pot_locations = [
     create_location(pot_location_start + 133, Potsanity.tg_cloud_ramp_4, TengokuRegion.cloud_ramp),
     create_location(pot_location_start + 134, Potsanity.tg_cloud_ramp_5, TengokuRegion.cloud_ramp),
     create_location(pot_location_start + 135, Potsanity.tg_flower_garden_1, TengokuRegion.flower_garden),
-    create_location(pot_location_start + 136, Potsanity.tg_flower_garden_2, TengokuRegion.flower_garden),
+    # create_location(pot_location_start + 136, Potsanity.tg_flower_garden_2, TengokuRegion.flower_garden),  Its buggy, temp block until fix.
     create_location(pot_location_start + 137, Potsanity.tg_flower_garden_3, TengokuRegion.flower_garden),
     create_location(pot_location_start + 138, Potsanity.tg_flower_garden_4, TengokuRegion.flower_garden),
     create_location(pot_location_start + 139, Potsanity.tg_flower_garden_5, TengokuRegion.flower_garden),

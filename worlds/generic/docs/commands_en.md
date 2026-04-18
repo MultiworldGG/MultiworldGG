@@ -75,6 +75,10 @@ including the exclamation point.
 - `/allow_release <player name>` Allows the given player to use the `!release` command.
 - `/forbid_release <player name>` Prevents the given player from using the `!release` command.
 
+### Goal
+- `/goal <player name>` Marks a player as having completed their goal. This triggers auto-collect/release if configured,
+  and displays as "Goal Completed (via override)" on the tracker.
+
 ### Cheats
 - `/send <player name> <item name>` Grants the given player the specified item.
 - `/send_multiple <amount> <player name> <item name>` Grants the given player the stated amount of the specified item.

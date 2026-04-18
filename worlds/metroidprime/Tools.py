@@ -2,7 +2,6 @@ import json
 
 # Initialize an empty dictionary
 consolidated_dict = {}
-data = {}
 # Open and read the JSON fil e
 with open("./data/RoomLoadouts.json", "r") as f:
     data = json.load(f)

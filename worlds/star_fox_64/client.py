@@ -1,6 +1,10 @@
 import colorama, asyncio, bsdiff4, pathlib, os, Utils, hashlib, sys, zipfile, settings, atexit, time, typing
 from CommonClient import CommonContext, ClientCommandProcessor, get_base_parser, gui_enabled, logger
 from NetUtils import ClientStatus
+try:
+    from Utils import instance_name as apname
+except ImportError:
+    apname = "Archipelago"
 
 from . import locations, items, data
 from .version import version
@@ -311,7 +315,7 @@ class StarFox64Context(CommonContext):
     asyncio.create_task(patch_and_run(True))
 
     class StarFox64Manager(GameManager):
-      base_title = f"Star Fox 64 Client {version.as_string()} | AP"
+      base_title = f"Star Fox 64 Client {version.as_string()} | {apname}"
 
       def build(self):
         ret = super().build()

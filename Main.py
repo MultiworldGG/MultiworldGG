@@ -24,6 +24,7 @@ __all__ = ["main"]
 
 
 def main(args, seed=None, baked_server_options: dict[str, object] | None = None):
+    worlds.ensure_worlds_loaded()
     if not baked_server_options:
         baked_server_options = get_settings().server_options.as_dict()
     assert isinstance(baked_server_options, dict)

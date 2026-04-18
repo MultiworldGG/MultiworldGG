@@ -222,7 +222,7 @@ move_rando_asm = { #most of these are just changing B address after calls to set
     0x2682B4: "1440001C", #act_crouch_slide
     0x26095C: "1440004F", #check_common_idle_cancels
     0x266830: "14400055", #act_hold_walking
-    0x2672F4: "14400077", #act_hold_decelerating
+    0x267310: "14400077", #act_hold_decelerating
     0x260B98: "14400042", #check_common_hold_idle_cancels
     0x26437C: "1440001F", #set_triple_jump_action
     0x264384: "14400019", #set_triple_jump_action

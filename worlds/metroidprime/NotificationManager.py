@@ -18,7 +18,8 @@ class NotificationManager:
         self.send_notification_func = send_notification_func
 
     def queue_notification(self, message: str):
-        self.notification_queue.append(message)
+        if message not in self.notification_queue:
+            self.notification_queue.append(message)
 
     def handle_notifications(self):
         self.time_since_last_message = time.time() - self.last_message_time

@@ -1,9 +1,9 @@
-from collections import defaultdict
 import copy
-from typing import TYPE_CHECKING, Dict, List
 
-from .RoomNames import RoomName
-from .RoomData import MetroidPrimeArea
+from collections import defaultdict
+from typing import Dict, List, TYPE_CHECKING
+
+from ..Enum import MetroidPrimeArea, RoomName
 
 if TYPE_CHECKING:
     from .. import MetroidPrimeWorld

@@ -1,11 +1,14 @@
 import os
 from typing import TYPE_CHECKING, Dict, Any, List
 
-from .Items import PROGRESSIVE_ITEM_EXCLUSION_LIST, ProgressiveUpgrade, SuitUpgrade, artifact_table
-
-
-from .PrimeOptions import ArtifactHints, HudColor, MetroidPrimeOptions
-from .data.RoomData import MetroidPrimeArea
+from .Enum import HudColor, MetroidPrimeArea, ProgressiveUpgrade, SuitUpgrade
+from .Items import (
+    artifact_table,
+    PROGRESSIVE_BEAM_ITEM_EXCLUSION_LIST,
+    PROGRESSIVE_BOMB_ITEM_EXCLUSION_LIST,
+)
+from .PrimeOptions import ArtifactHints, MetroidPrimeOptions, SpringBall
+from .PrimeUtils import count_ammo, get_apworld_version
 from .data.Transports import get_transport_data
 
 MAX_32_BIT_INT = 0x7FFFFFFF
@@ -17,6 +20,10 @@ if TYPE_CHECKING:
 def starting_inventory(world: "MetroidPrimeWorld", item: str) -> bool:
     items = [item.name for item in world.multiworld.precollected_items[world.player]]
     return item in items
+
+
+def starting_etanks(world: "MetroidPrimeWorld") -> int:
+    return sum([1 for item in world.multiworld.precollected_items[world.player] if item.name == "Energy Tank"])
 
 
 def skip_ridley(boss: int) -> bool:
@@ -47,8 +54,7 @@ def get_starting_beam(world: "MetroidPrimeWorld") -> str:
     return starting_beam
 
 
-def color_options_to_value(world: "MetroidPrimeWorld") -> List[float]:
-    options = world.options
+def color_options_to_value(options: "MetroidPrimeOptions") -> List[float]:
     # If any overrides are set, use that instead
     if (
         options.hud_color_red.value
@@ -62,7 +68,7 @@ def color_options_to_value(world: "MetroidPrimeWorld") -> List[float]:
         ]
 
     # get the key in hudcolor enum that matches all caps color
-    color: str = world.options.hud_color.current_key
+    color: str = options.hud_color.current_key
     color = color.upper()
     for key in HudColor.__members__.keys():
         if key == color:
@@ -80,10 +86,12 @@ def style(text: str, **kwargs: str):
 
 
 def make_artifact_hints(world: "MetroidPrimeWorld") -> Dict[str, str]:
+    options: MetroidPrimeOptions = world.options
+
     def make_artifact_hint(item: str) -> str:
         item_string = style(item, main_color="#c300ff")
         try:
-            if world.options.artifact_hints.value != ArtifactHints.option_disable:
+            if options.artifact_hints.value != ArtifactHints.option_disable:
                 location = world.multiworld.find_item(item, world.player)
                 player_string = (
                     f"{world.multiworld.player_name[location.player]}'s"
@@ -94,7 +102,7 @@ def make_artifact_hints(world: "MetroidPrimeWorld") -> Dict[str, str]:
             else:
                 return f"The {item_string} has not been collected."
             # This will error when trying to find an artifact that does not have a location since was pre collected
-        except:
+        except (Exception,):
             return f"The {item_string} does not need to be collected."
 
     return {
@@ -114,24 +122,41 @@ def make_artifact_hints(world: "MetroidPrimeWorld") -> Dict[str, str]:
 
 
 def make_credits(world: "MetroidPrimeWorld") -> str:
+    options: MetroidPrimeOptions = world.options
+
     def spoil_location(item: str):
         spoiler = f"{style(item, font='C29C51F1', main_color='#89a1ff')}\n"
-        locations = world.multiworld.find_item_locations(item, world.player, True)
-        if not locations:
-            return spoiler + "<Not Placed>\n"
-        for location in locations:
-            if world.multiworld.players == 1:
-                spoiler += f"{location.name}\n"
+        spoiler_locs = []
+        started_with_count = sum([1 for i in world.multiworld.precollected_items[world.player] if i.name == item])
+
+        if started_with_count > 0:
+            if started_with_count == 1:
+                spoiler_locs.append("<Started With>")
             else:
-                player_string = (
-                    f"{world.multiworld.player_name[location.player]}'s"
-                    if location.player != world.player
-                    else "Your"
-                )
-                spoiler += f"{style(player_string, main_color='#d4cc33')} {location.name}\n"
+                spoiler_locs.append(f"<Started With {started_with_count} of them>")
+
+        locations = world.multiworld.find_item_locations(item, world.player, True)
+        if locations:
+            for location in locations:
+                if world.multiworld.players == 1:
+                    spoiler_locs.append(f"{location.name}")
+                else:
+                    player_string = (
+                        f"{world.multiworld.player_name[location.player]}'s"
+                        if location.player != world.player
+                        else "Your"
+                    )
+                    spoiler_locs.append(f"{style(player_string, main_color='#d4cc33')} {location.name}")
+
+        if len(spoiler_locs) > 0:
+            spoiler += "\n".join(spoiler_locs)
+        else:
+            spoiler += "<Not Placed>\n"
+
         return spoiler
 
     excluded_items = {
+        SuitUpgrade.Nothing,
         SuitUpgrade.Missile_Expansion,
         SuitUpgrade.Power_Bomb_Expansion,
         SuitUpgrade.Energy_Tank,
@@ -146,17 +171,23 @@ def make_credits(world: "MetroidPrimeWorld") -> str:
         excluded_items.add(SuitUpgrade.Power_Beam)
     else:
         excluded_items.add(SuitUpgrade(world.starting_beam))
-    if world.options.progressive_beam_upgrades.value:
-        excluded_items.update(PROGRESSIVE_ITEM_EXCLUSION_LIST)
-    if not world.options.shuffle_scan_visor.value:
+    if options.progressive_beam_upgrades.value:
+        excluded_items.update(PROGRESSIVE_BEAM_ITEM_EXCLUSION_LIST)
+    if options.spring_ball.current_option_name.lower() == "its own progressive item":
+        excluded_items.update(PROGRESSIVE_BOMB_ITEM_EXCLUSION_LIST)
+    if not options.shuffle_scan_visor.value:
         excluded_items.add(SuitUpgrade.Scan_Visor)
-    if not world.options.missile_launcher.value:
+    if not options.missile_launcher.value:
         excluded_items.add(SuitUpgrade.Missile_Launcher)
-    if not world.options.main_power_bomb.value:
+    if not options.main_power_bomb.value:
         excluded_items.add(SuitUpgrade.Main_Power_Bomb)
+    if not options.shuffle_unlimited_missiles.value:
+        excluded_items.add(SuitUpgrade.Unlimited_Missiles)
+    if not options.shuffle_unlimited_power_bombs.value:
+        excluded_items.add(SuitUpgrade.Unlimited_Power_Bombs)
 
     spoilers = [f"{style('Major Item Locations', font='C29C51F1', main_color='#89D6FF')}\n"]
-    if world.options.progressive_beam_upgrades.value:
+    if options.progressive_beam_upgrades.value:
         for upgrade in ProgressiveUpgrade:
             spoilers.append(spoil_location(upgrade.value))
     for upgrade in SuitUpgrade:
@@ -167,34 +198,35 @@ def make_credits(world: "MetroidPrimeWorld") -> str:
     return "\n".join(spoilers)
 
 
-def get_tweaks(world: "MetroidPrimeWorld") -> Dict[str, List[float]]:
-    color = color_options_to_value(world)
+def get_tweaks(options: "MetroidPrimeOptions") -> Dict[str, List[float]]:
+    color = color_options_to_value(options)
     if color != HudColor.DEFAULT.value:
         return {"hudColor": color}
     else:
         return {}
 
 
-def get_strg(world: "MetroidPrimeWorld") -> Dict[str, List[str]]:
-    strg = {**OBJECTIVE_STRG}
+def get_strg(options: "MetroidPrimeOptions") -> Dict[str, List[str]]:
+    strg = {
+        DEFAULT_OBJECTIVE_STRG_KEY: OBJECTIVE_STRG[DEFAULT_OBJECTIVE_STRG_KEY][:],
+        PAUSE_MENU_STRG_KEY: PAUSE_STRG[PAUSE_MENU_STRG_KEY][:],
+    }
+
     # Set objective text in temple security station
-    objective_text = f"Current Mission: Retrieve {world.options.required_artifacts} Chozo Artifact{'s' if world.options.required_artifacts != 1 else ''}"
-    if world.options.final_bosses == 0:
-        objective_text += "\nDefeat Meta Ridley\nDefeat Metroid Prime"
-    elif world.options.final_bosses == 1:
+    objective_text = f"Current Mission: Retrieve {options.required_artifacts} Chozo Artifact{'s' if options.required_artifacts != 1 else ''}"
+    if options.final_bosses in [0, 1]:
         objective_text += "\nDefeat Meta Ridley"
-    elif world.options.final_bosses == 2:
+    if options.final_bosses in [0, 2]:
         objective_text += "\nDefeat Metroid Prime"
 
     strg[DEFAULT_OBJECTIVE_STRG_KEY][2] = objective_text
 
     # Show suit colors in pause menu
-    strg = {**strg, **PAUSE_STRG}
     pause_menu_overrides = {
-        "Power Suit": world.options.power_suit_color.value,
-        "Varia Suit": world.options.varia_suit_color.value,
-        "Gravity Suit": world.options.gravity_suit_color.value,
-        "Phazon Suit": world.options.phazon_suit_color.value,
+        "Power Suit": options.power_suit_color.value,
+        "Varia Suit": options.varia_suit_color.value,
+        "Gravity Suit": options.gravity_suit_color.value,
+        "Phazon Suit": options.phazon_suit_color.value,
     }
     # Update the name to include the color index if it is set
     for item in strg[PAUSE_MENU_STRG_KEY]:
@@ -229,14 +261,22 @@ def make_version_specific_changes(
     return config_json
 
 
+def get_spring_ball_item(spring_ball: SpringBall) -> str:
+    if spring_ball == SpringBall.option_when_bombs_acquired:
+        return "Morph Ball Bomb"
+    else:
+        return "Spring Ball"
+
+
 def make_config(world: "MetroidPrimeWorld") -> Dict[str, Any]:
     options: MetroidPrimeOptions = world.options
+
     config: Dict[str, Any] = {
         "$schema": "https://randovania.org/randomprime/randomprime.schema.json",
         "inputIso": "prime.iso",
         "outputIso": "prime_out.iso",
         "forceVanillaLayout": False,
-        "strg": get_strg(world),
+        "strg": get_strg(options),
         "preferences": {
             "forceFusion": bool(options.fusion_suit.value),
             "cacheDir": "cache",
@@ -252,17 +292,18 @@ def make_config(world: "MetroidPrimeWorld") -> Dict[str, Any]:
             "quickpatch": bool(os.environ.get("DEBUG", False)),
             "quiet": bool(os.environ.get("DEBUG", False)),
             "suitColors": {
-                "gravityDeg": world.options.gravity_suit_color.value or 0,
-                "phazonDeg": world.options.phazon_suit_color.value or 0,
-                "powerDeg": world.options.power_suit_color.value or 0,
-                "variaDeg": world.options.varia_suit_color.value or 0,
+                "gravityDeg": options.gravity_suit_color.value or 0,
+                "phazonDeg": options.phazon_suit_color.value or 0,
+                "powerDeg": options.power_suit_color.value or 0,
+                "variaDeg": options.varia_suit_color.value or 0,
             },
         },
-        "tweaks": get_tweaks(world),
+        "tweaks": get_tweaks(options),
         "gameConfig": {
-            "mainMenuMessage": "Archipelago Metroid Prime",
+            "resultsString": f"{get_apworld_version()} | {'_'.join(world.multiworld.get_out_file_name_base(world.player).split('_')[:2])}",
+            "mainMenuMessage": f"Archipelago Metroid Prime {get_apworld_version()}",
             "startingRoom": f"{world.starting_room_data.area.value}:{world.starting_room_data.name}",
-            "springBall": bool(options.spring_ball.value),
+            "springBallItem": get_spring_ball_item(options.spring_ball),
             "warpToStart": True,
             "multiworldDolPatches": True,
             "nonvariaHeatDamage": bool(options.non_varia_heat_damage.value),
@@ -276,21 +317,25 @@ def make_config(world: "MetroidPrimeWorld") -> Dict[str, Any]:
             "removeHiveMecha": bool(options.remove_hive_mecha.value),
             "startingItems": {
                 "combatVisor": True,
-                "powerSuit": True,
+                "powerSuit": 0,
                 "powerBeam": starting_inventory(world, SuitUpgrade.Power_Beam.value)
                 or starting_inventory(
                     world, ProgressiveUpgrade.Progressive_Power_Beam.value
                 ),
                 "scanVisor": starting_inventory(world, SuitUpgrade.Scan_Visor.value),
-                # These are handled by the client
-                "missiles": (
-                    5
-                    if starting_inventory(world, SuitUpgrade.Missile_Launcher.value)
-                    or starting_inventory(world, SuitUpgrade.Missile_Expansion.value)
-                    else 0
+                "missiles": count_ammo(
+                    [item.name for item in world.multiworld.precollected_items[world.player]],
+                    str(SuitUpgrade.Missile_Launcher),
+                    str(SuitUpgrade.Missile_Expansion),
+                    bool(world.options.missile_launcher),
                 ),
-                "energyTanks": 0,
-                "powerBombs": 0,
+                "energyTanks": starting_etanks(world),
+                "powerBombs": count_ammo(
+                    [item.name for item in world.multiworld.precollected_items[world.player]],
+                    str(SuitUpgrade.Main_Power_Bomb),
+                    str(SuitUpgrade.Power_Bomb_Expansion),
+                    bool(world.options.main_power_bomb),
+                ),
                 "wave": starting_inventory(world, SuitUpgrade.Wave_Beam.value)
                 or starting_inventory(
                     world, ProgressiveUpgrade.Progressive_Wave_Beam.value
@@ -331,26 +376,36 @@ def make_config(world: "MetroidPrimeWorld") -> Dict[str, Any]:
                 "flamethrower": starting_inventory(
                     world, SuitUpgrade.Flamethrower.value
                 ),
+                "unlimitedMissiles": starting_inventory(world, SuitUpgrade.Unlimited_Missiles.value),
+                "unlimitedPowerBombs": starting_inventory(world, SuitUpgrade.Unlimited_Power_Bombs.value),
+                "missileLauncher": (
+                    not bool(options.missile_launcher) or
+                    starting_inventory(world, SuitUpgrade.Missile_Launcher.value)
+                ),
+                "powerBombLauncher": (
+                    not bool(options.main_power_bomb) or
+                    starting_inventory(world, SuitUpgrade.Main_Power_Bomb.value)
+                ),
+                "springBall": starting_inventory(world, SuitUpgrade.Spring_Ball.value),
             },
             "disableItemLoss": True,
             "startingVisor": "Combat",
             "startingBeam": get_starting_beam(world),
-            "enableIceTraps": False,
             "missileStationPbRefill": True,
-            "doorOpenMode": "Original",
+            "doorOpenMode": "PrimaryBlastShield",
             "etankCapacity": 100,
             "itemMaxCapacity": {
                 "Power Beam": (
-                    2 if bool(world.options.progressive_beam_upgrades.value) else 1
+                    2 if bool(options.progressive_beam_upgrades.value) else 1
                 ),
                 "Ice Beam": (
-                    2 if bool(world.options.progressive_beam_upgrades.value) else 1
+                    2 if bool(options.progressive_beam_upgrades.value) else 1
                 ),
                 "Wave Beam": (
-                    2 if bool(world.options.progressive_beam_upgrades.value) else 1
+                    2 if bool(options.progressive_beam_upgrades.value) else 1
                 ),
                 "Plasma Beam": (
-                    2 if bool(world.options.progressive_beam_upgrades.value) else 1
+                    2 if bool(options.progressive_beam_upgrades.value) else 1
                 ),
                 "Missile": 999,
                 "Scan Visor": 1,
@@ -395,12 +450,12 @@ def make_config(world: "MetroidPrimeWorld") -> Dict[str, Any]:
             "backwardsLabs": True,
             "backwardsFrigate": True,
             "backwardsUpperMines": True,
-            "backwardsLowerMines": bool(world.options.backwards_lower_mines),
+            "backwardsLowerMines": bool(options.backwards_lower_mines),
             "patchPowerConduits": False,
             "removeMineSecurityStationLocks": False,
-            "powerBombArboretumSandstone": bool(world.options.flaahgra_power_bombs),
+            "powerBombArboretumSandstone": bool(options.flaahgra_power_bombs),
             "artifactHints": make_artifact_hints(world),
-            "requiredArtifactCount": world.options.required_artifacts.value,
+            "requiredArtifactCount": options.required_artifacts.value,
             "creditsString": make_credits(world),
         },
         "levelData": make_level_data(world),

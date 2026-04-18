@@ -31,12 +31,6 @@ class ConnectionData:
     flag: RandomizationFlag = RandomizationFlag.NOT_RANDOMIZED
     type: EntranceType = EntranceType.ONE_WAY
 
-    def __post_init__(self):
-        if connector_keyword in self.name:
-            origin, destination = self.name.split(connector_keyword)
-            if self.reverse is None:
-                super().__setattr__("reverse", f"{destination}{connector_keyword}{origin}")
-
 
 class RegionFactory(Protocol):
     def __call__(self, name: str, regions: List[ConnectionData]) -> Region:

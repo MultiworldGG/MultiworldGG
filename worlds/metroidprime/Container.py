@@ -3,7 +3,6 @@ import struct
 from typing import TYPE_CHECKING, List, Optional
 import zipfile
 from worlds.Files import APPlayerContainer
-import py_randomprime  # type: ignore
 
 
 from .MetroidPrimeInterface import GAMES, HUD_MESSAGE_DURATION
@@ -13,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class MetroidPrimeContainer(APPlayerContainer):
-    game: str = "Metroid Prime"  # type: ignore
+    game: str = "Metroid Prime"  # noqa
     patch_file_ending = ".apmp1"
 
     def __init__(
@@ -105,6 +104,8 @@ def slwi(
 
 
 def construct_hook_patch(game_version: str, progressive_beams: bool) -> List[int]:
+    import py_randomprime  # type: ignore
+
     from ppc_asm.assembler.ppc import (
         addi,
         bl,
@@ -140,6 +141,7 @@ def construct_hook_patch(game_version: str, progressive_beams: bool) -> List[int
     from ppc_asm import assembler
 
     symbols = py_randomprime.symbols_for_version(game_version)
+    assert symbols is not None
 
     # UpdateHintState is 0x1BC in length, 111 instructions
     num_preserved_registers = 2
@@ -230,7 +232,7 @@ def construct_hook_patch(game_version: str, progressive_beams: bool) -> List[int
 
 
 def _load_player_state_to_r6(game_version: str) -> List[int]:
-    from ppc_asm.assembler.ppc import lis, ori, lwz, r6, r5
+    from ppc_asm.assembler.ppc import lis, ori, lwz, r6
 
     cstate_manager_global = GAMES[game_version]["cstate_manager_global"]
     return [
@@ -254,36 +256,18 @@ def construct_progressive_beam_patch(
 ) -> List[int]:
     from ppc_asm.assembler.ppc import (
         addi,
-        bl,
         b,
         li,
         lwz,
-        r1,
-        r3,
-        r4,
         r5,
         r6,
         r8,
         r10,
-        r31,
-        stw,
         cmpwi,
         bgt,
-        mtspr,
-        blr,
-        lmw,
-        r0,
-        LR,
-        stwu,
-        mfspr,
-        or_,
-        stmw,
         stw,
-        lis,
         r7,
         r9,
-        nop,
-        ori,
         GeneralRegister,
         Instruction,
     )
@@ -309,7 +293,6 @@ def construct_progressive_beam_patch(
 
     if not progressive_beams:
         return []
-    cstate_manager_global = GAMES[game_version]["cstate_manager_global"]
     charge_beam_offset = 0x7C
     instructions: List = [
         # Step 0: Get the player state address

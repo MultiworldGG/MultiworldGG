@@ -140,7 +140,7 @@ class SM64HackWorld(World):
         self.location_names_that_exist_to_id = dict(filter(lambda location: location[0] in existing_location_names, self.location_name_to_id.items()))
 
     def create_item(self, item: str, item_link = True) -> SM64HackItem:
-        if item_link and item not in traps and item != "Coin": #item link is dumb and i need to make all potentially progressive item_link items some sort of progression
+        if item_link and item not in traps and item not in junk and item not in useful: #item link is dumb and i need to make all potentially progressive item_link items some sort of progression
             classification = ItemClassification.progression
             if item == "Power Star" or item == "Star Bundle" or item == "Blue Star" or item == "Blue Star Bundle":
                 classification = ItemClassification.progression_deprioritized_skip_balancing

@@ -36,7 +36,7 @@ class LocationName(InternalLocationName):
     Iron = "West of Madra - Venus Djinni Iron"
     Steel = "Gabomba Statue - Venus Djinni Steel"
     Mud = "Gabomba Catacombs - Venus Djinni Mud"
-    Flower = "Taopa Swamp - Venus Djinni Flower"
+    Flower = "Taopo Swamp - Venus Djinni Flower"
     Meld = "Islet Cave - Venus Djinni Meld"
     Petra = "Northeast Of Shaman Village - Venus Djinni Petra"
     Salt = "Contigo - Venus Djinni Salt"

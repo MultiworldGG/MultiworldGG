@@ -1,4 +1,5 @@
 import abc
+from struct import Struct
 
 from .type_aliases import TCSContext
 
@@ -30,6 +31,14 @@ class StaticUint(int):
         ctx.write_uint(self, value)
 
 
+class StaticInt(int):
+    def get(self, ctx: TCSContext) -> int:
+        return ctx.read_int(self)
+
+    def set(self, ctx: TCSContext, value: int):
+        ctx.write_int(self, value)
+
+
 class StaticBOOL(StaticUint):
     """Microsoft 4-byte BOOL"""
     def get(self, ctx: TCSContext) -> bool:
@@ -58,6 +67,24 @@ class UCharField(int):
 
     def set(self, ctx: TCSContext, raw_address: int, value: int):
         ctx.write_byte(raw_address + self, value, raw=True)
+
+
+class UShortField(int):
+    def get(self, ctx: TCSContext, raw_address: int) -> int:
+        return ctx.read_ushort(raw_address + self, raw=True)
+
+    def set(self, ctx: TCSContext, raw_address: int, value: int):
+        ctx.write_ushort(raw_address + self, value, raw=True)
+
+
+class NuVecField(int):
+    _struct = Struct("<3f")
+
+    def get(self, ctx: TCSContext, raw_address: int) -> tuple[float, float, float]:
+        return self._struct.unpack(ctx.read_bytes(raw_address + self, self._struct.size, raw=True))  # type: ignore
+
+    def set(self, ctx: TCSContext, raw_address: int, value: tuple[float, float, float]) -> None:
+        ctx.write_bytes(raw_address + self, self._struct.pack(*value), self._struct.size, raw=True)
 
 
 class ClientComponent(abc.ABC):

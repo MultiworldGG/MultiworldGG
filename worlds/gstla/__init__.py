@@ -17,7 +17,7 @@ from typing import List, TextIO, BinaryIO, ClassVar, Type, cast, Optional, Seque
 from .Option_groups import gstla_option_groups
 from .Option_presets import gstla_options_presets
 from .Options import GSTLAOptions
-from BaseClasses import Item, ItemClassification, Tutorial
+from BaseClasses import Item, ItemClassification, Tutorial, Location
 from .Items import GSTLAItem, item_table, all_items, ItemType, create_events, create_items, create_item, \
     AP_PLACEHOLDER_ITEM, items_by_id, get_filler_item, AP_PROG_PLACEHOLDER_ITEM, create_filler_pool_weights, \
     create_trap_pool_weights, AP_USEFUL_PLACEHOLDER_ITEM, create_item_direct
@@ -265,9 +265,18 @@ class GSTLAWorld(World):
         ret["goal"] = goal_dict
         return ret
 
+    @classmethod
+    def stage_finalize_multiworld(cls, multiworld: MultiWorld) -> None:
+        should_scale = False
+
+        for world in multiworld.get_game_worlds(GSTLAWorld.game):
+            if world.options.scale_mimics or world.options.scale_characters:
+                should_scale = True
+
+        if should_scale:
+            GSTLAWorld._handle_spheres(multiworld)
+
     def generate_output(self, output_directory: str):
-        if self.options.scale_mimics or self.options.scale_characters:
-            self._handle_spheres()
         ap_settings = BytesIO()
         ap_settings_debug = StringIO()
         self._generate_rando_data(ap_settings, ap_settings_debug)
@@ -284,39 +293,39 @@ class GSTLAWorld(World):
         patch.write_file("token_data.bin", patch.get_token_binary())
         patch.write()
 
-    def _handle_spheres(self):
-        mimic_map: defaultdict[int, List[GSTLALocation]]  = defaultdict(lambda: [])
-        character_map: defaultdict[int, List[GSTLAItem]] = defaultdict(lambda: [])
+    @classmethod
+    def _handle_spheres(cls, multiworld: MultiWorld):
+        mimic_map: defaultdict[int, defaultdict[int, List[Location]]]  = defaultdict(lambda: defaultdict(lambda: []))
+        character_map: defaultdict[int, defaultdict[int, List[GSTLAItem]]] = defaultdict(lambda: defaultdict(lambda: []))
         toons = {c.id for c in characters}
-        spheres = self.multiworld.get_spheres()
-        max_sphere = -1
+        spheres = multiworld.get_spheres()
+        max_spheres: defaultdict[int, int] = defaultdict(lambda: -1)
         for i, sphere in enumerate(spheres):
             for loc in sphere:
-                if loc.item.player != self.player:
+                if loc.item.game != GSTLAWorld.game:
                     continue
+                # if loc.item.player != self.player:
+                #     continue
                 if loc.item.name == ItemName.Victory:
-                    max_sphere = i
+                    max_spheres[loc.item.player] = i
                     continue
                 if loc.item.code is None:
                     continue
-                if cast(GSTLAItem, loc.item).item_data.is_mimic:
-                    mimic_map[i].append(cast(GSTLALocation, loc))
-                if loc.item.code in toons:
-                    character_map[i].append(cast(GSTLAItem, loc.item))
+                gsitem = cast(GSTLAItem, loc.item)
+                if gsitem.item_data.is_mimic:
+                    mimic_map[loc.item.player][i].append(loc)
+                elif loc.item.code in toons:
+                    character_map[loc.item.player][i].append(gsitem)
 
-        if max_sphere == -1:
-            logger.warning("Could not find max sphere for GSTLA; cannot scale mimics or characters")
-            return
-        # logger.info("Max sphere is %d", max_sphere)
+        for slot, max_sphere in max_spheres.items():
+            world: GSTLAWorld = cast(GSTLAWorld, multiworld.worlds[slot])
+            logger.info(f"Max sphere for slot{multiworld.get_player_name(slot)} is {max_sphere}")
+            if world.options.scale_mimics:
+                world._scale_mimics(max_sphere, mimic_map[slot])
+            if world.options.scale_characters:
+                world._scale_characters(max_sphere, character_map[slot])
 
-        if self.options.scale_mimics:
-            self._scale_mimics(max_sphere, mimic_map)
-
-        if self.options.scale_characters:
-            self._scale_characters(max_sphere, character_map)
-
-
-    def _scale_mimics(self, max_sphere: int, mimic_map: defaultdict[int, List[GSTLALocation]]):
+    def _scale_mimics(self, max_sphere: int, mimic_map: defaultdict[int, List[Location]]):
         mimic_lists = []
         for i in range(1, len(mimics) - 1):
             mimic_lists.append(mimics[i - 1:i + 2])
@@ -336,7 +345,8 @@ class GSTLAWorld(World):
                 current_item.location = None
                 new_mimic = create_item_direct(self.random.choice(mimic_list), self.player)
                 # logger.info("Replacing mimic %s with mimic %s in sphere %d", current_item.name, new_mimic.name, sphere)
-                mimic_loc.item = new_mimic
+                mimic_loc.item = None
+                mimic_loc.place_locked_item(new_mimic)
 
     def _scale_characters(self, max_sphere: int, char_map: defaultdict[int, List[GSTLAItem]]):
         max_level = self.options.max_scaled_level.value

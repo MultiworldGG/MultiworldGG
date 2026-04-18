@@ -13,31 +13,8 @@ from Options import (
 )
 from dataclasses import dataclass
 
-from .Enum import StartRoomDifficulty
-from .LogicCombat import CombatLogicDifficulty
+from .Enum import CombatLogicDifficulty, HudColor, StartRoomDifficulty
 from .data.Tricks import TrickInfo, Tricks
-
-
-class HudColor(Enum):
-    DEFAULT = [102 / 255, 174 / 255, 225 / 255]
-    RED = [1.0, 0.0, 0.0]
-    GREEN = [0.0, 1.0, 0.0]
-    BLUE = [0.0, 0.0, 1.0]
-    VIOLET = [1.0, 0.0, 1.0]
-    YELLOW = [1.0, 1.0, 0.0]
-    CYAN = [0.0, 1.0, 1.0]
-    WHITE = [1.0, 1.0, 1.0]
-    ORANGE = [1.0, 0.5, 0.0]
-    PINK = [1.0, 0.5, 1.0]
-    LIME = [0.5, 1.0, 0.0]
-    TEAL = [0.5, 1.0, 1.0]
-    PURPLE = [0.5, 0.0, 1.0]
-
-
-class SpringBall(DefaultOnToggle):
-    """Enables the spring ball when you receive Morph Ball Bombs. This will allow you to jump while in morph ball form by pressing up on the c stick, reducing the complexity of double bomb jumps."""
-
-    display_name = "Add Spring Ball"
 
 
 class RequiredArtifacts(Range):
@@ -86,9 +63,33 @@ class MainPowerBomb(Toggle):
 
 
 class ShuffleScanVisor(Toggle):
-    """If enabled, the scan visor will be shuffled into the item pool and will need to be found in order to scan dash and open certain locks."""
+    """If enabled, the Scan Visor will be shuffled into the item pool and will need to be found in order to scan dash and open certain locks."""
 
     display_name = "Shuffle Scan Visor"
+
+
+class ShuffleUnlimitedMissiles(Toggle):
+    """If enabled, Unlimited Missiles will be shuffled into the item pool. This is similar to Unlimited Missiles found in Metroid Prime 2 Echoes Multiplayer."""
+
+    display_name = "Shuffle Unlimited Missiles"
+
+
+class ShuffleUnlimitedPowerBombs(Toggle):
+    """If enabled, the Unlimited Power Bombs will be shuffled into the item pool. This is similar to Unlimited Missiles found in Metroid Prime 2 Echoes Multiplayer, but for Power Bombs."""
+
+    display_name = "Shuffle Unlimited Power Bombs"
+
+
+class SpringBall(Choice):
+    """Enables the spring ball when you receive Morph Ball Bombs or Spring Ball. This will allow you to jump while in morph ball form by pressing up on the c stick, reducing the complexity of double bomb jumps. Progressive means you get Spring Ball then Bombs."""
+
+    display_name = "Add Spring Ball"
+    option_disabled = 0
+    option_when_bombs_acquired = 1
+    option_its_own_item = 2
+    option_its_own_progressive_item = 3
+    alias_true = 1
+    alias_false = 0
 
 
 class NonVariaHeatDamage(DefaultOnToggle):
@@ -112,7 +113,7 @@ class StaggeredSuitDamage(Choice):
 
 
 class RemoveHiveMecha(Toggle):
-    """If enabled, the trigger for the Hive Mecha boss will be removed from the game."""
+    """If enabled, the trigger for the Hive Mecha boss will be removed from the game. Can be forced on if you don't start with Power Beam and you start at Tallon Overworld - Landing Site or Chozo Ruins - Save Station 1."""
 
     display_name = "Remove Hive Mecha"
 
@@ -444,6 +445,8 @@ class MetroidPrimeOptions(PerGameCommonOptions):
     missile_launcher: MissileLauncher
     main_power_bomb: MainPowerBomb
     shuffle_scan_visor: ShuffleScanVisor
+    shuffle_unlimited_missiles: ShuffleUnlimitedMissiles
+    shuffle_unlimited_power_bombs: ShuffleUnlimitedPowerBombs
     pre_scan_elevators: PreScanElevators
     elevator_randomization: ElevatorRandomization
     door_color_randomization: DoorColorRandomization
@@ -505,10 +508,12 @@ prime_option_groups = [
             MainPowerBomb,
             RandomizeStartingBeam,
             ShuffleScanVisor,
+            ShuffleUnlimitedMissiles,
+            ShuffleUnlimitedPowerBombs,
+            SpringBall,
             PreScanElevators,
             NonVariaHeatDamage,
             StaggeredSuitDamage,
-            SpringBall,
         ],
     ),
     OptionGroup(

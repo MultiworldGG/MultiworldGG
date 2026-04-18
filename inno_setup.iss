@@ -68,6 +68,7 @@ Name: "{commondesktop}\{#MyAppName} Launcher"; Filename: "{app}\MultiworldGGLaun
 
 Filename: "{tmp}\vc_redist.x64.exe"; Parameters: "/passive /norestart"; Check: IsVCRedist64BitNeeded; StatusMsg: "Installing VC++ redistributable..."
 Filename: "{app}\MultiworldGGLauncher"; Parameters: "--update_settings"; StatusMsg: "Updating host.yaml..."; Flags: runasoriginaluser runhidden
+Filename: "{app}\MultiworldGGLauncher"; Parameters: "--precache"; StatusMsg: "Preparing world data..."; Flags: runasoriginaluser runhidden
 Filename: "{app}\MultiworldGGLauncher"; Description: "{cm:LaunchProgram,{#StringChange('Launcher', '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 ; Silent install from updater auto starts the launcher again
 Filename: "{app}\MultiworldGGLauncher"; StatusMsg: "Restarting MultiworldGG Launcher..."; Flags: nowait skipifnotsilent

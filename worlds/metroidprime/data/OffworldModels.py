@@ -85,10 +85,16 @@ _OFFWORLD_MODELS: dict[str, dict[str, str]] = {
 }
 
 
-def get_offworld_model(item: Item, match_series: bool) -> Item:
+def get_offworld_model(item: Item, match_series: bool) -> str:
     if match_series:
+        game = item.game
+
+        # in case the other player plays Zero Mission pre name change
+        if game == "Metroid Zero Mission":
+            game = "Metroid: Zero Mission"
+
         offworld_model = (
-            _OFFWORLD_MODELS.get(item.game, {})
+            _OFFWORLD_MODELS.get(game, {})
                             .get(item.name, _NOT_FOUND_MODEL)
         )
 

@@ -13,7 +13,7 @@ from .levels import (
     BONUS_AREAS,
     SHORT_NAME_TO_CHAPTER_AREA,
 )
-from .options import GoalChapterLocationsMode
+from .options import GoalChapterLocationsMode, ChapterUnlockRequirement
 from .ridables import CHAPTER_TO_RIDABLES, BONUS_TO_RIDABLES, get_ridable_requirements, Ridable, RIDABLES_BY_NAME
 
 if TYPE_CHECKING:
@@ -61,11 +61,13 @@ class _RegionBuilder:
             assert chapter.number_in_episode == chapter_number
             if chapter.short_name not in world.enabled_chapters:
                 continue
-            if self.world.options.chapter_unlock_requirement == "story_characters":
+            if world.options.chapter_unlock_requirement == ChapterUnlockRequirement.option_vanilla_characters:
                 # Update the count of how many chapters this character blocks access to.
-                # `character_requirements` is a `set`, so sort to ensure that `world.character_chapter_access_counts`
-                # maintains a deterministic order.
-                world.character_chapter_access_counts.update(sorted(chapter.character_requirements))
+                # Sort to ensure that `world.character_chapter_access_counts` maintains a deterministic order.
+                if chapter.short_name in world.chapters_requiring_alt_characters:
+                    world.character_chapter_access_counts.update(sorted(chapter.alt_character_requirements))
+                else:
+                    world.character_chapter_access_counts.update(sorted(chapter.character_requirements))
             chapter_region = world.create_region(chapter.name)
 
             entrance_name = f"Episode {episode_number} Room, Chapter {chapter_number} Door"
@@ -205,13 +207,19 @@ class _RegionBuilder:
                 # The location is accessed from multiple regions, so put the location in its own region that those
                 # regions can be connected to.
                 character_region = world.create_region(f"Unlock {character}")
-                world.add_location(loc_name, character_region)
+                character_location = world.add_location(loc_name, character_region)
                 for parent_region in parent_regions:
                     parent_region.connect(character_region)
                 # There are multiple ways this location could be reached, so enable path display in the Spoiler (when
                 # Playthrough Paths are enabled in the generator's host.yaml), so that the route the Playthrough used to
                 # reach the location is clear.
                 world.topology_present = True
+            if excluded_goal_region is not None and excluded_goal_region in parent_regions:
+                # If the location can be accessed through the Goal Chapter that has excluded locations, exclude the
+                # location, even if it could be accessed from elsewhere. This prevents the possibility of the Goal
+                # Chapter from locking access to locations.
+                character_location.progress_type = LocationProgressType.EXCLUDED
+                world.goal_excluded_character_unlock_location_count += 1
 
         world.character_unlock_location_count += len(self.story_character_unlock_regions)
 
@@ -251,11 +259,11 @@ class _RegionBuilder:
                 world.add_location(area.completion_location_name, area_region)
 
                 if world.options.enable_story_character_unlock_locations:
-                    for character in area.story_characters:
+                    for character in sorted(area.story_characters):
                         self.story_character_unlock_regions.setdefault(character, []).append(area_region)
                 # todo: Item requirements have been removed for now because it is not currently possible to lock
                 #  access to the bonus levels.
-                if self.world.options.chapter_unlock_requirement == "story_characters":
+                if self.world.options.chapter_unlock_requirement == ChapterUnlockRequirement.option_vanilla_characters:
                     for item in area.item_requirements:
                         if item in CHARACTERS_AND_VEHICLES_BY_NAME:
                             world.character_chapter_access_counts[item] += 1
@@ -280,6 +288,13 @@ class _RegionBuilder:
     def create_ridesanity_locations(self) -> None:
         world = self.world
 
+        excluded_goal_region: Region | None
+        if (world.goal_chapter
+                and world.options.goal_chapter_locations_mode.value == GoalChapterLocationsMode.option_excluded):
+            excluded_goal_region = world.get_region(SHORT_NAME_TO_CHAPTER_AREA[world.goal_chapter].name)
+        else:
+            excluded_goal_region = None
+
         # Add the Cantina Car ridable found in the Cantina itself, it cannot be found anywhere else.
         cantina_car = RIDABLES_BY_NAME["Cantina Car"]
         # Assert that it cannot be found anywhere else.
@@ -294,6 +309,7 @@ class _RegionBuilder:
         for ridable, areas_list in self.ridable_character_regions.items():
             world.ridesanity_location_count += 1
             ridable_location_name = ridable.location_name
+            is_excluded_goal_chapter_location = False
             if len(areas_list) == 0:
                 # There is only one region where this ridable can be found, so the ridable location can go directly in
                 # that region.
@@ -302,6 +318,7 @@ class _RegionBuilder:
                 # If there are any rules, they will be set on the location.
                 requirements = get_ridable_requirements(area_short_name, ridable.user_facing_name)
                 ridesanity_spots[area_short_name].append((ridable_location, requirements))
+                is_excluded_goal_chapter_location = area_region == excluded_goal_region
             else:
                 # There are multiple regions this ridable can be found in, so create a new region just for this location
                 # and
@@ -311,7 +328,14 @@ class _RegionBuilder:
                     # If there are any rules, they will be set on the entrance.
                     requirements = get_ridable_requirements(area_short_name, ridable.user_facing_name)
                     ridesanity_spots[area_short_name].append((entrance, requirements))
-                world.add_location(ridable_location_name, ridable_region)
+                    if area_region == excluded_goal_region:
+                        is_excluded_goal_chapter_location = True
+                ridable_location = world.add_location(ridable_location_name, ridable_region)
+            if is_excluded_goal_chapter_location:
+                # If the location can be accessed through the Goal Chapter that has excluded locations, exclude the
+                # location, even if it could be accessed from elsewhere. This prevents the possibility of the Goal
+                # Chapter from locking access to locations.
+                ridable_location.progress_type = LocationProgressType.EXCLUDED
         world.ridesanity_spots.update(ridesanity_spots)
 
     def create_all_episodes_character_purchases(self) -> None:

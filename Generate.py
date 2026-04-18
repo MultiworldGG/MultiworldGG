@@ -179,7 +179,8 @@ def main(args=None) -> tuple[argparse.Namespace, int]:
                         f"Provide a general weights file ({args.weights_file_path}) or individual player files. "
                         f"A mix is also permitted.")
 
-    from worlds.AutoWorld import AutoWorldRegister
+    from worlds import AutoWorldRegister, ensure_worlds_loaded
+    ensure_worlds_loaded()
     args.outputname = seed_name
     args.name = {}
 
@@ -432,7 +433,8 @@ def update_weights(weights: dict, new_weights: dict, update_type: str, name: str
 
 
 def roll_meta_option(option_key, game: str, category_dict: dict) -> Any:
-    from worlds import AutoWorldRegister
+    from worlds import AutoWorldRegister, ensure_worlds_loaded
+    ensure_worlds_loaded()
 
     if not game:
         return get_choice(option_key, category_dict)
@@ -513,7 +515,8 @@ def handle_option(ret: argparse.Namespace, game_weights: dict, option_key: str, 
     except Exception as e:
         raise Options.OptionError(f"Error generating option {option_key} in {ret.game}") from e
     else:
-        from worlds import AutoWorldRegister
+        from worlds import AutoWorldRegister, ensure_worlds_loaded
+        ensure_worlds_loaded()
         player_option.verify(AutoWorldRegister.world_types[ret.game], ret.name, plando_options)
 
 
@@ -526,7 +529,8 @@ def roll_settings(weights: dict, plando_options: PlandoOptions = PlandoOptions.b
     This means it should never be modified without making a deepcopy first.
     """
 
-    from worlds import AutoWorldRegister
+    from worlds import AutoWorldRegister, ensure_worlds_loaded
+    ensure_worlds_loaded()
 
     if "linked_options" in weights:
         weights = roll_linked_options(weights)

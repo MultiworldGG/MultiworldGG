@@ -74,7 +74,7 @@ class Spyro3World(World):
     base_id = 1230000
     required_client_version = (0, 5, 0)
     # TODO: Remember to update this!
-    ap_world_version = "1.3.4"
+    ap_world_version = "1.3.5"
     item_name_to_id = Spyro3Item.get_name_to_id()
     location_name_to_id = Spyro3Location.get_name_to_id()
     item_name_groups = item_name_groups
@@ -795,39 +795,60 @@ class Spyro3World(World):
         useful_categories = [Spyro3ItemCategory.SPARX_POWERUP]
         data = self.item_name_to_id[name]
 
+        # Settings info will not be available for or relevant to item link handling - items created by item link cannot
+        # rely on methods like generate_early().
+        # When required settings data is unavailable for this reason, restrict the item to progression.
         if name in key_item_names or item_dictionary[name].category == Spyro3ItemCategory.EGG \
                 or item_dictionary[name].category == Spyro3ItemCategory.EVENT \
                 or item_dictionary[name].category == Spyro3ItemCategory.SKILLPOINT_GOAL \
                 or item_dictionary[name].category == Spyro3ItemCategory.LEVEL_KEY \
                 or item_dictionary[name].category == Spyro3ItemCategory.WORLD_KEY \
                 or item_dictionary[name].category == Spyro3ItemCategory.GEMSANITY \
-                or self.generation_options["enable_progressive_sparx_logic"] and name == 'Progressive Sparx Health Upgrade' \
+                or (
+                    name == 'Progressive Sparx Health Upgrade' and
+                    (
+                        "enable_progressive_sparx_logic" not in self.generation_options or
+                        self.generation_options["enable_progressive_sparx_logic"]
+                    )
+                ) \
                 or name == "Glitched Item" \
-                or self.generation_options["require_sparx_for_max_gems"] == SparxForGemsOptions.SPARX_FINDER and name == 'Sparx Gem Finder':
+                or (
+                    name == 'Sparx Gem Finder' and
+                    (
+                        "require_sparx_for_max_gems" not in self.generation_options or
+                        self.generation_options["require_sparx_for_max_gems"] == SparxForGemsOptions.SPARX_FINDER
+                    )
+                ):
             item_classification = ItemClassification.progression
         elif item_dictionary[name].category == Spyro3ItemCategory.MONEYBAGS:
             item_classification = ItemClassification.progression
             # Moneybags unlocks the player says they don't need are useful, not progression.
             # No way to skip into Agent 9 early, and skipping into Nancy is missable.
-            if name == "Moneybags Unlock - Sheila" and self.generation_options["logic_sheila_early"] or \
-                    name == "Moneybags Unlock - Sgt. Byrd" and self.generation_options["logic_byrd_early"] or \
-                    name == "Moneybags Unlock - Bentley" and self.generation_options["logic_bentley_early"] or \
-                    name == "Moneybags Unlock - Cloud Spires Bellows" and self.generation_options["logic_cloud_backwards"] or \
-                    name == "Moneybags Unlock - Spooky Swamp Door" and self.generation_options["logic_spooky_no_moneybags"] or \
-                    name == "Moneybags Unlock - Molten Crater Thieves Door" and self.generation_options["logic_molten_thieves_no_moneybags"] or \
-                    name == "Moneybags Unlock - Charmed Ridge Stairs" and self.generation_options["logic_charmed_no_moneybags"] or \
-                    name == "Moneybags Unlock - Desert Ruins Door" and self.generation_options["logic_desert_no_moneybags"] or \
-                    name == "Moneybags Unlock - Frozen Altars Cat Hockey Door" and self.generation_options["logic_frozen_cat_hockey_no_moneybags"] or \
-                    name == "Moneybags Unlock - Crystal Islands Bridge" and self.generation_options["logic_crystal_no_moneybags"] or \
-                    name == "Moneybags Unlock - Spooky Swamp Door" and self.generation_options["open_world"] or \
-                    name == "Moneybags Unlock - Charmed Ridge Stairs" and self.generation_options["open_world"]:
+            if "logic_sheila_early" in self.generation_options and (
+                    name == "Moneybags Unlock - Sheila" and self.generation_options["logic_sheila_early"] or
+                    name == "Moneybags Unlock - Sgt. Byrd" and self.generation_options["logic_byrd_early"] or
+                    name == "Moneybags Unlock - Bentley" and self.generation_options["logic_bentley_early"] or
+                    name == "Moneybags Unlock - Cloud Spires Bellows" and self.generation_options["logic_cloud_backwards"] or
+                    name == "Moneybags Unlock - Spooky Swamp Door" and self.generation_options["logic_spooky_no_moneybags"] or
+                    name == "Moneybags Unlock - Molten Crater Thieves Door" and self.generation_options["logic_molten_thieves_no_moneybags"] or
+                    name == "Moneybags Unlock - Charmed Ridge Stairs" and self.generation_options["logic_charmed_no_moneybags"] or
+                    name == "Moneybags Unlock - Desert Ruins Door" and self.generation_options["logic_desert_no_moneybags"] or
+                    name == "Moneybags Unlock - Frozen Altars Cat Hockey Door" and self.generation_options["logic_frozen_cat_hockey_no_moneybags"] or
+                    name == "Moneybags Unlock - Crystal Islands Bridge" and self.generation_options["logic_crystal_no_moneybags"] or
+                    name == "Moneybags Unlock - Spooky Swamp Door" and self.generation_options["open_world"] or
+                    name == "Moneybags Unlock - Charmed Ridge Stairs" and self.generation_options["open_world"]
+                ):
                 item_classification = ItemClassification.useful
             else:
                 item_classification = ItemClassification.progression
         elif item_dictionary[name].category in [Spyro3ItemCategory.INDIVIDUAL_POWERUP, Spyro3ItemCategory.TYPE_POWERUP]:
             item_classification = ItemClassification.progression
         elif item_dictionary[name].category in useful_categories \
-                or not self.generation_options["enable_progressive_sparx_logic"] and name == 'Progressive Sparx Health Upgrade':
+            or (
+                name == 'Progressive Sparx Health Upgrade' and
+                "enable_progressive_sparx_logic" in self.generation_options and
+                not self.generation_options["enable_progressive_sparx_logic"]
+            ):
             item_classification = ItemClassification.useful
         elif item_dictionary[name].category == Spyro3ItemCategory.TRAP:
             item_classification = ItemClassification.trap
@@ -1982,7 +2003,7 @@ class Spyro3World(World):
                            215, 216, 217, 218, 219, 220, 222, 223, 224, 225, 228, 229, 230, 236, 237, 238]
             invincibility_gems = [23, 24, 25, 42, 43, 44, 45, 56, 66, 67, 68, 70, 73, 74, 120, 121, 122, 123, 124,
                                   125, 126, 127, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159,
-                                  160, 161, 162, 163, 164, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178,
+                                  160, 161, 162, 163, 164, 168, 170, 171, 172, 173, 174, 175, 176, 177, 178,
                                   179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195,
                                   196]
             empty_bits = [41, 50, 52, 69, 78, 93, 165, 166, 167, 169, 221, 227, 231, 232, 233, 235]

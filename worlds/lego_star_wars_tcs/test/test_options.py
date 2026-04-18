@@ -1,8 +1,15 @@
+from typing import Iterable
 from unittest import TestCase
 
-from Options import Option, PerGameCommonOptions
+from Options import Option, PerGameCommonOptions, VerifyKeys
 
-from ..options import LegoStarWarsTCSOptions
+from ..items import CHARACTERS_AND_VEHICLES_BY_NAME, EXTRAS_BY_NAME
+from ..options import (
+    LegoStarWarsTCSOptions,
+    ChapterStoryUnlockCharactersNotRequired,
+    PreferredCharacters,
+    PreferredExtras,
+)
 
 
 BASE_OPTIONS = PerGameCommonOptions.type_hints
@@ -23,3 +30,19 @@ class TestOptions(TestCase):
         for option_name, option_type in TCS_OPTIONS.items():
             with self.subTest(option_name):
                 self.assertTrue(option_type.rich_text_doc)
+
+    def _test_valid_keys(self, all_keys: Iterable[str], *options: type[VerifyKeys]):
+        all_keys_set = set(all_keys)
+        for option in options:
+            with self.subTest(option.__name__):
+                self.assertLessEqual(set(option.valid_keys), all_keys_set)
+
+    def test_character_valid_keys(self):
+        self._test_valid_keys(
+            CHARACTERS_AND_VEHICLES_BY_NAME.keys(),
+            ChapterStoryUnlockCharactersNotRequired,
+            PreferredCharacters,
+        )
+
+    def test_extra_valid_keys(self):
+        self._test_valid_keys(EXTRAS_BY_NAME.keys(), PreferredExtras)

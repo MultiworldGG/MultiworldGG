@@ -23,7 +23,7 @@ class DolphinClient:
         try:
             self.__assert_connected()
             return True
-        except Exception:
+        except (Exception,):
             return False
 
     def connect(self):
@@ -48,7 +48,8 @@ class DolphinClient:
             self.disconnect()
             raise DolphinException(e)
 
-    def verify_target_address(self, target_address: int, read_size: int):
+    @staticmethod
+    def verify_target_address(target_address: int, read_size: int):
         """Ensures that the target address is within the valid range for GC memory"""
         if target_address < 0x80000000 or target_address + read_size > 0x81800000:
             raise DolphinException(
@@ -58,7 +59,6 @@ class DolphinClient:
     def read_pointer(self, pointer: int, offset: int, byte_count: int) -> Any:
         self.__assert_connected()
 
-        address = None
         try:
             address = self.dolphin.follow_pointers(pointer, [0])
         except RuntimeError:
@@ -72,13 +72,12 @@ class DolphinClient:
 
     def read_address(self, address: int, bytes_to_read: int) -> Any:
         self.__assert_connected()
-        self.verify_target_address(address, bytes_to_read)
+        DolphinClient.verify_target_address(address, bytes_to_read)
         result = self.dolphin.read_bytes(address, bytes_to_read)
         return result
 
     def write_pointer(self, pointer: int, offset: int, data: Any):
         self.__assert_connected()
-        address = None
         try:
             address = self.dolphin.follow_pointers(pointer, [0])
         except RuntimeError:
@@ -113,5 +112,5 @@ def get_num_dolphin_instances() -> int:
             count = sum("Dolphin.exe" in line for line in lines)
             return count
         return 0
-    except:
+    except (Exception,):
         return 0

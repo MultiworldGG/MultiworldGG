@@ -100,6 +100,7 @@ class ChapterArea:
     # TODO: Convert this file mostly into a script that writes `print(repr(GAME_LEVEL_AREAS))`
     short_name: str = field(init=False)
     character_requirements: frozenset[str] = field(init=False)
+    alt_character_requirements: frozenset[str] = field(init=False)
     character_shop_unlocks: dict[str, int] = field(init=False)
     power_brick_ability_requirements: tuple[CharacterAbility, ...] = field(init=False)
     power_brick_location_name: str = field(init=False)
@@ -125,8 +126,11 @@ class ChapterArea:
         character_requirements = CHAPTER_AREA_STORY_CHARACTERS[self.short_name]
         object.__setattr__(self, "character_requirements", character_requirements)
 
+        character_shop_unlock_data = SHOP_SLOT_REQUIREMENT_TO_UNLOCKS.get(self.short_name, {})
+        object.__setattr__(self, "alt_character_requirements", frozenset(character_shop_unlock_data.keys()))
+
         character_shop_unlocks = {f"Purchase {character} ({self.short_name})": price for character, price
-                                  in SHOP_SLOT_REQUIREMENT_TO_UNLOCKS.get(self.short_name, {}).items()}
+                                  in character_shop_unlock_data.items()}
         object.__setattr__(self, "character_shop_unlocks", character_shop_unlocks)
 
         power_brick = POWER_BRICK_REQUIREMENTS[self.short_name]
@@ -466,10 +470,10 @@ POWER_BRICK_REQUIREMENTS: dict[str, _PowerBrickData] = {
     "4-5": _PowerBrickData("Invincibility", JEDI, 1_000_000),
     "4-6": _PowerBrickData("Score x2", None, 1_250_000),
     "5-1": _PowerBrickData("Self Destruct", VEHICLE_TIE, 25_000),
-    "5-2": _PowerBrickData("Fast Build", SITH, 30_000),
+    "5-2": _PowerBrickData("Fast Build", SITH | ASTROMECH, 30_000),
     "5-3": _PowerBrickData("Score x4", None, 2_500_000),
     "5-4": _PowerBrickData("Regenerate Hearts", SITH, 150_000),
-    "5-5": _PowerBrickData("Score x6", BOUNTY_HUNTER | HOVER, 5_000_000),  # Note: In memory after Minikit Detector
+    "5-5": _PowerBrickData("Score x6", BOUNTY_HUNTER | HOVER | JEDI, 5_000_000),  # Note: In memory after Minikit Detector
     "5-6": _PowerBrickData("Minikit Detector", None, 250_000),  # Note: In memory before Score x6
     "6-1": _PowerBrickData("Super Zapper", None, 14_000),
     "6-2": _PowerBrickData("Bounty Hunter Rockets", None, 20_000),
@@ -489,7 +493,7 @@ ALL_MINIKITS_REQUIREMENTS: dict[str, tuple[CharacterAbility, ...]] = {
     "1-5": (SITH | BOUNTY_HUNTER | HIGH_JUMP,),
     "1-6": (SITH | HIGH_JUMP | BLASTER | BOUNTY_HUNTER | IMPERIAL,),
     "2-1": (VEHICLE_TIE,),
-    "2-2": (SITH | HIGH_JUMP | BLASTER | BOUNTY_HUNTER | SHORTIE,),
+    "2-2": (SITH | HIGH_JUMP | BLASTER | BOUNTY_HUNTER | SHORTIE | PROTOCOL_DROID,),
     "2-3": (HIGH_JUMP | IMPERIAL | SHORTIE,),
     "2-4": (HIGH_JUMP | SHORTIE,),
     "2-5": (VEHICLE_TIE,),
@@ -522,7 +526,9 @@ ALL_MINIKITS_REQUIREMENTS: dict[str, tuple[CharacterAbility, ...]] = {
     "6-2": (SITH | HOVER | SHORTIE,),
     "6-3": (SITH | BOUNTY_HUNTER | IMPERIAL | SHORTIE,),
     "6-4": (JEDI | BOUNTY_HUNTER,),
-    "6-5": (BLASTER | BOUNTY_HUNTER | SHORTIE | ASTROMECH | PROTOCOL_DROID,),
+    # IMPERIAL has been considered a chapter-specific ability, so Darth Maul/Count Dooku are considered valid to
+    # complete the chapter, and IMPERIAL must be specified for the Minikits.
+    "6-5": (BLASTER | BOUNTY_HUNTER | SHORTIE | ASTROMECH | PROTOCOL_DROID | IMPERIAL,),
     "6-6": (VEHICLE_TIE,),
 }
 
@@ -719,7 +725,6 @@ BONUS_AREAS = [
               gold_bricks_required=10,
               completion_ability_requirements=(
                       JEDI
-                      | SITH
                       | BLASTER
                       | BOUNTY_HUNTER
                       | CAN_BUILD_BRICKS

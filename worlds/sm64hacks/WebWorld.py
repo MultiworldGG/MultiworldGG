@@ -12,7 +12,7 @@ class SM64HackWebWorld(WebWorld):
     tutorials = [
         Tutorial(
             "Setup Guide",
-            "A guide to playing Romhacks for SM64 in MWGG.",
+            "A guide to playing Romhacks for SM64 in MultiworldGG.",
             "English",
             "setup_en.md",
             "setup/en",

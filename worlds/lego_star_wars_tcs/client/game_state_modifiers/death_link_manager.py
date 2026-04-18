@@ -7,9 +7,15 @@ from Utils import async_start
 
 from . import ClientComponent
 from .studs import give_studs
-from ..common import StaticUint
+from ..common import StaticUint, FloatField
 from ..common_addresses import CURRENT_AREA_ADDRESS, is_actively_playing, player_character_entity_iter, CustomSaveFlags1
-from ..events import subscribe_event, OnReceiveSlotDataEvent, OnGameWatcherTickEvent, OnAreaChangeEvent
+from ..events import (
+    subscribe_event,
+    OnReceiveSlotDataEvent,
+    OnGameWatcherTickEvent,
+    OnAreaChangeEvent,
+    OnPlayerCharacterIdChangeEvent,
+)
 from ..type_aliases import TCSContext
 from ...levels import (
     AREA_ID_TO_CHAPTER_AREA,
@@ -22,6 +28,10 @@ from ...levels import (
 
 logger = logging.getLogger("Client")
 debug_logger = logging.getLogger("TCS Debug")
+
+# Currently, all characters are allowed to be killed because the client sets the respawn timer before killing the
+# character.
+DISALLOWED_DEATH_CHARACTER_IDS = frozenset()
 
 
 # Player death count in the current area. Resets to zero upon area change.
@@ -55,9 +65,18 @@ VEHICLE_AMNESTY_AREA_IDS = frozenset({
 })
 
 
-class CharacterState(IntEnum):
+DEATH_COOLDOWN = 2.25
+"""
+Respawn is typically 2.0s, so ignore any deaths to send or receive within just above this time.
+If something goes horrendously wrong with this Death Link implementation, this has the added benefit of
+limiting death spam.
+"""
+
+
+class CharacterActionState(IntEnum):
+    """The current action a character is undergoing. The real name of the type itself is unknown."""
     # # Original name "NoContext" is converted to NO_CONTEXT for enum names. Other names follow the same pattern.
-    NO_CONTEXT = 0x0
+    # JUMP = 0x0
     # LAND_JUMP = 0x1  # Landing from a normal jump
     # LAND_JUMP_2 = 0x2
     # LAND_FLIP = 0x3
@@ -71,8 +90,8 @@ class CharacterState(IntEnum):
     # INTERFACE = 0xb  # Interacting with a Bounty Hunter/Astromech/Protocol/Imperial panel
     # BLOCK = 0xc  # Unknown use
     # LAND_LUNGE = 0xd  # Landing from Jedi single-jump attack
-    # # "LandSlam" appears to be next, but does not match the observed order
-    # CRAWLING_THROUGH_VENT_ = 0xf  # Real name unknown
+    # LAND_SLAM = 0xe  # Jedi slam attack
+    TELEPORT = 0xf  # Crawling through a vent
     # SWIPE = 0x10  # Lightsaber 'backwards attack' when an enemy is directly behind the character
     # TUBE = 0x11  # Floating in an updraft (internally, updrafts are called tubes)
     # FORCE_THROW = 0x12  # Unknown use, perhaps not implemented
@@ -82,17 +101,13 @@ class CharacterState(IntEnum):
     # ZAP = 0x16  # Astromech/jawa zap
     # DEACTIVATED = 0x17  # Zapped or force confused, also seen sometimes when exiting vehicles
     # HOLD = 0x18  # Blocking with a melee weapon
-    # # "LandSpecial" appears to be next, but does not match the observed order
+    # LAND_SPECIAL = 0x19
     # COMMUNICATE = 0x1a  # Using a Walkie Talkie (Battle Droid (Commander)/Imperial Spy)
-    # # The next names do not match observed order and some do not seem to exist as force abilities in the game:
-    # # "ForcePushed"
-    # # "ForceDeflect"
-    # # "ForceFrozen"
-    # USING_FORCE_LIGHTNING_CHOKE_OR_CONFUSION_ = 0x1b  # Real name unknown
-    # BEING_FORCED_ = 0x1c  # Real name unknown. Held by force lightning/choke or pushed by force as a droid
-    # UNKNOWN_1D = 0x1d  # No idea
-    # LAND_SLAM_ = 0x1e  # Real name unknown
-    # FORCE_GRAPPLE_LEAP_ = 0x1f  # Real name unknown
+    # FORCE_PUSH = 0x1b  # Using force lightning/choke/confusion
+    # FORCE_PUSHED = 0x1c  # Held by force lightning/choke or pushed by force as a droid
+    # FORCE_DEFLECT = 0x1d  # Unknown use
+    # FORCE_FROZEN = 0x1e  # Unknown use
+    # BIG_JUMP = 0x1f  # Force Grapple Leap jump
     # BACK_FLIP = 0x20  # General Grievous' backflip
     # RECOIL = 0x21  # Unknown use, looks like being pushed backwards by something, maybe an air vent
     # FORCED_BACK = 0x22  # Unknown use, looks the same as RECOIL
@@ -109,13 +124,11 @@ class CharacterState(IntEnum):
 
     DOOMED = 0x2b  # Falling death, body parts fall through the floor, seems to work on vehicles too
 
-    # # "BuildIt" appears to be next, but does not match the observed order
-    # GRABBED = 0x2c  # Suspected to be grabbed by a crane's claw, makes the character appear to be falling
-    # BUILD_IT = 0x2d  # Building bricks
-    # # "SpecialMoveVictim" appears to be next, but does not match the observed order
-    # THERMAL_DETONATOR_ = 0x2e  # Real name unknown. Throwing a thermal detonator
-    # UNKNOWN_2f = 0x2f  # Unknown use, it is not clear if this is actually "SpecialMoveVictim" or something else.
-    # UNKNOWN_30 = 0x30  # Unknown use, see 0x2f
+    # LAUNCH = 0x2c  # Suspected to be grabbed by a crane's claw, makes the character appear to be falling
+    # BUILD_IT = 0x2d  # Building bricks. Crashes if used incorrectly.
+    # THROW_DETONATOR = 0x2c  # Throwing a thermal detonator
+    # GRABBED = 0x2f  # Unknown use
+    # SPECIAL_MOVE_VICTIM = 0x30  # Unknown use
     # ROLL = 0x31  # Droideka roll movement
     # UN_ROLL = 0x32  # Droideka unrolling into standing pose
     # SLIDE = 0x33  # Sliding down a slippery surface, e.g. ice in 5-2
@@ -126,70 +139,71 @@ class CharacterState(IntEnum):
     # GRAB = 0x38  # Unknown use
     # EATEN = 0x39  # Unknown use, maybe Rancor related, makes the character disappear
     # BARREL_ROLL = 0x3a  # Vehicle aileron roll that is commonly mistakenly called a barrel roll
-    # GET_IN = 0x3b  # Getting into a vehicle
-    # # "Flatten" appears to be next, but does not match the observed order
-    # IN_VEHICLE_ = 0x3c  # Real name unknown
+    # BEEN_TAKEN_OVER = 0x3b  # Getting into a vehicle/turret (I'm guessing this is the state the vehicle enters?)
+    # GET_IN = 0x3c  # Getting into a vehicle/turret (I'm guessing this is the state the non-vehicle enters?)
     # FLATTEN = 0x3d  # Flattened by a vehicle
     # # Used by the vehicle in 5-2 that C-3PO is supposed to stand on the back of and then get launched by the vehicle,
     # # like a bucking horse.
     # BUCK = 0x3e
-    # # "Eat"
-    # # "Disorientate"
-    # # "ZappedByFloor"  # Maybe this is used in 6-5?
-    #
-    # # These all look like they could be Lego Batman 1-specific states:
-    # # "Climb"
-    # # "Tightrope"
-    # # "WallShuffle"
-    # # "Grapple"
-    # # "PlaceDetonator"
-    # # "PickUpDetonator"
-    # # "Float"
-    # # "Signal"
-    # # "Batarang"
-    # # "Hang"
-    # # "Glide"
-    # # "Catch"
-    # # "AttractoTarget"
-    # # "AttractoDeposit"
-    # # "Sonar"
-    # # "LedgeTerrain"
-    # # "Transform"
-    # # "WallJumpWait"
-    # # "SuperCarry"
-    # # "PushObstacle"
-    # # "Stunned"
-    # # "Security"
-    # # "Ballooning"
-    # # "ThrowQuick"
-    #
-    # # ???
-    # # "DieAir"
-    # # "DieGround"
-    #
-    # # Seems like these could be Lego Indiana Jones-specific states
-    # # "Whip"
-    # # Is there a net in LIJ1?
-    # # "NetWait"
-    #
-    # # Known names stop here besides "Walk" and "Idle", and there are a bunch of gaps, but the observed states
-    # # continue:
-    # VEHICLE_RELATED_41 = 0x41  # Seen very briefly sometimes when getting into vehicles
-    # USING_ZIP_UP_ = 0x47  # Real name unknown. Using a grapple point with a grapple character
-    # PULLING_LEVER_ = 0x4a  # Real name unknown
+    # EAT = 0x3f
+    # DISORIENTATE = 0x40
+    # ACTIVE = 0x41  # Seen very briefly sometimes when getting into vehicles
+    # ZAPPED_BY_FLOOR = 0x42
+    # CLIMB = 0x43  # Probably specific to the incomplete Lego Batman 1 demo
+    # TIGHTROPE = 0x44  # Probably specific to the incomplete Lego Batman 1 demo
+    # WALL_SHUFFLE = 0x45  # Probably specific to the incomplete Lego Batman 1 demo
+    # GRAPPLE = 0x46  # Maybe specific to the incomplete Lego Batman 1 demo
+    # ZIP_UP = 0x47  # Using a grapple point with a grapple character
+    # PLACE_DETONATOR = 0x48  # Probably specific to the incomplete Lego Batman 1 demo
+    # PICK_UP_DETONATOR = 0x49  # Probably specific to the incomplete Lego Batman 1 demo
+    # PULL_LEVER = 0x4a  # Pulling a lever
 
-    THROWN_BY_FORCE_LIGHTNING_OR_CHOKE_ = 0x5f  # Real name unknown. Throw death, body parts have physics.
+    # These are probably all specific to the incomplete Lego Batman 1 demo:
+    # FLOAT = 0x4b
+    # SIGNAL = 0x4c  # Crashes if used incorrectly.
+    # BATARANG = 0x4d
+    # HANG = 0x4e
+    # GLIDE = 0x4f
+    # CATCH = 0x50
+    # TECHNO = 0x51
+    # ATTRACTO_TARGET = 0x52
+    # ATTRACTO_DEPOSIT = 0x53
+    # SONAR = 0x54
+    # Moves the character very fast towards an unknown part of the current level, colliding and possibly getting stuck
+    # on objects (maybe towards (0, 0, 0)?).
+    # LEDGE_TERRAIN = 0x55
+    # TRANSFORM = 0x56
+    # WALL_JUMP_WAIT = 0x57
+    # SUPER_CARRY = 0x58
+    # PUSH_OBSTACLE = 0x59
+    # STUNNED = 0x5a
+    # LEDGE = 0x5b
+    # SECURITY = 0x5c  # Crashes if used incorrectly.
+    # BALLOONING = 0x5d
+    # THROW_QUICK = 0x5e
 
-    # USING_HAT_MACHINE_ = 0x61  # Real name unknown. Used by both characters with and without hats.
-    # # "Idle"
-    # IDLE = 0xFF
+    DIE_AIR = 0x5f  # Throw death from Force Lightning/Choke. Notably, the spawned body parts have physics.
+    # DIE_GROUND = 0x60  # Unknown use
+    # HAT_MACHINE = 0x61  # Using a Hat Machine. This is used by both characters that can and cannot wear hats.
 
-    @classmethod
-    def get(cls, ctx: TCSContext, character_address: int):
-        return cls(ctx.read_uchar(character_address + 0x7b5, raw=True))
+    # These are probably specific to the incomplete Lego Indiana Jones 1 demo:
+    # WHIP = 0x62
+    # NET_WAIT = 0x63
+    # NO_CONTEXT = 0xFF  # Idle
+
+    @staticmethod
+    def _get(ctx: TCSContext, character_address: int) -> int:
+        return ctx.read_uchar(character_address + 0x7b5, raw=True)
+
+    # @classmethod
+    # def get(cls, ctx: TCSContext, character_address: int):
+    #     return cls(ctx.read_uchar(character_address + 0x7b5, raw=True))
 
     def set(self, ctx: TCSContext, character_address: int):
         ctx.write_byte(character_address + 0x7b5, self.value, raw=True)
+
+    def is_set(self, ctx: TCSContext, character_address: int) -> bool:
+        return self._get(ctx, character_address) == self.value
 
 
 class CharacterDeathState(IntEnum):
@@ -203,6 +217,13 @@ class CharacterDeathState(IntEnum):
 
     def set(self, ctx: TCSContext, character_address: int):
         ctx.write_byte(character_address + 0x28b, self.value, raw=True)
+
+
+CHARACTER_RESPAWN_TIMER = FloatField(0x1010)
+"""
+Usually set by the game when a player dies, but can be set manually before killing a player, to make them wait a
+different amount of time before they respawn, so long as it is set greater than 0.0
+"""
 
 
 class DeathLinkManager(ClientComponent):
@@ -223,7 +244,13 @@ class DeathLinkManager(ClientComponent):
     death_link_stud_loss: int = 0
     death_link_stud_loss_scaling: bool = False
 
-    _expected_area_death_count: int = 999_999_999
+    _last_area_death_count: int = 999_999_999
+    _last_processed_received_death: float = float("-inf")
+
+    p1_is_allowed_to_be_killed: bool = True
+    p2_is_allowed_to_be_killed: bool = True
+
+    current_area_uses_vehicle_amnesty: bool = False
 
     @subscribe_event
     def init_from_slot_data(self, event: OnReceiveSlotDataEvent) -> None:
@@ -257,8 +284,8 @@ class DeathLinkManager(ClientComponent):
         self.normal_death_amnesty_remaining = self.normal_death_link_amnesty
         self.vehicle_death_amnesty_remaining = self.vehicle_death_link_amnesty
 
-        # Set the expected death count to its current value.
-        self._expected_area_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
+        # Set the last known death count to its current value.
+        self._last_area_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
 
     def _update_client_tags(self, ctx: TCSContext):
         """Update the client's tags to add/remove the DeathLink tag."""
@@ -269,7 +296,7 @@ class DeathLinkManager(ClientComponent):
             # The game's death counter increments even with Death Link is disabled, so update the current expected death
             # count to whatever the game's death counter is set to, to prevent sending a death as soon as Death Link is
             # enabled.
-            self._expected_area_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
+            self._last_area_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
             CustomSaveFlags1.DEATH_LINK_ENABLED.set(ctx)
         else:
             CustomSaveFlags1.DEATH_LINK_ENABLED.unset(ctx)
@@ -281,7 +308,7 @@ class DeathLinkManager(ClientComponent):
         self._update_death_link(ctx, not self.death_link_enabled)
 
     @staticmethod
-    def _get_kill_state_to_set(ctx: TCSContext) -> CharacterState:
+    def _get_kill_state_to_set(ctx: TCSContext) -> CharacterActionState:
         area_id = CURRENT_AREA_ADDRESS.get(ctx)
         area = AREA_ID_TO_CHAPTER_AREA.get(area_id)
         is_vehicle_or_unknown: bool
@@ -294,31 +321,51 @@ class DeathLinkManager(ClientComponent):
             is_vehicle_or_unknown = area.short_name in VEHICLE_CHAPTER_SHORTNAMES
         if is_vehicle_or_unknown:
             # Many of the vehicle levels ignore THROWN_BY_FORCE_LIGHTNING_OR_CHOKE_.
-            return CharacterState.DOOMED
+            return CharacterActionState.DOOMED
         else:
             # It is more pleasing for the character's parts to have physics instead of disappearing through the floor.
-            return CharacterState.THROWN_BY_FORCE_LIGHTNING_OR_CHOKE_
+            return CharacterActionState.DIE_AIR
 
-    @staticmethod
-    async def _kill_player_controlled_characters(ctx: TCSContext) -> bool:
+    async def _kill_player_controlled_characters(self, ctx: TCSContext) -> bool:
         kill_state = DeathLinkManager._get_kill_state_to_set(ctx)
         expecting_death = []
         for player_number, character_address in player_character_entity_iter(ctx):
             if CharacterDeathState.get(ctx, character_address) == CharacterDeathState.ALIVE:
+                if player_number == 1 and not self.p1_is_allowed_to_be_killed:
+                    continue
+                if player_number == 2 and not self.p2_is_allowed_to_be_killed:
+                    continue
+                # Do not kill players in the middle of crawling through a vent, they tend to get stuck and break the
+                # vent's interaction.
+                if CharacterActionState.TELEPORT.is_set(ctx, character_address):
+                    continue
                 expecting_death.append((player_number, character_address))
+                # WORKAROUND: Some characters, notably set-pieces such as Cranes, do not respawn when killed.
+                # I am not currently sure what determines that they do not respawn. There is a flag that can be set that
+                # will allow these non-respawning characters to respawn after 1.0s when killed, but normally respawning
+                # characters do not use this flag. By setting the respawn time manually, this appears to allow for
+                # non-respawning characters to respawn.
+                # For turrets that break into bricks when destroyed, this does not cause issues. The 5-5 turret actually
+                # respawns by default because it can be observed to be setting the respawn timer, which updates for a
+                # frame before the turret breaks into bricks.
+                CHARACTER_RESPAWN_TIMER.set(ctx, character_address, 2.0)
                 kill_state.set(ctx, character_address)
 
         killed_at_least_one = len(expecting_death) > 0
 
-        if kill_state != CharacterState.DOOMED:
-            # The THROWN_BY_FORCE_LIGHTNING_OR_CHOKE_ state can take some time before it actually kills, especially for
-            # Player 2 who sometimes ignores the state entirely for some reason.
+        if kill_state != CharacterActionState.DOOMED:
+            # The DIE_AIR state can take some time before it actually kills, especially for Player 2 who sometimes
+            # ignores the state entirely for some reason. Some characters, notably turrets and other set-pieces, also
+            # ignore DIE_AIR.
             await asyncio.sleep(0.05)
             for player_number, character_address in expecting_death:
                 if CharacterDeathState.get(ctx, character_address) == CharacterDeathState.ALIVE:
+                    # Set the respawn timer to ensure this character does actually respawn, even if it would not
+                    # normally do so.
+                    CHARACTER_RESPAWN_TIMER.set(ctx, character_address, 2.0)
                     # Use the more forceful DOOMED death state because it is better at interrupting current actions,
                     # especially for Player 2.
-                    CharacterState.DOOMED.set(ctx, character_address)
+                    CharacterActionState.DOOMED.set(ctx, character_address)
                     debug_logger.info("Retrying killing player %i with DOOMED", player_number)
 
             # Force kill implementation if needed.
@@ -341,70 +388,13 @@ class DeathLinkManager(ClientComponent):
                 return True, player_number
         return False, -1
 
-    @subscribe_event
-    async def update_game_state(self, event: OnGameWatcherTickEvent) -> None:
-        ctx = event.context
-        if not self.death_link_enabled or not ctx.is_in_game() or not is_actively_playing(ctx):
-            return
+    async def attempt_to_send_death(self, ctx: TCSContext):
+        """
+        Attempt to send a death due to the last known in-area player death count being less than the current in-area
+        player death count.
 
-        now = time.time()
-
-        if now < ctx.last_death_link + 2.25:
-            # Respawn is typically 2.0s, so ignore any deaths to send and delay any received within just above this
-            # time.
-            # If something goes horrendously wrong with this Death Link implementation, this has the added benefit of
-            # limiting death spam.
-            return
-        if self.waiting_for_respawn:
-            dead_player_controlled_characters_found, _ = self._find_dead_player_controlled_character(ctx)
-            if dead_player_controlled_characters_found:
-                # Still dead, so don't send any more deaths or receive any more deaths.
-                return
-            else:
-                self.waiting_for_respawn = False
-                # Update the expected death count to match however many player controlled characters were killed by the
-                # received death.
-                self._expected_area_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
-        # Receive death.
-        if self.pending_received_death:
-            # Kill player characters
-            # TODO: Entirely skip the received death if all player characters are already dead.
-            if await self.kill_player_characters(ctx):
-                # At least one character was killed, so the death has been received.
-                self.pending_received_death = False
-                ctx.text_display.priority_message(self.last_received_death_message)
-                # Remove studs from the player.
-                studs_to_lose = self.death_link_stud_loss
-                if studs_to_lose > 0:
-                    if self.death_link_stud_loss_scaling:
-                        studs_to_lose *= ctx.acquired_generic.current_score_multiplier
-                    give_studs(ctx, -studs_to_lose, only_give_if_in_level=True, allow_power_up_multiplier=False)
-            return
-
-        if now < self.last_death_amnesty + 2.25:
-            # Do not send another death if sending a death through Death Link was recently prevented due to amnesty.
-            return
-
-        # Check if players have died by comparing the expected death count to the actual death count.
-        player_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
-        expected_death_count = self._expected_area_death_count
-        if player_death_count == expected_death_count:
-            # Nothing to do.
-            return
-        elif player_death_count < expected_death_count:
-            # The area has changed, resetting the game's death counter. Note that there is a delay between when the area
-            # changes and when the game's death counter gets updated.
-            self._expected_area_death_count = player_death_count
-            return
-        elif player_death_count == 1 and (CHEAT_FLAGS_STARTING_DEATH_COUNT & CHEAT_FLAGS.get(ctx)):
-            # The game's level update function sets the in-area death count to at least 1 when an Extra with this flag
-            # is active. I have no idea why.
-            self._expected_area_death_count = 1
-            return
-
-        # Update for new deaths.
-        self._expected_area_death_count = player_death_count
-
+        The attempt to send a death may be blocked by amnesty.
+        """
         # todo: Customise the death cause.
         #  Ideas:
         #  f"{alias name} crashed their {vehicle name}"
@@ -416,8 +406,12 @@ class DeathLinkManager(ClientComponent):
         #  Special messages only when both P1 and P2 are player controlled and are the same character?
         #  f"Caused by {alias name}'s {character name} (P{player number})"
 
+        if time.time() < self.last_death_amnesty + DEATH_COOLDOWN:
+            # Do not send another death if sending a death through Death Link was recently prevented due to amnesty.
+            return
+
         amnesty_remaining = 0
-        if CURRENT_AREA_ADDRESS.get(ctx) in VEHICLE_AMNESTY_AREA_IDS:
+        if self.current_area_uses_vehicle_amnesty:
             if self.vehicle_death_amnesty_remaining <= 0:
                 send_death = True
                 # Reset amnesty.
@@ -449,19 +443,118 @@ class DeathLinkManager(ClientComponent):
                 ctx.text_display.priority_message("DeathLink: No amnesty remaining")
             else:
                 ctx.text_display.priority_message(f"DeathLink: {amnesty_remaining} amnesty remaining")
+            self.last_death_amnesty = time.time()
 
-    def on_deathlink(self, ctx: TCSContext, message: str):
-        if self.pending_received_death:
-            # The current pending death is going to be skipped because another has been received before the current
-            # pending death could be processed.
-            ctx.text_display.priority_message(self.last_received_death_message)
-        self.last_received_death_message = message
+    @subscribe_event
+    async def update_game_state(self, event: OnGameWatcherTickEvent) -> None:
+        ctx = event.context
+        if not self.death_link_enabled or not ctx.is_in_game() or not is_actively_playing(ctx):
+            return
+
+        now = time.time()
+
+        # Check if players have died by comparing the expected death count to the actual death count.
+        player_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
+        expected_death_count = self._last_area_death_count
+        if player_death_count == expected_death_count:
+            # No death to send.
+            pass
+        elif player_death_count < expected_death_count:
+            # The area has changed, resetting the game's death counter. Note that there is a delay between when the area
+            # changes and when the game's death counter gets updated.
+            self._last_area_death_count = player_death_count
+            return
+        elif player_death_count == 1 and (CHEAT_FLAGS_STARTING_DEATH_COUNT & CHEAT_FLAGS.get(ctx)):
+            # The game's level update function sets the in-area death count to at least 1 when an Extra with this flag
+            # is active. I have no idea why.
+            # This means the player has not actually died.
+            self._last_area_death_count = 1
+            return
+
+        # Update for new deaths.
+        self._last_area_death_count = player_death_count
+
+        # Wait for respawn from a received death.
+        if self.waiting_for_respawn:
+            # The player was killed by a received death link, and the client is still waiting for the player to respawn.
+
+            # Ignore all received deaths until the player has respawned.
+            self.pending_received_death = False
+            dead_player_controlled_characters_found, _ = self._find_dead_player_controlled_character(ctx)
+            if dead_player_controlled_characters_found:
+                # Still dead, so don't send any more deaths or receive any more deaths.
+                return
+            else:
+                debug_logger.info("Players have respawned.")
+                self.waiting_for_respawn = False
+                # If it took a long time for the death to actually be processed, e.g. the game was paused, act as if the
+                # death was actually recently processed.
+                pretend_last_processed_death = now - DEATH_COOLDOWN
+                if pretend_last_processed_death > self._last_processed_received_death:
+                    debug_logger.info("Waiting for respawn took a while, so the last processed death time has been"
+                                      " increased.")
+                    self._last_processed_received_death = pretend_last_processed_death
+                # Update the expected death count to match however many player controlled characters were killed by the
+                # received death.
+                self._last_area_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
+        # Receive death.
+        elif self.pending_received_death:
+            self.pending_received_death = False
+            message = self.last_received_death_message
+            self.last_received_death_message = ""
+            # Kill player characters
+            if await self.kill_player_characters(ctx):
+                # The client could have paused the current coroutine for a while when hitting the await, so re-get the
+                # current time instead of using `now`.
+                self._last_processed_received_death = time.time()
+                debug_logger.info("Killing player characters from received death")
+                # At least one character was alive and should now be dead or dying, so the death has been received.
+                ctx.text_display.priority_message(message)
+                # Remove studs from the player.
+                studs_to_lose = self.death_link_stud_loss
+                if studs_to_lose > 0:
+                    if self.death_link_stud_loss_scaling:
+                        studs_to_lose *= ctx.acquired_generic.current_score_multiplier
+                    give_studs(ctx, -studs_to_lose, only_give_if_in_level=True, allow_power_up_multiplier=False)
+            else:
+                # There were no living players to kill, or the living players are not currently allowed to be killed, so
+                # skip the received death.
+                debug_logger.info("There were no living players allowed to be killed.")
+                pass
+        # Send death.
+        elif player_death_count > expected_death_count:
+            # The player has died since the last time the in-area death count was checked.
+            x = now - DEATH_COOLDOWN
+            if x < self._last_processed_received_death:
+                # The player only recently received a death, don't send another death just yet.
+                # This generally should not happen because the player has to wait to respawn to be able to die again.
+                debug_logger.info("Skipping sending a death because the player too recently received a death.")
+                return
+            if x < ctx.last_death_link:
+                # The player only recently sent/received a death, don't send another death just yet.
+                debug_logger.info("Skipping sending a death because the player too recently sent/received a death.")
+                return
+            await self.attempt_to_send_death(ctx)
+
+    def on_deathlink(self, previous_death: float, last_death: float, message: str):
+        if (not self.last_received_death_message
+                or ((previous_death < last_death) and (last_death - previous_death) < 0.5)):
+            # If there is no stored message or the new death is only just after the previous death, store the new death
+            # message instead.
+            self.last_received_death_message = message
         self.pending_received_death = True
 
     @subscribe_event
-    def on_area_change(self, _event: OnAreaChangeEvent) -> None:
+    def on_area_change(self, event: OnAreaChangeEvent) -> None:
         # The area has changed, so the expected death count should reset. The area changes before the game resets the
         # death count, so the DeathLinkManager relies on the OnGameWatcherTickEvent to reduce _expected_area_death_count
         # from this very large dummy value to the proper value.
-        self._expected_area_death_count = 999_999_999
+        self._last_area_death_count = 999_999_999
+        self.waiting_for_respawn = False
         debug_logger.info("Reset expected death count to 0 upon area change.")
+        self.current_area_uses_vehicle_amnesty = event.new_area_data_id in VEHICLE_AMNESTY_AREA_IDS
+
+    @subscribe_event
+    def on_character_id_change(self, event: OnPlayerCharacterIdChangeEvent):
+        self.p1_is_allowed_to_be_killed = event.new_p1_character_id not in DISALLOWED_DEATH_CHARACTER_IDS
+        self.p2_is_allowed_to_be_killed = event.new_p2_character_id not in DISALLOWED_DEATH_CHARACTER_IDS

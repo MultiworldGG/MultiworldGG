@@ -1,10 +1,7 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, TYPE_CHECKING
 
-from .RoomNames import RoomName
-
-from .AreaNames import MetroidPrimeArea
-from typing import TYPE_CHECKING
+from ..Enum import MetroidPrimeArea, RoomName
 
 if TYPE_CHECKING:
     from .. import MetroidPrimeWorld

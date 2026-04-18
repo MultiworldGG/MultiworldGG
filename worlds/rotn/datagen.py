@@ -18,8 +18,6 @@ def extractModDataToJson() -> List[dict[str, Dict]]:
         user_path = Utils.user_path(settings.get_settings().generator.player_files_path)
         folder_path = sys.argv[sys.argv.index("--player_files_path") + 1] if "--player_files_path" in sys.argv else user_path
 
-        logger.debug(f"Checking YAMLs for megamix_mod_data at {folder_path}")
-
         if not os.path.isdir(folder_path):
             logger.debug(f"The path {folder_path} is not a valid directory. Modded songs are unavailable for this path.")
             return []

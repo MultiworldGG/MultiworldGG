@@ -7,6 +7,8 @@ from ...levels import SHORT_NAME_TO_CHAPTER_AREA, BONUS_NAME_TO_BONUS_AREA
 from ...locations import LOCATION_NAME_TO_ID
 from ...ridables import CHAPTER_TO_RIDABLES, BONUS_TO_RIDABLES, RIDABLES_BY_NAME
 
+from ...options import GoalChapterLocationsMode
+
 
 class RidesanityChecker(ClientComponent):
     ridables_by_area: dict[AreaId, dict[CharacterId, ApLocationId]]
@@ -31,6 +33,11 @@ class RidesanityChecker(ClientComponent):
         if not ridesanity_enabled:
             return
 
+        goal_chapter_locations_mode = event.slot_data.get("goal_chapter_locations_mode",
+                                                          GoalChapterLocationsMode.option_normal)
+        goal_locations_removed = goal_chapter_locations_mode == GoalChapterLocationsMode.option_removed
+        goal_chapter = event.slot_data.get("goal_chapter")
+
         for bonus_name in event.slot_data["enabled_bonuses"]:
             if bonus_name not in BONUS_TO_RIDABLES:
                 # No ridables in this bonus.
@@ -43,6 +50,9 @@ class RidesanityChecker(ClientComponent):
         for short_name in event.slot_data["enabled_chapters"]:
             if short_name not in CHAPTER_TO_RIDABLES:
                 # No ridables in this chapter.
+                continue
+            if short_name == goal_chapter and goal_locations_removed:
+                # The Goal Chapter, with locations removed, should not send Ridesanity checks.
                 continue
             area_id = SHORT_NAME_TO_CHAPTER_AREA[short_name].area_id
             self.ridables_by_area[area_id] = {

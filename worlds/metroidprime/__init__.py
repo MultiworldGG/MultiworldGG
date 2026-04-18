@@ -1,41 +1,35 @@
+import os
+import settings
 import typing
 from collections import defaultdict
-from .ItemPool import generate_item_pool
-import os
-from Options import NumericOption
-from typing import Any, Dict, List, Optional, TextIO, Union, cast
 from logging import info
-from .data.RoomNames import RoomName
-from .data.PhazonMines import PhazonMinesAreaData
-from .data.PhendranaDrifts import PhendranaDriftsAreaData
-from .data.MagmoorCaverns import MagmoorCavernsAreaData
-from .data.ChozoRuins import ChozoRuinsAreaData
-from .data.TallonOverworld import TallonOverworldAreaData
+from typing import Any, Dict, List, Optional, TextIO, Union, cast
+
+from BaseClasses import MultiWorld, Tutorial, ItemClassification
+from Options import NumericOption
+from worlds.LauncherComponents import Component, components, icon_paths, launch_subprocess, SuffixIdentifier, Type  # type: ignore
+from worlds.AutoWorld import World, WebWorld
+
 from .BlastShieldRando import (
     WorldBlastShieldMapping,
     apply_blast_shield_mapping,
     get_world_blast_shield_mapping,
 )
-from .data.RoomData import AreaData
-from .data.AreaNames import MetroidPrimeArea
+from .Config import make_config
+from .Container import MetroidPrimeContainer
 from .DoorRando import (
     WorldDoorColorMapping,
     get_world_door_mapping,
     remap_doors_to_power_beam_if_necessary,
 )
-
-from worlds.LauncherComponents import Component, SuffixIdentifier, Type, components, launch_subprocess  # type: ignore
-import settings
-from worlds.AutoWorld import World, WebWorld
-from .data.Transports import (
-    ELEVATOR_USEFUL_NAMES,
-    default_elevator_mappings,
-    get_random_elevator_mapping,
-)
-from .Config import make_config
-from .Regions import create_regions
-from .Locations import every_location
+from .Enum import MetroidPrimeArea, RoomName, SuitUpgrade
 from .ItemPool import generate_item_pool, generate_base_start_inventory
+from .Items import (
+    MetroidPrimeItem,
+    artifact_table,
+    item_table,
+)
+from .Locations import every_location
 from .PrimeOptions import (
     ArtifactHints,
     BlastShieldRandomization,
@@ -43,27 +37,32 @@ from .PrimeOptions import (
     MetroidPrimeOptions,
     prime_option_groups,
 )
-from .Items import (
-    MetroidPrimeItem,
-    SuitUpgrade,
-    artifact_table,
-    item_table,
-)
+from .Regions import create_regions
+
+from .data.ChozoRuins import ChozoRuinsAreaData
+from .data.MagmoorCaverns import MagmoorCavernsAreaData
+from .data.RoomData import AreaData
+from .data.PhazonMines import PhazonMinesAreaData
+from .data.PhendranaDrifts import PhendranaDriftsAreaData
 from .data.StartRoomData import (
     StartRoomData,
     init_starting_beam,
     init_starting_loadout,
     init_starting_room_data,
 )
-from .Container import MetroidPrimeContainer
-from BaseClasses import MultiWorld, Tutorial, ItemClassification
+from .data.TallonOverworld import TallonOverworldAreaData
+from .data.Transports import (
+    ELEVATOR_USEFUL_NAMES,
+    default_elevator_mappings,
+    get_random_elevator_mapping,
+)
 
 
 class MultiworldWithPassthrough(MultiWorld):
     re_gen_passthrough: Dict[str, Dict[str, Any]] = {}
 
 
-def run_client(*args: Any):
+def run_client(*_args: Any):
     from .MetroidPrimeClient import launch
 
     launch_subprocess(launch, name="MetroidPrimeClient")
@@ -75,8 +74,12 @@ components.append(
         func=run_client,
         component_type=Type.CLIENT,
         file_identifier=SuffixIdentifier(".apmp1"),
+        icon='Metroid Prime',
     )
 )
+
+
+icon_paths["Metroid Prime"] = "ap:worlds.metroidprime/assets/icon.png"
 
 
 class MetroidPrimeSettings(settings.Group):
@@ -103,9 +106,9 @@ class MetroidPrimeWeb(WebWorld):
             "Multiworld Setup Guide",
             "A guide to setting up Metroid Prime for MultiworldGG",
             "English",
-            "setup_en.md",
+            "setup.md",
             "setup/en",
-            ["hesto2", "Electro15"],
+            ["hesto2", "Electro15", "UltiNaruto"],
         )
     ]
     option_groups = prime_option_groups
@@ -126,7 +129,7 @@ class MetroidPrimeWorld(World):
     topology_present = True
     item_name_to_id = {name: data.code for name, data in item_table.items()}
     location_name_to_id = every_location
-    settings: MetroidPrimeSettings  # type: ignore
+    settings: MetroidPrimeSettings  # noqa
     item_name_groups = {"Artifacts": set(artifact_table.keys())}
     starting_room_data: StartRoomData
     prefilled_item_map: Dict[str, str] = {}  # Dict of location name to item name
@@ -323,12 +326,12 @@ class MetroidPrimeWorld(World):
 
         import json
 
-        configjson = make_config(self)
-        configjsons = json.dumps(configjson, indent=4)
+        config_json_dict = make_config(self)
+        config_json = json.dumps(config_json_dict, indent=4)
 
         if os.environ.get("DEBUG") == "True":
             with open("test_config.json", "w") as f:
-                f.write(configjsons)
+                f.write(config_json)
 
         options_dict: Dict[str, Union[int, str]] = {
             "progressive_beam_upgrades": self.options.progressive_beam_upgrades.value,
@@ -339,7 +342,7 @@ class MetroidPrimeWorld(World):
 
         outfile_name = self.multiworld.get_out_file_name_base(self.player)
         apmp1 = MetroidPrimeContainer(
-            configjsons,
+            config_json,
             options_json,
             outfile_name,
             output_directory,
@@ -378,8 +381,9 @@ class MetroidPrimeWorld(World):
             slot_data["starting_beam"] = self.starting_beam
         if self.options.artifact_hints.value == ArtifactHints.option_enable_scanned:
             locations = self.multiworld.find_items_in_locations(set(artifact_table.keys()), self.player)
-            slot_data["artifact_locations"] = { location.item.name: (location.address, location.player) for location in locations if location.item }
+            slot_data["artifact_locations"] = { location.item.name: (location.address, location.player) for location in locations if location.item is not None }
 
+        slot_data["first_non_starting_item_index"] = len(self.multiworld.precollected_items[self.player])
         return slot_data
 
         # for the universal tracker, doesn't get called in standard gen

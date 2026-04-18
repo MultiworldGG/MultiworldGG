@@ -307,6 +307,10 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
                     warnings.warn(f"Could not delete old build output: {match}\n"
                                   f"{ex}\nPlease close all AP instances and delete manually.")
 
+        # Eagerly load worlds so cx_Freeze sees all dependencies during its scan.
+        from worlds import ensure_worlds_loaded
+        ensure_worlds_loaded()
+
         # regular cx build
         self.buildtime = datetime.datetime.now(datetime.timezone.utc)
         super().run()
@@ -325,12 +329,10 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
 
         # include_files seems to not be done automatically. implement here
         for src, dst in self.include_files:
-            print(f"copying {src} -> {self.buildfolder / dst}")
             shutil.copyfile(src, self.buildfolder / dst, follow_symlinks=False)
 
         # now that include_files is completely broken, run find_libs here
         for src, dst in find_libs(*self.extra_libs):
-            print(f"copying {src} -> {self.buildfolder / dst}")
             shutil.copyfile(src, self.buildfolder / dst, follow_symlinks=False)
 
         # post build steps
@@ -363,8 +365,9 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
 
         os.makedirs(self.buildfolder / "Players" / "Templates", exist_ok=True)
         from Options import generate_yaml_templates
-        from worlds.AutoWorld import AutoWorldRegister
+        from worlds import AutoWorldRegister, ensure_worlds_loaded
         from worlds.Files import APWorldContainer
+        ensure_worlds_loaded()
         assert not non_apworlds - set(AutoWorldRegister.world_types), \
             f"Unknown world {non_apworlds - set(AutoWorldRegister.world_types)} designated for .apworld"
         folders_to_remove: list[str] = []

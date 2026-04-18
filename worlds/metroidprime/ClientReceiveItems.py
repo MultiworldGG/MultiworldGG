@@ -2,10 +2,9 @@ from typing import TYPE_CHECKING, Dict, List
 
 from NetUtils import NetworkItem
 
+from .Enum import ProgressiveUpgrade, SuitUpgrade
 from .Items import (
     PROGRESSIVE_ITEM_MAPPING,
-    ProgressiveUpgrade,
-    SuitUpgrade,
     custom_suit_upgrade_table,
 )
 from .MetroidPrimeInterface import ITEMS_USED_FOR_LOCATION_TRACKING, InventoryItemData
@@ -19,15 +18,15 @@ async def handle_receive_items(
 ):
     # Will be used when consumables are implemented
     # current_index = ctx.game_interface.get_last_received_index()
-    for network_item in ctx.items_received:
+    for index, network_item in enumerate(ctx.items_received):
+        # skip starting items since they are now handled locally
+        if index < ctx.slot_data.get("first_non_starting_item_index", 0):
+            continue
+
         item_data = inventory_item_by_network_id(network_item.item, current_items)
         if item_data is None:
             continue
-        if item_data.name == SuitUpgrade.Missile_Launcher.value:
-            continue
-        elif item_data.name == SuitUpgrade.Main_Power_Bomb.value:
-            continue
-        elif item_data.name in [key.value for key in PROGRESSIVE_ITEM_MAPPING.keys()]:
+        if item_data.name in [key.value for key in PROGRESSIVE_ITEM_MAPPING.keys()]:
             continue
         elif (
             item_data.name == SuitUpgrade.Gravity_Suit.value
@@ -35,7 +34,7 @@ async def handle_receive_items(
         ):
             continue
 
-            # Handle Single Item Upgrades
+        # Handle Single Item Upgrades
         if (
             item_data.max_capacity == 1
             or item_data.name in ITEMS_USED_FOR_LOCATION_TRACKING
@@ -43,9 +42,13 @@ async def handle_receive_items(
             give_item_if_not_owned(ctx, item_data, network_item)
         elif item_data.max_capacity > 1:
             continue
+
     # Not used until consumables are implemented but keeping it here to see if it breaks anything and gets reported
-    new_index = len(ctx.items_received) - 1
+    new_index = max(len(ctx.items_received) - 1, 0)
     ctx.game_interface.set_last_received_index(new_index)
+
+    # Update inventory before attempting to handle other types of upgrades
+    current_items = ctx.game_interface.get_current_inventory()
 
     await handle_receive_missiles(ctx, current_items)
     await handle_receive_power_bombs(ctx, current_items)
@@ -90,9 +93,9 @@ def disable_item_if_owned(ctx: "MetroidPrimeContext", item_data: InventoryItemDa
 
 
 async def handle_cosmetic_suit(
-    ctx: "MetroidPrimeContext", current_items: Dict[str, InventoryItemData]
+    ctx: "MetroidPrimeContext", _current_items: Dict[str, InventoryItemData]
 ):
-    if ctx.cosmetic_suit == None:
+    if ctx.cosmetic_suit is None:
         return
     ctx.game_interface.set_current_suit(ctx.cosmetic_suit)
 
@@ -119,31 +122,19 @@ async def handle_receive_missiles(
         new_capacity = 0
 
         missile_sender = None
-        has_missile_launcher = False
+        has_missile_launcher = not ctx.slot_data["missile_launcher"] or current_items[SuitUpgrade.Missile_Launcher.value].current_capacity > 0
 
         for network_item in ctx.items_received:
             item_data = inventory_item_by_network_id(network_item.item, current_items)
             if item_data is None:
                 continue
 
-            if item_data.name == "Missile Launcher":
-                has_missile_launcher = True
-                new_capacity += amount_per_expansion
-
-                # If they just got the missile launcher, and they have no missiles, then notify
-                if current_capacity == 0:
-                    if network_item.player != ctx.slot:
-                        ctx.notification_manager.queue_notification(
-                            f"{item_data.name} online ({ctx.player_names[network_item.player]})"
-                        )
-
-            elif item_data.name == "Missile Expansion":
+            if (
+                    item_data.name == SuitUpgrade.Missile_Launcher.value or
+                    item_data.name == SuitUpgrade.Missile_Expansion.value
+            ):
                 missile_sender = network_item.player
                 new_capacity += amount_per_expansion
-
-        # If playing with missile launcher and they haven't collected yet, then don't give any missiles
-        if ctx.slot_data["missile_launcher"] and not has_missile_launcher:
-            return
 
         diff = new_capacity - current_capacity
         new_amount = min(current_amount + diff, new_capacity)
@@ -151,12 +142,14 @@ async def handle_receive_missiles(
         ctx.game_interface.give_item_to_player(
             missile_item.id, new_amount, new_capacity
         )
-        if missile_sender != ctx.slot and diff > 0 and missile_sender != None:
+        if missile_sender != ctx.slot and diff > 0 and missile_sender is not None:
             message = (
                 f"Missile capacity increased by {diff}"
                 if diff > 5
                 else f"Missile capacity increased by {diff} ({ctx.player_names[missile_sender]})"
             )
+            if not has_missile_launcher:
+                message += " but Missile Launcher is required to use missiles"
             ctx.notification_manager.queue_notification(message)
 
 
@@ -164,41 +157,35 @@ async def handle_receive_power_bombs(
     ctx: "MetroidPrimeContext", current_items: Dict[str, InventoryItemData]
 ):
     # Handle Power Bomb Expansions
-    if ctx.slot_data and "Power Bomb Expansion" in current_items:
-        # Handle Missile Expansions
+    if ctx.slot_data and SuitUpgrade.Power_Bomb_Expansion.value in current_items:
         amount_per_expansion = 1
-        pb_item = current_items["Power Bomb Expansion"]
+        pb_item = current_items[SuitUpgrade.Power_Bomb_Expansion.value]
         current_capacity = pb_item.current_capacity
         current_amount = pb_item.current_amount
         new_capacity = 0
         first_pb_capacity = 4
 
         pb_sender = None
-        has_main_pb = False
+        has_main_pb = not ctx.slot_data["main_power_bomb"] or current_items[SuitUpgrade.Main_Power_Bomb.value].current_capacity > 0
 
         for network_item in ctx.items_received:
             item_data = inventory_item_by_network_id(network_item.item, current_items)
             if item_data is None:
                 continue
 
-            if item_data.name == "Power Bomb (Main)":
-                has_main_pb = True
-                new_capacity += first_pb_capacity
-
-                # If they just got the main pb, and they have no power bombs, then notify
-                if current_capacity == 0:
-                    if network_item.player != ctx.slot:
-                        ctx.notification_manager.queue_notification(
-                            f"{item_data.name} online ({ctx.player_names[network_item.player]})"
-                        )
-
-            elif item_data.name == "Power Bomb Expansion":
+            if (
+                item_data.name == SuitUpgrade.Main_Power_Bomb.value or
+                item_data.name == SuitUpgrade.Power_Bomb_Expansion.value
+            ):
                 pb_sender = network_item.player
-                new_capacity += amount_per_expansion
+                if ctx.slot_data["main_power_bomb"]:
+                    if item_data.name == SuitUpgrade.Main_Power_Bomb.value:
+                        new_capacity += first_pb_capacity
+                    else:
+                        new_capacity += amount_per_expansion
+                else:
+                    new_capacity += first_pb_capacity if new_capacity == 0 else amount_per_expansion
 
-        # If playing with main_power_bomb and they haven't collected yet, then don't give any power bombs
-        if ctx.slot_data["main_power_bomb"] and not has_main_pb:
-            return
 
         # First PB expansion is worth 4 power bombs
         if not ctx.slot_data["main_power_bomb"] and new_capacity > 0:
@@ -208,12 +195,14 @@ async def handle_receive_power_bombs(
         new_amount = min(current_amount + diff, new_capacity)
 
         ctx.game_interface.give_item_to_player(pb_item.id, new_amount, new_capacity)
-        if pb_sender != ctx.slot and diff > 0 and pb_sender != None:
+        if pb_sender != ctx.slot and diff > 0 and pb_sender is not None:
             message = (
                 f"Power Bomb capacity increased by {diff}"
                 if diff > 5
                 else f"Power Bomb capacity increased by {diff} ({ctx.player_names[pb_sender]})"
             )
+            if not has_main_pb:
+                message += " but Power Bomb (Main) is required to use power bombs"
             ctx.notification_manager.queue_notification(message)
 
 
@@ -261,6 +250,7 @@ async def handle_receive_progressive_items(
     ctx: "MetroidPrimeContext", current_items: Dict[str, InventoryItemData]
 ):
     counts = {upgrade.value: 0 for upgrade in PROGRESSIVE_ITEM_MAPPING}
+    curr = {upgrade.value: 0 for upgrade in PROGRESSIVE_ITEM_MAPPING}
     network_items: Dict[str, List[NetworkItem]] = {
         upgrade.value: [] for upgrade in PROGRESSIVE_ITEM_MAPPING
     }
@@ -272,9 +262,19 @@ async def handle_receive_progressive_items(
             counts[item_data.name] += 1
             network_items[item_data.name].append(network_item)
 
-    for progressive_upgrade, count in counts.items():
+    for item in PROGRESSIVE_ITEM_MAPPING:
+        if item.value in curr:
+            if item.value.endswith(" Beam"):
+                curr[item.value] += current_items[item.value[12:]].current_capacity
+                curr[item.value] += current_items[PROGRESSIVE_ITEM_MAPPING[item][2].value].current_capacity
+            if item.value.endswith(" Bomb"):
+                curr[item.value] += current_items[SuitUpgrade.Spring_Ball.value].current_capacity
+                curr[item.value] += current_items[SuitUpgrade.Morph_Ball_Bomb.value].current_capacity
+
+    for progressive_upgrade in counts:
+        count = counts[progressive_upgrade] - curr[progressive_upgrade]
         if count > 0:
-            for i in range(count):
+            for i in range(curr[progressive_upgrade], counts[progressive_upgrade]):
                 mapping = PROGRESSIVE_ITEM_MAPPING[
                     ProgressiveUpgrade(progressive_upgrade)
                 ]

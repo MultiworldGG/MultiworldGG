@@ -8,7 +8,7 @@
     focus_behavior: False
 
     MDRelativeLayout:
-        ApAsyncImage:
+        Image:
             source: main.image
             size: (48, 48)
             size_hint: None, None
@@ -51,14 +51,18 @@
             detect_visible: False
 
         MDButton:
+            id: open_button
             pos_hint:{"center_x": 0.9, "center_y": 0.25}
-            size_hint_y: None
+            size_hint: None, None
             height: "25dp"
+            width: "80dp"
             component: main.component
             on_release: app.component_action(self)
             detect_visible: False
             MDButtonText:
+                id: open_button_text
                 text: "Open"
+                halign: "center"
 
 
 #:import Type worlds.LauncherComponents.Type
@@ -141,11 +145,23 @@ MDFloatLayout:
 
             MDNavigationDrawerDivider:
 
-            ApAsyncImage:
+            Image:
                 source: local_path("data/launcher-logo.png")
                 size_hint: 1, None
                 height: self.width
                 fit_mode: "contain"
+
+            MDLabel:
+                id: cache_status_label
+                text: ""
+                size_hint_y: None
+                height: "16dp"
+                halign: "center"
+                font_style: "Label"
+                role: "small"
+                theme_text_color: "Custom"
+                text_color: app.theme_cls.primaryColor
+                opacity: 1 if self.text else 0
 
         MDGridLayout:
             id: main_layout

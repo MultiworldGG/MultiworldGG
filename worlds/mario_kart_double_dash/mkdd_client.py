@@ -9,6 +9,9 @@ from typing import TYPE_CHECKING, Any, Optional
 import dolphin_memory_engine as dolphin
 
 import Utils
+apname = Utils.instance_name if Utils.instance_name else "Archipelago"
+
+
 from CommonClient import get_base_parser, gui_enabled, logger, server_loop
 from NetUtils import ClientStatus, NetworkItem
 
@@ -312,7 +315,7 @@ class MkddContext(CommonContext):
             ut_title = f" | Universal Tracker {UT_VERSION}"
         class MKDDManager(base_class):
             logging_pairs = [("Client", "Archipelago")]
-            base_title = f"MKDD AP Client {version.get_version()}{ut_title} | Archipelago"
+            base_title = f"MKDD AP Client {version.get_version()}{ut_title} | {apname}"
             
 
             def build(self):

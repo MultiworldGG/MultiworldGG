@@ -18,6 +18,12 @@ from MultiServer import mark_raw
 from NetUtils import ClientStatus
 
 from Utils import get_intended_text
+
+try:
+    from Utils import instance_name as apname
+except ImportError:
+    apname = "Archipelago"
+
 from worlds.AutoWorld import World
 from worlds.rabi_ribi import RabiRibiWorld
 from worlds.rabi_ribi.client.memory_io import RabiRibiMemoryIO
@@ -223,7 +229,7 @@ class RabiRibiContext(TrackerGameContext): # type: ignore
         if tracker_loaded:
             ui.base_title += f" | UT {UT_VERSION}"
 
-        ui.base_title += " | AP"
+        ui.base_title += f" | {apname}"
         return ui
 
     def read_location_coordinates_and_rr_item_ids(self):

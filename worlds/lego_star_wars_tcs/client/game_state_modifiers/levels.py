@@ -1,4 +1,5 @@
 import logging
+from dataclasses import dataclass, field
 from typing import AbstractSet, Callable
 
 from .text_replacer import TextId
@@ -42,18 +43,100 @@ _SUB_GOAL_SPECIAL_ID = 999_999_999
 assert _SUB_GOAL_SPECIAL_ID not in _ITEM_DATA_BY_ID_PLUS_GOAL_SPECIAL, (
     f"The special item ID, {_SUB_GOAL_SPECIAL_ID} for all sub-goal completion already exists as a real item:"
     f" {_ITEM_DATA_BY_ID_PLUS_GOAL_SPECIAL[_SUB_GOAL_SPECIAL_ID]}")
+# Note that the fake item name is user-facing.
 _ITEM_DATA_BY_ID_PLUS_GOAL_SPECIAL[_SUB_GOAL_SPECIAL_ID] = GenericItemData(_SUB_GOAL_SPECIAL_ID,
-                                                                           "_INTERNAL_ALL_SUB_GOALS_COMPLETE")
+                                                                           "all other goals completed")
+
+
+@dataclass
+class RemainingChapterItemRequirements:
+    """
+    Represents the remaining requirements to unlock a chapter.
+    """
+    count_remaining: int = 0
+    item_ids_count_remaining: set[int] = field(default_factory=set)
+    item_ids_hard_remaining: set[int] = field(default_factory=set)
+
+    @staticmethod
+    def ids_to_names(ids: set[int]) -> list[str]:
+        return sorted(_ITEM_DATA_BY_ID_PLUS_GOAL_SPECIAL[ap_item_id].name for ap_item_id in ids)
+
+    def __bool__(self) -> bool:
+        """
+        :return: Whether requirements still need to be met.
+        """
+        return (len(self.item_ids_hard_remaining) > 0
+                or (len(self.item_ids_count_remaining) > 0 and self.count_remaining > 0))
+
+    def __contains__(self, item) -> bool:
+        """
+        :param item: Item to test.
+        :return: Whether the item is a remaining requirement.
+        """
+        return (item in self.item_ids_hard_remaining
+                or (self.count_remaining > 0 and item in self.item_ids_count_remaining))
+
+    def remove(self, ap_item_id: int) -> None:
+        """
+        Remove an item ID as a remaining requirement.
+        :param ap_item_id:
+        :return:
+        """
+        self.item_ids_hard_remaining.discard(ap_item_id)
+
+        if self.count_remaining > 0 and ap_item_id in self.item_ids_count_remaining:
+            self.item_ids_count_remaining.remove(ap_item_id)
+            self.count_remaining -= 1
+
+    @staticmethod
+    def _format_items_names(names: list[str]):
+        assert len(names) > 0
+        if len(names) > 1:
+            # A and B
+            # A, B and C
+            return f"{', '.join(names[:-1])} and {names[-1]}"
+        else:
+            # A
+            return names[0]
+
+    def format_remaining_chapter_requirements(self, chapter_name: str) -> str:
+        count_items = self.ids_to_names(self.item_ids_count_remaining)
+        hard_items = self.ids_to_names(self.item_ids_hard_remaining)
+        # Move "Episode # Unlock" items to the front.
+        hard_items.sort(key=lambda s: 0 if s.startswith("Episode") else 1)
+        if count_items:
+            if hard_items:
+                return (f"{chapter_name} - Missing {self._format_items_names(hard_items)}"
+                        f" and any {self.count_remaining} of {self._format_items_names(count_items)}")
+            else:
+                return f"{chapter_name} - Missing any {self.count_remaining} of {self._format_items_names(count_items)}"
+        else:
+            if hard_items:
+                return f"{chapter_name} - Missing {self._format_items_names(hard_items)}"
+            else:
+                return ""
+
+    def __str__(self) -> str:
+        if self.count_remaining > 0:
+            return (f"Requires all of {self.ids_to_names(self.item_ids_hard_remaining)},"
+                    f" and {self.count_remaining} of {self.ids_to_names(self.item_ids_count_remaining)}")
+        else:
+            return f"Requires all of {self.ids_to_names(self.item_ids_hard_remaining)}"
 
 
 class UnlockedChapterManager(ClientComponent):
     ap_item_id_to_dependent_game_chapters: dict[int, list[str]]
-    remaining_chapter_item_requirements: dict[str, set[int]]
+    remaining_chapter_item_requirements: dict[str, RemainingChapterItemRequirements]
 
     unlocked_chapters_per_episode: dict[int, set[AreaId]]
     should_unlock_all_episodes_shop_slots: Callable[[TCSContext], bool] = staticmethod(lambda _ctx: False)
 
     enabled_chapter_area_ids: set[int]
+    enabled_episodes: set[int]
+    chapters_using_alt_characters: set[str]
+    characters_excluded_from_unlocking_chapters: set[str]
+    per_chapter_required_character_count: dict[str, int]
+    random_character_chapter_requirements: dict[str, list[str]]
 
     easy_true_jedi: bool = False
     scale_true_jedi_with_score_multipliers: bool = False
@@ -61,12 +144,16 @@ class UnlockedChapterManager(ClientComponent):
     goal_chapter_area_id: int = -1
 
     last_area_door: ChapterArea | None = None
+    current_area_id: int = -1
 
     def __init__(self) -> None:
         self.ap_item_id_to_dependent_game_chapters = {}
         self.remaining_chapter_item_requirements = {}
         self.unlocked_chapters_per_episode = {}
         self.enabled_chapter_area_ids = set()
+        self.chapters_using_alt_characters = set()
+        self.characters_excluded_from_unlocking_chapters = set()
+        self.per_chapter_required_character_count = {}
 
     @subscribe_event
     def init_from_slot_data(self, event: OnReceiveSlotDataEvent) -> None:
@@ -95,14 +182,40 @@ class UnlockedChapterManager(ClientComponent):
 
         # In older multiworlds, chapters were always unlocked through Story Characters.
         if event.generator_version < (1, 3, 0):
-            chapter_unlock_requirement = options.ChapterUnlockRequirement.option_story_characters
+            chapter_unlock_requirement = options.ChapterUnlockRequirement.option_vanilla_characters
         else:
             chapter_unlock_requirement = slot_data["chapter_unlock_requirement"]
+
+        chapter_unlock_requirement_is_characters = chapter_unlock_requirement in (
+            options.ChapterUnlockRequirement.option_vanilla_characters,
+            options.ChapterUnlockRequirement.option_random_characters,
+        )
+
+        if chapter_unlock_requirement == options.ChapterUnlockRequirement.option_random_characters:
+            self.random_character_chapter_requirements = {
+                chapter: [ITEM_DATA_BY_ID[c].name for c in characters]
+                for chapter, characters in slot_data["chapter_random_character_requirements"].items()
+            }
+        else:
+            self.random_character_chapter_requirements = {}
 
         num_enabled_episodes = len(enabled_episodes)
 
         self.enabled_chapter_area_ids = {SHORT_NAME_TO_CHAPTER_AREA[chapter_shortname].area_id
                                          for chapter_shortname in enabled_chapters}
+
+        # In older multiworlds, all characters were required, alt characters could not be chosen, and characters could
+        # not be excluded from requirements.
+        if event.generator_version < (1, 4, 0):
+            self.per_chapter_required_character_count = dict.fromkeys(enabled_chapters, 999_999_999)
+            self.chapters_using_alt_characters = set()
+            self.characters_excluded_from_unlocking_chapters = set()
+        else:
+            self.per_chapter_required_character_count = slot_data.get("chapter_required_character_counts", {})
+            self.chapters_using_alt_characters = set(slot_data.get("chapters_requiring_alt_characters", ()))
+            self.characters_excluded_from_unlocking_chapters = set(
+                slot_data.get("chapter_unlock_characters_not_required", ())
+            )
 
         if len(enabled_chapters) == 1:
             chapters_text = enabled_chapters[0]
@@ -139,13 +252,14 @@ class UnlockedChapterManager(ClientComponent):
 
         self.unlocked_chapters_per_episode = {i: set() for i in enabled_episodes}
         item_id_to_chapter_area_short_name: dict[int, list[str]] = {}
-        remaining_chapter_item_requirements: dict[str, set[int]] = {}
+        remaining_chapter_item_requirements: dict[str, RemainingChapterItemRequirements] = {}
 
         if goal_chapter := slot_data.get("goal_chapter"):
             # Add the requirement for the fake sub-goals item to the Goal Chapter so that it will only unlock once all
             # sub-goals have been completed.
             item_id_to_chapter_area_short_name[_SUB_GOAL_SPECIAL_ID] = [goal_chapter]
-            remaining_chapter_item_requirements[goal_chapter] = {_SUB_GOAL_SPECIAL_ID}
+            remaining_requirements = RemainingChapterItemRequirements(item_ids_hard_remaining={_SUB_GOAL_SPECIAL_ID})
+            remaining_chapter_item_requirements[goal_chapter] = remaining_requirements
             self.goal_chapter = goal_chapter
             self.goal_chapter_area_id = SHORT_NAME_TO_CHAPTER_AREA[goal_chapter].area_id
             self.enabled_chapter_area_ids.add(self.goal_chapter_area_id)
@@ -153,33 +267,84 @@ class UnlockedChapterManager(ClientComponent):
         for chapter_area in CHAPTER_AREAS:
             if chapter_area.area_id not in self.enabled_chapter_area_ids:
                 continue
+            short_name = chapter_area.short_name
 
-            item_requirements: list[str]
-            if chapter_unlock_requirement == options.ChapterUnlockRequirement.option_story_characters:
-                item_requirements = list(chapter_area.character_requirements)
+            unique_count_required_items: list[str] = []
+            unique_count_required: int = 0
+            always_required_items: list[str]
+            if chapter_unlock_requirement_is_characters:
+                if chapter_unlock_requirement == options.ChapterUnlockRequirement.option_vanilla_characters:
+                    if short_name in self.chapters_using_alt_characters:
+                        character_requirements = list(chapter_area.alt_character_requirements)
+                    else:
+                        character_requirements = list(chapter_area.character_requirements)
+                    # Filter out excluded characters.
+                    character_requirements = [c for c in character_requirements
+                                              if c not in self.characters_excluded_from_unlocking_chapters]
+                    count_required = self.per_chapter_required_character_count[short_name]
+                else:
+                    assert chapter_unlock_requirement == options.ChapterUnlockRequirement.option_random_characters
+                    count_required = self.per_chapter_required_character_count[short_name]
+                    character_requirements = self.random_character_chapter_requirements[short_name]
+                assert count_required <= len(character_requirements), \
+                    "Required counts should never be larger than the maximum possible"
+                if count_required < len(character_requirements):
+                    # Not all are required.
+                    unique_count_required_items.extend(character_requirements)
+                    unique_count_required = count_required
+                    always_required_items = []
+                else:
+                    # All are required.
+                    always_required_items = list(character_requirements)
             elif chapter_unlock_requirement == options.ChapterUnlockRequirement.option_chapter_item:
-                item_requirements = [f"{chapter_area.short_name} Unlock"]
+                always_required_items = [f"{short_name} Unlock"]
             else:
                 raise ValueError(f"Unexpected ChapterUnlockRequirement with value {chapter_unlock_requirement}")
 
             episode = chapter_area.episode
             if episode_unlock_requirement == options.EpisodeUnlockRequirement.option_episode_item:
-                item_requirements.append(f"Episode {episode} Unlock")
+                always_required_items.append(f"Episode {episode} Unlock")
             elif episode_unlock_requirement == options.EpisodeUnlockRequirement.option_open:
                 pass
             else:
                 raise RuntimeError(f"Unexpected EpisodeUnlockRequirement: {episode_unlock_requirement}")
 
-            code_requirements = set()
-            for item_name in item_requirements:
+            # Convert item names into item IDs, and register the chapter shortname as depending on
+            # these item IDs.
+            unique_count_required_codes: set[int] = set()
+            for item_name in unique_count_required_items:
                 item_code = ITEM_DATA_BY_NAME[item_name].code
                 assert item_code != -1
-                item_id_to_chapter_area_short_name.setdefault(item_code, []).append(chapter_area.short_name)
-                code_requirements.add(item_code)
-            remaining_chapter_item_requirements.setdefault(chapter_area.short_name, set()).update(code_requirements)
+                item_id_to_chapter_area_short_name.setdefault(item_code, []).append(short_name)
+                assert item_code not in unique_count_required_items
+                unique_count_required_codes.add(item_code)
+
+            always_required_codes: set[int] = set()
+            for item_name in always_required_items:
+                item_code = ITEM_DATA_BY_NAME[item_name].code
+                assert item_code != -1
+                item_id_to_chapter_area_short_name.setdefault(item_code, []).append(short_name)
+                assert item_code not in always_required_codes
+                always_required_codes.add(item_code)
+
+            assert unique_count_required_codes.isdisjoint(always_required_codes), \
+                "Items should not be both always, and sometimes, required"
+
+            if short_name in remaining_chapter_item_requirements:
+                remaining_requirements = remaining_chapter_item_requirements[short_name]
+            else:
+                remaining_requirements = RemainingChapterItemRequirements()
+                remaining_chapter_item_requirements[short_name] = remaining_requirements
+            assert remaining_requirements.count_remaining == 0, "Count should not be set"
+            assert len(remaining_requirements.item_ids_count_remaining) == 0, "Count item IDs set should be empty"
+            remaining_requirements.count_remaining += unique_count_required
+            remaining_requirements.item_ids_count_remaining.update(unique_count_required_codes)
+            remaining_requirements.item_ids_hard_remaining.update(always_required_codes)
+            assert remaining_requirements, f"There should be some requirements for {short_name}"
 
         self.ap_item_id_to_dependent_game_chapters = item_id_to_chapter_area_short_name
         self.remaining_chapter_item_requirements = remaining_chapter_item_requirements
+        self.enabled_episodes = {AREA_ID_TO_CHAPTER_AREA[area_id].episode for area_id in self.enabled_chapter_area_ids}
 
     def on_sub_goal_completion(self, ctx: TCSContext):
         self.on_character_or_chapter_or_episode_unlocked(ctx, _SUB_GOAL_SPECIAL_ID)
@@ -190,11 +355,20 @@ class UnlockedChapterManager(ClientComponent):
             return
 
         for dependent_area_short_name in dependent_chapters:
+            if dependent_area_short_name not in self.remaining_chapter_item_requirements:
+                debug_logger.info("Would have removed %s from %s requirements, but it has already been unlocked.",
+                                  _ITEM_DATA_BY_ID_PLUS_GOAL_SPECIAL[ap_item_id].name, dependent_area_short_name)
+                continue
             remaining_requirements = self.remaining_chapter_item_requirements[dependent_area_short_name]
             assert remaining_requirements
-            assert ap_item_id in remaining_requirements, (
-                f"{_ITEM_DATA_BY_ID_PLUS_GOAL_SPECIAL[ap_item_id].name} not found in"
-                f" {sorted([_ITEM_DATA_BY_ID_PLUS_GOAL_SPECIAL[code] for code in remaining_requirements], key=lambda data: data.name)}")
+            if ap_item_id not in remaining_requirements:
+                # Consider a Chapter that requires an Episode Unlock and any 1 of 4 different Characters, once the first
+                # Character of that 4 has been received, that part of the unlock requirements is completed, but the
+                # Episode Unlock is still missing, so the chapter is not unlocked yet.
+                debug_logger.info("Would have removed %s from %s requirements, but the relevant part of the"
+                                  " requirements has already been completed.",
+                                  _ITEM_DATA_BY_ID_PLUS_GOAL_SPECIAL[ap_item_id].name, dependent_area_short_name)
+                continue
             remaining_requirements.remove(ap_item_id)
             debug_logger.info("Removed %s from %s requirements",
                               _ITEM_DATA_BY_ID_PLUS_GOAL_SPECIAL[ap_item_id].name, dependent_area_short_name)
@@ -263,6 +437,12 @@ class UnlockedChapterManager(ClientComponent):
                                 # or "Challenge" if they really want to (not currently useful).
                                 ChapterDoorGameMode.FREE_PLAY.set(ctx)
                                 self.last_area_door = area
+
+            # If the player is in a chapter, grant temporary Story mode completion so that they can Save and Exit to the
+            # Cantina.
+            current_area_id = self.current_area_id
+            if current_area_id in AREA_ID_TO_CHAPTER_AREA:
+                temporary_story_completion |= {current_area_id}
 
         completed_free_play = ctx.free_play_completion_checker.completed_free_play
 
@@ -333,6 +513,7 @@ class UnlockedChapterManager(ClientComponent):
         ctx = event.context
 
         current_area_id = event.new_area_data_id
+        self.current_area_id = current_area_id
         if current_area_id == -1:
             # debug_logger.info("Current AreaData pointer is NULL. Nothing to do.")
             return
@@ -357,3 +538,23 @@ class UnlockedChapterManager(ClientComponent):
                     # The player is in Challenge mode.
                     ctx.text_display.priority_messages("Chapters should only be played in Free Play",
                                                        "Challenge mode is not currently part of the randomizer")
+
+    def is_chapter_enabled(self, chapter: ChapterArea):
+        return chapter.area_id in self.enabled_chapter_area_ids
+
+    def is_chapter_unlocked(self, chapter: ChapterArea):
+        return chapter.area_id in self.unlocked_chapters_per_episode[chapter.episode]
+
+    def format_locked_chapter_requirements(self, chapter: ChapterArea) -> str:
+        remaining = self.remaining_chapter_item_requirements.get(chapter.short_name)
+        if remaining:
+            return remaining.format_remaining_chapter_requirements(chapter.name)
+        else:
+            return ""
+
+    def is_episode_enabled(self, episode: int):
+        return episode in self.enabled_episodes
+
+    def is_episode_unlocked(self, episode: int):
+        # Unlocking any chapter in the episode unlocks the Episode door.
+        return bool(self.unlocked_chapters_per_episode.get(episode))

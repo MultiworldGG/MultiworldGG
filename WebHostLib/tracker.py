@@ -254,6 +254,11 @@ class TrackerData:
         }
 
     @_cache_results
+    def get_room_goal_overrides(self) -> Set[TeamPlayer]:
+        """Retrieves the set of (team, player) pairs whose goals were set by an admin."""
+        return set(tuple(x) for x in self._multisave.get("goal_overrides", []))
+
+    @_cache_results
     def get_room_long_player_names(self) -> Dict[TeamPlayer, str]:
         """Retrieves a dictionary of names with aliases for each player."""
         long_player_names = {}
@@ -458,6 +463,7 @@ def render_generic_multiworld_tracker(tracker_data: TrackerData, enabled_tracker
         completed_worlds=tracker_data.get_team_completed_worlds_count(),
         games=tracker_data.get_room_games(),
         states=tracker_data.get_room_client_statuses(),
+        goal_overrides=tracker_data.get_room_goal_overrides(),
         hints=tracker_data.get_team_hints(),
         activity_timers=tracker_data.get_room_last_activity(),
         videos=tracker_data.get_room_videos(),
@@ -519,6 +525,7 @@ if "Factorio" in network_data_package["games"]:
             completed_worlds=tracker_data.get_team_completed_worlds_count(),
             games=tracker_data.get_room_games(),
             states=tracker_data.get_room_client_statuses(),
+            goal_overrides=tracker_data.get_room_goal_overrides(),
             hints=tracker_data.get_team_hints(),
             activity_timers=tracker_data.get_room_last_activity(),
             videos=tracker_data.get_room_videos(),
@@ -652,6 +659,7 @@ if "A Link to the Past" in network_data_package["games"]:
             completed_worlds=tracker_data.get_team_completed_worlds_count(),
             games=tracker_data.get_room_games(),
             states=tracker_data.get_room_client_statuses(),
+            goal_overrides=tracker_data.get_room_goal_overrides(),
             hints=tracker_data.get_team_hints(),
             activity_timers=tracker_data.get_room_last_activity(),
             videos=tracker_data.get_room_videos(),

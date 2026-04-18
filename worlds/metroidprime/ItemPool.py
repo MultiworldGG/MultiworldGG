@@ -1,15 +1,14 @@
-from typing import TYPE_CHECKING, List
+from typing import cast, List, TYPE_CHECKING
 from BaseClasses import ItemClassification
-from .PrimeOptions import BlastShieldAvailableTypes, BlastShieldRandomization
+
+from .Enum import ProgressiveUpgrade, SuitUpgrade
 from .Items import (
     PROGRESSIVE_ITEM_MAPPING,
     MetroidPrimeItem,
-    ProgressiveUpgrade,
-    SuitUpgrade,
     get_item_for_options,
     artifact_table,
 )
-from .Items import MetroidPrimeItem
+from .PrimeOptions import BlastShieldAvailableTypes, BlastShieldRandomization, SpringBall
 
 if TYPE_CHECKING:
     from . import MetroidPrimeWorld
@@ -23,7 +22,7 @@ def generate_base_start_inventory(world: "MetroidPrimeWorld") -> List[str]:
         ).value
     ]
     starting_items.extend(
-        get_item_for_options(world, item).value
+        get_item_for_options(world, cast(SuitUpgrade, item)).value
         for item in world.starting_room_data.selected_loadout.loadout
     )
 
@@ -38,7 +37,6 @@ def generate_item_pool(world: "MetroidPrimeWorld") -> List[MetroidPrimeItem]:
     items: List[MetroidPrimeItem] = [
         *[world.create_item(artifact) for artifact in artifact_table],
         world.create_item(SuitUpgrade.Morph_Ball.value),
-        world.create_item(SuitUpgrade.Morph_Ball_Bomb.value),
         world.create_item(SuitUpgrade.Thermal_Visor.value),
         world.create_item(SuitUpgrade.X_Ray_Visor.value),
         world.create_item(SuitUpgrade.Scan_Visor.value),
@@ -99,15 +97,16 @@ def generate_item_pool(world: "MetroidPrimeWorld") -> List[MetroidPrimeItem]:
     # Add beams and combos
     if world.options.progressive_beam_upgrades:
         for progressive_item in PROGRESSIVE_ITEM_MAPPING:
-            for index in range(3):
-                items.append(
-                    world.create_item(
-                        progressive_item.value,
-                        get_progressive_beam_classification(
-                            world, progressive_item, index
-                        ),
+            if progressive_item.value.endswith(" Beam"):
+                for index in range(3):
+                    items.append(
+                        world.create_item(
+                            progressive_item.value,
+                            get_progressive_beam_classification(
+                                world, progressive_item, index
+                            ),
+                        )
                     )
-                )
     else:
         combo_classification = (
             ItemClassification.progression
@@ -127,6 +126,20 @@ def generate_item_pool(world: "MetroidPrimeWorld") -> List[MetroidPrimeItem]:
                 world.create_item(SuitUpgrade.Flamethrower.value, combo_classification),
             )
         )
+
+    if world.options.shuffle_unlimited_missiles:
+        items.append(world.create_item(SuitUpgrade.Unlimited_Missiles.value, ItemClassification.useful))
+
+    if world.options.shuffle_unlimited_power_bombs:
+        items.append(world.create_item(SuitUpgrade.Unlimited_Power_Bombs.value, ItemClassification.useful))
+
+    if world.options.spring_ball == SpringBall.option_its_own_progressive_item:
+        for _ in range(2):
+            items.append(world.create_item(ProgressiveUpgrade.Progressive_Bomb.value, ItemClassification.progression))
+    else:
+        if world.options.spring_ball == SpringBall.option_its_own_item:
+            items.append(world.create_item(SuitUpgrade.Spring_Ball.value, ItemClassification.progression))
+        items.append(world.create_item(SuitUpgrade.Morph_Ball_Bomb.value))
 
     assert world.starting_room_data.selected_loadout
 

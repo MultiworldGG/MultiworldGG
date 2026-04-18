@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 from BaseClasses import ItemClassification, Region, LocationProgressType, Tutorial
@@ -117,13 +118,10 @@ class HuniePop2(World):
             self.pairs_enabled.add(pair[0])
 
         if len(pair_girls) < self.options.boss_wings_requirement.value:
-            print(f"ENABLED PAIRS LESS THAN BOSS WING REQUIREMENT SETTING VALUE TO MATCH NUMBER OF PAIRS:{len(pair_girls)}")
+            logging.warning(f"""(Hunie Pop 2) Changing Player:"{self.player_name}" YMAL option "boss_wings_requirement" from {self.options.boss_wings_requirement.value}->{len(pair_girls)} due to having lower than required pairs in logic""")
             self.options.boss_wings_requirement.value = len(pair_girls)
 
         self.wingval = self.options.boss_wings_requirement.value
-
-        if len(self.pairs_enabled) != 24:
-            self.options.boss_wings_requirement.value = min(24, (self.options.boss_wings_requirement.value + (24 - len(self.pairs_enabled))))
 
         # get random number of pairs based on what's set in options
         temppairs = pair_girls.copy()

@@ -210,37 +210,43 @@ window.addEventListener('load', () => {
 
     adjustTableHeight();
 
-    // Handle hide checked locations checkbox
+    // Persistent filter for hiding checked locations and found hints
+    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+        const row = $(settings.aoData[dataIndex].nTr);
+        if (settings.nTable.id === 'locations-table') {
+            const hideChecked = document.getElementById('hide-checked-locations')?.checked;
+            if (hideChecked && row.attr('data-checked') === 'true') {
+                return false;
+            }
+        }
+        if (settings.nTable.id === 'hints-table') {
+            const hideFound = document.getElementById('hide-found-hints')?.checked;
+            if (hideFound && row.attr('data-found') === 'true') {
+                return false;
+            }
+        }
+        return true;
+    });
+
     const hideCheckedCheckbox = document.getElementById('hide-checked-locations');
     if (hideCheckedCheckbox) {
-        // Restore checkbox state from localStorage
-        const hideCheckedState = localStorage.getItem('hideCheckedLocations') === 'true';
-        hideCheckedCheckbox.checked = hideCheckedState;
-
-        // Apply initial filter
-        const applyLocationFilter = () => {
-            const hideChecked = hideCheckedCheckbox.checked;
-            localStorage.setItem('hideCheckedLocations', hideChecked);
-
-            // Find the locations table
-            const locationsTable = tables.table('#locations-table');
-            if (locationsTable.rows().count() > 0) {
-                // Use DataTables search function to filter rows
-                $.fn.dataTable.ext.search.pop(); // Remove previous filter if any
-                if (hideChecked) {
-                    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                        if (settings.nTable.id !== 'locations-table') {
-                            return true; // Don't filter other tables
-                        }
-                        const row = $(settings.aoData[dataIndex].nTr);
-                        return row.attr('data-checked') !== 'true';
-                    });
-                }
-                locationsTable.draw();
-            }
+        hideCheckedCheckbox.checked = localStorage.getItem('hideCheckedLocations') === 'true';
+        const onCheckedChange = () => {
+            localStorage.setItem('hideCheckedLocations', hideCheckedCheckbox.checked);
+            tables.table('#locations-table').draw();
         };
+        onCheckedChange();
+        hideCheckedCheckbox.addEventListener('change', onCheckedChange);
+    }
 
-        applyLocationFilter();
-        hideCheckedCheckbox.addEventListener('change', applyLocationFilter);
+    const hideFoundCheckbox = document.getElementById('hide-found-hints');
+    if (hideFoundCheckbox) {
+        hideFoundCheckbox.checked = localStorage.getItem('hideFoundHints') === 'true';
+        const onFoundChange = () => {
+            localStorage.setItem('hideFoundHints', hideFoundCheckbox.checked);
+            tables.table('#hints-table').draw();
+        };
+        onFoundChange();
+        hideFoundCheckbox.addEventListener('change', onFoundChange);
     }
 });

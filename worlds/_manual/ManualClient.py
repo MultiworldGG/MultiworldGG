@@ -19,6 +19,7 @@ import ModuleUpdate
 ModuleUpdate.update()
 
 import Utils
+apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 
 from NetUtils import ClientStatus
 from CommonClient import gui_enabled, logger, get_base_parser, ClientCommandProcessor, server_loop
@@ -305,7 +306,7 @@ class ManualContext(SuperContext):
 
         if tracker_error:
             self._messagebox_connection_loss = self.gui_error(
-                "A Universal Tracker error has occurred. Please ensure that your version of UT matches your version of Archipelago.",
+                f"A Universal Tracker error has occurred. Please ensure that your version of UT matches your version of {apname}.",
                 formatted_tb)
         else:
             self._messagebox_connection_loss = self.gui_error(msg, formatted_tb)
@@ -392,7 +393,7 @@ class ManualContext(SuperContext):
             background_color = ColorProperty()
 
         class ManualManager(ui):
-            base_title = "Archipelago Manual Client"
+            base_title = f"{apname} Manual Client"
             listed_items = {"(No Category)": []}
             item_categories = ["(No Category)"]
             listed_locations = {"(No Category)": []}

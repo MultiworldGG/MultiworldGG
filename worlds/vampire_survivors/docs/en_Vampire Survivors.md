@@ -33,8 +33,6 @@ config file.
   - Stages actually end past the time that they say they do, meaning you need endless to send the checks.
   - You are also required to have Hurry to complete stages and enemy checks past 15 minutes currently.
 
-- I Installed The Mod Loader And The Game Won't Work
-  - Right now, and for the forseeable future, modding is broken with the latest update. Please check the setup page for instructions on how to downpatch the base game and, if you have it, DLC.
 
 ## Special Thanks
 

@@ -1,6 +1,8 @@
+import itertools
 import logging
 from collections import Counter
-from typing import cast, Iterable, Mapping, Any, NoReturn, Callable, ClassVar, TextIO
+from functools import partial
+from typing import Mapping, Any, NoReturn, Callable, ClassVar, TextIO
 
 from BaseClasses import (
     Region,
@@ -11,15 +13,20 @@ from BaseClasses import (
     Tutorial,
     Item,
     MultiWorld,
-    LocationProgressType,
 )
 from Options import OptionError
-from worlds.AutoWorld import WebWorld, World, LogicMixin
+from worlds.AutoWorld import WebWorld, World
 from worlds.LauncherComponents import components, Component, launch_subprocess, Type
-from worlds.generic.Rules import set_rule, add_rule
+from worlds.generic.Rules import set_rule, add_rule, CollectionRule
 
-from . import constants, regions
-from .constants import CharacterAbility, GOLD_BRICK_EVENT_NAME, GAME_NAME, CHAPTER_SPECIFIC_FLAGS
+from . import constants, regions, item_pool
+from .constants import (
+    CharacterAbility,
+    GOLD_BRICK_EVENT_NAME,
+    GAME_NAME,
+    CHAPTER_SPECIFIC_FLAGS,
+    progression_deprioritized_skip_balancing,
+)
 from .items import (
     ITEM_NAME_TO_ID,
     LegoStarWarsTCSItem,
@@ -71,26 +78,26 @@ from .item_groups import ITEM_GROUPS
 from .location_groups import LOCATION_GROUPS
 
 
-def launch_client():
+add_or_rule = partial(add_rule, combine="or")
+SpotRuleApplier = Callable[[Location | Entrance, CollectionRule], None]
+
+
+def launch_client(*args: str):
+    # Lazy import. Generation does not need to even load client modules, it would just be a waste of memory.
     from .client import launch
-    launch_subprocess(launch, name="LegoStarWarsTheCompleteSagaClient")
+    launch_subprocess(launch, name="LegoStarWarsTheCompleteSagaClient", args=args)
 
 
 components.append(Component("Lego Star Wars: The Complete Saga Client",
                             func=launch_client,
                             component_type=Type.CLIENT))
 
-# Use deprioritzed on AP 0.6.3+, but still allow generation on older AP versions.
-progression_deprioritized_skip_balancing: ItemClassification = getattr(
-    ItemClassification,
-    "progression_deprioritized_skip_balancing",
-    ItemClassification.progression_skip_balancing
-)
-progression_deprioritized: ItemClassification = getattr(
-    ItemClassification,
-    "progression_deprioritized",
-    ItemClassification.progression
-)
+
+class TCSUniversalTrackerAPWorldVersionMismatchError(Exception):
+    """
+    Raised when Universal Tracker attempts to connect to a multiworld generated with a different APWorld version to the
+    client's APWorld version.
+    """
 
 
 class LegoStarWarsTCSWebWorld(WebWorld):
@@ -130,6 +137,7 @@ class LegoStarWarsTCSWorld(World):
 
     # Requires Universal Tracker 0.2.12 or newer because the game name contains a colon.
     ut_can_gen_without_yaml = True  # Used by Universal Tracker to allow generation without player yaml.
+    glitches_item_name: str = "UT_GLITCHED"
 
     PROG_USEFUL_LEVEL_ACCESS_THRESHOLD_PERCENT: ClassVar[float] = 1/6
     prog_useful_level_access_threshold_count: int = 6
@@ -148,6 +156,11 @@ class LegoStarWarsTCSWorld(World):
     enabled_bosses: set[str]
     short_name_to_boss_character: dict[str, str]
     goal_chapter: str | None
+    chapters_requiring_alt_characters: set[str]
+    chapter_required_character_counts: dict[str, int]
+    chapter_extra_random_character_counts: dict[str, int]
+    chapter_random_character_requirements: dict[str, list[str]]
+    spoiler_chapter_character_requirements: dict[str, tuple[int, list[str]]]
 
     starting_chapter: ChapterArea = SHORT_NAME_TO_CHAPTER_AREA["1-1"]
     minikit_bundle_name: str = ""
@@ -176,6 +189,11 @@ class LegoStarWarsTCSWorld(World):
         self.character_chapter_access_counts = Counter()
         self.short_name_to_boss_character = {}
         self.ridesanity_spots = {}
+        self.chapters_requiring_alt_characters = set()
+        self.chapter_required_character_counts = {}
+        self.spoiler_chapter_character_requirements = {}
+        self.chapter_extra_random_character_counts = {}
+        self.chapter_random_character_requirements = {}
 
     def log_info(self, message: str, *args) -> None:
         logger.info("Lego Star Wars TCS (%s): " + message, self.player_name, *args)
@@ -186,13 +204,16 @@ class LegoStarWarsTCSWorld(World):
     def log_error(self, message: str, *args) -> None:
         logger.error("Lego Star Wars TCS (%s): " + message, self.player_name, *args)
 
+    def log_debug(self, message: str, *args) -> None:
+        logger.debug("Lego Star Wars TCS (%s): " + message, self.player_name, *args)
+
     def raise_error(self, ex_type: Callable[[str], Exception], message: str, *args) -> NoReturn:
         raise ex_type(("Lego Star Wars TCS (%s): " + message) % (self.player_name, *args))
 
     def option_error(self, message: str, *args) -> NoReturn:
         self.raise_error(OptionError, message, *args)
 
-    def _is_universal_tracker(self) -> bool:
+    def is_universal_tracker(self) -> bool:
         """Return whether the current generation is being done with Universal Tracker rather than a real generation."""
         # The `generation_is_fake` attribute is added by Universal Tracker to allow detection of generation with
         # Universal Tracker rather than real generation.
@@ -232,7 +253,7 @@ class LegoStarWarsTCSWorld(World):
             else:
                 abilities = item_data.abilities & ~self.starting_character_abilities
 
-            if name in self.character_chapter_access_counts:
+            if self.character_chapter_access_counts[name] > 0:
                 if self.character_chapter_access_counts[name] >= self.prog_useful_level_access_threshold_count:
                     # Characters that block access to a large number of chapters get progression + useful
                     # classification. This is functionally identical to progression classification, but some
@@ -262,8 +283,8 @@ class LegoStarWarsTCSWorld(World):
                 # A goal macguffin.
                 if self.goal_minikit_count > 0:
                     if self.options.accessibility == "minimal" or self.minikit_bundle_count > 10:
-                        # Minikits are sorted first for minimal players in stage_pre_fill to reduce generation failures,
-                        # so should always be deprioritized for minimal players.
+                        # Minikits are sorted first for minimal players in stage_fill_hook to reduce generation
+                        # failures, so should always be deprioritized for minimal players.
                         classification = progression_deprioritized_skip_balancing
                     else:
                         # If there are only very few bundles, e.g. the bundles are 10 minikits at a time and there are
@@ -291,837 +312,26 @@ class LegoStarWarsTCSWorld(World):
 
         return classification, abilities
 
-    def _get_effective_item_data(self,
-                                 starting_abilities: CharacterAbility,
-                                 ) -> tuple[dict[str, ItemClassification], dict[str, CharacterAbility]]:
-        """
-        Pre-calculate the effective character abilities and classification of each item to speed up the creation
-        of items with multiple copies.
-        """
-        effective_character_abilities: dict[str, CharacterAbility] = {}
-
-        for name, char in CHARACTERS_AND_VEHICLES_BY_NAME.items():
-            # Remove abilities provided by the starting characters from other characters, potentially changing the
-            # classification of other characters if all their abilities are covered by the starting characters.
-            # This improves generation performance by reducing the number of extra collects when a character item is
-            # collected.
-            effective_abilities: CharacterAbility = char.abilities & ~starting_abilities
-            effective_character_abilities[name] = effective_abilities
-
-        effective_item_classifications: dict[str, ItemClassification] = {}
-        effective_item_abilities: dict[str, CharacterAbility] = {}
-        for item in self.item_name_to_id:
-            classification, effective_abilities = self.evaluate_effective_item(item, effective_character_abilities)
-            effective_item_classifications[item] = classification
-            # The returned `effective_abiltiies` should be the same as what was in `effective_character_abilities`.
-            # The returned `effective_abiltiies` is not actually needed here, but `effective_character_abilities` is not
-            # always available when `self.evaluate_effective_item()` is called.
-            assert effective_abilities is effective_character_abilities.get(item, CharacterAbility.NONE)
-            effective_item_abilities[item] = effective_abilities
-        return effective_item_classifications, effective_item_abilities
-
     def get_filler_item_name(self) -> str:
         junk_weights: dict[str, int] = self.options.junk_weights.value
         return self.random.choices(tuple(junk_weights), tuple(junk_weights.values()))[0]
 
     def create_item(self, name: str) -> LegoStarWarsTCSItem:
+        if name == self.glitches_item_name and self.is_universal_tracker():
+            return LegoStarWarsTCSItem(name, ItemClassification.progression, None, self.player)
+
         code = self.item_name_to_id[name]
         classification, collect_abilities = self.evaluate_effective_item(name)
 
         return LegoStarWarsTCSItem(name, classification, code, self.player, collect_abilities)
 
-    def _create_item_ex(self,
-                        name: str,
-                        classification_lookup: dict[str, ItemClassification],
-                        abilities_lookup: dict[str, CharacterAbility]):
-        code = self.item_name_to_id[name]
-        classification = classification_lookup[name]
-        abilities = abilities_lookup[name]
-
-        return LegoStarWarsTCSItem(name, classification, code, self.player, abilities)
-
     def create_event(self, name: str) -> LegoStarWarsTCSItem:
         return LegoStarWarsTCSItem(name, ItemClassification.progression, None, self.player)
 
     def create_items(self) -> None:
-        # Determine how many chapter worth's of locations are enabled.
-        goal_chapter_locations_excluded = (
-                self.goal_chapter
-                and self.options.goal_chapter_locations_mode == GoalChapterLocationsMode.option_excluded
-        )
+        self.multiworld.itempool.extend(item_pool.create_item_pool(self))
 
-        if self.goal_chapter:
-            if self.options.goal_chapter_locations_mode == GoalChapterLocationsMode.option_removed:
-                chapters_with_locations = self.enabled_chapters - {self.goal_chapter}
-                chapters_with_non_excluded_locations = self.enabled_non_goal_chapters
-            elif self.options.goal_chapter_locations_mode == GoalChapterLocationsMode.option_excluded:
-                chapters_with_locations = self.enabled_chapters
-                chapters_with_non_excluded_locations = self.enabled_non_goal_chapters
-            else:
-                assert self.options.goal_chapter_locations_mode == GoalChapterLocationsMode.option_normal
-                chapters_with_locations = self.enabled_chapters
-                chapters_with_non_excluded_locations = self.enabled_chapters
-        else:
-            chapters_with_locations = self.enabled_chapters
-            chapters_with_non_excluded_locations = self.enabled_chapters
-
-        # todo: Reserve spaces in the item pool for vehicles and non-vehicles separately, based on how many locations
-        #  unlock characters of the each type.
-        vehicle_chapters_enabled = not VEHICLE_CHAPTER_SHORTNAMES.isdisjoint(self.enabled_chapters)
-
-        possible_pool_character_items = {name: char for name, char in CHARACTERS_AND_VEHICLES_BY_NAME.items()
-                                         if char.is_sendable and (vehicle_chapters_enabled
-                                                                  or char.item_type != "Vehicle")}
-        if self.goal_chapter and self.options.goal_chapter_locations_mode == GoalChapterLocationsMode.option_removed:
-            # Vehicle chapters could be disabled for normal chapters, but the goal chapter could be a vehicle chapter,
-            # so the vehicles required for the goal chapter need to be forced into the item pool.
-            for name in CHAPTER_AREA_STORY_CHARACTERS[self.goal_chapter]:
-                if name not in possible_pool_character_items:
-                    possible_pool_character_items[name] = CHARACTERS_AND_VEHICLES_BY_NAME[name]
-
-        # If Gunship Cavalry (Original), Pod Race (Original) and Anakin's Flight get updated to require Vehicles again,
-        # then Republic Gunship, Anakin's Pod and Naboo Starfighter would be required items to included in the pool.
-        # if not vehicle_chapters_enabled:
-        #     if "Anakin's Flight" in self.enabled_bonuses:
-        #         vehicle = CHARACTERS_AND_VEHICLES_BY_NAME["Naboo Starfighter"]
-        #         possible_pool_character_items[vehicle.name] = vehicle
-        #     if "Gunship Cavalry (Original)" in self.enabled_bonuses:
-        #         vehicle = CHARACTERS_AND_VEHICLES_BY_NAME["Republic Gunship"]
-        #         possible_pool_character_items[vehicle.name] = vehicle
-        #     if "Mos Espa Pod Race (Original)" in self.enabled_bonuses:
-        #         vehicle = CHARACTERS_AND_VEHICLES_BY_NAME["Anakin's Pod"]
-        #         possible_pool_character_items[vehicle.name] = vehicle
-
-        if self.options.chapter_unlock_requirement == ChapterUnlockRequirement.option_story_characters:
-            chapters_unlock_with_characters = True
-            # Add characters necessary to unlock the starting chapter into starting inventory.
-            # The story character names are a `set`, so sort before iterating to get a deterministic iteration order.
-            for name in sorted(CHAPTER_AREA_STORY_CHARACTERS[self.starting_chapter.short_name]):
-                self.push_precollected(self.create_item(name))
-                del possible_pool_character_items[name]
-            pool_required_chapter_unlock_items = []
-        elif self.options.chapter_unlock_requirement == ChapterUnlockRequirement.option_chapter_item:
-            chapters_unlock_with_characters = False
-            starting_chapter_short_name = self.starting_chapter.short_name
-            self.push_precollected(self.create_item(f"{starting_chapter_short_name} Unlock"))
-            pool_required_chapter_unlock_items = [f"{short_name} Unlock" for short_name in self.enabled_chapters
-                                                  if short_name != starting_chapter_short_name]
-
-            # Only give enough characters to fulfil the main requirements of the starting chapter.
-            # The alt requirements, if they exist, often replace a common requirement with a rarer requirement.
-            starting_chapter_entrance_abilities = self.starting_chapter.completion_main_ability_requirements
-
-            starting_chapter_entrance_abilities_list = sorted(starting_chapter_entrance_abilities)
-
-            # Shuffle the order the abilities will be fulfilled in.
-            fulfilled_abilities: set[CharacterAbility] = set()
-            self.random.shuffle(starting_chapter_entrance_abilities_list)
-
-            # Always pick CAN_ abilities last to avoid picking very boring characters at the start with basically no
-            # actual abilities.
-            # Always pick VEHICLE_BLASTER last to avoid picking a VEHICLE_BLASTER, and then picking a VEHICLE_TOW that
-            # also has VEHICLE_BLASTER.
-            pick_order = {
-                CharacterAbility.CAN_ATTACK_UP_CLOSE: 1,
-                CharacterAbility.CAN_RIDE_VEHICLES: 1,
-                CharacterAbility.CAN_JUMP_NORMALLY: 1,
-                CharacterAbility.CAN_PULL_LEVERS: 1,
-                CharacterAbility.CAN_PUSH_OBJECTS: 1,
-                CharacterAbility.CAN_BUILD_BRICKS: 1,
-                CharacterAbility.VEHICLE_BLASTER: 1,
-                **dict.fromkeys(CHAPTER_SPECIFIC_FLAGS, 2),
-            }
-            starting_chapter_entrance_abilities_list.sort(key=lambda ability: pick_order.get(ability, 0))
-
-            # Finally pick characters to fulfil the abilities.
-            ability_costs = {
-                CharacterAbility.SITH: 10,
-                CharacterAbility.BOUNTY_HUNTER: 10,
-                CharacterAbility.ASTROMECH: 8,
-                CharacterAbility.SHORTIE: 8,
-                CharacterAbility.HIGH_JUMP: 8,
-                CharacterAbility.HOVER: 7,
-                CharacterAbility.IMPERIAL: 6,
-                CharacterAbility.CAN_WEAR_HAT: 0,
-                CharacterAbility.JEDI: 2,
-                CharacterAbility.BLASTER: 2,
-                CharacterAbility.CAN_ATTACK_UP_CLOSE: 1,
-                CharacterAbility.CAN_RIDE_VEHICLES: 1,
-                CharacterAbility.CAN_JUMP_NORMALLY: 1,
-                CharacterAbility.CAN_PULL_LEVERS: 1,
-                CharacterAbility.VEHICLE_TOW: 10,
-                CharacterAbility.VEHICLE_TIE: 8,
-                CharacterAbility.VEHICLE_BLASTER: 2,
-                CharacterAbility.IS_A_VEHICLE: 0,
-            }
-
-            def sort_func(data: GenericCharacterData):
-                value = 0
-                for ability in data.abilities:
-                    value += ability_costs.get(ability, 0)
-                return value
-
-            # Pre-calculate the list of characters that provide each individual ability.
-            characters_by_ability: dict[CharacterAbility, list[GenericCharacterData]] = {}
-            for character_data in possible_pool_character_items.values():
-                for ability in character_data.abilities:
-                    characters_by_ability.setdefault(ability, []).append(character_data)
-
-            for individual_ability in starting_chapter_entrance_abilities_list:
-                if individual_ability in fulfilled_abilities:
-                    # A character picked earlier also had this ability, so there does not need to be another character
-                    # picked.
-                    continue
-                candidates = characters_by_ability[individual_ability]
-                # Shuffle first, so that ties on the sort have deterministically random order.
-                self.random.shuffle(candidates)
-                candidates.sort(key=sort_func)
-                # Randomly pick from the first quarter to avoid always picking the character in the list with the lowest
-                # ability score.
-                picks = candidates[0:max(1, round(len(candidates) * 0.25))]
-                picked = self.random.choice(picks)
-                self.push_precollected(self.create_item(picked.name))
-                del possible_pool_character_items[picked.name]
-                fulfilled_abilities.update(picked.abilities)
-                for ability in picked.abilities:
-                    # The ability is provided by the picked character, so it is no longer relevant for sorting future
-                    # picks.
-                    ability_costs[ability] = 0
-        else:
-            raise Exception(f"Unexpected Chapter Unlock Requirement {self.options.chapter_unlock_requirement}")
-
-        if self.options.episode_unlock_requirement == "episode_item":
-            self.push_precollected(self.create_item(f"Episode {self.starting_episode} Unlock"))
-
-        # Gather the abilities of all items in starting inventory, so that they can be removed from other created items,
-        # improving generation performance.
-        initial_starting_items = cast(list[LegoStarWarsTCSItem], self.multiworld.precollected_items[self.player])
-        starting_abilities = CharacterAbility.NONE
-        for item in initial_starting_items:
-            starting_abilities |= item.abilities
-
-        # Determine what abilities must be supplied by the item pool for all locations to be reachable with all items in
-        # the item pool.
-        required_character_abilities_in_pool = CharacterAbility.NONE
-        optional_character_abilities = CharacterAbility.NONE
-        # `chapters_with_locations` is a `set`, so sort for deterministic results from the `self.random` usage.
-        for shortname in sorted(chapters_with_locations):
-            power_brick_abilities = POWER_BRICK_REQUIREMENTS[shortname][1]
-            if power_brick_abilities is not None:
-                if isinstance(power_brick_abilities, tuple):
-                    at_least_one_already_required = False
-                    for abilities in power_brick_abilities:
-                        if abilities in required_character_abilities_in_pool:
-                            at_least_one_already_required = True
-                        # Mark the abilities as optional. They will be included in logic, but won't necessarily be
-                        # guaranteed to be provided by the item pool.
-                        optional_character_abilities |= abilities
-
-                    if not at_least_one_already_required:
-                        # Pick any one of the abilities to be required to be provided by the item pool.
-                        picked = self.random.choice(power_brick_abilities)
-                        required_character_abilities_in_pool |= picked
-                else:
-                    required_character_abilities_in_pool |= power_brick_abilities
-            if self.options.enable_minikit_locations.value:
-                for requirements in SHORT_NAME_TO_CHAPTER_AREA[shortname].all_minikits_ability_requirements:
-                    required_character_abilities_in_pool |= requirements
-        for bonus_name in self.enabled_bonuses:
-            area = BONUS_NAME_TO_BONUS_AREA[bonus_name]
-            required_character_abilities_in_pool |= area.completion_ability_requirements
-        for _area_name, ridable_spots in self.ridesanity_spots.items():
-            for _spot, any_ridable_ability_requirements in ridable_spots:
-                if any_ridable_ability_requirements:
-                    if len(any_ridable_ability_requirements) == 1:
-                        required_character_abilities_in_pool |= any_ridable_ability_requirements[0]
-                    else:
-                        at_least_one_already_required = False
-                        for ridable_ability_requirements in any_ridable_ability_requirements:
-                            if ridable_ability_requirements in required_character_abilities_in_pool:
-                                at_least_one_already_required = True
-                            # Mark the abilities as optional. They will be included in logic, but won't necessarily be
-                            # guaranteed to be provided by the item pool.
-                            optional_character_abilities |= ridable_ability_requirements
-
-                        if not at_least_one_already_required:
-                            # Pick any one of the abilities to be required to be provided by the item pool.
-                            picked = self.random.choice(any_ridable_ability_requirements)
-                            required_character_abilities_in_pool |= picked
-        if chapters_unlock_with_characters:
-            # Remove counts <= 0.
-            level_access_character_counts = +self.character_chapter_access_counts
-            for name in level_access_character_counts.keys():
-                abilities_provided_by_level_access = CHARACTERS_AND_VEHICLES_BY_NAME[name].abilities
-                # Characters with these abilities do not need to be explicitly added to the item pool because these
-                # abilities are provided by a character that is required to unlock a chapter.
-                required_character_abilities_in_pool &= ~abilities_provided_by_level_access
-                optional_character_abilities |= abilities_provided_by_level_access
-        else:
-            level_access_character_counts = Counter()
-            for chapter in sorted(self.enabled_chapters):
-                chapter_obj = SHORT_NAME_TO_CHAPTER_AREA[chapter]
-                # The item pool must provide the abilities require to complete the chapter.
-                required_character_abilities_in_pool |= chapter_obj.completion_main_ability_requirements
-                # Alternative requirements that swap out a common ability for a rarer ability are relevant to logic, but
-                # are not required to be included in the item pool.
-                alt_requirements = chapter_obj.completion_alt_ability_requirements
-                if alt_requirements:
-                    optional_character_abilities |= alt_requirements
-
-        required_character_abilities_in_pool &= ~starting_abilities
-        optional_character_abilities &= ~starting_abilities
-
-        # If an ability is not relevant to logic at all, then it is undesirable for that ability to be in collects, and
-        # any characters with only irrelevant abilities should lose their progression classification.
-        # In larger worlds, it is unlikely for there to be any logically irrelevant abilities.
-        logically_irrelevant_abilities = ~(required_character_abilities_in_pool | optional_character_abilities)
-
-        effective_item_classifications, effective_item_abilities = (
-            self._get_effective_item_data(logically_irrelevant_abilities)
-        )
-        # These abilities are provided by the starting characters, so these abilities can be stripped from other
-        # characters, improving logic performance.
-        self.starting_character_abilities = starting_abilities
-
-        remaining_abilities_to_fulfil = required_character_abilities_in_pool
-
-        pool_required_characters = []
-        for name in level_access_character_counts.keys():
-            if name not in possible_pool_character_items:
-                continue
-            char = CHARACTERS_AND_VEHICLES_BY_NAME[name]
-            remaining_abilities_to_fulfil &= ~char.abilities
-            pool_required_characters.append(char)
-            del possible_pool_character_items[name]
-
-        possible_pool_character_names = list(possible_pool_character_items.values())
-        self.random.shuffle(possible_pool_character_names)
-        # Sort preferred characters first so that they are picked in preference.
-        preferred_characters = self.options.preferred_characters.value
-        if preferred_characters:
-            possible_pool_character_names.sort(key=lambda char: -1 if char.name in preferred_characters else 0)
-
-        for character in possible_pool_character_names:
-            if remaining_abilities_to_fulfil & character.abilities:
-                pool_required_characters.append(character)
-                remaining_abilities_to_fulfil &= ~character.abilities
-                del possible_pool_character_items[character.name]
-        non_required_characters = list(possible_pool_character_items.values())
-
-        # Start with all sendable Extras as possible to add to the item pool.
-        possible_pool_extras = {name: extra for name, extra in EXTRAS_BY_NAME.items() if extra.is_sendable}
-
-        if not self.options.enable_starting_extras_locations:
-            # The starting Extra purchases are vanilla, so don't include their Extras in the pool.
-            for extra in PURCHASABLE_NON_POWER_BRICK_EXTRAS:
-                del possible_pool_extras[extra.name]
-
-        if self.options.start_with_detectors:
-            detectors = {"Minikit Detector", "Power Brick Detector"}
-            assert detectors <= set(possible_pool_extras.keys())
-            # The detector Extras are being given to the player at the start, so don't include their Extras in the pool.
-            for extra_name in detectors:
-                del possible_pool_extras[extra_name]
-            for detector in sorted(detectors):
-                self.push_precollected(self.create_item(detector))
-
-        non_required_extras = list(possible_pool_extras.keys())
-
-        max_studs_purchase = max(loc.studs_cost for loc in self.get_locations()
-                                 if isinstance(loc, LegoStarWarsTCSShopLocation))
-
-        required_score_multipliers = self._get_score_multiplier_requirement(max_studs_purchase)
-        # Increase required_score_multipliers to at least 1 if there are any enabled chapters with difficult or
-        # potentially impossible True Jedi.
-        if (required_score_multipliers < 1
-                and self.options.enable_true_jedi_locations
-                and not self.options.easier_true_jedi
-                and not DIFFICULT_OR_IMPOSSIBLE_TRUE_JEDI.isdisjoint(self.enabled_chapters_with_locations)):
-            required_score_multipliers = 1
-
-        non_required_score_multipliers = 5 - required_score_multipliers
-        assert 0 <= required_score_multipliers <= 5
-        pool_required_extras = ["Progressive Score Multiplier"] * required_score_multipliers
-        non_required_extras.extend(["Progressive Score Multiplier"] * non_required_score_multipliers)
-
-        required_characters_count = len(pool_required_characters)
-        required_extras_count = len(pool_required_extras)
-
-        non_excluded_character_unlock_location_count = (
-                self.character_unlock_location_count - self.goal_excluded_character_unlock_location_count
-        )
-
-        # Try to add as many characters to the pool as this.
-        reserved_character_location_count: int
-        free_character_location_count: int
-        if self.options.filler_reserve_characters:
-            reserved_character_location_count = non_excluded_character_unlock_location_count
-            free_character_location_count = 0
-        else:
-            reserved_character_location_count = min(required_characters_count,
-                                                    non_excluded_character_unlock_location_count)
-            free_character_location_count = (non_excluded_character_unlock_location_count
-                                             - reserved_character_location_count)
-        # Any goal excluded character unlock locations do not contribute Characters to the item pool (unless those
-        # characters happen to be Filler classification). Enough Filler items for Excluded locations is checked and
-        # satisfied later, so these locations are effectively free locations.
-        free_character_location_count += self.goal_excluded_character_unlock_location_count
-
-        # Try to create as many Extras as this.
-        reserved_extras_location_count = len(chapters_with_non_excluded_locations)
-        if self.options.enable_starting_extras_locations:
-            reserved_extras_location_count += len(PURCHASABLE_NON_POWER_BRICK_EXTRAS)
-
-        free_extra_location_count: int
-        if self.options.filler_reserve_extras:
-            # All the locations from Extras are reserved for putting Extra items into the item pool.
-            free_extra_location_count = 0
-        else:
-            # Reserve only as many locations for Extras as the number of Extras that are required to be in the item
-            # pool.
-            starting_reserved_count = reserved_extras_location_count
-            reserved_extras_location_count = min(required_extras_count, starting_reserved_count)
-            free_extra_location_count = starting_reserved_count - reserved_extras_location_count
-        if goal_chapter_locations_excluded:
-            # The Extra location of the Goal Chapter is excluded, and does not contribute an Extra to the item pool.
-            free_extra_location_count += 1
-
-        # As many minikit bundles as this will always be created. This may be fewer than is required to goal, but
-        # reducing the total bundle count can make a seed longer, so all minikit bundles should be considered to be
-        # required.
-        required_minikit_location_count = self.minikit_bundle_count
-
-        # The vanilla rewards for these are Gold Bricks, which are events, so these are effectively free locations for
-        # any kind of item when enabled.
-        if self.options.enable_true_jedi_locations:
-            true_jedi_location_count = len(chapters_with_non_excluded_locations)
-
-            if goal_chapter_locations_excluded:
-                # True Jedi locations are already free locations for any kind of item.
-                true_jedi_location_count += 1
-        else:
-            true_jedi_location_count = 0
-
-        completion_location_count = len(chapters_with_non_excluded_locations) + len(self.enabled_bonuses)
-        if goal_chapter_locations_excluded:
-            # The location is excluded, but still counted as a free location.
-            completion_location_count += 1
-
-        if self.options.enable_minikit_locations:
-            free_minikit_location_count = len(chapters_with_non_excluded_locations) * 10 - required_minikit_location_count
-            if goal_chapter_locations_excluded:
-                # The locations are excluded, but still count as free locations.
-                free_minikit_location_count += 10
-        else:
-            if self.options.minikit_goal_amount != 0:
-                assert self.options.minikit_bundle_size == 10
-                assert self.minikit_bundle_name == "10 Minikits"
-                assert self.minikit_bundle_count == len(self.enabled_non_goal_chapters)
-                # Consume the free Chapter Completion locations to fit the Minikits.
-                completion_location_count -= self.minikit_bundle_count
-                free_minikit_location_count = 0
-            else:
-                assert required_minikit_location_count == 0
-                free_minikit_location_count = 0
-        # There are no corresponding items for ridesanity locations, so they are free locations for any item.
-        free_ridesanity_location_count = self.ridesanity_location_count
-
-        free_location_count = (
-                completion_location_count
-                + true_jedi_location_count
-                + free_minikit_location_count
-                + free_character_location_count
-                + free_extra_location_count
-                + free_ridesanity_location_count
-        )
-
-        assert free_location_count >= 0, "initial free_location_count should always be >= 0"
-
-        extra_required_items = []
-        # A few free locations may need to be used for episode unlock items and/or episode tokens.
-        if self.options.episode_unlock_requirement == "episode_item":
-            for i in self.enabled_episodes:
-                if i != self.starting_episode:
-                    extra_required_items.append(f"Episode {i} Unlock")
-        if self.options.all_episodes_character_purchase_requirements == "episodes_tokens":
-            # One token is added to the item pool for every episode's worth of (6) chapters that are enabled.
-            tokens_in_pool = max(1, round(len(self.enabled_chapters) / 6))
-            start_inventory_tokens = 6 - tokens_in_pool
-            assert 5 >= start_inventory_tokens >= 0
-            for _ in range(tokens_in_pool):
-                extra_required_items.append("Episode Completion Token")
-            for _ in range(start_inventory_tokens):
-                self.push_precollected(self.create_item("Episode Completion Token"))
-        # 7 free locations may need to be used for Kyber Bricks.
-        if self.options.goal_requires_kyber_bricks:
-            extra_required_items.extend(("Kyber Brick",) * 7)
-
-        # As many Chapter Unlock items as there are enabled Chapters, excluding the starting chapter.
-        extra_required_items.extend(pool_required_chapter_unlock_items)
-
-        free_location_count -= len(extra_required_items)
-
-        unfilled_locations = self.multiworld.get_unfilled_locations(self.player)
-        num_to_fill = len(self.multiworld.get_unfilled_locations(self.player))
-
-        if free_location_count < 0:
-            # There are not enough non-excluded locations for all required progression items.
-            # Attempt to reduce reserved items until there is enough space.
-            needed = -free_location_count
-            # Subtract from reserved, but not required, counts.
-            ok_to_replace_character_count = max(0, reserved_character_location_count - required_characters_count)
-            ok_to_replace_extras_count = max(0, reserved_extras_location_count - required_extras_count)
-            total_replaceable = ok_to_replace_character_count + ok_to_replace_extras_count
-            if needed > total_replaceable:
-                if self.options.goal_requires_kyber_bricks:
-                    # The Kyber Bricks goal adds 7 items that have no corresponding vanilla locations.
-                    self.option_error("There are not enough locations to fit all required items. Enable additional"
-                                      " locations, increase the Minikit Bundle Size, or disable the Kyber Bricks goal"
-                                      " to free up more locations. There were %i more required progression items than"
-                                      " non-excluded locations.",
-                                      needed - total_replaceable)
-                else:
-                    self.option_error("There are not enough locations to fit all required items. Enable additional"
-                                      " locations or increase the Minikit Bundle Size to free up more locations. There"
-                                      " were %i more required progression items than locations.",
-                                      needed - total_replaceable)
-            character_percentage = ok_to_replace_character_count / total_replaceable
-            character_subtract = min(needed, round(character_percentage * needed))
-            extra_subtract = needed - character_subtract
-            reserved_character_location_count -= character_subtract
-            reserved_extras_location_count -= extra_subtract
-            free_location_count = 0
-
-        assert free_location_count >= 0, "free_location_count must always be >= 0"
-
-        expected_num_to_fill = (
-                reserved_character_location_count
-                + reserved_extras_location_count
-                + required_minikit_location_count
-                + free_location_count
-                + len(extra_required_items)
-        )
-
-        assert num_to_fill == expected_num_to_fill, \
-            f"Expected {expected_num_to_fill} locations to fill, but got {num_to_fill}"
-
-        required_extras_count = len(pool_required_extras)
-        required_excludable_count = (
-                sum(loc.progress_type == LocationProgressType.EXCLUDED for loc in unfilled_locations)
-        )
-
-        # fixme: Some reserved characters can be Filler classification, which would be fine being placed on excluded
-        #  locations, so this check is currently overly strict because it assumes that reserved characters will be
-        #  Useful or Progression.
-        if free_location_count < required_excludable_count:
-            # This shouldn't really happen unless basically the entire world is excluded and/or barely any locations
-            # are enabled.
-            needed = required_excludable_count - free_location_count
-            # Find how many character/extra locations can be used for filler placement without issue.
-            ok_to_replace_character_count = max(0, reserved_character_location_count - required_characters_count)
-            ok_to_replace_extras_count = max(0, reserved_extras_location_count - required_extras_count)
-            total_replaceable = ok_to_replace_character_count + ok_to_replace_extras_count
-            if needed > total_replaceable:
-                # There are too many non-excludable items for the number of excluded locations.
-                # Give up.
-                # If this is too common of an issue, it would be possible to add some of the required characters/extras
-                # to start inventory instead of erroring here.
-                non_excluded_count = num_to_fill - required_excludable_count
-                required_count = (
-                        required_extras_count
-                        + required_characters_count
-                        + required_minikit_location_count
-                        + len(extra_required_items)
-                )
-                self.option_error("There are too few non-excluded locations to fit all required progression items."
-                                  " There are %i locations, %i of which are not excluded, but there are %i required"
-                                  " items that cannot be placed on excluded locations.",
-                                  num_to_fill, non_excluded_count, required_count)
-            character_percentage = ok_to_replace_character_count / total_replaceable
-            character_subtract = min(needed, round(character_percentage * needed))
-            extra_subtract = needed - character_subtract
-            reserved_character_location_count -= character_subtract
-            reserved_extras_location_count -= extra_subtract
-            free_location_count = 0
-        else:
-            free_location_count -= required_excludable_count
-
-        item_pool: list[LegoStarWarsTCSItem] = []
-
-        created_item_names: set[str] = set()
-
-        def create_item(item_name: str) -> LegoStarWarsTCSItem:
-            return self._create_item_ex(item_name, effective_item_classifications, effective_item_abilities)
-
-        def add_to_pool(item: LegoStarWarsTCSItem):
-            item_pool.append(item)
-            created_item_names.add(item.name)
-
-        # Create Episode related items.
-        for name in extra_required_items:
-            add_to_pool(create_item(name))
-        num_to_fill -= len(extra_required_items)
-
-        # Create required characters.
-        start_inventory_required_characters_count: int
-        if reserved_character_location_count < required_characters_count:
-            # If there are not enough reserved character unlock locations for the required characters, subtract from the
-            # free location count.
-            to_subtract = required_characters_count - reserved_character_location_count
-            if free_location_count < to_subtract:
-                # If there are not enough free locations, some of the required characters will have to be added to start
-                # inventory.
-                start_inventory_required_characters_count = to_subtract - free_location_count
-                self.log_warning("There were not enough locations to add all required characters to the item pool,"
-                                 " some of them have been added to starting inventory")
-                free_location_count = 0
-            else:
-                free_location_count -= to_subtract
-                start_inventory_required_characters_count = 0
-            reserved_character_location_count = 0
-        else:
-            reserved_character_location_count -= required_characters_count
-            start_inventory_required_characters_count = 0
-
-        self.random.shuffle(pool_required_characters)
-        pool_required_chars = pool_required_characters[start_inventory_required_characters_count:]
-        start_required_chars = pool_required_characters[:start_inventory_required_characters_count]
-        for character in pool_required_chars:
-            add_to_pool(create_item(character.name))
-        num_to_fill -= len(pool_required_chars)
-        assert num_to_fill >= 0
-        for character in start_required_chars:
-            self.push_precollected(create_item(character.name))
-
-        # Create required extras.
-        start_inventory_required_extras_count: int
-        if reserved_extras_location_count < required_extras_count:
-            to_subtract = required_extras_count - reserved_extras_location_count
-            if free_location_count < to_subtract:
-                start_inventory_required_extras_count = to_subtract - free_location_count
-                self.log_warning("There were not enough locations to add all required Extras to the item pool,"
-                                 " some of them have been added to starting inventory")
-                free_location_count = 0
-            else:
-                free_location_count -= to_subtract
-                start_inventory_required_extras_count = 0
-            reserved_extras_location_count = 0
-        else:
-            reserved_extras_location_count -= required_extras_count
-            start_inventory_required_extras_count = 0
-
-        self.random.shuffle(pool_required_extras)
-        start_required_extras = pool_required_extras[:start_inventory_required_extras_count]
-        pool_required_extras = pool_required_extras[start_inventory_required_extras_count:]
-        for extra_name in pool_required_extras:
-            add_to_pool(create_item(extra_name))
-        num_to_fill -= len(pool_required_extras)
-        assert num_to_fill >= 0
-        for extra_name in start_required_extras:
-            self.push_precollected(create_item(extra_name))
-
-        # Create required minikits.
-        for _ in range(self.minikit_bundle_count):
-            add_to_pool(create_item(self.minikit_bundle_name))
-        num_to_fill -= self.minikit_bundle_count
-        assert num_to_fill >= 0
-
-        # Create as many non-required characters as there are reserved character locations.
-        self.random.shuffle(non_required_characters)
-        # Sort preferred characters first so that they are picked in preference.
-        if preferred_characters:
-            non_required_characters.sort(key=lambda char: -1 if char.name in preferred_characters else 0)
-        picked_chars = non_required_characters[:reserved_character_location_count]
-        leftover_chars = non_required_characters[reserved_character_location_count:]
-        for char in picked_chars:
-            item = create_item(char.name)
-            add_to_pool(item)
-            if required_excludable_count > 0 and item.excludable:
-                required_excludable_count -= 1
-        num_to_fill -= len(picked_chars)
-        assert num_to_fill >= 0
-
-        # Create as many non-required extras as there are reserved power brick locations.
-        self.random.shuffle(non_required_extras)
-        # Sort preferred Extras first so that they are picked in preference.
-        preferred_extras = self.options.preferred_extras.value
-        if preferred_extras:
-            # todo: Once Progressive Score Multipliers can be disabled, this if-condition also needs to check that
-            #  Progressive Score Multipliers are enabled.
-            # Swap out Progressive Score Multiplier with individual Score multipliers so that only the preferred
-            if non_required_score_multipliers:
-                score_multipliers = [
-                    "Score x10",
-                    "Score x8",
-                    "Score x6",
-                    "Score x4",
-                    "Score x2",
-                ]
-                # Find the highest preferred Score multiplier and ensure the lower multipliers are also preferred.
-                for i, multiplier in enumerate(score_multipliers[:-1]):
-                    if multiplier in preferred_extras:
-                        preferred_extras.update(score_multipliers[i + 1:])
-                        break
-                score_multipliers_set = set(score_multipliers)
-
-                # Replace "Progressive Score Multiplier" with individual multipliers.
-                progressive_replacements = score_multipliers[:non_required_score_multipliers]
-                self.random.shuffle(progressive_replacements)
-
-                non_required_extras = [progressive_replacements.pop() if e == "Progressive Score Multiplier" else e
-                                       for e in non_required_extras]
-                # Sort preferred extras to the front so that they get picked first.
-                non_required_extras.sort(key=lambda extra: -1 if extra in preferred_extras else 0)
-                # Replace individual multipliers with "Progressive Score Multiplier".
-                non_required_extras = ["Progressive Score Multiplier" if e in score_multipliers_set else e
-                                       for e in non_required_extras]
-            else:
-                # Sort preferred extras to the front so that they get picked first.
-                non_required_extras.sort(key=lambda extra: -1 if extra in preferred_extras else 0)
-
-        picked_extras = non_required_extras[:reserved_extras_location_count]
-        leftover_extras = non_required_extras[reserved_extras_location_count:]
-        for extra in picked_extras:
-            item = create_item(extra)
-            add_to_pool(item)
-            if required_excludable_count > 0 and item.excludable:
-                required_excludable_count -= 1
-        num_to_fill -= len(picked_extras)
-        assert num_to_fill >= 0
-
-        # Determine items to fill out the rest of the item pool according to the weights in the options.
-        leftover_choices: list[list[LegoStarWarsTCSItem]] = []
-        leftover_weights: list[int] = []
-
-        leftover_character_items = list(map(create_item, (char.name for char in leftover_chars)))
-        character_weight = self.options.filler_weight_characters.value
-        if character_weight and leftover_character_items:
-            leftover_choices.append(leftover_character_items)
-            leftover_weights.append(character_weight)
-
-        leftover_extra_items = list(map(create_item, leftover_extras))
-        extras_weight = self.options.filler_weight_extras.value
-        if extras_weight and leftover_extra_items:
-            leftover_choices.append(leftover_extra_items)
-            leftover_weights.append(extras_weight)
-
-        junk_names_and_weights = self.options.junk_weights.value
-        junk_names = tuple(junk_names_and_weights.keys())
-        junk_weights = tuple(junk_names_and_weights.values())
-
-        def create_excludable_junk_items(count: int):
-            names = self.random.choices(junk_names, junk_weights, k=count)
-            return [create_item(name) for name in names]
-
-        junk_weight = self.options.filler_weight_junk.value
-        if junk_weight:
-            leftover_junk = create_excludable_junk_items(num_to_fill)
-            leftover_choices.append(leftover_junk)
-            leftover_weights.append(junk_weight)
-
-        all_leftover_items: Iterable[LegoStarWarsTCSItem]
-        if not leftover_choices:
-            # While there is always at least one nonzero weight, it's possible to have run out of Extras or Characters.
-            all_leftover_items = []
-        elif len(leftover_choices) == 1:
-            all_leftover_items = leftover_choices[0]
-        else:
-            weighted_leftover_items: list[LegoStarWarsTCSItem] = []
-            needed_excludable = required_excludable_count
-            # Items will be popped from the ends rather than taken from the start, so reverse the lists.
-            for item_list in leftover_choices:
-                item_list.reverse()
-            while (len(weighted_leftover_items) < num_to_fill or needed_excludable > 0) and leftover_choices:
-                picked_list = self.random.choices(leftover_choices, leftover_weights, k=1)[0]
-                item = picked_list.pop()
-                if needed_excludable > 0 and item.excludable:
-                    needed_excludable -= 1
-                weighted_leftover_items.append(item)
-                if not picked_list:
-                    # The picked list is now empty, so update leftover_choices
-                    next_leftover_choices: list[list[LegoStarWarsTCSItem]] = []
-                    next_leftover_weights: list[int] = []
-                    for item_list, weight in zip(leftover_choices, leftover_weights):
-                        if item_list:
-                            next_leftover_choices.append(item_list)
-                            next_leftover_weights.append(weight)
-
-                    leftover_choices = next_leftover_choices
-                    leftover_weights = next_leftover_weights
-
-                    if len(leftover_choices) == 1:
-                        # There is only one list left, so append all elements from it.
-                        remaining_list = next_leftover_choices[0]
-                        weighted_leftover_items.extend(reversed(remaining_list))
-                        remaining_list.clear()
-                        break
-
-            all_leftover_items = weighted_leftover_items
-
-        # Split the all_leftover_items into separate lists for required excludable items and other leftover items.
-        excludable_leftover_items = []
-        leftover_items = []
-        for item in all_leftover_items:
-            if required_excludable_count > 0 and item.excludable:
-                excludable_leftover_items.append(item)
-                required_excludable_count -= 1
-            else:
-                leftover_items.append(item)
-        if len(excludable_leftover_items) < required_excludable_count:
-            excludable_leftover_items.extend(create_excludable_junk_items(required_excludable_count))
-        # Required excludable items must be picked first.
-        leftover_items = excludable_leftover_items + leftover_items
-        if len(leftover_items) < num_to_fill:
-            leftover_items.extend(create_excludable_junk_items(num_to_fill - len(leftover_items)))
-        else:
-            leftover_items = leftover_items[:num_to_fill]
-        assert len(leftover_items) == num_to_fill
-
-        for item in leftover_items:
-            add_to_pool(item)
-
-        assert len(item_pool) == len(unfilled_locations)
-
-        # todo: In the future, individual characters may be relevant to logic, e.g. Droideka, which should never be
-        #  given deprioritized + skip_balancing.
-        # Give deprioritized + skip_balancing to characters with only common abilities, and that do not give access to
-        # levels.
-        non_level_access_character_items: list[LegoStarWarsTCSItem] = []
-        non_deprioritize_ability_counts: Counter[CharacterAbility] = Counter()
-        for item in item_pool:
-            if item.advancement and item.name in CHARACTERS_AND_VEHICLES_BY_NAME:
-                if progression_deprioritized_skip_balancing in item.classification:
-                    # Don't count abilities from characters that are already deprioritized + skip_balancing.
-                    continue
-                abilities = item.abilities
-                if abilities:
-                    non_deprioritize_ability_counts.update(abilities)
-                if chapters_unlock_with_characters:
-                    if level_access_character_counts[item.name] == 0:
-                        assert abilities, ("No abilities should mean the character item is not progression currently if"
-                                           " the character does not unlock levels")
-                        non_level_access_character_items.append(item)
-                else:
-                    non_level_access_character_items.append(item)
-        self.random.shuffle(non_level_access_character_items)
-        for item in non_level_access_character_items:
-            abilities = item.abilities
-            for ability in abilities:
-                # 3 is a magic number and could be changed if other values produce nicer results.
-                if non_deprioritize_ability_counts[ability] <= 3:
-                    # One of the abilities is uncommon.
-                    break
-            else:
-                # None of the abilities were uncommon, so add the deprioritize and skip balancing classifications.
-                item.classification |= progression_deprioritized_skip_balancing
-                if abilities:
-                    # Reduce the remaining ability counts from non-deprioritized characters
-                    non_deprioritize_ability_counts.subtract(abilities)
-        assert all(ability.bit_count() == 1 for ability in non_deprioritize_ability_counts)
-
-        self.multiworld.itempool.extend(item_pool)
-
-        if self._is_universal_tracker():
+        if self.is_universal_tracker():
             # Universal Tracker deletes the items added to precollected_items by create_items, instead later creating
             # all items with create_item(), but starting characters need to be created before
             # self.starting_character_abilities is set to `starting_abilities` otherwise the starting characters will
@@ -1169,30 +379,36 @@ class LegoStarWarsTCSWorld(World):
         self.gold_brick_event_count += 1
         return self.add_event_pair(location_name, region, GOLD_BRICK_EVENT_NAME)
 
-    def set_abilities_rule(self, spot: Location | Entrance, abilities: CharacterAbility):
+    def set_abilities_rule(self,
+                           spot: Location | Entrance,
+                           abilities: CharacterAbility,
+                           apply_rule_fun: SpotRuleApplier = set_rule):
         player = self.player
         abilities_as_int: int = abilities.value
         if abilities_as_int == 0:
-            set_rule(spot, Location.access_rule if isinstance(spot, Location) else Entrance.access_rule)
+            apply_rule_fun(spot, Location.access_rule if isinstance(spot, Location) else Entrance.access_rule)
         elif abilities_as_int.bit_count == 1:
             # There is only 1 bit, so a match is all that is needed.
-            set_rule(spot, lambda state: state.count("COMBINED_ABILITIES", player) & abilities_as_int)
+            apply_rule_fun(spot, lambda state: state.count("COMBINED_ABILITIES", player) & abilities_as_int)
         else:
             # There are multiple bits, so all bits need to be present.
-            set_rule(spot, lambda state: state.count("COMBINED_ABILITIES", player) & abilities_as_int == abilities_as_int)
+            apply_rule_fun(spot, lambda state: state.count("COMBINED_ABILITIES", player) & abilities_as_int == abilities_as_int)
 
-    def set_any_abilities_rule(self, spot: Location | Entrance, *any_abilities: CharacterAbility):
+    def set_any_abilities_rule(self,
+                               spot: Location | Entrance,
+                               *any_abilities: CharacterAbility,
+                               apply_rule_fun: SpotRuleApplier = set_rule) -> None:
         for any_ability in any_abilities:
             if not any_ability:
                 # No requirements overrides any other ability requirements
-                self.set_abilities_rule(spot, any_ability)
+                self.set_abilities_rule(spot, any_ability, apply_rule_fun)
                 return
         if not any_abilities:
-            self.set_abilities_rule(spot, CharacterAbility.NONE)
+            self.set_abilities_rule(spot, CharacterAbility.NONE, apply_rule_fun)
             return
         any_abilities_set = set(any_abilities)
         if len(any_abilities_set) == 1:
-            self.set_abilities_rule(spot, next(iter(any_abilities_set)))
+            self.set_abilities_rule(spot, next(iter(any_abilities_set)), apply_rule_fun)
         else:
             sorted_abilities = sorted(any_abilities_set, key=lambda a: (a.bit_count(), a.value))
             abilities_as_ints: list[int] = [any_ability.value for any_ability in sorted_abilities]
@@ -1202,7 +418,8 @@ class LegoStarWarsTCSWorld(World):
                 for ability_as_int in abilities_as_ints:
                     single_bit_abilities |= ability_as_int
                 # Any bit matching is all that is needed.
-                set_rule(spot, lambda state, p=self.player: state.count("COMBINED_ABILITIES", p) & single_bit_abilities)
+                apply_rule_fun(spot,
+                               lambda state, p=self.player: state.count("COMBINED_ABILITIES", p) & single_bit_abilities)
             elif all(ability_as_int.bit_count() > 1 for ability_as_int in abilities_as_ints):
                 # Optimize for all abilities being multiple bits each.
                 def rule(state: CollectionState):
@@ -1213,7 +430,7 @@ class LegoStarWarsTCSWorld(World):
                             return True
                     return False
 
-                set_rule(spot, rule)
+                apply_rule_fun(spot, rule)
             else:
                 # I am unsure if this is faster than pretending all abilities have multiple bits.
                 single_bit_abilities = 0
@@ -1235,9 +452,9 @@ class LegoStarWarsTCSWorld(World):
                             return True
                     return False
 
-                set_rule(spot, rule)
+                apply_rule_fun(spot, rule)
 
-    def _get_score_multiplier_requirement(self, studs_cost: int):
+    def get_score_multiplier_requirement(self, studs_cost: int):
         max_no_multiplier_cost = self.options.most_expensive_purchase_with_no_multiplier.value * 1000
         count: int
         if studs_cost <= max_no_multiplier_cost:
@@ -1258,15 +475,32 @@ class LegoStarWarsTCSWorld(World):
 
         return count
 
-    def _add_score_multiplier_rule(self, spot: Location, studs_cost: int):
-        count = self._get_score_multiplier_requirement(studs_cost)
+    def get_starting_inventory_abilities(self) -> CharacterAbility:
+        """Get the abilities currently provided by the player's starting inventory."""
+        starting_abilities = CharacterAbility.NONE
+        for item in self.multiworld.precollected_items[self.player]:
+            if not item.advancement:
+                continue
+            assert isinstance(item, LegoStarWarsTCSItem)
+            if item.abilities:
+                starting_abilities |= item.abilities
+        return starting_abilities
+
+    def _add_score_multiplier_rule(self, spot: Location, studs_cost: int, allow_ut_glitched: bool = False):
+        count = self.get_score_multiplier_requirement(studs_cost)
         if count > 0:
-            add_rule(spot, lambda state, p=self.player, c=count: state.has("Progressive Score Multiplier", p, c))
+            if allow_ut_glitched:
+                add_rule(spot, lambda state, p=self.player, c=count: (state.has("Progressive Score Multiplier", p, c)
+                                                                      or state.has(self.glitches_item_name, p)))
+            else:
+                add_rule(spot, lambda state, p=self.player, c=count: state.has("Progressive Score Multiplier", p, c))
 
     def set_rules(self) -> None:
         player = self.player
 
         created_chapters = self.enabled_chapters
+
+        excluded_chapter_unlock_characters = self.options.chapter_unlock_story_characters_not_required.value
 
         # Episodes.
         for episode_number in range(1, 7):
@@ -1283,12 +517,11 @@ class LegoStarWarsTCSWorld(World):
                                  self.options.episode_unlock_requirement)
 
             # Set chapter requirements.
-            if self.options.chapter_unlock_requirement == ChapterUnlockRequirement.option_story_characters:
-                story_characters_for_chapters = True
-            elif self.options.chapter_unlock_requirement == ChapterUnlockRequirement.option_chapter_item:
-                story_characters_for_chapters = False
-            else:
-                raise Exception(f"Unexpected ChapterUnlockRequirement: {self.options.chapter_unlock_requirement}")
+            chapter_unlock_requirement = self.options.chapter_unlock_requirement
+            chapters_unlock_with_characters = chapter_unlock_requirement.is_characters()
+            assert (chapters_unlock_with_characters
+                    or chapter_unlock_requirement == ChapterUnlockRequirement.option_chapter_item)
+
             episode_chapters = EPISODE_TO_CHAPTER_AREAS[episode_number]
             for chapter_number, chapter in enumerate(episode_chapters, start=1):
                 assert chapter.episode == episode_number
@@ -1302,48 +535,97 @@ class LegoStarWarsTCSWorld(World):
                         and self.options.goal_chapter_locations_mode == GoalChapterLocationsMode.option_removed
                 )
 
-                if story_characters_for_chapters:
-                    required_character_names = CHAPTER_AREA_STORY_CHARACTERS[chapter.short_name]
-                    entrance_abilities = CharacterAbility.NONE
-                    for character_name in required_character_names:
-                        generic_character = CHARACTERS_AND_VEHICLES_BY_NAME[character_name]
-                        entrance_abilities |= generic_character.abilities
+                access_character_names = []
+                character_provided_entrance_access_abilities: CharacterAbility
+                if chapters_unlock_with_characters:
+                    # Access to the chapter requires characters.
+                    required_count = self.chapter_required_character_counts[chapter.short_name]
+                    if chapter_unlock_requirement == ChapterUnlockRequirement.option_vanilla_characters:
+                        if chapter.short_name in self.chapters_requiring_alt_characters:
+                            required_character_names = chapter.alt_character_requirements
+                        else:
+                            required_character_names = chapter.character_requirements
+                        required_character_names = required_character_names.difference(
+                            excluded_chapter_unlock_characters)
+                    elif chapter_unlock_requirement == ChapterUnlockRequirement.option_random_characters:
+                        required_character_names = self.chapter_random_character_requirements[chapter.short_name]
+                    else:
+                        raise Exception(f"Unexpected chapter unlock requirement {chapter_unlock_requirement}")
+                    access_character_names.extend(sorted(required_character_names))
+                    unlock_characters = [CHARACTERS_AND_VEHICLES_BY_NAME[name] for name in required_character_names]
+                    assert len(unlock_characters) > 0, "At least one character should always be required."
+                    assert len(unlock_characters) >= required_count, \
+                        "The number of characters should always be greater than or equal to the required count"
+
+                    # Find abilities that are always provided given *any* combination of characters.
+                    unlock_character_abilities = [character.abilities for character in unlock_characters]
+                    character_provided_entrance_access_abilities = ~CharacterAbility.NONE
+                    characters_combination: tuple[CharacterData, ...]
+                    for abilities_combination in itertools.combinations(unlock_character_abilities, required_count):
+                        # Combine the abilities in this combination.
+                        combination_abilities = CharacterAbility.NONE
+                        for abilities in abilities_combination:
+                            combination_abilities |= abilities
+                        # The intersection of all abilities combinations gives the abilities that are always provided by
+                        # any potential combination that is used to gain access to the chapter.
+                        character_provided_entrance_access_abilities &= combination_abilities
 
                     if len(required_character_names) == 1:
+                        # There is only one character, so use .has() for that single character.
                         character_name = next(iter(required_character_names))
                         set_rule(entrance, lambda state, item_=character_name: state.has(item_, player))
-                    elif len(required_character_names) > 1:
+                    elif len(required_character_names) == required_count:
+                        # All characters are required, so use .has_all().
                         character_names = tuple(sorted(required_character_names))
                         set_rule(entrance, lambda state, items_=character_names: state.has_all(items_, player))
-                    # Even if some of the abilities are chapter-specific, it doesn't matter, the player needs all of
-                    # these characters to access the chapter at all, and will therefore have access to all their
-                    # combined abilities, chapter-specific abilities included.
-                    strictly_required_entrance_abilities = entrance_abilities
-                    assert (set(chapter.completion_main_ability_requirements)
-                            <= set(strictly_required_entrance_abilities)), \
-                        ("The main abilities were not a subset of the character abilities. The main abilities should be"
-                         " calculated from the character abilities, with chapter-specific abilities removed besides the"
-                         " chapter-specific abilities of this chapter, so something is wrong.")
-                else:
-                    # The entrance requires a 'Chapter Unlock' item.
-                    # The logic is not fully prepared for this currently, so the entrance rule is also set to require
-                    # all the logical abilities of the Story characters of the Chapter, which will be overly
-                    # restrictive for many locations, but overly restrictive logic cannot result in impossible seeds.
-                    # A few chapters have chapter-specific logical requirements that get stripped from the requirements
-                    # of other chapters.
-                    main_ability_requirements = chapter.completion_main_ability_requirements
-                    alt_ability_requirements = chapter.completion_alt_ability_requirements
-                    if alt_ability_requirements:
-                        self.set_any_abilities_rule(entrance, main_ability_requirements, alt_ability_requirements)
-                        strictly_required_entrance_abilities = main_ability_requirements & alt_ability_requirements
                     else:
-                        self.set_abilities_rule(entrance, main_ability_requirements)
-                        strictly_required_entrance_abilities = main_ability_requirements
-
-                    add_rule(entrance,
+                        # A subset of the characters are required, so use .has_from_list_unique().
+                        character_names = tuple(sorted(required_character_names))
+                        set_rule(entrance,
+                                 lambda state, items_=character_names, count_=required_count:
+                                 state.has_from_list_unique(items_, player, count_))
+                    # Prepare the requirements for writing to the spoiler.
+                    self.spoiler_chapter_character_requirements[chapter.short_name] = (required_count,
+                                                                                       required_character_names)
+                else:
+                    # Access to the Chapter requires a Chapter Unlock item.
+                    character_provided_entrance_access_abilities = CharacterAbility.NONE
+                    set_rule(entrance,
                              lambda state, item_=f"{episode_number}-{chapter_number} Unlock": state.has(item_, player))
-                    # TODO: .levels.HAT_MACHINE_CHAPTERS provides alternative logic to Hat Machine logic abilities.
-                    #  Levels should be accessible with either the hat machine logic, or the ability logic.
+
+                # The logic is not fully prepared for this currently, so the entrance rule is also set to require
+                # all the logical abilities of the Story characters of the Chapter, which will be overly
+                # restrictive for many locations, but overly restrictive logic cannot result in impossible seeds.
+                # A few chapters have chapter-specific logical requirements that get stripped from the requirements
+                # of other chapters.
+                main_ability_requirements = chapter.completion_main_ability_requirements
+                alt_ability_requirements = chapter.completion_alt_ability_requirements
+
+                # Remove abilities that are always provided by the characters required to unlock the chapter.
+                main_ability_requirements &= ~character_provided_entrance_access_abilities
+                if alt_ability_requirements is not None:
+                    alt_ability_requirements &= ~character_provided_entrance_access_abilities
+
+                # All abilities satisfied by the entrance to the chapter can be skipped from locations within the
+                # chapter.
+                satisfied_by_entrance_abilities = character_provided_entrance_access_abilities
+
+                if main_ability_requirements:
+                    if alt_ability_requirements:
+                        self.set_any_abilities_rule(entrance, main_ability_requirements, alt_ability_requirements,
+                                                    apply_rule_fun=add_rule)
+                        # The abilities common in both the main and alt requirements are also required.
+                        satisfied_by_entrance_abilities |= main_ability_requirements & alt_ability_requirements
+                    else:
+                        self.set_any_abilities_rule(entrance, main_ability_requirements,
+                                                    apply_rule_fun=add_rule)
+                        # The remaining logical ability requirements for the entrance must be satisfied to even enter
+                        # the chapter.
+                        satisfied_by_entrance_abilities |= main_ability_requirements
+                else:
+                    # If all main ability requirements are already satisfied, the alt ability requirements can be
+                    # ignored because the entrance is accessible only once the required characters have been acquired.
+                    pass
 
                 if is_goal_chapter_without_locations:
                     # There are no locations, so there is no additional logic to add.
@@ -1352,7 +634,7 @@ class LegoStarWarsTCSWorld(World):
                 def set_chapter_spot_abilities_rule(spot: Location | Entrance, *abilities: CharacterAbility):
                     # Remove any requirements already satisfied by the chapter entrance before setting the rule.
                     self.set_any_abilities_rule(
-                        spot, *[ability & ~strictly_required_entrance_abilities for ability in abilities])
+                        spot, *[ability & ~satisfied_by_entrance_abilities for ability in abilities])
 
                 # Set Power Brick logic. Score multiplier requirements are added later.
                 power_brick = self.get_location(chapter.power_brick_location_name)
@@ -1417,7 +699,7 @@ class LegoStarWarsTCSWorld(World):
         # Add Score Multiplier requirements to shop purchase locations.
         for loc in self.get_locations():
             if isinstance(loc, LegoStarWarsTCSShopLocation):
-                self._add_score_multiplier_rule(loc, loc.studs_cost)
+                self._add_score_multiplier_rule(loc, loc.studs_cost, self.is_universal_tracker())
 
         # Victory.
         victory: Location | Entrance
@@ -1537,9 +819,26 @@ class LegoStarWarsTCSWorld(World):
         return False
 
     def fill_slot_data(self) -> Mapping[str, Any]:
+        options = self.options
+        optional_options: dict[str, Any] = {}
+        if options.chapter_unlock_requirement == ChapterUnlockRequirement.option_vanilla_characters:
+            chapters_requiring_alt_characters = sorted(self.chapters_requiring_alt_characters)
+            if chapters_requiring_alt_characters:
+                optional_options["chapters_requiring_alt_characters"] = chapters_requiring_alt_characters
+            if self.chapter_required_character_counts:
+                optional_options["chapter_required_character_counts"] = self.chapter_required_character_counts
+        elif options.chapter_unlock_requirement == ChapterUnlockRequirement.option_random_characters:
+            # Convert character names to IDs. This reduces slot_data storage/memory usage size, and is easier to
+            # interpret from the PopTracker pack.
+            optional_options["chapter_random_character_requirements"] = {
+                chapter: [self.item_name_to_id[c] for c in characters]
+                for chapter, characters in self.chapter_random_character_requirements.items()
+            }
+            optional_options["chapter_required_character_counts"] = self.chapter_required_character_counts
         return {
             # todo: A number of the slot data keys here could be inferred from what locations exist in the multiworld.
             "apworld_version": constants.AP_WORLD_VERSION,
+            "logic_version": constants.UT_LOGIC_VERSION,
             "enabled_chapters": sorted(self.enabled_chapters),
             "enabled_episodes": sorted(self.enabled_episodes),
             "enabled_bonuses": sorted(self.enabled_bonuses),
@@ -1549,8 +848,9 @@ class LegoStarWarsTCSWorld(World):
             "enabled_bosses": self.enabled_bosses,
             "goal_area_completion_count": self.goal_area_completion_count,
             "goal_chapter": self.goal_chapter,
-            "item_colors": self.options.item_colors_to_slot_data(),
-            **self.options.as_dict(
+            "item_colors": options.item_colors_to_slot_data(),
+            **optional_options,
+            **options.as_dict(
                 "received_item_messages",
                 "checked_location_messages",
                 "minikit_bundle_size",
@@ -1580,6 +880,7 @@ class LegoStarWarsTCSWorld(World):
                 "ridesanity",
                 "enable_starting_extras_locations",
                 "chapter_unlock_requirement",
+                "chapter_unlock_story_characters_not_required",
             )
         }
 
@@ -1604,11 +905,23 @@ class LegoStarWarsTCSWorld(World):
         enabled_bosses = sorted(self.enabled_bosses)
         spoiler_handle.write(f"Enabled Bosses: {enabled_bosses}\n")
 
+        if self.spoiler_chapter_character_requirements:
+            spoiler_handle.write(f"Chapter Character requirements:\n")
+            for chapter, required in sorted(self.spoiler_chapter_character_requirements.items(), key=lambda t: t[0]):
+                required_count = required[0]
+                sorted_characters = sorted(required[1])
+                spoiler_handle.write(f"    {chapter}:"
+                                     f" {required_count}/{len(sorted_characters)} of {', '.join(sorted_characters)}\n")
+
     @staticmethod
     def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any] | None:
         slot_data_version = tuple(slot_data["apworld_version"])
-        if slot_data_version != constants.AP_WORLD_VERSION:
-            raise RuntimeError(f"LSW TCS version error: The version of the apworld used to generate this world"
-                               f" ({slot_data_version}) does not match the version of your installed apworld"
-                               f" ({constants.AP_WORLD_VERSION}).")
+        # Allow connecting only if the APWorld major and minor version matches, and if there are no logic changes in the
+        # case that the APWorld versions are not the same.
+        if (slot_data_version[:2] != constants.AP_WORLD_VERSION[:2]
+                or slot_data["logic_version"] != constants.UT_LOGIC_VERSION):
+            raise TCSUniversalTrackerAPWorldVersionMismatchError(
+                f"LSW TCS version error: The version of the apworld used to generate this world ({slot_data_version})"
+                f" does not have matching logic with the version of your installed apworld ({constants.AP_WORLD_VERSION})."
+            )
         return slot_data

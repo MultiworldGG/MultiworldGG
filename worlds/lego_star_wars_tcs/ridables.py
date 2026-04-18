@@ -86,6 +86,7 @@ _RIDABLES: tuple[Ridable, ...] = (
     Ridable("speederbike", "Speeder Bike", 30, "6-3"),
     # Apparently there is also one in HOTHESCAPE/5-2?
     Ridable("ATAT", "AT-AT", 47, "6-3"),
+    Ridable("bomarmonk", "B'omarr Monk", 184, "6-1"),
 )
 
 RIDABLES_BY_NAME = {ridable.user_facing_name: ridable for ridable in _RIDABLES}

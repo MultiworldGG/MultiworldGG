@@ -70,15 +70,19 @@
                                     <td>{{ games[(team, player)] }}</td>
                                 {%- endif -%}
                                 <td>
-                                    {{
-                                        {
-                                            0: "Disconnected",
-                                            5: "Connected",
-                                            10: "Ready",
-                                            20: "Playing",
-                                            30: "Goal Completed"
-                                        }.get(states[(team, player)], "Unknown State")
-                                    }}
+                                    {%- if states[(team, player)] == 30 and (team, player) in goal_overrides -%}
+                                        Goal Completed (via override)
+                                    {%- else -%}
+                                        {{
+                                            {
+                                                0: "Disconnected",
+                                                5: "Connected",
+                                                10: "Ready",
+                                                20: "Playing",
+                                                30: "Goal Completed"
+                                            }.get(states[(team, player)], "Unknown State")
+                                        }}
+                                    {%- endif -%}
                                 </td>
 
                                 {% block custom_table_row scoped %}
