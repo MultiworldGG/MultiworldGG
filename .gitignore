@@ -242,3 +242,4 @@ sm64hack_jsons
 uploads
 
 worlds/oot/data/Compress/ARCHIVE.bin
+worlds/oot/ASM/roms/*.z64

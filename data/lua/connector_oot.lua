@@ -3,8 +3,7 @@ local json = require('json')
 local math = require('math')
 require('common')
 
-local last_modified_date = '2022-4-15' -- Should be the last modified date
-local script_version = 3
+local script_version = 4
 
 --------------------------------------------------
 -- Heavily modified form of RiptideSage's tracker
@@ -27,6 +26,11 @@ local inf_table_offset = save_context_offset + 0xEF8 -- 0x11B4C8
 local temp_context = nil
 local big_poe_count_addr = 0x0040001E  -- BIG_POE_COUNT in AP tracking header (0x8040001E - 0x80000000)
 
+local item_display_queue = {}
+local item_display_current = nil
+local item_display_timer = 0
+local ITEM_DISPLAY_DURATION = 300  -- frames (~5 seconds at 60fps)
+
 local collectibles_overrides = nil
 local collectible_offsets = nil
 
@@ -39,22 +43,15 @@ local scene_check = function(scene_offset, bit_to_check, scene_data_offset)
     return bit.check(nearby_memory,bit_to_check)
 end
 
--- Whenever a check is opened, values are written to 0x40002C.
+-- Whenever a check is opened, values are written to OUTGOING_KEY (0x80400C3C).
 -- We can use this to send checks before they are written to the main save context.
--- [0] should always be 0x00 when a non-local multiworld item is checked
--- [1] is the scene id
--- [2] is the location type, which varies as input to the function
--- [3] is the location id within the scene, and represents the bit which was checked
--- REORDERED IN 7.0 TO scene id - location type - 0x00 - location id
+-- v8.2: OUTGOING_KEY is now an 8-byte override_key_t: {scene(1), type(1), pad(2), flag(4)}
+-- [0] = scene id, [1] = location type, [7] = location flag LSB (bit index)
 -- Note that temp_context is 0-indexed and expected_values is 1-indexed, because consistency.
 local check_temp_context = function(expected_values)
-    -- if temp_context[0] ~= 0x00 then return false end
-    -- for i=1,3 do
-    --     if temp_context[i] ~= expected_values[i] then return false end
-    -- end
     if temp_context[0] ~= expected_values[1] then return false end
     if temp_context[1] ~= expected_values[2] then return false end
-    if temp_context[3] ~= expected_values[3] then return false end
+    if temp_context[7] ~= expected_values[3] then return false end
     return true
 end
 
@@ -1159,7 +1156,7 @@ end
 local check_all_locations = function(mq_table_address)
 -- TODO: make MQ better
     local location_checks = {}
-    temp_context = mainmemory.readbyterange(0x40002C, 4)
+    temp_context = mainmemory.readbyterange(0x400C3C, 8)
     for k,v in pairs(read_kokiri_forest_checks()) do location_checks[k] = v end
     for k,v in pairs(read_lost_woods_checks()) do location_checks[k] = v end
     for k,v in pairs(read_sacred_forest_meadow_checks()) do location_checks[k] = v end
@@ -1194,18 +1191,18 @@ local check_all_locations = function(mq_table_address)
     for k,v in pairs(read_ganons_castle_checks(mq_table_address)) do location_checks[k] = v end
     for k,v in pairs(read_outside_ganons_castle_checks()) do location_checks[k] = v end
     for k,v in pairs(read_song_checks()) do location_checks[k] = v end
-    -- write 0 to temp context values
-    mainmemory.write_u32_be(0x40002C, 0)
-    mainmemory.write_u32_be(0x400030, 0)
+    -- clear OUTGOING_KEY after reading (8 bytes at 0x80400C3C)
+    mainmemory.write_u32_be(0x400C3C, 0)
+    mainmemory.write_u32_be(0x400C40, 0)
     return location_checks
 end
 
 local check_collectibles = function()
     local retval = {}
-    if collectible_offsets ~= nil then
+    if collectible_overrides ~= nil and collectible_offsets ~= nil then
         for id, data in pairs(collectible_offsets) do
             local mem = mainmemory.readbyte(collectible_overrides + data[1] + bit.rshift(data[2], 3))
-            retval[id] = bit.check(mem, data[2] % 8)
+            retval[id] = bit.check(mem, 7 - (data[2] % 8))
         end
     end
     return retval
@@ -1597,7 +1594,7 @@ local player_names_address  = coop_context + 20
 local player_name_length    = 8 -- 8 bytes
 local file_hash_location    = player_names_address + 0x800 -- CFG_FILE_SELECT_HASH (5 bytes)
 
-local master_quest_table_address = rando_context + 0x1352
+local master_quest_table_address = rando_context + 0x1E36
 
 local save_context_addr = 0x11A5D0
 local internal_count_addr = save_context_addr + 0x90
@@ -1819,7 +1816,7 @@ function process_block(block)
     if not player_names_initialized then
         local index = 0
         while index <= 255 do
-            setPlayerName(index, 'APPlayer')
+            setPlayerName(index, 'a player')
             index = index + 1
         end
         player_names_initialized = true
@@ -1837,7 +1834,7 @@ function process_block(block)
             setPlayerName(index, block['playerNames'][index])
             index = index + 1
         end
-        setPlayerName(255, 'APPlayer')
+        setPlayerName(255, 'a player')
     end
     -- Kill Link if needed
     if block['triggerDeath'] then
@@ -1857,10 +1854,18 @@ function process_block(block)
     end
     -- Record collectible data if necessary
     if collectible_overrides == nil and block['collectibleOverrides'] ~= 0 then
-        collectible_overrides = mainmemory.read_u32_be(rando_context + block['collectibleOverrides']) - 0x80000000
+        local ptr = mainmemory.read_u32_be(rando_context + block['collectibleOverrides'])
+        if ptr >= 0x80000000 and ptr < 0x80800000 then
+            collectible_overrides = ptr - 0x80000000
+        end
     end
     if collectible_offsets ~= block['collectibleOffsets'] then
         collectible_offsets = block['collectibleOffsets']
+    end
+    if block['pendingDisplayItems'] ~= nil then
+        for _, msg in ipairs(block['pendingDisplayItems']) do
+            table.insert(item_display_queue, msg)
+        end
     end
     return
 end
@@ -1940,6 +1945,20 @@ function main()
                     print('Connection failed, ensure OoTClient is running and rerun connector_oot.lua')
                     return
                 end
+            end
+        end
+        -- Advance to next queued display item when current one expires
+        if item_display_current == nil and #item_display_queue > 0 then
+            item_display_current = table.remove(item_display_queue, 1)
+            item_display_timer = ITEM_DISPLAY_DURATION
+        end
+        -- Draw item send overlay each frame
+        if item_display_current ~= nil then
+            gui.drawString(6, 6,  "Sent: " .. item_display_current["item"], "white", "black")
+            gui.drawString(6, 18, "  to: " .. item_display_current["player"], "white", "black")
+            item_display_timer = item_display_timer - 1
+            if item_display_timer <= 0 then
+                item_display_current = nil
             end
         end
         emu.frameadvance()

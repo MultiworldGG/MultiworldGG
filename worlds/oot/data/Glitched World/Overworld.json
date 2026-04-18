@@ -3,7 +3,7 @@
         "region_name": "Root",
         "hint": "ROOT",
         "locations": {
-            "Links Pocket": "True",
+            "ToT Reward from Rauru": "True",
             "Gift from Sages": "can_receive_ganon_bosskey"
         },
         "exits": {

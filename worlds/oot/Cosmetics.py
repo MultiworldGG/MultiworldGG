@@ -67,6 +67,16 @@ def patch_dpad_left(rom, ootworld, symbols):
         rom.write_byte(symbols['CFG_DPAD_ON_THE_LEFT'], int(bool(ootworld.dpad_on_the_left)))
 
 
+def patch_input_viewer(rom, ootworld, symbols):
+    if 'CFG_INPUT_VIEWER' in symbols:
+        rom.write_byte(symbols['CFG_INPUT_VIEWER'], int(bool(getattr(ootworld, 'input_viewer', False))))
+
+
+def patch_song_names(rom, ootworld, symbols):
+    if 'CFG_SONG_NAME_STATE' in symbols:
+        rom.write_byte(symbols['CFG_SONG_NAME_STATE'], 0x00)
+
+
 def patch_music(rom, ootworld, symbols):
     # patch music
     if ootworld.background_music != 'normal' or ootworld.fanfares != 'normal':
@@ -870,6 +880,29 @@ patch_sets[0x1F073FE0] = {
     "symbols": {
         **patch_sets[0x1F073FDF]["symbols"],
         "CFG_DPAD_ON_THE_LEFT": 0x006A,
+    }
+}
+
+# 8.1.4
+patch_sets[0x1F073FE1] = {
+    "patches": patch_sets[0x1F073FE0]["patches"] + [
+        patch_input_viewer,
+    ],
+    "symbols": {
+        **patch_sets[0x1F073FE0]["symbols"],
+        "CFG_INPUT_VIEWER": 0x006B,
+    }
+}
+
+# 8.1.29
+patch_sets[0x1F073FE2] = {
+    "patches": patch_sets[0x1F073FE1]["patches"] + [
+        patch_song_names,
+    ],
+    "symbols": {
+        **patch_sets[0x1F073FE1]["symbols"],
+        "CFG_SONG_NAME_STATE": 0x006C,
+        "CFG_SONG_NAMES": 0x006D,
     }
 }
 

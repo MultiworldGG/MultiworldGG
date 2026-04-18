@@ -1037,7 +1037,7 @@ hintTable: dict[str, tuple[list[str] | str, Optional[str], str | list[str]]] = {
     'Morpha':                                                      ("the #Giant Aquatic Amoeba# holds", "#Morpha# holds", 'exclude'),
     'Bongo Bongo':                                                 ("the #Phantom Shadow Beast# holds", "#Bongo Bongo# holds", 'exclude'),
     'Twinrova':                                                    ("the #Sorceress Sisters# hold", "#Twinrova# holds", 'exclude'),
-    'Links Pocket':                                                ("#@'s pocket# holds", "@ already has", 'exclude'),
+    'ToT Reward from Rauru':                                       ("#@'s pocket# holds", "@ already has", 'exclude'),
 
     'Deku Tree GS Basement Back Room':                             ("a #spider deep within the Deku Tree# hides", None, 'exclude'),
     'Deku Tree GS Basement Gate':                                  ("a #web protects a spider# within the Deku Tree holding", None, 'exclude'),
@@ -1865,7 +1865,7 @@ goalTable: dict[str, tuple[str, str, str]] = {
     'Morpha':                                                   ("path to the #Amoeba#", "path to #Morpha#", "Blue"),
     'Bongo Bongo':                                              ("path to the #Hands#", "path to #Bongo Bongo#", "Pink"),
     'Twinrova':                                                 ("path to the #Witches#", "path to #Twinrova#", "Yellow"),
-    'Links Pocket':                                             ("path to #Links Pocket#", "path to #Links Pocket#", "Light Blue"),
+    'ToT Reward from Rauru':                                    ("path to #ToT Reward from Rauru#", "path to #ToT Reward from Rauru#", "Light Blue"),
 }
 
 

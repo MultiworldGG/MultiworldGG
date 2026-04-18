@@ -1,0 +1,155 @@
+.n64
+.relativeinclude on
+
+; version guard, prevent people from building with older armips versions
+.if (version() < 110)
+.notice version()
+.error   "Detected armips build is too old. Please install https://github.com/Kingcom/armips version 0.11 or later."
+.endif
+
+.create "../roms/patched.z64", 0
+.incbin "../roms/base.z64"
+.include "macros.asm"
+
+;==================================================================================================
+; Constants
+;==================================================================================================
+
+.include "constants.asm"
+.include "addresses.asm"
+.include "mwgg.asm"
+
+;==================================================================================================
+; Base game editing region
+;==================================================================================================
+
+.include "boot.asm"
+.include "hacks.asm"
+.include "malon.asm"
+.include "mido.asm"
+.include "weather.asm"
+
+;==================================================================================================
+; New code region
+;==================================================================================================
+
+;==================================================================================================
+; Item restriction table
+;==================================================================================================
+.include "item_restriction_flags.asm"
+
+
+.headersize (0x80400000 - 0x03480000)
+
+.org    0x80400000
+.area   0x00200000 ; payload max memory
+PAYLOAD_START:
+
+.area 0x20, 0
+RANDO_CONTEXT:
+.word COOP_CONTEXT
+.word COSMETIC_CONTEXT
+.word extern_ctxt
+.word AUTO_TRACKER_CONTEXT
+.endarea
+
+.include "coop_state.asm" ; This should always come first
+.include "config.asm"
+.include "init.asm"
+.include "item_overrides.asm"
+.include "cutscenes.asm"
+.include "shop.asm"
+.include "every_frame.asm"
+.include "menu.asm"
+.include "time_travel.asm"
+.include "song_fix.asm"
+.include "scarecrow.asm"
+.include "empty_bomb.asm"
+.include "initial_save.asm"
+.include "fishing.asm"
+.include "bgs_fix.asm"
+.include "chus_in_logic.asm"
+.include "rainbow_bridge.asm"
+.include "lacs_condition.asm"
+.include "gossip_hints.asm"
+.include "potion_shop.asm"
+.include "jabu_elevator.asm"
+.include "dampe.asm"
+.include "dpad.asm"
+.include "chests.asm"
+.include "red_ice.asm"
+.include "bunny_hood.asm"
+.include "colors.asm"
+.include "debug.asm"
+.include "extended_objects.asm"
+.include "cow.asm"
+.include "lake_hylia.asm"
+.include "timers.asm"
+.include "shooting_gallery.asm"
+.include "damage.asm"
+.include "bonk.asm"
+.include "bean_salesman.asm"
+.include "grotto.asm"
+.include "deku_mouth_condition.asm"
+.include "audio.asm"
+.include "king_zora.asm"
+.include "carpenter_boss.asm"
+.include "twinrova_wait.asm"
+.include "boomerang.asm"
+.include "file_select.asm"
+.include "zelda.asm"
+.include "link_anim.asm"
+.include "malon_hooks.asm"
+.include "bigocto.asm"
+.include "agony.asm"
+.include "horseback_archery.asm"
+.include "items_as_adult.asm"
+.include "carpet_salesman.asm"
+.include "medigoron.asm"
+.include "misc_colors.asm"
+.include "door_of_time_col_fix.asm"
+.include "mask_deequip.asm"
+.include "trade_quests.asm"
+.include "blue_fire_arrows.asm"
+.include "gerudo_guard.asm"
+.include "save.asm"
+.include "drop_overrides/obj_mure3.asm"
+.include "drop_overrides/bg_haka_tubo.asm"
+.include "drop_overrides/bg_spot18_basket.asm"
+.include "drop_overrides/obj_comb.asm"
+.include "drop_overrides/en_wonderitem.asm"
+.include "actor.asm"
+.include "rand_seed.asm"
+.include "messages.asm"
+.include "player_save_mask.asm"
+.include "gohma.asm"
+.include "camera_init.asm"
+.include "chest_game.asm"
+.include "en_item00.asm"
+.include "volvagia.asm"
+.include "key_counter.asm"
+.include "armos.asm"
+.include "ocarina_buttons.asm"
+.include "fairy_ocarina.asm"
+.include "en_dns.asm"
+.include "bg_gate_shutter.asm"
+
+.align 0x10
+.importobj "../build/bundle.o"
+
+.align 0x10
+
+; This address bump avoids an audio issue where random crackling or buzzing noises play at possibly
+; very high volume during the entire game, even on the N64 logo screen. If this issue reappears,
+; double this number.
+;
+; For possible proper fixes, see:
+; https://discord.com/channels/274180765816848384/512048482677424138/1251961594380947587
+.skip 0x200
+
+AUDIO_THREAD_MEM_START:
+.skip AUDIO_THREAD_MEM_SIZE
+PAYLOAD_END:
+.endarea ; payload max memory
+
+.close

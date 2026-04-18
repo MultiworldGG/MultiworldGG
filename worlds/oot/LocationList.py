@@ -46,15 +46,15 @@ def shop_address(shop_id, shelf_id):
 #   Location:                                                        Type             Scene  Default Addresses                      Vanilla Item                             Categories
 location_table = OrderedDict([
     ## Dungeon Rewards
-    ("Links Pocket",                                                 ("Boss",         None,  None, None,                            'Light Medallion',                       None)),
-    ("Queen Gohma",                                                  ("Boss",         None,  0x6C, (0x0CA315F, 0x2079571),          'Kokiri Emerald',                        None)),
-    ("King Dodongo",                                                 ("Boss",         None,  0x6D, (0x0CA30DF, 0x2223309),          'Goron Ruby',                            None)),
-    ("Barinade",                                                     ("Boss",         None,  0x6E, (0x0CA36EB, 0x2113C19),          'Zora Sapphire',                         None)),
-    ("Phantom Ganon",                                                ("Boss",         None,  0x66, (0x0CA3D07, 0x0D4ED79),          'Forest Medallion',                      None)),
-    ("Volvagia",                                                     ("Boss",         None,  0x67, (0x0CA3D93, 0x0D10135),          'Fire Medallion',                        None)),
-    ("Morpha",                                                       ("Boss",         None,  0x68, (0x0CA3E1F, 0x0D5A3A9),          'Water Medallion',                       None)),
-    ("Bongo Bongo",                                                  ("Boss",         None,  0x6A, (0x0CA3F43, 0x0D13E19),          'Shadow Medallion',                      None)),
-    ("Twinrova",                                                     ("Boss",         None,  0x69, (0x0CA3EB3, 0x0D39FF1),          'Spirit Medallion',                      None)),
+    ("ToT Reward from Rauru",                                        ("Boss",         0xFF,  0x04, None,                            'Light Medallion',                       None)),
+    ("Queen Gohma",                                                  ("Boss",         0xFF,  0x05, None,                            'Kokiri Emerald',                        None)),
+    ("King Dodongo",                                                 ("Boss",         0xFF,  0x06, None,                            'Goron Ruby',                            None)),
+    ("Barinade",                                                     ("Boss",         0xFF,  0x07, None,                            'Zora Sapphire',                         None)),
+    ("Phantom Ganon",                                                ("Boss",         0xFF,  0x08, None,                            'Forest Medallion',                      None)),
+    ("Volvagia",                                                     ("Boss",         0xFF,  0x09, None,                            'Fire Medallion',                        None)),
+    ("Morpha",                                                       ("Boss",         0xFF,  0x0A, None,                            'Water Medallion',                       None)),
+    ("Bongo Bongo",                                                  ("Boss",         0xFF,  0x0C, None,                            'Shadow Medallion',                      None)),
+    ("Twinrova",                                                     ("Boss",         0xFF,  0x0B, None,                            'Spirit Medallion',                      None)),
     ("Ganon",                                                        ("Event",        None,  None, None,                            'Triforce',                              None)),
     ("Gift from Sages",                                              ("Cutscene",     0xFF,  0x03, None,                             None,                                   None)),
 

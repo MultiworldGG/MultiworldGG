@@ -30,8 +30,13 @@ class Rom(BigStream):
         decomp_file = user_path('ZOOTDEC.z64')
 
         with open(data_path('generated/symbols.json'), 'r') as stream:
-            symbols = json.load(stream)
-            self.symbols = {name: int(addr, 16) for name, addr in symbols.items()}
+            raw_symbols = json.load(stream)
+        self.symbols = {}
+        for name, entry in raw_symbols.items():
+            if isinstance(entry, dict):
+                self.symbols[name] = {'address': int(entry['address'], 16), 'length': entry.get('length', 1)}
+            else:
+                self.symbols[name] = {'address': int(entry, 16), 'length': 1}
 
         # If decompressed file already exists, read from it
         if not force_use:
@@ -133,7 +138,12 @@ class Rom(BigStream):
         self.force_patch.extend([0x35, 0x36, 0x37])
 
     def sym(self, symbol_name):
-        return self.symbols.get(symbol_name)
+        entry = self.symbols.get(symbol_name)
+        return entry['address'] if entry else None
+
+    def sym_length(self, symbol_name):
+        entry = self.symbols.get(symbol_name)
+        return entry['length'] if entry else 0
 
     def write_to_file(self, file):
         self.verify_dmadata()

@@ -729,7 +729,7 @@ class OOTWorld(World):
             'Morpha',
             'Bongo Bongo',
             'Twinrova',
-            'Links Pocket'
+            'ToT Reward from Rauru'
         )
         boss_rewards = sorted(map(self.create_item, self.item_name_groups['rewards']))
         boss_locations = [self.multiworld.get_location(loc, self.player) for loc in boss_location_names]

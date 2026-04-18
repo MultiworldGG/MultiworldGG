@@ -6,7 +6,7 @@
             "Kakariko Village Gate Open": "open_kakariko == 'open' or (open_kakariko == 'zelda' and Zeldas_Letter)"
         },
         "locations": {
-            "Links Pocket": "True",
+            "ToT Reward from Rauru": "True",
             "Gift from Sages": "can_receive_ganon_bosskey"
         },
         "exits": {

@@ -53,7 +53,7 @@ deathlink_sent_this_death: we interacted with the multiworld on this death, wait
 
 oot_loc_name_to_id = network_data_package["games"]["Ocarina of Time"]["location_name_to_id"]
 
-script_version: int = 3
+script_version: int = 4
 
 def get_item_value(ap_id):
     return ap_id - 66000
@@ -96,6 +96,7 @@ class OoTContext(CommonContext):
         self.deathlink_sent_this_death = False
         self.deathlink_client_override = False
         self.version_warning = False
+        self.pending_display_items: list = []
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
@@ -129,6 +130,18 @@ class OoTContext(CommonContext):
             if slot_data:
                 self.collectible_override_flags_address = slot_data.get('collectible_override_flags', 0)
                 self.collectible_offsets = slot_data.get('collectible_flag_offsets', {})
+        elif cmd == 'PrintJSON':
+            if args.get('type') == 'ItemSend':
+                network_item = args.get('item')
+                if network_item and network_item.player == self.slot:
+                    receiving_slot = args.get('receiving', 0)
+                    if receiving_slot != self.slot:
+                        try:
+                            item_name = self.item_names.lookup_in_slot(network_item.item, receiving_slot)
+                            player_name = self.player_names.get(receiving_slot, f'Player {receiving_slot}')
+                            self.pending_display_items.append({'item': item_name, 'player': player_name})
+                        except Exception:
+                            pass
 
 
 def get_payload(ctx: OoTContext):
@@ -138,12 +151,16 @@ def get_payload(ctx: OoTContext):
     else:
         trigger_death = False
 
+    pending_display_items = ctx.pending_display_items
+    ctx.pending_display_items = []
+
     payload = json.dumps({
             "items": [get_item_value(item.item) for item in ctx.items_received],
             "playerNames": [name for (i, name) in ctx.player_names.items() if i != 0],
             "triggerDeath": trigger_death,
             "collectibleOverrides": ctx.collectible_override_flags_address,
-            "collectibleOffsets": ctx.collectible_offsets
+            "collectibleOffsets": ctx.collectible_offsets,
+            "pendingDisplayItems": pending_display_items,
         })
     return payload
 
@@ -160,6 +177,7 @@ async def parse_payload(payload: dict, ctx: OoTContext, force: bool):
         ctx.collectible_table = {}
         ctx.deathlink_pending = False
         ctx.deathlink_sent_this_death = False
+        ctx.pending_display_items = []
         ctx.auth = payload['playerName']
         await ctx.send_connect()
         return
