@@ -31,7 +31,7 @@ def patch_targeting(rom, ootworld, symbols):
 
 def patch_dpad(rom, ootworld, symbols):
     # Display D-Pad HUD
-    if ootworld.display_dpad:
+    if ootworld.display_dpad != 'off':
         rom.write_byte(symbols['CFG_DISPLAY_DPAD'], 0x01)
     else:
         rom.write_byte(symbols['CFG_DISPLAY_DPAD'], 0x00)
@@ -63,8 +63,8 @@ def patch_yaxis(rom, ootworld, symbols):
 
 
 def patch_dpad_left(rom, ootworld, symbols):
-    if 'CFG_DPAD_ON_THE_LEFT' in symbols and hasattr(ootworld, 'dpad_on_the_left'):
-        rom.write_byte(symbols['CFG_DPAD_ON_THE_LEFT'], int(bool(ootworld.dpad_on_the_left)))
+    if 'CFG_DPAD_ON_THE_LEFT' in symbols:
+        rom.write_byte(symbols['CFG_DPAD_ON_THE_LEFT'], 0x01 if ootworld.display_dpad == 'left' else 0x00)
 
 
 def patch_input_viewer(rom, ootworld, symbols):
@@ -73,19 +73,28 @@ def patch_input_viewer(rom, ootworld, symbols):
 
 
 def patch_song_names(rom, ootworld, symbols):
-    if 'CFG_SONG_NAME_STATE' in symbols:
+    if 'CFG_SONG_NAME_STATE' not in symbols:
+        return
+    mode = getattr(ootworld, 'display_custom_song_names', 'off')
+    if mode == 'top':
+        rom.write_byte(symbols['CFG_SONG_NAME_STATE'], 0x01)
+    elif mode == 'pause':
+        rom.write_byte(symbols['CFG_SONG_NAME_STATE'], 0x02)
+    else:
         rom.write_byte(symbols['CFG_SONG_NAME_STATE'], 0x00)
 
 
 def patch_music(rom, ootworld, symbols):
-    # patch music
+    music_dir = getattr(ootworld, 'music_dir', None) or None
     if ootworld.background_music != 'normal' or ootworld.fanfares != 'normal':
         music.restore_music(rom)
-        log, errors = music.randomize_music(rom, ootworld, {})
+        log, errors = music.randomize_music(rom, ootworld, {}, music_dir=music_dir)
         if errors:
             logger.error(errors)
     else:
         music.restore_music(rom)
+    if getattr(ootworld, 'disable_battle_music', False):
+        rom.write_byte(0xBE447F, 0x00)
 
 
 def patch_model_colors(rom, color, model_addresses):
@@ -634,18 +643,31 @@ def patch_button_colors(rom, ootworld, symbols):
 def patch_sfx(rom, ootworld, symbols):
     # Configurable Sound Effects
     sfx_config = [
-          ('sfx_navi_overworld', sfx.SoundHooks.NAVI_OVERWORLD),
-          ('sfx_navi_enemy',     sfx.SoundHooks.NAVI_ENEMY),
-          ('sfx_low_hp',         sfx.SoundHooks.HP_LOW),
-          ('sfx_menu_cursor',    sfx.SoundHooks.MENU_CURSOR),
-          ('sfx_menu_select',    sfx.SoundHooks.MENU_SELECT),
-          ('sfx_nightfall',      sfx.SoundHooks.NIGHTFALL),
-          ('sfx_horse_neigh',    sfx.SoundHooks.HORSE_NEIGH),
-          ('sfx_hover_boots',    sfx.SoundHooks.BOOTS_HOVER),
+          ('sfx_navi_overworld',  sfx.SoundHooks.NAVI_OVERWORLD),
+          ('sfx_navi_enemy',      sfx.SoundHooks.NAVI_ENEMY),
+          ('sfx_low_hp',          sfx.SoundHooks.HP_LOW),
+          ('sfx_menu_cursor',     sfx.SoundHooks.MENU_CURSOR),
+          ('sfx_menu_select',     sfx.SoundHooks.MENU_SELECT),
+          ('sfx_nightfall',       sfx.SoundHooks.NIGHTFALL),
+          ('sfx_horse_neigh',     sfx.SoundHooks.HORSE_NEIGH),
+          ('sfx_hover_boots',     sfx.SoundHooks.BOOTS_HOVER),
+          ('sfx_iron_boots',      sfx.SoundHooks.BOOTS_IRON),
+          ('sfx_silver_rupee',    sfx.SoundHooks.SILVER_RUPEE),
+          ('sfx_boomerang_throw', sfx.SoundHooks.BOOMERANG_THROW),
+          ('sfx_hookshot_chain',  sfx.SoundHooks.HOOKSHOT_CHAIN),
+          ('sfx_arrow_shot',      sfx.SoundHooks.ARROW_SHOT),
+          ('sfx_slingshot_shot',  sfx.SoundHooks.SLINGSHOT_SHOT),
+          ('sfx_magic_arrow_shot',sfx.SoundHooks.MAGIC_ARROW_SHOT),
+          ('sfx_bombchu_move',    sfx.SoundHooks.BOMBCHU_MOVE),
+          ('sfx_get_small_item',  sfx.SoundHooks.GET_SMALL_ITEM),
+          ('sfx_explosion',       sfx.SoundHooks.EXPLOSION),
+          ('sfx_daybreak',        sfx.SoundHooks.DAYBREAK),
+          ('sfx_cucco',           sfx.SoundHooks.CUCCO),
     ]
+    # These hooks store sound IDs with the SFX bank bit set; strip it before writing
+    sfx_flag_hooks = {sfx.SoundHooks.BOOMERANG_THROW, sfx.SoundHooks.HOOKSHOT_CHAIN, sfx.SoundHooks.BOMBCHU_MOVE}
+
     sound_dict = sfx.get_patch_dict()
-    sounds_keyword_label = {sound.value.keyword: sound.value.label for sound in sfx.Sounds}
-    sounds_label_keyword = {sound.value.label: sound.value.keyword for sound in sfx.Sounds}
 
     for setting, hook in sfx_config:
         selection = ootworld.__dict__[setting].replace('_', '-')
@@ -661,9 +683,14 @@ def patch_sfx(rom, ootworld, symbols):
                 selection = ootworld.random.choice(sfx.get_hook_pool(hook, "TRUE")).value.keyword
             elif selection == 'completely-random':
                 selection = ootworld.random.choice(sfx.standard).value.keyword
-            sound_id  = sound_dict[selection]
+            sound_id = sound_dict[selection]
+            if hook in sfx_flag_hooks and sound_id > 0x7FF:
+                sound_id -= 0x800
             for loc in hook.value.locations:
                 rom.write_int16(loc, sound_id)
+
+        if setting == 'sfx_get_small_item' and 'GET_ITEM_SEQ_ID' in symbols:
+            rom.write_int16(symbols['GET_ITEM_SEQ_ID'], sound_id if selection != 'default' else rom.original.read_int16(hook.value.locations[0]))
 
 
 

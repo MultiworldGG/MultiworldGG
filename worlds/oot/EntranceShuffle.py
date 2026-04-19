@@ -375,54 +375,62 @@ def _add_boss_entrances():
             'exit_blue_warp': reverse['blue_warp']
         }
 
-    for type, source, target, dungeon, index, rindex, addresses in [
+    for type, source, target, dungeon, index, rindex, addresses, *extra in [
         (
-            'ChildBoss', 'Deku Tree Boss Door', 'Queen Gohma Boss Room',
+            'ChildBoss', 'Deku Tree Before Boss', 'Queen Gohma Boss Room',
             'KF Outside Deku Tree -> Deku Tree Lobby',
             0x040f, 0x0252, [ 0xB06292, 0xBC6162, 0xBC60AE ]
         ),
         (
-            'ChildBoss', 'Dodongos Cavern Boss Door', 'King Dodongo Boss Room',
+            'ChildBoss', 'Dodongos Cavern Before Boss', 'King Dodongo Boss Room',
             'Death Mountain -> Dodongos Cavern Beginning',
-            0x040b, 0x00c5, [ 0xB062B6, 0xBC616E ]
+            0x040b, 0x00c5, [ 0xB062B6, 0xBC616E ], 'Dodongos Cavern Mouth'
         ),
         (
-            'ChildBoss', 'Jabu Jabus Belly Boss Door', 'Barinade Boss Room',
+            'ChildBoss', 'Jabu Jabus Belly Before Boss', 'Barinade Boss Room',
             'Zoras Fountain -> Jabu Jabus Belly Beginning',
             0x0301, 0x0407, [ 0xB062C2, 0xBC60C2 ]
         ),
         (
-            'AdultBoss', 'Forest Temple Boss Door', 'Phantom Ganon Boss Room',
+            'AdultBoss', 'Forest Temple Before Boss', 'Phantom Ganon Boss Room',
             'SFM Forest Temple Entrance Ledge -> Forest Temple Lobby',
             0x000c, 0x024E, [ 0xB062CE, 0xBC6182 ]
         ),
         (
-            'AdultBoss', 'Fire Temple Boss Door', 'Volvagia Boss Room',
+            'AdultBoss', 'Fire Temple Before Boss', 'Volvagia Boss Room',
             'DMC Fire Temple Entrance -> Fire Temple Lower',
             0x0305, 0x0175, [ 0xB062DA, 0xBC60CE ]
         ),
         (
-            'AdultBoss', 'Water Temple Boss Door', 'Morpha Boss Room',
+            'AdultBoss', 'Water Temple Before Boss', 'Morpha Boss Room',
             'Lake Hylia -> Water Temple Lobby',
             0x0417, 0x0423, [ 0xB062E6, 0xBC6196 ]
         ),
         (
-            'AdultBoss', 'Spirit Temple Boss Door', 'Twinrova Boss Room',
+            'AdultBoss', 'Spirit Temple Before Boss', 'Twinrova Boss Room',
             'Desert Colossus -> Spirit Temple Lobby',
             0x008D, 0x02F5, [ 0xB062F2, 0xBC6122 ]
         ),
         (
-            'AdultBoss', 'Shadow Temple Boss Door', 'Bongo Bongo Boss Room',
+            'AdultBoss', 'Shadow Temple Before Boss', 'Bongo Bongo Boss Room',
             'Graveyard Warp Pad Region -> Shadow Temple Entryway',
             0x0413, 0x02B2, [ 0xB062FE, 0xBC61AA ]
         )
     ]:
+        return_source = extra[0] if extra else source
         d = {'index': index, 'patch_addresses': addresses}
         d.update(dungeon_data[dungeon])
         entrance_shuffle_table.append(
-            (type, (f"{source} -> {target}", d), (f"{target} -> {source}", {'index': rindex}))
+            (type, (f"{source} -> {target}", d), (f"{target} -> {return_source}", {'index': rindex}))
         )
 _add_boss_entrances()
+entrance_shuffle_table.append(
+    (
+        'SpecialBoss',
+        ('Ganons Castle Main -> Ganons Castle Tower', {'index': 0x041B}),
+        ('Ganons Castle Tower -> Ganons Castle Main', {'index': 0x0534}),
+    )
+)
 
 
 # Basically, the entrances in the list above that go to:
@@ -500,9 +508,13 @@ def shuffle_random_entrances(ootworld):
     if ootworld.shuffle_bosses == 'full':
         entrance_pools['Boss'] = ootworld.get_shufflable_entrances(type='ChildBoss', only_primary=True)
         entrance_pools['Boss'] += ootworld.get_shufflable_entrances(type='AdultBoss', only_primary=True)
+        if ootworld.shuffle_ganon_tower:
+            entrance_pools['Boss'] += ootworld.get_shufflable_entrances(type='SpecialBoss', only_primary=True)
     elif ootworld.shuffle_bosses == 'limited':
         entrance_pools['ChildBoss'] = ootworld.get_shufflable_entrances(type='ChildBoss', only_primary=True)
         entrance_pools['AdultBoss'] = ootworld.get_shufflable_entrances(type='AdultBoss', only_primary=True)
+        if ootworld.shuffle_ganon_tower:
+            entrance_pools['AdultBoss'] += ootworld.get_shufflable_entrances(type='SpecialBoss', only_primary=True)
 
     if ootworld.shuffle_dungeon_entrances:
         entrance_pools['Dungeon'] = ootworld.get_shufflable_entrances(type='Dungeon', only_primary=True)
@@ -860,11 +872,6 @@ def validate_world(ootworld, entrance_placed, locations_to_ensure_reachable, all
         potion_back = get_entrance_replacing(multiworld.get_region('Kak Potion Shop Back', player), 'Kak Backyard -> Kak Potion Shop Back', player)
         if potion_front is not None and potion_back is not None and not same_hint_area(potion_front, potion_back):
             raise EntranceShuffleError('Kak Potion Shop entrances are not in the same hint area')
-        elif (potion_front and not potion_back) or (not potion_front and potion_back):
-            # Check the hint area and ensure it's one of the ones with more than one entrance
-            potion_placed_entrance = potion_front if potion_front else potion_back
-            if get_hint_area(potion_placed_entrance) not in multi_interior_regions:
-                raise EntranceShuffleError('Kak Potion Shop entrances can never be in the same hint area')
 
         # When cows are shuffled, ensure the same thing for Impa's House, since the cow is reachable from both sides
         if ootworld.shuffle_cows:
@@ -872,10 +879,6 @@ def validate_world(ootworld, entrance_placed, locations_to_ensure_reachable, all
             impas_back = get_entrance_replacing(multiworld.get_region('Kak Impas House Back', player), 'Kak Impas Ledge -> Kak Impas House Back', player)
             if impas_front is not None and impas_back is not None and not same_hint_area(impas_front, impas_back):
                 raise EntranceShuffleError('Kak Impas House entrances are not in the same hint area')
-            elif (impas_front and not impas_back) or (not impas_front and impas_back):
-                impas_placed_entrance = impas_front if impas_front else impas_back
-                if get_hint_area(impas_placed_entrance) not in multi_interior_regions:
-                    raise EntranceShuffleError('Kak Impas House entrances can never be in the same hint area')
 
     # Check basic refills, time passing, return to ToT
     if (ootworld.shuffle_special_interior_entrances or ootworld.shuffle_overworld_entrances or ootworld.spawn_positions) and \

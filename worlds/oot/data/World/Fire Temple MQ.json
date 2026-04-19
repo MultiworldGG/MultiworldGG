@@ -84,7 +84,9 @@
             "Fire Temple MQ Big Lava Room Left Pot": "True",
             "Fire Temple MQ Big Lava Room Right Pot": "Hookshot or logic_fire_mq_blocked_chest",
             "Fire Temple MQ Big Lava Room Alcove Pot": "True",
-            "Fire Temple MQ Boss Key Chest Room Pot": "
+            "Fire Temple MQ Boss Key Chest Room Pot 1": "
+                has_fire_source and (Bow or logic_fire_mq_bk_chest) and Hookshot",
+            "Fire Temple MQ Boss Key Chest Room Pot 2": "
                 has_fire_source and (Bow or logic_fire_mq_bk_chest) and Hookshot",
             "Fire Temple MQ GS Big Lava Room Open Door": "True",
             "Fire Temple MQ Boss Key Hookshot Wonderitem": "has_fire_source and (Bow or logic_fire_mq_bk_chest) and Hookshot",

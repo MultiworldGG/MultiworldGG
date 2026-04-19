@@ -11,6 +11,15 @@ from .ntype import BigStream
 from .crc import calculate_crc
 
 DMADATA_START = 0x7430
+OVERLAY_TABLE_START = 0xB5E490
+OVERLAY_TABLE_OFFSET = 0
+OVERLAY_TABLE_ENTRY_SIZE = 0x20
+PAUSE_PLAYER_OVERLAY_TABLE_START = 0xB743E0
+PAUSE_PLAYER_OVERLAY_TABLE_ENTRY_SIZE = 0x1C
+PAUSE_PLAYER_OVERLAY_TABLE_OFFSET = 4
+
+NUM_OVERLAY_ENTRIES = 0x1D7
+NUM_PAUSE_PLAYER_OVERLAY_ENTRIES = 2
 
 double_cache_prevention = threading.Lock()
 
@@ -38,6 +47,9 @@ class Rom(BigStream):
             else:
                 self.symbols[name] = {'address': int(entry, 16), 'length': 1}
 
+        with open(data_path('generated/patch_symbols.json'), 'r') as stream:
+            self.patch_symbols = json.load(stream)
+
         # If decompressed file already exists, read from it
         if not force_use:
             if os.path.exists(decomp_file):
@@ -64,6 +76,12 @@ class Rom(BigStream):
         with double_cache_prevention:
             if not self.original:
                 Rom.original = self.copy()
+        self.overlay_table = OverlayTable.read_overlay_table(
+            self, OVERLAY_TABLE_START, OVERLAY_TABLE_OFFSET, OVERLAY_TABLE_ENTRY_SIZE, NUM_OVERLAY_ENTRIES
+        ) + OverlayTable.read_overlay_table(
+            self, PAUSE_PLAYER_OVERLAY_TABLE_START, PAUSE_PLAYER_OVERLAY_TABLE_OFFSET,
+            PAUSE_PLAYER_OVERLAY_TABLE_ENTRY_SIZE, NUM_PAUSE_PLAYER_OVERLAY_ENTRIES
+        )
 
         # Add version number to header.
         self.write_bytes(0x35, get_version_bytes(__version__))
@@ -114,7 +132,7 @@ class Rom(BigStream):
 
             if not os.path.exists(subcall[0]):
                 raise RuntimeError(f'Decompressor does not exist! Please place it at {subcall[0]}.')
-            subprocess.call(subcall, **subprocess_args())
+            subprocess.check_call(subcall, **subprocess_args())
             self.read_rom(decomp_file)
         else:
             # ROM file is a valid and already uncompressed
@@ -127,6 +145,16 @@ class Rom(BigStream):
     def write_bytes(self, address, values):
         super().write_bytes(address, values)
         self.changed_address.update(zip(range(address, address + len(values)), values))
+
+    def revert_patch(self, patch_name):
+        patch_start_symbol = patch_name + "_START"
+        patch_end_symbol = patch_name + "_END"
+        if patch_start_symbol not in self.patch_symbols or patch_end_symbol not in self.patch_symbols:
+            return
+        patch_start = OverlayTable.VRAM_2_VROM(self.overlay_table, self.patch_symbols[patch_start_symbol])
+        patch_end = OverlayTable.VRAM_2_VROM(self.overlay_table, self.patch_symbols[patch_end_symbol])
+        original_bytes = self.original.read_bytes(patch_start, patch_end - patch_start)
+        self.write_bytes(patch_start, original_bytes)
 
     def restore(self):
         self.buffer = copy.copy(self.original.buffer)
@@ -311,3 +339,32 @@ def compress_rom_file(input_file, output_file):
     import logging
     logging.info(subprocess.check_output([compressor_path, input_file, output_file],
                                              **subprocess_args(include_stdout=False)))
+
+
+class OverlayEntry:
+    def __init__(self, vrom_start, vrom_end, vram_start, vram_end):
+        self.vrom_start = vrom_start
+        self.vrom_end = vrom_end
+        self.vram_start = vram_start
+        self.vram_end = vram_end
+
+
+class OverlayTable:
+    @staticmethod
+    def read_overlay_table(rom, ovl_table_start, offset, entry_size, num_entries):
+        overlay_entries = []
+        for i in range(0, num_entries):
+            entry_bytes = rom.read_bytes(ovl_table_start + i * entry_size, entry_size)
+            vrom_start = int.from_bytes(entry_bytes[offset + 0:offset + 4], 'big')
+            vrom_end = int.from_bytes(entry_bytes[offset + 4:offset + 8], 'big')
+            vram_start = int.from_bytes(entry_bytes[offset + 8:offset + 12], 'big')
+            vram_end = int.from_bytes(entry_bytes[offset + 12:offset + 16], 'big')
+            overlay_entries.append(OverlayEntry(vrom_start, vrom_end, vram_start, vram_end))
+        return overlay_entries
+
+    @staticmethod
+    def VRAM_2_VROM(overlay_entries, vram_address):
+        for overlay_entry in overlay_entries:
+            if overlay_entry.vram_start <= vram_address < overlay_entry.vram_end:
+                return vram_address - overlay_entry.vram_start + overlay_entry.vrom_start
+        raise Exception("Overlay address not found in table")

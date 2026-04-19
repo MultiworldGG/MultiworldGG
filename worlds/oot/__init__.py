@@ -39,6 +39,23 @@ from worlds.LauncherComponents import launch as launch_componenent, components, 
 # OoT's generate_output doesn't benefit from more than 2 threads, instead it uses a lot of memory.
 i_o_limiter = threading.Semaphore(2)
 
+# Logical note requirements for each learnable song.
+# These are used by has_all_notes_for_song() when individual ocarina notes are shuffled.
+VANILLA_SONG_NOTES = {
+    'Zeldas Lullaby': '<^><^>',
+    'Eponas Song': '^<>^<>',
+    'Sarias Song': 'v><v><',
+    'Suns Song': '>v^>v^',
+    'Song of Time': '>Av>Av',
+    'Song of Storms': 'Av^Av^',
+    'Minuet of Forest': 'A^<><>',
+    'Bolero of Fire': 'vAvA>v>v',
+    'Serenade of Water': 'Av>><',
+    'Requiem of Spirit': 'AvA>vA',
+    'Nocturne of Shadow': '<>>A<>v',
+    'Prelude of Light': '^>^><^',
+}
+
 class _StartingItemRecord:
     def __init__(self, count: int):
         self.count = count
@@ -110,15 +127,15 @@ class OOTCollectionState(metaclass=AutoLogicRegister):
 
     def has_medallions(self, count: int, player: int) -> bool:
         """Returns True if the player has at least 'count' medallions."""
-        return self.has_group("medallions", player, count)
+        return self.has_group_unique("medallions", player, count)
 
     def has_stones(self, count: int, player: int) -> bool:
         """Returns True if the player has at least 'count' spiritual stones."""
-        return self.has_group("stones", player, count)
+        return self.has_group_unique("stones", player, count)
 
     def has_dungeon_rewards(self, count: int, player: int) -> bool:
         """Returns True if the player has at least 'count' dungeon rewards (stones + medallions)."""
-        return self.has_group("rewards", player, count)
+        return self.has_group_unique("rewards", player, count)
 
 
 class OOTSettings(settings.Group):
@@ -293,6 +310,7 @@ class OOTWorld(World):
         player_id = min(self.player, 255)
         self.connect_name = f"OOT{player_id:03d}-" + ''.join(f"{value:02x}" for value in self.file_hash)
         self.collectible_flag_addresses = {}
+        self.song_notes = VANILLA_SONG_NOTES.copy()
 
         # Incompatible option handling
         # ER and glitched logic are not compatible; glitched takes priority
@@ -405,7 +423,8 @@ class OOTWorld(World):
         self.keysanity = self.shuffle_smallkeys in ['keysanity', 'remove', 'any_dungeon', 'overworld']
         self.trials_random = self.options.trials.randomized
         self.mq_dungeons_random = self.options.mq_dungeons_count.randomized
-        self.easier_fire_arrow_entry = self.fae_torch_count < 24
+        if not self.easier_fire_arrow_entry:
+            self.fae_torch_count = 24
 
         # Hint stuff
         self.clearer_hints = True  # this is being enforced since non-oot items do not have non-clear hint text
@@ -414,6 +433,9 @@ class OOTWorld(World):
         self.empty_areas = {}
         self.major_item_locations = []
         self.hinted_dungeon_reward_locations = {}
+        for item in self.multiworld.precollected_items[self.player]:
+            if item.name in self.item_name_groups['rewards']:
+                self.hinted_dungeon_reward_locations[item.name] = None
 
         # ER names
         self.shuffle_special_dungeon_entrances = self.shuffle_dungeon_entrances == 'all'
@@ -433,6 +455,19 @@ class OOTWorld(World):
         self.adult_trade_shuffle = bool(self.options.adult_trade_shuffle)
         self.disable_trade_revert = (self.shuffle_interior_entrances != 'off') or self.shuffle_overworld_entrances or self.adult_trade_shuffle
         self.shuffle_special_interior_entrances = self.shuffle_interior_entrances == 'all'
+        if self.shuffle_bosses == 'off':
+            self.shuffle_ganon_tower = False
+        self.mixed_pools_bosses = self.shuffle_bosses == 'full'
+        if self.shuffle_dungeon_rewards == 'dungeon' and self.shuffle_bosses != 'off':
+            raise Exception(
+                f"OoT (Player {self.player}): 'Own Dungeon' reward shuffle is incompatible with boss entrance shuffle. "
+                f"Disable boss entrance shuffle or choose a different Shuffle Dungeon Rewards option."
+            )
+        self.entrance_rando_reward_hints = (
+            self.mixed_pools_bosses
+            or self.shuffle_ganon_tower
+            or self.shuffle_dungeon_rewards not in ('vanilla', 'reward')
+        )
 
         # Convert the double option used by shopsanity into a single option
         if self.shopsanity == 'random_number':
@@ -477,8 +512,8 @@ class OOTWorld(World):
         self.dungeon_mq = {item['name']: (item['name'] in mq_dungeons) for item in dungeon_table}
         self.dungeon_mq['Thieves Hideout'] = False  # fix for bug in SaveContext:287
 
-        # Empty dungeon placeholder for the moment
-        self.empty_dungeons = {name: False for name in self.dungeon_mq}
+        # Precompleted dungeon placeholder for the moment
+        self.precompleted_dungeons = {name: False for name in self.dungeon_mq}
 
         # Determine which dungeons have shortcuts. Not compatible with glitched logic.
         shortcut_dungeons = ['Deku Tree', 'Dodongos Cavern', \
@@ -734,18 +769,47 @@ class OOTWorld(World):
         boss_rewards = sorted(map(self.create_item, self.item_name_groups['rewards']))
         boss_locations = [self.multiworld.get_location(loc, self.player) for loc in boss_location_names]
 
+        # Build canonical reward→dungeon mapping before entrance shuffle runs.
+        # HintArea.at() resolves correctly here since entrances are still vanilla.
+        self.reward_to_vanilla_dungeon: dict = {}
+        for loc in boss_locations:
+            if loc.vanilla_item:
+                try:
+                    hint_area = HintArea.at(loc)
+                    self.reward_to_vanilla_dungeon[loc.vanilla_item] = hint_area.dungeon_name if hint_area.is_dungeon else None
+                except HintAreaNotFound:
+                    self.reward_to_vanilla_dungeon[loc.vanilla_item] = None
+
+        mode = self.shuffle_dungeon_rewards
+
         placed_prizes = [loc.item.name for loc in boss_locations if loc.item is not None]
         prizepool = [item for item in boss_rewards if item.name not in placed_prizes]
         prize_locs = [loc for loc in boss_locations if loc.item is None]
 
-        while bossCount:
-            bossCount -= 1
-            self.random.shuffle(prizepool)
-            self.random.shuffle(prize_locs)
-            item = prizepool.pop()
-            loc = prize_locs.pop()
-            loc.place_locked_item(item)
-            self.hinted_dungeon_reward_locations[item.name] = loc
+        if mode == 'vanilla':
+            # Place each reward at its specific vanilla Boss location.
+            vanilla_map = {loc.vanilla_item: loc for loc in boss_locations}
+            for item in list(prizepool):
+                loc = vanilla_map.get(item.name)
+                if loc and loc.item is None:
+                    loc.place_locked_item(item)
+                    self.hinted_dungeon_reward_locations[item.name] = loc
+        elif mode == 'reward':
+            # Shuffle all rewards among the Boss locations (original behaviour).
+            while bossCount:
+                bossCount -= 1
+                self.random.shuffle(prizepool)
+                self.random.shuffle(prize_locs)
+                item = prizepool.pop()
+                loc = prize_locs.pop()
+                loc.place_locked_item(item)
+                self.hinted_dungeon_reward_locations[item.name] = loc
+        else:
+            # dungeon / overworld / any_dungeon / regional / anywhere:
+            # Rewards go into the general item pool; set_dungeon_reward_rules() in
+            # Rules.py handles the placement restrictions via item rules.
+            for item in prizepool:
+                self.multiworld.itempool.append(item)
 
 
     # Separate the result from generate_itempool into main and prefill pools
@@ -959,10 +1023,33 @@ class OOTWorld(World):
         locations = list(self.multiworld.get_unfilled_locations(self.player))
         self.random.shuffle(locations)
 
-        # Set up initial state
+        # Set up initial state.
+        # During prefill we assume every non-prefill item for this player could be found eventually.
+        # Use the MultiWorld itempool here so rewards shuffled out of boss locations are also included.
         state = CollectionState(self.multiworld)
-        for item in self.itempool:
-            self.collect(state, item)
+        for item in self.multiworld.itempool:
+            if item.player == self.player:
+                self.collect(state, item)
+
+        # In vanilla/reward modes, dungeon rewards are pre-placed on bosses instead of the item pool.
+        for location in self.get_locations():
+            if (location.item
+                and location.item.player == self.player
+                and location.item.type == 'DungeonReward'):
+                self.collect(state, location.item)
+
+        # Some progression is intentionally not represented in the item pool.
+        if self.free_scarecrow:
+            state.collect(self.create_item("Scarecrow Song"), prevent_sweep=True)
+        if not self.shuffle_ocarinas:
+            state.collect(self.create_item("Ocarina"), prevent_sweep=True)
+        if self.shuffle_child_trade == 'vanilla':
+            state.collect(self.create_item("Weird Egg"), prevent_sweep=True)
+        if self.shuffle_child_trade in {'vanilla', 'shuffle'}:
+            state.collect(self.create_item("Zeldas Letter"), prevent_sweep=True)
+        if not self.open_door_of_time:
+            state.collect(self.create_item("Song of Time"), prevent_sweep=True)
+
         state.sweep_for_advancements(locations=self.get_locations())
 
         # Place dungeon items
@@ -1276,16 +1363,16 @@ class OOTWorld(World):
             "dungeon_shortcuts", "dungeon_shortcuts_list",
             "mq_dungeons_mode", "mq_dungeons_list", "mq_dungeons_count",
             "shuffle_interior_entrances", "shuffle_grotto_entrances", "shuffle_dungeon_entrances",
-            "shuffle_overworld_entrances", "shuffle_bosses", "key_rings", "key_rings_list", "enhance_map_compass",
+            "shuffle_overworld_entrances", "shuffle_bosses", "shuffle_ganon_tower", "key_rings", "key_rings_list", "enhance_map_compass",
             "shuffle_mapcompass", "shuffle_smallkeys", "shuffle_hideoutkeys", "shuffle_bosskeys",
             "logic_rules", "logic_no_night_tokens_without_suns_song", "logic_tricks",
             "warp_songs", "shuffle_song_items","shuffle_medigoron_carpet_salesman", "shuffle_frog_song_rupees",
             "shuffle_scrubs", "shuffle_child_trade", "shuffle_freestanding_items", "shuffle_pots", "shuffle_crates",
             "shuffle_cows", "shuffle_beehives", "shuffle_wonderitems", "shuffle_kokiri_sword", "shuffle_ocarinas", "shuffle_gerudo_card",
-            "shuffle_beans", "starting_age", "bombchus_in_logic", "spawn_positions", "owl_drops",
-            "no_epona_race", "skip_some_minigame_phases", "complete_mask_quest", "free_scarecrow", "plant_beans",
+            "shuffle_beans", "shuffle_gerudo_fortress_heart_piece", "starting_age", "bombchus_in_logic", "spawn_positions", "owl_drops",
+            "no_epona_race", "skip_some_minigame_phases", "complete_mask_quest", "free_scarecrow", "plant_beans", "easier_fire_arrow_entry", "fast_shadow_boat",
             "chicken_count", "big_poe_count", "fae_torch_count", "blue_fire_arrows",
-            "damage_multiplier", "deadly_bonks", "starting_tod", "junk_ice_traps",
+            "damage_multiplier", "deadly_bonks", "starting_tod", "junk_ice_traps", "custom_ice_trap_count", "custom_ice_trap_percent",
             "start_with_consumables", "adult_trade_start", "plando_connections"
             )
         )

@@ -4,7 +4,7 @@ import typing
 
 from .Regions import TimeOfDay
 from .DungeonList import dungeon_table
-from .Hints import HintArea
+from .Hints import HintArea, HintAreaNotFound
 from .Items import oot_is_item_of_type
 from .LocationList import dungeon_song_locations
 
@@ -21,13 +21,13 @@ class OOTLogic(LogicMixin):
                            if parent.worlds[player].game == "Ocarina of Time"}
 
     def _oot_has_stones(self, count, player): 
-        return self.has_group("stones", player, count)
+        return self.has_group_unique("stones", player, count)
 
     def _oot_has_medallions(self, count, player): 
-        return self.has_group("medallions", player, count)
+        return self.has_group_unique("medallions", player, count)
 
     def _oot_has_dungeon_rewards(self, count, player): 
-        return self.has_group("rewards", player, count)
+        return self.has_group_unique("rewards", player, count)
 
     def _oot_has_hearts(self, count, player):
         containers = self.count("Heart Container", player)
@@ -58,6 +58,8 @@ class OOTLogic(LogicMixin):
 
         # Scarecrow Song needs at least 2 different notes
         if song == 'Scarecrow Song' or song == 'Scarecrow_Song':
+            if world.free_scarecrow:
+                return True
             # Count how many ocarina buttons we have
             button_count = 0
             if self.has("Ocarina A Button", player):
@@ -231,6 +233,8 @@ def set_rules(ootworld):
     # if location.type == 'HintStone' and ootworld.hints == 'mask':
     #     location.add_rule(is_child)
 
+    set_dungeon_reward_rules(ootworld)
+
 
 def create_shop_rule(location, parser):
     def required_wallets(price):
@@ -295,3 +299,53 @@ def set_entrances_based_rules(ootworld):
             forbid_item(location, 'Buy Goron Tunic', ootworld.player)
             forbid_item(location, 'Buy Zora Tunic', ootworld.player)
 
+
+def set_dungeon_reward_rules(ootworld):
+    REWARD_COLORS = {
+        'Kokiri Emerald':   'Green',
+        'Goron Ruby':       'Red',
+        'Zora Sapphire':    'Blue',
+        'Forest Medallion': 'Green',
+        'Fire Medallion':   'Red',
+        'Water Medallion':  'Blue',
+        'Shadow Medallion': 'Pink',
+        'Spirit Medallion': 'Yellow',
+        'Light Medallion':  'Light Blue',
+    }
+
+    mode = ootworld.shuffle_dungeon_rewards
+    if mode in ('vanilla', 'reward', 'anywhere'):
+        return
+
+    reward_to_vanilla_dungeon = ootworld.reward_to_vanilla_dungeon
+
+    # Precompute hint areas for all locations to avoid repeated BFS during fill.
+    loc_hint_area: dict = {}
+    for location in ootworld.get_locations():
+        try:
+            loc_hint_area[location.name] = HintArea.at(location)
+        except HintAreaNotFound:
+            loc_hint_area[location.name] = None
+
+    for location in ootworld.get_locations():
+        hint_area = loc_hint_area.get(location.name)
+
+        if mode == 'dungeon':
+            loc_dungeon = hint_area.dungeon_name if hint_area else None
+            add_item_rule(location, lambda item, d=loc_dungeon, r2d=reward_to_vanilla_dungeon:
+                not oot_is_item_of_type(item, 'DungeonReward') or r2d.get(item.name) == d)
+
+        elif mode == 'regional':
+            loc_color = hint_area.color if hint_area else None
+            add_item_rule(location, lambda item, c=loc_color, rc=REWARD_COLORS:
+                not oot_is_item_of_type(item, 'DungeonReward') or rc.get(item.name) == c)
+
+        elif mode == 'overworld':
+            if hint_area and hint_area.is_dungeon:
+                add_item_rule(location, lambda item:
+                    not oot_is_item_of_type(item, 'DungeonReward'))
+
+        elif mode == 'any_dungeon':
+            if not hint_area or not hint_area.is_dungeon:
+                add_item_rule(location, lambda item:
+                    not oot_is_item_of_type(item, 'DungeonReward'))

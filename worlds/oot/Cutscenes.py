@@ -1,6 +1,9 @@
 from typing import Optional
 
 from .Rom import Rom
+# The following helpers can be used when the cutscene is written in the form of CutsceneData instructions.
+# This is the case for all cutscenes defined directly in their scenes, and some specific ones in their actor file.
+# However some cutscenes like all the ones tied to bosses are done "manually" in their actor files in a completely different format.
 
 def delete_cutscene(rom: Rom, address: int) -> None:
     # Address is the start of the cutscene commands.
@@ -69,17 +72,7 @@ def patch_cutscene_misc_command(rom: Rom, address: int, start_frame:int, end_fra
     rom.write_int16(address + 2, start_frame)
     rom.write_int16(address + 4, end_frame)
 
-def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
-    # Speed scene after Deku Tree
-    # Deku Tree talking to Link.
-    # Cut to 1 frame and redirect destination to the get Emerald cutscene (0x07).
-    patch_cutscene_destination_and_length(rom, 0x2077E20, 1, 0x07)
-    # Recieve the Emerald cutscene.
-    patch_cutscene_destination_and_length(rom, 0x2078A10, 31)
-    # Display the 0x0080 textbox (You got the Kokiri's Emerald!) between 0 and 30 frames.
-    patch_textbox_during_cutscene(rom, 0x2079570, 0x0080, 0, 30)
-    # Display no text between 30 and 40 frames.
-    patch_textbox_during_cutscene(rom, 0x207957C, 0, 30, 40)
+def patch_cutscenes(rom: Rom, songs_as_items: bool, settings) -> None:
 
     # Speed obtaining Fairy Ocarina
     patch_cutscene_destination_and_length(rom, 0x2151230, 60)
@@ -172,11 +165,6 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
     # Play Sarias Song to Darunia
     delete_cutscene(rom, 0x22769E0)
 
-    # Speed scene after Dodongo's Cavern
-    patch_cutscene_destination_and_length(rom, 0x2221E88, 59)
-    # Display the 0x0081 textbox (You got the Goron's Ruby!) between 0 and 58 frames.
-    patch_textbox_during_cutscene(rom, 0x2223308, 0x0081, 0, 58)
-
     # Speed up Death Mountain Trail Owl Flight
     patch_cutscene_destination_and_length(rom, 0x223B6B0, 1)
 
@@ -189,11 +177,6 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
     # Speed scene after Jabu Jabu's Belly
     # Cut Ruto talking to Link when entering the blue warp.
     rom.write_int32(0xCA3530, 0x00000000)
-    patch_cutscene_destination_and_length(rom, 0x2113340, 59)
-    # Display the 0x0081 textbox (You got the Zora's Sapphire!) between 0 and 58 frames.
-    patch_textbox_during_cutscene(rom, 0x2113C18, 0x0082, 0, 58)
-    # Ensure the initial white screen will stay on screen for 59 frames and not switch briefly to the next cutscene.
-    patch_cutscene_scene_transition(rom, 0x21131D0, 1, 0, 59)
 
     # Speed up Lake Hylia Owl Flight
     patch_cutscene_destination_and_length(rom, 0x20E60D0, 1)
@@ -260,7 +243,7 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
         # Switch to player action 17 between frames 0 and 16.
         rom.write_int16s(0x020AFF90, [0x0011, 0x0000, 0x0010])  # action, start, end
         # Switch to player action 62 between frames 17 and 32.
-        rom.write_int16s(0x020AFFC1, [0x003E, 0x0011, 0x0020])  # action, start, end
+        rom.write_int16s(0x020AFFC0, [0x003E, 0x0011, 0x0020])  # action, start, end
 
     # Speed Phantom Ganon defeat scene
     # Removes the check for timers to switch between the different parts of the cutscene.
@@ -276,12 +259,7 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
     rom.write_int32(0xC94594, 0x00000000)
 
     # Speed scene after Forest Temple
-    # Saria becomes a Sage cutscene.
-    # Cut to 59 frames and redirect to the third part of the Deku Sprout cutscene (0x45).
-    patch_cutscene_destination_and_length(rom, 0xD4ED68, 59, 0x45)
-    # Display the 0x003E textbox (You received the Forest Medallion!) between 0 and 58 frames.
-    patch_textbox_during_cutscene(rom, 0xD4ED78, 0x003E, 0, 58)
-    # Deku Sprout cutscene number 3.
+    # Blue warp brings us to right before Deku Sprout cutscene number 3.
     delete_cutscene(rom, 0x207B9D0)
 
     # Speed learning Prelude of Light
@@ -317,14 +295,6 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
         rom.write_int16(0x0224B828, 0x0000)
         rom.write_int16(0x0224B858, 0x0000)
 
-    # Speed scene after Fire Temple
-    # Crater volcano erupting from Kakariko.
-    patch_cutscene_destination_and_length(rom, 0x2001848, 1)
-    # Darunia becomes a Sage cutscene.
-    patch_cutscene_destination_and_length(rom, 0xD100B4, 59)
-    # Display the 0x003C textbox (You received the Fire Medallion!) between 0 and 58 frames.
-    patch_textbox_during_cutscene(rom, 0xD10134, 0x003C, 0, 58)
-
     # Speed learning Serenade of Water
     if songs_as_items:
         delete_cutscene(rom, 0x02BEB250)
@@ -347,15 +317,13 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
         # Restart Ice cavern music on frame 33.
         rom.write_int16s(0x02BEC852, [0x0021, 0x0022])
 
-    # Speed scene after Water Temple
-    # Ruto becomes a Sage cutscene.
-    patch_cutscene_destination_and_length(rom, 0xD5A458, 59)
-    # Display the 0x003D textbox (You received the Water Medallion!) between 0 and 58 frames.
-    patch_textbox_during_cutscene(rom, 0xD5A3A8, 0x003D, 0, 58)
-    # Set the "Restored Lake Hylia water" flag at the first frame.
-    patch_cutscene_misc_command(rom, 0x20D0B68, 1, 2)
-    # Lake Hylia restored water cutscene.
-    patch_cutscene_destination_and_length(rom, 0x20D0D20, 2)
+    # Speed Morpha defeat cutscene
+    rom.write_int16(0xD3FDA6, 0x43AF) # make the cam look at the ceiling after core burst
+    rom.write_int16(0xD3FDBA, 0x0068) # jump some cutscene states, go directly to MO_DEATH_DROPLET instead of MO_DEATH_DRAIN_WATER_1
+    rom.write_int16(0xD3FE1E, 0x0020) # change the timer for current state to 32 because the MO_DEATH_DROPLET state starts at timer 30
+    rom.write_int16(0xD3FE46, 0xC396) # make the water level down instantly
+    rom.write_int32(0xD4021C, 0x00000000) # prevent cam to do a 90 degree rotation
+    rom.write_int16(0xD40392, 0x003C) # stop the NA_SE_EN_MOFER_APPEAR sfx after 2sec
 
     # Speed learning Nocturne of Shadow
     # Burning Kak cutscene
@@ -379,11 +347,24 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
     # Set the "Drain Well" flag at the second frame (first frame is used by the "Fast Windmill" flag).
     patch_cutscene_misc_command(rom, 0x20010D8, 2, 3)
 
-    # Speed scene after Shadow Temple
-    # Impa becomes a Sage cutscene.
-    patch_cutscene_destination_and_length(rom, 0xD13EC8, 59)
-    # Display the 0x0041 textbox (You received the Shadow Medallion!) between 0 and 58 frames.
-    patch_textbox_during_cutscene(rom, 0xD13E18, 0x0041, 0, 58)
+    # This cutscene is not written in the shadow temple scene or in the boat actor, but directly in z_onepointdemo.c instead.
+    # So not compatible with our functions.
+    if settings.fast_shadow_boat:
+        # bg_haka_ship changes to make the boat go faster.
+        rom.write_int16(0xD1923E, 0x0000) # Timer to start moving
+        rom.write_int16(0xD19426, 0x4348) # Speed x10
+        rom.write_int16(0xD19436, 0x447A) # Speed x10
+        # Cutscene changes so that it lasts just long enough to prevent jumping to the skulltula.
+        # Remove all camera cues of the cutscene past the first one by changing the size of keyFrameCount to 1.
+        rom.write_int16(0xAE010E, 0x0001)
+        # Change first camera cue point of view to be less awkward.
+        # Change viewFlags to 2121, this will make the camera focus on Link.
+        rom.write_int16(0xB697F6, 0x2121)
+        # Change the length to 4 sec instead of 2 sec.
+        rom.write_int16(0xB697F8, 0x0050)
+        # Change the at/eye camera values to follow Link from behind.
+        # New value : { 0.0f, 0.0f, 0.0f }, { 50.0f, 30.0f, -200.0f}
+        rom.write_int32s(0xB69804, [0x00000000, 0x00000000, 0x00000000, 0x42480000, 0x42480000, 0xC3480000])
 
     # Speed learning Requiem of Spirit
     if songs_as_items:
@@ -408,7 +389,7 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
     # Make the current miniboss music end on second frame.
     rom.write_bytes(0x2F5C7DA, [0x00, 0x01, 0x00, 0x02])
     # Restart dungeon music on third frame.
-    rom.write_bytes(0x2F5C7A4, [0x00, 0x03, 0x00, 0x04])
+    rom.write_bytes(0x2F5C7A2, [0x00, 0x03, 0x00, 0x04])
     # Kill the actors in the cutscene on the first frame by switching their first action by the last.
     # Nabooru
     rom.write_byte(0x2F5B369, 0x09)
@@ -432,12 +413,6 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
     # Replaces a if (msgId2 != 0) check by if (0 != 0) to prevent textboxes from starting.
     rom.write_bytes(0xD67BA4, [0x10, 0x00])
 
-    # Speed scene after Spirit Temple
-    # Nabooru becomes a Sage cutscene.
-    patch_cutscene_destination_and_length(rom, 0xD3A0A8, 59)
-    # Display the 0x003F textbox (You received the Spirit Medallion!) between 0 and 58 frames.
-    patch_textbox_during_cutscene(rom, 0xD39FF0, 0x003F, 0, 58)
-
     # Cutscene for all medallions never triggers when leaving shadow or spirit temples
     rom.write_byte(0xACA409, 0xAD)
     rom.write_byte(0xACA49D, 0xCE)
@@ -448,7 +423,7 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
     rom.write_bytes(0x292D682, [0x00, 0x01, 0x00, 0x6C])
     # Make Link look up to the particles by changing the type of first player cue from 5 to 39.
     rom.write_byte(0x292D6E9, 0x27)
-    # Make Link look at the bridge by changing the type of second player cue from 39 to 59.
+    # Make Link look at the bridge by changing the type of second player cue from 39 to 50.
     rom.write_byte(0x292D719, 0x32)
     # Make the rainbow bridge spawn on frame 60.
     rom.write_int16(0x292D812, 0x003C)
@@ -490,8 +465,16 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
     patch_cutscene_destination_and_length(rom, 0x33FB328, 1)
 
     # After tower collapse
-    # Jump from csState 1 to csState 4, 100 frames before giving back control. Next state only starts when Link gets near Ganon.
+    # Delete a bunch of camera instructions to avoid sudden movement when getting control back.
+    # Put subCamId at 0 in csState 0
+    rom.write_byte(0xE82DE9, 0x00)
+    # Jump from csState 1 to csState 4.
     rom.write_byte(0xE82E0F, 0x04)
+    # Remove all main camera changes in csState 4.
+    for byte in range(0, 80):
+        rom.write_byte(0xE8343C + byte, 0x00)
+    # Reduce the 100 frames wait in state 4 to 1. Next cutscene state only starts when Link gets close to Ganon.
+    rom.write_int16(0xE8341A, 0x0001)
     # Ganon intro
     # Jump from state 14 to 15 instantly instead of waiting 60 frames.
     rom.write_int32(0xE83B5C, 0x00000000)
@@ -499,3 +482,35 @@ def patch_cutscenes(rom: Rom, songs_as_items:bool) -> None:
     rom.write_int32(0xE83D28, 0x00000000)
     # Remove the Navi textbox at the start of state 28 ("This time, we fight together!).
     rom.write_int16(0xE84C80, 0x1000)
+
+def patch_wondertalk2(rom: Rom, settings) -> None:
+    # Wonder_talk2 is an actor that displays a textbox when near a certain spot, either automatically or by pressing A (button turns to Check).
+    # We remove them by moving their Y coordinate far below their normal spot.
+    wonder_talk2_y_coordinates = [
+        0x27C00BC, 0x27C00CC, 0x27C00DC, 0x27C00EC, 0x27C00FC, 0x27C010C, 0x27C011C, 0x27C012C, # Shadow Temple Whispering Wall Maze (Room 0)
+        0x27CE080, 0x27CE090, # Shadow Temple Truthspinner (Room 2)
+        0x2887070, 0x2887080, 0x2887090, # GTG Entrance Room (Room 0)
+        0x2897070, # GTG Stalfos Room (Room 1)
+        0x28A1144, # GTG Flame Wall Maze (Room 2)
+        0x28A60F4, 0x28A6104, # GTG Pushblock Room (Room 3)
+        0x28AE084, # GTG Rotating Statue Room (Room 4)
+        0x28B9174, # GTG Megaton Statue Room (Room 5)
+        0x28BF168, 0x28BF178, 0x28BF188, # GTG Lava Room (Room 6)
+        0x28C7134, # GTG Dinolfos Room (Room 7)
+        0x28D0094, # GTG Ice Arrow Room (Room 8)
+        0x28D91BC, # GTG Shellblade Room (Room 9)
+        0x225E7E0, # Death Mountain Crater (Room 1)
+        0x32A50E4, # Thieves' Hideout Green Cell Room 3 torches (Room 1)
+        0x32AD0E4, # Thieves' Hideout Red Cell Room 1 torch (Room 2)
+        0x32BD102, # Thieves' Hideout Green Cell Room 4 torches (Room 4)
+        0x32C1134, # Thieves' Hideout Blue Cell Room 2 torches (Room 5)
+    ]
+    for address in wonder_talk2_y_coordinates:
+        rom.write_byte(address, 0xFB)
+
+    if 'frogs2' in settings.misc_hints:
+        # Prevent setting the replaced textbox flag so that the hint is easily repeatible by walking over the spot again.
+        # And move the hint spot down the log so that it doesn't pop every time a song is played, and let some room to do ocarina item glitch.
+        rom.write_int16s(0x2059412, [0x03C0, 0x00E2, 0xFAA6]) # Move coordinates. Original value : 1000, 205, -1202. New value : 960, 226, -1370.
+        rom.write_byte(0x205941F, 0xBF) # Never set the flag.
+

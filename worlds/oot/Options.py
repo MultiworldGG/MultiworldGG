@@ -1,7 +1,7 @@
 import typing
 import random
 from dataclasses import dataclass
-from Options import Option, DefaultOnToggle, Toggle, Range, OptionSet, DeathLink, PlandoConnections, \
+from Options import Option, OptionDict, DefaultOnToggle, Toggle, Range, OptionSet, DeathLink, PlandoConnections, \
     PerGameCommonOptions, OptionGroup
 from .EntranceShuffle import entrance_shuffle_table
 from .LogicTricks import normalized_name_tricks
@@ -35,6 +35,12 @@ class TrackRandomRange(Range):
 class OoTPlandoConnections(PlandoConnections):
     entrances = set([connection[1][0] for connection in entrance_shuffle_table])
     exits = set([connection[2][0] for connection in entrance_shuffle_table if len(connection) > 2])
+
+
+class PlandomizedLocations(OptionDict):
+    """Compatibility-only field for importing upstream settings/presets."""
+    display_name = "Plandomized Locations"
+    default = {}
 
 
 class Logic(Choice): 
@@ -196,6 +202,11 @@ class BossEntrances(Choice):
     option_full = 2
 
 
+class ShuffleGanonTower(Toggle):
+    """Shuffle the entrance from Ganon's Castle Main to Ganon's Tower into the boss entrance pool."""
+    display_name = "Shuffle Ganon's Tower Entrance"
+
+
 class OverworldEntrances(Toggle):
     """Shuffles overworld loading zones."""
     display_name = "Shuffle Overworld Entrances"
@@ -204,6 +215,16 @@ class OverworldEntrances(Toggle):
 class ShuffleHideoutEntrances(Toggle):
     """Shuffles the 4 interior entrances to different rooms within Gerudo Fortress (v8.0)."""
     display_name = "Shuffle Hideout Entrances"
+
+
+class ShuffleGerudoFortressHeartPiece(Choice):
+    """Controls the child-only Heart Piece in Gerudo Fortress when Thieves' Hideout entrances are shuffled.
+    Remove: exclude it. Vanilla: leave it in place. Shuffle: add it to the item pool."""
+    display_name = "Shuffle Gerudo Fortress Heart Piece"
+    option_remove = 0
+    option_vanilla = 1
+    option_shuffle = 2
+    default = 1
 
 
 class ShuffleGerudoValleyRiverExit(Toggle):
@@ -269,9 +290,7 @@ class ExtraTriforces(Range):
 
 
 class LogicalChus(Toggle):
-    """Bombchus are properly considered in logic (v8.0 renamed to 'Add Bombchu Bag and Drops').
-
-    The first Bombchu pack found becomes a Bombchu Bag, giving the same amount of bombchus
+    """The first Bombchu pack found becomes a Bombchu Bag, giving the same amount of bombchus
     as the original pack (e.g., finding Bombchus (5) first gives Bombchu Bag with 5 bombchus).
 
     After finding the bag, bombchu refills drop from grass, pots, crates, and enemies.
@@ -386,11 +405,13 @@ world_options: typing.Dict[str, type(Option)] = {
     "shuffle_dungeon_entrances": DungeonEntrances,
     "shuffle_overworld_entrances": OverworldEntrances,
     "shuffle_hideout_entrances": ShuffleHideoutEntrances,  # v8.0
+    "shuffle_gerudo_fortress_heart_piece": ShuffleGerudoFortressHeartPiece,
     "shuffle_gerudo_valley_river_exit": ShuffleGerudoValleyRiverExit,  # v8.0
     "owl_drops": OwlDrops,
     "warp_songs": WarpSongs,
     "spawn_positions": SpawnPositions,
     "shuffle_bosses": BossEntrances,
+    "shuffle_ganon_tower": ShuffleGanonTower,
     # "mix_entrance_pools": MixEntrancePools,
     # "decouple_entrances": DecoupleEntrances,
     "triforce_hunt": TriforceHunt, 
@@ -730,7 +751,27 @@ shuffle_options: typing.Dict[str, type(Option)] = {
 }
 
 
-class ShuffleMapCompass(Choice): 
+class ShuffleDungeonRewards(Choice):
+    """Control where Medallions and Spiritual Stones can be placed.
+    Vanilla: Rewards appear at their vanilla locations (blue warps in their respective dungeons).
+    Reward: Rewards are shuffled among all nine blue-warp reward locations.
+    Dungeon: Each reward is shuffled within its own dungeon.
+    Regional: Rewards are shuffled within their region.
+    Overworld: Rewards are shuffled into overworld locations only.
+    Any Dungeon: Rewards are shuffled into any dungeon location.
+    Anywhere: Rewards are shuffled into any location in the pool."""
+    display_name = "Shuffle Dungeon Rewards"
+    option_vanilla = 0
+    option_reward = 1
+    option_dungeon = 2
+    option_regional = 3
+    option_overworld = 4
+    option_any_dungeon = 5
+    option_anywhere = 6
+    default = 1
+
+
+class ShuffleMapCompass(Choice):
     """Control where to shuffle dungeon maps and compasses.
     Remove: There will be no maps or compasses in the itempool.
     Startwith: You start with all maps and compasses.
@@ -921,6 +962,7 @@ class KeyRingList(OptionSet):
 
 
 dungeon_items_options: typing.Dict[str, type(Option)] = {
+    "shuffle_dungeon_rewards": ShuffleDungeonRewards,
     "shuffle_mapcompass": ShuffleMapCompass,
     "shuffle_smallkeys": ShuffleKeys,
     "shuffle_hideoutkeys": ShuffleGerudoKeys,
@@ -1010,8 +1052,18 @@ class FAETorchCount(Range):
     Does not affect logic; use the trick Shadow Temple Entry with Fire Arrows if desired."""
     display_name = "Fire Arrow Entry Torch Count"
     range_start = 1
-    range_end = 24
-    default = 24
+    range_end = 23
+    default = 3
+
+
+class EasierFireArrowEntry(Toggle):
+    """Allow reducing the number of lit torches required to open Shadow Temple with Fire Arrows."""
+    display_name = "Easier Fire Arrow Entry"
+
+
+class FastShadowBoat(Toggle):
+    """Speed up the boat ride in the Shadow Temple."""
+    display_name = "Fast Shadow Temple Boat"
 
 
 timesavers_options: typing.Dict[str, type(Option)] = {
@@ -1025,9 +1077,11 @@ timesavers_options: typing.Dict[str, type(Option)] = {
     "free_scarecrow": FreeScarecrow, 
     "fast_bunny_hood": FastBunny,
     "plant_beans": PlantBeans,
+    "easier_fire_arrow_entry": EasierFireArrowEntry,
     "chicken_count": ChickenCount,
     "big_poe_count": BigPoeCount,
     "fae_torch_count": FAETorchCount,
+    "fast_shadow_boat": FastShadowBoat,
 }
 
 
@@ -1115,6 +1169,7 @@ class MiscHints(OptionSet):
         "frogs2",
         "mask_shop",
         "unique_merchants",
+        "big_poes",
     }
     default = {
         "altar",
@@ -1270,8 +1325,26 @@ class IceTraps(Choice):
     option_on = 2
     option_mayhem = 3
     option_onslaught = 4
+    option_custom_count = 5
+    option_custom_percent = 6
     default = 1
     alias_extra = 2
+
+
+class CustomIceTrapPercent(Range):
+    """Percentage of junk items replaced by ice traps when Ice Traps is set to Custom (%)."""
+    display_name = "Custom Ice Trap Percent"
+    range_start = 0
+    range_end = 100
+    default = 50
+
+
+class CustomIceTrapCount(Range):
+    """Number of junk items replaced by ice traps when Ice Traps is set to Custom (count)."""
+    display_name = "Custom Ice Trap Count"
+    range_start = 0
+    range_end = 2000
+    default = 100
 
 
 class IceTrapVisual(Choice): 
@@ -1306,6 +1379,8 @@ class AdultTradeShuffleOption(Toggle):
 itempool_options: typing.Dict[str, type(Option)] = {
     "item_pool_value": ItemPoolValue,
     "junk_ice_traps": IceTraps,
+    "custom_ice_trap_percent": CustomIceTrapPercent,
+    "custom_ice_trap_count": CustomIceTrapCount,
     "ice_trap_appearance": IceTrapVisual,
     "adult_trade_shuffle": AdultTradeShuffleOption,
     "adult_trade_start": AdultTradeStart,
@@ -1320,9 +1395,16 @@ class Targeting(Choice):
     option_switch = 1
 
 
-class DisplayDpad(DefaultOnToggle):
-    """Show dpad icon on HUD for quick actions (ocarina, hover boots, iron boots, mask)."""
+class DisplayDpad(Choice):
+    """Show dpad icon on HUD for quick actions (ocarina, hover boots, iron boots, mask).
+    On: D-Pad shown on the right side (default).
+    Left: D-Pad shown on the left side.
+    Off: D-Pad hidden."""
     display_name = "Display D-Pad HUD"
+    option_off = 0
+    option_on = 1
+    option_left = 2
+    default = 1
 
 
 class DpadDungeonMenu(DefaultOnToggle):
@@ -1364,10 +1446,55 @@ class SwordTrailDuration(Range):
     default = 4
 
 
+class SpeedupMusicForLastTriforcePiece(Toggle):
+    """In Triforce Hunt, speed up the music slightly when one piece away from the goal."""
+    display_name = "Speed Up Music for Last Triforce Piece"
+
+
+class SlowdownMusicWhenLowhp(Toggle):
+    """Slow down the background music when at critically low health."""
+    display_name = "Slowdown Music When Low HP"
+
+
+class UninvertYAxisInFirstPersonCamera(Toggle):
+    """Uninvert the Y-axis when in first-person camera mode (e.g. arrow aiming)."""
+    display_name = "Uninvert Y-Axis in First Person Camera"
+
+
+class InputViewer(Toggle):
+    """Show a controller input display on screen."""
+    display_name = "Input Viewer"
+
+
+class DisableBattleMusic(Toggle):
+    """Prevent background music from being interrupted by the battle theme when near enemies."""
+    display_name = "Disable Battle Music"
+
+
+class DisplayCustomSongNames(Choice):
+    """When music is randomized, display the custom track name on screen."""
+    display_name = "Display Custom Song Names"
+    option_off = 0
+    option_top = 1
+    option_pause = 2
+
+
+class CreditsMusic(Toggle):
+    """Include the credits roll sequences in the background music shuffle pool."""
+    display_name = "Credits Music as BGM"
+
+
 cosmetic_options: typing.Dict[str, type(Option)] = {
     "default_targeting": Targeting,
     "display_dpad": DisplayDpad,
     "dpad_dungeon_menu": DpadDungeonMenu,
+    "speedup_music_for_last_triforce_piece": SpeedupMusicForLastTriforcePiece,
+    "slowdown_music_when_lowhp": SlowdownMusicWhenLowhp,
+    "uninvert_y_axis_in_first_person_camera": UninvertYAxisInFirstPersonCamera,
+    "input_viewer": InputViewer,
+    "disable_battle_music": DisableBattleMusic,
+    "display_custom_song_names": DisplayCustomSongNames,
+    "credits_music": CreditsMusic,
     "correct_model_colors": CorrectColors,
     "background_music": BackgroundMusic,
     "fanfares": Fanfares,
@@ -1421,6 +1548,18 @@ sfx_options: typing.Dict[str, type(Option)] = {
     "sfx_nightfall":        sfx_nightfall,
     "sfx_horse_neigh":      sfx_horse_neigh,
     "sfx_hover_boots":      sfx_hover_boots,
+    "sfx_iron_boots":       sfx_iron_boots,
+    "sfx_silver_rupee":     sfx_silver_rupee,
+    "sfx_boomerang_throw":  sfx_boomerang_throw,
+    "sfx_hookshot_chain":   sfx_hookshot_chain,
+    "sfx_arrow_shot":       sfx_arrow_shot,
+    "sfx_slingshot_shot":   sfx_slingshot_shot,
+    "sfx_magic_arrow_shot": sfx_magic_arrow_shot,
+    "sfx_bombchu_move":     sfx_bombchu_move,
+    "sfx_get_small_item":   sfx_get_small_item,
+    "sfx_explosion":        sfx_explosion,
+    "sfx_daybreak":         sfx_daybreak,
+    "sfx_cucco":            sfx_cucco,
     "sfx_ocarina":          SfxOcarina,
 }
 
@@ -1439,6 +1578,7 @@ class LogicTricks(OptionSet):
 @dataclass
 class OoTOptions(PerGameCommonOptions):
     plando_connections: OoTPlandoConnections
+    plandomized_locations: PlandomizedLocations
     death_link: DeathLink
     logic_rules: Logic
     logic_no_night_tokens_without_suns_song: NightTokens
@@ -1459,6 +1599,7 @@ class OoTOptions(PerGameCommonOptions):
     warp_songs: WarpSongs
     spawn_positions: SpawnPositions
     shuffle_bosses: BossEntrances
+    shuffle_ganon_tower: ShuffleGanonTower
     # mix_entrance_pools: MixEntrancePools
     # decouple_entrances: DecoupleEntrances
     triforce_hunt: TriforceHunt
@@ -1478,6 +1619,7 @@ class OoTOptions(PerGameCommonOptions):
     bridge_rewards: BridgeRewards
     bridge_tokens: BridgeTokens
     bridge_hearts: BridgeHearts
+    shuffle_dungeon_rewards: ShuffleDungeonRewards
     shuffle_mapcompass: ShuffleMapCompass
     shuffle_smallkeys: ShuffleKeys
     shuffle_hideoutkeys: ShuffleGerudoKeys
@@ -1516,6 +1658,7 @@ class OoTOptions(PerGameCommonOptions):
     tcg_requires_lens: TCGRequiresLens
     shuffle_loach_reward: ShuffleLoachReward
     shuffle_hideout_entrances: ShuffleHideoutEntrances
+    shuffle_gerudo_fortress_heart_piece: ShuffleGerudoFortressHeartPiece
     shuffle_gerudo_valley_river_exit: ShuffleGerudoValleyRiverExit
     key_rings_give_bosskeys: KeyRingsGiveBossKeys
     no_escape_sequence: SkipEscape
@@ -1528,9 +1671,11 @@ class OoTOptions(PerGameCommonOptions):
     free_scarecrow: FreeScarecrow
     fast_bunny_hood: FastBunny
     plant_beans: PlantBeans
+    easier_fire_arrow_entry: EasierFireArrowEntry
     chicken_count: ChickenCount
     big_poe_count: BigPoeCount
     fae_torch_count: FAETorchCount
+    fast_shadow_boat: FastShadowBoat
     correct_chest_appearances: CorrectChestAppearance
     minor_items_as_major_chest: MinorInMajor
     invisible_chests: InvisibleChests
@@ -1552,12 +1697,21 @@ class OoTOptions(PerGameCommonOptions):
     start_with_rupees: RupeeStart
     item_pool_value: ItemPoolValue
     junk_ice_traps: IceTraps
+    custom_ice_trap_percent: CustomIceTrapPercent
+    custom_ice_trap_count: CustomIceTrapCount
     ice_trap_appearance: IceTrapVisual
     adult_trade_shuffle: AdultTradeShuffleOption
     adult_trade_start: AdultTradeStart
     default_targeting: Targeting
     display_dpad: DisplayDpad
     dpad_dungeon_menu: DpadDungeonMenu
+    speedup_music_for_last_triforce_piece: SpeedupMusicForLastTriforcePiece
+    slowdown_music_when_lowhp: SlowdownMusicWhenLowhp
+    uninvert_y_axis_in_first_person_camera: UninvertYAxisInFirstPersonCamera
+    input_viewer: InputViewer
+    disable_battle_music: DisableBattleMusic
+    display_custom_song_names: DisplayCustomSongNames
+    credits_music: CreditsMusic
     correct_model_colors: CorrectColors
     background_music: BackgroundMusic
     fanfares: Fanfares
@@ -1597,6 +1751,18 @@ class OoTOptions(PerGameCommonOptions):
     sfx_nightfall:        sfx_nightfall
     sfx_horse_neigh:      sfx_horse_neigh
     sfx_hover_boots:      sfx_hover_boots
+    sfx_iron_boots:       sfx_iron_boots
+    sfx_silver_rupee:     sfx_silver_rupee
+    sfx_boomerang_throw:  sfx_boomerang_throw
+    sfx_hookshot_chain:   sfx_hookshot_chain
+    sfx_arrow_shot:       sfx_arrow_shot
+    sfx_slingshot_shot:   sfx_slingshot_shot
+    sfx_magic_arrow_shot: sfx_magic_arrow_shot
+    sfx_bombchu_move:     sfx_bombchu_move
+    sfx_get_small_item:   sfx_get_small_item
+    sfx_explosion:        sfx_explosion
+    sfx_daybreak:         sfx_daybreak
+    sfx_cucco:            sfx_cucco
     sfx_ocarina:          SfxOcarina
 
 

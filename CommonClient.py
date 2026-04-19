@@ -847,7 +847,7 @@ async def server_loop(ctx: CommonContext, address: typing.Optional[str] = None) 
 
     # Wait for the user to provide a multiworld server address
     if not address:
-        logger.info(f"Please connect to an {apname} server.")
+        logger.info(f"Please connect to your {apname} server.")
         return
 
     ctx.cancel_autoreconnect()

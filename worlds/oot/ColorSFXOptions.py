@@ -975,4 +975,152 @@ class sfx_hover_boots(Choice):
     option_tambourine = 10
 
 
+# Standard-pool SFX options (shared option list covers all sounds not tagged LOOPED)
+_STANDARD_SFX_OPTIONS = {
+    'option_none': 4,
+    'option_armos': 5,
+    'option_bark': 6,
+    'option_bomb_bounce': 7,
+    'option_bongo_bongo_high': 8,
+    'option_bongo_bongo_low': 9,
+    'option_bottle_cork': 10,
+    'option_bow_twang': 11,
+    'option_bubble_laugh': 12,
+    'option_business_scrub': 13,
+    'option_carrot_refill': 14,
+    'option_cartoon_fall': 15,
+    'option_change_item': 16,
+    'option_chest_open': 17,
+    'option_child_cringe': 18,
+    'option_child_gasp': 19,
+    'option_child_hurt': 20,
+    'option_child_owo': 21,
+    'option_child_pant': 22,
+    'option_child_scream': 23,
+    'option_cluck': 24,
+    'option_cockadoodledoo': 25,
+    'option_cursed_attack': 26,
+    'option_cursed_scream': 27,
+    'option_deku_baba': 28,
+    'option_drawbridge_set': 29,
+    'option_dusk_howl': 30,
+    'option_baby_epona': 31,
+    'option_exploding_crate': 32,
+    'option_explosion': 33,
+    'option_fanfare_light': 34,
+    'option_fanfare_medium': 35,
+    'option_field_shrub': 36,
+    'option_flare_dancer_laugh': 37,
+    'option_flare_dancer_startled': 38,
+    'option_ganondorf_teh': 39,
+    'option_gohma_larva_croak': 40,
+    'option_gold_skull_token': 41,
+    'option_goron_wake': 42,
+    'option_great_fairy': 43,
+    'option_guay': 44,
+    'option_gunshot': 45,
+    'option_hammer_bonk': 46,
+    'option_horse_neigh': 47,
+    'option_horse_trot': 48,
+    'option_low_health': 49,
+    'option_recover_health': 50,
+    'option_shattering_ice': 51,
+    'option_ingo_wooah': 52,
+    'option_iron_boots': 53,
+    'option_iron_knuckle': 54,
+    'option_kaah': 55,
+    'option_moblin_club_ground': 56,
+    'option_moblin_club_swing': 57,
+    'option_moo': 58,
+    'option_mweep': 59,
+    'option_navi_hello': 60,
+    'option_navi_hey': 61,
+    'option_navi_random': 62,
+    'option_notification': 63,
+    'option_phantom_ganon_laugh': 64,
+    'option_plant_explode': 65,
+    'option_poe': 66,
+    'option_shattering_pot': 67,
+    'option_redead_moan': 68,
+    'option_redead_scream': 69,
+    'option_ribbit': 70,
+    'option_rupee': 71,
+    'option_silver_rupee': 72,
+    'option_ruto_crash': 73,
+    'option_ruto_excited': 74,
+    'option_ruto_giggle': 75,
+    'option_ruto_lift': 76,
+    'option_ruto_thrown': 77,
+    'option_ruto_wiggle': 78,
+    'option_scrub_emerge': 79,
+    'option_shabom_bounce': 80,
+    'option_shabom_pop': 81,
+    'option_shellblade': 82,
+    'option_skulltula': 83,
+    'option_soft_beep': 84,
+    'option_spit_nut': 85,
+    'option_stalchild_attack': 86,
+    'option_stinger_squeak': 87,
+    'option_switch': 88,
+    'option_sword_bonk': 89,
+    'option_talon_cry': 90,
+    'option_talon_hmm': 91,
+    'option_talon_snore': 92,
+    'option_talon_wtf': 93,
+    'option_tambourine': 94,
+    'option_target_enemy': 95,
+    'option_target_neutral': 96,
+    'option_thunder': 97,
+    'option_timer': 98,
+    'option_wolfos_howl': 99,
+    'option_adult_zelda_gasp': 100,
+}
+
+
+def _make_standard_sfx_class(class_name: str, display: str) -> type:
+    attrs = {
+        '__doc__': 'Choose a sound effect. "random_choice" selects a random option. "random_ear_safe" selects a random safe option. "completely_random" selects any random sound.',
+        '__module__': __name__,
+        'display_name': display,
+        'option_default': 0,
+        'option_completely_random': 1,
+        'option_random_ear_safe': 2,
+        'option_random_choice': 3,
+        'default': 0,
+        **_STANDARD_SFX_OPTIONS,
+    }
+    return type(class_name, (Choice,), attrs)
+
+
+sfx_iron_boots      = _make_standard_sfx_class('sfx_iron_boots',       'Iron Boots')
+sfx_silver_rupee    = _make_standard_sfx_class('sfx_silver_rupee',      'Silver Rupee Jingle')
+sfx_boomerang_throw = _make_standard_sfx_class('sfx_boomerang_throw',   'Boomerang Throw')
+sfx_hookshot_chain  = _make_standard_sfx_class('sfx_hookshot_chain',    'Hookshot Chain')
+sfx_arrow_shot      = _make_standard_sfx_class('sfx_arrow_shot',        'Arrow Shot')
+sfx_slingshot_shot  = _make_standard_sfx_class('sfx_slingshot_shot',    'Slingshot Shot')
+sfx_magic_arrow_shot= _make_standard_sfx_class('sfx_magic_arrow_shot',  'Magic Arrow Shot')
+sfx_bombchu_move    = _make_standard_sfx_class('sfx_bombchu_move',       'Bombchu Move')
+sfx_get_small_item  = _make_standard_sfx_class('sfx_get_small_item',     'Get Refill')
+sfx_explosion       = _make_standard_sfx_class('sfx_explosion',          'Bomb Explosion')
+sfx_cucco           = _make_standard_sfx_class('sfx_cucco',              'Cucco')
+
+
+class sfx_daybreak(Choice):
+    """Choose a sound effect. "random_choice" selects a random option. "random_ear_safe" selects a random safe option.
+        "completely_random" selects any random sound."""
+    display_name = "Daybreak"
+    option_default = 0
+    option_completely_random = 1
+    option_random_ear_safe = 2
+    option_random_choice = 3
+    option_cockadoodledoo = 4
+    option_gold_skull_token = 5
+    option_great_fairy = 6
+    option_moo = 7
+    option_mweep = 8
+    option_redead_moan = 9
+    option_talon_snore = 10
+    option_thunder = 11
+
+
 

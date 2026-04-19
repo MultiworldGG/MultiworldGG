@@ -209,7 +209,7 @@ def tokens_required_by_settings(world: World) -> int:
 
 # Hints required under certain settings
 conditional_always: dict[str, Callable[[World], bool]] = {
-    'Market 10 Big Poes':           lambda world: world.options.big_poe_count.value > 3,
+    'Market 10 Big Poes':           lambda world: world.options.big_poe_count.value > 3 and 'big_poes' not in world.options.misc_hints.value,
     'Deku Theater Mask of Truth':   lambda world: not world.options.complete_mask_quest.value and world.options.shuffle_child_trade.value != 2,  # 2 = skip_child_zelda
     'Song from Ocarina of Time':    lambda world: stones_required_by_settings(world) < 2,
     'HF Ocarina of Time Item':      lambda world: stones_required_by_settings(world) < 2,
@@ -222,14 +222,41 @@ conditional_always: dict[str, Callable[[World], bool]] = {
     'LH Loach Fishing':             lambda world: not world.options.shuffle_loach_reward.value,  # 0 = off (vanilla)
 }
 
+
+def rainbow_bridge_hint_kind(world: World) -> str:
+    if world.options.bridge.value == 0:  # open
+        return 'never'
+    if world.options.bridge.value == 1:  # vanilla
+        return 'always'
+    if world.options.bridge.value == 2:  # stones
+        return 'always' if world.options.bridge_stones.value > 1 else 'sometimes'
+    if world.options.bridge.value == 3:  # medallions
+        return 'always' if world.options.bridge_medallions.value > 1 else 'sometimes'
+    if world.options.bridge.value == 4:  # dungeons
+        if world.options.bridge_rewards.value > 2:
+            return 'always'
+        if world.options.bridge_rewards.value > 1:
+            return 'sometimes'
+        return 'never'
+    if world.options.bridge.value == 5:  # tokens
+        if world.options.bridge_tokens.value > 20:
+            return 'always'
+        if world.options.bridge_tokens.value > 10:
+            return 'sometimes'
+        return 'never'
+    if world.options.bridge.value == 6:  # hearts; starting_hearts is always 3 in AP
+        if world.options.bridge_hearts.value > 4:
+            return 'always'
+        if world.options.bridge_hearts.value > 3:
+            return 'sometimes'
+        return 'never'
+    raise NotImplementedError(f'Unimplemented bridge condition: {world.options.bridge.value}')
+
+
 # Entrance hints required under certain settings
 conditional_entrance_always: dict[str, Callable[[World], bool]] = {
-    'Ganons Castle Grounds -> Ganons Castle Lobby': lambda world: (world.options.bridge.value != 0  # 0 = open
-        and (world.options.bridge.value != 2 or world.options.bridge_stones.value > 1)  # 2 = stones
-        and (world.options.bridge.value != 3 or world.options.bridge_medallions.value > 1)  # 3 = medallions
-        and (world.options.bridge.value != 4 or world.options.bridge_rewards.value > 2)  # 4 = dungeons
-        and (world.options.bridge.value != 5 or world.options.bridge_tokens.value > 20)  # 5 = tokens
-        and (world.options.bridge.value != 6 or world.options.bridge_hearts.value > 4)),  # 6 = hearts; starting_hearts is always 3 in AP
+    'Ganons Castle Grounds -> Ganons Castle Lobby': lambda world: rainbow_bridge_hint_kind(world) == 'always',
+    'Ganons Castle Main -> Ganons Castle Tower': lambda world: world.options.trials.value > 3 or (rainbow_bridge_hint_kind(world) == 'always' and not world.shuffle_special_dungeon_entrances),
 }
 
 # Dual hints required under certain settings
@@ -261,10 +288,8 @@ conditional_sometimes: dict[str, Callable[[World], bool]] = {
     'Shadow Temple Invisible Blades Chests':    lambda world: world.options.tokensanity.value not in [1, 3],  # 1 = dungeons, 3 = all
 
     # Conditional entrance hints
-    'Ganons Castle Grounds -> Ganons Castle Lobby': lambda world: (world.options.bridge.value != 0  # 0 = open
-        and (world.options.bridge.value != 4 or world.options.bridge_rewards.value > 1)  # 4 = dungeons
-        and (world.options.bridge.value != 5 or world.options.bridge_tokens.value > 10)  # 5 = tokens
-        and (world.options.bridge.value != 6 or world.options.bridge_hearts.value > 3)),  # 6 = hearts; starting_hearts is always 3 in AP
+    'Ganons Castle Grounds -> Ganons Castle Lobby': lambda world: rainbow_bridge_hint_kind(world) != 'never',
+    'Ganons Castle Main -> Ganons Castle Tower': lambda world: world.options.trials.value > 0 or (rainbow_bridge_hint_kind(world) != 'never' and not world.shuffle_special_dungeon_entrances),
 }
 
 # Table of hints, format is (name, hint text, clear hint text, type of hint) there are special characters that are read for certain in game commands:
@@ -424,6 +449,9 @@ hintTable: dict[str, tuple[list[str] | str, Optional[str], str | list[str]]] = {
     'SmallKey':                                                 (["a tool for unlocking", "a dungeon pass", "a lock remover", "a lockpick"], "a Small Key", 'item'),
     'HideoutSmallKey':                                          (["a get out of jail free card"], "a Jail Key", 'item'),
     'TCGSmallKey':                                              (["a key to becoming a winner"], "a Game Key", 'item'),
+    'SmallKeyRing':                                             (["a toolbox for unlocking", "a dungeon season pass", "a jingling ring", "a skeleton key"], "a Small Key Ring", 'item'),
+    'HideoutSmallKeyRing':                                      (["a deck of get out of jail free cards"], "a Jail Key Ring", 'item'),
+    'TCGSmallKeyRing':                                          (["the keys to becoming a winner"], "a Game Key Ring", 'item'),
     'SilverRupee':                                              (["an entry fee", "a priced artifact"], "a Silver Rupee", 'item'),
     'Boss Key (Forest Temple)':                                 (["a master of unlocking for a deep forest", "a master pass for a deep forest"], "the Forest Temple Boss Key", 'item'),
     'Boss Key (Fire Temple)':                                   (["a master of unlocking for a high mountain", "a master pass for a high mountain"], "the Fire Temple Boss Key", 'item'),
@@ -450,7 +478,7 @@ hintTable: dict[str, tuple[list[str] | str, Optional[str], str | list[str]]] = {
     'Small Key Ring (Gerudo Training Ground)':                  (["a toolbox for unlocking the test of thieves", "a dungeon season pass for the test of thieves", "a jingling ring for the test of thieves", "a skeleton key for the test of thieves"], "a Gerudo Training Ground Small Key Ring", 'item'),
     'Small Key Ring (Ganons Castle)':                           (["a toolbox for unlocking a conquered citadel", "a dungeon season pass for a conquered citadel", "a jingling ring for a conquered citadel", "a skeleton key for a conquered citadel"], "a Ganon's Castle Small Key Ring", 'item'),
     'Small Key Ring (Thieves Hideout)':                         (["a deck of get out of jail free cards"], "a Jail Key Ring", 'item'),
-    'Small Key Ring (Treasure Chest Game)':                     (["an abundance of keys to becoming a winner"], "a Game Key Ring", 'item'),
+    'Small Key Ring (Treasure Chest Game)':                     (["the keys to becoming a winner"], "a Game Key Ring", 'item'),
     'Silver Rupee (Dodongos Cavern Staircase)':                 (["an entry fee for an immense cavern", "a priced artifact from an immense cavern"], "a Silver Rupee for Dodongo's Cavern", 'item'),
     'Silver Rupee (Ice Cavern Spinning Scythe)':                (["an entry fee for a frozen maze", "a priced artifact from a frozen maze"], "a Silver Rupee for the Ice Cavern", 'item'),
     'Silver Rupee (Ice Cavern Push Block)':                     (["an entry fee for a frozen maze", "a priced artifact from a frozen maze"], "a Silver Rupee for the Ice Cavern", 'item'),
@@ -635,7 +663,7 @@ hintTable: dict[str, tuple[list[str] | str, Optional[str], str | list[str]]] = {
     'Spirit Temple Colossus Hands':                                ("upon the #Colossus's right and left hands# lie...^", None, 'dual'),
     'Spirit Temple Child Lower':                                   ("between the #crawl spaces in the Spirit Temple# chests contain...^", None, 'dual'),
     'Spirit Temple Child Top':                                     ("on the path to the #right hand of the Spirit Temple# a chest and a spider hold...^", None, 'dual'),
-    'Spirit Temple Adult Lower':                                   ("past a #silver block in the Spirit Temple# boulders and a melody conceal...^", None, 'dual'),
+    'Spirit Temple Adult Lower':                                   ("past a #silver block in the Spirit Temple# a melody and boulders conceal...^", None, 'dual'),
     'Spirit Temple MQ Child Top':                                  ("on the path to the #right hand of the Spirit Temple# a chest and a spider hold respectively...^", None, 'dual'),
     'Spirit Temple MQ Symphony Room':                              ("#the symphony room# in the Spirit Temple protects...^", None, 'dual'),
     'Spirit Temple MQ Throne Room GS':                             ("in the #nine thrones room# of the Spirit Temple spiders hold...^", None, 'dual'),
@@ -1363,6 +1391,7 @@ hintTable: dict[str, tuple[list[str] | str, Optional[str], str | list[str]]] = {
     'Kakariko Village -> Bottom of the Well':                   ("a #village well# leads to", None, 'entrance'),
 
     'Ganons Castle Grounds -> Ganons Castle Lobby':             ("the #rainbow bridge# leads to", None, 'entrance'),
+    'Ganons Castle Main -> Ganons Castle Tower':                ("a #castle barrier# protects the way to", "#Ganon's trials# protect the way to", 'entrance'),
 
     'KF Links House':                                           ("Link's House", None, 'region'),
     'Temple of Time':                                           ("the #Temple of Time#", None, 'region'),
@@ -1427,7 +1456,7 @@ hintTable: dict[str, tuple[list[str] | str, Optional[str], str | list[str]]] = {
     'HF Southeast Grotto':                                      ("a #generic grotto#", None, 'region'),
     'KF Storms Grotto':                                         ("a #generic grotto#", None, 'region'),
     'LW Near Shortcuts Grotto':                                 ("a #generic grotto#", None, 'region'),
-    'HF Inside Fence Grotto':                                   ("a #single Upgrade Deku Scrub#", None, 'region'),
+    'HF Inside Fence Grotto':                                   ("a #lonely Deku Scrub#", None, 'region'),
     'LW Scrubs Grotto':                                         ("#2 Deku Scrubs# including an Upgrade one", None, 'region'),
     'Colossus Grotto':                                          ("2 Deku Scrubs", None, 'region'),
     'ZR Storms Grotto':                                         ("2 Deku Scrubs", None, 'region'),
@@ -1727,7 +1756,7 @@ multiTable: dict[str, list[str]] = {
     'Graveyard Dampe Race Rewards':                             ['Graveyard Dampe Race Hookshot Chest', 'Graveyard Dampe Race Freestanding PoH'],
     'Graveyard Royal Family Tomb Contents':                     ['Graveyard Royal Familys Tomb Chest', 'Song from Royal Familys Tomb'],
     'DMC Child Upper Checks':                                   ['DMC GS Crate', 'DMC Deku Scrub'],
-    'Haunted Wasteland Checks':                                 ['Wasteland Chest', 'Wasteland GS'],
+    'Haunted Wasteland Checks':                                 ['Wasteland GS', 'Wasteland Chest'],
     'Castle Fairy Checks':                                      ['HC Great Fairy Reward', 'OGC Great Fairy Reward'],
     'King Zora Items':                                          ['ZD King Zora Thawed', 'ZD Trade Prescription'],
 
@@ -1744,7 +1773,7 @@ multiTable: dict[str, list[str]] = {
     'Spirit Temple Colossus Hands':                             ['Spirit Temple Silver Gauntlets Chest', 'Spirit Temple Mirror Shield Chest'],
     'Spirit Temple Child Lower':                                ['Spirit Temple Child Bridge Chest', 'Spirit Temple Child Early Torches Chest'],
     'Spirit Temple Child Top':                                  ['Spirit Temple Sun Block Room Chest', 'Spirit Temple GS Hall After Sun Block Room'],
-    'Spirit Temple Adult Lower':                                ['Spirit Temple Early Adult Right Chest', 'Spirit Temple Compass Chest'],
+    'Spirit Temple Adult Lower':                                ['Spirit Temple Compass Chest', 'Spirit Temple Early Adult Right Chest'],
     'Spirit Temple MQ Child Top':                               ['Spirit Temple MQ Sun Block Room Chest', 'Spirit Temple MQ GS Sun Block Room'],
     'Spirit Temple MQ Symphony Room':                           ['Spirit Temple MQ Symphony Room Chest', 'Spirit Temple MQ GS Symphony Room'],
     'Spirit Temple MQ Throne Room GS':                          ['Spirit Temple MQ GS Nine Thrones Room West', 'Spirit Temple MQ GS Nine Thrones Room North'],
@@ -1851,6 +1880,13 @@ misc_location_hint_table: dict[str, dict[str, Any]] = {
         'location_text': "Some frogs holding \x05\x42{item}\x05\x40 are looking at you from underwater...",
         'location_fallback': "Some frogs are looking at you from underwater...",
     },
+    'big_poes': {
+        'id': 0x70F5,
+        'hint_location': 'Market 10 Big Poes Hint',
+        'item_location': 'Market 10 Big Poes',
+        'location_text': "\x08Hey, young man. What's happening \x01today? Do you want\x01\x05\x41{item}\x05\x40?\x04\x1AIf you earn \x05\x41{poe_points} points\x05\x40, you'll\x01be a happy man! Heh heh.\x04\x08Your card now has \x05\x45\x1E\x01 \x05\x40points.\x01Come back again!\x01Heh heh heh!\x02",
+        'location_fallback': "\x08Hey, young man. What's happening \x01today? If you have a \x05\x41Poe\x05\x40, I will \x01buy it.\x04\x1AIf you earn \x05\x41{poe_points} points\x05\x40, you'll\x01be a happy man! Heh heh.\x04\x08Your card now has \x05\x45\x1E\x01 \x05\x40points.\x01Come back again!\x01Heh heh heh!\x02",
+    },
 }
 
 # Separate table for goal names to avoid duplicates in the hint table.
@@ -1865,7 +1901,7 @@ goalTable: dict[str, tuple[str, str, str]] = {
     'Morpha':                                                   ("path to the #Amoeba#", "path to #Morpha#", "Blue"),
     'Bongo Bongo':                                              ("path to the #Hands#", "path to #Bongo Bongo#", "Pink"),
     'Twinrova':                                                 ("path to the #Witches#", "path to #Twinrova#", "Yellow"),
-    'ToT Reward from Rauru':                                    ("path to #ToT Reward from Rauru#", "path to #ToT Reward from Rauru#", "Light Blue"),
+    'ToT Reward from Rauru':                                    ("path of #time#", "path of #time#", "Light Blue"),
 }
 
 

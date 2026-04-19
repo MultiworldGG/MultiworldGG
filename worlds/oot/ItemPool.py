@@ -233,6 +233,14 @@ song_list = [k for k, v in item_table.items() if v[0] == 'Song']
 junk_pool_base = [(k, v[3]['junk']) for k, v in item_table.items() if get_spec(v, 'junk', -1) > 0]
 remove_junk_items = [k for k, v in item_table.items() if get_spec(v, 'junk', -1) >= 0]
 
+ocarina_button_items = [
+    'Ocarina A Button',
+    'Ocarina C up Button',
+    'Ocarina C down Button',
+    'Ocarina C left Button',
+    'Ocarina C right Button',
+]
+
 remove_junk_ludicrous_items = [
     'Ice Arrows',
     'Deku Nut Capacity',
@@ -333,6 +341,22 @@ def replace_max_item(items, item, max, rand):
             count += 1
 
 
+def get_pool_count(pool, item_list):
+    return sum(1 for value in pool if value in item_list)
+
+
+def replace_x_items(items, replace_list, count, rand):
+    rand.shuffle(items)
+    replaced = 0
+    for index, value in enumerate(items):
+        if value in replace_list:
+            if replaced < count:
+                items[index] = get_junk_item(rand)[0]
+                replaced += 1
+            else:
+                return
+
+
 def generate_itempool(ootworld):
     multiworld = ootworld.multiworld
     player = ootworld.player
@@ -403,6 +427,9 @@ def get_pool_core(world):
         triforce_count = int((Decimal(100 + world.extra_triforce_percentage)/100 * world.triforce_goal).to_integral_value(rounding=ROUND_HALF_UP))
         pending_junk_pool.extend(['Triforce Piece'] * triforce_count)
 
+    if world.shuffle_individual_ocarina_notes:
+        pending_junk_pool.extend(ocarina_button_items)
+
     if world.adult_trade_shuffle:
         pending_junk_pool.extend(world.adult_trade_start)
         # Pocket Egg is always chosen if both Egg and Pocket Cucco are selected to be shuffled.
@@ -417,6 +444,14 @@ def get_pool_core(world):
 
         item = location.vanilla_item
         shuffle_item = None  # None for don't handle, False for place item, True for add to pool.
+
+        # Locations whose vanilla drop is nothing (empty pots/crates) are never shuffled
+        # here because there is no upstream shuffle_empty_X option ported yet.
+        if location.vanilla_item == 'Nothing':
+            location.disabled = DisableType.DISABLED
+            location.show_in_spoiler = False
+            placed_items[location.name] = IGNORE_LOCATION
+            continue
 
         # Always Placed Items
         if (location.vanilla_item in ['Zeldas Letter', 'Triforce', 'Scarecrow Song',
@@ -546,6 +581,19 @@ def get_pool_core(world):
                     shuffle_item = True
                 else:
                     shuffle_item = False
+
+        # Gerudo Fortress freestanding Heart Piece (child-only, normally out of logic)
+        elif location.vanilla_item == 'Piece of Heart (Out of Logic)':
+            if world.shuffle_gerudo_fortress_heart_piece == 'shuffle':
+                shuffle_item = True
+                item = 'Piece of Heart'
+            elif world.shuffle_gerudo_fortress_heart_piece == 'remove':
+                shuffle_item = False
+                item = IGNORE_LOCATION
+                location.show_in_spoiler = False
+            else:  # vanilla
+                shuffle_item = False
+                location.show_in_spoiler = False
 
         # Thieves' Hideout
         elif location.vanilla_item == 'Small Key (Thieves Hideout)':
@@ -780,7 +828,7 @@ def get_pool_core(world):
                 world.multiworld.push_precollected(k)
                 world.remove_from_start_inventory.append(k.name)
 
-    if (not world.keysanity or (world.empty_dungeons['Fire Temple'] and world.shuffle_smallkeys != 'remove'))\
+    if (not world.keysanity or (world.precompleted_dungeons.get('Fire Temple', False) and world.shuffle_smallkeys != 'remove'))\
         and not world.dungeon_mq['Fire Temple']:
         world.multiworld.push_precollected(world.create_item('Small Key (Fire Temple)'))
         world.remove_from_start_inventory.append('Small Key (Fire Temple)')
@@ -795,7 +843,7 @@ def get_pool_core(world):
         placed_items['Gift from Sages'] = IGNORE_LOCATION
     world.get_location('Gift from Sages').show_in_spoiler = False
 
-    if world.junk_ice_traps == 'off':
+    if world.junk_ice_traps in ['off', 'custom_count', 'custom_percent']:
         replace_max_item(pool, 'Ice Trap', 0, world.random)
     elif world.junk_ice_traps == 'onslaught':
         for item in [item for item, weight in junk_pool_base] + ['Recovery Heart', 'Bombs (20)', 'Arrows (30)']:
@@ -803,6 +851,11 @@ def get_pool_core(world):
 
     for item, maximum in item_difficulty_max[world.item_pool_value].items():
         replace_max_item(pool, item, maximum, world.random)
+    if world.item_pool_value in ['plentiful', 'ludicrous']:
+        heart_piece_indices = [item_index for item_index, value in enumerate(pool) if value == 'Piece of Heart']
+        full_hearts = (len(heart_piece_indices) // 4) * 4
+        for heart_index, item_index in enumerate(heart_piece_indices[:full_hearts]):
+            pool[item_index] = 'Heart Container' if heart_index % 4 == 0 else get_junk_item(world.random)[0]
 
     # world.distribution.alter_pool(world, pool)
 
@@ -836,6 +889,16 @@ def get_pool_core(world):
             junk_candidates.remove(junk_item)
             pool.remove(junk_item)
             pool.append(pending_item)
+
+    if world.junk_ice_traps in ['custom_count', 'custom_percent']:
+        junk_pool[:] = [('Ice Trap', 1)]
+        junk = [item for item, _ in junk_pool_base] + ['Rupee (1)', 'Recovery Heart', 'Bombs (20)', 'Arrows (30)']
+        junk_count = get_pool_count(pool, junk)
+        if world.junk_ice_traps == 'custom_percent':
+            num_to_replace = int((world.custom_ice_trap_percent / 100.0) * junk_count)
+        else:
+            num_to_replace = world.custom_ice_trap_count
+        replace_x_items(pool, junk, num_to_replace, world.random)
 
     return pool, placed_items
 

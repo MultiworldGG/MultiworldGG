@@ -129,6 +129,11 @@ WORLD_STRING_TXT:
 TIME_STRING_TXT:
 .endarea
 
+; web seed ID string (max length 10 chars)
+.area 0x10, 0
+WEB_ID_STRING_TXT:
+.endarea
+
 ; Initial Save Data table:
 ;
 ; This table describes what extra data should be written when a new save file is created. It must be terminated with
@@ -148,7 +153,7 @@ INITIAL_SAVE_DATA:
 EXTENDED_INITIAL_SAVE_DATA:
 .endarea
 
-.area 0x108, 0 ; size must be at least 8 * ((max object_id parameter Patches.add_to_extended_object_table is called with) - 0x192)
+.area 0x118, 0 ; size must be at least 8 * ((max object_id parameter Patches.add_to_extended_object_table is called with) - 0x192)
 EXTENDED_OBJECT_TABLE:
 .endarea
 
@@ -259,7 +264,7 @@ CFG_DUNGEON_PRECOMPLETED:
 ; Any changes made here should be documented in Notes/auto-tracker-ctx.md
 AUTO_TRACKER_CONTEXT:
 AUTO_TRACKER_VERSION:
-.word 4 ; Increment this if the auto-tracker context layout changes
+.word 5 ; Increment this if the auto-tracker context layout changes
 
 CFG_DUNGEON_INFO_ENABLE:
 .word 0
@@ -317,8 +322,13 @@ TRIFORCE_PIECES_REQUIRED:
 SPECIAL_DEAL_COUNTS:
 .endarea
 
-.area 9 * 0x17, 0x20
+.area 9 * 0x17, 0x00
 CFG_DUNGEON_REWARD_AREAS:
 .endarea
+
+CFG_ADULT_TRADE_SHUFFLE:
+.byte 0x00
+CFG_CHILD_TRADE_SHUFFLE:
+.byte 0x00
 
 .align 4

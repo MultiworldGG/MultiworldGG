@@ -21,6 +21,7 @@ class Scenes(IntEnum):
     GERUDO_VALLEY = 0x5A
     LOST_WOODS = 0x5B
     DESERT_COLOSSUS = 0x5C
+    GERUDO_FORTRESS = 0x5D
     DEATH_MOUNTAIN_TRAIL = 0x60
     DEATH_MOUNTAIN_CRATER = 0x61
 
@@ -987,19 +988,94 @@ class SaveContext():
         "Boomerang"      : {'item_slot.boomerang'       : 'boomerang'},
         "Lens of Truth"  : {'item_slot.lens'            : 'lens'},
         "Megaton Hammer"         : {'item_slot.hammer'          : 'hammer'},
-        "Pocket Egg"     : {'item_slot.adult_trade'     : 'pocket_egg'},
-        "Pocket Cucco"   : {'item_slot.adult_trade'     : 'pocket_cucco'},
-        "Cojiro"         : {'item_slot.adult_trade'     : 'cojiro'},
-        "Odd Mushroom"   : {'item_slot.adult_trade'     : 'odd_mushroom'},
-        "Poachers Saw"   : {'item_slot.adult_trade'     : 'poachers_saw'},
-        "Broken Sword"   : {'item_slot.adult_trade'     : 'broken_sword'},
-        "Prescription"   : {'item_slot.adult_trade'     : 'prescription'},
-        "Eyeball Frog"   : {'item_slot.adult_trade'     : 'eyeball_frog'},
-        "Eyedrops"       : {'item_slot.adult_trade'     : 'eye_drops'},
-        "Claim Check"    : {'item_slot.adult_trade'     : 'claim_check'},
-        "Weird Egg"      : {'item_slot.child_trade'     : 'weird_egg'},
-        "Chicken"        : {'item_slot.child_trade'     : 'chicken'},
-        "Zeldas Letter"  : {'item_slot.child_trade'     : 'zeldas_letter'},
+        "Pocket Egg"     : {
+            'item_slot.adult_trade'          : 'pocket_egg',
+            'owned_trade_items.pocket_egg'   : True,
+        },
+        "Pocket Cucco"   : {
+            'item_slot.adult_trade'          : 'pocket_cucco',
+            'owned_trade_items.pocket_cucco' : True,
+        },
+        "Cojiro"         : {
+            'item_slot.adult_trade'          : 'cojiro',
+            'owned_trade_items.cojiro'       : True,
+        },
+        "Odd Mushroom"   : {
+            'item_slot.adult_trade'          : 'odd_mushroom',
+            'owned_trade_items.odd_mushroom' : True,
+        },
+        "Odd Potion"     : {
+            'item_slot.adult_trade'          : 'odd_potion',
+            'owned_trade_items.odd_potion'   : True,
+        },
+        "Poachers Saw"   : {
+            'item_slot.adult_trade'          : 'poachers_saw',
+            'owned_trade_items.poachers_saw' : True,
+        },
+        "Broken Sword"   : {
+            'item_slot.adult_trade'          : 'broken_sword',
+            'owned_trade_items.broken_sword' : True,
+        },
+        "Prescription"   : {
+            'item_slot.adult_trade'          : 'prescription',
+            'owned_trade_items.prescription' : True,
+        },
+        "Eyeball Frog"   : {
+            'item_slot.adult_trade'          : 'eyeball_frog',
+            'owned_trade_items.eyeball_frog' : True,
+        },
+        "Eyedrops"       : {
+            'item_slot.adult_trade'          : 'eye_drops',
+            'owned_trade_items.eye_drops'    : True,
+        },
+        "Claim Check"    : {
+            'item_slot.adult_trade'          : 'claim_check',
+            'owned_trade_items.claim_check'  : True,
+        },
+        "Weird Egg"      : {
+            'item_slot.child_trade'          : 'weird_egg',
+            'owned_trade_items.weird_egg'    : True,
+        },
+        "Chicken"        : {
+            'item_slot.child_trade'          : 'chicken',
+            'owned_trade_items.chicken'      : True,
+        },
+        "Zeldas Letter"  : {
+            'item_slot.child_trade'          : 'zeldas_letter',
+            'owned_trade_items.zeldas_letter': True,
+        },
+        "Keaton Mask"    : {
+            'item_slot.child_trade'          : 'keaton_mask',
+            'owned_trade_items.keaton_mask'  : True,
+        },
+        "Skull Mask"     : {
+            'item_slot.child_trade'          : 'skull_mask',
+            'owned_trade_items.skull_mask'   : True,
+        },
+        "Spooky Mask"    : {
+            'item_slot.child_trade'          : 'spooky_mask',
+            'owned_trade_items.spooky_mask'  : True,
+        },
+        "Bunny Hood"     : {
+            'item_slot.child_trade'          : 'bunny_hood',
+            'owned_trade_items.bunny_hood'   : True,
+        },
+        "Goron Mask"     : {
+            'item_slot.child_trade'          : 'goron_mask',
+            'owned_trade_items.goron_mask'   : True,
+        },
+        "Zora Mask"      : {
+            'item_slot.child_trade'          : 'zora_mask',
+            'owned_trade_items.zora_mask'    : True,
+        },
+        "Gerudo Mask"    : {
+            'item_slot.child_trade'          : 'gerudo_mask',
+            'owned_trade_items.gerudo_mask'  : True,
+        },
+        "Mask of Truth"  : {
+            'item_slot.child_trade'          : 'mask_of_truth',
+            'owned_trade_items.mask_of_truth': True,
+        },
         "Goron Tunic"    : {'equip_items.goron_tunic'   : True},
         "Zora Tunic"     : {'equip_items.zora_tunic'    : True},
         "Iron Boots"     : {'equip_items.iron_boots'    : True},
@@ -1168,11 +1244,11 @@ class SaveContext():
             'total_keys.gc': 3,
         },
 
-        "Ocarina A Button"          : {'Ocarina_A_Button': True},
-        "Ocarina C up Button"       : {'Ocarina_C_up_Button': True},
-        "Ocarina C down Button"     : {'Ocarina_C_down_Button': True},
-        "Ocarina C left Button"     : {'Ocarina_C_left_Button': True},
-        "Ocarina C right Button"    : {'Ocarina_C_right_Button': True},
+        "Ocarina A Button"          : {'ocarina_buttons.a': True},
+        "Ocarina C up Button"       : {'ocarina_buttons.c_up': True},
+        "Ocarina C down Button"     : {'ocarina_buttons.c_down': True},
+        "Ocarina C left Button"     : {'ocarina_buttons.c_left': True},
+        "Ocarina C right Button"    : {'ocarina_buttons.c_right': True},
 
         "Silver Rupee (Dodongos Cavern Staircase)":            {'silver_rupee_counts.dc_staircase': None},
         "Silver Rupee (Ice Cavern Spinning Scythe)":           {'silver_rupee_counts.ice_scythe': None},
@@ -1290,11 +1366,37 @@ class SaveContext():
             ],
         },
 
-        'Ocarina_A_Button'           : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x01),
-        'Ocarina_C_up_Button'        : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x02),
-        'Ocarina_C_down_Button'      : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x04),
-        'Ocarina_C_left_Button'      : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x08),
-        'Ocarina_C_right_Button'     : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x10),
+        'ocarina_buttons': { # Unused word in scene x50
+            'a'                     : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x01),
+            'c_up'                  : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x02),
+            'c_down'                : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x04),
+            'c_left'                : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x08),
+            'c_right'               : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x10),
+        },
+        'owned_trade_items': { # Unused word in scene x60
+            'weird_egg'             : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000001),
+            'chicken'               : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000002),
+            'zeldas_letter'         : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000004),
+            'keaton_mask'           : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000008),
+            'skull_mask'            : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000010),
+            'spooky_mask'           : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000020),
+            'bunny_hood'            : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000040),
+            'goron_mask'            : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000080),
+            'zora_mask'             : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000100),
+            'gerudo_mask'           : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000200),
+            'mask_of_truth'         : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000400),
+            'pocket_egg'            : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000800),
+            'pocket_cucco'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00001000),
+            'cojiro'                : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00002000),
+            'odd_mushroom'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00004000),
+            'odd_potion'            : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00008000),
+            'poachers_saw'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00010000),
+            'broken_sword'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00020000),
+            'prescription'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00040000),
+            'eyeball_frog'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00080000),
+            'eye_drops'             : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00100000),
+            'claim_check'           : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00200000),
+        },
 
         'silver_rupee_counts' : {
             'dc_staircase'       : Address(0x1450, size=1, max=5),

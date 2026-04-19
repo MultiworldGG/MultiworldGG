@@ -180,6 +180,22 @@ class SoundHooks(Enum):
                         0xC18832, 0xC18C32, 0xC19A7E, 0xC19CBE, 0xC1A1F2, 0xC1A3B6, 0xC1B08A,
                         0xC1B556, 0xC1C28A, 0xC1CC36, 0xC1EB4A, 0xC1F18E, 0xC6B136, 0xC6BBA2,
                         0xC1E93A, 0XC6B366, 0XC6B562])
+    BOOTS_IRON      = SoundHook('Iron Boots',       standard,   [0xBCE1CA, 0xBCE21E, 0xBCE26A])
+    SILVER_RUPEE    = SoundHook('Silver Rupee',      standard,   [0xDF356A])
+    BOOMERANG_THROW = SoundHook('Boomerang Throw',   standard,   [0xC5ABD6])
+    HOOKSHOT_CHAIN  = SoundHook('Hookshot Chain',    standard,   [0xCAD5AE])
+    ARROW_SHOT      = SoundHook('Arrow Shot',        standard,   [0xC22002])
+    SLINGSHOT_SHOT  = SoundHook('Slingshot Shot',    standard,   [0xC21FEE])
+    MAGIC_ARROW_SHOT= SoundHook('Magic Arrow Shot',  standard,   [0xC22016])
+    BOMBCHU_MOVE    = SoundHook('Bombchu Move',      standard,   [0xD5F792])
+    GET_SMALL_ITEM  = SoundHook('Get Small Item',    standard,   [0xBDA00E, 0xBE9B4A, 0xBD9FFA, 0xA88EA2])
+    EXPLOSION       = SoundHook('Explosion',         standard,   [0xC0ECA2, 0xC88476])
+    DAYBREAK        = SoundHook('Daybreak',          nightfall,  [0xAD342E, 0xAD7B52])
+    CUCCO           = SoundHook('Cucco',             standard,   [0xC28B9E, 0xC28C92, 0xC28D12, 0xC294EE,
+                                                                  0xC29866, 0xC29B82, 0xC2A3BA, 0xC2A3A6,
+                                                                  0xE2841E,
+                                                                  0xE262B6, 0xE267EE, 0xE26846, 0xE26B1E, 0xE26B36,
+                                                                  0xE269CE, 0xE26A5E, 0xE26A7E, 0xE26A7A])
 
 
 #   # Some enemies have a different cutting sound, making this a bit weird

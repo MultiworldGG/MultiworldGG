@@ -3,7 +3,7 @@ local json = require('json')
 local math = require('math')
 require('common')
 
-local script_version = 4
+local script_version = 5
 
 --------------------------------------------------
 -- Heavily modified form of RiptideSage's tracker
@@ -1594,7 +1594,7 @@ local player_names_address  = coop_context + 20
 local player_name_length    = 8 -- 8 bytes
 local file_hash_location    = player_names_address + 0x800 -- CFG_FILE_SELECT_HASH (5 bytes)
 
-local master_quest_table_address = rando_context + 0x1E36
+local master_quest_table_address = rando_context + 0x1E56
 
 local save_context_addr = 0x11A5D0
 local internal_count_addr = save_context_addr + 0x90
@@ -1952,6 +1952,9 @@ function main()
             item_display_current = table.remove(item_display_queue, 1)
             item_display_timer = ITEM_DISPLAY_DURATION
         end
+        -- Clear the script's overlay so expired messages actually disappear.
+        gui.clearGraphics()
+
         -- Draw item send overlay each frame
         if item_display_current ~= nil then
             gui.drawString(6, 6,  "Sent: " .. item_display_current["item"], "white", "black")

@@ -148,20 +148,27 @@
     },
     {
         "region_name": "Ganons Castle Tower",
-        "dungeon": "Ganons Castle",
+        "scene": "Ganons Castle Tower",
+        "is_boss_room": true,
+        "events": {
+            # Used for the "path to the tower" goal
+            "Ganons Tower Access": "is_adult"
+        },
         "locations": {
             "Ganons Tower Boss Key Chest": "is_adult or Kokiri_Sword"
         },
         "exits": {
+            "Ganons Castle Main": "True",
             "Ganons Castle Tower Below Boss": "
                 (is_adult or Kokiri_Sword) and
-                (Boss_Key_Ganons_Castle or (shuffle_pots != 'off'))"
+                (Boss_Key_Ganons_Castle or (shuffle_pots != 'off'))",
+            "Farores Wind Warp": "can_use(Farores_Wind)"
         }
     },
     {
         "region_name": "Ganons Castle Tower Below Boss",
-        "dungeon": "Ganons Castle",
-        "hint": "INSIDE_GANONS_CASTLE",
+        "scene": "Ganons Castle Tower",
+        "is_boss_room": true,
         "alt_hint": "GANONDORFS_CHAMBER",
         "locations": {
             "Ganons Tower Pot 1": "True",
@@ -177,7 +184,11 @@
             "Ganons Tower Pot 11": "True",
             "Ganons Tower Pot 12": "True",
             "Ganons Tower Pot 13": "True",
-            "Ganons Tower Pot 14": "True"
+            "Ganons Tower Pot 14": "True",
+            "Ganons Tower Pot 15": "True",
+            "Ganons Tower Pot 16": "True",
+            "Ganons Tower Pot 17": "True",
+            "Ganons Tower Pot 18": "True"
         },
         "exits": {
             "Ganondorf Boss Room": "Boss_Key_Ganons_Castle"
@@ -185,9 +196,8 @@
     },
     {
         "region_name": "Ganondorf Boss Room",
-        "dungeon": "Ganons Castle",
-        "hint": "INSIDE_GANONS_CASTLE",
-        "alt_hint": "GANONDORFS_CHAMBER",
+        "scene": "Ganons Castle Tower",
+        "is_boss_room": true,
         "locations": {
             "Ganondorf Hint": "True",
             "Ganon": "can_use(Light_Arrows)"

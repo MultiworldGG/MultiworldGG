@@ -175,10 +175,11 @@ def is_restricted_dungeon_item(item: Item, world: Optional['OOTWorld'] = None) -
         return False
     return (
         ((getattr(item, 'map', False) or getattr(item, 'compass', False)) and item_world.shuffle_mapcompass == 'dungeon') or
-        (getattr(item, 'type', None) == 'SmallKey' and item_world.shuffle_smallkeys == 'dungeon') or
+        (getattr(item, 'type', None) in ('SmallKey', 'SmallKeyRing') and item_world.shuffle_smallkeys == 'dungeon') or
         (getattr(item, 'type', None) == 'BossKey' and item_world.shuffle_bosskeys == 'dungeon') or
         (getattr(item, 'type', None) == 'GanonBossKey' and item_world.shuffle_ganon_bosskey == 'dungeon') or
-        (getattr(item, 'type', None) == 'SilverRupee' and item_world.shuffle_silver_rupees == 'dungeon')
+        (getattr(item, 'type', None) == 'SilverRupee' and item_world.shuffle_silver_rupees == 'dungeon') or
+        (getattr(item, 'type', None) == 'DungeonReward' and item_world.shuffle_dungeon_rewards in ('vanilla', 'reward', 'dungeon'))
     )
 
 
@@ -474,7 +475,7 @@ class HintArea(Enum):
                     else:
                         spot_queue.append(entrance)
 
-        raise HintAreaNotFound('No hint area could be found for %s [World %d]' % (spot, spot.world.player))
+        raise HintAreaNotFound('No hint area could be found for %s [World %d]' % (spot, spot.player))
 
     @classmethod
     def for_dungeon(cls, dungeon_name: str) -> Optional[HintArea]:
@@ -560,6 +561,7 @@ def get_woth_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
     locations = list(filter(lambda location:
         location.name not in checked
         and not (world.woth_dungeon >= world.hint_dist_user['dungeons_woth_limit'] and HintArea.at(location).is_dungeon)
+        and not world.precompleted_dungeons.get(HintArea.at(location).dungeon_name, False)
         and location.name not in world.hint_exclusions
         and location.name not in world.hint_type_overrides['woth']
         and location.item.name not in world.item_hint_type_overrides['woth']
@@ -580,15 +582,16 @@ def get_woth_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
     return GossipText('%s is on the way of the hero.' % location_text, ['Light Blue'], [location.name], [location.item.name]), [location]
 
 
-def get_checked_areas(world: 'OOTWorld', checked: set[str]) -> set[HintArea | str]:
-    def get_area_from_name(check: str) -> HintArea | str:
+def get_checked_areas(world: 'OOTWorld', checked: set[str]) -> set[HintArea | str | None]:
+    def get_area_from_name(check: str) -> HintArea | str | None:
         try:
             location = world.multiworld.get_location(check, world.player)
         except Exception:
             return check
         # Don't consider dungeons as already hinted from the reward hint on the Temple of Time altar
-        if location.type != 'Boss':  # TODO or shuffled dungeon rewards
-            return HintArea.at(location)
+        if location.type == 'Boss' and world.shuffle_dungeon_rewards in ('vanilla', 'reward'):
+            return None
+        return HintArea.at(location)
 
     return set(get_area_from_name(check) for check in checked)
 
@@ -732,6 +735,7 @@ def get_barren_hint(world: 'OOTWorld', checked: set[str], all_checked: set[str])
     areas = list(filter(lambda area:
         area not in checked_areas
         and str(area) not in world.hint_type_overrides['barren']
+        and not world.precompleted_dungeons.get(area.dungeon_name, False)
         and not (world.barren_dungeon >= world.hint_dist_user['dungeons_barren_limit'] and world.empty_areas[area]['dungeon'])
         and any(
             location.name not in all_checked
@@ -783,13 +787,23 @@ def get_barren_hint(world: 'OOTWorld', checked: set[str], all_checked: set[str])
     return GossipText("plundering %s is a foolish choice." % area.text(world.clearer_hints), ['Pink']), None
 
 
-def is_not_checked(locations: Iterable[Location], checked: set[HintArea | str]) -> bool:
-    return not any(location.name in checked or HintArea.at(location) in checked for location in locations)
+def is_checked(locations: Iterable[Location], checked: set[HintArea | str]) -> bool:
+    for location in locations:
+        if location.name in checked:
+            return True
+        hint_area = HintArea.at(location)
+        if hint_area in checked:
+            return True
+        item_world = location.parent_region.multiworld.worlds[location.player]
+        if item_world is not None and item_world.precompleted_dungeons.get(hint_area.dungeon_name, False):
+            # Don't hint locations in precompleted dungeons.
+            return True
+    return False
 
 
 def get_good_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
     locations = list(filter(lambda location:
-        is_not_checked([location], checked)
+        not is_checked([location], checked)
         and ((is_major_item(location.item)
             and location.item.name not in unHintableWothItems)
                 or location.name in world.added_hint_types['item']
@@ -827,7 +841,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
             if itemname == "Bottle" and world.hint_dist == "bingo":
                 locations = [
                     location for location in world.multiworld.get_filled_locations(world.player)
-                    if (is_not_checked([location], checked)
+                    if (not is_checked([location], checked)
                         and location.name not in world.hint_exclusions
                         and location.item.name in bingoBottlesForHints
                         and not location.locked
@@ -837,7 +851,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
             else:
                 locations = [
                     location for location in world.multiworld.get_filled_locations(world.player)
-                    if (is_not_checked([location], checked)
+                    if (not is_checked([location], checked)
                         and location.name not in world.hint_exclusions
                         and location.item.name == itemname
                         and not location.locked
@@ -903,7 +917,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
             if itemname == "Bottle" and world.hint_dist == "bingo":
                 locations = [
                     location for location in named_item_locations
-                    if (is_not_checked([location], checked)
+                    if (not is_checked([location], checked)
                         and location.item.player == world.player
                         and location.name not in world.hint_exclusions
                         and location.item.name in bingoBottlesForHints
@@ -914,7 +928,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
             else:
                 locations = [
                     location for location in named_item_locations
-                    if (is_not_checked([location], checked)
+                    if (not is_checked([location], checked)
                         and location.item.player == world.player
                         and location.name not in world.hint_exclusions
                         and location.item.name == itemname
@@ -958,7 +972,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
 
 def get_random_location_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
     locations = list(filter(lambda location:
-        is_not_checked([location], checked)
+        not is_checked([location], checked)
         and location.item.type not in ('Drop', 'Event', 'Shop', 'DungeonReward')
         and not is_restricted_dungeon_item(location.item, world)
         and not location.locked
@@ -984,7 +998,7 @@ def get_random_location_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn
 
 def get_specific_hint(world: 'OOTWorld', checked: set[str], hint_type: str) -> HintReturn:
     hint_group = get_hint_group(hint_type, world)
-    hint_group = list(filter(lambda hint: is_not_checked([world.multiworld.get_location(hint.name, world.player)], checked), hint_group))
+    hint_group = list(filter(lambda hint: not is_checked([world.multiworld.get_location(hint.name, world.player)], checked), hint_group))
     if not hint_group:
         return None
 
@@ -992,7 +1006,7 @@ def get_specific_hint(world: 'OOTWorld', checked: set[str], hint_type: str) -> H
 
     if world.hint_dist_user.get('upgrade_hints', 'off') in ['on', 'limited']:
         upgrade_list = get_upgrade_hint_list(world, [hint.name])
-        upgrade_list = list(filter(lambda upgrade: is_not_checked([world.multiworld.get_location(location, world.player) for location in get_multi(
+        upgrade_list = list(filter(lambda upgrade: not is_checked([world.multiworld.get_location(location, world.player) for location in get_multi(
             upgrade.name).locations], checked), upgrade_list))
 
         if upgrade_list is not None:
@@ -1040,7 +1054,7 @@ def get_dungeon_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
 
 def get_random_multi_hint(world: 'OOTWorld', checked: set[str], hint_type: str) -> HintReturn:
     hint_group = get_hint_group(hint_type, world)
-    multi_hints = list(filter(lambda hint: is_not_checked([world.multiworld.get_location(location, world.player) for location in get_multi(
+    multi_hints = list(filter(lambda hint: not is_checked([world.multiworld.get_location(location, world.player) for location in get_multi(
         hint.name).locations], checked), hint_group))
 
     if not multi_hints:
@@ -1052,7 +1066,7 @@ def get_random_multi_hint(world: 'OOTWorld', checked: set[str], hint_type: str) 
         multi = get_multi(hint.name)
 
         upgrade_list = get_upgrade_hint_list(world, multi.locations)
-        upgrade_list = list(filter(lambda upgrade: is_not_checked([world.multiworld.get_location(location, world.player) for location in get_multi(
+        upgrade_list = list(filter(lambda upgrade: not is_checked([world.multiworld.get_location(location, world.player) for location in get_multi(
             upgrade.name).locations], checked), upgrade_list))
 
         if upgrade_list:
@@ -1149,8 +1163,10 @@ def get_junk_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
 
 def get_important_check_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
     top_level_locations = []
+    checked_areas = get_checked_areas(world, checked)
     for location in world.multiworld.get_filled_locations(world.player):
-        if (HintArea.at(location).text(world.clearer_hints) not in top_level_locations
+        if (HintArea.at(location) not in checked_areas
+                and HintArea.at(location).text(world.clearer_hints) not in top_level_locations
                 and (HintArea.at(location).text(world.clearer_hints) + ' Important Check') not in checked
                 and HintArea.at(location) != HintArea.ROOT):
             top_level_locations.append(HintArea.at(location).text(world.clearer_hints))
@@ -1169,9 +1185,9 @@ def get_important_check_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn
                 or location.item.name == 'Biggoron Sword'
                 or location.item.name == 'Double Defense'
                 # Handle make keys not in own dungeon major items
-                or (location.item.type == 'SmallKey' and not (world.shuffle_smallkeys == 'dungeon' or world.shuffle_smallkeys == 'vanilla'))
-                or (location.item.type == 'HideoutSmallKey' and not world.shuffle_hideoutkeys == 'vanilla')
-                or (location.item.type == 'TCGSmallKey' and not world.shuffle_tcgkeys == 'vanilla')
+                or (location.item.type in ('SmallKey', 'SmallKeyRing') and not (world.shuffle_smallkeys == 'dungeon' or world.shuffle_smallkeys == 'vanilla'))
+                or (location.item.type in ('HideoutSmallKey', 'HideoutSmallKeyRing') and not world.shuffle_hideoutkeys == 'vanilla')
+                or (location.item.type in ('TCGSmallKey', 'TCGSmallKeyRing') and not world.shuffle_tcgkeys == 'vanilla')
                 or (location.item.type == 'BossKey' and not (world.shuffle_bosskeys == 'dungeon' or world.shuffle_bosskeys == 'vanilla'))
                 or (location.item.type == 'GanonBossKey' and not (world.shuffle_ganon_bosskey == 'vanilla'
                     or world.shuffle_ganon_bosskey == 'dungeon' or world.shuffle_ganon_bosskey == 'on_lacs'
@@ -1294,6 +1310,9 @@ def build_gossip_hints(worlds: list['OOTWorld']) -> None:
         misc_hint_item_locations = getattr(world, 'misc_hint_item_locations', {})
         misc_hint_location_items = getattr(world, 'misc_hint_location_items', {})
         for location in world.hinted_dungeon_reward_locations.values():
+            if location is None:
+                # Ignore starting rewards that have no world location.
+                continue
             if 'altar' in world.misc_hints and not world.enhance_map_compass and can_reach_hint(worlds, world.multiworld.get_location('ToT Child Altar Hint' if location.item.info.stone else 'ToT Adult Altar Hint', world.player), location):
                 item_world = location.world
                 if item_world.player not in checked_locations:
@@ -1484,7 +1503,7 @@ def build_world_gossip_hints(world: 'OOTWorld', checked_locations: Optional[set[
 
     # Add required location hints, only if hint copies > 0
     if hint_dist['always'][1] > 0:
-        always_locations = list(filter(lambda hint: is_not_checked([world.multiworld.get_location(hint.name, world.player)], checked_always_locations),
+        always_locations = list(filter(lambda hint: not is_checked([world.multiworld.get_location(hint.name, world.player)], checked_always_locations),
                                        get_hint_group('always', world)))
         for hint in always_locations:
             location = world.multiworld.get_location(hint.name, world.player)
@@ -1701,7 +1720,13 @@ def build_boss_string(reward: str, color: str, world: 'OOTWorld') -> str:
             text = GossipText(f"\x08\x13{item_icon}One in #@'s pocket#...", [color], prefix='')
     else:
         location = world.hinted_dungeon_reward_locations[reward]
-        location_text = HintArea.at(location).text(world.clearer_hints, preposition=True)
+        if location is None:
+            hint_area = HintArea.ROOT
+            remote_world = None
+        else:
+            hint_area = HintArea.at(location)
+            remote_world = get_remote_world_display(world.player, location.player)
+        location_text = hint_area.text(world.clearer_hints, preposition=True, world=remote_world)
         text = GossipText(f"\x08\x13{item_icon}One {location_text}...", [color], prefix='')
     return str(text) + '\x04'
 
@@ -1820,6 +1845,15 @@ def build_misc_location_hints(world: 'OOTWorld', messages: list[Message]) -> Non
     misc_hint_location_items = getattr(world, 'misc_hint_location_items', {})
     for hint_type, data in misc_location_hint_table.items():
         text = data['location_fallback']
+        if hint_type == 'big_poes':
+            poe_points = world.big_poe_count * 100
+            if hint_type in world.misc_hints and hint_type in misc_hint_location_items:
+                item = misc_hint_location_items[hint_type]
+                text = data['location_text'].format(item=get_item_hint_text(item, world), poe_points=poe_points)
+            else:
+                text = data['location_fallback'].format(poe_points=poe_points)
+            update_message_by_id(messages, data['id'], text)
+            continue
         if hint_type in world.misc_hints:
             if hint_type in misc_hint_location_items:
                 item = misc_hint_location_items[hint_type]

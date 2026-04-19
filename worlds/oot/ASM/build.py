@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
 import argparse
 import json
@@ -128,19 +128,23 @@ os.chdir(run_dir)
 PAYLOAD_START = int(symbols['PAYLOAD_START']['address'], 16)
 PAYLOAD_END = int(symbols['PAYLOAD_END']['address'], 16)
 data_symbols = {}
+patch_symbols = {}
 for (name, sym) in symbols.items():
     if sym['type'] == 'data':
         addr = int(sym['address'], 16)
         if PAYLOAD_START <= addr < PAYLOAD_END:
             addr = addr - 0x80400000 + 0x03480000
+            data_symbols[name] = {
+                'address': f'{addr:08X}',
+                'length': sym.get('length', 0),
+            }
         else:
-            continue
-        data_symbols[name] = {
-            'address': f'{addr:08X}',
-            'length': sym.get('length', 0),
-        }
+            patch_symbols[name] = addr
 with open('../data/generated/symbols.json', 'w') as f:
     json.dump(data_symbols, f, indent=4, sort_keys=True)
+
+with open('../data/generated/patch_symbols.json', 'w') as f:
+    json.dump(patch_symbols, f, indent=4, sort_keys=True)
 
 if pj64_sym_path:
     pj64_sym_path = os.path.realpath(pj64_sym_path)
