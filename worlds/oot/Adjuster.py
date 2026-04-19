@@ -15,7 +15,7 @@ from worlds.oot.Options import (cosmetic_options, sfx_options,
 from worlds.oot.Rom import Rom, compress_rom_file
 from worlds.oot.N64Patch import apply_patch_file
 from worlds.oot.Utils import data_path
-from Utils import local_path
+from Utils import local_path, user_path
 
 logger = logging.getLogger('OoTAdjuster')
 
@@ -305,8 +305,9 @@ def adjust(args):
         os.remove(decomp_path)
     finally:
         if delete_zootdec:
-            os.chdir(os.path.split(__file__)[0])
-            os.remove("ZOOTDEC.z64")
+            decomp_file = user_path('ZOOTDEC.z64')
+            if os.path.exists(decomp_file):
+                os.remove(decomp_file)
     return comp_path
 
 def launch(*launcher_args: str):

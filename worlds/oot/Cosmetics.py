@@ -86,6 +86,7 @@ def patch_song_names(rom, ootworld, symbols):
 
 def patch_music(rom, ootworld, symbols):
     music_dir = getattr(ootworld, 'music_dir', None) or None
+    log = {}
     if ootworld.background_music != 'normal' or ootworld.fanfares != 'normal':
         music.restore_music(rom)
         log, errors = music.randomize_music(rom, ootworld, {}, music_dir=music_dir)
@@ -95,6 +96,16 @@ def patch_music(rom, ootworld, symbols):
         music.restore_music(rom)
     if getattr(ootworld, 'disable_battle_music', False):
         rom.write_byte(0xBE447F, 0x00)
+    if 'CFG_SONG_NAMES' in symbols:
+        # Only write names if music was re-randomized (log non-empty) or the table is uninitialized.
+        # This preserves names the generator already wrote when the adjuster runs without re-randomizing.
+        first_entry_blank = all(rom.read_byte(symbols['CFG_SONG_NAMES'] + j) == 0 for j in range(50))
+        if log or first_entry_blank:
+            for i, (name, seq_id) in enumerate(music.bgm_sequence_ids):
+                display_name = log.get(name, name)
+                name_bytes = display_name[:49].encode('ascii', errors='replace')
+                name_bytes = name_bytes + b'\x00' * (50 - len(name_bytes))
+                rom.write_bytes(symbols['CFG_SONG_NAMES'] + i * 50, list(name_bytes))
 
 
 def patch_model_colors(rom, color, model_addresses):
