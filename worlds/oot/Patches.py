@@ -755,6 +755,11 @@ def patch_rom(world, rom):
                 new_boss = entrance.replaces.data
                 original_boss = entrance.data
 
+                # The replacement slot (new_boss) might not have patch_addresses if it's a
+                # special entrance (e.g. Ganon Tower SpecialBoss) with no savewarp data.
+                if 'patch_addresses' not in new_boss or 'exit_blue_warp' not in new_boss:
+                    continue
+
                 # Fixup save/quit and death warping entrance IDs on bosses.
                 for address in new_boss['patch_addresses']:
                     rom.write_int16(address, original_boss['dungeon_index'])

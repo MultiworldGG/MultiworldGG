@@ -1,10 +1,11 @@
 from collections import deque
 import logging
+import re
 import typing
 
 from .Regions import TimeOfDay
 from .DungeonList import dungeon_table
-from .Hints import HintArea, HintAreaNotFound
+from .Hints import HintArea
 from .Items import oot_is_item_of_type
 from .LocationList import dungeon_song_locations
 
@@ -233,7 +234,7 @@ def set_rules(ootworld):
     # if location.type == 'HintStone' and ootworld.hints == 'mask':
     #     location.add_rule(is_child)
 
-    set_dungeon_reward_rules(ootworld)
+    set_ocarina_note_rules(ootworld)
 
 
 def create_shop_rule(location, parser):
@@ -300,52 +301,72 @@ def set_entrances_based_rules(ootworld):
             forbid_item(location, 'Buy Zora Tunic', ootworld.player)
 
 
-def set_dungeon_reward_rules(ootworld):
-    REWARD_COLORS = {
-        'Kokiri Emerald':   'Green',
-        'Goron Ruby':       'Red',
-        'Zora Sapphire':    'Blue',
-        'Forest Medallion': 'Green',
-        'Fire Medallion':   'Red',
-        'Water Medallion':  'Blue',
-        'Shadow Medallion': 'Pink',
-        'Spirit Medallion': 'Yellow',
-        'Light Medallion':  'Light Blue',
-    }
+def set_ocarina_note_rules(ootworld):
+    """Prevent ocarina note buttons from being placed at locations whose access requires those same notes.
 
-    mode = ootworld.shuffle_dungeon_rewards
-    if mode in ('vanilla', 'reward', 'anywhere'):
+    When shuffle_individual_ocarina_notes is enabled, a note button needed for song X must not
+    be placed at a location whose rule requires can_play(X). Without this, the fill can create
+    circular dependencies that pass the greedy fill check but fail the sphere-based accessibility check.
+
+    This also handles one level of event indirection: if a location's rule references an event
+    (e.g. 'Mask of Truth Access') whose own rule contains can_play(), those buttons are forbidden
+    at the location too.
+    """
+    if not ootworld.shuffle_individual_ocarina_notes:
+        return
+    if not hasattr(ootworld, 'song_notes'):
         return
 
-    reward_to_vanilla_dungeon = ootworld.reward_to_vanilla_dungeon
+    note_to_button = {
+        'A': 'Ocarina A Button',
+        '<': 'Ocarina C left Button',
+        '^': 'Ocarina C up Button',
+        'v': 'Ocarina C down Button',
+        '>': 'Ocarina C right Button',
+    }
 
-    # Precompute hint areas for all locations to avoid repeated BFS during fill.
-    loc_hint_area: dict = {}
+    song_to_buttons: dict = {}
+    for song, notes in ootworld.song_notes.items():
+        buttons = frozenset(note_to_button[c] for c in notes if c in note_to_button)
+        if buttons:
+            song_to_buttons[song.replace(' ', '_')] = buttons
+
+    can_play_re = re.compile(r'can_play\((\w+)\)')
+    # Matches single-quoted tokens used as event references in rule strings, e.g. 'Mask of Truth Access'
+    event_ref_re = re.compile(r"'([^']+)'")
+
+    # Build event_name -> required buttons from event locations' rule strings.
+    # Event location names have the form "EventName from RegionName".
+    event_buttons: dict = {}
     for location in ootworld.get_locations():
-        try:
-            loc_hint_area[location.name] = HintArea.at(location)
-        except HintAreaNotFound:
-            loc_hint_area[location.name] = None
+        if location.type != 'Event':
+            continue
+        rule_string = getattr(location, 'rule_string', None)
+        if not rule_string:
+            continue
+        songs = can_play_re.findall(rule_string)
+        if not songs:
+            continue
+        event_name = location.name.rsplit(' from ', 1)[0]
+        buttons = frozenset().union(*(song_to_buttons.get(s, frozenset()) for s in songs))
+        if event_name in event_buttons:
+            event_buttons[event_name] = event_buttons[event_name] | buttons
+        else:
+            event_buttons[event_name] = buttons
 
     for location in ootworld.get_locations():
-        hint_area = loc_hint_area.get(location.name)
+        if location.type == 'Event':
+            continue
+        rule_string = getattr(location, 'rule_string', None)
+        if not rule_string:
+            continue
+        songs_needed = can_play_re.findall(rule_string)
+        forbidden = frozenset().union(*(song_to_buttons.get(s, frozenset()) for s in songs_needed))
+        for event_name in event_ref_re.findall(rule_string):
+            if event_name in event_buttons:
+                forbidden = forbidden | event_buttons[event_name]
+        if not forbidden:
+            continue
+        add_item_rule(location, lambda item, f=forbidden: item.name not in f)
 
-        if mode == 'dungeon':
-            loc_dungeon = hint_area.dungeon_name if hint_area else None
-            add_item_rule(location, lambda item, d=loc_dungeon, r2d=reward_to_vanilla_dungeon:
-                not oot_is_item_of_type(item, 'DungeonReward') or r2d.get(item.name) == d)
 
-        elif mode == 'regional':
-            loc_color = hint_area.color if hint_area else None
-            add_item_rule(location, lambda item, c=loc_color, rc=REWARD_COLORS:
-                not oot_is_item_of_type(item, 'DungeonReward') or rc.get(item.name) == c)
-
-        elif mode == 'overworld':
-            if hint_area and hint_area.is_dungeon:
-                add_item_rule(location, lambda item:
-                    not oot_is_item_of_type(item, 'DungeonReward'))
-
-        elif mode == 'any_dungeon':
-            if not hint_area or not hint_area.is_dungeon:
-                add_item_rule(location, lambda item:
-                    not oot_is_item_of_type(item, 'DungeonReward'))

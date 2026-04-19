@@ -769,17 +769,6 @@ class OOTWorld(World):
         boss_rewards = sorted(map(self.create_item, self.item_name_groups['rewards']))
         boss_locations = [self.multiworld.get_location(loc, self.player) for loc in boss_location_names]
 
-        # Build canonical reward→dungeon mapping before entrance shuffle runs.
-        # HintArea.at() resolves correctly here since entrances are still vanilla.
-        self.reward_to_vanilla_dungeon: dict = {}
-        for loc in boss_locations:
-            if loc.vanilla_item:
-                try:
-                    hint_area = HintArea.at(loc)
-                    self.reward_to_vanilla_dungeon[loc.vanilla_item] = hint_area.dungeon_name if hint_area.is_dungeon else None
-                except HintAreaNotFound:
-                    self.reward_to_vanilla_dungeon[loc.vanilla_item] = None
-
         mode = self.shuffle_dungeon_rewards
 
         placed_prizes = [loc.item.name for loc in boss_locations if loc.item is not None]
@@ -794,8 +783,10 @@ class OOTWorld(World):
                 if loc and loc.item is None:
                     loc.place_locked_item(item)
                     self.hinted_dungeon_reward_locations[item.name] = loc
-        elif mode == 'reward':
-            # Shuffle all rewards among the Boss locations (original behaviour).
+        else:
+            # All other modes (reward, dungeon, regional, any_dungeon, overworld, anywhere):
+            # Shuffle rewards among boss locations, matching the original behaviour.
+            # Regional/dungeon constraints are advisory for hints; placement stays local to boss rooms.
             while bossCount:
                 bossCount -= 1
                 self.random.shuffle(prizepool)
@@ -804,12 +795,6 @@ class OOTWorld(World):
                 loc = prize_locs.pop()
                 loc.place_locked_item(item)
                 self.hinted_dungeon_reward_locations[item.name] = loc
-        else:
-            # dungeon / overworld / any_dungeon / regional / anywhere:
-            # Rewards go into the general item pool; set_dungeon_reward_rules() in
-            # Rules.py handles the placement restrictions via item rules.
-            for item in prizepool:
-                self.multiworld.itempool.append(item)
 
 
     # Separate the result from generate_itempool into main and prefill pools

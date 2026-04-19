@@ -750,6 +750,117 @@ class SaveContext():
             },
             'triforce_pieces'            : Address(0xD4 + 0x1C * 0x48 + 0x10, size=4), # Unused word in scene x48
             'pending_freezes'            : Address(0xD4 + 0x1C * 0x49 + 0x10, size=4), # Unused word in scene x49
+            'ocarina_buttons': { # Unused word in scene x50
+                'a'                     : Address(0xD4 + 0x1C * 0x50 + 0x10, size=4, mask=0x00000001),
+                'c_up'                  : Address(0xD4 + 0x1C * 0x50 + 0x10, size=4, mask=0x00000002),
+                'c_down'                : Address(0xD4 + 0x1C * 0x50 + 0x10, size=4, mask=0x00000004),
+                'c_left'                : Address(0xD4 + 0x1C * 0x50 + 0x10, size=4, mask=0x00000008),
+                'c_right'               : Address(0xD4 + 0x1C * 0x50 + 0x10, size=4, mask=0x00000010),
+            },
+            'owned_trade_items': { # Unused word in scene x60
+                'weird_egg'             : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000001),
+                'chicken'               : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000002),
+                'zeldas_letter'         : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000004),
+                'keaton_mask'           : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000008),
+                'skull_mask'            : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000010),
+                'spooky_mask'           : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000020),
+                'bunny_hood'            : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000040),
+                'goron_mask'            : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000080),
+                'zora_mask'             : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000100),
+                'gerudo_mask'           : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000200),
+                'mask_of_truth'         : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000400),
+                'pocket_egg'            : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00000800),
+                'pocket_cucco'          : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00001000),
+                'cojiro'                : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00002000),
+                'odd_mushroom'          : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00004000),
+                'odd_potion'            : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00008000),
+                'poachers_saw'          : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00010000),
+                'broken_sword'          : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00020000),
+                'prescription'          : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00040000),
+                'eyeball_frog'          : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00080000),
+                'eye_drops'             : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00100000),
+                'claim_check'           : Address(0xD4 + 0x1C * 0x60 + 0x10, size=4, mask=0x00200000),
+            },
+            'silver_rupee_counts' : {
+                'dc_staircase'       : Address(0x1450, size=1, max=5),
+                'ice_scythe'         : Address(0x1451, size=1, max=5),
+                'ice_block'          : Address(0x1452, size=1, max=5),
+                'botw_basement'      : Address(0x1453, size=1, max=5),
+                'shadow_scythe'      : Address(0x1454, size=1, max=5),
+                'shadow_blades'      : Address(0x1455, size=1, max=10),
+                'shadow_pit'         : Address(0x1456, size=1, max=5),
+                'shadow_spikes'      : Address(0x1457, size=1, max=10),
+                'gtg_slopes'         : Address(0x1458, size=1, max=5),
+                'gtg_lava'           : Address(0x1459, size=1, max=6),
+                'gtg_water'          : Address(0x145A, size=1, max=5),
+                'spirit_torches'     : Address(0x145B, size=1, max=5),
+                'spirit_boulders'    : Address(0x145C, size=1, max=5),
+                'spirit_lobby'       : Address(0x145D, size=1, max=5),
+                'spirit_sun'         : Address(0x145E, size=1, max=5),
+                'spirit_adult_climb' : Address(0x145F, size=1, max=5),
+                'trials_spirit'      : Address(0x1460, size=1, max=5),
+                'trials_light'       : Address(0x1461, size=1, max=5),
+                'trials_fire'        : Address(0x1462, size=1, max=5),
+                'trials_shadow'      : Address(0x1463, size=1, max=5),
+                'trials_water'       : Address(0x1464, size=1, max=5),
+                'trials_forest'      : Address(0x1465, size=1, max=5),
+            },
+            'scene_flags' : {
+                'dodongo' : {
+                    'swch' : {
+                        'silver_rupees_staircase': Address(0xD4 + 0x1C * 0x01 + 0x04, mask=0x80000000),
+                    },
+                },
+                'spirit' : {
+                    'swch' : {
+                        'silver_rupees_adult_climb': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000001),
+                        'silver_rupees_boulders': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000004),
+                        'silver_rupees_torches': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000020),
+                        'silver_rupees_sun': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000400),
+                        'silver_rupees_lobby': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x80000000),
+                    },
+                },
+                'shadow' : {
+                    'swch' : {
+                        'silver_rupees_scythe': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000002),
+                        'silver_rupees_blades': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000008),
+                        'silver_rupees_spikes': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000100),
+                        'silver_rupees_vanilla_pit': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000200),
+                        'silver_rupees_mq_pit': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00020000),
+                    },
+                },
+                'botw' : {
+                    'swch' : {
+                        'silver_rupees_basement': Address(0xD4 + 0x1C * 0x08 + 0x04, mask=0x80000000),
+                    },
+                },
+                'ice' : {
+                    'swch' : {
+                        'silver_rupees_scythe': Address(0xD4 + 0x1C * 0x09 + 0x04, mask=0x00000100),
+                        'silver_rupees_block': Address(0xD4 + 0x1C * 0x09 + 0x04, mask=0x00000200),
+                    },
+                },
+                'gtg' : {
+                    'swch' : {
+                        'silver_rupees_lava': Address(0xD4 + 0x1C * 0x0B + 0x04, mask=0x00001000),
+                        'silver_rupees_water': Address(0xD4 + 0x1C * 0x0B + 0x04, mask=0x08000000),
+                        'silver_rupees_slopes': Address(0xD4 + 0x1C * 0x0B + 0x04, mask=0x10000000),
+                    },
+                    'clear' : {
+                        'slopes_room': Address(0xD4 + 0x1C * 0x0B + 0x08, mask=0x10000000),
+                    },
+                },
+                'gc' : {
+                    'swch' : {
+                        'silver_rupees_mq_fire': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000002),
+                        'silver_rupees_water': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000004),
+                        'silver_rupees_vanilla_fire': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000200),
+                        'silver_rupees_shadow_spirit': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000800),
+                        'silver_rupees_forest': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00004000),
+                        'silver_rupees_light': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00040000),
+                    },
+                },
+            },
         }
 
 
@@ -1364,119 +1475,5 @@ class SaveContext():
             'boots' : [
                 'kokiri_boots',
             ],
-        },
-
-        'ocarina_buttons': { # Unused word in scene x50
-            'a'                     : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x01),
-            'c_up'                  : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x02),
-            'c_down'                : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x04),
-            'c_left'                : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x08),
-            'c_right'               : Address(0xD4 + 0x1C * 0x50 + 0x10, mask=0x10),
-        },
-        'owned_trade_items': { # Unused word in scene x60
-            'weird_egg'             : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000001),
-            'chicken'               : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000002),
-            'zeldas_letter'         : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000004),
-            'keaton_mask'           : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000008),
-            'skull_mask'            : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000010),
-            'spooky_mask'           : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000020),
-            'bunny_hood'            : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000040),
-            'goron_mask'            : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000080),
-            'zora_mask'             : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000100),
-            'gerudo_mask'           : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000200),
-            'mask_of_truth'         : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000400),
-            'pocket_egg'            : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00000800),
-            'pocket_cucco'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00001000),
-            'cojiro'                : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00002000),
-            'odd_mushroom'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00004000),
-            'odd_potion'            : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00008000),
-            'poachers_saw'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00010000),
-            'broken_sword'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00020000),
-            'prescription'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00040000),
-            'eyeball_frog'          : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00080000),
-            'eye_drops'             : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00100000),
-            'claim_check'           : Address(0xD4 + 0x1C * 0x60 + 0x10, mask=0x00200000),
-        },
-
-        'silver_rupee_counts' : {
-            'dc_staircase'       : Address(0x1450, size=1, max=5),
-            'ice_scythe'         : Address(0x1451, size=1, max=5),
-            'ice_block'          : Address(0x1452, size=1, max=5),
-            'botw_basement'      : Address(0x1453, size=1, max=5),
-            'shadow_scythe'      : Address(0x1454, size=1, max=5),
-            'shadow_blades'      : Address(0x1455, size=1, max=10),
-            'shadow_pit'         : Address(0x1456, size=1, max=5),
-            'shadow_spikes'      : Address(0x1457, size=1, max=10),
-            'gtg_slopes'         : Address(0x1458, size=1, max=5),
-            'gtg_lava'           : Address(0x1459, size=1, max=6),
-            'gtg_water'          : Address(0x145A, size=1, max=5),
-            'spirit_torches'     : Address(0x145B, size=1, max=5),
-            'spirit_boulders'    : Address(0x145C, size=1, max=5),
-            'spirit_lobby'       : Address(0x145D, size=1, max=5),
-            'spirit_sun'         : Address(0x145E, size=1, max=5),
-            'spirit_adult_climb' : Address(0x145F, size=1, max=5),
-            'trials_spirit'      : Address(0x1460, size=1, max=5),
-            'trials_light'       : Address(0x1461, size=1, max=5),
-            'trials_fire'        : Address(0x1462, size=1, max=5),
-            'trials_shadow'      : Address(0x1463, size=1, max=5),
-            'trials_water'       : Address(0x1464, size=1, max=5),
-            'trials_forest'      : Address(0x1465, size=1, max=5),
-        },
-
-        'scene_flags' : {
-            'dodongo' : {
-                'swch' : {
-                    'silver_rupees_staircase': Address(0xD4 + 0x1C * 0x01 + 0x04, mask=0x80000000),
-                },
-            },
-            'spirit' : {
-                'swch' : {
-                    'silver_rupees_adult_climb': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000001),
-                    'silver_rupees_boulders': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000004),
-                    'silver_rupees_torches': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000020),
-                    'silver_rupees_sun': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x00000400),
-                    'silver_rupees_lobby': Address(0xD4 + 0x1C * 0x06 + 0x04, mask=0x80000000),
-                },
-            },
-            'shadow' : {
-                'swch' : {
-                    'silver_rupees_scythe': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000002),
-                    'silver_rupees_blades': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000008),
-                    'silver_rupees_spikes': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000100),
-                    'silver_rupees_vanilla_pit': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00000200),
-                    'silver_rupees_mq_pit': Address(0xD4 + 0x1C * 0x07 + 0x04, mask=0x00020000),
-                },
-            },
-            'botw' : {
-                'swch' : {
-                    'silver_rupees_basement': Address(0xD4 + 0x1C * 0x08 + 0x04, mask=0x80000000),
-                },
-            },
-            'ice' : {
-                'swch' : {
-                    'silver_rupees_scythe': Address(0xD4 + 0x1C * 0x09 + 0x04, mask=0x00000100),
-                    'silver_rupees_block': Address(0xD4 + 0x1C * 0x09 + 0x04, mask=0x00000200),
-                },
-            },
-            'gtg' : {
-                'swch' : {
-                    'silver_rupees_lava': Address(0xD4 + 0x1C * 0x0B + 0x04, mask=0x00001000),
-                    'silver_rupees_water': Address(0xD4 + 0x1C * 0x0B + 0x04, mask=0x08000000),
-                    'silver_rupees_slopes': Address(0xD4 + 0x1C * 0x0B + 0x04, mask=0x10000000),
-                },
-                'clear' : {
-                    'slopes_room': Address(0xD4 + 0x1C * 0x0B + 0x08, mask=0x10000000),
-                },
-            },
-            'gc' : {
-                'swch' : {
-                    'silver_rupees_mq_fire': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000002),
-                    'silver_rupees_water': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000004),
-                    'silver_rupees_vanilla_fire': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000200),
-                    'silver_rupees_shadow_spirit': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00000800),
-                    'silver_rupees_forest': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00004000),
-                    'silver_rupees_light': Address(0xD4 + 0x1C * 0x0D + 0x04, mask=0x00040000),
-                },
-            },
         },
     }
