@@ -934,7 +934,12 @@ def main(args: argparse.Namespace | dict | None = None):
 
     if args["run_component_callable"]:
         module_name, qualname = args["run_component_callable"]
-        run_component_callable(module_name, qualname, *args["args"])
+        call_args = []
+        primary_arg = args.get("Patch|Game|Component|url")
+        if primary_arg is not None:
+            call_args.append(primary_arg)
+        call_args.extend(args["args"])
+        run_component_callable(module_name, qualname, *call_args)
         return
 
     path = args.get("Patch|Game|Component|url", None)
