@@ -25,6 +25,49 @@ def set_all_entrances_data(multiworld, player):
             if type == 'Grotto':
                 return_entrance.data['index'] = 0x7FFF
 
+    # Route each Blue Warp exit based on where the boss/dungeon shuffle placed things.
+    # boss_exits: boss room return entrance → corresponding dungeon lobby exit
+    boss_exits = {
+        'Queen Gohma Boss Room -> Deku Tree Before Boss':         multiworld.get_entrance('Deku Tree Lobby -> KF Outside Deku Tree', player),
+        'King Dodongo Boss Room -> Dodongos Cavern Mouth':        multiworld.get_entrance('Dodongos Cavern Beginning -> Death Mountain', player),
+        'Barinade Boss Room -> Jabu Jabus Belly Before Boss':     multiworld.get_entrance('Jabu Jabus Belly Beginning -> Zoras Fountain', player),
+        'Phantom Ganon Boss Room -> Forest Temple Before Boss':   multiworld.get_entrance('Forest Temple Lobby -> SFM Forest Temple Entrance Ledge', player),
+        'Volvagia Boss Room -> Fire Temple Before Boss':          multiworld.get_entrance('Fire Temple Lower -> DMC Fire Temple Entrance', player),
+        'Morpha Boss Room -> Water Temple Before Boss':           multiworld.get_entrance('Water Temple Lobby -> Lake Hylia', player),
+        'Bongo Bongo Boss Room -> Shadow Temple Before Boss':     multiworld.get_entrance('Shadow Temple Entryway -> Graveyard Warp Pad Region', player),
+        'Twinrova Boss Room -> Spirit Temple Before Boss':        multiworld.get_entrance('Spirit Temple Lobby -> Desert Colossus From Spirit Lobby', player),
+    }
+    # dungeon_exits: dungeon lobby exit → corresponding blue warp entrance
+    dungeon_exits = {
+        'Deku Tree Lobby -> KF Outside Deku Tree':                        multiworld.get_entrance('Queen Gohma Blue Warp -> KF Outside Deku Tree', player),
+        'Dodongos Cavern Beginning -> Death Mountain':                    multiworld.get_entrance('King Dodongo Blue Warp -> Death Mountain', player),
+        'Jabu Jabus Belly Beginning -> Zoras Fountain':                   multiworld.get_entrance('Barinade Blue Warp -> Zoras Fountain', player),
+        'Forest Temple Lobby -> SFM Forest Temple Entrance Ledge':        multiworld.get_entrance('Phantom Ganon Blue Warp -> Sacred Forest Meadow', player),
+        'Fire Temple Lower -> DMC Fire Temple Entrance':                   multiworld.get_entrance('Volvagia Blue Warp -> DMC Central Local', player),
+        'Water Temple Lobby -> Lake Hylia':                               multiworld.get_entrance('Morpha Blue Warp -> Lake Hylia', player),
+        'Shadow Temple Entryway -> Graveyard Warp Pad Region':            multiworld.get_entrance('Bongo Bongo Blue Warp -> Graveyard Warp Pad Region', player),
+        'Spirit Temple Lobby -> Desert Colossus From Spirit Lobby':       multiworld.get_entrance('Twinrova Blue Warp -> Desert Colossus', player),
+    }
+    for (blue_warp_name, boss_door_exit_name) in (
+        ('Queen Gohma Blue Warp -> KF Outside Deku Tree',      'Queen Gohma Boss Room -> Deku Tree Before Boss'),
+        ('King Dodongo Blue Warp -> Death Mountain',            'King Dodongo Boss Room -> Dodongos Cavern Mouth'),
+        ('Barinade Blue Warp -> Zoras Fountain',                'Barinade Boss Room -> Jabu Jabus Belly Before Boss'),
+        ('Phantom Ganon Blue Warp -> Sacred Forest Meadow',     'Phantom Ganon Boss Room -> Forest Temple Before Boss'),
+        ('Volvagia Blue Warp -> DMC Central Local',             'Volvagia Boss Room -> Fire Temple Before Boss'),
+        ('Morpha Blue Warp -> Lake Hylia',                      'Morpha Boss Room -> Water Temple Before Boss'),
+        ('Bongo Bongo Blue Warp -> Graveyard Warp Pad Region',  'Bongo Bongo Boss Room -> Shadow Temple Before Boss'),
+        ('Twinrova Blue Warp -> Desert Colossus',               'Twinrova Boss Room -> Spirit Temple Before Boss'),
+    ):
+        blue_warp = multiworld.get_entrance(blue_warp_name, player)
+        boss_door_exit = multiworld.get_entrance(boss_door_exit_name, player)
+        target = boss_door_exit.replaces or boss_door_exit
+        while target.name in boss_exits:
+            target = boss_exits[target.name].replaces or boss_exits[target.name]
+        if target.name in dungeon_exits:
+            target = dungeon_exits[target.name]
+        blue_warp.connect(multiworld.get_region(target.name.split(' -> ')[1], player))
+        blue_warp.replaces = target
+
 
 def assume_entrance_pool(entrance_pool, ootworld, pool_type):
     assumed_pool = []
@@ -75,28 +118,28 @@ def build_one_way_targets(world, pool, types_to_include, exclude=(), target_regi
 
 entrance_shuffle_table = [
     ('Dungeon',         ('KF Outside Deku Tree -> Deku Tree Lobby',                         { 'index': 0x0000 }),
-                        ('Deku Tree Lobby -> KF Outside Deku Tree',                         { 'index': 0x0209, 'blue_warp': 0x0457 })),
+                        ('Deku Tree Lobby -> KF Outside Deku Tree',                         { 'index': 0x0209 })),
     ('Dungeon',         ('Death Mountain -> Dodongos Cavern Beginning',                     { 'index': 0x0004 }),
-                        ('Dodongos Cavern Beginning -> Death Mountain',                     { 'index': 0x0242, 'blue_warp': 0x047A })),
+                        ('Dodongos Cavern Beginning -> Death Mountain',                     { 'index': 0x0242 })),
     ('Dungeon',         ('Zoras Fountain -> Jabu Jabus Belly Beginning',                    { 'index': 0x0028 }),
-                        ('Jabu Jabus Belly Beginning -> Zoras Fountain',                    { 'index': 0x0221, 'blue_warp': 0x010E })),
+                        ('Jabu Jabus Belly Beginning -> Zoras Fountain',                    { 'index': 0x0221 })),
     ('Dungeon',         ('SFM Forest Temple Entrance Ledge -> Forest Temple Lobby',         { 'index': 0x0169 }),
-                        ('Forest Temple Lobby -> SFM Forest Temple Entrance Ledge',         { 'index': 0x0215, 'blue_warp': 0x0608 })),
+                        ('Forest Temple Lobby -> SFM Forest Temple Entrance Ledge',         { 'index': 0x0215 })),
     ('Dungeon',         ('DMC Fire Temple Entrance -> Fire Temple Lower',                   { 'index': 0x0165 }),
-                        ('Fire Temple Lower -> DMC Fire Temple Entrance',                   { 'index': 0x024A, 'blue_warp': 0x0564 })),
+                        ('Fire Temple Lower -> DMC Fire Temple Entrance',                   { 'index': 0x024A })),
     ('Dungeon',         ('Lake Hylia -> Water Temple Lobby',                                { 'index': 0x0010 }),
-                        ('Water Temple Lobby -> Lake Hylia',                                { 'index': 0x021D, 'blue_warp': 0x060C })),
+                        ('Water Temple Lobby -> Lake Hylia',                                { 'index': 0x021D })),
     ('Dungeon',         ('Desert Colossus -> Spirit Temple Lobby',                          { 'index': 0x0082 }),
-                        ('Spirit Temple Lobby -> Desert Colossus From Spirit Lobby',        { 'index': 0x01E1, 'blue_warp': 0x0610 })),
+                        ('Spirit Temple Lobby -> Desert Colossus From Spirit Lobby',        { 'index': 0x01E1 })),
     ('Dungeon',         ('Graveyard Warp Pad Region -> Shadow Temple Entryway',             { 'index': 0x0037 }),
-                        ('Shadow Temple Entryway -> Graveyard Warp Pad Region',             { 'index': 0x0205, 'blue_warp': 0x0580 })),
+                        ('Shadow Temple Entryway -> Graveyard Warp Pad Region',             { 'index': 0x0205 })),
     ('Dungeon',         ('Kakariko Village -> Bottom of the Well',                          { 'index': 0x0098 }),
                         ('Bottom of the Well -> Kakariko Village',                          { 'index': 0x02A6 })),
     ('Dungeon',         ('ZF Ice Ledge -> Ice Cavern Beginning',                            { 'index': 0x0088 }),
                         ('Ice Cavern Beginning -> ZF Ice Ledge',                            { 'index': 0x03D4 })),
     ('Dungeon',         ('Gerudo Fortress -> Gerudo Training Ground Lobby',                 { 'index': 0x0008 }),
                         ('Gerudo Training Ground Lobby -> Gerudo Fortress',                 { 'index': 0x03A8 })),
-    ('DungeonSpecial',  ('Ganons Castle Grounds -> Ganons Castle Lobby',                    { 'index': 0x0467 }),
+    ('DungeonSpecial',  ('Ganons Castle Ledge -> Ganons Castle Lobby',                      { 'index': 0x0467 }),
                         ('Ganons Castle Lobby -> Castle Grounds From Ganons Castle',        { 'index': 0x023D })),
 
     ('Interior',        ('Kokiri Forest -> KF Midos House',                                 { 'index': 0x0433 }),
@@ -352,85 +395,38 @@ entrance_shuffle_table = [
     ('WarpSong',        ('Nocturne of Shadow Warp -> Graveyard Warp Pad Region',            { 'index': 0x0568, 'addresses': [0xBF0244] })),
     ('WarpSong',        ('Prelude of Light Warp -> Temple of Time',                         { 'index': 0x05F4, 'addresses': [0xBF0246] })),
 
+    ('BlueWarp',        ('Queen Gohma Blue Warp -> KF Outside Deku Tree',                   { 'index': 0x0457, 'addresses': [0xAC93A2, 0xCA3142, 0xCA316A] })),
+    ('BlueWarp',        ('King Dodongo Blue Warp -> Death Mountain',                        { 'index': 0x047A, 'addresses': [0xAC9336, 0xCA30CA, 0xCA30EA] })),
+    ('BlueWarp',        ('Barinade Blue Warp -> Zoras Fountain',                            { 'index': 0x010E, 'addresses': [0xAC936A, 0xCA31B2, 0xCA3702] })),
+    ('BlueWarp',        ('Phantom Ganon Blue Warp -> Sacred Forest Meadow',                 { 'index': 0x0608, 'addresses': [0xAC9F96, 0xCA3D66, 0xCA3D5A, 0xCA3D32], 'child_index': 0x0600 })),
+    ('BlueWarp',        ('Volvagia Blue Warp -> DMC Central Local',                         { 'index': 0x0564, 'addresses': [0xACA516, 0xCA3DF2, 0xCA3DE6, 0xCA3DBE], 'child_index': 0x04F6 })),
+    ('BlueWarp',        ('Morpha Blue Warp -> Lake Hylia',                                  { 'index': 0x060C, 'addresses': [0xAC995A, 0xCA3E82, 0xCA3E76, 0xCA3E4A], 'child_index': 0x0604 })),
+    ('BlueWarp',        ('Bongo Bongo Blue Warp -> Graveyard Warp Pad Region',              { 'index': 0x0580, 'addresses': [0xACA496, 0xCA3FA2, 0xCA3F96, 0xCA3F6A], 'child_index': 0x0568 })),
+    ('BlueWarp',        ('Twinrova Blue Warp -> Desert Colossus',                           { 'index': 0x0610, 'addresses': [0xACA402, 0xCA3F12, 0xCA3F06, 0xCA3EDA], 'child_index': 0x01F1 })),
+
+    ('ChildBoss',       ('Deku Tree Before Boss -> Queen Gohma Boss Room',                  { 'index': 0x040f, 'savewarp_addresses': [ 0xB06292, 0xBC6162, 0xBC60AE ], 'dungeon_index': 0x0000 }),
+                        ('Queen Gohma Boss Room -> Deku Tree Before Boss',                  { 'index': 0x0252 })),
+    ('ChildBoss',       ('Dodongos Cavern Before Boss -> King Dodongo Boss Room',           { 'index': 0x040b, 'savewarp_addresses': [ 0xB062B6, 0xBC616E ], 'dungeon_index': 0x0004 }),
+                        ('King Dodongo Boss Room -> Dodongos Cavern Mouth',                 { 'index': 0x00c5 })),
+    ('ChildBoss',       ('Jabu Jabus Belly Before Boss -> Barinade Boss Room',              { 'index': 0x0301, 'savewarp_addresses': [ 0xB062C2, 0xBC60C2 ], 'dungeon_index': 0x0028 }),
+                        ('Barinade Boss Room -> Jabu Jabus Belly Before Boss',              { 'index': 0x0407 })),
+    ('AdultBoss',       ('Forest Temple Before Boss -> Phantom Ganon Boss Room',            { 'index': 0x000c, 'savewarp_addresses': [ 0xB062CE, 0xBC6182 ], 'dungeon_index': 0x0169 }),
+                        ('Phantom Ganon Boss Room -> Forest Temple Before Boss',            { 'index': 0x024E })),
+    ('AdultBoss',       ('Fire Temple Before Boss -> Volvagia Boss Room',                   { 'index': 0x0305, 'savewarp_addresses': [ 0xB062DA, 0xBC60CE ], 'dungeon_index': 0x0165 }),
+                        ('Volvagia Boss Room -> Fire Temple Before Boss',                   { 'index': 0x0175 })),
+    ('AdultBoss',       ('Water Temple Before Boss -> Morpha Boss Room',                    { 'index': 0x0417, 'savewarp_addresses': [ 0xB062E6, 0xBC6196 ], 'dungeon_index': 0x0010 }),
+                        ('Morpha Boss Room -> Water Temple Before Boss',                    { 'index': 0x0423 })),
+    ('AdultBoss',       ('Shadow Temple Before Boss -> Bongo Bongo Boss Room',              { 'index': 0x0413, 'savewarp_addresses': [ 0xB062FE, 0xBC61AA ], 'dungeon_index': 0x0037 }),
+                        ('Bongo Bongo Boss Room -> Shadow Temple Before Boss',              { 'index': 0x02B2 })),
+    ('AdultBoss',       ('Spirit Temple Before Boss -> Twinrova Boss Room',                 { 'index': 0x008D, 'savewarp_addresses': [ 0xB062F2, 0xBC6122 ], 'dungeon_index': 0x0082 }),
+                        ('Twinrova Boss Room -> Spirit Temple Before Boss',                 { 'index': 0x02F5 })),
+
+    ('SpecialBoss',     ('Ganons Castle Main -> Ganons Castle Tower',                       { 'index': 0x041B }),
+                        ('Ganons Castle Tower -> Ganons Castle Main',                       { 'index': 0x0534 })),
+
     ('Extra',           ('ZD Eyeball Frog Timeout -> Zoras Domain',                         { 'index': 0x0153 })),
     ('Extra',           ('ZR Top of Waterfall -> Zora River',                               { 'index': 0x0199 })),
 ]
-
-
-def _add_boss_entrances():
-    # Compute this at load time to save a lot of duplication
-    dungeon_data = {}
-    for type, forward, *reverse in entrance_shuffle_table:
-        if type != 'Dungeon':
-            continue
-        if not reverse:
-            continue
-        name, forward = forward
-        reverse = reverse[0][1]
-        if 'blue_warp' not in reverse:
-            continue
-        dungeon_data[name] = {
-            'dungeon_index': forward['index'],
-            'exit_index': reverse['index'],
-            'exit_blue_warp': reverse['blue_warp']
-        }
-
-    for type, source, target, dungeon, index, rindex, addresses, *extra in [
-        (
-            'ChildBoss', 'Deku Tree Before Boss', 'Queen Gohma Boss Room',
-            'KF Outside Deku Tree -> Deku Tree Lobby',
-            0x040f, 0x0252, [ 0xB06292, 0xBC6162, 0xBC60AE ]
-        ),
-        (
-            'ChildBoss', 'Dodongos Cavern Before Boss', 'King Dodongo Boss Room',
-            'Death Mountain -> Dodongos Cavern Beginning',
-            0x040b, 0x00c5, [ 0xB062B6, 0xBC616E ], 'Dodongos Cavern Mouth'
-        ),
-        (
-            'ChildBoss', 'Jabu Jabus Belly Before Boss', 'Barinade Boss Room',
-            'Zoras Fountain -> Jabu Jabus Belly Beginning',
-            0x0301, 0x0407, [ 0xB062C2, 0xBC60C2 ]
-        ),
-        (
-            'AdultBoss', 'Forest Temple Before Boss', 'Phantom Ganon Boss Room',
-            'SFM Forest Temple Entrance Ledge -> Forest Temple Lobby',
-            0x000c, 0x024E, [ 0xB062CE, 0xBC6182 ]
-        ),
-        (
-            'AdultBoss', 'Fire Temple Before Boss', 'Volvagia Boss Room',
-            'DMC Fire Temple Entrance -> Fire Temple Lower',
-            0x0305, 0x0175, [ 0xB062DA, 0xBC60CE ]
-        ),
-        (
-            'AdultBoss', 'Water Temple Before Boss', 'Morpha Boss Room',
-            'Lake Hylia -> Water Temple Lobby',
-            0x0417, 0x0423, [ 0xB062E6, 0xBC6196 ]
-        ),
-        (
-            'AdultBoss', 'Spirit Temple Before Boss', 'Twinrova Boss Room',
-            'Desert Colossus -> Spirit Temple Lobby',
-            0x008D, 0x02F5, [ 0xB062F2, 0xBC6122 ]
-        ),
-        (
-            'AdultBoss', 'Shadow Temple Before Boss', 'Bongo Bongo Boss Room',
-            'Graveyard Warp Pad Region -> Shadow Temple Entryway',
-            0x0413, 0x02B2, [ 0xB062FE, 0xBC61AA ]
-        )
-    ]:
-        return_source = extra[0] if extra else source
-        d = {'index': index, 'patch_addresses': addresses}
-        d.update(dungeon_data[dungeon])
-        entrance_shuffle_table.append(
-            (type, (f"{source} -> {target}", d), (f"{target} -> {return_source}", {'index': rindex}))
-        )
-_add_boss_entrances()
-entrance_shuffle_table.append(
-    (
-        'SpecialBoss',
-        ('Ganons Castle Main -> Ganons Castle Tower', {'index': 0x041B}),
-        ('Ganons Castle Tower -> Ganons Castle Main', {'index': 0x0534}),
-    )
-)
 
 
 # Basically, the entrances in the list above that go to:
@@ -493,11 +489,11 @@ def shuffle_random_entrances(ootworld):
         one_way_entrance_pools['OwlDrop'] = ootworld.get_shufflable_entrances(type='OwlDrop')
     if ootworld.warp_songs:
         one_way_entrance_pools['WarpSong'] = ootworld.get_shufflable_entrances(type='WarpSong')
-        # No more exceptions for NL here, causes cascading failures later
-        one_way_priorities['Bolero'] = priority_entrance_table['Bolero']
-        one_way_priorities['Nocturne'] = priority_entrance_table['Nocturne']
-        if not ootworld.shuffle_dungeon_entrances and not ootworld.shuffle_overworld_entrances:
-            one_way_priorities['Requiem'] = priority_entrance_table['Requiem']
+        if ootworld.logic_rules != 'none':
+            one_way_priorities['Bolero'] = priority_entrance_table['Bolero']
+            one_way_priorities['Nocturne'] = priority_entrance_table['Nocturne']
+            if not ootworld.shuffle_dungeon_entrances and not ootworld.shuffle_overworld_entrances:
+                one_way_priorities['Requiem'] = priority_entrance_table['Requiem']
     if ootworld.spawn_positions:
         one_way_entrance_pools['Spawn'] = ootworld.get_shufflable_entrances(type='Spawn')
         if 'child' not in ootworld.spawn_positions:
@@ -563,13 +559,18 @@ def shuffle_random_entrances(ootworld):
     # Build target entrance pools
     one_way_target_entrance_pools = {}
     for pool_type, entrance_pool in one_way_entrance_pools.items():
-        if pool_type == 'OwlDrop':
-            valid_target_types = ('WarpSong', 'OwlDrop', 'Overworld', 'Extra')
+        if pool_type in {'OwlDrop', 'OverworldOneWay'}:
+            valid_target_types = ('WarpSong', 'BlueWarp', 'OwlDrop', 'OverworldOneWay', 'Overworld', 'Extra')
             one_way_target_entrance_pools[pool_type] = build_one_way_targets(ootworld, pool_type, valid_target_types, exclude=['Prelude of Light Warp -> Temple of Time'])
-            for target in one_way_target_entrance_pools[pool_type]:
-                set_rule(target, lambda state: state._oot_reach_as_age(target.parent_region, 'child', player))
-        elif pool_type in {'Spawn', 'WarpSong'}: 
-            valid_target_types = ('Spawn', 'WarpSong', 'OwlDrop', 'Overworld', 'Interior', 'SpecialInterior', 'Extra')
+            if pool_type == 'OwlDrop':
+                for target in one_way_target_entrance_pools[pool_type]:
+                    set_rule(target, lambda state: state._oot_reach_as_age(target.parent_region, 'child', player))
+        elif pool_type == 'Spawn':
+            valid_target_types = ('Spawn', 'WarpSong', 'BlueWarp', 'OwlDrop', 'OverworldOneWay', 'Overworld', 'Interior', 'SpecialInterior', 'Extra')
+            one_way_target_entrance_pools[pool_type] = build_one_way_targets(ootworld, pool_type, valid_target_types,
+                exclude=['Volvagia Blue Warp -> DMC Central Local', 'Bolero of Fire Warp -> DMC Central Local', 'Queen Gohma Blue Warp -> KF Outside Deku Tree'])
+        elif pool_type == 'WarpSong':
+            valid_target_types = ('Spawn', 'WarpSong', 'BlueWarp', 'OwlDrop', 'OverworldOneWay', 'Overworld', 'Interior', 'SpecialInterior', 'Extra')
             one_way_target_entrance_pools[pool_type] = build_one_way_targets(ootworld, pool_type, valid_target_types)
         # Ensure that the last entrance doesn't assume the rest of the targets are reachable
         for target in one_way_target_entrance_pools[pool_type]:

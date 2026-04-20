@@ -91,6 +91,7 @@ room_t water_rooms[] = {
 
 room_t shadow_rooms[] = {
     {  0x37, 2, { -254, -63, 594 }, 32768, "Entrance"},
+    {  0x37, 4, { -2141, -63, -394 }, 49152, "Dead Hand"},
     {  0x37, 8, { 4164, -983, 1366 }, 49152, "Before huge room"},
     {  0x37, 16, { 4677, -1143, 2474 }, 32768, "Invisible scythes"},
     {  0x37, 10, { 1227, -1343, 3853 }, 49152, "Stone umbrella"},
@@ -110,6 +111,7 @@ room_t spirit_rooms[] = {
 
 room_t botw_rooms[] = {
     {  0x98, 0, { 0, -12, 117 }, 32768, "Main room Entrance"},
+    {  0x98, 4, { 991, -20, 207 }, 16384, "Dead Hand"},
     {  0x98, 2, { -1650, 0, -739 }, 49152, "Coffin room"},
     {  0x98, 3, { 1140, 0, -1339 }, 0, "Beamos room"},
 };
@@ -151,7 +153,7 @@ room_t ganon_rooms[] = {
 rooms_t dungeon_rooms[13] = {
                             {6, deku_rooms}, {4, dc_rooms}, {3, jabu_rooms},
                             {6, forest_rooms}, {7, fire_rooms}, {6, water_rooms},
-                            {7, shadow_rooms}, {6, spirit_rooms}, {3, botw_rooms},
+                            {8, shadow_rooms}, {6, spirit_rooms}, {4, botw_rooms},
                             {5, ice_rooms}, {4, hideout_rooms}, {6, gtg_rooms}, {7, ganon_rooms},
                         };
 

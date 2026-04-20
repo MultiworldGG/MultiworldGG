@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Optional
 from urllib.error import URLError, HTTPError
 
 from .HintList import Hint, get_hint, get_multi, get_hint_group, get_upgrade_hint_list, hint_exclusions, \
-    misc_item_hint_table, misc_location_hint_table
+    misc_item_hint_table, misc_location_hint_table, misc_dual_hint_table
 from .Items import OOTItem as Item, item_table
 from .Messages import COLOR_MAP, update_message_by_id
 from BaseClasses import Region
@@ -397,46 +397,46 @@ class HintAreaNotFound(RuntimeError):
 
 
 class HintArea(Enum):
-    # internal name          prepositions        display name                  short name                color         internal dungeon name
+    # internal name          prepositions        display name                  short name                color         internal dungeon name          shorter name
     #                        vague     clear
-    ROOT                   = 'in',     'in',     "Link's pocket",              'Free',                   'White',      None
-    HYRULE_FIELD           = 'in',     'in',     'Hyrule Field',               'Hyrule Field',           'Light Blue', None
-    LON_LON_RANCH          = 'at',     'at',     'Lon Lon Ranch',              'Lon Lon Ranch',          'Light Blue', None
-    MARKET                 = 'in',     'in',     'the Market',                 'Market',                 'Light Blue', None
-    TEMPLE_OF_TIME         = 'inside', 'inside', 'the Temple of Time',         'Temple of Time',         'Light Blue', None
-    CASTLE_GROUNDS         = 'on',     'on',     'the Castle Grounds',         None,                     'Light Blue', None # required for warp songs
-    HYRULE_CASTLE          = 'at',     'at',     'Hyrule Castle',              'Hyrule Castle',          'Light Blue', None
-    OUTSIDE_GANONS_CASTLE  = None,     None,     "outside Ganon's Castle",     "Outside Ganon's Castle", 'Light Blue', None
-    INSIDE_GANONS_CASTLE   = 'inside', None,     "inside Ganon's Castle",      "Inside Ganon's Castle",  'Light Blue', 'Ganons Castle'
-    GANONDORFS_CHAMBER     = 'in',     'in',     "Ganondorf's Chamber",        "Ganondorf's Chamber",    'Light Blue', None
-    KOKIRI_FOREST          = 'in',     'in',     'Kokiri Forest',              "Kokiri Forest",          'Green',      None
-    DEKU_TREE              = 'inside', 'inside', 'the Deku Tree',              "Deku Tree",              'Green',      'Deku Tree'
-    LOST_WOODS             = 'in',     'in',     'the Lost Woods',             "Lost Woods",             'Green',      None
-    SACRED_FOREST_MEADOW   = 'at',     'at',     'the Sacred Forest Meadow',   "Sacred Forest Meadow",   'Green',      None
-    FOREST_TEMPLE          = 'in',     'in',     'the Forest Temple',          "Forest Temple",          'Green',      'Forest Temple'
-    DEATH_MOUNTAIN_TRAIL   = 'on',     'on',     'the Death Mountain Trail',   "Death Mountain Trail",   'Red',        None
-    DODONGOS_CAVERN        = 'within', 'in',     "Dodongo's Cavern",           "Dodongo's Cavern",       'Red',        'Dodongos Cavern'
-    GORON_CITY             = 'in',     'in',     'Goron City',                 "Goron City",             'Red',        None
-    DEATH_MOUNTAIN_CRATER  = 'in',     'in',     'the Death Mountain Crater',  "Death Mountain Crater",  'Red',        None
-    FIRE_TEMPLE            = 'on',     'in',     'the Fire Temple',            "Fire Temple",            'Red',        'Fire Temple'
-    ZORA_RIVER             = 'at',     'at',     "Zora's River",               "Zora's River",           'Blue',       None
-    ZORAS_DOMAIN           = 'at',     'at',     "Zora's Domain",              "Zora's Domain",          'Blue',       None
-    ZORAS_FOUNTAIN         = 'at',     'at',     "Zora's Fountain",            "Zora's Fountain",        'Blue',       None
-    JABU_JABUS_BELLY       = 'in',     'inside', "Jabu Jabu's Belly",          "Jabu Jabu's Belly",      'Blue',       'Jabu Jabus Belly'
-    ICE_CAVERN             = 'inside', 'in'    , 'the Ice Cavern',             "Ice Cavern",             'Blue',       'Ice Cavern'
-    LAKE_HYLIA             = 'at',     'at',     'Lake Hylia',                 "Lake Hylia",             'Blue',       None
-    WATER_TEMPLE           = 'under',  'in',     'the Water Temple',           "Water Temple",           'Blue',       'Water Temple'
-    KAKARIKO_VILLAGE       = 'in',     'in',     'Kakariko Village',           "Kakariko Village",       'Pink',       None
-    BOTTOM_OF_THE_WELL     = 'within', 'at',     'the Bottom of the Well',     "Bottom of the Well",     'Pink',       'Bottom of the Well'
-    GRAVEYARD              = 'in',     'in',     'the Graveyard',              "Graveyard",              'Pink',       None
-    SHADOW_TEMPLE          = 'within', 'in',     'the Shadow Temple',          "Shadow Temple",          'Pink',       'Shadow Temple'
-    GERUDO_VALLEY          = 'at',     'at',     'Gerudo Valley',              "Gerudo Valley",          'Yellow',     None
-    GERUDO_FORTRESS        = 'at',     'at',     "Gerudo's Fortress",          "Gerudo's Fortress",      'Yellow',     None
-    THIEVES_HIDEOUT        = 'in',     'in',     "the Thieves' Hideout",       "Thieves' Hideout",       'Yellow',     None
-    GERUDO_TRAINING_GROUND = 'within', 'on',     'the Gerudo Training Ground', "Gerudo Training Ground", 'Yellow',     'Gerudo Training Ground'
-    HAUNTED_WASTELAND      = 'in',     'in',     'the Haunted Wasteland',      "Haunted Wasteland",      'Yellow',     None
-    DESERT_COLOSSUS        = 'at',     'at',     'the Desert Colossus',        "Desert Colossus",        'Yellow',     None
-    SPIRIT_TEMPLE          = 'inside', 'in',     'the Spirit Temple',          "Spirit Temple",          'Yellow',     'Spirit Temple'
+    ROOT                   = 'in',     'in',     "Link's pocket",              'Free',                   'White',      None,                          None
+    HYRULE_FIELD           = 'in',     'in',     'Hyrule Field',               'Hyrule Field',           'Light Blue', None,                          'Field'
+    LON_LON_RANCH          = 'at',     'at',     'Lon Lon Ranch',              'Lon Lon Ranch',          'Light Blue', None,                          'Ranch'
+    MARKET                 = 'in',     'in',     'the Market',                 'Market',                 'Light Blue', None,                          'Market'
+    TEMPLE_OF_TIME         = 'inside', 'inside', 'the Temple of Time',         'Temple of Time',         'Light Blue', None,                          'ToT'
+    CASTLE_GROUNDS         = 'on',     'on',     'the Castle Grounds',         None,                     'Light Blue', None,                          'Castle' # required for warp songs
+    HYRULE_CASTLE          = 'at',     'at',     'Hyrule Castle',              'Hyrule Castle',          'Light Blue', None,                          'HC'
+    OUTSIDE_GANONS_CASTLE  = None,     None,     "outside Ganon's Castle",     "Outside Ganon's Castle", 'Light Blue', None,                          'OGC'
+    INSIDE_GANONS_CASTLE   = 'inside', None,     "inside Ganon's Castle",      "Inside Ganon's Castle",  'Light Blue', 'Ganons Castle',               'Ganon'
+    GANONDORFS_CHAMBER     = 'in',     'in',     "Ganondorf's Chamber",        "Ganondorf's Chamber",    'Light Blue', None,                          None
+    KOKIRI_FOREST          = 'in',     'in',     'Kokiri Forest',              "Kokiri Forest",          'Green',      None,                          'Kokiri'
+    DEKU_TREE              = 'inside', 'inside', 'the Deku Tree',              "Deku Tree",              'Green',      'Deku Tree',                   'Deku'
+    LOST_WOODS             = 'in',     'in',     'the Lost Woods',             "Lost Woods",             'Green',      None,                          'Woods'
+    SACRED_FOREST_MEADOW   = 'at',     'at',     'the Sacred Forest Meadow',   "Sacred Forest Meadow",   'Green',      None,                          'Meadow'
+    FOREST_TEMPLE          = 'in',     'in',     'the Forest Temple',          "Forest Temple",          'Green',      'Forest Temple',               'Forest'
+    DEATH_MOUNTAIN_TRAIL   = 'on',     'on',     'the Death Mountain Trail',   "Death Mountain Trail",   'Red',        None,                          'Trail'
+    DODONGOS_CAVERN        = 'within', 'in',     "Dodongo's Cavern",           "Dodongo's Cavern",       'Red',        'Dodongos Cavern',             'DC'
+    GORON_CITY             = 'in',     'in',     'Goron City',                 "Goron City",             'Red',        None,                          'Goron'
+    DEATH_MOUNTAIN_CRATER  = 'in',     'in',     'the Death Mountain Crater',  "Death Mountain Crater",  'Red',        None,                          'Crater'
+    FIRE_TEMPLE            = 'on',     'in',     'the Fire Temple',            "Fire Temple",            'Red',        'Fire Temple',                 'Fire'
+    ZORA_RIVER             = 'at',     'at',     "Zora's River",               "Zora's River",           'Blue',       None,                          'River'
+    ZORAS_DOMAIN           = 'at',     'at',     "Zora's Domain",              "Zora's Domain",          'Blue',       None,                          'Domain'
+    ZORAS_FOUNTAIN         = 'at',     'at',     "Zora's Fountain",            "Zora's Fountain",        'Blue',       None,                          'Fountain'
+    JABU_JABUS_BELLY       = 'in',     'inside', "Jabu Jabu's Belly",          "Jabu Jabu's Belly",      'Blue',       'Jabu Jabus Belly',            'Jabu'
+    ICE_CAVERN             = 'inside', 'in'    , 'the Ice Cavern',             "Ice Cavern",             'Blue',       'Ice Cavern',                  'Ice'
+    LAKE_HYLIA             = 'at',     'at',     'Lake Hylia',                 "Lake Hylia",             'Blue',       None,                          'Lake'
+    WATER_TEMPLE           = 'under',  'in',     'the Water Temple',           "Water Temple",           'Blue',       'Water Temple',                'Water'
+    KAKARIKO_VILLAGE       = 'in',     'in',     'Kakariko Village',           "Kakariko Village",       'Pink',       None,                          'Kakariko'
+    BOTTOM_OF_THE_WELL     = 'within', 'at',     'the Bottom of the Well',     "Bottom of the Well",     'Pink',       'Bottom of the Well',          'BotW'
+    GRAVEYARD              = 'in',     'in',     'the Graveyard',              "Graveyard",              'Pink',       None,                          'GY'
+    SHADOW_TEMPLE          = 'within', 'in',     'the Shadow Temple',          "Shadow Temple",          'Pink',       'Shadow Temple',               'Shadow'
+    GERUDO_VALLEY          = 'at',     'at',     'Gerudo Valley',              "Gerudo Valley",          'Yellow',     None,                          'Valley'
+    GERUDO_FORTRESS        = 'at',     'at',     "Gerudo's Fortress",          "Gerudo's Fortress",      'Yellow',     None,                          'Fortress'
+    THIEVES_HIDEOUT        = 'in',     'in',     "the Thieves' Hideout",       "Thieves' Hideout",       'Yellow',     None,                          'Hideout'
+    GERUDO_TRAINING_GROUND = 'within', 'on',     'the Gerudo Training Ground', "Gerudo Training Ground", 'Yellow',     'Gerudo Training Ground',      'GTG'
+    HAUNTED_WASTELAND      = 'in',     'in',     'the Haunted Wasteland',      "Haunted Wasteland",      'Yellow',     None,                          'Wasteland'
+    DESERT_COLOSSUS        = 'at',     'at',     'the Desert Colossus',        "Desert Colossus",        'Yellow',     None,                          'Colossus'
+    SPIRIT_TEMPLE          = 'inside', 'in',     'the Spirit Temple',          "Spirit Temple",          'Yellow',     'Spirit Temple',               'Spirit'
 
     # Performs a breadth first search to find the closest hint area from a given spot (region, location, or entrance).
     # May fail to find a hint if the given spot is only accessible from the root and not from any other region with a hint area
@@ -516,6 +516,10 @@ class HintArea(Enum):
     @property
     def dungeon_name(self) -> Optional[str]:
         return self.value[5]
+
+    @property
+    def shorter_name(self) -> Optional[str]:
+        return self.value[6]
 
     @property
     def is_dungeon(self) -> bool:
@@ -1313,7 +1317,7 @@ def build_gossip_hints(worlds: list['OOTWorld']) -> None:
             if location is None:
                 # Ignore starting rewards that have no world location.
                 continue
-            if 'altar' in world.misc_hints and not world.enhance_map_compass and can_reach_hint(worlds, world.multiworld.get_location('ToT Child Altar Hint' if location.item.info.stone else 'ToT Adult Altar Hint', world.player), location):
+            if 'altar' in world.misc_hints and 'compass_reward' not in world.enhance_map_compass and can_reach_hint(worlds, world.multiworld.get_location('ToT Child Altar Hint' if location.item.info.stone else 'ToT Adult Altar Hint', world.player), location):
                 item_world = location.world
                 if item_world.player not in checked_locations:
                     checked_locations[item_world.player] = set()
@@ -1680,7 +1684,7 @@ def build_altar_hints(world: 'OOTWorld', messages: list[Message], include_reward
         child_text += get_hint('Spiritual Stone Text Start', world.clearer_hints).text + '\x04'
         for (reward, color) in boss_rewards_spiritual_stones:
             child_text += build_boss_string(reward, color, world)
-    child_text += get_hint('Child Altar Text End', world.clearer_hints).text
+    child_text += build_dot_reqs_string(world)
     child_text += '\x0B'
     update_message_by_id(messages, 0x707A, get_raw_text(child_text), 0x20)
 
@@ -1706,6 +1710,25 @@ def build_altar_hints(world: 'OOTWorld', messages: list[Message], include_reward
         adult_text += get_hint('Adult Altar Text End', world.clearer_hints).text
     adult_text += '\x0B'
     update_message_by_id(messages, 0x7057, get_raw_text(adult_text), 0x20)
+
+
+def build_dot_reqs_string(world: 'OOTWorld') -> str:
+    dot = world.open_door_of_time
+    if dot == 'open':
+        string = "Ye who may become a Hero...&Go and pull the Master Sword from the Pedestal of Time."
+    elif dot == 'sot':
+        string = "\x13\x07Ye who may become a Hero...&Stand with the Ocarina and play the Song of Time."
+    elif dot == 'oot_sot':
+        string = "\x13\x08Ye who may become a Hero... Stand with the Ocarina of Time and play the Song of Time."
+    elif dot == 'stones':
+        string = "Ye who owns 3 Spiritual Stones...&Go and pull the Master Sword from the Pedestal of Time."
+    elif dot == 'stones_sot':
+        string = "\x13\x07Ye who owns 3 Spiritual Stones...&Stand with the Ocarina and play the Song of Time."
+    elif dot == 'stones_oot_sot':
+        string = "\x13\x08Ye who owns 3 Spiritual Stones... Stand with the Ocarina of Time and play the Song of Time."
+    else:
+        string = "\x13\x07Ye who may become a Hero...&Stand with the Ocarina and&play the Song of Time."
+    return str(GossipText(string, [], prefix=''))
 
 
 # pulls text string from hintlist for reward after sending the location to hintlist.
@@ -1844,6 +1867,8 @@ def build_misc_item_hints(world: 'OOTWorld', messages: list[Message]) -> None:
 def build_misc_location_hints(world: 'OOTWorld', messages: list[Message]) -> None:
     misc_hint_location_items = getattr(world, 'misc_hint_location_items', {})
     for hint_type, data in misc_location_hint_table.items():
+        if any(hint_type in hint_types for hint_types in misc_dual_hint_table):
+            continue
         text = data['location_fallback']
         if hint_type == 'big_poes':
             poe_points = world.big_poe_count * 100
@@ -1858,6 +1883,28 @@ def build_misc_location_hints(world: 'OOTWorld', messages: list[Message]) -> Non
             if hint_type in misc_hint_location_items:
                 item = misc_hint_location_items[hint_type]
                 text = data['location_text'].format(item=get_item_hint_text(item, world))
+
+        update_message_by_id(messages, data['id'], str(GossipText(text, ['Green'], prefix='')), 0x23)
+
+
+def build_misc_dual_hints(world: 'OOTWorld', messages: list[Message]) -> None:
+    misc_hint_location_items = getattr(world, 'misc_hint_location_items', {})
+    for (hint_type1, hint_type2), data in misc_dual_hint_table.items():
+        item_1 = misc_hint_location_items.get(hint_type1)
+        item_2 = misc_hint_location_items.get(hint_type2)
+
+        if hint_type1 in world.misc_hints and item_1 is not None:
+            if hint_type2 in world.misc_hints and item_2 is not None:
+                text = data['location_text'].format(
+                    item_1=get_item_hint_text(item_1, world),
+                    item_2=get_item_hint_text(item_2, world),
+                )
+            else:
+                text = misc_location_hint_table[hint_type1]['location_text'].format(item=get_item_hint_text(item_1, world))
+        elif hint_type2 in world.misc_hints and item_2 is not None:
+            text = misc_location_hint_table[hint_type2]['location_text'].format(item=get_item_hint_text(item_2, world))
+        else:
+            text = data['location_fallback']
 
         update_message_by_id(messages, data['id'], str(GossipText(text, ['Green'], prefix='')), 0x23)
 
@@ -1960,4 +2007,5 @@ hintExclusions = hint_exclusions
 getHintGroup = get_hint_group
 buildMiscItemHints = build_misc_item_hints
 buildMiscLocationHints = build_misc_location_hints
+buildMiscDualHints = build_misc_dual_hints
 colorText = color_text

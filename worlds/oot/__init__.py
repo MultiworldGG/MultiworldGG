@@ -23,7 +23,8 @@ from .Options import OoTOptions, oot_option_groups
 from .Utils import data_path, read_json
 from .LocationList import business_scrubs, set_drop_location_names, dungeon_song_locations
 from .DungeonList import dungeon_table, create_dungeons
-from .LogicTricks import normalized_name_tricks
+from .LogicTricks import normalized_name_tricks, normalized_name_advanced_tricks
+from .OcarinaSongs import generate_song_list
 from .Rom import Rom
 from .Patches import OoTContainer, patch_rom
 from .N64Patch import create_patch_file
@@ -54,6 +55,7 @@ VANILLA_SONG_NOTES = {
     'Requiem of Spirit': 'AvA>vA',
     'Nocturne of Shadow': '<>>A<>v',
     'Prelude of Light': '^>^><^',
+    'ZR Frogs Ocarina Game': 'A<>v<>vAvAv><A',
 }
 
 class _StartingItemRecord:
@@ -80,6 +82,9 @@ class _OOTDistribution:
 
     def configure_gossip(self, stone_ids):
         return
+
+    def configure_songs(self):
+        return {}
 
 
 def launch_client(*args):
@@ -136,6 +141,13 @@ class OOTCollectionState(metaclass=AutoLogicRegister):
     def has_dungeon_rewards(self, count: int, player: int) -> bool:
         """Returns True if the player has at least 'count' dungeon rewards (stones + medallions)."""
         return self.has_group_unique("rewards", player, count)
+
+    def has_soul(self, enemy: str, player: int) -> bool:
+        """
+        v9.0 glitched logic references enemy souls extensively.
+        AP does not currently model souls as progression, so this is a permissive compatibility stub.
+        """
+        return True
 
 
 class OOTSettings(settings.Group):
@@ -304,6 +316,7 @@ class OOTWorld(World):
 
         self.shop_prices = {}
         self.remove_from_start_inventory = []  # some items will be precollected but not in the inventory
+        self.randomized_starting_items = {}
         self.starting_items = Counter()
         self.songs_as_items = False
         self.file_hash = [self.random.randint(0, 31) for i in range(5)]
@@ -311,18 +324,6 @@ class OOTWorld(World):
         self.connect_name = f"OOT{player_id:03d}-" + ''.join(f"{value:02x}" for value in self.file_hash)
         self.collectible_flag_addresses = {}
         self.song_notes = VANILLA_SONG_NOTES.copy()
-
-        # Incompatible option handling
-        # ER and glitched logic are not compatible; glitched takes priority
-        if self.logic_rules == 'glitched':
-            self.shuffle_interior_entrances = 'off'
-            self.shuffle_dungeon_entrances = 'off'
-            self.spawn_positions = 'off'
-            self.shuffle_bosses = 'off'
-            self.shuffle_grotto_entrances = False
-            self.shuffle_overworld_entrances = False
-            self.owl_drops = False
-            self.warp_songs = False
 
         # Set skip_child_zelda boolean for logic
         self.skip_child_zelda = (self.shuffle_child_trade == 'skip_child_zelda')
@@ -389,13 +390,21 @@ class OOTWorld(World):
         self.skipped_trials = {trial: (trial not in chosen_trials) for trial in trial_list}
 
         # Determine tricks in logic
-        if self.logic_rules == 'glitchless':
+        if self.logic_rules in ('glitchless', 'advanced'):
             for trick in self.logic_tricks:
                 normalized_name = trick.casefold()
                 if normalized_name in normalized_name_tricks:
                     setattr(self, normalized_name_tricks[normalized_name]['name'], True)
                 else:
                     raise Exception(f'Unknown OOT logic trick for player {self.player}: {trick}')
+
+        if self.logic_rules == 'advanced':
+            for trick_info in normalized_name_advanced_tricks.values():
+                setattr(self, trick_info['name'], False)
+            for trick in self.advanced_allowed_tricks:
+                normalized_name = trick.casefold()
+                if normalized_name in normalized_name_advanced_tricks:
+                    setattr(self, normalized_name_advanced_tricks[normalized_name]['name'], True)
 
         # No Logic forces all tricks on, prog balancing off and beatable-only
         elif self.logic_rules == 'no_logic':
@@ -405,7 +414,6 @@ class OOTWorld(World):
                 setattr(self, trick['name'], True)
 
         # Not implemented for now, but needed to placate the generator. Remove as they are implemented
-        self.ocarina_songs = False  # just need to pull in the OcarinaSongs module
         self.mix_entrance_pools = False
         self.decouple_entrances = False
         self.available_tokens = 100
@@ -496,40 +504,33 @@ class OOTWorld(World):
             self.key_rings = self.random.sample(keyring_dungeons,
                 self.random.randint(0, len(keyring_dungeons)))
 
-        # Determine which dungeons are MQ. Not compatible with glitched logic.
+        # Determine which dungeons are MQ.
         mq_dungeons = set()
         all_dungeons = [d['name'] for d in dungeon_table]
-        if self.logic_rules != 'glitched':
-            if self.mq_dungeons_mode == 'mq':
-                mq_dungeons = all_dungeons
-            elif self.mq_dungeons_mode == 'specific':
-                mq_dungeons = self.mq_dungeons_specific
-            elif self.mq_dungeons_mode == 'count':
-                mq_dungeons = self.random.sample(all_dungeons, self.mq_dungeons_count)
-        else:
-            self.mq_dungeons_mode = 'count'
-            self.mq_dungeons_count = 0
+        if self.mq_dungeons_mode == 'mq':
+            mq_dungeons = all_dungeons
+        elif self.mq_dungeons_mode == 'specific':
+            mq_dungeons = self.mq_dungeons_specific
+        elif self.mq_dungeons_mode == 'count':
+            mq_dungeons = self.random.sample(all_dungeons, self.mq_dungeons_count)
         self.dungeon_mq = {item['name']: (item['name'] in mq_dungeons) for item in dungeon_table}
         self.dungeon_mq['Thieves Hideout'] = False  # fix for bug in SaveContext:287
 
         # Precompleted dungeon placeholder for the moment
         self.precompleted_dungeons = {name: False for name in self.dungeon_mq}
 
-        # Determine which dungeons have shortcuts. Not compatible with glitched logic.
+        # Determine which dungeons have shortcuts.
         shortcut_dungeons = ['Deku Tree', 'Dodongos Cavern', \
             'Jabu Jabus Belly', 'Forest Temple', 'Fire Temple', \
             'Water Temple', 'Shadow Temple', 'Spirit Temple']
-        if self.logic_rules != 'glitched':
-            if self.dungeon_shortcuts_choice == 'off':
-                self.dungeon_shortcuts = set()
-            elif self.dungeon_shortcuts_choice == 'all':
-                self.dungeon_shortcuts = set(shortcut_dungeons)
-            elif self.dungeon_shortcuts_choice == 'random':
-                self.dungeon_shortcuts = self.random.sample(shortcut_dungeons,
-                    self.random.randint(0, len(shortcut_dungeons)))
-            # == 'choice', leave as previous
-        else:
+        if self.dungeon_shortcuts_choice == 'off':
             self.dungeon_shortcuts = set()
+        elif self.dungeon_shortcuts_choice == 'all':
+            self.dungeon_shortcuts = set(shortcut_dungeons)
+        elif self.dungeon_shortcuts_choice == 'random':
+            self.dungeon_shortcuts = self.random.sample(shortcut_dungeons,
+                self.random.randint(0, len(shortcut_dungeons)))
+        # == 'choice', leave as previous
 
         # fixing some options
         # Fixes starting time spelling: "witching_hour" -> "witching-hour"
@@ -540,8 +541,8 @@ class OOTWorld(World):
         self.adult_trade_start = {self.adult_trade_start.title().replace('_', ' ')}
         # Set selected_adult_trade_item for logic rules (used before ItemPool runs).
         # When shuffling all trade items there is no single fixed start, so leave it None.
-        if not self.adult_trade_shuffle:
-            self.selected_adult_trade_item = next(iter(self.adult_trade_start))
+        if not self.adult_trade_shuffle and self.adult_trade_start:
+            self.selected_adult_trade_item = self.random.choice(sorted(self.adult_trade_start))
         else:
             self.selected_adult_trade_item = None
 
@@ -550,6 +551,12 @@ class OOTWorld(World):
         if 'combine_trial_hints' not in self.hint_dist_user:
             self.hint_dist_user['combine_trial_hints'] = False
         self.distribution = _OOTDistribution(self)
+        self.song_notes = generate_song_list(
+            self,
+            frog='frog' in self.ocarina_songs,
+            warp='warp' in self.ocarina_songs,
+            frogs2='frogs2' in self.ocarina_songs,
+        )
 
         self.added_hint_types = {}
         self.item_added_hint_types = {}
@@ -739,18 +746,21 @@ class OOTWorld(World):
             for location in region.locations:
                 if location.type == 'Shop':
                     if location.name[-1:] in shop_item_indexes[:shop_item_count]:
-                        if self.shopsanity_prices == 'normal':
-                            self.shop_prices[location.name] = int(self.random.betavariate(1.5, 2) * 60) * 5
-                        elif self.shopsanity_prices == 'affordable':
-                            self.shop_prices[location.name] = 10
-                        elif self.shopsanity_prices == 'starting_wallet':
-                            self.shop_prices[location.name] = self.random.randrange(0,100,5)
-                        elif self.shopsanity_prices == 'adults_wallet':
-                            self.shop_prices[location.name] = self.random.randrange(0,201,5)
-                        elif self.shopsanity_prices == 'giants_wallet':
-                            self.shop_prices[location.name] = self.random.randrange(0,501,5)
-                        elif self.shopsanity_prices == 'tycoons_wallet':
-                            self.shop_prices[location.name] = self.random.randrange(0,1000,5)
+                        if self.special_deal_price_distribution == 'vanilla':
+                            self.shop_prices[location.name] = item_table[location.vanilla_item][3].get('price', 0)
+                        elif self.special_deal_price_max < self.special_deal_price_min:
+                            raise ValueError('Maximum special deal price is lower than minimum, perhaps you meant to swap them?')
+                        elif self.special_deal_price_max == self.special_deal_price_min:
+                            self.shop_prices[location.name] = self.special_deal_price_min
+                        elif self.special_deal_price_distribution == 'betavariate':
+                            self.shop_prices[location.name] = self.special_deal_price_min + int(
+                                self.random.betavariate(1.5, 2) * (self.special_deal_price_max - self.special_deal_price_min) / 5) * 5
+                        elif self.special_deal_price_distribution == 'uniform':
+                            self.shop_prices[location.name] = self.random.randrange(
+                                self.special_deal_price_min, self.special_deal_price_max + 1, 5)
+                        else:
+                            raise NotImplementedError(
+                                f'Unimplemented special deal distribution: {self.special_deal_price_distribution}')
 
 
     # Fill boss prizes
@@ -984,13 +994,16 @@ class OOTWorld(World):
         if not all_state.has('Bottle with Big Poe', self.player) and bigpoe not in reachable:
             bigpoe.parent_region.locations.remove(bigpoe)
 
-        # If fast scarecrow then we need to kill the Pierre location as it will be unreachable
-        if self.free_scarecrow:
+        # If free scarecrow then Pierre is unreachable as a separate location.
+        if self.scarecrow_behavior == 'free':
             loc = self.multiworld.get_location("Pierre", self.player)
             loc.parent_region.locations.remove(loc)
         # If open zora's domain then we need to kill Deliver Rutos Letter
         if self.zora_fountain == 'open':
             loc = self.multiworld.get_location("Deliver Rutos Letter", self.player)
+            loc.parent_region.locations.remove(loc)
+        if not self.shuffle_100_skulltula_rupee:
+            loc = self.multiworld.get_location("Kak 100 Gold Skulltula Reward", self.player)
             loc.parent_region.locations.remove(loc)
 
 
@@ -1024,7 +1037,7 @@ class OOTWorld(World):
                 self.collect(state, location.item)
 
         # Some progression is intentionally not represented in the item pool.
-        if self.free_scarecrow:
+        if self.scarecrow_behavior == 'free':
             state.collect(self.create_item("Scarecrow Song"), prevent_sweep=True)
         if not self.shuffle_ocarinas:
             state.collect(self.create_item("Ocarina"), prevent_sweep=True)
@@ -1032,8 +1045,12 @@ class OOTWorld(World):
             state.collect(self.create_item("Weird Egg"), prevent_sweep=True)
         if self.shuffle_child_trade in {'vanilla', 'shuffle'}:
             state.collect(self.create_item("Zeldas Letter"), prevent_sweep=True)
-        if not self.open_door_of_time:
+        if self.open_door_of_time not in ('open', 'stones'):
             state.collect(self.create_item("Song of Time"), prevent_sweep=True)
+        # In child-start stone DoT modes, complete-state assumptions can otherwise strand
+        # adult-only prefill placements behind Time Travel during key placement.
+        if self.starting_age == 'child' and self.open_door_of_time in ('stones', 'stones_sot', 'stones_oot_sot'):
+            state.collect(self.create_item("Time Travel"), prevent_sweep=True)
 
         state.sweep_for_advancements(locations=self.get_locations())
 
@@ -1344,21 +1361,24 @@ class OOTWorld(World):
             "shuffle_ganon_bosskey", "ganon_bosskey_medallions", "ganon_bosskey_stones", "ganon_bosskey_rewards",
             "ganon_bosskey_tokens", "ganon_bosskey_hearts", "trials",
             "triforce_hunt", "triforce_goal", "extra_triforce_percentage",
-            "shopsanity", "shop_slots", "shopsanity_prices", "tokensanity",
+            "shopsanity", "shop_slots", "special_deal_price_distribution", "special_deal_price_min",
+            "special_deal_price_max", "tokensanity",
             "dungeon_shortcuts", "dungeon_shortcuts_list",
             "mq_dungeons_mode", "mq_dungeons_list", "mq_dungeons_count",
             "shuffle_interior_entrances", "shuffle_grotto_entrances", "shuffle_dungeon_entrances",
             "shuffle_overworld_entrances", "shuffle_bosses", "shuffle_ganon_tower", "key_rings", "key_rings_list", "enhance_map_compass",
             "shuffle_mapcompass", "shuffle_smallkeys", "shuffle_hideoutkeys", "shuffle_bosskeys",
-            "logic_rules", "logic_no_night_tokens_without_suns_song", "logic_tricks",
-            "warp_songs", "shuffle_song_items","shuffle_medigoron_carpet_salesman", "shuffle_frog_song_rupees",
+            "logic_rules", "logic_no_night_tokens_without_suns_song", "logic_tricks", "advanced_allowed_tricks",
+            "warp_songs", "shuffle_song_items", "ocarina_songs", "shuffle_medigoron_carpet_salesman", "shuffle_frog_song_rupees",
+            "shuffle_100_skulltula_rupee",
             "shuffle_scrubs", "shuffle_child_trade", "shuffle_freestanding_items", "shuffle_pots", "shuffle_crates",
             "shuffle_cows", "shuffle_beehives", "shuffle_wonderitems", "shuffle_kokiri_sword", "shuffle_ocarinas", "shuffle_gerudo_card",
             "shuffle_beans", "shuffle_gerudo_fortress_heart_piece", "starting_age", "bombchus_in_logic", "spawn_positions", "owl_drops",
-            "no_epona_race", "skip_some_minigame_phases", "complete_mask_quest", "free_scarecrow", "plant_beans", "easier_fire_arrow_entry", "fast_shadow_boat",
+            "no_epona_race", "skip_some_minigame_phases", "complete_mask_quest", "scarecrow_behavior", "plant_beans", "easier_fire_arrow_entry", "fast_shadow_boat",
             "chicken_count", "big_poe_count", "fae_torch_count", "blue_fire_arrows",
             "damage_multiplier", "deadly_bonks", "starting_tod", "junk_ice_traps", "custom_ice_trap_count", "custom_ice_trap_percent",
-            "start_with_consumables", "adult_trade_start", "plando_connections"
+            "start_with_consumables", "add_random_starting_items", "random_starting_items_count",
+            "random_starting_items_exclude", "adult_trade_start", "plando_connections"
             )
         )
         return slot_data
@@ -1538,8 +1558,8 @@ class OOTWorld(World):
         all_state = CollectionState(self.multiworld)
         for item in self.itempool + self.pre_fill_items:
             self.multiworld.worlds[item.player].collect(all_state, item)
-        # If free_scarecrow give Scarecrow Song
-        if self.free_scarecrow:
+        # If scarecrow behavior is free, give Scarecrow Song.
+        if self.scarecrow_behavior == 'free':
             all_state.collect(self.create_item("Scarecrow Song"), prevent_sweep=True)
         if not self.shuffle_ocarinas:
             all_state.collect(self.create_item("Ocarina"), prevent_sweep=True)
@@ -1547,8 +1567,10 @@ class OOTWorld(World):
             all_state.collect(self.create_item("Weird Egg"), prevent_sweep=True)
         if self.shuffle_child_trade in {'vanilla', 'shuffle'}:
             all_state.collect(self.create_item("Zeldas Letter"), prevent_sweep=True)
-        if not self.open_door_of_time:
+        if self.open_door_of_time not in ('open', 'stones'):
             all_state.collect(self.create_item("Song of Time"), prevent_sweep=True)
+        if self.starting_age == 'child' and self.open_door_of_time in ('stones', 'stones_sot', 'stones_oot_sot'):
+            all_state.collect(self.create_item("Time Travel"), prevent_sweep=True)
         all_state._oot_stale[self.player] = True
 
         return all_state

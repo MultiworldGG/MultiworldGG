@@ -270,7 +270,7 @@ def adjust(args):
             else:
                 raise Exception("Unsupported option type")
         setattr(ootworld, name, result)
-    ootworld.logic_rules = 'glitched' if args.is_glitched else 'glitchless'
+    ootworld.logic_rules = 'advanced' if args.is_glitched else 'glitchless'
     ootworld.death_link = args.deathlink
     ootworld.music_dir = getattr(args, 'music_dir', None) or None
 

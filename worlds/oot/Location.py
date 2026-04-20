@@ -50,10 +50,21 @@ class OOTLocation(Location):
             self.filter_tags = list(filter_tags)
         self.never = False # no idea what this does
         self.disabled = DisableType.ENABLED
+        self._locked = False
 
     @property
     def dungeon(self):
         return self.parent_region.dungeon
+
+    @property
+    def locked(self):
+        return self._locked or self.disabled != DisableType.ENABLED
+
+    @locked.setter
+    def locked(self, value: bool):
+        self._locked = value
+        if value:
+            self.disabled = DisableType.DISABLED
 
 
 def LocationFactory(locations, player: int):

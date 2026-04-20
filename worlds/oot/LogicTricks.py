@@ -1801,3 +1801,1120 @@ known_logic_tricks = {
 }
 
 normalized_name_tricks = {trick.casefold(): info for (trick, info) in known_logic_tricks.items()}
+
+
+known_advanced_logic_tricks = {
+    '(Glitch) Infinite Sword Glitch (ISG)': {
+        'name'    : 'glitch_isg',
+        'tags'    : ("Glitch","Child", "Adult",),
+        'tooltip' : '''\
+                    Crouch stabbing and interrupting it puts Link in a state
+                    where he is constantly swinging his sword. This can be used
+                    for damage output or for the secondary property of being
+                    unable to fall off ledges while in this state.
+                    '''},
+    '(Glitch) Groundjumps': {
+        'name'    : 'glitch_groundjump',
+        'tags'    : ("Glitch","Child", "Adult",),
+        'tooltip' : '''\
+                    Shielding while attempting to pick up a Bomb stores that
+                    state. If you then backflip, the backflip will be cancelled
+                    allowing Link to grab ledges higher than usual.
+                    '''},
+    '(Glitch) Clipping': {
+        'name'    : 'glitch_clipping',
+        'tags'    : ("Glitch","Child", "Adult",),
+        'tooltip' : '''\
+                    Enabling this will allow for the logical use of many
+                    damage clips, clipping through acute angles, squeezing through
+                    boulders, and generally used clips through the game.
+                    '''},
+    '(Glitch) Triple Slash Clip': {
+        'name'    : 'glitch_tsc',
+        'tags'    : ("Glitch","Child", "Adult",),
+        'tooltip' : '''\
+                    Using the Triple Slash animation and a first person item on
+                    a particular frame window can displace Link through some corners.
+                    '''},
+    '(Glitch) Ledge Clips': {
+        'name'    : 'glitch_ledge_clip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Enables general Ledge Clipping as Adult Link.
+                    '''},
+    '(Glitch) Lunge Storage': {
+        'name'    : 'glitch_lunge_storage',
+        'tags'    : ("Glitch","Child", "Adult",),
+        'tooltip' : '''\
+                    Lunge storage allows acute angle clips to be possible by
+                    cancelling the attack early and storing the forward displacement.
+                    '''},
+    '(Glitch) Equip Swap': {
+        'name'    : 'glitch_equip_swap',
+        'tags'    : ("Glitch","Child", "Adult",),
+        'tooltip' : '''\
+                    Child needs access to anything in the leftmost column,
+                    and Adult needs access to a spell due to the child trade item.
+                    '''},
+    '(Glitch) Itemless Forest Escape': {
+        'name'    : 'glitch_itemless_forest_escape',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Itemless escape requires precise timing using a rock in front of Midos House.
+                    '''},
+    '(Glitch) Pokey Escape': {
+        'name'    : 'glitch_pokey_escape',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    A stick or sword and shield to pass to LW Bridge.
+                    '''},
+    '(Glitch) WESS Escape': {
+        'name'    : 'glitch_wess_escape',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    A minimal items escape. Requires only sword or stick.
+                    '''},
+    '(Glitch) Hovering with Explosives': {
+        'name'    : 'glitch_hovering',
+        'tags'    : ("Glitch","Child", "Adult",),
+        'tooltip' : '''\
+                    Requires ISG, a shield, and both bombs and chus.
+                    '''},
+    '(Glitch) Megaflips and Megasidehops': {
+        'name'    : 'glitch_megaflip',
+        'tags'    : ("Glitch","Child", "Adult",),
+        'tooltip' : '''\
+                    Used to cross gaps or obstacles that cannot be reached by jumping.
+                    Either explosive is accounted for.
+                    '''},
+    '(Glitch) Ocarina Items': {
+        'name'    : 'glitch_oi',
+        'tags'    : ("Glitch","Child", "Adult",),
+        'tooltip' : '''\
+                    Only Putaway OI is considered as it only requires a bottle.
+                    '''},
+    '(Glitch) Superslide': {
+        'name'    : 'glitch_superslide',
+        'tags'    : ("Glitch","Child", "Adult",),
+        'tooltip' : '''\
+                    Can be an alternative to HESS to access items through obstacles.
+                    '''},
+    '(Glitch) HESS': {
+        'name'    : 'glitch_hess',
+        'tags'    : ("Glitch","Child", "Adult",),
+        'tooltip' : '''\
+                    Hyper Extended Superslides have numerous uses for passing obstacles.
+                    '''},
+    '(Advanced) Hoverboots Recoil': {
+        'name'    : 'adv_hovers_recoil',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    Allows for the use of Hover Boots momentum after a recoil or damage.
+                    '''},
+    '(Advanced) Recoil Jumps': {
+        'name'    : 'adv_recoil_jump',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    By shielding an explosion or damage midair, Link is able to grab
+                    ledges higher than usual.
+                    '''},
+    '(Glitch) Glitch Damage Value': {
+        'name'    : 'glitch_damage_value',
+        'tags'    : ("Glitch","QPA","Glitch Damage Value",),
+        'tooltip' : '''\
+                    Allows for use of QPA or Empty Jumpslash to store the glitch damage value.
+                    '''},
+    '(Glitch) Ledge Cancel': {
+        'name'    : 'glitch_ledge_cancel',
+        'tags'    : ("Glitch","Child","Adult",),
+        'tooltip' : '''\
+                    Climb a ledge and shield at the end of the animation to activate.
+                    '''},
+    '(Glitch) Weirdshot': {
+        'name'    : 'glitch_weirdshot',
+        'tags'    : ("Glitch","Adult","Bouldersanity",),
+        'tooltip' : '''\
+                    Weirdshotting is in logic with bombs, chus can also be utilized.
+                    '''},
+    '(Advanced) Damage Boost': {
+        'name'    : 'adv_damage_boost',
+        'tags'    : ("Glitchless","Child","Adult",),
+        'tooltip' : '''\
+                    Damage boosting for crossing gaps or obstacles. Not suitable for OHKO.
+                    '''},
+    '(Advanced) Wallwalking': {
+        'name'    : 'adv_wallwalking',
+        'tags'    : ("Glitchless","Child","Adult",),
+        'tooltip' : '''\
+                    Walk on the sides and tops of walls as in certain situations the game
+                    counts them as floors.
+                    '''},
+    '(Glitch) Hookshot Jumps': {
+        'name'    : 'glitch_hookshot_jump',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Fly high in the air by cancelling hook animation.
+                    '''},
+    '(Glitch) Open Underwater Chests': {
+        'name'    : 'glitch_underwater_chests',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    While wearing Iron Boots, hookshot something to open chests underwater.
+                    '''},
+    '(Glitch) LW Target with GDV': {
+        'name'    : 'glitch_lw_target_hover',
+        'tags'    : ("Glitch","QPA","Glitch Damage Value",),
+        'tooltip' : '''\
+                    Includes hovering to reach the slingshot target.
+                    '''},
+    '(Glitch) Navi Dive': {
+        'name'    : 'glitch_navi_dive',
+        'tags'    : ("Glitch","Child","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Dive without Scale or Iron Boots.
+                    '''},
+    '(Glitch) Aqua Escape Child': {
+        'name'    : 'glitch_aqua_escape_child',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Requires only a stick.
+                    '''},
+    '(Glitch) Aqua Escape Adult': {
+        'name'    : 'glitch_aqua_escape_adult',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Requires only sword and shield.
+                    '''},
+    '(Advanced) LH Tree GS with only Hookshot': {
+        'name'    : 'adv_lh_tree_gs_hookshot',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    Wall walk up the tree stump and reach this skull without Longshot.
+                    Requires Wallwalking to be enabled.
+                    '''},
+    "(Glitch) LH to Zora's Domain as Child with Nothing": {
+        'name'    : 'glitch_lh_to_zd_child_nothing',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Clip into the Lakeside Lab house and swim OoB to reach the load.
+                    '''},
+    '(Glitch) Enter Water Groundclip': {
+        'name'    : 'glitch_enter_water_groundclip',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Enter Water Temple from the warp pad with a jumpslash into the loading zone.
+                    '''},
+    '(Glitch) Enter Water Ledge Clip': {
+        'name'    : 'glitch_enter_water_ledgeclip',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Enter Water by Ledge Clipping on the island with the grave.
+                    '''},
+    '(Glitch) Enter Water Slippery Dive with Ocarina': {
+        'name'    : 'glitch_enter_water_ocarina',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Enter water from the central island by pulling Ocarina to dive through.
+                    '''},
+    '(Glitch) Enter Water Lab Clip Adult': {
+        'name'    : 'glitch_enter_water_lab_clip_adult',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    The traditional minimal item entrance into Water Temple.
+                    '''},
+    '(Glitch) Enter Water Lab Clip Child': {
+        'name'    : 'glitch_enter_water_lab_clip_child',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Enter Water as child through the lab clip and swim to the loading zone.
+                    '''},
+    '(Glitch) Lakeside Lab with less stuff': {
+        'name'    : 'glitch_lakeside_lab_with_less',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Achieve the lakeside lab reward without gold scale, irons or hookshot.
+                    '''},
+    '(Glitch) Unfreeze King Zora with Nothing': {
+        'name'    : 'glitch_kz_with_nothing',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Reading a sign in the correct spot causes the red ice to permanently disappear.
+                    '''},
+    '(Advanced) GV Broken Bridge with Hookshot': {
+        'name'    : 'adv_gv_bridge_hookshot',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    Cross the GV bridge with Hookshot Extension.
+                    '''},
+    '(Advanced) GV Broken Bridge Cucco Jump': {
+        'name'    : 'adv_cucco_jump',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Jump over the gerudo guard and gate at the bridge with the cucco.
+                    '''},
+    '(Advanced) GV Cross Broken Bridge with Recoil off Boulder': {
+        'name'    : 'adv_gv_boulder_recoil',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    Recoil off a boulder and preserve momentum with Hover Boots to cross the bridge.
+                    '''},
+    '(Advanced) GV Tent as Child': {
+        'name'    : 'adv_gv_tent_child',
+        'tags'    : ("Glitchless","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    The tent loading zone can be reached as child.
+                    '''},
+    '(Glitch) GV Chest with Longshot': {
+        'name'    : 'glitch_gv_chest_longshot',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Moving far enough away disables boulder collision, Longshot reaches through.
+                    '''},
+    '(Advanced) GV Grotto Ledge to Upper Stream': {
+        'name'    : 'adv_gv_grotto_ledge_to_upper',
+        'tags'    : ("Glitchless","Child","Adult",),
+        'tooltip' : '''\
+                    Reach the upper stream area from the grotto ledge without taking damage.
+                    '''},
+    '(Glitch) GTG Adult Groundclip': {
+        'name'    : 'glitch_gtg_adult_groundclip',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Ledgecancel at the top of the fortress and drop into GTG.
+                    '''},
+    '(Glitch) GTG Child Groundclip': {
+        'name'    : 'glitch_gtg_child_groundclip',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Requires stick or sword, and shield. Enter GTG by jumpslashing through the gate.
+                    '''},
+    '(Advanced) GF Gate Skip': {
+        'name'    : 'adv_gf_gateskip',
+        'tags'    : ("Glitchless","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Jump the fence from the GF balcony and use hover boots to walk down towards the gate.
+                    '''},
+    '(Advanced) GF Unload with Antigrav': {
+        'name'    : 'adv_gf_unload',
+        'tags'    : ("Glitchless","Child","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Unload the bottom level of GF by wall walking and jumping off creating antigravity.
+                    '''},
+    '(Advanced) GF Archery Area without Gerudo Card as Adult': {
+        'name'    : 'adv_gf_archery_no_card',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Day or night, pass the guard on the hill towards archery with a backwalk movement.
+                    '''},
+    '(Glitch) GF Gate Skip Groundclip': {
+        'name'    : 'glitch_gf_gate_groundclip',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Pass the gate from the ground level with a double bomb hover groundclip as adult.
+                    '''},
+    '(Advanced) TH Breakroom to Balcony as Child': {
+        'name'    : 'adv_th_breakroom_to_balcony_child',
+        'tags'    : ("Glitchless","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Jump from the breakroom to the balcony entrance hallway with a damage boost.
+                    '''},
+    '(Glitch) Spirit Hover': {
+        'name'    : 'glitch_spirit_hover',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle","Spirit Temple",),
+        'tooltip' : '''\
+                    Enter Spirit Temple with Hover Boots, Bombs, and Chus.
+                    Not dependent on the ISG or Hovering tricks.
+                    '''},
+    '(Glitch) Colossus Grotto Weirdclip': {
+        'name'    : 'glitch_colossus_grotto_weirdclip',
+        'tags'    : ("Glitch","Adult","Bouldersanity","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Separate from weirdshots/weirdslides. Logic requires chus.
+                    '''},
+    '(Glitch) Colossus Great Fairy Fountain without Explosives': {
+        'name'    : 'glitch_colossus_fairy_no_explosives',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Using a Hookshot Jump and Hover Boots, touch the Fairy Fountain load without
+                    opening the wall. Requires the Hookshot Jump glitch.
+                    '''},
+    '(Advanced) Market Night Baz and Sling': {
+        'name'    : 'adv_market_night_baz_sling',
+        'tags'    : ("Glitchless","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Jumping from the crate over the door to access Bazaar and Slingshot Gallery at night.
+                    '''},
+    '(Advanced) Market Night Potion': {
+        'name'    : 'adv_market_night_potion',
+        'tags'    : ("Glitchless","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Same jumpslash from crate, walk behind the houses into Potion shop load.
+                    '''},
+    '(Advanced) Market Night Mask Shop': {
+        'name'    : 'adv_market_night_mask_shop',
+        'tags'    : ("Glitchless","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Jumpslash over door from Shooting Gallery and walk through houses OoB to the shop.
+                    '''},
+    '(Advanced) Market Day Treasure Chest Game': {
+        'name'    : 'adv_market_day_tcg',
+        'tags'    : ("Glitchless","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Jumpslash over the Shooting Gallery door and walk around the edge OoB to the TCG.
+                    '''},
+    '(Glitch) ToT DoT Skip Child with Lunge Storage': {
+        'name'    : 'glitch_dot_skip_child_lunge',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Requires sword and shield, clip through DoT with a lunge storage.
+                    '''},
+    '(Glitch) ToT DoT Skip Child Swordless': {
+        'name'    : 'glitch_dot_skip_child_swordless',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Itemless DoT skip as child.
+                    '''},
+    '(Glitch) ToT DoT Skip Adult with Hover Recoil': {
+        'name'    : 'glitch_dot_skip_adult_hover_recoil',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Adult DoT skip with a crouchstab recoil and equipping hover boots.
+                    '''},
+    '(Glitch) ToT DoT Skip Adult with Hovers and BGS': {
+        'name'    : 'glitch_dot_skip_adult_hovers_bgs',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Easier DoT skip, crouchstab 3x with BGS and hover boots equipped.
+                    '''},
+    '(Glitch) ToT DoT Skip Adult with BGS only': {
+        'name'    : 'glitch_dot_skip_adult_bgs_only',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Skip DoT with only BGS. Pause buffering highly recommended.
+                    '''},
+    '(Glitch) HC Garden Ledge without Trade Item': {
+        'name'    : 'glitch_hc_garden_no_trade',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Access ZL check without Weird Egg using a damage boost or megaflip.
+                    '''},
+    '(Glitch) HC Fairy Fountain Wallwalk': {
+        'name'    : 'glitch_hc_fairy_wallwalk',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Wallwalk up the seam in front of the HC fairy, drop down into the load.
+                    '''},
+    '(Glitch) Treasure Chest Game with Suns Song and OI': {
+        'name'    : 'glitch_tcg_suns',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Perform Putaway OI with Suns Song to continue buying keys to reach the final chest.
+                    '''},
+    '(Glitch) Kakariko Tower GS with ISG': {
+        'name'    : 'glitch_kakariko_tower_gs_isg',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Glitch alternative to the jumpslash trick in glitchless logic.
+                    '''},
+    '(Glitch) Kak to BotW Odie Clip': {
+        'name'    : 'glitch_kak_botw_odie',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Itemless clip into the bottom of the well as adult.
+                    '''},
+    '(Glitch) Kak to BotW Ledge Clip Damage Boost': {
+        'name'    : 'glitch_kak_botw_ledge',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Drop a chu, then ledgeclip from near windmill entrance to clip into BotW as adult.
+                    '''},
+    '(Glitch) BotW Blank A': {
+        'name'    : 'glitch_botw_blank_a',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Only the timestop method is considered.
+                    '''},
+    "(Glitch) Kak Granny's House as Child": {
+        'name'    : 'glitch_kak_child_granny',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Enter Granny's house as child using some bomb movements.
+                    '''},
+    "(Glitch) Impa's House Front to Back": {
+        'name'    : 'glitch_impas_cow_clip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Ledgeclip fall into the cow gate from the front of Impas house.
+                    '''},
+    '(Advanced) Kak Windmill HP Child Jumpslash': {
+        'name'    : 'adv_kak_windmill_heart_child',
+        'tags'    : ("Glitchless","Child",),
+        'tooltip' : '''\
+                    Child can reach the spinning windmill ledge with a precise jumpslash timing.
+                    '''},
+    '(Advanced) Kakariko Tower GS with Boomerang': {
+        'name'    : 'adv_kak_tower_gs_rang',
+        'tags'    : ("Glitchless","Child",),
+        'tooltip' : '''\
+                    By standing in a precise position, kill the Skulltula with Boomerang and climb up.
+                    '''},
+    '(Advanced) Kakariko Backyard as Child with Jumpslash': {
+        'name'    : 'adv_kak_backyard_night',
+        'tags'    : ("Glitchless","Child",),
+        'tooltip' : '''\
+                    Forward sidehop from the edge of the fence outside the windmill and jumpslash.
+                    '''},
+    '(Advanced) Graveyard Box HP Damage Boost': {
+        'name'    : 'adv_graveyard_hp_damage_boost',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    Damage boost from the fence to the crate to reach the graveyard HP.
+                    '''},
+    '(Glitch) Graveyard Royal Tomb Jumpslash Clip Child': {
+        'name'    : 'glitch_rft_js_clip_child',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Clip into the Royal Tomb as child to skip Zelda's Lullaby requirement.
+                    '''},
+    '(Glitch) Royal Family Tomb Chest with Sticks': {
+        'name'    : 'glitch_rft_chest_sticks',
+        'tags'    : ("Glitch","Child","Adult",),
+        'tooltip' : '''\
+                    Using Flame Storage, carry the fire to light the front torches.
+                    '''},
+    '(Glitch) Graveyard to Shadow Early Hookshot Jump': {
+        'name'    : 'glitch_graveyard_shadow_early_hookshot',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Hookshot jump from fence or Dampe Hut to reach the Shadow Temple loading zone.
+                    '''},
+    '(Glitch) Graveyard to Shadow Early Hover': {
+        'name'    : 'glitch_graveyard_shadow_early_hover',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Without hookshot, hover onto the seam wall to cross towards the Shadow Temple load.
+                    '''},
+    '(Glitch) Graveyard to Shadow Early Bomb Push': {
+        'name'    : 'glitch_graveyard_shadow_early_bomb_push',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Triple bomb push to unload the door and bypass into the dungeon from the warp pad.
+                    '''},
+    '(Advanced) DMT Heart Piece Damageless Jump': {
+        'name'    : 'adv_dmt_hp_jump',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Force Link to roll when landing on top of the DC entrance rather than break legs.
+                    '''},
+    '(Glitch) DMT to Summit with Hookshot Jump': {
+        'name'    : 'glitch_dmt_hookshot_jump',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Hookshot jump from below the boulders to reach the summit.
+                    '''},
+    '(Glitch) DMT to DC Groundclip': {
+        'name'    : 'glitch_dmt_dc_groundclip',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Sidehop groundclip as child from the bomb flower platform to enter DC.
+                    '''},
+    '(Glitch) DMT Explosiveless Magic': {
+        'name'    : 'glitch_dmt_explosiveless_magic',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    More precise lunge storage to enter DMT Fairy without explosives.
+                    '''},
+    '(Advanced) Goron City LW Boulders with Bow': {
+        'name'    : 'adv_gc_lw_boulders_bow',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    Precise shot to hit one of the bomb flowers with an arrow through the boulders.
+                    '''},
+    '(Glitch) GC to DMC as Child': {
+        'name'    : 'glitch_gc_dmc_child',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Clip into the statue behind Darunia with a slash and bombchu to enter DMT lower.
+                    '''},
+    "(Glitch) Goron City Darunia's Room No Explosives": {
+        'name'    : 'glitch_gc_darunia_no_explosives',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Precise Ledge Clip to enter Darunia's Room without explosives.
+                    '''},
+    '(Glitch) DMC Fairy Fountain from Trail': {
+        'name'    : 'glitch_dmc_fairy_from_trail',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Megaflip from the DMC Upper to land in the loading zone of DMC Fairy.
+                    '''},
+    '(Glitch) LW Underwater Rupees without Diving or Rang': {
+        'name'    : 'glitch_lw_uw_rupees',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Requires Navi Dive or Child Aqua Escape to collect every rupee.
+                    '''},
+    '(Glitch) ZR to LW as Adult Ledge Clip': {
+        'name'    : 'glitch_zr_lw_adult_ledge_clip',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Ledgeclip and OoB swim to reach the LW loading zone without iron boots or scales.
+                    '''},
+    '(Glitch) ZR to LW as Child Megasidehop': {
+        'name'    : 'glitch_zr_lw_child_mega',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Megaflip from the bridges to the LW loading zone.
+                    '''},
+    '(Glitch) ZR to ZD Itemless': {
+        'name'    : 'glitch_zr_zd_itemless',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Ladder clip from lower ZR and swim OoB to the ZD entrance.
+                    '''},
+    "(Glitch) Zora's River upper GS with Boomerang": {
+        'name'    : 'glitch_zr_upper_skull_rang',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Equip swapping Boomerang and doing 1 hover to get this skulltula without Hookshot.
+                    Requires Equip Swap to be enabled.
+                    '''},
+    '(Glitch) ZD Child OoB': {
+        'name'    : 'glitch_zd_child_oob',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Bombchu damage boost clip from KZ throne area.
+                    '''},
+    '(Glitch) ZD to ZF Ledge Cancel': {
+        'name'    : 'glitch_zd_zf_ledge_cancel',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Pass behind KZ when he is not moved. Requires explosives.
+                    '''},
+    '(Glitch) ZD to ZF Burning Stick': {
+        'name'    : 'glitch_zd_zf_burning_stick',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Pass KZ when he is not moved with only a stick.
+                    '''},
+    '(Glitch) ZD Reverse KZ Adult': {
+        'name'    : 'glitch_zd_reverse_kz_adult',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    If KZ is not moved, use longshot to clip through him by hooking the torch.
+                    '''},
+    '(Glitch) ZD Reverse KZ Child': {
+        'name'    : 'glitch_zd_reverse_kz_child',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Perform a weirdslide as child with first person item to cross under KZ.
+                    '''},
+    '(Advanced) ZF Enter Jabu Jumpslash': {
+        'name'    : 'adv_jabu_no_fish',
+        'tags'    : ("Glitchless","Child",),
+        'tooltip' : '''\
+                    Jump and then Jumpslash into the head for glitchless access to Jabu without fish.
+                    '''},
+    '(Glitch) ZF Child Wall GS with Hover': {
+        'name'    : 'glitch_zf_child_gs_hover',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Hovering off the skulltula after walking up an invisible seam.
+                    Does not require the ISG or Hovering glitches.
+                    '''},
+    '(Glitch) ZF Enter Jabu Adult with Hovers': {
+        'name'    : 'glitch_adult_jabu_hovers',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Requires Bombs and Hover boots to do a megasidehop into Jabu as Adult.
+                    '''},
+    '(Glitch) ZF Enter Jabu Adult without Hovers': {
+        'name'    : 'glitch_adult_jabu_no_hovers',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Removes the hover boots requirement, requires chus to enter Jabu as adult.
+                    '''},
+    '(Glitch) Child Ice Cavern Hover': {
+        'name'    : 'glitch_child_ice',
+        'tags'    : ("Glitch","Child","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Child can hover into Ice Cavern Entrance.
+                    '''},
+    '(Advanced) ZF Great Fairy Fountain without Explosives': {
+        'name'    : 'adv_zf_fairy_no_explosives',
+        'tags'    : ("Glitchless","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Climb onto the wall and walk to the Fairy Fountain entrance.
+                    '''},
+    '(Glitch) HF Web Grotto Groundclip': {
+        'name'    : 'glitch_hf_web_groundclip',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Double bomb groundclip hover through the web to access locations.
+                    '''},
+    '(Advanced) HF Tektite Grotto with Rang': {
+        'name'    : 'adv_tektite_hp_rang',
+        'tags'    : ("Glitchless","Child","Adult",),
+        'tooltip' : '''\
+                    Reach HF Tektite Grotto with Boomerang.
+                    '''},
+    '(Glitch) Moustache Clip': {
+        'name'    : 'glitch_moustache_clip',
+        'tags'    : ("Glitch","Adult","Entrance Shuffle",),
+        'tooltip' : '''\
+                    Clip into the Deku Tree as Adult.
+                    '''},
+    '(Advanced) Deku 231 with Hammer': {
+        'name'    : 'adv_231_hammer',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    Stun the dekus in the basement with Hammer instead of shield.
+                    '''},
+    '(Glitch) Deku Boss Door Skip': {
+        'name'    : 'glitch_deku_boss_door_skip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Boss Door skip for both vanilla and MQ from the upper pillar room.
+                    '''},
+    '(Glitch) MQ Deku SoT Chest with Hookshot': {
+        'name'    : 'glitch_deku_mq_sot_skull_hook',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Skip SoT and clip into the block to obtain the chest past the rolling spike log.
+                    '''},
+    '(Glitch) DC Beyond the Head without Explosives': {
+        'name'    : 'glitch_dc_head_clip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Clip into the head and jump to the doorframe to open the door without explosives.
+                    '''},
+    '(Glitch) Death Hookshot Jumps': {
+        'name'    : 'glitch_death_hookshot_jump',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Death or Doom jump in DC and MQ DC to reach the upper bridge with fairy revival.
+                    '''},
+    '(Advanced) KD with Chus': {
+        'name'    : 'adv_kd_chus',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    With a well timed backflip and chu pull, Adult can down KD with only chus.
+                    '''},
+    '(Advanced) MQ DC Pass Boulder with Hoverboots Jump': {
+        'name'    : 'adv_dc_mq_hoverboots_boulder_jump',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    Cross the gap and jump over the boulder with precise hoverboots timing.
+                    '''},
+    '(Advanced) MQ DC jump around stair Skulltulas': {
+        'name'    : 'adv_dc_mq_stairs_skulltula_jump',
+        'tags'    : ("Glitchless","Child",),
+        'tooltip' : '''\
+                    Jump around the Skulltulas blocking the path above the stairs.
+                    '''},
+    '(Glitch) Jabu First Switch Hover': {
+        'name'    : 'glitch_jabu_switch_hover',
+        'tags'    : ("Glitch","Child","Adult",),
+        'tooltip' : '''\
+                    Hover to reach the switch in the lobby of Jabu to skip projectile requirement.
+                    '''},
+    '(Glitch) Jabu Compass Tentacle Skip': {
+        'name'    : 'glitch_jabu_compass_skip_tentacle',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Damage boost through the corner of Jabu wall into the compass room.
+                    '''},
+    '(Glitch) Jabu Compass with Death': {
+        'name'    : 'glitch_jabu_compass_with_death',
+        'tags'    : ("Glitch","Child","Adult",),
+        'tooltip' : '''\
+                    Death revival with Fairy to pass the tentacle without boomerang.
+                    '''},
+    '(Glitch) Jabu Jabu Biri Hover': {
+        'name'    : 'glitch_jabu_biri_hover',
+        'tags'    : ("Glitch","Child","Adult",),
+        'tooltip' : '''\
+                    Hover to reach the rooms after Big Octo.
+                    '''},
+    '(Advanced) Jabu Jabu GS Near Boss with Jumpslash': {
+        'name'    : 'adv_jabu_gs_near_boss_js',
+        'tags'    : ("Child","Adult",),
+        'tooltip' : '''\
+                    Kill this Gold Skulltula through the wall with a jumpslash and climb the vines.
+                    '''},
+    '(Glitch) Forest Temple Basement': {
+        'name'    : 'glitch_forest_temple_basement',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Access basement with hoverboots and explosives using megasidehop, ignoring elevator.
+                    '''},
+    '(Glitch) Forest Basement GS Hover': {
+        'name'    : 'glitch_forest_basement_gs',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    If in the basement, hover to the GS from the chest.
+                    '''},
+    '(Glitch) Forest Temple Boss Key Skip': {
+        'name'    : 'glitch_forest_bk_skip',
+        'tags'    : ("Glitch","Child","Adult",),
+        'tooltip' : '''\
+                    Adult requires only sword and shield. Child requires bombchus for vineclip.
+                    '''},
+    '(Glitch) Fire Temple Boss Key Skip (Ledge clip)': {
+        'name'    : 'glitch_fire_bk_skip_ledge',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Ledgeclip and jumpslash in front of the shortcut block to fall over the load zone.
+                    '''},
+    '(Glitch) Fire Temple Boss Key Skip (Hover)': {
+        'name'    : 'glitch_fire_bk_skip_hover',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Hovering from in front of door over/under the loading zone, skips key requirements.
+                    '''},
+    '(Glitch) Fire Temple Child enemy room': {
+        'name'    : 'glitch_fire_child_enemy_room',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Child can clip behind the hammer pillar without hammer. Requires bombchus.
+                    '''},
+    '(Glitch) Fire Temple Block skip': {
+        'name'    : 'glitch_fire_block_skip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Use a bomb or chu to clip through the block into the shortcut area.
+                    '''},
+    '(Glitch) Fire Temple Scarecrow Hover': {
+        'name'    : 'glitch_fire_scarecrow_hover',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Hover to Piere with hover boots and bombchus to skip needing Pierre or song.
+                    '''},
+    '(Glitch) MQ Fire Before Boss Torch puzzle with GDV': {
+        'name'    : 'glitch_fire_mq_torch_puzzle',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Using GDV and hover boots, light all torches in the before boss room.
+                    '''},
+    '(Advanced) MQ Fire Boss Key Chest Flame Skip': {
+        'name'    : 'adv_fire_mq_bk_chest_flame_skip',
+        'tags'    : ("Advanced","Adult",),
+        'tooltip' : '''\
+                    Backflipping from a specific spot avoids the fire wall hitbox.
+                    '''},
+    '(Glitch) Water Temple Antigrav to Boss Key Area': {
+        'name'    : 'glitch_water_bk_area_antigrav',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    After ledge clipping, skip crossing the gap before the locked north basement door.
+                    '''},
+    '(Glitch) Water Temple Cutscene Dive to Eastern Column': {
+        'name'    : 'glitch_water_bottle_dive',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Using Hoverboots and Fish or Bugs, cutscene dive without iron boots.
+                    '''},
+    '(Glitch) Water Temple Ledge clip to South Basement': {
+        'name'    : 'glitch_water_south_basement_clip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Ledgeclip OoB and drop down to the south basement without scale or iron boots.
+                    '''},
+    '(Glitch) Water Temple Central Pillar with Torch Clip and Irons': {
+        'name'    : 'glitch_water_central_pillar_with_torch_clip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Access the Central Pillar with water raised by clipping out with a torch.
+                    '''},
+    '(Glitch) Water Temple Torch Clips': {
+        'name'    : 'glitch_water_torch_clip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Clip OoB to reach areas by using hookshot from the torch in the basement.
+                    '''},
+    '(Glitch) Water Temple Dragon Head Cutscene Dive': {
+        'name'    : 'glitch_water_dragon_cs_dive',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Explode the switch and dive during the explosion to remove iron boots requirement.
+                    '''},
+    '(Glitch) Water Temple Dragon Head Hover': {
+        'name'    : 'glitch_water_dragon_hover',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Hover to the alcove to reach the river chest.
+                    '''},
+    '(Glitch) Water Temple Song of Time Block Skip': {
+        'name'    : 'glitch_water_sot_block_skip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Clip through the SoT block with explosives and a ledgeclip.
+                    '''},
+    '(Glitch) Water Temple Boss Key Skip with Bombs': {
+        'name'    : 'glitch_water_bk_skip_bombs',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Typical staircase hover, easier variation with bombs.
+                    '''},
+    '(Glitch) Water Temple Boss Key Skip with Chus': {
+        'name'    : 'glitch_water_bk_skip_chus',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Alternative to bomb version, slightly more precise.
+                    '''},
+    '(Glitch) MQ Water BK Skip': {
+        'name'    : 'glitch_water_mq_bk_skip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Climb the longshot target and jump over the door.
+                    '''},
+    '(Glitch) MQ Water Temple Boss Key Room Spout Pit': {
+        'name'    : 'glitch_water_mq_bk_pit',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Swim out of bounds after ledge clip and load the boss key room.
+                    '''},
+    '(Advanced) Shadow Temple Double Damage Boosts': {
+        'name'    : 'adv_shadow_double_boosts',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Hoverboots no longer needed to traverse Shadow Temple, double damage boosts instead.
+                    '''},
+    '(Glitch) Shadow Temple as Child': {
+        'name'    : 'glitch_child_shadow',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Access to multiple rooms as child including the boat.
+                    '''},
+    '(Glitch) Shadow Temple Gate clip to Falling Spikes': {
+        'name'    : 'glitch_shadow_gate_falling_spikes',
+        'tags'    : ("Glitch","Child","Adult",),
+        'tooltip' : '''\
+                    Negate the need for silver rupees with a roll through the gap between wall and gate.
+                    '''},
+    '(Glitch) Shadow Boat Skull without Longshot Master': {
+        'name'    : 'glitch_shadow_boat_skull',
+        'tags'    : ("Glitch","Child","Adult",),
+        'tooltip' : '''\
+                    Various methods to reach the alcove near shadow boat without Pierre or longshot.
+                    '''},
+    '(Glitch) Shadow Boat Skull as Adult with Nothing': {
+        'name'    : 'glitch_shadow_boat_skull_adult_nothing',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    With gate clip, reach the skull and hearts with only sword and shield.
+                    '''},
+    '(Glitch) Shadow Temple no Boat': {
+        'name'    : 'glitch_shadow_no_Boat',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Hover down the slippery slopes.
+                    '''},
+    '(Glitch) Shadow Temple Before Boss Recovery Hearts Hovers': {
+        'name'    : 'glitch_shadow_heart_chasm_hovers',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Hover to the recovery hearts without usable boomerang or SoT.
+                    '''},
+    '(Glitch) Shadow Temple Boss Key Skip Boat Key': {
+        'name'    : 'glitch_shadow_bk_skip_boat_key',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    HESS or Superslide variation from dead hand into the boss loading zone.
+                    '''},
+    '(Glitch) Shadow Temple Boss Key Skip from Deadhand': {
+        'name'    : 'glitch_shadow_bk_skip_deadhand',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Megaflip or TSC from Dead hand to unloaded pre-boss room, then BK skip with bombchu.
+                    '''},
+    '(Glitch) Shadow Temple Boss Key Skip pre-boss': {
+        'name'    : 'glitch_shadow_bk_skip_boss',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    From the loaded room before boss door, BK skip with bombchu.
+                    '''},
+    '(Glitch) Spirit Temple Child side as Adult': {
+        'name'    : 'glitch_spirit_child_side_as_adult',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Adult reaches the child side of Spirit via Hoverboots superslide or TSC+megaflip.
+                    '''},
+    '(Glitch) Spirit Temple Adult side Block Skip': {
+        'name'    : 'glitch_spirit_adult_block_skip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Adult side clip via Triple Slash Clip or superslide.
+                    '''},
+    '(Glitch) Spirit Temple Child side Crawlspace skip as Adult': {
+        'name'    : 'glitch_spirit_child_side_crawlspace_skip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Adult skips the second crawlspace on the child side with Entrance Point Glitch.
+                    '''},
+    '(Advanced) Spirit Compass with just Hoverboots': {
+        'name'    : 'adv_spirit_compass_hoverboots_only',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    Reach the compass chest without hookshot.
+                    '''},
+    '(Glitch) Spirit Temple Boss Key Skip Groundclip': {
+        'name'    : 'glitch_spirit_bk_skip_groundclip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Megaflip or double bomb staircase to clip through the boss door.
+                    '''},
+    '(Glitch) Spirit Temple Boss Key Skip Headclip': {
+        'name'    : 'glitch_spirit_bk_skip_headclip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Headclip using explosives and hookshot to reach the boss room.
+                    '''},
+    '(Advanced) MQ Spirit Temple Lobby Eye Switch without Explosives': {
+        'name'    : 'adv_spirit_mq_lobby_eye',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    Standing far enough away from a boulder removes its collision.
+                    '''},
+    '(Advanced) MQ Spirit Temple Child Gibdo Eye Switch without Explosives': {
+        'name'    : 'adv_spirit_mq_child_gibdo_eye',
+        'tags'    : ("Glitchless","Child",),
+        'tooltip' : '''\
+                    Standing far enough away from a boulder removes its collision.
+                    '''},
+    '(Glitch) MQ Spirit Temple Silver Block Skip': {
+        'name'    : 'glitch_spirit_mq_silver_block_skip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Skip the silver block in the upper hallway with a groundclip and hoverboots.
+                    '''},
+    '(Glitch) MQ Spirit Temple Ceiling Boulder Skip': {
+        'name'    : 'glitch_spirit_mq_ceiling_boulder_skip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Targeting after Longshot disables the boulder collision to hit the hookshot target.
+                    '''},
+    '(Advanced) MQ Spirit Temple Lower Adult from Lobby': {
+        'name'    : 'adv_spirit_mq_lower_adult_from_lobby',
+        'tags'    : ("Advanced","Adult",),
+        'tooltip' : '''\
+                    Using Hover Boots to conserve enough momentum to pass through the water jet.
+                    '''},
+    '(Glitch) MQ Spirit Temple Lower Adult without Fire': {
+        'name'    : 'glitch_spirit_mq_lower_adult_no_fire',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    With GDV and ISG, Hookshot to the tops of the torches to light them.
+                    '''},
+    '(Glitch) MQ Spirit Temple Symphony Room with just Lullaby': {
+        'name'    : 'glitch_spirit_mq_symphony_lullaby',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Using Time Stop from the Leever room, store the music staff and reactivate on Lullaby.
+                    '''},
+    '(Glitch) Ice Cavern Ledges Room as Child': {
+        'name'    : 'glitch_ice_ledges_child',
+        'tags'    : ("Glitch","Child",),
+        'tooltip' : '''\
+                    Use groundjumps and glitchless-style jumps to climb the tall ledges.
+                    '''},
+    '(Advanced) Ice Cavern HP without Bottle': {
+        'name'    : 'adv_ice_hp_no_bottle',
+        'tags'    : ("Advanced","Adult",),
+        'tooltip' : '''\
+                    Bomb push into the ice to obtain the freestanding item.
+                    '''},
+    '(Advanced) Ice Cavern Push Block Silver Rupee Jumpslash': {
+        'name'    : 'adv_ice_push_block_silver',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    More usage of Blue Fire Arrows to traverse Ice Cavern glitchlessly.
+                    '''},
+    '(Glitch) Reverse Ice Cavern': {
+        'name'    : 'glitch_reverse_ice',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Adult backflips onto the crystal in the Freezard room lobby to clip OoB.
+                    '''},
+    '(Glitch) GTG Lobby Eye Switch Hover': {
+        'name'    : 'glitch_gtg_lobby_eye',
+        'tags'    : ("Glitch","Adult","Child",),
+        'tooltip' : '''\
+                    Hover to the eye switch to drop chests without slingshot or bow.
+                    '''},
+    '(Glitch) GTG Vine Clips': {
+        'name'    : 'glitch_gtg_vine_clip',
+        'tags'    : ("Glitch","Adult","Child",),
+        'tooltip' : '''\
+                    Enables the entire maze in logic and access to the open lava room.
+                    '''},
+    '(Advanced) GTG Pillar Jumps': {
+        'name'    : 'adv_gtg_pillar_jumps',
+        'tags'    : ("Advanced","Adult",),
+        'tooltip' : '''\
+                    Reach GTG pillars without hover boots with precise jumps.
+                    '''},
+    '(Advanced) GTG Burning Chest without Hammer': {
+        'name'    : 'adv_gtg_burning_chest_without_hammer',
+        'tags'    : ("Advanced","Child","Adult",),
+        'tooltip' : '''\
+                    Reach the burning chest by taking damage, no hammer required.
+                    '''},
+    '(Advanced) MQ GTG Enemy Rooms as child': {
+        'name'    : 'adv_gtg_mq_enemy_rooms_as_child',
+        'tags'    : ("Advanced","Child","Adult",),
+        'tooltip' : '''\
+                    Child can logically defeat the enemy rooms in MQ GTG.
+                    '''},
+    '(Glitch) MQ GTG Blue Fire Wall Skip': {
+        'name'    : 'glitch_gtg_mq_blue_fire_skip',
+        'tags'    : ("Glitch","Child","Adult",),
+        'tooltip' : '''\
+                    Child clips through with lunge storage and jumpslash. Adult uses HESS and Hovers.
+                    '''},
+    "(Glitch) Ganon's Tower Rainbow Bridge Skip": {
+        'name'    : 'glitch_igc_rainbow_bridge',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Allows for logical use of skipping the Rainbow Bridge by hovering.
+                    Independent of the Hovering and ISG tricks.
+                    '''},
+    "(Glitch) Ganon's Tower Trials Skip": {
+        'name'    : 'glitch_igc_trials_skip',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Hover in the main room of both vanilla and MQ.
+                    '''},
+    "(Glitch) Ganon's Tower Trials Skip from Spirit Trial": {
+        'name'    : 'glitch_igc_trials_skip_spirit_trial',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Push the armos to the door for a jumpslash clip into the lobby.
+                    '''},
+    '(Advanced) Shadow Trial First Gap Without Fire': {
+        'name'    : 'adv_shadow_trial_no_fire_gap',
+        'tags'    : ("Advanced","Adult",),
+        'tooltip' : '''\
+                    Hammer recoil hoverboost and bombchu damage boost to reach the likelike.
+                    '''},
+    '(Glitch) Shadow Trial Hess': {
+        'name'    : 'glitch_shadow_trial_hess',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    HESS from the door with hover boots to the torch, then to likelike.
+                    '''},
+    '(Glitch) Fire Trial Pillar Silver without Gauntlets': {
+        'name'    : 'glitch_fire_trial_pillar_silver',
+        'tags'    : ("Glitch","Adult",),
+        'tooltip' : '''\
+                    Skip strength 3 requirement to obtain the silver rupee under the block.
+                    '''},
+    '(Advanced) Fire Trial Longshot Skip': {
+        'name'    : 'adv_fire_trial_longshot_skip',
+        'tags'    : ("Glitchless","Adult",),
+        'tooltip' : '''\
+                    Damage boost hoverslide to the door without the need for the Longshot.
+                    '''},
+}
+
+normalized_name_advanced_tricks = {trick.casefold(): info for (trick, info) in known_advanced_logic_tricks.items()}

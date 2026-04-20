@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from Options import Option, OptionDict, DefaultOnToggle, Toggle, Range, OptionSet, DeathLink, PlandoConnections, \
     PerGameCommonOptions, OptionGroup
 from .EntranceShuffle import entrance_shuffle_table
-from .LogicTricks import normalized_name_tricks
+from .LogicTricks import normalized_name_tricks, normalized_name_advanced_tricks
 from .ColorSFXOptions import *
 
 
@@ -46,8 +46,8 @@ class PlandomizedLocations(OptionDict):
 class Logic(Choice): 
     """Set the logic used for the generator.
     Glitchless: Normal gameplay. Can enable more difficult logical paths using the Logic Tricks option.
-    Glitched: Many powerful glitches expected, such as bomb hovering and clipping.
-    Glitched is incompatible with the following settings:
+    Advanced: Many powerful glitches expected, such as bomb hovering and clipping.
+    Advanced is incompatible with the following settings:
     - All forms of entrance randomizer
     - MQ dungeons
     - Pot shuffle
@@ -57,7 +57,7 @@ class Logic(Choice):
     No Logic: No logic is used when placing items. Not recommended for most players."""
     display_name = "Logic Rules"
     option_glitchless = 0
-    option_glitched = 1
+    option_advanced = 1
     option_no_logic = 2
 
 
@@ -91,9 +91,24 @@ class Gate(Choice):
     option_closed = 2
 
 
-class DoorOfTime(DefaultOnToggle):
-    """When enabled, the Door of Time starts opened, without needing Song of Time."""
-    display_name = "Open Door of Time"
+class DoorOfTime(Choice):
+    """Set how the Door of Time is opened.
+    Open: The Door of Time starts opened.
+    Song of Time: Requires Song of Time.
+    OoT + Song of Time: Requires Song of Time and level 2 Ocarina progression.
+    3 Stones: Requires all 3 Spiritual Stones.
+    3 Stones + Song of Time: Requires Stones and Song of Time.
+    3 Stones + OoT + SoT: Requires Stones, Song of Time, and level 2 Ocarina progression."""
+    display_name = "Door of Time"
+    option_open = 0
+    option_sot = 1
+    option_oot_sot = 2
+    option_stones = 3
+    option_stones_sot = 4
+    option_stones_oot_sot = 5
+    default = 1
+    alias_true = 0
+    alias_false = 1
 
 
 class Fountain(Choice): 
@@ -498,6 +513,34 @@ class SongShuffle(Choice):
     default = 0
 
 
+class OcarinaSongs(OptionSet):
+    """Randomize ocarina melody assignments.
+    frog: Randomize the six standard songs.
+    warp: Randomize the six warp songs.
+    frogs2: Randomize the Zora's River Frogs Ocarina Game melody.
+
+    Backward compatibility:
+    all -> {'frog', 'warp'}
+    """
+    display_name = "Randomize Ocarina Melodies"
+    valid_keys = {"frog", "warp", "frogs2"}
+    default = set()
+
+    @classmethod
+    def from_any(cls, data):
+        if isinstance(data, bool):
+            return cls({"frog", "warp"} if data else set())
+        if isinstance(data, str):
+            lowered = data.strip().lower()
+            if lowered in {"all", "true", "on", "yes", "1"}:
+                return cls({"frog", "warp"})
+            if lowered in {"frog", "warp", "frogs2"}:
+                return cls({lowered})
+            if lowered in {"false", "off", "no", "0", "none"}:
+                return cls(set())
+        return super().from_any(data)
+
+
 class ShopShuffle(Choice): 
     """Randomizes shop contents.
     Off: Shops are not randomized at all.
@@ -516,21 +559,32 @@ class ShopSlots(Range):
     range_end = 4
 
 
-class ShopPrices(Choice):
-    """Controls prices of shop locations.
-    Normal: Balanced distribution from 0 to 300.
-    Affordable: Every shop location costs 10 rupees.
-    Starting Wallet: Prices capped at 99 rupees.
-    Adult's Wallet: Prices capped at 200 rupees.
-    Giant's Wallet: Prices capped at 500 rupees.
-    Tycoon's Wallet: Prices capped at 999 rupees."""
-    display_name = "Shopsanity Prices"
-    option_normal = 0
-    option_affordable = 1
-    option_starting_wallet = 2
-    option_adults_wallet = 3
-    option_giants_wallet = 4
-    option_tycoons_wallet = 5
+class SpecialDealPriceDistribution(Choice):
+    """Controls how prices are selected for shuffled shop special deal slots.
+    Vanilla: Use the vanilla price tied to each shop slot.
+    Betavariate: Weighted distribution across the min/max range.
+    Uniform: Uniform distribution across the min/max range."""
+    display_name = "Special Deal Prices"
+    option_vanilla = 0
+    option_betavariate = 1
+    option_uniform = 2
+    default = 1
+
+
+class SpecialDealPriceMin(Range):
+    """Minimum rupee price for shuffled shop special deal slots."""
+    display_name = "Minimum Special Deal Price"
+    range_start = 0
+    range_end = 995
+    default = 0
+
+
+class SpecialDealPriceMax(Range):
+    """Maximum rupee price for shuffled shop special deal slots."""
+    display_name = "Maximum Special Deal Price"
+    range_start = 0
+    range_end = 995
+    default = 300
 
 
 class TokenShuffle(Choice): 
@@ -655,6 +709,11 @@ class ShuffleFrogRupees(Toggle):
     display_name = "Shuffle Frog Song Rupees"
 
 
+class Shuffle100SkulltulaRupee(Toggle):
+    """Shuffle the repeatable 200-rupee reward for collecting all 100 Gold Skulltulas."""
+    display_name = "Shuffle 100 Skulltula Rupee Reward"
+
+
 class ShuffleSilverRupees(Choice):
     """Shuffles the Silver Rupee puzzles into the item pool.
     Remove: Silver rupees are removed and puzzles are pre-solved.
@@ -725,9 +784,12 @@ class MaintainMaskEquips(Toggle):
 
 shuffle_options: typing.Dict[str, type(Option)] = {
     "shuffle_song_items": SongShuffle,
+    "ocarina_songs": OcarinaSongs,
     "shopsanity": ShopShuffle,
     "shop_slots": ShopSlots,
-    "shopsanity_prices": ShopPrices,
+    "special_deal_price_distribution": SpecialDealPriceDistribution,
+    "special_deal_price_min": SpecialDealPriceMin,
+    "special_deal_price_max": SpecialDealPriceMax,
     "tokensanity": TokenShuffle,
     "shuffle_scrubs": ScrubShuffle,
     "shuffle_child_trade": ShuffleChildTrade,
@@ -743,6 +805,7 @@ shuffle_options: typing.Dict[str, type(Option)] = {
     "shuffle_beans": ShuffleBeans,
     "shuffle_medigoron_carpet_salesman": ShuffleMedigoronCarpet,
     "shuffle_frog_song_rupees": ShuffleFrogRupees,
+    "shuffle_100_skulltula_rupee": Shuffle100SkulltulaRupee,
     "shuffle_silver_rupees": ShuffleSilverRupees,
     "shuffle_tcgkeys": ShuffleTCGKeys,
     "shuffle_individual_ocarina_notes": ShuffleIndividualOcarinaNotes,
@@ -889,9 +952,32 @@ class ShuffleGanonBK(Choice):
     alias_anywhere = 7
 
 
-class EnhanceMC(Toggle):
-    """Map tells if a dungeon is vanilla or MQ. Compass tells what the dungeon reward is."""
+class EnhanceMC(OptionSet):
+    """Gives maps/compasses extra functionality.
+    map_mq: Map tells if a dungeon is vanilla or MQ.
+    map_dungeon_location: Map tells where a dungeon entrance leads.
+    compass_boss_location: Compass tells which boss is in the dungeon.
+    compass_reward: Compass tells what dungeon reward is in the dungeon.
+
+    Backward compatibility:
+    true -> {'map_mq', 'compass_reward'}
+    false -> {}
+    """
     display_name = "Maps and Compasses Give Information"
+    valid_keys = {"map_mq", "map_dungeon_location", "compass_boss_location", "compass_reward"}
+    default = set()
+
+    @classmethod
+    def from_any(cls, data):
+        if isinstance(data, bool):
+            return cls({"map_mq", "compass_reward"} if data else set())
+        if isinstance(data, str):
+            lowered = data.strip().lower()
+            if lowered in {"true", "on", "yes", "1"}:
+                return cls({"map_mq", "compass_reward"})
+            if lowered in {"false", "off", "no", "0"}:
+                return cls(set())
+        return super().from_any(data)
 
 
 class GanonBKMedallions(Range):
@@ -1016,9 +1102,18 @@ class FastChests(DefaultOnToggle):
     display_name = "Fast Chest Cutscenes"
 
 
-class FreeScarecrow(Toggle):
-    """Pulling out the ocarina near a scarecrow spot spawns Pierre without needing the song."""
-    display_name = "Free Scarecrow's Song"
+class ScarecrowBehavior(Choice):
+    """Set scarecrow song behavior.
+    Vanilla: Standard game behavior.
+    Fast: Shared scarecrow song behavior is simplified.
+    Free: Pierre can be summoned without setting the song."""
+    display_name = "Scarecrow Song"
+    option_vanilla = 0
+    option_fast = 1
+    option_free = 2
+    default = 0
+    alias_false = 0
+    alias_true = 2
 
 
 class FastBunny(Toggle):
@@ -1074,7 +1169,7 @@ timesavers_options: typing.Dict[str, type(Option)] = {
     "complete_mask_quest": CompleteMaskQuest, 
     "useful_cutscenes": UsefulCutscenes, 
     "fast_chests": FastChests, 
-    "free_scarecrow": FreeScarecrow, 
+    "scarecrow_behavior": ScarecrowBehavior, 
     "fast_bunny_hood": FastBunny,
     "plant_beans": PlantBeans,
     "easier_fire_arrow_entry": EasierFireArrowEntry,
@@ -1166,7 +1261,10 @@ class MiscHints(OptionSet):
         "30_skulltulas",
         "40_skulltulas",
         "50_skulltulas",
+        "100_skulltulas",
         "frogs2",
+        "skull_mask",
+        "mask_of_truth",
         "mask_shop",
         "unique_merchants",
         "big_poes",
@@ -1376,6 +1474,26 @@ class AdultTradeShuffleOption(Toggle):
     display_name = "Shuffle All Adult Trade Items"
 
 
+class AddRandomStartingItems(Toggle):
+    """Add random progression-safe starting items to start inventory."""
+    display_name = "Additional Random Starting Items"
+
+
+class RandomStartingItemsCount(Range):
+    """How many additional random starting items to grant."""
+    display_name = "Amount of Random Starting Items"
+    range_start = 0
+    range_end = 10
+    default = 0
+
+
+class RandomStartingItemsExclude(OptionSet):
+    """Exclude item categories from random starting item selection."""
+    display_name = "Exclude From Random Starting Items"
+    valid_keys = {"songs", "bombchus", "shields", "deku_upgrades", "health_upgrades", "junk"}
+    default = set()
+
+
 itempool_options: typing.Dict[str, type(Option)] = {
     "item_pool_value": ItemPoolValue,
     "junk_ice_traps": IceTraps,
@@ -1384,6 +1502,9 @@ itempool_options: typing.Dict[str, type(Option)] = {
     "ice_trap_appearance": IceTrapVisual,
     "adult_trade_shuffle": AdultTradeShuffleOption,
     "adult_trade_start": AdultTradeStart,
+    "add_random_starting_items": AddRandomStartingItems,
+    "random_starting_items_count": RandomStartingItemsCount,
+    "random_starting_items_exclude": RandomStartingItemsExclude,
 }
 
 # Start of cosmetic options
@@ -1565,13 +1686,25 @@ sfx_options: typing.Dict[str, type(Option)] = {
 
 
 class LogicTricks(OptionSet):
-    """Set various tricks for logic in Ocarina of Time. 
+    """Set various tricks for logic in Ocarina of Time.
     Format as a comma-separated list of "nice" names: ["Fewer Tunic Requirements", "Hidden Grottos without Stone of Agony"].
     A full list of supported tricks can be found at:
     https://github.com/MultiworldGG/MultiworldGG/blob/main/worlds/oot/LogicTricks.py
     """
     display_name = "Logic Tricks"
     valid_keys = tuple(normalized_name_tricks.keys())
+    valid_keys_casefold = True
+
+
+class AdvancedAllowedTricks(OptionSet):
+    """When Logic Rules is set to Advanced, choose which glitch and advanced tricks are in logic.
+    Format as a comma-separated list of "nice" names:
+    ["(Glitch) Infinite Sword Glitch (ISG)", "(Glitch) Hovering with Explosives"].
+    A full list of supported tricks can be found at:
+    https://github.com/MultiworldGG/MultiworldGG/blob/main/worlds/oot/LogicTricks.py
+    """
+    display_name = "Advanced Allowed Tricks"
+    valid_keys = tuple(normalized_name_advanced_tricks.keys())
     valid_keys_casefold = True
 
 
@@ -1583,6 +1716,7 @@ class OoTOptions(PerGameCommonOptions):
     logic_rules: Logic
     logic_no_night_tokens_without_suns_song: NightTokens
     logic_tricks: LogicTricks
+    advanced_allowed_tricks: AdvancedAllowedTricks
     open_forest: Forest
     open_kakariko: Gate
     open_door_of_time: DoorOfTime
@@ -1634,9 +1768,12 @@ class OoTOptions(PerGameCommonOptions):
     key_rings: KeyRings
     key_rings_list: KeyRingList
     shuffle_song_items: SongShuffle
+    ocarina_songs: OcarinaSongs
     shopsanity: ShopShuffle
     shop_slots: ShopSlots
-    shopsanity_prices: ShopPrices
+    special_deal_price_distribution: SpecialDealPriceDistribution
+    special_deal_price_min: SpecialDealPriceMin
+    special_deal_price_max: SpecialDealPriceMax
     tokensanity: TokenShuffle
     shuffle_scrubs: ScrubShuffle
     shuffle_child_trade: ShuffleChildTrade
@@ -1652,6 +1789,7 @@ class OoTOptions(PerGameCommonOptions):
     shuffle_beans: ShuffleBeans
     shuffle_medigoron_carpet_salesman: ShuffleMedigoronCarpet
     shuffle_frog_song_rupees: ShuffleFrogRupees
+    shuffle_100_skulltula_rupee: Shuffle100SkulltulaRupee
     shuffle_silver_rupees: ShuffleSilverRupees
     shuffle_tcgkeys: ShuffleTCGKeys
     shuffle_individual_ocarina_notes: ShuffleIndividualOcarinaNotes
@@ -1668,7 +1806,7 @@ class OoTOptions(PerGameCommonOptions):
     complete_mask_quest: CompleteMaskQuest
     useful_cutscenes: UsefulCutscenes
     fast_chests: FastChests
-    free_scarecrow: FreeScarecrow
+    scarecrow_behavior: ScarecrowBehavior
     fast_bunny_hood: FastBunny
     plant_beans: PlantBeans
     easier_fire_arrow_entry: EasierFireArrowEntry
@@ -1700,6 +1838,9 @@ class OoTOptions(PerGameCommonOptions):
     custom_ice_trap_percent: CustomIceTrapPercent
     custom_ice_trap_count: CustomIceTrapCount
     ice_trap_appearance: IceTrapVisual
+    add_random_starting_items: AddRandomStartingItems
+    random_starting_items_count: RandomStartingItemsCount
+    random_starting_items_exclude: RandomStartingItemsExclude
     adult_trade_shuffle: AdultTradeShuffleOption
     adult_trade_start: AdultTradeStart
     default_targeting: Targeting

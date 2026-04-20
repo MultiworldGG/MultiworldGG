@@ -436,6 +436,9 @@ def get_pool_core(world):
         # Make the duplicate item consistent with that.
         if 'Pocket Egg' in world.adult_trade_start and 'Pocket Cucco' in world.adult_trade_start:
             pending_junk_pool.remove('Pocket Cucco')
+    elif world.adult_trade_start:
+        # With adult trade shuffle off, add another copy of the selected adult trade item
+        pending_junk_pool.append(world.selected_adult_trade_item)
 
     # Use the vanilla items in the world's locations when appropriate.
     for location in world.get_locations():
@@ -563,13 +566,15 @@ def get_pool_core(world):
             if not shuffle_item:
                 location.show_in_spoiler = False
 
+        # 100 Gold Skulltula Reward
+        elif location.scene == 0x50 and location.vanilla_item == 'Rupees (200)':
+            shuffle_item = world.shuffle_100_skulltula_rupee
+
         # Adult Trade Quest Items
         elif location.vanilla_item in trade_items:
             if not world.adult_trade_shuffle:
-                if location.vanilla_item == 'Pocket Egg':
-                    potential_trade_items = world.adult_trade_start if world.adult_trade_start else trade_items
-                    item = world.random.choice(sorted(potential_trade_items))
-                    world.selected_adult_trade_item = item
+                if location.vanilla_item == 'Pocket Egg' and world.adult_trade_start:
+                    item = world.selected_adult_trade_item
                     shuffle_item = True
                 else:
                     shuffle_item = False
@@ -765,6 +770,11 @@ def get_pool_core(world):
         elif location.type in ["Chest", "NPC", "Song", "Collectable", "Cutscene", "BossHeart"]:
             shuffle_item = True
 
+        # Deku Shield broken drop fix: Spirit Temple pot that can't actually give the item
+        if shuffle_item and not world.fix_broken_drops and location.vanilla_item == 'Deku Shield' and location.type in ['Pot', 'FlyingPot']:
+            item = 'Nothing'
+            shuffle_item = False
+
         # Now, handle the item as necessary.
         if shuffle_item:
             pool.append(item)
@@ -796,7 +806,7 @@ def get_pool_core(world):
             else:
                 pending_junk_pool.append(rupee)
 
-    if world.free_scarecrow:
+    if world.scarecrow_behavior == 'free':
         world.multiworld.push_precollected(world.create_item('Scarecrow Song'))
         world.remove_from_start_inventory.append('Scarecrow Song')
     
@@ -809,6 +819,21 @@ def get_pool_core(world):
                        'Ocarina C left Button', 'Ocarina C right Button']:
             world.multiworld.push_precollected(world.create_item(button))
             world.remove_from_start_inventory.append(button)
+
+    if world.add_random_starting_items:
+        world.randomized_starting_items = {}
+        for _ in range(world.random_starting_items_count):
+            random_starting_items_pool = configure_random_starting_items_pool(world, pool)
+            if random_starting_items_pool:
+                selected_item = world.random.choice(random_starting_items_pool)
+                world.randomized_starting_items[selected_item] = \
+                    world.randomized_starting_items.get(selected_item, 0) + 1
+                pool.remove(selected_item)
+                pool.extend(get_junk_item(world.random))
+        for item_name, count in world.randomized_starting_items.items():
+            for _ in range(count):
+                world.multiworld.push_precollected(world.create_item(item_name))
+                world.remove_from_start_inventory.append(item_name)
 
     if world.shuffle_smallkeys == 'vanilla':
         # Logic cannot handle vanilla key layout in some dungeons
@@ -917,3 +942,21 @@ def get_unrestricted_dungeon_items(ootworld):
         if dungeon.name == 'Ganons Castle' and ootworld.shuffle_ganon_bosskey in add_settings:
             unrestricted_dungeon_items.extend(dungeon.boss_key)
     return unrestricted_dungeon_items
+
+
+def configure_random_starting_items_pool(world, pool: list) -> list:
+    exclude = world.random_starting_items_exclude
+    exclude_list = []
+    if 'songs' in exclude:
+        exclude_list.extend(item_groups['Song'])
+    if 'bombchus' in exclude:
+        exclude_list.extend(item for item in pool if 'Bombchus' in item)
+    if 'shields' in exclude:
+        exclude_list.extend(item_groups['Shield'])
+    if 'deku_upgrades' in exclude:
+        exclude_list.extend(('Deku Stick Capacity', 'Deku Nut Capacity'))
+    if 'health_upgrades' in exclude:
+        exclude_list.extend(item_groups['HealthUpgrade'])
+    if 'junk' in exclude:
+        exclude_list.extend(item for item, _ in junk_pool_base)
+    return sorted({item for item in pool if item not in exclude_list and item_table.get(item, ('',))[0] != 'Shop'})

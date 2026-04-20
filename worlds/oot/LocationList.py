@@ -382,6 +382,7 @@ location_table = OrderedDict([
     ("Kak 30 Gold Skulltula Reward",                                 ("NPC",          0x50,  0x46, None,                            'Progressive Wallet',                    ("Kakariko Village", "Kakariko", "Skulltula House"))),
     ("Kak 40 Gold Skulltula Reward",                                 ("NPC",          0x50,  0x03, None,                            'Bombchus (10)',                         ("Kakariko Village", "Kakariko", "Skulltula House"))),
     ("Kak 50 Gold Skulltula Reward",                                 ("NPC",          0x50,  0x3E, None,                            'Piece of Heart',                        ("Kakariko Village", "Kakariko", "Skulltula House"))),
+    ("Kak 100 Gold Skulltula Reward",                                ("NPC",          0x50,  0x56, None,                            'Rupees (200)',                          ("Kakariko Village", "Kakariko", "Skulltula House"))),
     ("Kak Impas House Cow",                                          ("NPC",          0x37,  0x15, None,                            'Milk',                                  ("Kakariko Village", "Kakariko", "Cow"))),
     ("Kak GS Tree",                                                  ("GS Token",     0x10,  0x20, None,                            'Gold Skulltula Token',                  ("Kakariko Village", "Skulltulas"))),
     ("Kak GS Near Gate Guard",                                       ("GS Token",     0x10,  0x02, None,                            'Gold Skulltula Token',                  ("Kakariko Village", "Skulltulas"))),
@@ -2598,7 +2599,10 @@ location_table = OrderedDict([
     ("Gerudo Training Ground MQ Dinolfos Arrow Wonderitem",          ("Wonderitem",   0x0B,  (7,0,9), None,                         'Rupees (20)',                           ("Gerudo Training Ground", "Master Quest", "Wonderitem"))), # One of the actors in this room appears to have been deleted so this actor is #9. The 0x185 Checkable Spot actor is missing in MQU.json
 
     # Hints
+    ("100 Skulltulas Reward Hint",                                   ("Hint",         None,  None, None,                            None,                                    None)),
     ("ZR Frogs Ocarina Minigame Hint",                               ("Hint",         None,  None, None,                            None,                                    None)),
+    ("Deku Theater Skull Mask Hint",                                 ("Hint",         None,  None, None,                            None,                                    None)),
+    ("Deku Theater Mask of Truth Hint",                              ("Hint",         None,  None, None,                            None,                                    None)),
 ])
 
 location_sort_order = {

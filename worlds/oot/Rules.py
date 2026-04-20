@@ -59,7 +59,7 @@ class OOTLogic(LogicMixin):
 
         # Scarecrow Song needs at least 2 different notes
         if song == 'Scarecrow Song' or song == 'Scarecrow_Song':
-            if world.free_scarecrow:
+            if world.scarecrow_behavior == 'free':
                 return True
             # Count how many ocarina buttons we have
             button_count = 0
@@ -327,7 +327,7 @@ def set_ocarina_note_rules(ootworld):
 
     song_to_buttons: dict = {}
     for song, notes in ootworld.song_notes.items():
-        buttons = frozenset(note_to_button[c] for c in notes if c in note_to_button)
+        buttons = frozenset(note_to_button[c] for c in str(notes) if c in note_to_button)
         if buttons:
             song_to_buttons[song.replace(' ', '_')] = buttons
 
@@ -368,5 +368,3 @@ def set_ocarina_note_rules(ootworld):
         if not forbidden:
             continue
         add_item_rule(location, lambda item, f=forbidden: item.name not in f)
-
-

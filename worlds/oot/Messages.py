@@ -245,7 +245,6 @@ ITEM_MESSAGES = {
     0x00AD: "\x08\x13\x05You got \x05\x41Din's Fire\x05\x40!\x01Its fireball engulfs everything!",
     0x00AE: "\x08\x13\x0DYou got \x05\x42Farore's Wind\x05\x40!\x01This is warp magic you can use!",
     0x00AF: "\x08\x13\x13You got \x05\x43Nayru's Love\x05\x40!\x01Cast this to create a powerful\x01protective barrier.",
-    0x00B4: "\x08You got a \x05\x41Gold Skulltula Token\x05\x40!\x01You've collected \x05\x41\x19\x05\x40 tokens in total.",
     0x00B5: "\x08You destroyed a \x05\x41Gold Skulltula\x05\x40.\x01You got a token proving you \x01destroyed it!", #Unused
     0x00C2: "\x08\x13\x73You got a \x05\x41Piece of Heart\x05\x40!\x01Collect four pieces total to get\x01another Heart Container.",
     0x90C2: "\x08\x13\x73You got a \x05\x41Piece of Heart\x05\x40!\x01You are already at\x01maximum health.",
@@ -286,7 +285,7 @@ ITEM_MESSAGES = {
     0x901A: "\x08You found a \x05\x43filler MWGG item\x05\x40\x01for \x05\x42\xF2\x05\x40!",
 }
 
-KEYSANITY_MESSAGES = {
+IMPORTANT_ITEM_MESSAGES = {
     0x001C: "\x13\x74\x08You got the \x05\x41Boss Key\x05\x40\x01for the \x05\x41Fire Temple\x05\x40!\x09",
     0x0006: "\x13\x74\x08You got the \x05\x41Boss Key\x05\x40\x01for the \x05\x42Forest Temple\x05\x40!\x09",
     0x001D: "\x13\x74\x08You got the \x05\x41Boss Key\x05\x40\x01for the \x05\x43Water Temple\x05\x40!\x09",
@@ -331,6 +330,7 @@ KEYSANITY_MESSAGES = {
     0x9016: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x46Gerudo Training\x01Ground\x05\x40!\x09",
     0x9017: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x46Thieves' Hideout\x05\x40!\x09",
     0x9018: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for \x05\x41Ganon's Castle\x05\x40!\x09",
+    0x00B4: "\x08You got a \x05\x41Gold Skulltula Token\x05\x40!\x01You've collected \x05\x41\x19\x05\x40 tokens in total.",
 }
 
 COLOR_MAP = {
@@ -914,7 +914,7 @@ def make_player_message(text):
 # reduce item message sizes and add new item messages
 # make sure to call this AFTER move_shop_item_messages()
 def update_item_messages(messages, world):
-    new_item_messages = {**ITEM_MESSAGES, **KEYSANITY_MESSAGES}
+    new_item_messages = {**ITEM_MESSAGES, **IMPORTANT_ITEM_MESSAGES}
     for id, text in new_item_messages.items():
         if world.multiworld.players > 1:
             update_message_by_id(messages, id, make_player_message(text), 0x23)
@@ -1005,7 +1005,7 @@ def shuffle_messages(messages, rand, except_hints=True, always_allow_skip=True):
             GOSSIP_STONE_MESSAGES + TEMPLE_HINTS_MESSAGES +
             [data['id'] for data in misc_item_hint_table.values()] +
             [data['id'] for data in misc_location_hint_table.values()] +
-            list(KEYSANITY_MESSAGES.keys()) + shuffle_messages.shop_item_messages +
+            list(IMPORTANT_ITEM_MESSAGES.keys()) + shuffle_messages.shop_item_messages +
             shuffle_messages.scrubs_message_ids +
             [0x5036, 0x70F5] # Chicken count and poe count respectively
         )
@@ -1057,17 +1057,16 @@ def update_warp_song_text(messages, world):
         0x0892: 'Prelude of Light Warp -> Temple of Time',
     }
 
-    if world.logic_rules != "glitched": # Entrances not set on glitched logic so following code will error
-        for id, entr in msg_list.items():
-            if 'warp_songs_and_owls' in world.misc_hints or not world.warp_songs:
-                destination = world.get_entrance(entr).connected_region
-                destination_name = HintArea.at(destination)
-                color = COLOR_MAP[destination_name.color]
-                if destination_name.preposition(True) is not None:
-                    destination_name = f'to {destination_name}'
-            else:
-                destination_name = 'to a mysterious place'
-                color = COLOR_MAP['White']
+    for id, entr in msg_list.items():
+        if 'warp_songs_and_owls' in world.misc_hints or not world.warp_songs:
+            destination = world.get_entrance(entr).connected_region
+            destination_name = HintArea.at(destination)
+            color = COLOR_MAP[destination_name.color]
+            if destination_name.preposition(True) is not None:
+                destination_name = f'to {destination_name}'
+        else:
+            destination_name = 'to a mysterious place'
+            color = COLOR_MAP['White']
 
-            new_msg = f"\x08\x05{color}Warp {destination_name}?\x05\40\x09\x01\x01\x1b\x05\x42OK\x01No\x05\40"
-            update_message_by_id(messages, id, new_msg)
+        new_msg = f"\x08\x05{color}Warp {destination_name}?\x05\40\x09\x01\x01\x1b\x05\x42OK\x01No\x05\40"
+        update_message_by_id(messages, id, new_msg)

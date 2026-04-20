@@ -210,7 +210,7 @@ def tokens_required_by_settings(world: World) -> int:
 # Hints required under certain settings
 conditional_always: dict[str, Callable[[World], bool]] = {
     'Market 10 Big Poes':           lambda world: world.options.big_poe_count.value > 3 and 'big_poes' not in world.options.misc_hints.value,
-    'Deku Theater Mask of Truth':   lambda world: not world.options.complete_mask_quest.value and world.options.shuffle_child_trade.value != 2,  # 2 = skip_child_zelda
+    'Deku Theater Mask of Truth':   lambda world: not world.options.complete_mask_quest.value and world.options.shuffle_child_trade.value != 2 and 'mask_of_truth' not in world.options.misc_hints.value,  # 2 = skip_child_zelda
     'Song from Ocarina of Time':    lambda world: stones_required_by_settings(world) < 2,
     'HF Ocarina of Time Item':      lambda world: stones_required_by_settings(world) < 2,
     'Sheik in Kakariko':            lambda world: medallions_required_by_settings(world) < 5,
@@ -218,6 +218,7 @@ conditional_always: dict[str, Callable[[World], bool]] = {
     'Kak 30 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 30 and '30_skulltulas' not in world.options.misc_hints.value,
     'Kak 40 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 40 and '40_skulltulas' not in world.options.misc_hints.value,
     'Kak 50 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 50 and '50_skulltulas' not in world.options.misc_hints.value,
+    'Kak 100 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 100 and '100_skulltulas' not in world.options.misc_hints.value,
     'ZR Frogs Ocarina Game':        lambda world: 'frogs2' not in world.options.misc_hints.value,
     'LH Loach Fishing':             lambda world: not world.options.shuffle_loach_reward.value,  # 0 = off (vanilla)
 }
@@ -255,7 +256,7 @@ def rainbow_bridge_hint_kind(world: World) -> str:
 
 # Entrance hints required under certain settings
 conditional_entrance_always: dict[str, Callable[[World], bool]] = {
-    'Ganons Castle Grounds -> Ganons Castle Lobby': lambda world: rainbow_bridge_hint_kind(world) == 'always',
+    'Ganons Castle Ledge -> Ganons Castle Lobby': lambda world: rainbow_bridge_hint_kind(world) == 'always',
     'Ganons Castle Main -> Ganons Castle Tower': lambda world: world.options.trials.value > 3 or (rainbow_bridge_hint_kind(world) == 'always' and not world.shuffle_special_dungeon_entrances),
 }
 
@@ -288,7 +289,7 @@ conditional_sometimes: dict[str, Callable[[World], bool]] = {
     'Shadow Temple Invisible Blades Chests':    lambda world: world.options.tokensanity.value not in [1, 3],  # 1 = dungeons, 3 = all
 
     # Conditional entrance hints
-    'Ganons Castle Grounds -> Ganons Castle Lobby': lambda world: rainbow_bridge_hint_kind(world) != 'never',
+    'Ganons Castle Ledge -> Ganons Castle Lobby': lambda world: rainbow_bridge_hint_kind(world) != 'never',
     'Ganons Castle Main -> Ganons Castle Tower': lambda world: world.options.trials.value > 0 or (rainbow_bridge_hint_kind(world) != 'never' and not world.shuffle_special_dungeon_entrances),
 }
 
@@ -566,6 +567,7 @@ hintTable: dict[str, tuple[list[str] | str, Optional[str], str | list[str]]] = {
     'HF Ocarina of Time Item':                                     ("the #treasure thrown by Princess Zelda# is", None, ['overworld', 'sometimes']),
     'DMT Biggoron':                                                ("#Biggoron# crafts", "showing the #Claim Check to Biggoron# rewards", ['overworld', 'sometimes']),
     'Kak 50 Gold Skulltula Reward':                                (["#50 bug badges# rewards", "#50 spider souls# yields", "#50 auriferous arachnids# lead to"], "slaying #50 Gold Skulltulas# reveals", ['overworld', 'sometimes']),
+    'Kak 100 Gold Skulltula Reward':                               (["#100 bug badges# rewards", "#100 spider souls# yields", "#100 auriferous arachnids# lead to"], "slaying #100 Gold Skulltulas# reveals", ['overworld', 'sometimes']),
     'Kak 40 Gold Skulltula Reward':                                (["#40 bug badges# rewards", "#40 spider souls# yields", "#40 auriferous arachnids# lead to"], "slaying #40 Gold Skulltulas# reveals", ['overworld', 'sometimes']),
     'Kak 30 Gold Skulltula Reward':                                (["#30 bug badges# rewards", "#30 spider souls# yields", "#30 auriferous arachnids# lead to"], "slaying #30 Gold Skulltulas# reveals", ['overworld', 'sometimes']),
     'Kak 20 Gold Skulltula Reward':                                (["#20 bug badges# rewards", "#20 spider souls# yields", "#20 auriferous arachnids# lead to"], "slaying #20 Gold Skulltulas# reveals", ['overworld', 'sometimes']),
@@ -1390,7 +1392,7 @@ hintTable: dict[str, tuple[list[str] | str, Optional[str], str | list[str]]] = {
     'Zoras Fountain -> Jabu Jabus Belly Beginning':             ("inside #Jabu Jabu#, one can find", None, 'entrance'),
     'Kakariko Village -> Bottom of the Well':                   ("a #village well# leads to", None, 'entrance'),
 
-    'Ganons Castle Grounds -> Ganons Castle Lobby':             ("the #rainbow bridge# leads to", None, 'entrance'),
+    'Ganons Castle Ledge -> Ganons Castle Lobby':               ("the #rainbow bridge# leads to", None, 'entrance'),
     'Ganons Castle Main -> Ganons Castle Tower':                ("a #castle barrier# protects the way to", "#Ganon's trials# protect the way to", 'entrance'),
 
     'KF Links House':                                           ("Link's House", None, 'region'),
@@ -1721,7 +1723,6 @@ hintTable: dict[str, tuple[list[str] | str, Optional[str], str | list[str]]] = {
     'ganonBK_triforce':                                         ("given to the Hero once the #Triforce# is completed", None, 'ganonBossKey'),
 
     'Spiritual Stone Text Start':                               ("3 Spiritual Stones found in Hyrule...", None, 'altar'),
-    'Child Altar Text End':                                     ("\x13\x07Ye who may become a Hero...&Stand with the Ocarina and&play the Song of Time.", None, 'altar'),
     'Adult Altar Text Start':                                   ("When evil rules all, an awakening&voice from the Sacred Realm will&call those destined to be Sages,&who dwell in the \x05\x41five temples\x05\x40.", None, 'altar'),
     'Adult Altar Text End':                                     ("Together with the Hero of Time,&the awakened ones will bind the&evil and return the light of peace&to the world...", None, 'altar'),
 
@@ -1873,6 +1874,13 @@ misc_location_hint_table: dict[str, dict[str, Any]] = {
         'location_text': "Yeaaarrgh! I'm cursed!! Please save me by destroying \x05\x4150 Spiders of the Curse\x05\x40 and I will give you \x05\x42{item}\x05\x40.",
         'location_fallback': "Yeaaarrgh! I'm cursed!!",
     },
+    '100_skulltulas': {
+        'id': 0x9009,
+        'hint_location': '100 Skulltulas Reward Hint',
+        'item_location': 'Kak 100 Gold Skulltula Reward',
+        'location_text': "Yeaaarrgh! I'm cursed!! Please save me by destroying \x05\x41100 Spiders of the Curse\x05\x40 and I will give you \x05\x42{item}\x05\x40.",
+        'location_fallback': "Yeaaarrgh! I'm cursed!!",
+    },
     'frogs2': {
         'id': 0x022E,
         'hint_location': 'ZR Frogs Ocarina Minigame Hint',
@@ -1880,12 +1888,34 @@ misc_location_hint_table: dict[str, dict[str, Any]] = {
         'location_text': "Some frogs holding \x05\x42{item}\x05\x40 are looking at you from underwater...",
         'location_fallback': "Some frogs are looking at you from underwater...",
     },
+    'skull_mask': {
+        'id': 0x0344,
+        'hint_location': 'Deku Theater Skull Mask Hint',
+        'item_location': 'Deku Theater Skull Mask',
+        'location_text': 'Wearing the \x05\x41Skull Mask\x05\x40 will reward you with \x05\x42{item}\x05\x40.',
+        'location_fallback': '\x05\x42\x06\x3dForest Stage\x04\x01\x05\x40\x06\x14We are waiting to see your\x01\x06\x32beautiful face!\x01\x06\x28Win fabulous prizes!',
+    },
+    'mask_of_truth': {
+        'id': 0x0344,
+        'hint_location': 'Deku Theater Mask of Truth Hint',
+        'item_location': 'Deku Theater Mask of Truth',
+        'location_text': 'Wearing the \x05\x41Mask of Truth\x05\x40 will reward you with \x05\x42{item}\x05\x40.',
+        'location_fallback': '\x05\x42\x06\x3dForest Stage\x04\x01\x05\x40\x06\x14We are waiting to see your\x01\x06\x32beautiful face!\x01\x06\x28Win fabulous prizes!',
+    },
     'big_poes': {
         'id': 0x70F5,
         'hint_location': 'Market 10 Big Poes Hint',
         'item_location': 'Market 10 Big Poes',
         'location_text': "\x08Hey, young man. What's happening \x01today? Do you want\x01\x05\x41{item}\x05\x40?\x04\x1AIf you earn \x05\x41{poe_points} points\x05\x40, you'll\x01be a happy man! Heh heh.\x04\x08Your card now has \x05\x45\x1E\x01 \x05\x40points.\x01Come back again!\x01Heh heh heh!\x02",
         'location_fallback': "\x08Hey, young man. What's happening \x01today? If you have a \x05\x41Poe\x05\x40, I will \x01buy it.\x04\x1AIf you earn \x05\x41{poe_points} points\x05\x40, you'll\x01be a happy man! Heh heh.\x04\x08Your card now has \x05\x45\x1E\x01 \x05\x40points.\x01Come back again!\x01Heh heh heh!\x02",
+    },
+}
+
+misc_dual_hint_table: dict[tuple[str, str], dict[str, Any]] = {
+    ('skull_mask', 'mask_of_truth'): {
+        'id': 0x0344,
+        'location_text': '\x01Wearing the \x05\x41Skull Mask\x05\x40 will reward you with \x05\x42{item_1}\x05\x40.\x04Wearing the \x05\x41Mask of Truth\x05\x40 will reward you with \x05\x42{item_2}\x05\x40.',
+        'location_fallback': '\x05\x42\x06\x3dForest Stage\x04\x01\x05\x40\x06\x14We are waiting to see your\x01\x06\x32beautiful face!\x01\x06\x28Win fabulous prizes!',
     },
 }
 
