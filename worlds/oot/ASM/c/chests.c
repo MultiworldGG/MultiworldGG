@@ -29,6 +29,22 @@ extern uint8_t SOA_UNLOCKS_CHEST_TEXTURE;
 extern Mtx_t* write_matrix_stack_top(z64_gfx_t* gfx);
 asm(".equ write_matrix_stack_top, 0x800AB900");
 
+static _Bool should_tint_filler_chest(uint8_t chest_type) {
+    return chest_type == FILLER_CHEST
+        && (CHEST_SIZE_TEXTURE || CHEST_TEXTURE_MATCH_CONTENTS)
+        && (!SOA_UNLOCKS_CHEST_TEXTURE || z64_file.stone_of_agony != 0);
+}
+
+static void apply_filler_chest_tint(Gfx** opa_ptr) {
+    gDPSetPrimColor((*opa_ptr)++, 0, 0x80, 0x1E, 0x2A, 0x72, 0xFF);
+    gDPSetEnvColor((*opa_ptr)++, 0x00, 0x01, 0x14, 0xFF);
+}
+
+static void clear_filler_chest_tint(Gfx** opa_ptr) {
+    gDPSetPrimColor((*opa_ptr)++, 0, 0x80, 0xFF, 0xFF, 0xFF, 0xFF);
+    gDPSetEnvColor((*opa_ptr)++, 0x00, 0x00, 0x00, 0x00);
+}
+
 void get_chest_override(z64_actor_t* actor) {
     Chest* chest = (Chest*)actor;
     uint8_t size = chest->en_box.type;
@@ -132,11 +148,18 @@ void set_chest_texture(z64_gfx_t* gfx, uint8_t chest_type, Gfx** opa_ptr) {
 void draw_chest_base(z64_game_t* game, z64_actor_t* actor, Gfx** opa_ptr) {
     z64_gfx_t* gfx = game->common.gfx;
     uint8_t chest_type = get_chest_type(actor);
+    _Bool tint_filler = should_tint_filler_chest(chest_type);
     gSPMatrix((*opa_ptr)++, write_matrix_stack_top(gfx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
     if (chest_type != GOLD_CHEST || !CHEST_GOLD_TEXTURE ||
         (SOA_UNLOCKS_CHEST_TEXTURE && z64_file.stone_of_agony == 0)) {
         set_chest_texture(gfx, chest_type, opa_ptr);
+        if (tint_filler) {
+            apply_filler_chest_tint(opa_ptr);
+        }
         gSPDisplayList((*opa_ptr)++, 0x060006F0);
+        if (tint_filler) {
+            clear_filler_chest_tint(opa_ptr);
+        }
     } else {
         gSPDisplayList((*opa_ptr)++, 0x06000AE8);
     }
@@ -145,11 +168,18 @@ void draw_chest_base(z64_game_t* game, z64_actor_t* actor, Gfx** opa_ptr) {
 void draw_chest_lid(z64_game_t* game, z64_actor_t* actor, Gfx** opa_ptr) {
     z64_gfx_t* gfx = game->common.gfx;
     uint8_t chest_type = get_chest_type(actor);
+    _Bool tint_filler = should_tint_filler_chest(chest_type);
     gSPMatrix((*opa_ptr)++, write_matrix_stack_top(gfx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
     if (chest_type != GOLD_CHEST || !CHEST_GOLD_TEXTURE ||
         (SOA_UNLOCKS_CHEST_TEXTURE && z64_file.stone_of_agony == 0)) {
         set_chest_texture(gfx, chest_type, opa_ptr);
+        if (tint_filler) {
+            apply_filler_chest_tint(opa_ptr);
+        }
         gSPDisplayList((*opa_ptr)++, 0x060010C0);
+        if (tint_filler) {
+            clear_filler_chest_tint(opa_ptr);
+        }
     } else {
         gSPDisplayList((*opa_ptr)++, 0x06001678);
     }

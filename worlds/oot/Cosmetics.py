@@ -946,7 +946,7 @@ patch_sets[0x1F073FE2] = {
 
 
 def patch_cosmetics(ootworld, rom):
-    # Use the world's slot seed for cosmetics
+    from worlds.oot.Models import patch_model_adult, patch_model_child
 
     # try to detect the cosmetic patch data format
     versioned_patch_set = None
@@ -990,3 +990,9 @@ def patch_cosmetics(ootworld, rom):
 
         # Unknown patch format
         logger.error("Unable to patch some cosmetics. ROM uses unknown cosmetic patch format.")
+
+    # adjuster-only; skipped during normal generation
+    if getattr(ootworld, 'model_adult', 'Default') != 'Default' or getattr(ootworld, 'model_adult_filepicker', ''):
+        patch_model_adult(rom, ootworld)
+    if getattr(ootworld, 'model_child', 'Default') != 'Default' or getattr(ootworld, 'model_child_filepicker', ''):
+        patch_model_child(rom, ootworld)

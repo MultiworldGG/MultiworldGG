@@ -265,6 +265,10 @@ class Rom(BigStream):
                     from_file = key
             self.changed_dma[dma_index] = (from_file, start, end - start)
 
+    def extend_dmadata(self, extra_entries):
+        _, dma_data_end = self.get_dma_table_range()
+        self.write_int32(DMADATA_START + 0x04, dma_data_end + extra_entries * 0x10)
+
     def get_dma_table_range(self):
         cur = DMADATA_START
         dma_start, dma_end, dma_size = self._get_dmadata_record(cur)
@@ -320,6 +324,87 @@ class Rom(BigStream):
 
 
 def compress_rom_file(input_file, output_file):
+    def _read_dmadata_entries(path):
+        entries = []
+        with open(path, 'rb') as stream:
+            index = 0
+            cur = DMADATA_START
+            while True:
+                stream.seek(cur)
+                data = stream.read(0x10)
+                if len(data) < 0x10:
+                    break
+                start, end, pstart, pend = struct.unpack('>IIII', data)
+                if start == 0 and end == 0:
+                    break
+                entries.append((index, start, end, pstart, pend))
+                cur += 0x10
+                index += 1
+        return entries
+
+    def _read_extended_object_indices(path):
+        with open(data_path('generated/symbols.json'), 'r') as stream:
+            symbols = json.load(stream)
+        ext_symbol = symbols.get('EXTENDED_OBJECT_TABLE')
+        if ext_symbol is None:
+            return []
+        if isinstance(ext_symbol, dict):
+            ext_addr = int(ext_symbol['address'], 16)
+            ext_len = ext_symbol.get('length', 0)
+        else:
+            ext_addr = int(ext_symbol, 16)
+            ext_len = 0
+        if ext_len <= 0 or ext_len % 8 != 0:
+            return []
+
+        dmadata = _read_dmadata_entries(path)
+        if not dmadata:
+            return []
+
+        indices = set()
+        with open(path, 'rb') as stream:
+            stream.seek(ext_addr)
+            table = stream.read(ext_len)
+        if len(table) < ext_len:
+            return []
+
+        for off in range(0, ext_len, 8):
+            obj_start, obj_end = struct.unpack_from('>II', table, off)
+            if obj_start == 0 and obj_end == 0:
+                continue
+            for dma_index, dma_start, dma_end, _pstart, _pend in dmadata:
+                if dma_start <= obj_start < dma_end:
+                    indices.add(dma_index)
+                    break
+        return sorted(indices)
+
+    dma_table_backup = None
+    dma_table_path = 'dmaTable.dat'
+    try:
+        extended_dma_indices = _read_extended_object_indices(input_file)
+    except Exception:
+        extended_dma_indices = []
+
+    if extended_dma_indices and os.path.exists(dma_table_path):
+        with open(dma_table_path, 'r', encoding='utf-8') as stream:
+            dma_table_backup = stream.read()
+
+        try:
+            current_values = [int(tok) for tok in dma_table_backup.split()]
+        except ValueError:
+            current_values = []
+
+        changed = False
+        for dma_index in extended_dma_indices:
+            # Positive entries in dmaTable.dat are left uncompressed by Compress.
+            if dma_index not in current_values and -dma_index not in current_values:
+                current_values.append(dma_index)
+                changed = True
+
+        if changed:
+            with open(dma_table_path, 'w', encoding='utf-8') as stream:
+                stream.write(' '.join(str(v) for v in current_values) + '\n')
+
     compressor_path = "."
 
     if platform.system() == 'Windows':
@@ -337,8 +422,13 @@ def compress_rom_file(input_file, output_file):
     if not os.path.exists(compressor_path):
         raise RuntimeError(f'Compressor does not exist! Please place it at {compressor_path}.')
     import logging
-    logging.info(subprocess.check_output([compressor_path, input_file, output_file],
+    try:
+        logging.info(subprocess.check_output([compressor_path, input_file, output_file],
                                              **subprocess_args(include_stdout=False)))
+    finally:
+        if dma_table_backup is not None:
+            with open(dma_table_path, 'w', encoding='utf-8') as stream:
+                stream.write(dma_table_backup)
 
 
 class OverlayEntry:

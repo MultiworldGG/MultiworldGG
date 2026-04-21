@@ -14,6 +14,8 @@ void draw_gi_eggs_and_medallions(z64_game_t* game, uint32_t draw_id);
 void draw_gi_sold_out(z64_game_t* game, uint32_t draw_id);
 void draw_gi_compass(z64_game_t* game, uint32_t draw_id);
 void draw_gi_various_opa0(z64_game_t* game, uint32_t draw_id);
+void draw_gi_rainbow_opaque(z64_game_t* game, uint32_t draw_id);
+void draw_gi_silver_opaque(z64_game_t* game, uint32_t draw_id);
 void draw_gi_various_opa1023(z64_game_t* game, uint32_t draw_id);
 void draw_gi_wallets(z64_game_t* game, uint32_t draw_id);
 void draw_gi_various_xlu01(z64_game_t* game, uint32_t draw_id);

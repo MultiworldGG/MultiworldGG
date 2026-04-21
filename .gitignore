@@ -221,6 +221,7 @@ local_build_win.ps1
 
 # Sprites
 data/sprites/remote/*.zspr
+data/sprites/oot/**/*.zobj
 
 # SMO
 /atmosphere

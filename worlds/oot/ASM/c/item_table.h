@@ -328,7 +328,8 @@ typedef enum GetItemID {
     /* 0x0119 */ GI_FAIRY,
     /* 0x011A */ GI_NOTHING,
 
-    // 0x011B through 0x0126 reserved for https://github.com/OoTRandomizer/OoT-Randomizer/pull/2108
+    /* 0x011B */ GI_AP_PROGRESSION, // AP progression placeholder
+    /* 0x011C */ GI_AP_JUNK, // AP filler placeholder
 
     // TODO: remove hardcoded value when that PR gets merged
     /* 0x0127 */ GI_KOKIRI_EMERALD = 0x0127,
@@ -365,6 +366,7 @@ typedef enum {
     /* 15 */ SKULL_CHEST_BIG,
     /* 16 */ HEART_CHEST_SMALL,
     /* 17 */ HEART_CHEST_BIG,
+    /* 18 */ FILLER_CHEST,
 } ChestType;
 
 struct item_row_t;

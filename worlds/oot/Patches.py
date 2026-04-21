@@ -35,8 +35,20 @@ from .OcarinaSongs import patch_songs
 from worlds.Files import APPatch
 from Utils import __version__ as ap_version
 
-AP_PROGRESSION = 0xD4
-AP_JUNK = 0xD5
+AP_PROGRESSION = 0x11B
+AP_JUNK = 0x11C
+AP_PROGRESSION_OBJECT = 0x1B6
+AP_JUNK_OBJECT = 0x1B7
+AP_PROGRESSION_MODEL_GRAPHIC = 0x00A5
+AP_JUNK_MODEL_GRAPHIC = 0x00A6
+AP_PROGRESSION_TEXT = 0x90B6
+AP_JUNK_TEXT = 0x90B7
+AP_TRIFORCE_RAINBOW_PATCHES = (
+    (0x0AD0, [0xE7, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+)
+AP_TRIFORCE_GREY_PATCHES = (
+    (0x0AD0, [0xE7, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+)
 
 
 def encode_oot_player_name(name: str, max_length: int = 8) -> bytearray:
@@ -133,16 +145,34 @@ def patch_rom(world, rom):
         ('object_gi_cbutton',     data_path('items/C_Button_Vertical.zobj'),    0x1AA),  # C button Vertical
         ('object_gi_magic_meter', data_path('items/MagicMeter.zobj'),           0x1B4),  # Magic Meter
         ('object_gi_magic_meter', data_path('items/MagicMeter2.zobj'),          0x1B5),  # Double Magic Meter
+        ('object_gi_ap_triforce_prog', data_path('items/Triforce.zobj'), AP_PROGRESSION_OBJECT, AP_TRIFORCE_RAINBOW_PATCHES),  # AP progression
+        ('object_gi_ap_triforce_fill', data_path('items/Triforce.zobj'), AP_JUNK_OBJECT, AP_TRIFORCE_GREY_PATCHES),  # AP filler
     ]
 
     if world.key_appearance_matches_dungeon:
         rom.write_byte(rom.sym('CUSTOM_KEY_MODELS'), 0x01)
 
     extended_objects_start = start_address = rom.free_space()
-    for (name, zobj_path, object_id) in zobj_imports:
+    for zobj_import in zobj_imports:
+        if len(zobj_import) == 3:
+            name, zobj_path, object_id = zobj_import
+            patches = ()
+            transform = None
+        elif len(zobj_import) == 4:
+            name, zobj_path, object_id, patches = zobj_import
+            transform = None
+        else:
+            name, zobj_path, object_id, patches, transform = zobj_import
         with open(zobj_path, 'rb') as stream:
-            obj_data = stream.read()
-            rom.write_bytes(start_address, obj_data)
+            obj_data = bytearray(stream.read())
+        for offset, patch in patches:
+            patch_len = len(patch)
+            if offset < 0 or offset + patch_len > len(obj_data):
+                raise RuntimeError(f'Patch for {name} at 0x{offset:04X} exceeds object size')
+            obj_data[offset:offset + patch_len] = patch
+        if transform is not None:
+            transform(obj_data)
+        rom.write_bytes(start_address, obj_data)
         # Add it to the extended object table
         end_address = ((start_address + len(obj_data) + 0x0F) >> 4) << 4
         add_to_extended_object_table(rom, object_id, start_address, end_address)
@@ -297,9 +327,9 @@ def patch_rom(world, rom):
         (22, "texture_chest_front_skull",   0xFEC798,      None,            4096,   rgba16_patch,               'textures/chest/chest_front_skull_rgba16_patch.bin'),
         (23, "texture_chest_base_skull",    0xFED798,      None,            2048,   rgba16_patch,               'textures/chest/chest_base_skull_rgba16_patch.bin'),
 
-        (24, "texture_chest_front_heart",   0xFEC798,      None,            4096,   rgba16_patch,               'textures/chest/chest_front_heart_rgba16_patch.bin'),
-        (25, "texture_chest_base_heart",    0xFED798,      None,            2048,   rgba16_patch,               'textures/chest/chest_base_heart_rgba16_patch.bin'),
-        (26, 'texture_pot_side_heart',      0x01738000,    None,            2048,   rgba16_patch,               'textures/pot/pot_side_heart_rgba16_patch.bin'),
+        (24, "texture_chest_front_heart",    0xFEC798,      None,            4096,   rgba16_patch,               'textures/chest/chest_front_heart_rgba16_patch.bin'),
+        (25, "texture_chest_base_heart",     0xFED798,      None,            2048,   rgba16_patch,               'textures/chest/chest_base_heart_rgba16_patch.bin'),
+(26, 'texture_pot_side_heart',      0x01738000,    None,            2048,   rgba16_patch,               'textures/pot/pot_side_heart_rgba16_patch.bin'),
         (27, 'texture_pot_top_heart',       0x01739000,    None,            256,    rgba16_patch,               'textures/pot/pot_top_heart_rgba16_patch.bin'),
         (28, 'texture_crate_heart',         0x18B6020,     0x018B6000,      4096,   ci4_rgba16patch_to_ci8,     'textures/crate/crate_heart_rgba16_patch.bin'),
         (29, 'texture_smallcrate_heart',    0xF7ECA0,      None,            2048,   rgba16_patch,               'textures/crate/smallcrate_heart_rgba16_patch.bin'),
@@ -1890,6 +1920,7 @@ def patch_rom(world, rom):
     SILVER_CHEST = 13
     SKULL_CHEST_SMALL = 14
     SKULL_CHEST_BIG =  15
+    FILLER_CHEST = 18
 
     if world.bombchus_in_logic or 'bombchus' in world.minor_items_as_major_chest:
         bombchu_ids = [0x6A, 0x03, 0x6B]
@@ -1928,11 +1959,10 @@ def patch_rom(world, rom):
 
     for item_id in (AP_PROGRESSION, AP_JUNK):
         item = read_rom_item(rom, item_id)
-        # Use vanilla Bombchu visuals for AP outgoing placeholders.
-        # This avoids crashes from custom/extended model layout mismatches.
-        item['object_id'] = 0x00D9
-        item['graphic_id'] = 0x0028
-        item['text_id'] = 0x9019 if item_id == AP_PROGRESSION else 0x901A
+        item['object_id'] = AP_PROGRESSION_OBJECT if item_id == AP_PROGRESSION else AP_JUNK_OBJECT
+        item['graphic_id'] = AP_PROGRESSION_MODEL_GRAPHIC if item_id == AP_PROGRESSION else AP_JUNK_MODEL_GRAPHIC
+        item['text_id'] = AP_PROGRESSION_TEXT if item_id == AP_PROGRESSION else AP_JUNK_TEXT
+        item['chest_type'] = GILDED_CHEST if item_id == AP_PROGRESSION else FILLER_CHEST
         write_rom_item(rom, item_id, item)
 
     # Update chest type appearance
@@ -2386,13 +2416,6 @@ def get_override_entry(ootworld, location):
     else:
         return None
 
-    # shop_draw uses get_item_row() from the compiled C item table, not the vanilla ROM table.
-    # 0xD4/0xD5 (AP_PROGRESSION/AP_JUNK) map to Bombchu Bag (object 0x0197) there, which
-    # freezes when loaded via the custom get_object() buffer. Override the display model to
-    # Bombchu (10) (0x03) which maps to vanilla bombchu (object 0x00D9, graphic 0x28) in both tables.
-    if location.type == 'Shop' and location.item.game != 'Ocarina of Time':
-        looks_like_item_id = 0x03
-
     return (scene, type, default, item_id, player_id, looks_like_item_id)
 
 
@@ -2660,20 +2683,9 @@ def place_shop_items(rom, world, shop_items, messages, locations, init_shop_id=F
                 obj_id = rom_item['object_id']
                 model = rom_item['graphic_id'] - 1
             else:
-                # place_shop_items runs before the AP item_table patch in patch_rom,
-                # so read_rom_item(AP_PROGRESSION/AP_JUNK) would return the unpatched
-                # Bombchu Bag data (object 0x0197, graphic 0x7E). 0x0197 is an extended
-                # object larger than the scene's object bank slot (0x1E70 bytes), causing
-                # a heap overflow and freeze during scene loading.
-                # place_shop_items runs before the AP item_table patch in patch_rom,
-                # so read_rom_item(AP_PROGRESSION/AP_JUNK) would return the unpatched
-                # Bombchu Bag data (object 0x0197, graphic 0x7E). 0x0197 is an extended
-                # object larger than the scene's object bank slot (0x1E70 bytes), causing
-                # a heap overflow and freeze during scene loading.
-                # Use vanilla bombchu (0x00D9) directly instead.
-                shop_objs.add(0x00D9)
-                obj_id = 0x00D9
-                model = 0x27  # bombchu GI draw index (graphic_id 0x28 - 1)
+                obj_id = AP_PROGRESSION_OBJECT if location.item.advancement else AP_JUNK_OBJECT
+                shop_objs.add(obj_id)
+                model = (AP_PROGRESSION_MODEL_GRAPHIC - 1) if location.item.advancement else (AP_JUNK_MODEL_GRAPHIC - 1)
 
             shop_id = world.current_shop_id
             rom.write_int16(location.address1, shop_id)

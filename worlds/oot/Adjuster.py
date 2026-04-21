@@ -31,6 +31,10 @@ def main(launcher_args):
             help=option.__doc__)
     parser.add_argument('--music_dir', default=None,
         help='Path to a folder of custom music files (.ootrs, .mmrs) to include in randomization.')
+    parser.add_argument('--model_adult', default='Default',
+        help='Adult Link model name from data/Models/Adult/ folder, or Default.')
+    parser.add_argument('--model_child', default='Default',
+        help='Child Link model name from data/Models/Child/ folder, or Default.')
     parser.add_argument('--deathlink',
         help='Enable DeathLink system', action='store_true')
 
@@ -99,6 +103,24 @@ def adjustGUI():
     musicFolderLabel.pack(side=LEFT)
     musicFolderEntry.pack(side=LEFT, expand=True, fill=X)
     musicFolderButton.pack(side=LEFT)
+
+    from worlds.oot.Models import get_model_choices
+
+    adultModelFrame = Frame(window)
+    adultModelLabel = Label(adultModelFrame, text='Adult Link Model')
+    opts.model_adult = StringVar(value='Default')
+    adultModelMenu = OptionMenu(adultModelFrame, opts.model_adult, *get_model_choices(0))
+    adultModelFrame.pack(side=TOP, expand=True, fill=X)
+    adultModelLabel.pack(side=LEFT)
+    adultModelMenu.pack(side=LEFT)
+
+    childModelFrame = Frame(window)
+    childModelLabel = Label(childModelFrame, text='Child Link Model')
+    opts.model_child = StringVar(value='Default')
+    childModelMenu = OptionMenu(childModelFrame, opts.model_child, *get_model_choices(1))
+    childModelFrame.pack(side=TOP, expand=True, fill=X)
+    childModelLabel.pack(side=LEFT)
+    childModelMenu.pack(side=LEFT)
 
     # Cosmetic options
     romSettingsFrame = Frame(window)
@@ -267,6 +289,10 @@ def adjust(args):
     ootworld.logic_rules = 'glitchless'
     ootworld.death_link = args.deathlink
     ootworld.music_dir = getattr(args, 'music_dir', None) or None
+    ootworld.model_adult = getattr(args, 'model_adult', 'Default')
+    ootworld.model_adult_filepicker = ''
+    ootworld.model_child = getattr(args, 'model_child', 'Default')
+    ootworld.model_child_filepicker = ''
 
     delete_zootdec = False
     if os.path.splitext(args.rom)[-1] in ['.z64', '.n64']:

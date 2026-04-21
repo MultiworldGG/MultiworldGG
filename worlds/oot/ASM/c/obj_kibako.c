@@ -15,6 +15,22 @@ extern uint8_t POTCRATE_SKULL_TEXTURE;
 extern uint8_t POTCRATE_HEART_TEXTURE;
 extern uint8_t SOA_UNLOCKS_POTCRATE_TEXTURE;
 
+static _Bool should_tint_filler_smallcrate(uint8_t chest_type) {
+    return chest_type == FILLER_CHEST
+        && POTCRATE_TEXTURES_MATCH_CONTENTS == PTMC_CONTENTS
+        && (!SOA_UNLOCKS_POTCRATE_TEXTURE || z64_file.stone_of_agony != 0);
+}
+
+static void apply_filler_smallcrate_tint(z64_gfx_t* gfx) {
+    gDPSetPrimColor(gfx->poly_opa.p++, 0, 0x80, 0x1E, 0x2A, 0x72, 0xFF);
+    gDPSetEnvColor(gfx->poly_opa.p++, 0x00, 0x01, 0x14, 0xFF);
+}
+
+static void clear_filler_smallcrate_tint(z64_gfx_t* gfx) {
+    gDPSetPrimColor(gfx->poly_opa.p++, 0, 0x80, 0xFF, 0xFF, 0xFF, 0xFF);
+    gDPSetEnvColor(gfx->poly_opa.p++, 0x00, 0x00, 0x00, 0x00);
+}
+
 void ObjKibako_Draw(z64_actor_t* actor, z64_game_t* game) {
     uint8_t* texture = SMALLCRATE_TEXTURE; // get original texture
 
@@ -67,8 +83,17 @@ void ObjKibako_Draw(z64_actor_t* actor, z64_game_t* game) {
 
     gMoveWd(gfx->poly_opa.p++, G_MW_SEGMENT, 9 * sizeof(int), gfx->poly_opa.d);
 
+    _Bool tint_filler = should_tint_filler_smallcrate(this->chest_type);
+    if (tint_filler) {
+        apply_filler_smallcrate_tint(gfx);
+    }
+
     // draw the original dlist that has been hacked in ASM to jump to the custom dlists
     z64_Gfx_DrawDListOpa(game, SMALLCRATE_DLIST);
+
+    if (tint_filler) {
+        clear_filler_smallcrate_tint(gfx);
+    }
 }
 
 void ObjKibako_SpawnCollectible_Hack(z64_actor_t* this, z64_game_t* globalCtx) {

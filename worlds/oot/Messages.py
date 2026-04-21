@@ -281,8 +281,10 @@ ITEM_MESSAGES = {
     0x90FA: "\x08\x06\x49\x05\x41WINNER\x05\x40!\x04\x08\x13\x73You got a \x05\x41Piece of Heart\x05\x40!\x01You are already at\x01maximum health.",
     0x9002: "\x08You are a \x05\x43FOOL\x05\x40!",
     0x9003: "\x08You found a piece of the \x05\x41Triforce\x05\x40!",
-    0x9019: "\x08You found an \x05\x41important MWGG item\x05\x40\x01for \x05\x42\xF2\x05\x40!",
-    0x901A: "\x08You found a \x05\x43filler MWGG item\x05\x40\x01for \x05\x42\xF2\x05\x40!",
+    0x9019: "\x08\x13\x09You found a \x05\x41Bombchu Bag\x05\x40!\x01It has some \x05\x41Bombchus\x05\x40 inside!\x01Find more in tall grass.",
+    0x901A: "\x08You can't buy Bombchus without a\x01\x05\x41Bombchu Bag\x05\x40!",
+    0x90B6: "\x08You found an \x05\x41important MWGG item\x05\x40\x01for \x05\x42\xF2\x05\x40!",
+    0x90B7: "\x08You found a \x05\x43filler MWGG item\x05\x40\x01for \x05\x42\xF2\x05\x40!",
 }
 
 IMPORTANT_ITEM_MESSAGES = {

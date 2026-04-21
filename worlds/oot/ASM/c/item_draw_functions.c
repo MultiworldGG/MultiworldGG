@@ -66,6 +66,31 @@ void draw_gi_various_opa0(z64_game_t* game, uint32_t draw_id) {
     gSPDisplayList(gfx->poly_opa.p++, item_draw_table[draw_id].args[0].dlist);
 }
 
+void draw_gi_rainbow_opaque(z64_game_t* game, uint32_t draw_id) {
+    z64_gfx_t* gfx = game->common.gfx;
+    colorRGB8_t rainbow_color = get_rainbow_color(game->gameplay_frames, 10);
+
+    append_setup_dl_25_to_opa(gfx);
+    gSPMatrix(gfx->poly_opa.p++, append_sys_matrix(gfx), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+    gDPSetCombineMode(gfx->poly_opa.p++, G_CC_MODULATEI_PRIM, G_CC_MODULATEI_PRIM);
+    gDPSetPrimColor(gfx->poly_opa.p++, 0, 0x80, rainbow_color.r, rainbow_color.g, rainbow_color.b, 0xFF);
+    gDPSetEnvColor(gfx->poly_opa.p++, rainbow_color.r, rainbow_color.g, rainbow_color.b, 0xFF);
+    gSPDisplayList(gfx->poly_opa.p++, item_draw_table[draw_id].args[0].dlist);
+}
+
+void draw_gi_silver_opaque(z64_game_t* game, uint32_t draw_id) {
+    z64_gfx_t* gfx = game->common.gfx;
+    colorRGBA8_t prim_color = item_draw_table[draw_id].args[1].color;
+    colorRGBA8_t env_color = item_draw_table[draw_id].args[2].color;
+
+    append_setup_dl_25_to_opa(gfx);
+    gSPMatrix(gfx->poly_opa.p++, append_sys_matrix(gfx), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+    gDPSetCombineMode(gfx->poly_opa.p++, G_CC_MODULATEI_PRIM, G_CC_MODULATEI_PRIM);
+    gDPSetPrimColor(gfx->poly_opa.p++, 0, 0x80, prim_color.r, prim_color.g, prim_color.b, prim_color.a);
+    gDPSetEnvColor(gfx->poly_opa.p++, env_color.r, env_color.g, env_color.b, env_color.a);
+    gSPDisplayList(gfx->poly_opa.p++, item_draw_table[draw_id].args[0].dlist);
+}
+
 void draw_gi_various_opa1023(z64_game_t* game, uint32_t draw_id) {
     z64_gfx_t* gfx = game->common.gfx;
 
