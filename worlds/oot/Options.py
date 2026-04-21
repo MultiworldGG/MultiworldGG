@@ -1093,7 +1093,7 @@ class CompleteMaskQuest(Toggle):
 
 class UsefulCutscenes(Toggle):
     """Reenables the Poe cutscene in Forest Temple, Darunia in Fire Temple, and Twinrova introduction. Mostly useful for
-     glitched."""
+     advanced logic."""
     display_name = "Enable Useful Cutscenes"
 
 

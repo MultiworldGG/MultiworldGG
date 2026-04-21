@@ -144,7 +144,7 @@ class OOTCollectionState(metaclass=AutoLogicRegister):
 
     def has_soul(self, enemy: str, player: int) -> bool:
         """
-        v9.0 glitched logic references enemy souls extensively.
+        v9.0 advanced logic references enemy souls extensively.
         AP does not currently model souls as progression, so this is a permissive compatibility stub.
         """
         return True

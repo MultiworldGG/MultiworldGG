@@ -31,8 +31,6 @@ def main(launcher_args):
             help=option.__doc__)
     parser.add_argument('--music_dir', default=None,
         help='Path to a folder of custom music files (.ootrs, .mmrs) to include in randomization.')
-    parser.add_argument('--is_glitched', default=False, action='store_true',
-        help='Setting this to true will enable protection on kokiri tunic colors for weirdshot.')
     parser.add_argument('--deathlink',
         help='Enable DeathLink system', action='store_true')
 
@@ -212,10 +210,6 @@ def adjustGUI():
     opts.input_viewer = IntVar(value=InputViewer.default)
     Checkbutton(romSettingsFrame, text="Input Viewer", variable=opts.input_viewer).grid(row=22, column=1, sticky=W)
 
-    # Glitched is a checkbox
-    opts.is_glitched = IntVar(value=0)
-    glitched_checkbox = Checkbutton(romSettingsFrame, text="Glitched Logic?", variable=opts.is_glitched)
-    glitched_checkbox.grid(row=23, column=0, sticky=W)
 
     # Deathlink is a checkbox
     opts.deathlink = IntVar(value=0)
@@ -270,7 +264,7 @@ def adjust(args):
             else:
                 raise Exception("Unsupported option type")
         setattr(ootworld, name, result)
-    ootworld.logic_rules = 'advanced' if args.is_glitched else 'glitchless'
+    ootworld.logic_rules = 'glitchless'
     ootworld.death_link = args.deathlink
     ootworld.music_dir = getattr(args, 'music_dir', None) or None
 
