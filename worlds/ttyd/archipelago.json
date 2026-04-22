@@ -1,6 +1,1 @@
-{
-    "game": "Paper Mario: The Thousand-Year Door",
-	"authors": [ "jamesbrq" ],
-    "minimum_ap_version": "0.6.3",
-    "world_version": "0.8.0"
-}
+{"game": "Paper Mario: The Thousand-Year Door", "authors": ["jamesbrq"], "minimum_ap_version": "0.6.3", "world_version": "0.9.1", "compatible_version": 7, "version": 7}

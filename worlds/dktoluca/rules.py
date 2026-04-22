@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, override
+from typing_extensions import override
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import DKC3World
 

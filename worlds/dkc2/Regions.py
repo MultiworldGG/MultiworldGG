@@ -14,8 +14,6 @@ def create_regions(world: "DKC2World", active_locations):
     multiworld = world.multiworld
     player = world.player
 
-    menu = create_region(multiworld, player, active_locations, 'Menu')
-
     # Worlds
     crocodile_isle = create_region(multiworld, player, active_locations, RegionName.crocodile_isle)
     gangplank_galleon = create_region(multiworld, player, active_locations, RegionName.gangplank_galleon)
@@ -141,7 +139,6 @@ def create_regions(world: "DKC2World", active_locations):
 
 
     multiworld.regions += [
-        menu,
         crocodile_isle,
         gangplank_galleon,
         crocodile_cauldron,
@@ -876,8 +873,6 @@ def create_regions(world: "DKC2World", active_locations):
 
 
 def connect_regions(world: "DKC2World"):
-    connect(world, "Menu", RegionName.crocodile_isle)
-
     connect(world, RegionName.crocodile_isle, RegionName.gangplank_galleon)
     connect(world, RegionName.crocodile_isle, RegionName.crocodile_cauldron)
     connect(world, RegionName.crocodile_isle, RegionName.krem_quay)
@@ -990,7 +985,7 @@ def add_location_to_region(multiworld: MultiWorld, player: int, active_locations
         region.locations.append(location)
 
 
-def connect(world: World, source: str, target: str):
+def connect(world: "DKC2World", source: str, target: str):
     source_region: Region = world.multiworld.get_region(source, world.player)
     target_region: Region = world.multiworld.get_region(target, world.player)
     source_region.connect(target_region)

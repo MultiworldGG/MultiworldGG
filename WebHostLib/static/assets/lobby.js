@@ -802,6 +802,65 @@
                     }
                     resetPollRate();
                     pollStatus();
+                    if (data.needs_apworld_confirmation && data.needs_apworld_confirmation.length > 0) {
+                        const confirmItems = data.needs_apworld_confirmation;
+                        const fileMap = new Map();
+                        for (const file of files) {
+                            fileMap.set(file.name, file);
+                        }
+                        const lines = confirmItems.map(item => "  • " + item.filename + ": " + item.error);
+                        const message =
+                            "The following YAML(s) failed validation against the current game version:\n\n" +
+                            lines.join("\n") +
+                            "\n\nDo you want to upload a newer APWorld that supports this YAML?\n" +
+                            "If yes, the YAML will be stored and you will need to upload a matching .apworld file.\n" +
+                            "If no, the YAML will not be uploaded.";
+                        if (confirm(message)) {
+                            const retryForm = new FormData();
+                            const seenFiles = new Set();
+                            for (const item of confirmItems) {
+                                let file = fileMap.get(item.filename);
+                                if (!file) {
+                                    // Reverse split-document suffix: "base_N.ext" -> "base.ext"
+                                    const m = item.filename.match(/^(.+)_\d+(\.\w+)$/);
+                                    if (m) file = fileMap.get(m[1] + m[2]);
+                                }
+                                if (file && !seenFiles.has(file.name)) {
+                                    seenFiles.add(file.name);
+                                    retryForm.append("file", file);
+                                }
+                                retryForm.append("force_custom_file", item.filename);
+                            }
+                            fetch(API_BASE + "/upload", {
+                                method: "POST",
+                                body: retryForm,
+                            })
+                                .then(res => res.json())
+                                .then(retryData => {
+                                    if (retryData.error) {
+                                        showToast("Upload error: " + retryData.error);
+                                    } else {
+                                        if (yamlFileInput) yamlFileInput.value = "";
+                                        showToast(
+                                            "YAML(s) stored as custom. Please upload the matching .apworld file(s) " +
+                                            "using the \"Upload APWorld\" button next to each entry.",
+                                            "info", 12000
+                                        );
+                                        resetPollRate();
+                                        pollStatus();
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error("Upload error:", err);
+                                    showToast("Upload failed. Please try again.");
+                                });
+                        } else {
+                            showToast(
+                                "YAML(s) were not uploaded. Fix the options or upload a compatible .apworld first.",
+                                "warning"
+                            );
+                        }
+                    }
                 }
             })
             .catch(err => {

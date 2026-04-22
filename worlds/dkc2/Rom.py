@@ -23,11 +23,10 @@ from .data import Palettes
 from .Aesthetics import get_palette_bytes, palette_set_offsets
 from .Names import RegionName
 from Options import OptionError
+from argparse import Namespace
 
-from worlds.AutoWorld import AutoWorldRegister
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes, APPatchExtension
 
-from .data.Trivia import TriviaQuestion, trivia_data, trivia_addrs, original_correct_answers, excluded_questions
 from .data.Hints import CrankyHint, WrinklyHint, cranky_rarity_text, cranky_location_text, wrinkly_hint_text
 
 HASH_US = '98458530599b9dff8a7414a7f20b777a'
@@ -98,10 +97,10 @@ unlock_data = {
 currency_data = {
     STARTING_ID + 0x002F: [0x8024, 0x56],
     STARTING_ID + 0x0008: [0x802F, 0x36], # Lost World Rock
-    STARTING_ID + 0x0009: [0x08CE, 0x56], # DK Coin
-    STARTING_ID + 0x000A: [0x08CC, 0x36], # Kremkoin
-    STARTING_ID + 0x0030: [0x08CA, 0x2D], # Banana Coin
-    STARTING_ID + 0x0031: [0x08BE, 0x2C], # 1-Up
+    STARTING_ID + 0x0009: [0x80A2, 0x00], # DK Coin
+    STARTING_ID + 0x000A: [0x80A4, 0x00], # Kremkoin
+    STARTING_ID + 0x0030: [0x80A6, 0x00], # Banana Coin
+    STARTING_ID + 0x0031: [0x80A0, 0x00], # 1-Up
 }
 
 trap_data = {
@@ -116,111 +115,137 @@ trap_data = {
     STARTING_ID + 0x0033: [0x4C, 0x2D], # Banana Extractinator (not a trap, but this system works better lol)
 }
 
-trivia_aliases = {
-    "Celeste (Open World)": "Celeste",
-    "Ship of Harkinian": "Ocarina of Time",
-    "SMW: Warped Archipelago Product": "Super Mario World",
-    "yrtnuoC gnoK yeknoD": "Donkey Kong Country",
+reward_list = [
+    0x00,   # Banana bunch
+    0x05,   # DK Barrel
+    0x06,   # TNT Barrel
+    0x07,   # Invincibility barrel
+    0x08,   # Red balloon
+    0x09,   # Green balloon
+    0x0A,   # Blue balloon
+    0x0C,   # Banana coin
+    0x12,   # Cannonball
+    0x19,   # Single banana
+]
+
+reward_list_weights = [
+    20,  # Banana bunch
+    5,   # DK Barrel
+    5,   # TNT Barrel
+    5,   # Invincibility barrel
+    10,  # Red balloon
+    10,  # Green balloon
+    10,  # Blue balloon
+    25,  # Banana coin
+    5,   # Cannonball
+    5,   # Single banana
+]
+
+trivia_addrs = {
+    "easy": [
+        0x34F800,
+        0x34F900,
+        0x34FA00,
+        0x34FB00,
+        0x34FC00,
+        0x34FD00,
+    ],
+    "medium": [
+        0x34F850,
+        0x34F950,
+        0x34FA50,
+        0x34FB50,
+        0x34FC50,
+        0x34FD50,
+    ],
+    "hard": [
+        0x34F8A0,
+        0x34F9A0,
+        0x34FAA0,
+        0x34FBA0,
+        0x34FCA0,
+        0x34FDA0,
+    ],
 }
 
-def parse_custom_trivia(topic_data):
-    trivia_easy = []
-    trivia_medium = []
-    trivia_hard = []
+excluded_questions = [
+    2*8, 
+    7*8,
+    9*8,
+    10*8,
+    12*8,
+    16*8,
+    24*8,
+    27*8,
+    30*8,
+    35*8,
+    36*8,
+    41*8,
+    45*8,
+]
 
-    from .data.Trivia import TriviaQuestion
-
-    processed_question = False
-    processed_answers = False
-    idx = 0
-    while idx < len(topic_data):
-        if "---" in topic_data[idx]:
-            if not processed_question or not processed_answers:
-                print (f"A question had invalid format before line {idx+1}.")
-                return None
-            idx += 1
-            processed_question = False
-            processed_answers = False
-        elif "QUESTION:" in topic_data[idx]:
-            difficulty = topic_data[idx].split(": ")[1].rstrip()
-            if difficulty not in ["EASY", "MEDIUM", "HARD"]:
-                print (f"Unknown difficulty detected at line {idx+1}.")
-                return None
-            idx += 1
-            question = []
-            for idy in range(7):
-                line = topic_data[idx+idy].strip()
-                if len(line) > 32:
-                    print (f"Line {idx+1} exceeded the maximum allowed length of 32 (it has {len(line)}).")
-                    return None
-                # End of question
-                if "ANSWERS:" in line:
-                    break
-                question.append(f"{line.center(32, ' ').rstrip()}°")
-            else:
-                print (f"A question exceeded the max amount of allowed lines at line {idx+idy+1}.")
-                return None
-            idx += idy
-            total_lines = len(question)
-            if total_lines == 1:
-                question.insert(0, "°")
-                question.insert(0, "°")
-                question.append("°")
-                question.append("°")
-                question.append("°")
-            elif total_lines == 2:
-                question.insert(0, "°")
-                question.insert(0, "°")
-                question.append("°")
-                question.append("°")
-            elif total_lines == 3:
-                question.insert(0, "°")
-                question.append("°")
-                question.append("°")
-            elif total_lines == 4:
-                question.insert(0, "°")
-                question.append("°")
-            elif total_lines == 5:
-                question.append("°")
-            processed_question = True
-
-        elif "ANSWERS:" in topic_data[idx]:
-            idx += 1
-            answers = []
-            for idy in range(3):
-                answer = topic_data[idx+idy].strip()
-                if "°" in answer:
-                    if len(answer.split("°")[0]) > 24 or len(answer.split("°")[1].rstrip()) > 24:
-                        print (f"Line {idx+idy+1} exceeded the maximum allowed length of 24 for one of its lines (it has {len(answer)}).")
-                        return None
-                    answer += "°"
-                else:
-                    if len(answer) > 24:
-                        print (f"Line {idx+idy+1} exceeded the maximum allowed length of 24 (it has {len(answer)}).")
-                        return None
-                    answer += "°°"
-                answers.append(answer)
-            idx += 3
-            question_data = TriviaQuestion(question, answers[0], answers[1], answers[2])
-
-            if difficulty == "EASY":
-                trivia_easy.append(question_data)
-            elif difficulty == "MEDIUM":
-                trivia_medium.append(question_data)
-            elif difficulty == "HARD":
-                trivia_hard.append(question_data)
-
-            processed_answers = True
-
-        else:
-            print (f"Found an issue while parsing line {idx+1}:\n{topic_data[idx]}")
-            return None
-
-    return  [
-        trivia_easy.copy(),
-        trivia_medium.copy(),
-        trivia_hard.copy(),
-    ]
+original_correct_answers = {
+    # Galleon
+    0: 0,
+    1: 0,
+    2: 2,
+    3: 1,
+    4: 1,
+    5: 2,
+    6: 1,
+    7: 0,
+    8: 2,
+    # Cauldron
+    9: 1,
+    10: 0,
+    11: 0,
+    12: 2,
+    13: 1,
+    14: 0,
+    15: 1,
+    16: 2,
+    17: 2,
+    # Quay
+    18: 0,
+    19: 1,
+    20: 2,
+    21: 1,
+    22: 2,
+    23: 1,
+    24: 1,
+    25: 0,
+    26: 2,
+    # Kremland
+    27: 2,
+    28: 0,
+    29: 2,
+    30: 1,
+    31: 1,
+    32: 0,
+    33: 2,
+    34: 1,
+    35: 2,
+    # Gulch
+    36: 0,
+    37: 1,
+    38: 2,
+    39: 2,
+    40: 1,
+    41: 1,
+    42: 2,
+    43: 0,
+    44: 0,
+    # Keep
+    45: 1,
+    46: 2,
+    47: 1,
+    48: 0,
+    49: 2,
+    50: 1,
+    51: 1,
+    52: 0,
+    53: 2,
+}
 
 class DKC2PatchExtension(APPatchExtension):
     game = "Donkey Kong Country 2"
@@ -252,35 +277,37 @@ class DKC2PatchExtension(APPatchExtension):
     @staticmethod
     def generate_trivia(caller: APProcedurePatch, rom: bytes) -> bytes:
         rom = bytearray(rom)
-        
+
         import random
+        from worlds.dkc2_trivia.trivia import retrieve_topics
+        from worlds.dkc2_trivia.types import TriviaQuestion, Topic
 
         json_data = json.loads(caller.get_file("data.json").decode("UTF-8"))
         random.seed(json_data["seed"])
-        games_in_session: list = json_data["games_in_session"]
+        games_in_session: set = set(json_data["games_in_session"])
 
-        # Build custom database
-        custom_trivia = {}
-        world_type = AutoWorldRegister.world_types[DKC2PatchExtension.game]
-        world_settings = getattr(settings.get_settings(), world_type.settings_key, None)
-        if world_settings:
-            folder = world_settings.trivia_path
-            if os.path.isdir(folder):
-                for file in os.listdir(folder):
-                    if file.endswith(".txt"):
-                        topic = file[:-4]
-                        with open(folder+"/"+file, "r") as f:
-                            topic_data = f.readlines()
-                        print (f"Parsing trivia found in {topic}")
-                        new_trivia_database = parse_custom_trivia(topic_data)
-                        if new_trivia_database is None:
-                            continue
-                        custom_trivia[topic] = copy.deepcopy(new_trivia_database)
-                        games_in_session.append(topic)
+        if vars(Utils.persistent_load().get("trivia_settings", {}).get("Donkey Kong Country 2", Namespace())):
+            persistent_settings = Utils.persistent_load().get("trivia_settings", {}).get("Donkey Kong Country 2", Namespace())
+            # Fetch question count
+            if hasattr(persistent_settings, "question_count"):
+                question_count = persistent_settings.question_count
+                if question_count == 0:
+                    question_count = 1
+            else:
+                question_count = 1
+            # Fetch topic statuses
+            if hasattr(persistent_settings, "valid_topics"):
+                for topic_name, topic_status in persistent_settings.valid_topics.items():
+                    if topic_status == "Forced":
+                        games_in_session.add(topic_name)
+                    elif topic_status == "Excluded" and topic_name in games_in_session:
+                        games_in_session.remove(topic_name)
+        else:
+            question_count = 1
 
-        # Build database from original questions
+        # Build database from original question
         start_addr = 0x34C591
-        local_trivia_data = {**trivia_data, **custom_trivia}
+        local_trivia_data: dict[str, Topic] = retrieve_topics(games_in_session, is_dkc2=True)
 
         for idx in range(0, 0x1B0, 8):
             if idx in excluded_questions:
@@ -305,49 +332,47 @@ class DKC2PatchExtension(APPatchExtension):
 
             idy = original_correct_answers[idx >> 3]
             correct_answer = answers.pop(idy)
-            data = TriviaQuestion(question, correct_answer, answers.pop(0), answers.pop(0))
+            data = TriviaQuestion(question, "RARE", "Donkey Kong Country 2", correct_answer, answers.pop(0), answers.pop(0))
             if idx % 0x48 < 0x10:
-                local_trivia_data["Donkey Kong Country 2"][0].append(data)
+                local_trivia_data["Donkey Kong Country 2"].easy_questions.append(data)
             elif idx % 0x48 < 0x28:
-                local_trivia_data["Donkey Kong Country 2"][1].append(data)
+                local_trivia_data["Donkey Kong Country 2"].medium_questions.append(data)
             else:
-                local_trivia_data["Donkey Kong Country 2"][2].append(data)
+                local_trivia_data["Donkey Kong Country 2"].hard_questions.append(data)
 
         # Build valid library
-        selected_trivia = {
+        selected_trivia: dict[str, list[TriviaQuestion]] = {
             "easy": [],
             "medium": [],
             "hard": [],
         }
         
         for game, trivia in local_trivia_data.items():
-            if game in games_in_session:
-                selected_trivia["easy"].extend(trivia[0].copy())
-                selected_trivia["medium"].extend(trivia[1].copy())
-                selected_trivia["hard"].extend(trivia[2].copy())
+            selected_trivia["easy"].extend(trivia.easy_questions)
+            selected_trivia["medium"].extend(trivia.medium_questions)
+            selected_trivia["hard"].extend(trivia.hard_questions)
+
+        question_count = min(question_count, 
+                             len(selected_trivia["easy"]) // 6, 
+                             len(selected_trivia["medium"]) // 6, 
+                             len(selected_trivia["hard"]) // 6)
 
         answer_a = "     A. "
         answer_b = "     B. "
         answer_c = "     C. "
-
-        #for difficulty, questions in selected_trivia.items():
-        #    for question in questions:
-        #        question: TriviaQuestion
-        #        print (difficulty, question.question, question.correct_answer, question.incorrect_answer_1, question.incorrect_answer_2)
 
         # Choose questions and write them to ROM
         write_addr = 0x378466
         for difficulty, questions in selected_trivia.items():
             random.shuffle(questions)
             for idx in range(6):
-                question_count = json_data["question_count"]
                 pointer_addr = trivia_addrs[difficulty][idx]
                 for idy in range(0, question_count*8, 8):
                     # Write a question
                     addr = write_addr & 0xFFFF
                     rom[pointer_addr+idy:pointer_addr+idy+2] = addr.to_bytes(2, "little")
                     rom[pointer_addr+idy+2:pointer_addr+idy+4] = bytearray([0x58, 0x02])
-                    trivia: TriviaQuestion = questions.pop(0)
+                    trivia = questions.pop(0)
                     for line in trivia.question:
                         write_addr = write_text_to_rom(rom, write_addr, line)
 
@@ -368,6 +393,8 @@ class DKC2PatchExtension(APPatchExtension):
                         write_addr = write_text_to_rom(rom, write_addr, answer_a + trivia.incorrect_answer_1)
                         write_addr = write_text_to_rom(rom, write_addr, answer_b + trivia.incorrect_answer_2)
                         write_addr = write_text_to_rom(rom, write_addr, answer_c + trivia.correct_answer)
+
+        rom[0x34A3CC] = question_count
 
         # Save last written addr for later
         rom[0x400000:0x400003] = write_addr.to_bytes(3, "little")
@@ -430,12 +457,90 @@ class DKC2PatchExtension(APPatchExtension):
         return bytes(rom[:-3])
 
 
+    @staticmethod
+    def write_settings(caller: APProcedurePatch, rom: bytes) -> bytes:
+        rom = bytearray(rom)
+
+        import random
+
+        reward_addrs: list[int] = [
+            0x3FC49C,
+            0x3FC4A5,
+            0x3FC4AE,
+            0x3FC4C9,
+            0x3FC4D2,
+            0x3FC4DB,
+            0x3FC4ED,
+            0x3FC4FF,
+            0x3FC508,
+            0x3FC511,
+            0x3FC51A,
+            0x3FC523,
+            0x3FC52C,
+            0x3FC53E,
+            0x3FC550,
+            0x3FC559,
+        ]
+
+        special_reward_addrs: dict[int, list[int,int]] = {
+            0x3FC4B7: [0x04, 0x03],  # G letter
+            0x3FC4C0: [0x04, 0x03],  # G letter
+            0x3FC4E4: [0x04, 0x03],  # G letter
+            0x3FC535: [0x04, 0x03],  # G letter
+            0x3FC4F6: [0x11, 0x00],  # DK Coin
+            0x3FC547: [0x11, 0x01],  # DK Coin
+        }
+
+        if vars(Utils.persistent_load().get("global_settings", {}).get("Donkey Kong Country 2", Namespace())):
+            persistent_settings = Utils.persistent_load().get("global_settings", {}).get("Donkey Kong Country 2", Namespace())
+            if hasattr(persistent_settings, "guaranteed_rewards"):
+                guaranteed_rewards = persistent_settings.guaranteed_rewards
+            else:
+                guaranteed_rewards = False
+            if hasattr(persistent_settings, "random_rewards"):
+                random_rewards = persistent_settings.random_rewards
+            else:
+                random_rewards = False
+        else:
+            guaranteed_rewards = False
+            random_rewards = False
+
+        print (guaranteed_rewards, random_rewards)
+
+        if guaranteed_rewards:
+            for addr, value in special_reward_addrs.items():
+                rom[addr+0x00] = 0x40
+                rom[addr+0x01] = value[0x00]
+                rom[addr+0x02] = 0x00
+
+        if random_rewards:
+            for addr in reward_addrs:
+                rewards = random.choices(reward_list, reward_list_weights, k=4)
+                rom[addr+0x01] = rewards[0]
+                rom[addr+0x03] = rewards[1]
+                rom[addr+0x05] = rewards[2]
+                rom[addr+0x07] = rewards[3]
+
+            if not guaranteed_rewards:
+                for addr, value in special_reward_addrs.items():
+                    rewards = random.choices(reward_list, reward_list_weights, k=4)
+                    rom[addr+0x01] = rewards[0]
+                    rom[addr+0x03] = rewards[1]
+                    rom[addr+0x05] = rewards[2]
+                    rom[addr+0x07] = rewards[3]
+                    offset = value[1] * 2
+                    rom[addr+0x01+offset] = value[0]
+
+        return bytes(rom)
+
+
 def write_text_to_rom(rom: bytearray, write_addr: int, input_string: str):
     data = string_to_bytes(input_string)
     size = len(data)
     rom[write_addr:write_addr+size] = data
     write_addr += size
     return write_addr
+
 
 class DKC2ProcedurePatch(APProcedurePatch, APTokenMixin):
     hash = [HASH_US_REV_1]
@@ -450,6 +555,7 @@ class DKC2ProcedurePatch(APProcedurePatch, APTokenMixin):
         ("generate_trivia", []),
         ("write_cranky_hints", []),
         ("write_wrinkly_hints", []),
+        ("write_settings", []),
     ]
 
     @classmethod
@@ -583,7 +689,7 @@ def patch_rom(world: "DKC2World", patch: DKC2ProcedurePatch):
             patch.write_byte(addr, 0x01)
 
     # Write amount of questions per quiz (for the menus)
-    patch.write_byte(0x34A3CC, world.options.swanky_questions_per_quiz.value)
+    #patch.write_byte(0x34A3CC, world.options.swanky_questions_per_quiz.value)
 
     # Write flavor text for the goal
     if world.options.goal == Goal.option_kompletionist:
@@ -610,10 +716,16 @@ def patch_rom(world: "DKC2World", patch: DKC2ProcedurePatch):
     patch.write_bytes(0x34AC84, data)
 
     # Write additional data for generation
+    games_in_session = set()
+    for _, game_world in world.multiworld.worlds.items():
+        games_in_session.add(game_world.game)
+
     data_dict = {
         "seed": world.random.getrandbits(64),
-        "question_count": world.options.swanky_questions_per_quiz.value,
-        "games_in_session": list(world.games_in_session),
+        "games_in_session": list(games_in_session),
+        "energy_link": world.options.energy_link.value,
+        "trap_link": world.options.trap_link.value,
+        "death_link": world.options.death_link.value,
     }
     patch.write_file("data.json", json.dumps(data_dict).encode("UTF-8"))
 
@@ -636,6 +748,8 @@ def compute_cranky_hints(world: "DKC2World", patch: DKC2ProcedurePatch):
     valid_hints: List[CrankyHint] = []
     for location in world.multiworld.get_filled_locations(world.player):
         if location.progress_type is LocationProgressType.EXCLUDED or \
+            location.is_event or \
+            "(Map Event)" in location.name or \
             "Defeated" in location.name or \
             "K. Rool Duel" in location.name or  \
             "Krocodile Kore" in location.name:
@@ -810,48 +924,6 @@ def compute_wrinkly_hints(world: "DKC2World", patch: DKC2ProcedurePatch):
             
     patch.write_file("wrinkly_hints.bin", hint_data)
     patch.write_file("wrinkly_hint_offsets.bin", hint_offsets)
-
-
-def generate_game_trivia(world: "DKC2World"):
-    games_in_session = set()
-    for game in trivia_data.keys():
-        if len(world.multiworld.get_game_worlds(game)) != 0:
-            if game in trivia_aliases.keys():
-                games_in_session.add(trivia_aliases[game])
-            else:
-                games_in_session.add(game)
-    for game in world.options.swanky_excluded_topics.value:
-        if game in games_in_session:
-            games_in_session.remove(game)
-    for game in world.options.swanky_forced_topics.value:
-        games_in_session.add(game)
-    
-    games_in_session.add("Donkey Kong Country 2")
-    
-    trivia_easy_count = 7
-    trivia_medium_count = 15
-    trivia_hard_count = 19
-    
-    for game, trivia in trivia_data.items():
-        if game in games_in_session:
-            trivia_easy_count += len(trivia[0])
-            trivia_medium_count += len(trivia[1])
-            trivia_hard_count += len(trivia[2])
-
-    max_count = world.options.swanky_questions_per_quiz.value * 6
-
-    if trivia_easy_count < max_count or trivia_medium_count < max_count or trivia_hard_count < max_count:
-        raise OptionError(f"Slot \"{world.player_name}\" has way too many trivia questions per quiz. Please do one of the following: \n"
-                          f" * Force additional trivia categories\n"
-                          f" * Remove categories from being excluded\n"
-                          f" * Reduce the amount of trivia questions per quiz (Currently: {world.options.swanky_questions_per_quiz.value})\n\n"
-                          f"Current trivia counts:\n"
-                          f" * NEEDED: {max_count}\n"
-                          f" * EASY:   {trivia_easy_count}\n"
-                          f" * MEDIUM: {trivia_medium_count}\n"
-                          f" * HARD:   {trivia_hard_count}")
-    
-    return games_in_session
 
 
 def adjust_palettes(world: "DKC2World", patch: DKC2ProcedurePatch):

@@ -53,7 +53,8 @@ def set_tattle_rules(world: "TTYDWorld"):
                 extra_condition = lambda state: state.can_reach("Palace of Shadow Final Staircase: Ultra Shroom", "Location", world.player)
         else:
             # Require access to any of the listed locations
-            if world.options.pit_items != PitItems.option_all and location_name not in pit_exclusive_tattle_stars_required:
+            pit_exclusive_names = {name for names in pit_exclusive_tattle_stars_required.values() for name in names}
+            if world.options.pit_items != PitItems.option_all and location_name not in pit_exclusive_names:
                 locations = [loc for loc in locations if loc not in get_location_ids(get_locations_by_tags("pit_floor"))]
                 if len(locations) == 0:
                     continue

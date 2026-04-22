@@ -396,7 +396,7 @@ valley_castle_room_3     = "#7 Larry's Castle - Visited Boss Room"
 
 front_door = "Front Door"
 back_door  = "Back Door"
-bowser     = "Bowser"
+bowser     = "Defeated Bowser"
 
 star_road_1_exit_1 = "Star World 1 - Normal Exit"
 star_road_1_exit_2 = "Star World 1 - Secret Exit"

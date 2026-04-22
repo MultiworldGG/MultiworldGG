@@ -618,6 +618,37 @@ class WafflePatchExtension(APPatchExtension):
             
         rom[0x01BFBF] = settings_value
 
+        # Get world's settings
+        options: dict[str, typing.Any] = json.loads(caller.get_file("options.json").decode("UTF-8"))
+
+        if "death_link" in options.keys() and "death_link_heart" in options.keys():
+            value = options["death_link"]
+            if options["death_link_heart"] and value != 0x00:
+                value |= 0x80
+            rom[0x01BFA5] = value
+        else:
+            rom[0x01BFA5] = 0x00
+
+        if "energy_link" in options.keys():
+            rom[0x01BFB4] = options["energy_link"]
+        else:
+            rom[0x01BFB4] = 0x00
+
+        if "trap_link" in options.keys():
+            rom[0x01BFB7] = options["trap_link"]
+        else:
+            rom[0x01BFB7] = 0x00
+
+        rom[0x01BFB8] = 0x00    # RingLink (rip)
+
+        if "luigi_physics" in options.keys():
+            rom[0x01BFBE] = options["luigi_physics"]
+        else:
+            rom[0x01BFBE] = 0x00
+
+        if options["veloz"] == 0x01:
+            rom[0x2273] = 0x00
+        
         return bytes(rom)
 
 class WaffleProcedurePatch(APProcedurePatch, APTokenMixin):
@@ -786,7 +817,11 @@ def handle_location_item_info(patch: WaffleProcedurePatch, world: "WaffleWorld")
     hidden_1up_info = bytearray([0x00 for _ in range(96)])
     midway_point_info = bytearray([0x00 for _ in range(96)])
     locations = world.multiworld.get_filled_locations(world.player)
+
     for location in locations:
+        if location.address is None:
+            continue
+
         classification = 0
         if ItemClassification.progression in location.item.classification or ItemClassification.trap in location.item.classification:
             classification = 2
@@ -797,7 +832,7 @@ def handle_location_item_info(patch: WaffleProcedurePatch, world: "WaffleWorld")
         loc_type = (location.address >> 20 & 0x0F)
         level_data = location.address & 0x0F
 
-        if level_id in world.swapped_exits:
+        if level_id in world.swapped_exits and loc_type <= 0x01:
             loc_type = loc_type ^ 1
 
         if loc_type == 0x00 and level_data == 0x00:
@@ -958,6 +993,12 @@ def patch_rom(world: "WaffleWorld", patch: WaffleProcedurePatch, player: int, ac
         "level_palette_shuffle": 2,
         "enemy_shuffle": world.options.enemy_shuffle.value,
         "enemy_shuffle_seed": world.random.getrandbits(64),
+        "death_link": world.options.death_link.value,
+        "death_link_heart": world.options.death_link_heart.value,
+        "trap_link": world.options.trap_link.value,
+        "energy_link": world.options.energy_link.value,
+        "luigi_physics": world.options.luigi_physics.value,
+        "veloz": 0,
     }
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
 
@@ -1034,7 +1075,6 @@ def patch_rom(world: "WaffleWorld", patch: WaffleProcedurePatch, player: int, ac
     patch.write_byte(0x01BFA2, world.required_egg_count)
     #patch.write_byte(0x01BFA3, world.options.display_sent_item_popups.value)
     patch.write_byte(0x01BFA4, world.options.display_received_item_popups.value)
-    patch.write_byte(0x01BFA5, world.options.death_link.value)
     patch.write_byte(0x01BFA6, world.options.dragon_coin_checks.value)
     patch.write_byte(0x01BFA7, world.options.swap_donut_gh_exits.value)
     patch.write_byte(0x01BFA8, world.options.moon_checks.value)
@@ -1043,6 +1083,7 @@ def patch_rom(world: "WaffleWorld", patch: WaffleProcedurePatch, player: int, ac
     patch.write_byte(0x01BFAC, world.options.midway_point_checks.value)
     patch.write_byte(0x01BFAD, world.options.room_checks.value)
     patch.write_byte(0x01BFB0, world.options.level_shuffle.value)
+
     setting_value = 0
     block_checks = world.options.block_checks.value
     if "Coin Blocks" in block_checks:
@@ -1060,17 +1101,11 @@ def patch_rom(world: "WaffleWorld", patch: WaffleProcedurePatch, player: int, ac
     if "Flying Blocks" in block_checks:
         setting_value |= 0x40
     patch.write_byte(0x01BFAB, setting_value)
-    patch.write_byte(0x01BFB4, world.options.energy_link.value)
-
-    patch.write_byte(0x01BFB7, world.options.trap_link.value)
-    patch.write_byte(0x01BFB8, world.options.ring_link.value)
 
     from Utils import __version__
     patch.name = bytearray(f'WAFFLES{__version__.replace(".", "")[0:3]}_{player}_{world.multiworld.seed:13}\0', 'utf8')[:21]
     patch.name.extend([0] * (21 - len(patch.name)))
     patch.write_bytes(0x7FC0, patch.name)
-
-    #patch.write_byte(0x2273, 0x00)
 
     patch.write_file("token_patch.bin", patch.get_token_binary())
 

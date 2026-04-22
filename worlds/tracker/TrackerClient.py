@@ -59,14 +59,25 @@ def get_ut_color(color: str)->str:
         hinted_out_of_logic: ClassVar[str] = StringProperty("")
         hinted_glitched: ClassVar[str] = StringProperty("")
         excluded: ClassVar[str] = StringProperty("")
+        excluded_glitched: ClassVar[str] = StringProperty("")
         unconnected: ClassVar[str] = StringProperty("")
         error: ClassVar[str] = StringProperty("")
+        default: ClassVar[str] = StringProperty("")
+        ut_status: ClassVar[str] = StringProperty("")
     if not hasattr(get_ut_color,"utTextColor"):
         get_ut_color.utTextColor = UTTextColor()
     return str(getattr(get_ut_color.utTextColor,color,"DD00FF"))
 
 class TrackerCommandProcessor(ClientCommandProcessor):
     ctx: "TrackerGameContext"
+
+    def get_help_text(self) -> str:
+        sReturn = super().get_help_text() #get the normal response
+        new_text = self.ctx.get_help_text()
+        if new_text:
+            sReturn += "\n\n"+new_text
+
+        return sReturn
 
     @mark_raw
     def _cmd_inventory(self, filter_text: str = ""):
@@ -326,6 +337,7 @@ class TrackerGameContext(CommonContext):
     use_split = True
     re_gen_passthrough = None
     local_items: list[NetworkItem] = []
+    waiting_on_entrances = False
 
     _auto_tab = True
 
@@ -466,9 +478,7 @@ class TrackerGameContext(CommonContext):
                     status = "impassable"
                 for coord in relevent_coords:
                     coord.update_status(loc.name, status)
-        for entrance in updateTracker_ret.unconnected_entrances:
-            self.log_to_tab("[color="+get_ut_color("unconnected")+"]"+entrance.name+"[/color]",False) #keep these at the bottom
-        if self.quit_after_update:
+        if self.quit_after_update and not self.waiting_on_entrances:
             name = self.player_names[self.slot]
             if self.print_count:
                 logger.error(f"Game: {self.game} | Slot Name : {name} | In logic locations : {len(updateTracker_ret.in_logic_locations)}")
@@ -856,7 +866,7 @@ class TrackerGameContext(CommonContext):
             def addLine(self, line: str, sort: bool = False):
                 self.data.append({"text": line})
                 if sort:
-                    self.data.sort(key=lambda e: e["text"])
+                    logging.warning("Sorting in TrackerClient is deprecated.")
 
         class ApLocationIcon(ApAsyncImage):
             pass
@@ -1358,6 +1368,7 @@ class TrackerGameContext(CommonContext):
                         self.defered_entrance_datastorage_keys = []
                     else:
                         self.set_notify(*self.defered_entrance_datastorage_keys)
+                        self.waiting_on_entrances = True
                 else:
                     self.defered_entrance_datastorage_keys = []
 
@@ -1388,11 +1399,11 @@ class TrackerGameContext(CommonContext):
                             self.update_location_icon_coords()
                 if self.defered_entrance_datastorage_keys:
                     if "key" in args and args["key"] in self.defered_entrance_datastorage_keys:
-                            self.update_defered_entrances(args["key"])
+                        self.waiting_on_entrances = False
+                        self.update_defered_entrances([args["key"]])
                     elif "keys" in args:
-                        for key in self.defered_entrance_datastorage_keys:
-                            if key in args["keys"]:
-                                self.update_defered_entrances(key)
+                        self.waiting_on_entrances = False
+                        self.update_defered_entrances([key for key in self.defered_entrance_datastorage_keys if key in args["keys"]])
             elif cmd == 'LocationInfo':
                 if not (self.items_handling & 0b010):
                     self.update_tracker_items()
@@ -1415,9 +1426,10 @@ class TrackerGameContext(CommonContext):
                 self.location_icon.size = (self.ui.loc_icon_size, self.ui.loc_icon_size)
                 self.location_icon.pos = (x,y)
 
-    def update_defered_entrances(self,key):
-        if self.defered_entrance_callback and key:
-            self.defered_entrance_callback(key,self.stored_data.get(key,None))
+    def update_defered_entrances(self, keys: list[str]):
+        if self.defered_entrance_callback and keys:
+            for key in keys:
+                self.defered_entrance_callback(key,self.stored_data.get(key,None))
             self.updateTracker()
 
     async def disconnect(self, allow_autoreconnect: bool = False):
@@ -1486,8 +1498,24 @@ class TrackerGameContext(CommonContext):
         }
         persistent_store("universal_tracker", self._persistent_key, data)
 
+    def get_help_text(self) -> str:
+        import inspect
+        current_world = self.tracker_core.get_current_world()
+        if not current_world:
+            return ""
+        sReturn = ""
+        if hasattr(current_world,"explain_rule"):
+            docstring = inspect.getdoc(current_world.explain_rule)
+            if docstring:
+                sReturn += f"explain overrides:\n    {'\n    '.join(docstring.split('\n'))}"
+        if hasattr(current_world,"get_logical_path"):
+            docstring = inspect.getdoc(current_world.get_logical_path)
+            if docstring:
+                if sReturn:
+                    sReturn += "\n"
+                sReturn += f"get_logical_path overrides:\n    {'\n    '.join(docstring.split('\n'))}"
 
-
+        return sReturn
 
 
 def load_json(pack, path):
@@ -1557,8 +1585,7 @@ def explain(ctx: TrackerGameContext, dest_name: str):
     parent_region = None
     location = None
     if dest_name in location_names:
-        dest_id = current_world.location_name_to_id[dest_name]
-        if dest_id not in ctx.server_locations:
+        if dest_name in current_world.location_name_to_id and current_world.location_name_to_id[dest_name] not in ctx.server_locations:
             logger.error("Location not found")
             return
         location = ctx.tracker_core.multiworld.get_location(dest_name, ctx.tracker_core.player_id)

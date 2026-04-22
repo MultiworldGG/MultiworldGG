@@ -115,9 +115,9 @@ This will one of the following values:
 
 ## Logic explantion
 
-UT allows worlds to define two methods that will override the default UT methods for explaining/debuging logic
+UT allows worlds to define three methods that will override the default UT methods for explaining/debuging logic
 
-The first is an override for the `/get_logical_path` function
+The first is an override for the `/get_logical_path` command
 
 By default UT will provide a list of the entrances that are expected to take in order to get to the region/location, however if a world wants to they can replace this functionality by defining a function named `get_logical_path` on the world, e.g.
 
@@ -126,7 +126,7 @@ By default UT will provide a list of the entrances that are expected to take in 
         return [{"type":"text","text":"Just go get it"}]
 ```
 
-The second is an override for the `/explain` function
+The second is an override for the `/explain` command
 
 By default UT will provide a function that will use the rule builder api to explain the logic for a specific location, however if a world wants to they can replace this functionality by defining a function named `explain_rule` on the world, e.g.
 
@@ -134,3 +134,51 @@ By default UT will provide a function that will use the rule builder api to expl
     def explain_rule(self, target_name: str, state: CollectionState) -> list[JSONMessagePart]:
         return [{"type":"text","text":"You gotta pick it up"}]
 ```
+
+Finally there is an override for the normally non-functional `/explain_more` command, This is mostly used for worlds that have logic that either forks or is too complicated for a single message, requiring some statful memory on the world to modify the output.
+
+```python
+    def explain_more(self, target_name: str, state: CollectionState) -> list[JSONMessagePart]:
+        if self.last_command == "cursed idol":
+            return [{"type":"text","text":"Once you pick it up, run"}]
+        else:
+            return None
+```
+
+### Sub-Commands
+
+For all of these overrides, if the world returns None it will be defaulted to the normal UT response, this allows for making "sub-commands" by looking at the `target_name` and parsing it as a command
+
+```python
+    def explain_rule(self, target_name: str, state: CollectionState) -> list[JSONMessagePart]:
+        if target_name.starts_with("where "):
+            return [{"type":"text","text",f"{target_name[6:]} can be found by looking at the map"}]
+        else:
+            return None
+```
+
+### Explain Path
+
+There is a fourth much less powerful, but still useful override that UT allows worlds to define, `explain_path`. This will be given an *entrance* and a state and be asked how to format it for the default `get_logical_path` implementation
+
+```python
+    def explain_path(self, entrance: Entrance, state: CollectionState) -> list[JSONMessagePart]:
+        l_return = [{"type":"color","color":"green","text":entrance.name},{"type":"text","text":" -> "}]
+        l_return.extend(entrance.access_rule.explain_json(state))
+        return l_return
+```
+
+Unlike the other overrides this one has *two* different special return values, if the function returns None the entrance is skipped in the pathing, if it returns a non-None falsy the normal printing is used
+
+## Custom Sorting
+
+UT allows worlds to define a custom sorting method that can be used in place of UT's default sorting methods when the user sets their `sorting_method` to `apworld` in host.yaml. This is also the default value, so users will get this benefit by default if you implement it. (If you don't, UT will fall back to sorting based on the existing label.) 
+
+To implement a custom sort, you will need to override the `custom_ut_sort` function:
+
+```python
+    def custom_ut_sort(self, region_label: str, location_label: str) -> str | int:
+        sorting_key: str | int = ... #create a key that is used to sort locations instead of the region/location names 
+        return sorting_key
+```
+This function will be used as the sorting key in the call to sort locations on the tracker tab. You may find this useful if there's a meaningful way to sort your locations that isn't alphabetical.

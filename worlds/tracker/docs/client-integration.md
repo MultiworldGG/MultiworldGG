@@ -46,38 +46,53 @@ if gui_enabled:
 
 ## Calling UT's tracker engine directly
 
-This one is a bit stranger because UT is built off of client code that doesn't need a reason to run if there is no connection, but the functionality is fully there still. 
-Here's an example that instantiates the ctx object without a connection, runs generation, and then picks the correct player id from UT's internal multiworld.
-Then with the ctx created you can check which locations are in logic by:
-1. Setting ctx.missing_locations to the location IDs to be checked
-1. Filling ctx.items_received to be the NetworkItem representation of items received (Note: only the id will be checked by UT so that's why a single value tuple is valid in this example)
-1. Running updateTracker() on the ctx
-1. checking ctx.locations_available for the avaliable location IDs
+Thanks to a recent refactor, calling UT as a library has become easier.
 
+Be making a new instance of the TrackerCore, assuming you provide it with the expected information in the expected order, you can get access to UT's logic tracking methods without the need for a network connection
 
 ```py
-from worlds.tracker.TrackerClient import TrackerGameContext, updateTracker
+from worlds.tracker.TrackerCore import TrackerCore
+import logging
 
+# Making some constants
+slot_name = "qwintBug"
+game = "Hollow Knight"
+slot = 1
+team = 1
+print_list = False
+print_count = False
+logger = logging.getLogger("Client")
 
-def get_tracker_ctx(name):
-    ctx = TrackerGameContext("", "", no_connection=True)
-    ctx.run_generator()
+# logger is a logging.Logger used for messaging
+# print_list and print_count are used for CLI implementations and should likely be set to False always
+tracker_core = TrackerCore(logger,print_list, print_count)
+# Initial UT gen
+tracker_core.run_generator(None, None)
+# get the class of the world, if you're tracking your own world you can probally just reference that
+connected_cls = AutoWorld.AutoWorldRegister.world_types.get(game)
+# Set the slot parameters to track
+tracker_core.set_slot_params(game,slot,slot_name,team)
+# Interpret slot data + regen if needed
+tracker_core.initalize_tracker_core(connected_cls,slot_data)
 
-    ctx.player_id = ctx.launch_multiworld.world_name_lookup[name]
-    return ctx
+# At this point the tracker core has been fully initalized 
 
+# Set the list of locations to check for logic
+tracker_core.set_missing_locations(set([16777360, 16777370, 16777410]))
+# Set the list of items recieved
+# This part is annoying still as Tracker Core still depends on the NetworkItem format
+items = [16777224, 16777227, 16777289]
+#                                     id  ,loc,player,flags
+tracker_core.set_items_received(set([(item,-1 ,-1    ,0    ) for item in items]))
+# you can set hints here but it's not imporant unless you like the color blue in the output format
+# tracker_core.update_hints()
 
-def get_in_logic(ctx, items=[], locations=[]):
-    ctx.items_received = [(item,) for item in items]  # to account for the list being ids and not Items
-    ctx.missing_locations = locations
-    updateTracker(ctx)
-    return ctx.locations_available
+# Now you can actually ask tracker_core what the expected logic is
+updateTracker_ret = tracker_core.updateTracker()
 
+# Check UT's __init__.py for the class definition of the CurrentTrackerState type
 
-name = "qwintBug"
-ctx = get_tracker_ctx(name)
-print(get_in_logic(ctx, items=[16777224, 16777227, 16777289], locations=[16777360, 16777370, 16777410]))
-
+print(updateTracker_ret.in_logic_locations)
 # [16777370, 16777410]
 ```
 
@@ -114,7 +129,7 @@ Thanks to digiholic we have an example Powershell script that will use UT to con
 ```powershell
 Clear-Content count.txt
 Get-Content -Path "slots.txt" | ForEach-Object {
-    .\ArchipelagoLauncherDebug.exe "Universal Tracker" -- --nogui --name "$_" --connect localhost:38281 --count | Select-Object -Last 4 >> count.txt
+    .\MultiworldGGLauncherDebug.exe "Universal Tracker" -- --nogui --name "$_" --connect localhost:38281 --count | Select-Object -Last 4 >> count.txt
     echo "-----------------------------------------" >> count.txt
 }
 PAUSE
@@ -124,4 +139,15 @@ This script requires a `slots.txt` that contains each slot name on it's own line
 
 ## Adding In-Logic Callbacks
 
-To be filled out later
+For clients that have a desire to "poll" the tracker stats, this causes problems as every time a client runs updateTracker a lot of rules get called and that can take some time (even if it's faster then most humans will notice)
+
+The better solution for this problem is to use the callback registers that UT provides to get automatically notified when there is an update
+
+UT provides the following registers
+
+* set_callback : Called with the current in logic locations
+* set_region_callback : Called with the current in logic regions
+* set_events_callback : Called with the current in logic event location names
+* set_glitches_callback : Called with the current in logic locations that are only in logic with the "Glitches" state
+
+All of these functions must be provided with a function (that will be called with the appropriate parameter) that takes in a list of strings (currently expects to return a bool but that isn't used at the moment)

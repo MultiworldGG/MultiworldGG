@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import PerGameCommonOptions, Range, Toggle, OptionSet, Visibility, Choice
+from Options import PerGameCommonOptions, Range, Toggle, OptionSet, Choice
 
 
 class starting_pairs(Range):
@@ -70,6 +70,62 @@ class hide_shop_item_details(Toggle):
     display_name = "hide shop item details"
     default = False
 
+class shop_food_min(Range):
+    """set min value for food shop items. MUST BE LOWER OR EQUAL TO shop_food_max"""
+    display_name = "shop food min"
+    range_start = 1
+    range_end = 998
+    default = 1
+
+class shop_food_max(Range):
+    """set max value for food shop items. MUST BE HIGHER OR EQUAL TO shop_food_min"""
+    display_name = "shop food min"
+    range_start = 2
+    range_end = 999
+    default = 10
+
+class shop_date_gift_min(Range):
+    """set min value for date gift shop items. MUST BE LOWER OR EQUAL TO shop_date_gift_max"""
+    display_name = "shop date gift min"
+    range_start = 1
+    range_end = 998
+    default = 1
+
+class shop_date_gift_max(Range):
+    """set max value for date gift shop items. MUST BE HIGHER OR EQUAL TO shop_date_gift_min"""
+    display_name = "shop date gift max"
+    range_start = 2
+    range_end = 999
+    default = 10
+
+class shop_girl_gift_min(Range):
+    """set min value for Unique/Shoe gift shop items. MUST BE LOWER OR EQUAL TO shop_girl_gift_max"""
+    display_name = "shop date gift min"
+    range_start = 1
+    range_end = 998
+    default = 1
+
+class shop_girl_gift_max(Range):
+    """set max value for Unique/Shoe gift shop items. MUST BE HIGHER OR EQUAL TO shop_girl_gift_min"""
+    display_name = "shop date gift max"
+    range_start = 2
+    range_end = 999
+    default = 10
+
+class shop_arch_min(Range):
+    """set min value for Arch shop items. MUST BE LOWER OR EQUAL TO shop_arch_max"""
+    display_name = "shop arch min"
+    range_start = 1
+    range_end = 998
+    default = 10
+
+class shop_arch_max(Range):
+    """set max value for Arch shop items. MUST BE HIGHER OR EQUAL TO shop_arch_min"""
+    display_name = "shop arch max"
+    range_start = 2
+    range_end = 999
+    default = 20
+
 class enable_question_locations(Toggle):
     """enable having items locked behind asking girls their favourite stuff Note if there is not enough locations for items it will add shop locations to satisfy the locations needed"""
     display_name = "fav questions have items"
@@ -122,7 +178,7 @@ class randomise_girl_baggage(Toggle):
 class randomise_girl_gifts(Toggle):
     """randomise unique/shoe gifts for each girl"""
     display_name = "randomise girl gifts"
-    default = False
+    default = True
 
 class puzzle_goal_start(Range):
     """Starting affection goal for date puzzles"""
@@ -152,15 +208,18 @@ class puzzle_moves(Range):
     range_end = 999
     default = 25
 
-class filler_item(Range):
+class filler_item(Choice):
     """how the filler item is handled by making them all either:
-    1:nothing items,
-    2:random seed item,
-    3:random date gift"""
+    nothing: nothing items,
+    seed: random seed items,
+    date: random date gifts
+    mixed: all of above"""
     display_name = "filler item"
-    range_start = 1
-    range_end = 3
-    default = 3
+    option_nothing = 1
+    option_seed = 2
+    option_date = 3
+    option_mixed = 4
+    default = 4
 
 class outfits_require_date_completion(Toggle):
     """require date to be successfully completed before outfit can be unlocked"""
@@ -200,30 +259,45 @@ class game_difficulty(Choice):
 
 @dataclass
 class HP2Options(PerGameCommonOptions):
+    player_gender:player_gender
+    polly_gender:polly_gender
+    game_difficulty:game_difficulty
+
+    lovers_instead_wings: lovers_instead_wings
+    boss_wings_requirement: boss_wings_requirement
+
     number_of_starting_girls: starting_girls
     number_of_starting_pairs: starting_pairs
+
+    enabled_girls: enabled_girls
+    enable_questions: enable_question_locations
+    randomise_girl_token:randomise_girl_token
+    randomise_girl_baggage:randomise_girl_baggage
+    disable_baggage: disable_baggage
+    randomise_girl_gifts:randomise_girl_gifts
+    disable_outfits: disable_outfits
+    outfits_require_date_completion: outfits_require_date_completion
+
     number_blue_seed: starting_seed_blue
     number_green_seed: starting_seed_green
     number_orange_seed: starting_seed_orange
     number_red_seed: starting_seed_red
+
     number_shop_items: shop_items
-    enable_questions: enable_question_locations
-    disable_baggage: disable_baggage
-    enabled_girls: enabled_girls
-    randomise_girl_token:randomise_girl_token
-    randomise_girl_baggage:randomise_girl_baggage
-    randomise_girl_gifts:randomise_girl_gifts
-    lovers_instead_wings: lovers_instead_wings
+    exclude_shop_items: exclude_shop_items
+    hide_shop_item_details: hide_shop_item_details
+    shop_food_min:shop_food_min
+    shop_food_max:shop_food_max
+    shop_date_gift_min:shop_date_gift_min
+    shop_date_gift_max:shop_date_gift_max
+    shop_girl_gift_min:shop_girl_gift_min
+    shop_girl_gift_max:shop_girl_gift_max
+    shop_arch_min:shop_arch_min
+    shop_arch_max:shop_arch_max
+
     puzzle_goal_start: puzzle_goal_start
     puzzle_goal_add: puzzle_goal_add
     puzzle_goal_boss: puzzle_goal_boss
-    disable_outfits: disable_outfits
     puzzle_moves: puzzle_moves
+
     filler_item: filler_item
-    exclude_shop_items: exclude_shop_items
-    hide_shop_item_details: hide_shop_item_details
-    outfits_require_date_completion: outfits_require_date_completion
-    boss_wings_requirement: boss_wings_requirement
-    player_gender:player_gender
-    polly_gender:polly_gender
-    game_difficulty:game_difficulty

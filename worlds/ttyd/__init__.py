@@ -177,7 +177,12 @@ class TTYDWorld(World):
         if self.options.tattlesanity:
             extra_disabled = [location.name for name, locations in get_regions_dict().items()
                               if name in self.excluded_regions for location in locations]
-            for location_name, locations in get_tattle_rules_dict().items():
+            rules_dict = (
+                get_random_enemy_tattle_rules_dict(self)
+                if self.options.enemy_randomizer != EnemyRandomizer.option_vanilla
+                else get_tattle_rules_dict()
+            )
+            for location_name, locations in rules_dict.items():
                 if len(locations) == 0:
                     if "Palace of Shadow (Post-Riddle Tower)" in self.excluded_regions:
                         self.disabled_locations.update([location_name])
@@ -281,9 +286,6 @@ class TTYDWorld(World):
 
         base_rules = get_tattle_rules_dict()
 
-        # Use randomized rules if enabled; otherwise base.
-        # IMPORTANT: your get_random_enemy_tattle_rules_dict() should already do the
-        # "if no matches -> use base rule" fallback.
         rules_dict = (
             get_random_enemy_tattle_rules_dict(self)
             if self.options.enemy_randomizer != EnemyRandomizer.option_vanilla

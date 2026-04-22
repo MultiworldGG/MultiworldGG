@@ -2683,6 +2683,16 @@
       },
       {
         "has": "Paper Mode"
+      },
+      {
+        "or": [
+          {
+            "has": "Koops"
+          },
+          {
+            "has": "Yoshi"
+          }
+        ]
       }
     ]
   },

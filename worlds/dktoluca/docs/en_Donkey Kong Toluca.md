@@ -1,4 +1,4 @@
-# Donkey Kong Country 3
+# Donkey Kong Toluca (DKC3)
 
 ## Where is the options page?
 

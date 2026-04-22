@@ -82,7 +82,7 @@ trap_table = {
 }
 
 event_table = {
-    ItemName.victory:   ItemData(0xBC0000, ItemClassification.progression_skip_balancing | ItemClassification.useful),
+    ItemName.victory:   ItemData(None, ItemClassification.progression_skip_balancing | ItemClassification.useful),
     ItemName.koopaling: ItemData(0xBC0012, ItemClassification.progression_skip_balancing),
     ItemName.glitched:  ItemData(None, ItemClassification.progression_skip_balancing),
 }

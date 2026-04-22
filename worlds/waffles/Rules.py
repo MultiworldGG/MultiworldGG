@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, override
+from typing_extensions import override
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import WaffleWorld
 
-from .Options import EnemyShuffle, InventoryYoshiLogic, GameLogicDifficulty
-from .Levels import level_info_dict, hard_gameplay_levels, very_hard_gameplay_levels
+from .Options import EnemyShuffle, InventoryYoshiLogic, GameLogicDifficulty, Goal
+from .Levels import level_info_dict, hard_gameplay_levels, very_hard_gameplay_levels, possible_starting_regions
 from .Tricks import logic_tricks
 
 from .enums import Locations, Regions, Items
@@ -206,10 +207,17 @@ CanYoshiFly: Macro = Macro(
     "Can Yoshi fly",
     "Can fly with Yoshi",
 )
+
 CanFly: Macro = Macro(
     CanCapeFly | CanYoshiFly,
     "Can fly",
     "Can fly with either Yoshi or Cape",
+)
+
+CanCapeSpinFly: Macro = Macro(
+    CanCapeFly & CanSpinJump,
+    "Can spin fly",
+    "Can fly with Cape while spinning",
 )
 
 HasYoshi: Macro = Macro(
@@ -238,11 +246,11 @@ class WaffleRules:
         self.inventory_yoshi_logic = world.options.inventory_yoshi_logic.value
 
         options = self.world.options.alternate_logic.value
-        self.glitched_options = []
-        if self.world.is_ut:
-            options = logic_tricks
-            self.glitched_options = logic_tricks
         self.alternate_logic(self, options)
+
+        if self.world.is_ut:
+            options = [trick for trick in logic_tricks if trick not in options]
+            self.alternate_logic(self, options, True)
 
     def set_smw_rules(self) -> None:
         world = self.world
@@ -301,28 +309,40 @@ class WaffleRules:
                 self.connection_rules[entrance_1] = entrance_2_data
                 self.connection_rules[entrance_2] = entrance_1_data
 
-        # Build entrance rules
-        for entrance_name, rule in self.connection_rules.items():
-            entrance: Entrance = multiworld.get_entrance(entrance_name, self.player)
-            if entrance.parent_region.name in hard_gameplay_levels:
-                rule = rule & CanBeatHardLevel
-            elif entrance.parent_region.name in very_hard_gameplay_levels:
-                rule = rule & CanBeatVeryHardLevel
-            self.world.set_rule(entrance, rule)
-
-            #if self.world.is_ut and world.multiworld.enforce_deferred_connections in ("on", "default"):
-            #    try:
-            #        glitched_entrance = multiworld.get_entrance(f"{entrance_name} (Glitched)", self.player)
-            #    except KeyError:
-            #        continue
-            #    glitched_rule = rule & Has(Items.glitched)
-            #    self.world.set_rule(glitched_entrance, glitched_rule)
-
         # Build glitched entrances
         if self.world.is_ut and world.multiworld.enforce_deferred_connections in ("on", "default"):
             for entrance in multiworld.get_entrances(self.player):
                 if entrance.name.endswith("(Glitched)"):
                     self.world.set_rule(entrance, Has(Items.glitched))
+
+        # Build entrance rules
+        starting_region = possible_starting_regions[world.options.starting_location.value]
+        for entrance_name, rule in self.connection_rules.items():
+            entrance: Entrance = self.world.get_entrance(entrance_name)
+            if entrance.parent_region.name in hard_gameplay_levels:
+                rule = rule & CanBeatHardLevel
+            elif entrance.parent_region.name in very_hard_gameplay_levels:
+                rule = rule & CanBeatVeryHardLevel
+            self.world.set_rule(entrance, rule)
+            try:
+                location_name = entrance_name.split("-> ")[1]
+                location: Location = self.world.get_location(location_name)
+                self.world.set_rule(location, rule)
+                if self.world.is_ut:
+                    # Apply exit rules to 
+                    if len(entrance.connected_region.exits) != 0:
+                        # Do all of this to fix an issue where rules aren't being applied to an entrance that connects to the origin level
+                        for exit in entrance.connected_region.exits:
+                            if "Transition" in exit.name:
+                                destination = exit.connected_region.exits[0].connected_region.exits[0].connected_region
+                                if destination.name == starting_region:
+                                    break
+                        else:
+                            continue
+                    glitched_entrance = self.world.get_entrance(f"{entrance_name} (Glitched)")
+                    self.world.set_rule(glitched_entrance, rule)
+            except KeyError:
+                continue
 
         # Build location rules
         for loc in multiworld.get_locations(self.player):
@@ -346,6 +366,10 @@ class WaffleRules:
 
         # Handle goals
         self.world.set_completion_rule(Has(Items.victory))
+        if self.world.options.goal == Goal.option_yoshi_house:
+            self.world.set_rule(self.world.get_location(Locations.yoshis_house), Has(Items.yoshi_egg, count=FromWorldAttr("required_egg_count")))
+        elif self.world.options.goal == Goal.option_bowser:
+            self.world.set_rule(self.world.get_location(Locations.bowser), Has(Items.yoshi_egg, count=FromWorldAttr("required_egg_count")))
 
     
     def alternate_logic(self) -> None:
@@ -470,7 +494,7 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.forest_of_illusion_4_region} -> {Locations.forest_of_illusion_4_exit_1}": 
                 True_(),
             f"{Regions.forest_of_illusion_4_region} -> {Locations.forest_of_illusion_4_exit_2}":
-                CanRun & CanCarryOrYoshiTongue,
+                True_(),
             f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_1}": 
                 HasPSwitch,
             f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_2}": 
@@ -528,9 +552,9 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.valley_castle_region} -> {Locations.valley_castle}": 
                 True_(),
             f"{Locations.front_door} -> {Regions.bowser_region}": 
-                CanCarry & CanClimb & CanRun & CanSwim & Has(Items.yoshi_egg, count=FromWorldAttr("required_egg_count")),
+                CanCarry & CanClimb & CanRun & CanSwim,
             f"{Locations.back_door} -> {Regions.bowser_region}": 
-                CanCarry & Has(Items.yoshi_egg, count=FromWorldAttr("required_egg_count")),
+                CanCarry,
 
             f"{Regions.star_road_1_region} -> {Locations.star_road_1_exit_1}": 
                 CanBreakTurnBlocks,
@@ -547,7 +571,7 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_1}": 
                 True_(),
             f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_2}": 
-                CanYoshiFly | (CanCarry & HasGSP & HasRSP),
+                CanYoshiFly | (CanCarry & (HasFeather | (HasGSP & HasRSP))),
             f"{Regions.star_road_5_region} -> {Locations.star_road_5_exit_1}": 
                 HasPSwitch | CanFly,
             f"{Regions.star_road_5_region} -> {Locations.star_road_5_exit_2}": 
@@ -555,7 +579,7 @@ class WaffleBasicRules(WaffleRules):
                     CanCarry & CanClimb & HasPSwitch & 
                     HasYSP & HasGSP & HasRSP & HasBSP
                 ) | (
-                    CanFly & CanCarry & CanSpinJump
+                    CanFly & CanCarry
                 ),
             f"{Regions.special_zone_1_region} -> {Locations.special_zone_1_exit_1}": 
                 CanClimb & (
@@ -605,7 +629,7 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}": 
                 (CanCarry | HasYoshi) & CanCarryOrYoshiTongue & CanBreakTurnBlocks,
             f"{Regions.forest_of_illusion_4_region} -> {Locations.forest_of_illusion_4_exit_2}":
-                CanRun | HasYoshi,
+                True_(),
 
             f"{Regions.chocolate_island_2_region} -> {Locations.chocolate_island_2_exit_2}": 
                 True_(),
@@ -624,7 +648,7 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.star_road_3_region} -> {Locations.star_road_3_exit_2}": 
                 CanCarry | HasFireFlower,
             f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_2}": 
-                CanYoshiFly | (HasGSP & HasRSP & (CanCarry | HasFeather)),
+                CanYoshiFly | HasFeather | (HasGSP & HasRSP),
             f"{Regions.star_road_5_region} -> {Locations.star_road_5_exit_2}": 
                 CanYoshiFly | (
                     CanClimb & HasPSwitch & 
@@ -1622,8 +1646,7 @@ class WaffleBasicRules(WaffleRules):
                 CanCarry | HasYoshi,
 
             Locations.forest_of_illusion_4_dragon:
-                HasYoshi | CanCarry | 
-                    HasPSwitch | HasFireFlower,
+                HasYoshi | CanCarry | HasPSwitch | HasFireFlower,
             Locations.forest_of_illusion_4_multi_coin_block_1:
                 True_(),
             Locations.forest_of_illusion_4_coin_block_1:
@@ -1651,7 +1674,7 @@ class WaffleBasicRules(WaffleRules):
             Locations.forest_of_illusion_4_coin_block_10:
                 True_(),
             Locations.forest_of_illusion_4_room_2:
-                CanRun | HasYoshi,
+                True_(),
 
             Locations.forest_ghost_house_dragon:
                 HasPSwitch,
@@ -1969,23 +1992,21 @@ class WaffleBasicRules(WaffleRules):
             Locations.star_road_4_powerup_block_1:
                 True_(),
             Locations.star_road_4_green_block_1:
-                CanYoshiFly,
+                CanYoshiFly | CanCapeSpinFly,
             Locations.star_road_4_green_block_2:
-                CanYoshiFly,
+                CanYoshiFly | CanCapeSpinFly,
             Locations.star_road_4_green_block_3:
-                CanYoshiFly,
+                CanYoshiFly | CanCapeSpinFly,
             Locations.star_road_4_green_block_4:
-                CanYoshiFly,
+                CanYoshiFly | CanCapeSpinFly,
             Locations.star_road_4_green_block_5:
-                CanYoshiFly,
+                CanYoshiFly | CanCapeSpinFly,
             Locations.star_road_4_green_block_6:
-                CanYoshiFly,
+                CanYoshiFly | CanCapeSpinFly,
             Locations.star_road_4_green_block_7:
-                CanYoshiFly,
+                CanYoshiFly | CanCapeSpinFly,
             Locations.star_road_4_key_block_1:
-                CanYoshiFly | (
-                    CanCarry & HasGSP & HasRSP
-                ),
+                CanYoshiFly | HasFeather | (CanCarry & HasGSP & HasRSP),
 
             Locations.star_road_5_directional_coin_block_1:
                 True_(),
@@ -2333,9 +2354,8 @@ class WaffleBasicRules(WaffleRules):
         super().__init__(world)
 
 
-    def alternate_logic(self, world: "WaffleWorld", options: list[str] = []) -> None:
+    def alternate_logic(self, world: "WaffleWorld", options: list[str] = [], is_glitched: bool = False) -> None:
         if "Mondo - Swimless" in options:
-            is_glitched = "Mondo - Swimless" in self.glitched_options
             connection_rules = {
                 f"{Regions.special_zone_6_region} -> {Locations.special_zone_6_exit_1}": 
                     True_(),
@@ -2425,7 +2445,6 @@ class WaffleBasicRules(WaffleRules):
             self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
 
         if "Vanilla Dome 1 - Itemless Sinking Platform" in options:
-            is_glitched = "Vanilla Dome 1 - Itemless Sinking Platform" in self.glitched_options
             connection_rules = {
                 f"{Regions.vanilla_dome_1_region} -> {Locations.vanilla_dome_1_exit_1}": 
                     True_(),
@@ -2443,7 +2462,6 @@ class WaffleBasicRules(WaffleRules):
             self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
 
         if "Vanilla Secret 1 - Wall Running" in options:
-            is_glitched = "Vanilla Secret 1 - Wall Running" in self.glitched_options
             connection_rules = {
                 f"{Regions.vanilla_secret_1_region} -> {Locations.vanilla_secret_1_exit_1}": 
                     CanClimb | CanWallRun,
@@ -2464,12 +2482,11 @@ class WaffleBasicRules(WaffleRules):
                 Locations.vanilla_secret_1_room_2:
                     CanClimb | CanWallRun,
                 Locations.vanilla_secret_1_room_3:
-                    CanClimb | CanWallRun & CanCarry & HasBSP,
+                    (CanClimb | CanWallRun) & CanCarry & HasBSP,
             }
             self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
 
         if "Vanilla Secret 3 - Swimless" in options:
-            is_glitched = "Vanilla Secret 3 - Swimless" in self.glitched_options
             connection_rules = {
                 f"{Regions.vanilla_secret_3_region} -> {Locations.vanilla_secret_3_exit_1}": 
                     True_(),
@@ -2488,7 +2505,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Cheese Bridge Area - Secret Exit with Yoshi" in options:
-            is_glitched = "Cheese Bridge Area - Secret Exit with Yoshi" in self.glitched_options
             connection_rules = {
                 f"{Regions.cheese_bridge_region} -> {Locations.cheese_bridge_exit_2}": 
                     CanCapeFly | HasYoshi,
@@ -2501,7 +2517,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Vanilla Dome 4 - Sacrifice for Coin Block #8" in options:
-            is_glitched = "Vanilla Dome 4 - Sacrifice for Coin Block #8" in self.glitched_options
             location_rules = {
                 Locations.vanilla_dome_4_coin_block_8:
                     CanCarry | HasFeather | HasYoshi,
@@ -2509,35 +2524,7 @@ class WaffleBasicRules(WaffleRules):
             self.update_rules(is_glitched, location_rules=location_rules)
 
 
-        if "Butter Bridge 1 - No Red Switch Palace" in options:
-            is_glitched = "Butter Bridge 1 - No Red Switch Palace" in self.glitched_options
-            connection_rules = {
-                f"{Regions.butter_bridge_1_region} -> {Locations.butter_bridge_1_exit_1}": 
-                    True_(),
-            }
-            location_rules = {
-                Locations.butter_bridge_1_dragon:
-                    True_(),
-                Locations.butter_bridge_1_prize:
-                    True_(),
-                Locations.butter_bridge_1_powerup_block_1:
-                    True_(),
-                Locations.butter_bridge_1_multi_coin_block_1:
-                    True_(),
-                Locations.butter_bridge_1_multi_coin_block_2:
-                    True_(),
-                Locations.butter_bridge_1_multi_coin_block_3:
-                    True_(),
-                Locations.butter_bridge_1_life_block_1:
-                    True_(),
-                Locations.butter_bridge_1_room_2:
-                    True_(),
-            }
-            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
-
-
         if "Ludwig's Castle - Runless" in options:
-            is_glitched = "Ludwig's Castle - Runless" in self.glitched_options
             connection_rules = {
                 f"{Regions.twin_bridges_castle_region} -> {Locations.twin_bridges_castle}": 
                     CanClimb,
@@ -2550,7 +2537,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Ludwig's Castle - Climbless" in options:
-            is_glitched = "Ludwig's Castle - Climbless" in self.glitched_options
             connection_rules = {
                 f"{Regions.twin_bridges_castle_region} -> {Locations.twin_bridges_castle}": 
                     CanWallRun,
@@ -2563,7 +2549,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Forest of Illusion 1 - Secret Exit with Yoshi" in options:
-            is_glitched = "Forest of Illusion 1 - Secret Exit with Yoshi" in self.glitched_options
             connection_rules = {
                 f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
                     CanCarry & (HasYoshi | HasPBalloon),
@@ -2582,7 +2567,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Forest of Illusion 3 - Can pass big pipe itemless" in options:
-            is_glitched = "Forest of Illusion 3 - Can pass big pipe itemless" in self.glitched_options
             connection_rules = {
                 f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_1}": 
                     True_(),
@@ -2657,7 +2641,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Forest of Illusion 3 - Secret Exit with Yoshi" in options:
-            is_glitched = "Forest of Illusion 3 - Secret Exit with Yoshi" in self.glitched_options
             self.add_connection_rule(is_glitched,
                                      f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}", 
                                      CanYoshiCarry, "or")
@@ -2667,7 +2650,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Forest Ghost House - Skip second room" in options:
-            is_glitched = "Forest Ghost House - Skip second room" in self.glitched_options
             connection_rules = {
                 f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_1}": 
                     HasPSwitch | CanWallRun | CanCapeFly,
@@ -2688,7 +2670,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Valley of Bowser 4 - Yoshi Climb" in options:
-            is_glitched = "Valley of Bowser 4 - Yoshi Climb" in self.glitched_options
             connection_rules = {
                 f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_1}": 
                     CanClimb | HasYoshi,
@@ -2715,7 +2696,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Awesome - Itemless" in options:
-            is_glitched = "Awesome - Itemless" in self.glitched_options
             connection_rules = {
                 f"{Regions.special_zone_4_region} -> {Locations.special_zone_4_exit_1}": 
                     True_(),
@@ -2728,7 +2708,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Forest Secret Area - Itemless 1-Up block" in options:
-            is_glitched = "Forest Secret Area - Itemless 1-Up block" in self.glitched_options
             location_rules = {
                 Locations.forest_secret_life_block_1:
                     True_(),
@@ -2737,7 +2716,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Valley of Bowser 3 - Itemless Powerup block" in options:
-            is_glitched = "Valley of Bowser 3 - Itemless Powerup block" in self.glitched_options
             location_rules = {
                 Locations.valley_of_bowser_3_powerup_block_2:
                     True_(),
@@ -2746,7 +2724,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Outrageous - Wall Run pipe" in options:
-            is_glitched = "Outrageous - Wall Run pipe" in self.glitched_options
             connection_rules = {
                 f"{Regions.special_zone_7_region} -> {Locations.special_zone_7_exit_1}": 
                     CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
@@ -2767,7 +2744,6 @@ class WaffleBasicRules(WaffleRules):
 
 
         if "Lemmy's Castle - Itemless 1-Up blocks" in options:
-            is_glitched = "Lemmy's Castle - Itemless 1-Up blocks" in self.glitched_options
             location_rules = {
                 Locations.vanilla_dome_castle_life_block_1:
                     True_(),
@@ -2777,17 +2753,7 @@ class WaffleBasicRules(WaffleRules):
             self.update_rules(is_glitched, location_rules=location_rules)
 
 
-        if "Star World 4 - Carryless Secret Exit with Yoshi sacrifice" in options:
-            is_glitched = "Star World 4 - Carryless Secret Exit with Yoshi sacrifice" in self.glitched_options
-            carryless_exit_rules = {
-                f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_2}": 
-                    HasYoshi | (HasGSP & HasRSP & (CanCarry | HasFeather)),
-            }
-            self.update_rules(is_glitched, carryless_exit_rules=carryless_exit_rules)
-
-
         if "Star World 3 - Top area with a Star" in options:
-            is_glitched = "Star World 3 - Top area with a Star" in self.glitched_options
             self.add_carryless_rule(is_glitched, 
                                     f"{Regions.star_road_3_region} -> {Locations.star_road_3_exit_2}",
                                     Has(Items.super_star_active, 1), 
@@ -2797,9 +2763,14 @@ class WaffleBasicRules(WaffleRules):
                                     Has(Items.super_star_active, 1), 
                                     union="or")
 
+        if "Star World 4 - Carryless exit with wingless Yoshi" in options:
+            carryless_exit_rules = {
+                f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_2}": 
+                    HasYoshi | HasFeather | (HasGSP & HasRSP),
+            }
+            self.update_rules(is_glitched,carryless_exit_rules=carryless_exit_rules)
 
         if "Valley Ghost House - True Carryless Secret Exit" in options:
-            is_glitched = "Valley Ghost House - True Carryless Secret Exit" in self.glitched_options
             carryless_exit_rules = {
                 f"{Regions.valley_ghost_house_region} -> {Locations.valley_ghost_house_exit_2}": 
                     HasPSwitch & CanRun,

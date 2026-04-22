@@ -1056,8 +1056,11 @@ def lobby_upload_yaml(lobby: UUID):
             }), 400
     options = expanded
 
+    force_custom_filenames = set(request.form.getlist("force_custom_file"))
+
     from worlds.AutoWorld import AutoWorldRegister
     standard_options: dict[str, bytes] = {}
+    standard_info: dict[str, tuple[str, str]] = {}  # filename -> (player_name, game) for standard options
     custom_info: dict[str, tuple[str, str]] = {}  # filename -> (player_name, game)
     upgrade_info: dict[str, tuple[str, str]] = {}  # filename -> (player_name, game) for version upgrades
     requires_versions: dict[str, str | None] = {}  # filename -> requires_game_version JSON
@@ -1105,7 +1108,15 @@ def lobby_upload_yaml(lobby: UUID):
                 standard_options[filename] = content
 
         else:
-            standard_options[filename] = content
+            if filename in force_custom_filenames:
+                if not lobby.allow_custom_apworlds:
+                    return jsonify({"error": "Custom APWorlds are not enabled for this lobby."}), 400
+                if not player_name:
+                    return jsonify({"error": f"Could not find player name in '{filename}'"}), 400
+                custom_info[filename] = (player_name, game or os.path.splitext(filename)[0])
+            else:
+                standard_options[filename] = content
+                standard_info[filename] = (player_name, game or "")
 
     meta = json.loads(lobby.meta)
     plando_options = set(meta.get("plando_options", []))
@@ -1114,11 +1125,24 @@ def lobby_upload_yaml(lobby: UUID):
     new_custom: dict[str, bool] = {}
     new_requires: dict[str, str | None] = {}
 
+    needs_confirmation: list[dict] = []
     if standard_options:
         results, rolled = roll_options(standard_options, plando_options)
-        errors = {k: v for k, v in results.items() if isinstance(v, str)}
-        if errors:
-            return jsonify({"error": "; ".join(errors.values())}), 400
+        hard_errors: list[str] = []
+        for fn, result in results.items():
+            if isinstance(result, str):
+                pn, gm = standard_info.get(fn, ("", ""))
+                if gm and gm in AutoWorldRegister.world_types and lobby.allow_custom_apworlds:
+                    needs_confirmation.append({
+                        "filename": fn,
+                        "error": result,
+                        "player_name": pn or fn,
+                        "game": gm,
+                    })
+                else:
+                    hard_errors.append(result)
+        if hard_errors:
+            return jsonify({"error": "; ".join(hard_errors)}), 400
         for filename, rolled_opts in rolled.items():
             name = getattr(rolled_opts, 'name', None) or os.path.splitext(filename)[0]
             new_names[filename] = name
@@ -1170,12 +1194,16 @@ def lobby_upload_yaml(lobby: UUID):
         apworld_label = f"v{a.world_version}" if a.world_version else "custom"
         active_apworld_games[a.game_name] = (apworld_label, server_label)
 
+    confirmation_filenames = {item["filename"] for item in needs_confirmation}
+
     uploaded = []
     version_warnings: list[str] = []
     upgrades_needed: list[dict] = []
     active_apworld_notices: list[str] = []
     noticed_apworld_games: set[str] = set()
     for filename, content in options.items():
+        if filename in confirmation_filenames:
+            continue
         if isinstance(content, str):
             content = content.encode('utf-8')
         game = new_games.get(filename, '')
@@ -1217,15 +1245,17 @@ def lobby_upload_yaml(lobby: UUID):
         uploaded.append(entry)
 
     yaml_summaries = [
-        f"{new_names.get(fn, fn)} ({new_games.get(fn, '?')})" for fn in options
+        f"{new_names.get(fn, fn)} ({new_games.get(fn, '?')})"
+        for fn in options if fn not in confirmation_filenames
     ]
     player.is_ready = False
-    LobbyMessage(
-        lobby=lobby,
-        player=None,
-        sender_name="System",
-        content=f"{player.player_name} uploaded {len(uploaded)} YAML(s): {', '.join(yaml_summaries)}.",
-    )
+    if uploaded:
+        LobbyMessage(
+            lobby=lobby,
+            player=None,
+            sender_name="System",
+            content=f"{player.player_name} uploaded {len(uploaded)} YAML(s): {', '.join(yaml_summaries)}.",
+        )
     lobby.last_activity = utcnow()
     commit()
 
@@ -1236,6 +1266,8 @@ def lobby_upload_yaml(lobby: UUID):
         result["upgrades_needed"] = upgrades_needed
     if active_apworld_notices:
         result["active_apworld_notices"] = active_apworld_notices
+    if needs_confirmation:
+        result["needs_apworld_confirmation"] = needs_confirmation
     return jsonify(result), 201
 
 

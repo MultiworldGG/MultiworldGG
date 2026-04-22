@@ -5076,6 +5076,61 @@
         ],
         "release_date": 2024
     },
+    "Spirit Tracks": {
+        "igdb_id": "1038",
+        "world_name": "Spirit Tracks",
+        "igdb_name": "The Legend of Zelda: Spirit Tracks",
+        "us_rating": [],
+        "player_perspectives": [
+            "Bird view / Isometric"
+        ],
+        "genres": [
+            "Puzzle",
+            "Adventure"
+        ],
+        "themes": [
+            "Action",
+            "Fantasy"
+        ],
+        "keywords": [
+            "pirates",
+            "action-adventure",
+            "fairy",
+            "backtracking",
+            "multiple endings",
+            "campaign",
+            "princess",
+            "silent protagonist",
+            "boss fight",
+            "explosion",
+            "single-player only",
+            "world map",
+            "human",
+            "polygonal 3d",
+            "damsel in distress",
+            "collectibles",
+            "touch controls",
+            "virtual console",
+            "disorientation zone",
+            "young protagonist",
+            "treasure chest",
+            "real-time combat",
+            "coming of age",
+            "cartography",
+            "second person perspective",
+            "monomyth",
+            "ds microphone use",
+            "in-game anti-piracy effects",
+            "pax 2009",
+            "gamescom 2009",
+            "male protagonist",
+            "wii u virtual console",
+            "bees",
+            "sword sorcery",
+            "nintendo ds tag mode"
+        ],
+        "release_date": 2009
+    },
     "Spyro 3": {
         "igdb_id": "1578",
         "world_name": "Spyro 3",

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 from .Items import item_groups
-from .data.Trivia import trivia_data
 
 from Options import OptionGroup, Choice, Range, Toggle, DefaultOnToggle, OptionSet, OptionList, OptionDict, PerGameCommonOptions, StartInventoryPool, DeathLink, Visibility, FreeText
 from schema import Schema, Optional
@@ -236,40 +235,6 @@ class SwankyChecks(DefaultOnToggle):
     Whether completing a quiz will grant a check
     """
     display_name = "Swanky Quiz Checks"
-
-class SwankyQuestionsPerQuiz(Range):
-    """
-    Whether completing a quiz will grant a check
-    """
-    display_name = "Swanky Questions Per Quiz"
-    range_start = 1
-    range_end = 6
-    default = 1
-
-class SwankyExcludeTopics(OptionList):
-    """
-    Which topics will be excluded from Swanky's Bonus Bonanza pool of questions.
-
-    Swanky enforces questions from the multiworld. This will help you to remove topics from games you don't know/care about in the session.
-    Donkey Kong Country 2 can't be excluded (can be put here, but it'll be forced anyway)
-
-    Do note that if you remove way too many topics and set a very high question per quiz count an error may arise from the lack of questions available
-    """
-    display_name = "Swanky Excluded Topics"
-    default = sorted([topic for topic in trivia_data.keys()])
-    valid_keys = sorted([topic for topic in trivia_data.keys()])
-
-class SwankyForceTopics(OptionList):
-    """
-    Which additional topics will be added to Swanky's Bonus Bonanza pool of questions.
-
-    Swanky already enforces questions from games in the multiworld if they're on the database.
-
-    This option has priority over the Excluded Topics option.
-    """
-    display_name = "Swanky Forced Topics"
-    default = sorted([topic for topic in trivia_data.keys()])
-    valid_keys = sorted([topic for topic in trivia_data.keys()])
 
 class TrapFillPercentage(Range):
     """
@@ -720,11 +685,6 @@ dkc2_option_groups = [
         AnimalShuffle,
         BarrelShuffle,
     ]),
-    OptionGroup("Trivia", [
-        SwankyQuestionsPerQuiz,
-        SwankyForceTopics,
-        SwankyExcludeTopics,
-    ]),
     OptionGroup("Traps", [
         TrapFillPercentage,
         FreezeTrapWeight,
@@ -793,9 +753,6 @@ class DKC2Options(PerGameCommonOptions):
     coinsanity: CoinChecks
     bananasanity: BunchChecks
     swanky_checks: SwankyChecks
-    swanky_questions_per_quiz: SwankyQuestionsPerQuiz
-    swanky_forced_topics: SwankyForceTopics
-    swanky_excluded_topics: SwankyExcludeTopics
     trap_fill_percentage: TrapFillPercentage
     freeze_trap_weight: FreezeTrapWeight
     reverse_trap_weight: ReverseTrapWeight

@@ -1,5 +1,6 @@
 import logging
 import os
+import pkgutil
 import sys
 from worlds.poe.poeClient import fileHelper
 fileHelper.load_vendor_modules()
@@ -40,6 +41,9 @@ _params = {
 _auth_url = f"https://www.pathofexile.com/oauth/authorize?{urllib.parse.urlencode(_params)}"
 access_token = ""
 token_expire_time = None
+slot_info = {}  # Set externally before calling async_oauth_login to pass server/slot/password to tracker
+
+TRACKER_BASE_URL = "https://stubobis1.github.io/pathofexile_ap/"
 # === Step 3: Start local callback server ===
 
 
@@ -64,8 +68,19 @@ async def async_oauth_login() -> dict:
                     code = params.get("code", [None])[0]
                     if code:
                         self.send_response(200)
+                        self.send_header("Content-Type", "text/html; charset=utf-8")
                         self.end_headers()
-                        self.wfile.write(b"<h1>Authorization successful! You can close this tab and start playing!</h1>") #TODO; this would be good to have a full HTML page
+                        html_bytes = pkgutil.get_data("worlds.poe.poeClient", "static/oauth_success.html")
+                        html = html_bytes.decode("utf-8")
+                        # Build tracker redirect URL with slot info as query params
+                        params = {k: v for k, v in slot_info.items() if v}
+                        params["autoconnect"] = "1"
+                        redirect_url = TRACKER_BASE_URL + "?" + urllib.parse.urlencode(params)
+                        html = html.replace(
+                            "url=https://stubobis1.github.io/pathofexile_ap/",
+                            f"url={redirect_url}"
+                        )
+                        self.wfile.write(html.encode("utf-8"))
                         if not code_future.done():
                             code_future.set_result(code)
                         def shutdown_server(server):
@@ -74,8 +89,10 @@ async def async_oauth_login() -> dict:
                         threading.Thread(target=shutdown_server, args=(self.server,), daemon=True).start()
                     else:
                         self.send_response(400)
+                        self.send_header("Content-Type", "text/html; charset=utf-8")
                         self.end_headers()
-                        self.wfile.write(b"<h1>Error: Missing authorization code</h1>")
+                        error_bytes = pkgutil.get_data("worlds.poe.poeClient", "static/oauth_error.html")
+                        self.wfile.write(error_bytes)
 
 
         logger.info(f"🔊 Listening for callback on {REDIRECT_URI} ...")
@@ -87,7 +104,12 @@ async def async_oauth_login() -> dict:
             raise e
         webbrowser.open(_auth_url)
         loop = asyncio.get_event_loop()
-        await loop.run_in_executor(None, server.serve_forever)
+        executor_future = loop.run_in_executor(None, server.serve_forever)
+        try:
+            await executor_future
+        except asyncio.CancelledError:
+            server.shutdown()
+            raise
         code = await code_future
 
         async with httpx.AsyncClient() as client:

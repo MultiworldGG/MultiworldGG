@@ -34,6 +34,13 @@ This is to prevent a game trying to process a different game's `interpret_slot_d
 
 ![image](https://github.com/FarisTheAncient/Archipelago/assets/162540354/03b22004-8017-457e-be3c-26d20091f678)
 
+# Yaml-less generation
+
+<img width="682" height="715" alt="image" src="https://github.com/user-attachments/assets/e56b985c-fade-4c34-8b11-c9654b8b29e9" />
+
+If the default use case for a world using interpret_slot_data is to force a regeneration, it might be useful to have UT skip the first generation (as it would just be thrown out anyway)
+
+By having a world set the `ut_can_gen_without_yaml` flag and creating a static `interpret_slot_data` UT will not perform the first global generation and will instead use the slot_data on connection to a multiworld to trigger a solo generation that is used for tracking
 
 # Location Alias
 

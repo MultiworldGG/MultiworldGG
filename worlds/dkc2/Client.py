@@ -2,8 +2,9 @@ import logging
 import time
 import random
 
+from enum import Enum
 from NetUtils import ClientStatus, NetworkItem, color
-from worlds.AutoSNIClient import SNIClient
+from worlds.AutoSNIClient import SNIClient, SnesReader, SnesData, Read
 from .Items import trap_value_to_name, trap_name_to_value
 
 logger = logging.getLogger("Client")
@@ -22,19 +23,19 @@ SRAM_START = 0xE00000
 
 STARTING_ID = 0xBF0000
 
+DKC2_SRAM = SRAM_START + 0x800
 DKC2_SETTINGS = ROM_START + 0x3DFF80
 
 DKC2_MISC_FLAGS = WRAM_START + 0x08D2
 DKC2_GAME_FLAGS = WRAM_START + 0x59B2
 
-DKC2_SOUND_PLAYBACK = WRAM_START + 0x1F7E6
+DKC2_SOUND_PLAYBACK = DKC2_SRAM + 0x40E
 DKC2_EFFECT_BUFFER = WRAM_START + 0x0619
 DKC2_SOUND_BUFFER = WRAM_START + 0x0622
 DKC2_SPC_NEXT_INDEX = WRAM_START + 0x0634
 DKC2_SPC_INDEX = WRAM_START + 0x0632
 DKC2_SPC_CHANNEL_BUSY = WRAM_START + 0x0621
 
-DKC2_SRAM = SRAM_START + 0x800
 DKC2_RECV_INDEX = DKC2_SRAM + 0x020
 DKC2_INIT_FLAG = DKC2_SRAM + 0x022
 DKC2_DAMAGE_FLAG = DKC2_SRAM + 0x044
@@ -68,13 +69,13 @@ DKC2_BONUS_FLAGS = WRAM_START + 0x59B2
 DKC2_DK_COIN_FLAGS = WRAM_START + 0x59D2
 DKC2_STAGE_FLAGS = WRAM_START + 0x59F2
 
-DKC2_MESSAGE_TRACKER = WRAM_START + 0x1F7E4
-DKC2_MESSAGE_ACTIVATE = WRAM_START + 0x1F7F6
-DKC2_MESSAGE_TIMER = WRAM_START + 0x1F7F8
-DKC2_MESSAGE_PHASE = WRAM_START + 0x1F7F0
-DKC2_MESSAGE_RERUN  = WRAM_START + 0x1F7EE
-DKC2_MESSAGE_BUFFER = WRAM_START + 0x1F600
-DKC2_PALETTE_BUFFER = WRAM_START + 0x1F5C0
+DKC2_MESSAGE_PHASE = DKC2_SRAM + 0x400
+DKC2_MESSAGE_ACTIVATE = DKC2_SRAM + 0x402
+DKC2_MESSAGE_TIMER = DKC2_SRAM + 0x404
+DKC2_MESSAGE_TRACKER = DKC2_SRAM + 0x406
+DKC2_MESSAGE_RERUN  = DKC2_SRAM + 0x408
+DKC2_MESSAGE_BUFFER = DKC2_SRAM + 0x600
+DKC2_PALETTE_BUFFER = DKC2_SRAM + 0x700
 
 DKC2_ENERGY_LINK_TRANSFER = DKC2_SRAM + 0x04E
 DKC2_EXCHANGE_RATE = 200000000
@@ -87,11 +88,53 @@ ROMHASH_SIZE = 0x15
 UNCOLLECTABLE_LEVELS = [0x09, 0x21, 0x63, 0x60, 0x0D]
 BANNED_GAMEMODES = [0x8D1F, 0x8D3D]
 
+class DKC2Memory(Enum):
+    settings = Read(DKC2_SETTINGS, 0x40)
+    recv_index = Read(DKC2_RECV_INDEX, 0x02)
+    extended_data = Read(DKC2_SRAM, 0x100)
+    general_data = Read(WRAM_START + 0x00D0, 0x10)
+    game_flags = Read(DKC2_GAME_FLAGS, 0x60)
+    misc_flags = Read(DKC2_MISC_FLAGS, 0x80)
+    swanky_flags = Read(DKC2_SWANKY_FLAGS, 0x09)
+    sanity_flags = Read(DKC2_SANITY_FLAGS, 0x100)
+    nmi_pointer = Read(WRAM_START + 0x0020, 0x02)
+    validation = Read(DKC2_INIT_FLAG, 0x02)
+    player_state = Read(WRAM_START + 0x08C3, 0x01)
+    death_link_flag = Read(DKC2_DEATH_LINK_FLAG, 0x01)
+    current_level = Read(DKC2_CURRENT_LEVEL, 0x01)
+    loaded_level = Read(DKC2_LOADED_LEVEL, 0x01)
+    current_map_level = Read(WRAM_START + 0x066E, 0x01)
+    current_map = Read(DKC2_CURRENT_MAP, 0x01)
+    brightness = Read(DKC2_BRIGHTNESS, 0x01)
+    tracked_levels = Read(DKC2_TRACKED_LEVELS, 0x20)
+    current_clears = Read(DKC2_TRACKED_CLEARS, 0x0E)
+    dk_coins = Read(WRAM_START + 0x08CE, 0x02)
+    kremkoins = Read(WRAM_START + 0x08CC, 0x02)
+    banana_coins = Read(WRAM_START + 0x08CA, 0x02)
+    lives = Read(WRAM_START + 0x08BE, 0x02)
+    scene_flags = Read(WRAM_START + 0x06A1, 0x02)
+    gameplay_flags = Read(WRAM_START + 0x08C2, 0x02)
+    gamemode_pointer = Read(DKC2_GAMEMODE, 0x02)
+    energy_link_transfer = Read(DKC2_ENERGY_LINK_TRANSFER, 0x2)
+    message_timer = Read(DKC2_MESSAGE_TIMER, 0x02)
+    message_phase = Read(DKC2_MESSAGE_PHASE, 0x02)
+    message_rerun = Read(DKC2_MESSAGE_RERUN, 0x02)
+    message_activate = Read(DKC2_MESSAGE_ACTIVATE, 0x02)
+    message_is_tracker = Read(DKC2_MESSAGE_TRACKER, 0x02)
+    controller_flags = Read(WRAM_START + 0x0507, 0x02)
+
+class ConnectMemory(Enum):
+    rom_hash = Read(DKC2_ROMHASH_START, ROMHASH_SIZE)
+    settings = Read(DKC2_SETTINGS, 0x40)
+
+
 class DKC2SNIClient(SNIClient):
     game = "Donkey Kong Country 2"
     patch_suffix = ".apdkc2"
     slot_data: dict
     ctx: "SNIContext"
+    memory_reader = SnesReader(DKC2Memory)
+    connect_reader = SnesReader(ConnectMemory)
 
     def __init__(self):
         super().__init__()
@@ -99,6 +142,7 @@ class DKC2SNIClient(SNIClient):
         self.energy_link_enabled = False
         self.received_trap_link = False
         self.barrel_request = ""
+        self.barrel_count = ""
         self.current_map = 0
         self.barrel_label = None
         self.message_queue = []
@@ -108,12 +152,14 @@ class DKC2SNIClient(SNIClient):
 
 
     async def validate_rom(self, ctx: "SNIContext"):
-        from SNIClient import snes_read
+        snes_data = await self.connect_reader.read(ctx)
+        if snes_data is None:
+            return False
 
-        setting_data = await snes_read(ctx, DKC2_SETTINGS, 0x40)
-        rom_name = await snes_read(ctx, DKC2_ROMHASH_START, ROMHASH_SIZE)
+        rom_name = snes_data.get(ConnectMemory.rom_hash)
+        settings = snes_data.get(ConnectMemory.settings)
 
-        if rom_name is None or setting_data is None or rom_name == bytes([0] * ROMHASH_SIZE) or rom_name[:4] != b"DKC2":
+        if rom_name is None or settings is None or rom_name == bytes([0] * ROMHASH_SIZE) or rom_name[:4] != b"DKC2":
             if "request" in ctx.command_processor.commands:
                 ctx.command_processor.commands.pop("request")
             return False
@@ -126,19 +172,19 @@ class DKC2SNIClient(SNIClient):
 
         update_tags = False
 
-        energy_link = setting_data[0x19]
+        energy_link = settings[0x19]
         if energy_link and "EnergyLink" not in ctx.tags:
             ctx.tags.add("EnergyLink")
             update_tags = True
             if "request" not in ctx.command_processor.commands:
                 ctx.command_processor.commands["request"] = cmd_request
 
-        trap_link = setting_data[0x1A]
+        trap_link = settings[0x1A]
         if trap_link and "TrapLink" not in ctx.tags:
             ctx.tags.add("TrapLink")
             update_tags = True
 
-        death_link = setting_data[0x18]
+        death_link = settings[0x18]
         if death_link:
             await ctx.update_death_link(bool(death_link & 0b1))
         
@@ -153,16 +199,13 @@ class DKC2SNIClient(SNIClient):
     async def game_watcher(self, ctx: "SNIContext"):
         from SNIClient import snes_buffered_write, snes_flush_writes, snes_read
 
-        setting_data = await snes_read(ctx, DKC2_SETTINGS, 0x40)
-        general_data = await snes_read(ctx, WRAM_START + 0x00D0, 0x0F)
-        game_flags = await snes_read(ctx, DKC2_GAME_FLAGS, 0x60)
-        misc_flags = await snes_read(ctx, DKC2_MISC_FLAGS, 0x80)
-        swanky_flags = await snes_read(ctx, DKC2_SWANKY_FLAGS, 0x09)
-        sanity_flags = await snes_read(ctx, DKC2_SANITY_FLAGS, 0x100)
-
-        if general_data is None or game_flags is None or misc_flags is None or setting_data is None or swanky_flags is None:
+        memory_data = await self.memory_reader.read(ctx)
+        if memory_data is None:
             self.game_state = False
+            self.current_map = 0
             return
+
+        general_data = memory_data.get(DKC2Memory.general_data)
 
         loaded_save = int.from_bytes(general_data[0x05:0x07], "little")
         if loaded_save == 0:
@@ -170,11 +213,7 @@ class DKC2SNIClient(SNIClient):
             self.current_map = 0
             return
 
-        nmi_pointer = await snes_read(ctx, WRAM_START + 0x0020, 0x2)
-        if nmi_pointer is None:
-            self.game_state = False
-            self.current_map = 0
-            return
+        nmi_pointer = memory_data.get(DKC2Memory.nmi_pointer)
         nmi_pointer = int.from_bytes(nmi_pointer, "little")
         if nmi_pointer == 0x8CE9 or nmi_pointer == 0x8CF1:
             self.game_state = True
@@ -182,47 +221,42 @@ class DKC2SNIClient(SNIClient):
         if not self.game_state:
             return
 
-        validation = int.from_bytes(await snes_read(ctx, DKC2_INIT_FLAG, 0x2), "little")
+        validation = int.from_bytes(memory_data.get(DKC2Memory.validation), "little")
         if validation != 0xDEAD:
             snes_logger.info(f'ROM not properly validated.')
             self.game_state = False
             self.current_map = 0
             return
         
-        player_state = await snes_read(ctx, WRAM_START + 0x08C3, 0x01)
-        if player_state is None:
-            return
+        player_state = int.from_bytes(memory_data.get(DKC2Memory.player_state), "little")
         
         if "DeathLink" in ctx.tags and ctx.last_death_link + 1 < time.time():
-            death_link_flag = await snes_read(ctx, DKC2_DEATH_LINK_FLAG, 0x01)
-            if death_link_flag is not None:
-                is_death_link_active = death_link_flag[0]
-                is_player_dead = player_state[0] & 0x20
-                is_map = nmi_pointer == 0x8CE9 or nmi_pointer == 0x8CF1
-                currently_dead = is_player_dead and not is_death_link_active and not is_map
-                await ctx.handle_deathlink_state(currently_dead)
+            current_map_level = int.from_bytes(memory_data.get(DKC2Memory.current_map_level))
+            is_death_link_active = int.from_bytes(memory_data.get(DKC2Memory.death_link_flag))
+            is_player_dead = player_state & 0x20
+            is_map = nmi_pointer == 0x8CE9 or nmi_pointer == 0x8CF1
+            currently_dead = bool(is_player_dead) and not is_death_link_active and not is_map and current_map_level
+            await ctx.handle_deathlink_state(currently_dead)
 
         if "EnergyLink" in ctx.tags:
-            await self.handle_energy_link(ctx)
+            await self.handle_energy_link(ctx, memory_data)
 
         if "TrapLink" in ctx.tags:
-            await self.handle_trap_link(ctx)
+            await self.handle_trap_link(ctx, memory_data)
 
-        current_level = await snes_read(ctx, DKC2_CURRENT_LEVEL, 0x01)
-        loaded_level = await snes_read(ctx, DKC2_LOADED_LEVEL, 0x01)
-        current_map = await snes_read(ctx, DKC2_CURRENT_MAP, 0x01)
-        brightness = await snes_read(ctx, DKC2_BRIGHTNESS, 0x01)
-
-        if current_level is None or loaded_level is None or brightness is None:
-            return
-        
         from .Levels import location_id_to_level_id
         from worlds import AutoWorldRegister
 
         new_checks = []
-        current_level = int.from_bytes(current_level, "little")
-        loaded_level = int.from_bytes(loaded_level, "little")
-        brightness = int.from_bytes(brightness, "little")
+        setting_data = memory_data.get(DKC2Memory.settings)
+        current_level = int.from_bytes(memory_data.get(DKC2Memory.current_level), "little")
+        loaded_level = int.from_bytes(memory_data.get(DKC2Memory.loaded_level), "little")
+        current_map = memory_data.get(DKC2Memory.current_map)
+        brightness = int.from_bytes(memory_data.get(DKC2Memory.brightness), "little")
+        game_flags = memory_data.get(DKC2Memory.game_flags)
+        misc_flags = memory_data.get(DKC2Memory.misc_flags)
+        swanky_flags = memory_data.get(DKC2Memory.swanky_flags)
+        sanity_flags = list(memory_data.get(DKC2Memory.sanity_flags))
 
         dk_coins_as_checks = setting_data[0x20]
         kong_as_checks = setting_data[0x21]
@@ -235,7 +269,6 @@ class DKC2SNIClient(SNIClient):
         stage_flags = game_flags[0x40:0x60]
         bonus_flags = list(game_flags[0x00:0x20])
         dk_coin_flags = list(game_flags[0x20:0x40])
-        sanity_flags = list(sanity_flags)
         for loc_name, data in location_id_to_level_id.items():
             # Do not process locations if in a map or a transition
             if nmi_pointer == 0x8CE9 or nmi_pointer == 0x8CF1 or brightness & 0x0F != 0x0F:
@@ -314,14 +347,14 @@ class DKC2SNIClient(SNIClient):
                 return
             
         # Add a label that shows how many Barrels are left
-        await self.handle_messages(ctx)
+        await self.handle_messages(ctx, memory_data)
 
         # Add a label that shows how many Barrels are left
-        await self.handle_barrel_label(ctx)
+        await self.handle_barrel_label(ctx, memory_data)
 
         # Send current map to poptracker
-        reached_levels = await snes_read(ctx, DKC2_TRACKED_LEVELS, 0x20)
-        current_clears = await snes_read(ctx, DKC2_TRACKED_CLEARS, 0x0E)
+        reached_levels = memory_data.get(DKC2Memory.tracked_levels)
+        current_clears = memory_data.get(DKC2Memory.current_clears)
         if reached_levels is None or current_clears is None:
             return
         
@@ -376,14 +409,7 @@ class DKC2SNIClient(SNIClient):
                         [{"operation": "replace", "value": level_clear_list}],
                 }])
         
-
         # Receive items
-        rom = await snes_read(ctx, DKC2_ROMHASH_START, ROMHASH_SIZE)
-        if rom != ctx.rom:
-            ctx.rom = None
-            snes_logger.info(f'Exit ROM.')
-            return
-        
         for new_check_id in new_checks:
             ctx.locations_checked.add(new_check_id)
             self.current_session_locations.add(new_check_id)
@@ -392,13 +418,9 @@ class DKC2SNIClient(SNIClient):
                 f'New Check: {location} ({len(ctx.locations_checked)}/{len(ctx.missing_locations) + len(ctx.checked_locations)})')
             await ctx.send_msgs([{"cmd": 'LocationChecks', "locations": [new_check_id]}])
 
-        recv_count = await snes_read(ctx, DKC2_RECV_INDEX, 2)
-        if recv_count is None:
-            # Add a small failsafe in case we get a None. Other SNI games do this...
-            return
 
         from .Rom import unlock_data, currency_data, trap_data
-        recv_index = int.from_bytes(recv_count, "little")
+        recv_index = int.from_bytes(memory_data.get(DKC2Memory.recv_index), "little")
 
         if recv_index < len(ctx.items_received):
             item = ctx.items_received[recv_index]
@@ -475,10 +497,6 @@ class DKC2SNIClient(SNIClient):
             await snes_flush_writes(ctx)
                 
         # Handle collected locations
-        nmi_pointer = await snes_read(ctx, WRAM_START + 0x0020, 0x2)
-        if nmi_pointer is None:
-            return
-        nmi_pointer = int.from_bytes(nmi_pointer, "little")
         if nmi_pointer == 0x8CE9 or nmi_pointer == 0x8CF1:
             new_level_clear = False
             new_dk_coin = False
@@ -546,7 +564,7 @@ class DKC2SNIClient(SNIClient):
 
             await snes_flush_writes(ctx)
 
-    async def handle_energy_link(self, ctx: "SNIContext"):
+    async def handle_energy_link(self, ctx: "SNIContext", memory_data: SnesData[DKC2Memory]):
         from SNIClient import snes_buffered_write, snes_flush_writes, snes_read
 
         # Deposits EnergyLink into pool
@@ -574,7 +592,7 @@ class DKC2SNIClient(SNIClient):
         
         if self.barrel_request == "place_request":
             self.barrel_request_tag = f"dkc2-dkbarrel-{ctx.team}-{ctx.slot}-{random.randint(0, 0xFFFFFFFF)}"
-            value = DK_BARREL_BANANA_COST * DKC2_EXCHANGE_RATE
+            value = DK_BARREL_BANANA_COST * DKC2_EXCHANGE_RATE * self.barrel_count
             await ctx.send_msgs([{ 
                 "cmd": "Set", 
                 "key": f"EnergyLink{ctx.team}", 
@@ -589,10 +607,11 @@ class DKC2SNIClient(SNIClient):
             self.barrel_request = "pending"
 
         elif self.barrel_request == "successful":
-            barrels += 1
-            barrels &= 0x00FF
+            barrels += self.barrel_count
+            barrels &= 0x0FFF
             snes_buffered_write(ctx, DKC2_SRAM + 0x48, bytes([barrels]))
             self.barrel_request = ""
+            self.barrel_count = 0
             logger.info(f"Delivered DK Barrel! You have {barrels} barrels pending to be actually delivered in game.")
         
         elif self.barrel_request == "not_enough_funds":
@@ -606,33 +625,28 @@ class DKC2SNIClient(SNIClient):
             }])
             self.barrel_request_refund = 0
             self.barrel_request = ""
-            logger.info(f"Not enough bananas to summon a barrel! You need at least {DK_BARREL_BANANA_COST} bananas.")
+            logger.info(f"Not enough bananas to summon a barrel! You need at least {DK_BARREL_BANANA_COST * self.barrel_count} bananas.")
+            self.barrel_count = 0
 
         await snes_flush_writes(ctx)
 
-    async def handle_barrel_label(self, ctx: "SNIContext"):
+    async def handle_barrel_label(self, ctx: "SNIContext", memory_data: SnesData[DKC2Memory]):
         try:
             from kvui import MDLabel as Label
         except ImportError:
             from kvui import Label
-        from SNIClient import snes_read
 
         if not self.barrel_label:
             self.barrel_label = Label(text=f"", size_hint_x=None, width=120, halign="center")
             ctx.ui.connect_layout.add_widget(self.barrel_label)
 
-        barrels = await snes_read(ctx, DKC2_SRAM + 0x48, 0x02)
-        if barrels is not None:
-            barrel_count = int.from_bytes(barrels, "little")
-            self.barrel_label.text = f"Barrels: {barrel_count}"
+        extended_data = list(memory_data.get(DKC2Memory.extended_data))
+        barrel_count = int.from_bytes(extended_data[0x48:0x4A], "little")
+        self.barrel_label.text = f"Barrels: {barrel_count}"
 
-    async def handle_trap_link(self, ctx: "SNIContext"):
+    async def handle_trap_link(self, ctx: "SNIContext", memory_data: SnesData[DKC2Memory]):
         from SNIClient import snes_buffered_write, snes_flush_writes, snes_read
         from .Rom import trap_data
-        
-        setting_data = await snes_read(ctx, DKC2_SETTINGS, 0x40)
-        if setting_data is None:
-            return
 
         if self.received_trap_link:
             trap = self.received_trap_link
@@ -648,34 +662,19 @@ class DKC2SNIClient(SNIClient):
             await snes_flush_writes(ctx)
 
 
-    async def handle_messages(self, ctx: "SNIContext"):
-        from SNIClient import snes_buffered_write, snes_flush_writes, snes_read
+    async def handle_messages(self, ctx: "SNIContext", memory_data: SnesData[DKC2Memory]):
+        from SNIClient import snes_buffered_write, snes_flush_writes
         from .Text import message_received_to_bytes, item_names, item_order
         
-        nmi_pointer = await snes_read(ctx, WRAM_START + 0x0020, 0x02)
-        scene_flags = await snes_read(ctx, WRAM_START + 0x06A1, 0x02)
-        gameplay_flags = await snes_read(ctx, WRAM_START + 0x08C2, 0x02)
-        gamemode_pointer = await snes_read(ctx, DKC2_GAMEMODE, 0x02)
-        brightness = await snes_read(ctx, DKC2_BRIGHTNESS, 0x01)
-        if brightness is None or nmi_pointer is None or gamemode_pointer is None or scene_flags is None or gameplay_flags is None:
-            return
-        
         # Do not show messages in banned scenarios
-        gamemode_pointer = int.from_bytes(gamemode_pointer, "little")
-        scene_flags = int.from_bytes(scene_flags, "little")
-        gameplay_flags = int.from_bytes(gameplay_flags, "little")
+        gamemode_pointer = int.from_bytes(memory_data.get(DKC2Memory.gamemode_pointer), "little")
+        scene_flags = int.from_bytes(memory_data.get(DKC2Memory.scene_flags), "little")
+        gameplay_flags = int.from_bytes(memory_data.get(DKC2Memory.gameplay_flags), "little")
         if gamemode_pointer in BANNED_GAMEMODES or scene_flags & 0x3000 != 0 or gameplay_flags & 0x0040:
             return
         
-        message_timer = await snes_read(ctx, DKC2_MESSAGE_TIMER, 0x02)
-        message_phase = await snes_read(ctx, DKC2_MESSAGE_PHASE, 0x02)
-        message_rerun = await snes_read(ctx, DKC2_MESSAGE_RERUN, 0x02)
-        controller_flags = await snes_read(ctx, WRAM_START + 0x0507, 0x02)
-        if message_timer is None or message_phase is None or message_rerun is None or controller_flags is None:
-            return
-        
         # Rerun last message if it got caught during a screen transition
-        message_rerun = int.from_bytes(message_rerun, "little")
+        message_rerun = int.from_bytes(memory_data.get(DKC2Memory.message_rerun), "little")
         if message_rerun:
             self.message_queue.insert(0, self.last_message.copy())
             snes_buffered_write(ctx, DKC2_MESSAGE_RERUN, (0x00).to_bytes(2, "little"))
@@ -684,22 +683,18 @@ class DKC2SNIClient(SNIClient):
         
         # Skip messages if the message isn't done showing up or the brightness isn't at full
         # Also add "tap SELECT" and not holding, tap action isn't cleared until the map starts fading in
-        message_timer = int.from_bytes(message_timer, "little")
-        message_phase = int.from_bytes(message_phase, "little")
-        brightness = int.from_bytes(brightness, "little")
-        controller_flags = int.from_bytes(controller_flags, "little")
+        brightness = int.from_bytes(memory_data.get(DKC2Memory.brightness), "little")
+        message_timer = int.from_bytes(memory_data.get(DKC2Memory.message_timer), "little")
+        message_phase = int.from_bytes(memory_data.get(DKC2Memory.message_phase), "little")
+        controller_flags = int.from_bytes(memory_data.get(DKC2Memory.controller_flags), "little")
         if message_phase or message_timer or brightness & 0x0F != 0x0F or controller_flags & 0x0020:
             return
         
         # Show tracker instead if it's requested from the server, only when there's not a message queue going on
-        message_is_tracker = await snes_read(ctx, DKC2_MESSAGE_TRACKER, 0x02)
-        save_data = await snes_read(ctx, DKC2_SRAM, 0x40)
-        if message_is_tracker is None or save_data is None:
-            return
-        message_is_tracker = int.from_bytes(message_is_tracker, "little")
+        save_data = list(memory_data.get(DKC2Memory.extended_data))
+        message_is_tracker = int.from_bytes(memory_data.get(DKC2Memory.message_is_tracker), "little")
         if message_is_tracker and len(self.message_queue) == 0:
             # Build strings based on unlock data
-            save_data = list(save_data)
             slot = ""
             unlocks = []
             # Special case Diddy and Dixie
@@ -746,40 +741,44 @@ class DKC2SNIClient(SNIClient):
             return
         
         self.last_message = self.message_queue.pop(0)
-        nmi_pointer = int.from_bytes(nmi_pointer, "little")
+        nmi_pointer = int.from_bytes(memory_data.get(DKC2Memory.nmi_pointer), "little")
         in_map = nmi_pointer == 0x8CE9 or nmi_pointer == 0x8CF1
 
         # Early return for non tracker messages
-        if not self.last_message[0]:
-            classification = self.last_message[3]
-            is_received = self.last_message[4]
-            if is_received:
-                if not self.slot_data["display_messages"] & 0x02:
-                    return
-                current_filter = self.slot_data["received_message_filter"]
-            else:
-                if not self.slot_data["display_messages"] & 0x01:
-                    return
-                current_filter = self.slot_data["sent_message_filter"]
+        try:
+            if not self.last_message[0]:
+                classification = self.last_message[3]
+                is_received = self.last_message[4]
+                if is_received:
+                    if not self.slot_data["display_messages"] & 0x02:
+                        return
+                    current_filter = self.slot_data["received_message_filter"]
+                else:
+                    if not self.slot_data["display_messages"] & 0x01:
+                        return
+                    current_filter = self.slot_data["sent_message_filter"]
 
-            if classification & 0x01 and "Progression" in current_filter:
-                pass
-            elif classification & 0x02 and "Useful" in current_filter:
-                pass
-            elif classification & 0x04 and "Trap" in current_filter:
-                pass
-            elif classification == 0x00 and "Filler" in current_filter:
-                pass
-            else:
-                return
+                if classification & 0x01 and "Progression" in current_filter:
+                    pass
+                elif classification & 0x02 and "Useful" in current_filter:
+                    pass
+                elif classification & 0x04 and "Trap" in current_filter:
+                    pass
+                elif classification == 0x00 and "Filler" in current_filter:
+                    pass
+                else:
+                    return
+        except IndexError:
+            return
         
         message_buffer = message_received_to_bytes(ctx, self.last_message, in_map)
         message_colors = self.parse_client_colors(ctx)
         
-        snes_buffered_write(ctx, DKC2_MESSAGE_TIMER, (180).to_bytes(2, "little"))
         snes_buffered_write(ctx, DKC2_MESSAGE_ACTIVATE, (0x01).to_bytes(2, "little"))
+        snes_buffered_write(ctx, DKC2_MESSAGE_TIMER, (180).to_bytes(2, "little"))
         snes_buffered_write(ctx, DKC2_MESSAGE_BUFFER, message_buffer)
         snes_buffered_write(ctx, DKC2_PALETTE_BUFFER, message_colors)
+
         await snes_flush_writes(ctx)
 
     def parse_client_colors(self, ctx: "SNIContext"):
@@ -810,21 +809,30 @@ class DKC2SNIClient(SNIClient):
 
 
     async def deathlink_kill_player(self, ctx: "SNIContext"):
-        from SNIClient import DeathState, snes_buffered_write, snes_flush_writes, snes_read
+        from SNIClient import DeathState, snes_buffered_write, snes_flush_writes
 
-        # Discard killing from death link
-        death_link_flag = await snes_read(ctx, DKC2_DEATH_LINK_FLAG, 0x01)
-        if death_link_flag is None:
+        memory_data = await self.memory_reader.read(ctx)
+        if memory_data is None:
             return
-        if death_link_flag[0]:
+        
+        # Discard killing from death link
+        death_link_flag = int.from_bytes(memory_data.get(DKC2Memory.death_link_flag))
+        if death_link_flag:
             return
         
         # Discard killing from the map
-        nmi_pointer = await snes_read(ctx, WRAM_START + 0x0020, 0x2)
-        if nmi_pointer is None:
-            return
-        nmi_pointer = int.from_bytes(nmi_pointer, "little")
+        nmi_pointer = int.from_bytes(memory_data.get(DKC2Memory.nmi_pointer), "little")
         if nmi_pointer == 0x8CE9 or nmi_pointer == 0x8CF1:
+            return
+        
+        # Discard killing if already dead
+        player_state = int.from_bytes(memory_data.get(DKC2Memory.player_state))
+        if player_state & 0x20:
+            return
+
+        # Discard killing if on a shop level
+        current_map_level = int.from_bytes(memory_data.get(DKC2Memory.current_map_level))
+        if not current_map_level:
             return
             
         snes_buffered_write(ctx, DKC2_DEATH_LINK_FORCE, bytes([0x01]))
@@ -867,7 +875,7 @@ class DKC2SNIClient(SNIClient):
             if self.barrel_request == "pending" and "tag" in args:
                 if args["tag"] == self.barrel_request_tag:
                     self.barrel_request_tag = ""
-                    dk_barrel_cost = DKC2_EXCHANGE_RATE * DK_BARREL_BANANA_COST
+                    dk_barrel_cost = DKC2_EXCHANGE_RATE * DK_BARREL_BANANA_COST * self.barrel_count
                     if args["original_value"] < dk_barrel_cost:
                         # send back the original value
                         value = args["original_value"]
@@ -918,9 +926,9 @@ class DKC2SNIClient(SNIClient):
                 if item.player != ctx.slot and item.location in self.current_session_locations and item.location not in self.processed_locations:
                     self.processed_locations.add(item.location)
                     self.message_queue.append([False, ctx.player_names[item.player], ctx.item_names.lookup_in_slot(item.item, item.player), item.flags, False])
+        
 
-
-def cmd_request(self):
+def cmd_request(self, amount: str = ""):
     """
     Request a DK Barrel from the banana pool (EnergyLink).
     """
@@ -929,9 +937,21 @@ def cmd_request(self):
     if (not self.ctx.server) or self.ctx.server.socket.closed or not self.ctx.client_handler.game_state:
         logger.info(f"Must be connected to server and in game.")
     else:
-        if self.ctx.client_handler.barrel_request != "":
-            logger.info(f"You already have a DK Barrel in queue.")
-            return
+        if amount:
+            try:
+                amount = int(amount)
+            except ValueError:
+                logger.info(f"Please specify a valid number.")
+                return
+            if amount <= 0:
+                logger.info(f"Please specify a number higher than 0.")
+                return
+            if self.ctx.client_handler.barrel_request != "":
+                logger.info(f"You already have a DK Barrel in queue.")
+                return
+            else:
+                self.ctx.client_handler.barrel_request = "place_request"
+                self.ctx.client_handler.barrel_count = amount
+                logger.info(f"Placing a DK barrel request...")
         else:
-            self.ctx.client_handler.barrel_request = "place_request"
-            logger.info(f"Placing a DK barrel request...")
+            logger.info(f"You need to specify how many Barrels you will request.")

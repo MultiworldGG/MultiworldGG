@@ -324,18 +324,21 @@ def validate_char_equipment(character: gggAPI.Character, ctx: "PathOfExileContex
                 
     # get count of items.name that match the progressive unlocks
 
-    normal_flasks_usable = len([i for i in total_received_items_names if i == 'Progressive Normal Flask'])
-    magic_flasks_usable = len([i for i in total_received_items_names if i == 'Progressive Magic Flask'])
-    unique_flask_usable = len([i for i in total_received_items_names if i == 'Progressive Unique Flask'])
+    found_normal_flasks = len([i for i in total_received_items_names if i == 'Progressive Normal Flask Unlock'])
+    found_magic_flasks = len([i for i in total_received_items_names if i == 'Progressive Magic Flask Unlock'])
+    found_unique_flask = len([i for i in total_received_items_names if i == 'Progressive Unique Flask Unlock'])
     
     total_progressive_flasks_usable = len([i for i in total_received_items_names if i == 'Progressive Flask Unlock'])
-    normal_flasks_usable += min(total_progressive_flasks_usable, (5 - normal_flasks_usable))
-    total_progressive_flasks_usable -= normal_flasks_usable
+    normal_flasks_usable = max(total_progressive_flasks_usable, found_normal_flasks, 0)
+    normal_flasks_usable = min(5, normal_flasks_usable) # cap normal flasks at 5, since that's the max you can have even with all unlocks.
+    total_progressive_flasks_usable -= 5
 
-    magic_flasks_usable += min(total_progressive_flasks_usable, (5 - magic_flasks_usable))
-    total_progressive_flasks_usable -= magic_flasks_usable
+    magic_flasks_usable = max(total_progressive_flasks_usable, found_magic_flasks, 0)
+    magic_flasks_usable = min(5, magic_flasks_usable)
+    total_progressive_flasks_usable -= 5
 
-    unique_flask_usable += min(total_progressive_flasks_usable, (5 - unique_flask_usable))
+    unique_flask_usable = max(total_progressive_flasks_usable, found_unique_flask, 0)
+    unique_flask_usable = min(5, unique_flask_usable)
 
 
 

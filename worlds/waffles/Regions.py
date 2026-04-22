@@ -4,50 +4,13 @@ from BaseClasses import Region, ItemClassification
 from .Locations import WaffleLocation
 from .Levels import level_info_dict
 from .Items import WaffleItem
-from .Names import LocationName
+from .Names import LocationName, ItemName
 from .Options import Goal
 from worlds.generic.Rules import add_rule
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import WaffleWorld
-
-GREEN_YOSHI_LEVELS = [
-    LocationName.donut_plains_top_secret,
-    LocationName.yoshis_island_2_region,
-    LocationName.yoshis_island_3_region,
-    LocationName.donut_plains_1_region,
-    LocationName.donut_plains_4_region,
-    LocationName.vanilla_dome_3_region,
-    LocationName.vanilla_secret_2_region,
-    LocationName.butter_bridge_2_region,
-    LocationName.cookie_mountain_region,
-    LocationName.forest_of_illusion_1_region,
-    LocationName.forest_of_illusion_3_region,
-    LocationName.chocolate_island_1_region,
-    LocationName.chocolate_island_2_region,
-    LocationName.valley_of_bowser_4_region,
-    LocationName.special_zone_5_region,
-    LocationName.special_zone_7_region,
-    LocationName.special_zone_8_region,
-]
-
-BLUE_YOSHI_LEVELS = [
-    LocationName.cheese_bridge_region,
-    LocationName.star_road_2_region,
-    LocationName.valley_of_bowser_2_region,
-    LocationName.special_zone_3_region,
-]
-
-RED_YOSHI_LEVELS = [
-    LocationName.star_road_1_region,
-    LocationName.star_road_4_region,
-]
-
-YELLOW_YOSHI_LEVELS = [
-    LocationName.star_road_3_region,
-    LocationName.star_road_5_region,
-]
 
 def create_regions(world: "WaffleWorld", active_locations: typing.Dict[int,int]):
     menu_region = create_region(world, active_locations, 'Menu', None)
@@ -56,11 +19,7 @@ def create_regions(world: "WaffleWorld", active_locations: typing.Dict[int,int])
 
     yoshis_house_tile = create_region(world, active_locations, LocationName.yoshis_house_tile, None)
 
-    yoshis_house_region_locations = []
-    if world.options.goal == Goal.option_yoshi_house:
-        yoshis_house_region_locations.append(LocationName.yoshis_house)
-    yoshis_house_region = create_region(world, active_locations, LocationName.yoshis_house,
-                                        yoshis_house_region_locations)
+    yoshis_house_region = create_region(world, active_locations, LocationName.yoshis_house, None)
 
     yoshis_island_1_tile = create_region(world, active_locations, LocationName.yoshis_island_1_tile, None)
     yoshis_island_1_region = create_region(world, active_locations, LocationName.yoshis_island_1_region, None)
@@ -404,10 +363,7 @@ def create_regions(world: "WaffleWorld", active_locations: typing.Dict[int,int])
     front_door_region = create_region(world, active_locations, LocationName.front_door, None)
     back_door_tile = create_region(world, active_locations, LocationName.back_door_tile, None)
     back_door_region = create_region(world, active_locations, LocationName.back_door, None)
-    bowser_region_locations = []
-    if world.options.goal == Goal.option_bowser:
-        bowser_region_locations += [LocationName.bowser]
-    bowser_region = create_region(world, active_locations, LocationName.bowser_region, bowser_region_locations)
+    bowser_region = create_region(world, active_locations, LocationName.bowser_region, None)
 
     donut_plains_entrance_pipe = create_region(world, active_locations, LocationName.donut_plains_entrance_pipe, None)
     donut_plains_exit_pipe = create_region(world, active_locations, LocationName.donut_plains_exit_pipe, None)
@@ -808,6 +764,11 @@ def create_regions(world: "WaffleWorld", active_locations: typing.Dict[int,int])
         ci_to_vob,
         vob_from_ci,
     ]
+
+    if world.options.goal == Goal.option_yoshi_house:
+        add_event_to_region(world, LocationName.yoshis_house, LocationName.yoshis_house, ItemName.victory)
+    elif world.options.goal == Goal.option_bowser:
+        add_event_to_region(world, LocationName.bowser_region, LocationName.bowser, ItemName.victory)
 
     add_location_to_region(world, active_locations, LocationName.special_zone_1_exit_1, LocationName.special_zone_1_exit_1)
     add_location_to_region(world, active_locations, LocationName.special_zone_2_exit_1, LocationName.special_zone_2_exit_1)
@@ -1784,14 +1745,7 @@ def create_regions(world: "WaffleWorld", active_locations: typing.Dict[int,int])
         add_location_to_region(world, active_locations, LocationName.special_zone_4_region, LocationName.special_zone_4_star_block_1)
 
 def connect_regions(world: "WaffleWorld", level_to_tile_dict):
-    #connect(world, "Menu", LocationName.yoshis_island_region)
-    possible_starting_regions = [
-        LocationName.yoshis_island_region,
-        LocationName.donut_plains_1_tile,
-        LocationName.vanilla_dome_1_tile,
-        LocationName.forest_of_illusion_1_tile,
-        LocationName.special_zone_1_tile,
-    ]
+    from .Levels import possible_starting_regions
     connect(world, "Menu", possible_starting_regions[world.options.starting_location.value])
 
     # Connect starting locations both ways
@@ -2012,79 +1966,6 @@ def connect_regions(world: "WaffleWorld", level_to_tile_dict):
     # Connect transitions
     for entrance, exit in world.transition_pairs.items():
         connect(world, entrance, exit)
-
-    # I'm lazy
-    world.explicit_indirect_conditions = False
-    return
-
-    # Connect potential yoshi findings if applicable
-    if not world.options.inventory_yoshi_logic:
-        if 0x59 in world.swapped_exits:
-            connect_blue_yoshi_levels(world, f"{LocationName.star_road_4_region} -> {LocationName.star_road_4_exit_1}")
-        else:
-            connect_blue_yoshi_levels(world, f"{LocationName.star_road_4_region} -> {LocationName.star_road_4_exit_2}")
-
-        connect_blue_yoshi_levels(world, f"{LocationName.star_road_5_region} -> {LocationName.star_road_5_exit_1}")
-        connect_blue_yoshi_levels(world, f"{LocationName.star_road_5_region} -> {LocationName.star_road_5_exit_2}")
-
-        connect_blue_yoshi_levels(world, f"{LocationName.chocolate_island_3_region} -> {LocationName.chocolate_island_3_exit_1}")
-        connect_blue_yoshi_levels(world, f"{LocationName.chocolate_island_3_region} -> {LocationName.chocolate_island_3_exit_2}")
-
-        if 0x15 in world.swapped_exits:
-            connect_green_yoshi_levels(world, f"{LocationName.donut_plains_1_region} -> {LocationName.donut_plains_1_exit_1}")
-        else:
-            connect_green_yoshi_levels(world, f"{LocationName.donut_plains_1_region} -> {LocationName.donut_plains_1_exit_2}")
-
-        if 0x09 in world.swapped_exits:
-            connect_green_yoshi_levels(world, f"{LocationName.donut_plains_2_region} -> {LocationName.donut_plains_2_exit_1}")
-        else:
-            connect_green_yoshi_levels(world, f"{LocationName.donut_plains_2_region} -> {LocationName.donut_plains_2_exit_2}")
-
-        if 0x3E in world.swapped_exits:
-            connect_green_yoshi_levels(world, f"{LocationName.vanilla_dome_1_region} -> {LocationName.vanilla_dome_1_exit_1}")
-        else:
-            connect_green_yoshi_levels(world, f"{LocationName.vanilla_dome_1_region} -> {LocationName.vanilla_dome_1_exit_2}")
-        
-        connect_green_yoshi_levels(world, f"{LocationName.vanilla_dome_2_region} -> {LocationName.vanilla_dome_2_exit_1}")
-        connect_green_yoshi_levels(world, f"{LocationName.vanilla_dome_2_region} -> {LocationName.vanilla_dome_2_exit_2}")
-
-        connect_green_yoshi_levels(world, f"{LocationName.cheese_bridge_region} -> {LocationName.cheese_bridge_exit_1}")
-        connect_green_yoshi_levels(world, f"{LocationName.cheese_bridge_region} -> {LocationName.cheese_bridge_exit_2}")
-        
-        if 0x33 in world.swapped_exits:
-            connect_green_yoshi_levels(world, f"{LocationName.valley_of_bowser_4_region} -> {LocationName.valley_of_bowser_4_exit_1}")
-        else:
-            connect_green_yoshi_levels(world, f"{LocationName.valley_of_bowser_4_region} -> {LocationName.valley_of_bowser_4_exit_2}")
-
-        if 0x56 in world.swapped_exits:
-            connect_green_yoshi_levels(world, f"{LocationName.star_road_3_region} -> {LocationName.star_road_3_exit_1}")
-        else:
-            connect_green_yoshi_levels(world, f"{LocationName.star_road_3_region} -> {LocationName.star_road_3_exit_2}")
-        
-        connect_green_yoshi_levels(world, f"{LocationName.special_zone_3_region} -> {LocationName.special_zone_3_exit_1}")
-        connect_green_yoshi_levels(world, f"{LocationName.special_zone_8_region} -> {LocationName.special_zone_8_exit_1}")
-
-
-def connect_blue_yoshi_levels(world: "WaffleWorld", entrance_name: str):
-    entrance = world.multiworld.get_entrance(entrance_name, world.player)
-    for region_name in BLUE_YOSHI_LEVELS:
-        region = world.multiworld.get_region(region_name, world.player)
-        world.multiworld.register_indirect_condition(region, entrance)
-    for region_name in GREEN_YOSHI_LEVELS:
-        region = world.multiworld.get_region(region_name, world.player)
-        world.multiworld.register_indirect_condition(region, entrance)
-    for region_name in RED_YOSHI_LEVELS:
-        region = world.multiworld.get_region(region_name, world.player)
-        world.multiworld.register_indirect_condition(region, entrance)
-    for region_name in YELLOW_YOSHI_LEVELS:
-        region = world.multiworld.get_region(region_name, world.player)
-        world.multiworld.register_indirect_condition(region, entrance)
-
-def connect_green_yoshi_levels(world: "WaffleWorld", entrance_name: str):
-    entrance = world.multiworld.get_entrance(entrance_name, world.player)
-    for region_name in GREEN_YOSHI_LEVELS:
-        region = world.multiworld.get_region(region_name, world.player)
-        world.multiworld.register_indirect_condition(region, entrance)
 
 
 def create_region(world: "WaffleWorld", active_locations: typing.Dict[str,int], name: str, locations: typing.List | None = None):

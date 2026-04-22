@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 class DKC3Location(Location):
     game = GAME_NAME
     def __init__(self, player: int, name: str = '', address: int = None, parent=None):
-        super().__init__(player, name, address, parent)
+        super().__init__(player, str(name), address, parent)
 
 stage_clears = {
     Locations.lakeside_limbo_clear:         CLEAR | L11 | 0x02,

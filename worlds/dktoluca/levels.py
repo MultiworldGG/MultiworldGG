@@ -7,7 +7,7 @@ from .enums import Regions, Events, Locations
 from .constants import *
 
 
-level_region_data: dict[str, dict[str, list[str]]] = {
+level_region_data: dict[Regions, dict[Locations, list[str]]] = {
     Regions.lakeside_limbo_level:  {
         "Clear": [
             Locations.lakeside_limbo_clear,

@@ -45,7 +45,6 @@ class TrackmaniaWorld(World):
     """Trackmania is a mechanically deep arcade racing game that is easy to pick up and addicting to master!
     Zoom through hundreds of thousands of user-made tracks as fast as you can!"""
     game = "Trackmania"  # name of the game/world
-    author: str = "SerialBoxes & Kaito Kid"
     options_dataclass = TrackmaniaOptions  # options the player can set
     options: TrackmaniaOptions  # typing hints for option results
     web = Webmania()
@@ -82,7 +81,7 @@ class TrackmaniaWorld(World):
             self.options.series_maximum_map_number.value = temp
 
         if self.options.map_min_length > self.options.map_max_length:
-            self.options.map_max_length = self.options.map_min_length+1
+            self.options.map_max_length.value = self.options.map_min_length.value + 1
 
         for series in range(1, self.options.series_number.value + 1):
             map_count: int = self.random.randint(self.options.series_minimum_map_number.value,
@@ -121,6 +120,9 @@ class TrackmaniaWorld(World):
 
             if "has_award" not in search_criteria:
                 search_criteria["has_award"] = self.options.has_award.value
+
+            if "in_totd" not in search_criteria:
+                search_criteria["in_totd"] = self.options.in_totd.value
 
             values : dict = {"MedalTotal": medals,
                              "MapCount": map_count,

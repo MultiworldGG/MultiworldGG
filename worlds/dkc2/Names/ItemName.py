@@ -68,4 +68,4 @@ dk_barrel = "Backup DK Barrel"
 extractinator = "Banana Extractinator"
 
 # Universal Tracker
-glitched = "Glitched Item"
+glitched = "Skill"

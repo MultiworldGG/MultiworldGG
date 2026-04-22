@@ -1167,8 +1167,8 @@ all_locations = {
     **invisible_block_location_table,
     **coin_block_location_table,
     **item_block_location_table,
-    **bowser_location_table,
-    **yoshi_house_location_table,
+    #**bowser_location_table,
+    #**yoshi_house_location_table,
     **egg_location_table,
     **room_location_table,
 }
@@ -1372,10 +1372,10 @@ def setup_locations(world: "WaffleWorld"):
     if "Flying Blocks" in world.options.block_checks.value:
         location_table.update(flying_block_location_table)
 
-    if world.options.goal == Goal.option_yoshi_house:
-        location_table.update(yoshi_house_location_table)
-    else:
-        location_table.update(bowser_location_table)
+    #if world.options.goal == Goal.option_yoshi_house:
+    #    location_table.update(yoshi_house_location_table)
+    #else:
+    #    location_table.update(bowser_location_table)
 
     if "Every Level" in world.options.yoshi_egg_placement.value:
         location_table.update(egg_location_table)

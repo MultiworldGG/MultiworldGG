@@ -18,6 +18,7 @@ AppCopyright=Distributed under GPLv3 License
 AppVerName={#MyAppName} {#MyAppVersionText}
 VersionInfoVersion={#MyAppVersion}
 DefaultDirName={autopf}\{#MyAppName}
+DisableDirPage=no
 DisableProgramGroupPage=yes
 DefaultGroupName=MultiworldGG
 OutputDir=setups

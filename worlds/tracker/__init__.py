@@ -20,7 +20,7 @@ def launch_client(*args):
     from .TrackerClient import launch as TCMain
     launch(TCMain, name="Universal Tracker client", args=args)
 
-UT_VERSION = "v0.2.28"
+UT_VERSION = "v0.2.29"
 
 class CurrentTrackerState(NamedTuple):
     all_items: Counter
@@ -82,6 +82,29 @@ class TrackerSettings(Group):
         These will be saved per seed and slot.
         """
 
+    class SortingPriorties(dict):
+        """Defines how entries on the tracker tab are grouped and sorted.
+        Categories with the same value will be grouped together. Format is:
+          "category1": priority1,
+          "category2": priority2,
+          etc.
+        with each category on its own line and indented two spaces. Priority
+        must be a positive number. The 'other' category will be used
+        for all values you choose not to define. If 'other' is not given a
+        priority, it will default to one more than the highest number given.
+        Valid category names are: default, hinted, excluded, glitched,
+        hinted_glitched, excluded_glitched, disconnected, and other."""
+
+    class SortingMethod(str):
+        """Defines whether locations on the tracker tab are sorted by their
+        location name, their region name, the label shown on the screen,
+        or by the APWorld being tracked. Note that it is valid to sort by
+        regions even if they aren't visible. If apworld is selected but the
+        apworld doesn't define a custom sort method, label sorting is
+        used instead. If include_location_name is set to false, region
+        sorting will always be used.
+        Valid sorting methods are: location, region, label, apworld."""
+
     player_files_path: TrackerPlayersPath = TrackerPlayersPath("Players")
     include_region_name: RegionNameBool | bool = False
     include_location_name: LocationNameBool | bool = True
@@ -90,6 +113,8 @@ class TrackerSettings(Group):
     enforce_deferred_entrances: SettingDeferredEntranceMode | str = "default"
     display_glitched_logic: DisplayGlitchedLogic | bool = True
     save_entered_commands: SaveEnteredCommands | bool = True
+    sorting_priorities: SortingPriorties | dict[str, int] = {}
+    sorting_method: SortingMethod | str = "apworld"
 
 
 class TrackerWorld(World):

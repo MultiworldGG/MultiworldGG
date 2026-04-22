@@ -182,15 +182,6 @@
     ]
   },
   {
-    "name": "btlgrp_bom_bom_00_01_off_1",
-    "rel": "bom",
-    "location_id": 78780561,
-    "enemy_count": 1,
-    "enemy_ids": [
-      "0x1"
-    ]
-  },
-  {
     "name": "btlgrp_bom_bom_03_01_off_1",
     "rel": "bom",
     "location_id": 78780575,
@@ -284,17 +275,6 @@
       "0x71",
       "0x71",
       "0x71"
-    ]
-  },
-  {
-    "name": "btlgrp_dou_dou_00_01_off_1",
-    "rel": "dou",
-    "location_id": 78780493,
-    "enemy_count": 3,
-    "enemy_ids": [
-      "0x1",
-      "0x1",
-      "0x1"
     ]
   },
   {
@@ -4025,17 +4005,6 @@
     ]
   },
   {
-    "name": "btlgrp_moo_moo_00_01_off_1",
-    "rel": "moo",
-    "location_id": 78780579,
-    "enemy_count": 3,
-    "enemy_ids": [
-      "0x1",
-      "0x1",
-      "0x1"
-    ]
-  },
-  {
     "name": "btlgrp_moo_moo_01_01_off_1",
     "rel": "moo",
     "location_id": 78780807,
@@ -4484,17 +4453,6 @@
     ]
   },
   {
-    "name": "btlgrp_muj_muj_00_01",
-    "rel": "muj",
-    "location_id": 78780453,
-    "enemy_count": 3,
-    "enemy_ids": [
-      "0x1",
-      "0x1",
-      "0x1"
-    ]
-  },
-  {
     "name": "btlgrp_muj_muj_02_01_off_01",
     "rel": "muj",
     "location_id": 78780470,
@@ -4792,7 +4750,7 @@
   {
     "name": "btlgrp_tik_tik_01_02_off_1",
     "rel": "tik",
-    "location_id": 78780132,
+    "location_id": 78780136,
     "enemy_count": 2,
     "enemy_ids": [
       "0x3",
@@ -4859,69 +4817,9 @@
     ]
   },
   {
-    "name": "btlgrp_tik_tik_04_03_off_1",
-    "rel": "tik",
-    "location_id": 78780136,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xC",
-      "0xF"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_04_03_off_2",
-    "rel": "tik",
-    "location_id": 78780136,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xC",
-      "0xC"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_04_03_off_3",
-    "rel": "tik",
-    "location_id": 78780136,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xC",
-      "0xB"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_04_04_off_1",
-    "rel": "tik",
-    "location_id": 78780136,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xB",
-      "0x3"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_04_04_off_2",
-    "rel": "tik",
-    "location_id": 78780136,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xB",
-      "0xB"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_04_04_off_3",
-    "rel": "tik",
-    "location_id": 78780136,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xB",
-      "0xC"
-    ]
-  },
-  {
     "name": "btlgrp_tik_tik_07_01_off_1",
     "rel": "tik",
-    "location_id": 78780144,
+    "location_id": 78780145,
     "enemy_count": 3,
     "enemy_ids": [
       "0x5",
@@ -4932,7 +4830,7 @@
   {
     "name": "btlgrp_tik_tik_07_01_off_2",
     "rel": "tik",
-    "location_id": 78780144,
+    "location_id": 78780145,
     "enemy_count": 2,
     "enemy_ids": [
       "0x5",
@@ -4942,7 +4840,7 @@
   {
     "name": "btlgrp_tik_tik_07_02_off_1",
     "rel": "tik",
-    "location_id": 78780144,
+    "location_id": 78780145,
     "enemy_count": 2,
     "enemy_ids": [
       "0x5",
@@ -4952,72 +4850,12 @@
   {
     "name": "btlgrp_tik_tik_07_02_off_2",
     "rel": "tik",
-    "location_id": 78780144,
+    "location_id": 78780145,
     "enemy_count": 3,
     "enemy_ids": [
       "0x5",
       "0x4",
       "0x5"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_07_03_off_1",
-    "rel": "tik",
-    "location_id": 78780144,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xB",
-      "0xE"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_07_03_off_2",
-    "rel": "tik",
-    "location_id": 78780144,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xB",
-      "0xB"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_07_03_off_3",
-    "rel": "tik",
-    "location_id": 78780144,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xB",
-      "0x38"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_07_04_off_1",
-    "rel": "tik",
-    "location_id": 78780144,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0x38",
-      "0x5"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_07_04_off_2",
-    "rel": "tik",
-    "location_id": 78780144,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0x38",
-      "0x38"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_07_04_off_3",
-    "rel": "tik",
-    "location_id": 78780144,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0x38",
-      "0xB"
     ]
   },
   {
@@ -5045,66 +4883,6 @@
     "enemy_count": 1,
     "enemy_ids": [
       "0x3"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_15_04_off_1",
-    "rel": "tik",
-    "location_id": 78780147,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0x38",
-      "0x1"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_15_04_off_2",
-    "rel": "tik",
-    "location_id": 78780147,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0x38",
-      "0x38"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_15_04_off_3",
-    "rel": "tik",
-    "location_id": 78780147,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0x38",
-      "0xC"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_15_05_off_1",
-    "rel": "tik",
-    "location_id": 78780147,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xC",
-      "0x2"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_15_05_off_2",
-    "rel": "tik",
-    "location_id": 78780147,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xC",
-      "0xC"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_15_05_off_3",
-    "rel": "tik",
-    "location_id": 78780147,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xC",
-      "0x38"
     ]
   },
   {
@@ -5151,69 +4929,9 @@
     ]
   },
   {
-    "name": "btlgrp_tik_tik_18_03_off_1",
-    "rel": "tik",
-    "location_id": 78780151,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xC",
-      "0x2"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_18_03_off_2",
-    "rel": "tik",
-    "location_id": 78780151,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xC",
-      "0xC"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_18_03_off_3",
-    "rel": "tik",
-    "location_id": 78780151,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xC",
-      "0xB"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_18_04_off_1",
-    "rel": "tik",
-    "location_id": 78780151,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xB",
-      "0x5"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_18_04_off_2",
-    "rel": "tik",
-    "location_id": 78780151,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xB",
-      "0xB"
-    ]
-  },
-  {
-    "name": "btlgrp_tik_tik_18_04_off_3",
-    "rel": "tik",
-    "location_id": 78780151,
-    "enemy_count": 2,
-    "enemy_ids": [
-      "0xB",
-      "0xC"
-    ]
-  },
-  {
     "name": "btlgrp_tik_tik_20_01_off_1",
     "rel": "tik",
-    "location_id": 78780155,
+    "location_id": 78780156,
     "enemy_count": 5,
     "enemy_ids": [
       "0x5",
@@ -5226,7 +4944,7 @@
   {
     "name": "btlgrp_tik_tik_20_02_off_1",
     "rel": "tik",
-    "location_id": 78780155,
+    "location_id": 78780156,
     "enemy_count": 4,
     "enemy_ids": [
       "0x5",
@@ -5238,7 +4956,7 @@
   {
     "name": "btlgrp_tik_tik_20_03_off_1",
     "rel": "tik",
-    "location_id": 78780155,
+    "location_id": 78780156,
     "enemy_count": 3,
     "enemy_ids": [
       "0x5",
@@ -5249,7 +4967,7 @@
   {
     "name": "btlgrp_tik_tik_20_04_off_1",
     "rel": "tik",
-    "location_id": 78780155,
+    "location_id": 78780156,
     "enemy_count": 4,
     "enemy_ids": [
       "0x5",
@@ -5261,7 +4979,7 @@
   {
     "name": "btlgrp_tik_tik_20_05_off_1",
     "rel": "tik",
-    "location_id": 78780155,
+    "location_id": 78780156,
     "enemy_count": 5,
     "enemy_ids": [
       "0x5",
@@ -5274,7 +4992,7 @@
   {
     "name": "btlgrp_tik_tik_20_06_off_1",
     "rel": "tik",
-    "location_id": 78780155,
+    "location_id": 78780156,
     "enemy_count": 5,
     "enemy_ids": [
       "0xA3",

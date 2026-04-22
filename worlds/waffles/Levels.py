@@ -609,6 +609,14 @@ possible_starting_entrances = [
     LocationName.special_star_road,
 ]
 
+possible_starting_regions = [
+    LocationName.yoshis_island_region,
+    LocationName.donut_plains_1_tile,
+    LocationName.vanilla_dome_1_tile,
+    LocationName.forest_of_illusion_1_tile,
+    LocationName.special_zone_1_tile,
+]
+
 def generate_level_list(world: "WaffleWorld"):
     if not world.options.level_shuffle:
         out_level_list = full_level_list.copy()

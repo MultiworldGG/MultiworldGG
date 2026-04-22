@@ -963,3 +963,10 @@ item_datapackage = {
 "filler_item_start":filler_item_start,
 "arch_item_start":arch_item_start,
 }
+
+mixed_filler_items = {
+    **filler_item,
+    "nothing": arch_item_start + 1,
+    "Fruit Seeds": arch_item_start + 2,
+
+}

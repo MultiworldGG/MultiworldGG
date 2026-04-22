@@ -112,7 +112,7 @@ def _populate_json_file_options():
     for json_file in sorted(json_files):
         option_name = _filename_to_option_name(json_file)
         setattr(JsonFile, f"option_{option_name}", option_value)
-        new_options[json_file.lower()] = option_value
+        new_options[json_file] = option_value
         new_name_lookup[option_value] = json_file
         option_value += 1
 
@@ -123,7 +123,7 @@ def _populate_json_file_options():
     for json_file in sorted(json_files):
         normalized = re.sub(r'[^a-z0-9]', '', json_file.lower().replace('.json', ''))
         if normalized == "supermario64" or "supermario64" in normalized:
-            default_value = new_options.get(json_file.lower())
+            default_value = new_options.get(json_file)
             break
 
     if default_value is not None:

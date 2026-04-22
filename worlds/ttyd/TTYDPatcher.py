@@ -4,6 +4,7 @@ import sys
 import tempfile
 import zipfile
 
+import Utils
 from typing import Dict
 from settings import get_settings
 from .Data import Rels
@@ -11,6 +12,9 @@ from .Data import Rels
 
 def setup_gclib_path():
     """Extracts gclib files from .apworld zip to temp directory if needed."""
+    if Utils.is_frozen() or Utils.is_webhost_mode():
+        return
+
     base_path = os.path.dirname(__file__)
     lib_path = os.path.join(base_path, "lib", "gclib")
 

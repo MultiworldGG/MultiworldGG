@@ -165,6 +165,7 @@ class WaffleSNIClient(SNIClient):
         self.inventory_cost = 0
         self.visited_levels = set()
 
+
     async def deathlink_kill_player(self, ctx: "SNIContext"):
         from SNIClient import DeathState, snes_buffered_write, snes_flush_writes
 
@@ -187,15 +188,7 @@ class WaffleSNIClient(SNIClient):
         if state_mirror[0x09] != 0x00:
             return
 
-        snes_buffered_write(ctx, WRAM_START + 0x9D, bytes([0x30])) # Freeze Gameplay
-        snes_buffered_write(ctx, WRAM_START + 0x1DFB, bytes([0x09])) # Death Music
-        snes_buffered_write(ctx, WRAM_START + 0x0DDA, bytes([0xFF])) # Flush Music Buffer
-        snes_buffered_write(ctx, WRAM_START + 0x1407, bytes([0x00])) # Flush Cape Fly Phase
-        snes_buffered_write(ctx, WRAM_START + 0x140D, bytes([0x00])) # Flush Spin Jump Flag
-        snes_buffered_write(ctx, WRAM_START + 0x188A, bytes([0x00])) # Flush Empty Byte because the game does it
-        snes_buffered_write(ctx, WRAM_START + 0x7D, bytes([0x90])) # Mario Y Speed
-        snes_buffered_write(ctx, WRAM_START + 0x1496, bytes([0x30])) # Death Timer
-        snes_buffered_write(ctx, SMW_MARIO_STATE_ADDR, bytes([0x09])) # Mario State -> Dead
+        snes_buffered_write(ctx, SRAM_START + 0x4322, bytes([0x01]))
 
         await snes_flush_writes(ctx)
 
@@ -222,8 +215,8 @@ class WaffleSNIClient(SNIClient):
 
         ctx.allow_collect = True
 
-        #if bool(settings[0x05] & 0b1):
-        #    await ctx.update_death_link(True)
+        if bool(settings[0x05] & 0b1):
+            await ctx.update_death_link(True)
 
         if bool(settings[0x14] & 0b1) and "EnergyLink" not in ctx.tags:
             ctx.tags.add("EnergyLink")
@@ -328,9 +321,9 @@ class WaffleSNIClient(SNIClient):
             # Mario can't come to the phone right now
             return
 
-        #if "DeathLink" in ctx.tags and game_state == 0x14 and ctx.last_death_link + 1 < time.time():
-        #    currently_dead = mario_state == 0x09
-        #    await ctx.handle_deathlink_state(currently_dead)
+        if "DeathLink" in ctx.tags and game_state == 0x14 and ctx.last_death_link + 1 < time.time():
+            currently_dead = mario_state == 0x09
+            await ctx.handle_deathlink_state(currently_dead)
 
         # Check for Egg Hunt ending
         goal = rom_settings_data[0x00]

@@ -203,6 +203,7 @@ Currently, the following games are supported:
 * The Legend of Zelda: Oracle of Seasons
 * The Legend of Zelda: Phantom Hourglass
 * The Legend of Zelda: Skyward Sword
+* The Legend of Zelda: Spirit Tracks
 * The Legend of Zelda: The Minish Cap
 * The Legend of Zelda: The Wind Waker
 * The Legend of Zelda: Twilight Princess

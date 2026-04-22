@@ -67,10 +67,8 @@ async def validate_char(ctx: "PathOfExileContext" = context):
 
 
 async def async_load(ctx: "PathOfExileContext" = None):
-
-    await gggAPI.async_get_access_token()
-    
     global context
+    await gggAPI.async_get_access_token()
     ctx = ctx if ctx is not None else context
 
     # Extract jingle sound files from package data to the filter sounds directory

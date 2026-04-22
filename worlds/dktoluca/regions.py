@@ -16,20 +16,20 @@ def create_regions(world: "DKC3World", active_locations):
     player = world.player
 
     multiworld.regions += [
-        Region(Regions.lake_orangatanga, player, multiworld),
-        Region(Regions.kremwood_forest, player, multiworld),
-        Region(Regions.cotton_top_cove, player, multiworld),
-        Region(Regions.mekanos, player, multiworld),
-        Region(Regions.k3, player, multiworld),
-        Region(Regions.razor_ridge, player, multiworld),
-        Region(Regions.kaos_kore, player, multiworld),
-        Region(Regions.krematoa, player, multiworld),
+        Region(Regions.lake_orangatanga.value, player, multiworld),
+        Region(Regions.kremwood_forest.value, player, multiworld),
+        Region(Regions.cotton_top_cove.value, player, multiworld),
+        Region(Regions.mekanos.value, player, multiworld),
+        Region(Regions.k3.value, player, multiworld),
+        Region(Regions.razor_ridge.value, player, multiworld),
+        Region(Regions.kaos_kore.value, player, multiworld),
+        Region(Regions.krematoa.value, player, multiworld),
 
-        Region(Regions.northern_kremisphere_south, player, multiworld),
-        Region(Regions.northern_kremisphere_center, player, multiworld),
-        Region(Regions.northern_kremisphere_north, player, multiworld),
-        Region(Regions.northern_kremisphere_flying, player, multiworld),
-        Region(Regions.northern_kremisphere_kore, player, multiworld),
+        Region(Regions.northern_kremisphere_south.value, player, multiworld),
+        Region(Regions.northern_kremisphere_center.value, player, multiworld),
+        Region(Regions.northern_kremisphere_north.value, player, multiworld),
+        Region(Regions.northern_kremisphere_flying.value, player, multiworld),
+        Region(Regions.northern_kremisphere_kore.value, player, multiworld),
     ]
 
     active_kong_checks = world.options.kong_checks.value
@@ -39,8 +39,8 @@ def create_regions(world: "DKC3World", active_locations):
     active_banana_checks = world.options.banana_checks.value
 
     for region_name, region_data in level_region_data.items():
-        region = Region(region_name, player, multiworld)
-        region_map =  Region(region_name.replace(": Level", ": Map"), player, multiworld)
+        region = Region(region_name.value, player, multiworld)
+        region_map =  Region(region_name.value.replace(": Level", ": Map"), player, multiworld)
         multiworld.regions += [region, region_map]
 
         for loc_type, locations in region_data.items():
@@ -195,24 +195,22 @@ def connect_regions(world: "DKC3World"):
     connect(world, Regions.krematoa, Regions.rocket_rush_map)
     connect(world, Regions.krematoa, Regions.knautilus_map)
 
-    if world.options.goal != Goal.option_krematoa:
-        connect(world, Regions.kastle_kaos_map, Regions.kastle_kaos_level)
-    if world.options.goal != Goal.option_kore:
-        connect(world, Regions.knautilus_map, Regions.knautilus_level)
+    connect(world, Regions.kastle_kaos_map, Regions.kastle_kaos_level)
+    connect(world, Regions.knautilus_map, Regions.knautilus_level)
     
     for map_level, level in world.level_connections.items():
         connect(world, map_level, level)
 
-def add_location_to_region(multiworld: MultiWorld, player: int, active_locations, region_name: str, location_name: str):
-    region = multiworld.get_region(region_name, player)
-    loc_id = active_locations.get(location_name, 0)
+def add_location_to_region(multiworld: MultiWorld, player: int, active_locations, region_name: Regions, location_name: Locations):
+    region = multiworld.get_region(region_name.value, player)
+    loc_id = active_locations.get(location_name.value, 0)
     if loc_id:
-        location = DKC3Location(player, location_name, loc_id, region)
+        location = DKC3Location(player, location_name.value, loc_id, region)
         region.locations.append(location)
 
 
-def add_event_to_region(multiworld: MultiWorld, player: int, region_name: str, event_name: str, event_item=None):
-    region = multiworld.get_region(region_name, player)
+def add_event_to_region(multiworld: MultiWorld, player: int, region_name: Regions, event_name: str, event_item=None):
+    region = multiworld.get_region(str(region_name), player)
     event = DKC3Location(player, event_name, None, region)
     if event_item:
         event.place_locked_item(DKC3Item(event_item, ItemClassification.progression, None, player))
@@ -221,7 +219,7 @@ def add_event_to_region(multiworld: MultiWorld, player: int, region_name: str, e
     region.locations.append(event)
 
 
-def connect(world: "DKC3World", source: str, target: str):
-    source_region: Region = world.multiworld.get_region(source, world.player)
-    target_region: Region = world.multiworld.get_region(target, world.player)
+def connect(world: "DKC3World", source: Regions, target: Regions):
+    source_region: Region = world.multiworld.get_region(str(source), world.player)
+    target_region: Region = world.multiworld.get_region(str(target), world.player)
     source_region.connect(target_region)

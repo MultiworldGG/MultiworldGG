@@ -1,0 +1,10 @@
+[
+  {"name": "ToS 1 Entrances", "sections": [{"name": "Tower of Spirits Enter Section 1"}], "map_locations":[{"map": "Overview", "x": 496, "y": 388}]},
+  {"name": "ToS 2 Entrances", "sections": [{"name": "Tower of Spirits Enter Section 2"}], "map_locations":[{"map": "Overview", "x": 496, "y": 372}]},
+  {"name": "ToS 3 Entrances", "sections": [{"name": "Tower of Spirits Enter Section 3"}], "map_locations":[{"map": "Overview", "x": 496, "y": 356}]},
+  {"name": "ToS 4 Entrances", "sections": [{"name": "Tower of Spirits Enter Section 4"}], "map_locations":[{"map": "Overview", "x": 496, "y": 340}]},
+  {"name": "ToS 5 Entrances", "sections": [{"name": "Tower of Spirits Enter Section 5"}, {"name": "Tower of Spirits Exit Staven"}], "map_locations":[{"map": "Overview", "x": 496, "y": 324}]},
+  {"name": "ToS Summit Entrances", "sections": [
+    {"name": "ToS Summit Lower Exit"},
+    {"name": "Tower of Spirits Summit Enter Altar"}], "map_locations":[{"map": "Overview", "x": 496, "y": 308}]}
+]

@@ -276,6 +276,11 @@ def launch(exe: Sequence[str], in_terminal: bool = False) -> bool:
             subprocess.Popen(["start", f"Running {apname}", *exe], shell=True)
             return True
         elif is_linux:
+            # Attempt to use xdg-terminal-exec first to allow user-defined defaults
+            xdg = which('xdg-terminal-exec')
+            if xdg:
+                subprocess.Popen([xdg, '--', *exe])
+                return True
             terminal = which('x-terminal-emulator') or which("konsole") or which('gnome-terminal') or which('xterm')
             if terminal:
                 # Clear LD_LIB_PATH during terminal startup, but set it again when running command in case it's needed
@@ -325,6 +330,7 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
     from kivy.clock import Clock
     from kivy.uix.widget import Widget
     from kivy.uix.boxlayout import BoxLayout
+    from kivy.uix.progressbar import ProgressBar
     from kivy.uix.scrollview import ScrollView
     from kivy.uix.label import Label
     from kivy.uix.popup import Popup
@@ -759,22 +765,54 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
         def _on_user_requested_update(self, dialog, download_url):
             dialog.dismiss()
 
-            downloading = MDDialog(
-                MDDialogSupportingText(
-                    text="Downloading update…",
-                    halign="center"
-                ),
-                size_hint=(0.6, None),
+            status_label = MDDialogSupportingText(
+                text="Downloading update…",
+                halign="center",
+                size_hint_y=None,
+                height=dp(28),
             )
-            downloading.height = dp(100)
+            progress_bar = ProgressBar(max=100, value=0, size_hint=(1, None), height=dp(20))
+
+            inner = BoxLayout(
+                orientation="vertical",
+                spacing=dp(8),
+                size_hint=(1, None),
+                height=dp(28 + 8 + 20),
+            )
+            inner.add_widget(status_label)
+            inner.add_widget(progress_bar)
+
+            content = BoxLayout(orientation="vertical", padding=(dp(16), 0))
+            content.add_widget(Widget())
+            content.add_widget(inner)
+            content.add_widget(Widget())
+
+            downloading = MDDialog(content, size_hint=(0.6, None))
+            downloading.height = dp(140)
             downloading.open()
 
-            Clock.schedule_once(lambda dt: self._finalize_update(dialog, download_url), 0.5)
+            def on_progress(downloaded, total):
+                def _update(dt):
+                    if total > 0:
+                        progress_bar.value = downloaded / total * 100
+                        mb_done = downloaded / 1_048_576
+                        mb_total = total / 1_048_576
+                        status_label.text = f"Downloading update… {mb_done:.1f} / {mb_total:.1f} MB"
+                    else:
+                        mb_done = downloaded / 1_048_576
+                        status_label.text = f"Downloading update… {mb_done:.1f} MB"
+                Clock.schedule_once(_update)
 
-        def _finalize_update(self, dialog, download_url: str):
-            dialog.dismiss()
-            download_and_install_win(download_url)
-            self.stop()
+            def _run():
+                try:
+                    download_and_install_win(download_url, progress_callback=on_progress)
+                except Exception as e:
+                    def _err(dt):
+                        downloading.dismiss()
+                        logging.error(f"Update download failed: {e}")
+                    Clock.schedule_once(_err)
+
+            threading.Thread(target=_run, daemon=True).start()
 
         @staticmethod
         def _show_launch_toast(text: str = "Opening in a new window...", persist: bool = False):

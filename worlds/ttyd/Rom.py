@@ -135,7 +135,7 @@ class TTYDPatchExtension(APPatchExtension):
         caller.patcher.dol.data.seek(0x6CE38)
         caller.patcher.dol.data.write(int.to_bytes(0x4BF94A50, 4, "big"))
         caller.patcher.dol.data.seek(0x3C25FC)
-        caller.patcher.dol.data.write(int.to_bytes(0x2198, 4, "big"))
+        caller.patcher.dol.data.write(int.to_bytes(0x1F40, 4, "big"))
         caller.patcher.iso.add_new_directory("files/mod")
         caller.patcher.iso.add_new_directory("files/mod/subrels")
         for file in [file for file in rel_filepaths if file != "mod"]:
@@ -322,7 +322,9 @@ def write_files(world: "TTYDWorld", patch: TTYDProcedurePatch) -> None:
         for eid in ids:
             enemy_buffer.write(struct.pack("B", eid))
 
-    patch.write_file("desc.txt", buffer.getvalue())
+    max_desc_size = 0x1000
+    desc_data = buffer.getvalue()
+    patch.write_file("desc.txt", desc_data + b'\x00' * (max_desc_size - len(desc_data)))
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
     patch.write_file(f"locations.json", json.dumps(locations_to_dict(world.multiworld.get_locations(world.player))).encode("UTF-8"))
     patch.write_file("enemies.bin", enemy_buffer.getvalue())

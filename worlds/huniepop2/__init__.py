@@ -4,7 +4,7 @@ from typing import Any
 from BaseClasses import ItemClassification, Region, LocationProgressType, Tutorial
 from worlds.AutoWorld import World, WebWorld
 from .Data import default_pairs, girl_outfits, uniqueid_to_name, shoeid_to_name, randomise_stuff, default_girl_outfit, baggageid_to_name, girl_list
-from .Items import HP2Item, token_item, token_item_amounts, filler_item, outfits_item, fairy_wings_item, gift_shoe_item, gift_unique_item, pair_unlock_item, girl_unlock_item, item_list, item_datapackage
+from .Items import HP2Item, token_item, token_item_amounts, filler_item, outfits_item, fairy_wings_item, gift_shoe_item, gift_unique_item, pair_unlock_item, girl_unlock_item, item_list, item_datapackage, mixed_filler_items
 
 from .Locations import location_table, HP2Location, shop_loc_start, loc_datapackage
 from .Options import HP2Options, starting_pairs, starting_girls
@@ -48,6 +48,8 @@ class HuniePop2(World):
 
     totall = 0
     totali = 0
+
+    startingitems = 0
 
     gamedata = {}
 
@@ -101,6 +103,8 @@ class HuniePop2(World):
         numpairs = self.options.number_of_starting_pairs.value
         numgirls = self.options.number_of_starting_girls.value
 
+        self.startingitems = 0
+
         self.startingpairs = []
         self.startinggirls = []
 
@@ -108,6 +112,19 @@ class HuniePop2(World):
         self.gamedata = randomise_stuff(self.random, self.options)
 
         self.girls_enabled = self.options.enabled_girls.value
+
+        if self.options.shop_food_min.value > self.options.shop_food_max.value:
+            logging.warning(f"""(Hunie Pop 2) Changing Player:"{self.player_name}" YMAL option "shop_food_min" from {self.options.shop_food_min.value}->{self.options.shop_food_max.value} due to being higher than YMAL option "shop_food_max" """)
+            self.options.shop_food_min.value = self.options.shop_food_max.value
+        if self.options.shop_date_gift_min.value > self.options.shop_date_gift_max.value:
+            logging.warning(f"""(Hunie Pop 2) Changing Player:"{self.player_name}" YMAL option "shop_date_gift_min" from {self.options.shop_date_gift_min.value}->{self.options.shop_date_gift_max.value} due to being higher than YMAL option "shop_date_gift_max" """)
+            self.options.shop_date_gift_min.value = self.options.shop_date_gift_max.value
+        if self.options.shop_girl_gift_min.value > self.options.shop_girl_gift_max.value:
+            logging.warning(f"""(Hunie Pop 2) Changing Player:"{self.player_name}" YMAL option "shop_girl_gift_min" from {self.options.shop_girl_gift_min.value}->{self.options.shop_girl_gift_max.value} due to being higher than YMAL option "shop_girl_gift_max" """)
+            self.options.shop_girl_gift_min.value = self.options.shop_girl_gift_max.value
+        if self.options.shop_arch_min.value > self.options.shop_arch_max.value:
+            logging.warning(f"""(Hunie Pop 2) Changing Player:"{self.player_name}" YMAL option "shop_arch_min" from {self.options.shop_arch_min.value}->{self.options.shop_arch_max.value} due to being higher than YMAL option "shop_arch_max" """)
+            self.options.shop_arch_min.value = self.options.shop_arch_max.value
 
         pair_girls = set()
         for p in default_pairs:
@@ -300,12 +317,14 @@ class HuniePop2(World):
         for pair in self.pairs_enabled:
             if f"Pair Unlock {pair}" in self.startingpairs:
                 self.multiworld.push_precollected(self.create_item(f"Pair Unlock {pair}"))
+                self.startingitems+=1
             else:
                 self.multiworld.itempool.append(self.create_item(f"Pair Unlock {pair}"))
 
         for girl in self.girls_enabled:
             if f"Unlock Girl({girl})" in self.startinggirls:
                 self.multiworld.push_precollected(self.create_item(f"Unlock Girl({girl})"))
+                self.startingitems+=1
             else:
                 self.multiworld.itempool.append(self.create_item(f"Unlock Girl({girl})"))
 
@@ -328,6 +347,7 @@ class HuniePop2(World):
                 for outfit in girl_outfits[girl]:
                     if outfit is default_girl_outfit[girl]:
                         self.multiworld.push_precollected(self.create_item(f"{girl} {outfit} Outfit"))
+                        self.startingitems+=1
                     else:
                         self.multiworld.itempool.append(self.create_item(f"{girl} {outfit} Outfit"))
 
@@ -354,6 +374,8 @@ class HuniePop2(World):
                     self.multiworld.itempool.append(self.create_item("Fruit Seeds"))
                 elif self.options.filler_item.value == 3:
                     self.multiworld.itempool.append(self.create_item(self.random.choice(list(filler_item.keys()))))
+                elif self.options.filler_item.value == 4:
+                    self.multiworld.itempool.append(self.create_item(self.random.choice(list(mixed_filler_items.keys()))))
 
     #something to stop warnings happening in console when running tests
     def get_filler_item_name(self) -> str:
@@ -468,6 +490,17 @@ class HuniePop2(World):
 
             "gamedata": self.gamedata,
             "pairs_enabled": self.pairs_enabled,
+
+            "shop_food_min": self.options.shop_food_min.value,
+            "shop_food_max": self.options.shop_food_max.value,
+            "shop_date_gift_min": self.options.shop_date_gift_min.value,
+            "shop_date_gift_max": self.options.shop_date_gift_max.value,
+            "shop_girl_gift_min": self.options.shop_girl_gift_min.value,
+            "shop_girl_gift_max": self.options.shop_girl_gift_max.value,
+            "shop_arch_min": self.options.shop_arch_min.value,
+            "shop_arch_max": self.options.shop_arch_max.value,
+
+            "startitems": self.startingitems,
         }
 
         return returndict

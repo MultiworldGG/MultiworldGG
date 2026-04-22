@@ -172,16 +172,34 @@ class PathOfExileCommandProcessor(ClientCommandProcessor):
         return True
 
 
-    def _cmd_poe_auth(self) -> bool:        
+    def _cmd_poe_auth(self) -> bool:
         """Authenticate with Path of Exile's OAuth2 service."""
+        from .poeClient import gggOAuth
+        from urllib.parse import urlparse
+
+        raw = getattr(self.ctx, "server_address", "") or ""
+        try:
+            parsed = urlparse(raw if "://" in raw else f"ws://{raw}")
+            host = parsed.hostname or ""
+            port = parsed.port
+            server = f"{host}:{port}" if port else host
+        except Exception:
+            server = raw
+
+        gggOAuth.slot_info = {
+            "server":   server,
+            "slot":     getattr(self.ctx, "auth",     "") or "",
+            "password": getattr(self.ctx, "password", "") or "",
+        }
+
         def on_complete(task):
             try:
                 task.result()  # Will raise if auth failed
                 self.output("Authentication successful!")
             except Exception as e:
                 self.output(f"Authentication failed: {e}")
-        
-        task = asyncio.create_task(gggAPI.request_new_access_token()) # request_new_access_token is async, and will return a Task.
+
+        task = asyncio.create_task(gggAPI.request_new_access_token())
         task.add_done_callback(on_complete)
         self.output("Authentication started...")
         return True

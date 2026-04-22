@@ -65,22 +65,22 @@ class DKC3World(tracker.UTMxin, World):
     
     using_ut: bool
     ut_can_gen_without_yaml = True
-    glitches_item_name = Items.glitched
+    glitches_item_name = Items.glitched.value
 
     item_name_to_id = {name.value: data.code for name, data in item_table.items()}
     location_name_to_id = {name.value: code for name, code in all_locations.items()}
     item_name_groups = item_groups
     location_name_groups = location_groups
-    origin_region_name = Regions.northern_kremisphere_south
+    origin_region_name = Regions.northern_kremisphere_south.value
     rule_macros: dict[str, Rule.Resolved]
-    hint_blacklist = frozenset({
+    hint_blacklist = {
         Locations.defeated_belcha.value,
         Locations.defeated_arich.value,
         Locations.defeated_squirt.value,
         Locations.defeated_kaos.value,
         Locations.defeated_bleak.value,
         Locations.defeated_barbos.value,
-    })
+    }
 
     def __init__(self, multiworld: MultiWorld, player: int):
         self.rom_name_available_event = threading.Event()
@@ -207,7 +207,7 @@ class DKC3World(tracker.UTMxin, World):
             #Locations.defeated_krool_knautilus,
         ]
         for location in boss_locations:
-            self.multiworld.get_location(str(location), self.player).place_locked_item(self.create_item(Items.banana_bird))
+            self.multiworld.get_location(location.value, self.player).place_locked_item(self.create_item(Items.banana_bird))
 
         self.multiworld.itempool += itempool
 
@@ -276,7 +276,7 @@ class DKC3World(tracker.UTMxin, World):
 
 
     def get_filler_item_name(self) -> str:
-        return self.random.choice(list(misc_table.keys()))
+        return Items.dk_barrel.value
     
 
     def extend_hint_information(self, hint_data: dict[int, dict[int, str]]):

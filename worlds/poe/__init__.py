@@ -65,7 +65,7 @@ class PathOfExileWorld(World):
     and collect powerful loot. The game is known for its deep character customization, with an enormous passive skill
     tree, thousands of items, and a huge endgame full of challenging bosses, and a wide variety of skill gems that define abilities.
     """
-    _debug = True
+    _debug = False
     game = "Path of Exile"
     author: str = "StuBob"
     web = PathOfExileWebWorld()
@@ -233,7 +233,12 @@ class PathOfExileWorld(World):
     def generate_output(self, output_directory: str):
         if self._debug:
             logger.debug(f"Generating output for {self.game} in {output_directory}")
+            from BaseClasses import CollectionState
+            local_state = CollectionState(self.multiworld)  # collects all precollected items already
+            for item in self.multiworld.itempool:
+                if item.player == self.player:
+                    local_state.collect(item, prevent_sweep=True)
+            local_state.sweep_for_advancements(locations=self.multiworld.get_locations(self.player))
             visualize_regions(self.multiworld.get_region(self.origin_region_name, self.player), f"PathOfExile-Player{self.player}.puml",
                             show_entrance_names=True,
-                            regions_to_highlight=self.multiworld.get_all_state(self.player).reachable_regions[
-                                self.player])
+                            regions_to_highlight=local_state.reachable_regions[self.player])
