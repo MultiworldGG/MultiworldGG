@@ -4,9 +4,11 @@ from .HintList import misc_item_hint_table, misc_location_hint_table
 from .TextBox import line_wrap
 from .Utils import find_last
 
-TEXT_START = 0x92D000
+ENG_TEXT_START = 0x92D000
+JPN_TEXT_START = 0x8EB000
+TEXT_START = ENG_TEXT_START
 ENG_TEXT_SIZE_LIMIT = 0x39000
-JPN_TEXT_SIZE_LIMIT = 0x3A150
+JPN_TEXT_SIZE_LIMIT = 0x3B000
 
 JPN_TABLE_START = 0xB808AC
 ENG_TABLE_START = 0xB849EC
@@ -17,6 +19,8 @@ ENG_TABLE_SIZE = CREDITS_TABLE_START - ENG_TABLE_START
 
 EXTENDED_TABLE_START = JPN_TABLE_START # start writing entries to the jp table instead of english for more space
 EXTENDED_TABLE_SIZE = JPN_TABLE_SIZE + ENG_TABLE_SIZE # 0x8360 bytes, 4204 entries
+
+EXTENDED_TEXT_SIZE_LIMIT = JPN_TEXT_SIZE_LIMIT + ENG_TEXT_SIZE_LIMIT # 0x74000 bytes
 
 # name of type, followed by number of additional bytes to read, follwed by a function that prints the code
 CONTROL_CODES = {
@@ -285,6 +289,28 @@ ITEM_MESSAGES = {
     0x901A: "\x08You can't buy Bombchus without a\x01\x05\x41Bombchu Bag\x05\x40!",
     0x90B6: "\x08You found an \x05\x41important MWGG item\x05\x40\x01for \x05\x42\xF2\x05\x40!",
     0x90B7: "\x08You found a \x05\x43filler MWGG item\x05\x40\x01for \x05\x42\xF2\x05\x40!",
+
+    0x00F4: "\x08\x05\x44Loser!\x05\x40\x04\x08You found only \x05\x42one Rupee\x05\x40.\x01You are not very lucky.",
+    0x00F5: "\x08\x05\x44Loser!\x05\x40\x04\x08You found \x05\x43five Rupees\x05\x40.\x01Even so, you are not very lucky.",
+    0x00F6: "\x08\x05\x44Loser!\x05\x40\x04\x08You found \x05\x41twenty Rupees\x05\x40.\x01Your last selection was a mistake,\x01wasn't it! How frustrating!",
+    0x00F7: "\x08\x05\x41Winner!\x05\x40\x04\x08You found \x05\x46fifty Rupees\x05\x40.\x01You are a genuinely lucky guy!",
+    0x908C: "\x08You got the\x01\x05\x41Ocarina A Button!\x05\x40\x01You can now play \x9F on the Ocarina!",
+    0x908D: "\x08You got the\x01\x05\x41Ocarina C-up Button!\x05\x40\x01You can now play \xA5 on the Ocarina!",
+    0x908E: "\x08You got the\x01\x05\x41Ocarina C-down Button!\x05\x40\x01You can now play \xA6 on the Ocarina!",
+    0x908F: "\x08You got the\x01\x05\x41Ocarina C-left Button!\x05\x40\x01You can now play \xA7 on the Ocarina!",
+    0x9090: "\x08You got the\x01\x05\x41Ocarina C-right Button!\x05\x40\x01You can now play \xA8 on the Ocarina!",
+    0x9091: "\x08\x06\x28You have learned the\x01\x06\x2F\x05\x42Minuet of Forest\x05\x40!",
+    0x9092: "\x08\x06\x28You have learned the\x01\x06\x37\x05\x41Bolero of Fire\x05\x40!",
+    0x9093: "\x08\x06\x28You have learned the\x01\x06\x29\x05\x43Serenade of Water\x05\x40!",
+    0x9094: "\x08\x06\x28You have learned the\x01\x06\x2D\x05\x46Requiem of Spirit\x05\x40!",
+    0x9095: "\x08\x06\x28You have learned the\x01\x06\x28\x05\x45Nocturne of Shadow\x05\x40!",
+    0x9096: "\x08\x06\x28You have learned the\x01\x06\x32\x05\x44Prelude of Light\x05\x40!",
+    0x909A: "\x08\x06\x15You've learned \x05\x43Zelda's Lullaby\x05\x40!",
+    0x909B: "\x08\x06\x11You've learned \x05\x41Epona's Song\x05\x40!",
+    0x909C: "\x08\x06\x14You've learned \x05\x42Saria's Song\x05\x40!",
+    0x909D: "\x08\x06\x0BYou've learned the \x05\x46Sun's Song\x05\x40!",
+    0x909E: "\x08\x06\x05You've learned the \x05\x44Song of Time\x05\x40!",
+    0x909F: "\x08You've learned the \x05\x45Song of Storms\x05\x40!",
 }
 
 IMPORTANT_ITEM_MESSAGES = {
@@ -323,16 +349,122 @@ IMPORTANT_ITEM_MESSAGES = {
     0x00A5: "\x13\x76\x08You found the \x05\x41Dungeon Map\x05\x40\x01for the \x05\x45Bottom of the Well\x05\x40!\x09",
     0x00A6: "\x13\x77\x08You found a \x05\x41Small Key\x05\x40\x01for the \x05\x46Spirit Temple\x05\x40!\x09",
     0x00A9: "\x13\x77\x08You found a \x05\x41Small Key\x05\x40\x01for the \x05\x45Shadow Temple\x05\x40!\x09",
-    0x9010: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x42Forest Temple\x05\x40!\x09",
-    0x9011: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x41Fire Temple\x05\x40!\x09",
-    0x9012: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x43Water Temple\x05\x40!\x09",
-    0x9013: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x46Spirit Temple\x05\x40!\x09",
-    0x9014: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x45Shadow Temple\x05\x40!\x09",
-    0x9015: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x45Bottom of the Well\x05\x40!\x09",
-    0x9016: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x46Gerudo Training\x01Ground\x05\x40!\x09",
-    0x9017: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x46Thieves' Hideout\x05\x40!\x09",
-    0x9018: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for \x05\x41Ganon's Castle\x05\x40!\x09",
+    # Key ring text IDs: resolve_text_keyrings() returns 0x9200 + dungeon_id (from item_effects.h enum)
+    # Normal key rings (effect_arg2 == 0, or KEYRING_BOSSKEY_CONDITION is off)
+    0x9203: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x42Forest Temple\x05\x40!\x09",   # FOREST_ID=3
+    0x9204: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x41Fire Temple\x05\x40!\x09",     # FIRE_ID=4
+    0x9205: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x43Water Temple\x05\x40!\x09",    # WATER_ID=5
+    0x9206: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x46Spirit Temple\x05\x40!\x09",   # SPIRIT_ID=6
+    0x9207: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x45Shadow Temple\x05\x40!\x09",   # SHADOW_ID=7
+    0x9208: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x45Bottom of the Well\x05\x40!\x09",  # BOTW_ID=8
+    0x920B: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x46Gerudo Training\x01Ground\x05\x40!\x09",  # GTG_ID=11
+    0x920C: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x46Thieves' Hideout\x05\x40!\x09",           # FORT_ID=12
+    0x920D: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for \x05\x41Ganon's Castle\x05\x40!\x09",                 # CASTLE_ID=13
+    0x9210: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01for the \x05\x44Treasure Box Shop\x05\x40!\x09",          # TCG_ID=16
+    # Key ring + boss key variants (effect_arg2 == 1 and KEYRING_BOSSKEY_CONDITION): text_id + dungeon_id + 14
+    0x9211: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01and \x05\x41Boss Key\x05\x40 for the\x01\x05\x42Forest Temple\x05\x40!\x09",   # FOREST_ID=3, +14
+    0x9212: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01and \x05\x41Boss Key\x05\x40 for the\x01\x05\x41Fire Temple\x05\x40!\x09",     # FIRE_ID=4, +14
+    0x9213: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01and \x05\x41Boss Key\x05\x40 for the\x01\x05\x43Water Temple\x05\x40!\x09",    # WATER_ID=5, +14
+    0x9214: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01and \x05\x41Boss Key\x05\x40 for the\x01\x05\x46Spirit Temple\x05\x40!\x09",   # SPIRIT_ID=6, +14
+    0x9215: "\x13\x77\x08You found a \x05\x41Small Key Ring\x05\x40\x01and \x05\x41Boss Key\x05\x40 for the\x01\x05\x45Shadow Temple\x05\x40!\x09",   # SHADOW_ID=7, +14
     0x00B4: "\x08You got a \x05\x41Gold Skulltula Token\x05\x40!\x01You've collected \x05\x41\x19\x05\x40 tokens in total.",
+
+    0x00F3: "\x13\x77\x08You found a \x05\x41Small Key\x05\x40\x01for the \x05\x44Treasure Box Shop\x05\x40!\x09",
+    0x901B: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01staircase room in \x05\x41Dodongo's Cavern\x05\x40!\x01You have found \x05\x41\xF0\x00\x05\x40 so far!\x09",
+    0x901C: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x44spinning scythe room\x05\x40 in the \x05\x44Ice\x01Cavern\x05\x40! You have found \x05\x41\xF0\x01\x05\x40 so far!\x09",
+    0x901D: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x43push block room\x05\x40 in the \x05\x44Ice Cavern\x05\x40!\x01You have found \x05\x41\xF0\x02\x05\x40 so far!\x09",
+    0x901E: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01basement in the \x05\x45Bottom of the Well\x05\x40!\x01You have found \x05\x41\xF0\x03\x05\x40 so far!\x09",
+    0x901F: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x42scythe shortcut room\x05\x40 in the \x05\x45Shadow\x01Temple\x05\x40! You have found \x05\x41\xF0\x04\x05\x40 so far!\x09",
+    0x9020: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x44invisible blade room\x05\x40 in the \x05\x45Shadow\x01Temple\x05\x40! You have found \x05\x41\xF0\x05\x05\x40 so far!\x09",
+    0x9021: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x46huge pit\x05\x40 in the \x05\x45Shadow Temple\x05\x40!\x01You have found \x05\x41\xF0\x06\x05\x40 so far!\x09",
+    0x9022: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01room with \x05\x45invisible spikes\x05\x40 in the\x01\x05\x45Shadow Temple\x05\x40!\x01You have found \x05\x41\xF0\x07\x05\x40 so far!\x09",
+    0x9023: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x46sloped room\x05\x40 in the \x05\x46Gerudo Training\x01Ground\x05\x40! You have found \x05\x41\xF0\x08\x05\x40 so far!\x09",
+    0x9024: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the \x05\x41lava\x01room\x05\x40 in the \x05\x46Gerudo Training Ground\x05\x40!\x01You have found \x05\x41\xF0\x09\x05\x40 so far!\x09",
+    0x9025: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x43water room\x05\x40 in the \x05\x46Gerudo Training\x01Ground\x05\x40! You have found \x05\x41\xF0\x0A\x05\x40 so far!\x09",
+    0x9026: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x41torch room\x05\x40 in the child side of the\x01\x05\x46Spirit Temple\x05\x40! You have found \x05\x41\xF0\x0B\x05\x40\x01so far!\x09",
+    0x9027: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x42boulder room\x05\x40 in the adult side of the\x01\x05\x46Spirit Temple\x05\x40! You have found \x05\x41\xF0\x0C\x05\x40\x01so far!\x09",
+    0x9028: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x44lobby and adult side\x05\x40 of the \x05\x46Spirit\x01Temple\x05\x40! You have found \x05\x41\xF0\x0D\x05\x40 so far!\x09",
+    0x9029: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the \x05\x46sun\x01block room\x05\x40 in the \x05\x46Spirit Temple\x05\x40!\x01You have found \x05\x41\xF0\x0E\x05\x40 so far!\x09",
+    0x902A: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x43climbable wall\x05\x40 in the \x05\x46Spirit Temple\x05\x40!\x01You have found \x05\x41\xF0\x0F\x05\x40 so far!\x09",
+    0x902B: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x46Spirit Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x01You have found \x05\x41\xF0\x10\x05\x40 so far!\x09",
+    0x902C: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x44Light Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x01You have found \x05\x41\xF0\x11\x05\x40 so far!\x09",
+    0x902D: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the \x05\x41Fire\x01Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x01You have found \x05\x41\xF0\x12\x05\x40 so far!\x09",
+    0x902E: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x45Shadow Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x01You have found \x05\x41\xF0\x13\x05\x40 so far!\x09",
+    0x902F: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x43Water Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x01You have found \x05\x41\xF0\x14\x05\x40 so far!\x09",
+    0x9030: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x42Forest Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x01You have found \x05\x41\xF0\x15\x05\x40 so far!\x09",
+    0x9031: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the staircase room in\x01\x05\x41Dodongo's Cavern\x05\x40!\x09",
+    0x9032: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x44spinning scythe room\x05\x40\x01in the \x05\x44Ice Cavern\x05\x40!\x09",
+    0x9033: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x43push block room\x05\x40 in\x01the \x05\x44Ice Cavern\x05\x40!\x09",
+    0x9034: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the basement in the\x01\x05\x45Bottom of the Well\x05\x40!\x09",
+    0x9035: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x42scythe shortcut room\x05\x40\x01in the \x05\x45Shadow Temple\x05\x40!\x09",
+    0x9036: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x44invisible blade room\x05\x40 in\x01the \x05\x45Shadow Temple\x05\x40!\x09",
+    0x9037: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x46huge pit\x05\x40 in the\x01\x05\x45Shadow Temple\x05\x40!\x09",
+    0x9038: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the room with \x05\x45invisible\x01spikes\x05\x40 in the \x05\x45Shadow Temple\x05\x40!\x09",
+    0x9039: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x46sloped room\x05\x40 in the\x01\x05\x46Gerudo Training Ground\x05\x40!\x09",
+    0x903A: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x41lava room\x05\x40 in the\x01\x05\x46Gerudo Training Ground\x05\x40!\x09",
+    0x903B: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x43water room\x05\x40 in the\x01\x05\x46Gerudo Training Ground\x05\x40!\x09",
+    0x903C: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x41torch room\x05\x40 in the\x01child side of the \x05\x46Spirit Temple\x05\x40!\x09",
+    0x903D: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x42boulder room\x05\x40 in the\x01adult side of the \x05\x46Spirit Temple\x05\x40!\x09",
+    0x903E: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x44lobby and adult side\x05\x40\x01of the \x05\x46Spirit Temple\x05\x40!\x09",
+    0x903F: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x46sun block room\x05\x40 in the\x01\x05\x46Spirit Temple\x05\x40!\x09",
+    0x9040: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x43climbable wall\x05\x40 in the\x01\x05\x46Spirit Temple\x05\x40!\x09",
+    0x9041: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x46Spirit Trial\x05\x40 in \x05\x41Ganon's\x01Castle\x05\x40!\x09",
+    0x9042: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x44Light Trial\x05\x40 in \x05\x41Ganon's\x01Castle\x05\x40!\x09",
+    0x9043: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x41Fire Trial\x05\x40 in \x05\x41Ganon's\x01Castle\x05\x40!\x09",
+    0x9044: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x45Shadow Trial\x05\x40 in\x01\x05\x41Ganon's Castle\x05\x40!\x09",
+    0x9045: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x43Water Trial\x05\x40 in\x01\x05\x41Ganon's Castle\x05\x40!\x09",
+    0x9046: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x42Forest Trial\x05\x40 in\x01\x05\x41Ganon's Castle\x05\x40!\x09",
+    0x9049: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the staircase room in\x01\x05\x41Dodongo's Cavern\x05\x40! The way to the\x01hanging bridge is open!\x09",
+    0x904D: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x42scythe shortcut room\x05\x40\x01in the \x05\x45Shadow Temple\x05\x40! Now you can\x01access the \x05\x42chest\x05\x40 there!\x09",
+    0x904E: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x44invisible blade room\x05\x40 in\x01the \x05\x45Shadow Temple\x05\x40! Now you can\x01access the \x05\x44chest\x05\x40 there!\x09",
+    0x904F: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x46huge pit\x05\x40 in the\x01\x05\x45Shadow Temple\x05\x40! A \x05\x46chest\x05\x40 has\x01appeared!\x09",
+    0x9050: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the room with \x05\x45invisible\x01spikes\x05\x40 in the \x05\x45Shadow Temple\x05\x40! The\x01way to the \x05\x45Stalfos room\x05\x40 is open!\x09",
+    0x9051: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x46sloped room\x05\x40 in the\x01\x05\x46Gerudo Training Ground\x05\x40! The way to\x01the room with the \x05\x46heavy block\x05\x40 is\x04open!\x09",
+    0x9052: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x41lava room\x05\x40 in the\x01\x05\x46Gerudo Training Ground\x05\x40! The way to\x01the \x05\x41water room\x05\x40 is open!\x09",
+    0x9053: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x43water room\x05\x40 in the\x01\x05\x46Gerudo Training Ground\x05\x40! A \x05\x43chest\x05\x40\x01has appeared!\x09",
+    0x9056: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x44lobby and adult side\x05\x40\x01of the \x05\x46Spirit Temple\x05\x40! A \x05\x44chest\x05\x40 has\x01appeared!\x09",
+    0x9058: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x43climbable wall\x05\x40 in the\x01\x05\x46Spirit Temple\x05\x40! The way to the\x01\x05\x43upstairs\x05\x40 is open!\x09",
+    0x905B: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x41Fire Trial\x05\x40 in \x05\x41Ganon's\x01Castle\x05\x40! The way to the \x05\x41final room\x05\x40 is\x01open!\x09",
+    0x905C: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x45Shadow Trial\x05\x40 in\x01\x05\x41Ganon's Castle\x05\x40! The way to the \x05\x45final\x01room\x05\x40 is open!\x09",
+    0x905D: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x43Water Trial\x05\x40 in\x01\x05\x41Ganon's Castle\x05\x40! The way to the \x05\x43final\x01room\x05\x40 is open!\x09",
+    0x9060: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x44spinning scythe room\x05\x40\x01in the \x05\x44Ice Cavern\x05\x40! The way to the\x01\x05\x44map room\x05\x40 is open!\x09",
+    0x9061: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x43push block room\x05\x40 in\x01the \x05\x44Ice Cavern\x05\x40! The way to the \x05\x43final\x01room\x05\x40 is open!\x09",
+    0x9062: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the basement in the\x01\x05\x45Bottom of the Well\x05\x40! Now you can\x01get back to the upper level!\x09",
+    0x9063: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x42scythe shortcut room\x05\x40\x01in the \x05\x45Shadow Temple\x05\x40! Now you can\x01access the \x05\x42chest\x05\x40 there!\x09",
+    0x9065: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x46huge pit\x05\x40 in the\x01\x05\x45Shadow Temple\x05\x40! The way to the\x01room with \x05\x46falling spikes\x05\x40 is open!\x09",
+    0x9066: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the room with \x05\x45invisible\x01spikes\x05\x40 in the \x05\x45Shadow Temple\x05\x40! The\x01way to the room with the \x05\x45giant pot\x05\x40\x04is open!\x09",
+    0x9067: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x46sloped room\x05\x40 in the\x01\x05\x46Gerudo Training Ground\x05\x40! The way to\x01the room with the \x05\x46heavy block\x05\x40 is\x04open!\x09",
+    0x9068: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x41lava room\x05\x40 in the\x01\x05\x46Gerudo Training Ground\x05\x40! The way to\x01the \x05\x41water room\x05\x40 is open!\x09",
+    0x9069: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x43water room\x05\x40 in the\x01\x05\x46Gerudo Training Ground\x05\x40! A \x05\x43chest\x05\x40\x01has appeared!\x09",
+    0x906A: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x41torch room\x05\x40 in the\x01child side of the \x05\x46Spirit Temple\x05\x40! Now\x01the \x05\x41metal bridge\x05\x40 there is lowered!\x09",
+    0x906B: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x42boulder room\x05\x40 in the\x01adult side of the \x05\x46Spirit Temple\x05\x40! Now\x01you can access the \x05\x42chest\x05\x40 there!\x09",
+    0x906D: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x46sun block room\x05\x40 in the\x01\x05\x46Spirit Temple\x05\x40! The \x05\x46torch\x05\x40 has been\x01lit!\x09",
+    0x906F: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x46Spirit Trial\x05\x40 in \x05\x41Ganon's\x01Castle\x05\x40! The way to the \x05\x46second room\x05\x40\x01is open!\x09",
+    0x9070: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x44Light Trial\x05\x40 in \x05\x41Ganon's\x01Castle\x05\x40! The way to the \x05\x44final room\x05\x40 is\x01open!\x09",
+    0x9071: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x41Fire Trial\x05\x40 in \x05\x41Ganon's\x01Castle\x05\x40! The way to the \x05\x41final room\x05\x40 is\x01open!\x09",
+    0x9074: "\x08You have found all of the \x05\x44Silver\x01Rupees\x05\x40 for the \x05\x42Forest Trial\x05\x40 in\x01\x05\x41Ganon's Castle\x05\x40! The way to the \x05\x42final\x01room\x05\x40 is open!\x09",
+    0x9075: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01staircase room in \x05\x41Dodongo's Cavern\x05\x40!\x09",
+    0x9076: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x44spinning scythe room\x05\x40 in the \x05\x44Ice\x01Cavern\x05\x40!\x09",
+    0x9077: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x43push block room\x05\x40 in the \x05\x44Ice Cavern\x05\x40!\x09",
+    0x9078: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01basement in the \x05\x45Bottom of the Well\x05\x40!\x09",
+    0x9079: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x42scythe shortcut room\x05\x40 in the \x05\x45Shadow\x01Temple\x05\x40!\x09",
+    0x907A: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x44invisible blade room\x05\x40 in the \x05\x45Shadow\x01Temple\x05\x40!\x09",
+    0x907B: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x46huge pit\x05\x40 in the \x05\x45Shadow Temple\x05\x40!\x09",
+    0x907C: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01room with \x05\x45invisible spikes\x05\x40 in the\x01\x05\x45Shadow Temple\x05\x40!\x09",
+    0x907D: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x46sloped room\x05\x40 in the \x05\x46Gerudo Training\x01Ground\x05\x40!\x09",
+    0x907E: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the \x05\x41lava\x01room\x05\x40 in the \x05\x46Gerudo Training Ground\x05\x40!\x09",
+    0x907F: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x43water room\x05\x40 in the \x05\x46Gerudo Training\x01Ground\x05\x40!\x09",
+    0x9080: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x41torch room\x05\x40 in the child side of the\x01\x05\x46Spirit Temple\x05\x40!\x09",
+    0x9081: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x42boulder room\x05\x40 in the adult side of the\x01\x05\x46Spirit Temple\x05\x40!\x09",
+    0x9082: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x44lobby and adult side\x05\x40 of the \x05\x46Spirit\x01Temple\x05\x40!\x09",
+    0x9083: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the \x05\x46sun\x01block room\x05\x40 in the \x05\x46Spirit Temple\x05\x40!\x09",
+    0x9084: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x43climbable wall\x05\x40 in the \x05\x46Spirit Temple\x05\x40!\x09",
+    0x9085: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x46Spirit Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x09",
+    0x9086: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x44Light Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x09",
+    0x9087: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the \x05\x41Fire\x01Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x09",
+    0x9088: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x45Shadow Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x09",
+    0x9089: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x43Water Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x09",
+    0x908A: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x42Forest Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x09",
 }
 
 COLOR_MAP = {
@@ -486,14 +618,14 @@ class Text_Code:
         return size
 
     # writes the code to the given offset, and returns the offset of the next byte
-    def write(self, rom, offset):
-        rom.write_byte(TEXT_START + offset, self.code)
+    def write(self, rom, text_start, offset):
+        rom.write_byte(text_start + offset, self.code)
 
         extra_bytes = 0
         if self.code in CONTROL_CODES:
             extra_bytes = CONTROL_CODES[self.code][1]
             bytes_to_write = int_to_bytes(self.data, extra_bytes)
-            rom.write_bytes(TEXT_START + offset + 1, bytes_to_write)
+            rom.write_bytes(text_start + offset + 1, bytes_to_write)
 
         return offset + 1 + extra_bytes
 
@@ -529,6 +661,8 @@ class Message:
 
     # check if this is an unused message that just contains it's own id as text
     def is_id_message(self):
+        if self.id == 0xFFFC:
+            return False
         if self.unpadded_length != 5:
             return False
         for i in range(4):
@@ -640,20 +774,20 @@ class Message:
 
     # writes a Message back into the rom, using the given index and offset to update the table
     # returns the offset of the next message
-    def write(self, rom, index, offset):
+    def write(self, rom, index, text_start, offset, bank):
         # construct the table entry
         id_bytes = int_to_bytes(self.id, 2)
         offset_bytes = int_to_bytes(offset, 3)
-        entry = id_bytes + bytes([self.opts, 0x00, 0x07]) + offset_bytes
+        entry = id_bytes + bytes([self.opts, 0x00, bank]) + offset_bytes
         # write it back
         entry_offset = EXTENDED_TABLE_START + 8 * index
         rom.write_bytes(entry_offset, entry)
 
         for code in self.text_codes:
-            offset = code.write(rom, offset)
+            offset = code.write(rom, text_start, offset)
 
         while offset % 4 > 0:
-            offset = Text_Code(0x00, 0).write(rom, offset) # pad to 4 byte align
+            offset = Text_Code(0x00, 0).write(rom, text_start, offset) # pad to 4 byte align
 
         return offset
 
@@ -682,8 +816,14 @@ class Message:
 
     # read a single message from rom
     @classmethod
-    def from_rom(cls, rom, index):
-        entry_offset = ENG_TABLE_START + 8 * index
+    def from_rom(cls, rom, index, eng=True):
+        if eng:
+            table_start = ENG_TABLE_START
+            text_start = ENG_TEXT_START
+        else:
+            table_start = JPN_TABLE_START
+            text_start = JPN_TEXT_START
+        entry_offset = table_start + 8 * index
         entry = rom.read_bytes(entry_offset, 8)
         next = rom.read_bytes(entry_offset + 8, 8)
 
@@ -692,7 +832,7 @@ class Message:
         offset = bytes_to_int(entry[5:8])
         length = bytes_to_int(next[5:8]) - offset
 
-        raw_text = rom.read_bytes(TEXT_START + offset, length)
+        raw_text = rom.read_bytes(text_start + offset, length)
 
         return cls(raw_text, index, id, opts, offset, length)
 
@@ -953,19 +1093,42 @@ def read_messages(rom):
         index += 1
         table_offset += 8
 
+    messages.append(read_fffc_message(rom))
     return messages
+
+
+def read_fffc_message(rom):
+    table_offset = JPN_TABLE_START
+    index = 0
+    while True:
+        entry = rom.read_bytes(table_offset, 8)
+        id = bytes_to_int(entry[0:2])
+
+        if id == 0xFFFC:
+            message = Message.from_rom(rom, index, eng=False)
+            break
+
+        index += 1
+        table_offset += 8
+
+    return message
 
 # write the messages back
 def repack_messages(rom, messages, permutation=None, always_allow_skip=True, speed_up_text=True):
 
-    rom.update_dmadata_record(TEXT_START, TEXT_START, TEXT_START + ENG_TEXT_SIZE_LIMIT)
+    rom.update_dmadata_record(ENG_TEXT_START, ENG_TEXT_START, ENG_TEXT_START + ENG_TEXT_SIZE_LIMIT)
+    rom.update_dmadata_record(JPN_TEXT_START, JPN_TEXT_START, JPN_TEXT_START + JPN_TEXT_SIZE_LIMIT)
 
     if permutation is None:
         permutation = range(len(messages))
 
     # repack messages
     offset = 0
-    text_size_limit = ENG_TEXT_SIZE_LIMIT
+    text_start = JPN_TEXT_START
+    text_size_limit = EXTENDED_TEXT_SIZE_LIMIT
+    text_bank = 0x08 # start with the Japanese text bank
+    jp_bytes = 0
+    jp_index_offset = 0
 
     for old_index, new_index in enumerate(permutation):
         old_message = messages[old_index]
@@ -974,21 +1137,51 @@ def repack_messages(rom, messages, permutation=None, always_allow_skip=True, spe
         new_message.id = old_message.id
 
         # modify message, making it represent how we want it to be written
-        new_message.transform(True, old_message.ending, always_allow_skip, speed_up_text)
+        if new_message.id != 0xFFFC:
+            new_message.transform(True, old_message.ending, always_allow_skip, speed_up_text)
+
+        # check if there is space to write the message
+        message_size = new_message.size()
+        if message_size + offset > JPN_TEXT_SIZE_LIMIT and text_start == JPN_TEXT_START:
+            # Add a dummy entry to the table for the last entry in the
+            # JP file. This is used by the game to calculate message
+            # length. Since the next entry in the English table has an
+            # offset of zero, which would lead to a negative length.
+            # 0xFFFD is used as the text ID for this in vanilla.
+            # Text IDs need to be in order across the table for the
+            # split to work.
+            entry = bytes([0xFF, 0xFD, 0x00, 0x00, text_bank]) + int_to_bytes(offset, 3)
+            entry_offset = EXTENDED_TABLE_START + 8 * old_index
+            rom.write_bytes(entry_offset, entry)
+            # if there is no room then switch to the English text bank
+            text_bank = 0x07
+            text_start = ENG_TEXT_START
+            jp_bytes = offset
+            jp_index_offset = 1
+            offset = 0
+
+        if new_message.id == 0xFFFC:
+            rom.write_int16(0xAD1CE2, (text_bank << 8) + ((offset & 0xFFFF0000) >> 16) + (1 if offset & 0xFFFF > 0x8000 else 0))
+            rom.write_int16(0xAD1CE6, offset & 0XFFFF)
+            rom.write_int16(0xAD1D16, (text_bank << 8) + (((offset + new_message.size()) & 0xFFFF0000) >> 16) + (1 if (offset + new_message.size()) & 0xFFFF > 0x8000 else 0))
+            rom.write_int16(0xAD1D1E, (offset + new_message.size()) & 0XFFFF)
+            rom.write_int16(0xAD1D12, (text_bank << 8))
+            rom.write_int16(0xAD1D22, ((text_start & 0xFFFF0000) >> 16) + (1 if text_start & 0xFFFF > 0x8000 else 0))
+            rom.write_int16(0xAD1D2E, text_start & 0XFFFF)
 
         # actually write the message
-        offset = new_message.write(rom, old_index, offset)
+        offset = new_message.write(rom, old_index + jp_index_offset, text_start, offset, text_bank)
 
         new_message.id = remember_id
 
     # raise an exception if too much is written
     # we raise it at the end so that we know how much overflow there is
-    if offset > text_size_limit:
-        raise(TypeError("Message Text table is too large: 0x" + "{:x}".format(offset) + " written / 0x" + "{:x}".format(ENG_TEXT_SIZE_LIMIT) + " allowed."))
+    if jp_bytes + offset > text_size_limit:
+        raise(TypeError("Message Text table is too large: 0x" + "{:x}".format(jp_bytes + offset) + " written / 0x" + "{:x}".format(EXTENDED_TEXT_SIZE_LIMIT) + " allowed."))
 
-    # end the table
-    table_index = len(messages)
-    entry = bytes([0xFF, 0xFD, 0x00, 0x00, 0x07]) + int_to_bytes(offset, 3)
+    # end the table, accounting for additional entry for file split
+    table_index = len(messages) + (1 if text_bank == 0x07 else 0)
+    entry = bytes([0xFF, 0xFD, 0x00, 0x00, text_bank]) + int_to_bytes(offset, 3)
     entry_offset = EXTENDED_TABLE_START + 8 * table_index
     rom.write_bytes(entry_offset, entry)
     table_index += 1
@@ -1013,6 +1206,7 @@ def shuffle_messages(messages, rand, except_hints=True, always_allow_skip=True):
         )
         shuffle_exempt = [
             0x208D,         # "One more lap!" for Cow in House race.
+            0xFFFC,         # Character data from JP table used on title and file select screens
         ]
         is_hint = (except_hints and m.id in hint_ids)
         is_error_message = (m.id == ERROR_MESSAGE)

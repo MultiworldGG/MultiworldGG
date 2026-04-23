@@ -151,10 +151,11 @@ def get_item_generic_name(item: Item) -> str:
 def get_item_hint_text(item: Item, world: 'OOTWorld') -> str:
     item_name = get_item_generic_name(item)
     try:
-        return get_hint(item_name, world.clearer_hints).text
+        text = get_hint(item_name, world.clearer_hints).text
     except KeyError:
         # Cross-world items may not exist in OoT's hint table.
-        return item_name.replace('_', ' ')
+        text = item_name.replace('_', ' ')
+    return attach_name(text, item, world)
 
 
 def get_remote_world_display(local_player: int, other_player: Optional[int]) -> Optional[int]:

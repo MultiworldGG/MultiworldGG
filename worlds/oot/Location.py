@@ -2,7 +2,7 @@ from enum import Enum
 from .LocationList import location_table
 from BaseClasses import Location
 
-non_indexed_location_types = {'Boss', 'Event', 'Drop', 'HintStone', 'Hint'}
+non_indexed_location_types = {'Event', 'Drop', 'HintStone', 'Hint'}
 
 location_id_offset = 67000
 locnames_pre_70 = {
@@ -150,4 +150,3 @@ def build_location_name_groups() -> dict:
         rename(ret, 'Wonderitem', 'Wonderitems')
 
     return ret
-

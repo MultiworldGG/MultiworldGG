@@ -25,38 +25,39 @@ def set_all_entrances_data(multiworld, player):
             if type == 'Grotto':
                 return_entrance.data['index'] = 0x7FFF
 
+def set_blue_warp_targets(multiworld, player):
     # Route each Blue Warp exit based on where the boss/dungeon shuffle placed things.
-    # boss_exits: boss room return entrance → corresponding dungeon lobby exit
+    # boss_exits: boss room return entrance -> corresponding dungeon lobby exit
     boss_exits = {
-        'Queen Gohma Boss Room -> Deku Tree Before Boss':         multiworld.get_entrance('Deku Tree Lobby -> KF Outside Deku Tree', player),
-        'King Dodongo Boss Room -> Dodongos Cavern Mouth':        multiworld.get_entrance('Dodongos Cavern Beginning -> Death Mountain', player),
-        'Barinade Boss Room -> Jabu Jabus Belly Before Boss':     multiworld.get_entrance('Jabu Jabus Belly Beginning -> Zoras Fountain', player),
-        'Phantom Ganon Boss Room -> Forest Temple Before Boss':   multiworld.get_entrance('Forest Temple Lobby -> SFM Forest Temple Entrance Ledge', player),
-        'Volvagia Boss Room -> Fire Temple Before Boss':          multiworld.get_entrance('Fire Temple Lower -> DMC Fire Temple Entrance', player),
-        'Morpha Boss Room -> Water Temple Before Boss':           multiworld.get_entrance('Water Temple Lobby -> Lake Hylia', player),
-        'Bongo Bongo Boss Room -> Shadow Temple Before Boss':     multiworld.get_entrance('Shadow Temple Entryway -> Graveyard Warp Pad Region', player),
-        'Twinrova Boss Room -> Spirit Temple Before Boss':        multiworld.get_entrance('Spirit Temple Lobby -> Desert Colossus From Spirit Lobby', player),
+        'Queen Gohma Boss Room -> Deku Tree Before Boss': multiworld.get_entrance('Deku Tree Lobby -> KF Outside Deku Tree', player),
+        'King Dodongo Boss Room -> Dodongos Cavern Mouth': multiworld.get_entrance('Dodongos Cavern Beginning -> Death Mountain', player),
+        'Barinade Boss Room -> Jabu Jabus Belly Before Boss': multiworld.get_entrance('Jabu Jabus Belly Beginning -> Zoras Fountain', player),
+        'Phantom Ganon Boss Room -> Forest Temple Before Boss': multiworld.get_entrance('Forest Temple Lobby -> SFM Forest Temple Entrance Ledge', player),
+        'Volvagia Boss Room -> Fire Temple Before Boss': multiworld.get_entrance('Fire Temple Lower -> DMC Fire Temple Entrance', player),
+        'Morpha Boss Room -> Water Temple Before Boss': multiworld.get_entrance('Water Temple Lobby -> Lake Hylia', player),
+        'Bongo Bongo Boss Room -> Shadow Temple Before Boss': multiworld.get_entrance('Shadow Temple Entryway -> Graveyard Warp Pad Region', player),
+        'Twinrova Boss Room -> Spirit Temple Before Boss': multiworld.get_entrance('Spirit Temple Lobby -> Desert Colossus From Spirit Lobby', player),
     }
-    # dungeon_exits: dungeon lobby exit → corresponding blue warp entrance
+    # dungeon_exits: dungeon lobby exit -> corresponding blue warp entrance
     dungeon_exits = {
-        'Deku Tree Lobby -> KF Outside Deku Tree':                        multiworld.get_entrance('Queen Gohma Blue Warp -> KF Outside Deku Tree', player),
-        'Dodongos Cavern Beginning -> Death Mountain':                    multiworld.get_entrance('King Dodongo Blue Warp -> Death Mountain', player),
-        'Jabu Jabus Belly Beginning -> Zoras Fountain':                   multiworld.get_entrance('Barinade Blue Warp -> Zoras Fountain', player),
-        'Forest Temple Lobby -> SFM Forest Temple Entrance Ledge':        multiworld.get_entrance('Phantom Ganon Blue Warp -> Sacred Forest Meadow', player),
-        'Fire Temple Lower -> DMC Fire Temple Entrance':                   multiworld.get_entrance('Volvagia Blue Warp -> DMC Central Local', player),
-        'Water Temple Lobby -> Lake Hylia':                               multiworld.get_entrance('Morpha Blue Warp -> Lake Hylia', player),
-        'Shadow Temple Entryway -> Graveyard Warp Pad Region':            multiworld.get_entrance('Bongo Bongo Blue Warp -> Graveyard Warp Pad Region', player),
-        'Spirit Temple Lobby -> Desert Colossus From Spirit Lobby':       multiworld.get_entrance('Twinrova Blue Warp -> Desert Colossus', player),
+        'Deku Tree Lobby -> KF Outside Deku Tree': multiworld.get_entrance('Queen Gohma Blue Warp -> KF Outside Deku Tree', player),
+        'Dodongos Cavern Beginning -> Death Mountain': multiworld.get_entrance('King Dodongo Blue Warp -> Death Mountain', player),
+        'Jabu Jabus Belly Beginning -> Zoras Fountain': multiworld.get_entrance('Barinade Blue Warp -> Zoras Fountain', player),
+        'Forest Temple Lobby -> SFM Forest Temple Entrance Ledge': multiworld.get_entrance('Phantom Ganon Blue Warp -> Sacred Forest Meadow', player),
+        'Fire Temple Lower -> DMC Fire Temple Entrance': multiworld.get_entrance('Volvagia Blue Warp -> DMC Central Local', player),
+        'Water Temple Lobby -> Lake Hylia': multiworld.get_entrance('Morpha Blue Warp -> Lake Hylia', player),
+        'Shadow Temple Entryway -> Graveyard Warp Pad Region': multiworld.get_entrance('Bongo Bongo Blue Warp -> Graveyard Warp Pad Region', player),
+        'Spirit Temple Lobby -> Desert Colossus From Spirit Lobby': multiworld.get_entrance('Twinrova Blue Warp -> Desert Colossus', player),
     }
-    for (blue_warp_name, boss_door_exit_name) in (
-        ('Queen Gohma Blue Warp -> KF Outside Deku Tree',      'Queen Gohma Boss Room -> Deku Tree Before Boss'),
-        ('King Dodongo Blue Warp -> Death Mountain',            'King Dodongo Boss Room -> Dodongos Cavern Mouth'),
-        ('Barinade Blue Warp -> Zoras Fountain',                'Barinade Boss Room -> Jabu Jabus Belly Before Boss'),
-        ('Phantom Ganon Blue Warp -> Sacred Forest Meadow',     'Phantom Ganon Boss Room -> Forest Temple Before Boss'),
-        ('Volvagia Blue Warp -> DMC Central Local',             'Volvagia Boss Room -> Fire Temple Before Boss'),
-        ('Morpha Blue Warp -> Lake Hylia',                      'Morpha Boss Room -> Water Temple Before Boss'),
-        ('Bongo Bongo Blue Warp -> Graveyard Warp Pad Region',  'Bongo Bongo Boss Room -> Shadow Temple Before Boss'),
-        ('Twinrova Blue Warp -> Desert Colossus',               'Twinrova Boss Room -> Spirit Temple Before Boss'),
+    for blue_warp_name, boss_door_exit_name in (
+        ('Queen Gohma Blue Warp -> KF Outside Deku Tree', 'Queen Gohma Boss Room -> Deku Tree Before Boss'),
+        ('King Dodongo Blue Warp -> Death Mountain', 'King Dodongo Boss Room -> Dodongos Cavern Mouth'),
+        ('Barinade Blue Warp -> Zoras Fountain', 'Barinade Boss Room -> Jabu Jabus Belly Before Boss'),
+        ('Phantom Ganon Blue Warp -> Sacred Forest Meadow', 'Phantom Ganon Boss Room -> Forest Temple Before Boss'),
+        ('Volvagia Blue Warp -> DMC Central Local', 'Volvagia Boss Room -> Fire Temple Before Boss'),
+        ('Morpha Blue Warp -> Lake Hylia', 'Morpha Boss Room -> Water Temple Before Boss'),
+        ('Bongo Bongo Blue Warp -> Graveyard Warp Pad Region', 'Bongo Bongo Boss Room -> Shadow Temple Before Boss'),
+        ('Twinrova Blue Warp -> Desert Colossus', 'Twinrova Boss Room -> Spirit Temple Before Boss'),
     ):
         blue_warp = multiworld.get_entrance(blue_warp_name, player)
         boss_door_exit = multiworld.get_entrance(boss_door_exit_name, player)
@@ -67,7 +68,6 @@ def set_all_entrances_data(multiworld, player):
             target = dungeon_exits[target.name]
         blue_warp.connect(multiworld.get_region(target.name.split(' -> ')[1], player))
         blue_warp.replaces = target
-
 
 def assume_entrance_pool(entrance_pool, ootworld, pool_type):
     assumed_pool = []
@@ -95,26 +95,6 @@ def build_one_way_targets(world, pool, types_to_include, exclude=(), target_regi
                 if entrance.connected_region.name in target_region_names]
     return [entrance.get_new_target(pool) for entrance in valid_one_way_entrances]
 
-
-#   Abbreviations
-#       DMC     Death Mountain Crater
-#       DMT     Death Mountain Trail
-#       GC      Goron City
-#       GF      Gerudo Fortress
-#       GS      Gold Skulltula
-#       GV      Gerudo Valley
-#       HC      Hyrule Castle
-#       HF      Hyrule Field
-#       KF      Kokiri Forest
-#       LH      Lake Hylia
-#       LLR     Lon Lon Ranch
-#       LW      Lost Woods
-#       OGC     Outside Ganon's Castle
-#       SFM     Sacred Forest Meadow
-#       ToT     Temple of Time
-#       ZD      Zora's Domain
-#       ZF      Zora's Fountain
-#       ZR      Zora's River
 
 entrance_shuffle_table = [
     ('Dungeon',         ('KF Outside Deku Tree -> Deku Tree Lobby',                         { 'index': 0x0000 }),
@@ -655,6 +635,9 @@ def shuffle_random_entrances(ootworld):
     # Shuffle all entrance pools, in order
     for pool_type, entrance_pool in entrance_pools.items():
         shuffle_entrance_pool(ootworld, pool_type, entrance_pool, target_entrance_pools[pool_type], locations_to_ensure_reachable, all_state, none_state, check_all=True)
+
+    # Route Blue Warp exits after shuffles are finalized.
+    set_blue_warp_targets(multiworld, player)
 
     # Multiple checks after shuffling to ensure everything is OK
     # Check that all entrances hook up correctly

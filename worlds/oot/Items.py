@@ -4,21 +4,24 @@ from BaseClasses import Item, ItemClassification
 
 
 def oot_data_to_ap_id(data, event):
-    if event or data[2] is None or data[0] == 'Shop':
+    item_type, _, index, special = data
+    if event or item_type == 'Shop':
         return None
     offset = 66000
-    if data[0] in ['Item', 'BossKey', 'Compass', 'Map', 'SmallKey', 'Token', 'GanonBossKey', 'HideoutSmallKey', 'Song', 'TCGSmallKey', 'SilverRupee']:
-        return offset + data[2]
-    else:
-        raise Exception(f'Unexpected OOT item type found: {data[0]}')
+    if item_type == 'DungeonReward':
+        gi_id = (special or {}).get('gi_id')
+        return None if gi_id is None else offset + gi_id
+    if index is None:
+        return None
+    if item_type in ['Item', 'BossKey', 'Compass', 'Map', 'SmallKey', 'Token', 'GanonBossKey', 'HideoutSmallKey', 'Song', 'TCGSmallKey', 'SilverRupee']:
+        return offset + index
+    raise Exception(f'Unexpected OOT item type found: {item_type}')
 
 
 def ap_id_to_oot_data(ap_id): 
-    offset = 66000
-    val = ap_id - offset
-    try: 
-        return list(filter(lambda d: d[1][0] == 'Item' and d[1][2] == val, item_table.items()))[0]
-    except IndexError: 
+    try:
+        return next((name, data) for name, data in item_table.items() if oot_data_to_ap_id(data, False) == ap_id)
+    except StopIteration:
         raise Exception(f'Could not find desired item ID: {ap_id}')
 
 
@@ -413,6 +416,7 @@ item_table = {
                                                 'addr2_data': 0x80,
                                                 'bit_mask':   0x00040000,
                                                 'item_id':    0x6C,
+                                                'gi_id':      0x127,
                                                 'actor_type': 0x13,
                                                 'object_id':  0x00AD,
                                             }),
@@ -422,6 +426,7 @@ item_table = {
                                                 'addr2_data': 0x81,
                                                 'bit_mask':   0x00080000,
                                                 'item_id':    0x6D,
+                                                'gi_id':      0x128,
                                                 'actor_type': 0x14,
                                                 'object_id':  0x00AD,
                                             }),
@@ -431,6 +436,7 @@ item_table = {
                                                 'addr2_data': 0x82,
                                                 'bit_mask':   0x00100000,
                                                 'item_id':    0x6E,
+                                                'gi_id':      0x129,
                                                 'actor_type': 0x15,
                                                 'object_id':  0x00AD,
                                             }),
@@ -440,6 +446,7 @@ item_table = {
                                                 'addr2_data': 0x3E,
                                                 'bit_mask':   0x00000001,
                                                 'item_id':    0x66,
+                                                'gi_id':      0x12B,
                                                 'actor_type': 0x0B,
                                                 'object_id':  0x00BA,
                                             }),
@@ -449,6 +456,7 @@ item_table = {
                                                 'addr2_data': 0x3C,
                                                 'bit_mask':   0x00000002,
                                                 'item_id':    0x67,
+                                                'gi_id':      0x12C,
                                                 'actor_type': 0x09,
                                                 'object_id':  0x00BA,
                                             }),
@@ -458,6 +466,7 @@ item_table = {
                                                 'addr2_data': 0x3D,
                                                 'bit_mask':   0x00000004,
                                                 'item_id':    0x68,
+                                                'gi_id':      0x12D,
                                                 'actor_type': 0x0A,
                                                 'object_id':  0x00BA,
                                             }),
@@ -467,6 +476,7 @@ item_table = {
                                                 'addr2_data': 0x3F,
                                                 'bit_mask':   0x00000008,
                                                 'item_id':    0x69,
+                                                'gi_id':      0x12F,
                                                 'actor_type': 0x0C,
                                                 'object_id':  0x00BA,
                                             }),
@@ -476,6 +486,7 @@ item_table = {
                                                 'addr2_data': 0x41,
                                                 'bit_mask':   0x00000010,
                                                 'item_id':    0x6A,
+                                                'gi_id':      0x12E,
                                                 'actor_type': 0x0D,
                                                 'object_id':  0x00BA,
                                             }),
@@ -485,6 +496,7 @@ item_table = {
                                                 'addr2_data': 0x40,
                                                 'bit_mask':   0x00000020,
                                                 'item_id':    0x6B,
+                                                'gi_id':      0x12A,
                                                 'actor_type': 0x0E,
                                                 'object_id':  0x00BA,
                                             }),

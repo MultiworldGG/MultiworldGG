@@ -8,7 +8,7 @@ import datetime
 from collections import defaultdict
 from functools import partial
 
-from .Items import OOTItem
+from .Items import OOTItem, item_table
 from .Location import DisableType
 from .LocationList import business_scrubs
 from .HintList import getHint
@@ -466,9 +466,15 @@ def patch_rom(world, rom):
     rom.write_bytes(0xCD5E12, [0x0E, 0xDC])
 
     # songs as items flag
-    songs_as_items = (world.shuffle_song_items != 'song') or world.songs_as_items or \
-        (world.add_random_starting_items and world.random_starting_items_count > 0
-         and 'songs' not in world.random_starting_items_exclude)
+    song_item_names = {name for name, data in item_table.items() if data[0] == 'Song'}
+    random_start_items = getattr(world, 'randomized_starting_items', {})
+    random_start_has_song = (
+        world.add_random_starting_items
+        and world.random_starting_items_count > 0
+        and 'songs' not in world.random_starting_items_exclude
+        and any(item_name in song_item_names for item_name in random_start_items)
+    )
+    songs_as_items = (world.shuffle_song_items != 'song') or world.songs_as_items or random_start_has_song
 
     if songs_as_items:
         rom.write_byte(rom.sym('SONGS_AS_ITEMS'), 1)
@@ -2374,6 +2380,8 @@ def get_override_entry(ootworld, location):
             item_id = AP_JUNK
     else: 
         item_id = location.item.index
+        if item_id is None and isinstance(location.item, OOTItem) and location.item.type == 'DungeonReward':
+            item_id = location.item.special.get('gi_id')
         if None in [scene, default, item_id]:
             return None
 

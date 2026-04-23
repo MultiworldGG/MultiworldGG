@@ -229,8 +229,8 @@ class OOTWorld(World):
     settings: typing.ClassVar[OOTSettings]
     topology_present: bool = True
     item_name_to_id = {item_name: oot_data_to_ap_id(data, False) for item_name, data in item_table.items() if
-                       data[2] is not None and item_name not in {
-                        'Keaton Mask', 'Skull Mask', 'Spooky Mask', 'Bunny Hood',
+                       oot_data_to_ap_id(data, False) is not None and item_name not in {
+                        'Keaton Mask', 'Skull Mask', 'Spooky Mask',
                         'Mask of Truth', 'Goron Mask', 'Zora Mask', 'Gerudo Mask',
                         'Buy Magic Bean', 'Milk',
                         'Small Key', 'Map', 'Compass', 'Boss Key',

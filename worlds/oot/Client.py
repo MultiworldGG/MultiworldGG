@@ -97,6 +97,7 @@ class OoTContext(CommonContext):
         self.deathlink_client_override = False
         self.version_warning = False
         self.pending_display_items: list = []
+        self._unknown_location_warnings: set[str] = set()
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
@@ -208,7 +209,24 @@ async def parse_payload(payload: dict, ctx: OoTContext, force: bool):
     if ctx.location_table != locations or ctx.collectible_table != collectibles:
         ctx.location_table = locations
         ctx.collectible_table = collectibles
-        locs1 = [oot_loc_name_to_id[loc] for loc, b in ctx.location_table.items() if b]
+        locs1 = []
+
+        # Debug code for now to identify connector issues
+        unknown_locations = []
+        for loc, checked in ctx.location_table.items():
+            if not checked:
+                continue
+            loc_id = oot_loc_name_to_id.get(loc)
+            if loc_id is None:
+                unknown_locations.append(loc)
+                continue
+            locs1.append(loc_id)
+
+        for loc in unknown_locations:
+            if loc not in ctx._unknown_location_warnings:
+                logger.warning(f"Ignoring unknown OoT location from connector: {loc}")
+                ctx._unknown_location_warnings.add(loc)
+
         locs2 = [int(loc) for loc, b in ctx.collectible_table.items() if b]
         await ctx.send_msgs([{
             "cmd": "LocationChecks",
@@ -244,7 +262,10 @@ async def n64_sync_task(ctx: OoTContext):
                     if reported_version >= script_version:
                         if ctx.game is not None and 'locations' in data_decoded:
                             # Not just a keep alive ping, parse
-                            async_start(parse_payload(data_decoded, ctx, False))
+                            try:
+                                await parse_payload(data_decoded, ctx, False)
+                            except Exception:
+                                logger.exception("Failed to parse OoT payload; continuing connection loop.")
                         if not ctx.auth:
                             ctx.auth = data_decoded['playerName']
                             if ctx.awaiting_rom:

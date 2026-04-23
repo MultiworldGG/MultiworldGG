@@ -212,7 +212,7 @@ trade_items = (
     "Pocket Cucco",
     "Cojiro",
     "Odd Mushroom",
-    #"Odd Potion",
+    "Odd Potion",
     "Poachers Saw",
     "Broken Sword",
     "Prescription",
@@ -298,7 +298,6 @@ item_groups = {
 
 random = None
 
-
 def get_junk_pool(ootworld):
     junk_pool[:] = list(junk_pool_base)
     if ootworld.options.junk_ice_traps == 'on':
@@ -380,6 +379,7 @@ def get_pool_core(world):
     placed_items = {}
     remain_shop_items = []
     ruto_bottles = 1
+    ganon_bk_setting = world.shuffle_ganon_bosskey
 
     if world.zora_fountain == 'open':
         ruto_bottles = 0
@@ -415,7 +415,7 @@ def get_pool_core(world):
         if world.shuffle_bosskeys in ['any_dungeon', 'overworld', 'keysanity', 'regional']:
             for dungeon in ['Forest Temple', 'Fire Temple', 'Water Temple', 'Shadow Temple', 'Spirit Temple']:
                 pending_junk_pool.append(f"Boss Key ({dungeon})")
-        if world.shuffle_ganon_bosskey in ['any_dungeon', 'overworld', 'keysanity', 'regional']:
+        if ganon_bk_setting in ['any_dungeon', 'overworld', 'keysanity', 'regional']:
             pending_junk_pool.append('Boss Key (Ganons Castle)')
         if world.shuffle_song_items == 'any':
             pending_junk_pool.extend(song_list)
@@ -676,7 +676,7 @@ def get_pool_core(world):
 
             # Boss Key
             if location.vanilla_item == dungeon.item_name("Boss Key"):
-                shuffle_setting = world.shuffle_bosskeys if dungeon.name != 'Ganons Castle' else world.shuffle_ganon_bosskey
+                shuffle_setting = world.shuffle_bosskeys if dungeon.name != 'Ganons Castle' else ganon_bk_setting
                 dungeon_collection = dungeon.boss_key
                 if shuffle_setting == 'vanilla':
                     shuffle_item = False
@@ -833,7 +833,6 @@ def get_pool_core(world):
         for item_name, count in world.randomized_starting_items.items():
             for _ in range(count):
                 world.multiworld.push_precollected(world.create_item(item_name))
-                world.remove_from_start_inventory.append(item_name)
 
     if world.shuffle_smallkeys == 'vanilla':
         # Logic cannot handle vanilla key layout in some dungeons
@@ -858,10 +857,10 @@ def get_pool_core(world):
         world.multiworld.push_precollected(world.create_item('Small Key (Fire Temple)'))
         world.remove_from_start_inventory.append('Small Key (Fire Temple)')
 
-    if world.shuffle_ganon_bosskey == 'on_lacs':
+    if ganon_bk_setting == 'on_lacs':
         placed_items['ToT Light Arrows Cutscene'] = 'Boss Key (Ganons Castle)'
 
-    if world.shuffle_ganon_bosskey in ['stones', 'medallions', 'dungeons', 'tokens', 'hearts', 'triforce']:
+    if ganon_bk_setting in ['stones', 'medallions', 'dungeons', 'tokens', 'hearts', 'triforce']:
         placed_items['Gift from Sages'] = 'Boss Key (Ganons Castle)'
         pool.extend(get_junk_item(world.random))
     else:
@@ -932,6 +931,7 @@ def get_unrestricted_dungeon_items(ootworld):
     """Adds maps, compasses, small keys, boss keys, and Ganon boss key into item pool if they are not placed."""
     unrestricted_dungeon_items = []
     add_settings = {'dungeon', 'any_dungeon', 'overworld', 'keysanity', 'regional'}
+    ganon_bk_setting = ootworld.shuffle_ganon_bosskey
     for dungeon in ootworld.dungeons:
         if ootworld.shuffle_mapcompass in add_settings:
             unrestricted_dungeon_items.extend(dungeon.dungeon_items)
@@ -939,7 +939,7 @@ def get_unrestricted_dungeon_items(ootworld):
             unrestricted_dungeon_items.extend(dungeon.small_keys)
         if dungeon.name != 'Ganons Castle' and ootworld.shuffle_bosskeys in add_settings:
             unrestricted_dungeon_items.extend(dungeon.boss_key)
-        if dungeon.name == 'Ganons Castle' and ootworld.shuffle_ganon_bosskey in add_settings:
+        if dungeon.name == 'Ganons Castle' and ganon_bk_setting in add_settings:
             unrestricted_dungeon_items.extend(dungeon.boss_key)
     return unrestricted_dungeon_items
 
@@ -957,6 +957,10 @@ def configure_random_starting_items_pool(world, pool: list) -> list:
         exclude_list.extend(('Deku Stick Capacity', 'Deku Nut Capacity'))
     if 'health_upgrades' in exclude:
         exclude_list.extend(item_groups['HealthUpgrade'])
-    if 'junk' in exclude:
-        exclude_list.extend(item for item, _ in junk_pool_base)
-    return sorted({item for item in pool if item not in exclude_list and item_table.get(item, ('',))[0] != 'Shop'})
+    # Only include items with advancement=True in item_table — this filters out junk, fillers,
+    # Ice Traps, and ammo-only items. Junk replacements added each iteration would otherwise
+    # become eligible for selection in subsequent picks.
+    return sorted({item for item in pool
+                   if item not in exclude_list
+                   and item_table.get(item, (None, False, None, None))[1]
+                   and item_table.get(item, ('',))[0] != 'Shop'})

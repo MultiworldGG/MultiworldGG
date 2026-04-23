@@ -24,6 +24,8 @@ local item_get_inf_offset = save_context_offset + 0xEF0 --0x11B4C0
 local inf_table_offset = save_context_offset + 0xEF8 -- 0x11B4C8
 
 local temp_context = nil
+local temp_context_history = {}
+local outgoing_key_offset = 0x400C3C
 local big_poe_count_addr = 0x0040001E  -- BIG_POE_COUNT in AP tracking header (0x8040001E - 0x80000000)
 
 local item_display_queue = {}
@@ -48,11 +50,25 @@ end
 -- v8.2: OUTGOING_KEY is now an 8-byte override_key_t: {scene(1), type(1), pad(2), flag(4)}
 -- [0] = scene id, [1] = location type, [7] = location flag LSB (bit index)
 -- Note that temp_context is 0-indexed and expected_values is 1-indexed, because consistency.
+local temp_context_key = function(scene, location_type, flag)
+    return string.format('%02X:%02X:%02X', scene % 0x100, location_type % 0x100, flag % 0x100)
+end
+
 local check_temp_context = function(expected_values)
-    if temp_context[0] ~= expected_values[1] then return false end
-    if temp_context[1] ~= expected_values[2] then return false end
-    if temp_context[7] ~= expected_values[3] then return false end
-    return true
+    return temp_context_history[temp_context_key(expected_values[1], expected_values[2], expected_values[3])] == true
+end
+
+local poll_outgoing_key = function()
+    local high = mainmemory.read_u32_be(outgoing_key_offset)
+    local low = mainmemory.read_u32_be(outgoing_key_offset + 4)
+    if high == 0 and low == 0 then return end
+
+    temp_context = mainmemory.readbyterange(outgoing_key_offset, 8)
+    temp_context_history[temp_context_key(temp_context[0], temp_context[1], temp_context[7])] = true
+
+    -- Acknowledge this key so the ASM queue can move the next key into OUTGOING_KEY next frame.
+    mainmemory.write_u32_be(outgoing_key_offset, 0)
+    mainmemory.write_u32_be(outgoing_key_offset + 4, 0)
 end
 
 -- When checking locations, we check two spots:
@@ -75,6 +91,19 @@ end
 local boss_item_check = function(scene_offset)
     return on_the_ground_check(scene_offset, 0x1F)
         or check_temp_context({scene_offset, 0x00, 0x4F})
+end
+
+-- Boss rewards are queued as delayed overrides (scene=0xFF, type=OVR_DELAYED=0x05)
+-- with flags 0x05..0x0C for Gohma..Bongo.
+local boss_reward_check = function(reward_flag)
+    return check_temp_context({0xFF, 0x05, reward_flag})
+end
+
+-- Boss hearts and boss rewards are both gated by defeating the boss.
+-- Keep scene-based checks for persistence, but also accept the boss reward key
+-- so boss-room shuffle cannot miss the heart when scene identity changes.
+local boss_heart_check = function(scene_offset, reward_flag)
+    return boss_item_check(scene_offset) or boss_reward_check(reward_flag)
 end
 
 -- NOTE: Scrubs are stored in the "unused" block of scene memory
@@ -316,7 +345,8 @@ local read_deku_tree_checks = function(mq_table_address)
         checks["Deku Tree MQ GS Basement Back Room"] = skulltula_check(0x0, 0x0)
     end
 
-    checks["Deku Tree Queen Gohma Heart"] = boss_item_check(0x11)
+    checks["Deku Tree Queen Gohma Heart"] = boss_heart_check(0x11, 0x05)
+    checks["Queen Gohma"] = boss_reward_check(0x05)
     return checks
 end
 
@@ -363,7 +393,8 @@ local read_forest_temple_checks = function(mq_table_address)
         checks["Forest Temple MQ GS Block Push Room"] = skulltula_check(0x3, 0x4)
     end
 
-    checks["Forest Temple Phantom Ganon Heart"] = boss_item_check(0x14)
+    checks["Forest Temple Phantom Ganon Heart"] = boss_heart_check(0x14, 0x08)
+    checks["Phantom Ganon"] = boss_reward_check(0x08)
     return checks
 end
 
@@ -594,7 +625,8 @@ local read_shadow_temple_checks = function(mq_table_address)
         checks["Shadow Temple MQ GS Near Boss"] = skulltula_check(0x7, 0x2)
     end
 
-    checks["Shadow Temple Bongo Bongo Heart"] = boss_item_check(0x18)
+    checks["Shadow Temple Bongo Bongo Heart"] = boss_heart_check(0x18, 0x0C)
+    checks["Bongo Bongo"] = boss_reward_check(0x0C)
     return checks
 end
 
@@ -695,7 +727,8 @@ local read_dodongos_cavern_checks = function(mq_table_address)
 
     -- Both of these are shared between vanilla and MQ
     checks["Dodongos Cavern Boss Room Chest"] = chest_check(0x12, 0x0)
-    checks["Dodongos Cavern King Dodongo Heart"] = boss_item_check(0x12)
+    checks["Dodongos Cavern King Dodongo Heart"] = boss_heart_check(0x12, 0x06)
+    checks["King Dodongo"] = boss_reward_check(0x06)
     return checks
 end
 
@@ -743,7 +776,8 @@ local read_fire_temple_checks = function(mq_table_address)
         checks["Fire Temple MQ GS Above Flame Maze"] = skulltula_check(0x4, 0x1)
     end
 
-    checks["Fire Temple Volvagia Heart"] = boss_item_check(0x15)
+    checks["Fire Temple Volvagia Heart"] = boss_heart_check(0x15, 0x09)
+    checks["Volvagia"] = boss_reward_check(0x09)
     return checks
 end
 
@@ -829,7 +863,8 @@ local read_jabu_checks = function(mq_table_address)
         checks["Jabu Jabus Belly MQ GS Near Boss"] = skulltula_check(0x2, 0x1)
     end
 
-    checks["Jabu Jabus Belly Barinade Heart"] = boss_item_check(0x13)
+    checks["Jabu Jabus Belly Barinade Heart"] = boss_heart_check(0x13, 0x07)
+    checks["Barinade"] = boss_reward_check(0x07)
     return checks
 end
 
@@ -911,7 +946,8 @@ local read_water_temple_checks = function(mq_table_address)
         checks["Water Temple MQ GS Triple Wall Torch"] = skulltula_check(0x5, 0x4)
     end
 
-    checks["Water Temple Morpha Heart"] = boss_item_check(0x16)
+    checks["Water Temple Morpha Heart"] = boss_heart_check(0x16, 0x0A)
+    checks["Morpha"] = boss_reward_check(0x0A)
     return checks
 end
 
@@ -1076,7 +1112,8 @@ local read_spirit_temple_checks = function(mq_table_address)
         checks["Spirit Temple MQ GS Nine Thrones Room North"] = skulltula_check(0x6, 0x4)
     end
 
-    checks["Spirit Temple Twinrova Heart"] = boss_item_check(0x17)
+    checks["Spirit Temple Twinrova Heart"] = boss_heart_check(0x17, 0x0B)
+    checks["Twinrova"] = boss_reward_check(0x0B)
     return checks
 end
 
@@ -1156,7 +1193,6 @@ end
 local check_all_locations = function(mq_table_address)
 -- TODO: make MQ better
     local location_checks = {}
-    temp_context = mainmemory.readbyterange(0x400C3C, 8)
     for k,v in pairs(read_kokiri_forest_checks()) do location_checks[k] = v end
     for k,v in pairs(read_lost_woods_checks()) do location_checks[k] = v end
     for k,v in pairs(read_sacred_forest_meadow_checks()) do location_checks[k] = v end
@@ -1191,9 +1227,6 @@ local check_all_locations = function(mq_table_address)
     for k,v in pairs(read_ganons_castle_checks(mq_table_address)) do location_checks[k] = v end
     for k,v in pairs(read_outside_ganons_castle_checks()) do location_checks[k] = v end
     for k,v in pairs(read_song_checks()) do location_checks[k] = v end
-    -- clear OUTGOING_KEY after reading (8 bytes at 0x80400C3C)
-    mainmemory.write_u32_be(0x400C3C, 0)
-    mainmemory.write_u32_be(0x400C40, 0)
     return location_checks
 end
 
@@ -1570,11 +1603,14 @@ local STATE_OK = "Ok"
 local STATE_TENTATIVELY_CONNECTED = "Tentatively Connected"
 local STATE_INITIAL_CONNECTION_MADE = "Initial Connection Made"
 local STATE_UNINITIALIZED = "Uninitialized"
+local CONNECT_RETRY_FRAMES = 60
+local CONNECT_LOG_COOLDOWN_FRAMES = 300
 
 local prevstate = ""
 local curstate =  STATE_UNINITIALIZED
 local ootSocket = nil
 local frame = 0
+local last_connect_log_frame = -CONNECT_LOG_COOLDOWN_FRAMES
 
 -- Various useful values
 -- OoT Randomizer 8.0: GLOBAL_CONTEXT moved to 0x801C84A0 (was 0x801C6E90).
@@ -1873,23 +1909,10 @@ end
 -- Main control handling: main loop and socket receive
 
 function APreceive()
-    l, e = ootSocket:receive()
-    -- Handle incoming message
-    if e == 'closed' then
-        if curstate == STATE_OK then
-            print("Connection closed")
-        end
-        curstate = STATE_UNINITIALIZED
-        return
-    elseif e == 'timeout' then
-        print("timeout")
-        return
-    elseif e ~= nil then
-        print(e)
+    if ootSocket == nil then
         curstate = STATE_UNINITIALIZED
         return
     end
-    process_block(json.decode(l))
 
     -- Determine message to send back
     local retTable = {}
@@ -1907,13 +1930,54 @@ function APreceive()
     msg = json.encode(retTable).."\n"
     local ret, error = ootSocket:send(msg)
     if ret == nil then
-        print(error)
+        if error == 'timeout' then
+            -- Nonblocking sockets can hit transient send timeouts; keep the connection.
+            return
+        end
+        print("Send failed: " .. tostring(error))
+        pcall(function() ootSocket:close() end)
+        ootSocket = nil
+        temp_context = nil
+        temp_context_history = {}
+        curstate = STATE_UNINITIALIZED
+        return
     elseif curstate == STATE_INITIAL_CONNECTION_MADE then
         curstate = STATE_TENTATIVELY_CONNECTED
     elseif curstate == STATE_TENTATIVELY_CONNECTED then
         print("Connected!")
         curstate = STATE_OK
     end
+
+    -- Handle incoming message after sending heartbeat/update data
+    local l, e = ootSocket:receive()
+    if e == 'closed' then
+        if curstate == STATE_OK then
+            print("Connection closed")
+        end
+        pcall(function() ootSocket:close() end)
+        ootSocket = nil
+        temp_context = nil
+        temp_context_history = {}
+        curstate = STATE_UNINITIALIZED
+        return
+    elseif e == 'timeout' then
+        return
+    elseif e ~= nil then
+        print("Socket error: " .. tostring(e))
+        pcall(function() ootSocket:close() end)
+        ootSocket = nil
+        temp_context = nil
+        temp_context_history = {}
+        curstate = STATE_UNINITIALIZED
+        return
+    end
+
+    local decoded = json.decode(l)
+    if decoded == nil then
+        print("Failed to decode server message")
+        return
+    end
+    process_block(decoded)
 
 end
 
@@ -1922,6 +1986,11 @@ function main()
         return
     end
     server, error = socket.bind('localhost', 28921)
+    if server == nil then
+        print("Could not bind localhost:28921: " .. tostring(error))
+        return
+    end
+    server:settimeout(0)
 
     while true do
         frame = frame + 1
@@ -1929,21 +1998,29 @@ function main()
             prevstate = curstate
         end
         if (curstate == STATE_OK) or (curstate == STATE_INITIAL_CONNECTION_MADE) or (curstate == STATE_TENTATIVELY_CONNECTED) then
+            -- Drain OUTGOING_KEY every frame so transient keys from cutscene/menu transitions
+            -- cannot be missed before the next safe-state location sweep.
+            poll_outgoing_key()
             if (frame % 30 == 0) then
                 APreceive()
             end
         elseif (curstate == STATE_UNINITIALIZED) then
-            if  (frame % 60 == 0) then
-                server:settimeout(2)
-                local client, timeout = server:accept()
-                if timeout == nil then
+            if (frame % CONNECT_RETRY_FRAMES == 0) then
+                local client, accept_error = server:accept()
+                if client ~= nil then
                     print('Initial Connection Made')
+                    temp_context = nil
+                    temp_context_history = {}
                     curstate = STATE_INITIAL_CONNECTION_MADE
                     ootSocket = client
                     ootSocket:settimeout(0)
                 else
-                    print('Connection failed, ensure OoTClient is running and rerun connector_oot.lua')
-                    return
+                    if accept_error ~= nil and accept_error ~= 'timeout' then
+                        if frame - last_connect_log_frame >= CONNECT_LOG_COOLDOWN_FRAMES then
+                            print('Connection retry failed: ' .. tostring(accept_error))
+                            last_connect_log_frame = frame
+                        end
+                    end
                 end
             end
         end

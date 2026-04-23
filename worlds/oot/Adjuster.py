@@ -257,7 +257,27 @@ def adjustGUI():
             logging.exception(e)
             messagebox.showerror(title="Error while adjusting Rom", message=str(e))
         else:
-            messagebox.showinfo(title="Success", message=f"Rom patched successfully to {path}")
+            import subprocess
+            import settings as ap_settings
+            from worlds.LauncherComponents import launch_subprocess
+            from worlds.oot.Client import main as client_main
+            auto_start = OOTWorld.settings.rom_start
+            if auto_start is True:
+                emuhawk_path = ap_settings.get_settings().bizhawkclient_options.emuhawk_path
+                subprocess.Popen(
+                    [
+                        emuhawk_path,
+                        f"--lua={local_path('data', 'lua', 'connector_oot.lua')}",
+                        os.path.realpath(path),
+                    ],
+                    cwd=local_path("."),
+                    stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                )
+            elif os.path.isfile(auto_start):
+                subprocess.Popen([auto_start, path],
+                                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            launch_subprocess(client_main, name="OoTClient")
+            messagebox.showinfo(title="Success", message=f"Rom adjusted to {path}")
 
     # Adjust button
     bottomFrame = Frame(window)
