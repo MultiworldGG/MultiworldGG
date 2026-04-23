@@ -56,6 +56,7 @@ def add_items_from_filler(item_pool_dict: dict, filler_item_count: int, item: st
 class SpiritTracksWeb(WebWorld):
     theme = "grassFlowers"
     game = "Spirit Tracks"
+    display_name = "The Legend of Zelda: Spirit Tracks"
     setup_en = Tutorial(
         tutorial_name="Multiworld Setup Guide",
         description="A guide to setting up Spirit Tracks for MultiworldGG on your computer.",

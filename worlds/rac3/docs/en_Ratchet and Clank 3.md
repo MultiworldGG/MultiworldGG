@@ -5,7 +5,7 @@ A MultiworldGG implementation for Ratchet and Clank 3
 ## Setup Guide
 
 To get started,
-see [the Setup Guide](/tutorial/Ratchet%20&%20Clank%203/setup_en).
+see [the Setup Guide](/tutorial/Ratchet%20and%20Clank%203/setup_en).
 
 ## Where is the options page?
 

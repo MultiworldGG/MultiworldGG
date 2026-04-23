@@ -35,7 +35,7 @@ rac3_logger.setLevel(DEBUG)
 
 class RaC3World(World):
     """
-    Ratchet & Clank 3 is a third person action shooter.
+    Ratchet and Clank 3 is a third person action shooter.
     Blast your enemies with over the top weaponry and save the galaxy from total disaster.
     """
 

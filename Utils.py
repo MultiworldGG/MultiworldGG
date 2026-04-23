@@ -1090,6 +1090,18 @@ def _extend_freeze_support() -> None:
 
         # Handle the second process that MP will create
         if multiprocessing.spawn.is_forking(sys.argv):
+            # In frozen builds, child processes may need to import world modules
+            # packaged as .apworld archives (for example worlds.tracker).
+            # Register zip specs before spawn_main unpickles target callables.
+            try:
+                import worlds
+                world_sources = getattr(worlds, "world_sources", ())
+                for world_source in world_sources:
+                    if getattr(world_source, "is_zip", False):
+                        worlds._register_apworld_zip_spec(world_source)  # type: ignore[attr-defined]
+            except Exception:
+                pass
+
             kwargs = {}
             for arg in sys.argv[2:]:
                 name, value = arg.split('=')

@@ -6,7 +6,7 @@ The [player options page for this game](../player-options) contains all the opti
 
 ## What do I need to do to randomize DSR?
 
-See full instructions on [the setup page](./setup_en.md).
+See full instructions on [the setup page](/tutorial/Dark%20Souls%20Remastered/setup_en).
 
 ## What does randomization do to this game?
 

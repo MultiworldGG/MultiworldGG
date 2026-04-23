@@ -6,10 +6,10 @@ import logging
 
 
 def has_launcher_cache() -> bool:
+    """Return True only if the cache file exists *and* passes validation."""
     try:
-        from worlds import LauncherComponents
-        import os
-        return os.path.isfile(LauncherComponents._LAUNCHER_CACHE_PATH)
+        from worlds.LauncherComponents import _load_launcher_cache
+        return _load_launcher_cache() is not None
     except Exception:
         return False
 

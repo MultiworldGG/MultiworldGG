@@ -242,5 +242,9 @@ sm64hack_jsons
 # lobby uploads
 uploads
 
+# OoT
 worlds/oot/data/Compress/ARCHIVE.bin
 worlds/oot/ASM/roms/*.z64
+
+# launcher cache
+data/world_launcher_cache.json.gz

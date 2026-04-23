@@ -247,7 +247,7 @@ def _build_network_data_packages() -> None:
     }
 
 
-def ensure_worlds_loaded() -> None:
+def ensure_worlds_loaded(write_launcher_cache: bool = True) -> None:
     global _worlds_loaded
     global _worlds_loading
     global _worlds_load_owner_thread_id
@@ -279,7 +279,7 @@ def ensure_worlds_loaded() -> None:
                 _load_apworlds(apworlds)
             _build_network_data_packages()
 
-            if not has_launcher_cache():
+            if write_launcher_cache and not has_launcher_cache():
                 try:
                     from . import LauncherComponents
                     LauncherComponents.write_launcher_cache()

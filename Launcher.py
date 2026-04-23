@@ -19,7 +19,6 @@ import shlex
 import subprocess
 import sys
 import threading
-import time
 import urllib.parse
 import webbrowser
 from collections.abc import Callable, Sequence
@@ -238,6 +237,9 @@ def get_exe(component: str | Component) -> Sequence[str] | None:
 
 
 def _resolve_component_callable(module_name: str, qualname: str):
+    if module_name.startswith("worlds."):
+        import worlds
+        worlds.ensure_worlds_loaded()
     module = importlib.import_module(module_name)
     target = module
     for part in qualname.split("."):
@@ -257,12 +259,11 @@ def run_component_callable(module_name: str, qualname: str, *args: str) -> None:
     target(*args)
 
 
-def launch_component_callable(module_name: str, qualname: str, launch_args: Sequence[str] = ()) -> bool:
+def launch_component_callable(module_name: str, qualname: str, launch_args: Sequence[str] = ()) -> subprocess.Popen[Any] | None:
     launcher_exe = get_exe("Launcher")
     if not launcher_exe:
-        return False
-    subprocess.Popen([*launcher_exe, "--run_component_callable", module_name, qualname, "--", *launch_args])
-    return True
+        return None
+    return subprocess.Popen([*launcher_exe, "--run_component_callable", module_name, qualname, "--", *launch_args])
 
 
 def launch(exe: Sequence[str], in_terminal: bool = False) -> bool:
@@ -508,8 +509,13 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
 
                     Clock.schedule_once(_finish_on_main, 0)
             else:
-                # Cache exists, just dismiss overlay
-                Clock.schedule_once(lambda dt: self._dismiss_loading_overlay(), 0)
+                # Valid Cache
+                def _finish_from_cache(dt):
+                    from worlds.LauncherComponents import _hydrate_launcher_components_from_cache
+                    _hydrate_launcher_components_from_cache()
+                    self._rebuild_cards_from_components()
+                    self._dismiss_loading_overlay()
+                Clock.schedule_once(_finish_from_cache, 0)
 
         def _start_background_cache_refresh(self) -> None:
             if self._cache_refresh_started:
@@ -832,33 +838,30 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
             component = button.component
             is_cached_stub = getattr(component, "_mwgg_component_origin", None) == "cache_stub"
             launch_toast = self._show_launch_toast(persist=True)
-            launch_toast_started = time.perf_counter()
-            min_toast_seconds = 0.7
+            launch_toast_seconds = 4.0
 
-            def _dismiss_launch_toast() -> None:
+            def _dismiss_launch_toast(_dt: float = 0.0) -> None:
                 if not launch_toast:
                     return
+                try:
+                    launch_toast.dismiss()
+                except Exception:
+                    pass
 
-                elapsed = time.perf_counter() - launch_toast_started
-                remaining = max(0.0, min_toast_seconds - elapsed)
-
-                def _do_dismiss(dt: float) -> None:
-                    try:
-                        launch_toast.dismiss()
-                    except Exception:
-                        pass
-
-                if remaining > 0:
-                    Clock.schedule_once(_do_dismiss, remaining)
-                else:
-                    _do_dismiss(0.0)
+            Clock.schedule_once(_dismiss_launch_toast, launch_toast_seconds)
 
             def _execute_launch() -> str | None:
                 if component.func:
                     component.func()
                     return None
+                exe = get_exe(component)
+                if not exe:
+                    raise FileNotFoundError(f"Unable to resolve executable for component {component.display_name}")
+                if not component.cli:
+                    subprocess.Popen(exe)
+                    return None
                 # if launch returns False, it started the process in background (not in a new terminal)
-                if not launch(get_exe(component), component.cli) and component.cli:
+                if not launch(exe, component.cli):
                     return "Running in the background..."
                 return None
 
@@ -872,7 +875,6 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
                         post_toast = "Failed to open component."
                     finally:
                         def _finish(dt) -> None:
-                            _dismiss_launch_toast()
                             button.disabled = False
                             if post_toast:
                                 self._show_launch_toast(post_toast)
@@ -894,15 +896,11 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
                     logging.exception("Failed to launch component %s: %s", component.display_name, exc)
                     post_toast = "Failed to open component."
                 finally:
-                    _dismiss_launch_toast()
                     button.disabled = False
                 if post_toast:
                     self._show_launch_toast(post_toast)
 
-            def _show_toast_and_launch(dt):
-                Clock.schedule_once(_do_action, 0)
-
-            Clock.schedule_once(_show_toast_and_launch, 0)
+            Clock.schedule_once(_do_action, 0)
 
         def _on_drop_file(self, window: Window, filename: bytes, x: int, y: int) -> None:
             """ When a patch file is dropped into the window, run the associated component. """

@@ -13,7 +13,7 @@ import urllib.error
 import urllib.request
 import warnings
 import zipfile
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from hashlib import sha3_512
 from pathlib import Path
 
@@ -58,9 +58,113 @@ if __name__ == "__main__":
     import ModuleUpdate
     ModuleUpdate.update(yes="--yes" in sys.argv or "-y" in sys.argv)
 
+import worlds as worlds_module
+from worlds import ensure_worlds_loaded
 from worlds.LauncherComponents import components, icon_paths
 from Utils import version_tuple, instance_name, archipelago_guid, is_windows, is_linux
 from Cython.Build import cythonize
+
+def _install_cxfreeze_world_progress_logging() -> Callable[[], None]:
+    try:
+        from cx_Freeze import finder as cxfinder
+    except Exception:
+        return lambda: None
+
+    finder_cls = getattr(cxfinder, "ModuleFinder", None)
+    if finder_cls is None:
+        return lambda: None
+
+    world_module_names = sorted({
+        f"worlds.{Path(world_source.path).stem}"
+        for world_source in worlds_module.world_sources
+    })
+    world_module_set = set(world_module_names)
+    seen_world_modules: set[str] = set()
+    progress = {"count": 0, "total": len(world_module_names)}
+    wrapped_methods: dict[str, Callable[..., object]] = {}
+
+    def _extract_module_name(args: tuple[object, ...], kwargs: dict[str, object]) -> str | None:
+        candidate = kwargs.get("name")
+        if isinstance(candidate, str):
+            return candidate
+        candidate = kwargs.get("module_name")
+        if isinstance(candidate, str):
+            return candidate
+        for arg in args:
+            if isinstance(arg, str):
+                return arg
+        return None
+
+    def _log_module_if_relevant(module_name: str | None) -> None:
+        if isinstance(module_name, str) and module_name in world_module_set and module_name not in seen_world_modules:
+            seen_world_modules.add(module_name)
+            progress["count"] += 1
+            print(
+                f"cx_Freeze processing world module "
+                f"[{progress['count']}/{progress['total']}]: {module_name}"
+                , flush=True
+            )
+
+    def _wrap_method(method_name: str) -> None:
+        original_method = getattr(finder_cls, method_name, None)
+        if not callable(original_method):
+            return
+
+        def _wrapped(self, *args, __method=original_method, **kwargs):
+            _log_module_if_relevant(_extract_module_name(args, kwargs))
+            return __method(self, *args, **kwargs)
+
+        setattr(finder_cls, method_name, _wrapped)
+        wrapped_methods[method_name] = original_method
+
+    for method_name in ("include_module", "_import_module", "_internal_import_module", "import_module"):
+        _wrap_method(method_name)
+
+    def _restore() -> None:
+        for method_name, original_method in wrapped_methods.items():
+            setattr(finder_cls, method_name, original_method)
+
+    return _restore
+
+
+def _start_cxfreeze_world_output_monitor(worlds_output_dir: Path) -> Callable[[], None]:
+    expected_worlds = {
+        Path(world_source.path).stem
+        for world_source in worlds_module.world_sources
+    }
+    seen_worlds: set[str] = set()
+    stop_event = threading.Event()
+
+    def _scan_once() -> None:
+        if not worlds_output_dir.is_dir():
+            return
+
+        produced_worlds: set[str] = set()
+        for entry in worlds_output_dir.iterdir():
+            if entry.is_dir():
+                produced_worlds.add(entry.name)
+            elif entry.is_file() and entry.suffix == ".apworld":
+                produced_worlds.add(entry.stem)
+
+        new_worlds = sorted((produced_worlds & expected_worlds) - seen_worlds)
+        for world_name in new_worlds:
+            seen_worlds.add(world_name)
+            print(
+                f"cx_Freeze output world [{len(seen_worlds)}/{len(expected_worlds)}]: {world_name}",
+                flush=True,
+            )
+
+    def _monitor() -> None:
+        while not stop_event.wait(0.25):
+            _scan_once()
+        _scan_once()
+
+    threading.Thread(target=_monitor, name="CxFreezeWorldOutputMonitor", daemon=True).start()
+
+    def _stop() -> None:
+        stop_event.set()
+
+    return _stop
 
 
 non_apworlds: set[str] = {
@@ -164,14 +268,21 @@ def resolve_icon(icon_name: str):
         return base_path
 
 
-exes = [
-    cx_Freeze.Executable(
-        script=f"{c.script_name}.py",
-        target_name=c.frozen_name + (".exe" if is_windows else ""),
-        icon=resolve_icon(c.icon),
-        base="Win32GUI" if is_windows and not c.cli else None
-    ) for c in components if c.script_name and c.frozen_name
-]
+def build_executables() -> list[cx_Freeze.Executable]:
+    # Include world-defined launch components (for example SNI Client)
+    # so cx_Freeze emits executables for them as well.
+    ensure_worlds_loaded(write_launcher_cache=False)
+    return [
+        cx_Freeze.Executable(
+            script=f"{c.script_name}.py",
+            target_name=c.frozen_name + (".exe" if is_windows else ""),
+            icon=resolve_icon(c.icon),
+            base="Win32GUI" if is_windows and not c.cli else None
+        ) for c in components if c.script_name and c.frozen_name
+    ]
+
+
+exes = build_executables()
 
 if is_windows:
     # create a duplicate Launcher for Windows, which has a working stdout/stderr, for debugging and --help
@@ -309,11 +420,17 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
 
         # Eagerly load worlds so cx_Freeze sees all dependencies during its scan.
         from worlds import ensure_worlds_loaded
-        ensure_worlds_loaded()
+        ensure_worlds_loaded(write_launcher_cache=False)
 
         # regular cx build
         self.buildtime = datetime.datetime.now(datetime.timezone.utc)
-        super().run()
+        restore_finder_logging = _install_cxfreeze_world_progress_logging()
+        stop_world_output_monitor = _start_cxfreeze_world_output_monitor(self.libfolder / "worlds")
+        try:
+            super().run()
+        finally:
+            stop_world_output_monitor()
+            restore_finder_logging()
 
         # manually copy built modules to lib folder. cx_Freeze does not know they exist.
         for src in build_ext.get_outputs():
@@ -367,7 +484,7 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
         from Options import generate_yaml_templates
         from worlds import AutoWorldRegister, ensure_worlds_loaded
         from worlds.Files import APWorldContainer
-        ensure_worlds_loaded()
+        ensure_worlds_loaded(write_launcher_cache=False)
         assert not non_apworlds - set(AutoWorldRegister.world_types), \
             f"Unknown world {non_apworlds - set(AutoWorldRegister.world_types)} designated for .apworld"
         folders_to_remove: list[str] = []

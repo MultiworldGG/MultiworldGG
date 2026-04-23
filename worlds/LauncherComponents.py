@@ -6,6 +6,7 @@ import logging
 import os
 import pathlib
 import pkgutil
+import subprocess
 import sys
 import tempfile
 import time
@@ -509,36 +510,43 @@ def _find_cached_stub(component_id: tuple[Any, ...]) -> Component | None:
     return None
 
 
-def _launch_cached_script_stub(component: Component, launch_args: tuple[str, ...]) -> bool:
+def _launch_cached_script_stub(component: Component, launch_args: tuple[str, ...]) -> tuple[bool, subprocess.Popen[Any] | None]:
     if not (component.script_name or component.frozen_name):
-        return False
+        return False, None
 
     from Launcher import get_exe, launch
 
     exe = get_exe(component)
     if not exe:
-        return False
+        return False, None
 
-    launch([*exe, *launch_args], component.cli)
-    return True
+    if component.cli:
+        launch([*exe, *launch_args], component.cli)
+        return True, None
+    return True, subprocess.Popen([*exe, *launch_args])
 
 
 def _launch_cached_callable_stub(callable_module: str | None, callable_qualname: str | None,
-                                 launch_args: tuple[str, ...]) -> bool:
+                                 launch_args: tuple[str, ...]) -> tuple[bool, subprocess.Popen[Any] | None]:
     if not callable_module or not callable_qualname:
-        return False
+        return False, None
 
     from Launcher import launch_component_callable
-    return launch_component_callable(callable_module, callable_qualname, launch_args)
+    launched_process = launch_component_callable(callable_module, callable_qualname, launch_args)
+    return launched_process is not None, launched_process
 
 
 def _run_cached_component(component_id: tuple[Any, ...], callable_module: str | None,
-                          callable_qualname: str | None, *launch_args: str) -> None:
+                          callable_qualname: str | None, *launch_args: str) -> subprocess.Popen[Any] | None:
     stub = _find_cached_stub(component_id)
-    if stub is not None and _launch_cached_script_stub(stub, tuple(launch_args)):
-        return
-    if _launch_cached_callable_stub(callable_module, callable_qualname, tuple(launch_args)):
-        return
+    if stub is not None:
+        launched, launched_process = _launch_cached_script_stub(stub, tuple(launch_args))
+        if launched:
+            return launched_process
+
+    launched, launched_process = _launch_cached_callable_stub(callable_module, callable_qualname, tuple(launch_args))
+    if launched:
+        return launched_process
 
     # Resolve through fully loaded world components so launch behavior matches the real component.
     from worlds import ensure_worlds_loaded
@@ -546,14 +554,15 @@ def _run_cached_component(component_id: tuple[Any, ...], callable_module: str | 
     component = _find_loaded_component(component_id)
     if component is None:
         logging.warning("Failed to resolve cached launcher component after world loading completed.")
-        return
+        return None
     _launch_component(component, tuple(launch_args))
+    return None
 
 
 def _make_cached_component_func(component_id: tuple[Any, ...], callable_module: str | None,
-                                callable_qualname: str | None) -> Callable[..., None]:
-    def _launch_cached(*launch_args: str) -> None:
-        _run_cached_component(component_id, callable_module, callable_qualname, *launch_args)
+                                callable_qualname: str | None) -> Callable[..., subprocess.Popen[Any] | None]:
+    def _launch_cached(*launch_args: str) -> subprocess.Popen[Any] | None:
+        return _run_cached_component(component_id, callable_module, callable_qualname, *launch_args)
 
     return _launch_cached
 
