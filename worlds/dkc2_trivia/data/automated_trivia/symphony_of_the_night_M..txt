@@ -1,0 +1,44 @@
+PARSER: 1
+GAME: Symphony of the Night
+AUTHOR: M.
+---
+QUESTION: EASY
+In Symphony of the Night, 
+what does the item 
+"Secret Boots" do?
+ANSWERS:
+Makes Alucard taller
+Nothing
+Reveals breakable walls
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+what items do you need 
+to unlock the hidden area
+in Castle Entrance?
+ANSWERS:
+Soul of Wolf & Bat
+Holy Glasses
+Spike Breaker
+---
+QUESTION: HARD
+In Symphony of the Night,
+what is the name of the enemy
+that can only be encountered
+once in the entire game,
+excluding bosses?
+ANSWERS:
+Mudman
+Yorick
+Dodo Bird
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+what is an alternative way to
+chain Gravity Jumps without
+Leap Stone?
+ANSWERS:
+De-transforming mid-air
+Spamming X mid-air
+Casting Sword Brothers
+---

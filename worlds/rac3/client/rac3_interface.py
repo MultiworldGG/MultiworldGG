@@ -14,6 +14,7 @@ from worlds.rac3.client.texthelper import (
     ITEM_TO_STRING_TABLE_INDEX_OFFSET,
     TEXT_BYTE_TO_EXPECTED_WIDTH,
 )
+from worlds.rac3.constants.action_type import RAC3ACTIONTYPE
 from worlds.rac3.constants.check_type import CHECKTYPE
 from worlds.rac3.constants.data.address import RAC3ADDRESSDATA
 from worlds.rac3.constants.data.item import (
@@ -37,6 +38,7 @@ from worlds.rac3.constants.data.location import (
     RAC3LOCATIONDATA,
     REGION_TO_INFOBOT_LOCATION,
 )
+from worlds.rac3.constants.data.position import RAC3POSITIONDATA
 from worlds.rac3.constants.data.region import RAC3_REGION_DATA_TABLE
 from worlds.rac3.constants.data.status import RAC3_STATUS_DATA_TABLE
 from worlds.rac3.constants.data.vendorslot import (
@@ -48,7 +50,13 @@ from worlds.rac3.constants.data.vendorslot import (
 )
 from worlds.rac3.constants.deaths import CLANK_DEATH_FROM_ACTION, DEATH_FROM_ACTION
 from worlds.rac3.constants.input import RAC3INPUT
-from worlds.rac3.constants.instruction import ORIGINAL_INSTRUCTIONS, PATCHED_INSTRUCTIONS, RAC3INSTRUCTION
+from worlds.rac3.constants.instruction import (
+    ORIGINAL_INSTRUCTIONS,
+    PATCH_INSTRUCTION_TO_GAME_IDS,
+    PATCH_INSTRUCTION_TO_NAME,
+    PATCH_INSTRUCTION_TO_PLANET,
+    PATCHED_INSTRUCTIONS,
+)
 from worlds.rac3.constants.item_tags import RAC3ITEMTAG
 from worlds.rac3.constants.items import QUICK_SELECT_LIST, RAC3ITEM, UPGRADE_DICT
 from worlds.rac3.constants.locations.general import RAC3LOCATION
@@ -71,6 +79,7 @@ from worlds.rac3.constants.messages.text_format import CLASSIFICATION_TO_COLOR, 
 from worlds.rac3.constants.messages.text_strings import RAC3TEXTFORMATSTRING
 from worlds.rac3.constants.options import RAC3OPTION
 from worlds.rac3.constants.pause_state import RAC3PAUSESTATE
+from worlds.rac3.constants.player_action import RAC3PLAYERACTION
 from worlds.rac3.constants.player_type import PLAYER_TYPE_TO_NAME, RAC3PLAYERTYPE
 from worlds.rac3.constants.region import (
     PLANET_FROM_INFOBOT,
@@ -84,7 +93,13 @@ from worlds.rac3.constants.region import (
 from worlds.rac3.constants.status import RAC3STATUS
 from worlds.rac3.constants.vendors.type import RAC3VENDORTYPE
 from worlds.rac3.constants.vendors.vendor import RAC3SHIPVENDOR, RAC3VENDOR, RAC3WEAPONVENDOR, VENDORTYPE_TO_SLOT_SIZE
-from worlds.rac3.constants.version import GAME_ID_TO_VERSION, PAL_SHIFTED_PLANETS, RAC3VERSION, VERSION_TO_BLACK_SCREEN_ORIGINAL_VALUE
+from worlds.rac3.constants.version import (
+    GAME_ID_TO_OFFSET,
+    GAME_ID_TO_VERSION,
+    PAL_SHIFTED_PLANETS,
+    RAC3VERSION,
+    VERSION_TO_BLACK_SCREEN_ORIGINAL_VALUE,
+)
 
 
 class Rac3Interface(GameInterface):
@@ -111,7 +126,7 @@ class Rac3Interface(GameInterface):
         start_inventory_from_pool: dict[str, int]
         starting_weapons: dict[str, int]
         bolt_and_xp_multiplier: int
-        enable_progressive_weapons: int
+        progressive_weapons: int
         armor_upgrade: int
         skill_points: int
         trophies: int
@@ -122,7 +137,7 @@ class Rac3Interface(GameInterface):
         ship_nose: int
         ship_wings: int
         ship_skin: int
-        skin: int
+        player_skin: int
         traps_enabled: int
         trap_weight: dict[str, int]
         rangers: int
@@ -140,7 +155,7 @@ class Rac3Interface(GameInterface):
         clank_options: int
         ship_vendor: int
         armor_vendor: int
-        scout_vendors: int
+        scout_vendors: dict[str, int]
 
     UnlockItem: dict[str, UnlockData] = None
     options = Options
@@ -152,9 +167,9 @@ class Rac3Interface(GameInterface):
     planet: str = RAC3REGION.GALAXY
     player_type: str = RAC3PLAYERTYPE.RATCHET
     vehicle: int = 0
-    action: int = 0  # Todo: Player Action
-    action_2: int = 0
-    prev_action: int = 0
+    action: int = RAC3PLAYERACTION.IDLE
+    action_type: int = RAC3ACTIONTYPE.STATIONARY
+    prev_action: int = RAC3PLAYERACTION.IDLE
     pause_menu: bool = False
     pause_state: bool = False
     pause_state_value: int = 0
@@ -168,6 +183,7 @@ class Rac3Interface(GameInterface):
     last_death_state: int = 0
     has_died: bool = False
     died_in_vehicle: bool = False
+    died_from_softlock: bool = False
     inside_hacker_puzzle: bool = False
     notification_queue: list[RAC3NOTIFICATION] = []
     notification_time: float | None = None
@@ -179,19 +195,21 @@ class Rac3Interface(GameInterface):
     pda_vendor: int = 0
     last_in_vehicle_time: float = 0.0
     last_in_ship_time: float = 0.0
+    last_in_vendor_time: float = 0.0
+    deathlink_grace_period: float = 0.0
     nanotech_exp: int = 0
     homewarping: bool = False
     checked_locations: set[str] = set()
     clank_disabled: bool = False
     clank_disabled_trap: bool = False
     unfreeze_packs: bool = False
-    vidcomic_2_fix: int = 0
     visited_planets: set[str] = set()
     weapon_vendor_items: list[str] = []
     armor_vendor_items: list[str] = []
     vendor_type: RAC3VENDORTYPE | None = None
     vendor_string_pointers: dict[str, int] = None
     should_restore_vendor_item_names: bool = True
+    cycle_times: list[float] = []
 
     def __init__(self):
         super().__init__()  # GameInterfaceの初期化
@@ -244,7 +262,7 @@ class Rac3Interface(GameInterface):
         if (0x001d6a90 <= _addr <= 0x00300000
             and self.planet in PAL_SHIFTED_PLANETS
             and self.current_game == RAC3VERSION.EU_ID):
-                _addr += -0x80
+                _addr += GAME_ID_TO_OFFSET[RAC3VERSION.EU_ID]
 
         return _addr
 
@@ -259,7 +277,7 @@ class Rac3Interface(GameInterface):
         self.options.start_inventory_from_pool = slot_data[RAC3OPTION.START_INVENTORY_FROM_POOL]
         self.options.starting_weapons = slot_data[RAC3OPTION.STARTING_WEAPONS]
         self.options.bolt_and_xp_multiplier = slot_data[RAC3OPTION.BOLT_AND_XP_MULTIPLIER]
-        self.options.enable_progressive_weapons = slot_data[RAC3OPTION.ENABLE_PROGRESSIVE_WEAPONS]
+        self.options.progressive_weapons = slot_data[RAC3OPTION.PROGRESSIVE_WEAPONS]
         self.options.armor_upgrade = slot_data[RAC3OPTION.ARMOR_UPGRADE]
         self.options.skill_points = slot_data[RAC3OPTION.SKILL_POINTS]
         self.options.trophies = slot_data[RAC3OPTION.TROPHIES]
@@ -270,7 +288,7 @@ class Rac3Interface(GameInterface):
         self.options.ship_nose = slot_data[RAC3OPTION.SHIP_NOSE]
         self.options.ship_wings = slot_data[RAC3OPTION.SHIP_WINGS]
         self.options.ship_skin = slot_data[RAC3OPTION.SHIP_SKIN]
-        self.options.skin = slot_data[RAC3OPTION.SKIN]
+        self.options.player_skin = slot_data[RAC3OPTION.PLAYER_SKIN]
         self.options.traps_enabled = slot_data[RAC3OPTION.ENABLE_TRAPS]
         self.options.trap_weight = slot_data[RAC3OPTION.TRAP_WEIGHT]
         self.options.rangers = slot_data[RAC3OPTION.RANGERS]
@@ -395,8 +413,8 @@ class Rac3Interface(GameInterface):
         """Apply the generated cosmetics to the current game"""
         self._write8(RAC3STATUS.SHIP_CONFIG, self.options.ship_nose + self.options.ship_wings)
         self._write8(RAC3STATUS.SHIP_SKIN, self.options.ship_skin)
-        self._write8(RAC3STATUS.PLAYER_SKIN, self.options.skin)
-        self._write8(RAC3STATUS.PLAYER_SKIN_2, self.options.skin)
+        self._write8(RAC3STATUS.PLAYER_SKIN, self.options.player_skin)
+        self._write8(RAC3STATUS.PLAYER_SKIN_2, self.options.player_skin)
 
     #############################
     # Start of Main Update Loop #
@@ -406,9 +424,13 @@ class Rac3Interface(GameInterface):
         """Ran early in the update cycle, memory reads should happen here before any evaluations begin"""
         self.planet = PLANET_NAME_FROM_ID[self._read8(RAC3STATUS.PLANET)]
         self.player_type = PLAYER_TYPE_TO_NAME[self._read8(RAC3STATUS.PLAYER_TYPE)]
+        self.player_pos = RAC3POSITIONDATA(
+            self._read_float(RAC3STATUS.POS_X),
+            self._read_float(RAC3STATUS.POS_Y),
+            self._read_float(RAC3STATUS.POS_Z))
         self.vehicle = self._read32(RAC3STATUS.VEHICLE_POINTER)
         self.action = self._read8(RAC3STATUS.ACTION)
-        self.action_2 = self._read8(RAC3STATUS.ACTION_2)
+        self.action_type = self._read8(RAC3STATUS.ACTION_TYPE)
         self.prev_action = self._read8(RAC3STATUS.PREV_ACTION)
         self.inputs = RAC3INPUT(self._read16(RAC3STATUS.READ_INPUT))
         self.health = self._read8(RAC3STATUS.HEALTH)
@@ -476,7 +498,7 @@ class Rac3Interface(GameInterface):
         Used to detect if the player died while in a vehicle for deathlink.
         """
         current_time = time.time()
-        if self.vehicle or (current_time - self.last_in_vehicle_time < 1 and self.action == 0x39):
+        if self.vehicle or (current_time - self.last_in_vehicle_time < 1 and self.action == RAC3PLAYERACTION.DEATH):
             self.last_in_vehicle_time = current_time
 
     def pause_check(self):
@@ -624,8 +646,9 @@ class Rac3Interface(GameInterface):
                     _time = round(time.time() + uniform(10, 30), 4)
                     self.timers[name + str(_time)] = _time
                     self.bolt_and_xp_multiplier_value += 1
-            case RAC3ITEM.PLAYER_XP:
-                self.nanotech_exp += 12500 + randint(1, 350 * self.max_health)
+            case RAC3ITEM.NANOTECH_XP:
+                nanotech_gain = min(200000, max(20000, int(self.nanotech_exp * 0.15)))
+                self.nanotech_exp += nanotech_gain
                 if self.nanotech_exp > 0x7FFFFFFF:
                     self.nanotech_exp = 0x7FFFFFFF
                 self._write32(RAC3STATUS.NANOTECH_EXP, self.nanotech_exp)
@@ -755,11 +778,23 @@ class Rac3Interface(GameInterface):
         loc_data: RAC3LOCATIONDATA = RAC3_LOCATION_DATA_TABLE[location]
         if not loc_data:
             return False
+        #TODO: Implement a distance based checktype
         if location == RAC3LOCATION.OBANI_GEMINI_SKIDD and self.planet == RAC3REGION.OBANI_GEMINI:
-            _x = abs(self._read_float(RAC3STATUS.POS_X) - 201.2) < 10
-            _y = abs(self._read_float(RAC3STATUS.POS_Y) - 364) < 10
-            _z = abs(self._read_float(RAC3STATUS.POS_Z) - 296.8) < 10
-            return _x & _y & _z
+            current_pos = self.player_pos
+            skidd_pos = RAC3POSITIONDATA(201.2, 364, 296.8)
+            return (
+                abs(current_pos.X - skidd_pos.X) < 8
+                and abs(current_pos.Y - skidd_pos.Y) < 8
+                and abs(current_pos.Z - skidd_pos.Z) < 8
+            )
+        if location == RAC3LOCATION.PHOENIX_MEET_SASHA and self.planet == RAC3REGION.STARSHIP_PHOENIX:
+            current_pos = self.player_pos
+            sasha_pos = RAC3POSITIONDATA(157, 362, 118)
+            return (
+                abs(current_pos.X - sasha_pos.X) < 8
+                and abs(current_pos.Y - sasha_pos.Y) < 8
+                and abs(current_pos.Z - sasha_pos.Z) < 8
+            )
         check_all: bool = True
         for check in loc_data.CHECK_ADDRESS:
             match check.TYPE & CHECKTYPE.SIZE:
@@ -802,6 +837,7 @@ class Rac3Interface(GameInterface):
         if self.is_reloading and not self.reloading_handled and not self.self_respawning:
             self.last_death_state = self.action
             self.died_in_vehicle = time.time() - self.last_in_vehicle_time < 1.5
+            self.died_from_softlock = self._read16(RAC3STATUS.SOFTLOCK_TIMER) >= 0xF0
             self.reloading_handled = True
             logger.debug(f"{self.player_type} is Respawning, death state: {self.last_death_state},"
                          f" death count: {self.last_death_count}, in vehicle? {self.died_in_vehicle}")
@@ -828,70 +864,84 @@ class Rac3Interface(GameInterface):
             # vehicle death
             if self.died_in_vehicle:
                 # Vehicle death uses state 34 which is the same as getting eaten by a shark
-                death = "Didn't leave the vehicle in time."
+                death = "didn't leave the vehicle in time."
+            elif self.died_from_softlock:
+                death = "softlocked."
             return False, f"{self.player_type} {death}"
 
-        logger.debug(f"{self.player_type} is Alive")
+        #logger.debug(f"{self.player_type} is Alive")
         return True, f"{self.player_type} is Alive"
+
+    def can_be_killed(self) -> bool:
+        """Checks if the player can be killed based on the current game state."""
+        current_time = time.time()
+        if (self.pause_state
+                or self.inside_hacker_puzzle
+                or (self.action_type == RAC3ACTIONTYPE.PLAYER_MOVEMENT_LOCKED and not self.vehicle)
+                or self.action_type == RAC3ACTIONTYPE.IN_CUTSCENE):
+            self.deathlink_grace_period = current_time
+        if current_time - self.deathlink_grace_period < 1:
+            return False
+        return True
 
     def kill_player(self) -> bool:
         """Checks the current game state to determine if and how to kill the player, returns success/failure"""
-        if not self.pause_state and not self.inside_hacker_puzzle:
-            self._write8(RAC3STATUS.HEALTH, 0)
-            self._write8(RAC3STATUS.NANOPAK_HEALTH, 0)
-            # death = choice(list(DEATH_FROM_ACTION.keys()))
-            if self.vehicle:
-                health_addr = self._read32(self._read32(self.vehicle + 0x68))
-                self._write32(health_addr, 0)  # health is a float, but we can write 0 as int32
-                if self.planet == RAC3REGION.MARCADIA:
-                    # special case for the marcadia turret mission that cant blow up
-                    # this will force mission failure and increase death count by 1
-                    vehicle_reload_addr = self.vehicle + 0xCB
-                    self._write8(vehicle_reload_addr, 0xD0)  # 0xD0: force reload from vehicle death
-                else:
-                    vehicle_blow_up_addr = self.vehicle + 0xBC
-                    self._write8(vehicle_blow_up_addr, 0x9)  # 0x9: blow up vehicle immediately 0xA: force respawn
-                # self._write8(RAC3STATUS.ACTION, death)
-                logger.debug("player in vehicle, killing vehicle too")
-                # logger.debug(f'player died of {DEATH_FROM_ACTION[death]}')
+        if not self.can_be_killed():
+            logger.debug("player unable to be killed")
+            return False
+        self._write8(RAC3STATUS.HEALTH, 0)
+        self._write8(RAC3STATUS.NANOPAK_HEALTH, 0)
+        # death = choice(list(DEATH_FROM_ACTION.keys()))
+        if self.vehicle:
+            health_addr = self._read32(self._read32(self.vehicle + 0x68))
+            self._write32(health_addr, 0)  # health is a float, but we can write 0 as int32
+            if self.planet == RAC3REGION.MARCADIA:
+                # special case for the marcadia turret mission that cant blow up
+                # this will force mission failure and increase death count by 1
+                vehicle_reload_addr = self.vehicle + 0xCB
+                self._write8(vehicle_reload_addr, 0xD0)  # 0xD0: force reload from vehicle death
             else:
-                match self.player_type:
-                    case RAC3PLAYERTYPE.RATCHET:
-                        if self.action not in DEATH_FROM_ACTION.keys() and self.vehicle == 0:
-                            self._write8(RAC3STATUS.ACTION, 0x16)
-                            # update ratchet state to cancel free fall and other problematic states
+                vehicle_blow_up_addr = self.vehicle + 0xBC
+                self._write8(vehicle_blow_up_addr, 0x9)  # 0x9: blow up vehicle immediately 0xA: force respawn
+            # self._write8(RAC3STATUS.ACTION, death)
+            logger.debug("player in vehicle, killing vehicle too")
+            # logger.debug(f'player died of {DEATH_FROM_ACTION[death]}')
+        else:
+            match self.player_type:
+                case RAC3PLAYERTYPE.RATCHET:
+                    if self.action not in DEATH_FROM_ACTION.keys() and self.vehicle == 0:
+                        self._write8(RAC3STATUS.ACTION, RAC3PLAYERACTION.HURT)
+                        # update ratchet state to cancel free fall and other problematic states
 
-                        # self._write8(RAC3STATUS.ACTION, death)
-                        # logger.debug(f'player died of {DEATH_FROM_ACTION[death]}')
-                    case RAC3PLAYERTYPE.CLANK:
-                        # Clank taking damage state (updates state to trigger death animation once at 0 health)
-                        self._write8(RAC3STATUS.ACTION, 0x42)
-                        self._write8(RAC3STATUS.PREV_ACTION, 0x42)  # Past state
-                        self._write8(RAC3STATUS.SECOND_PREV_ACTION, 0x42)  # This helps the death animation trigger
-                        logger.debug("player is clank, clank must die dramatically")
-                    case RAC3PLAYERTYPE.GIANT:
-                        # Giant Clank punched state (updates state to trigger death animation once at 0 health)
-                        self._write32(RAC3STATUS.GIANT_CLANK_HEALTH, 0)
-                        self._write8(RAC3STATUS.ACTION, 0x5D)
-                        self._write8(RAC3STATUS.PREV_ACTION, 0x5D)  # Past state
-                        self._write8(RAC3STATUS.SECOND_PREV_ACTION, 0x5D)  # This helps the death animation trigger
-                        logger.debug("player is giant clank, giant clank must die dramatically")
-                    case RAC3PLAYERTYPE.TYHRRANOID:
-                        # Tyhrranoid taking damage state (updates state to trigger death animation once at 0 health)
-                        self._write8(RAC3STATUS.ACTION, 0x55)
-                        self._write8(RAC3STATUS.PREV_ACTION, 0x55)  # Past state
-                        self._write8(RAC3STATUS.SECOND_PREV_ACTION, 0x55)  # This helps the death animation trigger
-                        logger.debug("player is tyhrranoid, tyhrranoid must be squished")
-                    case RAC3PLAYERTYPE.QWARK:
-                        # Qwark taking damage state (updates state to trigger death animation once at 0 health)
-                        self._write8(RAC3STATUS.ACTION, 0x9E)
-                        self._write8(RAC3STATUS.PREV_ACTION, 0x9E)  # Past state
-                        self._write8(RAC3STATUS.SECOND_PREV_ACTION, 0x9E)  # This helps the death animation trigger
-                        logger.debug("player is qwark, qwark must die dramatically")
-            logger.debug("player successfully killed")
-            return True
-        logger.debug("player unable to be killed")
-        return False
+                    # self._write8(RAC3STATUS.ACTION, death)
+                    # logger.debug(f'player died of {DEATH_FROM_ACTION[death]}')
+                case RAC3PLAYERTYPE.CLANK:
+                    # Clank taking damage state (updates state to trigger death animation once at 0 health)
+                    self._write8(RAC3STATUS.ACTION, RAC3PLAYERACTION.CLANK_HURT)
+                    self._write8(RAC3STATUS.PREV_ACTION, RAC3PLAYERACTION.CLANK_HURT)  # Past state
+                    self._write8(RAC3STATUS.SECOND_PREV_ACTION, RAC3PLAYERACTION.CLANK_HURT)  # This helps the death animation trigger
+                    logger.debug("player is clank, clank must die dramatically")
+                case RAC3PLAYERTYPE.GIANT:
+                    # Giant Clank punched state (updates state to trigger death animation once at 0 health)
+                    self._write32(RAC3STATUS.GIANT_CLANK_HEALTH, 0)
+                    self._write8(RAC3STATUS.ACTION, RAC3PLAYERACTION.GIANT_CLANK_HURT)
+                    self._write8(RAC3STATUS.PREV_ACTION, RAC3PLAYERACTION.GIANT_CLANK_HURT)  # Past state
+                    self._write8(RAC3STATUS.SECOND_PREV_ACTION, RAC3PLAYERACTION.GIANT_CLANK_HURT)  # This helps the death animation trigger
+                    logger.debug("player is giant clank, giant clank must die dramatically")
+                case RAC3PLAYERTYPE.TYHRRANOID:
+                    # Tyhrranoid taking damage state (updates state to trigger death animation once at 0 health)
+                    self._write8(RAC3STATUS.ACTION, RAC3PLAYERACTION.TYHRRANOID_HURT)
+                    self._write8(RAC3STATUS.PREV_ACTION, RAC3PLAYERACTION.TYHRRANOID_HURT)  # Past state
+                    self._write8(RAC3STATUS.SECOND_PREV_ACTION, RAC3PLAYERACTION.TYHRRANOID_HURT)  # This helps the death animation trigger
+                    logger.debug("player is tyhrranoid, tyhrranoid must be squished")
+                case RAC3PLAYERTYPE.QWARK:
+                    # Qwark taking damage state (updates state to trigger death animation once at 0 health)
+                    self._write8(RAC3STATUS.ACTION, RAC3PLAYERACTION.QWARK_HURT)
+                    self._write8(RAC3STATUS.PREV_ACTION, RAC3PLAYERACTION.QWARK_HURT)  # Past state
+                    self._write8(RAC3STATUS.SECOND_PREV_ACTION, RAC3PLAYERACTION.QWARK_HURT)  # This helps the death animation trigger
+                    logger.debug("player is qwark, qwark must die dramatically")
+        logger.debug("player successfully killed")
+        return True
 
     ##############
     # Check Goal #
@@ -1007,6 +1057,7 @@ class Rac3Interface(GameInterface):
     def vendor_check(self):
         """Returns the current vendor type if the vendor is open, else None"""
         if self.pause_state_value == RAC3PAUSESTATE.VENDOR and self.planet in PLANET_VENDOR_OFFSET.keys():
+            self.last_in_vendor_time = time.time()
             try:
                 return RAC3VENDORTYPE(self._read8(
                     RAC3VENDOR.get_vendor_property_address(self.planet, RAC3VENDOR.VENDOR_TYPE_OFFSET)))
@@ -1127,13 +1178,15 @@ class Rac3Interface(GameInterface):
                     # change the string pointer to no items available message in code cave
                     item_name_addr = start_address + RAC3SHIPVENDOR.ITEM_NAME_PTR_OFFSET
                     already_equipped_addr = start_address + RAC3SHIPVENDOR.ITEM_IS_EQUIPPED_OFFSET
-                    self._write32(item_name_addr, self.vendor_string_pointers[RAC3VENDOR.NO_ITEMS_AVAILABLE_LOC_KEY])
+                    string_key = (RAC3VENDOR.ALL_ITEMS_SOLD_OUT_LOC_KEY
+                                  if self.has_checked_all_locations_with_tag(RAC3TAG.SHIP)
+                                  else RAC3VENDOR.NO_ITEMS_AVAILABLE_LOC_KEY)
+                    self._write32(item_name_addr, self.vendor_string_pointers[string_key])
                     self._write32(already_equipped_addr, 1)
                 case _:
                     # clear out vendor slot memory
                     slot_size = VENDORTYPE_TO_SLOT_SIZE[vendor_type]
                     self._write_bytes(start_address, bytes(slot_size*5))
-                
 
         for slot, slot_data in enumerate(inventory):
             for prop in slot_data.get_data():
@@ -1212,10 +1265,6 @@ class Rac3Interface(GameInterface):
             # Bring qwark back to life until Ratchet has met Sasha on the bridge
             if RAC3LOCATION.PHOENIX_MEET_SASHA not in self.checked_locations:
                 self._write8(RAC3STATUS.ESCAPED_LEVIATHAN, 0)
-        if self.planet == RAC3REGION.ANNIHILATION_NATION and self.vidcomic_2_fix < 150:
-            if self.is_location_checked(RAC3_LOCATION_DATA_TABLE[RAC3LOCATION.NATION_HEAT_STREET].AP_CODE):
-                self.vidcomic_2_fix += 1
-                self._write8(RAC3STATUS.HEAT_STREET_FIX, 1)
         if self.planet != RAC3REGION.ZELDRIN_STARPORT and not self._read8(RAC3STATUS.ZELDRIN_END_LEVIATHAN):
             self._write8(RAC3STATUS.ZELDRIN_START_LEVIATHAN, 0)
 
@@ -1254,11 +1303,6 @@ class Rac3Interface(GameInterface):
         for name in gadget_data.keys():
             addr = gadget_data[name].UNLOCK_ADDRESS
             if self.UnlockItem[name].status:
-                if (name == RAC3ITEM.TYHRRA_GUISE
-                        and self.planet == RAC3REGION.STARSHIP_PHOENIX
-                        and RAC3LOCATION.PHOENIX_MEET_SASHA not in self.checked_locations):
-                    self._write8(addr, 0)
-                    continue
                 if self.UnlockItem[name].unlock_delay:
                     self._write8(addr, 1)
                     self.UnlockItem[name].unlock_delay = 0
@@ -1273,7 +1317,7 @@ class Rac3Interface(GameInterface):
         if ((time.time() - self.last_in_ship_time) < 1.5
                 or self.is_reloading
                 or self.self_respawning
-                or self.action_2 == 0x09):
+                or self.action_type == RAC3ACTIONTYPE.PLAYER_MOVEMENT_LOCKED):
             return False
         return True
 
@@ -1282,7 +1326,7 @@ class Rac3Interface(GameInterface):
         if self.planet == RAC3REGION.QWARKS_HIDEOUT and self.distance_to_moby(self.pda_vendor) < 15.0:
             # In case the PDA vendor bugs out and doesn't play the cutscene
             if (self._read32(PLANET_LOAD_OFFSET[self.planet] + RAC3STATUS.PLANET_BOLT_DIFFERENCE_BASE) & 0x80000000 # If bolt difference is negative
-                and self.action_2 != 0x09):
+                and self.action_type != RAC3ACTIONTYPE.PLAYER_MOVEMENT_LOCKED):
                  self._write8(gadget_data[RAC3ITEM.PDA].UNLOCK_ADDRESS_2, 1)
             return True
         return False
@@ -1293,16 +1337,26 @@ class Rac3Interface(GameInterface):
             return float("inf")
         assert RAC3STATUS.HIDEOUT_MOBY_TABLE_START < moby < RAC3STATUS.HIDEOUT_MOBY_TABLE_START + 0x00100000, \
             "Moby not in the typical moby range"
-        player_pos = (self._read_float(RAC3STATUS.POS_X),
-                      self._read_float(RAC3STATUS.POS_Y),
-                      self._read_float(RAC3STATUS.POS_Z))
-        moby_pos = (self._read_float(moby + 0x10),
-                    self._read_float(moby + 0x14),
-                    self._read_float(moby + 0x18))
-        distance = ((player_pos[0] - moby_pos[0]) ** 2 +
-                    (player_pos[1] - moby_pos[1]) ** 2 +
-                    (player_pos[2] - moby_pos[2]) ** 2) ** 0.5
+        player_pos = self.player_pos
+        moby_pos = RAC3POSITIONDATA(
+            self._read_float(moby + 0x10),
+            self._read_float(moby + 0x14),
+            self._read_float(moby + 0x18))
+        distance = ((player_pos.X - moby_pos.X) ** 2 +
+                    (player_pos.Y - moby_pos.Y) ** 2 +
+                    (player_pos.Z - moby_pos.Z) ** 2) ** 0.5
         return distance
+
+    def get_checked_locations_by_tag(self, tag: str) -> list[int]:
+        """Get a list of checked locations that match the given tag"""
+        return [loc for loc in self.checked_locations if tag in RAC3_LOCATION_DATA_TABLE[loc].TAGS]
+
+    def has_checked_all_locations_with_tag(self, tag: str) -> bool:
+        """Check if all locations with the given tag have been checked"""
+        for loc in RAC3_LOCATION_DATA_TABLE.keys():
+            if tag in RAC3_LOCATION_DATA_TABLE[loc].TAGS and loc not in self.checked_locations:
+                return False
+        return True
 
     def respawn_gadgets(self):
         """Respawn gadget if the associated location isn't checked but the gadget is unlocked through AP"""
@@ -1420,7 +1474,16 @@ class Rac3Interface(GameInterface):
             if index == 0:
                 continue
 
-            unlock_delay_count = 30 if index == 2 else 1  # extra delay for Annihilation Nation Proceeding
+            # Prevent Vidcomic 2 from reappearing after being collected the first time on Heat Street
+            if (index == 2
+                and self.planet == RAC3REGION.ANNIHILATION_NATION
+                and self.is_location_checked(RAC3_LOCATION_DATA_TABLE[RAC3LOCATION.NATION_HEAT_STREET].AP_CODE)
+                and self.pause_state_value != RAC3PAUSESTATE.PAUSED
+                and comic.status == 0):
+                 self._write8(addr, 1)
+                 continue
+
+            unlock_delay_count = 1
             if comic.unlock_delay < unlock_delay_count:
                 comic.unlock_delay += 1
                 continue
@@ -1519,7 +1582,7 @@ class Rac3Interface(GameInterface):
         - Handles both progressive and non-progressive weapon logic, including syncing XP and level addresses in memory.
         """
         # TODO: Track weapon EXP
-        if self.options.enable_progressive_weapons:
+        if self.options.progressive_weapons:
             for weapon_name in non_prog_weapon_data.keys():
                 target_level = self.UnlockItem[weapon_name].status
                 if not target_level:
@@ -1533,11 +1596,11 @@ class Rac3Interface(GameInterface):
                         target_level = 1
                 if self.ryno and weapon_name == RAC3ITEM.RY3N0 and target_level > 4:
                     target_level = 4
-                logger.debug(f"weapon: {weapon_name}, target: {target_level}")
+                #logger.debug(f"weapon: {weapon_name}, target: {target_level}")
                 target_id = UPGRADE_DICT[weapon_name][target_level - 1]
                 target_name = ITEM_NAME_FROM_ID[target_id]
                 target_xp = RAC3_ITEM_DATA_TABLE[target_name].XP_THRESHOLD
-                logger.debug(f"{target_name}, id: {target_id}, xp:{target_xp}")
+                #logger.debug(f"{target_name}, id: {target_id}, xp:{target_xp}")
                 self._write32(non_prog_weapon_data[weapon_name].XP_ADDRESS, target_xp)
                 self._write8(non_prog_weapon_data[weapon_name].LEVEL_ADDRESS, target_id)
         else:
@@ -1610,56 +1673,72 @@ class Rac3Interface(GameInterface):
                 else:
                     self.UnlockItem[name].unlock_delay += 1
 
-    def safe_patch_instruction(self, instruction_address: int, patch: bool = True):
+    def safe_patch_instruction(self, instruction_address: int, restore: bool = False):
         """Safely apply or restore an instruction patch if current opcode matches the expected source opcode."""
         original = ORIGINAL_INSTRUCTIONS.get(instruction_address)
         patched = PATCHED_INSTRUCTIONS.get(instruction_address)
         if original is None or patched is None:
             return
 
-        # Determine source and target opcodes based on whether we are patching or restoring
-        source = original if patch else patched
-        target = patched if patch else original
+        # Determine source and target opcodes based on whether we are restoring or patching
+        source = patched if restore else original
+        target = original if restore else patched
         current = self._read32(instruction_address)
         if current == source:
             self._write32(instruction_address, target)
 
+    def get_planet_patch_instructions(self) -> list[int]:
+        """Return all patch instructions associated with the current planet and game version."""
+        game_version = self.current_game
+        if game_version == RAC3VERSION.US_GH_ID:
+            game_version = RAC3VERSION.US_ID  # US and US GH versions have the same instruction offsets
+        return [
+            instruction for instruction, planet in PATCH_INSTRUCTION_TO_PLANET.items()
+            if planet == self.planet
+            and (PATCH_INSTRUCTION_TO_GAME_IDS[instruction] is None
+                 or game_version == PATCH_INSTRUCTION_TO_GAME_IDS[instruction])]
+
     def patch_cycler(self):
         """Apply runtime instruction patches based on current planet."""
-        match self.planet:
-            case RAC3REGION.STARSHIP_PHOENIX:
-                # Allow buying weaker armor
-                # Allow keeping hypershot on quick select even if you havent completed VR Gadget Training
-                phoenix_patches = [
-                    RAC3INSTRUCTION.PHOENIX_CAN_BUY_ARMOR_NTSC,
-                    RAC3INSTRUCTION.PHOENIX_CAN_BUY_ARMOR_PAL,
-                    RAC3INSTRUCTION.PHOENIX_HYPERSHOT_QUICK_SELECT_REMOVAL_NTSC,
-                    RAC3INSTRUCTION.PHOENIX_HYPERSHOT_QUICK_SELECT_REMOVAL_PAL,
-                ]
-                for instruction in phoenix_patches:
+        planet_patches = self.get_planet_patch_instructions()
+        if not planet_patches:
+            return
+
+        if self.planet == RAC3REGION.ANNIHILATION_NATION:
+            # One HP challenge patches for Ratchet to prevent automatically losing One Hit Wonder type challenges.
+            # Sadly doesnt fix Flee Flawlessly skill point.
+            character = self.player_type
+            if character == RAC3PLAYERTYPE.TYHRRANOID:
+                character = RAC3PLAYERTYPE.RATCHET
+
+            # Apply patches if one HP challenge is enabled for Ratchet.
+            if self.one_hp_challenge.get(character, False) and character == RAC3PLAYERTYPE.RATCHET:
+                for instruction in planet_patches:
                     self.safe_patch_instruction(instruction)
+            # Restore original instructions if one HP challenge is not enabled for Ratchet.
+            elif not self.one_hp_challenge.get(character, False):
+                for instruction in planet_patches:
+                    self.safe_patch_instruction(instruction, restore=True)
+            return
 
-            case RAC3REGION.ANNIHILATION_NATION:
-                # One HP challenge patches for Ratchet to prevent automatically losing One Hit Wonder type challenges
-                # Sadly doesnt fix Flee Flawlessly skill point
-                nation_patches = [
-                    RAC3INSTRUCTION.NATION_SLEEP_GAS_HEALTH_UPDATE,
-                    RAC3INSTRUCTION.NATION_HEALTH_REFILL,
-                    RAC3INSTRUCTION.NATION_LEVELUP_HEALING,
-                    RAC3INSTRUCTION.NATION_LEVELUP_MILESTONE_HEALING,
-                ]
-                character = self.player_type
-                if character == RAC3PLAYERTYPE.TYHRRANOID:
-                    character = RAC3PLAYERTYPE.RATCHET
+        # Apply all non-conditional patches for the current planet.
+        for instruction in planet_patches:
+            self.safe_patch_instruction(instruction)
 
-                # Apply patches if one HP challenge is enabled for Ratchet
-                if self.one_hp_challenge.get(character, False) and character == RAC3PLAYERTYPE.RATCHET:
-                    for instruction in nation_patches:
-                        self.safe_patch_instruction(instruction)
-                # Restore original instructions if one HP challenge is not enabled for Ratchet
-                elif not self.one_hp_challenge.get(character, False):
-                    for instruction in nation_patches:
-                        self.safe_patch_instruction(instruction, patch=False)
+    def get_active_patches(self) -> list[int]:
+        """Return a list of currently active patch addresses based on the current planet."""
+        return [
+            instruction for instruction in self.get_planet_patch_instructions()
+            if self._read32(instruction) == PATCHED_INSTRUCTIONS[instruction]]
+
+    def get_failed_patches(self) -> list[int]:
+        """Return patch addresses whose opcode is neither the original nor patched value."""
+        return [
+            instruction for instruction in self.get_planet_patch_instructions()
+            if self._read32(instruction) not in {
+                ORIGINAL_INSTRUCTIONS[instruction],
+                PATCHED_INSTRUCTIONS[instruction],
+            }]
 
     def overflow_fix(self):
         """Detect any integer overflows and reset the value"""
@@ -1788,8 +1867,11 @@ class Rac3Interface(GameInterface):
     def notification_cycler(self):
         """Handle the current displayed pop-up message notification, and message queue"""
         current_time = time.time()
-        tyhrranoid_game = self.player_type == RAC3PLAYERTYPE.TYHRRANOID and self.action == 0x58
-        paused = (self.pause_state and self.pause_state_value != RAC3PAUSESTATE.QUICK_SELECT) or (current_time - self.last_in_ship_time) < 1.25
+        tyhrranoid_game = self.player_type == RAC3PLAYERTYPE.TYHRRANOID and self.action == RAC3PLAYERACTION.TYHRRANOID_MINIGAME
+        paused = ((self.pause_state 
+                   and self.pause_state_value != RAC3PAUSESTATE.QUICK_SELECT) 
+                   or (current_time - self.last_in_ship_time) < 1.25 
+                   or (current_time - self.last_in_vendor_time) < 0.25)
         self._write32(RAC3MESSAGEBOX.HIDDEN_AND_PAUSED,
                       int(self.inside_hacker_puzzle or paused))
         if self.notification_queue:
@@ -1804,11 +1886,13 @@ class Rac3Interface(GameInterface):
                 return
             if self.notification_time < current_time and not self.message_display:
                 # Pop the number of messages that were displayed last cycle
-                dequeued_duration = self.notification_queue[0].duration
+                next_duration = self.notification_queue[0].duration
                 self.dequeue_notifications(self.notification_merge_count)
                 self.write_messagebox_theme()
                 logger.debug(f"notification queue: {len(self.notification_queue)}")
-                self.notification_time = current_time + dequeued_duration
+                if self.notification_queue:
+                    next_duration = self.notification_queue[0].duration
+                self.notification_time = current_time + next_duration
             if self.notification_queue:
                 # Merge up to 3 notifications of the same theme, but do not exceed 235 chars
                 merged_notification = self.notification_queue[0]
@@ -1993,6 +2077,16 @@ class Rac3Interface(GameInterface):
         logger.info(f"AP World Version: {RAC3OPTION.VERSION_NUMBER}")
         logger.info(f'Game Version: {GAME_ID_TO_VERSION.get(self.current_game, "Unknown")} ({self.current_game})')
         logger.info(f"Current planet Tracked: {self.planet}")
+        if self.cycle_times:
+            cycle_min = min(self.cycle_times)
+            cycle_avg = sum(self.cycle_times) / len(self.cycle_times)
+            cycle_max = max(self.cycle_times)
+            logger.info(
+                f"Update cycle execution time last {len(self.cycle_times)} cycles: "
+                f"min {cycle_min:.4f}s / avg {cycle_avg:.4f}s / max {cycle_max:.4f}s"
+            )
+        else:
+            logger.info("Update cycle execution time: no samples collected yet")
         logger.info(f"Sewer Crystals Inventory: {self._read8(RAC3STATUS.CRYSTALS_CURRENT)}")
         logger.info(f"Sewer Crystals Traded: {self._read8(RAC3STATUS.CRYSTALS_TRADED)}")
         logger.info(f"Ship Slot Limit: {self.ship_slot_limit}")
@@ -2002,5 +2096,11 @@ class Rac3Interface(GameInterface):
             pda_vendor_str = hex(self.pda_vendor) if self.pda_vendor else "Not Found"
         logger.info(f"PDA Vendor Address: {pda_vendor_str}")
         logger.info(f"Meet Sasha Bridge: {RAC3LOCATION.PHOENIX_MEET_SASHA in self.checked_locations}")
-        logger.info(f"No Tyhrraguise Phoenix: {bool(RAC3LOCATION.PHOENIX_MEET_SASHA not in self.checked_locations and self.UnlockItem[RAC3ITEM.TYHRRA_GUISE].status)}")
         logger.info(f"Visited Planets: {[planet for planet in PLANET_NAME_FROM_ID.values() if planet in self.visited_planets and not (planet == RAC3REGION.HOLOSTAR_STUDIOS_CLANK and self.options.holostar_skip)]}")
+        logger.info(f"Active Patches: {[PATCH_INSTRUCTION_TO_NAME[patch] for patch in self.get_active_patches()]}")
+        failed_patches = self.get_failed_patches()
+        logger.info(f"Failed Patches: {[PATCH_INSTRUCTION_TO_NAME[patch] for patch in failed_patches]}")
+        if len(failed_patches) > 0:
+            logger.warning("Failed patches detected: instruction opcodes were neither source nor patched values. "
+                           "This may indicate a corrupted ISO or an unsupported game version. "
+                           "Please report this to the developers with the above information.")

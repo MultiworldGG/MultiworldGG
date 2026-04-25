@@ -1,0 +1,67 @@
+PARSER: 1
+GAME: Donkey Kong Country 2
+AUTHOR: Vasho
+---
+QUESTION: MEDIUM
+In Donkey Kong Country 2, 
+how many times does Clapper 
+the Seal appear in the game?
+ANSWERS:
+14
+13
+12
+---
+QUESTION: EASY
+ In Donkey Kong Country 2, 
+ what are the colors of the 
+ crocodile heads you can 
+ jump on in Hot-Head Hop?
+ANSWERS:
+Green and Brown
+Red and Blue
+Blue and Green
+---
+QUESTION: EASY
+ In Donkey Kong Country 2,
+ how many times do you have to
+ hit Krow to kill him?
+ANSWERS:
+4
+6
+10
+---
+QUESTION: HARD
+ In K. Rool Duel, how many oil 
+ barrels can you see in the 
+ background?
+ANSWERS:
+8
+7
+9
+---
+QUESTION: HARD
+In K. Rool Duel, what numbers 
+can be seen on the dice in 
+the cockpit?
+ANSWERS:
+A pair of 2
+6 and 4
+3 and 5
+---
+QUESTION: HARD
+ In K. Rool Duel, which of these 
+ is NOT a background object?
+ANSWERS:
+4 Giant Bananas
+A black tire
+A SNES controller
+---
+QUESTION: HARD
+ In Monkey Museum, how much 
+ does a terrarium of winky the 
+ frog cost?
+ANSWERS:
+$5=
+$2=
+$3=
+---

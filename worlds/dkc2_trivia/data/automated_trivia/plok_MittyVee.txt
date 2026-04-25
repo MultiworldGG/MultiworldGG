@@ -1,0 +1,13 @@
+PARSER: 1
+GAME: Plok
+AUTHOR: MittyVee
+---
+QUESTION: EASY
+In Plok, what item does Plok
+set out to recover at the
+beginning of the game?
+ANSWERS:
+Plok's flag
+Grandpappy's amulet
+Grandpappy's journal
+---

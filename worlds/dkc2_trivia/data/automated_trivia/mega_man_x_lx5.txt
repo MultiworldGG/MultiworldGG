@@ -1,0 +1,94 @@
+PARSER: 1
+GAME: Mega Man X
+AUTHOR: lx5
+---
+QUESTION: EASY
+Who's the main antagonist in
+Mega Man X?
+ANSWERS:
+Sigma
+Ligma
+Sugoma
+---
+QUESTION: MEDIUM
+Which inputs should be entered
+in order to shoot a Hadouken
+in Mega Man X?
+ANSWERS:
+236
+214
+632
+---
+QUESTION: MEDIUM
+Which of the following weapons
+can be used to deal damage to
+Wolf Sigma in Mega Man X?
+ANSWERS:
+Level 3 Charge Buster
+Shotgun Ice
+Hadouken
+---
+QUESTION: EASY
+In which Mega Man X stage
+can you find the Legs Capsule?
+ANSWERS:
+Chill Penguin
+Sting Chameleon
+Storm Eagle
+---
+QUESTION: MEDIUM
+Which of Rangda Bangda's eye
+colors follows the player
+in Mega Man X?
+ANSWERS:
+Blue
+Green
+Red
+---
+QUESTION: EASY
+Which Maverick has to be
+beaten in order to turn off
+the lights in Spark Mandrill's
+stage in Mega Man X?
+ANSWERS:
+Storm Eagle
+Launch Octopus
+Chill Penguin
+---
+QUESTION: EASY
+Which Maverick has to be
+beaten in order to freeze
+Flame Mammoth's stage
+in Mega Man X?
+ANSWERS:
+Chill Penguin
+Launch Octopus
+Storm Eagle
+---
+QUESTION: HARD
+What's the name of the sorting
+method used for Bospider's
+movement in Mega Man X?
+ANSWERS:
+Ghost Leg
+Drawing Straws
+Rock-Paper-Scissors
+---
+QUESTION: EASY
+What's NOT a valid method
+for destroying igloos in
+Mega Man X?
+ANSWERS:
+Boomerang Cutter
+Hadouken
+Fire Wave
+---
+QUESTION: EASY
+In which Mega Man X stage
+can the Hadouken Capsule
+be found?
+ANSWERS:
+Armored Armadillo
+Sting Chameleon
+Boomer Kuwanger
+---

@@ -1,0 +1,13 @@
+PARSER: 1
+GAME: Pokemon Red and Blue
+AUTHOR: Funk
+---
+QUESTION: EASY
+In Pokemon Red and Blue, 
+does TM28 contain the 
+move Tombstoner?
+ANSWERS:
+No
+Yes
+Sometimes
+---

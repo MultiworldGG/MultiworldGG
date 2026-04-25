@@ -1,0 +1,13 @@
+PARSER: 1
+GAME: Super Metroid
+AUTHOR: Mentholeus
+---
+QUESTION: EASY
+In Super Metroid, which 
+of these beam combinations 
+is not possible?
+ANSWERS:
+Spazer + Plasma
+Ice + Plasma
+Wave + Plasma
+---

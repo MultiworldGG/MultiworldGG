@@ -23,15 +23,17 @@
 6. Launch the vanilla game in bizhawk, and open the lua console. Add the `connector_bizhawk_generic.lua` script that can be found in `MultiworldGG\data\lua`. 
 7. You are now ready to play! Start a new savefile and go! You can check that everything worked by checking if the bridge has been repaired.
 
-## External patches
-- Works with controller patches!
+## External Patches and Enhancements
+- Works with some controller/dpad patches!
 - Works with player model patches. [Guide](https://gamebanana.com/tuts/19109) for making them.
+- [moonlight-n3ds](https://github.com/zoeyjodon/moonlight-N3DS) can be used to controll bizhawk with a modded 3ds
 
 ## Useful to know before you start
-- Since the game runs on live patching, you can't see what you found in game. Check your client to see what items you find.
+- Freestanding items, items dug from the ground and salvage do not change their item models, but still work correctly.
+- You can change your maximum boat speed with `/boat speed` in the client.
 - You can warp to start by opening the collection screen and flipping the screen, then entering any transition. This will also refill you ammo and heal you.
 - If enabled in the yaml, there is a fast travel system. Open your sea chart and select an island you've previously visited to select a warp location, and enter any transition to warp to it's port.
-- Some locations can despawn. They usually have a backup system. Save and reenter the room to trigger it. Only works for save slot one.
+- Some rupee locations can despawn. They usually have a backup system. Save and reenter the room to trigger it. Only works for save slot one.
 
 ## Further Reading
 - [FAQ and Credits](https://github.com/carrotinator/Archipelago/blob/main/worlds/tloz_ph/docs/faq_and_credits.md)

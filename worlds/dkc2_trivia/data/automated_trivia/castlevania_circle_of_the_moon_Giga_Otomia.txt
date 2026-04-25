@@ -1,0 +1,47 @@
+PARSER: 1
+GAME: Castlevania - Circle of the Moon
+AUTHOR: Otomia
+---
+QUESTION: HARD
+In Castlevania: 
+Circle of the Moon,
+which DSS cards are used
+to replicate the effect of
+the Sherman Ring from
+Aria of Sorrow?
+ANSWERS:
+Venus & Cockatrice
+Pluto & Mandragora
+AoS doesn't have cards
+---
+QUESTION: MEDIUM
+In Castlevania:
+Circle of the Moon,
+which enemy drops
+the Needle Armor?
+ANSWERS:
+Nightmare
+Lilith
+Succubus
+---
+QUESTION: EASY
+In Castlevania:
+Circle of the Moon,
+what does the
+abbreviation "DSS"
+stand for?
+ANSWERS:
+Dual Setup System
+Defense/Strike System
+It has no meaning
+---
+QUESTION: MEDIUM
+In Castlevania:
+Circle of the Moon,
+what is the player
+character's full name?
+ANSWERS:
+Nathan Graves
+Nathan Belmont
+Nathan Morris
+---

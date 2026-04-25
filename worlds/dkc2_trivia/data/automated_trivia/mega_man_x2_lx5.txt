@@ -1,0 +1,59 @@
+PARSER: 1
+GAME: Mega Man X2
+AUTHOR: lx5
+---
+QUESTION: EASY
+ Who are the main antagonists
+ of Mega Man X2?
+ANSWERS:
+X-Hunters
+Mechaniloids
+Flame Chasers
+---
+QUESTION: EASY
+ What's the name of the area
+ where the final battle
+ happens in Mega Man X2?
+ANSWERS:
+Central Computer
+Weather Control
+X-Hunter Stage
+---
+QUESTION: HARD
+ Which of the following colors
+ is the strongest form of
+ Raider Killer in MMX2?
+ANSWERS:
+Purple
+Red
+Blue
+---
+QUESTION: MEDIUM
+ Which of the following stages
+ in Mega Man X2 doesn't 
+ feature a Ride Armor?
+ANSWERS:
+Desert Base
+Dinosaur Tank
+Energen Crystal
+---
+QUESTION: MEDIUM
+Which inputs should be entered
+in order to perform 
+a Shoryuken in Mega Man X2?
+ANSWERS:
+632
+214
+236
+---
+QUESTION: MEDIUM
+Which of the following methods
+is not valid to reach
+the Heart Tank found
+at Dinosaur Tank
+in Mega Man X2?
+ANSWERS:
+Block from Crystal H.
+Charged S. Burner
+Shoryuken
+---

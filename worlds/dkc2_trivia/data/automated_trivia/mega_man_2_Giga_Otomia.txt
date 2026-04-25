@@ -1,0 +1,15 @@
+PARSER: 1
+GAME: Mega Man 2
+AUTHOR: Otomia
+---
+QUESTION: MEDIUM
+In Mega Man 2, how many 
+Robot Masters take more than
+one point of damage from the
+Metal Blade on Difficult
+mode?
+ANSWERS:
+Four
+Two
+One
+---

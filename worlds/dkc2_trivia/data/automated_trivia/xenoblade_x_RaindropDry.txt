@@ -1,0 +1,14 @@
+PARSER: 1
+GAME: Xenoblade X
+AUTHOR: RaindropDry
+---
+QUESTION: EASY
+        What's the name
+     of the adorable Nopon
+   who joins your adventures
+   in Xenoblade Chronicles X?
+ANSWERS:
+Tatsu
+Satsu
+Tora
+---

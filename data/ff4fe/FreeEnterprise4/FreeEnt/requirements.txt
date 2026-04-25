@@ -2,7 +2,7 @@ pillow
 cherrypy
 jinja2
 pymongo
-chardet
+chardet>=5,<6
 requests
 markdown
 javascripthon

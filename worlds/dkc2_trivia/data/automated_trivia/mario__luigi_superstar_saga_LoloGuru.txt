@@ -1,0 +1,13 @@
+PARSER: 1
+GAME: Mario & Luigi Superstar Saga
+AUTHOR: LoloGuru
+---
+QUESTION: EASY
+ In Mario & Luigi: Superstar 
+ Saga, which Mario brother
+ learns to use Thunderhand?  
+ANSWERS:
+Luigi
+Mario
+Wario
+---

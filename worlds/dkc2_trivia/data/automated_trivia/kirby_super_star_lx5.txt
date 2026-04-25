@@ -1,0 +1,156 @@
+PARSER: 1
+GAME: Kirby Super Star
+AUTHOR: lx5
+---
+QUESTION: EASY
+Which Kirby Super Star's
+game features King Dedede
+as a final boss?
+ANSWERS:
+Spring Breeze 
+Milky Way Wishes
+The Great Cave° Offensive
+---
+QUESTION: EASY
+Which Kirby Super Star's
+game features Marx as 
+a final boss?
+ANSWERS:
+Milky Way Wishes
+Spring Breeze 
+The Great Cave° Offensive
+---
+QUESTION: EASY
+Which Kirby Super Star's
+game features Wham Bam Rock 
+as a final boss?
+ANSWERS:
+The Great Cave° Offensive
+Spring Breeze 
+Milky Way Wishes
+---
+QUESTION: HARD
+Which Kirby Super Star boss 
+is NOT present in The Arena?
+ANSWERS:
+Kracko Jr.
+Dyna Blade
+Heavy Lobster
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Copy ability?
+ANSWERS:
+T.A.C.
+Capsule J
+Gim
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Yo-Yo ability?
+ANSWERS:
+Gim
+Simirror
+Bugzzy
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Plasma ability?
+ANSWERS:
+Plasma Wisp
+Bio Spark
+Burnin' Leo
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Ninja ability?
+ANSWERS:
+Bio Spark
+Poppy Bros. Jr.
+Bonkers
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Hammer ability?
+ANSWERS:
+Bonkers
+Capsule J
+Jukid
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Beam ability?
+ANSWERS:
+Waddle Doo
+Noddy
+Bio Spark
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Mike ability?
+ANSWERS:
+Walky
+Gim
+T.A.C.
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Jet ability?
+ANSWERS:
+Capsule J
+Poppy Bros. Jr.
+Walky
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Bomb ability?
+ANSWERS:
+Poppy Bros. Jr.
+Rocky
+Bugzzy
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Suplex ability?
+ANSWERS:
+Jukid
+Waddle Doo
+Noddy
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Suplex ability?
+ANSWERS:
+Bugzzy
+Bonkers
+Gim
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Cutter ability?
+ANSWERS:
+Sir Kibble
+Simirror
+Bugzzy
+---
+QUESTION: MEDIUM
+In Kirby Super Star, which
+enemy grants the player
+the Mirror ability?
+ANSWERS:
+Simirror
+Burnin' Leo
+Chilly
+---

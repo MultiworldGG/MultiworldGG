@@ -1,0 +1,13 @@
+PARSER: 1
+GAME: Sonic Adventure 2 Battle
+AUTHOR: Cat
+---
+QUESTION: MEDIUM
+What is the max amount of Chao
+allowed per garden 
+in Sonic Adventure 2?
+ANSWERS:
+Eight Chao
+Six Chao
+Ten Chao
+---

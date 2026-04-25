@@ -179,10 +179,7 @@ def get_item_iconpath(world: World, item: Item | None, keyword_based_icons: bool
             icon_path = others_paths["experience"]
 
     if icon_path is None:  # Fallback to Classification system if keyword_based_icons is turned off or fail
-        if ItemClassification.trap in classification:
-            icon_path = world.random.choice(list(archipelago_paths.values()) + list(skills_paths.values()))
-
-        elif ItemClassification.progression in classification:
+        if ItemClassification.progression in classification:
             icon_path = archipelago_paths["progression"]
 
         elif ItemClassification.useful in classification:

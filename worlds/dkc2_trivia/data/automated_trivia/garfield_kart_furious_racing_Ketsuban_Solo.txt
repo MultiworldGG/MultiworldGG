@@ -1,0 +1,67 @@
+PARSER: 1
+GAME: Garfield Kart - Furious Racing
+AUTHOR: Solo
+---
+QUESTION: EASY
+In Garfield Kart, how many
+puzzle pieces can you 
+collect on each course?
+ANSWERS:
+3
+1
+4
+---
+QUESTION: MEDIUM
+In Garfield Kart, who or what
+is Joe Montagna?
+ANSWERS:
+A hat
+A racer
+A spoiler
+---
+QUESTION: HARD
+In Garfield Kart,
+which of these courses 
+has unique music?
+ANSWERS:
+Loopy Lagoon
+Valley of the Kings
+Spooky Manor
+---
+QUESTION: EASY
+In Garfield Kart,
+what is the name of
+Garfield and Odie's owner?
+ANSWERS:
+Jon Arbuckle
+John Arbuckle
+Joan Arbuckle
+---
+QUESTION: MEDIUM
+In Garfield Kart, who or what is
+Joe Montagna?
+ANSWERS:
+A hat
+A racer
+A spoiler
+---
+QUESTION: HARD
+In Garfield Kart,
+which of the following
+courses does NOT have
+unique background music?
+ANSWERS:
+Valley of the Kings
+Loopy Lagoon
+Catz in The Hood
+---
+QUESTION: HARD
+In Garfield Kart,
+which two characters
+have the highest top speed
+with their Perfect Combos?
+ANSWERS:
+Jon and Liz
+Garfield and Odie
+Nermal and Harry
+---

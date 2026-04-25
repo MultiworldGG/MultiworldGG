@@ -1,0 +1,94 @@
+PARSER: 1
+GAME: Kirby's Dream Land 3
+AUTHOR: lx5
+---
+QUESTION: EASY
+What's the name of 
+your blue friend in 
+Kirby's Dream Land 3?
+ANSWERS:
+Gooey
+Guey
+Goofy
+---
+QUESTION: EASY
+What's the name of 
+your cat friend in 
+Kirby's Dream Land 3?
+ANSWERS:
+Nago
+Rick
+Chuchu
+---
+QUESTION: EASY
+What's the name of 
+your bird friend in 
+Kirby's Dream Land 3?
+ANSWERS:
+Pitch
+Coo
+Kine
+---
+QUESTION: HARD
+What animal species Pon is 
+in Kirby's Dream Land 3?
+ANSWERS:
+Tanuki
+Cat
+Kitsune
+---
+QUESTION: HARD
+Which enemy in Kirby's Dream
+Land 3 can hold as many 
+different weapons as there 
+are powers for Kirby?
+ANSWERS:
+Bukiset
+Galbo
+Tick
+---
+QUESTION: MEDIUM
+What's the name of the
+Kirby-like enemy in
+Kirby's Dream Land 3?
+ANSWERS:
+Batamon
+Gordo
+KeKe
+---
+QUESTION: MEDIUM
+Which mid-boss grants you
+the needle ability in
+Kirby's Dreamn Land 3?
+ANSWERS:
+Captain Stitch
+Haboki
+Blocky
+---
+QUESTION: EASY
+Which enemy grants
+the cutter ability
+in Kirby's Dream Land 3?
+ANSWERS:
+Sir Kibble
+Rocky
+Bobo
+---
+QUESTION: MEDIUM
+In some Kirby's Dream Land 3
+levels you can find some
+Waddlee Dees riding...
+ANSWERS:
+A raft
+A minecart
+An inner tube
+---
+QUESTION: HARD
+In some Kirby's Dream Land 3
+levels you can find some
+Waddlee Dees riding...
+ANSWERS:
+A Nruff
+A parasol
+A Bobo
+---

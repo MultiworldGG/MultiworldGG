@@ -15,6 +15,7 @@ It is a project forked from the 'Archipelago' project.
 
 Currently, the following games are supported:
 
+* 2048
 * Adventure
 * Against the Storm
 * A Hat in Time
@@ -66,6 +67,7 @@ Currently, the following games are supported:
 * Doom II
 * Doronko Wanko
 * Dredge
+* Duke Nukem 3D
 * EarthBound
 * Ender Lilies
 * Factorio (+SAWS)

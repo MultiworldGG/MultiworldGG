@@ -7,10 +7,10 @@ logic has been rewritten from scratch, into a format that is more suitable for M
 
 Story mode is skipped for Chapters within an Episode, which should always be played in Free Play.
 
-To unlock a Chapter, all Story Mode characters for that Chapter must be acquired. Optionally, an Episode Unlock item
-must also be acquired.
+To unlock a Chapter, typically, Story Mode characters for that Chapter must be acquired, but this can be changed in the
+options to other characters or 'Chapter Unlock' items instead. Optionally, an Episode Unlock item must also be acquired.
 
-The player always starts with the items necessary to enter their starting Chapter.
+The player always starts with the items required to enter and complete their starting Chapter.
 
 ## What items and locations get randomized?
 
@@ -88,12 +88,10 @@ If you are in the main room of the Cantina when you unlock your first Chapter in
 Episode door won't change to green, but the door can still be entered normally. The lights will become green the next
 time you enter the main room of the Cantina.
 
-This will happen whenever your starting Chapter is from any Episode other than Episode 1.
-
 ### Player 2 picking locked characters
 
-When entering a Chapter in Free Play with only one Character unlocked for that level type (vehicle/non-vehicle), Player
-2 will pick a locked Character.
+When entering a Vehicle Chapter in Free Play with only one Vehicle Character unlocked, Player 2 can pick a locked
+Character.
 
 Locked characters should not be used until they are actually unlocked.
 

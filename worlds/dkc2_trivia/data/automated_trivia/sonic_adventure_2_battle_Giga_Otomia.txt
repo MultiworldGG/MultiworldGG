@@ -1,0 +1,24 @@
+PARSER: 1
+GAME: Sonic Adventure 2 Battle
+AUTHOR: Otomia
+---
+QUESTION: HARD
+In Sonic Adventure 2,
+what is guaranteed
+to grant you a Perfect
+Bonus and an A-Rank
+at the end of a stage?
+ANSWERS:
+Holding all the rings
+Getting all animals
+Getting a low time
+---
+QUESTION: MEDIUM
+In Sonic Adventure 2, what
+colour do all the grind rails
+in space share?
+ANSWERS:
+Yellow
+Red
+Purple
+---

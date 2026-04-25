@@ -30,6 +30,7 @@ item_table = {  # The tuple contains the amount, the classification, the ID
     "Spear": (1, IC.progression | IC.useful, 3363015228915786),
     "Blaze": (1, IC.progression | IC.useful, 3363015228915827),
     "Water Breath": (1, IC.progression_deprioritized, 3363015228915735),
+    "Launch Fragment": (0, IC.progression | IC.useful, 3363023818981377),
     "Ancestral Light 1": (1, IC.useful, 3363015228915832),
     "Ancestral Light 2": (1, IC.useful, 3363015228915833),
     "Overcharge": (1, IC.useful, 3363015228981249),

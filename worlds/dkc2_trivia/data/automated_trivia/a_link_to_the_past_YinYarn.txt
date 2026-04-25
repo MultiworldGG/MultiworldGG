@@ -1,0 +1,14 @@
+PARSER: 1
+GAME: A Link to the Past
+AUTHOR: YinYarn
+---
+QUESTION: MEDIUM
+In A Link to the Past,
+which of the following
+items can be found in the
+Thieves' Town dungeon?
+ANSWERS:
+The Titan's Mitt
+The Blue Mail
+The Magic Hammer
+---

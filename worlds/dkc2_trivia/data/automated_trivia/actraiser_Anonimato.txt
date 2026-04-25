@@ -1,0 +1,29 @@
+PARSER: 1
+GAME: Actraiser
+AUTHOR: Anonimato
+---
+QUESTION: MEDIUM
+In ActRaiser, what's the 
+ name of the boss in 
+ Northwall Act 1?
+ANSWERS:
+Merman Fly
+Flying Mermaid
+Mermen Flew
+---
+QUESTION: HARD
+In ActRaiser, how many pedestals
+can be found in the game?
+ANSWERS:
+68
+75
+59
+---
+QUESTION: EASY
+In ActRaiser, what's the name of
+the final area of the game?
+ANSWERS:
+Death Heim
+Death Heimr
+Death Helm
+---

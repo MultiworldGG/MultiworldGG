@@ -1,0 +1,259 @@
+PARSER: 1
+GAME: Ocarina of Time
+AUTHOR: lx5
+---
+QUESTION: EASY
+Which Ocarina of Time song 
+allows to change the time 
+of the day in the game?
+ANSWERS:
+Sun's Song
+Song of Time
+Song of Storms
+---
+QUESTION: EASY
+Which Ocarina of Time song 
+is required to open
+the Door of Time?
+ANSWERS:
+Song of Time
+Zelda's Lullaby
+Prelude of Light
+---
+QUESTION: EASY
+Which boss can be found
+at the end of Water Temple
+in Ocarina of Time?
+ANSWERS:
+Morpha
+Barinade
+Volvagia
+---
+QUESTION: EASY
+What's the name of your
+fairy companion in
+Ocarina of Time?
+ANSWERS:
+Navi
+Tatl
+Malon
+---
+QUESTION: MEDIUM
+How do you gain access to
+Dodongo's Cavern in
+Ocarina of Time?
+ANSWERS:
+Blowing up a boulder°    at the entrance
+Make a Goron eat the°    boulder at the entrance
+Ask the Darunia to move° the boulder
+---
+QUESTION: MEDIUM
+How can you beat Dodongo in
+Ocarina of Time if you don't
+have access to a Bomb Bag?
+ANSWERS:
+With Bomb Flowers
+With Deku Nuts
+With the Slingshot
+---
+QUESTION: EASY
+Which boots can be found at
+the end of Ice Cavern
+in Ocarina of Time?
+ANSWERS:
+Iron Boots
+Hover Boots
+Kokiri Boots
+---
+QUESTION: HARD
+Which reward is granted by
+scoring 1500 points in
+Horseback Archery in
+Ocarina of Time?
+ANSWERS:
+A quiver upgrade
+A piece of heart
+Ice Arrows
+---
+QUESTION: MEDIUM
+How do you obtain the Magic
+Meter in Ocarina of Time?
+ANSWERS:
+As a gift from the°      Great Fairy of Power
+As a dungeon reward in°  Forest Temple
+As a gift from Zelda
+---
+QUESTION: MEDIUM
+How can you cross the broken
+bridge at Gerudo Valley in
+Ocarina of Time?
+ANSWERS:
+Jumping with Epona
+Floating with a Cucco
+With a magic plant
+---
+QUESTION: MEDIUM
+How can you cross the broken
+bridge at Gerudo Valley in
+Ocarina of Time?
+ANSWERS:
+With the longshot
+Via Kaepora Gaebora
+A well timed backflip
+---
+QUESTION: HARD
+How many nighttime Gold 
+Skulltulas can be found
+at Lon Lon Ranch in 
+Ocarina of Time?
+ANSWERS:
+3
+4
+5
+---
+QUESTION: HARD
+What's the name of the owl
+found in Ocarina of Time?
+ANSWERS:
+Kaepora Gaebora
+Kapoeira Gapora
+Gaepora Keapora
+---
+QUESTION: MEDIUM
+In Ocarina of Time, which
+medallions are required for
+Kakariko Village be on fire?
+ANSWERS:
+Forest, Fire and Water
+Only Forest
+Forest and Fire
+---
+QUESTION: MEDIUM
+What's the prize players 
+can receive as adults 
+in the Fishing Pond 
+in Ocarina of Time?
+ANSWERS:
+A golden scale
+A piece of heart
+A quiver upgrade
+---
+QUESTION: HARD
+How do you get the Happy 
+Mask Shop to open in 
+Ocarina of Time?
+ANSWERS:
+Speaking to a gatekeeper°in DMT in Kakariko
+Finding the salesman in° Goron City
+Entering the shop at°    night
+---
+QUESTION: HARD
+In which dungeon players
+can find a Green Bubble
+in Ocarina of Time?
+ANSWERS:
+Spirit Temple
+Fire Temple
+Dodongo's Cavern
+---
+QUESTION: HARD
+How many boxes can be found
+at Haunted Wasteland
+in Ocarina of Time?
+ANSWERS:
+5
+6
+4
+---
+QUESTION: MEDIUM
+What's one of the prizes
+players can receive at
+Bombchu Bowling Alley
+in Ocarina of Time?
+ANSWERS:
+A Bomb Bag upgrade
+A golden rupee
+Deku nuts
+---
+QUESTION: HARD
+What's one of the prizes
+players can receive at
+Bombchu Bowling Alley
+in Ocarina of Time?
+ANSWERS:
+A purple rupee
+A deku seed bag upgrade
+An empty bottle
+---
+QUESTION: MEDIUM
+How can players break beehives
+in Ocarina of Time?
+ANSWERS:
+With a Boomerang
+With a Deku nut
+With a bush
+---
+QUESTION: HARD
+How can players break beehives
+in Ocarina of Time?
+ANSWERS:
+With a Bombchu
+With the Megaton Hammer
+With a rock
+---
+QUESTION: EASY
+How can players force Business
+Scrubs out of their holes
+in Ocarina of Time?
+ANSWERS:
+By reflecting their°     projectiles
+By talking to them
+By getting hit by them
+---
+QUESTION: HARD
+How can players force Business
+Scrubs out of their holes
+in Ocarina of Time?
+ANSWERS:
+By using the Megaton°    Hammer
+By throwing a rock at°   them
+With a charged spin
+---
+QUESTION: MEDIUM
+Where you can find the Business
+Scrub that sells a Deku Stick
+capacity upgrade to players
+in Ocarina of Time?
+ANSWERS:
+Lost Woods
+Sacred Forest Meadow
+Hyrule Field
+---
+QUESTION: HARD
+Where you can find the Business
+Scrub that sells a Piece 
+of Heart to players
+in Ocarina of Time?
+ANSWERS:
+Hyrule Field
+Sacred Forest Meadow
+Lost Woods
+---
+QUESTION: HARD
+Where you can find the Business
+Scrub that sells a Deku Nut
+capacity upgrade to players
+in Ocarina of Time?
+ANSWERS:
+Sacred Forest Meadow
+Lost Woods
+Hyrule Fied
+---
+QUESTION: HARD
+How can players stop Blade
+Traps in Ocarina of Time?
+ANSWERS:
+With an Ice arrow
+With a bomb
+With Din's Fire
+---

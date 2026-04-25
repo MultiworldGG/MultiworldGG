@@ -1,0 +1,20 @@
+PARSER: 1
+GAME: Donkey Kong Country 2
+AUTHOR: lx5
+---
+QUESTION: EASY
+ What's the name of your fish
+ companion in DKC2?
+ANSWERS:
+Glimmer
+Glitter
+Grizzly
+---
+QUESTION: EASY
+ What's the name of your blue 
+ swordfish companion in DKC2?
+ANSWERS:
+Enguarde
+Pointy
+Eduardo
+---

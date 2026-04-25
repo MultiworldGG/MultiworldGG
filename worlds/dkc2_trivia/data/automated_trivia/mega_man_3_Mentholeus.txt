@@ -1,0 +1,13 @@
+PARSER: 1
+GAME: Mega Man 3
+AUTHOR: Mentholeus
+---
+QUESTION: MEDIUM
+In Mega Man 3, which Robot
+Masters does Doc Robot
+copy in Spark Man's Stage?
+ANSWERS:
+Metal & Quick
+Metal & Air
+Metal & Heat
+---

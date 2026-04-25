@@ -28,12 +28,12 @@ class WotWLogic(LogicMixin):
         self.wotw_enemies = {}
         for player in mw.get_game_players("Ori and the Will of the Wisps"):
             self.wotw_enemies.setdefault(player, {enemy: IMPOSSIBLE_COST for enemy in enemy_data.keys()})
-        self.wotw_resource_stale = {player: False for player in mw.get_game_players("Ori and the Will of the Wisps")}
+        self.wotw_resource_stale = {player: True for player in mw.get_game_players("Ori and the Will of the Wisps")}
         self.wotw_enemies_stale_collect = {
-            player: False for player in mw.get_game_players("Ori and the Will of the Wisps")
+            player: True for player in mw.get_game_players("Ori and the Will of the Wisps")
         }
         self.wotw_enemies_stale_remove = {
-            player: False for player in mw.get_game_players("Ori and the Will of the Wisps")
+            player: True for player in mw.get_game_players("Ori and the Will of the Wisps")
         }
 
     def copy_mixin(self, new_state: "CollectionState") -> "CollectionState":
@@ -116,28 +116,6 @@ enemy_data: dict[str, tuple[int, list[str]]] = {  # For each enemy: HP and comba
     "Spiderling": (12, []),
 }
 
-area_data = {"MidnightBurrows": (25, False),  # For each area, minimum health and whether regenerate is needed
-             "EastHollow": (20, False),
-             "WestHollow": (20, False),
-             "WestGlades": (20, False),
-             "OuterWellspring": (25, False),
-             "InnerWellspring": (25, False),
-             "WoodsEntry": (40, True),
-             "WoodsMain": (40, True),
-             "LowerReach": (40, True),
-             "UpperReach": (40, True),
-             "UpperDepths": (40, True),
-             "LowerDepths": (40, True),
-             "PoolsApproach": (25, True),
-             "EastPools": (40, True),
-             "UpperPools": (40, True),
-             "WestPools": (40, True),
-             "LowerWastes": (50, True),
-             "UpperWastes": (50, True),
-             "WindtornRuins": (50, True),
-             "WeepingRidge": (60, True),
-             "WillowsEnd": (60, True),
-             }
 
 def get_max(state: "CollectionState", player: int) -> tuple[int, float]:
     """Return the current max health and energy."""
@@ -177,25 +155,17 @@ def get_enemy_cost(enemy: str, state: "CollectionState", player: int, options: "
             cost = min(cost, weapon_data[weapon][1] * ceil(data[0] / weapon_data[weapon][0]))
     return cost
 
-def can_enter_area(area: str, state: "CollectionState", player: int, options: "WotWOptions") -> bool:
-    """Check if the requirement to enter an area is fulfilled."""
-    difficulty = options.difficulty.value
 
-    if area in ("MarshSpawn", "HowlsDen", "MarshPastOpher", "GladesTown"):  # No restriction in these areas
-        return True
+def has_enough_max_health(state: "CollectionState", player: int, options: "WotWOptions", value: int) -> bool:
+    """Check if the player has enough max health to solve the region requirement."""
+    if state.wotw_resource_stale[player]:  # Update the resources and refill values if needed
+        state.wotw_max_resources[player] = get_max(state, player)
+        state.wotw_refill_amount[player] = get_refill(state, player)
+        state.wotw_resource_stale[player] = False
 
-    if difficulty == 3:  # Unsafe difficulty: no restriction
-        return True
-
-    if difficulty != 0:  # Kii and Gorlek: only check for regenerate
-        if area_data[area][1]:  # Kii, Gorlek
-            return state.has("Regenerate", player)
-        return True
-
-    # Moki difficulty: check for health and regenerate
-    if area_data[area][1]:
-        return state.has("Regenerate", player) and state.wotw_max_resources[player][0] >= area_data[area][0]
-    return state.wotw_max_resources[player][0] >= area_data[area][0]
+    if options.hard_mode:
+        return state.wotw_max_resources[player][0] > 2 * value
+    return state.wotw_max_resources[player][0] > value
 
 
 def can_buy_map(state: "CollectionState", player: int) -> bool:
@@ -343,7 +313,7 @@ def compute_dboost(damage: int,
     return health, n_regen
 
 
-def compute_combat(enemy: str,
+def compute_combat(defeat_enemy: str,
                    state: "CollectionState",
                    player: int,
                    options: "WotWOptions") -> float:
@@ -360,7 +330,9 @@ def compute_combat(enemy: str,
                 state.wotw_enemies[player][enemy] = get_enemy_cost(enemy, state, player, options)
         state.wotw_enemies_stale_collect[player] = False
         state.wotw_enemies_stale_remove[player] = False
-    return state.wotw_enemies[player][enemy]
+
+    # Return the energy cost for the enemy that the rule require to defeat
+    return state.wotw_enemies[player][defeat_enemy]
 
 
 def compute_wall(data: tuple[str, int],

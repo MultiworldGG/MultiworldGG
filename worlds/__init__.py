@@ -104,6 +104,7 @@ from .AutoWorld import AutoWorldRegister
 
 _worlds_loaded = False
 _worlds_loading = False
+_current_loading_world: str | None = None
 _worlds_load_lock = threading.Lock()
 _worlds_load_owner_thread_id: int | None = None
 
@@ -123,6 +124,7 @@ def _load_loose_worlds() -> list[WorldSource]:
         if world_source.is_zip:
             apworlds.append(world_source)
         else:
+            _set_current_loading_world(Path(world_source.path).stem)
             world_source.load()
 
     for world_source in world_sources:
@@ -166,6 +168,11 @@ def _register_apworld_zip_spec(world_source: WorldSource) -> None:
         _apworld_module_specs[f"worlds.{world_name}"] = spec
 
 
+def _set_current_loading_world(world_name: str | None) -> None:
+    global _current_loading_world
+    _current_loading_world = world_name
+
+
 def _load_apworlds(apworlds: list[WorldSource]) -> None:
     from .Files import APWorldContainer, InvalidDataError
 
@@ -177,6 +184,7 @@ def _load_apworlds(apworlds: list[WorldSource]) -> None:
         logging.warning(reason)
 
     for apworld_source in apworlds:
+        _set_current_loading_world(Path(apworld_source.path).stem)
         apworld: APWorldContainer = APWorldContainer(apworld_source.resolved_path)
         # populate metadata
         try:
@@ -218,11 +226,9 @@ def _load_apworlds(apworlds: list[WorldSource]) -> None:
         reverse=True)
 
     for apworld_source, apworld in core_compatible:
+        _set_current_loading_world(apworld.game or Path(apworld_source.path).stem)
         if apworld.game and apworld.game in AutoWorldRegister.world_types:
-            fail_world(apworld.game,
-                       f"Did not load {apworld_source.path} "
-                       f"as its game {apworld.game} is already loaded.",
-                       add_as_failed_to_load=False)
+            continue
         else:
             _register_apworld_zip_spec(apworld_source)
 
@@ -266,6 +272,7 @@ def ensure_worlds_loaded(write_launcher_cache: bool = True) -> None:
 
         _worlds_load_owner_thread_id = current_thread_id
         _worlds_loading = True
+        _set_current_loading_world(None)
         try:
             try:
                 from . import LauncherComponents
@@ -288,6 +295,7 @@ def ensure_worlds_loaded(write_launcher_cache: bool = True) -> None:
 
             _worlds_loaded = True
         finally:
+            _set_current_loading_world(None)
             _worlds_loading = False
             _worlds_load_owner_thread_id = None
 

@@ -1,0 +1,87 @@
+PARSER: 1
+GAME: Majora's Mask Recompiled
+AUTHOR: lx5
+---
+QUESTION: EASY
+What's the name of your fairy
+companion in Majora's Mask?
+ANSWERS:
+Tatl
+Tael
+Navi
+---
+QUESTION: EASY
+Which mask is required to
+properly fight Twinmold
+in Majora's Mask?
+ANSWERS:
+Giant's Mask
+Bunny Hood
+Keaton Mask
+---
+QUESTION: MEDIUM
+How's the Gibdo Mask obtained
+in Majora's Mask?
+ANSWERS:
+Playing Song of Healing° to Pamela's father
+Collecting Cuccos in°    Romani Ranch
+Give a Rock Sirloin°     to a hungry Goron
+---
+QUESTION: MEDIUM
+Which mask in Majora's Mask
+allows Link to not fall sleep
+during Anju's grandmother
+stories?
+ANSWERS:
+All-Night Mask
+Kamaro's Mask
+Stone Mask
+---
+QUESTION: MEDIUM
+How do you obtain the Stone
+Mask in Majora's Mask?
+ANSWERS:
+Giving a Red Potion to°  Shiro in Ikana Canyon
+In a treasure chest°     inside Beneath the Well
+Finishing first at the°  Goron race
+---
+QUESTION: MEDIUM
+How do you obtain the Bremen
+Mask in Majora's Mask?
+ANSWERS:
+Talking to Guru-Guru°    in the Laundry Pool
+Finishing the Anju and°  Kafei side quest
+Giving a Red Potion to°  Shiro in Ikana Canyon
+---
+QUESTION: MEDIUM
+How do you obtain the Mask of
+Truth in Majora's Mask?
+ANSWERS:
+Breaking the Resident's° curse in Woodfall
+Talking to Guru-Guru°    in the Laundry Pool
+In a treasure chest°     inside Beneath the Well
+---
+QUESTION: MEDIUM
+How do you obtain the Mask of
+Scents in Majora's Mask?
+ANSWERS:
+From Deku Butler at the° Deku Shrine
+Breaking the Resident's° curse in Woodfall
+Talking to Kamaro in°    Termina Field
+---
+QUESTION: HARD
+How do you obtain Romani's
+Mask in Majora's Mask?
+ANSWERS:
+Protect Cremia's wagon°  from the Gorman brothers
+Help Romani defend the°  ranch
+Talking to Guru-Guru°    in the Laundry Pool
+---
+QUESTION: HARD
+How do you obtain Garo's
+Mask in Majora's Mask?
+ANSWERS:
+Win a horse race in the° Gorman Track
+Giving a Red Potion to°  Shiro in Ikana Canyon
+Finishing first at the°  Goron race
+---

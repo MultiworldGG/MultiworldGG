@@ -1,0 +1,422 @@
+PARSER: 1
+GAME: Pokemon Crystal
+AUTHOR: Manul
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, what 
+item is needed to enter 
+Tin Tower?
+ANSWERS:
+Clear Bell
+Clear Wing
+Lost Bell
+---
+QUESTION: EASY
+In Pokemon Crystal, what are
+the 2 regions you can visit?
+ANSWERS:
+Johto and Kanto
+Johto and Hoenn
+Kanto and Hoenn
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, how do you
+wake up the sleeping Snorlax?
+ANSWERS:
+Using the Pokegear Radio
+Using the PokeFlute
+Using the SquirtBottle
+---
+QUESTION: EASY
+In Pokemon Crystal, how do you
+wake up the Sudowoodo?
+ANSWERS:
+Using the Squirtbottle
+Using the PokeFlute
+Using the Wailmer Pail
+---
+QUESTION: EASY
+In Pokemon Crystal, who is
+the Gym Leader who specializes
+in Bug types?
+ANSWERS:
+Bugsy
+Burgh
+Brock
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, where are
+the Radio Towers located?
+ANSWERS:
+Goldenrod and Lavender
+Goldenrod and Saffron
+Ecruteak and Olivine
+---
+QUESTION: EASY
+In Pokemon Crystal, who is
+the Gym Leader who specializes
+in Flying types?
+ANSWERS:
+Falkner
+Flannery
+Fantina
+---
+QUESTION: EASY
+In Pokemon Crystal, which
+shiny pokemon can be found in
+the Lake of Rage?
+ANSWERS:
+Gyarados
+Dragonair
+Lapras
+---
+QUESTION: HARD
+In Pokemon Crystal, in which
+of these locations can you NOT
+find a Week Sibling?
+ANSWERS:
+Route 34
+Route 29
+Route 32
+---
+QUESTION: EASY
+In Pokemon Crystal, who is
+the Gym Leader who specializes
+in Normal types?
+ANSWERS:
+Whitney
+Will
+Wallace
+---
+QUESTION: EASY
+In Pokemon Crystal, what
+is your starting town?
+ANSWERS:
+New Bark Town
+Azalea Town
+Pallet Town
+---
+QUESTION: EASY
+In Pokemon Crystal, which of
+these is NOT a Johto Badge?
+ANSWERS:
+Mine Badge
+Glacier Badge
+Hive Badge
+---
+QUESTION: HARD
+In Pokemon Crystal, who
+of these people is NOT
+a Radio Host DJ?
+ANSWERS:
+Tom
+Reed
+Ben
+---
+QUESTION: EASY
+In Pokemon Crystal, who is
+the Gym Leader who specializes
+in Ghost types?
+ANSWERS:
+Morty
+Misty
+Melony
+---
+QUESTION: EASY
+In Pokemon Crystal, who is
+the Gym Leader who specializes
+in Fighting types?
+ANSWERS:
+Chuck
+Cheren
+Chili
+---
+QUESTION: EASY
+In Pokemon Crystal, who is
+the Gym Leader who specializes
+in Steel types?
+ANSWERS:
+Jasmine
+Janine
+Jessie
+---
+QUESTION: EASY
+In Pokemon Crystal, who is
+the Gym Leader who specializes
+in Ice types?
+ANSWERS:
+Pryce
+Proton
+Prince
+---
+QUESTION: EASY
+In Pokemon Crystal, who is
+the Gym Leader who specializes
+in Dragon types?
+ANSWERS:
+Clair
+Claire
+Clay
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, which Gym
+Leaders do you meet outside of
+their Gyms the first time?
+ANSWERS:
+Morty and Jasmine
+Morty and Clair
+Jasmine and Clair
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, which 
+of these Trainer Classes 
+can you NOT find in the 
+National Park?
+ANSWERS:
+PokeManiac
+Pokefan
+Lass
+---
+QUESTION: HARD
+In Pokemon Crystal, which of
+these items is NOT a prize
+in the Bug-Catching Contest?
+ANSWERS:
+Moon Stone
+Sun Stone
+Everstone
+---
+QUESTION: EASY
+In Pokemon Crystal, which of
+these places is NOT located in
+Goldenrod City?
+ANSWERS:
+Dance Theater
+Name Rater's House
+Game Corner
+---
+QUESTION: HARD
+In Pokemon Crystal, how many
+aides are there in Oak's Lab?
+ANSWERS:
+3
+2
+1
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, which
+legendary Pokemon can be found
+in the deep of Whirl Islands?
+ANSWERS:
+Lugia
+Suicune
+Mewtwo
+---
+QUESTION: EASY
+In Pokemon Crystal, where do
+you see the Legendary Beasts 
+the first time?
+ANSWERS:
+Burned Tower
+Tin Tower
+Radio Tower
+---
+QUESTION: HARD
+In Pokemon Crystal, how many
+breakable rocks are there in
+Cianwood City?
+ANSWERS:
+6
+4
+2
+---
+QUESTION: HARD
+In Pokemon Crystal, how many
+breakable rocks are there in
+Route 40?
+ANSWERS:
+3
+4
+2
+---
+QUESTION: HARD
+In Pokemon Crystal, how many
+breakable rocks are there in
+Dark Cave?
+ANSWERS:
+4
+3
+2
+---
+QUESTION: HARD
+In Pokemon Crystal, how many
+boulders are there in the
+Blackthorn Gym?
+ANSWERS:
+6
+4
+8
+---
+QUESTION: HARD
+In Pokemon Crystal, which of
+the Johto Gym Guides is NOT
+inside his respective Gym?
+ANSWERS:
+Cianwood Gym Guide
+Azalea Gym Guide
+Olivine Gym Guide
+---
+QUESTION: HARD
+In Pokemon Crystal, how many
+cuttable trees are there in
+Lake of Rage?
+ANSWERS:
+5
+4
+6
+---
+QUESTION: HARD
+In Pokemon Crystal, how many
+berry trees are there in
+Route 42?
+ANSWERS:
+3
+2
+1
+---
+QUESTION: HARD
+In Pokemon Crystal, what is 
+the color of the pokemon machine
+in the Hall of Fame?
+ANSWERS:
+Blue
+Gray
+Red
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, which
+Trainer Classes can be found
+on Goldenrod Gym?
+ANSWERS:
+Lass and Beauty
+Lass and Picnicker
+Picnicker and Beauty
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, which
+Trainer Classes can be found
+on Ecruteak Gym?
+ANSWERS:
+Sage and Medium
+PokeManiac and Medium
+Sage and Channeler
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, which
+Trainer Classes can be found
+on Azalea Gym?
+ANSWERS:
+Bug Catcher & Twins
+Bug Catcher & Camper
+Bug Catcher & Picnicker
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, which
+Trainer Classes can be found
+on Mahogany Gym?
+ANSWERS:
+Skier and Boarder
+Skier and Gentleman
+Lass and Gentleman
+---
+QUESTION: EASY
+In Pokemon Crystal, which
+Johto Gym has no trainers
+other than the Gym Leader?
+ANSWERS:
+Olivine Gym
+Violet Gym
+Cianwood Gym
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, which is
+the only Trainer Classes found
+on Violet Gym?
+ANSWERS:
+Bird Keeper
+Camper
+Youngster
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, which is
+the only Trainer Class found
+on Blackthorn Gym?
+ANSWERS:
+Cooltrainer
+PokeManiac
+Gentleman
+---
+QUESTION: MEDIUM
+In Pokemon Crystal, which is
+the only Trainer Class found
+in Cianwood Gym?
+ANSWERS:
+Blackbelt
+Sailor
+Cue Ball
+---
+QUESTION: HARD
+In Pokemon Crystal, how many
+phone numbers can you store
+in the Pokegear?
+ANSWERS:
+10
+15
+5
+---
+QUESTION: HARD
+In Pokemon Crystal, which of
+these places is NOT located in
+Violet City?
+ANSWERS:
+Poke Seer
+Pokemon Academy
+Sprout Tower
+---
+QUESTION: HARD
+In Pokemon Crystal, how much
+money do the Rocket Grunts steal
+from you in the Route 43 gate?
+ANSWERS:
+$1000
+$2000
+$500
+---
+QUESTION: HARD
+In Pokemon Crystal, which 
+of these Trainer Classes 
+can you NOT find in the 
+Dragon's Den?
+ANSWERS:
+PokeManiac
+Twins
+Cooltrainer
+---
+QUESTION: HARD
+In Pokemon Crystal, which of
+these species is NOT a
+headbutt tree wild encounter?
+ANSWERS:
+Sunkern
+Aipom
+Ekans
+---
+QUESTION: HARD
+In Pokemon Crystal, which of
+these species is NOT a
+rock smash wild encounter?
+ANSWERS:
+Geodude
+Krabby
+Shuckle
+---

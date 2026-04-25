@@ -168,16 +168,14 @@ class LockedCantinaDoorDisplay(ClientComponent):
 
     @subscribe_event
     def on_receive_slot_data(self, event: OnReceiveSlotDataEvent):
-        if event.first_time_setup:
-            # Set the Episode 1 Ending Area's localised Text ID to something we can overwrite. In this case, one of the
-            # Wii Motion Control hints.
-            # The Episode 1 Ending Area is picked because Episode endings are not levels that can be accessed directly
-            # from the Cantina, so do not have a localised Text ID assigned to their name in vanilla, meaning it can be
-            # freely overridden as needed.
-            a_data_list_addr = A_DATA_LIST_PTR.get(event.context)
-            episode_1_ending_area_data_addr = a_data_list_addr + AREA_DATA_SIZE * AREA_ID_TO_USE
-            AREA_DATA_NAME_ID.set(event.context, episode_1_ending_area_data_addr, TextId.WII_MOTION_CONTROL_HINT_1)
-            pass
+        # Set the Episode 1 Ending Area's localised Text ID to something we can overwrite. In this case, one of the Wii
+        # Motion Control hints.
+        # The Episode 1 Ending Area is picked because Episode endings are not levels that can be accessed directly from
+        # the Cantina, so do not have a localised Text ID assigned to their name in vanilla, meaning it can be freely
+        # overridden as needed.
+        a_data_list_addr = A_DATA_LIST_PTR.get(event.context)
+        episode_1_ending_area_data_addr = a_data_list_addr + AREA_DATA_SIZE * AREA_ID_TO_USE
+        AREA_DATA_NAME_ID.set(event.context, episode_1_ending_area_data_addr, TextId.WII_MOTION_CONTROL_HINT_1)
 
         # Initialise active state based on the current level ID.
         self.active = event.context.current_level_id == LEVEL_ID_CANTINA

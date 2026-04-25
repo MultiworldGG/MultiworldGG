@@ -29,6 +29,7 @@ async def receive_boss_key(client: "PhantomHourglassClient", ctx: "BizHawkClient
         last_value = await data["address"].read(ctx)
         new_value = last_value | data["value"]
         res += data["address"].get_write_list(new_value)
+        await client.open_boss_door(ctx)
     return res
 
 async def receive_potion(client: "PhantomHourglassClient", ctx: "BizHawkClientContext", item: "PHItem", _):
@@ -121,9 +122,18 @@ async def remove_vanilla_throwable_keys(client: "PhantomHourglassClient", ctx: "
     return []
 
 class PHItem(DSItem):
+    model: int = None  # int for what item to swap chest contents with
+    vanilla_model: list[int] = None
+    ghost_model: bool = False  # client gives you your item
+    model_reset: bool = False  # client removes the item received from the model
+
 
     def __init__(self, name, data, all_items):
         super().__init__(name, data, all_items)
+        if self.vanilla_model is None:
+            self.vanilla_model = [self.model]
+        elif isinstance(self.vanilla_model, int):
+            self.vanilla_model = [self.vanilla_model]
 
     def get_receive_function(self):
         receive_func = super().get_receive_function()

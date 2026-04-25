@@ -1,0 +1,31 @@
+PARSER: 1
+GAME: A Link to the Past
+AUTHOR: Vasho
+---
+QUESTION: EASY
+ In A Link to the Past, what
+ is the name of the boss in 
+ Desert Palace?
+ANSWERS:
+Lanmola
+Twinmold
+Molgera
+---
+QUESTION: HARD
+ In A Link to the Past, in the 
+ official manual, what is 
+ Ganondorf last name?
+ANSWERS:
+Dragmire
+Mandrag
+Dorf
+---
+QUESTION: HARD
+ In A Link to the Past, which
+ of the following is the 
+ correct name?
+ANSWERS:
+Sahasrahla
+Sahasarhla
+Sahasrala
+---

@@ -1,0 +1,435 @@
+PARSER: 1
+GAME: Donkey Kong Country
+AUTHOR: lx5
+---
+QUESTION: EASY
+Which animal buddy 
+from Donkey Kong Country 
+allows the player to 
+jump really high?
+ANSWERS:
+Winky
+Squawks
+Expresso
+---
+QUESTION: EASY
+Which animal buddy 
+from Donkey Kong Country 
+allows the player to 
+slowly descend in the air?
+ANSWERS:
+Expresso
+Winky
+Rambi
+---
+QUESTION: EASY
+In Donkey Kong Country, which
+of the following animal 
+buddies isn't rideable?
+ANSWERS:
+Squawks
+Enguarde
+Expresso
+---
+QUESTION: MEDIUM
+In Donkey Kong Country, which
+Kremling laughs at the player
+when they weren't able 
+to defeat them?
+ANSWERS:
+Krusha
+Klaptrap
+Klump
+---
+QUESTION: EASY
+Which Kong allows the player
+to save their game in
+Donkey Kong Country?
+ANSWERS:
+Candy Kong
+Dixie Kong
+Funky Kong
+---
+QUESTION: MEDIUM
+In Donkey Kong Country, which
+of the following levels
+has five bonuses inside?
+ANSWERS:
+Orang-utan Gang
+Ice Age Alley
+Oil Drum Alley
+---
+QUESTION: HARD
+In Donkey Kong Country, which
+of the following levels
+has a bonus inside a bonus?
+ANSWERS:
+Oil Drum Alley
+Orang-utan Gang
+Barrel Cannon Canyon
+---
+QUESTION: HARD
+What's the order in which
+Boss Dumb Drum from 
+Donkey Kong Country
+releases enemies?
+ANSWERS:
+Kritter,Slippa°         Klaptrap,Klump,Army
+Slippa,Klaptrap,Army°   Klump,Kritter
+Kritter,Klaptrap°       Klump,Slippa,Army
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Expresso Token?
+ANSWERS:
+Poison Pond
+Bouncy Bonanza
+Reptile Rumble
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Expresso Token?
+ANSWERS:
+Ice Age Alley
+Reptile Rumble
+Slipslide Ride
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Expresso Token?
+ANSWERS:
+Rope Bridge Rumble
+Mine Cart Madness
+Croctopus Chase
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Expresso Token?
+ANSWERS:
+Stop & Go Station
+Millstone Mayhem
+Blackout Basement
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Expresso Token?
+ANSWERS:
+Coral Capers
+Clam City
+Croctopus Chase
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Expresso Token?
+ANSWERS:
+Misty Mine
+Trick Track Trek
+Tanked Up Trouble
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Winky Token?
+ANSWERS:
+Croctopus Chase
+Jungle Hijinxs
+Bouncy Bonanza
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Winky Token?
+ANSWERS:
+Platform Perils
+Loopy Lights
+Millstone Mayhem
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Winky Token?
+ANSWERS:
+Trick Track Trek
+Vulture Culture
+Forest Frenzy
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Winky Token?
+ANSWERS:
+Stop & Go Station
+Poison Pond
+Mine Cart Carnage
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Winky Token?
+ANSWERS:
+Barrel Cannon Canyon
+Tree Top Town
+Torchlight Trouble
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Winky Token?
+ANSWERS:
+Rope Bridge Rumble
+Reptile Rumble
+Tanked Up Trouble
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Rambi Token?
+ANSWERS:
+Snow Barrel Blast
+Jungle Hijinxs
+Platform Perils
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Rambi Token?
+ANSWERS:
+Bouncy Bonanza
+Blackout Basement
+Stop & Go Station
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Rambi Token?
+ANSWERS:
+Ropey Rampage
+Mine Cart Carnage
+Tree Top Town
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Rambi Token?
+ANSWERS:
+Rope Bridge Rumble
+Oil Drum Alley
+Manic Mincers
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Rambi Token?
+ANSWERS:
+Orang-Utan Gang
+Clam City
+Elevator Antics
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Rambi Token?
+ANSWERS:
+Misty Mine
+Coral Capers
+Loopy Lights
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Enguarde Token?
+ANSWERS:
+Reptile Rumble
+Vulture Culture
+Snow Barrel Blast
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Enguarde Token?
+ANSWERS:
+Croctopus Chase
+Trick Track Trek
+Manic Mincers
+---
+QUESTION: MEDIUM
+Which Donkey Kong Country
+level has a Enguarde Token?
+ANSWERS:
+Mine Cart Madness
+Winky's Walkway
+Bouncy Bonanza
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Enguarde Token?
+ANSWERS:
+Barrel Cannon Canyon
+Stop & Go Station
+Vulture Culture
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Enguarde Token?
+ANSWERS:
+Blackout Basement
+Poison Pond
+Tree Top Town
+---
+QUESTION: HARD
+Which Donkey Kong Country
+level has a Enguarde Token?
+ANSWERS:
+Forest Frenzy
+Ice Age Alley
+Temple Tempest
+---
+QUESTION: EASY
+In Donkey Kong Country, which
+world has ruin themed levels?
+ANSWERS:
+Vine Valley
+Kremkroc Industries Inc
+Chimp Caverns
+---
+QUESTION: MEDIUM
+In Donkey Kong Country, which
+world has ruin themed levels?
+ANSWERS:
+Monkey Mines
+Kongo Jungle
+Gorilla Glacier
+---
+QUESTION: MEDIUM
+In Donkey Kong Country, which
+world does NOT feature
+underwater levels?
+ANSWERS:
+Chimp Caverns
+Kremkroc Industries Inc
+Gorilla Glacier
+---
+QUESTION: EASY
+In Donkey Kong Country, which
+world does NOT feature
+underwater levels?
+ANSWERS:
+Monkey Mines
+Kongo Jungle
+Vine Valley
+---
+QUESTION: EASY
+How many ice cave levels exist
+in Donkey Kong Country?
+ANSWERS:
+1
+3
+4
+---
+QUESTION: EASY
+Which Donkey Kong Country
+enemy protects their head
+when Diddy lands on them?
+ANSWERS:
+Klump
+Krusha
+Kritter
+---
+QUESTION: MEDIUM
+Which Klaptrap color jumps at
+the same time as the player
+in Donkey Kong Country?
+ANSWERS:
+Purple
+Blue
+Black
+---
+QUESTION: EASY
+In Donkey Kong Country, which
+world hosts Queen B.?
+ANSWERS:
+Vine Valley
+Monkey Mines
+Gorilla Glacier
+---
+QUESTION: MEDIUM
+In Donkey Kong Country, which
+world hosts Master Necky?
+ANSWERS:
+Monkey Mines
+Kongo Jungle
+Chimp Caverns
+---
+QUESTION: MEDIUM
+In Donkey Kong Country, which
+world hosts Very Gnawty?
+ANSWERS:
+Kongo Jungle
+Gorilla Glacier
+Kremkroc Industries Inc
+---
+QUESTION: EASY
+In Donkey Kong Country, which
+world hosts Really Gnawty?
+ANSWERS:
+Gorilla Glacier
+Vine Valley
+Monkey Mines
+---
+QUESTION: EASY
+In Donkey Kong Country, which
+world hosts Master Necky Snr.?
+ANSWERS:
+Chimp Caverns
+Kongo Jungle
+Kremkroc Industries Inc
+---
+QUESTION: EASY
+Which Donkey Kong Country
+world has factory levels?
+ANSWERS:
+Kremkroc Industries Inc
+Kongo Jungle
+Chimp Caverns
+---
+QUESTION: EASY
+How many minecart levels exist
+in Donkey Kong Country?
+ANSWERS:
+2
+3
+4
+---
+QUESTION: EASY
+How many unique animal tokens
+exists in Donkey Kong Country?
+ANSWERS:
+4
+5
+2
+---
+QUESTION: EASY
+How many bananas are obtained
+from Banana Bunches in
+Donkey Kong Country?
+ANSWERS:
+10 bananas
+5 bananas 
+20 bananas
+---
+QUESTION: HARD
+Which of the following is a
+valid method to open up
+hidden bonus levels in
+Donkey Kong Country?
+ANSWERS:
+Blasting through it°    via a Barrel Kannon
+Hitting the entrance°   with Gorilla Slap
+Hit the entrance with°  Enguarde's charge
+---
+QUESTION: EASY
+Which of the following is a
+valid method to open up
+hidden bonus levels in
+Donkey Kong Country?
+ANSWERS:
+Throwing a barrel at°   the entrance
+Jump on top of it°      with Winky
+Let a Klaptrap bite°     the wall
+---
+QUESTION: MEDIUM
+Which of the following is a
+valid method to open up
+hidden bonus levels in
+Donkey Kong Country?
+ANSWERS:
+Using Rambi's horn
+Light up the wall°      with Squawks' lamp
+Poking the wall with°   Expresso's beak
+---

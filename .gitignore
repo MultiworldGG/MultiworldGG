@@ -248,3 +248,9 @@ worlds/oot/ASM/roms/*.z64
 
 # launcher cache
 data/world_launcher_cache.json.gz
+
+# OoT
+worlds/oot/ASM/tools/armips
+worlds/oot/data/Compress/ARCHIVE.bin
+data/sprites/oot/adult/*.zobj
+data/sprites/oot/child/*.zobj

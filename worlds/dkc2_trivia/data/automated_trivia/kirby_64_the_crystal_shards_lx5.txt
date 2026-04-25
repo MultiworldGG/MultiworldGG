@@ -1,0 +1,96 @@
+PARSER: 1
+GAME: Kirby 64 - The Crystal Shards
+AUTHOR: lx5
+---
+QUESTION: EASY
+How many different statues can
+be seen with Cutter+Rock
+in Kirby 64?
+ANSWERS:
+6
+4
+8
+---
+QUESTION: EASY
+How many battle phases does
+Acro have in Kirby 64?
+ANSWERS:
+2
+1
+3
+---
+QUESTION: EASY
+Which power is required
+to collect Pop Star 1's 
+third crystal shard 
+in Kirby 64?
+ANSWERS:
+Bomb
+Stone
+Spark
+---
+QUESTION: HARD
+What's the name of the boss
+at the end of Shiver Star's
+second stage in Kirby 64?
+ANSWERS:
+Big Mopoo
+HR-H
+Big Chilly
+---
+QUESTION: MEDIUM
+What's the name of the first
+enemy boss you encounter at
+Pop Star in Kirby 64?
+ANSWERS:
+Big N-Z
+Waddle Doo
+Whispy Woods
+---
+QUESTION: HARD
+Which of the following
+Aqua Star stages in Kirby 64
+doesn't require any powers
+to collect its crystal shards?
+ANSWERS:
+Stage 4
+Stage 2
+Stage 3
+---
+QUESTION: MEDIUM
+How many enemy ambushes are
+at Ripple Star's third stage
+in Kirby 64?
+ANSWERS:
+5
+6
+4
+---
+QUESTION: EASY
+Which of the following items
+Adeleine draws for you when 
+you are at full health 
+in Kirby 64?
+ANSWERS:
+A 1-Up
+A Maxim Tomato
+An invincibility candy
+---
+QUESTION: HARD
+How many different food items 
+can be produced via Ice-Spark 
+in Kirby 64?
+ANSWERS:
+8
+5
+10
+---
+QUESTION: HARD
+Which of the following food 
+items can't be found outdoors 
+in Kirby 64?
+ANSWERS:
+Flan
+Cake
+Ice cream bar
+---

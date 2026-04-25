@@ -1,0 +1,29 @@
+PARSER: 1
+GAME: Astalon
+AUTHOR: Manul
+---
+QUESTION: EASY
+Where does Astalon take place?
+ANSWERS:
+In a Tower
+In a Castle
+In a Mansion
+---
+QUESTION: MEDIUM
+In Astalon, how many cyclops do
+you have to kill on Cyclops Den
+to open the boss' door?
+ANSWERS:
+35
+25
+45
+---
+QUESTION: EASY
+In Astalon, what are the colors
+of the different keys/doors
+in the game?
+ANSWERS:
+Blue, Red and White
+Blue, Purple and Green
+Blue, Gray and Orange
+---

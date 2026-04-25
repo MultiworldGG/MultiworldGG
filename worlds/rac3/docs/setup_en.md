@@ -9,7 +9,7 @@ The following are required in order to play Ratchet and Clank 3 in MultiworldGG
 - Installed the latest version of [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases).
 - If you do not want to use MWGG: The latest version of the [Ratchet and Clank 3 apworld](https://github.com/Taoshix/Archipelago-RaC3/releases).
 - [PCSX2 Emulator](https://pcsx2.net/downloads/). Must be v1.7 or higher for the required PINE support (the latest stable version is recommended).
-- A Ratchet and Clank 3 US ISO (`SCUS-97353`) \
+- A Ratchet and Clank 3 US ISO (`SCUS-97353`) or EU/AUS ISO (`SCES-52456`) \
 **Note:** To check the other game version's compatibility check the FAQ linked below.
 
 ## If you do not want to use MWGG: AP World Installation

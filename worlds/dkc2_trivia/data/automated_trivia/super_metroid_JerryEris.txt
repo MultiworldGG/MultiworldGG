@@ -1,0 +1,22 @@
+PARSER: 1
+GAME: Super Metroid
+AUTHOR: JerryEris
+---
+QUESTION: EASY
+In Super Metroid, 
+what item allows Samus 
+to move freely in water?
+ANSWERS:
+Gravity Suit
+Wet Suit
+Diving Suit
+---
+QUESTION: HARD
+What Super Metroid item 
+is in the room you enter 
+after defeating Ridley?
+ANSWERS:
+Energy Tank
+Power Bombs
+Screw Attack
+---

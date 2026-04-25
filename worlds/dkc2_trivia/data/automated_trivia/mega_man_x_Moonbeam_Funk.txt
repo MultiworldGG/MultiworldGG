@@ -1,0 +1,12 @@
+PARSER: 1
+GAME: Mega Man X
+AUTHOR: Funk
+---
+QUESTION: HARD
+In Mega Man X, which attack can
+destroy a Rolling Gabyoall?
+ANSWERS:
+Rolling Shield
+None
+Hadouken
+---

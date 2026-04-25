@@ -1,0 +1,28 @@
+PARSER: 1
+GAME: The Legend of Zelda
+AUTHOR: LoloGuru
+---
+QUESTION: EASY
+ In The Legend of Zelda, who 
+ is the old letter for?
+ANSWERS:
+an Old Woman
+an Old Man
+a Moblin
+---
+QUESTION: EASY
+ In The Legend of Zelda, who
+ is the bait for? 
+ANSWERS:
+A moblin
+An old man
+An old woman
+---
+QUESTION: EASY
+ In the Legend of Zelda, who 
+ offers Link a sword? 
+ANSWERS:
+An old man
+An old woman
+A moblin
+---

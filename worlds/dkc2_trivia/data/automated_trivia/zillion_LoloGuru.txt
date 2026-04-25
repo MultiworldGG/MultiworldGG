@@ -1,0 +1,29 @@
+PARSER: 1
+GAME: Zillion
+AUTHOR: LoloGuru
+---
+QUESTION: HARD
+ In Zillion, how does one open 
+ the doors blocking the 
+ capsule at A-6?
+ANSWERS:
+Duck & shoot right wall
+Code 0 0 0 0 in terminal
+Unlock room E-5
+---
+QUESTION: EASY
+ In Zillion, what is a Zillion? 
+ANSWERS:
+A gun upgrade
+A really big number
+Currency
+---
+QUESTION: MEDIUM
+ In Zillion, what items are 
+ needed to access the 
+ Master Computer?
+ANSWERS:
+Red Key Card & Floppys
+Scope & Key Card
+Scope & Floppys
+---

@@ -139,8 +139,6 @@ class PHAddr:
     adv_flags_50 = Address(0x1b55ae)
     adv_flags_51 = Address(0x1b55af)
     
-    
-    
     small_key_storage_1 = Address(0x1BA64E)
     small_key_storage_2 = Address(0x1BA64F)
     custom_storage = Address(0x1BA661)
@@ -272,6 +270,11 @@ class PHAddr:
     # island_visible_ = Address()
     # island_visible_ = Address()
     # island_visible_ = Address()
+
+    map_obj_table = Address(0x1B8968)  # size biig
+
+    defeated_bellum = Address(0x1b5774)
+    in_minigame = Address(0x307D77)
 
 class PHSRAM:
     # SRAM

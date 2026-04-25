@@ -149,10 +149,6 @@ def _start_cxfreeze_world_output_monitor(worlds_output_dir: Path) -> Callable[[]
         new_worlds = sorted((produced_worlds & expected_worlds) - seen_worlds)
         for world_name in new_worlds:
             seen_worlds.add(world_name)
-            print(
-                f"cx_Freeze output world [{len(seen_worlds)}/{len(expected_worlds)}]: {world_name}",
-                flush=True,
-            )
 
     def _monitor() -> None:
         while not stop_event.wait(0.25):
@@ -295,6 +291,9 @@ if is_windows:
 
 extra_data = ["LICENSE", "LICENSE-original.md", "data", "EnemizerCLI", "SNI", "application.yaml"]
 extra_libs = ["libssl.so", "libcrypto.so"] if is_linux else []
+excluded_extra_data_files = {
+    Path("data", "world_launcher_cache.json.gz"),
+}
 
 
 def remove_sprites_from_folder(folder: Path) -> None:
@@ -354,6 +353,25 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
         self.libfolder = Path(self.buildfolder, "lib")
         self.library = Path(self.libfolder, "library.zip")
 
+    def _ignore_excluded_extra_data_files(self, directory: str, names: list[str]) -> set[str]:
+        ignored: set[str] = set()
+        for name in names:
+            candidate = Path(directory, name)
+            try:
+                relative_path = candidate.relative_to(Path.cwd()) if candidate.is_absolute() else candidate
+            except ValueError:
+                continue
+            if relative_path in excluded_extra_data_files:
+                ignored.add(name)
+        return ignored
+
+    def remove_excluded_extra_data_files(self) -> None:
+        for relative_path in excluded_extra_data_files:
+            target = self.buildfolder / relative_path
+            if target.is_file():
+                target.unlink()
+                print(f"Removed excluded build data file {target}")
+
     def installfile(self, path: Path, subpath: str | Path | None = None, keep_content: bool = False) -> None:
         folder = self.buildfolder
         if subpath:
@@ -363,9 +381,14 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
             folder /= path.name
             if folder.is_dir() and not keep_content:
                 shutil.rmtree(folder)
-            shutil.copytree(path, folder, dirs_exist_ok=True)
+            shutil.copytree(path, folder, dirs_exist_ok=True, ignore=self._ignore_excluded_extra_data_files)
         elif path.is_file():
-            shutil.copy(path, folder)
+            try:
+                relative_path = path.relative_to(Path.cwd())
+            except ValueError:
+                relative_path = path
+            if relative_path not in excluded_extra_data_files:
+                shutil.copy(path, folder)
         else:
             print('Warning,', path, 'not found')
 
@@ -492,6 +515,8 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
         for worldname, worldtype in AutoWorldRegister.world_types.items():
             if worldname not in non_apworlds:
                 file_name = os.path.split(os.path.dirname(worldtype.__file__))[1]
+                if file_name.startswith("_"):
+                    continue # skip internal worlds like manual
                 world_directory = self.libfolder / "worlds" / file_name
                 if os.path.isfile(world_directory / "archipelago.json"):
                     with open(os.path.join(world_directory, "archipelago.json"), mode="r", encoding="utf-8") as manifest_file:
@@ -541,6 +566,7 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
 
         remove_sprites_from_folder(self.buildfolder / "data" / "sprites" / "alttpr")
         remove_sprites_from_folder(self.buildfolder / "data" / "sprites" / "alttp" / "remote")
+        self.remove_excluded_extra_data_files()
 
         self.create_manifest()
 

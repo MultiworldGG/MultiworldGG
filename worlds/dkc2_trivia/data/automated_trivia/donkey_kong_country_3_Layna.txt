@@ -1,0 +1,205 @@
+PARSER: 1
+GAME: Donkey Kong Country 3
+AUTHOR: Layna
+---
+QUESTION: EASY
+What is the name of
+ the yellow and blue 
+ bird in donkey kong
+ country 3?
+ANSWERS:
+Parry
+Squawks
+Quawks
+---
+QUESTION: EASY
+In donkey kong country 3,
+ blizzard give you a present
+ to deliver to wich bear?
+ANSWERS:
+Blue
+Blunder
+Boomer
+---
+QUESTION: EASY
+Wich bear ask you to
+ pay him with bonus coins
+ in donkey kong country 3?
+ANSWERS:
+Boomer
+Bramble
+Brash
+---
+QUESTION: MEDIUM
+In donkey kong country 3,
+ what is the name of the
+ bear that get angry at
+ you if you beat his time?
+ANSWERS:
+Brash
+Bazooka
+Baffle
+---
+QUESTION: HARD
+Who is the bear that 
+ collect shells in donkey
+ kong country 3?
+ANSWERS:
+Barnacle
+Baffle
+Boomer
+---
+QUESTION: MEDIUM
+Who operate a chairlift
+ in donkey kong country 3?
+ANSWERS:
+Bjorn
+Barnacle
+Bazooka
+---
+QUESTION: HARD
+In donkey kong country 3,
+ who provide you hint about
+ where krematoa is located?
+ANSWERS:
+Blunder
+Funky
+Brash
+---
+QUESTION: HARD
+In donkey kong country 3, 
+ bramble is not happy about
+ something, what is it?
+ANSWERS:
+Air pollution
+Kaos
+Lack of flowers
+---
+QUESTION: MEDIUM
+In donkey kong country 3,
+ who is the twin brother of
+ bjorn?
+ANSWERS:
+Benny
+Brash
+Baffle
+---
+QUESTION: HARD
+In donkey kong country 3, 
+ what is the code to enter
+ to be able to do 105%?
+ANSWERS:
+TUFST
+HARDR
+HARDM
+---
+QUESTION: HARD
+In donkey kong country 3, 
+ what is the code to enter
+ to be able to do 104%?
+ANSWERS:
+HARDR
+HARDM
+TUFST
+---
+QUESTION: MEDIUM
+what is the code to 
+ enter in donkey kong
+ country 3 to get all the
+ 85 bonus coins?
+ANSWERS:
+WATER
+COINS
+BONUS
+---
+QUESTION: HARD
+What is missing in the
+ level Rocket Rush on the
+ NTSC version of donkey
+ kong country 3?
+ANSWERS:
+Letter G
+DK Coin
+A DK Barrel
+---
+QUESTION: MEDIUM
+what is the button combination
+ in donkey kong country 3
+ to trigger the code menu?
+ANSWERS:
+LRRLRRLRLR
+BARALLAX
+UUDDLRLRBA
+---
+QUESTION: HARD
+Who was the lead music
+ in donkey kong country 3?
+ANSWERS:
+Eveline Novakovic
+David Wise
+Hiroshi Yamauchi
+---
+QUESTION: HARD
+in donkey kong country 3,
+ who say i get lots of post
+ you know, but it's all
+ bills, not a single card?
+ANSWERS:
+Blue
+Barnacle
+Wrinkly
+---
+QUESTION: MEDIUM
+What is the name of 
+ the reverse control level
+ in donkey kong country 3?
+ANSWERS:
+Poisonous pipeline
+Low-G Labyrinth
+Kreeping Klasps
+---
+QUESTION: EASY
+What is needed to get the
+ gyrocopter in donkey kong
+ country 3?
+ANSWERS:
+Dk Coins
+Propeller
+Patch
+---
+QUESTION: EASY
+What is needed to get the
+ Turbo Ski in donkey kong
+ country 3?
+ANSWERS:
+2 skis
+A ski
+propeller
+---
+QUESTION: EASY
+What is needed to get the
+ Hovercraft in donkey kong
+ country 3?
+ANSWERS:
+Patch
+Propeller
+Boat
+---
+QUESTION: EASY
+What is the name of the
+ barrel boss in donkey 
+ kong country 3?
+ANSWERS:
+Belcha
+Benny
+Bleak
+---
+QUESTION: EASY
+What is the name of the
+ snowman boss in donkey 
+ kong country 3?
+ANSWERS:
+Bleak
+Benny
+Frosty
+---

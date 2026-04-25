@@ -1,0 +1,452 @@
+PARSER: 1
+GAME: Symphony of the Night
+AUTHOR: lx5
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+what happens when Alucard
+sits on the left side of
+the confessional in
+the Royal Chapel?
+ANSWERS:
+A priest stabs him
+He confesses his sins
+Gets a Crissaegrim
+---
+QUESTION: HARD
+In Symphony of the Night,
+what happens when Alucard
+sits on the left side of
+the confessional in
+the Royal Chapel?
+ANSWERS:
+A priest tosses him° some grape juice
+A woman confesses° her sins
+His mother appears
+---
+QUESTION: EASY
+In Symphony of the Night,
+what happens when Alucard
+sits on the right side of
+the confessional in
+the Royal Chapel?
+ANSWERS:
+A woman confesses° her sins
+Absolutely nothing
+Gets a Crissaegrim
+---
+QUESTION: MEDIUM
+What happens if you manage
+to kill the Owl Knight's Owl 
+in front of him in the game
+Symphony of the Night?
+ANSWERS:
+The knight cries and° attacks the player
+The knight dies° alongside the owl
+The owl revives after° a few seconds
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Mermans
+can be found?
+ANSWERS:
+Entrance
+Alchemy Laboratory
+Colosseum
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Axe Knights
+can be found?
+ANSWERS:
+Alchemy Laboratory
+Catacombs
+Clock Tower
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Bloody Zombies
+can be found?
+ANSWERS:
+Entrance
+Long Library
+Underground Garden
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Ghosts
+can be found?
+ANSWERS:
+Marble Gallery
+Royal Chapel
+Olrox's Quarters
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Bone Archers
+can be found?
+ANSWERS:
+Underground Caverns
+Forbidden Library
+Royal Chapel
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Bone Pillars
+can be found?
+ANSWERS:
+Royal Chapel
+Reverse Entrance
+Outer Wall
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Doppleganger10
+can be found?
+ANSWERS:
+Outer Wall
+Underground Caverns
+Clock Tower
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Phantom Skulls
+can be found?
+ANSWERS:
+Clock Tower
+Death Wing's Lair
+Olrox's Quarters
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Skeleton Ape
+can be found?
+ANSWERS:
+Outer Wall
+Reverse Caverns
+Catacombs
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Winged Guards
+can be found?
+ANSWERS:
+Royal Chapel
+Outer Wall
+Entrance
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Armor Lord
+can be found?
+ANSWERS:
+Colosseum
+Castle Keep
+Royal Chapel
+---
+QUESTION: HARD
+In Symphony of the Night,
+in which area Armor Lord
+can be found?
+ANSWERS:
+Outer Wall
+Clock Tower
+Marble Gallery
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Skull Lords
+can be found?
+ANSWERS:
+Reverse Keep
+Olrox's Quarters
+Royal Chapel
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Flea Riders
+can be found?
+ANSWERS:
+Castle Keep
+Necromancy Laboratory
+Royal Chapel
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Hunting Girl
+can be found?
+ANSWERS:
+Colosseum
+Forbidden Library
+Anti-Chapel
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Vandal Sword
+can be found?
+ANSWERS:
+Clock Tower
+Reverse Caverns
+Anti-Chapel
+---
+QUESTION: HARD
+In Symphony of the Night,
+in which area Flea Armor
+can be found?
+ANSWERS:
+Clock Tower
+Forbidden Library
+Castle Keep
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Blade Master
+can be found?
+ANSWERS:
+Colosseum
+Clock Tower
+Anti-Chapel
+---
+QUESTION: HARD
+In Symphony of the Night,
+in which area Gremlins
+can be found?
+ANSWERS:
+Necromancy Laboratory
+Floating Catacombs
+Royal Chapel
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Gremlins
+can be found?
+ANSWERS:
+Catacombs
+Underground Caverns
+Black Marble Gallery
+---
+QUESTION: HARD
+In Symphony of the Night,
+in which area Valhalla Knights
+can be found?
+ANSWERS:
+Reverse Clock Tower
+Castle Keep
+Outer Wall
+---
+QUESTION: HARD
+In Symphony of the Night,
+in which area Lossoth
+can be found?
+ANSWERS:
+Catacombs
+Reverse Clock Tower
+Long Library
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Gurkha
+can be found?
+ANSWERS:
+Black Marble Gallery
+Reverse Outer Wall
+Reverse Caverns
+---
+QUESTION: HARD
+In Symphony of the Night,
+in which area Gurkha
+can be found?
+ANSWERS:
+Entrance
+Anti-Chapel
+Reverse Entrance
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Lion
+can be found?
+ANSWERS:
+Forbidden Library
+Reverse Keep
+Reverse Colosseum
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Granfalooon
+can be found?
+ANSWERS:
+Catacombs
+Forbidden Library
+Marble Gallery
+---
+QUESTION: HARD
+In Symphony of the Night,
+in which area Balloon Pod
+can be found?
+ANSWERS:
+Anti-Chapel
+Underground Caverns
+Long Library
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Yorick
+can be found?
+ANSWERS:
+Reverse Keep
+Reverse Outer Wall
+Reverse Entrance
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Bomb Knights
+can be found?
+ANSWERS:
+Reverse Clock Tower
+Forbidden Library
+Reverse Colosseum
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Werewolves
+can be found?
+ANSWERS:
+Reverse Colosseum
+Floating Catacombs
+Death Wing's Lair
+---
+QUESTION: HARD
+In Symphony of the Night,
+in which area Nova Skeletons
+can be found?
+ANSWERS:
+Reverse Outer Wall
+Death Wing's Lair
+Forbidden Library
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Nova Skeletons
+can be found?
+ANSWERS:
+Black Marble Gallery
+Underground Caverns
+Reverse Keep
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Nova Skeletons
+can be found?
+ANSWERS:
+Reverse Entrance
+Colosseum
+Royal Chapel
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Black Panthers
+can be found?
+ANSWERS:
+Anti-Chapel
+Long Library
+Reverse Entrance
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Snipers of Goth
+can be found?
+ANSWERS:
+Anti-Chapel
+Entrance
+Reverse Clock Tower
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Rock Knights
+can be found?
+ANSWERS:
+Reverse Caverns
+Catacombs
+Entrance
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Ghost Dancer
+can be found?
+ANSWERS:
+Death Wing's Lair
+Black Marble Gallery
+Outer Wall
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Gorgon
+can be found?
+ANSWERS:
+Black Marble Gallery
+Reverse Keep
+Reverse Colosseum
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Cave Troll
+can be found?
+ANSWERS:
+Reverse Caverns
+Catacombs
+Forbidden Library
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Doppleganger40
+can be found?
+ANSWERS:
+Reverse Caverns
+Floating Catacombs
+Reverse Colosseum
+---
+QUESTION: HARD
+In Symphony of the Night,
+in which area Imps
+can be found?
+ANSWERS:
+Reverse Caverns
+Royal Chapel
+Underground Garden
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Imps
+can be found?
+ANSWERS:
+Anti-Chapel
+Reverse Clock Tower
+Catacombs
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Salome
+can be found?
+ANSWERS:
+Floating Catacombs
+Catacombs
+Underground Garden
+---
+QUESTION: MEDIUM
+In Symphony of the Night,
+in which area Dodo Birds
+can be found?
+ANSWERS:
+Reverse Entrance
+Reverse Outer Wall
+Reverse Keep
+---
+QUESTION: EASY
+In Symphony of the Night,
+in which area Galamoth
+can be found?
+ANSWERS:
+Floating Catacombs
+Reverse Caverns
+Reverse Colosseum
+---

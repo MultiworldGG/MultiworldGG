@@ -1,0 +1,22 @@
+PARSER: 1
+GAME: History
+AUTHOR: Rickerd102
+---
+QUESTION: MEDIUM
+What was the capital
+of the Byzantine Empire,
+until it fell in 1453?
+ANSWERS:
+Constantinople
+Istanbul
+Byzantium
+---
+QUESTION: EASY
+Amelia Earhart was the
+first woman to fly
+solo across which ocean?
+ANSWERS:
+Atlantic Ocean
+Pacific Ocean
+Antarctic Ocean
+---

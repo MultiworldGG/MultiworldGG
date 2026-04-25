@@ -1,0 +1,151 @@
+PARSER: 1
+GAME: Lunacid
+AUTHOR: Albrekka
+---
+QUESTION: MEDIUM
+How many strange coins are
+required to reach Ending B
+in Lunacid?
+ANSWERS:
+30
+20
+40
+---
+QUESTION: EASY
+In Lunacid, what element
+opens the gates in
+Accursed Tomb?
+ANSWERS:
+Light
+Fire
+Ice
+---
+QUESTION: MEDIUM
+In Lunacid, what is the
+true name of Clive, the
+skeleton in Wing's Rest?
+ANSWERS:
+Calamis
+Byagototh
+Clive
+---
+QUESTION: HARD
+In Lunacid, internal files
+say Demi offers to shut down
+what possible location
+with her?
+ANSWERS:
+Crypto Farm
+Bank
+Grocery Store
+---
+QUESTION: MEDIUM
+In Lunacid, how many spells
+are required to reach
+Ending E?
+ANSWERS:
+36
+32
+All of them
+---
+QUESTION: EASY
+In Lunacid, what result
+from alchemy do you get
+from ashes and a fire opal?
+ANSWERS:
+Bomb
+Staff of Osiris
+Health Vial
+---
+QUESTION: MEDIUM
+In Lunacid, what item does
+Patchouli offer that doesn't
+heal you but poisons you?
+ANSWERS:
+Health ViaI
+Health Vial
+HeaIth Vial
+---
+QUESTION: EASY
+What class in Lunacid is
+allowed immediate entry
+into Castle Le Fanu?
+ANSWERS:
+Vampire
+Undead
+Witch
+---
+QUESTION: HARD
+Lunacid's Clive mentions
+"The King of Rats"; what
+other KIRA LLC game is this
+character from?
+ANSWERS:
+Lost in Vivo
+Spooky's House
+Uktena 64
+---
+QUESTION: MEDIUM
+Lunacid's Abdul mentions
+a particular demonic entity.
+What is their name?
+ANSWERS:
+Byagototh
+Spooky
+The Dreamer
+---
+QUESTION: EASY
+Staring into a puddle for
+about ten seconds gets
+you what ending in Lunacid?
+ANSWERS:
+CD
+B
+E
+---
+QUESTION: MEDIUM
+In Lunacid, Jellisha asks
+to find their boyfriend.
+What was NOT their fate?
+ANSWERS:
+Died
+Became Slime Skeleton
+Left her for someone
+---
+QUESTION: EASY
+Whose skull does Patchouli
+ask for in the game Lunacid?
+ANSWERS:
+Josiah
+Joshua
+Jimmy
+---
+QUESTION: MEDIUM
+What other KIRA LLC game does
+the weapon "Serpent Fang"
+originate from?
+ANSWERS:
+Basilisk 2000
+Spooky's House
+Lost in Vivo
+---
+QUESTION: EASY
+What melts the ice wall in
+Castle Le Fanu's Cattle
+Cells?
+ANSWERS:
+Any fire source
+Only fire weapons
+Only fire spells
+---
+QUESTION: HARD
+In Lunacid, Demi hands the
+player a "Dusty Crystal Orb",
+which seemingly has no use.
+What does its developer say
+its use will be?
+ANSWERS:
+To access DLC content
+To open hidden walls
+To start NG+
+---

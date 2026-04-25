@@ -1,0 +1,241 @@
+PARSER: 1
+GAME: Genshin Impact
+AUTHOR: lx5
+---
+QUESTION: EASY
+What's the name of your 
+companion in Genshin Impact?
+ANSWERS:
+Paimon
+Faerie
+Deimos
+---
+QUESTION: EASY
+Who's the first playable
+character you obtain 
+in Genshin Impact?
+ANSWERS:
+Amber
+Venti
+Kaeya
+---
+QUESTION: EASY
+What is Genshin Impact's
+starting nation?
+ANSWERS:
+Mondstadt
+Natlan
+Liyue
+---
+QUESTION: MEDIUM
+Which elements are required to
+trigger a Burning reaction
+in Genshin Impact?
+ANSWERS:
+Pyro + Dendro
+Pyro + Cryo
+Pyro + Electro
+---
+QUESTION: MEDIUM
+Which elements are required to
+trigger a Bloom reaction
+in Genshin Impact?
+ANSWERS:
+Hydro + Dendro
+Electro + Dendro
+Pyro + Dendro
+---
+QUESTION: MEDIUM
+Which elements are required to
+trigger an Overloaded reaction
+in Genshin Impact?
+ANSWERS:
+Electro + Pyro
+Electro + Dendro
+Electro + Hydro
+---
+QUESTION: MEDIUM
+Which elements are required to
+trigger a Quicken reaction
+in Genshin Impact?
+ANSWERS:
+Electro + Dendro
+Pyro + Hydro
+Electro + Hydro
+---
+QUESTION: MEDIUM
+Which elements are required to
+trigger a Melt reaction
+in Genshin Impact?
+ANSWERS:
+Cryo + Pyro
+Cryo + Hydro
+Cryo + Dendro
+---
+QUESTION: MEDIUM
+Which elements are required to
+trigger a Vaporize reaction
+in Genshin Impact?
+ANSWERS:
+Hydro + Pyro
+Hydro + Dendro
+Cryo + Pyro
+---
+QUESTION: MEDIUM
+Which elements are required to
+trigger a Superconduct reaction
+in Genshin Impact?
+ANSWERS:
+Cryo + Electro
+Electro + Hydro
+Cryo + Hydro
+---
+QUESTION: MEDIUM
+Which elements are required to
+trigger a Frozen reaction
+in Genshin Impact?
+ANSWERS:
+Cryo + Hydro
+Electro + Hydro
+Cryo + Geo
+---
+QUESTION: HARD
+In Genshin Impact, which unit
+is responsible for crime
+investigation in Fontaine?
+ANSWERS:
+Marechausse Phantom
+Spina di Rosula
+Scions of the Canopy
+---
+QUESTION: HARD
+In Genshin Impact, which 
+Natlan tribe is famous 
+for their mining?
+ANSWERS:
+Children of Echoes
+People of the Springs
+Scions of the Canopy
+---
+QUESTION: HARD
+In Genshin Impact, which Natlan 
+tribe is famous for their 
+predictions and rituals 
+related to the Night Kingdom?
+ANSWERS:
+Masters of the°         Night-Wind
+Children of Echoes
+People of the Springs
+---
+QUESTION: HARD
+In Genshin Impact, which Natlan 
+tribe live alongside Qucusaurs?
+ANSWERS:
+Flower-Feather Clan
+Masters of the°         Night-Wind
+Scions of the Canopy
+---
+QUESTION: EASY
+In Genshin Impact, which youkai
+from Inazuma acts as a courier
+for Komaniya Express?
+ANSWERS:
+Kirara
+Arataki Itto
+Yae Miko
+---
+QUESTION: HARD
+In Genshin Impact, which youkai
+from Inazuma have the 
+ability to transform 
+into other objects?
+ANSWERS:
+Bake-Danuki
+Yumekui-baku
+Kitsune
+---
+QUESTION: HARD
+In Genshin Impact, which 
+Akademiya Darshan specializes
+in biology, ecology 
+and medicine?
+ANSWERS:
+Amurta
+Haravatat
+Spantamad
+---
+QUESTION: HARD
+In Genshin Impact, which 
+Akademiya Darshan specializes
+in semiotics, linguistics and
+rune studies?
+ANSWERS:
+Haravatat
+Rtawahist
+Vahumana
+---
+QUESTION: HARD
+In Genshin Impact, which 
+Akademiya Darshan specializes
+in technology, architecture
+and mechanical skills?
+ANSWERS:
+Kshahrewar
+Rtawahist
+Amurta
+---
+QUESTION: HARD
+In Genshin Impact, which 
+Akademiya Darshan specializes
+in illuminationism, astronomy
+and astrology?
+ANSWERS:
+Rtawahist
+Haravatat
+Vahumana
+---
+QUESTION: HARD
+In Genshin Impact, which 
+Akademiya Darshan specializes
+in elementalism, elemental
+reactions, alchemy 
+and ley lines?
+ANSWERS:
+Spantamad
+Amurta
+Vahumana
+---
+QUESTION: HARD
+In Genshin Impact, which 
+Akademiya Darshan specializes
+in aetiology, history, 
+sociology and semantics?
+ANSWERS:
+Vahumana
+Rtawahist
+Kshahrewar
+---
+QUESTION: HARD
+In Genshin Impact, what's the
+name of Mavuika's weapon?
+ANSWERS:
+A Thousand Blazing Suns
+Daybreaker
+Scion of the Blazing°  Sun
+---
+QUESTION: HARD
+In Genshin Impact, what's the
+name of Zhongli's weapon?
+ANSWERS:
+Vortex Vanquisher
+Staff of the Scarlet° Sands
+Primordial Jade Cutter
+---
+QUESTION: MEDIUM
+In Genshin Impact, what's
+Yumemizuki Mizuki's profession?
+ANSWERS:
+A clinical psychologist
+A masseuse
+A maid
+---

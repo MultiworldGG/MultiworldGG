@@ -1,0 +1,14 @@
+PARSER: 1
+GAME: Math
+AUTHOR: JerryEris
+---
+QUESTION: MEDIUM
+What constant, equal to two
+times pi, is the ratio of
+a circle's circumference
+to its radius?
+ANSWERS:
+Tau
+Phi
+Omicron
+---

@@ -1,0 +1,105 @@
+PARSER: 2
+GAME: Kingdom Hearts 2
+AUTHOR: JurnthReinal
+---
+QUESTION: EASY
+In Kingdom Hearts 2,
+how many different Drive Forms
+are there in the game?
+ANSWERS:
+Six
+Four
+Five
+Seven
+---
+QUESTION: EASY
+In Kingdom Hearts 2,
+what is the last mini-game
+available in 100 Acre Woods?
+ANSWERS:
+The Hunny Pot
+Hunny Slider
+Balloon Bounce
+The Expotition
+---
+QUESTION: EASY
+In Kingdom Hearts 2, who is
+the first opponent Roxas faces
+in the Struggle tournament?
+ANSWERS:
+Hayner
+Seifer
+Vivi
+Setzer
+---
+QUESTION: MEDIUM
+In Kingdom Hearts 2,
+which ability allows Sora to
+stay alive from combo attacks?
+ANSWERS:
+Once More
+Second Chance
+Guard Break
+Lucky Lucky
+---
+QUESTION: MEDIUM
+In Kingdom Hearts 2,
+which of these puzzles
+is *not* in the game?
+ANSWERS:
+Darkness
+Heart
+Daylight
+Sunset
+---
+QUESTION: MEDIUM
+In Kingdom Hearts 2,
+where does Sora obtain 
+his first Cure Element?
+ANSWERS:
+Beast's Castle
+Olympus Coliseum
+Timeless River
+Land of Dragons
+---
+QUESTION: MEDIUM
+In Kingdom Hearts 2,
+what ability does the Keyblade
+Oathkeeper give when equipped?
+ANSWERS:
+Form Boost
+Drive Boost
+Reaction Boost
+Combo Boost
+---
+QUESTION: HARD
+In Kingdom Hearts 2, which of
+these boss fights allows you
+to play as King Mickey?
+ANSWERS:
+Dark Thorn
+Hostile Program
+Groundshaker
+Illuminator
+---
+QUESTION: HARD
+In Kingdom Hearts 2,
+who has Rank IX in
+the Organization XIII?
+ANSWERS:
+Demyx
+Axel
+Luxord
+Marluxia
+---
+QUESTION: HARD
+In Kingdom Hearts 2,
+which Olympus Coliseum Cup
+allows Sora to use Summons
+while fighting alone?
+ANSWERS:
+Titan Cup
+Pain & Panic Cup
+Cerberus Cup
+Goddess of Fate Cup
+---

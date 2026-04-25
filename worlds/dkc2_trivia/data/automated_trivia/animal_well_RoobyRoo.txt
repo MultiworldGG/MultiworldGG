@@ -1,0 +1,150 @@
+PARSER: 2
+GAME: ANIMAL WELL
+AUTHOR: RoobyRoo
+---
+QUESTION: MEDIUM
+In ANIMAL WELL, which of the
+following animals can damage
+or kill the player?
+ANSWERS:
+Chinchilla
+Otter
+Jellyfish
+Hummingbird
+---
+QUESTION: EASY
+In ANIMAL WELL, which toy can
+be directly upgraded?
+ANSWERS:
+B. Wand
+Wheel
+Top
+Slink
+---
+QUESTION: EASY
+In ANIMAL WELL, which animal
+is NOT guarding a flame?
+ANSWERS:
+Manticore
+Chameleon
+Seahorse
+Ostrich
+---
+QUESTION: EASY
+In ANIMAL WELL, what must you
+do in order to reach the
+E. Medal chest?
+ANSWERS:
+Light every candle
+Collect every egg
+Catch every bunny
+Collect every flame
+---
+QUESTION: HARD
+In ANIMAL WELL, two guards
+surround a chest to the left
+of a statue of a giraffe.
+What's in that chest?
+ANSWERS:
+A key
+An egg
+A match
+A figurine
+---
+QUESTION: HARD
+In ANIMAL WELL, a hallway is
+tightly packed with ghost mice
+that follow no easily readable
+pattern. There is a chest
+behind them. What's in that
+chest?
+ANSWERS:
+An egg
+A key
+A match
+A figurine
+---
+QUESTION: HARD
+In ANIMAL WELL, a puzzle room
+expects you to drop a chest
+on top of a chinchilla's head
+and then lure it in. What's
+in that chest?
+ANSWERS:
+A key
+An egg
+A match
+A figurine
+---
+QUESTION: HARD
+In ANIMAL WELL, there's a
+hidden chest underneath a big
+planter full of tall grass.
+Sometimes a secret rabbit is
+also there. What's in that
+chest?
+ANSWERS:
+A figurine
+An egg
+A key
+A match
+---
+QUESTION: MEDIUM
+In ANIMAL WELL, which of the
+following eggs doesn't exist?
+ANSWERS:
+Warm Egg
+Ruby Egg
+Rust Egg
+Scarlet Egg
+---
+QUESTION: HARD
+In ANIMAL WELL, which of the
+following eggs does not have
+a face on it?
+ANSWERS:
+Value Egg
+65th Egg
+Evil Egg
+Shadow Egg
+---
+QUESTION: MEDIUM
+In ANIMAL WELL, what is your
+reward for reaching the end
+of the game without dying or
+saving the game?
+ANSWERS:
+P. Phone
+Incense Burner
+Mama Cha
+Souvenir Cup
+---
+QUESTION: MEDIUM
+In ANIMAL WELL, which of 
+these items cannot be used
+to push buttons?
+ANSWERS:
+Mock Disc
+Slink
+Top
+Wheel
+---
+QUESTION: EASY
+In ANIMAL WELL, what animal
+can throw rocks at you?
+ANSWERS:
+Monkey
+Groveling Toad
+Ghost Mouse
+Otter
+---
+QUESTION: EASY
+In ANIMAL WELL, which toy is
+required to use the game's
+fast travel system?
+ANSWERS:
+Animal Flute
+B. Wand
+F. Pack
+Wheel
+---

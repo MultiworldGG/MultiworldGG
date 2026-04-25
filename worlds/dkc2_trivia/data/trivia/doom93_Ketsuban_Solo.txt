@@ -1,0 +1,66 @@
+PARSER: 2
+GAME: Doom 1993
+AUTHOR: Ketsuban Solo
+---
+QUESTION: EASY
+In Doom, what is the
+medium difficulty
+setting titled?
+ANSWERS:
+Hurt me plenty.
+I'm too young to die.
+Hey, not too rough.
+Ultra violence.
+---
+QUESTION: MEDIUM
+In Doom, what weapon does
+the Former Human Sergeant
+both use and drop on defeat?
+ANSWERS:
+Shotgun
+Pistol
+Chaingun
+BFG
+---
+QUESTION: HARD
+In Doom, which id Software
+employee's arm was used as
+a reference for the
+Fist weapon and animations?
+ANSWERS:
+Kevin Cloud
+John Romero
+Sandy Petersen
+Tom Hall
+---
+QUESTION: EASY
+In Doom, what is the
+first weapon your
+character pulls out?
+ANSWERS:
+Pistol
+Fist
+Shotgun
+Chainsaw
+---
+QUESTION: MEDIUM
+In Doom, how many keys do
+you need to collect to
+complete E1M1?
+ANSWERS:
+0
+1
+2
+3
+---
+QUESTION: HARD
+In Doom, the Spectre is a
+semi-transparent but otherwise
+identical copy of which of
+these enemies?
+ANSWERS:
+Demon
+Baron of Hell
+Cacodemon
+Imp
+---

@@ -1,0 +1,15 @@
+PARSER: 1
+GAME: Donkey Kong 64
+AUTHOR: Bethany
+---
+QUESTION: EASY
+Which of these treacherous
+Kremlings will give you a
+Golden Banana if you retrieve
+one of their stolen blueprints
+in Donkey Kong 64?
+ANSWERS:
+Snide the Weasel
+Kevin the Kasplat
+K. Lumsy
+---

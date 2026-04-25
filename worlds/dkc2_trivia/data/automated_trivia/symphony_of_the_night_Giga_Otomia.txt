@@ -1,0 +1,15 @@
+PARSER: 1
+GAME: Symphony of the Night
+AUTHOR: Otomia
+---
+QUESTION: HARD
+Which bible verse does
+Dracula quote in the ending
+to Castlevania:
+Symphony of the Night in the
+original release?
+ANSWERS:
+Matthew 16:26
+Matthew 9:5
+Solomon 2:9
+---

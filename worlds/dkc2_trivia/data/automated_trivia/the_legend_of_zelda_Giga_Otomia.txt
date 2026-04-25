@@ -1,0 +1,16 @@
+PARSER: 1
+GAME: The Legend of Zelda
+AUTHOR: Otomia
+---
+QUESTION: HARD
+What is the name of the board
+game based on The Legend of
+Zelda on the NES, wherein
+you move Link tokens around
+an overworld map lifted from
+the game's official art?
+ANSWERS:
+The Hyrule Fantasy
+The Legend of Zelda
+Tabletop Simulator
+---

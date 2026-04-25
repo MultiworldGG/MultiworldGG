@@ -1,0 +1,330 @@
+PARSER: 1
+GAME: Donkey Kong 64
+AUTHOR: lx5
+---
+QUESTION: MEDIUM
+In Donkey Kong 64, which of
+the following Kremlings
+is playable in the game?
+ANSWERS:
+Krusha
+Kosha
+Klump
+---
+QUESTION: EASY
+In Donkey Kong 64, which of
+the following enemies hold
+Snide's blueprints?
+ANSWERS:
+Kasplat
+Klump
+Kritter
+---
+QUESTION: MEDIUM
+In Donkey Kong 64, where in
+Gloomy Galleon the players
+can find Oysters?
+ANSWERS:
+Inside the treasure°     chest
+Below the lighthouse
+Inside the sunken ship
+---
+QUESTION: EASY
+In Donkey Kong 64, how can
+players defeat Klobbers?
+ANSWERS:
+Throwing an orange°      at them
+With a gun
+Kicks and punches
+---
+QUESTION: MEDIUM
+In Donkey Kong 64, how can
+players defeat Klobbers?
+ANSWERS:
+Playing an instrument
+With a simian slam
+Throwing a barrel°      at them
+---
+QUESTION: EASY
+In Donkey Kong 64, how many 
+melon slices can be found
+inside melon crates?
+ANSWERS:
+4
+2
+8
+---
+QUESTION: EASY
+What's the purpose of Candy's
+Headphones that can be 
+found inside levels
+in Donkey Kong 64?
+ANSWERS:
+Replenish the Kong's°    instrument usage
+Provide ammo to the°     current Kong
+Grant one entire melon
+---
+QUESTION: EASY
+What's the name of the large
+Kremling locked up in a cage
+on an island beside Crocodile
+Isles in Donkey Kong 64?
+ANSWERS:
+K. Lumsy
+Cranky K. Rool
+Giant Viking Kremling
+---
+QUESTION: MEDIUM
+In which Donkey Kong 64 level
+players can get Diddy to learn
+the Simian Spring ability?
+ANSWERS:
+Frantic Factory
+Jungle Japes
+Creepy Castle
+---
+QUESTION: MEDIUM
+In which Donkey Kong 64 level
+players can get Lanky to learn
+the Orangstand ability?
+ANSWERS:
+Angry Aztec
+Fungi Forest
+Frantic Factory
+---
+QUESTION: MEDIUM
+In which Donkey Kong 64 level
+players can get Tiny to learn
+the Pony Tail Twirl ability?
+ANSWERS:
+Frantic Factory
+Gloomy Galleon
+Fungi Forest
+---
+QUESTION: MEDIUM
+In which Donkey Kong 64 level
+players can get Chunky to learn
+the Gorilla Gone ability?
+ANSWERS:
+Crystal Caves
+Fungi Forest
+Creepy Castle
+---
+QUESTION: MEDIUM
+In which Donkey Kong 64 level
+players can get Donkey to learn
+the Baboon Blast ability?
+ANSWERS:
+Jungle Japes
+Crystal Caves
+Gloomy Galleon
+---
+QUESTION: HARD
+In which Donkey Kong 64 level
+players can learn the 
+Simium Strainus ability?
+ANSWERS:
+Frantic Factory
+Crystal Caves
+Angry Aztec
+---
+QUESTION: HARD
+In which Donkey Kong 64 level
+players can learn the 
+Hurtus Cranium ability?
+ANSWERS:
+Jungle Japes
+Frantic Factory
+Crystal Caves
+---
+QUESTION: HARD
+In which Donkey Kong 64 level
+players can learn the 
+Baboonus Balloonus ability?
+ANSWERS:
+Frantic Factory
+Fungi Forest
+Crystal Caves
+---
+QUESTION: HARD
+In which Donkey Kong 64 level
+players can learn the 
+Roundum Roundus ability?
+ANSWERS:
+Frantic Factory
+Crystal Caves
+Jungle Japes
+---
+QUESTION: HARD
+In which Donkey Kong 64 level
+players can learn the 
+Kremlinous Crushum ability?
+ANSWERS:
+Frantic Factory
+Fungi Forest
+Creepy Castle
+---
+QUESTION: HARD
+In which Donkey Kong 64 level
+players can learn the 
+Big Buttus Bashium ability?
+ANSWERS:
+Fungi Forest
+Crystal Caves
+Jungle Japes
+---
+QUESTION: HARD
+In which Donkey Kong 64 level
+players can learn the 
+Bigga Buttus Bashium ability?
+ANSWERS:
+Creepy Castle
+Angry Aztec
+Fungi Forest
+---
+QUESTION: HARD
+In which Donkey Kong 64 level
+players can learn the 
+Warpum Craftious ability?
+ANSWERS:
+Crystal Caves
+Creepy Castle
+Frantic Factory
+---
+QUESTION: MEDIUM
+In Donkey Kong 64, which bonus
+stage has a slot machine where
+the players have to line up
+four bananas to win?
+ANSWERS:
+Batty Barrel Bandit
+Krazy Kong Klamour
+Mad Maze Maul
+---
+QUESTION: EASY
+In Donkey Kong 64, which bonus
+stage asks the player to guide 
+Gnawties into a hole?
+ANSWERS:
+Beaver Bother
+Peril Path Panic
+Stash Snatch
+---
+QUESTION: EASY
+In Donkey Kong 64, which bonus
+stage lets the player control
+a fly swatter?
+ANSWERS:
+Big Bug Bash
+Krazy Kong Klamour
+Splish Splash Salvage
+---
+QUESTION: MEDIUM
+In Donkey Kong 64, which bonus
+stage has the player fixed on
+the center with a gun with
+infinite ammo?
+ANSWERS:
+Busy Barrel Barrage
+Kremling Kosh
+Batty Barrel Bandit
+---
+QUESTION: HARD
+In Donkey Kong 64, which bonus
+stage requires the player to
+shoot at golden bananas?
+ANSWERS:
+Krazy Kong Klamour
+Kremling Kosh
+Beaver Bother
+---
+QUESTION: HARD
+In Donkey Kong 64, which bonus
+stage features the player 
+controlling a cannon that
+shoots watermelons?
+ANSWERS:
+Kremling Kosh
+Stealthy Snoop
+Batty Barrel Bandit
+---
+QUESTION: EASY
+In Donkey Kong 64, which bonus
+stage requires the player to
+defeat every enemy in a maze?
+ANSWERS:
+Mad Maze Maul
+Busy Barrel Barrage
+Stealthy Snoop
+---
+QUESTION: MEDIUM
+In Donkey Kong 64, which bonus
+stage requires the player to
+avoid TNT Barrels?
+ANSWERS:
+Minecart Mayhem
+Splish Splash Salvage
+Busy Barrel Barrage
+---
+QUESTION: HARD
+In Donkey Kong 64, which bonus
+stage features Banana Fairies?
+ANSWERS:
+Peril Path Panic
+Stash Snatch
+Big Bug Bash
+---
+QUESTION: MEDIUM
+In Donkey Kong 64, which bonus
+stage features the player 
+controlling a cannon that
+shoots watermelons?
+ANSWERS:
+Searchlight Seek
+Big Bug Bash
+Stealthy Snoop
+---
+QUESTION: EASY
+In Donkey Kong 64, which bonus
+stage requires players to 
+swing from vines?
+ANSWERS:
+Speedy Swing Sortie
+Mad Maze Maul
+Teetering Turtle Trouble
+---
+QUESTION: EASY
+In Donkey Kong 64, which bonus
+stage requires players to 
+swim underwater?
+ANSWERS:
+Splish Splash Salvage
+Stash Snatch
+Speedy Swing Sortie
+---
+QUESTION: MEDIUM
+In Donkey Kong 64, which bonus
+stage requires players to 
+collect coins in a maze?
+ANSWERS:
+Stash Snatch
+Stealthy Snoop
+Mad Maze Maul
+---
+QUESTION: MEDIUM
+In Donkey Kong 64, which bonus
+stage forces the players to
+avoid Kremling cops?
+ANSWERS:
+Stealthy Snoop
+Busy Barrel Barrage
+Searchlight Seek
+---
+QUESTION: MEDIUM
+In Donkey Kong 64, which bonus
+stage features snakes?
+ANSWERS:
+Teetering Turtle Trouble
+Searchlight Seek
+Minecart Mayhem
+---

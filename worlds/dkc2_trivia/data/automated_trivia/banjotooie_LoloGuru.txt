@@ -1,0 +1,12 @@
+PARSER: 1
+GAME: Banjo-Tooie
+AUTHOR: LoloGuru
+---
+QUESTION: EASY
+ Banjo-Tooie is the sequel to 
+ what game? 
+ANSWERS:
+Banjo-Kazooie
+Banjo-Kablooie
+Yooka-Laylee
+---

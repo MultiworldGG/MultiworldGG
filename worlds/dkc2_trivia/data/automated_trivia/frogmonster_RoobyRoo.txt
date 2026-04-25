@@ -1,0 +1,137 @@
+PARSER: 2
+GAME: Frogmonster
+AUTHOR: RoobyRoo
+---
+QUESTION: HARD
+In Frogmonster, which spell
+destroys the mana that the
+monsters it kills would have
+dropped?
+ANSWERS:
+Zap
+Beans
+Mushbomb
+Sharp Shot
+---
+QUESTION: HARD
+In Frogmonster, which spell
+does not grant healing on
+hit?
+ANSWERS:
+Hive
+Mushbomb
+Fireball
+Zap
+---
+QUESTION: EASY
+In Frogmonster, which boss
+can be found in Under Under
+City?
+ANSWERS:
+Barge
+Djumbo
+Xoto
+Marvin
+---
+QUESTION: MEDIUM
+In Frogmonster, which of
+these bosses can be found on
+Old Road?
+ANSWERS:
+Balsam
+Bog and Chog
+Lazaro
+Hedgeward
+---
+QUESTION: EASY
+In Frogmonster, which of
+these bosses does Myzand NOT
+emulate when you fight him
+the first time?
+ANSWERS:
+Limbs
+Lazaro
+Door Crab
+Oosk and Dord
+---
+QUESTION: MEDIUM
+In Frogmonster, which of
+these boss fights can Supo
+never interfere with?
+ANSWERS:
+Placeholder
+Tymbal
+Yanoy
+Oosk and Dord
+---
+QUESTION: MEDIUM
+In Frogmonster, what happens
+when you swim in Trench's
+soup in Yellow Forest Town?
+ANSWERS:
+He yells at you
+You become sticky
+You take damage
+You start a boss rush
+---
+QUESTION: MEDIUM
+In Frogmonster, what happens
+when you swim in Trench's
+soup in Under City?
+ANSWERS:
+You start a boss rush
+He yells at you
+You become sticky
+You take damage
+---
+QUESTION: HARD
+In Frogmonster, which of
+these characters does NOT
+appear as a bonus boss in the
+post-game boss rush mode?
+ANSWERS:
+Orchus
+Trench
+Bins
+Supo
+---
+QUESTION: EASY
+In Frogmonster, which of
+these areas has two unique
+boss fights? 
+ANSWERS:
+Temple
+Very Lost Swamp
+Bins' Workshop
+Fog Garden
+---
+QUESTION: MEDIUM
+In Frogmonster, which of the
+four birds does not have a
+key named after them?
+ANSWERS:
+Melora
+Myzand
+Runi
+Orchus
+---
+QUESTION: EASY
+In Frogmonster, which of the
+four birds created the
+monsters with red eyes?
+ANSWERS:
+Runi
+Melora
+Myzand
+Orchus
+---
+QUESTION: MEDIUM
+In Frogmonster, which area
+does NOT have a purple-eyed
+bonus boss?
+ANSWERS:
+Moridono's Domain
+Old Road
+Outskirts
+Forest Floor
+---

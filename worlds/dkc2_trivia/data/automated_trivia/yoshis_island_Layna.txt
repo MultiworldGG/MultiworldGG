@@ -1,0 +1,245 @@
+PARSER: 1
+GAME: Yoshi's Island
+AUTHOR: Layna
+---
+QUESTION: EASY
+In Yoshi's island, how
+ many flowers is there
+ in each level?
+ANSWERS:
+5
+4
+3
+---
+QUESTION: EASY
+In yoshi's island, how
+ many eggs can you
+ carry?
+ANSWERS:
+6
+4
+3
+---
+QUESTION: EASY
+In yoshi's island, what
+ happen when you 
+ hit a flower on the 
+ goal ring at the 
+ end of a stage?
+ANSWERS:
+Bonus Game
+Get a Flower
+Special Animation
+---
+QUESTION: EASY
+In yoshi's island, 
+ what happen when
+ you complete every
+ stage with a score of
+ 100 in a world?
+ANSWERS:
+Extra Stage Unlock
+Star icon on the world
+New Yoshi Color
+---
+QUESTION: HARD
+In yoshi's island, where
+ do you first encounter 
+ blow hard?
+ANSWERS:
+The Baseball Boys
+KEEP MOVING!!!!
+Goonies Rides!
+---
+QUESTION: HARD
+In yoshi's island, where
+ do you first encounter 
+ bullet bill?
+ANSWERS:
+Poochy Ain't Stupid
+Goonies Rides!
+Make Eggs, Throw Eggs
+---
+QUESTION: MEDIUM
+In yoshi's island, where
+ do you first encounter 
+ coin bandit?
+ANSWERS:
+Marching Milde's Fort
+The Cave Of The Bandits
+Goonies Rides!
+---
+QUESTION: MEDIUM
+In yoshi's island, where
+ do you first encounter 
+ Crazee Dayzee
+ANSWERS:
+Make Eggs, Throw Eggs
+Touch Fuzzy, Get Dizzy
+The Baseball Boys
+---
+QUESTION: HARD
+In yoshi's island, where
+ do you first encounter 
+ Gargantua Blargg
+ANSWERS:
+Burt The Bashful's Fort
+Naval Piranha's Castle
+Monkeys' Favorite Lake
+---
+QUESTION: EASY
+In Yoshi's island, how
+ many world are there
+ in total?
+ANSWERS:
+6
+5
+8
+---
+QUESTION: MEDIUM
+In Yoshi's Island, wich
+ one of those isn't 
+ a metamorphosis bubble?
+ANSWERS:
+Ski
+Train
+Car
+---
+QUESTION: EASY
+In Yoshi's Island, wich
+ of those color isn't a 
+ watermelon color?
+ANSWERS:
+yellow
+blue
+red
+---
+QUESTION: MEDIUM
+In Yoshi's island, what
+ is the code to get enter
+ to get a secret menu
+ while holding select?
+ANSWERS:
+x,x,y,b,a
+x,y,b,a
+U,U,D,D,L,R,L,R,B,A
+---
+QUESTION: MEDIUM
+In Yoshi's island, wich
+ one of those colors isn't
+ a egg block color?
+ANSWERS:
+Blue
+Purple
+Yellow
+---
+QUESTION: MEDIUM
+In Yoshi's island, wich
+ one of those platforms
+ is the fastest?
+ANSWERS:
+Red
+Green
+Yellow
+---
+QUESTION: EASY
+In Yoshi's island, how
+ many yoshi colors is
+ there in the game?
+ANSWERS:
+8
+6
+10
+---
+QUESTION: HARD
+In Yoshi's island, who
+ operate the chain and
+ ball obstacle?
+ANSWERS:
+Boo Guy
+Crank
+Koopa
+---
+QUESTION: HARD
+In Yoshi's island, what
+ is the name of the blue
+ spiky obstacle that
+ instantly kill Yoshi?
+ANSWERS:
+Thorn
+Impaler
+Spike
+---
+QUESTION: EASY
+In Yoshi's island, how
+ many stars are required
+ for a perfect stars score
+ at the end of a level?
+ANSWERS:
+30
+20
+10
+---
+QUESTION: MEDIUM
+In Yoshi's island, what
+ is the name of the
+ bonus level in world 1?
+ANSWERS:
+Flip Cards
+Slot Machine
+Scratch and Match
+---
+QUESTION: MEDIUM
+In Yoshi's island, what
+ is the name of the
+ bonus level in world 2?
+ANSWERS:
+Scratch and Match
+Roulette
+Drawing Lots
+---
+QUESTION: MEDIUM
+In Yoshi's island, what
+ is the name of the
+ bonus level in world 3?
+ANSWERS:
+Drawing Lots
+Match Cards
+Slot Machine
+---
+QUESTION: MEDIUM
+In Yoshi's island, what
+ is the name of the
+ bonus level in world 4?
+ANSWERS:
+Match Cards
+Roulette
+Scratch and Match
+---
+QUESTION: MEDIUM
+In Yoshi's island, what
+ is the name of the
+ bonus level in world 5?
+ANSWERS:
+Roulette
+Slot Machine
+Drawing Lots
+---
+QUESTION: MEDIUM
+In Yoshi's island, what
+ is the name of the
+ bonus level in world 6?
+ANSWERS:
+Slot Machine
+Match Cards
+Roulette
+---
+QUESTION: HARD
+In Yoshi's island, wich
+ one of those isn't the
+ name of a mini-game?
+ANSWERS:
+Watermelon Race
+Popping Balloons
+Gather Coins
+---

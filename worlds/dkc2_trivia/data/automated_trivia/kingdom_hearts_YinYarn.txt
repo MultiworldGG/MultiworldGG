@@ -1,0 +1,24 @@
+PARSER: 1
+GAME: Kingdom Hearts
+AUTHOR: YinYarn
+---
+QUESTION: MEDIUM
+In Kingdom Hearts, what
+is the name of the Heartless
+that Clayton summons during
+his final battle?
+ANSWERS:
+Stealth Sneak
+Pot Centipede
+Parasite Cage
+---
+QUESTION: EASY
+In Kingdom Hearts, who can
+be found running the
+Accessory Shop upon
+first arriving?
+ANSWERS:
+Cid
+Huey, Dewey, and Louie
+Geppetto
+---

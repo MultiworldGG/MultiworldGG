@@ -1,0 +1,110 @@
+PARSER: 1
+GAME: The Binding of Isaac Repentance
+AUTHOR: Luigmas
+---
+QUESTION: EASY
+In 'The Binding of Isaac:
+Repentance' - Which Character 
+starts with random items?
+ANSWERS:
+Eden
+The Keeper
+Tainted Isaac
+---
+QUESTION: EASY
+In 'The Binding of Isaac:
+Repentance' - Beating floor
+8 in under 30 minutes grants 
+access to what area?
+ANSWERS:
+???
+Boss Rush 
+Dark Room
+---
+QUESTION: MEDIUM
+In 'The Binding of Isaac:
+Repentance' - How many 
+playable characters are there?
+ANSWERS:
+34
+26
+18
+---
+QUESTION: MEDIUM
+In 'The Binding of Isaac: 
+Repentance' - what is the 
+least amount of floors you
+would have to enter to kill
+the boss of 'Dark Room'?
+ANSWERS:
+2 
+10
+8
+---
+QUESTION: HARD
+In 'The Binding of Isaac: 
+Repentance' - what reward 
+awaits the player who steps
+on the spikes of a sacrifice
+room for the tenth time?
+ANSWERS:
+30 cents/7 blue hearts
+Gabriel spawns 
+50% Dark room teleport
+---
+QUESTION: HARD
+In 'The Binding of Isaac: 
+Repentance' - What is your
+chance to get a devil deal on
+Basement 2 if you took red
+heart damage on the floor,
+but not on the boss fight?
+ANSWERS:
+36%
+66%
+15%
+---
+QUESTION: EASY
+In 'The Binding of Isaac:
+Repentance' - Which of the
+following special rooms
+should you avoid to make 
+finding a planetarium 
+more likely?
+ANSWERS:
+Treasure Room
+Curse Room
+The Shop
+---
+QUESTION: MEDIUM
+In 'The Binding of Isaac
+Repentance' - which of the
+following items could be
+dropped by one of the 
+seven deadly sins?
+ANSWERS:
+Steam Sale
+Godhead
+Head of Krampus
+---
+QUESTION: HARD
+In 'The Binding of Isaac
+Repentance' - what is the
+name of the 18th challenge?
+ANSWERS:
+Waka Waka
+Computer Savvy
+XXXXXXXXXL
+---
+QUESTION: MEDIUM
+In 'The Binding of Isaac
+Repentance' - How many 
+coins must be donated to
+the greed mode donation 
+machine to unlock the "Lost
+starts with Holy Mantle"?
+ANSWERS:
+879
+666
+500
+---

@@ -1,0 +1,409 @@
+PARSER: 1
+GAME: Castlevania: Dawn of Sorrow
+AUTHOR: lx5
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow, which
+ability soul allows players
+to shatter certain blocks?
+ANSWERS:
+Balore
+Malphas
+Rahab
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow, which
+ability soul allows players
+to perform a double jump?
+ANSWERS:
+Malphas
+Mud Demon
+Doppelganger
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow, which
+ability soul allows players
+to move without penalties 
+in terrain with sand?
+ANSWERS:
+Mud Demon
+Malphas
+Procel
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow, which
+ability soul allows players
+to jump higher?
+ANSWERS:
+Hippogryph
+Rahab
+Balore
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow, 
+in which area of the 
+game players can find
+the Alura Une enemy?
+ANSWERS:
+Subterranean Hell
+Abyss
+Garden of Madness
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow, 
+in which area of the 
+game players can find
+the Arc Demon enemy?
+ANSWERS:
+Abyss
+Demon Guest House
+Wizardry Lab
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow, 
+in which area of the 
+game players can find
+the Armor Knight enemy?
+ANSWERS:
+Lost Village
+Demon Guest House
+Condemned Tower
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow, 
+in which area of the 
+game players can find
+the Bat enemy?
+ANSWERS:
+Silenced Ruins
+Subterranean Hell
+Dark Chapel
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow, 
+in which area of the 
+game players can find
+the Bone Pillar enemy?
+ANSWERS:
+Dark Chapel
+Condemned Tower
+Pinnacle
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow, 
+in which area of the 
+game players can find
+the Bomber Armor enemy?
+ANSWERS:
+Wizardry Lab
+Dark Chapel
+Cursed Clock Tower
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow, 
+in which area of the 
+game players can find
+the Bugbear enemy?
+ANSWERS:
+Cursed Clock Tower
+Demon Guest House
+Garden of Madness
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow, 
+in which area of the 
+game players can find
+the Black Panther enemy?
+ANSWERS:
+Abyss
+Silenced Ruins
+Cursed Clock Tower
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Corpseweed enemy?
+ANSWERS:
+Garden of Madness
+Subterranean Hell
+Lost Village
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Creature enemy?
+ANSWERS:
+Wizardry Lab
+Subterranean Hell
+Abyss
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Dead Pirate enemy?
+ANSWERS:
+Subterranean Hell
+Condemned Tower
+Demon Guest House
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Devil enemy?
+ANSWERS:
+Demon Guest House
+Condemned Tower
+Pinnacle
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Devil enemy?
+ANSWERS:
+Abyss
+Dark Chapel
+Wizardry Lab
+---
+QUESTION: HARD
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Devil enemy?
+ANSWERS:
+Cursed Clock Tower
+Condemned Tower
+Lost Village
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Draghignazzo enemy?
+ANSWERS:
+Condemned Tower
+Subterranean Hell
+Silenced Ruins
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Final Guard enemy?
+ANSWERS:
+Pinnacle
+Lost Village
+Cursed Clock Tower
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Fleaman enemy?
+ANSWERS:
+Condemned Tower
+Abyss
+Pinnacle
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Ghoul enemy?
+ANSWERS:
+Dark Chapel
+Cursed Clock Tower
+Lost Village
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Giant Slug enemy?
+ANSWERS:
+Mine of Judgment
+Dark Chapel
+Abyss
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Gorgon enemy?
+ANSWERS:
+Silenced Ruins
+Lost Village
+Wizardry Lab
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Homunculus enemy?
+ANSWERS:
+Wizardry Lab
+Subterranean Hell
+Garden of Madness
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Killer Doll enemy?
+ANSWERS:
+Demon Guest House
+Mine of Judgment
+Wizardry Lab
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Malacoda enemy?
+ANSWERS:
+Abyss
+Demon Guest House
+Wizardry Lab
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Manticore enemy?
+ANSWERS:
+Wizardry Lab
+Condemned Tower
+Abyss
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Mothman enemy?
+ANSWERS:
+Pinnacle
+Lost Village
+Demon Guest House
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Ouija Table enemy?
+ANSWERS:
+Lost Village
+Dark Chapel
+Silenced Ruins
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Persephone enemy?
+ANSWERS:
+Demon Guest House
+Lost Village
+Dark Chapel
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Rycuda enemy?
+ANSWERS:
+Garden of Madness
+Pinnacle
+Mine of Judgment
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Skeleton Farmer enemy?
+ANSWERS:
+Garden of Madness
+Lost Village
+Wizardry Lab
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Slogra enemy?
+ANSWERS:
+Mine of Judgment
+Lost Village
+Condemned Tower
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Student Witch enemy?
+ANSWERS:
+Wizardry Lab
+Condemned Tower
+Cursed Clock Tower
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Tanjelly enemy?
+ANSWERS:
+Mine of Judgment
+Subterranean Hell
+Silenced Ruins
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Une enemy?
+ANSWERS:
+Subterranean Hell
+Lost Village
+Condemned Tower
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Warg enemy?
+ANSWERS:
+Lost Village
+Cursed Clock Tower
+Mine of Judgment
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow,
+in which area of the
+game players can find
+the Witch enemy?
+ANSWERS:
+Dark Chapel
+Lost Village
+Mine of Judgment
+---
+QUESTION: EASY
+In CV: Dawn of Sorrow, 
+which item allows Soma to
+regenerate MP very quickly?
+ANSWERS:
+Chaos Ring
+Mina's Talisman
+Satan's Ring
+---
+QUESTION: MEDIUM
+In CV: Dawn of Sorrow, 
+which item allows Soma to
+gain more experience points?
+ANSWERS:
+Shaman Ring
+Lucky Charm
+Turquoise Stud
+---

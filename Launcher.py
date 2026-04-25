@@ -136,9 +136,9 @@ def open_folder(folder_path):
         logging.warning(f"No file browser available to open {folder_path}")
 
 
-def update_settings():
+def update_settings(skip_cache: bool = False):
     from settings import get_settings
-    get_settings().save()
+    get_settings().save(write_launcher_cache=not skip_cache)
 
 
 def precache_world_data() -> None:
@@ -336,13 +336,6 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
     from kivy.uix.label import Label
     from kivy.uix.popup import Popup
     from kivy.graphics import Color, Rectangle
-    from kivymd.uix.dialog import (
-        MDDialog,
-        MDDialogHeadlineText,
-        MDDialogSupportingText,
-        MDDialogButtonContainer,
-        MDDialogSupportingText
-    )
     from kivy.app import App
     from kivy.lang.builder import Builder
 
@@ -377,6 +370,8 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
             self.current_filter = (Type.CLIENT, Type.TOOL, Type.ADJUSTER, Type.MISC)
             self._loading_overlay = None
             self._loading_overlay_label = None
+            self._loading_overlay_subtitle_label = None
+            self._loading_world_poll_event = None
             self._cache_refresh_started = False
             persistent = Utils.persistent_load()
             if "launcher" in persistent:
@@ -439,17 +434,23 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
                 self._refresh_components(self.current_filter)
 
 
+        def _set_loading_overlay_text(self, text: str | None = None, subtitle: str | None = None) -> None:
+            if text is not None and self._loading_overlay_label is not None:
+                self._loading_overlay_label.text = text
+            if subtitle is not None and self._loading_overlay_subtitle_label is not None:
+                self._loading_overlay_subtitle_label.text = subtitle
+
         def _show_loading_overlay(self, text: str = "Validating APWorld info...") -> None:
             if self._loading_overlay is not None:
-                if self._loading_overlay_label is not None:
-                    self._loading_overlay_label.text = text
+                self._set_loading_overlay_text(text=text)
                 return
             overlay = BoxLayout(
                 orientation="vertical",
                 pos_hint={"center_x": 0.625, "center_y": 0.5},
                 size_hint=(0.52, None),
-                height=dp(110),
+                height=dp(118),
                 padding=(dp(16), dp(14)),
+                spacing=dp(4),
             )
             with overlay.canvas.before:
                 Color(0.12, 0.12, 0.12, 0.82)
@@ -459,21 +460,56 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
             label = Label(
                 text=text,
                 halign="center",
-                valign="middle",
+                valign="bottom",
                 font_size="18sp",
                 color=(0.95, 0.95, 0.95, 1.0),
+                size_hint_y=None,
+                height=dp(36),
             )
             label.bind(size=lambda inst, val: setattr(inst, "text_size", val))
+            subtitle_label = Label(
+                text="",
+                halign="center",
+                valign="top",
+                font_size="13sp",
+                color=(0.78, 0.78, 0.78, 1.0),
+                shorten=True,
+                shorten_from="center",
+                size_hint_y=None,
+                height=dp(26),
+            )
+            subtitle_label.bind(size=lambda inst, val: setattr(inst, "text_size", val))
+            overlay.add_widget(Widget())
             overlay.add_widget(label)
+            overlay.add_widget(subtitle_label)
+            overlay.add_widget(Widget())
             self.top_screen.add_widget(overlay)
             self._loading_overlay = overlay
             self._loading_overlay_label = label
+            self._loading_overlay_subtitle_label = subtitle_label
+
+        def _start_loading_world_poll(self) -> None:
+            if self._loading_world_poll_event is not None:
+                return
+
+            def _poll_loading_world(dt: float) -> None:
+                import worlds
+                world_name = getattr(worlds, "_current_loading_world", None)
+                subtitle = f"Parsing {world_name}" if world_name else ""
+                self._set_loading_overlay_text(subtitle=subtitle)
+
+            self._loading_world_poll_event = Clock.schedule_interval(_poll_loading_world, 0.1)
+            _poll_loading_world(0)
 
         def _dismiss_loading_overlay(self) -> None:
+            if self._loading_world_poll_event is not None:
+                self._loading_world_poll_event.cancel()
+                self._loading_world_poll_event = None
             if self._loading_overlay is not None:
                 self.top_screen.remove_widget(self._loading_overlay)
                 self._loading_overlay = None
                 self._loading_overlay_label = None
+                self._loading_overlay_subtitle_label = None
 
         def _background_refresh_worker(self) -> None:
             import worlds
@@ -597,6 +633,7 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
 
         def on_start(self):
             self._show_loading_overlay("Validating APWorld info...")
+            self._start_loading_world_poll()
 
             if self.launch_components:
                 build_uri_popup(self.launch_components, self.launch_args)
@@ -771,30 +808,45 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
         def _on_user_requested_update(self, dialog, download_url):
             dialog.dismiss()
 
-            status_label = MDDialogSupportingText(
-                text="Downloading update…",
+            status_label = Label(
+                text="Downloading update...",
                 halign="center",
+                valign="middle",
                 size_hint_y=None,
                 height=dp(28),
+                font_size="16sp",
+                color=(0.9, 0.9, 0.9, 1),
             )
+            status_label.bind(width=lambda inst, val: setattr(inst, "text_size", (val, None)))
             progress_bar = ProgressBar(max=100, value=0, size_hint=(1, None), height=dp(20))
 
             inner = BoxLayout(
                 orientation="vertical",
                 spacing=dp(8),
-                size_hint=(1, None),
+                size_hint=(0.82, None),
                 height=dp(28 + 8 + 20),
             )
             inner.add_widget(status_label)
             inner.add_widget(progress_bar)
 
-            content = BoxLayout(orientation="vertical", padding=(dp(16), 0))
+            row = BoxLayout(orientation="horizontal", size_hint_y=None, height=inner.height)
+            row.add_widget(Widget(size_hint_x=0.09))
+            row.add_widget(inner)
+            row.add_widget(Widget(size_hint_x=0.09))
+
+            content = BoxLayout(orientation="vertical", padding=(dp(12), dp(16), dp(12), dp(12)))
             content.add_widget(Widget())
-            content.add_widget(inner)
+            content.add_widget(row)
             content.add_widget(Widget())
 
-            downloading = MDDialog(content, size_hint=(0.6, None))
-            downloading.height = dp(140)
+            downloading = Popup(
+                title="Downloading Update",
+                title_align="center",
+                title_size="26sp",
+                content=content,
+                size_hint=(0.6, 0.24),
+                auto_dismiss=False,
+            )
             downloading.open()
 
             def on_progress(downloaded, total):
@@ -803,10 +855,10 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
                         progress_bar.value = downloaded / total * 100
                         mb_done = downloaded / 1_048_576
                         mb_total = total / 1_048_576
-                        status_label.text = f"Downloading update… {mb_done:.1f} / {mb_total:.1f} MB"
+                        status_label.text = f"Downloading update... {mb_done:.1f} / {mb_total:.1f} MB"
                     else:
                         mb_done = downloaded / 1_048_576
-                        status_label.text = f"Downloading update… {mb_done:.1f} MB"
+                        status_label.text = f"Downloading update... {mb_done:.1f} MB"
                 Clock.schedule_once(_update)
 
             def _run():
@@ -960,6 +1012,7 @@ def main(args: argparse.Namespace | dict | None = None):
         args = {}
 
     args.setdefault("update_settings", False)
+    args.setdefault("skip_cache", False)
     args.setdefault("precache", False)
     args.setdefault("run_component_callable", None)
     args.setdefault("args", ())
@@ -1004,7 +1057,7 @@ def main(args: argparse.Namespace | dict | None = None):
                 logging.warning(f"Could not identify Component responsible for {path}")
 
     if args["update_settings"]:
-        update_settings()
+        update_settings(args["skip_cache"])
     if "file" in args:
         run_component(args["component"], args["file"], *args["args"])
     elif "component" in args:
@@ -1018,11 +1071,14 @@ if __name__ == '__main__':
     multiprocessing.set_start_method("spawn")  # if launched process uses kivy, fork won't work
     parser = argparse.ArgumentParser(
         description=f'{apname} Launcher',
-        usage="[-h] [--update_settings] [--precache] [Patch|Game|Component] [-- component args here]"
+        usage="[-h] [--update_settings] [--skip-cache] [--precache] "
+              "[Patch|Game|Component] [-- component args here]"
     )
     run_group = parser.add_argument_group("Run")
     run_group.add_argument("--update_settings", action="store_true",
                            help="Update host.yaml and exit.")
+    run_group.add_argument("--skip-cache", action="store_true",
+                           help="Skip launcher cache writes during host.yaml update.")
     run_group.add_argument("--precache", action="store_true",
                            help="Build launcher cache and exit.")
     run_group.add_argument("--run_component_callable", nargs=2, metavar=("MODULE", "QUALNAME"),

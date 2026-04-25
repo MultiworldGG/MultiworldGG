@@ -29,7 +29,7 @@ _world_settings_name_cache_updated = False
 _lock = Lock()
 
 
-def _update_cache() -> None:
+def _update_cache(write_launcher_cache: bool = True) -> None:
     """Load world settings metadata from currently loaded worlds."""
     global _world_settings_name_cache_updated
     if _world_settings_name_cache_updated:
@@ -44,7 +44,7 @@ def _update_cache() -> None:
         )
 
         if not worlds._worlds_loading:
-            ensure_worlds_loaded()
+            ensure_worlds_loaded(write_launcher_cache=write_launcher_cache)
             cache_complete = True
 
         _world_settings_name_cache.clear()
@@ -860,7 +860,7 @@ class Settings(Group):
             import atexit
             atexit.register(autosave)
 
-    def save(self, location: str | None = None) -> None:  # as above
+    def save(self, location: str | None = None, write_launcher_cache: bool = True) -> None:  # as above
         from Utils import parse_yaml
         location = location or self._filename
         assert location, "No file specified"
@@ -870,7 +870,7 @@ class Settings(Group):
             os.unlink(temp_location)
         # can't use utf-8-sig because it breaks backward compat: pyyaml on Windows with bytes does not strip the BOM
         with open(temp_location, "w", encoding="utf-8") as f:
-            self.dump(f)
+            self.dump(f, write_launcher_cache=write_launcher_cache)
             f.flush()
             if hasattr(os, "fsync"):
                 os.fsync(f.fileno())
@@ -885,9 +885,9 @@ class Settings(Group):
             os.rename(temp_location, location)
         self._filename = location
 
-    def dump(self, f: TextIO, level: int = 0) -> None:
+    def dump(self, f: TextIO, level: int = 0, write_launcher_cache: bool = True) -> None:
         # load all world setting classes
-        _update_cache()
+        _update_cache(write_launcher_cache=write_launcher_cache)
         for key in _world_settings_name_cache:
             self.__getattribute__(key)  # load all worlds
         super().dump(f, level)

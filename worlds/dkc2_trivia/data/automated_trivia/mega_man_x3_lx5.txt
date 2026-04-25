@@ -1,0 +1,30 @@
+PARSER: 1
+GAME: Mega Man X3
+AUTHOR: lx5
+---
+QUESTION: EASY
+ Who's the main antagonist of
+ Mega Man X3?
+ANSWERS:
+Dr. Doppler
+Dr. Serges
+Dr. Wily
+---
+QUESTION: EASY
+ In whose level is the Chimera
+ Armor located in Mega Man X3?
+ANSWERS:
+Blast Hornet
+Sting Chameleon
+Gravity Beetle
+---
+QUESTION: MEDIUM
+ Who's the boss that can be
+ fought at the bottom door
+ of Dr. Doppler's Lab 1 in
+ Mega Man X3?
+ANSWERS:
+Godkarmachine O Inary
+Press Disposer
+Volt Kurageil
+---

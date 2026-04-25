@@ -411,10 +411,6 @@ class UnlockedChapterManager(ClientComponent):
             temporary_story_completion = ALL_CHAPTER_AREA_IDS_SET
         else:
             temporary_story_completion = set()
-            # TODO: Temporarily set the player's current chapter as completed so that they can save and exit from the
-            #  chapter instead of having to exit without saving. This should happen once individual minikit logic is
-            #  added because it can then be expected for a player to collect Minikits before a chapter is possible to
-            #  complete.
             # If the player is in an Episode's room, and inside a Chapter door with the Chapter door's menu open, grant
             # them temporary Story mode completion so that they can select Free Play.
             cantina_room = ctx.read_current_cantina_room().value
@@ -422,8 +418,7 @@ class UnlockedChapterManager(ClientComponent):
                 # The player is in an Episode room in the cantina.
                 unlocked_areas_in_room = self.unlocked_chapters_per_episode[cantina_room]
                 if unlocked_areas_in_room:
-                    # There are unlocked chapters in this room (the player shouldn't be able to access an Episode room
-                    # unless it contains unlocked chapters...).
+                    # There are unlocked chapters in this room.
                     area_id_of_door_the_player_is_in_front_of = ctx.read_uchar(CURRENT_AREA_DOOR_ADDRESS)
                     area = AREA_ID_TO_CHAPTER_AREA.get(area_id_of_door_the_player_is_in_front_of)
                     if area is not None and area.area_id in unlocked_areas_in_room:
@@ -437,6 +432,8 @@ class UnlockedChapterManager(ClientComponent):
                                 # or "Challenge" if they really want to (not currently useful).
                                 ChapterDoorGameMode.FREE_PLAY.set(ctx)
                                 self.last_area_door = area
+                        else:
+                            self.last_area_door = None
 
             # If the player is in a chapter, grant temporary Story mode completion so that they can Save and Exit to the
             # Cantina.

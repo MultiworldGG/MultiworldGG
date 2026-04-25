@@ -1,0 +1,419 @@
+PARSER: 1
+GAME: Luigi's Mansion
+AUTHOR: lx5
+---
+QUESTION: EASY
+What's the name of the vacuum
+used to hunt down ghosts
+in Luigi's Mansion?
+ANSWERS:
+Poltergust 3000
+Ghostbuster 4000
+Supervacuum 5000
+---
+QUESTION: EASY
+In Luigi's Mansion, which room
+is the one that has the Boos
+sealed behind a hatch?
+ANSWERS:
+Storage Room
+Cellar
+Conservatory
+---
+QUESTION: EASY
+In Luigi's Mansion, which room
+has a black piano in it?
+ANSWERS:
+Conservatory
+Rec Room
+Ball Room
+---
+QUESTION: EASY
+What's the name of the device
+Luigi uses to communicate 
+with Professor E. Gadd 
+in Luigi's Mansion?
+ANSWERS:
+Game Boy Horror
+Game Boy Horror SP
+Dual Scream
+---
+QUESTION: HARD
+Which of the following rooms
+has Fire Elemental Ghosts
+in Luigi's Mansion?
+ANSWERS:
+Study
+Kitchen
+Tea Room
+---
+QUESTION: EASY
+Which of the following rooms
+has Fire Elemental Ghosts
+in Luigi's Mansion?
+ANSWERS:
+Butler's Room
+Breaker Room
+Pipe Room
+---
+QUESTION: MEDIUM
+Which of the following rooms
+has Fire Elemental Ghosts
+in Luigi's Mansion?
+ANSWERS:
+Cold Storage
+Courtyard
+Tea Room
+---
+QUESTION: EASY
+Which of the following rooms
+has Water Elemental Ghosts
+in Luigi's Mansion?
+ANSWERS:
+Washroom 2F
+Ball Room
+Hallway 2
+---
+QUESTION: MEDIUM
+Which of the following rooms
+has Water Elemental Ghosts
+in Luigi's Mansion?
+ANSWERS:
+Courtyard
+Graveyard
+Ceramics Studio
+---
+QUESTION: HARD
+Which of the following rooms
+has Water Elemental Ghosts
+in Luigi's Mansion?
+ANSWERS:
+Sitting Room
+Pipe Room
+Tea Room
+---
+QUESTION: EASY
+Which of the following rooms
+has Ice Elemental Ghosts
+in Luigi's Mansion?
+ANSWERS:
+Tea Room
+Armory
+Sealed Room
+---
+QUESTION: HARD
+Which of the following rooms
+has Ice Elemental Ghosts
+in Luigi's Mansion?
+ANSWERS:
+Pipe Room
+Cold Storage
+Roof
+---
+QUESTION: MEDIUM
+Which of the following rooms
+has Ice Elemental Ghosts
+in Luigi's Mansion?
+ANSWERS:
+Kitchen
+Boneyard
+Dining Room
+---
+QUESTION: EASY
+Which mice color grants the
+player a large amount of
+treasure when catching them
+in Luigi's Mansion?
+ANSWERS:
+Gold
+Blue
+Purple
+---
+QUESTION: MEDIUM
+Which bat color reacts to the
+player activating the vacuum
+in Luigi's Mansion?
+ANSWERS:
+Yellow
+Blue
+Purple
+---
+QUESTION: MEDIUM
+Which bat color reacts to the
+player walking near them
+in Luigi's Mansion?
+ANSWERS:
+Purple
+Yellow
+Blue
+---
+QUESTION: EASY
+In Luigi's Mansion, how many
+different elemental medals
+can be obtained?
+ANSWERS:
+3
+2
+4
+---
+QUESTION: HARD
+In Luigi's Mansion, which of
+the following rooms has
+a cheese inside?
+ANSWERS:
+Study
+Breaker Room
+Anteroom
+---
+QUESTION: HARD
+In Luigi's Mansion, which of
+the following rooms has
+a cheese inside?
+ANSWERS:
+Safari Room
+Sealed Room
+Armory
+---
+QUESTION: MEDIUM
+In Luigi's Mansion, which of
+the following rooms has
+a cheese inside?
+ANSWERS:
+Dining Room
+Cold Storage
+Pipe Room
+---
+QUESTION: MEDIUM
+In Luigi's Mansion, what's the
+name of the Portrait Ghost
+found in the Master Bedroom?
+ANSWERS:
+Lydia
+Neville
+Shivers
+---
+QUESTION: MEDIUM
+In Luigi's Mansion, what's the
+name of the Portrait Ghost
+found in the Dining Room?
+ANSWERS:
+Mr. Luggs
+Miss Petunia
+Orville
+---
+QUESTION: EASY
+In Luigi's Mansion, what's the
+name of the Portrait Ghost
+found in the Billiards Room?
+ANSWERS:
+Slim Bankshot
+Nana
+Henry
+---
+QUESTION: MEDIUM
+In Luigi's Mansion, what's the
+name of the Portrait Ghosts
+found in the Twins' Room?
+ANSWERS:
+Henry & Orville
+Neville & Lydia
+Biff & Jarvis
+---
+QUESTION: EASY
+In Luigi's Mansion, what's the
+name of the Portrait Ghost
+found in the Rec Room?
+ANSWERS:
+Biff Atlas
+Mr. Luggs
+Melody Pianissima
+---
+QUESTION: MEDIUM
+In Luigi's Mansion, what's the
+name of the Portrait Ghost
+found in the Ceramics Studio?
+ANSWERS:
+Jarvis
+Sir Weston
+Vincent Van Gore
+---
+QUESTION: EASY
+In Luigi's Mansion, what's the
+name of the Portrait Ghost
+found in the Artist's Studio?
+ANSWERS:
+Vincent Van Gore
+Jarvis
+Slim Bankshot
+---
+QUESTION: EASY
+In Luigi's Mansion, what's the
+name of the Portrait Ghost
+found in the Guest Room?
+ANSWERS:
+Sue Pea
+Uncle Grimmly
+Shivers
+---
+QUESTION: HARD
+In Luigi's Mansion, what's the
+name of the Portrait Ghost
+that's only found 
+during a blackout?
+ANSWERS:
+Uncle Grimmly
+Sir Weston
+Shivers
+---
+QUESTION: EASY
+In Luigi's Mansion, how many
+Mario's items can be found
+inside the mansion?
+ANSWERS:
+5
+3
+6
+---
+QUESTION: EASY
+In Luigi's Mansion, how can 
+you obtain Big Pearls from 
+Portrait Ghosts?
+ANSWERS:
+Vacumm at least 90 HP°   in a single turn
+Sucessfully vacuum them
+Blow dust into their°    hearts
+---
+QUESTION: HARD
+In Luigi's Mansion, where can
+you find a Red Diamond?
+ANSWERS:
+By watering a plant in°  the balcony
+Vacumm at least 90 HP°   of a ghost in a turn
+Light up a candelabra°   in Astral Hall
+---
+QUESTION: EASY
+In Luigi's Mansion, which 
+ghost rolls a purple ball
+at the player?
+ANSWERS:
+Bowling Ghost
+Purple Bomber
+Purple Puncher
+---
+QUESTION: EASY
+In Luigi's Mansion, which 
+ghost slams the ground in
+order to hurt the player?
+ANSWERS:
+Blue Twirler
+Ceiling Surprise
+Mr. Bones
+---
+QUESTION: MEDIUM
+In Luigi's Mansion, which
+ghosts come out of 
+walls and explode?
+ANSWERS:
+Spark
+Blue Blaze
+Purple Bomber
+---
+QUESTION: EASY
+In Luigi's Mansion, which
+ghosts throw banana peels 
+on the ground?
+ANSWERS:
+Garbage Can Ghost
+Waiter
+Purple Puncher
+---
+QUESTION: EASY
+In Luigi's Mansion, which area
+of the game allows players to 
+access to the Hidden Room?
+ANSWERS:
+Butler's Room
+Roof
+Tea Room
+---
+QUESTION: EASY
+In Luigi's Mansion, which area
+of the game allows players to 
+access to the Sealed Room?
+ANSWERS:
+Roof
+Butler's Room
+Guest Room
+---
+QUESTION: EASY
+In Luigi's Mansion, which
+of the following rooms
+contains a mirror?
+ANSWERS:
+Foyer
+Balcony
+Clockwork Room
+---
+QUESTION: EASY
+In Luigi's Mansion, which
+of the following rooms
+contains a mirror?
+ANSWERS:
+Rec Room
+Cellar
+Pipe Room
+---
+QUESTION: MEDIUM
+In Luigi's Mansion, which
+of the following rooms
+contains a mirror?
+ANSWERS:
+Armory
+Cold Storage
+Astral Hall
+---
+QUESTION: MEDIUM
+In Luigi's Mansion, which
+of the following rooms
+contains a mirror?
+ANSWERS:
+Sealed Room
+Ball Room
+Conservatory
+---
+QUESTION: HARD
+In Luigi's Mansion, which
+of the following rooms
+contains a mirror?
+ANSWERS:
+Hidden Room
+Butler's Room
+Ceramics Studio
+---
+QUESTION: HARD
+In Luigi's Mansion, which
+of the following rooms
+contains a mirror?
+ANSWERS:
+Breaker Room
+Artist's Room
+Kitchen
+---
+QUESTION: HARD
+In Luigi's Mansion, which
+of the following rooms
+contains a mirror?
+ANSWERS:
+Safari Room
+Projection Room
+Observatory
+---
+QUESTION: HARD
+In Luigi's Mansion, which of 
+the following rooms contains 
+a fourth wall mirror?
+ANSWERS:
+Breaker Room
+Storage Room
+Foyer
+---

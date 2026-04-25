@@ -1,0 +1,95 @@
+PARSER: 1
+GAME: Skyward Sword
+AUTHOR: IvanSword
+---
+QUESTION: EASY
+In Skyward Sword, which  
+tablet is used to access  
+Faron Woods?
+ANSWERS:
+Emerald Tablet
+Amber Tablet
+Ruby Tablet
+---
+QUESTION: EASY
+In Skyward Sword, which  
+tablet is used to access  
+Eldin Volcano?
+ANSWERS:
+Ruby Tablet
+Emerald Tablet
+Amber Tablet
+---
+QUESTION: EASY
+In Skyward Sword, which  
+tablet is used to access  
+Lanayru Desert?
+ANSWERS:
+Amber Tablet
+Ruby Tablet
+Emerald Tablet
+---
+QUESTION: MEDIUM
+In Skyward Sword, what  
+are the negative effects  
+of the Cursed Medal?
+ANSWERS:
+Disables Adventure Poach
+Less Treasure Drop
+Shorter Potion Duration
+---
+QUESTION: MEDIUM
+In Skyward Sword, what  
+is the name of the boss  
+key of Skyview Temple?
+ANSWERS:
+Golden Carving
+Mysterious Crystals
+Dragon Sculpture
+---
+QUESTION: MEDIUM
+In Skyward Sword, what  
+is the name of the boss  
+key of Earth Temple?
+ANSWERS:
+Dragon Sculpture
+Blessed Idol
+Ancient Circuit
+---
+QUESTION: MEDIUM
+In Skyward Sword, what  
+is the name of the boss  
+key of Lanayru Mining  
+Facility?
+ANSWERS:
+Ancient Circuit
+Golden Carving
+Mysterious Crystals
+---
+QUESTION: MEDIUM
+In Skyward Sword, what  
+is the name of the boss  
+key of Ancient Cistern?
+ANSWERS:
+Blessed Idol
+Squid Carving
+Mysterious Crystals
+---
+QUESTION: MEDIUM
+In Skyward Sword, what  
+is the name of the boss  
+key of Sandship?
+ANSWERS:
+Squid Carving
+Golden Carving
+Blessed Idol
+---
+QUESTION: MEDIUM
+In Skyward Sword, what  
+is the name of the boss  
+key of Fire Sanctuary?
+ANSWERS:
+Mysterious Crystals
+Dragon Sculpture
+Golden Carving
+---

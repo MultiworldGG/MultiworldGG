@@ -1,0 +1,141 @@
+PARSER: 1
+GAME: Math
+AUTHOR: Albrekka
+---
+QUESTION: HARD
+Using Riemann integration,
+what the integral from 0 to 1
+of the function that is 1 if
+the number is irrational and
+0 otherwise?
+ANSWERS:
+Not integrable
+1
+0
+---
+QUESTION: EASY
+What is the 12th entry of the
+Fibonacci sequence?
+ANSWERS:
+144
+89
+233
+---
+QUESTION: HARD
+What function can be
+considered a
+generalization of the
+factorial, and sees common use
+in fractional order problems?
+ANSWERS:
+Gamma Function
+Beta Function
+Alpha Function
+---
+QUESTION: MEDIUM
+If the first derivative of a
+function is its speed, what
+is its second?
+ANSWERS:
+Acceleration
+Jerk
+Position
+---
+QUESTION: HARD
+What algebraic structure DOES
+allow for zero to have a
+multiplicative inverse?
+ANSWERS:
+Trivial one with only 0
+Extended reals
+Real functions
+---
+QUESTION: MEDIUM
+The tangent function can also
+be considered a conversion
+from an angle to what
+algebraic concept?
+ANSWERS:
+Slope
+Y-intercept
+Zeroes
+---
+QUESTION: HARD
+The set of numbers between
+zero and 1 which are
+irrational is not compact.
+What other numbers between
+zero and one are needed
+to make it compact?
+ANSWERS:
+The rationals
+Just 0 and 1
+Cannot be done
+---
+QUESTION: EASY
+Is 1 prime?
+ANSWERS:
+No
+Yes
+Maybe
+---
+QUESTION: EASY
+In "High School Geometry",
+if two lines do not
+intersect, what must they
+be relative to each other?
+ANSWERS:
+Parallel
+The same line
+All lines intersect
+---
+QUESTION: HARD
+Under the concept of measure,
+what percent of numbers
+between 0 and 1 are
+irrational?
+ANSWERS:
+100%
+50%
+67%
+---
+QUESTION: MEDIUM
+What is the name of the
+"horn" used as an example
+of a function whose surface
+area is infinite but its
+volume is finite?
+ANSWERS:
+Gabriel
+Raphael
+Sariel
+---
+QUESTION: HARD
+What pivotal axiom ISN'T used
+to create, from one ball,
+two balls of the same volume
+as the first, known as the
+Banach-Tarski Paradox?
+ANSWERS:
+Martin's Axiom
+Axiom of Choice
+Zorn's Lemma
+---
+QUESTION: MEDIUM
+Under a numeral system of
+base 12, which fraction does
+NOT have a terminating
+decimal form?
+ANSWERS:
+1/5
+1/3
+1/2
+---
+QUESTION: EASY
+What is the truth value of
+"This statement is false".
+ANSWERS:
+Cannot have one
+True
+False
+---

@@ -1,0 +1,74 @@
+PARSER: 1
+GAME: Mega Man 2
+AUTHOR: Carld923
+---
+QUESTION: MEDIUM
+What is the most effective
+weapon against Metal Man
+in Mega Man 2?
+ANSWERS:
+Metal Blade
+Time Stopper
+Quick Boomerang
+---
+QUESTION: EASY
+What is the total amount of 
+E-Tanks you can carry
+in Mega Man 2?
+ANSWERS:
+4
+9
+5
+---
+QUESTION: HARD
+What is the number of Yoku 
+Blocks in Heat Man's stage
+in Mega Man 2?
+ANSWERS:
+36
+32
+28
+---
+QUESTION: MEDIUM
+The Boss of the Third Wily 
+Stage in Megaman 2 
+is based on... ?
+ANSWERS:
+Guts Man
+Concrete Man
+Crash Man
+---
+QUESTION: MEDIUM
+What is the weakness of the
+final boss in Mega Man 2?
+ANSWERS:
+Bubble Lead
+Metal Blade
+Crash Bomb
+---
+QUESTION: HARD
+In total, How many bosses 
+(rematches included) are 
+in Mega Man 2?
+ANSWERS:
+22
+14
+8
+---
+QUESTION: EASY
+Who is the main villan 
+of Mega Man 2?
+ANSWERS:
+Dr. Wily
+Dr. Light
+Dr. Cossack
+---
+QUESTION: EASY
+In Mega Man 2, What is the 
+Primary Weakness you need 
+to beat Air Man?
+ANSWERS:
+Leaf Shield
+Atomic Fire
+You Cannot Beat Him
+---

@@ -1,0 +1,13 @@
+PARSER: 1
+GAME: Ocarina of Time
+AUTHOR: Anonimato
+---
+QUESTION: EASY
+In Ocarina of Time, which
+dungeon has a room that is not
+shown when you get its map?
+ANSWERS:
+Inside the Deku Tree
+Fire Temple
+Bottom of the Well
+---

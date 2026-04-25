@@ -1,0 +1,12 @@
+PARSER: 1
+GAME: Super Mario World
+AUTHOR: Mentholeus
+---
+QUESTION: HARD
+What is the serial code
+of the US SMW cartridge?
+ANSWERS:
+SNS-MW-USA
+SNSN-MW-USA
+SHVC-MW-USA
+---

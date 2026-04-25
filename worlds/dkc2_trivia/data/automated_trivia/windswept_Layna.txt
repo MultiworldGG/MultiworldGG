@@ -1,0 +1,470 @@
+PARSER: 1
+GAME: Windswept
+AUTHOR: Layna
+---
+QUESTION: EASY
+In Windswept, what is 
+the name of the duck?
+ANSWERS:
+Marbles
+Mabbles
+Marbels
+---
+QUESTION: EASY
+In Windswept, what is
+the name of the turtle?
+ANSWERS:
+Checkers
+Chequers
+Chexers
+---
+QUESTION: MEDIUM
+In Windswept, how many 
+Cartdrige are there
+in the game?
+ANSWERS:
+5
+6
+7
+---
+QUESTION: EASY
+In Windswept, which one of
+those is a key collectable?
+ANSWERS:
+Comet
+Stars
+Planet
+---
+QUESTION: EASY
+In Windswept, what is the 
+reward for completing a bonus?
+ANSWERS:
+Moon
+Stars
+Coins
+---
+QUESTION: MEDIUM
+In Windswept, what is
+the name of the first 
+boss in the game?
+ANSWERS:
+Octulent
+Pip
+Lumosa
+---
+QUESTION: MEDIUM
+In Windswept, what is 
+the name of the second 
+boss in the game?
+ANSWERS:
+Pip
+Pop
+Pepe
+---
+QUESTION: MEDIUM
+In windswept, What is 
+ the name of the third 
+ boss in the game
+ANSWERS:
+Lumosa
+Lunosa
+Lightmosa
+---
+QUESTION: MEDIUM
+In Windswept, what is the
+name of the fourth boss
+in the game?
+ANSWERS:
+B.V
+T.V
+B.T
+---
+QUESTION: MEDIUM
+In windswept, What is 
+ the name of the final boss 
+ in the game?
+ANSWERS:
+Cirra
+Cloudy
+Octulent
+---
+QUESTION: EASY
+In windswept, Who can glide?
+ANSWERS:
+Marbles
+Checkers
+Both
+---
+QUESTION: MEDIUM
+In windswept, what is 
+ the name of the 
+ flying moth
+ANSWERS:
+laamp
+Lumosa
+Lantern
+---
+QUESTION: HARD
+In windswept, what is 
+ the name of the laamp 
+ shade stage in world 1
+ANSWERS:
+Thornado
+Windblown
+Bramble Scramble
+---
+QUESTION: HARD
+In windswept, what is 
+ the name of the laamp 
+ shade stage in world 2
+ANSWERS:
+Calamitous Chasm
+Thornado
+Banefull Briar
+---
+QUESTION: HARD
+In windswept, what is 
+ the name of the laamp 
+ shade stage in world 3
+ANSWERS:
+Dizzying Descent
+Sawmill Thrill
+Banefull Briar
+---
+QUESTION: HARD
+In windswept, what is 
+ the name of the laamp 
+ shade stage in world 4
+ANSWERS:
+Sawmill Thrill
+Dizzying Descent
+Thornado
+---
+QUESTION: HARD
+In windswept, what is 
+ the name of the laamp 
+ shade stage in world 5
+ANSWERS:
+Banefull Briar
+Thornado
+Calamitous Chasm
+---
+QUESTION: HARD
+In windswept, what is
+ the name of the lizzard 
+ in ice levels?
+ANSWERS:
+Slicko
+Sicko
+Slick
+---
+QUESTION: MEDIUM
+In windswept, what 
+ appear on the map 
+ for completing a level 
+ without killing ennemies
+ANSWERS:
+White flag
+Coin
+Ennemy statue
+---
+QUESTION: MEDIUM
+In Windswept, what appears
+on the map for completing
+a level broke?
+ANSWERS:
+Star
+flag
+coin
+---
+QUESTION: HARD
+In windswept, how many 
+ action figure is it possible
+ to buy in laamp's stand?
+ANSWERS:
+64
+50
+69
+---
+QUESTION: HARD
+In windswept, how many 
+ disc is there in the game
+ANSWERS:
+40
+35
+50
+---
+QUESTION: HARD
+In windswept, who 
+ swim faster?
+ANSWERS:
+Checkers
+Marbles
+Same speed for both
+---
+QUESTION: MEDIUM
+In windswept, how many 
+ moons is there to collect
+ANSWERS:
+100
+99
+101
+---
+QUESTION: MEDIUM
+In windswept, how many comet
+coins are there to collect?
+ANSWERS:
+60
+55
+69
+---
+QUESTION: MEDIUM
+In windswept, how many
+Pinwheels are there
+to collect?
+ANSWERS:
+60
+56
+65
+---
+QUESTION: MEDIUM
+In Windswept, how many 
+cloud are there to collect?
+ANSWERS:
+60
+55
+54
+---
+QUESTION: MEDIUM
+In windswept, what is the 
+ amount of cloud the indicator 
+ ask for in Cloudy Clamber
+ANSWERS:
+40
+35
+38
+---
+QUESTION: HARD
+In windswept, where is located 
+the figure in laamp shade?
+ANSWERS:
+In the ceilling
+behind a wall
+under the floor
+---
+QUESTION: HARD
+In windswept, where is the
+music disc located
+in laamp shade?
+ANSWERS:
+Behind a wall
+in the ceilling
+under the floor
+---
+QUESTION: HARD
+In windswept, how many
+pacifist level do you 
+need to complete to have 
+the in game achievement?
+ANSWERS:
+40
+50
+45
+---
+QUESTION: HARD
+In windswept, how many level
+do you need to complete broke 
+to have the in game 
+achievement for it
+ANSWERS:
+40
+30
+25
+---
+QUESTION: MEDIUM
+In windswept, what do you 
+ get for completing one of
+ the mini-games in laamp
+ shade?
+ANSWERS:
+Trophy on file select
+Moons
+Coins
+---
+QUESTION: EASY
+In windswept, what is the
+ name of the level you unlock
+ after collecting all the moons?
+ANSWERS:
+Windswept
+Windblown
+Home
+---
+QUESTION: MEDIUM
+In windswept, what is 
+ the name of the frog
+ mini-game?
+ANSWERS:
+Hop Prince
+Froggy Adventure
+Sir Hop-a-frog
+---
+QUESTION: MEDIUM
+In windswept, what is 
+ the name of the weasel
+ mini-game?
+ANSWERS:
+Quick Pip Runner
+Quick Pip Dash
+Quickest Pip
+---
+QUESTION: MEDIUM
+In windswept, what is 
+ the name of the ice
+ lizzard mini-game?
+ANSWERS:
+Slicko, My Beloved
+Slicko Slides In
+Slick Move, Slicko
+---
+QUESTION: MEDIUM
+In windswept, what is 
+ the name of the lava
+ piranha mini-game?
+ANSWERS:
+Ready, Aim, Firanha!
+Aim and Chomp
+Bite on Sight
+---
+QUESTION: MEDIUM
+In windswept, what is 
+ the name of the 
+ mini-game with both 
+ character?
+ANSWERS:
+Chime Runners
+Chime Dash
+Chime Sprint
+---
+QUESTION: MEDIUM
+In windswept, what is the
+ name of the level that sound
+ similar to a level in another
+ popular game?
+ANSWERS:
+Dire Dire ducts
+Scrambled Bramble
+Nippa Ain't Stupid
+---
+QUESTION: EASY
+In Windswept, what is 
+ the move name similar 
+ to dkc2 team-up
+ANSWERS:
+PiggyBack
+TagTeam
+Buddy-Up
+---
+QUESTION: EASY
+In Windswept, what is 
+ the move name similar 
+ to dkc2 character swap
+ANSWERS:
+TagTeam
+Buddy-Swap
+TeamSwap
+---
+QUESTION: MEDIUM
+In Windswept, what is 
+ the move name similar 
+ to dkc2 roll
+ANSWERS:
+Attack
+Roll
+Spin
+---
+QUESTION: EASY
+In windswept, which
+ ability checkers (the
+ turtle) got that isn't 
+ an ability found in dkc2?
+ANSWERS:
+Groundpound
+Water Bounce
+Spin Jump
+---
+QUESTION: EASY
+In windswept, what do 
+ you unlock with comets?
+ANSWERS:
+A world
+A secret level
+A mini-game
+---
+QUESTION: MEDIUM
+In windswept, what is
+ the name of the level
+ that sound similar to
+ Toxic Tower?
+ANSWERS:
+Toxic Tunnel
+Toxic Halway
+Toxic Mansion
+---
+QUESTION: EASY
+In windswept, how do 
+ you get access to 
+ laamp shade levels?
+ANSWERS:
+With Moons
+With Comets
+With clouds
+---
+QUESTION: MEDIUM
+In windswept, how many
+ secret exit is there in the
+ game in total?
+ANSWERS:
+5
+6
+7
+---
+QUESTION: HARD
+In windswept, how many
+ Laamp's trial do you need
+ to complete to finish
+ the board?
+ANSWERS:
+30
+35
+28
+---
+QUESTION: MEDIUM
+In windswept, what do 
+ you get for completing 
+ the first level without
+ getting checkers on
+ a new save file?
+ANSWERS:
+New game modes
+Nothing
+An extra Moon
+---
+QUESTION: MEDIUM
+In windswept, where
+ is the 100th moon
+ located?
+ANSWERS:
+In file select
+Windswept EX
+Mini-Games
+---
+QUESTION: EASY
+In windswept, what is
+ unlocked by the sun
+ coin?
+ANSWERS:
+Windswept EX
+Arcade
+Space World
+---

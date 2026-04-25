@@ -1,0 +1,12 @@
+PARSER: 1
+GAME: Overcooked! 2
+AUTHOR: M.
+---
+QUESTION: EASY
+What is the name of the dog
+in Overcooked! 2?
+ANSWERS:
+Kevin
+Poochy
+Richard
+---

@@ -1,0 +1,16 @@
+PARSER: 1
+GAME: Math
+AUTHOR: MittyVee
+---
+QUESTION: EASY
+If I have 10 bananas, and I
+give Diddy half of them,
+then K. Rool steals all my
+bananas while Diddy eats one,
+how many bananas does
+Dixie have?
+ANSWERS:
+0
+1
+4
+---

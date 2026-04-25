@@ -1,0 +1,129 @@
+PARSER: 2
+GAME: Cuphead
+AUTHOR: Ketsuban Solo
+---
+QUESTION: EASY
+In Cuphead,
+how many coins are in
+the tutorial level?
+ANSWERS:
+1
+2
+3
+0
+---
+QUESTION: MEDIUM
+In Cuphead,
+what is the first enemy
+you see in Forest Follies?
+ANSWERS:
+A walking flower
+A mushroom
+A blue blob
+An acorn
+---
+QUESTION: HARD
+In Cuphead,
+which of these boss fights
+does NOT have a secret phase?
+ANSWERS:
+Beppi the Clown
+Sally Stageplay
+The Root Pack
+Djimmi The Great
+---
+QUESTION: EASY
+In Cuphead,
+who is the owner of
+Porkrind's Emporium
+ANSWERS:
+Porkrind
+Porkchops
+Porky
+Porkhock
+---
+QUESTION: MEDIUM
+In Cuphead,
+which of these is
+NOT an enemy you fight
+in Sugarland Shimmy?
+ANSWERS:
+A chocolate bar
+A waffle
+A jawbreaker
+A candy corn
+---
+QUESTION: HARD
+In Cuphead
+how do you pass either
+Two-Mouth Wall to get a
+P-Rank in Funhouse Frazzle?
+ANSWERS:
+Enter its open mouth
+Parry the pink lips
+Ride one of the cars
+Parry both tongues
+---
+QUESTION: EASY
+In Cuphead,
+who are you rescuing
+in the Mausoleums?
+ANSWERS:
+The Legendary Chalice
+Mugman
+Zomboni
+Kackles
+---
+QUESTION: MEDIUM
+In Cuphead,
+which stage does
+Cagney Carnation
+appear in?
+ANSWERS:
+Botanic Panic
+Botanic Manic
+Botanic Hammok
+Botanic Havoc
+---
+QUESTION: HARD
+In Cuphead,
+how many question marks
+appear in the stage,
+"Ruse of an Ooze?"
+ANSWERS:
+3
+2
+4
+5
+---
+QUESTION: EASY
+In Cuphead,
+what color are objects
+that you can parry?
+ANSWERS:
+Pink
+Red
+Blue
+Yellow
+---
+QUESTION: MEDIUM
+In Cuphead, which of
+these describes Beppi
+the Clown's third phase?
+ANSWERS:
+Riding a horse
+Riding a bumper car
+A balloon
+A carousel
+---
+QUESTION: HARD
+In Cuphead,
+which of these circus
+acts are NOT advertised
+in "Funfair Fever?"
+ANSWERS:
+A lion tamer
+A bearded lady
+A tightrope walker
+A clown
+---

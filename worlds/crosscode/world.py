@@ -14,7 +14,7 @@ from Options import OptionError
 from worlds.AutoWorld import WebWorld, World
 from worlds.generic.Rules import add_rule
 
-from .common import NAME
+from .common import NAME, APWORLD_VERSION_STRING
 from .logic import condition_satisfied
 from .world_data import static_world_data
 
@@ -763,6 +763,7 @@ class CrossCodeWorld(World):
         return {
             "mode": self.logic_mode,
             "dataVersion": self.world_data.data_version,
+            "apworldVersion": APWORLD_VERSION_STRING,
             "options": {
                 "goal": self.options.goal.current_key,
                 "vtShadeLock": self.options.vt_shade_lock.value,

@@ -7,13 +7,13 @@
 
 # What is this?
 This is an Archipelago Randomizer for Zelda: Phantom Hourglass that doesn't use modding or romhacking to function. All randomization 
-is done by reading and writing active memory with a lua script connected to the client. This means that item models and 
-text boxes in game will look vanilla, but they will still give the correct items. The main way to tell what you actually 
-got is with the client.
+is done by reading and writing active memory with a lua script connected to the client. This means the game stops being randomized the moment the client disconnects.
 
 If you want to help make a randomizer that's fully integrated into the game, visit [ph-randomizer](https://github.com/phst-randomizer/ph-randomizer). Unaffiliated with this project, but real cool.
 
 This is a spiritual successor to my discontinued [Manual for Phantom Hourglass](https://github.com/carrotinator/manual_phantomhourglass_carrot). It covers the full game but you've got to do all the memory editing manually.
+
+Also check out the [Spirit Tracks Archipelago Randomizer](https://github.com/DayKat/spirit-tracks), made using the same system!
 
 # Who made this?
 This version of the randomizer was made by me, @Carrotinator. Some features were added by  @CelestialKitsune and @Tanker50207, and some stuff in the shared client with Spirit tracks was written by @DayKat and @1313e. The Universal Tracker Map Integration was worked on by @palex00 and @catzador. But it wouldn't have been possible without the work of many that came before. Here are some of them:
@@ -40,7 +40,7 @@ Things not implemented:
 - Postman locations
 - That one treasure map from the girl on Molida Island
 
-It's still alpha, and there are still issues around! Report issues to the [phantom hourglass thread](https://discord.com/channels/731205301247803413/1256012365049233438) in the [Archipelago Discord](https://discord.gg/8Z65BR2)
+It's still alpha, and there are still issues around! Report issues to the [phantom hourglass thread](https://discord.com/channels/731205301247803413/1256012365049233438) in the [Archipelago Discord](https://discord.gg/8Z65BR2). There's also a channel in the [PH and ST Speedrunning Discord](https://discord.com/channels/261932667627503617/1496627635655147588)
 
 ## Is there a tracker?
 
@@ -60,7 +60,7 @@ Map warping lets you warp to any ocean or island port you've previously visited.
 There are some special conditions for warping:
 - You cannot map warp from the ocean. You can from ships at sea, like beedle.
 - You need to have visited an island or ocean to warp there, and have logical access to the port. 
-- If overworld entrances are shuffled, it will specifically check for the port quadrant.
+- If overworld entrances are shuffled, it will specifically check for access to the port quadrant.
 - If you enabled warp items in the yaml, you'll need those for warping to each island. Not having warp items will remove the islands from your map.
 - You cannot map warp with a save and quit.
 
@@ -72,10 +72,8 @@ Warp to start now refills health and ammo!
 The Milk Bar on Mercay Island will also give free refills. How nice
 
 ## My ship is slow. How do i go faster?
-There are multiple ways of doing this, but my favorite is to create a cheat in bizhawk for address `021FA0A4` in 
-`ARM7 system bus`, and set to any speed value. Default max speed is ``0x0080``.  My favorite is `0x0200`, or 4x speed.
-Note that this forces a max speed, and makes turning weird- you'll need to toggle it on and off to do things precisely. 
-Highly recommend setting a hotkey for toggling all cheats!
+There are ship speed options built into the client. Use `/boat speed` to set your max speed, the default value is 266. You can also instant acceleration with `/boat snap_speed`. Boat options are saved in `host.yaml` and persist between sessions and seeds.
+Note that the boat is bad at going round corners at high speed. It can be a bit finicky to use.
 
 ## My game crashed/I quit without saving
 
@@ -83,7 +81,7 @@ The client should give you back your missing items when you reenter the game. It
 lot of items, but it will tell you what it's doing in the client.
 
 ## Where is `Location`?
-There's a location guide being worked on at the [wiki](https://github.com/carrotinator/Archipelago/wiki). If the location you're looking for isn't there, and the map tracker isn't helping, ask about it in the discord.
+There's a location guide being worked on at the [wiki](https://github.com/carrotinator/Archipelago/wiki), mostly written by @thedragonslayr. If the location you're looking for isn't there, and the map tracker isn't helping, ask about it in the discord.
 
 ## I collected some locations while the client wasn't connected
 
@@ -91,8 +89,6 @@ There is a backup system that reads savedata for missing checks when you enter a
 reenter the room with the locations in question. So far this is only implemented for save slot 1 and the overworld 
 checks on Mercay Island, and some problematic checks like big rupees that can despawn or fall in the sea. I'm planning 
 to add all locations in bulk soon.
-
-This is also implemented for some problematic locations that are close together. Most of which have been fixed.
 
 ## How do small keys work in Temple of the Ocean King?
 

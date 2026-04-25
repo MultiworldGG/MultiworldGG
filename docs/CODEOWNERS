@@ -5,6 +5,9 @@
 #
 # All usernames must be GitHub usernames (and are case sensitive).
 
+# 2048
+/worlds/2048/ @Ishigh1
+
 # Adventure
 /worlds/adventure/ @JusticePS
 
@@ -165,6 +168,9 @@
 
 # Dredge
 /worlds/dredge/ @alextric234
+
+# Duke Nukem 3D
+/worlds/duke3d/ @randomcodegen
 
 # Earthbound
 /worlds/earthbound/ @PinkSwitch

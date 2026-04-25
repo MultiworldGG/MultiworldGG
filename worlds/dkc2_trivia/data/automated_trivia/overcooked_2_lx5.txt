@@ -1,0 +1,13 @@
+PARSER: 1
+GAME: Overcooked! 2
+AUTHOR: lx5
+---
+QUESTION: EASY
+How many Kevin levels
+are there in the base
+Overcooked! 2 game?
+ANSWERS:
+8
+4
+6
+---

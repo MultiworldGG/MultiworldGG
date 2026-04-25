@@ -1,0 +1,16 @@
+PARSER: 1
+GAME: Paper Mario
+AUTHOR: Otomia
+---
+QUESTION: EASY
+In Paper Mario, your regular
+Jump attacks hit your
+opponents twice. Do your
+opponents' defense stats
+get applied to the damage
+dealt this way twice?
+ANSWERS:
+Yes
+No
+I've never played it
+---

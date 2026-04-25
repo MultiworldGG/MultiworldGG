@@ -623,7 +623,8 @@ DYNAMIC_FLAGS = {
         "on_scenes": [0x1],
         "on_entrance": [5],
         "unset_if_true": [(PHAddr.flags_fog_spirits, 0x10)],
-        "set_if_true": [(PHAddr.flags_clear_fog, 0x80), (PHAddr.flags_fog_done, 0x10)]
+        "set_if_true": [(PHAddr.flags_clear_fog, 0x80), (PHAddr.flags_fog_done, 0x10),
+                        (PHAddr.adv_flags_12, 0x4)]  # Despawn jolene
     },
     "Dungeon rando dummy spirit flag removal": {
         "on_scenes": [0x1],
@@ -688,8 +689,8 @@ DYNAMIC_FLAGS = {
         "on_scenes": [0x100A],
         "not_has_locations": ["Goron Chief Post Dungeon Item"],
         "has_locations": ["Dongorongo Boss Reward", "Goron Chief Goron Quiz"],
-        "set_if_true": [(PHAddr.flags_metals, 0x40)],
-        "reset_flags": ["RESET remove Crimzonine"]
+        "set_if_true": [(PHAddr.flags_metals, 0x40), (PHAddr.adv_flags_18, 0x8)],
+        "reset_flags": ["RESET remove Crimzonine", "RESET goron chief gongoron"]
     },
     "Goron Island Crimzonine": {
         "on_scenes": [0x1002, 0x1003],
@@ -709,6 +710,10 @@ DYNAMIC_FLAGS = {
     "RESET Beat goron temple goron chief": {
         # "on_scenes": [0x1003],
         "set_if_true": [(PHAddr.adv_flags_23, 0x2)]
+    },
+    "RESET goron chief gongoron": {
+        "not_has_locations": ["Goron Temple B1 Kill Eyeslugs Chest"],
+        "unset_if_true": [(PHAddr.adv_flags_18, 0x8)]
     },
     "Play goron game on dee ess after temple": {
         "on_scenes": [0x1B00],
@@ -829,11 +834,14 @@ DYNAMIC_FLAGS = {
     },
 
     # Zauz
+    "Zauz resets": {
+        "on_scenes": [0x160A],
+        "reset_flags": ["RESET Zauz remove phantom blade", "RESET add triforce crest"]
+    },
     "Zauz remove phantom blade": {
         "on_scenes": [0x160A],
         "not_has_locations": ["Zauz's House Phantom Blade"],
         "unset_if_true": [(PHAddr.adv_flags_22, 0x20)],
-        "reset_flags": ["RESET Zauz remove phantom blade"]
     },
     "RESET Zauz remove phantom blade": {
         # "on_scenes": [0x1600],
@@ -843,14 +851,12 @@ DYNAMIC_FLAGS = {
     "Zauz remove triforce crest": {
         "on_scenes": [0x160A],
         "not_has_locations": ["Ghost Ship Rescue Tetra"],
-        "unset_if_true": [(PHAddr.flags_fog_done, 0x10), (PHAddr.adv_flags_4, 2), (PHAddr.flags_clear_fog, 0x80)],
-        "reset_flags": ["RESET Zauz remove triforce crest"]
+        "unset_if_true": [(PHAddr.flags_fog_done, 0x10), (PHAddr.adv_flags_4, 2), (PHAddr.flags_clear_fog, 0x80)]
     },
     "Zauz add triforce crest": {
         "on_scenes": [0x160A],
         "has_locations": ["Ghost Ship Rescue Tetra"],
         "set_if_true": [(PHAddr.flags_fog_done, 0x10), (PHAddr.adv_flags_4, 2), (PHAddr.flags_clear_fog, 0x80)],
-        "reset_flags": ["RESET add triforce crest"]
     },
     "RESET Zauz remove triforce crest": {
         # "on_scenes": [0x1600],
@@ -884,10 +890,18 @@ DYNAMIC_FLAGS = {
         "unset_if_true": [(PHAddr.adv_flags_3, 0x80)],
         "reset_flags": ["RESET Remove Jolene"]
     },
+    "Remove Jolene NW": {
+        "on_scenes": [0x1],
+        "set_if_true": [(PHAddr.adv_flags_12, 0x4)],  # uses the "got caught already" flag
+    },
+    "Remove Jolene in Ship": {
+        "on_scenes": [0x400],
+        "unset_if_true": [(PHAddr.adv_flags_12, 0x4)],  # uses the "got caught already" flag
+    },
     "RESET Remove Jolene": {
         # "on_scenes": [0xC00],
         "has_locations": ["Crayk Boss Reward"],
-        "set_if_true": [(PHAddr.adv_flags_3, 0x80)]
+        "set_if_true": [(PHAddr.adv_flags_3, 0x80), ]
     },
     "Zauz has enough metals": {
         "on_scenes": [0x160A],
@@ -927,6 +941,12 @@ DYNAMIC_FLAGS = {
         "set_if_true": [(PHAddr.adv_flags_15, 0x80)]
     },
     # Oshus Items
+    "Always spawn 1 oshus": {
+        "on_scenes": [0xB0A],
+        "set_if_true": [(PHAddr.flags_bosses_0, 0x20), # despawn o1
+                        (PHAddr.flags_clear_fog, 0x80), # despawn o2
+                        (PHAddr.adv_flags_4, 0x2)]  # spawn o3
+    },
     "Block phantom sword crafting blade": {
         "on_scenes": [0xB0A],
         "has_items": [("Phantom Blade", 0)],
@@ -942,7 +962,8 @@ DYNAMIC_FLAGS = {
     "Oshus Allow Sword Craft": {
         "on_scenes": [0xB0A],
         "has_items": [("Phantom Hourglass", 1), ("Phantom Blade", 1)],
-        "unset_if_true": [(PHAddr.adv_flags_22, 0x40)]
+        "unset_if_true": [(PHAddr.adv_flags_22, 0x40)],
+        "not_on_entrance": [0x2]
     },
     "Reset Oshus": {
         "on_scenes": [0xB0A],
@@ -953,8 +974,17 @@ DYNAMIC_FLAGS = {
                         "RESET Oshus Gem chart",
                         "RESET Oshus Wind Temple",
                         "RESET Oshus spawn B13 Phantoms",
-                        "RESET Oshus Have Phantom Blade"]
+                        "RESET Oshus Have Phantom Blade",
+                        "RESET yellow guy beat gs",  # unsets fog removal flag
+                        "RESET respawn fog vanilla fog",  # unsets fog removal flag
+                        "RESET Ember double linebeck"]  # unsets blaaz flag
     },
+    "RESET respawn fog vanilla fog": {
+        "not_has_locations": ["Ghost Ship Rescue Tetra"],
+        "has_slot_data": [("fog_settings", 1)],
+        "unset_if_true": [(PHAddr.flags_clear_fog, 0x80)]
+    },
+
     "RESET Oshus spawn B13 Phantoms": {
         "set_if_true": [(PHAddr.adv_flags_22, 0x40)]
     },
@@ -991,13 +1021,15 @@ DYNAMIC_FLAGS = {
     "RESET Block Oshus Gem": {
         # "on_scenes": [0xB00],
         "has_locations": ["TotOK Lobby Phantom Hourglass"],
-        "set_if_true": [(PHAddr.adv_flags_36, 0x4)]
+        "set_if_true": [(PHAddr.adv_flags_36, 0x4)],
+        "unset_if_true": [(PHAddr.adv_flags_22, 0x2)]
     },
     "Oshus Gem": {
         "on_scenes": [0xB0A],
         "not_has_locations": ["Oshus Spirit Gem"],
         "has_locations": ["Cyclok Boss Reward"],
-        "set_if_true": [(PHAddr.adv_flags_36, 0x4), (PHAddr.adv_flags_1, 0x2), (PHAddr.adv_flags_3, 0x40)]
+        "set_if_true": [(PHAddr.adv_flags_36, 0x4), (PHAddr.adv_flags_1, 0x2), (PHAddr.adv_flags_3, 0x40)],
+        "unset_if_true": [(PHAddr.adv_flags_22, 0x2)]
     },
     "RESET Oshus Gem hourglass": {
         # "on_scenes": [0xB00],
@@ -1013,17 +1045,12 @@ DYNAMIC_FLAGS = {
         "not_has_locations": ["Cyclok Boss Reward"],
         "unset_if_true": [(PHAddr.adv_flags_3, 0x40)]
     },
-    "Oshus absent backup gem": {
-        "on_scenes": [0xB0A],
-        "has_locations": ["Cyclok Boss Reward", "Blaaz Boss Reward"],
-        "set_if_true": [(PHAddr.adv_flags_41, 0x2)]
-    },
-    "Oshus absent backup sword": {
-        "on_scenes": [0xB0A],
-        "has_items": [("Phantom Hourglass", 1), ("Phantom Blade", 1)],
-        "has_locations": ["Blaaz Boss Reward"],
-        "set_if_true": [(PHAddr.adv_flags_41, 0x2), (PHAddr.inventory_5, 0x20)]
-    },
+    # "Oshus absent backup sword": {
+    #     "on_scenes": [0xB0A],
+    #     "has_items": [("Phantom Hourglass", 1), ("Phantom Blade", 1)],
+    #     "has_locations": ["Blaaz Boss Reward"],
+    #     "set_if_true": [(PHAddr.adv_flags_41, 0x2), (PHAddr.inventory_5, 0x20)]
+    # },
     # Trade Quest
     "PoRL Trade Quest": {
         "on_scenes": [0x700],
@@ -1241,12 +1268,14 @@ DYNAMIC_FLAGS = {
     "Remove big catch lure if no skippyjack": {
         "on_scenes": [0, 1, 2, 3],
         "not_has_locations": ["Fishing Catch Skippyjack"],
+        "has_slot_data": [("randomize_fishing", [1, 2, 3])],
         "unset_if_true": [(PHAddr.inventory_6, 0x80)],
-        "reset_flags": ["RESET Remove big catch lure if no skippyjack"]
+        # "reset_flags": ["RESET Remove big catch lure if no skippyjack"]
     },
     "RESET Remove big catch lure if no skippyjack": {
-        # "on_scenes": [0, 1, 2, 3],
+        "on_scenes": [0, 1, 2, 3],
         "has_locations": ["Fishing Catch Skippyjack"],
+        "has_slot_data": [("randomize_fishing", [1, 2, 3])],
         "has_items": [("Big Catch Lure", 1)],
         "set_if_true": [(PHAddr.inventory_6, 0x80)]
     },
@@ -1282,9 +1311,19 @@ DYNAMIC_FLAGS = {
         "set_if_true": [(PHAddr.flags_bosses_0, 0x20)],
         "reset_flags": ["RESET Ember double linebeck"],
     },
+    "Ember prevent blaaz temple exit softlock": {
+        "on_scenes": [0xD01],
+        "on_entrance": [1],
+        "unset_if_true": [(PHAddr.flags_bosses_0, 0x20)],
+        "reset_flags": ["RESET Defeated blaaz"],
+    },
     "RESET Ember double linebeck": {
         "not_has_locations": ["Blaaz Boss Reward"],
         "unset_if_true": [(PHAddr.flags_bosses_0, 0x20)],
+    },
+    "RESET Defeated blaaz": {
+        "has_locations": ["Blaaz Boss Reward"],
+        "set_if_true": [(PHAddr.flags_bosses_0, 0x20)],
     },
     "Astrid after fire temple": {
         "on_scenes": [0xD0A],
@@ -1298,12 +1337,14 @@ DYNAMIC_FLAGS = {
     },
     "Ember respawn blaaz": {
         "on_scenes": [0x2B00],
+        "on_entrance": [0],
         "not_has_locations": ["Blaaz Boss Reward"],
         "unset_if_true": [(PHAddr.flags_bosses_0, 0x20)],
     },
     "Molida respawn crayk": {
         "on_scenes": [0x2C00],
         "not_has_locations": ["Crayk Boss Reward"],
+        "on_entrance": [0],
         "unset_if_true": [(PHAddr.flags_bosses_0, 0x80)],
     },
     # Regal necklace backup removal

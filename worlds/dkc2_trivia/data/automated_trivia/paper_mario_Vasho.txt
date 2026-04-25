@@ -1,0 +1,194 @@
+PARSER: 1
+GAME: Paper Mario
+AUTHOR: Vasho
+---
+QUESTION: EASY
+ In Paper Mario 64, how many 
+ party members can Mario get?
+ANSWERS:
+8
+7
+6
+---
+QUESTION: EASY
+ In Paper Mario 64, what is 
+ the name of Lakilester's 
+ girlfriend? 
+ANSWERS:
+Lakilulu
+Lakisophia
+Merluvlee
+---
+QUESTION: EASY
+ In Paper Mario 64, how many 
+ times do you fight against 
+ Jr. Troopa in all of Mario's 
+ adventure? 
+ANSWERS:
+6
+5
+7
+---
+QUESTION: EASY
+ In Paper Mario 64, in what 
+ village you can get a 
+ Koopa Leaf? 
+ANSWERS:
+Koopa Village
+Toad Town
+Goomba Village
+---
+QUESTION: EASY
+ In Paper Mario 64, where can 
+ you find pebbles as a item? 
+ANSWERS:
+Shiver Mountain
+Lavalava Island
+Mt. Rugged
+---
+QUESTION: EASY
+ In Paper Mario 64, which 
+ Berry restores more HP? 
+ANSWERS:
+Red Berry
+Blue Berry
+Yellow Berry
+---
+QUESTION: MEDIUM
+ In Paper Mario 64, how many 
+ letters does Parakarry lost 
+ in the Mushroom Kingdom? 
+ANSWERS:
+12
+10
+25
+---
+QUESTION: MEDIUM
+ In Paper Mario 64 after 
+ chapter 5, where can you 
+ get Melons? 
+ANSWERS:
+Trading with Y. Yoshi
+A Specific palm tree
+In Yoshi's Cabana
+---
+QUESTION: MEDIUM
+ In Paper Mario 64, how many 
+ times can you hit Whacka 
+ before they "disappear"? 
+ANSWERS:
+8
+10
+6
+---
+QUESTION: MEDIUM
+ In Paper Mario 64, what is 
+ the name of the place where 
+ the Star Rod was stolen? 
+ANSWERS:
+Star Haven
+Shooting Star Summit
+Star Hill
+---
+QUESTION: MEDIUM
+ In Paper Mario 64, which 
+ candy can you use to bribe 
+ the Anti Guy in the Shy 
+ Guy's Toy Box? 
+ANSWERS:
+Lemon Candy
+Lime Candy
+Honey Candy
+---
+QUESTION: MEDIUM
+ In Paper Mario 64, who is the 
+ star spirit you rescue in 
+ Cloudy Climb? 
+ANSWERS:
+Klevar
+Kalmar
+Mamar
+---
+QUESTION: HARD
+ In Paper Mario 64, which of 
+ the following badges you can 
+ NOT buy in Rowf's badge shop?
+ANSWERS:
+I Spy
+All or Nothing
+Mega Quake
+---
+QUESTION: HARD
+ In Paper Mario 64, what is 
+ the name of Sushie's 
+ daughter? 
+ANSWERS:
+Sashimie
+Namerie
+Tammy Tuna
+---
+QUESTION: HARD
+ In Paper Mario 64, how many 
+ letters do you help 
+ Parakarry deliver? 
+ANSWERS:
+25
+10
+12
+---
+QUESTION: HARD
+ In Paper Mario 64, which of 
+ the following is NOT a status 
+ effect you can get after 
+ eating a Strange Cake? 
+ANSWERS:
+Paralyzed
+Electrified
+Sleepy
+---
+QUESTION: HARD
+ In Paper Mario 64, in Merlow's 
+ badge shop, which of the 
+ following is more expensive 
+ to buy? 
+ANSWERS:
+Money Money
+Peekaboo
+Zap Tap
+---
+QUESTION: HARD
+ In Paper Mario 64, which of 
+ the following items restore 
+ more HP?
+ANSWERS:
+Yoshi Cookie
+Koopasta
+Jelly Super
+---
+QUESTION: HARD
+ In Paper Mario 64, which of 
+ the following items restores 
+ more HP?
+ANSWERS:
+Frozen Fries
+Potato Salad
+Spicy Soup
+---
+QUESTION: HARD
+ In Paper Mario 64, which of 
+ the following items restore 
+ more FP? 
+ANSWERS:
+Coco Pop
+Bubble Berry
+Nutty Cake
+---
+QUESTION: HARD
+ In Paper Mario 64, which of 
+ the following items restore 
+ more FP? 
+ANSWERS:
+Healthy Juice
+Shroom Cake
+Lime Candy
+---

@@ -1,0 +1,74 @@
+PARSER: 2
+GAME: Crystalis
+AUTHOR: snackerfork
+---
+QUESTION: EASY
+What is the name
+of the game Crystalis
+in Japanese?
+ANSWERS:
+God Slayer
+Song of the Distant Sky
+Tower of Draygon
+Crystalis
+---
+QUESTION: MEDIUM
+Who is the final boss in
+the GBC port of Crystalis?
+ANSWERS:
+Draygon
+DYNA
+Azteca
+General Kelbesque
+---
+QUESTION: HARD
+Which of these monsters
+inspired the boss in
+the poison forest
+in the game Crystalis?
+ANSWERS:
+Ohm
+Gill-Man
+Ragon
+Mothra
+---
+QUESTION: EASY
+What is the first sword
+the player receives in
+the game Crystalis?
+ANSWERS:
+Sword of Wind
+Sword of Fire
+Sword of Water
+Sword of Thunder
+---
+QUESTION: EASY
+What year does End Day
+occur in the intro to the
+NES game Crystalis?
+ANSWERS:
+1997
+2000
+1990
+2012
+---
+QUESTION: MEDIUM
+In the game Crystalis, two of
+the four sages are cameos
+from another SNK title. What
+game did they come from?
+ANSWERS:
+Psycho Soldier
+Ikari Warriors
+Fatal Fury
+Guerilla War
+---
+QUESTION: HARD
+What was the floating tower
+created for in the story
+of the NES game Crystalis?
+ANSWERS:
+To judge humanity
+To conquer the world
+To defeat evil
+To guard Crystalis

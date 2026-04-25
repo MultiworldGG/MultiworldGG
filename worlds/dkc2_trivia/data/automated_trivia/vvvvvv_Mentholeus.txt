@@ -1,0 +1,21 @@
+PARSER: 1
+GAME: VVVVVV
+AUTHOR: Mentholeus
+---
+QUESTION: EASY
+Which of these songs
+from VVVVVV has a
+voice sample?
+ANSWERS:
+Pressure Cooker
+Passion for Exploring
+Potential for Anything
+---
+QUESTION: EASY
+What is the name of the
+collectibles in VVVVVV?
+ANSWERS:
+Trinkets
+Artifacts
+Orbs
+---

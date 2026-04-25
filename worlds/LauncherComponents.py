@@ -312,8 +312,6 @@ components: ComponentList = ComponentList([
               description=f"Install an APWorld to play games not included with {apname} by default."),
     Component('Text Client', 'CommonClient', f'{apname}TextClient', func=launch_textclient,
               description="Connect to a multiworld using the text client."),
-    Component('Manual Client', 'ManualClient', file_identifier=SuffixIdentifier('.apmanual'),
-        description="Client for a manual game with self-imposed rules."),
     Component("Export Datapackage", func=export_datapackage, component_type=Type.TOOL,
             description="Write item/location data for installed worlds to a file and open it."),
 ])
@@ -519,11 +517,22 @@ def _launch_cached_script_stub(component: Component, launch_args: tuple[str, ...
     exe = get_exe(component)
     if not exe:
         return False, None
+    if is_frozen():
+        if not os.path.isfile(exe[0]):
+            logging.debug("Cached launcher executable is missing for component %s.", component.display_name)
+            return False, None
+    elif len(exe) > 1 and not os.path.isfile(exe[1]):
+        logging.debug("Cached launcher script is missing for component %s.", component.display_name)
+        return False, None
 
     if component.cli:
         launch([*exe, *launch_args], component.cli)
         return True, None
-    return True, subprocess.Popen([*exe, *launch_args])
+    try:
+        return True, subprocess.Popen([*exe, *launch_args])
+    except FileNotFoundError:
+        logging.debug("Cached launcher executable is missing for component %s.", component.display_name)
+        return False, None
 
 
 def _launch_cached_callable_stub(callable_module: str | None, callable_qualname: str | None,
@@ -538,15 +547,15 @@ def _launch_cached_callable_stub(callable_module: str | None, callable_qualname:
 
 def _run_cached_component(component_id: tuple[Any, ...], callable_module: str | None,
                           callable_qualname: str | None, *launch_args: str) -> subprocess.Popen[Any] | None:
+    launched, launched_process = _launch_cached_callable_stub(callable_module, callable_qualname, tuple(launch_args))
+    if launched:
+        return launched_process
+
     stub = _find_cached_stub(component_id)
     if stub is not None:
         launched, launched_process = _launch_cached_script_stub(stub, tuple(launch_args))
         if launched:
             return launched_process
-
-    launched, launched_process = _launch_cached_callable_stub(callable_module, callable_qualname, tuple(launch_args))
-    if launched:
-        return launched_process
 
     # Resolve through fully loaded world components so launch behavior matches the real component.
     from worlds import ensure_worlds_loaded

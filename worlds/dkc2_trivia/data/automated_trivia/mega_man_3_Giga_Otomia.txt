@@ -1,0 +1,15 @@
+PARSER: 1
+GAME: Mega Man 3
+AUTHOR: Otomia
+---
+QUESTION: MEDIUM
+In Mega Man 3, how can you
+extend the amount of time
+you spend on Rush Jet if you
+do not have access to weapon
+energy pickups?
+ANSWERS:
+By jumping
+By sliding
+By firing your buster
+---

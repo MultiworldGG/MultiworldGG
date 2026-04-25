@@ -1,0 +1,35 @@
+PARSER: 1
+GAME: Math
+AUTHOR: lx5
+---
+QUESTION: EASY
+1-(-1)=?
+ANSWERS:
+2
+0
+-2
+---
+QUESTION: HARD
+Which is the last prime
+number before 1000?
+ANSWERS:
+997
+999
+987
+---
+QUESTION: MEDIUM
+1+1+1+1+1+1*0=?
+ANSWERS:
+5
+0
+6
+---
+QUESTION: MEDIUM
+What's the name of the
+following equation?
+y=mx+c
+ANSWERS:
+Slope-Intercept Form
+Circle
+Quadratic Equation
+---

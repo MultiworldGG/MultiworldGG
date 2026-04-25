@@ -1,0 +1,13 @@
+PARSER: 1
+GAME: Zelda II: The Adventure of Link
+AUTHOR: LoloGuru
+---
+QUESTION: MEDIUM
+ In Zelda 2, the Adventure of
+ Link, what information does 
+ ERROR possess? 
+ANSWERS:
+Way to the third palace
+Bagu's location
+I AM ERROR
+---

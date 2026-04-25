@@ -1,0 +1,75 @@
+PARSER: 1
+GAME: Super Mario 64
+AUTHOR: Mentholeus
+---
+QUESTION: HARD
+ In Super Mario 64, how many
+ balusters (pegs) are there in
+ the lobby of Peach's Castle?
+ANSWERS:
+120
+100
+128
+---
+QUESTION: EASY
+In Super Mario 64, how 
+many stars are required for
+the first MIPS to spawn?
+ANSWERS:
+15
+16
+20
+---
+QUESTION: EASY
+In Super Mario 64, when
+you dive near a penguin,
+the penguin...
+ANSWERS:
+Dives
+Does nothing
+Walks away
+---
+QUESTION: MEDIUM
+In Super Mario 64, if Mario
+gets squished by an object
+for a long time, he...
+ANSWERS:
+Gets killed
+Gets softlocked
+Gets pushed through
+---
+QUESTION: EASY
+In SM64, the 1-Up at
+the top of the flagpole in
+Whomp's Fortress will...
+ANSWERS:
+Follow you
+Drop down
+Float
+---
+QUESTION: EASY
+In SM64, how many times
+do you have to throw King
+Bob-Omb to defeat him?
+ANSWERS:
+3
+4
+5
+---
+QUESTION: MEDIUM
+In SM64, how many coins
+are there in Jolly Roger Bay?
+ANSWERS:
+104
+101
+103
+---
+QUESTION: MEDIUM
+In which version of
+SM64 was the BLJ
+glitch patched?
+ANSWERS:
+Shindou Edition
+European
+Wii Virtual Console
+---

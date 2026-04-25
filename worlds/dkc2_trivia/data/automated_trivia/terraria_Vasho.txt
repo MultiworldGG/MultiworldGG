@@ -1,0 +1,215 @@
+PARSER: 1
+GAME: Terraria
+AUTHOR: Vasho
+---
+QUESTION: EASY
+In Terraria, what is
+Retinazer's iris color?
+ANSWERS:
+Red
+Green
+Blue
+---
+QUESTION: EASY
+In Terraria, what is
+Spazmatism's iris color?
+ANSWERS:
+Green
+Red
+Blue
+---
+QUESTION: EASY
+In Terraria, which boss has
+the following spawn message:
+"The air is getting colder 
+around you..."?
+ANSWERS:
+Skeletron Prime
+The Destroyer
+The Twins
+---
+QUESTION: EASY
+In Terraria, which boss has
+the following spawn message:
+"This is going to be 
+a terrible night"?
+ANSWERS:
+The Twins
+Skeletron Prime
+The Destroyer
+---
+QUESTION: EASY
+Which kind of souls 
+The Destroyer from 
+Terraria drops 
+when defeated?
+ANSWERS:
+Soul of Might
+Soul of Fright
+Soul of Sight
+---
+QUESTION: EASY
+Which kind of souls Skeletron 
+Prime from Terraria drops 
+when defeated?
+ANSWERS:
+Soul of Fright
+Soul of Might
+Soul of Sight
+---
+QUESTION: EASY
+Which kind of souls The Twins
+from Terraria drops 
+when defeated?
+ANSWERS:
+Soul of Sight
+Soul of Fright
+Soul of Might
+---
+QUESTION: MEDIUM
+In Terraria, which achievement
+is granted when you defeat
+Deerclops for the first time?
+ANSWERS:
+An Eye For An Eye
+Eye on You
+Hero of Etheria
+---
+QUESTION: MEDIUM
+In Terraria, which achievement
+is granted after defeating the 
+Queen Slime for the first time?
+ANSWERS:
+Just Desserts
+Sticky Situation
+Gelatin World Tour
+---
+QUESTION: MEDIUM
+Which Terraria boss doesn't
+have a spawn message?
+ANSWERS:
+Eater of Worlds
+Eye of Cthulhu
+Mechdusa
+---
+QUESTION: MEDIUM
+In Terraria, how many wing 
+accessories can you craft 
+with Souls of Flight?
+ANSWERS:
+15
+14
+12
+---
+QUESTION: HARD
+In Terraria, which of the
+following candles doesn't
+provide a debuff?
+ANSWERS:
+Peace Candle
+Shadow Candle
+Water Candle
+---
+QUESTION: HARD
+In Terraria, what's the drop
+rate of the Rod of Discord?
+ANSWERS:
+1/500
+1/600
+1/300
+---
+QUESTION: HARD
+In Terraria, what's the drop
+rate of Biome Keys?
+ANSWERS:
+1/2500
+1/3000
+1/2000
+---
+QUESTION: HARD
+In Terraria, which of the
+following yo-yos has the
+highest drop rate?
+ANSWERS:
+Yelets
+Cascade
+Kraken
+---
+QUESTION: HARD
+Which of the following items
+from Terraria doesn't have a
+Lime rarity tier?
+ANSWERS:
+Nail Gun
+Black Belt
+Rod of Discord
+---
+QUESTION: HARD
+Which of the following items
+from Terraria doesn't have a
+Cyan rarity tier?
+ANSWERS:
+Heat Ray
+0x33's Aviators
+Arkhalis
+---
+QUESTION: HARD
+Which of the following items
+from Terraria doesn't have a
+Pink rarity tier?
+ANSWERS:
+Destroyer Emblem
+Amphibian Boots
+Terraprisma
+---
+QUESTION: HARD
+Which of the following enemies
+from Terraria causes the
+Blackout debuff?
+ANSWERS:
+Ragged Caster
+Necromancer
+That is not a debuff!
+---
+QUESTION: HARD
+Which of the following debuffs
+isn't a valid one in Terraria?
+ANSWERS:
+Asphyxiated
+Withered Weapon
+Stoned
+---
+QUESTION: HARD
+Which of the following debuffs
+isn't a valid one in Terraria?
+ANSWERS:
+Drunk
+Obstructed
+Oozed
+---
+QUESTION: HARD
+Which of the following buffs
+isn't a valid one in Terraria?
+ANSWERS:
+Lovestruck
+Clairvoyance
+Strategist
+---
+QUESTION: HARD
+Which of the following whip 
+buff effects isn't a valid
+one in Terraria?
+ANSWERS:
+Striking Moment
+Durendal's Blessing
+Harvest Time
+---
+QUESTION: HARD
+Which of the following flask
+buff effects isn't a valid
+one in Terraria?
+ANSWERS:
+Ice
+Nanites
+Confetti
+---

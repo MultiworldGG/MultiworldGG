@@ -497,7 +497,7 @@ def ph_can_farm_rupees(state: CollectionState, player: int):
 
 def ph_island_shop(state, player, price):
     other_costs = 0
-    if ph_has_sea_chart(state, player, "SW"):
+    if state.can_reach_region("Beedle", player):
         # Includes cannon island, but not salvage arm cause that also unlocks treasure shop
         other_costs += 1550
         if ph_option_randomize_masked_beedle(state, player):
@@ -1162,7 +1162,7 @@ def ph_mp3_back(state, player):
         all([
             any([
                 ph_option_vanilla_caves(state, player),
-                ph_option_keys_in_own_dungeon(state, player)
+                # ph_option_keys_in_own_dungeon(state, player) # Reverse mp 2f
             ]),
             ph_has_small_keys(state, player, "Mountain Passage", 2),
         ]),
@@ -1184,6 +1184,14 @@ def ph_mercay_passage_rat(state, player):
 def ph_nyave_fight(state, player):
     return any([ph_has_cave_damage(state, player), ph_clever_pots(state, player)])
 
+def ph_gust_ledge(state, player):
+    return any([
+        ph_has_shovel(state, player),
+        all([
+            ph_can_grapple_glitch(state, player),
+            ph_has_chus(state, player)
+        ])
+    ])
 
 def ph_bannan_scroll(state, player):
     return all([
@@ -1441,7 +1449,7 @@ def ph_toc_key_door_2(state, player):
             ph_toc_key_doors(state, player, 3, 2),
             any([
                 ph_option_pedestals_vanilla_any(state, player),
-                not ph_has_shape_crystal(state, player, "Temple of Courage", "North")
+                # not ph_has_shape_crystal(state, player, "Temple of Courage", "North")
             ])
         ]),
         # UT stuff
@@ -1606,11 +1614,19 @@ def ph_goron_south_reverse(state, player):
     ])
 
 def ph_goron_entrance(state, player):
-    return all([
-        ph_has_shovel(state, player),
-        any([
-            ph_has_explosives(state, player),
-            ph_has_hammer(state, player)
+    return any([
+        all([
+            ph_has_shovel(state, player),
+            any([
+                ph_has_explosives(state, player),
+                ph_has_hammer(state, player),
+            ])
+        ]),
+        all([
+            ph_option_glitched_logic(state, player),
+            ph_has_bow(state, player),
+            ph_has_grapple(state, player),
+            ph_has_chus(state, player)
         ])
     ])
 
@@ -1637,7 +1653,16 @@ def ph_gt_b1(state, player):
     return all([
         ph_has_explosives(state, player),
         ph_can_kill_eye_brute(state, player),
-        ph_has_sword(state, player)])
+        any([
+            ph_has_sword(state, player),
+            ph_option_hard_logic(state, player),
+            # all([  # rip
+            #     ph_can_grapple_glitch(state, player),
+            #     ph_has_chus(state, player)
+            # ])
+        ])
+
+    ])
 
 def ph_gt_b2_back(state, player):
     return any([
@@ -1825,7 +1850,10 @@ def ph_toi_key_door_3(state, player):
         ph_toi_all_key_doors_ut(state, player),
         all([
             ph_UT_glitched_logic(state, player),
-            ph_has_small_keys(state, player, "Temple of Ice", 1)
+            ph_has_small_keys(state, player, "Temple of Ice", 1),
+            ph_has_hammer(state, player),
+            ph_has_grapple(state, player),
+            ph_has_explosives(state, player)
         ])
     ])
 
@@ -3151,5 +3179,6 @@ RULE_DICT = {
     "totok_b13_chest": ph_totok_b13_chest,
     "b13_door": ph_totok_b13_door,
     # State Rules
-    "has": ph_has
+    "has": ph_has,
+    "gust_ledge": ph_gust_ledge
 }

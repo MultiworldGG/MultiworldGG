@@ -1,0 +1,82 @@
+PARSER: 1
+GAME: Rabi-Ribi
+AUTHOR: lx5
+---
+QUESTION: EASY
+In which Rabi-Ribi area
+can Ribbon be found
+for the first time?
+ANSWERS:
+Spectral Cave
+Starting Forest
+Forgotten Cave
+---
+QUESTION: EASY
+Which character can you find
+at Rabi-Ribi's Aurora Palace?
+ANSWERS:
+Nieve
+Kotri
+Cicini
+---
+QUESTION: EASY
+Which Rabi-Ribi item lets you
+jump higher?
+ANSWERS:
+Rabi Slippers
+Bunny Whirl
+Bunny Amulet
+---
+QUESTION: EASY
+Which of Ribbon's weapons
+allows her to use 
+Red type attacks?
+ANSWERS:
+Explode Shot
+Healing Staff
+Sunny Beam
+---
+QUESTION: EASY
+What's the name of the
+character found at the
+end of Rabi-Ribi's
+System Interior?
+ANSWERS:
+Syaro
+Cicini
+Nixie
+---
+QUESTION: EASY
+Which item lets Erina use
+her ultimate attack 
+in Rabi-Ribi?
+ANSWERS:
+Bunny Amulet
+Hammer Wave
+Soul Heart
+---
+QUESTION: MEDIUM
+Which of the following colors
+is NOT present in Rabi-Ribi's
+Rainbow Crystal boss?
+ANSWERS:
+Gray
+Violet
+Yellow
+---
+QUESTION: MEDIUM
+Which buff can't be bought
+from Rabi Rabi Town members?
+ANSWERS:
+Speed Up
+HP Regen
+Give ATK Down
+---
+QUESTION: MEDIUM
+Which buff can be bought
+from Rabi Rabi Town members?
+ANSWERS:
+Arrest
+Defense Boost
+Lucky Seven
+---

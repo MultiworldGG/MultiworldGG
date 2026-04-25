@@ -74,7 +74,6 @@ class Goal(OptionSet):
     """
     display_name = "Goal"
     rich_text_doc = True
-    valid_keys_casefold = True
     valid_keys = ["trees", "wisps", "quests", "relics", "random"]
     default = frozenset(["trees"])
 
@@ -87,9 +86,48 @@ class RelicCount(Range):
     default = 7
 
 
+class LaunchFragments(Toggle):
+    """Spilt Launch into multiple fragments."""
+    display_name = "Launch Fragments"
+
+
+class FragmentsRequired(Range):
+    """Set the amount of launch fragments needed to get Launch."""
+    display_name = "Required Launch Fragments"
+    range_start = 1
+    range_end = 10
+    default = 3
+
+
+class FragmentsCount(Range):
+    """Set the amount of launch fragments in the pool. Launch is in logic when all fragments are accessible."""
+    display_name = "Total Launch Fragments"
+    range_start = 1
+    range_end = 10
+    default = 5
+
+
 class RandomizeDoors(Toggle):
     """Enable door randomizer."""
     display_name = "Randomize Doors"
+
+
+class RegenerateRequirements(Choice):
+    """Set a logic difficulty at and above which Regenerate is ignored in region requirements."""
+    display_name = "Region Requirements"
+    default = 2
+    option_moki = 0
+    option_gorlek = 1
+    option_kii = 2
+    option_unsafe = 3
+    alias_easy = 0
+    alias_medium = 1
+    alias_hard = 2
+
+
+class FreeTeleporters(Toggle):
+    """Remove the requirements on teleporters for their hard lock skill (e.g. Reach TP requires Flap)."""
+    display_name = "Free Teleporters"
 
 
 class HardMode(Toggle):
@@ -107,22 +145,35 @@ class ShrineTrialHints(DefaultOnToggle):
     display_name = "Shrines and trials hints"
 
 
+class ZoneHints(DefaultOnToggle):
+    """Lupo sells hints that indicate how many progression items are in the area."""
+    display_name = "Zone hints"
+
+
 class KnowledgeHints(DefaultOnToggle):
     """Display useful hints on randomizer knowledge while playing the seed."""
     display_name = "Knowledge hints"
+
+
+class Unpopular(Toggle):
+    """
+    Enable unpopular paths for unsafe.
+
+    These involve tedious or extremely hard tricks. No effect without unsafe and glitches.
+    """
+    display_name = "Unpopular paths"
 
 
 class DeathLink(NamedRange):
     """Disable/enable death link. Set this to a non-zero integer to specify how many deaths are needed to trigger it."""
     display_name = "DeathLink amount"
     range_start = 0
-    range_end = 10
+    range_end = 99
     special_range_names = {
         "disable": 0,
         "enable": 1,
     }
     default = 0
-
 
 
 class Teleporters(DefaultOnToggle):
@@ -150,7 +201,7 @@ class SkillUpgrades(Toggle):
     display_name = "Skill upgrades"
 
 
-class BetterSpawn(Toggle):
+class BetterSpawn(DefaultOnToggle):
     """Open some doors so random spawn works better."""
     display_name = "Better random spawn"
 
@@ -176,7 +227,6 @@ class NoCombat(OptionSet):
     """
     display_name = "No Combat"
     rich_text_doc = True
-    valid_keys_casefold = True
     valid_keys = ["everything", "shrines", "arenas", "demi bosses", "bosses"]
     default = frozenset()
 
@@ -233,6 +283,11 @@ class SpawnSword(DefaultOnToggle):
     display_name = "Spawn with Sword"
 
 
+class SpawnRegenerate(Toggle):
+    """Choose to have Regenerate at the beginning."""
+    display_name = "Spawn with Regenerate"
+
+
 class VanillaShopUpgrades(Toggle):
     """Weapon upgrades and shards in shops are not randomized."""
     display_name = "Vanilla shop upgrades"
@@ -250,11 +305,18 @@ option_groups = [
         StartingLocation,
         Goal,
         RelicCount,
+        LaunchFragments,
+        FragmentsRequired,
+        FragmentsCount,
         HardMode,
         RandomizeDoors,
+        RegenerateRequirements,
+        FreeTeleporters,
         QualityOfLife,
         ShrineTrialHints,
+        ZoneHints,
         KnowledgeHints,
+        Unpopular,
         DeathLink,
     ]),
     OptionGroup("Item Pool", [
@@ -279,6 +341,7 @@ option_groups = [
     ]),
     OptionGroup("Item Placements", [
         SpawnSword,
+        SpawnRegenerate,
         VanillaShopUpgrades,
         LaunchOnSeir,
     ])
@@ -292,10 +355,17 @@ class WotWOptions(PerGameCommonOptions):
     spawn: StartingLocation
     goal: Goal
     relic_count: RelicCount
+    launch_fragments: LaunchFragments
+    fragments_required: FragmentsRequired
+    fragments_count: FragmentsCount
     hard_mode: HardMode
+    regenerate_requirements: RegenerateRequirements
+    free_teleporters: FreeTeleporters
     door_rando: RandomizeDoors
     qol: QualityOfLife
     hints: ShrineTrialHints
+    zone_hints: ZoneHints
+    unpopular: Unpopular
     knowledge_hints: KnowledgeHints
     tp: Teleporters  # Item Pool
     extratp: ExtraTeleporters
@@ -314,6 +384,7 @@ class WotWOptions(PerGameCommonOptions):
     glades_done: GladesDone
     shop_keywords: ShopKeywordsIcons
     sword: SpawnSword  # Item Placements
+    regenerate: SpawnRegenerate
     vanilla_shop_upgrades: VanillaShopUpgrades
     launch_on_seir: LaunchOnSeir
     start_inventory_from_pool: StartInventoryPool

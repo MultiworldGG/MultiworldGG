@@ -1,0 +1,12 @@
+PARSER: 1
+GAME: Yoshi's Island
+AUTHOR: M.
+---
+QUESTION: EASY
+What is the name of
+the dog in Yoshi's Island?
+ANSWERS:
+Poochy
+Kevin
+Richard
+---

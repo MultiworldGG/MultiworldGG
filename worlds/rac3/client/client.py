@@ -66,8 +66,13 @@ class CommandProcessor(ClientCommandProcessor):
     # This is not mandatory for the game. Just a client command implementation.
     def _cmd_kill(self):
         """Kill the player."""
+        if not self.verify():
+            return
         if isinstance(self.ctx, Rac3Context):
-            self.ctx.on_deathlink({"time": time(), "cause": "Amondo got gaslit"})
+            if self.ctx.death_link:
+                self.ctx.on_deathlink({"time": time(), "cause": "Amondo got gaslit"})
+            else:
+                self.output("Death Link is not enabled. You can toggle Death Link with /deathlink")
 
     def _cmd_connect_rac3(self):
         """Attempt to connect the client to the emulator"""
@@ -95,7 +100,7 @@ class CommandProcessor(ClientCommandProcessor):
         if not self.verify():
             return
         if isinstance(self.ctx, Rac3Context):
-            if self.ctx.slot_data[RAC3OPTION.ENABLE_PROGRESSIVE_WEAPONS]:
+            if self.ctx.slot_data[RAC3OPTION.PROGRESSIVE_WEAPONS]:
                 self.output("Weapon EXP item not compatible with Progressive Weapons")
             else:
                 self.ctx.game_interface.item_received(RAC3_ITEM_DATA_TABLE[RAC3ITEM.WEAPON_XP].AP_CODE,
@@ -137,6 +142,10 @@ class CommandProcessor(ClientCommandProcessor):
                 self.ctx.death_link = not self.ctx.death_link
                 async_start(self.ctx.update_death_link(self.ctx.death_link))
                 self.output(f"Death Link set to {self.ctx.death_link}")
+                if self.verify():
+                    self.ctx.game_interface.enqueue_notification(
+                        f"{RAC3TEXTFORMATSTRING.WHITE}Death Link {'Enabled' if self.ctx.death_link else 'Disabled'}",
+                        RAC3BOXTHEME.DEATHLINK)
             else:
                 self.output("Death Link not found in slot_data. Please report this")
 
@@ -165,8 +174,12 @@ class CommandProcessor(ClientCommandProcessor):
             self.ctx.game_interface.ryno = not self.ctx.game_interface.ryno
             if self.ctx.game_interface.ryno:
                 self.output("RYNO max upgrade is Lv4")
+                if self.verify():
+                    self.ctx.game_interface.enqueue_notification("RY3NO max upgrade set to Lv4")
             else:
                 self.output("RYNO max upgrade is Lv5")
+                if self.verify():
+                    self.ctx.game_interface.enqueue_notification("RY3NO max upgrade set to Lv5")
 
     def _cmd_messagebox(self, *args):
         """Displays a message box in-game with the specified message."""
@@ -192,6 +205,8 @@ class CommandProcessor(ClientCommandProcessor):
                 new_state = 0 if current_state else 1
                 self.ctx.game_interface.one_hp_challenge[char_name] = new_state
                 self.output(f'One HP Challenge for {char_name} set to {"Enabled" if new_state else "Disabled"}')
+                self.ctx.game_interface.enqueue_notification(
+                    f'One HP Challenge for {char_name} {"Enabled" if new_state else "Disabled"}')
             else:
                 self.output(f'Invalid character name. Valid options are: {", ".join(ONE_HP_CHALLENGE_CHARACTERS)}')
 

@@ -34,15 +34,28 @@ def build_location_room_to_watches() -> Dict[int, dict[str, dict]]:
     return location_room_to_watches
 
 
-def build_scene_to_dynamic_flag() -> Dict[int, list[dict]]:
+def build_scene_to_dynamic_flag(ctx) -> Dict[int, list[dict]]:
     scene_to_dynamic_flag: Dict[int, list[dict]] = {}
+    def check_slot_data(d):
+        for option, value, *args in d.get("has_slot_data", []):
+            value = value if isinstance(value, list) else [value]
+            print(f"\t{d['name']}: {option} {value}")
+            if ctx.slot_data.get(option) not in value:
+                return False
+        return True
+
     for flag_name, data in DYNAMIC_FLAGS.items():
         data["name"] = flag_name
+        if not check_slot_data(data):
+            continue
+
         for scene in data.get("on_scenes", []):
             scene_to_dynamic_flag.setdefault(scene, [])
             scene_to_dynamic_flag[scene].append(data)
     return scene_to_dynamic_flag
 
+def build_scene_to_dynamic_entrance(ctx) -> dict:
+    return {}
 
 def build_location_name_to_id_dict() -> Dict[str, int]:
     location_name_to_id: Dict[str, int] = {}

@@ -1,0 +1,22 @@
+PARSER: 1
+GAME: Pokemon Emerald
+AUTHOR: Mentholeus
+---
+QUESTION: MEDIUM
+In Pokemon Emerald, how many 
+fishing spots can Feebas 
+be caught on?
+ANSWERS:
+Six
+Four
+Eight
+---
+QUESTION: MEDIUM
+How do you originally
+obtain a Jirachi in 
+Pokemon Emerald?
+ANSWERS:
+Trade from R/S 
+Reward from Birch
+Trade from Colosseum
+---

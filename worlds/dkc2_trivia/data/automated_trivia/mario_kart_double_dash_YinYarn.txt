@@ -1,0 +1,15 @@
+PARSER: 1
+GAME: Mario Kart Double Dash
+AUTHOR: YinYarn
+---
+QUESTION: HARD
+In Mario Kart Double Dash,
+the battle course
+"Tilt-a-Kart" plays a
+unique music track in every
+mode except which one?
+ANSWERS:
+Shine Thief
+Balloon Battle
+Bob-omb Blast
+---

@@ -1,0 +1,20 @@
+PARSER: 1
+GAME: Adventure
+AUTHOR: LoloGuru
+---
+QUESTION: MEDIUM
+ In Adventure, which dragon is 
+ yellow in color? 
+ANSWERS:
+Yorgle
+Grundle
+Rhindle
+---
+QUESTION: HARD
+ In Adventure, where would
+ one see the credits? 
+ANSWERS:
+In a secret room
+After they beat the game
+On the title screen
+---

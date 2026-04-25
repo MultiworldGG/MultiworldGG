@@ -320,6 +320,8 @@ def get_hidden_entrances(world: "PhantomHourglassWorld"):
     if ENTRANCES["Ruins NW Pyramid"].id in active_entrances:
         entr_hidden.setdefault("Isle of Ruins", []).append("EVENT: Bremeur's Temple Lower Water")
         entr_hidden.setdefault("Isle of Ruins NW", []).append("EVENT: Bremeur's Temple Lower Water")
+    if ENTRANCES["IotD Pyramid"].id in active_entrances:
+        entr_hidden.setdefault("Isle of the Dead", []).append("Brant's Chamber Staircase")
     if ENTRANCES["Fuzo's Interior Door"].id not in active_entrances:
         entr_hidden.setdefault("Cannon Island", []).append("EVENT: Open Eddo's Door")
         entr_hidden.setdefault("Eddo's Workshop", []).append("EVENT: Open Eddo's Door")

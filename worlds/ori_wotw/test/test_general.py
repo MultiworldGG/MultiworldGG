@@ -5,7 +5,7 @@ from test.general.test_entrances import TestBase as TestEntrance
 from test.general.test_fill import TestFillRestrictive, TestDistributeItemsRestrictive, TestBalanceMultiworldProgression
 from test.general.test_groups import TestNameGroups
 from test.general.test_helpers import TestHelpers
-from test.general.test_host_yaml import TestIDs, TestSettingsDumper, TestSettingsSave
+from test.general.test_host_yaml import TestIDs, TestSettingsDumper
 from test.general.test_ids import TestIDs as TestItemIDs
 from test.general.test_implemented import TestImplemented
 from test.general.test_items import TestBase as TestItems

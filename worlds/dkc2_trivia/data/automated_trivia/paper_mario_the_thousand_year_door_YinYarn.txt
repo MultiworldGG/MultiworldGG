@@ -1,0 +1,46 @@
+PARSER: 1
+GAME: Paper Mario The Thousand Year Door
+AUTHOR: YinYarn
+---
+QUESTION: EASY
+In Paper Mario The Thousand
+Year Door, who is the wicked
+leader of the X-Nauts?
+ANSWERS:
+Sir Grodus
+TEC
+Lord Crump
+---
+QUESTION: EASY
+In Paper Mario The Thousand
+Year Door, what item was
+Garf the Craw missing when
+asking for assistance from
+the Trouble Center?
+ANSWERS:
+A House Key
+A Coin Pouch
+A Life Shroom
+---
+QUESTION: MEDIUM
+In Paper Mario The Thousand
+Year Door, how much BP is
+required to equip the
+"Spike Shield" badge?
+ANSWERS:
+3 BP
+2 BP
+4 BP
+---
+QUESTION: HARD
+Flavio, the boastful
+entrepreneur from Paper
+Mario The Thousand Year
+Door, was originally
+designed to be
+which species?
+ANSWERS:
+Toad
+Bob-omb
+Squeek
+---

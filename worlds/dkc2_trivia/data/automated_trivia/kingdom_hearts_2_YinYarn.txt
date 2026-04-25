@@ -1,0 +1,15 @@
+PARSER: 1
+GAME: Kingdom Hearts 2
+AUTHOR: YinYarn
+---
+QUESTION: MEDIUM
+In Kingdom Hearts 2, which
+villain says the 
+following line before
+battle: "How dare you get a
+happy ending! How DARE you!"?
+ANSWERS:
+Hades
+Jafar
+Oogie Boogie
+---

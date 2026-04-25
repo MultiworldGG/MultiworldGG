@@ -1,0 +1,53 @@
+PARSER: 1
+GAME: Mega Man 3
+AUTHOR: Carld923
+---
+QUESTION: EASY
+In Mega Man 3, who is the 
+main villain of the game? 
+ANSWERS:
+Dr. Wily
+Dr. Wiley
+Dr. Willy
+---
+QUESTION: EASY
+In Mega Man 3, who is behind
+the identity of Break Man? 
+ANSWERS:
+Proto Man
+Roll
+Shadow Man
+---
+QUESTION: MEDIUM
+What is not a Rush form
+in Mega Man 3?
+ANSWERS:
+Rush Drill
+Rush Marine
+Rush Jet
+---
+QUESTION: HARD
+In Mega Man 3, What computer 
+brand does Dr. Light 
+have in his lab? 
+ANSWERS:
+IBM
+IGN
+MAC
+---
+QUESTION: EASY
+In Mega Man 3, What is the
+name of your dog companion?
+ANSWERS:
+Rush
+Tango
+Beat
+---
+QUESTION: HARD
+What is the serial number 
+of Blues in Mega Man 3?
+ANSWERS:
+DLN. 000
+DRN. 001
+DWN. 001
+---

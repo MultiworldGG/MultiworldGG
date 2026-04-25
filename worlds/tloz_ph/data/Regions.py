@@ -235,6 +235,7 @@ REGIONS = [
     "ToF 3F",
     "ToF 3F Key Drop",
     "ToF 3F Key Door",
+    "ToF 3F OOB",
     "ToF 3F Boss Key",
     "ToF 4F",
     "Blaaz",

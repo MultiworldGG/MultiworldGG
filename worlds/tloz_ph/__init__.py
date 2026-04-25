@@ -30,6 +30,9 @@ dev_prints = False
 if TYPE_CHECKING:
     from .Subclasses import ERPlacementState, PHEntrance, PHRegion, PHTransition
 
+class PhantomHourglassItem(Item):
+    game = "Phantom Hourglass"
+
 class PhantomHourglassWeb(WebWorld):
     display_name = "The Legend of Zelda: Phantom Hourglass"
     setup_en = Tutorial(
@@ -171,7 +174,7 @@ class PhantomHourglassWorld(World):
     def __init__(self, multiworld, player):
         super().__init__(multiworld, player)
 
-        self.pre_fill_items: List[Item] = []
+        self.pre_fill_items: List[PhantomHourglassItem] = []
         self.required_dungeons = []
         self.boss_reward_items_pool = []
         self.boss_reward_location_names = []
@@ -324,7 +327,7 @@ class PhantomHourglassWorld(World):
         region = self.multiworld.get_region(region_name, self.player)
         location = Location(self.player, region_name + ".event", None, region)
         region.locations.append(location)
-        location.place_locked_item(Item(event_item_name, ItemClassification.progression, None, self.player))
+        location.place_locked_item(PhantomHourglassItem(event_item_name, ItemClassification.progression, None, self.player))
 
     def location_is_active(self, location_name, location_data):
         if not location_data.get("conditional", False):
@@ -962,7 +965,7 @@ class PhantomHourglassWorld(World):
         create_connections(self.multiworld, self.player, self.origin_region_name, self.options)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
 
-    def create_item(self, name: str) -> Item:
+    def create_item(self, name: str) -> PhantomHourglassItem:
         classification = ITEMS[name].classification
         if name in self.extra_filler_items:
             self.extra_filler_items.remove(name)
@@ -976,7 +979,7 @@ class PhantomHourglassWorld(World):
             classification = ItemClassification.useful
 
         ap_code = self.item_name_to_id[name]
-        return Item(name, classification, ap_code, self.player)
+        return PhantomHourglassItem(name, classification, ap_code, self.player)
 
     def build_item_pool_dict(self):
         def force_vanilla():
@@ -1175,7 +1178,7 @@ class PhantomHourglassWorld(World):
         self.pre_fill_boss_rewards()
         self.pre_fill_dungeon_items()
 
-    def filter_confined_dungeon_items_from_pool(self, items: List[Item]):
+    def filter_confined_dungeon_items_from_pool(self, items: List[PhantomHourglassItem]):
         confined_dungeon_items = []
 
         # Confine small keys to own dungeon if option is enabled
@@ -1332,6 +1335,28 @@ class PhantomHourglassWorld(World):
 
         hint_data[self.player] = player_hint_data
 
+    def get_location_models(self):
+        # get item placement models to send to client
+        location_models = {}
+        for loc in self.get_locations():
+            item = loc.item
+            if item is None: continue
+            loc_data = LOCATIONS_DATA.get(loc.name, {})
+            if not loc_data or not ('chest_offset' in loc_data or 'gift_addr' in loc_data):
+                continue
+            if item.game in ["Phantom Hourglass"]:
+                if ITEMS[item.name].model is not None:
+                    location_models[loc_data['id']] = ITEMS[item.name].model
+                    continue
+
+            if item.classification & ItemClassification.progression or item.classification & ItemClassification.useful:
+                location_models[loc_data['id']] = 0x1E  # blue force gem
+            else:
+                location_models[loc_data['id']] = 0x1D  # red force gem
+
+        return location_models
+        # print(f"Location Models: {location_models}")
+
     def fill_slot_data(self) -> dict:
         options = [
             # Goal
@@ -1386,6 +1411,7 @@ class PhantomHourglassWorld(World):
         slot_data["required_dungeon_locations"] = self.required_bosses  # for dungeon hints
         slot_data["boss_reward_items_pool"] = self.boss_reward_items_pool
         slot_data["treasure_price_index"] = self.treasure_price_index
+        slot_data["location_models"] = self.get_location_models()
 
         # Create ER Pairings, as ids to save space
         pairings = {}
@@ -1511,52 +1537,3 @@ class PhantomHourglassWorld(World):
             for event_tag in stored_data:
                 if event_tag in hidden_event_connect:
                     connect_existing_regions(event_tag, *hidden_event_connect[event_tag])
-
-            # # Sent on getting location. Does not show event in UT
-            # manage_ut_event("1f", "TotOK 1F Chart", "_UT_got_chart")
-            # # Connected on flag read
-            # connect_existing_regions("gsb", "Goron NW Shortcut", "Goron NW Outside Temple")
-            # connect_existing_regions("fi", "Mercay NE", "Mercay NW Freedle Island")
-            # connect_existing_regions("gms", "Goron NE Middle", "Goron NE")
-            # connect_existing_regions("gss", "Goron NE South", "Goron NE")
-            # connect_existing_regions("gls", "Goron NW Outside Temple", "Goron NW Like Like")
-            #
-            # connect_existing_regions("rb", "Ruins SE Return Bridge West", "Ruins SE Return Bridge East")
-            # connect_existing_regions("fif", "Frost SE Exit", "Frost SE")
-            # connect_existing_regions("ub", "Uncharted Outside Cave", "Uncharted Island")
-            # connect_existing_regions("md", "Molida Outside Temple", "Molida North")
-            # connect_existing_regions("cb", "Cannon Outside Eddo", "Cannon Bomb Garden")
-            # connect_existing_regions("mcb", "Sun Lake Cave", "Sun Lake Cave Back")
-            #
-            # connect_existing_regions("tfw", "ToF 1F", "ToF 4F")
-            # connect_existing_regions("tww", "ToW 1F", "ToW 2F")
-            # connect_existing_regions("tcw", "ToC 1F", "ToC 3F")
-            # connect_existing_regions("gtw", "GT 1F", "GT B4")
-            # connect_existing_regions("tiw", "ToI 1F", "ToI Blue Warp")
-            # connect_existing_regions("mtw", "MT 1F", "MT B3")
-            #
-            # # map warp connections
-            # connect_existing_regions("wsw", "Menu", "SW Ocean East", "Warp to SW Ocean")
-            # connect_existing_regions("wse", "Menu", "SE Ocean", "Warp to SE Ocean")
-            # connect_existing_regions("wnw", "Menu", "NW Ocean", "Warp to NW Ocean")
-            # connect_existing_regions("wne", "Menu", "NE Ocean", "Warp to NE Ocean")
-            #
-            # connect_existing_regions("wmc", "Menu", "Mercay SE", "Warp to Mercay Island")
-            # connect_existing_regions("wc", "Menu", "Cannon Island", "Warp to Cannon Island")
-            # connect_existing_regions("we", "Menu", "Ember Port", "Warp to Isle of Ember")
-            # connect_existing_regions("wml", "Menu", "Molida South", "Warp to Molida Island")
-            # connect_existing_regions("ws", "Menu", "Spirit Island", "Warp to Spirit Island")
-            #
-            # connect_existing_regions("wgu", "Menu", "Gust South", "Warp to Isle of Gust")
-            # connect_existing_regions("wb", "Menu", "Bannan Island", "Warp to Bannan Island")
-            # connect_existing_regions("wz", "Menu", "Zauz's Island", "Warp to Zauz' Island")
-            # connect_existing_regions("wu", "Menu", "Uncharted Island", "Warp to Uncharted Island")
-            #
-            # connect_existing_regions("wgo", "Menu", "Goron SW", "Warp to Goron Island")
-            # connect_existing_regions("wf", "Menu", "Frost SW", "Warp to Isle of Frost")
-            # connect_existing_regions("wh", "Menu", "Harrow Island", "Warp to Harrow Island")
-            # connect_existing_regions("wds", "Menu", "Dee Ess Island", "Warp to Dee Ess Island")
-            #
-            # connect_existing_regions("wd", "Menu", "IotD Port", "Warp to Isle of the Dead")
-            # connect_existing_regions("wr", "Menu", "Ruins SW Port", "Warp to Isle of Ruins")
-            # connect_existing_regions("wmz", "Menu", "Maze Island", "Warp to Maze Island")

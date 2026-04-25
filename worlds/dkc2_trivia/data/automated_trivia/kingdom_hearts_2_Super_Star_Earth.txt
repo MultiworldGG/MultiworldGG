@@ -1,0 +1,20 @@
+PARSER: 1
+GAME: Kingdom Hearts 2
+AUTHOR: Earth
+---
+QUESTION: EASY
+How many Keyblades Roxas pulls 
+out afront of Axel?
+ANSWERS:
+TWO!?
+FIVE!?
+THREE!?
+---
+QUESTION: HARD
+In the hit game Kingdom Hearts 2
+What does DTD stand for?
+ANSWERS:
+Door to Darkness
+Darkness to Doors
+Darkness to Darkness
+---

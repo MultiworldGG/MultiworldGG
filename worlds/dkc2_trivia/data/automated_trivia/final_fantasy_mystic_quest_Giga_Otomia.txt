@@ -1,0 +1,65 @@
+PARSER: 1
+GAME: Final Fantasy Mystic Quest
+AUTHOR: Otomia
+---
+QUESTION: MEDIUM
+In Final Fantasy: 
+Mystic Quest, how many
+weapons deal Axe element
+damage?
+ANSWERS:
+Four
+Three
+Axe isn't an element
+---
+QUESTION: EASY
+In Final Fantasy:
+Mystic Quest, what is the
+level cap?
+ANSWERS:
+41
+40
+99
+---
+QUESTION: EASY
+In a vanilla playthrough of 
+Final Fantasy: Mystic Quest,
+where do you find Excalibur?
+ANSWERS:
+Pazuzu's Tower
+Mac's Ship
+Doom Castle
+---
+QUESTION: HARD
+In Final Fantasy:
+Mystic Quest, what is the
+damage formula for bombs?
+ANSWERS:
+WATK*2.25/Count-MonDEF
+WATK*2.5-MonDEF
+WATK*2.5/Count-MonDEF
+---
+QUESTION: MEDIUM
+In the Final Fantasy:
+Mystic Quest Archipelago
+implementation, do you need
+Reuben in your party to save
+Arion, his dad, from the end
+of the Mine?
+ANSWERS:
+No, just Mega Grenades
+Yes
+No, just kill Jinn
+---
+QUESTION: MEDIUM
+In the Final Fantasy:
+Mystic Quest Archipelago
+implementation, what is
+Kaeli's mom obsessed with if
+you turn on the "Kaeli's Mom
+Fights Minotaur" flag?
+ANSWERS:
+The Void from FF5
+Woodcutting
+Death
+---

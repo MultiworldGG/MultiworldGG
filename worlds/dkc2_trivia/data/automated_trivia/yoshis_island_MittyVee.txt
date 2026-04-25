@@ -1,0 +1,13 @@
+PARSER: 1
+GAME: Yoshi's Island
+AUTHOR: MittyVee
+---
+QUESTION: MEDIUM
+Which Yoshi's Island boss
+is NOT enhanced by
+Kamek's magic?
+ANSWERS:
+Prince Froggy
+Marching Milde
+Raphael the Raven
+---

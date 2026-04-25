@@ -1,0 +1,23 @@
+PARSER: 1
+GAME: Mega Man X2
+AUTHOR: Mentholeus
+---
+QUESTION: MEDIUM
+At minimum, what do you
+need to reach the Heart Tank
+in Crystal Snail's stage in
+Mega Man X2?
+ANSWERS:
+Nothing
+Strike Chain
+Arms + S. Burner
+---
+QUESTION: EASY
+Which one of these
+does not appear in
+Mega Man X2?
+ANSWERS:
+Upwards Dash
+Ride Armor
+Double Charged Shot
+---

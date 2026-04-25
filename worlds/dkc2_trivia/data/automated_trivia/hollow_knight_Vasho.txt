@@ -1,0 +1,51 @@
+PARSER: 1
+GAME: Hollow Knight
+AUTHOR: Vasho
+---
+QUESTION: HARD
+ In Hollow Knight, how much Geo 
+ do you need to be able to buy 
+ all unbreakable charms? 
+ANSWERS:
+37,286 geo
+36,886 geo
+36,000 geo
+---
+QUESTION: EASY
+ In Hollow Knight, who do you 
+ fight in Teacher's Archive?  
+ANSWERS:
+Uumuu
+Uuwuu
+Jelly Kingsh
+---
+QUESTION: MEDIUM
+ In Hollow Knight, how many 
+Charm Notches does 
+Carefree Melody cost?
+ANSWERS:
+3
+2
+4
+---
+QUESTION: MEDIUM
+ In Hollow Knight, if you have 
+ Flukenest, Glowing Womb,
+ Shape of Unn, Spore Shroom,
+ Weaversong and Hiveblood
+ equipped, how many Charm
+ Notches are you using? 
+ANSWERS:
+14
+13
+Can't equip that many!
+---
+QUESTION: HARD
+ In Hollow Knight, which of 
+ these is NOT a title for 
+ Grey Prince Zote?
+ANSWERS:
+Courageous
+Sensual
+Vigorous
+---

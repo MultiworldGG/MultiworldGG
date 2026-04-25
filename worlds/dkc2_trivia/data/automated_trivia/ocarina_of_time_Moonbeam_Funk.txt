@@ -1,0 +1,12 @@
+PARSER: 1
+GAME: Ocarina of Time
+AUTHOR: Funk
+---
+QUESTION: EASY
+In Ocarina of Time, which
+character speaks to Link first?
+ANSWERS:
+Navi
+The Great Deku Tree
+Saria
+---

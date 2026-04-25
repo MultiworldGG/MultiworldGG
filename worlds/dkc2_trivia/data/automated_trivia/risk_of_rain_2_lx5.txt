@@ -1,0 +1,86 @@
+PARSER: 1
+GAME: Risk of Rain 2
+AUTHOR: lx5
+---
+QUESTION: EASY
+In Risk of Rain 2, which item
+allows you to execute bosses
+in one hit and guarantee a
+yellow item drop?
+ANSWERS:
+Trophy Hunter's Tricorn
+The Crowdfunder
+Recycler
+---
+QUESTION: MEDIUM
+Which of Risk of Rain 2's
+void items corrupts 
+Tri-Tip Daggers?
+ANSWERS:
+Needletick
+Plasma Shrimp 
+Polylute
+---
+QUESTION: EASY
+Which item can be obtained
+from Cleansing Pools in
+Risk of Rain 2?
+ANSWERS:
+Irradiant Pearl
+Interstellar Desk Plant
+Topaz Brooch
+---
+QUESTION: EASY
+Which Risk of Rain 2 item
+allows players to 
+ignite enemies?
+ANSWERS:
+Gasoline
+Forgive Me Please
+Medkit
+---
+QUESTION: MEDIUM
+Which Risk of Rain 2 item
+allows players to 
+ignite enemies?
+ANSWERS:
+Molten Perforator
+Ignition Tank
+Shattering Justice
+---
+QUESTION: EASY
+Which Risk of Rain 2 item
+allows players to 
+prevent debuffs?
+ANSWERS:
+Ben's Raincoat
+Aegis
+Medkit
+---
+QUESTION: MEDIUM
+Which Risk of Rain 2 item
+allows players to corrupt
+all of their yellow items?
+ANSWERS:
+Newly Hatched Zoea
+Lysate Cell
+Voidsent Flame
+---
+QUESTION: EASY
+Which Risk of Rain 2 item
+allows players to corrupt
+all of their Tougher Times?
+ANSWERS:
+Safer Spaces
+Plasma Shrimp
+Needletick
+---
+QUESTION: MEDIUM
+Which Risk of Rain 2 item
+allows players to corrupt all 
+of their Will-o'-the wisps?
+ANSWERS:
+Voidsent Flame
+Lysate Cell
+Weeping Fungus
+---

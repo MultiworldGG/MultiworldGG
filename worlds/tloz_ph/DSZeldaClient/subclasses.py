@@ -1,5 +1,5 @@
 from enum import IntEnum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterable
 import worlds._bizhawk as bizhawk
 
 if TYPE_CHECKING:
@@ -8,14 +8,18 @@ if TYPE_CHECKING:
     except ImportError:
         pass
 
-async def read_multiple(ctx, addresses, signed=False, keys=None) -> dict["Address", int] or dict[str, int]:
-    reads = await bizhawk.read(ctx.bizhawk_ctx, [a.get_inner_read_list() for a in addresses])
+async def read_multiple(ctx, addresses, signed=False, keys=None, offset=0) -> dict["Address", int] or dict[str, int]:
+    # print(f"\t reading {list(addresses)}")
+    read_list = [a.get_inner_read_list() for a in addresses]
+    if offset:
+        read_list = [(a+offset, *args) for a, *args in read_list]
+    reads = await bizhawk.read(ctx.bizhawk_ctx, read_list)
     reads = [int.from_bytes(r, "little", signed=signed) for r in reads]
     if keys:
         return {k: r for k, r in zip(keys, reads)}
     return {a: r for a, r in zip(addresses, reads)}
 
-async def write_multiple(ctx, addresses: list["Address"], values: list[int]):
+async def write_multiple(ctx, addresses: Iterable["Address"], values: Iterable[int]):
     writes = [a.get_inner_write_list(v) for a, v in zip(addresses, values)]
     await bizhawk.write(ctx.bizhawk_ctx, writes)
 
@@ -55,8 +59,6 @@ def split_bits(value, size):
         value = (value & f) >> 8
     return ret
 
-all_addresses = []
-
 class Address:
     addr_eu: int
     addr_us: int
@@ -66,7 +68,6 @@ class Address:
     size: int
     offset: int
     name: str
-    all_addresses: list = all_addresses
 
     def __init__(self, addr_eu, addr_us=None, size=1, domain="Main RAM", name=""):
         if domain == "Main RAM":
@@ -80,8 +81,6 @@ class Address:
         self.domain = domain
         self.size = size
         self.name = name
-
-        self.all_addresses.append(self)
 
     def set_region(self, region: str or int):
         self.current_region = self._region_int(region)
@@ -147,7 +146,7 @@ class Address:
     async def unset_bits(self, ctx, value: int or list, silent=False, offset=0):
         if isinstance(value, int):
             value = split_bits(value, self.size)
-        prev = split_bits(await self.read(ctx, silent=silent), self.size)
+        prev = split_bits(await Address.from_pointer(self + offset, self.size).read(ctx, silent=silent), self.size)
         # print(f"Setting bits {self} {prev} {value} {[p | v for p, v in zip(prev, value)]}")
         return await self.overwrite(ctx, [p & (~v) for p, v in zip(prev, value)], silent=silent, offset=offset)
 
@@ -310,10 +309,12 @@ class DSTransition:
             z_max = self.extra_data.get("z_max", 0x8FFFFFFF)
             z_min = self.extra_data.get("z_min", -0x8FFFFFFF)
             y = self.coords[1] if self.coords else coords["y"] - y_offest
-            # print(f"Checking entrance {self.name}: x {x_max} > {coords['x']} > {x_min}")
-            # print(f"\ty: {y + 1000} > {y} > {coords['y'] - y_offest}")
-            # print(f"\tz: {z_max} > {coords['z']} > {z_min}")
+            print(f"Checking entrance {self.name}")
+            print(f"\tx: {x_max} > {coords['x']} > {x_min}")
+            print(f"\ty: {y + 1000} > {y} > {coords['y'] - y_offest}")
+            print(f"\tz: {z_max} > {coords['z']} > {z_min}")
             if y + 2000 > coords["y"] - y_offest >= y and x_max > coords["x"] > x_min and z_max > coords["z"] > z_min:
+                print(f"\tMatch!")
                 return True
         return False
 

@@ -22,6 +22,7 @@ from worlds.rac3.constants.messages.box_theme import RAC3BOXTHEME
 from worlds.rac3.constants.messages.text_strings import RAC3TEXTFORMATSTRING
 from worlds.rac3.constants.options import RAC3OPTION
 from worlds.rac3.constants.pause_state import RAC3PAUSESTATE
+from worlds.rac3.constants.player_action import PERMITTED_DEATHLINK_SHIP_TELEPORT_ACTIONS
 from worlds.rac3.constants.region import PLANET_VENDOR_OFFSET, RAC3REGION
 from worlds.rac3.constants.vendors.name import RAC3VENDORNAME
 from worlds.rac3.constants.vendors.type import RAC3VENDORTYPE
@@ -200,7 +201,10 @@ async def _handle_game_ready(ctx: "Context") -> None:
             after_time = time()
             elapsed = after_time - current_time
             logger.debug(f"Update cycle took {elapsed:.5f} seconds")
-            logger.debug(f"Data Package: {ctx.stored_data.get(RAC3OPTION.PROCESSED_LOCATIONS, 'Empty')}")
+            #logger.debug(f"Data Package: {ctx.stored_data.get(RAC3OPTION.PROCESSED_LOCATIONS, 'Empty')}")
+            ctx.game_interface.cycle_times.append(elapsed)
+            if len(ctx.game_interface.cycle_times) > 100:
+                ctx.game_interface.cycle_times.pop(0)
 
 
 ##################################################
@@ -212,8 +216,9 @@ async def _handle_game_ready(ctx: "Context") -> None:
 async def update(ctx: "Context") -> None:
     """Called continuously"""
     ctx.game_interface.early_update()
+    # Check codecave and set values if needed
     await handle_codecave(ctx)
-
+    # Skip the intro and set the Veldin flags if the option is enabled
     await handle_intro_skip(ctx)
     # Check received items
     await handle_received_items(ctx)
@@ -353,14 +358,12 @@ async def handle_respawn(ctx: "Context", force_respawn: bool = False, force_load
     """Check if the player should respawn"""
     if ctx.game_interface.is_reloading:
         return
-    if ctx.death_link and ctx.game_interface.action not in {0, 1, 2, 3, 4, 0x13, 0x1D, 0x2E, 0x32, 0x33, 0x34, 0x37,
-                                                            0x3F, 0x40, 0x4D, 0x51, 0x52, 0x59, 0x5B, 0x5C, 0x61,
-                                                            0x62, 0x75, 0x76, 0x7C, 0x80, 0x9A, 0x9B, 0x9D, 0xA3}:
+    if ctx.death_link and ctx.game_interface.action not in PERMITTED_DEATHLINK_SHIP_TELEPORT_ACTIONS:
         if force_load:
             logger.error("Player cannot homewarp right now")
         elif force_respawn:
             logger.error("Player cannot respawn right now")
-        return  # Todo: Action states
+        return
     planet_data = RAC3_REGION_DATA_TABLE[ctx.game_interface.planet]
     if planet_data.ID > 55:
         return
@@ -474,11 +477,18 @@ async def handle_codecave(ctx: "Context") -> None:
     ap_codes = [RAC3_LOCATION_DATA_TABLE[loc].AP_CODE for loc in all_vendor_locations]
     ctx.game_interface.vendor_string_pointers = {}
     offset = 0x10
+
     no_items_addr = RAC3INSTRUCTION.CODECAVE_START + offset
     ctx.game_interface._write_string(no_items_addr, RAC3VENDOR.NO_ITEMS_AVAILABLE_MSG)
+    offset += len(RAC3VENDOR.NO_ITEMS_AVAILABLE_MSG) + 1
+
+    all_sold_out_addr = RAC3INSTRUCTION.CODECAVE_START + offset
+    ctx.game_interface._write_string(all_sold_out_addr, RAC3VENDOR.ALL_ITEMS_SOLD_OUT_MSG)
+    offset += len(RAC3VENDOR.ALL_ITEMS_SOLD_OUT_MSG) + 1
+
     if ctx.slot_data.get(RAC3OPTION.SHIP_VENDOR, False):
         ctx.game_interface.vendor_string_pointers[RAC3VENDOR.NO_ITEMS_AVAILABLE_LOC_KEY] = no_items_addr
-    offset += len(RAC3VENDOR.NO_ITEMS_AVAILABLE_MSG) + 1
+        ctx.game_interface.vendor_string_pointers[RAC3VENDOR.ALL_ITEMS_SOLD_OUT_LOC_KEY] = all_sold_out_addr
 
     for loc_key, ap_code in zip(all_vendor_locations, ap_codes, strict=False):
         net_item = ctx.locations_info.get(ap_code, None)

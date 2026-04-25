@@ -1,0 +1,157 @@
+PARSER: 1
+GAME: Cave Story
+AUTHOR: lx5
+---
+QUESTION: EASY
+What's the name of the
+upgraded version of the Polar 
+Star Weapon in Cave Story?
+ANSWERS:
+Spur
+Polar Two
+Whimsical Star
+---
+QUESTION: EASY
+In Cave Story, what's the
+item that allows quenching
+fireplaces?
+ANSWERS:
+Jellyfish Juice
+Sprinkler
+Charcoal
+---
+QUESTION: MEDIUM
+How do you obtain the
+Alien Medal in Cave Story?
+ANSWERS:
+No hit run vs Ironhead
+Defeat Ma Pignon
+No hit run vs Red Ogre
+---
+QUESTION: HARD
+On which Cave Story area
+is it possible to 
+find Monster X?
+ANSWERS:
+Labyrinth W
+Labyrinth I
+Labyrinth M
+---
+QUESTION: MEDIUM
+Which Cave Story weapons are
+needed to trade in for
+the Snake weapon at 
+the Labyrinth Shop?
+ANSWERS:
+Polar Star & Fireball
+Polar Star & Spur
+Machine Gun & Bubbler
+---
+QUESTION: MEDIUM
+Where does Cave Story
+takes place?
+ANSWERS:
+In a floating island
+In an archipelago
+In an underground city
+---
+QUESTION: HARD
+How many mimigas can be found
+at Sand Zone Residence
+in Cave Story?
+ANSWERS:
+4
+3
+5
+---
+QUESTION: HARD
+Which event is required to
+happen in order to pick up
+Mr. Little at Cementery
+in Cave Story?
+ANSWERS:
+Speak to Mrs. Little
+Reach Plantation
+Defeat Ma Pignon
+---
+QUESTION: MEDIUM
+When does Chaba at the
+Labyrinth Shop grants
+the player the Whimsical Star
+in Cave Story?
+ANSWERS:
+Own the Spur weapon
+After draining Curly
+Saved King in Sand Zone
+---
+QUESTION: HARD
+What's the name of the mimiga
+that spawns hearts when 
+talking to them after
+defeating the Doctor in
+Balcony in Cave Story?
+ANSWERS:
+Chaco
+Chie
+Santa
+---
+QUESTION: HARD
+What's the name of the 
+unique creature found at
+Reservoir in Cave Story?
+ANSWERS:
+Chinfish
+Midorin
+Porcupine Fish
+---
+QUESTION: MEDIUM
+In Cave Story, which of the
+following enemies can't be
+found in Grasstown?
+ANSWERS:
+Basu
+Mannan
+Puchi
+---
+QUESTION: EASY
+Which objects are shoot
+from a level 3 Nemesis
+in Cave Story?
+ANSWERS:
+Rubber ducks
+Bubbles
+Missiles
+---
+QUESTION: EASY
+What makes Mimigas turn into
+monsters in Cave Story?
+ANSWERS:
+Eating a red flower
+Getting stressed
+Drinking a lot of water
+---
+QUESTION: MEDIUM
+Which was Curly and Quote's
+true objective in Cave Story?
+ANSWERS:
+Destroy the Demon Crown
+Help the Doctor
+Retrieve Jenka's dogs
+---
+QUESTION: MEDIUM
+How do you gain access to
+Sand Zone's Warehouse
+in Cave Story?
+ANSWERS:
+Retrieving Jenka's dogs
+Defeating Omega
+Talking with Curly
+---
+QUESTION: HARD
+Who caused Ballos to be driven
+into insanity in Cave Story?
+ANSWERS:
+The king
+The doctor
+His sister
+---

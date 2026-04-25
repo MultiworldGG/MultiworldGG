@@ -1,0 +1,21 @@
+PARSER: 1
+GAME: Yoshi's Island
+AUTHOR: LoloGuru
+---
+QUESTION: EASY
+ In Yoshi's Island, how many 
+ red coins are in each level?
+ANSWERS:
+20
+8
+5
+---
+QUESTION: MEDIUM
+ In Yoshi's Island, what does a 
+ flashing egg drop when you 
+ hit something with it?
+ANSWERS:
+A red coin
+Two stars
+A yellow coin
+---

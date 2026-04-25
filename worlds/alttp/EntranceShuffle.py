@@ -225,7 +225,7 @@ def link_entrances(multiworld, player):
         # tavern back door cannot be shuffled yet
         connect_doors(multiworld, ['Tavern North'], ['Tavern'], player)
 
-        if multiworld.worlds[player].mode == 'standard':
+        if multiworld.worlds[player].options.mode == 'standard':
             # must connect front of hyrule castle to do escape
             connect_two_way(multiworld, 'Hyrule Castle Entrance (South)', 'Hyrule Castle Exit (South)', player)
         else:

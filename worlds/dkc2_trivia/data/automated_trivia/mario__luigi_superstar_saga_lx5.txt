@@ -1,0 +1,41 @@
+PARSER: 1
+GAME: Mario & Luigi Superstar Saga
+AUTHOR: lx5
+---
+QUESTION: EASY
+Who's the main villain from
+Mario & Luigi Superstar Saga?
+ANSWERS:
+Cackletta
+Popple
+Toadsworth
+---
+QUESTION: MEDIUM
+Where do the Hammerhead Bros.
+live before relocating
+to East Beanbean in
+Mario & Luigi Superstar Saga?
+ANSWERS:
+Hoohoo Village
+Oho Oasis
+Chucklehuck Woods
+---
+QUESTION: EASY
+What's the name of the master
+blacksmiths that upgrade the
+main character's hammers in
+Mario & Luigi Superstar Saga?
+ANSWERS:
+Hammerhead Bros.
+Gigi and Merri
+Cork and Cask
+---
+QUESTION: EASY
+Who teaches Mario & Luigi
+the High Jump move in
+Mario & Luigi Superstar Saga?
+ANSWERS:
+Starshade Bros
+Hammerhead Bros
+Popple and Rookie
+---

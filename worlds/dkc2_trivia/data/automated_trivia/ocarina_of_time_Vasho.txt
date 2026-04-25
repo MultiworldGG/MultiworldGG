@@ -1,0 +1,21 @@
+PARSER: 1
+GAME: Ocarina of Time
+AUTHOR: Vasho
+---
+QUESTION: MEDIUM
+ In Ocarina of Time, what is
+ the name of the blue Cucco?
+ANSWERS:
+Cojiro
+Kafei
+Pocket Cucco
+---
+QUESTION: MEDIUM
+ In Ocarina of Time, what is 
+ the 8th item in the Trading 
+ Sequence?
+ANSWERS:
+Prescription
+Odd Mushroom 
+Poacher's Saw 
+---

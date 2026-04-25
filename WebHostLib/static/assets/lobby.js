@@ -315,7 +315,7 @@
                 if (isCustom && (currentState === LOBBY_STATE_OPEN || currentState === LOBBY_STATE_LOCKED)) {
                     const apw = y.apworld;
                     if (apw) {
-                        const verLabel = apw.world_version ? `v${escapeHtml(apw.world_version)}` : "APWorld";
+                        const verLabel = apw.world_version ? `v${escapeHtml(apw.world_version)}` : (apw.game_name && apw.game_name.startsWith("Manual_") ? "Manual APWorld" : "APWorld");
                         let apwTip = escapeHtml(apw.filename);
                         if (apw.world_version && y.required_version) {
                             apwTip += ` — v${escapeHtml(apw.world_version)} satisfies requirement v${escapeHtml(y.required_version)}`;
@@ -339,7 +339,7 @@
                 if (!isCustom && (currentState === LOBBY_STATE_OPEN || currentState === LOBBY_STATE_LOCKED)) {
                     if (hasReplacementApworld) {
                         const apw = y.apworld;
-                        const verLabel = apw.world_version ? `v${escapeHtml(apw.world_version)}` : "APWorld";
+                        const verLabel = apw.world_version ? `v${escapeHtml(apw.world_version)}` : (apw.game_name && apw.game_name.startsWith("Manual_") ? "Manual APWorld" : "APWorld");
                         let apwTip = escapeHtml(apw.filename);
                         if (apw.world_version && y.required_version) {
                             apwTip += ` — v${escapeHtml(apw.world_version)} satisfies requirement v${escapeHtml(y.required_version)}`;

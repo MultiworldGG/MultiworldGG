@@ -1,0 +1,11 @@
+PARSER: 1
+GAME: Math
+AUTHOR: M.
+---
+QUESTION: EASY
+What is the result of 6/2(1+2)?
+ANSWERS:
+9
+1
+5
+---

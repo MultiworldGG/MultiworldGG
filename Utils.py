@@ -61,6 +61,10 @@ version_tuple = tuplize_version(__version__)
 instance_name = "MultiworldGG"
 archipelago_guid = "{{918BA46A-FAB8-460C-9DFF-AE691E1C865D}}"
 
+_default_version = __version__
+_default_instance_name = instance_name
+_default_archipelago_guid = archipelago_guid
+
 def get_config_file_path() -> str:
     if getattr(sys, 'frozen', False):
         # When frozen, the executable's directory is the base path.
@@ -71,25 +75,37 @@ def get_config_file_path() -> str:
 
 config_file = get_config_file_path()
 
-if os.path.exists(config_file):
-    try:
-        with open(config_file, "r", encoding="utf-8") as f:
-            config_data = load(f, Loader=SafeLoader)
-        if isinstance(config_data, dict):
-            app_options = config_data.get("application_options", {})
-            if isinstance(app_options, dict):
-                new_name = app_options.get("app_name")
-                if new_name is not None:
-                    instance_name = new_name
-                new_guid = app_options.get("app_guid")
-                if new_guid is not None:
-                    archipelago_guid = new_guid
-                new_version = app_options.get("app_version")
-                if new_version is not None:
-                    __version__ = new_version
-                    version_tuple = tuplize_version(__version__)
-    except Exception as e:
-        logging.warning("Failed to load configuration from %s: %s", config_file, e)
+def reload_application_options() -> None:
+    global __version__, version_tuple, instance_name, archipelago_guid
+
+    __version__ = _default_version
+    version_tuple = tuplize_version(__version__)
+    instance_name = _default_instance_name
+    archipelago_guid = _default_archipelago_guid
+
+    if os.path.exists(config_file):
+        try:
+            from yaml import safe_load
+            with open(config_file, "r", encoding="utf-8") as f:
+                config_data = safe_load(f)
+            if isinstance(config_data, dict):
+                app_options = config_data.get("application_options", {})
+                if isinstance(app_options, dict):
+                    new_name = app_options.get("app_name")
+                    if new_name is not None:
+                        instance_name = new_name
+                    new_guid = app_options.get("app_guid")
+                    if new_guid is not None:
+                        archipelago_guid = new_guid
+                    new_version = app_options.get("app_version")
+                    if new_version is not None:
+                        __version__ = new_version
+                        version_tuple = tuplize_version(__version__)
+        except Exception as e:
+            logging.warning("Failed to load configuration from %s: %s", config_file, e)
+
+
+reload_application_options()
 
 is_linux = sys.platform.startswith("linux")
 is_macos = sys.platform == "darwin"

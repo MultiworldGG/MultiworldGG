@@ -9,8 +9,8 @@ Generated with `extract_rules.py`.
 doors_vanilla: list[tuple[str, str]] = [  # Vanilla door connections
     ('GladesTown.TwillenHome (Door)', 'GladesTown.KeyMokiHutInside (Door)'),
     ('GladesTown.KeyMokiHutInside (Door)', 'GladesTown.TwillenHome (Door)'),
-    ('GladesTown.MotayHut (Door)', 'GladesTown.MotayHutInside (Door)'),
-    ('GladesTown.MotayHutInside (Door)', 'GladesTown.MotayHut (Door)'),
+    ('GladesTown.MotayHutDoor (Door)', 'GladesTown.MotayHutInside (Door)'),
+    ('GladesTown.MotayHutInside (Door)', 'GladesTown.MotayHutDoor (Door)'),
     ('GladesTown.UpperWest (Door)', 'GladesTown.InsideThirdHut (Door)'),
     ('GladesTown.InsideThirdHut (Door)', 'GladesTown.UpperWest (Door)'),
     ('GladesTown.AcornMoki (Door)', 'GladesTown.AcornCave (Door)'),
@@ -45,7 +45,7 @@ doors_vanilla: list[tuple[str, str]] = [  # Vanilla door connections
 doors_map: dict[str, int] = {  # Mapping to door ID
     "GladesTown.TwillenHome (Door)": 9,
     "GladesTown.KeyMokiHutInside (Door)": 10,
-    "GladesTown.MotayHut (Door)": 5,
+    "GladesTown.MotayHutDoor (Door)": 5,
     "GladesTown.MotayHutInside (Door)": 6,
     "GladesTown.UpperWest (Door)": 3,
     "GladesTown.InsideThirdHut (Door)": 4,

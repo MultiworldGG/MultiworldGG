@@ -1,0 +1,21 @@
+PARSER: 1
+GAME: Astalon
+AUTHOR: LoloGuru
+---
+QUESTION: MEDIUM
+ In Astalon's Cyclops Den, how 
+ many Cyclops do you need to 
+ slay to face the boss? 
+ANSWERS:
+35
+38
+40
+---
+QUESTION: HARD
+ In Astalon, who is the 
+ Black Knight's mother? 
+ANSWERS:
+Lydia
+Medusa
+The same as Arias's
+---

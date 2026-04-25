@@ -1,0 +1,253 @@
+PARSER: 1
+GAME: Subnautica
+AUTHOR: lx5
+---
+QUESTION: EASY
+Which items are required to
+fabricate Fiber Mesh
+in Subnautica?
+ANSWERS:
+Creepvine Sample x2
+Glass & Stalker Tooth
+Metal Salvage
+---
+QUESTION: EASY
+Which items are required to
+fabricate a Titatium Ingot
+in Subnautica?
+ANSWERS:
+Titanium x10
+Titanium & Lithium x2
+Metal Salvage
+---
+QUESTION: EASY
+Which items are required to
+fabricate Glass
+in Subnautica?
+ANSWERS:
+Quartz x2
+Acid Mushroom x2°       and Copper
+Quartz & Titanium
+---
+QUESTION: EASY
+Which items are required to
+fabricate a Battery
+in Subnautica?
+ANSWERS:
+Acid Mushroom x2°       and Copper
+Deep shroom x3°         and Salt Deposit
+Titanium ingot°          and Lithium x2
+---
+QUESTION: EASY
+Which items are required to
+fabricate Filtered Water
+in Subnautica?
+ANSWERS:
+Bladderfish
+Bleach
+Hydrochloric Acid
+---
+QUESTION: MEDIUM
+Which items are required to
+fabricate Disinfected Water
+in Subnautica?
+ANSWERS:
+Bleach
+Bladderfish
+Hydrochloric Acid
+---
+QUESTION: MEDIUM
+Which items are required to
+fabricate Benzene
+in Subnautica?
+ANSWERS:
+Blood Oil x3
+Deep Shroom x3°         and Salt Deposit
+Hydrochloric Acid°      and Gold
+---
+QUESTION: MEDIUM
+Which items are required to
+fabricate a Computer Chip
+in Subnautica?
+ANSWERS:
+Table Coral Sample x2°  Gold and Copper Wire
+Acid Mushroom x2°       and Copper
+Ion Cube, Gold°         and Silver Ore
+---
+QUESTION: MEDIUM
+Which items are required to
+fabricate Hydrochloric Acid
+in Subnautica?
+ANSWERS:
+Deep Shroom x3°         and Salt Deposit
+Blood Oil x3
+Creepvine Seed Cluster
+---
+QUESTION: EASY
+Which items are required to
+fabricate Lubricant
+in Subnautica?
+ANSWERS:
+Creepvine Seed Cluster
+Deep Shroom x3°         and Salt Deposit
+Blood Oil x3
+---
+QUESTION: EASY
+Which items are required to
+fabricate Silicone Rubber
+in Subnautica?
+ANSWERS:
+Creepvine Seed Cluster
+Creepvine Sample x2
+Metal Salvage
+---
+QUESTION: EASY
+Which items are required to
+fabricate a Wiring Kit
+in Subnautica?
+ANSWERS:
+Silver Ore x2
+Gold x2
+Gold and Copper Wire
+---
+QUESTION: MEDIUM
+Which items are required to
+fabricate Aerogel
+in Subnautica?
+ANSWERS:
+Gel Sack and Ruby
+Creepvine Seed Cluster
+Benzene and Fiber Mesh
+---
+QUESTION: EASY
+Which items are required to
+fabricate a Survival Knife
+in Subnautica?
+ANSWERS:
+Silicone Rubber°        and Titanium
+Battery and Glass
+Titanium x4
+---
+QUESTION: MEDIUM
+Which machine or tool allows 
+players to see in dark places 
+in Subnautica?
+ANSWERS:
+Seaglider
+Beacon
+Air Bladder
+---
+QUESTION: EASY
+Which machine or tool allows 
+players to see in dark places 
+in Subnautica?
+ANSWERS:
+Flashlight
+Repair tool
+Habitat Builder
+---
+QUESTION: EASY
+Which items are required to
+fabricate a Scanner
+in Subnautica?
+ANSWERS:
+Battery and Titanium
+Battery, Copper Ore°    and Titanium
+Battery and Glass
+---
+QUESTION: MEDIUM
+Which items are required to
+fabricate a Thermoblade
+in Subnautica?
+ANSWERS:
+Survival Knife°         and Battery
+Titanium and Magnetite
+Survival Knife°         and Polyaniline
+---
+QUESTION: EASY
+Which items are required to
+fabricate a Beacon
+in Subnautica?
+ANSWERS:
+Titanium and Copper Ore
+Titanium and Magnetite
+Titanium and Wiring Kit
+---
+QUESTION: EASY
+Which craft station is used
+to create a Seamoth
+in Subnautica?
+ANSWERS:
+Mobile Vehicle Bay
+Neptune Launch Platform
+Fabricator
+---
+QUESTION: MEDIUM
+Which craft station is used
+to create a Seaglide
+in Subnautica?
+ANSWERS:
+Fabricator
+Mobile Vehicle Bay
+Vehicle Upgrade Console
+---
+QUESTION: HARD
+Which craft station is used
+to create a Vortex Torpedo
+in Subnautica?
+ANSWERS:
+Vehicle Upgrade Console
+Mobile Vehicle Bay
+Fabricator
+---
+QUESTION: MEDIUM
+Which craft station is used
+to create a Thermoblade
+in Subnautica?
+ANSWERS:
+Modification Station
+Fabricator
+Vehicle Upgrade Console
+---
+QUESTION: EASY
+Where can you find the Neptune
+Launch Platform blueprints
+in Subnautica?
+ANSWERS:
+Captain's Quarters
+Dunes Wreck
+Lifepod 4
+---
+QUESTION: EASY
+Which items are required to
+fabricate a Fire Extinguisher
+in Subnautica?
+ANSWERS:
+Titanium x3
+Battery and Titanium
+Fiber Mesh
+---
+QUESTION: HARD
+How can players restore 
+their oxygen in Subnautica?
+ANSWERS:
+Eat a raw Bladderfish
+Open up a Snacks bag
+Touch Aerogel
+---
+QUESTION: MEDIUM
+How can players restore 
+their oxygen in Subnautica?
+ANSWERS:
+Approach the end of a°  functioning Pipe
+Using a Seaglide
+Enter an unpowered base
+---
+QUESTION: EASY
+How can players restore 
+their oxygen in Subnautica?
+ANSWERS:
+Rise to the surface
+Stay near a Creepvine
+Hitting a Gasopod
+---

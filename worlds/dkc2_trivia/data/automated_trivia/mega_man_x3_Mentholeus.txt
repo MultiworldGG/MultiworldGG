@@ -1,0 +1,32 @@
+PARSER: 1
+GAME: Mega Man X3
+AUTHOR: Mentholeus
+---
+QUESTION: HARD
+What song is very similar
+to Neon Tiger's Stage Theme
+in Mega Man X3?
+ANSWERS:
+My Michelle
+November Rain
+Who cares
+---
+QUESTION: MEDIUM
+What is the name of the
+combined form of Bit and Byte
+in Mega Man X3?
+ANSWERS:
+Godkarmachine O'Inary
+Bettabyte
+Press Disposer
+---
+QUESTION: EASY
+In Mega Man X3,
+which part of the
+Z-Saber attack causes
+the most total damage?
+ANSWERS:
+The beam
+The slash
+The tip
+---

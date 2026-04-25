@@ -252,6 +252,10 @@ def run_server_process(name: str, ponyconfig: dict, static_server_data: dict,
 
     setproctitle(name)
     Utils.init_logging(name)
+    Utils.reload_application_options()
+    import MultiServer
+    MultiServer.version_tuple = Utils.version_tuple
+    logging.info(f"{name} using server version {Utils.__version__}.")
     try:
         import resource
     except ModuleNotFoundError:

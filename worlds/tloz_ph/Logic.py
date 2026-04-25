@@ -300,6 +300,9 @@ def make_overworld_logic():
         # 3F
         ["ToF 3F", "ToF 3F Key Drop", False, "tof_key_drop"],
         ["ToF 3F", "ToF 3F Key Door", False, "tof_3f_key_door"],
+        ["ToF 3F", "ToF 3F OOB", False, "grapple_glitch"],
+            ["ToF 3F OOB", "ToF 3F Boss Key", False, None],
+            ["ToF 3F OOB", "ToF 4F", False, None],
         ["ToF 3F Key Door", "ToF 3F Boss Key", False, "boomerang"],
         ["ToF 3F Key Door", "ToF 4F", True, "tof_bk"],
         ["ToF 4F", "Blaaz", True, None],
@@ -429,7 +432,7 @@ def make_overworld_logic():
         ["Gust South Cliffs", "Gust North Temple Road", True, None],
         ["Gust South Cliffs", "Gust North Above Temple", True, None],
         ["Gust North Above Temple", "Gust South NW", True, None],
-        ["Gust South NW", "Gust South NW Chest", False, "shovel"],
+        ["Gust South NW", "Gust South NW Chest", False, "gust_ledge"],
         ["Gust South NW", "Gust South NW Ledge", False, "shovel"],
         ["Gust South NW Ledge", "Gust South NW", False, None],
         ["Gust South NW Ledge", "Gust South NW Chest", False, "grapple"],
@@ -691,7 +694,7 @@ def make_overworld_logic():
         ["ToI B2 North", "ToI B2 BK Chest", False, "hammer_clip"],
         ["ToI B2 North", "ToI B2 East", False, None],
         ["ToI B2 East", "ToI B2 Bow", False, "bow"],
-        ["ToI B2 East", "ToI B2 East Arena", False, "toi_key_doors", 3, 3],
+        ["ToI B2 East", "ToI B2 East Arena", False, "toi_key_door_3"],
         ["ToI B2 East Arena", "ToI B2 BK Chest", False, None],
 
         # ================= NE Ocean ====================

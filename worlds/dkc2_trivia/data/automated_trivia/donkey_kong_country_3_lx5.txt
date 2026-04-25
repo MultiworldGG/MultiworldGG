@@ -1,0 +1,63 @@
+PARSER: 1
+GAME: Donkey Kong Country 3
+AUTHOR: lx5
+---
+QUESTION: EASY
+How many brother bears 
+are present in Donkey
+Kong Country 3?
+ANSWERS:
+13
+10
+15
+---
+QUESTION: EASY
+Which item you need to give
+Barter in order obtain his
+No. 6 wrench in Donkey
+Kong Country 3?
+ANSWERS:
+A mirror
+A flower
+A bowling ball
+---
+QUESTION: MEDIUM
+Which tool is Funky playing
+with at Funky's Rentals
+when you visit him in
+Donkey Kong Country 3?
+ANSWERS:
+A hammer
+A blowtorch strainer
+A brushed iron
+---
+QUESTION: MEDIUM
+Which brother bear in Donkey
+Kong Country 3 asks the Kongs
+to deliver a present to Blue
+in Cotton Top Cove?
+ANSWERS:
+Blizzard
+Boomer
+Brash
+---
+QUESTION: HARD
+Which of the following
+conditions are required for 
+Flupperius Petallus Pongus 
+to fully bloom in Donkey 
+Kong Country 3's map?
+ANSWERS:
+Clear Razor Ridge
+Give Bramble a flower
+Defeat KAOS at Mekanos
+---
+QUESTION: MEDIUM
+What's the name of the 
+main villian of Donkey 
+Kong Country 3?
+ANSWERS:
+Baron K. Roolenstein
+Kaptain K. Rool
+KAOS
+---

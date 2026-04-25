@@ -17,6 +17,8 @@ class RAC3VENDOR:
     SLOT_SIZE: int = 0
     NO_ITEMS_AVAILABLE_LOC_KEY: str = "NO_VENDOR_ITEMS"
     NO_ITEMS_AVAILABLE_MSG: str = "No items available. 1 infobot = 3 items in stock!"
+    ALL_ITEMS_SOLD_OUT_LOC_KEY: str = "ALL_VENDOR_ITEMS_SOLD_OUT"
+    ALL_ITEMS_SOLD_OUT_MSG: str = "All 38 items purchased. Congratulations!"
 
     @staticmethod
     def get_vendor_property_address(planet: str, vendor_prop: int) -> int:
@@ -84,7 +86,7 @@ class RAC3SHIPVENDOR(RAC3VENDOR):
     ITEM_NAME_PTR_SIZE: int = 4
     ITEM_ICON_COLOR_OFFSET: int = 0x1C
     ITEM_ICON_COLOR_SIZE: int = 4
-    ITEM_IS_EQUIPPED_OFFSET: int = 0x20 
+    ITEM_IS_EQUIPPED_OFFSET: int = 0x20
     ITEM_IS_EQUIPPED_SIZE: int = 1
 
 class RAC3SKINVENDOR(RAC3VENDOR):

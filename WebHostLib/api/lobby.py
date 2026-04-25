@@ -386,16 +386,57 @@ def _check_version_constraint(requires_json: str | None, server_version: Version
     return None
 
 
-def _parse_apworld_upload(apworld_data: bytes) -> tuple[str, str | None]:
+def _manual_game_segment(game_name: str) -> str:
+    """'Manual_GameName_Player' -> 'GameName', 'Manual_GameName' -> 'GameName'"""
+    if not game_name.startswith("Manual_"):
+        return ""
+    rest = game_name[len("Manual_"):]
+    return rest.split("_")[0]
+
+
+def _is_manual_apworld(original_filename: str, apworld_data: bytes) -> bool:
+    if not os.path.basename(original_filename).lower().startswith("manual_"):
+        return False
+    try:
+        with zipfile.ZipFile(io.BytesIO(apworld_data)) as apzip:
+            return any(
+                n.lower().startswith("manual_") and n.lower().endswith("/game.py")
+                for n in apzip.namelist()
+            )
+    except Exception:
+        return False
+
+
+def _parse_apworld_upload(apworld_data: bytes, original_filename: str = "") -> tuple[str, str | None]:
     if not zipfile.is_zipfile(io.BytesIO(apworld_data)):
         raise ValueError("File is not a valid .apworld (must be a ZIP archive)")
 
     with zipfile.ZipFile(io.BytesIO(apworld_data)) as apzip:
+        names = apzip.namelist()
         manifest_path = next(
-            (n for n in apzip.namelist() if n == "archipelago.json" or n.endswith("/archipelago.json")),
+            (n for n in names if n == "archipelago.json" or n.endswith("/archipelago.json")),
             None,
         )
         if not manifest_path:
+            if os.path.basename(original_filename).lower().startswith("manual_"):
+                game_py_path = next(
+                    (n for n in names if n.lower().startswith("manual_") and n.lower().endswith("/game.py")),
+                    None,
+                )
+                if game_py_path:
+                    module_prefix = game_py_path[:game_py_path.lower().index("/game.py")]
+                    data_game_path = next(
+                        (n for n in names if n.lower() == f"{module_prefix.lower()}/data/game.json"),
+                        None,
+                    )
+                    if data_game_path:
+                        try:
+                            data_game = json.loads(apzip.read(data_game_path).decode("utf-8", errors="replace"))
+                            game = str(data_game.get("game", "")).strip() if isinstance(data_game, dict) else str(data_game).strip()
+                            if game:
+                                return f"Manual_{game}", None
+                        except Exception:
+                            pass
             raise ValueError("APWorld must contain archipelago.json manifest")
 
         try:
@@ -1872,17 +1913,23 @@ def lobby_upload_apworld(lobby: UUID, yaml_id: int):
         return jsonify({"error": "No file provided"}), 400
 
     try:
-        apworld_game, world_version = _parse_apworld_upload(apworld_data)
+        apworld_game, world_version = _parse_apworld_upload(apworld_data, original_filename)
     except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
 
     if apworld_game != yaml_record.yaml_game:
-        return jsonify({
-            "error": f"APWorld is for '{apworld_game}', but this YAML is for '{yaml_record.yaml_game}'. "
-                     f"Please upload the correct APWorld."
-        }), 400
+        yaml_game = yaml_record.yaml_game or ""
+        if not (
+            _is_manual_apworld(original_filename, apworld_data)
+            and _manual_game_segment(apworld_game) == _manual_game_segment(yaml_game)
+            and _manual_game_segment(apworld_game)
+        ):
+            return jsonify({
+                "error": f"APWorld is for '{apworld_game}', but this YAML is for '{yaml_game}'. "
+                         f"Please upload the correct APWorld."
+            }), 400
 
-    if not yaml_record.is_custom and world_version is None:
+    if not yaml_record.is_custom and world_version is None and not _is_manual_apworld(original_filename, apworld_data):
         return jsonify({"error": "Upgrade APWorlds must have a world_version defined in archipelago.json"}), 400
 
     try:
@@ -1894,7 +1941,7 @@ def lobby_upload_apworld(lobby: UUID, yaml_id: int):
     except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
 
-    if preview["unverifiable_yaml_ids"]:
+    if preview["unverifiable_yaml_ids"] and not _is_manual_apworld(original_filename, apworld_data):
         return jsonify({
             "error": "APWorld must define world_version in archipelago.json to validate YAML version requirements."
         }), 400

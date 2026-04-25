@@ -1,0 +1,13 @@
+PARSER: 1
+GAME: Ocarina of Time
+AUTHOR: M.
+---
+QUESTION: MEDIUM
+What is the name of
+Mamamu Yan's dog
+in Ocarina of Time?
+ANSWERS:
+Richard
+Kevin
+Poochy
+---

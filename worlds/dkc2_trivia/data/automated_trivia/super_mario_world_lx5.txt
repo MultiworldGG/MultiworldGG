@@ -1,0 +1,349 @@
+PARSER: 1
+GAME: Super Mario World
+AUTHOR: lx5
+---
+QUESTION: EASY
+How many exits are there in
+Super Mario World?
+ANSWERS:
+96
+100
+92
+---
+QUESTION: MEDIUM
+How many pairs of pipes exist
+in Super Mario World?
+ANSWERS:
+6
+12
+8
+---
+QUESTION: HARD
+ Which of the following levels
+ in Super Mario World has a 
+ Powerup Roulette inside?
+ANSWERS:
+Forest of Illusion 1
+Vanilla Dome 3
+Forest of Illusion 3
+---
+QUESTION: MEDIUM
+ Which of the following levels
+   in Super Mario World has 
+ enemies trapped in bubbles?
+ANSWERS:
+Forest of Illusion 3
+Donut Plains 2
+Chocolate Island 5
+---
+QUESTION: EASY
+ How many 3-Up Moons exist in
+ Super Mario World?
+ANSWERS:
+7
+6
+8
+---
+QUESTION: MEDIUM
+ Which of the following Super
+ Mario World levels doesn't
+ have enough Dragon Coins for
+ a 1-Up/sending a check?
+ANSWERS:
+Chocolate Secret
+Valley of Bowser 2
+Way Cool
+---
+QUESTION: HARD
+ Which of the following Super
+ Mario World levels has two
+ sets of Hidden 1-Up?
+ANSWERS:
+Valley of Bowser 2
+Yoshi's Island 4
+Donut Plains 4
+---
+QUESTION: EASY
+ In Super Mario World, which 
+ of the following levels
+ doesn't have a Magikoopa?
+ANSWERS:
+Iggy's Castle
+Larry's Castle
+Lemmy's Castle
+---
+QUESTION: EASY
+ In Super Mario World, what's
+ the message built with coins
+ at the end of Funky?
+ANSWERS:
+YOU ARE A SUPER PLAYER!!
+YOU ARE SUPER PLAYER!!
+YOU IS A SUPER PLAYER!!
+---
+QUESTION: HARD
+What's the minimal item 
+requirement in Vanilla
+Dome 1's Normal Exit in
+Super Mario World? 
+Account for out of logic
+situations as well.
+ANSWERS:
+Nothing
+Run + Super Star
+1 Progressive Powerup
+---
+QUESTION: MEDIUM
+Which of the following items
+aren't needed for Forest
+of Illusion 4's Dragon Coins
+checks in Super Mario World?
+ANSWERS:
+Run
+Fire Flower
+P-Switch
+---
+QUESTION: HARD
+How many Mega Moles are
+there in Valley of Bowser 1
+in Super Mario World?
+ANSWERS:
+20
+16
+24
+---
+QUESTION: HARD
+In Super Mario World,
+which of the following
+levels doesn't have
+Munchers in it?
+ANSWERS:
+Valley of Bowser 3
+Chocolate Secret
+Valley of Bowser 1
+---
+QUESTION: MEDIUM
+In Super Mario World, how 
+many Dragon Coins can be 
+found in Donut Secret 1?
+ANSWERS:
+7
+5
+6
+---
+QUESTION: EASY
+In Super Mario World, how
+many coin arrows are there in
+Vanilla Secret 3?
+ANSWERS:
+5
+3
+4
+---
+QUESTION: MEDIUM
+In Super Mario World, which
+of the following levels 
+doesn't have a bonus room?
+ANSWERS:
+Butter Bridge 2
+Morton's Castle
+Chocolate Island 5
+---
+QUESTION: EASY
+In Super Mario World, what
+causes Pokeys to have
+5 segments instead of 3?
+ANSWERS:
+Riding a Yoshi
+Having a Fire Flower
+A P-Switch is active
+---
+QUESTION: HARD
+What causes Hammer Bros. to
+launch hammers more often 
+in Super Mario World?
+ANSWERS:
+Not being in the°main map
+Riding a Yoshi
+Having a powerup
+---
+QUESTION: HARD
+What happens when you face
+Bowser at his castle and
+don't have enough Boss Tokens
+in Super Mario World AP?
+ANSWERS:
+Keeps dropping balls
+Stomps Mario
+Goes away
+---
+QUESTION: HARD
+Which Yoshi color can be found
+at Star World 1 in
+Super Mario World?
+ANSWERS:
+Red
+Green
+Yellow
+---
+QUESTION: HARD
+In Super Mario World, which 
+doors at Valley Ghost House
+allows you to reach 
+the Normal Exit?
+ANSWERS:
+Third and Fourth
+Fourth and Fifth
+First and Third
+---
+QUESTION: HARD
+What can be found at the very
+end of Sunken Ghost Ship
+in Super Mario World?
+ANSWERS:
+Three 1-Up mushrooms
+Several spike balls
+A goal sphere
+---
+QUESTION: HARD
+Which of the following 
+castles doesn't have a 
+freestanding red mushroom 
+in Super Mario World?
+ANSWERS:
+Roy's Castle
+Larry's Castle
+Ludwig's Castle
+---
+QUESTION: MEDIUM
+Which of the following ghost
+houses has a Big Boo fight 
+in Super Mario World?
+ANSWERS:
+Donut Secret House
+Forest Ghost House
+Valley Ghost House
+---
+QUESTION: EASY
+What's the color of the 
+Switch Palace located 
+inside Forest of Illusion 
+in Super Mario World?
+ANSWERS:
+Blue
+Green
+Red
+---
+QUESTION: EASY
+What's the color of the 
+Switch Palace located 
+inside Vanilla Dome
+in Super Mario World?
+ANSWERS:
+Red
+Blue
+Yellow
+---
+QUESTION: HARD
+Which of the following items 
+are the bare minimum to obtain
+Chocolate Island 2 normal exit
+in Super Mario World?
+ANSWERS:
+Nothing
+P-Switch
+Run + Red Switch Palace
+---
+QUESTION: MEDIUM
+What's an item that Magikoopas
+can spawn with their magic 
+in Super Mario World?
+ANSWERS:
+A 1-Up mushroom
+A fire flower
+A coin with a smile
+---
+QUESTION: MEDIUM
+In Super Mario World, yellow
+colored Yoshis have a special 
+ability when carrying 
+a shell on its mouth 
+which allows them to...
+ANSWERS:
+Create an earthquake
+Spit three fireballs
+Grow wings
+---
+QUESTION: HARD
+Which of the following items 
+are the bare minimum to obtain
+Iggy's Castle normal exit
+in Super Mario World?
+ANSWERS:
+Climb
+P-Switch
+Climb + P-Switch
+---
+QUESTION: HARD
+Which of the following levels
+doesn't feature Skewers
+in Super Mario World?
+ANSWERS:
+Forest Fortress
+Valley Fortress
+Wendy's Castle
+---
+QUESTION: MEDIUM
+Which Forest of Illusion level
+in Super Mario World has
+a Midway Gate?
+ANSWERS:
+Forest of Illusion 1
+Forest of Illusion 2
+Forest Secret Area
+---
+QUESTION: HARD
+How many 1-Ups from 1-Up
+Mushrooms are possible to
+collect in Gnarly in
+Super Mario World?
+ANSWERS:
+6
+2
+4
+---
+QUESTION: HARD
+Which Super Mario World 
+level has Blue Switch 
+Palace blocks?
+ANSWERS:
+Valley of Bowser 4
+Forest of Illusion 2
+Vanilla Secret 2
+---
+QUESTION: MEDIUM
+Which Super Mario World 
+level has the most Yellow
+Switch Palace blocks?
+ANSWERS:
+Yoshi's Island 3
+Donut Plains 1
+Chocolate Island 2
+---
+QUESTION: HARD
+Which Super Mario World 
+level doesn't have Red
+Switch Palace blocks?
+ANSWERS:
+Chocolate Island 5
+Wendy's Castle
+Chocolate Fortress
+---
+QUESTION: HARD
+Which Super Mario World castle
+doesn't have automatic stairs?
+ANSWERS:
+Lemmy's Castle
+Larry's Castle
+Ludwig's Castle
+---

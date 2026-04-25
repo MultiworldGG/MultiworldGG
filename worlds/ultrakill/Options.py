@@ -449,10 +449,10 @@ class MusicRando(Toggle):
     """
     Randomizes the music that plays during the game.
 
-    Music randomizer is temporarily disabled.
+    Some music is never randomized.
     """
     display_name = "Music Randomizer"
-    visibility = Visibility.none
+    #visibility = Visibility.none
 
 
 class CybergrindHints(DefaultOnToggle):

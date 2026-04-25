@@ -319,21 +319,21 @@ class UltrakillWorld(World):
             #print(self.music)
 
     
-    #def write_spoiler_header(self, spoiler_handle):
-    #    if self.options.music_randomizer:
-    #        spoiler_handle.write("\nMusic:\n")
-    #        for i, j in self.music.items():
-    #            original: str
-    #            changed: str
-    #            if i in multilayer_music.keys():
-    #                original = multilayer_music[i]
-    #            elif i in singlelayer_music.keys():
-    #                original = singlelayer_music[i]
-    #            if j in multilayer_music.keys():
-    #                changed = multilayer_music[j]
-    #            elif j in singlelayer_music.keys():
-    #                changed = singlelayer_music[j]
-    #            spoiler_handle.write(f"({i}) {original} -> {changed}\n")
+    def write_spoiler_header(self, spoiler_handle):
+        if self.options.music_randomizer:
+            spoiler_handle.write("\nMusic:\n")
+            for i, j in self.music.items():
+                original: str
+                changed: str
+                if i in multilayer_music.keys():
+                    original = multilayer_music[i]
+                elif i in singlelayer_music.keys():
+                    original = singlelayer_music[i]
+                if j in multilayer_music.keys():
+                    changed = multilayer_music[j]
+                elif j in singlelayer_music.keys():
+                    changed = singlelayer_music[j]
+                spoiler_handle.write(f"({i})".ljust(7) + f"{original} -> {changed}\n")
 
 
     def create_items(self):

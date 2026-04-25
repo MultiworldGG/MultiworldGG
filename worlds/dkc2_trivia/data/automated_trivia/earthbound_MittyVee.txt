@@ -1,0 +1,132 @@
+PARSER: 1
+GAME: EarthBound
+AUTHOR: MittyVee
+---
+QUESTION: MEDIUM
+In EarthBound, what is the
+name of the monkey who wants
+the King Banana?
+ANSWERS:
+Man K. Man
+Talah Rama
+Bubble Monkey
+---
+QUESTION: EASY
+In EarthBound, what flavor of
+yogurt can the Gourmet Yogurt
+Machine produce?
+ANSWERS:
+Trout
+Peanut
+Tofu
+---
+QUESTION: EASY
+In EarthBound, what is the
+name of the lake monster who
+can be found in Winters?
+ANSWERS:
+Tessie
+Tassie
+Nessie
+---
+QUESTION: EASY
+In EarthBound, what color does
+the cult in Happy-Happy
+Village worship?
+ANSWERS:
+Blue
+Purple
+White
+---
+QUESTION: MEDIUM
+In EarthBound, what item does
+the Broken Pipe become after
+being fixed?
+ANSWERS:
+Shield killer
+Hungry HP-Sucker
+Neutralizer
+---
+QUESTION: EASY
+In EarthBound, what is the
+name of the flying machine
+designed by Dr. Andonuts?
+ANSWERS:
+Sky Runner
+Phase Distorter
+Star Walker
+---
+QUESTION: MEDIUM
+Which of these does NOT
+appear as a PSI ability
+in EarthBound?
+ANSWERS:
+Offense down
+Offense up
+Defense down
+---
+QUESTION: EASY
+How many "Your Sanctuary"
+locations must be visited
+in a normal playthrough
+of EarthBound?
+ANSWERS:
+8
+6
+7
+---
+QUESTION: HARD
+In EarthBound, what is
+Mondo Mole's greatest
+weakness?
+ANSWERS:
+Paralysis
+PSI Fire
+PSI Freeze
+---
+QUESTION: EASY
+Which party member in
+EarthBound cannot use PSI?
+ANSWERS:
+Jeff
+Paula
+Poo
+---
+QUESTION: HARD
+Which boss in EarthBound
+can sometimes drop
+a Boiled Egg?
+ANSWERS:
+Captain Strong
+Everdred
+Clumsy Robot
+---
+QUESTION: MEDIUM
+In EarthBound, which of these
+items is NOT in Jeff's
+starting inventory?
+ANSWERS:
+Fresh Egg
+Ruler
+Protractor
+---
+QUESTION: MEDIUM
+Which of these items does
+Poo normally start with
+in EarthBound?
+ANSWERS:
+Tiny Ruby
+Hieroglyph Copy
+Brain Stone
+---
+QUESTION: MEDIUM
+In EarthBound, you can cure
+homesickness by calling your
+mom. Which of these is NOT
+an alternative way to cure
+homesickness?
+ANSWERS:
+Using a Chick
+Resting in a hot spring
+Falling unconscious
+---

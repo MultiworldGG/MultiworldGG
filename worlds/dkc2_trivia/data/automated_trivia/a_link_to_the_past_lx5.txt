@@ -1,0 +1,112 @@
+PARSER: 1
+GAME: A Link to the Past
+AUTHOR: lx5
+---
+QUESTION: EASY
+When does Armor Knights turn
+red in A Link to the Past?
+ANSWERS:
+When there's one left
+After defeating one
+They're always red
+---
+QUESTION: EASY
+How many eyes Moldorm has in
+A Link to the Past?
+ANSWERS:
+2
+8
+5
+---
+QUESTION: EASY
+Where's Moldorm weak point
+in A Link to the Past?
+ANSWERS:
+In the tail
+In the left eye
+In the head
+---
+QUESTION: EASY
+What's a valid way to remove
+Helmasaur King's mask
+in A Link to the Past?
+ANSWERS:
+With the hammer
+With Bombos
+With the tempered sword
+---
+QUESTION: MEDIUM
+What's a valid way to remove
+Helmasaur King's mask
+in A Link to the Past?
+ANSWERS:
+With bombs
+With the golden sword
+With the Cane of Somaria
+---
+QUESTION: MEDIUM
+What's the name of the boss
+found at the end of Swamp
+Palace in A Link to the Past?
+ANSWERS:
+Arrghus
+Kholdstare
+Vitreous
+---
+QUESTION: EASY
+Which weapons are needed
+to defeat Trinexx in
+A Link to the Past?
+ANSWERS:
+Ice Rod and Fire Rod
+Cane of Somaria and°     Ice rod
+Fire Rod and°            Cane of Byrna
+---
+QUESTION: HARD
+When you can find the Super
+Bomb in A Link to the Past?
+ANSWERS:
+After completing°        Ice Palace & Misery Mire
+After visting the°       Cursed Fairy
+After Rescuing Zelda
+---
+QUESTION: MEDIUM
+Where is the Bombos medallion
+located in A Link to the Past?
+ANSWERS:
+In a cliff in the Desert
+In the Lake of Ill Omen
+West of Tower of Hera
+---
+QUESTION: MEDIUM
+Where is the Quake medallion
+located in A Link to the Past?
+ANSWERS:
+In the Lake of Ill Omen
+In a cliff in the Desert
+West of Tower of Hera
+---
+QUESTION: MEDIUM
+Where is the Ether medallion
+located in A Link to the Past?
+ANSWERS:
+West of Tower of Hera
+In the Lake of Ill Omen
+In a cliff in the Desert
+---
+QUESTION: MEDIUM
+Which medallions are required
+to beat A Link to the Past?
+ANSWERS:
+Ether & Quake
+Quake & Bombos
+Bombos & Ether
+---
+QUESTION: HARD
+Where is the Magic Mushroom
+located at in ALTTP?
+ANSWERS:
+In a damp, misty glen°   in the Lost Woods
+In a open, rainy glen°   in the Lost Woods
+In a dry, rocky glen°    in the Lost Woods
+---

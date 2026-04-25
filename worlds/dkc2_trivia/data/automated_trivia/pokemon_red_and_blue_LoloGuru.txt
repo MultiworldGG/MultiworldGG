@@ -1,0 +1,21 @@
+PARSER: 1
+GAME: Pokemon Red and Blue
+AUTHOR: LoloGuru
+---
+QUESTION: EASY
+ In Pokemon Red & Blue, which 
+ Pokemon is #25 in the Pokedex? 
+ANSWERS:
+Pikachu
+Sandslash
+Oddish
+---
+QUESTION: MEDIUM
+ Which, of these Pokemon, can 
+ only be caught in Pokemon 
+ Red and not Pokemon Blue? 
+ANSWERS:
+Gloom
+Tangela
+Meowth
+---

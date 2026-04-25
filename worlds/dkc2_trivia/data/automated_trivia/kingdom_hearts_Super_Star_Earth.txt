@@ -1,0 +1,22 @@
+PARSER: 1
+GAME: Kingdom Hearts
+AUTHOR: Earth
+---
+QUESTION: MEDIUM
+In Kingdom Hearts 1:
+What is one of the required
+items to craft the rift to 
+leave Destiny Islands?
+ANSWERS:
+Cloth
+Bungee Cord
+Duck Tape
+---
+QUESTION: HARD
+What does Sora says to Riku
+while on Hook's Pirate Ship
+ANSWERS:
+You're Stupid!
+I Implore to Reconsider!
+I'm sorry Riku!
+---

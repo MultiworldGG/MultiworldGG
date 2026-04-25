@@ -1,0 +1,113 @@
+PARSER: 1
+GAME: Diddy Kong Racing
+AUTHOR: lx5
+---
+QUESTION: EASY
+How many missiles are given by 
+the third red balloon upgrade
+in Diddy Kong Racing?
+ANSWERS:
+10 missiles
+8 missiles
+12 missiles
+---
+QUESTION: HARD
+Which cheat code makes every
+balloon be yellow
+in Diddy Kong Racing?
+ANSWERS:
+BODYARMOR
+NOYELLOWSTUFF
+ROCKETFUEL
+---
+QUESTION: MEDIUM
+What's the name of the
+boss at Sherbet Island
+in Diddy Kong Racing?
+ANSWERS:
+Bubbler
+Bluey
+Smokey
+---
+QUESTION: MEDIUM
+At Diddy Kong Racing's final
+race, what is Wizpig riding 
+to challenge the racer?
+ANSWERS:
+A rocket
+Nothing
+A banana
+---
+QUESTION: EASY
+Which of the following 
+characters isn't part of
+Diddy Kong Racing's
+playable roster?
+ANSWERS:
+Dixie
+Conker
+Banjo
+---
+QUESTION: MEDIUM
+Which combination of vehicles
+can be used at Dino Domain's
+races in Diddy Kong Racing's 
+Adventure mode?
+ANSWERS:
+Car & Plane
+Car, Hovercraft & Plane
+Car & Hovercraft
+---
+QUESTION: MEDIUM
+Which combination of vehicles
+can be used at Sherbet Island's
+races in Diddy Kong Racing's 
+Adventure mode?
+ANSWERS:
+Car & Hovercraft
+Car, Hovercraft & Plane
+Hovercraft & Plane
+---
+QUESTION: EASY
+Which Snowflake Mountain 
+race contains a Wish Key
+in Diddy Kong Racing?
+ANSWERS:
+Snowball Valley
+Frosty Village
+Everfrost Peak
+---
+QUESTION: HARD
+Where's the Wish Key in 
+Boulder Canyon in 
+Diddy Kong Racing?
+ANSWERS:
+In a hidden alcove
+Behind a waterfall
+Underwater
+---
+QUESTION: EASY
+Where's the Wish Key
+in Ancient Lake in 
+Diddy Kong Racing?
+ANSWERS:
+Above an offtrack ramp
+Below a dinosaur foot
+Underwater
+---
+QUESTION: MEDIUM
+How do you unlock Drumstick
+in Diddy Kong Racing?
+ANSWERS:
+Run over a rooster frog
+Beat several time trials
+Beat Wizpig 1
+---
+QUESTION: MEDIUM
+When do you receive magic 
+codes in Diddy Kong Racing?
+ANSWERS:
+Beating any Wizpig
+Beat a time trial
+Finishing a trophy race
+---
