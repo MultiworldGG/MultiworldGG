@@ -4,6 +4,7 @@
 #include "item_table.h"
 #include "save.h"
 #include "z64.h"
+#include "ap_item_names.h"
 
 #define TEXT_STATE_CLOSING 2
 
@@ -46,6 +47,7 @@ int32_t DoorWarp1_PlayerInRange_Overwrite(z64_actor_t* actor, z64_game_t* game) 
                 }
                 call_effect_function(item_row);
                 PLAYER_NAME_ID = override.value.base.player;
+                ap_item_names_set_active_from_override(&override);
                 z64_DisplayTextbox(&z64_game, resolve_item_text_id(item_row, PLAYER_NAME_ID != PLAYER_ID), 0);
             }
             extended_savectx.collected_dungeon_rewards[boss_idx] = true;

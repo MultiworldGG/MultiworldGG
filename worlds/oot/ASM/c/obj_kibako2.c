@@ -1,11 +1,14 @@
 #include "obj_kibako2.h"
 #include "textures.h"
 #include "actor.h"
+// AP Specific, must be maintained when syncing from upstream
+#include "ap_filler_tint.h"
 #define CRATE_DLIST (z64_gfx_t *)0x06000960
 
 #define CRATE_CI8_TEXTURE_PALETTE_OFFSET 0x00
 #define CRATE_CI8_TEXTURE_TOP_OFFSET 0x200
 #define CRATE_CI8_TEXTURE_SIDE_OFFSET 0xA00
+#define CRATE_CI8_TEXTURE_BYTES 0x1200
 
 extern uint8_t POTCRATE_TEXTURES_MATCH_CONTENTS;
 extern uint8_t POTCRATE_GOLD_TEXTURE;
@@ -19,16 +22,6 @@ static _Bool should_tint_filler_crate(uint8_t chest_type) {
     return chest_type == FILLER_CHEST
         && POTCRATE_TEXTURES_MATCH_CONTENTS == PTMC_CONTENTS
         && (!SOA_UNLOCKS_POTCRATE_TEXTURE || z64_file.stone_of_agony != 0);
-}
-
-static void apply_filler_crate_tint(z64_gfx_t* gfx) {
-    gDPSetPrimColor(gfx->poly_opa.p++, 0, 0x80, 0x1E, 0x2A, 0x72, 0xFF);
-    gDPSetEnvColor(gfx->poly_opa.p++, 0x00, 0x01, 0x14, 0xFF);
-}
-
-static void clear_filler_crate_tint(z64_gfx_t* gfx) {
-    gDPSetPrimColor(gfx->poly_opa.p++, 0, 0x80, 0xFF, 0xFF, 0xFF, 0xFF);
-    gDPSetEnvColor(gfx->poly_opa.p++, 0x00, 0x00, 0x00, 0x00);
 }
 
 // Hacks the regular crate spawn collectible function to spawn overridden collectibles
@@ -96,6 +89,17 @@ void ObjKibako2_Draw(z64_actor_t* actor, z64_game_t* game) {
         }
     }
 
+    // AP Specific, must be maintained when syncing from upstream
+    _Bool tint_filler = should_tint_filler_crate(this->chest_type);
+    if (tint_filler) {
+        texture = ap_filler_tint_ci8_texture(
+            ap_filler_resolve_texture(game, actor, texture),
+            AP_FILLER_TINT_CRATE,
+            CRATE_CI8_TEXTURE_BYTES,
+            512
+        );
+    }
+
     // push custom dlists (that set the palette and textures) to segment 09
     z64_gfx_t* gfx = game->common.gfx;
     gfx->poly_opa.d -= 6;
@@ -108,15 +112,6 @@ void ObjKibako2_Draw(z64_actor_t* actor, z64_game_t* game) {
 
     gMoveWd(gfx->poly_opa.p++, G_MW_SEGMENT, 9 * sizeof(int), gfx->poly_opa.d);
 
-    _Bool tint_filler = should_tint_filler_crate(this->chest_type);
-    if (tint_filler) {
-        apply_filler_crate_tint(gfx);
-    }
-
     // draw the original dlist that has been hacked in ASM to jump to the custom dlists
     z64_Gfx_DrawDListOpa(game, CRATE_DLIST);
-
-    if (tint_filler) {
-        clear_filler_crate_tint(gfx);
-    }
 }

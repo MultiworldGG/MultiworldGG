@@ -5,6 +5,8 @@
 #include "z64.h"
 #include "get_items.h"
 #include "actor.h"
+// AP Specific, must be maintained when syncing from upstream
+#include "ap_filler_tint.h"
 
 #define DUNGEON_POT_SIDE_TEXTURE (uint8_t*)0x050108A0
 #define DUNGEON_POT_TOP_TEXTURE (uint8_t*)0x050118A0
@@ -13,6 +15,9 @@
 #define POT_SIDE_TEXTURE (uint8_t*)0x06000000
 #define POT_TOP_TEXTURE (uint8_t*)0x06001000
 #define POT_DLIST (z64_gfx_t*)0x060017C0
+
+#define POT_SIDE_TEXTURE_BYTES 4096
+#define POT_TOP_TEXTURE_BYTES 512
 
 extern uint8_t POTCRATE_TEXTURES_MATCH_CONTENTS;
 extern uint8_t POTCRATE_GOLD_TEXTURE;
@@ -26,16 +31,6 @@ static _Bool should_tint_filler_pot(uint8_t chest_type) {
     return chest_type == FILLER_CHEST
         && POTCRATE_TEXTURES_MATCH_CONTENTS == PTMC_CONTENTS
         && (!SOA_UNLOCKS_POTCRATE_TEXTURE || z64_file.stone_of_agony != 0);
-}
-
-static void apply_filler_pot_tint(z64_gfx_t* gfx) {
-    gDPSetPrimColor(gfx->poly_opa.p++, 0, 0x80, 0x1E, 0x2A, 0x72, 0xFF);
-    gDPSetEnvColor(gfx->poly_opa.p++, 0x00, 0x01, 0x14, 0xFF);
-}
-
-static void clear_filler_pot_tint(z64_gfx_t* gfx) {
-    gDPSetPrimColor(gfx->poly_opa.p++, 0, 0x80, 0xFF, 0xFF, 0xFF, 0xFF);
-    gDPSetEnvColor(gfx->poly_opa.p++, 0x00, 0x00, 0x00, 0x00);
 }
 
 void draw_pot(z64_actor_t* actor, z64_game_t* game) {
@@ -101,6 +96,21 @@ void draw_pot(z64_actor_t* actor, z64_game_t* game) {
         }
     }
 
+    // AP Specific, must be maintained when syncing from upstream
+    _Bool tint_filler = should_tint_filler_pot(chest_type);
+    if (tint_filler) {
+        side_texture = ap_filler_tint_rgba16_texture(
+            ap_filler_resolve_texture(game, actor, side_texture),
+            AP_FILLER_TINT_POT_SIDE,
+            POT_SIDE_TEXTURE_BYTES
+        );
+        top_texture = ap_filler_tint_rgba16_texture(
+            ap_filler_resolve_texture(game, actor, top_texture),
+            AP_FILLER_TINT_POT_TOP,
+            POT_TOP_TEXTURE_BYTES
+        );
+    }
+
     // push custom dlist (that sets the texture) to segment 09
     z64_gfx_t* gfx = game->common.gfx;
     gfx->poly_opa.d -= 4;
@@ -113,17 +123,8 @@ void draw_pot(z64_actor_t* actor, z64_game_t* game) {
     gSPEndDisplayList(gfx->poly_opa.d + 3);
     gMoveWd(gfx->poly_opa.p++, G_MW_SEGMENT, 0x0A * sizeof(int), gfx->poly_opa.d + 2);
 
-    _Bool tint_filler = should_tint_filler_pot(chest_type);
-    if (tint_filler) {
-        apply_filler_pot_tint(gfx);
-    }
-
     // draw the original dlist that has been hacked in ASM to jump to the custom dlist
     z64_Gfx_DrawDListOpa(game, dlist);
-
-    if (tint_filler) {
-        clear_filler_pot_tint(gfx);
-    }
 }
 
 void draw_pot_hack(z64_actor_t* actor, z64_game_t* game) {

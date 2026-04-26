@@ -43,6 +43,9 @@ AP_PROGRESSION_MODEL_GRAPHIC = 0x00A5
 AP_JUNK_MODEL_GRAPHIC = 0x00A6
 AP_PROGRESSION_TEXT = 0x90B6
 AP_JUNK_TEXT = 0x90B7
+AP_ITEM_NAME_TABLE_SIZE = 2201
+AP_ITEM_NAME_TEXT_SIZE = 0xFFFF
+AP_ACTIVE_ITEM_NAME_SIZE = 49
 AP_TRIFORCE_RAINBOW_PATCHES = (
     (0x0AD0, [0xE7, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
 )
@@ -1588,6 +1591,7 @@ def patch_rom(world, rom):
     if len(override_table_bytes) >= rom.sym_length('cfg_item_overrides'):
         raise RuntimeError(f'Exceeded override table size: {len(override_table)}')
     rom.write_bytes(rom.sym('cfg_item_overrides'), override_table_bytes)
+    write_ap_item_name_table(world, rom)
     rom.write_byte(rom.sym('PLAYER_ID'), min(world.player, 255)) # Write player ID
     placeholder_name = encode_oot_player_name('a player')
     all_player_names = bytearray()
@@ -2353,12 +2357,69 @@ def write_rom_texture(rom, texture_id, texture):
     rom.write_bytes(addr, row_bytes)
 
 
+def encode_ap_item_name(item_name):
+    safe_name = ''.join(
+        c if c in character_table and 0x20 <= ord(c) <= 0x7E else '?'
+        for c in rom_safe_text(item_name)
+    ).strip()
+    if not safe_name:
+        safe_name = "MWGG item"
+    while sum(character_table[c] for c in safe_name) > NORMAL_LINE_WIDTH and len(safe_name) > 1:
+        safe_name = safe_name[:-1].rstrip()
+    return safe_name[:AP_ACTIVE_ITEM_NAME_SIZE - 1].encode('ascii', errors='replace') + b'\x00'
+
+
+def get_ap_item_name_id(ootworld, item_name):
+    if not hasattr(ootworld, 'ap_item_name_ids'):
+        ootworld.ap_item_name_ids = {}
+        ootworld.ap_item_names = []
+
+    encoded_name = encode_ap_item_name(item_name)
+    if encoded_name in ootworld.ap_item_name_ids:
+        return ootworld.ap_item_name_ids[encoded_name]
+
+    name_id = len(ootworld.ap_item_names) + 1
+    if name_id >= AP_ITEM_NAME_TABLE_SIZE:
+        raise RuntimeError(f'Exceeded AP item name table size: {name_id}')
+
+    ootworld.ap_item_name_ids[encoded_name] = name_id
+    ootworld.ap_item_names.append(encoded_name)
+    return name_id
+
+
+def write_ap_item_name_table(ootworld, rom):
+    ap_item_names = getattr(ootworld, 'ap_item_names', [])
+    count_addr = rom.sym('AP_ITEM_NAME_COUNT')
+    control_code_version_addr = rom.sym('AP_ITEM_NAME_CONTROL_CODE_VERSION')
+    offset_table_size = rom.sym_length('AP_ITEM_NAME_OFFSETS')
+    text_table_size = rom.sym_length('AP_ITEM_NAME_TEXT')
+    if count_addr is None or control_code_version_addr is None or offset_table_size == 0 or text_table_size == 0:
+        raise RuntimeError('AP item name symbols are missing. Rebuild the OoT ASM bundle.')
+
+    offsets = bytearray(offset_table_size)
+    text = bytearray(text_table_size)
+    text_pos = 0
+    for name_id, encoded_name in enumerate(ap_item_names, start=1):
+        if name_id * 2 + 2 > offset_table_size:
+            raise RuntimeError(f'Exceeded AP item name offset table size: {name_id}')
+        if text_pos + len(encoded_name) > text_table_size:
+            raise RuntimeError(f'Exceeded AP item name text table size: {text_pos + len(encoded_name)}')
+
+        offsets[name_id * 2:name_id * 2 + 2] = text_pos.to_bytes(2, 'big')
+        text[text_pos:text_pos + len(encoded_name)] = encoded_name
+        text_pos += len(encoded_name)
+
+    rom.write_bytes(count_addr, len(ap_item_names).to_bytes(2, 'big'))
+    rom.write_bytes(rom.sym('AP_ITEM_NAME_OFFSETS'), offsets)
+    rom.write_bytes(rom.sym('AP_ITEM_NAME_TEXT'), text)
+
+
 def get_override_table(world):
     return list(filter(lambda val: val != None, map(partial(get_override_entry, world), world.multiworld.get_filled_locations(world.player))))
 
 
 override_key_struct = struct.Struct('>BBxxI')  # match override_key_t in get_items.h
-override_struct = struct.Struct('>BBxxIHBxHxx')  # match override_t in get_items.h
+override_struct = struct.Struct('>BBxxIHBxHH')  # match override_t in get_items.h
 
 def get_override_table_bytes(override_table):
     return b''.join(sorted(itertools.starmap(override_struct.pack, override_table)))
@@ -2372,12 +2433,14 @@ def get_override_entry(ootworld, location):
     scene = location.scene
     default = location.default
     player_id = max(1, min(int(location.item.player), 255))
+    ap_item_name_id = 0
     if location.item.game != 'Ocarina of Time': 
         # This is an AP sendable. It's guaranteed to not be None. 
         if location.item.advancement:
             item_id = AP_PROGRESSION
         else:
             item_id = AP_JUNK
+        ap_item_name_id = get_ap_item_name_id(ootworld, location.item.name)
     else: 
         item_id = location.item.index
         if item_id is None and isinstance(location.item, OOTItem) and location.item.type == 'DungeonReward':
@@ -2424,7 +2487,7 @@ def get_override_entry(ootworld, location):
     else:
         return None
 
-    return (scene, type, default, item_id, player_id, looks_like_item_id)
+    return (scene, type, default, item_id, player_id, looks_like_item_id, ap_item_name_id)
 
 
 chestTypeMap = {

@@ -28,11 +28,6 @@ local temp_context_history = {}
 local outgoing_key_offset = 0x400C3C
 local big_poe_count_addr = 0x0040001E  -- BIG_POE_COUNT in AP tracking header (0x8040001E - 0x80000000)
 
-local item_display_queue = {}
-local item_display_current = nil
-local item_display_timer = 0
-local ITEM_DISPLAY_DURATION = 300  -- frames (~5 seconds at 60fps)
-
 local collectibles_overrides = nil
 local collectible_offsets = nil
 
@@ -1898,11 +1893,6 @@ function process_block(block)
     if collectible_offsets ~= block['collectibleOffsets'] then
         collectible_offsets = block['collectibleOffsets']
     end
-    if block['pendingDisplayItems'] ~= nil then
-        for _, msg in ipairs(block['pendingDisplayItems']) do
-            table.insert(item_display_queue, msg)
-        end
-    end
     return
 end
 
@@ -2022,23 +2012,6 @@ function main()
                         end
                     end
                 end
-            end
-        end
-        -- Advance to next queued display item when current one expires
-        if item_display_current == nil and #item_display_queue > 0 then
-            item_display_current = table.remove(item_display_queue, 1)
-            item_display_timer = ITEM_DISPLAY_DURATION
-        end
-        -- Clear the script's overlay so expired messages actually disappear.
-        gui.clearGraphics()
-
-        -- Draw item send overlay each frame
-        if item_display_current ~= nil then
-            gui.drawString(6, 6,  "Sent: " .. item_display_current["item"], "white", "black")
-            gui.drawString(6, 18, "  to: " .. item_display_current["player"], "white", "black")
-            item_display_timer = item_display_timer - 1
-            if item_display_timer <= 0 then
-                item_display_current = nil
             end
         end
         emu.frameadvance()

@@ -3,6 +3,7 @@
 #include "stdbool.h"
 #include "save.h"
 #include "dungeon_info.h"
+#include "ap_item_names.h"
 
 // no support for kana since they're not part of the message charset
 char FILENAME_ENCODING[256] = {
@@ -95,11 +96,17 @@ bool Message_Decode_Additional_Control_Codes(uint8_t currChar, uint32_t* pDecode
 
     switch (currChar) {
         case 0xF0: {
-            // Silver rupee puzzle control code
-            // Get the next character which tells us which puzzle it's for
-            uint8_t puzzle = msgRaw[++(msgCtx->msgBufPos)];
-            uint8_t count = extended_savectx.silver_rupee_counts[puzzle];
-            Message_AddInteger(msgCtx, pFont, pDecodedBufPos, pCharTexIdx, count);
+            // Silver rupee puzzle count, or AP item name when using the reserved
+            // 0xFF argument.
+            uint8_t code = msgRaw[++(msgCtx->msgBufPos)];
+            if (code == 0xFF) {
+                Message_AddString(msgCtx, pFont, pDecodedBufPos, pCharTexIdx, ap_item_names_get_active_name());
+            } else if (code == 0xFE) {
+                Message_AddString(msgCtx, pFont, pDecodedBufPos, pCharTexIdx, ap_item_names_get_active_article());
+            } else {
+                uint8_t count = extended_savectx.silver_rupee_counts[code];
+                Message_AddInteger(msgCtx, pFont, pDecodedBufPos, pCharTexIdx, count);
+            }
             (*pDecodedBufPos)--;
             return true;
         }

@@ -3,6 +3,8 @@
 #include "gfx.h"
 #include "sys_matrix.h"
 #include "textures.h"
+// AP Specific, must be maintained when syncing from upstream
+#include "ap_filler_tint.h"
 
 #define BROWN_FRONT_TEXTURE 0x06001798
 #define BROWN_BASE_TEXTURE 0x06002798
@@ -33,16 +35,6 @@ static _Bool should_tint_filler_chest(uint8_t chest_type) {
     return chest_type == FILLER_CHEST
         && (CHEST_SIZE_TEXTURE || CHEST_TEXTURE_MATCH_CONTENTS)
         && (!SOA_UNLOCKS_CHEST_TEXTURE || z64_file.stone_of_agony != 0);
-}
-
-static void apply_filler_chest_tint(Gfx** opa_ptr) {
-    gDPSetPrimColor((*opa_ptr)++, 0, 0x80, 0x1E, 0x2A, 0x72, 0xFF);
-    gDPSetEnvColor((*opa_ptr)++, 0x00, 0x01, 0x14, 0xFF);
-}
-
-static void clear_filler_chest_tint(Gfx** opa_ptr) {
-    gDPSetPrimColor((*opa_ptr)++, 0, 0x80, 0xFF, 0xFF, 0xFF, 0xFF);
-    gDPSetEnvColor((*opa_ptr)++, 0x00, 0x00, 0x00, 0x00);
 }
 
 void get_chest_override(z64_actor_t* actor) {
@@ -88,8 +80,8 @@ uint8_t get_chest_type(z64_actor_t* actor) {
 
     return chest_type;
 }
-
-void set_chest_texture(z64_gfx_t* gfx, uint8_t chest_type, Gfx** opa_ptr) {
+// AP Specific parameters, must be maintained when syncing from upstream
+void set_chest_texture(z64_game_t* game, z64_actor_t* actor, z64_gfx_t* gfx, uint8_t chest_type, Gfx** opa_ptr, _Bool tint_filler) {
     //set texture type
     void* frontTexture = (void*)BROWN_FRONT_TEXTURE;
     void* baseTexture = (void*)BROWN_BASE_TEXTURE;
@@ -133,6 +125,20 @@ void set_chest_texture(z64_gfx_t* gfx, uint8_t chest_type, Gfx** opa_ptr) {
         }
     }
 
+    // AP Specific, must be maintained when syncing from upstream
+    if (tint_filler) {
+        frontTexture = ap_filler_tint_rgba16_texture(
+            ap_filler_resolve_texture(game, actor, frontTexture),
+            AP_FILLER_TINT_CHEST_FRONT,
+            4096
+        );
+        baseTexture = ap_filler_tint_rgba16_texture(
+            ap_filler_resolve_texture(game, actor, baseTexture),
+            AP_FILLER_TINT_CHEST_BASE,
+            2048
+        );
+    }
+
     //the brown chest's base and lid dlist has been modified to jump to
     //segment 09 in order to dynamically set the chest front and base textures
     gfx->poly_opa.d -= 4;
@@ -152,14 +158,8 @@ void draw_chest_base(z64_game_t* game, z64_actor_t* actor, Gfx** opa_ptr) {
     gSPMatrix((*opa_ptr)++, write_matrix_stack_top(gfx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
     if (chest_type != GOLD_CHEST || !CHEST_GOLD_TEXTURE ||
         (SOA_UNLOCKS_CHEST_TEXTURE && z64_file.stone_of_agony == 0)) {
-        set_chest_texture(gfx, chest_type, opa_ptr);
-        if (tint_filler) {
-            apply_filler_chest_tint(opa_ptr);
-        }
+        set_chest_texture(game, actor, gfx, chest_type, opa_ptr, tint_filler);
         gSPDisplayList((*opa_ptr)++, 0x060006F0);
-        if (tint_filler) {
-            clear_filler_chest_tint(opa_ptr);
-        }
     } else {
         gSPDisplayList((*opa_ptr)++, 0x06000AE8);
     }
@@ -172,14 +172,8 @@ void draw_chest_lid(z64_game_t* game, z64_actor_t* actor, Gfx** opa_ptr) {
     gSPMatrix((*opa_ptr)++, write_matrix_stack_top(gfx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
     if (chest_type != GOLD_CHEST || !CHEST_GOLD_TEXTURE ||
         (SOA_UNLOCKS_CHEST_TEXTURE && z64_file.stone_of_agony == 0)) {
-        set_chest_texture(gfx, chest_type, opa_ptr);
-        if (tint_filler) {
-            apply_filler_chest_tint(opa_ptr);
-        }
+        set_chest_texture(game, actor, gfx, chest_type, opa_ptr, tint_filler);
         gSPDisplayList((*opa_ptr)++, 0x060010C0);
-        if (tint_filler) {
-            clear_filler_chest_tint(opa_ptr);
-        }
     } else {
         gSPDisplayList((*opa_ptr)++, 0x06001678);
     }
@@ -208,6 +202,7 @@ _Bool should_draw_forest_hallway_chest(z64_actor_t* actor, z64_game_t* game) {
 void get_dummy_chest(Chest* dummy_chest) {
     z64_actor_t dummy_actor;
     dummy_actor.actor_id = 0x000A;
+    dummy_actor.alloc_index = z64_ObjectIndex(&z64_game.obj_ctxt, OBJECT_BOX);
     dummy_actor.variable = 0x27EE;
     dummy_chest->en_box.dyna.actor = dummy_actor;
     // Init the type at gold, this way it will keep its vanilla appearance if we do not override it later in get_chest_override.

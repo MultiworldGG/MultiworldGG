@@ -16,7 +16,6 @@ from worlds import network_data_package
 from . import OOTWorld
 from .Rom import Rom, compress_rom_file
 from .N64Patch import apply_patch_file
-from .Utils import data_path
 
 
 CONNECTION_TIMING_OUT_STATUS = "Connection timing out. Please restart your emulator, then restart connector_oot.lua"
@@ -358,7 +357,6 @@ async def patch_and_run_game(apz5_file):
 
     apply_patch_file(rom, apz5_file, sub_file=sub_file)
     rom.write_to_file(decomp_path)
-    os.chdir(data_path("Compress"))
     compress_rom_file(decomp_path, comp_path)
     os.remove(decomp_path)
     async_start(run_game(comp_path))

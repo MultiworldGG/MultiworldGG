@@ -324,6 +324,10 @@ class Rom(BigStream):
 
 
 def compress_rom_file(input_file, output_file):
+    input_file = os.path.abspath(input_file)
+    output_file = os.path.abspath(output_file)
+    compressor_dir = data_path("Compress")
+
     def _read_dmadata_entries(path):
         entries = []
         with open(path, 'rb') as stream:
@@ -379,7 +383,7 @@ def compress_rom_file(input_file, output_file):
         return sorted(indices)
 
     dma_table_backup = None
-    dma_table_path = 'dmaTable.dat'
+    dma_table_path = os.path.join(compressor_dir, 'dmaTable.dat')
     try:
         extended_dma_indices = _read_extended_object_indices(input_file)
     except Exception:
@@ -405,8 +409,6 @@ def compress_rom_file(input_file, output_file):
             with open(dma_table_path, 'w', encoding='utf-8') as stream:
                 stream.write(' '.join(str(v) for v in current_values) + '\n')
 
-    compressor_path = "."
-
     if platform.system() == 'Windows':
         executable_path = "Compress.exe"
     elif platform.system() == 'Linux':
@@ -418,12 +420,13 @@ def compress_rom_file(input_file, output_file):
         executable_path = "Compress.out"
     else:
         raise RuntimeError('Unsupported operating system for compression.')
-    compressor_path = os.path.join(compressor_path, executable_path)
+    compressor_path = os.path.join(compressor_dir, executable_path)
     if not os.path.exists(compressor_path):
         raise RuntimeError(f'Compressor does not exist! Please place it at {compressor_path}.')
     import logging
     try:
         logging.info(subprocess.check_output([compressor_path, input_file, output_file],
+                                             cwd=compressor_dir,
                                              **subprocess_args(include_stdout=False)))
     finally:
         if dma_table_backup is not None:

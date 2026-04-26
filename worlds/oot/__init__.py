@@ -898,6 +898,7 @@ class OOTWorld(World):
 
         junk_pool = get_junk_pool(self)
         removed_items = []
+        pool_removed_random_starting_items = Counter(self.randomized_starting_items)
         # Determine starting items
         for item in self.multiworld.precollected_items[self.player]:
             if item.name in self.remove_from_start_inventory:
@@ -908,7 +909,9 @@ class OOTWorld(World):
                 if item.type == 'Song':
                     self.songs_as_items = True
                 # Call the junk fill and get a replacement
-                if item in self.itempool:
+                if pool_removed_random_starting_items[item.name]:
+                    pool_removed_random_starting_items[item.name] -= 1
+                elif item in self.itempool:
                     self.itempool.remove(item)
                     self.itempool.append(self.create_item(*get_junk_item(self.random, pool=junk_pool)))
         if self.start_with_consumables:
@@ -923,11 +926,38 @@ class OOTWorld(World):
         # Divide itempool into prefill and main pools
         self.itempool, self.pre_fill_items = self.divide_itempools()
 
-        self.multiworld.itempool += self.itempool
         self.remove_from_start_inventory.extend(removed_items)
 
         # Fill boss prizes. needs to happen before entrance shuffle
         self.fill_bosses()
+
+        self.multiworld.itempool += self.itempool
+
+
+    def remove_excess_junk_from_itempool(self):
+        main_items = [item for item in self.multiworld.itempool if item.player == self.player]
+        unfilled_locations = sum(1 for location in self.get_locations() if location.item is None)
+        excess_items = len(main_items) + len(self.pre_fill_items) - unfilled_locations
+        if excess_items <= 0:
+            return
+
+        removed_items = []
+        for item in reversed(main_items):
+            if item.excludable and not item.dungeonitem:
+                self.multiworld.itempool.remove(item)
+                if item in self.itempool:
+                    self.itempool.remove(item)
+                removed_items.append(item.name)
+                if len(removed_items) == excess_items:
+                    logger.debug(
+                        "Removed excess OOT junk item(s) from player %s item pool: %s",
+                        self.player, removed_items)
+                    return
+
+        raise FillError(
+            f"OOT generated {excess_items} more items than unfilled locations for player {self.player}, "
+            "but there was not enough removable junk in the main item pool."
+        )
 
 
     def set_rules(self):
@@ -1028,13 +1058,6 @@ class OOTWorld(World):
         for item in self.multiworld.itempool:
             if item.player == self.player:
                 self.collect(state, item)
-
-        # In vanilla/reward modes, dungeon rewards are pre-placed on bosses instead of the item pool.
-        for location in self.get_locations():
-            if (location.item
-                and location.item.player == self.player
-                and location.item.type == 'DungeonReward'):
-                self.collect(state, location.item)
 
         # Some progression is intentionally not represented in the item pool.
         if self.scarecrow_behavior == 'free':
@@ -1205,6 +1228,8 @@ class OOTWorld(World):
                     not loc.show_in_spoiler or oot_is_item_of_type(loc.item, 'Shop')
                     or (self.shuffle_child_trade == 'skip_child_zelda' and loc.name in ['HC Zeldas Letter', 'Song from Impa'])):
                 loc.address = None
+
+        self.remove_excess_junk_from_itempool()
 
 
     def generate_output(self, output_directory: str):

@@ -1028,6 +1028,8 @@ class SaveContext():
         "Bottle with Red Potion"   : 'red_potion',
         "Bottle with Green Potion" : 'green_potion',
         "Bottle with Blue Potion"  : 'blue_potion',
+        "Red Potion"               : 'red_potion',
+        "Blue Potion"              : 'blue_potion',
         "Bottle with Fairy"        : 'fairy',
         "Bottle with Fish"         : 'fish',
         "Bottle with Milk"         : 'milk',

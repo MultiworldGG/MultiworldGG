@@ -11,6 +11,7 @@
 #include "actor.h"
 #include "save.h"
 #include "models.h"
+#include "ap_item_names.h"
 
 extern uint8_t SHUFFLE_CHEST_GAME;
 extern uint8_t FAST_CHESTS;
@@ -225,6 +226,7 @@ void activate_override(override_t override) {
     item_row_t* item_row = get_item_row(resolved_item_id);
 
     active_override = override;
+    ap_item_names_set_active_from_override(&active_override);
     if (resolved_item_id == GI_TRIFORCE_PIECE) {
         active_override_is_outgoing = 2; // Send to everyone
     } else {
@@ -972,6 +974,7 @@ uint8_t item_give_collectible(uint8_t item, z64_link_t* link, z64_actor_t* from_
         // draw message box and play get item sound (like when a skull is picked up)
         z64_Audio_PlayFanFare(NA_BGM_SMALL_ITEM_GET);
 
+        ap_item_names_set_active_from_override(&collectible_override);
         z64_DisplayTextbox(&z64_game, resolve_item_text_id(item_row, player != PLAYER_ID), 0);
 
         // Set up
@@ -1010,6 +1013,7 @@ void get_skulltula_token(z64_actor_t* token_actor) {
     token_actor->draw_proc = NULL;
 
     PLAYER_NAME_ID = player;
+    ap_item_names_set_active_from_override(&override);
     z64_DisplayTextbox(&z64_game, resolve_item_text_id(item_row, player != PLAYER_ID), 0);
     dispatch_item(resolved_item_id, player, &override, item_row);
 }
@@ -1043,5 +1047,6 @@ void fairy_ocarina_getitem() {
     }
     item_row_t* item_row = get_item_row(resolved_item_id);
     PLAYER_NAME_ID = override.value.base.player;
+    ap_item_names_set_active_from_override(&override);
     z64_DisplayTextbox(&z64_game, resolve_item_text_id(item_row, PLAYER_NAME_ID != PLAYER_ID), 0);
 }

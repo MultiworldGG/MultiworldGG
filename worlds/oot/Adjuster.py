@@ -14,7 +14,6 @@ from worlds.oot.Options import (cosmetic_options, sfx_options,
     UninvertYAxisInFirstPersonCamera, InputViewer, DisableBattleMusic, CreditsMusic)
 from worlds.oot.Rom import Rom, compress_rom_file
 from worlds.oot.N64Patch import apply_patch_file
-from worlds.oot.Utils import data_path
 from Utils import local_path, user_path
 
 logger = logging.getLogger('OoTAdjuster')
@@ -340,7 +339,6 @@ def adjust(args):
         decomp_path = path_pieces[0] + '-adjusted-decomp.n64'
         comp_path = path_pieces[0] + '-adjusted.n64'
         rom.write_to_file(decomp_path)
-        os.chdir(data_path("Compress"))
         compress_rom_file(decomp_path, comp_path)
         os.remove(decomp_path)
     finally:

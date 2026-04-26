@@ -26,7 +26,7 @@ typedef union override_value_base_t {
 typedef struct {
     override_value_base_t base;
     uint16_t looks_like_item_id;
-    uint16_t _pad;
+    uint16_t ap_item_name_id;
 } override_value_t;
 
 typedef struct {

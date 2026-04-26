@@ -4,6 +4,8 @@
 #include "textures.h"
 #include "obj_kibako.h"
 #include "actor.h"
+// AP Specific, must be maintained when syncing from upstream
+#include "ap_filler_tint.h"
 
 #define SMALLCRATE_DLIST (z64_gfx_t*)0x05005290
 #define SMALLCRATE_TEXTURE (uint8_t*)0x05011CA0
@@ -19,16 +21,6 @@ static _Bool should_tint_filler_smallcrate(uint8_t chest_type) {
     return chest_type == FILLER_CHEST
         && POTCRATE_TEXTURES_MATCH_CONTENTS == PTMC_CONTENTS
         && (!SOA_UNLOCKS_POTCRATE_TEXTURE || z64_file.stone_of_agony != 0);
-}
-
-static void apply_filler_smallcrate_tint(z64_gfx_t* gfx) {
-    gDPSetPrimColor(gfx->poly_opa.p++, 0, 0x80, 0x1E, 0x2A, 0x72, 0xFF);
-    gDPSetEnvColor(gfx->poly_opa.p++, 0x00, 0x01, 0x14, 0xFF);
-}
-
-static void clear_filler_smallcrate_tint(z64_gfx_t* gfx) {
-    gDPSetPrimColor(gfx->poly_opa.p++, 0, 0x80, 0xFF, 0xFF, 0xFF, 0xFF);
-    gDPSetEnvColor(gfx->poly_opa.p++, 0x00, 0x00, 0x00, 0x00);
 }
 
 void ObjKibako_Draw(z64_actor_t* actor, z64_game_t* game) {
@@ -74,6 +66,16 @@ void ObjKibako_Draw(z64_actor_t* actor, z64_game_t* game) {
                 break;
         }
     }
+    
+    // AP Specific, must be maintained when syncing from upstream
+    _Bool tint_filler = should_tint_filler_smallcrate(this->chest_type);
+    if (tint_filler) {
+        texture = ap_filler_tint_rgba16_texture(
+            ap_filler_resolve_texture(game, actor, texture),
+            AP_FILLER_TINT_SMALLCRATE,
+            2048
+        );
+    }
 
     // push custom dlists (that set the palette and textures) to segment 09
     z64_gfx_t* gfx = game->common.gfx;
@@ -83,17 +85,8 @@ void ObjKibako_Draw(z64_actor_t* actor, z64_game_t* game) {
 
     gMoveWd(gfx->poly_opa.p++, G_MW_SEGMENT, 9 * sizeof(int), gfx->poly_opa.d);
 
-    _Bool tint_filler = should_tint_filler_smallcrate(this->chest_type);
-    if (tint_filler) {
-        apply_filler_smallcrate_tint(gfx);
-    }
-
     // draw the original dlist that has been hacked in ASM to jump to the custom dlists
     z64_Gfx_DrawDListOpa(game, SMALLCRATE_DLIST);
-
-    if (tint_filler) {
-        clear_filler_smallcrate_tint(gfx);
-    }
 }
 
 void ObjKibako_SpawnCollectible_Hack(z64_actor_t* this, z64_game_t* globalCtx) {

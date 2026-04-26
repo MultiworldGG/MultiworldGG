@@ -180,7 +180,7 @@ item_draw_table_entry_t item_draw_table[] = {
     [0xA2] = { draw_gi_magic_meter,         { 0x06000000, 0x06000CC0, 0x06000F08, 0x060014E8, 0x286428FF, 0x000000FF } },  // Magic Meter Scroll 2
     [0xA3] = { draw_ice_trap,               { 0x04034380 } }, // Ice trap
     [0xA4] = { draw_gi_rainbow_opaque,      { 0x06000A30 } }, // AP progression Triforce (rainbow)
-    [0xA5] = { draw_gi_silver_opaque,       { 0x06000A30, 0x181818FF, 0x000000FF } }, // AP filler Triforce (very dark)
+    [0xA5] = { draw_gi_silver_opaque,       { 0x06000A30, 0x3C2CFFFF, 0x0C09DCFF } }, // AP filler Triforce
 };
 
 void base_draw_gi_model(z64_game_t* game, uint32_t draw_id) {
