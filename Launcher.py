@@ -137,8 +137,15 @@ def open_folder(folder_path):
 
 
 def update_settings(skip_cache: bool = False):
+    import settings as settings_module
     from settings import get_settings
-    get_settings().save(write_launcher_cache=not skip_cache)
+
+    previous_no_gui = settings_module.no_gui
+    settings_module.no_gui = True
+    try:
+        get_settings().save(write_launcher_cache=not skip_cache)
+    finally:
+        settings_module.no_gui = previous_no_gui
 
 
 def precache_world_data() -> None:

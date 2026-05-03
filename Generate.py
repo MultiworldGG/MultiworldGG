@@ -24,8 +24,15 @@ from Utils import parse_yamls, version_tuple, __version__, tuplize_version
 
 
 def mystery_argparse(argv: list[str] | None = None) -> argparse.Namespace:
+    import settings as settings_module
     from settings import get_settings
-    settings = get_settings()
+
+    previous_no_gui = settings_module.no_gui
+    settings_module.no_gui = True
+    try:
+        settings = get_settings()
+    finally:
+        settings_module.no_gui = previous_no_gui
     defaults = settings.generator
 
     parser = argparse.ArgumentParser(description="CMD Generation Interface, defaults come from host.yaml.")

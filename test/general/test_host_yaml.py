@@ -4,8 +4,10 @@ import unittest
 from io import StringIO
 from tempfile import TemporaryDirectory, TemporaryFile
 from typing import Any, Dict, List, cast
+from unittest.mock import patch
 
 import Utils
+import settings as settings_module
 from settings import Group, Settings, ServerOptions
 
 
@@ -84,6 +86,44 @@ class TestSettingsDumper(unittest.TestCase):
 
 
 class TestSettingsSave(unittest.TestCase):
+    def test_get_settings_saves_new_file_outside_lock(self) -> None:
+        """Creating a missing host.yaml may load worlds that consult settings."""
+        case = self
+        had_cache = hasattr(settings_module.get_settings, "_cache")
+        old_cache = getattr(settings_module.get_settings, "_cache", None)
+
+        def fake_save(settings_obj: Settings, location: str, write_launcher_cache: bool = True) -> None:
+            case.assertIs(getattr(settings_module.get_settings, "_cache", None), settings_obj)
+            case.assertTrue(settings_module._lock.acquire(blocking=False),
+                            "get_settings() should not hold its lock while saving a new host.yaml")
+            settings_module._lock.release()
+            settings_obj._filename = location
+
+        try:
+            if had_cache:
+                delattr(settings_module.get_settings, "_cache")
+
+            with TemporaryDirectory() as d:
+                user_dir = os.path.join(d, "user")
+                os.makedirs(user_dir)
+
+                def fake_local_path(*path: str) -> str:
+                    return os.path.join(os.getcwd(), *path)
+
+                def fake_user_path(*path: str) -> str:
+                    return os.path.join(user_dir, *path)
+
+                with patch.object(Utils, "local_path", fake_local_path), \
+                        patch.object(Utils, "user_path", fake_user_path), \
+                        patch.object(Settings, "save", fake_save):
+                    self.assertEqual(settings_module.get_settings().filename,
+                                     os.path.join(user_dir, "host.yaml"))
+        finally:
+            if had_cache:
+                setattr(settings_module.get_settings, "_cache", old_cache)
+            elif hasattr(settings_module.get_settings, "_cache"):
+                delattr(settings_module.get_settings, "_cache")
+
     def test_save(self) -> None:
         """Test that saving and updating works"""
         with TemporaryDirectory() as d:
