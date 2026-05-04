@@ -124,6 +124,45 @@ class TestSettingsSave(unittest.TestCase):
             elif hasattr(settings_module.get_settings, "_cache"):
                 delattr(settings_module.get_settings, "_cache")
 
+    def test_get_settings_initial_save_skips_launcher_cache_without_gui(self) -> None:
+        """Headless commands should not warm launcher caches while creating host.yaml."""
+        had_cache = hasattr(settings_module.get_settings, "_cache")
+        old_cache = getattr(settings_module.get_settings, "_cache", None)
+        previous_no_gui = settings_module.no_gui
+        cache_write_flags: list[bool] = []
+
+        def fake_save(settings_obj: Settings, location: str, write_launcher_cache: bool = True) -> None:
+            cache_write_flags.append(write_launcher_cache)
+            settings_obj._filename = location
+
+        try:
+            if had_cache:
+                delattr(settings_module.get_settings, "_cache")
+            settings_module.no_gui = True
+
+            with TemporaryDirectory() as d:
+                user_dir = os.path.join(d, "user")
+                os.makedirs(user_dir)
+
+                def fake_local_path(*path: str) -> str:
+                    return os.path.join(os.getcwd(), *path)
+
+                def fake_user_path(*path: str) -> str:
+                    return os.path.join(user_dir, *path)
+
+                with patch.object(Utils, "local_path", fake_local_path), \
+                        patch.object(Utils, "user_path", fake_user_path), \
+                        patch.object(Settings, "save", fake_save):
+                    self.assertEqual(settings_module.get_settings().filename,
+                                     os.path.join(user_dir, "host.yaml"))
+                    self.assertEqual(cache_write_flags, [False])
+        finally:
+            settings_module.no_gui = previous_no_gui
+            if had_cache:
+                setattr(settings_module.get_settings, "_cache", old_cache)
+            elif hasattr(settings_module.get_settings, "_cache"):
+                delattr(settings_module.get_settings, "_cache")
+
     def test_save(self) -> None:
         """Test that saving and updating works"""
         with TemporaryDirectory() as d:
