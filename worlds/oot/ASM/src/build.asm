@@ -17,7 +17,7 @@
 
 .include "constants.asm"
 .include "addresses.asm"
-.include "mwgg.asm"
+.include "ap.asm"
 
 ;==================================================================================================
 ; Base game editing region

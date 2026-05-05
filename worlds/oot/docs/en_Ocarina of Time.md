@@ -25,7 +25,7 @@ certain items to your own world.
 
 ## What does another world's item look like in OoT?
 
-Items belonging to other worlds are represented by the Zelda's Letter item.
+Items belonging to other worlds are represented by the Triforce icon, in different colors - important items are rainbow colored, filler items are grey-blue.
 
 ## When the player receives an item, what happens?
 

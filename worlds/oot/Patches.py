@@ -2385,7 +2385,7 @@ def encode_ap_item_name(item_name):
         for c in rom_safe_text(item_name)
     ).strip()
     if not safe_name:
-        safe_name = "MWGG item"
+        safe_name = "AP item"
     while sum(character_table[c] for c in safe_name) > NORMAL_LINE_WIDTH and len(safe_name) > 1:
         safe_name = safe_name[:-1].rstrip()
     return safe_name[:AP_ACTIVE_ITEM_NAME_SIZE - 1].encode('ascii', errors='replace') + b'\x00'

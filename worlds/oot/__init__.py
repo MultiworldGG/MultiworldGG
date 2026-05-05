@@ -183,16 +183,6 @@ class OOTWeb(WebWorld):
         ["Edos"]
     )
 
-    # Very out of date, requires updating to match current
-    # setup_es = Tutorial(
-    #     setup.tutorial_name,
-    #     setup.description,
-    #     "Español",
-    #     "setup_es.md",
-    #     "setup/es",
-    #     setup.authors
-    # )
-
     setup_fr = Tutorial(
         setup.tutorial_name,
         setup.description,
@@ -223,7 +213,6 @@ class OOTWorld(World):
     to rescue the Seven Sages, and then confront Ganondorf to save Hyrule!
     """
     game: str = "Ocarina of Time"
-    author: str = "espeon65536 (currenty unmaintained)"
     options_dataclass = OoTOptions
     options: OoTOptions
     settings: typing.ClassVar[OOTSettings]

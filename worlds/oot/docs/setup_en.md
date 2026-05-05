@@ -62,8 +62,7 @@ the host will provide you with either a link to download your data file, or with
 files. Your data file should have a `.apz5` extension.
 
 Double-click on your `.apz5` file to start your client and start the ROM patch process. Once the process is finished
-(this can take a while), the client and the emulator will be started automatically (if you associated the extension
-to the emulator as recommended).
+(this can take a while), the client and the emulator will be started automatically.
 
 ### Connect to the Multiserver
 

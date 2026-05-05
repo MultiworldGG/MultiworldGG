@@ -8,9 +8,9 @@ uint16_t AP_ITEM_NAME_COUNT = 0;
 uint8_t AP_ITEM_NAME_CONTROL_CODE_VERSION = 2;
 char ACTIVE_AP_ITEM_NAME[AP_ACTIVE_ITEM_NAME_SIZE] = { 0 };
 
-static char AP_IMPORTANT_ITEM_FALLBACK[] = "important MWGG item";
-static char AP_FILLER_ITEM_FALLBACK[] = "filler MWGG item";
-static char AP_ITEM_FALLBACK[] = "MWGG item";
+static char AP_IMPORTANT_ITEM_FALLBACK[] = "important AP item";
+static char AP_FILLER_ITEM_FALLBACK[] = "filler AP item";
+static char AP_ITEM_FALLBACK[] = "AP item";
 
 static char* ap_item_names_fallback(uint16_t item_id) {
     if (item_id == GI_AP_PROGRESSION) {

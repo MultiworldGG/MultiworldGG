@@ -26,7 +26,7 @@ fallen. Es ist jedoch möglich ausgewählte Items auf deine eigene Welt zu besch
 
 ## Wie sieht ein Item einer anderen Welt in OoT aus?
 
-Items, die zu einer anderen Welt gehören, werden repräsentiert durch Zelda's Brief.
+Items, die zu einer anderen Welt gehören, werden repräsentiert durch ein Triforce, wichtige Items strahlen in Regenbogenfarben, Filler Items sind gräulich blau.
 
 ## Was passiert, wenn der Spieler ein Item erhält?
 
