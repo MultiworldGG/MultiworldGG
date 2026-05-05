@@ -493,7 +493,7 @@ class OOTWorld(World):
         # self.empty_dungeons_specific = {s.replace("'", "") for s in self.empty_dungeons_list}
 
         # Determine which dungeons have key rings.
-        keyring_dungeons = [d['name'] for d in dungeon_table if d['small_key']] + ['Thieves Hideout']
+        keyring_dungeons = [d['name'] for d in dungeon_table if d['small_key']] + ['Thieves Hideout', 'Treasure Chest Game']
         if self.key_rings == 'off':
             self.key_rings = []
         elif self.key_rings == 'all':

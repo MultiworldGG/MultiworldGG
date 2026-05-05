@@ -1043,7 +1043,8 @@ class KeyRingList(OptionSet):
         "Spirit Temple",
         "Bottom of the Well",
         "Gerudo Training Ground",
-        "Ganon's Castle"
+        "Ganon's Castle",
+        "Treasure Chest Game"
     }
 
 

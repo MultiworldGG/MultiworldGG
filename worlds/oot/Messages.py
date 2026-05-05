@@ -467,6 +467,42 @@ IMPORTANT_ITEM_MESSAGES = {
     0x908A: "\x08You found a \x05\x44Silver Rupee\x05\x40 for the\x01\x05\x42Forest Trial\x05\x40 in \x05\x41Ganon's Castle\x05\x40!\x09",
 }
 
+SMALL_KEY_DUNGEON_NAMES = [
+    None, # Unused Deku Tree
+    None, # Unused Dodongos Cavern
+    None, # Unused Jabu
+    "the \x05\x42Forest Temple\x05\x40",
+    "the \x05\x41Fire Temple\x05\x40",
+    "the \x05\x43Water Temple\x05\x40",
+    "the \x05\x46Spirit Temple\x05\x40",
+    "the \x05\x45Shadow Temple\x05\x40",
+    "the \x05\x45Bottom of the Well\x05\x40",
+    None, # Unused Ice Cavern
+    None, # Unused Ganons Castle Tower
+    "the \x05\x46Gerudo Training\x01Ground\x05\x40",
+    "the \x05\x46Thieves' Hideout\x05\x40",
+    "\x05\x41Ganon's Castle\x05\x40",
+    None, # Unused Tower Collapse
+    None, # Unused Castle Collapse
+    "the \x05\x44Treasure Box Shop\x05\x40",
+]
+
+message_id = 0x9101
+for dungeon_name in SMALL_KEY_DUNGEON_NAMES:
+    if dungeon_name is not None:
+        IMPORTANT_ITEM_MESSAGES[message_id] = f"\x13\x77\x08You found a \x05\x41Small Key\x05\x40\x01for {dungeon_name}!\x01It's your \x05\x41first\x05\x40 one!\x09"
+    message_id += 1
+
+for dungeon_id, dungeon_name in enumerate(SMALL_KEY_DUNGEON_NAMES):
+    if dungeon_name is not None:
+        IMPORTANT_ITEM_MESSAGES[message_id] = f"\x13\x77\x08You found a \x05\x41Small Key\x05\x40\x01for {dungeon_name}!\x01You've collected \x05\x41\xF1{dungeon_id.to_bytes(1, 'big').decode()}\x05\x40 of them.\x09"
+    message_id += 1
+
+for dungeon_name in SMALL_KEY_DUNGEON_NAMES:
+    if dungeon_name is not None:
+        IMPORTANT_ITEM_MESSAGES[message_id] = f"\x13\x77\x08You found a \x05\x41Small Key\x05\x40\x01for {dungeon_name}!\x01You already have enough keys.\x09"
+    message_id += 1
+
 COLOR_MAP = {
     'White':      '\x40',
     'Red':        '\x41',

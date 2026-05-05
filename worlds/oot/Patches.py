@@ -651,8 +651,6 @@ def patch_rom(world, rom):
     rom.write_bytes(0xED4498, [0x00, 0x00, 0x00, 0x00])
 
     # Fixed reward order for Bombchu Bowling
-    rom.write_bytes(0xE2E698, [0x80, 0xAA, 0xE2, 0x64])
-    rom.write_bytes(0xE2E6A0, [0x80, 0xAA, 0xE2, 0x4C])
     rom.write_bytes(0xE2D440, [0x24, 0x19, 0x00, 0x00])
 
     # Offset kakariko carpenter starting position
@@ -1932,6 +1930,12 @@ def patch_rom(world, rom):
     SKULL_CHEST_BIG =  15
     FILLER_CHEST = 18
 
+    if world.shuffle_tcgkeys == 'vanilla':
+        # Keep vanilla Treasure Chest Game from being revealed by chest texture matching.
+        item = read_rom_item(rom, 0x71)
+        item['chest_type'] = BROWN_CHEST
+        write_rom_item(rom, 0x71, item)
+
     if world.bombchus_in_logic or 'bombchus' in world.minor_items_as_major_chest:
         bombchu_ids = [0x6A, 0x03, 0x6B]
         for i in bombchu_ids:
@@ -2261,6 +2265,24 @@ def patch_rom(world, rom):
     save_context.equip_current_items(world.starting_age)
     save_context.write_save_table(rom)
     rom.write_byte(0xC57AE2, 0x32)
+
+    # Convert temporary flags used for locked doors in Treasure Chest Game to permanent flags.
+    # Without this, shuffled TCG can reset doors/chests across reloads even when keys are in the pool.
+    if world.shuffle_tcgkeys != 'vanilla':
+        rom.write_byte(0x33A607F, 0xDF)
+        rom.write_byte(0x33A608F, 0xDE)
+        rom.write_byte(0x33A609F, 0xDD)
+        rom.write_byte(0x33A60AF, 0xDC)
+        rom.write_byte(0x33A60BF, 0xDB)
+        rom.write_byte(0x33A60CF, 0xDA)
+
+        if world.shuffle_tcgkeys == 'remove':
+            rom.write_byte(0x33A607F, 0x80)
+            rom.write_byte(0x33A608F, 0x80)
+            rom.write_byte(0x33A609F, 0x80)
+            rom.write_byte(0x33A60AF, 0x80)
+            rom.write_byte(0x33A60BF, 0x80)
+            rom.write_byte(0x33A60CF, 0x80)
 
     # Write numeric seed truncated to 32 bits for rng seeding
     # Overwritten with new seed every time a new rng value is generated

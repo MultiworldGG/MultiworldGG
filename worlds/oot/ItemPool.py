@@ -403,6 +403,11 @@ def get_pool_core(world):
                 pending_junk_pool.extend(['Small Key Ring (Thieves Hideout)'])
             else:
                 pending_junk_pool.append('Small Key (Thieves Hideout)')
+        if world.shuffle_tcgkeys in ['any_dungeon', 'overworld', 'keysanity', 'regional']:
+            if 'Treasure Chest Game' in world.key_rings:
+                pending_junk_pool.append('Small Key Ring (Treasure Chest Game)')
+            else:
+                pending_junk_pool.append('Small Key (Treasure Chest Game)')
         if world.shuffle_gerudo_card:
             pending_junk_pool.append('Gerudo Membership Card')
         if world.shuffle_smallkeys in ['any_dungeon', 'overworld', 'keysanity', 'regional']:
@@ -518,6 +523,11 @@ def get_pool_core(world):
             shuffle_item = world.shuffle_medigoron_carpet_salesman
             if not shuffle_item:
                 location.show_in_spoiler = False
+
+        # Bombchu Bowling 3rd and 4th prizes are renewable fallback rewards, not shuffled checks.
+        elif location.name in ['Market Bombchu Bowling Bombchus', 'Market Bombchu Bowling Bomb']:
+            shuffle_item = False
+            location.show_in_spoiler = False
 
         # Bombchus
         elif location.vanilla_item in ['Bombchus', 'Bombchus (5)', 'Bombchus (10)', 'Bombchus (20)']:
@@ -742,7 +752,7 @@ def get_pool_core(world):
             shuffle_item = False
             location.show_in_spoiler = False
 
-        elif location.type == 'TCGSmallKey' or (location.vanilla_item and 'Treasure Chest Game' in location.vanilla_item):
+        elif location.type == 'TCGSmallKey' or (location.scene == 0x10 and location.vanilla_item != 'Piece of Heart (Treasure Chest Game)'):
             if world.shuffle_tcgkeys == 'vanilla':
                 shuffle_item = False
                 location.show_in_spoiler = False
@@ -753,6 +763,8 @@ def get_pool_core(world):
                 location.show_in_spoiler = False
             else:
                 shuffle_item = True
+                if 'Treasure Chest Game' in world.key_rings and location.vanilla_item == 'Small Key (Treasure Chest Game)':
+                    item = 'Small Key Ring (Treasure Chest Game)' if location.name == 'Market Treasure Chest Game Salesman' else get_junk_item(world.random)[0]
 
         elif location.vanilla_item and location.vanilla_item.startswith('Ocarina') and 'Button' in location.vanilla_item:
             shuffle_item = world.shuffle_individual_ocarina_notes
