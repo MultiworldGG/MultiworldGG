@@ -2114,6 +2114,7 @@ location_table = OrderedDict([
     ("Fairy Pot",                                                    ("Drop",         None,  None, None,                            'Fairy',                                 None)),
     ("Free Fairies",                                                 ("Drop",         None,  None, None,                            'Fairy',                                 None)),
     ("Wall Fairy",                                                   ("Drop",         None,  None, None,                            'Fairy',                                 None)),
+    ("Bombable Fairy",                                               ("Drop",         None,  None, None,                            'Fairy',                                 None)),
     ("Butterfly Fairy",                                              ("Drop",         None,  None, None,                            'Fairy',                                 None)),
     ("Gossip Stone Fairy",                                           ("Drop",         None,  None, None,                            'Fairy',                                 None)),
     ("Bean Plant Fairy",                                             ("Drop",         None,  None, None,                            'Fairy',                                 None)),
@@ -2597,6 +2598,9 @@ location_table = OrderedDict([
     # Gerudo Training Ground MQ Wonderitems
     ("Gerudo Training Ground MQ Eye Statue Proximity Wonderitem",    ("Wonderitem",   0x0B,  (4,0,5), None,                         'Rupees (20)',                           ("Gerudo Training Ground", "Master Quest", "Wonderitem"))),
     ("Gerudo Training Ground MQ Dinolfos Arrow Wonderitem",          ("Wonderitem",   0x0B,  (7,0,9), None,                         'Rupees (20)',                           ("Gerudo Training Ground", "Master Quest", "Wonderitem"))), # One of the actors in this room appears to have been deleted so this actor is #9. The 0x185 Checkable Spot actor is missing in MQU.json
+
+    # Ganon's Castle MQ Wonderitems
+    ("Ganons Castle MQ Shadow Trial Explosives Wonderitem",          ("Wonderitem",   0x0D,  (12,0,13), None,                       'Deku Nuts (5)',                         ("Ganon's Castle MQ", "Master Quest", "Wonderitems"))),
 
     # Hints
     ("100 Skulltulas Reward Hint",                                   ("Hint",         None,  None, None,                            None,                                    None)),

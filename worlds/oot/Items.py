@@ -2,6 +2,30 @@ import typing
 
 from BaseClasses import Item, ItemClassification
 
+REWARD_COLORS = {
+    'Kokiri Emerald':   'Green',
+    'Goron Ruby':       'Red',
+    'Zora Sapphire':    'Blue',
+    'Light Medallion':  'Light Blue',
+    'Forest Medallion': 'Green',
+    'Fire Medallion':   'Red',
+    'Water Medallion':  'Blue',
+    'Shadow Medallion': 'Pink',
+    'Spirit Medallion': 'Yellow',
+}
+
+REWARD_TO_DUNGEON = {
+    'Kokiri Emerald':   'Deku Tree',
+    'Goron Ruby':       'Dodongos Cavern',
+    'Zora Sapphire':    'Jabu Jabus Belly',
+    'Light Medallion':  None,
+    'Forest Medallion': 'Forest Temple',
+    'Fire Medallion':   'Fire Temple',
+    'Water Medallion':  'Water Temple',
+    'Shadow Medallion': 'Shadow Temple',
+    'Spirit Medallion': 'Spirit Temple',
+}
+
 
 def oot_data_to_ap_id(data, event):
     item_type, _, index, special = data
@@ -55,6 +79,8 @@ class OOTItem(Item):
         self.index = index
         self.special = special or {}
         self.price = special.get('price', None) if special else None
+        self.market_price = special.get('market_price', None) if special else None
+        self.market_price_non_chu_drops_only = special.get('market_price_non_chu_drops_only', False) if special else False
         self.internal = False
 
     @property
@@ -68,11 +94,11 @@ class OOTItem(Item):
 #    Item:                                            (type, Progressive, GetItemID, special),
 item_table = {
     'Bomb (1)':                                        ('Item',     None,  0x65, {'junk': -1}),
-    'Bombs (5)':                                       ('Item',     None,  0x01, {'junk': 8}),
-    'Deku Nuts (5)':                                   ('Item',     None,  0x02, {'junk': 5}),
-    'Bombchus (10)':                                   ('Item',     True,  0x03, None),
+    'Bombs (5)':                                       ('Item',     None,  0x01, {'junk': 8, 'market_price': 25}),
+    'Deku Nuts (5)':                                   ('Item',     None,  0x02, {'junk': 5, 'market_price': 15}),
+    'Bombchus (10)':                                   ('Item',     True,  0x03, {'market_price': 99, 'market_price_non_chu_drops_only': True}),
     'Boomerang':                                       ('Item',     True,  0x06, None),
-    'Deku Stick (1)':                                  ('Item',     None,  0x07, {'junk': 5}),
+    'Deku Stick (1)':                                  ('Item',     None,  0x07, {'junk': 5, 'market_price': 10}),
     'Lens of Truth':                                   ('Item',     True,  0x0A, None),
     'Megaton Hammer':                                  ('Item',     True,  0x0D, None),
     'Cojiro':                                          ('Item',     True,  0x0E, {'trade': True}),
@@ -100,8 +126,8 @@ item_table = {
     'Claim Check':                                     ('Item',     True,  0x26, {'trade': True}),
     'Kokiri Sword':                                    ('Item',     True,  0x27, None),
     'Giants Knife':                                    ('Item',     True,  0x28, None),
-    'Deku Shield':                                     ('Item',     None,  0x29, None),
-    'Hylian Shield':                                   ('Item',     None,  0x2A, None),
+    'Deku Shield':                                     ('Item',     None,  0x29, {'market_price': 40}),
+    'Hylian Shield':                                   ('Item',     None,  0x2A, {'market_price': 80}),
     'Mirror Shield':                                   ('Item',     True,  0x2B, None),
     'Goron Tunic':                                     ('Item',     True,  0x2C, None),
     'Zora Tunic':                                      ('Item',     True,  0x2D, None),
@@ -116,19 +142,19 @@ item_table = {
     'Map':                                             ('Map',      None,  0x41, None),
     'Small Key':                                       ('SmallKey', True,  0x42, {'progressive': float('Inf')}),
     'Weird Egg':                                       ('Item',     True,  0x47, {'trade': True}),
-    'Recovery Heart':                                  ('Item',     None,  0x48, {'junk': 0}),
+    'Recovery Heart':                                  ('Item',     None,  0x48, {'junk': 0, 'market_price': 10}),
     'Arrows (5)':                                      ('Item',     None,  0x49, {'junk': 8}),
-    'Arrows (10)':                                     ('Item',     None,  0x4A, {'junk': 2}),
-    'Arrows (30)':                                     ('Item',     None,  0x4B, {'junk': 0}),
-    'Rupee (1)':                                       ('Item',     None,  0x4C, {'junk': -1}),
-    'Rupees (5)':                                      ('Item',     None,  0x4D, {'junk': 10}),
-    'Rupees (20)':                                     ('Item',     None,  0x4E, {'junk': 4}),
+    'Arrows (10)':                                     ('Item',     None,  0x4A, {'junk': 2, 'market_price': 20}),
+    'Arrows (30)':                                     ('Item',     None,  0x4B, {'junk': 0, 'market_price': 60}),
+    'Rupee (1)':                                       ('Item',     None,  0x4C, {'junk': -1, 'market_price': 1}),
+    'Rupees (5)':                                      ('Item',     None,  0x4D, {'junk': 10, 'market_price': 5}),
+    'Rupees (20)':                                     ('Item',     None,  0x4E, {'junk': 4, 'market_price': 20}),
     'Milk':                                            ('Item',     None,  0x50, None),
     'Goron Mask':                                      ('Item',     None,  0x51, None),
     'Zora Mask':                                       ('Item',     None,  0x52, None),
     'Gerudo Mask':                                     ('Item',     None,  0x53, None),
-    'Rupees (50)':                                     ('Item',     None,  0x55, {'junk': 1}),
-    'Rupees (200)':                                    ('Item',     None,  0x56, {'junk': 0}),
+    'Rupees (50)':                                     ('Item',     None,  0x55, {'junk': 1, 'market_price': 50}),
+    'Rupees (200)':                                    ('Item',     None,  0x56, {'junk': 0, 'market_price': 200}),
     'Biggoron Sword':                                  ('Item',     True,  0x57, None),
     'Fire Arrows':                                     ('Item',     True,  0x58, None),
     'Ice Arrows':                                      ('Item',     True,  0x59, None),
@@ -137,12 +163,12 @@ item_table = {
     'Dins Fire':                                       ('Item',     True,  0x5C, None),
     'Nayrus Love':                                     ('Item',     True,  0x5E, None),
     'Farores Wind':                                    ('Item',     True,  0x5D, None),
-    'Deku Nuts (10)':                                  ('Item',     None,  0x64, {'junk': 0}),
-    'Bombs (10)':                                      ('Item',     None,  0x66, {'junk': 2}),
-    'Bombs (20)':                                      ('Item',     None,  0x67, {'junk': 0}),
-    'Deku Seeds (30)':                                 ('Item',     None,  0x69, {'junk': 5}),
-    'Bombchus (5)':                                    ('Item',     True,  0x6A, None),
-    'Bombchus (20)':                                   ('Item',     True,  0x6B, None),
+    'Deku Nuts (10)':                                  ('Item',     None,  0x64, {'junk': 0, 'market_price': 30}),
+    'Bombs (10)':                                      ('Item',     None,  0x66, {'junk': 2, 'market_price': 50}),
+    'Bombs (20)':                                      ('Item',     None,  0x67, {'junk': 0, 'market_price': 80}),
+    'Deku Seeds (30)':                                 ('Item',     None,  0x69, {'junk': 5, 'market_price': 30}),
+    'Bombchus (5)':                                    ('Item',     True,  0x6A, {'market_price': 60, 'market_price_non_chu_drops_only': True}),
+    'Bombchus (20)':                                   ('Item',     True,  0x6B, {'market_price': 180, 'market_price_non_chu_drops_only': True}),
     'Rupee (Treasure Chest Game)':                     ('Item',     None,  0x72, None),
     'Piece of Heart (Treasure Chest Game)':            ('Item',     True,  0x76, {'alias': ('Piece of Heart', 1), 'progressive': float('Inf')}),
     'Ice Trap':                                        ('Item',     None,  0x7C, {'junk': 0}),

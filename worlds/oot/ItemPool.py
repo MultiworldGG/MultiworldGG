@@ -432,6 +432,9 @@ def get_pool_core(world):
         triforce_count = int((Decimal(100 + world.extra_triforce_percentage)/100 * world.triforce_goal).to_integral_value(rounding=ROUND_HALF_UP))
         pending_junk_pool.extend(['Triforce Piece'] * triforce_count)
 
+    if world.shuffle_dungeon_rewards in ('dungeon', 'regional', 'overworld', 'any_dungeon', 'anywhere'):
+        pool.extend(world.item_name_groups['rewards'])
+
     if world.shuffle_individual_ocarina_notes:
         pending_junk_pool.extend(ocarina_button_items)
 
@@ -479,7 +482,7 @@ def get_pool_core(world):
         # Shops
         elif location.type == "Shop":
             if world.shopsanity == 'off':
-                if world.bombchus_in_logic and location.name in ['KF Shop Item 8', 'Market Bazaar Item 4', 'Kak Bazaar Item 4']:
+                if world.free_bombchu_drops and location.name in ['KF Shop Item 8', 'Market Bazaar Item 4', 'Kak Bazaar Item 4']:
                     item = 'Buy Bombchu (5)'
                 shuffle_item = False
                 location.show_in_spoiler = False
@@ -531,7 +534,7 @@ def get_pool_core(world):
 
         # Bombchus
         elif location.vanilla_item in ['Bombchus', 'Bombchus (5)', 'Bombchus (10)', 'Bombchus (20)']:
-            if world.bombchus_in_logic:
+            if world.free_bombchu_drops:
                 item = 'Bombchus'
             shuffle_item = location.name != 'Wasteland Bombchu Salesman' or world.shuffle_medigoron_carpet_salesman
             if not shuffle_item:
@@ -678,6 +681,21 @@ def get_pool_core(world):
                 location.disabled = DisableType.DISABLED
                 location.show_in_spoiler = False
 
+        # GC BK lives in the tower/boss data rather than a dungeon-tagged region
+        elif location.vanilla_item == 'Boss Key (Ganons Castle)':
+            if ganon_bk_setting == 'vanilla':
+                shuffle_item = False
+            elif ganon_bk_setting == 'remove':
+                world.multiworld.push_precollected(world.create_item(item))
+                world.remove_from_start_inventory.append(item)
+                item = get_junk_item(world.random)[0]
+                shuffle_item = True
+            elif ganon_bk_setting in ['any_dungeon', 'overworld', 'keysanity', 'regional']:
+                shuffle_item = True
+            else:
+                dungeon = next(dungeon for dungeon in world.dungeons if dungeon.name == 'Ganons Castle')
+                dungeon.boss_key.append(world.create_item(item))
+
         # Dungeon Items
         elif location.dungeon is not None:
             dungeon = location.dungeon
@@ -690,10 +708,16 @@ def get_pool_core(world):
                 dungeon_collection = dungeon.boss_key
                 if shuffle_setting == 'vanilla':
                     shuffle_item = False
-            # Map or Compass
-            elif location.vanilla_item in [dungeon.item_name("Map"), dungeon.item_name("Compass")]:
-                shuffle_setting = world.shuffle_mapcompass
-                dungeon_collection = dungeon.dungeon_items
+            # Map
+            elif location.vanilla_item == dungeon.item_name("Map"):
+                shuffle_setting = world.shuffle_map
+                dungeon_collection = dungeon.maps
+                if shuffle_setting == 'vanilla':
+                    shuffle_item = False
+            # Compass
+            elif location.vanilla_item == dungeon.item_name("Compass"):
+                shuffle_setting = world.shuffle_compass
+                dungeon_collection = dungeon.compasses
                 if shuffle_setting == 'vanilla':
                     shuffle_item = False
             # Small Key
@@ -842,7 +866,10 @@ def get_pool_core(world):
                     world.randomized_starting_items.get(selected_item, 0) + 1
                 pool.remove(selected_item)
                 pool.extend(get_junk_item(world.random))
+        reward_names = world.item_name_groups['rewards']
         for item_name, count in world.randomized_starting_items.items():
+            if item_name in reward_names and count > 0:
+                world.hinted_dungeon_reward_locations[item_name] = None
             for _ in range(count):
                 world.multiworld.push_precollected(world.create_item(item_name))
 
@@ -945,8 +972,10 @@ def get_unrestricted_dungeon_items(ootworld):
     add_settings = {'dungeon', 'any_dungeon', 'overworld', 'keysanity', 'regional'}
     ganon_bk_setting = ootworld.shuffle_ganon_bosskey
     for dungeon in ootworld.dungeons:
-        if ootworld.shuffle_mapcompass in add_settings:
-            unrestricted_dungeon_items.extend(dungeon.dungeon_items)
+        if ootworld.shuffle_map in add_settings:
+            unrestricted_dungeon_items.extend(dungeon.maps)
+        if ootworld.shuffle_compass in add_settings:
+            unrestricted_dungeon_items.extend(dungeon.compasses)
         if ootworld.shuffle_smallkeys in add_settings:
             unrestricted_dungeon_items.extend(dungeon.small_keys)
         if dungeon.name != 'Ganons Castle' and ootworld.shuffle_bosskeys in add_settings:

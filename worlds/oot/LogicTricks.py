@@ -22,14 +22,16 @@ known_logic_tricks = {
         'tags'    : ("General", "Fire Temple", "Water Temple", "Gerudo Training Ground", "Zora's Fountain", "Death Mountain Crater", "MQ",),
         'tooltip' : '''\
                     Allows the following possible without Tunics:
-                    - Enter Water Temple. The area below the center
-                    pillar still requires Zora Tunic. Applies to
-                    MQ also.
-                    - Enter Fire Temple. Only the first floor is
-                    accessible, and not Volvagia. Applies to
-                    MQ also.
-                    - Zora's Fountain Bottom Freestanding PoH.
-                    Might not have enough health to resurface.
+                    - Zora's Fountain bottom Freestandings. You
+                    might not have enough time to resurface, and
+                    you may need to make multiple trips.
+                    - Enter Fire Temple from Goron City, the grotto,
+                    or the great fairy fountain.
+                    - Traverse the first floor of the Fire Temple,
+                    except the elevator room and Volvagia.
+                    - Go underwater in the Water Temple. (The area
+                    below the center pillar still requires Zora Tunic.)
+                    Applies to MQ also.
                     - Gerudo Training Ground Underwater
                     Silver Rupee Chest. May need to make multiple
                     trips. Applies to MQ also.
@@ -2228,6 +2230,14 @@ known_advanced_logic_tricks = {
         'tooltip' : '''\
                     Drop a chu, then ledgeclip from near windmill entrance to clip into BotW as adult.
                     '''},
+    '(Glitch) BotW Cucco Dive': {
+        'name'    : 'glitch_botw_cucco_dive',
+        'tags'    : ("Glitch","Child","Bottom of the Well",),
+        'tooltip' : '''\
+                    Using ISG (individual trick not required) or Nuts, you can trigger
+                    the angry cucco cutscene as you enter the water, allowing Link to
+                    fall through it and enter the Bottom of the Well.
+                    '''},
     '(Glitch) BotW Blank A': {
         'name'    : 'glitch_botw_blank_a',
         'tags'    : ("Glitch","Child",),
@@ -2601,6 +2611,18 @@ known_advanced_logic_tricks = {
         'tags'    : ("Advanced","Adult",),
         'tooltip' : '''\
                     Backflipping from a specific spot avoids the fire wall hitbox.
+                    '''},
+    '(Advanced) Water Hop': {
+        'name'    : 'adv_water_hop',
+        'tags'    : ("Advanced",),
+        'tooltip' : '''\
+                    By equipping the Iron Boots right before surfacing,
+                    you can keep the momentum from the swim up from a dive
+                    to propel yourself out of the water higher than usual
+                    allowing ledges to be grabbed.
+
+                    Notably allows for access to Morpha's ledge and the
+                    Eastern Middle Layer ledge in Water Temple.
                     '''},
     '(Glitch) Water Temple Antigrav to Boss Key Area': {
         'name'    : 'glitch_water_bk_area_antigrav',

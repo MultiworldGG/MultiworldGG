@@ -304,7 +304,7 @@ class ExtraTriforces(Range):
     default = 50
 
 
-class LogicalChus(Toggle):
+class FreeBombchuDrops(Toggle):
     """The first Bombchu pack found becomes a Bombchu Bag, giving the same amount of bombchus
     as the original pack (e.g., finding Bombchus (5) first gives Bombchu Bag with 5 bombchus).
 
@@ -312,9 +312,6 @@ class LogicalChus(Toggle):
     Bombchus can be purchased from shops for 60/99/180 rupees.
     Bombchus open Bombchu Bowling."""
     display_name = "Add Bombchu Bag and Drops"
-    # Note: This option was called 'free_bombchu_drops' in upstream v8.0, but we keep
-    # the internal name 'bombchus_in_logic' for backwards compatibility with existing
-    # AP worlds that reference this option
 
 
 class DungeonShortcuts(Choice):
@@ -432,7 +429,7 @@ world_options: typing.Dict[str, type(Option)] = {
     "triforce_hunt": TriforceHunt, 
     "triforce_goal": TriforceGoal,
     "extra_triforce_percentage": ExtraTriforces,
-    "bombchus_in_logic": LogicalChus,
+    "free_bombchu_drops": FreeBombchuDrops,
 
     "dungeon_shortcuts": DungeonShortcuts,
     "dungeon_shortcuts_list": DungeonShortcutsList,
@@ -834,17 +831,40 @@ class ShuffleDungeonRewards(Choice):
     default = 1
 
 
-class ShuffleMapCompass(Choice):
-    """Control where to shuffle dungeon maps and compasses.
-    Remove: There will be no maps or compasses in the itempool.
-    Startwith: You start with all maps and compasses.
-    Vanilla: Maps and compasses remain vanilla.
-    Dungeon: Maps and compasses are shuffled within their original dungeon.
-    Regional: Maps and compasses are shuffled only in regions near the original dungeon.
-    Overworld: Maps and compasses are shuffled locally outside of dungeons.
-    Any Dungeon: Maps and compasses are shuffled locally in any dungeon.
-    Keysanity: Maps and compasses can be anywhere in the multiworld."""
-    display_name = "Maps & Compasses"
+class ShuffleMap(Choice):
+    """Control where to shuffle dungeon maps.
+    Remove: There will be no maps in the itempool.
+    Startwith: You start with all maps.
+    Vanilla: Maps remain vanilla.
+    Dungeon: Maps are shuffled within their original dungeon.
+    Regional: Maps are shuffled only in regions near the original dungeon.
+    Overworld: Maps are shuffled locally outside of dungeons.
+    Any Dungeon: Maps are shuffled locally in any dungeon.
+    Keysanity: Maps can be anywhere in the multiworld."""
+    display_name = "Maps"
+    option_remove = 0
+    option_startwith = 1
+    option_vanilla = 2
+    option_dungeon = 3
+    option_regional = 4
+    option_overworld = 5
+    option_any_dungeon = 6
+    option_keysanity = 7
+    default = 1
+    alias_anywhere = 7
+
+
+class ShuffleCompass(Choice):
+    """Control where to shuffle dungeon compasses.
+    Remove: There will be no compasses in the itempool.
+    Startwith: You start with all compasses.
+    Vanilla: Compasses remain vanilla.
+    Dungeon: Compasses are shuffled within their original dungeon.
+    Regional: Compasses are shuffled only in regions near the original dungeon.
+    Overworld: Compasses are shuffled locally outside of dungeons.
+    Any Dungeon: Compasses are shuffled locally in any dungeon.
+    Keysanity: Compasses can be anywhere in the multiworld."""
+    display_name = "Compasses"
     option_remove = 0
     option_startwith = 1
     option_vanilla = 2
@@ -1050,7 +1070,8 @@ class KeyRingList(OptionSet):
 
 dungeon_items_options: typing.Dict[str, type(Option)] = {
     "shuffle_dungeon_rewards": ShuffleDungeonRewards,
-    "shuffle_mapcompass": ShuffleMapCompass,
+    "shuffle_map": ShuffleMap,
+    "shuffle_compass": ShuffleCompass,
     "shuffle_smallkeys": ShuffleKeys,
     "shuffle_hideoutkeys": ShuffleGerudoKeys,
     "shuffle_bosskeys": ShuffleBossKeys,
@@ -1162,15 +1183,31 @@ class FastShadowBoat(Toggle):
     display_name = "Fast Shadow Temple Boat"
 
 
+class SkipRewardFromRauru(Choice):
+    """Control whether the item Rauru gives beyond the Door of Time is given as a starting item.
+    Not Free: Rauru gives the reward when you go beyond the Door of Time.
+    Free: You begin the game with the reward Rauru normally gives. If dungeon rewards are shuffled
+    elsewhere, the Rauru reward is shuffled along with them.
+    Free Forced: You begin the game with the reward Rauru normally gives, and the ToT Reward
+    location is forced to contain a dungeon reward even when rewards are shuffled to other pools."""
+    display_name = "Free Reward from Rauru"
+    option_not_free = 0
+    option_free = 1
+    option_free_forced = 2
+    default = 0
+    alias_false = 0
+    alias_true = 1
+
+
 timesavers_options: typing.Dict[str, type(Option)] = {
-    "no_escape_sequence": SkipEscape, 
-    "no_guard_stealth": SkipStealth, 
-    "no_epona_race": SkipEponaRace, 
-    "skip_some_minigame_phases": SkipMinigamePhases, 
-    "complete_mask_quest": CompleteMaskQuest, 
-    "useful_cutscenes": UsefulCutscenes, 
-    "fast_chests": FastChests, 
-    "scarecrow_behavior": ScarecrowBehavior, 
+    "no_escape_sequence": SkipEscape,
+    "no_guard_stealth": SkipStealth,
+    "no_epona_race": SkipEponaRace,
+    "skip_some_minigame_phases": SkipMinigamePhases,
+    "complete_mask_quest": CompleteMaskQuest,
+    "useful_cutscenes": UsefulCutscenes,
+    "fast_chests": FastChests,
+    "scarecrow_behavior": ScarecrowBehavior,
     "fast_bunny_hood": FastBunny,
     "plant_beans": PlantBeans,
     "easier_fire_arrow_entry": EasierFireArrowEntry,
@@ -1178,6 +1215,7 @@ timesavers_options: typing.Dict[str, type(Option)] = {
     "big_poe_count": BigPoeCount,
     "fae_torch_count": FAETorchCount,
     "fast_shadow_boat": FastShadowBoat,
+    "skip_reward_from_rauru": SkipRewardFromRauru,
 }
 
 
@@ -1740,7 +1778,7 @@ class OoTOptions(PerGameCommonOptions):
     triforce_hunt: TriforceHunt
     triforce_goal: TriforceGoal
     extra_triforce_percentage: ExtraTriforces
-    bombchus_in_logic: LogicalChus
+    free_bombchu_drops: FreeBombchuDrops
     dungeon_shortcuts: DungeonShortcuts
     dungeon_shortcuts_list: DungeonShortcutsList
     mq_dungeons_mode: MQDungeons
@@ -1755,7 +1793,8 @@ class OoTOptions(PerGameCommonOptions):
     bridge_tokens: BridgeTokens
     bridge_hearts: BridgeHearts
     shuffle_dungeon_rewards: ShuffleDungeonRewards
-    shuffle_mapcompass: ShuffleMapCompass
+    shuffle_map: ShuffleMap
+    shuffle_compass: ShuffleCompass
     shuffle_smallkeys: ShuffleKeys
     shuffle_hideoutkeys: ShuffleGerudoKeys
     shuffle_bosskeys: ShuffleBossKeys
@@ -1815,6 +1854,7 @@ class OoTOptions(PerGameCommonOptions):
     big_poe_count: BigPoeCount
     fae_torch_count: FAETorchCount
     fast_shadow_boat: FastShadowBoat
+    skip_reward_from_rauru: SkipRewardFromRauru
     correct_chest_appearances: CorrectChestAppearance
     minor_items_as_major_chest: MinorInMajor
     invisible_chests: InvisibleChests

@@ -56,7 +56,6 @@ defaultHintDists: list[str] = [
     'useless.json',
     'very_strong.json',
     'very_strong_magic.json',
-    'weekly.json',
 ]
 
 unHintableWothItems: set[str] = {'Triforce Piece', 'Gold Skulltula Token', 'Piece of Heart', 'Piece of Heart (Treasure Chest Game)', 'Heart Container'}
@@ -175,7 +174,8 @@ def is_restricted_dungeon_item(item: Item, world: Optional['OOTWorld'] = None) -
     if item_world is None:
         return False
     return (
-        ((getattr(item, 'map', False) or getattr(item, 'compass', False)) and item_world.shuffle_mapcompass == 'dungeon') or
+        (getattr(item, 'map', False) and item_world.shuffle_map == 'dungeon') or
+        (getattr(item, 'compass', False) and item_world.shuffle_compass == 'dungeon') or
         (getattr(item, 'type', None) in ('SmallKey', 'SmallKeyRing') and item_world.shuffle_smallkeys == 'dungeon') or
         (getattr(item, 'type', None) == 'BossKey' and item_world.shuffle_bosskeys == 'dungeon') or
         (getattr(item, 'type', None) == 'GanonBossKey' and item_world.shuffle_ganon_bosskey == 'dungeon') or
@@ -1169,15 +1169,31 @@ def get_junk_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
 def get_important_check_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
     top_level_locations = []
     checked_areas = get_checked_areas(world, checked)
-    for location in world.multiworld.get_filled_locations(world.player):
+    locations = list(world.multiworld.get_filled_locations(world.player))
+    locations_by_area_text: dict[str, list] = {}
+    for location in locations:
+        if location.locked:
+            continue
+        area_text = HintArea.at(location).text(world.clearer_hints)
+        locations_by_area_text.setdefault(area_text, []).append(location)
+    for location in locations:
+        area_text = HintArea.at(location).text(world.clearer_hints)
         if (HintArea.at(location) not in checked_areas
-                and HintArea.at(location).text(world.clearer_hints) not in top_level_locations
-                and (HintArea.at(location).text(world.clearer_hints) + ' Important Check') not in checked
+                and area_text not in top_level_locations
+                and (area_text + ' Important Check') not in checked
                 and HintArea.at(location) != HintArea.ROOT):
-            top_level_locations.append(HintArea.at(location).text(world.clearer_hints))
+            shuffled_locations_in_region = locations_by_area_text.get(area_text, [])
+            # Don't hint areas where every shuffled location is already hinted
+            if shuffled_locations_in_region and all(loc.name in checked for loc in shuffled_locations_in_region):
+                continue
+            top_level_locations.append(area_text)
+            if len(shuffled_locations_in_region) == 1:
+                checked.add(shuffled_locations_in_region[0].name)
+    if not top_level_locations:
+        return None
     hint_loc = random.choice(top_level_locations)
     item_count = 0
-    for location in world.multiworld.get_filled_locations(world.player):
+    for location in locations:
         region = HintArea.at(location).text(world.clearer_hints)
         if region == hint_loc:
             if (is_major_item(location.item)
@@ -1743,14 +1759,20 @@ def build_boss_string(reward: str, color: str, world: 'OOTWorld') -> str:
         else:
             text = GossipText(f"\x08\x13{item_icon}One in #@'s pocket#...", [color], prefix='')
     else:
-        location = world.hinted_dungeon_reward_locations[reward]
+        location = world.hinted_dungeon_reward_locations.get(reward)
         if location is None:
             hint_area = HintArea.ROOT
             remote_world = None
+            location_text = hint_area.text(world.clearer_hints, preposition=True, world=remote_world)
         else:
-            hint_area = HintArea.at(location)
             remote_world = get_remote_world_display(world.player, location.player)
-        location_text = hint_area.text(world.clearer_hints, preposition=True, world=remote_world)
+            try:
+                hint_area = HintArea.at(location)
+                location_text = hint_area.text(world.clearer_hints, preposition=True, world=remote_world)
+            except HintAreaNotFound:
+                # Cross-game placement (anywhere mode) - location lives in a non-OoT world
+                # with no hint-area mapping. Render a generic preposition + world annotation.
+                location_text = HintArea.ROOT.text(world.clearer_hints, preposition=True, world=remote_world)
         text = GossipText(f"\x08\x13{item_icon}One {location_text}...", [color], prefix='')
     return str(text) + '\x04'
 
@@ -1834,7 +1856,10 @@ def build_misc_item_hints(world: 'OOTWorld', messages: list[Message]) -> None:
     for hint_type, data in misc_item_hint_table.items():
         if hint_type in world.misc_hints:
             item = misc_hint_items.get(hint_type, data['default_item'])
-            if item in world.distribution.effective_starting_items and world.distribution.effective_starting_items[item].count > 0:
+            if (
+                (item in world.distribution.effective_starting_items and world.distribution.effective_starting_items[item].count > 0)
+                or (item in getattr(world, 'randomized_starting_items', {}) and world.randomized_starting_items.get(item, 0) > 0)
+            ):
                 if item == data['default_item']:
                     text = data['default_item_text'].format(area='#your pocket#')
                 else:

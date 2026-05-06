@@ -52,7 +52,7 @@ deathlink_sent_this_death: we interacted with the multiworld on this death, wait
 
 oot_loc_name_to_id = network_data_package["games"]["Ocarina of Time"]["location_name_to_id"]
 
-script_version: int = 5
+script_version: int = 6
 
 def get_item_value(ap_id):
     return ap_id - 66000

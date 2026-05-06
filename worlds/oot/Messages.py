@@ -243,6 +243,7 @@ ITEM_MESSAGES = {
     0x90B4: "\x08You found a \x05\x41fairy\x05\x40!\x01Your health has been restored!",
     0x90B5: "\x08You found \x05\x43literally nothing\x05\x40!",
     0x009A: "\x08\x13\x21You got a \x05\x41Weird Egg\x05\x40!\x01Feels like there's something\x01moving inside!",
+    0x9097: "\x08\x13\x2EYou got a \x05\x41Chicken, \x05\x40one\x01of Anju's prized hens! It fits \x01in your pocket.",
     0x00A4: "\x08\x13\x3BYou got the \x05\x42Kokiri Sword\x05\x40!\x01This is a hidden treasure of\x01the Kokiri.",
     0x00A7: "\x08\x13\x01Now you can carry\x01many \x05\x41Deku Nuts\x05\x40!\x01You can hold up to \x05\x4630\x05\x40 nuts!",
     0x00A8: "\x08\x13\x01You can now carry even\x01more \x05\x41Deku Nuts\x05\x40! You can carry\x01up to \x05\x4640\x05\x41 \x05\x40nuts!",
@@ -765,8 +766,10 @@ class Message:
         text_codes = []
         instant_text_code = Text_Code(0x08, 0)
 
-        # # speed the text
-        if speed_up_text:
+        # speed the text
+        if (speed_up_text
+                and self.id != 0x4078  # long recording scarecrow message after playback
+        ):
             text_codes.append(instant_text_code) # allow instant
 
         # write the message

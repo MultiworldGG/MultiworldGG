@@ -3,7 +3,7 @@ local json = require('json')
 local math = require('math')
 require('common')
 
-local script_version = 5
+local script_version = 6
 
 --------------------------------------------------
 -- Heavily modified form of RiptideSage's tracker
@@ -1625,7 +1625,20 @@ local player_names_address  = coop_context + 20
 local player_name_length    = 8 -- 8 bytes
 local file_hash_location    = player_names_address + 0x800 -- CFG_FILE_SELECT_HASH (5 bytes)
 
-local master_quest_table_address = rando_context + 0x1E56
+local dungeon_is_mq_ptr_addr = rando_context + 0x10
+local master_quest_table_address = nil
+
+local function read_n64_pointer_offset(addr)
+    local ptr = mainmemory.read_u32_be(addr)
+    if ptr >= 0x80000000 and ptr < 0x80800000 then
+        return ptr - 0x80000000
+    end
+    return nil
+end
+
+local function resolve_master_quest_table_address()
+    master_quest_table_address = read_n64_pointer_offset(dungeon_is_mq_ptr_addr)
+end
 
 local save_context_addr = 0x11A5D0
 local internal_count_addr = save_context_addr + 0x90
@@ -1860,6 +1873,7 @@ function process_block(block)
     cur_mode = get_current_game_mode()
     if (first_connect or cur_mode == 0 or cur_mode == 1 or cur_mode == 2) and (#block['playerNames'] > 0) then
         first_connect = false
+        resolve_master_quest_table_address()
         local index = 1
         while (index <= #block['playerNames']) and (index < 255) do
             setPlayerName(index, block['playerNames'][index])
@@ -1909,7 +1923,7 @@ function APreceive()
     retTable["playerName"] = get_player_name()
     retTable["scriptVersion"] = script_version
     retTable["deathlinkActive"] = deathlink_enabled()
-    if InSafeState() then
+    if InSafeState() and master_quest_table_address ~= nil then
         retTable["locations"] = check_all_locations(master_quest_table_address)
         retTable["collectibles"] = check_collectibles()
         retTable["isDead"] = get_death_state()

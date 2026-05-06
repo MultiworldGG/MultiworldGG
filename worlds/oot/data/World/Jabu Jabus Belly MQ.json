@@ -95,7 +95,8 @@
             "Jabu Jabus Belly MQ Falling Like-Like Room Right Cow Wonderitem 3": "True",
             "Jabu Jabus Belly MQ Falling Like-Like Room Left Cow Wonderitem 1": "True",
             "Jabu Jabus Belly MQ Falling Like-Like Room Left Cow Wonderitem 2": "True",
-            "Jabu Jabus Belly MQ Falling Like-Like Room Left Cow Wonderitem 3": "True"
+            "Jabu Jabus Belly MQ Falling Like-Like Room Left Cow Wonderitem 3": "True",
+            "Bombable Fairy": "has_bottle"
         },
         "exits": {
             "Jabu Jabus Belly Past Big Octo": "Sticks or (can_use(Dins_Fire) and Kokiri_Sword)"

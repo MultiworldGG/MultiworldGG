@@ -9,20 +9,21 @@ class Dungeon(object):
         self.regions = []
         self.boss_key = []
         self.small_keys = []
-        self.dungeon_items = []
+        self.maps = []
+        self.compasses = []
 
         for region in world.multiworld.regions:
             if region.player == world.player and region.dungeon == self.name:
                 region.dungeon = self
-                self.regions.append(region)                
+                self.regions.append(region)
 
 
     def copy(self, new_world):
-        new_boss_key = [item.copy(new_world) for item in self.boss_key]
-        new_small_keys = [item.copy(new_world) for item in self.small_keys]
-        new_dungeon_items = [item.copy(new_world) for item in self.dungeon_items]
-
-        new_dungeon = Dungeon(new_world, self.name, self.hint_text, self.font_color, new_boss_key, new_small_keys, new_dungeon_items)
+        new_dungeon = Dungeon(new_world, self.name, self.hint_text, self.font_color)
+        new_dungeon.boss_key = [item.copy(new_world) for item in self.boss_key]
+        new_dungeon.small_keys = [item.copy(new_world) for item in self.small_keys]
+        new_dungeon.maps = [item.copy(new_world) for item in self.maps]
+        new_dungeon.compasses = [item.copy(new_world) for item in self.compasses]
 
         return new_dungeon
 
@@ -33,8 +34,22 @@ class Dungeon(object):
 
 
     @property
+    def shuffle_map(self):
+        return self.world.shuffle_map
+
+    @property
+    def shuffle_compass(self):
+        return self.world.shuffle_compass
+
+
+    @property
+    def dungeon_items(self):
+        return self.maps + self.compasses
+
+
+    @property
     def all_items(self):
-        return self.dungeon_items + self.keys
+        return self.maps + self.compasses + self.keys
 
 
     def is_dungeon_item(self, item):
@@ -51,4 +66,3 @@ class Dungeon(object):
 
     def __unicode__(self):
         return '%s' % self.name
-

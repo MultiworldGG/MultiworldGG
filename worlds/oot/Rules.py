@@ -198,17 +198,18 @@ def set_rules(ootworld):
     for location in filter(lambda location: location.name in ootworld.shop_prices
         or location.type in {'Scrub', 'GrottoScrub'}, ootworld.get_locations()):
         if location.type == 'Shop':
-            location.price = ootworld.shop_prices[location.name]
+            price = ootworld.shop_prices[location.name]
+            placed_item = location.item
+            if placed_item is not None and getattr(placed_item, 'market_price', None) is not None:
+                non_chu_drops_only = getattr(placed_item, 'market_price_non_chu_drops_only', False)
+                if not (non_chu_drops_only and ootworld.free_bombchu_drops) and price >= placed_item.market_price:
+                    # Reduce frequency of obvious scams by rerolling once and taking the lower price.
+                    price = min(price, ootworld.new_shop_price(location))
+                    ootworld.shop_prices[location.name] = price
+            location.price = price
+            if placed_item is not None:
+                placed_item.price = price
         add_rule(location, create_shop_rule(location, ootworld.parser))
-
-    if ootworld.shuffle_silver_rupees and ootworld.shuffle_silver_rupees != 'vanilla':
-        # Collecting the final BotW basement silver rupee and activating the cutscene of the door
-        # unlocking while on the ladder causes a softlock.
-        # Vanilla bug: https://github.com/OoTRandomizer/OoT-Randomizer/issues/2004
-        location = multiworld.get_location('Bottom of the Well Basement Silver Rupee Ladders Middle', player)
-        if location:
-            forbid_item(location, 'Silver Rupee (Bottom of the Well Basement)', ootworld.player)
-            forbid_item(location, 'Silver Rupee Pouch (Bottom of the Well Basement)', ootworld.player)
 
     if (ootworld.dungeon_mq['Forest Temple'] and ootworld.shuffle_bosskeys == 'dungeon'
         and ootworld.shuffle_smallkeys == 'dungeon' and ootworld.tokensanity == 'off'):

@@ -421,7 +421,7 @@ def patch_rom(world, rom):
     if not world.dungeon_mq['Water Temple']:
         rom.write_byte(0x25B8197, 0x3F)
 
-    if world.bombchus_in_logic:
+    if world.free_bombchu_drops:
         rom.write_int32(rom.sym('FREE_BOMBCHU_DROPS'), 1)
 
     # show seed info on file select screen
@@ -435,9 +435,7 @@ def patch_rom(world, rom):
         return txt
 
     line_len = 21
-    version_str = "version " + world.world_version.as_simple_string()
-    if len(version_str) > line_len:
-        version_str = "ver. " + world.world_version.as_simple_string()
+    version_str = "v " + world.world_version.as_simple_string()
     rom.write_bytes(rom.sym('VERSION_STRING_TXT'), makebytes(version_str, 25))
 
     if world.multiworld.players > 1:
@@ -1005,6 +1003,8 @@ def patch_rom(world, rom):
     save_context.write_bits(0x0ED6, 0x10) # "Spoke to Mido After Deku Tree's Death"
     save_context.write_bits(0x0EDA, 0x08) # "Began Nabooru Battle"
     save_context.write_bits(0x0EDC, 0x80) # "Entered the Master Sword Chamber"
+    if world.skip_reward_from_rauru in ('free', 'free_forced'):
+        save_context.write_bits(0x0EDD, 0x20) # "Pulled Master Sword from Pedestal"
     save_context.write_bits(0x0EE0, 0x80) # "Spoke to Kaepora Gaebora by Lost Woods"
     save_context.write_bits(0x0EE7, 0x20) # "Nabooru Captured by Twinrova"
     save_context.write_bits(0x0EE7, 0x10) # "Spoke to Nabooru in Spirit Temple"
@@ -1259,10 +1259,12 @@ def patch_rom(world, rom):
     rom.write_int16s(0x21BD62C, new_gate_opening_guard)  # Adult Night
 
     # start with maps/compasses
-    if world.shuffle_mapcompass == 'startwith':
+    if world.shuffle_map == 'startwith':
+        for dungeon in ['deku', 'dodongo', 'jabu', 'forest', 'fire', 'water', 'spirit', 'shadow', 'botw', 'ice']:
+            save_context.addresses['dungeon_items'][dungeon]['map'].value = True
+    if world.shuffle_compass == 'startwith':
         for dungeon in ['deku', 'dodongo', 'jabu', 'forest', 'fire', 'water', 'spirit', 'shadow', 'botw', 'ice']:
             save_context.addresses['dungeon_items'][dungeon]['compass'].value = True
-            save_context.addresses['dungeon_items'][dungeon]['map'].value = True
 
     if world.shuffle_smallkeys == 'vanilla':
         if world.dungeon_mq['Spirit Temple']:
@@ -1690,10 +1692,6 @@ def patch_rom(world, rom):
                 rom.write_byte(0x2000FED, special['text_id']) #Fix text box
             elif location.name == 'Sheik at Colossus':
                 rom.write_byte(0x218C589, special['text_id']) #Fix text box
-        elif location.type == 'Boss':
-            if location.name == 'ToT Reward from Rauru':
-                save_context.give_item(world, item.name)
-
     # add a cheaper bombchu pack to the bombchu shop
     # describe
     update_message_by_id(messages, 0x80FE, '\x08\x05\x41Bombchu   (5 pieces)   60 Rupees\x01\x05\x40This looks like a toy mouse, but\x01it\'s actually a self-propelled time\x01bomb!\x09\x0A', 0x03)
@@ -1895,10 +1893,6 @@ def patch_rom(world, rom):
         rom.write_byte(rom.sym('SHUFFLE_SILVER_RUPEES'), 1)
         if world.shuffle_silver_rupees != 'remove':
             rom.write_byte(rom.sym('CFG_DUNGEON_INFO_SILVER_RUPEES'), 1)
-            if not world.dungeon_mq['Bottom of the Well']:
-                # Collecting the final BotW basement silver rupee while climbing the ladder causes a softlock.
-                # Move the X coordinate of this actor slightly to prevent collection while climbing.
-                rom.write_int16(0x32E92C6, 0xFD78)
 
     if world.shuffle_tcgkeys != 'vanilla':
         if world.shuffle_tcgkeys == 'remove':
@@ -1936,7 +1930,7 @@ def patch_rom(world, rom):
         item['chest_type'] = BROWN_CHEST
         write_rom_item(rom, 0x71, item)
 
-    if world.bombchus_in_logic or 'bombchus' in world.minor_items_as_major_chest:
+    if world.free_bombchu_drops or 'bombchus' in world.minor_items_as_major_chest:
         bombchu_ids = [0x6A, 0x03, 0x6B]
         for i in bombchu_ids:
             item = read_rom_item(rom, i)
@@ -2861,12 +2855,35 @@ def configure_dungeon_info(rom, world):
     dungeon_reward_areas = bytearray()
     dungeon_reward_worlds = []
     for reward in ('Kokiri Emerald', 'Goron Ruby', 'Zora Sapphire', 'Light Medallion', 'Forest Medallion', 'Fire Medallion', 'Water Medallion', 'Shadow Medallion', 'Spirit Medallion'):
-        location = next(filter(lambda loc: loc.item.name == reward, world.multiworld.get_filled_locations(player=world.player)))
-        area = HintArea.at(location)
-        dungeon_reward_areas += area.short_name.encode('ascii').ljust(0x16) + b'\0'
+        sentinel = object()
+        location = world.hinted_dungeon_reward_locations.get(reward, sentinel)
+        if location is sentinel:
+            location = next(
+                (loc for loc in world.multiworld.get_filled_locations()
+                 if loc.item is not None
+                 and isinstance(loc.item, OOTItem)
+                 and loc.item.player == world.player
+                 and loc.item.name == reward),
+                None,
+            )
+        if location is None:
+            # Reward is in starting inventory (Rauru free/free_forced) or could not be found.
+            dungeon_reward_areas += HintArea.ROOT.short_name.encode('ascii').ljust(0x16) + b'\0'
+            dungeon_reward_worlds.append(world.player)
+            continue
+        try:
+            area = HintArea.at(location)
+            area_name = area.short_name
+            is_dungeon = area.is_dungeon
+            dungeon_name = area.dungeon_name
+        except Exception:
+            area_name = "Another World"
+            is_dungeon = False
+            dungeon_name = None
+        dungeon_reward_areas += area_name.encode('ascii').ljust(0x16) + b'\0'
         dungeon_reward_worlds.append(location.player)
-        if area.is_dungeon:
-            dungeon_rewards[codes.index(area.dungeon_name)] = boss_reward_index(location.item)
+        if is_dungeon and location.player == world.player:
+            dungeon_rewards[codes.index(dungeon_name)] = boss_reward_index(location.item)
 
     dungeon_is_mq = [1 if world.dungeon_mq.get(c) else 0 for c in codes]
     dungeon_precompleted = [1 if world.precompleted_dungeons.get(c, False) else 0 for c in codes]
@@ -2960,7 +2977,9 @@ def configure_dungeon_info(rom, world):
     rom.write_bytes(rom.sym('CFG_DUNGEON_REWARDS'), dungeon_rewards)
     rom.write_bytes(rom.sym('CFG_DUNGEON_IS_MQ'), dungeon_is_mq)
     rom.write_bytes(rom.sym('CFG_DUNGEON_REWARD_AREAS'), dungeon_reward_areas)
-    rom.write_byte(rom.sym('CFG_DUNGEON_INFO_REWARD_WORLDS_ENABLE'), 0)
+    rom.write_byte(rom.sym('CFG_DUNGEON_INFO_REWARD_WORLDS_ENABLE'),
+        int(world.multiworld.players > 1
+            and world.shuffle_dungeon_rewards in ('regional', 'overworld', 'any_dungeon', 'anywhere')))
     rom.write_bytes(rom.sym('CFG_DUNGEON_REWARD_WORLDS'), dungeon_reward_worlds)
     rom.write_bytes(rom.sym('CFG_DUNGEON_PRECOMPLETED'), dungeon_precompleted)
     rom.write_bytes(rom.sym('CFG_DUNGEON_BOSS_INFO'), dungeon_info)
