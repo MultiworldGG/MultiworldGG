@@ -176,7 +176,7 @@ class OOTWeb(WebWorld):
     display_name = "The Legend of Zelda: Ocarina of Time"
     setup = Tutorial(
         "Multiworld Setup Guide",
-        "A guide to setting up the MultiworldGG Ocarina of Time software on your computer.",
+        "A guide to setting up Ocarina of Time Randomizer for Multiworld",
         "English",
         "setup_en.md",
         "setup/en",
@@ -1324,6 +1324,7 @@ class OOTWorld(World):
             shop_locations = list(
                 filter(lambda location: location.type == 'Shop' and location.name not in self.shop_prices,
                        self.multiworld.get_unfilled_locations(player=self.player)))
+            shop_locations_to_hide = shop_locations.copy()
             shop_prog.sort(key=lambda item: {
                 'Buy Deku Shield': 2 * int(self.open_forest == 'closed'),
                 'Buy Goron Tunic': 1,
@@ -1334,8 +1335,10 @@ class OOTWorld(World):
             fill_restrictive(self.multiworld, prefill_state(state), shop_locations, shop_prog,
                 single_player_placement=True, lock=True, allow_excluded=True)
             fast_fill(self.multiworld, shop_junk, shop_locations)
-            for loc in shop_locations:
+            for loc in shop_locations_to_hide:
                 loc.locked = True
+                loc.address = None
+                loc.show_in_spoiler = False
         set_shop_rules(self)  # sets wallet requirements on shop items, must be done after they are filled
 
     def post_fill(self):
