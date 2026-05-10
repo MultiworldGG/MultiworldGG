@@ -45,6 +45,7 @@ item_table["Block Brawl Minigame Yellows"] = ItemData(9999944, ItemClassificatio
 item_table["Climb Line Minigame"] = ItemData(9999931, ItemClassification.progression)
 item_table["Climb Spiral Minigame"] = ItemData(9999932, ItemClassification.progression)
 item_table["Climb Chaos Minigame"] = ItemData(9999933, ItemClassification.progression)
+item_table["Climb Narrow Minigame"] = ItemData(9999934, ItemClassification.progression)
 
 item_table["Block Blub Minigame Reds"] = ItemData(9999921, ItemClassification.progression)
 item_table["Block Blub Minigame Blues"] = ItemData(9999922, ItemClassification.progression)
@@ -52,6 +53,8 @@ item_table["Block Blub Minigame Greens"] = ItemData(9999923, ItemClassification.
 item_table["Block Blub Minigame Yellows"] = ItemData(9999924, ItemClassification.progression)
 
 item_table["Refunct Mountain Minigame"] = ItemData(9999910, ItemClassification.progression)
+item_table["Rando Mountain Minigame"] = ItemData(9999911, ItemClassification.progression)
+
 
 # for i in range(0, 101):
 #     item_table[f"DEBUGA {i}"] = ItemData(20000000 + i, ItemClassification.filler)
@@ -73,6 +76,84 @@ item_table[f"Starry sky"] = ItemData(9999006, ItemClassification.trap)
 item_table[f"Red sky"] = ItemData(9999007, ItemClassification.trap)
 item_table[f"Hurricane"] = ItemData(9999008, ItemClassification.trap)
 item_table[f"Blurrrrgh"] = ItemData(9999009, ItemClassification.trap)
+
+english_flowers = [
+    "Rose",
+    "Tulip",
+    "Sunflower",
+    "Lily",
+    "Orchid",
+    "Gerbera Daisy",
+    "Carnation",
+    "Hydrangea",
+    "Peony",
+    "Chrysanthemum",
+]
+latin_flowers = [
+    "Rosa",
+    "Tulipa",
+    "Helianthus annuus",
+    "Lilium",
+    "Orchidaceae",
+    "Gerbera jamesonii",
+    "Dianthus caryophyllus",
+    "Hydrangea macrophylla",
+    "Paeonia",
+    "Chrysanthemum indicum",
+]
+
+english_grasses = [
+    "Fine fescue",
+    "Tall fescue",
+    "Kentucky bluegrass",
+    "Perennial ryegrass",
+    "Bermuda grass",
+    "Centipede grass",
+    "St. Augustine grass",
+    "Zoysia grass",
+    "Bahiagrass",
+    "Buffalo grass",
+    "Blue fescue grass",
+    "Little bluestem",
+    "Shenandoah switchgrass",
+    "Purple fountain grass",
+    "Pink muhly grass",
+    "Zebra grass",
+    "Maiden grass",
+    "Pampas grass",
+    "Blue oat grass",
+    "Feather reed grass",
+    "Mexican feather grass",
+]
+latin_grasses = [
+    "Festuca rubra",
+    "Festuca arundinacea",
+    "Poa pratensis",
+    "Lolium perenne",
+    "Cynodon dactylon",
+    "Eremochloa ophiuroides",
+    "Stenotaphrum secundatum",
+    "Zoysia japonica",
+    "Paspalum notatum",
+    "Bouteloua dactyloides",
+    "Festuca glauca",
+    "Schizachyrium scoparium",
+    "Panicum virgatum Shenandoah",
+    "Pennisetum setaceum Rubrum",
+    "Muhlenbergia capillaris",
+    "Miscanthus sinensis Zebrinus",
+    "Miscanthus sinensis",
+    "Cortaderia selloana",
+    "Helictotrichon sempervirens",
+    "Calamagrostis x acutiflora",
+    "Nassella tenuissima",
+]
+
+for i, flower in enumerate(english_flowers + latin_flowers, start=1):
+    item_table[flower] = ItemData(9080000 + i, ItemClassification.filler)
+
+for i, grass in enumerate(english_grasses + latin_grasses, start=1):
+    item_table[grass] = ItemData(9090000 + i, ItemClassification.progression_deprioritized_skip_balancing)
 
 item_groups = {
     "Block Brawl Cubes": {
@@ -107,10 +188,13 @@ item_groups = {
         "Climb Line Minigame",
         "Climb Spiral Minigame",
         "Climb Chaos Minigame",
+        "Climb Narrow Minigame",
         "Block Blub Minigame Reds",
         "Block Blub Minigame Blues",
         "Block Blub Minigame Greens",
         "Block Blub Minigame Yellows",
+        "Refunct Mountain Minigame",
+        "Rando Mountain Minigame",
     },
     "Abilities": {
         "Ledge Grab",
@@ -120,4 +204,6 @@ item_groups = {
         "Pipes",
         "Lifts",
     },
+    "Flowers": set(["Flower"] + english_flowers + latin_flowers),
+    "Grasses": set(["Grass"] + english_grasses + latin_grasses),
 }

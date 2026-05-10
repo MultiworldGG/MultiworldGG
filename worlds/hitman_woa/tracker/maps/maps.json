@@ -1,0 +1,290 @@
+[
+  {
+    "name": "overview",
+    "img": "images/overview.jpeg",
+    "location_size": 30,
+    "location_border_thickness": 5,
+    "location_shape": "diamond"
+  },
+  {
+    "name": "berlin_3",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/berlin_3.jpeg"
+  },
+  {
+    "name": "ica_facility_3",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/ica_facility_3.jpeg"
+  },
+  {
+    "name": "colorado_3",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/colorado_3.jpeg"
+  },
+  {
+    "name": "hawkes_bay_2",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/hawkes_bay_2.jpeg"
+  },
+  {
+    "name": "haven_island_3",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/haven_island_3.jpeg"
+  },
+  {
+    "name": "ica_facility_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/ica_facility_all.jpeg"
+  },
+  {
+    "name": "paris_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/paris_all.jpeg"
+  },
+  {
+    "name": "sapienza_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/sapienza_all.jpeg"
+  },
+  {
+    "name": "marrakesh_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/marrakesh_all.jpeg"
+  },
+  {
+    "name": "bangkok_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/bangkok_all.jpeg"
+  },
+  {
+    "name": "colorado_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/colorado_all.jpeg"
+  },
+  {
+    "name": "hokkaido_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/hokkaido_all.jpeg"
+  },
+  {
+    "name": "hawkes_bay_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/hawkes_bay_all.jpeg"
+  },
+  {
+    "name": "miami_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/miami_all.jpeg"
+  },
+  {
+    "name": "santa_fortuna_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/santa_fortuna_all.jpeg"
+  },
+  {
+    "name": "mumbai_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/mumbai_all.jpeg"
+  },
+  {
+    "name": "whittleton_creek_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/whittleton_creek_all.jpeg"
+  },
+  {
+    "name": "isle_of_sgail_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/isle_of_sgail_all.jpeg"
+  },
+  {
+    "name": "new_york_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/new_york_all.jpeg"
+  },
+  {
+    "name": "haven_island_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/haven_island_all.jpeg"
+  },
+  {
+    "name": "dubai_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/dubai_all.jpeg"
+  },
+  {
+    "name": "dartmoor_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/dartmoor_all.jpeg"
+  },
+  {
+    "name": "berlin_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/berlin_all.jpeg"
+  },
+  {
+    "name": "chongqing_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/chongqing_all.jpeg"
+  },
+  {
+    "name": "mendoza_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/mendoza_all.jpeg"
+  },
+  {
+    "name": "carpathian_mountains_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/carpathian_mountains_all.jpeg"
+  },
+  {
+    "name": "ambrose_island_all",
+    "location_size": 10,
+    "location_border_thickness": 2,
+    "img": "images/ambrose_island_all.jpeg"
+  },
+
+  { "name" : "ica_facility_0", "location_size": 10, "location_border_thickness": 2, "img": "images/ica_facility_0.jpeg"},
+  { "name" : "ica_facility_1", "location_size": 10, "location_border_thickness": 2, "img": "images/ica_facility_1.jpeg"},
+  { "name" : "ica_facility_2", "location_size": 10, "location_border_thickness": 2, "img": "images/ica_facility_2.jpeg"},
+  { "name" : "paris_3", "location_size": 10, "location_border_thickness": 2, "img": "images/paris_3.jpeg"},
+  { "name" : "paris_2", "location_size": 10, "location_border_thickness": 2, "img": "images/paris_2.jpeg"},
+  { "name" : "paris_0", "location_size": 10, "location_border_thickness": 2, "img": "images/paris_0.jpeg"},
+  { "name" : "paris_1", "location_size": 10, "location_border_thickness": 2, "img": "images/paris_1.jpeg"},
+  { "name" : "sapienza_3", "location_size": 10, "location_border_thickness": 2, "img": "images/sapienza_3.jpeg"},
+  { "name" : "sapienza_4", "location_size": 10, "location_border_thickness": 2, "img": "images/sapienza_4.jpeg"},
+  { "name" : "sapienza_6", "location_size": 10, "location_border_thickness": 2, "img": "images/sapienza_6.jpeg"},
+  { "name" : "sapienza_7", "location_size": 10, "location_border_thickness": 2, "img": "images/sapienza_7.jpeg"},
+  { "name" : "sapienza_5", "location_size": 10, "location_border_thickness": 2, "img": "images/sapienza_5.jpeg"},
+  { "name" : "sapienza_2", "location_size": 10, "location_border_thickness": 2, "img": "images/sapienza_2.jpeg"},
+  { "name" : "sapienza_1", "location_size": 10, "location_border_thickness": 2, "img": "images/sapienza_1.jpeg"},
+  { "name" : "sapienza_0", "location_size": 10, "location_border_thickness": 2, "img": "images/sapienza_0.jpeg"},
+  { "name" : "marrakesh_1", "location_size": 10, "location_border_thickness": 2, "img": "images/marrakesh_1.jpeg"},
+  { "name" : "marrakesh_0", "location_size": 10, "location_border_thickness": 2, "img": "images/marrakesh_0.jpeg"},
+  { "name" : "marrakesh_2", "location_size": 10, "location_border_thickness": 2, "img": "images/marrakesh_2.jpeg"},
+  { "name" : "marrakesh_3", "location_size": 10, "location_border_thickness": 2, "img": "images/marrakesh_3.jpeg"},
+  { "name" : "bangkok_1", "location_size": 10, "location_border_thickness": 2, "img": "images/bangkok_1.jpeg"},
+  { "name" : "bangkok_0", "location_size": 10, "location_border_thickness": 2, "img": "images/bangkok_0.jpeg"},
+  { "name" : "bangkok_2", "location_size": 10, "location_border_thickness": 2, "img": "images/bangkok_2.jpeg"},
+  { "name" : "bangkok_3", "location_size": 10, "location_border_thickness": 2, "img": "images/bangkok_3.jpeg"},
+  { "name" : "bangkok_4", "location_size": 10, "location_border_thickness": 2, "img": "images/bangkok_4.jpeg"},
+  { "name" : "bangkok_5", "location_size": 10, "location_border_thickness": 2, "img": "images/bangkok_5.jpeg"},
+  { "name" : "colorado_0", "location_size": 10, "location_border_thickness": 2, "img": "images/colorado_0.jpeg"},
+  { "name" : "colorado_2", "location_size": 10, "location_border_thickness": 2, "img": "images/colorado_2.jpeg"},
+  { "name" : "colorado_1", "location_size": 10, "location_border_thickness": 2, "img": "images/colorado_1.jpeg"},
+  { "name" : "hokkaido_0", "location_size": 10, "location_border_thickness": 2, "img": "images/hokkaido_0.jpeg"},
+  { "name" : "hokkaido_1", "location_size": 10, "location_border_thickness": 2, "img": "images/hokkaido_1.jpeg"},
+  { "name" : "hokkaido_2", "location_size": 10, "location_border_thickness": 2, "img": "images/hokkaido_2.jpeg"},
+  { "name" : "hokkaido_3", "location_size": 10, "location_border_thickness": 2, "img": "images/hokkaido_3.jpeg"},
+  { "name" : "hawkes_bay_0", "location_size": 10, "location_border_thickness": 2, "img": "images/hawkes_bay_0.jpeg"},
+  { "name" : "hawkes_bay_1", "location_size": 10, "location_border_thickness": 2, "img": "images/hawkes_bay_1.jpeg"},
+  { "name" : "miami_0", "location_size": 10, "location_border_thickness": 2, "img": "images/miami_0.jpeg"},
+  { "name" : "miami_1", "location_size": 10, "location_border_thickness": 2, "img": "images/miami_1.jpeg"},
+  { "name" : "miami_-1", "location_size": 10, "location_border_thickness": 2, "img": "images/miami_-1.jpeg"},
+  { "name" : "miami_2", "location_size": 10, "location_border_thickness": 2, "img": "images/miami_2.jpeg"},
+  { "name" : "miami_3", "location_size": 10, "location_border_thickness": 2, "img": "images/miami_3.jpeg"},
+  { "name" : "santa_fortuna_0", "location_size": 10, "location_border_thickness": 2, "img": "images/santa_fortuna_0.jpeg"},
+  { "name" : "santa_fortuna_1", "location_size": 10, "location_border_thickness": 2, "img": "images/santa_fortuna_1.jpeg"},
+  { "name" : "santa_fortuna_2", "location_size": 10, "location_border_thickness": 2, "img": "images/santa_fortuna_2.jpeg"},
+  { "name" : "santa_fortuna_-1", "location_size": 10, "location_border_thickness": 2, "img": "images/santa_fortuna_-1.jpeg"},
+  { "name" : "mumbai_0", "location_size": 10, "location_border_thickness": 2, "img": "images/mumbai_0.jpeg"},
+  { "name" : "mumbai_2", "location_size": 10, "location_border_thickness": 2, "img": "images/mumbai_2.jpeg"},
+  { "name" : "mumbai_1", "location_size": 10, "location_border_thickness": 2, "img": "images/mumbai_1.jpeg"},
+  { "name" : "mumbai_3", "location_size": 10, "location_border_thickness": 2, "img": "images/mumbai_3.jpeg"},
+  { "name" : "mumbai_4", "location_size": 10, "location_border_thickness": 2, "img": "images/mumbai_4.jpeg"},
+  { "name" : "mumbai_-1", "location_size": 10, "location_border_thickness": 2, "img": "images/mumbai_-1.jpeg"},
+  { "name" : "mumbai_7", "location_size": 10, "location_border_thickness": 2, "img": "images/mumbai_7.jpeg"},
+  { "name" : "mumbai_6", "location_size": 10, "location_border_thickness": 2, "img": "images/mumbai_6.jpeg"},
+  { "name" : "mumbai_5", "location_size": 10, "location_border_thickness": 2, "img": "images/mumbai_5.jpeg"},
+  { "name" : "whittleton_creek_-1", "location_size": 10, "location_border_thickness": 2, "img": "images/whittleton_creek_-1.jpeg"},
+  { "name" : "whittleton_creek_0", "location_size": 10, "location_border_thickness": 2, "img": "images/whittleton_creek_0.jpeg"},
+  { "name" : "whittleton_creek_2", "location_size": 10, "location_border_thickness": 2, "img": "images/whittleton_creek_2.jpeg"},
+  { "name" : "whittleton_creek_1", "location_size": 10, "location_border_thickness": 2, "img": "images/whittleton_creek_1.jpeg"},
+  { "name" : "ambrose_island_0", "location_size": 10, "location_border_thickness": 2, "img": "images/ambrose_island_0.jpeg"},
+  { "name" : "ambrose_island_1", "location_size": 10, "location_border_thickness": 2, "img": "images/ambrose_island_1.jpeg"},
+  { "name" : "ambrose_island_2", "location_size": 10, "location_border_thickness": 2, "img": "images/ambrose_island_2.jpeg"},
+  { "name" : "ambrose_island_3", "location_size": 10, "location_border_thickness": 2, "img": "images/ambrose_island_3.jpeg"},
+  { "name" : "ambrose_island_4", "location_size": 10, "location_border_thickness": 2, "img": "images/ambrose_island_4.jpeg"},
+  { "name" : "isle_of_sgail_8", "location_size": 10, "location_border_thickness": 2, "img": "images/isle_of_sgail_8.jpeg"},
+  { "name" : "isle_of_sgail_6", "location_size": 10, "location_border_thickness": 2, "img": "images/isle_of_sgail_6.jpeg"},
+  { "name" : "isle_of_sgail_5", "location_size": 10, "location_border_thickness": 2, "img": "images/isle_of_sgail_5.jpeg"},
+  { "name" : "isle_of_sgail_4", "location_size": 10, "location_border_thickness": 2, "img": "images/isle_of_sgail_4.jpeg"},
+  { "name" : "isle_of_sgail_3", "location_size": 10, "location_border_thickness": 2, "img": "images/isle_of_sgail_3.jpeg"},
+  { "name" : "isle_of_sgail_0", "location_size": 10, "location_border_thickness": 2, "img": "images/isle_of_sgail_0.jpeg"},
+  { "name" : "isle_of_sgail_1", "location_size": 10, "location_border_thickness": 2, "img": "images/isle_of_sgail_1.jpeg"},
+  { "name" : "isle_of_sgail_2", "location_size": 10, "location_border_thickness": 2, "img": "images/isle_of_sgail_2.jpeg"},
+  { "name" : "isle_of_sgail_7", "location_size": 10, "location_border_thickness": 2, "img": "images/isle_of_sgail_7.jpeg"},
+  { "name" : "new_york_0", "location_size": 10, "location_border_thickness": 2, "img": "images/new_york_0.jpeg"},
+  { "name" : "new_york_1", "location_size": 10, "location_border_thickness": 2, "img": "images/new_york_1.jpeg"},
+  { "name" : "new_york_3", "location_size": 10, "location_border_thickness": 2, "img": "images/new_york_3.jpeg"},
+  { "name" : "new_york_2", "location_size": 10, "location_border_thickness": 2, "img": "images/new_york_2.jpeg"},
+  { "name" : "new_york_-1", "location_size": 10, "location_border_thickness": 2, "img": "images/new_york_-1.jpeg"},
+  { "name" : "haven_island_0", "location_size": 10, "location_border_thickness": 2, "img": "images/haven_island_0.jpeg"},
+  { "name" : "haven_island_1", "location_size": 10, "location_border_thickness": 2, "img": "images/haven_island_1.jpeg"},
+  { "name" : "haven_island_-1", "location_size": 10, "location_border_thickness": 2, "img": "images/haven_island_-1.jpeg"},
+  { "name" : "haven_island_-2", "location_size": 10, "location_border_thickness": 2, "img": "images/haven_island_-2.jpeg"},
+  { "name" : "haven_island_-3", "location_size": 10, "location_border_thickness": 2, "img": "images/haven_island_-3.jpeg"},
+  { "name" : "haven_island_2", "location_size": 10, "location_border_thickness": 2, "img": "images/haven_island_2.jpeg"},
+  { "name" : "dubai_4", "location_size": 10, "location_border_thickness": 2, "img": "images/dubai_4.jpeg"},
+  { "name" : "dubai_-1", "location_size": 10, "location_border_thickness": 2, "img": "images/dubai_-1.jpeg"},
+  { "name" : "dubai_0", "location_size": 10, "location_border_thickness": 2, "img": "images/dubai_0.jpeg"},
+  { "name" : "dubai_2", "location_size": 10, "location_border_thickness": 2, "img": "images/dubai_2.jpeg"},
+  { "name" : "dubai_1", "location_size": 10, "location_border_thickness": 2, "img": "images/dubai_1.jpeg"},
+  { "name" : "dubai_3", "location_size": 10, "location_border_thickness": 2, "img": "images/dubai_3.jpeg"},
+  { "name" : "dubai_5", "location_size": 10, "location_border_thickness": 2, "img": "images/dubai_5.jpeg"},
+  { "name" : "dartmoor_0", "location_size": 10, "location_border_thickness": 2, "img": "images/dartmoor_0.jpeg"},
+  { "name" : "dartmoor_1", "location_size": 10, "location_border_thickness": 2, "img": "images/dartmoor_1.jpeg"},
+  { "name" : "dartmoor_2", "location_size": 10, "location_border_thickness": 2, "img": "images/dartmoor_2.jpeg"},
+  { "name" : "dartmoor_3", "location_size": 10, "location_border_thickness": 2, "img": "images/dartmoor_3.jpeg"},
+  { "name" : "berlin_-2", "location_size": 10, "location_border_thickness": 2, "img": "images/berlin_-2.jpeg"},
+  { "name" : "berlin_-1", "location_size": 10, "location_border_thickness": 2, "img": "images/berlin_-1.jpeg"},
+  { "name" : "berlin_0", "location_size": 10, "location_border_thickness": 2, "img": "images/berlin_0.jpeg"},
+  { "name" : "berlin_1", "location_size": 10, "location_border_thickness": 2, "img": "images/berlin_1.jpeg"},
+  { "name" : "berlin_2", "location_size": 10, "location_border_thickness": 2, "img": "images/berlin_2.jpeg"},
+  { "name" : "berlin_4", "location_size": 10, "location_border_thickness": 2, "img": "images/berlin_4.jpeg"},
+  { "name" : "chongqing_5", "location_size": 10, "location_border_thickness": 2, "img": "images/chongqing_5.jpeg"},
+  { "name" : "chongqing_4", "location_size": 10, "location_border_thickness": 2, "img": "images/chongqing_4.jpeg"},
+  { "name" : "chongqing_1", "location_size": 10, "location_border_thickness": 2, "img": "images/chongqing_1.jpeg"},
+  { "name" : "chongqing_-3", "location_size": 10, "location_border_thickness": 2, "img": "images/chongqing_-3.jpeg"},
+  { "name" : "chongqing_-2", "location_size": 10, "location_border_thickness": 2, "img": "images/chongqing_-2.jpeg"},
+  { "name" : "chongqing_-1", "location_size": 10, "location_border_thickness": 2, "img": "images/chongqing_-1.jpeg"},
+  { "name" : "chongqing_0", "location_size": 10, "location_border_thickness": 2, "img": "images/chongqing_0.jpeg"},
+  { "name" : "chongqing_2", "location_size": 10, "location_border_thickness": 2, "img": "images/chongqing_2.jpeg"},
+  { "name" : "chongqing_3", "location_size": 10, "location_border_thickness": 2, "img": "images/chongqing_3.jpeg"},
+  { "name" : "mendoza_6", "location_size": 10, "location_border_thickness": 2, "img": "images/mendoza_6.jpeg"},
+  { "name" : "mendoza_5", "location_size": 10, "location_border_thickness": 2, "img": "images/mendoza_5.jpeg"},
+  { "name" : "mendoza_0", "location_size": 10, "location_border_thickness": 2, "img": "images/mendoza_0.jpeg"},
+  { "name" : "mendoza_4", "location_size": 10, "location_border_thickness": 2, "img": "images/mendoza_4.jpeg"},
+  { "name" : "mendoza_1", "location_size": 10, "location_border_thickness": 2, "img": "images/mendoza_1.jpeg"},
+  { "name" : "mendoza_3", "location_size": 10, "location_border_thickness": 2, "img": "images/mendoza_3.jpeg"},
+  { "name" : "mendoza_2", "location_size": 10, "location_border_thickness": 2, "img": "images/mendoza_2.jpeg"},
+  { "name" : "carpathian_mountains_0", "location_size": 10, "location_border_thickness": 2, "img": "images/carpathian_mountains_0.jpeg"},
+  { "name" : "carpathian_mountains_2", "location_size": 10, "location_border_thickness": 2, "img": "images/carpathian_mountains_2.jpeg"},
+  { "name" : "carpathian_mountains_1", "location_size": 10, "location_border_thickness": 2, "img": "images/carpathian_mountains_1.jpeg"},
+  { "name" : "carpathian_mountains_3", "location_size": 10, "location_border_thickness": 2, "img": "images/carpathian_mountains_3.jpeg"}
+]

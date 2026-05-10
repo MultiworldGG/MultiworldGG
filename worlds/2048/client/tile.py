@@ -5,9 +5,13 @@ from kivy.metrics import dp
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.label import MDLabel
 
+from .game import TwoThousandAndFortyEightGame
+
+
 class TileWidget(MDFloatLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self):
+        super().__init__()
+        self.game: TwoThousandAndFortyEightGame | None = None
         self.size_hint = (1, 1)
         self.value = 0
 
@@ -19,40 +23,46 @@ class TileWidget(MDFloatLayout):
             pos_hint={"center_x": .5, "center_y": .5},
             theme_text_color="Custom",
             text_color=(0.1, 0.1, 0.1, 1),
-            # font_size removed from here as it's now dynamic
             bold=True
         )
-        self.label.bind(size=self.label.setter('text_size'))
+        self.label.bind(size=self.label.setter("text_size"))
 
         self.add_widget(self.label)
-        # update_canvas will now handle both background and font resizing
         self.bind(pos=self.update_canvas, size=self.update_canvas)
 
-    def update_canvas(self, *args):
-        # This ensures the text scales whenever the window or grid resizes
+    def update_canvas(self, *_):
         self.label.font_size = self.height * 0.45
         self.set_value(self.value)
 
-    def set_value(self, val: int):
-        self.value = val
-        self.label.text = str(val) if val > 0 else ""
+    def set_value(self, value: int):
+        self.value = value
+        self.label.text = str(value) if value > 0 else ""
 
-        # 1. Default for empty tiles
-        if val == 0:
+        if value == 0:
             bg_color = (0.8, 0.75, 0.71, 1)
         else:
-            # 2. Get the "step" (2->1, 4->2, 8->3, 16->4, etc.)
-            step = math.log2(val)
+            step = math.log2(value)
 
-            # 3. Compute a simple color shift
-            # As step increases, Red stays high, Green drops, Blue drops
             r = 0.95
             g = max(0.2, 0.9 - (step * 0.1))
             b = max(0.1, 0.8 - (step * 0.15))
             bg_color = (r, g, b, 1)
 
-        # 4. Text contrast: Dark text for small numbers, White for large
-        self.label.text_color = (0.3, 0.3, 0.3, 1) if val <= 4 else (1, 1, 1, 1)
+        if self.game is not None and value in self.game.owned_merges:
+            alpha = 1
+        else:
+            alpha = 0.5
+
+        if value <= 4:
+            if self.game is not None and alpha == 1 and value * 2 not in self.game.checked_locations:
+                self.label.text_color = (0.3, 0.3, 0.7, 1)
+            else:
+                self.label.text_color = (0.3, 0.3, 0.3, alpha)
+        else:
+            if alpha == 1 and value * 2 not in self.game.checked_locations:
+                self.label.text_color = (0.5, 0.9, 1, 1)
+            else:
+                self.label.text_color = (1, 1, 1, alpha)
 
         self.canvas.before.clear()
         with self.canvas.before:

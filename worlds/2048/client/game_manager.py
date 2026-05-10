@@ -48,5 +48,12 @@ class TwoThousandAndFortyEightManager(GameManager):
             self.tile_widgets.append(row)
 
         self.add_client_tab("2048 Game", game_view)
-        self.render(self.ctx.game_logic)
+        self.render(None)
         return container
+
+    def set_game(self, game: TwoThousandAndFortyEightGame):
+        self.game_view.game = game
+        self.game_view.update_score(0)
+        for tile_list in self.tile_widgets:
+            for tile in tile_list:
+                tile.game = game

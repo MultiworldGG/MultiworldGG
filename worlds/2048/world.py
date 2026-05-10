@@ -33,8 +33,8 @@ class TwoThousandAndFortyEightWorld(World):
         region.locations.append(score_200)
 
         region_to_score = {
-            16: 400,
-            32: 800,
+            16: 500,
+            32: 1000,
             64: 1500,
             128: 3000,
             256: 5000,
