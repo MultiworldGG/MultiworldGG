@@ -1,11 +1,7 @@
-; MultiworldGG-specific symbol definitions
+; AP-specific symbol definitions
 ; These addresses are within the payload region and get auto-exported to symbols.json.
-; Addresses correspond to locations in config.asm and the C bundle that MultiworldGG
-; reads/writes at patch time but are not labeled in the upstream OoT randomizer build.
+; Addresses correspond to locations in config.asm and the C bundle that AP reads/writes at patch time 
 
-;==================================================================================================
-; Config flags written by Patches.py
-;==================================================================================================
 .definelabel DUNGEON_IS_MQ_ADDRESS,        0x80400010
 .definelabel DUNGEON_REWARDS_ADDRESS,      0x80400014
 .definelabel ENHANCE_MAP_COMPASS,          0x80400018
@@ -17,10 +13,4 @@
 .definelabel BIG_POE_COUNT,                0x8040001E
 .definelabel DEATH_LINK,                   0x8040002B
 
-;==================================================================================================
-; AP multiworld data
-;==================================================================================================
 .definelabel AP_PLAYER_NAME,               0x80400839
-
-; Note: satisfied_pending_frames is already auto-exported from the C bundle (bundle.o).
-; Its correct VRAM address is resolved at link time; no .definelabel needed.

@@ -14,9 +14,30 @@ from worlds.oot.Options import (cosmetic_options, sfx_options,
     UninvertYAxisInFirstPersonCamera, InputViewer, DisableBattleMusic, CreditsMusic)
 from worlds.oot.Rom import Rom, compress_rom_file
 from worlds.oot.N64Patch import apply_patch_file
-from Utils import local_path, user_path
+from Utils import local_path, user_path, open_file
 
 logger = logging.getLogger('OoTAdjuster')
+
+
+def launch_rom(path: str) -> None:
+    import subprocess
+
+    rom_path = os.path.realpath(path)
+    auto_start = OOTWorld.settings.rom_start
+    emulator_path = OOTWorld.settings.emulator_path
+    if auto_start is True and emulator_path:
+        subprocess.Popen(
+            [emulator_path.resolve() if hasattr(emulator_path, "resolve") else str(emulator_path), rom_path],
+            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+    elif auto_start is True:
+        open_file(rom_path)
+    elif auto_start and os.path.isfile(auto_start):
+        subprocess.Popen(
+            [auto_start, rom_path],
+            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+
 
 def main(launcher_args):
     parser = argparse.ArgumentParser()
@@ -256,25 +277,9 @@ def adjustGUI():
             logging.exception(e)
             messagebox.showerror(title="Error while adjusting Rom", message=str(e))
         else:
-            import subprocess
-            import settings as ap_settings
             from worlds.LauncherComponents import launch_subprocess
-            from worlds.oot.Client import main as client_main
-            auto_start = OOTWorld.settings.rom_start
-            if auto_start is True:
-                emuhawk_path = ap_settings.get_settings().bizhawkclient_options.emuhawk_path
-                subprocess.Popen(
-                    [
-                        emuhawk_path,
-                        f"--lua={local_path('data', 'lua', 'connector_oot.lua')}",
-                        os.path.realpath(path),
-                    ],
-                    cwd=local_path("."),
-                    stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                )
-            elif os.path.isfile(auto_start):
-                subprocess.Popen([auto_start, path],
-                                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            from worlds.oot.client import main as client_main
+            launch_rom(path)
             launch_subprocess(client_main, name="OoTClient")
             messagebox.showinfo(title="Success", message=f"Rom adjusted to {path}")
 

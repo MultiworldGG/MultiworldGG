@@ -16,6 +16,11 @@ from .Hints import writeGossipStoneHints, buildAltarHints, \
         buildGanonText, getSimpleHintNoPrefix, HintArea, getItemGenericName, \
         buildMiscItemHints, buildMiscLocationHints, buildMiscDualHints
 from .Utils import data_path
+try:
+    from Utils import instance_name as apname
+except ImportError:
+    apname = "AP"
+
 from .Messages import read_messages, update_message_by_id, read_shop_items, update_warp_song_text, \
         write_shop_items, remove_unused_messages, make_player_message, \
         add_item_messages, repack_messages, shuffle_messages, \
@@ -94,7 +99,6 @@ class OoTContainer(APPatch):
         super().write_contents(opened_zipfile)
 
 
-# "Spoiler" argument deleted; can probably be replaced with calls to world.world
 def patch_rom(world, rom):
     with open(data_path('generated/rom_patch.txt'), 'r') as stream:
         for line in stream:
@@ -204,10 +208,8 @@ def patch_rom(world, rom):
     for name, start, end, object_id, patches in zobj_patches:
         end_address = start_address + end - start
         rom.buffer[start_address:end_address] = rom.buffer[start:end]
-        # Apply patches
         for offset, patch in patches:
             rom.write_bytes(start_address + offset, patch)
-        # Add it to the extended object table
         add_to_extended_object_table(rom, object_id, start_address, end_address)
         start_address = end_address
 
@@ -450,7 +452,7 @@ def patch_rom(world, rom):
 
     rom.write_byte(rom.sym('CFG_SHOW_SETTING_INFO'), 0x01)
 
-    msg = [f"MultiworldGG {ap_version}", world.multiworld.get_player_name(world.player)]
+    msg = [f"{apname} {ap_version}", world.multiworld.get_player_name(world.player)]
     for idx,part in enumerate(msg):
         part_bytes = list(ord(c) for c in part) + [0] * (line_len+1)
         part_bytes = part_bytes[:(line_len+1)]
@@ -460,7 +462,6 @@ def patch_rom(world, rom):
     # Change graveyard graves to not allow grabbing on to the ledge
     rom.write_byte(0x0202039D, 0x20)
     rom.write_byte(0x0202043C, 0x24)
-
 
     # Fix Castle Courtyard to check for meeting Zelda, not Zelda fleeing, to block you
     rom.write_bytes(0xCD5E76, [0x0E, 0xDC])
@@ -489,7 +490,6 @@ def patch_rom(world, rom):
     patch_wondertalk2(rom, world)
 
     # (song/dungeon cutscene patches moved to Cutscenes.py)
-
     if world.shuffle_ocarinas:
         symbol = rom.sym('OCARINAS_SHUFFLED')
         rom.write_byte(symbol,0x01)
@@ -1092,7 +1092,7 @@ def patch_rom(world, rom):
 
     if world.shuffle_child_trade == 'skip_child_zelda':
         save_context.give_item(world, 'Zeldas Letter')
-        # MultiworldGG forces this item to be local so it can always be given to the player. Usually it's a song so it's no problem.
+        # AP forces this item to be local so it can always be given to the player. Usually it's a song so it's no problem.
         item = world.get_location('Song from Impa').item
         save_context.give_item(world, item.name)
         if item.name == 'Slingshot':

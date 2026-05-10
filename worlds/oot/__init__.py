@@ -24,7 +24,7 @@ from .Utils import data_path, read_json
 from .LocationList import business_scrubs, set_drop_location_names, dungeon_song_locations
 from .DungeonList import dungeon_table, create_dungeons
 from .LogicTricks import normalized_name_tricks, normalized_name_advanced_tricks
-from .OcarinaSongs import generate_song_list
+from .OcarinaSongs import SONG_TABLE, generate_song_list
 from .Rom import Rom
 from .Patches import OoTContainer, patch_rom
 from .N64Patch import create_patch_file
@@ -39,24 +39,6 @@ from worlds.LauncherComponents import launch as launch_componenent, components, 
 
 # OoT's generate_output doesn't benefit from more than 2 threads, instead it uses a lot of memory.
 i_o_limiter = threading.Semaphore(2)
-
-# Logical note requirements for each learnable song.
-# These are used by has_all_notes_for_song() when individual ocarina notes are shuffled.
-VANILLA_SONG_NOTES = {
-    'Zeldas Lullaby': '<^><^>',
-    'Eponas Song': '^<>^<>',
-    'Sarias Song': 'v><v><',
-    'Suns Song': '>v^>v^',
-    'Song of Time': '>Av>Av',
-    'Song of Storms': 'Av^Av^',
-    'Minuet of Forest': 'A^<><>',
-    'Bolero of Fire': 'vAvA>v>v',
-    'Serenade of Water': 'Av>><',
-    'Requiem of Spirit': 'AvA>vA',
-    'Nocturne of Shadow': '<>>A<>v',
-    'Prelude of Light': '^>^><^',
-    'ZR Frogs Ocarina Game': 'A<>v<>vAvAv><A',
-}
 
 class _StartingItemRecord:
     def __init__(self, count: int):
@@ -88,7 +70,7 @@ class _OOTDistribution:
 
 
 def launch_client(*args):
-    from .Client import main
+    from .client import main
     launch_componenent(main, name="OoTClient", args=args)
 
 
@@ -164,12 +146,21 @@ class OOTSettings(settings.Group):
     class RomStart(str):
         """
         Set this to false to never autostart a rom (such as after patching),
-                    true  for operating system default program
-        Alternatively, a path to a program to open the .z64 file with
+                    true  to open with emulator_path if set, otherwise with the operating system default program.
+        Alternatively, a path to a program to open the .z64 file with.
         """
+
+    class EmulatorPath(settings.OptionalUserFilePath):
+        """
+        Path to an N64 emulator executable to auto-launch patched ROMs with.
+        Leave blank to use the operating system default program when rom_start is true.
+        """
+        is_exe = True
+        description = "N64 Emulator Executable"
 
     rom_file: RomFile = RomFile(RomFile.copy_to)
     rom_start: typing.Union[RomStart, bool] = True
+    emulator_path: EmulatorPath | str = ""
 
 
 class OOTWeb(WebWorld):
@@ -312,7 +303,7 @@ class OOTWorld(World):
         player_id = min(self.player, 255)
         self.connect_name = f"OOT{player_id:03d}-" + ''.join(f"{value:02x}" for value in self.file_hash)
         self.collectible_flag_addresses = {}
-        self.song_notes = VANILLA_SONG_NOTES.copy()
+        self.song_notes = {name: notes for name, (_, _, notes) in SONG_TABLE.items()}
 
         # Set skip_child_zelda boolean for logic
         self.skip_child_zelda = (self.shuffle_child_trade == 'skip_child_zelda')

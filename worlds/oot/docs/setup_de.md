@@ -1,17 +1,17 @@
 # Setup Anleitung für Ocarina of Time: Archipelago Edition
 
-## WICHTIG
-
-Da wir BizHawk benutzen, gilt diese Anleitung nur für Windows und Linux.
 
 ## Benötigte Software
 
-- BizHawk: [BizHawk Veröffentlichungen von TASVideos](https://tasvideos.org/BizHawk/ReleaseHistory)
-  - Version 2.10 und neuer werden unterstützt. Version 2.10 ist empfohlen.
-  - Detailierte Installtionsanweisungen für BizHawk können über den obrigen Link gefunden werden.
-  - Windows-Benutzer müssen die Prerequisiten installiert haben. Diese können ebenfalls über
-    den obrigen Link gefunden werden.
-- Der integrierte Archipelago-Client, welcher [hier](https://github.com/MultiworldGG/MultiworldGG/releases) installiert
+- Ein Emulator der Wahl
+  - [BizHawk] (https://tasvideos.org/BizHawk/ReleaseHistory) (v2.10+)
+  - [Project 64](https://www.pj64-emu.com/windows-downloads)
+  - [simple64](https://simple64.github.io/)
+  - [Rosalie's Mupen GUI](https://github.com/Rosalie241/RMG)
+  - [Gopher64](https://github.com/gopher64/gopher64) (Windows/Linux)
+  - [ares](https://ares-emu.net/) (Windows/Linux)
+  - [RetroArch](https://www.retroarch.com/?page=platforms) (funktioniert auch auf MacOS) 
+- Der integrierte Archipelago OoT-Client, welcher [hier](https://github.com/ArchipelagoMW/Archipelago/releases) installiert
   werden kann.
 - Eine `Ocarina of Time v1.0 US ROM`. (Nicht aus Europa und keine Master-Quest oder Debug-Rom!)
 
@@ -84,13 +84,17 @@ und klicke dann auf `Download APZ5 File...`.
 Führe die `.apz5`-Datei mit einem Doppelklick aus, um deinen Ocarina Of Time-Client zu starten, sowie das patchen
 deiner ROM. Ist dieser Prozess fertig (kann etwas dauern), startet sich der Client und der Emulator automatisch
 (sofern das "Öffnen mit..." ausgewählt wurde).
+Wenn du einen bestimmten Emulator automatisch starten möchtest, setze `oot_options.emulator_path` in deiner `host.yaml`
+auf die Emulator-Anwendung. Lasse den Wert leer, um die Standardanwendung deines Betriebssystems für `.z64` Dateien zu verwenden.
 
 ### Verbinde zum Multiserver
 
-Sind einmal der Client und der Emulator gestartet, müssen sie nur noch miteinander verbunden werden. Gehe dazu in
-deinen Archipelago-Ordner, dann zu `data/lua`, und füge das `connector_oot.lua` Script per Drag&Drop (ziehen und
-fallen lassen) auf das EmuHawk-Fenster. (Alternativ kannst du die Lua-Konsole manuell öffnen, gehe dazu auf
-`Script > Open Script` und durchsuche die Ordner nach `data/lua/connector_oot.lua`.)
+Sind einmal der Client und der Emulator gestartet, verbindet sich der OoT-Client automatisch mit der geladenen ROM.
+Du musst keine BizHawk-Lua-Konsole öffnen und kein Connector-Script in das Emulatorfenster ziehen. Falls keine
+Verbindung hergestellt wird, stelle sicher, dass die gepatchte ROM in einem unterstützten Emulator geladen ist, und
+nutze `/n64` im Client, um den Emulator-Verbindungsstatus zu prüfen.
+Für RetroArch musst du `Settings > Network > Network Commands` aktivieren und den Network Command Port auf `55355`
+lassen.
 
 Um den Client mit dem Multiserver zu verbinden, füge einfach `<Adresse>:<Port>` in das Textfeld ganz oben im
 Client ein und drücke Enter oder "Connect" (verbinden). Wird ein Passwort benötigt, musst du es danach unten in das

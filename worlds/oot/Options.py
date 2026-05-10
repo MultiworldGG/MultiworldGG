@@ -1324,7 +1324,7 @@ class MiscHints(OptionSet):
 
 class HintDistribution(Choice):
     """Choose the hint distribution to use. Affects the frequency of strong hints, which items are always hinted, etc.
-    Detailed documentation on hint distributions can be found on the MultiworldGG GitHub or OoTRandomizer.com.
+    Detailed documentation on hint distributions can be found on OoTRandomizer.com.
     The Async hint distribution is intended for async multiworlds. It removes Way of the Hero hints to improve generation times, since they are not very useful in asyncs."""
     display_name = "Hint Distribution"
     option_balanced = 0
@@ -1727,8 +1727,6 @@ sfx_options: typing.Dict[str, type(Option)] = {
 class LogicTricks(OptionSet):
     """Set various tricks for logic in Ocarina of Time.
     Format as a comma-separated list of "nice" names: ["Fewer Tunic Requirements", "Hidden Grottos without Stone of Agony"].
-    A full list of supported tricks can be found at:
-    https://github.com/MultiworldGG/MultiworldGG/blob/main/worlds/oot/LogicTricks.py
     """
     display_name = "Logic Tricks"
     valid_keys = tuple(normalized_name_tricks.keys())
@@ -1739,8 +1737,6 @@ class AdvancedAllowedTricks(OptionSet):
     """When Logic Rules is set to Advanced, choose which glitch and advanced tricks are in logic.
     Format as a comma-separated list of "nice" names:
     ["(Glitch) Infinite Sword Glitch (ISG)", "(Glitch) Hovering with Explosives"].
-    A full list of supported tricks can be found at:
-    https://github.com/MultiworldGG/MultiworldGG/blob/main/worlds/oot/LogicTricks.py
     """
     display_name = "Advanced Allowed Tricks"
     valid_keys = tuple(normalized_name_advanced_tricks.keys())

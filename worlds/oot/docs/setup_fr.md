@@ -1,17 +1,16 @@
 # Guide de configuration pour Ocarina of Time Archipelago
 
-## Important
-
-Comme nous utilisons BizHawk, ce guide s'applique uniquement aux systèmes Windows et Linux.
-
 ## Logiciel requis
 
-- BizHawk : [Sorties BizHawk de TASVideos](https://tasvideos.org/BizHawk/ReleaseHistory)
-   - Les versions 2.10 et ultérieures sont prises en charge. La version 2.10 est recommandée pour des raisons de stabilité.
-   - Des instructions d'installation détaillées pour BizHawk peuvent être trouvées sur le lien ci-dessus.
-   - Les utilisateurs Windows doivent d'abord exécuter le programme d'installation des prérequis, qui peut également être trouvé sur le lien ci-dessus.
-- Le client Archipelago intégré, qui peut être installé [ici](https://github.com/MultiworldGG/MultiworldGG/releases)
-   (sélectionnez « Ocarina of Time Client » lors de l'installation).
+- Un émulateur au choix
+  - [BizHawk] (https://tasvideos.org/BizHawk/ReleaseHistory) (v2.10+)
+  - [Project 64](https://www.pj64-emu.com/windows-downloads)
+  - [simple64](https://simple64.github.io/)
+  - [Rosalie's Mupen GUI](https://github.com/Rosalie241/RMG)
+  - [Gopher64](https://github.com/gopher64/gopher64) (Windows/Linux)
+  - [ares](https://ares-emu.net/) (Windows/Linux)
+  - [RetroArch](https://www.retroarch.com/?page=platforms) (marche sur MacOS) 
+- Le OoT client Archipelago intégré, qui peut être installé [ici](https://github.com/ArchipelagoMW/Archipelago/releases)
 - Un fichier ROM v1.0 US d'Ocarina of Time.
 
 ## Configuration de BizHawk
@@ -56,10 +55,17 @@ YAML page du validateur : [page de validation YAML](/mysterycheck)
 Lorsque vous rejoignez un jeu multimonde, il vous sera demandé de fournir votre fichier YAML à celui qui l'héberge. Une fois cela fait, l'hébergeur vous fournira soit un lien pour télécharger votre fichier de données, soit un fichier zip contenant les données de chacun des dossiers. Votre fichier de données doit avoir une extension « .apz5 ».
 
 Double-cliquez sur votre fichier « .apz5 » pour démarrer votre client et démarrer le processus de correctif ROM. Une fois le processus terminé (cela peut prendre un certain temps), le client et l'émulateur seront automatiquement démarrés (si vous avez associé l'extension à l'émulateur comme recommandé).
+Pour choisir un émulateur précis au lancement automatique, définissez `oot_options.emulator_path` dans votre `host.yaml`
+avec le chemin vers l'exécutable de l'émulateur. Laissez ce champ vide pour utiliser l'application par défaut de votre
+système pour les fichiers `.z64`.
 
 ### Connectez-vous au multiserveur
 
-Une fois le client et l'émulateur démarrés, vous devez les connecter. Accédez à votre dossier d'installation Archipelago, puis vers `data/lua`, et faites glisser et déposez le script `connector_oot.lua` sur la fenêtre principale d'EmuHawk. (Vous pourrez plutôt ouvrir depuis la console Lua manuellement, cliquez sur `Script` 〉 `Open Script` et accédez à `connector_oot.lua` avec le sélecteur de fichiers.)
+Une fois le client et l'émulateur démarrés, le client OoT se connecte automatiquement à la ROM chargée. Vous n'avez pas
+besoin d'ouvrir la console Lua de BizHawk ni de faire glisser un script de connexion dans l'émulateur. Si le client ne se
+connecte pas, vérifiez que la ROM corrigée est chargée dans un émulateur pris en charge, puis utilisez `/n64` dans le
+client pour vérifier l'état de la connexion à l'émulateur.
+Pour RetroArch, activez `Settings > Network > Network Commands` et laissez le Network Command Port sur `55355`.
 
 Pour connecter le client au multiserveur, mettez simplement `<adresse>:<port>` dans le champ de texte en haut et appuyez sur Entrée (si le serveur utilise un mot de passe, tapez dans le champ de texte inférieur `/connect <adresse>:<port> [mot de passe]`)
 

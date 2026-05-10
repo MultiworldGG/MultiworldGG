@@ -1,16 +1,16 @@
 # Setup Guide for Ocarina of Time Archipelago
 
-## Important
-
-As we are using BizHawk, this guide is only applicable to Windows and Linux systems.
-
 ## Required Software
 
-- BizHawk: [BizHawk Releases from TASVideos](https://tasvideos.org/BizHawk/ReleaseHistory)
-  - Version 2.10 and later are supported. Version 2.10 is recommended for stability.
-  - Detailed installation instructions for BizHawk can be found at the above link.
-  - Windows users must run the prereq installer first, which can also be found at the above link.
-- The built-in MultiworldGG client, which can be installed [here](https://github.com/MultiworldGG/MultiworldGG/releases).
+- An Emulator of choice
+  - [BizHawk] (https://tasvideos.org/BizHawk/ReleaseHistory) (v2.10+)
+  - [Project 64](https://www.pj64-emu.com/windows-downloads)
+  - [simple64](https://simple64.github.io/)
+  - [Rosalie's Mupen GUI](https://github.com/Rosalie241/RMG)
+  - [Gopher64](https://github.com/gopher64/gopher64) (Windows/Linux)
+  - [ares](https://ares-emu.net/) (Windows/Linux)
+  - [RetroArch](https://www.retroarch.com/?page=platforms) (works on MacOS) 
+- The built-in Archipelago OoT client, which can be installed [here](https://github.com/ArchipelagoMW/Archipelago/releases).
 - An Ocarina of Time v1.0 ROM.
 
 ## Configuring BizHawk
@@ -63,12 +63,15 @@ files. Your data file should have a `.apz5` extension.
 
 Double-click on your `.apz5` file to start your client and start the ROM patch process. Once the process is finished
 (this can take a while), the client and the emulator will be started automatically.
+To choose a specific emulator for auto-launch, set `oot_options.emulator_path` in your `host.yaml` to your emulator
+executable. Leave it blank to use your operating system's default application for `.z64` files.
 
 ### Connect to the Multiserver
 
-Once both the client and the emulator are started, you must connect them. Navigate to your MultiworldGG install folder,
-then to `data/lua`, and drag+drop the `connector_oot.lua` script onto the main EmuHawk window. (You could instead open
-the Lua Console manually, click `Script` 〉 `Open Script`, and navigate to `connector_oot.lua` with the file picker.)
+Once both the client and the emulator are started, the OoT Client will connect to the loaded ROM automatically. You do
+not need to open the BizHawk Lua console or drag in a connector script. If the client is not connecting, make sure the
+patched ROM is loaded in a supported emulator and use `/n64` in the client to check the emulator connection status.
+For RetroArch, enable `Settings > Network > Network Commands` and leave the Network Command Port at `55355`.
 
 To connect the client to the multiserver simply put `<address>:<port>` on the textfield on top and press enter (if the
 server uses password, type in the bottom textfield `/connect <address>:<port> [password]`)
