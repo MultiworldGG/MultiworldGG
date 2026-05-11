@@ -8,6 +8,10 @@ from math import ceil
 class WorldRequirementTest(BanjoTooieTestBase):
     expected_world_costs = [1, 4, 8, 14, 20, 28, 36, 45, 55]
 
+    options = {
+        "extra_jiggies_weight": 0,
+    }
+
     def test_check_world_costs(self) -> None:
         assert list(self.world.world_requirements.values()) == self.expected_world_costs
 
@@ -29,6 +33,7 @@ class WorldRequirementTest(BanjoTooieTestBase):
 class WorldRequirementMinTest(WorldRequirementTest):
     expected_world_costs = [1, 1, 1, 1, 1, 1, 1, 1, 1]
     options = {
+        **WorldRequirementTest.options,
         "world_requirements": WorldRequirements.option_custom,
         "custom_worlds": "1,1,1,1,1,1,1,1,1"
     }
@@ -37,6 +42,7 @@ class WorldRequirementMinTest(WorldRequirementTest):
 class WorldRequirementQuickTest(WorldRequirementTest):
     expected_world_costs = [1, 3, 6, 10, 15, 21, 28, 35, 44]
     options = {
+        **WorldRequirementTest.options,
         "world_requirements": WorldRequirements.option_quick
     }
 
@@ -44,6 +50,7 @@ class WorldRequirementQuickTest(WorldRequirementTest):
 class WorldRequirementNormalTest(WorldRequirementTest):
     expected_world_costs = [1, 4, 8, 14, 20, 28, 36, 45, 55]
     options = {
+        **WorldRequirementTest.options,
         "world_requirements": WorldRequirements.option_normal
     }
 
@@ -51,6 +58,7 @@ class WorldRequirementNormalTest(WorldRequirementTest):
 class WorldRequirementLongTest(WorldRequirementTest):
     expected_world_costs = [1, 8, 16, 25, 34, 43, 52, 60, 70]
     options = {
+        **WorldRequirementTest.options,
         "world_requirements": WorldRequirements.option_long
     }
 
@@ -58,6 +66,7 @@ class WorldRequirementLongTest(WorldRequirementTest):
 class WorldRequirementMaxTest(WorldRequirementTest):
     expected_world_costs = [1, 10, 20, 30, 50, 60, 70, 80, 90]
     options = {
+        **WorldRequirementTest.options,
         "world_requirements": WorldRequirements.option_custom,
         "custom_worlds": "1,10,20,30,50,60,70,80,90"
     }

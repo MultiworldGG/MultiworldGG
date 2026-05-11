@@ -3,6 +3,7 @@ from typing import Any, ClassVar
 from BaseClasses import MultiWorld, Region
 from test.bases import WorldTestBase
 
+from .. import BrotatoWorld
 from ..constants import (
     CHARACTER_REGION_TEMPLATE,
     CRATE_DROP_GROUP_REGION_TEMPLATE,
@@ -19,9 +20,12 @@ from . import BrotatoTestBase
 
 
 class TestBrotatoRegions(WorldTestBase):
-    def setUp(self) -> None:
-        # Create a multiworld just to give the regions something to attach to.
+    # Create the bare minimum test setup for our tests to work, for speed.
+    def setUp(self):
         self.multiworld = MultiWorld(1)
+        self.multiworld.game[1] = "Brotato"
+        self.multiworld.player_name = {self.player: "Tester"}
+        self.multiworld.worlds[1] = BrotatoWorld(self.multiworld, 1)
 
     def _create_region(self, name: str) -> Region:
         """Region factory to pass to the region creation functions."""

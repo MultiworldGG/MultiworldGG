@@ -1,0 +1,787 @@
+[
+    {
+        "areaLevel": 1,
+        "act": 1,
+        "areaName": "The Twilight Strand"
+    },
+    {
+        "areaLevel": 0,
+        "act": 1,
+        "areaName": "Lioneye's Watch"
+    },
+    {
+        "areaLevel": 2,
+        "act": 1,
+        "areaName": "The Coast"
+    },
+    {
+        "areaLevel": 3,
+        "act": 1,
+        "areaName": "The Tidal Island"
+    },
+    {
+        "areaLevel": 4,
+        "act": 1,
+        "areaName": "The Mud Flats"
+    },
+    {
+        "areaLevel": 5,
+        "act": 1,
+        "areaName": "The Fetid Pool"
+    },
+    {
+        "areaLevel": 5,
+        "act": 1,
+        "areaName": "The Submerged Passage"
+    },
+    {
+        "areaLevel": 6,
+        "act": 1,
+        "areaName": "The Flooded Depths"
+    },
+    {
+        "areaLevel": 6,
+        "act": 1,
+        "areaName": "The Ledge"
+    },
+    {
+        "areaLevel": 7,
+        "act": 1,
+        "areaName": "The Climb"
+    },
+    {
+        "areaLevel": 8,
+        "act": 1,
+        "areaName": "The Lower Prison"
+    },
+    {
+        "areaLevel": 9,
+        "act": 1,
+        "areaName": "The Upper Prison"
+    },
+    {
+        "areaLevel": 9,
+        "act": 1,
+        "areaName": "The Warden's Quarters"
+    },
+    {
+        "areaLevel": 9,
+        "act": 1,
+        "areaName": "The Warden's Chambers"
+    },
+    {
+        "areaLevel": 10,
+        "act": 1,
+        "areaName": "Prisoner's Gate"
+    },
+    {
+        "areaLevel": 11,
+        "act": 1,
+        "areaName": "The Ship Graveyard"
+    },
+    {
+        "areaLevel": 12,
+        "act": 1,
+        "areaName": "The Ship Graveyard Cave"
+    },
+    {
+        "areaLevel": 12,
+        "act": 1,
+        "areaName": "The Cavern of Wrath"
+    },
+    {
+        "areaLevel": 13,
+        "act": 1,
+        "areaName": "The Cavern of Anger"
+    },
+    {
+        "areaLevel": 13,
+        "act": 1,
+        "areaName": "Merveil's Lair"
+    },
+    {
+        "areaLevel": 16,
+        "act": 2,
+        "areaName": "The Chamber of Sins Level 2"
+    },
+    {
+        "areaLevel": 13,
+        "act": 2,
+        "areaName": "The Southern Forest"
+    },
+    {
+        "areaLevel": 15,
+        "act": 2,
+        "areaName": "The Chamber of Sins Level 1"
+    },
+    {
+        "areaLevel": 0,
+        "act": 2,
+        "areaName": "The Forest Encampment"
+    },
+    {
+        "areaLevel": 14,
+        "act": 2,
+        "areaName": "The Old Fields"
+    },
+    {
+        "areaLevel": 15,
+        "act": 2,
+        "areaName": "The Crossroads"
+    },
+    {
+        "areaLevel": 16,
+        "act": 2,
+        "areaName": "The Broken Bridge"
+    },
+    {
+        "areaLevel": 17,
+        "act": 2,
+        "areaName": "The Western Forest"
+    },
+    {
+        "areaLevel": 15,
+        "act": 2,
+        "areaName": "The Riverways"
+    },
+    {
+        "areaLevel": 15,
+        "act": 2,
+        "areaName": "The Den"
+    },
+    {
+        "areaLevel": 16,
+        "act": 2,
+        "areaName": "The Fellshrine Ruins"
+    },
+    {
+        "areaLevel": 18,
+        "act": 2,
+        "areaName": "Weaver's Chambers"
+    },
+    {
+        "areaLevel": 19,
+        "act": 2,
+        "areaName": "The Wetlands"
+    },
+    {
+        "areaLevel": 17,
+        "act": 2,
+        "areaName": "The Crypt Level 1"
+    },
+    {
+        "areaLevel": 20,
+        "act": 2,
+        "areaName": "Vaal Ruins"
+    },
+    {
+        "areaLevel": 18,
+        "act": 2,
+        "areaName": "The Crypt Level 2"
+    },
+    {
+        "areaLevel": 21,
+        "act": 2,
+        "areaName": "The Northern Forest"
+    },
+    {
+        "areaLevel": 21,
+        "act": 2,
+        "areaName": "The Dread Thicket"
+    },
+    {
+        "areaLevel": 22,
+        "act": 2,
+        "areaName": "The Caverns"
+    },
+    {
+        "areaLevel": 23,
+        "act": 2,
+        "areaName": "Ancient Pyramid"
+    },
+    {
+        "areaLevel": 23,
+        "act": 3,
+        "areaName": "The City of Sarn"
+    },
+    {
+        "areaLevel": 0,
+        "act": 3,
+        "areaName": "The Sarn Encampment"
+    },
+    {
+        "areaLevel": 25,
+        "act": 3,
+        "areaName": "The Crematorium"
+    },
+    {
+        "areaLevel": 24,
+        "act": 3,
+        "areaName": "The Slums"
+    },
+    {
+        "areaLevel": 30,
+        "act": 3,
+        "areaName": "The Lunaris Temple Level 2"
+    },
+    {
+        "areaLevel": 26,
+        "act": 3,
+        "areaName": "The Sewers"
+    },
+    {
+        "areaLevel": 26,
+        "act": 3,
+        "areaName": "The Marketplace"
+    },
+    {
+        "areaLevel": 27,
+        "act": 3,
+        "areaName": "The Catacombs"
+    },
+    {
+        "areaLevel": 29,
+        "act": 3,
+        "areaName": "The Lunaris Temple Level 1"
+    },
+    {
+        "areaLevel": 29,
+        "act": 3,
+        "areaName": "The Ebony Barracks"
+    },
+    {
+        "areaLevel": 27,
+        "act": 3,
+        "areaName": "The Battlefront"
+    },
+    {
+        "areaLevel": 27,
+        "act": 3,
+        "areaName": "The Solaris Temple Level 1"
+    },
+    {
+        "areaLevel": 30,
+        "act": 3,
+        "areaName": "The Library"
+    },
+    {
+        "areaLevel": 30,
+        "act": 3,
+        "areaName": "The Imperial Gardens"
+    },
+    {
+        "areaLevel": 29,
+        "act": 3,
+        "areaName": "The Docks"
+    },
+    {
+        "areaLevel": 28,
+        "act": 3,
+        "areaName": "The Solaris Temple Level 2"
+    },
+    {
+        "areaLevel": 31,
+        "act": 3,
+        "areaName": "The Archives"
+    },
+    {
+        "areaLevel": 32,
+        "act": 3,
+        "areaName": "The Sceptre of God"
+    },
+    {
+        "areaLevel": 33,
+        "act": 3,
+        "areaName": "The Upper Sceptre of God"
+    },
+    {
+        "areaLevel": 33,
+        "act": 4,
+        "areaName": "The Aqueduct"
+    },
+    {
+        "areaLevel": 34,
+        "act": 4,
+        "areaName": "The Dried Lake"
+    },
+    {
+        "areaLevel": 0,
+        "act": 4,
+        "areaName": "Highgate"
+    },
+    {
+        "areaLevel": 40,
+        "act": 4,
+        "areaName": "The Ascent"
+    },
+    {
+        "areaLevel": 34,
+        "act": 4,
+        "areaName": "The Mines Level 1"
+    },
+    {
+        "areaLevel": 35,
+        "act": 4,
+        "areaName": "The Mines Level 2"
+    },
+    {
+        "areaLevel": 37,
+        "act": 4,
+        "areaName": "Kaom's Dream"
+    },
+    {
+        "areaLevel": 36,
+        "act": 4,
+        "areaName": "The Crystal Veins"
+    },
+    {
+        "areaLevel": 37,
+        "act": 4,
+        "areaName": "Daresso's Dream"
+    },
+    {
+        "areaLevel": 38,
+        "act": 4,
+        "areaName": "Kaom's Stronghold"
+    },
+    {
+        "areaLevel": 38,
+        "act": 4,
+        "areaName": "The Belly of the Beast Level 1"
+    },
+    {
+        "areaLevel": 38,
+        "act": 4,
+        "areaName": "The Grand Arena"
+    },
+    {
+        "areaLevel": 39,
+        "act": 4,
+        "areaName": "The Belly of the Beast Level 2"
+    },
+    {
+        "areaLevel": 40,
+        "act": 4,
+        "areaName": "The Harvest (area)"
+    },
+    {
+        "areaLevel": 41,
+        "act": 5,
+        "areaName": "The Slave Pens"
+    },
+    {
+        "areaLevel": 0,
+        "act": 5,
+        "areaName": "Overseer's Tower"
+    },
+    {
+        "areaLevel": 41,
+        "act": 5,
+        "areaName": "The Control Blocks"
+    },
+    {
+        "areaLevel": 42,
+        "act": 5,
+        "areaName": "Oriath Square"
+    },
+    {
+        "areaLevel": 42,
+        "act": 5,
+        "areaName": "The Templar Courts"
+    },
+    {
+        "areaLevel": 43,
+        "act": 5,
+        "areaName": "The Chamber of Innocence"
+    },
+    {
+        "areaLevel": 45,
+        "act": 5,
+        "areaName": "The Cathedral Rooftop"
+    },
+    {
+        "areaLevel": 44,
+        "act": 5,
+        "areaName": "The Reliquary"
+    },
+    {
+        "areaLevel": 44,
+        "act": 5,
+        "areaName": "The Ruined Square"
+    },
+    {
+        "areaLevel": 44,
+        "act": 5,
+        "areaName": "The Ossuary"
+    },
+    {
+        "areaLevel": 44,
+        "act": 5,
+        "areaName": "The Torched Courts"
+    },
+    {
+        "areaLevel": 0,
+        "act": 6,
+        "areaName": "Lioneye's Watch"
+    },
+    {
+        "areaLevel": 45,
+        "act": 6,
+        "areaName": "The Twilight Strand"
+    },
+    {
+        "areaLevel": 45,
+        "act": 6,
+        "areaName": "The Coast"
+    },
+    {
+        "areaLevel": 45,
+        "act": 6,
+        "areaName": "The Tidal Island"
+    },
+    {
+        "areaLevel": 46,
+        "act": 6,
+        "areaName": "The Mud Flats"
+    },
+    {
+        "areaLevel": 46,
+        "act": 6,
+        "areaName": "The Karui Fortress"
+    },
+    {
+        "areaLevel": 46,
+        "act": 6,
+        "areaName": "The Ridge"
+    },
+    {
+        "areaLevel": 47,
+        "act": 6,
+        "areaName": "The Lower Prison"
+    },
+    {
+        "areaLevel": 47,
+        "act": 6,
+        "areaName": "Shavronne's Tower"
+    },
+    {
+        "areaLevel": 47,
+        "act": 6,
+        "areaName": "Prisoner's Gate"
+    },
+    {
+        "areaLevel": 48,
+        "act": 6,
+        "areaName": "The Western Forest"
+    },
+    {
+        "areaLevel": 48,
+        "act": 6,
+        "areaName": "The Riverways"
+    },
+    {
+        "areaLevel": 48,
+        "act": 6,
+        "areaName": "The Wetlands"
+    },
+    {
+        "areaLevel": 49,
+        "act": 6,
+        "areaName": "The Southern Forest"
+    },
+    {
+        "areaLevel": 49,
+        "act": 6,
+        "areaName": "The Cavern of Anger"
+    },
+    {
+        "areaLevel": 49,
+        "act": 6,
+        "areaName": "The Beacon"
+    },
+    {
+        "areaLevel": 50,
+        "act": 6,
+        "areaName": "The Brine King's Reef"
+    },
+    {
+        "areaLevel": 0,
+        "act": 7,
+        "areaName": "The Bridge Encampment"
+    },
+    {
+        "areaLevel": 52,
+        "act": 7,
+        "areaName": "Maligaro's Sanctum"
+    },
+    {
+        "areaLevel": 50,
+        "act": 7,
+        "areaName": "The Broken Bridge"
+    },
+    {
+        "areaLevel": 52,
+        "act": 7,
+        "areaName": "The Chamber of Sins Level 1"
+    },
+    {
+        "areaLevel": 51,
+        "act": 7,
+        "areaName": "The Crossroads"
+    },
+    {
+        "areaLevel": 51,
+        "act": 7,
+        "areaName": "The Fellshrine Ruins"
+    },
+    {
+        "areaLevel": 51,
+        "act": 7,
+        "areaName": "The Crypt"
+    },
+    {
+        "areaLevel": 52,
+        "act": 7,
+        "areaName": "The Chamber of Sins Level 2"
+    },
+    {
+        "areaLevel": 53,
+        "act": 7,
+        "areaName": "The Den"
+    },
+    {
+        "areaLevel": 53,
+        "act": 7,
+        "areaName": "The Ashen Fields"
+    },
+    {
+        "areaLevel": 53,
+        "act": 7,
+        "areaName": "The Northern Forest"
+    },
+    {
+        "areaLevel": 53,
+        "act": 7,
+        "areaName": "The Dread Thicket"
+    },
+    {
+        "areaLevel": 54,
+        "act": 7,
+        "areaName": "The Causeway"
+    },
+    {
+        "areaLevel": 54,
+        "act": 7,
+        "areaName": "The Vaal City"
+    },
+    {
+        "areaLevel": 54,
+        "act": 7,
+        "areaName": "The Temple of Decay Level 1"
+    },
+    {
+        "areaLevel": 55,
+        "act": 7,
+        "areaName": "The Temple of Decay Level 2"
+    },
+    {
+        "areaLevel": 55,
+        "act": 8,
+        "areaName": "The Sarn Ramparts"
+    },
+    {
+        "areaLevel": 0,
+        "act": 8,
+        "areaName": "The Sarn Encampment"
+    },
+    {
+        "areaLevel": 56,
+        "act": 8,
+        "areaName": "The Toxic Conduits"
+    },
+    {
+        "areaLevel": 56,
+        "act": 8,
+        "areaName": "Doedre's Cesspool"
+    },
+    {
+        "areaLevel": 56,
+        "act": 8,
+        "areaName": "The Grand Promenade"
+    },
+    {
+        "areaLevel": 57,
+        "act": 8,
+        "areaName": "The Quay"
+    },
+    {
+        "areaLevel": 57,
+        "act": 8,
+        "areaName": "The Grain Gate"
+    },
+    {
+        "areaLevel": 58,
+        "act": 8,
+        "areaName": "The High Gardens"
+    },
+    {
+        "areaLevel": 57,
+        "act": 8,
+        "areaName": "The Bath House"
+    },
+    {
+        "areaLevel": 58,
+        "act": 8,
+        "areaName": "The Hidden Underbelly"
+    },
+    {
+        "areaLevel": 58,
+        "act": 8,
+        "areaName": "The Imperial Fields"
+    },
+    {
+        "areaLevel": 59,
+        "act": 8,
+        "areaName": "The Lunaris Temple Level 1"
+    },
+    {
+        "areaLevel": 58,
+        "act": 8,
+        "areaName": "The Lunaris Concourse"
+    },
+    {
+        "areaLevel": 60,
+        "act": 8,
+        "areaName": "The Harbour Bridge"
+    },
+    {
+        "areaLevel": 58,
+        "act": 8,
+        "areaName": "The Solaris Concourse"
+    },
+    {
+        "areaLevel": 59,
+        "act": 8,
+        "areaName": "The Solaris Temple Level 1"
+    },
+    {
+        "areaLevel": 59,
+        "act": 8,
+        "areaName": "The Lunaris Temple Level 2"
+    },
+    {
+        "areaLevel": 59,
+        "act": 8,
+        "areaName": "The Solaris Temple Level 2"
+    },
+    {
+        "areaLevel": 61,
+        "act": 9,
+        "areaName": "The Blood Aqueduct"
+    },
+    {
+        "areaLevel": 0,
+        "act": 9,
+        "areaName": "Highgate"
+    },
+    {
+        "areaLevel": 61,
+        "act": 9,
+        "areaName": "The Descent"
+    },
+    {
+        "areaLevel": 61,
+        "act": 9,
+        "areaName": "The Vastiri Desert"
+    },
+    {
+        "areaLevel": 61,
+        "act": 9,
+        "areaName": "The Oasis"
+    },
+    {
+        "areaLevel": 62,
+        "act": 9,
+        "areaName": "The Foothills"
+    },
+    {
+        "areaLevel": 62,
+        "act": 9,
+        "areaName": "The Boiling Lake"
+    },
+    {
+        "areaLevel": 62,
+        "act": 9,
+        "areaName": "The Tunnel"
+    },
+    {
+        "areaLevel": 63,
+        "act": 9,
+        "areaName": "The Quarry"
+    },
+    {
+        "areaLevel": 63,
+        "act": 9,
+        "areaName": "The Refinery"
+    },
+    {
+        "areaLevel": 63,
+        "act": 9,
+        "areaName": "The Belly of the Beast"
+    },
+    {
+        "areaLevel": 64,
+        "act": 9,
+        "areaName": "The Rotting Core"
+    },
+    {
+        "areaLevel": 0,
+        "act": 10,
+        "areaName": "Oriath Docks"
+    },
+    {
+        "areaLevel": 64,
+        "act": 10,
+        "areaName": "The Cathedral Rooftop"
+    },
+    {
+        "areaLevel": 67,
+        "act": 10,
+        "areaName": "The Reliquary"
+    },
+    {
+        "areaLevel": 64,
+        "act": 10,
+        "areaName": "The Ravaged Square"
+    },
+    {
+        "areaLevel": 67,
+        "act": 10,
+        "areaName": "The Ossuary"
+    },
+    {
+        "areaLevel": 66,
+        "act": 10,
+        "areaName": "The Control Blocks"
+    },
+    {
+        "areaLevel": 65,
+        "act": 10,
+        "areaName": "The Torched Courts"
+    },
+    {
+        "areaLevel": 66,
+        "act": 10,
+        "areaName": "The Canals"
+    },
+    {
+        "areaLevel": 65,
+        "act": 10,
+        "areaName": "The Desecrated Chambers"
+    },
+    {
+        "areaLevel": 67,
+        "act": 10,
+        "areaName": "The Feeding Trough"
+    }
+]

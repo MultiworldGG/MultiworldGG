@@ -100,26 +100,6 @@
         "tags": ["Gas Mart", "Level Up Reward"],
         "modern_id": 21
     },
-    "Acid Unlock": {
-        "classification": {"default" : ["PROGRESSION"]},
-        "tags": ["Warehouse", "Level Up Reward"],
-        "modern_id": 22
-    },
-    "Phosphorus Unlock": {
-        "classification": {"default" : ["PROGRESSION"]},
-        "tags": ["Warehouse", "Level Up Reward"],
-        "modern_id": 23
-    },
-    "Chemistry Station Unlock": {
-        "classification": {"default" : ["PROGRESSION"]},
-        "tags": ["Warehouse", "Level Up Reward"],
-        "modern_id": 24
-    },
-    "Lab Oven Unlock": {
-        "classification": {"default" : ["PROGRESSION", "USEFUL"]},
-        "tags": ["Warehouse", "Level Up Reward"],
-        "modern_id": 25
-    },
     "Mixing Station Mk2 Unlock": {
         "classification": {"default" : ["PROGRESSION", "USEFUL"]},
         "tags": ["Warehouse", "Level Up Reward"],
@@ -1285,5 +1265,10 @@
         "classification": {"default" : ["TRAP"]},
         "tags": ["Trap"],
         "modern_id": 656
+    },
+    "Bomb Fragment": {
+        "classification": {"default" : ["PROGRESSION_SKIP_BALANCING"]},
+        "tags": ["MacGuffin"],
+        "modern_id": 600
     }
 }

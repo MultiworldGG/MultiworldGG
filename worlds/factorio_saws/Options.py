@@ -165,6 +165,10 @@ class AllModulesAllowedEverywhere(Toggle):
     display_name = "All Modules Allowed Everywhere"
     default = False
 
+class EnableLightning(Toggle):
+    """Harness the power of free, high-voltage atmospheric electricity.  Warning: Electricity will be provided whether you want it or not."""
+    display_name = "Free Power"
+    default = False
 
 class FreeSamplesQuality(Choice):
     """If free samples are on, determine the quality of the granted items.
@@ -538,6 +542,7 @@ class FactorioOptions(PerGameCommonOptions):
     recipe_ingredients_offset: RecipeIngredientsOffset
     imported_blueprints: ImportedBlueprint
     world_gen: FactorioWorldGen
+    free_power: EnableLightning
     progressive: Progressive
     teleport_traps: TeleportTrapCount
     grenade_traps: GrenadeTrapCount

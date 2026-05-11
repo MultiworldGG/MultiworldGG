@@ -189,7 +189,16 @@ class EnableDeathlinkOption(Toggle):
     """Includes Deathlink"""
     display_name = "Enable Deathlink"
 
-
+class GoalConditionOption(Choice):
+    """Set the goal condition
+    
+    - **Gwyn:** Default option -Beat Gwyn, Lord of Cinder
+    - **Bosses:** Defeat all bosses"""
+    display_name = "Goal Condition"
+    option_gwyn = 0
+    option_all_bosses = 1
+    default = 0
+    
 # Group relevant options
 option_groups = [
     OptionGroup("Quality of Life", [
@@ -253,3 +262,4 @@ class DSROption(PerGameCommonOptions):
     upgraded_weapons_min_level: UpgradedWeaponsMinLevel
     upgraded_weapons_max_level: UpgradedWeaponsMaxLevel
     enable_deathlink: EnableDeathlinkOption
+    goal_condition: GoalConditionOption

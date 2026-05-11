@@ -1,22 +1,52 @@
+import logging
 import re
 from collections import defaultdict
 from functools import lru_cache
-from typing import List, Union, Optional
-from . import char_table, kanji_table, text_offset_split_index_seasons, text_offset_1_table_address_seasons, text_offset_2_table_address_seasons, \
-    text_table_eng_address_seasons, \
-    text_addresses_limit_seasons, text_offset_split_index_ages, text_offset_1_table_address_ages, text_offset_2_table_address_ages, text_table_eng_address_ages, \
-    text_addresses_limit_ages
+from typing import Any
+
 from ..RomData import RomData
 from ..Util import simple_hex
 from ..z80asm.Assembler import GameboyAddress
+from . import (
+    char_table,
+    kanji_table,
+    text_addresses_limit_ages,
+    text_addresses_limit_seasons,
+    text_offset_1_table_address_ages,
+    text_offset_1_table_address_seasons,
+    text_offset_2_table_address_ages,
+    text_offset_2_table_address_seasons,
+    text_offset_split_index_ages,
+    text_offset_split_index_seasons,
+    text_table_eng_address_ages,
+    text_table_eng_address_seasons,
+)
 
-control_sequence_pattern = re.compile(r"""
+control_keywords = {
+    "link_name",
+    "child_name",
+    "w7SecretBuffer1",
+    "w7SecretBuffer2",
+    "num1",
+    "opt",
+    "stop",
+    "heartpiece",
+    "num2",
+    "slow",
+}
+
+control_functions = {"jump", "cmd", "col", "charsfx", "speed", "pos", "wait", "sfx", "call"}
+
+control_sequence_pattern = re.compile(
+    r"""
     \\
     (jump|cmd|col|charsfx|speed|pos|wait|sfx|call)
     \(([^)]+)\) |
     \\(link_name|child_name|w7SecretBuffer1|w7SecretBuffer2|
     num1|opt|stop|heartpiece|num2|slow)
-""", re.VERBOSE)
+""",
+    re.VERBOSE,
+)
 dict_pattern = re.compile(r"DICT(\d+)_([0-9a-f]+)")
 
 
@@ -46,60 +76,40 @@ def build_encoding_dict() -> dict[str, list[int]]:
     add_to_tree(tree, "🟩", [0x09, 0x04])
     add_to_tree(tree, "col", [0x09, 0x00])
 
-    add_to_tree(tree, "link_name", [0x0a, 0x00])
-    add_to_tree(tree, "child_name", [0x0a, 0x01])
-    add_to_tree(tree, "w7SecretBuffer1", [0x0a, 0x02])
-    add_to_tree(tree, "w7SecretBuffer2", [0x0a, 0x03])
+    add_to_tree(tree, "link_name", [0x0A, 0x00])
+    add_to_tree(tree, "child_name", [0x0A, 0x01])
+    add_to_tree(tree, "w7SecretBuffer1", [0x0A, 0x02])
+    add_to_tree(tree, "w7SecretBuffer2", [0x0A, 0x03])
 
-    add_to_tree(tree, "speed", [0x0c, 0x00])
-    add_to_tree(tree, "num1", [0x0c, 0x08])
-    add_to_tree(tree, "opt", [0x0c, 0x10])
-    add_to_tree(tree, "stop", [0x0c, 0x18])
-    add_to_tree(tree, "pos", [0x0c, 0x20])
-    add_to_tree(tree, "heartpiece", [0x0c, 0x28])
-    add_to_tree(tree, "num2", [0x0c, 0x30])
-    add_to_tree(tree, "slow", [0x0c, 0x38])
+    add_to_tree(tree, "speed", [0x0C, 0x00])
+    add_to_tree(tree, "num1", [0x0C, 0x08])
+    add_to_tree(tree, "opt", [0x0C, 0x10])
+    add_to_tree(tree, "stop", [0x0C, 0x18])
+    add_to_tree(tree, "pos", [0x0C, 0x20])
+    add_to_tree(tree, "heartpiece", [0x0C, 0x28])
+    add_to_tree(tree, "num2", [0x0C, 0x30])
+    add_to_tree(tree, "slow", [0x0C, 0x38])
 
-    add_to_tree(tree, "wait", [0x0d, 0x00])
-    add_to_tree(tree, "sfx", [0x0e, 0x00])
-    add_to_tree(tree, "call", [0x0f, 0x00])
+    add_to_tree(tree, "wait", [0x0D, 0x00])
+    add_to_tree(tree, "sfx", [0x0E, 0x00])
+    add_to_tree(tree, "call", [0x0F, 0x00])
 
-    add_to_tree(tree, "Ⓐ", [0xb8, 0xb9])
-    add_to_tree(tree, "Ⓑ", [0xba, 0xbb])
+    add_to_tree(tree, "Ⓐ", [0xB8, 0xB9])
+    add_to_tree(tree, "Ⓑ", [0xBA, 0xBB])
 
     return tree
 
 
-# --- Trie Data Structure ---
-class TrieNode:
-    def __init__(self):
-        self.children = defaultdict(lambda: TrieNode())
-        self.code = None
-
-
-# --- Global Caches ---
-encode_current_trie: Optional[TrieNode] = None
-encode_current_encoding: Optional[dict[str, list[int]]] = None
-encode_last_ids = (None, None)
-
-control_keywords = {
-    "link_name", "child_name", "w7SecretBuffer1", "w7SecretBuffer2",
-    "num1", "opt", "stop", "heartpiece", "num2", "slow"
-}
-
-control_functions = {
-    "jump", "cmd", "col", "charsfx", "speed", "pos", "wait", "sfx", "call"
-}
-
-
-def next_character(text: str, index: int) -> tuple[Union[str, tuple[str, int]], int]:
+def next_character(text: str, index: int) -> tuple[str | tuple[str, int], int]:
+    # EoL
     if index >= len(text):
         return "\0", 1
 
+    # Normal character
     if text[index] != "\\":
         return text[index], 1
 
-    # Try parsing a function-style command: \name(hex)
+    # Command with argument
     for name in control_functions:
         if text.startswith(f"\\{name}(", index):
             start = index + len(name) + 2  # skip past '\name('
@@ -107,15 +117,20 @@ def next_character(text: str, index: int) -> tuple[Union[str, tuple[str, int]], 
             value = text[start:end]
             return (name, int(value, 16)), end + 1 - index
 
-    # Try keyword match (e.g. \opt)
+    # Command without argument
     for name in control_keywords:
         if text.startswith(f"\\{name}", index):
             return name, 1 + len(name)
 
-    raise Exception()
+    raise Exception
+
+class TrieNode:
+    def __init__(self) -> None:
+        self.children = defaultdict(TrieNode)
+        self.code: None | tuple[int, int] = None
 
 
-def build_trie(dictionary: dict[str, str]) -> TrieNode:
+def build_dict_trie(dictionary: dict[str, str]) -> TrieNode:
     root = TrieNode()
     for key, value in dictionary.items():
         node = root
@@ -124,76 +139,59 @@ def build_trie(dictionary: dict[str, str]) -> TrieNode:
             token, length = next_character(value, i)
             node = node.children[token]
             i += length
-        node.code = [2 + int(key[4]), int(key[6:8], 16)]
+        node.code = (2 + int(key[4]), int(key[6:8], 16))
     return root
 
 
-@lru_cache
-def recursive_encode(text: str, index: int) -> tuple[int]:
-    if index >= len(text):
-        return (0,)
+def encode_text_data(text_data: dict[str, str], dictionary: dict[str, str] | None = None) -> dict[str, list[int]]:
+    encoding_dict: dict[str, list[int]] = build_encoding_dict()
+    encoding_trie: TrieNode = build_dict_trie(dictionary or {})
+    encoded_dict: dict[str, list[int]] = {}
 
-    token, length = next_character(text, index)
-    if isinstance(token, tuple):
-        encoded = list(encode_current_encoding[token[0]])
-        encoded[-1] += token[1]
-        if token[0] == "jump":
-            return tuple(encoded)
-    else:
-        if token not in encode_current_encoding:
-            token = "口"  # Use a white square to denote unknown characters
-        encoded = encode_current_encoding[token]
+    @lru_cache
+    def recursive_encode(text_to_encode: str, index: int) -> list[int]:
+        if index >= len(text_to_encode):
+            return [0]
 
-    best = list(encoded) + list(recursive_encode(text, index + length))
+        token, length = next_character(text_to_encode, index)
+        if isinstance(token, tuple):
+            encoded = list(encoding_dict[token[0]])
+            encoded[-1] += token[1]
+            if token[0] == "jump":
+                return encoded
+        else:
+            if token not in encoding_dict:
+                token = "口"  # Use a white square to denote unknown characters
+            encoded = encoding_dict[token]
 
-    if token not in encode_current_trie.children:
-        # No dict entry
-        return tuple(best)
+        best = encoded + recursive_encode(text_to_encode, index + length)
 
-    node = encode_current_trie.children[token]
-    i = index + length
-    depth = 1
+        if token not in encoding_trie.children:
+            # No dict entry
+            return best
 
-    while i < len(text):
-        token2, tlen = next_character(text, i)
-        if token2 not in node.children:
-            break
-        node = node.children[token2]
-        i += tlen
-        depth += 1
-        if node.code:
-            candidate = node.code + list(recursive_encode(text, i))
-            if len(candidate) < len(best):
-                best = candidate
+        node = encoding_trie.children[token]
+        i = index + length
+        depth = 1
 
-    return tuple(best)
+        while i < len(text_to_encode):
+            token2, token_length = next_character(text_to_encode, i)
+            if token2 not in node.children:
+                break
+            node = node.children[token2]
+            i += token_length
+            depth += 1
+            if node.code:
+                candidate = list(node.code) + recursive_encode(text_to_encode, i)
+                if len(candidate) < len(best):
+                    best = candidate
 
+        return best
 
-# --- Main Function ---
-def encode_text(text: str, encoding: dict[str, List[int]], dictionary: dict[str, str]) -> List[int]:
-    global encode_current_trie, encode_current_encoding, encode_last_ids
-    id_dict = id(dictionary)
-    id_enc = id(encoding)
-
-    # Rebuild trie/cache if dictionary/encoding changed
-    if encode_last_ids != (id_dict, id_enc):
-        encode_current_trie = build_trie(dictionary)
-        encode_current_encoding = encoding
-        encode_last_ids = (id_dict, id_enc)
-
-    result = list(recursive_encode(text, 0))
-    return result
-
-
-def encode_dict(text_data: dict[str, str], dictionary: Optional[dict[str, str]] = None) -> dict[str, list[int]]:
-    if dictionary is None:
-        dictionary = {}
-    encoding_dict = build_encoding_dict()
-    encoded_dict = {}
-    for key in text_data:
-        encoded_text = encode_text(text_data[key], encoding_dict, dictionary)
+    for key, text in text_data.items():
+        encoded_text = recursive_encode(text, 0)
         encoded_dict[key] = encoded_text
-    recursive_encode.cache_clear()
+
     return encoded_dict
 
 
@@ -203,16 +201,16 @@ def build_compact_table(data: dict[str, list[int]]) -> tuple[list[int], dict[str
     offsets = {}
 
     for key, seq in sorted_items:
-        for key2 in offsets:
-            string_end = offsets[key2] + len(data[key2])
-            if compact[string_end - len(seq):string_end] == seq:
+        for key2, string_start in offsets.items():
+            string_end = string_start + len(data[key2])
+            if compact[string_end - len(seq) : string_end] == seq:
                 offset = string_end - len(seq)
                 break
         else:
             offset = len(compact)
             compact.extend(seq)
         offsets[key] = offset
-    assert len(compact) <= 0xffff
+    assert len(compact) <= 0xFFFF
 
     return compact, offsets
 
@@ -220,28 +218,36 @@ def build_compact_table(data: dict[str, list[int]]) -> tuple[list[int], dict[str
 def write_text_data(rom: RomData, dictionary: dict[str, str], texts: dict[str, str], seasons: bool):
     if seasons:
         text_offset_split_index = text_offset_split_index_seasons
-        text_offset_1 = GameboyAddress(rom.read_byte(text_offset_1_table_address_seasons), rom.read_word(text_offset_1_table_address_seasons + 1))
-        text_offset_2 = GameboyAddress(rom.read_byte(text_offset_2_table_address_seasons), rom.read_word(text_offset_2_table_address_seasons + 1))
+        text_offset_1 = GameboyAddress(
+            rom.read_byte(text_offset_1_table_address_seasons), rom.read_word(text_offset_1_table_address_seasons + 1)
+        )
+        text_offset_2 = GameboyAddress(
+            rom.read_byte(text_offset_2_table_address_seasons), rom.read_word(text_offset_2_table_address_seasons + 1)
+        )
         text_table_eng_address = text_table_eng_address_seasons
         text_addresses_limit = text_addresses_limit_seasons
     else:
         text_offset_split_index = text_offset_split_index_ages
-        text_offset_1 = GameboyAddress(rom.read_byte(text_offset_1_table_address_ages), rom.read_word(text_offset_1_table_address_ages + 1))
-        text_offset_2 = GameboyAddress(rom.read_byte(text_offset_2_table_address_ages), rom.read_word(text_offset_2_table_address_ages + 1))
+        text_offset_1 = GameboyAddress(
+            rom.read_byte(text_offset_1_table_address_ages), rom.read_word(text_offset_1_table_address_ages + 1)
+        )
+        text_offset_2 = GameboyAddress(
+            rom.read_byte(text_offset_2_table_address_ages), rom.read_word(text_offset_2_table_address_ages + 1)
+        )
         text_table_eng_address = text_table_eng_address_ages
         text_addresses_limit = text_addresses_limit_ages
 
     dict1 = {}
     dict2 = {}
-    for key in texts:
+    for key, text in texts.items():
         if int(key[3:5], 16) < text_offset_split_index - 4:
-            dict1[key] = texts[key]
+            dict1[key] = text
         else:
-            dict2[key] = texts[key]
+            dict2[key] = text
 
-    encoded_dict1 = encode_dict(dict1, dictionary)
-    encoded_dict1.update(encode_dict(dictionary))
-    encoded_dict2 = encode_dict(dict2, dictionary)
+    encoded_dict1 = encode_text_data(dict1, dictionary)
+    encoded_dict1.update(encode_text_data(dictionary))
+    encoded_dict2 = encode_text_data(dict2, dictionary)
 
     offset_table_length = (len(encoded_dict1) + len(encoded_dict2)) * 2
     text_offset_1_address = text_offset_1.address_in_rom()
@@ -286,11 +292,18 @@ def write_text_data(rom: RomData, dictionary: dict[str, str], texts: dict[str, s
                 print(entry[0], dict1[entry[0]], len(entry[1]))
             elif entry[0] in dict2:
                 print(entry[0], dict2[entry[0]], len(entry[1]))
-    text_offset_2_offset = max(0, text_offset_1_address + text_offset_1_offset + len(compact_table1) - text_offset_2_address)
+    text_offset_2_offset = max(
+        0, text_offset_1_address + text_offset_1_offset + len(compact_table1) - text_offset_2_address
+    )
     compact_table2, compact_offsets2 = build_compact_table(encoded_dict2)
-    assert text_offset_2_address + text_offset_2_offset + len(compact_table2) < text_addresses_limit, \
-        f"Text is too long ({text_offset_2_address + text_offset_2_offset + len(compact_table2) - text_addresses_limit} too many bytes)"
-    print(f"Free text bytes: {text_addresses_limit - text_offset_2_address - text_offset_2_offset - len(compact_table2)}")
+    assert text_offset_2_address + text_offset_2_offset + len(compact_table2) < text_addresses_limit, (
+        "Text is too long ("
+        f"{text_offset_2_address + text_offset_2_offset + len(compact_table2) - text_addresses_limit}"
+        " too many bytes)"
+    )
+    logging.info(
+        f"Free text bytes: {text_addresses_limit - text_offset_2_address - text_offset_2_offset - len(compact_table2)}"
+    )
     rom.write_bytes(text_offset_2_address + text_offset_2_offset, compact_table2)
 
     for i in range(text_offset_split_index - 4, 0x60):

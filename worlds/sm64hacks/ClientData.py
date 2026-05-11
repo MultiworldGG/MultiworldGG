@@ -48,6 +48,8 @@ shellHookPtr = 0x24F6E0
 slopeFixHookPtr = 0x268010
 wallkickHookPtr1 = 0x26D34C
 wallkickHookPtr2 = 0x26D9D4
+holdJumpGPPtr1 = 0x26BB5C
+holdJumpGPPtr2 = 0x26BC7C
 
 bank13RamStartPtr = 0x33B400 + 4 * 0x13
 
@@ -56,6 +58,9 @@ coinVisualPtr = 0x33B262
 
 livesPtr = 0x33B21C
 stevePtr = 0x1F1000
+
+lastImpactPtr1 = 0x2C6D24
+lastImpactPtr2 = 0x2B3028
 
 level_index = { #sm64's internal level ids are different than the ones used in save data
     16:8, #overworld

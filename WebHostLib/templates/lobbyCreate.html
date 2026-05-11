@@ -40,7 +40,7 @@
                                 <tr>
                                     <td>
                                         <label for="timeout_minutes">Inactivity Timeout:
-                                            <span class="interactive" data-tooltip="Lobby will expire after this much time of no activity (player joining/leaving, chat, yaml changes). Max 4 weeks.">(?)
+                                            <span class="interactive" data-tooltip="The lobby is abandoned after this much time passes without new YAML uploads, chat messages, or players joining/leaving. Max 4 weeks.">(?)
                                             </span>
                                         </label>
                                     </td>
@@ -70,8 +70,8 @@
                                     </td>
                                     <td>
                                         <input type="number" id="max_yamls_per_player" name="max_yamls_per_player"
-                                               min="1" max="20" value="1" style="width:80px">
-                                        <span style="font-size:0.8rem;color:#aaa">(max. 20)</span>
+                                               min="1" max="100" value="1" style="width:80px">
+                                        <span style="font-size:0.8rem;color:#aaa">(max. 100)</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -233,13 +233,7 @@
                                         </label>
                                     </td>
                                     <td>
-                                        <select name="hint_cost" id="hint_cost">
-                                            {% for n in range(0, 110, 5) %}
-                                                <option {% if n == 5 %}selected{% endif %} value="{{ n }}">
-                                                    {% if n > 100 %}Off{% else %}{{ n }}%{% endif %}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
+                                        <input type="number" name="hint_cost" id="hint_cost" min="0" max="100" step="1" value="5" required>%
                                     </td>
                                 </tr>
                             </tbody>
@@ -291,10 +285,14 @@
     </div>
     <script>
     (function () {
+        const form = document.getElementById("lobby-create-form");
         const raceCheckbox = document.getElementById("race");
         const spoilerSelect = document.getElementById("spoiler");
         const remainingSelect = document.getElementById("remaining_mode");
         const itemCheatSelect = document.getElementById("item_cheat");
+        const COOKIE_NAME = "lobby_create_settings";
+        const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+        const EXCLUDED_IDS = new Set(["title", "password", "server_password"]);
 
         const RACE_FORCED = { spoiler: "0", remaining_mode: "disabled", item_cheat: "0" };
         const savedValues = {};
@@ -312,7 +310,48 @@
             });
         }
 
+        function readCookie(name) {
+            const prefix = name + "=";
+            return document.cookie
+                .split(";")
+                .map(part => part.trim())
+                .find(part => part.startsWith(prefix))
+                ?.slice(prefix.length);
+        }
+
+        function loadStoredSettings() {
+            const raw = readCookie(COOKIE_NAME);
+            if (!raw) return;
+            let settings;
+            try {
+                settings = JSON.parse(decodeURIComponent(raw));
+            } catch (e) {
+                return;
+            }
+
+            form.querySelectorAll("input, select").forEach(el => {
+                if (!el.name || EXCLUDED_IDS.has(el.id) || !(el.name in settings)) return;
+                if (el.type === "checkbox") {
+                    el.checked = !!settings[el.name];
+                } else {
+                    el.value = settings[el.name];
+                }
+            });
+        }
+
+        function saveStoredSettings() {
+            const settings = {};
+            form.querySelectorAll("input, select").forEach(el => {
+                if (!el.name || EXCLUDED_IDS.has(el.id)) return;
+                settings[el.name] = el.type === "checkbox" ? el.checked : el.value;
+            });
+            document.cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(settings))}; max-age=${COOKIE_MAX_AGE}; path=/; samesite=lax`;
+        }
+
+        loadStoredSettings();
+        applyRaceMode(raceCheckbox.checked);
         raceCheckbox.addEventListener("change", () => applyRaceMode(raceCheckbox.checked));
+        form.addEventListener("submit", saveStoredSettings);
     })();
     </script>
     {% include 'islandFooter.html' %}

@@ -4,64 +4,64 @@ from ..data.Constants import *
 # [x, y] = everything between x and y (included) is free
 # int = end of bank
 CAVE_DATA: list[int | list[int | list[int]]] = [
-    0x3ec8,  # 00
-    0x3e89,  # 01
+    0x3EC8,  # 00
+    0x3E89,  # 01
     [  # 02
-        [0x023d, 0x02a3],  # fileSelectMode5
-        0x35bb  # End of bank
+        [0x023D, 0x02A3],  # fileSelectMode5
+        0x35BB,  # End of bank
     ],
-    0x3dd7,  # 03
+    0x3DD7,  # 03
     [  # 04
-        [0x2668, 0x262a],  # Natzu bridge replacement
-        [0x2776, 0x280f],  # roomTileChangesAfterLoad for trees, which are reimplemented
-        0x3e12  # End of bank
+        [0x2668, 0x262A],  # Natzu bridge replacement
+        [0x2776, 0x280F],  # roomTileChangesAfterLoad for trees, which are reimplemented
+        0x3E12,  # End of bank
     ],
-    0x3e2d,  # 05
+    0x3E2D,  # 05
     0x3864,  # 06 - 128 bytes reserved for sprite expansion w/ web patcher
     0x3910,  # 07
     [  # 08
-        [0x2395, 0x26fd],  # Bipin & Blossom child mechanic
-        0x3fc0  # End of bank
+        [0x2395, 0x26FD],  # Bipin & Blossom child mechanic
+        0x3FC0,  # End of bank
     ],
     [
-        [0x2e6d, 0x2eae],  # Ricky giving his flute
-        0x3f4e,  # 09
+        [0x2E6D, 0x2EAE],  # Ricky giving his flute
+        0x3F4E,  # 09
     ],
     [  # 0a
         # Some space could be gotten by blanking code on the Vasu snakes
-        [0x3bba, 0x3bd0],  # Blank from removing the spin upon obtaining the sword in d0
-        0x3be9,
+        [0x3BBA, 0x3BD0],  # Blank from removing the spin upon obtaining the sword in d0
+        0x3BE9,
     ],
     [  # 0b
-        [0x2717, 0x27a1],  # Rosa hiding
-        [0x34ac, 0x34ee],  # Impa intro script
-        [0x39b4, 0x39e9],  # Twinrova cutscene 1
-        [0x39f5, 0x3a29],  # Twinrova cutscene 2
-        0x3f6d  # End of bank
+        [0x2717, 0x27A1],  # Rosa hiding
+        [0x34AC, 0x34EE],  # Impa intro script
+        [0x39B4, 0x39E9],  # Twinrova cutscene 1
+        [0x39F5, 0x3A29],  # Twinrova cutscene 2
+        0x3F6D,  # End of bank
     ],
-    0x3ea1,  # 0c
-    0x3b82,  # 0d
-    0x3ef3,  # 0e
-    0x3f9d,  # 0f
-    0x3bee,  # 10
-    0x3eb0,  # 11
-    0x3c8f,  # 12
-    0x3bd2,  # 13
+    0x3EA1,  # 0c
+    0x3B82,  # 0d
+    0x3EF3,  # 0e
+    0x3F9D,  # 0f
+    0x3BEE,  # 10
+    0x3EB0,  # 11
+    0x3C8F,  # 12
+    0x3BD2,  # 13
     [
-        [0x0e3f, 0x0f51],  # Rosa hiding
-        0x2fc9,  # 14 - ton of free space here
+        [0x0E3F, 0x0F51],  # Rosa hiding
+        0x2FC9,  # 14 - ton of free space here
     ],
     [  # 15
         [0x1435, 0x1464],  # Trade item (0x41) data
-        [0x1e5d, 0x1edd],  # Strange bros stealing feathers, companions in swamp
-        0x392d
+        [0x1E5D, 0x1EDD],  # Strange bros stealing feathers, companions in swamp
+        0x392D,
     ],
-    0x3a07,  # 16
-    0x3f3a,  # 17
-    0x3e6d,  # 18
-    0x36e1,  # 19
-    0x30f0,  # 1a - here too
-    0x3c40,  # 1b
+    0x3A07,  # 16
+    0x3F3A,  # 17
+    0x3E6D,  # 18
+    0x36E1,  # 19
+    0x30F0,  # 1a - here too
+    0x3C40,  # 1b
     0x4000,  # 1c
     0x4000,  # 1d
     0x4000,  # 1e
@@ -90,21 +90,23 @@ CAVE_DATA: list[int | list[int | list[int]]] = [
     0x4000,  # 35
     0x4000,  # 36
     0x4000,  # 37
-    0x3df0,  # 38
+    0x3DF0,  # 38
     [  # 39
-        [0x0c00, 0x0c08],  # Skipped weird call, this bank is packed so better use any room
-        [0x115d, 0x1169],  # "sndd6"-"snddd", unused sound descriptors
-        [0x145c, 0x1468],  # mus41, unused music descriptor
-        [0x1a79, 0x1a85],  # Junk data at the end of sndde
-        0x3ff2  # End of bank
+        [0x0C00, 0x0C08],  # Skipped weird call, this bank is packed so better use any room
+        [0x115D, 0x1169],  # "sndd6"-"snddd", unused sound descriptors
+        [0x145C, 0x1468],  # mus41, unused music descriptor
+        [0x1A79, 0x1A85],  # Junk data at the end of sndde
+        0x3FF2,  # End of bank
     ],
     0x4000,  # 3a
     0x4000,  # 3b
     0x4000,  # 3c
     0x4000,  # 3d
     0x4000,  # 3e
-    0x314b,  # 3f - also here
-
+    [  # 3f - also here
+        [0x314B, 0x3FBF],
+        0x4000,  # Slot name takes the last 40 bytes
+    ],
     # New banks
     0x0000,  # 40
 ]

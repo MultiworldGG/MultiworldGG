@@ -128,7 +128,7 @@ class RabiRibiMemoryIO():
         :returns: The data represented as a float.
         """
         data = self._read_word(offset)
-        return struct.unpack("f", data)[0]
+        return float(struct.unpack("f", data)[0])
 
     def _read_int(self, offset):
         """
@@ -138,7 +138,7 @@ class RabiRibiMemoryIO():
         :returns: The data represented as a float.
         """
         data = self._read_word(offset)
-        return struct.unpack("i", data)[0]
+        return int(struct.unpack("i", data)[0])
 
     def _read_4_byte_bool(self, offset):
         """
@@ -169,7 +169,6 @@ class RabiRibiMemoryIO():
         if (struct.unpack("i", data)[0] == 0):
             return False
         return True
-        
 
     def read_player_tile_position(self):
         """
@@ -181,13 +180,10 @@ class RabiRibiMemoryIO():
         player_x = self._read_float(OFFSET_PLAYER_X)
         player_y = self._read_float(OFFSET_PLAYER_Y)
 
-        # Round to nearest tile
-        if (player_x % TILE_LENGTH >= (TILE_LENGTH / 2)):
-            player_x += (TILE_LENGTH / 2)
-        if (player_y % TILE_LENGTH >= (TILE_LENGTH / 2)):
-            player_y += (TILE_LENGTH / 2)
+        tile_x = round(player_x / TILE_LENGTH)
+        tile_y = round(player_y / TILE_LENGTH)
 
-        return (int(area_id), int(player_x // TILE_LENGTH), int(player_y // TILE_LENGTH))
+        return (area_id, tile_x, tile_y)
     
     def read_tile_event_id(self, x:int, y:int):
         """
@@ -197,14 +193,13 @@ class RabiRibiMemoryIO():
         :y: y position of the tile
         :returns: event id of the tile
         """
-
         event_tile_offset = (
             OFFSET_EVENT_MAP +
             (((x * 200) + y) * 2)
         )
 
         data = self._read_short(event_tile_offset)
-        return struct.unpack("h", data)[0]
+        return int(struct.unpack("h", data)[0])
 
     def is_player_frozen(self):
         """

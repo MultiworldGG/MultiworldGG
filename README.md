@@ -195,6 +195,7 @@ Currently, the following games are supported:
 * Terraria
 * Tetris Attack
 * Timespinner
+* The Grinch
 * The Legend of Zelda
 * The Legend of Zelda: A Link Between Worlds
 * The Legend of Zelda: A Link to the Past

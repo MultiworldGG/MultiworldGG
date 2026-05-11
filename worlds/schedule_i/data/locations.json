@@ -530,64 +530,43 @@
     },
     "We Need To Cook|Purchase a chemistry station from Oscar": {
         "region": "We Need To Cook|2",
-        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
-                                                                "Lab Oven Unlock",
-                                                                "Acid Unlock",
-                                                                "Phosphorus Unlock"]}},
+        "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 81
     },
     "We Need To Cook|Purchase a lab oven from Oscar": {
         "region": "We Need To Cook|2",
-        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
-                                                                "Lab Oven Unlock",
-                                                                "Acid Unlock",
-                                                                "Phosphorus Unlock"]}},
+        "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 82
     },
     "We Need To Cook|Purchase acid from Oscar": {
         "region": "We Need To Cook|2",
-        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
-                                                                "Lab Oven Unlock",
-                                                                "Acid Unlock",
-                                                                "Phosphorus Unlock"]}},
+        "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 83
     },
     "We Need To Cook|Purchase phosphorus from Oscar": {
         "region": "We Need To Cook|2",
-        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
-                                                                "Lab Oven Unlock",
-                                                                "Acid Unlock",
-                                                                "Phosphorus Unlock"]}},
+        "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 84
     },
     "We Need To Cook|Message Shirley about buying some pseudo": {
         "region": "We Need To Cook|2",
-        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
-                                                                "Lab Oven Unlock",
-                                                                "Acid Unlock",
-                                                                "Phosphorus Unlock"]}},
+        "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 85
     },
     "We Need To Cook|Cook liquid meth at the chemistry station": {
         "region": "We Need To Cook|2",
-        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
-                                                                "Lab Oven Unlock",
-                                                                "Acid Unlock",
-                                                                "Phosphorus Unlock"]}},
+        "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 86
     },
     "We Need To Cook|Bake the liquid meth with the lab oven": {
         "region": "We Need To Cook|2",
-        "requirements": {"randomize_level_unlocks": {"has_all" :["Chemistry Station Unlock", 
-                                                                "Lab Oven Unlock",
-                                                                "Acid Unlock",
-                                                                "Phosphorus Unlock"]}},
+        "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 87
     },
@@ -1438,7 +1417,10 @@
     },
     "Successful Sample: Greg Figgle": {
         "region": "Downtown",
-        "requirements": {"randomize_customers" : {"has_any" : [["Greg Figgle Unlocked", "Eugene Buckley Unlocked", "Lucy Pennington Unlocked", "Philip Wentworth Unlocked"]]}},
+      "requirements": {
+        "randomize_customers": {"has_any": [["Greg Figgle Unlocked", "Eugene Buckley Unlocked", "Jeff Gilmore Unlocked"]]},
+        "randomize_dealers": {"has": "Brad Crosby Recruited"}
+      },
         "tags": ["Customer"],
         "modern_id": 332
     },
@@ -1534,6 +1516,7 @@
     "Successful Sample: Kelly Reynolds": {
         "region": "Docks",
         "requirements": {"randomize_customers" : {"has_any" : [["Kelly Reynolds Unlocked", "Lisa Gardener Unlocked"]]},
+                         "randomize_suppliers": { "has": "Salvador Moreno Unlocked" }, 
                          "randomize_level_unlocks": {"has" : "Fertilizer Unlock"}},
         "tags": ["Customer"],
         "modern_id": 345
@@ -1733,7 +1716,7 @@
     },
     "Recruit Suburbia Dealer: Wei Long": {
         "region": "Suburbia",
-        "requirements": {"randomize_customers" : {"has_any" : [["Jeremy Wilkinson Unlocked", "Harold Colt Unlocked", "Jack Stevenson Unlocked"]]},
+        "requirements": {"randomize_customers" : {"has_any" : [["Jeremy Wilkinson Unlocked", "Harold Colt Unlocked", "Jackie Stevenson Unlocked"]]},
                          "randomize_dealers" : {"has" : "Wei Long Recruited"}},
         "tags": ["Dealer"],
         "modern_id": 375

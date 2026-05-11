@@ -4,7 +4,7 @@ from ...AutoWorld import call_all
 from ..Options import HintClarity, RandomizeBKMoveList, RandomizeBTMoveList, \
     RandomizeSignposts, SignpostHints, AddSignpostHintsToArchipelagoHints
 from . import BanjoTooieTestBase
-from ..Items import moves_table, bk_moves_table, progressive_ability_table, all_item_table
+from ..Items import moves_table, bk_moves_table, progressive_ability_table
 from Fill import distribute_items_restrictive
 
 
@@ -17,7 +17,8 @@ class TestSignpostsHints(BanjoTooieTestBase):
         if not hasattr(self, "multiworld"):
             return
         distribute_items_restrictive(self.multiworld)
-        call_all(self.multiworld, "post_fill")
+        call_all(self.multiworld, "finalize_multiworld")
+        call_all(self.multiworld, "pre_output")
         call_all(self.multiworld, "fill_slot_data")
 
     def test_hint_count(self) -> None:

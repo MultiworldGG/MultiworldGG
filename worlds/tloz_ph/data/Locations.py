@@ -502,6 +502,7 @@ LOCATIONS_DATA = {
         "id": 35,
         "hint_entrance": "TotOK Lobby Exit",
         "chest_offset": 17,
+        # "read_object": True,
     },
     "TotOK B2 Phantom Chest": {
         "region_id": "TotOK B2 Phantom",
@@ -516,6 +517,7 @@ LOCATIONS_DATA = {
         "id": 36,
         "hint_entrance": "TotOK Lobby Exit",
         "chest_offset": 18,
+        # "read_object": True,
     },
     "TotOK B2 Small Key": {
         "region_id": "TotOK B2 Key",
@@ -566,6 +568,7 @@ LOCATIONS_DATA = {
         "id": 40,
         "hint_entrance": "TotOK Lobby Exit",
         "chest_offset": 6,
+        # "read_object": True,
     },
     "TotOK B3 SW Chest": {
         "region_id": "TotOK B3 SW Chest",
@@ -581,6 +584,7 @@ LOCATIONS_DATA = {
         "id": 41,
         "hint_entrance": "TotOK Lobby Exit",
         "chest_offset": 8,
+        # "read_object": True,
     },
     "TotOK B3 SE Chest": {
         "region_id": "TotOK B3 SE Chest",
@@ -595,6 +599,7 @@ LOCATIONS_DATA = {
         "id": 42,
         "hint_entrance": "TotOK Lobby Exit",
         "chest_offset": 7,
+        # "read_object": True,
     },
     "TotOK B3 Small Key": {
         "region_id": "TotOK B3 Key",
@@ -627,6 +632,7 @@ LOCATIONS_DATA = {
         "id": 45,
         "hint_entrance": "TotOK Lobby Exit",
         "chest_offset": 3,
+        # "read_object": True,
     },
     "TotOK B4 Phantom Chest": {
         "region_id": "TotOK B4 Phantom",
@@ -640,6 +646,7 @@ LOCATIONS_DATA = {
         "id": 46,
         "hint_entrance": "TotOK Lobby Exit",
         "chest_offset": 4,
+        # "read_object": True,
     },
     "TotOK B4 Small Key": {
         "region_id": "TotOK B4 Key",
@@ -821,6 +828,7 @@ LOCATIONS_DATA = {
         "stage_id": 0x25,
         "floor_id": 0xd,
         "dungeon": "Temple of the Ocean King",
+        "set_bit": [(PHAddr.adv_flags_1, 0x8)],
         "id": 61,
         "hint_entrance": "TotOK Lobby Exit",
         "chest_offset": 1,
@@ -840,6 +848,7 @@ LOCATIONS_DATA = {
         "id": 62,
         "hint_entrance": "TotOK Lobby Exit",
         "chest_offset": 28,
+        # "read_object": True,
     },
     "TotOK B10 Phantom Chest": {
         "region_id": "TotOK B10 Phantom",
@@ -857,6 +866,7 @@ LOCATIONS_DATA = {
         "id": 63,
         "hint_entrance": "TotOK Lobby Exit",
         "chest_offset": 23,
+        # "read_object": True,
     },
     "TotOK B10 Phantom Eye Chest": {
         "region_id": "TotOK B10 Eyes",
@@ -1237,6 +1247,7 @@ LOCATIONS_DATA = {
         "x_min": -0x1b58,
         "x_max": 0x1000,
         "delay_pickup": "Temple of Fire 2F Rat Key",
+        # "read_object": True,
         "dungeon": "Temple of Fire",
         "id": 95,
         "hint_entrance": ["ToF Exit", "ToF Enter Boss"],
@@ -1289,6 +1300,7 @@ LOCATIONS_DATA = {
         "item_override": "Rare Metal",
         "stage_id": 0x2b,
         "floor_id": 0x0,
+        "from_entrances": [1],
         "address": PHAddr.flags_bosses_0,
         "value": 0x20,
         "boss_room": "Temple of Fire",
@@ -1961,6 +1973,7 @@ LOCATIONS_DATA = {
         "address": PHAddr.flags_bosses_0,
         "value": 0x40,
         "boss_room": "Temple of Wind",
+        "from_entrances": [1, 2],
         # "delay_reset": True,
         "id": 156,
         "hint_entrance": "Cyclok Exit",
@@ -2298,7 +2311,7 @@ LOCATIONS_DATA = {
         "dungeon": "Ghost Ship",
         "sram_addr": PHSRAM.gs,
         "sram_value": 0x4,
-        "delay_pickup": "Ghost Ship B2 Third Sister Left Chest",
+        # "delay_pickup": "Ghost Ship B2 Third Sister Left Chest",
         "id": 180,
         "hint_entrance": ["GS Exit", "Ghost Ship Cubus Sisters Reunion"],
         "chest_offset": 43,
@@ -2313,7 +2326,7 @@ LOCATIONS_DATA = {
         "dungeon": "Ghost Ship",
         "sram_addr": PHSRAM.gs,
         "sram_value": 0x1,
-        "delay_pickup": "Ghost Ship B2 Third Sister Right Chest",
+        # "delay_pickup": "Ghost Ship B2 Third Sister Right Chest",
         "id": 181,
         "hint_entrance": ["GS Exit", "Ghost Ship Cubus Sisters Reunion"],
         "chest_offset": 14,
@@ -2407,7 +2420,8 @@ LOCATIONS_DATA = {
         "value": 0x80,
         "post_dungeon": "Ghost Ship",
         "id": 189,
-        "gift_addr": Address(0x215dfc)
+        "gift_addr": Address(0x215dfc),
+        "delay_reset": True
     },
 
     # ========== Goron Island ============
@@ -2418,14 +2432,13 @@ LOCATIONS_DATA = {
         "floor_id": 0x2,
         "vanilla_item": "Treasure Map #16 (Goron NE)",
         "address": PHAddr.adv_flags_34,
-        "delay_reset": True,
+        # "delay_reset": True,  # The treasure map is added by the cutscene!
         "value": 0x20,
         "x_min": -60000,
         "z_max": 45000,
         "id": 190,
         "do_special": {"event_type": "ut_connect",
                        "event_name": "EVENT: Goron SW Kill Yellow Chus"},
-        "set_bit": [(PHAddr.treasure_maps_2, 0x10)],
         "hint_entrance": "Goron SW Mountains East",
         "gift_addr": Address(0x2143DC)
     },
@@ -3520,6 +3533,7 @@ LOCATIONS_DATA = {
         "stage_id": 0x6,
         "floor_id": 0x0,
         "address": PHAddr.adv_flags_19,
+        "delay_reset": True,
         "value": 0x20,
         "id": 279,
         "gift_addr": [Address(0x216044), Address(0x215ee4)]
@@ -3530,6 +3544,7 @@ LOCATIONS_DATA = {
         "stage_id": 0x6,
         "floor_id": 0x0,
         "address": PHAddr.adv_flags_19,
+        "delay_reset": True,
         "value": 0x20,
         "id": 280,
         "gift_addr": [Address(0x215f04), Address(0x2160fc)]
@@ -3543,6 +3558,7 @@ LOCATIONS_DATA = {
         "value": 0x8,
         "id": 327,
         "conditional": True,
+        "delay_reset": True,
         "gift_addr": Address(0x215fe4)
     },
     "Prince of Red Lions Trade Quest Item": {

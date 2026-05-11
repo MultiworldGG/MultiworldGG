@@ -48,6 +48,46 @@ data.raw["rocket-silo"]["rocket-silo"].fluid_boxes = {
 data.raw["rocket-silo"]["rocket-silo"].fluid_boxes_off_when_no_fluid_recipe = true
 data.raw["rocket-silo"]["rocket-silo"].rocket_parts_required = {{ rocket_parts }}
 
+data.raw.technology["lightning-rod"] = {
+    type = "technology",
+    name = "lightning-rod",
+    icon = "__space-age__/graphics/icons/lightning-rod.png",
+    icon_size = 64,
+    hidden = true,
+    effects =
+    {
+      {
+        type = "unlock-recipe",
+        recipe = "lightning-rod",
+      },
+    },
+    prerequisites = {"steel-processing"},
+    unit =
+    {
+      count = 100,
+      ingredients =
+      {
+        {"automation-science-pack", 1}
+      },
+      time = 5
+    }
+  }
+data.raw.technology["lightning-collector"] = {
+    type = "technology",
+    name = "lightning-collector",
+    icon = "__space-age__/graphics/technology/lightning-collector.png",
+    icon_size = 256,
+    effects =
+    {
+      {
+        type = "unlock-recipe",
+        recipe = "lightning-collector",
+      },
+    },
+    prerequisites = {"electromagnetic-science-pack"}
+  }
+
+
 {%- for recipe_name, recipe in custom_recipes.items() %}
     data.raw["recipe"]["{{recipe_name}}"].category = "{{recipe.category}}"
     data.raw["recipe"]["{{recipe_name}}"].ingredients = {{ dict_to_recipe(recipe.ingredients, liquids) }}
@@ -162,6 +202,7 @@ end
 data.raw["assembling-machine"]["assembling-machine-1"].crafting_categories = table.deepcopy(data.raw["assembling-machine"]["assembling-machine-3"].crafting_categories)
 data.raw["assembling-machine"]["assembling-machine-2"].crafting_categories = table.deepcopy(data.raw["assembling-machine"]["assembling-machine-3"].crafting_categories)
 data.raw["assembling-machine"]["assembling-machine-1"].fluid_boxes = table.deepcopy(data.raw["assembling-machine"]["assembling-machine-2"].fluid_boxes)
+data.raw["assembling-machine"]["assembling-machine-1"].fluid_boxes_off_when_no_fluid_recipe = data.raw["assembling-machine"]["assembling-machine-2"].fluid_boxes_off_when_no_fluid_recipe
 if mods["factory-levels"] then
     -- Factory-Levels allows the assembling machines to get faster (and depending on settings), more productive at crafting products, the more the
     -- assembling machine crafts the product.  If the machine crafts enough, it may auto-upgrade to the next tier.
@@ -223,6 +264,9 @@ set_ap_icon(new_tree_copy){% else %}--
 
 set_ap_unimportant_icon(new_tree_copy){% endif %}
 {%- endif -%}
+{%- if tech_tree_information %}
+new_tree_copy.essential = {{ variable_to_lua(item.advancement) }}
+{%- endif -%}
 {#- connect Technology  #}
 {%- if location in tech_tree_layout_prerequisites %}
 {%- for prerequisite in tech_tree_layout_prerequisites[location] %}
@@ -256,6 +300,9 @@ technologies["rocket-silo"].visible_when_disabled = false
 {%- endif %}
 
 data.raw.resource["tungsten-ore"].category = "basic-solid"
+
+data.raw.planet.nauvis.map_gen_settings.autoplace_settings["entity"].settings["iron-stromatolite"] = {}
+data.raw.planet.nauvis.map_gen_settings.autoplace_settings["entity"].settings["copper-stromatolite"] = {}
 
 table.insert(data.raw.technology["quality-module-2"].effects, {type = "unlock-quality", quality = "uncommon"})
 table.insert(data.raw.technology["quality-module-3"].effects, {type = "unlock-quality", quality = "uncommon"})
@@ -294,3 +341,8 @@ data.raw.recipe["electromagnetic-science-pack"].main_product = "electromagnetic-
 data.raw.recipe["agricultural-science-pack"].main_product = "agricultural-science-pack"
 data.raw.recipe["metallurgic-science-pack"].main_product = "metallurgic-science-pack"
 data.raw.recipe["satellite"].main_product = "satellite"
+data.raw.recipe["rocket-silo"].main_product = "rocket-silo"
+
+{%- if free_power %}
+require("reenable_lightning")
+{%- endif %}

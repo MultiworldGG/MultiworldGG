@@ -1,10 +1,99 @@
+const TRACKER_TABLE_HEIGHT_COOKIE_PREFIX = 'trackerTableHeights_';
+const TRACKER_TABLE_HEIGHT_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
+
+const getCookie = (name) => {
+    const cookie = document.cookie
+        .split(';')
+        .map((row) => row.trim())
+        .find((row) => row.startsWith(`${name}=`));
+    return cookie ? decodeURIComponent(cookie.split('=').slice(1).join('=')) : null;
+};
+
+const setCookie = (name, value) => {
+    document.cookie = `${name}=${encodeURIComponent(value)};max-age=${TRACKER_TABLE_HEIGHT_COOKIE_MAX_AGE_SECONDS};path=/;SameSite=Lax`;
+};
+
+const getTrackerTableHeightCookieName = () => {
+    let hash = 0;
+    for (const character of location.pathname) {
+        hash = ((hash << 5) - hash + character.charCodeAt(0)) >>> 0;
+    }
+    return `${TRACKER_TABLE_HEIGHT_COOKIE_PREFIX}${hash.toString(36)}`;
+};
+
+const getTableWrappers = () => Array.from(document.getElementsByClassName('table-wrapper'));
+
+const loadTableHeightPreferences = () => {
+    const cookieValue = getCookie(getTrackerTableHeightCookieName());
+    if (!cookieValue)
+        return [];
+
+    try {
+        const tableHeights = JSON.parse(cookieValue);
+        if (Array.isArray(tableHeights))
+            return tableHeights;
+    } catch (error) {
+        console.warn('Failed to load saved tracker table heights.', error);
+    }
+    return [];
+};
+
+const saveTableHeightPreferences = () => {
+    const tableHeights = getTableWrappers().map((tableWrapper) =>
+        Math.round(tableWrapper.getBoundingClientRect().height)
+    );
+    setCookie(getTrackerTableHeightCookieName(), JSON.stringify(tableHeights));
+};
+
+const applyTableHeightPreferences = () => {
+    const tableHeights = loadTableHeightPreferences();
+    if (!tableHeights.length)
+        return;
+
+    getTableWrappers().forEach((tableWrapper, index) => {
+        const tableHeight = parseInt(tableHeights[index]);
+        if (Number.isFinite(tableHeight) && tableHeight > 0) {
+            tableWrapper.style.height = `${tableHeight}px`;
+        }
+    });
+};
+
+const watchTableHeightPreferenceChanges = () => {
+    if (typeof ResizeObserver === 'undefined')
+        return;
+
+    let pointerDownOnTableWrapper = false;
+    let tableWrapperSizeChanged = false;
+
+    getTableWrappers().forEach((tableWrapper) => {
+        tableWrapper.addEventListener('pointerdown', () => {
+            pointerDownOnTableWrapper = true;
+            tableWrapperSizeChanged = false;
+        });
+
+        new ResizeObserver(() => {
+            if (pointerDownOnTableWrapper) {
+                tableWrapperSizeChanged = true;
+            }
+        }).observe(tableWrapper);
+    });
+
+    window.addEventListener('pointerup', () => {
+        if (pointerDownOnTableWrapper && tableWrapperSizeChanged) {
+            saveTableHeightPreferences();
+        }
+        pointerDownOnTableWrapper = false;
+        tableWrapperSizeChanged = false;
+    });
+};
+
 const adjustTableHeight = () => {
     const tablesContainer = document.getElementById('tables-container');
     if (!tablesContainer)
         return;
     const upperDistance = tablesContainer.getBoundingClientRect().top;
 
-    const tableWrappers = document.getElementsByClassName('table-wrapper');
+    const tableWrappers = getTableWrappers();
     const availableHeight = window.innerHeight - upperDistance;
     const locationsTableWrapper = document.getElementById('locations-table-wrapper');
     const hasLocationsTable = locationsTableWrapper !== null;
@@ -19,10 +108,10 @@ const adjustTableHeight = () => {
         let maxHeight;
 
         if (hasLocationsTable && tableWrappers[i].id === 'locations-table-wrapper') {
-            maxHeight = availableHeight * 0.6;
+            maxHeight = availableHeight * 0.4;
         } else if (hasLocationsTable) {
             const otherTablesCount = tableWrappers.length - 1;
-            maxHeight = (availableHeight * 0.4) / otherTablesCount;
+            maxHeight = (availableHeight * 0.6) / otherTablesCount;
         } else {
             maxHeight = availableHeight / Math.min(tableWrappers.length, 4);
         }
@@ -197,6 +286,7 @@ window.addEventListener('load', () => {
 
     window.addEventListener('resize', () => {
         adjustTableHeight();
+        applyTableHeightPreferences();
         tables.draw();
     });
 
@@ -209,6 +299,8 @@ window.addEventListener('load', () => {
     });
 
     adjustTableHeight();
+    applyTableHeightPreferences();
+    watchTableHeightPreferenceChanges();
 
     // Persistent filter for hiding checked locations and found hints
     $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {

@@ -8,13 +8,14 @@ from worlds.AutoWorld import WebWorld, World
 from BaseClasses import CollectionState, Item, ItemClassification, Location, LocationProgressType, MultiWorld, \
     Region, Tutorial
 from Fill import fill_restrictive, sweep_from_pool
-from settings import Group, UserFilePath
+from settings import Group, UserFilePath, UserFolderPath
 from worlds.LauncherComponents import Component, SuffixIdentifier, Type, components, launch_subprocess
 from worlds.generic.Rules import set_rule
+from .Hints import sanitize, generate_hints, generate_bow_of_light_hint
 from .Items import ALBWItem, Items, ItemData, ItemType, all_items, item_table, vane_to_item, \
     convenient_hyrule_vanes, convenient_lorule_vanes, hyrule_vanes, lorule_vanes
 from .Locations import ALBWLocation, LocationData, LocationType, all_locations, dungeon_table, location_table, \
-    dungeon_item_excludes, starting_weapon_locations
+    dungeon_bosses, dungeon_item_excludes, starting_weapon_locations
 from .Options import ALBWOptions, CrackShuffle, InitialCrackState, Keysy, LogicMode, NiceItems, WeatherVanes, \
     create_randomizer_settings
 from .Patch import PatchInfo, PatchItemInfo, ALBWProcedurePatch
@@ -31,8 +32,7 @@ components.append(
         "A Link Between Worlds Client",
         func=launch_client,
         component_type=Type.CLIENT,
-        file_identifier=SuffixIdentifier(".apalbw"),
-        cli=True,
+        file_identifier=SuffixIdentifier(".apalbw")
     )
 )
 
@@ -61,8 +61,15 @@ class ALBWSettings(Group):
         @classmethod
         def validate(cls, path: str) -> None:
             pass #TODO add validation; hashing doesn't work for 3ds roms
+    
+    class ModPath(UserFolderPath):
+        """Optional: path to mods folder (either "<path-to-azahar-folder>/load/mods" or "<path-to-sd-card>/luma/titles")
+        Setting this to a non-empty value will cause the patcher to automatically install the mod."""
+        description = "Mods Folder"
+        required = False
 
     rom_file: ALBWRomFile = ALBWRomFile("Legend of Zelda, The - A Link Between Worlds (USA) (En,Fr,Es).cci")
+    mod_path: ModPath = ModPath("")
 
 class ALBWWorld(World):
     """
@@ -91,12 +98,16 @@ class ALBWWorld(World):
     seed: Optional[int]
     seed_info: Optional[SeedInfo]
 
-    def create_item(self, name: str) -> ALBWItem:
+    def create_item(self, name: str, num: Optional[int] = None) -> ALBWItem:
         item_id = self.item_name_to_id[name] if name in self.item_name_to_id else None
-        return ALBWItem(name, item_table[name].get_classification(self.options), item_id, self.player)
+        if not self.options.maiamai_mayhem and name == Items.Maiamai.name:
+            item_id = None # if Maiamai are unshuffled, make them an "event" item
+        return ALBWItem(name, item_table[name].get_classification(self.options, num), item_id, self.player)
     
     def create_location(self, name: str, region: Region) -> ALBWLocation:
         loc_id = self.location_name_to_id[name] if name in self.location_name_to_id else None
+        if not self.options.maiamai_mayhem and location_table[name].loctype == LocationType.Maiamai:
+            loc_id = None
         return ALBWLocation(self.player, name, loc_id, region)
     
     def get_filler_item_name(self):
@@ -108,9 +119,15 @@ class ALBWWorld(World):
         return self.random.choice(filler_items)
     
     def generate_early(self) -> None:
+        if self.options.nice_items == NiceItems.option_vanilla and self.options.shuffle_maiamai_rewards:
+            print(f"Option shuffle_maiamai_rewards is not compatible with vanilla nice items. Turning off shuffle_maiamai_rewards for player {self.player_name}.")
+            self.options.shuffle_maiamai_rewards.value = False
+
         settings = create_randomizer_settings(self.options)
         archipelago_info = ArchipelagoInfo()
         archipelago_info.name = self.player_name
+
+        # try crack shuffle
         max_tries = 20
         for num_tries in range(max_tries + 1):
             if num_tries == max_tries:
@@ -143,8 +160,8 @@ class ALBWWorld(World):
         region_graph = self.seed_info.get_region_graph()
 
         # generate regions and locations
-        for (region_name, (locations, _)) in region_graph.items():
-            region = Region(region_name, self.player, self.multiworld)
+        for (region_name, (hint_name, locations, _)) in region_graph.items():
+            region = Region(region_name, self.player, self.multiworld, hint_name)
             self.multiworld.regions.append(region)
             for location_name in locations:
                 # skip locations like hint ghosts without AP counterparts
@@ -154,23 +171,17 @@ class ALBWWorld(World):
                 loc_data = location_table[location_name]
                 if self._is_unrandomized(loc_data):
                     continue
-                location = self.create_location(location_name, region)
 
-                # exclude Mother Maiamai locations so Maiamai can be filler items
-                # if loc_data.loctype == LocationType.Upgrade and self.options.nice_mode:
-                #     location.progress_type = LocationProgressType.EXCLUDED
-                
-                # optionally exclude minigames
-                if self.options.minigames_excluded:
-                    if loc_data.loctype == LocationType.Minigame:
-                        location.progress_type = LocationProgressType.EXCLUDED
-                    if loc_data.name == "[Mai] Hyrule Rupee Rush Wall" or loc_data.name == "[Mai] Lorule Rupee Rush Wall":
-                        location.progress_type = LocationProgressType.EXCLUDED
+                location = self.create_location(location_name, region)
 
                 # place default item
                 item = self._get_location_item(loc_data)
                 if item is not None:
                     location.place_locked_item(self.create_item(item.name))
+
+                # optionally prioritize bosses
+                if self.options.progression_bosses and location_name in dungeon_bosses:
+                    location.progress_type = LocationProgressType.PRIORITY
 
                 set_rule(location, lambda state, location_name=location_name:
                     self.seed_info.can_reach(location_name, self._convert_state(state)))
@@ -181,7 +192,7 @@ class ALBWWorld(World):
 
         # generate connections
         path_counts = {}
-        for (source_region_name, (_, paths)) in region_graph.items():
+        for (source_region_name, (_, _, paths)) in region_graph.items():
             for target_region_name in paths:
                 source_region = self.multiworld.get_region(source_region_name, self.player)
                 target_region = self.multiworld.get_region(target_region_name, self.player)
@@ -212,8 +223,8 @@ class ALBWWorld(World):
             if item == self.starting_weapon:
                 self.pre_fill_items.append(self.create_item(item.name))
                 count -= 1
-            for _ in range(count):
-                self.itempool.append(self.create_item(item.name))
+            for num in range(count):
+                self.itempool.append(self.create_item(item.name, num))
         
         num_items = len(self.itempool) + len(self.pre_fill_items)
         num_locations = len(self.multiworld.get_unfilled_locations(self.player))
@@ -231,23 +242,27 @@ class ALBWWorld(World):
         if self.options.randomize_dungeon_prizes:
             prize_itempool = [item for item in self.pre_fill_items if item_table[item.name].itemtype == ItemType.Prize]
             prize_location_names = [loc.name for loc in all_locations if loc.loctype == LocationType.Prize]
-            self._initial_fill(prize_itempool, prize_location_names)
+            self._initial_fill([(prize_itempool, prize_location_names)])
 
         # randomize dungeon items
+        dungeon_items_and_locations = []
         for dungeon in dungeon_table:
             dungeon_itempool = [item for item in self.pre_fill_items if item_table[item.name] in dungeon.items]
             if dungeon.name == "Lorule Castle" and self.options.bow_of_light_in_castle:
                 dungeon_itempool.append(self.create_item(Items.BowOfLight.name))
-            dungeon_location_names = [loc.name for loc in dungeon.locations if loc.name not in dungeon_item_excludes]
-            self._initial_fill(dungeon_itempool, dungeon_location_names)
+            dungeon_location_names = [loc.name for loc in dungeon.locations if loc.name not in dungeon_item_excludes
+                and not (self.options.progression_bosses and loc.name in dungeon_bosses)]
+            dungeon_items_and_locations.append((dungeon_itempool, dungeon_location_names))
+        self._initial_fill(dungeon_items_and_locations)
         
         # starting weapon
         if self.starting_weapon is not None:
             starting_weapon_itempool = [item for item in self.pre_fill_items if item.name == self.starting_weapon.name]
-            self._initial_fill(starting_weapon_itempool, starting_weapon_locations)
+            self._initial_fill([(starting_weapon_itempool, starting_weapon_locations)])
     
     def fill_slot_data(self) -> Dict[str, Any]:
         slot_data = self.options.as_dict(
+            "death_link",
             "logic_mode",
             "lorule_castle_requirement",
             "pedestal_requirement",
@@ -271,10 +286,12 @@ class ALBWWorld(World):
     def generate_output(self, output_directory: str) -> None:
         # Create patch info object
         check_map = self._build_check_map()
-        items = {loc.name: PatchItemInfo(loc.item.name, loc.item.classification.as_flag())
+        items = {loc.name: PatchItemInfo(sanitize(loc.item.name), loc.item.classification.as_flag())
                         for loc in self.multiworld.get_locations(self.player)}
+        hints = generate_hints(self.multiworld, self.player, self.options, self.random)
+        bow_of_light_hint = generate_bow_of_light_hint(self.multiworld, self.player)
         patch_info = PatchInfo(PatchInfo.cur_version.as_simple_string(), self.seed, self.player_name,
-                               self.options, check_map, items)
+                               self.options, check_map, items, hints, bow_of_light_hint)
 
         # Write patch info to json file
         patch = ALBWProcedurePatch(player=self.player, player_name=self.player_name)
@@ -284,17 +301,21 @@ class ALBWWorld(World):
         out_file_name = self.multiworld.get_out_file_name_base(self.player)
         patch.write(os.path.join(output_directory, f"{out_file_name}{patch.patch_file_ending}"))
     
-    def _initial_fill(self, itempool: List[Item], location_names: List[str]) -> None:
-        for item in itempool:
-            self.pre_fill_items.remove(item)
+    def _initial_fill(self, pools: List[Tuple[List[Item], List[str]]]) -> None:
+        for itempool, _ in pools:
+            for item in itempool:
+                self.pre_fill_items.remove(item)
         state = CollectionState(self.multiworld)
         for item in self.pre_fill_items:
-            state.collect(item)
-        state = sweep_from_pool(state, self.itempool)
-        locations = [loc for loc in self.multiworld.get_unfilled_locations(self.player) if loc.name in location_names]
-        self.random.shuffle(locations)
-        fill_restrictive(self.multiworld, state, locations, itempool,
-            single_player_placement=True, lock=True, allow_excluded=True, allow_partial=False)
+            state.collect(item, prevent_sweep=True)
+        all_location_names = [name for _, loc_names in pools for name in loc_names]
+        all_locations = [loc for loc in self.multiworld.get_locations(self.player) if loc.name in all_location_names]
+        state = sweep_from_pool(state, self.itempool, locations=all_locations)
+        for itempool, location_names in pools:
+            locations = [loc for loc in self.multiworld.get_unfilled_locations(self.player) if loc.name in location_names]
+            self.random.shuffle(locations)
+            fill_restrictive(self.multiworld, state, locations, itempool,
+                single_player_placement=True, lock=True, allow_excluded=True, allow_partial=False)
 
     def _convert_state(self, state: CollectionState) -> List[PyRandomizable]:
         randomizables = []
@@ -320,9 +341,18 @@ class ALBWWorld(World):
                 if loc.loctype == LocationType.Upgrade:
                     assert loc.default_item is not None
                     check_map[loc.name] = loc.default_item.name
-        else:
+        elif not self.options.shuffle_maiamai_rewards:
             for loc in all_locations:
                 if loc.loctype == LocationType.Upgrade:
+                    check_map[loc.name] = Items.RupeeGreen.name
+        else:
+            check_map["Maiamai Great Spin"] = Items.RupeeGreen.name
+                
+
+        # Fill in unrandomized minigames
+        if self.options.minigames_excluded:
+            for loc in all_locations:
+                if loc.is_minigame():
                     check_map[loc.name] = Items.RupeeGreen.name
         
         # Fill in inaccessible shop items
@@ -344,7 +374,11 @@ class ALBWWorld(World):
             return 0
         if item.itemtype == ItemType.BigKey and self.options.keysy in [Keysy.option_big, Keysy.option_all]:
             return 0
-        if item == Items.Quake and self.options.initial_crack_state == InitialCrackState.option_open:
+        if item == Items.Quake and self.options.initial_crack_state != InitialCrackState.option_closed:
+            return 0
+        if item == Items.Merge and self.options.initial_crack_state != InitialCrackState.option_progressive:
+            return 0
+        if item == Items.Bracelet and self.options.initial_crack_state == InitialCrackState.option_progressive:
             return 0
         if (item == Items.Lamp or item == Items.Net) and not self.options.super_items:
             return 1
@@ -357,20 +391,24 @@ class ALBWWorld(World):
         return item.count
     
     def _get_location_item(self, location: LocationData) -> Optional[ItemData]:
-        # if location.loctype == LocationType.Upgrade and self.options.nice_mode:
-        #     return None
         if location.loctype == LocationType.Prize and self.options.randomize_dungeon_prizes:
             return None
         if location.loctype == LocationType.Vane:
             assert self.seed_info is not None
             assert location.default_item is not None and location.default_item.vane is not None
             return vane_to_item[self.seed_info.vane_map[location.default_item.vane]]
+        if location.loctype == LocationType.Upgrade and self.options.shuffle_maiamai_rewards:
+            return None
+        if location.loctype == LocationType.Maiamai and not self.options.maiamai_mayhem:
+            return Items.Maiamai
         return location.default_item
     
     def _is_unrandomized(self, location: LocationData) -> bool:
-        return (location.loctype == LocationType.Maiamai and not self.options.maiamai_mayhem) \
-            or location.loctype == LocationType.Upgrade
-            # or (location.loctype == LocationType.Upgrade and not self.options.nice_mode)
+        return (location.loctype == LocationType.Maiamai and not self.options.maiamai_mayhem
+                                                        and not self.options.shuffle_maiamai_rewards) \
+            or (location.loctype == LocationType.Upgrade and not self.options.shuffle_maiamai_rewards) \
+            or (location.name == "Maiamai Great Spin" and self.options.shuffle_maiamai_rewards) \
+            or (self.options.minigames_excluded and location.is_minigame())
     
     def _save_for_pre_fill(self, item: ItemData) -> bool:
         return item.is_dungeon_item() \

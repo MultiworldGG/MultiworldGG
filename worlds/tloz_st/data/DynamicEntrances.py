@@ -464,6 +464,109 @@ DYNAMIC_ENTRANCES = {
         "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
         "message": "You got here with Ferrus, putting you somewhere safe"
     },
+    # ToS Shortcuts: Open
+    "ToS Staircase shortcut open": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 5",
+        "has_slot_data": [("tos_section_unlocks", 0), ("tos_shortcuts", 1)],
+    },
+    # ToS Shortcuts: Sources
+    "ToS Staircase shortcut fire source": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 5",
+        "has_slot_data": [("tos_section_unlocks", 1), ("tos_shortcuts", 1)],
+        "has_groups": ["Tracks: Fire Source"]
+    },
+    "ToS Staircase shortcut ocean source": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 4",
+        "has_slot_data": [("tos_section_unlocks", 1), ("tos_shortcuts", 1)],
+        "not_has_groups": ["Tracks: Fire Source"],
+        "has_groups": ["Tracks: Ocean Source"],
+    },
+    "ToS Staircase shortcut snow source": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 3",
+        "has_slot_data": [("tos_section_unlocks", 1), ("tos_shortcuts", 1)],
+        "not_has_groups": ["Tracks: Fire Source", "Tracks: Ocean Source"],
+        "has_groups": ["Tracks: Snow Source"],
+    },
+    "ToS Staircase shortcut forest source": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 2",
+        "has_slot_data": [("tos_section_unlocks", 1), ("tos_shortcuts", 1)],
+        "not_has_groups": ["Tracks: Fire Source", "Tracks: Ocean Source", "Tracks: Snow Source"],
+        "has_groups": ["Tracks: Forest Source"],
+    },
+    "ToS Staircase shortcut no source": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 1",
+        "has_slot_data": [("tos_section_unlocks", 1), ("tos_shortcuts", 1)],
+        "not_has_groups": ["Tracks: Fire Source", "Tracks: Ocean Source",
+                           "Tracks: Snow Source", "Tracks: Forest Source"],
+    },
+    # ToS Shortcuts: Progressive no base
+    "ToS Staircase shortcut progressive nb 4": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 5",
+        "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 0), ("tos_shortcuts", 1)],
+        "has_items": [("Progressive ToS Section", 4, "has_exact")],
+    },
+    "ToS Staircase shortcut progressive nb 3": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 4",
+        "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 0), ("tos_shortcuts", 1)],
+        "has_items": [("Progressive ToS Section", 3, "has_exact")],
+    },
+    "ToS Staircase shortcut progressive nb 2": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 3",
+        "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 0), ("tos_shortcuts", 1)],
+        "has_items": [("Progressive ToS Section", 2, "has_exact")],
+    },
+    "ToS Staircase shortcut progressive nb 1": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 2",
+        "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 0), ("tos_shortcuts", 1)],
+        "has_items": [("Progressive ToS Section", 1, "has_exact")],
+    },
+    "ToS Staircase shortcut progressive nb 0": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 1",
+        "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 0), ("tos_shortcuts", 1)],
+        "has_items": [("Progressive ToS Section", 0)],
+    },
+    # ToS Shortcuts: Progressive base
+    "ToS Staircase shortcut progressive 5": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 5",
+        "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 1), ("tos_shortcuts", 1)],
+        "has_items": [("Progressive ToS Section", 5, "has_exact")],
+    },
+    "ToS Staircase shortcut progressive 4": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 4",
+        "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 1), ("tos_shortcuts", 1)],
+        "has_items": [("Progressive ToS Section", 4, "has_exact")],
+    },
+    "ToS Staircase shortcut progressive 3": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 3",
+        "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 1), ("tos_shortcuts", 1)],
+        "has_items": [("Progressive ToS Section", 3, "has_exact")],
+    },
+    "ToS Staircase shortcut progressive 2": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 2",
+        "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 1), ("tos_shortcuts", 1)],
+        "has_items": [("Progressive ToS Section", 2, "has_exact")],
+    },
+    "ToS Staircase shortcut progressive 1": {
+        "entrance": "ToS Staircase Exit",
+        "destination": "Tower of Spirits Enter Section 1",
+        "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 1), ("tos_shortcuts", 1)],
+        "has_items": [("Progressive ToS Section", 1, "has_exact")],
+    },
 }
 
 # Reorganize above data to the form {scene: data} or something

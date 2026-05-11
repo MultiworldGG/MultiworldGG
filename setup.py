@@ -289,7 +289,7 @@ if is_windows:
         icon=resolve_icon(c.icon),
     ))
 
-extra_data = ["LICENSE", "LICENSE-original.md", "data", "EnemizerCLI", "SNI", "application.yaml"]
+extra_data = ["LICENSE", "LICENSE-original.md", "data", "SNI", "application.yaml"]
 extra_libs = ["libssl.so", "libcrypto.so"] if is_linux else []
 excluded_extra_data_files = {
     Path("data", "world_launcher_cache.json.gz"),
@@ -580,9 +580,8 @@ class BuildExeCommand(cx_Freeze.command.build_exe.build_exe):
                              for world_directory in folders_to_remove)
         else:
             # make sure extra programs are executable
-            enemizer_exe = self.buildfolder / 'EnemizerCLI/EnemizerCLI.Core'
             sni_exe = self.buildfolder / 'SNI/sni'
-            extra_exes = (enemizer_exe, sni_exe)
+            extra_exes = (sni_exe,)
             for extra_exe in extra_exes:
                 if extra_exe.is_file():
                     extra_exe.chmod(0o755)

@@ -609,6 +609,13 @@ class TrapLink(Toggle):
     display_name = "Trap Link"
 
 
+class DamageLink(Toggle):
+    """
+    Damage is shared across slots
+    """
+    display_name = "Damage Link"
+
+
 class DisplayMessages(Choice):
     """
     The game may summon a pop up message on items sent and received
@@ -723,6 +730,7 @@ dkc2_option_groups = [
 class DKC2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     death_link: DeathLink
+    damage_link: DamageLink
     energy_link: EnergyLink
     trap_link: TrapLink
     display_messages: DisplayMessages

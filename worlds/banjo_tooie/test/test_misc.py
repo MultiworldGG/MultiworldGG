@@ -11,7 +11,8 @@ class TestVanillaJingalingJiggy(BanjoTooieTestBase):
         "jingaling_jiggy": KingJingalingHasJiggy.option_true,
         "randomize_jinjos": RandomizeJinjos.option_true,  # Just so that jinjo jiggies are also in the pool.
         "world_requirements": WorldRequirements.option_custom,
-        "custom_worlds": "1,1,1,1,1,1,1,1,61"
+        "custom_worlds": "1,1,1,1,1,1,1,1,61",
+        "extra_jiggies_weight": 0,
     }
 
     def test_item_pool(self) -> None:
@@ -32,6 +33,7 @@ class TestRandomizedJingalingJiggy(BanjoTooieTestBase):
         "randomize_jinjos": RandomizeJinjos.option_true,
         "world_requirements": WorldRequirements.option_custom,
         "custom_worlds": "1,1,1,1,1,1,1,1,61",
+        "extra_jiggies_weight": 0,
     }
 
     def test_item_pool(self) -> None:

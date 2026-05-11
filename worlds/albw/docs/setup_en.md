@@ -17,6 +17,7 @@
 
 1. In Azahar, select `File > Open Azahar Folder`. Create a `load` folder inside this folder, and inside the `load` folder create a `mods` folder.
 2. Also in Azahar, select `Emulation > Configure`. Then, in the general section, on the top, select `Debug`. Finally, at the bottom, ensure that the `Enable RPC Server` option is enabled.
+3. (Optional) If you want the patcher to automatically install the mod, run the MultiworldGG Launcher and select `Open host.yaml`. Under `albw_settings`, set `mod_path` to `"<path-to-your-azahar-folder>/load/mods"`.
 
 ## Setup (3DS)
 
@@ -27,19 +28,20 @@
 	3. Press Start or choose `Save and exit`.
 3. Press L+DPadDown+Select to open the Rosalina menu, and make sure that `Plugin loader` is set to `[Enabled]`.
 4. Download [plugin.3gx](https://github.com/LittleCube-hax/albw-ap-plugin/releases/latest) and copy it to `/luma/plugins/00040000000EC300/` on your SD card.
+5. (Optional) If you want the patcher to automatically install the mod, run the MultiworldGG Launcher and select `Open host.yaml`. Under `albw_settings`, set `mod_path` to `"<path-to-your-sd-card>/luma/titles"`.
 
 ## Generating a Game
 
 1. Create your player options YAML file. A sample YAML is included.
 2. Gather the YAMLs of all players into the `MultiworldGG/Players` folder.
 3. Run the MultiworldGG Launcher and select Generate.
-4. A zip file will be created in the `MultiworldGG/output` folder. Upload this to [the MultiworldGG website](/uploads) to host your game.
+4. A zip file will be created in the `MultiworldGG/output` folder. Upload this to [the MultiworldGG website](https://multiworld.gg/uploads) to host your game.
 5. Inside the zip file is a `.apalbw` file. You will need this file to play the game.
 
 ## Playing a Game (Emulator)
 
 1. The host will give you a `.apalbw` file. Drag and drop this file onto the MultiworldGG Launcher. Alternatively, run the Launcher, click Open Patch, and select your `.apalbw` file.
-2. Enter the path to your A Link Between Worlds ROM when prompted. Wait about 20 seconds for the game to patch.
+2. Enter the path to your A Link Between Worlds ROM when prompted. Wait about 20 seconds for the game to patch. If you set a `mod_path` in setup, skip steps 3 and 4.
 3. This will do two things. First, it will open the A Link Between Worlds client. Second, it will create a zip file with the same name and directory as the patch file. Unzip this file; it contains a folder named `00040000000EC300`.
 4. Place the `00040000000EC300` folder inside the `load/mods/` folder you created. (If there is already a folder with this name from a previous randomizer, delete it first.)
 5. Run A Link Between Worlds in the emulator. The client should automatically connect to the emulator.
@@ -47,16 +49,17 @@
 
 ## Playing a Game (3DS)
 
-1. The host will give you a `.apalbw` file. Drag and drop this file onto the MultiworldGG Launcher. Alternatively, run the Launcher, click Open Patch, and select your `.apalbw` file.
-2. Enter the path to your A Link Between Worlds ROM when prompted. Wait about 20 seconds for the game to patch.
-3. This will do two things. First, it will open the A Link Between Worlds client. Second, it will create a zip file with the same name and directory as the patch file. Unzip this file; it contains a folder named `00040000000EC300`.
-4. Copy the `00040000000EC300` folder to `/luma/titles/` on your SD card.
-5. Re-insert your SD card into your 3DS and power it on.
-6. Run A Link Between Worlds. At the end of the red 3DS loading screen, you should see a blue flash. This means the plugin has loaded successfully.
-7. Run the command on-screen into your ALBW client.
-8. Enter the server URL into the client and press Connect.
+1. Insert your 3ds SD card into the computer.
+2. The host will give you a `.apalbw` file. Drag and drop this file onto the MultiworldGG Launcher. Alternatively, run the Launcher, click Open Patch, and select your `.apalbw` file.
+3. Enter the path to your A Link Between Worlds ROM when prompted. Wait about 20 seconds for the game to patch. If you set a `mod_path` in setup, skip steps 4 and 5.
+4. This will do two things. First, it will open the A Link Between Worlds client. Second, it will create a zip file with the same name and directory as the patch file. Unzip this file; it contains a folder named `00040000000EC300`.
+5. Copy the `00040000000EC300` folder to `/luma/titles/` on your SD card.
+6. Re-insert your SD card into your 3DS and power it on.
+7. Run A Link Between Worlds. At the end of the red 3DS loading screen, you should see a blue flash. This means the plugin has loaded successfully.
+8. Run the command on-screen into your ALBW client.
+9. Enter the server URL into the client and press Connect.
 
 ## Resuming a Game
 
 1. Run the MultiworldGG Launcher and select the A Link Between Worlds client.
-2. Do steps 5-6 under Playing a Game (Emulator) or steps 6-8 under Playing a Game (3DS).
+2. Do steps 5-6 under Playing a Game (Emulator) or steps 7-9 under Playing a Game (3DS).

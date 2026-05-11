@@ -3,6 +3,7 @@ import time
 import random
 
 from enum import Enum
+from Utils import get_unique_identifier
 from NetUtils import ClientStatus, NetworkItem, color
 from worlds.AutoSNIClient import SNIClient, SnesReader, SnesData, Read
 from .Items import trap_value_to_name, trap_name_to_value
@@ -42,6 +43,9 @@ DKC2_DAMAGE_FLAG = DKC2_SRAM + 0x044
 DKC2_INSTA_DEATH_FLAG = DKC2_SRAM + 0x046
 DKC2_DEATH_LINK_FORCE = DKC2_SRAM + 0x05A
 DKC2_DEATH_LINK_FLAG = DKC2_SRAM + 0x058
+
+DKC2_SHARED_DAMAGE_FLAG = DKC2_SRAM + 0x068
+DKC2_DAMAGE_PACKET = DKC2_SRAM + 0x06A
 
 DKC2_TRACKED_LEVELS = DKC2_SRAM + 0x80
 DKC2_TRACKED_CLEARS = DKC2_SRAM + 0x70
@@ -122,6 +126,8 @@ class DKC2Memory(Enum):
     message_activate = Read(DKC2_MESSAGE_ACTIVATE, 0x02)
     message_is_tracker = Read(DKC2_MESSAGE_TRACKER, 0x02)
     controller_flags = Read(WRAM_START + 0x0507, 0x02)
+    damage_packet = Read(DKC2_DAMAGE_PACKET, 0x01)
+    damage_link_signal = Read(DKC2_SHARED_DAMAGE_FLAG, 0x01)
 
 class ConnectMemory(Enum):
     rom_hash = Read(DKC2_ROMHASH_START, ROMHASH_SIZE)
@@ -149,6 +155,10 @@ class DKC2SNIClient(SNIClient):
         self.last_message = []
         self.current_session_locations = set()
         self.processed_locations = set()
+        self.incoming_shared_damage = 0
+        self.current_shared_damage = 0
+        self.shared_damage_label = None
+        self.shared_damage_message = ""
 
 
     async def validate_rom(self, ctx: "SNIContext"):
@@ -182,6 +192,11 @@ class DKC2SNIClient(SNIClient):
         trap_link = settings[0x1A]
         if trap_link and "TrapLink" not in ctx.tags:
             ctx.tags.add("TrapLink")
+            update_tags = True
+
+        damage_link = settings[0x1B]
+        if damage_link and "SharedDamage" not in ctx.tags:
+            ctx.tags.add("SharedDamage")
             update_tags = True
 
         death_link = settings[0x18]
@@ -243,6 +258,10 @@ class DKC2SNIClient(SNIClient):
 
         if "TrapLink" in ctx.tags:
             await self.handle_trap_link(ctx, memory_data)
+
+        if "SharedDamage" in ctx.tags:
+            await self.handle_incoming_shared_damage(ctx, memory_data)
+            await self.handle_sent_shared_damage(ctx, memory_data)
 
         from .Levels import location_id_to_level_id
         from worlds import AutoWorldRegister
@@ -662,6 +681,64 @@ class DKC2SNIClient(SNIClient):
             await snes_flush_writes(ctx)
 
 
+    async def handle_incoming_shared_damage(self, ctx: "SNIContext", snes_data: SnesData[DKC2Memory]):
+        try:
+            from kvui import MDLabel as Label
+        except ImportError:
+            from kvui import Label
+
+        if not self.shared_damage_label:
+            self.shared_damage_label = Label(text=f"", size_hint_x=None, width=120, halign="center")
+            ctx.ui.connect_layout.add_widget(self.shared_damage_label)
+
+        self.shared_damage_label.text = f"DMG: {self.current_shared_damage}"
+
+        # Discard from the map, already dead or on a shop level
+        nmi_pointer = int.from_bytes(snes_data.get(DKC2Memory.nmi_pointer), "little")
+        player_state = int.from_bytes(snes_data.get(DKC2Memory.player_state))
+        current_map_level = int.from_bytes(snes_data.get(DKC2Memory.current_map_level))
+        if (nmi_pointer == 0x8CE9 or nmi_pointer == 0x8CF1) or \
+           player_state & 0x20 or \
+           not current_map_level:
+            self.incoming_shared_damage = 0
+            return
+        
+        # We cap damage to 80 points, other games could use other values
+        if self.incoming_shared_damage:
+            snes_logger.info(self.shared_damage_message)
+            self.current_shared_damage += min(self.incoming_shared_damage, 80)
+            self.incoming_shared_damage = 0
+        
+        # Delay damage signal if we're paused or a message box is showing
+
+        if self.current_shared_damage >= 80:
+            self.current_shared_damage = 0
+            snes_logger.info(f"Triggered DamageLink!")
+
+            from SNIClient import snes_buffered_write, snes_flush_writes
+            snes_buffered_write(ctx, DKC2_DAMAGE_FLAG, bytearray([0x01]))
+            await snes_flush_writes(ctx)
+
+
+    async def handle_sent_shared_damage(self, ctx: "SNIContext", snes_data: SnesData[DKC2Memory]):
+        damage_amount = int.from_bytes(snes_data.get(DKC2Memory.damage_packet), "little")
+        if damage_amount != 0:
+            await ctx.send_msgs([{
+                "cmd": "Bounce", "tags": ["SharedDamage"],
+                "data": {
+                    "time": time.time(),
+                    "uuid": get_unique_identifier(),
+                    "source": ctx.player_names[ctx.slot],
+                    "damage_points": damage_amount
+                }
+            }])
+            snes_logger.info(f"Sent {damage_amount} damage points to players")
+
+            from SNIClient import snes_buffered_write, snes_flush_writes
+            snes_buffered_write(ctx, DKC2_DAMAGE_PACKET, bytearray([0x00]))
+            await snes_flush_writes(ctx)
+
+
     async def handle_messages(self, ctx: "SNIContext", memory_data: SnesData[DKC2Memory]):
         from SNIClient import snes_buffered_write, snes_flush_writes
         from .Text import message_received_to_bytes, item_names, item_order
@@ -903,7 +980,7 @@ class DKC2SNIClient(SNIClient):
                 self.instance_id = time.time()
             
             source_name = args["data"]["source"]
-            if "TrapLink" in ctx.tags and "TrapLink" in args["tags"] and source_name != ctx.slot_info[ctx.slot].name:
+            if "TrapLink" in ctx.tags and "TrapLink" in args["tags"] and source_name != ctx.player_names[ctx.slot]:
                 trap_name: str = args["data"]["trap_name"]
                 if trap_name not in trap_name_to_value:
                     return
@@ -919,6 +996,13 @@ class DKC2SNIClient(SNIClient):
                 
                 self.received_trap_link = NetworkItem(trap_name_to_value[trap_name], None, None)
                 self.message_queue.append([False, "TrapLink", trap_name, 0x04, True])
+
+            uuid = args["data"]["uuid"]
+            if "SharedDamage" in ctx.tags and "SharedDamage" in args["tags"] and (uuid != get_unique_identifier() or source_name != ctx.player_names[ctx.slot]):
+                damage_amount = args["data"]["damage_points"]
+                self.incoming_shared_damage += damage_amount
+                self.shared_damage_message = f"Received {damage_amount} damage points from {source_name}"
+
 
         elif cmd == "LocationInfo":
             for item in args["locations"]:

@@ -9,13 +9,13 @@ from Options import OptionError
 from worlds.AutoWorld import WebWorld, World
 
 from .Items import item_table, ApeEscapeItem, GROUPED_ITEMS
-from .Locations import location_table, base_location_id, GROUPED_LOCATIONS
+from .Locations import location_table, base_location_id, GROUPED_LOCATIONS, doorTransitions
 from .Regions import create_regions, ApeEscapeLevel
 from .Rules import set_rules, get_required_keys
 from .Client import ApeEscapeClient
 from .Strings import AEItem, AELocation
 from .RAMAddress import RAM
-from .Options import ApeEscapeOptions
+from .Options import ApeEscapeOptions, DoorShuffleOption
 
 
 class ApeEscapeWeb(WebWorld):
@@ -51,10 +51,8 @@ class ApeEscapeWorld(World):
     game = "Ape Escape"
     web: ClassVar[WebWorld] = ApeEscapeWeb()
     topology_present = True
-
     options_dataclass = ApeEscapeOptions
     options: ApeEscapeOptions
-
     item_name_to_id = item_table
 
     for key, value in item_name_to_id.items():
@@ -67,7 +65,6 @@ class ApeEscapeWorld(World):
 
     item_name_groups = GROUPED_ITEMS
     location_name_groups = GROUPED_LOCATIONS
-
     glitches_item_name = AEItem.FAKE_OOL_ITEM.value
     ut_can_gen_without_yaml = True  # class var that tells it to ignore the player yaml
     using_ut: bool  # so we can check if we're using UT only once
@@ -83,11 +80,15 @@ class ApeEscapeWorld(World):
         self.infinitejump: Optional[int] = 0
         self.superflyer: Optional[int] = 0
         self.entrance: Optional[int] = 0
+        self.doorshuffle: Optional[int] = 0
+        self.doorshuffletype: Optional[int] = 0
         self.randomizestartingroom: Optional[int] = 0
         self.unlocksperkey: Optional[int] = 0
         self.extrakeys: Optional[int] = 0
         self.coin: Optional[int] = 0
         self.mailbox: Optional[int] = 0
+        self.jacket: Optional[int] = 0
+        self.trainingrooms: Optional[int] = 0
         self.lamp: Optional[int] = 0
         self.gadget: Optional[int] = 0
         self.shufflenet: Optional[int] = 0
@@ -99,10 +100,13 @@ class ApeEscapeWorld(World):
         self.levellist: List[ApeEscapeLevel] = []
         self.entranceorder: List[ApeEscapeLevel] = []
         self.firstrooms = []
+        self.shuffled_doors = []
         super(ApeEscapeWorld, self).__init__(multiworld, player)
 
-
     def generate_early(self) -> None:
+        # Disable Door shuffle until stable
+        self.options.doorshuffle.value = DoorShuffleOption.option_off
+
         self.goal = self.options.goal.value
         self.requiredtokens = self.options.requiredtokens.value
         self.totaltokens = self.options.totaltokens.value
@@ -112,11 +116,15 @@ class ApeEscapeWorld(World):
         self.infinitejump = self.options.infinitejump.value
         self.superflyer = self.options.superflyer.value
         self.entrance = self.options.entrance.value
+        self.doorshuffle = self.options.doorshuffle.value
+        self.doorshuffletype = self.options.doorshuffletype.value
         self.randomizestartingroom = self.options.randomizestartingroom.value
         self.unlocksperkey = self.options.unlocksperkey.value
         self.extrakeys = self.options.extrakeys.value
         self.coin = self.options.coin.value
         self.mailbox = self.options.mailbox.value
+        self.jacket = self.options.jacket.value
+        self.trainingrooms = self.options.trainingrooms.value
         self.lamp = self.options.lamp.value
         self.gadget = self.options.gadget.value
         self.shufflenet = self.options.shufflenet.value
@@ -141,11 +149,15 @@ class ApeEscapeWorld(World):
                 self.options.infinitejump.value = self.passthrough["infinitejump"]
                 self.options.superflyer.value = self.passthrough["superflyer"]
                 self.options.entrance.value = self.passthrough["entrance"]
+                self.options.doorshuffle.value = self.passthrough["doorshuffle"]
+                self.options.doorshuffletype.value = self.passthrough["doorshuffletype"]
                 self.options.randomizestartingroom.value = self.passthrough["randomizestartingroom"]
                 self.options.unlocksperkey.value = self.passthrough["unlocksperkey"]
                 self.options.extrakeys.value = self.passthrough["extrakeys"]
                 self.options.coin.value = self.passthrough["coin"]
                 self.options.mailbox.value = self.passthrough["mailbox"]
+                self.options.jacket.value = self.passthrough["jacket"]
+                self.options.trainingrooms.value = self.passthrough["trainingrooms"]
                 self.options.lamp.value = self.passthrough["lamp"]
                 self.options.gadget.value = self.passthrough["gadget"]
                 self.options.shufflenet.value = self.passthrough["shufflenet"]
@@ -153,6 +165,7 @@ class ApeEscapeWorld(World):
                 self.options.lowoxygensounds.value = self.passthrough["lowoxygensounds"]
                 self.options.trappercentage.value = self.passthrough["trappercentage"]
                 self.options.itemdisplay.value = self.passthrough["itemdisplay"]
+                self.shuffled_doors = self.passthrough["shuffled_doors"]
             else:
                 self.using_ut = False
         else:
@@ -161,10 +174,44 @@ class ApeEscapeWorld(World):
     def create_regions(self):
         create_regions(self)
 
-
     def set_rules(self):
         set_rules(self)
 
+    @classmethod
+    def stage_fill_hook(cls,multiworld: MultiWorld,progitempool,usefulitempool,filleritempool,fill_locations) -> None:
+        game_players = multiworld.get_game_players(cls.game)
+        # Get all player IDs that have progression classification tokens.
+        token_player_ids = {player for player in game_players if multiworld.worlds[player].goal in [2,3,4]}
+        # Get the player IDs of those that are using minimal accessibility.
+        token_minimal_player_ids = {player for player in game_players
+                                      if multiworld.worlds[player].options.accessibility == "minimal"}
+
+        def sort_func(item):
+
+            if item.player in token_player_ids and item.name == AEItem.Token.value:
+                #print(f"sorting item {item.name} for {item.player}")
+                if item.player in token_minimal_player_ids:
+                    # For minimal players, place goal macguffins first. This helps prevent fill from dumping logically
+                    # relevant items into unreachable locations and reducing the number of reachable locations to fewer
+                    # than the number of items remaining to be placed.
+                    #
+                    # Placing only the non-required goal macguffins first or slightly more than the number of
+                    # non-required goal macguffins first was also tried, but placing all goal macguffins first seems to
+                    # give fill the best chance of succeeding.
+                    #
+                    # All sizes of token, are given the *deprioritized* classification for minimal players,
+                    # which avoids them being placed on priority locations, which would otherwise occur due to them
+                    # being sorted to be placed first.
+                    return 1
+                else:
+                    # For non-minimal players, place goal macguffins last. The helps prevent fill from filling most/all
+                    # reachable locations with the goal macguffins that are only required for the goal.
+                    return -1
+            else:
+                # Python sorting is stable, so this will leave everything else in its original order.
+                return 0
+
+        progitempool.sort(key=sort_func)
 
     def create_item(self, name: str) -> ApeEscapeItem:
         item_id = item_table[name]
@@ -277,6 +324,7 @@ class ApeEscapeWorld(World):
             self.multiworld.push_precollected(net)
         elif self.options.shufflenet == "true":
             # If net shuffle is on, make sure there are locations that don't require net.
+            # Jacket locations are not enough to make it not fail,not including it in this list
             if self.options.coin == "true" or self.options.mailbox == "true":
                 self.itempool += [net]
             else:
@@ -455,11 +503,15 @@ class ApeEscapeWorld(World):
             "infinitejump": self.options.infinitejump.value,
             "superflyer": self.options.superflyer.value,
             "entrance": self.options.entrance.value,
+            "doorshuffle": self.options.doorshuffle.value,
+            "doorshuffletype": self.options.doorshuffletype.value,
             "randomizestartingroom": self.options.randomizestartingroom.value,
             "unlocksperkey": self.options.unlocksperkey.value,
             "extrakeys": self.options.extrakeys.value,
             "coin": self.options.coin.value,
             "mailbox": self.options.mailbox.value,
+            "jacket": self.options.jacket.value,
+            "trainingrooms": self.options.trainingrooms.value,
             "lamp": self.options.lamp.value,
             "gadget": self.options.gadget.value,
             "shufflenet": self.options.shufflenet.value,
@@ -480,6 +532,7 @@ class ApeEscapeWorld(World):
             "entranceids": entranceids,  # Not used by the client. List of level ids in entrance order.
             "newpositions": newpositions,  # List of positions a level is moved to. The position of FF is first.
             "firstrooms": orderedfirstroomids,  # List of first rooms in entrance order.
+            "shuffled_doors": self.shuffled_doors,
             "reqkeys": get_required_keys(self.options.unlocksperkey.value, self.options.goal.value, self.options.coin.value),
             "death_link": self.options.death_link.value
         }
@@ -493,11 +546,72 @@ class ApeEscapeWorld(World):
         return slot_data
 
     def write_spoiler(self, spoiler_handle: TextIO):
-        if self.options.entrance.value != 0x00:
+        if self.options.entrance.value != 0x00 or self.options.doorshuffle.value != 0:
             spoiler_handle.write(
-                f"\n\nApe Escape entrance connections for {self.multiworld.get_player_name(self.player)}:")
+                f"\n\nApe Escape connections for {self.multiworld.get_player_name(self.player)}:")
+
+            def _clean(val):
+                while isinstance(val, (list, tuple, set)):
+                    if not val: return "!!"
+                    val = next(iter(val))
+                return val
+
+            is_pairs = (self.options.doorshuffletype.value == 0x00)
+            door_arrow = " <==> " if is_pairs else " ==> "
+
+            shuffled_map = getattr(self, "shuffled_door_map", {})
+
+            try:
+                from .Locations import doorTransitions as raw_lookup
+            except ImportError:
+                raw_lookup = locals().get('doorTransitions') or \
+                             getattr(self, 'doorTransitions', None) or \
+                             getattr(Locations, 'doorTransitions', {})
+
+            safe_lookup = {str(_clean(k)): v for k, v in raw_lookup.items()}
+
             for x in range(0, 22):
-                spoiler_handle.write(f"\n  {self.levellist[x].name} ==> {self.entranceorder[x].name}")
+                vanilla_level = self.levellist[x]
+                actual_level_content = self.entranceorder[x]
+
+                if self.options.entrance.value != 0x00:
+                    spoiler_handle.write(f"\n      {vanilla_level.name} ==> {actual_level_content.name}:")
+                else:
+                    spoiler_handle.write(f"\n      {vanilla_level.name}:")
+
+                if self.options.doorshuffle.value != 0:
+                    current_level_id = actual_level_content.entrance
+                    level_rooms = [str(r) for r in RAM.roomsperlevel.get(current_level_id, [])]
+
+                    # Identify if this is a 1-room level (common for Bosses/Short levels)
+                    is_one_room_level = (len(level_rooms) == 1)
+
+                    for door_key in raw_lookup:
+                        s_id_str = str(_clean(door_key))
+
+                        # Filter logic:
+                        # 1. If it's a normal level, we still skip base Entries (no hyphen).
+                        # 2. If it's a 1-room level, we ALLOW the base Entry to show.
+                        if " - " not in s_id_str and not is_one_room_level:
+                            continue
+
+                        door_info = safe_lookup.get(s_id_str)
+
+                        if isinstance(door_info, (list, tuple)) and len(door_info) > 0:
+                            room_id_cl = _clean(door_info)
+
+                            if str(room_id_cl) in level_rooms:
+                                # Determine destination
+                                if s_id_str in shuffled_map:
+                                    d_id_str = str(_clean(shuffled_map[s_id_str]))
+                                else:
+                                    # If not shuffled, it's vanilla.
+                                    # We append " (Vanilla)" to the name for clarity.
+                                    vanilla_target = str(_clean(door_info)) if len(door_info) > 3 else "Fixed"
+                                    d_id_str = f"{vanilla_target} (Vanilla)"
+
+                                spoiler_handle.write(f"\n            {s_id_str}{door_arrow}{d_id_str}")
+
             spoiler_handle.write(f"\n")
 
     #def generate_output(self, output_directory: str):

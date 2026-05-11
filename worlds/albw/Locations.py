@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, NamedTuple, Optional, Tuple
 from enum import Enum
 from BaseClasses import Location
 from .Items import ItemData, Items
@@ -40,6 +40,11 @@ class LocationData:
         self.flag = flag
         self.loctype = loctype
         self.default_item = default_item
+
+    def is_minigame(self):
+        return self.loctype == LocationType.Minigame \
+            or self.name == "[Mai] Hyrule Rupee Rush Wall" \
+            or self.name == "[Mai] Lorule Rupee Rush Wall"
 
 Maiamai = LocationType.Maiamai
 Ravio = LocationType.Ravio
@@ -116,16 +121,16 @@ hyrule_locations: List[LocationData] = [
     LocationData(57, 0, 301, "[Mai] Southern Ruins Big Rock", Maiamai),
     LocationData(58, 0, 302, "[Mai] Lake Hylia Shallow Ring", Maiamai),
     LocationData(None, None, None, "Ravio's Signs", Event, Items.RavioSigns),
-    LocationData(59, None, None, "Maiamai Bow Upgrade", Upgrade, Items.Bow),
-    LocationData(60, None, None, "Maiamai Boomerang Upgrade", Upgrade, Items.Boomerang),
-    LocationData(61, None, None, "Maiamai Hookshot Upgrade", Upgrade, Items.Hookshot),
-    LocationData(62, None, None, "Maiamai Hammer Upgrade", Upgrade, Items.Hammer),
-    LocationData(63, None, None, "Maiamai Bombs Upgrade", Upgrade, Items.Bombs),
-    LocationData(64, None, None, "Maiamai Fire Rod Upgrade", Upgrade, Items.FireRod),
-    LocationData(65, None, None, "Maiamai Ice Rod Upgrade", Upgrade, Items.IceRod),
-    LocationData(66, None, None, "Maiamai Tornado Rod Upgrade", Upgrade, Items.TornadoRod),
-    LocationData(67, None, None, "Maiamai Sand Rod Upgrade", Upgrade, Items.SandRod),
-    LocationData(68, None, None, "100 Maiamai", Upgrade, Items.GreatSpin),
+    LocationData(59, None, 865, "Maiamai Bow Upgrade", Upgrade, Items.Bow),
+    LocationData(60, None, 864, "Maiamai Boomerang Upgrade", Upgrade, Items.Boomerang),
+    LocationData(61, None, 872, "Maiamai Hookshot Upgrade", Upgrade, Items.Hookshot),
+    LocationData(62, None, 867, "Maiamai Hammer Upgrade", Upgrade, Items.Hammer),
+    LocationData(63, None, 863, "Maiamai Bombs Upgrade", Upgrade, Items.Bombs),
+    LocationData(64, None, 869, "Maiamai Fire Rod Upgrade", Upgrade, Items.FireRod),
+    LocationData(65, None, 870, "Maiamai Ice Rod Upgrade", Upgrade, Items.IceRod),
+    LocationData(66, None, 871, "Maiamai Tornado Rod Upgrade", Upgrade, Items.TornadoRod),
+    LocationData(67, None, 868, "Maiamai Sand Rod Upgrade", Upgrade, Items.SandRod),
+    LocationData(68, None, 866, "Maiamai Great Spin", Upgrade, Items.GreatSpin),
     LocationData(69, 2, 5, "Woman"),
     LocationData(70, 0, 276, "[Mai] Kakariko Sand", Maiamai),
     LocationData(71, 0, 272, "[Mai] Waterfall Ledge", Maiamai),
@@ -571,30 +576,26 @@ location_lists: List[List[LocationData]] = [
 all_locations: List[LocationData] = [loc for loc_list in location_lists for loc in loc_list]
 location_table: Dict[str, LocationData] = {loc.name: loc for loc in all_locations}
 
-class Dungeon:
+class Dungeon(NamedTuple):
     name: str
     locations: List[LocationData]
     items: List[ItemData]
-
-    def __init__(self, name: str, locations: List[LocationData], items: List[ItemData]):
-        self.name = name
-        self.locations = locations
-        self.items = items
+    textcolor: int
 
 dungeon_table: List[Dungeon] = [
-    Dungeon("Hyrule Sanctuary", hyrule_sanctuary_locations, [Items.KeyHyruleSanctuary]),
-    Dungeon("Lorule Sanctuary", lorule_sanctuary_locations, [Items.KeyLoruleSanctuary]),
-    Dungeon("Eastern Palace", eastern_locations, [Items.KeyEastern, Items.BigKeyEastern, Items.CompassEastern]),
-    Dungeon("House of Gales", gales_locations, [Items.KeyGales, Items.BigKeyGales, Items.CompassGales]),
-    Dungeon("Tower of Hera", hera_locations, [Items.KeyHera, Items.BigKeyHera, Items.CompassHera]),
-    Dungeon("Dark Palace", dark_locations, [Items.KeyDark, Items.BigKeyDark, Items.CompassDark]),
-    Dungeon("Swamp Palace", swamp_locations, [Items.KeySwamp, Items.BigKeySwamp, Items.CompassSwamp]),
-    Dungeon("Skull Woods", skull_locations, [Items.KeySkull, Items.BigKeySkull, Items.CompassSkull]),
-    Dungeon("Thieves' Hideout", thieves_locations, [Items.KeyThieves, Items.BigKeyThieves, Items.CompassThieves]),
-    Dungeon("Ice Ruins", ice_locations, [Items.KeyIce, Items.BigKeyIce, Items.CompassIce]),
-    Dungeon("Desert Palace", desert_locations, [Items.KeyDesert, Items.BigKeyDesert, Items.CompassDesert]),
-    Dungeon("Turtle Rock", turtle_locations, [Items.KeyTurtle, Items.BigKeyTurtle, Items.CompassTurtle]),
-    Dungeon("Lorule Castle", lorule_castle_locations, [Items.KeyCastle, Items.CompassCastle])
+    Dungeon("Hyrule Sanctuary", hyrule_sanctuary_locations, [Items.KeyHyruleSanctuary], 7),
+    Dungeon("Lorule Sanctuary", lorule_sanctuary_locations, [Items.KeyLoruleSanctuary], 7),
+    Dungeon("Eastern Palace", eastern_locations, [Items.KeyEastern, Items.BigKeyEastern, Items.CompassEastern], 5),
+    Dungeon("House of Gales", gales_locations, [Items.KeyGales, Items.BigKeyGales, Items.CompassGales], 6),
+    Dungeon("Tower of Hera", hera_locations, [Items.KeyHera, Items.BigKeyHera, Items.CompassHera], 10),
+    Dungeon("Dark Palace", dark_locations, [Items.KeyDark, Items.BigKeyDark, Items.CompassDark], 5),
+    Dungeon("Swamp Palace", swamp_locations, [Items.KeySwamp, Items.BigKeySwamp, Items.CompassSwamp], 3),
+    Dungeon("Skull Woods", skull_locations, [Items.KeySkull, Items.BigKeySkull, Items.CompassSkull], 6),
+    Dungeon("Thieves' Hideout", thieves_locations, [Items.KeyThieves, Items.BigKeyThieves, Items.CompassThieves], 3),
+    Dungeon("Ice Ruins", ice_locations, [Items.KeyIce, Items.BigKeyIce, Items.CompassIce], 10),
+    Dungeon("Desert Palace", desert_locations, [Items.KeyDesert, Items.BigKeyDesert, Items.CompassDesert], 9),
+    Dungeon("Turtle Rock", turtle_locations, [Items.KeyTurtle, Items.BigKeyTurtle, Items.CompassTurtle], 8),
+    Dungeon("Lorule Castle", lorule_castle_locations, [Items.KeyCastle, Items.CompassCastle], 8)
 ]
 
 # Locations that cannot have dungeon items because they are outside the dungeon they are associated with
@@ -604,6 +605,19 @@ dungeon_item_excludes: List[str] = [
     "[DP] Zaganaga",
     "[TR] Left Balcony",
     "[LC] Zelda",
+]
+
+dungeon_bosses: List[str] = [
+    "[EP] Yuga (2)",
+    "[HG] Margomill",
+    "[TH] Moldorm",
+    "[PD] Gemesaur King",
+    "[SP] Arrghus",
+    "[SW] Knucklemaster",
+    "[TT] Stalblind",
+    "[IR] Dharkstare",
+    "[DP] Zaganaga",
+    "[TR] Grinexx",
 ]
 
 starting_weapon_locations: List[str] = [

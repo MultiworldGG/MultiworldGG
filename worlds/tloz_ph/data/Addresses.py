@@ -64,8 +64,9 @@ class PHAddr:
     in_map = Address(0x1B2D60)
     using_cyclone_slate = Address(0x1B636C)
     
-    loading_stage = Address(0x1B2E78)  # 0 when loading stage, some sorta pointer
+    loading_stage = Address(0x1BA8C7)  # 0 when loading stage, some sorta pointer
     loading_room = Address(0x10BD6F) # 0 when not loading room
+
     in_cutscene = Address(0x1BBCF4)
     in_short_cs = Address(0x1B6FE8)
     started_save_file = Address(0x1B7FB8)  # Used to trigger precision stuff from menu
@@ -74,7 +75,7 @@ class PHAddr:
     link_held_item_2 = Address(0x1CDAE0, size=2)
     link_held_item = Address(0x1CD510, size=2)
 
-    actor_table_pointer = Address(0x1BA8C4, size=4)
+    actor_table_pointer = Address(0x1BA8C4, size=3)
 
     # Pointers
     gItemManager = Pointer(0x0fb4)
@@ -274,7 +275,18 @@ class PHAddr:
     map_obj_table = Address(0x1B8968)  # size biig
 
     defeated_bellum = Address(0x1b5774)
+    potion_protector = Address(0x1BA70a)
     in_minigame = Address(0x307D77)
+
+    sea_actor_table = Address(0x257950)  # Size biig
+    swordfish_pointer_sw = Address(0x257A08, size=3)  # 46
+    swordfish_pointer_nw = Address(0x257A24, size=3)  # 53
+    swordfish_pointer_se = Address(0x2579B8, size=3)  # 26
+    swordfish_pointer_ne = Address(0x2579D4, size=3)  # 34
+    swordfish_pointers = [swordfish_pointer_sw,
+                          swordfish_pointer_nw,
+                          swordfish_pointer_se,
+                          swordfish_pointer_ne]
 
 class PHSRAM:
     # SRAM

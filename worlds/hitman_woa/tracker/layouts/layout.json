@@ -1,0 +1,1253 @@
+{
+  "tracker_horizontal": {
+    "type": "container",
+    "background": "#000000",
+    "content": {
+      "type": "dock",
+      "dropshadow": true,
+      "content": [
+        {
+          "type": "dock",
+          "dock": "bottom",
+          "content": {
+            "type": "layout",
+            "h_alignment": "center",
+            "v_alignment": "center",
+            "key": "shared_item_grid"
+          }
+        },
+        {
+          "type": "tabbed",
+          "tabs": [
+            {
+              "title": "Overview",
+              "content": {
+                "type": "map",
+                "maps": ["overview"]
+              }
+            },
+            {
+              "title": "Hitman 1",
+              "content": {
+                "type": "tabbed",
+                "tabs": [
+                  {
+                    "title": "ICA Facility",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["ica_facility_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["ica_facility_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["ica_facility_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["ica_facility_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["ica_facility_3"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Paris",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["paris_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["paris_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["paris_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["paris_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["paris_3"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Sapienza",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["sapienza_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["sapienza_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["sapienza_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["sapienza_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["sapienza_3"]
+                          }
+                        },
+                        {
+                          "title": "Level 4",
+                          "content": {
+                            "type": "map",
+                            "maps": ["sapienza_4"]
+                          }
+                        },
+                        {
+                          "title": "Level 5",
+                          "content": {
+                            "type": "map",
+                            "maps": ["sapienza_5"]
+                          }
+                        },
+                        {
+                          "title": "Level 6",
+                          "content": {
+                            "type": "map",
+                            "maps": ["sapienza_6"]
+                          }
+                        },
+                        {
+                          "title": "Level 7",
+                          "content": {
+                            "type": "map",
+                            "maps": ["sapienza_7"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Marrakesh",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["marrakesh_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["marrakesh_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["marrakesh_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["marrakesh_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["marrakesh_3"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Bangkok",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["bangkok_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["bangkok_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["bangkok_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["bangkok_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["bangkok_3"]
+                          }
+                        },
+                        {
+                          "title": "Level 4",
+                          "content": {
+                            "type": "map",
+                            "maps": ["bangkok_4"]
+                          }
+                        },
+                        {
+                          "title": "Level 5",
+                          "content": {
+                            "type": "map",
+                            "maps": ["bangkok_5"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Colorado",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["colorado_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["colorado_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["colorado_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["colorado_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["colorado_3"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Hokkadio",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["hokkaido_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["hokkaido_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["hokkaido_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["hokkaido_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["hokkaido_3"]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "title": "Hitman 2",
+              "content": {
+                "type": "tabbed",
+                "tabs": [
+                  {
+                    "title": "Hawke's Bay",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["hawkes_bay_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["hawkes_bay_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["hawkes_bay_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["hawkes_bay_2"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Miami",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["miami_all"]
+                          }
+                        },
+                        {
+                          "title": "Level -1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["miami_-1"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["miami_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["miami_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["miami_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["miami_3"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Santa Fortuna",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["santa_fortuna_all"]
+                          }
+                        },
+                        {
+                          "title": "Level -1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["santa_fortuna_-1"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["santa_fortuna_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["santa_fortuna_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["santa_fortuna_2"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Mumbai",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mumbai_all"]
+                          }
+                        },
+                        {
+                          "title": "Level -1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mumbai_-1"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mumbai_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mumbai_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mumbai_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mumbai_3"]
+                          }
+                        },
+                        {
+                          "title": "Level 4",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mumbai_4"]
+                          }
+                        },
+                        {
+                          "title": "Level 5",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mumbai_5"]
+                          }
+                        },
+                        {
+                          "title": "Level 6",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mumbai_6"]
+                          }
+                        },
+                        {
+                          "title": "Level 7",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mumbai_7"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Whittleton Creek",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["whittleton_creek_all"]
+                          }
+                        },
+                        {
+                          "title": "Level -1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["whittleton_creek_-1"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["whittleton_creek_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["whittleton_creek_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["whittleton_creek_2"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Isle of Sgàil",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["isle_of_sgail_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["isle_of_sgail_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["isle_of_sgail_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["isle_of_sgail_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["isle_of_sgail_3"]
+                          }
+                        },
+                        {
+                          "title": "Level 4",
+                          "content": {
+                            "type": "map",
+                            "maps": ["isle_of_sgail_4"]
+                          }
+                        },
+                        {
+                          "title": "Level 5",
+                          "content": {
+                            "type": "map",
+                            "maps": ["isle_of_sgail_5"]
+                          }
+                        },
+                        {
+                          "title": "Level 6",
+                          "content": {
+                            "type": "map",
+                            "maps": ["isle_of_sgail_6"]
+                          }
+                        },
+                        {
+                          "title": "Level 7",
+                          "content": {
+                            "type": "map",
+                            "maps": ["isle_of_sgail_7"]
+                          }
+                        },
+                        {
+                          "title": "Level 8",
+                          "content": {
+                            "type": "map",
+                            "maps": ["isle_of_sgail_8"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "New York",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["new_york_all"]
+                          }
+                        },
+                        {
+                          "title": "Level -1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["new_york_-1"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["new_york_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["new_york_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["new_york_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["new_york_3"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Haven Island",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["haven_island_all"]
+                          }
+                        },
+                        {
+                          "title": "Level -3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["haven_island_-3"]
+                          }
+                        },
+                        {
+                          "title": "Level -2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["haven_island_-2"]
+                          }
+                        },
+                        {
+                          "title": "Level -1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["haven_island_-1"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["haven_island_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["haven_island_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["haven_island_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["haven_island_3"]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "title": "Hitman 3",
+              "content": {
+                "type": "tabbed",
+                "tabs": [
+                  {
+                    "title": "Dubai",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dubai_all"]
+                          }
+                        },
+                        {
+                          "title": "Level -1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dubai_-1"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dubai_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dubai_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dubai_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dubai_3"]
+                          }
+                        },
+                        {
+                          "title": "Level 4",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dubai_4"]
+                          }
+                        },
+                        {
+                          "title": "Level 5",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dubai_5"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Dartmoor",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dartmoor_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dartmoor_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dartmoor_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dartmoor_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["dartmoor_3"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Berlin",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["berlin_all"]
+                          }
+                        },
+                        {
+                          "title": "Level -2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["berlin_-2"]
+                          }
+                        },
+                        {
+                          "title": "Level -1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["berlin_-1"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["berlin_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["berlin_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["berlin_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["berlin_3"]
+                          }
+                        },
+                        {
+                          "title": "Level 4",
+                          "content": {
+                            "type": "map",
+                            "maps": ["berlin_4"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Chongqing",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["chongqing_all"]
+                          }
+                        },
+                        {
+                          "title": "Level -3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["chongqing_-3"]
+                          }
+                        },
+                        {
+                          "title": "Level -2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["chongqing_-2"]
+                          }
+                        },
+                        {
+                          "title": "Level -1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["chongqing_-1"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["chongqing_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["chongqing_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["chongqing_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["chongqing_3"]
+                          }
+                        },
+                        {
+                          "title": "Level 4",
+                          "content": {
+                            "type": "map",
+                            "maps": ["chongqing_4"]
+                          }
+                        },
+                        {
+                          "title": "Level 5",
+                          "content": {
+                            "type": "map",
+                            "maps": ["chongqing_5"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Mendoza",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mendoza_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mendoza_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mendoza_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mendoza_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mendoza_3"]
+                          }
+                        },
+                        {
+                          "title": "Level 4",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mendoza_4"]
+                          }
+                        },
+                        {
+                          "title": "Level 5",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mendoza_5"]
+                          }
+                        },
+                        {
+                          "title": "Level 6",
+                          "content": {
+                            "type": "map",
+                            "maps": ["mendoza_6"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Carpathian Mountains",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["carpathian_mountains_all"]
+                          }
+                        },
+                        {
+                          "title": "Lab Area",
+                          "content": {
+                            "type": "map",
+                            "maps": ["carpathian_mountains_0"]
+                          }
+                        },
+                        {
+                          "title": "Beginning to Bar",
+                          "content": {
+                            "type": "map",
+                            "maps": ["carpathian_mountains_1"]
+                          }
+                        },
+                        {
+                          "title": "After Bar to Offices",
+                          "content": {
+                            "type": "map",
+                            "maps": ["carpathian_mountains_2"]
+                          }
+                        },
+                        {
+                          "title": "Offices",
+                          "content": {
+                            "type": "map",
+                            "maps": ["carpathian_mountains_3"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "title": "Ambrose Island",
+                    "content": {
+                      "type": "tabbed",
+                      "tabs": [
+                        {
+                          "title": "All",
+                          "content": {
+                            "type": "map",
+                            "maps": ["ambrose_island_all"]
+                          }
+                        },
+                        {
+                          "title": "Level 0",
+                          "content": {
+                            "type": "map",
+                            "maps": ["ambrose_island_0"]
+                          }
+                        },
+                        {
+                          "title": "Level 1",
+                          "content": {
+                            "type": "map",
+                            "maps": ["ambrose_island_1"]
+                          }
+                        },
+                        {
+                          "title": "Level 2",
+                          "content": {
+                            "type": "map",
+                            "maps": ["ambrose_island_2"]
+                          }
+                        },
+                        {
+                          "title": "Level 3",
+                          "content": {
+                            "type": "map",
+                            "maps": ["ambrose_island_3"]
+                          }
+                        },
+                        {
+                          "title": "Level 4",
+                          "content": {
+                            "type": "map",
+                            "maps": ["ambrose_island_4"]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "settings_popup": {
+    "type": "layout",
+    "key": "settings"
+  }
+}

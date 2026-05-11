@@ -34,6 +34,15 @@ class Goal(Choice):
     option_observatory = 2
     default = 0
 
+class CircuitOverrides(Range):
+    """
+    Number of circuit overrides to shuffle into the pool.
+    """
+    range_start = 0
+    range_end = 10
+
+    default = 5
+
 class VTShadeLock(Choice):
     """
     If set to a non-None value, creates an in-game barrier at the entrance of Vermillion Tower to prevent extremely
@@ -496,10 +505,11 @@ class CrossCodeOptions(PerGameCommonOptions):
     """
     # logic_mode: LogicMode
     goal: Goal
+    circuit_overrides: CircuitOverrides
     vt_shade_lock: VTShadeLock
     vw_meteor_passage: VWMeteorPassage
-    closed_gaia: ClosedGaia
     vt_skip: VTSkip
+    closed_gaia: ClosedGaia
 
     quest_rando: QuestRando
     hidden_quest_reward_mode: HiddenQuestRewardMode

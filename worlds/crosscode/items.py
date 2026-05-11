@@ -781,7 +781,7 @@ single_items_dict: dict[str, SingleItemData] = {
     'Amethyst': SingleItemData(item_id=463, name='Amethyst', classification=ItemClassification.filler, unique=True),
     'Emerald': SingleItemData(item_id=464, name='Emerald', classification=ItemClassification.filler, unique=True),
     'Lapis Lazuli': SingleItemData(item_id=465, name='Lapis Lazuli', classification=ItemClassification.filler, unique=True),
-    'Mine Detector': SingleItemData(item_id=466, name='Mine Detector', classification=ItemClassification.filler, unique=True),
+    'Mine Detector': SingleItemData(item_id=466, name='Mine Detector', classification=ItemClassification.progression, unique=True),
     'Dried Grass Hat': SingleItemData(item_id=467, name='Dried Grass Hat', classification=ItemClassification.progression_skip_balancing, unique=True),
     'Strawberry Hat': SingleItemData(item_id=468, name='Strawberry Hat', classification=ItemClassification.progression_skip_balancing, unique=True),
     'The Last Strawhat': SingleItemData(item_id=469, name='The Last Strawhat', classification=ItemClassification.progression_skip_balancing, unique=True),

@@ -56,6 +56,9 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x3000],
         "not_has_locations": ["Woodland Sanctuary Song Statue"],
         "unset_if_true": [(STAddr.songs, 0x01)],
+    },
+    "reset soa": {
+        "on_scenes": [0x3000],
         "reset_flags": ["RESET fs statue"]
     },
     "RESET fs statue": {
@@ -67,21 +70,22 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x190A],
         "not_has_locations": ["Wooded Temple Song Statue"],
         "unset_if_true": [(STAddr.songs, 0x02)],
-        "reset_flags": ["RESET wt statue"]
+    },
+    "reset soh": {
+        "on_scenes": [0x190A, 0x1b0a, 0x1c0A],
+        "reset_flags": ["RESET soh statue"]
     },
     "Allow learning healing song oct": {
         "on_scenes": [0x1b0a],
         "not_has_locations": ["Marine Temple Song Statue"],
         "unset_if_true": [(STAddr.songs, 0x02)],
-        "reset_flags": ["RESET wt statue"]
     },
     "Allow learning healing song mtt": {
         "on_scenes": [0x1c0A],
         "not_has_locations": ["Mountain Temple Song Statue"],
         "unset_if_true": [(STAddr.songs, 0x02)],
-        "reset_flags": ["RESET wt statue"]
     },
-    "RESET wt statue": {
+    "RESET soh statue": {
         "has_items": [["Song of Healing", 1]],
         "set_if_true": [(STAddr.songs, 0x02)],
     },
@@ -89,6 +93,9 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x3700],
         "not_has_locations": ["Trading Post Song Statue"],
         "unset_if_true": [(STAddr.songs, 0x08)],
+    },
+    "reset sol": {
+        "on_scenes": [0x3700],
         "reset_flags": ["RESET trading post statue"]
     },
     "RESET trading post statue": {
@@ -100,6 +107,9 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x2B00],
         "not_has_locations": ["Anouki Village Song Statue"],
         "unset_if_true": [(STAddr.songs, 0x10)],
+    },
+    "reset sod": {
+        "on_scenes": [0x2B00],
         "reset_flags": ["RESET av statue"]
     },
     "RESET av statue": {
@@ -117,6 +127,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x2000],
         "not_has_locations": ["Marine Temple Dungeon Reward"],
         "unset_if_true": [(STAddr.adv_flags_0, 0x40)],
+        "on_entrance": [0],
         "reset_flags": ["RESET Add Ocean source"]
     },
     "Cragma/Vulcano location": {
@@ -177,6 +188,12 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_items": [["Rabbit Net", 0]],
         "unset_if_true": [(STAddr.adv_flags_1a, 0x40)],
     },
+    "Prevent early alfonzo": {
+        "on_scenes": [0x2900],
+        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "not_has_locations": ["Castle Town Pick Up Alfonzo"],
+        "unset_if_true": [(STAddr.adv_flags_11, 0x40)],
+    },
     "Move Alfonso to castle town station": {
         "on_scenes": [0x2900],
         "not_has_locations": ["Outset Niko Stamp Book"],
@@ -222,8 +239,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x2F0A],
         "not_has_locations": ["Outset Niko Stamp Book"],
         "has_slot_data": [("randomize_passengers", 1)],
-        "unset_if_true": [(STAddr.adv_flags_0, 0x20)],
-        "reset_flags": ["RESET Add Snow Source"]
+        "unset_if_true": [(STAddr.adv_flags_0, 0x20)]
     },
     "Allow Stamp Book check alfonzo item": {
         "on_scenes": [0x2F0A],
@@ -231,8 +247,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_items": [("Passenger: Alfonzo", 1)],
         "has_slot_data": [("randomize_passengers", [2, 3])],
         "unset_if_true": [(STAddr.adv_flags_0, 0x20)],
-        "set_if_true": [(STAddr.adv_flags_11, 0x40)],
-        "reset_flags": ["RESET Add Snow Source"]
+        "set_if_true": [(STAddr.adv_flags_11, 0x40)]
     },
     "Allow Stamp Book check no passengers": {
         "on_scenes": [0x2F0A],
@@ -240,14 +255,16 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_slot_data": [("randomize_passengers", 0)],
         "has_groups": ["Tracks: Snow Glyph"],
         "unset_if_true": [(STAddr.adv_flags_0, 0x20)],
-        "set_if_true": [(STAddr.adv_flags_11, 0x40)],
-        "reset_flags": ["RESET Add Snow Source"]
+        "set_if_true": [(STAddr.adv_flags_11, 0x40)]
     },
     "Niko remove stamp book": {
         "on_scenes": [0x2F0A],
         "not_has_locations": ["Outset Niko Stamp Book"],
         "unset_if_true": [(STAddr.adv_flags_25, 0x02)],
-        "reset_flags": ["RESET Stamp Book Check"]
+    },
+    "Niko Resets": {
+        "on_scenes": [0x2F0A],
+        "reset_flags": ["RESET Stamp Book Check", "RESET Remove Snow source", "RESET Add Snow Source"]
     },
     "RESET Stamp Book Check": {
         "has_items": [["Stamp Book", 1]],
@@ -256,10 +273,8 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Allow stamp rewards": {
         "on_scenes": [0x2F0A],
         "has_locations": ["Outset Niko Stamp Book"],
-        "set_if_true": [(STAddr.adv_flags_0, 0x20)],
-        "reset_flags": ["RESET Remove Snow source"]
+        "set_if_true": [(STAddr.adv_flags_0, 0x20)]
     },
-
     "Fraaz location": {
         "on_scenes": [0x1F00],
         "not_has_locations": ["Blizzard Temple Dungeon Reward"],
@@ -1267,9 +1282,10 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
                      ],
         "unset_if_true": [(STAddr.adv_flags_b, 0x10),  # Remove finished quest flag
                         (STAddr.adv_flags_0, 0x20),  # Remove snow source
-                        (STAddr.adv_flags_1, 0x02),  # Remove btt
+                        (STAddr.adv_flags_1, 0x02),  # Remove btt and fire restoration
                         (STAddr.adv_flags_c, 0x08),  # Don't advance dialogue after btt
-                        (STAddr.adv_flags_4, 0x02)], # Remove Wagon, he gives ice hint
+                        (STAddr.adv_flags_4, 0x02),  # Remove Wagon, he gives ice hint
+                        (STAddr.adv_flags_3a, 0x40)], # unset brought noko to icyspring
         "reset_flags": ["Snow sanc Reset BTT", "RESET Add Snow Source", "RESET Wagon"]
     },
     "Anouki chief stop kofu": {
@@ -1567,8 +1583,8 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Noko arrived rando": {
         "on_scenes": [0x3500],
         "has_locations": ["Icy Spring Noko's Force Gem"],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
-        "set_if_true": [(STAddr.adv_flags_3a, 0x10)],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+        "set_if_true": [(STAddr.adv_flags_3a, 0x50)],
     },
     "No passengers icyspring": {
         "on_scenes": [0x3500],
@@ -1577,9 +1593,18 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Can pick up Mona": {
         "on_scenes": [0x290c],
-        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+        "has_slot_data": [("randomize_passengers", 1)],
         "has_groups": ["Tracks: Snow Glyph"],
         "set_if_true": [(STAddr.adv_flags_0, 0x40)],
+        "reset_flags": ["RESET Remove Ocean source"]
+    },
+    "Can pick up Mona randomize": {
+        "on_scenes": [0x290c],
+        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "not_has_locations": ["Castle Town Pick Up Mona"],
+        "has_groups": ["Tracks: Snow Glyph"],
+        "set_if_true": [(STAddr.adv_flags_0, 0x40)],
+        "unset_if_true": [(STAddr.adv_flags_3b, 0x20)],
         "reset_flags": ["RESET Remove Ocean source"]
     },
     "Mona missing glyph": {
@@ -1596,7 +1621,9 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Bring Mona to Rabbit Haven": {
         "on_scenes": [0x3E00],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
         "has_items": [("Passenger: Mona", 1)],
+        "not_has_locations": ["Rabbit Haven Mona's Force Gem"],
         "check_bits": [(STAddr.adv_flags_3b, 0x80, "not")],
         "set_if_true": [(STAddr.adv_flags_3b, 0x20)],
         "overwrite_if_true": [(STAddr.passenger_goal, 0x3e),
@@ -1948,6 +1975,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     #Check for Wadatsumi being delivered previously, and then set Gorons to appear
     "Wadatsumi Saved Already": {
         "on_scenes": [0x3A00],
+        "has_items": [("Bow (Progressive)", 1)],
         "has_slot_data": [("randomize_passengers", [2, 3])],
         "has_locations": ["Pirate Hideout Pick Up Wadatsumi"],
         # "check_bits": [(STAddr.adv_flags_34, 0x20)],
@@ -1955,12 +1983,14 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Wadatsumi Saved Already vanilla": {
         "on_scenes": [0x3A00],
+        "has_items": [("Bow (Progressive)", 1)],
         "has_slot_data": [("randomize_passengers", 1)],
         "has_locations": ["Papuzia Village Wadatsumi's Force Gem"],
         "set_if_true": [(STAddr.adv_flags_24, 0x2), (STAddr.adv_flags_34, 0xE0), (STAddr.adv_flags_4f, 0x6)],
     },
     "Wadatsumi Saved Already no papuzia": {
         "on_scenes": [0x3A00],
+        "has_items": [("Bow (Progressive)", 1)],
         "has_slot_data": [("randomize_passengers", [1, 2, 3])],
         "not_has_groups": ["Tracks: Ocean Glyph"],
         "set_if_true": [(STAddr.adv_flags_24, 0x2), (STAddr.adv_flags_34, 0xE0), (STAddr.adv_flags_4f, 0x6)],
@@ -2194,7 +2224,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x2c00],
         "not_has_locations": ["Papuzia Village Song Statue"],
         "has_items": [("Song of Discovery", 1)],
-        "unset_if_true": [(STAddr.songs, 0x4)],
+        "unset_if_true": [(STAddr.songs, 0x4), (STAddr.adv_flags_9, 0x10)],
         "set_if_true": [(STAddr.adv_flags_a, 0xA0)]
     },
     "Papuzia default reset SoB": {

@@ -138,11 +138,49 @@ compatible_games: Mapping[str, Mapping[str, str]] = {
         "Progressive Wave Beam": Sprite.WaveBeam,
         "Progressive Plasma Beam": Sprite.PlasmaBeam,
     },
+    "Metroid: Samus Returns": {
+        "Missile Tank": Sprite.MissileTank,
+        "Super Missile Tank": Sprite.SuperMissileTank,
+        "Power Bomb Tank": Sprite.PowerBombTank,
+        "Energy Tank": Sprite.EnergyTank,
+        # "Aeion Tank":
+        # "Missile Launcher":
+        # "Super Missile":
+        # "Power Bomb":
+        "Charge Beam": Sprite.ChargeBeam,
+        "Ice Beam": Sprite.IceBeam,
+        "Wave Beam": Sprite.WaveBeam,
+        "Spazer Beam": Sprite.SpazerBeam,
+        "Plasma Beam": Sprite.PlasmaBeam,
+        "Morph Ball": Sprite.MorphBall,
+        "Spider Ball": Sprite.SpiderBall,
+        "Spring Ball": Sprite.SpringBall,
+        "Bomb": Sprite.Bomb,
+        "Varia Suit": Sprite.VariaSuit,
+        "Gravity Suit": Sprite.GravitySuit,
+        "Grapple Beam": Sprite.GrappleBeam,
+        "High Jump Boots": Sprite.HiJump,
+        "Space Jump": Sprite.SpaceJump,
+        "Screw Attack": Sprite.ScrewAttack,
+        # "Metroid Hatchling":
+        # "Scan Pulse":
+        # "Lightning Armor":
+        # "Beam Burst":
+        # "Phase Drift":
+        "Energy Reserve Tank": Sprite.ReserveTank,
+        # "Missile Reserve Tank":
+        # "Aeion Reserve Tank":
+        "Metroid DNA": Sprite.MetroidDNA,
+        "Nothing": Sprite.Nothing,
+    },
     "Super Metroid Map Rando": {
         "ETank": Sprite.EnergyTank,
         "Missile": Sprite.MissileTank,
+        "ProgMissile": Sprite.MissileTank,
         "Super": Sprite.SuperMissileTank,
+        "ProgSuper": Sprite.SuperMissileTank,
         "PowerBomb": Sprite.PowerBombTank,
+        "ProgPowerBomb": Sprite.PowerBombTank,
         "Bombs": Sprite.Bomb,
         "Charge": Sprite.ChargeBeam,
         "Ice": Sprite.IceBeam,

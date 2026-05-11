@@ -218,6 +218,8 @@ location_table = {
        for i in range(1, 11)},
     **{f"Climb Chaos Minigame: {i}0m": LocData(10093000 + i, i, None, "Minigame", "Climb Chaos")
        for i in range(1, 11)},
+    **{f"Climb Narrow Minigame: {i}0m": LocData(10094000 + i, i, None, "Minigame", "Climb Narrow")
+       for i in range(1, 11)},
     
     **{f"Block Blub Minigame: Reds Score {j}": LocData(10100000 + 1 * 1000 + j, 1, j, "Minigame", "Block Blub")
        for j in block_blub_scores},
@@ -229,6 +231,8 @@ location_table = {
        for j in block_blub_scores},
     
     **{f"Refunct Mountain Minigame: Button {i}-{j}": LocData(10110000 + i * 100 + j, i, j, "Minigame", "Refunct Mountain")
+       for i in range(1, 32) for j in range(1, number_buttons_per_cluster[i] + 1)},
+    **{f"Rando Mountain Minigame: Button {i}-{j}": LocData(10120000 + i * 100 + j, i, j, "Minigame", "Rando Mountain")
        for i in range(1, 32) for j in range(1, number_buttons_per_cluster[i] + 1)},
     
 }

@@ -727,10 +727,12 @@ class PhantomHourglassWorld(World):
                 try:
                     if not self.options.decouple_entrances: self.manual_er()
                     self.er_placement_state = randomize_entrances(self, coupled, groups, on_connect=on_connect)
+                    if dev_prints:
+                        print(self.er_placement_state.pairings)
                     break
 
                 except EntranceRandomizationError as error:
-                    print(f"Phantom Hourglass ER failed {i+1} time(s)")
+                    print(f"Phantom Hourglass ER failed {i+1} time(s), retrying")
                     if i >= ph_max_er_attempts-1:
                         raise EntranceRandomizationError(
                             f"Phantom Hourglass: failed GER after {ph_max_er_attempts} attempts.")
@@ -802,20 +804,20 @@ class PhantomHourglassWorld(World):
 
     # Based on the messenger's plando connection by Aaron Wagner
     def connect_plando(self, plando_connections: "PhantomHourglassEntrancePlando") -> None:
-        def remove_dangling_exit(region: Region) -> None:
+        def remove_dangling_exit(region: Region, name) -> None:
             # find the disconnected exit and remove references to it
             for _exit in region.exits:
-                if not _exit.connected_region:
+                if not _exit.connected_region and _exit.name == name:
                     break
             else:
                 raise ValueError(f"Unable to find randomized transition for {plando_connection}")
 
             region.exits.remove(_exit)
 
-        def remove_dangling_entrance(region: Region) -> None:
+        def remove_dangling_entrance(region: Region, name) -> None:
             # find the disconnected entrance and remove references to it
             for _entrance in region.entrances:
-                if not _entrance.parent_region:
+                if not _entrance.parent_region and _entrance.name == name:
                     break
             else:
                 raise ValueError(f"Invalid target region for {plando_connection}")
@@ -825,11 +827,11 @@ class PhantomHourglassWorld(World):
             # get the connecting regions
             r1 = ENTRANCES[plando_connection.entrance]
             reg1 = self.get_region(r1.entrance_region)
-            remove_dangling_exit(reg1)
+            remove_dangling_exit(reg1, plando_connection.entrance)
 
             r2 = ENTRANCES[plando_connection.exit]
             reg2 = self.get_region(r2.entrance_region)
-            remove_dangling_entrance(reg2)
+            remove_dangling_entrance(reg2, plando_connection.exit)
             # connect the regions
             reg1.connect(reg2)
             self.plando_er_pairings.append((r1.name, r2.name))
@@ -840,8 +842,8 @@ class PhantomHourglassWorld(World):
             # pretend the user set the plando direction as "both" regardless of what they actually put on coupled
             if (self.options.decouple_entrances == "couple_all"
                  or plando_connection.direction == "both"):
-                remove_dangling_exit(reg2)
-                remove_dangling_entrance(reg1)
+                remove_dangling_exit(reg2, plando_connection.exit)
+                remove_dangling_entrance(reg1, plando_connection.entrance)
                 reg2.connect(reg1)
                 self.plando_er_pairings.append((r2.name, r1.name))
                 if dev_prints:
@@ -1419,7 +1421,6 @@ class PhantomHourglassWorld(World):
             for e1, e2 in self.er_placement_state.pairings + self.manual_er_pairings + self.plando_er_pairings:
                 pairings[ENTRANCES[e1].id] = ENTRANCES[e2].id
         slot_data["er_pairings"] = pairings
-
         return slot_data
 
     def write_spoiler(self, spoiler_handle):

@@ -83,11 +83,7 @@
                                  "has_all" : [
                                     "Cauldron Unlock", 
                                     "Gasoline Unlock", 
-                                    "Warehouse Access", 
-                                    "Chemistry Station Unlock", 
-                                    "Lab Oven Unlock",
-                                    "Acid Unlock",
-                                    "Phosphorus Unlock"]},
+                                    "Warehouse Access"]},
     "randomize_suppliers" : {"has_all": ["Salvador Moreno Unlocked", "Shirley Watts Unlocked"]},
     "randomize_cartel_influence" : {"has_all_counts": {"Cartel Influence, Suburbia" : 7}}
 }

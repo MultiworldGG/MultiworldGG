@@ -37,7 +37,7 @@ async def receive_tos_key(client: "SpiritTracksClient", ctx, item: "STItem", rii
     return res
 
 async def receive_tear_of_light(client: "SpiritTracksClient", ctx, item: "STItem", rii):
-    if client.current_stage == 0x13 and client.last_vanilla_item[-1] != item.name:  # avoid calcing tears when vanilla
+    if client.current_stage == 0x13 and ctx.slot_data["randomize_tears"] != -1:  # avoid calcing tears when vanilla
         await client.set_tears(ctx)
 
     return []

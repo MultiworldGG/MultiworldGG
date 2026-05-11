@@ -10,6 +10,7 @@ class JinjosEnabled(BanjoTooieTestBase):
         "randomize_jinjos": RandomizeJinjos.option_true,
         "world_requirements": "custom",
         "custom_worlds": "1,1,1,1,1,1,1,1,51",  # add jingaling's jiggy
+        "extra_jiggies_weight": 0
     }
 
     def test_item_pool_jinjos(self) -> None:
@@ -35,6 +36,7 @@ class JinjosDisabled(BanjoTooieTestBase):
         "randomize_jinjos": RandomizeJinjos.option_false,
         "world_requirements": "custom",
         "custom_worlds": "1,1,1,1,1,1,1,1,51",  # add jingaling's jiggy
+        "extra_jiggies_weight": 0
     }
 
     def test_disabled_item_pool(self) -> None:

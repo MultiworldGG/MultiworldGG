@@ -117,7 +117,7 @@ async def receive_normal(client: "DSZeldaClient", ctx: "BizHawkClientContext", i
 async def remove_vanilla_small_key(client: "DSZeldaClient", ctx: "BizHawkClientContext", item: "DSItem", num_received_items):
     address = client.key_address = await client.get_small_key_address(ctx)
     prev_value = await address.read(ctx)
-    return address.get_write_list(prev_value-1)
+    return address.get_write_list(max(prev_value-1, 0))
 
 async def remove_vanilla_progressive(client: "DSZeldaClient", ctx: "BizHawkClientContext", item: "DSItem", num_received_items):
     res = []
@@ -147,9 +147,7 @@ async def remove_vanilla_normal(client: "DSZeldaClient", ctx: "BizHawkClientCont
         value = 9999 - prev_value if prev_value + value > 9999 else value
         value = prev_value if prev_value-value < 0 else value
     if "incremental" or "monotone_incremental" in item.tags:
-        if prev_value - value < 0: print(f"TRIED TO UNDERFLOW {item.name}: {prev_value}-{value}")
-        value = prev_value if prev_value - value < 0 else prev_value - value
-
+        value = max(prev_value - value, 0)
     else:
         value = prev_value & (~value)
 

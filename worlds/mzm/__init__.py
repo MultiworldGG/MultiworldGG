@@ -27,7 +27,7 @@ from .options import (
     LogicDifficulty,
     HazardRuns,
 )
-from .patch import DIFFICULTY_TO_CONFIG_NAME, GOAL_TO_CONFIG_NAME, MZMProcedurePatch, write_json_data
+from .patch import MZMProcedurePatch, write_json_data
 from .patcher import MD5_US, MD5_US_VC
 from .patcher.layout_patches import LAYOUT_PATCH_MAPPING
 from .regions import create_regions_and_connections
@@ -333,12 +333,11 @@ class MZMWorld(World):
         patch.write(output_path / f"{output_filename}{patch.patch_file_ending}")
 
     def fill_slot_data(self) -> Dict[str, Any]:
-        # Using names for backwards compatibility with PopTracker pack. This will be removed next major version.
         return {
-            "goal": GOAL_TO_CONFIG_NAME[self.options.goal.value],
+            "goal": self.options.goal.value,
             "metroid_dna_required": self.options.metroid_dna_required.value,
             "metroid_dna_available": self.options.metroid_dna_available.value,
-            "game_difficulty": DIFFICULTY_TO_CONFIG_NAME[self.options.game_difficulty.value],
+            "game_difficulty": self.options.game_difficulty.value,
             "unknown_items_usable": self.options.fully_powered_suit.to_slot_data(),  # Backwards compatibility
             "fully_powered_suit": self.options.fully_powered_suit.value,
             "walljumps": self.options.walljumps.value,

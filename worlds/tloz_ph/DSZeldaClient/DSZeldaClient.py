@@ -27,7 +27,7 @@ class DSZeldaClient(BizHawkClient):
     item_id_to_name: Dict[int, str]
     location_name_to_id: Dict[str, int]
     location_area_to_watches: Dict[int, dict[str, dict]]
-    watches: Dict[str, tuple[int, int, str]]
+    watches: Dict[str, "Address"]
     item_data: dict[str, "DSItem"]
 
     addr_game_state: "Address"
@@ -138,6 +138,7 @@ class DSZeldaClient(BizHawkClient):
 
         self.cycle_counter: int = 0
         self.set_starting_flags = False
+        self.delay_pickup_remove_vanilla = False
 
     def item_count(self, ctx, item_name, items_received=-1) -> int:
         return self.item_data[item_name].get_count(ctx, items_received)
@@ -802,6 +803,7 @@ class DSZeldaClient(BizHawkClient):
 
         # Write
         write_list = [a.get_inner_write_list(v) for a, v in prev.items()]
+        print(f"writes: {[(hex(a), hex(v[0])) for a, v, _ in write_list]}")
         await bizhawk.write(ctx.bizhawk_ctx, write_list)
         return write_list
 
@@ -996,6 +998,7 @@ class DSZeldaClient(BizHawkClient):
         if not await self.has_special_dynamic_requirements(ctx, data):
             return False
         if not has_entrance(data):
+            print(f"\t{data['name']} has the wrong entrance")
             return False
 
         return True
@@ -1175,6 +1178,7 @@ class DSZeldaClient(BizHawkClient):
         next_item_id = ctx.items_received[num_received_items].item
         item_name = self.item_id_to_name[next_item_id]
         item_data = self.item_data[item_name]
+        local_item = ctx.items_received[num_received_items].player == ctx.slot
 
         if log_items:
             logger.info(f"Received Backlogged Item: {item_name}")
@@ -1194,12 +1198,15 @@ class DSZeldaClient(BizHawkClient):
         print("Write list:")
         for addr, v, domain in write_list:
             print(f"  {hex(addr)}: {v} ({domain})")
-        # print(f"Write list: {write_list}")
         await bizhawk.write(ctx.bizhawk_ctx, write_list)
 
         # Post Processes
         if self.current_scene in getattr(item_data, "reload_entrances", []):
             await self._set_dynamic_entrances(ctx, self.current_scene)
+        if self.delay_pickup_remove_vanilla and local_item:
+            self.delay_pickup_remove_vanilla = False
+            await self._remove_vanilla_item(ctx, num_received_items)
+
         await self.receive_item_post_processing(ctx, item_name, item_data)
     # Called when a stage has fully loaded
 
@@ -1374,11 +1381,12 @@ class DSZeldaClient(BizHawkClient):
                 print(f"Delay pickup {self.delay_pickup}")
                 fallback, pickups = self.delay_pickup
                 need_fallback = True
+                location = None
                 for location, item, value in pickups:
                     new_item_read = await self.get_item_read(ctx, item)
                     if "Rupee" in item or "Rupoor" in item:
                         if new_item_read - value == self.item_data[item].value:
-                            print(f"delay pickup rupee: {new_item_read - value} == {self.item_data[item].value}")
+                            print(f"\tdelay pickup rupee: {new_item_read - value} == {self.item_data[item].value}")
                             await self._process_checked_locations(ctx, location, True, item=item)
                             need_fallback = False
                     elif new_item_read != value:
@@ -1387,16 +1395,21 @@ class DSZeldaClient(BizHawkClient):
 
                 if need_fallback:
                     vanilla_item = LOCATIONS_DATA[fallback]["vanilla_item"]
+                    location = fallback
                     await self._process_checked_locations(ctx, fallback, True, item=vanilla_item)
 
                 self.delay_pickup = None
                 self.last_key_count = 0
                 if self.last_vanilla_item:
-                    print("Delay Pickup is removing vanilla item")
-                    await self._remove_vanilla_item(ctx, num_received_items)
+                    if self.location_name_to_id[location] in ctx.checked_locations:
+                        print(f"\tAlready found delay pickup location {location}")
+                        await self._remove_vanilla_item(ctx, num_received_items)
+                    else:
+                        self.delay_pickup_remove_vanilla = True
+                        print("\tDelay Pickup is removing vanilla item")
 
             # Remove vanilla item
-            elif self.last_vanilla_item:
+            elif self.last_vanilla_item and not self.delay_pickup_remove_vanilla:
                 print("Item Received Successfully")
                 await self._remove_vanilla_item(ctx, num_received_items)
             await self.process_post_receive(ctx)
@@ -1578,9 +1591,10 @@ class DSZeldaClient(BizHawkClient):
                 continue
 
             if "read_object" in location:
-                self.watches[loc_name] = await self.get_object_read_addr(ctx, location)
-                if self.watches[loc_name]:
+                watch_addr = await self.get_object_read_addr(ctx, location)
+                if not watch_addr:
                     continue
+                self.watches[loc_name] = watch_addr
             if loc_id in locations_found and "address" in location:
                 read = await location["address"].read(ctx)
                 if read & location["value"] and "persistent" not in location:

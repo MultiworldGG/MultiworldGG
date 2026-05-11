@@ -204,6 +204,9 @@ recipe_sources: Dict[str, Set[str]] = {}  # recipe_name -> technology source
 
 techs = techs_future.result()
 techs["fish-breeding"] = {"ingredients":["space-science-pack","agricultural-science-pack"],"unlocks":["fish-breeding", "nutrients-from-fish"],"requires":["tree-seeding"],"has_modifier":False}
+techs["lightning-rod"] = {"ingredients":["automation-science-pack"], "unlocks":["lightning-rod"],"requires":[],"has_modifier":False}
+techs["lightning-collector"] = {"ingredients":["electromagnetic-science-pack"], "unlocks":["lightning-collector"],"requires":[],"has_modifier":False}
+
 # recipes and technologies can share names in Factorio
 for technology_name, data in sorted(techs.items()):
     technology = Technology(

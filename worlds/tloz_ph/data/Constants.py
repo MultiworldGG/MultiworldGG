@@ -111,6 +111,7 @@ STAGE_FLAGS = {
     18: [0x10, 0x4C, 0x43, 0x00],  # Isle of ruins
     36: [0x20, 0x00, 0x00, 0x00],  # Bremeur's Temple
     33: [0x00, 0x36, 0x00, 0x00],  # Mutoh's Temple
+    0x1A: [0x02, 0x00, 0x00, 0x00],  # Uncharted
 }
 
 SKIP_OCEAN_FIGHTS_FLAGS = [0x86, 0xFC, 0x66, 0xFD]
@@ -1737,7 +1738,7 @@ BOSS_WARP_SCENE_LOOKUP = {
     0x200A: "Dongo Exit",
     0x2E00: "Dongo Exit",
     0x1F06: "Gleeok Exit",
-    0x1D00: "Gleeok Exit",
+    0x2D00: "Gleeok Exit",
     0x2106: "Eox Exit",
     0x2F00: "Eox Exit",
     0x3000: "Cubus Sisters Blue Warp"
@@ -1992,8 +1993,36 @@ map_type_lookup = {
     0x300: "sea"
 }
 
+# These items are the originals of their models,
+# that behave as vanilla, and do not want removing when found
+model_reset_vanillas = {
+    0x04: "Shield",
+    0x0A: "Heart Container",
+    0x2D: "Power Gem",
+    0x2E: "Wisdom Gem",
+    0x2F: "Courage Gem",
+    0x72: "Crimzonine",
+    0x73: "Azurine",
+    0x74: "Aquanine",
+    0x75: "Red Potion",
+    0x76: "Purple Potion",
+    0x77: "Yellow Potion",
+    0x81: "Rupoor (-10)",
+    0x82: "Big Rupoor (-50)",
+    0x02: "Green Rupee (1)",
+    0x18: "Blue Rupee (5)",
+    0x19: "Red Rupee (20)",
+    0x09: "Big Green Rupee (100)",
+    0x1A: "Big Red Rupee (200)",
+    0x1B: "Gold Rupee (300)",
+}
+
+# These are the vanilla items models,
+# that are used for multiple items or don't match their vanilla behaviour,
+# that want removing when getting that model.
 model_resets = {
-    # 0x02: "Green Rupee (1)",
+    0x1: "Small Key (Generic)",
+    0x02: "Green Rupee (1)",
     0x04: "Shield",
     0x06: "Force Gem (B3)",
     0x07: "Bombs (Progressive)",
@@ -2002,13 +2031,14 @@ model_resets = {
     0x0A: "Heart Container",
     0x0E: "Bombchus (Progressive)",
     0x0F: "Boss Key (Temple of Fire)",
-    # 0x18: "Blue Rupee (5)",
-    # 0x19: "Red Rupee (20)",
-    # 0x1A: "Big Red Rupee (200)",
-    # 0x1B: "Gold Rupee (300)",
+    0x18: "Blue Rupee (5)",
+    0x19: "Red Rupee (20)",
+    0x1A: "Big Red Rupee (200)",
+    0x1B: "Gold Rupee (300)",
     0x21: "Square Crystals",
     0x22: "Round Crystals",
     0x23: "Triangle Crystals",
+    0x25: "Cannon",
     0x28: "Bow (Progressive)",
     0x29: "Bombs (Progressive)",
     0x2A: "Bombchus (Progressive)",
@@ -2025,8 +2055,8 @@ model_resets = {
     0x78: "Sand of Hours (Small)",
     0x7F: "Cyclone Slate",
     0x80: "Big Catch Lure",
-    # 0x81: "Rupoor (-10)",
-    # 0x82: "Big Rupoor (-50)",
+    0x81: "Rupoor (-10)",
+    0x82: "Big Rupoor (-50)",
 }
 
 shop_location_lookup = {

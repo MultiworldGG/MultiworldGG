@@ -653,15 +653,6 @@ class EnergyLink(DefaultOnToggle):
     display_name = "Energy Link"
 
 
-class RingLink(Toggle):
-    """
-    Whether your in-level coin gain/loss is linked to other players
-
-    DISABLED FOR NOW. Please wait for future updates that reenables this feature.
-    """
-    display_name = "Ring Link"
-
-
 class TrapLink(Toggle):
     """
     Whether your received traps are linked to other players
@@ -674,6 +665,13 @@ class DeathLinkHeart(Toggle):
     Whenever DeathLinks are received they will be nullified at the cost of a heart
     """
     display_name = "Death Link Heart Cover"
+
+
+class DamageLink(Toggle):
+    """
+    Damage is shared across slots
+    """
+    display_name = "Damage Link"
 
 
 class UngoldenEggs(DefaultOnToggle):
@@ -761,7 +759,7 @@ class WaffleOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     death_link: DeathLink
     death_link_heart: DeathLinkHeart
-    ring_link: RingLink
+    damage_link: DamageLink
     trap_link: TrapLink
     energy_link: EnergyLink
     ability_shuffle: AbilityItemShuffle

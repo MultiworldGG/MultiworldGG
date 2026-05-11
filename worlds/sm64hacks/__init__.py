@@ -7,7 +7,7 @@ from .Options import SM64HackOptions
 from .Items import SM64HackItem, item_is_important
 from .Locations import SM64HackLocation, location_names, location_names_that_exist
 from .Data import sm64hack_items, star_like, traps, junk, useful, moves, badges, sr6_25_locations, create_json_folders, Data, cannons, fullmoves, tickets, badge_items
-from .Requirements import check_requirement_string
+from .Requirements import check_requirement_string, check_if_location_exists
 from .WebWorld import SM64HackWebWorld
 from .client import SM64HackClient
 from settings import get_settings
@@ -103,11 +103,9 @@ class SM64HackWorld(World):
             raise ValueError("JSON is too old. \
                             \nPlease reimport the JSON into the website (https://dnvic.com/ArchipelagoGenerator), and export in order to use it with the current version")
         if self.progressive_keys == 3:
-            try:
-                self.progressive_keys = self.data.locations["Other"]["Settings"]["prog_key"]
-            except TypeError:
-                raise ValueError("JSON is too old and does not have a default for progressive keys")
+            self.progressive_keys = self.data.locations["Other"]["Settings"]["prog_key"]
         
+        self.options.progressive_keys.value = self.progressive_keys
         self.options.level_tickets.value &= self.data.locations["Other"]["Settings"].get("Entrances") not in {None, False} #only add tickets if the json supports it
         self.options.move_randomization.value &= (self.data.locations["Other"]["Settings"].get("Moves") not in {None, False} or self.options.force_move_randomization) #only add moves if the json supports it or if you are reckless
         if self.options.move_randomization:
@@ -138,6 +136,13 @@ class SM64HackWorld(World):
                     
         existing_location_names = location_names_that_exist(self.data, self.options)
         self.location_names_that_exist_to_id = dict(filter(lambda location: location[0] in existing_location_names, self.location_name_to_id.items()))
+        if self.data.locations["Other"]["Settings"].get("Entrances"):
+            for entrance in self.data.locations["Other"]["Entrances"]:
+                check_if_location_exists(entrance[4], self.options, self.data.locations["Other"]["Macros"], self.data)
+        else:
+            for course, data in self.data.locations.items():
+                if course != "Other":
+                    check_if_location_exists(data.get("Requirements"), self.options, self.data.locations["Other"]["Macros"], self.data)
 
     def create_item(self, item: str, item_link = True) -> SM64HackItem:
         if item_link and item not in traps and item not in junk and item not in useful: #item link is dumb and i need to make all potentially progressive item_link items some sort of progression
@@ -197,10 +202,8 @@ class SM64HackWorld(World):
         if itemtype < useful_percent * 100:
             return self.random.choice(useful)
         if itemtype < (useful_percent + trap_percent) * 100:
-            enabledtraps = list(traps)
-            if self.options.no_spin_trap:
-                enabledtraps.remove("Spin Trap")
-            return self.random.choice(enabledtraps)
+            enabledtraps = set(traps) - self.options.turn_off_traps.value
+            return self.random.choice(list(enabledtraps))
         return self.random.choice(junk)
         
 
@@ -288,10 +291,10 @@ class SM64HackWorld(World):
         elif("decadeslater" in self.data.locations["Other"]["Settings"]):
             self.multiworld.itempool += [self.create_item("Gray Switch", False)]
             num_locations -= 1
-        elif(self.options.randomize_moat):
-            if "Castle Moat" in self.location_names_that_exist_to_id:
+        elif("Castle Moat" in self.location_names_that_exist_to_id):
+            if self.options.randomize_moat:
                 self.multiworld.itempool += [self.create_item("Castle Moat", False)]
-                num_locations -= 1
+            num_locations -= 1
 
         if(self.options.move_randomization):
             progressive_jumps = 3

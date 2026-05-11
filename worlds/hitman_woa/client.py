@@ -7,17 +7,27 @@ import requests
 import Utils
 apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 
-from CommonClient import ClientCommandProcessor, get_base_parser, handle_url_arg, server_loop, gui_enabled, logger, CommonContext
+from CommonClient import ClientCommandProcessor, get_base_parser, handle_url_arg, server_loop, gui_enabled, logger
 from NetUtils import ClientStatus, NetworkItem
 from settings import get_settings
+
+from worlds import AutoWorldRegister
 from .items import item_table, base_id
-from .locations import goal_table
+from .locations import goal_table, item_pickup_location_table, split_item_pickup_location_table, level_completion_location_table, target_kill_location_table, disguise_location_table
+
+tracker_loaded = False
+try:
+    from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext, load_json
+
+    tracker_loaded = True
+except ModuleNotFoundError:
+    from CommonClient import CommonContext as SuperContext
 
 class HitmanCommandProcessor(ClientCommandProcessor):
-    def __init__(self, ctx: CommonContext):
+    def __init__(self, ctx: SuperContext):
         super().__init__(ctx)
 
-class HitmanContext(CommonContext):
+class HitmanContext(SuperContext):
     command_processor = HitmanCommandProcessor
     game = "HITMAN World of Assassination"
     tags = {"AP"}
@@ -43,7 +53,7 @@ class HitmanContext(CommonContext):
             r = requests.get(self.peacock_url)
             r.raise_for_status()
         except Exception as e:
-            self.print_error("No respone from Peacock, please make sure the Peacock server is running before connecting.")
+            self.print_error("No response from Peacock, please make sure the Peacock server is running before connecting.")
             return
         logger.info("Peacock connection established.")            
 
@@ -56,6 +66,7 @@ class HitmanContext(CommonContext):
         await self.send_connect(game=self.game) 
 
     def on_package(self, cmd: str, args: dict):
+        super().on_package(cmd, args) #keep Universal Tracker in the loop
         match cmd:
             case "Connected":
                 self.collected_contract_pieces = 0
@@ -63,6 +74,23 @@ class HitmanContext(CommonContext):
 
                 self.game = self.slot_info[self.slot].game
                 self.slot_data = args["slot_data"]
+
+                if tracker_loaded:
+                    #for map tab in UT, give Events insight into which location was already checked
+                    self.tracker_core.multiworld.hitman_client_checked_locations = self.checked_locations
+
+                    #add/remove UT map locations based on master difficulty in yaml
+                    new_locations = self.tracker_world.map_page_locations.copy()
+                    if "master" in self.slot_data["entitlements"]:
+                        new_locations.remove("locations/itempickup_map_non_master_locations.json")
+
+                    self.locs = []
+                    for loc_page in new_locations:
+                        self.locs += load_json(self.tracker_core.get_current_world().__class__.__module__, f"/{self.tracker_world.map_page_folder}/{loc_page}")
+
+                    #force reload the map
+                    self.load_map(1)
+                    self.load_map(0)
                 try:
                     self.set_slot_data()
                     self.set_goal()
@@ -83,14 +111,10 @@ class HitmanContext(CommonContext):
                 print("Not implemented cmd: "+cmd+", with args: "+str(args))
 
     async def disconnect(self, allow_autoreconnect: bool = False):
-        if self.sse_thread != None:
+        if self.sse_thread is not None:
             self.sse_running = False
 
         await super().disconnect(allow_autoreconnect)
-
-    async def disconnectOnWindowClose(self):
-        # only nececery in rare circumstances, where the window would give no respone when closing with the windows x while connected
-        await self.disconnect()
 
     def make_gui(self):
         ui = super().make_gui()
@@ -107,66 +131,77 @@ class HitmanContext(CommonContext):
             self.slot_data["included_s2_locations"]+\
             self.slot_data["included_s2_dlc_locations"]+\
             self.slot_data["included_s3_locations"]+\
-            [self.slot_data["starting_location"]]
+            [self.slot_data["starting_location_name"]]
 
             if(cares_about_goal_rating):
                 enabled_levels.append(self.slot_data["goal_location_name"])
 
-            enabled_string = ""
-            completion_string = ""
+            level_data = {}
+            targets = self.slot_data.get("targets","vanilla")
+            if targets != "vanilla":
+                targets = targets.split("-")
 
-            for location in goal_table.keys():
-                if location in enabled_levels:
-                    enabled_string += "t-"
+            complications = self.slot_data.get("complications","vanilla")
+            if complications != "vanilla":
+                complications = complications.split("-")
 
-                    if location in self.slot_data["levels_with_check_for_completion"] or\
-                    "all" in self.slot_data["levels_with_check_for_completion"] or\
-                    (cares_about_goal_rating and location == self.slot_data["goal_location_name"] and\
-                     self.slot_data["goal_rating"] == "any"):
-                        completion_string+="completed_"
+            i = 0
+            for level in goal_table.keys():
+                level_object = {}
+                if level in enabled_levels:
+                    level_object["enabled"] = True
+                    if complications != "vanilla":
+                        level_object["complications"] = list(x for x in complications[i].split("_") if x != "")
+                    else:
+                        level_object["complications"] = []
+
+                    if targets != "vanilla" and targets[i] != "":
+                        level_object["targets"] = list(x for x in targets[i].split("_") if x != "")
+
+                else:
+                    level_object["enabled"] = False
+                
+                level_data[goal_table[level]] = level_object 
+                i = i+1
+
+            all_checks = {
+                "itemPickupChecks":[],
+                "splitItemPickupChecks":[],
+                "completionChecks":[],
+                "eliminationChecks":[],
+                "disguiseChecks":[]
+            }
+            for id in list(x-base_id for x in self.server_locations):
+                location_name = self.location_names.lookup_in_game(id+base_id)
+                if location_name in item_pickup_location_table:
+                    all_checks["itemPickupChecks"].append(id)
+                elif location_name in split_item_pickup_location_table:
+                    all_checks["splitItemPickupChecks"].append(id)
+                elif location_name in level_completion_location_table:
+                    all_checks["completionChecks"].append(id)
+                elif location_name in target_kill_location_table:
+                    all_checks["eliminationChecks"].append(id)
+                elif location_name in disguise_location_table:
+                    all_checks["disguiseChecks"].append(id)
             
-                    if location in self.slot_data["levels_with_check_for_sa"] or\
-                    "all" in self.slot_data["levels_with_check_for_sa"] or\
-                    (cares_about_goal_rating and location == self.slot_data["goal_location_name"] and\
-                     self.slot_data["goal_rating"] == "silent_assassin"):
-                        completion_string+="sa_"
+            all_checks["itemPickupChecks"].sort()
+            all_checks["splitItemPickupChecks"].sort()
+            all_checks["completionChecks"].sort()
+            all_checks["eliminationChecks"].sort()
+            all_checks["disguiseChecks"].sort()
 
-                    if location in self.slot_data["levels_with_check_for_so"] or\
-                    "all" in self.slot_data["levels_with_check_for_so"] or\
-                    (cares_about_goal_rating and location == self.slot_data["goal_location_name"] and\
-                     self.slot_data["goal_rating"] == "suit_only"):
-                        completion_string+="so_" 
-
-                    if location in self.slot_data["levels_with_check_for_saso"] or\
-                    "all" in self.slot_data["levels_with_check_for_saso"] or\
-                    (cares_about_goal_rating and location == self.slot_data["goal_location_name"] and\
-                     self.slot_data["goal_rating"] == "silent_assassin_suit_only"):
-                        completion_string+="saso_"
-
-                    completion_string+="-"
-                else:
-                    enabled_string += "-"
-                    completion_string += "-"
-
-            itemsanity_string = "off"
-            if self.slot_data["enable_itemsanity"]:
-                if self.slot_data["split_itemsanity"]:
-                    itemsanity_string = "split"
-                else:
-                    itemsanity_string = "combined"
-
-            r = requests.get(
-                self.peacock_url+"/setData/"+
-                self.slot_data["difficulty"]+"/"+
-                str(self.current_seed)+"/"+
-                enabled_string+"/"+
-                completion_string+"/"+
-                self.slot_data.get("targets","vanilla")+"/"+
-                str(self.slot_data.get("enable_target_checks",0)==1)+"/"+
-                self.slot_data.get("complications","vanilla")+"/"+
-                itemsanity_string+"/"+
-                str(self.slot_data.get("enable_disguisesanity",0)==1)+"/"+
-                str(self.slot_data.get("item_packages","off")))
+            r = requests.post(
+                self.peacock_url+"/setData",
+                json={
+                    "difficulty":self.slot_data.get("difficulty","normal"),
+                    "seed":self.current_seed,
+                    "everythingItemInInventory":self.slot_data.get("item_packages","")=="in_inventory",
+                    "checks":all_checks,
+                    "levels":level_data,
+                    "genVersion":self.slot_data.get("gen_version","pre-0.8.0"),
+                    "clientVersion":AutoWorldRegister.world_types[self.game].world_version.as_simple_string()
+                    #TODO: consolidate goal into this
+                })
             r.raise_for_status()
             logger.info("Slot Data sent.")
         except Exception as e:
@@ -178,24 +213,24 @@ class HitmanContext(CommonContext):
         try:
             match self.slot_data["goal_mode"]:
                 case "level_completion":
-                    goalData = self.slot_data["goal_location_name"]
-                    moreGoalData = self.slot_data["goal_rating"]
-                    evenMoreGoalData = "none"
+                    goal_data = self.slot_data["goal_location_name"]
+                    more_goal_data = self.slot_data["goal_rating"]
+                    even_more_goal_data = "none"
                 case "contract_collection":
-                    goalData = self.slot_data["goal_amount"]
-                    moreGoalData = "none"
-                    evenMoreGoalData = "none"
+                    goal_data = self.slot_data["goal_amount"]
+                    more_goal_data = "none"
+                    even_more_goal_data = "none"
                 case "contract_collection_level_completion":
-                    goalData = self.slot_data["goal_amount"]
-                    moreGoalData = self.slot_data["goal_location_name"]
-                    evenMoreGoalData = self.slot_data["goal_rating"]
+                    goal_data = self.slot_data["goal_amount"]
+                    more_goal_data = self.slot_data["goal_location_name"]
+                    even_more_goal_data = self.slot_data["goal_rating"]
                 case "number_of_completions":
-                    goalData = self.slot_data["goal_amount"]
-                    moreGoalData = self.slot_data["goal_rating"]
-                    evenMoreGoalData = "none"
+                    goal_data = self.slot_data["goal_amount"]
+                    more_goal_data = self.slot_data["goal_rating"]
+                    even_more_goal_data = "none"
 
             logger.info("Sending Goal information...")
-            r = requests.get(self.peacock_url+"/setGoal/"+self.slot_data["goal_mode"]+"/"+str(goalData)+"/"+moreGoalData+"/"+evenMoreGoalData)
+            r = requests.get(self.peacock_url+"/setGoal/"+self.slot_data["goal_mode"]+"/"+str(goal_data)+"/"+more_goal_data+"/"+even_more_goal_data)
             r.raise_for_status()
             logger.info("Goal information sent.")
         except Exception as e:
@@ -273,11 +308,10 @@ async def main(args):
     ctx = HitmanContext(args.connect, args.password)
     ctx.auth = args.name
 
-    import atexit
-    atexit.register(ctx.disconnectOnWindowClose)
-
     ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
 
+    if tracker_loaded:
+        ctx.run_generator()
     if gui_enabled:
         ctx.run_gui()
     ctx.run_cli()

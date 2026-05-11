@@ -963,7 +963,7 @@ DYNAMIC_FLAGS = {
         "on_scenes": [0xB0A],
         "has_items": [("Phantom Hourglass", 1), ("Phantom Blade", 1)],
         "unset_if_true": [(PHAddr.adv_flags_22, 0x40)],
-        "not_on_entrance": [0x2]
+        "on_entrance": [0, 1]
     },
     "Reset Oshus": {
         "on_scenes": [0xB0A],
@@ -1136,6 +1136,11 @@ DYNAMIC_FLAGS = {
         "on_scenes": [0x1a0b, 0x1a00],
         "unset_if_true": [(PHAddr.adv_flags_38, 0x40)]
     },
+    "Cyclone Slate Safety": {
+        "on_scenes": [0, 1, 2, 3],
+        "has_items": [("Cyclone Slate", 1)],
+        "set_if_true": [(PHAddr.inventory_6, 0x40)]
+    },
     # Doyland
     "Doyland lower water": {
         "on_scenes": [0x2201],
@@ -1259,9 +1264,21 @@ DYNAMIC_FLAGS = {
         "unset_if_true": [(PHAddr.adv_flags_19, 0x08)],
         "not_has_locations": ["Man of Smiles' Prize Postcard"]
     },
+    "Man of smiles resets": {
+        "on_scenes": [0x600],
+        "reset_flags": ["RESET Heroes new clothes"]
+    },
+    "RESET Heroes new clothes": {
+        "has_items": [("Hero's New Clothes", 0)],
+        "unset_if_true": [(PHAddr.flags_trade_quest, 0x4)]
+    },
+    "RESET Prize postcard": {
+        "has_items": [("Prize Postcard", 0)],
+        "unset_if_true": [(PHAddr.adv_flags_19, 0x8)]
+    },
     # Heal on bellumbeck
     "Full heal on bellumbeck": {
-        "on_scenes": [0x3300],
+        "on_scenes": [0x600],
         "full_heal": True
     },
     # Skippyjack protection

@@ -107,7 +107,7 @@ class STAddr:
     source_rails = Address(0x2653B8)
     key_storage_0 = Address(0x265784)
     key_storage_tos = Address(0x265785)
-    key_storage_2 = Address(0x265786)
+    key_storage_2 = set_starting_train = Address(0x265786)
 
     train_parts = Address(0x2653A8, size=4)
     equipped_engine = Address(0x265388, size=4)
@@ -129,15 +129,23 @@ class STAddr:
     cargo_count_1 = Address(0x2655e8)
 
     # Boss key pointers
-    boss_key_deletion_pointer = Address(0x265620, size=4)  # points to 3 references, and deleting then deletes the key.
+    boss_key_deletion_pointer = Address(0x265620, size=3)  # points to 3 references, and deleting then deletes the key.
     boss_key_deletion = Address(0x3251C0, size=12)
-    wt_bk_pointer = Address(0x3251C0, size=4)
-    bt_bk_pointer = Address(0x326C20, size=4)
-    oct_bk_pointer = Address(0x32520C, size=4)
-    mtt_bk_pointer = Address(0x32963C, size=4)
-    dt_bk_pointer = Address(0x3251C8, size=4)
-    tos3_bk_pointer = Address(0x332858, size=4)
-    tos_bk_pointer = Address(0x332818, size=4)
+    wt_bk_pointer = Address(0x3251C0, size=3)
+    bt_bk_pointer = Address(0x326C20, size=3)
+    oct_bk_pointer = Address(0x32520C, size=3)
+    mtt_bk_pointer = Address(0x32963C, size=3)
+    dt_bk_pointer = Address(0x3251C8, size=3)
+    tos3_bk_pointer = Address(0x332858, size=3)
+    tos5_bk_pointer = Address(0x332818, size=3)
+    tos_actor_table = Address(0x332810, size=3)
+    tos_bk_pointer = Address(0x332818, size=3)
+
+    tos_actor_table_pointer_0 = Address(0x3329C0, size=3)
+    tos_actor_table_pointer_1 = Address(0x329C3C, size=3)
+    tos_actor_table_pointer_safe = Address(0x25FA48, size=3)  # offset 1032 (header)/1040 (start of pointers)
+
+    oct_actor_table_start = Address(0x3251D8, size=3)
 
     # Candidates for ToS 3 bk pointers
     # 332858

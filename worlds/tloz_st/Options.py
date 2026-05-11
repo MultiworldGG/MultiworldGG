@@ -190,7 +190,7 @@ class SpiritTracksKeyrings(Choice):
     option_snurglar_only = 1
     option_all = 2
     option_random_mixed = 3
-    default = 1
+    default = 0
 
 class SpiritTracksBigKeyrings(Toggle):
     """
@@ -670,6 +670,31 @@ class SpiritTracksZeldaModelSwaps(Toggle):
     display_name = "Multiworld Item Model Swaps"
     default = 1
 
+class SpiritTracksMultiworldItemModel(Choice):
+    """
+    What unknown items from other worlds show up as.
+    Known items still change to their closest match if model swaps are enabled.
+    Revealed Traps always show up as skulls.
+    - force_gems: Foreign items show up as force gems.
+    - letters: Foreign items show up as letters.
+    - rupees: Foreign items show up as rupees. Gold for progression, blue for useful, green for filler.
+    """
+    display_name = "Multiworld Item Default Model"
+    option_force_gems = 0
+    option_letters = 1
+    option_rupees = 2
+    default = 0
+
+class SpiritTracksToSShortcuts(Toggle):
+    """
+    If enabled, taking the bottom door of the tower section of Tower of Spirits,
+    that usually takes you back to the lobby,
+    warps you to the highest unlocked door in the tower.
+    To return to lobby as normal use any lift opposite any other exit.
+    """
+    display_name = "Tower of Spirits Shortcuts"
+    default = 0
+
 @dataclass
 class SpiritTracksOptions(PerGameCommonOptions):
     # Accessibility
@@ -716,6 +741,7 @@ class SpiritTracksOptions(PerGameCommonOptions):
     tos_section_unlocks: SpiritTracksToSSectionUnlocks
     tos_unlock_base_item: SpiritTracksToSBase
     shuffle_tos_sections: SpiritTracksShuffleToSSections
+    tos_shortcuts: SpiritTracksToSShortcuts
 
     randomize_tears: SpiritTracksRandomizeTears
     tear_size: SpiritTracksTearSize
@@ -745,6 +771,7 @@ class SpiritTracksOptions(PerGameCommonOptions):
     # Cosmetic
     starting_train: SpiritTracksStartingTrain
     multiworld_item_model_swaps: SpiritTracksZeldaModelSwaps
+    multiworld_item_default_models: SpiritTracksMultiworldItemModel
 
     # Generic
     start_inventory_from_pool: StartInventoryPool
@@ -792,6 +819,7 @@ st_option_groups = [
         SpiritTracksToSSectionUnlocks,
         SpiritTracksToSBase,
         SpiritTracksShuffleToSSections,
+        SpiritTracksToSShortcuts,
         SpiritTracksRandomizeTears,
         SpiritTracksTearSize,
         SpiritTracksTearGroup,
@@ -813,7 +841,8 @@ st_option_groups = [
     ]),
     OptionGroup("Cosmetic Options", [
         SpiritTracksStartingTrain,
-        SpiritTracksZeldaModelSwaps
+        SpiritTracksZeldaModelSwaps,
+        SpiritTracksMultiworldItemModel
     ]),
     OptionGroup("Item & Location Options", [
         SpiritTracksRemoveItemsFromPool

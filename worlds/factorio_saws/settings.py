@@ -20,7 +20,11 @@ If this file does exist, then it will be used.
     class BridgeChatOut(settings.Bool):
         """Whether to send chat messages from players on the Factorio server to Archipelago."""
 
+    class FilterConnectionChanges(settings.Bool):
+        """Whether to filter connection changes displayed in-game."""
+
     executable: Executable = Executable("factorio/bin/x64/factorio")
-    server_settings: typing.Optional[ServerSettings] = None
-    filter_item_sends: typing.Union[FilterItemSends, bool] = False
-    bridge_chat_out: typing.Union[BridgeChatOut, bool] = True
+    server_settings: ServerSettings | None = None
+    filter_item_sends: FilterItemSends | bool = False
+    filter_connection_changes: FilterConnectionChanges | bool = False
+    bridge_chat_out: BridgeChatOut | bool = True

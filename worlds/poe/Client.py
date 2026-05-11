@@ -18,6 +18,7 @@ from worlds.poe import Items
 from .poeClient.fileHelper import load_settings, save_settings, find_possible_client_txt_path
 from .poeClient import main as poe_main
 from .poeClient import gggAPI
+from .poeClient import inputHelper
 from .poeClient import textUpdate
 from .poeClient import itemFilter
 from . import Options
@@ -343,6 +344,15 @@ def handle_task_errors(task: asyncio.Task, ctx: "PathOfExileContext", cmdprocess
     """Handle errors in the task."""
     try:
          task.result()  # Will raise if the task failed
+    except inputHelper.KeyboardAutomationUnavailable as e:
+        cmdprocessor.output(f"ERROR: {e}")
+
+        logger = logging.getLogger("poeClient.PathOfExileContext")
+        logger.setLevel(logging.DEBUG)
+        tb_str = ''.join(traceback.format_exception(type(e), e, e.__traceback__))
+        logger.error(f"Keyboard automation unavailable: {e}\nTraceback:\n{tb_str}")
+
+        ctx.running_task = None
     except Exception as e:
         cmdprocessor.output(f"ERROR, the client borked: {e}")
 

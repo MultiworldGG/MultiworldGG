@@ -24,6 +24,7 @@ from WebHostLib.models import (
 from WebHostLib import app, limiter
 
 APWORLD_MAX_SIZE = 60 * 1024 * 1024  # 60 MB — leaves headroom under 64 MB global limit
+LOBBY_LOCAL_GENERATION_YAML_LIMIT = 25
 
 def _safe_zip_name(name: str) -> str:
     """Replace characters that are problematic in ZIP entry names."""
@@ -960,6 +961,7 @@ def lobby_status(lobby: UUID):
         "timeout_minutes": lobby.timeout_minutes,
         "allow_custom_apworlds": lobby.allow_custom_apworlds,
         "has_custom": has_custom,
+        "force_local_generation": has_custom or total_yamls > LOBBY_LOCAL_GENERATION_YAML_LIMIT,
         "race": lobby.race,
         "server_opts": server_opts,
         "gen_opts": gen_opts,
@@ -1507,6 +1509,12 @@ def lobby_generate(lobby: UUID):
     if not all_yamls:
         return jsonify({"error": "No YAMLs uploaded yet"}), 400
 
+    if len(all_yamls) > LOBBY_LOCAL_GENERATION_YAML_LIMIT:
+        return jsonify({
+            "error": f"Lobbies with more than {LOBBY_LOCAL_GENERATION_YAML_LIMIT} YAMLs must be generated locally. "
+                     "Use 'Download Package', generate locally, then upload the result."
+        }), 400
+
     if len(all_yamls) > app.config["MAX_ROLL"]:
         return jsonify({
             "error": f"Too many YAMLs ({len(all_yamls)}). Maximum is {app.config['MAX_ROLL']}."
@@ -1599,7 +1607,7 @@ def lobby_update_settings(lobby: UUID):
 
     if "max_yamls_per_player" in data:
         try:
-            new_max_yamls = max(1, min(int(data["max_yamls_per_player"]), 20))
+            new_max_yamls = max(1, min(int(data["max_yamls_per_player"]), 100))
             counts = select(
                 (y.player.id, count(y))
                 for y in LobbyYaml if y.lobby == lobby and y.player is not None
@@ -1654,7 +1662,7 @@ def lobby_update_settings(lobby: UUID):
 
     if "hint_cost" in data:
         try:
-            server_opts["hint_cost"] = max(0, min(int(data["hint_cost"]), 105))
+            server_opts["hint_cost"] = max(0, min(int(data["hint_cost"]), 100))
         except (ValueError, TypeError):
             pass
 
@@ -2331,7 +2339,7 @@ def lobby_upload_game(lobby: UUID):
     if lobby.owner != session["_id"]:
         return jsonify({"error": "Only the lobby owner can upload the game"}), 403
 
-    if lobby.state != LOBBY_OPEN:
+    if lobby.state not in (LOBBY_OPEN, LOBBY_LOCKED):
         return jsonify({"error": "Lobby is not in a state to accept a game file"}), 400
 
     if 'file' not in request.files:

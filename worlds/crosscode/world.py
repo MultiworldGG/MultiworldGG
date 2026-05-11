@@ -557,6 +557,10 @@ class CrossCodeWorld(World):
         # initially, we need as many items as there are locations
         num_needed_items = len(self.pools.location_pool)
 
+        for _ in range(self.options.circuit_overrides.value):
+            self.multiworld.itempool.append(self.create_item("Circuit Override"))
+        num_needed_items -= self.options.circuit_overrides.value
+
         if self.options.shop_rando.value:
             if self.options.shop_send_mode.value == ShopSendMode.option_per_item_type:
                 num_needed_items += len(self.world_data.global_shop_locations)

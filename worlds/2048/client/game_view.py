@@ -2,10 +2,14 @@ from collections.abc import Callable
 from typing import Any
 
 from kivy.core.window import Window
+from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivymd.uix.button import MDButton, MDButtonText
 from kivymd.uix.label import MDLabel
+from kivymd.uix.snackbar import MDSnackbar, MDSnackbarText
+
+from .game import TwoThousandAndFortyEightGame
 
 INPUT_MAP_SPECIAL_INT = {
     273: "up",
@@ -19,9 +23,14 @@ class TwoThousandAndFortyEightGameView(BoxLayout):
     input_function: Callable[[Any], None]
     grid_layout: GridLayout
     score_label: MDLabel
+    game: TwoThousandAndFortyEightGame | None
+    current_popup: MDSnackbar | None
+    queue: list[str]
 
     def __init__(self, input_function: Callable[[Any], None], **kwargs: Any) -> None:
         super().__init__(**kwargs)
+        self.current_popup = None
+        self.queue = []
         self.input_function = input_function
         self.orientation = "vertical"
         self.padding = 20
@@ -29,7 +38,6 @@ class TwoThousandAndFortyEightGameView(BoxLayout):
 
         header_container = BoxLayout(orientation="horizontal", size_hint_y=None, height="60dp")
         self.score_label = MDLabel(
-            text="Score: 0",
             font_style="Headline",
             role="medium",
             theme_text_color="Primary",
@@ -61,4 +69,30 @@ class TwoThousandAndFortyEightGameView(BoxLayout):
         return False
 
     def update_score(self, score: int):
-        self.score_label.text = f"Score: {score}"
+        if self.game is not None and self.game.unmet_score_thresholds:
+            objective = self.game.unmet_score_thresholds[0]
+            self.score_label.text = f"Score: {score}/{objective}"
+        else:
+            self.score_label.text = f"Score: {score}"
+
+    def show_popup(self, message: str) -> None:
+        if self.current_popup is None:
+            new_popup = MDSnackbar(
+                MDSnackbarText(
+                    text=message,
+                ),
+                y=dp(24),
+                pos_hint={"center_x": 0.5},
+                size_hint_x=0.8,
+                duration=2.5,
+            )
+            self.current_popup = new_popup
+            new_popup.bind(on_dismiss=self.remove_popup)
+            new_popup.open()
+        else:
+            self.queue.append(message)
+
+    def remove_popup(self, *_) -> None:
+        self.current_popup = None
+        if self.queue:
+            self.show_popup(self.queue.pop(0))

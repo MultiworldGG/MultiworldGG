@@ -16,44 +16,38 @@ config file.
 ## Other stuff
 
 - Softlocked? Press New Game, your progress is saved.
-- Buttons and platforms underneath buttons are not checks in the main game. (Red) buttons don't do anything.
 - Universal Tracker can help you to figure out which platforms are accessible. The mini-map should help!
 - You should be able to quit a game and continue it later, just follow the steps again. Minigames do save checks but do not save progress.
-- The final cluster in the game won't appear and will stay underwater in the main game (the final button is weird).
 
 ## Troubleshooting
+All of these troubleshooting steps are for when the mod crashes on launch.
+### The basics
+- Is Refunct open when you open the mod? We only support the latest version of Refunct via Steam (build id 5753767).
+- Please try it 2 or 3 times, sometimes it just crashes.
+### Advanced
+- There are two ways to learn more about the error.
+  - Run `debug.bat` (after opening Refunct) and it'll print an error.
+  - Find the log file at `Users\user\AppData\Local\Temp\refunct-tas.log` (note that the log file may not exist).
+- **On Steam Deck: `debug.bat` says `CantConnectToRtil`.**
+  - In compatibility, try if legacy mode works.
+- **On linux, `debug.bat` says `thread 'main' panicked at 'called Result::unwrap()'...`**
+  - Make sure that you configured `LD_PRELOAD` correctly.
+- **`debug.bat` says `"failed to fill whole buffer"`**
+  - Do you have Spybot system tray? That program might interfere with Refunct.
+- **Log file ends with `Got code`**
+  - You might have older graphics drivers.
+  - Right-click the game on steam and add this as launch option: `cmd /C "set WGPU_BACKEND=gles&& %command%"`
+  - Or you could try to update your graphics driver (this helped many times).
+- **`debug.bat` says `An established connection was aborted` and the log file says `TcpError`.**
+  - You might have older graphics drivers, please update them.
+- **`debug.bat` says `ParseIntError { kind: InvalidDigit }`**
+  - Refunct probably has multiple processes open (some kind of overlay)?
+  - Please run Refunct, then open a cmd, and run `powershell -NoProfile -Command "Get-Process -Name 'Refunct-Win32-Shipping'"`. If it shows two or more lines, then this does seem to be the case.
+  - Try to kill one of the processes (try the one with the lowest handles/cpu first) using `taskkill /Pid 8132` where `8132` is the ID. If Refunct doesn't crash, you got the correct one
+  - Now try to run the mod again.
 
-* **thread 'main' panicked at 'Failed to decode config: Error**:
-  Your config file is invalid and couldn't be parsed correctly.
-  Please make sure to correctly configure it.
-* **thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value [...] "Connection Refused"**:
-  The tool couldn't connect to the game.
-  Please make sure that Refunct is started before running the tool.
-  On Linux also make sure that you configured `LD_PRELOAD` correctly.
-  *If you're still having problems, try updating your graphics drivers (yes this really solves some problems).*
-* **thread 'main' panicked at 'Cannot get pid of Refunct: Error { kind: NotFound, message: "program not found" }'**:
-  WMIC (Windows Management Instrumentation Command-Line) either doesn't exist or its directory isn't in PATH.
-  To put it in path, run `control sysdm.cpl,,3` in Run (WIN+R) -> Environment Variables -> [Under "User variables for (user)] -> Double click "Path". Add this entry to it: `%SystemRoot%\System32\Wbem`. Start the tool, and it should work.
-* **Refunct crashes with (or without) FATAL ERROR**:
-  On Windows this can happen from time to time when you start the tool.
-  Try restarting Refunct and the tool.
-  If the game continues to FATAL ERROR after multiple tries (2-3 should be enough),
-  try to change your ingame FPS to a fixed value (e.g. 60 FPS) and try again 2-3 times.
-  If it continues to crash, it could be due to multiple causes:
-    1. You are not using the latest version of Refunct.
-        Please verify your game files with Steam: Library → Right Click on Refunct →
-        Properties → Local Files → Verify Integrity of Game Files...
-    1. It could mean that I was too lazy to update all pointers to the latest version
-        of Refunct.
-        Currently refunct-tas is updated for Refunct BuildID 1964685.
-        You can find your BuildID in Steam: Library → Right Click on Refunct →
-        Properties → Local Files → bottom left
-* **Refunct / the TAS tool crashes and the file `refunct-tas.exe` disappears:**
-  Refunct-tas uses library injection, which some antivirus programs see as malicious
-  action.
-  Therefore your antivirus might have stopped execution and moves the executable
-  into quarantine.
-  Redownload the zip file and either whitelist `refunct-tas.exe` or disable it
-  while you are using the TAS tool.
-* **I got EAC banned**:
-  No, you didn't. Refunct does not come with EAC. Period.
+
+## Refunct TaS Tool
+
+This tool is derived from https://github.com/oberien/refunct-tas.
+There is a readme there too.

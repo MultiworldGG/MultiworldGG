@@ -20,7 +20,7 @@ except Exception as e:
 from WebHostLib import app, limiter
 from WebHostLib.generate import get_meta
 from WebHostLib.models import (
-    Lobby, LobbyPlayer, LobbyMessage, LobbyYaml,
+    Lobby, LobbyPlayer, LobbyMessage, LobbyYaml, LobbyApworld,
     LOBBY_OPEN, LOBBY_GENERATING, LOBBY_DONE, LOBBY_CLOSED, LOBBY_LOCKED,
     UUID,
 )
@@ -158,7 +158,7 @@ def lobby_create():
             max_yamls = int(request.form.get('max_yamls_per_player', 1))
         except (ValueError, TypeError):
             max_yamls = 1
-        max_yamls = max(1, min(max_yamls, 20))
+        max_yamls = max(1, min(max_yamls, 100))
 
         race = bool(request.form.get('race'))
 
@@ -247,6 +247,8 @@ def lobby_view(lobby: UUID):
     yaml_count = count(y for y in LobbyYaml if y.lobby == lobby)
     player_count = count(p for p in LobbyPlayer if p.lobby == lobby)
     has_custom = bool(count(y for y in LobbyYaml if y.lobby == lobby and y.is_custom))
+    has_upgrade_apworld = bool(count(a for a in LobbyApworld if a.lobby == lobby and not a.yaml.is_custom))
+    force_local_generation = has_custom or has_upgrade_apworld or yaml_count > 25
     is_full = lobby.max_players > 0 and player_count >= lobby.max_players
 
     meta = json.loads(lobby.meta)
@@ -270,6 +272,7 @@ def lobby_view(lobby: UUID):
         yaml_count=yaml_count,
         player_count=player_count,
         has_custom=has_custom,
+        force_local_generation=force_local_generation,
         is_full=is_full,
         server_opts=server_opts,
         gen_opts=gen_opts,

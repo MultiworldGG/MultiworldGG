@@ -964,6 +964,13 @@ a.lobby-btn-primary:hover {
     text-align: left;
 }
 
+.custom-disclaimer.package-alternative {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+
 .drop-zone-label {
     color: pink;
     text-decoration: underline;

@@ -1,5 +1,8 @@
 # Donkey Kong Country 2 setup guide
 
+## Details
+[Details can be found here](https://thelx5.github.io/dkc2/setup.html)
+
 ## Required Software
 
 - [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases).

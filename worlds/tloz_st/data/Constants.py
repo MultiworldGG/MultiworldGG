@@ -517,40 +517,46 @@ BOSS_KEY_DATA = {
     },
     0x1b05: {
         "y": 0,
-        "pointer": STAddr.oct_bk_pointer,
+        # "pointer": STAddr.oct_bk_pointer,
         "location": "Marine Temple 6F Boss Key",
         "door": STAddr.oct_boss_door,
-        "dungeon": "Marine Temple"
+        "dungeon": "Marine Temple",
+        "search_data": (16, 3, 59392, 4, STAddr.oct_actor_table_start),
+        "deletion_data": (8, 0)  # size, offset
     },
     0x1c04: {
         "y": -48000,
         "pointer": STAddr.mtt_bk_pointer,
         "location": "Mountain Temple B3 Boss Key",
         "door": STAddr.mtt_boss_door,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "deletion_data": (4, 64)
     },
     0x1d03: {
         "y": -2867,
         "pointer": STAddr.dt_bk_pointer,
         "location": "Desert Temple B1 Boss Key",
         "door": STAddr.dt_boss_door,
-        "dungeon": "Desert Temple"
+        "dungeon": "Desert Temple",
+        "deletion_data": (4, 8)
     },
     0x1309: {
         "y": 0,
-        "pointer": STAddr.tos3_bk_pointer,
+        # "pointer": STAddr.tos_actor_table_pointer_0,
         "location": "ToS 10F Boss Key",
         "door": STAddr.tos3_boss_door,
         "dungeon": "ToS 3",
-        "door_coords": 0xffff2ffc00000000fffffffc
+        "door_coords": 0xffff2ffc00000000fffffffc,
+        "deletion_data": (4, 0)
     },
     0x1318: {
         "y": 0,
-        "pointer": STAddr.tos3_bk_pointer,
+        # "pointer": STAddr.tos_actor_table_pointer_0,
         "location": "ToS 22F Boss Key",
         "door": STAddr.tos5_boss_door,
         "dungeon": "ToS 5",
-        "door_coords": 0x4ffc000000000000affc
+        "door_coords": 0x4ffc000000000000affc,
+        "deletion_data": (4, 0)
     },
 }
 
@@ -707,6 +713,13 @@ KEY_COUNTS = {
     "Small Key (ToS 5)": 2,
     "Small Key (ToS 6)": 3,
     "Small Key (Tunnel to ToS)": 1,
+}
+
+BOSS_ROOM_TO_BLOCKED_ITEM_GROUP: dict[int, str] = {
+    0x1e00: "Tracks: Forest Source",
+    0x1f00: "Tracks: Snow Source",
+    0x2000: "Tracks: Ocean Source",
+    0x2100: "Tracks: Fire Source",
 }
 
 TOS_SECTION_TO_EXIT = {section: e for e, section in EXIT_TO_TOS_SECTION.items()}

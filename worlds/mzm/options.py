@@ -27,11 +27,6 @@ class Goal(Choice):
     option_metroid_dna = 2
     default = option_metroid_dna
 
-    @classmethod
-    def from_text(cls, text: str) -> "Goal":
-        if text.lower() == "vanilla":
-            return cls(cls.option_mecha_ridley)
-        return super().from_text(text)
 
 class MetroidDNAAvailable(Range):
     display_name = "Metroid DNA Available"

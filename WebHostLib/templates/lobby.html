@@ -253,16 +253,26 @@
                                 <div id="apworld-queue-empty">No pending APWorld requests.</div>
                                 <ul id="apworld-queue-list"></ul>
                             </div>
-                            <div id="generate-standard">
+                            <div id="generate-standard" {% if force_local_generation %}style="display:none"{% endif %}>
                                 <button id="generate-btn" class="lobby-btn lobby-btn-primary"
                                         {% if yaml_count == 0 %}disabled{% endif %}>
                                     Generate Seed
                                 </button>
                             </div>
-                            <div id="generate-custom" style="display:none">
-                                <div class="custom-disclaimer">
-                                    &#9888; This lobby contains custom APWorlds. The server cannot generate this seed.
-                                    Download the package, generate locally with the {{ instance_name }} launcher, then upload the result (AP_12345.zip) here.
+                            <div id="generate-custom">
+                                <div id="package-generation-notice" class="custom-disclaimer{% if not force_local_generation %} package-alternative{% endif %}">
+                                    <span id="local-generation-required" {% if not force_local_generation %}style="display:none"{% endif %}>
+                                        &#9888; This lobby must be generated locally.
+                                    </span>
+                                    <span id="local-generation-required-text" {% if not force_local_generation %}style="display:none"{% endif %}>
+                                        Download the package, generate locally with the {{ instance_name }} launcher, then upload the result (AP_12345.zip) here.
+                                    </span>
+                                    <span id="local-generation-alternative-text" {% if force_local_generation %}style="display:none"{% endif %}>
+                                        Alternatively, download a package of all yamls and generate locally
+                                    </span>
+                                    <span id="large-lobby-local-notice" {% if yaml_count <= 25 %}style="display:none"{% endif %}>
+                                        Lobbies with more than 25 YAMLs cannot use server generation.
+                                    </span>
                                     <span id="package-incomplete-notice" style="display:none;">The package is currently incomplete, see below - download is possible either way:</span>
                                     <div id="missing-apworlds-notice" style="display:none; margin-top:8px;">
                                         <strong>Missing APWorlds:</strong>
@@ -348,8 +358,8 @@
                                         <td><label for="edit-max-yamls">Max YAMLs per Player:</label></td>
                                         <td>
                                             <input type="number" id="edit-max-yamls"
-                                                   min="1" max="20" value="{{ lobby.max_yamls_per_player }}" style="width:80px">
-                                            <span style="font-size:0.8rem;color:#aaa">(max. 20)</span>
+                                                   min="1" max="100" value="{{ lobby.max_yamls_per_player }}" style="width:80px">
+                                            <span style="font-size:0.8rem;color:#aaa">(max. 100)</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -446,11 +456,8 @@
                                     <tr>
                                         <td><label for="edit-hint-cost">Hint Cost:</label></td>
                                         <td>
-                                            <select id="edit-hint-cost">
-                                                {% for n in range(0, 110, 5) %}
-                                                    <option value="{{ n }}" {% if n == server_opts.get('hint_cost', 5) %}selected{% endif %}>{% if n > 100 %}Off{% else %}{{ n }}%{% endif %}</option>
-                                                {% endfor %}
-                                            </select>
+                                            {% set edit_hint_cost = server_opts.get('hint_cost', 5) %}
+                                            <input type="number" id="edit-hint-cost" min="0" max="100" step="1" value="{{ 100 if edit_hint_cost > 100 else 0 if edit_hint_cost < 0 else edit_hint_cost }}" required>%
                                         </td>
                                     </tr>
                                     <tr>
@@ -520,6 +527,7 @@
         let lastMessageId = {{ recent_messages[-1].id if recent_messages else 0 }};
         let currentState = {{ lobby.state }};
         let hasCustomYamls = {{ "true" if has_custom else "false" }};
+        let forceLocalGeneration = {{ "true" if force_local_generation else "false" }};
         let MAX_YAMLS_PER_PLAYER = {{ lobby.max_yamls_per_player }};
         let TIMEOUT_MINUTES = {{ lobby.timeout_minutes }};
     </script>

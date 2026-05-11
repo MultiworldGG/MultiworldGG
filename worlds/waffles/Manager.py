@@ -124,6 +124,7 @@ def load_data_from_patch(patch_path, vars_ns):
     vars_ns.death_link_heart.set(options_file["death_link_heart"])
     vars_ns.energy_link.set(options_file["energy_link"])
     vars_ns.trap_link.set(options_file["trap_link"])
+    vars_ns.damage_link.set(options_file["damage_link"])
 
     if "graphics_pack" in options_file.keys():
         vars_ns.selected_pack.set(options_file["graphics_pack"])
@@ -144,6 +145,7 @@ def save_adjusted_data(vars_ns):
     
     options_file["death_link"] = vars_ns.death_link.get()
     options_file["death_link_heart"] = vars_ns.death_link_heart.get()
+    options_file["damage_link"] = vars_ns.damage_link.get()
     options_file["energy_link"] = vars_ns.energy_link.get()
     options_file["trap_link"] = vars_ns.trap_link.get()
 
@@ -292,6 +294,13 @@ def create_linked_frame(parent=None):
     trap_link_label = Label(trap_link_frame, text="Enable Trap Link")
     trap_link_label.pack(side=LEFT, fill=X)
 
+    vars.damage_link = BooleanVar()
+    damage_link_frame = Frame(frame)
+    damage_link_check = Checkbutton(damage_link_frame, variable=vars.damage_link)
+    damage_link_check.pack(side=LEFT, fill=X)
+    damage_link_label = Label(damage_link_frame, text="Enable Damage Link")
+    damage_link_label.pack(side=LEFT, fill=X)
+
     vars.death_link = BooleanVar()
     death_link_frame = Frame(frame)
     death_link_check = Checkbutton(death_link_frame, variable=vars.death_link)
@@ -308,6 +317,7 @@ def create_linked_frame(parent=None):
 
     energy_link_frame.pack(side=TOP, fill=X)
     trap_link_frame.pack(side=TOP, fill=X)
+    damage_link_frame.pack(side=TOP, fill=X)
     death_link_frame.pack(side=TOP, fill=X)
     death_link_heart_frame.pack(side=TOP, fill=X)
 

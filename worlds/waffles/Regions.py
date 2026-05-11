@@ -2005,7 +2005,7 @@ def connect(world: "WaffleWorld", source: str, target: str) -> None:
     target_region = world.get_region(target)
     source_region.connect(target_region)
 
-    if world.is_ut and " Exit" in target_region.name and world.multiworld.enforce_deferred_connections in ("on", "default"):
+    if world.is_ut and target_region.name.endswith(" Exit") and world.multiworld.enforce_deferred_connections in ("on", "default"):
         glitched_entrance = source_region.create_exit(f"{source_region.name} -> {target_region.name} (Glitched)")
         glitched_entrance.connect(target_region)
         #print (f"Glitched Entrance: {glitched_entrance.name} ({glitched_entrance.connected_region})")

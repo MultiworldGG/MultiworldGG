@@ -11,7 +11,7 @@ When connected to a multiworld, all characters apart from those received in the
 multiworld will be unlocked. You may receive characters that you have not unlocked in
 vanilla play, but these will be locked again when you disconnect.
 
-Loot crate drops in-game are replaced with Archipelago "check" items. When picked up,
+Loot crate drops in-game are replaced with MultiworldGG/AP "check" items. When picked up,
 these will send a check to the multiworld. Depending on your settings, normal loot
 crates may not appear when randomized.
 

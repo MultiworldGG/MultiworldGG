@@ -9,7 +9,7 @@ from Utils import get_fuzzy_results, get_intended_text
 from .enums import Items
 from .Options import WaffleOptions
 from .Rules import Macro
-from .Locations import all_locations
+from .Locations import all_locations, level_location_table, reverse_level_location_table
 
 from .Constants import *
 from typing import Any, TYPE_CHECKING
@@ -26,7 +26,7 @@ def disconnect_entrances(world: "WaffleWorld") -> None:
             world.disconnected_entrances[entrance] = entrance.connected_region
             entrance.connected_region = None
             key = entrance.name.split("-> ")[1].split(" - Tile")[0]
-            actual_key = "smw_{team}_{player}_" + key
+            actual_key = "smw_{team}_{player}_tile_" + key
             if actual_key not in world.found_entrances_datastorage_key:
                 world.found_entrances_datastorage_key.append(actual_key)
 
@@ -34,46 +34,28 @@ def disconnect_entrances(world: "WaffleWorld") -> None:
 def create_glitched_entrances(world: "WaffleWorld") -> None:
     for entrance in world.get_entrances():
         if entrance.name.endswith("(Glitched)"):
-            if "Normal Exit" in entrance.name:
-                idx = 0
-            else:
-                idx = 2
-            try:
-                exit = entrance.parent_region.exits[idx]
-            except IndexError:
-                exit = entrance.parent_region.exits[0]
-            if exit.connected_region is None:
-                #print (f"      lol {exit} | {entrance.parent_region.exits[2]}")
-                continue
-            try:
-                disconnected_entrance = exit.connected_region.exits[0]
-            except IndexError:
-                continue 
-            #print (f"    {disconnected_entrance}")
-            if "Transition" in disconnected_entrance.name or "Pipe" in disconnected_entrance.name or "Star World -" in disconnected_entrance.name:
-                disconnected_entrance = disconnected_entrance.connected_region.exits[0].connected_region.exits[0]
-            key = disconnected_entrance.name.split("-> ")[1].split(" - Tile")[0]
-            actual_key = "smw_{team}_{player}_" + key
-            world.found_entrances_datastorage_key.append(actual_key)
-            world.disconnected_entrances[entrance] = [entrance.connected_region, disconnected_entrance.connected_region]
-            #print (f"    {entrance.connected_region} | {disconnected_entrance.connected_region} | {actual_key}")
+            level_name = entrance.name.split("-> ")[1].split(" (Glitched)")[0]
+            loc_id = level_location_table[level_name]
+            key = r"smw_{team}_{player}_level_" + f"{loc_id:08X}"
+            world.found_entrances_datastorage_key.append(key)
+            world.disconnected_entrances[entrance] = [entrance.connected_region, f"{loc_id:08X}"]
             entrance.connected_region = None
+            continue 
             
 
 
 def reconnect_found_entrance(world: "WaffleWorld", key: str) -> None:
     entrance_connected = False
-    level_name = key.split("_")[3]
+    entrance_type = key.split("_")[3]
+    entrance_data = key.split("_")[4]
     for entrance, data in world.disconnected_entrances.items():
-        if entrance.name.endswith("(Glitched)"):
-            level_destination = data[1].entrances[0].name.split("-> ")[1].split(" - Tile")[0]
-            if level_destination == level_name:
+        if entrance_type == "level" and entrance.name.endswith("(Glitched)"):
+            if entrance_data == data[1]:
                 entrance.connect(data[0])
                 entrance_connected = True
-                #print (f"    {entrance} | {entrance.connected_region} | {data[1]}")
-        if entrance.name.endswith(" - Tile"):
+        if entrance_type == "tile" and entrance.name.endswith(" - Tile"):
             level_destination = entrance.name.split("-> ")[1].split(" - Tile")[0]
-            if level_destination == level_name:
+            if level_destination == entrance_data:
                 entrance.connect(data)
                 entrance_connected = True
 
@@ -4486,6 +4468,9 @@ class UTMxin(World):
             self.options.yoshi_egg_placement.value = slot_data["yoshi_egg_placement"]
             self.options.starting_location.value = slot_data["starting_location"]
             self.options.ability_shuffle.value = slot_data["ability_shuffle"]
+            self.options.decoupled_fast_swimming.value = slot_data["decoupled_fast_swimming"]
+            self.options.decoupled_wall_run_anywhere.value = slot_data["decoupled_wall_run_anywhere"]
+            self.options.decoupled_yoshi_carry.value = slot_data["decoupled_yoshi_carry"]
             self.required_egg_count = slot_data["required_egg_count"]
             self.actual_egg_count = slot_data["actual_egg_count"]
 

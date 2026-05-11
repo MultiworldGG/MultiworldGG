@@ -53,11 +53,15 @@ class FactorioCommandProcessor(ClientCommandProcessor):
         """Manually trigger a resync."""
         self.ctx.awaiting_bridge = True
 
-    def _cmd_toggle_send_filter(self):
+    def _cmd_toggle_send_filter(self) -> None:
         """Toggle filtering of item sends that get displayed in-game to only those that involve you."""
         self.ctx.toggle_filter_item_sends()
 
-    def _cmd_toggle_chat(self):
+    def _cmd_toggle_connection_change_filter(self) -> None:
+        """Toggle filtering of Connected/Disconnected players."""
+        self.ctx.toggle_filter_connection_changes()
+
+    def _cmd_toggle_chat(self) -> None:
         """Toggle sending of chat messages from players on the Factorio server to Archipelago."""
         self.ctx.toggle_bridge_chat_out()
 
@@ -83,7 +87,7 @@ class FactorioContext(CommonContext):
     # updated by spinup server
     mod_version: Version = Version(0, 0, 0)
 
-    def __init__(self, server_address, password, filter_item_sends: bool, bridge_chat_out: bool,
+    def __init__(self, server_address, password, filter_connection_changes: bool, filter_item_sends: bool, bridge_chat_out: bool,
                  rcon_port: int, rcon_password: str, server_settings_path: str | None,
                  config_file: str, factorio_server_args: tuple[str, ...] | list[str]):
         super(FactorioContext, self).__init__(server_address, password)
@@ -95,6 +99,7 @@ class FactorioContext(CommonContext):
         self.factorio_json_text_parser = FactorioJSONtoTextParser(self)
         self.energy_link_increment = 0
         self.last_deplete = 0
+        self.filter_connection_changes: bool = filter_connection_changes
         self.filter_item_sends: bool = filter_item_sends
         self.multiplayer: bool = False  # whether multiple different players have connected
         self.bridge_chat_out: bool = bridge_chat_out
@@ -132,6 +137,7 @@ class FactorioContext(CommonContext):
     def on_print_json(self, args: dict):
         if self.rcon_client:
             if (not self.filter_item_sends or not self.is_uninteresting_item_send(args)) \
+                    and (not self.filter_connection_changes or not self.is_connection_change(args)) \
                     and not self.is_echoed_chat(args):
                 text = self.factorio_json_text_parser(copy.deepcopy(args["data"]))
                 if not text.startswith(
@@ -226,10 +232,19 @@ class FactorioContext(CommonContext):
         logger.info(announcement)
         self.print_to_game(announcement)
 
+    def toggle_filter_connection_changes(self) -> None:
+        self.filter_connection_changes = not self.filter_connection_changes
+        if self.filter_connection_changes:
+            announcement = "Connection changes are now filtered."
+        else:
+            announcement = "Connection changes are no longer filtered."
+        logger.info(announcement)
+        self.print_to_game(announcement)
+
     def toggle_bridge_chat_out(self) -> None:
         self.bridge_chat_out = not self.bridge_chat_out
         if self.bridge_chat_out:
-            announcement = f"Chat is now bridged to {apname}."
+            announcement = "Chat is now bridged to {apname}."
         else:
             announcement = f"Chat is no longer bridged to {apname}."
         logger.info(announcement)
@@ -380,7 +395,7 @@ async def factorio_server_watcher(ctx: FactorioContext):
                                                                timeout=5)
                     if not ctx.server:
                         logger.info("Established bridge to Factorio Server. "
-                                    f"Ready to connect to {apname} via /connect")
+                                    "Ready to connect to {apname} via /connect")
                         check_stdin()
 
                 if not ctx.awaiting_bridge and "Archipelago Bridge Data available for game tick " in msg:
@@ -392,6 +407,9 @@ async def factorio_server_watcher(ctx: FactorioContext):
                 elif re.match(r"^[0-9.]+ Script @[^ ]+\.lua:\d+: Player command toggle-ap-send-filter$", msg):
                     factorio_server_logger.debug(msg)
                     ctx.toggle_filter_item_sends()
+                elif re.match(r"^[0-9.]+ Script @[^ ]+\.lua:\d+: Player command toggle-ap-connection-change-filter$", msg):
+                    factorio_server_logger.debug(msg)
+                    ctx.toggle_filter_connection_changes()
                 elif re.match(r"^[0-9.]+ Script @[^ ]+\.lua:\d+: Player command toggle-ap-chat$", msg):
                     factorio_server_logger.debug(msg)
                     ctx.toggle_bridge_chat_out()
@@ -460,7 +478,7 @@ async def get_info(ctx: FactorioContext, rcon_client: factorio_rcon.RCONClient):
 
 
 async def factorio_spinup_server(ctx: FactorioContext) -> bool:
-    savegame_name = os.path.abspath("Archipelago.zip")
+    savegame_name = user_path("factorio", "saves", "Archipelago.zip")
     if not os.path.exists(savegame_name):
         logger.info(f"Creating savegame {savegame_name}")
         subprocess.run((
@@ -590,6 +608,7 @@ def launch(*new_args: str):
             raise FileNotFoundError(f"Could not find file {server_settings} for server_settings. Aborting.")
 
     initial_filter_item_sends = bool(settings.filter_item_sends)
+    initial_filter_connection_changes = bool(settings.filter_connection_changes)
     initial_bridge_chat_out = bool(settings.bridge_chat_out)
 
     if not os.path.exists(os.path.dirname(executable)):
@@ -631,7 +650,7 @@ def launch(*new_args: str):
 
     asyncio.run(main(lambda: FactorioContext(
         args.connect, args.password,
-        initial_filter_item_sends, initial_bridge_chat_out,
+        initial_filter_connection_changes, initial_filter_item_sends, initial_bridge_chat_out,
         rcon_port, rcon_password, server_settings, config_file, rest
     )))
     colorama.deinit()

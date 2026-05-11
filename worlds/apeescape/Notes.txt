@@ -1,6 +1,6 @@
-Thick Jungle :
-Random Starting Room to Fish Room not giving control back to player
+Make a 2 layer dict like so :
 
-Dark Ruins :
 
-RSR fails sometimes ?
+First layer : Levels
+Second Layer : Each Room transitions?
+{<Level>{<Room1>TR1,TR2,TR3,TR4,TR5}}

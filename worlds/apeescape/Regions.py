@@ -1,9 +1,12 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Set
 
 from BaseClasses import Region, Entrance, ItemClassification, CollectionState
+from Utils import visualize_regions
 from .Locations import location_table, ApeEscapeLocation
 from .Strings import AEDoor, AELocation, AEItem
 from .Items import ApeEscapeItem
+from .constants import *
+from entrance_rando import randomize_entrances, EntranceRandomizationError, disconnect_entrance_for_randomization
 from worlds.generic.Rules import add_rule, set_rule
 
 if TYPE_CHECKING:
@@ -292,7 +295,6 @@ def create_event_items(self):
 '''
 # I love this trick :) '''
 
-
 def create_regions(world: "ApeEscapeWorld"):
     options = world.options
     player = world.player
@@ -307,11 +309,19 @@ def create_regions(world: "ApeEscapeWorld"):
     TSR1T3 = Region(AEDoor.TIME_MAIN_MINIGAME.value, player, multiworld)
     TSR2T1 = Region(AEDoor.TIME_TRAINING_MAIN.value, player, multiworld)
     TSR2T2 = Region(AEDoor.TIME_TRAINING_WATERNET.value, player, multiworld)
+    TSR2T3 = Region(AEDoor.TIME_TRAINING_RADAR.value, player, multiworld)
+    TSR2T4 = Region(AEDoor.TIME_TRAINING_SLING.value, player, multiworld)
+    TSR2T5 = Region(AEDoor.TIME_TRAINING_HOOP.value, player, multiworld)
+    TSR2T6 = Region(AEDoor.TIME_TRAINING_FLYER.value, player, multiworld)
+    TSR2T7 = Region(AEDoor.TIME_TRAINING_CAR.value, player, multiworld)
+    TSR2T8 = Region(AEDoor.TIME_TRAINING_PUNCH.value, player, multiworld)
+    TSR2T2 = Region(AEDoor.TIME_TRAINING_WATERNET.value, player, multiworld)
     TSR3T1 = Region(AEDoor.TIME_MINIGAME_MAIN.value, player, multiworld)
-    
+
+
     # 1-1
     L11 = Region(AEDoor.FF_ENTRY.value, player, multiworld)
-    
+
     noonan = Region(AELocation.W1L1Noonan.value, player, multiworld)
     noonan.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], noonan) for loc_name in get_array([1])]
     jorjy = Region(AELocation.W1L1Jorjy.value, player, multiworld)
@@ -320,10 +330,10 @@ def create_regions(world: "ApeEscapeWorld"):
     nati.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], nati) for loc_name in get_array([3])]
     trayc = Region(AELocation.W1L1TrayC.value, player, multiworld)
     trayc.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], trayc) for loc_name in get_array([4])]
-    
+
     # 1-2
     L12 = Region(AEDoor.PO_ENTRY.value, player, multiworld)
-    
+
     shay = Region(AELocation.W1L2Shay.value, player, multiworld)
     shay.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], shay) for loc_name in get_array([5])]
     drmonk = Region(AELocation.W1L2DrMonk.value, player, multiworld)
@@ -336,14 +346,14 @@ def create_regions(world: "ApeEscapeWorld"):
     gornif.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], gornif) for loc_name in get_array([9])]
     tyrone = Region(AELocation.W1L2Tyrone.value, player, multiworld)
     tyrone.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], tyrone) for loc_name in get_array([10])]
-    
+
     # 1-3
     L13 = Region(AEDoor.ML_ENTRY.value, player, multiworld)
     L13R1T2 = Region(AEDoor.ML_ENTRY_VOLCANO.value, player, multiworld)
     L13R1T3 = Region(AEDoor.ML_ENTRY_TRICERATOPS.value, player, multiworld)
     L13R2T1 = Region(AEDoor.ML_VOLCANO_ENTRY.value, player, multiworld)
     L13R3T1 = Region(AEDoor.ML_TRICERATOPS_ENTRY.value, player, multiworld)
-    
+
     scotty = Region(AELocation.W1L3Scotty.value, player, multiworld)
     scotty.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], scotty) for loc_name in get_array([11])]
     coco = Region(AELocation.W1L3Coco.value, player, multiworld)
@@ -358,7 +368,7 @@ def create_regions(world: "ApeEscapeWorld"):
     rocky.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], rocky) for loc_name in get_array([16])]
     moggan = Region(AELocation.W1L3Moggan.value, player, multiworld)
     moggan.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], moggan) for loc_name in get_array([17])]
-    
+
     # 2-1
     L21 = Region(AEDoor.TJ_ENTRY.value, player, multiworld)
     L21R1T2 = Region(AEDoor.TJ_ENTRY_MUSHROOM.value, player, multiworld)
@@ -373,7 +383,7 @@ def create_regions(world: "ApeEscapeWorld"):
     L21R4T5 = Region(AEDoor.TJ_TENT_BOULDER.value, player, multiworld)
     L21R5T1 = Region(AEDoor.TJ_BOULDER_ENTRY.value, player, multiworld)
     L21R5T4 = Region(AEDoor.TJ_BOULDER_TENT.value, player, multiworld)
-    
+
     marquez = Region(AELocation.W2L1Marquez.value, player, multiworld)
     marquez.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], marquez) for loc_name in get_array([18])]
     livinston = Region(AELocation.W2L1Livinston.value, player, multiworld)
@@ -402,7 +412,7 @@ def create_regions(world: "ApeEscapeWorld"):
     elehcim.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], elehcim) for loc_name in get_array([28])]
     selur = Region(AELocation.W2L1Selur.value, player, multiworld)
     selur.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], selur) for loc_name in get_array([27])]
-    
+
     # 2-2
     L22 = Region(AEDoor.DR_ENTRY.value, player, multiworld)
     L22R1T21 = Region(AEDoor.DR_OUTSIDE_FENCE.value, player, multiworld)
@@ -444,7 +454,7 @@ def create_regions(world: "ApeEscapeWorld"):
     trance.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], trance) for loc_name in get_array([43])]
     chino = Region(AELocation.W2L2Chino.value, player, multiworld)
     chino.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], chino) for loc_name in get_array([44])]
-    
+
     # 2-3
     L23 = Region(AEDoor.CR_ENTRY.value, player, multiworld)
     L23R1T2 = Region(AEDoor.CR_ENTRY_SIDE_ROOM.value, player, multiworld)
@@ -474,12 +484,12 @@ def create_regions(world: "ApeEscapeWorld"):
 
     # 3-1
     L31 = Region(AEDoor.SA_ENTRY.value, player, multiworld)
-    
+
     # 4-1
     L41 = Region(AEDoor.CB_ENTRY.value, player, multiworld)
     L41R1T2 = Region(AEDoor.CB_ENTRY_SECOND_ROOM.value, player, multiworld)
     L41R2T1 = Region(AEDoor.CB_SECOND_ROOM_ENTRY.value, player, multiworld)
-    
+
     coolblue = Region(AELocation.W4L1CoolBlue.value, player, multiworld)
     coolblue.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], coolblue) for loc_name in get_array([53])]
     sandy = Region(AELocation.W4L1Sandy.value, player, multiworld)
@@ -496,12 +506,12 @@ def create_regions(world: "ApeEscapeWorld"):
     moko.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], moko) for loc_name in get_array([59])]
     puka = Region(AELocation.W4L1Puka.value, player, multiworld)
     puka.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], puka) for loc_name in get_array([60])]
-    
+
     # 4-2
     L42 = Region(AEDoor.CCAVE_ENTRY.value, player, multiworld)
     L42R1T2 = Region(AEDoor.CCAVE_ENTRY_SECOND_ROOM.value, player, multiworld)
     L42R2T1 = Region(AEDoor.CCAVE_SECOND_ROOM_ENTRY.value, player, multiworld)
-    
+
     chip = Region(AELocation.W4L2Chip.value, player, multiworld)
     chip.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], chip) for loc_name in get_array([61])]
     oreo = Region(AELocation.W4L2Oreo.value, player, multiworld)
@@ -518,7 +528,7 @@ def create_regions(world: "ApeEscapeWorld"):
     bongbong.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], bongbong) for loc_name in get_array([67])]
     pickles = Region(AELocation.W4L2Pickles.value, player, multiworld)
     pickles.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], pickles) for loc_name in get_array([68])]
-    
+
     # 4-3
     L43 = Region(AEDoor.DI_ENTRY.value, player, multiworld)
     L43R1T2 = Region(AEDoor.DI_ENTRY_STOMACH.value, player, multiworld)
@@ -532,7 +542,7 @@ def create_regions(world: "ApeEscapeWorld"):
     L43R4T5 = Region(AEDoor.DI_GALLERY_TENTACLE.value, player, multiworld)
     L43R4HELP = Region(AEDoor.DI_GALLERYBOULDER.value, player, multiworld)
     L43R5T4 = Region(AEDoor.DI_TENTACLE.value, player, multiworld)
-    
+
     stuw = Region(AELocation.W4L3Stuw.value, player, multiworld)
     stuw.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], stuw) for loc_name in get_array([69])]
     tonton = Region(AELocation.W4L3TonTon.value, player, multiworld)
@@ -555,10 +565,10 @@ def create_regions(world: "ApeEscapeWorld"):
     horke.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], horke) for loc_name in get_array([78])]
     quirck = Region(AELocation.W4L3Quirck.value, player, multiworld)
     quirck.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], quirck) for loc_name in get_array([79])]
-    
+
     # 5-1
     L51 = Region(AEDoor.SM_ENTRY.value, player, multiworld)
-    
+
     popcicle = Region(AELocation.W5L1Popcicle.value, player, multiworld)
     popcicle.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], popcicle) for loc_name in get_array([80])]
     iced = Region(AELocation.W5L1Iced.value, player, multiworld)
@@ -571,14 +581,14 @@ def create_regions(world: "ApeEscapeWorld"):
     rickets.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], rickets) for loc_name in get_array([84])]
     chilly = Region(AELocation.W5L1Chilly.value, player, multiworld)
     chilly.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], chilly) for loc_name in get_array([85])]
-    
+
     # 5-2
     L52 = Region(AEDoor.FR_ENTRY.value, player, multiworld)
     L52R1T2 = Region(AEDoor.FR_ENTRY_CAVERNS.value, player, multiworld)
     L52R2T1 = Region(AEDoor.FR_CAVERNS_ENTRY.value, player, multiworld)
     L52R2T3 = Region(AEDoor.FR_CAVERNS_WATER.value, player, multiworld)
     L52R3T2 = Region(AEDoor.FR_WATER_CAVERNS.value, player, multiworld)
-    
+
     storm = Region(AELocation.W5L2Storm.value, player, multiworld)
     storm.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], storm) for loc_name in get_array([86])]
     qube = Region(AELocation.W5L2Qube.value, player, multiworld)
@@ -597,14 +607,14 @@ def create_regions(world: "ApeEscapeWorld"):
     sharpe.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], sharpe) for loc_name in get_array([93])]
     droog = Region(AELocation.W5L2Droog.value, player, multiworld)
     droog.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], droog) for loc_name in get_array([94])]
-    
+
     # 5-3
     L53 = Region(AEDoor.HS_ENTRY.value, player, multiworld)
     L53R1T2 = Region(AEDoor.HS_ENTRY_HOT_SPRING.value, player, multiworld)
     L53R1T3 = Region(AEDoor.HS_ENTRY_POLAR_BEAR_CAVE.value, player, multiworld)
     L53R2T1 = Region(AEDoor.HS_HOT_SPRING.value, player, multiworld)
     L53R3T1 = Region(AEDoor.HS_POLAR_BEAR_CAVE.value, player, multiworld)
-    
+
     punky = Region(AELocation.W5L3Punky.value, player, multiworld)
     punky.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], punky) for loc_name in get_array([95])]
     ameego = Region(AELocation.W5L3Ameego.value, player, multiworld)
@@ -626,14 +636,14 @@ def create_regions(world: "ApeEscapeWorld"):
 
     # 6-1
     L61 = Region(AEDoor.GA_ENTRY.value, player, multiworld)
-    
+
     # 7-1
     L71 = Region(AEDoor.ST_ENTRY.value, player, multiworld)
     L71R1T2 = Region(AEDoor.ST_ENTRY_TEMPLE.value, player, multiworld)
     L71R1T3 = Region(AEDoor.ST_ENTRY_WELL.value, player, multiworld)
     L71R2T1 = Region(AEDoor.ST_TEMPLE.value, player, multiworld)
     L71R3T1 = Region(AEDoor.ST_WELL.value, player, multiworld)
-    
+
     taku = Region(AELocation.W7L1Taku.value, player, multiworld)
     taku.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], taku) for loc_name in get_array([104])]
     rocka = Region(AELocation.W7L1Rocka.value, player, multiworld)
@@ -658,7 +668,7 @@ def create_regions(world: "ApeEscapeWorld"):
     elly.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], elly) for loc_name in get_array([114])]
     chunky = Region(AELocation.W7L1Chunky.value, player, multiworld)
     chunky.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], chunky) for loc_name in get_array([115])]
-    
+
     # 7-2
     L72 = Region(AEDoor.WSW_ENTRY.value, player, multiworld)
     L72R1T2 = Region(AEDoor.WSW_ENTRY_GONG.value, player, multiworld)
@@ -669,7 +679,7 @@ def create_regions(world: "ApeEscapeWorld"):
     L72R4T3 = Region(AEDoor.WSW_OBSTACLE_MIDDLE.value, player, multiworld)
     L72R4T5 = Region(AEDoor.WSW_OBSTACLE_BARREL.value, player, multiworld)
     L72R5T4 = Region(AEDoor.WSW_BARREL_OBSTACLE.value, player, multiworld)
-    
+
     minky = Region(AELocation.W7L2Minky.value, player, multiworld)
     minky.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], minky) for loc_name in get_array([116])]
     zobbro = Region(AELocation.W7L2Zobbro.value, player, multiworld)
@@ -712,7 +722,7 @@ def create_regions(world: "ApeEscapeWorld"):
     L73R6T51 = Region(AEDoor.CC_BUTTON_BASEMENT_WATER.value, player, multiworld)
     L73R6T52 = Region(AEDoor.CC_BUTTON_BASEMENT_LEDGE.value, player, multiworld)
     L73R7T1 = Region(AEDoor.CC_BOSS_ROOM.value, player, multiworld)
-    
+
     L73BOSS = Region(AELocation.Boss73.value, player, multiworld)
     L73BOSS.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], L73BOSS) for loc_name in get_array([500])]
     naners = Region(AELocation.W7L3Naners.value, player, multiworld)
@@ -755,7 +765,7 @@ def create_regions(world: "ApeEscapeWorld"):
     joey.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], joey) for loc_name in get_array([144])]
     donqui = Region(AELocation.W7L3Donqui.value, player, multiworld)
     donqui.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], donqui) for loc_name in get_array([145])]
-    
+
     # 8-1
     L81 = Region(AEDoor.CP_ENTRY.value, player, multiworld)
     L81R1T2 = Region(AEDoor.CP_OUTSIDE_SEWERS_FRONT.value, player, multiworld)
@@ -843,7 +853,7 @@ def create_regions(world: "ApeEscapeWorld"):
     strung.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], strung) for loc_name in get_array([167])]
     khamo = Region(AELocation.W8L2Khamo.value, player, multiworld)
     khamo.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], khamo) for loc_name in get_array([168])]
-    
+
     # 8-3
     L83 = Region(AEDoor.TVT_ENTRY.value, player, multiworld)
     L83R1T2 = Region(AEDoor.TVT_OUTSIDE_LOBBY.value, player, multiworld)
@@ -856,7 +866,7 @@ def create_regions(world: "ApeEscapeWorld"):
     L83R4T6 = Region(AEDoor.TVT_TANK_BOSS.value, player, multiworld)
     L83R5T4 = Region(AEDoor.TVT_FAN_TANK.value, player, multiworld)
     L83R6T4 = Region(AEDoor.TVT_BOSS_TANK.value, player, multiworld)
-    
+
     L83BOSS = Region(AELocation.Boss83.value, player, multiworld)
     L83BOSS.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], L83BOSS) for loc_name in get_array([501])]
     fredo = Region(AELocation.W8L3Fredo.value, player, multiworld)
@@ -983,9 +993,9 @@ def create_regions(world: "ApeEscapeWorld"):
     carlito.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], carlito) for loc_name in get_array([203])]
     bg = Region(AELocation.W9L1BG.value, player, multiworld)
     bg.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], bg) for loc_name in get_array([204])]
-    
+
     regions = [menu,
-               TS, TSR1T2, TSR1T3, TSR2T1, TSR2T2, TSR3T1,
+               TS, TSR1T2, TSR1T3, TSR2T1, TSR2T2, TSR2T3, TSR2T4, TSR2T5, TSR2T6, TSR2T7, TSR2T8, TSR3T1,
                L11, noonan, jorjy, nati, trayc,
                L12, shay, drmonk, grunt, ahchoo, gornif, tyrone,
                L13, L13R1T2, L13R1T3, L13R2T1, L13R3T1, scotty, coco, jthomas, mattie, barney, rocky, moggan,
@@ -1002,7 +1012,7 @@ def create_regions(world: "ApeEscapeWorld"):
                L61,
                L71, L71R1T2, L71R1T3, L71R2T1, L71R3T1, taku, rocka, maralea, wog, mayi, owyang, long, elly, chunky, voti, queltin, phaldo,
                L72, L72R1T2, L72R2T1, L72R2T3, L72R3T2, L72R3T4, L72R4T3, L72R4T5, L72R5T4, minky, zobbro, xeeto, moops, zanabi, doxs, buddah, fooey, kong, phool,
-               L73, L73R1T2, L73R1T3, L73R1T5, L73R1T7, L73R2T1, L73R2T3, L73R2T4, L73R3T1, L73R3T2, L73R4T2, L73R4T5, L73R5T1, L73R5T4, L73R5T61, L73R5T62, L73R6T51, L73R6T52, L73R7T1, L73R2HELP, L73BOSS, 
+               L73, L73R1T2, L73R1T3, L73R1T5, L73R1T7, L73R2T1, L73R2T3, L73R2T4, L73R3T1, L73R3T2, L73R4T2, L73R4T5, L73R5T1, L73R5T4, L73R5T61, L73R5T62, L73R6T51, L73R6T52, L73R7T1, L73R2HELP, L73BOSS,
                robart, igor, naners, neeners, charles, gustav, wilhelm, emmanuel, sircutty, calligan, castalist, deveneom, astur, kilserack, ringo, densil, figero, fej, joey, donqui,
                L81, L81R1T2, L81R1T3, L81R2T1, L81R2T3, L81R3T1, L81R3T2, L81R3HELP, kaine, jaxx, gehry, alcatraz, tino, qbee, mcmanic, dywan, ckhutch, winky, bluv, camper, huener,
                L82, L82R1T2, L82R2T1, L82R2T3, L82R2T41, L82R2T42, L82R2T5, L82R3T2, L82R4T21, L82R4T22, L82R5T2, L82R5T6, L82R6T5, L82R6T7, L82R7T6,
@@ -1011,7 +1021,7 @@ def create_regions(world: "ApeEscapeWorld"):
                L83, L83R1T2, L83R2T1, L83R2T3, L83R2T4, L83R3T2, L83R4T2, L83R4T5, L83R4T6, L83R5T4, L83R6T4, L83BOSS, fredo, charlee, mach3, tortuss, manic, ruptdis, eighty7, danio, roosta, tellis, whack, frostee,
                L91, L91R1T2, L91R1T3, L91R1T4, L91R1T5, L91R1T10, L91R2T1, L91R3T1, L91R3T6E, L91R3T9X, L91R4T1, L91R5T1, L91R6T3X, L91R6T7E, L91R7T6X, L91R7T8E, L91R8T7X, L91R8T9, L91R9T3E, L91R9T8, L91R10T1, L91R10T11, L91R11T10, L91R11T12, L91R11T13, L91R12T11, L91R13T11, L91R13T14, L91R13T15, L91R13T16X, L91R13T17E, L91R14T13, L91R15T13, L91R15T16, L91R16T15, L91R16T13E, L91R17T13X, L91BOSS, L91PROF, L91JAKE,
                goopo, porto, slam, junk, crib, nak, cloy, shaw, flea, schafette, donovan, laura, uribe, gordo, raeski, poopie, teacup, shine, wrench, bronson, bungee, carro, carlito, bg]
-    
+
 
     # Don't create Specter 2 location if it would be guaranteed to be post-goal.
 
@@ -1152,6 +1162,109 @@ def create_regions(world: "ApeEscapeWorld"):
         mailbox63 = Region(AELocation.Mailbox63.value, player, multiworld)
         mailbox63.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox63) for loc_name in get_array([463])]
         regions += [mailbox60, mailbox61, mailbox62, mailbox63]
+
+    # Training Rooms mailboxes
+    if options.trainingrooms == "mailboxes":
+        mailbox64 = Region(AELocation.Mailbox64.value, player, multiworld)
+        mailbox64.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox64) for loc_name in
+                                get_array([464])]
+        mailbox65 = Region(AELocation.Mailbox65.value, player, multiworld)
+        mailbox65.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox65) for loc_name in
+                                get_array([465])]
+        mailbox66 = Region(AELocation.Mailbox66.value, player, multiworld)
+        mailbox66.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox66) for loc_name in
+                                get_array([466])]
+        mailbox67 = Region(AELocation.Mailbox67.value, player, multiworld)
+        mailbox67.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox67) for loc_name in
+                                get_array([467])]
+        mailbox68 = Region(AELocation.Mailbox68.value, player, multiworld)
+        mailbox68.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox68) for loc_name in
+                                get_array([468])]
+        mailbox69 = Region(AELocation.Mailbox69.value, player, multiworld)
+        mailbox69.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox69) for loc_name in
+                                get_array([469])]
+        mailbox70 = Region(AELocation.Mailbox70.value, player, multiworld)
+        mailbox70.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox70) for loc_name in
+                                get_array([470])]
+        mailbox71 = Region(AELocation.Mailbox71.value, player, multiworld)
+        mailbox71.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox71) for loc_name in
+                                get_array([471])]
+        mailbox72 = Region(AELocation.Mailbox72.value, player, multiworld)
+        mailbox72.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox72) for loc_name in
+                                get_array([472])]
+        mailbox73 = Region(AELocation.Mailbox73.value, player, multiworld)
+        mailbox73.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox73) for loc_name in
+                                get_array([473])]
+        mailbox74 = Region(AELocation.Mailbox74.value, player, multiworld)
+        mailbox74.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox74) for loc_name in
+                                get_array([474])]
+        mailbox75 = Region(AELocation.Mailbox75.value, player, multiworld)
+        mailbox75.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox75) for loc_name in
+                                get_array([475])]
+        mailbox76 = Region(AELocation.Mailbox76.value, player, multiworld)
+        mailbox76.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox76) for loc_name in
+                                get_array([476])]
+        mailbox77 = Region(AELocation.Mailbox77.value, player, multiworld)
+        mailbox77.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox77) for loc_name in
+                                get_array([477])]
+        mailbox78 = Region(AELocation.Mailbox78.value, player, multiworld)
+        mailbox78.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox78) for loc_name in
+                                get_array([478])]
+        mailbox79 = Region(AELocation.Mailbox79.value, player, multiworld)
+        mailbox79.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox79) for loc_name in
+                                get_array([479])]
+        mailbox80 = Region(AELocation.Mailbox80.value, player, multiworld)
+        mailbox80.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox80) for loc_name in
+                                get_array([480])]
+        mailbox81 = Region(AELocation.Mailbox81.value, player, multiworld)
+        mailbox81.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox81) for loc_name in
+                                get_array([481])]
+        mailbox82 = Region(AELocation.Mailbox82.value, player, multiworld)
+        mailbox82.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox82) for loc_name in
+                                get_array([482])]
+        mailbox83 = Region(AELocation.Mailbox83.value, player, multiworld)
+        mailbox83.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox83) for loc_name in
+                                get_array([483])]
+        mailbox84 = Region(AELocation.Mailbox84.value, player, multiworld)
+        mailbox84.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox84) for loc_name in
+                                get_array([484])]
+        mailbox85 = Region(AELocation.Mailbox85.value, player, multiworld)
+        mailbox85.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox85) for loc_name in
+                                get_array([485])]
+        mailbox86 = Region(AELocation.Mailbox86.value, player, multiworld)
+        mailbox86.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox86) for loc_name in
+                                get_array([486])]
+        mailbox87 = Region(AELocation.Mailbox87.value, player, multiworld)
+        mailbox87.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], mailbox87) for loc_name in
+                                get_array([487])]
+        regions += [mailbox64, mailbox65, mailbox66, mailbox67, mailbox68, mailbox69, mailbox70, mailbox71, mailbox72,
+                    mailbox73, mailbox74, mailbox75, mailbox76, mailbox77, mailbox78, mailbox79, mailbox80, mailbox81,
+                    mailbox82, mailbox83, mailbox84, mailbox85, mailbox86, mailbox87]
+    # Training Rooms Completions
+    if options.trainingrooms == "completion":
+        waterTraining = Region(AELocation.WaterTraining.value, player, multiworld)
+        waterTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], waterTraining) for
+                                    loc_name in get_array([498])]
+        radarTraining = Region(AELocation.RadarTraining.value, player, multiworld)
+        radarTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], radarTraining) for
+                                    loc_name in get_array([492])]
+        slingTraining = Region(AELocation.SlingTraining.value, player, multiworld)
+        slingTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], slingTraining) for
+                                    loc_name in get_array([493])]
+        hoopTraining = Region(AELocation.HoopTraining.value, player, multiworld)
+        hoopTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], hoopTraining) for loc_name
+                                   in get_array([494])]
+        flyerTraining = Region(AELocation.FlyerTraining.value, player, multiworld)
+        flyerTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], flyerTraining) for
+                                    loc_name in get_array([496])]
+        carTraining = Region(AELocation.CarTraining.value, player, multiworld)
+        carTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], carTraining) for loc_name in
+                                  get_array([497])]
+        punchTraining = Region(AELocation.PunchTraining.value, player, multiworld)
+        punchTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], punchTraining) for
+                                    loc_name in get_array([495])]
+        regions += [waterTraining, radarTraining, slingTraining, hoopTraining, flyerTraining, carTraining, punchTraining]
+
     # The rest are only needed for mailbox shuffle
     if options.mailbox == "true":
         # 1-1
@@ -1297,7 +1410,51 @@ def create_regions(world: "ApeEscapeWorld"):
                     mailbox31, mailbox32, mailbox33, mailbox34, mailbox35, mailbox36, mailbox37, mailbox38, mailbox39, mailbox40,
                     mailbox41, mailbox42, mailbox43, mailbox44, mailbox45, mailbox46, mailbox47, mailbox48, mailbox49, mailbox50,
                     mailbox51, mailbox52, mailbox53, mailbox54, mailbox55, mailbox56, mailbox57, mailbox58, mailbox59]
-
+    if options.jacket == "true":
+        jacket1 = Region(AELocation.Jacket1.value, player, multiworld)
+        jacket1.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket1) for loc_name in get_array([251])]
+        jacket2 = Region(AELocation.Jacket2.value, player, multiworld)
+        jacket2.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket2) for loc_name in get_array([252])]
+        jacket3 = Region(AELocation.Jacket3.value, player, multiworld)
+        jacket3.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket3) for loc_name in get_array([253])]
+        jacket4 = Region(AELocation.Jacket4.value, player, multiworld)
+        jacket4.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket4) for loc_name in get_array([254])]
+        jacket5 = Region(AELocation.Jacket5.value, player, multiworld)
+        jacket5.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket5) for loc_name in get_array([255])]
+        jacket6 = Region(AELocation.Jacket6.value, player, multiworld)
+        jacket6.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket6) for loc_name in get_array([256])]
+        jacket7 = Region(AELocation.Jacket7.value, player, multiworld)
+        jacket7.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket7) for loc_name in get_array([257])]
+        jacket8 = Region(AELocation.Jacket8.value, player, multiworld)
+        jacket8.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket8) for loc_name in get_array([258])]
+        jacket9 = Region(AELocation.Jacket9.value, player, multiworld)
+        jacket9.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket9) for loc_name in get_array([259])]
+        jacket10 = Region(AELocation.Jacket10.value, player, multiworld)
+        jacket10.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket10) for loc_name in get_array([260])]
+        jacket11 = Region(AELocation.Jacket11.value, player, multiworld)
+        jacket11.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket11) for loc_name in get_array([261])]
+        jacket12 = Region(AELocation.Jacket12.value, player, multiworld)
+        jacket12.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket12) for loc_name in get_array([262])]
+        jacket13 = Region(AELocation.Jacket13.value, player, multiworld)
+        jacket13.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket13) for loc_name in get_array([263])]
+        jacket14 = Region(AELocation.Jacket14.value, player, multiworld)
+        jacket14.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket14) for loc_name in get_array([264])]
+        jacket15 = Region(AELocation.Jacket15.value, player, multiworld)
+        jacket15.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket15) for loc_name in get_array([265])]
+        jacket16 = Region(AELocation.Jacket16.value, player, multiworld)
+        jacket16.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket16) for loc_name in get_array([266])]
+        jacket17 = Region(AELocation.Jacket17.value, player, multiworld)
+        jacket17.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket17) for loc_name in get_array([267])]
+        jacket18 = Region(AELocation.Jacket18.value, player, multiworld)
+        jacket18.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket18) for loc_name in get_array([268])]
+        jacket19 = Region(AELocation.Jacket19.value, player, multiworld)
+        jacket19.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket19) for loc_name in get_array([269])]
+        jacket20 = Region(AELocation.Jacket20.value, player, multiworld)
+        jacket20.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket20) for loc_name in get_array([270])]
+        jacket21 = Region(AELocation.Jacket21.value, player, multiworld)
+        jacket21.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket21) for loc_name in get_array([271])]
+        regions += [jacket1, jacket2, jacket3, jacket4, jacket5, jacket6, jacket7, jacket8, jacket9, jacket10, jacket11, jacket12, jacket13, jacket14,
+                    jacket15, jacket16, jacket17, jacket18, jacket19, jacket20,jacket21]
     multiworld.regions.extend(regions)
     create_event_items(world)
 

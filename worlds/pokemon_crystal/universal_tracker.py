@@ -19,11 +19,16 @@ def load_ut_slot_data(world: "PokemonCrystalWorld"):
         except AttributeError:
             pass
 
-    # Correct slot_data keys that collide with option names but store derived values
-    world.options.free_fly_location.value = world.ut_slot_data["free_fly_location_option"]
-    world.options.dexcountsanity.value = world.ut_slot_data["dexcountsanity_option"]
-    world.options.enable_mischief.value = world.ut_slot_data["enable_mischief_option"]
-    world.options.trap_weights.value = world.ut_slot_data["trap_weights_option"]
+    # Correct slot_data keys that collide with option names but store derived values.
+    # These _option keys were added after 5.4.0, so guard with `in` for backwards compat.
+    if "free_fly_location_option" in world.ut_slot_data:
+        world.options.free_fly_location.value = world.ut_slot_data["free_fly_location_option"]
+    if "dexcountsanity_option" in world.ut_slot_data:
+        world.options.dexcountsanity.value = world.ut_slot_data["dexcountsanity_option"]
+    if "enable_mischief_option" in world.ut_slot_data:
+        world.options.enable_mischief.value = world.ut_slot_data["enable_mischief_option"]
+    if "trap_weights_option" in world.ut_slot_data:
+        world.options.trap_weights.value = world.ut_slot_data["trap_weights_option"]
 
     world.generated_dexcountsanity = world.ut_slot_data["dexcountsanity_counts"]
     world.generated_dexsanity = {get_pokemon_id_by_rom_id(id) for id in world.ut_slot_data["dexsanity_pokemon"]}

@@ -240,12 +240,25 @@ def set_all_location_rules(world: Schedule1World, locationData) -> None:
 
 def set_completion_condition(world: Schedule1World, victoryData) -> None:
     # Victory conditions are loaded from victory.json
-    # > 0 means cartel is necessary, and we need to check all applicable conditions
-    if world.options.goal > 0:
-        # Build the victory rule from the requirements in victory.json
-        # All applicable option conditions must pass (AND logic)
-        rule = build_rule_from_requirements(world, victoryData.requirements, use_or_logic=False)
-        world.multiworld.completion_condition[world.player] = rule
-    else:
-        # Otherwise, money is farmable no matter what.
-        world.multiworld.completion_condition[world.player] = lambda state: True
+    # Goal options:
+    #   0 = bomb_fragments_only: collect N bomb fragments
+    #   1 = missions_only: complete cartel missions
+    #   2 = missions_networth: complete cartel missions (networth checked in-game)
+    #   3 = missions_bomb_fragments: complete cartel missions AND collect N bomb fragments
+    #   4 = missions_networth_bomb_fragments: complete cartel missions AND collect N bomb fragments (networth in-game)
+    #   5 = bomb_fragments_networth: collect N bomb fragments (networth checked in-game)
+
+    requires_missions = world.options.goal in (1, 2, 3, 4)
+    requires_fragments = world.options.goal in (0, 3, 4, 5)
+
+    rules: list[Callable[[CollectionState], bool]] = []
+
+    if requires_missions:
+        rules.append(build_rule_from_requirements(world, victoryData.requirements, use_or_logic=False))
+
+    if requires_fragments:
+        fragments_required = int(world.options.number_of_bomb_fragments_required)
+        rules.append(lambda state, count=fragments_required: state.has("Bomb Fragment", world.player, count))
+
+    # Every valid goal (0-4) populates at least one rule
+    world.multiworld.completion_condition[world.player] = lambda state: all(rule(state) for rule in rules)

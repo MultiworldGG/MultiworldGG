@@ -1,6 +1,0 @@
-{
-  "$schema": "https://github.com/ManualForArchipelago/Manual/raw/main/schemas/Manual.game.schema.json",
-  "game": "TheSimpsonsHitandRun",
-  "creator": "Caesius",
-  "filler_item_name": "Donut"
-}

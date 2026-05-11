@@ -1,10 +1,10 @@
 from BaseClasses import Region
-from .Types import Sly1Location
-from .Locations import location_table, is_valid_location
+from worlds.sly1.Types import Sly1Location
+from worlds.sly1.Locations import location_table, is_valid_location
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import Sly1World
+    from worlds.sly1 import Sly1World
 
 ## Would be for level randomizing if that ever happens
 # level_names = {

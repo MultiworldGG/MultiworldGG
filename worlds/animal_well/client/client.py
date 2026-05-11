@@ -1662,7 +1662,7 @@ def launch(*args):
         # handle if text client is launched using the "archipelago://name:pass@host:port" url from webhost
         if args.url:
             url = urllib.parse.urlparse(args.url)
-            if url.scheme == "archipelago":
+            if url.scheme == "archipelago" or url.scheme == "mwgg":
                 args.connect = url.netloc
                 if url.username:
                     args.name = urllib.parse.unquote(url.username)

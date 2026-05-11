@@ -775,7 +775,7 @@ commands.add_command("ap-get-technology", "Grant a technology, used by the Archi
     if index == nil then
         game.print("ap-get-technology is only to be used by the Archipelago Factorio Client")
         return
-    elseif index == -1 then -- for coop sync and restoring from an older savegame
+    elseif index == "-1" then -- for coop sync and restoring from an older savegame
         tech = force.technologies[item_name]
         if tech.researched ~= true then
             game.print({"", "Received [technology=" .. tech.name .. "] as it is already checked."})
@@ -855,6 +855,10 @@ end)
 
 commands.add_command("toggle-ap-send-filter", "Toggle filtering of item sends that get displayed in-game to only those that involve you.", function(call)
     log("Player command toggle-ap-send-filter") -- notifies client
+end)
+
+commands.add_command("toggle-ap-connection-change-filter", "Toggle filtering of players joining or parting", function(call)
+    log("Player command toggle-ap-connection-change-filter") -- notifies client
 end)
 
 commands.add_command("toggle-ap-chat", "Toggle sending of chat messages from players on the Factorio server to Archipelago.", function(call)

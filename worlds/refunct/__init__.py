@@ -1,5 +1,6 @@
 
 import pkgutil
+from collections import defaultdict
 from typing import Any, Dict, List, Union
 
 import orjson
@@ -10,7 +11,7 @@ from worlds.AutoWorld import WebWorld, World
 
 from .Items import RefunctItem, item_table, item_groups
 from .Locations import location_table, RefunctLocation, starting_platform, platforms_with_button_on_them, platforms_without_button_ids, platforms_with_button_ids, block_brawl_scores, block_blub_scores
-from .Options import Goal, RefunctOptions, Traps, Cubes, ExtraCubes, UnderwaterCubes, refunct_option_groups
+from .Options import Goal, RefunctOptions, RenameGrass, RenameFlowers, Traps, Cubes, ExtraCubes, UnderwaterCubes, refunct_option_groups
 
 
 class RefunctWeb(WebWorld):
@@ -45,7 +46,7 @@ class RefunctWorld(World):
     
     item_name_groups = item_groups
 
-    ap_world_version = "1.0.0"        
+    ap_world_version = "1.1.1"        
         
     def get_filler_item_name(self) -> str:
         return ":)"
@@ -158,6 +159,12 @@ class RefunctWorld(World):
                 items_to_add.append(f"Climb {style} Minigame")
             for _ in range(10 - num_unlocks):
                 items_to_add.append("Flower")
+        if "Climb Narrow Minigame" in self.minigames:
+            style = "Narrow"
+            for _ in range(num_unlocks):
+                items_to_add.append(f"Climb {style} Minigame")
+            for _ in range(10 - num_unlocks):
+                items_to_add.append("Flower")
                     
         if "Block Blub Minigame" in self.minigames:
             for color in ["Reds", "Blues", "Greens", "Yellows"]:
@@ -169,6 +176,12 @@ class RefunctWorld(World):
         if "Refunct Mountain Minigame" in self.minigames:
             for _ in range(num_unlocks):
                 items_to_add.append("Refunct Mountain Minigame")
+            for _ in range(37 - num_unlocks):
+                items_to_add.append("Flower")
+                
+        if "Rando Mountain Minigame" in self.minigames:
+            for _ in range(num_unlocks):
+                items_to_add.append("Rando Mountain Minigame")
             for _ in range(37 - num_unlocks):
                 items_to_add.append("Flower")
                 
@@ -210,33 +223,7 @@ class RefunctWorld(World):
                         self.get_location(loc).place_locked_item(
                             self.create_item("Flower")
                         )
-            if "Climb Line Minigame" in self.minigames:
-                location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Climb Line" in i.name and "Minigame" in i.name]
-                location_names_el = self.multiworld.random.sample(location_names, 20)
-                for loc in location_names_el:
-                    if "Flower" in items_to_add:
-                        items_to_add.remove("Flower")
-                        self.get_location(loc).place_locked_item(
-                            self.create_item("Flower")
-                        )
-            if "Climb Spiral Minigame" in self.minigames:
-                location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Climb Spiral" in i.name and "Minigame" in i.name]
-                location_names_el = self.multiworld.random.sample(location_names, 20)
-                for loc in location_names_el:
-                    if "Flower" in items_to_add:
-                        items_to_add.remove("Flower")
-                        self.get_location(loc).place_locked_item(
-                            self.create_item("Flower")
-                        )
-            if "Climb Chaos Minigame" in self.minigames:
-                location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Climb Chaos" in i.name and "Minigame" in i.name]
-                location_names_el = self.multiworld.random.sample(location_names, 20)
-                for loc in location_names_el:
-                    if "Flower" in items_to_add:
-                        items_to_add.remove("Flower")
-                        self.get_location(loc).place_locked_item(
-                            self.create_item("Flower")
-                        )
+            # climb line, spiral, and chaos don't need locked flowers since they have so few checks.
             if "Block Blub Minigame" in self.minigames:
                 location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Block Blub Minigame" in i.name]
                 location_names_el = self.multiworld.random.sample(location_names, 24)
@@ -248,6 +235,15 @@ class RefunctWorld(World):
                         )
             if "Refunct Mountain Minigame" in self.minigames:
                 location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Refunct Mountain Minigame" in i.name]
+                location_names_el = self.multiworld.random.sample(location_names, 27)
+                for loc in location_names_el:
+                    if "Flower" in items_to_add:
+                        items_to_add.remove("Flower")
+                        self.get_location(loc).place_locked_item(
+                            self.create_item("Flower")
+                        )
+            if "Rando Mountain Minigame" in self.minigames:
+                location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Rando Mountain Minigame" in i.name]
                 location_names_el = self.multiworld.random.sample(location_names, 27)
                 for loc in location_names_el:
                     if "Flower" in items_to_add:
@@ -280,6 +276,116 @@ class RefunctWorld(World):
                     items_to_add.remove("Flower")
                     items_to_add.append(item)
                     
+        if self.options.replace_flowers_by_traps.value != 0:
+            number_change = abs((self.options.replace_flowers_by_traps.value * items_to_add.count("Flower")) // 100)
+            trap_items = [
+                "Dark skies",
+                "No skylight",
+                # "Disco sky",
+                "Starry sky",
+                "Red sky",
+                "Hurricane",
+            ]
+            if self.options.replace_flowers_by_traps.value < 0:
+                trap_items += [
+                    "Slo-mo",
+                    "Fast-mo",
+                    "Blurrrrgh",
+                ]
+            # replace flowers by a random trap:
+            for _ in range(number_change):
+                if "Flower" in items_to_add:
+                    items_to_add.remove("Flower")
+                    items_to_add.append(self.multiworld.random.choice(trap_items))
+            
+        actual_flowers = []        
+        if self.options.rename_flowers.value == RenameFlowers.option_english or self.options.rename_flowers.value == RenameFlowers.option_both:
+            actual_flowers += [
+                "Rose",
+                "Tulip",
+                "Sunflower",
+                "Lily",
+                "Orchid",
+                "Gerbera Daisy",
+                "Carnation",
+                "Hydrangea",
+                "Peony",
+                "Chrysanthemum",
+            ]
+        if self.options.rename_flowers.value == RenameFlowers.option_latin or self.options.rename_flowers.value == RenameFlowers.option_both:
+            actual_flowers += [
+                "Rosa",
+                "Tulipa",
+                "Helianthus annuus",
+                "Lilium",
+                "Orchidaceae",
+                "Gerbera jamesonii",
+                "Dianthus caryophyllus",
+                "Hydrangea macrophylla",
+                "Paeonia",
+                "Chrysanthemum indicum",
+            ]
+        if actual_flowers:
+            for i in range(len(items_to_add)):
+                if items_to_add[i] == "Flower":
+                    items_to_add[i] = self.multiworld.random.choice(actual_flowers)
+        
+        actual_grasses = []
+        if self.options.rename_grass.value == RenameGrass.option_english or self.options.rename_grass.value == RenameGrass.option_both:
+            actual_grasses += [
+                "Fine fescue",
+                "Tall fescue",
+                "Kentucky bluegrass",
+                "Perennial ryegrass",
+                "Bermuda grass",
+                "Centipede grass",
+                "St. Augustine grass",
+                "Zoysia grass",
+                "Bahiagrass",
+                "Buffalo grass",
+                "Blue fescue grass",
+                "Little bluestem",
+                "Shenandoah switchgrass",
+                "Purple fountain grass",
+                "Pink muhly grass",
+                "Zebra grass",
+                "Maiden grass",
+                "Pampas grass",
+                "Blue oat grass",
+                "Feather reed grass",
+                "Mexican feather grass",
+            ]
+        if self.options.rename_grass.value == RenameGrass.option_latin or self.options.rename_grass.value == RenameGrass.option_both:
+            actual_grasses += [
+                "Festuca rubra",
+                "Festuca arundinacea",
+                "Poa pratensis",
+                "Lolium perenne",
+                "Cynodon dactylon",
+                "Eremochloa ophiuroides",
+                "Stenotaphrum secundatum",
+                "Zoysia japonica",
+                "Paspalum notatum",
+                "Bouteloua dactyloides",
+                "Festuca glauca",
+                "Schizachyrium scoparium",
+                "Panicum virgatum Shenandoah",
+                "Pennisetum setaceum Rubrum",
+                "Muhlenbergia capillaris",
+                "Miscanthus sinensis Zebrinus",
+                "Miscanthus sinensis",
+                "Cortaderia selloana",
+                "Helictotrichon sempervirens",
+                "Calamagrostis x acutiflora",
+                "Nassella tenuissima",
+            ]
+        if actual_grasses:
+            for i in range(len(items_to_add)):
+                if items_to_add[i] == "Grass":
+                    items_to_add[i] = self.multiworld.random.choice(actual_grasses)
+                if isinstance(items_to_add[i], list) and items_to_add[i][0] == "Grass":
+                    items_to_add[i][0] = self.multiworld.random.choice(actual_grasses)
+                    
         for item in items_to_add:
             if isinstance(item, list) and item[1] == True:
                 self.multiworld.itempool.append(self.create_item(item[0], force_useful=True))
@@ -307,6 +413,10 @@ class RefunctWorld(World):
                 self.minigames.append(choice)
                 population.pop(idx)
                 weights.pop(idx)
+                                
+            # Seeker Minigame info
+            all_platforms = platforms_without_button_ids.copy() + platforms_with_button_ids.copy()
+            self.seeker_platforms = self.multiworld.random.sample(all_platforms, 10)
 
         regions = []
         
@@ -342,10 +452,6 @@ class RefunctWorld(World):
             for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Vanilla"]:
                 region_object = self.multiworld.get_region("Vanilla Minigame", self.player)
                 region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
-                
-        # Seeker Minigame info
-        all_platforms = platforms_without_button_ids.copy() + platforms_with_button_ids.copy()
-        self.seeker_platforms = self.multiworld.random.sample(all_platforms, 10)
         
         if "Seeker Minigame" in self.minigames:
             self.multiworld.regions.append(Region("Seeker Minigame", self.player, self.multiworld))
@@ -396,6 +502,13 @@ class RefunctWorld(World):
                 region_object = self.multiworld.get_region(f"Climb {style} Minigame", self.player)
                 region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
         
+        if "Climb Narrow Minigame" in self.minigames:
+            style = "Narrow"
+            self.multiworld.regions.append(Region(f"Climb {style} Minigame", self.player, self.multiworld))
+            for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == f"Climb {style}"]:
+                region_object = self.multiworld.get_region(f"Climb {style} Minigame", self.player)
+                region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
+        
         if "Block Blub Minigame" in self.minigames:
             for i, color in enumerate(["Reds", "Blues", "Greens", "Yellows"], start=1):
                 self.multiworld.regions.append(Region(f"Block Blub Minigame {color}", self.player, self.multiworld))
@@ -408,11 +521,18 @@ class RefunctWorld(World):
             for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Refunct Mountain"]:
                 region_object = self.multiworld.get_region("Refunct Mountain Minigame", self.player)
                 region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
+         
+        if "Rando Mountain Minigame" in self.minigames:
+            self.multiworld.regions.append(Region("Rando Mountain Minigame", self.player, self.multiworld))
+            for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Rando Mountain"]:
+                region_object = self.multiworld.get_region("Rando Mountain Minigame", self.player)
+                region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
         
 
         
         # OG Randomizer Minigame info
         self.set_og_randomizer_order()
+        self.set_rando_mountain_order()
     
     def set_og_randomizer_order(self):
         # OG Randomizer Minigame info
@@ -488,6 +608,154 @@ class RefunctWorld(World):
             self.og_randomizer_order.append(next_cluster)
             remaining.remove(next_cluster)
         self.og_randomizer_order.append(31)
+    
+    def set_rando_mountain_order(self):
+        numbers = set(range(1, 32))
+
+        # Always available
+        always_available = {1, 2, 3, 4, 5, 10}
+
+        # Bidirectional connections
+        bidirectional = [
+            (4, 6),
+            (8, 18),
+            (8, 6),
+            (5, 28),
+            (16, 28),
+            (16, 17),
+            (2, 17),
+            (15, 17),
+            (27, 16),
+            (19, 21),
+            (21, 20),
+            (22, 30),
+            (29, 30),
+            (29, 25),
+            (25, 26),
+            (26, 27),
+            (17, 27),
+            (2, 16),
+            (16, 28),
+            (5, 18),
+            (12, 3),
+            (11, 23),
+            (11, 12),
+            (14, 15),
+            (13, 15),
+            (13, 11),
+            (24, 25),
+            (31, 19),
+            (20, 31),
+            (10, 21),
+        ]
+
+        # One-way requirements
+        directional = [
+            (18, 7),
+            (8, 7),
+            (8, 9),
+        ]
+
+        # Nearby weighting
+        somewhat_close = {
+            1: [2,4,6,10,3],
+            2: [1,4,16,17,15,3],
+            3: [23,22,12,11,10,1,2,15,13],
+            4: [1,2,16,28,5,18,6],
+            5: [16,28,18,6,4],
+            6: [1,10,4,5,18,7,8,9],
+            7: [6,18,8],
+            8: [10,9,6,7,18],
+            9: [19,11,10,6,8],
+            10: [11,3,1,6,8,9,19],
+            11: [12,3,1,9,19,21,20,30],
+            12: [22,23,3,11,20,30],
+            13: [24,27,14,15,3,23,11],
+            14: [13,15,17,27,24],
+            15: [13,14,17,16,2,3],
+            16: [17,15,2,1,4,5,28],
+            17: [27,14,15,2,16,28],
+            18: [4,5,6,7,8],
+            19: [21,20,11,10,9],
+            20: [30,12,11,21],
+            21: [19,20,11],
+            22: [30,23,12],
+            23: [22,13,12,3,29,24],
+            24: [23,22,30,29,25,26,27,14,13],
+            25: [24,26,29],
+            26: [29,25,24,27],
+            27: [14,17,13,24,26],
+            28: [17,16,4,5,18],
+            29: [26,25,24,23,22,30],
+            30: [20,11,12,22,23,29],
+        }
+
+        prereqs = defaultdict(set)
+
+        # One-way prerequisites
+        for a, b in directional:
+            prereqs[b].add(a)
+
+        # Bidirectional neighbor rules
+        neighbors = defaultdict(set)
+        for a, b in bidirectional:
+            neighbors[a].add(b)
+            neighbors[b].add(a)
+
+        result = [1]
+        placed = {1}
+
+        while len(result) < 31:
+            candidates = []
+
+            for n in numbers - placed:
+
+                # 31 must be last
+                if n == 31 and len(result) != 30:
+                    continue
+
+                # Directional prereqs
+                if not prereqs[n].issubset(placed):
+                    continue
+
+                # Must connect to something already placed
+                if n not in always_available:
+                    if neighbors[n] and not (neighbors[n] & placed):
+                        continue
+
+                candidates.append(n)
+
+            if not candidates:
+                raise RuntimeError("No valid candidates available")
+
+            previous = result[-1]
+
+            weights = []
+
+            for n in candidates:
+                weight = 1.0
+
+                # Higher numbers slightly favored earlier
+                progress = len(result) / 31
+                early_bonus = (1.0 - progress) * (n / 31) * 3
+                weight += early_bonus
+
+                # Nearby platforms more likely after previous
+                if n in somewhat_close.get(previous, []):
+                    weight += 5
+
+                # Strong extra bonus for direct bidirectional connections
+                if n in neighbors.get(previous, set()):
+                    weight += 4
+
+                weights.append(max(weight, 0.01))
+
+            choice = self.multiworld.random.choices(candidates, weights=weights, k=1)[0]
+
+            result.append(choice)
+            placed.add(choice)
+
+        self.rando_mountain_order = result
         
     def set_rules(self):
         def load_json_data_list_of_lists(data_name: str) -> List[List[Any]]:
@@ -577,7 +845,7 @@ class RefunctWorld(World):
         self.get_location(victory_location_name).place_locked_item(
             self.create_item("Goal Location")
         )
-        self.multiworld.completion_condition[self.player] = lambda state: all([state.has("Goal Location", self.player), state.has("Grass", self.player, self.required_grass)])
+        self.multiworld.completion_condition[self.player] = lambda state: all([state.has("Goal Location", self.player), state.has_group("Grasses", self.player, self.required_grass)])
 
         
         
@@ -640,6 +908,13 @@ class RefunctWorld(World):
             region_b = self.multiworld.get_region(f"Climb {style} Minigame", self.player)
             region_a.connect(region_b, f"Enter Climb {style} Minigame", 
                 lambda state, style=style: state.has(f"Climb {style} Minigame", self.player))
+                     
+        if "Climb Narrow Minigame" in self.minigames:
+            region_a = self.multiworld.get_region("10010102", self.player)
+            style = "Narrow"
+            region_b = self.multiworld.get_region(f"Climb {style} Minigame", self.player)
+            region_a.connect(region_b, f"Enter Climb {style} Minigame", 
+                lambda state, style=style: state.has(f"Climb {style} Minigame", self.player))
                     
         if "Block Blub Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
@@ -660,6 +935,12 @@ class RefunctWorld(World):
             region_b = self.multiworld.get_region("Refunct Mountain Minigame", self.player)
             region_a.connect(region_b, f"Enter Refunct Mountain Minigame", 
                 lambda state: state.has("Refunct Mountain Minigame", self.player))
+            
+        if "Rando Mountain Minigame" in self.minigames:
+            region_a = self.multiworld.get_region("10010102", self.player)
+            region_b = self.multiworld.get_region("Rando Mountain Minigame", self.player)
+            region_a.connect(region_b, f"Enter Rando Mountain Minigame", 
+                lambda state: state.has("Rando Mountain Minigame", self.player))
         
 
     def create_item(self, name: str, force_useful = False) -> Item:
@@ -692,6 +973,7 @@ class RefunctWorld(World):
         
         slot_data["seeker_platforms"] = self.seeker_platforms
         slot_data["og_randomizer_order"] = self.og_randomizer_order
+        slot_data["rando_mountain_order"] = self.rando_mountain_order
         
         slot_data["death_link"] = self.options.death_link.value
         
@@ -701,4 +983,4 @@ class RefunctWorld(World):
 
     @staticmethod
     def interpret_slot_data(slot_data: Dict[str, Any]) -> Dict[str, Any]:
-        return {"minigames": slot_data["minigames"], "seeker_platforms": slot_data["seeker_platforms"]}
+        return {"minigames": slot_data["minigames"], "seeker_platforms": slot_data["seeker_platforms"], "rando_mountain_order": slot_data["rando_mountain_order"]}

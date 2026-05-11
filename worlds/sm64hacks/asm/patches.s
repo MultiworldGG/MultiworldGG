@@ -2,11 +2,16 @@
 .create "trap_patch", 0x8029D4B8
 _start_trap:
 .area 0x1C4
+    SW S0, 0x001C(SP)
     LA T1, _flag
-    LW T2, 0(T1)
-    ADDIU T3, R0, 0x0069
-    BNE T2, T3, _heaveho
+    LW S0, 0(T1)
+    ADDIU T3, R0, 0x006B
+    BEQ S0, T3, _1up
     NOP
+    ADDIU T3, R0, 0x0069
+    BNE S0, T3, _heaveho
+    NOP
+_1up:
     SW R0, 0(T1)
     LI A0, 0x80361158;mario
     LW A0, 0(A0)
@@ -14,13 +19,16 @@ _start_trap:
     LI A2, 0x13004148 ;1-up bhv
     JAL 0x8029EDCC;spawn_object
     NOP
+    ADDIU T3, R0, 0x006B;dont actually set flag if just 1-up :)
+    BEQ S0, T3, _end;should make 1-ups more fun now
+    NOP
     LA T1, _greendemon
     SW V0, 0(T1);put pos of object in the greendemon memory address
     B _end
     NOP
 _heaveho:;jump table would probably be better but i cba to do that
-    ADDIU T3, T3, 0x0001
-    BNE T2, T3, _spin
+    ADDIU T3, R0, 0x006A
+    BNE S0, T3, _spin
     NOP
     SW R0, 0(T1)
     LI A0, 0x80361158;mario
@@ -81,6 +89,7 @@ _end:
     B _return_traps
     NOP
 _return_traps:
+    LW S0, 0x001C(SP)
     LW RA, 0x0014(SP)
     ADDIU SP, SP, 0x28
     JR RA
@@ -308,6 +317,22 @@ _air_hit_wall_extension:
 _slope_fix_failed:
     J 0x80268028
     NOP
+_drop_and_set_mario_action_if_gp:
+    ADDIU SP, SP, -0x18
+    SW RA, 0x0014(SP)
+    ORI T0, R0, 0x0400
+    LA T1, _jumps_allowed
+    LW T1, 0(T1)
+    AND T0, T0, T1
+    BEQZ T0, _gpend
+    NOP
+    JAL 0x80253178
+    NOP
+_gpend:
+    LW RA, 0x0014(SP)
+    ADDIU SP, SP, 0x18
+    JR RA
+    NOP
 _jumps_allowed: 
     NOP
 
@@ -374,6 +399,20 @@ _jumps_allowed:
 .area 0x8
     JAL _air_hit_wall_extension
     NOP
+.endarea
+.close
+
+.create "hold_jump_gp_patch", 0x8026BB5C
+.area 0x8
+    JAL _drop_and_set_mario_action_if_gp
+    OR A2, R0, R0
+.endarea
+.close
+
+.create "hold_jump_freefall_patch", 0x8026BC7C
+.area 0x8
+    JAL _drop_and_set_mario_action_if_gp
+    OR A2, R0, R0
 .endarea
 .close
 

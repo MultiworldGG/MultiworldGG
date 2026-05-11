@@ -154,6 +154,14 @@ def create_all_items(world: Schedule1World, data) -> None:
 
     itempool: list[Item] = []
     
+    # Add bomb fragment items into the pool
+    if world.options.goal in [world.options.goal.option_bomb_fragments_only,
+                              world.options.goal.option_missions_bomb_fragments, 
+                              world.options.goal.option_missions_networth_bomb_fragments,
+                              world.options.goal.option_bomb_fragments_networth]:
+        for _ in range(world.options.number_of_bomb_fragments_required + world.options.number_of_extra_bomb_fragments):
+            itempool += [world.create_item("Bomb Fragment")]
+
     # Create bundles bundles
     # Hard coding the bundles here based on options is more efficient than adding them through the json data
     for _ in range(world.options.number_of_cash_bundles):
@@ -234,7 +242,7 @@ def create_all_items(world: Schedule1World, data) -> None:
 
     filler_conditions = {
         "Bad Filler" : world.options.ban_bad_filler_items, 
-        "Ban Progression Skip" : world.options.ban_progression_skip_items}
+        "Progression Skip Filler" : world.options.ban_progression_skip_items}
     
     # set up fillers
     for item in data.items.values():

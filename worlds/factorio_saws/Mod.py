@@ -155,6 +155,7 @@ def generate_mod(world: "FactorioSAWS", output_directory: str):
         "quality_scaling": world.options.quality_scaling.value,
         "productivity_scaling": world.options.productivity_scaling.value,
         "all_modules_allowed_everywhere": world.options.all_modules_allowed_everywhere.value,
+        "free_power": world.options.free_power.value,
         "rocket_parts": world.options.rocket_parts.value
     }
 

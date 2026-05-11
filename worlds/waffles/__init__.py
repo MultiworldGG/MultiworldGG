@@ -64,7 +64,7 @@ class WaffleWeb(WebWorld):
         "English",
         "setup_en.md",
         "setup/en",
-        ["lx5", "TreZ"]
+        ["lx5"]
     )
     
     tutorials = [setup_en]
@@ -149,11 +149,6 @@ class WaffleWorld(UTMxin, World):
             if self.options.starting_location.value != 0 and not self.options.level_shuffle.value:
                 print (f"Enforcing Yoshi's Island as a starting world for \"{self.player_name}\" as they don't have Level Shuffle enabled.")
                 self.options.starting_location.value = 0
-                
-            # Enforce disabling RingLink for now
-            if self.options.ring_link:
-                print(f"Enforcing non-RingLink session for \"{self.player_name}\" (option requires some design adjustments).")
-                self.options.ring_link.value = False
 
             if self.options.early_climb:
                 self.multiworld.local_early_items[self.player][ItemName.climb] = 1
@@ -689,6 +684,9 @@ class WaffleWorld(UTMxin, World):
             "starting_location",
             "ability_shuffle",
             "alternate_logic",
+            "decoupled_yoshi_carry",
+            "decoupled_wall_run_anywhere",
+            "decoupled_fast_swimming",
         )
         slot_data["active_levels"] = self.active_level_dict
         slot_data["teleport_pairs"] = self.teleport_pairs

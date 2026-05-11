@@ -5769,6 +5769,34 @@
         "keywords": [],
         "release_date": 2024
     },
+    "The Grinch": {
+        "igdb_id": "15487",
+        "world_name": "The Grinch",
+        "igdb_name": "The Grinch",
+        "us_rating": [],
+        "player_perspectives": [
+            "Third person"
+        ],
+        "genres": [
+            "Platform",
+            "Adventure"
+        ],
+        "themes": [
+            "Action",
+            "Comedy",
+            "Kids"
+        ],
+        "keywords": [
+            "christmas",
+            "action-adventure",
+            "based on - movie",
+            "based on - book",
+            "licensed game",
+            "holiday themes",
+            "playstation underground"
+        ],
+        "release_date": 2000
+    },
     "The Legend of Zelda": {
         "igdb_id": "1022",
         "world_name": "The Legend of Zelda",

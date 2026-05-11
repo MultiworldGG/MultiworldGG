@@ -7,6 +7,17 @@ itemregex = r"(\|[^|]*\|)" #matches |anything|
 macroregex = r"(\|@[^|]*\|)" #matches |@anything|
 operand = r"[0-9]"
 
+def combine(t: list) -> list:
+    l = []
+    for item in t:
+        if isinstance(item, list):
+            item = combine(item)
+            l.extend(item)
+        else:
+            l.append(item)
+    return l
+
+
 def evaluate_nested_macros(input: str, macro_dict: dict[str, str]) -> str:
     macros = re.findall(macroregex, input)
     for macro in macros:
@@ -75,6 +86,57 @@ def evaluate_postfix_requirements(postfix: list[str], requirements: list[bool]) 
             stack.append(requirements[int(token)])
     return stack.pop()
 
+def simplify_postfix_requirements(postfix: list[str], requirements: list[bool | str], data:Data) -> bool:
+    for requirement in requirements:
+        if not isinstance(requirement, bool):
+            break
+    stack = []
+    for token in postfix:
+        if token == '&': #would use match case if > 2 operators
+            value1 = stack.pop()
+            value2 = stack.pop()
+            if value1 == False:
+                stack.append(False)
+            elif value2 == False:
+                stack.append(False)
+            elif value1 == True and value2 == True:
+                stack.append(True)
+            else:
+                l = []
+                if not isinstance(value1, bool):
+                    l.append(value1)
+                if not isinstance(value2, bool):
+                    l.append(value2)
+                stack.append(l)
+        elif token == '|':
+            value1 = stack.pop()
+            value2 = stack.pop()
+            if value1 == True:
+                stack.append(True)
+            elif value2 == True:
+                stack.append(True)
+            elif value1 == False and value2 == False:
+                stack.append(False)
+            else:
+                l = []
+                if not isinstance(value1, bool):
+                    l.append(value1)
+                if not isinstance(value2, bool):
+                    l.append(value2)
+                stack.append(l)
+        else:
+            stack.append(requirements[int(token)])
+
+    returnval = stack.pop()
+    if isinstance(returnval, list) or isinstance(returnval, str):
+        if isinstance(returnval, list):
+            data.required_items |= set(combine(returnval))
+        else:
+            data.required_items |= {returnval}
+        returnval = True
+    
+    return returnval
+
 def check_if_option_enabled(option:str, enabled_options: SM64HackOptions) -> bool:
     match option:
         case "reasonable":
@@ -88,7 +150,7 @@ def check_if_option_enabled(option:str, enabled_options: SM64HackOptions) -> boo
         case _:
             return (option in enabled_options.glitches_in_logic and enabled_options.logic_difficulty != 0) or option in enabled_options.hack_specific_options
 
-def check_if_location_exists(requirement_string: str, options: SM64HackOptions, macros: dict[str, str]) -> bool: #this does not check if you can access the zone. making locations not exist if the zone isnt accessible from options sounds too complicated to do, theres workarounds anyway
+def check_if_location_exists(requirement_string: str, options: SM64HackOptions, macros: dict[str, str], data: Data) -> bool: #this does not check if you can access the zone. making locations not exist if the zone isnt accessible from options sounds too complicated to do, theres workarounds anyway
     result = parse_requirement_string_to_postfix(requirement_string, macros)
     if(result is None): #no requirements = always possible
         return True
@@ -99,9 +161,16 @@ def check_if_location_exists(requirement_string: str, options: SM64HackOptions, 
             boolean_array.append(check_if_option_enabled(requirement[2:-1], options))
         elif requirement.startswith("|?"):
             boolean_array.append(not check_if_option_enabled(requirement[2:-1], options))
+        elif requirement.startswith("|#"):
+            boolean_array.append(True)
         else:
-            boolean_array.append(True) #for this step you assume you have all items and access to every level
-    return evaluate_postfix_requirements(result, boolean_array)
+            if requirement.startswith("|Stars") or requirement.startswith("|BlueStars") or requirement.startswith("|TotalStars") or requirement.startswith("|Actspecific"):
+                boolean_array.append(True) #stars usually dont depend on options
+            elif (requirement[1:-1].endswith("Jump") and requirement[1:-1] != "Long Jump") or ((requirement[1:-1] in sm64hack_items[76:86]) and not options.move_randomization): 
+                boolean_array.append(True)
+            else:
+                boolean_array.append(requirement[1:-1])
+    return simplify_postfix_requirements(result, boolean_array, data)
 
 def has_star_count(state: CollectionState, player: int, star_count: int) -> bool:
     return (state.count_from_list(star_like, player) + state.count("Star Bundle", player) * 2) >= star_count
@@ -164,9 +233,9 @@ def check_requirement_string(state: CollectionState,
                             can_get_previous_acts &= check_requirement_string(state, player, data.locations[stardata[0]]["Stars"][i]["Requirements"], options, data)
                         boolean_array.append(can_get_previous_acts)
                 case "Key 1":
-                    boolean_array.append(state.has("Key 1", player) or state.has("Progressive Key", player))
+                    boolean_array.append(state.has("Key 1", player) or state.has("Progressive Key", player, 1 if options.progressive_keys != 2 else 2))
                 case "Key 2":
-                    boolean_array.append(state.has("Key 2", player) or state.has("Progressive Key", player, 2))
+                    boolean_array.append(state.has("Key 2", player) or state.has("Progressive Key", player, 2 if options.progressive_keys != 2 else 1))
                 case "Super Badge":
                     boolean_array.append(state.has("Progressive Stomp Badge", player))
                 case "Ultra Badge":

@@ -10,7 +10,7 @@ from worlds.generic.Rules import set_rule, add_rule, add_item_rule
 from .Items import DSRItem, DSRItemCategory, item_dictionary, key_item_names, item_descriptions, BuildRequiredItemPool, BuildGuaranteedItemPool, UpgradeEquipment
 from .Locations import DSRLocation, DSRLocationCategory, location_tables, location_dictionary, location_skip_categories, location_locked_categories
 from .Groups import location_name_groups, item_name_groups
-from .Options import DSROption, option_groups, LogicToAccessCatacombs
+from .Options import DSROption, option_groups, LogicToAccessCatacombs, GoalConditionOption
 
 from settings import Group, FilePath
 
@@ -289,6 +289,7 @@ class DSRWorld(World):
         create_connection_2way("Upper Undead Burg - Before Fog", "Upper Undead Burg - Fog")
         create_connection_2way("Upper Undead Burg - Fog", "Upper Undead Burg")
         create_connection("Upper Undead Burg - Hellkite Bridge", "Undead Burg Basement Door")
+        create_connection("Upper Undead Burg - Hellkite Bridge", "Upper Undead Burg") # Bonfire ladder
         create_connection("Upper Undead Burg", "Upper Undead Burg - Taurus Demon")
         create_connection("Upper Undead Burg - Taurus Demon", "Upper Undead Burg - Hellkite Bridge")
         create_connection_2way("Upper Undead Burg - Hellkite Bridge", "Undead Parish - Before Fog")
@@ -418,7 +419,7 @@ class DSRWorld(World):
         create_connection("Sanctuary Garden - Sanctuary Guardian", "Oolacile Sanctuary")
         create_connection("Oolacile Sanctuary", "Royal Wood")
         create_connection("Royal Wood", "Royal Wood - Artorias")
-        create_connection("Royal Wood", "Oolacile Township")
+        create_connection("Royal Wood - Artorias", "Oolacile Township")
         create_connection("Oolacile Township", "Oolacile Township - After Crest Key")
         create_connection("Oolacile Township", "Oolacile Township - Behind Light-Dispelled Walls")
         create_connection("Oolacile Township - After Crest Key", "Royal Wood - After Hawkeye Gough")
@@ -629,14 +630,27 @@ class DSRWorld(World):
 
 
     def get_filler_item_name(self) -> str:
-        return "1000 Souls"
+        return "Soul of a Proud Knight"
     
     def set_rules(self) -> None:           
         #print("Setting rules")   
         for region in self.multiworld.get_regions(self.player):
             for location in region.locations:
-                    set_rule(location, lambda state: True)        
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Gwyn, Lord of Cinder Defeated", self.player)
+                    set_rule(location, lambda state: True)       
+        match self.options.goal_condition:
+            case GoalConditionOption.option_gwyn:
+                self.multiworld.completion_condition[self.player] = lambda state: state.has("Gwyn, Lord of Cinder Defeated", self.player)
+            case GoalConditionOption.option_all_bosses:
+                boss_defeated_items = [
+                    item.name
+                    for item in item_dictionary.values()
+                    if item.category == DSRItemCategory.EVENT and "Defeated" in item.name
+                ]
+            
+                self.multiworld.completion_condition[self.player] = lambda state, items=boss_defeated_items: all(
+                    state.has(item, self.player) for item in items
+                )
+            
 
         set_rule(self.multiworld.get_entrance("Undead Asylum Cell -> Undead Asylum Cell Door", self.player), lambda state: state.has("Dungeon Cell Key", self.player))   
         #set_rule(self.multiworld.get_entrance("Undead Asylum Cell Door -> Northern Undead Asylum", self.player), lambda state: state.has("Dungeon Cell Key", self.player))      
@@ -749,7 +763,7 @@ class DSRWorld(World):
         set_rule(self.multiworld.get_entrance("Darkroot Basin -> Sanctuary Garden", self.player), lambda state: state.has("Broken Pendant", self.player))
 
         set_rule(self.multiworld.get_entrance("Sanctuary Garden - Sanctuary Guardian -> Oolacile Sanctuary", self.player), lambda state: state.has("Sanctuary Guardian Defeated", self.player))
-        set_rule(self.multiworld.get_entrance("Royal Wood -> Oolacile Township", self.player), lambda state: state.has("Artorias the Abysswalker Defeated", self.player))
+        set_rule(self.multiworld.get_entrance("Royal Wood - Artorias -> Oolacile Township", self.player), lambda state: state.has("Artorias the Abysswalker Defeated", self.player))
         set_rule(self.multiworld.get_entrance("Oolacile Township -> Oolacile Township - After Crest Key", self.player), lambda state: state.has("Crest Key", self.player))
         set_rule(self.multiworld.get_entrance("Oolacile Township -> Oolacile Township - Behind Light-Dispelled Walls", self.player), lambda state: state.has("Skull Lantern", self.player))
     
@@ -888,11 +902,12 @@ class DSRWorld(World):
 
         slot_data = {
             "options": {
+                "goal_condition": self.options.goal_condition.current_key, # text of the option
                 "can_warp_without_lordvessel": self.options.can_warp_without_lordvessel.value,
                 "guaranteed_items": self.options.guaranteed_items.value,
                 "fogwall_sanity": self.options.fogwall_sanity.value,
                 "boss_fogwall_sanity": self.options.boss_fogwall_sanity.value,
-                "logic_to_access_catacombs": self.options.logic_to_access_catacombs.current_key,
+                "logic_to_access_catacombs": self.options.logic_to_access_catacombs.current_key, # text of the option
                 "randomize_starting_loadouts": self.options.randomize_starting_loadouts.value,
                 "randomize_starting_gifts": self.options.randomize_starting_gifts.value,
                 "require_one_handed_starting_weapons": self.options.require_one_handed_starting_weapons.value,
@@ -917,7 +932,7 @@ class DSRWorld(World):
             "itemsId": items_id,
             "itemsUpgrades": items_upgrades,
             "itemsAddress": items_address,
-            "apworld_api_version" : "0.1.0.0" # Manually set our apworld api level, for detecting compatibility with client
+            "apworld_api_version" : "0.1.1.0" # Manually set our apworld api level, for detecting compatibility with client
         }
 
         self.items_id = items_id

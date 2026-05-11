@@ -2,9 +2,7 @@
 Utility used across the apworld
 """
 import pkgutil, pkg_resources
-from Utils import Version
 
-CLIENT_VERSION = Version(1, 4, 6)
 rabi_ribi_base_id: int = 8350438193300
 
 def get_rabi_ribi_base_id() -> int:

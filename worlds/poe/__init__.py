@@ -65,7 +65,10 @@ class PathOfExileWorld(World):
     and collect powerful loot. The game is known for its deep character customization, with an enormous passive skill
     tree, thousands of items, and a huge endgame full of challenging bosses, and a wide variety of skill gems that define abilities.
     """
+    # CHANGE THIS TO OUTPUT VISUAL
     _debug = False
+
+
     game = "Path of Exile"
     author: str = "StuBob"
     web = PathOfExileWebWorld()
@@ -210,11 +213,13 @@ class PathOfExileWorld(World):
             "gucciHobo": options.gucci_hobo_mode.value,
             "passivePointsAsItems": options.add_passive_skill_points_to_item_pool.value,
             "LevelingUpAsLocations": options.add_leveling_up_to_location_pool.value,
+            "areaLocationsAsLocations": options.add_area_locations_to_location_pool.value,
             "ProgressiveGear": options.progressive_gear.value,
             "goal": options.goal.value,
             "starting_character": Options.option_starting_character_to_class_name(options.starting_character.value),
             "bosses_for_goal": self.bosses_for_goal,
             "deathlink": options.death_link.value,
+            "total_gear_upgrades": self.placed_total_gear_upgrades,
         }
         client_options = {
             "lootFilterSounds": options.loot_filter_sounds.value,

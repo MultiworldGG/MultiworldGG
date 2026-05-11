@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from typing import Dict
-from Options import PerGameCommonOptions, Choice, Range, Toggle
+from typing import Dict, get_type_hints
+from Options import PerGameCommonOptions, Choice, Range, Toggle, DeathLink
 import albwrandomizer
 
 class LogicMode(Choice):
@@ -21,6 +21,10 @@ class LogicMode(Choice):
 class RandomizeDungeonPrizes(Toggle):
     """This shuffles all Sage Portraits and Pendants among themselves."""
     display_name = "Randomize Dungeon Prizes"
+
+class ProgressionBosses(Toggle):
+    """Place progression items on all dungeon bosses."""
+    display_name = "Progression Bosses"
 
 class LoruleCastleRequirement(Range):
     """Choose how many Portraits are needed to enter Lorule Castle and fight Yuganon."""
@@ -53,6 +57,20 @@ class SuperItems(Toggle):
     """This shuffles a second progressive copy of the Lamp and Net into the general item pool."""
     display_name = "Super Items"
 
+class ShuffleMaiamaiRewards(Toggle):
+    """Choose whether to put items on Mother Maiamai. Has no effect if `nice_items` is set to vanilla.
+    Instead of trading Maiamai for items, Mother Maiamai gives you an item once you have the
+    required Ravio item and a certain number of Maiamai, controlled by `maiamai_limit`."""
+    display_name = "Shuffle Maiamai Rewards"
+
+class MaiamaiLimit(Range):
+    """When Mother Maiamai rewards are shuffled, this controls the maximum number of Maiamai
+    that can be required to get items from Mother Maiamai."""
+    display_name = "Maiamai Limit"
+    range_start = 0
+    range_end = 100
+    default = 50
+
 class LampAndNetAsWeapons(Toggle):
     """Treat the base Lamp and Net as damage-dealing weapons?
     - The red base Lamp and Net each deal 1/2 the damage of the Forgotten Sword (i.e. they're VERY BAD weapons).
@@ -65,7 +83,7 @@ class NoProgressionEnemies(Toggle):
     display_name = "No Progression Enemies"
 
 class AssuredWeapon(Toggle):
-    """"If enabled at least one weapon is guaranteed to be placed in Ravio's Shop."""
+    """If enabled at least one weapon is guaranteed to be placed in Ravio's Shop."""
     display_name = "Assured Weapon"
 
 class MaiamaiMayhem(Toggle):
@@ -75,10 +93,13 @@ class MaiamaiMayhem(Toggle):
 class InitialCrackState(Choice):
     """Choose the initial Crack state:
     closed: All Cracks except the Hyrule Castle Crack (and its pair) remain closed until the Quake Item is found.
-    open: All Cracks are open from the start of the game, and the Quake Item is not in the item pool."""
+    open: All Cracks are open from the start of the game, and the Quake Item is not in the item pool.
+    progressive: All Cracks except the Hyrule Castle Crack are closed, but the Quake Item and the Bracelets are not in the item pool.
+      Instead, there are two Progressive Merge items. The first one you get allows you to merge, while the second one opens the cracks."""
     display_name = "Initial Crack State"
     option_closed = 0
     option_open = 1
+    option_progressive = 2
     default = 1
 
 class CrackShuffle(Choice):
@@ -149,6 +170,17 @@ class SwordlessMode(Toggle):
     The Bug Net becomes a required item to play Dead Man's Volley against Yuga Ganon."""
     display_name = "Swordless Mode"
 
+class HintGhosts(Choice):
+    """Choose the behavior of the Hint Ghosts. (Hint Ghosts in dungeons never appear.)
+    off: Hint Ghosts do not appear.
+    always: Hint Ghosts always appear.
+    glasses: Hint Ghosts appear once you obtain the Hint Glasses item."""
+    display_name = "Hint Ghosts"
+    option_off = 0
+    option_always = 1
+    option_glasses = 2
+    default = 1
+
 class ChestSizeMatchesContents(Toggle):
     """All chests containing progression items will become large, and others will be made small.
     Note: Some large chests will have a reduced hitbox to prevent negative gameplay interference."""
@@ -174,13 +206,17 @@ class Keysy(Choice):
     option_all = 3
 
 @dataclass
-class ALBWSpecificOptions:
+class ALBWOptions(PerGameCommonOptions):
+    death_link: DeathLink
     logic_mode: LogicMode
     randomize_dungeon_prizes: RandomizeDungeonPrizes
+    progression_bosses: ProgressionBosses
     lorule_castle_requirement: LoruleCastleRequirement
     pedestal_requirement: PedestalRequirement
     nice_items: NiceItems
     super_items: SuperItems
+    shuffle_maiamai_rewards: ShuffleMaiamaiRewards
+    maiamai_limit: MaiamaiLimit
     lamp_and_net_as_weapons: LampAndNetAsWeapons
     no_progression_enemies: NoProgressionEnemies
     assured_weapon: AssuredWeapon
@@ -195,16 +231,17 @@ class ALBWSpecificOptions:
     weather_vanes: WeatherVanes
     dark_rooms_lampless: DarkRoomsLampless
     swordless_mode: SwordlessMode
+    hint_ghosts: HintGhosts
     chest_size_matches_contents: ChestSizeMatchesContents
     treacherous_tower_floors: TreacherousTowerFloors
     purple_potion_bottles: PurplePotionBottles
     keysy: Keysy
 
-@dataclass
-class ALBWOptions(PerGameCommonOptions, ALBWSpecificOptions):
-    pass
+    @classmethod
+    def option_names(cls):
+        return [option for option in get_type_hints(cls) if option not in get_type_hints(PerGameCommonOptions)]
 
-def create_randomizer_settings(options: ALBWSpecificOptions) -> albwrandomizer.Settings:
+def create_randomizer_settings(options: ALBWOptions) -> albwrandomizer.Settings:
     settings = albwrandomizer.Settings()
 
     settings.dev_mode = False
@@ -212,7 +249,8 @@ def create_randomizer_settings(options: ALBWSpecificOptions) -> albwrandomizer.S
     settings.yuganon_requirement = options.lorule_castle_requirement.value
     settings.dark_rooms_lampless = bool(options.dark_rooms_lampless.value)
     settings.dungeon_prize_shuffle = bool(options.randomize_dungeon_prizes.value)
-    settings.maiamai_limit = 100
+    settings.shuffle_maiamai_rewards = bool(options.shuffle_maiamai_rewards.value)
+    settings.maiamai_limit = options.maiamai_limit.value
     settings.maiamai_madness = bool(options.maiamai_mayhem.value)
     settings.super_items = bool(options.super_items.value)
     settings.lamp_and_net_as_weapons = bool(options.lamp_and_net_as_weapons.value)
@@ -262,6 +300,8 @@ def create_randomizer_settings(options: ALBWSpecificOptions) -> albwrandomizer.S
         settings.cracks = albwrandomizer.Cracks.Closed
     elif options.initial_crack_state == InitialCrackState.option_open:
         settings.cracks = albwrandomizer.Cracks.Open
+    elif options.initial_crack_state == InitialCrackState.option_progressive:
+        settings.cracks = albwrandomizer.Cracks.Progressive
     
     if options.crack_shuffle == CrackShuffle.option_off:
         settings.cracksanity = albwrandomizer.Cracksanity.Off
@@ -309,5 +349,12 @@ def create_randomizer_settings(options: ALBWSpecificOptions) -> albwrandomizer.S
 
     if options.open_trials_door:
         settings.trials_door = albwrandomizer.TrialsDoor.OpenFromBothSides
+
+    if options.hint_ghosts == HintGhosts.option_off:
+        settings.hint_ghosts = albwrandomizer.HintGhosts.Off
+    elif options.hint_ghosts == HintGhosts.option_always:
+        settings.hint_ghosts = albwrandomizer.HintGhosts.Always
+    elif options.hint_ghosts == HintGhosts.option_glasses:
+        settings.hint_ghosts = albwrandomizer.HintGhosts.Glasses
 
     return settings

@@ -358,6 +358,8 @@ def ph_totok_phantom_steal_object(state, player):
 def ph_has_range(state: CollectionState, player: int):
     return state.has_any(["Boomerang", "Bow (Progressive)", "Grappling Hook"], player)
 
+def ph_beam_range(state, player):
+    return ph_has_range(state, player) or ph_has_beam_sword(state, player)
 
 def ph_has_short_range(state: CollectionState, player: int):
     return any([ph_has_mid_range(state, player),
@@ -497,7 +499,7 @@ def ph_can_farm_rupees(state: CollectionState, player: int):
 
 def ph_island_shop(state, player, price):
     other_costs = 0
-    if state.can_reach_region("Beedle", player):
+    if state.has_group("Sea Charts", player):
         # Includes cannon island, but not salvage arm cause that also unlocks treasure shop
         other_costs += 1550
         if ph_option_randomize_masked_beedle(state, player):
@@ -1631,16 +1633,19 @@ def ph_goron_entrance(state, player):
     ])
 
 def ph_goron_chus(state, player):
-    return all([
-        ph_has_shovel(state, player),
-        any([
-            all([
-                ph_has_hammer(state, player),
-                ph_option_hard_logic(state, player)
-                ]),
-            ph_has_bow(state, player),
-            ph_has_grapple(state, player),
-        ])
+    return any([
+        all([
+            ph_has_shovel(state, player),
+            any([
+                all([
+                    ph_has_hammer(state, player),
+                    ph_option_hard_logic(state, player)
+                    ]),
+                ph_has_bow(state, player),
+                ph_has_grapple(state, player),
+            ])
+        ]),
+        ph_can_hammer_clip(state, player)
     ])
 
 def ph_meet_all_gorons(state, player):
@@ -1862,6 +1867,16 @@ def ph_toi_b2_north(state, player):
         ph_can_kill_yook(state, player),
         ph_has_grapple(state, player),
         ph_can_hit_spin_switches(state, player)
+    ])
+
+def ph_gleeok(state, player):
+    return all([
+        ph_has_grapple(state, player),
+        any([
+            ph_has_sword(state, player),
+            ph_has_bombs(state, player),
+            ph_has_hammer(state, player)
+        ])
     ])
 
 # Mutoh's
@@ -2928,6 +2943,7 @@ RULE_DICT = {
     "dark_yook": ph_can_kill_dark_yook,
     "can_steal_from_phantom": ph_totok_phantom_steal_object,
     "range": ph_has_range,
+    "beam_range": ph_beam_range,
     "long_range": ph_has_range,
     "short_range": ph_has_short_range,
     "mid_range": ph_has_mid_range,
@@ -3104,6 +3120,7 @@ RULE_DICT = {
     "toi_b1_switch": ph_toi_b2_switch_room,
     "toi_b2_north": ph_toi_b2_north,
     "toi_boss_door": ph_toi_boss_door,
+    "gleeok": ph_gleeok,
     # MT
     "mutoh_entrance": ph_mutoh_entrance,
     "mutoh_water": ph_mutoh_water,

@@ -1,9 +1,12 @@
-from .Types import LocData, EpisodeType, LevelData, Sly1Location
+from worlds.sly1.Types import LocData, EpisodeType, LevelData, Sly1Location
 from typing import Dict, TYPE_CHECKING
+from collections import defaultdict
 import logging
 
 if TYPE_CHECKING:
-    from . import Sly1World
+    from worlds.sly1 import Sly1World
+
+KEY_CACHE_BASE: int = 10029000
 
 def did_include_hourglasses(world: "Sly1World") -> bool:
     return bool(world.options.IncludeHourglasses)
@@ -23,7 +26,7 @@ def get_total_locations(world: "Sly1World") -> int:
         if location_table[name].level_type in world.options.ExcludeMinigames.value:
             continue
 
-        if is_valid_location:
+        if is_valid_location(world, name):
             total += 1
     
     if world.options.LocationCluesanityBundleSize.value > 0:
@@ -38,10 +41,39 @@ def get_total_locations(world: "Sly1World") -> int:
 
         total += world.options.MinigameCaches.value
 
+    total += getattr(world, "generated_key_caches", 0)
+
     return total
 
+def generate_key_caches(world: "Sly1World", count: int) -> None:
+    if count <= 0:
+        return
+
+    from collections import defaultdict
+    key_locations = [
+        (name, data) for name, data in sly_locations.items()
+        if name.endswith(" Key")
+    ]
+
+    per_level_counts = defaultdict(int)
+    created = 0
+    index = 0
+
+    while created < count:
+        name, data = key_locations[index % len(key_locations)]
+        reg = world.multiworld.get_region(data.region, world.player)
+        per_level_counts[name] += 1
+        cache_num = per_level_counts[name]
+        key_index = KEY_LOCATION_NAMES.index(name)
+        cache_name = f"{name} Cache #{cache_num}"
+        cache_code = KEY_CACHE_BASE + (key_index * 10) + (cache_num - 1)
+        location = Sly1Location(world.player, cache_name, cache_code, reg)
+        reg.locations.append(location)
+        created += 1
+        index += 1
+
 def get_location_names() -> Dict[str, int]:
-    # There HAS to be a better way. I just dont know it since I can't pass the world in here so I can't check the options
+    # There HAS to be a better way. I just don't know it since I can't pass the world in here so I can't check the options
 
     # For all possible bottle numbers, create location entries
     all_possible_bottle_locations = {}
@@ -60,7 +92,14 @@ def get_location_names() -> Dict[str, int]:
             cache_location_name = f"{base_name} Cache #{cache_number}"
             all_possible_minigame_locations[cache_location_name] = cache_code
 
-    names = {**{name: data.ap_code for name, data in location_table.items()}, **all_possible_bottle_locations, **all_possible_minigame_locations}
+    key_caches = {
+        f"{KEY_LOCATION_NAMES[key_index]} Cache #{i + 1}": KEY_CACHE_BASE + (key_index * 10) + i
+        for key_index in range(len(KEY_LOCATION_NAMES))
+        for i in range(10)
+    }
+
+    names = {**{name: data.ap_code for name, data in location_table.items()}, **all_possible_bottle_locations,
+             **all_possible_minigame_locations, **key_caches}
 
     return names
 
@@ -157,6 +196,8 @@ sly_locations = {
     "Deadly Dance": LocData(10020231, "Deadly Dance", key_type=EpisodeType.VV, key_requirement = 7),
     "Flame Fu!": LocData(10020232, "Flame Fu!", key_type=EpisodeType.FITS, key_requirement = 7),
 }
+
+KEY_LOCATION_NAMES = [name for name in sly_locations if name.endswith(" Key")]
 
 hourglass_locations = {
     ## Hourglass Locations - Speedrunning the level

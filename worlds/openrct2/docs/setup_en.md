@@ -4,7 +4,7 @@
 ## Quick Links
 - [Main Page](../info/en)
 - [Options Page](../player-options)
-- [OpenRCT2 Plugins](https://openrct2plugins.org/)
+- [OpenRCT2 Plugin (rctrando.js)](https://github.com/Crazycolbster/rollercoaster-tycoon-randomizer/releases)
 
 ## Required Software
 
@@ -30,7 +30,7 @@ If you haven't installed OpenRCT2 or the base game(s), follow the guide for your
 ### Install the Roller Coaster Tycoon Randomizer Plugin
 
 Once OpenRCT2 is up and running, you'll need to install the 
-[Roller Coaster Tycoon Randomizer plugin](https://openrct2plugins.org/plugin/R_kgDOGmXTVQ/rollercoaster-tycoon-randomizer).\
+[Roller Coaster Tycoon Randomizer plugin](https://github.com/Crazycolbster/rollercoaster-tycoon-randomizer/releases).\
 On the main menu of OpenRCT2, click the toolbox menu icon and select "Open custom content folder" \
 Save the `.js` file to the "plugin" folder within.
 

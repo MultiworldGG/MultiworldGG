@@ -21,6 +21,7 @@ item_pools_template: dict[str, list[ItemPoolEntry]] = {
         ItemPoolEntry(item=items_dict['Cursed Coin', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Shiny Orb', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Mine Pass', 1], quantity=1),
+        ItemPoolEntry(item=items_dict['Mine Detector', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Guild Pass', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Maroon Cave Pass', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Pond Slums Pass', 1], quantity=1),

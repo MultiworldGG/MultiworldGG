@@ -1562,7 +1562,7 @@ def launch(*args):
         args.patch_file = ""
 
     for v in args.patch_or_url:
-        if v.startswith("archipelago://") and not args.url:
+        if (v.startswith("archipelago://") or v.startswith("mwgg://")) and not args.url:
             args.url = v
             args = handle_url_arg(args, parser=parser)
         elif v.endswith(BfBBContainer.patch_file_ending) and not args.patch_file:

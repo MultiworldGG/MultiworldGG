@@ -41,15 +41,8 @@ from Updater import get_latest_release_info, download_and_install_win
 if __name__ == "__main__":
     init_logging('Launcher')
 
-from worlds.LauncherComponents import (
-    Component,
-    components,
-    has_world_components,
-    icon_paths,
-    resolve_icon_path,
-    SuffixIdentifier,
-    Type,
-)
+from worlds.LauncherComponents import Component, components, has_world_components, icon_paths, resolve_icon_path, SuffixIdentifier, Type
+from worlds import failed_world_loads
 
 apname = "Archipelago" if not Utils.instance_name else Utils.instance_name
 
@@ -181,7 +174,7 @@ def handle_uri(path: str) -> tuple[list[Component], Component]:
     text_client_component = None
     game = queries["game"][0]
     for component in components:
-        if component.supports_uri and component.game_name == game:
+        if component.supports_uri and game in component.game_name:
             client_components.append(component)
         elif component.display_name == "Text Client":
             text_client_component = component
@@ -358,6 +351,7 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
         search_box: MDTextField = ObjectProperty(None)
         cards: list[LauncherCard]
         current_filter: Sequence[str | Type] | None
+        failed_worlds: bool = bool(failed_world_loads)
 
         def __init__(self, ctx=None, components=None, args=None):
             self.title = self.base_title + " " + Utils.__version__
@@ -953,6 +947,39 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
                     self._show_launch_toast(post_toast)
 
             Clock.schedule_once(_do_action, 0)
+
+        @staticmethod
+        def copy_to_clipboard(text):
+            from kivy.core.clipboard import Clipboard
+            Clipboard.copy(text)
+            MDSnackbar(MDSnackbarText(text="Copied to clipboard."), y=dp(24), pos_hint={"center_x": 0.5},
+                       size_hint_x=0.5).open()
+
+        def display_failed(self):
+            """Display a dialog showing the exceptions produced by any world that failed to load during
+            initialization."""
+            if not self.failed_worlds:
+                return
+            from kivymd.uix.dialog import MDDialog, MDDialogIcon, MDDialogHeadlineText, MDDialogContentContainer
+            from kivymd.uix.divider import MDDivider
+            from kivymd.uix.list import MDListItem, MDListItemHeadlineText, MDListItemSupportingText
+            entries = []
+            for world, reason in failed_world_loads.items():
+                entries.append(MDListItem(
+                    MDListItemHeadlineText(text=world),
+                    MDListItemSupportingText(text=reason),
+                    on_release=lambda x, r=reason: self.copy_to_clipboard(r)
+                ))
+            dialog = MDDialog(
+                MDDialogIcon(icon="alert"),
+                MDDialogHeadlineText(text="Failed World Loads"),
+                MDDialogContentContainer(
+                    MDDivider(),
+                    *entries,
+                    orientation="vertical",
+                )
+            )
+            dialog.open()
 
         def _on_drop_file(self, window: Window, filename: bytes, x: int, y: int) -> None:
             """ When a patch file is dropped into the window, run the associated component. """

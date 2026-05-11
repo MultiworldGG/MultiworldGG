@@ -149,7 +149,7 @@ MDFloatLayout:
                 source: local_path("data/launcher-logo.png")
                 size_hint: 1, None
                 height: self.width
-                fit_mode: "contain"
+                fit_mode: "contain" 
 
             MDLabel:
                 id: cache_status_label
@@ -162,6 +162,15 @@ MDFloatLayout:
                 theme_text_color: "Custom"
                 text_color: app.theme_cls.primaryColor
                 opacity: 1 if self.text else 0
+
+            MDBoxLayout:
+                orientation: "horizontal"
+                MDIconButton:
+                    icon: "alert" if app.failed_worlds else ""
+                    theme_text_color: "Custom"
+                    text_color: "D23C42"
+                    disabled: not app.failed_worlds
+                    on_release: app.display_failed()
 
         MDGridLayout:
             id: main_layout

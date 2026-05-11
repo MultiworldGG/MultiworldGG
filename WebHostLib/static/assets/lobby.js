@@ -65,6 +65,7 @@
                 knownVersion = data.version;
                 currentState = data.state;
                 hasCustomYamls = data.has_custom || false;
+                forceLocalGeneration = !!data.force_local_generation;
                 allowCustomApworlds = !!data.allow_custom_apworlds;
                 updatePlayers(data.players);
                 const myPlayer = (MY_PLAYER_ID !== null)
@@ -452,16 +453,26 @@
             info.textContent = `Players: ${data.player_count}${maxP} | YAMLs: ${data.total_yamls} | Ready: ${data.ready_count}/${data.player_count}`;
         }
 
-        const isCustomMode = hasCustomYamls && (currentState === LOBBY_STATE_OPEN || currentState === LOBBY_STATE_LOCKED);
-        if (generateStandard) generateStandard.style.display = isCustomMode ? "none" : "";
-        if (generateCustom) generateCustom.style.display = isCustomMode ? "" : "none";
+        const isActiveGenerationState = currentState === LOBBY_STATE_OPEN || currentState === LOBBY_STATE_LOCKED;
+        if (generateStandard) generateStandard.style.display = forceLocalGeneration ? "none" : "";
+        if (generateCustom) generateCustom.style.display = isActiveGenerationState ? "" : "none";
 
+        const localRequiredNotice = document.getElementById("local-generation-required");
+        const packageNotice = document.getElementById("package-generation-notice");
+        const localRequiredText = document.getElementById("local-generation-required-text");
+        const localAlternativeText = document.getElementById("local-generation-alternative-text");
+        const largeLobbyNotice = document.getElementById("large-lobby-local-notice");
         const incompleteNotice = document.getElementById("package-incomplete-notice");
         const missingNotice = document.getElementById("missing-apworlds-notice");
         const missingList = document.getElementById("missing-apworlds-list");
         const upgradeNotice = document.getElementById("upgrade-apworlds-notice");
         const upgradeList = document.getElementById("upgrade-apworlds-list");
-        if (isCustomMode) {
+        if (packageNotice) packageNotice.classList.toggle("package-alternative", !forceLocalGeneration);
+        if (localRequiredNotice) localRequiredNotice.style.display = forceLocalGeneration ? "" : "none";
+        if (localRequiredText) localRequiredText.style.display = forceLocalGeneration ? "" : "none";
+        if (localAlternativeText) localAlternativeText.style.display = forceLocalGeneration ? "none" : "";
+        if (largeLobbyNotice) largeLobbyNotice.style.display = data.total_yamls > 25 ? "" : "none";
+        if (hasCustomYamls) {
             const missingGames = new Set();
             const upgradeGames = new Map(); // game name → version_warning string
             (data.players || []).forEach(p => {
@@ -546,6 +557,9 @@
         }
         if (data.timeout_minutes != null) {
             TIMEOUT_MINUTES = data.timeout_minutes;
+        }
+        if (data.force_local_generation != null) {
+            forceLocalGeneration = !!data.force_local_generation;
         }
 
         const titleEl = document.getElementById("lobby-title");
@@ -1487,7 +1501,10 @@
                 remaining_mode: document.getElementById("edit-remaining-mode").value,
                 countdown_mode: document.getElementById("edit-countdown-mode").value,
                 hint_mode: document.getElementById("edit-hint-mode").value,
-                hint_cost: parseInt(document.getElementById("edit-hint-cost").value),
+                hint_cost: Math.max(
+                    0,
+                    Math.min(parseInt(document.getElementById("edit-hint-cost").value, 10) || 0, 100)
+                ),
                 item_cheat: document.getElementById("edit-item-cheat").value === "1",
                 spoiler: parseInt(document.getElementById("edit-spoiler").value),
                 allow_custom_apworlds: allowCustomEl ? allowCustomEl.checked : undefined,
@@ -1520,9 +1537,9 @@
     }
 
     if (generateStandard && generateCustom) {
-        const isCustomMode = hasCustomYamls && (currentState === LOBBY_STATE_OPEN || currentState === LOBBY_STATE_LOCKED);
-        generateStandard.style.display = isCustomMode ? "none" : "";
-        generateCustom.style.display = isCustomMode ? "" : "none";
+        generateStandard.style.display = forceLocalGeneration ? "none" : "";
+        generateCustom.style.display =
+            (currentState === LOBBY_STATE_OPEN || currentState === LOBBY_STATE_LOCKED) ? "" : "none";
     }
 
     // Set initial expiry display from server-rendered values

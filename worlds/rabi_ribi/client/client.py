@@ -1,12 +1,13 @@
-from typing import Dict, NamedTuple, Optional, Set, Tuple, TYPE_CHECKING
+from typing import Dict, NamedTuple, Optional, Set, Tuple
 import ast
 import asyncio
 import os
 import time
 import hashlib
 import urllib.parse
+import Utils
 
-from BaseClasses import CollectionState, Entrance, Location, Region
+from BaseClasses import CollectionState
 from CommonClient import (
     CommonContext,
     get_base_parser,
@@ -14,11 +15,7 @@ from CommonClient import (
     server_loop,
     gui_enabled,
 )
-from MultiServer import mark_raw
-from NetUtils import ClientStatus
-
-from Utils import get_intended_text
-
+from NetUtils import ClientStatus, NetworkItem
 try:
     from Utils import instance_name as apname
 except ImportError:
@@ -27,12 +24,11 @@ except ImportError:
 from worlds.AutoWorld import World
 from worlds.rabi_ribi import RabiRibiWorld
 from worlds.rabi_ribi.client.memory_io import RabiRibiMemoryIO
-from worlds.rabi_ribi.items import event_table, consumable_table
+from worlds.rabi_ribi.items import consumable_table
 from worlds.rabi_ribi.locations import all_locations
 from worlds.rabi_ribi.names import ItemName
 from worlds.rabi_ribi.options import AttackMode
 from worlds.rabi_ribi.utility import (
-    CLIENT_VERSION,
     load_text_file,
     convert_existing_rando_name_to_ap_name
 )
@@ -86,72 +82,11 @@ class RabiRibiCommandProcessor(TrackerCommandProcessor): # type: ignore
             return
         self.ctx.set_attack_mode_flag(mode)
 
-    if tracker_loaded:
-        @mark_raw
-        def _cmd_route(self, location_or_region: str = "") -> None:
-            """Explain the route to get to a location or region"""
-            # Taken from https://github.com/drtchops/Archipelago/blob/astalon/worlds/astalon/client.py
-            world = self.ctx.get_world()
-            if not world:
-                logger.info("Not yet loaded into a game")
-                return
-
-            if self.ctx.stored_data and self.ctx.stored_data.get("_read_race_mode"):
-                logger.info("Route is disabled during Race Mode")
-                return
-
-            if not location_or_region:
-                logger.info("Provide a location or region to route to using /route [name]")
-                return
-
-            goal_location: Location | None = None
-            goal_region: Region | None = None
-            region_name = ""
-            location_or_event: Set[str] = {
-                *world.location_names,
-                *event_table
-            }
-            location_name, usable, response = get_intended_text(location_or_region, location_or_event)
-            if usable:
-                goal_location = world.get_location(location_name)
-                assert goal_location
-                goal_region = goal_location.parent_region
-                if not goal_region:
-                    logger.warning(f"Location {location_name} has no parent region")
-                    return
-            else:
-                region_name, usable, _ = get_intended_text(
-                    location_or_region,
-                    [r.name for r in world.multiworld.get_regions(world.player)],
-                )
-                if usable:
-                    goal_region = world.get_region(region_name)
-                else:
-                    logger.warning(response)
-                    return
-
-            state = self.ctx.get_updated_state()
-            if goal_location and not goal_location.can_reach(state):
-                logger.warning(f"Location {goal_location.name} cannot be reached")
-                return
-            if goal_region and goal_region not in state.path:
-                logger.warning(f"Region {goal_region.name} cannot be reached")
-                return
-
-            path: list[Entrance] = []
-            assert goal_region
-            name, connection = state.path[goal_region]
-            while connection != ("Menu", None) and connection is not None:
-                name, connection = connection
-                if "->" in name:
-                    path.append(world.get_entrance(name))
-
-            path.reverse()
-            for p in path:
-                logger.info(p.name)
-
-            if goal_location:
-                logger.info(f"-> {goal_location.name}")
+    def _cmd_deathlink(self):
+        """Toggle deathlink from client. Overrides default setting."""
+        self.ctx.death_link_enabled = not self.ctx.death_link_enabled
+        Utils.async_start(self.ctx.update_death_link(self.ctx.death_link_enabled), name="Update Deathlink")
+        logger.info(f"Deathlink is now {'enabled' if self.ctx.death_link_enabled else 'disabled'}")
 
 class RabiRibiContext(TrackerGameContext): # type: ignore
     """Rabi Ribi Game Context"""
@@ -213,11 +148,12 @@ class RabiRibiContext(TrackerGameContext): # type: ignore
         self.time_since_last_death = time.time()
         
         self.items_received_rabi_ribi_ids = []
-        self.obtained_items_queue = asyncio.Queue()
+        self.obtained_items_queue: asyncio.Queue[NetworkItem] = asyncio.Queue()
 
         self.critical_section_lock = asyncio.Lock()
 
-        self.deathlink_buffer = []
+        self.death_link_enabled = False
+        self.death_link_buffer = []
         self.has_died = False
 
         self.is_crosswarp_disabled = True
@@ -225,7 +161,7 @@ class RabiRibiContext(TrackerGameContext): # type: ignore
 
     def make_gui(self):
         ui = super().make_gui()
-        ui.base_title = f"Rabi-Ribi Client v{CLIENT_VERSION.as_simple_string()}"
+        ui.base_title = f"Rabi-Ribi Client v{RabiRibiWorld.world_version.as_simple_string()}"
         if tracker_loaded:
             ui.base_title += f" | UT {UT_VERSION}"
 
@@ -344,10 +280,6 @@ class RabiRibiContext(TrackerGameContext): # type: ignore
                 # request after an item is obtained
                 asyncio.create_task(self.obtained_items_queue.put(args["locations"][0]))
 
-        elif cmd == "Bounced":
-            if 'tags' in args and "DeathLink" in args['tags'] and not self.has_died:
-              self.deathlink_buffer.append(args)
-
     def client_recieved_initial_server_data(self):
         """
         This method waits until the client finishes the initial conversation with the server.
@@ -377,7 +309,8 @@ class RabiRibiContext(TrackerGameContext): # type: ignore
             # wait an extra second to process data
             await asyncio.sleep(1)
             assert self.slot_data
-            await self.update_death_link(bool(self.slot_data['death_link']))
+            self.death_link_enabled = bool(self.slot_data['death_link'])
+            await self.update_death_link(self.death_link_enabled)
 
             logger.info("Received initial data from server!")
             logger.info("****************************************************")
@@ -442,7 +375,7 @@ class RabiRibiContext(TrackerGameContext): # type: ignore
                     self.items_received_rabi_ribi_ids.append(potion_ids[item_name])
                     potion_ids[item_name] -= 1
                 elif item_name == ItemName.easter_egg:
-                    if network_item.player == self.slot:
+                    if self.slot_concerns_self(network_item.player):
                         location_name = self.location_names.lookup_in_game(network_item.location)
                         egg_coordinates = self.ap_location_name_to_location_coordinates[location_name]
                         self.collected_eggs.add(egg_coordinates)
@@ -492,7 +425,7 @@ class RabiRibiContext(TrackerGameContext): # type: ignore
                     location_id = all_locations[location_name]
                     if location_id not in self.locations_checked:
                         self.locations_checked.add(location_id)
-                        await self.send_msgs([{"cmd": 'LocationChecks', "locations": self.locations_checked}])
+                        await self.check_locations([location_id])
 
     def handle_consumable_changes(self):
         """
@@ -583,7 +516,7 @@ class RabiRibiContext(TrackerGameContext): # type: ignore
             (cur_time - self.time_since_last_costume_menu >= 2) and
             (cur_time - self.time_since_last_save_menu >= 2) and
             not self.rr_interface.is_player_frozen() and
-            len(self.deathlink_buffer) == 0 and
+            len(self.death_link_buffer) == 0 and
             self.is_item_queued()
         )
 
@@ -634,13 +567,17 @@ class RabiRibiContext(TrackerGameContext): # type: ignore
             (cur_time - self.time_since_last_death >= 5.5) and
             not self.rr_interface.is_player_frozen() and
             not self.has_died and
-            len(self.deathlink_buffer) > 0
+            len(self.death_link_buffer) > 0
         )
+
+    def on_deathlink(self, data: dict):
+        self.death_link_buffer.append(data)
+        super().on_deathlink(data)
 
     def trigger_death(self):
         self.rr_interface.set_player_health_to_zero()
         self.time_since_last_death = time.time()
-        self.deathlink_buffer = []
+        self.death_link_buffer = []
         self.has_died = True
 
     def has_zero_health(self):
@@ -666,10 +603,14 @@ class RabiRibiContext(TrackerGameContext): # type: ignore
             if location_name.startswith("Unknown Item"):
                 # Skip DLC Items
                 continue
+            location_id = all_locations[location_name]
+            if location_id in self.locations_checked:
+                # Ignore already sent locations
+                continue
             distance = abs(x - coordinate_entry[0]) + abs(y - coordinate_entry[1])
             if distance < closest_distance:
                 closest_distance = distance
-                closest_location_id = all_locations[location_name]
+                closest_location_id = location_id
                 closest_location_coordinates = (area_id, *coordinate_entry)
 
         if closest_distance < 10 and closest_location_id in self.server_locations:
@@ -794,10 +735,10 @@ async def rabi_ribi_watcher(ctx: RabiRibiContext):
             if ctx.in_deathlink_eligible_state():
                 ctx.trigger_death()
 
-            if ctx.has_zero_health() and not ctx.has_died and 'DeathLink' in ctx.tags:
+            if ctx.has_zero_health() and not ctx.has_died and ctx.death_link_enabled:
                 ctx.has_died = True
                 ctx.time_since_last_death = time.time()
-                await ctx.send_death("Rabi-Ribi deathlink sent")
+                await ctx.send_death(f"{ctx.player_names[ctx.slot]} was defeated...")
 
             await ctx.handle_egg_changes()
 
@@ -829,9 +770,9 @@ async def rabi_ribi_watcher(ctx: RabiRibiContext):
                     await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 
         except Exception as err:
-            #Process closed trap
+            # Process closed trap
             if type(err) is AttributeError and not ctx.rr_interface.is_connected():
-                #Stop the ayncio task. No cleanup is necessary
+                # Stop the ayncio task. No cleanup is necessary
                 if watch_menu_task is not None:
                     try:
                         watch_menu_task.cancel()
@@ -840,7 +781,7 @@ async def rabi_ribi_watcher(ctx: RabiRibiContext):
                 # attempt to reconnect at the top of the loop
                 continue
 
-            #Other Errors
+            # Other Errors
             logger.warning("*******************************")
             logger.warning("Encountered error. Please post a message to the Rabi-Ribi thread on the AP discord")
             logger.warning("*******************************")
@@ -865,21 +806,8 @@ async def check_for_locations(ctx: RabiRibiContext):
             return
         if ap_location_id not in ctx.locations_checked:
             ctx.locations_checked.add(ap_location_id)
-            await ctx.send_msgs([{"cmd": 'LocationChecks', "locations": ctx.locations_checked}])
-
-        # scout the location and delete it from the map if its an explanation point
-        asyncio.create_task(ctx.send_msgs([{
-            "cmd": "LocationScouts",
-            "locations": [ap_location_id]
-        }]))
-        ctx.time_since_last_item_obtained = time.time()
-
-        try:
-            network_item = await asyncio.wait_for(ctx.obtained_items_queue.get(), timeout=15)
-            if (network_item.player != ctx.slot) or (network_item.player == ctx.slot and ctx.item_names.lookup_in_game(network_item.item) == ItemName.nothing):
-                await remove_exclamation_point(ctx, coordinates)
-        except TimeoutError:
-            logger.warning("Never received response to scout request for ap_location_id %d", ap_location_id)
+            await ctx.check_locations([ap_location_id])
+            await remove_exclamation_point(ctx, coordinates)
 
 async def remove_exclamation_point(ctx: RabiRibiContext, coordinates):
     ctx.rr_interface.remove_exclamation_point_from_in_memory_map(coordinates[0], coordinates[1], coordinates[2])

@@ -505,8 +505,6 @@ class DKC2PatchExtension(APPatchExtension):
             guaranteed_rewards = False
             random_rewards = False
 
-        print (guaranteed_rewards, random_rewards)
-
         if guaranteed_rewards:
             for addr, value in special_reward_addrs.items():
                 rom[addr+0x00] = 0x40
@@ -530,6 +528,28 @@ class DKC2PatchExtension(APPatchExtension):
                     rom[addr+0x07] = rewards[3]
                     offset = value[1] * 2
                     rom[addr+0x01+offset] = value[0]
+
+        # Get patch settings
+        options: dict[str, typing.Any] = json.loads(caller.get_file("data.json").decode("UTF-8"))
+        if "death_link" in options.keys():
+            rom[0x3DFF98] = options["death_link"]
+        else:
+            rom[0x3DFF98] = 0x00
+
+        if "energy_link" in options.keys():
+            rom[0x3DFF99] = options["energy_link"]
+        else:
+            rom[0x3DFF99] = 0x00
+
+        if "trap_link" in options.keys():
+            rom[0x3DFF9A] = options["trap_link"]
+        else:
+            rom[0x3DFF9A] = 0x00
+
+        if "damage_link" in options.keys():
+            rom[0x3DFF9B] = options["damage_link"]
+        else:
+            rom[0x3DFF9B] = 0x00
 
         return bytes(rom)
 
@@ -587,6 +607,7 @@ def patch_rom(world: "DKC2World", patch: DKC2ProcedurePatch):
     patch.write_byte(0x3DFF98, world.options.death_link.value)
     patch.write_byte(0x3DFF99, world.options.energy_link.value)
     patch.write_byte(0x3DFF9A, world.options.trap_link.value)
+    patch.write_byte(0x3DFF9B, world.options.damage_link.value)
 
     # Options write
     patch.write_byte(0x3DFFA0, world.options.dk_coin_checks.value)
@@ -726,6 +747,7 @@ def patch_rom(world: "DKC2World", patch: DKC2ProcedurePatch):
         "energy_link": world.options.energy_link.value,
         "trap_link": world.options.trap_link.value,
         "death_link": world.options.death_link.value,
+        "damage_link": world.options.damage_link.value,
     }
     patch.write_file("data.json", json.dumps(data_dict).encode("UTF-8"))
 

@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
+from typing_extensions import override
 
 from rule_builder.options import OptionFilter
 from rule_builder.rules import Has, HasAll, Rule, True_, False_

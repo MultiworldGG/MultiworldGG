@@ -203,6 +203,9 @@ ITEMS_DATA = {
         "tags": ["monotone_incremental"],
         "size": 4,
         "id": 17,
+        "model": 0x78,
+        "ghost_model": True,
+        "model_reset": "Sand of Hours (Small)"
     },
     "Sand of Hours (Boss)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -284,8 +287,10 @@ ITEMS_DATA = {
         "value": 0x10,
         "id": 26,
         "model": 0x80,
+        # "set_bit": [(PHAddr.adv_flags_39, 0x80)],
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "blocked_scenes": [0x1401]
     },
     "Cyclone Slate": {
         "classification": ItemClassification.progression,
@@ -915,6 +920,7 @@ ITEMS_DATA = {
         "tags": ["incremental"],
         "id": 98,
         "model": 0x5,
+        "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
     },
@@ -924,6 +930,7 @@ ITEMS_DATA = {
         "tags": ["incremental", "always_process"],
         "id": 99,
         "model": 0x5,
+        "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
     },
@@ -933,6 +940,7 @@ ITEMS_DATA = {
         "tags": ["incremental"],
         "id": 100,
         "model": 0x5,
+        "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
     },
@@ -942,6 +950,7 @@ ITEMS_DATA = {
         "tags": ["incremental"],
         "id": 101,
         "model": 0x5,
+        "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
     },
@@ -951,6 +960,7 @@ ITEMS_DATA = {
         "tags": ["incremental"],
         "id": 102,
         "model": 0x5,
+        "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
     },
@@ -960,6 +970,7 @@ ITEMS_DATA = {
         "tags": ["incremental"],
         "id": 103,
         "model": 0x5,
+        "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
     },
@@ -969,6 +980,7 @@ ITEMS_DATA = {
         "tags": ["incremental"],
         "id": 104,
         "model": 0x5,
+        "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
     },
@@ -1672,6 +1684,7 @@ ITEMS_DATA = {
         "id": 174,
         "model": 0x25,
         "ghost_model": True,
+        "model_reset": True,
     },
     "Ship: Bright Ship": {
         "classification": ItemClassification.useful,
@@ -1680,6 +1693,7 @@ ITEMS_DATA = {
         "id": 175,
         "model": 0x25,
         "ghost_model": True,
+        "model_reset": True,
     },
     "Ship: Iron Ship": {
         "classification": ItemClassification.useful,
@@ -1688,6 +1702,7 @@ ITEMS_DATA = {
         "id": 176,
         "model": 0x25,
         "ghost_model": True,
+        "model_reset": True,
     },
     "Ship: Stone Ship": {
         "classification": ItemClassification.useful,
@@ -1696,6 +1711,7 @@ ITEMS_DATA = {
         "id": 177,
         "model": 0x25,
         "ghost_model": True,
+        "model_reset": True,
     },
     "Ship: Vintage Ship": {
         "classification": ItemClassification.useful,
@@ -1704,6 +1720,7 @@ ITEMS_DATA = {
         "id": 178,
         "model": 0x25,
         "ghost_model": True,
+        "model_reset": True,
     },
     "Ship: Demon Ship": {
         "classification": ItemClassification.useful,
@@ -1712,6 +1729,7 @@ ITEMS_DATA = {
         "id": 179,
         "model": 0x25,
         "ghost_model": True,
+        "model_reset": True,
     },
     "Ship: Tropical Ship": {
         "classification": ItemClassification.useful,
@@ -1720,6 +1738,7 @@ ITEMS_DATA = {
         "id": 180,
         "model": 0x25,
         "ghost_model": True,
+        "model_reset": True,
     },
     "Ship: Dignified Ship": {
         "classification": ItemClassification.useful,
@@ -1728,6 +1747,7 @@ ITEMS_DATA = {
         "id": 181,
         "model": 0x25,
         "ghost_model": True,
+        "model_reset": True,
     },
     "Ship: Golden Ship": {
         "classification": ItemClassification.useful,
@@ -1748,7 +1768,8 @@ ITEMS_DATA = {
         "id": 183,
         "model": 0x80,
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "blocked_scenes": [0x200]
     },
     "Fish: Toona": {
         "classification": ItemClassification.filler,
@@ -1759,7 +1780,8 @@ ITEMS_DATA = {
         "id": 184,
         "model": 0x80,
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "blocked_scenes": [0x200]
     },
     "Fish: Loovar": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -1770,7 +1792,8 @@ ITEMS_DATA = {
         "id": 185,
         "model": 0x80,
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "blocked_scenes": [0x200]
     },
     "Fish: Rusty Swordfish": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -1781,7 +1804,8 @@ ITEMS_DATA = {
         "id": 186,
         "model": 0x80,
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "blocked_scenes": [0x200]
     },
     "Fish: Legendary Neptoona": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -1792,7 +1816,8 @@ ITEMS_DATA = {
         "id": 187,
         "model": 0x80,
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "blocked_scenes": [0x200]
     },
     "Fish: Stowfish": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -1803,7 +1828,8 @@ ITEMS_DATA = {
         "id": 188,
         "model": 0x80,
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "blocked_scenes": [0x200]
     },
     "_UT_Glitched_Logic": {
         "classification": ItemClassification.progression,
@@ -1954,6 +1980,12 @@ ITEMS_DATA = {
         "model_reset": True,
         "ghost_model": True,
     },
+    "Small Key (Generic)": {
+        "classification": ItemClassification.useful,
+        "id": 222,
+        "model": 0x1,
+        "model_reset": True,
+    }
 }
 ITEMS: dict[str, "PHItem"] = dict()
 item_id_to_name_dict: dict[int, str] = dict()

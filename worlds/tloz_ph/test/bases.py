@@ -144,10 +144,16 @@ options_excluded_crystals = {"dungeons_required": 8,
                "ghost_ship_in_dungeon_pool": False,
                "randomize_pedestal_items": "anywhere",
                "pedestal_item_options": "unique_pedestals",
-               "shuffle_bosses": "no_shuffle",
+               "shuffle_bosses": "simple_mixed_pool",
                "randomize_boss_keys": "in_own_dungeon",
                # "shuffle_houses": "shuffle",
                "entrance_directionality": "disregard_all",
+               "shuffle_houses": "simple_mixed_pool",
+               # "shuffle_bosses": "simple_mixed_pool",
+            "plando_transitions": [
+                {"entrance": "Mercay SW Apricot's House",
+                 "exit": "Cyclok Exit"}
+            ]
                }
 
 class TestPHGeneration(WorldTestBase):

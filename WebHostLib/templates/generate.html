@@ -194,13 +194,7 @@ Warning: playthrough can take a significant amount of time for larger multiworld
                                             </label>
                                         </td>
                                         <td>
-                                            <select name="hint_cost" id="hint_cost">
-                                                {% for n in range(0, 110, 5) %}
-                                                    <option {% if n == 5 %}selected="selected" {% endif %} value="{{ n }}">
-                                                        {% if n > 100 %}Off{% else %}{{ n }}%{% endif %}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
+                                            <input type="number" name="hint_cost" id="hint_cost" min="0" max="100" step="1" value="5" required>%
                                         </td>
                                     </tr>
                                     <tr>

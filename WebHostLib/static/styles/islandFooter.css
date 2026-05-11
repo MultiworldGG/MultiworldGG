@@ -10,12 +10,14 @@
     color: #dfedc6;
     position: fixed;
     bottom: 0;
+    pointer-events: none;
 }
 
 #island-footer #links a{
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     color: #dfedc6;
+    pointer-events: auto;
 }
 @media all and (max-width: 900px) {
     #island-footer{

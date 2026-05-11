@@ -19,7 +19,7 @@
 2. Create a yaml settings file, and put it in the MultiworldGG directories `players` folder. You can generate a template yaml with the MultiworldGG launcher.
 3. Generate your game
 4. Host the game, either locally or via the MultiworldGG web hosting service
-5. Open the `generic bizhawk client` in MultiworldGG, and connect to the server
+5. Open the `Bizhawk Client` in the MultiworldGG Launcher, and connect to the server
 6. Launch the vanilla game in bizhawk, and open the lua console. Add the `connector_bizhawk_generic.lua` script that can be found in `MultiworldGG\data\lua`. 
 7. You are now ready to play! Start a new savefile and go! You can check that everything worked by checking if the bridge has been repaired.
 

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import WaffleWorld
 
-from .Options import EnemyShuffle, InventoryYoshiLogic, GameLogicDifficulty, Goal
+from .Options import EnemyShuffle, InventoryYoshiLogic, GameLogicDifficulty, Goal, DecoupledFastSwim, DecoupledWallRun, DecoupledYoshiCarry
 from .Levels import level_info_dict, hard_gameplay_levels, very_hard_gameplay_levels, possible_starting_regions
 from .Tricks import logic_tricks
 
@@ -64,17 +64,20 @@ class Macro(WrapperRule["WaffleWorld"], game=GAME_NAME):
         
 CanCarry: Rule = Has(Items.carry)
 CanRun: Macro = Macro(
-    HasAny(Items.run, Items.progressive_run),
+    Has(Items.run, options=[OptionFilter(DecoupledWallRun, 0)]) |
+    Has(Items.progressive_run, 1, options=[OptionFilter(DecoupledWallRun, 1)]),
     "Can run",
     "Can run freely",
 )
 CanWallRun: Macro = Macro(
-    HasAnyCount({Items.run: 1, Items.progressive_run: 2}),
+    Has(Items.run, options=[OptionFilter(DecoupledWallRun, 0)]) |
+    Has(Items.progressive_run, 2, options=[OptionFilter(DecoupledWallRun, 1)]),
     "Can wall run anywhere",
     "Can perform a wall run anywhere",
 )
 CanSwim: Macro = Macro(
-    HasAny(Items.swim, Items.progressive_swim),
+    Has(Items.swim, options=[OptionFilter(DecoupledFastSwim, 0)]) |
+    Has(Items.progressive_swim, 1, options=[OptionFilter(DecoupledFastSwim, 1)]),
     "Can swim",
     "Can swim freely underwater"
 )
@@ -189,7 +192,10 @@ CanGetAnyYoshi: Macro = Macro(
 )
 
 CanYoshiCarry: Macro = Macro(
-    HasAnyCount({Items.yoshi: 1, Items.progressive_yoshi: 2}) & (
+    (
+        Has(Items.yoshi, options=[OptionFilter(DecoupledYoshiCarry, 0)]) |
+        Has(Items.progressive_yoshi, 2, options=[OptionFilter(DecoupledYoshiCarry, 1)])
+    ) & (
         CanGetGreenYoshi | CanGetBlueYoshi | CanGetYellowYoshi
     ),
     "Can carry with Yoshi",
@@ -221,7 +227,10 @@ CanCapeSpinFly: Macro = Macro(
 )
 
 HasYoshi: Macro = Macro(
-    HasAny(Items.yoshi, Items.progressive_yoshi) & CanGetAnyYoshi,
+    (
+        Has(Items.yoshi, options=[OptionFilter(DecoupledYoshiCarry, 0)]) |
+        Has(Items.progressive_yoshi, 1, options=[OptionFilter(DecoupledYoshiCarry, 1)])
+    ) & CanGetAnyYoshi,
     "Has Yoshi",
     "Can get a Yoshi from either a level or the inventory (if that setting is enabled)"
 )
@@ -316,7 +325,6 @@ class WaffleRules:
                     self.world.set_rule(entrance, Has(Items.glitched))
 
         # Build entrance rules
-        starting_region = possible_starting_regions[world.options.starting_location.value]
         for entrance_name, rule in self.connection_rules.items():
             entrance: Entrance = self.world.get_entrance(entrance_name)
             if entrance.parent_region.name in hard_gameplay_levels:
@@ -328,19 +336,6 @@ class WaffleRules:
                 location_name = entrance_name.split("-> ")[1]
                 location: Location = self.world.get_location(location_name)
                 self.world.set_rule(location, rule)
-                if self.world.is_ut:
-                    # Apply exit rules to 
-                    if len(entrance.connected_region.exits) != 0:
-                        # Do all of this to fix an issue where rules aren't being applied to an entrance that connects to the origin level
-                        for exit in entrance.connected_region.exits:
-                            if "Transition" in exit.name:
-                                destination = exit.connected_region.exits[0].connected_region.exits[0].connected_region
-                                if destination.name == starting_region:
-                                    break
-                        else:
-                            continue
-                    glitched_entrance = self.world.get_entrance(f"{entrance_name} (Glitched)")
-                    self.world.set_rule(glitched_entrance, rule)
             except KeyError:
                 continue
 
@@ -494,7 +489,7 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.forest_of_illusion_4_region} -> {Locations.forest_of_illusion_4_exit_1}": 
                 True_(),
             f"{Regions.forest_of_illusion_4_region} -> {Locations.forest_of_illusion_4_exit_2}":
-                True_(),
+                CanCarry,
             f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_1}": 
                 HasPSwitch,
             f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_2}": 

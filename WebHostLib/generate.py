@@ -22,6 +22,13 @@ from .models import Generation, STATE_ERROR, STATE_QUEUED, Seed, UUID
 from .upload import upload_zip_to_db
 
 
+def _clamp_int(value: Any, default: int, minimum: int, maximum: int) -> int:
+    try:
+        return max(minimum, min(int(value), maximum))
+    except (ValueError, TypeError):
+        return default
+
+
 def get_meta(options_source: dict, race: bool = False) -> dict[str, list[str] | dict[str, Any]]:
     plando_options: set[str] = set()
     for substr in ("bosses", "items", "connections", "texts"):
@@ -29,7 +36,8 @@ def get_meta(options_source: dict, race: bool = False) -> dict[str, list[str] | 
             plando_options.add(substr)
 
     server_options = {
-        "hint_cost": int(options_source.get("hint_cost", ServerOptions.hint_cost)),
+        "hint_cost": _clamp_int(options_source.get("hint_cost", ServerOptions.hint_cost),
+                                ServerOptions.hint_cost, 0, 100),
         "release_mode": str(options_source.get("release_mode", ServerOptions.release_mode)),
         "remaining_mode": str(options_source.get("remaining_mode", ServerOptions.remaining_mode)),
         "collect_mode": str(options_source.get("collect_mode", ServerOptions.collect_mode)),

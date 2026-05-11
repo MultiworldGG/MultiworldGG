@@ -4,7 +4,9 @@ from ...Options import (
     OracleOfSeasonsAnimalCompanion,
     OracleOfSeasonsDefaultSeedType,
     OracleOfSeasonsDungeonShuffle,
+    OracleOfSeasonsFoolsOre,
     OracleOfSeasonsHoronSeason,
+    OracleOfSeasonsIncludeCrossItems,
     OracleOfSeasonsLogicDifficulty,
     OracleOfSeasonsLostWoodsItemSequence,
     OracleOfSeasonsLostWoodsMainSequence,
@@ -37,7 +39,9 @@ def oos_has_shield() -> Rule:
 
 
 def oos_has_fools_ore() -> Rule:
-    return Has("Fool's Ore")
+    return Has(
+        "Fool's Ore", options=[OptionFilter(OracleOfSeasonsFoolsOre, OracleOfSeasonsFoolsOre.option_excluded, "ne")]
+    )
 
 
 def oos_has_feather() -> Rule:
@@ -82,25 +86,29 @@ def oos_has_flippers() -> Rule:
 
 # Cross items
 def oos_has_cane() -> Rule:
-    return Has("Cane of Somaria")
-
-
-def oos_has_switch_hook(level: int = 1) -> Rule:
-    return Has("Switch Hook", level)
-
-
-def oos_has_tight_switch_hook() -> Rule:
-    return Or(
-        oos_has_switch_hook(2),
-        And(
-            oos_option_medium_logic(),
-            oos_has_switch_hook()
-        )
+    return Has(
+        "Cane of Somaria",
+        options=[OptionFilter(OracleOfSeasonsIncludeCrossItems, OracleOfSeasonsIncludeCrossItems.option_true)],
     )
 
 
+def oos_has_switch_hook(level: int = 1) -> Rule:
+    return Has(
+        "Switch Hook",
+        level,
+        options=[OptionFilter(OracleOfSeasonsIncludeCrossItems, OracleOfSeasonsIncludeCrossItems.option_true)],
+    )
+
+
+def oos_has_tight_switch_hook() -> Rule:
+    return Or(oos_has_switch_hook(2), And(oos_option_medium_logic(), oos_has_switch_hook()))
+
+
 def oos_has_shooter() -> Rule:
-    return Has("Seed Shooter")
+    return Has(
+        "Seed Shooter",
+        options=[OptionFilter(OracleOfSeasonsIncludeCrossItems, OracleOfSeasonsIncludeCrossItems.option_true)],
+    )
 
 
 def oos_has_seed_thrower() -> Rule:
@@ -437,15 +445,24 @@ def oos_has_flute() -> Rule:
 
 
 def oos_can_summon_ricky() -> Rule:
-    return Has("Ricky's Flute")
+    return Has(
+        "Ricky's Flute",
+        options=[OptionFilter(OracleOfSeasonsAnimalCompanion, OracleOfSeasonsAnimalCompanion.option_ricky)],
+    )
 
 
 def oos_can_summon_moosh() -> Rule:
-    return Has("Moosh's Flute")
+    return Has(
+        "Moosh's Flute",
+        options=[OptionFilter(OracleOfSeasonsAnimalCompanion, OracleOfSeasonsAnimalCompanion.option_moosh)],
+    )
 
 
 def oos_can_summon_dimitri() -> Rule:
-    return Has("Dimitri's Flute")
+    return Has(
+        "Dimitri's Flute",
+        options=[OptionFilter(OracleOfSeasonsAnimalCompanion, OracleOfSeasonsAnimalCompanion.option_dimitri)],
+    )
 
 
 # Jump-related predicates ###########################################

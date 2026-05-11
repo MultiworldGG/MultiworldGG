@@ -207,6 +207,14 @@ class AddLevelingUpToLocationPool(Toggle):
     display_name = "Leveling Up as location checks"
     default = True
 
+class AddAreaLocationsToLocationPool(Toggle):
+    """
+    Specifies if reaching areas (zones) should be considered "locations".
+    Only areas up to the goal act are included.
+    """
+    display_name = "Area visits as location checks"
+    default = True
+
 class AddSkillGemsToItemPool(Toggle):
     """
     Specifies if skill gems should be restricted, unlockable through items found in the multiworld.
@@ -311,6 +319,7 @@ poe_options_groups = [
 
         AddPassiveSkillPointsToItemPool,
         AddLevelingUpToLocationPool,
+        AddAreaLocationsToLocationPool,
 
         AddSkillGemsToItemPool,
         SkillGemsPerAct,
@@ -374,6 +383,7 @@ existing_char_preset_option = {
     "add_leveling_up_to_location_pool": False,
     "start_inventory": all_characters,
     "gear_upgrades": GearUpgrades.option_no_gear_unlocked,
+    "add_area_locations_to_location_pool": False,
 }
 
 poe_presets = {
@@ -456,6 +466,7 @@ class PathOfExileOptions(DeathLinkMixin, PerGameCommonOptions):
 
     add_passive_skill_points_to_item_pool: AddPassiveSkillPointsToItemPool
     add_leveling_up_to_location_pool: AddLevelingUpToLocationPool
+    add_area_locations_to_location_pool: AddAreaLocationsToLocationPool
 
     add_skill_gems_to_item_pool: AddSkillGemsToItemPool
     skill_gems_per_act: SkillGemsPerAct

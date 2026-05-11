@@ -2,6 +2,7 @@ import logging
 import time
 import random
 from enum import Enum
+from Utils import get_unique_identifier
 from NetUtils import ClientStatus, NetworkItem, color
 from worlds.AutoSNIClient import SNIClient, SnesReader, SnesData, Read
 from .Names.TextBox import generate_received_text, generate_received_trap_link_text
@@ -46,6 +47,9 @@ SMW_ENERGY_LINK_ITEM        = SMW_BWRAM + 0x0CFA
 SMW_ENERGY_LINK_REPLY       = SMW_BWRAM + 0x0CFB
 SMW_ENERGY_LINK_COUNT       = SMW_BWRAM + 0x0CFC
 SMW_TRAP_REPELLENT          = SMW_BWRAM + 0x0383
+
+SMW_DAMAGE_TRAP             = SMW_BWRAM + 0x0323
+SMW_DAMAGE_PACKET           = SMW_BWRAM + 0x0324
 
 SMW_GOAL_DATA                = ROM_START + 0x01BFA0
 SMW_REQUIRED_BOSSES_DATA     = ROM_START + 0x01BFA1
@@ -118,6 +122,8 @@ class SMWMemory(Enum):
     inventory_item = Read(SMW_ENERGY_LINK_ITEM, 0x01)
     inventory_purchase = Read(SMW_ENERGY_LINK_PURCHASE, 0x02)
     trap_repellent = Read(SMW_TRAP_REPELLENT, 0x01)
+    damage_trap = Read(SMW_DAMAGE_TRAP, 0x01)
+    shared_damage_packet = Read(SMW_DAMAGE_PACKET, 0x01)
 
 class ConnectMemory(Enum):
     settings = Read(SMW_GOAL_DATA, 0x20)
@@ -163,6 +169,10 @@ class WaffleSNIClient(SNIClient):
         self.inventory_tag = ""
         self.inventory_refund = 0
         self.inventory_cost = 0
+        self.incoming_shared_damage = 0
+        self.current_shared_damage = 0
+        self.shared_damage_label = None
+        self.shared_damage_message = ""
         self.visited_levels = set()
 
 
@@ -175,10 +185,12 @@ class WaffleSNIClient(SNIClient):
         
         state_mirror = snes_data.get(SMWMemory.state_mirror)
 
-        # If were not in a level
+        # If were not in a level discard any incoming deathlinks
         if state_mirror[0x00] != 0x14:
+            ctx.death_state = DeathState.dead
+            ctx.last_death_link = time.time()
             return
-        # Or Mario isn't in a playable state
+        # Delay deathlinks if Mario isn't in a playable state
         if state_mirror[0x01] != 0x00:
             return
         # Or a Message Box is showing
@@ -226,8 +238,8 @@ class WaffleSNIClient(SNIClient):
             ctx.tags.add("TrapLink")
             await ctx.send_msgs([{"cmd": "ConnectUpdate", "tags": ctx.tags}])
 
-        if bool(settings[0x18] & 0b1) and "RingLink" not in ctx.tags:
-            ctx.tags.add("RingLink")
+        if bool(settings[0x18] & 0b1) and "SharedDamage" not in ctx.tags:
+            ctx.tags.add("SharedDamage")
             await ctx.send_msgs([{"cmd": "ConnectUpdate", "tags": ctx.tags}])
 
         if ctx.rom != rom_name:
@@ -238,54 +250,6 @@ class WaffleSNIClient(SNIClient):
 
         return True
 
-
-    async def handle_ring_link(self, ctx: "SNIContext", snes_data: SnesData[SMWMemory]):
-        from SNIClient import snes_buffered_write, snes_flush_writes, snes_read
-
-        if "RingLink" not in ctx.tags:
-            return
-
-        if not hasattr(self, "prev_coins"):
-            self.prev_coins = 0
-
-        curr_coins = int.from_bytes(snes_data.get(SMWMemory.current_coins), "little")
-        curr_lives = int.from_bytes(snes_data.get(SMWMemory.current_lives), "little")
-
-        if curr_coins < self.prev_coins:
-            # Coins rolled over from 1-Up
-            curr_coins += 100
-
-        coins_diff = curr_coins - self.prev_coins
-        if coins_diff > 0:
-            await self.send_ring_link(ctx, snes_data, coins_diff)
-            self.prev_coins = curr_coins % 100
-
-        new_coins = curr_coins
-        if not hasattr(self, "pending_ring_link"):
-            self.pending_ring_link = 0
-
-        if self.pending_ring_link != 0:
-            new_coins += self.pending_ring_link
-            new_coins = max(new_coins, 0)
-
-            new_1_ups = 0
-            while new_coins >= 100:
-                new_1_ups += 1
-                new_coins -= 100
-
-            if new_1_ups > 0:
-                new_lives_inc = curr_lives + new_1_ups
-                snes_buffered_write(ctx, SRAM_START + 0x18E4, bytes([new_lives_inc]))
-
-            snes_buffered_write(ctx, SMW_COIN_COUNT_ADDR, bytes([new_coins]))
-            if self.pending_ring_link > 0:
-                snes_buffered_write(ctx, SMW_SFX_ADDR, bytes([0x01]))
-            else:
-                snes_buffered_write(ctx, SMW_SFX_ADDR, bytes([0x2A]))
-            self.pending_ring_link = 0
-            self.prev_coins = new_coins
-
-            await snes_flush_writes(ctx)
 
     async def game_watcher(self, ctx: "SNIContext"):
         if ctx.server is None:
@@ -346,16 +310,17 @@ class WaffleSNIClient(SNIClient):
         if current_level not in TRAPLESS_LEVELS and trap_repellent == 0:
             await self.handle_trap_queue(ctx)
 
-        await self.handle_ring_link(ctx, snes_data)
-
         if "EnergyLink" in ctx.tags and f"EnergyLink{ctx.team}" in ctx.stored_data and game_state >= 0x0D:
             await self.handle_energy_link(ctx, snes_data)
+
+        if "SharedDamage" in ctx.tags:
+            await self.handle_incoming_shared_damage(ctx, snes_data)
+            await self.handle_sent_shared_damage(ctx, snes_data)
 
         event_data = list(snes_data.get(SMWMemory.event_data))
         flags_data = list(snes_data.get(SMWMemory.flags_data))
         blocksanity_data = list(snes_data.get(SMWMemory.blocksanity_data))
 
-        new_checks = []
         progress_data = list(game_progress[0x02:0x02+0x0F])
         dragon_coins_data = list(game_progress[0x2F:0x2F+0x0C])
         moon_data = list(game_progress[0xEE:0xEE+0x0C])
@@ -398,14 +363,22 @@ class WaffleSNIClient(SNIClient):
                     data = progress_data[event_progress_byte]
                     masked_data = data & (1 << event_progress_bit)
                     if masked_data:
-                        new_checks.append(loc_id)
-                        new_checks.append(loc_id | 0x01)
+                        ctx.locations_checked.add(loc_id)
+                        ctx.locations_checked.add(loc_id | 0x01)
+                        await ctx.send_msgs([{
+                            "cmd": "Set", 
+                            "key": f"smw_{ctx.team}_{ctx.slot}_level_{loc_id:08X}",
+                            "slot": ctx.slot,
+                            "default": 0,
+                            "operations":
+                                [{"operation": "replace", "value": 1}],
+                        }])
                     continue
                 # Item from block
                 elif loc_type == 0x0A and blocksanity_active:
                     block_index = loc_data & 0x0FFFF
                     if blocksanity_data[block_index]:
-                        new_checks.append(loc_id)
+                        ctx.locations_checked.add(loc_id)
                     continue
                 # Room visited
                 elif loc_type == 0x08 and rooms_active:
@@ -413,16 +386,16 @@ class WaffleSNIClient(SNIClient):
                     # Regular rooms
                     if room_type == 0x00:
                         if loc_data == current_sublevel_value:
-                            new_checks.append(loc_id)
+                            ctx.locations_checked.add(loc_id)
                     # Similar rooms
                     elif room_type == 0x01:
                         loc_data &= 0x0FFF
                         if loc_data == current_sublevel_value or loc_data + 0x01 == current_sublevel_value:
-                            new_checks.append(loc_id)
+                            ctx.locations_checked.add(loc_id)
                     # Wing rooms 
                     elif room_type == 0x02:
                         if loc_data & 0x00FF == current_sublevel_value & 0x00FF:
-                            new_checks.append(loc_id)
+                            ctx.locations_checked.add(loc_id)
                     else:
                         continue
                 # Dragon coins
@@ -445,12 +418,10 @@ class WaffleSNIClient(SNIClient):
                 
                 masked_data = data & (1 << progress_bit)
                 if masked_data:
-                    new_checks.append(loc_id)
+                    ctx.locations_checked.add(loc_id)
 
-            for new_check_id in new_checks:
-                ctx.locations_checked.add(new_check_id)
-                await ctx.send_msgs([{"cmd": 'LocationChecks', "locations": [new_check_id]}])
-
+            await ctx.check_locations(ctx.locations_checked)
+            
         # Store visited OW levels for UT
         active_level_data = list(snes_data.get(SMWMemory.active_level_data))
         shuffled_level = state_mirror[0x0A]
@@ -465,12 +436,13 @@ class WaffleSNIClient(SNIClient):
             #print (f"smw_{ctx.team}_{ctx.slot}_{level_key}")
             await ctx.send_msgs([{
                 "cmd": "Set", 
-                "key": f"smw_{ctx.team}_{ctx.slot}_{level_key}",
+                "key": f"smw_{ctx.team}_{ctx.slot}_tile_{level_key}",
                 "slot": ctx.slot,
                 "default": 0,
                 "operations":
                     [{"operation": "replace", "value": 1}],
             }])
+
 
         # Send Current Room for Tracker
         if game_state != 0x14:
@@ -507,8 +479,7 @@ class WaffleSNIClient(SNIClient):
         # TODO: Rewrite it to use SnesReader
         from .Rom import trap_rom_data, item_rom_data, icon_rom_data, ability_rom_data, progressive_items
         from SNIClient import snes_read
-        recv_count = snes_data.get(SMWMemory.recv_count)
-        recv_index = int.from_bytes(recv_count, "little")
+        recv_index = int.from_bytes(snes_data.get(SMWMemory.recv_count), "little")
 
         if recv_index < len(ctx.items_received):
             item = ctx.items_received[recv_index]
@@ -663,6 +634,15 @@ class WaffleSNIClient(SNIClient):
 
                 if masked_data:
                     continue
+                
+                await ctx.send_msgs([{
+                    "cmd": "Set", 
+                    "key": f"smw_{ctx.team}_{ctx.slot}_level_{loc_id:08X}",
+                    "slot": ctx.slot,
+                    "default": 0,
+                    "operations":
+                        [{"operation": "replace", "value": 1}],
+                }])
 
                 new_events += 1
                 new_data = data | (1 << progress_bit)
@@ -878,7 +858,8 @@ class WaffleSNIClient(SNIClient):
                 return
 
             source_name = args["data"]["source"]
-            if "TrapLink" in ctx.tags and "TrapLink" in args["tags"] and source_name != ctx.slot_info[ctx.slot].name:
+
+            if "TrapLink" in ctx.tags and "TrapLink" in args["tags"] and source_name != ctx.player_names[ctx.slot]:
                 trap_name: str = args["data"]["trap_name"]
                 if trap_name not in trap_name_to_value:
                     # We don't know how to handle this trap, ignore it
@@ -899,10 +880,18 @@ class WaffleSNIClient(SNIClient):
                 self.priority_trap = NetworkItem(trap_id, 0, 0)
                 self.priority_trap_message = generate_received_trap_link_text(trap_name, source_name)
                 self.priority_trap_message_str = f"Received linked {trap_name} from {source_name}"
-            elif "RingLink" in ctx.tags and "RingLink" in args["tags"] and source_name != self.instance_id:
-                if not hasattr(self, "pending_ring_link"):
-                    self.pending_ring_link = 0
-                self.pending_ring_link += args["data"]["amount"]
+
+            if "SharedDamage" in ctx.tags and "SharedDamage" in args["tags"]:
+                if "uuid" in args["data"]:
+                    uuid = args["data"]["uuid"]
+                else:
+                    uuid = "lmao"
+                source_name = args["data"]["source"]
+                if uuid != get_unique_identifier() or source_name != ctx.player_names[ctx.slot]:
+                    damage_amount = args["data"]["damage_points"]
+                    self.incoming_shared_damage += damage_amount
+                    self.shared_damage_message = f"Received {damage_amount} damage points from {source_name}"
+
 
     async def send_trap_link(self, ctx: "SNIContext", trap_name: str):
         if "TrapLink" not in ctx.tags or ctx.slot == None:
@@ -912,33 +901,68 @@ class WaffleSNIClient(SNIClient):
             "cmd": "Bounce", "tags": ["TrapLink"],
             "data": {
                 "time": time.time(),
-                "source": ctx.slot_info[ctx.slot].name,
+                "source": ctx.player_names[ctx.slot],
                 "trap_name": trap_name
             }
         }])
         snes_logger.info(f"Sent linked {trap_name}")
 
-    async def send_ring_link(self, ctx: "SNIContext", snes_data: SnesData[SMWMemory], amount: int):
-        if "RingLink" not in ctx.tags or ctx.slot == None:
-            return
 
+    async def handle_incoming_shared_damage(self, ctx: "SNIContext", snes_data: SnesData[SMWMemory]):
+        try:
+            from kvui import MDLabel as Label
+        except ImportError:
+            from kvui import Label
+
+        if not self.shared_damage_label:
+            self.shared_damage_label = Label(text=f"", size_hint_x=None, width=120, halign="center")
+            ctx.ui.connect_layout.add_widget(self.shared_damage_label)
+
+        self.shared_damage_label.text = f"DMG: {self.current_shared_damage}"
+
+        # Ignore incoming damage if we're not in a level or the player isn't in a playable state
         state_mirror = snes_data.get(SMWMemory.state_mirror)
-        game_state = state_mirror[0x00]
-        
-        if game_state != 0x14:
+        if state_mirror[0x00] != 0x14 or state_mirror[0x01] != 0x00:
             return
+        
+        # We cap damage to 80 points, other games could use other values
+        if self.incoming_shared_damage:
+            snes_logger.info(self.shared_damage_message)
+            self.current_shared_damage += min(self.incoming_shared_damage, 80)
+            self.incoming_shared_damage = 0
+        
+        
+        # Delay damage signal if we're paused or a message box is showing
+        if state_mirror[0x07] != 0x00 or state_mirror[0x09] != 0x00:
+            return
+        
+        if self.current_shared_damage >= 80:
+            self.current_shared_damage = 0
+            snes_logger.info(f"Triggered DamageLink!")
 
-        if not hasattr(self, "instance_id"):
-            self.instance_id = time.time()
+            from SNIClient import snes_buffered_write, snes_flush_writes
+            snes_buffered_write(ctx, SMW_DAMAGE_TRAP, bytearray([0x01]))
+            await snes_flush_writes(ctx)
 
-        await ctx.send_msgs([{
-            "cmd": "Bounce", "tags": ["RingLink"],
-            "data": {
-                "time": time.time(),
-                "source": self.instance_id,
-                "amount": amount
-            }
-        }])
+
+    async def handle_sent_shared_damage(self, ctx: "SNIContext", snes_data: SnesData[SMWMemory]):
+        damage_amount = int.from_bytes(snes_data.get(SMWMemory.shared_damage_packet), "little")
+        if damage_amount != 0:
+            await ctx.send_msgs([{
+                "cmd": "Bounce", "tags": ["SharedDamage"],
+                "data": {
+                    "time": time.time(),
+                    "uuid": get_unique_identifier(),
+                    "source": ctx.player_names[ctx.slot],
+                    "damage_points": damage_amount
+                }
+            }])
+            snes_logger.info(f"Sent {damage_amount} damage points to players")
+
+            from SNIClient import snes_buffered_write, snes_flush_writes
+            snes_buffered_write(ctx, SMW_DAMAGE_PACKET, bytearray([0x00]))
+            await snes_flush_writes(ctx)
+
 
     def add_message_to_queue(self, new_message):
 
@@ -953,6 +977,7 @@ class WaffleSNIClient(SNIClient):
             self.message_queue = []
 
         self.message_queue.insert(0, new_message)
+
 
     async def handle_message_queue(self, ctx: "SNIContext"):
         from SNIClient import snes_buffered_write, snes_flush_writes, snes_read
@@ -1001,10 +1026,12 @@ class WaffleSNIClient(SNIClient):
 
         await snes_flush_writes(ctx)
 
+
     def add_trap_to_queue(self, trap_item, trap_msg):
         self.trap_queue = getattr(self, "trap_queue", [])
 
         self.trap_queue.append((trap_item, trap_msg))
+
 
     def should_show_message(self, ctx, next_item):
         return ctx.receive_option == 1 or \

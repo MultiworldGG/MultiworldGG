@@ -36,6 +36,7 @@ class LocationDict(TypedDict, total=False):
     placeInAct: str|None
     dropLevel: int|None
     level: int|None
+    areaLevel: int|None
     name: str
     act: int
     id: int
@@ -64,8 +65,9 @@ id_by_level_location_name = {i['name']: i['id'] for i in LocationTable.level_loc
 base_item_names_set = LocationTable.base_item_set
 base_item_type_locations: Dict[int, LocationDict] = LocationTable.base_item_location_table
 level_locations: Dict[int, LocationDict] = LocationTable.level_location_table
-full_locations = {**base_item_type_locations, **level_locations}
 base_item_locations_by_base_item_name: Dict[str, LocationDict] = {loc['baseItem']: loc for loc in base_item_type_locations.values()}
 
 bosses = LocationTable.bosses_dict
 bosses_by_id = {b['id']: b for b in bosses.values()}
+area_locations: Dict[int, LocationDict] = LocationTable.area_location_table
+full_locations = {**base_item_type_locations, **level_locations, **area_locations}

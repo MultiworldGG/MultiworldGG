@@ -72,7 +72,8 @@
       {"name": "ToS 30F W Chest"},
       {"name": "ToS 28F W Raised Chest"},
       {"name": "ToS 28F E Raised Chest"},
-      {"name": "ToS 29F SE Chest"},
+      {"name": "ToS 29F SE Eyes in the Dark Chest"},
+      {"name": "ToS 29F SE Extinguish Torches Chest"},
       {"name": "ToS 30F SE Wrecker Chest"},
       {"name": "ToS 24F Final Chest"}], "map_locations":[{"map": "Overview", "x": 512, "y": 308}]},
   {"name": "ToS 6 Events", "sections": [{"name": "EVENT: Reach ToS 24F"},{"name": "GOAL: Reach ToS 24F"}], "map_locations":[{"map": "Overview", "x": 528, "y": 308}]}

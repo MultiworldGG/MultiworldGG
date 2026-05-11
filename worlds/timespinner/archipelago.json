@@ -1,6 +1,1 @@
-{
-    "game": "Timespinner",
-    "authors": ["Jarno"],
-    "minimum_ap_version": "0.6.3",
-    "world_version": "1.38.0"
-}
+{"game": "Timespinner", "authors": ["Jarno"], "minimum_ap_version": "0.6.3", "world_version": "1.38.1", "compatible_version": 7, "version": 7}

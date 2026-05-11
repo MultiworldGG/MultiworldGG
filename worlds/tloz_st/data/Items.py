@@ -350,7 +350,7 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         'address': STAddr.adv_flags_1,
         'value': 0x80,
         'item_groups': ["Glyphs", "Rail Items", "Forest Tracks", "Major Forest Tracks", "Tracks: Forest Glyph"],
-        'model': "Forest Glyph 2",
+        'model': "Forest Glyph",
         "reload_entrances": [0x2F00], 
         "id": 38,
     },
@@ -405,7 +405,7 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         'item_groups': ["Restoration Tracks", "Rail Items", "Ocean Realm Tracks",
                         "Ocean Temple Tracks", "Ocean Restoration", "Ocean Realm Restoration",
                         "Major Ocean Tracks", "Tracks: Marine Temple Tracks"],
-        'model': "Ocean Glyph 3", 
+        'model': "Ocean Glyph 2",
         "id": 44,
     },
     "Mountain Temple Tracks": {
@@ -585,6 +585,7 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         'value': 0x20,
         'item_groups': ["Rail Items", "Desert Tracks", "Misc Tracks", "Major Sand Tracks", "Tracks: Sand Realm"],
         "id": 62,
+        "model": "Ocean Glyph"
     },
     "Fire Realm Sand Portal Tracks": {
         'classification': ItemClassification.progression,
@@ -686,7 +687,8 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         'value': 0x1,
         'set_bit': [[STAddr.source_rails, 0x20]],
         'item_groups': ["Sources", "Major Sand Tracks", "Tracks: Sand Source"],
-        'model': "Ocean Glyph", 
+        'model': "Ocean Glyph",
+        "blocked_scenes": [0x2200],
         "id": 72,
     },
 

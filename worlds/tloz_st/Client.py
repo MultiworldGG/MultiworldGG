@@ -207,7 +207,6 @@ class SpiritTracksClient(DSZeldaClient):
         self.train_quick_station = True
         self.update_train_speed: bool = False
         self.train_speed = [-143, 0, 115, 193]
-        self.has_set_starting_train = False
         self.key_address = STAddr.small_keys
 
         self.hint_data = HINT_DATA
@@ -227,6 +226,7 @@ class SpiritTracksClient(DSZeldaClient):
         self.saving_safety = False
 
         self.display_goal = False
+        self.oct_bk_offset = None
 
 
     def print_goal_info(self, ctx):
@@ -246,7 +246,7 @@ class SpiritTracksClient(DSZeldaClient):
             has_compass = "" if self.item_count(ctx, "Compass of Light") else "don't "
             logger.info(f"You need the Compass of Light to access the Dark Realm. You {has_compass}have it.")
         if slot_data["dark_realm_access"] in [1, 3]:
-            specific = "specific " if slot_data["require_specific_dungeons"] else ""
+            specific = "specific " if slot_data.get("require_specific_dungeons", False) else ""
             dungeon_locs = slot_data["required_dungeons"]
             has_locs = sum([1 for loc in ctx.checked_locations if loc in dungeon_locs])
             logger.info(
@@ -346,8 +346,6 @@ class SpiritTracksClient(DSZeldaClient):
 
     async def watched_intro_cs(self, ctx):
         watched_intro = await STAddr.watched_intro.read(ctx) & 1
-        if not watched_intro:
-            self.has_set_starting_train = False
         return watched_intro
 
     async def update_main_read_list(self, ctx: "BizHawkClientContext", stage: int, in_game=True):
@@ -577,10 +575,20 @@ class SpiritTracksClient(DSZeldaClient):
         if (item_name.startswith("Boss Key") or
             (item_name.startswith("Keyring") and ctx.slot_data["big_keyrings"])
         ) and self.current_scene in BOSS_KEY_DATA:
-            data = BOSS_KEY_DATA[self.current_scene]
-            if data["dungeon"] in item_name and (self.current_scene & 0xff00 != 0x1300 or self.location_name_to_id[data["location"]] in ctx.checked_locations):
-                print(f"Opening boss door for {hex(self.current_scene)}")
-                await data["door"].overwrite(ctx, 3)
+            if self.current_stage == 0x13:
+                await self.open_tos_boss_door(ctx, self.current_scene)
+            else:
+                data = BOSS_KEY_DATA[self.current_scene]
+                if data["dungeon"] in item_name and (self.current_scene & 0xff00 != 0x1300 or self.location_name_to_id[data["location"]] in ctx.checked_locations):
+                    print(f"Opening boss door for {hex(self.current_scene)}")
+                    await data["door"].overwrite(ctx, 3)
+
+        # Complex blocked scenes for sources in boss rooms
+        if (self.current_scene in BOSS_ROOM_TO_BLOCKED_ITEM_GROUP and
+            BOSS_ROOM_TO_BLOCKED_ITEM_GROUP[self.current_scene] in item_data.item_groups):
+            bit = 2 ** (self.current_stage-0x1a)
+            await STAddr.sources.unset_bits(ctx, bit)
+
 
     async def process_on_room_load(self, ctx, current_scene, read_result: dict):
         await self.update_treasure_tracker(ctx, "room_load")
@@ -715,8 +723,13 @@ class SpiritTracksClient(DSZeldaClient):
         print(f"Reseting treasure models")
         await bizhawk.write(ctx.bizhawk_ctx, write_list)
 
-    async def swap_models(self, ctx, locations: list, generic_model=0x59637266, treasure_mode=False):
+    async def swap_models(self, ctx, locations: list, treasure_mode=False):
         print(f"\tMultiple locations: {locations}")
+        generic_model = [
+            ITEM_MODEL_LOOKUP["Force Gem 17"].value,
+            ITEM_MODEL_LOOKUP["Letter"].value,
+            ITEM_MODEL_LOOKUP["Gold Rupee"].value,
+        ][ctx.slot_data.get("multiworld_item_default_models", 0)]
         item_location_check = {}  # dict of item to location id for what location determines the model
         item_priority = {}
         for loc_name in locations:
@@ -1137,13 +1150,19 @@ class SpiritTracksClient(DSZeldaClient):
         print(f"Setting starting train {res}")
         await bizhawk.write(ctx.bizhawk_ctx, res)
 
+    async def get_tos_bk_pointer(self, ctx) -> tuple[Address, int]:
+        actor_table = await STAddr.tos_actor_table_pointer_safe.read(ctx)
+        offset = 1040 + 8  # start of table + tos bk index
+        pointer_addr = Address.from_pointer(actor_table + offset, size=3)
+        pointer = await pointer_addr.read(ctx)
+        print(f"BK pointer from table read: {pointer_addr} -> {hex(pointer)} actor table: {actor_table}")
+        return pointer_addr, pointer
+
     async def process_hard_coded_rooms(self, ctx, current_scene):
         self.delay_room_action = 5
-        if current_scene == 0x2f00 and not self.has_set_starting_train:
-            # if self.location_name_to_id["Outset Bee Tree"] not in ctx.checked_locations:
-            #     print(f"Setting starting train")
+        if current_scene == 0x2f00 and not await STAddr.set_starting_train.read(ctx) & 4:
             await self.set_starting_train(ctx)
-            self.has_set_starting_train = True
+            await STAddr.set_starting_train.set_bits(ctx, 4)
         if self.save_ammo:
             await write_multiple(ctx, list(self.save_ammo.keys()), list(self.save_ammo.values()))
             self.save_ammo = None
@@ -1161,12 +1180,22 @@ class SpiritTracksClient(DSZeldaClient):
                 print(f"Has found location {data['location']}, deleting boss key")
                 await self.delete_boss_key(ctx)
             else:
-                pointer = await data["pointer"].read(ctx)
-                if 0x2000000 < pointer < 0x2400000:
+                if "search_data" in data:
+                    pointer, offset = await self.find_table_object(ctx, *data["search_data"], return_index=True)
+                    self.oct_bk_offset = offset
+                    print(f"Found bk in actor loop: {pointer}")
+                elif "pointer" in data:
+                    pointer = await data["pointer"].read(ctx)
+                    print(f"bk pointer: {data['pointer']} -> {hex(pointer)}")
+                else:
+                    pointer_addr, pointer = await self.get_tos_bk_pointer(ctx)
+
+                if pointer < 0x400000:
                     offset = 12 if self.current_stage == 0x1c else 8
-                    self.boss_key_read = Address.from_pointer(pointer+offset-0x2000000, size=4)
+                    self.boss_key_read = Address.from_pointer(pointer+offset, size=4)
                     self.boss_key_y = data["y"]
-                print(f"Loaded boss key data: {hex(pointer)} y: {self.boss_key_y}")
+                    print(f"BK Read: {self.boss_key_read}")
+                print(f"Loaded boss key data: {pointer} y: {self.boss_key_y}")
 
             # Open door
             if self.item_count(ctx, f"Boss Key ({data['dungeon']})") or (self.item_count(ctx, f"Keyring ({data['dungeon']})") and ctx.slot_data["big_keyrings"]):
@@ -1193,13 +1222,13 @@ class SpiritTracksClient(DSZeldaClient):
 
             if self.item_count(ctx, "Mountain Temple Snurglar Key") >= 3 or self.item_count(ctx, "Snurglar Keyring"):
                 if (not any([self.item_count(ctx, i) for i in ITEM_GROUPS["Tracks: Mountain Temple Tracks"]])
-                        or not self.item_count(ctx, "Cannon")):
+                        or not self.item_count(ctx, "Cannon")
+                        or all([LOCATIONS_DATA[i]['id'] in ctx.checked_locations for i in LOCATION_GROUPS["Snurglars"]])):
                     print(f"Got Snurglar keys, opening mountain temple")
                     await self.snurglar_addr.overwrite(ctx, 0x30)
                 else:
                     print(f"Got Snurglar keys, adding to main read list")
                     self.main_read_list.append(snurglar_flags)
-
         else:
             self.snurglar_addr = None
 
@@ -1290,17 +1319,20 @@ class SpiritTracksClient(DSZeldaClient):
 
 
     async def delete_boss_key(self, ctx):
-        pointer = await STAddr.boss_key_deletion_pointer.read(ctx) - 0x2000000
+        pointer = await STAddr.boss_key_deletion_pointer.read(ctx)
         print(f"Deleting boss key @ {hex(pointer)}")
-        size, offset = 12, 0
+        size, offset = BOSS_KEY_DATA[self.current_scene].get("deletion_data", (12, 0))
         if self.current_stage == 0x1b:
-            pointer += 44  # Ocean temple bk does not load into the first slot in memory
+            if not self.oct_bk_offset:
+                data = BOSS_KEY_DATA[0x1b05]
+                _, self.oct_bk_offset = await self.find_table_object(ctx, *data["search_data"], return_index=True)
+                if not self.oct_bk_offset:
+                    return
+            pointer += (self.oct_bk_offset-2)*4  # Ocean temple bk does not load into the first slot in memory
+            self.oct_bk_offset = None
             await Address.from_pointer(pointer+60, 4).overwrite(ctx, 0)  # also needs this to not crash
-            size = 8
-        if self.current_stage == 0x1D:
-            size, offset = 4, 8
-        if self.current_stage == 0x1C:
-            size, offset = 4, 64
+        if self.current_stage == 0x13:
+            pointer, _ = await self.get_tos_bk_pointer(ctx)
         deletion_address = Address.from_pointer(pointer+offset, size)
         print(f"Deleting boss key @ {deletion_address} size {size}")
         # print(f"Deleting boss key @ {STAddr.boss_key_deletion}")

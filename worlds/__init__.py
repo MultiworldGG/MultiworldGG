@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 from types import ModuleType
 from typing import List, Sequence, Dict
-from zipfile import BadZipFile
+from zipfile import ZipFile, BadZipFile
 import threading
 
 from NetUtils import DataPackage
@@ -37,7 +37,7 @@ __all__ = [
 ]
 
 
-failed_world_loads: List[str] = []
+failed_world_loads: dict[str, str] = {}
 
 
 @dataclasses.dataclass(order=True)
@@ -72,8 +72,9 @@ class WorldSource:
             print(f"Could not load world {self}:", file=file_like)
             traceback.print_exc(file=file_like)
             file_like.seek(0)
-            logging.exception(file_like.read())
-            failed_world_loads.append(os.path.basename(self.path).rsplit(".", 1)[0])
+            reason = file_like.read()
+            logging.exception(reason)
+            failed_world_loads[os.path.basename(self.path).rsplit(".", 1)[0]] = reason
             return False
 
 
@@ -113,7 +114,9 @@ network_data_package_single_game: Dict[str, DataPackage]
 
 from ._world_cache import (
     has_launcher_cache,
+    prepare_for_worlds_load,
     rebuild_world_caches,
+    write_launcher_cache_if_missing,
 )
 
 
@@ -143,6 +146,7 @@ def _load_loose_worlds() -> list[WorldSource]:
         game = manifest.get("game")
         if game in AutoWorldRegister.world_types:
             AutoWorldRegister.world_types[game].world_version = tuplize_version(manifest.get("world_version", "0.0.0"))
+            AutoWorldRegister.world_types[game].manifest = manifest
     return apworlds
 
 
@@ -180,7 +184,7 @@ def _load_apworlds(apworlds: list[WorldSource]) -> None:
 
     def fail_world(game_name: str, reason: str, add_as_failed_to_load: bool = True) -> None:
         if add_as_failed_to_load:
-            failed_world_loads.append(game_name)
+            failed_world_loads[game_name] = reason
         logging.warning(reason)
 
     for apworld_source in apworlds:
@@ -228,15 +232,27 @@ def _load_apworlds(apworlds: list[WorldSource]) -> None:
     for apworld_source, apworld in core_compatible:
         _set_current_loading_world(apworld.game or Path(apworld_source.path).stem)
         if apworld.game and apworld.game in AutoWorldRegister.world_types:
-            continue
+            world_type = AutoWorldRegister.world_types[apworld.game]
+            world_file = os.path.normcase(os.path.abspath(getattr(world_type, "__file__", "")))
+            apworld_path = os.path.normcase(os.path.abspath(apworld_source.resolved_path))
+            if world_file != apworld_path and not world_file.startswith(apworld_path + os.sep):
+                continue
         else:
             _register_apworld_zip_spec(apworld_source)
 
             apworld_source.load()
-            if apworld.game in AutoWorldRegister.world_types:
-                # world could fail to load at this point
-                if apworld.world_version:
-                    AutoWorldRegister.world_types[apworld.game].world_version = apworld.world_version
+        if apworld.game in AutoWorldRegister.world_types:
+            # world could fail to load at this point
+            if apworld.world_version:
+                AutoWorldRegister.world_types[apworld.game].world_version = apworld.world_version
+
+            assert apworld.path
+            with ZipFile(apworld.path, "r") as zf:
+                manifest = apworld.read_contents(zf)
+            # version/compatible_version shouldn't be needed by world, makes it consistent with folder world
+            manifest.pop("version", None)
+            manifest.pop("compatible_version", None)
+            AutoWorldRegister.world_types[apworld.game].manifest = manifest
 
 def _build_network_data_packages() -> None:
     global network_data_package
@@ -274,24 +290,14 @@ def ensure_worlds_loaded(write_launcher_cache: bool = True) -> None:
         _worlds_loading = True
         _set_current_loading_world(None)
         try:
-            try:
-                from . import LauncherComponents
-                LauncherComponents.prepare_for_worlds_load()
-            except Exception as exc:
-                logging.warning(f"Failed to prepare launcher components for world loading: {exc}")
+            prepare_for_worlds_load()
 
             failed_world_loads.clear()
             apworlds = _load_loose_worlds()
             if apworlds:
                 _load_apworlds(apworlds)
             _build_network_data_packages()
-
-            if write_launcher_cache and not has_launcher_cache():
-                try:
-                    from . import LauncherComponents
-                    LauncherComponents.write_launcher_cache()
-                except Exception as exc:
-                    logging.warning(f"Failed to write launcher cache: {exc}")
+            write_launcher_cache_if_missing(write_launcher_cache)
 
             _worlds_loaded = True
         finally:

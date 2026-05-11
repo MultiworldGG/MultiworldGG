@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from Options import Choice, Range, DeathLink, PerGameCommonOptions, OptionDict, FreeText, OptionSet, OptionCounter, \
+from Options import  Visibility, Choice , Range, DeathLink, PerGameCommonOptions, OptionDict, FreeText, OptionSet, OptionCounter, \
     Toggle, OptionList, DefaultOnToggle
 from .Items import AEItem
 
@@ -26,11 +26,10 @@ class GoalOption(Choice):
 
 class FastTokenGoalOption(Choice):
     """If this is enabled and the chosen Goal is `mmtoken` or `ppmtoken`, provides easy access to the end boss once enough tokens have been obtained.
-       The warp will be available in the Training Room where the first training warp would be (Water Net).
-       NOTE : Music does not change when warping. Using this warp will result in fighting your goal boss with the Time Station music.
+    When enough tokens have been collected, hold START while confirming a stage in the Level Select to warp directly to your Goal boss, skipping all other requirements.
 
-        off: Depending on goal, MM/PPM will be unlocked with world keys and will need to be accessed through Level Select
-        on: When enough tokens have been obtained,a warp taking you directly to your Goal boss in the Training Room will be activated, skipping all other requirements
+        off: MM/PPM will be unlocked through world keys and accessed normally via Level Select
+        on: A warp to your Goal boss becomes available in Level Select once enough tokens have been obtained (hold START to activate)
 
         Supported values: off, on
         Default value: off
@@ -156,6 +155,42 @@ class EntranceOption(Choice):
     option_lockmm = 0x02
     default = option_on
 
+class DoorShuffleOption(Choice):
+    """Choose how the transitions between rooms (doors) are randomized.
+    ***This option is currently disabled due to instability***
+
+    off: Doors will lead to their vanilla destinations.
+    same_level: Doors are shuffled with other doors within the same level.
+
+    Supported values: off, same_level
+    Default value: off
+    """
+
+    display_name = "Door Shuffle"
+    visibility = Visibility.none
+    option_off = 0x00
+    option_same_level = 0x01
+    #option_cross_level = 0x02
+    default = option_off
+
+class DoorShuffleTypeOption(Choice):
+    """Determines the logic used when connecting doors.
+    This only applies if Door Shuffle is set to 'same_level'.
+
+    pairs: Two-way transitions. If Door A leads to Door B, then Door B
+           will always lead back to Door A.
+    crossed: One-way transitions. Door A might lead to Door B, while Door B
+             leads to Door C.
+
+    Supported values: pairs, crossed
+    Default value: pairs
+    """
+    display_name = "Door Shuffle"
+    visibility = Visibility.none
+    option_pairs = 0x00
+    option_crossed = 0x01
+    default = option_pairs
+
 
 class RandomizeStartingRoomOption(Choice):
     """Choose if the starting room for each level should be randomized.
@@ -239,6 +274,37 @@ class MailboxOption(Choice):
     option_true = 0x01
     default = option_false
 
+class JacketOption(Choice):
+    """Choose if static jackets should act as locations.
+
+        false: Jackets are not locations.
+        true: The 21 available jackets are added as locations.
+
+        Supported values: false, true
+        Default value: false
+    """
+
+    display_name = "Jacket"
+    option_false = 0x00
+    option_true = 0x01
+    default = option_false
+
+class TrainingRoomsOption(Choice):
+    """Choose if locations inside training rooms should be included as checks.
+
+        false: Training rooms have no checks.
+        completion: Training rooms have 1 check on completion.
+        mailboxes: Training rooms mailboxes counts as checks.
+
+        Supported values: false, completion, mailboxes
+        Default value: false
+    """
+
+    display_name = "Training Rooms"
+    option_false = 0x00
+    option_completion = 0x01
+    option_mailboxes = 0x02
+    default = option_false
 
 class LampOption(Choice):
     """Choose if Monkey Lamps should be locked and shuffled into the multiworld.
@@ -547,11 +613,15 @@ class ApeEscapeOptions(PerGameCommonOptions):
     infinitejump: InfiniteJumpOption
     superflyer: SuperFlyerOption
     entrance: EntranceOption
+    doorshuffle: DoorShuffleOption
+    doorshuffletype: DoorShuffleTypeOption
     randomizestartingroom: RandomizeStartingRoomOption
     unlocksperkey: KeyOption
     extrakeys: ExtraKeysOption
     coin: CoinOption
     mailbox: MailboxOption
+    jacket: JacketOption
+    trainingrooms: TrainingRoomsOption
     lamp: LampOption
     gadget: GadgetOption
     shufflenet: ShuffleNetOption

@@ -18,7 +18,6 @@ import time
 import logging
 import pkgutil
 
-from pynput import keyboard
 from pathlib import Path
 
 
@@ -27,7 +26,7 @@ _debug = True  # Set to True for debug output, False for production
 validate_char_debounce_time = 2  # seconds
 context = None  # This will be set in the client_start function
 _run_update_item_filter = False
-_last_pressed_key: keyboard.Key | None = None
+_last_pressed_key: object | None = None
 
 possible_paths_to_client_txt = [
     Path("C:/Program Files (x86)/Grinding Gear Games/Path of Exile/logs/client.txt"),
@@ -37,12 +36,7 @@ possible_paths_to_client_txt = [
 ]
 path_to_client_txt = Path("D:/games/poe/logs/Client.txt")
 
-key_functions = {
-    #keyboard.KeyCode: lambda: validate_char(),
-    # numpad 1
-    keyboard.Key.f12: lambda: asyncio.create_task(validate_char(context)),
-    keyboard.Key.f11: lambda: asyncio.create_task( lambda :(_ for _ in ()).throw(Exception("F11 pressed, raising exception for testing purposes"))),
-}
+key_functions = {}
 
 def on_press(key):
     # key is a keycode, key or none.
@@ -115,6 +109,12 @@ async def async_load(ctx: "PathOfExileContext" = None):
         # Continue execution - jingles are optional
 
     itemFilter.update_item_filter_from_context(ctx)
+
+    keyboard = inputHelper.get_keyboard_module()
+    key_functions.update({
+        keyboard.Key.f12: lambda: asyncio.create_task(validate_char(context)),
+        keyboard.Key.f11: lambda: asyncio.create_task(lambda: (_ for _ in ()).throw(Exception("F11 pressed, raising exception for testing purposes"))),
+    })
 
     listener = keyboard.Listener(on_press=on_press)
     listener.start()
@@ -341,5 +341,4 @@ if __name__ == '__main__':
 #             client_txt_last_modified_time = current_mod_time
 #         else:
 #             logger.info(f"Path to client.txt does not exist: {path_to_client_txt}")
-
 

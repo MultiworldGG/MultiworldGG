@@ -334,6 +334,7 @@ class Data:
         #Other represents the keys + caps; the "star" ids 1 and 2 are keys 1 and 2, and 3-5 are wing, vanish, and metal cap
         #respectively
     }
+    required_items = set()
 
 
     def import_json(self, file_name):

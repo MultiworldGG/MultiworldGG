@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from Options import (Choice, DefaultOnToggle, OptionGroup, PerGameCommonOptions, 
-                    Range, DeathLink)
+                    Range, OptionSet ,DeathLink)
 
 # In this file, we define the options the player can pick.
 # The most common types of options are Toggle, Range and Choice.
@@ -22,19 +22,47 @@ from Options import (Choice, DefaultOnToggle, OptionGroup, PerGameCommonOptions,
 class Goal(Choice):
     """
     The goal to win the game.
-    missions_networth: Reach a specificed net worth and complete the main story.
-    networth_only: Reach a specificed net worth.
-    missions_only: Complete the main story.
+    Bomb Fragments: A MacGuffin item goal. Must recieve all bomb fragments to goal.
+    networth: Reach a specificed net worth to goal.
+    missions_: Complete the main story, defeat the cartel to goal
+        - 700 Suburbia cartel influence (7 cartel items) is required to defeat the cartel.
     """
     
     display_name = "Goal"
 
-    option_networth_only = 0
-    option_missions_networth = 1
-    option_missions_only = 2
+    option_bomb_fragments_only = 0
+    option_missions_only = 1
+    option_missions_networth = 2
+    option_missions_bomb_fragments = 3
+    option_missions_networth_bomb_fragments = 4
+    option_bomb_fragments_networth = 5
 
-    # Choice options must define an explicit default value.
     default = option_missions_networth
+
+class NumberOfBombFragmentsRequired(Range):
+    """
+    The number of bomb fragments required to win the game.
+    This option is only relevant if the goal includes bomb fragments.
+    The default value is 5.
+    """
+    display_name = "Number of Bomb Fragments Required"
+    range_start = 5
+    range_end = 20
+    default = 10
+
+
+class NumberOfExtraBombFragments(Range):
+    """
+    The number of extra bomb fragments to include in the item pool.
+    This option is only relevant if the goal includes bomb fragments.
+    The default value is 2. Make sure to accomadate for how many required.
+    Recommended value to have ~25-33% extra fragments.
+    """
+    display_name = "Number of Extra Bomb Fragments"
+    range_start = 0
+    range_end = 10
+    default = 2
+
 
 class RandomizeLevelUnlocks(DefaultOnToggle):
     """
@@ -247,12 +275,29 @@ class CashForTrash(Range):
     range_end = 50
     default = 5
 
+class DeathLinkOptions(OptionSet):
+    """
+    Specify how deathlink will affect you.
+    traps include: Heat Trap, Slippery Trap, Trash Trap, Pan Trap, TimeScale Trap, Sleep Trap
+    Death sends players to the hospital (Cash Fee). 
+    Recommended: Use either random trap or death or both. Sleep trap is okay too. Arrested is especially brutal.
+    Options:
+    - sleep trap: Ends day.
+    - arrested: Player is arrested and loses all illegal items in their inventory.
+    - random trap: Player will be affected by a random trap.
+    - death: Player will be sent to the hospital upon death (Cash Fee). The mod does not reset to last save on death.
+    """
+    display_name = "Death Link Options"
+    valid_keys = ["sleep trap", "arrested", "random trap", "death"]
+
 # We must now define a dataclass inheriting from PerGameCommonOptions that we put all our options in.
 # This is in the format "option_name_in_snake_case: OptionClassName".
 @dataclass
 class Schedule1Options(PerGameCommonOptions):
     goal: Goal
     networth_amount_required: NetworthAmountRequired
+    number_of_bomb_fragments_required: NumberOfBombFragmentsRequired
+    number_of_extra_bomb_fragments: NumberOfExtraBombFragments
     ban_bad_filler_items: BanBadFillerItems
     ban_progression_skip_items: BanProgressionSkipItems
     trap_chance: TrapChance
@@ -274,6 +319,7 @@ class Schedule1Options(PerGameCommonOptions):
     recipe_checks: RecipeChecks
     cash_for_trash: CashForTrash
     death_link: DeathLink
+    death_link_options: DeathLinkOptions
 
 
 
@@ -281,14 +327,14 @@ class Schedule1Options(PerGameCommonOptions):
 option_groups = [
     OptionGroup(
         "Gameplay Options",
-        [Goal, NetworthAmountRequired, NumberOfXpBundles, AmountOfXpPerBundleMin, AmountOfXpPerBundleMax, 
+        [Goal, NetworthAmountRequired,NumberOfBombFragmentsRequired, NumberOfExtraBombFragments, NumberOfXpBundles, AmountOfXpPerBundleMin, AmountOfXpPerBundleMax, 
          NumberOfCashBundles, AmountOfCashPerBundleMin, AmountOfCashPerBundleMax,  
          BanBadFillerItems, BanProgressionSkipItems, TrapChance,  
          RandomizeLevelUnlocks, RandomizeCartelInfluence, CartelInfluenceItemsPerRegion,   
          RandomizeCustomers, RandomizeDealers, RandomizeSuppliers, RandomizeSewerKey,
          RandomizeDrugMakingProperties, RandomizeBusinessProperties,  
          RecipeChecks, CashForTrash, 
-         DeathLink],
+         DeathLink, DeathLinkOptions],
     )
 ]
 
@@ -296,6 +342,8 @@ option_groups = [
 option_presets = {
     "Default": {
         "goal": Goal.default,
+        "number_of_bomb_fragments_required": NumberOfBombFragmentsRequired.default,
+        "number_of_extra_bomb_fragments": NumberOfExtraBombFragments.default,
         "number_of_xp_bundles": NumberOfXpBundles.default,
         "amount_of_xp_per_bundle_min": AmountOfXpPerBundleMin.default,
         "amount_of_xp_per_bundle_max": AmountOfXpPerBundleMax.default,
@@ -318,5 +366,6 @@ option_presets = {
         "randomize_suppliers": True,
         "randomize_sewer_key": True,
         "death_link": DeathLink.default,
+        "death_link_options": DeathLinkOptions.default,
     }
 }

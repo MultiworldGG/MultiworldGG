@@ -49,7 +49,7 @@ def manager_gui():
     manager_window.minsize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT)
     manager_window.maxsize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT)
     manager_window.resizable(True, False)
-    manager_window.wm_title(f"Donkey Kong Country 2 Adjuster")
+    manager_window.wm_title(f"Donkey Kong Country 2 Manager")
 
     left_frame = Frame(manager_window)
     right_frame = Frame(manager_window)
@@ -121,6 +121,8 @@ def load_data_from_patch(patch_path, vars_ns, canvas_frame: Frame):
 
     if "death_link" in options_file.keys():
         vars_ns.death_link_active.set(options_file["death_link"])
+    if "damage_link" in options_file.keys():
+        vars_ns.damage_link_active.set(options_file["damage_link"])
     if "energy_link" in options_file.keys():
         vars_ns.energy_link_active.set(options_file["energy_link"])
     if "trap_link" in options_file.keys():
@@ -176,6 +178,7 @@ def save_adjusted_data(vars_ns):
 
     options_file = json.loads(file.read("data.json").decode("UTF-8"))
     options_file["death_link"] = vars_ns.death_link_active.get()
+    options_file["damage_link"] = vars_ns.damage_link_active.get()
     options_file["energy_link"] = vars_ns.energy_link_active.get()
     options_file["trap_link"] = vars_ns.trap_link_active.get()
 
@@ -198,6 +201,13 @@ def create_linked_frame(parent=None):
     death_label = Label(death_frame, text="Enable Death Link")
     death_label.pack(side=LEFT, fill=X)
 
+    vars.damage_link_active = BooleanVar()
+    damage_frame = Frame(frame)
+    damage_check = Checkbutton(damage_frame, variable=vars.damage_link_active)
+    damage_check.pack(side=LEFT, fill=X)
+    damage_label = Label(damage_frame, text="Enable Damage Link")
+    damage_label.pack(side=LEFT, fill=X)
+
     vars.energy_link_active = BooleanVar()
     energy_frame = Frame(frame)
     energy_check = Checkbutton(energy_frame, variable=vars.energy_link_active)
@@ -213,6 +223,7 @@ def create_linked_frame(parent=None):
     trap_label.pack(side=LEFT, fill=X)
 
     death_frame.pack(side=TOP, fill=X)
+    damage_frame.pack(side=TOP, fill=X)
     energy_frame.pack(side=TOP, fill=X)
     trap_frame.pack(side=TOP, fill=X)
 

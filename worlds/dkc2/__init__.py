@@ -86,7 +86,6 @@ class DKC2World(Tracker.UTMxin, World):
     """
     # borrowed from DKC3's description
     game = "Donkey Kong Country 2"
-    author: str = "lx5"
     web = DKC2Web()
 
     settings: ClassVar[DKC2Settings]

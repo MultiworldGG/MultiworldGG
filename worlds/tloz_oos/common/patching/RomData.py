@@ -1,5 +1,5 @@
 from collections.abc import Collection
-from typing import Optional
+from typing import Iterable, Optional
 
 from .z80asm.Assembler import GameboyAddress
 from .z80asm.Util import hex_str
@@ -8,7 +8,7 @@ from .z80asm.Util import hex_str
 class RomData:
     buffer: bytearray
 
-    def __init__(self, file: bytes, name: Optional[str] = None) -> None:
+    def __init__(self, file: Iterable[int], name: Optional[str] = None) -> None:
         self.file = bytearray(file)
         self.name = name
 

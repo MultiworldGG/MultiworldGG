@@ -1287,7 +1287,90 @@ class RAM:
         84 : [0x0BF21A,0x0BF21E],
         85 : [0x0BF0FA,0x0BF0FE],
     }
+    jacketsListLocal = {
+        #Array Order:
+        # JacketNumber : [JacketVisualSprite,JacketHitBoxPosition,DoesRepawn]
+        # JacketVisualSprite : 2 = Jacket Sprite(Not collected),0 = Collected
+        13 : {
+            251 : [0x0BEFAA,0x0BEFAE,False]
+        },
+        14 : {
+            252 : [0x0BEFF2,0x0BEFF6,False]
+        },
+        17 : {
+            253 : [0x0BF172,0x0BF176,False]
+        },
+        27 : {
+            254 : [0x0BF00A,0x0BF00E,False]
+        },
+        33 : {
+            255 : [0x0BF1EA,0x0BF1EE,False]
+        },
+        34 : {
+            256 : [0x0BF172,0x0BF176,False]
+        },
+        35 : {
+            257 : [0x0BF27A,0x0BF27E,False]
+        },
+        44: {
+            258: [0x0BF202, 0x0BF206, False]
+        },
+        47 : {
+            259 : [0x0BF232,0x0BF236,False]
+        },
+        55 : {
+            260 : [0x0BEFAA,0x0BEFAE,False]
+        },
+        60 : {
+            261 : [0x0BF232,0x0BF236,False]
+        },
+        61 : {
+            262 : [0x0BEFF2,0x0BEFF6,False]
+        },
+        73 : {
+            263 : [0x0BF1A2,0x0BF1A6,False]
+        },
+        80 : {
+            264 : [0x0BEFDA,0x0BEFDE,False]
+        },
+        81 : {
+            265: [0x0B1B74,0x0BF236,True],
+            266 : [0x0BF202,0x0BF206,False],
+            267 : [0x0BF21A,0x0BF21E,False]
+        },
+        82 : {
+            268: [0x0B1B74,0x0BF236,True],
+            269 : [0x0BF21A,0x0BF21E,False]
 
+        },
+        83: {
+            271: [0x0B1B74, 0x0BF236, True]
+        },  # This value is 1 after the box is broken,2 after the life is collected
+        84 : {
+            270 : [0x0BF03A,0x0BF03E,False]
+        },
+
+    }
+
+    # TODO Respawning Jackets Box values are not stable
+    respawningJacketsListLocal = {
+    # JacketNumber : [JacketBox,JacketBoxedValue,JacketVisualSprite,JacketHitBoxPosition]
+        #Respawning Jackets are like so : Check if it is Boxed, then check the
+        #Then check if the value is 0
+        #81 : [0x0E6FFA,0x01,0x0BF232,0x0BF236], #Box is F8 when opened, then Jacket visual is 2
+        #82 : [0x0E72A6,0x01,0x0BF232,0x0BF236],
+        #83 : [0x0E6AA2,0x01,0x0BF232,0x0BF236], #Not mapped
+        81 : {
+
+        },
+        82 : {
+
+        },
+        83: {
+            270: [0x0B1B74, 0x0BF236, True]
+        },  # This value is 1 after the box is broken,2 after the life is collected
+
+    }
 
     CoinHitBoxPositionOff = 0xFFB0
     localMonkeyHitbox1 = 0x0BBDF4
@@ -1421,7 +1504,7 @@ class RAM:
         },
         11: {  # 2-2: Entry
             422: 105,
-            423: {49, 103},
+            423: {49,53,103},
             424: 22,
             425: 81,
         },
@@ -1517,7 +1600,46 @@ class RAM:
         },
         90: {  # Time station - Training Space
             463: 115
-        }
+        },
+        98: {  # Water Net Training
+            464: 96,
+            465: 97,
+            466: 98,
+            467: {99,116},
+        },
+        92: {  # Monkey Radar Training
+            468: 39,
+            469: 64,
+            470: {40,116}
+        },
+        93: {  # Slingback Shooter Training
+            471: 41,
+            472: 48,
+            473: 49,
+            474: {88,116}
+        },
+        94: {  # Super Hoop Training
+            475: 50,
+            476: 51,
+            477: {89,116}
+        },
+        96: {  # Sky Flyer Training
+            478: 53,
+            479: 54,
+            480: {102,116}
+        },
+        97: {  # RC Car Training
+            481: 55,
+            482: 56,
+            483: 57,
+            484: {52,116}
+        },
+        95: {  # Magic Punch Training
+            485: 0,
+            486: 1,
+            487: {2,116}
+        },
+
 
     }
 
@@ -1913,7 +2035,7 @@ class RAM:
             40, 41, 42, 43, 44
         },
         17: {
-            45, 46, 47, 49, 50, 51  # Removed boss room
+            45, 46, 47, 48, 49, 50, 51
         },
         20: {
             53, 54, 55
@@ -1922,15 +2044,16 @@ class RAM:
             56, 57, 58, 59, 60, 61, 62
         },
         22: {
-            63, 64, 65, 66, 67  # Removed boss room
+            63, 64, 65, 66, 67, 68
         },
         24: {
-            69, 72, 75, 76, 77, 78, 79, 80, 81, 82, 84, 85  # Removed boss rooms and coaster spawns
+            69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85
         },
         30: {
             87
         }
     }
+
     MM_roomspersublevel = {
         24: {
 
@@ -2548,6 +2671,7 @@ class RAM:
     worldIsScrollingRight = 0x139BD9 # 2 bytes: 0xFFFF = you are changing to the next world
     worldScrollToRightDPAD = 0x1381D4 # 2 bytes: Enabled = 0009, Disabled = 0000
     worldScrollToRightR1 = 0x138270  # 2 bytes: Enabled = 0009, Disabled = 0000
+    worldCanPressStart = 0x137FC8 # 2 bytes: Enabled = 1001, Disabled = 0000
 
     enteredWorldAddress = 0x0F461C
     enteredLevelAddress = 0x0F461D

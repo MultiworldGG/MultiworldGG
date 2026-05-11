@@ -21,7 +21,7 @@ apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 from CommonClient import ClientCommandProcessor, CommonContext, logger, server_loop, gui_enabled, get_base_parser
 from MultiServer import mark_raw
 from NetUtils import ClientStatus, NetworkItem, JSONtoTextParser, JSONMessagePart
-from Utils import async_start, get_file_safe_name, is_windows, Version, format_SI_prefix, get_text_between
+from Utils import async_start, get_file_safe_name, is_windows, Version, format_SI_prefix, get_text_between, user_path
 from .settings import FactorioSettings
 from settings import get_settings
 
@@ -476,7 +476,7 @@ async def get_info(ctx: FactorioContext, rcon_client: factorio_rcon.RCONClient):
 
 
 async def factorio_spinup_server(ctx: FactorioContext) -> bool:
-    savegame_name = os.path.abspath("Archipelago.zip")
+    savegame_name = user_path("factorio", "saves", "Archipelago.zip")
     if not os.path.exists(savegame_name):
         logger.info(f"Creating savegame {savegame_name}")
         subprocess.run((

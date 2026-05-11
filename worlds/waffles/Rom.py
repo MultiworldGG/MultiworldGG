@@ -639,7 +639,10 @@ class WafflePatchExtension(APPatchExtension):
         else:
             rom[0x01BFB7] = 0x00
 
-        rom[0x01BFB8] = 0x00    # RingLink (rip)
+        if "damage_link" in options.keys():
+            rom[0x01BFB8] = options["damage_link"]
+        else:
+            rom[0x01BFB8] = 0x00
 
         if "luigi_physics" in options.keys():
             rom[0x01BFBE] = options["luigi_physics"]
@@ -997,6 +1000,7 @@ def patch_rom(world: "WaffleWorld", patch: WaffleProcedurePatch, player: int, ac
         "death_link_heart": world.options.death_link_heart.value,
         "trap_link": world.options.trap_link.value,
         "energy_link": world.options.energy_link.value,
+        "damage_link": world.options.damage_link.value,
         "luigi_physics": world.options.luigi_physics.value,
         "veloz": 0,
     }

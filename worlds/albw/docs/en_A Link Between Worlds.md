@@ -18,8 +18,8 @@ All items for other worlds look like the Letter in a Bottle. Check the client to
 
 ## What happens when the player receives an item?
 
-An item popup appears as if you had collected the item yourself.
+An item popup appears as if you had collected the item yourself. For minor items (rupees, heart pieces, maiamai, monster parts), the popup is skipped.
 
 ## How does this differ from the standalone randomizer?
 
-The Archipelago randomizer is based on the 0.4.0 beta of the [standalone randomizer](https://github.com/rickfay/z17-randomizer/) by Rick Fay and Kevin Marsolais. However, some features have not yet been implemented. This includes Mother Maiamai location checks, the Chest Size Matches Contents option, and Hint Ghosts. Also, some minor changes have been made to the logic: heart requirements for dungeons are removed, compass requirements for certain dungeon locations are also removed, and the Great Rupee Fairy check now logically requires the ability to complete Treacherous Tower for rupee farming.
+The Archipelago randomizer is based on the 0.4.0 version of the [standalone randomizer](https://github.com/rickfay/z17-randomizer/) by Rick Fay and Kevin Marsolais. Some minor changes have been made to the logic: heart requirements for dungeons are removed, compass requirements for certain dungeon locations are also removed, and the Great Rupee Fairy check now logically requires the ability to complete Treacherous Tower for rupee farming.

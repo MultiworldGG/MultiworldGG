@@ -32,7 +32,7 @@ shop_dict: dict[str, ShopData] = {
     'Basin Vending Machine': ShopData(internal_name='basinVendingMachines', name='Basin Vending Machine', metadata={'shops': True}, access=AccessInfo(region={'linear': '23', 'open': 'open10'})),
     'Basin Items': ShopData(internal_name='basinItems', name='Basin Items', metadata={'shops': True}, access=AccessInfo(region={'linear': '23', 'open': 'open10'})),
     'Basin Weapons': ShopData(internal_name='basinWeapons', name='Basin Weapons', metadata={'shops': True}, access=AccessInfo(region={'linear': '23', 'open': 'open10'})),
-    'Calzone Shop': ShopData(internal_name='basinMushroom', name='Calzone Shop', metadata={'shops': True}, access=AccessInfo(region={'linear': '23', 'open': 'open10'}, cond=[ItemCondition(item_name='Wave', amount=1)])),
+    'Calzone Shop': ShopData(internal_name='basinMushroom', name='Calzone Shop', metadata={'shops': True}, access=AccessInfo(region={'linear': '23', 'open': 'open10'}, cond=[ItemCondition(item_name='Pond Slums Pass', amount=1)])),
     'Ridge Weapons': ShopData(internal_name='sapphireWeapons', name='Ridge Weapons', metadata={'shops': True}, access=AccessInfo(region={'linear': '31', 'open': 'open16'})),
     'Ridge Items': ShopData(internal_name='sapphireItems', name='Ridge Items', metadata={'shops': True}, access=AccessInfo(region={'linear': '31', 'open': 'open16'})),
     'Rhombus Weapons': ShopData(internal_name='rhombusWeapons1', name='Rhombus Weapons', metadata={'shops': True}, access=AccessInfo(region={'linear': '33', 'open': 'open20'}, cond=[VariableCondition(name='canGrind')])),

@@ -934,7 +934,8 @@ LOCATIONS_DATA = {
         'dungeon': "ToS",
         "tos_section": 6,
         "x_max": -80000,
-        "z_min": 40000
+        "z_min": 40000,
+        "delay_pickup": ["ToS 28F Stalfos"]
     },
     "ToS 28F E Raised Chest": {
         "stage_id": 0x13,
@@ -946,9 +947,10 @@ LOCATIONS_DATA = {
         "tos_section": 6,
         "x_max": -20000,
         "x_min": -40000,
-        "z_min": 25000
+        "z_min": 25000,
+        "delay_pickup": ["ToS 28F Stalfos"]
     },
-    "ToS 29F SE Chest": {
+    "ToS 29F SE Eyes in the Dark Chest": {
         "stage_id": 0x13,
         "room_id": 0x1F,
         "region_id": "tos 29f se",
@@ -957,7 +959,8 @@ LOCATIONS_DATA = {
         'dungeon': "ToS",
         "tos_section": 6,
         "x_min": 80000,
-        "z_min": 20000
+        "z_min": 20000,
+        "delay_pickup": ["ToS 29F SE Extinguish Torches Chest"]
     },
     "ToS 30F SE Wrecker Chest": {
         "stage_id": 0x13,
@@ -1093,6 +1096,7 @@ LOCATIONS_DATA = {
         "room_id": 0x1,
         "region_id": "fos song statue",
         "address": STAddr.rail_restorations,
+        "vanilla_item": "Wooded Temple Tracks",
         "value": 2,
         "minigame": [1, 2, 3, 4, 5, 6],
         "conditional": True,
@@ -1187,7 +1191,7 @@ LOCATIONS_DATA = {
     },
     "Wooded Temple 3F SE Chest": {
         "region_id": "wt 3f se chest",
-        "vanilla_item": ITEM_GROUPS["Common Treasures"],
+        "vanilla_item": "Red Rupee (20)",
         "stage_id": 0x19,
         "room_id": 2,
         "x_min": 42646,
@@ -1447,6 +1451,7 @@ LOCATIONS_DATA = {
         "stage_id": 0x31,
         "room_id": 0x2,
         "address": STAddr.rail_restorations,
+        "vanilla_item": "Blizzard Temple Tracks",
         "value": 4,
         "minigame": [1, 2, 3, 4, 5, 6],
         "conditional": True,
@@ -1730,7 +1735,7 @@ LOCATIONS_DATA = {
         "stage_id": 0x32,
         "room_id": 0x4,
         "region_id": "ocs song",
-        #"vanilla_item": "Marine Temple Tracks",
+        "vanilla_item": "Marine Temple Tracks",
         "address": STAddr.rail_restorations,
         "value": 0x8,
         "minigame": [1, 2, 3, 4, 5, 6],
@@ -2532,6 +2537,7 @@ LOCATIONS_DATA = {
         "room_id": 0x2,
         "region_id": "sand sanc song",
         "address": STAddr.rail_restorations,
+        "vanilla_item": "Desert Temple Tracks",
         "value": 0x20,
         "minigame": [1, 2, 3, 4, 5, 6],
         "conditional": True,
@@ -2672,6 +2678,7 @@ LOCATIONS_DATA = {
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "region_id": "dt b1 damage",
         "dungeon": "Desert Temple",
+        "delay_pickup": ["Desert Temple B1 Stalfos"]
     },
     "Desert Temple B1 NW Buried Rupee": {
         "stage_id": 0x1D,
@@ -4213,6 +4220,34 @@ LOCATIONS_DATA |= {
         "vanilla_item": "Treasure: Stalfos Skull",
         "x_max": -45000,
         "z_max": -55000,
+        "conditional": True
+    },
+    "ToS 28F Stalfos": {  # Dummy location for stalfos treasure drop conflict
+        "stage_id": 0x13,
+        "room_id": 0x20,
+        "region_id": "mtt 2f right",
+        "vanilla_item": "Treasure: Stalfos Skull",
+        "conditional": True,
+        "x_max": -20000,
+    },
+    "ToS 29F SE Extinguish Torches Chest": {
+        "stage_id": 0x13,
+        "room_id": 0x1F,
+        "region_id": "tos 29f se",
+        "vanilla_item": ITEM_GROUPS["Rare Treasures"],
+        'dungeon': "ToS",
+        "tos_section": 6,
+        "x_min": 80000,
+        "z_min": 20000,
+        "delay_pickup": ["ToS 29F SE Eyes in the Dark Chest"]
+    },
+    "Desert Temple B1 Stalfos": {
+        "stage_id": 0x1D,
+        "room_id": 0x3,
+        "x_max": -75000,
+        "z_min": 45000,
+        "vanilla_item": "Treasure: Stalfos Skull",
+        "region_id": "dt b1 damage",
         "conditional": True
     },
 

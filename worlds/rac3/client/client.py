@@ -265,7 +265,7 @@ class Rac3Context(CommonContext):
             ui.base_title += f" | Universal Tracker {UT_VERSION}"
 
         # AP version is added behind this automatically
-        ui.base_title += " | {apname}"
+        ui.base_title += f" | {apname}"
         return ui
 
     async def server_auth(self, password_requested: bool = False) -> None:

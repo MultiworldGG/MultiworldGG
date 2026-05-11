@@ -1153,6 +1153,8 @@ for loc_name, loc_id in level_location_table.items():
     if loc_name in switch_palace_locations:
         switch_palace_location_table[egg_loc_name] = loc_id | 0x01
 
+reverse_level_location_table: dict[int, str] = {y: x for x, y in level_location_table.items()}
+
 all_locations = {
     **level_location_table,
     **dragon_coin_location_table,

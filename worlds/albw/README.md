@@ -11,10 +11,3 @@ This world can be played on a modded 3DS [using a plugin](https://github.com/Lit
 ## Known Issues
 
 - Checks that logically require portraits or pendants do not show up in the Universal Tracker.
-
-## Not Yet Implemented
-
-- Randomized Mother Maiamai checks
-- Chest Size Matches Contents
-- Crack Shuffle
-- Hint Ghosts

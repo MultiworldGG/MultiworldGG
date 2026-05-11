@@ -24,7 +24,8 @@ From there you can launch the game as Modded on the top right and your install h
 
 ### Joining Game
 
-Use In-Game UI to connect to server. Once connected, Create a new world and skip the prologue. Make sure to save as often as you can, and you are able to rejoin. Restart your game if you need to rejoin the world! 
+Use In-Game UI to connect to server. Once connected, Create a new world and skip the prologue. 
+Make sure to save as often as you can, and you are able to rejoin. Restart your game if you need to rejoin the world! 
 If you want to play with friends (Untested): Invite them to your lobby. All of you connect as same MultiworldGG Info, Load into world.
 
 ## Switching Rooms

@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional
 from enum import Enum
 from BaseClasses import Item, ItemClassification
-from .Options import ALBWOptions, LogicMode
+from .Options import ALBWOptions, HintGhosts, LogicMode, NiceItems
 from albwrandomizer import PyRandomizable, Item as RItem, Goal, Vane, new_item, new_goal, new_vane
 
 class ALBWItem(Item):
@@ -33,6 +33,7 @@ filler = ItemClassification.filler
 useful = ItemClassification.useful
 progression = ItemClassification.progression
 progression_skip_balancing = ItemClassification.progression_skip_balancing
+progression_deprioritized = ItemClassification.progression_deprioritized_skip_balancing
 
 class ItemData:
     code: Optional[int]
@@ -74,9 +75,14 @@ class ItemData:
     def is_event(self) -> bool:
         return self.code is None
     
-    def get_classification(self, options: ALBWOptions):
-        if self == Items.Mail and options.logic_mode in [LogicMode.option_adv_glitched, LogicMode.option_hell]:
+    def get_classification(self, options: ALBWOptions, num: Optional[int]):
+        if self == Items.Mail and options.logic_mode.value in \
+                                [LogicMode.option_adv_glitched, LogicMode.option_hell]:
             return progression
+        if self == Items.Maiamai and options.shuffle_maiamai_rewards:
+            return progression_deprioritized if not num or num < options.maiamai_limit.value or not options.maiamai_mayhem else useful
+        if self == Items.HintGlasses and options.hint_ghosts == HintGhosts.option_glasses:
+            return useful
         return self.classification
     
 def goal(name: str, goal: Goal) -> ItemData:
@@ -86,68 +92,168 @@ def vane(name: str, vane: Vane) -> ItemData:
     return ItemData(None, name, ItemType.Vane, progression, [new_vane(vane)], vane=vane)
 
 class Items:
-    Bow = ItemData(0, "Bow", Ravio, progression, [
+    Bow = ItemData(0, "Bow", Ravio, progression | useful, [
         new_item(RItem.Bow01),
         new_item(RItem.Bow02),
     ], 2)
-    Boomerang = ItemData(1, "Boomerang", Ravio, progression, [
+    Boomerang = ItemData(1, "Boomerang", Ravio, progression | useful, [
         new_item(RItem.Boomerang01),
         new_item(RItem.Boomerang02),
     ], 2)
-    Hookshot = ItemData(2, "Hookshot", Ravio, progression, [
+    Hookshot = ItemData(2, "Hookshot", Ravio, progression | useful, [
         new_item(RItem.Hookshot01),
         new_item(RItem.Hookshot02)
     ], 2)
-    Bombs = ItemData(3, "Bombs", Ravio, progression, [
+    Bombs = ItemData(3, "Bombs", Ravio, progression | useful, [
         new_item(RItem.Bombs01),
         new_item(RItem.Bombs02),
     ], 2)
-    FireRod = ItemData(4, "Fire Rod", Ravio, progression, [
+    FireRod = ItemData(4, "Fire Rod", Ravio, progression | useful, [
         new_item(RItem.FireRod01),
         new_item(RItem.FireRod02),
     ], 2)
-    IceRod = ItemData(5, "Ice Rod", Ravio, progression, [
+    IceRod = ItemData(5, "Ice Rod", Ravio, progression | useful, [
         new_item(RItem.IceRod01),
         new_item(RItem.IceRod02),
     ], 2)
-    Hammer = ItemData(6, "Hammer", Ravio, progression, [
+    Hammer = ItemData(6, "Hammer", Ravio, progression | useful, [
         new_item(RItem.Hammer01),
         new_item(RItem.Hammer02),
     ], 2)
-    SandRod = ItemData(7, "Sand Rod", Ravio, progression, [
+    SandRod = ItemData(7, "Sand Rod", Ravio, progression | useful, [
         new_item(RItem.SandRod01),
         new_item(RItem.SandRod02),
     ], 2)
-    TornadoRod = ItemData(8, "Tornado Rod", Ravio, progression, [
+    TornadoRod = ItemData(8, "Tornado Rod", Ravio, progression | useful, [
         new_item(RItem.TornadoRod01),
         new_item(RItem.TornadoRod02)
     ], 2)
-    Bell = ItemData(9, "Bell", Normal, progression, [new_item(RItem.Bell)])
+    Bell = ItemData(9, "Bell", Normal, progression | useful, [new_item(RItem.Bell)])
     StaminaScroll = ItemData(10, "Stamina Scroll", Normal, progression, [new_item(RItem.StaminaScroll)])
-    BowOfLight = ItemData(11, "Bow of Light", Normal, progression, [new_item(RItem.BowOfLight)])
-    Boots = ItemData(12, "Pegasus Boots", Normal, progression, [new_item(RItem.PegasusBoots)])
-    Flippers = ItemData(13, "Flippers", Normal, progression, [new_item(RItem.Flippers)])
-    Bracelet = ItemData(14, "Progressive Bracelet", Normal, progression, [
+    BowOfLight = ItemData(11, "Bow of Light", Normal, progression_skip_balancing, [new_item(RItem.BowOfLight)])
+    Boots = ItemData(12, "Pegasus Boots", Normal, progression | useful, [new_item(RItem.PegasusBoots)])
+    Flippers = ItemData(13, "Flippers", Normal, progression | useful, [new_item(RItem.Flippers)])
+    Bracelet = ItemData(14, "Progressive Bracelet", Normal, progression | useful, [
         new_item(RItem.RaviosBracelet01),
         new_item(RItem.RaviosBracelet02),
     ], 2)
     HylianShield = ItemData(15, "Hylian Shield", Normal, useful, [new_item(RItem.HylianShield)])
-    SmoothGem = ItemData(16, "Smooth Gem", Normal, progression, [new_item(RItem.SmoothGem)])
-    # Letter = ItemData(17, "Letter in a Bottle", Normal, progression, [new_item(RItem.LetterInABottle)])
+    SmoothGem = ItemData(16, "Smooth Gem", Normal, progression_deprioritized, [new_item(RItem.SmoothGem)])
     PremiumMilk = ItemData(18, "Premium Milk", Normal, progression, [new_item(RItem.PremiumMilk)])
     Pouch = ItemData(19, "Pouch", Normal, useful, [new_item(RItem.Pouch)])
     BeeBadge = ItemData(20, "Bee Badge", Normal, filler, [new_item(RItem.BeeBadge)])
     HintGlasses = ItemData(21, "Hint Glasses", Normal, filler, [new_item(RItem.HintGlasses)])
     Charm = ItemData(22, "Charm", Normal, filler, [new_item(RItem.Charm)])
     GreatSpin = ItemData(23, "Great Spin", Normal, progression, [new_item(RItem.GreatSpin)])
-    Quake = ItemData(24, "Quake", Normal, progression, [new_item(RItem.Quake)])
+    Quake = ItemData(24, "Quake", Normal, progression | useful, [new_item(RItem.Quake)])
     RupeeGreen = ItemData(25, "Green Rupee", Junk, filler, [new_item(RItem.RupeeGreen)], 2)
     RupeeBlue = ItemData(26, "Blue Rupee", Junk, filler, [new_item(RItem.RupeeBlue)], 8)
     RupeeRed = ItemData(27, "Red Rupee", Junk, filler, [new_item(RItem.RupeeRed)], 20)
     RupeePurple = ItemData(28, "Purple Rupee", Normal, filler, [new_item(RItem.RupeePurple01)], 20)
     RupeeSilver = ItemData(29, "Silver Rupee", Normal, filler, [new_item(RItem.RupeeSilver01)], 39)
     RupeeGold = ItemData(30, "Gold Rupee", Normal, filler, [new_item(RItem.RupeeGold01)], 9)
-    Maiamai = ItemData(31, "Maiamai", Normal, filler, [new_item(RItem.Maiamai001)], 100)
+    Maiamai = ItemData(31, "Maiamai", Normal, filler, [
+        new_item(RItem.Maiamai001),
+        new_item(RItem.Maiamai002),
+        new_item(RItem.Maiamai003),
+        new_item(RItem.Maiamai004),
+        new_item(RItem.Maiamai005),
+        new_item(RItem.Maiamai006),
+        new_item(RItem.Maiamai007),
+        new_item(RItem.Maiamai008),
+        new_item(RItem.Maiamai009),
+        new_item(RItem.Maiamai010),
+        new_item(RItem.Maiamai011),
+        new_item(RItem.Maiamai012),
+        new_item(RItem.Maiamai013),
+        new_item(RItem.Maiamai014),
+        new_item(RItem.Maiamai015),
+        new_item(RItem.Maiamai016),
+        new_item(RItem.Maiamai017),
+        new_item(RItem.Maiamai018),
+        new_item(RItem.Maiamai019),
+        new_item(RItem.Maiamai020),
+        new_item(RItem.Maiamai021),
+        new_item(RItem.Maiamai022),
+        new_item(RItem.Maiamai023),
+        new_item(RItem.Maiamai024),
+        new_item(RItem.Maiamai025),
+        new_item(RItem.Maiamai026),
+        new_item(RItem.Maiamai027),
+        new_item(RItem.Maiamai028),
+        new_item(RItem.Maiamai029),
+        new_item(RItem.Maiamai030),
+        new_item(RItem.Maiamai031),
+        new_item(RItem.Maiamai032),
+        new_item(RItem.Maiamai033),
+        new_item(RItem.Maiamai034),
+        new_item(RItem.Maiamai035),
+        new_item(RItem.Maiamai036),
+        new_item(RItem.Maiamai037),
+        new_item(RItem.Maiamai038),
+        new_item(RItem.Maiamai039),
+        new_item(RItem.Maiamai040),
+        new_item(RItem.Maiamai041),
+        new_item(RItem.Maiamai042),
+        new_item(RItem.Maiamai043),
+        new_item(RItem.Maiamai044),
+        new_item(RItem.Maiamai045),
+        new_item(RItem.Maiamai046),
+        new_item(RItem.Maiamai047),
+        new_item(RItem.Maiamai048),
+        new_item(RItem.Maiamai049),
+        new_item(RItem.Maiamai050),
+        new_item(RItem.Maiamai051),
+        new_item(RItem.Maiamai052),
+        new_item(RItem.Maiamai053),
+        new_item(RItem.Maiamai054),
+        new_item(RItem.Maiamai055),
+        new_item(RItem.Maiamai056),
+        new_item(RItem.Maiamai057),
+        new_item(RItem.Maiamai058),
+        new_item(RItem.Maiamai059),
+        new_item(RItem.Maiamai060),
+        new_item(RItem.Maiamai061),
+        new_item(RItem.Maiamai062),
+        new_item(RItem.Maiamai063),
+        new_item(RItem.Maiamai064),
+        new_item(RItem.Maiamai065),
+        new_item(RItem.Maiamai066),
+        new_item(RItem.Maiamai067),
+        new_item(RItem.Maiamai068),
+        new_item(RItem.Maiamai069),
+        new_item(RItem.Maiamai070),
+        new_item(RItem.Maiamai071),
+        new_item(RItem.Maiamai072),
+        new_item(RItem.Maiamai073),
+        new_item(RItem.Maiamai074),
+        new_item(RItem.Maiamai075),
+        new_item(RItem.Maiamai076),
+        new_item(RItem.Maiamai077),
+        new_item(RItem.Maiamai078),
+        new_item(RItem.Maiamai079),
+        new_item(RItem.Maiamai080),
+        new_item(RItem.Maiamai081),
+        new_item(RItem.Maiamai082),
+        new_item(RItem.Maiamai083),
+        new_item(RItem.Maiamai084),
+        new_item(RItem.Maiamai085),
+        new_item(RItem.Maiamai086),
+        new_item(RItem.Maiamai087),
+        new_item(RItem.Maiamai088),
+        new_item(RItem.Maiamai089),
+        new_item(RItem.Maiamai090),
+        new_item(RItem.Maiamai091),
+        new_item(RItem.Maiamai092),
+        new_item(RItem.Maiamai093),
+        new_item(RItem.Maiamai094),
+        new_item(RItem.Maiamai095),
+        new_item(RItem.Maiamai096),
+        new_item(RItem.Maiamai097),
+        new_item(RItem.Maiamai098),
+        new_item(RItem.Maiamai099),
+        new_item(RItem.Maiamai100),
+    ], 100)
     MonsterGuts = ItemData(32, "Monster Guts", Junk, filler, [new_item(RItem.MonsterGuts)], 12)
     MonsterHorn = ItemData(33, "Monster Horn", Junk, filler, [new_item(RItem.MonsterHorn)], 3)
     MonsterTail = ItemData(34, "Monster Tail", Junk, filler, [new_item(RItem.MonsterTail)], 4)
@@ -164,13 +270,13 @@ class Items:
         new_item(RItem.Lamp01),
         new_item(RItem.Lamp02),
     ], 2)
-    Sword = ItemData(39, "Progressive Sword", Normal, progression, [
+    Sword = ItemData(39, "Progressive Sword", Normal, progression | useful, [
         new_item(RItem.Sword01),
         new_item(RItem.Sword02),
         new_item(RItem.Sword03),
         new_item(RItem.Sword04),
     ], 4)
-    Glove = ItemData(40, "Progressive Glove", Normal, progression, [
+    Glove = ItemData(40, "Progressive Glove", Normal, progression | useful, [
         new_item(RItem.Glove01),
         new_item(RItem.Glove02),
     ], 2)
@@ -182,7 +288,7 @@ class Items:
         new_item(RItem.Mail01),
         new_item(RItem.Mail02),
     ], 2)
-    Ore = ItemData(43, "Master Ore", Normal, progression, [
+    Ore = ItemData(43, "Master Ore", Normal, progression_deprioritized, [
         new_item(RItem.OreYellow),
         new_item(RItem.OreGreen),
         new_item(RItem.OreBlue),
@@ -293,6 +399,10 @@ class Items:
         new_item(RItem.LoruleCastleKeySmall04),
         new_item(RItem.LoruleCastleKeySmall05),
     ], 5)
+    Merge = ItemData(78, "Progressive Merge", Normal, progression | useful, [
+        new_item(RItem.Merge01),
+        new_item(RItem.Merge02),
+    ], 2)
     PendantOfPower = ItemData(None, "Pendant of Power", Prize, progression, [new_item(RItem.PendantOfPower)])
     PendantOfWisdom = ItemData(None, "Pendant of Wisdom", Prize, progression, [new_item(RItem.PendantOfWisdom)])
     PendantOfCourage = ItemData(None, "Pendant of Courage", Prize, progression, [new_item(RItem.PendantOfCourage)])

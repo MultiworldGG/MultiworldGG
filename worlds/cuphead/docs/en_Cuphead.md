@@ -1,3 +1,7 @@
+<!--
+Copyright 2025-2026 JKLeckr
+SPDX-License-Identifier: MPL-2.0
+-->
 # Cuphead
 **Main** | [Setup](../../../../tutorial/Cuphead/setup/en) | [Settings](../../../../games/Cuphead/player-options) | [Github](https://github.com/JKLeckr/CupheadArchipelagoMod)
 

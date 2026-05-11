@@ -14,7 +14,7 @@ Kingdom Hearts II Final Mix from the [Epic Games Store](https://store.epicgames.
     2. Lua Backend from the OpenKH Mod Manager
     3. Install the mod `KH2FM-Mods-Num/GoA-ROM-Edition` using OpenKH Mod Manager
 - Needed for MultiworldGG 
-    1. [MultiworldGG KH2Client](https://github.com/MultiworldGG/MultiworldGG/releases)
+    1. [MultiworldGG Launcher](https://github.com/MultiworldGG/MultiworldGG/releases)
     2. Install the Archipelago Companion mod from `JaredWeakStrike/APCompanion` using OpenKH Mod Manager
     3. Install the mod from `TopazTK/KH2-ArchipelagoEnablers` using OpenKH Mod manager
        1. Do Note that if you have `KH2FM-Mods-equations19/auto-save` OR `KH2FM-Mods-equations19/soft-reset` you should download `TopazTK/KH2-ArchipelagoEnablersLITE` instead

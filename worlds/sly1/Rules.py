@@ -1,10 +1,10 @@
 from worlds.generic.Rules import add_rule, set_rule
-from .Types import episode_type_to_shortened_name
-from .Locations import hourglass_locations, vault_locations, did_include_hourglasses, get_bundle_amount_for_level
+from worlds.sly1.Types import episode_type_to_shortened_name
+from worlds.sly1.Locations import hourglass_locations, vault_locations, did_include_hourglasses, get_bundle_amount_for_level
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import Sly1World
+    from worlds.sly1 import Sly1World
 
 def set_rules(world: "Sly1World"):
     player = world.player

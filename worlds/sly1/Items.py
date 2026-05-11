@@ -1,12 +1,12 @@
 import logging
 from BaseClasses import Item, ItemClassification
-from .Types import ItemData, Sly1Item, EpisodeType, episode_type_to_name, episode_type_to_shortened_name
-from .Locations import get_total_locations, get_bundle_amount_for_level, did_avoid_early_bk, hourglasses_roll, \
+from worlds.sly1.Types import ItemData, Sly1Item, EpisodeType, episode_type_to_name, episode_type_to_shortened_name
+from worlds.sly1.Locations import get_total_locations, get_bundle_amount_for_level, did_avoid_early_bk, hourglasses_roll, \
     did_include_hourglasses
 from typing import List, Dict, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import Sly1World
+    from worlds.sly1 import Sly1World
 
 
 def create_itempool(world: "Sly1World") -> List[Item]:

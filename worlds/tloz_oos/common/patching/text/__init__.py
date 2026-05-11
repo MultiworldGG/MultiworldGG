@@ -50,7 +50,7 @@ text_offset_2_table_address_ages = text_offset_2_table_ages.address_in_rom()
 
 text_offset_split_index_ages = 0x2c
 
-text_addresses_limit_ages = GameboyAddress(0x23, 0x4e04).address_in_rom()
+text_addresses_limit_ages = GameboyAddress(0x23, 0x67e3).address_in_rom()
 
 
 def normalize_text(text: str) -> str:

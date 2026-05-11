@@ -101,6 +101,7 @@ class SM64HackClient(BizHawkClient):
         self.receiving_ring_amount = 0
         self.supposed_ring_count = 0
         self.file_locked = False
+        self.li = False
     
     def __init__(self) -> None:
         super().__init__()
@@ -143,6 +144,22 @@ class SM64HackClient(BizHawkClient):
         file2data[11] = important_data
         return file2data
 
+    def dont_kill(self, action):
+        match action:
+            case "00001302":
+                return True #stargrab, to prevent fake deaths
+            case "00001303":
+                return True #stargrab, to prevent fake deaths
+            case "00001307":
+                return True #stargrab, to prevent fake deaths
+            case "00001904":
+                return True #stargrab, to prevent fake deaths
+            case "00001320":
+                return True #pulling door, to prevent fake deaths
+            case "00001321":
+                return True #pushing door, to prevent fake deaths
+        return False
+
     async def check_death(self, read, ctx):
         if(int.from_bytes(read[4]) == 0):
             return 0
@@ -155,6 +172,9 @@ class SM64HackClient(BizHawkClient):
         ypos = unpack('>f', read[7])[0]
         floorheight = unpack('>f', read[8])[0]
         floor = gread[0]
+
+        if self.dont_kill(action):
+            return False
         
         match action:
             case "00001302":
@@ -317,7 +337,7 @@ class SM64HackClient(BizHawkClient):
         elif not ctx.stored_data.get(datastorage_name) and index not in self.traps_received_this_game:
             self.traps_received_this_game.append(index)
             #print(self.loops)
-            if self.loops > 4 or name in junk:
+            if self.loops > 4 or name == "Coin":
                 await ctx.send_msgs([{
                     "cmd": "Set",
                     "key": datastorage_name,
@@ -350,7 +370,7 @@ class SM64HackClient(BizHawkClient):
             case "Coin":
                 return (coinPtr, (number + 1).to_bytes(2), "RDRAM")
             case "1-Up Mushroom":
-                return (livesPtr, (number + 1).to_bytes(2), "RDRAM")
+                return (self.flagPtr, bytes.fromhex("0000006B"), "RDRAM")
             case "Spin Trap":
                 self.spin = True
                 self.spin_timer = time()
@@ -546,8 +566,9 @@ class SM64HackClient(BizHawkClient):
 
             writes = []
             resettest = read[3]
-            if(resettest.hex() != "24180002"):
-                logger.info("Reminder: Save and load a savestate so that traps, move rando, or some other things can take effect")
+            if(resettest.hex() != "24180002" or self.loops == 0):
+                if resettest.hex() != "24180002":
+                    logger.info("Reminder: Save and load a savestate so that traps, move rando, or some other things can take effect")
                 self.receive_items = True
                 self.basecoincount = int.from_bytes(read[23])
                 self.base_cap_times = [int.from_bytes(read[24]),int.from_bytes(read[25]),int.from_bytes(read[26])]
@@ -608,6 +629,14 @@ class SM64HackClient(BizHawkClient):
                     (choirHookPtr, bytes.fromhex("0C09FFC0"), "RDRAM"),
                     (stevePtr, "HE IS WATCHING".encode("ascii"), "RDRAM")
                 ])
+
+                if(read[12].decode("ascii").startswith("SM64 LAST IMPACT")):
+                    writes.extend([
+                        (lastImpactPtr1, bytes.fromhex("24040002"), "RDRAM"),
+                        (lastImpactPtr2, bytes.fromhex("24040002"), "RDRAM")
+                    ])
+                    self.li = True
+
                 if ctx.slot_data.get("moves"):
                     move_patch = pkgutil.get_data(__name__, "asm/move_patch")
                     move_patch_hook = pkgutil.get_data(__name__, "asm/move_patch_hook")
@@ -620,6 +649,8 @@ class SM64HackClient(BizHawkClient):
                     shell_hook = pkgutil.get_data(__name__, "asm/shell_patch")
                     wallkick_hook_1 = pkgutil.get_data(__name__, "asm/wallkick_patch_1")
                     wallkick_hook_2 = pkgutil.get_data(__name__, "asm/wallkick_patch_2")
+                    gp_hook_1 = pkgutil.get_data(__name__, "asm/hold_jump_gp_patch")
+                    gp_hook_2 = pkgutil.get_data(__name__, "asm/hold_jump_freefall_patch")
 
                     self.moves = set()
                     writes.extend([
@@ -632,7 +663,9 @@ class SM64HackClient(BizHawkClient):
                         (movingPunchHookPtr, moving_punch_hook, "RDRAM"),
                         (shellHookPtr, shell_hook, "RDRAM"),
                         (wallkickHookPtr1, wallkick_hook_1, "RDRAM"),
-                        (wallkickHookPtr2, wallkick_hook_2, "RDRAM")
+                        (wallkickHookPtr2, wallkick_hook_2, "RDRAM"),
+                        (holdJumpGPPtr1, gp_hook_1, "RDRAM"),
+                        (holdJumpGPPtr2, gp_hook_2, "RDRAM")
                     ])
                     for address, asm in move_rando_asm.items():
                         writes.append((address, bytes.fromhex(asm), "RDRAM"))
@@ -719,6 +752,10 @@ class SM64HackClient(BizHawkClient):
                                             location_name = courseIndex[8] + " Cannon"
                                         else:
                                             location_name = courseIndex[i - 1] + " Cannon"
+                                    if self.li and (i == 27 or i == 28):
+                                        logger.info(f"test: {i} {self.file1Stars[i]}")
+                                        location_name = f"Key {i - 26}" #last impact is weird and stores keys in c15 and b1 cannons
+
                                     writes.append((filesPtr[self.current_file] + i, bytearray([self.file1Stars[i] & 0b01111111]), "RDRAM")) #reset cannon flag so you can detect both troll stars and cannons
                                 if(self.location_name_to_id[location_name] in ctx.server_locations):
                                     locs.append(self.location_name_to_id[location_name])
@@ -793,16 +830,32 @@ class SM64HackClient(BizHawkClient):
                             bluestars += 2
                         case "Progressive Key":
                             reversed = ctx.slot_data["ProgressiveKeys"] == 2
-                            if keyCounter == 1:
-                                self.flags[0 ^ reversed] = True
-                                keyCounter = 2
+                            if not self.li:
+                                if keyCounter == 1:
+                                    self.flags[0 ^ reversed] = True
+                                    keyCounter = 2
+                                else:
+                                    self.flags[1 ^ reversed] = True
+                                    keyCounter = 1
                             else:
-                                self.flags[1 ^ reversed] = True
-                                keyCounter = 1
+                                if keyCounter == 1:
+                                    cannon = 27 if reversed else 28 
+                                    self.cannons[cannon] = True
+                                    keyCounter = 2
+                                else:
+                                    cannon = 28 if reversed else 27 
+                                    self.cannons[cannon] = True
+                                    keyCounter = 1
                         case "Key 1":
-                            self.flags[1] = True
+                            if not self.li:
+                                self.flags[1] = True
+                            else:
+                                self.cannons[27] = True
                         case "Key 2":
-                            self.flags[0] = True
+                            if not self.li:
+                                self.flags[0] = True
+                            else:
+                                self.cannons[28] = True
                         case "Metal Cap":
                             self.flags[3] = True
                         case "Vanish Cap":
@@ -968,7 +1021,7 @@ class SM64HackClient(BizHawkClient):
                         if gread is not None:
                             active = int.from_bytes(gread[0])
                             behavior = gread[1]
-                            if active == 0 or int.from_bytes(behavior) != self.get_segmented_behavior(0x4148, read[16]):
+                            if not self.dont_kill(read[5].hex()) and (active == 0 or int.from_bytes(behavior) != self.get_segmented_behavior(0x4148, read[16])):
                                 self.green_demon_data = None
                                 writes.extend(((self.greenDemonPtr, bytes.fromhex("00000000"), "RDRAM"),
                                     (hpPtr, bytes.fromhex("0000"), "RDRAM")))
@@ -1103,10 +1156,11 @@ class SM64HackClient(BizHawkClient):
             # tickets
             if ctx.slot_data.get("tickets") and read[2].hex() != "0000":
                 level = int.from_bytes(read[11])
-                level_name = courseIndex[level_index[level]]
-                if f"{level_name} Ticket" not in self.tickets and level_name not in ctx.slot_data["NoTicketCourses"]:
-                    logger.info(f"You cannot enter this level without the correct ticket")
-                    writes.append((hpPtr, bytes.fromhex("0000"), "RDRAM"))
+                if level != 35:
+                    level_name = courseIndex[level_index[level]]
+                    if f"{level_name} Ticket" not in self.tickets and level_name not in ctx.slot_data["NoTicketCourses"]:
+                        logger.info(f"You cannot enter this level without the correct ticket")
+                        writes.append((hpPtr, bytes.fromhex("0000"), "RDRAM"))
 
             # deathlink
             deathlink_writes = await self.handle_deathlink(read, ctx)
@@ -1139,8 +1193,8 @@ class SM64HackClient(BizHawkClient):
                         writes.append(write)
 
             #print(list(read[10])[0])
-            for i in range(0, len(writes), 10):
-                await bizhawk.write(ctx.bizhawk_ctx, writes[i:i + 10])
+            for i in range(0, len(writes), 5):
+                await bizhawk.write(ctx.bizhawk_ctx, writes[i:i + 5])
             if locs != []:
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": locs}])
             

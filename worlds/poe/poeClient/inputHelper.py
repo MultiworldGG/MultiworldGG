@@ -17,17 +17,53 @@ try:
 except:
     import pygetwindow as gw  # type: ignore
 import time
-from pynput.keyboard import Controller, Key
 
 logger = logging.getLogger("poeClient")
 
-keyboard_controller = Controller()
+
+class KeyboardAutomationUnavailable(RuntimeError):
+    """Raised when the keyboard automation backend needed by the PoE client cannot load."""
+
+
+_keyboard_backend_error: Exception | None = None
+try:
+    from pynput import keyboard as pynput_keyboard
+    from pynput.keyboard import Controller, Key
+except ImportError as e:
+    pynput_keyboard = None
+    Controller = None
+    Key = None
+    _keyboard_backend_error = e
+
+try:
+    keyboard_controller = Controller() if Controller else None
+except Exception as e:
+    keyboard_controller = None
+    _keyboard_backend_error = e
 _debug = True
 _last_called = None
 DEBOUNCE_TIME = 1  # seconds
 _send_lock = asyncio.Lock()  # Add asyncio lock
 
 GAME_WINDOW_TITLE = "Path of Exile"
+
+
+def require_keyboard_automation():
+    if _keyboard_backend_error is not None:
+        raise KeyboardAutomationUnavailable(
+            "Path of Exile client keyboard automation is unavailable. "
+            "The pynput keyboard backend could not be loaded; install the PoE client dependencies "
+            "or run the client in an environment with a supported keyboard backend."
+        ) from _keyboard_backend_error
+    if keyboard_controller is None or Key is None or pynput_keyboard is None:
+        raise KeyboardAutomationUnavailable(
+            "Path of Exile client keyboard automation is unavailable because no keyboard backend was loaded."
+        )
+
+
+def get_keyboard_module():
+    require_keyboard_automation()
+    return pynput_keyboard
 
 def get_clipboard():
     import tkinter as tk
@@ -77,6 +113,7 @@ async def send_poe_text(command: str, retry_times: int = 1, retry_delay: float =
     return await send_multiple_poe_text([command], retry_times, retry_delay)
 
 async def send_multiple_poe_text(commands: list[str], retry_times: int = 1, retry_delay: float = 0):
+    require_keyboard_automation()
     window = gw.getActiveWindow()
     global _last_called
     # if windows is active
@@ -129,5 +166,3 @@ async def send_multiple_poe_text(commands: list[str], retry_times: int = 1, retr
         if _debug:
             logger.info("Path of Exile window not active, no retries left")
         return False
-
-

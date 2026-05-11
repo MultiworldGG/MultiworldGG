@@ -12,18 +12,17 @@ import ctypes
 from ctypes import wintypes
 from pathlib import Path
 import worlds
-from . import SimpsonsHitAndRunWorld
+from . import SimpsonsHitNRunWorld
 
 try:
-    from . import settings, SimpsonsHitAndRunOptions
+    from . import settings, SimpsonsHitNRunOptions
 except ImportError:
     import settings
 
 class SHARContext(CommonContext):
-    game = "The Simpsons Hit And Run"
+    game = "Simpsons Hit and Run"
 
     def __init__(self):
-        # Minimal constructor, no async tasks
         super().__init__()
         self._initialized = False
 
@@ -55,7 +54,7 @@ class SHARContext(CommonContext):
         print("[SHARClient] Initializing SHARContext asynchronously...")
 
         # Load options from host.yaml
-        opts = SimpsonsHitAndRunWorld.settings
+        opts = SimpsonsHitNRunWorld.settings
         documents_path = get_documents_folder()
 
         # Default extraction path
@@ -117,16 +116,18 @@ class SHARContext(CommonContext):
     def launch_external_tools(self):
         print("[SHARClient] Attempting to launch external tools...")
 
-        if self.SHARRandomizerExe and Path(self.SHARRandomizerExe).exists():
-            self.gui_message(f"Launching SHARRandomizer.exe...")
-            print(f"[SHARClient] Launching SHARRandomizer.exe at {self.SHARRandomizerExe}")
+        exe_path = Path(self.SHARRandomizerExe)
+        if exe_path.exists() and exe_path.name.lower() == "sharrandomizerfrontend.exe":
+            self.gui_message(f"Launching SHARRandomizerFrontend.exe...")
+            print(f"[SHARClient] Launching SHARRandomizerFrontend.exe at {self.SHARRandomizerExe}")
             subprocess.Popen([self.SHARRandomizerExe], cwd=Path(self.SHARRandomizerExe).parent, creationflags=subprocess.CREATE_NEW_CONSOLE )
         else:
-            msg = "SHARRandomizer.exe not configured or missing."
+            msg = "SHARRandomizerFrontend.exe not configured or missing."
             self.gui_message(msg)
             print(f"[SHARClient] {msg}")
 
-        if self.LucasLauncherExe and Path(self.LucasLauncherExe).exists():
+        exe_path = Path(self.LucasLauncherExe)
+        if exe_path.exists() and exe_path.name.lower() == "lucas simpsons hit & run mod launcher.exe":
             self.gui_message(f"Launching Lucas Mod Launcher.exe...")
             print(f"[SHARClient] Launching Lucas Launcher.exe at {self.LucasLauncherExe}")
             subprocess.Popen([self.LucasLauncherExe, "-enabledmod", "Archipelago Randomizer", "-launch"], cwd=Path(self.LucasLauncherExe).parent)

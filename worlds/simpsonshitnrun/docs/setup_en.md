@@ -1,11 +1,13 @@
+# Simpsons Hit and Run Setup Guide
+
 ## Required Software
 
 - Simpsons Hit And Run PC release
-- [Lucas' Mod Manager](https://modbakery.donutteam.com/releases/view/
-- [MultiworldGG](https://multiworld.gg/) (Latest release [here](https://github.com/MultiworldGG/MultiworldGG/releases/latest))
+- [Lucas' Mod Launcher](https://modbakery.donutteam.com/releases/view/6)
+- [MultiworldGG](https://multiworld.gg/) (Latest release [here](https://github.com/MultiworldGG/MultiworldGG/releases/latest).)
 - The latest release of the [client/memory manager and the lmlm mod](https://github.com/nmize1/AP-SHARRandomizer/releases/latest)
-- The latest release of the [apworld](https://github.com/nmize1/Archipelago/releases/latest) (ships with MultiworldGG)
-- [.NET 8 (x86)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) (**NOT x64**)
+- The latest release of the [apworld](https://github.com/nmize1/Archipelago/releases/latest) (ships with MultiworldGG).
+- [.NET 10 (x86)](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) (**NOT x64**)
 
 ## AP Setup 
 
@@ -37,26 +39,20 @@ Note: You can also self host a MultiworldGG game server, but that's outside the 
 - Check [here](https://docs.donutteam.com/docs/lucasmodlauncher/mods/installing-mods) for more help installing mods.
   
 - Under the "Settings" tab of the mod launcher, there are several optional mods. Don't enable anything that changes gameplay, but graphical changes or setting changes are fine.
-- Install .NET 8 from the link above. Make sure to install the **x86** version. The site will default to x64 as that's more modern, but SHAR needs x86.
+  Logic expects you to play between 60 and 150 fps.
+- Install .NET 10 from the link above. Make sure to install the **x86** version. The site will default to x64 as that's more modern, but SHAR needs x86.
 
 - Finally, extract SHARRandomizer.zip where ever you'd like.
 
 ## Connecting and Playing
-- Download the Config file (*.apshar) by going to the MultiworldGG Room and clicking "Download Patch File"
-- Open the MultiworldGG Launcher and start the Simpsons Hit & Run Client
-- The Client will prompt you for the location of your .apshar patchfile, the SHARRandomizer.exe, your installation of the Lucas' Mod Manager
-- The randomizer application will ask for the connection string. Then it'll ask for the slot name, this is what you put as Name in the yaml and also shows in the room on the website
-- Then it'll ask for a password. By default this is blank.
-
-- The game should auto launch. If not, launch it via the Lucas' Mod Manager.
-
+- Download the .apshar patch file from your room.
+- Open the SHAR Client in the MultiworldGG launcher
+  - On first launch, 3 file select prompts will open asking for SHARRandomizerFrontend.exe, Lucas' Mod Launcher, and the patch file 
+  - On subsequent launches, it will just ask for the patch file. If you need to change the paths to the executables, you can do so in your host.yaml in the root of your MultiworldGG install.
+- Enter your connection info in SHARRandomizerFrontend.exe
 - Enjoy!
 
 ## Optional Extra Steps
-- Use the Text Client in the MultiworldGG launcher and connect with the same info used to connect in SHARRandomizer.exe. This will give you a better list of all items sent/received, an optional chat with other players in the multiworld, and an interface to use for hints.
-
-OR
-
 - Use Universal Tracker as a Text Client and a tracker to help identify in logic checks.
   - Use the Universal Tracker in the launcher and connect the same as in the text client.
   - You now have a text client tab and a tracker tab. Text client behaves exactly like the default text client, tracker gives you a list of available checks based on what items you've received and your game settings.
@@ -67,8 +63,7 @@ This is in active development! Check the pinned FAQ and/or ask for help in the [
 
 ## I'm new to AP/MWGG, what does this do to the game?
 
-I'll assume you're familiar with randomizers in general. AP/MWGG randos are separated into items you receive and checks you do to send items. In SHAR, the items are (depending on your yaml settings): Each character's jump and double jump, each characters attack, a "Gagfinder" for each character that enables them to do gags, a "Level X" for each level that unlocks that level's missions, a "Checkered Flag" for each character that unlocks the level's races, all the cars, and then some filler items in the form of an inventory of wrenches and hit and run resets you can use on demand and some various traps.
-hes and hit and run resets you can use on demand and some various traps.
+I'll assume you're familiar with randomizers in general. MultiworldGG/AP randos are separated into items you receive and checks you do to send items. In SHAR, the items are (depending on your yaml settings): Each character's jump and double jump, each characters attack, a "Gagfinder" for each character that enables them to do gags, a "Level X" for each level that unlocks that level's missions, a "Checkered Flag" for each character that unlocks the level's races, all the cars, and then some filler items in the form of an inventory of wrenches and hit and run resets you can use on demand and some various traps.
 
 The checks are: Missions, wasps, cards, gags, talking to the character that would sell you a mission needed car (Barney, Homer, Otto, Willie, etc), and Gil's shops.
 

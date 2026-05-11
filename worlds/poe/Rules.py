@@ -1,7 +1,7 @@
 import logging
 
 from worlds.poe.Options import PathOfExileOptions
-from .Locations import PathOfExileLocation, base_item_type_locations, level_locations, acts, LocationDict
+from .Locations import PathOfExileLocation, base_item_type_locations, level_locations, area_locations, acts, LocationDict
 from BaseClasses import CollectionState, Region
 from . import Items
 import typing
@@ -247,6 +247,10 @@ def SelectLocationsToAdd (world: "PathOfExileWorld", target_amount) -> list[Loca
         #    {"name": "Reach Level 100", "level": 100, "act": 11},
         lvl_locs = [loc for loc in level_locations.values() if loc["level"] is not None and loc["level"] <= max_level]
         total_available_locations.extend(lvl_locs)
+
+    if opt.add_area_locations_to_location_pool:
+        area_locs = [loc for loc in area_locations.values() if loc["act"] <= goal_act]
+        total_available_locations.extend(area_locs)
 
     if len(total_available_locations) <= target_amount:
         logger.debug(f"There are more items than locations, enabling all {len(total_available_locations)} available locations")
