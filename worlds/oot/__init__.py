@@ -35,7 +35,7 @@ from Options import Range, Toggle, VerifyKeys, Accessibility, PlandoConnections,
 from Fill import fill_restrictive, fast_fill, FillError
 from worlds.generic.Rules import exclusion_rules, add_item_rule
 from worlds.AutoWorld import World, AutoLogicRegister, WebWorld
-from worlds.LauncherComponents import launch as launch_componenent, components, Component, Type, SuffixIdentifier
+from worlds.LauncherComponents import launch as launch_component, components, Component, Type, SuffixIdentifier
 
 # OoT's generate_output doesn't benefit from more than 2 threads, instead it uses a lot of memory.
 i_o_limiter = threading.Semaphore(2)
@@ -71,7 +71,7 @@ class _OOTDistribution:
 
 def launch_client(*args):
     from .client import main
-    launch_componenent(main, name="OoTClient", args=args)
+    launch_component(main, name="OoTClient", args=args)
 
 
 components.append(Component(display_name="OoT Client", func=launch_client, component_type=Type.CLIENT,
@@ -80,10 +80,10 @@ components.append(Component(display_name="OoT Client", func=launch_client, compo
 
 def launch_adjuster(*args):
     from .Adjuster import launch
-    launch_componenent(launch, name="OoTAdjuster", args=args)
+    launch_component(launch, name="OoTAdjuster", args=args)
 
 
-components.append(Component(display_name="OoT Adjuster", component_type=Type.ADJUSTER, func=launch_adjuster))
+components.append(Component(display_name="OoT Adjuster", component_type=Type.ADJUSTER, func=launch_adjuster,description="Change Cosmetics and SFX for your OoT Seed"))
 
 
 class OOTCollectionState(metaclass=AutoLogicRegister):

@@ -9,7 +9,7 @@ from asyncio import StreamReader, StreamWriter
 # CommonClient import first to trigger ModuleUpdater
 from CommonClient import CommonContext, server_loop, gui_enabled, \
     ClientCommandProcessor, logger, get_base_parser
-from Utils import async_start
+from Utils import async_start, init_logging, open_file
 try:
     from Utils import instance_name as apname
 except ImportError:
@@ -326,7 +326,7 @@ async def run_game(romfile):
             stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
     elif auto_start is True:
-        Utils.open_file(rom_path)
+        open_file(rom_path)
     elif auto_start and os.path.isfile(auto_start):
         subprocess.Popen([auto_start, rom_path],
                          stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -356,7 +356,7 @@ async def patch_and_run_game(apz5_file):
 
 def main(*launcher_args: str):
 
-    Utils.init_logging("OoTClient")
+    init_logging("OoTClient")
 
     async def main():
         multiprocessing.freeze_support()

@@ -454,6 +454,8 @@ class ProcessMemory:
 
 
 class Emulators(IntEnum):
+    Project64Scan  = auto()
+    Project64_EM   = auto()
     Project64      = auto()
     BizHawk        = auto()
     Project64_v4   = auto()
@@ -620,7 +622,7 @@ class EmulatorInfo:
 
         target_proc = matching_procs[0]
         try:
-            pm = ProcessMemory(target_proc["name"])
+            pm = ProcessMemory(self.process_name, pid=target_proc["pid"])
         except Exception as e:
             self.raiseError(f"Failed to attach to process: {e}")
             return None
@@ -947,6 +949,14 @@ class RetroArchNetworkInfo:
 
 
 EMULATOR_CONFIGS: Dict[Emulators, EmulatorInfo] = {
+    Emulators.Project64Scan: EmulatorInfo(
+        Emulators.Project64Scan, "Project64-compatible", "project64",
+        False, None, False, 0x00000000, 0x80000000, range_step=0x10000,
+    ),
+    Emulators.Project64_EM: EmulatorInfo(
+        Emulators.Project64_EM, "Project64-EM (PJ64 3.0.1)", "project64-em",
+        False, None, False, 0, 0, scan_memory_for_signature=True,
+    ),
     Emulators.Project64_v4: EmulatorInfo(
         Emulators.Project64_v4, "Project64 4.0", "project64",
         False, None, False, 0xFDD00000, 0xFE1FFFFF,
@@ -1007,6 +1017,7 @@ def _log_connect_status(errors: List[Tuple[str, str]]) -> None:
             "Failed to attach" in error
             or "RetroArch Network Commands" in error
             or "Could not find [" in error
+            or "Could not locate an OoT AP ROM" in error
             or "Could not read any data" in error
         ):
             text = f"{name}: {error}"
