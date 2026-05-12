@@ -146,14 +146,14 @@ class OOTSettings(settings.Group):
     class RomStart(str):
         """
         Set this to false to never autostart a rom (such as after patching),
-                    true  to open with emulator_path if set, otherwise with the operating system default program.
-        Alternatively, a path to a program to open the .z64 file with.
+                    true  to open with emulator_path.
+        If emulator_path is blank when patching finishes, the client will ask for it.
         """
 
     class EmulatorPath(settings.OptionalUserFilePath):
         """
         Path to an N64 emulator executable to auto-launch patched ROMs with.
-        Leave blank to use the operating system default program when rom_start is true.
+        Leave blank to be asked for an emulator when patching finishes and rom_start is true.
         """
         is_exe = True
         description = "N64 Emulator Executable"
@@ -161,6 +161,40 @@ class OOTSettings(settings.Group):
     rom_file: RomFile = RomFile(RomFile.copy_to)
     rom_start: typing.Union[RomStart, bool] = True
     emulator_path: EmulatorPath | str = ""
+
+
+def launch_rom(path: str, logger: logging.Logger) -> None:
+    import os
+    import subprocess
+
+    rom_path = os.path.realpath(path)
+    auto_start = OOTWorld.settings.rom_start
+    # Read the raw setting so a blank OptionalUserFilePath stays blank instead of resolving to ".exe".
+    emulator_path = OOTWorld.settings.__dict__.get("emulator_path", OOTWorld.settings.__class__.emulator_path)
+
+    if not auto_start:
+        return
+
+    if not emulator_path:
+        logger.info("OoT emulator path is not configured. Asking for oot_options.emulator_path.")
+        emulator_path = OOTWorld.settings.EmulatorPath("").browse()
+        if not emulator_path:
+            logger.error("Could not auto-launch OoT ROM: oot_options.emulator_path is required.")
+            return
+
+        OOTWorld.settings.emulator_path = emulator_path
+        OOTWorld.settings._changed = True
+
+    emulator = str(emulator_path.resolve() if hasattr(emulator_path, "resolve") else emulator_path)
+    try:
+        subprocess.Popen(
+            [emulator, rom_path],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except OSError as exc:
+        logger.error("Could not auto-launch OoT ROM with %s: %s", emulator, exc)
 
 
 class OOTWeb(WebWorld):
@@ -171,16 +205,7 @@ class OOTWeb(WebWorld):
         "English",
         "setup_en.md",
         "setup/en",
-        ["Edos"]
-    )
-
-    setup_fr = Tutorial(
-        setup.tutorial_name,
-        setup.description,
-        "Français",
-        "setup_fr.md",
-        "setup/fr",
-        ["TheLynk"]
+        ["TreZ"]
     )
 
     setup_de = Tutorial(
@@ -189,10 +214,10 @@ class OOTWeb(WebWorld):
         "Deutsch",
         "setup_de.md",
         "setup/de",
-        ["Held_der_Zeit"]
+        ["TreZ"]
     )
 
-    tutorials = [setup, setup_fr, setup_de]
+    tutorials = [setup, setup_de]
     option_groups = oot_option_groups
     game_info_languages = ["en", "de"]
 
@@ -1639,11 +1664,29 @@ class OOTWorld(World):
     # Key rings are multiple items glued together into one, so we need to give
     # the appropriate number of keys in the collection state when they are
     # picked up.
+    def keyring_give_bk(self, dungeon_name: str) -> bool:
+        return (
+            dungeon_name in {'Forest Temple', 'Fire Temple', 'Water Temple', 'Shadow Temple', 'Spirit Temple'}
+            and self.key_rings_give_bosskeys
+            and dungeon_name in self.key_rings
+            and self.shuffle_smallkeys != 'vanilla'
+        )
+
+    def _keyring_boss_key(self, item: OOTItem) -> str | None:
+        if not item.name.startswith('Small Key Ring (') or not item.name.endswith(')'):
+            return None
+        dungeon_name = item.name[:-1].split(' (', 1)[1]
+        if not self.keyring_give_bk(dungeon_name):
+            return None
+        return f'Boss Key ({dungeon_name})'
+
     def collect(self, state: CollectionState, item: OOTItem) -> bool:
         state._oot_stale[self.player] = True
         if item.advancement and item.special and item.special.get('alias', False):
             alt_item_name, count = item.special.get('alias')
             state.prog_items[self.player][alt_item_name] += count
+            if boss_key := self._keyring_boss_key(item):
+                state.prog_items[self.player][boss_key] += 1
             return True
         return super().collect(state, item)
 
@@ -1653,6 +1696,10 @@ class OOTWorld(World):
             state.prog_items[self.player][alt_item_name] -= count
             if state.prog_items[self.player][alt_item_name] < 1:
                 del (state.prog_items[self.player][alt_item_name])
+            if boss_key := self._keyring_boss_key(item):
+                state.prog_items[self.player][boss_key] -= 1
+                if state.prog_items[self.player][boss_key] < 1:
+                    del (state.prog_items[self.player][boss_key])
             # invalidate caches, nothing can be trusted anymore now
             state.child_reachable_regions[self.player] = set()
             state.child_blocked_connections[self.player] = set()

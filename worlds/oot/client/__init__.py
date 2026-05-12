@@ -2,20 +2,19 @@ import asyncio
 import json
 import os
 import multiprocessing
-import subprocess
 import zipfile
 from asyncio import StreamReader, StreamWriter
 
 # CommonClient import first to trigger ModuleUpdater
 from CommonClient import CommonContext, server_loop, gui_enabled, \
     ClientCommandProcessor, logger, get_base_parser
-from Utils import async_start, init_logging, open_file
+from Utils import async_start, init_logging
 try:
     from Utils import instance_name as apname
 except ImportError:
     apname = "Archipelago"
 from worlds import network_data_package
-from .. import OOTWorld
+from .. import OOTWorld, launch_rom
 from ..Rom import Rom, compress_rom_file
 from ..N64Patch import apply_patch_file
 
@@ -317,19 +316,7 @@ async def n64_sync_task(ctx: OoTContext):
 
 
 async def run_game(romfile):
-    rom_path = os.path.realpath(romfile)
-    auto_start = OOTWorld.settings.rom_start
-    emulator_path = OOTWorld.settings.emulator_path
-    if auto_start is True and emulator_path:
-        subprocess.Popen(
-            [emulator_path.resolve() if hasattr(emulator_path, "resolve") else str(emulator_path), rom_path],
-            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-        )
-    elif auto_start is True:
-        open_file(rom_path)
-    elif auto_start and os.path.isfile(auto_start):
-        subprocess.Popen([auto_start, rom_path],
-                         stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    launch_rom(romfile, logger)
 
 
 async def patch_and_run_game(apz5_file):

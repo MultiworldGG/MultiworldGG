@@ -7,36 +7,20 @@ from itertools import chain
 
 from BaseClasses import MultiWorld
 from Options import Choice, Range, Toggle
-from worlds.oot import OOTWorld
+from worlds.oot import OOTWorld, launch_rom as launch_oot_rom
 from worlds.oot.Cosmetics import patch_cosmetics
 from worlds.oot.Options import (cosmetic_options, sfx_options,
     DpadDungeonMenu, SpeedupMusicForLastTriforcePiece, SlowdownMusicWhenLowhp,
     UninvertYAxisInFirstPersonCamera, InputViewer, DisableBattleMusic, CreditsMusic)
 from worlds.oot.Rom import Rom, compress_rom_file
 from worlds.oot.N64Patch import apply_patch_file
-from Utils import local_path, user_path, open_file
+from Utils import local_path, user_path
 
 logger = logging.getLogger('OoTAdjuster')
 
 
 def launch_rom(path: str) -> None:
-    import subprocess
-
-    rom_path = os.path.realpath(path)
-    auto_start = OOTWorld.settings.rom_start
-    emulator_path = OOTWorld.settings.emulator_path
-    if auto_start is True and emulator_path:
-        subprocess.Popen(
-            [emulator_path.resolve() if hasattr(emulator_path, "resolve") else str(emulator_path), rom_path],
-            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-        )
-    elif auto_start is True:
-        open_file(rom_path)
-    elif auto_start and os.path.isfile(auto_start):
-        subprocess.Popen(
-            [auto_start, rom_path],
-            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-        )
+    launch_oot_rom(path, logger)
 
 
 def main(launcher_args):

@@ -332,9 +332,9 @@ def patch_rom(world, rom):
         (22, "texture_chest_front_skull",   0xFEC798,      None,            4096,   rgba16_patch,               'textures/chest/chest_front_skull_rgba16_patch.bin'),
         (23, "texture_chest_base_skull",    0xFED798,      None,            2048,   rgba16_patch,               'textures/chest/chest_base_skull_rgba16_patch.bin'),
 
-        (24, "texture_chest_front_heart",    0xFEC798,      None,            4096,   rgba16_patch,               'textures/chest/chest_front_heart_rgba16_patch.bin'),
-        (25, "texture_chest_base_heart",     0xFED798,      None,            2048,   rgba16_patch,               'textures/chest/chest_base_heart_rgba16_patch.bin'),
-(26, 'texture_pot_side_heart',      0x01738000,    None,            2048,   rgba16_patch,               'textures/pot/pot_side_heart_rgba16_patch.bin'),
+        (24, "texture_chest_front_heart",    0xFEC798,      None,            4096,   rgba16_patch,              'textures/chest/chest_front_heart_rgba16_patch.bin'),
+        (25, "texture_chest_base_heart",     0xFED798,      None,            2048,   rgba16_patch,              'textures/chest/chest_base_heart_rgba16_patch.bin'),
+        (26, 'texture_pot_side_heart',      0x01738000,    None,            2048,   rgba16_patch,               'textures/pot/pot_side_heart_rgba16_patch.bin'),
         (27, 'texture_pot_top_heart',       0x01739000,    None,            256,    rgba16_patch,               'textures/pot/pot_top_heart_rgba16_patch.bin'),
         (28, 'texture_crate_heart',         0x18B6020,     0x018B6000,      4096,   ci4_rgba16patch_to_ci8,     'textures/crate/crate_heart_rgba16_patch.bin'),
         (29, 'texture_smallcrate_heart',    0xF7ECA0,      None,            2048,   rgba16_patch,               'textures/crate/smallcrate_heart_rgba16_patch.bin'),

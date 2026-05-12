@@ -511,6 +511,7 @@ def _market(emu: EmuLoaderClient, st: OoTBridgeState) -> dict:
         "Market Lost Dog":                     _inf(emu, 0x33, 0x1),
         "Market 10 Big Poes":                  _poe_bottle(emu, st),
         "ToT Light Arrows Cutscene":           _event(emu, 0xC, 0x4),
+        "ToT Reward from Rauru":               _event(emu, 0x4, 0x5) or _boss_reward(st, 0x04),
         "Market GS Guard House":               _skulltula(emu, 0x0E, 0x3),
         "Market Bazaar Item 5":                _shop(emu, 0x4, 0x0),
         "Market Bazaar Item 6":                _shop(emu, 0x4, 0x1),

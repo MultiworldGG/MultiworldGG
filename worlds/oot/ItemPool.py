@@ -419,7 +419,8 @@ def get_pool_core(world):
                     pending_junk_pool.append(f"Small Key ({dungeon})")
         if world.shuffle_bosskeys in ['any_dungeon', 'overworld', 'keysanity', 'regional']:
             for dungeon in ['Forest Temple', 'Fire Temple', 'Water Temple', 'Shadow Temple', 'Spirit Temple']:
-                pending_junk_pool.append(f"Boss Key ({dungeon})")
+                if not world.keyring_give_bk(dungeon):
+                    pending_junk_pool.append(f"Boss Key ({dungeon})")
         if ganon_bk_setting in ['any_dungeon', 'overworld', 'keysanity', 'regional']:
             pending_junk_pool.append('Boss Key (Ganons Castle)')
         if world.shuffle_song_items == 'any':
@@ -704,10 +705,14 @@ def get_pool_core(world):
 
             # Boss Key
             if location.vanilla_item == dungeon.item_name("Boss Key"):
-                shuffle_setting = world.shuffle_bosskeys if dungeon.name != 'Ganons Castle' else ganon_bk_setting
-                dungeon_collection = dungeon.boss_key
-                if shuffle_setting == 'vanilla':
-                    shuffle_item = False
+                if world.keyring_give_bk(dungeon.name):
+                    item = get_junk_item(world.random)[0]
+                    shuffle_item = True
+                else:
+                    shuffle_setting = world.shuffle_bosskeys if dungeon.name != 'Ganons Castle' else ganon_bk_setting
+                    dungeon_collection = dungeon.boss_key
+                    if shuffle_setting == 'vanilla':
+                        shuffle_item = False
             # Map
             elif location.vanilla_item == dungeon.item_name("Map"):
                 shuffle_setting = world.shuffle_map

@@ -228,7 +228,7 @@ class OverworldEntrances(Toggle):
 
 
 class ShuffleHideoutEntrances(Toggle):
-    """Shuffles the 4 interior entrances to different rooms within Gerudo Fortress (v8.0)."""
+    """Shuffles the 4 interior entrances to different rooms within Gerudo Fortress."""
     display_name = "Shuffle Hideout Entrances"
 
 
@@ -243,7 +243,7 @@ class ShuffleGerudoFortressHeartPiece(Choice):
 
 
 class ShuffleGerudoValleyRiverExit(Toggle):
-    """Shuffles the river exit from Gerudo Valley that drops you at Lake Hylia (v8.0)."""
+    """Shuffles the river exit from Gerudo Valley that drops you at Lake Hylia."""
     display_name = "Shuffle Gerudo Valley River Exit"
 
 
@@ -416,9 +416,9 @@ world_options: typing.Dict[str, type(Option)] = {
     "shuffle_grotto_entrances": GrottoEntrances,
     "shuffle_dungeon_entrances": DungeonEntrances,
     "shuffle_overworld_entrances": OverworldEntrances,
-    "shuffle_hideout_entrances": ShuffleHideoutEntrances,  # v8.0
+    "shuffle_hideout_entrances": ShuffleHideoutEntrances,
     "shuffle_gerudo_fortress_heart_piece": ShuffleGerudoFortressHeartPiece,
-    "shuffle_gerudo_valley_river_exit": ShuffleGerudoValleyRiverExit,  # v8.0
+    "shuffle_gerudo_valley_river_exit": ShuffleGerudoValleyRiverExit,
     "owl_drops": OwlDrops,
     "warp_songs": WarpSongs,
     "spawn_positions": SpawnPositions,
@@ -750,32 +750,32 @@ class ShuffleIndividualOcarinaNotes(Toggle):
 
 
 class TCGRequiresLens(Toggle):
-    """Treasure Chest Game requires Lens of Truth to see which chests contain keys (v8.0)."""
+    """Treasure Chest Game requires Lens of Truth to see which chests contain keys."""
     display_name = "TCG Requires Lens of Truth"
 
 
 class ShuffleLoachReward(Toggle):
-    """Shuffle the Hyrule Loach reward from the Fishing Pond (v8.0)."""
+    """Shuffle the Hyrule Loach reward from the Fishing Pond."""
     display_name = "Shuffle Loach Reward"
 
 
 class KeyRingsGiveBossKeys(Toggle):
-    """When enabled, obtaining a key ring also grants the corresponding boss key (v8.0)."""
+    """When enabled, obtaining a key ring also grants the corresponding boss key."""
     display_name = "Key Rings Give Boss Keys"
 
 
 class KeyAppearanceMatchesDungeon(Toggle):
-    """Small key models match their dungeon (v8.0). Requires keysanity or key ring shuffle."""
+    """Small key models match their dungeon. Requires keysanity or key ring shuffle."""
     display_name = "Key Appearance Matches Dungeon"
 
 
 class RutoAlreadyAtF1(Toggle):
-    """Ruto starts at the first switch in Jabu instead of needing to be carried (v8.0)."""
+    """Ruto starts at the first switch in Jabu instead of needing to be carried."""
     display_name = "Ruto Already at F1"
 
 
 class MaintainMaskEquips(Toggle):
-    """Equipped masks stay equipped when using ocarina or picking up items (v8.0)."""
+    """Equipped masks stay equipped when using ocarina or picking up items."""
     display_name = "Maintain Mask Equips"
 
 
@@ -1418,9 +1418,9 @@ misc_options: typing.Dict[str, type(Option)] = {
     "minor_items_as_major_chest": MinorInMajor,
     "invisible_chests": InvisibleChests,
     "correct_potcrate_appearances": CorrectPotCrateAppearance,
-    "key_appearance_matches_dungeon": KeyAppearanceMatchesDungeon,  # v8.0
-    "ruto_already_at_f1": RutoAlreadyAtF1,  # v8.0
-    "maintain_mask_equips": MaintainMaskEquips,  # v8.0
+    "key_appearance_matches_dungeon": KeyAppearanceMatchesDungeon,
+    "ruto_already_at_f1": RutoAlreadyAtF1,
+    "maintain_mask_equips": MaintainMaskEquips,
     "hints": Hints,
     "misc_hints": MiscHints,
     "hint_dist": HintDistribution,

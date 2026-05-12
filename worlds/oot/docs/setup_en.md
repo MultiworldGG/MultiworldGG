@@ -64,7 +64,7 @@ files. Your data file should have a `.apz5` extension.
 Double-click on your `.apz5` file to start your client and start the ROM patch process. Once the process is finished
 (this can take a while), the client and the emulator will be started automatically.
 To choose a specific emulator for auto-launch, set `oot_options.emulator_path` in your `host.yaml` to your emulator
-executable. Leave it blank to use your operating system's default application for `.z64` files.
+executable. If it is blank, the patching process will ask you to select an emulator executable before auto-launching.
 
 ### Connect to the Multiserver
 
