@@ -9,6 +9,7 @@ from collections import defaultdict
 from functools import partial
 
 from .Items import OOTItem, item_table
+from .ItemPool import trade_items
 from .Location import DisableType
 from .LocationList import business_scrubs
 from .HintList import getHint
@@ -637,13 +638,6 @@ def patch_rom(world, rom):
     # Fix Spirit Temple to check for different rewards for scene
     rom.write_bytes(0xCA3EA2, [0x00, 0x00, 0x25, 0x4A, 0x00, 0x08])
 
-    # Fix Biggoron to check a different flag.
-    rom.write_byte(0xED329B, 0x72)
-    rom.write_byte(0xED43E7, 0x72)
-    rom.write_bytes(0xED3370, [0x3C, 0x0D, 0x80, 0x12])
-    rom.write_bytes(0xED3378, [0x91, 0xB8, 0xA6, 0x42, 0xA1, 0xA8, 0xA6, 0x42])
-    rom.write_bytes(0xED6574, [0x00, 0x00, 0x00, 0x00])
-
     # Remove the check on the number of days that passed for claim check.
     rom.write_bytes(0xED4470, [0x00, 0x00, 0x00, 0x00])
     rom.write_bytes(0xED4498, [0x00, 0x00, 0x00, 0x00])
@@ -1084,6 +1078,23 @@ def patch_rom(world, rom):
     elif world.open_kakariko != 'closed':
         rom.write_byte(rom.sym('OPEN_KAKARIKO'), 1)
 
+    # Mark unreachable adult trade-ins as already traded when the quest starts mid-chain.
+    if not world.adult_trade_shuffle and world.adult_trade_start:
+        traded_flags = 0
+        reverting_item_map = {
+            "Cojiro": ["Odd Mushroom"],
+            "Prescription": ["Eyeball Frog", "Eyedrops"],
+        }
+        trade_item = getattr(world, 'adult_trade_starting_inventory', '') or world.selected_adult_trade_item
+        for item_name in trade_items:
+            if item_name in reverting_item_map and not world.disable_trade_revert:
+                if trade_item in reverting_item_map[item_name]:
+                    break
+            if item_name == trade_item:
+                break
+            traded_flags |= 0x1 << (trade_items.index(item_name) + 11)
+        save_context.write_bytes(0x00D4 + 0x62 * 0x1C + 0x04 * 0x04, traded_flags.to_bytes(4, byteorder='big'))
+
     if world.complete_mask_quest:
         rom.write_byte(rom.sym('COMPLETE_MASK_QUEST'), 1)
 
@@ -1491,21 +1502,22 @@ def patch_rom(world, rom):
 
     # Set Dungeon Reward Actor in Jabu Jabu to be accurate
     # Vanilla and MQ Jabu Jabu addresses are the same for this object and actor
-    if location is not None: #TODO make actor invisible if no item?
+    if location is not None and location.item is not None: #TODO make actor invisible if no item?
         jabu_item = location.item
-        jabu_stone_object = jabu_item.special['object_id']
-        rom.write_int16(0x277D068, jabu_stone_object)
-        rom.write_int16(0x277D168, jabu_stone_object)
-        jabu_stone_type = jabu_item.special['actor_type']
-        rom.write_byte(0x277D0BB, jabu_stone_type)
-        rom.write_byte(0x277D19B, jabu_stone_type)
-        jabu_actor_type = jabu_item.special['actor_type']
-        set_jabu_stone_actors(rom, jabu_actor_type)
-        # Also set the right object for the actor, since medallions and stones require different objects
-        # MQ is handled separately, as we include both objects in the object list in mqu.json (Scene 2, Room 6)
-        if not world.dungeon_mq['Jabu Jabus Belly']:
+        if isinstance(jabu_item, OOTItem) and jabu_item.type == 'DungeonReward':
+            jabu_stone_object = jabu_item.special['object_id']
             rom.write_int16(0x277D068, jabu_stone_object)
             rom.write_int16(0x277D168, jabu_stone_object)
+            jabu_stone_type = jabu_item.special['actor_type']
+            rom.write_byte(0x277D0BB, jabu_stone_type)
+            rom.write_byte(0x277D19B, jabu_stone_type)
+            jabu_actor_type = jabu_item.special['actor_type']
+            set_jabu_stone_actors(rom, jabu_actor_type)
+            # Also set the right object for the actor, since medallions and stones require different objects
+            # MQ is handled separately, as we include both objects in the object list in mqu.json (Scene 2, Room 6)
+            if not world.dungeon_mq['Jabu Jabus Belly']:
+                rom.write_int16(0x277D068, jabu_stone_object)
+                rom.write_int16(0x277D168, jabu_stone_object)
         entry = get_override_entry(world, location)
         if entry is not None:
             rom.write_bytes(rom.sym('CFG_BIGOCTO_OVERRIDE_KEY'),
@@ -1990,7 +2002,8 @@ def patch_rom(world, rom):
             location = world.get_location(chest_name)
             if not location.item.trap:
                 if location.item.game == 'Ocarina of Time':
-                    item = read_rom_item(rom, location.item.index)
+                    item_id = get_oot_item_id(location.item)
+                    item = read_rom_item(rom, item_id if item_id is not None else (AP_PROGRESSION if location.item.advancement else AP_JUNK))
                 else:
                     item = read_rom_item(rom, AP_PROGRESSION if location.item.advancement else AP_JUNK)
             else:
@@ -2006,7 +2019,8 @@ def patch_rom(world, rom):
             location = world.get_location(chest_name)
             if not location.item.trap:
                 if location.item.game == 'Ocarina of Time':
-                    item = read_rom_item(rom, location.item.index)
+                    item_id = get_oot_item_id(location.item)
+                    item = read_rom_item(rom, item_id if item_id is not None else (AP_PROGRESSION if location.item.advancement else AP_JUNK))
                 else:
                     item = read_rom_item(rom, AP_PROGRESSION if location.item.advancement else AP_JUNK)
             else:
@@ -2024,7 +2038,8 @@ def patch_rom(world, rom):
             location = world.get_location(chest_name)
             if not location.item.trap:
                 if location.item.game == 'Ocarina of Time':
-                    item = read_rom_item(rom, location.item.index)
+                    item_id = get_oot_item_id(location.item)
+                    item = read_rom_item(rom, item_id if item_id is not None else (AP_PROGRESSION if location.item.advancement else AP_JUNK))
                 else:
                     item = read_rom_item(rom, AP_PROGRESSION if location.item.advancement else AP_JUNK)
             else:
@@ -2351,6 +2366,13 @@ def read_rom_item(rom, item_id):
     return { item_row_fields[i]: row[i] for i in range(len(item_row_fields)) }
 
 
+def get_oot_item_id(item):
+    item_id = item.index
+    if item_id is None and isinstance(item, OOTItem) and item.type == 'DungeonReward':
+        item_id = item.special.get('gi_id')
+    return item_id
+
+
 def write_rom_item(rom, item_id, item):
     addr = rom.sym('item_table') + (item_id * item_row_struct.size)
     row = [item[f] for f in item_row_fields]
@@ -2457,10 +2479,8 @@ def get_override_entry(ootworld, location):
         else:
             item_id = AP_JUNK
         ap_item_name_id = get_ap_item_name_id(ootworld, location.item.name)
-    else: 
-        item_id = location.item.index
-        if item_id is None and isinstance(location.item, OOTItem) and location.item.type == 'DungeonReward':
-            item_id = location.item.special.get('gi_id')
+    else:
+        item_id = get_oot_item_id(location.item)
         if None in [scene, default, item_id]:
             return None
 
@@ -2763,9 +2783,12 @@ def place_shop_items(rom, world, shop_items, messages, locations, init_shop_id=F
             # so that that are different than normal shop refils
             if location.item.trap or location.item.game == "Ocarina of Time":
                 if 'shop_object' in item_display.special:
-                    rom_item = read_rom_item(rom, item_display.special['shop_object'])
+                    rom_item_id = item_display.special['shop_object']
                 else:
-                    rom_item = read_rom_item(rom, item_display.index)
+                    rom_item_id = get_oot_item_id(item_display)
+                if rom_item_id is None:
+                    rom_item_id = AP_PROGRESSION if location.item.advancement else AP_JUNK
+                rom_item = read_rom_item(rom, rom_item_id)
                 shop_objs.add(rom_item['object_id'])
                 obj_id = rom_item['object_id']
                 model = rom_item['graphic_id'] - 1

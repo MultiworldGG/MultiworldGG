@@ -1171,31 +1171,35 @@ class OOTWorld(World):
         locations = list(self.multiworld.get_unfilled_locations(self.player))
         self.random.shuffle(locations)
 
-        # Set up initial state.
-        # During prefill we assume every non-prefill item for this player could be found eventually.
-        # Use the MultiWorld itempool here so rewards shuffled out of boss locations are also included.
-        state = CollectionState(self.multiworld)
-        for item in self.multiworld.itempool:
-            if item.player == self.player:
-                self.collect(state, item)
+        def base_prefill_state(assume_song_of_time=True, assume_time_travel=True):
+            # During prefill we assume every non-prefill item for this player could be found eventually.
+            # Use the MultiWorld itempool here so rewards shuffled out of boss locations are also included.
+            state = CollectionState(self.multiworld)
+            for item in self.multiworld.itempool:
+                if item.player == self.player:
+                    self.collect(state, item)
 
-        # Some progression is intentionally not represented in the item pool.
-        if self.scarecrow_behavior == 'free':
-            state.collect(self.create_item("Scarecrow Song"), prevent_sweep=True)
-        if not self.shuffle_ocarinas:
-            state.collect(self.create_item("Ocarina"), prevent_sweep=True)
-        if self.shuffle_child_trade == 'vanilla':
-            state.collect(self.create_item("Weird Egg"), prevent_sweep=True)
-        if self.shuffle_child_trade in {'vanilla', 'shuffle'}:
-            state.collect(self.create_item("Zeldas Letter"), prevent_sweep=True)
-        if self.open_door_of_time not in ('open', 'stones'):
-            state.collect(self.create_item("Song of Time"), prevent_sweep=True)
-        # In child-start stone DoT modes, complete-state assumptions can otherwise strand
-        # adult-only prefill placements behind Time Travel during key placement.
-        if self.starting_age == 'child' and self.open_door_of_time in ('stones', 'stones_sot', 'stones_oot_sot'):
-            state.collect(self.create_item("Time Travel"), prevent_sweep=True)
+            # Some progression is intentionally not represented in the item pool.
+            if self.scarecrow_behavior == 'free':
+                state.collect(self.create_item("Scarecrow Song"), prevent_sweep=True)
+            if not self.shuffle_ocarinas:
+                state.collect(self.create_item("Ocarina"), prevent_sweep=True)
+            if self.shuffle_child_trade == 'vanilla':
+                state.collect(self.create_item("Weird Egg"), prevent_sweep=True)
+            if self.shuffle_child_trade in {'vanilla', 'shuffle'}:
+                state.collect(self.create_item("Zeldas Letter"), prevent_sweep=True)
+            if assume_song_of_time and self.open_door_of_time not in ('open', 'stones'):
+                state.collect(self.create_item("Song of Time"), prevent_sweep=True)
+            # In child-start stone DoT modes, complete-state assumptions can otherwise strand
+            # adult-only prefill placements behind Time Travel during key placement.
+            if (assume_time_travel and self.starting_age == 'child'
+                    and self.open_door_of_time in ('stones', 'stones_sot', 'stones_oot_sot')):
+                state.collect(self.create_item("Time Travel"), prevent_sweep=True)
 
-        state.sweep_for_advancements(locations=self.get_locations())
+            state.sweep_for_advancements(locations=self.get_locations())
+            return state
+
+        state = base_prefill_state()
 
         # Place dungeon items
         special_fill_types = ['GanonBossKey', 'BossKey', 'SmallKey', 'HideoutSmallKey', 'Map', 'Compass']
@@ -1252,6 +1256,14 @@ class OOTWorld(World):
             for song in songs:
                 self.pre_fill_items.remove(song)
 
+            song_state_base = state
+            door_requires_song_of_time = self.open_door_of_time in {
+                'sot', 'oot_sot', 'stones_sot', 'stones_oot_sot'}
+            if door_requires_song_of_time and any(song.name == 'Song of Time' for song in songs):
+                # Do not let the Song of Time place itself behind the Door of Time.
+                # Key and dungeon-item prefill can still use the broader assumptions above.
+                song_state_base = base_prefill_state(assume_song_of_time=False, assume_time_travel=False)
+
             important_warps = (self.shuffle_special_interior_entrances or self.shuffle_overworld_entrances or
                                self.warp_songs or self.spawn_positions)
             song_order = {
@@ -1273,7 +1285,7 @@ class OOTWorld(World):
             while tries:
                 try:
                     self.random.shuffle(song_locations)
-                    song_state = prefill_state(state)
+                    song_state = prefill_state(song_state_base)
 
                     fill_restrictive(self.multiworld, song_state, song_locations[:], songs[:],
                                      single_player_placement=True, lock=True, allow_excluded=True)

@@ -1313,11 +1313,7 @@ def _process_block(emu: EmuLoaderClient, st: OoTBridgeState, block: dict) -> Non
         pid = emu.read_u8(PLAYER_ID_ADDR)
         emu.write_u16(INCOMING_PLAYER_ADDR, pid)
         emu.write_u16(INCOMING_ITEM_ADDR, st.item_queue[received])
-        logger.debug(
-            f"OoT Bridge: queued incoming item {st.item_queue[received]} "
-            f"for player {pid} at index {received}"
-        )
-
+        
     # Collectible override pointer (resolved once from a rando-context pointer).
     co = block.get("collectibleOverrides", 0)
     if st.collectible_overrides is None and co:
