@@ -214,7 +214,7 @@ conditional_always: dict[str, Callable[[World], bool]] = {
     'Song from Ocarina of Time':    lambda world: stones_required_by_settings(world) < 2,
     'HF Ocarina of Time Item':      lambda world: stones_required_by_settings(world) < 2,
     'Sheik in Kakariko':            lambda world: medallions_required_by_settings(world) < 5,
-    'DMT Biggoron':                 lambda world: world.options.adult_trade_start.value != 9 and not world.adult_trade_shuffle,  # 9 = claim_check
+    'DMT Biggoron':                 lambda world: ('Claim Check' not in world.options.adult_trade_start.value or len(world.options.adult_trade_start.value) != 1) and not world.adult_trade_shuffle,
     'Kak 30 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 30 and '30_skulltulas' not in world.options.misc_hints.value,
     'Kak 40 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 40 and '40_skulltulas' not in world.options.misc_hints.value,
     'Kak 50 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 50 and '50_skulltulas' not in world.options.misc_hints.value,

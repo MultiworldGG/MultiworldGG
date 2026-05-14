@@ -384,6 +384,8 @@ def get_pool_core(world):
     if world.zora_fountain == 'open':
         ruto_bottles = 0
 
+    adult_trade_shuffle_items = [item for item in trade_items if item in world.adult_trade_start]
+
     if world.shopsanity not in ['off', '0']:
         pending_junk_pool.append('Progressive Wallet')
 
@@ -425,6 +427,15 @@ def get_pool_core(world):
             pending_junk_pool.append('Boss Key (Ganons Castle)')
         if world.shuffle_song_items == 'any':
             pending_junk_pool.extend(song_list)
+        if world.adult_trade_shuffle:
+            pending_junk_pool.extend(adult_trade_shuffle_items)
+            # Pocket Egg is always chosen if both Egg and Pocket Cucco are shuffled.
+            # Match upstream by making the plentiful duplicate item consistent with that.
+            if 'Pocket Egg' in adult_trade_shuffle_items and 'Pocket Cucco' in adult_trade_shuffle_items:
+                pending_junk_pool.remove('Pocket Cucco')
+        elif world.adult_trade_start:
+            # With adult trade shuffle off, add another copy of the selected adult trade item.
+            pending_junk_pool.append(world.selected_adult_trade_item)
 
     if world.item_pool_value == 'ludicrous':
         pending_junk_pool.extend(ludicrous_health)
@@ -438,16 +449,6 @@ def get_pool_core(world):
 
     if world.shuffle_individual_ocarina_notes:
         pending_junk_pool.extend(ocarina_button_items)
-
-    if world.adult_trade_shuffle:
-        pending_junk_pool.extend(world.adult_trade_start)
-        # Pocket Egg is always chosen if both Egg and Pocket Cucco are selected to be shuffled.
-        # Make the duplicate item consistent with that.
-        if 'Pocket Egg' in world.adult_trade_start and 'Pocket Cucco' in world.adult_trade_start:
-            pending_junk_pool.remove('Pocket Cucco')
-    elif world.adult_trade_start:
-        # With adult trade shuffle off, add another copy of the selected adult trade item
-        pending_junk_pool.append(world.selected_adult_trade_item)
 
     # Use the vanilla items in the world's locations when appropriate.
     for location in world.get_locations():
@@ -592,10 +593,12 @@ def get_pool_core(world):
                     shuffle_item = True
                 else:
                     shuffle_item = False
-            elif location.vanilla_item in world.adult_trade_start:
+            elif location.vanilla_item in adult_trade_shuffle_items:
                 shuffle_item = True
             else:
-                if location.vanilla_item == 'Pocket Egg' and 'Pocket Cucco' in world.adult_trade_start:
+                # Upgrade Pocket Egg to Pocket Cucco if the Cucco is shuffled but not the Egg.
+                # If both are selected to be shuffled, only the Egg gets shuffled.
+                if location.vanilla_item == 'Pocket Egg' and 'Pocket Cucco' in adult_trade_shuffle_items:
                     item = 'Pocket Cucco'
                     shuffle_item = True
                 else:

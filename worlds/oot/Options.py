@@ -1492,25 +1492,32 @@ class IceTrapVisual(Choice):
     option_anything = 2
 
 
-class AdultTradeStart(Choice):
-    """Choose the item that starts the adult trade sequence."""
-    display_name = "Adult Trade Sequence Start"
-    option_pocket_egg = 0
-    option_pocket_cucco = 1
-    option_cojiro = 2
-    option_odd_mushroom = 3
-    option_poachers_saw = 4
-    option_broken_sword = 5
-    option_prescription = 6
-    option_eyeball_frog = 7
-    option_eyedrops = 8
-    option_claim_check = 9
-    default = 9
+adult_trade_items = frozenset({
+    "Pocket Egg",
+    "Pocket Cucco",
+    "Cojiro",
+    "Odd Mushroom",
+    "Odd Potion",
+    "Poachers Saw",
+    "Broken Sword",
+    "Prescription",
+    "Eyeball Frog",
+    "Eyedrops",
+    "Claim Check",
+})
+
+class AdultTradeStart(OptionSet):
+    """Select the adult trade sequence items to shuffle.
+    If Shuffle All Selected Adult Trade Items is off, one selected item starts the adult trade sequence.
+    If Shuffle All Selected Adult Trade Items is on, every selected item is shuffled."""
+    display_name = "Shuffle Adult Trade Sequence Items"
+    valid_keys = adult_trade_items
+    default = adult_trade_items
 
 
 class AdultTradeShuffleOption(Toggle):
-    """Shuffle all adult trade sequence items into the item pool."""
-    display_name = "Shuffle All Adult Trade Items"
+    """Shuffle every selected adult trade sequence item into the item pool."""
+    display_name = "Shuffle All Selected Adult Trade Items"
 
 
 class AddRandomStartingItems(Toggle):

@@ -549,8 +549,6 @@ class OOTWorld(World):
         self.starting_tod = self.starting_tod.replace('_', '-')
         self.shuffle_scrubs = self.shuffle_scrubs.replace('_prices', '')
 
-        # Convert adult trade option to expected Set
-        self.adult_trade_start = {self.adult_trade_start.title().replace('_', ' ')}
         # Set selected_adult_trade_item for logic rules (used before ItemPool runs).
         # When shuffling all trade items there is no single fixed start, so leave it None.
         if not self.adult_trade_shuffle and self.adult_trade_start:
