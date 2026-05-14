@@ -8,28 +8,28 @@ from ...levels import SHORT_NAME_TO_CHAPTER_AREA, AREA_ID_TO_CHAPTER_AREA, Chapt
 from ...locations import LEVEL_COMMON_LOCATIONS, LOCATION_NAME_TO_ID
 
 
-CURRENT_AREA_MINIKIT_COUNT_ADDRESS = 0x951238
+CURRENT_AREA_MINIKIT_COUNT_ADDRESS = 0x951258
 # There is a second address, but I don't know what the difference is. This address remains non-zero for longer when
 # exiting a level.
-# CURRENT_AREA_MINIKIT_COUNT_ADDRESS2 = 0x951230
+# CURRENT_AREA_MINIKIT_COUNT_ADDRESS2 = 0x951250
 # The number of minikits found in this current session is also found in this same memory area.
-# CURRENT_AREA_CURRENT_SESSION_MINIKIT_COUNT_ADDRESS = 0x951234
+# CURRENT_AREA_CURRENT_SESSION_MINIKIT_COUNT_ADDRESS = 0x951254
 # There is an array of found Minikits in the current session. Each element of the array includes the Minikit's internal
 # name and the Level ID the Minikit was found in. Minikit names can be shared by multiple Levels within an Area, so the
 # Level ID is necessary to differentiate them.
 # Each Minikit name is an 8-character null-terminated string.
 # Each Level ID is a 2-byte integer (probably)
 # There are then 2 unknown bytes
-# CURRENT_AREA_CURRENT_SESSION_MINIKIT_ARRAY = 0x955FD0
+# CURRENT_AREA_CURRENT_SESSION_MINIKIT_ARRAY = 0x955ff0
 
 # Set to 1 when True Jedi is completed, in either Story mode or Free Play, 0 otherwise.
 # This is used by the game when deciding whether it needs to write True Jedi completion to the save data.
-CURRENT_AREA_TRUE_JEDI_COMPLETE_STORY_OR_FREE_PLAY_ADDRESS = 0x87B980
+CURRENT_AREA_TRUE_JEDI_COMPLETE_STORY_OR_FREE_PLAY_ADDRESS = 0x87b9a0
 # There is a second byte that only gets set from Free Play.
 # Completing True Jedi in either Story or Free Play sets both True Jedi bytes in the save data, so there is not much
 # point in only sending in-level True Jedi from Free Play mode, when the player could 'cheat' and do it in Story mode
 # instead.
-# CURRENT_AREA_TRUE_JEDI_COMPLETE_FREE_PLAY_ONLY_ADDRESS = 0x87B996
+# CURRENT_AREA_TRUE_JEDI_COMPLETE_FREE_PLAY_ONLY_ADDRESS = 0x87b9b6
 
 
 class TrueJediAndPowerBrickAndMinikitChecker(ClientComponent):

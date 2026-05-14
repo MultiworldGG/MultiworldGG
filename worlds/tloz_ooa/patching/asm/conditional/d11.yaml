@@ -1,0 +1,12 @@
+# Remove red rupee from hero's cave basement
+0a/7392/: |
+  call getThisRoomFlags
+  and $20
+  jr nz,@delete
+
+  ld bc,locations.d11Basement
+  call createTreasure
+  call objectCopyPosition
+  jr nz,@delete
+  @delete:
+  jp interactionDelete

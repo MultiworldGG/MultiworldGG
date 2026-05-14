@@ -1,6 +1,6 @@
 from typing import Dict, List
 from BaseClasses import Item
-from .data import BASE_LOCATION_ID, LOCATIONS_DATA, BASE_ITEM_ID, ITEMS_DATA
+from ..data import BASE_LOCATION_ID, LOCATIONS_DATA, BASE_ITEM_ID, ITEMS_DATA
 
 
 def build_location_name_to_id_dict() -> Dict[str, int]:

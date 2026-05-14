@@ -20,6 +20,7 @@ from .items import (
     PURCHASABLE_NON_POWER_BRICK_EXTRAS,
     GENERIC_BY_NAME,
 )
+from .item_groups import ability_to_readable_group
 from .levels import (
     CHAPTER_AREA_STORY_CHARACTERS,
     VEHICLE_CHAPTER_SHORTNAMES,
@@ -1435,6 +1436,84 @@ def _apply_deprioritized_and_skip_balancing_to_characters(
     assert all(ability.bit_count() == 1 for ability in non_deprioritize_ability_counts)
 
 
+def _create_universal_tracker_item_pool(
+        world: LegoStarWarsTCSWorld,
+        level_access_character_counts: Counter[str],
+        possible_pool_character_items: dict[str, GenericCharacterData],
+        pool_required_chapter_unlock_items: list[str],
+        item_pool_ability_requirements: ItemPoolAbilityRequirements,
+) -> list[LegoStarWarsTCSItem]:
+    """
+    Universal Tracker discards the item pool for the most part, it needs it to know what item names to try in
+    the `/next_progression` client command.
+
+    We don't create the full item pool when generating under Universal Tracker because of a couple of issues:
+    1. Non-required, but logically relevant, characters are randomly chosen, so each Universal Tracker generation
+       could create different non-required characters, some of which may not even exist in the multiworld that UT
+       is connected to. Similarly, some characters may exist in the multiworld, but not be created during UT's
+       generation, so `/next_progression` would miss these items.
+    2. In rare cases, due to Universal Tracker integration assuming there are no starting abilities, some
+       characters who would normally have all their abilities removed, and become non-progression, could become
+       progression when generating with Universal Tracker, and it might not be possible to fit all the progression
+       items into the pool if there are more than expected.
+
+    Instead of creating non-required, but logically relevant characters, events are created for each logically
+    relevant CharacterAbility, whose names match the Item Group names for characters with those abilities.
+    :return: The created item pool for Universal Tracker.
+    """
+    item_creator = ItemCreator(world, item_pool_ability_requirements.get_logically_irrelevant())
+
+    item_pool: list[LegoStarWarsTCSItem] = []
+
+    logically_relevant_abilities = ((item_pool_ability_requirements.required | item_pool_ability_requirements.optional)
+                                    & ~item_pool_ability_requirements.starting)
+
+    pool_required_characters: list[GenericCharacterData] = []
+    # Get characters that are required to access levels. Updates `item_pool_ability_requirements` as characters are
+    # appended.
+    _append_level_access_required_characters(
+        world,
+        pool_required_characters,
+        level_access_character_counts,
+        possible_pool_character_items,
+        item_pool_ability_requirements,
+    )
+
+    # Get the required extras names.
+    pool_required_extras, _non_required_extras = prepare_extras(world)
+
+    # Append required Extras items.
+    for extra_name in pool_required_extras:
+        item = item_creator.create_item(extra_name)
+        assert item.advancement
+        item_pool.append(item)
+
+    # Append character items that lock access to levels.
+    for character_data in pool_required_characters:
+        item = item_creator.create_item(character_data.name)
+        assert item.advancement
+        item_pool.append(item)
+
+    # Append an event for each logically relevant ability. These events are created instead of creating one of every
+    # possibly logically relevant character. The event names match the Item Groups.
+    for ability in logically_relevant_abilities:
+        item = world.create_item(ability_to_readable_group(ability))
+        assert item.advancement
+        item_pool.append(item)
+
+    # Get other required items that don't belong to any particular category, and don't have associated vanilla
+    # locations.
+    other_required_items, _starting_required_other_items = _get_additional_required_items(
+        world, pool_required_chapter_unlock_items)
+
+    for item_name in other_required_items:
+        item = item_creator.create_item(item_name)
+        assert item.advancement
+        item_pool.append(item)
+
+    return item_pool
+
+
 def _create_items(
         world: LegoStarWarsTCSWorld,
         level_access_character_counts: Counter[str],
@@ -1461,12 +1540,13 @@ def _create_items(
     :return: The created item pool.
     """
     if world.is_universal_tracker():
-        # Universal Tracker discards the item pool, so don't bother creating it in the first place.
-        # In rare cases, due to Universal Tracker integration assuming there are no starting abilities, some characters
-        # who would normally have all their abilities removed, and become non-progression, could become progression when
-        # generating with Universal Tracker, and it might not be possible to fit all the progression items into the pool
-        # if there are more than expected.
-        return []
+        return _create_universal_tracker_item_pool(
+            world,
+            level_access_character_counts,
+            possible_pool_character_items,
+            pool_required_chapter_unlock_items,
+            item_pool_ability_requirements
+        )
 
     item_creator = ItemCreator(world, item_pool_ability_requirements.get_logically_irrelevant())
 

@@ -1,32 +1,4 @@
-# Format is group,room,treasure_id,treasure_subid
-0a//staticItemsReplacementsTable: |
-  # ------- Freestanding items -------
-  dwbe $0186, locations.blackTowerHP
-  dwbe $0406, locations.makuPathHP
-  dwbe $008b, locations.yollGraveyardHP
-  dwbe $05b1, locations.dekuForestHP
-  dwbe $03af, locations.restorationWallHP
-  dwbe $0011, locations.symmetryCityHP
-  dwbe $05c1, locations.ridgeWestHP
-  dwbe $000d, locations.ridgeUpperHP
-  dwbe $0605, locations.d0Basement
-  dwbe $0610, locations.d1Basement
-  dwbe $0628, locations.d2ThwompTunnel
-  dwbe $0627, locations.d2ThwompShelf
-
-  # ------- Drops / spawned items -------
-  dwbe $041e, locations.d1GhiniDrop
-  dwbe $0439, locations.d2MoblinDrop
-  dwbe $0442, locations.d2StatuePuzzle
-  dwbe $042e, locations.d2BasementDrop
-  dwbe $045e, locations.d3ArmosDrop
-  dwbe $0461, locations.d3StatueDrop
-  dwbe $0464, locations.d3SixBlocDrop
-  dwbe $044b, locations.d3MoldormDrop
-  dwbe $047b, locations.d4ColorDrop
-  dwbe $0553, locations.d7CaneDiamondPuzzle
-  dwbe $054b, locations.d7FlowerRoom
-  dwbe $0555, locations.d7DiamondPuzzle
+0a//staticItemsReplacementsTable: /include staticItemsReplacementsTable
 
 
 0a//staticItemsReplacementsLookup_body: |

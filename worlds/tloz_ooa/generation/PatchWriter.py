@@ -4,13 +4,13 @@ import yaml
 
 from typing import TYPE_CHECKING
 from BaseClasses import ItemClassification
-from .patching.ProcedurePatch import OoAProcedurePatch
-from .data.Constants import *
-from .data.Locations import LOCATIONS_DATA
+from ..patching.ProcedurePatch import OoAProcedurePatch
+from ..data.Constants import *
+from ..Options import *
 
 
 if TYPE_CHECKING:
-    from . import OracleOfAgesWorld
+    from .. import OracleOfAgesWorld
 
 def ooa_create_appp_patch(world: "OracleOfAgesWorld") -> OoAProcedurePatch:
     patch = OoAProcedurePatch()
@@ -19,20 +19,18 @@ def ooa_create_appp_patch(world: "OracleOfAgesWorld") -> OoAProcedurePatch:
     patch.player_name = world.multiworld.get_player_name(world.player)
 
     patch_data = {
-        "version": VERSION,
+        "version": f"{world.version()}",
 
-        "options": world.options.as_dict(*[
-            "goal", "logic_difficulty", "required_essences",
-            "required_slates", "animal_companion", "default_seed", "shuffle_dungeons", "master_keys",
-            "keysanity_small_keys", "keysanity_boss_keys", "keysanity_maps_compasses", "keysanity_slates",
-            "required_rings", "excluded_rings", "shop_prices_factor", "advance_shop",
-            "combat_difficulty", "death_link"
-        ]),
+        "options": world.options.as_dict(
+            *[option_name for option_name in OracleOfAgesOptions.type_hints
+              if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_patch")]),
+        "warp_to_start_variables": world.determine_warp_to_start_variables(),
+
         "dungeon_entrances": {a.replace(" entrance", ""): b.replace("enter ", "")
                               for a, b in world.dungeon_entrances.items()},
-        
         "locations": {},
-        "shop_prices": world.shop_prices
+        "shop_prices": world.shop_prices,
+        "music_order": {}
     }
 
     for loc in world.multiworld.get_locations(world.player):

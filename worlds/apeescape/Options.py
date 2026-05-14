@@ -1,13 +1,18 @@
 from dataclasses import dataclass
-from Options import  Visibility, Choice , Range, DeathLink, PerGameCommonOptions, OptionDict, FreeText, OptionSet, OptionCounter, \
-    Toggle, OptionList, DefaultOnToggle
+from typing import Dict, Any
+
+from Options import Visibility, Choice, Range, DeathLink, PerGameCommonOptions, OptionDict, FreeText, OptionSet, \
+    OptionCounter, \
+    Toggle, OptionList, DefaultOnToggle, OptionGroup
 from .Items import AEItem
+from schema import Schema, Or, Optional
+
 
 class GoalOption(Choice):
     """Choose the victory condition for this world.
 
         mm: First Specter fight in Monkey Madness, with the vanilla condition (just get there).
-        ppm: Second Specter fight in Peak Point Matrix, with the vanilla condition (catch all monkeys). Peak Point Matrix will only have the vanilla entry condition for Specter 1 and Specter 2 goals.
+        ppm: Second Specter fight in Peak Point Matrix, with the vanilla condition (catch all monkeys). Peak Point Matrix will have the vanilla entry condition.
         tokenhunt: Collecting enough Specter Token items throughout the world.
         mmtoken: First Specter fight in Monkey Madness, after collecting enough Specter Token items.
         ppmtoken: Second Specter fight in Peak Point Matrix, after collecting enough Specter Token items.
@@ -24,12 +29,13 @@ class GoalOption(Choice):
     option_ppmtoken = 0x04
     default = option_mm
 
-class FastTokenGoalOption(Choice):
-    """If this is enabled and the chosen Goal is `mmtoken` or `ppmtoken`, provides easy access to the end boss once enough tokens have been obtained.
-    When enough tokens have been collected, hold START while confirming a stage in the Level Select to warp directly to your Goal boss, skipping all other requirements.
 
-        off: MM/PPM will be unlocked through world keys and accessed normally via Level Select
-        on: A warp to your Goal boss becomes available in Level Select once enough tokens have been obtained (hold START to activate)
+class FastTokenGoalOption(Choice):
+    """If this is enabled and the chosen goal is `mmtoken` or `ppmtoken`, provides easy access to the goal boss once enough Specter Tokens have been obtained.
+    When enough Specter Tokens have been obtained, hold START while confirming a stage in the level select to warp directly to your goal boss, bypassing all other requirements.
+
+        off: MM/PPM will only be accessible through World Keys by normal means.
+        on: You will be able to warp directly to your goal boss by holding START in the level select.
 
         Supported values: off, on
         Default value: off
@@ -40,9 +46,10 @@ class FastTokenGoalOption(Choice):
     option_on = 0x01
     default = option_off
 
+
 class AllowCollectOption(Toggle):
         """
-        Allows for !collect to catch Monkeys or collect Coins containing items for other players.
+        Allows for the !collect command used by other players to catch monkeys or collect Specter Coins in your world. This behaves the same as automatically using the /syncprogress command after someone !collects.
         """
         display_name = "Allow Collect"
 
@@ -139,21 +146,71 @@ class SuperFlyerOption(Choice):
 
 
 class EntranceOption(Choice):
-    """Choose which level entrances should be randomized. Peak Point Matrix will always be the last level when it's postgame or the goal level. Races will be included in randomization if coin shuffle is on, and excluded otherwise.
+    """Choose how the level entrances should be randomized. Can be used to access Entrance Plando with the custom option. For "mm", "ppm" and "ppmtoken" goals, Peak Point Matrix will always be the last level with its vanilla unlock condition. Races will be included in randomization if coin shuffle is on, and excluded otherwise.
 
         off: Levels will be in the vanilla order.
-        on: Levels will be in a random order.
-        lockmm: Levels will be in a random order, and Monkey Madness will be locked to its original entrance.
+        recommended: The recommended preset for your chosen goal will be selected. For mm, this is "Lock Endgame". For ppm and ppmtoken, this is "Lock PPM". For everything else, this is "Random".
+        levelshuffle: Levels will be in a random order.
+        erashuffle: Each era will contain the levels from a random other era. Dimension X, containing the Jake races and Peak Point Matrix, counts as an era.
+        lockendgame: Levels will be in a random order, with Monkey Madness and Peak Point Matrix forced to the end.
+        lockppm: Levels will be in a random order, with Peak Point Matrix forced to the end.
+        goallevelfirst: Levels will be in a random order, with your goal level forced to the start.
+        custom: Uses the Entrance Plando option to determine level order, allowing any level to be placed at any entrance, with the rest placed randomly. This overrides coin shuffle race level placements, but does not override the ppm goal Peak Point Matrix placement.
 
-        Supported values: off, on, lockmm
-        Default value: on
+        Supported values: off, recommended, levelshuffle, erashuffle, lockendgame, lockppm, goallevelfirst, custom
+        Default value: recommended
     """
 
     display_name = "Entrance"
     option_off = 0x00
-    option_on = 0x01
-    option_lockmm = 0x02
-    default = option_on
+    option_recommended = 0x01
+    option_levelshuffle = 0x02
+    option_erashuffle = 0x03
+    option_lockendgame = 0x04
+    option_lockppm = 0x05
+    option_goallevelfirst = 0x06
+    option_custom = 0x07
+    default = option_recommended
+
+
+class EntrancePlandoOption(OptionDict):
+    """If Entrance is Custom, forces the chosen levels to the chosen entrances. Note that if you plando a level to the Peak Point Matrix entrance for the ppm goal, this placement will be ignored!
+    
+        Format is Entrance: Level. Monkey Madness: Dexter's Island will result in Dexter's Island being at the Monkey Madness entrance. Any entrance not set will have a random level. Any level assigned to more than one entrance will be placed at the later entrance.
+        The default sequence is a "reverse lock endgame" sequence.
+        Level names: "Fossil Field", "Primordial Ooze", "Molten Lava", "Thick Jungle", "Dark Ruins", "Cryptic Relics", "Stadium Attack", "Crabby Beach", "Coral Cave", "Dexter's Island", "Snowy Mammoth", "Frosty Retreat", "Hot Springs", "Gladiator Attack", "Sushi Temple", "Wabi Sabi Wall", "Crumbling Castle", "City Park", "Specter's Factory", "TV Tower", "Monkey Madness", "Peak Point Matrix"
+    """
+
+    display_name = "Entrance Plando"
+    level_names = ["Fossil Field", "Primordial Ooze", "Molten Lava", "Thick Jungle", "Dark Ruins", "Cryptic Relics", "Stadium Attack", "Crabby Beach", "Coral Cave", "Dexter's Island", "Snowy Mammoth", "Frosty Retreat", "Hot Springs", "Gladiator Attack", "Sushi Temple", "Wabi Sabi Wall", "Crumbling Castle", "City Park", "Specter's Factory", "TV Tower", "Monkey Madness", "Peak Point Matrix"]
+    default = {
+        "Fossil Field": "TV Tower",
+        "Primordial Ooze": "Specter's Factory",
+        "Molten Lava": "City Park",
+        "Thick Jungle": "Crumbling Castle",
+        "Dark Ruins": "Wabi Sabi Wall",
+        "Cryptic Relics": "Sushi Temple",
+        "Stadium Attack": "Gladiator Attack",
+        "Crabby Beach": "Hot Springs",
+        "Coral Cave": "Frosty Retreat",
+        "Dexter's Island": "Snowy Mammoth",
+        "Snowy Mammoth": "Dexter's Island",
+        "Frosty Retreat": "Coral Cave",
+        "Hot Springs": "Crabby Beach",
+        "Gladiator Attack": "Stadium Attack",
+        "Sushi Temple": "Cryptic Relics",
+        "Wabi Sabi Wall": "Dark Ruins",
+        "Crumbling Castle": "Thick Jungle",
+        "City Park": "Molten Lava",
+        "Specter's Factory": "Primordial Ooze",
+        "TV Tower": "Fossil Field",
+        "Monkey Madness": "Monkey Madness",
+        "Peak Point Matrix": "Peak Point Matrix"
+    }
+    schema = Schema({
+        Optional(Or(*level_names)): Or(*level_names)
+    })
+
 
 class DoorShuffleOption(Choice):
     """Choose how the transitions between rooms (doors) are randomized.
@@ -170,26 +227,11 @@ class DoorShuffleOption(Choice):
     visibility = Visibility.none
     option_off = 0x00
     option_same_level = 0x01
-    #option_cross_level = 0x02
+    #option_same_level_decoupled = 0x02
+    #same_level_decoupled: Doors are shuffled within the same level, and returning through a door may take you somewhere different.
+    #option_cross_level = 0x03
+    #cross_level: Doors are shuffled across levels.
     default = option_off
-
-class DoorShuffleTypeOption(Choice):
-    """Determines the logic used when connecting doors.
-    This only applies if Door Shuffle is set to 'same_level'.
-
-    pairs: Two-way transitions. If Door A leads to Door B, then Door B
-           will always lead back to Door A.
-    crossed: One-way transitions. Door A might lead to Door B, while Door B
-             leads to Door C.
-
-    Supported values: pairs, crossed
-    Default value: pairs
-    """
-    display_name = "Door Shuffle"
-    visibility = Visibility.none
-    option_pairs = 0x00
-    option_crossed = 0x01
-    default = option_pairs
 
 
 class RandomizeStartingRoomOption(Choice):
@@ -199,7 +241,7 @@ class RandomizeStartingRoomOption(Choice):
         on: The starting room for each level is a random room from within that level.
 
         Supported values: off, on
-        Default value: on
+        Default value: off
     """
 
     display_name = "Randomize Starting Room"
@@ -258,9 +300,25 @@ class CoinOption(Choice):
     default = option_false
 
 
+class JacketOption(Choice):
+    """Choose if static jackets should act as locations.
+
+        false: Jackets are not locations.
+        true: The 23 available jackets are added as locations.
+
+        Supported values: false, true
+        Default value: false
+    """
+
+    display_name = "Jacket"
+    option_false = 0x00
+    option_true = 0x01
+    default = option_false
+
+
 class MailboxOption(Choice):
-    """Choose if mailboxes should act as locations.
-        Mailboxes in training rooms will never be locations.
+    """Choose if mailboxes in the Time Station and levels should act as locations.
+        Training rooms are in a different option.
 
         false: Mailboxes are not locations.
         true: The 63 available mailboxes are added as locations.
@@ -274,27 +332,13 @@ class MailboxOption(Choice):
     option_true = 0x01
     default = option_false
 
-class JacketOption(Choice):
-    """Choose if static jackets should act as locations.
-
-        false: Jackets are not locations.
-        true: The 21 available jackets are added as locations.
-
-        Supported values: false, true
-        Default value: false
-    """
-
-    display_name = "Jacket"
-    option_false = 0x00
-    option_true = 0x01
-    default = option_false
 
 class TrainingRoomsOption(Choice):
     """Choose if locations inside training rooms should be included as checks.
 
         false: Training rooms have no checks.
         completion: Training rooms have 1 check on completion.
-        mailboxes: Training rooms mailboxes counts as checks.
+        mailboxes: Training room mailboxes count as checks.
 
         Supported values: false, completion, mailboxes
         Default value: false
@@ -305,6 +349,7 @@ class TrainingRoomsOption(Choice):
     option_completion = 0x01
     option_mailboxes = 0x02
     default = option_false
+
 
 class LampOption(Choice):
     """Choose if Monkey Lamps should be locked and shuffled into the multiworld.
@@ -513,6 +558,7 @@ class TrapsOnReconnect(OptionSet):
         AEItem.BananaPeelTrap.value,AEItem.GadgetShuffleTrap.value, AEItem.MonkeyMashTrap.value, AEItem.IcyHotPantsTrap.value, AEItem.StunTrap.value, AEItem.CameraRotateTrap.value
     })
 
+
 class TrapLink(Toggle):
     """
     Whether your received traps are linked to other players
@@ -613,14 +659,14 @@ class ApeEscapeOptions(PerGameCommonOptions):
     infinitejump: InfiniteJumpOption
     superflyer: SuperFlyerOption
     entrance: EntranceOption
+    entranceplando: EntrancePlandoOption
     doorshuffle: DoorShuffleOption
-    doorshuffletype: DoorShuffleTypeOption
     randomizestartingroom: RandomizeStartingRoomOption
     unlocksperkey: KeyOption
     extrakeys: ExtraKeysOption
     coin: CoinOption
-    mailbox: MailboxOption
     jacket: JacketOption
+    mailbox: MailboxOption
     trainingrooms: TrainingRoomsOption
     lamp: LampOption
     gadget: GadgetOption
@@ -639,3 +685,50 @@ class ApeEscapeOptions(PerGameCommonOptions):
     spikecolor: SpikeColor
     customspikecolor: CustomSpikeColor
     death_link: DeathLink
+
+ape_escape_option_groups = [
+    OptionGroup("Goal", [
+        GoalOption,
+        FastTokenGoalOption,
+        RequiredTokensOption,
+        TotalTokensOption,
+        TokenLocationsOption,
+    ]),
+    OptionGroup("Logic & Abilities", [
+        LogicOption,
+        InfiniteJumpOption,
+        SuperFlyerOption,
+        GadgetOption,
+    ]),
+    OptionGroup("Entrance & World", [
+        EntranceOption,
+        EntrancePlandoOption,
+        RandomizeStartingRoomOption,
+        KeyOption,
+        ExtraKeysOption,
+    ]),
+    OptionGroup("Items & Locations", [
+        CoinOption,
+        JacketOption,
+        MailboxOption,
+        TrainingRoomsOption,
+        LampOption,
+        ShuffleNetOption,
+        ShuffleWaterNetOption,
+    ]),
+    OptionGroup("Filler & Traps", [
+        FillerPreset,
+        CustomFillerWeights,
+        TrapPercentage,
+        TrapWeights,
+        TrapsOnReconnect,
+    ]),
+    OptionGroup("Quality of Life", [
+        LowOxygenSounds,
+        ItemDisplayOption,
+        KickoutPreventionOption,
+        AutoEquipOption,
+        SpikeColor,
+        CustomSpikeColor,
+    ]),
+]

@@ -12,7 +12,7 @@ LUKE_DAGOBAH_ID_ADDR = StaticUint(0x7f198c)
 
 YODA_IDS = [CHARACTERS_AND_VEHICLES_BY_NAME[name].character_index for name in ["Yoda", "Yoda (Ghost)"]]
 LEVEL_ID_VADER_A = 136
-GCDataList_ADDR = StaticUint(0x93b284)  # CharacterEntry*
+GCDataList_ADDR = StaticUint(0x93b2a4)  # CharacterEntry*
 SIZE_OF_CHARACTER_ENTRY = 0x120
 YODA_RUN_SPEED = 0.8
 CHARACTER_ENTRY_RUN_SPEED = FloatField(0x1c)

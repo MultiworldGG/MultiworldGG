@@ -6,6 +6,7 @@ import hashlib
 import ModuleUpdate
 import Utils
 from BaseClasses import ItemClassification
+from MultiServer import mark_raw
 from NetUtils import ClientStatus
 from worlds._bizhawk.context import AuthStatus
 
@@ -21,7 +22,6 @@ from CommonClient import server_loop, gui_enabled, get_base_parser
 
 from .. import options, TCSUniversalTrackerAPWorldVersionMismatchError
 from ..constants import GAME_NAME, AP_WORLD_VERSION
-from ..items import CHARACTERS_AND_VEHICLES_BY_NAME
 from ..levels import SHORT_NAME_TO_CHAPTER_AREA, CHAPTER_AREAS, ChapterArea
 from ..locations import LOCATION_NAME_TO_ID
 from .client_text import ClientText, clean_string
@@ -56,6 +56,9 @@ from .game_state_modifiers.text_display import InGameTextDisplay
 from .game_state_modifiers.text_replacer import TextReplacer
 from .game_state_modifiers.uncap_high_jump import UncapHighJump
 from .game_state_modifiers.level_specific_fixes import LevelSpecificFixes
+from .game_state_modifiers.patches import apply_game_patches
+from .game_state_modifiers.auto_collect_pickups import AutoCollectPickups
+from .game_version_check import get_game_version, GameVersion, gog_to_steam
 
 apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 
@@ -84,54 +87,8 @@ LocationId = int
 
 PROCESS_NAME = "LEGOStarWarsSaga"
 
-# The STEAM and GOG versions have different memory addresses.
-# The client needs to determine which version is being used and adjust the addresses accordingly.
-VERSION_CHECK_PATTERN = (b"japanese\x00\x00\x00\x00"
-                         b"danish\x00\x00"
-                         b"spanish\x00"
-                         b"italian\x00"
-                         b"german\x00\x00"
-                         b"french\x00\x00"
-                         b"english\x00"
-                         b"Err\\.\\.\\.\x00")
-VERSION_CHECK_ADDRESS_GOG = 0x76161c
-VERSION_CHECK_ADDRESS_STEAM = 0x761634
-VERSION_CHECK_GOG_OFFSET = VERSION_CHECK_ADDRESS_STEAM - VERSION_CHECK_ADDRESS_GOG
 
-# A potential alternative version check
-# VERSION_CHECK_PATTERN = b"This program cannot be run in DOS mode"
-# VERSION_CHECK_ADDRESS_GOG = 0x40004e
-# VERSION_CHECK_ADDRESS_STEAM = None  # Not present in the executable.
-
-MEMORY_OFFSET_STEAM = 0
-MEMORY_OFFSET_GOG = 0x20
-# Addresses greater than this need to be offset by 0x20 when the GOG version is being used.
-# It is possible that the cutoff point is earlier, somewhere between 0x802d98 and 0x855000
-GOG_MEMORY_OFFSET_START = 0x855000
-
-# class MemoryBlock(NamedTuple):
-#     base: int
-#     gog_offset: int
-#
-# memory_blocks = [
-#     MemoryBlock(0x761000, -0x18),
-#     # Somewhere in between 0x761634 and 0x7fd2c1, an early offset occurs, aligning the two versions.
-#     MemoryBlock(0x7FD000, 0x0),
-#     MemoryBlock(0x800000, 0x0),
-#     MemoryBlock(0x802000, 0x0),
-#     # Somewhere in between 0x800944 and 0x855F38, an offset occurs, misaligning the two versions.
-#     MemoryBlock(0x855000, 0x20),
-#     MemoryBlock(0x86E000, 0x20),
-#     MemoryBlock(0x87B000, 0x20),
-#     MemoryBlock(0x925000, 0x20),
-#     MemoryBlock(0x951000, 0x20),
-#     MemoryBlock(0x973000, 0x20),
-#     MemoryBlock(0x986000, 0x20),
-#     MemoryBlock(0x297C000, 0x20),
-# ]
-
-
-CURRENT_LEVEL_ID = 0x951BA0  # 2 bytes (or more)
+CURRENT_LEVEL_ID = 0x951bc0  # 2 bytes (or more)
 # While in the Cantina and in the shop room, all extras that have been received, but not purchased, must be locked,
 # otherwise those extras cannot be bought from the shop.
 # When entering the Cantina, all purchased extras that have not been received will need to be locked because entering
@@ -154,16 +111,16 @@ CURRENT_SAVE_SLOT = 0x802014  # byte, 255/-1 for no save file loaded. [0-5] for 
 # 7: Outside junkyard
 # 8: Bonuses room
 # 9: Bounty Hunter missions room
-CANTINA_ROOM_ID = 0x87B460
+CANTINA_ROOM_ID = 0x87b480
 CANTINA_ROOM_WITH_SHOP = 0
 
 # Appears to be 1 while in the shop, and 0 otherwise. But becomes 0 when playing a cutscene from within the shop.
-# SHOP_CHECK2 = 0x880474  # byte
-ACTIVE_SHOP_TYPE_ADDRESS = 0x8801AC
+# SHOP_CHECK2 = 0x880494  # byte
+ACTIVE_SHOP_TYPE_ADDRESS = 0x8801cc
 
 
-# CUSTOM_CHARACTER_1_NAME = 0x86E500  # char[16], null-terminated, so 15 usable characters
-# CUSTOM_CHARACTER_2_NAME = 0x86E538  # char[16], null-terminated, so 15 usable characters
+# CUSTOM_CHARACTER_1_NAME = 0x86e520  # char[16], null-terminated, so 15 usable characters
+# CUSTOM_CHARACTER_2_NAME = 0x86e558  # char[16], null-terminated, so 15 usable characters
 
 # Byte
 # 0 = Blue Lightsaber (requires any Jedi unlocked)
@@ -176,7 +133,7 @@ ACTIVE_SHOP_TYPE_ADDRESS = 0x8801AC
 # 7 = Shiny Pistol (always available)
 # 8 = Crossbow (bowcaster) (requires *unknown* unlocked (probably Chewbacca or Wookie))
 # 9 = There is no 9
-CUSTOM_CHARACTER_1_WEAPON = 0x86E4F0
+CUSTOM_CHARACTER_1_WEAPON = 0x86e510
 
 
 # # Unverified, but seems to be the case.
@@ -298,6 +255,16 @@ MINIKIT_GOAL_SUBMITTED_PREFIX = "tcs_minikit_goal_submitted_"
 
 
 class LegoStarWarsTheCompleteSagaCommandProcessor(ClientCommandProcessor):
+    AUTO_COLLECT_PICKUPS_ENABLED = ("enabled", "on", "yes")
+    AUTO_COLLECT_PICKUPS_DISABLED = ("disabled", "off", "no")
+    AUTO_COLLECT_PICKUPS_VEHICLES_ONLY = ("vehicles", "vehicles_only", "vehicles only",
+                                          "vehicle", "vehicle_only", "vehicle only",
+                                          "vehicle_levels_only", "vehicle levels only",
+                                          "vehicle_levels", "vehicle levels")
+    AUTO_COLLECT_PICKUPS_ALL = (AUTO_COLLECT_PICKUPS_ENABLED
+                                + AUTO_COLLECT_PICKUPS_DISABLED
+                                + AUTO_COLLECT_PICKUPS_VEHICLES_ONLY)
+
     def __init__(self, ctx: CommonContext):
         super().__init__(ctx)
 
@@ -319,6 +286,45 @@ class LegoStarWarsTheCompleteSagaCommandProcessor(ClientCommandProcessor):
                 msg = ctx.client_text.from_text_color_choice(TextColorChoice(value), name)
                 ctx.text_display.queue_message(msg)
             logger.info("Demonstrating text color choices.")
+
+    @mark_raw
+    def _cmd_auto_collect_pickups(self, mode: str = ""):
+        """
+        Toggle automatic collection of spawned pickups. Either on, off, or on for vehicle levels only.
+
+        :param mode: on/off/vehicles, or leave blank to toggle between on/off while maintaining whether only vehicle
+        levels are affected.
+        """
+        ctx = self.ctx
+        if isinstance(ctx, LegoStarWarsTheCompleteSagaContext):
+            if ctx.last_connected_slot is None or not ctx.is_in_game():
+                logger.info("Load into the game and connect to a server first.")
+                return
+            component = ctx.auto_collect_pickups
+            if mode == "":
+                # Act like a toggle, while maintaining vehicles_only status.
+                component.update(ctx, not component.enabled, component.vehicles_only)
+            else:
+                best_pick, ok, message = Utils.get_intended_text(mode, self.AUTO_COLLECT_PICKUPS_ALL)
+                if not ok:
+                    logger.info(message)
+                    return
+                if ok:
+                    if best_pick in self.AUTO_COLLECT_PICKUPS_ENABLED:
+                        component.update(ctx, True, False)
+                    elif best_pick in self.AUTO_COLLECT_PICKUPS_DISABLED:
+                        component.update(ctx, False, False)
+                    elif best_pick in self.AUTO_COLLECT_PICKUPS_VEHICLES_ONLY:
+                        component.update(ctx, True, True)
+                    else:
+                        logger.error("Unrecognised value '%s' from fuzzy matching", best_pick)
+            if component.enabled:
+                if component.vehicles_only:
+                    logger.info("Enabled automatic pickup collection (vehicle levels only)")
+                else:
+                    logger.info("Enabled automatic pickup collection")
+            else:
+                logger.info("Disabled automatic pickup collection")
 
     def _cmd_toggle_death_link(self):
         """Toggle Death Link on/off. Whether Death Link is enabled is stored in your save data, so the client will
@@ -357,11 +363,10 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
     current_cantina_room: CantinaRoom = CantinaRoom.UNKNOWN
     current_p1_character_id: int | None = None
     current_p2_character_id: int | None = None
-    # Memory in the GOG version is offset 32 bytes after GOG_MEMORY_OFFSET_START.
-    # todo: Memory in the retail version is offset ?? bytes after ??.
-    _gog_memory_offset: int = 0
+
+    game_version: GameVersion = GameVersion.GOG
     # In the case of an unrecognised version, an overall memory offset may be set.
-    _overall_memory_offset: int = 0
+    overall_memory_offset: int = 0
     event_manager: EventManager
 
     # Client state.
@@ -396,6 +401,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         options.ReceivedItemMessages.option_all)
     checked_location_messages: bool = True
     client_text: ClientText
+    auto_collect_pickups: AutoCollectPickups
 
     # A few components are permanent and will need to be manually re-subscribed to receive events because the components
     # won't be re-created.
@@ -435,6 +441,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
 
         self.death_link_manager = DeathLinkManager()
         self.shop_names_replacer = ShopNamesReplacer()
+        self.auto_collect_pickups = AutoCollectPickups()
 
         # It is not ideal to leak `self` in __init__. The TextReplacer methods could be updated to include a TCSContext
         # parameter if needed, instead of leaking `self`. Alternatively, the TextReplacer could be created only when
@@ -710,31 +717,6 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                     }
                 ]
             ))
-
-            # todo: Move this somewhere else.
-            # Give 4-LOM and IG-88 the Protocol flag so that if the player has no Protocol Droid, but does have 4-LOM or
-            # IG-88, the game will pick 4-LOM or IG-88 for the Free Play character selection.
-            # While 4-LOM and IG-88 can also use Astromech panels, the Astromech flag (0x40) also tells the game that
-            # the characters can hover, and can traverse Dagobah's swamps, which neither 4-LOM nor IG-88 can do, so they
-            # should not be given the Astromech flag.
-            # Character data is loaded once when the game starts, so the changes made here are permanent until the game
-            # is restarted.
-            # UnknownLoadedCharacterData* _CDataList
-            addr_p_c_data_list = 0x0093b274
-            addr_c_data_list = self.read_uint(addr_p_c_data_list)
-            # sizeof(UnknownLoadedCharacterData)
-            unknown_loaded_character_data_size = 0x4c
-            # UnknownLoadedCharacterData.data_flag3
-            character_data_flag_3_field_offset = 0x4
-            # CharacterDataFlag3.Protocol
-            protocol_droid_flag = 0x20
-            for character in ("IG-88", "4-LOM"):
-                character_index = CHARACTERS_AND_VEHICLES_BY_NAME[character].character_index
-                addr_character_data = addr_c_data_list + unknown_loaded_character_data_size * character_index
-                addr_character_data_flag_3 = addr_character_data + character_data_flag_3_field_offset
-                character_data_flag_3 = self.read_uint(addr_character_data_flag_3, raw=True)
-                new_flag = character_data_flag_3 | protocol_droid_flag
-                self.write_uint(addr_character_data_flag_3, new_flag, raw=True)
         elif cmd == "SetReply":
             key: str = args["key"]
             if self._is_datastorage_key(key, COMPLETED_FREE_PLAY_KEY_PREFIX):
@@ -927,45 +909,37 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         await self.unhook_game_process()
         return await super().shutdown()
 
-    def open_game_process(self):
+    async def open_game_process(self):
         try:
             process = pymem.Pymem(PROCESS_NAME)
+            game_version, memory_offset = get_game_version(process)
+            if game_version is None:
+                logger.info(f"Connected to process but could not determine memory offsets. Supported game versions are"
+                            f" Steam and GOG, make sure your LegoStarWarsSaga.exe has not been modified.")
+                return False
+            self.game_version = game_version
+            self.overall_memory_offset = memory_offset
+
+            self.game_process = process
+            await apply_game_patches(self)
+            self.text_replacer = TextReplacer(self)
+
+            if memory_offset != 0:
+                logger.warning(
+                    f"Connected to an unrecognised game version with memory offset {memory_offset:X}. Assuming the game"
+                    f" version is a modified {game_version.name} version. Things could be very broken. Please report"
+                    f" this in the Lego Star Wars: The Complete Saga thread in the Archipelago discord server.")
+            else:
+                logger.info(
+                    "Connected to %s version successfully", game_version.name
+                )
+            return True
         except ProcessNotFound:
             logger.info(f"{PROCESS_NAME} process not found. Make sure it is running.")
             return False
         except ProcessError as err:
             logger.info(f"Unexpected error connecting to game process: {err}.")
             return False
-
-        # Find the address of a unique pattern to determine offsets.
-        found_address = process.pattern_scan_module(VERSION_CHECK_PATTERN, process.process_base)
-        if found_address is None:
-            logger.info(f"Connected to process but could not determine memory offsets. Supported game versions are"
-                        f" Steam and GOG, make sure your LegoStarWarsSaga.exe has not been modified.")
-            return False
-
-        if found_address == VERSION_CHECK_ADDRESS_STEAM:
-            logger.info("Connected to STEAM version successfully")
-            # All memory addresses have been written with the STEAM version in mind.
-            self._gog_memory_offset = 0
-            self._overall_memory_offset = 0
-        elif found_address == VERSION_CHECK_ADDRESS_GOG:
-            logger.info("Connected to GOG version successfully")
-            # The GOG version is offset after around GOG_MEMORY_OFFSET_START.
-            self._gog_memory_offset = MEMORY_OFFSET_GOG
-            self._overall_memory_offset = 0
-        else:
-            # Assume a modified STEAM version that is offset by a fixed amount. todo: Try the 'Steamless' executable.
-            memory_offset = found_address - VERSION_CHECK_ADDRESS_STEAM
-            logger.warning(f"Connected to an unrecognised game version with memory offset {memory_offset:X}. Assuming"
-                           f" the game version is a modified STEAM version. Things could be very broken. Please report"
-                           f" this in the Lego Star Wars: The Complete Saga thread in the Archipelago discord server.")
-            self._gog_memory_offset = 0
-            self._overall_memory_offset = memory_offset
-
-        self.game_process = process
-        self.text_replacer = TextReplacer(self)
-        return True
 
     async def unhook_game_process(self):
         if self.game_process is not None:
@@ -990,51 +964,53 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         else:
             return process
 
-    def _adjust_address(self, address: int) -> int:
-        if address >= GOG_MEMORY_OFFSET_START:
-            return address + self._gog_memory_offset + self._overall_memory_offset
+    def adjust_gog_address(self, address: int) -> int:
+        if self.game_version is GameVersion.STEAM:
+            # Hardcoded, static memory addresses to read from/write to are for the GOG version, so need to be adjusted
+            # when playing the Steam version.
+            return gog_to_steam(address) + self.overall_memory_offset
         else:
-            return address + self._overall_memory_offset
+            return address + self.overall_memory_offset
 
     def read_int(self, address: int, raw=False) -> int:
-        return self._game_process.read_int(address if raw else self._adjust_address(address))
+        return self._game_process.read_int(address if raw else self.adjust_gog_address(address))
 
     def read_uint(self, address: int, raw=False) -> int:
-        return self._game_process.read_uint(address if raw else self._adjust_address(address))
+        return self._game_process.read_uint(address if raw else self.adjust_gog_address(address))
 
     def read_ushort(self, address: int, raw=False) -> int:
-        return self._game_process.read_short(address if raw else self._adjust_address(address))
+        return self._game_process.read_short(address if raw else self.adjust_gog_address(address))
 
     def read_bytes(self, address: int, length: int, raw=False) -> bytes:
-        return self._game_process.read_bytes(address if raw else self._adjust_address(address), length)
+        return self._game_process.read_bytes(address if raw else self.adjust_gog_address(address), length)
 
     def read_byte(self, address: int, raw=False) -> bytes:
-        return self._game_process.read_bytes(address if raw else self._adjust_address(address), 1)
+        return self._game_process.read_bytes(address if raw else self.adjust_gog_address(address), 1)
 
     def read_float(self, address: int, raw=False) -> float:
-        return self._game_process.read_float(address if raw else self._adjust_address(address))
+        return self._game_process.read_float(address if raw else self.adjust_gog_address(address))
 
     def read_uchar(self, address: int, raw=False) -> int:
-        return self._game_process.read_uchar(address if raw else self._adjust_address(address))
-        #return self._game_process.read_bytes(address if raw else self._adjust_address(address), 1)[0]
+        return self._game_process.read_uchar(address if raw else self.adjust_gog_address(address))
+        #return self._game_process.read_bytes(address if raw else self.adjust_gog_address(address), 1)[0]
 
     def write_int(self, address: int, value: int, raw=False) -> None:
-        self._game_process.write_int(address if raw else self._adjust_address(address), value)
+        self._game_process.write_int(address if raw else self.adjust_gog_address(address), value)
 
     def write_uint(self, address: int, value: int, raw=False) -> None:
-        self._game_process.write_uint(address if raw else self._adjust_address(address), value)
+        self._game_process.write_uint(address if raw else self.adjust_gog_address(address), value)
 
     def write_ushort(self, address: int, value: int, raw=False) -> None:
-        self._game_process.write_ushort(address if raw else self._adjust_address(address), value)
+        self._game_process.write_ushort(address if raw else self.adjust_gog_address(address), value)
 
     def write_byte(self, address: int, value: int, raw=False) -> None:
-        self._game_process.write_uchar(address if raw else self._adjust_address(address), value)
+        self._game_process.write_uchar(address if raw else self.adjust_gog_address(address), value)
 
     def write_bytes(self, address: int, value: bytes, length: int, raw=False) -> None:
-        self._game_process.write_bytes(address if raw else self._adjust_address(address), value, length)
+        self._game_process.write_bytes(address if raw else self.adjust_gog_address(address), value, length)
 
     def write_float(self, address: int, value: float, raw=False) -> None:
-        self._game_process.write_float(address if raw else self._adjust_address(address), value)
+        self._game_process.write_float(address if raw else self.adjust_gog_address(address), value)
 
     def allocate(self, num_bytes: int) -> MemoryAddress:
         return self._game_process.allocate(num_bytes)
@@ -1235,7 +1211,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
     def is_in_game(self) -> bool:
         # There are more than 255 levels, but far fewer than 65536, so assume 2 bytes.
         return ((process := self.game_process) is not None
-                and process.read_ushort(self._adjust_address(CURRENT_LEVEL_ID)) != 0)
+                and process.read_ushort(self.adjust_gog_address(CURRENT_LEVEL_ID)) != 0)
 
     def get_current_save_file(self) -> int | None:
         file_number = self.read_uchar(CURRENT_SAVE_SLOT)
@@ -1264,17 +1240,17 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         if self.is_in_game():
             # Based on BrickBench, with addresses converted to Steam addresses.
             if reset_door:
-                self.write_byte(0x9513b8, 0)
+                self.write_byte(0x9513d8, 0)
             if hard_reset:
                 self.write_uint(0x803784, 0xFFFFFFFF)
-                self.write_uint(0x93b2ac, 0x20)
-            level_data_start_addr = self.read_uint(0x951b78)
+                self.write_uint(0x93b2cc, 0x20)
+            level_data_start_addr = self.read_uint(0x951b98)
             # Each level struct is 0x130 bytes. Level IDs are consecutive according to the order they are defined in
             # LEVELS.TXT.
             target_level_data_addr = level_data_start_addr + 0x130 * level_id
-            self.write_uint(0x951b80, target_level_data_addr)
+            self.write_uint(0x951ba0, target_level_data_addr)
             # Some sort of flag that BrickBench sets. I don't know what this does.
-            self.write_uint(0x93d850, 1)
+            self.write_uint(0x93d870, 1)
 
     def reload_cantina(self, hard: bool = False) -> bool:
         """
@@ -1305,12 +1281,12 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         #  character.
         # The data at a character address includes things like the character's position vector and rotation.
         if player == 1:
-            # There seems to be the same pointer value at +0x20, but Brick Bench uses 0x93d810 (GOG), which is 0x93d7f0
-            # (STEAM) used below, so lets use that one.
+            # There seems to be the same pointer value at +0x20, but Brick Bench uses 0x93d810 (GOG), so lets use that
+            # one.
             # Maybe 0x93d830 can be different in some cases?
-            ptr_addr = 0x93d7f0
+            ptr_addr = 0x93d810
         elif player == 2:
-            ptr_addr = 0x93d7f4
+            ptr_addr = 0x93d814
         else:
             raise ValueError(f"Invalid player {player}")
         character_address = self.read_uint(ptr_addr)
@@ -1442,6 +1418,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
 
         self.shop_names_replacer.reset_persisted_client_data(self)
         self.shop_names_replacer = ShopNamesReplacer()
+        self.auto_collect_pickups = AutoCollectPickups()
 
         if clear_text_display_queue:
             self.text_display.message_queue.clear()
@@ -1628,7 +1605,7 @@ async def game_watcher(ctx: LegoStarWarsTheCompleteSagaContext):
             game_process = ctx.game_process
             if game_process is None:
                 previously_not_in_game = True
-                if not ctx.open_game_process():
+                if not await ctx.open_game_process():
                     log_message("Connection to game failed, attempting again in 5 seconds...", True)
                     sleep_time = 5
                 else:
@@ -1761,8 +1738,8 @@ async def game_watcher(ctx: LegoStarWarsTheCompleteSagaContext):
             await ctx.unhook_game_process()
             ctx.reset_persisted_client_data()
             if isinstance(e, (PymemError, WinAPIError)):
-                msg = "Lost connection to game, attempting re-connection in 5 seconds..."
-                debug_logger.error(traceback.format_exc())
+                msg = f"Lost connection to game, attempting re-connection in 5 seconds..."
+                logger.error(traceback.format_exc())
             else:
                 msg = "Unexpected error occurred, attempting re-connection to game in 5 seconds..."
                 logger.error(traceback.format_exc())

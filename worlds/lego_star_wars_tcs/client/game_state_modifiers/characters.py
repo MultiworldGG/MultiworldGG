@@ -7,8 +7,8 @@ from ...items import CHARACTERS_AND_VEHICLES_BY_NAME, GenericCharacterData, CHAR
 from . import ItemReceiver
 
 
-UNLOCKED_CHARACTERS_ADDRESS = 0x86E5C0
-CHARACTERS_SHOP_ACTIVE_INDEX_ADDRESS = 0x87BDF8
+UNLOCKED_CHARACTERS_ADDRESS = 0x86e5e0
+CHARACTERS_SHOP_ACTIVE_INDEX_ADDRESS = 0x87be18
 
 # 0b01 controls whether the character shows in the Free Play character picker.
 # 0b10's use is unknown, but seemingly all unlocked characters use both bits.

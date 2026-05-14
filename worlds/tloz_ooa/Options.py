@@ -1,15 +1,17 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet
+from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, ItemSet, OptionSet, Accessibility
 
-from worlds.tloz_ooa.data.Items import ITEMS_DATA
+from .data.Constants import TREES_TABLE
 
+from .common.Options import *
 
 class OracleOfAgesGoal(Choice):
     """
     The goal to accomplish in order to complete the seed.
-    - Beat Veran: beat the usual final boss (same as vanilla)
-    - Beat Ganon: teleport to the Room of Rites after beating Veran, then beat Ganon (same as linked game)
+    - Beat Veran: beat the usual final boss
+    - Beat Ganon: teleport to the Room of Rites after beating Onox or Veran, then beat Ganon (same as linked game)
+    - Retrieve Maku Seed - You will have to retrieve the maku seed from the maku tree in order cut straight into the credits scene (similar to a triforce hunt in ALTTPR)
     """
     display_name = "Goal"
 
@@ -17,33 +19,8 @@ class OracleOfAgesGoal(Choice):
     option_beat_ganon = 1
 
     default = 0
-
-
-class OracleOfAgesLogicDifficulty(Choice):
-    """
-    The difficulty of the logic used to generate the seed.
-    - Casual: expects you to know what you would know when playing the game for the first time
-    - Medium: expects you to know well the alternatives on how to do basic things, but won't expect any trick
-    - Hard: expects you to know difficult tricks such as bomb jumps
-    """
-    display_name = "Logic Difficulty"
-
-    option_casual = 0
-    option_medium = 1
-    option_hard = 2
-
-    default = 0
-
-
-class OracleOfAgesRequiredEssences(Range):
-    """
-    The amount of essences that need to be obtained in order to get the Maku Seed from the Maku Tree and be able
-    to fight Veran in the Black Tower
-    """
-    display_name = "Required Essences"
-    range_start = 0
-    range_end = 8
-    default = 8
+    include_in_patch = True
+    include_in_slot_data = True
 
 class OracleOfAgesRequiredSlates(Range):
     """
@@ -54,89 +31,62 @@ class OracleOfAgesRequiredSlates(Range):
     range_end = 4
     default = 4
 
-class OracleOfAgesAnimalCompanion(Choice):
+    include_in_slot_data = True
+    include_in_patch = True
+
+class OracleOfAgesWarpToStartLocation(Choice):
     """
-    Determines which animal companion you can summon using the Flute, as well as the layout of the Nuun region.
-    - Ricky: the kangaroo with boxing skills
-    - Dimitri: the swimming dinosaur who can eat anything
-    - Moosh: the flying blue bear with a passion for Spring Bananas
+    This option changes the spot you warp in when you press select or start, A, and B buttons to warp back to the forest of time.
+    Please note that depending on the option you select, logic will be affected.
     """
-    display_name = "Animal Companion"
+    display_name = "Warp to Start Location"
 
-    option_ricky = 0
-    option_dimitri = 1
-    option_moosh = 2
+    option_near_timeportal = 0
+    option_near_triforce_stone = 1
 
-    default = "random"
+    default = 1
+
+    include_in_patch = True
+    include_in_slot_data = True
 
 
-class OracleOfAgesDefaultSeedType(Choice):
+class OracleOfAgesDuplicateSeedTrees(OptionSet):
     """
-    Determines which of the 5 seed types will be the "default seed type", which is given:
-    - when obtaining Seed Satchel
-    - when obtaining Slingshot
-    - by Lynna Seed Tree
+    The game contains 8 seed trees, but only 5 types of seeds. This means that some types of seeds can appear on
+    multiple trees. This setting lets you choose seed trees that will be guaranteed to not hold a unique type of
+    seed. You can choose up to 3.
+    Regardless of what you choose, each seed type will appear on at most 2 trees.
+    Valid choices are:
+    - Lynna City
+    - Ambi's Palace
+    - Deku Forest
+    - Symmetry City
+    - Crescent Island
+    - Rolling Ridge West
+    - Rolling Ridge East
+    - Zora Village
     """
-    display_name = "Default Seed Type"
+    display_name = "Duplicate Seed Trees"
+    default = {"Crescent Island", "Zora Village", "Rolling Ridge East"}
+    valid_keys = {key for key in TREES_TABLE.keys()}
 
-    option_ember = 0
-    option_scent = 1
-    option_pegasus = 2
-    option_gale = 3
-    option_mystery = 4
-
-    default = 0
+    include_in_patch = True
 
 
-class OracleOfAgesDungeonShuffle(Choice):
+class OracleOfAgesLinkedHerosCave(Choice):
     """
-    - Vanilla: each dungeon entrance leads to its intended dungeon
-    - Shuffle: each dungeon entrance leads to a random dungeon picked at generation time
+    Adds linked hero's cave to a list of locations for you to complete. This option also allows you to mark which location the linked hero's cave will be in.
+    - Maku Tree Entrance Right Side: A cave will be placed to the right side of the maku tree entrance, allowing access despite the finished game flag not being set.
     """
-    display_name = "Shuffle Dungeons"
-
-    option_vanilla = 0
-    option_shuffle = 1
-
-    default = 0
-
-
-class OracleOfAgesMasterKeys(Choice):
-    """
-    - Disabled: All dungeon keys must be obtained individually, just like in vanilla
-    - All Small Keys: Small Keys are replaced by a single Master Key for each dungeon which is capable of opening
-      every small keydoor for that dungeon
-    - All Dungeon Keys: the Master Key for each dungeon is also capable of opening the boss keydoor,
-      removing Boss Keys from the item pool
-    Master Keys placement is determined following the "Keysanity (Small Keys)" option.
-    """
-    display_name = "Master Keys"
+    display_name = "Linked Hero's Cave"
 
     option_disabled = 0
-    option_all_small_keys = 1
-    option_all_dungeon_keys = 2
+    option_maku_tree_entrance_right_side = 1
 
     default = 0
 
-class OracleOfAgesSmallKeyShuffle(Toggle):
-    """
-    If enabled, dungeon Small Keys can be found anywhere instead of being confined in their dungeon of origin.
-    """
-    display_name = "Keysanity (Small Keys)"
-
-
-class OracleOfAgesBossKeyShuffle(Toggle):
-    """
-    If enabled, dungeon Boss Keys can be found anywhere instead of being confined in their dungeon of origin.
-    """
-    display_name = "Keysanity (Boss Keys)"
-
-
-class OracleOfAgesMapCompassShuffle(Toggle):
-    """
-    If enabled, Dungeon Maps and Compasses can be found anywhere instead of being confined in their dungeon of origin.
-    """
-    display_name = "Maps & Compasses Outside Dungeon"
+    include_in_patch = True
+    include_in_slot_data = True
 
 
 class OracleOfAgesSlateShuffle(Toggle):
@@ -145,27 +95,10 @@ class OracleOfAgesSlateShuffle(Toggle):
     """
     display_name = "Slates Outside Dungeon 8"
 
-
-class OracleOfSeasonsRequiredRings(ItemSet):
-    """
-    Forces a specified set of rings to appear somewhere in the seed.
-    Adding too many rings to this list can cause generation failures.
-    List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
-    """
-    display_name = "Required Rings"
-    valid_keys = {name for name, idata in ITEMS_DATA.items() if "ring" in idata}
+    include_in_patch = True
 
 
-class OracleOfSeasonsExcludedRings(ItemSet):
-    """
-    Forces a specified set of rings to not appear in the seed.
-    List of ring names can be found here: https://zeldawiki.wiki/wiki/Magic_Ring
-    """
-    display_name = "Excluded Rings"
-    default = sorted({name for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] == "useless"})
-    valid_keys = {name for name, idata in ITEMS_DATA.items() if "ring" in idata}
-
-
+# Keeping this for now
 class OracleOfAgesPricesFactor(Range):
     """
     A factor (expressed as percentage) that will be applied to all prices inside all shops in the game.
@@ -178,61 +111,42 @@ class OracleOfAgesPricesFactor(Range):
     range_end = 500
     default = 100
 
+    include_in_slot_data = True
+    include_in_patch = True
 
-class OracleOfAgesAdvanceShop(Toggle):
+class OracleOfAgesLynnaGardener(Toggle):
     """
-    In the vanilla game, there is secret "Advance Shop" next to the shooting gallery in past Lynna Village that can only
-    be accessed if the game is being played on a Game Boy Advance console.
-    If enabled, this option makes this shop always open, adding 3 shop locations to the game (and some rupees to the
-    item pool to compensate for the extra purchases that might be required)
+    When enabled, a friendly gardener will have trimmed the bushes outside of Lynna City and cleared the path
+    so you don't have to! This will expand the sphere 0 checks to include everything past the bushes that you
+    normally would need nothing for.
     """
-    display_name = "Open Advance Shop"
+    display_name = "Lynna Gardener"
 
-
-
-class OracleOfAgesWarpToStart(DefaultOnToggle):
-    """
-    When enabled, you can warp to start by holding A+B while entering map or inventory screen.
-    This can be used to make backtracking a bit more bearable in seeds where Gale Seeds take time to obtain and prevent
-    most softlock situations from happening.
-    NOTE : You can use can press A + B during the fade to white to avoid using your object.
-    """
-    display_name = "Warp to Start"
-
-
-class OracleOfAgesCombatDifficulty(Choice):
-    """
-    Modifies the damage taken during combat to make this aspect of the game easier or harder depending on the
-    type of experience you want to have
-    """
-    display_name = "Combat Difficulty"
-
-    option_peaceful = 4
-    option_easier = 2
-    option_vanilla = 0
-    option_harder = -2
-    option_insane = -4
-
-    default = 0
+    include_in_patch = True
+    include_in_slot_data = True
 
 @dataclass
 class OracleOfAgesOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     goal: OracleOfAgesGoal
-    logic_difficulty: OracleOfAgesLogicDifficulty
-    required_essences: OracleOfAgesRequiredEssences
+    logic_difficulty: OraclesLogicDifficulty
+    required_essences: OraclesRequiredEssences
     required_slates: OracleOfAgesRequiredSlates
-    animal_companion: OracleOfAgesAnimalCompanion
-    default_seed: OracleOfAgesDefaultSeedType
-    shuffle_dungeons: OracleOfAgesDungeonShuffle
-    master_keys: OracleOfAgesMasterKeys
-    keysanity_small_keys: OracleOfAgesSmallKeyShuffle
-    keysanity_boss_keys: OracleOfAgesBossKeyShuffle
-    keysanity_maps_compasses: OracleOfAgesMapCompassShuffle
+    warp_to_start_location: OracleOfAgesWarpToStartLocation
+    animal_companion: OraclesAnimalCompanion
+    default_seed: OraclesDefaultSeedType
+    linked_heros_cave: OracleOfAgesLinkedHerosCave
+    duplicate_seed_trees: OracleOfAgesDuplicateSeedTrees
+    shuffle_dungeons: OraclesDungeonShuffle
+    master_keys: OraclesMasterKeys
+    lynna_gardener: OracleOfAgesLynnaGardener
+    keysanity_small_keys: OraclesSmallKeyShuffle
+    keysanity_boss_keys: OraclesBossKeyShuffle
+    keysanity_maps_compasses: OraclesMapCompassShuffle
     keysanity_slates: OracleOfAgesSlateShuffle
-    required_rings: OracleOfSeasonsRequiredRings
-    excluded_rings: OracleOfSeasonsExcludedRings
+    required_rings: OraclesRequiredRings
+    excluded_rings: OraclesExcludedRings
     shop_prices_factor: OracleOfAgesPricesFactor
-    advance_shop: OracleOfAgesAdvanceShop
-    combat_difficulty: OracleOfAgesCombatDifficulty
+    advance_shop: OraclesAdvanceShop
+    combat_difficulty: OraclesCombatDifficulty
     death_link: DeathLink

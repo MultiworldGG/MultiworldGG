@@ -20,7 +20,7 @@ base_id = 598_145_444_000
 
 item_data_table: Dict[str, HereComesNikoItemData] = {
     "Coin": HereComesNikoItemData(base_id, type=ItemClassification.progression_deprioritized_skip_balancing, num_exist=79),
-    "Cassette": HereComesNikoItemData(base_id + 1, type=ItemClassification.progression_deprioritized_skip_balancing, can_create=lambda options: options.cassette_logic.value != 0, num_exist=71),
+    "Cassette": HereComesNikoItemData(base_id + 1, type=ItemClassification.progression_deprioritized_skip_balancing, can_create=lambda options: options.cassette_logic.value != 0, num_exist=71, item_group="Cassettes"),
     "Key": HereComesNikoItemData(base_id + 2, type=ItemClassification.progression, num_exist=9, can_create=lambda options: not options.level_based_keys.value, item_group="Keys"),
     #"Letter": HereComesNikoItemData(base_id + 7, type=ItemClassification.filler, num_exist=13),
     "Apples": HereComesNikoItemData(base_id + 3, type=ItemClassification.filler),
@@ -95,7 +95,7 @@ item_data_table: Dict[str, HereComesNikoItemData] = {
 
     # Permits
     "Safety Helmet": HereComesNikoItemData(base_id + 101, type=ItemClassification.progression, can_create=lambda options: options.bonk_permit.value != 0, item_group="Bonk"),
-    "Bug Net": HereComesNikoItemData(base_id + 102, type=ItemClassification.progression, can_create=lambda options: options.bug_catching.value != 0),
+    "Bug Net": HereComesNikoItemData(base_id + 102, type=ItemClassification.progression, can_create=lambda options: options.bug_catching.value != 0, item_group="Net"),
     "Soda Repair": HereComesNikoItemData(base_id + 103, type=ItemClassification.progression, can_create=lambda options: options.soda_cans.value != 0, item_group="Soda Cans"),
     "Parasol Repair": HereComesNikoItemData(base_id + 104, type=ItemClassification.progression, can_create=lambda options: options.parasols.value != 0, item_group="Parasols"),
     "Swim Course": HereComesNikoItemData(base_id + 105, type=ItemClassification.progression, can_create=lambda options: options.swimming.value != 0, item_group="Swimming"),

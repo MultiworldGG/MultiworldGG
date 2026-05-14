@@ -1,18 +1,20 @@
-from typing import List
+from typing import List, Any
 
 import os
 import random
 import Utils
 from settings import get_settings
-from . import RomData
+from ..common.patching.RomData import *
 from .Util import *
-from .z80asm.Assembler import Z80Assembler
+from ..common.patching.z80asm.Assembler import Z80Assembler
 from ..data.Constants import *
 from .Constants import *
 from pathlib import Path
 
-from .. import LOCATIONS_DATA, OracleOfAgesMasterKeys, OracleOfAgesGoal
+from .. import LOCATIONS_DATA
+from ..Options import *
 
+locations = {}
 
 def get_treasure_addr(rom: RomData, item_name: str):
     item_id, item_subid = get_item_id_and_subid(item_name)
@@ -20,6 +22,31 @@ def get_treasure_addr(rom: RomData, item_name: str):
     if rom.read_byte(addr) & 0x80 != 0:
         addr = 0x54000 + rom.read_word(addr + 1)
     return addr + (item_subid * 4)
+
+def apworld_path(file_path) -> str:
+    path = Utils.user_path("lib/" if os.path.exists(Utils.user_path("lib")) else "")
+    path += "custom_" if os.path.exists(os.path.join(path, Utils.user_path("custom_worlds"))) else ""
+    world_path = "worlds/tloz_ooa"
+    world_path_from_source = Utils.user_path(world_path)
+    path += world_path
+    
+    def path_exists(p):
+        if not os.path.exists(p):
+            raise FileNotFoundError(f"Your apworld could not be found inside {p} for some reason.")
+        path = os.path.join(p, file_path)
+        if os.path.exists(path):
+            return path
+        raise FileNotFoundError(f"Your file could not be found inside {path}") 
+    
+    return path_exists(world_path_from_source if os.path.exists(world_path_from_source) else path)
+
+def list_files(dir_name) -> dict[str, Any]:
+    dir_name = apworld_path(dir_name)
+    files = {}
+    for filename in os.listdir(dir_name):
+        fullpath = os.path.join(dir_name, filename)
+        files[fullpath] = list_files(fullpath) if os.path.isdir(fullpath) else None
+    return files
 
 
 def set_treasure_data(rom: RomData,
@@ -47,6 +74,45 @@ def alter_treasures(rom: RomData):
     # not drops (see asm/seasons/bomb_bag_behavior)
     set_treasure_data(rom, "Bombs (10)", None, None, 0x90)
 
+def define_static_items_table(assembler: Z80Assembler, patch_data: dict[str, Any]):
+    # Format is group,room,treasure_id,treasure_subid
+    static_item_replacements_table = [
+        # ------- Freestanding items -------
+        0x01, 0x86, locations["blackTowerHP"]["id"], locations["blackTowerHP"]["subid"],
+        0x04, 0x06, locations["makuPathHP"]["id"], locations["makuPathHP"]["subid"],
+        0x00, 0x8b, locations["yollGraveyardHP"]["id"], locations["yollGraveyardHP"]["subid"],
+        0x05, 0xb1, locations["dekuForestHP"]["id"], locations["dekuForestHP"]["subid"],
+        0x03, 0xaf, locations["restorationWallHP"]["id"], locations["restorationWallHP"]["subid"],
+        0x00, 0x11, locations["symmetryCityHP"]["id"], locations["symmetryCityHP"]["subid"],
+        0x05, 0xc1, locations["ridgeWestHP"]["id"], locations["ridgeWestHP"]["subid"],
+        0x00, 0x0d, locations["ridgeUpperHP"]["id"], locations["ridgeUpperHP"]["subid"],
+        0x06, 0x05, locations["d0Basement"]["id"], locations["d0Basement"]["subid"],
+        0x06, 0x10, locations["d1Basement"]["id"], locations["d1Basement"]["subid"],
+        0x06, 0x28, locations["d2ThwompTunnel"]["id"], locations["d2ThwompTunnel"]["subid"],
+        0x06, 0x27, locations["d2ThwompShelf"]["id"], locations["d2ThwompShelf"]["subid"],
+
+        # ------- Drops / spawned items -------
+        0x04, 0x1e, locations["d1GhiniDrop"]["id"], locations["d1GhiniDrop"]["subid"],
+        0x04, 0x39, locations["d2MoblinDrop"]["id"], locations["d2MoblinDrop"]["subid"],
+        0x04, 0x42, locations["d2StatuePuzzle"]["id"], locations["d2StatuePuzzle"]["subid"],
+        0x04, 0x2e, locations["d2BasementDrop"]["id"], locations["d2BasementDrop"]["subid"],
+        0x04, 0x5e, locations["d3ArmosDrop"]["id"], locations["d3ArmosDrop"]["subid"],
+        0x04, 0x61, locations["d3StatueDrop"]["id"], locations["d3StatueDrop"]["subid"],
+        0x04, 0x64, locations["d3SixBlocDrop"]["id"], locations["d3SixBlocDrop"]["subid"],
+        0x04, 0x4b, locations["d3MoldormDrop"]["id"], locations["d3MoldormDrop"]["subid"],
+        0x04, 0x7b, locations["d4ColorDrop"]["id"], locations["d4ColorDrop"]["subid"],
+        0x05, 0x53, locations["d7CaneDiamondPuzzle"]["id"], locations["d7CaneDiamondPuzzle"]["subid"],
+        0x05, 0x4b, locations["d7FlowerRoom"]["id"], locations["d7FlowerRoom"]["subid"],
+        0x05, 0x55, locations["d7DiamondPuzzle"]["id"], locations["d7DiamondPuzzle"]["subid"]
+    ]
+    
+    if patch_data["options"]["linked_heros_cave"] > 0:
+        static_item_replacements_table.extend([
+            0x04, 0xcd, locations["d11Statue3Puzzle"]["id"], locations["d11Statue3Puzzle"]["subid"]
+        ])
+
+    assembler.add_floating_chunk("staticItemsReplacementsTable", static_item_replacements_table)
+
 
 def get_asm_files(patch_data):
     asm_files = ASM_FILES.copy()
@@ -58,8 +124,18 @@ def get_asm_files(patch_data):
         asm_files.append("asm/conditional/skip_joke.yaml")
     if get_settings()["tloz_ooa_options"]["qol_mermaid_suit"]:
         asm_files.append("asm/conditional/qol_mermaid_suit.yaml")
+    if get_settings()["tloz_ooa_options"]["mute_music"]:
+        asm_files.append("asm/conditional/mute_music.yaml")
+    if patch_data["options"]["lynna_gardener"]:
+        asm_files.append("asm/conditional/lynna_gardener.yaml")
     if patch_data["options"]["goal"] == OracleOfAgesGoal.option_beat_ganon:
         asm_files.append("asm/conditional/ganon_goal.yaml")
+    if get_settings()["tloz_ooa_options"]["skip_intro_cinematic"]:
+        asm_files.append("asm/conditional/intro_cinematic_skip.yaml")
+    if patch_data["options"]["linked_heros_cave"]:
+        asm_files.append("asm/conditional/d11.yaml")
+        if patch_data["options"]["linked_heros_cave"] == OracleOfAgesLinkedHerosCave.option_maku_tree_entrance_right_side:
+            asm_files.append("asm/conditional/d11_in_maku_tree_entrance_right_side.yaml")
     return asm_files
 
 def define_location_constants(assembler: Z80Assembler, patch_data):
@@ -77,19 +153,26 @@ def define_location_constants(assembler: Z80Assembler, patch_data):
             item_name = COMPANIONS[patch_data["options"]["animal_companion"]] + "'s Flute"
 
         item_id, item_subid = get_item_id_and_subid(item_name)
-        assembler.define_byte(f"locations.{symbolic_name}.id", item_id)
-        assembler.define_byte(f"locations.{symbolic_name}.subid", item_subid)
-        assembler.define_word(f"locations.{symbolic_name}", (item_id << 8) + item_subid)
+        locations[symbolic_name] = {}
+        locations[symbolic_name]["id"] = item_id
+        locations[symbolic_name]["subid"] = item_subid
+        locations[symbolic_name]["fullid"] = (item_id << 8) + item_subid
+        assembler.define_byte(f"locations.{symbolic_name}.id", locations[symbolic_name]["id"])
+        assembler.define_byte(f"locations.{symbolic_name}.subid", locations[symbolic_name]["subid"])
+        assembler.define_word(f"locations.{symbolic_name}", locations[symbolic_name]["fullid"])
 
         
 def define_option_constants(assembler: Z80Assembler, patch_data):
     options = patch_data["options"]
 
     assembler.define_byte("option.startingGroup", 0x00)
-    assembler.define_byte("option.startingRoom", 0x59)
-    assembler.define_byte("option.startingPosY", 0x58)
-    assembler.define_byte("option.startingPosX", 0x58)
-    assembler.define_byte("option.startingPos", 0x55)
+    assembler.define_byte("option.startingRoom", 0x39)
+
+    assembler.define_byte("option.warpingGroup", patch_data["warp_to_start_variables"]["group"] if "group" in patch_data["warp_to_start_variables"] else 0x00)
+    assembler.define_byte("option.warpingRoom", patch_data["warp_to_start_variables"]["room"] if "room" in patch_data["warp_to_start_variables"] else 0x59)
+    assembler.define_byte("option.warpingPos", patch_data["warp_to_start_variables"]["pos"] if "pos" in patch_data["warp_to_start_variables"] else 0x55)
+    assembler.define_byte("option.warpingDestTransittion", patch_data["warp_to_start_variables"]["dest_transittion"] if "dest_transittion" in patch_data["warp_to_start_variables"] else 0x05)
+    assembler.define_byte("option.warpingSrcTransittion", patch_data["warp_to_start_variables"]["src_transittion"] if "src_transittion" in patch_data["warp_to_start_variables"] else 0x03)
 
     assembler.define_byte("option.animalCompanion", 0x0b + patch_data["options"]["animal_companion"])
     assembler.define_byte("option.defaultSeedType", 0x20 + patch_data["options"]["default_seed"])
@@ -103,10 +186,10 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
     keysanity = patch_data["options"]["keysanity_small_keys"] or patch_data["options"]["keysanity_boss_keys"]
     assembler.define_byte("option.customCompassChimes", 1 if keysanity else 0)
 
-    master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OracleOfAgesMasterKeys.option_all_dungeon_keys
+    master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OraclesMasterKeys.option_all_dungeon_keys
     assembler.define_byte("option.smallKeySprite", 0x43 if master_keys_as_boss_keys else 0x42)
 
-def process_item_name_for_shop_text(item_name: str) -> List[int]:
+def text_to_binary(item_name: str) -> List[int]:
     words = item_name.split(" ")
     current_line = 0
     lines = [""]
@@ -131,33 +214,33 @@ def process_item_name_for_shop_text(item_name: str) -> List[int]:
 
 def define_text_constants(assembler: Z80Assembler, patch_data):
     overworld_shops = [
-        "Lynna Shop",
-        "Hidden Shop",
-        "Syrup Shop",
-        "Advance Shop",
+        "Lynna City: Shop",
+        "Lynna City: Hidden Shop",
+        "Yoll Graveyard: Syrup Shop",
+        "Lynna Village: Advance Shop",
     ]
 
     for shop_name in overworld_shops:
         for i in range(1, 4):
-            location_name = f"{shop_name} #{i}"
+            location_name = f"{shop_name} Item #{i}"
             symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
             text_bytes = []
             if location_name in patch_data["locations"]:
-                item_name_bytes = process_item_name_for_shop_text(patch_data["locations"][location_name])
+                item_name_bytes = text_to_binary(patch_data["locations"][location_name])
                 text_bytes = [0x09, 0x01] + item_name_bytes + [0x09, 0x00, 0x0c, 0x18, 0x01]  # Item name
-                if shop_name != "Tokay Market":
+                if shop_name != "Crescent Island (Past): Market":
                     text_bytes.extend([0x20, 0x0c, 0x08, 0x20, 0x03, 0x7b, 0x01])  # Price
                     text_bytes.extend([0x02, 0x00, 0x00])  # OK / No thanks
             assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
 
     #Tokay Market
-    shop_name = "Tokay Market"
+    shop_name = "Crescent Island (Past): Market"
     for i in range(1, 3):
-        location_name = f"{shop_name} #{i}"
+        location_name = f"{shop_name} Item #{i}"
         symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
         text_bytes = []
         if location_name in patch_data["locations"]:
-            item_name_bytes = process_item_name_for_shop_text(patch_data["locations"][location_name])
+            item_name_bytes = text_to_binary(patch_data["locations"][location_name])
             text_bytes = [0x09, 0x01] + item_name_bytes + [0x09, 0x00, 0x0c, 0x18, 0x00]  # Item name
             assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
     text_bytes = [0x31, 0x30, 0x20, 0x02, 0x12, 0x01, 0x02, 0x00, 0x00]
@@ -169,14 +252,20 @@ def write_chest_contents(rom: RomData, patch_data):
     Chest locations are packed inside several big tables in the ROM, unlike other more specific locations.
     This puts the item described in the patch data inside each chest in the game.
     """
+    locations_data = patch_data["locations"]
     for location_name, location_data in LOCATIONS_DATA.items():
-        if ('collect' not in location_data or 'room' not in location_data or location_data['collect'] != COLLECT_CHEST) and location_name != "Ridge Bush Cave":
+        if (
+            'collect' not in location_data 
+            or 'room' not in location_data 
+            or location_data['collect'] != COLLECT_CHEST
+            or location_name not in locations_data
+        ) and location_name != "Rolling Ridge (Present): Bush Cave Chest":
             continue
-        if location_name == "Nuun Highlands Cave":
-            chest_addr = rom.get_chest_addr(location_data['room'][patch_data["options"]["animal_companion"]])
+        if location_name == "Nuun Highlands: Southern Cave":
+            chest_addr = rom.get_chest_addr(location_data['room'][patch_data["options"]["animal_companion"]], 0x16, 0x5108)
         else:
-            chest_addr = rom.get_chest_addr(location_data['room'])
-        item_name = patch_data["locations"][location_name]
+            chest_addr = rom.get_chest_addr(location_data['room'], 0x16, 0x5108)
+        item_name = locations_data[location_name]
         item_id, item_subid = get_item_id_and_subid(item_name)
         rom.write_byte(chest_addr, item_id)
         rom.write_byte(chest_addr + 1, item_subid)
@@ -194,7 +283,6 @@ def define_compass_rooms_table(assembler: Z80Assembler, patch_data):
 
         if dungeon != 0xff:
             location_data = LOCATIONS_DATA[location_name]
-            print(location_name)
             rooms = location_data["room"]
             if not isinstance(rooms, list):
                 rooms = [rooms]
@@ -267,17 +355,31 @@ def set_dungeon_warps(rom: RomData, patch_data):
     entrance_map = dict((v, k) for k, v in warp_matchings.items())
 
     # D1-D8 Essence Warps (hardcoded in one array using a unified format)
-    for i in range(8):
+    for i in range(0, 9):
+        if i == 8:
+            if patch_data["options"]["linked_heros_cave"] > 0:
+                i = 10
+            else:
+                continue
         entrance_name = f"d{i + 1}"
         if i == 5:
             entrance_name += " past"
         entrance = DUNGEON_ENTRANCES[entrance_map[entrance_name]]
-        rom.write_bytes(0x2874f + (i * 4), [
-            entrance["group"] | 0x80,
-            entrance["room"],
-            entrance["position"],
-            0x0e if entrance["shifted"] else 0x01
-        ])
+        if i == 10:
+            rom.write_bytes(GameboyAddress(0x0a, 0x7204).address_in_rom(), [
+                entrance["group"] | 0x80,
+                entrance["room"], 
+                0x0e if entrance["shifted"] else 0x01, 
+                entrance["position"], 
+                (entrance["group"] * 0x10) + 0x03
+            ])
+        else:
+            rom.write_bytes(0x2874f + (i * 4), [
+                entrance["group"] | 0x80,
+                entrance["room"],
+                entrance["position"],
+                0x0e if entrance["shifted"] else 0x01
+            ])
 
 #    # Change Minimap popups to indicate the randomized dungeon's name
 #    for i in range(8):
@@ -286,13 +388,50 @@ def set_dungeon_warps(rom: RomData, patch_data):
 #        map_tile = DUNGEON_ENTRANCES[entrance_name]["map_tile"]
 #        rom.write_byte(0x???? + map_tile, 0x81 | (dungeon_index << 3))
 
+def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
+    new_tiles_table = [
+        0x00, 0x20, 0x00, 0x61, 0xd7, # portal in talus peaks
+        0x01, 0x48, 0x00, 0x45, 0xd7, # portal south of past maku tree
+        0x00, 0x37, 0x02, 0x43, 0xd7, # portal in southeast ricky/moosh nuun
+        0x00, 0x6b, 0x00, 0x42, 0x3a, # removed tree in yoll graveyard
+        0x00, 0x6b, 0x02, 0x42, 0xce, # not removed tree in yoll graveyard
+        0x00, 0x83, 0x00, 0x43, 0xa4, # rock outside D2
+        0x03, 0x0f, 0x00, 0x66, 0xf9, # water in d6 past entrance
+        0x01, 0x13, 0x00, 0x61, 0xd7, # portal in symmetry city past
+        0x01, 0x13, 0x00, 0x68, 0xd7, # portal in symmetry city past
+        0x00, 0x25, 0x00, 0x37, 0xd7, # portal in nuun highlands
+        0x05, 0xda, 0x01, 0xa4, 0xb2, # tunnel to moblin keep
+        0x05, 0xda, 0x01, 0xa5, 0xb2, # cont.
+        0x05, 0xda, 0x01, 0xa6, 0xb2, # cont.
+        0x00, 0x24, 0x02, 0x49, 0x63, # other side of symmetry city bridge
+        0x00, 0x24, 0x02, 0x59, 0x63, # cont.
+        0x00, 0x24, 0x02, 0x69, 0x63, # cont.
+        0x00, 0x24, 0x02, 0x79, 0x73, # cont.
+        0x01, 0x2c, 0x00, 0x70, 0x69, # ledge in rolling ridge east past
+        0x01, 0x2c, 0x00, 0x71, 0x06, # cont.
+        0x01, 0x2c, 0x00, 0x72, 0x67, # cont.
+        0x00, 0xa9, 0x00, 0x67, 0xf2, # portal sign on crescent island
+        0x01, 0xa5, 0x00, 0x35, 0x48, # ledge by library past
+        0x01, 0xa5, 0x00, 0x45, 0x0b, # cont.
+        0x01, 0xa5, 0x00, 0x55, 0x6c, # cont.
+        0x00, 0x83, 0x00, 0x44, 0xd7, # portal outside D2 present
+        0x01, 0x48, 0x02, 0x31, 0xcd # past maku road: remove dirt when exiting
+    ]
+
+    assembler.add_floating_chunk("tileReplacementsTable", new_tiles_table)
+
 def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
 
-    for i in range(0, 10): # D0 has no map, no compass, no boss key, and the unique small key use the default text. 
+    for i in range(0, 11): # Maku Path and Hero's Cave has no map, no compass, no boss key, and the unique small key use the default text. 
         # " for\nDungeon X"
         trueI = i if i != 9 else 6
-        dungeon_precision = [0x03, 0x39, 0x44, 0x05, 0xe6, 0x20, (0x30 + trueI)]
+        if trueI == 10:
+            trueI = 11
+        dungeon_precision = [0x03, 0x39]
         dungeon_tag = f"D{trueI}"
+        dungeon_precision.extend(text_to_binary((f"{DUNGEON_NAMES[trueI]} ({dungeon_tag})") if get_settings().tloz_ooa_options["simplify_dungeon_precision_text"] else (
+            f"Dungeon {dungeon_tag[1:]}"
+        )))
         dungeon_precisionForBossKey = dungeon_precision.copy()
 
         if i == 6:
@@ -318,8 +457,8 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
         small_key_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
         assembler.add_floating_chunk(f"text.smallKey{dungeon_tag}", small_key_text)
 
-        # Hero's Cave only has Small Keys, so skip other texts
-        if i == 0:
+        # Maku Path & Hero Cave only has Small Keys, so skip other texts
+        if i == 0 or i == 10:
             continue
 
         # ###### Boss keys ##############################################
@@ -337,11 +476,9 @@ def define_dungeon_items_text_constants(assembler: Z80Assembler, patch_data):
         # ###### Dungeon maps ##############################################
         # "You found the\n\color(RED)"
         dungeon_map_text = [0x02, 0x7c, 0x20, 0x05, 0xb4, 0x09, 0x01]
+        dungeon_map_text.extend(text_to_binary("Dungeon Map"))
         if patch_data["options"]["keysanity_maps_compasses"]:
-            dungeon_map_text.extend([0x4d, 0x61, 0x70])  # "Map"
             dungeon_map_text.extend(dungeon_precision)
-        else:
-            dungeon_map_text.extend([0x44, 0x05, 0x8a, 0x20, 0x4d, 0x61, 0x70])  # "Dungeon Map"
         dungeon_map_text.extend([0x09, 0x00, 0x21, 0x00])  # "\color(WHITE)!(end)"
         assembler.add_floating_chunk(f"text.dungeonMap{dungeon_tag}", dungeon_map_text)
 
@@ -370,8 +507,8 @@ def set_file_select_text(assembler: Z80Assembler, slot_name: str):
             return 0xff
         else:
             return 0xfc  # All other chars are blank spaces
-
-    row_1 = [char_to_tile(c) for c in f"ARCHIP. {VERSION}"]
+    from .. import OracleOfAgesWorld
+    row_1 = [char_to_tile(c) for c in f"ARCHIP. {OracleOfAgesWorld.version()}"]
     row_1_left_padding = int((16 - len(row_1)) / 2)
     row_1_right_padding = int(16 - row_1_left_padding - len(row_1))
     row_1 = ([0x00] * row_1_left_padding) + row_1 + ([0x00] * row_1_right_padding)
@@ -442,11 +579,11 @@ def set_character_sprite_from_settings(rom: RomData):
     rom.write_byte(0x8d9c, 0x20 | palette_byte)
 
 def apply_misc_option(rom: RomData, patch_data):
-    if patch_data["options"]["master_keys"] != OracleOfAgesMasterKeys.option_disabled:
+    if patch_data["options"]["master_keys"] != OraclesMasterKeys.option_disabled:
         # Remove small key consumption on keydoor opened
         rom.write_byte(0x18366, 0x00)
         # Change obtention text
         rom.write_bytes(0x78247, [0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x20, 0x4b, 0x65, 0x79, 0x09, 0x01, 0x21, 0x00]) # I really wish that the dictionnay of ages would be more useful...
-    if patch_data["options"]["master_keys"] == OracleOfAgesMasterKeys.option_all_dungeon_keys:
+    if patch_data["options"]["master_keys"] == OraclesMasterKeys.option_all_dungeon_keys:
         # Remove boss key consumption on boss keydoor opened (boss door behave like normal locked door)
         rom.write_word(0x1835e, 0x0000)

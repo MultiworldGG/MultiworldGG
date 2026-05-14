@@ -1,0 +1,34 @@
+# Move inventory from c680-c691 to c6e9-c6ff towInventoryStorage get 5 extra spaces
+
+# removeTreasureFromInventory
+3f/44b3/: ld hl,wInventoryB
+
+# addTreasureToInventory
+3f/46c6/: add a,<wInventoryB
+3f/46dd/: ld hl,wInventoryB
+3f/46eb/: ld l,<wInventoryB
+3f/46f3/: sub <wInventoryStorage
+
+# loadEquippedItemGfx
+02/52da/: ld a,(wInventoryB)
+02/52e8/: ld a,(wInventoryA)
+
+# drawItemTilesOnStatusBar
+02/5362/: ld a,(wInventoryB)
+02/536b/: ld a,(wInventoryA)
+
+# loadStatusBarMap
+02/54e9/: ld a,(wInventoryB)
+
+# inventoryMenuState1
+02/5611/: ld a,<wInventoryB
+02/5622/: ld hl,wInventoryStorage
+02/5658/: ld hl,wInventoryStorage
+# 02/563d/: ld d,>wInventoryStorage
+02/5683/: add a,<wInventoryStorage
+02/5691/: ld l,<wInventoryB
+02/56a3/: ld a,(wInventoryB)
+02/56aa/: ld a,(wInventoryA)
+02/56B0/: ld l,<wInventoryB
+02/56ba/: ld l,<wInventoryStorage
+02/5b5e/: ld hl,wInventoryStorage-1

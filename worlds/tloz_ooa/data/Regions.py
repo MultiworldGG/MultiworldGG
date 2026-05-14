@@ -59,6 +59,7 @@ REGIONS = [
     "tokay crystal cave",
     "crescent past east",
     "tokay bomb cave",
+    "tokay chicken hut",
     "wild tokay game",
     "hidden tokay cave",
     "tokay pot cave",
@@ -355,4 +356,23 @@ REGIONS = [
     "symmetry city heartpiece",
     "ridge west heartpiece",
     "ridge upper heartpiece",
+]
+
+D11_REGIONS = [
+    "d11 entrance",
+    "enter d11",
+    "d11 pots puzzle 1",
+    "d11 statue 1 puzzle",
+    "d11 bridge puzzle 1",
+    "d11 shoot eyes",
+    "d11 statue 2 puzzle",
+    "d11 pots puzzle 2",
+    "d11 statue 3 puzzle",
+    "d11 bridge puzzle 2",
+    "d11 color room",
+    "d11 water puzzle 1f",
+    "d11 water puzzle b1f",
+    "d11 basement",
+    "d11 minecart room",
+    "d11 reward"
 ]

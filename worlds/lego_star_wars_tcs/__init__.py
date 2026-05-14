@@ -74,7 +74,7 @@ from .options import (
 )
 from .option_resolution.common import resolve_options
 from .ridables import RIDABLES_REQUIREMENTS
-from .item_groups import ITEM_GROUPS
+from .item_groups import ITEM_GROUPS, REVERSE_READABLE_ABILITY_TO_ABILITY
 from .location_groups import LOCATION_GROUPS
 
 
@@ -317,8 +317,12 @@ class LegoStarWarsTCSWorld(World):
         return self.random.choices(tuple(junk_weights), tuple(junk_weights.values()))[0]
 
     def create_item(self, name: str) -> LegoStarWarsTCSItem:
-        if name == self.glitches_item_name and self.is_universal_tracker():
-            return LegoStarWarsTCSItem(name, ItemClassification.progression, None, self.player)
+        if self.is_universal_tracker():
+            if name == self.glitches_item_name:
+                return LegoStarWarsTCSItem(name, ItemClassification.progression, None, self.player)
+            if name not in self.item_name_to_id and name in REVERSE_READABLE_ABILITY_TO_ABILITY:
+                return LegoStarWarsTCSItem(name, ItemClassification.progression, None, self.player,
+                                           REVERSE_READABLE_ABILITY_TO_ABILITY[name])
 
         code = self.item_name_to_id[name]
         classification, collect_abilities = self.evaluate_effective_item(name)
@@ -881,6 +885,8 @@ class LegoStarWarsTCSWorld(World):
                 "enable_starting_extras_locations",
                 "chapter_unlock_requirement",
                 "chapter_unlock_story_characters_not_required",
+                "shop_fake_trap_chance",
+                "auto_collect_spawned_pickups",
             )
         }
 

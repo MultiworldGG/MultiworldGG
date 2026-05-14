@@ -1,13 +1,13 @@
 
 
 01//dungeonShuffleOpenFlagTable: |
-    dwbe 0501, drownLinkOnD7Exit # D7 Exit
-    dwbe 0003, setD4EntranceFlag # D4 entrance
-    dwbe 0004, setD5EntranceFlag # D5 entrance
-    dwbe 0303, setD6PastEntranceFlag # D6 Past entrance
-    dwbe 0106, setD6PresentEntranceFlag # D6 Present entrance
-    dwbe 0200, setD7EntranceFlag # D7 entrance
-    db ff
+    dwbe $0501, drownLinkOnD7Exit # D7 Exit
+    dwbe $0003, setD4EntranceFlag # D4 entrance
+    dwbe $0004, setD5EntranceFlag # D5 entrance
+    dwbe $0303, setD6PastEntranceFlag # D6 Past entrance
+    dwbe $0106, setD6PresentEntranceFlag # D6 Present entrance
+    dwbe $0200, setD7EntranceFlag # D7 entrance
+    db $ff
 
 # Attempting to enter Jabu without mermaid suit will cancel the warp and instead
 # cause Link to drown. (Could happen with dungeon entrance randomization.)

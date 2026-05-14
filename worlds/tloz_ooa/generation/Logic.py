@@ -1,16 +1,22 @@
 from BaseClasses import MultiWorld
-from . import LOCATIONS_DATA
-from .data.logic.DungeonsLogic import *
-from .data.logic.OverworldLogic import make_overworld_logic
-from .data.Regions import REGIONS
+from .. import LOCATIONS_DATA
+from ..data.logic.DungeonsLogic import *
+from ..data.logic.OverworldLogic import *
+from ..data.Regions import REGIONS
+from typing import TYPE_CHECKING
 
-def create_connections(multiworld: MultiWorld, player: int):
+if TYPE_CHECKING:
+    from .. import OracleOfAgesWorld
+
+def create_connections(world: "OracleOfAgesWorld"):
+    multiworld = world.multiworld
+    player = world.player
     dungeon_entrances = []
     for reg1, reg2 in multiworld.worlds[player].dungeon_entrances.items():
         dungeon_entrances.append([reg1, reg2, True, None])
 
     all_logic = [
-        make_overworld_logic(player),
+        make_overworld_logic(player, world.options),
         make_d0_logic(player),
         make_d1_logic(player),
         make_d2_logic(player),
@@ -21,8 +27,12 @@ def create_connections(multiworld: MultiWorld, player: int):
         make_d6present_logic(player),
         make_d7_logic(player),
         make_d8_logic(player),
-        dungeon_entrances,
     ]
+
+    if world.options.linked_heros_cave.value > 0:
+        all_logic.append(make_d11_logic(player))
+
+    all_logic.append(dungeon_entrances)
 
     # Check unreachable regions
     unused_region = REGIONS.copy()
@@ -75,7 +85,7 @@ def apply_self_locking_rules(multiworld: MultiWorld, player: int):
     OTHER_SELF_LOCKING_ITEMS = {
         # TODO Trade Sequence OOA
         #'Yoll Graveyard: Graveyard Poe Trade':"Poe Clock",
-        #'Lynna Village: Postman Trade':"Stationary",
+        #'Lynna Village: Postman Trade':"Stationery",
         #'Lynna Village: The Toilet Hand Trade':"Stink Bag",
         #'Crescent Island (Present): Tokay Chef Trade':"Tasty Meat",
         #'Nuun Highland: Happy Mask Salesman Trade':"Doggie Mask",

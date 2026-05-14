@@ -84,6 +84,8 @@ class ChapterArea:
     # level_ids: set[int]
     # The address in the in-memory save data that stores most of the Area information.
     address: int
+    # Playable level IDs within this area.
+    playable_level_ids: tuple[int, ...]
     # The level ID of the 'status' screen used when tallying up collected studs/minikits/etc., either from
     # "Save and Exit to Cantina", or from completing the level.
     status_level_id: int
@@ -186,6 +188,8 @@ class ChapterArea:
 class BonusArea:
     name: str
     address: int
+    # Playable level IDs within this area.
+    playable_level_ids: tuple[int, ...]
     completion_offset: int
     """
     The cheat table listing the addresses listed a base address with unknown purpose for the bonus levels, and then an
@@ -632,62 +636,62 @@ ability.
 #  serve as a record of data that might be useful for others.
 CHAPTER_AREAS = [
     # area -1/255 = Cantina, AreaData* index ??
-    ChapterArea("Negotiations", 1, 1, 0x86E0F4, 7, 0, 31000, 64000, 0),
-    ChapterArea("Invasion of Naboo", 1, 2, 0x86E100, 15, 1, 44000, 52000, 1),
-    ChapterArea("Escape From Naboo", 1, 3, 0x86E10C, 24, 2, 48000, 60000, 2),
-    ChapterArea("Mos Espa Pod Race", 1, 4, 0x86E118, 37, 3, 45000, 45000, 3),
+    ChapterArea("Negotiations", 1, 1, 0x86e114, (3, 4, 5), 7, 0, 31000, 64000, 0),
+    ChapterArea("Invasion of Naboo", 1, 2, 0x86e120, (10, 11, 12, 13), 15, 1, 44000, 52000, 1),
+    ChapterArea("Escape From Naboo", 1, 3, 0x86e12c, (19, 20, 21, 22), 24, 2, 48000, 60000, 2),
+    ChapterArea("Mos Espa Pod Race", 1, 4, 0x86e138, (36,), 37, 3, 45000, 45000, 3),
     # area 4 = Bonus: Pod Race (Original), AreaData* index 49
-    ChapterArea("Retake Theed Palace", 1, 5, 0x86E130, 48, 5, 60000, 100000, 4),
-    ChapterArea("Darth Maul", 1, 6, 0x86E13C, 55, 6, 31000, 64000, 5),
+    ChapterArea("Retake Theed Palace", 1, 5, 0x86e150, (41, 42, 43, 44, 45, 46), 48, 5, 60000, 100000, 4),
+    ChapterArea("Darth Maul", 1, 6, 0x86e15c, (50, 51, 52, 53, 54), 55, 6, 31000, 64000, 5),
     # area 7 = EP1 Ending
     # area 8 = EP1 Character Bonus, AreaData* index 37
     # area 9 = EP1 Minikit Bonus. Episode Bonus doors show the Minikit Bonus Area ID rather than Character Bonus Area ID
     # AreaData* index 43
-    ChapterArea("Bounty Hunter Pursuit", 2, 1, 0x86E16C, 68, 10, 35000, 45000, 6),
-    ChapterArea("Discovery On Kamino", 2, 2, 0x86E178, 78, 11, 50000, 65000, 7),
-    ChapterArea("Droid Factory", 2, 3, 0x86E184, 88, 12, 40000, 55000, 8),
-    ChapterArea("Jedi Battle", 2, 4, 0x86E190, 92, 13, 8000, 16000, 9),
-    ChapterArea("Gunship Cavalry", 2, 5, 0x86E19C, 95, 14, 30000, 40000, 10),
+    ChapterArea("Bounty Hunter Pursuit", 2, 1, 0x86e18c, (62, 63, 64, 65, 66), 68, 10, 35000, 45000, 6),
+    ChapterArea("Discovery On Kamino", 2, 2, 0x86e198, (71, 72, 73, 74, 75), 78, 11, 50000, 65000, 7),
+    ChapterArea("Droid Factory", 2, 3, 0x86e1a4, (82, 83, 84, 85, 86, 87), 88, 12, 40000, 55000, 8),
+    ChapterArea("Jedi Battle", 2, 4, 0x86e1b0, (90,), 92, 13, 8000, 16000, 9),
+    ChapterArea("Gunship Cavalry", 2, 5, 0x86e1bc, (93, 94), 95, 14, 30000, 40000, 10),
     # area 15 = Bonus: Gunship Cavalry (Original), AreaData* index 51
-    ChapterArea("Count Dooku", 2, 6, 0x86E1B4, 103, 16, 10000, 22000, 11),
+    ChapterArea("Count Dooku", 2, 6, 0x86e1d4, (100, 101), 103, 16, 10000, 22000, 11),
     # area 17 = EP2 Ending
     # area 18 = EP2 Character Bonus, AreaData* index 38
     # area 19 = EP2 Minikit Bonus, AreaData* index 44
-    ChapterArea("Battle Over Coruscant", 3, 1, 0x86E1E4, 111, 20, 75000, 75000, 12),
-    ChapterArea("Chancellor In Peril", 3, 2, 0x86E1F0, 121, 21, 60000, 80000, 14),
-    ChapterArea("General Grievous", 3, 3, 0x86E1FC, 123, 22, 3300, 5000, 15),
-    ChapterArea("Defense Of Kashyyyk", 3, 4, 0x86E208, 128, 23, 65000, 90000, 16),
-    ChapterArea("Ruin Of The Jedi", 3, 5, 0x86E214, 134, 24, 35000, 75000, 17),
-    ChapterArea("Darth Vader", 3, 6, 0x86E220, 139, 25, 25000, 45000, 18),
+    ChapterArea("Battle Over Coruscant", 3, 1, 0x86e204, (110,), 111, 20, 75000, 75000, 12),
+    ChapterArea("Chancellor In Peril", 3, 2, 0x86e210, (112, 113, 114, 115, 116, 117, 118), 121, 21, 60000, 80000, 14),
+    ChapterArea("General Grievous", 3, 3, 0x86e21c, (122,), 123, 22, 3300, 5000, 15),
+    ChapterArea("Defense Of Kashyyyk", 3, 4, 0x86e228, (124, 125, 126, 127), 128, 23, 65000, 90000, 16),
+    ChapterArea("Ruin Of The Jedi", 3, 5, 0x86e234, (131, 132, 133), 134, 24, 35000, 75000, 17),
+    ChapterArea("Darth Vader", 3, 6, 0x86e240, (136, 137, 138), 139, 25, 25000, 45000, 18),
     # area 26 = EP3 Ending
     # area 27 = EP3 Character Bonus, AreaData* index 39
     # area 28 = EP3 Minikit Bonus, AreaData* index 45
     # area 29 = Bonus: A New Hope, AreaData* index 52
-    ChapterArea("Secret Plans", 4, 1, 0x86E25C, 159, 30, 28000, 40000, 19),
-    ChapterArea("Through The Jundland Wastes", 4, 2, 0x86E268, 167, 31, 60000, 90000, 20),
-    ChapterArea("Mos Eisley Spaceport", 4, 3, 0x86E274, 177, 32, 60000, 100000, 21),
-    ChapterArea("Rescue The Princess", 4, 4, 0x86E280, 185, 33, 60000, 80000, 22),
-    ChapterArea("Death Star Escape", 4, 5, 0x86E28C, 192, 34, 45000, 65000, 23),
-    ChapterArea("Rebel Attack", 4, 6, 0x86E298, 203, 35, 30000, 45000, 24),
+    ChapterArea("Secret Plans", 4, 1, 0x86e27c, (153, 154, 155, 156), 159, 30, 28000, 40000, 19),
+    ChapterArea("Through The Jundland Wastes", 4, 2, 0x86e288, (161, 162, 163, 164, 165), 167, 31, 60000, 90000, 20),
+    ChapterArea("Mos Eisley Spaceport", 4, 3, 0x86e294, (169, 170, 171, 172, 173), 177, 32, 60000, 100000, 21),
+    ChapterArea("Rescue The Princess", 4, 4, 0x86e2a0, (180, 181, 182, 183, 184), 185, 33, 60000, 80000, 22),
+    ChapterArea("Death Star Escape", 4, 5, 0x86e2ac, (187, 188, 189, 190), 192, 34, 45000, 65000, 23),
+    ChapterArea("Rebel Attack", 4, 6, 0x86e2b8, (197, 198, 199, 200), 203, 35, 30000, 45000, 24),
     # area 36 = EP4 Ending
     # area 37 = EP4 Character Bonus, AreaData* index 40
     # area 38 = EP4 Minikit Bonus, AreaData* index 46
-    ChapterArea("Hoth Battle", 5, 1, 0x86E2C8, 219, 39, 25000, 35000, 25),
-    ChapterArea("Escape From Echo Base", 5, 2, 0x86E2D4, 228, 40, 40000, 80000, 26),
-    ChapterArea("Falcon Flight", 5, 3, 0x86E2E0, 236, 41, 30000, 48000, 27),
-    ChapterArea("Dagobah", 5, 4, 0x86E2EC, 244, 42, 52000, 72000, 28),
+    ChapterArea("Hoth Battle", 5, 1, 0x86e2e8, (213, 214, 215, 216, 217), 219, 39, 25000, 35000, 25),
+    ChapterArea("Escape From Echo Base", 5, 2, 0x86e2f4, (221, 222, 223, 224, 225), 228, 40, 40000, 80000, 26),
+    ChapterArea("Falcon Flight", 5, 3, 0x86e300, (230, 231, 232, 233), 236, 41, 30000, 48000, 27),
+    ChapterArea("Dagobah", 5, 4, 0x86e30c, (238, 239, 240, 241, 242), 244, 42, 52000, 72000, 28),
     # 5-5 levels are after 5-6 levels for some reason.
-    ChapterArea("Cloud City Trap", 5, 5, 0x86E2F8, 257, 43, 14000, 22000, 29),
-    ChapterArea("Betrayal Over Bespin", 5, 6, 0x86E304, 251, 44, 34000, 60000, 30),
+    ChapterArea("Cloud City Trap", 5, 5, 0x86e318, (253, 254, 255), 257, 43, 14000, 22000, 29),
+    ChapterArea("Betrayal Over Bespin", 5, 6, 0x86e324, (247, 248, 249), 251, 44, 34000, 60000, 30),
     # area 45 = EP5 Ending
     # area 46 = EP5 Character Bonus, AreaData* index 41
     # area 47 = EP5 Minikit Bonus, AreaData* index 47
-    ChapterArea("Jabba's Palace", 6, 1, 0x86E334, 271, 48, 43000, 60000, 31),
-    ChapterArea("The Great Pit Of Carkoon", 6, 2, 0x86E340, 277, 49, 50000, 65000, 32),
-    ChapterArea("Speeder Showdown", 6, 3, 0x86E34C, 279, 50, 55000, 70000, 33),
-    ChapterArea("The Battle Of Endor", 6, 4, 0x86E358, 286, 51, 90000, 110000, 34),
-    ChapterArea("Jedi Destiny", 6, 5, 0x86E364, 301, 52, 35000, 80000, 35),
-    ChapterArea("Into The Death Star", 6, 6, 0x86E370, 297, 53, 35000, 40000, 36),
+    ChapterArea("Jabba's Palace", 6, 1, 0x86e354, (265, 266, 267, 268), 271, 48, 43000, 60000, 31),
+    ChapterArea("The Great Pit Of Carkoon", 6, 2, 0x86e360, (273, 274, 275), 277, 49, 50000, 65000, 32),
+    ChapterArea("Speeder Showdown", 6, 3, 0x86e36c, (278,), 279, 50, 55000, 70000, 33),
+    ChapterArea("The Battle Of Endor", 6, 4, 0x86e378, (281, 282, 283, 284), 286, 51, 90000, 110000, 34),
+    ChapterArea("Jedi Destiny", 6, 5, 0x86e384, (299, 300), 301, 52, 35000, 80000, 35),
+    ChapterArea("Into The Death Star", 6, 6, 0x86e390, (288, 289, 290, 291, 292, 293, 294), 297, 53, 35000, 40000, 36),
     # area 54 = EP6 Ending
     # area 55 = EP6 Character Bonus, AreaData* index 42
     # area 56 = EP6 Minikit Bonus, AreaData* index 48
@@ -704,7 +708,7 @@ CHAPTER_AREAS = [
 #  Character/Minikit bonuses.
 BONUS_AREAS = [
     # Could require: "Anakin's Pod"
-    BonusArea("Mos Espa Pod Race (Original)", 0x86E124, 0x1, 35, 4, gold_bricks_required=10),
+    BonusArea("Mos Espa Pod Race (Original)", 0x86e144, (30, 31, 32), 0x1, 35, 4, gold_bricks_required=10),
     # There are a number of test levels in LEVELS.TXT that seem to not be counted, so the level IDs for Anakin's Flight
     # do not match what is expected:
     # Intro = 327
@@ -715,13 +719,13 @@ BONUS_AREAS = [
     # Outro2 = 332
     # Status = 333
     # Could require: "Naboo Starfighter"
-    BonusArea("Anakin's Flight", 0x86E3AC, 0x1, 333, 58, gold_bricks_required=30),
+    BonusArea("Anakin's Flight", 0x86e3cc, (328, 329, 330), 0x1, 333, 58, gold_bricks_required=30),
     # Could require: "Republic Gunship"
-    BonusArea("Gunship Cavalry (Original)", 0x86E1A8, 0x1, 98, 15, gold_bricks_required=10),
+    BonusArea("Gunship Cavalry (Original)", 0x86e1c8, (96, 97), 0x1, 98, 15, gold_bricks_required=10),
     # Note: The base address may be incorrect/I do not know what the base address is supposed to be.
     # Could require: "Darth Vader" + "Stormtrooper" + "C-3PO"
-    BonusArea("A New Hope (Bonus Level)", 0x86E249, 0x8, 150, 29, gold_bricks_required=20),
-    BonusArea("LEGO City", 0x86E3B8, 0x1, 311, 59,
+    BonusArea("A New Hope (Bonus Level)", 0x86e269, (148, 149), 0x8, 150, 29, gold_bricks_required=20),
+    BonusArea("LEGO City", 0x86e3d8, (310,), 0x1, 311, 59,
               gold_bricks_required=10,
               completion_ability_requirements=(
                       JEDI
@@ -732,7 +736,7 @@ BONUS_AREAS = [
                       | CAN_ATTACK_UP_CLOSE
                       | CAN_RIDE_VEHICLES
               )),
-    BonusArea("New Town", 0x86E3A0, 0x1, 309, 57,
+    BonusArea("New Town", 0x86e3c0, (308,), 0x1, 309, 57,
               gold_bricks_required=50,
               completion_ability_requirements=(
                       JEDI
@@ -749,7 +753,7 @@ BONUS_AREAS = [
     # No gold brick for watching the trailer, but it does unlock the shop slot for purchasing Indiana Jones in vanilla
     # todo: Add the Purchase Indiana Jones location.
     # It looks like the unfinished Indiana Jones level would have been Area 67, though this is inaccessible.
-    BonusArea("Indiana Jones: Trailer", 0x86E4E5, 0x0, -1, 67, gold_brick=False)
+    BonusArea("Indiana Jones: Trailer", 0x86e505, (), 0x0, -1, 67, gold_brick=False)
 ]
 BONUS_NAME_TO_BONUS_AREA = {bonus.name: bonus for bonus in BONUS_AREAS}
 

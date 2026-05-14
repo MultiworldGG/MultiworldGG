@@ -287,14 +287,16 @@ class AELocation(Enum):
     Jacket11 = "8-2 Specters Factory Jacket - Triple Wheel Room"
     Jacket12 = "8-2 Specters Factory Jacket - Conveyor Room"
     Jacket13 = "9-1 Monkey Madness Jacket - Coaster (Room 1)"
-    Jacket14 = "9-1 Monkey Madness Jacket - Castle Main"
-    Jacket15 = "9-1 Monkey Madness Jacket - Inside Climb (Respawning)"
-    Jacket16 = "9-1 Monkey Madness Jacket - Inside Climb (Balance Beam)"
-    Jacket17 = "9-1 Monkey Madness Jacket - Inside Climb (Grid)"
-    Jacket18 = "9-1 Monkey Madness Jacket - Outside Climb (Respawning)"
-    Jacket19 = "9-1 Monkey Madness Jacket - Outside Climb (Near Barrels)"
-    Jacket20 = "9-1 Monkey Madness Jacket - Monkey Head"
-    Jacket21 = "9-1 Monkey Madness Jacket - Specter 1 Room (Respawning)"
+    Jacket14 = "9-1 Monkey Madness Jacket - Castle Main (Green Alcove)"
+    Jacket15 = "9-1 Monkey Madness Jacket - Castle Main (Below Coin)"
+    Jacket16 = "9-1 Monkey Madness Jacket - Inside Climb (Respawning)"
+    Jacket17 = "9-1 Monkey Madness Jacket - Inside Climb (Balance Beam)"
+    Jacket18 = "9-1 Monkey Madness Jacket - Inside Climb (Top Chain Link)"
+    Jacket19 = "9-1 Monkey Madness Jacket - Outside Climb (Respawning)"
+    Jacket20 = "9-1 Monkey Madness Jacket - Outside Climb (Above Barrels)"
+    Jacket21 = "9-1 Monkey Madness Jacket - Monkey Head (By Wheel)"
+    Jacket22 = "9-1 Monkey Madness Jacket - Monkey Head (Secret Room)"
+    Jacket23 = "9-1 Monkey Madness Jacket - Specter 1 Room (Respawning)"
     Mailbox1 = "1-1 Fossil Field Mailbox - Stun Club Tutorial (Main)"
     Mailbox2 = "1-1 Fossil Field Mailbox - Switch Gadgets Tutorial (Main)"
     Mailbox3 = "1-1 Fossil Field Mailbox - Don't Toss Your Cookies! (Main)"
@@ -387,7 +389,7 @@ class AELocation(Enum):
     SlingTraining = "Slingback Shooter Training - Completion"
     HoopTraining = "Super Hoop Training - Completion"
     FlyerTraining = "Sky Flyer Training - Completion"
-    CarTraining = "RC Car Training Training - Completion"
+    CarTraining = "RC Car Training - Completion"
     PunchTraining = "Magic Punch Training - Completion"
 
 
@@ -642,15 +644,15 @@ class AEItem(Enum):
     RainbowCookie = "Rainbow Cookie"
     FAKE_OOL_ITEM = "Fake OOL Item"
 
-DS_Options = ["kickoutprevention","deathlink","autoequip","bhdisplay"]
-DS_ButtonAndDoors = ["DIButton","CrCWaterButton","MM_Painting_Button","MM_MonkeyHead_Button","TVT_Lobby_Button","DR_Block"]
+DS_Options = ["kickoutprevention", "deathlink", "autoequip", "bhdisplay"]
+DS_ButtonAndDoors = ["DIButton", "CrCWaterButton", "MM_Painting_Button", "MM_MonkeyHead_Button", "TVT_Lobby_Button", "DR_Block"]
 
 Commands_Dict = {
-    "ae_commands" : "cmd_ae_commands",
-    "bh_itemdisplay" : "cmd_bh_itemdisplay",
-    "prevent_kickout":"cmd_prevent_kickout",
-    "deathlink" : "cmd_deathlink",
-    "auto_equip" : "cmd_auto_equip",
-    "syncprogress" : "cmd_syncprogress",
-    "spikecolor" : "cmd_spikecolor",
+    "ae_commands": "cmd_ae_commands",
+    "bh_itemdisplay": "cmd_bh_itemdisplay",
+    "prevent_kickout": "cmd_prevent_kickout",
+    "deathlink": "cmd_deathlink",
+    "auto_equip": "cmd_auto_equip",
+    "syncprogress": "cmd_syncprogress",
+    "spikecolor": "cmd_spikecolor",
 }

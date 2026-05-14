@@ -17,20 +17,20 @@ LEVEL_ID_CANTINA = 325
 CHARACTER_POSITION_VECTOR = NuVecField(0x5c)
 """Feet position of a character (GameObject_s)."""
 
-HUB_EPISODE_TIME = StaticFloat(0x879574)
+HUB_EPISODE_TIME = StaticFloat(0x879594)
 """Timer float for the Cantina episode door on-screen text. If this is set by the game, then the on-screen text for
 an episode door is currently being displayed. Setting this above zero do *not* cause the on-screen text to display."""
 
-HUB_AREA_TIME = StaticFloat(0x879508)
+HUB_AREA_TIME = StaticFloat(0x879528)
 """
 Timer float for the Cantina area door on-screen text. Setting this above zero causes the on-screen text to display
 according to the Area ID that the value at HUB_AREA is set to.
 """
 
-HUB_AREA = StaticInt(0x879B00)
+HUB_AREA = StaticInt(0x879b20)
 """Area ID for the Cantina level door on-screen text."""
 
-A_DATA_LIST_PTR = StaticUint(0x951354)
+A_DATA_LIST_PTR = StaticUint(0x951374)
 """Pointer to the start of the AREADATA_s array _ADataList."""
 
 AREA_DATA_SIZE = 0x9c
@@ -305,7 +305,7 @@ class LockedCantinaDoorDisplay(ClientComponent):
         # I'm guessing this works because each level defines maximum numbers of each level object type, and the game
         # probably allocates the maximum space required for each type, so, within an individual level, the offset, from
         # the splines array to the 'special objects''s matrices array, is a constant value.
-        hub_minikitviewer_camspl_p_addr = 0x879b3c
+        hub_minikitviewer_camspl_p_addr = 0x879b5c
         ctx = event.context
         hub_minikitviewer_camspl_addr = ctx.read_uint(hub_minikitviewer_camspl_p_addr)
         # +0x4ec to get to the start of the array.
@@ -327,6 +327,8 @@ class LockedCantinaDoorDisplay(ClientComponent):
     @subscribe_event
     async def on_tick(self, event: OnGameWatcherTickEvent):
         if not self.active:
+            return
+        if not event.is_actively_playing:
             return
         await self._draw_locked_door_info(event)
         await self._force_open_episode_doors(event)

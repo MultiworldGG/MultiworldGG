@@ -144,7 +144,7 @@ class GrinchWorld(World):
             if location == "WV - Squashing All Gifts":
                 exclude_wv_squash: bool = False
                 for wv_sub in wv_subareas:
-                    if wv_sub in self.options.exclude_environments.value:
+                    if wv_sub in self.options.exclude_environments:
                         exclude_wv_squash = True
 
                 if exclude_wv_squash:
@@ -153,7 +153,7 @@ class GrinchWorld(World):
             elif location == "WF - Squashing All Gifts":
                 exclude_wf_squash: bool = False
                 for wf_sub in wf_subareas:
-                    if wf_sub in self.options.exclude_environments.value:
+                    if wf_sub in self.options.exclude_environments:
                         exclude_wf_squash = True
 
                 if exclude_wf_squash:
@@ -162,7 +162,7 @@ class GrinchWorld(World):
             elif location == "WD - Squashing All Gifts":
                 exclude_wd_squash: bool = False
                 for wd_sub in wd_subareas:
-                    if wd_sub in self.options.exclude_environments.value:
+                    if wd_sub in self.options.exclude_environments:
                         exclude_wd_squash = True
 
                 if exclude_wd_squash:
@@ -171,7 +171,7 @@ class GrinchWorld(World):
             elif location == "WL - Squashing All Gifts":
                 exclude_wl_squash: bool = False
                 for wl_sub in wl_subareas:
-                    if wl_sub in self.options.exclude_environments.value:
+                    if wl_sub in self.options.exclude_environments:
                         exclude_wl_squash = True
 
                 if exclude_wl_squash:
@@ -182,8 +182,8 @@ class GrinchWorld(World):
 
             if ("WL - Mayor's Villa - Hook" in location
                     and not self.options.randomize_mission_items
-                    and self.options.exclude_gc.value
-                    and not "Mayor's Villa" in self.options.exclude_environments.value):
+                    and self.options.exclude_gc
+                    and not "Mayor's Villa" in self.options.exclude_environments):
                 continue
 
             if "Sleigh Parts" in data.location_group and self.options.randomize_sleigh_parts:
@@ -191,7 +191,7 @@ class GrinchWorld(World):
 
             # If the region is in the list to be ignored, DON'T create the location and just continue.
             # Ex if Mount Crumpit is in the exclude env list, no locations should exist in Mount Crumpit.
-            if region.name in self.options.exclude_environments.value:
+            if region.name in self.options.exclude_environments:
                 if region.name == "Mount Crumpit":
                     logger.warning(f"Player {self.player_name} has excluded Mount Crumpit, which is where a large number of Sphere 1 locations usually exist.")
                 continue
@@ -241,7 +241,7 @@ class GrinchWorld(World):
                 if "Tires" in sleigh_parts:
                     self.multiworld.get_location("WD - Tires", self.player).place_locked_item(
                         self.create_item("Tires"))
-                if not "Submarine World" in self.options.exclude_environments.value and "Twin-End Tuba" in sleigh_parts:
+                if not "Submarine World" in self.options.exclude_environments and "Twin-End Tuba" in sleigh_parts:
                     self.multiworld.get_location("WL - Submarine World - Twin-End Tuba", self.player).place_locked_item(
                         self.create_item("Twin-End Tuba"))
                 else:
@@ -295,7 +295,7 @@ class GrinchWorld(World):
                     self.multiworld.get_location("WV - Painting Bucket", self.player).place_locked_item(
                         self.create_item("Painting Bucket"))
 
-                if not "Clock Tower" in self.options.exclude_environments.value:
+                if not "Clock Tower" in self.options.exclude_environments:
                     if "Who Cloak" in mission_item:
                         self.multiworld.get_location("WV - Clock Tower - Who Cloak", self.player).place_locked_item(
                             self.create_item("Who Cloak"))
@@ -308,7 +308,7 @@ class GrinchWorld(World):
                     else:
                         self.multiworld.push_precollected(self.create_item("Hammer"))
 
-                if not "City Hall" in self.options.exclude_environments.value:
+                if not "City Hall" in self.options.exclude_environments:
                     if "Sculpting Tools" in mission_item:
                         self.multiworld.get_location("WV - City Hall - Sculpting Tools", self.player).place_locked_item(
                             self.create_item("Sculpting Tools"))
@@ -323,35 +323,35 @@ class GrinchWorld(World):
                     self.multiworld.get_location("WF - Cable Car Access Card", self.player).place_locked_item(
                         self.create_item("Cable Car Access Card"))
 
-                if not "Minefield" in self.options.exclude_environments.value:
+                if not "Minefield" in self.options.exclude_environments:
                     if "Scissors" in mission_item:
                         self.multiworld.get_location("WD - Minefield - Scissors", self.player).place_locked_item(
                             self.create_item("Scissors"))
                     else:
                         self.multiworld.push_precollected(self.create_item("Scissors"))
 
-                if not "Scout's Hut" in self.options.exclude_environments.value:
+                if not "Scout's Hut" in self.options.exclude_environments:
                     if "Scout Clothes" in mission_item:
                         self.multiworld.get_location("WL - Scout's Hut - Scout Clothes", self.player).place_locked_item(
                             self.create_item("Scout Clothes"))
                     else:
                         self.multiworld.push_precollected(self.create_item("Scout Clothes"))
 
-                if not "North Shore" in self.options.exclude_environments.value:
+                if not "North Shore" in self.options.exclude_environments:
                     if "Drill" in mission_item:
                         self.multiworld.get_location("WL - North Shore - Drill", self.player).place_locked_item(
                             self.create_item("Drill"))
                     else:
                         self.multiworld.push_precollected(self.create_item("Drill"))
 
-                if not "Mayor's Villa" in self.options.exclude_environments.value:
+                if not "Mayor's Villa" in self.options.exclude_environments:
                     if "Rope" in mission_item:
                         self.multiworld.get_location("WL - Mayor's Villa - Rope", self.player).place_locked_item(
                             self.create_item("Rope"))
                     else:
                         self.multiworld.push_precollected(self.create_item("Rope"))
 
-                    if not self.options.exclude_gc.value and "Hook" in mission_item:
+                    if not self.options.exclude_gc and "Hook" in mission_item:
                         self.multiworld.get_location("WL - Mayor's Villa - Hook", self.player).place_locked_item(
                             self.create_item("Hook"))
                     else:
@@ -367,7 +367,7 @@ class GrinchWorld(World):
             if moves_added in player_start_inv:
                 continue
 
-            if self.options.move_rando and moves_added in self.options.moves_to_randomize.value:
+            if self.options.move_rando and moves_added in self.options.moves_to_randomize:
                 self_itempool.append(self.create_item(moves_added))
             else:
                 self.multiworld.push_precollected(self.create_item(moves_added))
@@ -378,7 +378,7 @@ class GrinchWorld(World):
             if gadgets_added == "Grinch Copter" and self.options.exclude_gc:
                 continue
 
-            if gadgets_added == "Marine Mobile" and "Submarine World" in self.options.exclude_environments.value:
+            if gadgets_added == "Marine Mobile" and "Submarine World" in self.options.exclude_environments:
                 self.multiworld.push_precollected(self.create_item(gadgets_added))
                 player_start_inv.append(gadgets_added)
                 continue
@@ -396,16 +396,16 @@ class GrinchWorld(World):
 
         if not self.options.progressive_vacuums:
         # When the starting area is chosen, add the key to the starting inventory.
-            if self.options.starting_area.value == 0:
+            if self.options.starting_area == 0:
                 self.multiworld.push_precollected(self.create_item("Whoville Vacuum Tube"))
                 player_start_inv.append("Whoville Vacuum Tube")
-            elif self.options.starting_area.value == 1:
+            elif self.options.starting_area == 1:
                 self.multiworld.push_precollected(self.create_item("Who Forest Vacuum Tube"))
                 player_start_inv.append("Who Forest Vacuum Tube")
-            elif self.options.starting_area.value == 2:
+            elif self.options.starting_area == 2:
                 self.multiworld.push_precollected(self.create_item("Who Dump Vacuum Tube"))
                 player_start_inv.append("Who Dump Vacuum Tube")
-            elif self.options.starting_area.value == 3:
+            elif self.options.starting_area == 3:
                 self.multiworld.push_precollected((self.create_item("Who Lake Vacuum Tube")))
                 player_start_inv.append("Who Lake Vacuum Tube")
         else:
@@ -431,7 +431,7 @@ class GrinchWorld(World):
                 self.create_item("Skis"))
             self.multiworld.get_location("WD - Tires", self.player).place_locked_item(
                 self.create_item("Tires"))
-            if not "Submarine World" in self.options.exclude_environments.value:
+            if not "Submarine World" in self.options.exclude_environments:
                 self.multiworld.get_location("WL - Submarine World - Twin-End Tuba", self.player).place_locked_item(
                     self.create_item("Twin-End Tuba"))
             else:

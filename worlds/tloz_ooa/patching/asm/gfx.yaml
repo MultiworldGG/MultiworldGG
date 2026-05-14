@@ -18,39 +18,39 @@
 
 # red soldier sprite data for deku forest soldier check.
 3f//soldierSpriteData: |
-    db 4d,00,22
+    db $4d,$00,$22
 
     
 3f//customSpriteJumpTableNotItem: |
-    dwbe 4000,soldierSpriteData
-    db ff
+    dwbe $4000,soldierSpriteData
+    db $ff
 
-# format (ID, subID, jump address). these functions *must* pop af as the last
-# instruction before returning.
+# Format is dwbe $<interactionID><interactionSubID>, location. db $ff indicates the end of the table.
 3f//customSpriteJumpTable: |
-    dwbe 4700, locations.hiddenShop1
-    dwbe 4702, locations.hiddenShop2
-    dwbe 4705, locations.hiddenShop3
-    dwbe 4704, locations.lynnaShop1
-    dwbe 4703, locations.lynnaShop2
-    dwbe 4701, locations.lynnaShop3
-    dwbe 470e, locations.advanceShop1
-    dwbe 470f, locations.advanceShop2
-    dwbe 4710, locations.advanceShop3
-    dwbe 4709, locations.syrupShop2
-    dwbe 470a, locations.syrupShop3
-    dwbe 470b, locations.syrupShop1
-    dwbe 6314, locations.hiddenTokayCave
-    dwbe 6315, locations.hiddenTokayCave
-    dwbe 633e, locations.wildTokayGame
-    dwbe 6b0b, locations.chevalInvention
-    dwbe 6b0c, locations.chevalTest
-    dwbe 7731, locations.d8Stalfos
-    dwbe 8007, locations.libraryPast
-    dwbe 8008, locations.libraryPresent
-    dwbe 8100, locations.tokayMarket1
-    dwbe 8101, locations.tokayMarket2
-    db ff
+    dwbe $4700, locations.hiddenShop1
+    dwbe $4702, locations.hiddenShop2
+    dwbe $4705, locations.hiddenShop3
+    dwbe $4704, locations.lynnaShop1
+    dwbe $4703, locations.lynnaShop2
+    dwbe $4701, locations.lynnaShop3
+    dwbe $470e, locations.advanceShop1
+    dwbe $470f, locations.advanceShop2
+    dwbe $4710, locations.advanceShop3
+    dwbe $4709, locations.syrupShop2
+    dwbe $470a, locations.syrupShop3
+    dwbe $470b, locations.syrupShop1
+    dwbe $6314, locations.hiddenTokayCave
+    dwbe $6315, locations.hiddenTokayCave
+    dwbe $633e, locations.wildTokayGame
+    dwbe $6b0b, locations.chevalInvention
+    dwbe $6b0a, locations.tokayChickenHut
+    dwbe $6b0c, locations.chevalTest
+    dwbe $7731, locations.d8Stalfos
+    dwbe $8007, locations.libraryPast
+    dwbe $8008, locations.libraryPresent
+    dwbe $8100, locations.tokayMarket1
+    dwbe $8101, locations.tokayMarket2
+    db $ff
 
 # overrides the sprite data loaded for certain interactions. this is mostly
 # used for "non-item" interactions that depict items, like the ones in shops.

@@ -6,8 +6,12 @@ from ..client.game_state_modifiers import locked_cantina_door_display as door_di
 
 ALL_DOORS: list[Iterable[door_display.Coordinates]] = [
     door_display.MAIN_ROOM_DOORS.values(),
+    door_display.EPISODE_1_DOORS.values(),
     door_display.EPISODE_2_DOORS.values(),
     door_display.EPISODE_3_DOORS.values(),
+    door_display.EPISODE_4_DOORS.values(),
+    door_display.EPISODE_5_DOORS.values(),
+    door_display.EPISODE_6_DOORS.values(),
 ]
 
 

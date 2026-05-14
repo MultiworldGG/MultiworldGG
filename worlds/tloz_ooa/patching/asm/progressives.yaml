@@ -155,7 +155,7 @@
     db TREASURE_FLIPPERS,$00,TREASURE_MERMAID_SUIT 
     dw $545a # mermaid suit
     
-    db ff
+    db $ff
 
 16/4539/: call modifyTreasure
 

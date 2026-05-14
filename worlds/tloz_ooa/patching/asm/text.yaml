@@ -113,33 +113,34 @@
 38//TX_5a06: /include text.smallKeyD6Present
 38//TX_5a07: /include text.smallKeyD7
 38//TX_5a08: /include text.smallKeyD8
-38//TX_5a09: /include text.smallKeyD6Past
-38//TX_5a0a: /include text.bossKeyD1
-38//TX_5a0b: /include text.bossKeyD2
-38//TX_5a0c: /include text.bossKeyD3
-38//TX_5a0d: /include text.bossKeyD4
-38//TX_5a0e: /include text.bossKeyD5
-38//TX_5a0f: /include text.bossKeyD6
-38//TX_5a10: /include text.bossKeyD7
-38//TX_5a11: /include text.bossKeyD8
-38//TX_5a12: /include text.dungeonMapD1
-38//TX_5a13: /include text.dungeonMapD2
-38//TX_5a14: /include text.dungeonMapD3
-38//TX_5a15: /include text.dungeonMapD4
-38//TX_5a16: /include text.dungeonMapD5
-38//TX_5a17: /include text.dungeonMapD6Present
-38//TX_5a18: /include text.dungeonMapD7
-38//TX_5a19: /include text.dungeonMapD8
-38//TX_5a1a: /include text.dungeonMapD6Past
-38//TX_5a1b: /include text.compassD1
-38//TX_5a1c: /include text.compassD2
-38//TX_5a1d: /include text.compassD3
-38//TX_5a1e: /include text.compassD4
-38//TX_5a1f: /include text.compassD5
-38//TX_5a20: /include text.compassD6Present
-38//TX_5a21: /include text.compassD7
-38//TX_5a22: /include text.compassD8
-38//TX_5a23: /include text.compassD6Past
+38//TX_5a09: /include text.smallKeyD11
+38//TX_5a0a: /include text.smallKeyD6Past
+38//TX_5a0b: /include text.bossKeyD1
+38//TX_5a0c: /include text.bossKeyD2
+38//TX_5a0d: /include text.bossKeyD3
+38//TX_5a0e: /include text.bossKeyD4
+38//TX_5a0f: /include text.bossKeyD5
+38//TX_5a10: /include text.bossKeyD6
+38//TX_5a11: /include text.bossKeyD7
+38//TX_5a12: /include text.bossKeyD8
+38//TX_5a13: /include text.dungeonMapD1
+38//TX_5a14: /include text.dungeonMapD2
+38//TX_5a15: /include text.dungeonMapD3
+38//TX_5a16: /include text.dungeonMapD4
+38//TX_5a17: /include text.dungeonMapD5
+38//TX_5a18: /include text.dungeonMapD6Present
+38//TX_5a19: /include text.dungeonMapD7
+38//TX_5a1a: /include text.dungeonMapD8
+38//TX_5a1b: /include text.dungeonMapD6Past
+38//TX_5a1c: /include text.compassD1
+38//TX_5a1d: /include text.compassD2
+38//TX_5a1e: /include text.compassD3
+38//TX_5a1f: /include text.compassD4
+38//TX_5a20: /include text.compassD5
+38//TX_5a21: /include text.compassD6Present
+38//TX_5a22: /include text.compassD7
+38//TX_5a23: /include text.compassD8
+38//TX_5a24: /include text.compassD6Past
 
 38//customTextTable: |
     dw TX_5a00, TX_5a01, TX_5a02, TX_5a03
@@ -151,6 +152,7 @@
     dw TX_5a18, TX_5a19, TX_5a1a, TX_5a1b
     dw TX_5a1c, TX_5a1d, TX_5a1e, TX_5a1f
     dw TX_5a20, TX_5a21, TX_5a22, TX_5a23
+    dw TX_5a24
 
 38//setCustomBankForText: |
     ld hl,customTextTable
@@ -213,8 +215,8 @@
 
 # Insert a redirection table inside showText
 38//customTextJumpTable: |
-    dwbe 2e0d, 0564 ; maku path sign into maku tree introduction
-    db ff
+    dwbe $2e0d, $0564 ; maku path sign into maku tree introduction
+    db $ff
 
 38//showCustomText_body: |
     ld a,b

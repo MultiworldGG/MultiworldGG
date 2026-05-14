@@ -739,6 +739,7 @@ class UltrakillRules:
                 or arm1(state)
                 or revstd0_fire2(state)
                 or revstd1_fire2(state)
+                or revstd2_fire2(state)
                 or revalt_any(state)
                 or shostd0_fire2(state)
                 or shostd1_fire2(state)
@@ -753,6 +754,7 @@ class UltrakillRules:
                 or rock_any(state)
                 or revstd0_fire2(state)
                 or revstd1_fire2(state)
+                or revstd2_fire2(state)
                 or revalt_any(state)
                 or shoany0_fire2(state)
                 or can_proj_boost(state)
@@ -761,6 +763,7 @@ class UltrakillRules:
         def can_break_walls(state: CollectionState) -> bool:
             return (
                 rai0(state)
+                or rai1(state)
                 or rai2(state)
                 or rock_any(state)
                 or arm1(state)
@@ -772,22 +775,10 @@ class UltrakillRules:
                 or can_proj_boost(state)
             )
         
-        def can_break_wall_cancerous_rodent(state: CollectionState) -> bool:
-            return (
-                rai0(state)
-                or rai2(state)
-                or rock_any(state)
-                or arm1(state)
-                or revalt_any(state)
-                or shostd0_fire2(state)
-                or shostd1_fire2(state)
-                or shoalt_any(state)
-                or can_proj_boost(state)
-            )
-        
         def can_break_glass_or_walls(state: CollectionState) -> bool:
             return (
                 rai0(state)
+                or rai1(state)
                 or rai2(state)
                 or rock_any(state)
                 or arm1(state)
@@ -1601,7 +1592,7 @@ class UltrakillRules:
                         or can_break_walls(state)
                         and can_zap(state)
                     )
-                    and can_break_wall_cancerous_rodent(state)
+                    and can_break_walls(state)
                 ),
 
             "1-2: Perfect Rank":
@@ -1667,7 +1658,7 @@ class UltrakillRules:
                         and state.can_reach(self.world.get_region("1-3: HALLS OF SACRED REMAINS"), player=player)
                         and l6_switch(state)
                         and can_break_glass(state)
-                        and can_break_wall_cancerous_rodent(state)
+                        and can_break_walls(state)
                         and good_weapon(state)
                         and grab_item(state)
                         and skull(state, "1-1", "Red")
@@ -1691,6 +1682,9 @@ class UltrakillRules:
                     grab_item(state)
                     and skull(state, "1-4", "Blue")
                 ),
+
+            "1-4: V2's Arm":
+                good_weapon,
 
             "1-4: Do not pick up any skulls":
                 good_weapon,
@@ -1900,7 +1894,7 @@ class UltrakillRules:
             "4-1: Secret #4":
                 lambda state: (
                     slam_storage(state)
-                    or can_rocket_ride(state)
+                    or rock_any(state)
                     or shoalt0_fire2(state)
                     or shostd1_fire2(state)
                     or rai2(state)
@@ -2922,6 +2916,15 @@ class UltrakillRules:
                         or can_proj_boost(state)
                         or rai2(state)
                         or rock_any(state)
+                    )
+                    and (
+                        arm2(state)
+                        or shoany0_fire2(state)
+                        or shostd1_fire2(state)
+                        or can_proj_boost(state)
+                        or rai2(state)
+                        or rock0_fire2(state)
+                        or slam_storage(state)
                     )
                     and skull(state, "8-2", "Red")
                     and can_break_glass(state)
@@ -5033,7 +5036,7 @@ class UltrakillRules:
                         or can_break_walls(state)
                         and can_zap(state)
                     )
-                    and can_break_wall_cancerous_rodent(state)
+                    and can_break_walls(state)
                 ),
 
             "Boss: Mysterious Druid Knight (& Owl)":

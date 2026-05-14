@@ -214,6 +214,11 @@ ITEMS_DATA = {
         'id': 0x30,
         'subid': 0x08
     },
+    "Small Key (Linked Hero's Cave)": {
+        'classification': ItemClassification.progression,
+        'id': 0x30,
+        'subid': 0x0b
+    },
     "Master Key (Maku Path)": {
         'classification': ItemClassification.progression,
         'id': 0x30,
@@ -263,6 +268,11 @@ ITEMS_DATA = {
         'classification': ItemClassification.progression,
         'id': 0x30,
         'subid': 0x08
+    },
+    "Master Key (Linked Hero's Cave)": {
+        'classification': ItemClassification.progression,
+        'id': 0x30,
+        'subid': 0x0b
     },
     "Boss Key (Spirit's Grave)": {
         'classification': ItemClassification.progression,
@@ -410,7 +420,7 @@ ITEMS_DATA = {
         'classification': ItemClassification.progression,
         'id': 0x3d
     },
-    "Stationary": {
+    "Stationery": {
         'classification': ItemClassification.progression,
         'id': 0x3e
     },

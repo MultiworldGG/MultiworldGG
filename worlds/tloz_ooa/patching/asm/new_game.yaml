@@ -1,14 +1,14 @@
 # setting up a new file - this is done when link is dropped into the world, not
 # at actual file creation.
 
-03//initialGlobalFlags: |
-    db 0a,0c,1d,20,23,2b,33,3d,40,41,43,45,ff
+07//initialGlobalFlags: |
+    db $0a,$0c,$1d,$20,$21,$23,$2b,$33,$3d,$40,$41,$43,$45,$ff
 
-07/4195/startingBomb: db 00
+07/4195/startingBomb: db $00
 
 # set flags to skip opening and a bunch of other things. see doc/technical.md
 # for a dictionary of the flags.
-03//setInitialFlags: |
+07//setInitialFlags: |
     push hl
 
     # global flags
@@ -109,5 +109,21 @@
     call setGlobalFlag
 
     pop hl
+    ld hl,$415c  ; initializeChildOnGameStart; this may look useless, but this prevents the game from locking up after file creation.
     ret
-03/6e97/: jp setInitialFlags
+07/4049/: call setInitialFlags 
+
+# Set default text speed to 5
+07/418b/: db $04
+
+# Remove the "Accept our quest, hero!" cutscene when launching the game
+# for the first time
+01/5a31/: |
+  nop
+  nop
+  xor a
+  cp $01
+
+# Changes Link's starting point (Postion is unaffected because it doesen't interfere with anything else)
+07/419b/: db option.startingGroup       # Group Number
+07/419d/: db option.startingRoom        # Room Number

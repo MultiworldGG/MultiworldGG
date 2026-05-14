@@ -22,3 +22,8 @@ class UnknownFloatingChunkError(Exception):
 class ArgumentOverflowError(Exception):
     def __init__(self, value, expected_size):
         super().__init__(f"Argument overflow: {hex(value)} cannot fit in {expected_size} byte(s)")
+
+
+class InvalidAddressError(Exception):
+    def __init__(self, addr):
+        super().__init__(f"Invalid address: {hex(addr)}")

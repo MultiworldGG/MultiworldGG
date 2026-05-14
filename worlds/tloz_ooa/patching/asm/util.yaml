@@ -48,6 +48,23 @@
     pop bc
     ret
 
+# searches for a value in a table starting at hl, with an entry matching
+# key "a" and values "e" bytes long. sets c if found. a key of ff ends the table.
+00//searchKey: |
+    ld b,a
+    @loop:
+    ldi a,(hl)
+    cp $ff
+    ret z
+    cp b
+    jr nz,@next
+    scf
+    ret
+    @next:
+    ld a,e
+    rst 10
+    jr @loop
+
 # b = treasure id
 # c = treasure subid
 00//spawnTreasureOnLink: |

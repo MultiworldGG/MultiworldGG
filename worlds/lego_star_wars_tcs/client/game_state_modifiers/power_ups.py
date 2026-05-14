@@ -2,7 +2,6 @@ import logging
 
 from ..common import AREA_ID_CANTINA
 from ..common_addresses import (
-    is_actively_playing,
     player_character_entity_iter,
     CURRENT_AREA_ADDRESS,
     CHARACTER_POWER_UP_TIMER
@@ -57,7 +56,7 @@ class PowerUpReceiver(ItemReceiver):
         if (
                 ctx.is_in_game()
                 and CURRENT_AREA_ADDRESS.get(ctx) not in BANNED_AREA_IDS
-                and is_actively_playing(ctx)
+                and event.is_actively_playing
         ):
             gave_power_up = False
 

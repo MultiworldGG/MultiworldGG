@@ -34,6 +34,15 @@ _COMPONENT_ORIGIN_CACHE = "cache_stub"
 _INITIALIZING_COMPONENTS = True
 
 
+class APWorldInstallRestartRequired(Exception):
+    def __init__(self, module_name: str) -> None:
+        self.module_name = module_name
+        super().__init__(
+            f"Installed APWorld successfully, but '{module_name}' is already loaded, "
+            "so a Launcher restart is required to use the new installation."
+        )
+
+
 class Type(Enum):
     TOOL = auto()
     MISC = auto()
@@ -250,8 +259,7 @@ def _install_apworld(apworld_src: str = "") -> Optional[Tuple[pathlib.Path, path
             found_already_loaded = True
             break
     if found_already_loaded and is_kivy_running():
-        raise Exception(f"Installed APWorld successfully, but '{module_name}' is already loaded, "
-                        "so a Launcher restart is required to use the new installation.")
+        raise APWorldInstallRestartRequired(module_name)
     world_source = worlds.WorldSource(str(target), is_zip=True, relative=False)
     bisect.insort(worlds.world_sources, world_source)
     if world_source.is_zip:
@@ -268,12 +276,45 @@ def _install_apworld(apworld_src: str = "") -> Optional[Tuple[pathlib.Path, path
 
 
 def install_apworld(apworld_path: str = "") -> None:
+    def _restart_launcher_from_running_process() -> None:
+        launcher_module = sys.modules.get("Launcher") or sys.modules.get("__main__")
+        restart = getattr(launcher_module, "restart_launcher", None)
+        if callable(restart):
+            restart()
+            return
+
+        from Launcher import restart_launcher
+        restart_launcher()
+
     try:
         res = _install_apworld(apworld_path)
         if res is None:
             logging.info("Aborting APWorld installation.")
             return
         source, target = res
+    except APWorldInstallRestartRequired as e:
+        import Utils
+        logging.info(str(e))
+        if is_kivy_running():
+            from kvui import ButtonsPrompt
+
+            prompt: ButtonsPrompt
+
+            def _handle_response(response: str) -> None:
+                prompt.dismiss()
+                if response == "Restart Launcher":
+                    _restart_launcher_from_running_process()
+
+            prompt = ButtonsPrompt(
+                "Restart required",
+                str(e),
+                _handle_response,
+                "Restart Launcher",
+                "Later",
+            )
+            prompt.open()
+        else:
+            Utils.messagebox("Restart required", str(e))
     except Exception as e:
         import Utils
         Utils.messagebox("Notice", str(e), error=True)

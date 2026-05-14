@@ -94,61 +94,61 @@
 # peaks past, to prevent a softlock if the player doesn't have flippers or
 # ages.
 12//talusPeaksStaticObjects: |
-    db f2
-    db e1,00,68,18
-    db f6
-    db 20,08,00
-    db fe
+    db $f2
+    db $e1,$00,$68,$18
+    db $f6
+    db $20,$08,$00
+    db $fe
 12/5a62/: dw talusPeaksStaticObjects
 
 # and in nuun highlands, by the bridge.
 12//nuunWestPortalStaticObjects: |
-    db f2
-    db 9a,00,68,48 # all carpenter stuff
-    db 9a,01,58,58
-    db 9a,02,58,68
-    db 9a,03,48,58
-    db 9a,04,38,58
-    db fe
+    db $f2
+    db $9a,$00,$68,$48 # all carpenter stuff
+    db $9a,$01,$58,$58
+    db $9a,$02,$58,$68
+    db $9a,$03,$48,$58
+    db $9a,$04,$38,$58
+    db $fe
 12/5a7b/: |
-    db f2
-    db e1,00,38,78
-    db f3
+    db $f2
+    db $e1,$00,$38,$78
+    db $f3
     dw nuunWestPortalStaticObjects
-    db ff
+    db $ff
 
 # and in nuun highlands, southeast corner.
 12//nuunEastPortalStaticObjects: |
-    db f2
-    db d0,03,25,20
-    db e1,00,48,38
-    db fe
+    db $f2
+    db $d0,$03,$25,$20
+    db $e1,$00,$48,$38
+    db $fe
 12/5af0/: |
-    db f3
+    db $f3
     dw nuunEastPortalStaticObjects
-    db f3
-    dw 4383
-    db ff
+    db $f3
+    dw $4383
+    db $ff
 
 # and outside D2 present.
 12//d2PresentPortalStaticObjects: |
-    db f2
-    db dc,02,48,38
-    db e1,00,48,48
-    db fe
+    db $f2
+    db $dc,$02,$48,$38
+    db $e1,$00,$48,$48
+    db $fe
 12/5d42/: |
-    db f3
+    db $f3
     dw d2PresentPortalStaticObjects
-    db ff
+    db $ff
 
 # and symmetry city past.
 12//symmetryPortalStaticObjects: |
-    db f1
-    db dc,05
-    db f2
-    db e1,00,68,18
-    db e1,00,68,88
-    db fe
+    db $f1
+    db $dc,$05
+    db $f2
+    db $e1,$00,$68,$18
+    db $e1,$00,$68,$88
+    db $fe
 12/5e91/: |
-    db f3
+    db $f3
     dw symmetryPortalStaticObjects

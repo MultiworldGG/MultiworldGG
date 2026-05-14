@@ -40,8 +40,8 @@ except ImportError:
 SHOP_SLOT_NAME_MAX_BYTES = 64
 """64 bytes, including the null-terminator."""
 
-P_CHARACTER_SHOP_SLOTS = StaticUint(0x880478)
-P_EXTRAS_SHOP_SLOTS = StaticUint(0x880480)
+P_CHARACTER_SHOP_SLOTS = StaticUint(0x880498)
+P_EXTRAS_SHOP_SLOTS = StaticUint(0x8804a0)
 SHOP_SLOT_SIZE_BYTES = 0x74
 
 
@@ -170,6 +170,8 @@ class ShopNamesReplacer(ClientComponent):
     _is_in_cantina: bool = False
     _is_in_shop: bool = False
 
+    trap_as_fake_progression_chance: int = 50
+
     _client_colors: ClientText
 
     def __init__(self):
@@ -226,7 +228,8 @@ class ShopNamesReplacer(ClientComponent):
                 else:
                     classification = ItemClassification(info.flags)
                     # Fake the names for items that are purely traps, and don't have any other classification(s).
-                    if classification == ItemClassification.trap and shop_random.random() < 0.5:
+                    if (classification == ItemClassification.trap
+                            and shop_random.randint(0, 99) < self.trap_as_fake_progression_chance):
                         slot_info = ctx.slot_info.get(info.player)
                         # Change the classification to Progression.
                         classification = ItemClassification.progression
@@ -337,6 +340,7 @@ class ShopNamesReplacer(ClientComponent):
 
     @subscribe_event
     def init_from_slot_data(self, event: OnReceiveSlotDataEvent):
+        self.trap_as_fake_progression_chance = event.slot_data.get("shop_fake_trap_chance", 50)
         self._set_enabled_locations(event.context.server_locations)
         self._scout_locations = set().union(self._enabled_character_slots.values(), self._enabled_extra_slots.values())
         if not self._scout_locations:
@@ -400,7 +404,6 @@ class ShopNamesReplacer(ClientComponent):
                 # to be changed.
                 is_in_shop = event.context.is_in_shop()
                 if is_in_shop != self._is_in_shop:
-                    text_replacer = event.context.text_replacer
                     if is_in_shop:
                         self._replace_extras_names_with_shop_checks(event.context)
                     else:

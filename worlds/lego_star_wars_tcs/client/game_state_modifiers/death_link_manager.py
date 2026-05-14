@@ -8,7 +8,7 @@ from Utils import async_start
 from . import ClientComponent
 from .studs import give_studs
 from ..common import StaticUint, FloatField
-from ..common_addresses import CURRENT_AREA_ADDRESS, is_actively_playing, player_character_entity_iter, CustomSaveFlags1
+from ..common_addresses import CURRENT_AREA_ADDRESS, player_character_entity_iter, CustomSaveFlags1
 from ..events import (
     subscribe_event,
     OnReceiveSlotDataEvent,
@@ -35,13 +35,13 @@ DISALLOWED_DEATH_CHARACTER_IDS = frozenset()
 
 
 # Player death count in the current area. Resets to zero upon area change.
-PLAYER_DEATH_COUNT_IN_CURRENT_AREA = StaticUint(0x951224)
+PLAYER_DEATH_COUNT_IN_CURRENT_AREA = StaticUint(0x951244)
 # Player death count in the current level. Resets to zero upon level change.
-# PLAYER_DEATH_COUNTER_IN_CURRENT_LEVEL = StaticUint(0x87b2d0)
+# PLAYER_DEATH_COUNTER_IN_CURRENT_LEVEL = StaticUint(0x87b2f0)
 
 
 # Flags for the currently active 'cheats' (Extras).
-CHEAT_FLAGS = StaticUint(0x950d8c)
+CHEAT_FLAGS = StaticUint(0x950dac)
 # For some reason, if the in-area death count is 0, but flag cheat 0x2000 is active, then the in-area death count is
 # increased to 1.
 CHEAT_FLAGS_STARTING_DEATH_COUNT = 0x2000
@@ -49,7 +49,7 @@ CHEAT_FLAGS_STARTING_DEATH_COUNT = 0x2000
 
 # There are a maximum of 8 playable characters in a level, pointers to their 'character entity' objects are in an
 # entity*[8] array at this address.
-PLAYER_CHARACTER_POINTERS_ARRAY_ADDRESS = 0x93d7f0
+PLAYER_CHARACTER_POINTERS_ARRAY_ADDRESS = 0x93d810
 
 
 VEHICLE_AMNESTY_AREA_IDS = frozenset({
@@ -448,7 +448,7 @@ class DeathLinkManager(ClientComponent):
     @subscribe_event
     async def update_game_state(self, event: OnGameWatcherTickEvent) -> None:
         ctx = event.context
-        if not self.death_link_enabled or not ctx.is_in_game() or not is_actively_playing(ctx):
+        if not self.death_link_enabled or not ctx.is_in_game() or not event.is_actively_playing:
             return
 
         now = time.time()

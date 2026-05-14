@@ -8,7 +8,7 @@ config file.
 ## What does randomization do to this game?
 
 Access to levels is determined by World Keys instead of the standard progression of catching enough monkeys in a level.
-Which entrance leads to which level can also be randomized.
+Which entrance leads to which level, and which room you start each level in, can also be randomized.
 Gadgets are shuffled throughout the multiworld instead of being unlocked at specific points, optionally including the
 Time Net and Water Net.
 "Specter Token" items can also be included to unlock the chosen goal boss (Specter in either Monkey Madness or Peak
@@ -25,8 +25,8 @@ Specter Tokens can also be created, as an optional requirement for goal, similar
 Energy Chips, special pellets, Cookies and even Jackets fill the rest of the item pool.
 
 Monkeys and non-goal bosses are always locations.
-Specter Coins and Mailboxes can optionally be included as locations. The mailboxes in the gadget training rooms are
-not included in this due to technical limitations with the gadget training.
+Specter Coins, Jackets and Mailboxes can optionally be included as locations.
+Training rooms can also be included as locations, either as single checks for completion or on each mailbox within.
 Even if Mailbox Shuffle is turned off, the Time Station mailboxes will be included if the Time Net is shuffled.
 
 ## How do I check my settings?

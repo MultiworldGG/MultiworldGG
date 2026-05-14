@@ -1,74 +1,78 @@
+from .asm import ASM_FILES
+from ..common.patching.z80asm.Assembler import GameboyAddress
+
 EOB_ADDR = [
   0x3ef8, # 00
-  0x7f23, # 01 - garbage data here
-  0x7de7, # 02 - garbage data here
-  0x7e54, # 03 - garbage data here
-  0x7ee2, # 04
-  0x7d9d, # 05
-  0x7a73, # 06 - garbage data here - 128 bytes reserved for sprite expansion w/ web patcher
-  0x7caa, # 07 - garbage data here
-  0x7f5c, # 08
-  0x7def, # 09
-  0x7e08, # 0a
-  0x7fa8, # 0b
-  0x7f94, # 0c
-  0x7eaa, # 0d
-  0x7f88, # 0e
-  0x7f90, # 0f
-  0x7ef4, # 10
-  0x7f73, # 11
-  0x7e8f, # 12
-  0x7ef0, # 13
-  0x7acd, # 14
-  0x7bfb, # 15
-  0x7e03, # 16
-  0x6ee3, # 17 - garbage data here (lots of space here)
-  0x799e, # 18 - garbage data here
-  0x7fdf, # 19
-  0x7ed0, # 1a
-  0x7ee0, # 1b
-  0x7dc0, # 1c - garbage data here
-  0x8000, # 1d
-  0x8000, # 1e
-  0x8000, # 1f
-  0x8000, # 20
-  0x8000, # 21
-  0x8000, # 22
-  0x8000, # 23
-  0x8000, # 24
-  0x8000, # 25
-  0x8000, # 26
-  0x8000, # 27
-  0x8000, # 28
-  0x8000, # 29
-  0x8000, # 2a
-  0x8000, # 2b
-  0x8000, # 2c
-  0x8000, # 2d
-  0x8000, # 2e
-  0x8000, # 2f
-  0x8000, # 30
-  0x8000, # 31
-  0x8000, # 32
-  0x8000, # 33
-  0x8000, # 34
-  0x8000, # 35
-  0x8000, # 36
-  0x8000, # 37
-  0x6afb, # 38 - lots of space here
-  0x8000, # 39
-  0x8000, # 3a
-  0x8000, # 3b
-  0x8000, # 3c
-  0x8000, # 3d
-  0x8000, # 3e
-  0x7d0a  # 3f 
+  0x3f23, # 01 - garbage data here
+  0x3de7, # 02 - garbage data here
+  0x3e54, # 03 - garbage data here
+  0x3ee2, # 04
+  0x3d9d, # 05
+  0x3a73, # 06 - garbage data here - 128 bytes reserved for sprite expansion w/ web patcher
+  0x3caa, # 07 - garbage data here
+  0x3f5c, # 08
+  0x3def, # 09
+  0x3e08, # 0a
+  0x3fa8, # 0b
+  0x3f94, # 0c
+  0x3eaa, # 0d
+  0x3f88, # 0e
+  0x3f90, # 0f
+  0x3ef4, # 10
+  0x3f73, # 11
+  0x3e8f, # 12
+  0x3ef0, # 13
+  0x3acd, # 14
+  0x3bfb, # 15
+  0x3e03, # 16
+  0x2ee3, # 17 - garbage data here (lots of space here)
+  0x399e, # 18 - garbage data here
+  0x3fdf, # 19
+  0x3ed0, # 1a
+  0x3ee0, # 1b
+  0x3dc0, # 1c - garbage data here
+  0x4000, # 1d
+  0x4000, # 1e
+  0x4000, # 1f
+  0x4000, # 20
+  0x4000, # 21
+  0x4000, # 22
+  0x4000, # 23
+  0x4000, # 24
+  0x4000, # 25
+  0x4000, # 26
+  0x4000, # 27
+  0x4000, # 28
+  0x4000, # 29
+  0x4000, # 2a
+  0x4000, # 2b
+  0x4000, # 2c
+  0x4000, # 2d
+  0x4000, # 2e
+  0x4000, # 2f
+  0x4000, # 30
+  0x4000, # 31
+  0x4000, # 32
+  0x4000, # 33
+  0x4000, # 34
+  0x4000, # 35
+  0x4000, # 36
+  0x4000, # 37
+  0x2afb, # 38 - lots of space here
+  0x4000, # 39
+  0x4000, # 3a
+  0x4000, # 3b
+  0x4000, # 3c
+  0x4000, # 3d
+  0x4000, # 3e
+  0x3d0a  # 3f 
 ]
 
 DEFINES = {
     "AREAFLAG_OUTDOORS":"$01",
     "BTN_A": "$01",
     "BTN_B": "$02",
+    "BTN_START": "$08",
     "COLLECT_PICKUP_NOFLAG":"$02",
     "COLLECT_PICKUP":"$0a",
     "COLLECT_POOF":"$1a",
@@ -85,6 +89,15 @@ DEFINES = {
     "SND_TELEPORT":"$8d",
     "SND_GETSEED": "$5e",
     "SND_COMPASS": "$a2",
+        
+    "TX_REMOTE_ITEM":"$3b",
+    "DEV_RING":"$40",
+    "INTERAC_MULTI_BYTE":"$7f # low byte of struct",
+    "INTERACID_TREASURE":"$60",
+
+    # TREASURES
+    # ---------
+    "TREASURE_NONE":"$00",
     "TREASURE_SHIELD":"$01",
     "TREASURE_PUNCH":"$02",
     "TREASURE_BOMBS":"$03",
@@ -93,16 +106,31 @@ DEFINES = {
     "TREASURE_BOOMERANG":"$06",
     "TREASURE_ROD_OF_SEASONS":"$07",
     "TREASURE_MAGNET_GLOVES":"$08",
+    #"TREASURE_SWITCH_HOOK_HELPER":"$09",
     "TREASURE_SWITCH_HOOK":"$0a",
+    #"TREASURE_SWITCH_HOOK_CHAIN":"$0b",
     "TREASURE_BIGGORON_SWORD":"$0c",
+    "TREASURE_BOMBCHUS":"$0d",
     "TREASURE_FLUTE":"$0e",
     "TREASURE_SHOOTER":"$0f",
+    # ---------
+    #"TREASURE_10":"$10",
     "TREASURE_HARP":"$11",
+    #"TREASURE_12":"$12",
     "TREASURE_SLINGSHOT":"$13",
+    #"TREASURE_14":"$14",
+    "TREASURE_SHOVEL":"$15",
     "TREASURE_BRACELET":"$16",
     "TREASURE_FEATHER":"$17",
+    #"TREASURE_14":"$14",
     "TREASURE_SEED_SATCHEL":"$19",
+    #"TREASURE_1a":"$1a",
+    #"TREASURE_1b":"$1b",
+    #"TREASURE_1c":"$1c",
+    #"TREASURE_MINECART_COLLISION":"$1d",
     "TREASURE_FOOLS_ORE":"$1e",
+    #"TREASURE_1f":"$1f",
+    # ---------
     "TREASURE_EMBER_SEEDS":"$20",
     "TREASURE_SCENT_SEEDS":"$21",
     "TREASURE_PEGASUS_SEEDS":"$22",
@@ -114,59 +142,64 @@ DEFINES = {
     "TREASURE_RUPEES":"$28",
     "TREASURE_HEART_REFILL":"$29",
     "TREASURE_HEART_CONTAINER":"$2a",
+    "TREASURE_HEART_PIECE":"$2b",
+    "TREASURE_RING_BOX":"$2c",
     "TREASURE_RING":"$2d",
     "TREASURE_FLIPPERS":"$2e",
+    "TREASURE_POTION":"$2f",
+    # ---------
     "TREASURE_SMALL_KEY":"$30",
     "TREASURE_BOSS_KEY":"$31",
     "TREASURE_COMPASS":"$32",
     "TREASURE_MAP":"$33",
-    "TREASURE_MAKU_SEED":"$36",
-    "TREASURE_ESSENCE":"$40",
-    "TREASURE_TRADEITEM":"$41",
-    "TREASURE_STAR_ORE":"$45",
-    "TREASURE_MERMAID_SUIT":"$4a",
-    "TREASURE_MASTERS_PLAQUE":"$54",
-    "TREASURE_GORON_LETTER":"$59",
-    "TREASURE_GNARLED_KEY":"$42",
-    "TREASURE_FLOODGATE_KEY":"$43",
-    "TREASURE_DRAGON_KEY":"$44",
-    "TREASURE_STAR_ORE":"$45",
-    "TREASURE_RIBBON":"$46",
-    "TREASURE_SPRING_BANANA":"$47",
-    "TREASURE_RICKY_GLOVES":"$48",
-    "TREASURE_BOMB_FLOWER":"$49",
-    "TREASURE_RUSTY_BELL":"$4a",
-    "TREASURE_PIRATES_BELL":"$25",
-    "TREASURE_TREASURE_MAP":"$4b",
-    "TREASURE_ROUND_JEWEL":"$4c",
-    "TREASURE_PYRAMID_JEWEL":"$4d",
-    "TREASURE_SQUARE_JEWEL":"$4e",
-    "TREASURE_X_SHAPED_JEWEL":"$4f",
-    "TREASURE_RED_ORE":"$50",
-    "TREASURE_BLUE_ORE":"$51",
-    "TREASURE_HARD_ORE":"$52",
-    "TREASURE_MEMBERS_CARD":"$53",
-    "TREASURE_MASTERS_PLAQUE":"$54",
-    "TREASURE_BOMB_FLOWER_LOWER_HALF":"$58",
-    "TREASURE_POE_CLOCK":"$3d",
-    "TREASURE_STATIONARY":"$3e",
-    "TREASURE_STINK_BAG":"$3f",
-    "TREASURE_TASTY_MEAT":"$47",
-    "TREASURE_DOGGIE_MASK":"$56",
-    "TREASURE_DUMBBELL":"$57",
-    "TREASURE_CHEESY_MUSTACHE":"$5f",
-    "TREASURE_FUNNY_JOKE":"$3c",
+    "TREASURE_GASHA_SEED":"$34",
     "TREASURE_TOUCHING_BOOK":"$35",
+    "TREASURE_MAKU_SEED":"$36",
+    "TREASURE_MERMAID_SUIT":"$4a",
+    "TREASURE_GORON_LETTER":"$59",
+    "TREASURE_ZORA_POTION":"$37", # Replace Ore Chunk in ages
     "TREASURE_MAGIC_OAR":"$38",
     "TREASURE_SEA_UKULELE":"$39",
     "TREASURE_BROKEN_SWORD":"$3a",
-    "TREASURE_GASHA_SEED":"$34",
-    "TREASURE_POTION":"$2f",
-    "TREASURE_ZORA_POTION":"$37", # Replace Ore Chunk
-    "TX_REMOTE_ITEM":"$3b",
-    "DEV_RING":"$40",
-    "INTERAC_MULTI_BYTE":"$7f # low byte of struct",
-    "INTERACID_TREASURE":"$60",
+    "TREASURE_CRACKED_TUNI_NUT": "$3b",
+    "TREASURE_FUNNY_JOKE":"$3c",
+    "TREASURE_POE_CLOCK":"$3d",
+    "TREASURE_STATIONERY":"$3e",
+    "TREASURE_STINK_BAG":"$3f",
+    # ---------
+    "TREASURE_ESSENCE":"$40",
+    "TREASURE_TRADEITEM":"$41",
+    "TREASURE_GRAVEYARD_KEY":"$42",
+    "TREASURE_CROWN_KEY":"$43",
+    "TREASURE_MERMAID_KEY":"$44",
+    "TREASURE_OLD_MERMAID_KEY":"$45",
+    "TREASURE_LIBRARY_KEY":"$46",
+    "TREASURE_TASTY_MEAT":"$47",
+    "TREASURE_RICKY_GLOVES":"$48",
+    "TREASURE_BOMB_FLOWER":"$49",
+    "TREASURE_MERMAID_SUIT":"$4a",
+    "TREASURE_SLATE":"$4b",
+    "TREASURE_TUNI_NUT":"$4c",
+    "TREASURE_SCENT_SEEDLING":"$4d",
+    "TREASURE_ZORA_SCALE":"$4e",
+    "TREASURE_TOKAY_EYEBALL":"$4f",
+    # ---------
+    #"TREASURE_EMPTY_BOTTLE":"$50", # Unused ?
+    "TREASURE_FAIRY_POWDER":"$51",
+    "TREASURE_CHEVAL_ROPE":"$52",
+    #"TREASURE_MEMBERS_CARD":"$53",  # Unused ?
+    "TREASURE_ISLAND_CHART":"$54",
+    "TREASURE_BOOK_OF_SEAL":"$55",
+    "TREASURE_DOGGIE_MASK":"$56",
+    "TREASURE_DUMBBELL":"$57",
+    "TREASURE_BOMB_FLOWER_LOWER_HALF":"$58",
+    "TREASURE_GORON_LETTER":"$59",
+    "TREASURE_LAVA_JUICE":"$5a",
+    "TREASURE_BROTHER_EMBLEM":"$5b",
+    "TREASURE_GORON_VASE":"$5c",
+    "TREASURE_GORONADE":"$5d",
+    "TREASURE_ROCK_BRISKET":"$5e",
+    "TREASURE_CHEESY_MUSTACHE":"$5f",
 
     # script commands
     "scriptend":"$00",
@@ -218,6 +251,8 @@ DEFINES = {
     "hRomBank":"$97",
 
     # wram
+    "wSubscreen1CurrentSlotIndex": "$c085",
+    "wBigBuffer": "$c300",
     "wKeysPressed":"$c481",
     "wKeysJustPressed":"$c482",
     "wAnimalRegion":"$c610",
@@ -229,9 +264,12 @@ DEFINES = {
     "wTextIndexH":"$cba3",
     "wTextNumberSubstitution":"$cba8",
     "wMapMenu_mode":"$cbb3",
+    "cinematicState":"$cbb5",
     "wMapMenu_cursorIndex":"$cbb6",
+    "wInventorySubmenu0CursorPos": "$cbd0",
     "wInventorySubmenu1CursorPos":"$cbd1",
     "wRingMenu_mode":"$cbd3",
+    "wStatusBarNeedsRefresh": "$cbea",
     "wNetTreasureIn":"$cbfb",
     "wNetPlayerOut":"$cbfd",
     "wNetTreasureOut":"$cbfe",
@@ -288,6 +326,7 @@ DEFINES = {
     # wram
     "wFeatherLevel":"$0 # not present in ages",
     "wRememberedCompanionId":"$cc24",
+    "wIntroVar": "$c2e7",
     "wRickyState":"$c646",
     "wDimitriState":"$c647",
     "wAnimalTutorialFlags":"$c649",
@@ -303,6 +342,12 @@ DEFINES = {
     "wSatchelSelectedSeeds": "$c6c4",
     "wActiveRing":"$c6cb",
     "wRingBoxLevel":"$c6cc",
+    "wInventoryB": "$c6e8",  # Moved from c680
+    "wInventoryA": "$c6e9",  # Moved from c681
+    "wInventoryStorage": "$c6ea",  # Moved from c682-691
+    "<wInventoryB": "$e8",
+    "<wInventoryA": "$e9",
+    "<wInventoryStorage": "$ea",
     "wMakuMapTextPresent":"$c6e6",
     "wMakuMapTextPast":"$c6e7",
     "wMakuTreeState":"$c6e8",
@@ -400,41 +445,6 @@ DEFINES = {
     "GLOBALFLAG_WON_LYNNA_SHOOTING_GALLERY":"$49",
     "GLOBALFLAG_GAVE_MYST_SEED":"$4a",
 }
-
-ASM_FILES = [
-    "asm/util.yaml",
-    "asm/new_game.yaml",
-    "asm/triggers.yaml",
-    "asm/cutscenes.yaml",
-    "asm/layouts.yaml",
-    "asm/collect.yaml",
-    "asm/location.yaml",
-    "asm/map_menu.yaml",
-    "asm/progressives.yaml",
-    "asm/animals.yaml",
-    "asm/static_items.yaml",
-    "asm/multi.yaml",
-    "asm/rings.yaml",
-    "asm/misc.yaml",
-    "asm/new_treasures.yaml",
-    "asm/item_events.yaml",
-    "asm/timeportals.yaml",
-    "asm/boss_items.yaml",
-    "asm/keysanity.yaml",
-    "asm/shops_handling.yaml",
-    "asm/gfx.yaml",
-    "asm/get_item_behavior.yaml",
-    "asm/vars.yaml",
-    "asm/text.yaml",
-    "asm/remove_item_on_use.yaml",
-    "asm/dungeon_shuffle.yaml",
-    "asm/file_select_custom_string.yaml",
-    "asm/impa_refill.yaml",
-    "asm/combat_difficulty.yaml",
-    "asm/tokay_market.yaml",
-    "asm/compass_chimes.yaml",
-    "asm/warp_to_start.yaml"
-]
 
 RUPEE_VALUES = {
     0: 0x00,
@@ -553,6 +563,15 @@ DUNGEON_ENTRANCES = {
         "shifted": True,
         "default":"d8"
     },
+    "d11": {
+        "addr": GameboyAddress(0x04, 0x770c).address_in_rom(),
+        "map_tile": 0x048,
+        "room": 0x48,
+        "group": 0x00,
+        "position": 0x28,
+        "shifted": False,
+        "default":"d11"
+    },
     "d6 past": {
         "addr": 0x139b4,
         "map_tile": 0x13c,
@@ -575,6 +594,7 @@ DUNGEON_EXITS = {
     "d6 present": 0x13c48,
     "d7": 0x13c60,
     "d8": 0x13c74,
+    "d11": 0x13ae4,
     "d6 past": 0x13c54,
 }
 
@@ -606,8 +626,8 @@ SEED_TREE_DATA = {
         "location" : "Crescent Island: Seed Tree",
         "codeAdress" : 0x499b8,
     },
-    "Symmetry city" : {
-        "location" : "Symmetry city: Seed Tree",
+    "Symmetry City" : {
+        "location" : "Symmetry City: Seed Tree",
         "codeAdress" : 0x499a1,
     },
     "Rolling Ridge West" : {

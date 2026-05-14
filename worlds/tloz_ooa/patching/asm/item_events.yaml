@@ -285,7 +285,7 @@
     db jumpalways
     dw script_soldierDone
 0c//script_soldierCheckSeeds: |
-    db jumpifc6xxset,bd,ff
+    db jumpifc6xxset,$bd,$ff
     dw script_soldierGiveItem
     db $5d,$ee # jump
 0c//script_dekuForestSoldier: |
@@ -328,9 +328,9 @@
 # skip normal boomerang check in target carts, since EOB code handles it.
 15/66ae/: jr $0b
 # remove "boomerang" from random prizes (it's guaranteed second instead).
-15/66e5/: db 03,03,03 # prize indexes in a table
+15/66e5/: db $03,$03,$03 # prize indexes in a table
 # don't give boomerang as a shooting gallery prize either.
-15/52b6/: db jumpalways,c3,52,scriptend
+15/52b6/: db jumpalways,$c3,$52,scriptend
 
 # trade lava juice without having the mermaid key.
 15/6879/: jr nc,$00

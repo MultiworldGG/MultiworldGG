@@ -61,7 +61,7 @@ class Hint:
         # At the very end, we have the base state has done sweep_for_advancements with no excluded locations. We save that state, so that we can determine
         #   which of the hinted locations are not reachable, so that we can say "lost" in the cryptic hint.
 
-        MAIN_BATCH_SIZE = 500
+        MAIN_BATCH_SIZE = 200
         SPHERE_BATCH_SIZE = 25
 
         # In case of when everybody with cryptic hints has signpost_hints = 0
@@ -129,7 +129,6 @@ class Hint:
             # We finished a main batch, so we update the base state for the next main batch.
             base_state.sweep_for_advancements(checked_locations=base_state.locations_checked | remaining_locations)
         # Save final state for lost hints
-        print(MAIN_BATCH_SIZE)
         Hint.final_state = base_state
     @staticmethod
     def is_last_cryptic_hint_world(world: "BanjoTooieWorld"):

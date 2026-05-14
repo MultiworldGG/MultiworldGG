@@ -292,6 +292,18 @@ def launch(exe: Sequence[str], in_terminal: bool = False) -> bool:
     return False
 
 
+def restart_launcher() -> None:
+    launcher_exe = get_exe("Launcher")
+    if not launcher_exe:
+        raise FileNotFoundError("Unable to resolve executable for Launcher")
+    subprocess.Popen(launcher_exe)
+
+    from kivy.app import App
+    app = App.get_running_app()
+    if app:
+        app.stop()
+
+
 def create_shortcut(button: Any, component: Component) -> None:
     from pyshortcuts import make_shortcut
     env = os.environ

@@ -355,7 +355,7 @@ class HereComesNikoWorld(World):
             else:
                 real_cassette_cost = self.cassette_cost[i] * 5
             spoiler_handle.write(f"%s Cassette Cost: %i\n" %(i, real_cassette_cost))
-        spoiler_handle.write(f"Extra added Cassettes: {self.extra_cassettes}")
+        spoiler_handle.write(f"Extra added Cassettes: {self.extra_cassettes}\n")
         if self.options.goal_completion.value == 2:
             spoiler_handle.write(f"Required Coins for custom goal: {self.custom_goal_required}\n")
 

@@ -1,13 +1,13 @@
 from .LogicPredicates import *
 
 
-def make_overworld_logic(player: int):
-    return [
+def make_overworld_logic(player: int, options: OracleOfAgesOptions):
+    labrynna_logic = [
         
         # FOREST OF TIME
         #######################################
         ["Menu", "forest of time", False, None],
-        ["Menu", "maple trade", False, lambda state: all([
+        ["black tower worker", "maple trade", False, lambda state: all([
             ooa_can_kill_normal_enemy(state, player, True),
             state.has("Touching Book", player)
         ])],
@@ -16,7 +16,10 @@ def make_overworld_logic(player: int):
 
         # LYNNA CITY
         #######################################
-        ["forest of time", "lynna city", True, lambda state: ooa_can_break_bush(state, player)],
+        ["forest of time", "lynna city", True, lambda state: any([
+            ooa_can_break_bush(state, player),
+            ooa_option_lynna_gardener(state, player)
+        ])],
         ["lynna city", "south lynna tree", False, lambda state: ooa_can_harvest_tree(state, player, True)],
         ["lynna city", "lynna city chest", False, lambda state: ooa_can_use_ember_seeds(state, player, False)],
         ["lynna village", "lynna city chest", False, lambda state: ooa_can_go_back_to_present(state, player)],
@@ -62,7 +65,7 @@ def make_overworld_logic(player: int):
             ])
         ])],
         ["lynna village", "postman trade", False, lambda state: state.has("Poe Clock", player)],
-        ["lynna village", "toilet hand trade", False, lambda state: state.has("Stationary", player)],
+        ["lynna village", "toilet hand trade", False, lambda state: state.has("Stationery", player)],
         ["lynna village", "sad boi trade", False, lambda state: state.has("Funny Joke", player)],
         ["lynna village", "rafton's raft", False, lambda state: all([
             state.has("Cheval Rope", player),
@@ -91,16 +94,19 @@ def make_overworld_logic(player: int):
                 ooa_has_noble_sword(state, player),
                 ooa_has_seedshooter(state, player),
                 ooa_can_use_ember_seeds(state, player, False),
-                ooa_can_use_mystery_seeds(state, player)
+                ooa_can_use_mystery_seeds(state, player),
+                ooa_has_feather(state, player)
             ]),
             all([
                 ooa_option_medium_logic(state, player),
+                ooa_has_feather(state, player),
                 ooa_has_sword(state, player, False),
                 any([
                     # all seeds damage Twinrova phase 2
                     ooa_has_seedshooter(state, player),
                     all([
                         ooa_option_hard_logic(state, player),
+                        ooa_has_feather(state, player),
                         ooa_can_use_seeds(state, player),
                         # satchel can't use pegasus to damage, but all others work
                         any([
@@ -121,9 +127,11 @@ def make_overworld_logic(player: int):
         ["lynna city", "shore present", True, lambda state: any([
             ooa_can_swim_deepwater(state, player, True),
             ooa_has_bracelet(state, player),
-            ooa_can_go_back_to_present(state, player),
             all([
-                ooa_can_break_bush(state, player, True),
+                any([
+                    ooa_can_go_back_to_present(state, player),
+                    ooa_can_break_bush(state, player, True),
+                ]),
                 ooa_can_jump_1_wide_pit(state, player, True)
             ]),
         ])],
@@ -236,10 +244,8 @@ def make_overworld_logic(player: int):
         ["lynna village", "hidden tokay cave", True, lambda state: ooa_can_dive(state, player)],
         ["crescent past west", "crescent past east", False, lambda state: ooa_can_break_bush(state, player)],
         ["crescent present west", "crescent past east", False, lambda state: ooa_can_go_back_to_present(state, player)],
-        ["crescent past east", "tokay bomb cave", False, lambda state: all([
-            ooa_has_bracelet(state, player),
-            ooa_has_bombs(state, player),
-        ])],
+        ["crescent past east", "tokay chicken hut", False, lambda state: ooa_has_bracelet(state, player)],
+        ["tokay chicken hut", "tokay bomb cave", False, lambda state: ooa_has_bombs(state, player)],
         ["crescent past east", "wild tokay game", False, lambda state: all([
             ooa_has_bracelet(state, player),
             ooa_has_bombs(state, player),
@@ -406,15 +412,20 @@ def make_overworld_logic(player: int):
                 ooa_has_switch_hook(state, player),
             ]),
         ])],
+        ["ridge west past base", "ridge west present", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ["ridge west past base", "goron elder", False, lambda state: state.has("Bomb Flower", player)],
-        ["ridge west present", "ridge west past", False, lambda state: all([
+        ["ridge west present", "ridge west past", False, lambda state: any([
+            ooa_can_switch_past_and_present(state, player),
+            all([
             ooa_can_open_portal(state, player),
             ooa_has_bracelet(state, player)
+            ])
         ])],
         ["ridge west present", "ridge west heartpiece", False, lambda state: ooa_has_bombs(state, player)],
         ["goron elder", "ridge west past", False, None],
         ["ridge west past", "ridge west past base", False, None],
         ["ridge west past", "ridge west tree", False, lambda state: ooa_can_harvest_tree(state, player, False)],
+
         #########
         ["ridge west past", "ridge west present", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ["ridge upper present", "ridge west present", False, None],
@@ -443,10 +454,16 @@ def make_overworld_logic(player: int):
         #####
         ["ridge upper present", "ridge upper past", False, lambda state: ooa_can_switch_past_and_present(state, player)],
         ["ridge upper present", "treasure hunting goron", False, lambda state: all([
-            ooa_has_bombs(state, player),
+            ooa_has_bombs(state, player, 2),
             ooa_has_ember_seeds(state, player),
-            ooa_can_open_portal(state, player),
-            ooa_has_bracelet(state, player)
+            any([
+                all([
+                    ooa_can_open_portal(state, player),
+                    ooa_has_bracelet(state, player)
+                ]),
+                ooa_can_switch_past_and_present(state, player),
+            ])
+
         ])],
         ["ridge upper past", "bomb goron head", False, lambda state: ooa_has_bombs(state, player)],
         ["ridge upper past", "ridge upper heartpiece", False, lambda state: all([
@@ -500,21 +517,22 @@ def make_overworld_logic(player: int):
                 ooa_can_jump_3_wide_pit(state, player, False),
             ])
         ])],
+        ["ridge diamonds past", "ridge mid past", False, None],
         ["ridge mid past", "ridge mid present", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ["ridge mid present", "target carts", True, lambda state: all([
             ooa_has_switch_hook(state, player),
             state.has("_access_cart", player),
         ])],
         ["goron shooting gallery", "target carts", False, lambda state: ooa_can_go_back_to_present(state, player)],
-        ["target carts", "target carts 1", True, lambda state: all([
-            ooa_has_seedshooter(state, player),
-            any([
-                ooa_has_ember_seeds(state, player),
-                ooa_has_mystery_seeds(state, player),
-                ooa_has_pegasus_seeds(state, player),
-                ooa_has_scent_seeds(state, player),
-            ])
-        ])],
+        ["target carts", "target carts 1", True, None], #lambda state: all([minigame gives a seed shooter, possible later asm to remove unless you own shooter
+            #ooa_has_seedshooter(state, player),
+            #any([
+                #ooa_has_ember_seeds(state, player),
+                #ooa_has_mystery_seeds(state, player),
+                #ooa_has_pegasus_seeds(state, player),
+                #ooa_has_scent_seeds(state, player),
+            #])
+        #])],
         ["target carts 1", "target carts 2", True, None],
         ["ridge mid present", "big bang game", True, lambda state: state.has("Goronade", player)],
         ["ridge mid present", "goron diamond cave", True, lambda state: any([
@@ -534,9 +552,12 @@ def make_overworld_logic(player: int):
         ])],
         ["ridge mid present", "goron shooting gallery", False, lambda state: ooa_can_switch_past_and_present(state, player)],
         ["goron shooting gallery", "goron shooting gallery price", False, lambda state: ooa_has_sword(state, player)],
-        ["ridge mid past", "ridge east tree", False, lambda state: all([
+        ["ridge mid past", "ridge east tree", False, lambda state: any([
             ooa_can_harvest_tree(state, player, False),
-            ooa_can_warp_using_gale_seeds(state, player),
+            all([
+                ooa_option_medium_logic(state, player),
+                ooa_can_warp_using_gale_seeds(state, player),
+            ])
         ])],
         ["goron shooting gallery", "ridge east tree", False, lambda state: ooa_can_harvest_tree(state, player, False)],
         ["ridge mid past", "trade lava juice", False, lambda state: state.has("Lava Juice", player)],
@@ -603,3 +624,10 @@ def make_overworld_logic(player: int):
         ["d8 entrance", "sea of no return", False, lambda state: ooa_has_glove(state, player)],
 
     ]
+
+    if options.linked_heros_cave.value > 0:
+        labrynna_logic.extend([
+            ["lynna city", "d11 entrance", False, None]
+        ])
+
+    return labrynna_logic

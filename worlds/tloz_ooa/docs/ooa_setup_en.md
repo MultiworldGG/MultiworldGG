@@ -4,7 +4,7 @@
 
 - [Oracle of Ages .apworld](https://github.com/SenPierre/ArchipelagoOoA/releases/latest)
 - [Bizhawk 2.9.1 (x64)](https://tasvideos.org/BizHawk/ReleaseHistory)
-- Your legally obtained Oracle of Ages US ROM file
+- Your legally obtained Oracle of Agess US ROM file
 
 ## Installation Instructions
 

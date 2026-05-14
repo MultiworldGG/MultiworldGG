@@ -8,7 +8,8 @@ The game's CUE file should also work alongside the BIN file if you have troubles
 - [BizHawk](https://tasvideos.org/BizHawk/ReleaseHistory) Versions between 2.9.1 & 2.11 will allow you to play the game. Any version below 2.9.1 may not work.
 - IF you want to use AP: The latest `grinch.apworld` file. You can find this on the [Releases page](https://github.com/MarioSpore/Grinch-AP/releases/latest). Put this in your `Archipelago/custom_worlds` folder.
 - PSX BIOS Firmware bin file, which is required to run the game through Bizhawk. The file you need should be
-named something like `SCPH-5501.BIN`.
+named something like `SCPH-5501.BIN`. Though, any other BIOS version should work fine
+if Bizhawk detects the version indicates either a star symbol or a green checkmark.
 
 ## Configuring BizHawk
 Once you have installed BizHawk, open `EmuHawk.exe` and change the following settings:

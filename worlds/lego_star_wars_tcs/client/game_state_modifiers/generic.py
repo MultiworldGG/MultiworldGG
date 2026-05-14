@@ -50,7 +50,7 @@ BONUS_CHARACTER_REQUIREMENTS: Mapping[int, AbstractSet[int]] = {
         for name in ("Darth Vader", "Stormtrooper", "C-3PO")},
 }
 
-BONUSES_BASE_ADDRESS = 0x86E4E4
+BONUSES_BASE_ADDRESS = 0x86e504
 
 
 logger = logging.getLogger("Client")

@@ -1,88 +1,21 @@
 import logging
 import os
 import yaml
-import settings
 
-from BaseClasses import Tutorial, Region, Location, LocationProgressType
-from Fill import fill_restrictive, FillError
+from BaseClasses import Region, Location, LocationProgressType
 from Options import Accessibility, OptionError
-from worlds.AutoWorld import WebWorld, World
 from typing import Any, Set, List, Dict, Optional, Tuple, ClassVar, TextIO, Union
-from .Data import *
+from .generation.Data import *
 from .data.Items import *
-from .Logic import create_connections, apply_self_locking_rules
+from .generation.Logic import create_connections, apply_self_locking_rules
 from .Options import *
-from .PatchWriter import ooa_create_appp_patch
+from .generation.PatchWriter import ooa_create_appp_patch
 from .data import LOCATIONS_DATA
 from .data.Constants import *
-from .data.Regions import REGIONS
+from .data.Regions import *
 from .Client import OracleOfAgesClient  # Unused, but required to register with BizHawkClient
-from .patching.ProcedurePatch import ROM_HASH
-
-class OOASettings(settings.Group):
-    class OOARomFile(settings.UserFilePath):
-        """File path of the OOA US rom"""
-        description = "Oracle of Ages (USA) ROM File"
-        copy_to = "Legend of Zelda, The - Oracle of Ages (USA).gbc"
-        md5s = [ROM_HASH]
-
-    class OoACharacterSprite(str):
-        """
-        The name of the sprite file to use (from "data/sprites/oos_ooa/").
-        Putting "link" as a value uses the default game sprite.
-        Putting "random" as a value randomly picks a sprite from your sprites directory for each generated ROM.
-        """
-    class OoACharacterPalette(str):
-        """
-        The color palette used for character sprite throughout the game.
-        Valid values are: "green", "red", "blue", "orange", and "random"
-        """
-    class OoAHeartBeepInterval(str):
-        """
-        A factor applied to the infamous heart beep sound interval.
-        Valid values are: "vanilla", "half", "quarter", "disabled"
-        """
-    
-    class OoAQolMermaidSuit(str):
-        """
-        Defines if you don't want to spam the buttons to swim with the mermaid suit.
-        """
-        
-    class OoAQuickFlute(str):
-        """
-        When enabled, playing the flute and the harp will immobilize you during a very small amount of time compared to vanilla game.
-        """
-
-    class OoASkipTokkeyDance(str):
-        """
-        Defines if you want to skip the small dance that tokkay does
-        """
-
-    class OoASkipSadBoiJoke(str):
-        """
-        Defines if you want to skip the joke you tell to the sad boi
-        """
-
-    rom_file: OOARomFile = OOARomFile(OOARomFile.copy_to)
-    heart_beep_interval: Union[OoAHeartBeepInterval, str] = "vanilla"
-    character_sprite: Union[OoACharacterSprite, str] = "link"
-    character_palette: Union[OoACharacterPalette, str] = "green"
-    qol_mermaid_suit: Union[OoAQolMermaidSuit, bool] = True
-    qol_quick_flute: Union[OoAQuickFlute, bool] = True
-    skip_tokkey_dance: Union[OoASkipTokkeyDance, bool] = False
-    skip_boi_joke: Union[OoASkipSadBoiJoke, bool] = False
-
-class OracleOfAgesWeb(WebWorld):
-    theme = "grass"
-    display_name = "The Legend of Zelda: Oracle of Ages"
-    tutorials = [Tutorial(
-        "Multiworld Setup Guide",
-        "A guide to setting up Oracle of Ages for MultiworldGG on your computer.",
-        "English",
-        "ooa_setup_en.md",
-        "ooa_setup/en",
-        ["Dinopony"]
-    )]
+from .Settings import OOASettings
+from .WebWorld import *
 
 class OracleOfAgesWorld(World):
     """
@@ -91,7 +24,6 @@ class OracleOfAgesWorld(World):
     Gather the Essences of Times, exorcice Nayru and defeat Veran to save the timeline of Labrynna
     """
     game = "The Legend of Zelda - Oracle of Ages"
-    author: str = "Dinopony, Piapiou, & Mael"
     options_dataclass = OracleOfAgesOptions
     options: OracleOfAgesOptions
     required_client_version = (0, 5, 1)
@@ -111,6 +43,14 @@ class OracleOfAgesWorld(World):
     settings: ClassVar[OOASettings]
     settings_key = "tloz_ooa_options"
 
+    ages = True
+    seasons = False
+    romhack = False
+
+    @classmethod
+    def version(cls) -> str:
+        return cls.world_version.as_simple_string()
+
     def __init__(self, multiworld, player):
         super().__init__(multiworld, player)
         self.pre_fill_items = []
@@ -121,35 +61,47 @@ class OracleOfAgesWorld(World):
     def fill_slot_data(self) -> dict:
         # Put options that are useful to the tracker inside slot data
         # TODO MOAR DATA ?
-        options = ["goal", "death_link",
-                   # Logic-impacting options
-                   "logic_difficulty",
-                   "shuffle_dungeons",
-                   "default_seed",
-                   # Locations
-                   "advance_shop",
-                   # Requirements
-                   "required_essences", "required_slates",
-                   # keysanity
-                   "keysanity_small_keys", "keysanity_boss_keys", "keysanity_slates"
-                   ]
 
-        slot_data = self.options.as_dict(*options)
+        slot_data = self.options.as_dict(*[
+            option_name 
+            for option_name in OracleOfAgesOptions.type_hints 
+            if hasattr(OracleOfAgesOptions.type_hints[option_name], "include_in_slot_data")
+        ])
         slot_data["animal_companion"] = COMPANIONS[self.options.animal_companion.value]
         slot_data["default_seed"] = SEED_ITEMS[self.options.default_seed.value]
-
         slot_data["dungeon_entrances"] = self.dungeon_entrances
 
         return slot_data
+    
+    def determine_warp_to_start_variables(self):
+        # Mashy wasn't sure if he liked the new warp to start location on his first video on playing my 1.0.0 beta hotfix. 
+        # Adding this to not force the new warp to start location on anyone that is still used to the old one.
+        if self.options.warp_to_start_location == OracleOfAgesWarpToStartLocation.option_near_timeportal:
+            return {
+                "room": 0x39,
+                "pos": 0x21
+            }
+        else:
+            return {
+                # The syntax is like this:
+                # "room" represents a byte number for the screen that link will go to when warp to start is activated.
+                # "pos" represents a byte number for a position link will be in when warp to start is active.
+                # "group" represents a byte number for a screen group that link will be in once warp to start is activated.
+                # "dest_transittion" is a number that will changes the screen after the warp
+                # "src_transittion" is a number that will changes the screen before the warp
+            }
 
     def generate_early(self):
         conflicting_rings = self.options.required_rings.value & self.options.excluded_rings.value
         if len(conflicting_rings) > 0:
             raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
         
+        if self.options.linked_heros_cave.value > 0:
+            self.dungeon_entrances["d11 entrance"] = "enter d11"
+        
         self.restrict_non_local_items()
 
-        if self.options.shuffle_dungeons == "shuffle":
+        if self.options.shuffle_dungeons:
             self.shuffle_dungeons()
 
         self.randomize_shop_prices()
@@ -195,6 +147,10 @@ class OracleOfAgesWorld(World):
         region_id = location_data["region_id"]
         if region_id == "advance shop":
             return self.options.advance_shop.value
+        
+        if "dungeon" in location_data:
+            if location_data["dungeon"] == 11:
+                return self.options.linked_heros_cave.value > 0
 
         # TODO FUNNY LOCATION ?
 
@@ -209,7 +165,13 @@ class OracleOfAgesWorld(World):
 
     def create_regions(self):
         # Create regions
-        for region_name in REGIONS:
+        regions = REGIONS.copy()
+
+        if self.options.linked_heros_cave.value > 0:
+            for region_name in D11_REGIONS:
+                regions.append(region_name)
+
+        for region_name in regions:
             region = Region(region_name, self.player, self.multiworld)
             self.multiworld.regions.append(region)
 
@@ -268,7 +230,7 @@ class OracleOfAgesWorld(World):
             self.multiworld.get_location(name, self.player).progress_type = LocationProgressType.EXCLUDED
 
     def set_rules(self):
-        create_connections(self.multiworld, self.player)
+        create_connections(self)
         apply_self_locking_rules(self.multiworld, self.player)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("_beaten_game", self.player)
 
@@ -318,11 +280,11 @@ class OracleOfAgesWorld(World):
                 continue
 
 
-            if self.options.master_keys != OracleOfAgesMasterKeys.option_disabled and "Small Key" in item_name:
+            if self.options.master_keys != OraclesMasterKeys.option_disabled and "Small Key" in item_name:
                 # Small Keys don't exist if Master Keys are set to replace them
                 filler_item_count += 1
                 continue
-            if self.options.master_keys == OracleOfAgesMasterKeys.option_all_dungeon_keys and "Boss Key" in item_name:
+            if self.options.master_keys == OraclesMasterKeys.option_all_dungeon_keys and "Boss Key" in item_name:
                 # Boss keys don't exist if Master Keys are set to replace them
                 filler_item_count += 1
                 continue
@@ -339,10 +301,11 @@ class OracleOfAgesWorld(World):
             item_pool_dict[item_name] = item_pool_dict.get(item_name, 0) + 1
 
         # If Master Keys are enabled, put one for every dungeon
-        if self.options.master_keys != OracleOfAgesMasterKeys.option_disabled:
+        if self.options.master_keys != OraclesMasterKeys.option_disabled:
             for small_key_name in ITEM_GROUPS["Master Keys"]:
-                item_pool_dict[small_key_name] = 1
-                filler_item_count -= 1
+                if self.options.linked_heros_cave.value > 0 or small_key_name != "Master Key (Linked Hero's Cave)":
+                    item_pool_dict[small_key_name] = 1
+                    filler_item_count -= 1
 
         # Add the required rings
         ring_copy = sorted(self.options.required_rings.value.copy())
@@ -418,104 +381,8 @@ class OracleOfAgesWorld(World):
         return self.pre_fill_items
 
     def pre_fill(self) -> None:
-        self.pre_fill_seeds()
-        self.pre_fill_dungeon_items()
-
-        #self.debug_pre_fill("Dimitri's Flute", "Impa Gift")
-
-    def debug_pre_fill(self, i, l):
-        collection_state = self.multiworld.get_all_state(False)
-        
-        locations = [loc for loc in self.multiworld.get_locations(self.player)
-                                 if l in loc.name]
-        item = [self.create_item(i)]
-        print(item)
-        print(locations)
-        fill_restrictive(self.multiworld, collection_state, locations, item, single_player_placement=True, lock=True, allow_excluded=True)
-
-    def pre_fill_dungeon_items(self):
-        # If keysanity is off, dungeon items can only be put inside local dungeon locations, and there are not so many
-        # of those which makes them pretty crowded.
-        # This usually ends up with generator not having anywhere to place a few small keys, making the seed unbeatable.
-        # To circumvent this, we perform a restricted pre-fill here, placing only those dungeon items
-        # before anything else.
-        collection_state = self.multiworld.get_all_state(False)
-        D6_remaining_location = []
-
-        for i in range(0, 10):
-            # Build a list of locations in this dungeon
-            dungeon_location_names = [name for name, loc in LOCATIONS_DATA.items()
-                                      if "dungeon" in loc and loc["dungeon"] == i]
-            dungeon_locations = [loc for loc in self.multiworld.get_locations(self.player)
-                                 if loc.name in dungeon_location_names]
-
-            # Build a list of dungeon items that are "confined" (i.e. must be placed inside this dungeon)
-            # See `create_items` to see how `self.dungeon_items` is populated depending on current options.
-            confined_dungeon_items = [item for item in self.dungeon_items if item.name.endswith(f"({DUNGEON_NAMES[i]})") or (i == 8 and "Slate" in item.name)]
-            if len(confined_dungeon_items) == 0:
-                if i == 9 or i == 6:
-                        D6_remaining_location += dungeon_locations
-                continue  # This list might be empty with some keysanity options
-            for item in confined_dungeon_items:
-                collection_state.remove(item)
-
-            # Perform a prefill to place confined items inside locations of this dungeon
-            for attempts_remaining in range(2, -1, -1):
-                self.random.shuffle(dungeon_locations)
-                try:
-                    fill_restrictive(self.multiworld, collection_state, dungeon_locations, confined_dungeon_items,
-                                     single_player_placement=True, lock=True, allow_excluded=True)
-                    if i == 9 or i == 6:
-                        D6_remaining_location += dungeon_locations
-                    break
-                except FillError as exc:
-                    if attempts_remaining == 0:
-                        raise exc
-                    logging.debug(f"Failed to shuffle dungeon items for player {self.player}. Retrying...")
-
-        # D6 specific item that can appear in both dungeon (the boss key)
-        d6CommonDungeon = "(Mermaid's Cave)"
-        
-        confined_dungeon_items = [item for item in self.dungeon_items if item.name.endswith(d6CommonDungeon) ]
-        
-        for item in confined_dungeon_items:
-            collection_state.remove(item)
-
-        # Preplace D6 Boss key
-        for attempts_remaining in range(2, -1, -1):
-            self.random.shuffle(D6_remaining_location)
-            try:
-                fill_restrictive(self.multiworld, collection_state, D6_remaining_location, confined_dungeon_items,
-                                    single_player_placement=True, lock=True, allow_excluded=True)
-                break
-            except FillError as exc:
-                if attempts_remaining == 0:
-                    raise exc
-                logging.debug(f"Failed to shuffle dungeon items for player {self.player}. Retrying...")
-
-
-    def pre_fill_seeds(self) -> None:
-        
-        def place_seed(seed_name: str, location_name: str):
-            seed_item = self.create_item(seed_name)
-            self.multiworld.get_location(location_name, self.player).place_locked_item(seed_item)
-            self.pre_fill_items.append(seed_item)
-
-        seeds_to_place = set([name for name in SEED_ITEMS if name != SEED_ITEMS[self.options.default_seed.value]])
-
-        manually_placed_trees = ["Lynna City: Seed Tree"]
-        trees_to_process = [name for name in TREES_TABLE if name not in manually_placed_trees]
-
-        # Place default seed type in Horon Village tree
-        place_seed(SEED_ITEMS[self.options.default_seed.value], "Lynna City: Seed Tree")
-
-        # Place remaining seeds on remaining trees
-        self.random.shuffle(trees_to_process)
-        for seed in seeds_to_place:
-            place_seed(seed, trees_to_process.pop())
-
-        while len(trees_to_process) != 0:
-            place_seed(self.random.choice(SEED_ITEMS), trees_to_process.pop())
+        from .generation.PreFill import pre_fill
+        pre_fill(self)
             
 
     def get_filler_item_name(self) -> str:
@@ -537,7 +404,7 @@ class OracleOfAgesWorld(World):
         return
 
     def write_spoiler(self, spoiler_handle):
-        spoiler_handle.write(f"Apworld version : {VERSION}")
+        spoiler_handle.write(f"Apworld version : {self.version()}")
         if self.options.shuffle_dungeons != "vanilla":
             spoiler_handle.write(f"\nDungeon Entrances ({self.multiworld.player_name[self.player]}):\n")
             for entrance, dungeon in self.dungeon_entrances.items():

@@ -6,7 +6,7 @@ from .Options import VictoryCondition
 
 from .Names import regionName, locationName, itemName
 from .Locations import BanjoTooieLocation
-from .Rules import BanjoTooieRules
+from .Rules import BanjoTooieRules, BanjoTooieUniversalTrackerRules
 
 # This dict contains all the regions, as well as all the locations that are always tracked by Archipelago.
 BANJO_TOOIE_REGIONS: Dict[str, List[str]] = {
@@ -1615,7 +1615,11 @@ def create_region(world, active_locations, name: str, locations=None):
 
 def connect_regions(self):
     player = self.player
-    rules = BanjoTooieRules(self)
+
+    if hasattr(self.multiworld, "generation_is_fake"):
+        rules = BanjoTooieUniversalTrackerRules(self)
+    else:
+        rules = BanjoTooieRules(self)
 
     region_menu = self.get_region(regionName.MENU)
     region_menu.add_exits({regionName.SM})
@@ -2216,7 +2220,19 @@ def connect_regions(self):
 
             # Entering Repair Depot is a very convoluted process.
             if source == regionName.GIBOSS:
-                add_indirect_condition(IndirectTransitionCondition(boss_entrance, boss_room, [regionName.GI3]))
+                add_indirect_condition(IndirectTransitionCondition(
+                    boss_entrance, boss_room, [regionName.GI3, regionName.GI2]
+                ))
+
+            if boss_room == regionName.WWBOSS:
+                if boss_entrance == regionName.WW:
+                    add_indirect_condition(IndirectTransitionCondition(
+                        boss_entrance, boss_room, [regionName.WWI]
+                    ))
+                else:
+                    add_indirect_condition(IndirectTransitionCondition(
+                        boss_entrance, boss_room, [regionName.WW, regionName.WWI]
+                    ))
 
             # Terry's nest has 2 loading zones, one of them not randomised, so leaving Terry's nest is logically relevant.
             if boss_room == regionName.TLBOSS:
@@ -2234,7 +2250,12 @@ def connect_regions(self):
                     terry_nest_region.add_exits({boss_entrance}, {})
 
     static_indirect_transition_conditions: List[IndirectTransitionCondition] = [
-        IndirectTransitionCondition(regionName.MT, regionName.MTKS, [regionName.MTJSG]),
+        IndirectTransitionCondition(regionName.MTKS, regionName.HP, [regionName.MTJSG]),
+        IndirectTransitionCondition(regionName.HP, regionName.MTKS, [regionName.IOHPG]),
+        IndirectTransitionCondition(regionName.GI4, regionName.GI4B, [regionName.GI3]),
+        IndirectTransitionCondition(regionName.GIES, regionName.GI2EM, [regionName.GI3B, regionName.GI4B]),
+        IndirectTransitionCondition(regionName.GIES, regionName.GI3B, [regionName.GI4B]),
+        IndirectTransitionCondition(regionName.TL, regionName.TL_HATCH, [regionName.TLTOP, regionName.TLBOSS]),
         IndirectTransitionCondition(regionName.GIO, regionName.GIF, [regionName.GI2, regionName.GI4]),
         IndirectTransitionCondition(regionName.GIOB, regionName.GIF, [regionName.GI2, regionName.GI4]),
         IndirectTransitionCondition(regionName.HP, regionName.JR, [regionName.CC]),

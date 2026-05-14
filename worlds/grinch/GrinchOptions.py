@@ -74,12 +74,12 @@ class StartingArea(Choice):
     If "progressive_vacuums" is enabled, this is not considered and will always start in Whoville.
     """
 
+    display_name = "Starting Area"
     option_whoville = 0
     option_who_forest = 1
     option_who_dump = 2
     option_who_lake = 3
     default = 0
-    display_name = "Starting Area"
 
 
 class ProgressiveVacuums(Toggle):  # DefaultOnToggle
@@ -131,7 +131,7 @@ class ExcludeEnvironments(OptionSet):
     "Scout's Hut", "North Shore", "Mayor's Villa", "Submarine World"
     """
 
-    display_name = "Exclude Environments"
+    display_name = "Environments Excluded"
     valid_keys = {
         "Post Office",
         "Clock Tower",

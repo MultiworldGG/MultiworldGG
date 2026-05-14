@@ -5,7 +5,7 @@ from functools import cached_property
 from typing import Callable, TypeVar, Any, ClassVar, Generic, Awaitable, overload, cast
 
 from ..common import ClientComponent
-from ..common_addresses import AREA_DATA_ID
+from ..common_addresses import AREA_DATA_ID, is_actively_playing
 from ..type_aliases import TCSContext
 
 
@@ -224,6 +224,15 @@ class OnGameWatcherTickEvent(Event):
     Reset to zero upon no longer being loaded into the game.
     Use modular arithmetic to run tick event callbacks less frequently.
     """
+
+    @cached_property
+    def is_actively_playing(self) -> bool:
+        """
+        Get whether the player is actively playing the game (not paused/alt-tabbed/in a cutscene/in the shop/etc.).
+
+        This property is cached the first time it is accessed.
+        """
+        return is_actively_playing(self.context)
 
 
 @dataclass

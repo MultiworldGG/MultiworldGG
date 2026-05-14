@@ -16,7 +16,7 @@ debug_logger = logging.getLogger("TCS Debug")
 
 
 # Flags set when on the Status screen.
-STATUS_LEVEL_FLAGS_ADDRESS = 0x87A6D8
+STATUS_LEVEL_FLAGS_ADDRESS = 0x87a6f8
 
 
 class StatusLevelFlags(IntFlag):

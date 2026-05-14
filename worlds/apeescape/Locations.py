@@ -260,6 +260,8 @@ location_table = {
     AELocation.Jacket19.value: 269,
     AELocation.Jacket20.value: 270,
     AELocation.Jacket21.value: 271,
+    AELocation.Jacket22.value: 272,
+    AELocation.Jacket23.value: 273,
 
     # Coins
     AELocation.Coin1.value: 301,
@@ -322,7 +324,6 @@ location_table = {
     AELocation.Coin85.value: 385,
     AELocation.Coin84.value: 384,
     AELocation.Coin82.value: 382,
-
 
     # Mailboxes
     AELocation.Mailbox1.value: 401,
@@ -414,13 +415,13 @@ location_table = {
     AELocation.Mailbox87.value: 487,
 
     # Training Rooms
-    AELocation.WaterTraining.value: 498,
-    AELocation.RadarTraining.value: 492,
-    AELocation.SlingTraining.value: 493,
-    AELocation.HoopTraining.value: 494,
+    AELocation.WaterTraining.value: 492,
+    AELocation.RadarTraining.value: 493,
+    AELocation.SlingTraining.value: 494,
+    AELocation.HoopTraining.value: 495,
     AELocation.FlyerTraining.value: 496,
     AELocation.CarTraining.value: 497,
-    AELocation.PunchTraining.value: 495,
+    AELocation.PunchTraining.value: 498,
 
     # Bosses
     AELocation.Boss73.value: 500,
@@ -429,7 +430,7 @@ location_table = {
     AELocation.W9L1Jake.value: 503
 }
 
-#Where RAM.levels[address] : Total monkeys count
+# Where RAM.levels[address]: Total monkeys count
 hundoMonkeysCount = {
     0x01: 4, # Fossil
     0x02: 6, # Primordial

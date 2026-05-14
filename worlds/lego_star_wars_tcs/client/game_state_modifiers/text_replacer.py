@@ -67,7 +67,7 @@ logger = logging.getLogger("Client")
 debug_logger = logging.getLogger("TCS Debug")
 
 # char***
-LOCALIZED_TEXT_ARRAY_POINTER = 0x926C20
+LOCALIZED_TEXT_ARRAY_POINTER = 0x926c40  # _TTab
 
 
 @dataclass

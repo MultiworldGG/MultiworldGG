@@ -1,6 +1,3 @@
-VERSION = "0.4.3"
-RETRO_COMPAT_VERSION = ["0.4.3", "0.4.2", "0.4.1", "0.4.0"]
-
 COMPANIONS = [
     "Ricky",
     "Dimitri",
@@ -22,16 +19,16 @@ SEED_ITEMS = [
     "Mystery Seeds"
 ]
 
-TREES_TABLE = [
-    "Lynna City: Seed Tree",
-    "Ambi's Palace: Seed Tree",
-    "Deku Forest: Seed Tree",
-    "Crescent Island: Seed Tree",
-    "Symmetry city: Seed Tree",
-    "Rolling Ridge West: Seed Tree",
-    "Rolling Ridge East: Seed Tree",
-    "Zora Village: Seed Tree",
-]
+TREES_TABLE = {
+    "Lynna City": "Lynna City: Seed Tree",
+    "Ambi's Palace": "Ambi's Palace: Seed Tree",
+    "Deku Forest": "Deku Forest: Seed Tree",
+    "Crescent Island": "Crescent Island: Seed Tree",
+    "Symmetry City": "Symmetry City: Seed Tree",
+    "Rolling Ridge West": "Rolling Ridge West: Seed Tree",
+    "Rolling Ridge East": "Rolling Ridge East: Seed Tree",
+    "Zora Village": "Zora Village: Seed Tree",
+}
 
 
 DUNGEON_NAMES = [
@@ -45,6 +42,8 @@ DUNGEON_NAMES = [
     "Jabu-Jabu's Belly",
     "Ancient Tomb",
     "Mermaid's Cave Past",
+    "",
+    "Linked Hero's Cave"
 ]
 
 REGIONS_CONVERSION_TABLE = {
@@ -117,6 +116,7 @@ ITEM_GROUPS = {
         "Small Key (Mermaid's Cave Present)",
         "Small Key (Jabu-Jabu's Belly)",
         "Small Key (Ancient Tomb)",
+        "Small Key (Linked Hero's Cave)",
         "Small Key (Mermaid's Cave Past)",
     ],
     "Boss Keys": [
@@ -161,6 +161,7 @@ ITEM_GROUPS = {
         "Master Key (Mermaid's Cave Present)",
         "Master Key (Jabu-Jabu's Belly)",
         "Master Key (Ancient Tomb)",
+        "Master Key (Linked Hero's Cave)",
         "Master Key (Mermaid's Cave Past)",
     ],
 }
@@ -291,6 +292,23 @@ LOCATION_GROUPS = {
         'Ancient Tomb (1F): Stalfos',
         'Ancient Tomb (B3F): Single Chest',
         'Ancient Tomb (B3F): Boss',
+    ],
+    'D11': [
+        "Linked Hero's Cave (1F): Pots Puzzle",
+        "Linked Hero's Cave (1F): Statue Puzzle #1",
+        "Linked Hero's Cave (1F): Bridge Puzzle #1",
+        "Linked Hero's Cave (1F): Shoot Eyes",
+        "Linked Hero's Cave (1F): Statue Puzzle #2",
+        "Linked Hero's Cave (1F): Pots Puzzle #2",
+        "Linked Hero's Cave (1F): Statue Puzzle #3",
+        "Linked Hero's Cave (1F): Bridge Puzzle #2",
+        "Linked Hero's Cave (1F): Color Room",
+        "Linked Hero's Cave (1F): Water Puzzle",
+        "Linked Hero's Cave (B1F): Water Puzzle",
+        "Linked Hero's Cave (B1F): Basement",
+        "Linked Hero's Cave (1F): Minecart Room",
+        "Linked Hero's Cave (1F): Completion Reward"
+
     ],
     'Trade Sequence': [
         'Yoll Graveyard: Graveyard Poe',

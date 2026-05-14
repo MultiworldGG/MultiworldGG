@@ -31,7 +31,7 @@ ALL_CHAPTER_AREA_IDS_SET = frozenset({area.area_id for area in CHAPTER_AREAS})
 
 # Changes according to what Area door the player is stand in front of. It is 0xFF while in the rest of the Cantina, away
 # from an Area door.
-CURRENT_AREA_DOOR_ADDRESS = 0x8795A0
+CURRENT_AREA_DOOR_ADDRESS = 0x8795c0  # _last_hub_area
 
 AREA_DATA_STORY_TRUE_JEDI_REQUIREMENT = UintField(0x8c)
 AREA_DATA_FREE_PLAY_TRUE_JEDI_REQUIREMENT = UintField(0x90)
@@ -286,7 +286,9 @@ class UnlockedChapterManager(ClientComponent):
                     assert chapter_unlock_requirement == options.ChapterUnlockRequirement.option_random_characters
                     count_required = self.per_chapter_required_character_count[short_name]
                     character_requirements = self.random_character_chapter_requirements[short_name]
-                assert count_required <= len(character_requirements), \
+                # Older versions do not provide a count in slot data, and instead assume all are required by setting the
+                # count_required to 999_999_999.
+                assert count_required <= len(character_requirements) or event.generator_version < (1, 4, 0), \
                     "Required counts should never be larger than the maximum possible"
                 if count_required < len(character_requirements):
                     # Not all are required.

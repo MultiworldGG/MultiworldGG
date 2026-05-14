@@ -19,16 +19,16 @@
     cp BTN_B | BTN_A
     jr nz,@done
     
-    ld a,option.startingGroup
+    ld a,option.warpingGroup
     set 7,a
     ld (wWarpDestGroup),a
-    ld a,option.startingRoom        ; Starting room ID
+    ld a,option.warpingRoom        ; room ID
     ld (wWarpDestRoom),a
-    ld a,option.startingPos         ; Position in starting room
+    ld a,option.warpingPos         ; Position in a room
     ld (wWarpDestPos),a
-    ld a,$05                        ; TRANSITION_DEST_FALL
+    ld a,option.warpingDestTransittion
     ld (wWarpTransition),a
-    ld a,$03
+    ld a,option.warpingSrcTransittion
     ld (wWarpTransition2),a
     ld a,$ff
     ld (wDisabledObjects),a

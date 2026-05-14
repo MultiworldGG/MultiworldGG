@@ -19,10 +19,10 @@ from .Locations import LocationData, all_location_table, MTLoc_Table, GMLoc_tabl
 from .Regions import create_regions, connect_regions
 from .Options import BanjoTooieOptions, EggsBehaviour, JamjarsSiloCosts, LogicType, ProgressiveEggAim, \
     ProgressiveWaterTraining, RandomizeBKMoveList, VictoryCondition, bt_option_groups, WorldRequirements
-from .Rules import BanjoTooieRules
+from .Rules import BanjoTooieRules, BanjoTooieUniversalTrackerRules
 from .Names import itemName, locationName, regionName
 from .WorldOrder import randomize_world_progression
-from BaseClasses import ItemClassification, Location, MultiWorld, Tutorial, Item
+from BaseClasses import CollectionState, ItemClassification, Location, MultiWorld, Tutorial, Item
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, icon_paths, components, Type, launch_subprocess
 
@@ -579,6 +579,10 @@ class BanjoTooieWorld(World):
             self.hand_preopened_silos()
 
     def validate_yaml_options(self) -> None:
+        if self.options.randomize_worlds.value and not self.options.skip_puzzles.value:
+            raise OptionError(
+                "Skip Puzzles must be enabled to randomize worlds."
+            )
         if self.options.randomize_worlds.value \
                 and self.options.randomize_bk_moves.value != RandomizeBKMoveList.option_none\
                 and self.options.logic_type.value == LogicType.option_intended:
@@ -599,10 +603,15 @@ class BanjoTooieWorld(World):
                 )
             if self.options.tokens_in_pool.value > 50 and not self.options.nestsanity.value:
                 raise OptionError("You cannot have more than 50 Mumbo Tokens without enabling Nestanity.")
-        if not self.options.randomize_notes.value\
-                and self.options.extra_trebleclefs_count.value != 0\
-                and self.options.bass_clef_amount.value != 0:
-            raise OptionError("Randomize Notes is required to add extra Treble Clefs or Bass Clefs")
+        if not self.options.randomize_notes.value:
+            if self.options.extra_trebleclefs_count.value != 0:
+                raise OptionError(
+                    "Randomize Notes is required to add extra Treble Clefs."
+                )
+            if self.options.bass_clef_amount.value != 0:
+                raise OptionError(
+                    "Randomize Notes is required to add Bass Clefs."
+                )
         if self.options.progressive_beak_buster.value\
                 and (not self.options.randomize_bk_moves.value or not self.options.randomize_bt_moves.value):
             raise OptionError(
@@ -723,7 +732,10 @@ class BanjoTooieWorld(World):
             self.multiworld.push_precollected(self.create_item(silo))
 
     def set_rules(self) -> None:
-        rules = BanjoTooieRules(self)
+        if hasattr(self.multiworld, "generation_is_fake"):
+            rules = BanjoTooieUniversalTrackerRules(self)
+        else:
+            rules = BanjoTooieRules(self)
         return rules.set_rules()
 
     def pre_fill_me(self) -> None:
@@ -1037,6 +1049,58 @@ class BanjoTooieWorld(World):
 
     def pre_output(self):
         generate_hint_data(self)
+
+    # Code written by Mysteryem, to detect an early unbeatable seed.
+    def generate_basic(self) -> None:
+        ## By running this check *before* item plando, it is only necessary to collect the current world's items and
+        ## pre-placed items in the current world, which has much better performance scaling in large multiworlds.
+        test_state = CollectionState(self.multiworld)
+        # Collect our progression items from the item pool.
+        for item in self.multiworld.itempool:
+            if item.player == self.player and item.advancement:
+                test_state.collect(item, True)
+        ## This is being run before the `pre_fill` step, so also collect any items that are going to be placed in the
+        ## `pre_fill` step.
+        # Collect our progression items that are going to be placed in the `pre_fill` step.
+        for item in self.get_pre_fill_items():
+            if item.advancement:
+                test_state.collect(item, True)
+        # Collect our reachable pre-placed progression items.
+        test_state.sweep_for_advancements(self.get_locations())
+        unreachable = [loc for loc in self.get_locations() if not loc.can_reach(test_state)]
+
+        def log_unreachable(reason: str) -> None:
+            if not unreachable:
+                return
+            body = "\n".join(str(loc) for loc in unreachable)
+            logging.warning(
+                "%s generate_basic — %s — %d unreachable location(s):\n%s",
+                self.player_name,
+                reason,
+                len(unreachable),
+                body,
+            )
+
+        ## If the loading zone randomization is performed after the item pool is created, e.g. in `connect_entrances`,
+        ## then accessibility/beatability failures here could be used to perform a limited number of retries at loading
+        ## zone randomization, in which case, this function could be changed to return True/False instead of raising
+        ## exceptions.
+        if not self.multiworld.has_beaten_game(test_state, self.player):
+            log_unreachable("has_beaten_game is False (after granting local advancement + sweep)")
+            raise OptionError(f"{self.player_name}: The game is unbeatable.")
+        ## Technically, MultiWorld.fulfills_accessibility() only raises an exception with __debug__, so it would be
+        ## optional to check accessibility, but note that AP's webhost runs with __debug__=True, so this would fail
+        ## there.
+        if __debug__:
+            ## If you were to opt-in to Items accessibility in the future, that would be a separate check that all your
+            ## pre-placed progression items are reachable.
+            # All locations must be reachable in Full accessibility.
+            if self.options.accessibility == "full" and unreachable:
+                log_unreachable("full accessibility (same can_reach probe as above)")
+                raise OptionError(
+                    f"{self.player_name}: The Full Accessibility requirement could not be met with the rolled loading "
+                    f"zone randomization. {len(unreachable)} location(s) unreachable (see log); first: {unreachable[0]}"
+                )
 
     def fill_slot_data(self) -> Dict[str, Any]:
         btoptions = {option_name: option.value for option_name, option in self.options.__dict__.items()}

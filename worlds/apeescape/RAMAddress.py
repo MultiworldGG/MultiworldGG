@@ -1233,141 +1233,141 @@ class RAM:
         204: 0x0DFAC8,
     }
     coinsListLocal = {
-        #Array Order:
-        # CoinNumber : [CoinVisualSprite,CoinHitBoxPosition]
-        # CoinVisualSprite : 4 = Coin Sprite(Not collected),0 = Collected
-        1 : [0x0BF03A,0x0BF03E], # This is the ONLY coin that has an audio bug for w/e reason
-        2 : [0x0BF1D2,0x0BF1D6],
-        3 : [0x0BF15A,0x0BF15E],
-        6 : [0x0BF0CA,0x0BF0CE],
-        7 : [0x0BF1BA,0x0BF1BE],
-        8 : [0x0BF1A2,0x0BF1A6],
-        9 : [0x0BF1EA,0x0BF1EE],
-        11 : [0x0BF172,0x0BF176],
-        12 : [0x0BF09A,0X0BF09E],
-        13 : [0x0BF142,0x0BF146],
-        14 : [0x0BF1A2,0x0BF1A6],
-        17 : [0x0BF142,0x0BF146],
-        21 : [0x0BF15A,0x0BF15E],
-        23 : [0x0BF1A2,0x0BF1A6],
-        24 : [0x0BF052,0x0BF056],
-        25 : [0x0BF142,0x0BF146],
-        28 : [0x0BF0B2,0x0BF0B6],
-        29 : [0x0BF142,0x0BF146],
-        30 : [0x0BF142,0x0BF146],
-        31 : [0x0BF172,0x0BF176],
-        32 : [0x0BF18A,0x0BF18E],
-        34 : [0x0BF112,0x0BF116],
-        35 : [0x0BF232,0x0BF236],
-        37 : [0x0BF0B2,0x0BF0B6],
-        38 : [0x0BF0E2,0x0BF0E6],
-        39 : [0x0BF1EA,0x0BF1EE],
-        40 : [0x0BF15A,0x0BF15E],
-        41 : [0x0BF00A,0x0BF00E],
-        44 : [0x0BF1A2,0x0BF1A6],
-        45 : [0x0BF172,0x0BF176],
-        46 : [0x0BF1BA,0x0BF1BE],
-        49 : [0x0BF142,0x0BF146],
-        50 : [0x0BF1EA,0x0BF1EE],
-        53 : [0x0BF18A,0x0BF18E],
-        54 : [0x0BF1A2,0x0BF1A6],
-        55 : [0x0BF24A,0x0BF24E],
-        58 : [0x0BF082,0x0BF086],
-        59 : [0x0BF18A,0x0BF18E],
-        64 : [0x0BF1EA,0x0BF1EE],
-        66 : [0x0BEFAA,0x0BEFAE],
-        73 : [0x0BF18A,0x0BF18E],
-        74 : [0x0BF09A,0x0BF09E],
-        75 : [0x0BF0E2,0x0BF0E6],
-        77 : [0x0BF12A,0x0BF12E],
-        78 : [0x0BF18A,0x0BF18E],
-        79 : [0x0BF21A,0x0BF21E],
-        80 : [0X0BF142,0X0BF146],
-        82 : [0X0BF1BA,0X0BF1BE],
-        84 : [0x0BF21A,0x0BF21E],
-        85 : [0x0BF0FA,0x0BF0FE],
+        # Array Order:
+        # CoinNumber: [CoinVisualSprite,CoinHitBoxPosition]
+        # CoinVisualSprite: 4 = Coin Sprite(Not collected), 0 = Collected
+        1: [0x0BF03A, 0x0BF03E], # This is the ONLY coin that has an audio bug for w/e reason
+        2: [0x0BF1D2, 0x0BF1D6],
+        3: [0x0BF15A, 0x0BF15E],
+        6: [0x0BF0CA, 0x0BF0CE],
+        7: [0x0BF1BA, 0x0BF1BE],
+        8: [0x0BF1A2, 0x0BF1A6],
+        9: [0x0BF1EA, 0x0BF1EE],
+        11: [0x0BF172, 0x0BF176],
+        12: [0x0BF09A, 0X0BF09E],
+        13: [0x0BF142, 0x0BF146],
+        14: [0x0BF1A2, 0x0BF1A6],
+        17: [0x0BF142, 0x0BF146],
+        21: [0x0BF15A, 0x0BF15E],
+        23: [0x0BF1A2, 0x0BF1A6],
+        24: [0x0BF052, 0x0BF056],
+        25: [0x0BF142, 0x0BF146],
+        28: [0x0BF0B2, 0x0BF0B6],
+        29: [0x0BF142, 0x0BF146],
+        30: [0x0BF142, 0x0BF146],
+        31: [0x0BF172, 0x0BF176],
+        32: [0x0BF18A, 0x0BF18E],
+        34: [0x0BF112, 0x0BF116],
+        35: [0x0BF232, 0x0BF236],
+        37: [0x0BF0B2, 0x0BF0B6],
+        38: [0x0BF0E2, 0x0BF0E6],
+        39: [0x0BF1EA, 0x0BF1EE],
+        40: [0x0BF15A, 0x0BF15E],
+        41: [0x0BF00A, 0x0BF00E],
+        44: [0x0BF1A2, 0x0BF1A6],
+        45: [0x0BF172, 0x0BF176],
+        46: [0x0BF1BA, 0x0BF1BE],
+        49: [0x0BF142, 0x0BF146],
+        50: [0x0BF1EA, 0x0BF1EE],
+        53: [0x0BF18A, 0x0BF18E],
+        54: [0x0BF1A2, 0x0BF1A6],
+        55: [0x0BF24A, 0x0BF24E],
+        58: [0x0BF082, 0x0BF086],
+        59: [0x0BF18A, 0x0BF18E],
+        64: [0x0BF1EA, 0x0BF1EE],
+        66: [0x0BEFAA, 0x0BEFAE],
+        73: [0x0BF18A, 0x0BF18E],
+        74: [0x0BF09A, 0x0BF09E],
+        75: [0x0BF0E2, 0x0BF0E6],
+        77: [0x0BF12A, 0x0BF12E],
+        78: [0x0BF18A, 0x0BF18E],
+        79: [0x0BF21A, 0x0BF21E],
+        80: [0X0BF142, 0X0BF146],
+        82: [0X0BF1BA, 0X0BF1BE],
+        84: [0x0BF21A, 0x0BF21E],
+        85: [0x0BF0FA, 0x0BF0FE],
     }
     jacketsListLocal = {
-        #Array Order:
-        # JacketNumber : [JacketVisualSprite,JacketHitBoxPosition,DoesRepawn]
-        # JacketVisualSprite : 2 = Jacket Sprite(Not collected),0 = Collected
-        13 : {
-            251 : [0x0BEFAA,0x0BEFAE,False]
+        # Array Order:
+        # JacketNumber: [JacketVisualSprite, JacketHitBoxPosition, DoesRepawn]
+        # JacketVisualSprite: 2 = Jacket Sprite(Not collected), 0 = Collected
+        13: {
+            251: [0x0BEFAA, 0x0BEFAE, False]
         },
-        14 : {
-            252 : [0x0BEFF2,0x0BEFF6,False]
+        14: {
+            252: [0x0BEFF2, 0x0BEFF6, False]
         },
-        17 : {
-            253 : [0x0BF172,0x0BF176,False]
+        17: {
+            253: [0x0BF172, 0x0BF176, False]
         },
-        27 : {
-            254 : [0x0BF00A,0x0BF00E,False]
+        27: {
+            254: [0x0BF00A, 0x0BF00E, False]
         },
-        33 : {
-            255 : [0x0BF1EA,0x0BF1EE,False]
+        33: {
+            255: [0x0BF1EA, 0x0BF1EE, False]
         },
-        34 : {
-            256 : [0x0BF172,0x0BF176,False]
+        34: {
+            256: [0x0BF172, 0x0BF176, False]
         },
-        35 : {
-            257 : [0x0BF27A,0x0BF27E,False]
+        35: {
+            257: [0x0BF27A, 0x0BF27E, False]
         },
         44: {
             258: [0x0BF202, 0x0BF206, False]
         },
-        47 : {
-            259 : [0x0BF232,0x0BF236,False]
+        47: {
+            259: [0x0BF232, 0x0BF236, False]
         },
-        55 : {
-            260 : [0x0BEFAA,0x0BEFAE,False]
+        55: {
+            260: [0x0BEFAA, 0x0BEFAE, False]
         },
-        60 : {
-            261 : [0x0BF232,0x0BF236,False]
+        60: {
+            261: [0x0BF232, 0x0BF236, False]
         },
-        61 : {
-            262 : [0x0BEFF2,0x0BEFF6,False]
+        61: {
+            262: [0x0BEFF2, 0x0BEFF6, False]
         },
-        73 : {
-            263 : [0x0BF1A2,0x0BF1A6,False]
+        73: {
+            263: [0x0BF1A2, 0x0BF1A6, False]
         },
-        80 : {
-            264 : [0x0BEFDA,0x0BEFDE,False]
+        80: {
+            264: [0x0BEFC2, 0x0BEFC6, False],
+            265: [0x0BEFDA, 0x0BEFDE, False]
         },
-        81 : {
-            265: [0x0B1B74,0x0BF236,True],
-            266 : [0x0BF202,0x0BF206,False],
-            267 : [0x0BF21A,0x0BF21E,False]
+        81: {
+            266: [0x0B1B74, 0x0BF236, True],
+            267: [0x0BF202, 0x0BF206, False],
+            268: [0x0BF21A, 0x0BF21E, False]
         },
-        82 : {
-            268: [0x0B1B74,0x0BF236,True],
-            269 : [0x0BF21A,0x0BF21E,False]
-
+        82: {
+            269: [0x0B1B74, 0x0BF236, True],
+            270: [0x0BF21A, 0x0BF21E, False]
         },
         83: {
-            271: [0x0B1B74, 0x0BF236, True]
-        },  # This value is 1 after the box is broken,2 after the life is collected
-        84 : {
-            270 : [0x0BF03A,0x0BF03E,False]
+            273: [0x0B1B74, 0x0BF236, True]
+        },  # This value is 1 after the box is broken, 2 after the life is collected
+        84: {
+            271: [0x0BF022, 0x0BF026, False],
+            272: [0x0BF03A, 0x0BF03E, False]
         },
 
     }
 
-    # TODO Respawning Jackets Box values are not stable
     respawningJacketsListLocal = {
-    # JacketNumber : [JacketBox,JacketBoxedValue,JacketVisualSprite,JacketHitBoxPosition]
-        #Respawning Jackets are like so : Check if it is Boxed, then check the
+    # JacketNumber: [JacketBox, JacketBoxedValue, JacketVisualSprite, JacketHitBoxPosition]
+        #Respawning Jackets are like so: Check if it is Boxed, then check the
         #Then check if the value is 0
-        #81 : [0x0E6FFA,0x01,0x0BF232,0x0BF236], #Box is F8 when opened, then Jacket visual is 2
-        #82 : [0x0E72A6,0x01,0x0BF232,0x0BF236],
-        #83 : [0x0E6AA2,0x01,0x0BF232,0x0BF236], #Not mapped
-        81 : {
+        #81: [0x0E6FFA, 0x01, 0x0BF232, 0x0BF236], # Box is F8 when opened, then Jacket visual is 2
+        #82: [0x0E72A6, 0x01, 0x0BF232, 0x0BF236],
+        #83: [0x0E6AA2, 0x01, 0x0BF232, 0x0BF236], # Not mapped
+        81: {
 
         },
-        82 : {
+        82: {
 
         },
         83: {
-            270: [0x0B1B74, 0x0BF236, True]
+            273: [0x0B1B74, 0x0BF236, True]
         },  # This value is 1 after the box is broken,2 after the life is collected
 
     }
@@ -2234,7 +2234,7 @@ class RAM:
     globalLamp_MonkeyDetect2 = 0x097560
 
     lampDoors_update = {
-        'localLamp_MonkeyDetect_ON':0x3C02800E,
+        'localLamp_MonkeyDetect_ON': 0x3C02800E,
         'localLamp_MonkeyDetect_OFF': 0x00000000,
 
         'globalLamp_MonkeyDetect1_ON': 0x02712021,
@@ -2246,81 +2246,81 @@ class RAM:
         # CBLamp
         # Array order: bytesToWrite, OpenValue, ClosedValue
         20: {  # CB_LampDoor
-            0x0C01AB: [1,0xF4,0xF8],  #CB_LampDoor_Visual1 Open = F4
-            0x0C01AF: [1,0x00,0x80],  #CB_LampDoor_Visual2 Open = 00
-            0x177B77: [1,0xF4,0xF8],  #CB_LampDoor_Hitbox Open = F4
+            0x0C01AB: [1, 0xF4, 0xF8],  #CB_LampDoor_Visual1 Open = F4
+            0x0C01AF: [1, 0x00, 0x80],  #CB_LampDoor_Visual2 Open = 00
+            0x177B77: [1, 0xF4, 0xF8],  #CB_LampDoor_Hitbox Open = F4
         },
         53: {  # CP_Lamp
-            0x0E7901:[1,0x00,0x10],  # CP_LampDoor_Visual1 Open = 00
-            0x0E7903:[1,0x10,0x00],  # CP_LampDoor_Visual2 Open = 10
-            0x0E7907:[1,0xF0,0x00],  # CP_LampDoor_Visual3 Open = F0
-            0x0E7909:[1,0x00,0x10],  # CP_LampDoor_Visual4 Open = 00
-            0x17ABA0:[2,0xE0C0,0xE200],  # CP_LampDoor_Hitbox1 Open = E0C0
-            0x17ABA6:[2,0x0040,0x0180],  # CP_LampDoor_Hitbox2 Open = 0040
-            0x17ABA9:[2,0x8003,0x8000],  # CP_LampDoor_Hitbox3 Open = 8003
+            0x0E7901: [1, 0x00, 0x10],  # CP_LampDoor_Visual1 Open = 00
+            0x0E7903: [1, 0x10, 0x00],  # CP_LampDoor_Visual2 Open = 10
+            0x0E7907: [1, 0xF0, 0x00],  # CP_LampDoor_Visual3 Open = F0
+            0x0E7909: [1, 0x00, 0x10],  # CP_LampDoor_Visual4 Open = 00
+            0x17ABA0: [2, 0xE0C0, 0xE200],  # CP_LampDoor_Hitbox1 Open = E0C0
+            0x17ABA6: [2, 0x0040, 0x0180],  # CP_LampDoor_Hitbox2 Open = 0040
+            0x17ABA9: [2, 0x8003, 0x8000],  # CP_LampDoor_Hitbox3 Open = 8003
         },
         79: {  # MM_Lamp
-            0x0E79D1:[1,0x00,0x10],  # MM_LampDoorL_Visual1 Open = 00
-            0x0E79C1:[1,0x00,0x10],  # MM_LampDoorL_Visual2 Open = 00
-            0x0E79C5:[1,0xF0,0x00],  # MM_LampDoorL_Visual3 Open = F0
-            0x0E79CD:[1,0x10,0x00],  # MM_LampDoorL_Visual4 Open = 10
-            0x0E79E1:[1,0x00,0x10],  # MM_LampDoorR_Visual1 Open = 00
-            0x0E79E5:[1,0x10,0x00],  # MM_LampDoorR_Visual2 Open = 10
-            0x0E79ED:[1,0xF0,0x00],  # MM_LampDoorR_Visual3 Open = F0
-            0x0E79F1:[1,0x00,0x10],  # MM_LampDoorR_Visual4 Open = 00
-            0x173C08:[2,0xFD40,0xFE80],  # MM_LampDoorL_Hitbox1 Open = FD40
-            0x173C0C:[4,0x00400B80,0x018009C0],  # MM_LampDoorL_Hitbox2 Open = 00400B80
-            0x173C12:[2,0x0180,0x0040],  # MM_LampDoorL_Hitbox3 Open = 0180
-            0x173CB0:[2,0x02C0,0x0180],  # MM_LampDoorR_Hitbox1 Open = 02C0
-            0x173CB4:[4,0x00400B80,0x018009C0],  # MM_LampDoorR_Hitbox2 Open = 00400B80
-            0x173CBA:[2,0x0180,0x0040]  # MM_LampDoorR_Hitbox3 Open = 0180
+            0x0E79D1: [1, 0x00, 0x10],  # MM_LampDoorL_Visual1 Open = 00
+            0x0E79C1: [1, 0x00, 0x10],  # MM_LampDoorL_Visual2 Open = 00
+            0x0E79C5: [1, 0xF0, 0x00],  # MM_LampDoorL_Visual3 Open = F0
+            0x0E79CD: [1, 0x10, 0x00],  # MM_LampDoorL_Visual4 Open = 10
+            0x0E79E1: [1, 0x00, 0x10],  # MM_LampDoorR_Visual1 Open = 00
+            0x0E79E5: [1, 0x10, 0x00],  # MM_LampDoorR_Visual2 Open = 10
+            0x0E79ED: [1, 0xF0, 0x00],  # MM_LampDoorR_Visual3 Open = F0
+            0x0E79F1: [1, 0x00, 0x10],  # MM_LampDoorR_Visual4 Open = 00
+            0x173C08: [2, 0xFD40, 0xFE80],  # MM_LampDoorL_Hitbox1 Open = FD40
+            0x173C0C: [4, 0x00400B80, 0x018009C0],  # MM_LampDoorL_Hitbox2 Open = 00400B80
+            0x173C12: [2, 0x0180, 0x0040],  # MM_LampDoorL_Hitbox3 Open = 0180
+            0x173CB0: [2, 0x02C0, 0x0180],  # MM_LampDoorR_Hitbox1 Open = 02C0
+            0x173CB4: [4, 0x00400B80, 0x018009C0],  # MM_LampDoorR_Hitbox2 Open = 00400B80
+            0x173CBA: [2, 0x0180, 0x0040]  # MM_LampDoorR_Hitbox3 Open = 0180
         },
         26: {  # DI_Lamp
-            0x0BFDAB:[1,0xF2,0xF6],  # DI_LampDoor_Visual1 Open = F2 | Closed = F6
-            0x0BFDAF:[1,0x00,0x80],  # DI_LampDoor_Visual2 Open = 00 | Closed = 80
-            0x169653:[1,0xF2,0xF6],  # DI_LampDoor_Hitbox Open = F2 | Closed = F6
+            0x0BFDAB: [1, 0xF2, 0xF6],  # DI_LampDoor_Visual1 Open = F2 | Closed = F6
+            0x0BFDAF: [1, 0x00, 0x80],  # DI_LampDoor_Visual2 Open = 00 | Closed = 80
+            0x169653: [1, 0xF2, 0xF6],  # DI_LampDoor_Hitbox Open = F2 | Closed = F6
         },
         46: {  # CrC_Lamp
-            0x0E7981:[1,0x00,0x10],  # CrC_LampDoorL_Visual1 Open = 00
-            0x0E7985:[1,0xF0,0x00],  # CrC_LampDoorL_Visual2 Open = F0
-            0x0E798D:[1,0x10,0x00],  # CrC_LampDoorL_Visual3 Open = 10
-            0x0E7991:[1,0x00,0x10],  # CrC_LampDoorL_Visual4 Open = 00
-            0x0E79A1:[1,0x00,0x10],  # CrC_LampDoorR_Visual1 Open = 00
-            0x0E79A5:[1,0x10,0x00],  # CrC_LampDoorR_Visual2 Open = 10
-            0x0E79AD:[1,0xF0,0x00],  # CrC_LampDoorR_Visual3 Open = F0
-            0x0E79B1:[1,0x00,0x10],  # CrC_LampDoorR_Visual4 Open = 00
-            0x1710C0:[2,0x0040,0x0100],  # CrC_LampDoorL_Hitbox1 Open = 0040
-            0x1710C4:[4,0x00400400,0x010002C0],  # CrC_LampDoorL_Hitbox2 Open = 00400400
-            0x1710CA:[2,0x0100,0x0040],  # CrC_LampDoorL_Hitbox3 Open = 0100
-            0x1710F8:[2,0x03C0,0x0300],  # CrC_LampDoorR_Hitbox1 Open = 03C0
-            0x1710FC:[4,0x00400400,0x010002C0],  # CrC_LampDoorR_Hitbox2 Open = 00400400
-            0x171102:[2,0x0100,0x0040],  # CrC_LampDoorR_Hitbox3 Open = 0100
+            0x0E7981: [1, 0x00, 0x10],  # CrC_LampDoorL_Visual1 Open = 00
+            0x0E7985: [1, 0xF0, 0x00],  # CrC_LampDoorL_Visual2 Open = F0
+            0x0E798D: [1, 0x10, 0x00],  # CrC_LampDoorL_Visual3 Open = 10
+            0x0E7991: [1, 0x00, 0x10],  # CrC_LampDoorL_Visual4 Open = 00
+            0x0E79A1: [1, 0x00, 0x10],  # CrC_LampDoorR_Visual1 Open = 00
+            0x0E79A5: [1, 0x10, 0x00],  # CrC_LampDoorR_Visual2 Open = 10
+            0x0E79AD: [1, 0xF0, 0x00],  # CrC_LampDoorR_Visual3 Open = F0
+            0x0E79B1: [1, 0x00, 0x10],  # CrC_LampDoorR_Visual4 Open = 00
+            0x1710C0: [2, 0x0040, 0x0100],  # CrC_LampDoorL_Hitbox1 Open = 0040
+            0x1710C4: [4, 0x00400400, 0x010002C0],  # CrC_LampDoorL_Hitbox2 Open = 00400400
+            0x1710CA: [2, 0x0100, 0x0040],  # CrC_LampDoorL_Hitbox3 Open = 0100
+            0x1710F8: [2, 0x03C0, 0x0300],  # CrC_LampDoorR_Hitbox1 Open = 03C0
+            0x1710FC: [4, 0x00400400, 0x010002C0],  # CrC_LampDoorR_Hitbox2 Open = 00400400
+            0x171102: [2, 0x0100, 0x0040],  # CrC_LampDoorR_Hitbox3 Open = 0100
         },
         57: {  # SF_Lamp
-            0x0C04AD:[1,0x0B,0x0D],  # SF_LampDoor_Visual1 Open = 0B
-            0x0C04AF:[1,0x00,0x80],  # SF_LampDoor_Visual2 Open = 00
-            0x0C056D:[1,0x11,0x0F],  # SF_LampDoor_Visual3 Open = 11
-            0x0C056F:[1,0x00,0x80],  # SF_LampDoor_Visual4 Open = 00
-            0x16A499:[1,0x0B,0x0D],  # SF_LampDoor_Hitbox1 Open = 0B
-            0x16A461:[1,0x11,0x0F],  # SF_LampDoor_Hitbox2 Open = 11
+            0x0C04AD: [1, 0x0B, 0x0D],  # SF_LampDoor_Visual1 Open = 0B
+            0x0C04AF: [1, 0x00, 0x80],  # SF_LampDoor_Visual2 Open = 00
+            0x0C056D: [1, 0x11, 0x0F],  # SF_LampDoor_Visual3 Open = 11
+            0x0C056F: [1, 0x00, 0x80],  # SF_LampDoor_Visual4 Open = 00
+            0x16A499: [1, 0x0B, 0x0D],  # SF_LampDoor_Hitbox1 Open = 0B
+            0x16A461: [1, 0x11, 0x0F],  # SF_LampDoor_Hitbox2 Open = 11
         },
         65: {  # TVT_LobbyLamp
-            0x0C042D:[1,0xFF,0xFD],  # TvtL_LampDoorL_Visual1 Open = FF
-            0x0C042F:[1,0x00,0x80],  # TvtL_LampDoorL_Visual2 Open = 00
-            0x0C046D:[1,0xF9,0xFB],  # TvtL_LampDoorR_Visual1 Open = F9
-            0x0C046F:[1,0x00,0x80],  # TvtL_LampDoorR_Visual2 Open = 00
-            0x170C51:[1,0xFF,0xFD],  # TvtL_LampDoorL_Hitbox1 Open = FF
-            0x170C65:[1,0x80,0x00],  # TvtL_LampDoorL_Hitbox2 Open = 80
-            0x170C89:[1,0xF9,0xFB],  # TvtL_LampDoorR_Hitbox1 Open = F9
-            0x170C9D:[1,0x80,0x00],  # TvtL_LampDoorR_Hitbox2 Open = 80
+            0x0C042D: [1, 0xFF, 0xFD],  # TvtL_LampDoorL_Visual1 Open = FF
+            0x0C042F: [1, 0x00, 0x80],  # TvtL_LampDoorL_Visual2 Open = 00
+            0x0C046D: [1, 0xF9, 0xFB],  # TvtL_LampDoorR_Visual1 Open = F9
+            0x0C046F: [1, 0x00, 0x80],  # TvtL_LampDoorR_Visual2 Open = 00
+            0x170C51: [1, 0xFF, 0xFD],  # TvtL_LampDoorL_Hitbox1 Open = FF
+            0x170C65: [1, 0x80, 0x00],  # TvtL_LampDoorL_Hitbox2 Open = 80
+            0x170C89: [1, 0xF9, 0xFB],  # TvtL_LampDoorR_Hitbox1 Open = F9
+            0x170C9D: [1, 0x80, 0x00],  # TvtL_LampDoorR_Hitbox2 Open = 80
         },
         66: {  # TVT_TankLamp
-            0x0C05AC:[4,0x00000DC0,0x80000F40],  # TvtTR_LampDoorL_Visual Open = 00000DC0
-            0x0C056C:[4,0x00001240,0x800010C0],  # TvtTR_LampDoorR_Visual Open = 00001240
-            0x16C294:[2,0x0DC0,0x0F40],  # TvtTR_LampDoorL_Hitbox1 Open = 0DC0
-            0x16C2A9:[1,0x80,0x00],  # TvtTR_LampDoorL_Hitbox2 Open = 80
-            0x16C2CC:[2,0x1240,0x10C0],  # TvtTR_LampDoorR_Hitbox1 Open = 1240
-            0x16C2E1:[1,0x80,0x00],  # TvtTR_LampDoorR_Hitbox2 Open = 80
+            0x0C05AC: [4, 0x00000DC0, 0x80000F40],  # TvtTR_LampDoorL_Visual Open = 00000DC0
+            0x0C056C: [4, 0x00001240, 0x800010C0],  # TvtTR_LampDoorR_Visual Open = 00001240
+            0x16C294: [2, 0x0DC0, 0x0F40],  # TvtTR_LampDoorL_Hitbox1 Open = 0DC0
+            0x16C2A9: [1, 0x80, 0x00],  # TvtTR_LampDoorL_Hitbox2 Open = 80
+            0x16C2CC: [2, 0x1240, 0x10C0],  # TvtTR_LampDoorR_Hitbox1 Open = 1240
+            0x16C2E1: [1, 0x80, 0x00],  # TvtTR_LampDoorR_Hitbox2 Open = 80
         },
     }
 
@@ -2817,16 +2817,16 @@ class RAM:
     #These addresses lock the ability for the game to update the XYZ values of Spike
     # When set to 0 Spike cannot move
     Spike_PosUpdates = {
-        0x0728A8 : [4,0xAE030000,0x00000000],  # SpikeX_PosLock1
-        0x0734D4 : [4,0xAE620000,0x00000000],  # SpikeX_PosLock2
-        0x0738B0 : [4,0xAE620000,0x00000000],  # SpikeX_PosLock3
+        0x0728A8 : [4, 0xAE030000, 0x00000000],  # SpikeX_PosLock1
+        0x0734D4 : [4, 0xAE620000, 0x00000000],  # SpikeX_PosLock2
+        0x0738B0 : [4, 0xAE620000, 0x00000000],  # SpikeX_PosLock3
 
-        0x072E80 : [4,0xAE020004,0x00000000],  # SpikeY_PosLock1
-        0x072E8C : [4,0xAE020004,0x00000000],  # SpikeY_PosLock2
+        0x072E80 : [4, 0xAE020004, 0x00000000],  # SpikeY_PosLock1
+        0x072E8C : [4, 0xAE020004, 0x00000000],  # SpikeY_PosLock2
 
-        0x0728E4 : [4,0xAE030008,0x00000000],  # SpikeZ_PosLock1
-        0x0734CC : [4,0xAE630008,0x00000000],  # SpikeZ_PosLock2
-        0x0738C8 : [4,0xAE620008,0x00000000],  # SpikeZ_PosLock3
+        0x0728E4 : [4, 0xAE030008, 0x00000000],  # SpikeZ_PosLock1
+        0x0734CC : [4, 0xAE630008, 0x00000000],  # SpikeZ_PosLock2
+        0x0738C8 : [4, 0xAE620008, 0x00000000],  # SpikeZ_PosLock3
     }
     Spike_CanMove = 0x0F4450 # 0x00 means can move, 0x01 means cannot move (And every odd bit like 0x03)
 

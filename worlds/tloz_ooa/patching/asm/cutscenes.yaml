@@ -47,35 +47,35 @@
     db $0c
     dw $6277
 0c/570f/: db movedown,$5c
-12/7738/: db 36,02,48,50,ff # bye ralph
-15/54f3/: db setdisabledobjectsto11,setanimation,02,delay30frames
-15/54f8/: dw 0657 # reverse endian addr
+12/7738/: db $36,$02,$48,$50,$ff # bye ralph
+15/54f3/: db setdisabledobjectsto11,setanimation,$02,delay30frames
+15/54f8/: dw $0657 # reverse endian addr
 
 # skip maku tree cutscene after moblin keep / bomb flower cutscene.
-0c/77dc/: db orroomflag,40,enableinput,scriptend
+0c/77dc/: db orroomflag,$40,enableinput,scriptend
 
 # remove ralph cutscene in black tower.
-12/6668/: db ff
+12/6668/: db $ff
 
 # skip twinrova cutscene and additional dialouge after getting maku seed.
-15/7298/: db setglobalflag,35,setglobalflag,13,enableinput,scriptend
+15/7298/: db setglobalflag,$35,setglobalflag,$13,enableinput,scriptend
 
 # skip cutscene when talking to worker outside black tower.
 15/601f/: |
     db jumpalways
-    dw c322
+    dw $c322
 
 # skip some of the maku tree's intro text (after saving her in the past).
 15/7230/: |
     db jumpalways
-    dw c376
+    dw $c376
 15/7273/: db enableinput,enableinput,enableinput,enableinput # lol
 
 
 # skip a text box in the symmetry city brothers' script
 15/7910/: |
-    db showtext,04
-    dw 1c79 # reverse endian addr
+    db showtext,$04
+    dw $1c79 # reverse endian addr
 
 
 #skip a bunch of the dialogue of the dumbbell guy

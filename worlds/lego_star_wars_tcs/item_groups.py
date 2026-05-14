@@ -25,12 +25,15 @@ ABILITY_TO_CHARACTERS: Mapping[CharacterAbility, Sequence[GenericCharacterData]]
 # }
 
 
-def _ability_to_readable(ability: CharacterAbility) -> str:
+def ability_to_readable_group(ability: CharacterAbility) -> str:
     return ability.name.replace("_", " ").title() + " Characters"  # type: ignore # (.name is str | None)
 
 
+REVERSE_READABLE_ABILITY_TO_ABILITY = {ability_to_readable_group(ability): ability for ability in CharacterAbility}
+
+
 ITEM_GROUPS: dict[str, set[str]] = {
-    **{_ability_to_readable(ability): {c.name for c in characters if c.is_sendable}
+    **{ability_to_readable_group(ability): {c.name for c in characters if c.is_sendable}
        for ability, characters in ABILITY_TO_CHARACTERS.items()},
     "No Abilities Characters": {name for name, c in CHARACTERS_AND_VEHICLES_BY_NAME.items()
                                 if c.is_sendable and c.abilities is CharacterAbility.NONE},

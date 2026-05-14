@@ -12,13 +12,13 @@ logger = logging.getLogger("Client")
 debug_logger = logging.getLogger("TCS Debug")
 
 
-UNLOCKED_EXTRAS_ADDRESS = 0x86E4C8
+UNLOCKED_EXTRAS_ADDRESS = 0x86e4e8
 """Memory address of the array that stores which Extras are unlocked."""
 
 # EXTRAS_SHOP_LENGTH_BYTES = 6  # 0xB8 to 0xBD
 # Active slot in the shop, which displays its name and will be purchased if the player presses the use key
 # Note: The previous 2 and next 2 shop indices are before/after this in memory (5 on screen at once).
-EXTRAS_SHOP_ACTIVE_INDEX_ADDRESS = 0x87BF0C
+EXTRAS_SHOP_ACTIVE_INDEX_ADDRESS = 0x87bf2c
 
 
 RECEIVABLE_EXTRAS_BY_AP_ID: Mapping[ApItemId, ExtraData] = {

@@ -1,0 +1,3 @@
+#Open Lynna QOL
+#rightmost bush address RO24:4170, change from tile c5 to 3a
+24/4171/: db $3a

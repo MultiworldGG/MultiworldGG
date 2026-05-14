@@ -1244,16 +1244,16 @@ def create_regions(world: "ApeEscapeWorld"):
     if options.trainingrooms == "completion":
         waterTraining = Region(AELocation.WaterTraining.value, player, multiworld)
         waterTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], waterTraining) for
-                                    loc_name in get_array([498])]
+                                    loc_name in get_array([492])]
         radarTraining = Region(AELocation.RadarTraining.value, player, multiworld)
         radarTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], radarTraining) for
-                                    loc_name in get_array([492])]
+                                    loc_name in get_array([493])]
         slingTraining = Region(AELocation.SlingTraining.value, player, multiworld)
         slingTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], slingTraining) for
-                                    loc_name in get_array([493])]
+                                    loc_name in get_array([494])]
         hoopTraining = Region(AELocation.HoopTraining.value, player, multiworld)
         hoopTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], hoopTraining) for loc_name
-                                   in get_array([494])]
+                                   in get_array([495])]
         flyerTraining = Region(AELocation.FlyerTraining.value, player, multiworld)
         flyerTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], flyerTraining) for
                                     loc_name in get_array([496])]
@@ -1262,7 +1262,7 @@ def create_regions(world: "ApeEscapeWorld"):
                                   get_array([497])]
         punchTraining = Region(AELocation.PunchTraining.value, player, multiworld)
         punchTraining.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], punchTraining) for
-                                    loc_name in get_array([495])]
+                                    loc_name in get_array([498])]
         regions += [waterTraining, radarTraining, slingTraining, hoopTraining, flyerTraining, carTraining, punchTraining]
 
     # The rest are only needed for mailbox shuffle
@@ -1453,8 +1453,12 @@ def create_regions(world: "ApeEscapeWorld"):
         jacket20.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket20) for loc_name in get_array([270])]
         jacket21 = Region(AELocation.Jacket21.value, player, multiworld)
         jacket21.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket21) for loc_name in get_array([271])]
+        jacket22 = Region(AELocation.Jacket22.value, player, multiworld)
+        jacket22.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket22) for loc_name in get_array([272])]
+        jacket23 = Region(AELocation.Jacket23.value, player, multiworld)
+        jacket23.locations += [ApeEscapeLocation(player, loc_name, location_table[loc_name], jacket23) for loc_name in get_array([273])]
         regions += [jacket1, jacket2, jacket3, jacket4, jacket5, jacket6, jacket7, jacket8, jacket9, jacket10, jacket11, jacket12, jacket13, jacket14,
-                    jacket15, jacket16, jacket17, jacket18, jacket19, jacket20,jacket21]
+                    jacket15, jacket16, jacket17, jacket18, jacket19, jacket20, jacket21, jacket22, jacket23]
     multiworld.regions.extend(regions)
     create_event_items(world)
 

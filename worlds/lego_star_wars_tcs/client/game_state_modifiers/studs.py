@@ -17,7 +17,7 @@ logger = logging.getLogger("Client")
 #  without saving re-giving them the studs, which would have otherwise allowed for entering another level and getting
 #  the True Jedi progress there.
 # Note, this is not the in-level stud count. We don't add to that, because it is not saved.
-STUD_COUNT_ADDRESS = 0x86E4DC
+STUD_COUNT_ADDRESS = 0x86e4fc
 MAX_STUD_COUNT = 4_000_000_000
 
 
@@ -34,8 +34,8 @@ CHARACTER_STUD_COUNTER_POINTER = UintField(0x7fc)
 
 # todo?: The stud counts for each player appear to be static addresses, which begs the question of why each player
 #  controlled character entity has a pointer to one of these addresses.
-# CURRENT_AREA_STUDS_P1_ADDRESS = 0x855F38
-# CURRENT_AREA_STUDS_P2_ADDRESS = 0x855F48
+# CURRENT_AREA_STUDS_P1_ADDRESS = 0x855f58
+# CURRENT_AREA_STUDS_P2_ADDRESS = 0x855f68
 
 
 def give_studs_item(ctx: TCSContext, ap_item_id: int) -> None:

@@ -15,7 +15,7 @@ from .Rules import set_rules, get_required_keys
 from .Client import ApeEscapeClient
 from .Strings import AEItem, AELocation
 from .RAMAddress import RAM
-from .Options import ApeEscapeOptions, DoorShuffleOption
+from .Options import ApeEscapeOptions, DoorShuffleOption, ape_escape_option_groups
 
 
 class ApeEscapeWeb(WebWorld):
@@ -39,6 +39,7 @@ class ApeEscapeWeb(WebWorld):
         ["Thedragon005"]
     )
 
+    option_groups = ape_escape_option_groups
     tutorials = [setup_en, setup_fr]
 
 
@@ -81,7 +82,6 @@ class ApeEscapeWorld(World):
         self.superflyer: Optional[int] = 0
         self.entrance: Optional[int] = 0
         self.doorshuffle: Optional[int] = 0
-        self.doorshuffletype: Optional[int] = 0
         self.randomizestartingroom: Optional[int] = 0
         self.unlocksperkey: Optional[int] = 0
         self.extrakeys: Optional[int] = 0
@@ -117,7 +117,6 @@ class ApeEscapeWorld(World):
         self.superflyer = self.options.superflyer.value
         self.entrance = self.options.entrance.value
         self.doorshuffle = self.options.doorshuffle.value
-        self.doorshuffletype = self.options.doorshuffletype.value
         self.randomizestartingroom = self.options.randomizestartingroom.value
         self.unlocksperkey = self.options.unlocksperkey.value
         self.extrakeys = self.options.extrakeys.value
@@ -150,7 +149,6 @@ class ApeEscapeWorld(World):
                 self.options.superflyer.value = self.passthrough["superflyer"]
                 self.options.entrance.value = self.passthrough["entrance"]
                 self.options.doorshuffle.value = self.passthrough["doorshuffle"]
-                self.options.doorshuffletype.value = self.passthrough["doorshuffletype"]
                 self.options.randomizestartingroom.value = self.passthrough["randomizestartingroom"]
                 self.options.unlocksperkey.value = self.passthrough["unlocksperkey"]
                 self.options.extrakeys.value = self.passthrough["extrakeys"]
@@ -503,14 +501,14 @@ class ApeEscapeWorld(World):
             "infinitejump": self.options.infinitejump.value,
             "superflyer": self.options.superflyer.value,
             "entrance": self.options.entrance.value,
+            "entranceplando": self.options.entranceplando.value,
             "doorshuffle": self.options.doorshuffle.value,
-            "doorshuffletype": self.options.doorshuffletype.value,
             "randomizestartingroom": self.options.randomizestartingroom.value,
             "unlocksperkey": self.options.unlocksperkey.value,
             "extrakeys": self.options.extrakeys.value,
             "coin": self.options.coin.value,
-            "mailbox": self.options.mailbox.value,
             "jacket": self.options.jacket.value,
+            "mailbox": self.options.mailbox.value,
             "trainingrooms": self.options.trainingrooms.value,
             "lamp": self.options.lamp.value,
             "gadget": self.options.gadget.value,
@@ -556,7 +554,7 @@ class ApeEscapeWorld(World):
                     val = next(iter(val))
                 return val
 
-            is_pairs = (self.options.doorshuffletype.value == 0x00)
+            is_pairs = (self.options.doorshuffle.value == 0x01)
             door_arrow = " <==> " if is_pairs else " ==> "
 
             shuffled_map = getattr(self, "shuffled_door_map", {})
@@ -575,9 +573,9 @@ class ApeEscapeWorld(World):
                 actual_level_content = self.entranceorder[x]
 
                 if self.options.entrance.value != 0x00:
-                    spoiler_handle.write(f"\n      {vanilla_level.name} ==> {actual_level_content.name}:")
+                    spoiler_handle.write(f"\n      {vanilla_level.name} ==> {actual_level_content.name}")
                 else:
-                    spoiler_handle.write(f"\n      {vanilla_level.name}:")
+                    spoiler_handle.write(f"\n      {vanilla_level.name}")
 
                 if self.options.doorshuffle.value != 0:
                     current_level_id = actual_level_content.entrance

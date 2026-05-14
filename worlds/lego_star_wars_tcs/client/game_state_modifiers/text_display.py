@@ -3,7 +3,6 @@ from collections import deque
 from time import perf_counter_ns
 
 from . import ClientComponent
-from ..common_addresses import is_actively_playing
 from ..events import subscribe_event, OnGameWatcherTickEvent
 from ..type_aliases import TCSContext
 from .text_replacer import TextId
@@ -13,7 +12,7 @@ debug_logger = logging.getLogger("TCS Debug")
 
 # Float value in seconds. The text will begin to fade out towards the end.
 # Note that values higher than 1.0 will flash more rapidly the higher the value.
-DOUBLE_SCORE_ZONE_TIMER_ADDRESS = 0x925040
+DOUBLE_SCORE_ZONE_TIMER_ADDRESS = 0x925060
 
 WAIT_BETWEEN_MESSAGES_SECONDS = 2
 WAIT_BETWEEN_MESSAGES_NS = WAIT_BETWEEN_MESSAGES_SECONDS * 1_000_000_000
@@ -81,5 +80,5 @@ class InGameTextDisplay(ClientComponent):
                 self.memory_dirty = False
         else:
             # Don't display a new message if the game is paused, in a cutscene, in a status screen, or tabbed out.
-            if is_actively_playing(ctx):
+            if event.is_actively_playing:
                 self._display_message(ctx, self.message_queue.popleft())

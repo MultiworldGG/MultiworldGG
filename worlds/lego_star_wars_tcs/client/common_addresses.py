@@ -1,13 +1,119 @@
+from bisect import bisect_right
 from enum import IntEnum, IntFlag
+from functools import cache
 
 from .common import StaticUChar, StaticFloat, StaticUint, StaticBOOL, FloatField, UCharField
 from .type_aliases import TCSContext
 from ..levels import AREA_ID_TO_CHAPTER_AREA
 
+# To use: Iterate to find the first key that the address-to-convert is less than, then add the offset value.
+_GOG_TO_STEAM = {
+    # Fully aligned all the way back to 0x00400000.
+    0x006f1505: 0x0,
+    0x006f47b0: -0x14,
+    0x006f4f64: -0x10,
+    0x006f5d56: -0x13,
+    0x006f5d60: -0x19,
+    0x006f5eb3: -0x18,
+    # There are a bunch of other minor changes between these two addresses, all within `__write_nolock`.
+    # For example:
+    # - 0x006f64b2: -0x70,  # GOG uses AND (3 bytes), Steam uses MOV (2 bytes)
+    # - 0x006f64ba: -0x71,  # GOG has some extra instructions
+    0x006f65c0: -0x74,
+    # The function starting at 0x007139af (__isindst_nolock apparently) has a couple of different instructions in GOG.
+    0x007139d3: -0x80,
+    # Instructions in a function or two differ before here, so alignment gets complete thrown off
+    0x00713b15: -0x82,
+    0x00714ca0: -0xa8,
+    # There is some empty space that varies in length between Steam and GOG, and then the same functions are found, but
+    # offset.
+    0x00751000: -0xb0,
+    # Prior to 0x00751450, data does not match completely, but matches overall, back to 0x00751000.
+    0x0075e9e0: +0x0,
+    0x0075ece0: +0x8,
+    0x0075ed00: +0xC,
+    0x007615e4: +0x10,
+    0x007615e8: +0x14,
+    0x0076a914: +0x18,
+    0x0076aa20: +0x1c,
+    # This offset occurs because the previous string in memory is the path to
+    # [parent dir]/gameapi.saga/edtools/fileselect.c, where [parent dir] is different between when the GOG and Steam
+    # versions were compiled.
+    0x76af90: +0x20,
+    0x76b038: +0x24,
+    0x777cd0: +0x28,
+    # GOG and Steam addresses sync up at 0x7ef000, a pointer to the "bad allocation" string. There is a variable amount
+    # of empty space before this.
+    0x007ef000: +0x30,
+    0x00829c40: 0x0,
+    0x00829d70: -0x8,
+    0x00854724: -0x10,
+    0x029ab000: -0x20,
+    0xFFFFFFFF: 0,
+}
+_GOG_TO_STEAM_KEYS = tuple(_GOG_TO_STEAM.keys())
+assert sorted(_GOG_TO_STEAM_KEYS) == list(_GOG_TO_STEAM_KEYS)
+
+_STEAM_TO_GOG = {
+    # Fully aligned all the way back to 0x00400000.
+    0x006f14f1: 0x0,
+    0x006f47a0: +0x14,
+    0x006f4f51: +0x10,
+    0x006f5d3d: +0x13,
+    0x006f5d48: +0x19,
+    0x006f5e9b: +0x18,
+    0x006f6441: +0x70,
+    0x006f6446: +0x71,
+    0x006f6540: +0x74,
+    0x00713951: +0x80,
+    0x00713a6d: +0x82,
+    0x00714bf0: +0xa8,
+    0x00751000: +0xb0,
+    # Prior to 0x00751450, data does not match completely, but matches overall, back to 0x00751000.
+    0x0075e9e8: -0x0,
+    0x0075ecec: -0x8,
+    0x0075ed10: -0xc,
+    0x007615f8: -0x10,
+    0x007615ff: -0x14,
+    0x0076a930: -0x18,
+    0x0076aa40: -0x1c,
+    0x0076afb4: -0x20,
+    0x0076b060: -0x24,
+    0x00777d00: -0x28,
+    0x007ef000: -0x30,
+    0x00829c38: +0x0,
+    0x00829d60: +0x8,
+    0x00854704: +0x10,
+    0x029ab000: +0x20,
+    0xFFFFFFFF: +0x0,
+}
+_STEAM_TO_GOG_KEYS = tuple(_STEAM_TO_GOG.keys())
+assert sorted(_STEAM_TO_GOG_KEYS) == list(_STEAM_TO_GOG_KEYS)
+
+
+@cache
+def gog_to_steam(address: int):
+    # On an exact match, we want the next value because the keys in the dicts are for addresses *less than* a key
+    # address.
+    index = bisect_right(_GOG_TO_STEAM_KEYS, address)
+    if index < len(_GOG_TO_STEAM_KEYS):
+        return address + _GOG_TO_STEAM[_GOG_TO_STEAM_KEYS[index]]
+    else:
+        raise Exception(f"Address {address} is too high for GOG -> Steam conversion.")
+
+
+@cache
+def steam_to_gog(address: int):
+    index = bisect_right(_STEAM_TO_GOG_KEYS, address)
+    if index < len(_STEAM_TO_GOG_KEYS):
+        return address + _STEAM_TO_GOG[_STEAM_TO_GOG_KEYS[index]]
+    else:
+        raise Exception(f"Address {address} is too high for Steam -> GOG conversion.")
+
 
 # There are two pointers here, which are NULL when the player is dropped out.
 # The full array of all 8 'player' character pointers, that can be tagged, is found at 0x93d7f0
-HUMAN_CONTROLLED_PLAYER_CHARACTER_POINTERS = 0x93d810
+HUMAN_CONTROLLED_PLAYER_CHARACTER_POINTERS = 0x93d830
 
 
 class CharacterFlags1(IntFlag):
@@ -38,13 +144,13 @@ CURRENT_AREA_ADDRESS = StaticUChar(0x7fd2c1)
 # CURRENT_AREA_ADDRESS = StaticUChar(0x803784)
 
 # Technically, this is direct access of the WORLDINFO struct at 0x93d858, accessing field offset 0x12c.
-CURRENT_P_AREA_DATA_ADDRESS = StaticUint(0x93d984)
+CURRENT_P_AREA_DATA_ADDRESS = StaticUint(0x93d9a4)
 # ID field of P_AREA_DATA.
 AREA_DATA_ID = UCharField(0x7c)
 
 
-CHARACTERS_SHOP_START = 0x86E4A8  # See CHARACTER_SHOP_SLOTS in items.py for the mapping
-EXTRAS_SHOP_START = 0x86E4B8
+CHARACTERS_SHOP_START = 0x86e4c8  # See CHARACTER_SHOP_SLOTS in items.py for the mapping
+EXTRAS_SHOP_START = 0x86e4d8
 
 # 0 when a menu is not open, 1 when a menu is open (pause screen, shop, custom character creator, select mode after
 # entering a level door). Increases to 2 when opening a submenu in the pause screen.
@@ -60,7 +166,7 @@ OPENED_MENU_DEPTH_ADDRESS = 0x800944
 # 8: In Cantina shop
 # 9: Minikits display on outside scrapyard
 # There is another address at 0x925395
-GAME_STATE_ADDRESS = 0x925394
+GAME_STATE_ADDRESS = 0x9253b4
 
 
 # This is GameState1 because other address have been found that can be used to infer game state, so it is likely that
@@ -92,10 +198,10 @@ class GameState1(IntEnum):
 # This can be forcefully enabled in Story, and potentially other modes, to allow character swapping, though may disable
 # some Story-only events that usually get disabled in Free Play, e.g. TC-14 won't spawn if this is enabled before
 # Negotiations_A loads.
-IS_CHARACTER_SWAPPING_ENABLED = StaticBOOL(0x93b2a4)
+IS_CHARACTER_SWAPPING_ENABLED = StaticBOOL(0x93b2c4)
 
 # See ChapterDoorGameMode below.
-CHAPTER_DOOR_GAME_MODE = StaticUint(0x87951C)
+CHAPTER_DOOR_GAME_MODE = StaticUint(0x87953c)
 
 
 class ChapterDoorGameMode(IntEnum):
@@ -126,7 +232,7 @@ class ChapterDoorGameMode(IntEnum):
     #         return None
 
 
-CHALLENGE_MODE_ADDRESS = StaticUint(0x856c08)
+CHALLENGE_MODE_ADDRESS = StaticUint(0x856c28)
 
 
 class ChallengeMode(IntEnum):
@@ -185,7 +291,7 @@ class CantinaRoom(IntEnum):
     BOUNTY_HUNTER_MISSIONS = 9
 
 
-_CUSTOM_SAVE_FLAGS_1_ADDRESS = 0x86e4e6  # 0x86e506 (GOG)
+_CUSTOM_SAVE_FLAGS_1_ADDRESS = 0x86e506
 
 
 class CustomSaveFlags1(IntFlag):
@@ -199,9 +305,9 @@ class CustomSaveFlags1(IntFlag):
     """
     MINIKIT_GOAL_COMPLETE = 0x1
     DEATH_LINK_ENABLED = 0x2
-    FIELD_3 = 0x4  # Could be DEFEAT_BOSSES_GOAL_COMPLETE to reduce memory reading once the goal is complete.
-    FIELD_4 = 0x8
-    FIELD_5 = 0x10
+    AUTO_COLLECT_PICKUPS_ENABLED = 0x4
+    AUTO_COLLECT_PICKUPS_VEHICLES_ONLY = 0x8
+    FIELD_5 = 0x10  # Could be DEFEAT_BOSSES_GOAL_COMPLETE to reduce memory reading once the goal is complete.
     FIELD_6 = 0x20
     FIELD_7 = 0x40
     FIELD_8 = 0x80
@@ -251,6 +357,12 @@ class CustomSaveFlags1(IntFlag):
         if b & v:
             ctx.write_byte(_CUSTOM_SAVE_FLAGS_1_ADDRESS, b & ~v)
 
+    def set_bool(self, ctx: TCSContext, b: bool):
+        if b:
+            return self.set(ctx)
+        else:
+            return self.unset(ctx)
+
 # Other potential unused sava-data bytes
 # Some (most?) (all?) bonus levels have enough space reserved for all the Minikits/True Jedi/Power Brick bytes, which
 # they don't use.
@@ -264,19 +376,19 @@ class CustomSaveFlags1(IntFlag):
 # This value is slightly unstable and occasionally changes to 0 while playing. It is also set to 2 in Mos Espa Pod Race
 # for some reason.
 # Importantly, this value is *not* 0 when watching a Story cutscene, and is instead 1.
-PAUSED_OR_STATUS_WHEN_0_ADDRESS = 0x9737D8
+PAUSED_OR_STATUS_WHEN_0_ADDRESS = 0x9737f8
 # This address is usually -1/255 while playing or paused, 1 while tabbed out and 0 while both paused and tabbed out.
 # It is a more unstable than the previous value, while playing, however.
 # Notably, if window focus is forced by setting 0x827610 to 1, thus allowing the game to run in the background, then
 # this still correctly identifies whether the game is frozen.
-TABBED_OUT_WHEN_1_ADDRESS = 0x9868C4
+TABBED_OUT_WHEN_1_ADDRESS = 0x9868e4
 
 # 0 when playing, 1 when in a cutscene, same-level door transition, Indy trailer and title crawl.
 # Rarely unstable and seen as -1 briefly while playing
-IS_PLAYING_WHEN_0_ADDRESS = 0x297C0AC
+IS_PLAYING_WHEN_0_ADDRESS = 0x297c0cc
 
 # Set to > 0.0 during a screen wipe/transition. In-game hints only display when this is 0.0.
-SCREEN_TRANSITION_TIMER_ADDRESS = StaticFloat(0x950780)
+SCREEN_TRANSITION_TIMER_ADDRESS = StaticFloat(0x9507a0)
 
 
 def is_actively_playing(ctx: TCSContext):

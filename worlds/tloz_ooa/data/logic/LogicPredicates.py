@@ -1,5 +1,5 @@
 from BaseClasses import CollectionState
-from Options import Accessibility
+from ...Options import *
 from ..Constants import DUNGEON_NAMES, ESSENCES
 
 
@@ -148,6 +148,12 @@ def ooa_has_slates(state: CollectionState, player: int, target_count):
     
 def ooa_has_enough_slates(state: CollectionState, player: int):
     return ooa_has_slates(state, player, state.multiworld.worlds[player].options.required_slates.value)
+
+def ooa_option_lynna_gardener(state: CollectionState, player: int):
+    return any([
+        state.multiworld.worlds[player].options.lynna_gardener == True,
+        state.multiworld.worlds[player].options.warp_to_start_location == OracleOfAgesWarpToStartLocation.option_near_timeportal
+    ])
 
 
 # Various item predicates ###########################################

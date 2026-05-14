@@ -28,8 +28,8 @@ def set_rules(world: "ApeEscapeWorld"):
         # If entrances aren't shuffled, then we don't need to shuffle the entrances.
         if (world.options.entrance != 0x00):
             world.random.shuffle(world.levellist)
-            # Some levels need to be kept at a specific entrance - put those back.
-            world.levellist = fixed_levels(world.levellist, world.options.entrance, world.options.coin, world.options.goal)
+            # Some levels need to be at specific entrances based on settings, also entrance plando
+            world.levellist = fixed_levels(world, world.levellist, world.options.coin, world.options.goal, world.options.entrance, world.options.entranceplando)
         world.firstrooms = initialize_room_list(world, RAM.roomsperlevel)
         world.shuffled_doors = initialize_door_transitions(world, door_map, RAM.roomsperlevel, doorTransitions)
 
@@ -101,7 +101,7 @@ def set_entrances(self, logic):
     # If the goal is not token hunt, then there is a victory item on the worlds' final boss.
     if self.options.goal != "tokenhunt":
         # Redundant, but maybe relevant if we get more goals in the future
-        if self.options.goal in ("mm","mmtoken","ppm","ppmtoken"):
+        if self.options.goal in ("mm", "mmtoken", "ppm", "ppmtoken"):
             self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
     else:
         self.multiworld.completion_condition[self.player] = lambda state: Tokens(state, self, min(self.options.requiredtokens, self.options.totaltokens))
@@ -653,7 +653,7 @@ def set_transitions(self, logic):
     if logic == "normal":
         connect_regions(self, AEDoor.SF_OUTSIDE_FACTORY.value, AEDoor.SF_ENTRY.value,
                         lambda state: HasFlyer(state, self) or HasPunch(state, self))
-    elif logic == "hard":
+    else:
         connect_regions(self, AEDoor.SF_OUTSIDE_FACTORY.value, AEDoor.SF_ENTRY.value,
                         lambda state: HasFlyer(state, self) or HasPunch(state, self) or IJ(state, self))
     # Main Factory
@@ -826,9 +826,17 @@ def set_transitions(self, logic):
                         lambda state: True)
     connect_regions(self, AEDoor.MM_OUTSIDE_CASTLE_CRATER.value, AEDoor.MM_OUTSIDE_CASTLE_CASTLE_MAIN.value,
                         lambda state: MM_Lamp(state, self))
-    connect_regions(self, AEDoor.MM_OUTSIDE_CASTLE_SIDE_ENTRY.value, AEDoor.MM_OUTSIDE_CASTLE_CRATER.value,
+    if logic == "normal":
+        connect_regions(self, AEDoor.MM_OUTSIDE_CASTLE_SIDE_ENTRY.value, AEDoor.MM_OUTSIDE_CASTLE_CRATER.value,
+                        lambda state: HasFlyer(state, self))
+    else:
+        connect_regions(self, AEDoor.MM_OUTSIDE_CASTLE_SIDE_ENTRY.value, AEDoor.MM_OUTSIDE_CASTLE_CRATER.value,
                         lambda state: True)
-    connect_regions(self, AEDoor.MM_OUTSIDE_CASTLE_CASTLE_MAIN.value, AEDoor.MM_OUTSIDE_CASTLE_CRATER.value,
+    if logic == "normal":
+        connect_regions(self, AEDoor.MM_OUTSIDE_CASTLE_CASTLE_MAIN.value, AEDoor.MM_OUTSIDE_CASTLE_CRATER.value,
+                        lambda state: HasFlyer(state, self))
+    else:
+        connect_regions(self, AEDoor.MM_OUTSIDE_CASTLE_CASTLE_MAIN.value, AEDoor.MM_OUTSIDE_CASTLE_CRATER.value,
                         lambda state: True)
     # Castle Foyer
     connect_regions(self, AEDoor.MM_CASTLE_MAIN_OUTSIDE_CASTLE.value, AEDoor.MM_CASTLE_MAIN_MONKEY_HEAD.value, 
@@ -875,104 +883,107 @@ def set_locations(self, logic):
                         lambda state: True)
 
     # Training Rooms
-    # Water Training
+    # Water Net Training
     if self.options.trainingrooms == "mailboxes":
         connect_regions(self, AEDoor.TIME_TRAINING_WATERNET.value, AELocation.Mailbox64.value,
                         lambda state: True)
         connect_regions(self, AEDoor.TIME_TRAINING_WATERNET.value, AELocation.Mailbox65.value,
-                        lambda state: CanSwim(state,self))
+                        lambda state: CanSwim(state, self))
         connect_regions(self, AEDoor.TIME_TRAINING_WATERNET.value, AELocation.Mailbox66.value,
-                        lambda state: CanDive(state,self))
+                        lambda state: CanDive(state, self))
         connect_regions(self, AEDoor.TIME_TRAINING_WATERNET.value, AELocation.Mailbox67.value,
-                        lambda state: (CanDive(state,self) and HasWaterNet(state,self)))
+                        lambda state: (CanDive(state, self) and HasWaterNet(state, self)))
     if self.options.trainingrooms == "completion":
         connect_regions(self, AEDoor.TIME_TRAINING_WATERNET.value, AELocation.WaterTraining.value,
-                        lambda state: (CanDive(state,self) and HasWaterNet(state,self)))
+                        lambda state: (CanDive(state, self) and HasWaterNet(state, self)))
 
-    #TODO NEXT LOGIC TO DO HERE ====>
-    # Radar Training
+    # Monkey Radar Training
     if self.options.trainingrooms == "mailboxes":
         connect_regions(self, AEDoor.TIME_TRAINING_RADAR.value, AELocation.Mailbox68.value,
                         lambda state: True)
         connect_regions(self, AEDoor.TIME_TRAINING_RADAR.value, AELocation.Mailbox69.value,
                         lambda state: True)
         connect_regions(self, AEDoor.TIME_TRAINING_RADAR.value, AELocation.Mailbox70.value,
-                        lambda state: HasRadar(state,self))
+                        lambda state: HasRadar(state, self))
     if self.options.trainingrooms == "completion":
         connect_regions(self, AEDoor.TIME_TRAINING_RADAR.value, AELocation.RadarTraining.value,
-                        lambda state: HasRadar(state,self))
-    # Sling Training
+                        lambda state: HasRadar(state, self))
+
+    # Slingback Shooter Training
     if self.options.trainingrooms == "mailboxes":
         connect_regions(self, AEDoor.TIME_TRAINING_SLING.value, AELocation.Mailbox71.value,
                         lambda state: True)
         connect_regions(self, AEDoor.TIME_TRAINING_SLING.value, AELocation.Mailbox72.value,
-                        lambda state: HasSling(state,self))
+                        lambda state: HasSling(state, self))
         connect_regions(self, AEDoor.TIME_TRAINING_SLING.value, AELocation.Mailbox73.value,
-                        lambda state: HasSling(state,self))
+                        lambda state: HasSling(state, self))
         connect_regions(self, AEDoor.TIME_TRAINING_SLING.value, AELocation.Mailbox74.value,
-                        lambda state: HasSling(state,self))
+                        lambda state: HasSling(state, self))
     if self.options.trainingrooms == "completion":
         connect_regions(self, AEDoor.TIME_TRAINING_SLING.value, AELocation.SlingTraining.value,
-                        lambda state: HasSling(state,self))
-    # Hoop Training
+                        lambda state: HasSling(state, self))
+
+    # Super Hoop Training
     if self.options.trainingrooms == "mailboxes":
         connect_regions(self, AEDoor.TIME_TRAINING_HOOP.value, AELocation.Mailbox75.value,
                         lambda state: True)
         if logic == "normal":
            connect_regions(self, AEDoor.TIME_TRAINING_HOOP.value, AELocation.Mailbox76.value,
-                            lambda state: HasHoop(state,self))
+                            lambda state: HasHoop(state, self))
         else:
            connect_regions(self, AEDoor.TIME_TRAINING_HOOP.value, AELocation.Mailbox76.value,
                             lambda state: True)
         if logic == "normal" or logic == "hard":
             connect_regions(self, AEDoor.TIME_TRAINING_HOOP.value, AELocation.Mailbox77.value,
-                            lambda state: HasHoop(state,self))
+                            lambda state: HasHoop(state, self))
         else:
             connect_regions(self, AEDoor.TIME_TRAINING_HOOP.value, AELocation.Mailbox77.value,
                             lambda state: True)
     if self.options.trainingrooms == "completion":
         if logic == "normal" or logic == "hard":
             connect_regions(self, AEDoor.TIME_TRAINING_HOOP.value, AELocation.HoopTraining.value,
-                            lambda state: HasHoop(state,self))
+                            lambda state: HasHoop(state, self))
         else:
             connect_regions(self, AEDoor.TIME_TRAINING_HOOP.value, AELocation.HoopTraining.value,
                             lambda state: True)
 
-    # Flyer Training
+    # Sky Flyer Training
     if self.options.trainingrooms == "mailboxes":
         connect_regions(self, AEDoor.TIME_TRAINING_FLYER.value, AELocation.Mailbox78.value,
                         lambda state: True)
         connect_regions(self, AEDoor.TIME_TRAINING_FLYER.value, AELocation.Mailbox79.value,
-                        lambda state: HasFlyer(state,self))
+                        lambda state: HasFlyer(state, self))
         connect_regions(self, AEDoor.TIME_TRAINING_FLYER.value, AELocation.Mailbox80.value,
-                        lambda state: HasFlyer(state,self))
+                        lambda state: HasFlyer(state, self))
     if self.options.trainingrooms == "completion":
         connect_regions(self, AEDoor.TIME_TRAINING_FLYER.value, AELocation.FlyerTraining.value,
-                        lambda state: HasFlyer(state,self))
-    # Car Training
+                        lambda state: HasFlyer(state, self))
+
+    # RC Car Training
     if self.options.trainingrooms == "mailboxes":
         connect_regions(self, AEDoor.TIME_TRAINING_CAR.value, AELocation.Mailbox81.value,
                         lambda state: True)
         connect_regions(self, AEDoor.TIME_TRAINING_CAR.value, AELocation.Mailbox82.value,
                         lambda state: True)
         connect_regions(self, AEDoor.TIME_TRAINING_CAR.value, AELocation.Mailbox83.value,
-                        lambda state: HasRC(state,self))
+                        lambda state: HasRC(state, self))
         connect_regions(self, AEDoor.TIME_TRAINING_CAR.value, AELocation.Mailbox84.value,
-                        lambda state: HasRC(state,self))
+                        lambda state: HasRC(state, self))
     if self.options.trainingrooms == "completion":
         connect_regions(self, AEDoor.TIME_TRAINING_CAR.value, AELocation.CarTraining.value,
-                        lambda state: HasRC(state,self))
-    # Punch Training
+                        lambda state: HasRC(state, self))
+
+    # Magic Punch Training
     if self.options.trainingrooms == "mailboxes":
         connect_regions(self, AEDoor.TIME_TRAINING_PUNCH.value, AELocation.Mailbox85.value,
                         lambda state: True)
         connect_regions(self, AEDoor.TIME_TRAINING_PUNCH.value, AELocation.Mailbox86.value,
-                        lambda state: HasPunch(state,self))
+                        lambda state: HasPunch(state, self))
         connect_regions(self, AEDoor.TIME_TRAINING_PUNCH.value, AELocation.Mailbox87.value,
-                        lambda state: HasPunch(state,self))
+                        lambda state: HasPunch(state, self))
     if self.options.trainingrooms == "completion":
         connect_regions(self, AEDoor.TIME_TRAINING_PUNCH.value, AELocation.PunchTraining.value,
-                        lambda state: HasPunch(state,self))
+                        lambda state: HasPunch(state, self))
 
     # Fossil Field
     connect_regions(self, AEDoor.FF_ENTRY.value, AELocation.W1L1Noonan.value,
@@ -1384,7 +1395,7 @@ def set_locations(self, logic):
                             lambda state: ((CanHitWheel(state, self) and CanSwim(state, self)) or IJ(state, self) or HasFlyer(state, self)))
         else:
             connect_regions(self, AEDoor.CR_MAIN_RUINS_PILLAR_ROOM.value, AELocation.Jacket3.value,
-                            lambda state: ((CanHitWheel(state, self) and CanSwim(state, self)) or IJ(state, self) or HasHoop(state,self) or HasFlyer(state, self)))
+                            lambda state: ((CanHitWheel(state, self) and CanSwim(state, self)) or IJ(state, self) or HasHoop(state, self) or HasFlyer(state, self)))
 
     # Stadium Attack
     if self.options.coin == "true":
@@ -1571,6 +1582,7 @@ def set_locations(self, logic):
     if self.options.jacket == "true":
         connect_regions(self, AEDoor.DI_TENTACLE.value, AELocation.Jacket4.value,
                         lambda state: True)
+
     # Snowy Mammoth
     connect_regions(self, AEDoor.SM_ENTRY.value, AELocation.W5L1Popcicle.value, 
                         lambda state: HasNet(state, self))
@@ -1650,8 +1662,12 @@ def set_locations(self, logic):
         connect_regions(self, AEDoor.FR_WATER_CAVERNS.value, AELocation.W5L2Droog.value, 
                         lambda state: (CanDive(state, self) or HasFlyer(state, self) or IJ(state, self)) and HasNet(state, self))
     # Caverns
-    connect_regions(self, AEDoor.FR_CAVERNS_ENTRY.value, AELocation.W5L2Gash.value, 
-                        lambda state: HasNet(state, self))
+    if logic == "normal":
+         connect_regions(self, AEDoor.FR_CAVERNS_ENTRY.value, AELocation.W5L2Gash.value, 
+                        lambda state: HasNet(state, self) or (CanDive(state, self) and HasWaterNet(state, self)))
+    else:
+         connect_regions(self, AEDoor.FR_CAVERNS_ENTRY.value, AELocation.W5L2Gash.value, 
+                        lambda state: HasNet(state, self) or HasWaterNet(state, self))
     connect_regions(self, AEDoor.FR_CAVERNS_WATER.value, AELocation.W5L2Kundra.value, 
                         lambda state: HasNet(state, self))
     if logic == "normal":
@@ -1741,7 +1757,7 @@ def set_locations(self, logic):
                         lambda state: True)
     if self.options.jacket == "true":
         connect_regions(self, AEDoor.HS_ENTRY_HOT_SPRING.value, AELocation.Jacket5.value,
-                        lambda state: (CanSwim(state,self)))
+                        lambda state: (CanSwim(state, self)))
         if logic == "normal":
             connect_regions(self, AEDoor.HS_HOT_SPRING.value, AELocation.Jacket6.value,
                             lambda state: (HasFlyer(state, self)))
@@ -1886,6 +1902,7 @@ def set_locations(self, logic):
     if self.options.jacket == "true":
         connect_regions(self, AEDoor.WSW_BARREL_OBSTACLE.value, AELocation.Jacket8.value,
                         lambda state: True)
+
     # Crumbling Castle
     # Outside
     connect_regions(self, AEDoor.CC_ENTRY.value, AELocation.W7L3Robart.value, 
@@ -2162,6 +2179,7 @@ def set_locations(self, logic):
                         lambda state: True)
         connect_regions(self, AEDoor.SF_CONVEYOR_LAVA.value, AELocation.Jacket12.value,
                         lambda state: True)
+
     # TV Tower
     # Outside
     connect_regions(self, AEDoor.TVT_OUTSIDE_LOBBY.value, AELocation.W8L3Fredo.value,
@@ -2415,33 +2433,37 @@ def set_locations(self, logic):
         connect_regions(self, AEDoor.MM_COASTER1_ENTRY.value, AELocation.Jacket13.value,
                         lambda state: True)
         connect_regions(self, AEDoor.MM_CASTLE_MAIN_OUTSIDE_CASTLE.value, AELocation.Jacket14.value,
-                        lambda state: CanHitOnce(state,self))
-        connect_regions(self, AEDoor.MM_INSIDE_CLIMB_CASTLE_MAIN.value, AELocation.Jacket15.value,
-                        lambda state: CanHitOnce(state,self))
-        connect_regions(self, AEDoor.MM_INSIDE_CLIMB_CASTLE_MAIN.value, AELocation.Jacket16.value,
                         lambda state: True)
+        connect_regions(self, AEDoor.MM_CASTLE_MAIN_OUTSIDE_CASTLE.value, AELocation.Jacket15.value,
+                        lambda state: CanHitOnce(state, self))
+        connect_regions(self, AEDoor.MM_INSIDE_CLIMB_CASTLE_MAIN.value, AELocation.Jacket16.value,
+                        lambda state: CanHitOnce(state, self))
         connect_regions(self, AEDoor.MM_INSIDE_CLIMB_CASTLE_MAIN.value, AELocation.Jacket17.value,
                         lambda state: True)
-        connect_regions(self, AEDoor.MM_OUTSIDE_CLIMB_INSIDE_CLIMB.value, AELocation.Jacket18.value,
-                        lambda state: CanHitOnce(state,self))
+        connect_regions(self, AEDoor.MM_INSIDE_CLIMB_CASTLE_MAIN.value, AELocation.Jacket18.value,
+                        lambda state: True)
+        connect_regions(self, AEDoor.MM_OUTSIDE_CLIMB_INSIDE_CLIMB.value, AELocation.Jacket19.value,
+                        lambda state: CanHitOnce(state, self))
         if logic == "normal":
-            connect_regions(self, AEDoor.MM_OUTSIDE_CLIMB_INSIDE_CLIMB.value, AELocation.Jacket19.value,
+            connect_regions(self, AEDoor.MM_OUTSIDE_CLIMB_INSIDE_CLIMB.value, AELocation.Jacket20.value,
                             lambda state: HasFlyer(state, self))
         else:
-            connect_regions(self, AEDoor.MM_OUTSIDE_CLIMB_INSIDE_CLIMB.value, AELocation.Jacket19.value,
-                            lambda state: HasFlyer(state, self) or IJ(state, self) or HasHoop(state,self))
+            connect_regions(self, AEDoor.MM_OUTSIDE_CLIMB_INSIDE_CLIMB.value, AELocation.Jacket20.value,
+                            lambda state: HasFlyer(state, self) or IJ(state, self) or HasHoop(state, self))
+        connect_regions(self, AEDoor.MM_MONKEY_HEAD_CASTLE_MAIN.value, AELocation.Jacket21.value,
+                        lambda state: True)
         if logic == "normal":
-            connect_regions(self, AEDoor.MM_MONKEY_HEAD_CASTLE_MAIN.value, AELocation.Jacket20.value,
+            connect_regions(self, AEDoor.MM_MONKEY_HEAD_CASTLE_MAIN.value, AELocation.Jacket22.value,
                             lambda state: HasSling(state, self) and HasFlyer(state, self))
         elif logic == "hard":
-            connect_regions(self, AEDoor.MM_MONKEY_HEAD_CASTLE_MAIN.value, AELocation.Jacket20.value,
-                            lambda state: HasClub(state, self) or HasSling(state, self) or HasPunch(state,self) or HasFlyer(state, self))
+            connect_regions(self, AEDoor.MM_MONKEY_HEAD_CASTLE_MAIN.value, AELocation.Jacket22.value,
+                            lambda state: HasClub(state, self) or HasSling(state, self) or HasPunch(state, self) or HasFlyer(state, self))
         else:
-            connect_regions(self, AEDoor.MM_MONKEY_HEAD_CASTLE_MAIN.value, AELocation.Jacket20.value,
+            connect_regions(self, AEDoor.MM_MONKEY_HEAD_CASTLE_MAIN.value, AELocation.Jacket22.value,
                             lambda state: CanHitWheel(state, self) or HasFlyer(state, self))
-
-        connect_regions(self, AEDoor.MM_OUTSIDE_CLIMB_INSIDE_CLIMB.value, AELocation.Jacket21.value,
+        connect_regions(self, AEDoor.MM_SPECTER1_ROOM.value, AELocation.Jacket23.value,
                         lambda state: CanHitOnce(state, self))
+
     # Peak Point Matrix
     if self.options.goal != "mm":
         connect_regions(self, AEDoor.PPM_ENTRY.value, AELocation.Specter2.value, 
@@ -2449,10 +2471,12 @@ def set_locations(self, logic):
     if self.options.fasttokengoal == self.options.fasttokengoal.option_on:
         if self.options.goal == "mmtoken":
             connect_regions(self, "Menu", AEDoor.MM_SPECTER1_ROOM.value,
-                            lambda state: Tokens(state, self,min(self.options.requiredtokens, self.options.totaltokens)))
+                            lambda state: Tokens(state, self, min(self.options.requiredtokens, self.options.totaltokens)))
         if self.options.goal == "ppmtoken":
             connect_regions(self, "Menu", AEDoor.PPM_ENTRY.value,
                             lambda state: Tokens(state, self, min(self.options.requiredtokens, self.options.totaltokens)))
+
+
 # Item Checking Helper Functions
 def Keys(state, world, count):
     return state.has(AEItem.Key.value, world.player, count)
@@ -2786,7 +2810,7 @@ def initialize_room_list(world, roomsperlevel, setlevelids = None, setroomids = 
 
         orderedfirstroomids = []
         excludedrooms_LampsOff = [27] # Exclude certain rooms if LampShuffle is off
-        excludedrooms = [48,68,70,71,83,86,73,74,75] #Exclude Boss rooms and coasters (Except Coaster Entrance)
+        excludedrooms = [48, 68, 70, 71, 83, 86, 73, 74, 75] # Exclude Boss rooms and coasters (Except Coaster Entrance)
         for x in range (0, 22):
 
             levelrooms = list(roomsperlevel[levelids[x]])
@@ -2818,7 +2842,7 @@ def initialize_room_list(world, roomsperlevel, setlevelids = None, setroomids = 
 # 23 is a lot closer?
 # 24 is...the one? :O
 # New 12 is the stable one
-# Idea to fix it : If lamps are off, make all the lamps transitions requires 2(?) other rooms to unlock them ?
+# Idea to fix it: If lamps are off, make all the lamps transitions require 2(?) other rooms to unlock them?
 
 def initialize_door_transitions(world, door_map, roomsperlevel, doorTransitions):
     if world.options.doorshuffle.value == 0x00:
@@ -3386,22 +3410,114 @@ def character_lookup(byte):
         return 141
     if ord(byte) == 58:  # Colon
         return 174
+        
 
+def fixed_levels(world, levellist, coinoption, goaloption, entoption, entplando):
+    # Handle recommended preset assignments
+    preset = entoption
+    if preset == 0x01: # recommended
+        if goaloption == 0x00:
+            preset = 0x04
+        elif goaloption == 0x01 or goaloption == 0x04:
+            preset = 0x05
+        else:
+            preset = 0x02 # levelshuffle
 
-def fixed_levels(levellist, entoption, coinoption, goaloption):
-    # Reset position of Peak Point Matrix for mm (postgame), ppm and ppm token (endgame)
-    # If MM is locked and mmtoken is the goal, then place PPM at the end anyway
-    if goaloption == 0x00 or goaloption == 0x01 or goaloption == 0x04 or (entoption == 0x02 and goaloption == 0x03):
+    # if preset == 0x02: # levelshuffle. Obviously, do nothing extra here.
+
+    # Set level positions for entrance presets
+    if preset == 0x03: # erashuffle
+        levelids = [0x07, 0x0E, 0x1E, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0F, 0x10, 0x11, 0x14, 0x15, 0x16] # Sorted by era, with Dimension X first and Monkey Madness removed
+        eraorder = [0, 1, 2, 3, 4, 5, 6]
+        world.random.shuffle(eraorder) # Dim. X, Lost Land, Mysterious, Oceana, Freezeland, Mayhem, Futurama
+
+        # Force Dimension X to be on Dimension X for MM, PPM, PPM Token goals, or coin shuffle off
+        if goaloption == 0x00 or goaloption == 0x01 or goaloption == 0x04 or coinoption == 0x00:
+            for x in range (0, 7):
+                if eraorder[x] == 0:
+                    eraorder[x], eraorder[0] = eraorder[0], eraorder[x]
+        else: # Dimension X can be elsewhere
+            # Prevent Dimension X from being on Lost Land if there would be no sphere 1 locations, which happens with a very specific set of options.
+            # If someone really wants this for a multiworld they can plando it anyway.
+            # Worth noting that this can technically happen with a random level order too, but the odds are vanishingly unlikely. Since this only affects solo worlds, a failure that happens once in a million generations is a total non-issue. If it happens, generate again.
+            if eraorder[1] == 0: # If it's on Lost Land, check other options
+                # Check to see if any setting would guarantee a sphere 1 location (Time Station/No Keys/Race)
+                if (world.options.mailbox == 0x00) and (world.options.unlocksperkey != 0x03) and (world.options.shufflenet == 0x00) and (world.options.shufflewaternet != 0x00):
+                    # Check starting gadgets and training room availability.
+                    # There are no locations for club/none + training rooms completion.
+                    # There are no locations for a non-flyer/water net gadget + training rooms off.
+                    if ((world.options.gadget == 0x00 or world.options.gadget == 0x08) and world.options.trainingrooms == 0x01) or ((world.options.gadget != 0x04 and world.options.gadget != 0x07) and world.options.trainingrooms == 0x00):
+                        while eraorder[1] == 0: # Until Dimension X isn't on Lost Land
+                            world.random.shuffle(eraorder) # Reshuffle
+
         for x in range (0, 22):
-            if levellist[x].entrance == 0x1E:
-                levellist[x], levellist[21] = levellist[21], levellist[x]
-    # Reset position of Monkey Madness if the option requires it
-    if entoption == 0x02:
-        for x in range (0, 22):
-            if levellist[x].entrance == 0x18:
+            if levellist[x].entrance == 0x18: # Reset Monkey Madness - the only level in its own era
                 levellist[x], levellist[20] = levellist[20], levellist[x]
-    # Reset position of races if coin shuffle isn't on
-    if coinoption == 0x00:
+
+        for era in range (0, 7): # For each era, assign the entrances the levels for eraorder[era] to go to
+            if era == 0:
+                destinations = [6, 13, 21] # Dimension X
+            elif era == 1:
+                destinations = [0, 1, 2] # The Lost Land
+            elif era == 2:
+                destinations = [3, 4, 5] # Mysterious Age
+            elif era == 3:
+                destinations = [7, 8, 9] # Oceana
+            elif era == 4:
+                destinations = [10, 11, 12] # New Freezeland
+            elif era == 5:
+                destinations = [14, 15, 16] # Medieval Mayhem
+            else:
+                destinations = [17, 18, 19] # Futurama
+            world.random.shuffle(destinations) # Shuffle order of era
+            for level in range (0, 3):
+                for x in range (0, 22): # Place each desired level onto the next era entrance
+                    if levellist[x].entrance == levelids[eraorder[era] * 3 + level]:
+                        levellist[x], levellist[destinations[level]] = levellist[destinations[level]], levellist[x]
+
+    elif preset == 0x04: # lockendgame
+        for x in range (0, 22):
+            if levellist[x].entrance == 0x18: # Reset Monkey Madness
+                levellist[x], levellist[20] = levellist[20], levellist[x]
+        for x in range (0, 22):
+            if levellist[x].entrance == 0x1E: # Reset Peak Point Matrix
+                levellist[x], levellist[21] = levellist[21], levellist[x]
+
+    elif preset == 0x05: # lockppm
+        for x in range (0, 22):
+            if levellist[x].entrance == 0x1E: # Reset Peak Point Matrix
+                levellist[x], levellist[21] = levellist[21], levellist[x]
+
+    elif preset == 0x06: # goallevelfirst
+        if goaloption == 0x00 or goaloption == 0x03: # mm, mmtoken
+            for x in range (0, 22):
+                if levellist[x].entrance == 0x18: # Place Monkey Madness first
+                    levellist[x], levellist[0] = levellist[0], levellist[x]
+        elif goaloption == 0x04: # ppmtoken
+            for x in range (0, 22):
+                if levellist[x].entrance == 0x1E: # Place Peak Point Matrix first
+                    levellist[x], levellist[0] = levellist[0], levellist[x]
+
+    elif preset == 0x07: # custom
+        levelnames = ["Fossil Field", "Primordial Ooze", "Molten Lava", "Thick Jungle", "Dark Ruins", "Cryptic Relics", "Stadium Attack", "Crabby Beach", "Coral Cave", "Dexter's Island", "Snowy Mammoth", "Frosty Retreat", "Hot Springs", "Gladiator Attack", "Sushi Temple", "Wabi Sabi Wall", "Crumbling Castle", "City Park", "Specter's Factory", "TV Tower", "Monkey Madness", "Peak Point Matrix"] # Ordered list of level names
+        levelids = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x14, 0x15, 0x16, 0x18, 0x1E] # Ordered list of level IDs
+        for x in range (0, 22): # For each entrance
+            for y in range (0, 22): # Find the original order (0 = FF, 1 = PO ... 21 = PPM)
+                if levelnames[x] in entplando.keys(): # Make sure the key exists first
+                    if entplando[levelnames[x]] == levelnames[y]: # x is the level index. y is the level ID.
+                        for z in range (0, 22): # For each entry in the level list
+                            if levellist[z].entrance == levelids[y]: # If we found the correct level at index z
+                                # Swap the level in the level list (index z) with the desired entrance (index x)
+                                levellist[z], levellist[x] = levellist[x], levellist[z]
+
+    # Reset position of Peak Point Matrix for mm, ppm, ppmtoken goal, even for custom prseet
+    if goaloption == 0x00 or goaloption == 0x01 or goaloption == 0x04:
+        for x in range (0, 22):
+            if levellist[x].entrance == 0x1E: # Reset Peak Point Matrix
+                levellist[x], levellist[21] = levellist[21], levellist[x]
+
+    # Reset position of races if coin shuffle isn't on and entrance preset isn't custom
+    if coinoption == 0x00 and preset != 0x07:
         for x in range (0, 22):
             if levellist[x].entrance == 0x07: # Stadium Attack
                 levellist[x], levellist[6] = levellist[6], levellist[x]

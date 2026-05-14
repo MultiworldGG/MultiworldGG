@@ -57,6 +57,6 @@ class GrinchWeb(WebWorld):
             "English",
             "setup_en.md",
             "setup/en",
-            ["MarioSpore", "SomeJakeGuy", "Artamiss"],
+            ["MarioSpore"],
         )
     ]
