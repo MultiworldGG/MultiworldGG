@@ -163,7 +163,11 @@ class OOTSettings(settings.Group):
     emulator_path: EmulatorPath | str = ""
 
 
-def launch_rom(path: str, logger: logging.Logger) -> None:
+def launch_rom(
+    path: str,
+    logger: logging.Logger,
+    status_callback: typing.Callable[[str], None] | None = None,
+) -> None:
     import os
     import subprocess
 
@@ -187,6 +191,10 @@ def launch_rom(path: str, logger: logging.Logger) -> None:
 
     emulator = str(emulator_path.resolve() if hasattr(emulator_path, "resolve") else emulator_path)
     try:
+        if status_callback:
+            status_callback("Starting OoT emulator.")
+        else:
+            logger.info("Starting OoT emulator.")
         subprocess.Popen(
             [emulator, rom_path],
             stdin=subprocess.DEVNULL,

@@ -142,6 +142,10 @@ class OoTContext(CommonContext):
                             pass
 
 
+def show_client_message(ctx: OoTContext, text: str) -> None:
+    ctx.on_print_json({"cmd": "PrintJSON", "data": [{"text": text}]})
+
+
 def get_payload(ctx: OoTContext):
     if ctx.deathlink_enabled and ctx.deathlink_pending:
         trigger_death = True
@@ -315,11 +319,12 @@ async def n64_sync_task(ctx: OoTContext):
                 continue
 
 
-async def run_game(romfile):
-    launch_rom(romfile, logger)
+async def run_game(romfile, ctx: OoTContext | None = None):
+    status_callback = None if ctx is None else lambda text: show_client_message(ctx, text)
+    launch_rom(romfile, logger, status_callback)
 
 
-async def patch_and_run_game(apz5_file):
+async def patch_and_run_game(apz5_file, ctx: OoTContext | None = None):
     apz5_file = os.path.abspath(apz5_file)
     base_name = os.path.splitext(apz5_file)[0]
     decomp_path = base_name + '-decomp.z64'
@@ -338,7 +343,7 @@ async def patch_and_run_game(apz5_file):
     rom.write_to_file(decomp_path)
     compress_rom_file(decomp_path, comp_path)
     os.remove(decomp_path)
-    async_start(run_game(comp_path))
+    async_start(run_game(comp_path, ctx))
 
 
 def main(*launcher_args: str):
@@ -352,11 +357,11 @@ def main(*launcher_args: str):
                             help='Path to an APZ5 file')
         args = parser.parse_args(launcher_args)
 
+        ctx = OoTContext(args.connect, args.password)
         if args.apz5_file:
             logger.info("APZ5 file supplied, beginning patching process...")
-            async_start(patch_and_run_game(args.apz5_file))
+            async_start(patch_and_run_game(args.apz5_file, ctx))
 
-        ctx = OoTContext(args.connect, args.password)
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="Server Loop")
         if gui_enabled:
             ctx.run_gui()

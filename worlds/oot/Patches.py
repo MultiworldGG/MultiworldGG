@@ -16,7 +16,7 @@ from .HintList import getHint
 from .Hints import writeGossipStoneHints, buildAltarHints, \
         buildGanonText, getSimpleHintNoPrefix, HintArea, getItemGenericName, \
         buildMiscItemHints, buildMiscLocationHints, buildMiscDualHints
-from .Utils import data_path
+from .Utils import data_path, encode_oot_player_name
 try:
     from Utils import instance_name as apname
 except ImportError:
@@ -33,7 +33,6 @@ from .SceneFlags import build_xflag_tables, build_xflags_from_world, get_alt_lis
         get_collectible_flag_addresses
 from .TextBox import character_table, NORMAL_LINE_WIDTH, rom_safe_text
 from .texture_util import ci4_rgba16patch_to_ci8, rgba16_patch
-from .Utils import data_path
 from .ntype import BigStream
 from .Cutscenes import patch_cutscenes, patch_wondertalk2
 from .OcarinaSongs import patch_songs
@@ -58,30 +57,6 @@ AP_TRIFORCE_RAINBOW_PATCHES = (
 AP_TRIFORCE_GREY_PATCHES = (
     (0x0AD0, [0xE7, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
 )
-
-
-def encode_oot_player_name(name: str, max_length: int = 8) -> bytearray:
-    encoded = bytearray()
-    for c in name:
-        b = ord(c)
-        if ord('0') <= b <= ord('9'):
-            encoded.append(b - ord('0'))
-        elif ord('A') <= b <= ord('Z'):
-            encoded.append(b + 0x6A)
-        elif ord('a') <= b <= ord('z'):
-            encoded.append(b + 0x64)
-        elif c == '.':
-            encoded.append(0xEA)
-        elif c == '-':
-            encoded.append(0xE4)
-        elif c == ' ':
-            encoded.append(0xDF)
-        else:
-            continue
-        if len(encoded) >= max_length:
-            break
-    encoded.extend([0xDF] * (max_length - len(encoded)))
-    return encoded
 
 
 class OoTContainer(APPatch):

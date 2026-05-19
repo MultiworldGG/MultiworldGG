@@ -430,7 +430,6 @@ def get_pool_core(world):
         if world.adult_trade_shuffle:
             pending_junk_pool.extend(adult_trade_shuffle_items)
             # Pocket Egg is always chosen if both Egg and Pocket Cucco are shuffled.
-            # Match upstream by making the plentiful duplicate item consistent with that.
             if 'Pocket Egg' in adult_trade_shuffle_items and 'Pocket Cucco' in adult_trade_shuffle_items:
                 pending_junk_pool.remove('Pocket Cucco')
         elif world.adult_trade_start:

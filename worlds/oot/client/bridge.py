@@ -13,6 +13,7 @@ except ImportError:
     logger = logging.getLogger(__name__)
 
 from .emu_loader import EmuLoaderClient
+from ..Utils import OOT_PLAYER_NAME_LENGTH, encode_oot_player_name
 
 SCRIPT_VERSION = 7
 CONNECT_PORT   = 28921
@@ -76,7 +77,7 @@ GAME_MODES: Dict[int, tuple] = {
 
 SHOP_SCENES             = {0x2C, 0x2D, 0x2E, 0x2F, 0x30, 0x31, 0x32, 0x33, 0x42, 0x4B}
 KILL_LINK_EXCLUDE_SCENES = {27, 28, 29, 35, 36, 37}
-PLAYER_NAME_LENGTH      = 8
+PLAYER_NAME_LENGTH      = OOT_PLAYER_NAME_LENGTH
 
 
 class OoTBridgeState:
@@ -188,34 +189,9 @@ def _check_temp_context(state: OoTBridgeState, scene: int, loc_type: int, flag: 
     )
 
 
-def _encode_oot_name(name: str) -> List[int]:
-    result: List[int] = []
-    for c in name[:100]:
-        if "0" <= c <= "9":
-            v: Optional[int] = ord(c) - ord("0")
-        elif "A" <= c <= "Z":
-            v = ord(c) + 0x6A
-        elif "a" <= c <= "z":
-            v = ord(c) + 0x64
-        elif c == ".":
-            v = 0xEA
-        elif c == "-":
-            v = 0xE4
-        elif c == " ":
-            v = 0xDF
-        else:
-            v = None
-        if v is not None:
-            result.append(v)
-            if len(result) >= PLAYER_NAME_LENGTH:
-                break
-    return result
-
-
 def _set_player_name(emu: EmuLoaderClient, player_id: int, name: str) -> None:
-    encoded = _encode_oot_name(name) or _encode_oot_name("Player")
     addr    = PLAYER_NAMES_ADDR + player_id * PLAYER_NAME_LENGTH
-    data = bytes((encoded[:PLAYER_NAME_LENGTH] + [0xDF] * PLAYER_NAME_LENGTH)[:PLAYER_NAME_LENGTH])
+    data = bytes(encode_oot_player_name(name, PLAYER_NAME_LENGTH))
     # Player name slots are 8-byte/4-byte aligned; write as words to avoid
     # hundreds of synchronous RetroArch UDP writes on first connect.
     emu.write_u32(addr, int.from_bytes(data[:4], "big"))

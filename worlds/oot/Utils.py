@@ -7,6 +7,34 @@ import tempfile
 import zipfile
 from functools import lru_cache
 
+OOT_PLAYER_NAME_LENGTH = 8
+OOT_PLAYER_NAME_PAD = 0xDF
+OOT_PLAYER_NAME_CHARACTERS = {
+    **{str(i): i for i in range(10)},
+    **{chr(c): c + 0x6A for c in range(ord('A'), ord('Z') + 1)},
+    **{chr(c): c + 0x64 for c in range(ord('a'), ord('z') + 1)},
+    '.': 0xEA,
+    '-': 0xE4,
+    ' ': OOT_PLAYER_NAME_PAD,
+}
+
+
+def encode_oot_player_name(name: str, max_length: int = OOT_PLAYER_NAME_LENGTH) -> bytearray:
+    encoded = bytearray()
+    for c in name:
+        value = OOT_PLAYER_NAME_CHARACTERS.get(c)
+        if value is None:
+            continue
+        encoded.append(value)
+        if len(encoded) >= max_length:
+            break
+
+    if not encoded:
+        return encode_oot_player_name("Player", max_length)
+
+    encoded.extend([OOT_PLAYER_NAME_PAD] * (max_length - len(encoded)))
+    return encoded
+
 
 def _is_apworld_archive(path):
     return path and path.lower().endswith(".apworld")
