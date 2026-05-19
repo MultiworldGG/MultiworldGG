@@ -107,11 +107,11 @@ class Rom(BigStream):
         romCRC = list(self.buffer[0x10:0x18])
         if romCRC not in validCRC and not skip_crc_check:
             # Bad CRC validation
-            raise RuntimeError('ROM file %s is not a valid OoT 1.0 US ROM.' % file)
+            raise RuntimeError('ROM file %s is not a valid OoT 1.0 NTSC-U/J ROM.' % file)
         elif len(self.buffer) < 0x2000000 or len(self.buffer) > (0x4000000) or file_name[1].lower() not in ['.z64',
                                                                                                             '.n64']:
             # ROM is too big, or too small, or not a bad type
-            raise RuntimeError('ROM file %s is not a valid OoT 1.0 US ROM.' % file)
+            raise RuntimeError('ROM file %s is not a valid OoT 1.0 NTSC-U/J ROM.' % file)
         elif len(self.buffer) == 0x2000000:
             # If Input ROM is compressed, then Decompress it
 

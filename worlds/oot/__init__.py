@@ -134,13 +134,16 @@ class OOTCollectionState(metaclass=AutoLogicRegister):
 
 class OOTSettings(settings.Group):
     class RomFile(settings.UserFilePath):
-        """File name of the OoT v1.0 ROM"""
+        """File name of the OoT v1.0 NTSC-U or NTSC-J ROM"""
         description = "Ocarina of Time ROM File"
         copy_to = "The Legend of Zelda - Ocarina of Time.z64"
         md5s = [
-            "5bd1fe107bf8106b2ab6650abecd54d6",  # normal
-            "6697768a7a7df2dd27a692a2638ea90b",  # byte-swapped
-            "05f0f3ebacbc8df9243b6148ffe4792f",  # decompressed
+            "5bd1fe107bf8106b2ab6650abecd54d6",  # NTSC-U z64
+            "6697768a7a7df2dd27a692a2638ea90b",  # NTSC-U n64, byte-swapped
+            "05f0f3ebacbc8df9243b6148ffe4792f",  # NTSC-U decompressed z64
+            "9f04c8e68534b870f707c247fa4b50fc",  # NTSC-J z64
+            "7d44b555e0af3eec36319b5e76e31b0c",  # NTSC-J n64, byte-swapped
+            "a6090ade6efb0490f5e74838d47bbfac",  # NTSC-J decompressed z64
         ]
 
     class RomStart(str):

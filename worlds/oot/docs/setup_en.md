@@ -11,7 +11,7 @@
   - [ares](https://ares-emu.net/) (Windows/Linux)
   - [RetroArch](https://www.retroarch.com/?page=platforms) (works on MacOS) 
 - The built-in Archipelago OoT client, which can be installed [here](https://github.com/ArchipelagoMW/Archipelago/releases).
-- An Ocarina of Time v1.0 ROM.
+- An Ocarina of Time v1.0 NTSC-U or NTSC-J ROM.
 
 ## Configuring BizHawk
 

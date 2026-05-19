@@ -13,7 +13,7 @@
   - [RetroArch](https://www.retroarch.com/?page=platforms) (funktioniert auch auf MacOS) 
 - Der integrierte Archipelago OoT-Client, welcher [hier](https://github.com/ArchipelagoMW/Archipelago/releases) installiert
   werden kann.
-- Eine `Ocarina of Time v1.0 US ROM`. (Nicht aus Europa und keine Master-Quest oder Debug-Rom!)
+- Eine `Ocarina of Time v1.0 NTSC-U oder NTSC-J ROM`. (Nicht aus Europa und keine Master-Quest oder Debug-Rom!)
 
 ## Konfigurieren von BizHawk
 
