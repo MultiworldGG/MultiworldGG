@@ -249,6 +249,8 @@ class Context:
     all_item_and_group_names: typing.Dict[str, typing.Set[str]]
     all_location_and_group_names: typing.Dict[str, typing.Set[str]]
     non_hintable_names: typing.Dict[str, typing.AbstractSet[str]]
+    def_allow_collecting_from: dict[int, bool]  # per slot, the starting collect_from value
+    allow_collecting_from: dict[int, dict[int, bool]]  # per team, the current collect_from value
     spheres: typing.List[typing.Dict[int, typing.Set[int]]]
     """ each sphere is { player: { location_id, ... } } """
     logger: logging.Logger
@@ -272,6 +274,8 @@ class Context:
         self.player_name_lookup: typing.Dict[str, team_slot] = {}
         self.connect_names = {}  # names of slots clients can connect to
         self.allow_releases = {}
+        self.def_allow_collecting_from = {}
+        self.allow_collecting_from = {}
         self.host = host
         self.port = port
         self.server_password = server_password
@@ -525,6 +529,8 @@ class Context:
         self.clients = {0: {}}
         slot_info: NetworkSlot
         slot_id: int
+
+        self.def_allow_collecting_from = decoded_obj.get("allow_collecting_from", {})
 
         team_0 = self.clients[0]
         for slot_id, slot_info in self.slot_info.items():
@@ -893,6 +899,10 @@ class Context:
         if targets:
             self.broadcast(targets, [{"cmd": "SetReply", "key": key, "value": self.client_game_state[team, slot]}])
 
+    def can_collect_from(self, team: int, slot: int) -> bool:
+        return (self.allow_collecting_from.get(team, {})
+                .get(slot, self.def_allow_collecting_from.get(slot, True)))
+
 
 def update_aliases(ctx: Context, team: int):
     cmd = ctx.dumper([{"cmd": "RoomUpdate",
@@ -1116,6 +1126,8 @@ def collect_player(ctx: Context, team: int, slot: int, is_group: bool = False):
                            % (ctx.player_names[(team, slot)], team + 1),
                            {"type": "Collect", "team": team, "slot": slot})
     for source_player, location_ids in all_locations.items():
+        if not ctx.can_collect_from(team, source_player):
+            continue
         register_location_checks(ctx, team, source_player, location_ids, count_activity=False)
         update_checked_locations(ctx, team, source_player)
 
@@ -1872,6 +1884,25 @@ class ClientMessageProcessor(CommonCommandProcessor):
         """For example, '!hint_location_multiple 5 Everywhere' to get a spoiler peek for matching locations.
         Will return as many results as possible up to the specified amount, possibly spending multiple hints worth of hint points in the process."""
         return self.get_hints(" ".join(location_name), True, int(amount))
+
+    def _cmd_collect_from(self, should_allow: str = ""):
+        if should_allow == "":
+            can_collect = self.ctx.can_collect_from(self.client.team, self.client.slot)
+            self.output(f"You currently {'can' if can_collect else 'cannot'} be collected from."
+                        f" Use '!collect_from {'deny' if can_collect else 'allow'}' to change this.")
+            return
+        should_allow = should_allow.lower()
+        allow_collect: bool
+        if should_allow in ("allow", "true", "on", "yes"):
+            allow_collect = True
+        elif should_allow in ("deny", "false", "off", "no"):
+            allow_collect = False
+        else:
+            self.output(f"Invalid argument '{should_allow}', valid args are 'allow', 'deny', or no argument.")
+            return
+        if self.client.team not in self.ctx.allow_collecting_from:
+            self.ctx.allow_collecting_from[self.client.team] = {}
+        self.ctx.allow_collecting_from[self.client.team][self.client.slot] = allow_collect
 
 
 def get_checked_checks(ctx: Context, team: int, slot: int) -> typing.List[int]:
