@@ -1521,6 +1521,12 @@ class DeathLink(Toggle):
     rich_text_doc = True
 
 
+class AllowCollectingFrom(DefaultOnToggle):
+    """If other players are allowed to '!collect' items from your world."""
+    display_name = "Allow Collecting"
+    rich_text_doc = True
+
+
 class ItemLinks(OptionList):
     """Share part of your item pool with other players."""
     display_name = "Item Links"
@@ -1744,6 +1750,7 @@ class PerGameCommonOptions(CommonOptions):
     priority_locations: PriorityLocations
     item_links: ItemLinks
     plando_items: PlandoItems
+    allow_collecting_from: AllowCollectingFrom
 
 
 @dataclass

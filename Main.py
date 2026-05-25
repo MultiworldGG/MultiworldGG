@@ -308,6 +308,9 @@ def main(args, seed=None, baked_server_options: dict[str, object] | None = None)
                         elif any([location.item.name in multiworld.worlds[player].options.start_hints
                                   for player in multiworld.groups.get(location.item.player, {}).get("players", [])]):
                             precollect_hint(location, auto_status)
+                
+                allow_collecting_from: dict[int, bool] = {player: multiworld.worlds[player].options.allow_collecting_from.value != 0
+                                                     for player in multiworld.player_ids}
 
                 # embedded data package
                 data_package = {
@@ -345,6 +348,7 @@ def main(args, seed=None, baked_server_options: dict[str, object] | None = None)
                     "spheres": spheres,
                     "datapackage": data_package,
                     "race_mode": int(multiworld.is_race),
+                    "allow_collecting_from": allow_collecting_from
                 }
                 # TODO: change to `"version": version_tuple` after getting better serialization
                 AutoWorld.call_all(multiworld, "modify_multidata", multidata)
