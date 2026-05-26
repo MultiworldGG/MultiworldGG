@@ -1138,8 +1138,16 @@ def collect_player(ctx: Context, team: int, slot: int, is_group: bool = False):
         # Trim failed worlds from the list so they aren't collected
         for failed in failed_collects:
             all_locations.pop(failed)
-        failed_worlds = ", ".join((ctx.player_names[(team, failed)] for failed in sorted(failed_collects)))
-        failed_worlds = f"[{failed_worlds}] which {'have' if len(failed_collects) > 1 else 'has'} collecting disabled"
+        failed_names = [ctx.player_names[(team, failed)] for failed in sorted(failed_collects)]
+        fail_count = len(failed_names)
+        max_fail_count = 5
+        if fail_count > max_fail_count:
+            failed_worlds = ", ".join(failed_names[:max_fail_count])
+            failed_worlds += f", +{fail_count - max_fail_count} more"
+        else:
+            failed_worlds = ", ".join(failed_names)
+
+        failed_worlds = f"[{failed_worlds}] which {'have' if fail_count > 1 else 'has'} collecting disabled"
         if not all_locations:  # all collection failed
             collect_str = f"failed to collect their items from {failed_worlds}."
         else:  # some collection succeeded
