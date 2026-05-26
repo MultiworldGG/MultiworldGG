@@ -1886,6 +1886,7 @@ class ClientMessageProcessor(CommonCommandProcessor):
         return self.get_hints(" ".join(location_name), True, int(amount))
 
     def _cmd_collect_from(self, should_allow: str = ""):
+        """Check or change the permission of other worlds to collect items from your world."""
         if should_allow == "":
             can_collect = self.ctx.can_collect_from(self.client.team, self.client.slot)
             self.output(f"You currently {'can' if can_collect else 'cannot'} be collected from."
@@ -1895,8 +1896,10 @@ class ClientMessageProcessor(CommonCommandProcessor):
         allow_collect: bool
         if should_allow in ("allow", "true", "on", "yes"):
             allow_collect = True
+            self.output("You can now be collected from.")
         elif should_allow in ("deny", "false", "off", "no"):
             allow_collect = False
+            self.output("You can no longer be collected from.")
         else:
             self.output(f"Invalid argument '{should_allow}', valid args are 'allow', 'deny', or no argument.")
             return
