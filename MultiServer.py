@@ -1122,12 +1122,34 @@ def collect_player(ctx: Context, team: int, slot: int, is_group: bool = False):
     """register any locations that are in the multidata, pointing towards this player"""
     all_locations = ctx.locations.get_for_player(slot)
 
-    ctx.broadcast_text_all("%s (Team #%d) has collected their items from other worlds."
-                           % (ctx.player_names[(team, slot)], team + 1),
-                           {"type": "Collect", "team": team, "slot": slot})
+    failed_collects = set()  # track what worlds have collecting turned off
+    empty_worlds = set()  # track empty worlds to not bother with them / calculate more accurate message
     for source_player, location_ids in all_locations.items():
         if not ctx.can_collect_from(team, source_player):
-            continue
+            failed_collects.add(source_player)
+        elif not (location_ids - ctx.location_checks[team, source_player]):
+            empty_worlds.add(source_player)
+
+    for empty in empty_worlds:  # trim empty worlds as there's nothing to collect from them
+        all_locations.pop(empty)
+
+    collect_str = "has collected their items from all other worlds."
+    if failed_collects:
+        # Trim failed worlds from the list so they aren't collected
+        for failed in failed_collects:
+            all_locations.pop(failed)
+        failed_worlds = ", ".join((ctx.player_names[(team, failed)] for failed in sorted(failed_collects)))
+        if not all_locations:  # all collection failed
+            collect_str = f"failed to collect their items from [{failed_worlds}]."
+        else:  # some collection succeeded
+            collect_str = f"has collected their items from worlds except [{failed_worlds}]."
+    elif not all_locations:  # no collection left to be done
+        collect_str = "has no items left to collect."
+
+    ctx.broadcast_text_all("%s (Team #%d) %s"
+                           % (ctx.player_names[(team, slot)], team + 1, collect_str),
+                           {"type": "Collect", "team": team, "slot": slot})
+    for source_player, location_ids in all_locations.items():
         register_location_checks(ctx, team, source_player, location_ids, count_activity=False)
         update_checked_locations(ctx, team, source_player)
 
