@@ -1125,10 +1125,10 @@ def collect_player(ctx: Context, team: int, slot: int, is_group: bool = False):
     failed_collects = set()  # track what worlds have collecting turned off
     empty_worlds = set()  # track empty worlds to not bother with them / calculate more accurate message
     for source_player, location_ids in all_locations.items():
-        if not ctx.can_collect_from(team, source_player):
-            failed_collects.add(source_player)
-        elif not (location_ids - ctx.location_checks[team, source_player]):
+        if not (location_ids - ctx.location_checks[team, source_player]):
             empty_worlds.add(source_player)
+        elif not ctx.can_collect_from(team, source_player):
+            failed_collects.add(source_player)
 
     for empty in empty_worlds:  # trim empty worlds as there's nothing to collect from them
         all_locations.pop(empty)
@@ -1139,10 +1139,11 @@ def collect_player(ctx: Context, team: int, slot: int, is_group: bool = False):
         for failed in failed_collects:
             all_locations.pop(failed)
         failed_worlds = ", ".join((ctx.player_names[(team, failed)] for failed in sorted(failed_collects)))
+        failed_worlds = f"[{failed_worlds}] which {'have' if len(failed_collects) > 1 else 'has'} collecting disabled"
         if not all_locations:  # all collection failed
-            collect_str = f"failed to collect their items from [{failed_worlds}]."
+            collect_str = f"failed to collect their items from {failed_worlds}."
         else:  # some collection succeeded
-            collect_str = f"has collected their items from worlds except [{failed_worlds}]."
+            collect_str = f"has collected their items from worlds except {failed_worlds}."
     elif not all_locations:  # no collection left to be done
         collect_str = "has no items left to collect."
 
