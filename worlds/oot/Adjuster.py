@@ -15,7 +15,7 @@ from .Options import (cosmetic_options, sfx_options, voice_options,
 from .Rom import Rom, compress_rom_file
 from .N64Patch import apply_patch_file
 from .Utils import __version__ as oot_version
-from Utils import local_path, user_path
+from Utils import local_path, user_path, persistent_store, get_adjuster_settings_no_defaults
 
 logger = logging.getLogger('OoTAdjuster')
 
@@ -23,7 +23,7 @@ def launch_rom(path: str) -> None:
     launch_oot_rom(path, logger)
 
 
-def main(launcher_args):
+def get_argparser():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--rom', default='', 
@@ -42,11 +42,56 @@ def main(launcher_args):
     parser.add_argument('--deathlink',
         help='Enable DeathLink system', action='store_true')
 
-    args = parser.parse_args(launcher_args)
+    return parser
+
+
+def get_default_adjuster_settings():
+    adjuster_settings = get_argparser().parse_known_args(args=[])[0]
+    adjuster_settings.vanilla_rom = "The Legend of Zelda - Ocarina of Time.z64"
+    for name, option in chain(cosmetic_options.items(), sfx_options.items()):
+        if issubclass(option, Choice):
+            setattr(adjuster_settings, name, option.name_lookup[option.default])
+        elif issubclass(option, Range) or issubclass(option, Toggle):
+            setattr(adjuster_settings, name, option.default)
+        else:
+            raise Exception("Unsupported option type")
+    for name in voice_options:
+        setattr(adjuster_settings, name, 'Default')
+    return adjuster_settings
+
+
+def get_adjuster_settings():
+    adjuster_settings = get_adjuster_settings_no_defaults(OOTWorld.game)
+    default_settings = get_default_adjuster_settings()
+
+    # Fill in settings added after a user's persistent storage was created.
+    settings = argparse.Namespace(**vars(adjuster_settings), **{
+        k: v for k, v in vars(default_settings).items() if k not in vars(adjuster_settings)
+    })
+    settings.rom = ''
+    return settings
+
+
+def save_adjuster_settings(args):
+    stored_args = argparse.Namespace(**vars(args))
+    if hasattr(stored_args, "rom"):
+        delattr(stored_args, "rom")
+    persistent_store("adjuster", OOTWorld.game, stored_args)
+
+
+def main(launcher_args):
+    parser = get_argparser()
+    launcher_args = launcher_args or ()
+
+    adjuster_settings = get_adjuster_settings_no_defaults(OOTWorld.game)
+    if not any(arg == '--rom' or arg.startswith('--rom=') for arg in launcher_args):
+        adjuster_settings.rom = ''
+    args = parser.parse_args(launcher_args, namespace=adjuster_settings)
     if not os.path.isfile(args.rom):
         adjustGUI()
     else:
         adjust(args)
+        save_adjuster_settings(args)
 
 def adjustGUI():
     from tkinter import Tk, LEFT, BOTTOM, TOP, E, W, \
@@ -66,13 +111,14 @@ def adjustGUI():
     set_icon(window)
 
     opts = Namespace()
+    adjuster_settings = get_adjuster_settings()
 
     # Select ROM
     romDialogFrame = Frame(window)
     romLabel = Label(romDialogFrame, text='Rom/patch to adjust')
     vanillaLabel = Label(romDialogFrame, text='OoT Base Rom')
-    opts.rom = StringVar()
-    opts.vanilla_rom = StringVar(value="The Legend of Zelda - Ocarina of Time.z64")
+    opts.rom = StringVar(value=getattr(adjuster_settings, 'rom', ''))
+    opts.vanilla_rom = StringVar(value=adjuster_settings.vanilla_rom)
     romEntry = Entry(romDialogFrame, textvariable=opts.rom)
     vanillaEntry = Entry(romDialogFrame, textvariable=opts.vanilla_rom)
 
@@ -96,7 +142,7 @@ def adjustGUI():
     # Custom music folder picker
     musicFolderFrame = Frame(window)
     musicFolderLabel = Label(musicFolderFrame, text='Custom Music Folder (.ootrs/.mmrs)')
-    opts.music_dir = StringVar()
+    opts.music_dir = StringVar(value=adjuster_settings.music_dir or '')
 
     def MusicDirSelect():
         d = filedialog.askdirectory(title='Select Custom Music Folder')
@@ -114,7 +160,7 @@ def adjustGUI():
 
     adultModelFrame = Frame(window)
     adultModelLabel = Label(adultModelFrame, text='Adult Link Model')
-    opts.model_adult = StringVar(value='Default')
+    opts.model_adult = StringVar(value=adjuster_settings.model_adult)
     adultModelMenu = OptionMenu(adultModelFrame, opts.model_adult, *get_model_choices(0))
     adultModelFrame.pack(side=TOP, expand=True, fill=X)
     adultModelLabel.pack(side=LEFT)
@@ -122,7 +168,7 @@ def adjustGUI():
 
     childModelFrame = Frame(window)
     childModelLabel = Label(childModelFrame, text='Child Link Model')
-    opts.model_child = StringVar(value='Default')
+    opts.model_child = StringVar(value=adjuster_settings.model_child)
     childModelMenu = OptionMenu(childModelFrame, opts.model_child, *get_model_choices(1))
     childModelFrame.pack(side=TOP, expand=True, fill=X)
     childModelLabel.pack(side=LEFT)
@@ -141,7 +187,7 @@ def adjustGUI():
         optionLabel = Label(optionFrame, text=option.display_name)
         optionLabel.pack(side=LEFT)
         setattr(opts, option_name, StringVar())
-        getattr(opts, option_name).set(option.name_lookup[option.default])
+        getattr(opts, option_name).set(getattr(adjuster_settings, option_name))
         optionMenu = OptionMenu(optionFrame, getattr(opts, option_name), *option.name_lookup.values())
         optionMenu.pack(side=LEFT)
 
@@ -181,10 +227,10 @@ def adjustGUI():
 
     dropdown_option('cosmetic', 'display_custom_song_names', 13, 0)
 
-    opts.credits_music = IntVar(value=CreditsMusic.default)
+    opts.credits_music = IntVar(value=adjuster_settings.credits_music)
     Checkbutton(romSettingsFrame, text="Credits Music as BGM", variable=opts.credits_music).grid(row=13, column=1, sticky=W)
 
-    opts.disable_battle_music = IntVar(value=DisableBattleMusic.default)
+    opts.disable_battle_music = IntVar(value=adjuster_settings.disable_battle_music)
     Checkbutton(romSettingsFrame, text="Disable Battle Music", variable=opts.disable_battle_music).grid(row=13, column=2, sticky=W)
 
     dropdown_option('sfx', 'sfx_navi_overworld', 14, 0)
@@ -216,7 +262,7 @@ def adjustGUI():
         optionFrame.grid(row=row, column=column, sticky=E)
         optionLabel = Label(optionFrame, text=option.display_name)
         optionLabel.pack(side=LEFT)
-        setattr(opts, option_name, StringVar(value='Default'))
+        setattr(opts, option_name, StringVar(value=getattr(adjuster_settings, option_name)))
         optionMenu = OptionMenu(optionFrame, getattr(opts, option_name), *get_voice_choices(age))
         optionMenu.pack(side=LEFT)
 
@@ -231,29 +277,29 @@ def adjustGUI():
     optionLabel = Label(optionFrame, text=option.display_name)
     optionLabel.pack(side=LEFT)
     setattr(opts, 'sword_trail_duration', StringVar())
-    getattr(opts, 'sword_trail_duration').set(option.default)
+    getattr(opts, 'sword_trail_duration').set(adjuster_settings.sword_trail_duration)
     optionMenu = OptionMenu(optionFrame, getattr(opts, 'sword_trail_duration'), *range(4, 21))
     optionMenu.pack(side=LEFT)
 
     # Toggle cosmetic options as checkboxes
-    opts.dpad_dungeon_menu = IntVar(value=DpadDungeonMenu.default)
+    opts.dpad_dungeon_menu = IntVar(value=adjuster_settings.dpad_dungeon_menu)
     Checkbutton(romSettingsFrame, text="D-Pad Dungeon Info", variable=opts.dpad_dungeon_menu).grid(row=22, column=0, sticky=W)
 
-    opts.speedup_music_for_last_triforce_piece = IntVar(value=SpeedupMusicForLastTriforcePiece.default)
+    opts.speedup_music_for_last_triforce_piece = IntVar(value=adjuster_settings.speedup_music_for_last_triforce_piece)
     Checkbutton(romSettingsFrame, text="Speed Up Music (Last Triforce Piece)", variable=opts.speedup_music_for_last_triforce_piece).grid(row=22, column=1, sticky=W)
 
-    opts.slowdown_music_when_lowhp = IntVar(value=SlowdownMusicWhenLowhp.default)
+    opts.slowdown_music_when_lowhp = IntVar(value=adjuster_settings.slowdown_music_when_lowhp)
     Checkbutton(romSettingsFrame, text="Slowdown Music When Low HP", variable=opts.slowdown_music_when_lowhp).grid(row=22, column=2, sticky=W)
 
-    opts.uninvert_y_axis_in_first_person_camera = IntVar(value=UninvertYAxisInFirstPersonCamera.default)
+    opts.uninvert_y_axis_in_first_person_camera = IntVar(value=adjuster_settings.uninvert_y_axis_in_first_person_camera)
     Checkbutton(romSettingsFrame, text="Uninvert Y-Axis (First Person)", variable=opts.uninvert_y_axis_in_first_person_camera).grid(row=23, column=0, sticky=W)
 
-    opts.input_viewer = IntVar(value=InputViewer.default)
+    opts.input_viewer = IntVar(value=adjuster_settings.input_viewer)
     Checkbutton(romSettingsFrame, text="Input Viewer", variable=opts.input_viewer).grid(row=23, column=1, sticky=W)
 
 
     # Deathlink is a checkbox
-    opts.deathlink = IntVar(value=0)
+    opts.deathlink = IntVar(value=adjuster_settings.deathlink)
     deathlink_checkbox = Checkbutton(romSettingsFrame, text="DeathLink (Team Deaths)", variable=opts.deathlink)
     deathlink_checkbox.grid(row=24, column=1, sticky=W)
 
@@ -350,6 +396,7 @@ def adjustGUI():
                         return
 
                     path = value
+                    save_adjuster_settings(guiargs)
                     from worlds.LauncherComponents import launch_subprocess
                     from .client import main as client_main
                     launch_rom(path)
@@ -365,7 +412,19 @@ def adjustGUI():
     # Adjust button
     bottomFrame = Frame(window)
     adjustButton = Button(bottomFrame, text='Adjust Rom', command=adjustRom)
-    adjustButton.pack(side=BOTTOM, padx=(5, 5))
+    adjustButton.pack(side=LEFT, padx=(5, 5))
+
+    def saveGUISettings():
+        try:
+            save_adjuster_settings(make_guiargs())
+        except Exception as e:
+            logging.exception(e)
+            messagebox.showerror(title="Error while saving settings", message=str(e))
+        else:
+            messagebox.showinfo(title="Success", message="Settings saved to persistent storage")
+
+    saveButton = Button(bottomFrame, text='Save Settings', command=saveGUISettings)
+    saveButton.pack(side=LEFT, padx=(5, 5))
     bottomFrame.pack(side=BOTTOM, pady=(5, 5))
 
     window.mainloop()

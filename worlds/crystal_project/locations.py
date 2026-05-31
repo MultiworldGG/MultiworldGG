@@ -716,7 +716,7 @@ def get_treasure_and_npc_locations(player: int, options: CrystalProjectOptions |
         #Salmon Bay
         #Salmon Bay Base
         LocationData(SALMON_BAY_BASIN_AP_REGION, SALMON_BAY_DISPLAY_NAME + " NPC - Moodlit shore behind waterfall", 2438 + npc_index_offset), #Ancient Tablet B
-        LocationData(SALMON_BAY_BASIN_AP_REGION, SALMON_BAY_DISPLAY_NAME + " NPC - Quintar splish splash", 1272 + npc_index_offset), #Ancient Tablet A
+        LocationData(SALMON_BAY_ISLAND, SALMON_BAY_DISPLAY_NAME + " NPC - Quintar splish splash", 1272 + npc_index_offset), #Ancient Tablet A
         LocationData(SALMON_BAY_BASIN_AP_REGION, SALMON_BAY_DISPLAY_NAME + " Chest - Across the bridge", 2974 + treasure_index_offset), #Potion Pouch chest
         #Salmon Bay West Crag
         LocationData(SALMON_BAY_WEST_CRAG_AP_REGION, SALMON_BAY_DISPLAY_NAME + " NPC - West cliff diving", 1271 + npc_index_offset), #Ancient Tablet C
@@ -782,7 +782,7 @@ def get_treasure_and_npc_locations(player: int, options: CrystalProjectOptions |
         LocationData(JIDAMBA_ATOLLS_AP_REGION, THE_OPEN_SEA_DISPLAY_NAME + " Chest - Atoll southeast of Jidamba Tangle", 3767 + treasure_index_offset),  # Fenix Syrup chest
         LocationData(JIDAMBA_ATOLLS_AP_REGION, THE_OPEN_SEA_DISPLAY_NAME + " Chest - Atoll southwest of southeast Jidamba Tangle atoll", 3765 + treasure_index_offset),  # Z-Potion chest
         #NPCs
-        LocationData(THE_OPEN_SEA_AP_REGION, THE_OPEN_SEA_DISPLAY_NAME + " NPC - I'm on a raft!", 2804 + npc_index_offset, lambda state: state.has("Item - Super Rod", player) and state.has("Item - Jigging Lure", player), tags=[FISHER_LOCATION_GROUP, FETCH_QUEST_LOCATION_GROUP]),
+        LocationData(BAZAAR_COAST_AP_REGION, THE_OPEN_SEA_DISPLAY_NAME + " NPC - I'm on a raft!", 2804 + npc_index_offset, lambda state: state.has("Item - Super Rod", player) and state.has("Item - Jigging Lure", player), tags=[FISHER_LOCATION_GROUP, FETCH_QUEST_LOCATION_GROUP]),
         #CheckOrNot: (930, 91, 253) do we put a check on the guy who gives you a Gaea Shard if you get there with no Salmon lol: no
         #LocationData(THE_OPEN_SEA_AP_REGION, THE_OPEN_SEA_DISPLAY_NAME + " NPC - Z34_SinisterSailor", 2520 + npc_index_offset),
 
@@ -1512,8 +1512,8 @@ def get_boss_locations(player: int, options: CrystalProjectOptions | None) -> Li
         LocationData(THE_DEPTHS_AP_REGION, THE_DEPTHS_DISPLAY_NAME + " Boss - The Peacekeeper", 2579 + boss_index_offset, lambda state: logic.is_area_in_level_range(state, PEACEKEEPER_FIGHT_LEVEL), tags=[END_GAME_BOSS_LOCATION_GROUP]), #Monster ID: 169
         LocationData(THE_DEPTHS_AP_REGION, THE_DEPTHS_DISPLAY_NAME + " Boss - With STEM WARD in hand, offer 4 Deity Eyes to battle Gabriel", 2580 + boss_index_offset, lambda state: state.has(DEITY_EYE, player, 4) and state.has(STEM_WARD, player) and logic.is_area_in_level_range(state, GABRIEL_FIGHT_LEVEL), tags=[END_GAME_BOSS_LOCATION_GROUP, FETCH_QUEST_LOCATION_GROUP]), #Monster ID: 241
         LocationData(CASTLE_SEQUOIA_AP_REGION, CASTLE_SEQUOIA_DISPLAY_NAME + " Boss - Parasite X", 1457 + boss_index_offset, lambda state: logic.is_area_in_level_range(state, PARASITE_X_FIGHT_LEVEL)), #Monster ID: 198 (Castle Sequoia (Skums) Z58_TrapdoorGuard)
-        LocationData(CASTLE_SEQUOIA_AP_REGION, CASTLE_SEQUOIA_DISPLAY_NAME + " Boss - Neo Warden", 1477 + boss_index_offset, lambda state: logic.is_area_in_level_range(state, NEO_WARDEN_FIGHT_LEVEL)), #Monster ID: 200 (Castle Sequoia (Bounce) Z58_F2TrapdoorGuard)
-        LocationData(CASTLE_SEQUOIA_AP_REGION, CASTLE_SEQUOIA_DISPLAY_NAME + " Boss - Akamanto", 1503 + boss_index_offset, lambda state: logic.is_area_in_level_range(state, AKAMANTO_FIGHT_LEVEL)), #Monster ID: 201 (Castle Sequoia (Ice) Z58_F3TrapdoorGuard)
+        LocationData(CASTLE_SEQUOIA_SHROOM_AP_REGION, CASTLE_SEQUOIA_DISPLAY_NAME + " Boss - Neo Warden", 1477 + boss_index_offset, lambda state: logic.is_area_in_level_range(state, NEO_WARDEN_FIGHT_LEVEL)), #Monster ID: 200 (Castle Sequoia (Bounce) Z58_F2TrapdoorGuard)
+        LocationData(CASTLE_SEQUOIA_ICE_AP_REGION, CASTLE_SEQUOIA_DISPLAY_NAME + " Boss - Akamanto", 1503 + boss_index_offset, lambda state: logic.is_area_in_level_range(state, AKAMANTO_FIGHT_LEVEL)), #Monster ID: 201 (Castle Sequoia (Ice) Z58_F3TrapdoorGuard)
         LocationData(THE_OLD_WORLD_AP_REGION, THE_OLD_WORLD_DISPLAY_NAME + " Boss - Periculum", 3650 + boss_index_offset, tags=[END_GAME_BOSS_LOCATION_GROUP]), #Monster ID: 268 (min level 70)
         ]
     return location_table

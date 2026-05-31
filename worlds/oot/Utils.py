@@ -58,13 +58,14 @@ def _apworld_archive_path():
 _version_data = pkgutil.get_data(__name__, "archipelago.json")
 if _version_data is None:
     raise FileNotFoundError("archipelago.json")
-__version__: str = json.loads(_version_data.decode('utf-8'))['world_version']
-
+_version_info = json.loads(_version_data.decode('utf-8'))
+__version__: str = _version_info['world_version']
+__version_full__: str = _version_info['world_version_full']
 
 def _restore_executable_mode(path):
     if os.path.basename(path).startswith(('Compress', 'Decompress')):
         try:
-            os.chmod(path, 0o755)
+            os.chmod(path, 0o755) # nosec
         except OSError:
             pass
 

@@ -121,7 +121,7 @@ class MetroidFusionWorld(World):
     item_name_groups = {
         "MajorUpgrades": major_upgrades
     }
-    version = "1.22.2"
+    version = "1.22.4"
     debug = False
 
 

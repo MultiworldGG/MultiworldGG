@@ -1,4 +1,3 @@
-from itertools import product as itertools_product
 from typing import TYPE_CHECKING
 import logging
 
@@ -117,18 +116,11 @@ def create_logic_rule(
         requirement: Requirement,
         options: "MetroidFusionOptions",
         debug: bool = False) -> list[tuple[set[str], int, int, int, bool]]:
-    hard_items: set[str] = set()
-    possibilities: list[tuple[set[str], int, int, int, bool]] = []
-    unpack_requirement(
-        requirement,
-        possibilities,
-        set(),
-        options,
-        hard_items,
-        0,
-        0,
-        0,
-        debug)
+    possibilities: list[tuple[set[str], int, int, int, bool]] = requirement.unpack(options, debug=debug)
+    # Validate all item names in possibilities before proceeding
+    assert all([item_needed in valid_item_names
+                for possibility in possibilities
+                for item_needed in possibility[0]]), requirement
     if debug:
         sub_requirements_debug_string = [
             (f"\t({requirements_list},\n"
@@ -141,116 +133,7 @@ def create_logic_rule(
         debug_string = ("Create logic rule...\n"
                         f"Requirement: {requirement.name}\n"
                         f"Item Possibilities: [\n{",\n".join(sub_requirements_debug_string)}\n]\n"
-                        f"Hard Requirements: {{{", ".join(hard_items)}}}\n"
                         f"Enabled: {requirement.check_option_enabled(options)}")
         print(debug_string)
         logging.info(debug_string)
-    return possibilities
-
-def unpack_requirement(
-        requirement: Requirement,
-        possibilities: list[tuple[set[str], int, int, int, bool]],
-        parent_items: set[str],
-        options: "MetroidFusionOptions",
-        parent_hard_items: set[str],
-        parent_energy_tanks: int = 0,
-        parent_missile_ammo: int = 0,
-        parent_power_bomb_ammo: int = 0,
-        debug = False) -> list[tuple[set[str], int, int, int, bool]]:
-    """Unpacks a requirement into a list of possible item sets each paired with an integer of energy tanks,
-    integer of missiles, integer of power bombs and whether it's enabled by YAML settings"""
-    if debug:
-        logging.info(f"Requirement {requirement.name}. "
-                     f"Items needed {requirement.items_needed}. "
-                     f"Sub-requirements {requirement.requirements}. "
-                     f"Hard requirements {requirement.hard_items_needed}. "
-                     f"Possibilities {possibilities}. "
-                     f"Parent items {parent_items}. "
-                     f"Parent hard requirements {parent_hard_items}. "
-                     f"Parent Energy Tanks Needed {parent_energy_tanks}. "
-                     f"Parent Missile Ammo {parent_missile_ammo}. "
-                     f"Parent Power Bomb Ammo {parent_power_bomb_ammo}.")
-    # Is the Requirement's YAML option enabled?
-    yaml_enabled: bool = requirement.check_option_enabled(options)
-    # Validate item names
-    assert all([item_needed in valid_item_names
-                for item_needed in requirement.items_needed]), requirement
-    assert all([hard_item_needed in valid_item_names
-                for hard_item_needed in requirement.hard_items_needed]), requirement
-    # Has sub-requirements?
-    if requirement.requirements:
-        # Permute the requirements lists
-        requirements_product: list[list[Requirement]] = list(itertools_product(*requirement.requirements))
-        for requirements_permutation in requirements_product:
-            if debug:
-                print(f"Evaluating permutation: ["
-                      f"{", ".join(nested_requirement.name 
-                                   for nested_requirement in requirements_permutation)}]")
-            # Check if all requirements in permutation have enabled options
-            if not yaml_enabled or any([not nested_requirement.check_option_enabled(options)
-                                         for nested_requirement in requirements_permutation]):
-                if debug:
-                    print(f"Permutation disabled due to options: ["
-                          f"{requirement.name}, {", ".join(nested_requirement.name 
-                                       for nested_requirement in requirements_permutation)}]")
-                    logging.info(f"Permutation disabled due to options: ["
-                                 f"{requirement.name}, {", ".join(nested_requirement.name 
-                                              for nested_requirement in requirements_permutation)}]")
-            # Save state of parent's hard_items_needed
-            current_hard_items = parent_hard_items.copy()
-            current_parent_items = parent_items.copy()
-            parent_hard_items |= requirement.hard_items_needed
-            parent_items |= requirement.items_needed
-            new_possibilities: list[tuple[set[str], int, int, int, bool]] = []
-            for nested_requirement in requirements_permutation:
-                and_possibilities = unpack_requirement(
-                    nested_requirement,
-                    [],
-                    parent_items,
-                    options,
-                    parent_hard_items,
-                    max(parent_energy_tanks, requirement.energy_tanks_needed),
-                    parent_missile_ammo + requirement.missile_ammo_needed,
-                    parent_power_bomb_ammo + requirement.power_bomb_ammo_needed,
-                    debug
-                )
-                if new_possibilities:
-                    current_new_possibilities = new_possibilities.copy()
-                    new_possibilities = [(p[0][0] | p[1][0],
-                                          max(p[0][1], p[1][1]),
-                                          p[0][2] + p[1][2],
-                                          p[0][3] + p[1][3],
-                                          p[0][4] and p[1][4])
-                                         for p in itertools_product(current_new_possibilities, and_possibilities)]
-                elif not new_possibilities:
-                    new_possibilities.extend(and_possibilities)
-            for (n_r_items, n_r_energy, n_r_missiles, n_r_pbs, n_r_yaml) in new_possibilities:
-                combined_items = n_r_items | requirement.items_needed
-                calculated_energy = max(n_r_energy, requirement.energy_tanks_needed)
-                hard_test: bool = parent_hard_items.issubset(combined_items)
-                possibility_exists_test: bool = \
-                    (combined_items, calculated_energy, n_r_missiles, n_r_pbs) in possibilities
-                if hard_test and not possibility_exists_test:
-                    possibilities.append( (combined_items, calculated_energy, n_r_missiles, n_r_pbs, n_r_yaml) )
-                elif debug:
-                    print(f"Skipping Possibility: {combined_items}")
-                    logging.info(f"Skipping Possibility: {combined_items}")
-                    if not hard_test:
-                        print(f"\tDoes not contain all of: {parent_hard_items}")
-                        logging.info(f"\tDoes not contain all of: {parent_hard_items}")
-                    elif possibility_exists_test:
-                        print(f"\tPossibility already existed when attempting to add to list")
-                        logging.info(f"\tPossibility already existed when attempting to add to list")
-            parent_hard_items = current_hard_items.copy()
-            parent_items = current_parent_items.copy()
-    else:
-        if debug and not yaml_enabled:
-            print(f"Requirement {requirement.name} disabled due to options.")
-            logging.info(f"Requirement {requirement.name} disabled due to options.")
-        parent_hard_items |= requirement.hard_items_needed
-        possibilities.append(( parent_items | requirement.items_needed,
-                               max(parent_energy_tanks, requirement.energy_tanks_needed),
-                               parent_missile_ammo + requirement.missile_ammo_needed,
-                               parent_power_bomb_ammo + requirement.power_bomb_ammo_needed,
-                               yaml_enabled))
     return possibilities

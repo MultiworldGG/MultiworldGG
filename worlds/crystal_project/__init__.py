@@ -27,6 +27,7 @@ from .mod_helper import ModLocationData, get_modded_items, get_modded_locations,
 from typing import List, Set, Dict, Any
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import Item, Tutorial, MultiWorld, CollectionState, ItemClassification
+from Options import OptionError
 
 class CrystalProjectWeb(WebWorld):
     theme = "jungle"
@@ -300,7 +301,7 @@ class CrystalProjectWorld(World):
                                 starting_passes_list.append(item_name)
                                 break
                     if not is_inv_pass_for_included_region:
-                        raise Exception(f"For player {self.player_name}: YAML settings were contradictory. Starting inventory contains {item_name}, "
+                        raise OptionError(f"For player {self.player_name}: YAML settings were contradictory. Starting inventory contains {item_name}, "
                                         f"but that region is not in {self.options.included_regions}. Change settings and regenerate.")
 
             for item_name in self.options.start_inventory_from_pool.keys():
@@ -314,7 +315,7 @@ class CrystalProjectWorld(World):
                             starting_passes_list.append(item_name)
                             break
                     if not is_inv_pool_pass_for_included_region:
-                        raise Exception(f"For player {self.player_name}: YAML settings were contradictory. Starting inventory from pool contains {item_name}, "
+                        raise OptionError(f"For player {self.player_name}: YAML settings were contradictory. Starting inventory from pool contains {item_name}, "
                                         f"but that region is not in {self.options.included_regions}. Change settings and regenerate.")
 
             if len(starting_passes_list) > 0:
@@ -333,7 +334,7 @@ class CrystalProjectWorld(World):
                 actual_starting_level_value = self.options.starting_level.value
 
                 if self.options.regionsanity_starter_region_max_level.value < self.options.regionsanity_starter_region_min_level.value:
-                    raise Exception(f"For player {self.player_name}: YAML settings were contradictory. Regionsanity Starter Level Min Value {self.options.regionsanity_starter_region_min_level.value} "
+                    raise OptionError(f"For player {self.player_name}: YAML settings were contradictory. Regionsanity Starter Level Min Value {self.options.regionsanity_starter_region_min_level.value} "
                                     f"is higher than Regionsanity Starter Level Max Value {self.options.regionsanity_starter_region_max_level.value}. Change settings and regenerate.")
 
                 for ap_region in self.get_regions():
@@ -370,7 +371,7 @@ class CrystalProjectWorld(World):
                 self.options.starting_level.value = actual_starting_level_value
 
                 if len(valid_starting_regions) == 0:
-                    raise Exception(f"For player {self.player_name}: YAML settings were too restrictive. No valid regions are between Regionsanity Starter Level Min Value {self.options.regionsanity_starter_region_min_level.value} "
+                    raise OptionError(f"For player {self.player_name}: YAML settings were too restrictive. No valid regions are between Regionsanity Starter Level Min Value {self.options.regionsanity_starter_region_min_level.value} "
                                     f"and Regionsanity Starter Level Max Value {self.options.regionsanity_starter_region_max_level.value}. Change settings and regenerate.")
 
                 self.starter_ap_region = self.random.choice(valid_starting_regions).name
@@ -483,7 +484,7 @@ class CrystalProjectWorld(World):
                 potential_max_level = max_progressive_levels * potential_progressive_level_size
 
             if self.options.max_level.value > potential_max_level:
-                raise Exception(f"For player {self.player_name}: yaml settings were too restrictive. Needed at least {-(level_up_amount // -potential_progressive_level_size)} Progressive Levels, but only room for {max_progressive_levels} Progressive Levels in the pool. "
+                raise OptionError(f"For player {self.player_name}: yaml settings were too restrictive. Needed at least {-(level_up_amount // -potential_progressive_level_size)} Progressive Levels, but only room for {max_progressive_levels} Progressive Levels in the pool. "
                                 f"This is usually caused by mods that add more items than locations. Change settings and regenerate.")
             else:
                 message = (f"For player {self.player_name}: yaml settings were too restrictive. Only room for {max_progressive_levels} Progressive Levels in the pool. "
@@ -835,6 +836,7 @@ class CrystalProjectWorld(World):
             "includeSummonAbilities": self.options.include_summon_abilities.value,
             "includeScholarAbilities": self.options.include_scholar_abilities.value,
             "itemInfoMode": self.options.item_info_mode.value,
+            "earnedItemInfoPercent": self.options.earned_item_info_percent.value,
             "randomizeMusic": bool(self.options.randomize_music.value),
             "useMods": self.options.use_mods.value,
             "modInfo": mod_info,

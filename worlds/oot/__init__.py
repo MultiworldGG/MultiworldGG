@@ -13,7 +13,7 @@ from .Location import OOTLocation, LocationFactory, location_name_to_id, build_l
 from .Entrance import OOTEntrance
 from .EntranceShuffle import shuffle_random_entrances, entrance_shuffle_table, EntranceShuffleError
 from .HintList import getRequiredHints
-from .Hints import HintArea, HintAreaNotFound, hint_dist_keys, get_hint_area, buildWorldGossipHints
+from .Hints import HintArea, HintAreaNotFound, hint_dist_keys, get_hint_area, buildWorldGossipHints, populate_misc_hint_data
 from .Items import OOTItem, item_table, oot_data_to_ap_id, oot_is_item_of_type, REWARD_COLORS, REWARD_TO_DUNGEON
 from .ItemPool import generate_itempool, get_junk_item, get_junk_pool
 from .Regions import OOTRegion, TimeOfDay
@@ -255,15 +255,13 @@ class OOTWorld(World):
     topology_present: bool = True
     item_name_to_id = {item_name: oot_data_to_ap_id(data, False) for item_name, data in item_table.items() if
                        oot_data_to_ap_id(data, False) is not None and item_name not in {
-                        'Keaton Mask', 'Skull Mask', 'Spooky Mask',
-                        'Mask of Truth', 'Goron Mask', 'Zora Mask', 'Gerudo Mask',
                         'Buy Magic Bean', 'Milk',
                         'Small Key', 'Map', 'Compass', 'Boss Key',
                        }}  # These are items which aren't used, but have get-item values
     location_name_to_id = location_name_to_id
     web = OOTWeb()
 
-    required_client_version = (0, 4, 0)
+    required_client_version = (0, 6, 4)
 
     item_name_groups = {
         # internal groups
@@ -1492,10 +1490,25 @@ class OOTWorld(World):
 
         placed_prefill_items = []
 
-        def prefill_state(base_state, excluded_items=None):
+        def prefill_state(base_state, excluded_items=None, collect_placed_items=True):
             excluded_item_ids = {id(item) for item in excluded_items or ()}
             state = base_state.copy()
+            # Trial states may exclude keys/songs from the copied base state. OoT's
+            # age/time reachability caches are monotonic, so clear them before
+            # checking candidate locations or a stricter trial can inherit access
+            # from a less restricted one.
+            state.child_reachable_regions[self.player] = set()
+            state.adult_reachable_regions[self.player] = set()
+            state.child_blocked_connections[self.player] = set()
+            state.adult_blocked_connections[self.player] = set()
+            state.day_reachable_regions[self.player] = set()
+            state.dampe_reachable_regions[self.player] = set()
+            state._oot_stale[self.player] = True
             for item in placed_prefill_items:
+                if id(item) in excluded_item_ids:
+                    continue
+                if not collect_placed_items:
+                    continue
                 self.collect(state, item)
             for item in self.get_pre_fill_items():
                 if id(item) in excluded_item_ids:
@@ -1564,7 +1577,11 @@ class OOTWorld(World):
             unplaced_items = items[:]
             while unplaced_items:
                 item = unplaced_items.pop()
-                placement_state = prefill_state(base_state, excluded_items=unplaced_items + [item])
+                placement_state = prefill_state(
+                    base_state,
+                    excluded_items=unplaced_items + [item],
+                    collect_placed_items=fill_stage != 'SmallKey',
+                )
                 self.random.shuffle(locations)
                 for location_index, location in enumerate(locations):
                     if location.can_fill(placement_state, item, True):
@@ -1873,7 +1890,7 @@ class OOTWorld(World):
             for entrance in all_entrances:
                 self.multiworld.spoiler.set_entrance(entrance, entrance.replaces, 'entrance', self.player)
 
-        if self.hints != 'none':
+        if self.hints != 'none' or self.misc_hints:
             self.hint_data_available.wait()
 
         with i_o_limiter:
@@ -1912,8 +1929,10 @@ class OOTWorld(World):
     # Gathers hint data for OoT. Loops over all world locations for woth, barren, and major item locations.
     @classmethod
     def stage_generate_output(cls, multiworld: MultiWorld, output_directory: str):
+        oot_worlds = list(multiworld.get_game_worlds(cls.game))
+
         def hint_type_players(hint_type: str) -> set:
-            return {autoworld.player for autoworld in multiworld.get_game_worlds("Ocarina of Time")
+            return {autoworld.player for autoworld in oot_worlds
                     if autoworld.hints != 'none' 
                     and autoworld.hint_dist_user['distribution'][hint_type]['copies'] > 0
                     and (autoworld.hint_dist_user['distribution'][hint_type]['fixed'] > 0 
@@ -1942,7 +1961,7 @@ class OOTWorld(World):
                                 or (loc.player in item_hint_players and loc.name in multiworld.worlds[loc.player].added_hint_types['item'])):
                         autoworld.major_item_locations.append(loc)
 
-                    if loc.game == "Ocarina of Time" and loc.item.code and (not loc.locked or
+                    if loc.game == cls.game and loc.item.code and (not loc.locked or
                         (oot_is_item_of_type(loc.item, 'Song') or
                             (oot_is_item_of_type(loc.item, 'SmallKey')         and multiworld.worlds[loc.player].shuffle_smallkeys     in ('overworld', 'any_dungeon', 'regional')) or
                             (oot_is_item_of_type(loc.item, 'HideoutSmallKey')  and multiworld.worlds[loc.player].shuffle_hideoutkeys   in ('overworld', 'any_dungeon', 'regional')) or
@@ -1981,10 +2000,11 @@ class OOTWorld(World):
             for player in barren_hint_players:
                 multiworld.worlds[player].empty_areas = {region: info for (region, info) in items_by_region[player].items()
                                                     if info['is_barren']}
+            populate_misc_hint_data(oot_worlds)
         except Exception as e:
             raise e
         finally:
-            for autoworld in multiworld.get_game_worlds("Ocarina of Time"):
+            for autoworld in oot_worlds:
                 autoworld.hint_data_available.set()
 
 

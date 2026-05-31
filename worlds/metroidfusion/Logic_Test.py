@@ -64,10 +64,9 @@ class FusionLogicTest(WorldTestBase):
         start = perf_counter()
         reqs: list[Requirement] = [
             # Copy or write a Requirement in this area to test
-            PONRRequirement("PONR - Shinespark to Fiery Storage", [
-                CanDoBeginnerShinespark()
-            ], [
-                HasVaria()
+            HasKeycard2("Enter BOX's Zone", [
+                CanDamageMediumGeron(),
+                CanDamageAnyGeron()
             ])
         ]
         expected_results: list[tuple[set[str], int, int, int]] = [

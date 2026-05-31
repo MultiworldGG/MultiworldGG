@@ -841,8 +841,22 @@ def validate_world(ootworld, entrance_placed, locations_to_ensure_reachable, all
     # This means we need to hard check that none of the relevant entrances are ever reachable as that age
     # This is mostly relevant when shuffling special interiors (such as windmill or kak potion shop)
     # Warp Songs and Overworld Spawns can also end up inside certain indoors so those need to be handled as well
-    CHILD_FORBIDDEN = ['OGC Great Fairy Fountain -> Castle Grounds', 'GV Carpenter Tent -> GV Fortress Side']
-    ADULT_FORBIDDEN = ['HC Great Fairy Fountain -> Castle Grounds', 'HC Storms Grotto -> Castle Grounds']
+    CHILD_FORBIDDEN = [
+        'OGC Great Fairy Fountain -> Castle Grounds',
+        'GV Carpenter Tent -> GV Fortress Side',
+        'Ganons Castle Lobby -> Castle Grounds',
+        'Bongo Bongo Boss Room -> Shadow Temple Before Boss',
+        'Twinrova Boss Room -> Spirit Temple Before Boss',
+    ]
+    ADULT_FORBIDDEN = [
+        'HC Great Fairy Fountain -> Castle Grounds',
+        'HC Storms Grotto -> Castle Grounds',
+        'Bongo Bongo Boss Room -> Shadow Temple Before Boss',
+        'Twinrova Boss Room -> Spirit Temple Before Boss',
+    ]
+    if ootworld.dungeon_mq['Forest Temple'] and 'Forest Temple' in ootworld.dungeon_shortcuts:
+        CHILD_FORBIDDEN.append('Phantom Ganon Boss Room -> Forest Temple Before Boss')
+        ADULT_FORBIDDEN.append('Phantom Ganon Boss Room -> Forest Temple Before Boss')
 
     if not ootworld.decouple_entrances:
         for entrance in ootworld.get_shufflable_entrances():

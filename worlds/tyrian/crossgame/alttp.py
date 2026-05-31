@@ -102,7 +102,7 @@ alttp_item_texts: list[tuple[list[str], TyrianALTTPText]] = [
               flute_spot="vulcan boy shoots fast again")
     ),
     (  # Laser Weapons
-        ["Laser", "Zica Laser", "Needle Laser", "MegaLaser Dual", "MegaLaser", "SDF Main Gun", "Zica Supercharger"],
+        ["Laser", "Zica Laser", "Needle Laser", "MegaLaser Dual", "MegaLaser", "SDF Main Gun", "Zica SuperCharger"],
         TyrianALTTPText(
               pedestal="and the space laser",
               sick_kid="the laser-beam kid",

@@ -1,13 +1,14 @@
-import math
-from typing import Dict, Any, Union, ClassVar, Final
-from .Locations import locations, columns
-from .Items import PPDSItem, item_table, create_items
 from worlds.AutoWorld import World, WebWorld
-from BaseClasses import Location, Region, LocationProgressType, Tutorial
-from settings import Group, Bool
+from BaseClasses import Tutorial
+from .Locations import *
+from .Rules import *
+from .Options import *
+from .Items import *
+from .Regions import *
+from .Settings import *
+from typing import *
 
-uuid_offset = 0x0BF6E0BB
-
+# File is Auto-generated, see: [https://github.com/SWCreeperKing/ApWorldFactories/tree/master/ApWorldFactories/Games]
 class PPDSWebWorld(WebWorld):
     setup_en = Tutorial(
         tutorial_name="Start Guide",
@@ -20,44 +21,79 @@ class PPDSWebWorld(WebWorld):
 
     tutorials = [setup_en]
 
-
 class PlacidPlasticDuckSimulator(World):
-    """A game about funny ducks in a pool"""
-    game = "Placid Plastic Duck Simulator"
-    author: str = "SW_CreeperKing"
-    web = PPDSWebWorld()
-    location_name_to_id = {name: uuid_offset + id_offset for name, id_offset in locations.items()}
-    item_name_to_id = {name: uuid_offset + data.id_offset for name, data in item_table.items()}
-    locations_to_fill = 0
+	"""
+	A game about funny ducks in a pool
+	"""
+	game = "Placid Plastic Duck Simulator"
+	web = PPDSWebWorld()
+	options_dataclass = PlacidPlasticDuckSimulatorOptions
+	options: PlacidPlasticDuckSimulatorOptions
+	settings: ClassVar[PlacidPlasticDuckSimulatorSettings]
+	topology_present = True
+	ut_can_gen_without_yaml = True
+	gen_puml = False
+	location_name_to_id = {value: location_dict.index(value) + 1 for value in location_dict}
+	item_name_to_id = {value: raw_items.index(value) + 1 for value in raw_items}
+	item_name_groups = {
+		"column": ["Progressive Column Unlock"]
+	}
 
-    def create_regions(self) -> None:
-        menu_region = Region("Menu", self.player, self.multiworld)
-        last_region = menu_region
+	def __init__(self, multiworld: "MultiWorld", player: int):
+		super().__init__(multiworld, player)
+		self.location_count = 0
 
-        for column in range(len(columns)):
-            next_region = Region(f"Duck Column {column}", self.player, self.multiworld)
-            self.multiworld.regions.append(next_region)
+	def generate_early(self):
+		options = self.options
+		if hasattr(self.multiworld, "re_gen_passthrough"):
+			if "Placid Plastic Duck Simulator" not in self.multiworld.re_gen_passthrough: return
+			passthrough = self.multiworld.re_gen_passthrough["Placid Plastic Duck Simulator"]
+			if "ducks_please" in passthrough:
+				options.ducks_please = DucksPlease(passthrough["ducks_please"])
+			
+			if "duck_addiction" in passthrough:
+				options.duck_addiction = DuckAddiction(passthrough["duck_addiction"])
+			
+			if "so_many_ducks" in passthrough:
+				options.so_many_ducks = SoManyDucks(passthrough["so_many_ducks"])
+			
+			if "ducks_galore" in passthrough:
+				options.ducks_galore = DucksGalore(passthrough["ducks_galore"])
+			
+			if "ducklings" in passthrough:
+				options.ducklings = Ducklings(passthrough["ducklings"])
+			
+		check_options(self)
 
-            if column > 0:
-                last_region.connect(next_region, rule=lambda state, progression_req=column: \
-                    state.has("Progressive Column Unlock", self.player, progression_req))
-            else:
-                last_region.connect(next_region)
-            last_region = next_region
+	def create_regions(self):
+		gen_create_regions(self)
 
-            for duck in columns[column]:
-                self.locations_to_fill += 1
-                location = Location(self.player, duck, self.location_name_to_id[duck], last_region)
-                last_region.locations.append(location)
+	def create_item(self, name: str):
+		return Item(name, item_table[name], self.item_name_to_id[name], self.player)
 
-        self.multiworld.regions.append(menu_region)
+	def create_items(self):
+		gen_create_items(self)
 
-    def create_item(self, name: str) -> PPDSItem:
-        item = item_table[name]
-        return PPDSItem(name, item.type, item.id_offset + uuid_offset, self.player)
+	def set_rules(self):
+		player = self.player
+		options = self.options
+		self.multiworld.completion_condition[self.player] = lambda state: has_column(state, player, options, 10)
 
-    def create_items(self) -> None:
-        create_items(self)
+	def fill_slot_data(self):
+		slot_data = {
+			"ducks_please": bool(self.options.ducks_please),
+			"duck_addiction": bool(self.options.duck_addiction),
+			"so_many_ducks": bool(self.options.so_many_ducks),
+			"ducks_galore": bool(self.options.ducks_galore),
+			"ducklings": bool(self.options.ducklings)
+		}
+		return slot_data
 
-    def set_rules(self) -> None:
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Progressive Column Unlock", self.player, 9)
+	def generate_output(self, output_directory: str):
+		if self.gen_puml: 
+		    from Utils import visualize_regions
+		    state = self.multiworld.get_all_state(False)
+		    state.update_reachable_regions(self.player)
+		    visualize_regions(self.get_region("Menu"), f"{self.player_name}_world.puml",
+		                      show_entrance_names=True,
+		                      regions_to_highlight=state.reachable_regions[self.player])

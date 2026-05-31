@@ -23,8 +23,10 @@ class InitialWeapon(Choice):
 class LocationSystem(Choice):
     """
     Chooses how the game gives you items. (1) RoomBased gives items on every new room completed. (2) ScoreBased
-    gives items according to score obtained by clearing rooms (even repeated ones). (3) RoomWeaponBased gives
-    items on every new room completed with a new weapon (so more locations than the original room based system).
+    gives items according to score obtained by clearing rooms (even repeated ones). For example; each time the player
+    completes room 4 it will award 4 points. Getting a new high-score gives an item and resets the score.
+    (3) RoomWeaponBased gives items on every new room completed with a new weapon (so more locations than the 
+    original room based system).
     """
     display_name = "Location System"
     option_room_based = 1
@@ -126,7 +128,7 @@ class FatesNeeded(Range):
     """
     display_name = "FatesNeeded"
     range_start = 0
-    range_end = 35
+    range_end = 52
     default = 0
 
 
@@ -143,7 +145,7 @@ class HeatSystem(Choice):
     display_name = "Heat System"
     option_reverse_heat = 1
     option_minimal_heat = 2
-    option_vanillla_heat = 3
+    option_vanilla_heat = 3
     default = 1
 
 
@@ -320,6 +322,17 @@ class DarknessPackValue(Range):
     default = 1000
 
 
+class DarknessPackPercentage(Range):
+    """
+    Choose the percentage of filler items in the pool that will be darkness packs.
+    Note if filler porcentage don't sum up to 100 the system will treat them as proportions.
+    """
+    display_name = "Darkness Pack Percentage"
+    range_start = 0
+    range_end = 100
+    default = 10
+
+
 class KeysPackValue(Range):
     """
     Choose the value(amount of Keys) of each Keys pack in the pool.
@@ -329,6 +342,17 @@ class KeysPackValue(Range):
     range_start = 0
     range_end = 500
     default = 20
+
+
+class KeysPackPercentage(Range):
+    """
+    Choose the percentage of filler items in the pool that will be Key packs.
+    Note if filler porcentage don't sum up to 100 the system will treat them as proportions.
+    """
+    display_name = "Keys Pack Percentage"
+    range_start = 0
+    range_end = 100
+    default = 10
 
 
 class GemstonesPackValue(Range):
@@ -342,6 +366,17 @@ class GemstonesPackValue(Range):
     default = 100
 
 
+class GemstonesPackPercentage(Range):
+    """
+    Choose the percentage of filler items in the pool that will be Gemstones packs.
+    Note if filler porcentage don't sum up to 100 the system will treat them as proportions.
+    """
+    display_name = "Gemstones Pack Percentage"
+    range_start = 0
+    range_end = 1000
+    default = 10
+
+
 class DiamondsPackValue(Range):
     """
     Choose the value(amount of diamonds) of each diamond pack in the pool. 
@@ -351,6 +386,16 @@ class DiamondsPackValue(Range):
     range_start = 0
     range_end = 100
     default = 15
+
+class DiamondsPackPercentage(Range):
+    """
+    Choose the percentage of filler items in the pool that will be Gemstones packs.
+    Note if filler porcentage don't sum up to 100 the system will treat them as proportions.
+    """
+    display_name = "Diamonds Pack Percentage"
+    range_start = 0
+    range_end = 100
+    default = 10
 
 
 class TitanBloodPackValue(Range):
@@ -364,6 +409,17 @@ class TitanBloodPackValue(Range):
     default = 3
 
 
+class TitanBloodPackPercentage(Range):
+    """
+    Choose the percentage of filler items in the pool that will be Titan Blood packs.
+    Note if filler porcentage don't sum up to 100 the system will treat them as proportions.
+    """
+    display_name = "TitanBlood Pack Percentage"
+    range_start = 0
+    range_end = 100
+    default = 10
+
+
 class NectarPackValue(Range):
     """
     Choose the value(amount of Nectar) of each Nectar pack in the pool. 
@@ -375,6 +431,16 @@ class NectarPackValue(Range):
     default = 3
 
 
+class NectarPackPercentage(Range):
+    """
+    Choose the percentage of filler items in the pool that will be Nectar packs.
+    Note if filler porcentage don't sum up to 100 the system will treat them as proportions.
+    """
+    display_name = "Nectar Pack Percentage"
+    range_start = 0
+    range_end = 100
+    default = 10
+
 class AmbrosiaPackValue(Range):
     """
     Choose the value(amount of Ambrosia) of each Ambrosia pack in the pool. 
@@ -385,13 +451,25 @@ class AmbrosiaPackValue(Range):
     range_end = 50
     default = 3
 
+
+class AmbrosiaPackPercentage(Range):
+    """
+    Choose the percentage of filler items in the pool that will be Ambrosia packs.
+    Note if filler porcentage don't sum up to 100 the system will treat them as proportions.
+    """
+    display_name = "Ambrosia Pack Percentage"
+    range_start = 0
+    range_end = 100
+    default = 10
+
 # -----------------------Settings for Helpers -------------------------
 
 
 class FillerHelperPercentage(Range):
     """
-    Choose the percentage of filler items in the pool that will be to helpers instead. 
+    Choose the percentage of filler items in the pool that will be helpers instead. 
     Helpers give a boost to your max Health or boost the chance of obtaining rare Boons.
+    Note if filler porcentage don't sum up to 100 the system will treat them as proportions.
     """
     display_name = "Filler Helper Percentage"
     range_start = 0
@@ -428,6 +506,7 @@ class FillerTrapPercentage(Range):
     """
     Choose the percentage of filler items in the pool that will be traps instead. 
     Traps diminish your money or health during a run.
+    Note if filler porcentage don't sum up to 100 the system will treat them as proportions.
     """
     display_name = "Filler Trap Percentage"
     range_start = 0
@@ -460,6 +539,13 @@ class StoreGiveHints(DefaultOnToggle):
     """
     display_name = "Store Give Hints"
 
+
+class DisableLateStyx(Toggle):
+    """
+    If true, rooms past room 55 will not have checks on room based settings.  
+    """
+    display_name = "Disable Late Styx"
+    default = 0
 
 class AutomaticRoomsFinishOnHadesDefeat(Toggle):
     """
@@ -505,12 +591,19 @@ class HadesOptions(PerGameCommonOptions):
     tight_deadline_pact_amount: TightDeadlinePactAmount
     personal_liability_pact_amount: PersonalLiabilityPactAmount
     darkness_pack_value: DarknessPackValue
+    darkness_pack_percentage: DarknessPackPercentage
     keys_pack_value: KeysPackValue
+    keys_pack_percentage: KeysPackPercentage
     gemstones_pack_value: GemstonesPackValue
+    gemstones_pack_percentage: GemstonesPackPercentage
     diamonds_pack_value: DiamondsPackValue
+    diamonds_pack_percentage: DiamondsPackPercentage
     titan_blood_pack_value: TitanBloodPackValue
+    titan_blood_pack_percentage: TitanBloodPackPercentage
     nectar_pack_value: NectarPackValue
+    nectar_pack_percentage: NectarPackPercentage
     ambrosia_pack_value: AmbrosiaPackValue
+    ambrosia_pack_percentage: AmbrosiaPackPercentage
     filler_helper_percentage: FillerHelperPercentage
     max_health_helper_percentage: MaxHealthHelperPercentage
     initial_money_helper_percentage: InitialMoneyHelperPercentage
@@ -518,6 +611,7 @@ class HadesOptions(PerGameCommonOptions):
     reverse_order_em: ReverseOrderExtremeMeasure
     ignore_greece_deaths: IgnoreGreeceDeaths
     store_give_hints: StoreGiveHints
+    disable_late_styx : DisableLateStyx
     automatic_rooms_finish_on_hades_defeat: AutomaticRoomsFinishOnHadesDefeat
     death_link: DeathLink
 
@@ -563,12 +657,19 @@ hades_option_groups = [
     ]),
     OptionGroup("Filler Options", [
         DarknessPackValue,
+        DarknessPackPercentage,
         KeysPackValue,
+        KeysPackPercentage,
         GemstonesPackValue,
+        GemstonesPackPercentage,
         DiamondsPackValue,
+        DiamondsPackPercentage,
         TitanBloodPackValue,
+        TitanBloodPackPercentage,
         NectarPackValue,
-        AmbrosiaPackValue
+        NectarPackPercentage,
+        AmbrosiaPackValue,
+        AmbrosiaPackPercentage,
     ]),
     OptionGroup("Helpers and Trap Options", [
         FillerHelperPercentage,
@@ -580,6 +681,7 @@ hades_option_groups = [
         ReverseOrderExtremeMeasure,
         IgnoreGreeceDeaths,
         StoreGiveHints,
+        DisableLateStyx,
         AutomaticRoomsFinishOnHadesDefeat
     ]),
 ]
@@ -620,6 +722,7 @@ hades_option_presets: Dict[str, Dict[str, Any]] = {
         "max_health_helper_percentage": 40,
         "initial_money_helper_percentage": 30,
         "filler_trap_percentage": 0,
+        "disable_late_styx" : True,
         "automatic_rooms_finish_on_hades_defeat": True,
     },
     "Normal": {
@@ -652,6 +755,7 @@ hades_option_presets: Dict[str, Dict[str, Any]] = {
         "ambrosia_pack_value": 2,
         "filler_helper_percentage": 0,
         "filler_trap_percentage": 5,
+        "disable_late_styx" : True,
         "automatic_rooms_finish_on_hades_defeat": True,
     },
     "Hard": {
@@ -684,6 +788,7 @@ hades_option_presets: Dict[str, Dict[str, Any]] = {
         "ambrosia_pack_value": 1,
         "filler_helper_percentage": 0,
         "filler_trap_percentage": 10,
+        "disable_late_styx" : False,
         "automatic_rooms_finish_on_hades_defeat": False,
     },
 }

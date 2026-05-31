@@ -479,7 +479,7 @@ class ItemInfoMode(Choice):
     """
     For Full, all treasure and store icons on the map will display if they are progression, useful, or filler items.
 
-    For Earned, all treasure and store icons on the map will display as mimics until you complete 50% of your checks.
+    For Earned, all treasure and store icons on the map will display as mimics until you complete 50% (configurable below) of your checks.
 
     For Obscured, all treasure and store icons on the map will display as mimics permanently.
     If you find skipping treasures is distasteful but part of your brain always wants to be efficient, this option is for you!
@@ -490,6 +490,15 @@ class ItemInfoMode(Choice):
     option_earned = 1
     option_obscured = 2
     default = 0
+
+class EarnedItemInfoPercent(Range):
+    """
+    This is the percent of checks that must be collected to earn check info when Item Info Mode is set to earned.
+    """
+    display_name = "Percent of checks that must be collected to earn info on treasure and store icons."
+    range_start = 1
+    range_end = 99
+    default = 50
 
 class RandomizeMusic(Toggle):
     """
@@ -563,6 +572,7 @@ class CrystalProjectOptions(PerGameCommonOptions):
     include_scholar_abilities: IncludeScholarAbilities
     trap_likelihood: TrapLikelihood
     item_info_mode: ItemInfoMode
+    earned_item_info_percent: EarnedItemInfoPercent
     randomize_music: RandomizeMusic
     use_mods: UseMods
 
@@ -571,5 +581,5 @@ crystal_project_option_groups: Dict[str, List[Any]] = {
     "Location Options": [IncludedRegions, JobRando, StartingJobQuantity, DisableSparks, KillBossesMode, Shopsanity, Regionsanity, RegionsanityStarterRegionMinLevel, RegionsanityStarterRegionMaxLevel, HomePointHustle],
     "Progression Options": [ProgressiveMountMode, StartingLevel, LevelGating, LevelComparedToEnemies, ProgressiveLevelSize, MaxLevel, StartingPassivePoints, MaximumPassivePoints, PassivePointBoostSize, KeyMode, ObscureRoutes, HopToIt, PrioritizeCrystals, AutoSpendLP, AutoEquipPassives, EasyLeveling],
     "Item Pool Options": [ProgressiveEquipmentMode, StartWithTreasureFinder, StartWithMaps, FillFullMap, IncludeSummonAbilities, IncludeScholarAbilities],
-    "Bonus Fun": [ItemInfoMode, RandomizeMusic, UseMods]
+    "Bonus Fun": [ItemInfoMode, EarnedItemInfoPercent, RandomizeMusic, UseMods]
 }

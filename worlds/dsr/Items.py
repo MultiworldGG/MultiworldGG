@@ -22,7 +22,9 @@ class DSRItemCategory(IntEnum):
     BOSSFOGWALL = 14,
     FILLER = 15,
     NOTHING = 16,
-    BONFIREWARP = 17
+    BONFIREWARP = 17,
+    PROGRESSIVE_MULTIPLIER = 18,
+    FIRE_KEEPER_SOUL = 19
 
 class DSRWeaponType(IntEnum):
     Melee = 1,
@@ -55,9 +57,7 @@ class DSRItem(Item):
         return {item_data.name: (base_id + item_data.dsr_code if item_data.dsr_code is not None else None) for item_data in _all_items}
 
 key_item_names = {
-"Covenant of Artorias","Orange Charred Ring", "Skull Lantern", 
-"Fire Keeper Soul (Anastacia of Astora)", "Fire Keeper Soul (Darkmoon Knightess)", "Fire Keeper Soul (Daughter of Chaos)",
-"Fire Keeper Soul (New Londo)", "Fire Keeper Soul (Blighttown)", "Fire Keeper Soul (Duke's Archives)", "Fire Keeper Soul (Undead Parish)"
+"Covenant of Artorias","Orange Charred Ring", "Skull Lantern"
 }
 
 _all_items_base = [    
@@ -222,7 +222,7 @@ _all_items_base = [
     ("Bonfire Warp Unlock - Painted World", 1309, DSRItemCategory.BONFIREWARP),
     ("Bonfire Warp Unlock - Duke's Archives", 1310, DSRItemCategory.BONFIREWARP),
     ("Bonfire Warp Unlock - Crystal Cave", 1311, DSRItemCategory.BONFIREWARP),
-    ("Bonfire Warp Unlock - Catacombs", 1312, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Chasm of the Abyss", 1312, DSRItemCategory.BONFIREWARP),
     ("Bonfire Warp Unlock - Tomb of the Giants", 1313, DSRItemCategory.BONFIREWARP),
     ("Bonfire Warp Unlock - Altar of the Gravelord", 1314, DSRItemCategory.BONFIREWARP),
     ("Bonfire Warp Unlock - The Abyss", 1315, DSRItemCategory.BONFIREWARP),
@@ -230,7 +230,7 @@ _all_items_base = [
     ("Bonfire Warp Unlock - Oolacile Sanctuary", 1317, DSRItemCategory.BONFIREWARP),
     ("Bonfire Warp Unlock - Oolacile Township", 1318, DSRItemCategory.BONFIREWARP),
     ("Bonfire Warp Unlock - Oolacile Township Dungeon", 1319, DSRItemCategory.BONFIREWARP),
-    ("Bonfire Warp Unlock - Chasm of the Abyss", 1320, DSRItemCategory.BONFIREWARP),
+    ("Bonfire Warp Unlock - Catacombs", 1320, DSRItemCategory.BONFIREWARP),
     ("Bonfire Warp Unlock - Undead Asylum - Courtyard", 1321, DSRItemCategory.BONFIREWARP),
     ("Bonfire Warp Unlock - Undead Asylum - Interior", 1322, DSRItemCategory.BONFIREWARP),
     ("Bonfire Warp Unlock - Undead Burg", 1323, DSRItemCategory.BONFIREWARP),
@@ -255,8 +255,9 @@ _all_items_base = [
     ("Bonfire Warp Unlock - Tomb of the Giants - Before Nito", 1342, DSRItemCategory.BONFIREWARP),
     ("Bonfire Warp Unlock - Firelink Altar - Lordvessel", 1343, DSRItemCategory.BONFIREWARP),
 
+    ("Progressive Soul Multiplier", 1400, DSRItemCategory.PROGRESSIVE_MULTIPLIER),
+    ("Progressive Weight Reducer", 1401, DSRItemCategory.PROGRESSIVE_MULTIPLIER),
 
-    
     ("Eye of Death", 2000, DSRItemCategory.CONSUMABLE),
     ("Cracked Red Eye Orb", 2001, DSRItemCategory.CONSUMABLE),
     ("Elizabeth's Mushroom", 2002, DSRItemCategory.CONSUMABLE),
@@ -289,13 +290,13 @@ _all_items_base = [
     ("Copper Coin", 2029, DSRItemCategory.CONSUMABLE),
     ("Silver Coin", 2030, DSRItemCategory.CONSUMABLE),
     ("Gold Coin", 2031, DSRItemCategory.CONSUMABLE),
-    ("Fire Keeper Soul (Anastacia of Astora)", 2032, DSRItemCategory.CONSUMABLE),
-    ("Fire Keeper Soul (Darkmoon Knightess)", 2033, DSRItemCategory.CONSUMABLE),
-    ("Fire Keeper Soul (Daughter of Chaos)", 2034, DSRItemCategory.CONSUMABLE),
-    ("Fire Keeper Soul (New Londo)", 2035, DSRItemCategory.CONSUMABLE),
-    ("Fire Keeper Soul (Blighttown)", 2036, DSRItemCategory.CONSUMABLE),
-    ("Fire Keeper Soul (Duke's Archives)", 2037, DSRItemCategory.CONSUMABLE),
-    ("Fire Keeper Soul (Undead Parish)", 2038, DSRItemCategory.CONSUMABLE),
+    ("Fire Keeper Soul (Anastacia of Astora)", 2032, DSRItemCategory.FIRE_KEEPER_SOUL),
+    ("Fire Keeper Soul (Darkmoon Knightess)", 2033, DSRItemCategory.FIRE_KEEPER_SOUL),
+    ("Fire Keeper Soul (Daughter of Chaos)", 2034, DSRItemCategory.FIRE_KEEPER_SOUL),
+    ("Fire Keeper Soul (New Londo)", 2035, DSRItemCategory.FIRE_KEEPER_SOUL),
+    ("Fire Keeper Soul (Blighttown)", 2036, DSRItemCategory.FIRE_KEEPER_SOUL),
+    ("Fire Keeper Soul (Duke's Archives)", 2037, DSRItemCategory.FIRE_KEEPER_SOUL),
+    ("Fire Keeper Soul (Undead Parish)", 2038, DSRItemCategory.FIRE_KEEPER_SOUL),
     ("Soul of a Lost Undead", 2039, DSRItemCategory.CONSUMABLE),
     ("Large Soul of a Lost Undead", 2040, DSRItemCategory.CONSUMABLE),
     ("Soul of a Nameless Soldier", 2041, DSRItemCategory.CONSUMABLE),
@@ -1066,10 +1067,22 @@ def BuildRequiredItemPool(world, count):
             item_pool.append(item)
             remaining_count = remaining_count - 1
 
-    useful_items = [item for item in _all_items if item.category == DSRItemCategory.EMBER]
+    useful_items = [item for item in _all_items if item.category in [DSRItemCategory.EMBER, DSRItemCategory.FIRE_KEEPER_SOUL] ]
     for item in useful_items:
         item_pool.append(item)
         remaining_count = remaining_count - 1
+
+    if world.options.soul_multiplier_steps > 0:
+        for i in range(world.options.soul_multiplier_steps):
+            item = item_dictionary["Progressive Soul Multiplier"]
+            item_pool.append(item)
+            remaining_count = remaining_count - 1
+
+    if world.options.weight_multiplier_steps > 0:
+        for i in range(world.options.weight_multiplier_steps):
+            item = item_dictionary["Progressive Weight Reducer"]
+            item_pool.append(item)
+            remaining_count = remaining_count - 1
 
     world.random.shuffle(item_pool)
     return item_pool

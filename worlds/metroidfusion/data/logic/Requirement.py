@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING, Self
 from abc import ABC, abstractmethod
 
+from itertools import product as itertools_product
+import logging
+
 if TYPE_CHECKING:
     from ... import MetroidFusionOptions
 
@@ -76,6 +79,139 @@ class RequirementBase(ABC):
 
     def __str__(self):
         return self.__repr__()
+
+    def unpack(self,
+               options: "MetroidFusionOptions",
+               **kwargs) -> list[tuple[set[str], int, int, int, bool]]:
+        """
+        Unpacks this Requirement into a digestible list of possibilities able to be used by the logic interpreter.
+
+        All ``kwargs`` are overrides for initial values. Do not set keywords if you don't know what you are doing.
+
+        :param options: A dict of options defined in the AP YAML settings
+        :key debug: A bool to enable/disable printing debug messages.
+            Defaults to False.
+        :key possibilities: A list of tuples each containing a set of items, energy tanks, missiles, power bombs, and
+            if this is enabled by ``options``. This is the eventual return value. Defaults to an empty list.
+        :key parent_items: A set of item names.
+            Will default to this Requirement's ``items_needed``
+        :key parent_hard_items: A set of item names.
+            Will default to this Requirement's ``hard_items_needed``
+        :key parent_energy_tanks: An int of energy tanks.
+            Will default to this Requirement's ``energy_tanks_needed``
+        :key parent_missile_ammo: An int of missile ammo.
+            Will default to this Requirement's ``missile_ammo_needed``
+        :key parent_power_bomb_ammo: An int of power bomb ammo.
+            Will default to this Requirement's ``power_bomb_ammo_needed``
+        :key yaml_enabled: A bool to override the YAML settings.
+            Defaults to this Requirement's ``check_option_enabled()``
+        :return: A list of tuples each containing a set of items, energy tanks, missiles, power bombs, and
+            if this is enabled by ``options``
+        """
+
+        # Initialize variables
+        possibilities: list[tuple[set[str], int, int, int, bool]] = kwargs.pop("possibilities", [])
+        yaml_enabled: bool = kwargs.pop("yaml_enabled", self.check_option_enabled(options))
+        debug: bool = kwargs.pop("debug", False)
+        parent_items: set[str] = kwargs.pop("parent_items", self.items_needed)
+        parent_hard_items: set[str] = kwargs.pop("parent_hard_items", self.hard_items_needed)
+        parent_energy_tanks: int = kwargs.pop("parent_energy_tanks", self.energy_tanks_needed)
+        parent_missile_ammo: int = kwargs.pop("parent_missile_ammo", self.missile_ammo_needed)
+        parent_power_bomb_ammo: int = kwargs.pop("parent_power_bomb_ammo", self.power_bomb_ammo_needed)
+
+        if debug:
+            logging.info(f"Requirement {self.name}. "
+                         f"Items needed {self.items_needed}. "
+                         f"Sub-requirements {self.requirements}. "
+                         f"Hard items needed {self.hard_items_needed}. "
+                         f"Possibilities {possibilities}. "
+                         f"Parent items {set() 
+                         if parent_items is self.items_needed 
+                         else parent_items}. "
+                         f"Parent hard items {set() 
+                         if parent_hard_items is self.hard_items_needed 
+                         else parent_hard_items}. "
+                         f"Parent Energy Tanks Needed {parent_energy_tanks}. "
+                         f"Parent Missile Ammo {parent_missile_ammo}. "
+                         f"Parent Power Bomb Ammo {parent_power_bomb_ammo}.")
+
+        if self.requirements:
+            # Create list of permutations of sub-requirements
+            requirements_product: list[list[Requirement]] = list(itertools_product(*self.requirements))
+            for requirements_permutation in requirements_product:
+                if debug:
+                    print(f"Evaluating permutation: ["
+                          f"{self.name}, {", ".join(nested_requirement.name
+                                       for nested_requirement in requirements_permutation)}]")
+                    logging.info(f"Evaluating permutation: ["
+                          f"{self.name}, {", ".join(nested_requirement.name
+                                                    for nested_requirement in requirements_permutation)}]")
+
+                # Check if all requirements in permutation have enabled options
+                if not yaml_enabled or any([not nested_requirement.check_option_enabled(options)
+                                            for nested_requirement in requirements_permutation]):
+                    if debug:
+                        print(f"Permutation disabled due to options: ["
+                              f"{self.name}, {", ".join(nested_requirement.name
+                                                        for nested_requirement in requirements_permutation)}]")
+                        logging.info(f"Permutation disabled due to options: ["
+                                     f"{self.name}, {", ".join(nested_requirement.name
+                                                               for nested_requirement in requirements_permutation)}]")
+
+                # Initialize for recursion
+                new_possibilities: list[tuple[set[str], int, int, int, bool]] = []
+                for nested_requirement in requirements_permutation:
+                    # Recursive unpack
+                    and_possibilities = nested_requirement.unpack(
+                        options,
+                        parent_items=parent_items | self.items_needed,
+                        parent_hard_items=parent_hard_items | self.hard_items_needed,
+                        parent_energy_tanks=max(parent_energy_tanks, self.energy_tanks_needed),
+                        parent_missile_ammo=parent_missile_ammo + self.missile_ammo_needed,
+                        parent_power_bomb_ammo=parent_power_bomb_ammo + self.power_bomb_ammo_needed,
+                        debug=debug
+                    )
+                    if new_possibilities:
+                        current_new_possibilities = new_possibilities.copy()
+                        new_possibilities = [(p[0][0] | p[1][0],
+                                              max(p[0][1], p[1][1]),
+                                              p[0][2] + p[1][2],
+                                              p[0][3] + p[1][3],
+                                              p[0][4] and p[1][4])
+                                             for p in itertools_product(current_new_possibilities, and_possibilities)]
+                    elif not new_possibilities:
+                        new_possibilities.extend(and_possibilities)
+
+                # Post-recursion processing
+                for (n_r_items, n_r_energy, n_r_missiles, n_r_pbs, n_r_yaml) in new_possibilities:
+                    n_r_yaml = n_r_yaml and self.check_option_enabled(options)
+                    combined_items = n_r_items | self.items_needed
+                    calculated_energy = max(n_r_energy, self.energy_tanks_needed)
+                    hard_test: bool = (parent_hard_items.issubset(combined_items)
+                                       and self.hard_items_needed.issubset(combined_items))
+                    exists_test: bool = \
+                        (combined_items, calculated_energy, n_r_missiles, n_r_pbs, n_r_yaml) in possibilities
+                    if hard_test and not exists_test:
+                        possibilities.append((combined_items, calculated_energy, n_r_missiles, n_r_pbs, n_r_yaml))
+                    elif debug:
+                        print(f"Skipping Possibility: {combined_items}")
+                        logging.info(f"Skipping Possibility: {combined_items}")
+                        if not hard_test:
+                            print(f"\tDoes not contain all of: {parent_hard_items | self.hard_items_needed}")
+                            logging.info(f"\tDoes not contain all of: {parent_hard_items | self.hard_items_needed}")
+                        elif exists_test:
+                            print(f"\tPossibility already existed when attempting to add to list")
+                            logging.info(f"\tPossibility already existed when attempting to add to list")
+        else:
+            if debug and not yaml_enabled:
+                print(f"Requirement {self.name} disabled due to options.")
+                logging.info(f"Requirement {self.name} disabled due to options.")
+            possibilities.append((parent_items | self.items_needed,
+                                  max(parent_energy_tanks, self.energy_tanks_needed),
+                                  parent_missile_ammo + self.missile_ammo_needed,
+                                  parent_power_bomb_ammo + self.power_bomb_ammo_needed,
+                                  yaml_enabled and self.check_option_enabled(options)))
+        return possibilities
 
     @staticmethod
     def check_option_enabled(options: "MetroidFusionOptions") -> bool:

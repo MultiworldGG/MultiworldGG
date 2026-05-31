@@ -23,7 +23,7 @@
 1. Launch APTyrian.
 2. In the main menu, select "Start Game".
 3. Choose "Online via Archipelago Server".
-4. Enter the address of the Archipelago server, and your slot name.
+4. Enter the address of the MultiworldGG server, and your slot name.
 5. Choose "Connect to Server", and enjoy.
 
 To continue a game, follow these same steps. Your progress is automatically saved each time you return to the main

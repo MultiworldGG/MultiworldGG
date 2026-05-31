@@ -55,6 +55,10 @@ item_table["Block Blub Minigame Yellows"] = ItemData(9999924, ItemClassification
 item_table["Refunct Mountain Minigame"] = ItemData(9999910, ItemClassification.progression)
 item_table["Rando Mountain Minigame"] = ItemData(9999911, ItemClassification.progression)
 
+item_table["Funny Bridge Game Minigame"] = ItemData(9999900, ItemClassification.progression)
+item_table["Clique: Button Activation"] = ItemData(9999901, ItemClassification.progression)
+item_table["Clique: Feeling of Satisfaction"] = ItemData(9999902, ItemClassification.filler)
+
 
 # for i in range(0, 101):
 #     item_table[f"DEBUGA {i}"] = ItemData(20000000 + i, ItemClassification.filler)

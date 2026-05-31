@@ -2,6 +2,7 @@ from .Items import item_table
 from .Location import DisableType
 from .LocationList import location_groups
 from BaseClasses import LocationProgressType
+from collections import Counter
 from decimal import Decimal, ROUND_HALF_UP
 
 
@@ -506,6 +507,7 @@ def get_pool_core(world):
         return False
 
     # Use the vanilla items in the world's locations when appropriate.
+    vanilla_items_processed = Counter()
     for location in world.get_locations():
         if location.vanilla_item is None:
             continue
@@ -809,7 +811,7 @@ def get_pool_core(world):
                 dungeon_collection = dungeon.small_keys
                 if shuffle_setting == 'vanilla':
                     shuffle_item = False
-                elif dungeon.name in world.key_rings and not dungeon.small_keys:
+                elif dungeon.name in world.key_rings and not vanilla_items_processed[location.vanilla_item]:
                     item = dungeon.item_name("Small Key Ring")
                 elif dungeon.name in world.key_rings:
                     item = get_junk_item(world.random)[0]
@@ -900,6 +902,7 @@ def get_pool_core(world):
             pool.append(item)
         elif shuffle_item is not None:
             placed_items[location.name] = item
+        vanilla_items_processed[location.vanilla_item] += 1
     # End of Locations loop.
 
     # AP fills restricted dungeon items through pre_fill, while upstream passes

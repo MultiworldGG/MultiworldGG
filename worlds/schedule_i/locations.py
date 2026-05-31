@@ -108,7 +108,7 @@ def create_regular_locations(world: Schedule1World, data) -> None:
             100 : regions_dict["Overworld"],
             200 : regions_dict["Dodgy Dealing"],
             300 : regions_dict["Mixing Mania"],
-            400 : regions_dict["We Need To Cook|2"],
+            400 : regions_dict["We Need To Cook"],
             500 : regions_dict["Finishing the Job"]
         }
         cash_for_trash_locations = []

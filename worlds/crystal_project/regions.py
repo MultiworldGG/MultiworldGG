@@ -612,7 +612,7 @@ def init_areas(world: "CrystalProjectWorld", locations: List[LocationData], opti
     fancy_add_exits(world, ATOP_LABYRINTH_CUBE_AP_REGION, [LABYRINTH_ENTRANCE_PUSHBLOCK_AP_REGION, GOLD_BEDAZZLING_LABYRINTH_AP_REGION, TOWER_OF_ZOT_CAMP_AP_REGION, RUINS_CRUMBLING_ON_SHORE_AP_REGION, SALMON_BAY_WEST_CRAG_AP_REGION])
     fancy_add_exits(world, LABYRINTH_ENTRANCE_PUSHBLOCK_AP_REGION, [TOWER_OF_ZOT_CAMP_AP_REGION, ATOP_LABYRINTH_CUBE_AP_REGION, GOLD_BEDAZZLING_LABYRINTH_AP_REGION, ANCIENT_LABYRINTH_AP_REGION],
                     {ATOP_LABYRINTH_CUBE_AP_REGION: lambda state: logic.has_vertical_movement(state) and logic.has_golden_quintar(state),
-                     GOLD_BEDAZZLING_LABYRINTH_AP_REGION: lambda state: logic.has_glide(state) or (logic.has_horizontal_movement(state) and logic.has_vertical_movement(state)),
+                     GOLD_BEDAZZLING_LABYRINTH_AP_REGION: lambda state: logic.has_glide(state) and logic.has_vertical_movement(state),
                      ANCIENT_LABYRINTH_AP_REGION: lambda state: (state.has(POKO_POKO_DESERT_PASS, player) or logic.is_regionsanity_disabled()) and (logic.has_a_caster(state)) and (state.has(ANCIENT_TABLET_A, player) or logic.obscure_routes_on()),})
     fancy_add_exits(world, GOLD_BEDAZZLING_LABYRINTH_AP_REGION, [RUINS_CRUMBLING_ON_SHORE_AP_REGION])
     fancy_add_exits(world, POKO_POKO_LAKE_DELENDE_PASS_AP_REGION, [POKO_POKO_EAST_PLATEAU_AP_REGION, TOWER_OF_ZOT_CAMP_AP_REGION, POKO_POKO_SPAWNING_MEADOWS_PASS_AP_REGION, LAKE_DELENDE_AP_REGION, SALMON_BAY_WEST_CRAG_AP_REGION, SALMON_RIVER_MOUTH_AP_REGION],
@@ -689,13 +689,17 @@ def init_areas(world: "CrystalProjectWorld", locations: List[LocationData], opti
                      IBEK_CAVE_MOUTH_AP_REGION: lambda state: logic.has_vertical_movement(state)})
     #Ancient Reservoir end
     #Salmon Bay start
-    fancy_add_exits(world, SALMON_BAY_BASIN_AP_REGION, [SALMON_BAY_WEST_CRAG_AP_REGION, SALMON_BAY_EAST_CRAG_AP_REGION, SALMON_RIVER_MOUTH_AP_REGION, THE_OPEN_SEA_AP_REGION],
+    fancy_add_exits(world, SALMON_BAY_BASIN_AP_REGION, [SALMON_BAY_WEST_CRAG_AP_REGION, SALMON_BAY_EAST_CRAG_AP_REGION, SALMON_BAY_ISLAND, SALMON_RIVER_MOUTH_AP_REGION, THE_OPEN_SEA_AP_REGION],
                     {SALMON_BAY_WEST_CRAG_AP_REGION: lambda state: logic.has_vertical_movement(state),
                      SALMON_BAY_EAST_CRAG_AP_REGION: lambda state: logic.has_vertical_movement(state),
                      SALMON_RIVER_MOUTH_AP_REGION: lambda state: logic.has_swimming(state),
+                     SALMON_BAY_ISLAND: lambda state: logic.has_swimming(state),
                      THE_OPEN_SEA_AP_REGION: lambda state: logic.has_swimming(state)})
     fancy_add_exits(world, SALMON_BAY_WEST_CRAG_AP_REGION, [SALMON_BAY_BASIN_AP_REGION])
-    fancy_add_exits(world, SALMON_BAY_EAST_CRAG_AP_REGION, [SALMON_BAY_BASIN_AP_REGION])
+    fancy_add_exits(world, SALMON_BAY_ISLAND, [SALMON_BAY_BASIN_AP_REGION, SALMON_BAY_EAST_CRAG_AP_REGION],
+                    {SALMON_BAY_BASIN_AP_REGION: lambda state: logic.has_swimming(state),
+                     SALMON_BAY_EAST_CRAG_AP_REGION: lambda state: logic.has_vertical_movement(state)})
+    fancy_add_exits(world, SALMON_BAY_EAST_CRAG_AP_REGION, [SALMON_BAY_BASIN_AP_REGION, SALMON_BAY_ISLAND])
     fancy_add_exits(world, SALMON_RIVER_MOUTH_AP_REGION, [SALMON_BAY_BASIN_AP_REGION, SALMON_BAY_WEST_CRAG_AP_REGION, SALMON_BAY_EAST_CRAG_AP_REGION, SOUTH_SALMON_RIVER_AP_REGION, POKO_POKO_EAST_PLATEAU_AP_REGION, TOWER_OF_ZOT_CAMP_AP_REGION],
                     {SALMON_BAY_WEST_CRAG_AP_REGION: lambda state: logic.has_glide(state),
                      SALMON_BAY_EAST_CRAG_AP_REGION: lambda state: logic.has_glide(state),
@@ -799,7 +803,8 @@ def init_areas(world: "CrystalProjectWorld", locations: List[LocationData], opti
     fancy_add_exits(world, PAH_SUMMON_AP_REGION, [UNDERCITY_WATERWAYS_AP_REGION],
                     {UNDERCITY_WATERWAYS_AP_REGION: lambda state: logic.has_swimming(state)})
     fancy_add_exits(world, UNDERCITY_WATERWAYS_AP_REGION, [THE_UNDERCITY_HOMEPOINT_AND_BLADE_MASTER_AP_REGION, EAST_UNDERCITY_WAREHOUSE_AP_REGION, DUEL_MASTER_AP_REGION, SHADOW_MASTER_AP_REGION, SHADOW_MASTER_ENTRANCE_AP_REGION, PAH_SUMMON_AP_REGION, SHOUDU_WATERFRONT_AP_REGION, SHOUDU_WATERWAYS_AP_REGION, THE_OPEN_SEA_AP_REGION],
-                    {DUEL_MASTER_AP_REGION: lambda state: logic.has_vertical_movement(state) or logic.has_glide(state)})
+                    {DUEL_MASTER_AP_REGION: lambda state: logic.has_vertical_movement(state) or logic.has_glide(state),
+                    PAH_SUMMON_AP_REGION: lambda state: logic.has_swimming(state)})
     #The Undercity end
     #Ganymede Shrine start
     fancy_add_exits(world, GANYMEDE_SHRINE_AP_REGION, [OKIMOTO_NS_AP_REGION, SHOUDU_FIELDS_WEST_SCAFFOLDING_AP_REGION, SHOUDU_GOLD_NEAR_GANYMEDE_AP_REGION, SHOUDU_WATERWAYS_AP_REGION, QUINTAR_RESERVE_AP_REGION, FLYERS_CRAG_LOWER_AP_REGION],

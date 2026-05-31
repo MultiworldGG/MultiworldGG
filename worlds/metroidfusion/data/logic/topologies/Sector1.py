@@ -12,7 +12,16 @@ from ..regions.Sector6 import Sector6RestrictedZoneElevatorToTourian
 
 # Region Connections
 Sector1AfterChargeCoreZone.connections = [
-    Connection(Sector1FirstStabilizerZone, [], one_way=True)
+    Connection(Sector1FirstStabilizerZone, [], one_way=True),
+    Connection(Sector1ChargeCoreZone, [
+        Requirement("", [
+            CanDamageAnyGeron(),
+            CanDamageStabilizer("",[HasMorph()])
+        ],[
+            HasMissile(),
+            PONRRequirement("PONR - Enter Charge Core Zone", [])
+        ])
+    ], one_way=True),
 ]
 
 Sector1Antechamber.connections = [
@@ -29,14 +38,14 @@ Sector1Antechamber.connections = [
 Sector1ChargeCoreZone.connections = [
     Connection(Sector1AfterChargeCoreZone, [
         CanDamageCoreX("Need to Kill Beam Core X", [CanDamageGadora()])
-    ])
+    ], one_way=True)
 ]
 
 Sector1FirstStabilizerZone.connections = [
     Connection(Sector1SecondStabilizerZone, []),
     Connection(Sector1AfterChargeCoreZone, [
         HasWaveBeam("Backwards Travel")
-    ]),
+    ], one_way=True),
 ]
 
 Sector1FourthStabilizerZone.connections = [
@@ -278,7 +287,7 @@ Sector1TourianHub.locations = [
             CanDoSimpleWallJump("Wall Jump out of Animorphs Cache", [
                 HasHiJump()
             ])
-        ], enemy_hp=60)
+        ], enemy_hp=60, behind_wall=True)
     ]),
     FusionLocation("Sector 1 (SRX) -- Neo-Ridley Arena", True, [
         Requirement("Enter Neo-Ridley Arena", [

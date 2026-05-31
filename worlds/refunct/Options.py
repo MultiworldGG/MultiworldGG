@@ -109,7 +109,7 @@ class NumberOfMinigames(Range):
     display_name = "Number of Minigames"
     default = -1
     range_start = -1
-    range_end = 11
+    range_end = 14
     
 class NerfMinigameChecks(Toggle):
     """
@@ -186,6 +186,17 @@ class MinigamesLikeliness(OptionCounter):
     Press the buttons for checks.
     PRESS E TO DASH, YOU (CURRENTLY) CANNOT REBIND THIS IN-GAME (which is why it's off by default)
     Tip: use steam controller settings to map dash to a button of your choice.
+    
+    Funny Bridge Game Minigame:
+    Based on the Glass Bridge game from Squid Game.
+    Five pairs of platforms appear, but only one of each pair is real.
+    Are you lucky enough to beat the game?
+    This minigame has one check :)
+    
+    Clique:
+    Based on Archipelago game "Clique". Hard-mode!
+    There is one free item in this minigame. Once the "button activation" item is found, 
+    you can press the button for another check.
     """
    
     display_name = "Likeliness of minigames"
@@ -203,6 +214,8 @@ class MinigamesLikeliness(OptionCounter):
         "Block Blub Minigame": int,
         "Refunct Mountain Minigame": int,
         "Rando Mountain Minigame": int,
+        "Funny Bridge Game Minigame": int,
+        "Clique": int,
     })
     min = 0
     default = {
@@ -218,7 +231,19 @@ class MinigamesLikeliness(OptionCounter):
         "Block Blub Minigame": 3,
         "Refunct Mountain Minigame": 0,
         "Rando Mountain Minigame": 0,
+        "Funny Bridge Game Minigame": 1,
+        "Clique": 0,
     }
+
+class JustClique(Toggle):
+    """
+    When enabled, the ONLY thing in this ENTIRE game is JUST Clique.
+    No other gamemodes, no other minigames, JUST Clique in Refunct.
+    ALL other settings are ignored.
+    So the ENTIRE game is just one free item and one button.
+    """
+    display_name = "Just Clique"
+    default = False
 
 
 class Traps(Choice):
@@ -288,6 +313,7 @@ class RefunctOptions(PerGameCommonOptions):
     nerf_minigame_checks: NerfMinigameChecks
     number_of_unlocks_per_minigame: NumberOfUnlocksPerMinigame
     minigames_likeliness: MinigamesLikeliness
+    just_clique: JustClique
     
     traps: Traps
     replace_flowers_by_traps: ReplaceFlowersByTraps
@@ -318,6 +344,7 @@ refunct_option_groups = [
             NerfMinigameChecks,
             NumberOfUnlocksPerMinigame,
             MinigamesLikeliness,
+            JustClique,
         ],
     ),
     OptionGroup(

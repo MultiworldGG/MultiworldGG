@@ -10,7 +10,7 @@ class ItemData(NamedTuple):
     trap: bool = False
 
 
-hades_base_item_id = 666100
+hades_base_item_id = 1
 
 item_table_pacts: Dict[str, ItemData] = {  
     "Hard Labor Pact Level": ItemData(hades_base_item_id, True),
@@ -99,6 +99,22 @@ items_table_fates_completion: Dict[str, ItemData] = {
     "Close At Heart Event Item": ItemData(None, True, True),
     "Denizens Of The Deep Event Item": ItemData(None, True, True),
     "The Useless Trinket Event Item": ItemData(None, True, True),
+    "Musician and Muse Event Item" : ItemData(None, True, True),
+    "End to Torment Event Item" : ItemData(None, True, True),
+    "Divided by Death Event Item" : ItemData(None, True, True),
+    "Eternal Rest Event Item" : ItemData(None, True, True),
+    "A Place of Revelry Event Item" : ItemData(None, True, True),
+    "Amusing Chaos Event Item" : ItemData(None, True, True),
+    "Sea-God's Spite Event Item" : ItemData(None, True, True),
+    "War-God's Bloodlust Event Item" : ItemData(None, True, True), 
+    "A Friendly Wager Event Item" : ItemData(None, True, True), 
+    "The Holy Liege Event Item" : ItemData(None, True, True),
+    "The Fated Saint of War Event Item" : ItemData(None, True, True),
+    "The Preserver's Avatar Event Item" : ItemData(None, True, True),
+    "The Dragon's Rival Event Item" : ItemData(None, True, True),
+    "The God-like King Event Item" : ItemData(None, True, True),
+    "The Dawn Bringer Event Item" : ItemData(None, True, True),
+    "The Gift of Song Event Item" : ItemData(None, True, True),
 }
 
 item_table_filler: Dict[str, ItemData] = {
@@ -191,28 +207,6 @@ item_table_helpers: Dict[str, ItemData] = {
     "Initial Money Helper": ItemData(hades_base_item_id + 84, False, False, False),
 }
 
-
-def create_filler_pool_options(options):
-    item_filler_options = []
-    if options.darkness_pack_value.value:
-        item_filler_options.append("Darkness")
-    if options.keys_pack_value.value:
-        item_filler_options.append("Keys")
-    if options.gemstones_pack_value.value:
-        item_filler_options.append("Gemstones")
-    if options.diamonds_pack_value.value:
-        item_filler_options.append("Diamonds")
-    if options.titan_blood_pack_value.value:
-        item_filler_options.append("TitanBlood")
-    if options.nectar_pack_value.value:
-        item_filler_options.append("Nectar")
-    if options.ambrosia_pack_value.value:
-        item_filler_options.append("Ambrosia")
-    if not item_filler_options:
-        item_filler_options.append("Darkness")
-    return item_filler_options
-
-
 def create_trap_pool():
     return [trap for trap in item_table_traps.keys()]
 
@@ -280,6 +274,22 @@ event_item_pairs: Dict[str, str] = {
     "Close At Heart Event": "Close At Heart Event Item",
     "Denizens Of The Deep Event": "Denizens Of The Deep Event Item",
     "The Useless Trinket Event": "The Useless Trinket Event Item", 
+    "Musician and Muse Event" : "Musician and Muse Event Item",
+    "End to Torment Event" : "End to Torment Event Item",
+    "Divided by Death Event" : "Divided by Death Event Item",
+    "Eternal Rest Event" : "Eternal Rest Event Item",
+    "A Place of Revelry Event" : "A Place of Revelry Event Item",
+    "Amusing Chaos Event" : "Amusing Chaos Event Item",
+    "Sea-God's Spite Event" : "Sea-God's Spite Event Item",
+    "War-God's Bloodlust Event" : "War-God's Bloodlust Event Item", 
+    "A Friendly Wager Event" :  "A Friendly Wager Event Item", 
+    "The Holy Liege Event" : "The Holy Liege Event Item",
+    "The Fated Saint of War Event" : "The Fated Saint of War Event Item",
+    "The Preserver's Avatar Event" : "The Preserver's Avatar Event Item",
+    "The Dragon's Rival Event" : "The Dragon's Rival Event Item",
+    "The God-like King Event" : "The God-like King Event Item",
+    "The Dawn Bringer Event" : "The Dawn Bringer Event Item",
+    "The Gift of Song Event" : "The Gift of Song Event Item",
 }
 
 event_item_pairs_weapon_mode: Dict[str, str] = {
@@ -319,6 +329,22 @@ event_item_pairs_weapon_mode: Dict[str, str] = {
     "Close At Heart Event": "Close At Heart Event Item",
     "Denizens Of The Deep Event": "Denizens Of The Deep Event Item",
     "The Useless Trinket Event": "The Useless Trinket Event Item", 
+    "Musician and Muse Event" : "Musician and Muse Event Item",
+    "End to Torment Event" : "End to Torment Event Item",
+    "Divided by Death Event" : "Divided by Death Event Item",
+    "Eternal Rest Event" : "Eternal Rest Event Item",
+    "A Place of Revelry Event" : "A Place of Revelry Event Item",
+    "Amusing Chaos Event" : "Amusing Chaos Event Item",
+    "Sea-God's Spite Event" : "Sea-God's Spite Event Item",
+    "War-God's Bloodlust Event" : "War-God's Bloodlust Event Item", 
+    "A Friendly Wager Event" :  "A Friendly Wager Event Item", 
+    "The Holy Liege Event" : "The Holy Liege Event Item",
+    "The Fated Saint of War Event" : "The Fated Saint of War Event Item",
+    "The Preserver's Avatar Event" : "The Preserver's Avatar Event Item",
+    "The Dragon's Rival Event" : "The Dragon's Rival Event Item",
+    "The God-like King Event" : "The God-like King Event Item",
+    "The Dawn Bringer Event" : "The Dawn Bringer Event Item",
+    "The Gift of Song Event" : "The Gift of Song Event Item",
     "Beat Hades Sword Weapon": "Hades Victory Sword Weapon",
     "Beat Meg Sword Weapon": "Meg Victory Sword Weapon",
     "Beat Lernie Sword Weapon": "Lernie Victory Sword Weapon",
@@ -394,5 +420,5 @@ class HadesItem(Item):
             item_data.code, player
         )
 
-    def is_progression(self):
+    def is_progression(self) -> bool:
         return self.classification == ItemClassification.progression

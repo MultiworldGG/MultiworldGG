@@ -236,7 +236,7 @@ class LocalItemData:
         "Plasma Storm":               LocalWeapon(808, count=2, item_class=IClass.useful),
         "Mini-Missile":               LocalWeapon(809, count=2),
         "Buster Rocket":              LocalWeapon(810, count=2),
-        "Zica Supercharger":          LocalWeapon(811, count=2),
+        "Zica SuperCharger":          LocalWeapon(811, count=2),
         "MicroBomb":                  LocalWeapon(812, count=2),
         "8-Way MicroBomb":            LocalWeapon(813, count=2),
         "Post-It Mine":               LocalWeapon(814, count=2),

@@ -201,16 +201,12 @@
     },
     "Wretched Hive of Scum and Villainy": {
         "connections": {
-            "We Need To Cook|1": {"randomize_level_unlocks": {"has": "Warehouse Access"}}
+            "We Need To Cook": {"randomize_level_unlocks": {"has": "Warehouse Access"},
+                                "randomize_customers&!randomize_suppliers": {"has_any": [["Meg Cooley Unlocked", "Jerry Montero Unlocked"]]},
+                                "randomize_suppliers": {"has": "Shirley Watts Unlocked"}}
         }
     },
-    "We Need To Cook|1": {
-        "connections": {
-            "We Need To Cook|2": {"randomize_customers": {"has_any": [["Meg Cooley Unlocked", "Jerry Montero Unlocked"]]},
-                                    "randomize_suppliers": {"has": "Shirley Watts Unlocked"}}
-        }
-    },
-    "We Need To Cook|2": {
+    "We Need To Cook": {
         "connections": {
             "Unfavourable Agreements": {"randomize_customers": {"has_from_list": {
                                         "Charles Rowland Unlocked": 5,

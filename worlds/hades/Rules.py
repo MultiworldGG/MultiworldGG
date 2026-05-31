@@ -26,6 +26,12 @@ class HadesLogic(LogicMixin):
             return True
         return self._has_enough_of_item(player, amount, "Routine Inspection Pact Level")
     
+    def _has_all_approval_process(self, player: int, options) -> bool:
+        if not options.heat_system == "reverse_heat":
+            return True
+        total_approval_process = int(options.approval_process_pact_amount.value)
+        return self._has_enough_of_item(player, total_approval_process, "Approval Process Pact Level")
+    
     def _has_enough_urns(self, player: int, amount: int) -> bool:
         return self.count("Urns Of Wealth1 Item", player) + self.count("Urns Of Wealth2 Item", player) \
             + self.count("Urns Of Wealth3 Item", player) >= amount
@@ -64,7 +70,7 @@ class HadesLogic(LogicMixin):
             amount_fates += self.count(fates_names, player)
         return amount_fates >= amount
     
-    def _has_weapon(self, weaponSubfix, player: int, option) -> bool:
+    def _has_weapon(self, weaponSubfix : str, player: int, option) -> bool:
         if not option.weaponsanity:
             return True
         if weaponSubfix == "Sword Weapon":
@@ -92,7 +98,7 @@ class HadesLogic(LogicMixin):
         can_win = (can_win) and (self._has_enough_fates_done(player, fates, options))
         return can_win
     
-    def _has_defeated_boss(self, bossVictory, player: int, options) -> bool:
+    def _has_defeated_boss(self, bossVictory : str, player: int, options) -> bool:
         if options.location_system == "room_weapon_based":
             counter = 0
             counter += self.count(bossVictory + " Sword Weapon", player)
@@ -121,7 +127,7 @@ class HadesLogic(LogicMixin):
 # -----------
 
 
-def set_rules(world: "HadesWorld", player: int, number_items: int, location_table, options):
+def set_rules(world: "HadesWorld", player: int, number_items: int, location_table: dict, options) -> None:
     # Set up some logic in areas to avoid having all heats "stack up" as batch in other games.
     total_routine_inspection = int(options.routine_inspection_pact_amount.value)
 
@@ -139,20 +145,20 @@ def set_rules(world: "HadesWorld", player: int, number_items: int, location_tabl
         set_weapon_region_rules(world, player, number_items, location_table, options, 
                                 "Gun Weapon", total_routine_inspection)
     else:
-        set_rule(world.get_entrance("Exit Tartarus", player), 
+        add_rule(world.get_entrance("Exit Tartarus", player), 
                  lambda state: state.has("Meg Victory", player) and  \
                     state._total_heat_level(player, min(number_items / 4, 10), options) and  \
                     state._has_enough_routine_inspection(player, total_routine_inspection-2, options) and  \
                     state._has_enough_weapons(player, options, 2))
-        set_rule(world.get_entrance("Exit Asphodel", player), lambda state: state.has("Lernie Victory", player) and  \
+        add_rule(world.get_entrance("Exit Asphodel", player), lambda state: state.has("Lernie Victory", player) and  \
                     state._total_heat_level(player, min(number_items / 2, 20), options) and \
                     state._has_enough_routine_inspection(player, total_routine_inspection - 1, options) and  \
                     state._has_enough_weapons(player, options, 3))
-        set_rule(world.get_entrance("Exit Elysium", player), lambda state: state.has("Bros Victory", player) and  \
+        add_rule(world.get_entrance("Exit Elysium", player), lambda state: state.has("Bros Victory", player) and  \
                     state._total_heat_level(player, min(number_items * 3 / 4, 30), options) and  \
                     state._has_enough_routine_inspection(player, total_routine_inspection, options) and  \
                     state._has_enough_weapons(player, options, 5))
-        set_rule(world.get_location("Beat Hades", player), lambda state: \
+        add_rule(world.get_location("Beat Hades", player), lambda state: \
                     state._total_heat_level(player, min(number_items, 35), options) and \
                     state._has_enough_weapons(player, options, 6))
     
@@ -165,7 +171,7 @@ def set_rules(world: "HadesWorld", player: int, number_items: int, location_tabl
         add_rule(world.get_location("Eurydice Keepsake", player), lambda state: \
                  state._has_defeated_boss("Lernie Victory", player, options))
         add_rule(world.get_location("Thanatos Keepsake", player), lambda state: \
-                state._has_defeated_boss("Hades Victory", player, options))
+                state._has_defeated_boss("Bros Victory", player, options))
         add_rule(world.get_location("Patroclus Keepsake", player), lambda state: \
                 state._has_defeated_boss("Bros Victory", player, options))
         set_keepsake_balance(world, player, location_table, options)
@@ -183,72 +189,74 @@ def set_rules(world: "HadesWorld", player: int, number_items: int, location_tabl
                 state.has("Court Musician Sentence Item",player))
         
 
-def set_keepsake_balance(world: "HadesWorld", player: int, location_table, options):
-    set_rule(world.get_location("Zeus Keepsake", player), lambda state:   \
+def set_keepsake_balance(world: "HadesWorld", player: int, location_table : dict, options) -> None:
+    add_rule(world.get_location("Zeus Keepsake", player), lambda state:   \
             state.has("Zeus Keepsake", player))
-    set_rule(world.get_location("Poseidon Keepsake", player), lambda state:   \
+    add_rule(world.get_location("Poseidon Keepsake", player), lambda state:   \
             state.has("Poseidon Keepsake", player))
-    set_rule(world.get_location("Athena Keepsake", player), lambda state:   \
+    add_rule(world.get_location("Athena Keepsake", player), lambda state:   \
             state.has("Athena Keepsake", player))
-    set_rule(world.get_location("Aphrodite Keepsake", player), lambda state:   \
+    add_rule(world.get_location("Aphrodite Keepsake", player), lambda state:   \
             state.has("Aphrodite Keepsake", player))
-    set_rule(world.get_location("Ares Keepsake", player), lambda state:   \
+    add_rule(world.get_location("Ares Keepsake", player), lambda state:   \
             state.has("Ares Keepsake", player))
-    set_rule(world.get_location("Artemis Keepsake", player), lambda state:   \
+    add_rule(world.get_location("Artemis Keepsake", player), lambda state:   \
             state.has("Artemis Keepsake", player))
-    set_rule(world.get_location("Dionysus Keepsake", player), lambda state:   \
+    add_rule(world.get_location("Dionysus Keepsake", player), lambda state:   \
             state.has("Dionysus Keepsake", player))
-    set_rule(world.get_location("Demeter Keepsake", player), lambda state:   \
+    add_rule(world.get_location("Demeter Keepsake", player), lambda state:   \
             state.has("Demeter Keepsake", player))
-    set_rule(world.get_location("Hermes Keepsake", player), lambda state:   \
+    add_rule(world.get_location("Hermes Keepsake", player), lambda state:   \
+            state._has_defeated_boss("Meg Victory", player, options))
+    add_rule(world.get_location("Megaera Keepsake", player), lambda state:   \
             state._has_defeated_boss("Meg Victory", player, options))
 
 
-def set_store_rules(world: "HadesWorld", player: int, location_table, options):
+def set_store_rules(world: "HadesWorld", player: int, location_table : dict, options) -> None:
     #Fountains
-    set_rule(world.get_location("Fountain Upgrade1 Location", player), lambda state:  \
+    add_rule(world.get_location("Fountain Upgrade1 Location", player), lambda state:  \
             state.has("Fountain Tartarus Item", player))
-    set_rule(world.get_location("Fountain Upgrade2 Location", player), lambda state:  \
+    add_rule(world.get_location("Fountain Upgrade2 Location", player), lambda state:  \
             state.has("Fountain Upgrade1 Item", player) and state.has("Fountain Tartarus Item", player))
-    set_rule(world.get_location("Fountain Asphodel Location", player), lambda state:  \
+    add_rule(world.get_location("Fountain Asphodel Location", player), lambda state:  \
             state.has("Fountain Tartarus Item", player) and state.has("Keepsake Collection Item", player) and  \
             state._has_defeated_boss("Meg Victory", player, options))
-    set_rule(world.get_location("Fountain Elysium Location", player), lambda state: \
+    add_rule(world.get_location("Fountain Elysium Location", player), lambda state: \
             state.has("Fountain Tartarus Item", player) and state.has("Keepsake Collection Item", player) and  \
             state._has_defeated_boss("Lernie Victory", player, options))
     
     #Urns
-    set_rule(world.get_location("Urns Of Wealth1 Location", player), lambda state:  \
+    add_rule(world.get_location("Urns Of Wealth1 Location", player), lambda state:  \
              state.has("Fountain Tartarus Item", player))
-    set_rule(world.get_location("Urns Of Wealth2 Location", player), lambda state: state._has_enough_urns(player,1))
-    set_rule(world.get_location("Urns Of Wealth3 Location", player), lambda state: state._has_enough_urns(player,2))
+    add_rule(world.get_location("Urns Of Wealth2 Location", player), lambda state: state._has_enough_urns(player,1))
+    add_rule(world.get_location("Urns Of Wealth3 Location", player), lambda state: state._has_enough_urns(player,2))
     
     #Infernal Trove
-    set_rule(world.get_location("Infernal Trove2 Location", player), lambda state: state._has_enough_throve(player,1) \
+    add_rule(world.get_location("Infernal Trove2 Location", player), lambda state: state._has_enough_throve(player,1) \
         and state.has("Fountain Tartarus Item",player) and state.has("Fountain Asphodel Item",player) \
         and state.has("Fountain Elysium Item",player) and state.has("Keepsake Collection Item", player))
 
-    set_rule(world.get_location("Infernal Trove3 Location", player), lambda state: state._has_enough_throve(player,2) \
+    add_rule(world.get_location("Infernal Trove3 Location", player), lambda state: state._has_enough_throve(player,2) \
         and state.has("Fountain Tartarus Item",player) and state.has("Fountain Asphodel Item",player) \
         and state.has("Fountain Elysium Item",player) and state.has("Keepsake Collection Item", player) \
         and state.has("Deluxe Contractor Desk Item", player))
     
     #Keepsake storage
-    set_rule(world.get_location("Keepsake Collection Location", player), lambda state:  \
+    add_rule(world.get_location("Keepsake Collection Location", player), lambda state:  \
             state._has_defeated_boss("Meg Victory", player, options) and state.has("Fountain Tartarus Item", player))
     
     #Deluxe contractor desk
-    set_rule(world.get_location("Deluxe Contractor Desk Location", player), lambda state:  \
+    add_rule(world.get_location("Deluxe Contractor Desk Location", player), lambda state:  \
             state.has("Fountain Elysium Item", player) and state.has("Court Musician Sentence Item", player) and \
             state.has("Urns Of Wealth1 Item", player) and state.has("Keepsake Collection Item", player) and \
             state.has("Infernal Trove1 Item", player))
     
     #Other random stuff
-    set_rule(world.get_location("Vanquishers Keep Location", player), lambda state:\
+    add_rule(world.get_location("Vanquishers Keep Location", player), lambda state:\
             state.has("Deluxe Contractor Desk Item", player))
-    set_rule(world.get_location("Fishing Rod Location", player), lambda state:  \
+    add_rule(world.get_location("Fishing Rod Location", player), lambda state:  \
             state._has_defeated_boss("Bros Victory", player, options) and state.has("Fountain Tartarus Item", player))
-    set_rule(world.get_location("Court Musician Stand Location", player), lambda state:  \
+    add_rule(world.get_location("Court Musician Stand Location", player), lambda state:  \
             state.has("Court Musician Sentence Item", player))
     
     #Orpheus might have other rules depending on settings
@@ -256,97 +264,131 @@ def set_store_rules(world: "HadesWorld", player: int, location_table, options):
             state._has_defeated_boss("Meg Victory", player, options) and state.has("Fountain Tartarus Item", player))
     
     #Upgrades of runs with gems locations
-    set_rule(world.get_location("Pitch Black Darkness Location", player), lambda state:  \
+    add_rule(world.get_location("Pitch Black Darkness Location", player), lambda state:  \
             state.has("Deluxe Contractor Desk Item", player))
-    set_rule(world.get_location("Fated Keys Location", player), lambda state:  \
+    add_rule(world.get_location("Fated Keys Location", player), lambda state:  \
             state.has("Deluxe Contractor Desk Item", player))
-    set_rule(world.get_location("Brilliant Gemstones Location", player), lambda state:  \
+    add_rule(world.get_location("Brilliant Gemstones Location", player), lambda state:  \
             state.has("Deluxe Contractor Desk Item", player))
-    set_rule(world.get_location("Vintage Nectar Location", player), lambda state:  \
+    add_rule(world.get_location("Vintage Nectar Location", player), lambda state:  \
             state.has("Deluxe Contractor Desk Item", player))
-    set_rule(world.get_location("Darker Thirst Location", player), lambda state: \
+    add_rule(world.get_location("Darker Thirst Location", player), lambda state: \
             state.has("Deluxe Contractor Desk Item", player))
     
 
-def set_fates_rules(world: "HadesWorld", player: int, location_table, options, subfix: str):
+def set_fates_rules(world: "HadesWorld", player: int, location_table : dict, options, subfix: str) -> None:
     #Rules that dont depend on other settings
-    set_rule(world.get_location("Is There No Escape?" + subfix, player), lambda state: \
+    add_rule(world.get_location("Is There No Escape?" + subfix, player), lambda state: \
             state._has_defeated_boss("Hades Victory", player, options))
-    set_rule(world.get_location("Harsh Conditions" + subfix, player), lambda state:  \
+    add_rule(world.get_location("Harsh Conditions" + subfix, player), lambda state:  \
             state._has_defeated_boss("Hades Victory", player, options))
-    set_rule(world.get_location("Slashed Benefits" + subfix, player), lambda state:  \
+    add_rule(world.get_location("Slashed Benefits" + subfix, player), lambda state:  \
             state._has_defeated_boss("Hades Victory", player, options))
-    set_rule(world.get_location("The Useless Trinket" + subfix, player), lambda state:  \
+    add_rule(world.get_location("The Useless Trinket" + subfix, player), lambda state:  \
             state._has_defeated_boss("Hades Victory", player, options))
-    set_rule(world.get_location("Wanton Ransacking" + subfix, player), lambda state:  \
+    add_rule(world.get_location("Wanton Ransacking" + subfix, player), lambda state:  \
             state._has_defeated_boss("Hades Victory", player, options))
-    set_rule(world.get_location("Dark Reflections" + subfix, player), lambda state:  \
+    add_rule(world.get_location("Dark Reflections" + subfix, player), lambda state:  \
             state._has_defeated_boss("Hades Victory", player, options))
 
     #Rules that depend on storesanity
     if options.storesanity:
-        set_rule(world.get_location("The Reluctant Musician" + subfix, player), lambda state:  \
+        add_rule(world.get_location("The Reluctant Musician" + subfix, player), lambda state:  \
                 state.has("Court Musician Sentence Item", player))
-        set_rule(world.get_location("Denizens Of The Deep" + subfix, player), lambda state:  \
+        add_rule(world.get_location("Musician and Muse" + subfix, player), lambda state:  \
+                state.has("Court Musician Sentence Item", player) \
+                and state._has_defeated_boss("Hades Victory", player, options))
+        add_rule(world.get_location("The Gift of Song" + subfix, player), lambda state: \
+                state.has("Court Musician Sentence Item", player))
+        add_rule(world.get_location("Denizens Of The Deep" + subfix, player), lambda state:  \
                 state._has_defeated_boss("Hades Victory", player, options) and state.has("Fishing Rod Item",player))
+        add_rule(world.get_location("A Place of Revelry" + subfix, player), lambda state: \
+                state.has("Deluxe Contractor Desk Item", player))
+        add_rule(world.get_location("Customer Loyalty" + subfix, player), lambda state: \
+                state.has("Fishing Rod Item", player) and state.has("Infernal Trove1 Item", player))
+        add_rule(world.get_location("Divided by Death" + subfix, player), lambda state: \
+                state.has("Court Musician Sentence Item", player))   
     else:
-        set_rule(world.get_location("The Reluctant Musician" + subfix, player), lambda state:  \
+        add_rule(world.get_location("The Reluctant Musician" + subfix, player), lambda state:  \
                 state._has_defeated_boss("Meg Victory", player, options))
-        set_rule(world.get_location("Denizens Of The Deep" + subfix, player), lambda state: \
+        add_rule(world.get_location("Musician and Muse" + subfix, player), lambda state:  \
+                state._has_defeated_boss("Hades Victory", player, options))
+        add_rule(world.get_location("Denizens Of The Deep" + subfix, player), lambda state: \
                 state._has_defeated_boss("Hades Victory", player, options))
     #This part depends on weaponsanity, but the false option is handled on has_enough_weapons
-    set_rule(world.get_location("Infernal Arms" + subfix, player), lambda state:  \
+    add_rule(world.get_location("Infernal Arms" + subfix, player), lambda state:  \
             state._has_enough_weapons(player, options, 6))
-    set_rule(world.get_location("A Violent Past" + subfix, player), lambda state:  \
+    add_rule(world.get_location("A Violent Past" + subfix, player), lambda state:  \
             state._has_enough_weapons(player, options, 6))
-    set_rule(world.get_location("Master Of Arms" + subfix, player), lambda state:  \
+    add_rule(world.get_location("Master Of Arms" + subfix, player), lambda state:  \
             state._has_enough_weapons(player, options, 6) and  \
             state._has_defeated_boss("Hades Victory", player, options))
    
     #rules that depend on weaponsanity:
     if options.weaponsanity:
-        set_rule(world.get_location("The Stygian Blade" + subfix, player), lambda state: \
+        add_rule(world.get_location("The Stygian Blade" + subfix, player), lambda state: \
                 state.has("Sword Weapon Unlock Item", player) or options.initial_weapon == 0)
-        set_rule(world.get_location("The Heart Seeking Bow" + subfix, player), lambda state: \
+        add_rule(world.get_location("The Heart Seeking Bow" + subfix, player), lambda state: \
                 state.has("Bow Weapon Unlock Item", player) or options.initial_weapon == 1)
-        set_rule(world.get_location("The Eternal Spear" + subfix, player), lambda state: \
+        add_rule(world.get_location("The Eternal Spear" + subfix, player), lambda state: \
                 state.has("Spear Weapon Unlock Item", player) or options.initial_weapon == 2)
-        set_rule(world.get_location("The Shield Of Chaos" + subfix, player), lambda state: \
+        add_rule(world.get_location("The Shield Of Chaos" + subfix, player), lambda state: \
                 state.has("Shield Weapon Unlock Item", player) or options.initial_weapon == 3)
-        set_rule(world.get_location("The Twin Fists" + subfix, player), lambda state: \
+        add_rule(world.get_location("The Twin Fists" + subfix, player), lambda state: \
                 state.has("Fist Weapon Unlock Item", player) or options.initial_weapon == 4)
-        set_rule(world.get_location("The Adamant Rail" + subfix, player), lambda state: \
+        add_rule(world.get_location("The Adamant Rail" + subfix, player), lambda state: \
                 state.has("Gun Weapon Unlock Item", player) or options.initial_weapon == 5)
         
+        add_rule(world.get_location("Eternal Rest" + subfix, player), lambda state: \
+                state.has("Sword Weapon Unlock Item", player) or options.initial_weapon == 0)
+        
+        #balancing for aspects related fates
+        add_rule(world.get_location("The Holy Liege" + subfix, player), lambda state: \
+                        state.has("Sword Weapon Unlock Item", player) or options.initial_weapon == 0)
+        add_rule(world.get_location("The Preserver's Avatar" + subfix, player), lambda state: \
+                        state.has("Bow Weapon Unlock Item", player) or options.initial_weapon == 1)
+        add_rule(world.get_location("The Fated Saint of War" + subfix, player), lambda state: \
+                        state.has("Spear Weapon Unlock Item", player) or options.initial_weapon == 2)
+        add_rule(world.get_location("The Dragon's Rival" + subfix, player), lambda state: \
+                        state.has("Shield Weapon Unlock Item", player) or options.initial_weapon == 3)
+        add_rule(world.get_location("The God-like King" + subfix, player), lambda state: \
+                        state.has("Fist Weapon Unlock Item", player) or options.initial_weapon == 4)
+        add_rule(world.get_location("The Dawn Bringer" + subfix, player), lambda state: \
+                        state.has("Gun Weapon Unlock Item", player) or options.initial_weapon == 5)
+        
+        
     if options.keepsakesanity:
-        set_rule(world.get_location("Close At Heart" + subfix, player), lambda state: \
+        add_rule(world.get_location("Close At Heart" + subfix, player), lambda state: \
                 state._has_enough_keepsakes(player, 23, options))
         #This is balancing rules, so grinding gods is less painful
-        set_rule(world.get_location("Goddess Of Wisdom" + subfix, player), lambda state: \
+        add_rule(world.get_location("Goddess Of Wisdom" + subfix, player), lambda state: \
                 state.has("Athena Keepsake", player))
-        set_rule(world.get_location("God Of The Heavens" + subfix, player), lambda state: \
+        add_rule(world.get_location("God Of The Heavens" + subfix, player), lambda state: \
                 state.has("Zeus Keepsake", player))
-        set_rule(world.get_location("God Of The Sea" + subfix, player), lambda state: \
+        add_rule(world.get_location("God Of The Sea" + subfix, player), lambda state: \
                 state.has("Poseidon Keepsake", player))
-        set_rule(world.get_location("Goddess Of Love" + subfix, player), lambda state: \
+        add_rule(world.get_location("Goddess Of Love" + subfix, player), lambda state: \
                 state.has("Aphrodite Keepsake", player))
-        set_rule(world.get_location("God Of War" + subfix, player), lambda state: \
+        add_rule(world.get_location("God Of War" + subfix, player), lambda state: \
                 state.has("Ares Keepsake", player))
-        set_rule(world.get_location("Goddess Of The Hunt" + subfix, player), lambda state: \
+        add_rule(world.get_location("Goddess Of The Hunt" + subfix, player), lambda state: \
                 state.has("Artemis Keepsake", player))
-        set_rule(world.get_location("God Of Wine" + subfix, player), lambda state: \
+        add_rule(world.get_location("God Of Wine" + subfix, player), lambda state: \
                 state.has("Dionysus Keepsake", player))
-        set_rule(world.get_location("God Of Swiftness" + subfix, player), lambda state: \
-                state.has("Hermes Keepsake", player))
-        set_rule(world.get_location("Goddess Of Seasons" + subfix, player), lambda state: \
+        add_rule(world.get_location("Goddess Of Seasons" + subfix, player), lambda state: \
                 state.has("Demeter Keepsake", player))
         
         #Balancing rules
-        #Put here a rule that you need to have all God keepsakes for the DivinePairis?
-        set_rule(world.get_location("Primordial Boons" + subfix, player), lambda state: \
+        add_rule(world.get_location("Primordial Boons" + subfix, player), lambda state: \
                 state.has("Chaos Keepsake", player))
-        set_rule(world.get_location("Primordial Banes" + subfix, player), lambda state: \
+        add_rule(world.get_location("Primordial Banes" + subfix, player), lambda state: \
                 state.has("Chaos Keepsake", player))
+        add_rule(world.get_location("Amusing Chaos" + subfix, player), lambda state: \
+                state.has("Chaos Keepsake", player))
+        add_rule(world.get_location("Sea-God's Spite" + subfix, player), lambda state: \
+                state.has("Poseidon Keepsake", player))
+        add_rule(world.get_location("War-God's Bloodlust" + subfix, player), lambda state: \
+                state.has("Ares Keepsake", player))
         
         #Balacing rules for DivinePairings
         add_rule(world.get_location("Divine Pairings" + subfix, player), lambda state: \
@@ -364,47 +406,137 @@ def set_fates_rules(world: "HadesWorld", player: int, location_table, options, s
         add_rule(world.get_location("Divine Pairings" + subfix, player), lambda state: \
                 state.has("Dionysus Keepsake", player))
         add_rule(world.get_location("Divine Pairings" + subfix, player), lambda state: \
-                state.has("Hermes Keepsake", player))
-        add_rule(world.get_location("Divine Pairings" + subfix, player), lambda state: \
                 state.has("Demeter Keepsake", player))
+        
+    if options.hidden_aspectsanity:
+        #balancing for aspects related fates
+        add_rule(world.get_location("The Holy Liege" + subfix, player), lambda state: \
+                        state.has("Sword Hidden Aspect", player) or options.initial_weapon == 0)
+        add_rule(world.get_location("The Preserver's Avatar" + subfix, player), lambda state: \
+                        state.has("Bow Hidden Aspect", player) or options.initial_weapon == 1)
+        add_rule(world.get_location("The Fated Saint of War" + subfix, player), lambda state: \
+                        state.has("Spear Hidden Aspect", player) or options.initial_weapon == 2)
+        add_rule(world.get_location("The Dragon's Rival" + subfix, player), lambda state: \
+                        state.has("Shield Hidden Aspect", player) or options.initial_weapon == 3)
+        add_rule(world.get_location("The God-like King" + subfix, player), lambda state: \
+                        state.has("Fist Hidden Aspect", player) or options.initial_weapon == 4)
+        add_rule(world.get_location("The Dawn Bringer" + subfix, player), lambda state: \
+                        state.has("Gun Hidden Aspect", player) or options.initial_weapon == 5)
 
     # This is extra balancing rules to avoid fates being a pain in the butt
     add_rule(world.get_location("Primordial Boons" + subfix, player), lambda state: \
-                state._has_defeated_boss("Lernie Victory", player, options))
+                state._has_defeated_boss("Hades Victory", player, options))
     add_rule(world.get_location("Primordial Banes" + subfix, player), lambda state: \
                 state._has_defeated_boss("Lernie Victory", player, options))
+    add_rule(world.get_location("Primordial Boons" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("Primordial Banes" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
     
-    set_rule(world.get_location("Power Without Equal" + subfix, player), lambda state: \
-                state._has_defeated_boss("Bros Victory", player, options))
     add_rule(world.get_location("Divine Pairings" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    
+    add_rule(world.get_location("Power Without Equal" + subfix, player), lambda state: \
+                state._has_defeated_boss("Hades Victory", player, options))
+    add_rule(world.get_location("Divine Pairings" + subfix, player), lambda state: \
+                state._has_defeated_boss("Hades Victory", player, options))
+    
+    add_rule(world.get_location("Chthonic Colleagues" + subfix, player), lambda state: \
+                state._has_defeated_boss("Bros Victory", player, options))
+    add_rule(world.get_location("Customer Loyalty" + subfix, player), lambda state: \
                 state._has_defeated_boss("Lernie Victory", player, options))
-        
+    
+    add_rule(world.get_location("Goddess Of Wisdom" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("God Of The Heavens" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("God Of The Sea" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("Goddess Of Love" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("God Of War" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("Goddess Of The Hunt" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("God Of Wine" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("God Of Swiftness" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("Goddess Of Seasons" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    
+    add_rule(world.get_location("The Stygian Blade" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("The Heart Seeking Bow" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("The Eternal Spear" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("The Shield Of Chaos" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("The Twin Fists" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    add_rule(world.get_location("The Adamant Rail" + subfix, player), lambda state: \
+                state._has_all_approval_process(player, options))
+    
+    add_rule(world.get_location("End to Torment" + subfix, player), lambda state: \
+                state._has_defeated_boss("Hades Victory", player, options))
+    add_rule(world.get_location("Divided by Death" + subfix, player), lambda state: \
+                state._has_defeated_boss("Hades Victory", player, options))
+    add_rule(world.get_location("Eternal Rest" + subfix, player), lambda state: \
+                state._has_defeated_boss("Lernie Victory", player, options))
+    add_rule(world.get_location("A Place of Revelry" + subfix, player), lambda state: \
+                state._has_defeated_boss("Hades Victory", player, options))
+    add_rule(world.get_location("Amusing Chaos" + subfix, player), lambda state: \
+                state._has_defeated_boss("Hades Victory", player, options))
+    add_rule(world.get_location("Sea-God's Spite" + subfix, player), lambda state: \
+                state._has_defeated_boss("Hades Victory", player, options))
+    add_rule(world.get_location("War-God's Bloodlust" + subfix, player), lambda state: \
+                state._has_defeated_boss("Hades Victory", player, options))
+    add_rule(world.get_location("A Friendly Wager" + subfix, player), lambda state: \
+                state._has_defeated_boss("Hades Victory", player, options))
+    add_rule(world.get_location("The Gift of Song" + subfix, player), lambda state: \
+                state._has_defeated_boss("Hades Victory", player, options))
+    
+    #balancing for aspects related fates
+    add_rule(world.get_location("The Holy Liege" + subfix, player), lambda state: \
+                state._has_defeated_boss("Bros Victory", player, options))
+    add_rule(world.get_location("The Fated Saint of War" + subfix, player), lambda state: \
+                state._has_defeated_boss("Bros Victory", player, options))
+    add_rule(world.get_location("The Preserver's Avatar" + subfix, player), lambda state: \
+                state._has_defeated_boss("Bros Victory", player, options))
+    add_rule(world.get_location("The Dragon's Rival" + subfix, player), lambda state: \
+                state._has_defeated_boss("Bros Victory", player, options))
+    add_rule(world.get_location("The God-like King" + subfix, player), lambda state: \
+                state._has_defeated_boss("Bros Victory", player, options))
+    add_rule(world.get_location("The Dawn Bringer" + subfix, player), lambda state: \
+                state._has_defeated_boss("Bros Victory", player, options))
 
 def set_weapon_region_rules(world: "HadesWorld", player: int, number_items: int, 
-                            location_table, options, weaponSubfix: str, total_routine_inspection: int):
-    set_rule(world.get_entrance("Zags room " + weaponSubfix, player), lambda state: \
+                            location_table : list, options, weaponSubfix: str, 
+                            total_routine_inspection: int) -> None:
+    add_rule(world.get_entrance("Zags room " + weaponSubfix, player), lambda state: \
             state._has_weapon(weaponSubfix, player, options))
-    set_rule(world.get_entrance("Exit Tartarus " + weaponSubfix, player), lambda state: \
+    add_rule(world.get_entrance("Exit Tartarus " + weaponSubfix, player), lambda state: \
             state.has("Meg Victory " + weaponSubfix, player) and \
             state._total_heat_level(player, min(number_items / 4, 10), options) and \
             state._has_enough_routine_inspection(player, total_routine_inspection - 2, options) and \
             state._has_enough_weapons(player, options, 2))
-    set_rule(world.get_entrance("Exit Asphodel " + weaponSubfix, player), lambda state: \
+    add_rule(world.get_entrance("Exit Asphodel " + weaponSubfix, player), lambda state: \
             state.has("Lernie Victory " + weaponSubfix, player) and \
             state._total_heat_level(player, min(number_items / 2, 20), options) and \
             state._has_enough_routine_inspection(player, total_routine_inspection - 1, options) and \
             state._has_enough_weapons(player, options, 3))
-    set_rule(world.get_entrance("Exit Elysium " + weaponSubfix, player), lambda state: \
+    add_rule(world.get_entrance("Exit Elysium " + weaponSubfix, player), lambda state: \
             state.has("Bros Victory " + weaponSubfix, player)  and \
             state._total_heat_level(player, min(number_items * 3 / 4, 30), options) and \
             state._has_enough_routine_inspection(player, total_routine_inspection, options) and \
             state._has_enough_weapons(player, options, 5))
-    set_rule(world.get_location("Beat Hades " + weaponSubfix, player), lambda state: \
+    add_rule(world.get_location("Beat Hades " + weaponSubfix, player), lambda state: \
             state._total_heat_level(player, min(number_items, 35), options) and \
             state._has_enough_weapons(player, options, 6))
     
 
-def forbid_important_items_on_late_styx(world: "HadesWorld", player: int, options):
+def forbid_important_items_on_late_styx(world: "HadesWorld", player: int, options) -> None:
     if options.location_system == "room_weapon_based":
         for weaponString in location_weapons_subfixes:
                 late_styx_region = world.get_region("Styx Late " + weaponString, player)

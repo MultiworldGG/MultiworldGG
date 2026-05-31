@@ -1,9 +1,8 @@
 from BaseClasses import Location
 
 
-hades_base_location_id = 5093427000
+hades_base_location_id = 1
 
-# This is basically location + score checks. Keeping this as a variable to have easier time keeping
 max_number_room_checks = 1700 + hades_base_location_id
 
 # Making global tables that can be used for unit testing.
@@ -133,6 +132,22 @@ location_table_fates = {
     "Close At Heart": max_number_room_checks + 87,
     "Denizens Of The Deep": max_number_room_checks + 88,
     "The Useless Trinket": max_number_room_checks + 89,
+    "Musician and Muse" : max_number_room_checks + 90,
+    "End to Torment" : max_number_room_checks + 91,
+    "Divided by Death" : max_number_room_checks + 92,
+    "Eternal Rest" : max_number_room_checks + 93,
+    "A Place of Revelry" : max_number_room_checks + 94,
+    "Amusing Chaos" : max_number_room_checks + 95,
+    "Sea-God's Spite" : max_number_room_checks + 96,
+    "War-God's Bloodlust" : max_number_room_checks + 97, 
+    "A Friendly Wager" : max_number_room_checks + 98, 
+    "The Holy Liege" : max_number_room_checks + 99,
+    "The Fated Saint of War" : max_number_room_checks + 100,
+    "The Preserver's Avatar" : max_number_room_checks + 101,
+    "The Dragon's Rival" : max_number_room_checks + 102,
+    "The God-like King" : max_number_room_checks + 103,
+    "The Dawn Bringer" : max_number_room_checks + 104,
+    "The Gift of Song" : max_number_room_checks + 105,
 }
 
 
@@ -173,6 +188,22 @@ location_table_fates_events = {
     "Close At Heart Event": None,
     "Denizens Of The Deep Event": None,
     "The Useless Trinket Event": None,
+    "Musician and Muse Event" : None,
+    "End to Torment Event" : None,
+    "Divided by Death Event" : None,
+    "Eternal Rest Event" : None,
+    "A Place of Revelry Event" : None,
+    "Amusing Chaos Event" : None,
+    "Sea-God's Spite Event" : None,
+    "War-God's Bloodlust Event" : None, 
+    "A Friendly Wager Event" : None, 
+    "The Holy Liege Event" : None,
+    "The Fated Saint of War Event" : None,
+    "The Preserver's Avatar Event" : None,
+    "The Dragon's Rival Event" : None,
+    "The God-like King Event" : None,
+    "The Dawn Bringer Event" : None,
+    "The Gift of Song Event" : None,
 }
 
 # ----------------------
@@ -189,10 +220,10 @@ location_weapons_subfixes = [
 # ---------------------
 
 
-def give_all_locations_table():
-    table_rooms = give_default_location_table()
+def give_all_locations_table() -> dict:
+    table_rooms = give_default_location_table(False)
     table_score = give_score_location_table(1000)
-    table_weaponlocation = give_weapon_based_locations()    
+    table_weaponlocation = give_weapon_based_locations(False)    
 
     return {
         **table_rooms,
@@ -207,7 +238,7 @@ def give_all_locations_table():
     }
 
 
-def clear_tables():
+def clear_tables() -> None:
     global location_table_tartarus 
     location_table_tartarus = {
         "Beat Meg": None,
@@ -236,7 +267,7 @@ def clear_tables():
 # Change parameters so they include the settings of the player
 # Chose between old and new system. And for the new system we want to be able
 # to choose how many "locations" we have.
-def setup_location_table_with_settings(options):
+def setup_location_table_with_settings(options) -> None:
     clear_tables()
     total_table = {}
  
@@ -255,13 +286,13 @@ def setup_location_table_with_settings(options):
         total_table.update(location_store_diamonds)
 
     if options.location_system.value == 1:
-        result = give_default_location_table()
+        result = give_default_location_table(options.disable_late_styx)
         total_table.update(result)
     elif options.location_system.value == 2:
         levels = options.score_rewards_amount.value
         total_table.update(give_score_location_table(levels))
     elif options.location_system.value == 3:
-        total_table.update(give_weapon_based_locations())
+        total_table.update(give_weapon_based_locations(options.disable_late_styx))
     
     if options.fatesanity == 1:
         total_table.update(location_table_fates)
@@ -271,7 +302,7 @@ def setup_location_table_with_settings(options):
 # -----------------------------------------------
 
 
-def should_ignore_weapon_location(weaponLocation, options):
+def should_ignore_weapon_location(weaponLocation : str, options) -> None:
     if options.initial_weapon.value == 0 and weaponLocation == "Sword Weapon Unlock Location":
         return True
     if options.initial_weapon.value == 1 and weaponLocation == "Bow Weapon Unlock Location":
@@ -289,7 +320,7 @@ def should_ignore_weapon_location(weaponLocation, options):
 
 # -----------------------------------------------
 
-def give_default_location_table():
+def give_default_location_table(disable_late_styx : bool) -> dict:
     #Repopulate tartarus table; rooms from 1 to 13.
     global location_table_tartarus
     for i in range(13):
@@ -310,12 +341,13 @@ def give_default_location_table():
     
     # Repopulate styx table, rooms from 35 to 72. Split into early and late
     global location_table_styx 
-    for i in range(35, 60):
+    for i in range(35, 55):
         location_table_styx["Clear Room "+str(i + 1)] = hades_base_location_id + i
         
-    global location_table_styx_late
-    for i in range(60, 72):
-        location_table_styx_late["Clear Room "+str(i + 1)] = hades_base_location_id + i
+    if (not disable_late_styx):
+        global location_table_styx_late
+        for i in range(55, 72):
+            location_table_styx_late["Clear Room "+str(i + 1)] = hades_base_location_id + i
     
     location_table = {
         **location_table_tartarus, 
@@ -327,7 +359,7 @@ def give_default_location_table():
     return location_table
 
 
-def give_score_location_table(locations):
+def give_score_location_table(locations : int) -> dict:
     fraction_location = int(locations/8)
     locations_first_region = locations - 7 * fraction_location
 
@@ -361,6 +393,7 @@ def give_score_location_table(locations):
         location_table_styx["Clear Score "+stringInt] = hades_base_location_id + i + 72
         
     global location_table_styx_late
+    location_table_styx_late = {}
     for i in range(locations_first_region+6*fraction_location, locations):
         stringInt = str(i + 1)
         while len(stringInt) < 4:
@@ -378,7 +411,7 @@ def give_score_location_table(locations):
     return location_table
     
 
-def give_weapon_based_locations():
+def give_weapon_based_locations(disable_late_styx : bool) -> dict:
     subfixCounter = 0
     weapon_locations = {}
     
@@ -403,15 +436,16 @@ def give_weapon_based_locations():
                 + 73 * subfixCounter
         weapon_locations["Beat Bros "+weaponSubfix] = None    
 
-        for i in range(35, 60):
+        for i in range(35, 55):
             weapon_locations["Clear Room " + str(i + 1) + " " + weaponSubfix] = hades_base_location_id + 1073 + i \
                 + 73 * subfixCounter
         
         weapon_locations["Beat Hades " + weaponSubfix] = None
 
-        for i in range(60, 72):
-            weapon_locations["Clear Room " + str(i + 1) + " " + weaponSubfix] = hades_base_location_id + 1073 + i \
-                + 73 * subfixCounter
+        if (not disable_late_styx):
+            for i in range(55, 72):
+                weapon_locations["Clear Room " + str(i + 1) + " " + weaponSubfix] = hades_base_location_id + 1073 + i \
+                    + 73 * subfixCounter
             
         subfixCounter += 1
     

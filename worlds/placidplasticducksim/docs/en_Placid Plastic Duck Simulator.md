@@ -6,7 +6,7 @@ You can read through all the options and generate a YAML [here](../player-option
 
 ## Randomizer Info
 
-- new game only appears once you connect to MWGG
+- new game only appears once you connect to ap
 - removed the ability to save (not needed)
 - removed the ability to resume a save (not needed because you can't save)
 - the classic spawner was shut down and replaced with a custom one
@@ -21,13 +21,23 @@ You can read through all the options and generate a YAML [here](../player-option
   - there are 9 of these so 120s -> 30s
 - `Random Duck`
   - spawns a duck from the random pool
-## Funny quirks
-- will goal before sending last check
-- crashes when loosing connection
-- as long as you don't bk the MAX time to goal is 1hr 30min
+- funny quirks
+  - will goal before sending last check
+  - crashes when loosing connection
+  - as long as you don't bk the MAX time to goal is 1hr 30min
+
+---
 
 ## Special Thanks
 
 - Sterlia for buying me the game and 'forcing' me to make an ap for it
 - Silent, Ethical Logic, and FyreDay for programming support
 - BadMagic for telling me about IlRepack
+
+
+## Tools:
+
+- ~~BepInEx~~ Melon Loader (obv) 
+- Rider
+- ILRepacker
+- UnityExplorer (yukieiji fork)

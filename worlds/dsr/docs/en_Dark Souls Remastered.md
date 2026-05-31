@@ -131,6 +131,7 @@ All DLC regions
 All Doors  
 All Fog Walls  
 All Item Lots  
+After O+S      (intended for use with ornstein_and_smough goal condition)  
 Anor Londo  
 Ash Lake  
 Chasm of the Abyss  

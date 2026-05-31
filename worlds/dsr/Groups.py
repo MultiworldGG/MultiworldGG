@@ -102,7 +102,8 @@ location_name_groups = {
     "All Item Lots": set(),
     "All DLC regions": set(),
     "All Fog Walls": set(),
-    "All Boss Fog Walls": set()
+    "All Boss Fog Walls": set(),
+    "After O+S": set()
 }
 
 category_to_loc_name_map = {
@@ -127,6 +128,46 @@ dlc_regions = [
     "Chasm of the Abyss - Manus",
 ]
 
+#Post Ornstein And Smough
+post_os_regions  = [
+    "Anor Londo - After Ornstein and Smough",
+    "The Duke's Archives",
+    "The Duke's Archives - After First Seath Encounter",
+    "The Duke's Archives - After Archive Tower Cell Key",
+    "The Duke's Archives - After Archive Prison Extra Key",
+    "The Duke's Archives - Out of Cell",
+    "The Duke's Archives - After Archive Tower Giant Door Key",
+    "The Duke's Archives - Courtyard",
+    "The Duke's Archives - Giant Cell",
+    "Crystal Cave",
+    "Crystal Cave - After Seath",
+    "The Duke's Archives - First Arena after Seath's Death",
+    "Demon Ruins - Demon Firesage",
+    "Demon Ruins - After Demon Firesage",
+    "Demon Ruins - Centipede Demon",
+    "Demon Ruins Shortcut",
+    "Lost Izalith",
+    "Lost Izalith - Bed of Chaos",
+    "Tomb of the Giants - Behind Golden Fog Wall",
+    "Tomb of the Giants - Nito",
+    "Tomb of the Giants - After Nito",
+    "Sanctuary Garden",
+    "Sanctuary Garden - Sanctuary Guardian",
+    "Oolacile Sanctuary",
+    "Royal Wood",
+    "Royal Wood - Artorias",
+    "Royal Wood - After Hawkeye Gough",
+    "Oolacile Township",
+    "Oolacile Township - Behind Light-Dispelled Walls",
+    "Oolacile Township - After Crest Key",
+    "Chasm of the Abyss",
+    "Chasm of the Abyss - Manus",
+    "Firelink Altar",
+    "Kiln of the First Flame",
+    "Kiln of the First Flame - Gwyn"
+]
+
+
 # Map door+shortcut regions to their "parent" region
 region_parents = {
     "Undead Asylum Cell Door"   : "Undead Asylum Cell",
@@ -146,7 +187,8 @@ for region in location_tables.keys(): # For each region
         # Add all DLC locations to the DLC location group
         if (region in dlc_regions): 
             location_name_groups['All DLC regions'].add(location.name)
-
+        if (region in post_os_regions):
+            location_name_groups["After O+S"].add(location.name)
         # Add each location to its category type location group (e.g. DOOR -> All Doors, ITEM_LOT -> All ITEM_LOTs, etc)
         if location.category.name in category_to_loc_name_map.keys():
             location_name_groups[category_to_loc_name_map[location.category.name]].add(location.name)

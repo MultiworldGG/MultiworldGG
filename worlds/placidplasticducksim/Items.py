@@ -1,25 +1,49 @@
-import math
+from BaseClasses import ItemClassification
+from .Locations import *
+from .Options import *
 
-from BaseClasses import Item, ItemClassification, Optional
-from typing import NamedTuple, Dict
+# File is Auto-generated, see: [https://github.com/SWCreeperKing/ApWorldFactories/tree/master/ApWorldFactories/Games]
 
-class PPDSItem(Item):
-    game = "Placid Plastic Duck Simulator"
+dlc_items = [
+	"Ducks Please Ducks",
+	"Duck Addiction Ducks",
+	"So Many Ducks Ducks",
+	"Ducks Galore Ducks",
+	"Ducklings Ducks"
+]
 
-class PPDSItemData(NamedTuple):
-    type: ItemClassification
-    id_offset: Optional[int]
-
-item_table: Dict[str, PPDSItemData] = {
-    "Progressive Column Unlock": PPDSItemData(ItemClassification.progression, 1),
-    "Progressive Spawn Speed Upgrade": PPDSItemData(ItemClassification.useful, 2),
-    "Random Duck": PPDSItemData(ItemClassification.filler, 3),
+item_table = {
+	"Progressive Column Unlock": ItemClassification.progression,
+	"Progressive Spawn Speed Upgrade": ItemClassification.useful,
+	"Random Duck": ItemClassification.filler,
+	**{item: ItemClassification.progression for item in dlc_items}
 }
 
-def create_items(world):
-    for i in range(9):
-        world.multiworld.itempool.append(world.create_item("Progressive Column Unlock"))
-        world.multiworld.itempool.append(world.create_item("Progressive Spawn Speed Upgrade"))
+raw_items = [item for item, classification in item_table.items()]
 
-    for i in range(world.locations_to_fill - 18):
-        world.multiworld.itempool.append(world.create_item("Random Duck"))
+def gen_create_items(world):
+	pool = world.multiworld.itempool
+	options = world.options
+	for _ in range(9):
+		world.location_count -= 1
+		pool.append(world.create_item("Progressive Column Unlock"))
+	for _ in range(9):
+		world.location_count -= 1
+		pool.append(world.create_item("Progressive Spawn Speed Upgrade"))
+	if options.ducks_please:
+		world.location_count -= 1
+		pool.append(world.create_item("Ducks Please Ducks"))
+	if options.duck_addiction:
+		world.location_count -= 1
+		pool.append(world.create_item("Duck Addiction Ducks"))
+	if options.so_many_ducks:
+		world.location_count -= 1
+		pool.append(world.create_item("So Many Ducks Ducks"))
+	if options.ducks_galore:
+		world.location_count -= 1
+		pool.append(world.create_item("Ducks Galore Ducks"))
+	if options.ducklings:
+		world.location_count -= 1
+		pool.append(world.create_item("Ducklings Ducks"))
+	for _ in range(world.location_count):
+		pool.append(world.create_item("Random Duck"))

@@ -1,8 +1,8 @@
 # world/dsr/__init__.py
-from typing import Dict, Set, List, ClassVar, TextIO, Any
+from typing import Dict, Set, List, ClassVar, TextIO, Any, Optional
 
-from BaseClasses import MultiWorld, Region, Item, Entrance, Tutorial, ItemClassification
-from Options import Toggle, OptionError
+from BaseClasses import MultiWorld, Region, Item, Entrance, Tutorial, ItemClassification, Location
+from Options import Toggle, OptionError, Option
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import set_rule, add_rule, add_item_rule
@@ -38,6 +38,52 @@ class DSRSettings(Group):
         required = False
     ut_poptracker_path: UTPoptrackerPath | str = UTPoptrackerPath()
 
+def map_page_index(data: Any) -> int:
+    if (data is None or data == ""):
+        return 0
+
+    print (f"data = {data}")
+
+    map_dict = dict([
+                (1000000, 11), # "Depths"), 
+                (1001000, 28), # "* Undead Burg  / Undead Parish"), -> Undead Burg Upper
+                (1001100, 29), # "* Undead Burg  / Undead Parish"), -> Undead Parish
+                (1001200, 27), # "* Undead Burg  / Undead Parish"), -> Undead Burg Lower
+                (1002000, 14), #"Firelink Shrine"), 
+                (1100000, 19), #"Painted World"), 
+                (1200000, 9),  #"* Darkroot Garden / Darkroot Basin"), -> Darkroot Garden
+                (1200100, 8),  #"* Darkroot Garden / Darkroot Basin"), -> Darkroot Basin
+                (1201000, 31), #"* Oolacile"), -> Sanctuary Garden & Sanctuary
+                (1201100, 32), #"* Oolacile"), -> Royal wood
+                (1201200, 33), #"* Oolacile"), -> Oolacile Township
+                (1201300, 34), #"* Oolacile"), -> Chasm of the Abyss
+                (1300000, 6),  #"Catacombs"), 
+                (1301000, 25), #"* Tomb of the Giants"), -> Upper
+                (1301100, 24), #"* Tomb of the Giants"), -> Lower
+                (1302000, 15), #"* Great Hollow / Ash Lake"), -> Great Hollow
+                (1302100, 3),  #"* Great Hollow / Ash Lake"), -> Ash Lake
+                (1400000, 5),  #"* Blighttown"), -> Upper
+                (1400100, 4),  #"* Blighttown"), -> Lower
+                (1401000, 10), #"* Demon Ruins / Lost Izalith"), -> Demon Ruins
+                (1401100, 17), #"* Demon Ruins / Lost Izalith"), -> Lost Izalith
+                (1500000, 22), #"* Sen's Fortress"), -> Main
+                (1500100, 21), #"* Sen's Fortress"), -> Basement
+                (1500200, 23), #"* Sen's Fortress"), -> Roof
+                (1501000, 1),  #"* Anor Londo"), -> Exterior
+                (1501100, 2),  #"* Anor Londo"), -> Interior
+                (1600000, 18), #"* New Londo Ruins / Valley of Drakes"), -> New Londo Ruins
+                (1600100, 30), #"* New Londo Ruins / Valley of Drakes"), -> Valley of Drakes
+                (1700000, 12), #"* Duke's Archives / Crystal Cave"), -> Main
+                (1700100, 13), #"* Duke's Archives / Crystal Cave"), -> Big Room
+                (1700200, 7),  #"* Duke's Archives / Crystal Cave"), -> Crystal Cave
+                (1800000, 16), #"Kiln of the First Flame"), 
+                (1801000, 26)])#"Northern Undead Asylum")]
+
+    if data in map_dict:
+        return map_dict[data]
+    else:
+        return 0;
+    
 class DSRWorld(World):
     """
     Dark Souls is a game where you die.
@@ -63,8 +109,11 @@ class DSRWorld(World):
     tracker_world: ClassVar = {
         "map_page_maps" : "maps/maps.json",
         "map_page_locations" : "locations/locations.json",
-        "external_pack_key" : "ut_poptracker_path"
+        "external_pack_key" : "ut_poptracker_path",
+        "map_page_setting_key" : "map_{team}_{player}",
+        "map_page_index" : map_page_index
     }
+
     # Tell UT we don't need a yaml
     ut_can_gen_without_yaml = True
     # Define function for it to get the options
@@ -103,7 +152,7 @@ class DSRWorld(World):
                     # You can also set .value directly but that won't work if you have OptionSets
                     setattr(self.options, key, opt.from_any(value))
         # End UT yamlless support
-        
+            
         # if upgrade level max < min, reverse them
         if self.options.upgraded_weapons_percentage.value > 0 and self.options.upgraded_weapons_max_level.value < self.options.upgraded_weapons_min_level.value:
             (self.options.upgraded_weapons_min_level, self.options.upgraded_weapons_max_level) = (self.options.upgraded_weapons_max_level, self.options.upgraded_weapons_min_level)
@@ -111,6 +160,34 @@ class DSRWorld(World):
         # If % > 0 but no allowed infusion types, default to normal
         if self.options.upgraded_weapons_percentage.value > 0 and len(self.options.upgraded_weapons_allowed_infusions.value) == 0:
             self.options.upgraded_weapons_allowed_infusions.value = ['Normal']
+
+        ## Soul Multiplier
+        # If soul multiplier steps is 0, don't make there be an increase at all. Base is both the base and max
+        if self.options.soul_multiplier_steps.value == 0:
+            self.options.soul_multiplier_max.value = self.options.soul_multiplier_base.value
+
+        # If soul multiplier base and max are equal, set steps to 0.
+        if self.options.soul_multiplier_max.value == self.options.soul_multiplier_base.value:
+            self.options.soul_multiplier_steps.value = 0
+
+        # If soul multiplier base > max, reverse them
+        if self.options.soul_multiplier_base.value > self.options.soul_multiplier_max.value:
+            (self.options.soul_multiplier_base.value, self.options.soul_multiplier_max.value) = (self.options.soul_multiplier_max.value, self.options.soul_multiplier_base.value)
+
+        ## Weight Multiplier
+        # If weight multiplier steps is 0, don't make there be an increase at all. Base is both the base and min
+        if self.options.weight_multiplier_steps.value == 0:
+            self.options.weight_multiplier_min.value = self.options.weight_multiplier_base.value
+
+        # If weight multiplier base and max are equal, set steps to 0.
+        if self.options.weight_multiplier_min.value == self.options.weight_multiplier_base.value:
+            self.options.weight_multiplier_steps.value = 0
+
+        # If weight multiplier base < min, reverse them
+        if self.options.weight_multiplier_base.value < self.options.weight_multiplier_min.value:
+            (self.options.weight_multiplier_base.value, self.options.weight_multiplier_min.value) = (self.options.weight_multiplier_min.value, self.options.weight_multiplier_base.value)
+
+
 
         self.enabled_location_categories.add(DSRLocationCategory.EVENT)
         self.enabled_location_categories.add(DSRLocationCategory.BOSS)
@@ -614,9 +691,11 @@ class DSRWorld(World):
 
 
     def create_item(self, name: str) -> Item:
-        useful_categories = {
+        useful_categories = [
             DSRItemCategory.EMBER,
-        }
+            DSRItemCategory.FIRE_KEEPER_SOUL,
+            DSRItemCategory.PROGRESSIVE_MULTIPLIER,
+        ]
         data = self.item_name_to_id[name]
 
         if name in key_item_names or item_dictionary[name].category in [DSRItemCategory.EVENT, DSRItemCategory.KEY_ITEM, DSRItemCategory.FOGWALL, DSRItemCategory.BOSSFOGWALL]:
@@ -650,7 +729,10 @@ class DSRWorld(World):
                 self.multiworld.completion_condition[self.player] = lambda state, items=boss_defeated_items: all(
                     state.has(item, self.player) for item in items
                 )
-            
+            case GoalConditionOption.option_ornstein_and_smough:
+                self.multiworld.completion_condition[self.player] = lambda state: state.has("Ornstein and Smough Defeated", self.player)
+            case GoalConditionOption.option_manus:
+                self.multiworld.completion_condition[self.player] = lambda state: state.has("Manus, Father of the Abyss Defeated", self.player)
 
         set_rule(self.multiworld.get_entrance("Undead Asylum Cell -> Undead Asylum Cell Door", self.player), lambda state: state.has("Dungeon Cell Key", self.player))   
         #set_rule(self.multiworld.get_entrance("Undead Asylum Cell Door -> Northern Undead Asylum", self.player), lambda state: state.has("Dungeon Cell Key", self.player))      
@@ -911,6 +993,12 @@ class DSRWorld(World):
                 "warp_to_all_bonfires": self.options.warp_to_all_bonfires.value,
                 # Difficulty
                 "ghost_difficulty": self.options.ghost_difficulty.value,
+                "soul_multiplier_base": self.options.soul_multiplier_base.value,
+                "soul_multiplier_max": self.options.soul_multiplier_max.value,
+                "soul_multiplier_steps": self.options.soul_multiplier_steps.value,
+                "weight_multiplier_base": self.options.weight_multiplier_base.value,
+                "weight_multiplier_min": self.options.weight_multiplier_min.value,
+                "weight_multiplier_steps": self.options.weight_multiplier_steps.value,
                 # Sanity
                 "fogwall_sanity": self.options.fogwall_sanity.value,
                 "boss_fogwall_sanity": self.options.boss_fogwall_sanity.value,
@@ -941,7 +1029,7 @@ class DSRWorld(World):
             "itemsId": items_id,
             "itemsUpgrades": items_upgrades,
             "itemsAddress": items_address,
-            "apworld_api_version" : "0.1.3.0" # Manually set our apworld api level, for detecting compatibility with client
+            "apworld_api_version" : "0.1.4.0" # Manually set our apworld api level, for detecting compatibility with client
         }
 
         self.items_id = items_id

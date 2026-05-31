@@ -53,8 +53,13 @@ Sector2LeftSide.connections = [
         ])
     ], one_way=True),
     Connection(Sector2ZazabiZone, [
-        CanBomb(),
-        CanPowerBomb(power_bomb_ammo_needed=4)
+        Requirement("", [
+            CanBomb(),
+            CanPowerBomb(power_bomb_ammo_needed=4)
+        ],[
+            CanJumpHigh(),
+            PONRRequirement(),
+        ])
     ], one_way=True)
 ]
 

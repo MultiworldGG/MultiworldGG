@@ -4,6 +4,7 @@ import json
 import logging
 import multiprocessing
 import os
+import queue
 import shutil
 import typing
 from datetime import timedelta, datetime
@@ -272,6 +273,9 @@ def autohost(config: dict):
                 last_lobby_check = utcnow()
 
                 while not stop_event.wait(0.1):
+                    for hoster in hosters:
+                        hoster.maintain()
+
                     with db_session:
                         rooms = select(
                             room for room in Room if
@@ -400,14 +404,23 @@ class MultiworldInstance():
         is_idle = len(self.room_ids) == 0
         return time_for_restart and is_idle
 
-    def start_room(self, room_id):
-        while not self.rooms_shutting_down.empty():
-            self.room_ids.remove(self.rooms_shutting_down.get(block=True, timeout=None))
+    def drain_shutting_down_rooms(self):
+        while True:
+            try:
+                room_id = self.rooms_shutting_down.get_nowait()
+            except queue.Empty:
+                break
+            self.room_ids.discard(room_id)
 
+    def maintain(self):
+        self.drain_shutting_down_rooms()
         if self.should_restart():
-            logging.info(f"{self.name} restarting to load fresh APWorld data (process was idle, no rooms were interrupted")
+            logging.info(f"{self.name} restarting to load fresh APWorld data (process was idle, no rooms were interrupted)")
             self.stop(wait=True)  # Wait for old process to fully terminate before starting new one
             self.start()
+
+    def start_room(self, room_id):
+        self.maintain()
 
         if room_id in self.room_ids:
             pass  # should already be hosted currently.

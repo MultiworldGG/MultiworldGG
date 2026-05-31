@@ -516,56 +516,56 @@
         "modern_id": 78
     },
     "We Need To Cook|Talk to Uncle Nelson at a payphone": {
-        "region": "We Need To Cook|1",
+        "region": "We Need To Cook",
         "requirements": true,
         "tags": ["Mission", "Permanent"],
         "modern_id": 79
     },
     "We Need To Cook|Unlock the pseudo supplier in Westville": {
-        "region": "We Need To Cook|1",
+        "region": "We Need To Cook",
         "requirements": {"randomize_customers" : {"has_any" : [["Meg Cooley Unlocked", "Jerry Montero Unlocked"]]},
                         "randomize_suppliers": {"has": "Shirley Watts Unlocked"}},
         "tags": ["Mission", "Permanent", "Customers Unlocked Required"],
         "modern_id": 80
     },
     "We Need To Cook|Purchase a chemistry station from Oscar": {
-        "region": "We Need To Cook|2",
+        "region": "We Need To Cook",
         "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 81
     },
     "We Need To Cook|Purchase a lab oven from Oscar": {
-        "region": "We Need To Cook|2",
+        "region": "We Need To Cook",
         "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 82
     },
     "We Need To Cook|Purchase acid from Oscar": {
-        "region": "We Need To Cook|2",
+        "region": "We Need To Cook",
         "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 83
     },
     "We Need To Cook|Purchase phosphorus from Oscar": {
-        "region": "We Need To Cook|2",
+        "region": "We Need To Cook",
         "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 84
     },
     "We Need To Cook|Message Shirley about buying some pseudo": {
-        "region": "We Need To Cook|2",
+        "region": "We Need To Cook",
         "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 85
     },
     "We Need To Cook|Cook liquid meth at the chemistry station": {
-        "region": "We Need To Cook|2",
+        "region": "We Need To Cook",
         "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 86
     },
     "We Need To Cook|Bake the liquid meth with the lab oven": {
-        "region": "We Need To Cook|2",
+        "region": "We Need To Cook",
         "requirements": true,
         "tags": ["Mission", "Permanent", "Level Up Reward Required"],
         "modern_id": 87
@@ -740,13 +740,13 @@
     },
     "Chemists|Assign a station to the chemist": {
         "region": "Overworld",
-        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access", "has_any" : [["Mixing Station Mk II Unlock",  "Mixing Station Unlock"]]}},
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
         "tags": ["Mission", "Permanent"],
         "modern_id": 116
     },
     "Chemists|Place cash in the chemist's locker": {
         "region": "Overworld",
-        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access", "has_any" : [["Mixing Station Mk II Unlock",  "Mixing Station Unlock"]]}},
+        "requirements": {"randomize_level_unlocks" : {"has" : "Warehouse Access"}},
         "tags": ["Mission", "Permanent"],
         "modern_id": 117
     },
@@ -971,19 +971,19 @@
         "modern_id": 145
     },
     "Rank Bagman I": {
-        "region": "We Need To Cook|1",
+        "region": "We Need To Cook",
         "requirements": true,
         "tags": ["Level Up Reward"],
         "modern_id": 378
     },
     "Rank Bagman III": {
-        "region": "We Need To Cook|1",
+        "region": "We Need To Cook",
         "requirements": true,
         "tags": ["Level Up Reward"],
         "modern_id": 379
     },
     "Rank Bagman V": {
-        "region": "We Need To Cook|2",
+        "region": "We Need To Cook",
         "requirements": true,
         "tags": ["Level Up Reward"],
         "modern_id": 146
@@ -1187,7 +1187,7 @@
         "modern_id": 183
     },
     "Realtor Purchase, Barn": {
-        "region": "We Need To Cook|2",
+        "region": "We Need To Cook",
         "requirements": {"randomize_business_properties" : {"has" : "Car Wash"}},
         "tags": ["Drug Making Property"],
         "modern_id": 184

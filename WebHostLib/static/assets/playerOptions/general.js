@@ -20,6 +20,49 @@ const setRangeValue = (optionName, value) => {
   }
 };
 
+const hasSelectValue = (select, value) => {
+  return Array.from(select.options).some((option) => option.value === String(value));
+};
+
+const decimalPlaces = (value) => {
+  const text = String(value);
+  if (text.includes("e-")) return parseInt(text.split("e-")[1], 10);
+  return text.includes(".") ? text.split(".")[1].length : 0;
+};
+
+const sanitizeStoredValue = (input, value) => {
+  if (input.tagName === "SELECT") {
+    return hasSelectValue(input, value) ? value : input.value;
+  }
+
+  if (input.type === "number" || input.type === "range") {
+    let numericValue = Number(value);
+    if (!Number.isFinite(numericValue)) {
+      numericValue = Number(input.defaultValue || input.value || input.min || 0);
+    }
+
+    const min = input.min === "" ? null : Number(input.min);
+    const max = input.max === "" ? null : Number(input.max);
+    if (Number.isFinite(min)) numericValue = Math.max(min, numericValue);
+    if (Number.isFinite(max)) numericValue = Math.min(max, numericValue);
+
+    if (input.step !== "any") {
+      const step = input.step === "" ? 1 : Number(input.step);
+      if (Number.isFinite(step) && step > 0) {
+        const base = Number.isFinite(min) ? min : 0;
+        numericValue = base + Math.round((numericValue - base) / step) * step;
+        if (Number.isFinite(min)) numericValue = Math.max(min, numericValue);
+        if (Number.isFinite(max)) numericValue = Math.min(max, numericValue);
+        numericValue = Number(numericValue.toFixed(decimalPlaces(step)));
+      }
+    }
+
+    return String(numericValue);
+  }
+
+  return value;
+};
+
 const restoreCollection = (optionName, values) => {
   const selectedValues = new Set(values.map(String));
   let found = false;
@@ -261,8 +304,9 @@ const loadSettings = (importObj = null) => {
         return;
       }
 
-      input.value = value;
-      setRangeValue(key, value);
+      const sanitizedValue = sanitizeStoredValue(input, value);
+      input.value = sanitizedValue;
+      setRangeValue(key, sanitizedValue);
     });
 
     // Restore checkboxes
@@ -292,12 +336,20 @@ const loadSettings = (importObj = null) => {
     const optionName = checkbox.getAttribute("data-option-name");
     if (checkbox.checked) {
       const input = document.getElementById(optionName);
+      const namedRangeSelect = document.querySelector(
+        `select[data-option-name=${optionName}]`
+      );
       if (input) {
         input.setAttribute("disabled", "1");
       }
+      namedRangeSelect?.setAttribute("disabled", "1");
       const customInput = document.getElementById(`${optionName}-custom`);
       if (customInput) {
         customInput.setAttribute("disabled", "1");
+      }
+      const valueInput = document.getElementById(`${optionName}-value`);
+      if (valueInput && valueInput.tagName === "INPUT") {
+        valueInput.setAttribute("disabled", "1");
       }
     }
   });

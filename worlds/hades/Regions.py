@@ -1,4 +1,4 @@
-def create_main_weapon_regions(ctx, weaponSubfix, subfixCounter, location_database):
+def create_main_weapon_regions(ctx, weaponSubfix : str, subfixCounter : int, location_database : dict) -> None:
     from . import create_region
     
     hades_base_location_id = 5093427000
@@ -28,14 +28,15 @@ def create_main_weapon_regions(ctx, weaponSubfix, subfixCounter, location_databa
             + 73 * subfixCounter
     elysium["Beat Bros " + weaponSubfix] = None
 
-    for i in range(35, 60):
+    for i in range(35, 55):
         styx["Clear Room " + str(i + 1) + " " + weaponSubfix] = hades_base_location_id + 1073 + i + 73 * subfixCounter
         
     styx["Beat Hades " + weaponSubfix] = None
 
-    for i in range(60, 72):
-        styx_late["Clear Room " + str(i + 1) + " " + weaponSubfix] = hades_base_location_id + 1073 + i \
-            + 73 * subfixCounter
+    if (not ctx.options.disable_late_styx):
+        for i in range(55, 72):
+            styx_late["Clear Room " + str(i + 1) + " " + weaponSubfix] = hades_base_location_id + 1073 + i \
+                + 73 * subfixCounter
     
     ctx.multiworld.regions += [
                 create_region(ctx.multiworld, ctx.player, location_database, "Tartarus " + weaponSubfix,
@@ -62,7 +63,7 @@ def create_main_weapon_regions(ctx, weaponSubfix, subfixCounter, location_databa
     styx_late = {}
 
 
-def create_regions(ctx, location_database):
+def create_regions(ctx, location_database : dict) -> None:
     from . import create_region
     from .Locations import location_table_tartarus, location_table_asphodel, location_table_elysium, \
         location_table_styx, location_table_styx_late, location_keepsakes, location_weapons, \

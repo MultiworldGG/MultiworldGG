@@ -46,13 +46,20 @@ class RefunctWorld(World):
     
     item_name_groups = item_groups
 
-    ap_world_version = "1.1.1"        
+    ap_world_version = "1.2.1"        
         
     def get_filler_item_name(self) -> str:
         return ":)"
 
     def create_items(self):
+        if self.options.just_clique.value:
+            self.minigames = ["Clique"]
+            self.multiworld.itempool.append(self.create_item("Clique: Button Activation"))
+            self.multiworld.itempool.append(self.create_item("Clique: Feeling of Satisfaction"))
+            return
+        
         items_to_add = []
+        locs_force_filler = []
         for name in item_table:
             if "Cluster" in name and name != "Cluster 1":
                 items_to_add.append(name)
@@ -71,7 +78,7 @@ class RefunctWorld(World):
         for _ in range(self.required_grass):
             items_to_add.append("Grass")
         for _ in range(self.amount_of_grass - self.required_grass):
-            items_to_add.append(["Grass", True])
+            items_to_add.append(["Grass", "Useful"])
         for _ in range(250 - self.amount_of_grass):
             items_to_add.append("Flower")
             
@@ -184,6 +191,14 @@ class RefunctWorld(World):
                 items_to_add.append("Rando Mountain Minigame")
             for _ in range(37 - num_unlocks):
                 items_to_add.append("Flower")
+        
+        if "Funny Bridge Game Minigame" in self.minigames:
+            for _ in range(num_unlocks):
+                items_to_add.append("Funny Bridge Game Minigame")
+        
+        if "Clique" in self.minigames:
+            items_to_add.append("Clique: Button Activation")
+            items_to_add.append("Clique: Feeling of Satisfaction")
                 
         if self.options.nerf_minigame_checks.value:
             if "Vanilla Minigame" in self.minigames:
@@ -192,9 +207,7 @@ class RefunctWorld(World):
                 for loc in location_names_el:
                     if "Flower" in items_to_add:
                         items_to_add.remove("Flower")
-                        self.get_location(loc).place_locked_item(
-                            self.create_item("Flower")
-                        )
+                        locs_force_filler.append(loc)
             # Seeker Minigame doesn't need locked flowers.
             if "Button Galore Minigame" in self.minigames:
                 location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Button Galore Minigame" in i.name]
@@ -202,27 +215,21 @@ class RefunctWorld(World):
                 for loc in location_names_el:
                     if "Flower" in items_to_add:
                         items_to_add.remove("Flower")
-                        self.get_location(loc).place_locked_item(
-                            self.create_item("Flower")
-                        )
+                        locs_force_filler.append(loc)
             if "OG Randomizer Minigame" in self.minigames:
                 location_names = [i.name for i in self.multiworld.get_locations(self.player) if "OG Randomizer Minigame" in i.name]
                 location_names_el = self.multiworld.random.sample(location_names, 27)
                 for loc in location_names_el:
                     if "Flower" in items_to_add:
                         items_to_add.remove("Flower")
-                        self.get_location(loc).place_locked_item(
-                            self.create_item("Flower")
-                        )
+                        locs_force_filler.append(loc)
             if "Block Brawl Minigame" in self.minigames:
                 location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Block Brawl Minigame" in i.name]
                 location_names_el = self.multiworld.random.sample(location_names, 60)
                 for loc in location_names_el:
                     if "Flower" in items_to_add:
                         items_to_add.remove("Flower")
-                        self.get_location(loc).place_locked_item(
-                            self.create_item("Flower")
-                        )
+                        locs_force_filler.append(loc)
             # climb line, spiral, and chaos don't need locked flowers since they have so few checks.
             if "Block Blub Minigame" in self.minigames:
                 location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Block Blub Minigame" in i.name]
@@ -230,27 +237,25 @@ class RefunctWorld(World):
                 for loc in location_names_el:
                     if "Flower" in items_to_add:
                         items_to_add.remove("Flower")
-                        self.get_location(loc).place_locked_item(
-                            self.create_item("Flower")
-                        )
+                        locs_force_filler.append(loc)
             if "Refunct Mountain Minigame" in self.minigames:
                 location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Refunct Mountain Minigame" in i.name]
                 location_names_el = self.multiworld.random.sample(location_names, 27)
                 for loc in location_names_el:
                     if "Flower" in items_to_add:
                         items_to_add.remove("Flower")
-                        self.get_location(loc).place_locked_item(
-                            self.create_item("Flower")
-                        )
+                        locs_force_filler.append(loc)
             if "Rando Mountain Minigame" in self.minigames:
                 location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Rando Mountain Minigame" in i.name]
                 location_names_el = self.multiworld.random.sample(location_names, 27)
                 for loc in location_names_el:
                     if "Flower" in items_to_add:
                         items_to_add.remove("Flower")
-                        self.get_location(loc).place_locked_item(
-                            self.create_item("Flower")
-                        )
+                        locs_force_filler.append(loc)
+            # Funny Bridge Game Minigame and Clique don't need locked flowers since they have so few checks.
+        
+        for loc in locs_force_filler:
+            items_to_add.append("Flower")
                         
         trap_items = []
         if self.options.traps == Traps.option_pretty or self.options.traps == Traps.option_all:
@@ -296,7 +301,7 @@ class RefunctWorld(World):
             for _ in range(number_change):
                 if "Flower" in items_to_add:
                     items_to_add.remove("Flower")
-                    items_to_add.append(self.multiworld.random.choice(trap_items))
+                    items_to_add.append([self.multiworld.random.choice(trap_items), "Filler"])
             
         actual_flowers = []        
         if self.options.rename_flowers.value == RenameFlowers.option_english or self.options.rename_flowers.value == RenameFlowers.option_both:
@@ -328,7 +333,7 @@ class RefunctWorld(World):
         if actual_flowers:
             for i in range(len(items_to_add)):
                 if items_to_add[i] == "Flower":
-                    items_to_add[i] = self.multiworld.random.choice(actual_flowers)
+                    items_to_add[i] = [self.multiworld.random.choice(actual_flowers), "Filler"]
         
         actual_grasses = []
         if self.options.rename_grass.value == RenameGrass.option_english or self.options.rename_grass.value == RenameGrass.option_both:
@@ -385,19 +390,40 @@ class RefunctWorld(World):
                     items_to_add[i] = self.multiworld.random.choice(actual_grasses)
                 if isinstance(items_to_add[i], list) and items_to_add[i][0] == "Grass":
                     items_to_add[i][0] = self.multiworld.random.choice(actual_grasses)
-                    
+        
+        if locs_force_filler:
+            for item in items_to_add:
+                if item == "Flower" or (isinstance(item, list) and item[1] == "Filler"):
+                    item = items_to_add.pop(items_to_add.index(item))
+                    item_name = item if isinstance(item, str) else item[0]
+                    loc = locs_force_filler.pop()
+                    self.get_location(loc).place_locked_item(self.create_item(item_name))
+                if not locs_force_filler:
+                    break
+            
+        
         for item in items_to_add:
-            if isinstance(item, list) and item[1] == True:
-                self.multiworld.itempool.append(self.create_item(item[0], force_useful=True))
+            if isinstance(item, list):
+                self.multiworld.itempool.append(self.create_item(item[0], force_useful=(item[1]=="Useful")))
             else:
                 self.multiworld.itempool.append(self.create_item(item))
 
     def create_regions(self):
-
         if hasattr(self.multiworld, "re_gen_passthrough"):
-            self.minigames = self.multiworld.re_gen_passthrough[self.game]["minigames"]
-            self.seeker_platforms = self.multiworld.re_gen_passthrough[self.game]["seeker_platforms"]
+            regen = self.multiworld.re_gen_passthrough[self.game]
+            if "minigames" in regen:
+                self.minigames = regen["minigames"]
+            if "seeker_platforms" in regen:
+                self.seeker_platforms = regen["seeker_platforms"]
         else:
+            if self.options.just_clique.value:
+                self.multiworld.regions.append(Region(self.origin_region_name, self.player, self.multiworld))
+                self.multiworld.regions.append(Region("Clique", self.player, self.multiworld))
+                for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Clique"]:
+                    region_object = self.multiworld.get_region("Clique", self.player)
+                    region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
+                return
+            
             minigames_weights = self.options.minigames_likeliness.value
             population = list(minigames_weights.keys())
             weights = list(minigames_weights.values())
@@ -528,6 +554,17 @@ class RefunctWorld(World):
                 region_object = self.multiworld.get_region("Rando Mountain Minigame", self.player)
                 region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
         
+        if "Funny Bridge Game Minigame" in self.minigames:
+            self.multiworld.regions.append(Region("Funny Bridge Game Minigame", self.player, self.multiworld))
+            for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Funny Bridge Game"]:
+                region_object = self.multiworld.get_region("Funny Bridge Game Minigame", self.player)
+                region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
+        
+        if "Clique" in self.minigames:
+            self.multiworld.regions.append(Region("Clique", self.player, self.multiworld))
+            for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Clique"]:
+                region_object = self.multiworld.get_region("Clique", self.player)
+                region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
 
         
         # OG Randomizer Minigame info
@@ -758,6 +795,15 @@ class RefunctWorld(World):
         self.rando_mountain_order = result
         
     def set_rules(self):
+        if self.options.just_clique.value:
+            region_a = self.multiworld.get_region("10010102", self.player)
+            region_b = self.multiworld.get_region("Clique", self.player)
+            region_a.connect(region_b, f"Enter Clique")
+            location = self.get_location("Clique: The Button")
+            location.access_rule = lambda state: state.has("Clique: Button Activation", self.player)
+            self.multiworld.completion_condition[self.player] = lambda state: state.has("Clique: Button Activation", self.player)
+            return            
+            
         def load_json_data_list_of_lists(data_name: str) -> List[List[Any]]:
             return orjson.loads(pkgutil.get_data(__name__, "data/" + data_name).decode("utf-8-sig"))    
         
@@ -941,7 +987,19 @@ class RefunctWorld(World):
             region_b = self.multiworld.get_region("Rando Mountain Minigame", self.player)
             region_a.connect(region_b, f"Enter Rando Mountain Minigame", 
                 lambda state: state.has("Rando Mountain Minigame", self.player))
+            
+        if "Funny Bridge Game Minigame" in self.minigames:
+            region_a = self.multiworld.get_region("10010102", self.player)
+            region_b = self.multiworld.get_region("Funny Bridge Game Minigame", self.player)
+            region_a.connect(region_b, f"Enter Funny Bridge Game Minigame", 
+                lambda state: state.has("Funny Bridge Game Minigame", self.player))
         
+        if "Clique" in self.minigames:
+            region_a = self.multiworld.get_region("10010102", self.player)
+            region_b = self.multiworld.get_region("Clique", self.player)
+            region_a.connect(region_b, f"Enter Clique")
+            location = self.get_location("Clique: The Button")
+            location.access_rule = lambda state: state.has("Clique: Button Activation", self.player)
 
     def create_item(self, name: str, force_useful = False) -> Item:
         item_data = item_table[name]
@@ -956,25 +1014,28 @@ class RefunctWorld(World):
         make slot data, which consists of refunct_data, options, and some other variables.
         """
         slot_data = {}
+        
+        if not self.options.just_clique.value:
+            slot_data["amount_grass"] = self.amount_of_grass
+            slot_data["required_grass"] = self.required_grass
+            
+            slot_data["goal_t"] = self.goal[0]
+            slot_data["goal_c"] = self.goal[1][0]
+            slot_data["goal_p"] = self.goal[1][1]
+            slot_data["goal_known"] = self.options.goal.value not in [Goal.option_random_unknown, Goal.option_random_unknown_button, Goal.option_random_unknown_platform]
                 
-        slot_data["amount_grass"] = self.amount_of_grass
-        slot_data["required_grass"] = self.required_grass
-        
-        slot_data["goal_t"] = self.goal[0]
-        slot_data["goal_c"] = self.goal[1][0]
-        slot_data["goal_p"] = self.goal[1][1]
-        slot_data["goal_known"] = self.options.goal.value not in [Goal.option_random_unknown, Goal.option_random_unknown_button, Goal.option_random_unknown_platform]
-        
+            slot_data["cubes"] = self.options.cubes.value
+            slot_data["extra_cubes"] = self.options.extra_cubes.value
+            # slot_data["underwater_cubes"] = self.options.underwater_cubes.value
+            
+            slot_data["seeker_platforms"] = self.seeker_platforms
+            slot_data["og_randomizer_order"] = self.og_randomizer_order
+            slot_data["rando_mountain_order"] = self.rando_mountain_order
+            
         slot_data["minigames"] = self.minigames
-        
-        slot_data["cubes"] = self.options.cubes.value
-        slot_data["extra_cubes"] = self.options.extra_cubes.value
-        # slot_data["underwater_cubes"] = self.options.underwater_cubes.value
-        
-        slot_data["seeker_platforms"] = self.seeker_platforms
-        slot_data["og_randomizer_order"] = self.og_randomizer_order
-        slot_data["rando_mountain_order"] = self.rando_mountain_order
-        
+        slot_data["just_clique"] = self.options.just_clique.value
+        slot_data["has_clique"] = "Clique" in self.minigames
+
         slot_data["death_link"] = self.options.death_link.value
         
         slot_data["ap_world_version"] = self.ap_world_version

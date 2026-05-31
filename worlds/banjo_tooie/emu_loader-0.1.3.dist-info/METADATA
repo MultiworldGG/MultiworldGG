@@ -1,0 +1,260 @@
+Metadata-Version: 2.4
+Name: emu-loader
+Version: 0.1.3
+Summary: Cross-platform emulator memory access library for N64 emulators
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/Killklli/EmuLoader
+Keywords: emulator,n64,memory,archipelago
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# EmuLoader
+
+Cross-platform emulator memory access library for N64 emulators. Supports Windows and Linux, with built-in detection for common emulators including Project64, BizHawk, Rosalie's Mupen GUI, simple64, Parallel Launcher, RetroArch, Gopher64, and ares.
+
+> **Note on emulator config loading:** The emulator definitions bundled with this package come from [`emu_loader/emulators.json`](emu_loader/emulators.json) in this repository. However, when `pull_from_web=True` is passed by the implementor (which is the default), EmuLoader will first attempt to fetch the latest config directly from [https://killklli.github.io/EmuLoader/emulators.json](https://killklli.github.io/EmuLoader/emulators.json) — which always reflects the `emulators.json` on the `main` branch. This means emulator support can be updated or corrected without requiring end users to upgrade the package. If the remote fetch fails, EmuLoader falls back to the bundled local copy automatically. To opt out of remote fetching entirely, pass `pull_from_web=False` when connecting.
+
+## Installation
+
+```bash
+pip install emu-loader
+```
+
+Install a specific tagged release directly from GitHub:
+
+```bash
+pip install git+https://github.com/Killklli/EmuLoader.git@v1.0.0
+```
+
+Or always track the latest commit on `main`:
+
+```bash
+pip install git+https://github.com/Killklli/EmuLoader.git@main
+```
+
+Or install from a local clone:
+
+```bash
+pip install .
+```
+
+### Archipelago World Installation
+
+If you are building an [Archipelago](https://github.com/ArchipelagoMW/Archipelago) world that depends on EmuLoader, add the following line to your `worlds/<your_world>/requirements.txt`:
+
+```
+emu-loader @ git+https://github.com/Killklli/EmuLoader@v0.1.2#0.1.2
+```
+
+Archipelago's `ModuleUpdate.py` uses a custom `name @ git+url@<ref>#<version>` syntax to pin a specific release while still allowing version checking via `pkg_resources`. The `#<version>` suffix is **not** a standard URL fragment — it is parsed by Archipelago to derive `name==version` for requirement validation. The `@<ref>` portion is any valid git ref passed to pip (tag, branch, or full commit SHA).
+
+To update the pin to a newer release, replace the tag and version accordingly:
+
+```
+emu-loader @ git+https://github.com/Killklli/EmuLoader@v<version>#<version>
+```
+
+If you need to pin to a specific commit instead of a tag, you can use the full commit SHA:
+
+```
+emu-loader @ git+https://github.com/Killklli/EmuLoader@<full-commit-sha>#<version>
+```
+
+## Supported Emulators
+
+| Emulator | Key |
+|---|---|
+| Project64 | `"Project64"` |
+| Project64 4.0+ | `"Project64_v4"` |
+| BizHawk | `"BizHawk"` |
+| Rosalie's Mupen GUI | `"RMG"` |
+| Rosalie's Mupen GUI (Flatpak) | `"RMG_Flatpak"` |
+| simple64 | `"Simple64"` |
+| Parallel Launcher | `"ParallelLauncher"` |
+| Parallel Launcher 9.0.3+ | `"ParallelLauncher903"` |
+| RetroArch (mupen64plus_next) | `"RetroArch"` |
+| Gopher64 | `"Gopher64"` |
+| ares | `"Ares"` |
+
+Emulator configs are loaded from `emulators.json` (or fetched from the web at runtime) and are no longer tied to a hardcoded enum — new emulators can be added simply by updating the JSON.
+
+## Adding Emulators
+
+New emulators can be added by appending an entry to `emu_loader/emulators.json`. Each entry is a JSON object with the following fields:
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `id` | string | ✅ | Unique identifier used when referencing the emulator in code (e.g. `"MyEmu"`). |
+| `readable_emulator_name` | string | ✅ | Human-friendly display name (e.g. `"My Emulator 2.0"`). |
+| `process_name` | string | ✅ | The executable name (without `.exe`) that EmuLoader searches for in the process list. |
+| `find_dll` | bool | ✅ | If `true`, EmuLoader locates the emulator's memory via a loaded DLL rather than the main process. |
+| `dll_name` | string\|null | ✅ | Windows DLL filename to search for (e.g. `"mupen64plus.dll"`). Set to `null` when `find_dll` is `false` or Windows is unsupported. |
+| `linux_dll_name` | string\|null | ✅ | Linux shared-library filename (e.g. `"libmupen64plus.so"`). Set to `null` when Linux is unsupported. |
+| `additional_lookup` | bool | ✅ | If `true`, an additional pointer/offset lookup is performed after the initial base address is found. |
+| `lower_offset_range` | string | ✅ | Hex string lower bound of the memory scan range (e.g. `"0x5A000"`). Set to `"0x0"` when using `scan_memory_for_signature`. |
+| `upper_offset_range` | string | ✅ | Hex string upper bound of the memory scan range (e.g. `"0x5658DF"`). Set to `"0x0"` when using `scan_memory_for_signature`. |
+| `range_step` | string | ✅ | Hex step size used when iterating through the scan range (e.g. `"0x10"`). |
+| `extra_offset` | string | ✅ | Additional hex offset added to the located base address (e.g. `"0x80000000"`). Use `"0x0"` if no adjustment is needed. |
+| `scan_memory_for_signature` | bool | ❌ | If `true`, the scan range is ignored and EmuLoader instead searches process memory for a known N64 RAM signature. Useful for emulators with dynamic memory layouts. |
+| `signature_alignment` | string | ❌ | Hex alignment boundary used during signature scanning (e.g. `"0x1000"`). Only relevant when `scan_memory_for_signature` is `true`. |
+
+### Example entry
+
+```json
+{
+    "id": "MyEmulator",
+    "readable_emulator_name": "My Emulator 2.0",
+    "process_name": "myemulator",
+    "find_dll": true,
+    "dll_name": "myemulator_core.dll",
+    "linux_dll_name": "libmyemulator_core.so",
+    "additional_lookup": false,
+    "lower_offset_range": "0x100000",
+    "upper_offset_range": "0x500000",
+    "range_step": "0x10",
+    "extra_offset": "0x0"
+}
+```
+
+After adding the entry, the new `id` can be passed anywhere EmuLoader accepts an emulator key.
+
+## Usage
+
+```python
+from emu_loader import EmuLoaderClient
+from emu_loader.process import ProcessMemory
+
+MY_ROM_MAGIC_ADDRESS = 0x759290
+MY_ROM_MAGIC_VALUE   = 0x52414D42
+
+def validate_rom(mem: ProcessMemory, base: int) -> bool:
+    """Return True when the correct ROM is loaded at the candidate base address."""
+    try:
+        value = mem.read_int(base + (MY_ROM_MAGIC_ADDRESS & 0x7FFFFFFF))
+        return value == MY_ROM_MAGIC_VALUE
+    except Exception:
+        return False
+
+client = EmuLoaderClient(validate_rom)
+
+if client.connect():
+    print("Connected to emulator!")
+
+    value = client.read_u32(0x807ED000)
+    client.write_u8(0x807ED100, 0x01)
+
+    client.disconnect()
+```
+
+## Async Game Loop Integration
+
+`wait_for_emulator` is designed to be called **at the very start of your async game logic loop** before any memory reads or writes. It blocks until an emulator is detected and — optionally — until your ROM validation passes. Once it returns you can safely proceed with game logic knowing the connection is ready.
+
+```python
+import asyncio
+from emu_loader import EmuLoaderClient
+from emu_loader.process import ProcessMemory
+
+MY_ROM_MAGIC_ADDRESS = 0x80123456
+MY_ROM_MAGIC_VALUE   = 0xDEADBEEF
+
+def find_rom(mem: ProcessMemory, base: int) -> bool:
+    """Return True only when the correct ROM is loaded at the candidate base address."""
+    try:
+        value = mem.read_int(base + (MY_ROM_MAGIC_ADDRESS & 0x7FFFFFFF))
+        return value == MY_ROM_MAGIC_VALUE
+    except Exception:
+        return False
+
+def validate_rom(client: EmuLoaderClient) -> bool:
+    """Return True only when the correct ROM is loaded."""
+    try:
+        return client.read_u32(MY_ROM_MAGIC_ADDRESS) == MY_ROM_MAGIC_VALUE
+    except Exception:
+        return False
+
+async def game_loop():
+    client = EmuLoaderClient(find_rom)
+
+    # Always call this first — it will retry until ready.
+    await client.wait_for_emulator(validate=validate_rom)
+
+    # From here the emulator is connected and the ROM is confirmed valid.
+    while True:
+        try:
+            value = client.read_u32(0x807ED000)
+            # ... your per-tick game logic ...
+            await asyncio.sleep(0.1)
+        except Exception as e:
+            print(f"Connection lost: {e}")
+            # Re-enter the wait loop if the connection drops.
+            await client.wait_for_emulator(validate=validate_rom)
+
+asyncio.run(game_loop())
+```
+
+If you don't need ROM validation — for example you just want to wait until *any* emulator is running — omit the `validate` argument:
+
+```python
+await client.wait_for_emulator()
+```
+
+## ROM Validation
+
+**EmuLoader does not perform any ROM validation itself.** Before reading or writing game memory, you are responsible for verifying that the correct ROM is loaded in the emulator. Skipping this step may cause incorrect reads/writes against an unintended game.
+
+A typical validation pattern is to check a known magic value or game-specific flag at a fixed memory address:
+
+```python
+from emu_loader import EmuLoaderClient
+from emu_loader.process import ProcessMemory
+
+MY_ROM_MAGIC_ADDRESS = 0x80123456
+MY_ROM_MAGIC_VALUE   = 0xDEADBEEF
+
+def validate_base(mem: ProcessMemory, base: int) -> bool:
+    """Called during emulator attachment — return True if the correct ROM is at this base."""
+    try:
+        value = mem.read_int(base + (MY_ROM_MAGIC_ADDRESS & 0x7FFFFFFF))
+        return value == MY_ROM_MAGIC_VALUE
+    except Exception:
+        return False
+
+client = EmuLoaderClient(validate_base)
+
+if client.connect():
+    value = client.read_u32(MY_ROM_MAGIC_ADDRESS)
+    if value != MY_ROM_MAGIC_VALUE:
+        print("Wrong ROM loaded — disconnecting.")
+        client.disconnect()
+    else:
+        print("ROM validated, proceeding.")
+        # ... your game logic here
+```
+
+Adapt the address and expected value to whatever sentinel your ROM exposes (e.g. a header checksum, a version flag, or an AP-status byte).
+
+> **Note:** The `validation_func` receives a raw `ProcessMemory` object and a candidate RDRAM base address (host memory). It is called during the emulator attachment scan to confirm the correct base was found. To read an N64 virtual address, strip the high bit (`addr & 0x7FFFFFFF`) and add it to `base`, then use `mem.read_int(base + physical_addr)` (4-byte little-endian) or `mem.read_bytes(...)` for raw access.
+
+## Memory Access
+
+All addresses should be N64 virtual addresses (e.g. `0x80xxxxxx`). The library strips the high bit and applies byte-swap corrections automatically.
+
+| Method | Description |
+|---|---|
+| `read_u8(address)` | Read 8-bit unsigned int |
+| `read_u16(address)` | Read 16-bit unsigned int |
+| `read_u32(address)` | Read 32-bit unsigned int |
+| `write_u8(address, value)` | Write 8-bit unsigned int |
+| `write_u16(address, value)` | Write 16-bit unsigned int |
+| `write_u32(address, value)` | Write 32-bit unsigned int |
+| `read_bytestring(address, length)` | Read a string from memory |
+| `write_bytestring(address, data)` | Write a sanitized string to memory |
+
+## Linux Notes
+
+On Linux, memory access uses `/proc/<pid>/mem`. If ptrace restrictions are enabled (`/proc/sys/kernel/yama/ptrace_scope` > 0), the library will attempt to relax them automatically using `sudo`. You may be prompted for your password.

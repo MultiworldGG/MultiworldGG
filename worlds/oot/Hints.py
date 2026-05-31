@@ -5,12 +5,10 @@ import logging
 import os
 import random
 import sys
-import urllib.request
 from collections import OrderedDict, defaultdict
 from collections.abc import Callable, Iterable
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
-from urllib.error import URLError, HTTPError
 
 from .HintList import Hint, get_hint, get_multi, get_hint_group, get_upgrade_hint_list, hint_exclusions, \
     misc_item_hint_table, misc_location_hint_table, misc_dual_hint_table
@@ -1270,50 +1268,6 @@ hint_func: dict[str, HintFunc | BarrenFunc] = {
 hint_dist_keys: set[str] = set(hint_func)
 
 
-def build_bingo_hint_list(board_url: str) -> list[str]:
-    try:
-        if len(board_url) > 256:
-            raise URLError(f"URL too large {len(board_url)}")
-        with urllib.request.urlopen(board_url + "/board") as board:
-            if board.length and 0 < board.length < 4096:
-                goal_list = board.read()
-            else:
-                raise URLError(f"Board of invalid size {board.length}")
-    except (URLError, HTTPError) as e:
-        logger = logging.getLogger('')
-        logger.info(f"Could not retrieve board info. Using default bingo hints instead: {e}")
-        with open(data_path('Bingo/generic_bingo_hints.json'), 'r') as bingoFile:
-            generic_bingo = json.load(bingoFile)
-        return generic_bingo['settings']['item_hints']
-
-    # Goal list returned from Bingosync is a sequential list of all of the goals on the bingo board, starting at top-left and moving to the right.
-    # Each goal is a dictionary with attributes for name, slot, and colours. The only one we use is the name
-    goal_list = [goal['name'] for goal in json.loads(goal_list)]
-    with open(data_path('Bingo/bingo_goals.json'), 'r') as bingoFile:
-        goal_hint_requirements = json.load(bingoFile)
-
-    hints_to_add = {}
-    for goal in goal_list:
-        # Using 'get' here ensures some level of forward compatibility, where new goals added to randomiser bingo won't
-        # cause the generator to crash (though those hints won't have item hints for them)
-        requirements = goal_hint_requirements.get(goal, {})
-        if len(requirements) != 0:
-            for item in requirements:
-                hints_to_add[item] = max(hints_to_add.get(item, 0), requirements[item]['count'])
-
-    # Items to be hinted need to be included in the item_hints list once for each instance you want hinted
-    # (e.g. if you want all three strength upgrades to be hintes it needs to be in the list three times)
-    hints = []
-    for key, value in hints_to_add.items():
-        for _ in range(value):
-            hints.append(key)
-
-    # Since there's no way to verify if the Bingosync URL is actually for OoTR, this exception catches that case
-    if len(hints) == 0:
-        raise Exception('No item hints found for goals on Bingosync card. Verify Bingosync URL is correct, or leave field blank for generic bingo hints.')
-    return hints
-
-
 def always_named_item(world: 'OOTWorld', locations: Iterable['Location']):
     oot_world_count = len([p for p in world.multiworld.get_all_ids() if world.multiworld.worlds[p].game == "Ocarina of Time"])
     for location in locations:
@@ -1338,7 +1292,49 @@ def natjoin(elements: Iterable[str], conjunction: str = 'and') -> Optional[str]:
         return f'{", ".join(rest)}, {conjunction} {last}'
 
 
+def populate_misc_hint_data(worlds: list['OOTWorld']) -> None:
+    for world in worlds:
+        if not hasattr(world, 'misc_hint_item_locations'):
+            world.misc_hint_item_locations = {}
+        if not hasattr(world, 'misc_hint_location_items'):
+            world.misc_hint_location_items = {}
+        if not hasattr(world, 'misc_hint_items'):
+            world.misc_hint_items = {
+                hint_type: world.hint_dist_user.get('misc_hint_items', {}).get(hint_type, data['default_item'])
+                for hint_type, data in misc_item_hint_table.items()
+            }
+        if not hasattr(world, 'misc_hint_locations'):
+            world.misc_hint_locations = {
+                hint_type: world.hint_dist_user.get('misc_hint_locations', {}).get(hint_type, data['item_location'])
+                for hint_type, data in misc_location_hint_table.items()
+            }
+
+    oot_worlds_by_player = {world.player: world for world in worlds}
+    for world in worlds:
+        for location in world.get_locations():
+            if location.item is None:
+                continue
+
+            item_world = oot_worlds_by_player.get(location.item.player)
+            if item_world is not None:
+                for hint_type, item_name in item_world.misc_hint_items.items():
+                    if (
+                        hint_type not in item_world.misc_hint_item_locations
+                        and location.item.name == item_name
+                    ):
+                        item_world.misc_hint_item_locations[hint_type] = location
+
+            for hint_type, location_name in world.misc_hint_locations.items():
+                if (
+                    hint_type not in world.misc_hint_location_items
+                    and location.name == location_name
+                ):
+                    world.misc_hint_location_items[hint_type] = location.item
+
+
 def build_gossip_hints(worlds: list['OOTWorld']) -> None:
+    populate_misc_hint_data(worlds)
+
     checked_locations = dict()
     # Add misc. item hint locations to "checked" locations if the respective hint is reachable without the hinted item.
     for world in worlds:
@@ -1433,29 +1429,14 @@ def build_world_gossip_hints(world: 'OOTWorld', checked_locations: Optional[set[
     random.shuffle(stone_groups)
 
     # Create list of items for which we want named-item hints.
-    # AP does not expose upstream's item_hints setting, so seed from distribution additions.
     world.item_hints = list(world.item_added_hint_types['named-item'])
 
-    # If Bingosync URL is supplied, include items specific to that bingo.
-    # If not (or if the URL is invalid), use generic bingo hints.
     if world.hint_dist == "bingo":
-        with open(data_path('Bingo/generic_bingo_hints.json'), 'r') as bingoFile:
-            bingo_defaults = json.load(bingoFile)
-        if world.bingosync_url and world.bingosync_url.startswith("https://bingosync.com/"): # Verify that user actually entered a bingosync URL
-            logger = logging.getLogger('')
-            logger.info("Got Bingosync URL. Building board-specific goals.")
-            world.item_hints = build_bingo_hint_list(world.bingosync_url)
-        else:
-            world.item_hints = bingo_defaults['settings']['item_hints']
-
         if world.tokensanity in ("overworld", "all") and "Suns Song" not in world.item_hints:
             world.item_hints.append("Suns Song")
 
         if world.shopsanity != "off" and "Progressive Wallet" not in world.item_hints:
             world.item_hints.append("Progressive Wallet")
-
-        # Apply custom additions on top of bingo defaults.
-        world.item_hints.extend(world.item_added_hint_types['named-item'])
 
     # Apply distribution removals for named-item hints.
     for itemname in world.item_hint_type_overrides['named-item']:

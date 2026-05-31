@@ -1330,7 +1330,6 @@ class HintDistribution(Choice):
     The Async hint distribution is intended for async multiworlds. It removes Way of the Hero hints to improve generation times, since they are not very useful in asyncs."""
     display_name = "Hint Distribution"
     option_balanced = 0
-    option_ddr = 1
     option_scrubs = 4
     option_strong = 5
     option_useless = 7
@@ -1984,6 +1983,7 @@ class OoTOptions(PerGameCommonOptions):
 
 
 oot_option_groups: typing.List[OptionGroup] = [
+    OptionGroup("Logic", [Logic, NightTokens, LogicTricks, AdvancedAllowedTricks]),
     OptionGroup("Open", [option for option in open_options.values()]),
     OptionGroup("World", [*[option for option in world_options.values()],
                 *[option for option in bridge_options.values()]]),
