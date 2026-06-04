@@ -194,10 +194,10 @@ def _load_apworlds(apworlds: list[WorldSource]) -> None:
         try:
             apworld.read()
         except InvalidDataError as e:
-            if version_tuple < (0, 7, 250):
+            if version_tuple < (0, 7, 300):
                 logging.error(
                     f"Invalid or missing manifest file for {apworld_source.resolved_path}. "
-                    "This apworld will stop working with MultiworldGG ~v0.7.250."
+                    "This apworld will stop working with MultiworldGG ~v0.7.300."
                 )
                 logging.error(e)
             else:

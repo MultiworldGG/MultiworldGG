@@ -4,7 +4,7 @@ This module provides the options and option dataclass for the Options dataclass.
 
 from dataclasses import dataclass
 
-from Options import Choice, DefaultOnToggle, OptionGroup, PerGameCommonOptions, Toggle, Range
+from Options import Choice, DefaultOnToggle, NamedRange, OptionGroup, PerGameCommonOptions, Toggle, Range
 
 # class LogicMode(Choice):
 #     """
@@ -26,13 +26,23 @@ class Goal(Choice):
     [Creator] Ascend Vermillion Tower and fight the Creator.
     [Monkey] Ascend the Grand Krys'kajo and defeat the Son of the East.
     [Observatory] Complete all five A Promise is a Promise quests and uncover the secret of the Observatory.
+    [Di'orbis] Descend Ku'lero temple and defeat the Gods of Shape. Requires DLC to be enabled.
     """
     display_name = "Goal"
 
     option_creator = 0
     option_monkey = 1
     option_observatory = 2
+    option_diorbis = 3
     default = 0
+
+
+class EnableDLC(Toggle):
+    """
+    If enabled, DLC areas will be placed in logic. Requires that you have the DLC installed.
+    """
+    display_name = "Enable DLC"
+
 
 class CircuitOverrides(Range):
     """
@@ -42,6 +52,7 @@ class CircuitOverrides(Range):
     range_end = 10
 
     default = 5
+
 
 class VTShadeLock(Choice):
     """
@@ -72,7 +83,7 @@ class ClosedGaia(Choice):
     when unlocking the area, openable with East and West Gaia Pass obtained from Apollo duel encounter.
     [Minimal] Adds barriers to Left and Right side of Gaia (includes dungeons).
     [Full] Besides the Left and Right barriers, also adds gates in Grove and Infested areas which require the dungeon shades.
-    
+
     """
     display_name = "Closed Gaia"
 
@@ -93,6 +104,21 @@ class QuestRando(Toggle):
     If enabled, all quest rewards will be added to the location list.
     """
     display_name = "Quest Randomization"
+
+class BotanicsAmount(NamedRange):
+    """
+    The number of plants required to turn in the quest "Crocus Pocus".
+    """
+    display_name = "Botanics Completion Amount"
+
+    range_start = 1
+    range_end = 88
+    default = 77
+
+    special_range_names = {
+        "vanilla": 77,
+        "dlc": 88,
+    }
 
 class HiddenQuestRewardMode(Choice):
     """
@@ -182,6 +208,12 @@ class ShopDialogHints(DefaultOnToggle):
     """
     display_name = "Shop Dialog Hints"
 
+class Botanity(Toggle):
+    """
+    If enabled, acquiring all the information about each plant by collecting drops is a location.
+    """
+    display_name = "Botanics Randomization"
+
 class StartWithGreenLeafShade(DefaultOnToggle):
     """
     If enabled, the player will start with the green leaf shade, unlocking Autumn's Fall. This makes the early game far
@@ -222,6 +254,20 @@ class Keyrings(Toggle):
     If enabled, all keys for each dungeon will be replaced with a singular item that unlocks every door in that dungeon.
     """
     display_name = "Keyrings"
+
+class AllowBoosterGrinding(Toggle):
+    """
+    If enabled, some locations may require grinding enemies with boosters on for gem drops.
+    If disabled, alternative methods for obtaining required items will be made available.
+    """
+    display_name = "Allow Booster Grinding"
+
+class ChestReveal(Toggle):
+    """
+    If enabled, shows the category of all chests without having to reach the room chests are in first.
+    If disabled, the player must reach the room with chests to know what category the chests are.
+    """
+    display_name = "Chest Reveal"
 
 class RhombusHubUnlock(Toggle):
     """
@@ -325,7 +371,7 @@ class ShadeShuffle(Reachability):
         "any": {
             "Green Leaf Shade", "Yellow Sand Shade", "Blue Ice Shade",
             "Red Flame Shade", "Purple Bolt Shade", "Azure Drop Shade",
-            "Green Seed Shade", "Star Shade", "Meteor Shade",
+            "Green Seed Shade", "Star Shade", "Meteor Shade", "Ancient Shade",
             "Progressive Area Unlock", "Progressive Overworld Area Unlock",
         }
     }
@@ -355,6 +401,7 @@ class SmallKeyShuffle(DungeonReachability):
         "wave-dng": { "So'najiz Key" },
         "shock-dng": { "Zir'vitar Key" },
         "tree-dng": { "Krys'kajo Key" },
+        "final-dng": { "Ku'lero Key" },
     }
 
 class MasterKeyShuffle(DungeonReachability):
@@ -367,6 +414,7 @@ class MasterKeyShuffle(DungeonReachability):
         "cold-dng": { "Mine Master Key" },
         "heat-dng": { "Faj'ro Master Key" },
         "tree-dng": { "Kajo Master Key" },
+        "final-dng": { "Ku'lero Master Key" },
     }
 
 class ChestKeyShuffle(DungeonReachability):
@@ -505,6 +553,7 @@ class CrossCodeOptions(PerGameCommonOptions):
     """
     # logic_mode: LogicMode
     goal: Goal
+    enable_dlc: EnableDLC
     circuit_overrides: CircuitOverrides
     vt_shade_lock: VTShadeLock
     vw_meteor_passage: VWMeteorPassage
@@ -512,6 +561,7 @@ class CrossCodeOptions(PerGameCommonOptions):
     closed_gaia: ClosedGaia
 
     quest_rando: QuestRando
+    botanics_completion_amount: BotanicsAmount
     hidden_quest_reward_mode: HiddenQuestRewardMode
     hidden_quest_obfuscation_level: HiddenQuestObfuscationLevel
     quest_dialog_hints: QuestDialogHints
@@ -520,6 +570,8 @@ class CrossCodeOptions(PerGameCommonOptions):
     shop_dialog_hints: ShopDialogHints
     shop_send_mode: ShopSendMode
     shop_receive_mode: ShopReceiveMode
+
+    botanity: Botanity
 
     start_with_green_leaf_shade: StartWithGreenLeafShade
     start_with_chest_detector: StartWithChestDetector
@@ -530,6 +582,8 @@ class CrossCodeOptions(PerGameCommonOptions):
     progressive_area_unlocks: ProgressiveAreaUnlocks
     progressive_equipment: ProgressiveEquipment
     keyrings: Keyrings
+    allow_booster_grinding: AllowBoosterGrinding
+    chest_reveal: ChestReveal
 
     shade_shuffle: ShadeShuffle
     element_shuffle: ElementShuffle
@@ -559,6 +613,7 @@ option_groups: list[OptionGroup] = [
         name="Quests",
         options=[
             QuestRando,
+            BotanicsAmount,
             HiddenQuestRewardMode,
             HiddenQuestObfuscationLevel,
             QuestDialogHints,
@@ -571,6 +626,12 @@ option_groups: list[OptionGroup] = [
             ShopDialogHints,
             ShopSendMode,
             ShopReceiveMode
+        ]
+    ),
+    OptionGroup(
+        name="Botanics",
+        options=[
+            Botanity,
         ]
     ),
     OptionGroup(

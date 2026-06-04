@@ -3,6 +3,7 @@ Provides the merge function, to combine JSON objects.
 """
 
 import re
+import copy
 import typing
 
 T = typing.TypeVar("T", dict[str, typing.Any], list[typing.Any])
@@ -38,7 +39,7 @@ def merge(original: T, addon: T, patch: bool = True) -> T:
 
             # normal key. we just want to get that key and merge it.
             elif key not in original:
-                original[key] = value
+                original[key] = copy.copy(value)
             else:
                 merge(original[key], addon[key], patch)
 

@@ -2,8 +2,23 @@ import typing
 import os
 import json
 from .Items import (item_data_table, zones_item_data_table, character_item_data_table, other_item_table, item_table, mpmatch_item_table, traps_item_data_table, special_item_data_table, acts_item_data_table, objects_item_table,
-                    nights_item_table, SRB2Item)
-from .Locations import location_table, GFZ_table, THZ_table, DSZ_table, CEZ_table,ACZ_table,RVZ_table,ERZ_table,BCZ_table,FHZ_table,PTZ_table,FFZ_table,HHZ_table,AGZ_table,ATZ_table,FFSP_table,TPSP_table,FCSP_table,CFSP_table,DWSP_table,MCSP_table,ESSP_table,BHSP_table,CCSP_table,DHSP_table,APSP_table,EXTRA_table,tokens_table,oneupcoords_table,ringmonitors_table, SRB2Location
+                    nights_item_table, objects_item_table, custom_item_data_table, SRB2Item)
+from .Locations import (location_table,
+                  GFZ_table,THZ_table,DSZ_table,CEZ_table,ACZ_table,
+                  RVZ_table,ERZ_table,BCZ_table,FHZ_table,PTZ_table,FFZ_table,FDZ_table,HHZ_table,AGZ_table,ATZ_table,
+                  FFSP_table,TPSP_table,FCSP_table,CFSP_table,DWSP_table,MCSP_table,ESSP_table,BHSP_table,
+                  CCSP_table,DHSP_table,APSP_table,EXTRA_table,tokens_table,
+                  GFZ_1UP_monitors,THZ_1UP_monitors,DSZ_1UP_monitors,CEZ_1UP_monitors,ACZ_1UP_monitors,RVZ_1UP_monitors,
+                  ERZ_1UP_monitors,BCZ_1UP_monitors,FHZ_1UP_monitors,PTZ_1UP_blocks,FFZ_1UP_monitors,FDZ_1UP_monitors,
+                  HHZ_1UP_monitors,AGZ_1UP_monitors,ATZ_1UP_monitors,MPSFZ_1UP_monitors,
+                  GFZ_ring_monitors,THZ_ring_monitors,DSZ_ring_monitors,CEZ_ring_monitors,ACZ_ring_monitors,RVZ_ring_monitors,
+                  ERZ_ring_monitors,FHZ_ring_monitors,PTZ_1UP_blocks,FFZ_ring_monitors,FDZ_ring_monitors,
+                  HHZ_ring_monitors,AGZ_ring_monitors,ATZ_ring_monitors,
+                  MPJVZ_monitors,MPNFZ_monitors,MPTPZ_monitors,MPTCZ_monitors,MPDTZ_monitors,MPFMZ_monitors,
+                  MPOHZ_monitors,MPSFZ_monitors,MPDBZ_monitors,MPCSZ_monitors,MPFCZ_monitors,MPMMZ_monitors,
+                  MPGLZ_monitors,MPSuShZ_monitors,MPSiShZ_monitors,MPUBZ_monitors,MPPSZ_monitors,MPCHZ_monitors,
+                  MPMAZ_monitors,MPATZ_monitors, annoying_locations, SRB2Location)
+
 from .Options import srb2_options_groups, SRB2Options
 from .Rules import set_rules
 from .Regions import create_regions, SRB2Zones
@@ -50,30 +65,59 @@ class SRB2World(World):
     item_name_groups = {
         "Act":acts_item_data_table,
         "Zone":zones_item_data_table,
-        "Character":character_item_data_table,
+        "Character":{**character_item_data_table,**custom_item_data_table},
         "Match Zone":mpmatch_item_table,
         "Trap":traps_item_data_table,
         "Shield":other_item_table,
         "Powerup":nights_item_table,
-        "Nights Stage":special_item_data_table
+        "Nights Stage":special_item_data_table,
+        "Object":objects_item_table
     }
 
     location_name_groups = {
         "Greenflower Zone":GFZ_table,
+        "Greenflower 1UP Monitors": GFZ_1UP_monitors,
+        "Greenflower Ring Monitors": GFZ_ring_monitors,
         "Techno Hill Zone": THZ_table,
+        "Techno Hill 1UP Monitors": THZ_1UP_monitors,
+        "Techno Hill Ring Monitors": THZ_ring_monitors,
         "Deep Sea Zone": DSZ_table,
+        "Deep Sea 1UP Monitors": DSZ_1UP_monitors,
+        "Deep Sea Ring Monitors": DSZ_ring_monitors,
         "Castle Eggman Zone":CEZ_table,
+        "Castle Eggman 1UP Monitors": CEZ_1UP_monitors,
+        "Castle Eggman Ring Monitors": CEZ_ring_monitors,
         "Arid Canyon Zone":ACZ_table,
+        "Arid Canyon 1UP Monitors": ACZ_1UP_monitors,
+        "Arid Canyon Ring Monitors": ACZ_ring_monitors,
         "Red Volcano Zone":RVZ_table,
+        "Red Volcano 1UP Monitors": RVZ_1UP_monitors,
+        "Red Volcano Ring Monitors": RVZ_ring_monitors,
         "Egg Rock Zone":ERZ_table,
+        "Egg Rock 1UP Monitors": ERZ_1UP_monitors,
+        "Egg Rock Ring Monitors": ERZ_ring_monitors,
         "Black Core Zone":BCZ_table,
+        "Black Core 1UP Monitors": BCZ_1UP_monitors,
         "Frozen Hillside Zone":FHZ_table,
+        "Frozen Hillside 1UP Monitors": FHZ_1UP_monitors,
+        "Frozen Hillside Ring Monitors": FHZ_ring_monitors,
         "Pipe Towers Zone":PTZ_table,
+        "Pipe Towers 1UP Blocks": PTZ_1UP_blocks,
         "Forest Fortress Zone":FFZ_table,
-        #"Final Demo Zone": oh thats non sorted things
+        "Forest Fortress 1UP Monitors": FFZ_1UP_monitors,
+        "Forest Fortress Ring Monitors": FFZ_ring_monitors,
+        "Final Demo Zone": FDZ_table,
+        "Final Demo 1UP Monitors": FDZ_1UP_monitors,
+        "Final Demo Ring Monitors": FDZ_ring_monitors,
         "Haunted Heights Zone":HHZ_table,
+        "Haunted Heights 1UP Monitors": HHZ_1UP_monitors,
+        "Haunted Heights Ring Monitors": HHZ_ring_monitors,
         "Aerial Garden Zone":AGZ_table,
+        "Aerial Garden 1UP Monitors": AGZ_1UP_monitors,
+        "Aerial Garden Ring Monitors": AGZ_ring_monitors,
         "Azure Temple Zone":ATZ_table,
+        "Azure Temple 1UP Monitors": AGZ_1UP_monitors,
+        "Azure Temple Ring Monitors": AGZ_ring_monitors,
         "Floral Field Zone":FFSP_table,
         "Toxic Plateau Zone":TPSP_table,
         "Flooded Cove Zone":FCSP_table,
@@ -85,10 +129,22 @@ class SRB2World(World):
         "Dream Hill Zone":DHSP_table,
         "Alpine Paradise Zone":APSP_table,
         "Emerald Tokens":tokens_table,
-        "1UP Monitors":oneupcoords_table,
-        "Super Ring Monitors":ringmonitors_table
 
-
+        "1UP Monitors":{**GFZ_1UP_monitors,**THZ_1UP_monitors,**DSZ_1UP_monitors,**CEZ_1UP_monitors,**ACZ_1UP_monitors,**RVZ_1UP_monitors,**
+                  ERZ_1UP_monitors,**BCZ_1UP_monitors,**FHZ_1UP_monitors,**PTZ_1UP_blocks,**FFZ_1UP_monitors,**FDZ_1UP_monitors,**
+                  HHZ_1UP_monitors,**AGZ_1UP_monitors,**ATZ_1UP_monitors,**MPSFZ_1UP_monitors},
+        "Ring Monitors":{**GFZ_ring_monitors,**THZ_ring_monitors,**DSZ_ring_monitors,**CEZ_ring_monitors,**ACZ_ring_monitors,**RVZ_ring_monitors,
+                  **ERZ_ring_monitors,**FHZ_ring_monitors,**PTZ_1UP_blocks,**FFZ_ring_monitors,**FDZ_ring_monitors,
+                  **HHZ_ring_monitors,**AGZ_ring_monitors,**ATZ_ring_monitors,
+                  **MPJVZ_monitors,**MPNFZ_monitors,**MPTPZ_monitors,**MPTCZ_monitors,**MPDTZ_monitors,**MPFMZ_monitors,
+                  **MPOHZ_monitors,**MPSFZ_monitors,**MPDBZ_monitors,**MPCSZ_monitors,**MPFCZ_monitors,**MPMMZ_monitors,
+                  **MPGLZ_monitors,**MPSuShZ_monitors,**MPSiShZ_monitors,**MPUBZ_monitors,**MPPSZ_monitors,**MPCHZ_monitors,
+                  **MPMAZ_monitors,**MPATZ_monitors},
+        "Match Monitors":{**MPSFZ_1UP_monitors,**MPJVZ_monitors,**MPNFZ_monitors,**MPTPZ_monitors,**MPTCZ_monitors,**MPDTZ_monitors,**MPFMZ_monitors,
+                  **MPOHZ_monitors,**MPSFZ_monitors,**MPDBZ_monitors,**MPCSZ_monitors,**MPFCZ_monitors,**MPMMZ_monitors,
+                  **MPGLZ_monitors,**MPSuShZ_monitors,**MPSiShZ_monitors,**MPUBZ_monitors,**MPPSZ_monitors,**MPCHZ_monitors,
+                  **MPMAZ_monitors,**MPATZ_monitors},
+        "Annoying Locations":annoying_locations
 
     }
 
@@ -182,22 +238,33 @@ class SRB2World(World):
                 else:
                     Valid_starts = ["Greenflower Zone", "Techno Hill Zone", "Deep Sea Zone", "Castle Eggman Zone",
                             "Arid Canyon Zone", "Egg Rock Zone"]#zone boss means these always have a sphere 1
-
             else:
+
                 if not self.options.object_locking and disable_objects == False:
-                    Valid_starts = ["Greenflower Zone (Act 1)", "Greenflower Zone (Act 2)", "Techno Hill Zone (Act 1)", "Techno Hill Zone (Act 2)", "Deep Sea Zone (Act 1)","Deep Sea Zone (Act 2)",
-                                "Castle Eggman Zone (Act 1)","Castle Eggman Zone (Act 2)","Arid Canyon Zone (Act 1)", "Arid Canyon Zone (Act 2)","Red Volcano Zone (Act 1)", "Egg Rock Zone (Act 1)","Egg Rock Zone (Act 2)",
-                                "Frozen Hillside Zone","Pipe Towers Zone","Forest Fortress Zone"]
+                    Valid_starts = ["Greenflower Zone (Act 1)", "Greenflower Zone (Act 2)", "Techno Hill Zone (Act 1)",
+                                    "Techno Hill Zone (Act 2)", "Deep Sea Zone (Act 1)", "Deep Sea Zone (Act 2)",
+                                    "Castle Eggman Zone (Act 1)", "Castle Eggman Zone (Act 2)",
+                                    "Arid Canyon Zone (Act 1)", "Arid Canyon Zone (Act 2)", "Red Volcano Zone (Act 1)",
+                                    "Egg Rock Zone (Act 1)", "Egg Rock Zone (Act 2)",
+                                    "Frozen Hillside Zone", "Pipe Towers Zone", "Forest Fortress Zone"]
+                elif self.options.superring_sanity:
+                        Valid_starts = ["Greenflower Zone (Act 1)","Greenflower Zone (Act 2)","Techno Hill Zone (Act 1)", "Deep Sea Zone (Act 2)",
+                                        "Castle Eggman Zone (Act 1)","Castle Eggman Zone (Act 2)", "Arid Canyon Zone (Act 1)","Arid Canyon Zone (Act 2)","Red Volcano (Act 1)",
+                                        "Egg Rock Zone (Act 1)","Egg Rock Zone (Act 2)","Frozen Hillside Zone","Pipe Towers Zone"]
+                elif self.options.oneup_sanity:
+                        Valid_starts = ["Greenflower Zone (Act 1)","Techno Hill Zone (Act 1)", "Deep Sea Zone (Act 2)",
+                                        "Castle Eggman Zone (Act 1)", "Arid Canyon Zone (Act 1)","Red Volcano (Act 1)","Egg Rock Zone (Act 2)","Frozen Hillside Zone","Pipe Towers Zone"]
                 else:
-                    Valid_starts = ["Greenflower Zone (Act 1)","Techno Hill Zone (Act 1)", "Deep Sea Zone (Act 2)",
-                                    "Castle Eggman Zone (Act 1)", "Egg Rock Zone (Act 2)"]#append forest fortress if starting character can get through spin walls
+                        Valid_starts = ["Greenflower Zone (Act 1)", "Techno Hill Zone (Act 1)",
+                                        "Castle Eggman Zone (Act 1)",
+                                        "Egg Rock Zone (Act 2)"]  # append forest fortress if starting character can get through spin walls
 
             rand_idx = random.randrange(len(Valid_starts))
 
             Starting_zone = Valid_starts[rand_idx]
             self.multiworld.push_precollected(self.create_item(Starting_zone))
 
-            char_list = ["Sonic","Tails","Knuckles","Amy","Fang","Metal Sonic"]
+
 
             slots_to_fill = self.number_of_locations
 
@@ -210,38 +277,67 @@ class SRB2World(World):
                     self.multiworld.push_precollected(self.create_item(object_name))
 
 
+
+
+
+
+
             if self.options.actsanity:
                 for act_name in acts_item_data_table.keys():
                     if act_name == Starting_zone:
                         continue
-                    if act_name == "Black Core Zone (Act 3)" and self.options.bcz_emblem_percent > 0:
-                        self.multiworld.itempool += [self.create_item("1UP")] #replace bcz with a 1up to match item numbers
-                        slots_to_fill -= 1
-                        continue
+                    if self.options.completion_type == 1 or self.options.completion_type == 0 or self.options.completion_type == 3:
+                        if act_name == "Black Core Zone (Act 3)" and self.options.bcz_emblem_percent > 0:
+                            continue
+                    if self.options.completion_type == 2:
+                        if (act_name == "Haunted Heights Zone" or act_name == "Aerial Garden Zone" or act_name == "Azure Temple Zone") and self.options.bcz_emblem_percent > 0:
+                            continue
                     slots_to_fill-=1
                     self.multiworld.itempool += [self.create_item(act_name)]
             else:
                 for zone_name in zones_item_data_table.keys():
                     if zone_name == Starting_zone:
                         continue
-                    if zone_name == "Black Core Zone" and self.options.bcz_emblem_percent > 0:
-                        self.multiworld.itempool += [self.create_item("1UP")] #replace bcz with a 1up to match item numbers
-                        slots_to_fill -= 1
-                        continue
+                    if self.options.completion_type == 1 or self.options.completion_type == 0 or self.options.completion_type == 3:
+                        if zone_name == "Black Core Zone" and self.options.bcz_emblem_percent > 0:
+                            continue
+                    if self.options.completion_type == 2:
+                        if (zone_name == "Haunted Heights Zone" or zone_name == "Aerial Garden Zone" or zone_name == "Azure Temple Zone") and self.options.bcz_emblem_percent > 0:
+                            continue
                     slots_to_fill-=1
                     self.multiworld.itempool += [self.create_item(zone_name)]#and != starting_zone
             #not concise because I need to keep track of slots_to_fill
-            if self.options.starting_character != 6:
-                starting_char = char_list[self.options.starting_character]
-                for char_name in character_item_data_table.keys():
-                    if char_name == starting_char:
-                        self.multiworld.push_precollected(self.create_item(starting_char))
-                        continue
-                    self.multiworld.itempool += [self.create_item(char_name)]
-                    slots_to_fill -= 1
+            char_list = []
+
+            if self.options.random_start_char:
+                length = 0
+                for i in self.options.starting_character:
+                    length += 1#len() didnt work and im too tired to figure out why
+                rand_char = random.randrange(length)
+                length = 0
+                for i in self.options.starting_character:
+                    if length == rand_char:
+                        self.multiworld.push_precollected(self.create_item(i))
+                        char_list.append(i)
+                        break
+                    length += 1#len() didnt work and im too tired to figure out why
+
+
+
             else:
-                for char_name in character_item_data_table.keys():
+                for char_name in self.options.starting_character:
                     self.multiworld.push_precollected(self.create_item(char_name))
+                    char_list.append(char_name)
+
+
+
+            for char_name in self.options.character_list:
+                if char_name in char_list:
+                    continue
+                self.multiworld.itempool += [self.create_item(char_name)]
+                slots_to_fill -= 1
+
+
 
 
             for shield in other_item_table.keys():
@@ -348,7 +444,8 @@ class SRB2World(World):
             "CompletionType": self.options.completion_type.value,
             "BlackCoreEmblems": self.options.bcz_emblem_percent.value,
             "EnableMatchMaps": self.options.match_maps.value,
-            "ActSanity":self.options.actsanity.value
+            "ActSanity":self.options.actsanity.value,
+            "LocalRingReset":self.options.ring_reset_zone_exit.value
         }
 
     def generate_output(self, output_directory: str):

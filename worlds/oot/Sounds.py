@@ -195,7 +195,7 @@ class SoundHooks(Enum):
                                                                   0xC29866, 0xC29B82, 0xC2A3BA, 0xC2A3A6,
                                                                   0xE2841E,
                                                                   0xE262B6, 0xE267EE, 0xE26846, 0xE26B1E, 0xE26B36,
-                                                                  0xE269CE, 0xE26A5E, 0xE26A7E, 0xE26A7A])
+                                                                  0xBEACCE, 0xE2109A, 0xAFD942])
 
 
 #   # Some enemies have a different cutting sound, making this a bit weird
@@ -206,8 +206,8 @@ def get_patch_dict():
     return {s.value.keyword: s.value.id for s in Sounds}
 
 
-def get_hook_pool(sound_hook, earsafeonly = "FALSE"):
-    if earsafeonly == "TRUE":
+def get_hook_pool(sound_hook, earsafeonly=False):
+    if earsafeonly is True or earsafeonly == "TRUE":
         list = [s for s in sound_hook.value.pool if Tags.PAINFUL not in s.value.tags]
         return list
     else:

@@ -12,3 +12,10 @@ data/Compress/ARCHIVE.bin
 tmp
 temp
 oot.apworld
+
+# macos
+.DS_Store
+.localized
+__MACOSX/
+.AppleDouble
+.LSOverride

@@ -4,12 +4,15 @@ import os
 import zipfile
 from typing import Optional
 
+from .Audiobank import Audiobin, AudioBank, Sample, Instrument, Drum, SFX
 from .Sequence import Sequence, SequenceGame
 from .Utils import data_path
-from .MusicHelpers import process_sequence_ootrs, process_sequence_mmr_zseq, process_sequence_mmrs
+from .MusicHelpers import find_mm_audiobin_path, process_sequence_ootrs, process_sequence_mmr_zseq, process_sequence_mmrs
 
 # DMA table byte offset for the audioseq file (entry index 4, DMADATA_START 0x7430 + 4*0x10)
 AUDIOSEQ_DMADATA_OFFSET = 0x7470
+AUDIOBANK_DMADATA_OFFSET = 0x7460
+AUDIOTABLE_DMADATA_OFFSET = 0x7480
 
 # Format: (Title, Sequence ID)
 bgm_sequence_ids: tuple[tuple[str, int], ...] = (
@@ -124,7 +127,8 @@ def process_sequences(rom, ids, seq_type: str = 'bgm',
                       sequences: Optional[dict] = None,
                       target_sequences: Optional[dict] = None,
                       errors: Optional[list] = None,
-                      music_dir: Optional[str] = None) -> tuple[dict, dict]:
+                      music_dir: Optional[str] = None,
+                      include_custom_audiobanks: bool = False) -> tuple[dict, dict]:
     disabled_source_sequences = [] if disabled_source_sequences is None else disabled_source_sequences
     disabled_target_sequences = {} if disabled_target_sequences is None else disabled_target_sequences
     sequences = {} if sequences is None else sequences
@@ -163,6 +167,7 @@ def process_sequences(rom, ids, seq_type: str = 'bgm',
         scan_dirs.append(music_dir)
 
     for scan_dir in scan_dirs:
+        mm_audiobin_path = find_mm_audiobin_path(scan_dir)
         for dirpath, _, filenames in os.walk(scan_dir, followlinks=True):
             for fname in filenames:
                 if fname in seq_exclusion_list:
@@ -171,11 +176,13 @@ def process_sequences(rom, ids, seq_type: str = 'bgm',
                 seq = None
                 try:
                     if fname.lower().endswith('.ootrs'):
-                        seq = process_sequence_ootrs(filepath, fname, seq_type, False, {})
+                        seq = process_sequence_ootrs(filepath, fname, seq_type, include_custom_audiobanks, {})
                     elif fname.lower().endswith('.zseq'):
-                        seq = process_sequence_mmr_zseq(filepath, fname, seq_type, False, {})
+                        seq = process_sequence_mmr_zseq(filepath, fname, seq_type, include_custom_audiobanks, {},
+                                                        mm_audiobin_path)
                     elif fname.lower().endswith('.mmrs'):
-                        seq = process_sequence_mmrs(filepath, fname, seq_type, False, {})
+                        seq = process_sequence_mmrs(filepath, fname, seq_type, include_custom_audiobanks, {},
+                                                    mm_audiobin_path)
                     if seq and seq.cosmetic_name not in disabled_source_sequences:
                         sequences[seq.cosmetic_name] = seq
                 except Exception as e:
@@ -215,7 +222,9 @@ def shuffle_music(source_sequences: dict, target_sequences: dict, music_mapping:
     return sequences
 
 
-def rebuild_sequences(rom, sequences: list) -> None:
+def rebuild_sequences(rom, sequences: list, symbols: Optional[dict] = None) -> None:
+    symbols = {} if symbols is None else symbols
+    custom_banks_supported = "CFG_AUDIOBANK_TABLE_EXTENDED_ADDR" in symbols
     audioseq_start, audioseq_end, audioseq_size = rom._get_dmadata_record(AUDIOSEQ_DMADATA_OFFSET)
 
     replacement_dict = {seq.replaces: seq for seq in sequences}
@@ -311,6 +320,8 @@ def rebuild_sequences(rom, sequences: list) -> None:
     else:
         rom.write_bytes(audioseq_start, new_audio_sequence)
 
+    fanfare_bank_shift = 0x26 if custom_banks_supported else 0
+
     # Update pointer table
     for i in range(0x6E):
         rom.write_int32(0xB89AE0 + (i * 0x10), new_sequences[i].address)
@@ -326,12 +337,12 @@ def rebuild_sequences(rom, sequences: list) -> None:
         base = 0xB89911 + 0xDD + (i * 2)
         j = replacement_dict.get(i if new_sequences[i].size else new_sequences[i].address, None)
         if j:
-            rom.write_byte(base, j.instrument_set)
+            rom.write_byte(base, j.instrument_set + fanfare_bank_shift)
     for i in ocarinalist:
         base = 0xB89911 + 0xDD + (i * 2)
         j = replacement_dict.get(i if new_sequences[i].size else new_sequences[i].address, None)
         if j:
-            rom.write_byte(base, j.instrument_set)
+            rom.write_byte(base, j.instrument_set + fanfare_bank_shift)
     for i in creditlist:
         base = 0xB89911 + 0xDD + (i * 2)
         j = replacement_dict.get(i if new_sequences[i].size else new_sequences[i].address, None)
@@ -342,6 +353,225 @@ def rebuild_sequences(rom, sequences: list) -> None:
         j = replacement_dict.get(i if new_sequences[i].size else new_sequences[i].address, None)
         if j:
             rom.write_byte(base, j.instrument_set)
+
+    if not custom_banks_supported:
+        return
+
+    bank_index_base = (rom.read_int32(symbols['CFG_AUDIOBANK_TABLE_EXTENDED_ADDR']) - 0x80400000) + 0x3480000
+    for i in range(0, 0x26):
+        bank_entry = rom.read_bytes(bank_index_base + 0x10 + 0x10 * i, 0x10)
+        bank_entry[9] = 1
+        rom.write_bytes(bank_index_base + 0x270 + 0x10 * i, bank_entry)
+    rom.write_byte(bank_index_base + 0x01, 0x4C)
+
+    added_banks: list[AudioBank] = []
+    added_samples: list[Sample] = []
+    new_bank_index = 0x4C
+    instr_data = bytearray(0)
+
+    audiobank_start, audiobank_end, audiobank_size = rom._get_dmadata_record(AUDIOBANK_DMADATA_OFFSET)
+    audiotable_start, audiotable_end, audiotable_size = rom._get_dmadata_record(AUDIOTABLE_DMADATA_OFFSET)
+    instr_offset_in_file = audiotable_size
+
+    AUDIOBANK_INDEX_ADDR = 0x00B896A0
+    AUDIOBANK_ADDR = 0xD390
+    AUDIOTABLE_INDEX_ADDR = 0xB8A1C0
+    AUDIOTABLE_ADDR = 0x79470
+
+    audiobank_index = rom.read_bytes(AUDIOBANK_INDEX_ADDR, 0x2A0)
+    audiobank = rom.read_bytes(AUDIOBANK_ADDR, 0x1CA50)
+    audiotable_index = rom.read_bytes(AUDIOTABLE_INDEX_ADDR, 0x80)
+    audiotable = rom.read_bytes(AUDIOTABLE_ADDR, 0x460AD0)
+    oot_audiobin = Audiobin(audiobank, audiobank_index, audiotable, audiotable_index)
+
+    mm_audiobin: Optional[Audiobin] = None
+    for i in range(0x6E):
+        j = replacement_dict.get(i if new_sequences[i].size else new_sequences[i].address, None)
+        if j and j.game == SequenceGame.MM:
+            if not j.mm_audiobin_path or not os.path.exists(j.mm_audiobin_path):
+                raise FileNotFoundError(".MMRS/.zseq sequence found but missing MM.audiobin")
+            with zipfile.ZipFile(j.mm_audiobin_path) as mm_audiobin_zip:
+                mm_audiobank = bytearray(mm_audiobin_zip.read("Audiobank"))
+                mm_audiobank_index = bytearray(mm_audiobin_zip.read("Audiobank_index"))
+                mm_audiotable = bytearray(mm_audiobin_zip.read("Audiotable"))
+                mm_audiotable_index = bytearray(mm_audiobin_zip.read("Audiotable_index"))
+                mm_audiobin = Audiobin(mm_audiobank, mm_audiobank_index, mm_audiotable, mm_audiotable_index)
+            break
+
+    for i in range(0x6E):
+        seq_bank_base = 0xB89911 + 0xDD + (i * 2)
+        j = replacement_dict.get(i if new_sequences[i].size else new_sequences[i].address, None)
+        if j is None or not j.new_instrument_set:
+            continue
+
+        newbank: Optional[AudioBank] = None
+        vanilla_mm_bank: Optional[AudioBank] = None
+        bankdata: Optional[bytearray] = None
+        bank_entry: Optional[bytearray] = None
+        audiobin = oot_audiobin if j.game == SequenceGame.OOT else mm_audiobin
+        if audiobin is None:
+            raise FileNotFoundError(".MMRS/.zseq sequence found but missing MM.audiobin")
+
+        if j.name.lower().endswith('.zseq'):
+            offset = 0x10 + j.instrument_set * 0x10
+            bank_entry = bytearray(audiobin.Audiobank_index[offset:offset + 0x10])
+            vanilla_mm_bank = AudioBank(bank_entry, audiobin.Audiobank, audiobin.Audiotable, audiobin.Audiotable_index)
+            vanilla_mm_bank.table_entry[0x0A] = 1
+            bankdata = vanilla_mm_bank.bank_data
+        else:
+            with zipfile.ZipFile(j.name) as zip:
+                if j.zbank_file:
+                    bankdata = bytearray(zip.read(j.zbank_file))
+                    bank_meta = bytearray(zip.open(j.bankmeta, 'r').read())
+                    bank_entry = bytearray(4) + len(bankdata).to_bytes(4, 'big') + bank_meta
+                elif j.game == SequenceGame.MM:
+                    offset = 0x10 + j.instrument_set * 0x10
+                    bank_entry = bytearray(audiobin.Audiobank_index[offset:offset + 0x10])
+                    vanilla_mm_bank = AudioBank(bank_entry, audiobin.Audiobank, audiobin.Audiotable, audiobin.Audiotable_index)
+                    vanilla_mm_bank.table_entry[0x0A] = 1
+                    bankdata = vanilla_mm_bank.bank_data
+                else:
+                    raise Exception("No bank data available for custom music: " + j.cosmetic_name)
+
+        bank_entry[9] = 1 if j.seq_type == 'fanfare' else 2
+        for added_bank in added_banks:
+            if added_bank.original_data == bankdata:
+                newbank = added_bank
+                if added_bank.table_entry[8:16] != bank_entry[8:16]:
+                    for bank in added_bank.duplicate_banks:
+                        if bank.table_entry[8:16] == bank_entry[8:16]:
+                            newbank = bank
+                            break
+                    else:
+                        dupe_bank = AudioBank(bank_entry, bytearray(0), None, None)
+                        dupe_bank.bank_index = new_bank_index
+                        new_bank_index += 1
+                        newbank.duplicate_banks.append(dupe_bank)
+                        newbank = dupe_bank
+                break
+
+        if not newbank:
+            if vanilla_mm_bank:
+                newbank = vanilla_mm_bank
+            else:
+                newbank = AudioBank(bank_entry, bankdata, audiobin.Audiotable, audiobin.Audiotable_index)
+            newbank.bank_index = new_bank_index
+
+            zsound_samples: list[Sample] = []
+            tempbank = AudioBank(bank_entry, bankdata, None, None)
+            if j.name.lower().endswith('.ootrs') or j.name.lower().endswith('.mmrs'):
+                with zipfile.ZipFile(j.name) as zip:
+                    for zsound in j.zsounds:
+                        if zsound['tempaddr']:
+                            for sample in tempbank.get_all_samples():
+                                if sample.addr == zsound['tempaddr']:
+                                    parent = sample.parent
+                                    if type(parent) == Instrument:
+                                        if parent.highNoteSample and parent.highNoteSample.addr == sample.addr:
+                                            sample = newbank.instruments[parent.inst_id].highNoteSample
+                                        elif parent.normalNoteSample and parent.normalNoteSample.addr == sample.addr:
+                                            sample = newbank.instruments[parent.inst_id].normalNoteSample
+                                        elif parent.lowNoteSample and parent.lowNoteSample.addr == sample.addr:
+                                            sample = newbank.instruments[parent.inst_id].lowNoteSample
+                                    if type(parent) == Drum:
+                                        sample = newbank.drums[parent.drum_id].sample
+                                    if type(parent) == SFX:
+                                        sample = newbank.SFX[parent.sfx_id].sample
+                                    sample.data = zip.read(zsound['file'])
+                                    sample.addr = -1
+                                    zsound_samples.append(sample)
+                                    break
+                        else:
+                            curr_sample_data = zip.read(zsound['file'])
+                            sample: Optional[Sample] = None
+                            if zsound['type'] == 'DRUM':
+                                sample = newbank.drums[zsound['index']].sample
+                            if zsound['type'] == 'SFX':
+                                sample = newbank.SFX[zsound['index']].sample
+                            if zsound['type'] == 'INST':
+                                if zsound['alt'] == 'LOW':
+                                    sample = newbank.instruments[zsound['index']].lowNoteSample
+                                elif zsound['alt'] == 'NORM':
+                                    sample = newbank.instruments[zsound['index']].normalNoteSample
+                                elif zsound['alt'] == 'HIGH':
+                                    sample = newbank.instruments[zsound['index']].highNoteSample
+                            if sample:
+                                sample.data = curr_sample_data
+                                sample.addr = -1
+                                zsound_samples.append(sample)
+
+            mm_samples_to_add: list[Sample] = []
+            if j.game == SequenceGame.MM:
+                all_samples = [sample for sample in newbank.get_all_samples() if sample.addr != -1]
+                for sample in all_samples:
+                    match = oot_audiobin.find_sample_in_audiobanks(sample.data)
+                    if match:
+                        newbank.bank_data[sample.bank_offset + 4:sample.bank_offset + 8] = match.audiotable_addr.to_bytes(4, 'big')
+                    else:
+                        mm_samples_to_add.append(sample)
+
+                k = 0
+                while k < len(zsound_samples):
+                    match = oot_audiobin.find_sample_in_audiobanks(zsound_samples[k].data)
+                    if match:
+                        newbank.bank_data[zsound_samples[k].bank_offset + 4:zsound_samples[k].bank_offset + 8] = match.audiotable_addr.to_bytes(4, 'big')
+                        zsound_samples.pop(k)
+                        continue
+                    k += 1
+
+            for sample_to_add in zsound_samples + mm_samples_to_add:
+                for added_sample in added_samples:
+                    if sample_to_add.data == added_sample.data:
+                        newbank.bank_data[sample_to_add.bank_offset + 4:sample_to_add.bank_offset + 8] = added_sample.audiotable_addr.to_bytes(4, 'big')
+                        break
+                else:
+                    instr_data += sample_to_add.data
+                    sample_to_add.audiotable_addr = instr_offset_in_file
+                    instr_offset_in_file += len(sample_to_add.data)
+                    if len(instr_data) % 0x10 != 0:
+                        padding_length = 0x10 - (len(instr_data) % 0x10)
+                        instr_data += bytearray(padding_length)
+                        instr_offset_in_file += padding_length
+                    newbank.bank_data[sample_to_add.bank_offset + 4:sample_to_add.bank_offset + 8] = sample_to_add.audiotable_addr.to_bytes(4, 'big')
+                    added_samples.append(sample_to_add)
+
+            added_banks.append(newbank)
+            new_bank_index += 1
+
+        rom.write_byte(seq_bank_base, newbank.bank_index)
+
+    if instr_data:
+        audiotable_data = rom.read_bytes(audiotable_start, audiotable_size)
+        rom.write_bytes(audiotable_start, [0] * audiotable_size)
+        audiotable_data += instr_data
+        new_audiotable_start = rom.free_space()
+        rom.write_bytes(new_audiotable_start, audiotable_data)
+        rom.update_dmadata_record(audiotable_start, new_audiotable_start, new_audiotable_start + len(audiotable_data))
+
+    new_bank_data = bytearray(0)
+    audiobank_data = rom.read_bytes(audiobank_start, audiobank_size)
+    new_bank_offset = len(audiobank_data)
+    for bank in added_banks:
+        bank_entry = bank.build_entry(new_bank_offset)
+        rom.write_bytes(bank_index_base + 0x10 + bank.bank_index * 0x10, bank_entry)
+        for dupe_bank in bank.duplicate_banks:
+            bank_entry = bytearray(dupe_bank.build_entry(new_bank_offset))
+            bank_entry[4:8] = bank.size.to_bytes(4, 'big')
+            rom.write_bytes(bank_index_base + 0x10 + dupe_bank.bank_index * 0x10, bank_entry)
+        new_bank_data += bank.bank_data
+        new_bank_offset += len(bank.bank_data)
+
+    if new_bank_data:
+        rom.write_bytes(audiobank_start, [0] * audiobank_size)
+        audiobank_data += new_bank_data
+        new_audiobank_start = rom.free_space()
+        rom.write_bytes(new_audiobank_start, audiobank_data)
+        rom.update_dmadata_record(audiobank_start, new_audiobank_start, new_audiobank_start + len(audiobank_data))
+        rom.write_bytes(bank_index_base, new_bank_index.to_bytes(2, 'big'))
+
+    init_heap_size = rom.read_int32(0xB80118)
+    init_heap_size += (new_bank_index - 0x26) * 0x20
+    rom.write_int32(0xB80118, init_heap_size)
 
 
 def rebuild_pointers_table(rom, sequences: list) -> None:
@@ -356,6 +586,7 @@ def rebuild_pointers_table(rom, sequences: list) -> None:
 
 
 def randomize_music(rom, ootworld, music_mapping: dict, symbols: Optional[dict] = None, music_dir: Optional[str] = None) -> tuple[dict, list]:
+    symbols = {} if symbols is None else symbols
     log: dict = {}
     errors: list = []
     sequences: dict = {}
@@ -414,13 +645,13 @@ def randomize_music(rom, ootworld, music_mapping: dict, symbols: Optional[dict] 
     if ootworld.background_music == 'randomized' or bgm_mapped:
         sequences, target_sequences = process_sequences(
             rom, bgm_ids.values(), 'bgm', disabled_source_sequences, disabled_target_sequences, errors=errors,
-            music_dir=music_dir)
+            music_dir=music_dir, include_custom_audiobanks="CFG_AUDIOBANK_TABLE_EXTENDED_ADDR" in symbols)
 
     # Process and shuffle fanfares
     if ootworld.fanfares == 'randomized' or ff_mapped or ocarina_mapped:
         fanfare_sequences, target_fanfare_sequences = process_sequences(
             rom, ff_ids.values(), 'fanfare', disabled_source_sequences, disabled_target_sequences, errors=errors,
-            music_dir=music_dir)
+            music_dir=music_dir, include_custom_audiobanks="CFG_AUDIOBANK_TABLE_EXTENDED_ADDR" in symbols)
 
     shuffled_sequences = []
     shuffled_fanfare_sequences = []
@@ -437,7 +668,7 @@ def randomize_music(rom, ootworld, music_mapping: dict, symbols: Optional[dict] 
     # Patch the ROM
     all_sequences = shuffled_sequences + shuffled_fanfare_sequences
     if all_sequences:
-        rebuild_sequences(rom, all_sequences)
+        rebuild_sequences(rom, all_sequences, symbols)
 
     if disabled_target_sequences:
         disable_music(rom, disabled_target_sequences.values(), log)

@@ -21,6 +21,8 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ProgressiveChainEntry(item=items_dict['Azure Drop Shade', 1]),
             ProgressiveChainEntry(item=items_dict['Star Shade', 1]),
             ProgressiveChainEntry(item=items_dict['Meteor Shade', 1]),
+            ProgressiveChainEntry(item=items_dict['Azure Archipelago Pass', 1]),
+            ProgressiveChainEntry(item=items_dict['Ancient Shade', 1]),
         ],
     ),
     "areaItemsOverworld": ProgressiveItemChainSingle(
@@ -32,6 +34,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ProgressiveChainEntry(item=items_dict['Green Seed Shade', 1]),
             ProgressiveChainEntry(item=items_dict['Star Shade', 1]),
             ProgressiveChainEntry(item=items_dict['Meteor Shade', 1]),
+            ProgressiveChainEntry(item=items_dict['Azure Archipelago Pass', 1]),
         ],
     ),
     "areaItemsDungeons": ProgressiveItemChainSingle(
@@ -41,6 +44,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ProgressiveChainEntry(item=items_dict['Yellow Sand Shade', 1]),
             ProgressiveChainEntry(item=items_dict['Purple Bolt Shade', 1]),
             ProgressiveChainEntry(item=items_dict['Azure Drop Shade', 1]),
+            ProgressiveChainEntry(item=items_dict['Ancient Shade', 1]),
         ],
     ),
     "headsAllPurpose": ProgressiveItemChainMulti(
@@ -48,6 +52,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -78,6 +83,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -102,6 +108,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -125,6 +132,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -155,6 +163,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -181,6 +190,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -205,6 +215,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -229,6 +240,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -252,6 +264,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -278,6 +291,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -302,6 +316,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -322,6 +337,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -338,6 +354,361 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
                     ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
                     ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
                 ]
             ),
         ],
@@ -347,6 +718,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -372,6 +744,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -395,6 +768,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -420,6 +794,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -443,6 +818,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -467,6 +843,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -490,6 +867,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -511,6 +889,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -534,6 +913,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -562,6 +942,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -588,6 +969,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -610,6 +992,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -631,6 +1014,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -653,6 +1037,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -679,6 +1064,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -703,6 +1089,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -727,6 +1114,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -747,6 +1135,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -765,6 +1154,499 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
                     ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
                     ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Student's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Chilling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Red Bandana', 1]),
+                    ProgressiveChainEntry(item=items_dict["Electrician's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardhead Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Gorgon Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble', 1]),
+                    ProgressiveChainEntry(item=items_dict['Very Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Enlightened Halo', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Serene Bubble+', 1]),
                 ]
             ),
         ],
@@ -774,6 +1656,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -798,6 +1681,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -822,6 +1706,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -846,6 +1731,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -870,6 +1756,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -894,6 +1781,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -918,6 +1806,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -946,6 +1835,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -973,6 +1863,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -997,6 +1888,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -1021,6 +1913,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -1045,6 +1938,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -1073,6 +1967,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -1100,6 +1995,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -1124,6 +2020,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -1148,6 +2045,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -1168,6 +2066,484 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
                     ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
                     ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict["Bandit's Scarf", 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Medusa Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lis'mita Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Recruit's Scope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shady Monocle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Edgy Headphones', 1]),
+                    ProgressiveChainEntry(item=items_dict['Longears', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fin Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nomadic Turban', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shiny Glasses', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nifty Grey Shades', 1]),
+                    ProgressiveChainEntry(item=items_dict['Faedora', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mystic Mohawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scouting Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furious Hothead+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trackwalker Visor+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Headset TYPE>:3', 1]),
                 ]
             ),
         ],
@@ -1177,6 +2553,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -1206,6 +2583,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -1235,6 +2613,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -1262,6 +2641,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -1289,6 +2669,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -1311,6 +2692,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -1331,6 +2713,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -1358,6 +2741,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -1383,6 +2767,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -1403,6 +2788,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -1423,6 +2809,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -1441,6 +2828,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -1454,6 +2842,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -1468,6 +2857,340 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
                     ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
                     ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Explorer's Cap", 1]),
+                    ProgressiveChainEntry(item=items_dict['Proper Tophat', 1]),
+                    ProgressiveChainEntry(item=items_dict["Miner's Helmet", 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dried Grass Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Scarecrown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Strawberry Hat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climate Cowl', 1]),
+                    ProgressiveChainEntry(item=items_dict['The Last Strawhat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunglass Visor', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Cooling Veil', 1]),
+                    ProgressiveChainEntry(item=items_dict['Furry Cap', 1]),
+                    ProgressiveChainEntry(item=items_dict["Thief's Band", 1]),
+                    ProgressiveChainEntry(item=items_dict['Mighty Strand', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dented Crown', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tengu Mask', 1]),
+                    ProgressiveChainEntry(item=items_dict["Burglar's Rope", 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs', 1]),
+                    ProgressiveChainEntry(item=items_dict["Dragon's Bandana+", 1]),
+                    ProgressiveChainEntry(item=items_dict['Tranquil Earmuffs+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Goggles', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Goggles', 1]),
                 ]
             ),
         ],
@@ -1477,6 +3200,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -1500,6 +3224,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -1519,6 +3244,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -1542,6 +3268,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -1565,6 +3292,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -1587,6 +3315,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -1606,6 +3335,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -1624,6 +3354,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -1647,6 +3378,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -1669,6 +3401,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -1691,6 +3424,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -1709,6 +3443,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -1727,6 +3462,292 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
                     ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
                     ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 2]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 2]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 2]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 2]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 2]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 2]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
                 ]
             ),
         ],
@@ -1736,6 +3757,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -1760,6 +3782,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -1784,6 +3807,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -1807,6 +3831,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -1831,6 +3856,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -1853,6 +3879,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -1876,6 +3903,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -1900,6 +3928,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -1922,6 +3951,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -1945,6 +3975,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -1966,6 +3997,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -1988,6 +4020,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -2011,6 +4044,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -2032,6 +4066,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -2054,6 +4089,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -2075,6 +4111,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -2092,6 +4129,438 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
                     ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
                     ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 2]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 2]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 2]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 2]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 2]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 2]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 2]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 2]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 2]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 2]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 2]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 2]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 2]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 2]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 2]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 2]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 2]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 2]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 2]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 2]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 2]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 2]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 2]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 2]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rapier Carrot', 1]),
+                    ProgressiveChainEntry(item=items_dict['Western Starfist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict["Lawkeeper's Fist", 1]),
+                    ProgressiveChainEntry(item=items_dict['Panzer Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meister Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unbreaking Fist+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brostick of Force+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Highmeister Gloves', 1]),
                 ]
             ),
         ],
@@ -2101,6 +4570,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -2123,6 +4593,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -2145,6 +4616,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -2167,6 +4639,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -2187,6 +4660,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -2209,6 +4683,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -2231,6 +4706,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -2251,6 +4727,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -2273,6 +4750,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -2293,6 +4771,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -2315,6 +4794,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -2335,6 +4815,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -2355,6 +4836,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -2377,6 +4859,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -2397,6 +4880,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -2417,6 +4901,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -2433,6 +4918,430 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
                     ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
                     ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 2]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 2]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 2]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 2]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 2]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 2]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 2]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 2]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Mugger's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardwood Stave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Maverick Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Twitching Slicer', 1]),
+                    ProgressiveChainEntry(item=items_dict["Survivor's Blade", 1]),
+                    ProgressiveChainEntry(item=items_dict['Shuddering Cleaver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydra Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cerberus Fang', 1]),
+                    ProgressiveChainEntry(item=items_dict['Skirmisher+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tremor Mirage', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bearserker Claw', 1]),
                 ]
             ),
         ],
@@ -2442,6 +5351,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -2465,6 +5375,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -2488,6 +5399,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -2509,6 +5421,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -2531,6 +5444,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -2554,6 +5468,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -2575,6 +5490,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -2597,6 +5513,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -2620,6 +5537,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -2640,6 +5558,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -2661,6 +5580,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -2683,6 +5603,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -2703,6 +5624,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -2724,6 +5646,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -2746,6 +5669,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -2766,6 +5690,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -2782,6 +5707,414 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
                     ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
                     ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 2]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 2]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 2]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 2]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 2]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 2]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 2]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 2]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 2]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 2]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 2]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 2]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Civilian Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict["Gunner's Trigger", 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Hawk', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Revolver', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bigger Stick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Marksmen Trigger', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Falcon+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Meteor Trigger', 1]),
                 ]
             ),
         ],
@@ -2791,6 +6124,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -2815,6 +6149,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -2835,6 +6170,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -2865,6 +6201,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -2889,6 +6226,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -2911,6 +6249,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -2935,6 +6274,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -2957,6 +6297,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -2977,6 +6318,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -2996,6 +6338,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -3026,193 +6369,10 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
-                    'chest': False,
-                    'quest': True,
-                },
-                chain=[
-                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
-                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
-                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
-                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
-                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
-                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
-                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
-                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
-                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
-                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
-                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
-                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
-                ]
-            ),
-            ProgressiveItemSubchain(
-                metadata={
-                    'trade': True,
-                    'shop': False,
-                    'arena': True,
-                    'chest': True,
-                    'quest': False,
-                },
-                chain=[
-                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
-                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
-                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
-                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
-                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
-                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
-                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
-                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
-                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
-                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
-                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
-                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
-                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
-                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
-                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
-                ]
-            ),
-            ProgressiveItemSubchain(
-                metadata={
-                    'trade': True,
-                    'shop': True,
-                    'arena': False,
-                    'chest': False,
-                    'quest': True,
-                },
-                chain=[
-                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
-                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
-                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
-                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
-                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
-                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
-                ]
-            ),
-            ProgressiveItemSubchain(
-                metadata={
-                    'trade': True,
-                    'shop': True,
-                    'arena': False,
-                    'chest': True,
-                    'quest': False,
-                },
-                chain=[
-                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
-                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
-                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
-                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
-                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
-                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
-                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
-                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
-                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
-                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
-                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
-                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
-                ]
-            ),
-            ProgressiveItemSubchain(
-                metadata={
-                    'trade': True,
-                    'shop': True,
-                    'arena': True,
-                    'chest': False,
-                    'quest': False,
-                },
-                chain=[
-                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
-                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
-                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
-                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
-                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
-                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
-                ]
-            ),
-            ProgressiveItemSubchain(
-                metadata={
-                    'trade': False,
-                    'shop': False,
-                    'arena': False,
-                    'chest': True,
-                    'quest': True,
-                },
-                chain=[
-                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
-                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
-                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
-                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
-                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
-                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
-                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
-                ]
-            ),
-            ProgressiveItemSubchain(
-                metadata={
-                    'trade': False,
-                    'shop': False,
-                    'arena': True,
-                    'chest': True,
-                    'quest': False,
-                },
-                chain=[
-                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
-                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
-                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
-                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
-                ]
-            ),
-            ProgressiveItemSubchain(
-                metadata={
-                    'trade': False,
-                    'shop': True,
-                    'arena': False,
-                    'chest': True,
-                    'quest': False,
-                },
-                chain=[
-                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
-                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
-                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
-                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
-                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
-                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
-                ]
-            ),
-            ProgressiveItemSubchain(
-                metadata={
-                    'trade': True,
-                    'shop': False,
-                    'arena': False,
                     'chest': False,
                     'quest': True,
                 },
@@ -3238,6 +6398,199 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': False,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': False,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': False,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': False,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': False,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': False,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': False,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -3266,6 +6619,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -3292,6 +6646,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -3314,6 +6669,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -3336,6 +6692,634 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
                     ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
                     ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 2]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 2]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 2]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 2]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 2]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Core Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Climbing Pick', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Giga Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sparkling Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Galaxy Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity Spiral Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Radiant Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Singularity Drill', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mantis Whip+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunshine Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nanopoint Needle', 1]),
                 ]
             ),
         ],
@@ -3345,6 +7329,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -3370,6 +7355,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -3395,6 +7381,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -3417,6 +7404,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -3438,6 +7426,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -3460,6 +7449,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -3481,6 +7471,184 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -3504,6 +7672,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -3531,6 +7700,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -3552,6 +7722,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -3576,6 +7747,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -3597,6 +7769,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -3615,6 +7788,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -3641,6 +7815,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -3655,6 +7830,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -3671,6 +7847,203 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
                 ]
             ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 2]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 2]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict["Edge o' All", 2]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Swiftspike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Battered Fist', 1]),
+                    ProgressiveChainEntry(item=items_dict['Disciple Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict["Hunter's Bolt", 1]),
+                    ProgressiveChainEntry(item=items_dict['Adept Gloves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Thrashing Ripper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Daikon', 1]),
+                    ProgressiveChainEntry(item=items_dict['Copper Gull', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rocksplitter', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prickly Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Winterclaw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hidden Blade', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bright Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Humming Razor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sunset Claw', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rough Branch', 2]),
+                    ProgressiveChainEntry(item=items_dict['Aehre', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sneaky Shiv', 1]),
+                    ProgressiveChainEntry(item=items_dict['Sonic Spike', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shining Bracer', 1]),
+                    ProgressiveChainEntry(item=items_dict['Warkeeper', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker', 1]),
+                    ProgressiveChainEntry(item=items_dict['Eternal Salami+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Knocking One+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pendulum Striker+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Edge', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Edge', 1]),
+                ]
+            ),
         ],
     ),
     "torsosAllPurpose": ProgressiveItemChainMulti(
@@ -3678,6 +8051,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -3701,6 +8075,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -3724,6 +8099,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -3744,6 +8120,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -3766,6 +8143,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -3786,6 +8164,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -3808,6 +8187,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -3827,6 +8207,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -3839,6 +8220,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -3854,6 +8236,212 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
                     ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
                     ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
                 ]
             ),
         ],
@@ -3863,6 +8451,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -3885,6 +8474,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -3907,6 +8497,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -3928,6 +8519,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -3950,6 +8542,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -3971,6 +8564,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -3992,6 +8586,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -4014,6 +8609,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -4035,6 +8631,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -4056,6 +8653,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -4077,6 +8675,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -4098,6 +8697,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -4115,6 +8715,298 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
                     ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
                     ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
                 ]
             ),
         ],
@@ -4124,6 +9016,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -4146,6 +9039,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -4173,6 +9067,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -4195,6 +9090,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -4216,6 +9112,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -4238,6 +9135,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -4265,6 +9163,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -4288,6 +9187,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -4314,6 +9214,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -4335,6 +9236,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -4357,6 +9259,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -4378,6 +9281,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -4401,6 +9305,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -4427,6 +9332,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -4448,6 +9354,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -4469,6 +9376,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -4487,6 +9395,428 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
                     ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
                     ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Leaf Cape', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bubblebelt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Petal Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Prism Pouch', 1]),
+                    ProgressiveChainEntry(item=items_dict['Rootweave', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinite Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Infinity+1 Bag', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plate of Chests', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Uniform', 1]),
+                    ProgressiveChainEntry(item=items_dict['Body Armoire', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pioneer Vest+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lifefiber Dress', 1]),
                 ]
             ),
         ],
@@ -4496,6 +9826,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -4517,6 +9848,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -4536,6 +9868,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -4557,6 +9890,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -4578,6 +9912,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -4599,6 +9934,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -4618,6 +9954,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -4637,6 +9974,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -4658,6 +9996,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -4677,6 +10016,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -4698,6 +10038,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -4717,6 +10058,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -4732,6 +10074,306 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
                     ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
                     ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
                 ]
             ),
         ],
@@ -4741,6 +10383,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -4770,6 +10413,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -4792,6 +10436,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -4819,6 +10464,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -4840,6 +10486,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -4868,6 +10515,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -4888,6 +10536,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -4902,6 +10551,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -4923,6 +10573,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -4942,6 +10593,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -4968,6 +10620,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -4988,6 +10641,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -5000,6 +10654,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -5019,6 +10674,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -5032,6 +10688,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -5046,6 +10703,354 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
                     ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
                     ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Second Hide', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Tattered Satchel', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Chest Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bluefiber Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Golden Chest Plate', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Mail', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Mail', 1]),
                 ]
             ),
         ],
@@ -5055,6 +11060,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -5087,6 +11093,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -5117,6 +11124,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -5149,6 +11157,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -5175,6 +11184,158 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
                     ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
                     ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Harness+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Killing Dress+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Scrappy Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bovine Armor', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assault Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Spiky Jacket', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hardrock Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Dessert Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Assassin Garb', 1]),
+                    ProgressiveChainEntry(item=items_dict['Magic Robe', 1]),
+                    ProgressiveChainEntry(item=items_dict['Crystal Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ramming Shell', 1]),
+                    ProgressiveChainEntry(item=items_dict['Vermillion Mantle', 1]),
+                    ProgressiveChainEntry(item=items_dict['Loose Trenchcoat', 1]),
+                    ProgressiveChainEntry(item=items_dict['Survival Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Timeworn Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shadowy Cloak', 1]),
+                    ProgressiveChainEntry(item=items_dict['Plated Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Centaur Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate', 1]),
+                    ProgressiveChainEntry(item=items_dict['Reactive Plate+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Asteroid Belt', 1]),
+                    ProgressiveChainEntry(item=items_dict['Chiron Vest', 1]),
+                    ProgressiveChainEntry(item=items_dict['Zealous Lamellar+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Nightfeather Coat', 1]),
                 ]
             ),
         ],
@@ -5184,6 +11345,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -5207,6 +11369,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -5230,6 +11393,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -5252,6 +11416,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -5274,6 +11439,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -5296,6 +11462,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -5318,6 +11485,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -5339,6 +11507,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -5356,6 +11525,206 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
                     ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
                     ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
                 ]
             ),
         ],
@@ -5365,6 +11734,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -5391,6 +11761,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -5417,6 +11788,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -5442,6 +11814,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -5467,6 +11840,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -5492,6 +11866,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -5517,6 +11892,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -5542,6 +11918,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -5567,6 +11944,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -5591,6 +11969,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -5615,6 +11994,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -5639,6 +12019,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -5663,6 +12044,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -5687,6 +12069,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -5711,6 +12094,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -5734,6 +12118,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -5753,6 +12138,470 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
                     ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
                     ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Rusty Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bull Stompers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Icewalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Curly Slippers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lavish Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Stable Footguard', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pathfinders', 1]),
+                    ProgressiveChainEntry(item=items_dict['Hydraulic Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bamboots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Brave Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Praetorian Anchors+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Mistwalkers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Moonwalkers', 1]),
                 ]
             ),
         ],
@@ -5762,6 +12611,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -5785,6 +12635,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -5813,6 +12664,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -5835,6 +12687,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -5858,6 +12711,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -5879,6 +12733,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -5906,6 +12761,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -5933,6 +12789,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -5958,6 +12815,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -5980,6 +12838,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -6000,6 +12859,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': True,
@@ -6021,6 +12881,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -6047,6 +12908,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -6071,6 +12933,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': True,
@@ -6095,6 +12958,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': True,
                     'arena': False,
@@ -6115,6 +12979,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': True,
                     'shop': False,
                     'arena': False,
@@ -6134,6 +12999,470 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
                     ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
                     ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': True,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Fleety Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Feline Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Desert Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Carpet Runners', 1]),
+                    ProgressiveChainEntry(item=items_dict['Shinkickers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Boom Walkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Urban Sneakers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Trench Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Unicorn Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Old Geta', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Pegasus Greaves', 1]),
+                    ProgressiveChainEntry(item=items_dict['Deadly Dancers+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Artillery Boots+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Speedy Boom Boots', 1]),
                 ]
             ),
         ],
@@ -6143,6 +13472,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
         subchains=[
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -6169,6 +13499,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -6188,6 +13519,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -6212,6 +13544,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -6236,6 +13569,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -6258,6 +13592,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -6275,6 +13610,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -6292,6 +13628,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -6307,6 +13644,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -6329,6 +13667,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -6349,6 +13688,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': True,
@@ -6369,6 +13709,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -6384,6 +13725,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': False,
@@ -6397,6 +13739,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': False,
                     'arena': True,
@@ -6410,6 +13753,7 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
             ),
             ProgressiveItemSubchain(
                 metadata={
+                    'dlc': False,
                     'trade': False,
                     'shop': True,
                     'arena': False,
@@ -6424,6 +13768,338 @@ progressive_chains: dict[str, ProgressiveItemChain] = {
                     ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
                     ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
                     ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': False,
+                    'quest': True,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Grasswalkers', 1]),
+                    ProgressiveChainEntry(item=items_dict['Wooly Socks', 1]),
+                    ProgressiveChainEntry(item=items_dict['Weird Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': False,
+                    'chest': True,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Ancient Sandals', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lead Boots', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': False,
+                    'arena': True,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Combat Skates', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos', 1]),
+                    ProgressiveChainEntry(item=items_dict['Combat Skates+', 1]),
+                    ProgressiveChainEntry(item=items_dict['Lunatic Paws UwU', 1]),
+                    ProgressiveChainEntry(item=items_dict['Paedalos+', 1]),
+                ]
+            ),
+            ProgressiveItemSubchain(
+                metadata={
+                    'dlc': True,
+                    'trade': False,
+                    'shop': True,
+                    'arena': False,
+                    'chest': False,
+                    'quest': False,
+                },
+                chain=[
+                    ProgressiveChainEntry(item=items_dict['Bronze Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Iron Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Steel Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Silver Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Titan Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cobalt Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Laser Boots', 1]),
+                    ProgressiveChainEntry(item=items_dict['Cross Boots', 1]),
                 ]
             ),
         ],

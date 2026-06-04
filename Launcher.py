@@ -36,7 +36,7 @@ import Utils
 apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 from Utils import (env_cleared_lib_path, init_logging, is_frozen, is_linux, is_macos, is_windows, local_path,
                    messagebox, open_filename, user_path)
-from Updater import get_latest_release_info, download_and_install_win
+from Updater import ReleaseInfo, get_latest_release_info, download_and_install_update
 
 if __name__ == "__main__":
     init_logging('Launcher')
@@ -302,6 +302,18 @@ def restart_launcher() -> None:
     app = App.get_running_app()
     if app:
         app.stop()
+
+
+def can_check_for_updates() -> bool:
+    if not is_frozen():
+        return False
+    if is_windows:
+        return True
+    if is_linux:
+        return bool(os.environ.get("APPIMAGE"))
+    if is_macos:
+        return ".app/Contents/MacOS/" in os.path.realpath(sys.executable)
+    return False
 
 
 def create_shortcut(button: Any, component: Component) -> None:
@@ -646,7 +658,7 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
                 self.launch_components = None
                 self.launch_args = None
 
-            if is_frozen() and is_windows:
+            if can_check_for_updates():
                 # Check for updates first, then start cache refresh after user responds
                 Clock.schedule_once(self._maybe_show_update_dialog, 0.2)
             else:
@@ -655,13 +667,15 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
 
         def _maybe_show_update_dialog(self, dt):
             try:
-                latest_ver, download_url, changelog = get_latest_release_info()
+                release_info = get_latest_release_info()
             except Exception as e:
                 logging.warning("Launcher update check failed: %s", e)
                 # Update check failed, proceed with cache refresh
                 self._start_background_cache_refresh()
                 return
 
+            latest_ver = release_info.version
+            changelog = release_info.changelog
             if latest_ver > Utils.version_tuple:
 
                 def _md_to_kivy(text: str) -> str:
@@ -805,13 +819,13 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
                     self._start_background_cache_refresh()
 
                 later_btn.bind(on_release=_on_later)
-                update_btn.bind(on_release=lambda *a: self._on_user_requested_update(popup, download_url))
+                update_btn.bind(on_release=lambda *a: self._on_user_requested_update(popup, release_info))
                 popup.open()
             else:
                 # No update available, proceed with cache refresh
                 self._start_background_cache_refresh()
 
-        def _on_user_requested_update(self, dialog, download_url):
+        def _on_user_requested_update(self, dialog, release_info: ReleaseInfo):
             dialog.dismiss()
 
             status_label = Label(
@@ -869,11 +883,12 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
 
             def _run():
                 try:
-                    download_and_install_win(download_url, progress_callback=on_progress)
+                    download_and_install_update(release_info, progress_callback=on_progress)
                 except Exception as e:
                     def _err(dt):
-                        downloading.dismiss()
-                        logging.error(f"Update download failed: {e}")
+                        logging.error("Update failed: %s", e)
+                        status_label.text = f"Update failed: {e}"
+                        progress_bar.value = 0
                     Clock.schedule_once(_err)
 
             threading.Thread(target=_run, daemon=True).start()

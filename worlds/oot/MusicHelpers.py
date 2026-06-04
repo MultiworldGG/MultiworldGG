@@ -5,10 +5,29 @@
 import io
 import os
 import zipfile
+from typing import Optional
 from .Sequence import Sequence, SequenceGame
-from .Utils import data_path
 
-def process_sequence_mmr_zseq(filepath: str, file_name: str, seq_type: str, include_custom_audiobanks: bool, groups) -> Sequence:
+MM_AUDIOBIN_NAME = 'MM.audiobin'
+
+
+def find_mm_audiobin_path(search_dir: Optional[str]) -> Optional[str]:
+    if not search_dir or not os.path.isdir(search_dir):
+        return None
+
+    exact_path = os.path.join(search_dir, MM_AUDIOBIN_NAME)
+    if os.path.isfile(exact_path):
+        return exact_path
+
+    for dirpath, _, filenames in os.walk(search_dir, followlinks=True):
+        for fname in filenames:
+            if fname.lower() == MM_AUDIOBIN_NAME.lower():
+                return os.path.join(dirpath, fname)
+    return None
+
+
+def process_sequence_mmr_zseq(filepath: str, file_name: str, seq_type: str, include_custom_audiobanks: bool, groups,
+                              mm_audiobin_path: Optional[str] = None) -> Sequence:
     split = file_name.split('.zseq')
     base = split[0]
     split = base.split('_')
@@ -34,9 +53,11 @@ def process_sequence_mmr_zseq(filepath: str, file_name: str, seq_type: str, incl
     seq = Sequence(filepath, cosmetic_name, seq_type=seq_type, seq_file = seq_file, instrument_set = instrument_set)
     seq.game = SequenceGame.MM
     seq.new_instrument_set = True
+    seq.mm_audiobin_path = mm_audiobin_path
     return seq
 
-def process_sequence_mmrs(filepath: str, file_name: str, seq_type: str, include_custom_audiobanks: bool, groups) -> Sequence:
+def process_sequence_mmrs(filepath: str, file_name: str, seq_type: str, include_custom_audiobanks: bool, groups,
+                          mm_audiobin_path: Optional[str] = None) -> Sequence:
     if not include_custom_audiobanks:
         return None
 
@@ -94,8 +115,9 @@ def process_sequence_mmrs(filepath: str, file_name: str, seq_type: str, include_
 
             seq.game = SequenceGame.MM
             seq.new_instrument_set = True # MM sequences always require new instrument set.
+            seq.mm_audiobin_path = mm_audiobin_path
             # Make sure we have the MM audio binaries
-            if not os.path.exists(os.path.join(data_path(), 'Music', 'MM.audiobin')):
+            if not mm_audiobin_path or not os.path.exists(mm_audiobin_path):
                 # Raise error. Maybe just skip and log a warning?
                 raise FileNotFoundError(".MMRS sequence found but missing MM.audiobin")
 

@@ -240,8 +240,24 @@ FFZ_table = {
     "Forest Fortress Time Emblem": 150,
     "Forest Fortress Ring Emblem": 151,
     "Forest Fortress Clear": 152,
-    "Final Demo Clear": 153
+
 }
+FDZ_table = {
+    "Final Demo Clear": 153,
+    "Final Demo Emerald Token - Greenflower (Act 1) Breakable Wall Near Bridge": 301,
+    "Final Demo Emerald Token - Greenflower (Act 2) Underwater Cave": 302,
+    "Final Demo Emerald Token - Greenflower (Act 2) Under Bridge Near End": 303,
+    "Final Demo Emerald Token - Techno Hill (Act 1) On Pipes": 304,
+    "Final Demo Emerald Token - Techno Hill (Act 1) Alt Path Fans": 305,
+    "Final Demo Emerald Token - Techno Hill (Act 2) Breakable Wall": 306,
+    "Final Demo Emerald Token - Techno Hill (Act 2) Under Poison Near End": 307,
+    "Final Demo Emerald Token - Castle Eggman (Act 1) Small Lake Near Start": 308,
+    "Final Demo Emerald Token - Castle Eggman (Act 1) Tunnel Before Act Clear": 309,
+    "Final Demo Emerald Token - Castle Eggman (Act 2) Water Flow in Sewers": 310,
+}
+
+
+
 HHZ_table = {
     "Haunted Heights Star Emblem": 154,
     "Haunted Heights Spade Emblem": 155,
@@ -454,28 +470,7 @@ tokens_table = {
 
 
 
-oneupcoords_table = {
-#"Greenflower (Act 1) Monitor - x:5408 y:3040":320,
-#"Greenflower (Act 1) Monitor - x:10560 y:2240":321,
-#"Greenflower (Act 1) Monitor - x:1184 y:5824":322,
-#"Greenflower (Act 2) Monitor - x:-480 y:-4480":323,
-#"Greenflower (Act 2) Monitor - x:2880 y:-6208":324,
-#"Greenflower (Act 2) Monitor - x:-2976 y:-4672":325,
-#"Greenflower (Act 2) Monitor - x:188 y:-347":326,
-#"Greenflower (Act 2) Monitor - x:-1184 y:512":327,
-#"Greenflower (Act 2) Monitor - x:3296 y:6624":328,
-#"Greenflower (Act 2) Monitor - x:-7072 y:-9696":329,
-#"Greenflower (Act 2) Monitor - x:720 y:-10320":330,
-#"Greenflower (Act 2) Monitor - x:-3968 y:4800":331,
-#"Techno Hill (Act 1) Monitor - x:5568 y:-3360":332,
-#"Techno Hill (Act 1) Monitor - x:-3904 y:-12224":333,
-#"Techno Hill (Act 1) Monitor - x:3008 y:-9152":334,
-#"Techno Hill (Act 1) Monitor - x:-960 y:-12128":335,
-#"Techno Hill (Act 1) Monitor - x:16320 y:-9472":336,
-#"Techno Hill (Act 1) Monitor - x:20160 y:-7904":337,
-#"Techno Hill (Act 1) Monitor - x:10944 y:-11584":338,
-#"Techno Hill (Act 1) Monitor - x:14400 y:-6208":339,
-#"Techno Hill (Act 1) Monitor - x:2976 y:4384":340,
+GFZ_1UP_monitors = {
 "Greenflower (Act 1) Monitor - Upper Spin Path in Cave":320,
 "Greenflower (Act 1) Monitor - Single Pillar Near End":321,
 "Greenflower (Act 1) Monitor - Highest Ledge":322,#wind | tails | knuckles
@@ -487,7 +482,9 @@ oneupcoords_table = {
 "Greenflower (Act 2) Monitor - Waterfall Top Near Start":328, #tails knux (sonic might do this with a large bounce)
 "Greenflower (Act 2) Monitor - Pillar Next to End":329, #tails knux
 "Greenflower (Act 2) Monitor - High Ledge After Final Cave":330,
-"Greenflower (Act 2) Monitor - Inside Fence Above Start":331,
+"Greenflower (Act 2) Monitor - Inside Fence Above Start":331}
+
+THZ_1UP_monitors = {
 "Techno Hill (Act 1) Monitor - Spin Under Conveyor Belt Door":332,
 "Techno Hill (Act 1) Monitor - Knuckles Path Highest Ledge":333,
 "Techno Hill (Act 1) Monitor - In Slime Above Spade Emblem":334,
@@ -508,7 +505,11 @@ oneupcoords_table = {
 "Techno Hill (Act 2) Monitor - Pillar Before End":349,
 "Techno Hill (Act 2) Monitor - Egg Corp Deep in Slime":350,
 "Techno Hill (Act 2) Monitor - Near Amy Emerald Token":351,
-"Techno Hill (Act 2) Monitor - Tall Pillar Outside Glass":352,
+"Techno Hill (Act 2) Monitor - Tall Pillar Outside Glass":352}
+
+
+
+DSZ_1UP_monitors = {
 "Deep Sea (Act 1) Monitor - Left Path First Water Around Corner":353,
 "Deep Sea (Act 1) Monitor - Right Lower Route Sloped Ledge":354,
 "Deep Sea (Act 1) Monitor - Heart Emblem Backtrack to Club 1":355,
@@ -542,7 +543,11 @@ oneupcoords_table = {
 "Deep Sea (Act 2) Monitor - Gargoyle Path Spiked Cliff Top":383,
 "Deep Sea (Act 2) Monitor - Waterslide Fail 2nd Jump":384,
 "Deep Sea (Act 2) Monitor - Waterslide Avoid Wall Spikes":385,
-"Deep Sea (Act 2) Monitor - Spindash Fast Door 3":386,
+"Deep Sea (Act 2) Monitor - Spindash Fast Door 3":386}
+
+
+
+CEZ_1UP_monitors = {
 "Castle Eggman (Act 1) Monitor - Mud Path on Side Wall":387,
 "Castle Eggman (Act 1) Monitor - Outside Bars First Tall Castle Wall":388,
 "Castle Eggman (Act 1) Monitor - Second Area Behind Overgrown Bars":389,
@@ -566,7 +571,10 @@ oneupcoords_table = {
 "Castle Eggman (Act 2) Monitor - Rocky Ledge Opposite Club Emblem":407,
 "Castle Eggman (Act 2) Monitor - Window of Left Courtyard":408,
 "Castle Eggman (Act 2) Monitor - Left Path Mace Launch Side Corridor":409,
-"Castle Eggman (Act 2) Monitor - Right Path Thin Gray Bookshelf Top":410,
+"Castle Eggman (Act 2) Monitor - Right Path Thin Gray Bookshelf Top":410}
+
+
+ACZ_1UP_monitors = {
 "Arid Canyon (Act 1) Monitor - Top Plank Before Path Split":411,
 "Arid Canyon (Act 1) Monitor - Cave Below First House":412,
 "Arid Canyon (Act 1) Monitor - Main Area High Broken Road":413,
@@ -594,7 +602,10 @@ oneupcoords_table = {
 "Arid Canyon (Act 2) Monitor - Ending Minecarts":435,
 "Arid Canyon (Act 2) Monitor - Very High Ledge Between Left and Looping Path":436,
 #"Arid Canyon (Act 2) Monitor - Left Path Inaccessible":437, #removed due to being oob, keep in client list to keep ids similar
-"Arid Canyon (Act 2) Monitor - TNT Barrel Ledge Near Star Emblem":438,
+"Arid Canyon (Act 2) Monitor - TNT Barrel Ledge Near Star Emblem":438}
+
+
+RVZ_1UP_monitors = {
 "Red Volcano (Act 1) Monitor - Lava Waves Pillar":439,
 "Red Volcano (Act 1) Monitor - Thin Ledge First Outside Area":440,
 "Red Volcano (Act 1) Monitor - First Outside Cave":441,
@@ -603,7 +614,10 @@ oneupcoords_table = {
 "Red Volcano (Act 1) Monitor - Flame Jets Room Ledge":444,
 "Red Volcano (Act 1) Monitor - Behind Pillar Near End":445,
 "Red Volcano (Act 1) Monitor - Near Heart Emblem":446,
-"Red Volcano (Act 1) Monitor - Thin Ledge Second Outside Area":447,
+"Red Volcano (Act 1) Monitor - Thin Ledge Second Outside Area":447}
+
+
+ERZ_1UP_monitors = {
 "Egg Rock (Act 1) Monitor - Spin Path Crushers Corner":448,
 "Egg Rock (Act 1) Monitor - Spin Path Guarded by Spincushion":449,
 "Egg Rock (Act 1) Monitor - Near Diamond Emblem 1":450,
@@ -625,34 +639,36 @@ oneupcoords_table = {
 "Egg Rock (Act 2) Monitor - Disco Room 1":466,
 "Egg Rock (Act 2) Monitor - Disco Room 2":467,
 "Egg Rock (Act 2) Monitor - Skip Gravity Pad Near Token":468,
-"Egg Rock (Act 2) Monitor - Right Path Below Outside Start":469,
+"Egg Rock (Act 2) Monitor - Right Path Below Outside Start":469}
+
+
+BCZ_1UP_monitors = {
 "Black Core (Act 1) Monitor - Half Pillar Above Spike Gate":470,
 "Black Core (Act 1) Monitor - Behind Arrow Sign":471,
-"Black Core (Act 2) Monitor - Behind Computers":472,
-#"Frozen Hillside Monitor - x:6656 y:-4624":472,
-#"Frozen Hillside Monitor - x:-2944 y:-19168":473,
-#"Pipe Towers Monitor - x:-1576 y:55":474,
-#"Pipe Towers Monitor - x:-216 y:5097":475,
-#"Pipe Towers Monitor - x:7000 y:6520":476,
-#"Pipe Towers Monitor - x:11496 y:-5097":477,
-#"Pipe Towers Monitor - x:7704 y:616":478,
-#"Pipe Towers Monitor - x:8744 y:-3752":479,
+"Black Core (Act 2) Monitor - Behind Computers":472}
+
+FHZ_1UP_monitors = {
 "Frozen Hillside Monitor - First Snow Field Behind Ice":473,
-"Frozen Hillside Monitor - Final Path Ledge Behind Ice":474,
+"Frozen Hillside Monitor - Final Path Ledge Behind Ice":474}
+
+PTZ_1UP_blocks = {
 "Pipe Towers ? Block - Above Start":475,
 "Pipe Towers ? Block - Purple Mushroom Skylight":476,
 "Pipe Towers ? Block - Ceiling Hole Near Flowing Water":477,
 "Pipe Towers ? Block - Near Diamond Emblem":478,
 "Pipe Towers ? Block - Flowing Water Alt Path on Ledge":479,
-"Pipe Towers ? Block - Underground Thwomp Room":480,
+"Pipe Towers ? Block - Underground Thwomp Room":480}
+
+
+FFZ_1UP_monitors = {
 "Forest Fortress Monitor - Near Hanging Wood Bridge 1":481,
 "Forest Fortress Monitor - High Ledge Before Second Checkpoint":482,
 "Forest Fortress Monitor - Low Ledge Before Goal 1":483,
 "Forest Fortress Monitor - In Ceiling After Final Checkpoint":484,
-"Forest Fortress Monitor - Trees Near Diamond Emblem":485,
-###"Final Demo Monitor - x:-27232 y:-20000","Final Demo Monitor - x:-9312 y:-20512","Final Demo Monitor - x:-6080 y:-26560","Final Demo Monitor - x:9216 y:-25728","Final Demo Monitor - x:29504 y:-9984",
-###"Final Demo Monitor - x:21056 y:-6400","Final Demo Monitor - x:18880 y:15104","Final Demo Monitor - x:27520 y:7552","Final Demo Monitor - x:27712 y:7360","Final Demo Monitor - x:24448 y:12352","Final Demo Monitor - x:20192 y:25536",
-###"Final Demo Monitor - x:28192 y:26688","Final Demo Monitor - x:-9104 y:16320","Final Demo Monitor - x:496 y:28416","Final Demo Monitor - x:8496 y:26880"
+"Forest Fortress Monitor - Trees Near Diamond Emblem":485}
+
+
+FDZ_1UP_monitors = {
 "Final Demo Monitor - Greenflower (Act 1) Ledge After Main Bridge":486,
 "Final Demo Monitor - Greenflower (Act 2) Skylight in 2nd Cave":487,
 "Final Demo Monitor - Greenflower (Act 2) Open Area Small Cave":488,
@@ -667,7 +683,10 @@ oneupcoords_table = {
 "Final Demo Monitor - Castle Eggman (Act 2) Right Courtyard on Platform 1":497,
 "Final Demo Monitor - Red Volcano (Act 1) Start":498,
 "Final Demo Monitor - Red Volcano (Act 1) Across Broken Bridge 1":499,
-"Final Demo Monitor - Red Volcano (Act 1) Cave Near Falling Platforms":500,
+"Final Demo Monitor - Red Volcano (Act 1) Cave Near Falling Platforms":500}
+
+
+HHZ_1UP_monitors = {
 "Haunted Heights Monitor - First Area Falling Platform":501,
 "Haunted Heights Monitor - First Upper Path Disappearing Ledge":502,
 "Haunted Heights Monitor - Spin Path Spinning Maces":503,
@@ -684,7 +703,8 @@ oneupcoords_table = {
 "Haunted Heights Monitor - Fang Path End Breakable Wall":514,
 "Haunted Heights Monitor - First Area Highest Pillar":515,
 "Haunted Heights Monitor - First Lower Path Slime Before Checkpoint":516,
-"Haunted Heights Monitor - First Lower Path Slimefall":517,
+"Haunted Heights Monitor - First Lower Path Slimefall":517}
+AGZ_1UP_monitors = {
 "Aerial Garden Monitor - Path Left 5 Thin Platforms Top 1":518,
 "Aerial Garden Monitor - Path Right 3 Behind Statues":519,
 "Aerial Garden Monitor - Triangle Hallway Spin Under Seaweed":520,
@@ -716,7 +736,8 @@ oneupcoords_table = {
 "Aerial Garden Monitor - Split Path Room Middle Ledge":546,
 "Aerial Garden Monitor - Path Right 2 Tiny Platform":547,
 "Aerial Garden Monitor - Underwater Path Spring Pillars":548,
-"Aerial Garden Monitor - Underwater Path Behind Corner":549,
+"Aerial Garden Monitor - Underwater Path Behind Corner":549}
+ATZ_1UP_monitors = {
 "Azure Temple Monitor - Main Path Behind Statues":550,
 "Azure Temple Monitor - Main Path High Rocky Ledge":551,
 "Azure Temple Monitor - Bottom Path Side of Statue Hallway":552,
@@ -734,80 +755,11 @@ oneupcoords_table = {
 "Azure Temple Monitor - Action Path Rafters 1":564,
 "Azure Temple Monitor - Gap Between Pillars Near First Checkpoint":565,
 "Azure Temple Monitor - End of Puzzle Path":566,
-"Azure Temple Monitor - Action Nospin Path Ledge After Spring":567,
-"Sapphire Falls Monitor - Inside Central Platform":568
-}
+"Azure Temple Monitor - Action Nospin Path Ledge After Spring":567}
+MPSFZ_1UP_monitors = {
+"Sapphire Falls Monitor - Inside Central Platform":568}
 
-
-
-ringmonitors_table = {
-#"Greenflower (Act 1) Monitor - x:2400 y:7600":570,
-#"Greenflower (Act 1) Monitor - x:5808 y:2656":571,
-#"Greenflower (Act 1) Monitor - x:1672 y:9376":572,
-#"Greenflower (Act 1) Monitor - x:1362 y:1172":573,
-#"Greenflower (Act 1) Monitor - x:192 y:7360":574,
-#"Greenflower (Act 1) Monitor - x:6048 y:7160":575,
-#"Greenflower (Act 1) Monitor - x:1720 y:9376":576,
-#"Greenflower (Act 1) Monitor - x:10720 y:3872":577,
-#"Greenflower (Act 1) Monitor - x:9424 y:4528":578,
-#"Greenflower (Act 1) Monitor - x:352 y:1312":579,
-#"Greenflower (Act 1) Monitor - x:8976 y:6192":580,
-#"Greenflower (Act 1) Monitor - x:9392 y:4560":581,
-#"Greenflower (Act 2) Monitor - x:2560 y:3040":582,
-#"Greenflower (Act 2) Monitor - x:5792 y:1856":583,
-#"Greenflower (Act 2) Monitor - x:5856 y:1856":584,
-#"Greenflower (Act 2) Monitor - x:5856 y:1792":585,
-#"Greenflower (Act 2) Monitor - x:5856 y:1728":586,
-#"Greenflower (Act 2) Monitor - x:5792 y:1728":587,
-#"Greenflower (Act 2) Monitor - x:5728 y:1728":588,
-#"Greenflower (Act 2) Monitor - x:5728 y:1792":589,
-#"Greenflower (Act 2) Monitor - x:5728 y:1856":590,
-#"Greenflower (Act 2) Monitor - x:-7833 y:-1002":591,
-#"Greenflower (Act 2) Monitor - x:-7882 y:-1030":592,
-#"Greenflower (Act 2) Monitor - x:-7872 y:-992":593,
-#"Greenflower (Act 2) Monitor - x:2616 y:4168":594,
-#"Greenflower (Act 2) Monitor - x:-1408 y:-10624":595,
-#"Greenflower (Act 2) Monitor - x:-6688 y:-9760":596,
-#"Greenflower (Act 2) Monitor - x:2656 y:352":597,
-#"Greenflower (Act 2) Monitor - x:-2656 y:6688":598,
-#"Greenflower (Act 2) Monitor - x:6120 y:1760":599,
-#"Greenflower (Act 2) Monitor - x:-5024 y:-7712":600,
-#"Greenflower (Act 2) Monitor - x:-3552 y:-5088":601,
-#"Greenflower (Act 2) Monitor - x:-832 y:2560":602,
-#"Greenflower (Act 2) Monitor - x:-6720 y:-5408":603,
-#"Techno Hill (Act 1) Monitor - x:4096 y:-13056":604,
-#"Techno Hill (Act 1) Monitor - x:-2560 y:1952":605,
-#"Techno Hill (Act 1) Monitor - x:14304 y:-7360":606,
-#"Techno Hill (Act 1) Monitor - x:1808 y:-7792":607,
-#"Techno Hill (Act 1) Monitor - x:10048 y:-7488":608,
-#"Techno Hill (Act 1) Monitor - x:16960 y:-7040":609,
-#"Techno Hill (Act 1) Monitor - x:-6976 y:-9472":610,
-#"Techno Hill (Act 1) Monitor - x:7392 y:-5664":611,
-#"Techno Hill (Act 1) Monitor - x:-4608 y:-12800":612,
-#"Techno Hill (Act 1) Monitor - x:-6048 y:-12960":613,
-#"Techno Hill (Act 1) Monitor - x:-5632 y:-5664":614,
-#"Techno Hill (Act 1) Monitor - x:-1280 y:-13536":615,
-#"Techno Hill (Act 1) Monitor - x:-5216 y:-11040":616,
-#"Techno Hill (Act 1) Monitor - x:17280 y:-8576":617,
-#"Techno Hill (Act 1) Monitor - x:16960 y:-8512":618,
-#"Techno Hill (Act 1) Monitor - x:-4416 y:-13888":619,
-#"Techno Hill (Act 1) Monitor - x:8640 y:-12096":620,
-#"Techno Hill (Act 1) Monitor - x:13632 y:-5120":621,
-#"Techno Hill (Act 1) Monitor - x:-832 y:4832":622,
-#"Techno Hill (Act 1) Monitor - x:7520 y:-6656":623,
-#"Techno Hill (Act 1) Monitor - x:5928 y:-9784":624,
-#"Techno Hill (Act 1) Monitor - x:11328 y:-10368":625,
-#"Techno Hill (Act 1) Monitor - x:5848 y:-9864":626,
-#"Techno Hill (Act 1) Monitor - x:1568 y:5408":627,
-#"Techno Hill (Act 1) Monitor - x:-5344 y:864":628,
-#"Techno Hill (Act 1) Monitor - x:-1600 y:1408":629,
-#"Techno Hill (Act 1) Monitor - x:-5632 y:-3456":630,
-#"Techno Hill (Act 1) Monitor - x:1776 y:-7824":631,
-#"Techno Hill (Act 1) Monitor - x:2176 y:1696":632,
-#"Techno Hill (Act 1) Monitor - x:-1088 y:-1216":633,
-#"Techno Hill (Act 1) Monitor - x:-864 y:1952":634,
-#"Techno Hill (Act 1) Monitor - x:1600 y:-9344":635,
-#"Techno Hill (Act 1) Monitor - x:-1504 y:-9024":636,
+GFZ_ring_monitors = {
 "Greenflower (Act 1) Monitor - Lake Side Path on Ledge":570,
 "Greenflower (Act 1) Monitor - Spin Path Entrance":571,
 "Greenflower (Act 1) Monitor - Alcove Near Bridges 2":572,
@@ -841,7 +793,8 @@ ringmonitors_table = {
 "Greenflower (Act 2) Monitor - No Spin Inside Spikes":600,
 "Greenflower (Act 2) Monitor - Open Area on Ledge":601,
 "Greenflower (Act 2) Monitor - High Path River":602,
-"Greenflower (Act 2) Monitor - Spin Path Red Springs":603,
+"Greenflower (Act 2) Monitor - Spin Path Red Springs":603}
+THZ_ring_monitors = {
 "Techno Hill (Act 1) Monitor - Crate on Large Slime Lake":604,
 "Techno Hill (Act 1) Monitor - Upper Path in Alcove":605,
 "Techno Hill (Act 1) Monitor - On Pipe Outside Pipe Room":606,
@@ -915,7 +868,9 @@ ringmonitors_table = {
 "Techno Hill (Act 2) Monitor - Near Heart Emblem 3":674,
 "Techno Hill (Act 2) Monitor - Final Room Behind Pipe":675,
 "Techno Hill (Act 2) Monitor - Near Diamond Emblem 1":676,
-"Techno Hill (Act 2) Monitor - Near Diamond Emblem 2":677,
+"Techno Hill (Act 2) Monitor - Near Diamond Emblem 2":677}
+
+DSZ_ring_monitors = {
 "Deep Sea (Act 1) Monitor - Underwater After Red Spring Jump":678,
 "Deep Sea (Act 1) Monitor - Right Path Beside Elevator":679,
 "Deep Sea (Act 1) Monitor - Sinking Pillar Button 2":680,
@@ -987,7 +942,9 @@ ringmonitors_table = {
 "Deep Sea (Act 2) Monitor - Gargoyle Path Stalagmite Cave":746,
 "Deep Sea (Act 2) Monitor - Gargoyle Path Pillar Between Gap":747,
 "Deep Sea (Act 2) Monitor - Nospin Path Behind Ruins Corner L2":748,
-"Deep Sea (Act 2) Monitor - Gargoyle Path After Rising Pillars Behind Plants":749,
+"Deep Sea (Act 2) Monitor - Gargoyle Path After Rising Pillars Behind Plants":749}
+
+CEZ_ring_monitors = {
 "Castle Eggman (Act 1) Monitor - Lower Main Path Before Tilted Maces":750,
 "Castle Eggman (Act 1) Monitor - Near Spade Emblem 2":751,
 "Castle Eggman (Act 1) Monitor - Near Spade Emblem 3":752,
@@ -1071,7 +1028,9 @@ ringmonitors_table = {
 "Castle Eggman (Act 2) Monitor - Right Courtyard Spring Path Miss Jump 2":830,
 "Castle Eggman (Act 2) Monitor - Grass Room Spike Pit Side Room":831,
 "Castle Eggman (Act 2) Monitor - First Courtyard Back Right Corner":832,
-"Castle Eggman (Act 2) Monitor - Right Courtyard First Pillar":833,
+"Castle Eggman (Act 2) Monitor - Right Courtyard First Pillar":833}
+
+ACZ_ring_monitors = {
 "Arid Canyon (Act 1) Monitor - First House":834,
 "Arid Canyon (Act 1) Monitor - Knuckles Path Before Climb 1":835,
 "Arid Canyon (Act 1) Monitor - Main Area High Near Broken Road 1":836,
@@ -1141,7 +1100,9 @@ ringmonitors_table = {
 "Arid Canyon (Act 2) Monitor - Left Path Climb Wooden Spring Ladder":900,
 "Arid Canyon (Act 2) Monitor - Canarivore Path Join Left Path Ledge":901,
 "Arid Canyon (Act 2) Monitor - Large Arch Cave Guarded By Green Snapper":902,
-"Arid Canyon (Act 2) Monitor - Crate Before Final Minecart":903,
+"Arid Canyon (Act 2) Monitor - Crate Before Final Minecart":903}
+
+RVZ_ring_monitors = {
 "Red Volcano (Act 1) Monitor - First Ledge":904,
 "Red Volcano (Act 1) Monitor - First Outside Area Under Stone Platform":905,
 "Red Volcano (Act 1) Monitor - First Outside Area Tall Middle Rock":906,
@@ -1154,7 +1115,9 @@ ringmonitors_table = {
 "Red Volcano (Act 1) Monitor - Second Outside Area Right Ledge 1":913,
 "Red Volcano (Act 1) Monitor - Near Lavafall Token 1":914,
 "Red Volcano (Act 1) Monitor - Near Lavafall Token 2":915,
-"Red Volcano (Act 1) Monitor - Second Outside Area Right Ledge 2":916,
+"Red Volcano (Act 1) Monitor - Second Outside Area Right Ledge 2":916}
+
+ERZ_ring_monitors = {
 "Egg Rock (Act 1) Monitor - Near Star Emblem 2":917,
 "Egg Rock (Act 1) Monitor - Near Star Emblem 3":918,
 "Egg Rock (Act 1) Monitor - 2D Area Zoom Tube Top":919,
@@ -1195,19 +1158,9 @@ ringmonitors_table = {
 "Egg Rock (Act 2) Monitor - Right Path Near Second Checkpoint 1":954,
 "Egg Rock (Act 2) Monitor - Right Path Near Second Checkpoint 2":955,
 "Egg Rock (Act 2) Monitor - Turret Room Back Left":956,
-"Egg Rock (Act 2) Monitor - Air Lock Room Floor":957,
-#"Frozen Hillside Monitor - x:4896 y:-1856":958,
-#"Frozen Hillside Monitor - x:4992 y:-1872":959,
-#"Frozen Hillside Monitor - x:9280 y:-16016":960,
-#"Frozen Hillside Monitor - x:3392 y:-14592":961,
-#"Frozen Hillside Monitor - x:9664 y:-14208":962,
-#"Frozen Hillside Monitor - x:7616 y:-7904":963,
-#"Frozen Hillside Monitor - x:5248 y:-8896":964,
-#"Frozen Hillside Monitor - x:5728 y:-17216":965,
-#"Frozen Hillside Monitor - x:2368 y:-9376":966,
-#"Frozen Hillside Monitor - x:64 y:-14656":967,
-#"Frozen Hillside Monitor - x:-1184 y:-16384":968,
-#"Frozen Hillside Monitor - x:-1024 y:-17152":969,
+"Egg Rock (Act 2) Monitor - Air Lock Room Floor":957}
+
+FHZ_ring_monitors = {
 "Frozen Hillside Monitor - Ledge Near Start 1":958,
 "Frozen Hillside Monitor - Ledge Near Start 2":959,
 "Frozen Hillside Monitor - Lower Path Alcove":960,
@@ -1219,7 +1172,9 @@ ringmonitors_table = {
 "Frozen Hillside Monitor - Frozen Lake Middle Platform":966,
 "Frozen Hillside Monitor - Right Path Flowing Snow Behind Pillar":967,
 "Frozen Hillside Monitor - Right Path Flowing Snow Lower Ice":968,
-"Frozen Hillside Monitor - Converging Paths Under Overhang":969,
+"Frozen Hillside Monitor - Converging Paths Under Overhang":969}
+
+FFZ_ring_monitors = {
 "Forest Fortress Monitor - Ledge Near First Swinging Mace":970,
 "Forest Fortress Monitor - Main Path Ring Circle":971,
 "Forest Fortress Monitor - Near Hanging Wood Bridge 2":972,
@@ -1240,7 +1195,9 @@ ringmonitors_table = {
 "Forest Fortress Monitor - Overgrown Ledge Right Path 2":987,
 "Forest Fortress Monitor - Before Final Spring Chain":988,
 "Forest Fortress Monitor - Castle Lake Underwater":989,
-"Forest Fortress Monitor - Tower Before Club Emblem":990,
+"Forest Fortress Monitor - Tower Before Club Emblem":990}
+
+FDZ_ring_monitors = {
 "Final Demo Monitor - Greenflower (Act 1) First Pillar":991,
 "Final Demo Monitor - Greenflower (Act 1) First Cave Skylight 1":992,
 "Final Demo Monitor - Greenflower (Act 1) Bridge Lake Top Ledge":993,
@@ -1300,7 +1257,9 @@ ringmonitors_table = {
 "Final Demo Monitor - Castle Eggman (Act 2) Right Courtyard Platform 3":1047,
 "Final Demo Monitor - Red Volcano (Act 1) Main Path After Checkpoint":1048,
 "Final Demo Monitor - Red Volcano (Act 1) Across Broken Bridge 2":1049,
-"Final Demo Monitor - Red Volcano (Act 1) Main Path Under Pipes":1050,
+"Final Demo Monitor - Red Volcano (Act 1) Main Path Under Pipes":1050}
+
+HHZ_ring_monitors = {
 "Haunted Heights Monitor - Right Ledge Near Start":1051,
 "Haunted Heights Monitor - Grave Near Start":1052,
 "Haunted Heights Monitor - First Slime Pit":1053,
@@ -1323,7 +1282,9 @@ ringmonitors_table = {
 "Haunted Heights Monitor - Amy Path Spikes In Slime":1070,
 "Haunted Heights Monitor - First Lower Path Entrance":1071,
 "Haunted Heights Monitor - Third Area Slimefall Lake":1072,
-"Haunted Heights Monitor - Third Area Ledge After Conveyors":1073,
+"Haunted Heights Monitor - Third Area Ledge After Conveyors":1073}
+
+AGZ_ring_monitors = {
 "Aerial Garden Monitor - Triangle Hallway End 1":1074,
 "Aerial Garden Monitor - Triangle Hallway End 2":1075,
 "Aerial Garden Monitor - Path Left 5 Thin Platforms Top 2":1076,
@@ -1373,7 +1334,9 @@ ringmonitors_table = {
 "Aerial Garden Monitor - Final Elevator Top S 2":1120,
 "Aerial Garden Monitor - Final Elevator Top S 3":1121,
 "Aerial Garden Monitor - Near Heart Emblem 16":1122,
-"Aerial Garden Monitor - Path Left 2 Near Fountain":1123,
+"Aerial Garden Monitor - Path Left 2 Near Fountain":1123}
+
+ATZ_ring_monitors = {
 "Azure Temple Monitor - Behind Left Starting Pillar":1124,
 "Azure Temple Monitor - Right Starting Ledge":1125,
 "Azure Temple Monitor - Right Path Behind Corner":1126,
@@ -1417,7 +1380,9 @@ ringmonitors_table = {
 "Azure Temple Monitor - Top Path First Hallway Secret":1164,
 "Azure Temple Monitor - Knuckles Path First Rocky Ledge":1165,
 "Azure Temple Monitor - Knuckles Path Second Rocky Ledge":1166,
-"Azure Temple Monitor - Action Nospin Path Pillar":1167,
+"Azure Temple Monitor - Action Nospin Path Pillar":1167}
+
+MPJVZ_monitors = {
 "Jade Valley Monitor - x:-336 y:768":1168,
 "Jade Valley Monitor - x:1440 y:-768":1169,
 "Jade Valley Monitor - x:1341 y:2218":1170,
@@ -1435,7 +1400,9 @@ ringmonitors_table = {
 "Jade Valley Monitor - x:4320 y:4576":1182,
 "Jade Valley Monitor - x:4448 y:5984":1183,
 "Jade Valley Monitor - x:384 y:5248":1184,
-"Jade Valley Monitor - x:384 y:5312":1185,
+"Jade Valley Monitor - x:384 y:5312":1185}
+
+MPNFZ_monitors = {
 "Noxious Factory Monitor - x:1600 y:2624":1186,
 "Noxious Factory Monitor - x:-2048 y:3904":1187,
 "Noxious Factory Monitor - x:1472 y:2624":1188,
@@ -1457,7 +1424,11 @@ ringmonitors_table = {
 "Noxious Factory Monitor - x:2112 y:-1920":1204,
 "Noxious Factory Monitor - x:2496 y:3264":1205,
 "Noxious Factory Monitor - x:2496 y:3136":1206,
-"Noxious Factory Monitor - x:1440 y:-2336":1207,
+"Noxious Factory Monitor - x:1440 y:-2336":1207}
+
+
+
+MPTPZ_monitors = {
 "Tidal Palace Monitor - x:-2624 y:-3072":1208,
 "Tidal Palace Monitor - x:-1920 y:-3616":1209,
 "Tidal Palace Monitor - x:0 y:-3232":1210,
@@ -1482,7 +1453,10 @@ ringmonitors_table = {
 "Tidal Palace Monitor - x:1504 y:-224":1229,
 "Tidal Palace Monitor - x:-4160 y:1536":1230,
 "Tidal Palace Monitor - x:-224 y:-672":1231,
-"Tidal Palace Monitor - x:224 y:-672":1232,
+"Tidal Palace Monitor - x:224 y:-672":1232}
+
+
+MPTCZ_monitors = {
 "Thunder Citadel Monitor - x:-1234 y:-1124":1233,
 "Thunder Citadel Monitor - x:224 y:1760":1234,
 "Thunder Citadel Monitor - x:3520 y:4928":1235,
@@ -1499,7 +1473,11 @@ ringmonitors_table = {
 "Thunder Citadel Monitor - x:3392 y:1856":1246,
 "Thunder Citadel Monitor - x:320 y:2560":1247,
 "Thunder Citadel Monitor - x:3328 y:1600":1248,
-"Thunder Citadel Monitor - x:1536 y:3392":1249,
+"Thunder Citadel Monitor - x:1536 y:3392":1249}
+
+
+
+MPDTZ_monitors = {
 "Desolate Twilight Monitor - x:-512 y:-960":1250,
 "Desolate Twilight Monitor - x:480 y:-960":1251,
 "Desolate Twilight Monitor - x:2768 y:-3792":1252,
@@ -1511,7 +1489,11 @@ ringmonitors_table = {
 "Desolate Twilight Monitor - x:2913 y:212":1258,
 "Desolate Twilight Monitor - x:2904 y:275":1259,
 "Desolate Twilight Monitor - x:0 y:3584":1260,
-"Desolate Twilight Monitor - x:2704 y:-3856":1261,
+"Desolate Twilight Monitor - x:2704 y:-3856":1261}
+
+
+
+MPFMZ_monitors = {
 "Frigid Mountain Monitor - x:3232 y:-3136":1262,
 "Frigid Mountain Monitor - x:1760 y:-1312":1263,
 "Frigid Mountain Monitor - x:6432 y:-384":1264,
@@ -1523,7 +1505,12 @@ ringmonitors_table = {
 "Frigid Mountain Monitor - x:5024 y:-2048":1270,
 "Frigid Mountain Monitor - x:5280 y:-4864":1271,
 "Frigid Mountain Monitor - x:5280 y:-4928":1272,
-"Frigid Mountain Monitor - x:3808 y:-192":1273,
+"Frigid Mountain Monitor - x:3808 y:-192":1273}
+
+
+
+
+MPOHZ_monitors = {
 "Orbital Hangar Monitor - x:4928 y:-4160":1274,
 "Orbital Hangar Monitor - x:4928 y:-5568":1275,
 "Orbital Hangar Monitor - x:3456 y:-2016":1276,
@@ -1548,7 +1535,10 @@ ringmonitors_table = {
 "Orbital Hangar Monitor - x:5344 y:-1984":1295,
 "Orbital Hangar Monitor - x:448 y:-4320":1296,
 "Orbital Hangar Monitor - x:-320 y:-4896":1297,
-"Orbital Hangar Monitor - x:6592 y:-5760":1298,
+"Orbital Hangar Monitor - x:6592 y:-5760":1298}
+
+
+MPSFZ_monitors = {
 "Sapphire Falls Monitor - x:-912 y:-3872":1299,
 "Sapphire Falls Monitor - x:4288 y:-1248":1300,
 "Sapphire Falls Monitor - x:-4864 y:-832":1301,
@@ -1566,7 +1556,10 @@ ringmonitors_table = {
 "Sapphire Falls Monitor - x:-912 y:-3616":1313,
 "Sapphire Falls Monitor - x:-16 y:-3136":1314,
 "Sapphire Falls Monitor - x:-544 y:-5344":1315,
-"Sapphire Falls Monitor - x:1184 y:-2176":1316,
+"Sapphire Falls Monitor - x:1184 y:-2176":1316}
+
+
+MPDBZ_monitors = {
 "Diamond Blizzard Monitor - x:64 y:-3520":1317,
 "Diamond Blizzard Monitor - x:2688 y:-3136":1318,
 "Diamond Blizzard Monitor - x:1856 y:-3968":1319,
@@ -1592,7 +1585,11 @@ ringmonitors_table = {
 "Diamond Blizzard Monitor - x:0 y:-3808":1339,
 "Diamond Blizzard Monitor - x:-128 y:-3808":1340,
 "Diamond Blizzard Monitor - x:4160 y:-680":1341,
-"Diamond Blizzard Monitor - x:4160 y:-728":1342,
+"Diamond Blizzard Monitor - x:4160 y:-728":1342}
+
+
+
+MPCSZ_monitors = {
 "Celestial Sanctuary Monitor - x:1504 y:3168":1343,
 "Celestial Sanctuary Monitor - x:2880 y:6208":1344,
 "Celestial Sanctuary Monitor - x:-764 y:-1802":1345,
@@ -1614,7 +1611,9 @@ ringmonitors_table = {
 "Celestial Sanctuary Monitor - x:-2368 y:-1136":1361,
 "Celestial Sanctuary Monitor - x:192 y:5952":1362,
 "Celestial Sanctuary Monitor - x:256 y:5952":1363,
-"Celestial Sanctuary Monitor - x:4128 y:-1120":1364,
+"Celestial Sanctuary Monitor - x:4128 y:-1120":1364}
+
+MPFCZ_monitors = {
 "Frost Columns Monitor - x:-3776 y:3904":1365,
 "Frost Columns Monitor - x:-3872 y:3808":1366,
 "Frost Columns Monitor - x:-3616 y:1120":1367,
@@ -1636,13 +1635,19 @@ ringmonitors_table = {
 "Frost Columns Monitor - x:-2080 y:-896":1383,
 "Frost Columns Monitor - x:2112 y:-1088":1384,
 "Frost Columns Monitor - x:2112 y:-1344":1385,
-"Frost Columns Monitor - x:832 y:-1376":1386,
+"Frost Columns Monitor - x:832 y:-1376":1386}
+
+
+MPMMZ_monitors = {
 "Meadow Match Monitor - x:-1536 y:1472":1387,
 "Meadow Match Monitor - x:-2688 y:320":1388,
 "Meadow Match Monitor - x:3520 y:-576":1389,
 "Meadow Match Monitor - x:-64 y:-1088":1390,
 "Meadow Match Monitor - x:-1472 y:512":1391,
-"Meadow Match Monitor - x:1472 y:-864":1392,
+"Meadow Match Monitor - x:1472 y:-864":1392}
+
+
+MPGLZ_monitors = {
 "Granite Lake Monitor - x:1728 y:3264":1393,
 "Granite Lake Monitor - x:-432 y:-1168":1394,
 "Granite Lake Monitor - x:4764 y:7933":1395,
@@ -1653,7 +1658,12 @@ ringmonitors_table = {
 "Granite Lake Monitor - x:5472 y:1344":1400,
 "Granite Lake Monitor - x:1075 y:5651":1401,
 "Granite Lake Monitor - x:1293 y:7833":1402,
-"Granite Lake Monitor - x:4288 y:3040":1403,
+"Granite Lake Monitor - x:4288 y:3040":1403}
+
+
+
+
+MPSuShZ_monitors = {
 "Summit Showdown Monitor - x:5344 y:1952":1404,
 "Summit Showdown Monitor - x:4640 y:2400":1405,
 "Summit Showdown Monitor - x:-6624 y:-64":1406,
@@ -1676,7 +1686,10 @@ ringmonitors_table = {
 "Summit Showdown Monitor - x:3936 y:-1408":1423,
 "Summit Showdown Monitor - x:0 y:-224":1424,
 "Summit Showdown Monitor - x:-1216 y:-928":1425,
-"Summit Showdown Monitor - x:-4321 y:1792":1426,
+"Summit Showdown Monitor - x:-4321 y:1792":1426}
+
+
+MPSiShZ_monitors = {
 "Silver Shiver Monitor - x:4560 y:-8688":1427,
 "Silver Shiver Monitor - x:3648 y:-10176":1428,
 "Silver Shiver Monitor - x:6080 y:-12416":1429,
@@ -1721,7 +1734,11 @@ ringmonitors_table = {
 "Silver Shiver Monitor - x:15360 y:-27360":1468,
 "Silver Shiver Monitor - x:15552 y:-27360":1469,
 "Silver Shiver Monitor - x:6240 y:-13776":1470,
-"Silver Shiver Monitor - x:6304 y:-13808":1471,
+"Silver Shiver Monitor - x:6304 y:-13808":1471}
+
+
+
+MPUBZ_monitors = {
 "Uncharted Badlands Monitor - x:1337 y:-1608":1472,
 "Uncharted Badlands Monitor - x:515 y:502":1473,
 "Uncharted Badlands Monitor - x:2522 y:114":1474,
@@ -1730,7 +1747,11 @@ ringmonitors_table = {
 "Uncharted Badlands Monitor - x:-1379 y:-2638":1477,
 "Uncharted Badlands Monitor - x:-992 y:32":1478,
 "Uncharted Badlands Monitor - x:1152 y:3008":1479,
-"Uncharted Badlands Monitor - x:40 y:3323":1480,
+"Uncharted Badlands Monitor - x:40 y:3323":1480}
+
+
+
+MPPSZ_monitors = {
 "Pristine Shores Monitor - x:6208 y:10720":1481,
 "Pristine Shores Monitor - x:4736 y:12288":1482,
 "Pristine Shores Monitor - x:4272 y:3440":1483,
@@ -1750,7 +1771,10 @@ ringmonitors_table = {
 "Pristine Shores Monitor - x:2088 y:5240":1497,
 "Pristine Shores Monitor - x:4160 y:7176":1498,
 "Pristine Shores Monitor - x:6528 y:7936":1499,
-"Pristine Shores Monitor - x:9944 y:7616":1500,
+"Pristine Shores Monitor - x:9944 y:7616":1500}
+
+
+MPCHZ_monitors = {
 "Crystalline Heights Monitor - x:4288 y:12384":1501,
 "Crystalline Heights Monitor - x:7392 y:8832":1502,
 "Crystalline Heights Monitor - x:3250 y:8402":1503,
@@ -1772,7 +1796,12 @@ ringmonitors_table = {
 "Crystalline Heights Monitor - x:5554 y:9730":1519,
 "Crystalline Heights Monitor - x:6384 y:19336":1520,
 "Crystalline Heights Monitor - x:-544 y:4064":1521,
-"Crystalline Heights Monitor - x:-2704 y:12592":1522,
+"Crystalline Heights Monitor - x:-2704 y:12592":1522}
+
+
+
+
+MPMAZ_monitors = {
 "Midnight Abyss Monitor - x:-3264 y:3136":1523,
 "Midnight Abyss Monitor - x:3264 y:3136":1524,
 "Midnight Abyss Monitor - x:3264 y:-3136":1525,
@@ -1784,7 +1813,9 @@ ringmonitors_table = {
 "Midnight Abyss Monitor - x:-3136 y:3264":1531,
 "Midnight Abyss Monitor - x:3136 y:3264":1532,
 "Midnight Abyss Monitor - x:3136 y:-3264":1533,
-"Midnight Abyss Monitor - x:-3136 y:-3264":1534,
+"Midnight Abyss Monitor - x:-3136 y:-3264":1534}
+
+MPATZ_monitors = {
 "Airborne Temple Monitor - x:-2432 y:2432":1535,
 "Airborne Temple Monitor - x:2432 y:2432":1536,
 "Airborne Temple Monitor - x:2432 y:-2432":1537,
@@ -1799,7 +1830,79 @@ ringmonitors_table = {
 "Airborne Temple Monitor - x:-256 y:-256":1546
 }
 
+annoying_locations = {
+
+"Deep Sea (Act 1) Heart Emblem": 41,
+"Black Core (Act 2) Score Emblem": 124,
+"Black Core (Act 3) Score Emblem": 127,
+"Haunted Heights Star Emblem": 154,
+"Aerial Garden Spade Emblem": 163,
+"Aerial Garden Heart Emblem": 164,
+"Aerial Garden Diamond Emblem": 165,
+"Aerial Garden Club Emblem": 166,
+"Aerial Garden Emerald Token - Diamond Emblem 1": 312,
+"Aerial Garden Emerald Token - Diamond Emblem 2": 313,
+"Aerial Garden Emerald Token - Diamond Emblem 3": 314,
+"Aerial Garden Emerald Token - Diamond Emblem 4": 315,
+
+**ATZ_table,
+
+"Black Hole Sun Emblem": 213,
+"Black Hole Moon Emblem": 214,
+"Black Hole A Rank Emblem": 215,
+"Black Hole Time Emblem": 216,
+"Black Hole Clear": 217,
+
+"Deep Sea (Act 1) Monitor - Heart Emblem Backtrack to Club 1":355,
+"Deep Sea (Act 1) Monitor - Heart Emblem Backtrack to Club 2":362,
+"Deep Sea (Act 1) Monitor - Behind Fast Closing Door 1":365,
+"Deep Sea (Act 1) Monitor - Behind Fast Closing Door 2":366,
+"Deep Sea (Act 2) Monitor - Spindash Fast Door 1":372,
+"Deep Sea (Act 2) Monitor - Spindash Fast Door 2":374,
+"Deep Sea (Act 2) Monitor - Spindash Fast Door 3":386,
+
+"Aerial Garden Monitor - Near Heart Emblem 1":528,
+"Aerial Garden Monitor - Near Heart Emblem 2":529,
+"Aerial Garden Monitor - Near Heart Emblem 3":530,
+"Aerial Garden Monitor - Near Heart Emblem 4":531,
+
+**ATZ_1UP_monitors,
+
+
+
+
+
+"Aerial Garden Monitor - Near Heart Emblem 5":1079,
+"Aerial Garden Monitor - Near Heart Emblem 6":1080,
+"Aerial Garden Monitor - Near Heart Emblem 7":1081,
+"Aerial Garden Monitor - Near Heart Emblem 8":1082,
+"Aerial Garden Monitor - Near Heart Emblem 9":1083,
+"Aerial Garden Monitor - Near Heart Emblem 10":1084,
+"Aerial Garden Monitor - Near Heart Emblem 11":1085,
+"Aerial Garden Monitor - Near Heart Emblem 12":1086,
+"Aerial Garden Monitor - Near Heart Emblem 13":1087,
+"Aerial Garden Monitor - Near Heart Emblem 14":1088,
+"Aerial Garden Monitor - Near Heart Emblem 15":1093,
+"Aerial Garden Monitor - Near Heart Emblem 16":1122,
+
+**ATZ_ring_monitors
+
+}
+
 location_table = {**GFZ_table,**THZ_table,**DSZ_table,**CEZ_table,**ACZ_table,
-                  **RVZ_table,**ERZ_table,**BCZ_table,**FHZ_table,**PTZ_table,**FFZ_table,**HHZ_table,**AGZ_table,**ATZ_table,
+                  **RVZ_table,**ERZ_table,**BCZ_table,**FHZ_table,**PTZ_table,**FFZ_table,**FDZ_table,**HHZ_table,**AGZ_table,**ATZ_table,
                   **FFSP_table,**TPSP_table,**FCSP_table,**CFSP_table,**DWSP_table,**MCSP_table,**ESSP_table,**BHSP_table,
-                  **CCSP_table,**DHSP_table,**APSP_table,**EXTRA_table,**tokens_table,**oneupcoords_table,**ringmonitors_table}
+                  **CCSP_table,**DHSP_table,**APSP_table,**EXTRA_table,**tokens_table,
+                  **GFZ_1UP_monitors,**THZ_1UP_monitors,**DSZ_1UP_monitors,**CEZ_1UP_monitors,**ACZ_1UP_monitors,**RVZ_1UP_monitors,
+                  **ERZ_1UP_monitors,**BCZ_1UP_monitors,**FHZ_1UP_monitors,**PTZ_1UP_blocks,**FFZ_1UP_monitors,**FDZ_1UP_monitors,
+                  **HHZ_1UP_monitors,**AGZ_1UP_monitors,**ATZ_1UP_monitors,**MPSFZ_1UP_monitors,
+                  **GFZ_ring_monitors,**THZ_ring_monitors,**DSZ_ring_monitors,**CEZ_ring_monitors,**ACZ_ring_monitors,**RVZ_ring_monitors,
+                  **ERZ_ring_monitors,**FHZ_ring_monitors,**PTZ_1UP_blocks,**FFZ_ring_monitors,**FDZ_ring_monitors,
+                  **HHZ_ring_monitors,**AGZ_ring_monitors,**ATZ_ring_monitors,
+                  **MPJVZ_monitors,**MPNFZ_monitors,**MPTPZ_monitors,**MPTCZ_monitors,**MPDTZ_monitors,**MPFMZ_monitors,
+                  **MPOHZ_monitors,**MPSFZ_monitors,**MPDBZ_monitors,**MPCSZ_monitors,**MPFCZ_monitors,**MPMMZ_monitors,
+                  **MPGLZ_monitors,**MPSuShZ_monitors,**MPSiShZ_monitors,**MPUBZ_monitors,**MPPSZ_monitors,**MPCHZ_monitors,
+                  **MPMAZ_monitors,**MPATZ_monitors
+                  
+                  
+                  }

@@ -29,13 +29,13 @@ region_data_table: Dict[str, ChainedEchoesRegion] = {}
 # Example region connections text data
 region_txt = '''
 Menu,Prologue
-Prologue,Sandworm
-Sandworm,Krachan,Glenn Boost #1,1,Glenn Boost #2,1,Lenne Boost #1,1,Lenne Boost #2,1,Robb Boost #1,1,Robb Boost #2,1
-Krachan,Flame Mantis,Glenn Boost #3,1,Sienna Boost #1,1,Sienna Boost #2,1
+Prologue,Sandworm,Lenne Skill #1,1,Robb Skill #1,1
+Sandworm,Krachan,Glenn Skill #1,1,Sienna Skill #1,1,Kylian Skill #1,1,Glenn Boost #1,1,Glenn Boost #2,1,Lenne Boost #1,1,Lenne Boost #2,1,Robb Boost #1,1,Robb Boost #2,1
+Krachan,Flame Mantis,Victor Skill #1,1,Glenn Boost #3,1,Sienna Boost #1,1,Sienna Boost #2,1
 Flame Mantis,Lich,Glenn Boost #4,1
 Lich,Mines,Glenn Boost #5,1
 Mines,Drill Breaker,Glenn Boost #6,1
-Drill Breaker,Arlette,Glenn Boost #7,1,Victor Boost #1,1,Victor Boost #2,1,Victor Boost #3,1,Victor Boost #4,1,Robb Boost #3,1,Robb Boost #4,1
+Drill Breaker,Arlette,Ba'Thraz Skill #1,1,Glenn Boost #7,1,Victor Boost #1,1,Victor Boost #2,1,Victor Boost #3,1,Victor Boost #4,1,Robb Boost #3,1,Robb Boost #4,1
 Arlette,Puppeteer,Glenn Boost #8,1
 Puppeteer,Gin,Glenn Boost #9,1
 Gin,Kondor,Glenn Boost #10,1
@@ -45,7 +45,7 @@ Fridolyn,Matthye,Glenn Boost #12,1
 Matthye,Donner,Glenn Boost #13,1
 Donner,Godfrey,Glenn Boost #14,1
 Godfrey,Shaved Head,Glenn Boost #15,1
-Shaved Head,Endahrt,Glenn Boost #16,1
+Shaved Head,Endahrt,Amalia Skill #1,1,Glenn Boost #16,1
 Endahrt,Living Wall,Amalia Boost #1,1,Amalia Boost #2,1,Amalia Boost #3,1,Amalia Boost #4,1,Amalia Boost #5,1,Amalia Boost #6,1,Ba'Thraz Boost #1,1,Ba'Thraz Boost #2,1,Ba'Thraz Boost #3,1,Ba'Thraz Boost #4,1,Ba'Thraz Boost #5,1,Ba'Thraz Boost #6,1
 Living Wall,Church,Church Key,1
 Living Wall,Miner's Section,Miner's Key,1

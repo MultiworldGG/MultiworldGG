@@ -33,9 +33,9 @@ class WorldData:
     shops_dict: dict[str, ShopData]
     per_shop_locations: dict[str, dict[int, LocationData]]
     global_shop_locations: dict[int, LocationData]
-    shop_unlock_by_id: dict[int, ItemData]
-    shop_unlock_by_shop: dict[str, ItemData]
-    shop_unlock_by_shop_and_id: dict[tuple[str, int], ItemData]
+    shop_unlock_by_id: dict[int, ItemPoolEntry]
+    shop_unlock_by_shop: dict[str, ItemPoolEntry]
+    shop_unlock_by_shop_and_id: dict[tuple[str, int], ItemPoolEntry]
 
     # item_pools.py
     item_pools_template: dict[str, list[ItemPoolEntry]]

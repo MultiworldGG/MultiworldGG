@@ -74,18 +74,27 @@ def get_ssl_context():
 
 
 class SRB2ClientCommandProcessor(ClientCommandProcessor):
-    def _cmd_dummy(self):
-        """This is a surprise tool that will help us later"""
-        return
+    #def _cmd_dummy(self):
+    #    """This is a surprise tool that will help us later"""
+    #    return
+    def _cmd_deathlink(self):
+        """Toggles Deathlink"""
+        if isinstance(self.ctx, SRB2Context):
 
+            async_start(self.ctx.toggle_tag("DeathLink"))
+    def _cmd_ringlink(self):
+        """Toggles Ringlink"""
+        if isinstance(self.ctx, SRB2Context):
+            async_start(self.ctx.toggle_tag("RingLink"))
 
 
 class SRB2Context(CommonContext):
-
+    command_processor = SRB2ClientCommandProcessor
     def __init__(self, server_address: Optional[str], password: Optional[str]) -> None:
         super().__init__(server_address, password)
         self.slot = 0
         self.game = "Sonic Robo Blast 2"
+        self.connected = False
         self.missing_checks = None
         self.prev_found = None
         self.location_ids = None
@@ -102,6 +111,7 @@ class SRB2Context(CommonContext):
         self.goal_type = 0
         self.actsanity = False
         self.matchmaps = None
+        self.ring_reset_zone_exit = False
         self.items_handling = 0b001 | 0b010 | 0b100  # Receive items from other worlds, starting inv, and own items
         self.location_name_to_ap_id = None
         self.location_ap_id_to_name = None
@@ -140,6 +150,8 @@ class SRB2Context(CommonContext):
             self.matchmaps = args["slot_data"]["EnableMatchMaps"]
             self.goal_type = args["slot_data"]["CompletionType"]
             self.actsanity = args["slot_data"]["ActSanity"]
+            self.ring_reset_zone_exit = args["slot_data"]["LocalRingReset"]
+            self.connected = True
             if args["slot_data"]["DeathLink"] != 0:
                 self.death_link = True
                 self.tags.add("DeathLink")
@@ -164,18 +176,46 @@ class SRB2Context(CommonContext):
             if "RingLink" in tags:
                 handle_received_rings(self, args["data"])
 
+
+
+
+
             # If receiving data package, resync previous items
             #asyncio.create_task(self.receive_item())#probably important
     #def on_ringlink(self, rings) -> None:
     #   self.rings = rings
 
+    async def toggle_tag(self, tag: str):
+        if self.connected:
+            if tag in self.tags:
+                self.tags.remove(tag)
+                logger.info(f"Removed Tag: {tag}")
+                if tag == "Ringlink":
+                    self.ring_link = False
+                if tag == "Deathlink":
+                    self.ring_link = False
+            else:
+                self.tags.add(tag)
+                logger.info(f"Added Tag: {tag}")
+                if tag == "Ringlink":
+                    self.ring_link = True
+                if tag == "Deathlink":
+                    self.ring_link = True
+            await self.update_tags()
+        else:
+            logger.info(f"Couldn't change tag, not yet connected to Archipelago server!")
+
+    async def update_tags(self):
+        await self.send_msgs([{"cmd": "ConnectUpdate", "tags": self.tags}])
+        await self.send_msgs_proxy(encode([{"cmd": "UpdateTags", "tags": self.tags}]))
 
 
     def on_deathlink(self, data: typing.Dict[str, typing.Any]) -> None:
         """Gets dispatched when a new DeathLink is triggered by another linked player."""
         self.last_death_link = time.time()#max(data["time"], self.last_death_link)
-        text = data.get("cause", "")
         self.activate_death = True
+        text = data.get("cause", "")
+
         if text:
             logger.info(f"DeathLink: {text}")
         else:
@@ -322,7 +362,7 @@ async def item_handler(ctx, file_path):
     # dont need to zero anything out because the first write will overwrite everything wrong
 
     locs_received = []
-    received_bytes = [0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0]
+    received_bytes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     numreceived = 0
     currenttrap = 0
@@ -336,7 +376,7 @@ async def item_handler(ctx, file_path):
                 logger.info('Could not open APTranslator.dat. Permission Error')
                 await asyncio.sleep(1)
                 continue
-            f.seek(0x1D)
+            f.seek(0x1E)
             f.write(ctx.ring_link.to_bytes(1, byteorder="little"))
 
 
@@ -673,9 +713,57 @@ async def item_handler(ctx, file_path):
                 if id == 161:#blue springs
                     received_bytes[11] = received_bytes[11] | 64
 
+                if id == 300:  # mario
+                    received_bytes[12] = received_bytes[12] | 1
+                if id == 301:  # luigi
+                    received_bytes[12] = received_bytes[12] | 2
+                if id == 302:  # yoshi
+                    received_bytes[12] = received_bytes[12] | 4
+                if id == 303:  # ray
+                    received_bytes[12] = received_bytes[12] | 8
+                if id == 304:  # silver
+                    received_bytes[12] = received_bytes[12] | 16
+                if id == 305:  # shadow
+                    received_bytes[12] = received_bytes[12] | 32
+                if id == 306:  # modern sonic
+                    received_bytes[12] = received_bytes[12] | 64
+                if id == 307:  # werehog
+                    received_bytes[12] = received_bytes[12] | 128
+                if id == 308:  # metal knuckles
+                    received_bytes[13] = received_bytes[13] | 1
+                if id == 309:  # tails doll
+                    received_bytes[13] = received_bytes[13] | 2
+                if id == 310:  # espio
+                    received_bytes[13] = received_bytes[13] | 4
+                if id == 311:  # mighty
+                    received_bytes[13] = received_bytes[13] | 8
+                if id == 312:  # charmy bee
+                    received_bytes[13] = received_bytes[13] | 16
+                if id == 313:  # vector
+                    received_bytes[13] = received_bytes[13] | 32
+                if id == 314:  # heavy
+                    received_bytes[13] = received_bytes[13] | 64
+                if id == 315:  # bomb
+                    received_bytes[13] = received_bytes[13] | 128
+
+
+
+
                 #received_bytes[11] = received_bytes[11] | 128 #deathlink toggle
                 locs_received.append(id)
-            if (ctx.bcz_emblems > 0 and emblems >= ctx.bcz_emblems):
+
+            if (ctx.goal_type == 2):
+                if ctx.bcz_emblems > 0 and emblems >= ctx.bcz_emblems / 3:
+                        received_bytes[3] = received_bytes[3] | 16
+                if ctx.bcz_emblems > 0 and emblems >= ctx.bcz_emblems * 2 / 3:
+                        received_bytes[3] = received_bytes[3] | 32
+                if ctx.bcz_emblems > 0 and emblems >= ctx.bcz_emblems:
+                        received_bytes[3] = received_bytes[3] | 64
+
+
+
+
+            if (ctx.bcz_emblems > 0 and emblems >= ctx.bcz_emblems) and (ctx.goal_type == 0 or ctx.goal_type == 1 or ctx.goal_type == 3):
                 if not ctx.actsanity and 17 not in locs_received:
                     locs_received.append(17)
                     received_bytes[2] = received_bytes[2] | 32
@@ -687,34 +775,48 @@ async def item_handler(ctx, file_path):
             # this would be so much better if i made a list of everything and then wrote it to the file all at once
             if ctx.matchmaps:
                 received_bytes[11] = received_bytes[11] | 128
-            if ctx.death_link:
-                received_bytes[2] = received_bytes[2] | 16
+
+
+
+
             f.seek(0x14)
             if emblemhints >= 2:
                 emblemhints = 3 #bits 1 and 2 set
             if soundtest!= 0:
-                emblemhints += 4 #sound test bullshit
+                emblemhints = emblemhints | 4 #sound test bullshit
+
+            if ctx.ring_reset_zone_exit:
+                emblemhints = emblemhints | 64
+
+            if ctx.death_link:
+                emblemhints = emblemhints | 128
+
+
+
             f.write(emblemhints.to_bytes(1, byteorder="little"))  # this sucks
+
+
+
             if emeralds > 7:
                 emeralds = 7
-            f.seek(0x0F)
+            f.seek(0x11)
 
             if emeralds == 0:
-                f.write(0x00.to_bytes(2, byteorder="little"))  # this sucks
+                f.write(0x00.to_bytes(1, byteorder="little"))  # this sucks
             if emeralds == 1:
-                f.write(0x01.to_bytes(2, byteorder="little"))  # this sucks
+                f.write(0x01.to_bytes(1, byteorder="little"))  # this sucks
             if emeralds == 2:
-                f.write(0x03.to_bytes(2, byteorder="little"))  # this sucks
+                f.write(0x03.to_bytes(1, byteorder="little"))  # this sucks
             if emeralds == 3:
-                f.write(0x07.to_bytes(2, byteorder="little"))  # this sucks
+                f.write(0x07.to_bytes(1, byteorder="little"))  # this sucks
             if emeralds == 4:
-                f.write(0x0F.to_bytes(2, byteorder="little"))  # this sucks
+                f.write(0x0F.to_bytes(1, byteorder="little"))  # this sucks
             if emeralds == 5:
-                f.write(0x1F.to_bytes(2, byteorder="little"))  # this sucks
+                f.write(0x1F.to_bytes(1, byteorder="little"))  # this sucks
             if emeralds == 6:
-                f.write(0x3F.to_bytes(2, byteorder="little"))  # this sucks
+                f.write(0x3F.to_bytes(1, byteorder="little"))  # this sucks
             if emeralds >= 7:
-                f.write(0x7F.to_bytes(2, byteorder="little"))  # this sucks
+                f.write(0x7F.to_bytes(1, byteorder="little"))  # this sucks
 
             f.seek(0x03)
             f.write(bytes(received_bytes))
@@ -801,7 +903,6 @@ async def item_handler(ctx, file_path):
                         f.seek(0x18)
                         f.write((int.from_bytes(f.read(1), 'little') | 1).to_bytes(1,byteorder="little"))  # let srb2 know to read the file
                         ctx.death_link_lockout = time.time()
-                        print("kill yourself")
                         ctx.activate_death = False
 
                     elif is_dead != b'\x00':  # outgoing deathlink
@@ -811,29 +912,21 @@ async def item_handler(ctx, file_path):
 
                         await ctx.send_death(message)
                         ctx.death_link_lockout = time.time()
-                        print("killed myself")
 
                 else:
                     ctx.activate_death = False
-                    print("in lockout")
                     # write 0s to both slots if conditions havent been met
                     f.seek(0x00)
                     f.write(0x00.to_bytes(2, byteorder="little"))
             # print("wrote new file data")
             if ctx.ring_link != 0:
             #more stolen code from shadow himself
-                f.seek(0x1B)
+                f.seek(0x1C)
                 current_rings_bytes = f.read(2)
-                current_rings = int.from_bytes(current_rings_bytes, byteorder="little")
+                srb2toclient = int.from_bytes(current_rings_bytes, byteorder="little", signed=True)
+                    #TODO special code for when rings goes over 9999
 
-                difference = current_rings - ctx.previous_rings
-                ctx.previous_rings = current_rings + ctx.ring_link_rings
-
-
-                #TODO special code for when rings goes over 9999
-
-
-                if difference != 0:
+                if srb2toclient != 0:
                     #logger.info("got here with a difference of " + str(difference))
                     msg = {
                         "cmd": "Bounce",
@@ -841,23 +934,30 @@ async def item_handler(ctx, file_path):
                         "data": {
                             "time": time.time(),
                             "source": ctx.slot,
-                            "amount": difference
+                            "amount": srb2toclient
                         },
                         "tags":["RingLink"]
                     }
-
                     await ctx.send_msgs([msg])
+                    f.seek(0x1C)
+                    f.write(int(0).to_bytes(2, byteorder="little",signed=True))
+
 
                 #here write new ring value back into file
-                f.seek(0x1B)
-                if current_rings+ctx.ring_link_rings < 0:
-                    ctx.ring_link_rings = -current_rings
-                if current_rings+ctx.ring_link_rings <= 65535:
-                    f.write(int(current_rings+ctx.ring_link_rings).to_bytes(2, byteorder="little"))
-                else:
-                    f.write(int(65535).to_bytes(2, byteorder="little"))
-                ctx.ring_link_rings = 0
-                # logger.info("ring link rings is " + str(ctx.ring_link_rings))
+
+
+                if ctx.ring_link_rings != 0:
+                    f.seek(0x1A)
+                    clienttosrb2 = int.from_bytes(current_rings_bytes, byteorder="little", signed=True)
+                    clienttosrb2 += ctx.ring_link_rings
+                    if 32767 >= clienttosrb2 >= -32767:
+                        f.write(int(clienttosrb2).to_bytes(2, byteorder="little", signed=True))
+                    elif clienttosrb2 <-32767:
+                        f.write(int(-32767).to_bytes(2, byteorder="little", signed=True))
+                    else:
+                        f.write(int(32767).to_bytes(2, byteorder="little", signed=True))
+                    ctx.ring_link_rings = 0
+                    #logger.info("ring link rings is " + str(ctx.ring_link_rings))
 
             f.close()
             await asyncio.sleep(1)
@@ -1114,15 +1214,15 @@ async def file_watcher(ctx, file_path):
 ##    cfg.write("addfile addons/SL_ArchipelagoSRB2_v134.pk3")
 ##    cfg.close()
 ##    os.chdir(file_path)
-    if os.path.exists(file_path+"/addons/SL_ArchipelagoSRB2_v161.pk3"):
+    if os.path.exists(file_path+"/addons/SL_ArchipelagoSRB2_v170.pk3"):
         try:
-            subprocess.Popen([file_path + "/srb2win.exe", "-file", "/addons/SL_ArchipelagoSRB2_v161.pk3"], cwd=file_path)
+            subprocess.Popen([file_path + "/srb2win.exe", "-file", "/addons/SL_ArchipelagoSRB2_v170.pk3"], cwd=file_path)
         except:
             logger.info('Could not open srb2win.exe. Open the game and load the addon manually')
     else:
         try:
             subprocess.Popen([file_path + "/srb2win.exe"], cwd=file_path)
-            logger.info('Could not find SL_ArchipelagoSRB2_v161.pk3 in the addons folder. You must load the addon manually')
+            logger.info('Could not find SL_ArchipelagoSRB2_v170.pk3 in the addons folder. You must load the addon manually')
         except:
             logger.info('Could not open srb2win.exe. Open the game and load the addon manually')
 
@@ -1334,6 +1434,7 @@ async def file_watcher(ctx, file_path):
 
             previous = current
             with open(file_path2, 'rb') as f:
+                goaltype2 = 0
                 f.seek(0x417)  # start of the emblem save file
                 for i in range(0, 0x21):
                     byte = int.from_bytes(f.read(1), 'little')
@@ -1342,6 +1443,28 @@ async def file_watcher(ctx, file_path):
                         bit = (byte >> j) & 1
                         if bit == 1:
                             locs_to_send.add(8 * i + j + 1)
+
+                            if ((8 * i + j + 1) == 19 or (8 * i + j + 1) == 38 or (8 * i + j + 1) == 57 or (8 * i + j + 1) == 76 or (8 * i + j + 1) == 95 or (8 * i + j + 1) == 122 or (8 * i + j + 1) == 125 or (8 * i + j + 1) == 128)  and ctx.goal_type == 3:
+                                goaltype2+=1
+                                if goaltype2 == 8:
+                                    ctx.finished_game = True
+                                    await ctx.send_msgs([{
+                                        "cmd": "StatusUpdate",
+                                        "status": ClientStatus.CLIENT_GOAL
+                                    }])
+
+
+
+
+                            if ((8 * i + j + 1) == 161 or (8 * i + j + 1) == 169 or (8 * i + j + 1) == 177)  and ctx.goal_type == 2:
+                                goaltype2+=1
+                                if goaltype2 == 3:
+                                    ctx.finished_game = True
+                                    await ctx.send_msgs([{
+                                        "cmd": "StatusUpdate",
+                                        "status": ClientStatus.CLIENT_GOAL
+                                    }])
+
                             if (8 * i + j + 1) == 128 and ctx.goal_type == 0:
                                 ctx.finished_game = True
                                 await ctx.send_msgs([{

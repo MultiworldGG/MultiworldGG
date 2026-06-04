@@ -10,7 +10,7 @@ class TestShopShopReceiveSlotSend(CrossCodeTestBase):
     def test_all_slots_available_with_shop_item(self):
         all_state = self.multiworld.get_all_state(use_cache=False)
         item_list = self.get_items_by_name(
-            shop.name for shop in self.world_data.shop_unlock_by_shop.values()
+            shop.item.name for shop in self.world_data.shop_unlock_by_shop.values()
         )
         for item in item_list:
             all_state.remove(item)
@@ -20,7 +20,7 @@ class TestShopShopReceiveSlotSend(CrossCodeTestBase):
             # create a state with just the shop unlock for this shop.
             shop_state = all_state.copy()
             shop_state.collect(
-                self.get_item_by_name(self.world_data.shop_unlock_by_shop[shop_data.internal_name].name)
+                self.get_item_by_name(self.world_data.shop_unlock_by_shop[shop_data.internal_name].item.name)
             )
 
             self.assertTrue(shop_state.can_reach_region(shop_name, self.player))
@@ -37,7 +37,7 @@ class TestSlotShopReceiveSlotSend(CrossCodeTestBase):
     def test_all_slots_available_with_slot_item(self):
         all_state = self.multiworld.get_all_state(use_cache=False)
         item_list = self.get_items_by_name(
-            shop.name for shop in self.world_data.shop_unlock_by_shop_and_id.values()
+            shop.item.name for shop in self.world_data.shop_unlock_by_shop_and_id.values()
         )
         for item in item_list:
             all_state.remove(item)
@@ -49,7 +49,7 @@ class TestSlotShopReceiveSlotSend(CrossCodeTestBase):
                 # create a state with just the slot unlock for this item.
                 shop_state = all_state.copy()
                 shop_state.collect(self.get_item_by_name(
-                    self.world_data.shop_unlock_by_shop_and_id[shop_data.internal_name, item_id].name
+                    self.world_data.shop_unlock_by_shop_and_id[shop_data.internal_name, item_id].item.name
                 ))
 
                 self.assertTrue(shop_state.can_reach_location(location_data.name, self.player))
@@ -64,7 +64,7 @@ class TestSlotItemReceiveSlotSend(CrossCodeTestBase):
     def test_all_slots_available_with_slot_item(self):
         all_state = self.multiworld.get_all_state(use_cache=False)
         item_list = self.get_items_by_name(
-            shop.name for shop in self.world_data.shop_unlock_by_id.values()
+            shop.item.name for shop in self.world_data.shop_unlock_by_id.values()
         )
         for item in item_list:
             all_state.remove(item)
@@ -74,7 +74,7 @@ class TestSlotItemReceiveSlotSend(CrossCodeTestBase):
                 # create a state with just the slot unlock for this item.
                 shop_state = all_state.copy()
                 shop_state.collect(self.get_item_by_name(
-                    self.world_data.shop_unlock_by_id[item_id].name
+                    self.world_data.shop_unlock_by_id[item_id].item.name
                 ))
 
                 self.assertTrue(shop_state.can_reach_location(location_data.name, self.player))

@@ -30,7 +30,7 @@ from .Patches import OoTContainer, patch_rom
 from .N64Patch import create_patch_file
 from .Cosmetics import patch_cosmetics
 
-from BaseClasses import MultiWorld, CollectionState, Tutorial, LocationProgressType
+from BaseClasses import MultiWorld, CollectionState, Tutorial
 from Options import Range, Toggle, VerifyKeys, Accessibility, PlandoConnections, PlandoItems
 from Fill import fill_restrictive, fast_fill, FillError
 from worlds.generic.Rules import exclusion_rules, add_item_rule
@@ -1032,9 +1032,7 @@ class OOTWorld(World):
             self.empty_dungeon_reward_location_names.add(location.name)
             self.hinted_dungeon_reward_locations[reward_name] = None
             self.multiworld.push_precollected(self.create_item(reward_name))
-            location.place_locked_item(self.create_item('Recovery Heart'))
-            location.address = None
-            location.show_in_spoiler = False
+            location.place_locked_item(self.create_item('Rupee (1)'))
 
 
     def add_starting_hearts(self):
@@ -1399,16 +1397,12 @@ class OOTWorld(World):
         fill_location_set = set(fill_locations)
         for location in self.get_locations():
             if location.player != self.player or location.item is not None:
-                dungeon = getattr(location.parent_region, 'dungeon', None)
-                if dungeon is not None and self.precompleted_dungeons.get(dungeon.name, False):
-                    location.progress_type = LocationProgressType.EXCLUDED
                 continue
             dungeon = getattr(location.parent_region, 'dungeon', None)
             if dungeon is None:
                 continue
             dungeon_name = dungeon.name
             if self.precompleted_dungeons.get(dungeon_name, False):
-                location.progress_type = LocationProgressType.EXCLUDED
                 if location in fill_location_set:
                     empty_locations.append(location)
 
@@ -1434,8 +1428,10 @@ class OOTWorld(World):
         def place_empty_item(location, item):
             fill_locations.remove(location)
             empty_locations.remove(location)
-            location.progress_type = LocationProgressType.EXCLUDED
             self.multiworld.push_item(location, item, collect=False)
+
+        for location in empty_locations[:getattr(self, 'empty_dungeon_free_junk_count', 0)]:
+            place_empty_item(location, self.create_item('Rupee (1)'))
 
         local_nonprogression_items = [
             item for item in filleritempool
@@ -1482,7 +1478,6 @@ class OOTWorld(World):
         for location, item in zip(empty_locations, nonprogression_items):
             remove_nonprogression_item(item)
             fill_locations.remove(location)
-            location.progress_type = LocationProgressType.EXCLUDED
             self.multiworld.push_item(location, item, collect=False)
 
 
@@ -1530,8 +1525,6 @@ class OOTWorld(World):
             # During prefill we assume every non-prefill item for this player could be found eventually.
             # Use the MultiWorld itempool here so rewards shuffled out of boss locations are also included.
             state = CollectionState(self.multiworld)
-            for item in self.multiworld.precollected_items[self.player]:
-                self.collect(state, item)
             for item in self.multiworld.itempool:
                 if item.player == self.player:
                     if not assume_song_of_time and item.name == 'Song of Time':
@@ -1572,60 +1565,53 @@ class OOTWorld(World):
                     return
             raise ValueError(f"Could not remove prefill item by identity: {item}")
 
-        def place_reachable_prefill_items(locations, items, fill_stage, dungeon_name, base_state=None):
-            base_state = base_state or state
-            unplaced_items = items[:]
-            while unplaced_items:
-                item = unplaced_items.pop()
-                placement_state = prefill_state(
-                    base_state,
-                    excluded_items=unplaced_items + [item],
-                    collect_placed_items=fill_stage != 'SmallKey',
-                )
-                self.random.shuffle(locations)
-                for location_index, location in enumerate(locations):
-                    if location.can_fill(placement_state, item, True):
-                        locations.pop(location_index)
-                        self.multiworld.push_item(location, item, collect=False)
-                        location.locked = True
-                        placed_prefill_items.append(item)
-                        break
-                else:
-                    raise FillError(
-                        f"OoT (Player {self.player}): no reachable location for {item.name} "
-                        f"during {fill_stage} prefill for {dungeon_name}.")
-
-        # Pre-completed dungeons are intentionally empty of progression. Keep
-        # their own dungeon items inside them before generic empty-dungeon fill.
-        precompleted_dungeon_items = [
+        # Pre-completed dungeons remain beatable but barren. Their traversal
+        # items are still placed in the dungeon; non-required dungeon items are
+        # discarded and replaced with green rupees in fill_hook.
+        self.empty_dungeon_free_junk_count = 0
+        empty_dungeon_payload_items = [
             item for item in self.pre_fill_items
-            if self.item_precompleted_dungeon_name(item) is not None
+            if (self.item_precompleted_dungeon_name(item) is not None
+                and item.type not in {'SmallKey', 'BossKey', 'SilverRupee'})
         ]
-        precompleted_items_by_dungeon = {}
-        for item in precompleted_dungeon_items:
-            precompleted_items_by_dungeon.setdefault(
-                self.item_precompleted_dungeon_name(item), []).append(item)
-        for dungeon_name, dungeon_items in precompleted_items_by_dungeon.items():
-            locations = [
+        for item in empty_dungeon_payload_items:
+            remove_prefill_item(item)
+            self.empty_dungeon_free_junk_count += 1
+
+        # Empty dungeons keep the traversal layout vanilla. This avoids making a
+        # live-but-barren dungeon fail full accessibility because a key or
+        # silver rupee puzzle item was shuffled behind itself.
+        empty_dungeon_required_items = [
+            item for item in self.pre_fill_items
+            if (self.item_precompleted_dungeon_name(item) is not None
+                and item.type in {'SmallKey', 'BossKey', 'SilverRupee'})
+        ]
+
+        def empty_dungeon_vanilla_locations(item):
+            dungeon_name = self.item_precompleted_dungeon_name(item)
+            vanilla_item_names = {item.name}
+            if item.name.startswith('Small Key Ring ('):
+                vanilla_item_names.add(f"Small Key ({dungeon_name})")
+            return [
                 location for location in self.multiworld.get_unfilled_locations(player=self.player)
-                if valid_dungeon_item_location(self, 'dungeon', dungeon_name, location)
+                if (getattr(location.parent_region, 'dungeon', None) is not None
+                    and location.parent_region.dungeon.name == dungeon_name
+                    and location.vanilla_item in vanilla_item_names)
             ]
-            if len(locations) < len(dungeon_items):
-                raise FillError(
-                    f"OoT (Player {self.player}): not enough locations in pre-completed "
-                    f"{dungeon_name} for restricted dungeon items: "
-                    f"{[item.name for item in dungeon_items]}")
-            self.random.shuffle(locations)
-            self.random.shuffle(dungeon_items)
-            for location, item in zip(locations, dungeon_items):
-                remove_prefill_item(item)
-                self.multiworld.push_item(location, item, collect=False)
-                location.locked = True
-                placed_prefill_items.append(item)
+
+        for item in empty_dungeon_required_items:
+            locations = empty_dungeon_vanilla_locations(item)
+            if not locations:
+                continue
+            location = locations[0]
+            remove_prefill_item(item)
+            self.multiworld.push_item(location, item, collect=False)
+            location.locked = True
+            placed_prefill_items.append(item)
 
         # Place dungeon items
         special_fill_types = [
-            'GanonBossKey', 'BossKey', 'SmallKey', 'HideoutSmallKey',
+            'SmallKey', 'GanonBossKey', 'BossKey', 'HideoutSmallKey',
             'Map', 'Compass', 'SilverRupee',
         ]
         type_to_setting = {
@@ -1650,7 +1636,8 @@ class OOTWorld(World):
                         remove_prefill_item(item)
                     placement_items = stage_items[:]
                     self.random.shuffle(locations)
-                    fill_restrictive(self.multiworld, prefill_state(state), locations, placement_items[:],
+                    fill_restrictive(self.multiworld, prefill_state(state, excluded_items=placement_items),
+                        locations, placement_items[:],
                         single_player_placement=True, lock=True, allow_excluded=True,
                         on_place=lambda loc: placed_prefill_items.append(loc.item))
             else:
@@ -1659,8 +1646,7 @@ class OOTWorld(World):
                     dungeon_items = list(filter(lambda item: dungeon_name in item.name, stage_items))
                     if not dungeon_items:
                         continue
-                    if (self.accessibility == 'full'
-                            and self.precompleted_dungeons.get(dungeon_name, False)):
+                    if self.precompleted_dungeons.get(dungeon_name, False):
                         locations = [
                             location for location in self.multiworld.get_unfilled_locations(player=self.player)
                             if valid_dungeon_item_location(self, 'dungeon', dungeon_name, location)
@@ -1673,12 +1659,10 @@ class OOTWorld(World):
                         remove_prefill_item(item)
                     placement_items = dungeon_items[:]
                     self.random.shuffle(locations)
-                    if fill_stage == 'SmallKey' and getattr(self, type_to_setting[fill_stage]) == 'dungeon':
-                        place_reachable_prefill_items(locations, placement_items, fill_stage, dungeon_name)
-                    else:
-                        fill_restrictive(self.multiworld, prefill_state(state), locations, placement_items[:],
-                            single_player_placement=True, lock=True, allow_excluded=True,
-                            on_place=lambda loc: placed_prefill_items.append(loc.item))
+                    fill_restrictive(self.multiworld, prefill_state(state, excluded_items=placement_items),
+                        locations, placement_items[:],
+                        single_player_placement=True, lock=True, allow_excluded=True,
+                        on_place=lambda loc: placed_prefill_items.append(loc.item))
 
         # Place songs
         # 15 built-in retries because this section can fail sometimes
@@ -2295,8 +2279,6 @@ class OOTWorld(World):
     # Entrance validation still needs the complete age-travel assumption.
     def get_state_with_complete_itempool(self):
         all_state = CollectionState(self.multiworld)
-        for item in self.multiworld.precollected_items[self.player]:
-            self.collect(all_state, item)
         for item in self.itempool + self.pre_fill_items:
             self.multiworld.worlds[item.player].collect(all_state, item)
         for loc in self.get_locations():

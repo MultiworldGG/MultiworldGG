@@ -12,20 +12,30 @@ The [player options page for this game](../player-options) contains all the opti
 
 - Do modded characters work?
   
-  While you can use modded characters, logic doesn't currently account for them and there's no way to switch to them in the hub.
-  If you want to use a modded character with no logic issues, select 'All' for your starting character in the yaml settings.
+  Currently, 16 different modded characters are supported and can be enabled in the yaml settings. The AP addon does not contain these characters by default, so you will have to download them seperately (links in additional notes)
+  
+  If you want to use non-supported modded characters with no logic issues, include all vanilla characters for your starting characters in the yaml settings.
 
-- The AP mod didn't load when connecting
+- Do modded level packs work?
+
+  No
+
+- The AP mod didn't load when connecting.
 
   You can load the AP mod manually and everything will work fine.
 
-- Something something can't read APTranslator.dat
+- Something something can't read APTranslator.dat.
   
-  I swear I'm working on fixing that, keep restarting the client until it works.
+  I swear I'm working on fixing that, keep restarting the client until it works or see the above linux step.
 
 - SRB2 was closed, do I have to restart the client?
 
   No, you can reopen SRB2 and reload the AP mod without any issues.
+
+- The heavily lags after loading the pk3.
+
+  Make sure you aren't running SRB2 off of an external drive that may have a slow file transfer speed.
+
 
 ## ADDITIONAL NOTES
 

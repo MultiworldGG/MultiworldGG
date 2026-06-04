@@ -42,47 +42,7 @@ def map_page_index(data: Any) -> int:
     if (data is None or data == ""):
         return 0
 
-    print (f"data = {data}")
-
-    map_dict = dict([
-                (1000000, 11), # "Depths"), 
-                (1001000, 28), # "* Undead Burg  / Undead Parish"), -> Undead Burg Upper
-                (1001100, 29), # "* Undead Burg  / Undead Parish"), -> Undead Parish
-                (1001200, 27), # "* Undead Burg  / Undead Parish"), -> Undead Burg Lower
-                (1002000, 14), #"Firelink Shrine"), 
-                (1100000, 19), #"Painted World"), 
-                (1200000, 9),  #"* Darkroot Garden / Darkroot Basin"), -> Darkroot Garden
-                (1200100, 8),  #"* Darkroot Garden / Darkroot Basin"), -> Darkroot Basin
-                (1201000, 31), #"* Oolacile"), -> Sanctuary Garden & Sanctuary
-                (1201100, 32), #"* Oolacile"), -> Royal wood
-                (1201200, 33), #"* Oolacile"), -> Oolacile Township
-                (1201300, 34), #"* Oolacile"), -> Chasm of the Abyss
-                (1300000, 6),  #"Catacombs"), 
-                (1301000, 25), #"* Tomb of the Giants"), -> Upper
-                (1301100, 24), #"* Tomb of the Giants"), -> Lower
-                (1302000, 15), #"* Great Hollow / Ash Lake"), -> Great Hollow
-                (1302100, 3),  #"* Great Hollow / Ash Lake"), -> Ash Lake
-                (1400000, 5),  #"* Blighttown"), -> Upper
-                (1400100, 4),  #"* Blighttown"), -> Lower
-                (1401000, 10), #"* Demon Ruins / Lost Izalith"), -> Demon Ruins
-                (1401100, 17), #"* Demon Ruins / Lost Izalith"), -> Lost Izalith
-                (1500000, 22), #"* Sen's Fortress"), -> Main
-                (1500100, 21), #"* Sen's Fortress"), -> Basement
-                (1500200, 23), #"* Sen's Fortress"), -> Roof
-                (1501000, 1),  #"* Anor Londo"), -> Exterior
-                (1501100, 2),  #"* Anor Londo"), -> Interior
-                (1600000, 18), #"* New Londo Ruins / Valley of Drakes"), -> New Londo Ruins
-                (1600100, 30), #"* New Londo Ruins / Valley of Drakes"), -> Valley of Drakes
-                (1700000, 12), #"* Duke's Archives / Crystal Cave"), -> Main
-                (1700100, 13), #"* Duke's Archives / Crystal Cave"), -> Big Room
-                (1700200, 7),  #"* Duke's Archives / Crystal Cave"), -> Crystal Cave
-                (1800000, 16), #"Kiln of the First Flame"), 
-                (1801000, 26)])#"Northern Undead Asylum")]
-
-    if data in map_dict:
-        return map_dict[data]
-    else:
-        return 0;
+    return data
     
 class DSRWorld(World):
     """
@@ -110,7 +70,7 @@ class DSRWorld(World):
         "map_page_maps" : "maps/maps.json",
         "map_page_locations" : "locations/locations.json",
         "external_pack_key" : "ut_poptracker_path",
-        "map_page_setting_key" : "map_{team}_{player}",
+        "map_page_setting_key" : "DSR_current_map_{team}_{player}",
         "map_page_index" : map_page_index
     }
 
@@ -1029,7 +989,7 @@ class DSRWorld(World):
             "itemsId": items_id,
             "itemsUpgrades": items_upgrades,
             "itemsAddress": items_address,
-            "apworld_api_version" : "0.1.4.0" # Manually set our apworld api level, for detecting compatibility with client
+            "apworld_api_version" : "0.1.5.0" # Manually set our apworld api level, for detecting compatibility with client
         }
 
         self.items_id = items_id

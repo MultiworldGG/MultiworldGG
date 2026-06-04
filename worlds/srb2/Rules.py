@@ -54,13 +54,61 @@ def fix_reg(entrance_map: Dict[SRB2Zones, str], entrance: SRB2Zones, invalid_reg
 def set_rules(world, options: SRB2Options, player: int, area_connections: dict, move_rando_bitvec: int):
 
     #set up info array
-    character_info = {'Sonic': [100,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"midair_speed","roll","badnik_bounce",'can_use_shields',"can_spindash"],
-                      'Tails': [1500,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"roll", 'free_flyer','makes_stages_easy','soft_jump',"badnik_bounce",'can_use_shields',"can_spindash"],
-                      'Knuckles': [80,'weak_walls','spin_walls','strong_walls','climbs_walls', 'fits_under_gaps','instant_speed',"roll",'low_grav',"midair_speed",'soft_jump',"badnik_bounce",'can_use_shields',"can_spindash"],
+    character_info = {'Sonic': [100,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"midair_speed","roll","badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
+                      'Tails': [1500,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"roll", 'free_flyer','soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
+                      'Knuckles': [80,'weak_walls','spin_walls','strong_walls','climbs_walls', 'fits_under_gaps','instant_speed',"roll",'low_grav',"midair_speed",'soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
                       'Amy': [115,'weak_walls','spin_walls', 'strong_walls', 'strong_floors', 'breaks_spikes', 'pounds_springs','soft_jump',"badnik_bounce",'can_use_shields','attacks_though_thin_walls'],
                       'Fang': [200,'strong_floors','lava_immune','soft_jump','downward_projectile','can_use_shields','attacks_though_thin_walls'],
-                      'Metal Sonic': [100,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"can_hover",'breaks_spikes',"roll",'soft_jump','makes_stages_easy',"badnik_bounce",'can_use_shields',"can_spindash"],
+                      'Metal Sonic': [100,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"can_hover",'breaks_spikes',"roll",'soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
+
+                      'Mario': [250,'weak_walls', 'spin_walls',"strong_walls","strong_floors",'roll',"fits_under_gaps","instant_speed","midair_speed","wall_jump","breaks_spikes","pounds_springs","can_use_shields","skims_water","can_stomp","soft_jump","attacks_though_thin_walls","swims"],#
+                      'Luigi': [300,'weak_walls', 'spin_walls',"strong_walls","strong_floors",'roll',"fits_under_gaps","instant_speed","midair_speed","wall_jump","breaks_spikes","pounds_springs","can_use_shields","skims_water","can_stomp","soft_jump","attacks_though_thin_walls","swims"],#
+
+                      'Yoshi': [200,'weak_walls','spin_walls','strong_walls',"strong_floors",'stomp',"free_flyer","downward_projectile","badnik_bounce","breaks_spikes",'pounds_springs'],
+                      'Ray': [250,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"roll", 'free_flyer','soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water","wall_jump","climbs_walls"],#
+                      'Silver': [600,'weak_walls','spin_walls','strong_walls','strong_floors','breaks_spikes',"free_flyer",'soft_jump',"midair_speed","can_hover","downward_projectile","attacks_though_thin_walls"],#
+                      'Shadow': [500,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"midair_speed","roll","badnik_bounce",'can_use_shields',"can_spindash","skims_water"],#
+                      'Modern Sonic': [125,'weak_walls','spin_walls','strong_walls','stronger_walls','strong_floors','fits_under_gaps','instant_speed','midair_speed','free_flyer','wall_jump','breaks_spikes','can_stomp','skims_water'],
+                      'Werehog': [150, 'weak_walls', "free_flyer", "badnik_bounce", "breaks_spikes", 'soft_jump','can_use_shields'],
+
+                      'Metal Knuckles': [80,'weak_walls','spin_walls','strong_walls','fits_under_gaps','instant_speed','midair_speed','climbs_walls','breaks_spikes','can_spindash','can_use_shields','badnik_bounce'],
+                      'Tails Doll': [300,'weak_walls','spin_walls','strong_walls','strong_floors','breaks_spikes','pounds_springs','can_use_shields','soft_jump','skims_water','lava_immune'],
+
+                      'Espio': [125,'weak_walls','spin_walls',"climbs_walls","wall_jump","roll","instant_speed","midair_speed","can_spindash","skims_water","badnik_bounce",'can_use_shields'],#
+                      'Mighty': [100,'weak_walls','spin_walls','strong_floors','fits_under_gaps',"wall_jump","roll","instant_speed","can_spindash","skims_water","badnik_bounce",'can_use_shields',"breaks_spikes","stomp"],#
+                      'Charmy Bee': [1500,'weak_walls','spin_walls','fits_under_gaps',"instant_speed","skims_water","stomp","free_flyer","can_spindash","soft_jump","fits_through_bars"],#
+                      'Vector': [100,'weak_walls','spin_walls','strong_walls',"climbs_walls","roll","instant_speed","midair_speed","breaks_spikes","can_spindash","skims_water","badnik_bounce",'can_use_shields'],#fits under gaps but it sucks
+                      'Heavy': [450,'weak_walls','spin_walls','strong_walls','strong_floors','fits_under_gaps',"breaks_spikes","stomp","attacks_though_thin_walls","lava_immune",'pounds_springs'],#
+                      'Bomb': [250,'weak_walls','spin_walls','fits_under_gaps',"roll","instant_speed","breaks_spikes","skims_water","can_spindash","attacks_though_thin_walls",'soft_jump'],#
+
+                      'Kris': [],#
+                      'Susie': [],#
+                      'Ralsei': [],#
+
+                        #
+                      'Surge': [],  #
+                      'Blaze': [],  #
+
+                      'Skip': [200, 'weak_walls', 'spin_walls', 'fits_under_gaps', 'free_flyer', 'can_spindash','roll','badnik_bounce'],
+                      'Jana': [],#
+                      'Kou': [],#
+                      'Echoes & Abyss': [],#
+
+                      'Inazuma': [],  #
+                      'Aether': [],  #
+
+                      'Whisper': [],
+                      'Tangle': [],
+                      'X Sonic': [115, 'weak_walls', 'spin_walls', 'strong_walls', 'stronger_walls','strong_floors','roll','fits_under_gaps', 'instant_speed','breaks_spikes', 'insane_speed', 'skims_water','badnik_bounce','can_use_shields',"can_spindash"],
                       }
+
+    #skip extra code:
+    #'lava_immune'with either Fire Shield or Elemental Shield
+    #'stomp' with Bubble Shield
+    #'instant_speed' with either Lightning Shield or Armageddon Shield
+
+
+
 #tag descriptions:
     #jump_height
     #weak_walls (fhz ice)
@@ -86,9 +134,15 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
     #lava_immune
     #insane_speed (dsz1 fast door)
     #downward_projectile (able to break monitors in shallow bouyant slime, ie fangs popgun)
-    #shoots_player_blockers (able to break monitors through exclusively player blocking linedefs)#not implemented because fuck that
+    #shoots_player_blockers (able to break monitors through exclusively player blocking linedefs)
     # attacks_though_thin_walls (acz2 monitors near heart emblem can be broken by fangs popgun & amy's hammer)
+    #badnik_bounce (get full height off of badnik/monitor bouncing)
 
+    #to add
+    #breaths_water
+    #fits_through_bars (aerial garden bars)
+    #swims (infinite height in water) (probably useless outside azt)
+    #not_hydrophobic (water doesnt kill/ immobilize you) (x sonic)
 
     def char_needs_tags(state: CollectionState,tag_list,jump_height):
         for i in character_info:
@@ -138,7 +192,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
     connect_regions(world, player, "Menu", "Egg Rock Zone 1", lambda state: state.has("Egg Rock Zone", player) or state.has("Egg Rock Zone (Act 1)", player))
     connect_regions(world, player, "Menu", "Egg Rock Zone 2", lambda state: state.has("Egg Rock Zone", player) or state.has("Egg Rock Zone (Act 2)", player))
 
-    if options.bcz_emblem_percent==0:
+    if options.bcz_emblem_percent==0 and (options.completion_type == 1 or options.completion_type == 0):
         connect_regions(world, player, "Menu", "Black Core Zone 1", lambda state: state.has("Black Core Zone", player) or state.has("Black Core Zone (Act 1)", player))
         connect_regions(world, player, "Menu", "Black Core Zone 2", lambda state: state.has("Black Core Zone", player) or state.has("Black Core Zone (Act 2)", player))
         connect_regions(world, player, "Menu", "Black Core Zone 3", lambda state: state.has("Black Core Zone", player) or state.has("Black Core Zone (Act 3)", player))
@@ -162,9 +216,19 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
     connect_regions(world, player, "Menu", "Pipe Towers Zone", lambda state: state.has("Pipe Towers Zone", player))
     connect_regions(world, player, "Menu", "Forest Fortress Zone", lambda state: state.has("Forest Fortress Zone", player))
     connect_regions(world, player, "Menu", "Final Demo Zone", lambda state: state.has("Final Demo Zone", player))
-    connect_regions(world, player, "Menu", "Haunted Heights Zone", lambda state: state.has("Haunted Heights Zone", player))
-    connect_regions(world, player, "Menu", "Aerial Garden Zone", lambda state: state.has("Aerial Garden Zone", player))
-    connect_regions(world, player, "Menu", "Azure Temple Zone", lambda state: state.has("Azure Temple Zone", player))
+
+    if options.bcz_emblem_percent != 0 and options.completion_type == 2:
+        connect_regions(world, player, "Menu", "Haunted Heights Zone", lambda state: state.has("Haunted Heights Zone", player) or state.has("Emblem", player, int(options.bcz_emblem_percent/3)))
+        connect_regions(world, player, "Menu", "Aerial Garden Zone", lambda state: state.has("Aerial Garden Zone", player) or state.has("Emblem", player, int(options.bcz_emblem_percent*2/3)))
+        connect_regions(world, player, "Menu", "Azure Temple Zone", lambda state: state.has("Azure Temple Zone", player) or state.has("Emblem", player, int(options.bcz_emblem_percent)))
+
+    else:
+        connect_regions(world, player, "Menu", "Haunted Heights Zone", lambda state: state.has("Haunted Heights Zone", player))
+        connect_regions(world, player, "Menu", "Aerial Garden Zone", lambda state: state.has("Aerial Garden Zone", player))
+        connect_regions(world, player, "Menu", "Azure Temple Zone", lambda state: state.has("Azure Temple Zone", player))
+
+
+
     if options.nights_maps:
         connect_regions(world, player, "Menu", "Floral Field Zone", lambda state: state.has("Floral Field Zone", player))
         connect_regions(world, player, "Menu", "Toxic Plateau Zone", lambda state: state.has("Toxic Plateau Zone", player))
@@ -214,7 +278,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                                                  char_needs_tags(state, ["wall_jump"], -1) or
                                                  char_needs_tags(state, ["climbs_walls"], -1))
             add_rule(world.get_location("Greenflower (Act 1) Heart Emblem", player),
-                     lambda state: char_needs_tags(state, [], 500))#badnik bounce
+                     lambda state: char_needs_tags(state, [], 400) or char_needs_tags(state, ['free_flyer'], 200))#badnik bounce
             add_rule(world.get_location("Greenflower (Act 1) Clear", player),
                      lambda state: state.has("Yellow Springs", player) or
                                    char_needs_tags(state, [], 150) or
@@ -227,6 +291,8 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                                                  char_needs_tags(state, ["climbs_walls"], -1) or
                                                  char_needs_tags(state, ["instant_speed"], -1)
                      )
+            add_rule(world.get_location("Greenflower (Act 1) Heart Emblem", player),
+                     lambda state: char_needs_tags(state, [], 400) or char_needs_tags(state, ['free_flyer'], 200) or char_needs_tags(state, ['badnik_bounce'], -1))#badnik bounce
             add_rule(world.get_location("Greenflower (Act 1) Clear", player),
                  lambda state: state.has("Yellow Springs",player) or
                         char_needs_tags(state, [], 150) or
@@ -260,7 +326,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
 
         add_rule(world.get_location("Greenflower (Act 2) Star Emblem", player),
                  lambda state: (state.has("Yellow Springs", player) and state.has("Red Springs", player) and char_needs_tags(state,['spin_walls'],-1)) or
-                               (state.has("Red Springs", player) or (state.has("Yellow Springs", player) and char_needs_tags(state, ['spin_walls'], 250))) or
+                               ((state.has("Red Springs", player) or state.has("Yellow Springs", player)) and char_needs_tags(state, ['spin_walls'], 250)) or
                                 char_needs_tags(state, ["wall_jump",'spin_walls'], -1) or
                                 char_needs_tags(state, ['spin_walls'], 1200) or
                                 char_needs_tags(state, ['climbs_walls','spin_walls'], -1))
@@ -692,9 +758,9 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
         add_rule(world.get_location("Deep Sea (Act 2) Spade Emblem", player),
                  lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [],400))
         add_rule(world.get_location("Deep Sea (Act 2) Heart Emblem", player),
-                 lambda state: char_needs_tags(state, ['spin_walls'], -1))
+                 lambda state: (char_needs_tags(state, ['spin_walls'], -1) and state.has("Yellow Springs",player)) or char_needs_tags(state, ['spin_walls'], 400))
         add_rule(world.get_location("Deep Sea (Act 2) Diamond Emblem", player),
-                 lambda state: char_needs_tags(state, ['strong_walls',"climbs_walls"], -1) or
+                 lambda state: char_needs_tags(state, ["strong_walls","climbs_walls"], -1) or
                                (char_needs_tags(state, ['strong_walls','strong_floors',"pounds_springs"], 115) and state.has("Yellow Springs",player) and state.has("Gargoyle Statues",player)) or
                                char_needs_tags(state, ['strong_walls'], 400))
         add_rule(world.get_location("Deep Sea (Act 2) Club Emblem", player),
@@ -704,7 +770,8 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
         add_rule(world.get_location("Deep Sea (Act 2) Emerald Token - Near Heart Emblem", player),
                  lambda state: char_needs_tags(state, ['spin_walls'], -1))
         add_rule(world.get_location("Deep Sea (Act 2) Emerald Token - No Spin Spring Turnaround", player),
-                 lambda state: char_needs_tags(state, ['strong_floors'], -1) and (state.has("Air Bubbles", player) or state.has("Elemental Shield", player)))
+                 lambda state: ((((char_needs_tags(state, ['strong_floors'], -1) and (state.has("Red Springs", player) or state.has("Gargoyle Statues", player)))or char_needs_tags(state, ['strong_floors',"wall_jump"], -1) or ())
+                                and state.has("Yellow Springs", player)) or char_needs_tags(state, ['strong_floors'], 1500) or (state.has("Gargoyle Statues", player) and char_needs_tags(state, ['strong_floors'], 350))) and (state.has("Air Bubbles", player) or state.has("Elemental Shield", player)))
 
         add_rule(world.get_location("Deep Sea (Act 2) Emerald Token - Down Right From Goal", player),
                  lambda state: ((state.has("Yellow Springs", player)) or
@@ -720,16 +787,18 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                      lambda state: char_needs_tags(state, [], 250) or char_needs_tags(state, ['can_hover'],-1) or char_needs_tags(state, ['climbs_walls'], -1) or state.has("Yellow Springs", player))
             #not possible for amy
             add_rule(world.get_location("Deep Sea (Act 1) Star Emblem", player),
-                 lambda state: char_needs_tags(state,['strong_walls',"pounds_springs",'can_hover'],-1) or
+                 lambda state: ((char_needs_tags(state,['strong_walls',"pounds_springs",'can_hover'],-1) or
                                 char_needs_tags(state,['strong_walls',"pounds_springs"],250) or
                                 char_needs_tags(state,['strong_walls',"pounds_springs",'climbs_walls'],-1) or
                                 (char_needs_tags(state,['strong_walls',"pounds_springs"],-1) and state.has("Yellow Springs",player) and
-                                state.has("Red Springs",player) and state.has("Gargoyle Statues",player)) or
+                                state.has("Gargoyle Statues",player)) or
                                 (char_needs_tags(state,['strong_walls',"pounds_springs",'can_use_shields'],-1) and state.has("Yellow Springs",player) and
-                                state.has("Red Springs",player)and state.has("Whirlwind Shield",player) ) or
-                                (char_needs_tags(state,['strong_walls',"pounds_springs"],200) and state.has("Yellow Springs",player) and
+                                state.has("Red Springs",player)and state.has("Whirlwind Shield",player)) or
+                                (char_needs_tags(state,['strong_walls',"pounds_springs"],200) and state.has("Yellow Springs",player))) and
                                 state.has("Red Springs",player)) or
                                char_needs_tags(state,['strong_walls'],1500))
+
+
             add_rule(world.get_location("Deep Sea (Act 1) Spade Emblem", player),
                  lambda state:  (((char_needs_tags(state,[],200) and state.has("Yellow Springs",player)) or
                                 char_needs_tags(state, [], 250) or
@@ -772,19 +841,22 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                  lambda state: char_needs_tags(state, [], 250) or char_needs_tags(state, ['can_hover'],-1) or
                                char_needs_tags(state, ['climbs_walls'], -1) or state.has("Yellow Springs", player) or char_needs_tags(state, ["badnik_bounce"], -1))
             add_rule(world.get_location("Deep Sea (Act 1) Star Emblem", player),
-                 lambda state: char_needs_tags(state,['strong_walls',"pounds_springs",'can_hover'],-1) or
+                 lambda state: ((char_needs_tags(state,['strong_walls',"pounds_springs",'can_hover'],-1) or
                                 char_needs_tags(state,['strong_walls',"pounds_springs"],250) or
                                 char_needs_tags(state,['strong_walls',"pounds_springs",'climbs_walls'],-1) or
                                 (char_needs_tags(state,['strong_walls',"pounds_springs"],-1) and state.has("Yellow Springs",player) and
-                                state.has("Red Springs",player) and state.has("Gargoyle Statues",player)) or
+                                state.has("Gargoyle Statues",player)) or
                                 (char_needs_tags(state,['strong_walls',"pounds_springs",'can_use_shields'],-1) and state.has("Yellow Springs",player) and
-                                state.has("Red Springs",player)and state.has("Whirlwind Shield",player) ) or
-                                (char_needs_tags(state,['strong_walls',"pounds_springs"],200) and state.has("Yellow Springs",player) and
-                                state.has("Red Springs",player)) or
-                                (char_needs_tags(state,['strong_walls',"pounds_springs",'badnik_bounce'],-1) and state.has("Red Springs",player) and state.has("Gargoyle Statues",player)) or
-                                (char_needs_tags(state,['strong_walls',"pounds_springs",'can_use_shields','badnik_bounce'],-1) and state.has("Red Springs",player)and state.has("Whirlwind Shield",player) ) or
-                                (char_needs_tags(state,['strong_walls',"pounds_springs",'badnik_bounce'],200) and state.has("Red Springs",player)) or
+                                 state.has("Whirlwind Shield",player)) or
+                                (char_needs_tags(state,['strong_walls',"pounds_springs"],200) and state.has("Yellow Springs",player)) or
+                                (char_needs_tags(state,['strong_walls',"pounds_springs",'badnik_bounce'],-1) and state.has("Gargoyle Statues",player)) or
+                                (char_needs_tags(state,['strong_walls',"pounds_springs",'can_use_shields','badnik_bounce'],-1) and state.has("Whirlwind Shield",player)) or
+                                (char_needs_tags(state,['strong_walls',"pounds_springs",'badnik_bounce'],200))) and state.has("Red Springs",player)) or
                                char_needs_tags(state,['strong_walls'],1500))
+
+
+
+
             add_rule(world.get_location("Deep Sea (Act 1) Spade Emblem", player),
                  lambda state:  (((char_needs_tags(state,[],200) and state.has("Yellow Springs",player)) or
                                   (char_needs_tags(state, ['badnik_bounce'], 200)) or
@@ -854,6 +926,8 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
             #"Deep Sea (Act 1) Monitor - x:8640 y:3168" - maybe at least require wind for normal - have to check other emblems if so (Club emblem) (NAH)
 
             add_rule(world.get_location("Deep Sea (Act 1) Monitor - Heart Emblem Backtrack to Club 1", player),
+                     lambda state: state.can_reach_location("Deep Sea (Act 1) Heart Emblem", player))
+            add_rule(world.get_location("Deep Sea (Act 1) Monitor - Heart Emblem Backtrack to Club 2", player),
                      lambda state: state.can_reach_location("Deep Sea (Act 1) Heart Emblem", player))
             add_rule(world.get_location("Deep Sea (Act 1) Monitor - Near Waterslide Emerald Token", player),
                      lambda state: state.can_reach_location("Deep Sea (Act 1) Emerald Token - Waterslide Gargoyles", player))
@@ -928,9 +1002,9 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                                  char_needs_tags(state, ["can_hover","spin_walls"], -1) or char_needs_tags(state, ["climbs_walls","spin_walls"],-1) or
                                  char_needs_tags(state, ["wall_jump","spin_walls"], -1))
                 add_rule(world.get_location("Deep Sea (Act 1) Monitor - Waterslide Hidden Spring Room",player),
-                    lambda state: char_needs_tags(state, [], 300) or ((state.has("Yellow Springs", player) or
+                    lambda state: state.has("Gargoyle Statues", player) and (char_needs_tags(state, [], 300) or ((state.has("Yellow Springs", player) or
                                   char_needs_tags(state, ["can_hover"], -1)) and (char_needs_tags(state, [],150) and (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"],-1)))) or char_needs_tags(state, ["climbs_walls"],-1) or
-                                  char_needs_tags(state, ["wall_jump"], -1))
+                                  char_needs_tags(state, ["wall_jump"], -1)))
 
                 #rf.assign_rule("Deep Sea (Act 2) Monitor - Gargoyle Path Spiked Cliff Top", "TAILS | KNUCKLES | FANG")
             else:
@@ -957,7 +1031,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                         lambda state: state.has("Gargoyle Statues", player) and (char_needs_tags(state, ["can_hover","instant_speed","insane_speed"], -1) or char_needs_tags(state, ["badnik_bounce","instant_speed","insane_speed"], -1) or (char_needs_tags(state, ["instant_speed","insane_speed"], -1) and state.has("Yellow Springs", player)) or
                                   (state.has("Red Springs", player) and (char_needs_tags(state, ["can_hover","insane_speed"], -1) or char_needs_tags(state, ["badnik_bounce","insane_speed"], -1) or (char_needs_tags(state, ["insane_speed"], -1) and state.has("Yellow Springs", player)))) or
                                   char_needs_tags(state, ["insane_speed"], 500) or char_needs_tags(state, ["climbs_walls","insane_speed"], -1) or char_needs_tags(state, ["wall_jump","insane_speed"], -1))) # rs+(hov/ys/bb)  (jh500/cw/wj)+gsw
-                add_rule(world.get_location("Deep Sea (Act 1) Monitor - Left Path Waterfall Cave",player),
+                add_rule(world.get_location("Deep Sea (Act 1) Monitor - Waterfall Cave Near Cyan Door",player),
                     lambda state: char_needs_tags(state, ["free_flyer"], 300) or char_needs_tags(state, ["midair_speed"], 300) or (state.has("Yellow Springs", player) and char_needs_tags(state, ["midair_speed"], -1)) or
                                   char_needs_tags(state, ["can_hover"], -1) or char_needs_tags(state, ["climbs_walls"],-1) or
                                   char_needs_tags(state, ["wall_jump"], -1) or char_needs_tags(state, ["midair_speed","badnik_bounce"],-1))
@@ -1243,6 +1317,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
         add_rule(world.get_location("Castle Eggman (Act 2) Star Emblem", player),
                  lambda state: (state.has("Red Springs", player) and (state.has("Yellow Springs", player) or char_needs_tags(state, [], 200))) or
                                (state.has("Yellow Springs", player) and (char_needs_tags(state, ['can_hover'], -1)) or char_needs_tags(state, [], 200)) or
+                               (state.has("Yellow Springs", player) and char_needs_tags(state, ['pounds_springs'], -1)) or
                                char_needs_tags(state, ['climbs_walls'], -1) or char_needs_tags(state, [], 250))
         add_rule(world.get_location("Castle Eggman (Act 2) Spade Emblem", player),
                  lambda state: (state.has("Swinging Maces", player) and (state.has("Yellow Springs", player) or char_needs_tags(state, [], 200))) or
@@ -1254,7 +1329,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
         add_rule(world.get_location("Castle Eggman (Act 2) Diamond Emblem", player),
                  lambda state: (state.has("Swinging Maces", player) and state.has("Yellow Springs", player) and char_needs_tags(state, ["low_grav"], -1)) or
                                (state.has("Swinging Maces", player) and char_needs_tags(state, ["low_grav"], 200)) or
-                               (state.has("Swinging Maces", player) and char_needs_tags(state, ['climbs_walls',"low_grav"], -1)) or char_needs_tags(state, [], 1500))
+                               (state.has("Swinging Maces", player) and char_needs_tags(state, ['climbs_walls',"low_grav"], -1)) or char_needs_tags(state, [], 1800))
         add_rule(world.get_location("Castle Eggman (Act 2) Club Emblem", player),
                  lambda state: (state.has("Swinging Maces", player) and state.has("Yellow Springs", player) and state.has("Red Springs", player)) or
                                (state.has("Swinging Maces", player) and char_needs_tags(state, [], 200)) or
@@ -1959,14 +2034,14 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                      lambda state: char_needs_tags(state, [], 800) or char_needs_tags(state, ['climbs_walls'], -1))
             add_rule(world.get_location("Arid Canyon (Act 2) Monitor - TNT Barrel Ledge Near Star Emblem", player),
                      lambda state:
-                                   (state.has("Minecarts", player) and
+                                    (state.has("Minecarts", player) and(
                                     (char_needs_tags(state, ['strong_floors','breaks_spikes','soft_jump'], 115) or
-                                   char_needs_tags(state, ['strong_floors','soft_jump'], 150)) or
+                                   char_needs_tags(state, ['strong_floors','soft_jump'], 150) or
                                    char_needs_tags(state, ['strong_floors', 'breaks_spikes','stronger_walls','soft_jump'], 115) or
                                    char_needs_tags(state, ['strong_floors','stronger_walls','soft_jump'], 150) or
                                     char_needs_tags(state, ["climbs_walls"], -1) or
                                     char_needs_tags(state, [], 300)
-                                    ) or
+                                    ))) or
                                    (char_needs_tags(state, ["stronger_walls",'soft_jump'], -1) and state.has("Dust Devils", player)) or
                                    char_needs_tags(state, ["stronger_walls",'instant_speed','soft_jump'], -1) or
                                    (char_needs_tags(state, ["stronger_walls",'roll','soft_jump'], -1) and state.has("Red Springs", player))
@@ -2320,7 +2395,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
         add_rule(world.get_location("Red Volcano (Act 1) Star Emblem", player),
                  lambda state: state.can_reach_location("Red Volcano (Act 1) Clear", player))
         add_rule(world.get_location("Red Volcano (Act 1) Spade Emblem", player),
-                 lambda state: char_needs_tags(state, ["free_flyer"],-1) or
+                 lambda state: char_needs_tags(state, ["free_flyer"],200) or
                                 char_needs_tags(state, [],800))
         add_rule(world.get_location("Red Volcano (Act 1) Heart Emblem", player),
                  lambda state: state.has("Red Springs",player) or
@@ -2688,7 +2763,8 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                                    char_needs_tags(state, ["climbs_walls", "weak_walls"], -1))
         else:
             add_rule(world.get_location("Frozen Hillside Club Emblem", player),
-                     lambda state: (state.has("Yellow Springs", player) and char_needs_tags(state, ["weak_walls","badnik_bounce"],-1)) or
+                     lambda state: (state.has("Yellow Springs", player) and char_needs_tags(state, ["weak_walls"],-1)) or
+
                                    char_needs_tags(state, ["weak_walls"], 200) or
                                    char_needs_tags(state, ["climbs_walls", "weak_walls"], -1))
 
@@ -2749,12 +2825,12 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
         #yellow springs and red springs or 200jh and red springs or 800jh
         add_rule(world.get_location("Pipe Towers Clear", player),
                  lambda state: (state.has("Red Springs", player) and
-                (state.has("Yellow Springs", player)) or char_needs_tags(state, ["pounds_springs"], -1) or char_needs_tags(state, [], 200) or (char_needs_tags(state, ['can_use_shields'], 130) and state.has("Whirlwind Shield", player))) or
+                (state.has("Yellow Springs", player) or char_needs_tags(state, ["pounds_springs"], -1) or char_needs_tags(state, [], 200) or (char_needs_tags(state, ['can_use_shields'], 130) and state.has("Whirlwind Shield", player)))) or
                 char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 800))
 
         add_rule(world.get_location("Pipe Towers Star Emblem", player),
                  lambda state: (state.has("Red Springs", player) and
-                                (state.has("Yellow Springs", player) and char_needs_tags(state,[],200)) or (char_needs_tags(state, ['can_use_shields'], 130) and state.has("Whirlwind Shield", player))) or
+                                (state.has("Yellow Springs", player) and char_needs_tags(state,[],200)) or (char_needs_tags(state, ['can_use_shields'], 100) and state.has("Whirlwind Shield", player))) or
                                char_needs_tags(state, [], 800))
         add_rule(world.get_location("Pipe Towers Spade Emblem", player),
                  lambda state: char_needs_tags(state, ["climbs_walls"], 200) or
@@ -3320,8 +3396,6 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                                 ((char_needs_tags(state,['fits_under_gaps','instant_speed'],100) or char_needs_tags(state,['fits_under_gaps','can_hover'],100) or (char_needs_tags(state,['fits_under_gaps','can_use_shields'],100) and state.has("Flame Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state,['fits_under_gaps'],300))and (state.has("Red Springs", player) or char_needs_tags(state,['fits_under_gaps'],600))) or
                                  char_needs_tags(state,['fits_under_gaps','climbs_walls'],100) or
 
-
-
                                 (char_needs_tags(state, ['strong_floors'], 200)and state.has("Red Springs", player)) or
                                   char_needs_tags(state, ['strong_floors'], 600))
 
@@ -3333,11 +3407,25 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
             add_rule(world.get_location("Haunted Heights Monitor - Fang Path End Breakable Wall", player),
                  lambda state: char_needs_tags(state, ['strong_floors','strong_walls'], 200) or
                                char_needs_tags(state, ['strong_floors', 'climbs_walls','strong_walls'], -1) or
-                               char_needs_tags(state, ['fits_under_gaps', 'strong_walls', "climbs_walls"], -1) or
+                               (char_needs_tags(state, ['fits_under_gaps', 'strong_walls', "climbs_walls"], -1) and state.has("Buoyant Slime", player)) or
                                char_needs_tags(state, ['fits_under_gaps', 'strong_walls'], 1000))
+
+
             add_rule(world.get_location("Haunted Heights Monitor - First Area Highest Pillar", player),#can be done with ww shields and nospin chars
                  lambda state: char_needs_tags(state, [], 400) or
                                char_needs_tags(state, ['climbs_walls'], -1))
+
+            add_rule(world.get_location("Haunted Heights Monitor - First Lower Path Slime Before Checkpoint", player),
+                 lambda state:  state.has("Buoyant Slime", player) and
+                                (((state.has("Yellow Springs", player) and char_needs_tags(state, ['can_use_shields'], -1))or
+                               char_needs_tags(state, ['can_use_shields'], 200) or
+                               char_needs_tags(state, ['climbs_walls','can_use_shields'], -1)) and state.has("Elemental Shield", player)) or
+                                ((state.has("Yellow Springs", player) and char_needs_tags(state, ['stomp'], -1))or
+                               char_needs_tags(state, ['stomp'], 200) or
+                               char_needs_tags(state, ['climbs_walls','stomp'], -1)))
+
+
+
             add_rule(world.get_location("Haunted Heights Monitor - First Lower Path Slimefall", player),
                  lambda state:  state.has("Buoyant Slime", player) and
                                  ((state.has("Yellow Springs", player)) or
@@ -3356,7 +3444,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
 
 
             add_rule(world.get_location("Haunted Heights Monitor - Third Area Deep in Slimefall", player),
-                     lambda state: state.can_reach_location("Haunted Heights Clear", player))
+                     lambda state: state.can_reach_location("Haunted Heights Clear", player) and state.has("Buoyant Slime", player))
             add_rule(world.get_location("Haunted Heights Monitor - Third Area Conveyor Pillar", player),
                      lambda state: state.can_reach_location("Haunted Heights Clear", player))
             add_rule(world.get_location("Haunted Heights Monitor - Near Diamond Emblem", player),
@@ -3383,7 +3471,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                                char_needs_tags(state, ['climbs_walls'], -1)))
 
             add_rule(world.get_location("Haunted Heights Monitor - Knuckles Path Center Slime Platform", player),
-                 lambda state: ((state.has("Yellow Springs", player) and char_needs_tags(state, ['strong_walls','fits_under_gaps'], -1)) or
+                 lambda state: state.has("Buoyant Slime", player) and ((state.has("Yellow Springs", player) and char_needs_tags(state, ['strong_walls','fits_under_gaps'], -1)) or
                                char_needs_tags(state, ['strong_walls','fits_under_gaps'], 200) or
                                char_needs_tags(state, ['climbs_walls','strong_walls','fits_under_gaps'], -1)))
 
@@ -3513,12 +3601,31 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                                char_needs_tags(state, ['strong_floors'], 500) or char_needs_tags(state, ['climbs_walls','strong_floors'], -1))
 
             add_rule(world.get_location("Aerial Garden Heart Emblem", player),
-                 lambda state: ((char_needs_tags(state, [], 115) or state.has("Gargoyle Statues", player) or (char_needs_tags(state, ["can_use_shields"], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, [], 300)) and state.has("Red Springs", player)) or
-                               char_needs_tags(state, [], 700) or char_needs_tags(state, ['climbs_walls'], -1))
+                 lambda state: (state.has("Gargoyle Statues", player) and state.has("Red Springs", player) and ((char_needs_tags(state, ['can_hover'], -1) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['can_hover'], 300)) and state.has("Red Springs", player)) or
+                               char_needs_tags(state, [], 500) or char_needs_tags(state, ['climbs_walls'], 100))) or
+
+                               (state.has("Gargoyle Statues", player) and char_needs_tags(state, [], 700)) or
+
+                     (char_needs_tags(state, ['can_hover',"fits_through_bars"], -1) and (char_needs_tags(state, ['can_hover',"fits_through_bars"], 115) or (char_needs_tags(state, ["can_use_shields",'can_hover',"fits_through_bars"], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['can_hover',"fits_through_bars"], 300)) and state.has("Red Springs", player)) or
+                               char_needs_tags(state, ["fits_through_bars"], 500) or char_needs_tags(state, ['climbs_walls',"fits_through_bars"], -1)
+                     )
 
             add_rule(world.get_location("Aerial Garden Diamond Emblem", player),
-                 lambda state: (char_needs_tags(state, ['can_hover'], -1) and (char_needs_tags(state, ['can_hover'], 115) or state.has("Gargoyle Statues", player) or (char_needs_tags(state, ["can_use_shields",'can_hover'], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['can_hover'], 300)) and state.has("Red Springs", player)) or
-                               char_needs_tags(state, [], 500) or char_needs_tags(state, ['climbs_walls'], 100))
+                 lambda state: state.has("Gargoyle Statues", player) and ((char_needs_tags(state, ['can_hover'], -1) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['can_hover'], 300)) and state.has("Red Springs", player)) or
+                               char_needs_tags(state, [], 500) or char_needs_tags(state, ['climbs_walls'], 100)) or
+
+                     (char_needs_tags(state, ['can_hover',"fits_through_bars"], -1) and (char_needs_tags(state, ['can_hover',"fits_through_bars"], 115) or (char_needs_tags(state, ["can_use_shields",'can_hover',"fits_through_bars"], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['can_hover',"fits_through_bars"], 300)) and state.has("Red Springs", player)) or
+                               char_needs_tags(state, ["fits_through_bars"], 500) or char_needs_tags(state, ['climbs_walls',"fits_through_bars"], -1)
+                     )
+
+            add_rule(world.get_location("Aerial Garden Club Emblem", player),
+                 lambda state: state.has("Gargoyle Statues", player) and ((char_needs_tags(state, ['can_hover'], -1) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['can_hover'], 300)) and state.has("Red Springs", player)) or
+                               char_needs_tags(state, [], 500) or char_needs_tags(state, ['climbs_walls'], 100)) or
+
+                     (char_needs_tags(state, ['can_hover',"fits_through_bars"], -1) and (char_needs_tags(state, ['can_hover',"fits_through_bars"], 115) or (char_needs_tags(state, ["can_use_shields",'can_hover',"fits_through_bars"], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['can_hover',"fits_through_bars"], 300)) and state.has("Red Springs", player)) or
+                               char_needs_tags(state, ["fits_through_bars"], 500) or char_needs_tags(state, ['climbs_walls',"fits_through_bars"], -1)
+                     )
+
 
         else:
             add_rule(world.get_location("Aerial Garden Clear", player),#laziness
@@ -3532,19 +3639,43 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                  lambda state: ((char_needs_tags(state, ['strong_floors','can_use_shields'], 200) and state.has("Lightning Shield", player)) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['strong_floors'], 300)) and state.has("Red Springs", player)) or
                                char_needs_tags(state, ['strong_floors'], 500) or char_needs_tags(state, ['climbs_walls','strong_floors'], -1))
 
-            add_rule(world.get_location("Aerial Garden Heart Emblem", player),
-                 lambda state: (char_needs_tags(state, ['can_hover'], -1) and (char_needs_tags(state, ['can_hover'], 115) or state.has("Gargoyle Statues", player) or (char_needs_tags(state, ["can_use_shields",'can_hover'], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['can_hover'], 300)) and state.has("Red Springs", player)) or
-                               char_needs_tags(state, [], 700) or char_needs_tags(state, ['climbs_walls'], -1))
-
             add_rule(world.get_location("Aerial Garden Diamond Emblem", player),
-                 lambda state: ((char_needs_tags(state, [], 115) or state.has("Gargoyle Statues", player) or (char_needs_tags(state, ["can_use_shields"], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, [], 300)) and state.has("Red Springs", player)
-                                ) or (((char_needs_tags(state, ["can_use_shields",'instant_speed'], -1) and state.has("Lightning Shield", player)) or char_needs_tags(state, ['can_hover'], -1)) and state.has("Yellow Springs", player)) or
-                               char_needs_tags(state, [], 500) or char_needs_tags(state, ['climbs_walls'], -1))
+                 lambda state: (state.has("Gargoyle Statues", player) and ((
+                         ((char_needs_tags(state, ['can_hover'], -1) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['can_hover'], 300))) or ((char_needs_tags(state, ['instant_speed','can_use_shields'], -1) and state.has("Lightning Shield", player)) and (state.has("Yellow Springs", player) or (char_needs_tags(state, ['instant_speed','can_use_shields'], 300) and state.has("Lightning Shield", player)))) or (char_needs_tags(state, ['badnik_bounce'], -1) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['badnik_bounce'], 300)))) and state.has("Red Springs", player))
+                                   or char_needs_tags(state, [], 700) or char_needs_tags(state, ['climbs_walls'], -1))) or
+
+                     (( (char_needs_tags(state, ['can_hover',"fits_through_bars"], 115) or (char_needs_tags(state, ["can_use_shields",'can_hover',"fits_through_bars"], -1) and state.has("Lightning Shield", player) and state.has("Yellow Springs", player)) or char_needs_tags(state, ['can_hover',"fits_through_bars"], 300)) and state.has("Red Springs", player)) or
+                               char_needs_tags(state, ["fits_through_bars"], 700) or char_needs_tags(state, ['climbs_walls',"fits_through_bars"], -1)) or
+                    (( (char_needs_tags(state, ['can_use_shields',"fits_through_bars"], 115) or (state.has("Gargoyle Statues", player) and char_needs_tags(state, ["fits_through_bars","badnik_bounce"], -1)) or (char_needs_tags(state, ["can_use_shields","badnik_bounce","fits_through_bars"], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, ["badnik_bounce","fits_through_bars"], 300)) and state.has("Red Springs", player) and state.has("Lightning Shield", player))) or
+                    (( (char_needs_tags(state, ['badnik_bounce',"fits_through_bars"], 115) or (state.has("Gargoyle Statues", player) and char_needs_tags(state, ["fits_through_bars","badnik_bounce"], -1)) or (char_needs_tags(state, ["can_use_shields","badnik_bounce","fits_through_bars"], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, ["badnik_bounce","fits_through_bars"], 300)) and state.has("Red Springs", player)))
+
+                     )
+
+            add_rule(world.get_location("Aerial Garden Heart Emblem", player),
+                 lambda state: (state.has("Gargoyle Statues", player) and (((state.has("Yellow Springs", player) or char_needs_tags(state, [], 250)) and state.has("Red Springs", player)) or char_needs_tags(state, ['can_hover'], 700))) or
+                     (( (char_needs_tags(state, ['can_hover',"fits_through_bars"], 115) or (char_needs_tags(state, ["can_use_shields",'can_hover',"fits_through_bars"], -1) and state.has("Lightning Shield", player) and state.has("Yellow Springs", player)) or char_needs_tags(state, ['can_hover',"fits_through_bars"], 300)) and state.has("Red Springs", player)) or
+                               char_needs_tags(state, ["fits_through_bars"], 700) or char_needs_tags(state, ['climbs_walls',"fits_through_bars"], -1)) or
+                    (( (char_needs_tags(state, ['can_use_shields',"fits_through_bars"], 115) or (state.has("Gargoyle Statues", player) and char_needs_tags(state, ["fits_through_bars","badnik_bounce"], -1)) or (char_needs_tags(state, ["can_use_shields","badnik_bounce","fits_through_bars"], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, ["badnik_bounce","fits_through_bars"], 300)) and state.has("Red Springs", player) and state.has("Lightning Shield", player)))or
+                    (( (char_needs_tags(state, ['badnik_bounce',"fits_through_bars"], 115) or (state.has("Gargoyle Statues", player) and char_needs_tags(state, ["fits_through_bars","badnik_bounce"], -1)) or (char_needs_tags(state, ["can_use_shields","badnik_bounce","fits_through_bars"], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, ["badnik_bounce","fits_through_bars"], 300)) and state.has("Red Springs", player)))
+
+                     )
 
 
 
-        add_rule(world.get_location("Aerial Garden Club Emblem", player),#laziness
-                 lambda state: state.can_reach_location("Aerial Garden Clear",player))
+            add_rule(world.get_location("Aerial Garden Club Emblem", player),
+                    lambda state: (state.has("Gargoyle Statues", player) and ((
+                         ((char_needs_tags(state, ['can_hover'], -1) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['can_hover'], 300))) or ((char_needs_tags(state, ['instant_speed','can_use_shields'], -1) and state.has("Lightning Shield", player)) and (state.has("Yellow Springs", player) or (char_needs_tags(state, ['instant_speed','can_use_shields'], 300) and state.has("Lightning Shield", player)))) or (char_needs_tags(state, ['badnik_bounce'], -1) and (state.has("Yellow Springs", player) or char_needs_tags(state, ['badnik_bounce'], 300)))) and state.has("Red Springs", player))
+                                   or char_needs_tags(state, [], 700) or char_needs_tags(state, ['climbs_walls'], -1))) or
+
+                     (( (char_needs_tags(state, ['can_hover',"fits_through_bars"], 115) or (char_needs_tags(state, ["can_use_shields",'can_hover',"fits_through_bars"], -1) and state.has("Lightning Shield", player) and state.has("Yellow Springs", player)) or char_needs_tags(state, ['can_hover',"fits_through_bars"], 300)) and state.has("Red Springs", player)) or
+                               char_needs_tags(state, ["fits_through_bars"], 700) or char_needs_tags(state, ['climbs_walls',"fits_through_bars"], -1)) or
+                    (( (char_needs_tags(state, ['can_use_shields',"fits_through_bars"], 115) or (state.has("Gargoyle Statues", player) and char_needs_tags(state, ["fits_through_bars","badnik_bounce"], -1)) or (char_needs_tags(state, ["can_use_shields","badnik_bounce","fits_through_bars"], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, ["badnik_bounce","fits_through_bars"], 300)) and state.has("Red Springs", player) and state.has("Lightning Shield", player))) or
+                    (( (char_needs_tags(state, ['badnik_bounce',"fits_through_bars"], 115) or (state.has("Gargoyle Statues", player) and char_needs_tags(state, ["fits_through_bars","badnik_bounce"], -1)) or (char_needs_tags(state, ["can_use_shields","badnik_bounce","fits_through_bars"], -1) and state.has("Lightning Shield", player))) and (state.has("Yellow Springs", player) or char_needs_tags(state, ["badnik_bounce","fits_through_bars"], 300)) and state.has("Red Springs", player)))
+
+                     )
+
+
+
 
         add_rule(world.get_location("Aerial Garden Emerald Token - Diamond Emblem 1", player),#laziness
                  lambda state: state.can_reach_location("Aerial Garden Diamond Emblem",player))
@@ -4126,64 +4257,290 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
 
 
         if options.superring_sanity and options.match_maps:
-            rf.assign_rule("Noxious Factory Monitor - x:416 y:576", "TAILS | KNUCKLES | FANG")
-            rf.assign_rule("Noxious Factory Monitor - x:736 y:768", "TAILS | KNUCKLES | FANG")
-            rf.assign_rule("Noxious Factory Monitor - x:2112 y:-1920", "TAILS | KNUCKLES | FANG")
-            rf.assign_rule("Noxious Factory Monitor - x:2496 y:3264", "TAILS | KNUCKLES | FANG | WIND")
-            rf.assign_rule("Noxious Factory Monitor - x:2496 y:3136", "TAILS | KNUCKLES | FANG | WIND")
-            rf.assign_rule("Noxious Factory Monitor - x:1440 y:-2336", "TAILS | KNUCKLES | FANG")
 
-            rf.assign_rule("Tidal Palace Monitor - x:-2624 y:-3072", "TAILS")
-            rf.assign_rule("Tidal Palace Monitor - x:-2912 y:-2976", "TAILS")
-            rf.assign_rule("Tidal Palace Monitor - x:-2656 y:-2656", "TAILS")
-            rf.assign_rule("Tidal Palace Monitor - x:1504 y:-96",  "TAILS | KNUCKLES")
-            rf.assign_rule("Tidal Palace Monitor - x:1504 y:-224",  "TAILS | KNUCKLES")
-            rf.assign_rule("Tidal Palace Monitor - x:-224 y:-672", "TAILS | KNUCKLES")
-            rf.assign_rule("Tidal Palace Monitor - x:224 y:-672", "TAILS | KNUCKLES")
+            add_rule(world.get_location("Jade Valley Monitor - x:384 y:5248", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, ["instant_speed"], -1) or char_needs_tags(state, [], 700))
+            add_rule(world.get_location("Jade Valley Monitor - x:384 y:5312", player),
+                    lambda state: state.can_reach_location("Jade Valley Monitor - x:384 y:5248", player))
 
-            rf.assign_rule("Desolate Twilight Monitor - x:-128 y:-2688", "TAILS | KNUCKLES")
-            rf.assign_rule("Desolate Twilight Monitor - x:2913 y:212", "TAILS | KNUCKLES")
-            rf.assign_rule("Desolate Twilight Monitor - x:2904 y:275", "TAILS | KNUCKLES")
-            rf.assign_rule("Desolate Twilight Monitor - x:0 y:3584", "TAILS | KNUCKLES")
 
-            rf.assign_rule("Diamond Blizzard Monitor - x:1296 y:400", "SONIC | TAILS | KNUCKLES | FANG | METAL SONIC | WIND")
-            rf.assign_rule("Diamond Blizzard Monitor - x:1904 y:-1040","SONIC | TAILS | KNUCKLES | FANG | METAL SONIC | WIND")
-            rf.assign_rule("Diamond Blizzard Monitor - x:608 y:-4544","TAILS | KNUCKLES | AMY+WIND | FANG+WIND")
-            rf.assign_rule("Diamond Blizzard Monitor - x:928 y:-4544", "TAILS | KNUCKLES | AMY+WIND | FANG+WIND")
+            add_rule(world.get_location("Noxious Factory Monitor - x:1600 y:2624", player),
+                     lambda state: state.has("Buoyant Slime", player) or char_needs_tags(state, ["downward_projectile"], -1))
+            add_rule(world.get_location("Noxious Factory Monitor - x:-1568 y:1312", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 300))
+            add_rule(world.get_location("Noxious Factory Monitor - x:416 y:576", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 300) or  (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)) or
+                     char_needs_tags(state, ["free_flyer"], 150))
+            add_rule(world.get_location("Noxious Factory Monitor - x:2112 y:-1920", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 220))
+            add_rule(world.get_location("Noxious Factory Monitor - x:2496 y:3264", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 200) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)))
 
-            rf.assign_rule("Frost Columns Monitor - x:0 y:-3520", "TAILS | KNUCKLES | AMY+WIND | FANG+WIND")
-            rf.assign_rule("Frost Columns Monitor - x:-64 y:-3520", "TAILS | KNUCKLES | AMY+WIND | FANG+WIND")
-            rf.assign_rule("Frost Columns Monitor - x:-1472 y:-96", "TAILS | KNUCKLES | AMY+WIND | FANG")
-            rf.assign_rule("Frost Columns Monitor - x:-1472 y:-32", "TAILS | KNUCKLES | AMY+WIND | FANG")
-            rf.assign_rule("Frost Columns Monitor - x:-3296 y:3200", "TAILS | KNUCKLES | AMY+WIND | FANG+WIND")
-            rf.assign_rule("Frost Columns Monitor - x:-3328 y:3168", "TAILS | KNUCKLES | AMY+WIND | FANG+WIND")
-            rf.assign_rule("Frost Columns Monitor - x:2112 y:-1088", "TAILS | AMY+WIND | FANG")
-            rf.assign_rule("Frost Columns Monitor - x:2112 y:-1344", "TAILS | AMY+WIND | FANG")
-            rf.assign_rule("Frost Columns Monitor - x:832 y:-1376", "SONIC | TAILS | KNUCKLES | FANG | METAL SONIC | WIND")
+            add_rule(world.get_location("Noxious Factory Monitor - x:1472 y:2624", player),
+                    lambda state: state.can_reach_location("Noxious Factory Monitor - x:1600 y:2624", player))
+            add_rule(world.get_location("Noxious Factory Monitor - x:-1504 y:1760", player),
+                    lambda state: state.can_reach_location("Noxious Factory Monitor - x:-1568 y:1312", player))
+            add_rule(world.get_location("Noxious Factory Monitor - x:1472 y:2752", player),
+                    lambda state: state.can_reach_location("Noxious Factory Monitor - x:1600 y:2624", player))
+            add_rule(world.get_location("Noxious Factory Monitor - x:1600 y:2752", player),
+                    lambda state: state.can_reach_location("Noxious Factory Monitor - x:1600 y:2624", player))
+            add_rule(world.get_location("Noxious Factory Monitor - x:736 y:768", player),
+                    lambda state: state.can_reach_location("Noxious Factory Monitor - x:416 y:576", player))
+            add_rule(world.get_location("Noxious Factory Monitor - x:2496 y:3136", player),
+                    lambda state: state.can_reach_location("Noxious Factory Monitor - x:2496 y:3264", player))
+            add_rule(world.get_location("Noxious Factory Monitor - x:1440 y:-2336", player),
+                    lambda state: state.can_reach_location("Noxious Factory Monitor - x:2112 y:-1920", player))
 
-            rf.assign_rule("Summit Showdown Monitor - x:-7456 y:-1696","SONIC | TAILS | KNUCKLES | FANG | METAL SONIC | WIND")
-            rf.assign_rule("Summit Showdown Monitor - x:-7008 y:-2144","SONIC | TAILS | KNUCKLES | FANG | METAL SONIC | WIND")
 
-            rf.assign_rule("Silver Shiver Monitor - x:-96 y:-2768","SONIC+WIND | TAILS | KNUCKLES | METAL SONIC")
-            rf.assign_rule("Silver Shiver Monitor - x:32 y:-2768", "SONIC+WIND | TAILS | KNUCKLES | METAL SONIC")
-            rf.assign_rule("Silver Shiver Monitor - x:15280 y:-26560", "TAILS | AMY | FANG | WIND")
-            rf.assign_rule("Silver Shiver Monitor - x:15696 y:-26560", "TAILS | AMY | FANG | WIND")
 
-            rf.assign_rule("Uncharted Badlands Monitor - x:1920 y:1024", "TAILS | KNUCKLES")
+            add_rule(world.get_location("Tidal Palace Monitor - x:-2624 y:-3072", player),
+                     lambda state: char_needs_tags(state, [], 600))
+            add_rule(world.get_location("Tidal Palace Monitor - x:1504 y:-96", player),
+                     lambda state: char_needs_tags(state, [], 250) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)) or char_needs_tags(state, ["climbs_walls"], -1))
+            add_rule(world.get_location("Tidal Palace Monitor - x:-224 y:-672", player),
+                     lambda state: char_needs_tags(state, [], 800) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields","instant_speed"], -1) and state.has("Gargoyle Statues", player)) or
+                                   (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields","instant_speed"], 115)) or char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, ["can_hover"], 200))
 
-            rf.assign_rule("Pristine Shores Monitor - x:15808 y:12160", "TAILS | KNUCKLES")
-            rf.assign_rule("Pristine Shores Monitor - x:14936 y:13448", "SONIC | TAILS | KNUCKLES | FANG | METAL SONIC | WIND")
-            rf.assign_rule("Pristine Shores Monitor - x:4160 y:7176", "SONIC | TAILS | KNUCKLES | METAL SONIC")
-            rf.assign_rule("Pristine Shores Monitor - x:9944 y:7616", "TAILS | KNUCKLES")
+
+            add_rule(world.get_location("Tidal Palace Monitor - x:-2912 y:-2976", player),
+                    lambda state: state.can_reach_location("Tidal Palace Monitor - x:-2624 y:-3072", player))
+            add_rule(world.get_location("Tidal Palace Monitor - x:-2656 y:-2656", player),
+                    lambda state: state.can_reach_location("Tidal Palace Monitor - x:-2624 y:-3072", player))
+            add_rule(world.get_location("Tidal Palace Monitor - x:1504 y:-224", player),
+                    lambda state: state.can_reach_location("Tidal Palace Monitor - x:1504 y:-96", player))
+            add_rule(world.get_location("Tidal Palace Monitor - x:224 y:-672", player),
+                    lambda state: state.can_reach_location("Tidal Palace Monitor - x:-224 y:-672", player))
+
+            add_rule(world.get_location("Thunder Citadel Monitor - x:3392 y:1856", player),
+                     lambda state: char_needs_tags(state, [], 200) or char_needs_tags(state, ["instant_speed"], -1) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 115)))
+
+
+
+
+            add_rule(world.get_location("Desolate Twilight Monitor - x:2913 y:212", player),
+                     lambda state: char_needs_tags(state, [], 300) or ((state.has("Whirlwind Shield", player) and (char_needs_tags(state, ["can_use_shields"], 115) or char_needs_tags(state, ["instant_speed","can_use_shields"], -1))) and (state.has("Yellow Springs", player)or state.has("Red Springs", player))))
+
+            add_rule(world.get_location("Desolate Twilight Monitor - x:-128 y:-2688", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 500) or
+                                   (char_needs_tags(state, [], 300) and (
+                                               state.has("Yellow Springs", player) or state.has("Red Springs",player))))
+
 
 
             if options.difficulty == 0:
-                rf.assign_rule("Summit Showdown Monitor - x:5600 y:2208","SONIC | TAILS | KNUCKLES | FANG | METAL SONIC | WIND")
-                rf.assign_rule("Summit Showdown Monitor - x:5088 y:1696","SONIC | TAILS | KNUCKLES | FANG | METAL SONIC | WIND")
+                add_rule(world.get_location("Desolate Twilight Monitor - x:0 y:3584", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 500) or
+                                   (char_needs_tags(state, [], 300) and (state.has("Yellow Springs", player)or state.has("Red Springs", player))))
+            else:
+                add_rule(world.get_location("Desolate Twilight Monitor - x:0 y:3584", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 500) or
+                                   (char_needs_tags(state, [], 300) and (state.has("Yellow Springs", player)or state.has("Red Springs", player)))or
+                                   ((state.has("Whirlwind Shield", player) and (char_needs_tags(state, ["can_use_shields","badnik_bounce"], 115) or char_needs_tags(state, ["instant_speed","can_use_shields","badnik_bounce"], -1))) and state.has("Yellow Springs", player)))
+
+            add_rule(world.get_location("Desolate Twilight Monitor - x:2904 y:275", player),
+                    lambda state: state.can_reach_location("Desolate Twilight Monitor - x:2913 y:212", player))
+
+            add_rule(world.get_location("Orbital Hangar Monitor - x:2368 y:-2304", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 115)or char_needs_tags(state, ["wall_jump"], -1) or
+                                   (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)))
+
+
+            add_rule(world.get_location("Orbital Hangar Monitor - x:2304 y:-2304", player),
+                    lambda state: state.can_reach_location("Orbital Hangar Monitor - x:2368 y:-2304", player))
+            add_rule(world.get_location("Orbital Hangar Monitor - x:2304 y:-2304", player),
+                    lambda state: state.can_reach_location("Orbital Hangar Monitor - x:2240 y:-2304", player))
+            add_rule(world.get_location("Orbital Hangar Monitor - x:5344 y:-1984", player),
+                    lambda state: state.can_reach_location("Orbital Hangar Monitor - x:5472 y:-1984", player))
+
+            add_rule(world.get_location("Diamond Blizzard Monitor - x:1296 y:400", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 150)or char_needs_tags(state, ['instant_speed','midair_speed'], -1)or char_needs_tags(state, ['instant_speed','can_hover'], -1)or
+                                   (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)))
+
+            add_rule(world.get_location("Diamond Blizzard Monitor - x:608 y:-4544", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 250) or
+                                   (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 115)))
 
 
 
 
+            add_rule(world.get_location("Diamond Blizzard Monitor - x:1904 y:-1040", player),
+                    lambda state: state.can_reach_location("Diamond Blizzard Monitor - x:1296 y:400", player))
+            add_rule(world.get_location("Diamond Blizzard Monitor - x:928 y:-4544", player),
+                    lambda state: state.can_reach_location("Diamond Blizzard Monitor - x:608 y:-4544", player))
+
+
+            add_rule(world.get_location("Celestial Sanctuary Monitor - x:-2320 y:-1088", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 300)or
+                                   state.has("Yellow Springs", player) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields","instant_speed"], -1)))
+            add_rule(world.get_location("Celestial Sanctuary Monitor - x:3084 y:2461", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 150)or
+                                   state.has("Yellow Springs", player) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)))
+
+
+            add_rule(world.get_location("Celestial Sanctuary Monitor - x:-2368 y:-1136", player),
+                    lambda state: state.can_reach_location("Celestial Sanctuary Monitor - x:-2320 y:-1088", player))
+            add_rule(world.get_location("Celestial Sanctuary Monitor - x:4128 y:-1120", player),
+                    lambda state: state.can_reach_location("Celestial Sanctuary Monitor - x:3084 y:2461", player))
+
+
+            add_rule(world.get_location("Frost Columns Monitor - x:0 y:-3520", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 250) or char_needs_tags(state, ['free_flyer'], 200)
+                                    or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 115)))
+
+            add_rule(world.get_location("Frost Columns Monitor - x:-1472 y:-96", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 200))
+            add_rule(world.get_location("Frost Columns Monitor - x:-3296 y:3200", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 300)  or char_needs_tags(state, ["free_flyer"], 200)  or char_needs_tags(state, ["instant_speed"], 200) or char_needs_tags(state, ["can_hover"], 200) or
+                     (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 115)))
+
+            add_rule(world.get_location("Frost Columns Monitor - x:2112 y:-1088", player),
+                     lambda state: char_needs_tags(state, [], 200) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 100)))
+
+
+            add_rule(world.get_location("Frost Columns Monitor - x:832 y:-1376", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 200) or
+                    (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 100)) or char_needs_tags(state, ["instant_speed"], -1) or
+                                   char_needs_tags(state, ["free_flyer"], -1) or char_needs_tags(state, ["can_hover"], -1))
+
+
+
+            add_rule(world.get_location("Frost Columns Monitor - x:-64 y:-3520", player),
+                    lambda state: state.can_reach_location("Frost Columns Monitor - x:0 y:-3520", player))
+            add_rule(world.get_location("Frost Columns Monitor - x:-1472 y:-32", player),
+                     lambda state: state.can_reach_location("Frost Columns Monitor - x:-1472 y:-96", player))
+            add_rule(world.get_location("Frost Columns Monitor - x:-3328 y:3168", player),
+                     lambda state: state.can_reach_location("Frost Columns Monitor - x:-3296 y:3200", player))
+            add_rule(world.get_location("Frost Columns Monitor - x:2112 y:-1344", player),
+                     lambda state: state.can_reach_location("Frost Columns Monitor - x:2112 y:-1088", player))
+
+
+            add_rule(world.get_location("Granite Lake Monitor - x:1728 y:3264", player),
+                     lambda state: state.has("Yellow Springs", player) or char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 250) or
+                                   char_needs_tags(state, ["midair_speed","instant_speed"], -1))
+
+            add_rule(world.get_location("Granite Lake Monitor - x:-432 y:-1168", player),
+                     lambda state: state.can_reach_location("Granite Lake Monitor - x:1728 y:3264", player))
+            add_rule(world.get_location("Granite Lake Monitor - x:4764 y:7933", player),
+                     lambda state: state.can_reach_location("Granite Lake Monitor - x:1728 y:3264", player))
+            add_rule(world.get_location("Granite Lake Monitor - x:5045 y:7647", player),
+                     lambda state: state.can_reach_location("Granite Lake Monitor - x:4764 y:7933", player))
+            add_rule(world.get_location("Granite Lake Monitor - x:2304 y:1056", player),
+                     lambda state: state.can_reach_location("Granite Lake Monitor - x:1728 y:3264", player))
+            add_rule(world.get_location("Granite Lake Monitor - x:1075 y:5651", player),
+                     lambda state: state.can_reach_location("Granite Lake Monitor - x:4764 y:7933", player))
+            add_rule(world.get_location("Granite Lake Monitor - x:1293 y:7833", player),
+                     lambda state: state.can_reach_location("Granite Lake Monitor - x:1728 y:3264", player))
+
+
+
+            add_rule(world.get_location("Summit Showdown Monitor - x:5344 y:1952", player),
+                     lambda state: state.has("Yellow Springs", player) or char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 115) or
+                                   char_needs_tags(state, ["midair_speed","instant_speed"], -1))
+            add_rule(world.get_location("Summit Showdown Monitor - x:-7456 y:-1696", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 200) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)))
+
+
+            add_rule(world.get_location("Summit Showdown Monitor - x:5600 y:2208", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 200) or
+                    (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 115)))
+            add_rule(world.get_location("Summit Showdown Monitor - x:-1216 y:-928", player),
+                     lambda state: state.has("Yellow Springs", player) or char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 300) or char_needs_tags(state, ["can_hover"], -1))
+
+
+
+
+            add_rule(world.get_location("Summit Showdown Monitor - x:-7008 y:-2144", player),
+                     lambda state: state.can_reach_location("Summit Showdown Monitor - x:-7456 y:-1696", player))
+            add_rule(world.get_location("Summit Showdown Monitor - x:5088 y:1696", player),
+                     lambda state: state.can_reach_location("Summit Showdown Monitor - x:5600 y:2208", player))
+
+
+            add_rule(world.get_location("Silver Shiver Monitor - x:-96 y:-2768", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, ["free_flyer"], 200) or char_needs_tags(state, [], 300) or
+                    (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields","instant_speed"], -1)) or char_needs_tags(state, ["can_hover"], -1))
+
+
+
+            add_rule(world.get_location("Silver Shiver Monitor - x:3056 y:-5568", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 150) or char_needs_tags(state, ["can_hover"], -1) or
+                                   char_needs_tags(state, ["instant_speed"], -1) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)))
+
+
+            add_rule(world.get_location("Silver Shiver Monitor - x:15280 y:-26560", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 150) or
+                                   (state.has("Yellow Springs", player) and (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)))
+                                    (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 115))  )
+
+
+
+
+
+
+
+            add_rule(world.get_location("Silver Shiver Monitor - x:32 y:-2768", player),
+                     lambda state: state.can_reach_location("Silver Shiver Monitor - x:-96 y:-2768", player))
+            add_rule(world.get_location("Silver Shiver Monitor - x:3056 y:-5760", player),
+                     lambda state: state.can_reach_location("Silver Shiver Monitor - x:3056 y:-5568", player))
+            add_rule(world.get_location("Silver Shiver Monitor - x:15696 y:-26560", player),
+                     lambda state: state.can_reach_location("Silver Shiver Monitor - x:15280 y:-26560", player))
+
+
+            #add_rule(world.get_location("Uncharted Badlands Monitor - x:1920 y:1024", player),
+            #         lambda state: char_needs_tags(state, ["midair_speed"], -1) or char_needs_tags(state, [], 400))#this needs a "side_air_attack" tag because fang
+            add_rule(world.get_location("Pristine Shores Monitor - x:14272 y:7488", player),
+                     lambda state: state.has("Red Springs", player) or char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 115) or char_needs_tags(state, ["can_hover"], -1) or char_needs_tags(state, ["instant_speed"], -1))
+
+            add_rule(world.get_location("Pristine Shores Monitor - x:15808 y:12160", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 300) or char_needs_tags(state, ["can_hover","instant_speed"], -1))
+
+            add_rule(world.get_location("Pristine Shores Monitor - x:15808 y:12160", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 150) or char_needs_tags(state, ["can_hover","instant_speed"], -1))
+            add_rule(world.get_location("Pristine Shores Monitor - x:14936 y:13448", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 125) or char_needs_tags(state, ["can_hover"], -1))
+            add_rule(world.get_location("Pristine Shores Monitor - x:16782 y:8472", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 115) or char_needs_tags(state, ["can_hover"], -1)or char_needs_tags(state, ["instant_speed"], -1))
+            add_rule(world.get_location("Pristine Shores Monitor - x:9296 y:12928", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 115) or char_needs_tags(state, ["instant_speed"], -1))
+            add_rule(world.get_location("Pristine Shores Monitor - x:4160 y:7176", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 600) or char_needs_tags(state, ["instant_speed"], -1))
+            add_rule(world.get_location("Pristine Shores Monitor - x:9944 y:7616", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 600))
+
+
+
+            if options.difficulty == 0:
+                add_rule(world.get_location("Pristine Shores Monitor - x:3008 y:6528", player),
+                     lambda state: state.has("Red Springs", player) or char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 600))
+            else:
+                add_rule(world.get_location("Pristine Shores Monitor - x:3008 y:6528", player),
+                     lambda state: state.has("Red Springs", player) or char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 600) or (state.has("Yellow Springs", player) and char_needs_tags(state, ["instant_speed"], -1)))
+
+
+            add_rule(world.get_location("Pristine Shores Monitor - x:2088 y:5240", player),
+                     lambda state: state.can_reach_location("Pristine Shores Monitor - x:3008 y:6528", player))
+
+
+
+            add_rule(world.get_location("Crystalline Heights Monitor - x:3250 y:8402", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 400) or state.has("Yellow Springs", player) or (state.has("Red Springs", player) and char_needs_tags(state, ["pounds_springs"], -1)))
+            add_rule(world.get_location("Crystalline Heights Monitor - x:-784 y:-632", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 115) or state.has("Blue Springs", player) or char_needs_tags(state, ["can_hover"], -1) or char_needs_tags(state, ["instant_speed"], -1) )
+            add_rule(world.get_location("Crystalline Heights Monitor - x:6384 y:19336", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 115) or char_needs_tags(state, ["can_hover"], -1) or char_needs_tags(state, ["instant_speed"], -1) )
+            add_rule(world.get_location("Crystalline Heights Monitor - x:-544 y:4064", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 200) or state.has("Yellow Springs", player))
+
+
+            add_rule(world.get_location("Airborne Temple Monitor - x:-256 y:256", player),
+                     lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 250) or (state.has("Gargoyle Statues", player)and ((state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 115))or char_needs_tags(state, ["free_flyer"], 200) or char_needs_tags(state, ["can_hover"], 200)or(char_needs_tags(state, [], 200) and state.has("Red Springs", player)))) or
+                                   (state.has("Yellow Springs", player) and (state.has("Red Springs", player) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)) or char_needs_tags(state, ["free_flyer"], -1) or char_needs_tags(state, ["can_hover"], -1))))
+
+            add_rule(world.get_location("Airborne Temple Monitor - x:256 y:256", player),
+                     lambda state: state.can_reach_location("Airborne Temple Monitor - x:-256 y:256", player))
+            add_rule(world.get_location("Airborne Temple Monitor - x:256 y:-256", player),
+                     lambda state: state.can_reach_location("Airborne Temple Monitor - x:-256 y:256", player))
+            add_rule(world.get_location("Airborne Temple Monitor - x:-256 y:-256", player),
+                     lambda state: state.can_reach_location("Airborne Temple Monitor - x:-256 y:256", player))
 
         if options.nights_maps:
             #special stages
@@ -4203,10 +4560,12 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
 
     if options.completion_type == 0:
         world.completion_condition[player] = lambda state: state.can_reach("Black Core Zone 3", 'Region', player)
-    else:
+    elif options.completion_type == 1:
         world.completion_condition[player] = lambda state: state.can_reach("Credits", 'Region', player)
-
-
+    elif options.completion_type == 2:
+        world.completion_condition[player] = lambda state: state.can_reach_location("Haunted Heights Clear", player) and state.can_reach_location("Aerial Garden Clear", player) and state.can_reach_location("Azure Temple Clear", player)
+    else:
+        world.completion_condition[player] = lambda state: state.can_reach_location("Black Core (Act 3) Clear",player) and state.can_reach_location("Black Core (Act 2) Clear", player) and state.can_reach_location("Black Core (Act 1) Clear", player)and state.can_reach_location("Arid Canyon (Act 3) Clear", player) and state.can_reach_location("Castle Eggman (Act 3) Clear", player)and state.can_reach_location("Deep Sea (Act 3) Clear", player)and state.can_reach_location("Techno Hill (Act 3) Clear", player)and state.can_reach_location("Greenflower (Act 3) Clear", player)
 
 class RuleFactory:
 

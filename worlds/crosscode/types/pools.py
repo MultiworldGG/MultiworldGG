@@ -5,6 +5,7 @@ import itertools
 from .metadata import IncludeOptions
 from .locations import LocationData
 from .items import ItemData, ItemPoolEntry, ProgressiveChainEntry, ProgressiveItemChain, ProgressiveItemChainMulti, ProgressiveItemChainSingle
+from .shops import ShopData
 from .world import WorldData
 
 
@@ -34,6 +35,9 @@ class Pools:
     location_pool: list[LocationData]
     event_pool: list[LocationData]
 
+    per_shop_location_pool: dict[str, list[LocationData]]
+    global_shop_location_pool: list[LocationData]
+
     item_pools: dict[str, ItemPool]
     _item_pool_lists: dict[str, tuple[list[ItemData], list[int]]]
 
@@ -55,6 +59,8 @@ class Pools:
         self.options = opts
         self.location_pool = []
         self.event_pool = []
+        self.per_shop_location_pool = {}
+        self.global_shop_location_pool = []
         self.item_pools = {}
         self._item_pool_lists = {}
         self.progressive_chains = {}
@@ -82,6 +88,24 @@ class Pools:
 
         for name, pool in self.item_pools.items():
             self._item_pool_lists[name] = (list(pool.keys()), weights[name])
+
+        for shop_name, locations in world_data.per_shop_locations.items():
+            shop_locations = []
+            for loc in locations.values():
+                if self.__should_include(loc.metadata):
+                    shop_locations.append(loc)
+            self.per_shop_location_pool[shop_name] = shop_locations
+
+        for loc in world_data.global_shop_locations.values():
+            if self.__should_include(loc.metadata):
+                self.global_shop_location_pool.append(loc)
+
+        for shop_pool, pool_name in (
+                (world_data.shop_unlock_by_id, "shop_unlock_by_id"),
+                (world_data.shop_unlock_by_shop, "shop_unlock_by_shop"),
+                (world_data.shop_unlock_by_shop_and_id, "shop_unlock_by_shop_and_id")
+        ):
+            self.item_pools[pool_name] = { entry.item: 1 for entry in shop_pool.values() if self.__should_include(entry.metadata) }
 
         for chain_name, chain in world_data.progressive_chains.items():
             item_list: list[ItemData] = []
@@ -123,13 +147,13 @@ class Pools:
 
         result = True
 
-        for var in ("trade", "shop", "arena", "chest", "quest"):
-            try:
-                val = metadata[var]
-            except KeyError:
+        for var in ("dlc", "trade", "shop", "arena", "chest", "quest", "botanics"):
+            val = metadata.get(var)
+
+            if val is None:
                 continue
 
-            if val != self.options[var]:
+            if val != self.options.get(var):
                 result = False
                 break
 

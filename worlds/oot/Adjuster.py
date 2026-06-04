@@ -9,6 +9,7 @@ from BaseClasses import MultiWorld
 from Options import Choice, Range, Toggle
 from . import OOTWorld, launch_rom as launch_oot_rom
 from .Cosmetics import get_voice_choices, patch_cosmetics, patch_voices
+from .MusicHelpers import find_mm_audiobin_path
 from .Options import (cosmetic_options, sfx_options, voice_options,
     DpadDungeonMenu, SpeedupMusicForLastTriforcePiece, SlowdownMusicWhenLowhp,
     UninvertYAxisInFirstPersonCamera, InputViewer, DisableBattleMusic, CreditsMusic)
@@ -21,6 +22,26 @@ logger = logging.getLogger('OoTAdjuster')
 
 def launch_rom(path: str) -> None:
     launch_oot_rom(path, logger)
+
+
+def get_mmrs_missing_audiobin_warning(args) -> str | None:
+    if getattr(args, 'background_music', 'normal') == 'normal' and getattr(args, 'fanfares', 'normal') == 'normal':
+        return None
+
+    music_dir = getattr(args, 'music_dir', None) or None
+    if not music_dir or not os.path.isdir(music_dir):
+        return None
+
+    if find_mm_audiobin_path(music_dir):
+        return None
+
+    for _dirpath, _dirnames, filenames in os.walk(music_dir, followlinks=True):
+        if any(fname.lower().endswith('.mmrs') for fname in filenames):
+            return (
+                ".mmrs custom music files were ignored because MM.audiobin was not found. "
+                f"Place MM.audiobin in {music_dir} to enable .mmrs tracks from that folder."
+            )
+    return None
 
 
 def get_argparser():
@@ -399,6 +420,9 @@ def adjustGUI():
                     save_adjuster_settings(guiargs)
                     from worlds.LauncherComponents import launch_subprocess
                     from .client import main as client_main
+                    warning = get_mmrs_missing_audiobin_warning(guiargs)
+                    if warning:
+                        messagebox.showwarning(title="Custom music skipped", message=warning)
                     launch_rom(path)
                     launch_subprocess(client_main, name="OoTClient")
                     messagebox.showinfo(title="Success", message=f"Rom adjusted to {path}")
@@ -440,6 +464,9 @@ def adjust(args, status_callback=None):
 
     # Create a fake multiworld and OOTWorld to use as a base
     update_status("Preparing options...")
+    warning = get_mmrs_missing_audiobin_warning(args)
+    if warning:
+        logger.warning(warning)
     multiworld = MultiWorld(1)
     ootworld = OOTWorld(multiworld, 1)
     # Set options in the fake OOTWorld

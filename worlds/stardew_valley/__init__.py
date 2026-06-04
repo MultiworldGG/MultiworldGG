@@ -93,22 +93,20 @@ if TRACKER_ENABLED:
     from .. import user_folder
     import os
 
-    # Best effort to detect if universal tracker is installed
-    if any("tracker.apworld" in f.name for f in os.scandir(user_folder)):
-        def launch_client(*args):
-            from worlds.LauncherComponents import launch
-            from .client import launch as client_main
-            launch(client_main, name="Stardew Valley Tracker", args=args)
+    def launch_client(*args):
+        from worlds.LauncherComponents import launch
+        from .client import launch as client_main
+        launch(client_main, name="Stardew Valley Tracker", args=args)
 
 
-        components.append(Component(
-            "Stardew Valley Tracker",
-            func=launch_client,
-            component_type=Type.CLIENT,
-            icon='stardew'
-        ))
+    components.append(Component(
+        "Stardew Valley Tracker",
+        func=launch_client,
+        component_type=Type.CLIENT,
+        icon='stardew'
+    ))
 
-        icon_paths['stardew'] = f"ap:{__name__}/stardew.png"
+    icon_paths['stardew'] = f"ap:{__name__}/stardew.png"
 
 
 class StardewValleyWorld(World):

@@ -400,7 +400,7 @@ class JsonParser:
 
         region_list = list(regions_seen)
 
-        region_list.sort(key=lambda x: float(x.strip(string.ascii_letters)))
+        region_list.sort()
 
         return RegionsData(start, exclude, region_list, connections, goals)
 

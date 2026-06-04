@@ -2,7 +2,7 @@
 
 from .HintList import misc_item_hint_table, misc_location_hint_table
 from .Items import REWARD_COLORS
-from .TextBox import line_wrap
+from .TextBox import line_wrap, rom_safe_text
 from .Utils import find_last
 
 ENG_TEXT_START = 0x92D000
@@ -1322,12 +1322,11 @@ def update_map_compass_messages(messages, world):
 
     maps_exist = world.shuffle_map != 'remove'
     compasses_exist = world.shuffle_compass != 'remove'
-    world_count = getattr(world, 'world_count', 1)
     dungeon_entrance_shuffle = world.shuffle_dungeon_entrances
     if not isinstance(dungeon_entrance_shuffle, bool):
         dungeon_entrance_shuffle = dungeon_entrance_shuffle != 'off'
 
-    if world.enhance_map_compass and (maps_exist or compasses_exist) and world_count == 1:
+    if world.enhance_map_compass and (maps_exist or compasses_exist):
         dungeon_list = {
             #                      dungeon name                      compass map  name of the entrance leading to the boss
             'Deku Tree':          ("the \x05\x42Deku Tree",          0x62, 0x88, "Deku Tree Before Boss -> Queen Gohma Boss Room"),
@@ -1383,6 +1382,19 @@ def update_map_compass_messages(messages, world):
             'Ganons Castle Tower': "\x05\x41Ganondorf",
         }
 
+        def dungeon_reward_area_text(location):
+            if location is None:
+                area = HintArea.ROOT
+                text = area.text(world.clearer_hints, preposition=True, use_2nd_person=True)
+                return GossipText(text, [area.color], prefix='', capitalize=False)
+            if location.player != world.player:
+                player_name = rom_safe_text(world.multiworld.get_player_name(location.player))
+                return GossipText(f"in #{player_name}'s world#", ['Light Blue'], prefix='', capitalize=False)
+
+            area = HintArea.at(location)
+            text = area.text(world.clearer_hints, preposition=True, use_2nd_person=True)
+            return GossipText(text, [area.color], prefix='', capitalize=False)
+
         for dungeon in world.dungeons:
             if dungeon.name in ('Gerudo Training Ground', 'Ganons Castle'):
                 pass
@@ -1412,11 +1424,7 @@ def update_map_compass_messages(messages, world):
                                 vanilla_boss_name = vanilla_boss_names[dungeon.name]
                                 vanilla_reward = world.get_location(vanilla_boss_name).vanilla_item
                                 vanilla_reward_location = world.hinted_dungeon_reward_locations[vanilla_reward]
-                                if vanilla_reward_location is None:
-                                    area = HintArea.ROOT
-                                else:
-                                    area = HintArea.at(vanilla_reward_location)
-                                area = GossipText(area.text(world.clearer_hints, preposition=True, use_2nd_person=True), [area.color], prefix='', capitalize=False)
+                                area = dungeon_reward_area_text(vanilla_reward_location)
                                 if 'compass_boss_location' in world.enhance_map_compass and world.shuffle_bosses != 'off':
                                     boss_room = world.get_entrance(boss_entrance).connected_region.name
                                     compass_message = f"\x13\x75\x08You found the \x05\x41Compass\x05\x40 for\x01{dungeon_name}\x05\x40! {boss_textboxes[boss_room]}\x05\x40\x01lurks, and the {vanilla_reward}\x01is {area}!\x09"

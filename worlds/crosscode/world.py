@@ -1,4 +1,5 @@
 """
+
 This module contains the world class for CrossCode.
 """
 
@@ -7,7 +8,7 @@ import typing
 import logging
 import itertools
 
-from BaseClasses import ItemClassification, Location, LocationProgressType, Region, Item, MultiWorld, Tutorial
+from BaseClasses import ItemClassification, Location, LocationProgressType, Region, Item, MultiWorld
 from Fill import fill_restrictive
 
 from Options import OptionError
@@ -112,7 +113,7 @@ class CrossCodeWorld(World):
     pre_fill_any_dungeon: list[CrossCodeItem]
 
     dungeon_location_list: dict[str, set[CrossCodeLocation]]
-    dungeon_areas: typing.ClassVar[set[str]] = {"cold-dng", "heat-dng", "shock-dng", "wave-dng", "tree-dng"}
+    dungeon_areas: typing.ClassVar[set[str]] = {"cold-dng", "heat-dng", "shock-dng", "wave-dng", "tree-dng", "final-dng"}
 
     logic_dict: LogicDict
 
@@ -172,11 +173,13 @@ class CrossCodeWorld(World):
         classes to check for inclusion.
         """
         return {
+            "dlc": bool(self.options.enable_dlc.value),
             "trade": False,
             "shop": bool(self.options.shop_rando.value),
             "arena": False,
             "chest": True,
             "quest": bool(self.options.quest_rando.value),
+            "botanics": bool(self.options.botanity.value),
         }
 
     def create_location(self, location: str, event_from_location: bool = False) -> CrossCodeLocation:
@@ -299,6 +302,22 @@ class CrossCodeWorld(World):
                 "Observatory goal requires quest randomization to be enabled"
             )
 
+        if (
+            self.options.goal.value == self.options.goal.option_diorbis and
+            not self.options.enable_dlc.value
+        ):
+            raise OptionError(
+                "Di'orbis goal requires DLC to be enabled"
+            )
+
+        if (
+            not self.options.enable_dlc.value and
+            self.options.botanics_completion_amount.value > (vanilla_amt := self.options.botanics_completion_amount.special_range_names["vanilla"])
+        ):
+            raise OptionError(
+                f"Cannot have more than {vanilla_amt} botanics chests required without DLC"
+            )
+
         self.fill_pools()
 
         self.variables = defaultdict(list)
@@ -336,11 +355,14 @@ class CrossCodeWorld(World):
 
         if self.options.shop_rando.value:
             if self.options.shop_receive_mode == ShopReceiveMode.option_per_item_type:
-                self.required_items.update(self.world_data.shop_unlock_by_id.values())
+                self.required_items.update(self.pools.item_pools["shop_unlock_by_id"])
             if self.options.shop_receive_mode == ShopReceiveMode.option_per_shop:
-                self.required_items.update(self.world_data.shop_unlock_by_shop.values())
+                self.required_items.update(self.pools.item_pools["shop_unlock_by_shop"])
             if self.options.shop_receive_mode == ShopReceiveMode.option_per_slot:
-                self.required_items.update(self.world_data.shop_unlock_by_shop_and_id.values())
+                self.required_items.update(self.pools.item_pools["shop_unlock_by_shop_and_id"])
+
+        if self.options.enable_dlc.value:
+            self.required_items.update(self.pools.item_pools["Required (DLC)"])
 
         if self.options.vt_shade_lock.value in [1, 2]:
             self.variables["vtShadeLock"].append("shades")
@@ -359,6 +381,8 @@ class CrossCodeWorld(World):
         self.variables["canGrind"].append("noShadeWarp")
 
         self.variables["rhombusHubUnlock"].append("on" if self.rhombus_hub_unlock else "off")
+
+        self.variables["allowBoosterGrinding"].append("on" if self.options.allow_booster_grinding else "off")
 
         if self.options.start_with_green_leaf_shade.value:
             self.multiworld.push_precollected(self.create_item(green_leaf_shade_name))
@@ -418,6 +442,7 @@ class CrossCodeWorld(World):
             "shop_unlock_by_shop": self.world_data.shop_unlock_by_shop,
             "shop_unlock_by_shop_and_id": self.world_data.shop_unlock_by_shop_and_id,
             "region_botanics_amounts": self.world_data.region_botanics_amounts[self.logic_mode],
+            "botanics_completion_amount": self.options.botanics_completion_amount.value,
         }
 
         # Universal Tracker support
@@ -465,6 +490,7 @@ class CrossCodeWorld(World):
             self.logic_dict["chest_clearance_levels"][data.code] = clearance
 
     def create_shops(self):
+        # don't filter the shop pool - the regions must always exist to prevent generation errors
         for shop_name, shop in self.world_data.shops_dict.items():
             region = Region(shop_name, self.player, self.multiworld)
             self.multiworld.regions.append(region)
@@ -477,11 +503,11 @@ class CrossCodeWorld(World):
                     )
 
                     if self.options.shop_send_mode == ShopSendMode.option_per_slot:
-                        for data in self.world_data.per_shop_locations[shop_name].values():
+                        for data in self.pools.per_shop_location_pool[shop_name]:
                             self.add_location(data, region)
 
         if self.options.shop_send_mode.value == ShopSendMode.option_per_item_type:
-            for data in self.world_data.global_shop_locations.values():
+            for data in self.pools.global_shop_location_pool:
                 self.add_location(data, self.region_dict["Menu"])
 
     def create_regions(self):
@@ -563,9 +589,9 @@ class CrossCodeWorld(World):
 
         if self.options.shop_rando.value:
             if self.options.shop_send_mode.value == ShopSendMode.option_per_item_type:
-                num_needed_items += len(self.world_data.global_shop_locations)
+                num_needed_items += len(self.pools.global_shop_location_pool)
             elif self.options.shop_send_mode == ShopSendMode.option_per_slot:
-                num_needed_items += sum(len(shop) for shop in self.world_data.per_shop_locations.values())
+                num_needed_items += sum(len(shop) for shop in self.pools.per_shop_location_pool.values())
 
         # items that have been replaced by progressive items
         replaced: dict[str, list[CrossCodeItem]] = defaultdict(list)
@@ -770,12 +796,15 @@ class CrossCodeWorld(World):
             "apworldVersion": APWORLD_VERSION_STRING,
             "options": {
                 "goal": self.options.goal.current_key,
+                "dlcActive": bool(self.options.enable_dlc.value),
                 "vtShadeLock": self.options.vt_shade_lock.value,
                 "rhombusHubUnlock": bool(self.options.rhombus_hub_unlock.value),
                 "meteorPassage": bool(self.options.vw_meteor_passage.value),
                 "closedGaia": self.options.closed_gaia.value,
                 "vtSkip": bool(self.options.vt_skip.value),
                 "keyrings": [self.world_data.single_items_dict[name].item_id for name in self.logic_dict["keyrings"]],
+                "chestReveal": bool(self.options.chest_reveal.value),
+                "allowBoosterGrinding": bool(self.options.allow_booster_grinding),
                 "questRando": bool(self.options.quest_rando.value),
                 "hiddenQuestRewardMode": self.options.hidden_quest_reward_mode.current_key,
                 "hiddenQuestObfuscationLevel": self.options.hidden_quest_obfuscation_level.current_key,
@@ -785,6 +814,7 @@ class CrossCodeWorld(World):
                 "shopReceiveMode": shop_receive_mode_string,
                 "shopDialogHints": bool(self.options.shop_dialog_hints.value),
                 "chestClearanceLevels": self.logic_dict["chest_clearance_levels"],
+                "botanicsCompletionAmount": self.options.botanics_completion_amount.value,
             }
         }
 

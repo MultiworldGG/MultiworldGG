@@ -1,5 +1,6 @@
 import json
 import typing
+import logging
 from Options import Choice, OptionSet, PerGameCommonOptions, Range, OptionDict, OptionList, Option, StartInventoryPool, Toggle, DefaultOnToggle
 from dataclasses import dataclass
 from . import map_rando_app_data
@@ -420,8 +421,75 @@ class MapRandoOptions(OptionDict):
                 }
     
     def verify(self, world, player_name: str, plando_options) -> None:
+        if self.value.get("version", 119) >= 121:
+            self.downgrade_options(player_name if player_name is not None else "Unknown")
         if not world.validate_settings(json.dumps(self.value)):
             raise Exception("MapRandoOptions failed to validate.")
+
+    def downgrade_options(self, player_name: str) -> None:
+        logger = logging.getLogger("Super Metroid Map Rando")
+
+        qol_key = "quality_of_life_settings"
+        item_key = "item_progression_settings"
+
+        qol_settings = self.value.get(qol_key, {})
+        enemy_drops = qol_settings.get("enemy_drops", None)
+        if enemy_drops is not None:
+            drops_mapping = {"Vanilla": False, "Buffed": True}
+            if enemy_drops not in drops_mapping:
+                logger.warning(f"Enemy drops option {enemy_drops} not recognized. "
+                               f"Converting to buffed_drops = false for player {player_name}.")
+            del self.value[qol_key]["enemy_drops"]
+            self.value[qol_key]["buffed_drops"] = drops_mapping.get(enemy_drops, False)
+
+        disableable_etanks = qol_settings.get("disableable_etanks", None)
+        if disableable_etanks is not None:
+            self.value[qol_key]["disableable_etanks"] = disableable_etanks != "Off"
+
+        other_settings = self.value.get("other_settings", {})
+        area_assignment = other_settings.get("area_assignment", None)
+        if isinstance(area_assignment, dict):
+            layout = area_assignment.get("preset", None)
+            if layout is None:
+                layout = area_assignment.get("base_order", "Standard")
+            assignment_mapping = {"Standard": "Standard", "Size": "Ordered", "Depth": "Ordered", "Random": "Random"}
+            if layout not in assignment_mapping:
+                logger.warning(f"Area assignment option {layout} not recognized. "
+                               f"Converting to Standard for player {player_name}.")
+            self.value["other_settings"]["area_assignment"] = assignment_mapping.get(layout, "Standard")
+
+        if "ultra_low_qol" not in other_settings:
+            logger.warning(f"Key ultra_low_qol not found in other_options for player {player_name}. Assuming off.")
+            self.value["other_settings"]["ultra_low_qol"] = False
+
+        door_settings = self.value.get("doors_settings", {})
+        if not isinstance(self.value.get("doors_mode", None), str):
+            doors_mode = "Blue"
+            ammo_door_keys = {"red", "green", "yellow"}
+            beam_door_keys = {"charge", "ice", "wave", "spazer", "plasma"}
+            for key in ammo_door_keys:
+                if door_settings.get(f"{key}_doors_count", 0) > 0:
+                    doors_mode = "Ammo"
+                    break
+            for key in beam_door_keys:
+                if door_settings.get(f"{key}_doors_count", 0) > 0:
+                    doors_mode = "Beam"
+                    break
+            self.value["doors_mode"] = doors_mode
+
+        item_settings = self.value.get(item_key, {})
+        item_list_keys = ("item_pool", "starting_items", "key_item_priority", "filler_items")
+        for key in item_list_keys:
+            item_list = item_settings.get(key, [])
+            indices_to_delete = []
+            for i in range(len(item_list)):
+                if item_list[i]["item"] in ("BlueBooster", "SparkBooster"):
+                    indices_to_delete.append(i)
+            indices_to_delete.reverse()
+            for i in indices_to_delete:
+                self.value[item_key][key].pop(i)
+
+        # And then we pray that skill assumption settings aren't radically different!
 
 @dataclass
 class SMMROptions(PerGameCommonOptions):

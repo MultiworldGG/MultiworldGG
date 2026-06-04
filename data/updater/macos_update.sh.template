@@ -1,0 +1,32 @@
+#!/bin/sh
+set -u
+
+APP={app_path}
+SRC={source_app}
+STAGE={stage_app}
+VOL={volume}
+DMG={dmg_path}
+
+while kill -0 {parent_pid} 2>/dev/null; do
+    sleep 0.2
+done
+
+copy_app() {{
+    rm -rf "$STAGE"
+    ditto "$SRC" "$STAGE"
+    rm -rf "$APP"
+    mv "$STAGE" "$APP"
+}}
+
+if ! copy_app; then
+    osascript -e {admin_script} || {{
+        open "$VOL"
+        rm -f "$0"
+        exit 1
+    }}
+fi
+
+open "$APP"
+hdiutil detach "$VOL" >/dev/null 2>&1 || true
+rm -f "$DMG"
+rm -f "$0"

@@ -61,12 +61,13 @@ class ListInfo:
     shop_data: dict[str, ShopData]
     per_shop_locations: dict[str, dict[int, LocationData]]
     global_shop_locations: dict[int, LocationData]
-    shop_unlock_by_id: dict[int, ItemData]
-    shop_unlock_by_shop: dict[str, ItemData]
-    shop_unlock_by_shop_and_id: dict[tuple[str, int], ItemData]
+    shop_unlock_by_id: dict[int, ItemPoolEntry]
+    shop_unlock_by_shop: dict[str, ItemPoolEntry]
+    shop_unlock_by_shop_and_id: dict[tuple[str, int], ItemPoolEntry]
     global_slot_region_conditions_list: dict[str, list[Condition]]
 
     region_botanics_amounts: dict[str, dict[str, int]] # { mode => { region => number of plants } }
+    botanics_internal_names_to_ids: dict[str, int]
 
     progressive_chains: dict[str, ProgressiveItemChain]
     progressive_items: dict[str, ItemData]
@@ -112,6 +113,7 @@ class ListInfo:
         self.global_slot_region_conditions_list = {}
 
         self.region_botanics_amounts = defaultdict(lambda: defaultdict(lambda: 0))
+        self.botanics_internal_names_to_ids = {}
 
         self.json_parser = JsonParser(self.ctx)
         self.json_parser.single_items_dict = self.single_items_dict
@@ -342,21 +344,24 @@ class ListInfo:
         real_name = dbentry["name"]["en_US"]
 
         metadata = raw_shop.get("metadata", {})
-        metadata["shops"] = True
+        metadata["shop"] = True
         access_info = self.json_parser.parse_location_access_info(raw_shop)
 
         shop_locs = self.per_shop_locations[shop_display_name]
 
         by_shop_name =  f"Shop Unlock: {shop_base_name}"
         by_shop_item = self.__add_shop_unlock_item(by_shop_name)
-        self.shop_unlock_by_shop[shop_name] = by_shop_item
-        self.descriptions[by_shop_item.combo_id] = {
-            "en_US": f"Unlocks \\c[3]all item slots\\c[0] in the shop \\c[3]{real_name}\\c[0]."
-        }
+        if shop_name not in self.shop_unlock_by_shop:
+            # if the shop unlock already exists do nothing
+            # THIS IS A HACK and MUST BE REPLACED with a more permanent solution when metadata is phased out
+            self.shop_unlock_by_shop[shop_name] = ItemPoolEntry(by_shop_item, 1, metadata)
+            self.descriptions[by_shop_item.combo_id] = {
+                "en_US": f"Unlocks \\c[3]all item slots\\c[0] in the shop \\c[3]{real_name}\\c[0]."
+            }
 
-        shop_unlocks = self.item_groups.setdefault(f"Shop Unlocks", [])
-        if by_shop_item not in shop_unlocks:
-            shop_unlocks.append(by_shop_item)
+            shop_unlocks = self.item_groups.setdefault(f"Shop Unlocks", [])
+            if by_shop_item not in shop_unlocks:
+                shop_unlocks.append(by_shop_item)
 
         global_item_group = self.item_groups.setdefault("Global Slot Unlocks", [])
         slots_item_group = self.item_groups.setdefault("Slot Unlocks", [])
@@ -392,7 +397,7 @@ class ListInfo:
 
             by_shop_and_id_name = f"Slot Unlock: {item_name} ({shop_display_name})"
             by_shop_and_id_item = self.__add_shop_unlock_item(by_shop_and_id_name)
-            self.shop_unlock_by_shop_and_id[shop_name, item_id] = by_shop_and_id_item
+            self.shop_unlock_by_shop_and_id[shop_name, item_id] = ItemPoolEntry(by_shop_and_id_item, 1, metadata)
 
             slots_item_group.append(by_shop_and_id_item)
             this_shop_item_group.append(by_shop_and_id_item)
@@ -427,7 +432,7 @@ class ListInfo:
 
                 by_id_name = f"Global Slot Unlock: {item_name}"
                 by_id_item = self.__add_shop_unlock_item(by_id_name)
-                self.shop_unlock_by_id[item_id] = by_id_item
+                self.shop_unlock_by_id[item_id] = ItemPoolEntry(by_id_item, 1, metadata)
                 self.global_shop_locations[item_id] = global_location
 
                 global_item_group.append(by_id_item)
@@ -501,10 +506,43 @@ class ListInfo:
         for name, pool in raw.items():
             self.__add_item_group(name, pool)
 
+    def __add_plant(self, name: str, raw: dict[str, typing.Any]) -> LocationData:
+        for mode, region in raw["region"].items():
+            self.region_botanics_amounts[mode][region] += 1
+
+        name = f"Botanics: {name}"
+        area = raw["location"].get("area", None)
+        internal_name = raw["location"].get("name", None)
+        metadata = { "botanics": True } | raw.get("metadata", {})
+        area_name = self.ctx.area_names[area]
+        code = self.__get_or_allocate_location_id(name)
+
+        location = LocationData(
+            name=name,
+            code=code,
+            access=AccessInfo(region=raw["region"], cond=None),
+            area=area,
+            metadata=metadata,
+        )
+
+        self.botanics_internal_names_to_ids[internal_name] = code
+
+        if area != None:
+            try:
+                self.location_groups[area_name].append(location)
+                self.location_groups[f"{area_name} Botanics"].append(location)
+            except KeyError:
+                print(f"Cannot add location '{name}' in area '{area}'")
+
+        self.locations_data[name] = location
+        self.pool_locations.append(location)
+        self.location_groups["Botanics"].append(location)
+
+        return location
+
     def __add_botanics(self, raw: dict[str, dict[str, typing.Any]]):
-        for plant in raw.values():
-            for mode, region in plant["region"].items():
-                self.region_botanics_amounts[mode][region] += 1
+        for name, plant in raw.items():
+            self.__add_plant(name, plant)
 
     def __add_reward(self, reward: list[dict[str, typing.Any]]) -> ItemData:
         """

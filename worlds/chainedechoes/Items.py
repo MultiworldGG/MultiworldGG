@@ -281,7 +281,7 @@ Lenne Boost #14,LenneStatBoost,1,CharacterStatBoost,Useful
 Lenne Boost #15,LenneStatBoost,1,CharacterStatBoost,Useful
 Lenne Boost #16,LenneStatBoost,1,CharacterStatBoost,Useful
 // ROBB PROGRESSIVES
-Robb Skill #1,RobbSkill,1,CharacterSkill,Useful
+Robb Skill #1,RobbSkill,1,CharacterSkill,Progression
 Robb Skill #2,RobbSkill,1,CharacterSkill,Useful
 Robb Skill #3,RobbSkill,1,CharacterSkill,Useful
 Robb Skill #4,RobbSkill,1,CharacterSkill,Useful
@@ -330,7 +330,7 @@ Robb Boost #14,RobbStatBoost,1,CharacterStatBoost,Useful
 Robb Boost #15,RobbStatBoost,1,CharacterStatBoost,Useful
 Robb Boost #16,RobbStatBoost,1,CharacterStatBoost,Useful
 // VICTOR PROGRESSIVES
-Victor Skill #1,VictorSkill,1,CharacterSkill,Useful
+Victor Skill #1,VictorSkill,1,CharacterSkill,Progression
 Victor Skill #2,VictorSkill,1,CharacterSkill,Useful
 Victor Skill #3,VictorSkill,1,CharacterSkill,Useful
 Victor Skill #4,VictorSkill,1,CharacterSkill,Useful
@@ -624,7 +624,7 @@ Magnolia Boost #14,MagnoliaStatBoost,1,CharacterStatBoost,Filler
 Magnolia Boost #15,MagnoliaStatBoost,1,CharacterStatBoost,Filler
 Magnolia Boost #16,MagnoliaStatBoost,1,CharacterStatBoost,Filler
 // KYLIAN PROGRESSIVES
-Kylian Skill #1,KylianSkill,1,CharacterSkill,Filler
+Kylian Skill #1,KylianSkill,1,CharacterSkill,Progression
 Kylian Skill #2,KylianSkill,1,CharacterSkill,Filler
 Kylian Skill #3,KylianSkill,1,CharacterSkill,Filler
 Kylian Skill #4,KylianSkill,1,CharacterSkill,Filler
@@ -930,7 +930,6 @@ Opal Ring,Opal Ring,1,Equipment,Filler
 Magic Poleyns,Magic Poleyns,1,Equipment,Filler
 Leaf Hood,Leaf Hood,1,Equipment,Filler
 Friendship Ring,Friendship Ring,1,Equipment,Filler
-Can Machine,Can Machine,1,Equipment,Filler
 Holy Symbol,Holy Symbol,1,Equipment,Filler
 Dancing Shoes,Dancing Shoes,1,Equipment,Filler
 Adrenalin Stone,Adrenalin Stone,1,Equipment,Filler
@@ -1019,6 +1018,7 @@ Crap #1,Crap,1,Item,Trap
 Crap #2,Crap,1,Item,Trap
 Crap #3,Crap,1,Item,Trap
 Crap #4,Crap,1,Item,Trap
+Crap #5,Crap,1,Item,Trap
 '''
 
 # Map string classifications to `ItemClassification`
@@ -1030,7 +1030,8 @@ classification_map = {
 }
 
 # Parse the item data from the text
-current_id = 2000
+ITEM_ID_START = 8500000
+current_id = ITEM_ID_START
 for line in items_txt.strip().splitlines():
     if line.startswith("//"):  # Skip comments
         continue
@@ -1050,15 +1051,18 @@ for line in items_txt.strip().splitlines():
     current_id += 1
 
 
+item_data_by_name: Dict[str, ChainedEchoesItem] = {item.item_name: item for item in item_data_table}
+item_table: Dict[str, int] = {item.item_name: item.id for item in item_data_table}
+
+
 def create_items(world: "ChainedEchoesWorld"):
     """
-    Dynamically create items for the game world using BaseClasses.Item.
+    Create the full deterministic item pool during world setup.
+
+    Universal Tracker and AP generation both rely on create_items() being the
+    single place where the item pool is populated.  Use the world's create_item()
+    factory so any future item metadata logic remains centralized.
     """
     for item in item_data_table:
-        for _ in range(item.count):  # Create as many instances as specified by `count`
-            # Create the item using MultiworldGG's Item class
-            game_item = Item(item.item_name, item.classification, item.id, world.player)
-            world.multiworld.itempool.append(game_item)
-            
-            
-item_table: Dict[str, int] = {item.item_name: item.id for item in item_data_table}
+        for _ in range(item.count):
+            world.multiworld.itempool.append(world.create_item(item.item_name))

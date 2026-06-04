@@ -16,6 +16,10 @@ generic_item_data_table: dict[str, SRB2ItemData] = {
     "Chaos Emerald": SRB2ItemData(2),
     "Progressive Emblem Hint": SRB2ItemData(3, ItemClassification.useful),
     "1UP": SRB2ItemData(4, ItemClassification.filler),
+    #Extra Shield Slot
+    #shields between zones
+
+
 
     "& Knuckles": SRB2ItemData(70, ItemClassification.trap | ItemClassification.useful),
     "50 Rings": SRB2ItemData(71, ItemClassification.filler),
@@ -29,6 +33,8 @@ generic_item_data_table: dict[str, SRB2ItemData] = {
     "Double Rings": SRB2ItemData(84, ItemClassification.filler),
 
 
+    # Hyper Ring
+    # Shield Reinforcer
     #"Extended Invincibility": SRB2ItemData(90, ItemClassification.useful),
     #"Extended Super Sneakers": SRB2ItemData(91, ItemClassification.useful),
     #"Max Drill Increase": SRB2ItemData(92, ItemClassification.useful),
@@ -204,8 +210,28 @@ character_item_data_table: dict[str, SRB2ItemData] = {
     "Amy": SRB2ItemData(53),
     "Metal Sonic": SRB2ItemData(54),
     "Sonic": SRB2ItemData(55),
-
 }
+
+custom_item_data_table: dict[str, SRB2ItemData] = {
+    "Mario": SRB2ItemData(300),
+    "Luigi": SRB2ItemData(301),
+    "Yoshi": SRB2ItemData(302),
+    "Ray": SRB2ItemData(303),
+    "Silver": SRB2ItemData(304),
+    "Shadow": SRB2ItemData(305),
+    "Modern Sonic": SRB2ItemData(306),
+    "Werehog": SRB2ItemData(307),
+    "Metal Knuckles": SRB2ItemData(308),
+    "Tails Doll": SRB2ItemData(309),
+    "Espio": SRB2ItemData(310),
+    "Mighty": SRB2ItemData(311),
+    "Charmy Bee": SRB2ItemData(312),
+    "Vector": SRB2ItemData(313),
+    "Heavy": SRB2ItemData(314),
+    "Bomb": SRB2ItemData(315)
+}
+
+
 other_item_table:dict[str, SRB2ItemData] = {
     "Whirlwind Shield":SRB2ItemData(56),
     "Armageddon Shield":SRB2ItemData(57),
@@ -266,7 +292,8 @@ item_data_table = {
     **traps_item_data_table,
     **nights_item_table,
     **special_item_data_table,
-    **sp_acts_item_data_table
+    **sp_acts_item_data_table,
+    **custom_item_data_table
 }
 
 item_table = {name: data.code for name, data in item_data_table.items() if data.code is not None}

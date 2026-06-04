@@ -117,7 +117,18 @@ if baseclasses_loaded:
                 except (FileNotFoundError, KeyError):
                     raise Exception(f"Could not find vendor dependencies for Linux Python {python_version}")
         else:
-            raise Exception(f"Unsupported platform: {platform_type}")
+            requirements_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "requirements.txt")
+            try:
+                import pkg_resources
+                with open(requirements_file) as f:
+                    reqs = [line.strip() for line in f if line.strip() and not line.startswith("#") and " @ " not in line]
+                pkg_resources.require(reqs)
+            except Exception:
+                try:
+                    import subprocess
+                    subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", requirements_file])
+                except Exception as install_error:
+                    raise Exception(f"Unsupported platform: {platform_type}. Also failed to install requirements.txt: {install_error}")
 
     # Add paths for APWorld context - use __file__ to get the correct base path
     current_dir = os.path.dirname(os.path.abspath(__file__))

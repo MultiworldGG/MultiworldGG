@@ -80,6 +80,8 @@ jobs:
           }
           $contents = Get-ChildItem -Path setups/*.exe -Force -Recurse
           $SETUP_NAME=$contents[0].Name
+          $SETUP_HASH=(Get-FileHash -Algorithm SHA256 "setups/$SETUP_NAME").Hash.ToLower()
+          "$SETUP_HASH  $SETUP_NAME" | Out-File -Encoding ascii "setups/$SETUP_NAME.sha256"
           echo "SETUP_NAME=$SETUP_NAME" >> $Env:GITHUB_ENV
       # - code above copied from build.yml -
       - name: Attest Build
@@ -145,6 +147,7 @@ jobs:
           cd dist && export APPIMAGE_NAME="`ls *.AppImage`" && cd ..
           export TAR_NAME="${APPIMAGE_NAME%.AppImage}.tar.gz"
           (cd build && DIR_NAME="`ls | grep exe`" && mv "$DIR_NAME" MultiworldGG && tar -cv MultiworldGG | gzip -8 > ../dist/$TAR_NAME && mv MultiworldGG "$DIR_NAME")
+          (cd dist && sha256sum "$APPIMAGE_NAME" > "$APPIMAGE_NAME.sha256" && sha256sum "$TAR_NAME" > "$TAR_NAME.sha256")
           echo "APPIMAGE_NAME=$APPIMAGE_NAME" >> $GITHUB_ENV
           echo "TAR_NAME=$TAR_NAME" >> $GITHUB_ENV
       # - code above copied from build.yml -
@@ -236,6 +239,7 @@ jobs:
           dmgbuild -s .github/dmg_settings.py \
             "MultiworldGG v${{ env.RELEASE_VERSION }}" \
             "build/MultiworldGG_${{ env.RELEASE_VERSION }}.dmg"
+          (cd build && shasum -a 256 "MultiworldGG_${{ env.RELEASE_VERSION }}.dmg" > "MultiworldGG_${{ env.RELEASE_VERSION }}.dmg.sha256")
 
       - name: Add to Release
         uses: softprops/action-gh-release@975c1b265e11dd76618af1c374e7981f9a6ff44a
@@ -245,5 +249,6 @@ jobs:
           name: v${{ env.RELEASE_VERSION }}
           files: |
             build/MultiworldGG_${{ env.RELEASE_VERSION }}.dmg
+            build/MultiworldGG_${{ env.RELEASE_VERSION }}.dmg.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

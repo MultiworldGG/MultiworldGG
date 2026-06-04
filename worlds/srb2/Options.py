@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from Options import DefaultOnToggle, Range, Toggle, DeathLink, Choice, PerGameCommonOptions, OptionSet, OptionGroup, OptionCounter
+from Options import DefaultOnToggle, Range, Toggle, DeathLink, Choice, PerGameCommonOptions, OptionSet, OptionGroup, OptionCounter, OptionList
 
 
 class TimeEmblems(DefaultOnToggle):
@@ -25,18 +25,33 @@ class NTimeEmblems(DefaultOnToggle):
     display_name = "NiGHTS Time Emblems"
 
 
+class CharacterList(OptionList):
+    """Choose Included characters
+    MODDED CHARACTERS MUST BE DOWNLOADED SEPERATELY
+    Removing vanilla character may cause logic issues
+    Vanilla characters: 'Sonic', 'Tails', 'Knuckles', 'Amy', 'Fang', 'Metal Sonic'
+    Chaotix: 'Espio', 'Mighty', 'Charmy Bee', 'Vector', 'Heavy', 'Bomb'
+    Mario Bros: 'Mario', 'Luigi'
+    RChars: 'Metal Knuckles', 'Tails Doll'
+    Misc characters: 'Yoshi', 'Ray', 'Silver', 'Shadow', 'Modern Sonic', 'Werehog'"""
 
-class StartingCharacter(Choice):
-    """Choose Starting character
-    Tails/Knuckles are recommended if you don't know where all the emblems are"""
-    option_sonic = 0
-    option_tails = 1
-    option_knuckles = 2
-    option_amy = 3
-    option_fang = 4
-    option_metal_sonic = 5
-    option_all = 6
-    default = 0
+    display_name = "Character List"
+    valid_keys = {"Sonic","Tails","Knuckles","Amy","Fang","Metal Sonic","Mario","Luigi","Yoshi","Ray","Silver","Shadow","Modern Sonic","Werehog","Metal Knuckles","Tails Doll","Espio","Mighty","Charmy Bee","Vector","Heavy","Bomb"}
+    default = ["Sonic","Tails","Knuckles","Amy","Fang","Metal Sonic"]
+
+class StartingCharacter(OptionList):
+    """Choose Starting characters
+    Tails/Knuckles are recommended if you don't know where all the emblems are
+    You may also select any valid custom character"""
+    display_name = "Starting Character"
+    valid_keys = {"Sonic","Tails","Knuckles","Amy","Fang","Metal Sonic","Mario","Luigi","Yoshi","Ray","Silver","Shadow","Modern Sonic","Werehog","Metal Knuckles","Tails Doll","Espio","Mighty","Charmy Bee","Vector","Heavy","Bomb"}
+    default = ["Sonic"]
+
+class RandomStartChar(Toggle):
+    """Randomly pick a character from the Starting Character list as your starting character instead of all of them"""
+    display_name = "Randomize Starting Character"
+#randomize starting character
+#randomly pick from startingcharacter as your starting character
 
 
 class RadarStart(Toggle):
@@ -46,11 +61,9 @@ class RadarStart(Toggle):
 class LogicDifficulty(Choice):
     """Difficulty of logic required to get items
     Normal - Tails/Knuckles required for difficult emblems, no badnik bouncing
-    Hard - If it's possible, it's in logic
-    Custom - Disables in-zone logic for custom character use"""
+    Hard - If it's possible, it's in logic"""
     option_normal = 0
     option_hard = 1
-    option_custom = 2
     default = 0
     display_name = "Logic Difficulty"
 
@@ -71,15 +84,19 @@ class SuperRingSanity(Toggle):
 class ActSanity(Toggle):
     """Splits zone unlocks into individual acts
     I.E. Greenflower Zone -> Greenflower Zone (Act 1), Greenflower Zone (Act 2), Greenflower Zone (Act 3)"""
+    display_name = "Actsanity"
 
 class ObjectLocking(Toggle):
-    """Shuffles certain objects like springs, slime, zoom tubes etc
-    DOES NOT CURRENTLY WORK WITH MATCH MAPS + RING MONITORS"""
+    """Shuffles objects such as springs, slime, zoom tubes etc"""
+    display_name = "Object Locking"
 
 class BlackCoreEmblemCost(Range):
-    """PERCENTAGE of emblems needed for black core zone to be unlocked
-    Putting 0 will make Black Core Zone an item in the multiworld like the rest of the zones"""
-    display_name = "Emblems for Black Core"
+    """PERCENTAGE of emblems needed for your goal stage to be unlocked
+    When playing with the challenge level goal:
+        1/3 of this percentage unlocks Haunted Heights, 2/3 unlocks Aerial Garden and 3/3 unlocks Azure Temple
+    Putting 0 will make your goal stages items in the multiworld like the rest of the zones
+    """
+    display_name = "Emblems for Goal"
     range_start = 0
     range_end = 100
     default = 50
@@ -139,12 +156,22 @@ class FillerWeights(OptionCounter):
 
 class CompletionType(Choice):
     """Set goal for Victory Condition
-    Bad Ending Requires Beating Black Core Zone Act 3
-    Good Ending Requires The 7 Chaos Emeralds"""
+    Bad Ending - Beat Black Core Zone Act 3
+    Good Ending - Beat Black Core Act 3 with all 7 Chaos Emeralds
+    Challenge Levels - Beat Haunted Heights, Aerial Garden and Azure Temple
+    All Bosses - Beat every Act 3 and every act of Black Core Zone"""
+
 
     display_name = "Completion Goal"
     option_Bad_Ending = 0
     option_Good_Ending = 1
+    option_Challenge_Levels = 2
+    option_All_Bosses = 3
+
+class RingResetZoneExit(DefaultOnToggle):
+    """Rings reset locally on zone entry/exit (takes priority over hard ringlink)"""
+    display_name = "Local Ring Reset"
+
 
 class RingLink(Choice):
     """Enable Ringlink (share rings/currency with other games)
@@ -157,9 +184,7 @@ class RingLink(Choice):
     option_hard = 3
     display_name = "Ring Link"
 
-#class LocalRingReset(DefaultOnToggle):
-#    """Reset rings locally on zone exit/entry"""
-#    display_name = "Reset Rings Locally"
+
 
 srb2_options_groups = [
     OptionGroup("Emblem Toggles", [
@@ -169,7 +194,6 @@ srb2_options_groups = [
         NightsMaps,
         RankEmblems,
         NTimeEmblems,
-        StartingCharacter,
         OneUpSanity,
         SuperRingSanity,
         MPMaps
@@ -179,12 +203,18 @@ srb2_options_groups = [
         ObjectLocking,
         LogicDifficulty,
         RadarStart,
+        CompletionType,
         BlackCoreEmblemCost,
+        CharacterList,
+        StartingCharacter,
+        RandomStartChar,
         TrapPercentage,
         TrapWeights,
         FillerWeights,
         EmblemNumber,
-        RingLink,
+        RingResetZoneExit,
+        RingLink
+
 
     ]),
 ]
@@ -201,6 +231,8 @@ class SRB2Options(PerGameCommonOptions):
     actsanity: ActSanity
     object_locking: ObjectLocking
     starting_character: StartingCharacter
+    character_list: CharacterList
+    random_start_char: RandomStartChar
     difficulty: LogicDifficulty
     match_maps: MPMaps
     oneup_sanity: OneUpSanity
@@ -209,8 +241,10 @@ class SRB2Options(PerGameCommonOptions):
     num_emblems: EmblemNumber
     trap_weights: TrapWeights
     filler_weights: FillerWeights
+    completion_type: CompletionType
     bcz_emblem_percent:BlackCoreEmblemCost
     trap_percentage:TrapPercentage
     ring_link: RingLink
+    ring_reset_zone_exit: RingResetZoneExit
     death_link: DeathLink
-    completion_type: CompletionType
+

@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+
+while kill -0 {parent_pid} 2>/dev/null; do
+    sleep 0.2
+done
+
+rm -f {backup_path}
+mv {current_path} {backup_path}
+mv {download_path} {current_path}
+chmod 755 {current_path}
+{current_path} >/dev/null 2>&1 &
+
+sleep 2
+rm -f {backup_path}
+rm -f "$0"

@@ -23,6 +23,7 @@ class Sequence:
         self.zsounds: Optional[list[dict[str, str]]] = zsounds
         self.zbank_file: Optional[str] = None
         self.bankmeta: Optional[str] = None
+        self.mm_audiobin_path: Optional[str] = None
         self.game: Optional[SequenceGame] = SequenceGame.OOT
 
         self.instrument_set: int = 0x0
@@ -38,5 +39,6 @@ class Sequence:
         copy = Sequence(self.name, self.cosmetic_name, self.seq_type, self.type, self.instrument_set, self.replaces, self.vanilla_id, self.seq_file, self.new_instrument_set, self.zsounds)
         copy.zbank_file = self.zbank_file
         copy.bankmeta = self.bankmeta
+        copy.mm_audiobin_path = self.mm_audiobin_path
         copy.game = self.game
         return copy

@@ -40,4 +40,10 @@ variable_definitions: dict[str, dict[str, list[Condition]]] = {
         ],"full": [
         ],
     },
+    "allowBoosterGrinding": {
+        "off": [
+            NeverCondition(),
+        ],"on": [
+        ],
+    },
 }

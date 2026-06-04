@@ -22,8 +22,6 @@ from worlds.AutoWorld import World, AutoLogicRegister, WebWorld
 from worlds.generic.Rules import set_rule, add_rule, add_item_rule
 
 logger = logging.getLogger("Super Metroid Map Rando")
-# Suppress verbose urllib3 debug logs during package installation
-logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 from .Rom import make_ips_patches, SMMapRandoProcedurePatch
 from .ips import IPS_Patch
@@ -42,15 +40,14 @@ class MapRepositoryError(Exception):
     Used when the upstream Map Rando map repository is unreachable for whatever reason
     """
 
-import Utils
-
-def _import_pysmmaprando():
-    """Import pysmmaprando, installing if needed (source only)."""
+try:
+    if version("pysmmaprando") != required_pysmmaprando_version_short:
+        raise WrongVersionError
     from pysmmaprando import build_app_data, validate_settings_ap, randomize_ap, customize_seed_ap, randomization_to_json, CustomizeRequest, Item as MapRandoItem
-    return build_app_data, validate_settings_ap, randomize_ap, customize_seed_ap, randomization_to_json, CustomizeRequest, MapRandoItem
 
-def _install_pysmmaprando_from_source():
-    """Download and install pysmmaprando for source installations only."""
+# required for APWorld distribution outside official AP releases as stated at https://docs.python.org/3/library/zipimport.html:
+# ZIP import of dynamic modules (.pyd, .so) is disallowed.
+except (ImportError, WrongVersionError, PackageNotFoundError) as e:
     python_version = f"cp{sys.version_info.major}{sys.version_info.minor}"
     if sys.platform.startswith('win'):
         abi_version = f"cp{sys.version_info.major}{sys.version_info.minor}-win_amd64"
@@ -60,34 +57,28 @@ def _install_pysmmaprando_from_source():
         else:
             abi_version = f"{python_version}-manylinux_2_28_{platform.machine()}"
     elif sys.platform.startswith('darwin'):
+        mac_ver = platform.mac_ver()[0].split('.')
         abi_version = f"{python_version}-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2"
-    else:
-        raise ImportError(f"Unsupported platform: {sys.platform}")
-
     map_rando_lib_file = f'https://github.com/snowflav-goob/MapRandomizer/releases/download/v{required_pysmmaprando_version}/pysmmaprando-{required_pysmmaprando_version_short}-{python_version}-{abi_version}.whl'
-    logger.info(f"Installing pysmmaprando from {map_rando_lib_file}")
-    import subprocess
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', map_rando_lib_file])
-
-try:
-    installed_version = version("pysmmaprando")
-    if installed_version != required_pysmmaprando_version and installed_version != required_pysmmaprando_version_short:
-        raise WrongVersionError
-    build_app_data, validate_settings_ap, randomize_ap, customize_seed_ap, randomization_to_json, CustomizeRequest, MapRandoItem = _import_pysmmaprando()
-
-# required for APWorld distribution outside official AP releases as stated at https://docs.python.org/3/library/zipimport.html:
-# ZIP import of dynamic modules (.pyd, .so) is disallowed.
-except (ImportError, WrongVersionError, PackageNotFoundError) as e:
-    if Utils.is_frozen():
-        # In frozen builds, pysmmaprando should already be in library.zip via requirements.txt
-        raise ImportError(
-            f"pysmmaprando {required_pysmmaprando_version} not found in frozen build. "
-            "This is a build error - the package should have been included via requirements.txt."
-        ) from e
+    import Utils
+    if not Utils.is_frozen():
+        import subprocess
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', map_rando_lib_file])
     else:
-        # Source installation: download and install the package
-        _install_pysmmaprando_from_source()
-        build_app_data, validate_settings_ap, randomize_ap, customize_seed_ap, randomization_to_json, CustomizeRequest, MapRandoItem = _import_pysmmaprando()
+        import requests
+        import zipfile
+        import io
+        import glob
+        import shutil
+        dirs_to_delete = glob.glob(f"{os.path.dirname(sys.executable)}/lib/pysmmaprando-*.dist-info")
+        for dir in dirs_to_delete:
+            shutil. rmtree(dir)
+        with requests.get(map_rando_lib_file) as r:
+            r.raise_for_status()
+            z = zipfile.ZipFile(io.BytesIO(r.content))
+            z.extractall(f"{os.path.dirname(sys.executable)}/lib")
+            
+    from pysmmaprando import build_app_data, validate_settings_ap, randomize_ap, customize_seed_ap, randomization_to_json, CustomizeRequest, Item as MapRandoItem
 
 def GetAPWorldPath():
     filename = sys.modules[__name__].__file__

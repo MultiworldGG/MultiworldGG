@@ -92,7 +92,7 @@ def patch_music(rom, ootworld, symbols):
     log = {}
     if ootworld.background_music != 'normal' or ootworld.fanfares != 'normal':
         music.restore_music(rom)
-        log, errors = music.randomize_music(rom, ootworld, {}, music_dir=music_dir)
+        log, errors = music.randomize_music(rom, ootworld, {}, symbols=symbols, music_dir=music_dir)
         if errors:
             logger.error(errors)
     else:
@@ -104,9 +104,12 @@ def patch_music(rom, ootworld, symbols):
         # This preserves names the generator already wrote when the adjuster runs without re-randomizing.
         first_entry_blank = all(rom.read_byte(symbols['CFG_SONG_NAMES'] + j) == 0 for j in range(50))
         if log or first_entry_blank:
-            for i, (name, seq_id) in enumerate(music.bgm_sequence_ids):
+            for i, (name, seq_id) in enumerate(music.bgm_sequence_ids[:47]):
                 display_name = log.get(name, name)
-                name_bytes = display_name[:49].encode('ascii', errors='replace')
+                if display_name == 'None':
+                    name_bytes = b''
+                else:
+                    name_bytes = str(display_name)[:49].encode('ascii', errors='replace')
                 name_bytes = name_bytes + b'\x00' * (50 - len(name_bytes))
                 rom.write_bytes(symbols['CFG_SONG_NAMES'] + i * 50, list(name_bytes))
 
@@ -679,7 +682,7 @@ def patch_sfx(rom, ootworld, symbols):
           ('sfx_cucco',           sfx.SoundHooks.CUCCO),
     ]
     # These hooks store sound IDs with the SFX bank bit set; strip it before writing
-    sfx_flag_hooks = {sfx.SoundHooks.BOOMERANG_THROW, sfx.SoundHooks.HOOKSHOT_CHAIN, sfx.SoundHooks.BOMBCHU_MOVE}
+    sfx_flag_hooks = {sfx.SoundHooks.BOOTS_HOVER, sfx.SoundHooks.BOOMERANG_THROW, sfx.SoundHooks.HOOKSHOT_CHAIN, sfx.SoundHooks.BOMBCHU_MOVE}
 
     sound_dict = sfx.get_patch_dict()
 
@@ -694,7 +697,7 @@ def patch_sfx(rom, ootworld, symbols):
             if selection == 'random-choice':
                 selection = ootworld.random.choice(sfx.get_hook_pool(hook)).value.keyword
             elif selection == 'random-ear-safe':
-                selection = ootworld.random.choice(sfx.get_hook_pool(hook, "TRUE")).value.keyword
+                selection = ootworld.random.choice(sfx.get_hook_pool(hook, True)).value.keyword
             elif selection == 'completely-random':
                 selection = ootworld.random.choice(sfx.standard).value.keyword
             sound_id = sound_dict[selection]
@@ -816,9 +819,6 @@ def _patch_voice_bin(rom, sfxid, binsfx, soundbank_entries, source_name):
         logger.error(f"Voice patch skipped unknown SFX file {source_name}.")
         return
     length = soundbank_entries[sfxid]["length"]
-    if len(binsfx) > length:
-        logger.error(f"Voice patch skipped oversized SFX file {source_name}.")
-        return
     rom.write_bytes(soundbank_entries[sfxid]["romoffset"], binsfx.ljust(length, b'\0'))
 
 
