@@ -8,7 +8,7 @@ import typing
 import logging
 import itertools
 
-from BaseClasses import ItemClassification, Location, LocationProgressType, Region, Item, MultiWorld
+from BaseClasses import ItemClassification, Location, LocationProgressType, Region, Item, MultiWorld, Tutorial
 from Fill import fill_restrictive
 
 from Options import OptionError
