@@ -402,7 +402,7 @@ def _component_identity(component: Component) -> tuple[Any, ...]:
         bool(component.cli),
         component.script_name,
         component.frozen_name,
-        component.game_name,
+        tuple(component.game_name),
         bool(component.supports_uri),
         _component_suffixes(component),
     )
@@ -417,7 +417,7 @@ def _component_identity_from_cache(component_data: dict[str, Any]) -> tuple[Any,
         component_data["cli"],
         component_data["script_name"],
         component_data["frozen_name"],
-        component_data["game_name"],
+        tuple(component_data["game_name"]),
         component_data["supports_uri"],
         tuple(component_data["file_suffixes"]),
     )
@@ -500,7 +500,7 @@ def _load_launcher_cache(check_freshness: bool = True) -> dict[str, Any] | None:
             return None
         if frozen_name is not None and not isinstance(frozen_name, str):
             return None
-        if game_name is not None and not isinstance(game_name, str):
+        if not isinstance(game_name, list) or any(not isinstance(name, str) for name in game_name):
             return None
 
         file_suffixes = component_data.get("file_suffixes")

@@ -24,6 +24,52 @@ def format_cosmetic_option_result(option_result):
     return ' '.join([format_word(word) for word in words])
 
 
+def _truthy_setting(value):
+    if isinstance(value, str):
+        return value.strip().replace('_', '-').casefold() in ('1', 'true', 'on', 'yes')
+    return bool(value)
+
+
+def resolve_randomize_all_sfx(ootworld):
+    if not _truthy_setting(getattr(ootworld, 'randomize_all_sfx', False)):
+        return
+
+    for setting in (
+        'sfx_bombchu_move',
+        'sfx_hover_boots',
+        'sfx_iron_boots',
+        'sfx_boomerang_throw',
+        'sfx_hookshot_chain',
+        'sfx_arrow_shot',
+        'sfx_slingshot_shot',
+        'sfx_magic_arrow_shot',
+        'sfx_explosion',
+        'sfx_navi_overworld',
+        'sfx_navi_enemy',
+        'sfx_horse_neigh',
+        'sfx_cucco',
+        'sfx_daybreak',
+        'sfx_nightfall',
+        'sfx_menu_cursor',
+        'sfx_menu_select',
+        'sfx_low_hp',
+        'sfx_silver_rupee',
+        'sfx_get_small_item',
+    ):
+        if hasattr(ootworld, setting):
+            setattr(ootworld, setting, 'random_ear_safe')
+
+    for setting, value in (
+        ('background_music', 'randomized'),
+        ('fanfares', 'randomized'),
+        ('sfx_ocarina', 'random_choice'),
+        ('ocarina_fanfares', True),
+        ('credits_music', True),
+    ):
+        if hasattr(ootworld, setting):
+            setattr(ootworld, setting, value)
+
+
 def patch_targeting(rom, ootworld, symbols):
     # Set default targeting option to Hold
     if ootworld.default_targeting == 'hold':
@@ -75,6 +121,14 @@ def patch_input_viewer(rom, ootworld, symbols):
         rom.write_byte(symbols['CFG_INPUT_VIEWER'], int(bool(getattr(ootworld, 'input_viewer', False))))
 
 
+def _song_name_bytes(name):
+    if name == 'None':
+        name_bytes = b''
+    else:
+        name_bytes = str(name)[:49].encode('ascii', errors='replace')
+    return name_bytes + b'\x00' * (50 - len(name_bytes))
+
+
 def patch_song_names(rom, ootworld, symbols):
     if 'CFG_SONG_NAME_STATE' not in symbols:
         return
@@ -86,10 +140,22 @@ def patch_song_names(rom, ootworld, symbols):
     else:
         rom.write_byte(symbols['CFG_SONG_NAME_STATE'], 0x00)
 
+    if 'CFG_SONG_NAMES' not in symbols:
+        return
+
+    log = getattr(ootworld, 'cosmetic_music_log', {}) or {}
+    first_entry_blank = all(rom.read_byte(symbols['CFG_SONG_NAMES'] + j) == 0 for j in range(50))
+    if not log and not first_entry_blank:
+        return
+
+    for i, (name, _seq_id) in enumerate(music.bgm_sequence_ids[:47]):
+        rom.write_bytes(symbols['CFG_SONG_NAMES'] + i * 50, list(_song_name_bytes(log.get(name, name))))
+
 
 def patch_music(rom, ootworld, symbols):
     music_dir = getattr(ootworld, 'music_dir', None) or None
     log = {}
+    errors = []
     if ootworld.background_music != 'normal' or ootworld.fanfares != 'normal':
         music.restore_music(rom)
         log, errors = music.randomize_music(rom, ootworld, {}, symbols=symbols, music_dir=music_dir)
@@ -97,21 +163,10 @@ def patch_music(rom, ootworld, symbols):
             logger.error(errors)
     else:
         music.restore_music(rom)
+    ootworld.cosmetic_music_log = log
+    ootworld.cosmetic_music_errors = errors
     if getattr(ootworld, 'disable_battle_music', False):
         rom.write_byte(0xBE447F, 0x00)
-    if 'CFG_SONG_NAMES' in symbols:
-        # Only write names if music was re-randomized (log non-empty) or the table is uninitialized.
-        # This preserves names the generator already wrote when the adjuster runs without re-randomizing.
-        first_entry_blank = all(rom.read_byte(symbols['CFG_SONG_NAMES'] + j) == 0 for j in range(50))
-        if log or first_entry_blank:
-            for i, (name, seq_id) in enumerate(music.bgm_sequence_ids[:47]):
-                display_name = log.get(name, name)
-                if display_name == 'None':
-                    name_bytes = b''
-                else:
-                    name_bytes = str(display_name)[:49].encode('ascii', errors='replace')
-                name_bytes = name_bytes + b'\x00' * (50 - len(name_bytes))
-                rom.write_bytes(symbols['CFG_SONG_NAMES'] + i * 50, list(name_bytes))
 
 
 def patch_model_colors(rom, color, model_addresses):
@@ -724,7 +779,7 @@ def patch_instrument(rom, ootworld, symbols):
            #'another_ocarina': 0x07,
     }
 
-    choice = ootworld.sfx_ocarina
+    choice = ootworld.sfx_ocarina.replace('_', '-')
     if choice == 'random-choice':
         choice = ootworld.random.choice(list(instruments.keys()))
 
@@ -772,7 +827,7 @@ def _normalize_voice_setting(voice_setting):
     special_names = {
         'default': 'Default',
         'silent': 'Silent',
-        'random': 'Random',
+        'randomized': 'Random',
     }
     return special_names.get(voice_setting.casefold(), voice_setting)
 
@@ -886,7 +941,7 @@ global_patch_sets = [
     patch_sword_trails,
     patch_gauntlet_colors,
     patch_shield_frame_colors,
-    # patch_voices,
+    patch_voices,
     patch_sfx,
     patch_instrument,
 ]
@@ -1093,6 +1148,8 @@ patch_sets[0x1F073FE2] = {
 
 def patch_cosmetics(ootworld, rom):
     from worlds.oot.Models import patch_model_adult, patch_model_child
+
+    resolve_randomize_all_sfx(ootworld)
 
     # try to detect the cosmetic patch data format
     versioned_patch_set = None

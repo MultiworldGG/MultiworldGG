@@ -9,10 +9,9 @@ from .Sequence import Sequence, SequenceGame
 from .Utils import data_path
 from .MusicHelpers import find_mm_audiobin_path, process_sequence_ootrs, process_sequence_mmr_zseq, process_sequence_mmrs
 
-# DMA table byte offset for the audioseq file (entry index 4, DMADATA_START 0x7430 + 4*0x10)
-AUDIOSEQ_DMADATA_OFFSET = 0x7470
-AUDIOBANK_DMADATA_OFFSET = 0x7460
-AUDIOTABLE_DMADATA_OFFSET = 0x7480
+AUDIOBANK_DMADATA_INDEX = 3
+AUDIOSEQ_DMADATA_INDEX = 4
+AUDIOTABLE_DMADATA_INDEX = 5
 
 # Format: (Title, Sequence ID)
 bgm_sequence_ids: tuple[tuple[str, int], ...] = (
@@ -225,7 +224,8 @@ def shuffle_music(source_sequences: dict, target_sequences: dict, music_mapping:
 def rebuild_sequences(rom, sequences: list, symbols: Optional[dict] = None) -> None:
     symbols = {} if symbols is None else symbols
     custom_banks_supported = "CFG_AUDIOBANK_TABLE_EXTENDED_ADDR" in symbols
-    audioseq_start, audioseq_end, audioseq_size = rom._get_dmadata_record(AUDIOSEQ_DMADATA_OFFSET)
+    audioseq_dma_entry = rom.dma[AUDIOSEQ_DMADATA_INDEX]
+    audioseq_start, audioseq_end, audioseq_size = audioseq_dma_entry.as_tuple()
 
     replacement_dict = {seq.replaces: seq for seq in sequences}
 
@@ -312,13 +312,12 @@ def rebuild_sequences(rom, sequences: list, symbols: Optional[dict] = None) -> N
             new_audio_sequence.extend(new_entry.data)
             address += new_entry.size
 
+    new_address = audioseq_start
     if address > audioseq_size:
         rom.buffer[audioseq_start:audioseq_end] = [0] * audioseq_size
-        new_address = rom.free_space()
-        rom.write_bytes(new_address, new_audio_sequence)
-        rom.update_dmadata_record(audioseq_start, new_address, new_address + address)
-    else:
-        rom.write_bytes(audioseq_start, new_audio_sequence)
+        new_address = rom.dma.free_space(address)
+        audioseq_dma_entry.update(new_address, new_address + address)
+    rom.write_bytes(new_address, new_audio_sequence)
 
     fanfare_bank_shift = 0x26 if custom_banks_supported else 0
 
@@ -369,8 +368,10 @@ def rebuild_sequences(rom, sequences: list, symbols: Optional[dict] = None) -> N
     new_bank_index = 0x4C
     instr_data = bytearray(0)
 
-    audiobank_start, audiobank_end, audiobank_size = rom._get_dmadata_record(AUDIOBANK_DMADATA_OFFSET)
-    audiotable_start, audiotable_end, audiotable_size = rom._get_dmadata_record(AUDIOTABLE_DMADATA_OFFSET)
+    audiobank_dma_entry = rom.dma[AUDIOBANK_DMADATA_INDEX]
+    audiotable_dma_entry = rom.dma[AUDIOTABLE_DMADATA_INDEX]
+    audiobank_start, audiobank_end, audiobank_size = audiobank_dma_entry.as_tuple()
+    audiotable_start, audiotable_end, audiotable_size = audiotable_dma_entry.as_tuple()
     instr_offset_in_file = audiotable_size
 
     AUDIOBANK_INDEX_ADDR = 0x00B896A0
@@ -544,9 +545,9 @@ def rebuild_sequences(rom, sequences: list, symbols: Optional[dict] = None) -> N
         audiotable_data = rom.read_bytes(audiotable_start, audiotable_size)
         rom.write_bytes(audiotable_start, [0] * audiotable_size)
         audiotable_data += instr_data
-        new_audiotable_start = rom.free_space()
+        new_audiotable_start = rom.dma.free_space(len(audiotable_data))
         rom.write_bytes(new_audiotable_start, audiotable_data)
-        rom.update_dmadata_record(audiotable_start, new_audiotable_start, new_audiotable_start + len(audiotable_data))
+        audiotable_dma_entry.update(new_audiotable_start, new_audiotable_start + len(audiotable_data))
 
     new_bank_data = bytearray(0)
     audiobank_data = rom.read_bytes(audiobank_start, audiobank_size)
@@ -564,9 +565,9 @@ def rebuild_sequences(rom, sequences: list, symbols: Optional[dict] = None) -> N
     if new_bank_data:
         rom.write_bytes(audiobank_start, [0] * audiobank_size)
         audiobank_data += new_bank_data
-        new_audiobank_start = rom.free_space()
+        new_audiobank_start = rom.dma.free_space(len(audiobank_data))
         rom.write_bytes(new_audiobank_start, audiobank_data)
-        rom.update_dmadata_record(audiobank_start, new_audiobank_start, new_audiobank_start + len(audiobank_data))
+        audiobank_dma_entry.update(new_audiobank_start, new_audiobank_start + len(audiobank_data))
         rom.write_bytes(bank_index_base, new_bank_index.to_bytes(2, 'big'))
 
     init_heap_size = rom.read_int32(0xB80118)
@@ -585,6 +586,14 @@ def rebuild_pointers_table(rom, sequences: list) -> None:
     rom.write_int16(0xB89910 + 0xDD + (0x57 * 2), rom.read_int16(0xB89910 + 0xDD + (0x28 * 2)))
 
 
+def _is_randomized_music(setting) -> bool:
+    return setting in ('randomized', 'randomized_custom_only')
+
+
+def _is_random_custom_only_music(setting) -> bool:
+    return setting == 'randomized_custom_only'
+
+
 def randomize_music(rom, ootworld, music_mapping: dict, symbols: Optional[dict] = None, music_dir: Optional[str] = None) -> tuple[dict, list]:
     symbols = {} if symbols is None else symbols
     log: dict = {}
@@ -600,8 +609,12 @@ def randomize_music(rom, ootworld, music_mapping: dict, symbols: Optional[dict] 
     bgm_ids = {bgm[0]: bgm for bgm in bgm_sequence_ids}
     ff_ids = {ff[0]: ff for ff in fanfare_sequence_ids}
     ocarina_ids = {bgm[0]: bgm for bgm in ocarina_sequence_ids}
+    background_music_randomized = _is_randomized_music(ootworld.background_music)
+    background_music_custom_only = _is_random_custom_only_music(ootworld.background_music)
+    fanfares_randomized = _is_randomized_music(ootworld.fanfares)
+    fanfares_custom_only = _is_random_custom_only_music(ootworld.fanfares)
 
-    if getattr(ootworld, 'credits_music', False) and ootworld.background_music == 'randomized':
+    if getattr(ootworld, 'credits_music', False) and background_music_randomized:
         bgm_ids.update({bgm[0]: bgm for bgm in credit_sequence_ids})
 
     # Check if we have mapped music for BGM or Fanfares
@@ -642,16 +655,20 @@ def randomize_music(rom, ootworld, music_mapping: dict, symbols: Optional[dict] 
         ff_ids.update(ocarina_ids)
 
     # Process and shuffle BGM
-    if ootworld.background_music == 'randomized' or bgm_mapped:
+    if background_music_randomized or bgm_mapped:
         sequences, target_sequences = process_sequences(
             rom, bgm_ids.values(), 'bgm', disabled_source_sequences, disabled_target_sequences, errors=errors,
             music_dir=music_dir, include_custom_audiobanks="CFG_AUDIOBANK_TABLE_EXTENDED_ADDR" in symbols)
+        if background_music_custom_only:
+            sequences = {name: seq for name, seq in sequences.items() if name not in bgm_ids or name in music_mapping.values()}
 
     # Process and shuffle fanfares
-    if ootworld.fanfares == 'randomized' or ff_mapped or ocarina_mapped:
+    if fanfares_randomized or ff_mapped or ocarina_mapped:
         fanfare_sequences, target_fanfare_sequences = process_sequences(
             rom, ff_ids.values(), 'fanfare', disabled_source_sequences, disabled_target_sequences, errors=errors,
             music_dir=music_dir, include_custom_audiobanks="CFG_AUDIOBANK_TABLE_EXTENDED_ADDR" in symbols)
+        if fanfares_custom_only:
+            fanfare_sequences = {name: seq for name, seq in fanfare_sequences.items() if name not in ff_ids or name in music_mapping.values()}
 
     shuffled_sequences = []
     shuffled_fanfare_sequences = []
@@ -695,10 +712,11 @@ def restore_music(rom) -> None:
     rom.write_int16(0xB89910 + 0xDD + (0x57 * 2), bgm_instrument)
 
     # Restore audioseq DMA entry and data
-    orig_start, orig_end, orig_size = rom.original._get_dmadata_record(AUDIOSEQ_DMADATA_OFFSET)
+    orig_start, orig_end, orig_size = rom.original.dma[AUDIOSEQ_DMADATA_INDEX].as_tuple()
     rom.write_bytes(orig_start, rom.original.read_bytes(orig_start, orig_size))
 
-    start, end, size = rom._get_dmadata_record(AUDIOSEQ_DMADATA_OFFSET)
+    dma_entry = rom.dma[AUDIOSEQ_DMADATA_INDEX]
+    start, end, size = dma_entry.as_tuple()
     if start != orig_start:
         rom.write_bytes(start, [0] * size)
-        rom.update_dmadata_record(start, orig_start, orig_end)
+        dma_entry.update(orig_start, orig_end, start)

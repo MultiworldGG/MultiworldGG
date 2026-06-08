@@ -243,6 +243,8 @@ location_table = {
 location_table["Funny Bridge Game Minigame: Cube"] = LocData(10130000, None, None, "Minigame", "Funny Bridge Game")
 location_table["Clique: The Button"] = LocData(10130001, None, None, "Minigame", "Clique")
 location_table["Clique: The Free Item"] = LocData(10130002, None, None, "Minigame", "Clique")
+for i in range(1,9):
+    location_table[f"Clique: Filler {i}"] = LocData(10130002 + i, None, None, "Minigame", "Clique Filler")
     
 platforms_with_button_ids = []
 platforms_without_button_ids = []

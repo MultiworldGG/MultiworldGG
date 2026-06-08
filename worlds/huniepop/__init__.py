@@ -1,7 +1,9 @@
 import logging
+from typing import Any
 
 from BaseClasses import ItemClassification, Region, LocationProgressType, Tutorial
 from worlds.AutoWorld import World, WebWorld
+from worlds.generic.Rules import set_rule
 from worlds.huniepop.Data import girllist, rand_girl_data, gift_id_to_name
 from worlds.huniepop.Items import item_table, HPItem, panties_item, gift_item, girl_unlock, token_item, junk_item, item_datapackage, filler_items
 from worlds.huniepop.Locations import location_table, HPLocation, loc_datapackage
@@ -90,6 +92,8 @@ class HuniePop(World):
             totalitems += (len(self.enabledgirls) * 24)
         if True: #token items
             totalitems += (8*6)
+        if self.options.progressive_dates: # Date Pass Items
+            totalitems += 5
 
 
         if totallocations != totalitems:
@@ -106,6 +110,8 @@ class HuniePop(World):
 
 
     def create_regions(self):
+        is_ut = getattr(self.multiworld, "generation_is_fake", False)
+
         hub_region = Region("Menu", self.player, self.multiworld)
 
         if self.options.goal.value == 0:
@@ -134,32 +140,35 @@ class HuniePop(World):
                 f"{girl}'s Favourite Color": self.location_name_to_id[f"{girl}'s Favourite Color"],
                 f"{girl}'s Favourite Season": self.location_name_to_id[f"{girl}'s Favourite Season"],
                 f"{girl}'s Favourite Hangout": self.location_name_to_id[f"{girl}'s Favourite Hangout"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift1"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift1"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift2"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift2"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift3"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift3"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift4"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift4"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift5"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift5"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift6"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift6"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift7"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift7"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift8"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift8"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift9"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift9"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift10"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift10"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift11"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift11"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift12"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift12"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift13"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift13"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift14"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift14"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift15"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift15"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift16"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift16"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift17"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift17"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift18"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift18"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift19"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift19"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift20"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift20"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift21"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift21"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift22"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift22"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift23"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift23"]]}"],
-                f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift24"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift24"]]}"],
-
             }, HPLocation)
+
+            if not is_ut:
+                girlregion.add_locations({
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift1"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift1"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift2"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift2"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift3"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift3"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift4"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift4"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift5"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift5"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift6"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift6"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift7"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift7"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift8"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift8"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift9"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift9"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift10"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift10"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift11"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift11"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift12"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift12"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift13"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift13"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift14"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift14"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift15"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift15"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift16"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift16"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift17"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift17"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift18"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift18"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift19"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift19"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift20"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift20"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift21"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift21"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift22"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift22"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift23"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift23"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift24"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift24"]]}"],
+                }, HPLocation)
 
             if girl == "kyu" or girl == "momo" or girl == "celeste" or girl == "venus":
                 girlregion.add_locations({f"{girl}'s Homeworld": self.location_name_to_id[f"{girl}'s Homeworld"]}, HPLocation)
@@ -196,6 +205,7 @@ class HuniePop(World):
                     girlregion.add_locations({"Give kyu all available panties": self.location_name_to_id["Give kyu all available panties"]}, HPLocation)
 
 
+            self.multiworld.regions.append(girlregion)
             hub_region.connect(girlregion, f"hub-{girl}")
 
 
@@ -209,7 +219,7 @@ class HuniePop(World):
 
 
     def create_item(self, name: str) -> HPItem:
-        if name in girl_unlock or name in panties_item or name in gift_item or name == "Goal Achieved":
+        if name in girl_unlock or name in panties_item or name in gift_item or name in ["Goal Achieved","Date Pass"]:
             return HPItem(name, ItemClassification.progression, self.item_name_to_id[name], self.player)
         if name in token_item:
             return HPItem(name, ItemClassification.useful, self.item_name_to_id[name], self.player)
@@ -251,7 +261,12 @@ class HuniePop(World):
             self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift23"]])))
             self.multiworld.itempool.append((self.create_item(gift_id_to_name[self.girldata[girl]["gift24"]])))
 
-
+        if self.options.progressive_dates:
+            self.multiworld.itempool.append(self.create_item("Date Pass"))
+            self.multiworld.itempool.append(self.create_item("Date Pass"))
+            self.multiworld.itempool.append(self.create_item("Date Pass"))
+            self.multiworld.itempool.append(self.create_item("Date Pass"))
+            self.multiworld.itempool.append(self.create_item("Date Pass"))
 
         for t in token_item:
             self.multiworld.itempool.append(self.create_item(t))
@@ -279,7 +294,7 @@ class HuniePop(World):
 
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Goal Achieved", self.player)
 
-        set_rules(self.multiworld, self.player, self.enabledgirls, self.girldata, self.options.goal.value)
+        set_rules(self.multiworld, self.player, self.enabledgirls, self.girldata, self.options.goal.value, self.options.progressive_dates)
 
         if self.shopslots > self.options.exclude_shop_items:
             for i in range(self.shopslots):
@@ -289,6 +304,83 @@ class HuniePop(World):
     #something to stop warnings happening in console when running tests
     def get_filler_item_name(self) -> str:
         return self.random.choice(list(filler_items.keys()))
+
+
+    # Method for making Universal Tracker work properly
+    def interpret_slot_data(self, slot_data: dict[str, Any]) -> None:
+        self.girldata = slot_data["girldata"]
+        girlsset = set()
+
+        for girl in girllist:
+            if slot_data[f"{girl}_enabled"]:
+                girlsset.add(f"Unlock Girl({girl})")
+                print(f"hello {girl}")
+                grigion = self.multiworld.get_region(f"{girl} Region", self.player)
+                print("hello")
+                grigion.add_locations({
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift1"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift1"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift2"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift2"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift3"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift3"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift4"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift4"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift5"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift5"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift6"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift6"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift7"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift7"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift8"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift8"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift9"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift9"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift10"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift10"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift11"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift11"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift12"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift12"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift13"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift13"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift14"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift14"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift15"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift15"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift16"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift16"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift17"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift17"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift18"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift18"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift19"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift19"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift20"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift20"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift21"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift21"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift22"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift22"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift23"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift23"]]}"],
+                    f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift24"]]}": self.location_name_to_id[f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift24"]]}"],
+                }, HPLocation)
+
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift1"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift1"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift2"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift2"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift3"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift3"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift4"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift4"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift5"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift5"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift6"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift6"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift7"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift7"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift8"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift8"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift9"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift9"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift10"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift10"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift11"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift11"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift12"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift12"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift13"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift13"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift14"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift14"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift15"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift15"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift16"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift16"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift17"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift17"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift18"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift18"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift19"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift19"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift20"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift20"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift21"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift21"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift22"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift22"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift23"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift23"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+                set_rule(self.multiworld.get_location(f"Gift {girl} {gift_id_to_name[self.girldata[girl]["gift24"]]}", self.player), lambda state, g=girl, i=gift_id_to_name[self.girldata[girl]["gift24"]]: state.has(i, self.player) and state.has(f"Unlock Girl({g})", self.player))
+
+                if slot_data["progressive_dates"]:
+                    set_rule(self.multiworld.get_location(f"{girl} date 1", self.player), lambda state: state.has("Date Pass", self.player, 1))
+                    set_rule(self.multiworld.get_location(f"{girl} date 2", self.player), lambda state: state.has("Date Pass", self.player, 2))
+                    set_rule(self.multiworld.get_location(f"{girl} date 3", self.player), lambda state: state.has("Date Pass", self.player, 3))
+                    set_rule(self.multiworld.get_location(f"{girl} date 4", self.player), lambda state: state.has("Date Pass", self.player, 4))
+                    set_rule(self.multiworld.get_location(f"Slept with {girl}", self.player), lambda state: state.has("Date Pass", self.player, 5))
+
+        if slot_data["goal"] != 1 and slot_data["progressive_dates"]:
+            set_rule(self.multiworld.get_location("Sleep with all girls", self.player), lambda state: state.has_all(girlsset, self.player) and state.has("Date Pass", self.player, 5))
+
+        return
+
 
     def fill_slot_data(self) -> dict:
         returndict = {
@@ -311,6 +403,7 @@ class HuniePop(World):
 
             "world_version": self.world_version,
             "goal": self.options.goal.value,
+            "progressive_dates": self.options.progressive_dates.value,
 
             "deathlink": self.options.deathlink.value,
 

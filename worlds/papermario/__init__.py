@@ -34,7 +34,7 @@ from .options import (SeedGoal, PaperMarioOptions, ShuffleKootFavors, PartnerUpg
                       SpiritRequirements, ConsumableItemPool, StartingBoots)
 from .data.node import Node
 from .data.starting_maps import starting_maps
-from .Rom import generate_output, PaperMarioDeltaPatch
+from .Rom import generate_output, PaperMarioProcedurePatch
 from Fill import fill_restrictive, remaining_fill
 import pkg_resources
 from .client import PaperMarioClient  # unused but required for generic client to hook onto
@@ -46,7 +46,7 @@ class PaperMarioSettings(settings.Group):
         """File name of the Paper Mario USA ROM"""
         description = "Paper Mario ROM File"
         copy_to = "Paper Mario (USA).z64"
-        md5s = [PaperMarioDeltaPatch.hash]
+        md5s = [PaperMarioProcedurePatch.hash]
 
     class RomStart(str):
         """
@@ -82,7 +82,7 @@ class PaperMarioWorld(World):
     and venture through dangerous lands with the help of partners you meet along the way.
     """
     game = "Paper Mario"
-    author: str = "JKB"
+    author: str = "JKB & icebound777"
     web = PaperMarioWeb()
     topology_present = True
 
@@ -130,11 +130,6 @@ class PaperMarioWorld(World):
         self.battle_list = []
 
         self.spoilerlog_puzzles = {}
-
-    @classmethod
-    def stage_assert_generate(cls, multiworld: MultiWorld) -> None:
-        if not os.path.exists(cls.settings.rom_file):
-            raise FileNotFoundError(cls.settings.rom_file)
 
     # Do some housekeeping before generating, namely fixing some options that might be incompatible with each other
     def generate_early(self) -> None:
@@ -225,9 +220,12 @@ class PaperMarioWorld(World):
 
         # limit chapter logic only applies when using the specific star spirits setting
         if self.options.spirit_requirements.value == SpiritRequirements.option_Any:
+            self.require_specific_spirits = False
             self.required_spirits = []
             self.excluded_spirits = []
         else:
+            self.require_specific_spirits = True
+
             # determine which star spirits are needed
             remaining_spirits = [i for i in range(1, 8)]
             chosen_spirits = []
@@ -778,7 +776,7 @@ class PaperMarioWorld(World):
             if loc.address is not None and not loc.show_in_spoiler:
                 loc.address = None
 
-    def generate_output(self, output_directory: str):
+    def generate_output(self, output_directory: str) -> None:
         generate_output(self, output_directory)
 
 

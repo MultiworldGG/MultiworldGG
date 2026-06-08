@@ -37,6 +37,7 @@ class RefunctWorld(World):
     option_groups = refunct_option_groups
 
     web = RefunctWeb()
+    ut_can_gen_without_yaml = True
     
     origin_region_name = "10010102"  # Platform 1-2
 
@@ -46,16 +47,35 @@ class RefunctWorld(World):
     
     item_name_groups = item_groups
 
-    ap_world_version = "1.2.1"        
+    ap_world_version = "1.2.2"        
         
     def get_filler_item_name(self) -> str:
         return ":)"
+    
+    def generate_early(self):
+        if hasattr(self.multiworld, "re_gen_passthrough"):
+            self.regen = self.multiworld.re_gen_passthrough[self.game]
+
+            # setattr(self.options, "just_clique", self.regen["just_clique"])
+            
+            setattr(self.options, "cubes", self.regen["cubes"])
+            setattr(self.options, "extra_cubes", self.regen["extra_cubes"])
+        # self.just_clique = self.just_clique
+        self.just_clique = False
+   
 
     def create_items(self):
-        if self.options.just_clique.value:
+                
+        # OG Randomizer Minigame info
+        self.set_og_randomizer_order()
+        self.set_rando_mountain_order()
+        
+        if self.just_clique:
             self.minigames = ["Clique"]
             self.multiworld.itempool.append(self.create_item("Clique: Button Activation"))
             self.multiworld.itempool.append(self.create_item("Clique: Feeling of Satisfaction"))
+            self.amount_of_grass = 0
+            self.required_grass = 0
             return
         
         items_to_add = []
@@ -73,8 +93,13 @@ class RefunctWorld(World):
             
         self.multiworld.push_precollected(self.create_item("Cluster 1"))
         
-        self.amount_of_grass = self.options.amount_of_grass.value
-        self.required_grass = (self.options.required_grass_percentage.value * self.amount_of_grass) // 100
+        if hasattr(self.multiworld, "re_gen_passthrough"):
+            self.amount_of_grass = self.regen["amount_grass"]
+            self.required_grass = self.regen["required_grass"]
+        else:
+            self.amount_of_grass = self.options.amount_of_grass.value
+            self.required_grass = (self.options.required_grass_percentage.value * self.amount_of_grass) // 100
+        
         for _ in range(self.required_grass):
             items_to_add.append("Grass")
         for _ in range(self.amount_of_grass - self.required_grass):
@@ -193,8 +218,7 @@ class RefunctWorld(World):
                 items_to_add.append("Flower")
         
         if "Funny Bridge Game Minigame" in self.minigames:
-            for _ in range(num_unlocks):
-                items_to_add.append("Funny Bridge Game Minigame")
+            items_to_add.append("Funny Bridge Game Minigame")
         
         if "Clique" in self.minigames:
             items_to_add.append("Clique: Button Activation")
@@ -416,12 +440,22 @@ class RefunctWorld(World):
             if "seeker_platforms" in regen:
                 self.seeker_platforms = regen["seeker_platforms"]
         else:
-            if self.options.just_clique.value:
+            # Seeker Minigame info
+            all_platforms = platforms_without_button_ids.copy() + platforms_with_button_ids.copy()
+            self.seeker_platforms = self.multiworld.random.sample(all_platforms, 10)
+            
+            if self.just_clique:
                 self.multiworld.regions.append(Region(self.origin_region_name, self.player, self.multiworld))
                 self.multiworld.regions.append(Region("Clique", self.player, self.multiworld))
-                for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Clique"]:
+                for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Clique" or 
+                                            b.minigame == "Clique Filler"
+                                           ]:
                     region_object = self.multiworld.get_region("Clique", self.player)
                     region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
+                    if "Filler" in loc_name:
+                        self.get_location(loc_name).place_locked_item(
+                            self.create_item("Flower")
+                        )
                 return
             
             minigames_weights = self.options.minigames_likeliness.value
@@ -440,9 +474,7 @@ class RefunctWorld(World):
                 population.pop(idx)
                 weights.pop(idx)
                                 
-            # Seeker Minigame info
-            all_platforms = platforms_without_button_ids.copy() + platforms_with_button_ids.copy()
-            self.seeker_platforms = self.multiworld.random.sample(all_platforms, 10)
+
 
         regions = []
         
@@ -567,10 +599,6 @@ class RefunctWorld(World):
                 region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
 
         
-        # OG Randomizer Minigame info
-        self.set_og_randomizer_order()
-        self.set_rando_mountain_order()
-    
     def set_og_randomizer_order(self):
         # OG Randomizer Minigame info
         dependences = {}
@@ -795,7 +823,7 @@ class RefunctWorld(World):
         self.rando_mountain_order = result
         
     def set_rules(self):
-        if self.options.just_clique.value:
+        if self.just_clique:
             region_a = self.multiworld.get_region("10010102", self.player)
             region_b = self.multiworld.get_region("Clique", self.player)
             region_a.connect(region_b, f"Enter Clique")
@@ -845,46 +873,48 @@ class RefunctWorld(World):
                     
         possible_final_platforms = [i for i,j in location_table.items() if j.type_of_check == "Platform"]
 
-                    
-        self.goal = None
-            # option_button_31_1 = 0
-            # option_button_1_1 = 1
-            # option_random_known_button = 2
-            # option_random_unknown_button = 3
-            # option_platform_1_5 = 4
-            # option_platform_21_1 = 5
-            # option_platform_29_2 = 6
-            # option_random_known_platform = 7
-            # option_random_unknown_platform = 8
-            # option_random_known = 9
-            # option_random_unknown = 10
-        if self.options.goal.value == Goal.option_button_31_1:
-            self.goal = ("B", (31,1))
-        elif self.options.goal.value == Goal.option_button_1_1:
-            self.goal = ("B", (1,1))
-        elif self.options.goal.value == Goal.option_random_known_button or self.options.goal.value == Goal.option_random_unknown_button:
-            valid_candidates = list(platforms_with_button_on_them.values())
-            finish_button = self.multiworld.random.choice(valid_candidates)
-            self.goal = ("B", (finish_button[0], finish_button[1]))
-        elif self.options.goal.value == Goal.option_platform_1_5:
-            self.goal = ("P", (1,5))
-        elif self.options.goal.value == Goal.option_platform_21_1:
-            self.goal = ("P", (21,1))
-        elif self.options.goal.value == Goal.option_platform_29_2:
-            self.goal = ("P", (29,2))
-        elif self.options.goal.value == Goal.option_random_known_platform or self.options.goal.value == Goal.option_random_unknown_platform:
-            valid_candidates = possible_final_platforms
-            finish_platform_name = self.multiworld.random.choice(valid_candidates)
-            self.goal = ("P", (int(finish_platform_name.split(" ")[1].split("-")[0]), int(finish_platform_name.split(" ")[1].split("-")[1])))
-        elif self.options.goal.value == Goal.option_random_known or self.options.goal.value == Goal.option_random_unknown:
-            if self.multiworld.random.random() < 0.5:
+        if hasattr(self.multiworld, "re_gen_passthrough"):
+            self.goal = [self.regen["goal_t"], (self.regen["goal_c"], self.regen["goal_p"])]
+        else:
+            self.goal = None
+                # option_button_31_1 = 0
+                # option_button_1_1 = 1
+                # option_random_known_button = 2
+                # option_random_unknown_button = 3
+                # option_platform_1_5 = 4
+                # option_platform_21_1 = 5
+                # option_platform_29_2 = 6
+                # option_random_known_platform = 7
+                # option_random_unknown_platform = 8
+                # option_random_known = 9
+                # option_random_unknown = 10
+            if self.options.goal.value == Goal.option_button_31_1:
+                self.goal = ("B", (31,1))
+            elif self.options.goal.value == Goal.option_button_1_1:
+                self.goal = ("B", (1,1))
+            elif self.options.goal.value == Goal.option_random_known_button or self.options.goal.value == Goal.option_random_unknown_button:
                 valid_candidates = list(platforms_with_button_on_them.values())
                 finish_button = self.multiworld.random.choice(valid_candidates)
                 self.goal = ("B", (finish_button[0], finish_button[1]))
-            else:
+            elif self.options.goal.value == Goal.option_platform_1_5:
+                self.goal = ("P", (1,5))
+            elif self.options.goal.value == Goal.option_platform_21_1:
+                self.goal = ("P", (21,1))
+            elif self.options.goal.value == Goal.option_platform_29_2:
+                self.goal = ("P", (29,2))
+            elif self.options.goal.value == Goal.option_random_known_platform or self.options.goal.value == Goal.option_random_unknown_platform:
                 valid_candidates = possible_final_platforms
                 finish_platform_name = self.multiworld.random.choice(valid_candidates)
                 self.goal = ("P", (int(finish_platform_name.split(" ")[1].split("-")[0]), int(finish_platform_name.split(" ")[1].split("-")[1])))
+            elif self.options.goal.value == Goal.option_random_known or self.options.goal.value == Goal.option_random_unknown:
+                if self.multiworld.random.random() < 0.5:
+                    valid_candidates = list(platforms_with_button_on_them.values())
+                    finish_button = self.multiworld.random.choice(valid_candidates)
+                    self.goal = ("B", (finish_button[0], finish_button[1]))
+                else:
+                    valid_candidates = possible_final_platforms
+                    finish_platform_name = self.multiworld.random.choice(valid_candidates)
+                    self.goal = ("P", (int(finish_platform_name.split(" ")[1].split("-")[0]), int(finish_platform_name.split(" ")[1].split("-")[1])))
 
         victory_location_name = f"{'Button' if self.goal[0] == 'B' else 'Platform'} {self.goal[1][0]}-{self.goal[1][1]}"
         # self.get_location(victory_location_name).address = None
@@ -1015,25 +1045,25 @@ class RefunctWorld(World):
         """
         slot_data = {}
         
-        if not self.options.just_clique.value:
-            slot_data["amount_grass"] = self.amount_of_grass
-            slot_data["required_grass"] = self.required_grass
-            
+        slot_data["amount_grass"] = self.amount_of_grass
+        slot_data["required_grass"] = self.required_grass
+        
+        if not self.just_clique:
             slot_data["goal_t"] = self.goal[0]
             slot_data["goal_c"] = self.goal[1][0]
             slot_data["goal_p"] = self.goal[1][1]
             slot_data["goal_known"] = self.options.goal.value not in [Goal.option_random_unknown, Goal.option_random_unknown_button, Goal.option_random_unknown_platform]
-                
-            slot_data["cubes"] = self.options.cubes.value
-            slot_data["extra_cubes"] = self.options.extra_cubes.value
-            # slot_data["underwater_cubes"] = self.options.underwater_cubes.value
             
-            slot_data["seeker_platforms"] = self.seeker_platforms
-            slot_data["og_randomizer_order"] = self.og_randomizer_order
-            slot_data["rando_mountain_order"] = self.rando_mountain_order
+        slot_data["cubes"] = self.options.cubes.value
+        slot_data["extra_cubes"] = self.options.extra_cubes.value
+        # slot_data["underwater_cubes"] = self.options.underwater_cubes.value
+            
+        slot_data["seeker_platforms"] = self.seeker_platforms
+        slot_data["og_randomizer_order"] = self.og_randomizer_order
+        slot_data["rando_mountain_order"] = self.rando_mountain_order
             
         slot_data["minigames"] = self.minigames
-        slot_data["just_clique"] = self.options.just_clique.value
+        slot_data["just_clique"] = self.just_clique
         slot_data["has_clique"] = "Clique" in self.minigames
 
         slot_data["death_link"] = self.options.death_link.value
@@ -1044,4 +1074,4 @@ class RefunctWorld(World):
 
     @staticmethod
     def interpret_slot_data(slot_data: Dict[str, Any]) -> Dict[str, Any]:
-        return {"minigames": slot_data["minigames"], "seeker_platforms": slot_data["seeker_platforms"], "rando_mountain_order": slot_data["rando_mountain_order"]}
+        return slot_data

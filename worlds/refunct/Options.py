@@ -107,7 +107,7 @@ class NumberOfMinigames(Range):
     Another option allows you to tweak how likely each minigame is to be included, but the default is probably OK!
     """
     display_name = "Number of Minigames"
-    default = -1
+    default = 7
     range_start = -1
     range_end = 14
     
@@ -219,31 +219,31 @@ class MinigamesLikeliness(OptionCounter):
     })
     min = 0
     default = {
-        "Vanilla Minigame": 3,
+        "Vanilla Minigame": 2,
         "Seeker Minigame": 2,
-        "Button Galore Minigame": 1,
-        "OG Randomizer Minigame": 3,
-        "Block Brawl Minigame": 4,
-        "Climb Line Minigame": 0,
-        "Climb Spiral Minigame": 0,
-        "Climb Chaos Minigame": 0,
-        "Climb Narrow Minigame": 0,
-        "Block Blub Minigame": 3,
-        "Refunct Mountain Minigame": 0,
-        "Rando Mountain Minigame": 0,
+        "Button Galore Minigame": 2,
+        "OG Randomizer Minigame": 5,
+        "Block Brawl Minigame": 5,
+        "Climb Line Minigame": 1,
+        "Climb Spiral Minigame": 1,
+        "Climb Chaos Minigame": 1,
+        "Climb Narrow Minigame": 1,
+        "Block Blub Minigame": 2,
+        "Refunct Mountain Minigame": 2,
+        "Rando Mountain Minigame": 5,
         "Funny Bridge Game Minigame": 1,
-        "Clique": 0,
+        "Clique": 1,
     }
 
-class JustClique(Toggle):
-    """
-    When enabled, the ONLY thing in this ENTIRE game is JUST Clique.
-    No other gamemodes, no other minigames, JUST Clique in Refunct.
-    ALL other settings are ignored.
-    So the ENTIRE game is just one free item and one button.
-    """
-    display_name = "Just Clique"
-    default = False
+# class JustClique(Toggle):
+#     """
+#     When enabled, the ONLY thing in this ENTIRE game is JUST Clique.
+#     No other gamemodes, no other minigames, JUST Clique in Refunct.
+#     ALL other settings are ignored.
+#     So the ENTIRE game is just one free item and one button.
+#     """
+#     display_name = "Just Clique"
+#     default = False
 
 
 class Traps(Choice):
@@ -313,7 +313,7 @@ class RefunctOptions(PerGameCommonOptions):
     nerf_minigame_checks: NerfMinigameChecks
     number_of_unlocks_per_minigame: NumberOfUnlocksPerMinigame
     minigames_likeliness: MinigamesLikeliness
-    just_clique: JustClique
+    # just_clique: JustClique
     
     traps: Traps
     replace_flowers_by_traps: ReplaceFlowersByTraps
@@ -344,7 +344,7 @@ refunct_option_groups = [
             NerfMinigameChecks,
             NumberOfUnlocksPerMinigame,
             MinigamesLikeliness,
-            JustClique,
+            # JustClique,
         ],
     ),
     OptionGroup(

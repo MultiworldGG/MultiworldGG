@@ -2062,6 +2062,12 @@ def patch_rom(world, rom):
     }
     symbol = rom.sym('POTCRATE_TEXTURES_MATCH_CONTENTS')
     rom.write_byte(symbol, ptmc_options[world.correct_potcrate_appearances])
+    rom.write_byte(rom.sym('POTCRATE_GILDED_TEXTURE'), 'major' in world.potcrate_textures_specific)
+    rom.write_byte(rom.sym('POTCRATE_GOLD_TEXTURE'), 'bosskeys' in world.potcrate_textures_specific)
+    rom.write_byte(rom.sym('POTCRATE_SILVER_TEXTURE'), 'keys' in world.potcrate_textures_specific)
+    rom.write_byte(rom.sym('POTCRATE_SKULL_TEXTURE'), 'tokens' in world.potcrate_textures_specific)
+    rom.write_byte(rom.sym('POTCRATE_HEART_TEXTURE'), 'hearts' in world.potcrate_textures_specific)
+    rom.write_byte(rom.sym('SOA_UNLOCKS_POTCRATE_TEXTURE'), world.soa_unlocks_potcrate_texture)
 
     # give dungeon items the correct messages
     add_item_messages(messages, shop_items, world)
@@ -2419,8 +2425,16 @@ def get_override_table_bytes(override_table):
 
 
 def get_override_entry(ootworld, location):
-    # Don't add freestanding items, pots/crates, beehives to the override table if they're disabled. We use this check to determine how to draw and interact with them
-    if location.type in ["ActorOverride", "Freestanding", "RupeeTower", "Pot", "Crate", "FlyingPot", "SmallCrate", "Beehive", "Wonderitem"] and location.locked:
+    # Don't add unshuffled freestanding items, pots/crates, beehives to the
+    # override table. AP also locks prefilled locations, so keep spoiler-visible
+    # locked locations patchable.
+    newflag_types = [
+        "ActorOverride", "Freestanding", "RupeeTower", "Pot", "Crate",
+        "FlyingPot", "SmallCrate", "Beehive", "Wonderitem",
+    ]
+    if (location.type in newflag_types
+            and location.locked
+            and not location.show_in_spoiler):
         return None
 
     scene = location.scene

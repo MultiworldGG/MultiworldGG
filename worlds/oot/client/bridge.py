@@ -21,6 +21,7 @@ CONNECT_PORT   = 28921
 OUTGOING_KEY_POLL_FRAMES = 6
 PROTOCOL_EXCHANGE_FRAMES = 10
 FULL_STATE_FRAMES = 30
+CACHE_RESYNC_FRAMES = 1800
 
 # COOP_CONTEXT layout at 0x80400020 (RDRAM 0x00400020)
 COOP_VERSION_ADDR       = 0x00400020   # u32 = 7
@@ -86,7 +87,7 @@ class OoTBridgeState:
         "temp_context_history", "mq_table_address", "collectible_overrides",
         "collectible_offsets", "item_queue", "first_connect",
         "player_names_initialized", "game_complete", "num_big_poes_required",
-        "shop_flag_offsets",
+        "shop_flag_offsets", "location_cache", "location_cache_dirty",
     )
 
     def __init__(self) -> None:
@@ -100,10 +101,14 @@ class OoTBridgeState:
         self.game_complete:           bool             = False
         self.num_big_poes_required:   int              = 10
         self.shop_flag_offsets:       dict             = {}
+        self.location_cache:          Optional[dict]   = None
+        self.location_cache_dirty:    bool             = True
 
     def reset_connection(self) -> None:
         self.temp_context_history = set()
         self.first_connect        = True
+        self.location_cache       = None
+        self.location_cache_dirty = True
 
 
 def _get_current_game_mode(emu: EmuLoaderClient) -> int:
@@ -170,6 +175,10 @@ def _kill_link(emu: EmuLoaderClient) -> None:
         emu.write_u16(HP_ADDR, 0)
 
 
+def _override_key(scene: int, loc_type: int, flag: int) -> str:
+    return f"{scene % 0x100:02X}:{loc_type % 0x100:02X}:{flag % 0x100:02X}"
+
+
 def _poll_outgoing_key(emu: EmuLoaderClient, state: OoTBridgeState) -> None:
     high = emu.read_u32(OUTGOING_KEY_ADDR)
     low  = emu.read_u32(OUTGOING_KEY_ADDR + 4)
@@ -178,18 +187,15 @@ def _poll_outgoing_key(emu: EmuLoaderClient, state: OoTBridgeState) -> None:
     scene    = emu.read_u8(OUTGOING_KEY_ADDR + 0)
     loc_type = emu.read_u8(OUTGOING_KEY_ADDR + 1)
     flag     = emu.read_u8(OUTGOING_KEY_ADDR + 7)  # flag LSB = bit index
-    state.temp_context_history.add(
-        f"{scene % 0x100:02X}:{loc_type % 0x100:02X}:{flag % 0x100:02X}"
-    )
+    key = _override_key(scene, loc_type, flag)
+    state.temp_context_history.add(key)
+    _apply_outgoing_key_to_cache(state, key)
     emu.write_u32(OUTGOING_KEY_ADDR,     0)
     emu.write_u32(OUTGOING_KEY_ADDR + 4, 0)
 
 
 def _check_temp_context(state: OoTBridgeState, scene: int, loc_type: int, flag: int) -> bool:
-    return (
-        f"{scene % 0x100:02X}:{loc_type % 0x100:02X}:{flag % 0x100:02X}"
-        in state.temp_context_history
-    )
+    return _override_key(scene, loc_type, flag) in state.temp_context_history
 
 
 def _set_player_name(emu: EmuLoaderClient, player_id: int, name: str) -> None:
@@ -589,6 +595,97 @@ SPECIAL_LOCATION_TAGS: Dict[str, Tuple[str, ...]] = {
 }
 
 
+SPECIAL_LOCATION_OVERRIDE_KEYS: Dict[str, Tuple[str, ...]] = {
+    "LW Trade Cojiro": (_override_key(0x5B, 0x00, 0x1F),),
+    "LW Trade Odd Potion": (_override_key(0x5B, 0x00, 0x21),),
+    "Gift from Sages": (_override_key(0xFF, 0x05, 0x03),),
+    "Market Treasure Chest Game Salesman": (_override_key(0x10, 0x00, 0x71),),
+    "Market Treasure Chest Game Reward": (_override_key(0x10, 0x01, 0x0A),),
+    "ToT Reward from Rauru": (_override_key(0xFF, 0x05, 0x04),),
+    "Kak Anju Trade Pocket Cucco": (_override_key(0x52, 0x00, 0x0E),),
+    "Kak Granny Trade Odd Mushroom": (_override_key(0x4E, 0x00, 0x20),),
+    "Kak Granny Buy Blue Potion": (_override_key(0x4E, 0x00, 0x12),),
+    "Kak 100 Gold Skulltula Reward": (_override_key(0x50, 0x00, 0x56),),
+    "DMT Great Fairy Reward": (
+        _override_key(0x3B, 0x05, 0x18),
+        _override_key(0xFF, 0x05, 0x13),
+    ),
+    "DMT Biggoron": (_override_key(0x60, 0x00, 0x57),),
+    "DMT Trade Broken Sword": (_override_key(0x60, 0x00, 0x23),),
+    "DMT Trade Eyedrops": (_override_key(0x60, 0x00, 0x26),),
+    "DMC Great Fairy Reward": (
+        _override_key(0x3B, 0x05, 0x10),
+        _override_key(0xFF, 0x05, 0x14),
+    ),
+    "ZR Magic Bean Salesman": (_override_key(0x54, 0x00, 0x16),),
+    "ZD Trade Prescription": (_override_key(0x58, 0x00, 0x24),),
+    "LH Sun": (_override_key(0x57, 0x00, 0x58),),
+    "LH Trade Eyeball Frog": (_override_key(0x38, 0x00, 0x25),),
+    "GV Trade Poachers Saw": (_override_key(0x5A, 0x00, 0x22),),
+    "Wasteland Bombchu Salesman": (_override_key(0x5E, 0x00, 0x03),),
+}
+
+
+def _generic_override_keys(kind: str, args: Tuple[int, ...]) -> Tuple[str, ...]:
+    if kind == "chest":
+        return (_override_key(args[0], 0x01, args[1]),)
+    if kind == "ground":
+        return (_override_key(args[0], 0x02, args[1]),)
+    if kind == "mask_shop":
+        return (_override_key(args[0], 0x00, args[1]),)
+    if kind == "boss":
+        return (_override_key(0xFF, 0x05, args[0]),)
+    if kind == "boss_heart":
+        return (
+            _override_key(args[0], 0x02, 0x1F),
+            _override_key(args[0], 0x00, 0x4F),
+            _override_key(0xFF, 0x05, args[1]),
+        )
+    return ()
+
+
+def _build_override_key_location_index() -> Dict[str, Tuple[str, ...]]:
+    index: Dict[str, List[str]] = {}
+
+    for name, kind, args, _tags in GENERIC_LOCATION_RULES:
+        for key in _generic_override_keys(kind, args):
+            index.setdefault(key, []).append(name)
+
+    for name, keys in SPECIAL_LOCATION_OVERRIDE_KEYS.items():
+        for key in keys:
+            index.setdefault(key, []).append(name)
+
+    return {key: tuple(names) for key, names in index.items()}
+
+
+OVERRIDE_KEY_LOCATION_INDEX = _build_override_key_location_index()
+CACHED_LOCATION_NAMES = {
+    name
+    for names in OVERRIDE_KEY_LOCATION_INDEX.values()
+    for name in names
+}
+
+
+def _apply_outgoing_key_to_cache(st: OoTBridgeState, key: str) -> None:
+    if st.location_cache is None:
+        st.location_cache_dirty = True
+        return
+
+    names = OVERRIDE_KEY_LOCATION_INDEX.get(key)
+    if not names:
+        st.location_cache_dirty = True
+        return
+
+    updated = False
+    for name in names:
+        if name in st.location_cache:
+            st.location_cache[name] = True
+            updated = True
+
+    if not updated:
+        st.location_cache_dirty = True
+
+
 def _check_generic_location(emu: EmuLoaderClient, st: OoTBridgeState, name: str, kind: str, args: Tuple[int, ...]) -> bool:
     if kind == "chest":
         return _chest(emu, st, args[0], args[1])
@@ -609,10 +706,13 @@ def _check_generic_location(emu: EmuLoaderClient, st: OoTBridgeState, name: str,
     raise NotImplementedError(f"Unhandled generic location rule: {kind}")
 
 
-def _check_generic_locations(emu: EmuLoaderClient, st: OoTBridgeState) -> dict:
+def _check_generic_locations(emu: EmuLoaderClient, st: OoTBridgeState, cached: Optional[bool] = None) -> dict:
     active_cache: Dict[Tuple[str, ...], bool] = {}
     out: dict = {}
     for name, kind, args, tags in GENERIC_LOCATION_RULES:
+        is_cached = name in CACHED_LOCATION_NAMES
+        if cached is not None and cached != is_cached:
+            continue
         if tags not in active_cache:
             active_cache[tags] = _active_location_variant(emu, st, tags)
         if active_cache[tags]:
@@ -620,10 +720,13 @@ def _check_generic_locations(emu: EmuLoaderClient, st: OoTBridgeState) -> dict:
     return out
 
 
-def _check_special_locations(emu: EmuLoaderClient, st: OoTBridgeState) -> dict:
+def _check_special_locations(emu: EmuLoaderClient, st: OoTBridgeState, cached: Optional[bool] = None) -> dict:
     active_cache: Dict[Tuple[str, ...], bool] = {}
     out: dict = {}
     for name, check in SPECIAL_LOCATION_CHECKS.items():
+        is_cached = name in CACHED_LOCATION_NAMES
+        if cached is not None and cached != is_cached:
+            continue
         tags = SPECIAL_LOCATION_TAGS.get(name, ())
         if tags not in active_cache:
             active_cache[tags] = _active_location_variant(emu, st, tags)
@@ -638,37 +741,116 @@ def _check_all_locations(emu: EmuLoaderClient, st: OoTBridgeState) -> dict:
     return out
 
 
+def _cached_location_is_checked(st: OoTBridgeState, name: str, force_resync: bool) -> bool:
+    return not force_resync and st.location_cache is not None and st.location_cache.get(name) is True
+
+
+def _check_cached_generic_locations(emu: EmuLoaderClient, st: OoTBridgeState, force_resync: bool) -> dict:
+    active_cache: Dict[Tuple[str, ...], bool] = {}
+    out: dict = {}
+    for name, kind, args, tags in GENERIC_LOCATION_RULES:
+        if name not in CACHED_LOCATION_NAMES:
+            continue
+        if tags not in active_cache:
+            active_cache[tags] = _active_location_variant(emu, st, tags)
+        if not active_cache[tags]:
+            continue
+        if _cached_location_is_checked(st, name, force_resync):
+            out[name] = True
+        else:
+            out[name] = _check_generic_location(emu, st, name, kind, args)
+    return out
+
+
+def _check_cached_special_locations(emu: EmuLoaderClient, st: OoTBridgeState, force_resync: bool) -> dict:
+    active_cache: Dict[Tuple[str, ...], bool] = {}
+    out: dict = {}
+    for name, check in SPECIAL_LOCATION_CHECKS.items():
+        if name not in CACHED_LOCATION_NAMES:
+            continue
+        tags = SPECIAL_LOCATION_TAGS.get(name, ())
+        if tags not in active_cache:
+            active_cache[tags] = _active_location_variant(emu, st, tags)
+        if not active_cache[tags]:
+            continue
+        if _cached_location_is_checked(st, name, force_resync):
+            out[name] = True
+        else:
+            out[name] = check(emu, st)
+    return out
+
+
+def _check_cached_locations(emu: EmuLoaderClient, st: OoTBridgeState, force_resync: bool) -> dict:
+    out: dict = _check_cached_generic_locations(emu, st, force_resync)
+    out.update(_check_cached_special_locations(emu, st, force_resync))
+    return out
+
+
+def _check_uncached_locations(emu: EmuLoaderClient, st: OoTBridgeState) -> dict:
+    out: dict = _check_generic_locations(emu, st, cached=False)
+    out.update(_check_special_locations(emu, st, cached=False))
+    return out
+
+
 def _check_collectibles(emu: EmuLoaderClient, st: OoTBridgeState) -> dict:
     result: dict = {}
     if st.collectible_overrides is None or not st.collectible_offsets:
         return result
+    byte_cache: Dict[int, int] = {}
     for id_str, data in st.collectible_offsets.items():
         byte_addr = st.collectible_overrides + data[0] + (data[1] >> 3)
-        mem = emu.read_u8(byte_addr)
+        if byte_addr not in byte_cache:
+            byte_cache[byte_addr] = emu.read_u8(byte_addr)
+        mem = byte_cache[byte_addr]
         result[id_str] = bool(mem & (1 << (7 - (data[1] % 8))))
     return result
 
 
-def _build_state(emu: EmuLoaderClient, st: OoTBridgeState, include_full_state: bool) -> dict:
+def _build_state(
+    emu: EmuLoaderClient,
+    st: OoTBridgeState,
+    include_full_state: bool,
+    force_resync: bool,
+) -> dict:
     batch_owner = getattr(emu.emulator_info, "begin_batch", None)
     batch_done = getattr(emu.emulator_info, "end_batch", None)
     if batch_owner and batch_done:
         batch_owner()
     try:
-        return _build_state_uncached(emu, st, include_full_state)
+        return _build_state_uncached(emu, st, include_full_state, force_resync)
     finally:
         if batch_done:
             batch_done()
 
 
-def _build_state_uncached(emu: EmuLoaderClient, st: OoTBridgeState, include_full_state: bool) -> dict:
+def _check_locations_with_cache(emu: EmuLoaderClient, st: OoTBridgeState, force_resync: bool) -> dict:
+    resync_cached = st.location_cache_dirty or force_resync
+    if st.location_cache is None:
+        st.location_cache = {}
+        resync_cached = True
+
+    checked_cacheable = _check_cached_locations(emu, st, resync_cached)
+    st.location_cache.update(checked_cacheable)
+    st.location_cache_dirty = False
+
+    locations = dict(checked_cacheable)
+    locations.update(_check_uncached_locations(emu, st))
+    return locations
+
+
+def _build_state_uncached(
+    emu: EmuLoaderClient,
+    st: OoTBridgeState,
+    include_full_state: bool,
+    force_resync: bool,
+) -> dict:
     payload: dict = {
         "playerName":    _get_player_name(emu),
         "scriptVersion": SCRIPT_VERSION,
         "deathlinkActive": _deathlink_enabled(emu),
     }
     if include_full_state and _in_safe_state(emu) and st.mq_table_address is not None:
-        payload["locations"]   = _check_all_locations(emu, st)
+        payload["locations"]   = _check_locations_with_cache(emu, st, force_resync)
         payload["collectibles"]= _check_collectibles(emu, st)
         payload["isDead"]      = _get_death_state(emu)
         payload["gameComplete"]= _is_game_complete(emu, st)
@@ -714,6 +896,7 @@ def _process_block(emu: EmuLoaderClient, st: OoTBridgeState, block: dict) -> Non
     new_shop_offsets = block.get("shopFlagOffsets", {})
     if new_shop_offsets != st.shop_flag_offsets:
         st.shop_flag_offsets = new_shop_offsets
+        st.location_cache_dirty = True
 
 
 async def _protocol_cycle(
@@ -722,13 +905,9 @@ async def _protocol_cycle(
     emu: EmuLoaderClient,
     st: OoTBridgeState,
     include_full_state: bool,
+    force_resync: bool,
 ) -> None:
-    """One send-then-receive exchange with the AP client."""
-    payload = _build_state(emu, st, include_full_state)
-    line    = json.dumps(payload) + "\n"
-    writer.write(line.encode())
-    await writer.drain()
-
+    """One receive-then-send exchange with the AP client."""
     try:
         raw = await asyncio.wait_for(reader.readline(), timeout=0.1)
     except asyncio.TimeoutError:
@@ -740,6 +919,11 @@ async def _protocol_cycle(
         _process_block(emu, st, block)
     except json.JSONDecodeError:
         logger.warning("OoT Bridge: could not decode client message")
+
+    payload = _build_state(emu, st, include_full_state, force_resync)
+    line    = json.dumps(payload) + "\n"
+    writer.write(line.encode())
+    await writer.drain()
 
 
 async def _client_session(
@@ -789,6 +973,7 @@ async def _client_session(
                     await _protocol_cycle(
                         reader, writer, emu, st,
                         include_full_state=(frame % FULL_STATE_FRAMES == 0),
+                        force_resync=(frame % CACHE_RESYNC_FRAMES == 0),
                     )
                 except ConnectionError as exc:
                     logger.info(f"OoT Bridge: client disconnected ({exc})")

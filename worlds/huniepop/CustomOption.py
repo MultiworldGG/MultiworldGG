@@ -3,7 +3,7 @@ import random
 import math
 import typing
 
-from Options import NumericOption, Option, AssembleOptions
+from Options import Option, AssembleOptions
 
 
 class DictRangeMeta(AssembleOptions):
@@ -109,7 +109,7 @@ class DictRange(Option[str], abc.ABC, metaclass=DictRangeMeta):
                     i = int(textsplit[1])
                 except ValueError:
                     raise ValueError(f"Invalid sub-value {textsplit[1]} in value {text} for option {cls.__name__}")
-                if not cls.range_min < i < cls.range_max:
+                if not cls.range_min <= i <= cls.range_max:
                     raise ValueError(f"Invalid sub-value {textsplit[1]} out of range {cls.range_min}-{cls.range_max} in value {text} for option {cls.__name__}")
                 l = {}
                 for k in cls.keys:

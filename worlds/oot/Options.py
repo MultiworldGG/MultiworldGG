@@ -1269,6 +1269,23 @@ class CorrectPotCrateAppearance(Choice):
     default = 2
 
 
+class PotCrateTexturesSpecific(OptionSet):
+    """Select which contents use special textures when pot and crate appearance is set to Textures (Content).
+    major: Major items use golden pots/crates.
+    bosskeys: Boss keys use boss-key pots/crates.
+    keys: Small keys use key pots/crates.
+    tokens: Gold Skulltula tokens use spider-web pots/crates.
+    hearts: Heart items use heart pots/crates."""
+    display_name = "Pot and Crate Textures"
+    valid_keys = {"major", "bosskeys", "keys", "tokens", "hearts"}
+    default = {"major", "bosskeys", "keys", "tokens", "hearts"}
+
+
+class StoneOfAgonyUnlocksPotCrateTexture(Toggle):
+    """Textures for pots and crates will only be correct when Stone of Agony is found."""
+    display_name = "Stone of Agony Unlocks Pot and Crate Textures"
+
+
 class Hints(Choice): 
     """Gossip Stones can give hints about item locations.
     None: Gossip Stones do not give hints.
@@ -1424,6 +1441,8 @@ misc_options: typing.Dict[str, type(Option)] = {
     "minor_items_as_major_chest": MinorInMajor,
     "invisible_chests": InvisibleChests,
     "correct_potcrate_appearances": CorrectPotCrateAppearance,
+    "potcrate_textures_specific": PotCrateTexturesSpecific,
+    "soa_unlocks_potcrate_texture": StoneOfAgonyUnlocksPotCrateTexture,
     "key_appearance_match_dungeon": KeyAppearanceMatchesDungeon,
     "ruto_already_f1_jabu": RutoAlreadyAtF1,
     "auto_equip_masks": MaintainMaskEquips,
@@ -1595,6 +1614,7 @@ class Music(Choice):
     option_normal = 0
     option_off = 1
     option_randomized = 2
+    option_randomized_custom_only = 3
 
 
 class BackgroundMusic(Music):
@@ -1705,6 +1725,7 @@ cosmetic_options: typing.Dict[str, type(Option)] = {
 class SfxOcarina(Choice):
     """Change the sound of the ocarina."""
     display_name = "Ocarina Instrument"
+    option_random_choice = 0
     option_ocarina = 1
     option_malon = 2
     option_whistle = 3
@@ -1719,6 +1740,7 @@ class SfxLinkVoice(Choice):
     option_default = 0
     option_silent = 1
     option_feminine = 2
+    option_randomized = 3
     default = 0
 
 
@@ -1730,33 +1752,41 @@ class SfxLinkChildVoice(SfxLinkVoice):
     display_name = "Child Voice"
 
 
+class RandomizeAllSFX(Toggle):
+    """Randomize all sound effects and music settings, except Link voices."""
+    display_name = "Randomize All Sound Effects"
+
+
 sfx_options: typing.Dict[str, type(Option)] = {
-    "sfx_navi_overworld":   sfx_navi_overworld,
-    "sfx_navi_enemy":       sfx_navi_enemy,
-    "sfx_low_hp":           sfx_low_hp,
-    "sfx_menu_cursor":      sfx_menu_cursor,
-    "sfx_menu_select":      sfx_menu_select,
-    "sfx_nightfall":        sfx_nightfall,
-    "sfx_horse_neigh":      sfx_horse_neigh,
+    "randomize_all_sfx":    RandomizeAllSFX,
+    "sfx_ocarina":          SfxOcarina,
+    "sfx_bombchu_move":     sfx_bombchu_move,
     "sfx_hover_boots":      sfx_hover_boots,
     "sfx_iron_boots":       sfx_iron_boots,
-    "sfx_silver_rupee":     sfx_silver_rupee,
     "sfx_boomerang_throw":  sfx_boomerang_throw,
     "sfx_hookshot_chain":   sfx_hookshot_chain,
     "sfx_arrow_shot":       sfx_arrow_shot,
     "sfx_slingshot_shot":   sfx_slingshot_shot,
     "sfx_magic_arrow_shot": sfx_magic_arrow_shot,
-    "sfx_bombchu_move":     sfx_bombchu_move,
-    "sfx_get_small_item":   sfx_get_small_item,
     "sfx_explosion":        sfx_explosion,
-    "sfx_daybreak":         sfx_daybreak,
+    "sfx_link_adult":       SfxLinkAdultVoice,
+    "sfx_link_child":       SfxLinkChildVoice,
+    "sfx_navi_overworld":   sfx_navi_overworld,
+    "sfx_navi_enemy":       sfx_navi_enemy,
+    "sfx_horse_neigh":      sfx_horse_neigh,
     "sfx_cucco":            sfx_cucco,
-    "sfx_ocarina":          SfxOcarina,
+    "sfx_daybreak":         sfx_daybreak,
+    "sfx_nightfall":        sfx_nightfall,
+    "sfx_menu_cursor":      sfx_menu_cursor,
+    "sfx_menu_select":      sfx_menu_select,
+    "sfx_low_hp":           sfx_low_hp,
+    "sfx_silver_rupee":     sfx_silver_rupee,
+    "sfx_get_small_item":   sfx_get_small_item,
 }
 
 voice_options: typing.Dict[str, type(Option)] = {
-    "sfx_link_adult":        SfxLinkAdultVoice,
-    "sfx_link_child":        SfxLinkChildVoice,
+    "sfx_link_adult":       SfxLinkAdultVoice,
+    "sfx_link_child":       SfxLinkChildVoice,
 }
 
 
@@ -1892,6 +1922,8 @@ class OoTOptions(PerGameCommonOptions):
     minor_items_as_major_chest: MinorInMajor
     invisible_chests: InvisibleChests
     correct_potcrate_appearances: CorrectPotCrateAppearance
+    potcrate_textures_specific: PotCrateTexturesSpecific
+    soa_unlocks_potcrate_texture: StoneOfAgonyUnlocksPotCrateTexture
     key_appearance_match_dungeon: KeyAppearanceMatchesDungeon
     ruto_already_f1_jabu: RutoAlreadyAtF1
     auto_equip_masks: MaintainMaskEquips
@@ -1959,6 +1991,7 @@ class OoTOptions(PerGameCommonOptions):
     b_button_color:       b_button_color
     c_button_color:       c_button_color
     start_button_color:   start_button_color
+    randomize_all_sfx:    RandomizeAllSFX
     sfx_navi_overworld:   sfx_navi_overworld
     sfx_navi_enemy:       sfx_navi_enemy
     sfx_low_hp:           sfx_low_hp
@@ -1977,6 +2010,8 @@ class OoTOptions(PerGameCommonOptions):
     sfx_bombchu_move:     sfx_bombchu_move
     sfx_get_small_item:   sfx_get_small_item
     sfx_explosion:        sfx_explosion
+    sfx_link_adult:       SfxLinkAdultVoice
+    sfx_link_child:       SfxLinkChildVoice
     sfx_daybreak:         sfx_daybreak
     sfx_cucco:            sfx_cucco
     sfx_ocarina:          SfxOcarina

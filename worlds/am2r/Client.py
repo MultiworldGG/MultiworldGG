@@ -834,140 +834,140 @@ async def am2r_sync_task(ctx: AM2RContext):
                         f"{player} has shattered into innumerable pieces",
                     ]
                     terraria = [
-                        f"{player} was slain by {enemy}."
-                        f"{player} was eviscerated by {rand_player}'s Speed Booster."
-                        f"{player} was murdered by {rand_player}'s Bad Sense of Humor."
-                        f"{player}'s face was torn off by {enemy}."
-                        f"{player}'s entrails were ripped out by {enemy}."
-                        f"{player} was destroyed by {rand_player}'s Greed."
-                        f"{player}'s skull was crushed by {rand_player}'s Hammer."
-                        f"{player} got massacred by {enemy}."
-                        f"{player} got impaled by {rand_player}'s Super Missile."
-                        f"{player} was torn in half by {enemy}."
-                        f"{player} was decapitaded by {rand_player}'s Gambling Adiction."
-                        f"{player} let their arms get torn off by {enemy}."
-                        f"{player} watched their innards become outards by {rand_player}'s OOL Checks."
-                        f"{player} was brutally dissected by {enemy}."
-                        f"{player}'s extremities were detached by {rand_player}'s Ping Reply."
-                        f"{player}'s body was mangled by {enemy}."
-                        f"{player}'s vital organs were ruptured by {rand_player}'s BK Game."
-                        f"{player} was turned into a pile of flesh by {enemy}."
-                        f"{player} was removed from the multiworld by {rand_player}'s Bad Memory."
-                        f"{player} got snapped in half by {enemy}."
-                        f"{player} was cut down the middle by {enemy}."
-                        f"{player} was chopped up by {rand_player}'s Gen Alpha Slang."
-                        f"{player}'s plea for death was answered by {rand_player}'s Hatred."
-                        f"{player}'s meat was ripped off the bone by {enemy}."
-                        f"{player}'s flailing about was finally stopped by {rand_player}'s Out of Memory Error."
-                        f"{player} had their head removed by {enemy}."
-                        f"{player}'s bowels were unplugged by {rand_player}'s Speech Disorder."
-                        f"{player}'s journey was ended by {enemy}."
-                        f"{player} was sent to Ocram's House by {rand_player}'s Bad Decision Making."
-                        f"{player} was macerated by {enemy}."
-                        f"{player} was exsanguinated by {rand_player}'s Thirsty Aptitude."
-                        f"{player} was sent to the bone zone by {rand_player}'s Guitar Riff."
-                        f"{player} was spontaneously lobotomized by {enemy}."
-                        f"{player} was pressed into a succulent pulp by {rand_player}'s Lack of Checks."
-                        f"{player} was ground into sad meat by {enemy}."
-                        f"{player}'s bones were shattered by {rand_player}'s Bomb."
-                        f"{player} was turned into monster food by {enemy}."
-                        f"{player} had their home remodeled by {rand_player}'s Game Addiction."
-                        f"{player} was voluntold to donate blood by {enemy}."
-                        f"{player} had their cap peeled back by {rand_player}'s YAML Settings."
-                        f"{player}'s top knot was carved off by {enemy}."
-                        f"{player}'s parts were misplaced by {rand_player}'s Generation Error."
-                        f"{player} was blended into a zesty sauce by {rand_player}'s Psychic Powers."
-                        f"{player}'s spine was ripped out by {enemy}."
-                        f"{player}'s living streak was ended by {rand_player}'s Game Choices."
-                        f"{player} received a forced amputation by {enemy}."
-                        f"{player}'s neck was snapped by {rand_player}'s These Hands."
-                        f"{player} was shredded to bits by {enemy}."
-                        f"{player} succumbed to a fatal injury by {enemy}."
-                        f"{player} was informed of their expiration date by {rand_player}'s Credit Card."
-                        f"{player}'s incompetence was put on display by {enemy}."
-                        f"{player}'s soul was extractinated by {rand_player}'s Thirty Scarabs."
-                        f"{player} underwent a merciful euthanasia by {enemy}."
-                        f"{player} was eaten from the bottom up by {enemy}."
-                        f"{player} was deboned by {rand_player}'s 2/7 Children Kills."
-                        f"{player} had both kidneys stolen by {rand_player}'s Lips and Teeth."
-                        f"{player}'s depravity was ended by {enemy}."
-                        f"{player}'s disc was herniated by {enemy}."
-                        f"{player}'s body was donated to science by {rand_player}'s Chiny Tozos."
-                        f"{player} had their brain turned to jam by {rand_player}'s Negative Energy."
-                        f"{player} was turned into a long pig by {enemy}."
-                        f"{player} was sent to the farm by {enemy}."
-                        f"{player}'s clogs were popped by {enemy}."
-                        f"{player}'s ticker was stopped by {rand_player}'s Time Eaters."
-                        f"{player} was whacked in the head by {rand_player}'s Stick."
-                        f"{player} got rubbed out by {rand_player}'s I Use Arch btw."
-                        f"{player} was degloved by {enemy}."
-                        f"{player} was flayed by {enemy}."
-                        f"{player} was ganked by {enemy}."
-                        f"{player} got spanked by {rand_player}'s Hint Cost."
-                        f"{player} got got by {rand_player}'s Horrible Sleep Schedule."
-                        f"{player} got murked by {rand_player}'s Smugness."
-                        f"{player} was put in a glass coffin by {enemy}."
-                        f"{player} was put on the wrong side of the grass by {enemy}."
-                        f"{player} will quickly be forgotten by {rand_player}'s Game Coordination."
-                        f"{player} was smote by {enemy}."
-                        f"{player} fell to their death."
-                        f"{player} didn't bounce."
-                        f"{player} invented gravity."
-                        f"{player} discovered the meaning of defenestration."
-                        f"{player} was freeeee, free-fallin'."
-                        f"{player} tried to ice skate uphill."
-                        f"{player} thought they could fly."
-                        f"{player} left a crater."
-                        f"{player} forgot their happy thought."
-                        f"{player} forgot to breathe."
-                        f"{player} is sleeping with the fish."
-                        f"{player} drowned."
-                        f"{player} is shark food."
-                        f"{player} tried to drink a lake."
-                        f"{player} discovered Atlantis."
-                        f"{player} forgot to bring a towel."
-                        f"{player} got melted."
-                        f"{player} was incinerated."
-                        f"{player} tried to swim in lava."
-                        f"{player} likes to play in magma."
-                        f"{player} is bad at the Floor Is Lava."
-                        f"{player} couldn't put the fire out."
-                        f"{player} was reduced to charcoal."
-                        f"{player} was burnt to a crisp."
-                        f"{player} is a well-done steak."
-                        f"{player} was consumed by the inferno."
-                        f"{player} couldn't find the antidote."
-                        f"{player} couldn't breathe."
-                        f"{player} was buried alive."
-                        f"{player} couldn't contain the watts."
-                        f"{player} was turned into a battery."
-                        f"{player}'s positive lifeforce became negative."
-                        f"{player} became a lightning rod."
-                        f"{player} shattered into pieces."
-                        f"{player} can't be put back together again."
-                        f"{player} needs to be swept up."
-                        f"{player} just became another dirt pile."
-                        f"{player}'s legs appeared where their head should be."
-                        f"{player} didn't materialize."
-                        f"{player} starved to death."
-                        f"{player} couldn't find food."
-                        f"{player} forgot to eat."
-                        f"{player} was licked."
-                        f"{player} got to 1st base with the Wall of Flesh!"
-                        f"{player} tried to escape."
-                        f"{player} died for the team."
-                        f"{player} was slain..."
-                        f"{player} was stabbed."
-                        f"{player} was killed by something in the dark!"
-                        f"{player} became an astronaut."
-                        f"{player} is now space debris."
-                        f"{player} left orbit."
-                        f"{player} has ascended."
-                        f"{player} departed SR388."
-                        f"{player} was never seen again."
-                        f"{player} dug too deep."
-                        f"{player} never stopped falling."
-                        f"{player} entered the abyss."
+                        f"{player} was slain by {enemy}.",
+                        f"{player} was eviscerated by {rand_player}'s Speed Booster.",
+                        f"{player} was murdered by {rand_player}'s Bad Sense of Humor.",
+                        f"{player}'s face was torn off by {enemy}.",
+                        f"{player}'s entrails were ripped out by {enemy}.",
+                        f"{player} was destroyed by {rand_player}'s Greed.",
+                        f"{player}'s skull was crushed by {rand_player}'s Hammer.",
+                        f"{player} got massacred by {enemy}.",
+                        f"{player} got impaled by {rand_player}'s Super Missile.",
+                        f"{player} was torn in half by {enemy}.",
+                        f"{player} was decapitaded by {rand_player}'s Gambling Adiction.",
+                        f"{player} let their arms get torn off by {enemy}.",
+                        f"{player} watched their innards become outards by {rand_player}'s OOL Checks.",
+                        f"{player} was brutally dissected by {enemy}.",
+                        f"{player}'s extremities were detached by {rand_player}'s Ping Reply.",
+                        f"{player}'s body was mangled by {enemy}.",
+                        f"{player}'s vital organs were ruptured by {rand_player}'s BK Game.",
+                        f"{player} was turned into a pile of flesh by {enemy}.",
+                        f"{player} was removed from the multiworld by {rand_player}'s Bad Memory.",
+                        f"{player} got snapped in half by {enemy}.",
+                        f"{player} was cut down the middle by {enemy}.",
+                        f"{player} was chopped up by {rand_player}'s Gen Alpha Slang.",
+                        f"{player}'s plea for death was answered by {rand_player}'s Hatred.",
+                        f"{player}'s meat was ripped off the bone by {enemy}.",
+                        f"{player}'s flailing about was finally stopped by {rand_player}'s Out of Memory Error.",
+                        f"{player} had their head removed by {enemy}.",
+                        f"{player}'s bowels were unplugged by {rand_player}'s Speech Disorder.",
+                        f"{player}'s journey was ended by {enemy}.",
+                        f"{player} was sent to Ocram's House by {rand_player}'s Bad Decision Making.",
+                        f"{player} was macerated by {enemy}.",
+                        f"{player} was exsanguinated by {rand_player}'s Thirsty Aptitude.",
+                        f"{player} was sent to the bone zone by {rand_player}'s Guitar Riff.",
+                        f"{player} was spontaneously lobotomized by {enemy}.",
+                        f"{player} was pressed into a succulent pulp by {rand_player}'s Lack of Checks.",
+                        f"{player} was ground into sad meat by {enemy}.",
+                        f"{player}'s bones were shattered by {rand_player}'s Bomb.",
+                        f"{player} was turned into monster food by {enemy}.",
+                        f"{player} had their home remodeled by {rand_player}'s Game Addiction.",
+                        f"{player} was voluntold to donate blood by {enemy}.",
+                        f"{player} had their cap peeled back by {rand_player}'s YAML Settings.",
+                        f"{player}'s top knot was carved off by {enemy}.",
+                        f"{player}'s parts were misplaced by {rand_player}'s Generation Error.",
+                        f"{player} was blended into a zesty sauce by {rand_player}'s Psychic Powers.",
+                        f"{player}'s spine was ripped out by {enemy}.",
+                        f"{player}'s living streak was ended by {rand_player}'s Game Choices.",
+                        f"{player} received a forced amputation by {enemy}.",
+                        f"{player}'s neck was snapped by {rand_player}'s These Hands.",
+                        f"{player} was shredded to bits by {enemy}.",
+                        f"{player} succumbed to a fatal injury by {enemy}.",
+                        f"{player} was informed of their expiration date by {rand_player}'s Credit Card.",
+                        f"{player}'s incompetence was put on display by {enemy}.",
+                        f"{player}'s soul was extractinated by {rand_player}'s Thirty Scarabs.",
+                        f"{player} underwent a merciful euthanasia by {enemy}.",
+                        f"{player} was eaten from the bottom up by {enemy}.",
+                        f"{player} was deboned by {rand_player}'s 2/7 Children Kills.",
+                        f"{player} had both kidneys stolen by {rand_player}'s Lips and Teeth.",
+                        f"{player}'s depravity was ended by {enemy}.",
+                        f"{player}'s disc was herniated by {enemy}.",
+                        f"{player}'s body was donated to science by {rand_player}'s Chiny Tozos.",
+                        f"{player} had their brain turned to jam by {rand_player}'s Negative Energy.",
+                        f"{player} was turned into a long pig by {enemy}.",
+                        f"{player} was sent to the farm by {enemy}.",
+                        f"{player}'s clogs were popped by {enemy}.",
+                        f"{player}'s ticker was stopped by {rand_player}'s Time Eaters.",
+                        f"{player} was whacked in the head by {rand_player}'s Stick.",
+                        f"{player} got rubbed out by {rand_player}'s I Use Arch btw.",
+                        f"{player} was degloved by {enemy}.",
+                        f"{player} was flayed by {enemy}.",
+                        f"{player} was ganked by {enemy}.",
+                        f"{player} got spanked by {rand_player}'s Hint Cost.",
+                        f"{player} got got by {rand_player}'s Horrible Sleep Schedule.",
+                        f"{player} got murked by {rand_player}'s Smugness.",
+                        f"{player} was put in a glass coffin by {enemy}.",
+                        f"{player} was put on the wrong side of the grass by {enemy}.",
+                        f"{player} will quickly be forgotten by {rand_player}'s Game Coordination.",
+                        f"{player} was smote by {enemy}.",
+                        f"{player} fell to their death.",
+                        f"{player} didn't bounce.",
+                        f"{player} invented gravity.",
+                        f"{player} discovered the meaning of defenestration.",
+                        f"{player} was freeeee, free-fallin'.",
+                        f"{player} tried to ice skate uphill.",
+                        f"{player} thought they could fly.",
+                        f"{player} left a crater.",
+                        f"{player} forgot their happy thought.",
+                        f"{player} forgot to breathe.",
+                        f"{player} is sleeping with the fish.",
+                        f"{player} drowned.",
+                        f"{player} is shark food.",
+                        f"{player} tried to drink a lake.",
+                        f"{player} discovered Atlantis.",
+                        f"{player} forgot to bring a towel.",
+                        f"{player} got melted.",
+                        f"{player} was incinerated.",
+                        f"{player} tried to swim in lava.",
+                        f"{player} likes to play in magma.",
+                        f"{player} is bad at the Floor Is Lava.",
+                        f"{player} couldn't put the fire out.",
+                        f"{player} was reduced to charcoal.",
+                        f"{player} was burnt to a crisp.",
+                        f"{player} is a well-done steak.",
+                        f"{player} was consumed by the inferno.",
+                        f"{player} couldn't find the antidote.",
+                        f"{player} couldn't breathe.",
+                        f"{player} was buried alive.",
+                        f"{player} couldn't contain the watts.",
+                        f"{player} was turned into a battery.",
+                        f"{player}'s positive lifeforce became negative.",
+                        f"{player} became a lightning rod.",
+                        f"{player} shattered into pieces.",
+                        f"{player} can't be put back together again.",
+                        f"{player} needs to be swept up.",
+                        f"{player} just became another dirt pile.",
+                        f"{player}'s legs appeared where their head should be.",
+                        f"{player} didn't materialize.",
+                        f"{player} starved to death.",
+                        f"{player} couldn't find food.",
+                        f"{player} forgot to eat.",
+                        f"{player} was licked.",
+                        f"{player} got to 1st base with the Wall of Flesh!",
+                        f"{player} tried to escape.",
+                        f"{player} died for the team.",
+                        f"{player} was slain...",
+                        f"{player} was stabbed.",
+                        f"{player} was killed by something in the dark!",
+                        f"{player} became an astronaut.",
+                        f"{player} is now space debris.",
+                        f"{player} left orbit.",
+                        f"{player} has ascended.",
+                        f"{player} departed SR388.",
+                        f"{player} was never seen again.",
+                        f"{player} dug too deep.",
+                        f"{player} never stopped falling.",
+                        f"{player} entered the abyss.",
                         f"{player} reached the core."
                     ]
                     copypastas = [

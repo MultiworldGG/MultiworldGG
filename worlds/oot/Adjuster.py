@@ -8,7 +8,8 @@ from itertools import chain
 from BaseClasses import MultiWorld
 from Options import Choice, Range, Toggle
 from . import OOTWorld, launch_rom as launch_oot_rom
-from .Cosmetics import get_voice_choices, patch_cosmetics, patch_voices
+from .Cosmetics import get_voice_choices, patch_cosmetics
+from . import Music as music
 from .MusicHelpers import find_mm_audiobin_path
 from .Options import (cosmetic_options, sfx_options, voice_options,
     DpadDungeonMenu, SpeedupMusicForLastTriforcePiece, SlowdownMusicWhenLowhp,
@@ -51,7 +52,7 @@ def get_argparser():
         help='Path to an OoT randomized ROM to adjust.')
     parser.add_argument('--vanilla_rom', default='',
         help='Path to a vanilla OoT ROM for patching.')
-    for name, option in chain(cosmetic_options.items(), sfx_options.items(), voice_options.items()):
+    for name, option in chain(cosmetic_options.items(), sfx_options.items()):
         parser.add_argument('--'+name, default=None,
             help=option.__doc__)
     parser.add_argument('--music_dir', default=None,
@@ -318,6 +319,9 @@ def adjustGUI():
     opts.input_viewer = IntVar(value=adjuster_settings.input_viewer)
     Checkbutton(romSettingsFrame, text="Input Viewer", variable=opts.input_viewer).grid(row=23, column=1, sticky=W)
 
+    opts.randomize_all_sfx = IntVar(value=adjuster_settings.randomize_all_sfx)
+    Checkbutton(romSettingsFrame, text="Randomize All SFX", variable=opts.randomize_all_sfx).grid(row=23, column=2, sticky=W)
+
 
     # Deathlink is a checkbox
     opts.deathlink = IntVar(value=adjuster_settings.deathlink)
@@ -457,6 +461,82 @@ def set_icon(window):
     logo = tk.PhotoImage(file=local_path('data', 'icon.png'))
     window.tk.call('wm', 'iconphoto', window._w, logo)
 
+
+def _option_display_value(args, name, option=None):
+    value = getattr(args, name, None)
+    if isinstance(value, bool):
+        return "on" if value else "off"
+    if option is not None and issubclass(option, Toggle) and isinstance(value, int):
+        return "on" if value else "off"
+    return str(value)
+
+
+def _append_option_section(lines, title, args, options):
+    lines.append(f"{title}:")
+    for name, option in options.items():
+        display_name = getattr(option, "display_name", name)
+        lines.append(f"  {display_name} ({name}): {_option_display_value(args, name, option)}")
+    lines.append("")
+
+
+def _append_music_log(lines, ootworld):
+    music_log = getattr(ootworld, "cosmetic_music_log", {}) or {}
+    music_errors = getattr(ootworld, "cosmetic_music_errors", []) or []
+    sequence_ids = []
+    seen = set()
+    for name, seq_id in (
+        music.bgm_sequence_ids
+        + music.fanfare_sequence_ids
+        + music.ocarina_sequence_ids
+        + music.credit_sequence_ids
+        + music.fileselect_sequence_id
+    ):
+        if name in seen:
+            continue
+        seen.add(name)
+        sequence_ids.append((name, seq_id))
+
+    lines.append("Music Placements:")
+    if music_log:
+        for name, seq_id in sequence_ids:
+            if name in music_log:
+                lines.append(f"  0x{seq_id:02X} {name}: {music_log[name]}")
+        for name in sorted(set(music_log) - seen):
+            lines.append(f"  {name}: {music_log[name]}")
+    else:
+        lines.append("  No randomized music placements were written.")
+    lines.append("")
+
+    if music_errors:
+        lines.append("Music Warnings/Errors:")
+        for error in music_errors:
+            lines.append(f"  {error}")
+        lines.append("")
+
+
+def write_adjuster_cosmetics_log(args, ootworld, output_rom_path, log_path):
+    lines = [
+        "OoT Adjuster Cosmetics Log",
+        f"Input file: {args.rom}",
+        f"Base ROM: {getattr(args, 'vanilla_rom', '')}",
+        f"Output ROM: {output_rom_path}",
+        f"OoT APWorld version: {oot_version}",
+        "",
+    ]
+    _append_option_section(lines, "Cosmetic Options", args, cosmetic_options)
+    _append_option_section(lines, "SFX Options", args, sfx_options)
+    lines.append("Models and Adjuster Options:")
+    lines.append(f"  Adult Link Model: {getattr(args, 'model_adult', 'Default')}")
+    lines.append(f"  Child Link Model: {getattr(args, 'model_child', 'Default')}")
+    lines.append(f"  Custom Music Folder: {getattr(args, 'music_dir', None) or ''}")
+    lines.append(f"  DeathLink: {'on' if bool(getattr(args, 'deathlink', False)) else 'off'}")
+    lines.append("")
+    _append_music_log(lines, ootworld)
+
+    with open(log_path, "w", encoding="utf-8") as stream:
+        stream.write("\n".join(lines).rstrip() + "\n")
+
+
 def adjust(args, status_callback=None):
     def update_status(status):
         if status_callback:
@@ -470,7 +550,7 @@ def adjust(args, status_callback=None):
     multiworld = MultiWorld(1)
     ootworld = OOTWorld(multiworld, 1)
     # Set options in the fake OOTWorld
-    for name, option in chain(cosmetic_options.items(), sfx_options.items(), voice_options.items()):
+    for name, option in chain(cosmetic_options.items(), sfx_options.items()):
         result = getattr(args, name, None)
         if result is None:
             if issubclass(option, Choice):
@@ -512,8 +592,6 @@ def adjust(args, status_callback=None):
     try:
         update_status("Applying cosmetic changes...")
         patch_cosmetics(ootworld, rom)
-        update_status("Applying voice changes...")
-        patch_voices(rom, ootworld, {})
         rom.write_byte(rom.sym('DEATH_LINK'), args.deathlink)
         # Output new file
         path_pieces = os.path.splitext(args.rom)
@@ -523,6 +601,8 @@ def adjust(args, status_callback=None):
         rom.write_to_file(decomp_path)
         update_status("Compressing adjusted ROM...")
         compress_rom_file(decomp_path, comp_path)
+        update_status("Writing cosmetics log...")
+        write_adjuster_cosmetics_log(args, ootworld, comp_path, path_pieces[0] + '_cosmetics.log')
         os.remove(decomp_path)
         update_status("Finishing...")
     finally:

@@ -86,6 +86,9 @@ def create_trap_items(world: AM2RWorld, locations_to_trap: int) -> List[str]:
     if world.options.RemoveIceTrap.value == 1:
         del trap_pool["Ice Trap"]
 
+    if trap_pool == {}:
+        return []
+
     return world.random.choices(
         population=list(trap_pool.keys()),
         weights=list(trap_pool.values()),

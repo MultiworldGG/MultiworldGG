@@ -290,7 +290,8 @@ junk_item = {
 
 item_table = {
     "Nothing": junk_item_start + 85,
-    "Goal Achieved": junk_item_start + 86,
+    "Date Pass": junk_item_start + 86,
+    "Goal Achieved": junk_item_start + 87,
     **panties_item,
     **girl_unlock,
     **gift_item,

@@ -38,7 +38,7 @@ class WotWWeb(WebWorld):
     theme = "ocean"  # TODO documentation
     tutorials = [Tutorial(
         "Multiworld Setup Guide",
-        "A guide to setting up the Ori and the Will of the Wisps randomizer connected to an Archipelago Multiworld",
+        "A guide to setting up the Ori and the Will of the Wisps randomizer connected to a MultiworldGG Multiworld",
         "English",
         "setup_en.md",
         "setup/en",
@@ -802,7 +802,7 @@ class WotWWorld(World):
             location_flags += 0b000100
         if not options.no_trials:
             location_flags += 0b001000
-        if not options.qol:
+        if not options.qol and options.quests != Quests.option_none:
             location_flags += 0b010000
         if not options.zone_hints:
             location_flags += 0b100000

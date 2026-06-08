@@ -171,7 +171,6 @@ non_apworlds: set[str] = {
     "Lufia II Ancient Cave",
     "Meritous",
     "Archipelago",
-    "Ocarina of Time",
     "Overcooked! 2",
     "Raft",
     "Slay the Spire",
