@@ -1,5 +1,5 @@
 import ast, os
-from ..utility import load_text_file
+from ..resource_utility import load_text_file
 
 # Visualisation primarily used for debugging
 

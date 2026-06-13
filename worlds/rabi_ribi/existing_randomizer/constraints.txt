@@ -367,24 +367,9 @@
 
 {
 "item": "MP_UP_UPPER_GRAVEYARD",
-"from_location": "GRAVEYARD_UPPER",
-"entry_prereq": "
-    // Getting onto the ledge
-    (AIR_JUMP | AIR_DASH | (ITM_HARD & (AMULET_FOOD | BUNNY_STRIKE)))
-    & (EXPLOSIVES | BLOCK_CLIP)
-",
-"exit_prereq": "AIR_JUMP | SLIDE_JUMP_BUNSTRIKE_CANCEL",
-
-"alternate_entries": {
-    "GRAVEYARD_MAIN": "ADV_VHARD & WHIRL_BONK & (
-        AIR_JUMP
-        | (OBS_EXT & HAMMER_ROLL)
-        | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD & (RABI_SLIPPERS | STUPID))
-    )",
-    },
-"alternate_exits": {
-    "GRAVEYARD_MAIN": "NONE",
-    },
+"from_location": "GRAVEYARD_UPPER_MP_UP_LEDGE",
+"entry_prereq": "EXPLOSIVES | BLOCK_CLIP",
+"exit_prereq": "NONE",
 }
 
 {

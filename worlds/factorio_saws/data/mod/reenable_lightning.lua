@@ -172,6 +172,10 @@ data.raw.planet.nauvis.lightning_properties = {
           string = "plant",
         },
         {
+          type = "prototype",
+          string = "fish",
+        },
+        {
           type = "countAsRockForFilteredDeconstruction",
           string = "true",
         },

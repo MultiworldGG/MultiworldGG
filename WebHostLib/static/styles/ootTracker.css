@@ -45,6 +45,26 @@
     right: 8px;
 }
 
+#inventory-table tr.extra-items td {
+    height: 32px;
+}
+
+#inventory-table tr.extra-items img {
+    max-width: 32px;
+    max-height: 32px;
+}
+
+#inventory-table tr.extra-items img.silver-rupee {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+#inventory-table tr.extra-items div.item-count {
+    font-size: 0.85em;
+    right: 3px;
+}
+
 #location-table{
     width: 480px;
     border-left: 2px solid #000000;

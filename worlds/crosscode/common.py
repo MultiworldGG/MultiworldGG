@@ -8,5 +8,5 @@ from Utils import Version
 NAME: str = "CrossCode"
 BASE_ID: int = 3235824000
 DATA_VERSION: str = "0.5"
-APWORLD_VERSION_STRING = "0.9.1"
-APWORLD_VERSION: Version = Version(0, 9, 1)
+APWORLD_VERSION_STRING = "0.9.2"
+APWORLD_VERSION: Version = Version(0, 9, 2)

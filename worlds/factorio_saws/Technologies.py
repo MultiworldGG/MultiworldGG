@@ -554,8 +554,8 @@ fluids: Set[str] = set(fluids_future.result())
 del fluids_future
 
 
-@Utils.cache_argsless
-def get_science_pack_pools() -> Dict[str, Set[str]]:
+@functools.cache
+def get_science_pack_pools(difficulty_factor: float) -> Dict[str, Set[str]]:
     def get_estimated_difficulty(recipe: Recipe):
 
         base_ingredients = recipe.base_cost
@@ -576,9 +576,12 @@ def get_science_pack_pools() -> Dict[str, Set[str]]:
         current = science_pack_pools[science_pack] = set()
         for name, recipe in recipes.items():
             if recipe.name not in ignored_recipes:
-                if (science_pack != "automation-science-pack" or not recipe.recursive_unlocking_technologies) \
-                        and get_estimated_difficulty(recipe) < current_difficulty:
-                    current |= set(recipe.products)
+                if (science_pack != "automation-science-pack" or not recipe.recursive_unlocking_technologies):
+                    difficulty = get_estimated_difficulty(recipe)
+                    for p in recipe.products:
+                        this_diff = difficulty * (10 if p in fluids else 1) / recipe.products[p]
+                        if this_diff < current_difficulty:
+                            current |= { p }
 
         if science_pack == "automation-science-pack":
             # Can't handcraft automation science if fluids end up in its recipe, making the seed impossible.
@@ -590,7 +593,7 @@ def get_science_pack_pools() -> Dict[str, Set[str]]:
 
         current -= already_taken
         already_taken |= current
-        current_difficulty *= 2
+        current_difficulty *= difficulty_factor
 
     return science_pack_pools
 

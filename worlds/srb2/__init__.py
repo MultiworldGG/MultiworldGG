@@ -249,11 +249,11 @@ class SRB2World(World):
                                     "Frozen Hillside Zone", "Pipe Towers Zone", "Forest Fortress Zone"]
                 elif self.options.superring_sanity:
                         Valid_starts = ["Greenflower Zone (Act 1)","Greenflower Zone (Act 2)","Techno Hill Zone (Act 1)", "Deep Sea Zone (Act 2)",
-                                        "Castle Eggman Zone (Act 1)","Castle Eggman Zone (Act 2)", "Arid Canyon Zone (Act 1)","Arid Canyon Zone (Act 2)","Red Volcano (Act 1)",
+                                        "Castle Eggman Zone (Act 1)","Castle Eggman Zone (Act 2)", "Arid Canyon Zone (Act 1)","Arid Canyon Zone (Act 2)","Red Volcano Zone (Act 1)",
                                         "Egg Rock Zone (Act 1)","Egg Rock Zone (Act 2)","Frozen Hillside Zone","Pipe Towers Zone"]
                 elif self.options.oneup_sanity:
                         Valid_starts = ["Greenflower Zone (Act 1)","Techno Hill Zone (Act 1)", "Deep Sea Zone (Act 2)",
-                                        "Castle Eggman Zone (Act 1)", "Arid Canyon Zone (Act 1)","Red Volcano (Act 1)","Egg Rock Zone (Act 2)","Frozen Hillside Zone","Pipe Towers Zone"]
+                                        "Castle Eggman Zone (Act 1)", "Arid Canyon Zone (Act 1)","Red Volcano Zone (Act 1)","Egg Rock Zone (Act 2)","Frozen Hillside Zone","Pipe Towers Zone"]
                 else:
                         Valid_starts = ["Greenflower Zone (Act 1)", "Techno Hill Zone (Act 1)",
                                         "Castle Eggman Zone (Act 1)",

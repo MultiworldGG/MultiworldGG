@@ -5,7 +5,7 @@ from enum import IntEnum
 from .DSZeldaClient.subclasses import DSTransition, split_bits, AddrFromPointer
 from .DSZeldaClient.ItemClass import DSItem, remove_vanilla_normal
 from .data.SwitchLogic import *
-from .data.Constants import EQUIPPED_SHIP_PARTS_ADDR, BOSS_DOOR_DATA, ITEM_GROUPS
+from .data.Constants import EQUIPPED_SHIP_PARTS_ADDR, BOSS_DOOR_DATA
 from .data.Addresses import PHAddr
 
 if TYPE_CHECKING:
@@ -154,6 +154,7 @@ class PHItem(DSItem):
         return receive_func
 
     def get_remove_vanilla_function(self):
+        from .data.Items import ITEM_GROUPS
         if self.name == "Treasure":
             return remove_vanilla_treasure
         if self.name  == "Ship Part":

@@ -17,7 +17,7 @@ from .Options import MMX3Options, mmx3_option_groups
 from .Client import MMX3SNIClient
 from .Levels import location_id_to_level_id
 from .Weaknesses import handle_weaknesses, weapon_id
-from .Rom import patch_rom, MMX3ProcedurePatch, HASH_US, HASH_LEGACY
+from .Rom import patch_rom, MMX3ProcedurePatch, HASH_US, HASH_LEGACY, HASH_LEGACY, LC_EXE_HASH
 
 from typing import Dict, Any, TYPE_CHECKING, Optional, Sequence, Tuple, ClassVar, List
 
@@ -26,7 +26,33 @@ class MMX3Settings(settings.Group):
         """File name of the Mega Man X3 US ROM"""
         description = "Mega Man X3 (USA) ROM File"
         copy_to = "Mega Man X3 (USA).sfc"
-        md5s = [HASH_US, HASH_LEGACY]
+        md5s = [HASH_US, HASH_LEGACY, LC_EXE_HASH]
+
+        # Borrowed from MM2, let's pray it actually works for X LC
+        def browse(self: settings.T,
+                   filetypes: Optional[Sequence[Tuple[str, Sequence[str]]]] = None,
+                   **kwargs: Any) -> Optional[settings.T]:
+            if not filetypes:
+                file_types = [("SNES", [".sfc"]), ("Program", [".exe"])]  # LC1 is only a windows executable, no linux
+                return super().browse(file_types, **kwargs)
+            else:
+                return super().browse(filetypes, **kwargs)
+
+        @classmethod
+        def validate(cls, path: str) -> None:
+            """Try to open and validate file against hashes"""
+            with open(path, "rb", buffering=0) as f:
+                try:
+                    f.seek(0)
+                    cls._validate_stream_hashes(f)
+                    base_rom_bytes = f.read()
+                    basemd5 = hashlib.md5()
+                    basemd5.update(base_rom_bytes)
+                    if basemd5.hexdigest() == LC_EXE_HASH:
+                        # we need special behavior here
+                        cls.copy_to = None
+                except ValueError:
+                    raise ValueError(f"File hash does not match for {path}")
 
     rom_file: RomFile = RomFile(RomFile.copy_to)
 

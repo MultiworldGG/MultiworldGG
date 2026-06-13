@@ -3,7 +3,8 @@ from math import floor, ceil
 from BaseClasses import CollectionState
 from Options import Accessibility
 from .Constants import *
-
+from .Items import ITEM_GROUPS
+from .. import PhantomHourglassOptions
 
 
 # =========== Item States =============
@@ -1744,8 +1745,12 @@ def ph_toi_b2(state, player):
         ph_has_grapple(state, player),
         any([
             all([
+                state.has("_toi_b1_switch", player),
                 ph_quick_switches(state, player),
-                state.has("_toi_b1_switch", player)
+                any([
+                    ph_option_hard_logic(state, player),
+                    ph_has_hammer(state, player)
+                ])
             ]),
             all([
                 ph_can_bcl(state, player),
@@ -1874,7 +1879,7 @@ def ph_gleeok(state, player):
         ph_has_grapple(state, player),
         any([
             ph_has_sword(state, player),
-            ph_has_bombs(state, player),
+            state.has("Bombs (Progressive)", player, 2),
             ph_has_hammer(state, player)
         ])
     ])
@@ -1943,8 +1948,11 @@ def ph_mutoh_bk_chest(state, player):
             ph_has_small_keys(state, player, "Mutoh's Temple", 2),
             ph_ut_small_key_own_dungeon(state, player),
             all([
-                ph_has_small_keys(state, player, "Mutoh's Temple", 1),
-                ph_UT_glitched_logic(state, player)
+                ph_UT_glitched_logic(state, player),
+                any([
+                    ph_has_small_keys(state, player, "Mutoh's Temple", 1),
+                    ph_has_explosives(state, player)
+                ])
             ])
     ])
 
@@ -2817,7 +2825,10 @@ def ph_totok_b12_ghost(state, player):
 
 
 def ph_totok_b12_hammer(state, player):
-    return ph_totok_has_floor_time(state, player, '12_h', 10)
+    return any([
+        ph_totok_has_floor_time(state, player, '12_h', 10),
+        ph_option_hard_logic(state, player) and ph_totok_has_floor_time(state, player, 12, 20)
+    ])
 
 
 def ph_totok_b13(state, player):
@@ -2860,6 +2871,58 @@ def ph_get_switch_state(state: "CollectionState", player, entrance):
 
 def ph_switch_state_red(state, player, entrance):
     return ph_get_switch_state(state, player, entrance) & 0x1
+
+def ph_pirate_ambush_ne(state, player):
+    return all([
+        ph_beat_ghost_ship(state, player),
+        any([
+            ph_has_sea_chart(state, player, "SE"),
+            all([
+                ph_has_frog_square(state, player),
+                any([
+                    ph_has_frog_x(state, player),
+                    ph_has_frog_phi(state, player),
+                    ph_has_frog_n(state, player),
+                ])
+            ]),
+            all([
+                ph_option_hard_logic(state, player),
+                ph_has_sea_chart(state, player, "NW")
+            ])
+        ])
+    ])
+
+def ph_pirate_ambush_se(state, player):
+    return all([
+        ph_beat_ghost_ship(state, player),
+        any([
+            ph_has_sea_chart(state, player, "SW"),
+            ph_has_sea_chart(state, player, "NE"),
+            all([
+                ph_has_se_frogs(state, player),
+                ph_has_frog_n(state, player)
+            ])
+        ])
+    ])
+
+def ph_pirate_ambush_nw(state, player):
+    options: PhantomHourglassOptions = state.multiworld.worlds[player].options
+    return all([
+        options.shuffle_bosses.value == 0,
+        options.shuffle_dungeon_entrances == 0,
+        ph_beat_ghost_ship(state, player),  # rescue tetra
+        state.has("_beat_cubus_sisters", player),
+        any([
+            ph_has_sea_chart(state, player, "SW"),
+            all([
+                ph_has_frog_n(state, player),
+                any([
+                    ph_has_frog_square(state, player),
+                    ph_has_se_frogs(state, player),
+                ])
+            ])
+        ])
+    ])
 
 # This is pretty stupid, but is niceish when writing logic. Was originally intended for exporting logic to
 # poptracker but with the advancements in UT tracker that probably won't be necessary any more
@@ -3063,6 +3126,10 @@ RULE_DICT = {
     "ruins_stalfos_n": ph_ruins_stalfos_n,
     "ruins_stalfos_s": ph_ruins_stalfos_n,
     "ice_field": ph_ice_field,
+    # pirate ambush
+    "pirate_ambush_ne": ph_pirate_ambush_ne,
+    "pirate_ambush_se": ph_pirate_ambush_se,
+    "pirate_ambush_nw": ph_pirate_ambush_nw,
     # ToF
     "tof_3f": ph_tof_3f,
     "tof_maze": ph_tof_maze,

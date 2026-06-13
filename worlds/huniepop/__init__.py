@@ -53,9 +53,15 @@ class HuniePop(World):
         self.totalloc = 0
         self.totalitem = 0
 
+        if len(self.options.enabled_girls.value)==0:
+            raise Exception(f"""(Hunie Pop) Player:"{self.player_name}" has no girls enabled in their YMAL""")
+
         if "kyu" not in self.options.enabled_girls.value and self.options.goal.value==1:
             logging.warning(f"""(Hunie Pop) Adding "kyu" to "enabled_girls" for Player:"{self.player_name}" since goal is "Give kyu all available panties\"""")
             self.options.enabled_girls.value.add("kyu")
+        if len(self.options.enabled_girls.value) < self.options.number_of_starting_girls.value:
+            logging.warning(f"""(Hunie Pop) "number_of_starting_girls" higher than number of girls enabled for Player:"{self.player_name}" setting "number_of_starting_girls" to be number of girls enabled """)
+            self.options.number_of_starting_girls.value = len(self.options.enabled_girls.value)
 
 
         self.enabledgirls = list(self.options.enabled_girls.value.copy())
@@ -213,6 +219,7 @@ class HuniePop(World):
             shop_region = Region("shop", self.player, self.multiworld)
             for i in range(self.shopslots):
                 shop_region.add_locations({f"shop_location: {i+1}" : self.location_name_to_id[f"shop_location: {i+1}"]}, HPLocation)
+            self.multiworld.regions.append(shop_region)
             hub_region.connect(shop_region, "hub-shop")
 
 
@@ -294,7 +301,7 @@ class HuniePop(World):
 
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Goal Achieved", self.player)
 
-        set_rules(self.multiworld, self.player, self.enabledgirls, self.girldata, self.options.goal.value, self.options.progressive_dates)
+        set_rules(self.multiworld, self.player, self.enabledgirls, self.girldata, self.options.goal.value, self.options.progressive_dates, self.shopslots > 0)
 
         if self.shopslots > self.options.exclude_shop_items:
             for i in range(self.shopslots):
@@ -378,6 +385,9 @@ class HuniePop(World):
 
         if slot_data["goal"] != 1 and slot_data["progressive_dates"]:
             set_rule(self.multiworld.get_location("Sleep with all girls", self.player), lambda state: state.has_all(girlsset, self.player) and state.has("Date Pass", self.player, 5))
+
+        if slot_data["progressive_dates"] and slot_data["number_of_shop_items"]>0:
+            set_rule(self.multiworld.get_entrance("hub-shop", self.player), lambda state: state.has("Date Pass", self.player, 4))
 
         return
 

@@ -1,4 +1,4 @@
-# This file contains the logic for item placement and progression in the Path of Exile world.
+# Item placement and progression logic for the Path of Exile world.
 
 from typing import Dict, Set
 from worlds.LauncherComponents import components, Component, launch_subprocess, Type, icon_paths
@@ -31,61 +31,70 @@ logger = logging.getLogger("poe.logic")
 logger.setLevel(logging.INFO)
 
 def generate_items_logic(world: "PathOfExileWorld"):
+    """Main generation entry point. Determines goal act, selects boss targets,
+    builds the item/location pools, and culls items if locations are scarce."""
 
-       # # Clear performance cache for fresh generation
-       # from . import Rules as poeRules
-       # poeRules.clear_item_cache()
-        
-        opt: PathOfExileOptions = world.options
-        world.goal_act = get_goal_act(world, opt)
+    opt: PathOfExileOptions = world.options
+    world.goal_act = get_goal_act(world, opt)
 
-        if opt.goal.value == opt.goal.option_defeat_bosses:
-            if opt.bosses_available.value is None or len(opt.bosses_available.value) == 0:
-                opt.bosses_available.value = list(Locations.bosses.keys())
+    if opt.goal.value == opt.goal.option_defeat_bosses:
+        if opt.bosses_available.value is None or len(opt.bosses_available.value) == 0:
+            opt.bosses_available.value = list(Locations.bosses.keys())
 
-            bosses_to_kill = min(opt.number_of_bosses, len(Locations.bosses), len(opt.bosses_available.value))
+        bosses_to_kill = min(opt.number_of_bosses, len(Locations.bosses), len(opt.bosses_available.value))
+        world.bosses_for_goal = world.random.sample(sorted(opt.bosses_available.value), bosses_to_kill)
 
-            world.bosses_for_goal = world.random.sample(sorted(opt.bosses_available.value), bosses_to_kill)
+    setup_early_items(world)
 
-        setup_early_items(world)
+    # Downgrade non-essential gems to "useful" so the filler algorithm can skip them.
+    # Gear deprioritization is disabled — it caused generation failures.
+    world.items_to_place = deprioritize_non_logic_gems(world, world.items_to_place)
 
-        world.items_to_place = deprioritize_non_logic_gems(world, world.items_to_place)
-        # world.items_to_place = deprioritize_non_logic_gear(world, world.items_to_place) # this can lead to some generation issues, so not doing it for now.
+    world.total_items_to_place_count = sum(item.get("count", 1) for item in world.items_to_place.values())
+    world.locations_to_place = poeRules.SelectLocationsToAdd(world=world, target_amount=world.total_items_to_place_count)
 
+    # Universal Tracker needs every location present regardless of count balance.
+    fake_generation = hasattr(world.multiworld, "generation_is_fake")
+    if fake_generation:
+        logger.debug(f"Generating with all locations, seeing generation_is_fake")
+        world.locations_to_place = list(Locations.full_locations.values())
+        world.bosses_for_goal = list(Locations.bosses.keys())
+
+    table_total_item_count = sum(item.get("count", 1) for item in Items.item_table.values())
+    if len(world.locations_to_place) < world.total_items_to_place_count:
+        logger.debug(
+            f"[POE]: Not enough locations to place all items! locations: {len(world.locations_to_place)} < items: {table_total_item_count}\nCulling...")
         world.total_items_to_place_count = sum(item.get("count", 1) for item in world.items_to_place.values())
-        world.locations_to_place = poeRules.SelectLocationsToAdd(world=world, target_amount=world.total_items_to_place_count)
+        logger.debug(
+            f"[POE]: total items to place before culling: {world.total_items_to_place_count} / {table_total_item_count} possible")
+        world.items_to_place = cull_items_to_place(world, world.items_to_place, world.locations_to_place)
+        world.total_items_to_place_count = sum(item.get("count", 1) for item in world.items_to_place.values())
+        logger.debug(
+            f"[POE]: total items to place after  culling: {world.total_items_to_place_count} / {table_total_item_count} possible")
 
-        fake_generation = hasattr(world.multiworld, "generation_is_fake")
-        if fake_generation:  # This is to add support for Universal Tracker
-            logger.debug(f"Generating with all locations, seeing generation_is_fake")
-            world.locations_to_place: list[Locations.LocationDict] = list(Locations.full_locations.values())
-            world.bosses_for_goal = list(Locations.bosses.keys())
-
-        table_total_item_count = sum(item.get("count", 1) for item in Items.item_table.values())
-        if len(world.locations_to_place) <  world.total_items_to_place_count:
-            logger.debug(
-                f"[POE]: Not enough locations to place all items! locations: {len(world.locations_to_place)} < items: {table_total_item_count}\nCulling...")
-            world.total_items_to_place_count = sum(item.get("count", 1) for item in world.items_to_place.values())
-            logger.debug(
-                f"[POE]: total items to place before culling: {world.total_items_to_place_count} / {table_total_item_count} possible")
-            world.items_to_place = cull_items_to_place(world, world.items_to_place, world.locations_to_place)
-            world.total_items_to_place_count = sum(item.get("count", 1) for item in world.items_to_place.values())
-            logger.debug(
-                f"[POE]: total items to place after  culling: {world.total_items_to_place_count} / {table_total_item_count} possible")
-
-
-        table_total_item_count = sum(item.get("count", 1) for item in Items.item_table.values())
-        logger.debug(f"[POE]: total items to place: {world.total_items_to_place_count} / {table_total_item_count} possible")
-        logger.debug(f"[POE]: total locs in world.: {len(world.locations_to_place)} / {len(Locations.full_locations)} possible")
-
-
+    table_total_item_count = sum(item.get("count", 1) for item in Items.item_table.values())
+    logger.debug(f"[POE]: total items to place: {world.total_items_to_place_count} / {table_total_item_count} possible")
+    logger.debug(f"[POE]: total locs in world.: {len(world.locations_to_place)} / {len(Locations.full_locations)} possible")
 
 
 def setup_early_items(world: "PathOfExileWorld"):
+    """Configure the item pool before location selection.
+
+    Handles (in order):
+      - Starting character gear/gems pre-collection
+      - Gucci Hobo mode (all uniques become progression; non-uniques may be stripped)
+      - Passive skill point count scaling to goal act
+      - Gem level filtering (gems above max monster level for goal act are removed)
+      - Gear unlock options (pre-collect gear categories that start unlocked)
+      - Flask/link/gem pool inclusion options
+      - Progressive vs random gear cleanup
+      - Tracking placed counts used later by Rules
+    """
     options: PathOfExileOptions = world.options
     setup_character_items(world)
     max_level = Locations.acts[world.goal_act]["maxMonsterLevel"]
 
+    # --- Gucci Hobo mode: all unique items become progression ---
     if options.gucci_hobo_mode.value != options.gucci_hobo_mode.option_disabled:
         uniques = [item for item in world.items_to_place.values() if
                    "Unique" in item["category"] and "Fishing Rod" not in item["category"]]
@@ -114,15 +123,17 @@ def setup_early_items(world: "PathOfExileWorld"):
         item = Items.get_by_name("Progressive passive point", world.items_to_place)
         if item:
             item["count"] = poeRules.passives_required_for_act[world.goal_act + 1]
+
+    # --- Remove gems whose required level exceeds the goal act's max monster level ---
     items_to_remove = {}
     gem_categories = {"MainSkillGem", "SupportGem", "UtilSkillGem"}
-    # remove gems that are too high level from item pool
     for item in world.items_to_place.values():
         if set(item["category"]).intersection(gem_categories) and item["reqLevel"] > max_level:
             items_to_remove[item["id"]] = item
-
     for item_id in items_to_remove:
         world.items_to_place.pop(item_id)
+
+    # --- Pre-collect gear categories that start unlocked based on gear_upgrades option ---
     # TODO: handle progressive gear unlocked.
     if options.gear_upgrades != options.gear_upgrades.option_no_gear_unlocked:
         categories = set()
@@ -143,6 +154,8 @@ def setup_early_items(world: "PathOfExileWorld"):
             item_objs = world.remove_and_create_items_by_itemdict(item)
             for item_obj in item_objs:
                 world.precollect(item_obj)
+
+    # --- Optional pools: flasks, max links, skill gems, support gems ---
     if options.add_flasks_to_item_pool.value == False:
         flask_slots = Items.get_flask_items(table=world.items_to_place)
         for item in flask_slots:
@@ -169,8 +182,10 @@ def setup_early_items(world: "PathOfExileWorld"):
             item_objs = world.remove_and_create_items_by_itemdict(item)
             for item_obj in item_objs:
                 world.precollect(item_obj)
+
     cleanup_gear_based_on_progressive_option(options, world)
 
+    # Track placed counts — Rules uses these to determine how many checks to gate on gear/gems.
     world.placed_total_gear_upgrades = min(len(Items.get_gear_items(table=world.items_to_place)),
                                            world.MAX_GUCCI_GEAR_UPGRADES)
     world.placed_total_flask_slots = min(len(Items.get_flask_items(table=world.items_to_place)),
@@ -184,6 +199,15 @@ def setup_early_items(world: "PathOfExileWorld"):
 
 
 def cleanup_gear_based_on_progressive_option(options, world):
+    """Remove whichever gear variant (random or progressive) is not needed.
+
+    Three modes:
+    - progressive enabled (no gucci): keep Progressive Gear, remove Random Gear
+    - progressive_except_for_unique: keep Random Gear for uniques only; reduce
+      Progressive Gear counts by 1 (weapon) or 5 (flask) to leave room for a
+      single "real" gear drop
+    - else (disabled or gucci_hobo active): keep Random Gear, remove Progressive Gear
+    """
     gucci_mode = not (options.gucci_hobo_mode.value == options.gucci_hobo_mode.option_disabled)
 
     if options.progressive_gear.value == options.progressive_gear.option_enabled and not gucci_mode:
@@ -208,6 +232,15 @@ def cleanup_gear_based_on_progressive_option(options, world):
 
 
 def setup_character_items(world: "PathOfExileWorld"):
+    """Pre-collect starting character and associated gear/gems based on options.
+
+    Steps:
+    1. Pre-collect the chosen character class item (removes it from the pool).
+    2. Optionally pre-collect starting weapon + link slot, gems, or flask slots.
+    3. Remove other character class items if multi-character unlock is disabled.
+    4. Sample ascendancy items (max 2 for Scion, 3 for others) if goal >= act 3,
+       then strip all un-selected ascendancies from the pool.
+    """
     options: PathOfExileOptions = world.options
 
     def handle_starting_character(char):
@@ -217,6 +250,7 @@ def setup_character_items(world: "PathOfExileWorld"):
         if options.usable_starting_gear.value in \
                 (options.usable_starting_gear.option_starting_weapon_flask_and_gems,
                  options.usable_starting_gear.option_starting_weapon_and_gems,
+                 options.usable_starting_gear.option_starting_weapon_and_flask_slots,
                  options.usable_starting_gear.option_starting_weapon):
             weapon_name = ItemTable.starting_items_table[char]["weapon"]
             if not options.progressive_gear.value == options.progressive_gear.option_disabled:
@@ -226,6 +260,7 @@ def setup_character_items(world: "PathOfExileWorld"):
             if weapon_name in [item["name"] for item in world.items_to_place.values()]:
                 world.precollect(world.remove_and_create_item_by_name(weapon_name))
 
+            # Also pre-collect the first weapon link slot so the starting weapon is usable
             count = world.multiworld.state.count("Progressive max links - Weapon", world.player)
             if count < 1:
                 link = [i for i in Items.get_max_links_items(table=world.items_to_place) if
@@ -246,20 +281,18 @@ def setup_character_items(world: "PathOfExileWorld"):
                 (options.usable_starting_gear.option_starting_weapon_flask_and_gems,
                  options.usable_starting_gear.option_starting_weapon_and_flask_slots):
             if options.progressive_gear.value == options.progressive_gear.option_disabled:
-                # Get all normal flask items from the main table, this will probably just be 1, with a count
+                # Non-progressive mode uses individual normal flask items with a count field
                 normal_flasks = Items.get_by_has_every_category({"Flask", "Normal"})
                 normal_flask_ids = {flask["id"] for flask in normal_flasks}
                 total_normal_flask_count = sum(
                     item.get("count", 1) for item in world.items_to_place.values() if item["id"] in normal_flask_ids)
-                # Count how many normal flasks are already collected
                 collected_normal_flask_count = sum(
                     1 for item_obj in world.items_procollected.values() if item_obj.code in normal_flask_ids)
 
-                # add flasks
                 flasks_needed = STARTING_FLASK_SLOTS - collected_normal_flask_count
                 if flasks_needed > 0:
                     normal_progressive_flask = Items.get_by_has_every_category({"Flask", "Normal"},
-                                                                               table=world.items_to_place)  # should only be 1 item
+                                                                               table=world.items_to_place)
                     total_normal_flask_count = normal_progressive_flask[0].get("count", 1)
                     for i in range(min(flasks_needed, total_normal_flask_count)):
                         item_obj = Items.PathOfExileItem(
@@ -273,6 +306,7 @@ def setup_character_items(world: "PathOfExileWorld"):
                     if normal_progressive_flask[0]["count"] <= 0:
                         world.items_to_place.pop(normal_progressive_flask[0]["id"], None)
             else:
+                # Progressive mode: grant 3 "Progressive Flask Unlock" items
                 for i in range(STARTING_FLASK_SLOTS):
                     world.precollect(world.create_item("Progressive Flask Unlock"))
         return char
@@ -292,7 +326,8 @@ def setup_character_items(world: "PathOfExileWorld"):
         starting_character = handle_starting_character("Witch")
     if options.starting_character.value == options.starting_character.option_templar:
         starting_character = handle_starting_character("Templar")
-    # remove other character class items, if not allowed
+
+    # Strip other character class items when multi-character unlock is off
     if not options.allow_unlock_of_other_characters.value:
         character_items = Items.get_base_class_items(world.items_to_place)
         for character_item in character_items:
@@ -305,6 +340,7 @@ def setup_character_items(world: "PathOfExileWorld"):
                     "Scion"] if options.allow_unlock_of_other_characters.value else [starting_character]
     if world.goal_act >= 3:
         for char_class in char_classes:
+            # Scion has only 2 ascendancy paths so cap at 2; others have 3 paths
             sample_size = max(min(2 if char_class == "Scion" else 3, options.ascendancies_available_per_class.value), 0)
             logger.debug(
                 f"{sample_size} Adding ascendancy items for {char_class}. "
@@ -316,15 +352,16 @@ def setup_character_items(world: "PathOfExileWorld"):
             for item in items:
                 temp_items_to_place[item["id"]] = item
 
-    # remove all the other ascendancy items
+    # Remove all ascendancy items then re-add only the sampled ones
     for item in Items.get_ascendancy_items(table=world.items_to_place):
         item_id = world.item_name_to_id[item["name"]]
         world.items_to_place.pop(item_id, None)
-    # add the temp items to place back to the items to place
     for item_id, item_obj in temp_items_to_place.items():
         world.items_to_place[item_id] = item_obj
 
 def get_goal_act(world, opt) -> int:
+    """Map the goal option to the corresponding act number (1–11).
+    Act 11 is returned for unknown/modded goals (treated as "beyond campaign")."""
     if opt.goal.value == opt.goal.option_complete_act_1: return 1
     elif opt.goal.value == opt.goal.option_complete_act_2: return 2
     elif opt.goal.value == opt.goal.option_complete_act_3: return 3
@@ -339,16 +376,26 @@ def get_goal_act(world, opt) -> int:
 
 def deprioritize_non_logic_gems(world: "PathOfExileWorld",
                                 table: Dict[int, Items.ItemDict]) -> Dict[int, Items.ItemDict]:
+    """Select a logic-relevant subset of gems and downgrade the rest to 'useful'.
+
+    Selection strategy per act:
+    - Act 0 (start): sample ACT_0_USABLE_GEMS level-1 main gems + ACT_1_MOVEMENT_GEMS movement gems
+    - Acts 1–goal: for each act, sample up to skill_gems_per_act main gems,
+      support_gems_per_act support gems, and skill_gems_per_act utility gems
+      (filtered to gems usable at that act's max monster level)
+
+    Gems not selected remain in the pool as 'useful' so they can still appear
+    as non-blocking checks — they are never fully removed here.
+    """
     opt: PathOfExileOptions = world.options
 
-    # Early exit if no gems are in the table (e.g., when gems are disabled)
     all_gems = Items.get_all_gems(table)
     if not all_gems:
         return table
 
     still_required_gem_ids = set()
 
-    # act 0 starter gems
+    # Act 0 starter gems
     selected_gems = []  # a list, we may have duplicates, but that's fine
     lvl_1_gems = [item for item in Items.get_main_skill_gem_items(table) if item["reqLevel"] == 1]
     movement_gems = [item for item in Items.get_by_has_every_category({"EarlyMovement"})]
@@ -379,6 +426,7 @@ def deprioritize_non_logic_gems(world: "PathOfExileWorld",
 
     still_required_gem_ids.update(item["id"] for item in selected_gems)
 
+    # Selected gems stay progression; unselected progression gems become useful
     for item in table.values():
         if "MainSkillGem" in item["category"] \
                 or "SupportGem" in item["category"] \
@@ -389,60 +437,74 @@ def deprioritize_non_logic_gems(world: "PathOfExileWorld",
             else:
                 if item["classification"] == ItemClassification.progression:
                     item["classification"] = ItemClassification.useful
-    #                elif item["classification"] == ItemClassification.useful:
-    #                    item["classification"] = ItemClassification.filler
     return table
 
 
-def deprioritize_non_logic_gear(world: "PathOfExileWorld",
-                                table: Dict[int, Items.ItemDict]) -> Dict[int, Items.ItemDict]:
-    opt: PathOfExileOptions = world.options
-
-    # If gear upgrades are disabled, don't try to deprioritize any gear, flask are already progressive.
-    if opt.gear_upgrades.value == opt.gear_upgrades.option_all_gear_unlocked_at_start:
-        return table
-
-    required_categories = list()
-    progression_main_gems = [gem for gem in Items.get_main_skill_gem_items(table) if
-                             gem["classification"] == ItemClassification.progression]
-    for gem in progression_main_gems:
-        if gem.get("reqToUse"):
-            required_categories.append(random.choice(gem.get("reqToUse")))
-
-    required_categories = world.random.sample(required_categories,
-                                              k=min(Items.ACT_0_WEAPON_TYPES, len(required_categories)))
-    if "Unarmed" in required_categories: required_categories.remove("Unarmed")
-    required_categories.extend(["Wand", "Bow", "Sword"])
-    required_categories = required_categories[
-                          :Items.ACT_0_WEAPON_TYPES]  # Ensure we only keep the guaranteed number of weapons
-
-    required_armor_ids = [i['id'] for i in world.random.sample(Items.get_armor_items(table),
-                                                               k=min(Items.ACT_0_ARMOUR_TYPES,
-                                                                     len(Items.get_armor_items(table))))]
-    gear_ids = [item["id"] for item in Items.get_gear_items(table)]
-    progression_sample_size = min(opt.gear_upgrades_per_act.value * world.goal_act, len(gear_ids))
-    progression_gear_ids = world.random.sample(gear_ids, progression_sample_size)
-
-    required_categories.append("Flask")  # Flasks are always progression
-    for item in [item for item in Items.get_gear_items(table)]:
-        if (any(cat in item["category"] for cat in required_categories)
-                or item["id"] in required_armor_ids
-                or item["id"] in progression_gear_ids):
-            item["classification"] = ItemClassification.progression
-        else:
-            if item["classification"] == ItemClassification.progression:
-                item["classification"] = ItemClassification.useful
-    #           elif item["classification"] == ItemClassification.useful:
-    #               item["classification"] = ItemClassification.filler
-
-    return table
-
+#def deprioritize_non_logic_gear(world: "PathOfExileWorld",
+#                                table: Dict[int, Items.ItemDict]) -> Dict[int, Items.ItemDict]:
+#    """Select logic-relevant gear and downgrade the rest to 'useful'.
+#
+#    NOTE: Currently unused — calling this caused generation failures. Left for
+#    future reference. See generate_items_logic for the commented-out call site.
+#
+#    Strategy:
+#    - Derive required weapon categories from progression gems' reqToUse fields
+#    - Sample a fixed number of armour types
+#    - Mark a subset of gear items progression proportional to goal act length
+#    - Flasks are always progression
+#    """
+#    opt: PathOfExileOptions = world.options
+#
+#    if opt.gear_upgrades.value == opt.gear_upgrades.option_all_gear_unlocked_at_start:
+#        return table
+#
+#    required_categories = list()
+#    progression_main_gems = [gem for gem in Items.get_main_skill_gem_items(table) if
+#                             gem["classification"] == ItemClassification.progression]
+#    for gem in progression_main_gems:
+#        if gem.get("reqToUse"):
+#            required_categories.append(random.choice(gem.get("reqToUse")))
+#
+#    required_categories = world.random.sample(required_categories,
+#                                              k=min(Items.ACT_0_WEAPON_TYPES, len(required_categories)))
+#    if "Unarmed" in required_categories: required_categories.remove("Unarmed")
+#    required_categories.extend(["Wand", "Bow", "Sword"])
+#    required_categories = required_categories[:Items.ACT_0_WEAPON_TYPES]
+#
+#    required_armor_ids = [i['id'] for i in world.random.sample(Items.get_armor_items(table),
+#                                                               k=min(Items.ACT_0_ARMOUR_TYPES,
+#                                                                     len(Items.get_armor_items(table))))]
+#    gear_ids = [item["id"] for item in Items.get_gear_items(table)]
+#    progression_sample_size = min(opt.gear_upgrades_per_act.value * world.goal_act, len(gear_ids))
+#    progression_gear_ids = world.random.sample(gear_ids, progression_sample_size)
+#
+#    required_categories.append("Flask")  # Flasks are always progression
+#    for item in [item for item in Items.get_gear_items(table)]:
+#        if (any(cat in item["category"] for cat in required_categories)
+#                or item["id"] in required_armor_ids
+#                or item["id"] in progression_gear_ids):
+#            item["classification"] = ItemClassification.progression
+#        else:
+#            if item["classification"] == ItemClassification.progression:
+#                item["classification"] = ItemClassification.useful
+#
+#    return table
+#
 
 def cull_items_to_place(world: "PathOfExileWorld", items: Dict[int, Items.ItemDict],
                         locations: Dict[int, Items.ItemDict]) -> Dict[int, Items.ItemDict]:
+    """Remove items until item count matches available location count.
+
+    Priority: remove filler items first, then useful items. Progression items
+    are never culled. Within each tier, items are shuffled randomly before
+    culling so no single item type is always preferred.
+
+    If item count still exceeds locations after culling all non-progression
+    items (shouldn't happen in normal generation), randomly pre-collects the
+    excess to avoid a generation crash.
+    """
     total_locations_count = len(locations)
 
-    # Keep culling until we match the location count
     while True:
         total_items_count = sum(item.get("count", 1) for item in items.values())
         amount_to_cull = total_items_count - total_locations_count
@@ -470,6 +532,8 @@ def cull_items_to_place(world: "PathOfExileWorld", items: Dict[int, Items.ItemDi
         culled_count = 0
 
         def cull_item_func(cull_items, culled_count=0, amount_to_cull=amount_to_cull):
+            """Remove or reduce items from `items` (captured by closure) until
+            amount_to_cull is reached. Returns the number actually culled."""
             starting_culled_count = culled_count
             items_to_remove = []
 

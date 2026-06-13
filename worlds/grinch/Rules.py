@@ -539,6 +539,7 @@ rules_dict: dict[str, list[list[str]]] = {
             grinch_items.level_items.WL_SCOUT_CLOTHES,
             grinch_items.moves.SNEAK,
             grinch_items.moves.PANCAKE,
+            grinch_items.level_items.WL_HOOK,
         ],
     ],
     # Whoville Blueprints
@@ -1197,11 +1198,11 @@ rules_dict: dict[str, list[list[str]]] = {
     "Bike Race - Top 2": [[]],
     "Bike Race - Top 3": [[]],
     # Intro
-    "MC - Collect Key in Boxes": [
-        [
-            grinch_items.moves.PANCAKE,
-        ],
-    ],
+    # "MC - Collect Key in Boxes": [
+    #     [
+    #         grinch_items.moves.PANCAKE,
+    #     ],
+    # ],
     "MC - 1st Crate Squashed": [
         [
             grinch_items.moves.PANCAKE,
@@ -1231,27 +1232,27 @@ rules_dict: dict[str, list[list[str]]] = {
     "MC - I hate Whos!": [[]],
     "MC - I hate Christmas!": [[]],
     "MC - My heart is like a pea!": [[]],
-    "MC - Move Boulder": [
-        [
-            grinch_items.moves.PANCAKE,
-            grinch_items.moves.SEIZE,
-        ],
-    ],
-    "MC - Collect Max Door Key": [
-        [
-            grinch_items.moves.PANCAKE,
-            grinch_items.moves.SEIZE,
-            grinch_items.moves.MAX,
-        ],
-    ],
-    "MC - Open Door with Breath Analyzer": [
-        [
-            grinch_items.moves.PANCAKE,
-            grinch_items.moves.SEIZE,
-            grinch_items.moves.MAX,
-            grinch_items.moves.BAD_BREATH,
-        ],
-    ],
+    # "MC - Move Boulder": [
+    #     [
+    #         grinch_items.moves.PANCAKE,
+    #         grinch_items.moves.SEIZE,
+    #     ],
+    # ],
+    # "MC - Collect Max Door Key": [
+    #     [
+    #         grinch_items.moves.PANCAKE,
+    #         grinch_items.moves.SEIZE,
+    #         grinch_items.moves.MAX,
+    #     ],
+    # ],
+    # "MC - Open Door with Breath Analyzer": [
+    #     [
+    #         grinch_items.moves.PANCAKE,
+    #         grinch_items.moves.SEIZE,
+    #         grinch_items.moves.MAX,
+    #         grinch_items.moves.BAD_BREATH,
+    #     ],
+    # ],
     "WV - Smashing Snowmen - Next to Vacuum Tube": [
         [
             grinch_items.moves.PANCAKE,
@@ -2730,6 +2731,7 @@ rules_dict: dict[str, list[list[str]]] = {
         ],
         [
             grinch_items.gadgets.ROTTEN_EGG_LAUNCHER,
+            grinch_items.gadgets.ROCKET_SPRING,
             grinch_items.gadgets.GRINCH_COPTER,
             grinch_items.moves.PANCAKE,
             grinch_items.moves.SEIZE,
@@ -3009,6 +3011,11 @@ rules_dict: dict[str, list[list[str]]] = {
     "WL - Mayor's Villa - Rope": [
         [
             grinch_items.moves.MAX,
+            grinch_items.gadgets.GRINCH_COPTER,
+        ],
+        [
+            grinch_items.moves.MAX,
+            grinch_items.gadgets.ROCKET_SPRING,
         ],
     ],
     "WL - Mayor's Villa - Hook": [
@@ -3016,6 +3023,59 @@ rules_dict: dict[str, list[list[str]]] = {
             grinch_items.moves.BAD_BREATH,
             grinch_items.gadgets.GRINCH_COPTER,
             grinch_items.gadgets.ROTTEN_EGG_LAUNCHER,
+        ],
+    ],
+    "WL - Mayor's Villa - Hooking The Mayor's Bed To The Motorboat - Scarf on Scout near Pier": [
+        [
+            grinch_items.gadgets.GRINCH_COPTER,
+            grinch_items.moves.BAD_BREATH,
+        ],
+        [
+            grinch_items.gadgets.ROTTEN_EGG_LAUNCHER,
+            grinch_items.gadgets.ROCKET_SPRING,
+            grinch_items.moves.PANCAKE,
+            grinch_items.moves.BAD_BREATH,
+        ],
+    ],
+    "WL - Mayor's Villa - Hooking The Mayor's Bed To The Motorboat - Scarf on Scout beside Tree Stump": [
+        [
+            grinch_items.gadgets.GRINCH_COPTER,
+            grinch_items.gadgets.ROTTEN_EGG_LAUNCHER,
+        ],
+        [
+            grinch_items.gadgets.ROTTEN_EGG_LAUNCHER,
+            grinch_items.gadgets.ROCKET_SPRING,
+            grinch_items.moves.PANCAKE,
+        ],
+    ],
+    "WL - Mayor's Villa - Hooking The Mayor's Bed To The Motorboat - Scarf on Scout above Villa": [
+        [
+            grinch_items.gadgets.GRINCH_COPTER,
+            grinch_items.moves.BAD_BREATH,
+            grinch_items.gadgets.ROTTEN_EGG_LAUNCHER,
+        ],
+        [
+            grinch_items.gadgets.GRINCH_COPTER,
+            grinch_items.moves.BAD_BREATH,
+            grinch_items.gadgets.SLIME_SHOOTER,
+        ],
+    ],
+    "WL - Mayor's Villa - Hooking The Mayor's Bed To The Motorboat - Scarf on Flying Scout": [
+        [
+            grinch_items.gadgets.GRINCH_COPTER,
+            grinch_items.moves.BAD_BREATH,
+        ],
+    ],
+    "WL - Mayor's Villa - Hooking The Mayor's Bed To The Motorboat - Scarf on Scout near Pirate Cave": [
+        [
+            grinch_items.gadgets.GRINCH_COPTER,
+            grinch_items.moves.BAD_BREATH,
+        ],
+        [
+            grinch_items.gadgets.ROTTEN_EGG_LAUNCHER,
+            grinch_items.gadgets.ROCKET_SPRING,
+            grinch_items.moves.PANCAKE,
+            grinch_items.moves.BAD_BREATH,
         ],
     ],
     # "Green Present": [

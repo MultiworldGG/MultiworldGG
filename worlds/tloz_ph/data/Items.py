@@ -1,6 +1,7 @@
 from BaseClasses import ItemClassification
 from ..Subclasses import PHItem
 from .Addresses import *
+from .Constants import TREASURE_MAPS
 
 """backwards-compatible fallback for AP v0.6.2 and prior
 Code idea from @eternalcode0s minish cap implementation
@@ -48,6 +49,7 @@ ITEMS_DATA = {
         "model": 0x3,
         "ghost_model": True,  # gives the item manually
         "model_reset": True,  # Removes what the model gives. Having both solves the progressive problem
+        "item_groups": ["Equipment", "Swords"]
     },
     "Oshus' Sword": {
         "classification": ItemClassification.progression,
@@ -56,7 +58,8 @@ ITEMS_DATA = {
         "ammo_address": PHAddr.sword_count,  # used to remove sword model
         "set_bit": [(PHAddr.sword_count, 1)],
         "id": 2,
-        "model": 0x3
+        "model": 0x3,
+        "item_groups": ["Equipment", "Swords"]
     },
     "Phantom Sword": {
         "classification": ItemClassification.progression,
@@ -66,6 +69,7 @@ ITEMS_DATA = {
         "model": 0x3,
         "ghost_model": True,
         "model_reset": True,
+        "item_groups": ["Equipment", "Swords", "Upgrades"]
     },
     "Shield": {
         "classification": ItemClassification.progression,
@@ -73,6 +77,7 @@ ITEMS_DATA = {
         "value": 0x2,
         "id": 4,
         "model": 0x4,
+        "item_groups": ["Equipment", "Consumables"]
     },
     "Boomerang": {
         "classification": ItemClassification.progression,
@@ -82,6 +87,7 @@ ITEMS_DATA = {
         "id": 5,
         "inventory_id": 2,
         "model": 0xC,
+        "item_groups": ["Equipment", "Tools", "Items Without Ammo"]
     },
     "Bombs (Progressive)": {
         "classification": ItemClassification.progression,
@@ -95,7 +101,8 @@ ITEMS_DATA = {
         "model": 0x29,
         "vanilla_model": [0x29, 0x7],
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Equipment", "Tools", "Bombs", "Items With Ammo", "Bomb Bag", "Upgrades"]
     },
     "Bombchus (Progressive)": {
         "classification": ItemClassification.progression,
@@ -109,7 +116,8 @@ ITEMS_DATA = {
         "model": 0x2a,
         "vanilla_model": [0x2a, 0xE],
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Equipment", "Tools", "Bombchus", "Items With Ammo", "Bombchu Bag", "Upgrades"]
     },
     "Bow (Progressive)": {
         "classification": ItemClassification.progression,
@@ -123,7 +131,8 @@ ITEMS_DATA = {
         "model": 0x28,
         "vanilla_model": [0x28, 0x8],
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Equipment", "Tools", "Bows", "Items With Ammo", "Quiver", "Upgrades"]
     },
     "Grappling Hook": {
         "classification": ItemClassification.progression,
@@ -133,6 +142,7 @@ ITEMS_DATA = {
         "id": 9,
         "inventory_id": 6,
         "model": 0x20,
+        "item_groups": ["Equipment", "Tools", "Grapple", "Items Without Ammo"],
     },
     "Shovel": {
         "classification": ItemClassification.progression,
@@ -142,6 +152,7 @@ ITEMS_DATA = {
         "id": 10,
         "inventory_id": 3,
         "model": 0xd,
+        "item_groups": ["Equipment", "Tools", "Spade", "Items Without Ammo"],
     },
     "Hammer": {
         "classification": ItemClassification.progression,
@@ -151,6 +162,7 @@ ITEMS_DATA = {
         "id": 11,
         "inventory_id": 8,
         "model": 0x1f,
+        "item_groups": ["Equipment", "Tools", "Items Without Ammo"],
     },
 
     # Spirits
@@ -161,6 +173,7 @@ ITEMS_DATA = {
         "model": 0x2d,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Spirit of Power", "Spirits", "SoP", "Upgrades"],
     },
     "Spirit of Wisdom (Progressive)": {
         "classification": ItemClassification.progression,
@@ -169,6 +182,7 @@ ITEMS_DATA = {
         "model": 0x2e,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Spirit of Wisdom", "Spirits", "SoW", "Upgrades"],
     },
     "Spirit of Courage (Progressive)": {
         "classification": ItemClassification.progression,
@@ -177,12 +191,14 @@ ITEMS_DATA = {
         "model": 0x2F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Spirit of Courage", "Spirits", "SoC", "Upgrades"],
     },
     "Spirit of Courage (White)": {  # Used to remove spirit from Temple of Courage
         "classification": ItemClassification.progression,
         "address": PHAddr.fairies_1,
         "value": 0x20,
         "id": 15,
+        "item_groups": ["Spirit of Courage", "Spirits", "SoC", "Technical Items"],
     },
 
     # Upgrades
@@ -195,6 +211,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 16,
         "model": 0xa,
+        "item_groups": ["Upgrades", "HC", "Hearts"],
     },
     "Phantom Hourglass": {
         "classification": ItemClassification.progression,
@@ -205,7 +222,8 @@ ITEMS_DATA = {
         "id": 17,
         "model": 0x78,
         "ghost_model": True,
-        "model_reset": "Sand of Hours (Small)"
+        "model_reset": "Sand of Hours (Small)",
+        "item_groups": ["Upgrades", "PH", "Hourglass", "Sand", "Time"],
     },
     "Sand of Hours (Boss)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -216,6 +234,7 @@ ITEMS_DATA = {
         "id": 18,
         "model": 0x78,
         "ghost_model": True,
+        "item_groups": ["Upgrades", "Sand", "Time", "Technical Items"],
     },
     "Sand of Hours (Small)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -226,6 +245,7 @@ ITEMS_DATA = {
         "id": 19,
         "model": 0x78,
         "ghost_model": True,
+        "item_groups": ["Upgrades", "Sand", "Time", "Technical Items"],
     },
     "Sand of Hours": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -236,7 +256,8 @@ ITEMS_DATA = {
         "id": 20,
         "model": 0x78,
         "ghost_model": True,
-        "model_reset": "Sand of Hours (Small)"
+        "model_reset": "Sand of Hours (Small)",
+        "item_groups": ["Upgrades", "Sand", "Time"],
     },
     "Swordsman's Scroll": {
         "classification": ItemClassification.useful,
@@ -244,6 +265,7 @@ ITEMS_DATA = {
         "value": 0x20,
         "id": 21,
         "model": 0x71,
+        "item_groups": ["Upgrades", "Scrolls"],
     },
 
     # Ship Items
@@ -254,7 +276,8 @@ ITEMS_DATA = {
         "id": 22,
         "model": 0x25,
         "ghost_model": True,
-        "blocked_scenes": [0x130B]
+        "blocked_scenes": [0x130B],
+        "item_groups": ["Ship Items"],
     },
     "Salvage Arm": {
         "classification": ItemClassification.progression,
@@ -263,7 +286,8 @@ ITEMS_DATA = {
         "id": 23,
         "model": 0x3D,
         "ghost_model": True,
-        "blocked_scenes": [0x130B]
+        "blocked_scenes": [0x130B],
+        "item_groups": ["Ship Items", "Salvage"],
     },
     "Fishing Rod": {
         "classification": ItemClassification.progression,
@@ -272,6 +296,7 @@ ITEMS_DATA = {
         "id": 24,
         "model": 0x24,
         "ghost_model": True,
+        "item_groups": ["Ship Items", "Fishing Items"],
     },
     "Big Catch Lure": {
         "classification": ItemClassification.progression,
@@ -280,6 +305,7 @@ ITEMS_DATA = {
         "id": 25,
         "model": 0x80,
         "ghost_model": True,
+        "item_groups": ["Ship Items", "Fishing Items"],
     },
     "Swordfish Shadows": {
         "classification": ItemClassification.progression,
@@ -290,7 +316,8 @@ ITEMS_DATA = {
         # "set_bit": [(PHAddr.adv_flags_39, 0x80)],
         "ghost_model": True,
         "model_reset": True,
-        "blocked_scenes": [0x1401]
+        "blocked_scenes": [0x1401],
+        "item_groups": ["Ship Items", "Fishing Items"],
     },
     "Cyclone Slate": {
         "classification": ItemClassification.progression,
@@ -299,6 +326,7 @@ ITEMS_DATA = {
         "id": 27,
         "model": 0x7F,
         "ghost_model": True,
+        "item_groups": ["Slate", "Ship Items", "Tablet"],
     },
 
     # Sea Charts
@@ -315,6 +343,7 @@ ITEMS_DATA = {
             "Ocean SW Spirit",
         ],
         "model": 0x13,
+        "item_groups": ["Sea Charts"],
     },
     "NW Sea Chart": {
         "classification": ItemClassification.progression,
@@ -329,6 +358,7 @@ ITEMS_DATA = {
             "Ocean NW Board Ghost Ship",
         ],
         "model": 0x14,
+        "item_groups": ["Sea Charts"],
     },
     "SE Sea Chart": {
         "classification": ItemClassification.progression,
@@ -343,6 +373,7 @@ ITEMS_DATA = {
             "Ocean SE Frost",
         ],
         "model": 0x15,
+        "item_groups": ["Sea Charts"],
     },
     "NE Sea Chart": {
         "classification": ItemClassification.progression,
@@ -355,6 +386,7 @@ ITEMS_DATA = {
             "Ocean NE Maze",
         ],
         "model": 0x16,
+        "item_groups": ["Sea Charts"],
     },
     # Spirit gems
     "Power Gem": {
@@ -363,7 +395,8 @@ ITEMS_DATA = {
         "value": 0x1,
         "tags": ["incremental"],
         "id": 32,
-        "model": 0x2D
+        "model": 0x2D,
+        "item_groups": ["Spirit Gems", "Single Spirit Gems", "Power Gems"],
     },
     "Wisdom Gem": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -371,7 +404,8 @@ ITEMS_DATA = {
         "value": 0x1,
         "tags": ["incremental"],
         "id": 33,
-        "model": 0x2E
+        "model": 0x2E,
+        "item_groups": ["Spirit Gems", "Single Spirit Gems", "Wisdom Gems"],
     },
     "Courage Gem": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -379,7 +413,8 @@ ITEMS_DATA = {
         "value": 0x1,
         "tags": ["incremental"],
         "id": 34,
-        "model": 0x2F
+        "model": 0x2F,
+        "item_groups": ["Spirit Gems", "Single Spirit Gems", "Courage Gems"],
     },
     "Power Gem Pack": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -389,7 +424,8 @@ ITEMS_DATA = {
         "id": 35,
         "model": 0x2D,
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Spirit Gems", "Spirit Gem Packs", "Power Gems"],
     },
     "Wisdom Gem Pack": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -399,7 +435,8 @@ ITEMS_DATA = {
         "id": 36,
         "model": 0x2E,
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Spirit Gems", "Spirit Gem Packs", "Wisdom Gems"],
     },
     "Courage Gem Pack": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -409,7 +446,8 @@ ITEMS_DATA = {
         "id": 37,
         "model": 0x2F,
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Spirit Gems", "Spirit Gem Packs", "Courage Gems"],
     },
 
     # Rupees and filler
@@ -421,6 +459,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 38,
         "model": 0x2,
+        "item_groups": ["Rupees", "Small Rupees", "Green Rupee"],
     },
     "Blue Rupee (5)": {
         "classification": ItemClassification.filler,
@@ -430,6 +469,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 39,
         "model": 0x18,
+        "item_groups": ["Rupees", "Small Rupees", "Blue Rupee"],
     },
     "Red Rupee (20)": {
         "classification": ItemClassification.filler,
@@ -439,6 +479,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 40,
         "model": 0x19,
+        "item_groups": ["Rupees", "Small Rupees", "Red Rupee"],
     },
     "Big Green Rupee (100)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -448,6 +489,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 41,
         "model": 0x9,
+        "item_groups": ["Rupees", "Big Rupees", "Big Green Rupee"],
     },
     "Big Red Rupee (200)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -457,6 +499,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 42,
         "model": 0x1a,
+        "item_groups": ["Rupees", "Big Rupees", "Big Red Rupee"],
     },
     "Gold Rupee (300)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -466,6 +509,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 43,
         "model": 0x1b,
+        "item_groups": ["Rupees", "Big Rupees", "Big Gold Rupee", "Gold Rupee"],
     },
     "Rupoor (-10)": {
         "classification": ItemClassification.trap,
@@ -475,6 +519,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 44,
         "model": 0x81,
+        "item_groups": ["Rupees", "Rupoors", "Rupoor"],
     },
     "Big Rupoor (-50)": {
         "classification": ItemClassification.trap,
@@ -484,6 +529,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 45,
         "model": 0x82,
+        "item_groups": ["Rupees", "Rupoors", "Big Rupoor"],
     },
     "Pre-Alpha Rupee (5000)": {
         "classification": ItemClassification.progression,
@@ -492,22 +538,26 @@ ITEMS_DATA = {
         "tags": ["incremental"],
         "size": 2,
         "id": 46,
+        "item_groups": ["Rupees", "Big Rupees","Technical Items"],
     },
     "Treasure": {
         "classification": ItemClassification.filler,
         "tags": ["incremental"],
         "id": 47,
-        "vanilla_model": [0x7D, 0x86]
+        "vanilla_model": [0x7D, 0x86],
+        "item_groups": ["Technical Items"],
     },
     "Ship Part": {
         "classification": ItemClassification.filler,
         "tags": ["ship_part"],
         "id": 48,
-        "vanilla_model": [0x7E, 0x85]
+        "vanilla_model": [0x7E, 0x85],
+        "item_groups": ["Technical Items"],
     },
     "Potion": {
         "classification": ItemClassification.filler,
         "id": 49,
+        "item_groups": ["Technical Items", "Potions"],
     },
     "Red Potion": {
         "classification": ItemClassification.filler,
@@ -515,6 +565,7 @@ ITEMS_DATA = {
         "id": 50,
         "overflow_item": "Big Green Rupee (100)",
         "model": 0x75,
+        "item_groups": ["Potions"],
     },
     "Purple Potion": {
         "classification": ItemClassification.filler,
@@ -522,6 +573,7 @@ ITEMS_DATA = {
         "id": 51,
         "overflow_item": "Big Green Rupee (100)",
         "model": 0x76,
+        "item_groups": ["Potions"],
     },
     "Yellow Potion": {
         "classification": ItemClassification.filler,
@@ -529,12 +581,14 @@ ITEMS_DATA = {
         "id": 52,
         "overflow_item": "Big Red Rupee (200)",
         "model": 0x77,
+        "item_groups": ["Potions"],
     },
     "Nothing!": {
         "classification": ItemClassification.filler,
         "dummy": True,
         "id": 53,
         "model": 0x0,
+        "item_groups": ["Technical Items", "Potions"],
     },
     "Refill: Bombs": {
         "classification": ItemClassification.filler,
@@ -543,7 +597,8 @@ ITEMS_DATA = {
         "refill": "Bombs (Progressive)",
         "id": 54,
         "model": 0x7,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Ammo Refills"],
     },
     "Refill: Arrows": {
         "classification": ItemClassification.filler,
@@ -552,7 +607,8 @@ ITEMS_DATA = {
         "refill": "Bow (Progressive)",
         "id": 55,
         "model": 0x8,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Ammo Refills"],
     },
     "Refill: Bombchus": {
         "classification": ItemClassification.filler,
@@ -561,7 +617,8 @@ ITEMS_DATA = {
         "refill": "Bombchus (Progressive)",
         "id": 56,
         "model": 0xE,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Ammo Refills"],
     },
     "Salvage Repair Kit": {
         "classification": ItemClassification.filler,
@@ -572,12 +629,14 @@ ITEMS_DATA = {
         "max": 0xFF,
         "model": 0x3D,
         "ghost_model": True,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Ammo Refills"],
     },
     "Refill: Health": {
         "classification": ItemClassification.filler,
         "value": "full_heal",
         "id": 193,
+        "item_groups": ["Ammo Refills"],
     },
 
     # Treasure
@@ -588,6 +647,7 @@ ITEMS_DATA = {
         "id": 58,
         "model": 0x30,
         "ghost_model": True,
+        "item_groups": ["Treasure Items"],
     },
     "Treasure: White Pearl Loop": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -596,6 +656,7 @@ ITEMS_DATA = {
         "id": 59,
         "model": 0x31,
         "ghost_model": True,
+        "item_groups": ["Treasure Items"],
     },
     "Treasure: Dark Pearl Loop": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -604,6 +665,7 @@ ITEMS_DATA = {
         "id": 60,
         "model": 0x32,
         "ghost_model": True,
+        "item_groups": ["Treasure Items"],
     },
     "Treasure: Zora Scale": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -612,6 +674,7 @@ ITEMS_DATA = {
         "id": 61,
         "model": 0x33,
         "ghost_model": True,
+        "item_groups": ["Treasure Items"],
     },
     "Treasure: Goron Amber": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -620,6 +683,7 @@ ITEMS_DATA = {
         "id": 62,
         "model": 0x34,
         "ghost_model": True,
+        "item_groups": ["Treasure Items"],
     },
     "Treasure: Ruto Crown": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -628,6 +692,7 @@ ITEMS_DATA = {
         "id": 63,
         "model": 0x35,
         "ghost_model": True,
+        "item_groups": ["Treasure Items"],
     },
     "Treasure: Helmaroc Plume": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -636,6 +701,7 @@ ITEMS_DATA = {
         "id": 64,
         "model": 0x36,
         "ghost_model": True,
+        "item_groups": ["Treasure Items"],
     },
     "Treasure: Regal Ring": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -644,6 +710,7 @@ ITEMS_DATA = {
         "id": 65,
         "model": 0x37,
         "ghost_model": True,
+        "item_groups": ["Treasure Items"],
     },
 
     # Salvage
@@ -656,6 +723,7 @@ ITEMS_DATA = {
         "model": 0x2F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Crests", "Treasure Maps", "Map 0"],
     },
     "Treasure Map #1 (Molida SW)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -663,7 +731,8 @@ ITEMS_DATA = {
         "value": 0x80,
         "id": 67,
         "hint_on_receive": ["Ocean SW Salvage #1 Molida SW"],
-        "model": 0x52
+        "model": 0x52,
+        "item_groups": ["Map 1"],
     },
     "Treasure Map #2 (Mercay NE)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -671,7 +740,8 @@ ITEMS_DATA = {
         "value": 0x10,
         "id": 68,
         "hint_on_receive": ["Ocean SW Salvage #2 Mercay NE"],
-        "model": 0x4F
+        "model": 0x4F,
+        "item_groups": ["Map 2"],
     },
     "Treasure Map #3 (Gusts SW)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -679,7 +749,8 @@ ITEMS_DATA = {
         "value": 0x20,
         "id": 69,
         "hint_on_receive": ["Ocean NW Salvage #3 Gusts SW"],
-        "model": 0x58
+        "model": 0x58,
+        "item_groups": ["Map 3"],
     },
     "Treasure Map #4 (Bannan SE)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -687,7 +758,8 @@ ITEMS_DATA = {
         "value": 0x80,
         "id": 70,
         "hint_on_receive": ["Ocean NW Salvage #4 Bannan SE"],
-        "model": 0x5a
+        "model": 0x5a,
+        "item_groups": ["Map 4"],
     },
     "Treasure Map #5 (Molida N)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -695,7 +767,8 @@ ITEMS_DATA = {
         "value": 0x40,
         "id": 71,
         "hint_on_receive": ["Ocean SW Salvage #5 Molida N"],
-        "model": 0x51
+        "model": 0x51,
+        "item_groups": ["Map 5"],
     },
     "Treasure Map #6 (Bannan W)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -703,7 +776,8 @@ ITEMS_DATA = {
         "value": 0x1,
         "id": 72,
         "hint_on_receive": ["Ocean NW Salvage #6 Bannan W"],
-        "model": 0x53
+        "model": 0x53,
+        "item_groups": ["Map 6"],
     },
     "Treasure Map #7 (Gusts E)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -711,7 +785,8 @@ ITEMS_DATA = {
         "value": 0x8,
         "id": 73,
         "hint_on_receive": ["Ocean NW Salvage #7 Gusts E"],
-        "model": 0x56
+        "model": 0x56,
+        "item_groups": ["Map 7"],
     },
     "Treasure Map #8 (Mercay SE)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -719,7 +794,8 @@ ITEMS_DATA = {
         "value": 0x8,
         "id": 74,
         "hint_on_receive": ["Ocean SW Salvage #8 Mercay SE"],
-        "model": 0x4E
+        "model": 0x4E,
+        "item_groups": ["Map 8"],
     },
     "Treasure Map #9 (Cannon W)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -728,7 +804,8 @@ ITEMS_DATA = {
         "id": 75,
         "hint_on_receive": ["Ocean SW Salvage #9 Cannon W"],
         "model": 0x4C,
-        "blocked_scenes": [0xb03]
+        "blocked_scenes": [0xb03],
+        "item_groups": ["Map 9"],
     },
     "Treasure Map #10 (Gusts SE)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -736,7 +813,8 @@ ITEMS_DATA = {
         "value": 0x10,
         "id": 76,
         "hint_on_receive": ["Ocean NW Salvage #10 Gusts SE"],
-        "model": 0x57
+        "model": 0x57,
+        "item_groups": ["Map 10"],
     },
     "Treasure Map #11 (Gusts N)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -744,7 +822,8 @@ ITEMS_DATA = {
         "value": 0x2,
         "id": 77,
         "hint_on_receive": ["Ocean NW Salvage #11 Gusts N"],
-        "model": 0x54
+        "model": 0x54,
+        "item_groups": ["Map 11"],
     },
     "Treasure Map #12 (Dee Ess N)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -752,7 +831,8 @@ ITEMS_DATA = {
         "value": 0x20,
         "id": 78,
         "hint_on_receive": ["Ocean SE Salvage #12 Dee Ess N"],
-        "model": 0x60
+        "model": 0x60,
+        "item_groups": ["Map 12"],
     },
     "Treasure Map #13 (Harrow E)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -760,7 +840,8 @@ ITEMS_DATA = {
         "value": 0x4,
         "id": 79,
         "hint_on_receive": ["Ocean SE Salvage #13 Harrow E"],
-        "model": 0x5d
+        "model": 0x5d,
+        "item_groups": ["Map 13"],
     },
     "Treasure Map #14 (Goron NW)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -769,7 +850,8 @@ ITEMS_DATA = {
         "id": 80,
         "hint_on_receive": ["Ocean SE Salvage #14 Goron NW"],
         "model": 0x5b,
-        "blocked_scenes": [0x1800]
+        "blocked_scenes": [0x1800],
+        "item_groups": ["Map 14"],
     },
     "Treasure Map #15 (Goron W)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -778,7 +860,8 @@ ITEMS_DATA = {
         "id": 81,
         "hint_on_receive": ["Ocean SE Salvage #15 Goron W"],
         "model": 0x5c,
-        "blocked_scenes": [0x1800]
+        "blocked_scenes": [0x1800],
+        "item_groups": ["Map 15"],
     },
     "Treasure Map #16 (Goron NE)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -786,7 +869,8 @@ ITEMS_DATA = {
         "value": 0x10,
         "id": 82,
         "hint_on_receive": ["Ocean SE Salvage #16 Goron NE"],
-        "model": 0x5f
+        "model": 0x5f,
+        "item_groups": ["Map 16"],
     },
     "Treasure Map #17 (Frost S)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -794,7 +878,8 @@ ITEMS_DATA = {
         "value": 0x40,
         "id": 83,
         "hint_on_receive": ["Ocean SE Salvage #17 Frost S"],
-        "model": 0x61
+        "model": 0x61,
+        "item_groups": ["Map 17"],
     },
     "Treasure Map #18 (Cannon S)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -802,7 +887,8 @@ ITEMS_DATA = {
         "value": 0x4,
         "id": 84,
         "hint_on_receive": ["Ocean SW Salvage #18 Cannon S"],
-        "model": 0x4D
+        "model": 0x4D,
+        "item_groups": ["Map 18"],
     },
     "Treasure Map #19 (Gusts NE)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -810,7 +896,8 @@ ITEMS_DATA = {
         "value": 0x4,
         "id": 85,
         "hint_on_receive": ["Ocean NW Salvage #19 Gusts NE"],
-        "model": 0x55
+        "model": 0x55,
+        "item_groups": ["Map 19"],
     },
     "Treasure Map #20 (Bannan E)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -818,7 +905,8 @@ ITEMS_DATA = {
         "value": 0x40,
         "id": 86,
         "hint_on_receive": ["Ocean NW Salvage #20 Bannan E"],
-        "model": 0x59
+        "model": 0x59,
+        "item_groups": ["Map 20"],
     },
     "Treasure Map #21 (Molida NW)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -826,8 +914,8 @@ ITEMS_DATA = {
         "value": 0x20,
         "id": 87,
         "hint_on_receive": ["Ocean SW Salvage #21 Molida NW"],
-        "model": 0x50
-
+        "model": 0x50,
+        "item_groups": ["Map 21"],
     },
     "Treasure Map #22 (Harrow S)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -836,7 +924,8 @@ ITEMS_DATA = {
         "id": 88,
         "hint_on_receive": ["Ocean SE Salvage #22 Harrow S"],
         "model": 0x5e,
-        "blocked_scenes": [0x1400]
+        "blocked_scenes": [0x1400],
+        "item_groups": ["Map 22"],
     },
     "Treasure Map #23 (Frost NW)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -844,7 +933,8 @@ ITEMS_DATA = {
         "value": 0x80,
         "id": 89,
         "hint_on_receive": ["Ocean SE Salvage #23 Frost NW"],
-        "model": 0x62
+        "model": 0x62,
+        "item_groups": ["Map 23"],
     },
     "Treasure Map #24 (Ruins W)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -852,7 +942,8 @@ ITEMS_DATA = {
         "value": 0x20,
         "id": 90,
         "hint_on_receive": ["Ocean NE Salvage #24 Ruins W"],
-        "model": 0x68
+        "model": 0x68,
+        "item_groups": ["Map 24"],
     },
     "Treasure Map #25 (Dead E)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -861,7 +952,8 @@ ITEMS_DATA = {
         "id": 91,
         "hint_on_receive": ["Ocean NE Salvage #25 Dead E"],
         "model": 0x65,
-        "blocked_scenes": [0x1800]
+        "blocked_scenes": [0x1800],
+        "item_groups": ["Map 25"],
     },
     "Treasure Map #26 (Ruins SW)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -870,7 +962,8 @@ ITEMS_DATA = {
         "id": 92,
         "hint_on_receive": ["Ocean NE Salvage #26 Ruins SW"],
         "model": 0x64,
-        "blocked_scenes": [0x1800]
+        "blocked_scenes": [0x1800],
+        "item_groups": ["Map 26"],
     },
     "Treasure Map #27 (Maze E)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -878,7 +971,8 @@ ITEMS_DATA = {
         "value": 0x8,
         "id": 93,
         "hint_on_receive": ["Ocean NE Salvage #27 Maze E"],
-        "model": 0x66
+        "model": 0x66,
+        "item_groups": ["Map 27"],
     },
     "Treasure Map #28 (Ruins NW)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -886,7 +980,8 @@ ITEMS_DATA = {
         "value": 0x1,
         "id": 94,
         "hint_on_receive": ["Ocean NE Salvage #28 Ruins NW"],
-        "model": 0x63
+        "model": 0x63,
+        "item_groups": ["Map 28"],
     },
     "Treasure Map #29 (Maze W)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -894,7 +989,8 @@ ITEMS_DATA = {
         "value": 0x10,
         "id": 95,
         "hint_on_receive": ["Ocean NE Salvage #29 Maze W"],
-        "model": 0x67
+        "model": 0x67,
+        "item_groups": ["Map 29"],
     },
     "Treasure Map #30 (Ruins S)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -902,7 +998,8 @@ ITEMS_DATA = {
         "value": 0x40,
         "id": 96,
         "hint_on_receive": ["Ocean NE Salvage #30 Ruins S"],
-        "model": 0x69
+        "model": 0x69,
+        "item_groups": ["Map 30"],
     },
     "Treasure Map #31 (Dead S)": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -910,7 +1007,8 @@ ITEMS_DATA = {
         "value": 0x80,
         "id": 97,
         "hint_on_receive": ["Ocean NE Salvage #31 Dead S"],
-        "model": 0x6a
+        "model": 0x6a,
+        "item_groups": ["Map 31"],
     },
 
     # Keys
@@ -923,6 +1021,7 @@ ITEMS_DATA = {
         "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
+        "item_groups": ["Small Keys", "Mountain Passage Keys", "Small Key MP"],
     },
     "Small Key (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -933,6 +1032,7 @@ ITEMS_DATA = {
         "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
+        "item_groups": ["Small Keys", "TotOK Keys", "Small Key TotOK"],
     },
     "Small Key (Temple of Fire)": {
         "classification": ItemClassification.progression,
@@ -943,6 +1043,7 @@ ITEMS_DATA = {
         "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
+        "item_groups": ["Small Keys", "Fire Temple Keys", "Small Key ToF"],
     },
     "Small Key (Temple of Wind)": {
         "classification": ItemClassification.progression,
@@ -953,6 +1054,7 @@ ITEMS_DATA = {
         "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
+        "item_groups": ["Small Keys", "Wind Temple Keys", "Small Key ToW"],
     },
     "Small Key (Temple of Courage)": {
         "classification": ItemClassification.progression,
@@ -963,6 +1065,7 @@ ITEMS_DATA = {
         "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
+        "item_groups": ["Small Keys", "Courage Temple Keys", "Small Key ToC"],
     },
     "Small Key (Temple of Ice)": {
         "classification": ItemClassification.progression,
@@ -973,6 +1076,7 @@ ITEMS_DATA = {
         "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
+        "item_groups": ["Small Keys", "Ice Temple Keys", "Small Key ToI"],
     },
     "Small Key (Mutoh's Temple)": {
         "classification": ItemClassification.progression,
@@ -983,6 +1087,7 @@ ITEMS_DATA = {
         "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
+        "item_groups": ["Small Keys", "Mutoh's Temple Keys", "Small Key MT"],
     },
     "Boss Key (Temple of Fire)": {
         "classification": ItemClassification.progression,
@@ -991,6 +1096,7 @@ ITEMS_DATA = {
         "tags": ["always_process"],
         "model": 0xf,
         "model_reset": True,
+        "item_groups": ["Boss Keys", "Big Keys", "Fire Temple Keys", "Boss Key ToF"],
     },
     "Boss Key (Temple of Wind)": {
         "classification": ItemClassification.progression,
@@ -999,6 +1105,7 @@ ITEMS_DATA = {
         "tags": ["always_process"],
         "model": 0xf,
         "model_reset": True,
+        "item_groups": ["Boss Keys", "Big Keys", "Wind Temple Keys", "Boss Key ToW"],
     },
     "Boss Key (Temple of Courage)": {
         "classification": ItemClassification.progression,
@@ -1007,6 +1114,7 @@ ITEMS_DATA = {
         "tags": ["always_process"],
         "model": 0xf,
         "model_reset": True,
+        "item_groups": ["Boss Keys", "Big Keys", "Courage Temple Keys", "Boss Key ToC"],
     },
     "Boss Key (Goron Temple)": {
         "classification": ItemClassification.progression,
@@ -1015,6 +1123,7 @@ ITEMS_DATA = {
         "tags": ["always_process"],
         "model": 0xf,
         "model_reset": True,
+        "item_groups": ["Boss Keys", "Big Keys", "Goron Temple Keys", "Boss Key GT"],
     },
     "Boss Key (Temple of Ice)": {
         "classification": ItemClassification.progression,
@@ -1023,6 +1132,7 @@ ITEMS_DATA = {
         "tags": ["always_process"],
         "model": 0xf,
         "model_reset": True,
+        "item_groups": ["Boss Keys", "Big Keys", "Ice Temple Keys", "Boss Key ToI"],
     },
     "Boss Key (Mutoh's Temple)": {
         "classification": ItemClassification.progression,
@@ -1031,6 +1141,7 @@ ITEMS_DATA = {
         "tags": ["always_process"],
         "model": 0xf,
         "model_reset": True,
+        "item_groups": ["Boss Keys", "Big Keys", "Mutoh's Temple Keys", "Boss Key MT"],
     },
     "Square Crystal (Temple of Courage)": {
         "classification": ItemClassification.progression,
@@ -1041,6 +1152,7 @@ ITEMS_DATA = {
                                      ("stage_flag", 0x80)]},
         "model": 0x21,
         "model_reset": True,
+        "item_groups": ["Regular Crystal Items", "Square Crystal Items", "Square Crystal ToC"],
     },
     "Square Pedestal North (Temple of Courage)": {
         "classification": ItemClassification.progression,
@@ -1050,6 +1162,8 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x1E00: [(PHAddr.toc_crystal_state, 0x10)]},
         "model": 0x21,
         "model_reset": True,
+        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal ToC"],
+
     },
     "Square Pedestal South (Temple of Courage)": {
         "classification": ItemClassification.progression,
@@ -1059,6 +1173,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x1E00: [("stage_flag", 0x80)]},
         "model": 0x21,
         "model_reset": True,
+        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal ToC"],
     },
     "Triangle Crystal (Ghost Ship)": {
         "classification": ItemClassification.progression,
@@ -1068,6 +1183,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x2900: [("stage_flag", [0, 8])]},
         "model": 0x23,
         "model_reset": True,
+        "item_groups": ["Regular Crystal Items", "Unique Crystal Items", "Triangle Crystal Items", "Triangle Crystal GS"],
     },
     "Round Crystal (Ghost Ship)": {
         "classification": ItemClassification.progression,
@@ -1077,6 +1193,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x2900: [("stage_flag", [0, 0, 0, 2])]},
         "model": 0x22,
         "model_reset": True,
+        "item_groups": ["Regular Crystal Items", "Unique Crystal Items", "Round Crystal Items", "Round Crystal GS"],
     },
     "Round Crystal (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1087,6 +1204,7 @@ ITEMS_DATA = {
                             0x250C: [(PHAddr.totok_b9_state, 0x4)]},
         "model": 0x22,
         "model_reset": True,
+        "item_groups": ["Regular Crystal Items", "Round Crystal Items", "Round Crystal TotOK"],
     },
     "Round Pedestal B8 (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1096,6 +1214,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250B: [(PHAddr.totok_b8_state, 0x2)]},
         "model": 0x22,
         "model_reset": True,
+        "item_groups": ["Unique Crystal Items", "Round Crystal Items", "Round Crystal TotOK"],
     },
     "Round Pedestal B9 (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1105,6 +1224,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250C: [(PHAddr.totok_b9_state, 0x4)]},
         "model": 0x22,
         "model_reset": True,
+        "item_groups": ["Unique Crystal Items", "Round Crystal Items", "Round Crystal TotOK"],
     },
     "Round Crystals": {
         "classification": ItemClassification.progression,
@@ -1116,6 +1236,7 @@ ITEMS_DATA = {
                             0x2900: [("stage_flag", [0, 0, 0, 2])]},
         "model": 0x22,
         "model_reset": True,
+        "item_groups": ["Global Crystal Items", "Round Crystal Items"],
     },
     "Triangle Crystal (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1126,6 +1247,7 @@ ITEMS_DATA = {
                             0x250C: [(PHAddr.totok_b9_state, 0x8)]},
         "model": 0x23,
         "model_reset": True,
+        "item_groups": ["Regular Crystal Items", "Triangle Crystal Items", "Triangle Crystal TotOK"],
     },
     "Triangle Pedestal B8 (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1135,6 +1257,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250B: [(PHAddr.totok_b8_state, 0x4)]},
         "model": 0x23,
         "model_reset": True,
+        "item_groups": ["Unique Crystal Items", "Triangle Crystal Items", "Triangle Crystal TotOK"],
     },
     "Triangle Pedestal B9 (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1144,6 +1267,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250C: [(PHAddr.totok_b9_state, 0x8)]},
         "model": 0x23,
         "model_reset": True,
+        "item_groups": ["Unique Crystal Items", "Triangle Crystal Items", "Triangle Crystal TotOK"],
     },
     "Triangle Crystals": {
         "classification": ItemClassification.progression,
@@ -1155,6 +1279,7 @@ ITEMS_DATA = {
                             0x2900: [("stage_flag", [0, 8])]},
         "model": 0x23,
         "model_reset": True,
+        "item_groups": ["Global Crystal Items", "Triangle Crystal Items"],
     },
     "Square Crystal (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1164,6 +1289,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250C: [(PHAddr.totok_b9_state, 0x22)]},
         "model": 0x21,
         "model_reset": True,
+        "item_groups": ["Regular Crystal Items", "Square Crystal Items", "Square Crystal TotOK"],
     },
     "Square Pedestal West (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1173,6 +1299,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250C: [(PHAddr.totok_b9_state, 0x20)]},
         "model": 0x21,
         "model_reset": True,
+        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal TotOK"],
     },
     "Square Pedestal Center (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1182,6 +1309,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250C: [(PHAddr.totok_b9_state, 0x2)]},
         "model": 0x21,
         "model_reset": True,
+        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal TotOK"],
     },
     "Square Crystals": {
         "classification": ItemClassification.progression,
@@ -1193,6 +1321,7 @@ ITEMS_DATA = {
                                      ("stage_flag", 0x80)]},
         "model": 0x21,
         "model_reset": True,
+        "item_groups": ["Global Crystal Items", "Square Crystal Items"],
     },
     "Force Gem (B3)": {
         "classification": ItemClassification.progression,
@@ -1203,6 +1332,7 @@ ITEMS_DATA = {
                                      (PHAddr.totok_b3_state_1, 0xF, {"count": 3})]},
         "model": 0x6,
         "model_reset": True,
+        "item_groups": ["Force Gem Items", "Unique Force Gems"],
     },
     "Force Gem (B12)": {
         "classification": ItemClassification.progression,
@@ -1215,6 +1345,7 @@ ITEMS_DATA = {
                                      (PHAddr.totok_b12_state, 0x4, {"count": 1})]},
         "model": 0x6,
         "model_reset": True,
+        "item_groups": ["Force Gem Items", "Unique Force Gems"],
     },
     "Force Gems": {
         "classification": ItemClassification.progression,
@@ -1226,6 +1357,7 @@ ITEMS_DATA = {
                                      (PHAddr.totok_b12_state_1, 0xF)]},
         "model": 0x6,
         "model_reset": True,
+        "item_groups": ["Force Gem Items", "Global Pedestal Items"],
     },
     "Triforce Crest": {
         "classification": ItemClassification.progression,
@@ -1233,6 +1365,7 @@ ITEMS_DATA = {
         "value": 0x2,
         "id": 119,
         "model": 0x1C,
+        "item_groups": ["Crests"],
     },
     "Sun Key": {
         "classification": ItemClassification.progression,
@@ -1240,6 +1373,7 @@ ITEMS_DATA = {
         "value": 0x40,
         "id": 120,
         "model": 0x26,
+        "item_groups": ["Collection Screen Keys"],
     },
     "Ghost Key": {
         "classification": ItemClassification.progression,
@@ -1247,6 +1381,7 @@ ITEMS_DATA = {
         "value": 0x8,
         "id": 121,
         "model": 0x38,
+        "item_groups": ["Collection Screen Keys"],
     },
     "King's Key": {
         "classification": ItemClassification.progression,
@@ -1254,6 +1389,7 @@ ITEMS_DATA = {
         "value": 0x4,
         "id": 122,
         "model": 0x2c,
+        "item_groups": ["Collection Screen Keys"],
     },
     "Regal Necklace": {
         "classification": ItemClassification.progression,
@@ -1262,6 +1398,7 @@ ITEMS_DATA = {
         "id": 123,
         "model": 0x3c,
         "ghost_model": True,
+        "item_groups": ["Collection Screen Keys"],
     },
 
     # Metals
@@ -1271,7 +1408,8 @@ ITEMS_DATA = {
         "value": 0x40,
         "id": 124,
         "model": 0x72,
-        "blocked_scenes": [0x100a]
+        "blocked_scenes": [0x100a],
+        "item_groups": ["Vanilla Metals"],
     },
     "Azurine": {
         "classification": ItemClassification.progression,
@@ -1279,6 +1417,7 @@ ITEMS_DATA = {
         "value": 0x20,
         "id": 125,
         "model": 0x73,
+        "item_groups": ["Vanilla Metals"],
     },
     "Aquanine": {
         "classification": ItemClassification.progression,
@@ -1286,216 +1425,247 @@ ITEMS_DATA = {
         "value": 0x80,
         "id": 126,
         "model": 0x74,
+        "item_groups": ["Vanilla Metals"],
     },
     "Rare Metal": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 127,
         "model": 0x74,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Technical Items"],
     },
     "Additional Rare Metal": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 128,
         "model": 0x74,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Metals"],
     },
     "Verdanine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 129,
         "model": 0x74,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Lavendine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 130,
         "model": 0x73,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Amberine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 131,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Vermilline": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 132,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Burgundine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 133,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Crystaline": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 134,
         "model": 0x73,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Carrotine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 135,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Olivine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 136,
         "model": 0x74,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Chartreusine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 137,
         "model": 0x74,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Violetine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 138,
         "model": 0x73,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Ceruline": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 139,
         "model": 0x73,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Fuchsianine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 140,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Saffrine": {  # oops duplicate
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 141,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Sepianine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 142,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Apricotine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 143,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Scarletine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 144,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Coraline": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 145,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Magentine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 146,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Cyanine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 147,
         "model": 0x73,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Mauvine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 148,
         "model": 0x73,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Indigorine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 149,
         "model": 0x73,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Junipine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 150,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Viridine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 151,
         "model": 0x74,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Limeinine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 152,
         "model": 0x74,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Mintine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 153,
         "model": 0x74,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Umberine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 154,
         "model": 0x74,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Lilacine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 155,
         "model": 0x73,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
     "Saffronine": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 156,
         "model": 0x72,
-        "model_reset": True
+        "model_reset": True,
+        "item_groups": ["Custom Metals"],
     },
 
     # Trade Quest
@@ -1506,7 +1676,8 @@ ITEMS_DATA = {
         "id": 157,
         "model": 0x3e,
         "ghost_model": True,
-        "blocked_scenes": [0x600]
+        "blocked_scenes": [0x600],
+        "item_groups": ["Trade Quest Items"],
     },
     "Kaleidoscope": {
         "classification": ItemClassification.progression,
@@ -1515,7 +1686,8 @@ ITEMS_DATA = {
         "id": 158,
         "model": 0x3f,
         "ghost_model": True,
-        "blocked_scenes": [0x700]
+        "blocked_scenes": [0x700],
+        "item_groups": ["Trade Quest Items"],
     },
     "Guard Notebook": {
         "classification": ItemClassification.progression,
@@ -1524,7 +1696,8 @@ ITEMS_DATA = {
         "id": 159,
         "model": 0x40,
         "ghost_model": True,
-        "blocked_scenes": [0x900]
+        "blocked_scenes": [0x900],
+        "item_groups": ["Trade Quest Items"],
     },
     "Wood Heart": {
         "classification": ItemClassification.progression,
@@ -1533,7 +1706,8 @@ ITEMS_DATA = {
         "id": 160,
         "model": 0x43,
         "ghost_model": True,
-        "blocked_scenes": [0xa00]
+        "blocked_scenes": [0xa00],
+        "item_groups": ["Trade Quest Items"],
     },
     "Phantom Blade": {
         "classification": ItemClassification.progression,
@@ -1542,7 +1716,8 @@ ITEMS_DATA = {
         "id": 161,
         "model": 0x44,
         "ghost_model": True,
-        "blocked_scenes": [0x160A]
+        "blocked_scenes": [0x160A],
+        "item_groups": ["Trade Quest Items"],
     },
 
     # Letters and cards
@@ -1554,6 +1729,7 @@ ITEMS_DATA = {
         "tags": ["backup_filler"],
         "model": 0x39,
         "ghost_model": True,
+        "item_groups": ["Beedle Cards"],
     },
     "Member's Card (Progressive)": {
         "classification": ItemClassification.progression,
@@ -1561,6 +1737,7 @@ ITEMS_DATA = {
         "id": 163,
         "model": 0x3a,
         "ghost_model": True,
+        "item_groups": ["Beedle Cards"],
     },
     "Complimentary Card": {
         "classification": ItemClassification.filler,
@@ -1569,6 +1746,7 @@ ITEMS_DATA = {
         "id": 164,
         "model": 0x3b,
         "ghost_model": True,
+        "item_groups": ["Beedle Cards"],
     },
     "Compliment Card": {
         "classification": ItemClassification.filler,
@@ -1577,6 +1755,7 @@ ITEMS_DATA = {
         "id": 190,
         "model": 0x3a,
         "ghost_model": True,
+        "item_groups": ["Beedle Cards"],
     },
     "Jolene's Letter": {
         "classification": ItemClassification.progression,
@@ -1585,6 +1764,7 @@ ITEMS_DATA = {
         "id": 165,
         "model": 0x41,
         "ghost_model": True,
+        "item_groups": ["Letters"],
     },
     "Prize Postcard": {
         "classification": ItemClassification.filler,
@@ -1593,6 +1773,7 @@ ITEMS_DATA = {
         "id": 166,
         "model": 0x42,
         "ghost_model": True,
+        "item_groups": ["Letters"],
     },
     "Beedle Points (10)": {
         "classification": ItemClassification.progression,
@@ -1602,6 +1783,7 @@ ITEMS_DATA = {
         "id": 167,
         "model": 0x39,
         "ghost_model": True,
+        "item_groups": ["Beedle Points"],
     },
     "Beedle Points (20)": {
         "classification": ItemClassification.progression,
@@ -1611,6 +1793,7 @@ ITEMS_DATA = {
         "id": 191,
         "model": 0x39,
         "ghost_model": True,
+        "item_groups": ["Beedle Points"],
     },
     "Beedle Points (50)": {
         "classification": ItemClassification.progression,
@@ -1620,6 +1803,7 @@ ITEMS_DATA = {
         "id": 192,
         "model": 0x39,
         "ghost_model": True,
+        "item_groups": ["Beedle Points"],
     },
 
     # Frogs
@@ -1631,6 +1815,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "ghost_model": True,
         "model_reset": True,
+        "item_groups": ["Golden Frog Glyphs"],
     },
     "Golden Frog Glyph Phi": {
         "classification": ItemClassification.progression,
@@ -1640,6 +1825,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Golden Frog Glyphs"],
     },
     "Golden Frog Glyph N": {
         "classification": ItemClassification.progression,
@@ -1649,6 +1835,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Golden Frog Glyphs"],
     },
     "Golden Frog Glyph Omega": {
         "classification": ItemClassification.progression,
@@ -1658,6 +1845,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Golden Frog Glyphs"],
     },
     "Golden Frog Glyph W": {
         "classification": ItemClassification.progression,
@@ -1667,6 +1855,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Golden Frog Glyphs"],
     },
     "Golden Frog Glyph Square": {
         "classification": ItemClassification.progression,
@@ -1676,6 +1865,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Golden Frog Glyphs"],
     },
 
     # Ships
@@ -1685,6 +1875,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
+        # "item_groups": ["Ships"],
     },
     "Ship: Bright Ship": {
         "classification": ItemClassification.useful,
@@ -1694,6 +1885,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
+        "item_groups": ["Ships"],
     },
     "Ship: Iron Ship": {
         "classification": ItemClassification.useful,
@@ -1703,6 +1895,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
+        "item_groups": ["Ships"],
     },
     "Ship: Stone Ship": {
         "classification": ItemClassification.useful,
@@ -1712,6 +1905,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
+        "item_groups": ["Ships"],
     },
     "Ship: Vintage Ship": {
         "classification": ItemClassification.useful,
@@ -1721,6 +1915,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
+        "item_groups": ["Ships"],
     },
     "Ship: Demon Ship": {
         "classification": ItemClassification.useful,
@@ -1730,6 +1925,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
+        "item_groups": ["Ships"],
     },
     "Ship: Tropical Ship": {
         "classification": ItemClassification.useful,
@@ -1739,6 +1935,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
+        "item_groups": ["Ships"],
     },
     "Ship: Dignified Ship": {
         "classification": ItemClassification.useful,
@@ -1748,6 +1945,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
+        "item_groups": ["Ships"],
     },
     "Ship: Golden Ship": {
         "classification": ItemClassification.useful,
@@ -1756,6 +1954,7 @@ ITEMS_DATA = {
         "id": 182,
         "model": 0x7B,
         "ghost_model": True,
+        "item_groups": ["Ships"],
     },
 
     # Fish
@@ -1769,7 +1968,8 @@ ITEMS_DATA = {
         "model": 0x80,
         "ghost_model": True,
         "model_reset": True,
-        "blocked_scenes": [0x200]
+        "blocked_scenes": [0x200],
+        "item_groups": ["Fish"],
     },
     "Fish: Toona": {
         "classification": ItemClassification.filler,
@@ -1781,7 +1981,8 @@ ITEMS_DATA = {
         "model": 0x80,
         "ghost_model": True,
         "model_reset": True,
-        "blocked_scenes": [0x200]
+        "blocked_scenes": [0x200],
+        "item_groups": ["Fish"],
     },
     "Fish: Loovar": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -1793,7 +1994,8 @@ ITEMS_DATA = {
         "model": 0x80,
         "ghost_model": True,
         "model_reset": True,
-        "blocked_scenes": [0x200]
+        "blocked_scenes": [0x200],
+        "item_groups": ["Fish"],
     },
     "Fish: Rusty Swordfish": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -1805,7 +2007,8 @@ ITEMS_DATA = {
         "model": 0x80,
         "ghost_model": True,
         "model_reset": True,
-        "blocked_scenes": [0x200]
+        "blocked_scenes": [0x200],
+        "item_groups": ["Fish"],
     },
     "Fish: Legendary Neptoona": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -1817,7 +2020,8 @@ ITEMS_DATA = {
         "model": 0x80,
         "ghost_model": True,
         "model_reset": True,
-        "blocked_scenes": [0x200]
+        "blocked_scenes": [0x200],
+        "item_groups": ["Fish"],
     },
     "Fish: Stowfish": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -1829,13 +2033,16 @@ ITEMS_DATA = {
         "model": 0x80,
         "ghost_model": True,
         "model_reset": True,
-        "blocked_scenes": [0x200]
+        "blocked_scenes": [0x200],
+        "item_groups": ["Fish"],
     },
     "_UT_Glitched_Logic": {
         "classification": ItemClassification.progression,
         "dummy": True,
         "id": 189,
+        "item_groups": ["Technical Items"],
     },
+    # Map Warps
     "Map Warp: Mercay": {
         "classification": ItemClassification.useful,
         "dummy": True,
@@ -1844,6 +2051,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Cannon": {
         "classification": ItemClassification.useful,
@@ -1853,6 +2061,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Ember": {
         "classification": ItemClassification.useful,
@@ -1862,6 +2071,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Molida": {
         "classification": ItemClassification.useful,
@@ -1871,6 +2081,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Spirit": {
         "classification": ItemClassification.useful,
@@ -1880,6 +2091,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Gust": {
         "classification": ItemClassification.useful,
@@ -1889,6 +2101,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Bannan": {
         "classification": ItemClassification.useful,
@@ -1898,6 +2111,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Uncharted": {
         "classification": ItemClassification.useful,
@@ -1907,6 +2121,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Zauz": {
         "classification": ItemClassification.useful,
@@ -1916,6 +2131,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Goron": {
         "classification": ItemClassification.useful,
@@ -1925,6 +2141,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Frost": {
         "classification": ItemClassification.useful,
@@ -1934,6 +2151,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Harrow": {
         "classification": ItemClassification.useful,
@@ -1943,6 +2161,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Dee Ess": {
         "classification": ItemClassification.useful,
@@ -1952,6 +2171,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Isle of the Dead": {
         "classification": ItemClassification.useful,
@@ -1961,6 +2181,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Ruins": {
         "classification": ItemClassification.useful,
@@ -1970,6 +2191,7 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Map Warp: Maze": {
         "classification": ItemClassification.useful,
@@ -1979,14 +2201,38 @@ ITEMS_DATA = {
         "model": 0x7F,
         "model_reset": True,
         "ghost_model": True,
+        "item_groups": ["Map Warp Unlocks"],
     },
     "Small Key (Generic)": {
         "classification": ItemClassification.useful,
         "id": 222,
         "model": 0x1,
         "model_reset": True,
+        "item_groups": ["Technical Items"],
     }
 }
+
+# Create Items Groups
+ITEM_GROUPS: dict[str, set[str]] = {}
+for name, data in ITEMS_DATA.items():
+    for group in data.get("item_groups", []):
+        ITEM_GROUPS.setdefault(group, set()).add(name)
+
+# Combined Item Groups
+ITEM_GROUPS["Metals"] |= ITEM_GROUPS["Vanilla Metals"] | ITEM_GROUPS["Custom Metals"]
+ITEM_GROUPS["Equipable Items"] = ITEM_GROUPS["Tools"]
+
+ITEM_GROUPS["Unique Pedestal Items"] = ITEM_GROUPS["Unique Crystal Items"] | ITEM_GROUPS["Unique Force Gems"]
+ITEM_GROUPS["Global Pedestal Items"] |= ITEM_GROUPS["Global Crystal Items"]
+ITEM_GROUPS["Regular Pedestal Items"] = ITEM_GROUPS["Regular Crystal Items"] | ITEM_GROUPS["Unique Force Gems"]
+ITEM_GROUPS["Shape Crystals"] = ITEM_GROUPS["Unique Crystal Items"] | ITEM_GROUPS["Regular Crystal Items"] | ITEM_GROUPS["Global Crystal Items"]
+ITEM_GROUPS["Pedestal Items"] = ITEM_GROUPS["Shape Crystals"] | ITEM_GROUPS["Force Gem Items"]
+
+ITEM_GROUPS["Throwable Keys"] = ITEM_GROUPS["Boss Keys"] | ITEM_GROUPS["Pedestal Items"]
+ITEM_GROUPS["Keys"] = ITEM_GROUPS["Collection Screen Keys"] | ITEM_GROUPS["Small Keys"] | ITEM_GROUPS["Throwable Keys"] | ITEM_GROUPS["Crests"]
+
+ITEM_GROUPS["Treasure Maps"] |= set(TREASURE_MAPS)
+
 ITEMS: dict[str, "PHItem"] = dict()
 item_id_to_name_dict: dict[int, str] = dict()
 
@@ -1994,67 +2240,11 @@ id_check = []
 for name, data in ITEMS_DATA.items():
     if data["id"] in id_check:
         raise f"Duplicate ID Detected: {data['id']}"
+
+
+
+
+
     id_check.append(data["id"])
     item_id_to_name_dict[data["id"]] = name
     ITEMS[name] = PHItem(name, data, ITEMS)
-
-# IDs are now fixed!!!
-"""for i, k in enumerate(ITEMS_DATA):
-    ITEMS_DATA[k]["id"] = i+1"""
-
-# bulk data editing / export
-if __name__ == "__main__":
-    attributes = set()
-    for name, data in ITEMS_DATA.items():
-        for attribute in data:
-            attributes.add(attribute)
-    for attribute in attributes:
-        print(f"self.{attribute}: ")
-"""
-    keys = set()
-    for name, data in ITEMS_DATA.items():
-        for key in data:
-            keys.add(key)
-    for i in keys:
-        print(i)
-    # print(f"\t\"{name}\": " + "{")
-"""
-"""
-        for key, value in data.items():
-            if type(value) is str:
-                print(f"\t\t\"{key}\": \"{value}\",")
-            elif key == "classification":
-                print(f"\t\t\"{key}\": ItemClassification.{CLASSIFICATION[value]},")
-            elif type(value) is int:
-                if key in ["id", "size"]:
-                    print(f"\t\t\"{key}\": {value},")
-                else:
-                    print(f"\t\t\"{key}\": {hex(value)},")
-            elif type(value) is list:
-                l_print = "["
-                for i in value:
-                    if type(i) is tuple or type(i) is list:
-                        l_print += "("
-                        for j in i:
-                            if type(j) is int:
-                                l_print += f"{hex(j)}, "
-                            elif type(j) is str:
-                                l_print += f"\"{j}\", "
-                            else:
-                                l_print += f"{j}, "
-                        l_print = l_print[:-2]
-                        l_print += "), "
-                    else:
-                        if type(i) is int:
-                            l_print += f"{hex(i)}, "
-                        elif type(i) is str:
-                            l_print += f"\"{i}\", "
-                        else:
-                            l_print += f"{i}, "
-                l_print = l_print[:-2]
-                l_print += "]"
-                print(f"\t\t\"{key}\": {l_print},")
-            else:
-                print(f"\t\t\"{key}\": {value},")
-        print("\t},")
-"""

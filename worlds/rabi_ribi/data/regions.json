@@ -232,6 +232,11 @@
     "has_warp": true
   },
   {
+    "name": "Floating Graveyard - Upper Mana Up Ledge",
+    "logic_key": "GRAVEYARD_UPPER_MP_UP_LEDGE",
+    "region": "Floating Graveyard"
+  },
+  {
     "name": "Floating Graveyard - Top of the Bridge",
     "logic_key": "GRAVEYARD_TOP_OF_BRIDGE",
     "region": "Floating Graveyard"

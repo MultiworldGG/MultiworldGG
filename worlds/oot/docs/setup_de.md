@@ -4,7 +4,7 @@
 ## Benötigte Software
 
 - Ein Emulator der Wahl
-  - [BizHawk](https://tasvideos.org/BizHawk/ReleaseHistory) (v2.10+)
+  - [BizHawk](https://tasvideos.org/BizHawk/ReleaseHistory) (v2.10+) (außer Linux)
   - [Project 64](https://www.pj64-emu.com/windows-downloads)
   - [simple64](https://simple64.github.io/)
   - [Rosalie's Mupen GUI](https://github.com/Rosalie241/RMG)
@@ -84,8 +84,7 @@ Sind einmal der Client und der Emulator gestartet, verbindet sich der OoT-Client
 Du musst keine BizHawk-Lua-Konsole öffnen und kein Connector-Script in das Emulatorfenster ziehen. Falls keine
 Verbindung hergestellt wird, stelle sicher, dass die gepatchte ROM in einem unterstützten Emulator geladen ist, und
 nutze `/n64` im Client, um den Emulator-Verbindungsstatus zu prüfen.
-Für RetroArch musst du `Settings > Network > Network Commands` aktivieren und den Network Command Port auf `55355`
-lassen.
+Für RetroArch musst du einen N64 Core (wie Mupen64Plus-next) installieren und dann in `Settings > Network > Network Commands` aktivieren und den Network Command Port auf `55355` lassen.
 
 Um den Client mit dem Multiserver zu verbinden, füge einfach `<Adresse>:<Port>` in das Textfeld ganz oben im
 Client ein und drücke Enter oder "Connect" (verbinden). Wird ein Passwort benötigt, musst du es danach unten in das

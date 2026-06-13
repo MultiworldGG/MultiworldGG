@@ -28,6 +28,7 @@
 
 #lobby-table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     text-align: left;
     margin-top: 20px;
@@ -35,8 +36,9 @@
 
 #lobby-table th,
 #lobby-table td {
-    padding: 8px 12px;
+    padding: 8px 8px;
     border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
 }
 
 #lobby-table th {
@@ -719,11 +721,14 @@ a.lobby-btn-primary:hover {
 
 .settings-tip {
     position: relative;
+    display: inline-block;
     cursor: help;
     font-size: 0.8rem;
+    line-height: 1.2;
     color: #aaa;
     text-decoration: underline dotted;
-    white-space: nowrap;
+    white-space: normal;
+    max-width: 5.8em;
 }
 
 .settings-tip-content {
@@ -1123,6 +1128,7 @@ a.lobby-btn-primary:hover {
 
 #my-lobby-table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     text-align: left;
     margin-top: 10px;
@@ -1130,8 +1136,9 @@ a.lobby-btn-primary:hover {
 
 #my-lobby-table th,
 #my-lobby-table td {
-    padding: 8px 12px;
+    padding: 8px 8px;
     border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
 }
 
 #my-lobby-table th {
@@ -1141,6 +1148,77 @@ a.lobby-btn-primary:hover {
 
 #my-lobby-table tr:hover {
     background-color: rgba(0, 0, 0, 0.03);
+}
+
+@media (min-width: 936px) {
+    #lobby-table th:nth-child(1),
+    #lobby-table td:nth-child(1),
+    #my-lobby-table th:nth-child(1),
+    #my-lobby-table td:nth-child(1) {
+        width: 23%;
+    }
+
+    #lobby-table th:nth-child(2),
+    #lobby-table td:nth-child(2),
+    #my-lobby-table th:nth-child(2),
+    #my-lobby-table td:nth-child(2) {
+        width: 13%;
+    }
+
+    #lobby-table th:nth-child(3),
+    #lobby-table td:nth-child(3),
+    #my-lobby-table th:nth-child(3),
+    #my-lobby-table td:nth-child(3) {
+        width: 8%;
+    }
+
+    #lobby-table th:nth-child(4),
+    #lobby-table td:nth-child(4),
+    #my-lobby-table th:nth-child(4),
+    #my-lobby-table td:nth-child(4) {
+        width: 7%;
+    }
+
+    #lobby-table th:nth-child(5),
+    #lobby-table td:nth-child(5),
+    #my-lobby-table th:nth-child(5),
+    #my-lobby-table td:nth-child(5) {
+        width: 12%;
+    }
+
+    #lobby-table th:nth-child(6),
+    #lobby-table td:nth-child(6),
+    #my-lobby-table th:nth-child(6),
+    #my-lobby-table td:nth-child(6) {
+        width: 9%;
+    }
+
+    #lobby-table th:nth-child(7),
+    #lobby-table td:nth-child(7),
+    #my-lobby-table th:nth-child(7),
+    #my-lobby-table td:nth-child(7) {
+        width: 8%;
+    }
+
+    #lobby-table th:nth-child(8),
+    #lobby-table td:nth-child(8),
+    #my-lobby-table th:nth-child(8),
+    #my-lobby-table td:nth-child(8) {
+        width: 9%;
+    }
+
+    #lobby-table th:nth-child(9),
+    #lobby-table td:nth-child(9),
+    #my-lobby-table th:nth-child(9),
+    #my-lobby-table td:nth-child(9) {
+        width: 11%;
+    }
+}
+
+#lobby-table td[data-label="Lobby"],
+#my-lobby-table td[data-label="Lobby"] {
+    overflow-wrap: anywhere;
+    word-break: normal;
 }
 
 @media (max-width: 935px) {
@@ -1323,6 +1401,7 @@ a.lobby-btn-primary:hover {
         text-decoration: none;
         cursor: default;
         white-space: normal;
+        max-width: none;
     }
 
     .lobby-settings-td .settings-tip-content {

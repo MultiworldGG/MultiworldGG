@@ -1825,6 +1825,9 @@
         "region_name": "Kak Carpenter Boss House",
         "scene": "Kak Carpenter Boss House",
         "events": {
+            # AP full accessibility requires every AP location to be reachable after fill.
+            # Unlike upstream, allow mid-chain non-shuffled adult trade starts to logically
+            # skip waking Talon, matching the save-context trade flags written by Patches.py.
             "Wake Up Adult Talon": "is_adult and (Pocket_Egg or Pocket_Cucco or ((selected_adult_trade_item == 'Cojiro' or selected_adult_trade_item == 'Odd Mushroom' or selected_adult_trade_item == 'Odd Potion' or selected_adult_trade_item == 'Poachers Saw' or selected_adult_trade_item == 'Broken Sword' or selected_adult_trade_item == 'Prescription' or selected_adult_trade_item == 'Eyeball Frog' or selected_adult_trade_item == 'Eyedrops' or selected_adult_trade_item == 'Claim Check') and not adult_trade_shuffle))"
         },
         "exits": {
@@ -2412,7 +2415,9 @@
                 is_adult and
                 (Hover_Boots or Hookshot or
                     (logic_crater_bolero_jump and Goron_Tunic and can_shield))",
-            "DMC Fire Temple Entrance": "is_adult or shuffle_dungeon_entrances"
+            "DMC Fire Temple Entrance": "
+                is_adult and (Hover_Boots or Hookshot) and
+                (logic_fewer_tunic_requirements or Goron_Tunic)"
         }
     },
     {
@@ -2510,8 +2515,9 @@
         "locations": {
             "ZR Magic Bean Salesman": "is_child",
             "ZR Frogs Ocarina Game": "
-                is_child and can_play(Zeldas_Lullaby) and can_play(Eponas_Song) and
-                can_play(Sarias_Song) and can_play(Suns_Song) and can_play(Song_of_Time) and can_play(Song_of_Storms) and
+                is_child and
+                can_play(Zeldas_Lullaby) and can_play(Eponas_Song) and can_play(Sarias_Song) and
+                can_play(Suns_Song) and can_play(Song_of_Time) and can_play(Song_of_Storms) and
                 has_all_notes_for_song('ZR Frogs Ocarina Game')",
             "ZR Frogs Zeldas Lullaby": "is_child and can_play(Zeldas_Lullaby)",
             "ZR Frogs Eponas Song": "is_child and can_play(Eponas_Song)",

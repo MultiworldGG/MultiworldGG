@@ -1,255 +1,184 @@
-# MultiworldGG Randomizer for Path of Exile (PC)
+# Path of Exile — MultiworldGG Setup Guide
 
+## Requirements
 
-## What does randomization do to this game?
-
-This `.apworld` does not modify Path of Exile directly, it:
-- Reads your character data through an API.
-- Reads your PoE client logs.
-- Writes to an item filter (and can place audio files) to highlight AP items.
-- Checks that you are using the items / gems that you have received. And sends checks when you find new items or level up.
-
-## What items and locations get shuffled?
-
-### Locations (checks)
-- Finding certain base item types that drop from monsters (e.g., a specific sword base).
-- Leveling up.
-
-### Items (unlocks)
-- Available characters
-- Ascendancies
-- Passive skill points
-- Ability to equip certain gear rarities
-- Ability to equip flasks
-- Maximum allowed number of linked sockets
-- Utility gems (auras, movement skills, curses, etc.)
-- Skill gems (active attack/spell abilities)
-- Support gems (that empower skill gems)
-
-
-## How It Works (Read-Only Integration)
-
-### Core loop
-1. **Enter a zone** → the client validates your current gear and progression.
-2. **Pick up items** → The filter should make clear what items will unlock things.
-3. **Enter a new zone** → “checks” are sent for newly found items/conditions.
-
-## What does another world's item look like in Path of Exile?
-- Items from other players will be highlighted in your item filter.
-- If enabled there will be audio cues for what an item will unlock when you pick it up and change zones.
-
-## Options
-
-### Configurable goals
-- Finish acts / complete the campaign
-- Kill endgame bosses
-
-### Configurable Items
-
-**Characters & Classes:**
-- Starting character class (Marauder, Ranger, Witch, Duelist, Templar, Shadow, Scion)
-- Additional character unlocks (optional)
-- Ascendancy classes (0-3 per character class)
-
-**Equipment & Gear:**
-- Gear rarity restrictions (Normal, Magic, Rare, Unique)
-- Starting gear allowances (weapon, flask slots, gems)
-- Flask slot upgrades (up to 5 total)
-- Support gem socket limits (linked sockets for gem combinations)
-
-**Skills & Progression:**
-- Passive skill points (can be restricted and unlocked through items)
-- Skill gems (active attack/spell abilities)
-- Support gems (enhance and modify skill gems)  
-- Utility gems (auras, movement skills, curses, buffs)
-
-
-
-
-**Quality of Life:**
-- Text-to-Speech announcements for found items
-- Configurable TTS speed (50-500 WPM)
-- DeathLink integration (share deaths with other players)
-
-**Item Distribution:**
-- Minimum items per act (ensures progression isn't completely blocked)
-- Gear upgrades, flask slots, and support gem slots distributed per act
-- Skill gem availability scaling with acts
-
-**Misc:**
-- Gucci Hobo Mode (extreme equipment restrictions - unique items only) -- Would not recommend.
-
----
-Example options:
-I want to use my own end-game character, and go from nothing to mapping to a boss.
-- Disable levels as checks.
-- Enable passive skill points as unlocks.
-- Respec my character, removing all passive points, and start with no gear.
-- enable boss as a goal
-- add my class in the "starting inventory" section.
-  ```
-    start_inventory:
-    # Start with these items.
-    {
-      "Ascendant": 1,
-    }
---- 
-## What do I do if I encounter a bug with the game?
-- Please reach out to the discord channel for Path of Exile archipelago
-#### OR
-- Create an issue here: [github.com/stubobis1/Archipelago/issues](https://github.com/stubobis1/Archipelago/issues)
-
-# Setup
+- **Path of Exile** installed and playable — [pathofexile.com](https://www.pathofexile.com)
+- **Python 3.12** — [python.org/downloads/release/python-31210](https://www.python.org/downloads/release/python-31210/) (3.13 not supported)
+- **MultiworldGG** (latest release) — [github.com/MultiworldGG/MultiworldGG/releases](https://github.com/MultiworldGG/MultiworldGG/releases)
+- **PoE .apworld file** — [github.com/stubobis1/Archipelago/releases](https://github.com/stubobis1/Archipelago/releases) (only needed for Archipelago)
+- **ArchiPoElago client** — [github.com/stubobis1/Archipelago/releases](https://github.com/stubobis1/Archipelago/releases)
 
 ---
 
-## 1) Prerequisites
+## 1) Install MultiworldGG/AP and the .apworld
 
-- Path of Exile installed and playable.
-- Python 3.13 installed (unless you use the downloadable release of MWGG)
-- MultiworldGG (latest release).
-- Except with MWGG: The Path of Exile `.apworld` file from the Path of Exile APWorld release page. 
-  - [github.com/stubobis1/Archipelago/releases](https://github.com/stubobis1/Archipelago/releases)
-
----
-
-## 2) Download & Install MultiworldGG
-
-1. Download the latest MultiworldGG release:
-   - [github.com/MultiworldGG/MultiworldGG/releases](https://github.com/MultiworldGG/MultiworldGG/releases)
-2. Install Python if needed (unless you use the downloadable release of MWGG):
-   - [python.org/downloads/release/python-31311/](https://www.python.org/downloads/release/python-31311/)
-3. Extract the MultiworldGG release to a folder of your choice (e.g., `C:\Games\MultiworldGG` or `~/MultiworldGG`).
+1. Install Python 3.12 if you haven't already.
+2. Download and install the latest MultiworldGG/AP release.
+3. If you are using AP: Download the `poe.apworld` file from the PoE AP releases page.
+4. If you are using AP: Place `poe.apworld` into the `Archipelago/custom_worlds/` folder.
 
 ---
 
-## 3) Add the Path of Exile .apworld (not needed with MultiworldGG)
+## 2) Create Your YAML
 
-1. Download the `.apworld`:
-   - [github.com/stubobis1/Archipelago/releases](https://github.com/stubobis1/Archipelago/releases)
-2. Place the `.apworld` file into the `MultiworldGG/custom_worlds/` folder.
+You need a `.yaml` file describing your settings before generating a multiworld.
 
----
+**Option A — Built-in YAML generator:** Open the ArchiPoElago client and click **YAML Generator** in the sidebar. It walks you through every option with descriptions.
 
-## 4) Generate / Join a Multiworld
+**Option B — Web generator:**
+- [ap.stripesoo7.org/games/Path%20of%20Exile/player-options](https://ap.stripesoo7.org/games/Path%20of%20Exile/player-options)
+- [multiworld.gg/games/Path%20of%20Exile/player-options](https://multiworld.gg/games/Path%20of%20Exile/player-options)
 
-1. Launch `MultiworldGGLauncher.exe` from your MultiworldGG folder.
-2. Generate Template Options
-3. Modify `MultiworldGG/Players/Templates/Path of Exile.yaml` to change options to your liking.
-4. Setup a Multiworld session:
-  - If self-hosting / playing single player:
-    - place the `Path of Exile.yaml` in your Players directory
-    - run `MultiworldGGLauncher.exe`
-    - Select **Generate Game**.
-    - Select **Host**, and select the generated file from `/output`
-    - By default the server will run on port `38281`
-  - If playing with others:
-    - Send your `yaml` to whomever is generating and hosting
-    - Get your slot name from the host, and the server address (IP or domain) and port.
+**Option C — Edit the template manually:** Run `MultiworldGGLauncher.exe` → **Generate Template Options**, then edit `Players/Templates/Path of Exile.yaml`.
 
+Key settings to review:
+- `name` — your slot name; change it to something recognizable when playing with others
+- `goal` — what you need to do to finish (campaign, act N, defeat bosses)
+- `starting_character` — which class you start with (`random` by default; **Scion cannot be a starting class** — she must be unlocked in Act 3)
+- `usable_starting_gear` — how much of the Twilight Strand gear you can use from the start
+- `add_passive_skill_points_to_item_pool` — whether passive points are locked behind unlocks
+- `add_leveling_up_to_location_pool` — whether level-ups count as checks
 
 ---
 
-## 5) Setup Poptracker (Optional but Highly Recommended)
+## 3) Generate and Host a Multiworld
 
-1. Download Poptracker from: [github.com/black-sliver/PopTracker/releases](https://github.com/black-sliver/PopTracker/releases)
-2. Extract / Setup Poptracker to a folder of your choice.
-3. Download the PoE Archipelago Poptracker pack from: [github.com/stubobis1/PathOfExilePoptracker/releases](https://github.com/stubobis1/PathOfExilePoptracker/releases)
-4. Place the zip file into the `poptracker/packs` directory.
-5. Launch `PopTracker.exe`.
-6. Click on the `AP` button at the top.
-7. Enter your slot name and server address from step 4. (Example: `127.0.0.1:38281`, slot `Player1`, no password)
-8. If the `AP` button is green you are connected.
+**Playing solo or hosting for others:**
+1. Place your `.yaml` (and any other players' `.yaml` files) into `MultiworldGG/Players/`.
+2. Run `MultiworldGGLauncher.exe` → **Generate Game**.
+3. Go to [multiworld.gg/uploads](/uploads), upload the generated archive from `MultiworldGG/output/`, and click **Create New Room**.
+4. Note the server address and port (e.g. `multiworld.gg:38281`).
 
-
----
-
-## 6) Start the Client
-
-1. In `MultiworldGGLauncher.exe` run `Path of Exile` from the client list.
-2. Enter the slot name and server address in the top bar 
-   - something like `Player1:@127.0.0.1:38281` 
-     - (note the `:` after the slot name is where you would put the password, if one was set by the host).
-3. Click **Connect**.
-4. (optional) Run `/received` to see which class you have received. (not needed if you setup poptracker)
-5. Run `/poe_auth` in the client console to authenticate your PoE account.
-6. Set the character you will be playing with `/char YourCharacterName`.
-7. Set your `client.txt` path by running `/client "C:\PathOfExile\logs\Client.txt"` (adjust path as needed). Note the Quotation marks.
-8. Set your item filter path by running `/filter <filterName>.filter` 
-    - this should be a local filter, and exist at something like `C:\Users\<USERNAME>\Documents\My Games\Path of Exile`
-9. (Optional) Enable or Disable DeathLink with `/deathlink` if you want to share deaths with other players.
-10. If you haven't already, Launch Path of Exile and **LOGIN**. 
-11. Run `/start` in the client.
-12. Start playing Path of Exile!
-    - Enter a zone to trigger an initial check.
-    - Pick up items to unlock things.
-    - Change zones to send checks for newly found items/conditions.
-
+**Joining someone else's multiworld:**
+1. Send your `.yaml` to the host (they must also have the same `poe.apworld`).
+2. Wait for the host to share the server address, port, and your slot name.
 
 ---
 
+## 4) Install and Launch ArchiPoElago
 
-## 7) In‑Game Chat Commands (Whisper Yourself)
+1. Download the **ArchiPoElago** client from the [PoE AP releases page](https://github.com/stubobis1/Archipelago/releases).
+2. Extract and run it. You do **not** need to launch it through `MultiworldGGLauncher.exe`.
+3. The first time you open it, a setup wizard walks you through five steps:
 
-Send whispers **to your own character** using `@YourCharacterName` followed by a command. Example:
+### Step 1 — Paths
+
+Set two required paths (the client tries to detect them automatically):
+
+- **Client.txt** — PoE's log file, usually at:
+  - Windows: `C:\Games\Path of Exile\logs\Client.txt`
+  - Steam: `C:\Program Files (x86)\Steam\steamapps\common\Path of Exile\logs\Client.txt`
+- **PoE Documents folder** — where your item filters live, usually:
+  - `C:\Users\<you>\Documents\My Games\Path of Exile\`
+
+Optionally set a **base item filter** — an existing filter (e.g. Neversink) that the AP filter will chain-import. This keeps your normal item highlighting while the AP filter adds its own rules on top.
+
+### Step 2 — GGG OAuth
+
+Click **Login with GGG**. A browser window opens the GGG login page. Approve the read-only access request (character data only — no trading or account changes), and the browser redirects back automatically.
+
+### Step 3 — Connect to MultiworldGG
+
+Enter the server address (e.g. `multiworld.gg:38281`), your slot name, and the server password if one was set. Click **Connect**.
+
+### Step 4 — Choose Your Character
+
+Select the PoE character you will be playing as. The client uses the GGG API to read that character's equipment, gems, and passives to validate your state on each zone change.
+
+If your character doesn't appear in the list, make sure OAuth is authenticated and you have logged into PoE at least once with that character.
+
+### Step 5 — Ready
+
+The status screen shows your connection states. Click **Open Dashboard** to start. The client is now watching your game and will manage your item filter automatically.
+
+---
+
+## 5) Start Playing
+
+1. Launch Path of Exile normally (Steam or standalone launcher).
+2. Log in with the character you selected in Step 4.
+3. In the ArchiPoElago client, click **Start Monitoring** on the Dashboard.
+4. Enter a zone in PoE to trigger the initial validation and filter load.
+
+The client will:
+- Automatically write and activate `__ap.filter` in your PoE documents folder whenever you enter a zone.
+- Show a whisper in chat when you receive items (toggle off in Settings → Game Input → Item whispers).
+- Tell you if you're "out of logic" (using gear you haven't unlocked yet) via an in-game whisper.
+
+---
+
+## 6) In-Game Chat Commands
+
+Whisper **yourself** to query status without leaving the game. Example:
+
 ```
-@YourCharacterName !gems
+@YourCharacterName !gear
 ```
 
-Commands:
-```
-!ap char                  - Set your character
-!deathlink                - Toggle DeathLink
-!goal                     - View your current goal
-!passive or !p            - List usable passive points
-!usable skill gems        - List usable skill gems (by level)
-!usable support gems      - List usable support gems
-!usable utility gems      - List usable utility gems
-!usable gems              - List all usable gems
-!main gems                - Show main skill gems received
-!support gems             - Show support gems received
-!utility gems             - Show utility gems received
-!all gems or !gems        - Show all gems received
-!gear                     - Show usable gear
-!weapons                  - Show usable weapons
-!armor                    - Show usable armor
-!links                    - Show maximum link allowance
-!flasks                   - Show flask unlocks
-!ascendancy               - Show unlocked ascendancies
-!help                     - Show help message
-```
-
-Note: Commands must be whispered to **yourself** (not global chat) using `@YourCharacterName`.
+| Command | Description |
+|---|---|
+| `!help` | List all commands |
+| `!gear` | Show all usable gear |
+| `!weapons` | Show usable weapons |
+| `!armor` | Show usable armour |
+| `!links` | Show max link allowance |
+| `!flasks` | Show flask unlocks |
+| `!gems` | Show all received gems |
+| `!main gems` | Show skill gems |
+| `!support gems` | Show support gems |
+| `!utility gems` | Show utility gems |
+| `!usable gems` | Show gems usable at your current level |
+| `!passives` or `!p` | Show available passive points |
+| `!ascendancy` | Show unlocked ascendancies |
+| `!goal` | Show current goal status |
+| `!boss` | Show boss progress (boss-rush goals) |
+| `!deathlink` | Toggle DeathLink on/off |
+| `!whisper updates` | Toggle item received whispers on/off |
 
 ---
 
-## 8) Tips & Troubleshooting
+## 7) PopTracker (Optional but Recommended)
 
-- If you get problems when you are trying to write the filter, it could be Windows OneDrive interfering. Try disabling OneDrive.
-- Keep the MultiworldGG client running while you play PoE.
-- If you pick up an item and no check is sent, **enter a new zone** to trigger a check.
-- Make sure your PoE logs are being read (client should detect zone changes and chat whispers).
-- If your normal item filter isn't working, load it with `/filter` in the client console.
-- OAuth/API: Ensure your PoE account is properly authenticated if the client needs character data from the API.
-- DeathLink: When enabled, your deaths (and others’) can be shared as events across players.
-- F11 will restart the client if you run into issues.
-- F12 will force the client to do a check. 
-  - The API still only updates when changing zones, but this is helpful if something gets messed up. (AP can't read the client.txt file)
+PopTracker provides a visual overview of your unlocked items and progress.
+
+1. Download PopTracker: [github.com/black-sliver/PopTracker/releases](https://github.com/black-sliver/PopTracker/releases)
+2. Extract it to a folder of your choice.
+3. Download the PoE AP pack: [github.com/stubobis1/PathOfExilePoptracker/releases](https://github.com/stubobis1/PathOfExilePoptracker/releases)
+4. Place the downloaded `.zip` into `poptracker/packs/` (do not extract it).
+5. Launch PopTracker, click the **AP** button at the top, and enter your server address and slot name.
+6. A green AP button means you are connected and synced.
 
 ---
 
-## 9) Quick Start Summary
+## 8) Troubleshooting
 
-1. Install Python (3.12) and MultiworldGG.
-2. Without MWGG: Drop the PoE `.apworld` into `Archipelago/custom_worlds/`.
-3. Use the Launcher to generate or connect to a multiworld.
-4. Start playing PoE with the client open.
-5. Whisper yourself for status/info commands and change zones to send checks.
+**Filter not loading / showing the wrong items**
+- Make sure the PoE Documents path is correct and writable.
+- If OneDrive is managing your Documents folder, try disabling OneDrive for that folder — it can interfere with filter writes.
+- Click **Regenerate filter** in Settings → Item Filter.
+
+**Checks not sending**
+- Checks are sent when you **enter a new zone**, not immediately when you pick something up. Change zones to trigger a send.
+- Make sure monitoring is active (green on Dashboard) and the client is connected to the AP server.
+
+**Out of logic / all items showing as orange blocks**
+- You are using something you haven't unlocked yet. Check the **Equipment** tab in the client to see what's allowed.
+- The client will whisper you the specific reason on each zone change.
+- Unequip the offending item, then change zones to re-validate.
+
+**Whispers or filter commands going to the wrong chat channel**
+- Make sure Path of Exile is the active window when commands fire.
+- If commands fire while PoE isn't focused, they will queue and retry until PoE is foregrounded.
+- If commands are landing in global chat, go to Settings → Game Input and increase **Enter delay** or **Zone transition delay** by 50–100 ms.
+
+**Goal button grayed out after reaching the goal zone**
+- The client sends a verification whisper to confirm your in-game identity. If it doesn't receive an echo within 30 seconds, the button enables automatically.
+- If you want instant activation, go to Settings → Goal and disable **Chat verification**.
+
+**Character not found / OAuth errors**
+- Re-authenticate via Settings → GGG Account → Login with GGG.
+- Make sure you have logged into PoE at least once with that character so it appears in the API.
 
 ---
 
-Happy mapping, and good luck with your drops!
-
-
-
-#### This product isn’t affiliated with or endorsed by Grinding Gear Games in any way.
+*This product is not affiliated with or endorsed by Grinding Gear Games.*

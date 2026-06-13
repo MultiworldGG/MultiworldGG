@@ -1,4 +1,5 @@
 from .Addresses import *
+from dataclasses import dataclass
 
 VERSION = "0.3.0"
 ROM_HASH = "f2dc6c4e093e4f8c6cbea80e8dbd62cb"
@@ -241,370 +242,6 @@ TREASURE_MAPS = [
     "Treasure Map #30 (Ruins S)",
     "Treasure Map #31 (Dead S)",
 ]
-
-ITEM_GROUPS: dict[str, set[str]] = {
-    "Small Keys": {
-        "Small Key (Mountain Passage)",
-        "Small Key (Temple of the Ocean King)",
-        "Small Key (Temple of Fire)",
-        "Small Key (Temple of Wind)",
-        "Small Key (Temple of Courage)",
-        "Small Key (Temple of Ice)",
-        "Small Key (Mutoh's Temple)"
-    },
-    "Vanilla Metals": {
-        "Crimzonine",
-        "Azurine",
-        "Aquanine"
-    },
-    "Custom Metals": {
-        "Verdanine",
-        "Lavendine",
-        "Amberine",
-        "Vermilline",
-        "Burgundine",
-        "Crystaline",
-        "Carrotine",
-        "Olivine",
-        "Chartreusine",
-        "Violetine",
-        "Ceruline",
-        "Fuchsianine",
-        "Saffronine",
-        "Viridine",
-        "Sepianine",
-        "Apricotine",
-        "Scarletine",
-        "Coraline",
-        "Magentine",
-        "Cyanine",
-        "Mauvine",
-        "Lilacine",
-        "Indigorine",
-        "Junipine",
-        "Limeinine",
-        "Mintine",
-        "Umberine",
-    },
-    "Treasure Items": {
-        "Treasure: Pink Coral",
-        "Treasure: White Pearl Loop",
-        "Treasure: Dark Pearl Loop",
-        "Treasure: Zora Scale",
-        "Treasure: Goron Amber",
-        "Treasure: Ruto Crown",
-        "Treasure: Helmaroc Plume",
-        "Treasure: Regal Ring"
-    },
-    "Ammo Refills": {
-        "Refill: Bombs",
-        "Refill: Arrows",
-        "Refill: Bombchus",
-        "Refill: Health",
-    },
-    "Treasure Maps": set(TREASURE_MAPS),
-    "Items With Ammo": {
-        "Bombs (Progressive)",
-        "Bombchus (Progressive)",
-        "Bow (Progressive)",
-    },
-    "Items Without Ammo": {
-        "Boomerang",
-        "Grappling Hook",
-        "Shovel",
-        "Hammer",
-    },
-    "Spirits": {
-        "Spirit of Power (Progressive)",
-        "Spirit of Wisdom (Progressive)",
-        "Spirit of Courage (Progressive)",
-    },
-    "Ship Items": {
-        "Cannon",
-        "Salvage Arm",
-        "Fishing Rod",
-        "Big Catch Lure",
-        "Cyclone Slate",
-    },
-    "Fish": {
-        "Fish: Skippyjack",
-        "Fish: Toona",
-        "Fish: Loovar",
-        "Fish: Rusty Swordfish",
-        "Fish: Legendary Neptoona",
-        "Fish: Stowfish"
-    },
-    "Sea Charts": set(SEA_CHARTS),
-    "Upgrades": {
-        "Heart Container",
-        "Sand of Hours",
-        "Swordsman's Scroll",
-    },
-    "Rupees": {
-        "Green Rupee (1)",
-        "Blue Rupee (5)",
-        "Red Rupee (20)",
-        "Big Green Rupee (100)",
-        "Big Red Rupee (200)",
-        "Gold Rupee (300)",
-        "Rupoor (-10)",
-        "Big Rupoor (-50)",
-        "Pre-Alpha Rupee (5000)",
-    },
-    "Boss Keys": {
-        "Boss Key (Temple of Fire)",
-        "Boss Key (Temple of Wind)",
-        "Boss Key (Temple of Courage)",
-        "Boss Key (Goron Temple)",
-        "Boss Key (Temple of Ice)",
-        "Boss Key (Mutoh's Temple)",
-    },
-    "Single Spirit Gems": {
-        "Power Gem",
-        "Wisdom Gem",
-        "Courage Gem",
-    },
-    "Spirit Gem Packs": {
-        "Power Gem Pack",
-        "Wisdom Gem Pack",
-        "Courage Gem Pack",
-    },
-
-    "Unique Crystal Items": {
-        "Triangle Pedestal B8 (Temple of the Ocean King)",
-        "Triangle Pedestal B9 (Temple of the Ocean King)",
-        "Round Pedestal B8 (Temple of the Ocean King)",
-        "Round Pedestal B9 (Temple of the Ocean King)",
-        "Square Pedestal West (Temple of the Ocean King)",
-        "Square Pedestal Center (Temple of the Ocean King)",
-        "Square Pedestal North (Temple of Courage)",
-        "Square Pedestal South (Temple of Courage)",
-        "Triangle Crystal (Ghost Ship)",
-        "Round Crystal (Ghost Ship)",
-    },
-    "Regular Crystal Items": {
-        "Square Crystal (Temple of Courage)",
-        "Triangle Crystal (Ghost Ship)",
-        "Round Crystal (Ghost Ship)",
-        "Round Crystal (Temple of the Ocean King)",
-        "Triangle Crystal (Temple of the Ocean King)",
-        "Square Crystal (Temple of the Ocean King)",
-    },
-    "Global Crystal Items": {
-        "Square Crystals",
-        "Round Crystals",
-        "Triangle Crystals",
-    },
-    "Unique Force Gems": {
-        "Force Gem (B3)",
-        "Force Gem (B12)",
-    },
-    "All Force Gems": {
-        "Force Gem (B3)",
-        "Force Gem (B12)",
-        "Force Gems"
-    },
-    "Collection Screen Keys": {
-        "Sun Key",
-        "Ghost Key",
-        "King's Key",
-        "Regal Necklace",
-    },
-    "Trade Quest Items": {
-        "Hero's New Clothes",
-        "Kaleidoscope",
-        "Guard Notebook",
-        "Wood Heart",
-    },
-    "Crests": {
-        "Courage Crest",
-        "Triforce Crest",
-    },
-    "Golden Frog Glyphs": {
-        "Golden Frog Glyph X",
-        "Golden Frog Glyph Phi",
-        "Golden Frog Glyph N",
-        "Golden Frog Glyph Omega",
-        "Golden Frog Glyph W",
-        "Golden Frog Glyph Square"
-    },
-    "Ships": {
-        #         "S.S. Linebeck",
-        "Ship: Bright Ship",
-        "Ship: Iron Ship",
-        "Ship: Stone Ship",
-        "Ship: Vintage Ship",
-        "Ship: Demon Ship",
-        "Ship: Tropical Ship",
-        "Ship: Dignified Ship",
-        "Ship: Golden Ship",
-    },
-    "Technical Items": {
-        "Treasure",
-        "Ship Part",
-        "Potion",
-        "Nothing!",
-        "Sand of Hours (Boss)",
-        "Sand of Hours (Small)",
-        "Spirit of Courage (White)"
-    },
-    "Potions": {
-        "Red Potion",
-        "Purple Potion",
-        "Yellow Potion",
-    },
-    "Rupoors": {
-        "Rupoor (-10)",
-        "Big Rupoor (-50)",
-    },
-    "Swords": {
-        "Sword (Progressive)",
-        "Oshus' Sword",
-        "Phantom Sword",
-    },
-    "Map Warp Unlocks": {
-        "Map Warp: Mercay",
-        "Map Warp: Cannon",
-        "Map Warp: Ember",
-        "Map Warp: Molida",
-        "Map Warp: Spirit",
-        "Map Warp: Gust",
-        "Map Warp: Bannan",
-        "Map Warp: Uncharted",
-        "Map Warp: Zauz",
-        "Map Warp: Goron",
-        "Map Warp: Frost",
-        "Map Warp: Harrow",
-        "Map Warp: Dee Ess",
-        "Map Warp: Isle of the Dead",
-        "Map Warp: Ruins",
-        "Map Warp: Maze",
-    }
-}
-
-# Item Aliases
-ITEM_GROUPS |= {
-
-    "Sword": ITEM_GROUPS["Swords"],
-    "Bombs": {"Bombs (Progressive)"},
-    "Bow": {"Bow (Progressive)"},
-    "Quiver": {"Bow (Progressive)"},
-    "Bombchus": {"Bombchus (Progressive)"},
-    "Chus": {"Bombchus (Progressive)"},
-    "Spade": {"Shovel"},
-    "Rang": {"Boomerang"},
-    "Grapple": {"Grappling Hook"},
-
-    "Spirit of Power": {"Spirit of Power (Progressive)"},
-    "Spirit of Wisdom": {"Spirit of Wisdom (Progressive)"},
-    "Spirit of Courage": {"Spirit of Courage (Progressive)"},
-    "SoP": {"Spirit of Power (Progressive)"},
-    "SoW": {"Spirit of Wisdom (Progressive)"},
-    "SoC": {"Spirit of Courage (Progressive)"},
-
-    "Map 1": {"Treasure Map #1 (Molida SW)"},
-    "Map 2": {"Treasure Map #2 (Mercay NE)"},
-    "Map 3": {"Treasure Map #3 (Gusts SW)"},
-    "Map 4": {"Treasure Map #4 (Bannan SE)"},
-    "Map 5": {"Treasure Map #5 (Molida N)"},
-    "Map 6": {"Treasure Map #6 (Bannan W)"},
-    "Map 7": {"Treasure Map #7 (Gusts E)"},
-    "Map 8": {"Treasure Map #8 (Mercay SE)"},
-    "Map 9": {"Treasure Map #9 (Cannon W)"},
-    "Map 10": {"Treasure Map #10 (Gusts SE)"},
-    "Map 11": {"Treasure Map #11 (Gusts N)"},
-    "Map 12": {"Treasure Map #12 (Dee Ess N)"},
-    "Map 13": {"Treasure Map #13 (Harrow E)"},
-    "Map 14": {"Treasure Map #14 (Goron NW)"},
-    "Map 15": {"Treasure Map #15 (Goron W)"},
-    "Map 16": {"Treasure Map #16 (Goron NE)"},
-    "Map 17": {"Treasure Map #17 (Frost S)"},
-    "Map 18": {"Treasure Map #18 (Cannon S)"},
-    "Map 19": {"Treasure Map #19 (Gusts NE)"},
-    "Map 20": {"Treasure Map #20 (Bannan E)"},
-    "Map 21": {"Treasure Map #21 (Molida NW)"},
-    "Map 22": {"Treasure Map #22 (Harrow S)"},
-    "Map 23": {"Treasure Map #23 (Frost NW)"},
-    "Map 24": {"Treasure Map #24 (Ruins W)"},
-    "Map 25": {"Treasure Map #25 (Dead E)"},
-    "Map 26": {"Treasure Map #26 (Ruins SW)"},
-    "Map 27": {"Treasure Map #27 (Maze E)"},
-    "Map 28": {"Treasure Map #28 (Ruins NW)"},
-    "Map 29": {"Treasure Map #29 (Maze W)"},
-    "Map 30": {"Treasure Map #30 (Ruins S)"},
-    "Map 31": {"Treasure Map #31 (Dead S)"},
-
-    "Small Key TotOK": {"Small Key (Temple of the Ocean King)"},
-    "Small Key MP": {"Small Key (Mountain Passage)"},
-    "Small Key ToF": {"Small Key (Temple of Fire)"},
-    "Small Key ToW": {"Small Key (Temple of Wind)"},
-    "Small Key ToC": {"Small Key (Temple of Courage)"},
-    "Small Key ToI": {"Small Key (Temple of Ice)"},
-    "Small Key MT": {"Small Key (Mutoh's Temple)"},
-
-    "Boss Key ToF": {"Boss Key (Temple of Fire)"},
-    "Boss Key ToW": {"Boss Key (Temple of Wind)"},
-    "Boss Key ToC": {"Boss Key (Temple of Courage)"},
-    "Boss Key GT": {"Boss Key (Goron Temple)"},
-    "Boss Key ToI": {"Boss Key (Temple of Ice)"},
-    "Boss Key MT": {"Boss Key (Mutoh's Temple)"},
-
-}
-
-# Combo groups
-ITEM_GROUPS |= {
-    "Metals":
-        ITEM_GROUPS["Vanilla Metals"] |
-        ITEM_GROUPS["Custom Metals"] |
-        {"Additional Rare Metal"},
-    "Equipable Items":
-        ITEM_GROUPS["Items With Ammo"] |
-        ITEM_GROUPS["Items Without Ammo"],
-    "Fishing Items": {
-                         "Fishing Rod",
-                         "Big Catch Lure",
-                         "Swordfish Shadows",
-                     } |
-                     ITEM_GROUPS["Fish"],
-    "Regular Pedestal Items":
-        ITEM_GROUPS["Regular Crystal Items"] |
-        ITEM_GROUPS["Unique Force Gems"],
-    "Unique Pedestal Items":
-        ITEM_GROUPS["Unique Force Gems"] |
-        ITEM_GROUPS["Unique Crystal Items"],
-    "Global Pedestal Items":
-        ITEM_GROUPS["Global Crystal Items"] |
-        {"Force Gems"},
-    "Spirit Gems":
-        ITEM_GROUPS["Single Spirit Gems"] |
-        ITEM_GROUPS["Spirit Gem Packs"],
-}
-
-ITEM_GROUPS |= {
-    "Shape Crystals":
-        ITEM_GROUPS["Unique Crystal Items"] |
-        ITEM_GROUPS["Regular Crystal Items"] |
-        ITEM_GROUPS["Global Crystal Items"],
-    "Pedestal Items":
-        ITEM_GROUPS["Regular Pedestal Items"] |
-        ITEM_GROUPS["Unique Pedestal Items"] |
-        ITEM_GROUPS["Global Pedestal Items"],
-    "Player Items": {
-                        "Shield",
-                    } | ITEM_GROUPS["Equipable Items"] |
-                    ITEM_GROUPS["Swords"],
-}
-
-ITEM_GROUPS |= {
-    "Throwable Keys":
-        ITEM_GROUPS["Boss Keys"] |
-        ITEM_GROUPS["Pedestal Items"],
-    "Keys":
-        ITEM_GROUPS["Collection Screen Keys"] |
-        ITEM_GROUPS["Small Keys"] |
-        ITEM_GROUPS["Boss Keys"] |
-        ITEM_GROUPS["Pedestal Items"],
-}
 
 STAGE_LOCATION_GROUPS = {
     "Mercay Island": [
@@ -2081,6 +1718,226 @@ SHOP_SCENES = [
     0xc0e,
 
 ]
+
+@dataclass
+class DigSpotData:
+    name: str
+    lock_addr: "Address"
+    item_pointer_addr: "Address"
+    item_pointer_value: int
+    extra_address: "Address" = Address(0)
+    extra_value: int = 0
+    is_tree: bool = False
+    tree_flag_bit: int = 0
+    dangerous_reset: bool = False
+    reset_count: int = 0
+
+
+    async def get_reset_writes(self, _ctx):
+        self.reset_count += 1
+        if self.dangerous_reset and self.reset_count > 1:
+            print(f"\tCanceled Dangerous reset {self.name}")
+            return []
+        if self.reset_count > 5:
+            print(f"\tToo many reloads: {self.name}")
+            return []
+        res: list[tuple[int, list[int], str]] = [
+            self.item_pointer_addr.get_inner_write_list(self.item_pointer_value)
+        ]
+        if not self.is_tree:
+            res.append(self.lock_addr.get_inner_write_list(0x1))
+        else:
+            prev_flags = await self.lock_addr.read(_ctx, silent=True)
+            res.append(self.lock_addr.get_inner_write_list(prev_flags & (~self.tree_flag_bit)))
+
+        if self.extra_address:
+            res.append(self.extra_address.get_inner_write_list(self.extra_value))
+
+        return res
+
+    async def reset(self, _ctx):
+        import worlds._bizhawk as bizhawk
+        wl = await self.get_reset_writes(_ctx)
+        await bizhawk.write(_ctx.bizhawk_ctx, wl)
+
+    def get_clear_writes(self):
+        res: list[tuple[int, list[int], str]] = [
+            self.item_pointer_addr.get_inner_write_list(0)
+        ]
+        return res
+
+class MapDigData(DigSpotData):
+    def __init__(self, name, obj_addr, v):
+        super().__init__(name, obj_addr, obj_addr, v, is_tree=True)
+        self.addr = None
+
+    async def get_pointer(self, ctx):
+        point = await self.item_pointer_addr.read(ctx) + 4*6
+        self.addr = Address(point)
+
+    async def get_reset_writes(self, _ctx):
+        await self.get_pointer(_ctx)
+        return self.addr.get_write_list(self.item_pointer_value)
+
+    async def reset(self, _ctx):
+        await self.get_pointer(_ctx)
+        await self.addr.overwrite(_ctx, self.item_pointer_value)
+
+    def get_clear_writes(self):
+        if self.addr:
+            return self.addr.get_write_list(0)
+        return []
+
+dig_spot_data = {
+    # Cannon
+    # "Cannon Island Bee Dig": DigSpotData("Cannon Island Bee Dig",
+    #                                      Address(0x26A1C0),
+    #                                      Address(0x2707E8, size=4),
+    #                                      0x0226A0A8,
+    #                                      Address(0x1BA8B8), 0x2F),
+    # "Cannon Island SE Dig": DigSpotData("Cannon Island SE Dig",
+    #                                      Address(0x269CC0),
+    #                                      Address(0x2707E0, size=4),
+    #                                      0x02269BA8),
+    # "Cannon Island East Dig": DigSpotData("Cannon Island East Dig",
+    #                                     Address(0x266140),
+    #                                     Address(0x270784, size=4),
+    #                                     0x02266028),
+    "Cannon Island Bonk Tree": DigSpotData("Cannon Island Bonk Tree",
+                                          Address(0x254D50),
+                                          Address(0x2558D4),
+                                          3,
+                                           is_tree=True,
+                                           tree_flag_bit=1),
+
+    # Mercay
+    "Mercay NE Bonk Tree": DigSpotData("Mercay NE Bonk Tree",
+                                           Address(0x263908),
+                                           Address(0x264B9C),
+                                           6,
+                                           is_tree=True,
+                                           tree_flag_bit=1),
+    # "Mercay SW Tree Dig": MapDigData("Mercay SW Tree Dig",
+    #                                          Address(0x26E518), 0x9
+    #                                          ),
+    # Ember
+    # "Astrid's Basement Dig": MapDigData("Astrid's Basement Dig",
+    #                                  Address(0x266A88), 0x9
+    #                                  ),
+    # "Isle of Ember East Summit Dig": MapDigData("Isle of Ember East Summit Dig",
+    #                                     Address(0x26A770, size=3), 0x9
+    #                                     ),
+
+    # Molida
+    # "Molida Island South Romanos Tree Dig": DigSpotData("Molida Island South Romanos Tree Dig",
+    #                                    Address(0x265A18),
+    #                                    Address(0x26C31C, size=4),
+    #                                    0x02265900,
+    #                                    Address(0x1BA8B8), 0x2F),
+    # "Sun Lake Cave Geozard Dig": DigSpotData("Sun Lake Cave Geozard Dig",
+    #                                         Address(0x266318),
+    #                                         Address(0x26C320, size=4),
+    #                                         0x02266200,
+    #                                         Address(0x1BA8B8), 0x11
+    #                                          ),
+    # "Shovel Hideout Dig": DigSpotData("Shovel Hideout Dig",
+    #                                          Address(0x264118),
+    #                                          Address(0x26C320, size=4),
+    #                                          0x02264000, dangerous_reset=True
+    #                                          ),
+    # "Molida Island South Cucco Grapple Tree Dig": MapDigData("Molida Island South Cucco Grapple Tree Dig",
+    #                                  Address(0x264ED8), 0x9
+    #                                  ),
+    # "Molida Island South Cucco Grapple Small Island Dig": DigSpotData("Molida Island South Cucco Grapple Small Island Dig",
+    #                                          Address(0x265898),
+    #                                          Address(0x26C318, size=4),
+    #                                          0x02265380
+    #                                          ),
+    # Gust
+    # "Isle of Gust North Dig": DigSpotData("Isle of Gust North Dig",
+    #                                         Address(0x25F310),
+    #                                         Address(0x26C300, size=4),
+    #                                         0x0225F1F8,
+    #                                         Address(0x1BA8B8), 0xE
+    #                                          ),
+    # "Isle of Gust South NE Dig": DigSpotData("Isle of Gust South NE Dig",
+    #                                       Address(0x266810),
+    #                                       Address(0x26ED18, size=4),
+    #                                       0x022666F8,
+    #                                       ),
+    # Bannan
+    # "Bannan Island West Wayfarer Dig": MapDigData("Bannan Island West Wayfarer Dig",
+    #                                             Address(0x264C38), 0x9
+    #                                             ),
+    # "Bannan Island East Grapple Dig": MapDigData("Bannan Island East Grapple Dig",
+    #                                               Address(0x264DB8), 0x9
+    #                                               ),
+    # Zauz
+    # "Zauz's Island Secret Dig": MapDigData("Zauz's Island Secret Dig",
+    #                                              Address(0x2631D0), 0x9
+    #                                              ),
+    # Frost
+    # "Isle of Frost SW Chief's Sign Dig": DigSpotData("Isle of Frost SW Chief's Sign Dig",
+    #                                          Address(0x265D78),
+    #                                          Address(0x271C38, size=4),
+    #                                          0x02265C60, dangerous_reset=True
+    #                                          ),
+    # "Isle of Frost NW Estate Sign Dig": DigSpotData("Isle of Frost NW Estate Sign Dig",
+    #                                          Address(0x266078),
+    #                                          Address(0x271C50, size=4),
+    #                                          0x02265F60,
+    #                                          ),
+    # "Isle of Frost NW Fofo's Sign Dig (SE)": DigSpotData("Isle of Frost NW Fofo's Sign Dig (SE)",
+    #                                          Address(0x265B78),
+    #                                          Address(0x271C44, size=4),
+    #                                          0x02265A60,
+    #                                          ),
+    # "Isle of Frost NW Dobo's Sign Dig (SW)": DigSpotData("Isle of Frost NW Dobo's Sign Dig (SW)",
+    #                                          Address(0x265878),
+    #                                          Address(0x271C3C, size=4),
+    #                                          0x02265760,
+    #                                          dangerous_reset=True
+    #                                          ),
+    # "Isle of Frost NW Island Dig SE": DigSpotData("Isle of Frost NW Island Dig SE",
+    #                                                      Address(0x2661F8),
+    #                                                      Address(0x271C54, size=4),
+    #                                                      0x022660E0,
+    #                                                      ),
+    # "Isle of Frost NW Island Dig SW": MapDigData("Isle of Frost NW Island Dig SW",
+    #                                               Address(0x2663B8), 0x9
+    #                                               ),
+    # Ruins
+    "Isle of Ruins NW Upper Bonk Tree": DigSpotData("Isle of Ruins NW Upper Bonk Tree",
+                                           Address(0x2519E0),
+                                           Address(0x254A8C),
+                                           3,
+                                           is_tree=True,
+                                           tree_flag_bit=1),
+    # "Isle of Ruins NW Like-Like Dig": DigSpotData("Isle of Ruins NW Like-Like Dig",
+    #                                                 Address(0x259AA8),
+    #                                                 Address(0x26433C, size=4),
+    #                                                 0x02259990, dangerous_reset=True),
+
+}
+dig_spot_data_water = {
+    "Isle of Ruins NW Upper Bonk Tree": DigSpotData("Isle of Ruins NW Upper Bonk Tree",
+                                                    Address(0x2519E0),
+                                                    Address(0x254E38),
+                                                    3,
+                                                    is_tree=True,
+                                                    tree_flag_bit=4),
+    "Isle of Ruins NW Lower Water Bonk Tree": DigSpotData("Isle of Ruins NW Lower Water Bonk Tree",
+                                                    Address(0x2519E0),
+                                                    Address(0x254f38),
+                                                    3,
+                                                    is_tree=True,
+                                                    tree_flag_bit=8),
+    # "Isle of Ruins NW Like-Like Dig": DigSpotData("Isle of Ruins NW Like-Like Dig",
+    #                                               Address(0x25B2B8),
+    #                                               Address(0x26AEB4, size=4),
+    #                                               0x0225B1A0, dangerous_reset=True),
+}
+
 
 if __name__ == "__main__":
     for cat, value in CATEGORY_LOCATION_GROUPS.items():

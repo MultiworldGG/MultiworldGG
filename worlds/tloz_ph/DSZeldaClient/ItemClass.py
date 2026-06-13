@@ -30,9 +30,13 @@ async def receive_small_key(client: "DSZeldaClient", ctx: "BizHawkClientContext"
         print("In dungeon! Getting Key")
         # Don't remove vanilla keys
         if client.last_vanilla_item and client.last_vanilla_item[-1] == item.name:
+            print(f"\tCanceling removal of vanilla key")
             client.last_vanilla_item.pop()
         else:
+            print(f"\tKey address: {client.key_address}")
+            await client.get_small_key_address(ctx)
             key_value = await client.key_address.read(ctx)
+            print(f"\tNew Key address: {client.key_address} = {key_value}")
             key_value = 7 if key_value > 7 else key_value
             res += client.key_address.get_write_list(key_value + key_count)
             res += await client.receive_key_in_own_dungeon(ctx, item.name, write_keys_to_storage)  # TODO: Move special operation here too
@@ -43,6 +47,7 @@ async def receive_small_key(client: "DSZeldaClient", ctx: "BizHawkClientContext"
 
     # Extra key operations, in ph writing totok midway keys
     res += await client.received_special_small_keys(ctx, item.name, write_keys_to_storage)
+    print(f"\tKey Write List: {res}")
     return res
 
 async def receive_refill(client: "DSZeldaClient", ctx: "BizHawkClientContext", item: "DSItem", num_received_items):

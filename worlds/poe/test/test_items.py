@@ -6,6 +6,7 @@ from unittest.mock import Mock, patch, MagicMock
 from BaseClasses import ItemClassification
 from worlds.poe import Items
 from worlds.poe.Items import ItemDict, PathOfExileItem
+from worlds.poe import Logic
 from . import PoeTestBase
 
 
@@ -258,15 +259,15 @@ class TestItemDeprioritization(PoeTestBase):
     def test_deprioritize_non_logic_gems(self, mock_acts):
         """Test gem deprioritization based on logic requirements"""
         mock_acts.__getitem__ = Mock(side_effect=lambda x: {"maxMonsterLevel": x * 5})
-        
+
         # Mock Items module functions to return our test data
-        with patch.object(Items, 'get_main_skill_gem_items', return_value=[self.mock_item_table[1], self.mock_item_table[2]]), \
-             patch.object(Items, 'get_support_gem_items', return_value=[self.mock_item_table[3]]), \
-             patch.object(Items, 'get_utility_skill_gem_items', return_value=[self.mock_item_table[4]]):
-            
+        with patch('worlds.poe.Items.get_main_skill_gem_items', return_value=[self.mock_item_table[1], self.mock_item_table[2]]), \
+             patch('worlds.poe.Items.get_support_gem_items', return_value=[self.mock_item_table[3]]), \
+             patch('worlds.poe.Items.get_utility_skill_gem_items', return_value=[self.mock_item_table[4]]):
+
             # Create a copy to test against original
             original_table = self.mock_item_table.copy()
-            result = Items.deprioritize_non_logic_gems(self.mock_world, original_table)
+            result = Logic.deprioritize_non_logic_gems(self.mock_world, original_table)
             
             # Should return the modified table
             self.assertIsInstance(result, dict)
@@ -289,22 +290,6 @@ class TestItemDeprioritization(PoeTestBase):
             for item_id, item in result.items():
                 self.assertIn("classification", item)
                 self.assertIsInstance(item["classification"], ItemClassification)
-    
-    @patch('worlds.poe.Items.get_main_skill_gem_items')
-    @patch('worlds.poe.Items.get_gear_items')
-    def test_deprioritize_non_logic_gear(self, mock_gear_items, mock_main_gems):
-        """Test gear deprioritization based on logic requirements"""
-        mock_main_gems.return_value = [
-            {"reqToUse": ["Sword"], "classification": ItemClassification.progression}
-        ]
-        mock_gear_items.return_value = [self.mock_item_table[5], self.mock_item_table[6]]
-        
-        result = Items.deprioritize_non_logic_gear(self.mock_world, self.mock_item_table.copy())
-        
-        # Should maintain some gear as progression
-        self.assertTrue(any(item["classification"] == ItemClassification.progression 
-                          for item in result.values() if "Gear" in item.get("category", [])))
-
 
 class TestItemCulling(PoeTestBase):
     """Test item culling functionality"""
@@ -330,7 +315,7 @@ class TestItemCulling(PoeTestBase):
     
     def test_cull_items_to_place_exact_match(self):
         """Test culling when items exactly match locations"""
-        result = Items.cull_items_to_place(self.mock_world, self.test_items.copy(), self.test_locations)
+        result = Logic.cull_items_to_place(self.mock_world, self.test_items.copy(), self.test_locations)
         
         # Should not cull anything if counts match
         total_items = sum(item.get("count", 1) for item in result.values())
@@ -342,7 +327,7 @@ class TestItemCulling(PoeTestBase):
         excess_items = self.test_items.copy()
         excess_items[4] = {"id": 4, "name": "Item4", "classification": ItemClassification.filler, "count": 5}
         
-        result = Items.cull_items_to_place(self.mock_world, excess_items, self.test_locations)
+        result = Logic.cull_items_to_place(self.mock_world, excess_items, self.test_locations)
         
         # Should cull items to match location count
         total_items = sum(item.get("count", 1) for item in result.values())
@@ -360,7 +345,7 @@ class TestItemCulling(PoeTestBase):
         # Only 2 locations, so should cull 5 items
         small_locations = {1: {"id": 1}, 2: {"id": 2}}
         
-        result = Items.cull_items_to_place(self.mock_world, excess_items, small_locations)
+        result = Logic.cull_items_to_place(self.mock_world, excess_items, small_locations)
         
         # Progression should always be preserved
         self.assertIn(1, result)

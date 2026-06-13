@@ -81,24 +81,43 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                       'Heavy': [450,'weak_walls','spin_walls','strong_walls','strong_floors','fits_under_gaps',"breaks_spikes","stomp","attacks_though_thin_walls","lava_immune",'pounds_springs'],#
                       'Bomb': [250,'weak_walls','spin_walls','fits_under_gaps',"roll","instant_speed","breaks_spikes","skims_water","can_spindash","attacks_though_thin_walls",'soft_jump'],#
 
-                      'Kris': [],#
-                      'Susie': [],#
-                      'Ralsei': [],#
+                      'Bean': [400,'weak_walls','spin_walls','strong_walls','strong_floors','strong_floors','free_flyer','breaks_spikes','soft_jump','downward_projectile','attacks_though_thin_walls'],  #700 with wall
+                      'Dr. Eggman': [1200,'weak_walls', 'spin_walls',"strong_walls",'strong_floors','roll','fits_under_gaps','free_flyer','breaks_spikes','can_use_shields','skims_water','downward_projectile',"attacks_though_thin_walls",'water_run'],  #no air strong walls
+                      'Adventure Sonic': [250,'weak_walls','spin_walls','strong_walls','stronger_walls','roll','fits_under_gaps','instant_speed',"breaks_spikes","can_spindash",'can_stomp',"badnik_bounce","skims_water"],  #
+                      'Tangle': [250,'weak_walls', 'spin_walls',"strong_walls",'strong_floors','roll','fits_under_gaps',"climbs_walls","breaks_spikes","soft_jump","downward_projectile"],  #climbs walls
+
+                      'Blaze': [250,'weak_walls', 'spin_walls',"roll","instant_speed","free_flyer","breaks_spikes","can_spindash",'can_use_shields'],  #
+                      'Marine': [800,'weak_walls', 'spin_walls',"strong_walls",'strong_floors',"fits_under_gaps","free_flyer","breaks_spikes","pounds_springs","soft_jump","attacks_though_thin_walls","badnik_bounce","roll_with_springs"],  #
+
+                      'Inazuma': [115,'weak_walls', 'spin_walls',"strong_walls",'strong_floors',"breaks_spikes","soft_jump","attacks_though_thin_walls","skims_water","water_run"],  #
+                      'Aether': [900,'weak_walls', 'spin_walls',"strong_walls",'strong_floors',"free_flyer","breaks_spikes","soft_jump","attacks_though_thin_walls"],  #
+
+
+
+                      'E-102 Gamma': [],  #breaks
+
+                      'Kris': [115,'weak_walls', 'spin_walls','roll','fits_under_gaps',"free_flyer","can_use_shields","soft_jump","skims_water","can_spindash"],#
+                      'Susie': [250,'weak_walls', 'spin_walls', 'stronger_walls','strong_floors',"breaks_spikes","pounds_springs","soft_jump","can_stomp","attacks_though_thin_walls"],#
+                      'Ralsei': [600,'weak_walls', 'spin_walls','strong_floors',"free_flyer","breaks_spikes","soft_jump","attacks_though_thin_walls"],#
+
+
 
                         #
+
+                      'Cacee': [350],  #
+
                       'Surge': [],  #
-                      'Blaze': [],  #
+
 
                       'Skip': [200, 'weak_walls', 'spin_walls', 'fits_under_gaps', 'free_flyer', 'can_spindash','roll','badnik_bounce'],
                       'Jana': [],#
                       'Kou': [],#
                       'Echoes & Abyss': [],#
 
-                      'Inazuma': [],  #
-                      'Aether': [],  #
+
 
                       'Whisper': [],
-                      'Tangle': [],
+
                       'X Sonic': [115, 'weak_walls', 'spin_walls', 'strong_walls', 'stronger_walls','strong_floors','roll','fits_under_gaps', 'instant_speed','breaks_spikes', 'insane_speed', 'skims_water','badnik_bounce','can_use_shields',"can_spindash"],
                       }
 
@@ -135,13 +154,19 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
     #insane_speed (dsz1 fast door)
     #downward_projectile (able to break monitors in shallow bouyant slime, ie fangs popgun)
     #shoots_player_blockers (able to break monitors through exclusively player blocking linedefs)
-    # attacks_though_thin_walls (acz2 monitors near heart emblem can be broken by fangs popgun & amy's hammer)
+    # attacks_though_thin_walls (BADNIKS NEAR THE ARMAGEDDON SHIELD IN GFZ1 can be broken by fangs popgun & amy's hammer)
     #badnik_bounce (get full height off of badnik/monitor bouncing)
+    # fits_through_bars (aerial garden bars)
 
     #to add
     #breaths_water
-    #fits_through_bars (aerial garden bars)
     #swims (infinite height in water) (probably useless outside azt)
+    #roll_with_springs (many chars can roll by pouding sideways springs)
+    #water_run (skims water is used for rolling, this is used when you can actually jump off the water i.e. inazuma)
+    #strong_walls_air (can break strong walls not on the ground)
+    #homing_attack
+    #blast_linedefs (can break the tnt walls in acz1/floating mine walls in dsz1)
+
     #not_hydrophobic (water doesnt kill/ immobilize you) (x sonic)
 
     def char_needs_tags(state: CollectionState,tag_list,jump_height):
@@ -270,7 +295,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
 
 
     # TODO add emerald token logic and other zones
-    if options.difficulty != 2:
+    if options.difficulty <=1:
         # Greenflower
         if options.difficulty == 0:
             add_rule(world.get_location("Greenflower (Act 1) Diamond Emblem", player),
@@ -4443,6 +4468,9 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
             add_rule(world.get_location("Summit Showdown Monitor - x:5600 y:2208", player),
                      lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 200) or
                     (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 115)))
+
+
+
             add_rule(world.get_location("Summit Showdown Monitor - x:-1216 y:-928", player),
                      lambda state: state.has("Yellow Springs", player) or char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 300) or char_needs_tags(state, ["can_hover"], -1))
 
@@ -4468,7 +4496,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
 
             add_rule(world.get_location("Silver Shiver Monitor - x:15280 y:-26560", player),
                      lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [], 150) or
-                                   (state.has("Yellow Springs", player) and (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)))
+                                   (state.has("Yellow Springs", player) and (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1))) or
                                     (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 115))  )
 
 

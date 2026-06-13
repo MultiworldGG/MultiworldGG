@@ -110,7 +110,11 @@
             "Water Temple MQ Storage Room Crate 4": "can_break_crate",
             "Water Temple MQ Storage Room Crate 5": "can_break_crate",
             "Water Temple MQ Storage Room Crate 6": "can_break_crate",
-            "Water Temple MQ Storage Room Crate 7": "can_break_crate"
+            "Water Temple MQ Storage Room Crate 7": "can_break_crate",
+            "Water Temple MQ Storage Room Small Wooden Crate 1": "True",
+            "Water Temple MQ Storage Room Small Wooden Crate 2": "True",
+            "Water Temple MQ Storage Room Small Wooden Crate 3": "True",
+            "Water Temple MQ Storage Room Small Wooden Crate 4": "True"
         }
     },
     {
@@ -144,8 +148,10 @@
             "Water Temple MQ Before Upper Water Switch Lower Crate 4": "can_break_crate",
             "Water Temple MQ Before Upper Water Switch Lower Crate 5": "can_break_crate",
             "Water Temple MQ Before Upper Water Switch Lower Crate 6": "can_break_crate",
+            "Water Temple MQ Before Upper Water Switch Lower Small Crate": "True",
             "Water Temple MQ Before Upper Water Switch Upper Crate 1": "Longshot and can_break_crate",
             "Water Temple MQ Before Upper Water Switch Upper Crate 2": "Longshot and can_break_crate",
+            "Water Temple MQ Before Upper Water Switch Upper Small Crate": "Longshot",
             "Water Temple MQ GS Before Upper Water Switch": "Longshot",
             "Water Temple MQ Upper Water Switch Hookshot Wonderitem": "Hookshot"
         }
@@ -190,6 +196,9 @@
         "locations": {
             "Water Temple MQ Dragon Statue By Torches Crate 1": "can_break_crate",
             "Water Temple MQ Dragon Statue By Torches Crate 2": "can_break_crate",
+            "Water Temple MQ Dragon Statue By Torches Small Wooden Crate 1": "True",
+            "Water Temple MQ Dragon Statue By Torches Small Wooden Crate 2": "True",
+            "Water Temple MQ Dragon Statue By Torches Small Wooden Crate 3": "True",
             "Water Temple MQ Dragon Statue Submerged Crate 1": "
                 (Iron_Boots and can_bonk) or (has_bombchus and (can_dive or Iron_Boots))",
             "Water Temple MQ Dragon Statue Submerged Crate 2": "

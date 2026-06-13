@@ -40,11 +40,11 @@ window.addEventListener('load', () => {
       const tab_header = document.getElementById(hide_id+'-header').children[0];
       const orig_text = tab_header.innerHTML;
       let new_text;
-      if (orig_text.includes("▼")) {
-        new_text = orig_text.replace("▼", "▲");
+      if (orig_text.includes("[+]")) {
+        new_text = orig_text.replace("[+]", "[-]");
       }
       else {
-        new_text = orig_text.replace("▲", "▼");
+        new_text = orig_text.replace("[-]", "[+]");
       }
       tab_header.innerHTML = new_text;
     });

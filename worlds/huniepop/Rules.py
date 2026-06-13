@@ -2,7 +2,7 @@ from worlds.generic.Rules import set_rule, forbid_item, forbid_items_for_player
 from worlds.huniepop.Data import gift_id_to_name
 
 
-def set_rules(multiworld, player, girls, girldata, goal, progdate):
+def set_rules(multiworld, player, girls, girldata, goal, progdate, shopslots):
     is_ut = getattr(multiworld, "generation_is_fake", False)
 
     panties = set()
@@ -148,3 +148,6 @@ def set_rules(multiworld, player, girls, girldata, goal, progdate):
             set_rule(multiworld.get_location("Sleep with all girls", player), lambda state: state.has_all(girlsset, player) and state.has("Date Pass", player, 5))
         else:
             set_rule(multiworld.get_location("Sleep with all girls", player), lambda state: state.has_all(girlsset, player))
+
+    if not is_ut and shopslots and progdate:
+        set_rule(multiworld.get_entrance("hub-shop", player), lambda state: state.has("Date Pass", player, 4))

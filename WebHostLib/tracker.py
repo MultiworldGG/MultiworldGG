@@ -61,6 +61,8 @@ class TrackerData:
 
         self.item_name_to_id: Dict[str, Dict[str, int]] = {}
         self.location_name_to_id: Dict[str, Dict[str, int]] = {}
+        self.item_name_groups: Dict[str, Dict[str, List[str]]] = {}
+        self.location_name_groups: Dict[str, Dict[str, List[str]]] = {}
 
         # Generate inverse lookup tables from data package, useful for trackers.
         self.item_id_to_name: Dict[str, Dict[int, str]] = KeyedDefaultDict(lambda game_name: {
@@ -79,6 +81,8 @@ class TrackerData:
             # Normal lookup tables as well.
             self.item_name_to_id[game] = game_package["item_name_to_id"]
             self.location_name_to_id[game] = game_package["location_name_to_id"]
+            self.item_name_groups[game] = game_package.get("item_name_groups", {})
+            self.location_name_groups[game] = game_package.get("location_name_groups", {})
 
     def get_seed_name(self) -> str:
         """Retrieves the seed name."""
@@ -892,19 +896,30 @@ if "Ocarina of Time" in network_data_package["games"]:
             "Prelude of Light":       "https://static.wikia.nocookie.net/zelda_gamepedia_en/images/9/90/Yellow_Note.png",
             "Small Key":              "https://static.wikia.nocookie.net/zelda_gamepedia_en/images/e/e5/OoT_Small_Key_Icon.png",
             "Boss Key":               "https://static.wikia.nocookie.net/zelda_gamepedia_en/images/4/40/OoT_Boss_Key_Icon.png",
+            "Silver Rupee":           "https://cdn.wikimg.net/en/zeldawiki/images/thumb/b/b7/OoT3D_Silver_Rupee_Model.png/196px-OoT3D_Silver_Rupee_Model.png",
+            "Ocarina Button":         "https://static.wikia.nocookie.net/zelda_gamepedia_en/images/2/21/Grey_Note.png",
         }
 
         display_data = {}
+        inventory = tracker_data.get_player_inventory_counts(team, player)
+        item_name_to_id = tracker_data.item_name_to_id["Ocarina of Time"]
+
+        def item_count(item_name: str) -> int:
+            item_id = item_name_to_id.get(item_name)
+            return inventory[item_id] if item_id is not None else 0
+
+        def has_item(item_name: str) -> bool:
+            return item_count(item_name) > 0
 
         # Determine display for progressive items
-        progressive_items = {
-            "Progressive Hookshot":         66128,
-            "Progressive Strength Upgrade": 66129,
-            "Progressive Wallet":           66133,
-            "Progressive Scale":            66134,
-            "Magic Meter":                  66138,
-            "Ocarina":                      66139,
-        }
+        progressive_items = (
+            "Progressive Hookshot",
+            "Progressive Strength Upgrade",
+            "Progressive Wallet",
+            "Progressive Scale",
+            "Magic Meter",
+            "Ocarina",
+        )
 
         progressive_names = {
             "Progressive Hookshot":         ["Hookshot", "Hookshot", "Longshot"],
@@ -916,9 +931,8 @@ if "Ocarina of Time" in network_data_package["games"]:
             "Ocarina":                      ["Fairy Ocarina", "Fairy Ocarina", "Ocarina of Time"]
         }
 
-        inventory = tracker_data.get_player_inventory_counts(team, player)
-        for item_name, item_id in progressive_items.items():
-            level = min(inventory[item_id], len(progressive_names[item_name]) - 1)
+        for item_name in progressive_items:
+            level = min(item_count(item_name), len(progressive_names[item_name]) - 1)
             display_name = progressive_names[item_name][level]
             if item_name.startswith("Progressive"):
                 base_name = item_name.split(maxsplit=1)[1].lower().replace(" ", "_")
@@ -932,47 +946,88 @@ if "Ocarina of Time" in network_data_package["games"]:
                 display_data["wallet_size"] = {0: "99", 1: "200", 2: "500", 3: "999"}.get(level)
 
         # Determine display for bottles. Show letter if it's obtained, determine bottle count
-        bottle_ids = [66015, 66020, 66021, 66140, 66141, 66142, 66143, 66144, 66145, 66146, 66147, 66148]
-        display_data["bottle_count"] = min(sum(map(lambda item_id: inventory[item_id], bottle_ids)), 4)
-        display_data["bottle_url"] = icons["Rutos Letter"] if inventory[66021] > 0 else icons["Bottle"]
+        item_name_groups = tracker_data.item_name_groups.get("Ocarina of Time", {})
+        bottle_names = item_name_groups.get("Bottles", (
+            "Bottle", "Bottle with Milk", "Rutos Letter", "Bottle with Red Potion", "Bottle with Green Potion",
+            "Bottle with Blue Potion", "Bottle with Fairy", "Bottle with Fish", "Bottle with Blue Fire",
+            "Bottle with Bugs", "Bottle with Big Poe", "Bottle with Poe",
+        ))
+        display_data["bottle_count"] = min(sum(item_count(item_name) for item_name in bottle_names), 4)
+        display_data["bottle_url"] = icons["Rutos Letter"] if has_item("Rutos Letter") else icons["Bottle"]
 
         # Determine bombchu display
-        display_data["has_bombchus"] = any(map(lambda item_id: inventory[item_id] > 0, [66003, 66106, 66107, 66137]))
+        display_data["has_bombchus"] = any(has_item(item_name) for item_name in (
+            "Bombchus (10)", "Bombchus (5)", "Bombchus (20)", "Bombchus",
+        ))
 
         # Multi-items
-        multi_items = {
-            "Gold Skulltula Token": 66091,
-            "Triforce Piece":       66202,
-        }
-        for item_name, item_id in multi_items.items():
+        multi_items = ("Gold Skulltula Token", "Triforce Piece")
+        for item_name in multi_items:
             base_name = item_name.split()[-1].lower()
-            display_data[base_name + "_count"] = inventory[item_id]
+            display_data[base_name + "_count"] = item_count(item_name)
+
+        ocarina_button_names = (
+            "Ocarina A Button",
+            "Ocarina C up Button",
+            "Ocarina C down Button",
+            "Ocarina C left Button",
+            "Ocarina C right Button",
+        )
+        display_data["ocarina_button_items"] = {
+            item_name: has_item(item_name) for item_name in ocarina_button_names
+        }
+        display_data["ocarina_button_labels"] = {
+            "Ocarina A Button": "A",
+            "Ocarina C up Button": "C^",
+            "Ocarina C down Button": "Cv",
+            "Ocarina C left Button": "C<",
+            "Ocarina C right Button": "C>",
+        }
+        display_data["tcg_key_count"] = item_count("Small Key (Treasure Chest Game)")
+        display_data["tcg_key_ring"] = has_item("Small Key Ring (Treasure Chest Game)")
+        display_data["silver_rupee_count"] = sum(
+            item_count(item_name) for item_name in item_name_to_id if item_name.startswith("Silver Rupee ("))
+        display_data["silver_rupee_pouch_count"] = sum(
+            item_count(item_name) for item_name in item_name_to_id if item_name.startswith("Silver Rupee Pouch ("))
+        display_data["show_extra_items"] = (
+            any(item_name in item_name_to_id for item_name in ocarina_button_names)
+            or "Small Key (Treasure Chest Game)" in item_name_to_id
+            or any(item_name.startswith("Silver Rupee") for item_name in item_name_to_id)
+        )
 
         # Gather dungeon locations
-        area_id_ranges = {
-            "Overworld":              ((67000, 67263), (67269, 67280), (67747, 68024), (68054, 68062)),
-            "Deku Tree":              ((67281, 67303), (68063, 68077)),
-            "Dodongo's Cavern":       ((67304, 67334), (68078, 68160)),
-            "Jabu Jabu's Belly":      ((67335, 67359), (68161, 68188)),
-            "Bottom of the Well":     ((67360, 67384), (68189, 68230)),
-            "Forest Temple":          ((67385, 67420), (68231, 68281)),
-            "Fire Temple":            ((67421, 67457), (68282, 68350)),
-            "Water Temple":           ((67458, 67484), (68351, 68483)),
-            "Shadow Temple":          ((67485, 67532), (68484, 68565)),
-            "Spirit Temple":          ((67533, 67582), (68566, 68625)),
-            "Ice Cavern":             ((67583, 67596), (68626, 68649)),
-            "Gerudo Training Ground": ((67597, 67635), (68650, 68656)),
-            "Thieves' Hideout":       ((67264, 67268), (68025, 68053)),
-            "Ganon's Castle":         ((67636, 67673), (68657, 68705)),
+        area_groups = {
+            "Deku Tree": "Deku Tree",
+            "Dodongo's Cavern": "Dodongo's Cavern",
+            "Jabu Jabu's Belly": "Jabu Jabu's Belly",
+            "Bottom of the Well": "Bottom of the Well",
+            "Forest Temple": "Forest Temple",
+            "Fire Temple": "Fire Temple",
+            "Water Temple": "Water Temple",
+            "Shadow Temple": "Shadow Temple",
+            "Spirit Temple": "Spirit Temple",
+            "Ice Cavern": "Ice Cavern",
+            "Gerudo Training Ground": "Gerudo Training Ground",
+            "Thieves' Hideout": "Thieves' Hideout",
+            "Ganon's Castle": "Ganon's Castle",
         }
+        area_order = ("Overworld", *area_groups)
+        location_name_to_id = tracker_data.location_name_to_id["Ocarina of Time"]
+        location_name_groups = tracker_data.location_name_groups.get("Ocarina of Time", {})
 
         def lookup_and_trim(id, area):
             full_name = tracker_data.location_id_to_name["Ocarina of Time"][id]
             if "Ganons Tower" in full_name:
                 return full_name
             if area not in ["Overworld", "Thieves' Hideout"]:
-                # trim dungeon name. leaves an extra space that doesn't display, or trims fully for DC/Jabu/GC
-                return full_name[len(area):]
+                prefixes = {
+                    "Dodongo's Cavern": ("Dodongos Cavern",),
+                    "Jabu Jabu's Belly": ("Jabu Jabus Belly",),
+                    "Ganon's Castle": ("Ganons Castle",),
+                }.get(area, (area,))
+                for prefix in prefixes:
+                    if full_name.startswith(prefix):
+                        return full_name[len(prefix):].strip()
             return full_name
 
         locations = tracker_data.get_player_locations(player)
@@ -980,18 +1035,27 @@ if "Ocarina of Time" in network_data_package["games"]:
         location_info = {}
         checks_done = {}
         checks_in_area = {}
-        for area, ranges in area_id_ranges.items():
+        area_location_ids = {}
+        dungeon_location_ids = set()
+        for area, group_name in area_groups.items():
+            area_ids = {
+                location_name_to_id[location_name]
+                for location_name in location_name_groups.get(group_name, ())
+                if location_name in location_name_to_id
+            }
+            area_location_ids[area] = area_ids
+            dungeon_location_ids.update(area_ids)
+        area_location_ids["Overworld"] = set(locations) - dungeon_location_ids
+
+        for area in area_order:
             location_info[area] = {}
             checks_done[area] = 0
             checks_in_area[area] = 0
-            for r in ranges:
-                min_id, max_id = r
-                for id in range(min_id, max_id + 1):
-                    if id in locations:
-                        checked = id in checked_locations
-                        location_info[area][lookup_and_trim(id, area)] = checked
-                        checks_in_area[area] += 1
-                        checks_done[area] += checked
+            for id in sorted(area_location_ids[area].intersection(locations)):
+                checked = id in checked_locations
+                location_info[area][lookup_and_trim(id, area)] = checked
+                checks_in_area[area] += 1
+                checks_done[area] += checked
 
         checks_done["Total"] = sum(checks_done.values())
         checks_in_area["Total"] = sum(checks_in_area.values())
@@ -1002,28 +1066,32 @@ if "Ocarina of Time" in network_data_package["games"]:
             if "GS" in lookup_and_trim(id, ""):
                 display_data["token_count"] += 1
 
-        oot_y = "✔"
-        oot_x = "✕"
+        oot_y = "Y"
+        oot_x = "N"
 
         # Gather small and boss key info
+        def key_count(key_name: str, keyring_name: str) -> int | str:
+            return oot_y if has_item(keyring_name) else item_count(key_name)
+
         small_key_counts = {
-            "Forest Temple":          oot_y if inventory[66203] else inventory[66175],
-            "Fire Temple":            oot_y if inventory[66204] else inventory[66176],
-            "Water Temple":           oot_y if inventory[66205] else inventory[66177],
-            "Spirit Temple":          oot_y if inventory[66206] else inventory[66178],
-            "Shadow Temple":          oot_y if inventory[66207] else inventory[66179],
-            "Bottom of the Well":     oot_y if inventory[66208] else inventory[66180],
-            "Gerudo Training Ground": oot_y if inventory[66209] else inventory[66181],
-            "Thieves' Hideout":       oot_y if inventory[66210] else inventory[66182],
-            "Ganon's Castle":         oot_y if inventory[66211] else inventory[66183],
+            "Forest Temple":          key_count("Small Key (Forest Temple)", "Small Key Ring (Forest Temple)"),
+            "Fire Temple":            key_count("Small Key (Fire Temple)", "Small Key Ring (Fire Temple)"),
+            "Water Temple":           key_count("Small Key (Water Temple)", "Small Key Ring (Water Temple)"),
+            "Spirit Temple":          key_count("Small Key (Spirit Temple)", "Small Key Ring (Spirit Temple)"),
+            "Shadow Temple":          key_count("Small Key (Shadow Temple)", "Small Key Ring (Shadow Temple)"),
+            "Bottom of the Well":     key_count("Small Key (Bottom of the Well)", "Small Key Ring (Bottom of the Well)"),
+            "Gerudo Training Ground": key_count(
+                "Small Key (Gerudo Training Ground)", "Small Key Ring (Gerudo Training Ground)"),
+            "Thieves' Hideout":       key_count("Small Key (Thieves Hideout)", "Small Key Ring (Thieves Hideout)"),
+            "Ganon's Castle":         key_count("Small Key (Ganons Castle)", "Small Key Ring (Ganons Castle)"),
         }
         boss_key_counts = {
-            "Forest Temple":  oot_y if inventory[66149] else oot_x,
-            "Fire Temple":    oot_y if inventory[66150] else oot_x,
-            "Water Temple":   oot_y if inventory[66151] else oot_x,
-            "Spirit Temple":  oot_y if inventory[66152] else oot_x,
-            "Shadow Temple":  oot_y if inventory[66153] else oot_x,
-            "Ganon's Castle": oot_y if inventory[66154] else oot_x,
+            "Forest Temple":  oot_y if has_item("Boss Key (Forest Temple)") else oot_x,
+            "Fire Temple":    oot_y if has_item("Boss Key (Fire Temple)") else oot_x,
+            "Water Temple":   oot_y if has_item("Boss Key (Water Temple)") else oot_x,
+            "Spirit Temple":  oot_y if has_item("Boss Key (Spirit Temple)") else oot_x,
+            "Shadow Temple":  oot_y if has_item("Boss Key (Shadow Temple)") else oot_x,
+            "Ganon's Castle": oot_y if has_item("Boss Key (Ganons Castle)") else oot_x,
         }
 
         # Victory condition

@@ -280,8 +280,8 @@ async def map_mode(client: "PhantomHourglassClient", ctx: "BizHawkClientContext"
         # Setup pen mode stuff
         pen_mode_pointer = await PHAddr.pen_mode_pointer.read(ctx, silent=True)
         print(f"pen mode pointer {hex(pen_mode_pointer)}")
-        pen_mode_check = pen_mode_pointer+25*4-0x2000000
-        if pen_mode_check < 0x400000:
+        pen_mode_check = pen_mode_pointer+25*4
+        if 0x100000 < pen_mode_check < 0x400000:
             client.pen_mode_pointer = Address(pen_mode_check, size=4)
             client.last_pen_mode = await client.pen_mode_pointer.read(ctx)
         else: client.pen_mode_pointer = None
@@ -314,7 +314,7 @@ async def map_mode(client: "PhantomHourglassClient", ctx: "BizHawkClientContext"
             if transition_mode in warp_item_lookup and not item_count(ctx, warp_item_lookup[transition_mode]):
                 client.map_warp = None
                 logger.info(f"Missing warp unlock item for that island")
-        elif transition_mode in range(0x1f, 0x23) and ctx.slot_data["boat_requires_sea_chart"]:
+        if transition_mode in range(0x1f, 0x23) and ctx.slot_data["boat_requires_sea_chart"]:
             # If warping to sea, check sea chart reqs
             trans_mode_to_chart = {0x1F: "SW Sea Chart", 0x20: "SE Sea Chart", 0x21: "NW Sea Chart", 0x22: "NE Sea Chart"}
             if not item_count(ctx, trans_mode_to_chart[transition_mode]):

@@ -736,8 +736,9 @@
     function uploadFiles(files) {
         if (!files || files.length === 0) return;
 
+        const selectedFiles = Array.from(files);
         const formData = new FormData();
-        for (const file of files) {
+        for (const file of selectedFiles) {
             formData.append("file", file);
         }
 
@@ -830,7 +831,7 @@
                     if (data.needs_apworld_confirmation && data.needs_apworld_confirmation.length > 0) {
                         const confirmItems = data.needs_apworld_confirmation;
                         const fileMap = new Map();
-                        for (const file of files) {
+                        for (const file of selectedFiles) {
                             fileMap.set(file.name, file);
                         }
                         const lines = confirmItems.map(item => "  • " + item.filename + ": " + item.error);

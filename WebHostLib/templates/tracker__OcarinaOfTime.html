@@ -3,6 +3,7 @@
 <head>
     <title>{{ player_name }}&apos;s Tracker</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/ootTracker.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/standaloneTracker.css') }}"/>
     <script type="application/ecmascript" src="{{ url_for('static', filename='assets/ootTracker.js') }}"></script>
 </head>
 
@@ -153,6 +154,30 @@
                     </div>
                 </td>
             </tr>
+            {% if show_extra_items %}
+            <tr class="extra-items">
+                {% for item_name, acquired in ocarina_button_items.items() %}
+                <td>
+                    <div class="counted-item">
+                        <img src="{{ icons['Ocarina Button'] }}" class="{{ 'acquired' if acquired }}" title="{{ item_name }}" />
+                        <div class="item-count">{{ ocarina_button_labels[item_name] }}</div>
+                    </div>
+                </td>
+                {% endfor %}
+                <td>
+                    <div class="counted-item">
+                        <img src="{{ icons['Small Key'] }}" class="{{ 'acquired' if tcg_key_count > 0 or tcg_key_ring }}" title="Treasure Chest Game Keys" />
+                        <div class="item-count">{{ 'R' if tcg_key_ring else (tcg_key_count if tcg_key_count > 0 else '') }}</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="counted-item">
+                        <img src="{{ icons['Silver Rupee'] }}" class="silver-rupee {{ 'acquired' if silver_rupee_count > 0 or silver_rupee_pouch_count > 0 }}" title="Silver Rupees" />
+                        <div class="item-count">{{ silver_rupee_count if silver_rupee_count > 0 else '' }}{{ '+' ~ silver_rupee_pouch_count ~ 'P' if silver_rupee_pouch_count > 0 else '' }}</div>
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
         </table>
         <table id="location-table">
             <tr>
@@ -163,7 +188,7 @@
             </tr>
             {% for area in checks_done %}
             <tr class="location-category" id="{{area}}-header">
-                <td>{{ area }} {{'▼' if area != 'Total'}}</td>
+                <td>{{ area }} {{'[+]' if area != 'Total'}}</td>
                 <td class="smallkeys">{{ small_key_counts.get(area, '-') }}</td>
                 <td class="bosskeys">{{ boss_key_counts.get(area, '-') }}</td>
                 <td class="counter">{{ checks_done[area] }} / {{ checks_in_area[area] }}</td>
@@ -174,7 +199,7 @@
                     <td class="location-name">{{ location }}</td>
                     <td></td>
                     <td></td>
-                    <td class="counter">{{ '✔' if location_info[area][location] else '' }}</td>
+                    <td class="counter">{{ 'Y' if location_info[area][location] else '' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

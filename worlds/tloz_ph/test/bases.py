@@ -158,4 +158,4 @@ options_excluded_crystals = {"dungeons_required": 8,
 
 class TestPHGeneration(WorldTestBase):
     game = "The Legend of Zelda - Phantom Hourglass"
-    options = options_excluded_crystals
+    options = options_metal_bug

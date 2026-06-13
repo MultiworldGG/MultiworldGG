@@ -386,6 +386,7 @@ REGIONS = [
     "Ghost Ship Warp",
     "Cubus Sisters",
     "Post Cubus Sisters",
+    "Post Cubus Sisters Event",
     "Ghost Ship Tetra",
     "Spawn Pirate Ambush",
 

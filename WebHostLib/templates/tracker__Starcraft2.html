@@ -5,10 +5,11 @@
   <title>{{ player_name }}&apos;s Tracker</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/sc2Tracker.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/sc2TrackerAtlas.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/standaloneTracker.css') }}">
   <script type="application/ecmascript" src="{{ url_for('static', filename='assets/sc2Tracker.js') }}"></script>
   <link rel="stylesheet" media="screen" href="https://fontlibrary.org//face/jura" type="text/css">
 </head>
-<body style="background-color: #111">
+<body>
   <div style="margin-bottom: 0.5rem; padding: 0.5rem">
     <a href="{{ url_for("get_generic_game_tracker", tracker=room.tracker, tracked_team=team, tracked_player=player) }}">Switch To Generic Tracker</a>
   </div>

@@ -3,7 +3,7 @@
 ## Required Software
 
 - An Emulator of choice
-  - [BizHawk](https://tasvideos.org/BizHawk/ReleaseHistory) (v2.10+)
+  - [BizHawk](https://tasvideos.org/BizHawk/ReleaseHistory) (v2.10+) (not on Linux)
   - [Project 64](https://www.pj64-emu.com/windows-downloads)
   - [simple64](https://simple64.github.io/)
   - [Rosalie's Mupen GUI](https://github.com/Rosalie241/RMG)
@@ -67,7 +67,7 @@ executable. If it is blank, the patching process will ask you to select an emula
 Once both the client and the emulator are started, the Ocarina of Time Client will connect to the loaded ROM automatically. You do
 not need to open the BizHawk Lua console or drag in a connector script. If the client is not connecting, make sure the
 patched ROM is loaded in a supported emulator and use `/n64` in the client to check the emulator connection status.
-For RetroArch, enable `Settings > Network > Network Commands` and leave the Network Command Port at `55355`.
+For RetroArch, install an N64 capable core (Mupen64Plus-Next for example) and enable `Settings > Network > Network Commands` and leave the Network Command Port at `55355`.
 
 To connect the client to the multiserver simply put `<address>:<port>` on the textfield on top and press enter (if the
 server uses password, type in the bottom textfield `/connect <address>:<port> [password]`)

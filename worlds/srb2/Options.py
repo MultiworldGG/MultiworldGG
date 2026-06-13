@@ -26,17 +26,18 @@ class NTimeEmblems(DefaultOnToggle):
 
 
 class CharacterList(OptionList):
-    """Choose Included characters
+    """Choose Included characters, you will not be able as said character unless you put it in this list.
     MODDED CHARACTERS MUST BE DOWNLOADED SEPERATELY
-    Removing vanilla character may cause logic issues
+    Removing vanilla characters may cause logic issues
     Vanilla characters: 'Sonic', 'Tails', 'Knuckles', 'Amy', 'Fang', 'Metal Sonic'
     Chaotix: 'Espio', 'Mighty', 'Charmy Bee', 'Vector', 'Heavy', 'Bomb'
     Mario Bros: 'Mario', 'Luigi'
     RChars: 'Metal Knuckles', 'Tails Doll'
-    Misc characters: 'Yoshi', 'Ray', 'Silver', 'Shadow', 'Modern Sonic', 'Werehog'"""
-
+    Rush Chars: 'Blaze', 'Marine'
+    Silverhorn: 'Inazuma', 'Aether'
+    Misc characters: 'Yoshi', 'Ray', 'Silver', 'Shadow', 'Modern Sonic', 'Werehog', 'Bean', 'Dr. Eggman', 'Adventure Sonic', 'Tangle'"""
     display_name = "Character List"
-    valid_keys = {"Sonic","Tails","Knuckles","Amy","Fang","Metal Sonic","Mario","Luigi","Yoshi","Ray","Silver","Shadow","Modern Sonic","Werehog","Metal Knuckles","Tails Doll","Espio","Mighty","Charmy Bee","Vector","Heavy","Bomb"}
+    valid_keys = {"Sonic","Tails","Knuckles","Amy","Fang","Metal Sonic","Mario","Luigi","Yoshi","Ray","Silver","Shadow","Modern Sonic","Werehog","Metal Knuckles","Tails Doll","Espio","Mighty","Charmy Bee","Vector","Heavy","Bomb", "Bean", "Dr. Eggman", "Adventure Sonic", "Tangle", "Blaze", "Marine","Inazuma", "Aether"}
     default = ["Sonic","Tails","Knuckles","Amy","Fang","Metal Sonic"]
 
 class StartingCharacter(OptionList):
@@ -44,7 +45,7 @@ class StartingCharacter(OptionList):
     Tails/Knuckles are recommended if you don't know where all the emblems are
     You may also select any valid custom character"""
     display_name = "Starting Character"
-    valid_keys = {"Sonic","Tails","Knuckles","Amy","Fang","Metal Sonic","Mario","Luigi","Yoshi","Ray","Silver","Shadow","Modern Sonic","Werehog","Metal Knuckles","Tails Doll","Espio","Mighty","Charmy Bee","Vector","Heavy","Bomb"}
+    valid_keys = {"Sonic","Tails","Knuckles","Amy","Fang","Metal Sonic","Mario","Luigi","Yoshi","Ray","Silver","Shadow","Modern Sonic","Werehog","Metal Knuckles","Tails Doll","Espio","Mighty","Charmy Bee","Vector","Heavy","Bomb", "Bean", "Dr. Eggman", "Adventure Sonic", "Tangle", "Blaze", "Marine","Inazuma", "Aether"}
     default = ["Sonic"]
 
 class RandomStartChar(Toggle):
@@ -247,4 +248,3 @@ class SRB2Options(PerGameCommonOptions):
     ring_link: RingLink
     ring_reset_zone_exit: RingResetZoneExit
     death_link: DeathLink
-

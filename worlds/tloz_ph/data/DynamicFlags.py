@@ -375,6 +375,12 @@ DYNAMIC_FLAGS = {
         "has_locations": ["Ocean SW Salvage Courage Crest"],
         "unset_if_true": [(PHAddr.adv_flags_2, 0x40)],
     },
+    "Courage Crest room remove sea chart": {
+        "on_scenes": [0x2508],
+        "has_items": [("SW Sea Chart", 0)],
+        "unset_if_true": [(PHAddr.inventory_5, 0x2)],
+        "reset_flags": ["RESET Give all sea charts if map warping"]
+    },
     "Courage Crest room remove crest": {
         "on_scenes": [0x2508],
         "unset_if_true": [(PHAddr.adv_flags_16, 0x04)],
@@ -482,6 +488,12 @@ DYNAMIC_FLAGS = {
         "set_if_true": [(PHAddr.adv_flags_4, 0x2)],
         "has_slot_data": [["randomize_triforce_crest", 1]],
         "has_items": [("Triforce Crest", 1)]
+    },
+    "Triforce Crest Rando safety remove": {
+        "on_scenes": [0x2507],
+        "unset_if_true": [(PHAddr.adv_flags_4, 0x2)],
+        "has_slot_data": [["randomize_triforce_crest", 1]],
+        "has_items": [("Triforce Crest", 0)]
     },
 
     # boat requires sea chart
@@ -832,13 +844,13 @@ DYNAMIC_FLAGS = {
         "has_items": [("NE Sea Chart", 0)],
         "unset_if_true": [(PHAddr.adv_flags_1, 0x10)]
     },
-    "SE spawn pirate ship": {
+    "spawn big pirate ship": {
         "on_scenes": [0x2, 0x3],
         "not_has_locations": ["Ocean Miniblin Pirate Ambush Item"],
         "has_locations": ["Ghost Ship Rescue Tetra"],
         "set_if_true": [(PHAddr.flags_fog_spirits, 0x10), (PHAddr.flags_clear_fog, 0x80), (PHAddr.flags_fog_done, 0x10)]
     },
-    "SE despawn pirate ship": {
+    "despawn big pirate ship": {
         "on_scenes": [0x2, 0x3],
         "not_has_locations": ["Ghost Ship Rescue Tetra"],
         "unset_if_true": [(PHAddr.flags_fog_spirits, 0x10), (PHAddr.flags_clear_fog, 0x80), (PHAddr.flags_fog_done, 0x10)]
@@ -909,6 +921,10 @@ DYNAMIC_FLAGS = {
     "Remove Jolene in Ship": {
         "on_scenes": [0x400],
         "unset_if_true": [(PHAddr.adv_flags_12, 0x4)],  # uses the "got caught already" flag
+    },
+    "Pirate ambush set spirit flag": {
+        "on_scenes": [0x400],
+        "set_if_true": [(PHAddr.flags_fog_spirits, 0x10)]
     },
     "RESET Remove Jolene": {
         # "on_scenes": [0xC00],
@@ -1152,6 +1168,16 @@ DYNAMIC_FLAGS = {
         "on_scenes": [0, 1, 2, 3],
         "has_items": [("Cyclone Slate", 1)],
         "set_if_true": [(PHAddr.inventory_6, 0x40)]
+    },
+    "Salvage Arm Safety": {
+        "on_scenes": [0, 1, 2, 3],
+        "has_items": [("Salvage Arm", 1)],
+        "set_if_true": [(PHAddr.inventory_6, 0x10)]
+    },
+    "Salvage Arm Safety remove": {
+        "on_scenes": [0, 1, 2, 3],
+        "has_items": [("Salvage Arm", 0)],
+        "unset_if_true": [(PHAddr.inventory_6, 0x10)]
     },
     # Doyland
     "Doyland lower water": {

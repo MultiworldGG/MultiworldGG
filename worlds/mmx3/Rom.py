@@ -24,6 +24,10 @@ action_buttons = ("Y", "B", "A", "L", "R", "X", "START", "SELECT")
 HASH_US = 'cfe8c11f0dce19e4fa5f3fd75775e47c'
 HASH_LEGACY = 'ff683b75e75e9b59f0c713c7512a016b'
 
+LC_EXE_HASH = 'f31847891e120d19d74fe2098b273627'
+LC_ROM_OFFSET = 0x148DF20
+LC_ROM_SIZE = 0x200000
+
 weapon_rom_data = {
     0xBD000B: [0x1FC8, 0xFF],
     0xBD000C: [0x1FBC, 0xFF],
@@ -173,7 +177,9 @@ class MMX3PatchExtension(APPatchExtension):
     @staticmethod
     def output_xml(caller: APProcedurePatch, rom: bytes):
         manifest = caller.get_file("mmx3_manifest_for_bsnes.xml")
-        with open(f"{Path(caller.path).stem}.xml", "wb") as f:
+        path_lol = f"{Path(caller.path).absolute().with_suffix('')}.xml"
+        print (path_lol)
+        with open(path_lol, "wb") as f:
             f.write(manifest)
         return rom
 
@@ -449,7 +455,7 @@ def patch_rom(world: "MMX3World", patch: MMX3ProcedurePatch):
 
     patch.write_file("token_patch.bin", patch.get_token_binary())
 
-
+    
 def get_base_rom_bytes(file_name: str = "") -> bytes:
     base_rom_bytes = getattr(get_base_rom_bytes, "base_rom_bytes", None)
     if not base_rom_bytes:
@@ -458,6 +464,10 @@ def get_base_rom_bytes(file_name: str = "") -> bytes:
 
         basemd5 = hashlib.md5()
         basemd5.update(base_rom_bytes)
+        if basemd5.hexdigest() == LC_EXE_HASH:
+            base_rom_bytes = extract_mmx3(base_rom_bytes)
+            basemd5 = hashlib.md5()
+            basemd5.update(base_rom_bytes)
         if basemd5.hexdigest() not in {HASH_US, HASH_LEGACY}:
             raise Exception('Supplied Base Rom does not match known MD5 for US or LC release. '
                             'Get the correct game and version, then dump it')
@@ -466,9 +476,14 @@ def get_base_rom_bytes(file_name: str = "") -> bytes:
 
 
 def get_base_rom_path(file_name: str = "") -> str:
-    options = Utils.get_options()
     if not file_name:
-        file_name = options["mmx3_options"]["rom_file"]
+        from settings import get_settings
+        file_name = get_settings()["mmx3_options"]["rom_file"]
     if not os.path.exists(file_name):
         file_name = Utils.user_path(file_name)
     return file_name
+
+
+def extract_mmx3(exe_file: bytes) -> bytes:
+    mmx3 = bytearray(exe_file[LC_ROM_OFFSET:LC_ROM_OFFSET + LC_ROM_SIZE])
+    return bytes(mmx3)

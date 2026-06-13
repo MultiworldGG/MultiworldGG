@@ -2,21 +2,20 @@
 The APworld, client, and mod files to be used with Archipelago randomizer
 
 Avoid mentioning/ linking this on the main AP Discord because of the "no fangames" rule.
-All discussion/ development of this APworld will take place here:
-https://discord.gg/kkH4wBUmG9
+All discussion/ development of this APworld will take place [here](https://discord.gg/kkH4wBUmG9)
 
 ## Required Software
 
-- Sonic Robo Blast 2 (https://www.srb2.org/download/)
+- [Sonic Robo Blast 2](https://www.srb2.org/download/)
 
 - The most recent Archipelago client or the most recent MultiworldGG client
 
-  (https://github.com/ArchipelagoMW/Archipelago/releases)
-  (https://multiworld.gg/downloads/)
+  [AP](https://github.com/ArchipelagoMW/Archipelago/releases)
+  [MWGG](https://multiworld.gg/downloads/)
 
 ## Setup Guide
 
-- Download SL_ArchipelagoSRB2_Vxxx.pk3 and srb2.apworld from releases (https://github.com/GraymonDgt/SRB2Archipelago/releases)
+- Download SL_ArchipelagoSRB2_Vxxx.pk3 and srb2.apworld from [releases](https://github.com/GraymonDgt/SRB2Archipelago/releases)
 
 - If you use Archipelago: Install srb2.apworld by opening it or moving it to 
 
@@ -36,8 +35,8 @@ C:\ProgramData\Archipelago\custom_worlds\.
 
 - How do I set up an Archipelago/MultiworldGG game?
   
-  This guide should hopefully help you get started:
-  https://github.com/GraymonDgt/SRB2Archipelago/blob/main/srb2/docs/detailed_guide_en.md
+  [This guide](https://github.com/GraymonDgt/SRB2Archipelago/blob/main/srb2/docs/detailed_guide_en.md) should hopefully help you get started:
+
 
 - Do modded characters work?
   

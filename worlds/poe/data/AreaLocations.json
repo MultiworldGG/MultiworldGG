@@ -50,16 +50,6 @@
     "areaName": "The Upper Prison"
   },
   {
-    "areaLevel": 9,
-    "act": 1,
-    "areaName": "The Warden's Quarters"
-  },
-  {
-    "areaLevel": 9,
-    "act": 1,
-    "areaName": "The Warden's Chambers"
-  },
-  {
     "areaLevel": 10,
     "act": 1,
     "areaName": "Prisoner's Gate"

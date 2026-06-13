@@ -16,7 +16,7 @@ from .Options import *
 from .Logic import create_connections
 from .data import LOCATIONS_DATA
 from .data.Constants import *
-from .data.Items import ITEMS
+from .data.Items import ITEMS, ITEM_GROUPS
 from .data.Regions import REGIONS
 from .data.LogicPredicates import *
 from .data.Entrances import ENTRANCES, entrance_id_to_region, EVENTS, entrance_id_to_entrance
@@ -471,6 +471,7 @@ class PhantomHourglassWorld(World):
         self.create_event("Post ToI", "_beat_toi")
         self.create_event("Post MT", "_beat_mt")
         self.create_event("Spawn Pirate Ambush", "_beat_ghost_ship")
+        self.create_event("Post Cubus Sisters Event", "_beat_cubus_sisters")
         # Farmable minigame events
         self.create_event("Bannan Cannon Game", "_can_play_cannon_game")
         self.create_event("Archery Game", "_can_play_archery")

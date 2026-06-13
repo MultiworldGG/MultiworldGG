@@ -117,9 +117,6 @@ def perform_level_scaling(multiworld: MultiWorld):
                 frontier = next_frontier
 
     while locations:
-        if needs_distance:
-            calculate_distances()
-
         sphere_locations = set()
 
         # Collect event locations first because they might unlock more locations in the same sphere
@@ -155,8 +152,10 @@ def perform_level_scaling(multiworld: MultiWorld):
                 spheres.append(locations)
             break
 
-        # Build the actual spheres, splitting them by distance if necessary
+        # Build the actual spheres, splitting them by distance if necessary.
+        # Distances are computed after event collection so mid-sphere regions get real distances.
         if needs_distance:
+            calculate_distances()
             by_distance = {}
             for loc in sphere_locations:
                 dist = getattr(loc.parent_region, "distance", 0) if loc.game == data.manifest.game else 0

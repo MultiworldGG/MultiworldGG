@@ -128,6 +128,13 @@ class RotNCollections:
         "Bergentrückung / Asgore": SongData(142, "Bergentrückung / Asgore", "Undertale", 4, 10, 15, 21, False),
         "Battle Against a True Hero": SongData(143, "Battle Against a True Hero", "Undertale", 5, 11, 17, 26, False),
         "MEGALOVANIA": SongData(144, "MEGALOVANIA", "Undertale", 5, 11, 17, 25, False),
+        #Vol 2
+        "A Banj After Midnight (feat. M Gewehr)": SongData(145, "A Banj After Midnight (feat. M Gewehr)", "Volume 2", 5, 11, 18, 24, False),
+        "Goo": SongData(146, "Goo", "Volume 2", 4, 11, 17, 23, False),
+        "Phantom Funk (feat. Lawrence Ravagnan)": SongData(147, "Phantom Funk (feat. Lawrence Ravagnan)", "Volume 2", 5, 11, 16, 25, False),
+        "The Showdown Throwdown": SongData(148, "The Showdown Throwdown", "Volume 2", 6, 12, 20, 29, False),
+        "Ultra Creepy": SongData(149, "Ultra Creepy", "Free DLC", 5, 10, 15, 26, False),
+        "Inside": SongData(150, "Inside", "Volume 2", 4, 12, 16, 24, False),
     }
 
     EXTRA_DATA: Dict[str, ExtraSongData] = {
@@ -168,6 +175,7 @@ class RotNCollections:
         "Friday Night Funkin'",
         "VA-11 HALL-A",
         "Undertale",
+        "Volume 2",
     ]
 
     DLC_SONGS: List[str] = []
@@ -374,6 +382,7 @@ class RotNCollections:
             "Friday Night Funkin'": {name for name, data, in self.song_items.items() if data.DLC == "Friday Night Funkin'" or "Dad Battle" in name},
             "VA-11 HALL-A": {name for name, data, in self.song_items.items() if data.DLC == "VA-11 HALL-A" or "YLIAD" in name},
             "Undertale": {name for name, data, in self.song_items.items() if data.DLC == "Undertale" or "Spider Dance" in name},
+            "Volume 2": {name for name, data, in self.song_items.items() if data.DLC == "Volume 2" or "Ultra Creepy" in name},
         }
 
         return groups

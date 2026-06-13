@@ -97,18 +97,17 @@ def create_trap_items(world: AM2RWorld, locations_to_trap: int) -> List[str]:
 
 
 def create_random_items(remaining_items: int, world: AM2RWorld) -> List[str]:
-    # print(f"Creating {remaining_items} filler items")
-    total_weight = world.options.PowerBombWeight.value + world.options.EnergyTankWeight.value + world.options.SuperMissileWeight.value + world.options.MissileWeight
-    super_total = (int(remaining_items * (world.options.SuperMissileWeight.value / total_weight)))
-    e_total = (int(remaining_items * (world.options.EnergyTankWeight.value / total_weight)))
-    pb_count = (int(remaining_items * (world.options.PowerBombWeight / total_weight)))
-    # print(f"Filler Items Breakdown - Supers: {super_total}, E Tanks: {e_total}, PBs: {pb_count}")
+    import math
+    total_weight = world.options.PowerBombWeight.value + world.options.EnergyTankWeight.value + world.options.SuperMissileWeight.value + world.options.MissileWeight.value
+
+    super_total = (math.ceil(remaining_items * (world.options.SuperMissileWeight.value / total_weight)))
+    e_total = (math.ceil(remaining_items * (world.options.EnergyTankWeight.value / total_weight)))
+    pb_count = (math.ceil(remaining_items * (world.options.PowerBombWeight / total_weight)))
 
     super_total = abs(super_total - 1)
     e_total = abs(e_total - 1)
     pb_count = abs(pb_count - 3)
     missile_count =  remaining_items - (super_total + e_total + pb_count)
-    # print(f"Filler Items Breakdown - Missiles: {missile_count}, Supers: {super_total}, E Tanks: {e_total}, PBs: {pb_count}")
 
     items_to_create = []
 
@@ -144,14 +143,11 @@ def create_all_items(world: AM2RWorld) -> None:
     PBs = 3
     player = world.player
     sum_locations = len(world.multiworld.get_unfilled_locations(player))
-    # print(f"Total Locations for Player {player}: {sum_locations}")
 
     itempool = (
         create_fixed_item_pool()
         + create_metroid_items(world.options.MetroidsRequired, world.options.MetroidsInPool, world.options.LocationSettings)
     )
-    # print(f"Fixed Items: {itempool}")
-    # print(Counter(itempool))
 
     trap_percentage = world.options.TrapFillPercentage
     trap_fill = trap_percentage / 100
@@ -164,7 +160,6 @@ def create_all_items(world: AM2RWorld) -> None:
     random_items = create_random_items(random_count, world)
     itempool += random_items
 
-    # print(f'Random Items: {Counter(itempool)}')
     for name in itempool:
         # print(f"NAME: {name}")
         progression = False

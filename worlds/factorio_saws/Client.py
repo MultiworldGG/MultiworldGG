@@ -150,7 +150,7 @@ class FactorioContext(CommonContext):
         return get_file_safe_name(f"AP_{self.seed_name}_{self.auth}")+"_Save.zip"
 
     def print_to_game(self, text):
-        self.rcon_client.send_command(f"/ap-print [font=default-large-bold]{apname}:[/font] "
+        self.rcon_client.send_command(f"/ap-print [font=default-large-bold]Archipelago:[/font] "
                                       f"{text}")
 
     @property
@@ -394,9 +394,12 @@ async def factorio_server_watcher(ctx: FactorioContext):
                     ctx.rcon_client = factorio_rcon.RCONClient("localhost", ctx.rcon_port, ctx.rcon_password,
                                                                timeout=5)
                     if not ctx.server:
-                        logger.info("Established bridge to Factorio Server. "
-                                    f"Ready to connect to {apname} via /connect")
-                        check_stdin()
+                        if ctx.server_address:
+                            await ctx.connect(ctx.server_address)
+                        else:
+                            logger.info("Established bridge to Factorio Server. "
+                                        f"Ready to connect to {apname} via /connect")
+                            check_stdin()
 
                 if not ctx.awaiting_bridge and "Archipelago Bridge Data available for game tick " in msg:
                     ctx.awaiting_bridge = True
@@ -539,7 +542,6 @@ async def factorio_spinup_server(ctx: FactorioContext) -> bool:
 
 async def main(make_context):
     ctx = make_context()
-    ctx.server_task = asyncio.create_task(server_loop(ctx), name="ServerLoop")
 
     if gui_enabled:
         ctx.run_gui()

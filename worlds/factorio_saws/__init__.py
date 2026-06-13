@@ -9,7 +9,7 @@ from Options import OptionError
 import Utils
 from BaseClasses import Region, Location, Item, Tutorial, ItemClassification
 from worlds.AutoWorld import World, WebWorld
-from worlds.LauncherComponents import Component, components, Type, launch_subprocess
+from worlds.LauncherComponents import Component, components, Type, launch as launch_component
 from worlds.generic import Rules
 from .settings import FactorioSAWSSettings
 from .Locations import location_pools, location_table, craftsanity_locations
@@ -23,9 +23,9 @@ from .Technologies import base_tech_table, recipe_sources, base_technology_table
     fluids, stacking_items, valid_ingredients, progressive_rows, ignored_recipes
 
 
-def launch_client():
+def launch_client(*args: str):
     from .Client import launch
-    launch_subprocess(launch, name="FactorioSAWSClient")
+    launch_component(launch, name="FactorioSAWSClient", args=args)
 
 
 components.append(Component("Factorio - Space Age Without Space Client", func=launch_client, component_type=Type.CLIENT))
@@ -361,7 +361,7 @@ class FactorioSAWS(World):
                                                                                    victory_tech_names_p)
 
         if "Craft satellite" in self.multiworld.regions.location_cache[self.player]:
-            victory_tech_names_s = get_rocket_requirements(None, None, satellite_recipe, None)
+            victory_tech_names_s = get_rocket_requirements(None, None, self.get_recipe("satellite"), None)
             if self.options.silo == Silo.option_spawn:
                 victory_tech_names_s -= {"rocket-silo"}
             else:
@@ -581,7 +581,7 @@ class FactorioSAWS(World):
     def set_custom_recipes(self):
         ingredients_offset = self.options.recipe_ingredients_offset
         original_rocket_part = recipes["rocket-part"]
-        science_pack_pools = get_science_pack_pools()
+        science_pack_pools = get_science_pack_pools(self.options.recipe_difficulty_factor.value / 100)
         valid_pool = sorted(science_pack_pools[self.options.max_science_pack.get_max_pack()]
                             & valid_ingredients)
         self.random.shuffle(valid_pool)
@@ -602,7 +602,16 @@ class FactorioSAWS(World):
 
         if self.options.recipe_ingredients:
             valid_pool = []
-            for pack in self.options.max_science_pack.get_ordered_science_packs():
+            for (idx, pack) in enumerate(self.options.max_science_pack.get_ordered_science_packs()):
+                if idx > self.options.recipe_pool_max_tiers_below:
+                    remove_pack_pool = self.options.max_science_pack.get_ordered_science_packs()[idx - self.options.recipe_pool_max_tiers_below - 1]
+                    for elem in science_pack_pools[remove_pack_pool]:
+                        try:
+                            valid_pool.remove(elem)
+                        except ValueError:
+                            # elem not in pool
+                            pass
+
                 valid_pool += sorted(science_pack_pools[pack])
                 self.random.shuffle(valid_pool)
                 if pack in recipes:  # skips over space science pack
@@ -643,11 +652,13 @@ class FactorioSAWS(World):
                     ingredients_offset=ingredients_offset.value)
                 self.custom_recipes["satellite"] = new_recipe
         bridge = "ap-energy-bridge"
+        bridge_pool = sorted(science_pack_pools[self.options.max_science_pack.get_ordered_science_packs()[0]])
+        self.random.shuffle(bridge_pool)
         new_recipe = self.make_quick_recipe(
             Recipe(bridge, "crafting", {"replace_1": 1, "replace_2": 1, "replace_3": 1,
                                         "replace_4": 1, "replace_5": 1, "replace_6": 1},
                    {bridge: 1}, 10),
-            sorted(science_pack_pools[self.options.max_science_pack.get_ordered_science_packs()[0]]),
+            bridge_pool,
             ingredients_offset=ingredients_offset.value)
         for ingredient_name in new_recipe.ingredients:
             new_recipe.ingredients[ingredient_name] = self.random.randint(50, 500)
@@ -680,7 +691,7 @@ class FactorioSAWS(World):
     factorio_pack_names = frozenset({
         "Astronomic", "Geological", "Friction", "Transportation", "Robotic",
         "Nutritional", "Botanical", "Vehicular", "Ablative", "Atomic", "Magnetic",
-          "Computational", "Microscopic", "Offshore"})
+        "Computational", "Microscopic", "Offshore"})
 
     def set_science_pack_names(self) -> None:
         self.custom_science_pack_names = {}
@@ -712,17 +723,18 @@ class FactorioSAWS(World):
 
                 recipe = self.custom_recipes.get(pack, recipes[pack])
                 ingredients = set(recipe.ingredients.keys())
+                self.custom_science_pack_names[pack] = []
                 if "scrap" in ingredients:
-                    self.custom_science_pack_names[pack] = "Archeological Science Pack"
+                    self.custom_science_pack_names[pack].append("Archeological")
                 elif "biter-egg" in ingredients:
-                    self.custom_science_pack_names[pack] = "Biter Science Pack"
+                    self.custom_science_pack_names[pack].append("Biter")
                 elif "pentapod-egg" in ingredients:
-                    self.custom_science_pack_names[pack] = "Pentapod Science Pack"
+                    self.custom_science_pack_names[pack].append("Pentapod")
                 elif "lubricant" in ingredients:
-                    self.custom_science_pack_names[pack] = "Lubricated Science Pack"
+                    self.custom_science_pack_names[pack].append("Lubricated")
                 elif generic_pack_names:
                     name = generic_pack_names.pop()
-                    self.custom_science_pack_names[pack] = f"{name} Science Pack"
+                    self.custom_science_pack_names[pack].append(f"{name}")
                 pass
 
 

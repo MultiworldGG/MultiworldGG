@@ -1,6 +1,5 @@
 import os
 from typing import Dict, Set
-from worlds.LauncherComponents import components, Component, launch_subprocess, Type, icon_paths
 from BaseClasses import Region, MultiWorld, Item, Location, LocationProgressType, ItemClassification
 from worlds.AutoWorld import World, WebWorld
 from Utils import visualize_regions
@@ -20,19 +19,6 @@ from .Version import POE_VERSION
 logger = logging.getLogger("poe")
 logger.setLevel(logging.INFO)
 
-# ----- Configure the POE client ----- #
-
-
-def launch_client():
-    from . import Client
-    launch_subprocess(Client.launch, name="poeClient", )
-
-components.append(Component("Path of Exile Client",
-                            func=launch_client,
-                            component_type=Type.CLIENT,
-                            icon="poe"))
-
-icon_paths["poe"] = f"ap:{__name__}/icons/poeicon.png"
 
 # ----- PathOfExile Web World ----- #
 from BaseClasses import Tutorial

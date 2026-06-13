@@ -14,10 +14,12 @@ class SRB2ItemData(NamedTuple):
 generic_item_data_table: dict[str, SRB2ItemData] = {
     "Emblem": SRB2ItemData(1, ItemClassification.progression_deprioritized_skip_balancing),
     "Chaos Emerald": SRB2ItemData(2),
+    "Sol Emerald": SRB2ItemData(322),
     "Progressive Emblem Hint": SRB2ItemData(3, ItemClassification.useful),
     "1UP": SRB2ItemData(4, ItemClassification.filler),
     #Extra Shield Slot
-    #shields between zones
+    #Shields between zones
+    #Shield Swapper (switch between any shields in your shield slots)
 
 
 
@@ -34,13 +36,15 @@ generic_item_data_table: dict[str, SRB2ItemData] = {
 
 
     # Hyper Ring
+
+
     # Shield Reinforcer
     #"Extended Invincibility": SRB2ItemData(90, ItemClassification.useful),
     #"Extended Super Sneakers": SRB2ItemData(91, ItemClassification.useful),
     #"Max Drill Increase": SRB2ItemData(92, ItemClassification.useful),
 }
 
-# reversed controls
+
 # super ring drain - drains rings and kills you when you run out
 #increased defense - taking damage only gets rid of 100 rings
 # killing dead
@@ -102,7 +106,9 @@ traps_item_data_table:dict[str, SRB2ItemData] = {
     "Grow Monitor": SRB2ItemData(83, ItemClassification.trap),
     #"Reversed Controls": SRB2ItemData(85, ItemClassification.trap),
     "Jumpscare": SRB2ItemData(86, ItemClassification.trap)
-#Slip trap
+    #Slip trap
+    #Bound Rings (chaotix binding rings)
+
 
 }
 objects_item_table: dict[str, SRB2ItemData] = {
@@ -115,8 +121,8 @@ objects_item_table: dict[str, SRB2ItemData] = {
     "Air Bubbles": SRB2ItemData(156),#object most zones
     "Buoyant Slime": SRB2ItemData(157),#floor thz1 thz2
     "Dust Devils": SRB2ItemData(158),#object acz1 acz2
-    "Yellow Springs": SRB2ItemData(159),#object
-    "Red Springs": SRB2ItemData(160),#object
+    "Yellow Springs": SRB2ItemData(159),#objec
+    "Red Springs": SRB2ItemData(160),#objectt
     "Blue Springs": SRB2ItemData(161,ItemClassification.useful),#object
 
     #"NiGHTS Bumpers": SRB2ItemData(162),  # object
@@ -125,6 +131,11 @@ objects_item_table: dict[str, SRB2ItemData] = {
     #"Signposts": SRB2ItemData(165),  # object (probably a bad idea)
     #"Floating Mines": SRB2ItemData(166, ItemClassification.progression | ItemClassification.trap),  # object
     #"TNT Barrels": SRB2ItemData(167, ItemClassification.progression | ItemClassification.trap),  # object
+
+    #"CTF Flags": SRB2ItemData(168), # object, team flags for ctf
+
+
+
 }
 
 zones_item_data_table: dict[str, SRB2ItemData] = {
@@ -228,7 +239,20 @@ custom_item_data_table: dict[str, SRB2ItemData] = {
     "Charmy Bee": SRB2ItemData(312),
     "Vector": SRB2ItemData(313),
     "Heavy": SRB2ItemData(314),
-    "Bomb": SRB2ItemData(315)
+    "Bomb": SRB2ItemData(315),
+    "Bean": SRB2ItemData(316),
+    "Dr. Eggman": SRB2ItemData(317),
+    "Adventure Sonic": SRB2ItemData(318),
+    "Tangle": SRB2ItemData(319),
+    "Blaze": SRB2ItemData(320),
+    "Marine": SRB2ItemData(321),
+    "Inazuma": SRB2ItemData(323),
+    "Aether": SRB2ItemData(324),
+
+
+
+
+
 }
 
 

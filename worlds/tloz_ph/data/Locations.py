@@ -40,6 +40,7 @@ LOCATIONS_DATA = {
         "floor_id": 0x0,
         "y": 0x1333,
         "vanilla_item": "Treasure Map #10 (Gusts SE)",
+        # "vanilla_item": "Big Green Rupee (100)",
         "id": 3,
     },
     "Mercay SE Cucco Chest": {
@@ -1054,6 +1055,7 @@ LOCATIONS_DATA = {
         "x_max": -0xc350,
         "y": 0x1333,
         "conditional": True,
+        "persistent": True,
         "id": 79,
         "hint_entrance": ["Cannon Bomb Garden Cave", "Cannon Bee Cave",
                           "Cannon Workshop East", "Cannon Workshop West", "Cannon Board Ship"]
@@ -1087,6 +1089,7 @@ LOCATIONS_DATA = {
         "x_max": 0x6978,
         "z_min": 0x9088,
         "conditional": True,
+        "persistent": True,
         "id": 82,
         "hint_entrance": ["Cannon Bomb Garden Cave", "Cannon Workshop East"]
     },
@@ -1102,6 +1105,7 @@ LOCATIONS_DATA = {
         "sram_addr": SRAM(0x6dc),
         "sram_value": 0x1,
         "id": 83,
+        "persistent": True,
         "hint_entrance": ["Cannon Bomb Garden Cave", "Cannon Workshop East"]
     },
     "Cannon Island East Dig": {
@@ -1115,6 +1119,7 @@ LOCATIONS_DATA = {
         "sram_addr": SRAM(0x190),
         "sram_value": 0x2,
         "conditional": True,
+        "persistent": True,
         "id": 84,
         "hint_entrance": ["Cannon Bomb Garden Cave", "Cannon Workshop East"]
     },
@@ -1149,6 +1154,7 @@ LOCATIONS_DATA = {
     "Astrid's Basement Dig": {
         "region_id": "Astrid's Basement Dig",
         "vanilla_item": "Treasure Map #3 (Gusts SW)",
+        # "vanilla_item": "Big Green Rupee (100)",
         "stage_id": 0xd,
         "floor_id": 0x14,
         "id": 87,
@@ -1169,6 +1175,7 @@ LOCATIONS_DATA = {
     "Isle of Ember East Summit Dig": {
         "region_id": "Ember Outside Temple Dig",
         "vanilla_item": "Treasure Map #4 (Bannan SE)",
+        # "vanilla_item": "Big Green Rupee (100)",
         "stage_id": 0xd,
         "floor_id": 0x1,
         "y": 0x2666,
@@ -1415,6 +1422,7 @@ LOCATIONS_DATA = {
     "Molida Island South Cucco Grapple Tree Dig": {
         "region_id": "Molida Cucco Dig",
         "vanilla_item": "Treasure Map #20 (Bannan E)",
+        # "vanilla_item": "Big Green Rupee (100)",
         "stage_id": 0xc,
         "floor_id": 0x0,
         "y": 0x1333,
@@ -2028,6 +2036,7 @@ LOCATIONS_DATA = {
     "Bannan Island West Wayfarer Dig": {
         "region_id": "Bannan Dig",
         "vanilla_item": "Treasure Map #21 (Molida NW)",
+        # "vanilla_item": "Big Green Rupee (100)",
         "stage_id": 0x14,
         "floor_id": 0x0,
         "z_max": -0x7530,
@@ -2159,6 +2168,7 @@ LOCATIONS_DATA = {
     "Bannan Island East Grapple Dig": {
         "region_id": "Bannan East Grapple Dig",
         "vanilla_item": "Treasure Map #22 (Harrow S)",
+        # "vanilla_item": "Big Green Rupee (100)",
         "stage_id": 0x14,
         "floor_id": 0x0,
         "x_min": 0xea60,
@@ -2246,6 +2256,7 @@ LOCATIONS_DATA = {
     "Zauz's Island Secret Dig": {
         "region_id": "Zauz Dig",
         "vanilla_item": "Treasure Map #5 (Molida N)",
+        # "vanilla_item": "Big Green Rupee (100)",
         "stage_id": 0x16,
         "floor_id": 0x0,
         "y": 0x0,
@@ -2838,6 +2849,7 @@ LOCATIONS_DATA = {
         "stage_id": 0xf,
         "floor_id": 0x2,
         "vanilla_item": "Treasure Map #19 (Gusts NE)",
+        # "vanilla_item": "Big Green Rupee (100)",  # swap!
         "x_max": -0x2d2a8,
         "id": 223,
     },

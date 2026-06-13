@@ -1906,11 +1906,21 @@ def patch_rom(world, rom):
         if world.shuffle_silver_rupees != 'remove':
             rom.write_byte(rom.sym('CFG_DUNGEON_INFO_SILVER_RUPEES'), 1)
 
+    update_message_by_id(messages, 0x908B, "All right. You don't have to play\x01if you don't want to.\x0B\x02", 0x00)
     if world.shuffle_tcgkeys != 'vanilla':
         if world.shuffle_tcgkeys == 'remove':
             rom.write_byte(rom.sym('SHUFFLE_CHEST_GAME'), 0x02)
         else:
             rom.write_byte(rom.sym('SHUFFLE_CHEST_GAME'), 0x01)
+        if 'unique_merchants' not in world.misc_hints:
+            update_message_by_id(messages, 0x6D, "I seem to have misplaced my\x01keys, but I have a fun item to\x01sell instead.\x04How about \x05\x4110 Rupees\x05\x40?\x01\x01\x1B\x05\x42Buy\x01Don't Buy\x05\x40\x02")
+        else:
+            location = world.get_location("Market Treasure Chest Game Salesman")
+            item_text = get_item_hint_text(location.item, world)
+            update_message_by_id(messages, 0x6D, "I seem to have misplaced my\x01keys, but I have a fun item to\x01sell instead.\x04How about \x05\x4110 Rupees\x05\x40 for\x01\x05\x41" + item_text + "\x05\x40?\x01\x1B\x05\x42Buy\x01Don't Buy\x05\x40\x02")
+        update_message_by_id(messages, 0x908B, "That's OK!\x01More fun for me.\x0B\x02", 0x00, allow_duplicates=True)
+        update_message_by_id(messages, 0x6E, "Wait, that room was off limits!\x02")
+        update_message_by_id(messages, 0x704C, "I hope you like it!\x02")
     else:
         for i in range(1, 8):
             rom.revert_patch(f'TCG_SHUFFLE_PATCH_{i}')

@@ -418,12 +418,12 @@ function update_player(index)
                 sent = 0
             end
             if sent > 0 then
-                player.print("Received " .. sent .. "x [item=" .. name .. ",quality={{ free_sample_quality_name }}]")
+                player.print({"archipelago.receive-sample-item", sent, "[item=" .. name .. ",quality="..stack.quality.."]"})
                 data.suppress_full_inventory_message = false
             end
             if sent ~= count then               -- Couldn't full send.
                 if not data.suppress_full_inventory_message then
-                    player.print("Additional items will be sent when inventory space is available.", {r=1, g=1, b=0.25})
+                    player.print({"archipelago.sample-inventory-full"}, {r=1, g=1, b=0.25})
                 end
                 data.suppress_full_inventory_message = true -- Avoid spamming them with repeated full inventory messages.
                 samples[name] = count - sent    -- Buffer the remaining items
@@ -432,7 +432,7 @@ function update_player(index)
                 samples[name] = nil             -- Remove from the list
             end
         else
-            player.print("Unable to receive " .. count .. "x [item=" .. name .. "] as this item does not exist.")
+            player.print({"archipelago.sample-error", count, name})
             samples[name] = nil
         end
     end
@@ -723,7 +723,7 @@ end,
     local new_factor = game.forces["enemy"].get_evolution_factor("nauvis") +
         (TRAP_EVO_FACTOR * (1 - game.forces["enemy"].get_evolution_factor("nauvis")))
     game.forces["enemy"].set_evolution_factor(new_factor, "nauvis")
-    game.print({"", "New evolution factor:", new_factor})
+    game.print({"traps.new-evolution-factor", new_factor})
 end,
 ["Teleport Trap"] = function()
     for _, player in ipairs(game.forces["player"].players) do
@@ -778,7 +778,7 @@ commands.add_command("ap-get-technology", "Grant a technology, used by the Archi
     elseif index == "-1" then -- for coop sync and restoring from an older savegame
         tech = force.technologies[item_name]
         if tech.researched ~= true then
-            game.print({"", "Received [technology=" .. tech.name .. "] as it is already checked."})
+            game.print({"archipelago.receive-ap-catchup", "[technology=" .. tech.name .. "]"})
             game.play_sound({path="utility/research_completed"})
             tech.researched = true
         end
@@ -790,7 +790,7 @@ commands.add_command("ap-get-technology", "Grant a technology, used by the Archi
             for _, item_name in ipairs(tech_stack) do
                 tech = force.technologies[item_name]
                 if tech.researched ~= true then
-                    game.print({"", "Received [technology=" .. tech.name .. "] from ", source})
+                    game.print({"archipelago.receive-ap-item", "[technology=" .. tech.name .. "]", source})
                     game.play_sound({path="utility/research_completed"})
                     tech.researched = true
                     return
@@ -802,7 +802,7 @@ commands.add_command("ap-get-technology", "Grant a technology, used by the Archi
         if tech ~= nil then
             storage.index_sync[index] = tech
             if tech.researched ~= true then
-                game.print({"", "Received [technology=" .. tech.name .. "] from ", source})
+                game.print({"archipelago.receive-ap-item", "[technology=" .. tech.name .. "]", source})
                 game.play_sound({path="utility/research_completed"})
                 tech.researched = true
             end
@@ -810,7 +810,7 @@ commands.add_command("ap-get-technology", "Grant a technology, used by the Archi
     elseif TRAP_TABLE[item_name] ~= nil then
         if storage.index_sync[index] ~= item_name then -- not yet received trap
             storage.index_sync[index] = item_name
-            game.print({"", "Received ", item_name, " from ", source})
+            game.print({"archipelago.receive-ap-item", item_name, source})
             TRAP_TABLE[item_name]()
         end
     else
@@ -840,7 +840,7 @@ commands.add_command("ap-deathlink", "Kill all players", function(call)
     local force = game.forces["player"]
     local source = call.parameter or "Archipelago"
     kill_players(force)
-    game.print("Death was granted by " .. source)
+    game.print({"archipelago.death-link",source})
 end)
 
 commands.add_command("ap-energylink", "Used by the Archipelago client to manage Energy Link", function(call)

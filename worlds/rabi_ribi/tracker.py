@@ -33,16 +33,16 @@ def map_page_index(data: Any) -> int:
 
 
 MAP_OFFSETS = [
-    (1, 2),  # Southern Woodland
-    (1, 3),  # Western Coast
-    (3, 3),  # Island Core
-    (2, 2),  # Northern Tundra
-    (1, 2),  # Eastern Highlands
-    (2, 0),  # Rabi Rabi Town
-    (1, 2),  # Plurkwood
-    (1, 2),  # Subterranean Area
-    (0, 5),  # Warp Destination
-    (1, 2),  # System Interior
+    (1, 1),  # Southern Woodland
+    (1, 2),  # Western Coast
+    (3, 2),  # Island Core
+    (2, 1),  # Northern Tundra
+    (1, 1),  # Eastern Highlands
+    (2, -1), # Rabi Rabi Town
+    (1, 1),  # Plurkwood
+    (1, 1),  # Subterranean Area
+    (0, 4),  # Warp Destination
+    (1, 1),  # System Interior
 ]
 
 

@@ -4,7 +4,7 @@ Tests for the Path of Exile Rules module
 import unittest
 from unittest.mock import Mock, patch, MagicMock
 from BaseClasses import CollectionState
-from worlds.poe import Rules
+from worlds.poe import Rules, PathOfExileWorld
 from worlds.poe.Rules import (
     get_ascendancy_amount_for_act, get_gear_amount_for_act, get_flask_amount_for_act,
     get_gem_link_amount_for_act, get_skill_gem_amount_for_act, get_support_gem_amount_for_act,
@@ -24,93 +24,102 @@ class TestActRequirementFunctions(unittest.TestCase):
         self.mock_opt.gear_upgrades_per_act.value = 5
         self.mock_opt.gucci_hobo_mode.value = 0  # disabled
         self.mock_opt.gucci_hobo_mode.option_disabled = 0
-        self.mock_opt.add_flasks_to_item_pool = True
+        self.mock_opt.add_flasks_to_item_pool = Mock(value=True)
         self.mock_opt.flasks_per_act.value = 2
-        self.mock_opt.add_max_links_to_item_pool = True
+        self.mock_opt.add_max_links_to_item_pool = Mock(value=True)
         self.mock_opt.max_links_per_act.value = 3
         self.mock_opt.skill_gems_per_act.value = 4
         self.mock_opt.support_gems_per_act.value = 3
         self.mock_opt.add_passive_skill_points_to_item_pool.value = True
+        self.mock_opt.add_skill_gems_to_item_pool = Mock(value=True)
+        self.mock_opt.add_support_gems_to_item_pool = Mock(value=True)
+        self.mock_world = Mock()
+        self.mock_world.options = self.mock_opt
+        self.mock_world.placed_total_gear_upgrades = PathOfExileWorld.MAX_GEAR_UPGRADES
+        self.mock_world.placed_total_flask_slots = PathOfExileWorld.MAX_FLASK_SLOTS
+        self.mock_world.placed_total_link_upgrades = PathOfExileWorld.MAX_LINK_UPGRADES
+        self.mock_world.placed_total_skill_gems = PathOfExileWorld.MAX_SKILL_GEMS
+        self.mock_world.placed_total_support_gems = PathOfExileWorld.MAX_SUPPORT_GEMS
     
     def test_get_ascendancy_amount_for_act(self):
         """Test ascendancy amount calculation"""
         # Act 3 and above should return ascendancy amount
-        self.assertEqual(get_ascendancy_amount_for_act(3, self.mock_opt), 3)
-        self.assertEqual(get_ascendancy_amount_for_act(4, self.mock_opt), 3)
+        self.assertEqual(get_ascendancy_amount_for_act(3, self.mock_world), 3)
+        self.assertEqual(get_ascendancy_amount_for_act(4, self.mock_world), 3)
         # Other acts should return 0
-        self.assertEqual(get_ascendancy_amount_for_act(1, self.mock_opt), 0)
-        self.assertEqual(get_ascendancy_amount_for_act(2, self.mock_opt), 0)
+        self.assertEqual(get_ascendancy_amount_for_act(1, self.mock_world), 0)
+        self.assertEqual(get_ascendancy_amount_for_act(2, self.mock_world), 0)
 
     
     def test_get_ascendancy_amount_for_scion(self):
         """Test ascendancy amount for Scion character"""
         self.mock_opt.starting_character.value = self.mock_opt.starting_character.option_scion
-        
-        result = get_ascendancy_amount_for_act(3, self.mock_opt)
-        self.assertEqual(result, 1)  # Scion gets only 1 ascendancy
+
+        result = get_ascendancy_amount_for_act(3, self.mock_world)
+        self.assertEqual(result, 2)  # Scion capped at min(ascendancies_per_class=3, scion_max=2) = 2
     
     def test_get_gear_amount_for_act(self):
         """Test gear amount calculation"""
         # Act 1 should give 0 gear (act - 1)
-        self.assertEqual(get_gear_amount_for_act(1, self.mock_opt), 0)
-        
+        self.assertEqual(get_gear_amount_for_act(1, self.mock_world), 0)
+
         # Act 3 should give 10 gear (5 * 2)
-        self.assertEqual(get_gear_amount_for_act(3, self.mock_opt), 10)
-        
-        # Test with gucci hobo mode
-        self.mock_opt.gucci_hobo_mode.value = 1  # enabled
-        result = get_gear_amount_for_act(20, self.mock_opt)  # Large act to test max
-        self.assertEqual(result, Rules.MAX_GUCCI_GEAR_UPGRADES)
+        self.assertEqual(get_gear_amount_for_act(3, self.mock_world), 10)
+
+        # Test cap: placed_total_gear_upgrades acts as ceiling
+        self.mock_world.placed_total_gear_upgrades = PathOfExileWorld.MAX_GUCCI_GEAR_UPGRADES
+        result = get_gear_amount_for_act(20, self.mock_world)
+        self.assertEqual(result, PathOfExileWorld.MAX_GUCCI_GEAR_UPGRADES)
     
     def test_get_flask_amount_for_act(self):
         """Test flask amount calculation"""
-        self.assertEqual(get_flask_amount_for_act(1, self.mock_opt), 0)
-        self.assertEqual(get_flask_amount_for_act(3, self.mock_opt), 4)  # 2 * 2
-        
+        self.assertEqual(get_flask_amount_for_act(1, self.mock_world), 2)  # 2 * act(1)
+        self.assertEqual(get_flask_amount_for_act(3, self.mock_world), 6)  # 2 * act(3)
+
         # Test with flask slots disabled
         self.mock_opt.add_flasks_to_item_pool = False
-        self.assertEqual(get_flask_amount_for_act(3, self.mock_opt), 0)
+        self.assertEqual(get_flask_amount_for_act(3, self.mock_world), 0)
     
     def test_get_gem_amount_for_act(self):
         """Test gem slot amount calculation"""
-        self.assertEqual(get_gem_link_amount_for_act(1, self.mock_opt), 0)
-        self.assertEqual(get_gem_link_amount_for_act(3, self.mock_opt), 6)  # 3 * 2
-        
+        self.assertEqual(get_gem_link_amount_for_act(1, self.mock_world), 3)  # 3 * act(1)
+        self.assertEqual(get_gem_link_amount_for_act(3, self.mock_world), 9)  # 3 * act(3)
+
         # Test with max links disabled
         self.mock_opt.add_max_links_to_item_pool = False
-        self.assertEqual(get_gem_link_amount_for_act(3, self.mock_opt), 0)
+        self.assertEqual(get_gem_link_amount_for_act(3, self.mock_world), 0)
     
     def test_get_skill_gem_amount_for_act(self):
         """Test skill gem amount calculation"""
-        self.assertEqual(get_skill_gem_amount_for_act(1, self.mock_opt), 0)
-        self.assertEqual(get_skill_gem_amount_for_act(3, self.mock_opt), 8)  # 4 * 2
-        
+        self.assertEqual(get_skill_gem_amount_for_act(1, self.mock_world), 0)
+        self.assertEqual(get_skill_gem_amount_for_act(3, self.mock_world), 8)  # 4 * 2
+
         # Test max cap
-        result = get_skill_gem_amount_for_act(20, self.mock_opt)
-        self.assertEqual(result, Rules.MAX_SKILL_GEMS)
+        result = get_skill_gem_amount_for_act(20, self.mock_world)
+        self.assertEqual(result, PathOfExileWorld.MAX_SKILL_GEMS)
     
     def test_get_support_gem_amount_for_act(self):
         """Test support gem amount calculation"""
-        self.assertEqual(get_support_gem_amount_for_act(1, self.mock_opt), 0)
-        self.assertEqual(get_support_gem_amount_for_act(3, self.mock_opt), 6)  # 3 * 2
-        
+        self.assertEqual(get_support_gem_amount_for_act(1, self.mock_world), 0)
+        self.assertEqual(get_support_gem_amount_for_act(3, self.mock_world), 6)  # 3 * 2
+
         # Test max cap
-        result = get_support_gem_amount_for_act(20, self.mock_opt)
-        self.assertEqual(result, Rules.MAX_SUPPORT_GEMS)
+        result = get_support_gem_amount_for_act(20, self.mock_world)
+        self.assertEqual(result, PathOfExileWorld.MAX_SUPPORT_GEMS)
     
     def test_get_passives_amount_for_act(self):
         """Test passive points amount calculation"""
-        self.assertEqual(get_passives_amount_for_act(1, self.mock_opt), 6)
-        self.assertEqual(get_passives_amount_for_act(5, self.mock_opt), 56)
-        self.assertEqual(get_passives_amount_for_act(12, self.mock_opt), 136)
-        
+        self.assertEqual(get_passives_amount_for_act(1, self.mock_world), 6)
+        self.assertEqual(get_passives_amount_for_act(5, self.mock_world), 56)
+        self.assertEqual(get_passives_amount_for_act(12, self.mock_world), 136)
+
         # Test with passive points disabled
         self.mock_opt.add_passive_skill_points_to_item_pool.value = False
-        self.assertEqual(get_passives_amount_for_act(5, self.mock_opt), 0)
-        
+        self.assertEqual(get_passives_amount_for_act(5, self.mock_world), 0)
+
         # Test with act not in table
         self.mock_opt.add_passive_skill_points_to_item_pool.value = True
-        self.assertEqual(get_passives_amount_for_act(99, self.mock_opt), 0)
+        self.assertEqual(get_passives_amount_for_act(99, self.mock_world), 0)
 
 
 class TestCompletionCondition(PoeTestBase):
@@ -164,16 +173,23 @@ class TestCanReach(PoeTestBase):
         self.mock_options.gear_upgrades_per_act.value = 2
         self.mock_options.gucci_hobo_mode.value = 0
         self.mock_options.gucci_hobo_mode.option_disabled = 0
-        self.mock_options.add_flasks_to_item_pool = True
+        self.mock_options.add_flasks_to_item_pool = Mock(value=True)
         self.mock_options.flasks_per_act.value = 1
-        self.mock_options.add_max_links_to_item_pool = True
+        self.mock_options.add_max_links_to_item_pool = Mock(value=True)
         self.mock_options.max_links_per_act.value = 1
         self.mock_options.skill_gems_per_act.value = 2
         self.mock_options.support_gems_per_act.value = 1
         self.mock_options.add_passive_skill_points_to_item_pool.value = True
-        
+        self.mock_options.add_skill_gems_to_item_pool = Mock(value=True)
+        self.mock_options.add_support_gems_to_item_pool = Mock(value=True)
+
         self.mock_world.options = self.mock_options
         self.mock_world.player = 1
+        self.mock_world.placed_total_gear_upgrades = PathOfExileWorld.MAX_GEAR_UPGRADES
+        self.mock_world.placed_total_flask_slots = PathOfExileWorld.MAX_FLASK_SLOTS
+        self.mock_world.placed_total_link_upgrades = PathOfExileWorld.MAX_LINK_UPGRADES
+        self.mock_world.placed_total_skill_gems = PathOfExileWorld.MAX_SKILL_GEMS
+        self.mock_world.placed_total_support_gems = PathOfExileWorld.MAX_SUPPORT_GEMS
     
     def test_can_reach_early_act(self):
         """Test can_reach for acts before act 1"""
@@ -331,16 +347,23 @@ class TestSelectLocationsToAdd(PoeTestBase):
         self.mock_options.starting_character.option_scion = 1
         self.mock_options.gucci_hobo_mode.value = 0
         self.mock_options.gucci_hobo_mode.option_disabled = 0
-        self.mock_options.add_flasks_to_item_pool = True
+        self.mock_options.add_flasks_to_item_pool = Mock(value=True)
         self.mock_options.flasks_per_act.value = 1
-        self.mock_options.add_max_links_to_item_pool = True
+        self.mock_options.add_max_links_to_item_pool = Mock(value=True)
         self.mock_options.max_links_per_act.value = 1
         self.mock_options.skill_gems_per_act.value = 2
         self.mock_options.support_gems_per_act.value = 1
         self.mock_options.add_passive_skill_points_to_item_pool.value = True
-        
+        self.mock_options.add_skill_gems_to_item_pool = Mock(value=True)
+        self.mock_options.add_support_gems_to_item_pool = Mock(value=True)
+
         self.mock_world.options = self.mock_options
-        
+        self.mock_world.placed_total_gear_upgrades = PathOfExileWorld.MAX_GEAR_UPGRADES
+        self.mock_world.placed_total_flask_slots = PathOfExileWorld.MAX_FLASK_SLOTS
+        self.mock_world.placed_total_link_upgrades = PathOfExileWorld.MAX_LINK_UPGRADES
+        self.mock_world.placed_total_skill_gems = PathOfExileWorld.MAX_SKILL_GEMS
+        self.mock_world.placed_total_support_gems = PathOfExileWorld.MAX_SUPPORT_GEMS
+
         # Mock locations data
         self.mock_base_item_locations = {
             "loc1": {"name": "Location 1", "act": 1},
@@ -431,12 +454,12 @@ class TestConstants(unittest.TestCase):
     
     def test_constants_are_reasonable(self):
         """Test that constants have reasonable values"""
-        self.assertGreater(Rules.MAX_GUCCI_GEAR_UPGRADES, 0)
-        self.assertGreater(Rules.MAX_GEAR_UPGRADES, Rules.MAX_GUCCI_GEAR_UPGRADES)
-        self.assertGreater(Rules.MAX_FLASK_SLOTS, 0)
-        self.assertGreater(Rules.MAX_LINK_UPGRADES, 0)
-        self.assertGreater(Rules.MAX_SKILL_GEMS, 0)
-        self.assertGreater(Rules.MAX_SUPPORT_GEMS, 0)
+        self.assertGreater(PathOfExileWorld.MAX_GUCCI_GEAR_UPGRADES, 0)
+        self.assertGreater(PathOfExileWorld.MAX_GEAR_UPGRADES, PathOfExileWorld.MAX_GUCCI_GEAR_UPGRADES)
+        self.assertGreater(PathOfExileWorld.MAX_FLASK_SLOTS, 0)
+        self.assertGreater(PathOfExileWorld.MAX_LINK_UPGRADES, 0)
+        self.assertGreater(PathOfExileWorld.MAX_SKILL_GEMS, 0)
+        self.assertGreater(PathOfExileWorld.MAX_SUPPORT_GEMS, 0)
     
     def test_armor_categories(self):
         """Test armor categories list"""
@@ -479,16 +502,23 @@ class TestCanReachFunction(PoeTestBase):
         self.mock_options.gear_upgrades_per_act.value = 2
         self.mock_options.gucci_hobo_mode.value = 0
         self.mock_options.gucci_hobo_mode.option_disabled = 0
-        self.mock_options.add_flasks_to_item_pool = True
+        self.mock_options.add_flasks_to_item_pool = Mock(value=True)
         self.mock_options.flasks_per_act.value = 1
-        self.mock_options.add_max_links_to_item_pool = True
+        self.mock_options.add_max_links_to_item_pool = Mock(value=True)
         self.mock_options.max_links_per_act.value = 1
         self.mock_options.skill_gems_per_act.value = 2
         self.mock_options.support_gems_per_act.value = 1
         self.mock_options.add_passive_skill_points_to_item_pool.value = True
-        
+        self.mock_options.add_skill_gems_to_item_pool = Mock(value=True)
+        self.mock_options.add_support_gems_to_item_pool = Mock(value=True)
+
         self.mock_world.options = self.mock_options
         self.mock_world.player = 1
+        self.mock_world.placed_total_gear_upgrades = PathOfExileWorld.MAX_GEAR_UPGRADES
+        self.mock_world.placed_total_flask_slots = PathOfExileWorld.MAX_FLASK_SLOTS
+        self.mock_world.placed_total_link_upgrades = PathOfExileWorld.MAX_LINK_UPGRADES
+        self.mock_world.placed_total_skill_gems = PathOfExileWorld.MAX_SKILL_GEMS
+        self.mock_world.placed_total_support_gems = PathOfExileWorld.MAX_SUPPORT_GEMS
         
         # Setup default item mocks using real names from Items.json
         self.setup_default_item_mocks()
@@ -795,13 +825,13 @@ class TestCanReachFunction(PoeTestBase):
             def mock_count_scion(items, player):
                 item_names = [item["name"] if isinstance(item, dict) else str(item) for item in items]
                 if any("Ascendant" in name for name in item_names):
-                    return 1
+                    return 2  # Scion needs min(ascendancies_per_class=3, scion_max=2) = 2
                 return 5
-            
+
             self.mock_state.count_from_list.side_effect = mock_count_scion
-            
+
             result = can_reach(3, self.mock_world, self.mock_state)
-            self.assertTrue(result)  # Scion only needs 1 ascendancy
+            self.assertTrue(result)  # Scion needs 2 ascendancies (min of 3 available, 2 max for Scion)
     
     def test_can_reach_flask_slots_disabled(self):
         """Test can_reach when flask slots are disabled in options"""

@@ -309,7 +309,8 @@ MISSION_ITEMS_TABLE: dict[str, GrinchItemData] = {
             grinch_categories.PROGRESSION_IC,
         ],
         202,
-        IC.progression_deprioritized,
+        # IC.progression_deprioritized,
+        IC.progression,
         [
             GrinchRamData(0x0101F9, binary_bit_pos=6),
             GrinchRamData(0x0100C2, binary_bit_pos=1),
@@ -322,8 +323,11 @@ MISSION_ITEMS_TABLE: dict[str, GrinchItemData] = {
             grinch_categories.PROGRESSION_IC,
         ],
         203,
-        IC.progression_deprioritized,
-        [GrinchRamData(0x0101F9, binary_bit_pos=4)],
+        # IC.progression_deprioritized,
+        IC.progression,
+        [
+            GrinchRamData(0x0101F9, binary_bit_pos=4)
+        ],
     ),
     grinch_items.level_items.WF_CABLE_CAR_ACCESS_CARD: GrinchItemData(
         [
@@ -352,8 +356,11 @@ MISSION_ITEMS_TABLE: dict[str, GrinchItemData] = {
             grinch_categories.PROGRESSION_IC,
         ],
         206,
-        IC.progression_deprioritized,
-        [GrinchRamData(0x0101FA, binary_bit_pos=1)],
+        # IC.progression_deprioritized,
+        IC.progression,
+        [
+            GrinchRamData(0x0101FA, binary_bit_pos=1)
+        ],
     ),
     grinch_items.level_items.WL_HOOK: GrinchItemData(
         [
@@ -362,8 +369,11 @@ MISSION_ITEMS_TABLE: dict[str, GrinchItemData] = {
             grinch_categories.PROGRESSION_IC,
         ],
         207,
-        IC.progression_deprioritized,
-        [GrinchRamData(0x0101FA, binary_bit_pos=0)],
+        # IC.progression_deprioritized,
+        IC.progression,
+        [
+            GrinchRamData(0x0101FA, binary_bit_pos=0)
+        ],
     ),
     grinch_items.level_items.WV_SCULPTING_TOOLS: GrinchItemData(
         [
@@ -372,8 +382,11 @@ MISSION_ITEMS_TABLE: dict[str, GrinchItemData] = {
             grinch_categories.PROGRESSION_IC,
         ],
         208,
-        IC.progression_deprioritized,
-        [GrinchRamData(0x0101F9, binary_bit_pos=2)],
+        # IC.progression_deprioritized,
+        IC.progression,
+        [
+            GrinchRamData(0x0101F9, binary_bit_pos=2)
+        ],
     ),
     grinch_items.level_items.WV_HAMMER: GrinchItemData(
         [
@@ -383,8 +396,11 @@ MISSION_ITEMS_TABLE: dict[str, GrinchItemData] = {
 
         ],
         209,
-        IC.progression_deprioritized,
-        [GrinchRamData(0x0101F9, binary_bit_pos=3)],
+        # IC.progression_deprioritized,
+        IC.progression,
+        [
+            GrinchRamData(0x0101F9, binary_bit_pos=3)
+        ],
     ),
     grinch_items.level_items.WL_SCOUT_CLOTHES: GrinchItemData(
         [
@@ -395,7 +411,7 @@ MISSION_ITEMS_TABLE: dict[str, GrinchItemData] = {
         210,
         IC.progression,
         [GrinchRamData(0x0101F9, binary_bit_pos=7)],
-         # GrinchRamData(0x0100E3, value=5)], # Allows removal of pirate in cave when doing squashing all gifts
+         # GrinchRamData(0x0100E4, value=2)], # Allows removal of pirate in cave when doing squashing all gifts
     ),
 }
 
@@ -408,7 +424,7 @@ SLEIGH_TABLE: dict[str, GrinchItemData] = {
             grinch_categories.PROGRESSION_IC,
         ],
         410,
-        IC.progression_skip_balancing,
+        IC.progression,
         [
             GrinchRamData(0x010200, binary_bit_pos=6),
             GrinchRamData(0x0100AA, binary_bit_pos=5),
@@ -866,7 +882,6 @@ TRAPS_TABLE: dict[str, GrinchItemData] = {
         IC.trap,  # Alias to Home Trap for traplink
         [
             GrinchRamData(0x010000, value=0x05),
-            GrinchRamData(0x0101FF, binary_bit_pos=0),
             GrinchRamData(0x0100B4, value=0),
             GrinchRamData(0x08FB94, value=1),
             GrinchRamData(0x010111, value=0),

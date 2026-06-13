@@ -300,7 +300,7 @@ def make_overworld_logic():
         # 3F
         ["ToF 3F", "ToF 3F Key Drop", False, "tof_key_drop"],
         ["ToF 3F", "ToF 3F Key Door", False, "tof_3f_key_door"],
-        ["ToF 3F", "ToF 3F OOB", False, "grapple_glitch"],
+        ["ToF 3F Key Door", "ToF 3F OOB", False, "grapple_glitch"],
             ["ToF 3F OOB", "ToF 3F Boss Key", False, None],
             ["ToF 3F OOB", "ToF 4F", False, None],
         ["ToF 3F Key Door", "ToF 3F Boss Key", False, "boomerang"],
@@ -418,8 +418,9 @@ def make_overworld_logic():
             ["Ghost Ship Boat", "Ghost Ship 1F", False, "ghost_ship"],
             ["Ghost Ship 1F", "Ghost Ship Boat", False, None],
         ["NW Ocean", "PoRL", False, None],
-        ["PoRL", "PoRL Item", False, "sword"],
-        ["PoRL", "PoRL Trade", False, "heroes_new_clothes"],
+            ["PoRL", "PoRL Item", False, "sword"],
+            ["PoRL", "PoRL Trade", False, "heroes_new_clothes"],
+        ["NW Ocean", "Pirate Ambush", False, "pirate_ambush_nw"],
 
         # ================= Isle of Gust ====================
 
@@ -453,7 +454,7 @@ def make_overworld_logic():
         ["ToW B2", "ToW B2 Dig", False, "shovel"],
         ["ToW B2", "ToW B2 Bombs", False, "explosives"],
         ["ToW B2", "ToW B2 Key", False, "tow_key"],
-        ["ToW B2 Bombs", "ToW 1F NE", False, None],
+        ["ToW B2 Bombs", "ToW 1F NE", False, "chus"],
         ["ToW 1F", "ToW 2F", False, "tow_cyclok"],
         ["ToW 2F", "Cyclok", True, None],
         ["ToW 2F", "ToW 1F", False, None],
@@ -507,6 +508,7 @@ def make_overworld_logic():
         ["Cubus Sisters", "Ghost Ship Warp", False, "sword"],
         ["Ghost Ship Warp", "Ghost Ship 1F", False, None],
         ["Cubus Sisters", "Post Cubus Sisters", False, "sword"],
+        ["Post Cubus Sisters", "Post Cubus Sisters Event", False, None],
         ["Ghost Ship B2", "Ghost Ship Tetra", False, "ghost_key"],
         ["Ghost Ship Tetra", "Spawn Pirate Ambush", False, None],
 
@@ -531,7 +533,7 @@ def make_overworld_logic():
         ["Dee Ess Island", "Dee Ess Boat", False, None],
             ["Dee Ess Boat", "Dee Ess Island", False, "require_chart", "SE"],
             ["Dee Ess Boat", "SE Ocean", True, "require_chart", "SE"],
-        ["SE Ocean", "Pirate Ambush", False, "beat_gs"],
+        ["SE Ocean", "Pirate Ambush", False, "pirate_ambush_se"],
         ["SE Ocean", "SS Wayfarer", True, "ss_wayfarer"],
         ["SS Wayfarer", "SS Wayfarer Trade", False, "wood_heart"],
         ["SS Wayfarer Trade", "SS Wayfarer Event", False, None],
@@ -714,7 +716,7 @@ def make_overworld_logic():
             ["Ruins Boat", "NE Ocean", False, "require_chart", "NE"],
             ["Ruins Boat", "Ruins SW Port", False, "regal_necklace"],
             ["Ruins SW Port", "Ruins Boat", False, None],
-        ["NE Ocean", "Pirate Ambush", False, "beat_gs"],
+        ["NE Ocean", "Pirate Ambush", False, "pirate_ambush_ne"],
 
         # ================= IotD ====================
 

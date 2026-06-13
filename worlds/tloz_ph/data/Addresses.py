@@ -49,7 +49,7 @@ class PHAddr:
     
     saving = Address(0x19B7CF)
     changing_map_scene = Address(0x1BA700)
-    pen_mode_pointer = Address(0x1CCCEC, size=4)
+    pen_mode_pointer = Address(0x1CCCEC, size=3)
     lower_water = Address(0x1B5582)
     
     text_speed = Address(0x0EC754)  # Sus

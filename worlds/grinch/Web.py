@@ -40,6 +40,7 @@ class GrinchWeb(WebWorld):
             DamageRate,
             MusicRando,
             ReducedCutscenes,
+            TeleportMultibind,
         ]),
         OptionGroup("Filler/Trap Settings", [
             FillerWeight,
@@ -53,7 +54,7 @@ class GrinchWeb(WebWorld):
     tutorials = [
         Tutorial(
             "Multiworld Setup Guide",
-            "A guide to setting up The Grinch randomizer connected to a MultiworldGG Multiworld",
+            "A guide to setting up The Grinch randomizer connected to an Archipelago Multiworld",
             "English",
             "setup_en.md",
             "setup/en",

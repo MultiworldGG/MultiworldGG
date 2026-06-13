@@ -1,0 +1,14 @@
+html {
+    background-image: url('../static/backgrounds/ocean.png');
+    background-repeat: repeat;
+    background-size: 126px 126px;
+}
+
+body {
+    background-color: transparent !important;
+    color: #ffffff;
+}
+
+a {
+    color: #ea166c;
+}

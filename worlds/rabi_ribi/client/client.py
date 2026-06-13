@@ -16,6 +16,7 @@ from CommonClient import (
     gui_enabled,
 )
 from NetUtils import ClientStatus, NetworkItem
+
 from worlds.AutoWorld import World
 from ..client.memory_io import RabiRibiMemoryIO
 from ..constants import GAME_NAME
@@ -370,7 +371,9 @@ class RabiRibiContext(TrackerGameContext): # type: ignore
             )
 
         room_x = x // 20
-        room_y = 0 if y < 12 else (((y - 12) // 45) * 4) + (((y - 12) % 45) // 11)
+        room_y = (y // 45) * 4
+        if y % 45 >= 12:
+            room_y += ((y % 45) - 1) // 11
 
         if self.current_room != (room_x, room_y):
             self.current_room = (room_x, room_y)
@@ -696,11 +699,17 @@ async def check_for_locations(ctx: RabiRibiContext):
     if ctx.rr_interface.is_in_item_receive_animation():
         ap_location_id, coordinates = ctx.find_closest_item_location()
         if not ap_location_id:
-            # logger.warning("Detected item obtained, but unable to find location.")
             return
         if ap_location_id not in ctx.locations_checked:
             ctx.locations_checked.add(ap_location_id)
             await ctx.check_locations([ap_location_id])
+
+            # TODO: Remove this LocationScout when UT fixes issue with local item tracking
+            asyncio.create_task(ctx.send_msgs([{
+                "cmd": "LocationScouts",
+                "locations": [ap_location_id]
+            }]))
+
             await remove_exclamation_point(ctx, coordinates)
 
 async def remove_exclamation_point(ctx: RabiRibiContext, coordinates):

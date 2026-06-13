@@ -110,6 +110,7 @@ class GrinchClient(BizHawkClient):
         self.unique_client_id = 0
         self.chosen_music = {}
         self.reduced_cutscenes = False
+        self.teleport_multibind = False
 
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
         from CommonClient import logger
@@ -169,6 +170,7 @@ class GrinchClient(BizHawkClient):
                 self.music_rando = bool(ctx.slot_data["music_rando"])
                 self.chosen_music = dict(ctx.slot_data["chosen_music"])
                 self.reduced_cutscenes = bool(ctx.slot_data["reduced_cutscenes"])
+                self.teleport_multibind = bool(ctx.slot_data["teleport_multibind"])
                 self.unique_client_id = self._get_uuid()
                 # logger.info(
                 #     "You are now connected to the client. "
@@ -509,8 +511,20 @@ class GrinchClient(BizHawkClient):
         ]
 
         # Setting mission count for all addresses back to 0 to prevent warping/unlocking after completing 3 missions
-        #
         ram_addr_dict[0x0100F0] = [0, 4]
+        ingame_map_id = await self.get_current_map_id(ctx)
+        if ingame_map_id == 0x05:
+            # Removes key in Breath Analyzer room
+            await bizhawk.write(
+                ctx.bizhawk_ctx,
+                [(0x0FF90C, int(64628).to_bytes(2, "little"), "MainRAM")],
+            )
+            # Open access to Mount Crumpit tutorial section
+            await bizhawk.write(
+                ctx.bizhawk_ctx,
+                [(0x0101FE, int(255).to_bytes(1, "little"), "MainRAM")],
+            )
+
 
         for item_name, item_data in items_to_check.items():
             # If item is an event or already been received, ignore.
@@ -699,26 +713,50 @@ class GrinchClient(BizHawkClient):
                     await asyncio.sleep(0.5)
 
         if self.reduced_cutscenes:
-            # Disables all Whoville tutorial cutscenes & first visit cutscene
-            await bizhawk.write(
-                ctx.bizhawk_ctx,
-                [(0x010212, int(95).to_bytes(1, "little"), "MainRAM")],
-            )
+            ingame_map_id = await self.get_current_map_id(ctx)
+            if ingame_map_id == 0x07:
+                # Disables all Whoville tutorial cutscenes & first visit cutscene
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [(0x010212, int(95).to_bytes(1, "little"), "MainRAM")],
+                )
+            # Disables WV, WF, WD, & WL first visit cutscene
+            # await bizhawk.write(
+            #     ctx.bizhawk_ctx,
+            #     [(0x04B438, int(0).to_bytes(1, "little"), "MainRAM")],
+            # )
             # Disables WF first visit cutscene
-            await bizhawk.write(
-                ctx.bizhawk_ctx,
-                [(0x01024A, int(2).to_bytes(1, "little"), "MainRAM")],
-            )
+                # Cannot use due to blueprints using same address
+            # await bizhawk.write(
+            #     ctx.bizhawk_ctx,
+            #     [(0x01024A, int(2).to_bytes(1, "little"), "MainRAM")],
+            # )
             # Disables WD first visit cutscene
-            await bizhawk.write(
-                ctx.bizhawk_ctx,
-                [(0x01025C, int(2).to_bytes(1, "little"), "MainRAM")],
-            )
+                # Cannot use due to blueprints using same address
+            # await bizhawk.write(
+            #     ctx.bizhawk_ctx,
+            #     [(0x01025C, int(2).to_bytes(1, "little"), "MainRAM")],
+            # )
             # Disables WL first visit cutscene
-            await bizhawk.write(
-                ctx.bizhawk_ctx,
-                [(0x010282, int(16).to_bytes(1, "little"), "MainRAM")],
-            )
+            # await bizhawk.write(
+            #     ctx.bizhawk_ctx,
+            #     [(0x010282, int(16).to_bytes(1, "little"), "MainRAM")],
+            # )
+            if ingame_map_id == 0x05:
+            # Disabled MC cutscenes
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [(0x095344, int(255).to_bytes(1, "little"), "MainRAM")],
+                )
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [(LOBBY_TRIGGER_ADDR, int(1).to_bytes(1, "little"), "MainRAM")],
+                )
+                    # Removes crate
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [(0x0F70CC, int(30620).to_bytes(2, "little"), "MainRAM")],
+                )
 
     async def funny_secret_goal(self, ctx: "BizHawkClientContext"):
         secret_cond = False
@@ -779,8 +817,6 @@ class GrinchClient(BizHawkClient):
                     )[0],
                     "little",
                 )
-                # Need asyncio sleep because AP may mandate delayed sends for
-                await asyncio.sleep(1)
 
                 if (current_egg_count - self.previous_egg_count) != 0:
                     msg = {
@@ -805,7 +841,7 @@ class GrinchClient(BizHawkClient):
                 logger.error("While monitoring grinch's egg count ingame, an error occurred. Details:" + str(ex))
                 self.send_ring_link = False
 
-        if not ctx.slot:
+        if not ctx.slot and self.send_ring_link:
             logger.info("You must be connected to the multi-world in order for RingLink to work properly.")
 
     async def ring_link_input(self, egg_amount: int, ctx: "BizHawkClientContext"):
@@ -883,16 +919,16 @@ class GrinchClient(BizHawkClient):
             lt_pressed: bool = (get_other_buttons_state & (1 << 0)) > 0
 
             # If RT and LT are both held + start, sending player up to the top of MC / Tutorial area.
-            if await self.paused_state(ctx):
-                if rt_pressed and lt_pressed:
-                    lobby_val = int.from_bytes((await bizhawk.read(ctx.bizhawk_ctx, [(LOBBY_TRIGGER_ADDR,
-                        TRIGGER_ADDR_SIZE, "MainRAM")]))[0],"little")
-                    lobby_val = set_binary_position(lobby_val, 0, False)
-                    await asyncio.sleep(1)
-                    await bizhawk.write(ctx.bizhawk_ctx,
-                        [(LOBBY_TRIGGER_ADDR, lobby_val.to_bytes(TRIGGER_ADDR_SIZE, "little"), "MainRAM"),
-                                (MC_ELEVATOR_ADDR, int(3).to_bytes(TRIGGER_ADDR_SIZE, "little"), "MainRAM"),])
-                    await _teleport_player(ctx, MOUNT_CRUMPIT_MAP_ID)
+            if await self.paused_state(ctx) and self.teleport_multibind:
+                # if rt_pressed and lt_pressed:
+                #     lobby_val = int.from_bytes((await bizhawk.read(ctx.bizhawk_ctx, [(LOBBY_TRIGGER_ADDR,
+                #         TRIGGER_ADDR_SIZE, "MainRAM")]))[0],"little")
+                #     lobby_val = set_binary_position(lobby_val, 0, False)
+                #     await asyncio.sleep(1)
+                #     await bizhawk.write(ctx.bizhawk_ctx,
+                #         [(LOBBY_TRIGGER_ADDR, lobby_val.to_bytes(TRIGGER_ADDR_SIZE, "little"), "MainRAM"),
+                #                 (MC_ELEVATOR_ADDR, int(3).to_bytes(TRIGGER_ADDR_SIZE, "little"), "MainRAM"),])
+                #     await _teleport_player(ctx, MOUNT_CRUMPIT_MAP_ID)
 
                 # If RB and LB are both held + start, sending player to grinch computer room / lobby.
                 if lb_pressed and rb_pressed:
@@ -1023,7 +1059,7 @@ class GrinchClient(BizHawkClient):
 
 def _cmd_ringlink(self):
     """Toggle ringling from client. Overrides default setting."""
-    if not self.ctx.slot:
+    if not self.ctx.slot and self.send_ring_link:
         return
 
     Utils.async_start(
