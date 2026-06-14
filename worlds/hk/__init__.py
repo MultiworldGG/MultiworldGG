@@ -8,7 +8,6 @@ from typing import Any, ClassVar
 from BaseClasses import CollectionState, Entrance, EntranceType, ItemClassification, LocationProgressType, MultiWorld
 from entrance_rando import EntranceRandomizationError, randomize_entrances
 from Options import OptionError
-from worlds.AutoWorld import World
 
 from .charms import charm_name_to_id, charm_names
 from .classes import HKClause, HKEntrance, HKItem, HKLocation, HKRegion, HKSettings, HKWeb
@@ -41,10 +40,10 @@ from .parse_data import (
     options_pool_mappings,
     structure_regions,
     structure_transition_to_region_map,
+    structure_transitions,
     trando_starts,
     trando_transitions,
     vanilla_location_costs,
-    vanilla_shop_costs,
 )
 from .resource_state_vars import ResourceStateHandler
 from .rules import cost_terms
@@ -109,7 +108,6 @@ class HKWorld(RandomizerCoreWorld):
         }
         self.ranges = {}
         self.created_shop_items = 0
-        self.vanilla_shop_costs = deepcopy(vanilla_shop_costs)
         self.cached_filler_items = []
         self.event_locations = deepcopy(event_locations)
         self.entrance_by_term = defaultdict(list)
@@ -258,7 +256,7 @@ class HKWorld(RandomizerCoreWorld):
         location_to_option["Elevator_Pass"] = "RandomizeElevatorPass"
         for location, costs in vanilla_location_costs.items():
             if self.options.AddUnshuffledLocations or getattr(self.options, location_to_option[location]):
-                self.get_location(location).costs = costs
+                self.get_location(location).costs = costs.copy()
 
         self.get_region("Menu").connect(self.get_region(self.start_location_region))
 
@@ -395,10 +393,19 @@ class HKWorld(RandomizerCoreWorld):
                 hk_state_requirements=state_requirements,
                 ))
 
+        if skip_clause and not hk_rule:
+            # if we skipped anything then we have impossible logic not empty (default=True) logic
+            return [HKClause(hk_item_requirements={"FALSE": 1},
+                             hk_region_requirements=[],
+                             hk_state_requirements=[],
+                             )]
         return hk_rule
 
     def set_rule(self, spot, rule):
         # set hk_rule instead of access_rule because our Location class defines a custom access_rule
+        if rule == []:
+            return
+            # treat this as a noop to stay True
         if isinstance(spot, HKEntrance):
             relevant_terms = {term for clause in rule for term in clause.hk_item_requirements.keys()}
             tried_modifiers = set()
@@ -575,6 +582,24 @@ class HKWorld(RandomizerCoreWorld):
         if self.options.WhitePalace < WhitePalace.option_kingfragment:
             self.options.SkipTitledAreaInER.value.add("White Palace")
 
+        exit_to_rules = {
+            transition["name"]: transition["logic"]
+            for transition in structure_transitions
+        }
+        exit_to_rules.update({
+            f"{region['name']} -> {exit['target']}": exit["logic"]
+            for region in structure_regions
+            for exit in region["exits"]
+        })
+        empty_rule = [
+            {
+                "item_requirements": [],
+                "location_requirements": [],
+                "region_requirements": [],
+                "state_modifiers": []
+            }
+        ]
+
         one_ways = defaultdict(list)
         reverse_lookup = {
             # to map doors to the opposite direction of their vanilla target
@@ -604,6 +629,10 @@ class HKWorld(RandomizerCoreWorld):
 
                 if sides != "OneWayOut":
                     exit_obj = region1.create_exit(name)
+                    rule = exit_to_rules.get(name)
+                    assert rule != empty_rule, f"bad data {name}"
+                    if rule:
+                        self.set_rule(exit_obj, self.create_rule(rule))
                     exit_obj.randomization_type = entrance_type
                     exit_obj.randomization_group = group
                     self.entrance_groups[entrance_subgroup].append(exit_obj)
@@ -624,7 +653,10 @@ class HKWorld(RandomizerCoreWorld):
 
                 region1 = self.get_region(structure_transition_to_region_map[name])
                 region2 = self.get_region(structure_transition_to_region_map[trans_data["vanilla_target"]])
-                region1.connect(region2, name)
+                rule_data = exit_to_rules.get(name)
+                assert rule_data != empty_rule, f"bad data {name}"
+                rule = self.create_rule(rule_data) if rule_data else None
+                region1.connect(region2, name, rule)
 
         if not one_ways:
             return
@@ -666,6 +698,7 @@ class HKWorld(RandomizerCoreWorld):
                     self.item_class(item, ItemClassification.progression, item_id, self.player)
                 )
                 loc.show_in_spoiler = False
+            loc.costs = {i["term"]: i["amount"] for i in costs}
             return loc
 
         for option, option_data in options_pool_mappings.items():
@@ -995,7 +1028,7 @@ class HKWorld(RandomizerCoreWorld):
             return
         for region in self.get_regions():
             for location in region.locations:
-                if location.costs:
+                if not location.vanilla and location.costs:
                     if location.item.name in geo_cost_caps and "GEO" in location.costs:
                         location.costs["GEO"] = min(location.costs["GEO"], geo_cost_caps[location.item.name])
 

@@ -142,6 +142,13 @@ class AutoExcludeSkip(DefaultOnToggle):
     display_name = "Auto Exclude Skipped Level Locations"
 
 
+class AutoExcludeGoal(DefaultOnToggle):
+    """
+    Choose if the goal level shoudl automatically have all of its locations excluded.
+    """
+    display_name = "Auto Exclude Goal Level Locations"
+
+
 class UnlockType(Choice):
     """
     Choose if levels will be unlocked one at a time, or whole layers at once.
@@ -490,6 +497,7 @@ class UltrakillOptions(PerGameCommonOptions):
     perfect_goal: PerfectGoal
     skipped_levels: SkipLevels
     auto_exclude_skipped_locations: AutoExcludeSkip
+    auto_exclude_goal_locations: AutoExcludeGoal
     unlock_type: UnlockType
     secret_mission_unlock_type: SecretUnlockType
     secret_exit_behavior: SecretExitType

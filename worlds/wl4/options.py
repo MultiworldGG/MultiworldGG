@@ -67,12 +67,14 @@ class Difficulty(Choice):
 
 class Logic(Choice):
     """
-    Advanced logic enables some strategies that are more difficult or can risk forcing a Give Up, many of which involve Grab.
+    Higher logic levels enable some strategies that are more difficult and/or can risk forcing a Give Up.
     A list of these strategies can be found on the game page.
     """
     display_name = "Logic"
     option_basic = 0
-    option_advanced = 1
+    option_intermediate = 1
+    option_advanced = 2
+    option_anything_goes = 3
     default = option_basic
 
 

@@ -4785,10 +4785,14 @@ class UltrakillRules:
                             can_reach_level(state, "Enemy: Deathcatcher", "8-3")
                             and good_weapon(state)
                             and (
-                                stamina(state, 1)
-                                or walljumps(state, 3)
-                                or shoalt_any(state)
-                                or rock_any(state)
+                                slide(state)
+                                or (
+                                    stamina(state, 1)
+                                    or walljumps(state, 3)
+                                    or shoalt_any(state)
+                                    or rock_any(state)
+                                )
+                                and arm2(state)
                             )
                         )
                     )

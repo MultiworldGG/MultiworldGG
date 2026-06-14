@@ -218,7 +218,8 @@ class MagicTypesRule(rules.Rule[RabiRibiWorldBase], game=GAME_NAME):
             return curr_magic_types >= self.num_magic_types
 
         def _count_magic_types(self, state: CollectionState) -> int:
-            curr_magic_types = state.count_group_unique("Magic", self.player)
+            # Add 1 for default Ribbon magic
+            curr_magic_types = state.count_group_unique("Magic", self.player) + 1
             if self._rainbow_shot_in_logic(state):
                 curr_magic_types += 1
             return curr_magic_types

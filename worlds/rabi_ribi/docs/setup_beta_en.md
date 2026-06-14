@@ -4,31 +4,29 @@ This randomizer assumes the player is aware of hidden techniques that allow the 
 Additionally, the logic assumes that the player knows of hidden paths throughout the game, revealed with Ribbon, Fire Orb, or Carrot Bombs. A patch is available to expose these paths, alongside other useful features! It can be enabled by setting "Apply Beginner Mod" to `true`.
 
 ## To Install
-1. Download and install the latest MultiworldGG release from the [MultiworldGG Releases page](https://github.com/MultiworldGG/MultiworldGG/releases).
-
-If you are not using MultiworldGG:
+1. Download and install the latest archipelago release from the [Archipelago Releases page](https://github.com/ArchipelagoMW/Archipelago/releases).
 2. Download `rabi_ribi.apworld` from the latest release on the [Archipelago Rabi-Ribi Releases page](https://github.com/tdkollins/Archipelago-Rabi-Ribi/releases)
 3. Open `rabi_ribi.apworld` with Archipelago Launcher; it will be automatically installed to Archipelago's `custom_world` folder.
 
 ## To Generate a Game
 1. Download `Rabi-Ribi.yaml` from the latest release on the [Archipelago Rabi-Ribi Releases page](https://github.com/tdkollins/Archipelago-Rabi-Ribi/releases)
 2. Edit the file to have your desired settings.
-3. Navigate to your MultiworldGG installation (by default, `C:\Program Files\MultiworldGG`).
-4. Navigate to the `Players` folder under your MultiworldGG base folder.
+3. Navigate to your Archipelago installation (by default, `C:\ProgramData\Archipelago`).
+4. Navigate to the `Players` folder under your Archipelago base folder.
 5. Move `Rabi-Ribi.yaml` into this folder (you can rename it if you wish).
-6. Open MultiworldGG Launcher and click the **Generate** button.
-7. Your generated game will be in the `Output` folder in the MultiworldGG base folder.
+6. Open Archipelago Launcher and click the **Generate** button.
+7. Your generated game will be in the `Output` folder in the Archipelago base folder.
 
 ## To Host a Game
-1. Navigate to the [Host Game](https://multiworld.gg/uploads) page.
+1. Navigate to the [Host Game](https://archipelago.gg/uploads) page.
 2. Upload the `.zip` file outputted from the above "To Generate a Game"
 
 ## To Start Playing
-1. Make sure you have an MultiworldGG room from the previous "To Host a Game".
-2. Open the MultiworldGG Launcher and click "Rabi-Ribi Client".
+1. Make sure you have an Archipelago room from the previous "To Host a Game".
+2. Open the Archipelago Launcher and click "Rabi-Ribi Client".
 3. Connect to the room via the room URL and port.
-4. (First Time) When prompted, select the **Rabi-Ribi Installation Folder** on Steam. (This can be changed later via the `host.yaml` file in your MultiworldGG base folder)
-5. (First Time, Optional) When prompted, select the **Rabi-Ribi Poptracker Pack** `.zip` file, available [here](https://github.com/rajanb/RabiRibiPoptracker). (This can be changed later via the `host.yaml` file in your MultiworldGG base folder)
+4. (First Time) When prompted, select the **Rabi-Ribi Installation Folder** on Steam. (This can be changed later via the `host.yaml` file in your Archipelago base folder)
+5. (First Time, Optional) When prompted, select the **Rabi-Ribi Poptracker Pack** `.zip` file, available [here](https://github.com/rajanb/RabiRibiPoptracker). (This can be changed later via the `host.yaml` file in your Archipelago base folder)
 6. Launch Rabi-Ribi through Steam.
 7. On the Rabi-Ribi main menu, press F5 and select the scenario listed in the Rabi-Ribi Client.
 8. Start and have fun!

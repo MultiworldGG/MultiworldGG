@@ -170,11 +170,11 @@ class TestNotPRanks(UltrakillTestBase):
     options = { "p_rank_rewards": "false" }
     
     def test_not_p_ranks(self) -> None:
-        challenge_locations = [l.name for l in location_list if l.type == LocationType.PerfectRank]
+        p_rank_locations = [l.name for l in location_list if l.type == LocationType.PerfectRank]
 
         location_names = [l.name for l in self.multiworld.get_locations()]
 
-        for location in challenge_locations:
+        for location in p_rank_locations:
             self.assertNotIn(location, location_names)
 
 
@@ -185,11 +185,11 @@ class TestPRanks(UltrakillTestBase):
     }
     
     def test_p_ranks(self) -> None:
-        challenge_locations = [l.name for l in location_list if l.type == LocationType.PerfectRank]
+        p_rank_locations = [l.name for l in location_list if l.type == LocationType.PerfectRank and l.region.short_name != self.world.goal_level.short_name]
 
         location_names = [l.name for l in self.multiworld.get_locations()]
 
-        for location in challenge_locations:
+        for location in p_rank_locations:
             self.assertIn(location, location_names)
 
 

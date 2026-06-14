@@ -37,6 +37,10 @@ class UltrakillWorld(World):
     options_dataclass = UltrakillOptions
     options: UltrakillOptions
 
+    required_client_version = (0, 6, 7)
+
+    ut_can_gen_without_yaml = True
+
 
     def __init__(self, multiworld, player):
         super(UltrakillWorld, self).__init__(multiworld, player)
@@ -94,10 +98,43 @@ class UltrakillWorld(World):
     
 
     def generate_early(self):
-        # level options
-        self.start_level = Regions.get_from_id(self.options.start_level.value)
-        self.goal_level = Regions.get_from_id(self.options.goal_level.value)
+        # universal tracker
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            slot_data: Dict[str, Any] = re_gen_passthrough[self.game]
+            self.start_level = Regions.get_from_short_name(slot_data.get("start", self.options.start_level.default))
+            self.goal_level = Regions.get_from_short_name(slot_data.get("goal", self.options.goal_level.default))
+            self.options.goal_requirement.value = slot_data.get("goal_requirement", self.options.goal_requirement.default)
+            self.options.perfect_goal.value = slot_data.get("perfect_goal", self.options.perfect_goal.default)
+            self.options.skipped_levels.value = slot_data.get("skipped_levels", self.options.skipped_levels.default)
+            self.options.secret_mission_unlock_type.value = slot_data.get("secret_mission_unlock_type", self.options.secret_mission_unlock_type.default)
+            self.options.secret_exit_behavior.value = slot_data.get("secret_exit_behavior", self.options.secret_exit_behavior.default)
+            self.options.enemy_rewards.value = slot_data.get("enemy_rewards", self.options.enemy_rewards.default)
+            self.options.challenge_rewards.value = slot_data.get("challenge_rewards", self.options.challenge_rewards.default)
+            self.options.p_rank_rewards.value = slot_data.get("p_rank_rewards", self.options.p_rank_rewards.default)
+            self.options.hank_rewards.value = slot_data.get("hank_rewards", self.options.hank_rewards.default)
+            self.options.randomize_clash_mode.value = slot_data.get("randomize_clash_mode", self.options.randomize_clash_mode.default)
+            self.options.fish_rewards.value = slot_data.get("fish_rewards", self.options.fish_rewards.default)
+            self.options.cleaning_rewards.value = slot_data.get("cleaning_rewards", self.options.cleaning_rewards.default)
+            self.options.chess_reward.value = slot_data.get("chess_reward", self.options.chess_reward.default)
+            self.options.rocket_race_reward.value = slot_data.get("rocket_race_reward", self.options.rocket_race_reward.default)
+            self.options.randomize_secondary_fire.value = slot_data.get("randomize_secondary_fire", self.options.randomize_secondary_fire.default)
+            self.options.start_with_arm.value = slot_data.get("start_with_arm", self.options.start_with_arm.default)
+            self.options.starting_stamina.value = slot_data.get("starting_stamina", self.options.starting_stamina.default)
+            self.options.starting_walljumps.value = slot_data.get("starting_walljumps", self.options.starting_walljumps.default)
+            self.options.start_with_slide.value = slot_data.get("start_with_slide", self.options.start_with_slide.default)
+            self.options.start_with_slam.value = slot_data.get("start_with_slam", self.options.start_with_slam.default)
+            self.options.revolver_form.value = slot_data.get("revolver_form", self.options.revolver_form.default)
+            self.options.shotgun_form.value = slot_data.get("shotgun_form", self.options.shotgun_form.default)
+            self.options.nailgun_form.value = slot_data.get("nailgun_form", self.options.nailgun_form.default)
+            self.options.randomize_skulls.value = slot_data.get("randomize_skulls", self.options.randomize_skulls.default)
+            self.options.randomize_limbo_switches.value = slot_data.get("randomize_limbo_switches", self.options.randomize_limbo_switches.default)
+            self.options.randomize_violence_switches.value = slot_data.get("randomize_violence_switches", self.options.randomize_violence_switches.default)
+        else:
+            self.start_level = Regions.get_from_id(self.options.start_level.value)
+            self.goal_level = Regions.get_from_id(self.options.goal_level.value)
 
+        # level options
         valid_levels = []
         for level in self.options.goal_level.options.values():
             if Regions.get_from_id(level).short_name not in self.options.skipped_levels.value:
@@ -436,6 +473,9 @@ class UltrakillWorld(World):
         for index, loc in enumerate(location_list):
             if loc.type in self.skipped_location_types:
                 continue
+            elif loc.type == LocationType.PerfectRank and loc.region.short_name == self.goal_level.short_name:
+                continue
+
             self.game_id_to_long[loc.game_id] = (base_id + index)
 
             region: Region = self.get_region(loc.region.full_name)
@@ -444,6 +484,9 @@ class UltrakillWorld(World):
 
             if loc.region.short_name in skipped:
                 if self.options.auto_exclude_skipped_locations or isinstance(loc, UKEnemyLocation):
+                    self.options.exclude_locations.value.add(loc.name)
+            elif loc.region.short_name == self.goal_level.short_name:
+                if self.options.auto_exclude_goal_locations:
                     self.options.exclude_locations.value.add(loc.name)
             elif isinstance(loc, UKEnemyLocation):
                 if loc.applicable_levels.issubset(skipped):
@@ -514,6 +557,11 @@ class UltrakillWorld(World):
 
         #self.export_lua()
 
+        return slot_data
+
+
+    @staticmethod
+    def interpret_slot_data(slot_data: Dict[str, Any]) -> Dict[str, Any]:
         return slot_data
     
 

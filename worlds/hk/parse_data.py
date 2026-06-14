@@ -22,10 +22,10 @@ __all__ = [
     "structure_locations",
     "structure_regions",
     "structure_transition_to_region_map",
+    "structure_transitions",
     "trando_starts",
     "trando_transitions",
     "vanilla_location_costs",
-    "vanilla_shop_costs",
 ]
 
 datapackage_items = ids.item_name_to_id
@@ -45,6 +45,7 @@ options_pool_mappings = option_data.pool_options
 structure_locations = region_structure.locations
 structure_regions = region_structure.regions
 structure_transition_to_region_map = region_structure.transition_to_region_map
+structure_transitions = region_structure.transitions
 
 trando_starts = trando_data.starts
 trando_transitions = trando_data.transitions
@@ -60,12 +61,6 @@ vanilla_location_costs = {
     for pair in vanilla_cost_data
     if pair["location"] not in metadata_location_multi
     }
-vanilla_shop_costs = defaultdict(list)
-for i in vanilla_cost_data:
-    if i["location"] not in metadata_location_multi:
-        continue
-    costs = {cost["term"]: cost["amount"] for cost in i["costs"]}
-    vanilla_shop_costs[(i["location"], i["item"])].append(costs)
 
 hk_regions = [
     region for region in cast(list[dict[str, Any]], structure_regions)

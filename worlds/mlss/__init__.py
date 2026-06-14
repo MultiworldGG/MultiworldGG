@@ -59,11 +59,10 @@ class MLSSWorld(World):
     """
 
     game = "Mario & Luigi Superstar Saga"
-    author: str = "jamesbrq"
+    web = MLSSWebWorld()
     options_dataclass = MLSSOptions
     options: MLSSOptions
     settings: typing.ClassVar[MLSSSettings]
-    web = MLSSWebWorld()
     item_name_groups = mlss_item_name_groups
     item_name_to_id = {name: data.code for name, data in item_table.items()}
     location_name_to_id = {loc_data.name: loc_data.id for loc_data in all_locations}

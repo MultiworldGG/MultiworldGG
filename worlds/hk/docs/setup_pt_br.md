@@ -52,5 +52,5 @@ para gerar o YAML usando a interface gráfica.
 
 ## Dicas e outros comandos
 Enquanto jogar um multiworld, você pode interagir com o servidor usando vários comandos listados no
-[Guia de comandos](/tutorial/MultiworldGG/commands/en). Você pode usar o cliente de texto do Archipelago para isso,
-que está incluido na ultima versão do [Archipelago software](https://github.com/MultiworldGG/MultiworldGG/releases/latest).
+[Guia de comandos](/tutorial/Archipelago/commands/en). Você pode usar o cliente de texto do MultiworldGG para isso,
+que está incluido na ultima versão do [MultiworldGG software](https://github.com/MultiworldGG/MultiworldGG/releases/latest).
