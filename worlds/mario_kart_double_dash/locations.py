@@ -2,6 +2,8 @@ from typing import NamedTuple, TYPE_CHECKING
 
 from BaseClasses import Location
 from . import game_data, items, version
+from .locations_routes import ROUTE_LOCATIONS, get_loc_name_route
+from .locations_item_boxes import BOX_NAMES, CUSTOM_BOXES, get_loc_name_item_box, get_loc_name_custom_box
 
 if TYPE_CHECKING:
     from . import MkddWorld
@@ -21,6 +23,16 @@ TAG_TT = "Time Trial"
 TAG_TT_GOOD = "Time Trial Good Time"
 TAG_TT_GHOST = "Time Trial Staff Ghost"
 TAG_ITEM_BOX = "Item Box"
+TAG_SHORTCUT = "Shortcut"
+TAG_ITEM_BOX_INTERESTING = "*Interesting Item Box" # Tags starting with * are for gen purposes only, not user facing.
+TAG_ITEM_BOX_GROUP = "*Item Box Group"
+TAG_ITEM_BOX_SANITY = "*Boxsanity Item Box"
+TAG_ITEM_BOX_CUSTOM = "*Custom Item Box"
+TAG_ITEM_BOX_REPLACEABLE = "*Replaceable Item Box"
+TAG_REQUIRES_BOOST = "*Requires Boost"
+TAG_CHAIN_CHOMP = "*Requires Chain Chomp"
+TAG_REQUIRES_STAR = "*Requires Star"
+TAG_NO_SLOW_KARTS = "*Requires 100cc"
 
 
 class MkddLocation(Location):
@@ -32,31 +44,17 @@ class MkddLocationData(NamedTuple):
     difficulty: int = 0
     region: str = "Menu"
     required_items: dict[str, int] = {}
-    tags: set[str] = {}
+    tags: set[str] = set()
 
-BOX_NAMES = {
-    "Mushroom Bridge": ["Pipe", "Sidewalk", "Bridge"],
-    "Peach Beach": ["Hidden Pipe", "Beach Jump", "Fountain"],
-    "Luigi Circuit": ["Chomp Shortcut", "Last Curve Shortcut"],
-    "Wario Colosseum": ["Great Jump"],
-    "Daisy Cruiser": ["Cargo Area"],
-    "Dino Dino Jungle": ["Bridge Side"]
-}
 
 def get_loc_name_cup(cup: str, ranking: int, vehicle_class: int) -> str:
-    try:
-        rank_name = ["Gold", "Silver", "Bronze"][ranking]
-        class_name = ["50cc", "100cc", "150cc", "Mirror"][vehicle_class]
-        return f"{cup} {rank_name} {class_name}"
-    except:
-        return ""
+    rank_name = ["Gold", "Silver", "Bronze"][ranking]
+    class_name = ["50cc", "100cc", "150cc", "Mirror"][vehicle_class]
+    return f"{cup} {rank_name} {class_name}"
 
 def get_loc_name_trophy(cup: str, vehicle_class: int) -> str:
-    try:
-        class_name = ["50cc", "100cc", "150cc", "Mirror"][vehicle_class]
-        return f"{cup} Gold {class_name} (Trophy)"
-    except:
-        return ""
+    class_name = ["50cc", "100cc", "150cc", "Mirror"][vehicle_class]
+    return f"{cup} Gold {class_name} (Trophy)"
 
 def get_loc_name_perfect(cup: str) -> str:
     return f"{cup} Perfect"
@@ -92,9 +90,6 @@ def get_loc_name_win_course_char(course: game_data.Course) -> str:
     else:
         return f"Win in {course.name} With {characters[0]} and {characters[1]}"
 
-def get_loc_name_item_box(course: str, box_id: int) -> str:
-    names = BOX_NAMES.get(course, [])
-    return f"{course} - {names[box_id]} Box"
 
 data_table: list[MkddLocationData] = [MkddLocationData("", 0)] # Id 0 is reserved.
 
@@ -129,7 +124,7 @@ for course in game_data.RACE_COURSES:
     data_table.append(MkddLocationData(get_loc_name_lead(course.name), 30, course.name + " GP", tags = {course.name, TAG_COURSE_LEAD}))
     data_table.append(MkddLocationData(get_loc_name_first(course.name), 40, course.name + " GP", tags = {course.name, TAG_COURSE_FIRST}))
     data_table.append(MkddLocationData(get_loc_name_good_time(course), 70, course.name + " TT", tags = {course.name, TAG_TT, TAG_TT_GOOD}))
-    data_table.append(MkddLocationData(get_loc_name_ghost(course.name), 100, course.name + " TT", tags = {course.name, TAG_TT, TAG_TT_GHOST}))
+    data_table.append(MkddLocationData(get_loc_name_ghost(course.name), 120, course.name + " TT", tags = {course.name, TAG_TT, TAG_TT_GHOST}))
 
 # Win with default character pairs.
 for character_id in range(0, len(game_data.CHARACTERS), 2):
@@ -162,20 +157,34 @@ data_table.append(MkddLocationData(GOLD_PARADE, 40, required_items = {"Parade Ka
 data_table.append(MkddLocationData(TROPHY_GOAL, 0))
 data_table.append(MkddLocationData(WIN_ALL_CUP_TOUR, 0, game_data.CUPS[game_data.CUP_ALL_CUP_TOUR]))
 
-# Box in course related locations.
-for course in game_data.RACE_COURSES:
-    boxes = BOX_NAMES.get(course.name, [])
-    for i, box_nickname in enumerate(boxes):
-        if course.name == "Luigi Circuit":
-            data_table.append(MkddLocationData(get_loc_name_item_box(course.name, i), 0, f"{course.name} GP", {items.PROGRESSIVE_CLASS:1}, tags={course.name, TAG_ITEM_BOX}))
+# Item Box locations.
+for course, box_groups in BOX_NAMES.items():
+    custom_boxes = CUSTOM_BOXES.get(course, [])
+    for i, group in enumerate(box_groups):
+        tags: set[str] = {course, TAG_ITEM_BOX}
+        if group.count > 1: # Don't add group and box separately if it's just one.
+            for j in range(group.count):
+                box_tags = tags.copy() | {TAG_ITEM_BOX_SANITY}
+                if any(cb.replaces_group == group.name and cb.replaces_number == j for cb in custom_boxes):
+                    box_tags.add(TAG_ITEM_BOX_REPLACEABLE)
+                data_table.append(MkddLocationData(get_loc_name_item_box(course, i, j), 0, f"{course} GP", group.required_items, tags=box_tags))
         else:
-            data_table.append(MkddLocationData(get_loc_name_item_box(course.name, i), 0, f"{course.name} GP", tags={course.name, TAG_ITEM_BOX}))
+            tags.add(TAG_ITEM_BOX_SANITY) # Just add one location with both tags.
+        data_table.append(MkddLocationData(get_loc_name_item_box(course, i), 0, f"{course} GP", group.required_items, tags=tags | group.tags | {TAG_ITEM_BOX_GROUP}))
+    for idx, box in enumerate(custom_boxes):
+        data_table.append(MkddLocationData(
+                get_loc_name_custom_box(course, idx), 0, f"{course} GP",
+                tags={course, TAG_ITEM_BOX, TAG_ITEM_BOX_GROUP, TAG_ITEM_BOX_INTERESTING, TAG_ITEM_BOX_SANITY, TAG_ITEM_BOX_CUSTOM} | box.tags))
+
+for course, routes in ROUTE_LOCATIONS.items():
+    for route in routes:
+        data_table.append(MkddLocationData(get_loc_name_route(course, route), 0, course, tags={course, TAG_SHORTCUT} | route.tags))
 
 name_to_id: dict[str, int] = {data.name:id for (id, data) in enumerate(data_table) if id > 0}
 
 group_names: set[str] = set()
 for data in data_table:
-    group_names.update(data.tags)
+    group_names.update({tag for tag in data.tags if not tag.startswith("*")})
 groups: dict[str: set[str]] = {
     group:{data.name for data in data_table if group in data.tags} 
     for group in group_names

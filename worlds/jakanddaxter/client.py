@@ -24,6 +24,11 @@ from CommonClient import ClientCommandProcessor, CommonContext, server_loop, gui
 from NetUtils import ClientStatus
 from PyMemoryEditor import OpenProcess, ProcessNotFoundError
 
+try:
+    from Utils import instance_name as apname
+except ImportError:
+    apname = "Archipelago"
+
 # Jak imports
 from .game_id import jak1_name, jak1_gk, jak1_goalc
 from .options import EnableOrbsanity
@@ -382,12 +387,12 @@ def find_root_directory(ctx: JakAndDaxterContext):
                         f"   Run the OpenGOAL Launcher, click Jak and Daxter > Features > Mods > ArchipelaGOAL.\n"
                         f"   Then click Advanced > Open Game Data Folder.\n"
                         f"   Go up one folder, then copy this path.\n"
-                        f"   Run the MultiworldGG Launcher, click Open host.yaml.\n"
+                        f"   Run the {apname} Launcher, click Open host.yaml.\n"
                         f"   Set the value of 'jakanddaxter_options > root_directory' to this path.\n"
                         f"   Replace all backslashes in the path with forward slashes.\n"
                         f"   Set the value of 'jakanddaxter_options > auto_detect_root_directory' to false, "
                         f"then save and close the host.yaml file.\n"
-                        f"   Close all launchers, games, clients, and console windows, then restart MultiworldGG.")
+                        f"   Close all launchers, games, clients, and console windows, then restart {apname}.")
 
     if not os.path.exists(settings_path):
         msg = (f"{err_title}: The OpenGOAL settings file does not exist.\n"
@@ -599,7 +604,7 @@ async def run_game(ctx: JakAndDaxterContext):
                            f"Open Game Data Folder.\n"
                            f"   Paste the iso_data folder in this location.\n"
                            f"   Click Advanced > Compile. When this is done, click Continue.\n"
-                           f"   Close all launchers, games, clients, and console windows, then restart MultiworldGG.\n"
+                           f"   Close all launchers, games, clients, and console windows, then restart {apname}.\n"
                            f"(See Setup Guide for more details.)")
                     ctx.on_log_error(logger, msg)
                     return

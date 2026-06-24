@@ -1,6 +1,7 @@
 import logging
 import math
 import typing
+from typing import Callable
 from BaseClasses import CollectionState
 from Options import OptionError
 from .options import (EnableOrbsanity,
@@ -10,7 +11,8 @@ from .options import (EnableOrbsanity,
                       MountainPassCellCount,
                       LavaTubeCellCount,
                       CitizenOrbTradeAmount,
-                      OracleOrbTradeAmount)
+                      OracleOrbTradeAmount,
+                      JakAndDaxterOptions)
 from .locs import cell_locations as cells
 from .locations import location_table
 from .levels import level_table
@@ -19,7 +21,7 @@ if typing.TYPE_CHECKING:
     from . import JakAndDaxterWorld
 
 
-def set_orb_trade_rule(world: "JakAndDaxterWorld"):
+def set_option_driven_rules(world: "JakAndDaxterWorld"):
     options = world.options
     player = world.player
 
@@ -29,6 +31,34 @@ def set_orb_trade_rule(world: "JakAndDaxterWorld"):
     else:
         world.can_trade = lambda state, required_orbs, required_previous_trade: (
             can_trade_orbsanity(state, player, world, required_orbs, required_previous_trade))
+
+    if options.punch_uppercut_scout_flies:
+        world.can_free_scout_flies = lambda state, p: (
+            state.has("Jump Dive", p)
+            or state.has_all(("Crouch", "Crouch Uppercut"), p)
+            or state.has_all(("Punch", "Punch Uppercut"), p))
+    else:
+        world.can_free_scout_flies = lambda state, p: (
+            state.has("Jump Dive", p)
+            or state.has_all(("Crouch", "Crouch Uppercut"), p))
+
+    if options.attack_with_roll_jump:
+        world.can_fight_or_roll_jump = lambda state, p: (
+            can_fight(state, p)
+            or state.has_all(("Roll", "Roll Jump"), p))
+    else:
+        world.can_fight_or_roll_jump = can_fight
+
+    if options.boosted_and_extended_uppercuts:
+        world.can_do_boosted = lambda state, p: (
+            state.has_all(("Punch", "Punch Uppercut"), p)
+        )
+        world.can_do_boosted_extended = lambda state, p: (
+            state.has_all(("Punch", "Punch Uppercut", "Jump Kick"), p)
+        )
+    else:
+        world.can_do_boosted = lambda state, p: False
+        world.can_do_boosted_extended = lambda state, p: False
 
 
 def recalculate_reachable_orbs(state: CollectionState, player: int, world: "JakAndDaxterWorld") -> None:
@@ -123,10 +153,6 @@ def can_trade_orbsanity(state: CollectionState,
         return (state.has("Tradeable Orbs", player, required_orbs)
                 and state.can_reach_location(name_of_previous_trade, player=player))
     return state.has("Tradeable Orbs", player, required_orbs)
-
-
-def can_free_scout_flies(state: CollectionState, player: int) -> bool:
-    return state.has("Jump Dive", player) or state.has_all({"Crouch", "Crouch Uppercut"}, player)
 
 
 def can_fight(state: CollectionState, player: int) -> bool:

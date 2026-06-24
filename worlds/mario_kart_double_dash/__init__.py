@@ -19,6 +19,7 @@ from .settings import MkddSettings
 
 class MkddWebWorld(WebWorld):
     theme = "ocean"
+    option_groups = options.option_groups
     tutorials = [
         Tutorial(
             tutorial_name="Setup Guide",
@@ -59,27 +60,27 @@ class MkddWorld(World):
         self.cups_courses: list[list[int]] = []
         self.character_item_total_weights: dict[str, list[int]] = {}
         self.global_items_total_weights: list[int] = []
+
+        self.trophy_requirement: int = 0
+
+        self.logger: logging.Logger = logging.getLogger("MKDD Logger")
         super(MkddWorld, self).__init__(world, player)
 
     def generate_early(self):
-        # Adjust amount of trophies in the pool if the requirement is too high.
+        # Calculate max number of trophies.
         max_requirement: int = self.options.shuffle_extra_trophies.value
         if self.options.grand_prix_trophies:
             max_requirement += 16
-        if self.options.trophy_requirement.value > max_requirement:
-            logging.getLogger("MKDD Logger").warning(f"{self.player_name}: Requirement for trophies is higher than available trophies. Adding extra trophies...")
-            self.options.shuffle_extra_trophies.value = self.options.trophy_requirement.value
-            if self.options.grand_prix_trophies:
-                self.options.shuffle_extra_trophies.value -= 16
+        if max_requirement == 0:
+            self.options.shuffle_extra_trophies.value = 1
+            self.logger.warning(f"{self.player_name}: No trophies in the pool, adding 1.")
+        self.trophy_requirement = max(1, int(max_requirement * self.options.trophy_requirement_percent / 100))
 
         # Universal Tracker passthrough.
         if hasattr(self.multiworld, "re_gen_passthrough"):
             slot_data: dict = self.multiworld.re_gen_passthrough["Mario Kart Double Dash"]
-            self.options.trophy_requirement = slot_data["trophy_requirement"]
-            self.options.logic_difficulty = slot_data["logic_difficulty"]
-            # Staff ghosts were on by default before this option was introduced.
-            self.options.time_trials = slot_data.get("time_trials", options.TimeTrials.option_include_staff_ghosts)
-            self.options.item_boxes_as_locations = slot_data["item_boxes_as_locations"]
+            self.options.update_from_slot_data(slot_data)
+            self.trophy_requirement = slot_data["trophy_requirement"]
 
 
     def create_regions(self) -> None:
@@ -126,7 +127,24 @@ class MkddWorld(World):
                     continue
                 if not self.options.grand_prix_trophies and locations.TAG_CUP_TROPHY in location_data.tags:
                     continue
-                if self.options.item_boxes_as_locations == 0 and locations.TAG_ITEM_BOX in location_data.tags:
+                if locations.TAG_ITEM_BOX in location_data.tags:
+                    if not self.options.add_custom_item_boxes and locations.TAG_ITEM_BOX_CUSTOM in location_data.tags:
+                        continue
+                    match self.options.item_boxes_as_locations:
+                        case options.ItemBoxesAsLocations.option_disabled:
+                            continue
+                        case options.ItemBoxesAsLocations.option_interesting_locations:
+                            if locations.TAG_ITEM_BOX_INTERESTING not in location_data.tags:
+                                continue
+                        case options.ItemBoxesAsLocations.option_box_groups:
+                            if locations.TAG_ITEM_BOX_GROUP not in location_data.tags:
+                                continue
+                        case options.ItemBoxesAsLocations.option_boxsanity:
+                            if locations.TAG_ITEM_BOX_SANITY not in location_data.tags:
+                                continue
+                            if self.options.add_custom_item_boxes and locations.TAG_ITEM_BOX_REPLACEABLE in location_data.tags:
+                                continue
+                if not self.options.shortcuts_as_locations and locations.TAG_SHORTCUT in location_data.tags:
                     continue
                 if id > 0 and location_data.region == region_name:
                     region.add_locations({location_data.name: id})
@@ -145,32 +163,42 @@ class MkddWorld(World):
             self.get_location(locations.TROPHY_GOAL).place_locked_item(self.create_item("Victory"))
         
     
+    def _random_from(self, pool: list[str], count: int = 1) -> list[str]:
+        """Returns random choices from given pool, taking into account player defined starting inventory."""
+        ret: list[str] = []
+        current_count: int = 0
+        for item in self.options.start_inventory_from_pool:
+            if item in pool:
+                pool.remove(item)
+                current_count += 1
+        while current_count < count:
+            item_name: str = self.random.choice(pool)
+            ret.append(item_name)
+            pool.remove(item_name)
+            current_count += 1
+        return ret
+
+
     def create_items(self) -> None:
         total_locations = len(self.multiworld.get_unfilled_locations(self.player))
         # (item_name, count)
         precollected: list[str] = []
         # Give 1 cup, can't be All Star Cup.
-        precollected.append(self.random.choice(game_data.NORMAL_CUPS))
+        precollected.extend(self._random_from(game_data.NORMAL_CUPS.copy()))
         # Give 1 time trial track.
         if self.options.time_trials != options.TimeTrials.option_disable:
-            precollected.append(items.get_item_name_tt_course(self.random.choice(game_data.RACE_COURSES).name))
+            precollected.extend(self._random_from([items.get_item_name_tt_course(c.name) for c in game_data.RACE_COURSES]))
         # Give 2 random characters to begin.
-        precollected_characters = 0
-        while precollected_characters < 2:
-            character_name: str = self.random.choice(game_data.CHARACTERS).name
-            if not character_name in precollected:
-                precollected.append(character_name)
-                precollected_characters += 1
+        precollected.extend(self._random_from([character.name for character in game_data.CHARACTERS], 2))
         # Give 1 kart in each weight class.
         for weight in range(3):
-            karts: list[str] = [kart.name for kart in game_data.KARTS if kart.weight == weight]
-            precollected.append(self.random.choice(karts))
+            precollected.extend(self._random_from([kart.name for kart in game_data.KARTS if kart.weight == weight]))
         if not self.options.speed_upgrades:
             precollected.append(items.PROGRESSIVE_ENGINE)
             # Set minimum difficulty on "hard", otherwise the seed can be unbeatable.
             if self.options.logic_difficulty.value < game_data.ENGINE_UPGRADE_USEFULNESS:
                 self.options.logic_difficulty.value = game_data.ENGINE_UPGRADE_USEFULNESS
-                logging.getLogger("MKDD Logger").warning(f"{self.player_name}: No engine upgrades are available, setting difficulty to hard.")
+                self.logger.warning(f"{self.player_name}: No engine upgrades are available, setting difficulty to hard.")
         for item in precollected:
             self.multiworld.push_precollected(self.create_item(item))
 
@@ -210,9 +238,9 @@ class MkddWorld(World):
             item = self.random.sample(items_left, 1, counts = weights)[0]
             item_pool.append(self.create_item(items.get_item_name_character_item(None, item.name)))
             global_items.append(item)
-            id = items_left.index(item)
-            items_left.pop(id)
-            weights.pop(id)
+            idx = items_left.index(item)
+            items_left.pop(idx)
+            weights.pop(idx)
 
         # If there's too much global items there's going to be multiples.
         # Make the pool bigger to avoid every character having the same items.
@@ -228,7 +256,7 @@ class MkddWorld(World):
                 # Try rolling for unique items.
                 for j in range(50):
                     item = self.random.sample(items_left, 1, counts = weights)[0]
-                    if not item in items_per_character[character]:
+                    if item not in items_per_character[character]:
                         break
                     # If item hasn't been found after 10 tries, try refilling the pool.
                     elif j == 10:
@@ -240,37 +268,78 @@ class MkddWorld(World):
                     self.multiworld.push_precollected(self.create_item(items.get_item_name_character_item(character.name, item.name)))
                 else:
                     item_pool.append(self.create_item(items.get_item_name_character_item(character.name, item.name)))
-                id = items_left.index(item)
-                weights[id] -= 1
-                if weights[id] == 0:
-                    items_left.pop(id)
-                    weights.pop(id)
+                idx = items_left.index(item)
+                weights[idx] -= 1
+                if weights[idx] == 0:
+                    items_left.pop(idx)
+                    weights.pop(idx)
                 if len(items_left) == 0:
                     # Refill the pool with some balancing.
                     items_left = items_left_characters_pool.copy()
                     weights = [10 - item.usefulness for item in items_left]
-                # There can be too much of these, so generate only as long as there's enough locations.
-                if len(item_pool) == total_locations:
-                    break
-            if len(item_pool) == total_locations:
-                break
+        
 
         self.character_item_total_weights = {character.name:[] for character in game_data.CHARACTERS}
         for i in range(8):
-            self.global_items_total_weights.append(sum([item.weight_table[i] for item in global_items]))
+            self.global_items_total_weights.append(sum([item.get_weight(i, self.options.frantic_items) for item in global_items]))
             for character in game_data.CHARACTERS:
                 self.character_item_total_weights[character.name].append(
-                    sum([item.weight_table[i] for item in items_per_character[character]])
+                    sum([item.get_weight(i, self.options.frantic_items) for item in items_per_character[character]])
                 )
 
-        item_pool += [self.create_item(self.get_filler_item_name()) for _ in range(total_locations - len(item_pool))]
+        remove_items: bool = True
+        ensure_star: bool = True
+        if len(item_pool) > total_locations:
+            self.logger.warning(f"{self.player_name}: Too many items, removing {len(item_pool) - total_locations} items from the pool.")
+        while remove_items or ensure_star:
+            # Remove some items if there are more items than locations.
+            while len(item_pool) > total_locations:
+                item: items.MkddItem = self.random.choice(item_pool)
+                item_type: items.ItemType = items.data_table[item.code].item_type
+                if item_type == items.ItemType.KART_UPGRADE:
+                    item_pool.remove(item)
+                if item_type == items.ItemType.ITEM_UNLOCK:
+                    item_pool.remove(item)
+                    ensure_star = True
+            remove_items = False
+            
+            # In case the user has specified no items, force at least one boost item for all locations be reachable.
+            if self.options.shortcuts_as_locations and ensure_star:
+                for item in item_pool:
+                    item_data: items.MkddItemData = items.data_table[item.code]
+                    if (
+                            item_data.item_type == items.ItemType.ITEM_UNLOCK
+                            and item_data.meta["item"] == game_data.ITEM_STAR):
+                        ensure_star = False
+                        break
+                if ensure_star:
+                    item_pool.append(self.create_item(items.get_item_name_character_item(game_data.CHARACTERS[0].name, game_data.ITEM_STAR.name)))
+                    remove_items = True
+            ensure_star = False
+
+        remaining_item_count = total_locations - len(item_pool)
+        trap_count = int(remaining_item_count * self.options.trap_chance / 100)
+        traps = [
+            items.BANANA_RAIN_TRAP,
+            items.SHELL_RAIN_TRAP,
+            items.BOMB_RAIN_TRAP,
+            items.OVERLAPPING_START_TRAP,
+        ]
+        trap_weights = [
+            self.options.banana_rain_trap_weight.value,
+            self.options.shell_rain_trap_weight.value,
+            self.options.bomb_rain_trap_weight.value,
+            self.options.overlapping_start_trap_weight.value,
+        ]
+        item_pool += [self.create_item(self.random.sample(traps, 1, counts=trap_weights)[0]) for _ in range(trap_count)]
+        item_pool += [self.create_item(self.get_filler_item_name()) for _ in range(remaining_item_count - trap_count)]
         
         self.multiworld.itempool += item_pool
 
     def create_item(self, name: str) -> MkddItem:
-        id = items.name_to_id[name]
-        item_data = items.data_table[id]
-        return MkddItem(name, item_data.classification, id, self.player)
+        idx = items.name_to_id[name]
+        item_data = items.data_table[idx]
+        return MkddItem(name, item_data.classification, idx, self.player)
 
     def get_filler_item_name(self) -> str:
         return items.RANDOM_ITEM
@@ -292,26 +361,38 @@ class MkddWorld(World):
             rules.add_item(state, self.player, item, -1)
         return change
 
+    def extend_hint_information(self, hint_data: dict[int, dict[int, str]]):
+        hints: dict[int, str] = {}
+        for course_no, course in enumerate(game_data.RACE_COURSES):
+            entrance: str = ""
+            for cup_no, cup in enumerate(self.cups_courses):
+                if course_no in cup:
+                    entrance = game_data.CUPS[cup_no]
+                    break
+            for loc in self.multiworld.get_locations(self.player):
+                if course.name in locations.data_table[loc.address].tags:
+                    hints[loc.address] = entrance
+        hint_data[self.player] = hints
+
     def fill_slot_data(self) -> dict[str, Any]:
-        lap_counts = {course.name:course.laps for course in game_data.RACE_COURSES}
-        if self.options.shorter_courses:
-            for course, laps in lap_counts.items():
-                lap_counts[course] = int(math.ceil(laps * 2 / 3))
-        for course, laps in self.options.custom_lap_counts.items():
-            if laps > 0:
-                lap_counts[course] = laps
+        # Fill in lap data into custom lap table.
+        # Priority: custom > short > vanilla.
+        new_lap_counts: dict[str, int] = {}
+        for course in game_data.RACE_COURSES:
+            if course.name in self.options.custom_lap_counts:
+                new_lap_counts[course.name] = self.options.custom_lap_counts[course.name]
+            elif self.options.shorter_courses:
+                new_lap_counts[course.name] = int(math.ceil(course.laps * 2 / 3))
+            else:
+                new_lap_counts[course.name] = course.laps
+        self.options.custom_lap_counts.value = new_lap_counts
         return {
             "version": version.get_version(),
-            "trophy_requirement": int(self.options.trophy_requirement),
-            "logic_difficulty": int(self.options.logic_difficulty) if not self.options.tracker_unrestricted_logic else 100,
-            "time_trials": int(self.options.time_trials),
+            "trophy_requirement": self.trophy_requirement,
             "cups_courses": self.cups_courses,
-            "all_cup_tour_length": int(self.options.all_cup_tour_length),
-            "mirror_200cc": int(self.options.mirror_200cc),
-            "lap_counts": lap_counts,
             "character_item_total_weights": self.character_item_total_weights,
             "global_items_total_weights": self.global_items_total_weights,
-            "item_boxes_as_locations": int(self.options.item_boxes_as_locations),
+            **self.options.to_slot_data(),
         }
     
     # Rerun Universal Tracker with received options.

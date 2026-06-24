@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from functools import cached_property
+from typing import Any
+
 from Options import PerGameCommonOptions, StartInventoryPool, Toggle, Choice, Range, DefaultOnToggle, OptionCounter, \
     AssembleOptions
 from .items import trap_item_table
@@ -87,8 +89,9 @@ class EnableOrbsanity(Choice):
     """Include bundles of Precursor Orbs as checks. Every time you collect the chosen number of orbs, you will trigger
     another check.
 
-    Per Level: bundles are for each level in the game.
-    Global: bundles carry over level to level.
+    **Per Level:** bundles are for each level in the game.
+
+    **Global:** bundles carry over level to level.
 
     This adds a number of Items and Locations to the pool inversely proportional to the size of the bundle.
     For example, if your bundle size is 20 orbs, you will add 100 items to the pool. If your bundle size is 250 orbs,
@@ -183,9 +186,10 @@ class PerLevelOrbsanityBundleSize(AllowedChoice):
 
 
 class FireCanyonCellCount(Range):
-    """The number of power cells you need to cross Fire Canyon. This value is restricted to a safe maximum value to
-    ensure valid singleplayer games and non-disruptive multiplayer games, but the host can remove this restriction by
-    turning off enforce_friendly_options in host.yaml."""
+    """The number of power cells you need to cross Fire Canyon.
+
+    This value is restricted to a safe maximum value to ensure valid singleplayer games and non-disruptive multiplayer
+    games, but the host can remove this restriction by turning off enforce_friendly_options in host.yaml."""
     display_name = "Fire Canyon Cell Count"
     friendly_maximum = 30
     absolute_maximum = 100
@@ -195,9 +199,10 @@ class FireCanyonCellCount(Range):
 
 
 class MountainPassCellCount(Range):
-    """The number of power cells you need to reach Klaww and cross Mountain Pass. This value is restricted to a safe
-    maximum value to ensure valid singleplayer games and non-disruptive multiplayer games, but the host can
-    remove this restriction by turning off enforce_friendly_options in host.yaml."""
+    """The number of power cells you need to reach Klaww and cross Mountain Pass.
+
+    This value is restricted to a safe maximum value to ensure valid singleplayer games and non-disruptive multiplayer
+    games, but the host can remove this restriction by turning off enforce_friendly_options in host.yaml."""
     display_name = "Mountain Pass Cell Count"
     friendly_maximum = 60
     absolute_maximum = 100
@@ -207,9 +212,10 @@ class MountainPassCellCount(Range):
 
 
 class LavaTubeCellCount(Range):
-    """The number of power cells you need to cross Lava Tube. This value is restricted to a safe maximum value to
-    ensure valid singleplayer games and non-disruptive multiplayer games, but the host can remove this restriction by
-    turning off enforce_friendly_options in host.yaml."""
+    """The number of power cells you need to cross Lava Tube.
+
+    This value is restricted to a safe maximum value to ensure valid singleplayer games and non-disruptive multiplayer
+    games, but the host can remove this restriction by turning off enforce_friendly_options in host.yaml."""
     display_name = "Lava Tube Cell Count"
     friendly_maximum = 90
     absolute_maximum = 100
@@ -227,8 +233,11 @@ class EnableOrderedCellCounts(DefaultOnToggle):
 
 
 class RequirePunchForKlaww(DefaultOnToggle):
-    """Force the Punch move to come before Klaww. Disabling this setting may require Jak to fight Klaww
-    and Gol and Maia by shooting yellow eco through his goggles. This only applies if "Enable Move Randomizer" is ON."""
+    """Force the Punch move to come before Klaww.
+
+    Disabling this setting may require Jak to fight Klaww and Gol and Maia by shooting yellow eco through his goggles.
+
+    This only applies if "Enable Move Randomizer" is ON."""
     display_name = "Require Punch For Klaww"
 
 
@@ -294,10 +303,11 @@ class FillerOrbBundlesReplacedWithTraps(Range):
 
 class TrapEffectDuration(Range):
     """
-    The length of time, in seconds, that a trap effect lasts.
+    The length of time, in seconds, that a trap effect lasts. If set to 0, trap items will still be created to replace
+    filler items, but they will have no effect ingame.
     """
     display_name = "Trap Effect Duration"
-    range_start = 5
+    range_start = 0
     range_end = 60
     default = 30
 
@@ -317,6 +327,341 @@ class TrapWeights(OptionCounter):
     def weights_pair(self) -> tuple[list[str], list[int]]:
         return list(self.value.keys()), list(self.value.values())
 
+
+class BoostedAndExtendedUppercuts(Toggle):
+    """
+    Create alternate paths to some areas with advanced movement.
+
+    Enabling this setting may require Jak to use boosted and extended uppercuts as opposed to regular movement options.
+
+    It may also require Jak to use uneven geometry, or missing collision boxes to reach unintended locations.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Boosted and Extended Uppercuts"
+
+
+class PunchUppercutScoutFlies(Toggle):
+    """
+    Treat *Punch Uppercut* as a valid move to break scout fly boxes.
+
+    Enabling this setting may require Jak to break scout fly boxes using only *Punch Uppercut*, even in confined spaces.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Punch Uppercut Scout Flies"
+
+
+class GeyserRockCliffClimb(Toggle):
+    """
+    Remove the movement requirement for the Geyser Rock Cliff.
+
+    Enabling this setting may require Jak to use uneven terrain to reach the cliff with only *Single Jump*.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Geyser Rock Cliff Climb"
+
+
+class SentinelBeachCannonTowerClimb(Choice):
+    """
+    Create an alternate path to the Sentinel Beach Cannon Tower.
+
+    Enabling this setting may require Jak to use uneven geometry to reach the cannon tower without having the
+    *Blue Eco Switch* unlocked.
+
+    **Medium:** Tower is climbable with only *Double Jump*.
+
+    **Hard:** Tower is climbable with only *Jump Kick* or only *Double Jump*.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Sentinel Beach Cannon Tower Climb"
+    option_no = 0
+    option_medium = 1
+    option_hard = 2
+
+
+class SnowyMountainEntranceClimb(Choice):
+    """
+    Create an alternate path into Snowy Mountain.
+
+    Enabling this setting may require Jak to use uneven geometry to reach Snowy Mountain's main area with fewer move
+    options.
+
+    **Medium:** only *Double Jump* or *Crouch Jump*
+
+    **Hard:** only *Single Jump*
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Snowy Mountain Entrance Climb"
+    option_no = 0
+    option_medium = 1
+    option_hard = 2
+
+
+class BoggySwampFlutFlutEscape(Toggle):
+    """
+    Create an alternate path into the Boggy Swamp Ambush.
+
+    Enabling this setting may require Jak to get Flut Flut into the ambush arena instead of using attacking moves.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Boggy Swamp Flut Flut Escape"
+
+
+class SnowyMountainFlutFlutEscape(Toggle):
+    """
+    Changes Snowy Mountain to rely on Flut Flut for movement.
+
+    Enabling this setting may require Jak to get Flut Flut over an invisible barrier to access all of Snowy Mountain.
+    """
+    display_name = "Snowy Mountain Flut Flut Escape"
+
+
+class SnowyMountainFlutFlutSkip(Toggle):
+    """
+    Create an alternative path to the end of the Flut Flut course in Snowy Mountain.
+
+    Enabling this setting may require Jak to use advanced movement tricks to reach the Fort Gate Button with only
+    *Single Jump* and no *Flut Flut*.
+    """
+    display_name = "Snowy Mountain Flut Flut Skip"
+
+
+class SandoverVillageCliffOrbCacheClimb(Toggle):
+    """
+    Create an alternative path to the Sandover Village orb cache on the cliff.
+
+    Enabling this setting may require Jak to use precise jumps to reach the orb cache (and the blue eco next to it) with
+    only *Single Jump*.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Sandover Village Orb Cache Climb"
+
+
+class AttacklessLurkerCannons(Toggle):
+    """
+    Remove the attack requirement for lurker cannon power cells in Sentinel Beach and Misty Island.
+
+    Enabling this setting may require Jak to defeat the lurkers next to the cannon without any attacking moves.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Attackless Lurker Cannons"
+
+
+class SentinelBeachAttacklessPelican(Toggle):
+    """
+    Create an alternative path to the Pelican power cell in Sentinel Beach.
+
+    Enabling this setting may require Jak to  use other unlocks to acquire the power cell without any attacking moves.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Sentinel Beach Attackless Pelican"
+
+
+class AttackWithRollJump(Toggle):
+    """
+    Treat *Roll Jump* as a valid attack move for some power cells.
+
+    Enabling this setting may require Jak to use *Roll Jump* to destroy objects and acquire these power cells.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Attack with Roll Jump"
+
+
+class ForbiddenJungleAttacklessSpiralStumpsScoutFly(Toggle):
+    """
+    Create an alternative path to the Scout Fly "On Spiral Of Stumps" in Forbidden Jungle.
+
+    Enabling this setting may require Jak to use precise movement to collect this scout fly without attack moves.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Forbidden Jungle Attackless Spiral Stumps Scout Fly"
+
+
+class ForbiddenJungleElevatorSkip(Toggle):
+    """
+    Create an alternative path to the temple interior in Forbidden Jungle without having *Jungle Elevator* unlocked.
+
+    Enabling this setting may require Jak to get inside the temple with only *Jump Kick*.
+    """
+    display_name = "Forbidden Jungle Elevator Skip"
+
+
+class MistyIslandSingleJumpFarSideOrbCache(Toggle):
+    """
+    Create an alternative path to the Far Side Orb Cache in Misty Island.
+
+    Enabling this setting may require Jak to reach the orb cache with blue eco with only *Single Jump*.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Misty Island Single Jump Far Side Orb Cache"
+
+
+class MistyIslandAttacklessScoutFlies(Toggle):
+    """
+    Remove attack requirements to the scout flies "Barrel Ramps", "Ledge Near Arena Entrance", "Near Arena Door",
+    "Overlooking Entrance" in Misty Island.
+
+    Enabling this setting may require Jak to break these scout fly boxes with precise blue eco movement or clever use
+    of game mechanics.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Misty Island Attackless Scout Flies"
+
+
+class MistyIslandArenaFightSkip(Toggle):
+    """
+    Create an alternative path to the power cell "Return To The Dark Eco Pool" in Misty Island.
+
+    Enabling this setting may require Jak to reach this power cell with only *Single Jump*.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Misty Island Arena Fight Skip"
+
+
+class MistyIslandFarSideCliffSeesawSkip(Toggle):
+    """
+    Create an alternative path to the far side cliff (with scout fly "Scout Fly On Ledge Near Arena Exit") in Misty
+    Island.
+
+    Enabling this setting may require Jak to use uneven terrain to find an alternative way to the cliff, using
+    only *Single Jump*.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Misty Island Far Side Cliff Seesaw Skip"
+
+
+class RockVillageSingleJumpOrbCache(Toggle):
+    """
+    Remove requirements from the orb cache in Rock Village.
+
+    Enabling this setting may require Jak to use precise movement to reach the orb cache with only *Single Jump*.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Rock Village Single Jump Orb Cache"
+
+
+class RockVillagePontoonSkip(Toggle):
+    """
+    Create alternative paths to Boggy Swamp and Klaww Cliff in Rock Village.
+
+    Enabling this setting may require Jak to use precise movement to reach these locations without having the
+    *Warrior's Pontoons* unlocked.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Rock Village Pontoon Skip"
+
+
+class KlawwCliffClimb(Toggle):
+    """
+    Create an alternative path to get up to Klaww from Rock Village.
+
+    Enabling this setting may require Jak to use glitches and uneven terrain to reach Klaww with only *Single Jump*.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Klaww Cliff Climb"
+
+
+class KlawwBoulderSkip(Toggle):
+    """
+    Create an alternative path to Klaww without having enough power cells.
+
+    Enabling this setting may require Jak to use glitches to reach Klaww even if the boulder is not lifted.
+
+    This may drastically increase the amount of reachable locations when Rock Village is reachable.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Klaww Boulder Skip"
+
+
+class BoggySwampPreciseMovement(Toggle):
+    """
+    Create an alternative path through Boggy Swamp.
+
+    Enabling this setting may require Jak to traverse through the whole Boggy Swamp with only *Single Jump* using
+    precise movement, invincibility after taking damage, and respawns.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Boggy Swamp Precise Movement"
+
+
+class BoggySwampAttacklessAmbush(Toggle):
+    """
+    Remove the attack requirement from the Boggy Swamp ambush.
+
+    Enabling this setting may require Jak to defeat the lurkers by only shooting yellow Eco through his goggles.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Boggy Swamp Attackless Ambush"
+
+
+class BoggySwampFlutFlutSkip(Toggle):
+    """
+    Create an alternative path through the Flut Flut course in Boggy Swamp without having *Flut Flut* unlocked.
+
+    Enabling this setting may require Jak to complete the whole course with only *Roll Jump*, and reach the scout fly
+    "Overlooking Flut Flut" with only *Double Jump* or *Jump Kick*.
+    """
+    display_name = "Boggy Swamp Flut Flut Skip"
+
+
+class LostPrecursorCitySingleJumpSlideTubeClimb(Toggle):
+    """
+    Create an alternative path through the helix with the rising dark eco in Lost Precursor City.
+
+    Enabling this setting may require Jak to use precise movement to reach the power cell at the bottom of Lost
+    Precursor City and escape the rising dark eco with only *Single Jump*.
+
+    This only applies if "Enable Move Randomizer" is ON.
+    """
+    display_name = "Lost Precursor City Single Jump Slide Tube Climb"
+
+
+class SnowyMountainFortGateSkip(Choice):
+    """
+    Create an alternative path into the Snowy Mountain Fort Gate without having *Snowy Fort Gate* unlocked.
+
+    Enabling this setting may require Jak to use uneven geometry and precise movement, or *Flut Flut* to enter the Fort
+    in Snowy Mountain.
+
+    **On Foot**: Fort is reachable after many movement options are unlocked.
+
+    **Flut Flut**: Fort is reachable after *Flut Flut* is unlocked.
+    """
+    display_name = "Snowy Mountain Fort Gate Skip"
+
+    option_no = 0
+    option_on_foot = 1
+    option_flut_flut = 2
+    option_both = 3
+
+class SentinelBeachBlueEcoSwitchSkip(Toggle):
+    """
+    Create an alternative path to the blue eco jump pad in Sentinel Beach without having *Blue Eco Switch* unlocked.
+
+    Enabling this setting may require Jak to use precise movement to reach the jump pad with enough blue eco, using
+    only *Punch* or only *Roll Jump*.
+    """
+    display_name = "Sentinel Beach Blue Eco Switch Skip"
 
 class CompletionCondition(Choice):
     """Set the goal for completing the game."""
@@ -348,5 +693,128 @@ class JakAndDaxterOptions(PerGameCommonOptions):
     filler_orb_bundles_replaced_with_traps: FillerOrbBundlesReplacedWithTraps
     trap_effect_duration: TrapEffectDuration
     trap_weights: TrapWeights
+    boosted_and_extended_uppercuts: BoostedAndExtendedUppercuts
+    punch_uppercut_scout_flies: PunchUppercutScoutFlies
+    geyser_rock_cliff_climb: GeyserRockCliffClimb
+    sentinel_beach_cannon_tower_climb: SentinelBeachCannonTowerClimb
+    snowy_mountain_entrance_climb: SnowyMountainEntranceClimb
+    boggy_swamp_flut_flut_escape: BoggySwampFlutFlutEscape
+    snowy_mountain_flut_flut_escape: SnowyMountainFlutFlutEscape
+    snowy_mountain_flut_flut_skip: SnowyMountainFlutFlutSkip
+    sandover_village_cliff_orb_cache_climb: SandoverVillageCliffOrbCacheClimb
+    attackless_lurker_cannons: AttacklessLurkerCannons
+    sentinel_beach_attackless_pelican: SentinelBeachAttacklessPelican
+    attack_with_roll_jump: AttackWithRollJump
+    forbidden_jungle_attackless_spiral_stumps_scout_fly: ForbiddenJungleAttacklessSpiralStumpsScoutFly
+    forbidden_jungle_elevator_skip: ForbiddenJungleElevatorSkip
+    misty_island_single_jump_far_side_orb_cache: MistyIslandSingleJumpFarSideOrbCache
+    misty_island_attackless_scout_flies: MistyIslandAttacklessScoutFlies
+    misty_island_arena_fight_skip: MistyIslandArenaFightSkip
+    misty_island_far_side_cliff_seesaw_skip: MistyIslandFarSideCliffSeesawSkip
+    rock_village_single_jump_orb_cache: RockVillageSingleJumpOrbCache
+    rock_village_pontoon_skip: RockVillagePontoonSkip
+    klaww_cliff_climb: KlawwCliffClimb
+    klaww_boulder_skip: KlawwBoulderSkip
+    boggy_swamp_precise_movement: BoggySwampPreciseMovement
+    boggy_swamp_attackless_ambush: BoggySwampAttacklessAmbush
+    boggy_swamp_flut_flut_skip: BoggySwampFlutFlutSkip
+    lost_precursor_city_single_jump_slide_tube_climb: LostPrecursorCitySingleJumpSlideTubeClimb
+    snowy_mountain_fort_gate_skip: SnowyMountainFortGateSkip
+    sentinel_beach_blue_eco_switch_skip: SentinelBeachBlueEcoSwitchSkip
     jak_completion_condition: CompletionCondition
     start_inventory_from_pool: StartInventoryPool
+
+jakanddaxter_option_presets: dict[str, dict[str, Any]] = {
+    "Move Randomizer + Easy Tricks & Glitches": {
+        "enable_move_randomizer": True,
+        "attack_with_roll_jump": True,
+        "attackless_lurker_cannons": True,
+        "sentinel_beach_attackless_pelican": True,
+    },
+    "Move Randomizer + Medium Tricks & Glitches": {
+        "enable_move_randomizer": True,
+        "attack_with_roll_jump": True,
+        "attackless_lurker_cannons": True,
+        "sentinel_beach_attackless_pelican": True,
+
+        "punch_uppercut_scout_flies": True,
+        "geyser_rock_cliff_climb": True,
+        "sandover_village_cliff_orb_cache_climb": True,
+        "sentinel_beach_cannon_tower_climb": SentinelBeachCannonTowerClimb.option_medium,
+        "forbidden_jungle_elevator_skip": True,
+        "misty_island_single_jump_far_side_orb_cache": True,
+        "misty_island_arena_fight_skip": True,
+        "misty_island_far_side_cliff_seesaw_skip": True,
+        "rock_village_single_jump_orb_cache": True,
+        "rock_village_pontoon_skip": True,
+        "klaww_cliff_climb": True,
+        "klaww_boulder_skip": True,
+        "boggy_swamp_precise_movement": True,
+        "snowy_mountain_entrance_climb": SnowyMountainEntranceClimb.option_medium,
+        "snowy_mountain_flut_flut_skip": True,
+    },
+    "Move Randomizer + Hard Tricks & Glitches": {
+        "enable_move_randomizer": True,
+        "attack_with_roll_jump": True,
+        "attackless_lurker_cannons": True,
+        "sentinel_beach_attackless_pelican": True,
+
+        "punch_uppercut_scout_flies": True,
+        "geyser_rock_cliff_climb": True,
+        "sandover_village_cliff_orb_cache_climb": True,
+        "sentinel_beach_cannon_tower_climb": SentinelBeachCannonTowerClimb.option_hard,
+        "forbidden_jungle_elevator_skip": True,
+        "misty_island_single_jump_far_side_orb_cache": True,
+        "misty_island_arena_fight_skip": True,
+        "misty_island_far_side_cliff_seesaw_skip": True,
+        "rock_village_single_jump_orb_cache": True,
+        "rock_village_pontoon_skip": True,
+        "klaww_cliff_climb": True,
+        "klaww_boulder_skip": True,
+        "boggy_swamp_precise_movement": True,
+        "snowy_mountain_entrance_climb": SnowyMountainEntranceClimb.option_hard,
+        "snowy_mountain_flut_flut_skip": True,
+
+        "boosted_and_extended_uppercuts": True,
+        "sentinel_beach_blue_eco_switch_skip": True,
+        "forbidden_jungle_attackless_spiral_stumps_scout_fly": True,
+        "misty_island_attackless_scout_flies": True,
+        "boggy_swamp_flut_flut_escape": True,
+        "boggy_swamp_flut_flut_skip": True,
+        "snowy_mountain_flut_flut_escape": True,
+    },
+    "Move Randomizer + All Tricks & Glitches": {
+        "enable_move_randomizer": True,
+        "attack_with_roll_jump": True,
+        "attackless_lurker_cannons": True,
+        "sentinel_beach_attackless_pelican": True,
+
+        "punch_uppercut_scout_flies": True,
+        "geyser_rock_cliff_climb": True,
+        "sandover_village_cliff_orb_cache_climb": True,
+        "sentinel_beach_cannon_tower_climb": SentinelBeachCannonTowerClimb.option_hard,
+        "forbidden_jungle_elevator_skip": True,
+        "misty_island_single_jump_far_side_orb_cache": True,
+        "misty_island_arena_fight_skip": True,
+        "misty_island_far_side_cliff_seesaw_skip": True,
+        "rock_village_single_jump_orb_cache": True,
+        "rock_village_pontoon_skip": True,
+        "klaww_cliff_climb": True,
+        "klaww_boulder_skip": True,
+        "boggy_swamp_precise_movement": True,
+        "snowy_mountain_entrance_climb": SnowyMountainEntranceClimb.option_hard,
+        "snowy_mountain_flut_flut_skip": True,
+
+        "boosted_and_extended_uppercuts": True,
+        "sentinel_beach_blue_eco_switch_skip": True,
+        "forbidden_jungle_attackless_spiral_stumps_scout_fly": True,
+        "misty_island_attackless_scout_flies": True,
+        "boggy_swamp_flut_flut_escape": True,
+        "boggy_swamp_flut_flut_skip": True,
+        "snowy_mountain_flut_flut_escape": True,
+
+        "boggy_swamp_attackless_ambush": True,
+        "lost_precursor_city_single_jump_slide_tube_climb": True,
+        "snowy_mountain_fort_gate_skip": SnowyMountainFortGateSkip.option_both,
+    }
+}

@@ -21,7 +21,7 @@ for course in game_data.RACE_COURSES:
     course_tt_regions[course.name + " TT"] = MkddRegionData([course.name], {TAG_TIME_TRIALS})
 
 data_table = {
-    "Menu": MkddRegionData([region for region in {**cup_regions, **course_tt_regions}]),
+    "Menu": MkddRegionData({**cup_regions, **course_tt_regions}),
     **cup_regions,
     **course_regions,
     **course_gp_regions,

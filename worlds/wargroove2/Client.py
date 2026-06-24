@@ -26,6 +26,12 @@ from CommonClient import gui_enabled, logger, get_base_parser, ClientCommandProc
 
 ModuleUpdate.update()
 
+try:
+    from Utils import instance_name as apname
+except ImportError:
+    apname = "Archipelago"
+
+
 if __name__ == "__main__":
     Utils.init_logging("Wargroove2Client", exception_logger="Client")
 
@@ -487,7 +493,7 @@ class Wargroove2Context(CommonContext):
                 ("Client", "Archipelago"),
                 ("WG2", "WG2 Console"),
             ]
-            base_title = "Archipelago Wargroove 2 Client"
+            base_title = f"{apname} Wargroove 2 Client"
             ctx: Wargroove2Context
             unit_tracker: ItemTracker
             level_tracker: LevelTracker

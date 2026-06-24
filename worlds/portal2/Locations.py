@@ -224,7 +224,8 @@ speedrun_logic_table: dict[str, list[str]] = {
     "Portal Carousel Completion": [button, floor_button],
     "Smooth Jazz Completion": [floor_button],
     "Cube Momentum Completion": [floor_button],
-    "Incinerator Completion": [],
+    "Future Starter Completion": [floor_button],
+    "Incinerator Completion": [weighted_cube],
     # Chapter 2
     "Laser Intro Completion": [portal_gun_2],
     "Laser Stairs Completion": [portal_gun_2, floor_button],
@@ -233,15 +234,15 @@ speedrun_logic_table: dict[str, list[str]] = {
     "Catapult Intro Completion": [portal_gun_2, floor_button],
     "Trust Fling Completion": [portal_gun_2, faith_plate, floor_button],
     "Pit Flings Completion": [portal_gun_2],
-    "Fizzler Intro Completion": [portal_gun_2],
+    "Fizzler Intro Completion": [portal_gun_2, laser, laser_catcher],
     # Chapter 3
-    "Ricochet Completion": [portal_gun_2, weighted_cube],
+    "Ricochet Completion": [portal_gun_2, weighted_cube, floor_button],
     "Bridge Intro Completion": [portal_gun_2, floor_button],
     "Bridge the Gap Completion": [weighted_cube, button, floor_button],
     "Turret Intro Completion": [floor_button],
     "Laser Relays Completion": [laser_relays, laser, reflection_cube],
     "Turret Blocker Completion": [floor_button],
-    "Laser Vs. Turret Completion": [portal_gun_2, laser, laser_catcher],
+    "Laser Vs. Turret Completion": [portal_gun_2],
     "Pull The Rug Completion": [floor_button, weighted_cube, bridge, portal_gun_2],
     # Chapter 4
     "Column Blocker Completion": [portal_gun_2],
@@ -259,25 +260,25 @@ speedrun_logic_table: dict[str, list[str]] = {
     "Crazy Box Completion": [portal_gun_2, old_floor_button],
     # Chapter 7
     "Propulsion Intro Completion": [portal_gun_2],
-    "Propulsion Flings Completion": [portal_gun_2, antique_cube],
+    "Propulsion Flings Completion": [portal_gun_2, blue_gel],
     "Conversion Intro Completion": [portal_gun_2],
     "Three Gels Completion": [portal_gun_2, blue_gel],
     # Chapter 8
     "Funnel Intro Completion": [floor_button, funnel],
     "Ceiling Button Completion": [floor_button, frankenturret, button, portal_gun_2],
-    "Wall Button Completion": [floor_button, frankenturret, button, portal_gun_2],
-    "Polarity Completion": [funnel],
+    "Wall Button Completion": [floor_button, funnel, portal_gun_2],
+    "Polarity Completion": [portal_gun_2, funnel],
     "Funnel Catch Completion": [portal_gun_2],
     "Stop The Box Completion": [floor_button, portal_gun_2],
     "Laser Catapult Completion": [portal_gun_2],
     "Laser Platform Completion": [portal_gun_2, funnel],
-    "Propulsion Catch Completion": [button, frankenturret],
+    "Propulsion Catch Completion": [floor_button, funnel],
     "Repulsion Polarity Completion": [turrets, button, blue_gel],
     # Chapter 9
     "Finale 1 Completion": [portal_gun_2, frankenturret, faith_plate],
     "Finale 2 Completion": [portal_gun_2],
     "Finale 3 Completion": [portal_gun_2, funnel],
-    "Finale 4 Completion": [portal_gun_2, potatos, blue_gel, white_gel, adventure_core, space_core, fact_core],
+    "Finale 4 Completion": [portal_gun_2, potatos, white_gel, adventure_core, space_core, fact_core],
 }
 
 sub_locations_in_maps: dict[str, list[str]] = {

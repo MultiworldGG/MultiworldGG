@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional
 from enum import Enum
 from BaseClasses import Item, ItemClassification
-from .Options import ALBWOptions, HintGhosts, LogicMode, NiceItems
+from .Options import ALBWOptions, HintGhosts, LogicMode, NiceItems, SmallKeys, BigKeys, Compasses
 from albwrandomizer import PyRandomizable, Item as RItem, Goal, Vane, new_item, new_goal, new_vane
 
 class ALBWItem(Item):
@@ -18,6 +18,8 @@ class ItemType(Enum):
     Shop = 7
     Event = 8
     Vane = 9
+    NiceUpgrade = 10
+    SuperUpgrade = 11
 
 Normal = ItemType.Normal
 Ravio = ItemType.Ravio
@@ -28,6 +30,8 @@ Junk = ItemType.Junk
 Prize = ItemType.Prize
 Shop = ItemType.Shop
 Event = ItemType.Event
+NiceUpgrade = ItemType.NiceUpgrade
+SuperUpgrade = ItemType.SuperUpgrade
 
 filler = ItemClassification.filler
 useful = ItemClassification.useful
@@ -69,8 +73,14 @@ class ItemData:
             return NotImplemented
         return self.name == other.name
     
-    def is_dungeon_item(self) -> bool:
-        return self.itemtype in [Compass, SmallKey, BigKey]
+    def is_dungeon_item(self, options: ALBWOptions) -> bool:
+        if self.itemtype == SmallKey:
+            return options.small_keys == SmallKeys.option_own_dungeons
+        if self.itemtype == BigKey:
+            return options.big_keys == BigKeys.option_own_dungeons
+        if self.itemtype == Compass:
+            return options.compasses == Compasses.option_own_dungeons
+        return False
     
     def is_event(self) -> bool:
         return self.code is None
@@ -403,6 +413,17 @@ class Items:
         new_item(RItem.Merge01),
         new_item(RItem.Merge02),
     ], 2)
+    UpgradeIceRod = ItemData(79, "Ice Rod Upgrade", NiceUpgrade, progression, [new_item(RItem.UpgradeIceRod)])
+    UpgradeSandRod = ItemData(80, "Sand Rod Upgrade", NiceUpgrade, progression, [new_item(RItem.UpgradeSandRod)])
+    UpgradeTornadoRod = ItemData(81, "Tornado Rod Upgrade", NiceUpgrade, progression, [new_item(RItem.UpgradeTornadoRod)])
+    UpgradeBombs = ItemData(82, "Bomb Upgrade", NiceUpgrade, progression, [new_item(RItem.UpgradeBombs)])
+    UpgradeFireRod = ItemData(83, "Fire Rod Upgrade", NiceUpgrade, progression, [new_item(RItem.UpgradeFireRod)])
+    UpgradeHookshot = ItemData(84, "Hookshot Upgrade", NiceUpgrade, progression, [new_item(RItem.UpgradeHookshot)])
+    UpgradeBoomerang = ItemData(85, "Boomerang Upgrade", NiceUpgrade, progression, [new_item(RItem.UpgradeBoomerang)])
+    UpgradeHammer = ItemData(86, "Hammer Upgrade", NiceUpgrade, progression, [new_item(RItem.UpgradeHammer)])
+    UpgradeBow = ItemData(87, "Bow Upgrade", NiceUpgrade, progression, [new_item(RItem.UpgradeBow)])
+    UpgradeLamp = ItemData(88, "Lamp Upgrade", SuperUpgrade, progression, [new_item(RItem.UpgradeLamp)])
+    UpgradeNet = ItemData(89, "Bug Net Upgrade", SuperUpgrade, progression, [new_item(RItem.UpgradeNet)])
     PendantOfPower = ItemData(None, "Pendant of Power", Prize, progression, [new_item(RItem.PendantOfPower)])
     PendantOfWisdom = ItemData(None, "Pendant of Wisdom", Prize, progression, [new_item(RItem.PendantOfWisdom)])
     PendantOfCourage = ItemData(None, "Pendant of Courage", Prize, progression, [new_item(RItem.PendantOfCourage)])

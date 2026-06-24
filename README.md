@@ -55,6 +55,7 @@ Currently, the following games are supported:
 * Dark Souls II
 * Dark Souls III
 * Dark Souls Remastered
+* DELTARUNE
 * Diddy Kong Racing
 * Digimon World
 * Donkey Kong Country

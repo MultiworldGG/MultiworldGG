@@ -85,7 +85,7 @@ class ZorkGrandInquisitorWebWorld(WebWorld):
     tutorials: List[Tutorial] = [
         Tutorial(
             "Multiworld Setup Guide",
-            "A guide to setting up the Zork Grand Inquisitor randomizer connected to an Archipelago Multiworld",
+            "A guide to setting up the Zork Grand Inquisitor randomizer connected to a MultiworldGG Multiworld",
             "English",
             "setup_en.md",
             "setup/en",

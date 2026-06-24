@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from kvui import GameManager
 
@@ -14,23 +14,26 @@ try:
 except ImportError:
     apname = "Archipelago"
 
-class PeggleNightsManager(GameManager):
-    ctx: PeggleNightsContext
+def bootstrap_client_gui(gui: Optional[type[GameManager]]) -> type[GameManager]:
+    class PeggleNightsManager(gui):
+        ctx: PeggleNightsContext
 
-    logging_pairs: List[Tuple[str, str]] = [("Client", "Archipelago")]
-    base_title: str = f"{apname} Peggle Nights Client"
+        logging_pairs: List[Tuple[str, str]] = [("Client", "Archipelago")]
+        base_title: str = f"{apname} Peggle Nights Client"
 
-    peggle_nights_tab_layout: PeggleNightsTabLayout
+        peggle_nights_tab_layout: PeggleNightsTabLayout
 
-    peggle_nights_tab: Widget
+        peggle_nights_tab: Widget
 
-    def build(self) -> Layout:
-        container: Layout = super().build()
+        def build(self) -> Layout:
+            container: Layout = super().build()
 
-        self.peggle_nights_tab_layout = PeggleNightsTabLayout(self.ctx)
-        self.peggle_nights_tab = self.add_client_tab("Peggle Nights", self.peggle_nights_tab_layout)
+            self.peggle_nights_tab_layout = PeggleNightsTabLayout(self.ctx)
+            self.peggle_nights_tab = self.add_client_tab("Peggle Nights", self.peggle_nights_tab_layout)
 
-        return container
+            return container
 
-    def update_tabs(self) -> None:
-        self.peggle_nights_tab_layout.update()
+        def update_tabs(self) -> None:
+            self.peggle_nights_tab_layout.update()
+
+    return PeggleNightsManager

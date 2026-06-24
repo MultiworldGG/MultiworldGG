@@ -2,7 +2,6 @@ import math
 from dataclasses import dataclass
 
 from BaseClasses import Region
-from Utils import visualize_regions
 from worlds.generic.Rules import add_rule
 from . import level_areas
 from .CharacterUtils import get_playable_characters, is_level_playable, is_character_playable
@@ -13,7 +12,7 @@ from .Locations import get_location_by_name, level_location_table, upgrade_locat
 from .Logic import LevelLocation, UpgradeLocation, SubLevelLocation, EmblemLocation, CharacterUpgrade, \
     CapsuleLocation, BossFightLocation, MissionLocation, chao_egg_location_table, ChaoEggLocation, \
     chao_race_location_table, enemy_location_table, EnemyLocation, fish_location_table, FishLocation, area_connections
-from .Names import ItemName
+from .Names import ItemName, LocationName
 from .Regions import get_region_name, get_entrance_name
 
 
@@ -86,7 +85,7 @@ def add_boss_fight_rules(self, location_name: str, boss_fight: BossFightLocation
         boss_fight.characters if character in get_playable_characters(self.options)))
 
 
-def add_mission_rules(self, location_name: str, mission: MissionLocation):
+def add_mission_rules(self, location_name: str, mission: MissionLocation, area_map):
     location = self.multiworld.get_location(location_name, self.player)
     if mission.cardArea == Area.ECOutside:
         card_area_name = get_region_name(mission.character, mission.cardArea, False, self.options)
@@ -97,7 +96,10 @@ def add_mission_rules(self, location_name: str, mission: MissionLocation):
         add_rule(location, lambda state, card_area=card_area_name: state.can_reach_region(card_area, self.player))
 
     logic_items = mission.get_logic_items(self.options)
-    if all(isinstance(item, str) for item in logic_items):
+    if mission.missionNumber == 1 and self.options.gating_mode.value == 0:
+        emblem_requirement = calculate_emblem_requirements_for_mission_1(area_map)
+        add_rule(location, lambda state, emblems=emblem_requirement: state.has("Emblem", self.player, emblems))
+    elif all(isinstance(item, str) for item in logic_items):
         for need in logic_items:
             add_rule(location, lambda state, item=need: state.has(item, self.player))
     else:
@@ -108,16 +110,66 @@ def add_mission_rules(self, location_name: str, mission: MissionLocation):
         add_rule(location, lambda state: state.has(ItemName.Big.PowerRod, self.player))
 
 
-def add_egg_rules(self, location_name: str, egg: ChaoEggLocation):
+def calculate_emblem_requirements_for_mission_1(area_map):
+    # Get the cheaper connection between City Hall and SSMain
+    cityhall_requirement = area_map.get(AreaConnection.from_areas(Area.CityHall, Area.SSMain), 0)
+    sewer_route_requirement = max(
+        area_map.get(AreaConnection.from_areas(Area.CityHall, Area.Sewers), 0),
+        area_map.get(AreaConnection.from_areas(Area.Sewers, Area.TPTunnel), 0),
+        area_map.get(AreaConnection.from_areas(Area.TPTunnel, Area.SSMain), 0),
+    )
+    return min(cityhall_requirement, sewer_route_requirement)
+
+
+def add_egg_rules(self, location_name: str, egg: ChaoEggLocation, area_map):
     location = self.multiworld.get_location(location_name, self.player)
     add_rule(location, lambda state: any(
         state.can_reach_region(
             get_region_name(character, egg.area, self.options.egg_carrier_starts_transformed, self.options),
             self.player) for character in
         egg.characters if character in get_playable_characters(self.options)))
-    if egg.requirements:
+    if egg.eggName == LocationName.Chao.GoldEgg and self.options.gating_mode.value == 0:
+        emblem_requirement = calculate_emblem_requirements_for_golden_egg(area_map)
+        add_rule(location, lambda state, emblems=emblem_requirement: state.has("Emblem", self.player, emblems))
+    elif egg.eggName == LocationName.Chao.BlackEgg and self.options.gating_mode.value == 0:
+        emblem_requirement = calculate_emblem_requirements_for_black_egg(area_map)
+        add_rule(location, lambda state, emblems=emblem_requirement: state.has("Emblem", self.player, emblems))
+    elif egg.eggName == LocationName.Chao.SilverEgg and self.options.gating_mode.value == 0:
+        emblem_requirement = area_map.get(AreaConnection.from_areas(Area.MRMain, Area.MRChaoGarden), 0)
+        add_rule(location, lambda state, emblems=emblem_requirement: state.has("Emblem", self.player, emblems))
+    else:
         add_rule(location, lambda state, egg_requirements=egg.requirements: any(
             all(state.has(item, self.player) for item in requirement_group) for requirement_group in egg_requirements))
+
+
+def calculate_emblem_requirements_for_golden_egg(area_map):
+    # Get the cheaper connection between City Hall and SSMain
+    cityhall_requirement = area_map.get(AreaConnection.from_areas(Area.CityHall, Area.SSMain), 0)
+    sewer_route_requirement = max(
+        area_map.get(AreaConnection.from_areas(Area.CityHall, Area.Sewers), 0),
+        area_map.get(AreaConnection.from_areas(Area.Sewers, Area.TPTunnel), 0),
+        area_map.get(AreaConnection.from_areas(Area.TPTunnel, Area.SSMain), 0),
+    )
+    cheaper_city_hall_route_requirement = min(cityhall_requirement, sewer_route_requirement)
+
+    # Get the cheaper connection between SSMain and Hotel
+    station_route_requirement = max(
+        area_map.get(AreaConnection.from_areas(Area.SSMain, Area.Station), 0),
+        area_map.get(AreaConnection.from_areas(Area.Station, Area.Casino), 0),
+        area_map.get(AreaConnection.from_areas(Area.Casino, Area.Hotel), 0),
+    )
+    hotel_route_requirement = area_map.get(AreaConnection.from_areas(Area.SSMain, Area.Hotel), 0)
+    cheaper_hotel_route_requirement = min(station_route_requirement, hotel_route_requirement)
+    return max(cheaper_city_hall_route_requirement, cheaper_hotel_route_requirement)
+
+
+def calculate_emblem_requirements_for_black_egg(area_map):
+    return max(
+        area_map.get(AreaConnection.from_areas(Area.PrivateRoom, Area.HedgehogHammer), 0),
+        area_map.get(AreaConnection.from_areas(Area.HedgehogHammer, Area.ECInside), 0),
+        area_map.get(AreaConnection.from_areas(Area.ECInside, Area.WarpHall), 0),
+        area_map.get(AreaConnection.from_areas(Area.WarpHall, Area.ECChaoGarden), 0),
+    )
 
 
 def add_race_rules(self, location_name: str):
@@ -149,7 +201,7 @@ def add_fish_rules(self, location_name: str, fish: FishLocation):
         add_rule(location, lambda state: state.has(ItemName.Big.PowerRod, self.player))
 
 
-def calculate_rules(self, location: LocationInfo):
+def calculate_rules(self, location: LocationInfo, area_map):
     if location is None:
         return
     for level in level_location_table:
@@ -172,10 +224,10 @@ def calculate_rules(self, location: LocationInfo):
             add_boss_fight_rules(self, location["name"], boss_fight)
     for mission in mission_location_table:
         if location["id"] == mission.locationId:
-            add_mission_rules(self, location["name"], mission)
+            add_mission_rules(self, location["name"], mission, area_map)
     for egg in chao_egg_location_table:
         if location["id"] == egg.locationId:
-            add_egg_rules(self, location["name"], egg)
+            add_egg_rules(self, location["name"], egg, area_map)
     for race in chao_race_location_table:
         if location["id"] == race.locationId:
             add_race_rules(self, location["name"])
@@ -194,7 +246,7 @@ def create_sadx_rules(self, needed_emblems: int, area_map) -> LocationDistributi
     missions_for_perfect_chaos = 0
     bosses_for_perfect_chaos = 0
     for ap_location in self.multiworld.get_locations(self.player):
-        calculate_rules(self, get_location_by_name(ap_location.name))
+        calculate_rules(self, get_location_by_name(ap_location.name), area_map)
 
     perfect_chaos_fight = self.multiworld.get_location("Perfect Chaos Fight", self.player)
     perfect_chaos_fight.place_locked_item(self.create_item(ItemName.Progression.ChaosPeace))
@@ -485,7 +537,6 @@ def connect_regions(self, needed_emblems: int, area_map=None):
         captain_region_transformed.connect(captain_region_not_transformed, name=entrance_name_1)
         captain_region_not_transformed.connect(captain_region_transformed, name=entrance_name_2)
 
-    visualize_regions(self.get_region("Menu"), "sadx.puml")
     return area_map
 
 

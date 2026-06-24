@@ -1,6 +1,1 @@
-{
-    "game": "Jak and Daxter: The Precursor Legacy",
-    "world_version": "1.1.5",
-    "minimum_ap_version": "0.6.2",
-    "authors": ["markustulliuscicero"]
-}
+{"game": "Jak and Daxter: The Precursor Legacy", "world_version": "1.2.0", "minimum_ap_version": "0.6.2", "authors": ["markustulliuscicero"], "compatible_version": 7, "version": 7}

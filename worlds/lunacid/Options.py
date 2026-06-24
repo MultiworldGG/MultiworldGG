@@ -314,6 +314,12 @@ class SilverLink(Toggle):
     display_name = "Silver Link"
 
 
+class OfflineMode(Toggle):
+    """Skips the connecting stage of the game, so it is played completely offline.  This is turned off if any other player is in the multiworld."""
+    internal_name = "offline_mode"
+    display_name = "Offline Mode"
+
+
 @dataclass
 class LunacidOptions(PerGameCommonOptions):
     ending: Ending
@@ -346,3 +352,4 @@ class LunacidOptions(PerGameCommonOptions):
     custom_class: CustomClass
     silver_link: SilverLink
     death_link: DeathLink
+    # offline_mode: OfflineMode

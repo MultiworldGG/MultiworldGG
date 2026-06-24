@@ -12,6 +12,7 @@ class PeggleDeluxeAPItems(enum.Enum):
     CHIPPED_PEG = "Chipped Peg"
     DENTED_PEG = "Dented Peg"
     HOLLOW_PEG = "Hollow Peg"
+    OOL = "OOL"
     PROGRESSIVE_FEVER_METER = "Progressive Fever Meter Threshold"
     PROGRESSIVE_STARTING_BALL_INCREASE = "Progressive Starting Ball Increase"
     RUSTY_PEG = "Rusty Peg"
@@ -91,6 +92,7 @@ class PeggleDeluxeAPTags(enum.Enum):
     MR_PEEPERS_LOCATION = "2-5 Mr. Peepers Location"
     NINE_LUFT_BALLOONS_ITEM = "9-4 9 Luft Balloons Item"
     NINE_LUFT_BALLOONS_LOCATION = "9-4 9 Luft Balloons Location"
+    OOL_ITEM = "OOL Item"
     ORANGE_PEG_COMBO_LOCATION = "Orange Peg Combo Location"
     OUR_FAVORITE_EEL_ITEM = "5-4 Our Favorite Eel Item"
     OUR_FAVORITE_EEL_LOCATION = "5-4 Our Favorite Eel Location"
@@ -260,3 +262,4 @@ class PeggleDeluxeLevelStates(enum.Enum):
     BEFORE_SHOT = 1
     SHOT_ACTIVE = 2
     AFTER_SHOT = 3
+    MASTER_SELECTION = 9

@@ -18,6 +18,10 @@ class Filler:
     MagneticShield = "Magnetic Shield"
     ExtraLife = "Extra Life"
 
+    @classmethod
+    def values(cls) -> list[str]:
+        return [value for key, value in vars(cls).items() if not key.startswith("_") and isinstance(value, str)]
+
 
 class Traps:
     IceTrap = "Ice Trap"
@@ -26,6 +30,10 @@ class Traps:
     BuyonTrap = "Buyon Trap"
     ReverseTrap = "Reverse Trap"
     GravityTrap = "Gravity Trap"
+
+    @classmethod
+    def values(cls) -> list[str]:
+        return [value for key, value in vars(cls).items() if not key.startswith("_") and isinstance(value, str)]
 
 
 class KeyItem:

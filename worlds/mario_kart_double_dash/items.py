@@ -19,6 +19,8 @@ TAG_CHARACTERS = "Characters"
 TAG_KARTS = "Karts"
 TAG_ITEMS = "Items"
 TAG_KART_UPGRADES = "Kart Upgrades"
+TAG_TRAPS = "Trap"
+TAG_SYNC_ONLY = "*Sync/Online Only"
 
 class ItemType(Enum):
     OTHER = 0
@@ -28,6 +30,7 @@ class ItemType(Enum):
     TT_COURSE = 4
     ITEM_UNLOCK = 5
     KART_UPGRADE = 6
+    RAIN_TRAP = 7
 
 class MkddItem(Item):
     game = version.get_game_name()
@@ -40,22 +43,28 @@ class MkddItemData(NamedTuple):
     address: int = 0
     count: int = 1
     meta: Any = None
-    tags: set[str] = {}
+    tags: set[str] = set()
 
 
 PROGRESSIVE_CLASS = "Progressive CC"
 PROGRESSIVE_CUP_SKIP = "Progressive GP Race Skip"
 PROGRESSIVE_TIME_TRIAL_ITEM = "Progressive Time Trial Item"
 PROGRESSIVE_ENGINE = "Progressive Speed Upgrade"
-RANDOM_ITEM = "Nothing"
+PROGRESSIVE_STARTING_POSITION = "Progressive Starting Position"
+RANDOM_ITEM = "Random Item"
 TROPHY = "Trophy"
 VICTORY = "Victory"
 SKIP_DIFFICULTY = "Skip Difficulty Calculation"
 
+OVERLAPPING_START_TRAP = "Overlapping Start Trap"
+BANANA_RAIN_TRAP = "Banana Rain Trap"
+SHELL_RAIN_TRAP = "Shell Rain Trap"
+BOMB_RAIN_TRAP = "Bomb Rain Trap"
+
 def get_item_name_tt_course(course: str) -> str:
     return f"{course} Time Trial"
 
-def get_item_name_character_item(character: str, item: str) -> str:
+def get_item_name_character_item(character: str|None, item: str) -> str:
     if character != None:
         return f"{item} for {character}"
     else:
@@ -71,7 +80,7 @@ data_table: list[MkddItemData] = [
     MkddItemData(PROGRESSIVE_CUP_SKIP, USEF, count = 2),
     MkddItemData(PROGRESSIVE_TIME_TRIAL_ITEM, PROG, count = 3),
     MkddItemData(PROGRESSIVE_ENGINE, PROG, count = 0), # Count depends on options.
-    MkddItemData(RANDOM_ITEM, FILL),
+    MkddItemData(RANDOM_ITEM, FILL, tags={TAG_SYNC_ONLY}),
     MkddItemData(TROPHY, PROG, count = 0),
     MkddItemData(VICTORY, PROG, count = 0),
 ]
@@ -102,6 +111,12 @@ for item in game_data.ITEMS:
                 meta = {"character": character, "item": item}, tags = TAG_ITEMS_FOR_X
             ))
 
+data_table.append(MkddItemData(PROGRESSIVE_STARTING_POSITION, USEF, count=7))
+data_table.append(MkddItemData(OVERLAPPING_START_TRAP, TRAP, count=0, tags={TAG_TRAPS, TAG_SYNC_ONLY}))
+data_table.append(MkddItemData(BANANA_RAIN_TRAP, TRAP, ItemType.RAIN_TRAP, count=0, tags={TAG_TRAPS, TAG_SYNC_ONLY}))
+data_table.append(MkddItemData(SHELL_RAIN_TRAP, TRAP, ItemType.RAIN_TRAP, count=0, tags={TAG_TRAPS, TAG_SYNC_ONLY}))
+data_table.append(MkddItemData(BOMB_RAIN_TRAP, TRAP, ItemType.RAIN_TRAP, count=0, tags={TAG_TRAPS, TAG_SYNC_ONLY}))
+
 # Used by Universal Tracker glitched logic.
 data_table.append(MkddItemData(SKIP_DIFFICULTY, PROG, count = 0))
 
@@ -109,7 +124,7 @@ name_to_id: dict[str, int] = {item.name:id for (id, item) in enumerate(data_tabl
 
 group_names: set[str] = set()
 for data in data_table:
-    group_names.update(data.tags)
+    group_names.update({tag for tag in data.tags if not tag.startswith("*")})
 groups: dict[str: set[str]] = {
     group:{data.name for data in data_table if group in data.tags}
     for group in group_names

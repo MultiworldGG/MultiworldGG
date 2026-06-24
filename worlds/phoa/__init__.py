@@ -1,5 +1,3 @@
-import time
-
 from BaseClasses import Tutorial, Item
 from BaseClasses import ItemClassification as IC
 from worlds.AutoWorld import WebWorld, World
@@ -49,7 +47,9 @@ class PhoaWorld(World):
         item_pool_strings, precollected_items = get_item_pool(self, get_location_data(self.player, self.options))
 
         for item in precollected_items:
-            self.multiworld.push_precollected(self.create_item(item))
+            precollected_item = self.create_item(item)
+            precollected_item.classification = IC.progression
+            self.multiworld.push_precollected(precollected_item)
 
         item_pool: list[PhoaItem] = []
 
@@ -57,16 +57,13 @@ class PhoaWorld(World):
             item_pool.append(self.create_item(item_name))
 
         self.multiworld.itempool += item_pool
-        # for itemyea in self.multiworld.itempool:
-        #     print(itemyea.name, itemyea.classification)
-        # time.sleep(1200)
 
     def create_regions(self):
         create_regions_and_locations(self.multiworld, self.player, self.options)
 
     def set_rules(self):
         self.multiworld.completion_condition[self.player] = lambda state: state.has(
-            "Strange Urn", self.player
+            "Defeat Sand Dragon", self.player
         )
 
     def get_filler_item_name(self) -> str:
@@ -90,3 +87,9 @@ class PhoaWorld(World):
             self.progressive_item_classifications_overrides.append("Fishing Rod")
             self.progressive_item_classifications_overrides.append("Serpent Rod")
             self.progressive_item_classifications_overrides.append("Progressive Fishing Rod")
+        if (options.enable_rin_locations > 1
+                or options.enable_minigames
+                or options.enable_moonstone_locations
+                or options.enable_fishing_spots
+                or options.enable_ancient_vault):
+            self.progressive_item_classifications_overrides.append("Energy Gem")

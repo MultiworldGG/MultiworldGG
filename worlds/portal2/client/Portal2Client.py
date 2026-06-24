@@ -5,7 +5,14 @@ import sys
 import time
 import typing
 
-from CommonClient import CommonContext, server_loop, ClientCommandProcessor, logger, gui_enabled
+tracker_loaded = False
+try:
+    from worlds.tracker.TrackerClient import TrackerGameContext as CommonContext, TrackerCommandProcessor as ClientCommandProcessor
+    tracker_loaded = True
+except ModuleNotFoundError:
+    from CommonClient import CommonContext, ClientCommandProcessor
+
+from CommonClient import server_loop, logger, gui_enabled
 from NetUtils import ClientStatus, NetworkItem
 from Utils import async_start, init_logging
 
@@ -68,11 +75,19 @@ class Portal2CommandProcessor(ClientCommandProcessor):
                 break
         self.output(message)
 
+    def _cmd_ping(self):
+        async def player_in_map(compro):
+            is_in_map = await compro.ctx.is_player_in_map()
+            compro.output("pong" if is_in_map else "no pong recieved from server")
+        loop = asyncio.get_event_loop()
+        loop.create_task(player_in_map(self))
+
 class Portal2Context(CommonContext):
     command_processor = Portal2CommandProcessor
     game_command_sender_task: typing.Optional["asyncio.Task[None]"] = None
     game_message_listener_task: typing.Optional["asyncio.Task[None]"] = None
     game = "Portal 2"
+    tags = {"AP"}
     items_handling = 0b111  # receive all items for /received
 
     HOST = "localhost"
@@ -143,7 +158,6 @@ class Portal2Context(CommonContext):
                         self.game_message_queue += data_list
 
                 except asyncio.CancelledError:
-                    logger.info("Game listener closed from cancellation")
                     raise
                 except Exception as e:
                     logger.error(f"An error occurred in listener loop: {e}")
@@ -164,16 +178,27 @@ class Portal2Context(CommonContext):
         try:
             while True:
                 try:
-                    reader, writer = await asyncio.open_connection(self.HOST, self.PORT)
+                    _, writer = await asyncio.open_connection(self.HOST, self.PORT)
                 except ConnectionRefusedError:
                     self.sender_active = False
                     await asyncio.sleep(self.current_reconnect_delay)
                     continue
 
                 self.sender_active = True
+                next_player_check = time.time()
                 try:
                     # Keep the connection open and send queued commands without blocking the loop
                     while True:
+                        # Make sure player is in map before flushing the command queue
+                        if next_player_check < time.time():
+                            if not await self.is_player_in_map():
+                                logger.info("Player not in a map sleeping 10 seconds")
+                                await asyncio.sleep(10)
+                                continue
+                            else:
+                                next_player_check = time.time() + 10
+                                logger.info(f"Player is in a map, next check at {next_player_check}")
+
                         # handle commands
                         if self.command_queue:
                             c = self.command_queue.pop(0)
@@ -190,7 +215,6 @@ class Portal2Context(CommonContext):
                             # yield control briefly so other tasks (listener, etc.) run smoothly
                             await asyncio.sleep(0.1)
                 except asyncio.CancelledError:
-                    logger.info("Game sender closed from cancellation")
                     raise
                 except Exception as e:
                     logger.error(f"An error occurred in sender loop: {e}")
@@ -205,6 +229,23 @@ class Portal2Context(CommonContext):
         except asyncio.CancelledError:
             logger.info("Game sender closed from cancellation")
             raise
+
+    async def is_player_in_map(self):
+        try:
+            reader, writer = await asyncio.open_connection(self.HOST, self.PORT)
+            ping = 'script printl("Pong")\n'
+            writer.write(ping.encode())
+            await writer.drain()
+
+            data = await asyncio.wait_for(reader.read(1000), timeout=0.5)
+            pong = data.decode(errors="ignore").replace("\'", "").split('\r\n')
+            writer.close()
+            await writer.wait_closed()
+            if pong and pong[0] == "Pong":
+                return True
+            return False
+        except:
+            return False
 
     async def handle_message(self, message: str):
         if message.startswith("map_name:"):
@@ -358,6 +399,7 @@ class Portal2Context(CommonContext):
         self.refresh_menu()
 
     def on_package(self, cmd, args):
+        super().on_package(cmd, args)
         def update_item_list():
             # Update item list to only include items not collected
             items_received_names = [self.item_names.lookup_in_game(i.item, self.game) for i in self.items_received]
@@ -423,14 +465,11 @@ class Portal2Context(CommonContext):
         
     def make_gui(self):
         from kvui import GameManager
+        ui = super().make_gui()
+        ui.base_title = "Portal 2 Text Client"
+        ui.icon = r"worlds/portal2/data/Portalpelago.png"
 
-        class Portal2TextManager(GameManager):
-            base_title = "Portal 2 Text Client"
-            def __init__(self, ctx):
-                super().__init__(ctx)
-                self.icon = r"worlds/portal2/data/Portalpelago.png"
-
-        return Portal2TextManager
+        return ui
     
     async def shutdown(self):
         self.server_address = ""
@@ -467,6 +506,8 @@ async def main(args: Namespace):
     ctx.game_command_sender_task = asyncio.create_task(ctx.p2_command_sender(), name="sender loop")
     ctx.game_message_listener_task = asyncio.create_task(ctx.p2_message_listener(), name="listener loop")
 
+    if tracker_loaded:
+        ctx.run_generator()
     if gui_enabled:
         ctx.run_gui()
     ctx.run_cli()

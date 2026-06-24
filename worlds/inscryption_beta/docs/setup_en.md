@@ -7,7 +7,7 @@
   - [r2modman](https://inscryption.thunderstore.io/package/ebkr/r2modman/) OR [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager)
 - For manual setup:
   - [BepInEx pack for Inscryption](https://inscryption.thunderstore.io/package/BepInEx/BepInExPack_Inscryption/)
-  - [ArchipelagoMod](https://inscryption.thunderstore.io/package/Ballin_Inc/ArchipelagoMod/)
+  - [ArchipelagoMod](https://github.com/empathy-mp3/Archipelago_Inscryption/releases/latest)
 
 ## Installation
 Before starting the installation process, here's what you should know:
@@ -15,18 +15,10 @@ Before starting the installation process, here's what you should know:
 - The ArchipelagoMod uses its own save file system when playing, but for safety measures, back up your save file by going to your Inscryption installation directory and copy the `SaveFile.gwsave` file to another folder.
 - It is strongly recommended to use a mod manager if you want a quicker and easier installation process, but if you don't like installing extra software and are comfortable moving files around, you can refer to the manual setup guide instead.
 
-### Easy setup (mod manager)
-1. Download [r2modman](https://inscryption.thunderstore.io/package/ebkr/r2modman/) using the "Manual Download" button, then install it using the executable in the downloaded zip package (You can also use [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager) which works the same, but it requires [Overwolf](https://www.overwolf.com/))
-2. Open the mod manager and select Inscryption in the game selection screen.
-3. Select the default profile or create a new one.
-4. Open the `Online` tab on the left, then search for `ArchipelagoMod`.
-5. Expand ArchipelagoMod and click the `Download` button to install the latest version and all its dependencies.
-6. Click `Start Modded` to open the game with the mods (a console should appear if everything was done correctly).
-
-### Manual setup
+## Manual setup
 1. Download the following mods using the `Manual Download` button:
    - [BepInEx pack for Inscryption](https://inscryption.thunderstore.io/package/BepInEx/BepInExPack_Inscryption/)
-   - [ArchipelagoMod](https://inscryption.thunderstore.io/package/Ballin_Inc/ArchipelagoMod/)
+   - [ArchipelagoMod](https://github.com/empathy-mp3/Archipelago_Inscryption/releases/latest)
 2. Open your Inscryption installation directory. On Steam, you can find it easily by right-clicking the game and clicking `Manage` > `Browse local files`.
 3. Open the BepInEx pack zip file, then open the `BepInExPack_Inscryption` folder.
 4. Drag all folders and files located inside the `BepInExPack_Inscryption` folder and drop them in your Inscryption directory.

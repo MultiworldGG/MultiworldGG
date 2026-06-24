@@ -1,11 +1,10 @@
-from typing import Any, Dict, List, Tuple
+from typing import Dict, List
 
 from .data.item_data import PeggleDeluxeItemData, item_data
 from .data.location_data import PeggleDeluxeLocationData, location_data
 
 from .enums import (
     PeggleDeluxeAPGoals,
-    PeggleDeluxeAPItems,
     PeggleDeluxeAPMasterSelectionModes,
     PeggleDeluxeAPRequirementModes,
     PeggleDeluxeAPTags,
@@ -92,35 +91,3 @@ def locations_with_tag(tag: PeggleDeluxeAPTags) -> List[str]:
     data: PeggleDeluxeLocationData
 
     return [location for location, data in location_data.items() if data.tags is not None and tag in data.tags]
-
-
-def location_access_rule_for(location: str, player: int) -> str:
-    data: PeggleDeluxeLocationData = location_data[location]
-
-    if data.requirements is None:
-        return "lambda state: True"
-
-    lambda_string: str = "lambda state: "
-
-    i: int
-    requirement: Tuple[Any]
-    for i, requirement in enumerate(data.requirements):
-        if isinstance(requirement[0], PeggleDeluxeAPItems):
-            lambda_string += f"state.has(\"{requirement[0].value}\", {player}, {requirement[1]})"
-        elif isinstance(requirement[0], tuple):
-            lambda_string += "("
-
-            ii: int
-            sub_requirement: tuple[Any]
-            for ii, sub_requirement in enumerate(requirement):
-                lambda_string += f"state.has(\"{sub_requirement[0].value}\", {player}, {sub_requirement[1]})"
-
-                if ii < len(requirement) - 1:
-                    lambda_string += " or "
-
-            lambda_string += ")"
-
-        if i < len(data.requirements) - 1:
-            lambda_string += " and "
-
-    return lambda_string

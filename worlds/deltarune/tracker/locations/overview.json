@@ -1,0 +1,1981 @@
+[
+  {
+    "name": "Chapter 1 - Complete",
+    "sections": [
+      {
+        "name": "CH1: Card Kingdom - Fountain Sealed"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 150,
+        "y": 110
+      }
+    ]
+  },
+  {
+    "name": "Chapter 1 - ??????",
+    "sections": [
+      {
+        "name": "CH1: ?????? - Hidden Item"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 150,
+        "y": 160
+      }
+    ]
+  },
+  {
+    "name": "Chapter 1 - Castle Town",
+    "sections": [
+      {
+        "name": "CH1: Castle Town - Manual"
+      },
+      {
+        "name": "CH1: Throw Away Manual"
+      },
+      {
+        "name": "CH1: Throw Away Manual (Again...)"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 150,
+        "y": 350
+      }
+    ]
+  },
+  {
+    "name": "Chapter 1 - Fields",
+    "children": [
+      {
+        "name": "Chapter 1 - Fields - Candy Trees",
+        "sections": [
+          {
+            "name": "CH1: Fields - Dark Candy Tree 1"
+          },
+          {
+            "name": "CH1: Fields - Dark Candy Tree 2"
+          },
+          {
+            "name": "CH1: Fields - Dark Candy Tree 3"
+          },
+          {
+            "name": "CH1: Fields - Dark Candy Tree 4"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 50,
+            "y": 450
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Fields - Candy Trees 1&2",
+        "sections": [
+          {
+            "name": "CH1: Fields - Dark Candy Tree 1"
+          },
+          {
+            "name": "CH1: Fields - Dark Candy Tree 2"
+          }
+        ],
+        "map_locations": []
+      },
+      {
+        "name": "Chapter 1 - Fields - Candy Trees 3&4",
+        "sections": [
+          {
+            "name": "CH1: Fields - Dark Candy Tree 3"
+          },
+          {
+            "name": "CH1: Fields - Dark Candy Tree 4"
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Fields - Chests",
+        "sections": [
+          {
+            "name": "CH1: Fields - Maze of Death Chest"
+          },
+          {
+            "name": "CH1: Fields - Chest Before Great Board"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 50,
+            "y": 550
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Fields - Maze of Death Chest",
+        "sections": [
+          {
+            "name": "CH1: Fields - Maze of Death Chest"
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Fields - Chest Before Great Board",
+        "sections": [
+          {
+            "name": "CH1: Fields - Chest Before Great Board"
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Fields - Cake",
+        "sections": [
+          {
+            "name": "CH1: Fields - BrokenCake"
+          },
+          {
+            "name": "CH1: Fields - Return Top Cake"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 100,
+            "y": 450
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Fields - Seam's Seap",
+        "sections": [
+          {
+            "name": "CH1: Seam's Seap 1"
+          },
+          {
+            "name": "CH1: Seam's Seap 2"
+          },
+          {
+            "name": "CH1: Seam's Seap 3"
+          },
+          {
+            "name": "CH1: Seam's Seap 4"
+          },
+          {
+            "name": "CH1: Seam's Seap - Talk About Strange Prisoner"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 220,
+            "y": 475
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Fields - Warp Door",
+        "sections": [
+          {
+            "name": "CH1: Forest - Warp Door"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 100,
+            "y": 500
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Fields - Recruits",
+        "sections": [
+          {
+            "name": "CH1: Fields - Recruit Rudinn"
+          },
+          {
+            "name": "CH1: Fields - Recruit Hathy"
+          },
+          {
+            "name": "CH1: Fields - Recruit Jigsawry"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 150,
+            "y": 500
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Fields - Loses",
+        "sections": [
+          {
+            "name": "CH1: Fields - Lost Rudinn"
+          },
+          {
+            "name": "CH1: Fields - Lost Hathy"
+          },
+          {
+            "name": "CH1: Fields - Lost Jigsawry"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 150,
+            "y": 550
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 1 - Great Board",
+    "children": [
+      {
+        "name": "Chapter 1 - Great Board - Recruits",
+        "sections": [
+          {
+            "name": "CH1: Great Board - Recruit Ponman"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 50,
+            "y": 700
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Great Board - Loses",
+        "sections": [
+          {
+            "name": "CH1: Great Board - Lost Ponman"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 50,
+            "y": 750
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 1 - Forest",
+    "children": [
+      {
+        "name": "Chapter 1 - Forest - Recruits",
+        "sections": [
+          {
+            "name": "CH1: Forest - Recruit Rabbick"
+          },
+          {
+            "name": "CH1: Forest - Recruit Bloxer"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 100,
+            "y": 700
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Forest - Loses",
+        "sections": [
+          {
+            "name": "CH1: Forest - Lost Rabbick"
+          },
+          {
+            "name": "CH1: Forest - Lost Bloxer"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 100,
+            "y": 750
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Forest - Warp Door",
+        "sections": [
+          {
+            "name": "CH1: Forest - Warp Door"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 100,
+            "y": 650
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Forest - Chests",
+        "sections": [
+          {
+            "name": "CH1: Forest - Scissor Dancers Chest"
+          },
+          {
+            "name": "CH1: Forest - Hidden Chest Near Dancers"
+          },
+          {
+            "name": "CH1: Forest - Man"
+          },
+          {
+            "name": "CH1: Forest - Chest Near Worm"
+          },
+          {
+            "name": "CH1: Forest - Letter Block Chest"
+          },
+          {
+            "name": "CH1: Forest - Coat Rack's Chest"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 150,
+            "y": 750
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Forest - Scissor Dancers Chest",
+        "sections": [
+          {
+            "name": "CH1: Forest - Scissor Dancers Chest"
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Forest - Hidden Chest Near Dancers",
+        "sections": [
+          {
+            "name": "CH1: Forest - Hidden Chest Near Dancers"
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Forest - Man",
+        "sections": [
+          {
+            "name": "CH1: Forest - Man"
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Forest - Coat Rack's Chest",
+        "sections": [
+          {
+            "name": "CH1: Forest - Coat Rack's Chest"
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Forest - Letter Block Chest",
+        "sections": [
+          {
+            "name": "CH1: Forest - Letter Block Chest"
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Forest - Chest Near Worm",
+        "sections": [
+          {
+            "name": "CH1: Forest - Chest Near Worm"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 1 - Bake Sale",
+    "children": [
+      {
+        "name": "Chapter 1 - Bake Sale - Malius",
+        "sections": [
+          {
+            "name": "CH1: Bake Sale - Repair Top Cake"
+          },
+          {
+            "name": "CH1: Bake Sale - Repair Door Key"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 200,
+            "y": 750
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Bake Sale - Warp Door",
+        "sections": [
+          {
+            "name": "CH1: Bake Sale - Warp Door"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 200,
+            "y": 650
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Bake Sale - Stands",
+        "sections": [
+          {
+            "name": "CH1: Bake Sale - Diamond Stand"
+          },
+          {
+            "name": "CH1: Bake Sale - Heart Stand"
+          },
+          {
+            "name": "CH1: Bake Sale - Spade Stand"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 200,
+            "y": 700
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 1 - Card Castle",
+    "children": [
+      {
+        "name": "Chapter 1 - Card Castle - Chests",
+        "sections": [
+          {
+            "name": "CH1: Card Castle - IronShackle"
+          },
+          {
+            "name": "CH1: Card Castle - Moss"
+          },
+          {
+            "name": "CH1: Card Castle - Rudinn Gift"
+          },
+          {
+            "name": "CH1: Card Castle - 2F Chest"
+          },
+          {
+            "name": "CH1: Card Castle - 4F Chest"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 100,
+            "y": 900
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Card Castle - Jevil",
+        "sections": [
+          {
+            "name": "CH1: Card Castle - Jevil Defeat Item #1"
+          },
+          {
+            "name": "CH1: Card Castle - Jevil Defeat Item #2"
+          },
+          {
+            "name": "CH1: Card Castle - Jevil Defeat Item #3"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 200,
+            "y": 900
+          }
+        ]
+      },
+      {
+        "name": "Chapter 1 - Card Castle - Rouxls' Shop",
+        "sections": [
+          {
+            "name": "CH1: Rouxls' Shop 1"
+          },
+          {
+            "name": "CH1: Rouxls' Shop 2"
+          },
+          {
+            "name": "CH1: Rouxls' Shop 3"
+          },
+          {
+            "name": "CH1: Rouxls' Shop 4"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 236,
+            "y": 830
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 2 - Complete",
+    "sections": [
+      {
+        "name": "CH2: Cyber World - Fountain Sealed"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 420,
+        "y": 110
+      }
+    ]
+  },
+  {
+    "name": "Chapter 2 - Castle Town",
+    "children": [
+      {
+        "name": "Chapter 2 - Castle Town - Dojo",
+        "sections": [
+          {
+            "name": "CH2: Castle Town - Jigsaw Joe Challenge"
+          },
+          {
+            "name": "CH2: Castle Town - Graze Challenge 1"
+          },
+          {
+            "name": "CH2: Castle Town - Clover Rematch Challenge"
+          },
+          {
+            "name": "CH2: Castle Town - Tasque Manager Says Challenge"
+          },
+          {
+            "name": "CH2: Castle Town - Ch2 All Stars Challenge"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 420,
+            "y": 210
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Castle Town - Cake",
+        "sections": [
+          {
+            "name": "CH2: Castle Town - Top Chef Gift"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 520,
+            "y": 210
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 2 - Cyber Fields",
+    "children": [
+      {
+        "name": "Chapter 2 - Cyber Fields - Chests",
+        "sections": [
+          {
+            "name": "CH2: Cyber Field - First Chest"
+          },
+          {
+            "name": "CH2: Cyber Field - Nubert's Chest"
+          },
+          {
+            "name": "CH2: Cyber Field - Chest Near Music Shop"
+          },
+          {
+            "name": "CH2: Cyber Field - Virovirokun Puzzle Chest"
+          },
+          {
+            "name": "CH2: Cyber Field - Teacup Puzzle Chest"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 400,
+            "y": 400
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Cyber Fields - Checkmark",
+        "sections": [
+          {
+            "name": "CH2: Cyber Field - Tasque Maze Checkmark"
+          },
+          {
+            "name": "CH2: Cyber Field - Giasfelfebrehber Checkmark"
+          },
+          {
+            "name": "CH2: Cyber Field - S/R/N-Actions unlock"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 400,
+            "y": 350
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Cyber Fields - Recruits",
+        "sections": [
+          {
+            "name": "CH2: Recruit Werewire"
+          },
+          {
+            "name": "CH2: Recruit Tasque"
+          },
+          {
+            "name": "CH2: Recruit Virovirokun"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 350,
+            "y": 350
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Cyber Fields - Loses",
+        "sections": [
+          {
+            "name": "CH2: Lost Werewire"
+          },
+          {
+            "name": "CH2: Lost Tasque"
+          },
+          {
+            "name": "CH2: Lost Virovirokun"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 350,
+            "y": 400
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Cyber Fields - Warp Door",
+        "sections": [
+          {
+            "name": "CH2: Cyber Field - Warp Door"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 450,
+            "y": 350
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Cyber Fields - Music Shop",
+        "sections": [
+          {
+            "name": "CH2: Music Shop 1"
+          },
+          {
+            "name": "CH2: Music Shop 2"
+          },
+          {
+            "name": "CH2: Music Shop 3"
+          },
+          {
+            "name": "CH2: Music Shop 4"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 480,
+            "y": 300
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 2 - Trash Zone",
+    "children": [
+      {
+        "name": "Chapter 2 - Trash Zone - Trash",
+        "sections": [
+          {
+            "name": "CH2: Trash Zone - Trash Can"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 350,
+            "y": 550
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Trash Zone - Warp Door",
+        "sections": [
+          {
+            "name": "CH2: Trash Zone - Warp Door"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 350,
+            "y": 500
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Trash Zone - Spamton Shop",
+        "sections": [
+          {
+            "name": "CH2: Spamton's Shop 1"
+          },
+          {
+            "name": "CH2: Spamton's Shop 2"
+          },
+          {
+            "name": "CH2: Spamton's Shop 3"
+          },
+          {
+            "name": "CH2: Spamton's Shop 4"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 480,
+            "y": 470
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 2 - Cyber City",
+    "children": [
+      {
+        "name": "Chapter 2 - Cyber City - Recruits",
+        "sections": [
+          {
+            "name": "CH2: Recruit Poppup"
+          },
+          {
+            "name": "CH2: Recruit Ambyu-lance"
+          },
+          {
+            "name": "CH2: Recruit Maus"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 400,
+            "y": 500
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Cyber City - Loses",
+        "sections": [
+          {
+            "name": "CH2: Lost Poppup"
+          },
+          {
+            "name": "CH2: Lost Ambyu-lance"
+          },
+          {
+            "name": "CH2: Lost Maus"
+          },
+          {
+            "name": "CH2: Cyber City - \"Purchase\" FreezeRing"
+          },
+          {
+            "name": "CH2: Cyber City - Purchase ThornRing"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 400,
+            "y": 550
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Cyber City - Teas",
+        "sections": [
+          {
+            "name": "CH2: Cyber City - Purchase Kris Tea"
+          },
+          {
+            "name": "CH2: Cyber City - Purchase Noelle Tea"
+          },
+          {
+            "name": "CH2: Cyber City - Purchase Susie Tea"
+          },
+          {
+            "name": "CH2: Cyber City - Purchase Ralsei Tea"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 450,
+            "y": 500
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Cyber City - Chests",
+        "sections": [
+          {
+            "name": "CH2: Cyber City - Trash Can #1"
+          },
+          {
+            "name": "CH2: Cyber City - Trash Can #2"
+          },
+          {
+            "name": "CH2: Cyber City - Trash Can #3"
+          },
+          {
+            "name": "CH2: Cyber City - Trash Can #4"
+          },
+          {
+            "name": "CH2: Cyber City - Trash Can #5"
+          },
+          {
+            "name": "CH2: Cyber City - Queen Poster Chest"
+          },
+          {
+            "name": "CH2: Cyber City - Chest Guarded By Virovirokun"
+          },
+          {
+            "name": "CH2: Cyber City - Purchase Mannequin"
+          },
+          {
+            "name": "CH2: Cyber City - Annoying Dog...?"
+          },
+          {
+            "name": "CH2: Cyber City - Man"
+          },
+          {
+            "name": "CH2: Cyber City - Moss"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 450,
+            "y": 550
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 2 - Mansion",
+    "children": [
+      {
+        "name": "Chapter 2 - Mansion - Chests",
+        "sections": [
+          {
+            "name": "CH2: Mansion - Painting Chest"
+          },
+          {
+            "name": "CH2: Mansion - Sculpture Room Chest"
+          },
+          {
+            "name": "CH2: Mansion - Platter Chest"
+          },
+          {
+            "name": "CH2: Mansion - Tunnel of Love Chest"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 350,
+            "y": 750
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Mansion - Warp Door",
+        "sections": [
+          {
+            "name": "CH2: Mansion - Warp Door"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 350,
+            "y": 700
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Mansion - Spamton NEO",
+        "sections": [
+          {
+            "name": "CH2: Mansion - Basement Chest"
+          },
+          {
+            "name": "CH2: Mansion - Basement Mechanism"
+          },
+          {
+            "name": "CH2: Mansion - Spamton NEO Defeat Item #1"
+          },
+          {
+            "name": "CH2: Mansion - Spamton NEO Defeat Item #2"
+          },
+          {
+            "name": "CH2: Mansion - Spamton NEO Defeat Item #3"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 450,
+            "y": 750
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Mansion - Recruits",
+        "sections": [
+          {
+            "name": "CH2: Recruit Swatchling"
+          },
+          {
+            "name": "CH2: Recruit Tasque Manager"
+          },
+          {
+            "name": "CH2: Recruit Mauswheel"
+          },
+          {
+            "name": "CH2: Recruit Werewerewire"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 400,
+            "y": 700
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Mansion - Loses",
+        "sections": [
+          {
+            "name": "CH2: Lost Swatchling"
+          },
+          {
+            "name": "CH2: Lost Tasque Manager"
+          },
+          {
+            "name": "CH2: Lost Mauswheel"
+          },
+          {
+            "name": "CH2: Lost Werewerewire"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 400,
+            "y": 750
+          }
+        ]
+      },
+      {
+        "name": "Chapter 2 - Mansion - Swatch's Cafe",
+        "sections": [
+          {
+            "name": "CH2: Swatch's Cafe 1"
+          },
+          {
+            "name": "CH2: Swatch's Cafe 2"
+          },
+          {
+            "name": "CH2: Swatch's Cafe 3"
+          },
+          {
+            "name": "CH2: Swatch's Cafe 4"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 500,
+            "y": 650
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 4 - Castle Town",
+    "children": [
+      {
+        "name": "Chapter 4 - Castle Town - Mike",
+        "sections": [
+          {
+            "name": "CH4: Castle Town - Defeat Mike"
+          },
+          {
+            "name": "CH4: Mike - Battat (Bronze Rank)"
+          },
+          {
+            "name": "CH4: Mike - Battat (Silver Rank)"
+          },
+          {
+            "name": "CH4: Mike - Battat (Gold Rank)"
+          },
+          {
+            "name": "CH4: Mike - Battat (Platinum Rank)"
+          },
+          {
+            "name": "CH4: Mike - Jongler (Bronze Rank)"
+          },
+          {
+            "name": "CH4: Mike - Jongler (Silver Rank)"
+          },
+          {
+            "name": "CH4: Mike - Jongler (Gold Rank)"
+          },
+          {
+            "name": "CH4: Mike - Jongler (Platinum Rank)"
+          },
+          {
+            "name": "CH4: Mike - Pluey (Bronze Rank)"
+          },
+          {
+            "name": "CH4: Mike - Pluey (Silver Rank)"
+          },
+          {
+            "name": "CH4: Mike - Pluey (Gold Rank)"
+          },
+          {
+            "name": "CH4: Mike - Pluey (Platinum Rank)"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 1100,
+            "y": 200
+          }
+        ]
+      },
+      {
+        "name": "Chapter 4 - Dojo",
+        "sections": [
+          {
+            "name": "CH4: Castle Town - Lanino&Elnina Challenge"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 935,
+            "y": 200
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 4 - Dark Sanctuary",
+    "children": [
+      {
+        "name": "Chapter 4 - Dark Sanctuary - Chest",
+        "sections": [
+          {
+            "name": "CH4: Dark Sanctuary - Jockington Prophecy Chest"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - Chest in First Dark Area"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - Worship Room Chest"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - Library Chest 1"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - Library Chest 2"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - Lantern Puzzle Chest"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - Jackenstein Gift"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - Climbing Tutorial Chest"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - Cuptain Pillar Chest"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - Sleeping Mizzle Chest"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - Hidden Climbing Chest"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - SheetMusic"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 930,
+            "y": 370
+          }
+        ]
+      },
+      {
+        "name": "Chapter 4 - Dark Sanctuary - Recruits",
+        "sections": [
+          {
+            "name": "CH4: Recruit Guei"
+          },
+          {
+            "name": "CH4: Recruit Balthizard"
+          },
+          {
+            "name": "CH4: Recruit Bibliox"
+          },
+          {
+            "name": "CH4: Recruit Mizzle"
+          },
+          {
+            "name": "CH4: Recruit Miss Mizzle"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 980,
+            "y": 320
+          }
+        ]
+      },
+      {
+        "name": "Chapter 4 - Dark Sanctuary - Loses",
+        "sections": [
+          {
+            "name": "CH4: Lost Guei"
+          },
+          {
+            "name": "CH4: Lost Balthizard"
+          },
+          {
+            "name": "CH4: Lost Bibliox"
+          },
+          {
+            "name": "CH4: Lost Mizzle"
+          },
+          {
+            "name": "CH4: Lost Miss Mizzle"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 980,
+            "y": 370
+          }
+        ]
+      },
+      {
+        "name": "Chapter 4 - Old Man's Shop",
+        "sections": [
+          {
+            "name": "CH4: Old Man's Shop 1"
+          },
+          {
+            "name": "CH4: Old Man's Shop 2"
+          },
+          {
+            "name": "CH4: Old Man's Shop 3"
+          },
+          {
+            "name": "CH4: Old Man's Shop 4"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 1030,
+            "y": 370
+          }
+        ]
+      },
+      {
+        "name": "Chapter 4 - Hammer of Justice",
+        "sections": [
+          {
+            "name": "CH4: Dark Sanctuary - Hammer of Justice Defeat Item #1"
+          },
+          {
+            "name": "CH4: Dark Sanctuary - Hammer of Justice Defeat Item #2"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 1080,
+            "y": 370
+          }
+        ]
+      },
+      {
+        "name": "Chapter 4 - Dark Sanctuary - Fountain Sealed",
+        "sections": [
+          {
+            "name": "CH4: Dark Sanctuary - Fountain Sealed"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 1030,
+            "y": 320
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 4 - Second Sanctuary",
+    "children": [
+      {
+        "name": "Chapter 4 - Second Sanctuary - Chest",
+        "sections": [
+          {
+            "name": "CH4: Second Sanctuary - Wall Climbing Chest"
+          },
+          {
+            "name": "CH4: Second Sanctuary - Waterfall Chest"
+          },
+          {
+            "name": "CH4: Second Sanctuary - Destroyed Piano Block Chest"
+          },
+          {
+            "name": "CH4: Second Sanctuary - Gallery Prophecy Chest"
+          },
+          {
+            "name": "CH4: Second Sanctuary - Man"
+          },
+          {
+            "name": "CH4: Second Sanctuary - Moss"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 930,
+            "y": 560
+          }
+        ]
+      },
+      {
+        "name": "Chapter 4 - Dark Sanctuary - Recruits",
+        "sections": [
+          {
+            "name": "CH4: Recruit Wicabel"
+          },
+          {
+            "name": "CH4: Recruit Winglade"
+          },
+          {
+            "name": "CH4: Recruit Organikk"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 980,
+            "y": 510
+          }
+        ]
+      },
+      {
+        "name": "Chapter 4 - Dark Sanctuary - Loses",
+        "sections": [
+          {
+            "name": "CH4: Lost Wicabel"
+          },
+          {
+            "name": "CH4: Lost Winglade"
+          },
+          {
+            "name": "CH4: Lost Organikk"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 980,
+            "y": 560
+          }
+        ]
+      },
+      {
+        "name": "Chapter 4 - Second Sanctuary - Fountain Sealed",
+        "sections": [
+          {
+            "name": "CH4: Second Sanctuary - Fountain Sealed"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overview",
+            "x": 1030,
+            "y": 560
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chapter 4 - Complete",
+    "sections": [
+      {
+        "name": "CH4: Third Sanctuary - Fountain Sealed"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 1010,
+        "y": 110
+      }
+    ]
+  },
+  {
+    "name": "Cross Chapter - Fusions",
+    "sections": [
+      {
+        "name": "Castle Town - DD-Burger Fusion"
+      },
+      {
+        "name": "Castle Town - Silver Card Fusion"
+      },
+      {
+        "name": "Castle Town - Twin Ribbon Fusion"
+      },
+      {
+        "name": "Castle Town - TensionBow Fusion"
+      },
+      {
+        "name": "Castle Town - Spike Band Fusion"
+      },
+      {
+        "name": "Castle Town - TwistedSwd Fusion"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 1260,
+        "y": 170
+      }
+    ]
+  },
+  {
+    "name": "Chapter 4 - Third Sanctuary - Annoying Dog...?",
+    "sections": [
+      {
+        "name": "CH4: Third Sanctuary - Annoying Dog...?"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 930,
+        "y": 720
+      }
+    ]
+  },
+  {
+    "name": "CH4: Third Sanctuary - Speed Climbing Chest",
+    "sections": [
+      {
+        "name": "CH4: Third Sanctuary - Speed Climbing Chest"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 980,
+        "y": 720
+      }
+    ]
+  },
+  {
+    "name": "CH4: Third Sanctuary - Dark Area Chest",
+    "sections": [
+      {
+        "name": "CH4: Third Sanctuary - Dark Area Chest"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 1030,
+        "y": 720
+      }
+    ]
+  },
+  {
+    "name": "CH4: Third Sanctuary - Titan Defeat",
+    "sections": [
+      {
+        "name": "CH4: Third Sanctuary - Titan Defeat"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 1080,
+        "y": 720
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Complete",
+    "sections": [
+      {
+        "name": "CH3: TV World - Fountain Sealed"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 710,
+        "y": 110
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Couch Cliffs",
+    "sections": [
+      {
+        "name": "CH3: Couch Cliffs - Dust Pile Chest"
+      },
+      {
+        "name": "CH3: Couch Cliffs - Warp Door"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 630,
+        "y": 210
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Board 1 - Loses",
+    "sections": [
+      {
+        "name": "CH3: Lost Shadowguy"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 680,
+        "y": 210
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Board 1 - Board",
+    "sections": [
+      {
+        "name": "CH3: Board 1 - Z-Rank"
+      },
+      {
+        "name": "CH3: Board 1 - C-Rank"
+      },
+      {
+        "name": "CH3: Board 1 - B-Rank"
+      },
+      {
+        "name": "CH3: Board 1 - A-Rank"
+      },
+      {
+        "name": "CH3: Board 1 - S-Rank"
+      },
+      {
+        "name": "CH3: Board 1 - T-Rank"
+      },
+      {
+        "name": "CH3: Board 1 - Extra Key"
+      },
+      {
+        "name": "CH3: Board 1 - Extra Extra Key"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 730,
+        "y": 210
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Board 1 - SWORD 1",
+    "sections": [
+      {
+        "name": "CH3: MANTLE - Out of Bounds Chest"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 780,
+        "y": 210
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Green Room - Vending 1",
+    "sections": [
+      {
+        "name": "CH3: Green Room - Vending Machine 1"
+      },
+      {
+        "name": "CH3: Green Room - Vending Machine 2"
+      },
+      {
+        "name": "CH3: Green Room - Vending Machine 3"
+      },
+      {
+        "name": "CH3: Green Room - Vending Machine 4"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 652,
+        "y": 303
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Green Room - Outside",
+    "sections": [
+      {
+        "name": "CH3: Green Room - Warp Door"
+      },
+      {
+        "name": "CH3: Green Room - Vending Machine 5"
+      },
+      {
+        "name": "CH3: Green Room - Vending Machine 6"
+      },
+      {
+        "name": "CH3: Green Room - Vending Machine 7"
+      },
+      {
+        "name": "CH3: Green Room - Vending Machine 8"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 719,
+        "y": 374
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Green Room - Rambs Gift",
+    "sections": [
+      {
+        "name": "CH3: Green Room - Board 1 Ramb Gift"
+      },
+      {
+        "name": "CH3: Green Room - Board 2 Ramb Gift"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 723,
+        "y": 292
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Green Room - S-Rank Room",
+    "sections": [
+      {
+        "name": "CH3: S-Rank Room - Vending Machine 1"
+      },
+      {
+        "name": "CH3: S-Rank Room - Vending Machine 2"
+      },
+      {
+        "name": "CH3: S-Rank Room - Vending Machine 3"
+      },
+      {
+        "name": "CH3: S-Rank Room - Vending Machine 4"
+      },
+      {
+        "name": "CH3: S-Rank Room - Person Behind Curtain"
+      },
+      {
+        "name": "CH3: S-Rank Room - OddController"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 790,
+        "y": 293
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Green Room - Rank Rooms",
+    "sections": [
+      {
+        "name": "CH3: B-Rank Room - Golden Prize 1"
+      },
+      {
+        "name": "CH3: B-Rank Room - Golden Prize 2"
+      },
+      {
+        "name": "CH3: B-Rank Room - Golden Prize 3"
+      },
+      {
+        "name": "CH3: B-Rank Room - Golden Prize 4"
+      },
+      {
+        "name": "CH3: B-Rank Room - Golden Prize 5"
+      },
+      {
+        "name": "CH3: Recruit Water Cooler"
+      },
+      {
+        "name": "CH3: Lost Water Cooler"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 820,
+        "y": 293
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Board 2 - Board",
+    "sections": [
+      {
+        "name": "CH3: Board 2 - Z-Rank"
+      },
+      {
+        "name": "CH3: Board 2 - C-Rank"
+      },
+      {
+        "name": "CH3: Board 2 - B-Rank"
+      },
+      {
+        "name": "CH3: Board 2 - A-Rank"
+      },
+      {
+        "name": "CH3: Board 2 - S-Rank"
+      },
+      {
+        "name": "CH3: Board 2 - T-Rank"
+      },
+      {
+        "name": "CH3: Board 2 - Extra Photo"
+      },
+      {
+        "name": "CH3: Board 2 - Moss"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 730,
+        "y": 530
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Board 2 - Loses",
+    "sections": [
+      {
+        "name": "CH3: Lost Shuttah"
+      },
+      {
+        "name": "CH3: Lost Pippins"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 680,
+        "y": 530
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Board 2 - Recruits",
+    "sections": [
+      {
+        "name": "CH3: Recruit Shuttah"
+      },
+      {
+        "name": "CH3: Recruit Pippins"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 680,
+        "y": 480
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Board 2 - SWORD 2",
+    "sections": [
+      {
+        "name": "CH3: MANTLE - Northern Light Item"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 780,
+        "y": 530
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - TV World - Loses",
+    "sections": [
+      {
+        "name": "CH3: Lost Shadowguy"
+      },
+      {
+        "name": "CH3: Lost Pippins"
+      },
+      {
+        "name": "CH3: Lost Water Cooler"
+      },
+      {
+        "name": "CH3: Lost Shuttah"
+      },
+      {
+        "name": "CH3: Lost Zapper"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 680,
+        "y": 680
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - TV World - Recruits",
+    "sections": [
+      {
+        "name": "CH3: Recruit Shadowguy"
+      },
+      {
+        "name": "CH3: Recruit Pippins"
+      },
+      {
+        "name": "CH3: Recruit Water Cooler"
+      },
+      {
+        "name": "CH3: Recruit Shuttah"
+      },
+      {
+        "name": "CH3: Recruit Zapper"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 680,
+        "y": 630
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - TV World - TV World Warp",
+    "sections": [
+      {
+        "name": "CH3: TV World - Entrance Warp Door"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 630,
+        "y": 680
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - TV World - Chests",
+    "sections": [
+      {
+        "name": "CH3: TV World - Chest Near Shadowmen"
+      },
+      {
+        "name": "CH3: TV World - Board Puzzle 1 Chest"
+      },
+      {
+        "name": "CH3: TV World - Trash Can 1"
+      },
+      {
+        "name": "CH3: TV World - Trash Can 2"
+      },
+      {
+        "name": "CH3: TV World - Trash Can 3"
+      },
+      {
+        "name": "CH3: TV World - Trash Can 4"
+      },
+      {
+        "name": "CH3: TV World - Trash Can 5"
+      },
+      {
+        "name": "CH3: TV World - Water Cooler Chest"
+      },
+      {
+        "name": "CH3: TV World - Board Puzzle 2 Chest"
+      },
+      {
+        "name": "CH3: TV World - Serious Trashy Chest"
+      },
+      {
+        "name": "CH3: TV World - Bonus Zone Chest 1"
+      },
+      {
+        "name": "CH3: TV World - Bonus Zone Chest 2"
+      },
+      {
+        "name": "CH3: TV World - Bonus Zone Chest 3"
+      },
+      {
+        "name": "CH3: TV World - Chest Outside Green Room"
+      },
+      {
+        "name": "CH3: TV World - TripTicket"
+      },
+      {
+        "name": "CH3: TV World - Man"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 730,
+        "y": 680
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Post-TV-World - MANTLE",
+    "sections": [
+      {
+        "name": "CH3: MANTLE - Defeat"
+      },
+      {
+        "name": "CH3: MANTLE - Susie's Gift"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 650,
+        "y": 880
+      }
+    ]
+  },
+  {
+    "name": "Chapter 3 - Cold Place - Knight Defeat",
+    "sections": [
+      {
+        "name": "CH3: Cold Place - Knight Defeat Item #1"
+      },
+      {
+        "name": "CH3: Cold Place - Knight Defeat Item #2"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Overview",
+        "x": 770,
+        "y": 880
+      }
+    ]
+  }
+]

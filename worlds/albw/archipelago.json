@@ -1,6 +1,6 @@
 {
     "minimum_ap_version": "0.6.3", 
-    "world_version": "0.2.3",
+    "world_version": "0.3.1",
     "authors": ["randomsalience"],
     "version": 7,
     "compatible_version": 7,

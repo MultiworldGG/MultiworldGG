@@ -33,7 +33,7 @@ After following the steps, your game folder should have a `BepInEx` folder conta
 ## Reporting a problem
 
 If you encounter a problem that could possibly be a bug, please report it trough one of the following channels:
-1. File an issue at the repository on [Github](https://github.com/Amphyros/Phoenotopia-Awakening-AP-client/issues)
+1. File an issue at the repository on [GitHub](https://github.com/Amphyros/Phoenotopia-Awakening-AP-client/issues)
 2. Describe your issue in the game thread on the official AP discord.
 3. Post it in the mwgg-support channel in the [Unofficial AP Discord](https://discord.multiworld.gg)
 

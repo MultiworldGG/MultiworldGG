@@ -7,7 +7,13 @@ import tempfile
 import zipfile
 from Utils import local_path
 
+albw_base_id = 6242624000
+
 tmp_path = ""
+
+def get_temp_path():
+    global tmp_path
+    return tmp_path
 
 def setup_lib():
     global tmp_path

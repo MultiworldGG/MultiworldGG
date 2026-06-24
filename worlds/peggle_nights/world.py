@@ -2,6 +2,8 @@ import logging
 
 from typing import Any, Dict, List, Optional, TextIO, Tuple
 
+from rule_builder.rules import Rule, And, Has, Or
+
 from BaseClasses import Item, ItemClassification, Location, Region, Tutorial
 
 from Options import OptionError
@@ -21,7 +23,6 @@ from .data_funcs import (
     location_groups,
     location_names_to_id,
     locations_with_tag,
-    location_access_rule_for,
 )
 
 from .enums import (
@@ -52,7 +53,7 @@ class PeggleNightsWebWorld(WebWorld):
     tutorials: List[Tutorial] = [
         Tutorial(
             "Multiworld Setup Guide",
-            "A guide to setting up the Peggle Nights randomizer connected to a MultiworldGG Multiworld",
+            "A guide to setting up the Peggle Nights randomizer connected to an Archipelago Multiworld",
             "English",
             "setup_en.md",
             "setup/en",
@@ -81,7 +82,7 @@ class PeggleNightsWorld(World):
     item_name_groups = item_groups()
     location_name_groups = location_groups()
 
-    required_client_version: Tuple[int, int, int] = (0, 6, 5)
+    required_client_version: Tuple[int, int, int] = (0, 6, 7)
 
     web = PeggleNightsWebWorld()
 
@@ -117,6 +118,8 @@ class PeggleNightsWorld(World):
     target_score_ratios: Dict[PeggleNightsLevels, float]
 
     # Universal Tracker
+    glitches_item_name: str = PeggleNightsAPItems.OOL.value
+    location_id_to_alias: Dict[int, str]
     ut_can_gen_without_yaml: bool = True
 
     @property
@@ -274,6 +277,7 @@ class PeggleNightsWorld(World):
 
         # Universal Tracker Support
         if self.is_universal_tracker:
+            self.location_id_to_alias = dict()
             self._apply_universal_tracker_passthrough()
 
     def create_regions(self) -> None:
@@ -305,16 +309,18 @@ class PeggleNightsWorld(World):
         if self.goal == PeggleNightsAPGoals.SHADOW_PEGS_FINAL_LEVEL:
             region_menu.connect(
                 region_endgame,
-                rule=lambda state: (
-                    state.has(PeggleNightsAPItems.SHADOW_PEG.value, self.player, self.shadow_pegs_required) and
-                    state.has(f"Level Unlock: {self.selected_goal_level.value}", self.player) and
-                    state.has(PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value, self.player, 4)
+                rule=(
+                    And(
+                        Has(PeggleNightsAPItems.SHADOW_PEG.value, self.shadow_pegs_required),
+                        Has(f"Level Unlock: {self.selected_goal_level.value}"),
+                        Has(PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value, 4)
+                    )
                 )
             )
         elif self.goal == PeggleNightsAPGoals.SHADOW_PEG_HUNT:
             region_menu.connect(
                 region_endgame,
-                rule=lambda state: state.has(PeggleNightsAPItems.SHADOW_PEG.value, self.player, self.shadow_pegs_required)
+                rule=Has(PeggleNightsAPItems.SHADOW_PEG.value, self.shadow_pegs_required)
             )
 
         # Levels
@@ -325,7 +331,7 @@ class PeggleNightsWorld(World):
 
             region_level: Region = Region(f"Level: {level.value}", self.player, self.multiworld)
 
-            level_tag: PeggleNightsAPTags = eval(f"PeggleNightsAPTags.{level.name}_LOCATION")
+            level_tag: PeggleNightsAPTags = getattr(PeggleNightsAPTags, f"{level.name}_LOCATION")
             level_location_names: List[str] = locations_with_tag(level_tag)
 
             location_name: str
@@ -345,39 +351,73 @@ class PeggleNightsWorld(World):
                     region_level,
                 )
 
-                location_access_rule: str = location_access_rule_for(location_name, self.player)
+                location_access_rule: Optional[Rule]
 
                 if "Target Score (Mid)" in location_name:
-                    location_access_rule = location_access_rule.replace(
-                        "999",
-                        str(round((self.maximum_starting_ball_count - 5) / 2))
+                    location_access_rule = Or(
+                        And(
+                            data.requirements,
+                            Has(
+                                PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
+                                round((self.maximum_starting_ball_count - 5) / 2)
+                            )
+                        ),
+                        Has(PeggleNightsAPItems.OOL.value),
                     )
                 elif "Target Score (High)" in location_name:
-                    location_access_rule = location_access_rule.replace(
-                        "999",
-                        str(self.maximum_starting_ball_count - 5)
+                    location_access_rule = Or(
+                        And(
+                            data.requirements,
+                            Has(
+                                PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
+                                self.maximum_starting_ball_count - 5
+                            )
+                        ),
+                        And(
+                            Has(PeggleNightsAPItems.OOL.value),
+                            Has(PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value, 2),
+                            Has(
+                                PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
+                                max((self.maximum_starting_ball_count // 2) - 5, 0)
+                            )
+                        )
                     )
                 elif "Full Clear" in location_name:
-                    location_access_rule = location_access_rule.replace(
-                        "999",
-                        str(self.maximum_starting_ball_count - 5)
+                    location_access_rule = Or(
+                        Has(
+                            PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
+                            self.maximum_starting_ball_count - 5
+                        ),
+                        And(
+                            Has(PeggleNightsAPItems.OOL.value),
+                            Has(
+                                PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
+                                max((self.maximum_starting_ball_count // 2) - 5, 0)
+                            ),
+                        )
                     )
+                else:
+                    location_access_rule = data.requirements
 
-                if location_access_rule != "lambda state: True":
-                    location.access_rule = eval(location_access_rule)
+                if location_access_rule is not None:
+                    self.set_rule(location, location_access_rule)
 
                 region_level.locations.append(location)
 
             if level == self.selected_goal_level:
                 region_menu.connect(
                     region_level,
-                    rule=lambda state, l=level: state.has(f"Level Unlock: {l.value}", self.player) and
-                    state.has(PeggleNightsAPItems.SHADOW_PEG.value, self.player, self.shadow_pegs_required)
+                    rule=(
+                        And(
+                            Has(f"Level Unlock: {level.value}"),
+                            Has(PeggleNightsAPItems.SHADOW_PEG.value, self.shadow_pegs_required)
+                        )
+                    )
                 )
             else:
                 region_menu.connect(
                     region_level,
-                    rule=lambda state, l=level: state.has(f"Level Unlock: {l.value}", self.player)
+                    rule=Has(f"Level Unlock: {level.value}")
                 )
 
             region_level.connect(region_menu)
@@ -541,7 +581,7 @@ class PeggleNightsWorld(World):
         if self.selected_goal_level is not None:
             spoiler_handle.write(f"\n\nGoal Level: {self.selected_goal_level.value}")
 
-        spoiler_handle.write(f"\n\nTarget Scores:\n  {join_string.join([f'{t.value} ({self.target_score_ratios[t]}x): {self.target_scores[t]}' for t in self.target_scores])}")
+        spoiler_handle.write(f"\n\nTarget Scores:\n  {join_string.join([f'{t.value} ({self.target_score_ratios[t]}x): {self.target_scores[t]}' for t in self.target_scores])}\n")
 
     def get_filler_item_name(self) -> str:
         return self.random.choice(self.filler_item_names)
@@ -598,6 +638,18 @@ class PeggleNightsWorld(World):
             self.maximum_starting_ball_count = passthrough["maximum_starting_ball_count"]
             self.useful_item_percentage = passthrough["useful_item_percentage"]
             self.useful_item_weights = passthrough["useful_item_weights"]
+
+            # Location Aliases
+            score_labels: Tuple[str, ...] = ("Low", "Mid", "High")
+
+            level: PeggleNightsLevels
+            scores: List[int]
+            for level, scores in self.target_scores.items():
+                i: int
+                score: int
+                for i, score in enumerate(scores):
+                    location_name: str = f"{level.value} - Target Score ({score_labels[i]})"
+                    self.location_id_to_alias[self.location_name_to_id[location_name]] = f"{score:,}"
 
     def _generate_filler_useful_item_pool(self, count: int, useful_item_pool: List[str]) -> List[str]:
         useful_items_needed: int = round(self.useful_item_percentage / 100 * count)

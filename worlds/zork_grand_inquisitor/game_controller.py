@@ -706,6 +706,10 @@ class GameController:
         if self._read_game_state_value_for(14568) < 8:
             self._write_game_state_value_for(14568, 8)
 
+        # Zork Rocks Blast Locker ASAP
+        if self._read_game_state_value_for(11767) > 0 and self._read_game_state_value_for(11769) == 1:
+            self._write_game_state_value_for(11767, 5)
+
     def _apply_permanent_game_flags(self) -> None:
         self._write_game_flags_value_for(13597, 2)  # Monastery Vent
         self._write_game_flags_value_for(9437, 2)  # Monastery Exhibit Door to Outside
@@ -897,7 +901,7 @@ class GameController:
                 set(condition_data.location_condition) & self.completed_locations
             )
 
-            if len(location_condition_intersection):
+            if len(location_condition_intersection) == len(condition_data.location_condition):
                 grant_location: bool = True
 
                 item: ZorkGrandInquisitorItems
@@ -1852,10 +1856,6 @@ class GameController:
                     to_filter_inventory_items.add(item)
             elif item == ZorkGrandInquisitorItems.MEAD_LIGHT:
                 if 105 in inventory_item_values:
-                    to_filter_inventory_items.add(item)
-                elif self._read_game_state_value_for(17620) > 0:
-                    to_filter_inventory_items.add(item)
-                elif self._read_game_state_value_for(4034) == 1:
                     to_filter_inventory_items.add(item)
             elif item == ZorkGrandInquisitorItems.OLD_SCRATCH_CARD:
                 if 32 in inventory_item_values:

@@ -86,7 +86,6 @@ class GameController:
     # Data
     target_score_locations_by_level: Optional[Dict[PeggleDeluxeLevels, Dict[int, str]]]
     useful_items: Optional[Dict[PeggleDeluxeLevels, Dict[PeggleDeluxeAPUsefulItems, int]]]
-    can_modify_ball_count: bool
     can_modify_fever_meter: bool
 
     def __init__(self, logger: logging.Logger = None) -> None:
@@ -152,7 +151,6 @@ class GameController:
 
         self.target_score_locations_by_level = None
         self.useful_items = None
-        self.can_modify_ball_count = True
         self.can_modify_fever_meter = True
 
     def log(self, message) -> None:
@@ -289,7 +287,6 @@ class GameController:
 
         self.target_score_locations_by_level = None
         self.useful_items = None
-        self.can_modify_ball_count = True
         self.can_modify_fever_meter = True
 
     def _refresh_game_state(self) -> None:
@@ -330,19 +327,13 @@ class GameController:
         ]
 
         if self.game_state_context in return_contexts:
-            self.can_modify_ball_count = True
             self.can_modify_fever_meter = True
 
             return
 
         if self.game_state_current_level in self.selected_levels or self.game_state_current_level == self.selected_goal_level:
             # Starting Ball Count
-            if self.game_state_current_score > 0:
-                self.can_modify_ball_count = True
-
-            if self.can_modify_ball_count and self.game_state_current_score == 0:
-                self.can_modify_ball_count = False
-
+            if self.game_state_level_state == PeggleDeluxeLevelStates.MASTER_SELECTION:
                 ball_count: int = 5
                 ball_count += self.received_items.get(PeggleDeluxeAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value, 0)
 
@@ -354,8 +345,6 @@ class GameController:
                 self.can_modify_fever_meter = True
 
             if self.can_modify_fever_meter and self.game_state_orange_pegs_remaining == 25:
-                self.can_modify_ball_count = False
-
                 if self.game_state_current_level != self.selected_goal_level:
                     useful_item_count: int = self.useful_items[self.game_state_current_level][
                         PeggleDeluxeAPUsefulItems.FEVER_METER_BONUS
@@ -414,6 +403,9 @@ class GameController:
                 return
             elif self.received_items[PeggleDeluxeAPItems.GOLD_PEG.value] < self.option_gold_pegs_required:
                 return
+
+        if self.game_state_current_character is None:
+            return
 
         character_unlock_item: str = f"Master Unlock: {self.game_state_current_character.value}"
 

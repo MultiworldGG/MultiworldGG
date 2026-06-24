@@ -3,7 +3,7 @@ from ..options import EnableOrbsanity
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .. import JakAndDaxterWorld
-from ..rules import can_free_scout_flies, can_fight, can_reach_orbs_level
+from ..rules import can_fight, can_reach_orbs_level
 
 
 def build_regions(level_name: str, world: "JakAndDaxterWorld") -> JakAndDaxterRegion:
@@ -17,7 +17,7 @@ def build_regions(level_name: str, world: "JakAndDaxterWorld") -> JakAndDaxterRe
     first_room_upper = JakAndDaxterRegion("First Chamber (Upper)", player, multiworld, level_name, 21)
 
     first_room_lower = JakAndDaxterRegion("First Chamber (Lower)", player, multiworld, level_name, 0)
-    first_room_lower.add_fly_locations([262193], access_rule=lambda state: can_free_scout_flies(state, player))
+    first_room_lower.add_fly_locations([262193], access_rule=lambda state: world.can_free_scout_flies(state, player))
 
     first_room_orb_cache = JakAndDaxterRegion("First Chamber Orb Cache", player, multiworld, level_name, 22)
 
@@ -26,7 +26,7 @@ def build_regions(level_name: str, world: "JakAndDaxterWorld") -> JakAndDaxterRe
                                              state.has_all(("Jump Dive", "Double Jump"), player))
 
     first_hallway = JakAndDaxterRegion("First Hallway", player, multiworld, level_name, 10)
-    first_hallway.add_fly_locations([131121], access_rule=lambda state: can_free_scout_flies(state, player))
+    first_hallway.add_fly_locations([131121], access_rule=lambda state: world.can_free_scout_flies(state, player))
 
     # This entire room is accessible with floating platforms and single jump.
     second_room = JakAndDaxterRegion("Second Chamber", player, multiworld, level_name, 28)
@@ -36,7 +36,7 @@ def build_regions(level_name: str, world: "JakAndDaxterWorld") -> JakAndDaxterRe
     second_room.add_fly_locations([49, 65585], access_rule=lambda state: state.has("Jump Dive", player))
 
     # This is the scout fly on the way to the pipe cell, requires normal breaking moves.
-    second_room.add_fly_locations([196657], access_rule=lambda state: can_free_scout_flies(state, player))
+    second_room.add_fly_locations([196657], access_rule=lambda state: world.can_free_scout_flies(state, player))
 
     # This orb vent and scout fly are right next to each other, can be gotten with blue eco and the floating platforms.
     second_room.add_fly_locations([393265])
@@ -47,7 +47,8 @@ def build_regions(level_name: str, world: "JakAndDaxterWorld") -> JakAndDaxterRe
     center_complex.add_cell_locations([51])
 
     color_platforms = JakAndDaxterRegion("Color Platforms", player, multiworld, level_name, 6)
-    color_platforms.add_cell_locations([44], access_rule=lambda state: can_fight(state, player))
+    # This power cell can be reached with only a Single Jump by taking damage once to start at the left platform.
+    color_platforms.add_cell_locations([44])
 
     quick_platforms = JakAndDaxterRegion("Quick Platforms", player, multiworld, level_name, 3)
 
@@ -69,14 +70,22 @@ def build_regions(level_name: str, world: "JakAndDaxterWorld") -> JakAndDaxterRe
     # You can slide to the bottom of the city, but if you spawn down there, you have no momentum from the slide.
     # So you need some kind of jump to reach this cell.
     second_slide = JakAndDaxterRegion("Second Slide", player, multiworld, level_name, 31)
-    second_slide.add_cell_locations([46], access_rule=lambda state:
-                                    state.has_any(("Double Jump", "Jump Kick"), player)
-                                    or state.has_all(("Punch", "Punch Uppercut"), player))
+    if options.lost_precursor_city_single_jump_slide_tube_climb:
+        # It is possible to jump to the platform with only Single Jump by gathering enough momentum and jumping late.
+        second_slide.add_cell_locations([46])
+    else:
+        second_slide.add_cell_locations([46], access_rule=lambda state:
+                                        state.has_any(("Double Jump", "Jump Kick"), player)
+                                        or state.has_all(("Punch", "Punch Uppercut"), player))
 
     # If you can enter the helix room, you can jump or fight your way to the top. But you need some kind of movement
     # to enter it in the first place.
     helix_room = JakAndDaxterRegion("Helix Chamber", player, multiworld, level_name, 30)
-    helix_room.add_cell_locations([50], access_rule=lambda state:
+    if options.lost_precursor_city_single_jump_slide_tube_climb:
+        # It is possible (but hard) to escape with only Single Jump unlocked.
+        helix_room.add_cell_locations([50])
+    else:
+        helix_room.add_cell_locations([50], access_rule=lambda state:
                                   state.has("Double Jump", player)
                                   or can_fight(state, player))
 
@@ -115,13 +124,19 @@ def build_regions(level_name: str, world: "JakAndDaxterWorld") -> JakAndDaxterRe
     capsule_room.connect(main_area, rule=lambda state:              # Chamber goes back to surface.
                          state.has("Jump Dive", player))            # (Assume one-way for sanity.)
 
-    second_slide.connect(helix_room, rule=lambda state:                           # As stated above, you need to jump
-                         state.has_any(("Double Jump", "Jump Kick"), player)      # across the dark eco pool before
-                         or state.has_all(("Punch", "Punch Uppercut"), player))   # you can climb the helix room.
+    if options.lost_precursor_city_single_jump_slide_tube_climb:
+        # It is possible to jump to the platform with only Single Jump by gathering enough momentum and jumping late.
+        second_slide.connect(helix_room)
+        # It's possible to get back with only Single Jump by taking damage once.
+        helix_room.connect(quick_platforms)
+    else:
+        second_slide.connect(helix_room, rule=lambda state:                           # As stated above, you need to jump
+                             state.has_any(("Double Jump", "Jump Kick"), player)      # across the dark eco pool before
+                             or state.has_all(("Punch", "Punch Uppercut"), player))   # you can climb the helix room.
 
-    helix_room.connect(quick_platforms, rule=lambda state:          # Escape to get back to here.
-                       state.has("Double Jump", player)             # Capsule is a convenient exit to the level.
-                       or can_fight(state, player))
+        helix_room.connect(quick_platforms, rule=lambda state:          # Escape to get back to here.
+                           state.has("Double Jump", player)             # Capsule is a convenient exit to the level.
+                           or can_fight(state, player))
 
     world.level_to_regions[level_name].append(main_area)
     world.level_to_regions[level_name].append(first_room_upper)

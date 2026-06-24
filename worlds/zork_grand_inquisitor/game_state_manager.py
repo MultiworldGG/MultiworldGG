@@ -84,23 +84,23 @@ class GameStateManager:
 
     @property
     def zvision_address(self) -> int:
-        return self.render_manager_struct_address + 0x0
+        return self.render_manager_struct_address + 0x1C
 
     @property
     def render_type_address(self) -> int:
-        return self.render_manager_struct_address + 0x10
+        return self.render_manager_struct_address + 0x28
 
     @property
     def panorama_reversed_address(self) -> int:
-        return self.render_manager_struct_address + 0x1C
+        return self.render_manager_struct_address + 0x40
 
     def open_process_handle(self) -> bool:
         try:
             self.process = Pymem(self.process_name)
             self.is_process_running = True
 
-            self.script_manager_struct_address = self._resolve_address(0x5276600, (0xC8, 0x0))
-            self.render_manager_struct_address = self._resolve_address(0x5276600, (0xD0, 0x120))
+            self.script_manager_struct_address = self._resolve_address(0x6CE45F8, (0xC0, 0x0))
+            self.render_manager_struct_address = self._resolve_address(0x6CE45F8, (0xC8, 0x3F8))
         except Exception:
             return False
 
@@ -260,7 +260,7 @@ class GameStateManager:
 
     def set_zvision(self, is_zvision: bool) -> Optional[bool]:
         if self.is_process_running:
-            self.process.write_int(self.zvision_address, 320 if is_zvision else 640)
+            self.process.write_float(self.zvision_address, 15.5 if is_zvision else 171.5)
 
             return True
 

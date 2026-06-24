@@ -9,15 +9,12 @@ Probably yea
 
 ## WHY IS LOCATION X NOT RANDOMIZED??? I'LL SUE YOU!
 I made this as a proof of concept which I can expand upon.
-**Sunflower Road, the cave leading to the East bridge and anything beyond that are not included in the mod YET**.
-Currently, only the first section of the game is included. Obtaining the Strange Urn past the Century Toad is considered the goal.
-
-## Can I randomize the Wooden Bat as well?
-Not yet, as the randomizer logic is currently very basic. I definitely will implement this later.
+**Moonlight Ravine and the big gap on the Kingdom Bridge are considered out of bounds. Anything beyond that are not included in the mod YET**.
+Considering this limitation, the current goal of the randomizer is to defeat Birdy and the Sand Drake boss at the end of the Ouroboros Hideout.
 
 ## What other adjustments have been made to the Base Game?
 * Some cutscenes have been removed or changed.
-* Bart's head is included in the randomizer pool. So story progression is pretty much disabled
+* A story management system is implemented so state dependant locations like Panselo can be accessed in it's pre-abduction state even after defeating the Slargummy boss
 
 ## When will Star Illiad release?
 I'll tell you when you finish a run of this randomizer and tell me about any issues you might have encountered.

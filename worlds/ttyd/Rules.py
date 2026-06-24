@@ -143,6 +143,10 @@ def _build_single_lambda(req: typing.Dict, world: "TTYDWorld") -> typing.Callabl
 
 def get_tattle_rules_dict() -> dict[str, typing.List[int]]:
     return {
+        "Tattle: Goomba": [78780047],
+        "Tattle: Paragoomba": [78780047],
+        "Tattle: Spiky Goomba": [78780047],
+        "Tattle: Spinia": [78780047],
         "Tattle: Spania": [78780145, 78780267, 78780638],
         "Tattle: Fuzzy": [78780170, 78780296, 78780638],
         "Tattle: Koopa Troopa": [78780193, 78780170],
@@ -284,6 +288,13 @@ def get_random_enemy_tattle_rules_dict(world: "TTYDWorld") -> dict[str, list[int
 
         # fallback to base rule if random finds nothing
         result[key] = matching_locations if matching_locations else list(base_rules[key])
+
+        if key == "Tattle: Mini-Yux":
+            result[key] = result["Tattle: Yux"]
+        elif key == "Tattle: Mini-Z-Yux":
+            result[key] = result["Tattle: Z-Yux"]
+        elif key == "Tattle: Mini-X-Yux":
+            result[key] = result["Tattle: X-Yux"]
 
     return result
 

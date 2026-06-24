@@ -12,6 +12,7 @@ class PeggleNightsAPItems(enum.Enum):
     CHIPPED_PEG = "Chipped Peg"
     DENTED_PEG = "Dented Peg"
     HOLLOW_PEG = "Hollow Peg"
+    OOL = "OOL"
     PROGRESSIVE_FEVER_METER = "Progressive Fever Meter Threshold"
     PROGRESSIVE_STARTING_BALL_INCREASE = "Progressive Starting Ball Increase"
     RUSTY_PEG = "Rusty Peg"
@@ -122,6 +123,7 @@ class PeggleNightsAPTags(enum.Enum):
     NOWHERE_STAIRS_LOCATION = "3-5 Nowhere Stairs Location"
     OLD_FRIENDS_ITEM = "6-4 Old Friends Item"
     OLD_FRIENDS_LOCATION = "6-4 Old Friends Location"
+    OOL_ITEM = "OOL Item"
     ORANGE_PEG_COMBO_LOCATION = "Orange Peg Combo Location"
     OUROBOROS_ITEM = "11-2 Ouroboros Item"
     OUROBOROS_LOCATION = "11-2 Ouroboros Location"
@@ -306,3 +308,4 @@ class PeggleNightsLevelStates(enum.Enum):
     BEFORE_SHOT = 1
     SHOT_ACTIVE = 2
     AFTER_SHOT = 3
+    CHARACTER_SELECT = 9

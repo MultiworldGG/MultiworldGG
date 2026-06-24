@@ -46,16 +46,25 @@ class NiceItems(Choice):
     """Choose how to handle Nice Items.
     vanilla: Nice Items are obtained as upgrades from Mother Maiamai.
     shuffled: Freely shuffles two progressive copies of each Ravio Item.
-    off: Removes Nice Items from the game."""
+    off: Removes Nice Items from the game.
+    upgrades: Shuffles upgrades for each Ravio item, which upgrade your item once you get it."""
     display_name = "Nice Items"
     option_vanilla = 0
     option_shuffled = 1
     option_off = 2
+    option_upgrades = 3
     default = 0
 
-class SuperItems(Toggle):
-    """This shuffles a second progressive copy of the Lamp and Net into the general item pool."""
+class SuperItems(Choice):
+    """Choose how to handle Super Items.
+    shuffled: Shuffles a second progressive copy of the Lamp and Net into the general item pool.
+    off: Removes Super Items from the game.
+    upgrades: Shuffles upgrades for the Lamp and Net, which upgrade your item once you get it."""
     display_name = "Super Items"
+    option_shuffled = 0
+    option_off = 1
+    option_upgrades = 2
+    default = 1
 
 class ShuffleMaiamaiRewards(Toggle):
     """Choose whether to put items on Mother Maiamai. Has no effect if `nice_items` is set to vanilla.
@@ -70,6 +79,40 @@ class MaiamaiLimit(Range):
     range_start = 0
     range_end = 100
     default = 50
+
+class SmallKeys(Choice):
+    """Choose how to randomize small keys.
+    own_dungeons: Small keys are found in their own dungeons.
+    anywhere: (Keyos) Small keys can be found in any world.
+    remove: (Keysy) Small keys and the doors they lock are removed from the game."""
+    display_name = "Small Keys"
+    option_own_dungeons = 0
+    option_anywhere = 1
+    alias_keyos = 1
+    option_remove = 2
+    alias_keysy = 2
+
+class BigKeys(Choice):
+    """Choose how to randomize big keys.
+    own_dungeons: Big keys are found in their own dungeons.
+    anywhere: (Keyos) Big keys can be found in any world.
+    remove: (Keysy) Big keys and the doors they lock are removed from the game."""
+    display_name = "Big Keys"
+    option_own_dungeons = 0
+    option_anywhere = 1
+    alias_keyos = 1
+    option_remove = 2
+    alias_keysy = 2
+
+class Compasses(Choice):
+    """Choose how to randomize compasses.
+    own_dungeons: Compasses are found in their own dungeons.
+    anywhere: Compasses can be found in any world.
+    startwith: Start with the compass to every dungeon."""
+    display_name = "Compasses"
+    option_own_dungeons = 0
+    option_anywhere = 1
+    option_startwith = 2
 
 class LampAndNetAsWeapons(Toggle):
     """Treat the base Lamp and Net as damage-dealing weapons?
@@ -197,14 +240,6 @@ class PurplePotionBottles(Toggle):
     """Fills all Empty Bottles with a free Purple Potion."""
     display_name = "Purple Potion Bottles"
 
-class Keysy(Choice):
-    """This setting removes keys and locked doors from dungeons if enabled."""
-    display_name = "Keysy"
-    option_off = 0
-    option_small = 1
-    option_big = 2
-    option_all = 3
-
 @dataclass
 class ALBWOptions(PerGameCommonOptions):
     death_link: DeathLink
@@ -217,6 +252,9 @@ class ALBWOptions(PerGameCommonOptions):
     super_items: SuperItems
     shuffle_maiamai_rewards: ShuffleMaiamaiRewards
     maiamai_limit: MaiamaiLimit
+    small_keys: SmallKeys
+    big_keys: BigKeys
+    compasses: Compasses
     lamp_and_net_as_weapons: LampAndNetAsWeapons
     no_progression_enemies: NoProgressionEnemies
     assured_weapon: AssuredWeapon
@@ -235,7 +273,6 @@ class ALBWOptions(PerGameCommonOptions):
     chest_size_matches_contents: ChestSizeMatchesContents
     treacherous_tower_floors: TreacherousTowerFloors
     purple_potion_bottles: PurplePotionBottles
-    keysy: Keysy
     start_inventory_from_pool: StartInventoryPool
 
     @classmethod
@@ -253,7 +290,6 @@ def create_randomizer_settings(options: ALBWOptions) -> albwrandomizer.Settings:
     settings.shuffle_maiamai_rewards = bool(options.shuffle_maiamai_rewards.value)
     settings.maiamai_limit = options.maiamai_limit.value
     settings.maiamai_madness = bool(options.maiamai_mayhem.value)
-    settings.super_items = bool(options.super_items.value)
     settings.lamp_and_net_as_weapons = bool(options.lamp_and_net_as_weapons.value)
     settings.ravios_shop = albwrandomizer.RaviosShop.Open
     settings.bow_of_light_in_castle = bool(options.bow_of_light_in_castle.value)
@@ -267,10 +303,12 @@ def create_randomizer_settings(options: ALBWOptions) -> albwrandomizer.Settings:
     settings.boots_in_shop = False
     settings.assured_weapon = bool(options.assured_weapon.value)
     settings.chest_size_matches_contents = bool(options.chest_size_matches_contents.value)
+    settings.change_freestanding_models = False
     settings.minigames_excluded = bool(options.minigames_excluded.value)
     settings.skip_big_bomb_flower = bool(options.skip_big_bomb_flower.value)
     settings.treacherous_tower_floors = options.treacherous_tower_floors.value
     settings.purple_potion_bottles = bool(options.purple_potion_bottles.value)
+    settings.start_with_compasses = options.compasses.value == Compasses.option_startwith
     settings.night_mode = False
     settings.user_exclusions = set()
 
@@ -296,6 +334,15 @@ def create_randomizer_settings(options: ALBWOptions) -> albwrandomizer.Settings:
         settings.nice_items = albwrandomizer.NiceItems.Shuffled
     elif options.nice_items == NiceItems.option_off:
         settings.nice_items = albwrandomizer.NiceItems.Off
+    elif options.nice_items == NiceItems.option_upgrades:
+        settings.nice_items = albwrandomizer.NiceItems.Upgrades
+
+    if options.super_items == SuperItems.option_shuffled:
+        settings.super_items = albwrandomizer.SuperItems.Shuffled
+    elif options.super_items == SuperItems.option_off:
+        settings.super_items = albwrandomizer.SuperItems.Off
+    elif options.super_items == SuperItems.option_upgrades:
+        settings.super_items = albwrandomizer.SuperItems.Upgrades
 
     if options.initial_crack_state == InitialCrackState.option_closed:
         settings.cracks = albwrandomizer.Cracks.Closed
@@ -328,13 +375,13 @@ def create_randomizer_settings(options: ALBWOptions) -> albwrandomizer.Settings:
     elif options.weather_vanes == WeatherVanes.option_all:
         settings.weather_vanes = albwrandomizer.WeatherVanes.All
 
-    if options.keysy == Keysy.option_off:
+    if options.small_keys != SmallKeys.option_remove and options.big_keys != BigKeys.option_remove:
         settings.keysy = albwrandomizer.Keysy.Off
-    elif options.keysy == Keysy.option_small:
+    elif options.small_keys == SmallKeys.option_remove and options.big_keys != BigKeys.option_remove:
         settings.keysy = albwrandomizer.Keysy.SmallKeysy
-    elif options.keysy == Keysy.option_big:
+    elif options.small_keys != SmallKeys.option_remove and options.big_keys == BigKeys.option_remove:
         settings.keysy = albwrandomizer.Keysy.BigKeysy
-    elif options.keysy == Keysy.option_all:
+    elif options.small_keys == SmallKeys.option_remove and options.big_keys == BigKeys.option_remove:
         settings.keysy = albwrandomizer.Keysy.AllKeysy
     
     if options.trials_required == 0:

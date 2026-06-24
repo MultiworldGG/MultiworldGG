@@ -1264,6 +1264,43 @@
         ],
         "release_date": 2018
     },
+    "DELTARUNE": {
+        "igdb_id": "171233",
+        "world_name": "DELTARUNE",
+        "igdb_name": "Deltarune",
+        "us_rating": [],
+        "player_perspectives": [
+            "Bird view / Isometric"
+        ],
+        "genres": [
+            "Music",
+            "Puzzle",
+            "Role-playing (RPG)",
+            "Turn-based strategy (TBS)",
+            "Adventure",
+            "Indie"
+        ],
+        "themes": [
+            "Action",
+            "Comedy",
+            "Drama",
+            "Mystery"
+        ],
+        "keywords": [
+            "2d",
+            "bullet hell",
+            "pixel art",
+            "pixel graphics",
+            "dog",
+            "xbox controller support for pc",
+            "steam cloud",
+            "dualshock 4 support for pc",
+            "controller support",
+            "steam families",
+            "dualsense support for pc"
+        ],
+        "release_date": 2025
+    },
     "Diddy Kong Racing": {
         "igdb_id": "2723",
         "world_name": "Diddy Kong Racing",

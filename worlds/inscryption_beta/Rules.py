@@ -196,16 +196,13 @@ class InscryptionRules:
     
     def bypass_grizzly_requirements(self, state: CollectionState, boss_number: int) -> bool:
         if self.world.options.randomize_challenges == RandomizeChallenges.option_randomize and \
-            not state.has("Progressive Grizzlies", self.player, boss_number):
+            not state.has("Progressive Grizzlies", self.player, boss_number) and \
+            not self.world.options.randomize_nodes:
             required_count = boss_number - state.count("Progressive Grizzlies", self.player)
             if required_count == 1:
-                return state.has_any(["Dagger", "Angler Hook"], self.player)
-            elif not self.world.options.randomize_nodes:
-                return state.has("Dagger", self.player)
-            elif required_count == 2:
-                return state.has("Dagger", self.player) and state.has_any(["Angler Hook", "Backpack Node"], self.player)
-            elif required_count == 3:
-                return state.has_all(["Dagger", "Backpack Node"], self.player)
+                return state.has_all(["Dagger", "Angler Hook"], self.player) or state.has("Backpack Node", self.player)
+            else:
+                return state.has("Backpack Node", self.player)
         return True
 
     def has_later_woodlands_requirements(self, state: CollectionState) -> bool:
@@ -230,7 +227,7 @@ class InscryptionRules:
         elif self.world.options.randomize_nodes or \
             self.world.options.randomize_challenges != RandomizeChallenges.option_disable:
             return self.act1_battle_requirements(state, 4 + extra_points, True, False) and \
-                self.has_later_woodlands_requirements(state) and self.bypass_grizzly_requirements(state, 1)
+                self.has_later_woodlands_requirements(state)
         return True
 
     def has_wetlands_requirements(self, state: CollectionState) -> bool:

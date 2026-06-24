@@ -56,7 +56,7 @@ _steve:
     ADDIU T3, T3, 0x0001
     BNE T2, T3, _end
     NOP
-    LA A2, 0x801F1000
+    LA A2, 0x80200000
     ADDIU A0, R0, 0x50
     JAL 0x802D6554 ;print_text
     ADDIU A1, R0, 0x50
@@ -142,7 +142,7 @@ _star:
 .endarea
 .close
 
-.create "move_patch", 0x801F1100 ;hooks into set_mario_action
+.create "move_patch", 0x80200100 ;hooks into set_mario_action
 .area 0x500
 _start_move_checks:
     SW A0, 0x0028(SP)

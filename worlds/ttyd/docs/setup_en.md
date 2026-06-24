@@ -1,4 +1,4 @@
-# Setup Guide for Paper Mario: The Thousand-Year Door MultiworldGG
+# Setup Guide for Paper Mario: The Thousand-Year Door Archipelago
 
 ## Required Software
 
@@ -14,14 +14,13 @@ Place the TTYD apworld in the `custom_worlds` folder of your Archipelago install
 
 ## Dolphin Configuration
 
-In your TTYD Properties (Accessed by Right Clicking on the game in Dolphin and selecting Properties), change the following settings:
-- In Game Config > General, make sure Enable Dual Core is unchecked
-- In Game Config > Graphics, set your Backend to either OpenGL or Vulkan (Direct3D can often cause errors that may lead to crashes)
-
 In your Dolphin settings (Accessed by going to Options > Configuration up top), change the following settings:
 
-- In Advanced > Clock Override, make sure that Enable Emulated CPU Clock Override is unchecked
-- In Advanced > Memory Override, make sure that Enable Emulated Memory Size Override is unchecked
+- In Game Config > General, make sure Enable Dual Core is unchecked
+- In Game Config > Graphics, set your Backend to either OpenGL or Vulkan (Direct3D can often cause errors that may lead to crashes)
+- In Game Config > Advanced, make sure that Enable Emulated CPU Clock Override is unchecked
+- In Game Config > Advanced, check 'Enable Emulated Memory Size Override' and set 'MEM1' to 64 MB. This is required for the mod's expanded memory usage. On Windows the Archipelago client sets this for you automatically every time it launches. On macOS/Linux, or if you do not use auto-launch when playing, this setting must be enabled manually.
+- In Game Config > Advanced, make sure Enable MMU is checked. This is required, the game will not boot correctly without it. On Windows the Archipelago client enables this for you automatically every time it launches. On macOS/Linux, or if you do not use auto-launch when playing, this setting must be enabled manually.
 
 ## Configuring your YAML file
 
@@ -58,7 +57,7 @@ When you patch the game for the first time, it will ask you for an `.iso` file t
 The client will open and the game will launch automatically if everything was done correctly.
 
 ### Hosting a game
-Any `.zip` file you generate can be uploaded [here](https://multiworld.gg/uploads) to create a room, which you can join in your client.
+Any `.zip` file you generate can be uploaded [here](/uploads) to create a room, which you can join in your client.
 
 
 

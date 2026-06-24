@@ -1029,17 +1029,17 @@
         "category": "base", "logsanity": true, "address": 1085039155, "name": "Ship Log: Frozen Shuttle 1 - Identify",
         "region": "Space", "requires": [ { "item": "Translator (Other)" } ] // text wheel just outside the shuttle, on Interloper surface
     },
-    {
+    { // text wheel inside the shuttle, read by recalling it to ET's gravity cannon, which requires spending time outside your ship to move the orb
         "category": "base", "logsanity": true, "address": 1085039156, "name": "Ship Log: Frozen Shuttle 2 - Energy Readings",
-        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Other)" } ] // text wheel inside the shuttle, read by recalling to ET
+        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Other)" }, { "item": "Spacesuit" } ]
     },
     {
         "category": "base", "logsanity": true, "address": 1085039157, "name": "Ship Log: Frozen Shuttle 3 - Stayed",
         "region": "Space", "requires": [ { "item": "Translator (Other)" } ] // text wheel just outside the shuttle, on Interloper surface
     },
-    {
+    { // text wheel inside the shuttle, read by recalling it to ET's gravity cannon, which requires spending time outside your ship to move the orb
         "category": "base", "logsanity": true, "address": 1085039158, "name": "Ship Log: Frozen Shuttle 4 - Lost Contact",
-        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Other)" } ] // text wheel inside the shuttle, read by recalling to ET
+        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Other)" }, { "item": "Spacesuit" } ]
     },
     {
         "category": "base", "logsanity": true, "address": 1085039159, "name": "Ship Log: Ruptured Core 1 - Missing Crew",
@@ -1225,9 +1225,7 @@
     },
     {
         "category": "dlc", "address": 1085040014, "name": "DW: Starlit Cove Upper Tower Floors",
-        "region": "Starlit Cove", "requires": [
-            { "item": "Dream Totem Patch" } // project dock w/ walkway to lower tower entrance
-        ]
+        "region": "Starlit Cove Upper Tower Floors", "requires": []
     },
     {
         "category": "dlc", "address": 1085040015, "name": "DW: Endless Canyon Mural",

@@ -183,6 +183,7 @@ def lobby_create():
             return redirect(url_for('lobby_create'))
 
         meta = get_meta(request.form, race)
+        meta["host_display_name"] = creator_name
 
         lobby = Lobby(
             title=title,

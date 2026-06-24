@@ -110,6 +110,7 @@ class CourseType(IntEnum):
     RACE = 0
     BATTLE = 1
     CEREMONY = 2
+    MENU = 3
 
 class Course(NamedTuple):
     name: str = ""
@@ -142,16 +143,17 @@ RACE_COURSES = [
 ]
 
 COURSES = RACE_COURSES + [
-    # Battle courses:
     Course("Cookie Land", 0x3a, CourseType.BATTLE),
     Course("Pipe Plaza", 0x3b, CourseType.BATTLE),
     Course("Block City", 0x36, CourseType.BATTLE),
     Course("Nintendo Gamecube", 0x35, CourseType.BATTLE),
     Course("Luigi's Mansion", 0x34, CourseType.BATTLE),
     Course("Tilt-A-Kart", 0x38, CourseType.BATTLE),
-    # Award Ceremony
+    
     Course("Award Ceremony", 0x44, CourseType.CEREMONY),
+    Course("Menu", 0, CourseType.MENU),
 ]
+
 
 class Modes(IntEnum):
     TIMETRIAL = 1
@@ -168,28 +170,41 @@ class Item(NamedTuple):
     short_name: str
     usefulness: int = 0
     weight_table: list[int] = []
+    guaranteed_position: int = 0
+    is_boost_item: bool = False
+    no_first_place: bool = False
+
+    def get_weight(self, rank: int, frantic: int) -> int:
+        if self.no_first_place and rank == 0:
+            return 0
+        return int((self.weight_table[rank] * (100 - frantic) + 100 * frantic) / 100)
+
+    def is_guaranteened(self, rank: int, frantic: int) -> bool:
+        if self.no_first_place and rank == 0:
+            return False
+        return rank >= round(self.guaranteed_position * (1 - frantic / 100))
 
 ITEMS = [
-    Item(0, "Green Shell", "GrSh",          2, [ 90,  50,  25,  10,   1,   1,   1,   1]),
-    Item(1, "Bowser's Shell", "BoSh",       3, [ 30,  60, 100, 100, 100,  90,  40,   1]),
-    Item(2, "Red Shell", "ReSh",            3, [ 10,  55,  70,  70,  70,  50,  40,  20]),
-    Item(3, "Banana", "Ba",                 1, [ 70,  35,  15,   5,   1,   1,   1,   1]),
-    Item(4, "Giant Banana", "GBa",          2, [120, 100,  90,  60,  30,   1,   1,   1]),
-    Item(5, "Mushroom", "Mu",               4, [  1,  40,  65,  75,  65,  35,  10,  10]),
-    Item(6, "Star", "St",                   5, [  1,   1,   1,  10,  20,  30,  40,  40]),
-    Item(7, "Chain Chomp", "CC",            4, [  0,   0,   1,   3,  20,  60, 130, 180]),
-    Item(8, "Bob-omb", "Bo",                1, [ 10,  70, 100, 100, 100,  90,  40,   0]),
-    Item(10, "Lightning", "Li",             3, [  0,   0,   1,   1,   3,  10,  20,  30]),
-    Item(11, "Yoshi Egg", "Eg",             4, [ 50,  70,  80,  80,  80,  70,  60,  40]),
-    Item(12, "Golden Mushroom", "GMu",      6, [  0,   3,  10,  30,  50,  80, 100, 120]),
-    Item(13, "Spiny Shell", "SpSh",         0, [  0,   0,   5,  10,  10,  20,  20,  20]),
-    Item(14, "Heart", "He",                 4, [  1,   1,   3,  10,  30,  90, 110, 130]),
-    Item(15, "Fake Item", "FI",             0, [ 30,  20,  10,   0,   0,   0,   0,   1]),
-    Item(17, "Triple Green Shells", "3GS",  3, [ 20,  50, 100, 100, 100,  90,  40,   1]),
-    Item(18, "Triple Mushrooms", "3Mu",     6, [  1,   1,  10,  20,  35,  50,  70,  90]),
-    Item(19, "Triple Red Shells", "3RS",    4, [  5,  40,  60,  70,  70,  50,  50,  30]),
-    Item(21, "Fireballs", "Fi",             2, [ 30,  70, 100, 100, 100,  90,  40,   1]),
-    Item(20, "None", "",                    0, [  0,   0,   0,   0,   0,   0,   0,   0]),
+    Item(0, "Green Shell", "GrSh",          2, [ 90,  50,  25,  10,   0,   0,   0,   0], 0),
+    Item(1, "Bowser's Shell", "BoSh",       3, [ 30,  60, 100, 100, 100,  90,  40,   0], 2),
+    Item(2, "Red Shell", "ReSh",            3, [ 10,  55,  70,  70,  70,  50,  40,  20], 2),
+    Item(3, "Banana", "Ba",                 1, [ 70,  35,  15,   5,   0,   0,   0,   0], 0),
+    Item(4, "Giant Banana", "GBa",          2, [120, 100,  90,  60,  30,   0,   0,   0], 0),
+    Item(5, "Mushroom", "Mu",               4, [  0,  40,  65,  75,  65,  35,  10,  10], 3, is_boost_item=True),
+    Item(6, "Star", "St",                   5, [  0,   0,   0,  10,  20,  30,  40,  40], 6, is_boost_item=True),
+    Item(7, "Chain Chomp", "CC",            4, [  0,   0,   0,   3,  20,  60, 130, 180], 6),
+    Item(8, "Bob-omb", "Bo",                1, [ 10,  70, 100, 100, 100,  90,  40,   0], 1),
+    Item(10, "Lightning", "Li",             3, [  0,   0,   0,   0,   3,  10,  20,  30], 7),
+    Item(11, "Yoshi Egg", "Eg",             4, [ 50,  70,  80,  80,  80,  70,  60,  40], 1),
+    Item(12, "Golden Mushroom", "GMu",      6, [  0,   3,  10,  30,  50,  80, 100, 120], 5, is_boost_item=True),
+    Item(13, "Spiny Shell", "SpSh",         0, [  0,   0,   5,  10,  10,  20,  20,  20], 6, no_first_place=True),
+    Item(14, "Heart", "He",                 4, [  0,   0,   3,  10,  30,  90, 110, 130], 5),
+    Item(15, "Fake Item", "FI",             0, [ 30,  20,  10,   0,   0,   0,   0,   0], 0),
+    Item(17, "Triple Green Shells", "3GS",  3, [ 20,  50, 100, 100, 100,  90,  40,   0], 2),
+    Item(18, "Triple Mushrooms", "3Mu",     6, [  0,   0,  10,  20,  35,  50,  70,  90], 5, is_boost_item=True),
+    Item(19, "Triple Red Shells", "3RS",    4, [  5,  40,  60,  70,  70,  50,  50,  30], 3),
+    Item(21, "Fireballs", "Fi",             2, [ 30,  70, 100, 100, 100,  90,  40,   0], 1),
+    Item(20, "None", "",                    0, [  0,   0,   0,   0,   0,   0,   0,   0], 8),
 ]
 
 ITEM_GREEN_SHELL = ITEMS[0]

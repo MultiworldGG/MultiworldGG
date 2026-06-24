@@ -1,28 +1,15 @@
-from typing import Dict, NamedTuple, Optional, Tuple, Union
+from typing import Dict, NamedTuple, Optional, Tuple
+
+from rule_builder.rules import Rule, Has
 
 from ..enums import PeggleDeluxeAPItems, PeggleDeluxeAPTags, PeggleDeluxeLevels
-
-
-PeggleDeluxeLocationRule = Union[
-    Tuple[
-        Union[
-            Tuple[PeggleDeluxeAPItems, int],
-            Tuple[
-                Tuple[PeggleDeluxeAPItems, int],
-                ...,
-            ],
-        ],
-        ...,
-    ],
-    None,
-]
 
 
 class PeggleDeluxeLocationData(NamedTuple):
     archipelago_id: Optional[int]
     region: PeggleDeluxeLevels
     tags: Optional[Tuple[PeggleDeluxeAPTags, ...]] = None
-    requirements: PeggleDeluxeLocationRule = None
+    requirements: Optional[Rule] = None
 
 
 location_offset: int = 1000000
@@ -40,7 +27,7 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.FEVER_METER_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
     )
 
@@ -49,10 +36,10 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.FEVER_METER_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
         requirements=(
-            (PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER, 1),
+            Has(PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER.value, 1)
         ),
     )
 
@@ -61,10 +48,10 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.FEVER_METER_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
         requirements=(
-            (PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER, 2),
+            Has(PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER.value, 2)
         ),
     )
 
@@ -73,10 +60,10 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.FEVER_METER_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
         requirements=(
-            (PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER, 3),
+            Has(PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER.value, 3)
         ),
     )
 
@@ -85,10 +72,10 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.LEVEL_CLEAR_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
         requirements=(
-            (PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER, 4),
+            Has(PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER.value, 4)
         ),
     )
 
@@ -97,7 +84,7 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.SCORE_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
     )
 
@@ -106,12 +93,11 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.SCORE_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
         requirements=(
-            (PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER, 2),
-            (PeggleDeluxeAPItems.PROGRESSIVE_STARTING_BALL_INCREASE, 999)  # Replace 999 with ((Max balls - 5) / 2)
-        ),
+            Has(PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER.value, 2)
+        ),  # Rest of rule dynamically created in World
     )
 
     location_data[f"{location_prefix} Target Score (High)"] = PeggleDeluxeLocationData(
@@ -119,12 +105,11 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.SCORE_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
         requirements=(
-            (PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER, 4),
-            (PeggleDeluxeAPItems.PROGRESSIVE_STARTING_BALL_INCREASE, 999)  # Replace 999 with (Max balls - 5)
-        ),
+            Has(PeggleDeluxeAPItems.PROGRESSIVE_FEVER_METER.value, 4)
+        ),  # Rest of rule dynamically created in World
     )
 
     location_data[f"{location_prefix} Style Shot (25,000+)"] = PeggleDeluxeLocationData(
@@ -132,7 +117,7 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.STYLE_SHOT_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
     )
 
@@ -141,7 +126,7 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.ORANGE_PEG_COMBO_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
     )
 
@@ -150,7 +135,7 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.ORANGE_PEG_COMBO_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
     )
 
@@ -159,7 +144,7 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.PEG_COMBO_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
     )
 
@@ -168,7 +153,7 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.PEG_COMBO_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
     )
 
@@ -177,9 +162,7 @@ for i, level in enumerate(PeggleDeluxeLevels):
         region=level,
         tags=(
             PeggleDeluxeAPTags.FULL_CLEAR_LOCATION,
-            eval(f"PeggleDeluxeAPTags.{level.name}_LOCATION"),
+            getattr(PeggleDeluxeAPTags, f"{level.name}_LOCATION"),
         ),
-        requirements=(
-            (PeggleDeluxeAPItems.PROGRESSIVE_STARTING_BALL_INCREASE, 999),  # Replace 999 with (Max balls - 5)
-        ),
+        requirements=None  # Rest of rule dynamically created in World
     )

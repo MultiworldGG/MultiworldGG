@@ -41,9 +41,11 @@ Once you're happy with your settings, provide the room host with your YAML file 
 Unlike most randomizers, MKDD AP doesn't need you to patch your rom beforehand. Everything is done at runtime.
 Do note, that using the randomizer unlocks everything in your save of MKDD and you will probably make unrealistically good time trials times. So if you care for your vanilla save, you should do a backup of your save first!
 * Open Mario Kart Double Dash Client from MultiworldGG Launcher.
+  * You can also click your slot name in multiworld.gg room.
 * Open Dolphin and launch the game.
+  * You can use the "Launch Game" button in the client.
   * At this point, the client should say "Patch Applied".
-  * **Important!** Do not go further than the title screen before you are connected to the host!
+  * **Important!** Do not select game mode before you are connected to the host!
 * Write your host connection info in the box at the top of the client (if you are hosting yourself it's `localhost`) and press enter.
 * Write your slot/player name (if you didn't modify the YAML then it's `Player1`) into the box at the bottom and press enter.
 
@@ -53,22 +55,21 @@ You should now get checks whenever you finish races. To see what is currently un
 
 ## Troubleshooting
 
+* For most random behavior / something doesn't work quite right try these first!
+  * Restart the game.
+  * Restart the client.
 * The game crashes when I try to select a character.
   * You probably aren't connected to a server. Restart the game and ensure you have connection.
-* I can't select character X.
-  * The characters need to be unlocked by completing checks. The game currently doesn't give any visual indication what is unlocked, but you can use `/unlocked` command in the client to see your current status.
-* The client doesn't register any checks.
-  * Restart both the game and the client. Open the client before launching the game to apply the patch as early as possible.
+* The game crashes (other).
+  * Use unmodified Mario Kart Double Dash USA rom. "Debug" build, MKDD Extender or other versions don't work.
+  * Disable any Gecko codes like widescreen hack.
 * Where's my patch?
   * There's no patch, use vanilla rom.
 * Can I use ar/gecko cheat codes?
-  * Most of them should work.
+  * Gecko codes don't work, AR codes should mostly work.
   * If you find a cheat that doesn't work and you would like it to work, you can open an issue and we'll try to look into it.
 * The client can't connect to Dolphin.
   * Make sure you are using USA version of MKDD.
   * Use MultiworldGG 0.7.100 or newer.
   * Try running the client with admin privileges.
   * As a last resort try resetting your settings (MAKE BACKUP FIRST - deleting `%appdata%/Dolphin Emulator` deletes your saves as well).
-* On-screen notifications doesn't appear.
-  * They don't appear in the title screen due to limitations posed by the patching system used.
-  * If they don't appear in other screens, it might be a cache issue. Try making a savestate (shift + F1) and loading it (F1) to invalidate cache.

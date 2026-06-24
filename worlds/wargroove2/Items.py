@@ -1,5 +1,5 @@
 from BaseClasses import Item, ItemClassification
-from typing import Dict, List, NamedTuple, Optional
+from typing import Dict, Set, List, NamedTuple, Optional
 
 PROGRESSION = ItemClassification.progression
 PROGRESSION_SKIP_BALANCING = ItemClassification.progression_skip_balancing
@@ -66,15 +66,29 @@ item_table: Dict[str, ItemData] = {
     "Faahri Commanders": ItemData(252040, "Faction", USEFUL),
 
     # Event Items
-    "Wargroove 2 Victory": ItemData(None, "Goal")
+    "Wargroove 2 Final Level Completed": ItemData(None, "Goal")
 
 }
 
 item_id_name: Dict[int, str] = {}
+item_name_groups: Dict[str, Set[str]] = {}
 for name in item_table.keys():
     id = item_table[name].code
     if id is not None:
         item_id_name[id] = name
+
+    group = item_table[name].type
+    if not group or id is None:
+        continue
+    if group == "Trigger":
+        # Split triggers since they serve very different purposes.
+        if "Final" in name:
+            group = "Final"
+        else:
+            group = "Event"
+    if group not in item_name_groups:
+        item_name_groups[group] = set()
+    item_name_groups[group].add(name)
 
 
 class CommanderData(NamedTuple):

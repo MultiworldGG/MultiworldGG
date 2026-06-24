@@ -2,6 +2,7 @@ from typing import Dict, List, NamedTuple, Optional, Tuple
 from enum import Enum
 from BaseClasses import Location
 from .Items import ItemData, Items
+from .Utils import albw_base_id
 
 class ALBWLocation(Location):
     game = "A Link Between Worlds"
@@ -40,6 +41,9 @@ class LocationData:
         self.flag = flag
         self.loctype = loctype
         self.default_item = default_item
+
+    def true_code(self) -> Optional[int]:
+        return self.code + albw_base_id if self.code is not None else None
 
     def is_minigame(self):
         return self.loctype == LocationType.Minigame \

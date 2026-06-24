@@ -787,6 +787,20 @@ def _get_player_in_lobby(lobby: Lobby) -> LobbyPlayer | None:
     return LobbyPlayer.get(lobby=lobby, session_id=session["_id"])
 
 
+def _get_lobby_owner_name(lobby: Lobby) -> str | None:
+    owner_player = LobbyPlayer.get(lobby=lobby, session_id=lobby.owner)
+    return owner_player.player_name if owner_player else None
+
+
+def _lobby_meta_with_host_display_name(lobby: Lobby) -> dict:
+    meta = json.loads(lobby.meta)
+    owner_name = _get_lobby_owner_name(lobby)
+    if owner_name and meta.get("host_display_name") != owner_name:
+        meta["host_display_name"] = owner_name
+        lobby.meta = json.dumps(meta)
+    return meta
+
+
 @api_endpoints.route('/lobbies/eligible', methods=['GET'])
 def eligible_lobbies():
     """Return lobbies where the current session user can upload more YAMLs."""
@@ -807,8 +821,7 @@ def eligible_lobbies():
             continue
         remaining = lobby.max_yamls_per_player - len(player.yamls)
         if remaining > 0:
-            owner_player = LobbyPlayer.get(lobby=lobby, session_id=lobby.owner)
-            owner_name = owner_player.player_name if owner_player else "Unknown"
+            owner_name = _get_lobby_owner_name(lobby) or "Unknown"
             result.append({
                 "id": str(lobby.id),
                 "title": lobby.title,
@@ -942,7 +955,7 @@ def lobby_status(lobby: UUID):
     latest_msg_id = select(max(m.id) for m in LobbyMessage if m.lobby == lobby).first() or 0
     version = f"{int(lobby.last_activity.timestamp() * 1000)}-{latest_msg_id}"
 
-    meta = json.loads(lobby.meta)
+    meta = _lobby_meta_with_host_display_name(lobby)
     server_opts = meta.get("server_options", {})
     gen_opts = meta.get("generator_options", {})
     pending_request_count = count(r for r in LobbyApworldRequest if r.lobby == lobby)
@@ -1161,7 +1174,7 @@ def lobby_upload_yaml(lobby: UUID):
                 standard_options[filename] = content
                 standard_info[filename] = (player_name, game or "")
 
-    meta = json.loads(lobby.meta)
+    meta = _lobby_meta_with_host_display_name(lobby)
     plando_options = set(meta.get("plando_options", []))
     new_names: dict[str, str] = {}
     new_games: dict[str, str] = {}
@@ -1558,7 +1571,7 @@ def lobby_generate(lobby: UUID):
         options[unique_key] = yaml_record.content
 
     # Validate all options together
-    meta = json.loads(lobby.meta)
+    meta = _lobby_meta_with_host_display_name(lobby)
     plando_options = set(meta.get("plando_options", []))
     results, gen_options = roll_options(options, plando_options)
 
@@ -2384,7 +2397,7 @@ def lobby_upload_game(lobby: UUID):
     if not f.filename or not allowed_generation(f.filename):
         return jsonify({"error": "Invalid file type. Expected .archipelago, .mwgg, or .zip"}), 400
 
-    meta = json.loads(lobby.meta)
+    meta = _lobby_meta_with_host_display_name(lobby)
 
     try:
         file_bytes = f.read()

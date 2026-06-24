@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from kvui import GameManager
 
@@ -13,23 +13,26 @@ try:
 except ImportError:
     apname = "Archipelago"
 
-class PeggleDeluxeManager(GameManager):
-    ctx: PeggleDeluxeContext
+def bootstrap_client_gui(gui: Optional[type[GameManager]]) -> type[GameManager]:
+    class PeggleDeluxeManager(gui):
+        ctx: PeggleDeluxeContext
 
-    logging_pairs: List[Tuple[str, str]] = [("Client", "Archipelago")]
-    base_title: str = f"{apname} Peggle Deluxe Client"
+        logging_pairs: List[Tuple[str, str]] = [("Client", "Archipelago")]
+        base_title: str = f"{apname} Peggle Deluxe Client"
 
-    peggle_deluxe_tab_layout: PeggleDeluxeTabLayout
+        peggle_deluxe_tab_layout: PeggleDeluxeTabLayout
 
-    peggle_deluxe_tab: Widget
+        peggle_deluxe_tab: Widget
 
-    def build(self) -> Layout:
-        container: Layout = super().build()
+        def build(self) -> Layout:
+            container: Layout = super().build()
 
-        self.peggle_deluxe_tab_layout = PeggleDeluxeTabLayout(self.ctx)
-        self.peggle_deluxe_tab = self.add_client_tab("Peggle Deluxe", self.peggle_deluxe_tab_layout)
+            self.peggle_deluxe_tab_layout = PeggleDeluxeTabLayout(self.ctx)
+            self.peggle_deluxe_tab = self.add_client_tab("Peggle Deluxe", self.peggle_deluxe_tab_layout)
 
-        return container
+            return container
 
-    def update_tabs(self) -> None:
-        self.peggle_deluxe_tab_layout.update()
+        def update_tabs(self) -> None:
+            self.peggle_deluxe_tab_layout.update()
+
+    return PeggleDeluxeManager

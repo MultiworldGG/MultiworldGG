@@ -3,7 +3,7 @@ from ..options import EnableOrbsanity
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .. import JakAndDaxterWorld
-from ..rules import can_free_scout_flies, can_fight, can_reach_orbs_level
+from ..rules import can_fight, can_reach_orbs_level
 
 
 def build_regions(level_name: str, world: "JakAndDaxterWorld") -> JakAndDaxterRegion:
@@ -30,7 +30,7 @@ def build_regions(level_name: str, world: "JakAndDaxterWorld") -> JakAndDaxterRe
 
     dark_cave = JakAndDaxterRegion("Dark Cave", player, multiworld, level_name, 5)
     dark_cave.add_cell_locations([80])
-    dark_cave.add_fly_locations([262229], access_rule=lambda state: can_free_scout_flies(state, player))
+    dark_cave.add_fly_locations([262229], access_rule=lambda state: world.can_free_scout_flies(state, player))
 
     robot_cave = JakAndDaxterRegion("Robot Cave", player, multiworld, level_name, 0)
 

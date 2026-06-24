@@ -102,6 +102,8 @@ class SM64HackClient(BizHawkClient):
         self.supposed_ring_count = 0
         self.file_locked = False
         self.li = False
+        global victory
+        victory = False
     
     def __init__(self) -> None:
         super().__init__()

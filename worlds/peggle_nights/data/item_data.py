@@ -25,6 +25,12 @@ item_data: Dict[str, PeggleNightsItemData] = {
         classification=ItemClassification.progression_deprioritized_skip_balancing,
         tags=(PeggleNightsAPTags.GOAL_ITEM,),
     ),
+    # OOL Items
+    PeggleNightsAPItems.OOL.value: PeggleNightsItemData(
+        archipelago_id=item_offset + 5,
+        classification=ItemClassification.progression,
+        tags=(PeggleNightsAPTags.OOL_ITEM,),
+    ),
     # Progressive Items
     PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value: PeggleNightsItemData(
         archipelago_id=item_offset + 10 + 1,
@@ -134,7 +140,7 @@ for i, level in enumerate(PeggleNightsLevels):
         classification=ItemClassification.progression,
         tags=(
             PeggleNightsAPTags.LEVEL_UNLOCK_ITEM,
-            eval(f"PeggleNightsAPTags.{level.name}_ITEM"),
+            getattr(PeggleNightsAPTags, f"{level.name}_ITEM"),
         ),
     )
 
@@ -144,7 +150,7 @@ for i, level in enumerate(PeggleNightsLevels):
         classification=ItemClassification.useful,
         tags=(
             PeggleNightsAPTags.USEFUL_ITEM,
-            eval(f"PeggleNightsAPTags.{level.name}_ITEM"),
+            getattr(PeggleNightsAPTags, f"{level.name}_ITEM"),
         ),
     )
 
@@ -153,7 +159,7 @@ for i, level in enumerate(PeggleNightsLevels):
         classification=ItemClassification.useful,
         tags=(
             PeggleNightsAPTags.USEFUL_ITEM,
-            eval(f"PeggleNightsAPTags.{level.name}_ITEM"),
+            getattr(PeggleNightsAPTags, f"{level.name}_ITEM"),
         ),
     )
 
@@ -162,7 +168,7 @@ for i, level in enumerate(PeggleNightsLevels):
         classification=ItemClassification.useful,
         tags=(
             PeggleNightsAPTags.USEFUL_ITEM,
-            eval(f"PeggleNightsAPTags.{level.name}_ITEM"),
+            getattr(PeggleNightsAPTags, f"{level.name}_ITEM"),
         ),
     )
 
@@ -171,6 +177,6 @@ for i, level in enumerate(PeggleNightsLevels):
         classification=ItemClassification.useful,
         tags=(
             PeggleNightsAPTags.USEFUL_ITEM,
-            eval(f"PeggleNightsAPTags.{level.name}_ITEM"),
+            getattr(PeggleNightsAPTags, f"{level.name}_ITEM"),
         ),
     )

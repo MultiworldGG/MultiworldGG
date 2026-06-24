@@ -2,10 +2,10 @@ from .Options import InscryptionOptions, ActUnlocks, EpitaphPiecesRandomization,
     RandomizeHammer, Act2RandomizeBridge, RandomizeShortcuts, RandomizeVesselUpgrades, StartingAct, \
     RandomizeChallenges, inscryption_option_groups
 from .Items import act1_items, act2_items, act3_items, act2_3_items, act_items, filler_items, \
-    trap_items, item_groups, base_id, InscryptionItem
+    trap_items, item_groups, base_id, InscryptionItem, ItemDict
 from .Locations import act1_locations, act2_locations, act3_locations, regions_to_locations
 from .Regions import inscryption_regions_all
-from typing import Dict, Any
+from typing import Dict, Any, List
 from . import Rules
 from BaseClasses import Region, Item, Tutorial, ItemClassification
 from Options import OptionError
@@ -71,8 +71,6 @@ class InscryptionWorld(World):
                     if self.options.enable_act_2: possible_starts.append(StartingAct.option_act_2)
                     if self.options.enable_act_3: possible_starts.append(StartingAct.option_act_3)
                     self.options.starting_act = StartingAct(self.random.choice(possible_starts))
-        if not self.options.enable_act_1 and not self.options.enable_act_3:
-            self.options.trap_type_weights.value["Bleach Trap"] = 0
         if not self.options.enable_act_2:
             self.options.trap_type_weights.value["Deck Size Trap"] = 0
 
@@ -239,7 +237,8 @@ class InscryptionWorld(World):
             self.multiworld.itempool.append(new_item)
 
     def create_regions(self) -> None:
-        used_regions = inscryption_regions_all
+        regions_to_locations_copy = {key: value.copy() for key, value in regions_to_locations.items()}
+        used_regions = {key: value.copy() for key, value in inscryption_regions_all.items()}
 
         if not self.options.enable_act_1:
             del used_regions["Act 1"]
@@ -252,50 +251,50 @@ class InscryptionWorld(World):
             used_regions["Menu"].remove("Act 3")
         if self.options.enable_act_3:
             if not self.options.act3_overhaul:
-                regions_to_locations["Act 3"].pop(38)
+                regions_to_locations_copy["Act 3"].pop(38)
             if self.options.randomize_vessel_upgrades == RandomizeVesselUpgrades.option_vanilla:
-                regions_to_locations["Act 3"].pop(37)
-                regions_to_locations["Act 3"].pop(36)
-                regions_to_locations["Act 3"].pop(35)
-                regions_to_locations["Act 3"].pop(34)
+                regions_to_locations_copy["Act 3"].pop(37)
+                regions_to_locations_copy["Act 3"].pop(36)
+                regions_to_locations_copy["Act 3"].pop(35)
+                regions_to_locations_copy["Act 3"].pop(34)
             if self.options.randomize_shortcuts == RandomizeShortcuts.option_vanilla:
-                regions_to_locations["Act 3"].pop(33)
-                regions_to_locations["Act 3"].pop(32)
-                regions_to_locations["Act 3"].pop(31)
+                regions_to_locations_copy["Act 3"].pop(33)
+                regions_to_locations_copy["Act 3"].pop(32)
+                regions_to_locations_copy["Act 3"].pop(31)
         if self.options.enable_act_1:
             if self.options.randomize_challenges == RandomizeChallenges.option_disable:
-                    regions_to_locations["Act 1"].pop(38) #consumable checks
-                    regions_to_locations["Act 1"].pop(37)
-                    regions_to_locations["Act 1"].pop(36)
-                    regions_to_locations["Act 1"].pop(35)
-                    regions_to_locations["Act 1"].pop(34)
-                    regions_to_locations["Act 1"].pop(33)
-                    regions_to_locations["Act 1"].pop(32) # pelts
-                    regions_to_locations["Act 1"].pop(31)
-                    regions_to_locations["Act 1"].pop(30)
-                    regions_to_locations["Act 1"].pop(29) # new game button
-                    regions_to_locations["Act 1"].pop(28) # free checks
-                    regions_to_locations["Act 1"].pop(27)
-                    regions_to_locations["Act 1"].pop(26)
+                    regions_to_locations_copy["Act 1"].pop(38) #consumable checks
+                    regions_to_locations_copy["Act 1"].pop(37)
+                    regions_to_locations_copy["Act 1"].pop(36)
+                    regions_to_locations_copy["Act 1"].pop(35)
+                    regions_to_locations_copy["Act 1"].pop(34)
+                    regions_to_locations_copy["Act 1"].pop(33)
+                    regions_to_locations_copy["Act 1"].pop(32) # pelts
+                    regions_to_locations_copy["Act 1"].pop(31)
+                    regions_to_locations_copy["Act 1"].pop(30)
+                    regions_to_locations_copy["Act 1"].pop(29) # new game button
+                    regions_to_locations_copy["Act 1"].pop(28) # free checks
+                    regions_to_locations_copy["Act 1"].pop(27)
+                    regions_to_locations_copy["Act 1"].pop(26)
             if not self.options.randomize_nodes and \
                 self.options.randomize_challenges == RandomizeChallenges.option_disable:
-                    regions_to_locations["Act 1"].pop(25)
-                    regions_to_locations["Act 1"].pop(24)
-                    regions_to_locations["Act 1"].pop(23)
-                    regions_to_locations["Act 1"].pop(22)
-                    regions_to_locations["Act 1"].pop(21)
-                    regions_to_locations["Act 1"].pop(20)
-                    regions_to_locations["Act 1"].pop(19)
-                    regions_to_locations["Act 1"].pop(18)
-                    regions_to_locations["Act 1"].pop(17)
+                    regions_to_locations_copy["Act 1"].pop(25)
+                    regions_to_locations_copy["Act 1"].pop(24)
+                    regions_to_locations_copy["Act 1"].pop(23)
+                    regions_to_locations_copy["Act 1"].pop(22)
+                    regions_to_locations_copy["Act 1"].pop(21)
+                    regions_to_locations_copy["Act 1"].pop(20)
+                    regions_to_locations_copy["Act 1"].pop(19)
+                    regions_to_locations_copy["Act 1"].pop(18)
+                    regions_to_locations_copy["Act 1"].pop(17)
             elif not self.options.randomize_nodes and \
                 self.options.randomize_challenges != RandomizeChallenges.option_disable:
-                    regions_to_locations["Act 1"].pop(38)
-                    regions_to_locations["Act 1"].pop(37)
-                    regions_to_locations["Act 1"].pop(36)
-                    regions_to_locations["Act 1"].pop(35)
-                    regions_to_locations["Act 1"].pop(34)
-                    regions_to_locations["Act 1"].pop(33)
+                    regions_to_locations_copy["Act 1"].pop(38)
+                    regions_to_locations_copy["Act 1"].pop(37)
+                    regions_to_locations_copy["Act 1"].pop(36)
+                    regions_to_locations_copy["Act 1"].pop(35)
+                    regions_to_locations_copy["Act 1"].pop(34)
+                    regions_to_locations_copy["Act 1"].pop(33)
         for region_name in used_regions.keys():
             self.multiworld.regions.append(Region(region_name, self.player, self.multiworld))
 
@@ -303,7 +302,7 @@ class InscryptionWorld(World):
             region = self.get_region(region_name)
             region.add_exits(region_connections)
             region.add_locations({
-                location: self.location_name_to_id[location] for location in regions_to_locations[region_name]
+                location: self.location_name_to_id[location] for location in regions_to_locations_copy[region_name]
             })
 
     def set_rules(self) -> None:

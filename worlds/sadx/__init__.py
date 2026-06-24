@@ -16,7 +16,7 @@ from .Regions import create_sadx_regions, get_location_ids_for_area
 from .Rules import create_sadx_rules, LocationDistribution
 from .StartingSetup import StarterSetup, generate_early_sadx, write_sadx_spoiler, CharacterArea
 
-sadx_version = 121
+sadx_version = 122
 
 
 class SonicAdventureDXWeb(WebWorld):

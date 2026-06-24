@@ -57,9 +57,6 @@ def generate_early_sadx(world: World, options: SonicAdventureDXOptions) -> Start
 
 
 def validate_settings(options):
-    # Temporal blacklist
-    options.mission_blacklist.value.add("1")
-
     if not get_playable_characters(options):
         logging.warning(" -- SADX warning: Zero playable characters in settings. enabling Sonic as a failsafe.")
         options.playable_sonic.value = True
@@ -68,10 +65,6 @@ def validate_settings(options):
         logging.warning(
             " -- SADX warning: Gating mode is set to Emblems and they are not enabled. Enabling emblems as a failsafe.")
         options.goal_requires_emblems.value = True
-    if options.gating_mode.value == 0 and options.chao_egg_checks:
-        logging.warning(
-            " -- SADX warning: Emblem gating mode is not compatible with egg checks. Disabling them as a failsafe.")
-        options.chao_egg_checks.value = False
     if options.entrance_randomizer.value == 2 and options.chao_egg_checks:
         logging.warning(
             " -- SADX warning: Extended random level entrances is not compatible with egg checks. Disabling them as a failsafe.")

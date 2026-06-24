@@ -5,21 +5,25 @@ from BaseClasses import ItemClassification
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, gui_enabled, logger, server_loop
 from NetUtils import ClientStatus
 from Patch import create_rom_file
-from .Citra import CitraInterface, CitraException
-from .Triple import TripleInterface, TripleException
+from .Interface import N3DSInterface, ConnectionError
 from .Locations import LocationData, LocationType, all_locations, location_table
 from .Items import item_code_table
 from .Data import flag_data, nice_items, scoot_fruit_flag, golden_bee_flag
-from . import albw_base_id
-import time
+from .Utils import albw_base_id
 import Utils
 import random
 import os
 import logging
 
-citra = CitraInterface()
-triple = TripleInterface()
+try:
+    from Utils import instance_name as apname
+except ImportError:
+    apname = "Archipelago"
+
+TITLE_ID = 0x00040000000EC300
+
 triple_addr = ""
+is_3ds = False
 
 def bytes_or(a: bytes, b: bytes) -> bytes:
     return bytes([x | y for x,y in zip(a,b)])
@@ -41,14 +45,6 @@ class ALBWCommandProcessor(ClientCommandProcessor):
         else:
             self.output(f"Disconnected from {triple_addr}.")
             triple_addr = ""
-    
-    def _cmd_3dstimeout(self, timeout):
-        """Set timeout (in connection attempts) until giving up connection to 3ds (default 200000)"""
-        global triple
-        if triple.set_timeout(timeout):
-            self.output(f"Successfully set timeout to {timeout} attempts")
-        else:
-            self.error(f"Invalid timeout: {timeout}")
 
 class ALBWClientContext(CommonContext):
     command_processor = ALBWCommandProcessor
@@ -56,12 +52,12 @@ class ALBWClientContext(CommonContext):
     items_handling: Optional[int] = 0b101 # receive remote items and starting inventory
     want_slot_data: bool = True
 
-    interface = None
+    interface: N3DSInterface = N3DSInterface()
     interface_connected: bool
     server_connected: bool
     initial_delay: bool
     save_validated: bool
-    slot_data: Optional[Dict[str, any]]
+    slot_data: Optional[Dict[str, Any]]
     save_ptr: int
     event_flags_ptr: int
     course_flags_ptr: int
@@ -70,7 +66,7 @@ class ALBWClientContext(CommonContext):
     course_flags: List[bytes]
     minigame_flags: int
     messages: List[Any]
-    server_storage_flags: Set[int]
+    server_storage_flags: Set[str]
     shuffle_maiamai_rewards: bool
     last_maiamai_count: int
     maiamai_count: int
@@ -150,9 +146,10 @@ class ALBWClientContext(CommonContext):
         from kvui import GameManager
 
         class ALBWManager(GameManager):
-            base_title: str = "Archipelago A Link Between Worlds Client"
+            base_title: str = f"{apname} A Link Between Worlds Client"
 
         self.ui = ALBWManager(self)
+        assert self.ui is not None
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
     
     def error(self, error: str) -> None:
@@ -161,24 +158,8 @@ class ALBWClientContext(CommonContext):
             self.last_error = error
         self.invalid = True
     
-    async def citra_connect(self) -> None:
-        if self.show_citra_connect_message:
-            logger.info("Connecting to emulator...")
-        self.show_citra_connect_message = False
-        self.interface_connected = False
-        if not await self.interface.connect():
-            await asyncio.sleep(1)
-        else:
-            self.interface_connected = True
-            self.initial_delay = True
-            self.save_validated = False
-            if self.server_connected:
-                logger.info("Emulator connected")
-            else:
-                logger.info("Emulator connected, but not yet connected to the multiworld")
-    
     async def validate_rom(self) -> None:
-        if (await self.interface.read(self.AP_HEADER_LOCATION, 4)) != b"ARCH":
+        if await self.interface.read(self.AP_HEADER_LOCATION, 4) != b"ARCH":
             self.error("The running game was not patched with an Archipelago patch.")
         else:
             name = await self.interface.read(self.AP_HEADER_LOCATION + 0x10, 0x40)
@@ -219,7 +200,7 @@ class ALBWClientContext(CommonContext):
         if password_requested and not self.password:
             await super(ALBWClientContext, self).server_auth(password_requested)
         if not self.auth:
-            logger.info("Connected to the multiworld, awaiting connection to emulator to authenticate with server")
+            logger.info("Connected to the multiworld, awaiting connection to game to authenticate with server")
         while not self.auth and not self.exit_event.is_set():
             await asyncio.sleep(1)
         await self.send_connect()
@@ -242,7 +223,7 @@ class ALBWClientContext(CommonContext):
     async def get_player_ptrs(self):
         self.player_singleton_ptr = await self.interface.read_u32(self.PLAYER_SINGLETON_LOCATION)
         if self.player_singleton_ptr == 0:
-            return 0
+            return
 
         self.player_ptr = await self.interface.read_u32(self.player_singleton_ptr + 0x10)
         self.player_struct_ptr = await self.interface.read_u32(self.player_singleton_ptr + 0x14)
@@ -334,7 +315,7 @@ class ALBWClientContext(CommonContext):
             return True
         return False
 
-    def check_locations(self) -> None:
+    def check_all_locations(self) -> None:
         updated_flags = {}
         for flag, name in flag_data:
             if self.check_flag(None, flag) and not name in self.server_storage_flags:
@@ -362,7 +343,8 @@ class ALBWClientContext(CommonContext):
         checks = []
         for loc in all_locations:
             if self.check_location(loc):
-                code = loc.code + albw_base_id
+                code = loc.true_code()
+                assert code is not None
                 if code not in self.locations_checked:
                     self.locations_checked.add(code)
                     checks.append(code)
@@ -411,7 +393,7 @@ class ALBWClientContext(CommonContext):
 
     def scout_hints(self) -> None:
         if not self.ravio_scouted and self.check_location(location_table["Ravio's Gift"]):
-            ravio_locations = [loc.code + albw_base_id for loc in all_locations if loc.loctype == LocationType.Ravio]
+            ravio_locations = [loc.true_code() for loc in all_locations if loc.loctype == LocationType.Ravio]
             self.messages.append({
                 "cmd": "LocationScouts",
                 "create_as_hint": 0,
@@ -432,7 +414,7 @@ class ALBWClientContext(CommonContext):
             self.get_hints = True
 
         if self.shuffle_maiamai_rewards and self.new_stage and self.course == 4 and self.stage == 14:
-            maiamai_locations = [loc.code + albw_base_id for loc in all_locations if loc.loctype == LocationType.Upgrade]
+            maiamai_locations = [loc.true_code() for loc in all_locations if loc.loctype == LocationType.Upgrade]
             seen_maiamai_locations = [code for i, code in enumerate(maiamai_locations[:9]) if self.inventory[self.RAVIO_ITEM[i]] != 0]
             self.messages.append({
                 "cmd": "LocationScouts",
@@ -466,6 +448,7 @@ class ALBWClientContext(CommonContext):
         if health == 0 and not self.link_is_dead:
             if not self.sent_deathlink:
                 logger.info("Link died")
+                assert self.slot is not None
                 await self.send_death(self.player_names[self.slot] + " " + random.choice(self.deathlink_msgs))
                 self.sent_deathlink = True
             else :
@@ -500,23 +483,21 @@ class ALBWClientContext(CommonContext):
         self.messages = []
 
 async def game_watcher(ctx: ALBWClientContext) -> None:
-    global citra
-    global triple
     global triple_addr
-    ctx.interface = citra
+    global is_3ds
     while not ctx.exit_event.is_set():
         try:
             ctx.invalid = False
-            if triple_addr == "" and ctx.interface == triple:
+            if triple_addr == "" and is_3ds:
                 ctx.interface_connected = False
-                triple.disconnect()
+                ctx.interface.disconnect()
             if not ctx.interface_connected:
                 if triple_addr != "":
-                    if await triple.connect(triple_addr):
+                    if await ctx.interface.connect(triple_addr, TITLE_ID):
                         if ctx.show_triple_connected_message:
                             logger.info("3ds connected!")
                         ctx.initial_delay = True
-                        ctx.interface = triple
+                        is_3ds = True
                         ctx.interface_connected = True
                         ctx.show_citra_connect_message = False
                         ctx.show_triple_connected_message = False
@@ -524,19 +505,26 @@ async def game_watcher(ctx: ALBWClientContext) -> None:
                     else:
                         logger.info("Couldn't connect to 3ds.")
                         ctx.interface_connected = False
-                        triple.disconnect()
+                        ctx.interface.disconnect()
                         triple_addr = ""
                 else:
-                    triple.disconnect()
-                    ctx.interface_connected = False
+                    ctx.interface.disconnect()
                     ctx.show_triple_connected_message = True
-                    ctx.interface = citra
-                    await ctx.citra_connect()
+                    is_3ds = False
+                    if ctx.show_citra_connect_message:
+                        logger.info("Connecting to game...")
+                    ctx.show_citra_connect_message = False
+                    ctx.interface_connected = False
+                    if not await ctx.interface.connect("127.0.0.1", TITLE_ID):
+                        await asyncio.sleep(1)
+                    else:
+                        ctx.interface_connected = True
+                        ctx.initial_delay = True
+                        ctx.save_validated = False
+                        logger.info("Emulator connected!")
             else:
                 if ctx.initial_delay:
-                    delay = 1
-                    if ctx.interface == triple:
-                        delay = 5
+                    delay = 5 if is_3ds else 1
                     await asyncio.sleep(delay)
                     ctx.initial_delay = False
                 await ctx.validate_rom()
@@ -547,13 +535,13 @@ async def game_watcher(ctx: ALBWClientContext) -> None:
                         if not ctx.save_validated:
                             await asyncio.sleep(1)
                         await ctx.validate_save()
-                        if not ctx.invalid and ctx.server_connected and (await ctx.get_pointers()):
+                        if not ctx.invalid and ctx.server_connected and await ctx.get_pointers():
                             if "DeathLink" in ctx.tags:
                                 await ctx.handle_deathlink()
                             await ctx.read_flags()
                             await ctx.read_inventory()
                             await ctx.read_stage()
-                            ctx.check_locations()
+                            ctx.check_all_locations()
                             ctx.scout_hints()
                             await ctx.get_item()
                             await ctx.send_message_queue()
@@ -561,20 +549,13 @@ async def game_watcher(ctx: ALBWClientContext) -> None:
                             ctx.initial_delay = True
                     else:
                         await ctx.get_null_item()
-        except CitraException as e:
+        except ConnectionError as e:
             logger.error(e)
-            logger.error(traceback.format_exc())
+            ctx.interface.disconnect()
             ctx.interface_connected = False
             ctx.last_error = ""
             ctx.show_citra_connect_message = True
-        except TripleException as e:
-            if str(e) != "":
-                logger.error(e)
-                logger.error(traceback.format_exc())
-            ctx.interface_connected = False
-            ctx.last_error = ""
-            ctx.show_citra_connect_message = True
-            ctx.interface = citra
+            ctx.show_triple_connected_message = True
         except Exception as e:
             logger.error(e)
             logger.error(traceback.format_exc())
@@ -583,6 +564,7 @@ async def game_watcher(ctx: ALBWClientContext) -> None:
             ctx.server_connected = False
             ctx.last_error = ""
             ctx.show_citra_connect_message = True
+            ctx.show_triple_connected_message = True
         await asyncio.sleep(0.25)
 
 def launch(*launch_args) -> None:

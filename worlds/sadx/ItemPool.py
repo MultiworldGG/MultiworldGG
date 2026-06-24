@@ -23,10 +23,14 @@ class ItemDistribution:
 def create_sadx_items(world: World, starter_setup: StarterSetup, options: SonicAdventureDXOptions):
     item_names = get_item_names(options, starter_setup)
 
-    # Remove the items that are already in the starting inventory
-    for item in world.options.start_inventory:
-        for _ in range(world.options.start_inventory[item]):
-            item_names.remove(item)
+    # Remove the items that are already in the starting inventory (ignore filler items)
+    ignored_starting_items = set(ItemName.Filler.values()) | set(ItemName.Traps.values())
+    for item, count in world.options.start_inventory.items():
+        if item in ignored_starting_items:
+            continue
+        for _ in range(count):
+            if item in item_names:
+                item_names.remove(item)
 
     # Calculate the number of items per type
     item_distribution = get_item_distribution(world, len(item_names), options)

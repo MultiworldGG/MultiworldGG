@@ -936,7 +936,7 @@ location_data: Dict[
         archipelago_id=LOCATION_OFFSET + 72,
         region=ZorkGrandInquisitorRegions.PORT_FOOZLE,
         description="Knock on Jack's door with the mead light in Port Foozle",
-        tags=(ZorkGrandInquisitorTags.CORE, ZorkGrandInquisitorTags.MISSABLE),
+        tags=(ZorkGrandInquisitorTags.CORE,),
         requirements=(
             And(
                 Has(ZorkGrandInquisitorItems.MEAD_LIGHT.value),
@@ -1339,7 +1339,7 @@ location_data: Dict[
         archipelago_id=LOCATION_OFFSET + 104,
         region=ZorkGrandInquisitorRegions.SPELL_LAB,
         description="Insert a blank scroll sheet into the spell checker in the Spell Lab",
-        tags=(ZorkGrandInquisitorTags.CORE,),
+        tags=(ZorkGrandInquisitorTags.CORE, ZorkGrandInquisitorTags.MISSABLE),
         requirements=(
             And(
                 Or(
@@ -1899,7 +1899,7 @@ location_data: Dict[
         archipelago_id=LOCATION_OFFSET + 147,
         region=ZorkGrandInquisitorRegions.SPELL_LAB,
         description="Insert the ZIMDOR scroll into the spell checker in the Spell Lab",
-        tags=(ZorkGrandInquisitorTags.CORE, ZorkGrandInquisitorTags.MISSABLE),
+        tags=(ZorkGrandInquisitorTags.CORE,),
         requirements=(
             And(
                 Has(ZorkGrandInquisitorItems.ZIMDOR_SCROLL.value),
@@ -2611,6 +2611,7 @@ location_data: Dict[
                     Has(ZorkGrandInquisitorItems.HOTSPOT_SODA_MACHINE_COIN_SLOT.value),
                     Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_GUE_TECH.value),
                 ),
+                Has(ZorkGrandInquisitorItems.ZORK_ROCKS.value),
                 Or(
                     Has(ZorkGrandInquisitorItems.HOTSPOT_SODA_MACHINE_BUTTONS.value),
                     Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_GUE_TECH.value),

@@ -1,3 +1,6 @@
+from typing import List
+
+
 class Weapon:
     axe_of_harming = "Axe of Harming"
     battle_axe = "Battle Axe"
@@ -97,6 +100,12 @@ class Weapon:
                           lyrian_longsword, iron_club, steel_claw, rapier, crossbow, rusted_sword,
                           shining_blade,
                           ]
+
+    long_weapons: List[str] = [axe_of_harming, blade_of_ophelia, blessed_wind, brittle_arming_sword, broken_lance, dark_greatsword, dark_rapier, elfen_longsword,
+                    golden_kopesh, halberd, jotunn_slayer, lyrian_greatsword, marauder_black_flail, obsidian_cursebrand, shining_blade, silver_rapier,
+                    skeleton_axe, steel_club, steel_lance, steel_needle, steel_spear, stone_club, sucsarian_spear, thorn, vampire_hunter_sword,
+                    wolfram_greatsword]
+    long_quenchable_weapon: List[str] = [iron_club, rapier, rusted_sword, shadow_blade, ]
 
 
 class SpookyWeapon:

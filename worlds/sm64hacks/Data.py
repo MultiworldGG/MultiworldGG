@@ -9,6 +9,9 @@ import json
 import re
 import os
 import shutil
+import logging
+logger = logging.getLogger("SM64 Romhack")
+
 
 sm64hack_items: Tuple[str, ...] = (
     "Key 1", 
@@ -110,6 +113,19 @@ sm64hack_items: Tuple[str, ...] = (
     "+1 Wallkick Frame",
     "Steve"
 )
+keys: Set[str] = {
+    "Key 1",
+    "Key 2"
+}
+caps: Set[str] = {
+    "Wing Cap",
+    "Metal Cap",
+    "Vanish Cap",
+    "Yellow Switch",
+    "Black Switch",
+    "Gray Switch"
+}
+
 tickets: Set[str] = {
     "Course 1 Cannon",
     "Course 2 Cannon",
@@ -353,7 +369,11 @@ class Data:
         #print(json_file)
         with open(json_file, 'r') as infile:
             filetext = infile.read()
-            self.maxstarcount = max(int(i) for i in re.findall(r"\|Stars:(\d+)\|", filetext))
+            starcounts = [int(i) for i in re.findall(r"\|Stars:(\d+)\|", filetext)]
+            if len(starcounts) == 0:
+                raise AssertionError(f"There are no star requirements in {file_name}; this is most likely a mistake")
+            else:
+                self.maxstarcount = max(starcounts)
             self.locations = json.loads(filetext)
             if self.locations["Other"]["Settings"].get("Entrances"):
                 self.progression_courses = set() 

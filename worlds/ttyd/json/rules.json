@@ -87,9 +87,6 @@
       }
     ]
   },
-  "Boggly Woods Outside Great Tree: FP Plus": {
-    "function": "super_boots"
-  },
   "Great Tree Entrance: Mystic Egg": {
     "can_reach": "Great Tree Entrance: Emerald Star"
   },
@@ -1830,6 +1827,9 @@
           },
           {
             "has": "Koops"
+          },
+          {
+            "has": "Flurrie"
           }
         ]
       }
@@ -1839,6 +1839,9 @@
     "and": [
       {
         "has": "Yoshi"
+      },
+      {
+        "has": "Flurrie"
       },
       {
         "or": [
@@ -1861,6 +1864,9 @@
         "has": "Bobbery"
       },
       {
+        "has": "Flurrie"
+      },
+      {
         "function": "ultra_boots"
       }
     ]
@@ -1872,6 +1878,9 @@
       },
       {
         "has": "Bobbery"
+      },
+      {
+        "has": "Flurrie"
       },
       {
         "function": "ultra_boots"
@@ -1891,6 +1900,9 @@
         "has": "Bobbery"
       },
       {
+        "has": "Flurrie"
+      },
+      {
         "function": "ultra_boots"
       },
       {
@@ -1899,6 +1911,30 @@
       },
       {
         "has": "Paper Mode"
+      }
+    ]
+  },
+  "Palace of Shadow Far Backroom 2: Shooting Star": {
+    "and": [
+      {
+        "has": "Yoshi"
+      },
+      {
+      "or": [
+         {
+            "has": "Bobbery"
+          },
+          {
+            "has": "Koops"
+          }
+      ]
+      },
+      {
+        "function": "ultra_boots"
+      },
+      {
+        "has": "Palace Key",
+        "count": 2
       }
     ]
   },

@@ -33,11 +33,12 @@ from .locations import (JakAndDaxterLocation,
                         special_location_table,
                         cache_location_table,
                         orb_location_table)
+from .options import jakanddaxter_option_presets
 from .regions import create_regions
 from .rules import (enforce_mp_absolute_limits,
                     enforce_mp_friendly_limits,
                     enforce_sp_limits,
-                    set_orb_trade_rule)
+                    set_option_driven_rules)
 from .locs import (cell_locations as cells,
                    scout_locations as scouts,
                    special_locations as specials,
@@ -96,6 +97,9 @@ class JakAndDaxterWebWorld(WebWorld):
     tutorials = [setup_en]
     bug_report_page = "https://github.com/ArchipelaGOAL/Archipelago/issues"
 
+    rich_text_options_doc = True
+
+    options_presets = jakanddaxter_option_presets
     option_groups = [
         OptionGroup("Orbsanity", [
             options.EnableOrbsanity,
@@ -112,6 +116,42 @@ class JakAndDaxterWebWorld(WebWorld):
             options.CitizenOrbTradeAmount,
             options.OracleOrbTradeAmount,
         ]),
+        OptionGroup("Tricks & Glitches - Easy", [
+            options.AttackWithRollJump,  # Use Roll Jump instead of regular attacks to hit certain targets.
+            options.AttacklessLurkerCannons, # Shoot the lurkers with their own cannon.
+            options.SentinelBeachAttacklessPelican, # Shoot the Pelican with the cannon.
+        ], True),
+        OptionGroup("Tricks & Glitches - Medium", [
+            options.PunchUppercutScoutFlies,  # Some may be a little tricky.
+            options.GeyserRockCliffClimb, # You have to know where to jump, but the jump is not terribly difficult.
+            options.SandoverVillageCliffOrbCacheClimb, # Same here.
+            options.SentinelBeachCannonTowerClimb, # Medium with Double Jump, hard with Jump Kick only.
+            options.ForbiddenJungleElevatorSkip, # Deload glitch is easy, but hitting the loading zone can be tricky.
+            options.MistyIslandSingleJumpFarSideOrbCache, # Precise movement, but not too hard.
+            options.MistyIslandArenaFightSkip, # Drop down from top or use cannon to shoot enemies.
+            options.MistyIslandFarSideCliffSeesawSkip, # Relatively easy, but route is not obvious.
+            options.RockVillageSingleJumpOrbCache, # Precise movement, but not too hard, fast retries possible.
+            options.RockVillagePontoonSkip, # May require fast swimming, but not too tight.
+            options.KlawwCliffClimb, # Easy when out of bounds spot is known.
+            options.KlawwBoulderSkip, # Same trick as above.
+            options.BoggySwampPreciseMovement, # Mostly just taking damage on some jumps to get to the next checkpoint.
+            options.SnowyMountainEntranceClimb, # Jump onto the wall on the left and simply slide over.
+            options.SnowyMountainFlutFlutSkip, # Easily reachable by Zoom Walking.
+        ], True),
+        OptionGroup("Tricks & Glitches - Hard", [
+            options.BoostedAndExtendedUppercuts,
+            options.SentinelBeachBlueEcoSwitchSkip, # Precise movement required.
+            options.ForbiddenJungleAttacklessSpiralStumpsScoutFly, # Precise movement from temple to power cell.
+            options.MistyIslandAttacklessScoutFlies, # Some require relatively precise movement with long runback.
+            options.BoggySwampFlutFlutEscape, # Harder trick, long runback.
+            options.BoggySwampFlutFlutSkip, # Flut Flut course with only Roll Jump requires precise jumping.
+            options.SnowyMountainFlutFlutEscape,  # Escaping is easy, doing the whole level can be tricky though.
+        ], True),
+        OptionGroup("Tricks & Glitches - Very Hard", [
+            options.BoggySwampAttacklessAmbush,  # Doing the lurker ambush without attacks is annoying (and hard).
+            options.LostPrecursorCitySingleJumpSlideTubeClimb,  # Climbing the tube without attacks/moves is hard.
+            options.SnowyMountainFortGateSkip,  # Getting into the Fort without an open gate is always very hard.
+        ], True),
         OptionGroup("Traps", [
             options.FillerPowerCellsReplacedWithTraps,
             options.FillerOrbBundlesReplacedWithTraps,
@@ -133,7 +173,6 @@ class JakAndDaxterWorld(World):
     """
     # ID, name, version
     game = jak1_name
-    author: str = "massimilianodelliubaldini"
     required_client_version = (0, 5, 0)
 
     # Options
@@ -218,6 +257,19 @@ class JakAndDaxterWorld(World):
     # These functions and variables are Options-driven, keep them as instance variables here so that we don't clog up
     # the seed generation routines with options checking. So we set these once, and then just use them as needed.
     can_trade: Callable[[CollectionState, int, int | None], bool]
+
+    can_fight_or_roll_jump: Callable[[CollectionState, int], bool]
+    """Returns true if Jak can fight, including Roll Jump if the respective option is enabled."""
+
+    can_free_scout_flies: Callable[[CollectionState, int], bool]
+    """Returns true if Jak can break scout fly boxes, depending on the chosen options."""
+
+    can_do_boosted: Callable[[CollectionState, int], bool]
+    """Returns true if Jak can do a boosted, using Punch + Punch Uppercut."""
+
+    can_do_boosted_extended: Callable[[CollectionState, int], bool]
+    """Returns true if Jak can do a boosted, using Punch + Punch Uppercut + Jump Kick."""
+
     total_orbs: int = 2000
     orb_bundle_item_name: str = ""
     orb_bundle_size: int = 0
@@ -233,9 +285,6 @@ class JakAndDaxterWorld(World):
     power_cell_thresholds_minus_one: list[int]
     trap_weights: tuple[list[str], list[int]]
 
-    # UT Yaml-less flag
-    ut_can_gen_without_yaml = True
-
     # Store these dictionaries for speed improvements.
     level_to_regions: dict[str, list[JakAndDaxterRegion]]  # Contains all levels and regions.
     level_to_orb_regions: dict[str, list[JakAndDaxterRegion]]  # Contains only regions which contain orbs.
@@ -246,15 +295,6 @@ class JakAndDaxterWorld(World):
         # Initialize the level-region dictionary.
         self.level_to_regions = defaultdict(list)
         self.level_to_orb_regions = defaultdict(list)
-
-        # Implement Universal Tracker support - reset all options to those from UT's gen if applicable.
-        if hasattr(self.multiworld, "re_gen_passthrough"):
-            if jak1_name in self.multiworld.re_gen_passthrough:
-                for key, val in self.multiworld.re_gen_passthrough[jak1_name].items():
-                    try:
-                        getattr(self.options, key).value = val
-                    except AttributeError:
-                        pass
 
         # Cache the power cell threshold values for quicker reference.
         self.power_cell_thresholds = [
@@ -334,8 +374,8 @@ class JakAndDaxterWorld(World):
 
         self.trap_weights = self.options.trap_weights.weights_pair
 
-        # Options drive which trade rules to use, so they need to be setup before we create_regions.
-        set_orb_trade_rule(self)
+        # Options drive which trade rules to use and advanced logic, so they need to be setup before we create_regions.
+        set_option_driven_rules(self)
 
     # This will also set Locations, Location access rules, Region access rules, etc.
     def create_regions(self) -> None:
@@ -349,8 +389,8 @@ class JakAndDaxterWorld(World):
             # This should help speed up orbsanity calculations.
             self.level_to_orb_regions[level] = [reg for reg in self.level_to_regions[level] if reg.orb_count > 0]
 
-        # from Utils import visualize_regions
-        # visualize_regions(self.multiworld.get_region("Menu", self.player), "jakanddaxter.puml")
+        from Utils import visualize_regions
+        visualize_regions(self.multiworld.get_region("Menu", self.player), "jakanddaxter.puml")
 
     def item_data_helper(self, item: int) -> list[tuple[int, ItemClass, OrbAssoc, int]]:
         """
@@ -521,5 +561,34 @@ class JakAndDaxterWorld(World):
                                             "trap_weights",
                                             "jak_completion_condition",
                                             "require_punch_for_klaww",
+                                            # Tricks & Glitches
+                                            "boosted_and_extended_uppercuts",
+                                            "punch_uppercut_scout_flies",
+                                            "geyser_rock_cliff_climb",
+                                            "sentinel_beach_cannon_tower_climb",
+                                            "snowy_mountain_entrance_climb",
+                                            "boggy_swamp_flut_flut_escape",
+                                            "snowy_mountain_flut_flut_escape",
+                                            "snowy_mountain_flut_flut_skip",
+                                            "sandover_village_cliff_orb_cache_climb",
+                                            "attackless_lurker_cannons",
+                                            "sentinel_beach_attackless_pelican",
+                                            "attack_with_roll_jump",
+                                            "forbidden_jungle_attackless_spiral_stumps_scout_fly",
+                                            "forbidden_jungle_elevator_skip",
+                                            "misty_island_single_jump_far_side_orb_cache",
+                                            "misty_island_attackless_scout_flies",
+                                            "misty_island_arena_fight_skip",
+                                            "misty_island_far_side_cliff_seesaw_skip",
+                                            "rock_village_single_jump_orb_cache",
+                                            "rock_village_pontoon_skip",
+                                            "klaww_cliff_climb",
+                                            "klaww_boulder_skip",
+                                            "boggy_swamp_precise_movement",
+                                            "boggy_swamp_attackless_ambush",
+                                            "boggy_swamp_flut_flut_skip",
+                                            "lost_precursor_city_single_jump_slide_tube_climb",
+                                            "snowy_mountain_fort_gate_skip",
+                                            "sentinel_beach_blue_eco_switch_skip",
                                             )
         return options_dict

@@ -224,7 +224,8 @@ class FillerTrapWeight(Range):
 
 class TurnOffTraps(OptionSet):
     """Turns off specific traps from generating. Has no effect if filler_trap_weight is set to 0."""
-    valid_keys = ["Green Demon Trap", "Heave-ho Trap", "Mario Choir", "Squish Trap", "Spin Trap", "Tempo Trap"]
+    valid_keys = ["Green Demon Trap", "Heave-Ho Trap", "Mario Choir", "Squish Trap", "Spin Trap", "Tempo Trap"]
+    
 class SignRandomization(Toggle):
     """There is 1 check per level (not per sign) for reading a sign inside it. If you are generating a solo game and it fails, the logic might be too restrictive; enabling this will ease up the logic a bit since there is usually a sign right next to the start"""
 

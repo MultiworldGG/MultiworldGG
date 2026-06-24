@@ -116,6 +116,10 @@
     { "category": "dlc", "from": "Stranger Sunside Hangar", "to": "Cinder Isles", "requires": [
         { "item": "Stranger Light Modulator" }
     ] },
+    { "category": "dlc", "from": "Stranger Sunside Hangar", "to": "Cinder Isles (with Artifact)", "requires": [
+        { "location": "EotE: Find an Artifact" },
+        { "item": "Stranger Light Modulator" } // use a raft instead of the Threader, so you can carry the Artifact downriver
+    ] },
     { "category": "dlc", "from": "Stranger Sunside Hangar", "to": "Hidden Gorge", "requires": [
         { "item": "Stranger Light Modulator" }
     ] },
@@ -136,9 +140,8 @@
         { "item": "River Lowlands Painting Code" },
         { "location": "EotE: Find an Artifact" }
     ] },
-    { "category": "dlc", "from": "Cinder Isles", "to": "Starlit Cove", "requires": [
-        { "item": "Cinder Isles Painting Code" },
-        { "location": "EotE: Find an Artifact" }
+    { "category": "dlc", "from": "Cinder Isles (with Artifact)", "to": "Starlit Cove", "requires": [
+        { "item": "Cinder Isles Painting Code" }
     ] },
     { "category": "dlc", "from": "Hidden Gorge", "to": "Endless Canyon Start", "requires": [
         { "item": "Hidden Gorge Painting Code" } // HG has its own artifact, so we don't need to check for that
@@ -167,12 +170,14 @@
         { "item": "Stranger Light Modulator" }
     ] },
 
-    { "category": "dlc", "from": "Cinder Isles", "to": "Cinder Isles Symbol Room", "requires": [
-        { "region": "Starlit Cove" }, // to extinguish the dream candles that unlock the real door
+    { "category": "dlc", "from": "Starlit Cove", "to": "Starlit Cove Upper Tower Floors", "requires": [
         { "anyOf": [
             { "item": "Dream Totem Patch" }, // project the dock that adds a walkway to the tower's lower entrance
             { "item": "Raft Docks Patch" } // unless it's already there
-        ] },
+        ] }
+    ] },
+    { "category": "dlc", "from": "Cinder Isles (with Artifact)", "to": "Cinder Isles Symbol Room", "requires": [
+        { "region": "Starlit Cove Upper Tower Floors" }, // to extinguish the dream candles that unlock the real door
         // This is the one case where entering DW via The Outsider does not work, because after
         // using that fire you won't have a ship to fly back to the real world's Cinder Isles tower.
         // The only good fix I can see for this is requiring that you have access to a normal DW entrance.
@@ -198,9 +203,8 @@
     // extinguished by the dam breaking.
     // Implementing this requires a bunch of "duplicate" (After Dam Breaks) regions to express that only
     // dreamworld routes starting from the CI or HG green fires will work for this.
-    { "category": "dlc", "from": "Cinder Isles", "to": "Starlit Cove (After Dam Breaks)", "requires": [
-        { "item": "Cinder Isles Painting Code" },
-        { "location": "EotE: Find an Artifact" }
+    { "category": "dlc", "from": "Cinder Isles (with Artifact)", "to": "Starlit Cove (After Dam Breaks)", "requires": [
+        { "item": "Cinder Isles Painting Code" }
     ] },
     { "category": "dlc", "from": "Hidden Gorge", "to": "Endless Canyon (After Dam Breaks)", "requires": [
         { "item": "Hidden Gorge Painting Code" } // HG has its own artifact, so we don't need to check for that
@@ -251,7 +255,9 @@
         { "item": "Alarm Bypass Patch" }
     ] },
 
+    { "category": "hn1", "from": "Timber Hearth Village", "to": "Hearth's Neighbor Museum Plate", "requires": [] },
     { "category": "hn1", "from": "Space", "to": "Lonely Hermit", "requires": [
+        { "region": "Hearth's Neighbor Museum Plate" }, // look at the Museum Plate to unlock the HN1 system
         { "item": "Spacesuit" } // we don't have proper HN1 suitless logic, so simply require suit for all of it
     ] },
 
@@ -418,6 +424,7 @@
 
     // Alternate way to navigate the Stranger.
     { "category": "eh&dlc", "from": "Stranger Sunside Hangar", "to": "Stranger via Threader", "requires": [ { "item": "Threader" } ] },
+    // We distinguish CI from CI (with Artifact) because if you can only get to CI via Threader, you can't carry an Artifact with you
     { "category": "eh&dlc", "from": "Stranger via Threader", "to": "Cinder Isles", "requires": [] },
     { "category": "eh&dlc", "from": "Stranger via Threader", "to": "Hidden Gorge", "requires": [] },
     { "category": "eh&dlc", "from": "Stranger via Threader", "to": "Reservoir", "requires": [] },

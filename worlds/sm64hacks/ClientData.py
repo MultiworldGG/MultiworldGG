@@ -37,7 +37,7 @@ choirPatchPtr = 0x27FF00
 choirHookPtr = 0x3191E0
 starPatchPtr = 0x279C88
 moveHookPtr = 0x252CFC
-movePatchPtr = 0x1F1100
+movePatchPtr = 0x200100
 
 burningHookPtr = 0x24EC1C
 treeHookPtr1 = 0x25E64C
@@ -57,7 +57,7 @@ coinPtr = 0x33B218
 coinVisualPtr = 0x33B262
 
 livesPtr = 0x33B21C
-stevePtr = 0x1F1000
+stevePtr = 0x200000
 
 lastImpactPtr1 = 0x2C6D24
 lastImpactPtr2 = 0x2B3028

@@ -1,7 +1,6 @@
 import os
 import orjson
 import shutil
-import tempfile
 from dataclasses import dataclass
 from typing import Any, ClassVar, Dict, List, Optional
 from worlds.Files import APProcedurePatch, AutoPatchExtensionRegister
@@ -11,6 +10,7 @@ from settings import get_settings
 from .Hints import sanitize
 from .Items import item_table, APItem
 from .Options import ALBWOptions, create_randomizer_settings
+from .Utils import get_temp_path
 from albwrandomizer import ArchipelagoItem, ArchipelagoInfo, logging_on, randomize_pre_fill, set_custom_hints
 
 class PatchItemInfo:
@@ -31,8 +31,8 @@ class PatchInfo:
     hints: List[str]
     bow_of_light_hint: str
 
-    cur_version: ClassVar[Version] = Version(0, 2, 3)
-    min_compatible_version: ClassVar[Version] = Version(0, 2, 0)
+    cur_version: ClassVar[Version] = Version(0, 3, 1)
+    min_compatible_version: ClassVar[Version] = Version(0, 3, 0)
 
     def __init__(
         self,
@@ -66,7 +66,7 @@ class PatchInfo:
             "bow_of_light_hint": self.bow_of_light_hint,
         })
     
-def from_json(json: str) -> PatchInfo:
+def from_json(json: bytes) -> PatchInfo:
     info = orjson.loads(json)
 
     # Check patch version
@@ -142,32 +142,32 @@ def patch_albw_inner(caller: ALBWProcedurePatch, rom: bytes, patch_name: str) ->
     seed_info.build_layout(check_map)
     set_custom_hints(seed_info, patch_info.hints, patch_info.bow_of_light_hint)
 
-    with tempfile.TemporaryDirectory() as output_directory:
-        # Create the patch
-        output_subdirectory = os.path.join(output_directory, f"tmp_apalbw_{caller.player}")
-        os.mkdir(output_subdirectory)
-        seed_info.patch(caller.rom_file, output_subdirectory)
+    # Create the patch
+    temp_path = get_temp_path()
+    output_subdirectory = os.path.join(temp_path, f"tmp_apalbw_{caller.player}")
+    os.mkdir(output_subdirectory)
+    seed_info.patch(caller.rom_file, output_subdirectory)
 
-        # Optionally install the patch
-        mod_path = getattr(get_settings().albw_settings, "mod_path", "")
-        if mod_path != user_path(""):
-            if os.path.exists(mod_path):
-                try:
-                    albw_mod_path = os.path.join(mod_path, GAME_ID)
-                    if os.path.exists(albw_mod_path):
-                        shutil.rmtree(albw_mod_path)
-                    tmp_mod_path = os.path.join(output_subdirectory, GAME_ID)
-                    shutil.copytree(tmp_mod_path, albw_mod_path)
-                except Exception as err:
-                    print(f"Error installing mod: {err}")
-            else:
-                print(f"Could not install mod, path {mod_path} does not exist")
+    # Optionally install the patch
+    mod_path = getattr(get_settings().albw_settings, "mod_path", "")
+    if mod_path != user_path(""):
+        if os.path.exists(mod_path):
+            try:
+                albw_mod_path = os.path.join(mod_path, GAME_ID)
+                if os.path.exists(albw_mod_path):
+                    shutil.rmtree(albw_mod_path)
+                tmp_mod_path = os.path.join(output_subdirectory, GAME_ID)
+                shutil.copytree(tmp_mod_path, albw_mod_path)
+            except Exception as err:
+                print(f"Error installing mod: {err}")
+        else:
+            print(f"Could not install mod, path {mod_path} does not exist")
 
-        # Put the patch in a zip file
-        output_path = os.path.join(output_directory, f"tmp_apalbw_{caller.player}.zip")
-        shutil.make_archive(output_subdirectory, "zip", output_subdirectory)
+    # Put the patch in a zip file
+    output_path = os.path.join(temp_path, f"tmp_apalbw_{caller.player}.zip")
+    shutil.make_archive(output_subdirectory, "zip", output_subdirectory)
 
-        # Output the contents of the zip file
-        with open(output_path, "rb") as output_file:
-            output = output_file.read()
-        return output
+    # Output the contents of the zip file
+    with open(output_path, "rb") as output_file:
+        output = output_file.read()
+    return output

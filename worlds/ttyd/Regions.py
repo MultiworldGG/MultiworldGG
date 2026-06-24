@@ -109,10 +109,10 @@ def get_region_connections_dict(world: "TTYDWorld") -> dict[tuple[str, str], typ
     }
 
     if world.options.blue_pipe_toggle:
-        connections[("Rogueport Sewers", "Petal Meadows (Right)")] = lambda state: StateLogic.super_blue_pipes(state, world.player)
-        connections[("Rogueport Sewers", "Boggly Woods")] = lambda state: StateLogic.super_blue_pipes(state, world.player)
-        connections[("Rogueport Sewers", "Keelhaul Key")] = lambda state: StateLogic.ultra_blue_pipes(state, world.player)
-        connections[("Rogueport Sewers", "Poshley Heights")] = lambda state: StateLogic.ultra_blue_pipes(state, world.player)
+        connections[("Rogueport Sewers", "Petal Meadows (Right)")] = lambda state: StateLogic.super_blue_pipes(state, world.player) or StateLogic.petal_left(state, world.player)
+        connections[("Rogueport Sewers", "Boggly Woods")] = lambda state: StateLogic.super_blue_pipes(state, world.player) or StateLogic.boggly_woods(state, world.player)
+        connections[("Rogueport Sewers", "Keelhaul Key")] = lambda state: StateLogic.ultra_blue_pipes(state, world.player) or StateLogic.keelhaul_key(state, world.player)
+        connections[("Rogueport Sewers", "Poshley Heights")] = lambda state: StateLogic.ultra_blue_pipes(state, world.player) or (state.can_reach("Rogueport (Westside)", "Region", world.player) and StateLogic.excess_express(state, world.player) and StateLogic.riverside(state, world.player) and StateLogic.poshley_heights(state, world.player))
 
     return connections
 

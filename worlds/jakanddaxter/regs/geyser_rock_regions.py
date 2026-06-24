@@ -20,10 +20,13 @@ def build_regions(level_name: str, world: "JakAndDaxterWorld") -> JakAndDaxterRe
     cliff = JakAndDaxterRegion("Cliff", player, multiworld, level_name, 2)
     cliff.add_cell_locations([94])
 
-    main_area.connect(cliff, rule=lambda state:
-                      state.has("Double Jump", player)
-                      or state.has_all(("Crouch", "Crouch Jump"), player)
-                      or state.has_all(("Crouch", "Crouch Uppercut"), player))
+    if options.geyser_rock_cliff_climb:
+        main_area.connect(cliff)
+    else:
+        main_area.connect(cliff, rule=lambda state:
+                          state.has("Double Jump", player)
+                          or state.has_all(("Crouch", "Crouch Jump"), player)
+                          or state.has_all(("Crouch", "Crouch Uppercut"), player))
 
     cliff.connect(main_area)  # Jump down or ride blue eco elevator.
 

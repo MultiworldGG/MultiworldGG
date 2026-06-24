@@ -239,11 +239,12 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
 
             # Locations Checked
             if "checked_locations" in _args:
-                ui_locations_checked_update: Set[ZorkGrandInquisitorLocations] = set(
+                locations_checked: Set[ZorkGrandInquisitorLocations] = set(
                     [self.id_to_locations[location_id] for location_id in _args["checked_locations"]]
                 )
 
-                self.ui_locations_checked |= ui_locations_checked_update
+                self.game_controller.completed_locations |= locations_checked
+                self.ui_locations_checked |= locations_checked
 
             # UI Tabs
             self.ui.update_tabs()

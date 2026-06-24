@@ -152,16 +152,6 @@ missable_location_grant_conditions_data: Dict[
             item_conditions=(ZorkGrandInquisitorItems.POUCH_OF_ZORKMIDS,),
         )
     ,
-    ZorkGrandInquisitorLocations.MEAD_LIGHT:
-        ZorkGrandInquisitorMissableLocationGrantConditionsData(
-            game_location_condition="pe1e",
-            location_condition=(
-                ZorkGrandInquisitorLocations.FIRE_FIRE,
-                ZorkGrandInquisitorLocations.WANT_SOME_RYE_COURSE_YA_DO,
-            ),
-            item_conditions=(ZorkGrandInquisitorItems.MEAD_LIGHT,),
-        )
-    ,
     ZorkGrandInquisitorLocations.MUSHROOM_HAMMERED:
         ZorkGrandInquisitorMissableLocationGrantConditionsData(
             game_location_condition="dg3e",
@@ -184,6 +174,13 @@ missable_location_grant_conditions_data: Dict[
                 ZorkGrandInquisitorItems.WELL_ROPE,
                 ZorkGrandInquisitorItems.SPELL_GLORF,
             ),
+        )
+    ,
+    ZorkGrandInquisitorLocations.SPELL_CHECK_COMPLETE:
+        ZorkGrandInquisitorMissableLocationGrantConditionsData(
+            game_location_condition="tp2g",
+            location_condition=(ZorkGrandInquisitorLocations.IMBUE_BEBURTT,),
+            item_conditions=None,
         )
     ,
     ZorkGrandInquisitorLocations.TALK_TO_ME_GRAND_INQUISITOR:
@@ -259,16 +256,6 @@ missable_location_grant_conditions_data: Dict[
             game_location_condition="pe20",
             location_condition=(ZorkGrandInquisitorLocations.HELP_ME_CANT_BREATHE,),
             item_conditions=None,
-        )
-    ,
-    ZorkGrandInquisitorLocations.ZIMDOR_IS_UNDAMAGED:
-        ZorkGrandInquisitorMissableLocationGrantConditionsData(
-            game_location_condition="tp4g",
-            location_condition=(ZorkGrandInquisitorLocations.WANT_SOME_RYE_COURSE_YA_DO,),
-            item_conditions=(
-                ZorkGrandInquisitorItems.ZIMDOR_SCROLL,
-                ZorkGrandInquisitorItems.HOTSPOT_SPELL_CHECKER,
-            ),
         )
     ,
 }

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import io
 import pkgutil
@@ -65,6 +65,14 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
     information_label: Label
     shadow_pegs_label: Label
 
+    progressive_starting_balls_all: int
+    progressive_starting_balls_half: int
+
+    level_clears_available_label: Label
+    target_scores_mid_available_label: Label
+    target_scores_high_available_label: Label
+    full_clears_available_label: Label
+
     level_information_level_image: Image
     level_information_master_image: Image
     level_information_title: Label
@@ -84,6 +92,9 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
     orange_peg_combo_label: Label
     peg_combo_label: Label
     pegs_cleared: Label
+
+    last_seen_level: Optional[PeggleNightsLevels]
+    last_seen_master: Optional[PeggleNightsCharacters]
 
     def __init__(self, ctx: PeggleNightsContext) -> None:
         super().__init__(orientation="vertical", size_hint_y=None, height="200dp", spacing="8dp",)
@@ -119,7 +130,7 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
             ),
             markup=True,
             size_hint_y=None,
-            height="60dp",
+            height="40dp",
             halign="left",
             valign="middle",
         )
@@ -127,6 +138,90 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
         self.shadow_pegs_label.bind(size=lambda label, size: setattr(label, "text_size", size))
 
         self.add_widget(self.shadow_pegs_label)
+
+        # Logic Thresholds
+        self.progressive_starting_balls_all = self.ctx.game_controller.option_maximum_starting_ball_count - 5
+        self.progressive_starting_balls_half = round((self.ctx.game_controller.option_maximum_starting_ball_count - 5) / 2)
+
+        logic_thresholds_layout: BoxLayout = BoxLayout(
+            orientation="horizontal",
+            size_hint_y=None,
+            height="80dp",
+            spacing="8dp",
+        )
+
+        # Target Scores (Mid) Available
+        self.target_scores_mid_available_label: Label = Label(
+            text=(
+                f"[b]Scores (Mid) Available[/b]\n"
+                f"[color=00FA9A]0[/color] / [color=00FA9A]2[/color] Prog. Fever Meters\n"
+                f"[color=00FA9A]0[/color] / [color=00FA9A]{self.progressive_starting_balls_half}[/color] Prog. Start. Balls"
+            ),
+            markup=True,
+            size_hint_y=None,
+            height="80dp",
+            halign="left",
+            valign="middle",
+        )
+
+        self.target_scores_mid_available_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+        logic_thresholds_layout.add_widget(self.target_scores_mid_available_label)
+
+        # Target Scores (High) Available
+        self.target_scores_high_available_label: Label = Label(
+            text=(
+                f"[b]Scores (High) Available[/b]\n"
+                f"[color=00FA9A]0[/color] / [color=00FA9A]4[/color] Prog. Fever Meters\n"
+                f"[color=00FA9A]0[/color] / [color=00FA9A]{self.progressive_starting_balls_all}[/color] Prog. Start. Balls"
+            ),
+            markup=True,
+            size_hint_y=None,
+            height="80dp",
+            halign="left",
+            valign="middle",
+        )
+
+        self.target_scores_high_available_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+        logic_thresholds_layout.add_widget(self.target_scores_high_available_label)
+
+        # Level Clears Available
+        self.level_clears_available_label: Label = Label(
+            text=(
+                f"[b]Level Clears Available[/b]\n"
+                f"[color=00FA9A]0[/color] / [color=00FA9A]4[/color] Prog. Fever Meters"
+            ),
+            markup=True,
+            size_hint_y=None,
+            height="60dp",
+            halign="left",
+            valign="middle",
+        )
+
+        self.level_clears_available_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+        logic_thresholds_layout.add_widget(self.level_clears_available_label)
+
+        # Full Clears Available
+        if self.ctx.game_controller.option_include_full_clears:
+            self.full_clears_available_label: Label = Label(
+                text=(
+                    f"[b]Full Clears Available[/b]\n"
+                    f"[color=00FA9A]0[/color] / [color=00FA9A]{self.progressive_starting_balls_all}[/color] Prog. Start. Balls"
+                ),
+                markup=True,
+                size_hint_y=None,
+                height="60dp",
+                halign="left",
+                valign="middle",
+            )
+
+            self.full_clears_available_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+            logic_thresholds_layout.add_widget(self.full_clears_available_label)
+
+        self.add_widget(logic_thresholds_layout)
 
         # Level Information
         level_information_layout: BoxLayout = BoxLayout(
@@ -433,6 +528,9 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
 
         self.add_widget(self.pegs_cleared)
 
+        self.last_seen_level = None
+        self.last_seen_master = None
+
     def update(self) -> None:
         ## Received Items
         received_items: Dict[str, int] = dict()
@@ -476,6 +574,32 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
             f"([color=888888]{self.ctx.game_controller.option_shadow_pegs_total} total[/color])"
         )
 
+        fever_meters_obtained: int = received_items.get(PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value, 0)
+        balls_obtained: int = received_items.get(PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value, 0)
+
+        self.target_scores_mid_available_label.text = (
+            f"[b]Scores (Mid) Available[/b]\n"
+            f"[color=00FA9A]{fever_meters_obtained}[/color] / [color=00FA9A]2[/color] Prog. Fever Meters\n"
+            f"[color=00FA9A]{balls_obtained}[/color] / [color=00FA9A]{self.progressive_starting_balls_half}[/color] Prog. Start. Balls"
+        )
+
+        self.target_scores_high_available_label.text = (
+            f"[b]Scores (High) Available[/b]\n"
+            f"[color=00FA9A]{fever_meters_obtained}[/color] / [color=00FA9A]4[/color] Prog. Fever Meters\n"
+            f"[color=00FA9A]{balls_obtained}[/color] / [color=00FA9A]{self.progressive_starting_balls_all}[/color] Prog. Start. Balls"
+        )
+
+        self.level_clears_available_label.text = (
+            f"[b]Level Clears Available[/b]\n"
+            f"[color=00FA9A]{fever_meters_obtained}[/color] / [color=00FA9A]4[/color] Prog. Fever Meters"
+        )
+
+        if self.ctx.game_controller.option_include_full_clears:
+            self.full_clears_available_label.text = (
+                f"[b]Full Clears Available[/b]\n"
+                f"[color=00FA9A]{balls_obtained}[/color] / [color=00FA9A]{self.progressive_starting_balls_all}[/color] Prog. Start. Balls"
+            )
+
         # Level
         if game_state is not None:
             if game_state.context == PeggleNightsContexts.INVALID:
@@ -502,6 +626,9 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
                 self.orange_peg_combo_label.text = "[b]Orange Peg Combo:[/b] 0"
                 self.peg_combo_label.text = "[b]Peg Combo:[/b] 0"
                 self.pegs_cleared.text = "[b]Pegs Cleared:[/b] 0"
+
+                self.last_seen_level = None
+                self.last_seen_master = None
             else:
                 if game_state.current_level is not None and game_state.current_character is not None:
                     level_unlock: str = f"Level Unlock: {game_state.current_level.value}"
@@ -564,25 +691,31 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
                         is_master_unlocked = True
 
                     # Level Image
-                    stage, stage_level = level_to_stage_levels[game_state.current_level]
-                    level_string = f"{stage + 1}-{stage_level + 1}"
+                    if self.last_seen_level != game_state.current_level:
+                        stage, stage_level = level_to_stage_levels[game_state.current_level]
+                        level_string = f"{stage + 1}-{stage_level + 1}"
 
-                    image_path: str = f"assets/{level_string}.png"
-                    image_bytes: bytes = pkgutil.get_data(client_gui.__name__, image_path)
+                        image_path: str = f"assets/{level_string}.png"
+                        image_bytes: bytes = pkgutil.get_data(client_gui.__name__, image_path)
 
-                    image: CoreImage = CoreImage(io.BytesIO(image_bytes), ext="png")
+                        image: CoreImage = CoreImage(io.BytesIO(image_bytes), ext="png")
 
-                    self.level_information_level_image.texture = image.texture
-                    self.level_information_level_image.opacity = 1.0
+                        self.level_information_level_image.texture = image.texture
+                        self.level_information_level_image.opacity = 1.0
+
+                        self.last_seen_level = game_state.current_level
 
                     # Master Image
-                    image_path: str = f"assets/{character_to_ids[game_state.current_character]}.png"
-                    image_bytes: bytes = pkgutil.get_data(client_gui.__name__, image_path)
+                    if self.last_seen_master != game_state.current_character:
+                        image_path: str = f"assets/{character_to_ids[game_state.current_character]}.png"
+                        image_bytes: bytes = pkgutil.get_data(client_gui.__name__, image_path)
 
-                    image: CoreImage = CoreImage(io.BytesIO(image_bytes), ext="png")
+                        image: CoreImage = CoreImage(io.BytesIO(image_bytes), ext="png")
 
-                    self.level_information_master_image.texture = image.texture
-                    self.level_information_master_image.opacity = 1.0
+                        self.level_information_master_image.texture = image.texture
+                        self.level_information_master_image.opacity = 1.0
+
+                        self.last_seen_master = game_state.current_character
 
                     # Level Title
                     self.level_information_title.text = f"[b]{game_state.current_level.value}[/b]"
