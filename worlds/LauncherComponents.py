@@ -21,9 +21,10 @@ try:
 except ImportError:
     apname = "Archipelago"
 
-_LAUNCHER_CACHE_PATH = local_path("data", "world_launcher_cache.json.gz")
+_LAUNCHER_CACHE_PATH = user_path("data", "world_launcher_cache.json.gz")
 _DEFAULT_ICON_PATH = local_path("data", "icon.png")
 _LAUNCHER_ICON_CACHE_DIR = os.path.join(tempfile.gettempdir(), "mwgg_launcher_icons")
+_LAUNCHER_CACHE_SCHEMA = 2
 
 _COMPONENT_ORIGIN_ATTRIBUTE = "_mwgg_component_origin"
 _COMPONENT_ORIGIN_BUILTIN = "builtin"
@@ -441,6 +442,55 @@ def _serialize_component(component: Component) -> dict[str, Any]:
     }
 
 
+def _world_source_fingerprint(world_source: Any) -> dict[str, Any]:
+    path = getattr(world_source, "path", "")
+    resolved_path = getattr(world_source, "resolved_path", path)
+    fingerprint: dict[str, Any] = {
+        "path": path,
+        "is_zip": bool(getattr(world_source, "is_zip", False)),
+        "relative": bool(getattr(world_source, "relative", True)),
+    }
+
+    try:
+        stat_result = os.stat(resolved_path)
+    except OSError:
+        fingerprint["missing"] = True
+        return fingerprint
+
+    fingerprint.update({
+        "mtime_ns": stat_result.st_mtime_ns,
+        "size": stat_result.st_size,
+    })
+
+    if os.path.isdir(resolved_path):
+        marker_files: list[dict[str, Any]] = []
+        for filename in ("__init__.py", "__init__.pyc", "archipelago.json"):
+            file_path = os.path.join(resolved_path, filename)
+            try:
+                file_stat = os.stat(file_path)
+            except OSError:
+                continue
+            marker_files.append({
+                "path": filename,
+                "mtime_ns": file_stat.st_mtime_ns,
+                "size": file_stat.st_size,
+            })
+        fingerprint["files"] = marker_files
+
+    return fingerprint
+
+
+def _current_world_source_fingerprints() -> list[dict[str, Any]]:
+    worlds_module = sys.modules.get("worlds")
+    return [
+        _world_source_fingerprint(world_source)
+        for world_source in sorted(
+            getattr(worlds_module, "world_sources", []),
+            key=lambda ws: getattr(ws, "path", ""),
+        )
+    ]
+
+
 def _load_launcher_cache(check_freshness: bool = True) -> dict[str, Any] | None:
     if not os.path.isfile(_LAUNCHER_CACHE_PATH):
         return None
@@ -457,16 +507,20 @@ def _load_launcher_cache(check_freshness: bool = True) -> dict[str, Any] | None:
     if not isinstance(serialized_components, list) or not isinstance(cached_icon_paths, dict):
         return None
 
+    if payload.get("schema") != _LAUNCHER_CACHE_SCHEMA:
+        if check_freshness:
+            logging.debug("Launcher cache schema changed, ignoring.")
+            return None
+        payload["schema"] = _LAUNCHER_CACHE_SCHEMA
+
     if check_freshness:
-        cached_sources = payload.get("world_sources")
-        if isinstance(cached_sources, list):
-            worlds_module = sys.modules.get("worlds")
-            current_sources = sorted(
-                ws.path for ws in getattr(worlds_module, "world_sources", [])
-            )
-            if sorted(cached_sources) != current_sources:
-                logging.debug("Launcher cache is stale (world sources changed), ignoring.")
-                return None
+        cached_sources = payload.get("world_source_fingerprints")
+        if not isinstance(cached_sources, list):
+            logging.debug("Launcher cache has no world source fingerprints, ignoring.")
+            return None
+        if cached_sources != _current_world_source_fingerprints():
+            logging.debug("Launcher cache is stale (world sources changed), ignoring.")
+            return None
 
     sanitized_icon_paths: dict[str, str] = {}
     for icon_key, icon_path in cached_icon_paths.items():
@@ -726,9 +780,11 @@ def write_launcher_cache() -> None:
         if isinstance(icon_key, str) and isinstance(icon_path, str)
     }
     _write_cache_payload({
+        "schema": _LAUNCHER_CACHE_SCHEMA,
         "components": serialized_components,
         "icon_paths": serialized_icon_paths,
         "world_sources": world_source_paths,
+        "world_source_fingerprints": _current_world_source_fingerprints(),
     })
 
 
@@ -764,9 +820,11 @@ def _merge_installed_world_components_into_cache(new_components: list[Component]
     })
 
     _write_cache_payload({
+        "schema": _LAUNCHER_CACHE_SCHEMA,
         "components": list(merged_components.values()),
         "icon_paths": merged_icon_paths,
         "world_sources": world_source_paths,
+        "world_source_fingerprints": _current_world_source_fingerprints(),
     })
 
 

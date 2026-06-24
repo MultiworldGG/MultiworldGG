@@ -233,7 +233,7 @@ def home_path(*path: str) -> str:
                 os.makedirs(home_path.cached_path, 0o700, exist_ok=True)
     elif sys.platform == 'darwin':
         import platformdirs
-        home_path.cached_path = platformdirs.user_data_dir("Archipelago", False)
+        home_path.cached_path = platformdirs.user_data_dir(instance_name, False)
         os.makedirs(home_path.cached_path, 0o700, exist_ok=True)
     else:
         # not implemented

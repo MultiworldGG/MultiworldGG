@@ -78,7 +78,7 @@ class WorldSource:
             return False
 
 
-# find potential world containers, currently folders and zip-importable .apworld's
+# find potential world containers; custom worlds are .apworld-only, local built-ins may be folders
 def _scan_world_sources() -> List[WorldSource]:
     scanned_world_sources: List[WorldSource] = []
     for folder in (folder for folder in (user_folder, local_folder) if folder):
@@ -88,6 +88,9 @@ def _scan_world_sources() -> List[WorldSource]:
             if not entry.name.startswith(("_", ".")):
                 file_name = entry.name if relative else os.path.join(folder, entry.name)
                 if entry.is_dir():
+                    if not relative:
+                        logging.warning(f"excluding {entry.name} from custom world sources because it is not an .apworld file")
+                        continue
                     if os.path.isfile(os.path.join(entry.path, '__init__.py')):
                         scanned_world_sources.append(WorldSource(file_name, relative=relative))
                     elif os.path.isfile(os.path.join(entry.path, '__init__.pyc')):

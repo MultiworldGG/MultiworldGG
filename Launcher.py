@@ -531,19 +531,6 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
 
         def _background_refresh_worker(self) -> None:
             import worlds
-            import os
-            import shutil
-
-            # If frozen, check for cache in install dir and copy to user dir
-            if is_frozen():
-                from worlds.LauncherComponents import _LAUNCHER_CACHE_PATH
-                install_cache = local_path("data", "world_launcher_cache.json.gz")
-                if not os.path.isfile(_LAUNCHER_CACHE_PATH) and os.path.isfile(install_cache):
-                    try:
-                        os.makedirs(os.path.dirname(_LAUNCHER_CACHE_PATH), exist_ok=True)
-                        shutil.copy2(install_cache, _LAUNCHER_CACHE_PATH)
-                    except Exception as exc:
-                        logging.warning(f"Failed to copy cache from install dir: {exc}")
 
             cache_exists = worlds.has_launcher_cache()
 
