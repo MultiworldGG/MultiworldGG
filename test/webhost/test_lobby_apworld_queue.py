@@ -485,6 +485,64 @@ class TestLobbyApworldQueue(TestBase):
             self.assertIsNotNone(LobbyApworld.get(id=apworld_id))
             self.assertTrue(os.path.exists(apworld_path))
 
+    def test_download_package_names_apworlds_by_game_except_manuals(self) -> None:
+        ids = self._create_open_lobby()
+        with db_session:
+            lobby = Lobby.get(id=ids["lobby_id"])
+            host_player = LobbyPlayer.get(session_id=self.host_session, lobby=lobby)
+            host_yaml = LobbyYaml.get(id=ids["host_yaml_id"])
+            manual_yaml = LobbyYaml(
+                lobby=lobby,
+                player=host_player,
+                filename="manual.yaml",
+                yaml_player_name="ManualSlot",
+                yaml_game="Manual_CoolGame",
+                is_custom=True,
+                requires_game_version=None,
+                content=b"game: Manual_CoolGame\nname: ManualSlot\n",
+            )
+            flush()
+
+            apworld_dir = os.path.join(self.temp_apworld_dir, str(lobby.id))
+            os.makedirs(apworld_dir, exist_ok=True)
+            game_apworld_path = os.path.join(apworld_dir, "uploaded-name.apworld")
+            manual_apworld_path = os.path.join(apworld_dir, "manual-upload.apworld")
+            game_apworld_bytes = _make_apworld_bytes("GameX", "2.0.0")
+            manual_apworld_bytes = _make_apworld_bytes("Manual_CoolGame", "2.0.0")
+            with open(game_apworld_path, "wb") as apworld_file:
+                apworld_file.write(game_apworld_bytes)
+            with open(manual_apworld_path, "wb") as apworld_file:
+                apworld_file.write(manual_apworld_bytes)
+
+            LobbyApworld(
+                lobby=lobby,
+                yaml=host_yaml,
+                game_name="GameX",
+                original_filename="uploaded-name.apworld",
+                storage_path=game_apworld_path,
+                file_size=len(game_apworld_bytes),
+                world_version="2.0.0",
+            )
+            LobbyApworld(
+                lobby=lobby,
+                yaml=manual_yaml,
+                game_name="Manual_CoolGame",
+                original_filename="Manual_Uploaded_Name.apworld",
+                storage_path=manual_apworld_path,
+                file_size=len(manual_apworld_bytes),
+                world_version="2.0.0",
+            )
+
+        response = self.host_client.get(f"/api/lobby/{to_url(ids['lobby_id'])}/download-package")
+        self.assertEqual(response.status_code, 200, response.get_data(as_text=True))
+
+        with zipfile.ZipFile(io.BytesIO(response.get_data())) as package:
+            names = set(package.namelist())
+
+        self.assertIn("custom_worlds/GameX.apworld", names)
+        self.assertNotIn("custom_worlds/uploaded-name.apworld", names)
+        self.assertIn("custom_worlds/Manual_Uploaded_Name.apworld", names)
+
     def test_reopen_requires_owner(self) -> None:
         ids = self._create_open_lobby()
         with db_session:

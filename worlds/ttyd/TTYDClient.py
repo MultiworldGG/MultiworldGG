@@ -18,6 +18,12 @@ import typing
 import settings
 import Patch
 import Utils
+
+try:
+    from Utils import instance_name as apname
+except ImportError:
+    apname = "Archipelago"
+    
 from CommonClient import ClientCommandProcessor, get_base_parser, gui_enabled, logger, server_loop
 from NetUtils import NetworkItem, ClientStatus
 from . import Ghosts
@@ -391,7 +397,7 @@ class TTYDContext(cmmCtx):
         from kvui import GameManager
         class TTYDManager(GameManager):
             logging_pairs = [("Client", "Archipelago")]
-            base_title = "Archipelago TTYD Client"
+            base_title = f"{apname} TTYD Client"
         if not _check_universal_tracker_version():
             return TTYDManager
         class TrackerManager(super().make_gui()):

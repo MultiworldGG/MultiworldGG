@@ -1347,10 +1347,23 @@ class HintDistribution(Choice):
     The Async hint distribution is intended for async multiworlds. It removes Way of the Hero hints to improve generation times, since they are not very useful in asyncs."""
     display_name = "Hint Distribution"
     option_balanced = 0
+    option_battle_royale = 10
+    option_bingo = 1
+    option_chaos = 2
+    option_chaos_no_goal = 3
+    option_coop = 6
+    option_ddr = 11
+    option_important_checks = 12
+    option_league = 13
+    option_mw_path = 14
+    option_mw_woth = 15
     option_scrubs = 4
+    option_sgl = 16
     option_strong = 5
+    option_tournament = 17
     option_useless = 7
     option_very_strong = 8
+    option_very_strong_magic = 18
     option_async = 9
     default = 9
 

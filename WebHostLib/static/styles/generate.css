@@ -8,6 +8,7 @@
 
 #generate-game{
     width: 990px;
+    max-width: calc(100vw - 32px);
     min-height: 360px;
     text-align: center;
     margin-bottom: 50px;
@@ -29,25 +30,56 @@
 }
 
 #generate-game-tables-container{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 18px;
+    align-items: start;
+}
+
+#generate-game-tables-container .table-wrapper {
+    min-width: 0;
 }
 
 .table-wrapper select {
-    width: 200px;
+    box-sizing: border-box;
+    width: 230px;
+    max-width: 100%;
+    padding-right: 0.75rem;
+    text-overflow: ellipsis;
 }
 
 .table-wrapper input:not([type]){
-    width: 200px;
+    box-sizing: border-box;
+    width: 230px;
+    max-width: 100%;
 }
 
 #generate-game-form-wrapper table td{
     text-align: left;
     padding-right: 0.5rem;
     vertical-align: top;
+}
+
+#generate-game-form-wrapper table td:first-child{
+    width: 205px;
+}
+
+#generate-game-form-wrapper table td:last-child{
     width: 230px;
+}
+
+#generate-game-form-wrapper table td:first-child{
+    white-space: nowrap;
+}
+
+#generate-game-form-wrapper input[type="number"]{
+    width: 80px;
+}
+
+@media (max-width: 900px) {
+    #generate-game-tables-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 #generate-form-button-row{

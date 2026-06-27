@@ -1475,24 +1475,10 @@ def patch_rom(world, rom):
         new_message = f"\x08Princess Ruto got \x01{reward_text}!\x01But why Princess Ruto?\x02"
     update_message_by_id(messages, 0x4050, new_message)
 
-    # Set Dungeon Reward Actor in Jabu Jabu to be accurate
-    # Vanilla and MQ Jabu Jabu addresses are the same for this object and actor
+    # Set the item model shown before Big Octo.
+    # Keep the underlying Demo_Effect actor as vanilla Zora Sapphire so the
+    # pickup cutscene still removes it correctly.
     if location is not None and location.item is not None: #TODO make actor invisible if no item?
-        jabu_item = location.item
-        if isinstance(jabu_item, OOTItem) and jabu_item.type == 'DungeonReward':
-            jabu_stone_object = jabu_item.special['object_id']
-            rom.write_int16(0x277D068, jabu_stone_object)
-            rom.write_int16(0x277D168, jabu_stone_object)
-            jabu_stone_type = jabu_item.special['actor_type']
-            rom.write_byte(0x277D0BB, jabu_stone_type)
-            rom.write_byte(0x277D19B, jabu_stone_type)
-            jabu_actor_type = jabu_item.special['actor_type']
-            set_jabu_stone_actors(rom, jabu_actor_type)
-            # Also set the right object for the actor, since medallions and stones require different objects
-            # MQ is handled separately, as we include both objects in the object list in mqu.json (Scene 2, Room 6)
-            if not world.dungeon_mq['Jabu Jabus Belly']:
-                rom.write_int16(0x277D068, jabu_stone_object)
-                rom.write_int16(0x277D168, jabu_stone_object)
         entry = get_override_entry(world, location)
         if entry is not None:
             rom.write_bytes(rom.sym('CFG_BIGOCTO_OVERRIDE_KEY'),

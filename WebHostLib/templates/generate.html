@@ -39,7 +39,7 @@
                 {%- endif -%}
             </p>
             <div id="generate-game-form-wrapper">
-                <form id="generate-game-form" method="post" enctype="multipart/form-data">
+                <form id="generate-game-form" method="post" enctype="multipart/form-data" data-race="{{ 1 if race else 0 }}">
                     <div id="generate-game-tables-container">
                         <div class="table-wrapper">
                         <table>
@@ -83,6 +83,20 @@
                                             <option value="enabled">Manual !collect</option>
                                             <option value="disabled">Disabled</option>
                                         </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label for="release_threshold">Release Threshold:
+                                            <span class="interactive" data-tooltip="Minimum percentage of locations a player must check before !release or !collect can be used. Also applies to automatic release and collect.">
+                                                (?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="release_threshold" id="release_threshold"
+                                               min="0" max="100" step="1" value="0" required>%
                                     </td>
                                 </tr>
 
@@ -155,10 +169,10 @@ Warning: playthrough can take a significant amount of time for larger multiworld
                                             {% if race -%}
                                                 <option value="0">Disabled in Race mode</option>
                                             {%- else -%}
-                                                <option value="3">Enabled with playthrough and traversal</option>
+                                                <option selected="selected" value="3">Enabled with playthrough and traversal</option>
                                                 <option value="2">Enabled with playthrough</option>
                                                 <option value="1">Enabled</option>
-                                                <option selected="selected" value="0">Disabled</option>
+                                                <option value="0">Disabled</option>
                                             {%- endif -%}
                                         </select>
                                     </td>

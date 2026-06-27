@@ -3,13 +3,10 @@
 ## Logiciel Exigé
 
 - [Inscryption](https://store.steampowered.com/app/1092790/Inscryption/)
-- Pour une installation facile (recommandé):
-  - [r2modman](https://inscryption.thunderstore.io/package/ebkr/r2modman/) OU [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager)
-- Pour une installation manuelle:
-  - [BepInEx pack for Inscryption](https://inscryption.thunderstore.io/package/BepInEx/BepInExPack_Inscryption/)
-  - [MonoMod Loader for Inscryption](https://inscryption.thunderstore.io/package/BepInEx/MonoMod_Loader_Inscryption/)
-  - [Inscryption API](https://inscryption.thunderstore.io/package/API_dev/API/)
-  - [ArchipelagoMod](https://github.com/empathy-mp3/Archipelago_Inscryption/releases/latest)
+- [BepInEx pack for Inscryption](https://inscryption.thunderstore.io/package/BepInEx/BepInExPack_Inscryption/)
+- [MonoMod Loader for Inscryption](https://inscryption.thunderstore.io/package/BepInEx/MonoMod_Loader_Inscryption/)
+- [Inscryption API](https://inscryption.thunderstore.io/package/API_dev/API/)
+- [ArchipelagoMod](https://github.com/empathy-mp3/Archipelago_Inscryption/releases/latest)
 
 ## Installation
 Avant de commencer le processus d'installation, voici ce que vous deviez savoir:

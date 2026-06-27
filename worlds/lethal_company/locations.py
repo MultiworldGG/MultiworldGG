@@ -23,7 +23,7 @@ def get_default_location_map():
         "Swing of Things",
         "Autopilot",
         "Golden Planet",
-        "Sound Behind the Wall",
+        "Behind the Wall",
         "Goodbye",
         "Screams",
         "Idea",
@@ -32,7 +32,8 @@ def get_default_location_map():
         "Real Job",
         "Desmond",
         "Team Synergy",
-        "Letter of Resignation"
+        "Letter of Resignation",
+        "Work"
     ]
 
     bestiary_names = [[key for key in monster.keys()][0] for monster in data["bestiary"]]
@@ -71,7 +72,7 @@ def generate_locations(world: "LethalCompanyWorld"):
         "Swing of Things",
         "Autopilot",
         "Golden Planet",
-        "Sound Behind the Wall",
+        "Behind the Wall",
         "Goodbye",
         "Screams",
         "Idea",
@@ -80,7 +81,8 @@ def generate_locations(world: "LethalCompanyWorld"):
         "Real Job",
         "Desmond",
         "Team Synergy",
-        "Letter of Resignation"
+        "Letter of Resignation",
+        "Work"
     ]
 
     #world.bestiary_names = [[key for key in monster.keys() if any(moon["chance"] > 0 for moon in monster[key])][0] for monster in world.imported_data["bestiary"]]

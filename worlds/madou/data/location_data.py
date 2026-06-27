@@ -108,7 +108,7 @@ magic_village_locations = [
 school_location_start = 50
 school_locations = [
     # The address for dictionary is actually right before you talk to the headmaster about the dictionary.
-    create_location(school_location_start + 1, School.magical_dictionary, MadouRegion.headmaster_office, 0x001394, 0x20),
+    create_location(school_location_start + 1, School.magical_dictionary, MadouRegion.school_maze, 0x001394, 0x20),
     create_location(school_location_start + 2, School.mandrake_leaf, MadouRegion.school, 0x001383, 0x10,
                     [ContainerInfo("Found", 0x1793e6)]),
     create_location(school_location_start + 3, BuildingBlockMaze.magic_crystal, MadouRegion.school_maze, 0x0013a7, 0x01,

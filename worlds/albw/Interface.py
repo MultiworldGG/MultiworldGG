@@ -34,15 +34,10 @@ class N3DSInterface:
     def _max_write_size(self) -> int:
         return self.max_request_size - 8
     
-    async def _send(request):
-        await asyncio.get_running_loop().sock_sendall(self.sock, request)
-
-    async def _recv() -> bytes:
-        return await asyncio.get_running_loop().sock_sendall(self.sock, self.MAX_PACKET_SIZE)
-    
-    async def _send_packet(self, request_type: RequestType, request_data: bytes, response_size: Optional[int] = None) -> bytes:
+    async def _send_packet(self, request_type: RequestType, request_data: bytes, response_size: Optional[int] = None, retry: bool = True) -> bytes:
         loop = asyncio.get_running_loop()
-        for _ in range(4):
+        tries = 4 if retry else 1
+        for _ in range(tries):
             try:
                 request_id = self.id
                 self.id = (self.id + 1) & 0xffffffff
@@ -65,7 +60,7 @@ class N3DSInterface:
         while True:
             request_data = struct.pack("=II", start_process, 0x7fffffff)
             try:
-                response = await self._send_packet(RequestType.ProcessList, request_data)
+                response = await self._send_packet(RequestType.ProcessList, request_data, retry=False)
                 if len(response) < 4:
                     self.max_request_size = 32
                     return True
@@ -116,7 +111,7 @@ class N3DSInterface:
             end = min(start + self._max_write_size(), len(data))
             request_data = struct.pack("=II", address + start, end - start)
             request_data += data[start:end]
-            await self._send_packet(RequestType.Write, request_data, 0)
+            await self._send_packet(RequestType.Write, request_data, 0, retry=False)
             start += self._max_write_size()
 
     async def read_u32(self, address: int) -> int:

@@ -36,6 +36,9 @@
     let lastApworldStates = {};  // game_name -> { world_version, yaml_id }
     let myPlayerName = null;
     let allowCustomApworlds = false;
+    let yamlActionMenuGlobalsBound = false;
+    let yamlActionsPortal = null;
+    let activeYamlActionToggle = null;
     const renderedMessageIds = new Set();
 
     // Returns { fast, slow, idleThreshold } based on lobby size / viewer mode.
@@ -246,6 +249,7 @@
         const playerList = document.getElementById("lobby-players");
         if (!playerList) return;
 
+        closeYamlActionMenus();
         maxYamlsHeld = Math.max(0, ...players.map(p => p.yamls ? p.yamls.length : 0));
         playerList.innerHTML = "";
         players.forEach(p => {
@@ -284,8 +288,9 @@
                 const serverVer = !isCustom && y.server_world_version && !hasReplacementApworld && !versionSatisfied
                     ? `<span class="yaml-world-version" title="Server has v${escapeHtml(y.server_world_version)} — compatibility unverified (YAML has no version requirement)">v${escapeHtml(y.server_world_version)}</span>`
                     : '';
-                const versionWarn = y.version_warning && !hasReplacementApworld
-                    ? `<span class="yaml-version-warning" title="${escapeHtml(y.version_warning)}">&#9888;</span>`
+                const versionWarning = y.apworld_version_warning || (hasReplacementApworld ? null : y.version_warning);
+                const versionWarn = versionWarning
+                    ? `<span class="yaml-version-warning" title="${escapeHtml(versionWarning)}">&#9888;</span>`
                     : '';
                 // Puzzle-piece tag when a server world is replaced by a custom APWorld
                 const replacementTag = hasReplacementApworld ? (() => {
@@ -313,6 +318,7 @@
                 const hasOwnApworld = !!y.apworld_is_own;
                 const hasPendingRequest = !!y.apworld_request_pending;
                 const canEditApworld = p.id === MY_PLAYER_ID && allowCustomApworlds && !hasOwnApworld && !hasPendingRequest;
+                const yamlMenuItems = [];
 
                 if (isCustom && (currentState === LOBBY_STATE_OPEN || currentState === LOBBY_STATE_LOCKED)) {
                     const apw = y.apworld;
@@ -329,12 +335,15 @@
                         html += `<span class="apworld-missing" title="APWorld not yet uploaded">&#9888;</span>`;
                     }
                     if (hasPendingRequest && p.id === MY_PLAYER_ID) {
-                        html += `<button class="apworld-upload-btn" disabled title="APWorld replacement request is pending host approval">In Review</button>`;
+                        html += `<span class="apworld-status-pending" title="APWorld replacement request is pending host approval">In Review</span>`;
                     } else if (canEditApworld) {
                         const reqVer = y.required_version ? ` (requires v${escapeHtml(y.required_version)})` : "";
                         const uploadTitle = apw ? `Upload APWorld replacement${reqVer}` : `Upload APWorld for this game${reqVer}`;
-                        const uploadLabel = apw ? "&#x2B06; Replace APWorld" : "&#x2B06; Upload APWorld";
-                        html += `<button class="apworld-upload-btn" data-yaml-id="${y.id}" title="${uploadTitle}">${uploadLabel}</button>`;
+                        if (apw) {
+                            yamlMenuItems.push(`<button class="yaml-menu-item apworld-menu-upload-btn" data-yaml-id="${y.id}" title="${uploadTitle}">Replace APWorld</button>`);
+                        } else {
+                            html += `<button class="apworld-upload-btn" data-yaml-id="${y.id}" title="${uploadTitle}">&#x2B06; Upload APWorld</button>`;
+                        }
                     }
                 }
 
@@ -354,20 +363,29 @@
                         html += `<span class="apworld-status-ok" title="Server v${escapeHtml(y.server_world_version)} satisfies requirement v${escapeHtml(y.required_version)}">&#10003; v${escapeHtml(y.server_world_version)}</span>`;
                     }
                     if (hasPendingRequest && p.id === MY_PLAYER_ID) {
-                        html += `<button class="apworld-upload-btn" disabled title="APWorld replacement request is pending host approval">In Review</button>`;
+                        html += `<span class="apworld-status-pending" title="APWorld replacement request is pending host approval">In Review</span>`;
                     } else if (canEditApworld) {
                         const reqVer = y.required_version ? ` (requires v${escapeHtml(y.required_version)})` : "";
-                        html += `<button class="apworld-upload-btn" data-yaml-id="${y.id}" title="Upload APWorld replacement${reqVer}">&#x2B06; Replace APWorld</button>`;
+                        const uploadTitle = `Upload APWorld replacement${reqVer}`;
+                        if (y.version_upgrade_available || y.apworld_replacement_required) {
+                            html += `<button class="apworld-upload-btn" data-yaml-id="${y.id}" title="${uploadTitle}">&#x2B06; Upload APWorld</button>`;
+                        } else {
+                            yamlMenuItems.push(`<button class="yaml-menu-item apworld-menu-upload-btn" data-yaml-id="${y.id}" title="${uploadTitle}">Replace APWorld</button>`);
+                        }
                     }
                 }
 
-                html += `<span class="yaml-actions">`;
-                html += `<a class="yaml-download-btn" href="${downloadHref}" title="Download YAML" download>&#x2B07;</a>`;
-                html += `<button class="yaml-view-btn" data-yaml-id="${y.id}" data-filename="${escapeHtml(y.filename)}" title="View YAML">&#128065;</button>`;
+                yamlMenuItems.push(`<a class="yaml-menu-item" href="${downloadHref}" download>Download YAML</a>`);
+                yamlMenuItems.push(`<button class="yaml-menu-item yaml-view-btn" data-yaml-id="${y.id}" data-filename="${escapeHtml(y.filename)}">View YAML</button>`);
                 if ((currentState === LOBBY_STATE_OPEN || currentState === LOBBY_STATE_LOCKED) && (IS_OWNER || p.id === MY_PLAYER_ID)) {
-                    html += `<button class="yaml-delete-btn" data-yaml-id="${y.id}" title="Remove YAML">&times;</button>`;
+                    yamlMenuItems.push(`<button class="yaml-menu-item yaml-delete-btn" data-yaml-id="${y.id}">Remove YAML</button>`);
                 }
-                html += `</span>`;
+                if (yamlMenuItems.length > 0) {
+                    html += `<span class="yaml-actions">`;
+                    html += `<button class="yaml-actions-toggle" type="button" title="YAML actions" aria-label="YAML actions">&#9776;</button>`;
+                    html += `<span class="yaml-actions-menu">${yamlMenuItems.join("")}</span>`;
+                    html += `</span>`;
+                }
                 html += '</li>';
             });
             html += '</ul>';
@@ -377,11 +395,10 @@
         });
 
         // Re-bind delete, kick, apworld upload, ready, and view buttons
-        bindYamlDeleteButtons();
         bindKickButtons();
         bindApworldUploadButtons();
         bindReadyButtons();
-        bindYamlViewButtons();
+        bindYamlActionMenus();
     }
 
     function buildMessageDiv(msg) {
@@ -546,7 +563,8 @@
         const hcLabel = hc > 100 ? 'off' : hc + '%';
         const sp = g.spoiler != null ? g.spoiler : 0;
         const spLabel = sp === 0 ? 'off' : sp === 1 ? 'on' : sp === 2 ? '+playthrough' : 'full';
-        return `Release: ${s.release_mode || '?'} | Collect: ${s.collect_mode || '?'} | Remaining: ${s.remaining_mode || '?'} | Hints: ${hmLabel} @ ${hcLabel} | Item Cheat: ${s.item_cheat ? 'on' : 'off'} | Spoiler: ${spLabel}`;
+        const threshold = s.release_threshold != null ? s.release_threshold : 0;
+        return `Release: ${s.release_mode || '?'} | Collect: ${s.collect_mode || '?'} | Threshold: ${threshold}% | Remaining: ${s.remaining_mode || '?'} | Hints: ${hmLabel} @ ${hcLabel} | Item Cheat: ${s.item_cheat ? 'on' : 'off'} | Spoiler: ${spLabel}`;
     }
 
     function updateStatusDisplay(data) {
@@ -1166,19 +1184,23 @@
             .catch(err => console.error("APWorld request poll error:", err));
     }
 
+    function promptApworldUpload(yamlId) {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".apworld";
+        input.onchange = e => {
+            const file = e.target.files[0];
+            if (file) uploadApworld(yamlId, file);
+        };
+        input.click();
+    }
+
     function bindApworldUploadButtons() {
         document.querySelectorAll(".apworld-upload-btn").forEach(btn => {
             const yamlId = btn.dataset.yamlId;
 
             btn.addEventListener("click", function () {
-                const input = document.createElement("input");
-                input.type = "file";
-                input.accept = ".apworld";
-                input.onchange = e => {
-                    const file = e.target.files[0];
-                    if (file) uploadApworld(yamlId, file);
-                };
-                input.click();
+                promptApworldUpload(yamlId);
             });
 
             btn.addEventListener("dragenter", e => {
@@ -1278,22 +1300,124 @@
         });
     }
 
-    function bindYamlDeleteButtons() {
-        document.querySelectorAll(".yaml-delete-btn").forEach(btn => {
-            btn.addEventListener("click", function () {
-                const yamlId = this.dataset.yamlId;
-                if (!confirm("Remove this YAML?")) return;
+    function removeYaml(yamlId) {
+        if (!confirm("Remove this YAML?")) return;
 
-                resetPollRate();
-                fetch(API_BASE + "/yaml/" + yamlId, { method: "DELETE" })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.error) showToast(data.error);
-                        else pollStatus();
-                    })
-                    .catch(err => console.error("Delete error:", err));
+        resetPollRate();
+        fetch(API_BASE + "/yaml/" + yamlId, { method: "DELETE" })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) showToast(data.error);
+                else pollStatus();
+            })
+            .catch(err => console.error("Delete error:", err));
+    }
+
+    function closeYamlActionMenus() {
+        if (yamlActionsPortal) {
+            yamlActionsPortal.classList.remove("open");
+            yamlActionsPortal.innerHTML = "";
+            yamlActionsPortal.style.left = "";
+            yamlActionsPortal.style.top = "";
+            yamlActionsPortal.style.visibility = "";
+        }
+        if (activeYamlActionToggle) {
+            activeYamlActionToggle.classList.remove("is-open");
+            activeYamlActionToggle.setAttribute("aria-expanded", "false");
+            activeYamlActionToggle = null;
+        }
+    }
+
+    function getYamlActionsPortal() {
+        if (yamlActionsPortal) return yamlActionsPortal;
+
+        yamlActionsPortal = document.createElement("div");
+        yamlActionsPortal.id = "yaml-actions-portal";
+        yamlActionsPortal.className = "yaml-actions-menu yaml-actions-portal";
+        yamlActionsPortal.addEventListener("click", e => {
+            if (!(e.target instanceof Element)) return;
+            const item = e.target.closest(".yaml-menu-item");
+            if (!item) return;
+
+            if (item.classList.contains("yaml-delete-btn")) {
+                e.preventDefault();
+                closeYamlActionMenus();
+                removeYaml(item.dataset.yamlId);
+            } else if (item.classList.contains("yaml-view-btn")) {
+                e.preventDefault();
+                closeYamlActionMenus();
+                openYamlViewModal(item.dataset.yamlId, item.dataset.filename);
+            } else if (item.classList.contains("apworld-menu-upload-btn")) {
+                e.preventDefault();
+                closeYamlActionMenus();
+                promptApworldUpload(item.dataset.yamlId);
+            } else if (item.tagName === "A") {
+                setTimeout(closeYamlActionMenus, 0);
+            }
+        });
+        document.body.appendChild(yamlActionsPortal);
+        return yamlActionsPortal;
+    }
+
+    function positionYamlActionMenu(toggle, menuTemplate) {
+        const portal = getYamlActionsPortal();
+        portal.innerHTML = menuTemplate.innerHTML;
+        portal.classList.add("open");
+        portal.style.visibility = "hidden";
+        portal.style.left = "0px";
+        portal.style.top = "0px";
+
+        const margin = 8;
+        const toggleRect = toggle.getBoundingClientRect();
+        const menuRect = portal.getBoundingClientRect();
+        const left = Math.min(
+            Math.max(margin, toggleRect.right - menuRect.width),
+            window.innerWidth - menuRect.width - margin
+        );
+        let top = toggleRect.bottom + 4;
+        if (top + menuRect.height > window.innerHeight - margin) {
+            top = Math.max(margin, toggleRect.top - menuRect.height - 4);
+        }
+
+        activeYamlActionToggle = toggle;
+        toggle.classList.add("is-open");
+        toggle.setAttribute("aria-expanded", "true");
+        portal.style.left = left + "px";
+        portal.style.top = top + "px";
+        portal.style.visibility = "";
+    }
+
+    function bindYamlActionMenus() {
+        document.querySelectorAll(".yaml-actions-toggle").forEach(toggle => {
+            const menuTemplate = toggle.parentElement ? toggle.parentElement.querySelector(".yaml-actions-menu") : null;
+            if (!menuTemplate) return;
+            toggle.setAttribute("aria-expanded", "false");
+            toggle.addEventListener("click", e => {
+                e.preventDefault();
+                e.stopPropagation();
+                const isOpen = activeYamlActionToggle === toggle;
+                closeYamlActionMenus();
+                if (!isOpen) {
+                    positionYamlActionMenu(toggle, menuTemplate);
+                }
             });
         });
+
+        if (!yamlActionMenuGlobalsBound) {
+            yamlActionMenuGlobalsBound = true;
+            document.addEventListener("click", e => {
+                if (e.target instanceof Element &&
+                    (e.target.closest(".yaml-actions") || e.target.closest("#yaml-actions-portal"))) {
+                    return;
+                }
+                closeYamlActionMenus();
+            });
+            document.addEventListener("keydown", e => {
+                if (e.key === "Escape") closeYamlActionMenus();
+            });
+            window.addEventListener("resize", () => closeYamlActionMenus());
+            window.addEventListener("scroll", () => closeYamlActionMenus(), true);
+        }
     }
 
     function bindKickButtons() {
@@ -1532,6 +1656,10 @@
                 max_players: maxPlayersEl ? parseInt(maxPlayersEl.value) || 0 : undefined,
                 release_mode: document.getElementById("edit-release-mode").value,
                 collect_mode: document.getElementById("edit-collect-mode").value,
+                release_threshold: Math.max(
+                    0,
+                    Math.min(parseInt(document.getElementById("edit-release-threshold").value, 10) || 0, 100)
+                ),
                 remaining_mode: document.getElementById("edit-remaining-mode").value,
                 countdown_mode: document.getElementById("edit-countdown-mode").value,
                 hint_mode: document.getElementById("edit-hint-mode").value,
@@ -1622,14 +1750,6 @@
     if (yamlViewModal) {
         yamlViewModal.addEventListener("click", e => {
             if (e.target === yamlViewModal) closeYamlViewModal();
-        });
-    }
-
-    function bindYamlViewButtons() {
-        document.querySelectorAll(".yaml-view-btn").forEach(btn => {
-            btn.addEventListener("click", function () {
-                openYamlViewModal(this.dataset.yamlId, this.dataset.filename);
-            });
         });
     }
 

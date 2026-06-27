@@ -178,11 +178,8 @@ class ALBWClientContext(CommonContext):
         if all_saves_ptr == 0 or self.save_ptr == 0 or await self.interface.read_u32(self.save_ptr + 0x1600) != 0:
             self.invalid = True
             self.last_error = ""
-        elif await self.interface.read(self.save_ptr + 0xde0, 4) == b"\0\0\0\0":
-            self.error("The loaded save file is not an Archipelago save file. Choose a different save file.")
         elif await self.interface.read(self.save_ptr + 0xde0, 4) != b"ARCH":
-            self.invalid = True
-            self.last_error = ""
+            self.error("The loaded save file is not an Archipelago save file. Choose a different save file.")
         elif await self.interface.read_u32(self.save_ptr + 0xde8) != await self.interface.read_u32(self.AP_HEADER_LOCATION + 0x8):
             self.error("The loaded save file was created for a different multiworld. Choose a different save file.")
         else:

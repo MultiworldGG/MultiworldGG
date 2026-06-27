@@ -26,6 +26,7 @@ class LethalCompanyWeb(WebWorld):
         OptionGroup("Checks", [
             options.ChecksPerMoon,
             options.NumQuotas,
+            options.QuotaCheckpointEvery,
             options.MoneyPerQuotaCheck,
             options.Scrapsanity,
             options.RandomizeCompanyBuilding,
@@ -187,7 +188,7 @@ class LethalCompanyWorld(World):
 
     def create_regions(self) -> None:
         create_regions(self.options, self)
-        create_events(self.multiworld, self.player)
+        create_events(self.multiworld, self.player, self.options)
 
     def fill_slot_data(self):
         calculate_credits(self)
@@ -216,25 +217,28 @@ class LethalCompanyWorld(World):
         return item
 
 
-def create_events(world: MultiWorld, player: int) -> None:
+def create_events(world: MultiWorld, player: int, options: LCOptions) -> None:
     world_region = world.get_region("Company Building", player)
     victory_region = world.get_region("Victory", player)
-    victory_event = LethalCompanyLocation(player, "Victory", None, victory_region)
     quota_region = world.get_region("Quotas", player)
-    quota_quarter1_event = LethalCompanyLocation(player, "Quota 25%", None, quota_region)
-    quota_quarter2_event = LethalCompanyLocation(player, "Quota 50%", None, quota_region)
-    quota_quarter3_event = LethalCompanyLocation(player, "Quota 75%", None, quota_region)
+
+    victory_event = LethalCompanyLocation(player, "Victory", None, victory_region)
     victory_event.place_locked_item(LethalCompanyItem("Victory", ItemClassification.progression, None, player))
-    quota_quarter1_event.place_locked_item(LethalCompanyItem("Completed 25% Quota", ItemClassification.progression,
-                                                             None, player))
-    quota_quarter2_event.place_locked_item(LethalCompanyItem("Completed 50% Quota", ItemClassification.progression,
-                                                             None, player))
-    quota_quarter3_event.place_locked_item(LethalCompanyItem("Completed 75% Quota", ItemClassification.progression,
-                                                             None, player))
-    quota_region.locations.append(quota_quarter1_event)
-    quota_region.locations.append(quota_quarter2_event)
-    quota_region.locations.append(quota_quarter3_event)
     world_region.locations.append(victory_event)
+
+    checkpoint_every = options.quota_checkpoint_every.value
+    num_quotas = options.num_quotas.value
+    checkpoint_index = 1
+    while checkpoint_index * checkpoint_every < num_quotas:
+        event = LethalCompanyLocation(player, f"Quota checkpoint {checkpoint_index}", None, quota_region)
+        event.place_locked_item(LethalCompanyItem(
+            f"Completed quota checkpoint {checkpoint_index}",
+            ItemClassification.progression,
+            None,
+            player
+        ))
+        quota_region.locations.append(event)
+        checkpoint_index += 1
 
 
 def create_region(world: MultiWorld, player: int, name: str, loc=None) -> Region:

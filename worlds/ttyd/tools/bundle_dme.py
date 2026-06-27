@@ -7,10 +7,11 @@ python-package-* artifacts (or build wheels locally) and run:
 
     python tools/bundle_dme.py <dir-of-wheels | wheel.whl> [more.whl ...]
 
-Each wheel's compiled extension is copied into
-lib/dolphin_memory_engine_ttyd/ under the platform-tagged name that
-TTYDPatcher._select_native_binary expects. The abi3 binaries work on any
-CPython >= 3.9, so one file per platform is all that's needed.
+Each wheel's compiled extension is copied into lib/dolphin_memory_engine_ttyd/
+under the platform-tagged name that TTYDPatcher._select_native_binary expects.
+The tool also writes lib/dolphin_memory_engine_ttyd.zip, which is extracted at
+runtime when the world is loaded from a frozen .apworld. The abi3 binaries work
+on any CPython >= 3.9, so one file per platform is all that's needed.
 """
 import shutil
 import sys
@@ -18,6 +19,7 @@ import zipfile
 from pathlib import Path
 
 LIB = Path(__file__).resolve().parent.parent / "lib" / "dolphin_memory_engine_ttyd"
+ARCHIVE = LIB.parent / "dolphin_memory_engine_ttyd.zip"
 
 
 def classify(name: str):
@@ -59,10 +61,22 @@ def extract(whl: Path, member: str, dest: Path) -> bool:
     return False
 
 
+def write_archive() -> None:
+    with zipfile.ZipFile(ARCHIVE, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+        for path in sorted(LIB.rglob("*")):
+            if "__pycache__" in path.parts:
+                continue
+            if path.is_file():
+                zf.write(path, path.relative_to(LIB.parent))
+    print("wrote", ARCHIVE)
+
+
 def main(argv) -> int:
+    archive_only = "--archive-only" in argv
+    argv = [arg for arg in argv if arg != "--archive-only"]
     wheels = collect(argv)
-    if not wheels:
-        print("usage: bundle_dme.py <dir-of-wheels | wheel.whl> [more.whl ...]")
+    if not wheels and not archive_only:
+        print("usage: bundle_dme.py [--archive-only] <dir-of-wheels | wheel.whl> [more.whl ...]")
         return 1
     LIB.mkdir(parents=True, exist_ok=True)
     done = 0
@@ -77,7 +91,9 @@ def main(argv) -> int:
                 done += 1
             else:
                 print("MISSING", member, "in", whl.name)
-    return 0 if done else 1
+    if done or archive_only:
+        write_archive()
+    return 0 if done or archive_only else 1
 
 
 if __name__ == "__main__":

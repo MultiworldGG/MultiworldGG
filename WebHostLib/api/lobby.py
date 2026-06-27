@@ -408,6 +408,17 @@ def _is_manual_apworld(original_filename: str, apworld_data: bytes) -> bool:
         return False
 
 
+def _apworld_package_filename(apworld: LobbyApworld) -> str:
+    """Name APWorlds in host packages by game, except manuals keep their uploaded filename."""
+    if apworld.game_name.startswith("Manual_"):
+        return _safe_zip_name(os.path.basename(apworld.original_filename))
+
+    filename = _safe_zip_name(apworld.game_name)
+    if not filename.lower().endswith(".apworld"):
+        filename = f"{filename}.apworld"
+    return filename
+
+
 def _parse_apworld_upload(apworld_data: bytes, original_filename: str = "") -> tuple[str, str | None]:
     if not zipfile.is_zipfile(io.BytesIO(apworld_data)):
         raise ValueError("File is not a valid .apworld (must be a ZIP archive)")
@@ -906,6 +917,18 @@ def lobby_status(lobby: UUID):
             yaml_info["apworld_is_own"] = True
         elif y_game and y_game in apworld_by_game:
             yaml_info["apworld"] = apworld_by_game[y_game]
+        active_apworld_info = yaml_info.get("apworld")
+        if active_apworld_info and y_requires_version and active_apworld_info.get("world_version"):
+            try:
+                active_apworld_version = tuplize_version(str(active_apworld_info["world_version"]))
+                if _version_mismatch_direction(y_requires_version, active_apworld_version):
+                    yaml_info["apworld_version_warning"] = (
+                        f"requires v{_required_version_label(y_requires_version)}, "
+                        f"APWorld has v{active_apworld_info['world_version']}"
+                    )
+                    yaml_info["apworld_replacement_required"] = True
+            except Exception:
+                pass
         if y_id in yaml_ids_with_pending_request:
             yaml_info["apworld_request_pending"] = True
         if y_requires_version:
@@ -1695,6 +1718,11 @@ def lobby_update_settings(lobby: UUID):
         server_opts["release_mode"] = data["release_mode"]
     if data.get("collect_mode") in _collect:
         server_opts["collect_mode"] = data["collect_mode"]
+    if "release_threshold" in data:
+        try:
+            server_opts["release_threshold"] = max(0, min(int(data["release_threshold"]), 100))
+        except (ValueError, TypeError):
+            pass
     if data.get("remaining_mode") in _remaining:
         if lobby.race:
             server_opts["remaining_mode"] = "disabled"
@@ -2320,6 +2348,7 @@ def lobby_download_package(lobby: UUID):
             "hint_cost": server_opts.get("hint_cost", 10),
             "release_mode": server_opts.get("release_mode", "auto"),
             "collect_mode": server_opts.get("collect_mode", "auto"),
+            "release_threshold": server_opts.get("release_threshold", 0),
             "remaining_mode": server_opts.get("remaining_mode", "goal"),
             "countdown_mode": server_opts.get("countdown_mode", "auto"),
             "hint_mode": server_opts.get("hint_mode", "default"),
@@ -2336,6 +2365,7 @@ def lobby_download_package(lobby: UUID):
 
     zip_buffer = io.BytesIO()
     seen_apworld_games: set[str] = set()
+    seen_apworld_filenames: set[str] = set()
 
     with zipfile.ZipFile(zip_buffer, 'w', compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("host.yaml", host_yaml)
@@ -2359,7 +2389,11 @@ def lobby_download_package(lobby: UUID):
             if a.game_name in seen_apworld_games:
                 continue
             seen_apworld_games.add(a.game_name)
-            safe_filename = _safe_zip_name(a.original_filename)
+            safe_filename = _apworld_package_filename(a)
+            if safe_filename in seen_apworld_filenames:
+                root, ext = os.path.splitext(safe_filename)
+                safe_filename = f"{root}_{a.id}{ext or '.apworld'}"
+            seen_apworld_filenames.add(safe_filename)
             try:
                 with open(a.storage_path, 'rb') as apf:
                     zf.writestr(f"custom_worlds/{safe_filename}", apf.read())

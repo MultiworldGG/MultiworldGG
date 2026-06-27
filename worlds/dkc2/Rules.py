@@ -1670,7 +1670,7 @@ class DKC2LooseRules(DKC2Rules):
                 CanCling & CanCarry & CanTeamAttack,
             LocationName.gangplank_galley_dk_coin:
                 CanCling & (
-                    CanHover | (CanCartwheel & CanCartwheel)
+                    CanHover | (HasDiddy & CanCartwheel)
                 ),
             LocationName.gangplank_galley_bonus_1:
                 CanCarry,
@@ -1678,7 +1678,7 @@ class DKC2LooseRules(DKC2Rules):
                 CanCling & CanBeInvincible,
             LocationName.gangplank_galley_banana_bunch_1:
                 CanCling & (
-                    CanHover | (CanCartwheel & CanCartwheel)
+                    CanHover | (HasDiddy & CanCartwheel)
                 ),
             LocationName.gangplank_galley_banana_bunch_2:
                 CanCarry,
@@ -1865,51 +1865,51 @@ class DKC2LooseRules(DKC2Rules):
 
 
             LocationName.lava_lagoon_clear:
-                CanSwim & HasGlimmer & CanUseKannons & 
+                CanSwim & HasClapper & CanUseKannons & 
                     HasEnguarde,
             LocationName.lava_lagoon_kong:
-                CanSwim & HasGlimmer & CanUseKannons & 
+                CanSwim & HasClapper & CanUseKannons & 
                     HasEnguarde,
             LocationName.lava_lagoon_dk_coin:
-                CanSwim & HasGlimmer & CanUseKannons & 
+                CanSwim & HasClapper & CanUseKannons & 
                     HasEnguarde,
             LocationName.lava_lagoon_bonus_1:
-                CanSwim & HasGlimmer & CanUseKannons & 
+                CanSwim & HasClapper & CanUseKannons & 
                     HasEnguarde & CanCarry,
             LocationName.lava_lagoon_banana_coin_1:
-                CanSwim & HasGlimmer,
+                CanSwim & HasClapper,
             LocationName.lava_lagoon_banana_coin_2:
-                CanSwim & HasGlimmer,
+                CanSwim & HasClapper,
             LocationName.lava_lagoon_banana_bunch_1:
-                CanSwim & HasGlimmer,
+                CanSwim & HasClapper,
             LocationName.lava_lagoon_banana_coin_3:
-                CanSwim & HasGlimmer,
+                CanSwim & HasClapper,
             LocationName.lava_lagoon_banana_bunch_2:
-                CanSwim & HasGlimmer,
+                CanSwim & HasClapper,
             LocationName.lava_lagoon_banana_coin_4:
-                CanSwim & HasGlimmer & CanUseKannons,
+                CanSwim & HasClapper & CanUseKannons,
             LocationName.lava_lagoon_banana_coin_5:
-                CanSwim & HasGlimmer & 
+                CanSwim & HasClapper & 
                     CanUseKannons & CanBeInvincible,
             LocationName.lava_lagoon_banana_bunch_3:
-                CanSwim & HasGlimmer & 
+                CanSwim & HasClapper & 
                     CanUseKannons,
             LocationName.lava_lagoon_banana_coin_6:
-                CanSwim & HasGlimmer & CanUseKannons,
+                CanSwim & HasClapper & CanUseKannons,
             LocationName.lava_lagoon_banana_coin_7:
-                CanSwim & HasGlimmer & CanUseKannons,
+                CanSwim & HasClapper & CanUseKannons,
             LocationName.lava_lagoon_red_balloon_1:
-                CanSwim & HasGlimmer & CanUseKannons & HasEnguarde,
+                CanSwim & HasClapper & CanUseKannons & HasEnguarde,
             LocationName.lava_lagoon_banana_bunch_4:
-                CanSwim & HasGlimmer & CanUseKannons & CanCarry & HasEnguarde,
+                CanSwim & HasClapper & CanUseKannons & CanCarry & HasEnguarde,
             LocationName.lava_lagoon_banana_bunch_5:
-                CanSwim & HasGlimmer & CanUseKannons,
+                CanSwim & HasClapper & CanUseKannons,
             LocationName.lava_lagoon_banana_coin_8:
-                CanSwim & HasGlimmer & CanUseKannons,
+                CanSwim & HasClapper & CanUseKannons,
             LocationName.lava_lagoon_banana_coin_9:
-                CanSwim & HasGlimmer & CanUseKannons,
+                CanSwim & HasClapper & CanUseKannons,
             LocationName.lava_lagoon_banana_coin_10:
-                CanSwim & HasGlimmer & CanUseKannons & 
+                CanSwim & HasClapper & CanUseKannons & 
                     CanTeamAttack,
 
 
@@ -2331,7 +2331,7 @@ class DKC2LooseRules(DKC2Rules):
             LocationName.rickety_race_bonus_1:
                 CanRideSkullKart & CanTeamAttack & (
                     CanHover | 
-                    (CanCartwheel & CanCartwheel)
+                    (HasDiddy & CanCartwheel)
                 ),
             LocationName.rickety_race_banana_coin:
                 CanRideSkullKart,
@@ -2584,13 +2584,13 @@ class DKC2LooseRules(DKC2Rules):
             LocationName.arctic_abyss_bonus_2:
                 CanSwim & HasEnguarde & CanCarry,
             LocationName.arctic_abyss_banana_coin_1:
-                CanHover | (CanCartwheel & CanCartwheel),
+                CanHover | (HasDiddy & CanCartwheel),
             LocationName.arctic_abyss_banana_bunch_1:
-                CanHover | (CanCartwheel & CanCartwheel),
+                CanHover | (HasDiddy & CanCartwheel),
             LocationName.arctic_abyss_banana_bunch_2:
-                CanHover | (CanCartwheel & CanCartwheel),
+                CanHover | (HasDiddy & CanCartwheel),
             LocationName.arctic_abyss_banana_bunch_3:
-                CanHover | (CanCartwheel & CanCartwheel),
+                CanHover | (HasDiddy & CanCartwheel),
             LocationName.arctic_abyss_banana_bunch_4:
                 CanSwim,
             LocationName.arctic_abyss_banana_coin_2:
@@ -2677,39 +2677,39 @@ class DKC2LooseRules(DKC2Rules):
 
 
             LocationName.clappers_cavern_clear:
-                HasGlimmer & CanSwim & CanUseKannons & 
+                HasClapper & CanSwim & CanUseKannons & 
                     CanCling,
             LocationName.clappers_cavern_kong:
-                HasGlimmer & CanSwim & CanUseKannons & 
+                HasClapper & CanSwim & CanUseKannons & 
                     CanCling,
             LocationName.clappers_cavern_dk_coin:
                 CanTeamAttack & CanCling,
             LocationName.clappers_cavern_bonus_1:
                 CanTeamAttack & CanCling,
             LocationName.clappers_cavern_bonus_2:
-                HasGlimmer & CanSwim & CanUseKannons & 
+                HasClapper & CanSwim & CanUseKannons & 
                     HasEnguarde,
             LocationName.clappers_cavern_banana_coin_1:
-                HasGlimmer,
+                HasClapper,
             LocationName.clappers_cavern_banana_bunch_1:
-                HasGlimmer & CanSwim & CanUseKannons,
+                HasClapper & CanSwim & CanUseKannons,
             LocationName.clappers_cavern_banana_bunch_2:
-                HasGlimmer & CanSwim & CanUseKannons,
+                HasClapper & CanSwim & CanUseKannons,
             LocationName.clappers_cavern_banana_bunch_3:
-                HasGlimmer & CanSwim & CanUseKannons,
+                HasClapper & CanSwim & CanUseKannons,
             LocationName.clappers_cavern_banana_coin_2:
-                HasGlimmer & CanSwim & CanUseKannons,
+                HasClapper & CanSwim & CanUseKannons,
             LocationName.clappers_cavern_banana_bunch_4:
-                HasGlimmer & CanSwim & CanUseKannons & 
+                HasClapper & CanSwim & CanUseKannons & 
                     HasEnguarde,
             LocationName.clappers_cavern_banana_coin_3:
-                HasGlimmer & CanSwim & CanUseKannons & 
+                HasClapper & CanSwim & CanUseKannons & 
                     CanTeamAttack & CanBeInvincible,
             LocationName.clappers_cavern_banana_coin_4:
-                HasGlimmer & CanSwim & CanUseKannons & 
+                HasClapper & CanSwim & CanUseKannons & 
                     CanTeamAttack & CanBeInvincible,
             LocationName.clappers_cavern_banana_coin_5:
-                HasGlimmer & CanSwim & CanUseKannons & 
+                HasClapper & CanSwim & CanUseKannons & 
                     CanTeamAttack & CanBeInvincible,
 
 
@@ -2816,15 +2816,15 @@ class DKC2LooseRules(DKC2Rules):
 
             LocationName.screechs_sprint_clear:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_kong:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_dk_coin:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_bonus_1:
                 CanClimb & CanTeamAttack & CanCarry & 
@@ -2837,51 +2837,51 @@ class DKC2LooseRules(DKC2Rules):
                 CanClimb & CanCarry & CanCartwheel,
             LocationName.screechs_sprint_banana_coin_3:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_red_balloon:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_banana_bunch_2:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_banana_bunch_3:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_banana_coin_4:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_banana_coin_5:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_banana_coin_6:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_banana_coin_7:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_banana_coin_8:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_banana_bunch_4:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_banana_bunch_5:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
             LocationName.screechs_sprint_banana_bunch_6:
                 CanClimb & HasSquawks & (
-                    (CanCartwheel & CanCartwheel) | CanHover
+                    (HasDiddy & CanCartwheel) | CanHover
                 ),
 
 
@@ -2958,9 +2958,9 @@ class DKC2LooseRules(DKC2Rules):
                 CanCartwheel & CanUseDiddyBarrels & 
                     CanUseControllableBarrels,
             LocationName.klobber_karnage_banana_bunch_4:
-                (CanCartwheel & CanCartwheel | CanHover),
+                (HasDiddy & CanCartwheel | CanHover),
             LocationName.klobber_karnage_banana_bunch_5:
-                (CanCartwheel & CanCartwheel | CanHover & CanUseKannons),
+                (HasDiddy & CanCartwheel | CanHover & CanUseKannons),
             LocationName.klobber_karnage_banana_bunch_6:
                 CanCartwheel & CanUseDiddyBarrels & 
                     CanUseDixieBarrels & CanUseControllableBarrels & 
@@ -3128,7 +3128,7 @@ class DKC2ExpertRules(DKC2Rules):
             LocationName.gangplank_galley_banana_bunch_1:
                 CanHover | (
                     CanCling & (
-                        (CanCartwheel & CanCartwheel) 
+                        (HasDiddy & CanCartwheel) 
                         | CanTeamAttack)
                     ),
             LocationName.gangplank_galley_banana_bunch_2:
@@ -3333,48 +3333,48 @@ class DKC2ExpertRules(DKC2Rules):
 
 
             LocationName.lava_lagoon_clear:
-                CanSwim & HasGlimmer,
+                CanSwim & HasClapper,
             LocationName.lava_lagoon_kong:
-                CanSwim & HasGlimmer,
+                CanSwim & HasClapper,
             LocationName.lava_lagoon_dk_coin:
-                CanSwim & HasGlimmer,
+                CanSwim & HasClapper,
             LocationName.lava_lagoon_bonus_1:
                 CanSwim & 
-                    HasGlimmer & 
+                    HasClapper & 
                     CanCarry  &
                     HasEnguarde,
             LocationName.lava_lagoon_banana_coin_1:
-                HasGlimmer | HasBothKongs,
+                HasClapper | HasBothKongs,
             LocationName.lava_lagoon_banana_coin_2:
-                HasGlimmer | HasBothKongs,
+                HasClapper | HasBothKongs,
             LocationName.lava_lagoon_banana_bunch_1:
-                HasGlimmer | HasBothKongs,
+                HasClapper | HasBothKongs,
             LocationName.lava_lagoon_banana_coin_3:
-                HasGlimmer & (CanSwim | HasBothKongs),
+                HasClapper & (CanSwim | HasBothKongs),
             LocationName.lava_lagoon_banana_bunch_2:
-                HasGlimmer & CanSwim,
+                HasClapper & CanSwim,
             LocationName.lava_lagoon_banana_coin_4:
-                HasGlimmer & CanSwim,
+                HasClapper & CanSwim,
             LocationName.lava_lagoon_banana_coin_5:
-                HasGlimmer & CanSwim,
+                HasClapper & CanSwim,
             LocationName.lava_lagoon_banana_bunch_3:
-                HasGlimmer & CanSwim,
+                HasClapper & CanSwim,
             LocationName.lava_lagoon_banana_coin_6:
-                HasGlimmer & CanSwim,
+                HasClapper & CanSwim,
             LocationName.lava_lagoon_banana_coin_7:
-                HasGlimmer & CanSwim,
+                HasClapper & CanSwim,
             LocationName.lava_lagoon_red_balloon_1:
-                HasGlimmer & CanSwim & HasEnguarde,
+                HasClapper & CanSwim & HasEnguarde,
             LocationName.lava_lagoon_banana_bunch_4:
-                HasGlimmer & CanSwim & HasEnguarde & CanCarry,
+                HasClapper & CanSwim & HasEnguarde & CanCarry,
             LocationName.lava_lagoon_banana_bunch_5:
-                HasGlimmer & CanSwim,
+                HasClapper & CanSwim,
             LocationName.lava_lagoon_banana_coin_8:
-                HasGlimmer & CanSwim,
+                HasClapper & CanSwim,
             LocationName.lava_lagoon_banana_coin_9:
-                HasGlimmer & CanSwim,
+                HasClapper & CanSwim,
             LocationName.lava_lagoon_banana_coin_10:
-                HasGlimmer & CanSwim,
+                HasClapper & CanSwim,
 
 
             
@@ -3907,28 +3907,28 @@ class DKC2ExpertRules(DKC2Rules):
 
 
             LocationName.rambi_rumble_clear:
-                (CanCling | (CanCartwheel & CanCartwheel))  & CanUseKannons & HasRambi,
+                (CanCling | (HasDiddy & CanCartwheel))  & CanUseKannons & HasRambi,
             LocationName.rambi_rumble_kong:
-                (CanCling | (CanCartwheel & CanCartwheel)) & CanUseKannons & HasRambi & ( 
+                (CanCling | (HasDiddy & CanCartwheel)) & CanUseKannons & HasRambi & ( 
                     CanCartwheel | CanTeamAttack),
             LocationName.rambi_rumble_dk_coin:
                 CanUseKannons & (CanCling | CanTeamAttack),
             LocationName.rambi_rumble_bonus_1:
                 CanCling & CanUseKannons,
             LocationName.rambi_rumble_bonus_2:
-                (CanCling | (CanCartwheel & CanCartwheel)) & CanUseKannons & HasRambi,
+                (CanCling | (HasDiddy & CanCartwheel)) & CanUseKannons & HasRambi,
             LocationName.rambi_rumble_banana_coin_1:
                 True_(),
             LocationName.rambi_rumble_banana_bunch_1:
                 True_(),
             LocationName.rambi_rumble_banana_bunch_2:
-                (CanCartwheel & CanCartwheel) | (CanCling & CanUseKannons),
+                (HasDiddy & CanCartwheel) | (CanCling & CanUseKannons),
             LocationName.rambi_rumble_banana_coin_2:
                 CanUseKannons & (
-                        CanCling | (CanCartwheel & CanCartwheel & CanHover)
+                        CanCling | (HasDiddy & CanCartwheel & CanHover)
                     ),
             LocationName.rambi_rumble_banana_bunch_3:
-                (CanCling | (CanCartwheel & CanCartwheel)) & CanUseKannons & HasRambi,
+                (CanCling | (HasDiddy & CanCartwheel)) & CanUseKannons & HasRambi,
 
 
             LocationName.king_zing_sting_clear:
@@ -3947,7 +3947,7 @@ class DKC2ExpertRules(DKC2Rules):
                 CanClimb & CanCarry,
             LocationName.ghostly_grove_dk_coin:
                  (CanClimb & (
-                    (CanCartwheel & CanCartwheel) | CanHover)
+                    (HasDiddy & CanCartwheel) | CanHover)
                     ) | ((CanTeamAttack | HasBothKongs) & CanHover
                 ),
             LocationName.ghostly_grove_bonus_1:
@@ -4083,7 +4083,7 @@ class DKC2ExpertRules(DKC2Rules):
             LocationName.web_woods_kong:
                 HasSquitter & (
                     CanTeamAttack | (CanHover | (
-                        CanCartwheel & CanCartwheel)
+                        HasDiddy & CanCartwheel)
                     )),
             LocationName.web_woods_dk_coin:
                 HasSquitter,
@@ -4093,12 +4093,12 @@ class DKC2ExpertRules(DKC2Rules):
                 HasSquitter,
             LocationName.web_woods_banana_coin_1:
                 CanTeamAttack | 
-                    (CanCartwheel & CanCartwheel) |
+                    (HasDiddy & CanCartwheel) |
                     (HasDixie & CanHover),
             LocationName.web_woods_banana_coin_2:
                 CanCarry & 
                     (CanTeamAttack | 
-                    (CanCartwheel & CanCartwheel) |
+                    (HasDiddy & CanCartwheel) |
                     (HasDixie & CanHover)
                 ),
             LocationName.web_woods_green_balloon_1:
@@ -4134,24 +4134,24 @@ class DKC2ExpertRules(DKC2Rules):
             LocationName.arctic_abyss_clear:
                 CanSwim | (
                     HasEnguarde & (
-                        (CanCartwheel & CanCartwheel) | CanHover
+                        (HasDiddy & CanCartwheel) | CanHover
                     )
                 ),
             LocationName.arctic_abyss_kong:
                 (
                     (CanSwim | HasEnguarde)  &
-                    ( (CanCartwheel & CanCartwheel) | CanHover)
+                    ( (HasDiddy & CanCartwheel) | CanHover)
                 ),
             LocationName.arctic_abyss_dk_coin:
                 CanSwim | (
                     HasEnguarde & (
-                         (CanCartwheel & CanCartwheel) | CanHover
+                         (HasDiddy & CanCartwheel) | CanHover
                     )
                 ),
             LocationName.arctic_abyss_bonus_1:
                 HasEnguarde & ( 
                     CanSwim | (
-                         (CanCartwheel & CanCartwheel) | CanHover
+                         (HasDiddy & CanCartwheel) | CanHover
                     )
                 ),
             LocationName.arctic_abyss_bonus_2:
@@ -4159,81 +4159,81 @@ class DKC2ExpertRules(DKC2Rules):
                 CanCarry & (
                     CanSwim | (
                         HasEnguarde & (
-                             (CanCartwheel & CanCartwheel) | CanHover
+                             (HasDiddy & CanCartwheel) | CanHover
                         )
                     )
                 ),
             LocationName.arctic_abyss_banana_coin_1:
-                (CanCartwheel & CanCartwheel) | 
+                (HasDiddy & CanCartwheel) | 
                     (HasDixie & CanHover),
             LocationName.arctic_abyss_banana_bunch_1:
-                (CanCartwheel & CanCartwheel) | 
+                (HasDiddy & CanCartwheel) | 
                     (HasDixie & CanHover),
             LocationName.arctic_abyss_banana_bunch_2:
-                (CanCartwheel & CanCartwheel) | 
+                (HasDiddy & CanCartwheel) | 
                     (HasDixie & CanHover),
             LocationName.arctic_abyss_banana_bunch_3:
-                (CanCartwheel & CanCartwheel) | 
+                (HasDiddy & CanCartwheel) | 
                     (HasDixie & CanHover),
             LocationName.arctic_abyss_banana_bunch_4:
                 CanSwim | 
                     (HasEnguarde & 
-                        ((CanCartwheel & CanCartwheel) | 
+                        ((HasDiddy & CanCartwheel) | 
                         (HasDixie & CanHover))
                     ),
             LocationName.arctic_abyss_banana_coin_2:
                 CanSwim | 
                     (HasEnguarde & 
-                        ((CanCartwheel & CanCartwheel) | 
+                        ((HasDiddy & CanCartwheel) | 
                         (HasDixie & CanHover))
                     ),
             LocationName.arctic_abyss_banana_coin_3:
                 CanSwim | 
                     (HasEnguarde & 
-                        ((CanCartwheel & CanCartwheel) | 
+                        ((HasDiddy & CanCartwheel) | 
                         (HasDixie & CanHover))
                     ),
             LocationName.arctic_abyss_banana_coin_4:
                 CanSwim | 
                     (HasEnguarde & 
-                        ((CanCartwheel & CanCartwheel) | 
+                        ((HasDiddy & CanCartwheel) | 
                         (HasDixie & CanHover))
                     ),
             LocationName.arctic_abyss_banana_bunch_5:
                 CanSwim | 
                     (HasEnguarde & 
-                        ((CanCartwheel & CanCartwheel) | 
+                        ((HasDiddy & CanCartwheel) | 
                         (HasDixie & CanHover))
                     ),
             LocationName.arctic_abyss_banana_coin_5:
                 CanSwim | 
                     (HasEnguarde & 
-                        ((CanCartwheel & CanCartwheel) | 
+                        ((HasDiddy & CanCartwheel) | 
                         (HasDixie & CanHover))
                     ),
             LocationName.arctic_abyss_banana_bunch_6:
                 CanSwim | 
                     (HasEnguarde & 
-                        ((CanCartwheel & CanCartwheel) | 
+                        ((HasDiddy & CanCartwheel) | 
                         (HasDixie & CanHover))
                     ),
             LocationName.arctic_abyss_banana_bunch_7:
                 CanSwim | 
                     (HasEnguarde & 
-                        ((CanCartwheel & CanCartwheel) | 
+                        ((HasDiddy & CanCartwheel) | 
                         (HasDixie & CanHover))
                     ),
             LocationName.arctic_abyss_red_balloon_1:
                 HasEnguarde & 
                     (CanSwim | (
-                        (CanCartwheel & CanCartwheel) | 
+                        (HasDiddy & CanCartwheel) | 
                             (HasDixie & CanHover)
                         )
                     ),
             LocationName.arctic_abyss_red_balloon_2:
                 CanSwim | 
                     (HasEnguarde & 
-                        ((CanCartwheel & CanCartwheel) | 
+                        ((HasDiddy & CanCartwheel) | 
                         (HasDixie & CanHover))
                     ),
 
@@ -4311,7 +4311,7 @@ class DKC2ExpertRules(DKC2Rules):
 
 
             LocationName.clappers_cavern_clear:
-                CanUseKannons & (HasGlimmer | (CanHover & CanSwim & HasBothKongs)) & ((
+                CanUseKannons & (HasClapper | (CanHover & CanSwim & HasBothKongs)) & ((
                     CanCling & 
                         (HasEnguarde | CanSwim)
                     ) | (
@@ -4319,7 +4319,7 @@ class DKC2ExpertRules(DKC2Rules):
                     )
                 ),
             LocationName.clappers_cavern_kong:
-                CanUseKannons & (HasGlimmer | (CanHover & CanSwim & HasBothKongs)) & ((
+                CanUseKannons & (HasClapper | (CanHover & CanSwim & HasBothKongs)) & ((
                     CanCling & 
                         (HasEnguarde | CanSwim)
                     ) | (
@@ -4328,37 +4328,37 @@ class DKC2ExpertRules(DKC2Rules):
                 ),
             LocationName.clappers_cavern_dk_coin:
                 CanTeamAttack & 
-                    (CanCling | HasGlimmer | (CanHover & CanSwim)),
+                    (CanCling | HasClapper | (CanHover & CanSwim)),
             LocationName.clappers_cavern_bonus_1:
                 CanCling & CanTeamAttack,
             LocationName.clappers_cavern_bonus_2:
-                CanUseKannons & (HasGlimmer | (CanHover & CanSwim)) & HasEnguarde,
+                CanUseKannons & (HasClapper | (CanHover & CanSwim)) & HasEnguarde,
             LocationName.clappers_cavern_banana_coin_1:
-                HasGlimmer | (CanHover & CanSwim),
+                HasClapper | (CanHover & CanSwim),
             LocationName.clappers_cavern_banana_bunch_1:
-                CanUseKannons & (HasGlimmer | (CanHover & CanSwim)) & 
+                CanUseKannons & (HasClapper | (CanHover & CanSwim)) & 
                     (CanSwim | HasEnguarde),
             LocationName.clappers_cavern_banana_bunch_2:
-                CanUseKannons & (HasGlimmer | (CanHover & CanSwim)) & 
+                CanUseKannons & (HasClapper | (CanHover & CanSwim)) & 
                     (CanSwim | HasEnguarde),
             LocationName.clappers_cavern_banana_bunch_3:
-                CanUseKannons & (HasGlimmer | (CanHover & CanSwim)) & 
+                CanUseKannons & (HasClapper | (CanHover & CanSwim)) & 
                     (CanSwim | HasEnguarde),
             LocationName.clappers_cavern_banana_coin_2:
-                CanUseKannons & (HasGlimmer | (CanHover & CanSwim)) & 
+                CanUseKannons & (HasClapper | (CanHover & CanSwim)) & 
                     (CanSwim | HasEnguarde),
             LocationName.clappers_cavern_banana_bunch_4:
-                CanUseKannons & (HasGlimmer | (CanHover & CanSwim)) & HasEnguarde,
+                CanUseKannons & (HasClapper | (CanHover & CanSwim)) & HasEnguarde,
             LocationName.clappers_cavern_banana_coin_3:
-                CanUseKannons & (HasGlimmer | (CanHover & CanSwim)) & 
+                CanUseKannons & (HasClapper | (CanHover & CanSwim)) & 
                     (CanSwim | HasEnguarde) & (
                         (CanTeamAttack & CanBeInvincible) | HasBothKongs),
             LocationName.clappers_cavern_banana_coin_4:
-                CanUseKannons & HasGlimmer & 
+                CanUseKannons & HasClapper & 
                     (CanSwim | HasEnguarde) & (
                         (CanTeamAttack & CanBeInvincible) | HasBothKongs),
             LocationName.clappers_cavern_banana_coin_5:
-                CanUseKannons & HasGlimmer & 
+                CanUseKannons & HasClapper & 
                     (CanSwim | HasEnguarde) & (
                         (CanTeamAttack & CanBeInvincible) | HasBothKongs),
 

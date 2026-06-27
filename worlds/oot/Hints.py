@@ -39,6 +39,7 @@ bingoBottlesForHints: set[str] = {
 
 defaultHintDists: list[str] = [
     'balanced.json',
+    'battle_royale.json',
     'bingo.json',
     'chaos.json',
     'chaos_no_goal.json',
@@ -49,6 +50,7 @@ defaultHintDists: list[str] = [
     'mw_path.json',
     'mw_woth.json',
     'scrubs.json',
+    'sgl.json',
     'strong.json',
     'tournament.json',
     'useless.json',

@@ -19,12 +19,12 @@ from .ItemPool import generate_itempool, get_junk_item, get_junk_pool
 from .Regions import OOTRegion, TimeOfDay
 from .Rules import set_rules, set_shop_rules, set_entrances_based_rules
 from .RuleParser import Rule_AST_Transformer
-from .Options import EmptyDungeonList, EmptyDungeonRewards, OoTOptions, oot_option_groups
+from .Options import EmptyDungeonList, EmptyDungeonRewards, OoTOptions, cosmetic_options, oot_option_groups, sfx_options
 from .Utils import data_path, read_json, __version__ as oot_version
-from .LocationList import business_scrubs, set_drop_location_names, dungeon_song_locations
+from .LocationList import business_scrubs, dungeon_song_locations, location_sort_order, set_drop_location_names
 from .DungeonList import dungeon_table, create_dungeons
 from .LogicTricks import normalized_name_tricks, normalized_name_advanced_tricks
-from .OcarinaSongs import SONG_TABLE, generate_song_list
+from .OcarinaSongs import SONG_TABLE, Song, generate_song_list
 from .Rom import Rom
 from .Patches import OoTContainer, patch_rom
 from .N64Patch import create_patch_file
@@ -253,6 +253,8 @@ class OOTWorld(World):
     options: OoTOptions
     settings: typing.ClassVar[OOTSettings]
     topology_present: bool = True
+    ut_can_gen_without_yaml = True
+    ut_omitted_slot_options = {'plando_connections', *cosmetic_options, *sfx_options}
     item_name_to_id = {item_name: oot_data_to_ap_id(data, False) for item_name, data in item_table.items() if
                        oot_data_to_ap_id(data, False) is not None and item_name not in {
                         'Buy Magic Bean', 'Milk',
@@ -314,9 +316,56 @@ class OOTWorld(World):
         rom = Rom(file=oot_settings.rom_file)
 
 
+    @staticmethod
+    def interpret_slot_data(slot_data: dict) -> dict:
+        """Tell Universal Tracker to regenerate using this slot data as re_gen_passthrough."""
+        return slot_data
+
+
+    def get_ut_replay_slot_data(self) -> dict:
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            return re_gen_passthrough[self.game]
+        return {}
+
+
+    @staticmethod
+    def get_generation_results_from_slot_data(slot_data: dict) -> dict:
+        return slot_data.get("generation_results", slot_data.get("oot_generated", {}))
+
+
+    def apply_ut_replay_options(self, slot_data: dict) -> None:
+        slot_options = slot_data.get("options", slot_data)
+        for option_name, option_type in self.options_dataclass.type_hints.items():
+            if option_name not in slot_options:
+                continue
+            try:
+                setattr(self.options, option_name, option_type.from_any(slot_options[option_name]))
+            except Exception as exc:
+                logger.warning(
+                    "Could not restore OoT option %s from slot data for Universal Tracker: %s",
+                    option_name,
+                    exc,
+                )
+
+        generation_results = self.get_generation_results_from_slot_data(slot_data)
+        for option_name, randomized in generation_results.get("option_randomized", {}).items():
+            option = getattr(self.options, option_name, None)
+            if option is not None and hasattr(option, "randomized"):
+                option.randomized = bool(randomized)
+
+
+    def custom_ut_sort(self, region_label: str, location_label: str) -> tuple[int, str, str]:
+        return location_sort_order.get(location_label, 999999), region_label, location_label
+
+
     # Option parsing, handling incompatible options, building useful-item table
     def generate_early(self):
         self.parser = Rule_AST_Transformer(self, self.player)
+        self.ut_replay_slot_data = self.get_ut_replay_slot_data()
+        self.ut_replay_results = self.get_generation_results_from_slot_data(self.ut_replay_slot_data)
+        if self.ut_replay_slot_data:
+            self.apply_ut_replay_options(self.ut_replay_slot_data)
 
         for option_name in self.options_dataclass.type_hints:
             result = getattr(self.options, option_name)
@@ -343,9 +392,16 @@ class OOTWorld(World):
         self.randomized_starting_items = {}
         self.starting_items = Counter()
         self.songs_as_items = False
-        self.file_hash = [self.random.randint(0, 31) for i in range(5)]
+        self.file_hash = self.ut_replay_results.get('file_hash')
+        if self.file_hash is None:
+            self.file_hash = [self.random.randint(0, 31) for i in range(5)]
+        else:
+            self.file_hash = list(self.file_hash)
         player_id = min(self.player, 255)
-        self.connect_name = f"OOT{player_id:03d}-" + ''.join(f"{value:02x}" for value in self.file_hash)
+        self.connect_name = self.ut_replay_results.get(
+            'connect_name',
+            f"OOT{player_id:03d}-" + ''.join(f"{value:02x}" for value in self.file_hash),
+        )
         self.collectible_flag_addresses = {}
         self.song_notes = {name: notes for name, (_, _, notes) in SONG_TABLE.items()}
 
@@ -418,8 +474,14 @@ class OOTWorld(World):
         # Determine skipped trials in GT
         # This needs to be done before the logic rules in GT are parsed
         trial_list = ['Forest', 'Fire', 'Water', 'Spirit', 'Shadow', 'Light']
-        chosen_trials = self.random.sample(trial_list, self.trials)  # chooses a list of trials to NOT skip
-        self.skipped_trials = {trial: (trial not in chosen_trials) for trial in trial_list}
+        if 'skipped_trials' in self.ut_replay_results:
+            self.skipped_trials = {
+                trial: bool(self.ut_replay_results['skipped_trials'].get(trial, False))
+                for trial in trial_list
+            }
+        else:
+            chosen_trials = self.random.sample(trial_list, self.trials)  # chooses a list of trials to NOT skip
+            self.skipped_trials = {trial: (trial not in chosen_trials) for trial in trial_list}
 
         # Determine tricks in logic
         if self.logic_rules in ('glitchless', 'advanced'):
@@ -543,6 +605,8 @@ class OOTWorld(World):
         elif self.key_rings == 'random_dungeons':
             self.key_rings = self.random.sample(keyring_dungeons,
                 self.random.randint(0, len(keyring_dungeons)))
+        if 'key_rings' in self.ut_replay_results:
+            self.key_rings = set(self.ut_replay_results['key_rings'])
 
         # Determine which dungeons are MQ.
         mq_dungeons = set()
@@ -555,6 +619,9 @@ class OOTWorld(World):
             mq_dungeons = self.random.sample(all_dungeons, self.mq_dungeons_count)
         self.dungeon_mq = {item['name']: (item['name'] in mq_dungeons) for item in dungeon_table}
         self.dungeon_mq['Thieves Hideout'] = False  # fix for bug in SaveContext:287
+        if 'dungeon_mq' in self.ut_replay_results:
+            self.dungeon_mq = dict(self.ut_replay_results['dungeon_mq'])
+            self.dungeon_mq['Thieves Hideout'] = False
 
         # Determine which reward dungeons are pre-completed.
         empty_dungeon_pool = self.get_empty_dungeon_pool()
@@ -567,6 +634,13 @@ class OOTWorld(World):
         elif self.empty_dungeons_mode == 'rewards':
             empty_dungeons = self.select_empty_dungeons_from_rewards(empty_dungeon_pool)
         self.precompleted_dungeons = {name: (name in empty_dungeons) for name in empty_dungeon_pool}
+        if 'empty_dungeon_reward_assignments' in self.ut_replay_results:
+            self.empty_dungeon_reward_assignments = dict(self.ut_replay_results['empty_dungeon_reward_assignments'])
+        if 'precompleted_dungeons' in self.ut_replay_results:
+            self.precompleted_dungeons = {
+                name: bool(self.ut_replay_results['precompleted_dungeons'].get(name, False))
+                for name in empty_dungeon_pool
+            }
         self.empty_dungeon_starting_rewards = []
 
         # Determine which dungeons have shortcuts.
@@ -581,6 +655,8 @@ class OOTWorld(World):
             self.dungeon_shortcuts = self.random.sample(shortcut_dungeons,
                 self.random.randint(0, len(shortcut_dungeons)))
         # == 'choice', leave as previous
+        if 'dungeon_shortcuts' in self.ut_replay_results:
+            self.dungeon_shortcuts = set(self.ut_replay_results['dungeon_shortcuts'])
 
         # fixing some options
         # Fixes starting time spelling: "witching_hour" -> "witching-hour"
@@ -593,6 +669,8 @@ class OOTWorld(World):
             self.selected_adult_trade_item = self.random.choice(sorted(self.adult_trade_start))
         else:
             self.selected_adult_trade_item = None
+        if 'selected_adult_trade_item' in self.ut_replay_results:
+            self.selected_adult_trade_item = self.ut_replay_results['selected_adult_trade_item']
 
         # Get hint distribution
         self.hint_dist_user = read_json(data_path('Hints', f'{self.hint_dist}.json'))
@@ -607,6 +685,11 @@ class OOTWorld(World):
             warp='warp' in self.ocarina_songs,
             frogs2='frogs2' in self.ocarina_songs,
         )
+        if 'song_notes' in self.ut_replay_results:
+            self.song_notes = {
+                name: Song.from_str(notes)
+                for name, notes in self.ut_replay_results['song_notes'].items()
+            }
 
         self.added_hint_types = {}
         self.item_added_hint_types = {}
@@ -766,6 +849,7 @@ class OOTWorld(World):
         scrub_locations = [location for location in self.get_locations() if location.type in {'Scrub', 'GrottoScrub'}]
         scrub_dictionary = {}
         self.scrub_prices = {}
+        replay_prices = self.ut_replay_results.get('scrub_prices', {})
         for location in scrub_locations:
             if location.default not in scrub_dictionary:
                 scrub_dictionary[location.default] = []
@@ -780,6 +864,8 @@ class OOTWorld(World):
                 # this is a random value between 0-99
                 # average value is ~33 rupees
                 price = int(self.random.betavariate(1, 2) * 99)
+            if scrub_item in replay_prices:
+                price = replay_prices[scrub_item]
 
             # Set price in the dictionary as well as the location.
             self.scrub_prices[scrub_item] = price
@@ -792,6 +878,11 @@ class OOTWorld(World):
 
     # Sets prices for shuffled shop locations
     def random_shop_prices(self):
+        replay_prices = self.ut_replay_results.get('shop_prices')
+        if replay_prices is not None:
+            self.shop_prices = dict(replay_prices)
+            return
+
         shop_item_indexes = ['7', '5', '8', '6']
         self.shop_prices = {}
         for region in self.regions:
@@ -881,6 +972,15 @@ class OOTWorld(World):
 
         mode = self.shuffle_dungeon_rewards
         rauru_location = self.multiworld.get_location('ToT Reward from Rauru', self.player)
+        if 'rauru_starting_item' in self.ut_replay_results or 'rauru_free_post_fill' in self.ut_replay_results:
+            reward_name = self.ut_replay_results.get('rauru_starting_item')
+            if reward_name is not None:
+                self.rauru_starting_item = reward_name
+                self._claim_rauru_starting(reward_name, rauru_location)
+                return
+            if self.ut_replay_results.get('rauru_free_post_fill', False):
+                self.rauru_free_post_fill = True
+                return
 
         if mode == 'vanilla':
             reward_name = rauru_location.vanilla_item
@@ -918,18 +1018,10 @@ class OOTWorld(World):
         """Push a chosen reward as starting inventory and mark Rauru as a non-sendable check."""
         self.hinted_dungeon_reward_locations[reward_name] = None
         self.multiworld.push_precollected(self.create_item(reward_name))
-        self._grant_rauru_skip_state()
         rauru_location.address = None
         rauru_location.show_in_spoiler = False
         if rauru_location in rauru_location.parent_region.locations:
             rauru_location.parent_region.locations.remove(rauru_location)
-
-    def _grant_rauru_skip_state(self):
-        if not any(item.name == 'Time Travel' for item in self.multiworld.precollected_items[self.player]):
-            self.multiworld.push_precollected(self.create_item('Time Travel'))
-        if 'Time Travel' not in self.remove_from_start_inventory:
-            self.remove_from_start_inventory.append('Time Travel')
-
 
     @staticmethod
     def item_dungeon_name_from_name(item_name: str) -> Optional[str]:
@@ -1015,7 +1107,10 @@ class OOTWorld(World):
             return
 
         reward_assignments = getattr(self, 'empty_dungeon_reward_assignments', {})
-        if reward_assignments:
+        replay_reward_names = self.ut_replay_results.get('empty_dungeon_starting_rewards', [])
+        if replay_reward_names:
+            reward_names = list(replay_reward_names)
+        elif reward_assignments:
             reward_names = [
                 reward_assignments[HintArea.at(loc).dungeon_name]
                 for loc in empty_reward_locations
@@ -1827,7 +1922,6 @@ class OOTWorld(World):
                         and extracted.type == 'DungeonReward'):
                     self.hinted_dungeon_reward_locations[extracted.name] = None
 
-                self._grant_rauru_skip_state()
                 rauru_loc.address = None
                 rauru_loc.show_in_spoiler = False
                 if rauru_loc in rauru_loc.parent_region.locations:
@@ -1996,41 +2090,16 @@ class OOTWorld(World):
         self.collectible_flags_available.wait()
         if not self.shop_location_flags:
             self.shop_location_flags = self.calculate_shop_location_flags()
+        slot_options = self._serialize_slot_options()
 
         slot_data = {
             'collectible_override_flags': self.collectible_override_flags,
             'collectible_flag_offsets': self.collectible_flag_offsets,
             'shop_flag_offsets': self.shop_location_flags,
+            'options': slot_options,
+            'generation_results': self._serialize_generation_results(),
         }
-        slot_data.update(self.options.as_dict(
-            "open_forest", "open_kakariko", "open_door_of_time", "zora_fountain", "gerudo_fortress",
-            "bridge", "bridge_stones", "bridge_medallions", "bridge_rewards", "bridge_tokens", "bridge_hearts",
-            "shuffle_ganon_bosskey", "ganon_bosskey_medallions", "ganon_bosskey_stones", "ganon_bosskey_rewards",
-            "ganon_bosskey_tokens", "ganon_bosskey_hearts", "trials",
-            "triforce_hunt", "triforce_goal", "extra_triforce_percentage",
-            "shopsanity", "shop_slots", "special_deal_price_distribution", "special_deal_price_min",
-            "special_deal_price_max", "tokensanity",
-            "dungeon_shortcuts", "dungeon_shortcuts_list",
-            "mq_dungeons_mode", "mq_dungeons_list", "mq_dungeons_count",
-            "empty_dungeons_mode", "empty_dungeons_list", "empty_dungeons_rewards", "empty_dungeons_count",
-            "shuffle_interior_entrances", "shuffle_grotto_entrances", "shuffle_dungeon_entrances",
-            "shuffle_overworld_entrances", "shuffle_bosses", "shuffle_ganon_tower", "key_rings", "key_rings_list", "enhance_map_compass",
-            "shuffle_map", "shuffle_compass", "shuffle_smallkeys", "shuffle_hideoutkeys", "shuffle_bosskeys",
-            "logic_rules", "logic_no_night_tokens_without_suns_song", "allowed_tricks", "advanced_allowed_tricks",
-            "warp_songs", "shuffle_song_items", "ocarina_songs", "shuffle_expensive_merchants",
-            "shuffle_frog_song_rupees",
-            "shuffle_100_skulltula_rupee",
-            "shuffle_scrubs", "shuffle_child_trade", "shuffle_freestanding_items", "shuffle_pots", "shuffle_empty_pots", "shuffle_crates",
-            "shuffle_empty_crates",
-            "shuffle_cows", "shuffle_beehives", "shuffle_wonderitems", "shuffle_kokiri_sword", "shuffle_ocarinas", "shuffle_gerudo_card",
-            "shuffle_beans", "shuffle_gerudo_fortress_heart_piece", "starting_age", "free_bombchu_drops", "spawn_positions", "owl_drops",
-            "no_epona_race", "skip_some_minigame_phases", "complete_mask_quest", "scarecrow_behavior", "plant_beans", "easier_fire_arrow_entry", "fast_shadow_boat", "skip_reward_from_rauru",
-            "chicken_count", "big_poe_count", "fae_torch_count", "blue_fire_arrows",
-            "damage_multiplier", "deadly_bonks", "starting_tod", "junk_ice_traps", "custom_ice_trap_count", "custom_ice_trap_percent",
-            "start_with_consumables", "starting_hearts", "add_random_starting_items", "random_starting_items_count",
-            "random_starting_items_exclude", "adult_trade_start", "plando_connections"
-            )
-        )
+        slot_data.update(slot_options)
 
         if not self.multiworld.is_race:
             dungeon_reward_locations = {}
@@ -2078,6 +2147,58 @@ class OOTWorld(World):
             slot_data['dungeon_bosses'] = dungeon_bosses
 
         return slot_data
+
+
+    @staticmethod
+    def _serialize_slot_value(value):
+        if isinstance(value, (set, frozenset)):
+            return sorted(value)
+        if isinstance(value, Counter):
+            return dict(value)
+        if isinstance(value, dict):
+            return {
+                key: OOTWorld._serialize_slot_value(inner_value)
+                for key, inner_value in value.items()
+            }
+        if isinstance(value, (list, tuple)):
+            return [OOTWorld._serialize_slot_value(inner_value) for inner_value in value]
+        return value
+
+
+    def _serialize_slot_options(self):
+        return {
+            option_name: self._serialize_slot_value(getattr(self.options, option_name).value)
+            for option_name in self.options_dataclass.type_hints
+            if option_name not in self.ut_omitted_slot_options
+        }
+
+
+    def _serialize_generation_results(self):
+        return {
+            'connect_name': self.connect_name,
+            'file_hash': list(self.file_hash),
+            'skipped_trials': dict(self.skipped_trials),
+            'dungeon_mq': dict(self.dungeon_mq),
+            'precompleted_dungeons': dict(self.precompleted_dungeons),
+            'empty_dungeon_reward_assignments': dict(self.empty_dungeon_reward_assignments),
+            'empty_dungeon_starting_rewards': list(getattr(self, 'empty_dungeon_starting_rewards', [])),
+            'dungeon_shortcuts': sorted(self.dungeon_shortcuts),
+            'key_rings': sorted(self.key_rings),
+            'selected_adult_trade_item': self.selected_adult_trade_item,
+            'shop_prices': dict(self.shop_prices),
+            'scrub_prices': dict(self.scrub_prices),
+            'randomized_starting_items': dict(self.randomized_starting_items),
+            'song_notes': {name: str(notes) for name, notes in self.song_notes.items()},
+            'rauru_starting_item': getattr(self, 'rauru_starting_item', None),
+            'rauru_free_post_fill': getattr(self, 'rauru_free_post_fill', False),
+            'option_randomized': {
+                'trials': self.trials_random,
+                'mq_dungeons_count': self.mq_dungeons_random,
+                'empty_dungeons_count': self.options.empty_dungeons_count.randomized,
+                'special_deal_price_min': self.options.special_deal_price_min.randomized,
+                'special_deal_price_max': self.options.special_deal_price_max.randomized,
+            },
+        }
 
 
     def modify_multidata(self, multidata: dict):

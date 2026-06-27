@@ -3,11 +3,8 @@
 ## Required Software
 
 - [Inscryption](https://store.steampowered.com/app/1092790/Inscryption/)
-- For easy setup (recommended):
-  - [r2modman](https://inscryption.thunderstore.io/package/ebkr/r2modman/) OR [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager)
-- For manual setup:
-  - [BepInEx pack for Inscryption](https://inscryption.thunderstore.io/package/BepInEx/BepInExPack_Inscryption/)
-  - [ArchipelagoMod](https://github.com/empathy-mp3/Archipelago_Inscryption/releases/latest)
+- [BepInEx pack for Inscryption](https://inscryption.thunderstore.io/package/BepInEx/BepInExPack_Inscryption/)
+- [ArchipelagoMod](https://github.com/empathy-mp3/Archipelago_Inscryption/releases/latest)
 
 ## Installation
 Before starting the installation process, here's what you should know:

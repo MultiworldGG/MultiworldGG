@@ -57,7 +57,7 @@
 
 .no-lobbies {
     text-align: center !important;
-    color: #ea166c;
+    color: #ffdd5a;
     font-size: 20px;
 }
 
@@ -93,13 +93,24 @@
 
 #lobby-create .table-wrapper select,
 #lobby-create .table-wrapper input:not([type="checkbox"]) {
-    width: 200px;
+    box-sizing: border-box;
+    width: 240px;
+    max-width: 100%;
+}
+
+#lobby-create .table-wrapper select {
+    padding-right: 0.75rem;
+    text-overflow: ellipsis;
 }
 
 #lobby-create table td {
     text-align: left;
     padding: 4px 8px;
     vertical-align: top;
+}
+
+#lobby-create table td:first-child {
+    white-space: nowrap;
 }
 
 #lobby-create-submit {
@@ -253,7 +264,7 @@
 
 .yaml-game-name {
     flex: 1;
-    color: #ea166c;
+    color: #ffdd5a;
     font-weight: bold;
     font-size: 0.85rem;
     overflow: hidden;
@@ -839,7 +850,14 @@ a.lobby-btn-primary:hover {
 
 .settings-section select,
 .settings-section input[type="text"] {
-    width: 180px;
+    box-sizing: border-box;
+    width: 220px;
+    max-width: 100%;
+}
+
+.settings-section select {
+    padding-right: 0.75rem;
+    text-overflow: ellipsis;
 }
 
 #settings-modal-actions {
@@ -904,6 +922,13 @@ a.lobby-btn-primary:hover {
 
 .apworld-status-ok {
     color: #28a745;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    cursor: default;
+}
+
+.apworld-status-pending {
+    color: #ffc107;
     font-size: 0.75rem;
     flex-shrink: 0;
     cursor: default;
@@ -1012,10 +1037,100 @@ a.lobby-btn-primary:hover {
 }
 
 .yaml-actions {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 2px;
     flex-shrink: 0;
+}
+
+.yaml-actions-toggle {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.25);
+    color: #ffdd5a;
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1;
+    padding: 0;
+}
+
+.yaml-actions-toggle:hover,
+.yaml-actions-toggle.is-open,
+.yaml-actions:focus-within .yaml-actions-toggle {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #ffdd5a;
+}
+
+.yaml-actions-toggle:active {
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ffdd5a;
+}
+
+.yaml-actions-menu {
+    display: none;
+    position: fixed;
+    z-index: 900;
+    min-width: 150px;
+    padding: 4px;
+    background: #171321;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+    font-family: Inter-Regular, sans-serif;
+}
+
+.yaml-actions-portal.open {
+    display: flex;
+    flex-direction: column;
+}
+
+.yaml-actions-menu .yaml-menu-item,
+.yaml-actions-menu .yaml-view-btn,
+.yaml-actions-menu .yaml-delete-btn {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 3px;
+    background: none;
+    color: #fff;
+    cursor: pointer;
+    font-family: Inter-Regular, sans-serif;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.yaml-actions-menu .yaml-menu-item:hover,
+.yaml-actions-menu .yaml-view-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffdd5a;
+}
+
+.yaml-actions-menu .yaml-delete-btn {
+    color: #ff9aa5;
+}
+
+.yaml-actions-menu .yaml-delete-btn:hover {
+    background: rgba(220, 53, 69, 0.18);
+    color: #fff;
+}
+
+.yaml-actions-menu .yaml-menu-item:active,
+.yaml-actions-menu .yaml-view-btn:active,
+.yaml-actions-menu .yaml-delete-btn:active {
+    padding: 6px 8px;
+    margin: 0;
 }
 
 .yaml-view-btn {

@@ -8,6 +8,7 @@ from typing import Dict, Any, List, Iterable, ClassVar
 import settings
 from BaseClasses import Item, Tutorial, Location, Entrance, ItemClassification, Region
 from Utils import visualize_regions
+from rule_builder.rules import Has
 from worlds.AutoWorld import WebWorld, World
 from . import tracker
 from .options import MadouOptions
@@ -152,8 +153,6 @@ class MadouWorld(World):
         self.get_region(MadouRegion.school_maze).add_event(EventLocation.unpetrify, EventItem.unpetrify, None),
         self.get_region(MadouRegion.sage_mountain_summit).add_event("Chest on Sage Mountain",
                                                                     "Final Exam Certificate",
-                                                                    lambda state: state.has(Special.secret_stone, self.player, self.options.required_secret_stones.value)
-                                                                    and (self.options.skip_fairy_search or state.has(Special.dark_orb, self.player)),
                                                                     show_in_spoiler=True)
         if not self.options.souvenir_hunt:
             self.get_region(MadouRegion.ruins_town).add_event(EventLocation.ruins_shop, EventItem.ruins_buy, show_in_spoiler=True)
@@ -164,15 +163,15 @@ class MadouWorld(World):
             white_gem = self.get_location(MagicTown.white_gem)
             white_gem.address = None
             white_gem.place_locked_item(self.create_event("Mother's Appreciation"))
-            multiworld.completion_condition[self.player] = lambda state: state.has("Mother's Appreciation", player)
+            self.set_completion_rule(Has("Mother's Appreciation"))
         elif self.options.goal == self.options.goal.option_certificate:
-            multiworld.completion_condition[self.player] = lambda state: state.has("Final Exam Certificate", player)
+            self.set_completion_rule(Has("Final Exam Certificate"))
         else:
             ending_region = self.get_region(MadouRegion.magical_tower)
             victory = Location(player, "Graduate!", None, ending_region)
-            multiworld.completion_condition[self.player] = lambda state: state.has("Victory", player)
             victory.place_locked_item(self.create_event("Victory"))
             ending_region.locations.append(victory)
+            self.set_completion_rule(Has("Victory"))
 
     def modify_multidata(self, multidata: Dict[str, Any]) -> None:
         # wait for self.rom_name to be available.

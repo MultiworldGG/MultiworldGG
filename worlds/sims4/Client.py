@@ -4,6 +4,7 @@ import asyncio
 import json
 import os
 import urllib.parse
+import re
 from pathlib import Path
 
 import Utils
@@ -22,9 +23,12 @@ from . import Sims4World
 
 # Gets the sims 4 mods folder
 
-mods_folder_str = str(Sims4World.settings.mods_folder).replace(r"\_", "\u00A0")
+def unescape_ap_path(path: str) -> str:
+    # Replace Archipelago's \_ escape with NBSP,
+    # but skip if it's the first character of a segment
+    return re.sub(r'(?<!\\)\\_', '\u00A0', path)
 
-mods_folder_path = Path(mods_folder_str)
+mods_folder_path = Path(unescape_ap_path(str(Sims4World.settings.mods_folder)))
 
 if mods_folder_path.exists():
     mod_data_path = mods_folder_path / "mod_data" / "s4ap"
@@ -54,6 +58,8 @@ def load_json(name):
                 with open(full_path, 'r') as f:
                     return json.load(f)
             except json.JSONDecodeError:
+                return None
+            except PermissionError:
                 return None
         else:
             return None
@@ -87,11 +93,13 @@ class SimsCommandProcessor(ClientCommandProcessor):
         """Set the file path to the Sims 4 mods folder manually (if automatic detection fails)"""
         p = sims_4_mods_path
         global mod_data_path
-        if p == '':
-            self.output('no path inputed')
+        if not p:
+            self.output("No path provided")
         elif os.path.exists(os.path.join(p, 'mod_data', 's4ap')):
             self.output('Sims 4 mods folder found')
             mod_data_path = os.path.join(p, 'mod_data', 's4ap')
+        elif not os.path.isabs(p):
+            self.output("Please enter the full path to the Sims 4 mods folder.\nFor example: C:\\Users\\Username\\Documents\\Electronic Arts\\The Sims 4\\Mods")
         else:
             self.ctx.gui_error(title='Sims 4 mods folder not found',
                                text=f'Make sure the file path you inputed is correct.')
@@ -217,23 +225,28 @@ async def game_watcher(ctx: SimsContext):
         if ctx.server is not None and ctx.slot is not None:
             json_data = load_json('locations_cached.json')
             if json_data is not None:
+                locations_to_send = []
                 if "Locations" in json_data and json_data["Locations"] is not None and json_data["Seed"] == ctx.seed_name:
                     # locations_to_remove = []
-                    for data in json_data["Locations"]:
-                        for location_id in ctx.missing_locations:
-                            location_current_name = ctx.location_names.lookup_in_game(location_id)
-                            if location_current_name == data:
-                                if ctx.goal == data.split("(", 1)[0].strip().replace(" ", "_").lower() and not ctx.finished_game:
-                                    await SimsContext.send_msgs(ctx, [
-                                        {"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
-                                    ctx.finished_game = True
-                                await SimsContext.send_msgs(ctx,
-                                                            [{"cmd": "LocationChecks", "locations": [location_id]}])
-                                # locations_to_remove.append(data)
-                                break
+
+                    checked_locations = set(json_data["Locations"])
+
+                    for location_id in ctx.missing_locations:
+                        location_current_name = ctx.location_names.lookup_in_game(location_id)
+                        if location_current_name in checked_locations:
+                            if ctx.goal == location_current_name.split("(", 1)[0].strip().replace(" ", "_").lower() and not ctx.finished_game:
+                                await SimsContext.send_msgs(ctx, [
+                                    {"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
+                                ctx.finished_game = True
+                            locations_to_send.append(location_id)
+                            # locations_to_remove.append(data)
+                            break
                     # for loc in locations_to_remove:
                     #     json_data["Locations"].remove(loc)
                     #     print_json(json_data, 'locations_cached.json', ctx)
+                if locations_to_send:
+                    locations_to_send = await SimsContext.send_msgs(ctx,
+                                            [{"cmd": "LocationChecks", "locations": locations_to_send}])
             json_data = load_json('sync.json')
             if json_data is not None:
                 if json_data:
@@ -242,12 +255,12 @@ async def game_watcher(ctx: SimsContext):
         await asyncio.sleep(0.5)
 
 
-def main():
+def main(args: list[str] | None = None) -> None:
     async def _main():
         parser = get_base_parser(description="The Sims 4 Client, for text interfacing.")
-        args, rest = parser.parse_known_args()
+        _args, _rest = parser.parse_known_args(args)
 
-        ctx = SimsContext(args.connect, args.password)
+        ctx = SimsContext(_args.connect, _args.password)
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="ServerLoop")
         watcher_task = asyncio.create_task(game_watcher(ctx), name="GameWatcher")
 
@@ -270,4 +283,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(None)
