@@ -1,8 +1,1 @@
-{
-  "version": 6,
-  "compatible_version": 5,
-  "game": "The Sims 4",
-  "world_version": "1.7.5",
-  "world_version_full": "1.7.5",
-  "contributors": ["mrsummer360", "itsmisscactus", "silasary"]
-}
+{"game": "The Sims 4", "world_version": "2.0.0", "world_version_full": "2.0.0", "contributors": ["mrsummer360", "itsmisscactus", "silasary"], "compatible_version": 7, "version": 7}

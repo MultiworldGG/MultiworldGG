@@ -119,7 +119,7 @@
                                 <tr>
                                     <td>
                                         <label for="release_mode">Release Permission:
-                                            <span class="interactive" data-tooltip="Permissions on when players are able to release all remaining items from their world.">(?)
+                                            <span class="interactive" data-tooltip="Controls when players can release all remaining items from their world.&#10;Automatic on goal completion: releases as soon as the player finishes.&#10;Allow !release after goal completion: manual command unlocks after goal.&#10;Automatic + manual !release: auto on goal, but manual is always allowed.&#10;Manual !release: command is always allowed.&#10;Disabled: no client release.">(?)
                                             </span>
                                         </label>
                                     </td>
@@ -136,15 +136,15 @@
                                 <tr>
                                     <td>
                                         <label for="collect_mode">Collect Permission:
-                                            <span class="interactive" data-tooltip="Permissions on when players are able to collect all their remaining items.">(?)
+                                            <span class="interactive" data-tooltip="Controls when players can collect all remaining items for themselves.&#10;Automatic on goal completion: collects as soon as the player finishes.&#10;Allow after goal completion: manual command unlocks after goal.&#10;Automatic + manual: auto on goal, but manual is always allowed.&#10;Manual !collect: command is always allowed.&#10;Disabled: no client collect.">(?)
                                             </span>
                                         </label>
                                     </td>
                                     <td>
                                         <select name="collect_mode" id="collect_mode">
                                             <option value="auto">Automatic on goal completion</option>
-                                            <option selected value="goal">Allow !collect after goal completion</option>
-                                            <option value="auto-enabled">Automatic + manual !collect</option>
+                                            <option selected value="goal">Allow after goal completion</option>
+                                            <option value="auto-enabled">Automatic + manual</option>
                                             <option value="enabled">Manual !collect</option>
                                             <option value="disabled">Disabled</option>
                                         </select>
@@ -152,8 +152,20 @@
                                 </tr>
                                 <tr>
                                     <td>
+                                        <label for="release_threshold">Release Threshold:
+                                            <span class="interactive" data-tooltip="Minimum percentage of locations a player must check before !release or !collect can be used. Also applies to automatic release and collect.">(?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="release_threshold" id="release_threshold"
+                                               min="0" max="100" step="1" value="0" required>%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
                                         <label for="remaining_mode">Remaining Permission:
-                                            <span class="interactive" data-tooltip="Remaining lists all items still in your world by name only.">(?)
+                                            <span class="interactive" data-tooltip="Controls !remaining, which lists items still in a player's world by name only.&#10;Allow !remaining after goal completion: command unlocks after goal.&#10;Manual !remaining: command is always allowed.&#10;Disabled: no client remaining command.">(?)
                                             </span>
                                         </label>
                                     </td>

@@ -47,8 +47,13 @@ class MoneyPerQuotaCheck(Range):
 
 class NumQuotas(Range):
     """
-    Will not give checks for quotas past this number. For example, if maximum quotas is 10, the 11th quota check will
-    not count as a check
+    The number of quota locations to create. A quota location is completed whenever the player fulfills
+    money_per_quota_check-worth of quota. Progress accumulates over quotas and crew wipes.
+
+    Ex: If money_per_quota_check = 70 and the first quota is 120, then 1 quota location will be completed when the 
+        player fulfills their first quota. If the second quota is 200, then 3 additional quota locations will be 
+        completed when the player fulfills their second quota. 320 total quota has been fulfilled at this point, so a
+        total of 4 quota locations are complete.
     """
     display_name = "Num Quotas"
     range_start = 10
@@ -56,6 +61,21 @@ class NumQuotas(Range):
     default = 20
     slot = True
     slot_name = "numQuota"
+
+
+class QuotaCheckpointEvery(Range):
+    """
+    How many quota locations the player must complete between each checkpoint unlock event.
+    With the default values (num_quotas=20 and quota_checkpoint_every=5), quota locations will be grouped into four
+    spheres with five locations each. This helps ensure that important early items are not stuck behind late quota
+    locations. Set higher than num_quotas to disable checkpoints entirely and group all quota locations into a single
+    sphere.
+    """
+    display_name = "Quota Checkpoint Every"
+    range_start = 1
+    range_end = 20
+    default = 5
+    slot = False
 
 
 class BrackenTrapWeight(Range):
@@ -471,6 +491,7 @@ class LCOptions(PerGameCommonOptions):
     checks_per_moon: ChecksPerMoon #done
     money_per_quota_check: MoneyPerQuotaCheck #done
     num_quotas: NumQuotas #done
+    quota_checkpoint_every: QuotaCheckpointEvery #done
     starting_inventory_slots: StartingInventorySlots #done
     starting_stamina_bars: StartingStaminaBars #done
     randomize_scanner: RandomizeScanner #done

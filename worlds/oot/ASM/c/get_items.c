@@ -228,7 +228,10 @@ void activate_override(override_t override) {
     active_override = override;
     ap_item_names_set_active_from_override(&active_override);
     if (resolved_item_id == GI_TRIFORCE_PIECE) {
-        active_override_is_outgoing = 2; // Send to everyone
+        // ### AP SPECIFIC CHANGE ###
+        // Bit 0 suppresses local effects in the ASM hook; bit 1 still sends
+        // locally-owned Triforce pieces to the bridge.
+        active_override_is_outgoing = override.value.base.player == PLAYER_ID ? 2 : 1;
     } else {
         active_override_is_outgoing = override.value.base.player != PLAYER_ID;
     }
@@ -412,7 +415,9 @@ void try_pending_item() {
     uint16_t resolved_item_id = resolve_upgrades(override);
     item_row_t* item_row = get_item_row(resolved_item_id);
     if (override.value.base.item_id == GI_TRIFORCE_PIECE && override.value.base.player != PLAYER_ID) {
-        call_effect_function(item_row);
+        // ### AP SPECIFIC CHANGE ###
+        // Triforce pieces for another OoT slot must advance the incoming
+        // queue, but must not increment this ROM's local hunt counter.
         pop_pending_item();
         after_key_received(override.key);
         clear_override();
@@ -889,10 +894,14 @@ int16_t get_override_drop_id(int16_t dropId) {
 void dispatch_item(uint16_t resolved_item_id, uint8_t player, override_t* override, item_row_t* item_row) {
     // Give the item to the right place
     if (resolved_item_id == GI_TRIFORCE_PIECE) {
-        // Send triforce to everyone
+        // ### AP SPECIFIC CHANGE ###
+        // Always send Triforce pieces to the bridge, but only apply the local
+        // hunt counter effect for this player.
         push_outgoing_override(override);
-        call_effect_function(item_row);
-        z64_GiveItem(&z64_game, item_row->action_id);
+        if (player == PLAYER_ID) {
+            call_effect_function(item_row);
+            z64_GiveItem(&z64_game, item_row->action_id);
+        }
     } else if (player != PLAYER_ID) {
         // Item is for another world. Set outgoing item.
         push_outgoing_override(override);

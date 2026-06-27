@@ -1,4 +1,4 @@
-VERSION: tuple[int, int, int] | tuple[int, int, int, str] = (1, 7, 4)
+VERSION: tuple[int, int, int] | tuple[int, int, int, str] = (2, 0, 0)
 
 
 class Sims4Version:
@@ -26,5 +26,8 @@ class Sims4Version:
         return len(version) == 4
 
     @staticmethod
-    def does_major_version_mismatch(client_version: tuple[int, int, int] | tuple[int, int, int, str], server_version: tuple[int, int, int] | tuple[int, int, int, str]) -> bool:
+    def does_major_version_mismatch(
+            client_version: tuple[int, int, int] | tuple[int, int, int, str],
+            server_version: tuple[int, int, int] | tuple[int, int, int, str]
+    ) -> bool:
         return client_version[0] != server_version[0]

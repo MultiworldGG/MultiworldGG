@@ -2,6 +2,7 @@ import math
 import string
 
 from BaseClasses import MultiWorld, CollectionState, ItemClassification, LocationProgressType
+from worlds.generic.Rules import add_rule
 from .options import LCOptions
 from typing import TYPE_CHECKING
 
@@ -23,18 +24,18 @@ def has_location_access_rule(multiworld: MultiWorld, moon: str, player: int, ite
 def has_quota_access_rule(multiworld: MultiWorld, player: int, item_number: int, options: LCOptions) -> None:
     if item_number == 1:
         return
-    elif item_number == math.ceil(options.num_quotas.value / 4.0):
-        multiworld.get_location(f"Quota check {item_number}", player).access_rule = lambda state: check_quota(
-            player=player, state=state, item_number=item_number) and state.has("Completed 25% Quota", player)
-    elif item_number == math.ceil(options.num_quotas.value / 2.0):
-        multiworld.get_location(f"Quota check {item_number}", player).access_rule = lambda state: check_quota(
-            player=player, state=state, item_number=item_number) and state.has("Completed 50% Quota", player)
-    elif item_number == math.ceil(3.0 * options.num_quotas.value / 4.0):
-        multiworld.get_location(f"Quota check {item_number}", player).access_rule = lambda state: check_quota(
-            player=player, state=state, item_number=item_number) and state.has("Completed 75% Quota", player)
-    else:
-        multiworld.get_location(f"Quota check {item_number}", player).access_rule = \
-            lambda state: check_quota(player=player, state=state, item_number=item_number)
+    checkpoint_every = options.quota_checkpoint_every.value
+    num_quotas = options.num_quotas.value
+    if item_number % checkpoint_every == 0:
+
+        if item_number < num_quotas:
+            multiworld.get_location(f"Quota check {item_number}", player).access_rule = \
+                lambda state, ci=item_number // checkpoint_every, n=item_number: check_quota(
+                    player=player, state=state, item_number=n
+                ) and state.has(f"Completed quota checkpoint {ci}", player)
+            return
+    multiworld.get_location(f"Quota check {item_number}", player).access_rule = \
+        lambda state, n=item_number: check_quota(player=player, state=state, item_number=n)
 
 
 def check_location(state, moon: str, player: int, item_number: int) -> None:
@@ -56,10 +57,17 @@ def set_rules(lc_world: 'LethalCompanyWorld') -> None:
     for i in range(options.num_quotas.value):
         has_quota_access_rule(multiworld, player, i + 1, options)
 
-    multiworld.get_location("Quota 50%", player).access_rule = \
-        lambda state: state.has("Completed 25% Quota", player)
-    multiworld.get_location("Quota 75%", player).access_rule = \
-        lambda state: state.has("Completed 50% Quota", player)
+    checkpoint_every = options.quota_checkpoint_every.value
+    num_quotas = options.num_quotas.value
+    checkpoint_index = 2
+    while checkpoint_index * checkpoint_every < num_quotas:
+        ci = checkpoint_index
+        multiworld.get_location(f"Quota checkpoint {ci}", player).access_rule = \
+            lambda state, prev=ci - 1: state.has(f"Completed quota checkpoint {prev}", player)
+        checkpoint_index += 1
+
+    add_rule(multiworld.get_location("Bestiary Entry - Kidnapper fox", player), lambda state: can_buy(state, player, options))
+    add_rule(multiworld.get_location("Bestiary Entry - Vain shroud", player), lambda state: can_buy(state, player, options))
 
     if options.scrapsanity.value == 1:
         for scrap_index in range(len(lc_world.scrap_names)):

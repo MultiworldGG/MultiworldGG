@@ -69,6 +69,55 @@ def _select_native_binary(pkg_dir: str) -> None:
         shutil.copyfile(src_path, dest_path)
 
 
+def _dme_cache_dir(zip_file_path: str) -> str:
+    import hashlib
+    stat = os.stat(zip_file_path)
+    cache_key = f"{os.path.abspath(zip_file_path)}:{stat.st_size}:{stat.st_mtime_ns}"
+    cache_name = hashlib.sha1(cache_key.encode("utf-8")).hexdigest()[:16]
+    return os.path.join(tempfile.gettempdir(), "ttyd_temp_dme", cache_name)
+
+
+def _extract_dme_from_apworld(zip_file_path: str, target_dir_path: str) -> str:
+    import shutil
+    lib_parent = os.path.join(target_dir_path, "ttyd", "lib")
+    pkg_dir = os.path.join(lib_parent, "dolphin_memory_engine_ttyd")
+    marker = os.path.join(pkg_dir, "__init__.py")
+    complete_marker = os.path.join(target_dir_path, ".complete")
+
+    if os.path.exists(marker) and os.path.exists(complete_marker):
+        return lib_parent
+
+    if os.path.exists(target_dir_path):
+        try:
+            shutil.rmtree(target_dir_path)
+        except OSError:
+            target_dir_path = tempfile.mkdtemp(prefix="ttyd_temp_dme_")
+            lib_parent = os.path.join(target_dir_path, "ttyd", "lib")
+    os.makedirs(lib_parent, exist_ok=True)
+
+    with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
+        archive_member = next(
+            (
+                member for member in zip_ref.namelist()
+                if member.endswith("ttyd/lib/dolphin_memory_engine_ttyd.zip")
+            ),
+            None,
+        )
+        if archive_member:
+            with zipfile.ZipFile(io.BytesIO(zip_ref.read(archive_member)), "r") as dme_zip:
+                dme_zip.extractall(lib_parent)
+            with open(os.path.join(target_dir_path, ".complete"), "w", encoding="utf-8") as marker_file:
+                marker_file.write("ok\n")
+            return lib_parent
+
+        for member in zip_ref.namelist():
+            if "dolphin_memory_engine" in member:
+                zip_ref.extract(member, target_dir_path)
+    with open(os.path.join(target_dir_path, ".complete"), "w", encoding="utf-8") as marker_file:
+        marker_file.write("ok\n")
+    return lib_parent
+
+
 def setup_dme_path():
     base_path = os.path.dirname(__file__)
     lib_path = os.path.join(base_path, "lib")
@@ -78,16 +127,8 @@ def setup_dme_path():
         while not zip_file_path.lower().endswith(".apworld"):
             zip_file_path = os.path.dirname(zip_file_path)
 
-        target_dir_path = os.path.join(tempfile.gettempdir(), "ttyd_temp_dme")
-        lib_parent = os.path.join(target_dir_path, "ttyd", "lib")
-        marker = os.path.join(lib_parent, "dolphin_memory_engine_ttyd", "__init__.py")
-
-        if not os.path.exists(marker):
-            os.makedirs(target_dir_path, exist_ok=True)
-            with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
-                for member in zip_ref.namelist():
-                    if "dolphin_memory_engine" in member:
-                        zip_ref.extract(member, target_dir_path)
+        target_dir_path = _dme_cache_dir(zip_file_path)
+        lib_parent = _extract_dme_from_apworld(zip_file_path, target_dir_path)
     else:
         lib_parent = lib_path
 

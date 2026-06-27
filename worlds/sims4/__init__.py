@@ -1,28 +1,29 @@
 # standard lib imports
-from typing import Mapping, Any, ClassVar, Dict
-from pathlib import Path
-from multiprocessing import Process
+from typing import Any, ClassVar
+from collections.abc import Mapping
 
 # ap imports
-import settings
-from BaseClasses import Tutorial, Item, ItemClassification, Region, Entrance
-from worlds.AutoWorld import World, WebWorld
-from ..LauncherComponents import Component, components, Type, icon_paths
+from BaseClasses import ItemClassification, Region, Entrance
+from worlds.AutoWorld import World
+from ..LauncherComponents import Component, components, Type, icon_paths, launch
 
 # TS4 specific imports
 from .Locations import location_table, Sims4Location, skill_locations_table
-from .Items import item_table, skills_table, Sims4Item, junk_table, filler_set
-from .Options import Sims4Options
-from .Regions import sims4_careers, sims4_aspiration_milestones, sims4_skill_dependencies, \
-    sims4_regions
-from .Rules import set_rules as ts4_set_rules
+from .Items import item_table, Sims4Item, junk_table, filler_set
+from .Names import EventNames
+from .Options import AspirationGoal, Sims4Options
+from .Regions import sims4_careers, sims4_aspiration_milestones
+from .Rules import set_rules
 from .Groups import location_name_groups, item_name_groups
+from .UT import UTMixin
+from .Settings import Sims4Settings
+from .Web import Sims4Web
 from .Version import VERSION, Sims4Version
 
-def run_client():
+
+def run_client(*args: str) -> None:
     from .Client import main
-    p = Process(target=main)
-    p.start()
+    launch(main, name="The Sims 4 Client", args=args)
 
 
 components.append(Component("The Sims 4 Client", func=run_client, component_type=Type.CLIENT, icon="plumbob"))
@@ -30,33 +31,13 @@ components.append(Component("The Sims 4 Client", func=run_client, component_type
 icon_paths["plumbob"] = f"ap:{__name__}/icons/plumbob.png"
 
 
-class Sims4Settings(settings.Group):
-    class ModsFolder(settings.UserFolderPath):
-        """Path to the Sims 4 Mods folder"""
-        description = "the folder your Sims 4 mods are installed to"
-
-    mods_folder: ModsFolder = ModsFolder(Path.home() / "Documents" / "Electronic Arts" / "The Sims 4" / "Mods")
-
-
-class Sims4Web(WebWorld):
-    tutorials = [Tutorial(
-        "Multiworld Setup Guide",
-        "A guide to setting up The Sims 4 for MultiWorld.",
-        "English",
-        "setup_en.md",
-        "setup/en",
-        ["mrsummer360"]
-    )]
-
-
-class Sims4World(World):
+class Sims4World(World, UTMixin):
     """
     The Sims 4 is the fourth installment in The Sims franchise. Like the previous games in the series,
     The Sims 4 focuses on creating and controlling a neighborhood of virtual people, called "Sims".
     """
 
     game = "The Sims 4"
-    author: str = "bennydreamly"
     topology_present = False
     web = Sims4Web()
 
@@ -77,97 +58,125 @@ class Sims4World(World):
 
     settings: ClassVar[Sims4Settings]
 
-    ut_can_gen_without_yaml = True
-    passthrough: dict[str, Any]
+    GOAL_TO_EVENT_MAPPING: ClassVar[dict[int, tuple[str, str]]] = {
+        AspirationGoal.option_bodybuilder: (EventNames.bodybuilder, EventNames.bodybuilder_item),
+        AspirationGoal.option_painter_extraordinaire: (
+            EventNames.painter_extraordinaire, EventNames.painter_extraordinaire_item
+        ),
+        AspirationGoal.option_bestselling_author: (EventNames.bestselling_author, EventNames.bestselling_author_item),
+        AspirationGoal.option_musical_genius: (EventNames.musical_genius, EventNames.musical_genius_item),
+        AspirationGoal.option_public_enemy: (EventNames.public_enemy, EventNames.public_enemy_item),
+        AspirationGoal.option_chief_of_mischief: (EventNames.chief_of_mischief, EventNames.chief_of_mischief_item),
+        AspirationGoal.option_master_chef: (EventNames.master_chef, EventNames.master_chef_item),
+        AspirationGoal.option_master_mixologist: (EventNames.master_mixologist, EventNames.master_mixologist_item),
+        AspirationGoal.option_renaissance_sim: (EventNames.renaissance_sim, EventNames.renaissance_sim_item),
+        AspirationGoal.option_nerd_brain: (EventNames.nerd_brain, EventNames.nerd_brain_item),
+        AspirationGoal.option_computer_whiz: (EventNames.computer_whiz, EventNames.computer_whiz_item),
+        AspirationGoal.option_serial_romantic: (EventNames.serial_romantic, EventNames.serial_romantic_item),
+        AspirationGoal.option_freelance_botanist: (EventNames.freelance_botanist, EventNames.freelance_botanist_item),
+        AspirationGoal.option_the_curator: (EventNames.the_curator, EventNames.the_curator_item),
+        AspirationGoal.option_angling_ace: (EventNames.angling_ace, EventNames.angling_ace_item),
+        AspirationGoal.option_joke_star: (EventNames.joke_star, EventNames.joke_star_item),
+        AspirationGoal.option_friend_of_the_world: (
+            EventNames.friend_of_the_world, EventNames.friend_of_the_world_item
+        ),
+        AspirationGoal.option_neighborly_advisor: (
+            EventNames.neighborly_advisor, EventNames.neighborly_advisor_item
+        )
+    }
 
     def generate_early(self) -> None:
+        # this is specific to UT, it doesn't apply unless UT is being used
+        self.get_options_from_slot_data(self)
 
-        if hasattr(self.multiworld, "re_gen_passthrough"):
-            if "The Sims 4" in self.multiworld.re_gen_passthrough:
-                self.passthrough = self.multiworld.re_gen_passthrough["The Sims 4"]
-                self.options.goal.value = self.passthrough["goal_value"]
-                self.options.career.value = self.passthrough["career_value"]
-                self.options.expansion_packs.value = self.passthrough["expansion_packs"]
-                self.options.game_packs.value = self.passthrough["game_packs"]
-                self.options.stuff_packs.value = self.passthrough["stuff_packs"]
-                self.options.cas_kits.value = self.passthrough["cas_kits"]
-                self.options.build_kits.value = self.passthrough["build_kits"]
-
-    def create_item(self, name: str) -> Item:
+    def create_item(self, name: str) -> Sims4Item:
         item_id: int = self.item_name_to_id[name]
 
         return Sims4Item(name,
                          item_table[item_id]["classification"],
-                         item_id, player=self.player)
+                         item_id, self.player)
 
-    def create_event(self, event: str):
+    def create_location(self, name: str, parent: Region) -> Sims4Location:
+        location_id: int = self.location_name_to_id[name]
+
+        return Sims4Location(self.player, name, location_id, parent)
+
+    def create_event(self, event: str) -> Sims4Item:
         return Sims4Item(event, ItemClassification.progression, None, self.player)
 
-    def create_items(self) -> None:
-        career_key = self.options.career.current_key
-        aspiration_key = self.options.goal.current_key
+    def create_event_location(self, event: str, region: Region) -> Sims4Location:
+        return Sims4Location(self.player, event, None, region)
 
+    def create_items(self) -> None:
+        used_dlc = set(
+            self.options.expansion_packs.value |
+            self.options.game_packs.value |
+            self.options.stuff_packs.value
+        )
         pool = []
 
-        count_to_fill = (
-            len(sims4_careers[career_key]) +
-            len(sims4_aspiration_milestones[aspiration_key]) +
-            len(skill_locations_table)
-        )
-        for item in item_table.values():
-            for i in range(item["count"]):
-                sims4_item = self.create_item(item["name"])
-                pool.append(sims4_item)
+        unfilled_locations = len(self.multiworld.get_unfilled_locations(self.player))
+        for item_data in item_table.values():
+            if item_data['expansion'] == 'base' or item_data['expansion'] in used_dlc:
+                for i in range(item_data["count"]):
+                    sims4_item = self.create_item(item_data["name"])
+                    pool.append(sims4_item)
 
-        count_to_fill = count_to_fill - len(pool)
+        filler_needed = unfilled_locations - len(pool)
 
-        for item_name in self.random.choices(sorted(filler_set), k=count_to_fill):
+        for item_name in self.random.choices(sorted(filler_set), k=filler_needed):
             item = self.create_item(item_name)
-            item.classification = item.classification
             pool.append(item)
 
         self.multiworld.itempool += pool
 
-    def create_region(self, name: str, locations=None, exits=None):
+    def create_region(self, name: str, locations: list[str] | None = None, exits: list[str] | None = None) -> Region:
         ret = Region(name, self.player, self.multiworld)
         if locations:
-            for location in locations:
-                loc_id = self.location_name_to_id.get(location, None)
-                location = Sims4Location(self.player, location, loc_id, ret)
+            for location_name in locations:
+                location = self.create_location(location_name, ret)
                 ret.locations.append(location)
         if exits:
             for region_exit in exits:
                 ret.exits.append(Entrance(self.player, region_exit, ret))
         return ret
 
-    def create_regions(self):
+    def create_regions(self) -> None:
         menu = self.create_region("Menu", locations=None, exits=None)
-        career_key = self.options.career.current_key
-        aspiration_key = self.options.goal.current_key
-        for career in sims4_careers[career_key]:
-            menu.locations.append(
-                Sims4Location(self.player, career, self.location_name_to_id.get(career), menu))
+        chosen_careers = sorted(self.options.career.value)
+        goal = self.options.goal
+        goal_value = goal.value
+        aspiration_key = goal.current_key
+        for career_key in chosen_careers:
+            for career in sims4_careers[career_key.lower().replace(" ", "_")]:
+                menu.locations.append(self.create_location(career, menu))
         for aspiration in sims4_aspiration_milestones[aspiration_key]:
-            menu.locations.append(
-                Sims4Location(self.player, aspiration, self.location_name_to_id.get(aspiration), menu)
-            )
+            menu.locations.append(self.create_location(aspiration, menu))
+        used_dlc = set(
+            self.options.expansion_packs.value |
+            self.options.game_packs.value |
+            self.options.stuff_packs.value
+        )
         for skill in skill_locations_table.values():
             skill_name = skill["name"]
-            menu.locations.append(
-                Sims4Location(self.player, skill_name, self.location_name_to_id.get(skill_name), menu)
-            )
+            if skill['expansion'] == 'base' or skill['expansion'] in used_dlc:
+                menu.locations.append(self.create_location(skill_name, menu))
+        mapping = self.GOAL_TO_EVENT_MAPPING.get(goal_value)
+        if mapping:
+            event_name, item_name = mapping
+            event = self.create_event_location(event_name, menu)
+            menu.locations.append(event)
+            event.place_locked_item(self.create_event(item_name))
+
         self.multiworld.regions.append(menu)
 
     def set_rules(self) -> None:
-        ts4_set_rules(self)
+        set_rules(self.multiworld, self.player, self.options)
 
     def fill_slot_data(self) -> Mapping[str, Any]:
-        # slot_data = self.options.as_dict("goal", "career", "expansion_packs", "game_packs", "stuff_packs", "cas_kits", "build_kits")
         slot_data = {
             "goal": self.options.goal.current_key,
-            "goal_value": self.options.goal.value,
-            "career": self.options.career.current_key,
-            "career_value": self.options.career.value,
+            "career": self.options.career.value,
             "expansion_packs": self.options.expansion_packs.value,
             "game_packs": self.options.game_packs.value,
             "stuff_packs": self.options.stuff_packs.value,
@@ -177,8 +186,5 @@ class Sims4World(World):
         }
         return slot_data
 
-    # for UT, not called in standard generation
-    @staticmethod
-    def interpret_slot_data(slot_data: Dict[str, Any]) -> Dict[str, Any]:
-        # returns slot data to be used in UT regen
-        return slot_data
+    def get_filler_item_name(self) -> str:
+        return self.random.choice([entry['name'] for entry in junk_table.values()])

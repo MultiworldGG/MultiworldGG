@@ -29,6 +29,7 @@
                     <p class="lobby-preview-meta">
                         Release: {{ server_opts.get('release_mode', 'auto') }} &mdash;
                         Collect: {{ server_opts.get('collect_mode', 'auto') }} &mdash;
+                        Threshold: {{ server_opts.get('release_threshold', 0) }}% &mdash;
                         Remaining: {{ server_opts.get('remaining_mode', 'goal') }} &mdash;
                         {% set hm = server_opts.get('hint_mode', 'default') %}
                         Hints: {% if hm == 'default' %}full{% elif hm == 'own' %}hide own{% elif hm == 'all' %}hide all{% else %}{{ hm }}{% endif %}
@@ -75,6 +76,7 @@
                     <p class="lobby-preview-meta">
                         Release: {{ server_opts.get('release_mode', 'auto') }} &mdash;
                         Collect: {{ server_opts.get('collect_mode', 'auto') }} &mdash;
+                        Threshold: {{ server_opts.get('release_threshold', 0) }}% &mdash;
                         Remaining: {{ server_opts.get('remaining_mode', 'goal') }} &mdash;
                         {% set hm = server_opts.get('hint_mode', 'default') %}
                         Hints: {% if hm == 'default' %}full{% elif hm == 'own' %}hide own{% elif hm == 'all' %}hide all{% else %}{{ hm }}{% endif %}
@@ -139,6 +141,7 @@
                         <span id="lobby-meta-opts" class="lobby-meta">
                             Release: {{ server_opts.get('release_mode', '?') }} |
                             Collect: {{ server_opts.get('collect_mode', '?') }} |
+                            Threshold: {{ server_opts.get('release_threshold', 0) }}% |
                             Remaining: {{ server_opts.get('remaining_mode', '?') }} |
                             Hints: {% set hm = server_opts.get('hint_mode', 'default') %}{% if hm == 'default' %}full{% elif hm == 'own' %}hide own{% elif hm == 'all' %}hide all{% else %}{{ hm }}{% endif %} @ {% set hc = server_opts.get('hint_cost', 5) %}{% if hc > 100 %}off{% else %}{{ hc }}%{% endif %} |
                             Item Cheat: {% if server_opts.get('item_cheat') %}on{% else %}off{% endif %} |
@@ -213,6 +216,7 @@
                         <span id="lobby-meta-opts" class="lobby-meta">
                             Release: {{ server_opts.get('release_mode', '?') }} |
                             Collect: {{ server_opts.get('collect_mode', '?') }} |
+                            Threshold: {{ server_opts.get('release_threshold', 0) }}% |
                             Remaining: {{ server_opts.get('remaining_mode', '?') }} |
                             Hints: {% set hm = server_opts.get('hint_mode', 'default') %}{% if hm == 'default' %}full{% elif hm == 'own' %}hide own{% elif hm == 'all' %}hide all{% else %}{{ hm }}{% endif %} @ {% set hc = server_opts.get('hint_cost', 5) %}{% if hc > 100 %}off{% else %}{{ hc }}%{% endif %} |
                             Item Cheat: {% if server_opts.get('item_cheat') %}on{% else %}off{% endif %} |
@@ -434,6 +438,13 @@
                                                     <option value="{{ val }}" {% if val == server_opts.get('collect_mode') %}selected{% endif %}>{{ lbl }}</option>
                                                 {% endfor %}
                                             </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="edit-release-threshold">Release Threshold:</label></td>
+                                        <td>
+                                            {% set edit_release_threshold = server_opts.get('release_threshold', 0) %}
+                                            <input type="number" id="edit-release-threshold" min="0" max="100" step="1" value="{{ 100 if edit_release_threshold > 100 else 0 if edit_release_threshold < 0 else edit_release_threshold }}" required>%
                                         </td>
                                     </tr>
                                     <tr>

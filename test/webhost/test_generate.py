@@ -7,6 +7,40 @@ from . import TestBase
 
 
 class TestGenerate(TestBase):
+    def test_generate_page_marks_race_mode_for_settings_cache(self) -> None:
+        normal_response = self.client.get("/generate")
+        self.assertEqual(normal_response.status_code, 200)
+        self.assertIn('data-race="0"', normal_response.get_data(as_text=True))
+
+        race_response = self.client.get("/generate/True")
+        self.assertEqual(race_response.status_code, 200)
+        self.assertIn('data-race="1"', race_response.get_data(as_text=True))
+
+    def test_generate_js_caches_non_sensitive_settings(self) -> None:
+        with open("WebHostLib/static/assets/generate.js", encoding="utf-8") as js_file:
+            js_content = js_file.read()
+
+        self.assertIn("generate_settings", js_content)
+        self.assertIn("generate_race_settings", js_content)
+        self.assertIn("readCookie", js_content)
+        self.assertIn("saveStoredSettings", js_content)
+        self.assertIn("server_password", js_content)
+        self.assertIn("file-input", js_content)
+        self.assertIn("form.submit()", js_content)
+
+    def test_get_meta_release_threshold(self) -> None:
+        from WebHostLib.generate import get_meta
+
+        meta = get_meta({"release_threshold": "37"})
+        self.assertEqual(meta["server_options"]["release_threshold"], 37)
+
+    def test_get_meta_release_threshold_clamps_invalid_values(self) -> None:
+        from WebHostLib.generate import get_meta
+
+        self.assertEqual(get_meta({"release_threshold": "-5"})["server_options"]["release_threshold"], 0)
+        self.assertEqual(get_meta({"release_threshold": "150"})["server_options"]["release_threshold"], 100)
+        self.assertEqual(get_meta({"release_threshold": "bad"})["server_options"]["release_threshold"], 0)
+
     def test_valid_yaml(self) -> None:
         """
         Verify that posting a valid yaml will start generating a game.

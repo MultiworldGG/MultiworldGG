@@ -1,13 +1,15 @@
-from typing import TYPE_CHECKING, Dict, List
+import dataclasses
+from typing import TYPE_CHECKING, Dict, List, Any, override, Set, Tuple
 
 from BaseClasses import CollectionState
+from NetUtils import JSONMessagePart
+from rule_builder.rules import Has, Rule, False_, HasAll, True_
 from .strings.locations import HarpyPath, Spell, ShadyWell, DarkForest, ForestOfLight, LightGarden, MagicTown, \
     SatanVilla, AncientRuins, School, \
     AncientVillage, DragonAreas, Bestiary, LookoutMountain, SageMountain, Bazaar
 from .strings.region_entrances import MadouEntrance
 from .strings.items import Tool, Custom, Special, Souvenir, EventItem, Gem, SpellItem, FlightUnlocks
 from .options import MadouOptions
-from worlds.generic.Rules import CollectionRule
 
 if TYPE_CHECKING:
     from . import MadouWorld
@@ -15,206 +17,211 @@ if TYPE_CHECKING:
 
 class MadouRules:
     world: "MadouWorld"
-    region_rules: Dict[str, CollectionRule]
-    entrance_rules: Dict[str, CollectionRule]
-    location_rules: Dict[str, CollectionRule]
+    region_rules: Dict[str, Rule[Any]]
+    entrance_rules: Dict[str, Rule[Any]]
+    location_rules: Dict[str, Rule[Any]]
 
     def __init__(self, world: "MadouWorld") -> None:
         self.player = world.player
         self.world = world
         self.world.options = world.options
+        self.starting_magic = tuple(world.options.starting_magic.value)
+        self.fairy_search = False_()
+        if self.world.options.skip_fairy_search:
+            self.fairy_search = True_()
 
         self.region_rules = {
 
         }
 
         self.entrance_rules = {
-            MadouEntrance.village_to_nw_cave: lambda state: state.has(Tool.ribbit_boots, self.player),
-            MadouEntrance.nw_cave_to_village: lambda state: state.has(Tool.ribbit_boots, self.player),
-            MadouEntrance.forest_to_frog: lambda state: state.has(Tool.ribbit_boots, self.player),
-            MadouEntrance.frog_to_forest: lambda state: state.has(Tool.ribbit_boots, self.player),
-            MadouEntrance.ruins_to_ancient_ruins: lambda state: state.has(Tool.magic_bracelet, self.player),
-            MadouEntrance.rain_forest_to_ancient_village: lambda state: state.has(Tool.hammer, self.player),
-            MadouEntrance.ancient_to_zoh: lambda state: state.has(Special.elephant_head, self.player),
-            MadouEntrance.nw_cave_to_smoky: lambda state: state.has(Custom.bomb, self.player),
-            MadouEntrance.death_to_bazaar: lambda state: state.has(Special.bazaar_pass, self.player) and state.has(Tool.ribbit_boots, self.player),
-            MadouEntrance.smoky_left_to_right: lambda state: state.has(Tool.ribbit_boots, self.player),
-            MadouEntrance.magic_village_to_tower: lambda state: self.can_fight_generic_at_level(state, 5, self.world.options) and
-                                                                state.has("Final Exam Certificate", self.player),
-            MadouEntrance.headmaster_to_school_maze: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
-            MadouEntrance.smoky_to_graveyard: lambda state: state.has(Special.dark_flower, self.player) and state.has(Special.leaf, self.player),
-            MadouEntrance.dark_forest_to_well: lambda state: state.has(Tool.ribbit_boots, self.player),
-            MadouEntrance.dark_forest_to_satan: lambda state: state.has(Tool.ribbit_boots, self.player) and state.has(Special.secret_stone, self.player, 3),
-            MadouEntrance.dark_forest_to_maze: lambda state: state.has(Tool.ribbit_boots, self.player),
-            MadouEntrance.dark_forest_to_dark_orb: lambda state: state.has(Tool.ribbit_boots, self.player),
-            MadouEntrance.wolf_to_sage: lambda state: state.has(Tool.ribbit_boots, self.player),
-            MadouEntrance.sage_to_wolf: lambda state: state.has(Tool.ribbit_boots, self.player),
-            MadouEntrance.sage_to_summit: lambda state: state.has(Tool.ribbit_boots, self.player),
+            MadouEntrance.village_to_nw_cave: Has(Tool.ribbit_boots),
+            MadouEntrance.nw_cave_to_village: Has(Tool.ribbit_boots),
+            MadouEntrance.forest_to_frog: Has(Tool.ribbit_boots),
+            MadouEntrance.frog_to_forest: Has(Tool.ribbit_boots),
+            MadouEntrance.ruins_to_ancient_ruins: Has(Tool.magic_bracelet),
+            MadouEntrance.rain_forest_to_ancient_village: Has(Tool.hammer),
+            MadouEntrance.ancient_to_zoh: Has(Special.elephant_head),
+            MadouEntrance.nw_cave_to_smoky: Has(Custom.bomb),
+            MadouEntrance.smoky_to_bazaar: Has(Tool.ribbit_boots),
+            MadouEntrance.death_to_bazaar: Has(Special.bazaar_pass) & Has(Tool.ribbit_boots),
+            MadouEntrance.smoky_left_to_right: Has(Tool.ribbit_boots),
+            MadouEntrance.magic_village_to_tower: self.HasGoodEnoughCombatLevel(5, self.starting_magic) &
+                                                                Has("Final Exam Certificate"),
+            MadouEntrance.headmaster_to_school_maze: self.HasGoodEnoughCombatLevel(3, self.starting_magic),
+            MadouEntrance.smoky_to_graveyard: Has(Special.dark_flower) & Has(Special.leaf),
+            MadouEntrance.dark_forest_to_well: Has(Tool.ribbit_boots),
+            MadouEntrance.dark_forest_to_satan: Has(Tool.ribbit_boots) & Has(Special.secret_stone, 3),
+            MadouEntrance.dark_forest_to_maze: Has(Tool.ribbit_boots),
+            MadouEntrance.dark_forest_to_dark_orb: Has(Tool.ribbit_boots),
+            MadouEntrance.wolf_to_sage: Has(Tool.ribbit_boots),
+            MadouEntrance.sage_to_wolf: Has(Tool.ribbit_boots),
+            MadouEntrance.sage_to_summit: Has(Tool.ribbit_boots),
             # TODO: find a way to make the game accept a flight path even if you only have one; this isn't very intuitive.
-            MadouEntrance.flight_magic_to_ruins: lambda state: state.has(FlightUnlocks.ruins_town, self.player) and
-                                                               self.has_any_flight_path_other_than(FlightUnlocks.ruins_town, state),
-            MadouEntrance.flight_magic_to_wolf: lambda state: state.has(FlightUnlocks.wolf_town, self.player) and
-                                                              self.has_any_flight_path_other_than(FlightUnlocks.wolf_town, state),
-            MadouEntrance.flight_magic_to_ancient: lambda state: state.has(FlightUnlocks.ancient_village, self.player) and
-                                                                 self.has_any_flight_path_other_than(FlightUnlocks.ancient_village, state),
-            MadouEntrance.flight_magic_to_sage: lambda state: state.has(FlightUnlocks.sage_mountain, self.player) and
-                                                              self.has_any_flight_path_other_than(FlightUnlocks.sage_mountain, state),
-            MadouEntrance.flight_ruins_to_magic: lambda state: state.has(FlightUnlocks.magic_village, self.player) and
-                                                               self.has_any_flight_path_other_than(FlightUnlocks.magic_village, state),
-            MadouEntrance.flight_ruins_to_ancient: lambda state: state.has(FlightUnlocks.ancient_village, self.player) and
-                                                                 self.has_any_flight_path_other_than(FlightUnlocks.ancient_village, state),
-            MadouEntrance.flight_ruins_to_wolf: lambda state: state.has(FlightUnlocks.wolf_town, self.player) and
-                                                              self.has_any_flight_path_other_than(FlightUnlocks.wolf_town, state),
-            MadouEntrance.flight_ruins_to_sage: lambda state: state.has(FlightUnlocks.sage_mountain, self.player) and
-                                                              self.has_any_flight_path_other_than(FlightUnlocks.sage_mountain, state),
-            MadouEntrance.flight_wolf_to_magic: lambda state: state.has(FlightUnlocks.magic_village, self.player) and
-                                                              self.has_any_flight_path_other_than(FlightUnlocks.magic_village, state),
-            MadouEntrance.flight_wolf_to_ruins: lambda state: state.has(FlightUnlocks.ruins_town, self.player) and
-                                                              self.has_any_flight_path_other_than(FlightUnlocks.ruins_town, state),
-            MadouEntrance.flight_wolf_to_ancient: lambda state: state.has(FlightUnlocks.ancient_village, self.player) and
-                                                                self.has_any_flight_path_other_than(FlightUnlocks.ancient_village, state),
-            MadouEntrance.flight_wolf_to_sage: lambda state: state.has(FlightUnlocks.sage_mountain, self.player) and
-                                                             self.has_any_flight_path_other_than(FlightUnlocks.sage_mountain, state),
-            MadouEntrance.flight_ancient_to_magic: lambda state: state.has(FlightUnlocks.magic_village, self.player) and
-                                                                 self.has_any_flight_path_other_than(FlightUnlocks.magic_village, state),
-            MadouEntrance.flight_ancient_to_ruins: lambda state: state.has(FlightUnlocks.ruins_town, self.player) and
-                                                                 self.has_any_flight_path_other_than(FlightUnlocks.ruins_town, state),
-            MadouEntrance.flight_ancient_to_wolf: lambda state: state.has(FlightUnlocks.wolf_town, self.player) and
-                                                                self.has_any_flight_path_other_than(FlightUnlocks.wolf_town, state),
-            MadouEntrance.flight_ancient_to_sage: lambda state: state.has(FlightUnlocks.sage_mountain, self.player) and
-                                                                self.has_any_flight_path_other_than(FlightUnlocks.sage_mountain, state),
-            MadouEntrance.flight_sage_to_magic: lambda state: state.has(FlightUnlocks.magic_village, self.player) and
-                                                              self.has_any_flight_path_other_than(FlightUnlocks.magic_village, state),
-            MadouEntrance.flight_sage_to_ruins: lambda state: state.has(FlightUnlocks.ruins_town, self.player) and
-                                                              self.has_any_flight_path_other_than(FlightUnlocks.ruins_town, state),
-            MadouEntrance.flight_sage_to_wolf: lambda state: state.has(FlightUnlocks.wolf_town, self.player) and
-                                                             self.has_any_flight_path_other_than(FlightUnlocks.wolf_town, state),
-            MadouEntrance.flight_sage_to_ancient: lambda state: state.has(FlightUnlocks.ancient_village, self.player) and
-                                                                self.has_any_flight_path_other_than(FlightUnlocks.ancient_village, state),
+            MadouEntrance.flight_magic_to_ruins: Has(FlightUnlocks.ruins_town) & self.has_any_flight_path_other_than(FlightUnlocks.ruins_town),
+            MadouEntrance.flight_magic_to_wolf: Has(FlightUnlocks.wolf_town) & self.has_any_flight_path_other_than(FlightUnlocks.wolf_town),
+            MadouEntrance.flight_magic_to_ancient: Has(FlightUnlocks.ancient_village) & self.has_any_flight_path_other_than(FlightUnlocks.ancient_village),
+            MadouEntrance.flight_magic_to_sage: Has(FlightUnlocks.sage_mountain) & self.has_any_flight_path_other_than(FlightUnlocks.sage_mountain),
+            MadouEntrance.flight_ruins_to_magic: Has(FlightUnlocks.magic_village) & self.has_any_flight_path_other_than(FlightUnlocks.magic_village),
+            MadouEntrance.flight_ruins_to_ancient: Has(FlightUnlocks.ancient_village) & self.has_any_flight_path_other_than(FlightUnlocks.ancient_village),
+            MadouEntrance.flight_ruins_to_wolf: Has(FlightUnlocks.wolf_town) & self.has_any_flight_path_other_than(FlightUnlocks.wolf_town),
+            MadouEntrance.flight_ruins_to_sage: Has(FlightUnlocks.sage_mountain) & self.has_any_flight_path_other_than(FlightUnlocks.sage_mountain),
+            MadouEntrance.flight_wolf_to_magic: Has(FlightUnlocks.magic_village) & self.has_any_flight_path_other_than(FlightUnlocks.magic_village),
+            MadouEntrance.flight_wolf_to_ruins: Has(FlightUnlocks.ruins_town) & self.has_any_flight_path_other_than(FlightUnlocks.ruins_town),
+            MadouEntrance.flight_wolf_to_ancient: Has(FlightUnlocks.ancient_village) & self.has_any_flight_path_other_than(FlightUnlocks.ancient_village),
+            MadouEntrance.flight_wolf_to_sage: Has(FlightUnlocks.sage_mountain) & self.has_any_flight_path_other_than(FlightUnlocks.sage_mountain),
+            MadouEntrance.flight_ancient_to_magic: Has(FlightUnlocks.magic_village) & self.has_any_flight_path_other_than(FlightUnlocks.magic_village),
+            MadouEntrance.flight_ancient_to_ruins: Has(FlightUnlocks.ruins_town) & self.has_any_flight_path_other_than(FlightUnlocks.ruins_town),
+            MadouEntrance.flight_ancient_to_wolf: Has(FlightUnlocks.wolf_town) & self.has_any_flight_path_other_than(FlightUnlocks.wolf_town),
+            MadouEntrance.flight_ancient_to_sage: Has(FlightUnlocks.sage_mountain) & self.has_any_flight_path_other_than(FlightUnlocks.sage_mountain),
+            MadouEntrance.flight_sage_to_magic: Has(FlightUnlocks.magic_village) & self.has_any_flight_path_other_than(FlightUnlocks.magic_village),
+            MadouEntrance.flight_sage_to_ruins: Has(FlightUnlocks.ruins_town) & self.has_any_flight_path_other_than(FlightUnlocks.ruins_town),
+            MadouEntrance.flight_sage_to_wolf: Has(FlightUnlocks.wolf_town) & self.has_any_flight_path_other_than(FlightUnlocks.wolf_town),
+            MadouEntrance.flight_sage_to_ancient: Has(FlightUnlocks.ancient_village) & self.has_any_flight_path_other_than(FlightUnlocks.ancient_village),
         }
 
         self.location_rules = {
-            MagicTown.magic_bracelet: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            SatanVilla.satan: lambda state: state.has(Special.secret_stone, self.player, 3),
-            ForestOfLight.sukiyapodes_2: lambda state: state.has(Special.light_orb, self.player),
-            Spell.thunder_dark_forest: lambda state: state.has(Tool.ribbit_boots, self.player),
-            Spell.diacute_dark_forest: lambda state: state.has(Tool.ribbit_boots, self.player),
-            DarkForest.green_gem: lambda state: state.has(Tool.ribbit_boots, self.player),
-            DarkForest.dark_flower: lambda state: state.has(Special.dark_orb, self.player),
-            LightGarden.purple_orb: lambda state: state.has(Tool.toy_elephant, self.player),
-            LightGarden.bouquet: lambda state: state.has(Special.leaf, self.player) and state.has(Special.dark_flower, self.player) and state.has(EventItem.unpetrify,
-                                                                                                                                      self.player),
-            ShadyWell.lofu: lambda state: state.has(Tool.toy_elephant, self.player),
-            SageMountain.cyan_orb: lambda state: state.has(Tool.toy_elephant, self.player) and state.has(Tool.ribbit_boots, self.player),
-            DarkForest.rele: lambda state: state.has(Tool.toy_elephant, self.player),
-            MagicTown.white_gem: lambda state: self.has_souvenirs(state, self.world.options),
-            LookoutMountain.red_gem: lambda state: state.has(Tool.ribbit_boots, self.player),
+            "Chest on Sage Mountain": Has(Special.secret_stone, self.world.options.required_secret_stones.value) & (self.fairy_search | Has(Special.dark_orb)),
+
+            MagicTown.magic_bracelet: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            SatanVilla.satan: Has(Special.secret_stone, 3),
+            ForestOfLight.sukiyapodes_2: Has(Special.light_orb) & Has(Tool.ribbit_boots),
+            Spell.thunder_dark_forest: Has(Tool.ribbit_boots),
+            Spell.diacute_dark_forest: Has(Tool.ribbit_boots),
+            DarkForest.green_gem: Has(Tool.ribbit_boots),
+            DarkForest.dark_flower: Has(Special.dark_orb),
+            LightGarden.purple_orb: Has(Tool.toy_elephant),
+            LightGarden.bouquet: Has(Special.leaf) & Has(Special.dark_flower) & Has(EventItem.unpetrify),
+            ShadyWell.lofu: Has(Tool.toy_elephant),
+            SageMountain.cyan_orb: Has(Tool.toy_elephant) & Has(Tool.ribbit_boots),
+            DarkForest.rele: Has(Tool.toy_elephant),
+            MagicTown.white_gem: self.has_souvenirs(),
+            LookoutMountain.red_gem: Has(Tool.ribbit_boots),
             #  Gold Tablets
-            Spell.fire_school: lambda state: state.has(Tool.magical_dictionary, self.player),
-            Spell.fire_library: lambda state: self.has_gems(state) and state.has(Tool.magical_dictionary, self.player),
-            Spell.ice_storm_underground: lambda state: state.has(Tool.magical_dictionary, self.player),
-            Spell.ice_storm_library: lambda state: self.has_gems(state) and state.has(Tool.magical_dictionary, self.player),
-            Spell.thunder_northwestern: lambda state: state.has(Tool.magic_ribbon, self.player) and state.has(Tool.magical_dictionary, self.player),
-            Spell.thunder_library: lambda state: self.has_gems(state) and state.has(Tool.magical_dictionary, self.player),
-            Spell.diacute_library: lambda state: self.has_gems(state) and state.has(Tool.magical_dictionary, self.player),
+            Spell.fire_school: Has(Tool.magical_dictionary),
+            Spell.fire_library: HasAll(*Gem.gems) & Has(Tool.magical_dictionary),
+            Spell.ice_storm_underground: Has(Tool.magical_dictionary),
+            Spell.ice_storm_library: HasAll(*Gem.gems) & Has(Tool.magical_dictionary),
+            Spell.thunder_northwestern: Has(Tool.magic_ribbon) & Has(Tool.magical_dictionary),
+            Spell.thunder_library: HasAll(*Gem.gems) & Has(Tool.magical_dictionary),
+            Spell.diacute_library: HasAll(*Gem.gems) & Has(Tool.magical_dictionary),
             #  Combat Rules
-            ForestOfLight.orb: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options) and state.has(Tool.ribbit_boots, self.player),
-            ForestOfLight.ribbit_boots: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            ForestOfLight.sukiyapodes_1: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            AncientRuins.zoh_daimaoh: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            HarpyPath.bag: lambda state: state.has(Tool.panotty_flute, self.player) and self.can_fight_generic_at_level(state, 2, self.world.options),
-            ShadyWell.arachne: lambda state: state.has(Special.ripe_cucumber, self.player) and self.can_fight_generic_at_level(state, 2, self.world.options),
-            School.magical_dictionary: lambda state: self.can_fight_generic_at_level(state, 2, self.world.options),
-            AncientVillage.elder: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
-            AncientVillage.villager_1: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
-            AncientVillage.villager_2: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
-            AncientVillage.villager_3: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
-            AncientVillage.villager_4: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
-            AncientVillage.villager_5: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
-            AncientVillage.villager_6: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
-            DragonAreas.firefly_egg: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
-            DragonAreas.stone: lambda state: self.can_fight_generic_at_level(state, 4, self.world.options) and state.has(Special.firefly_egg, self.player, 2),
-            MagicTown.suketoudara: lambda state: state.has(Special.secret_stone, self.player, 7) and self.can_fight_generic_at_level(state, 4, self.world.options),
-            Bestiary.flea: lambda state: state.has(Tool.toy_elephant, self.player),
-            DarkForest.ribbon: lambda state: self.can_fight_generic_at_level(state, 2, self.world.options),
+            ForestOfLight.orb: self.HasGoodEnoughCombatLevel(1, self.starting_magic) & Has(Tool.ribbit_boots),
+            ForestOfLight.ribbit_boots: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            ForestOfLight.sukiyapodes_1: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            AncientRuins.zoh_daimaoh: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            HarpyPath.bag: Has(Tool.panotty_flute) & self.HasGoodEnoughCombatLevel(2, self.starting_magic) & Has(Tool.ribbit_boots),
+            ShadyWell.arachne: Has(Special.ripe_cucumber) & self.HasGoodEnoughCombatLevel(2, self.starting_magic),
+            School.magical_dictionary: self.HasGoodEnoughCombatLevel(2, self.starting_magic),
+            AncientVillage.elder: self.HasGoodEnoughCombatLevel(3, self.starting_magic),
+            AncientVillage.villager_1: self.HasGoodEnoughCombatLevel(3, self.starting_magic),
+            AncientVillage.villager_2: self.HasGoodEnoughCombatLevel(3, self.starting_magic),
+            AncientVillage.villager_3: self.HasGoodEnoughCombatLevel(3, self.starting_magic),
+            AncientVillage.villager_4: self.HasGoodEnoughCombatLevel(3, self.starting_magic),
+            AncientVillage.villager_5: self.HasGoodEnoughCombatLevel(3, self.starting_magic),
+            AncientVillage.villager_6: self.HasGoodEnoughCombatLevel(3, self.starting_magic),
+            DragonAreas.firefly_egg: Has(Special.bouquet) & self.HasGoodEnoughCombatLevel(3, self.starting_magic),
+            DragonAreas.stone: self.HasGoodEnoughCombatLevel(4, self.starting_magic) & Has(Special.firefly_egg, 2),
+            MagicTown.suketoudara: Has(Special.secret_stone, 7) & self.HasGoodEnoughCombatLevel(4, self.starting_magic),
+            Bestiary.flea: Has(Tool.toy_elephant),
+            DarkForest.ribbon: self.HasGoodEnoughCombatLevel(2, self.starting_magic),
             # Boss checks require that you can actually defeat them
-            Bestiary.owlbear: lambda state: state.has(Special.secret_stone, self.player, 8) and state.has(
-                Special.dark_orb, self.player) and self.can_fight_generic_at_level(state, 4, self.world.options),
-            Bestiary.sukiyapodes: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Bestiary.mini_zombie: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Bestiary.zoh: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Bestiary.arachne: lambda state: self.can_fight_generic_at_level(state, 2, self.world.options),
-            Bestiary.headmaster: lambda state: self.can_fight_generic_at_level(state, 2, self.world.options),
-            Bestiary.harpy: lambda state: self.can_fight_generic_at_level(state, 2, self.world.options),
-            Bestiary.skeleton_d: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
-            Bestiary.skeleton_t: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
-            Bestiary.nasu_grave: lambda state: self.can_fight_generic_at_level(state, 2, self.world.options),
-            Bestiary.leviathan: lambda state: self.can_fight_generic_at_level(state, 4, self.world.options),
+            Bestiary.owlbear: Has(Special.secret_stone, 8) & Has(Special.dark_orb) & self.HasGoodEnoughCombatLevel(4, self.starting_magic),
+            Bestiary.sukiyapodes: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Bestiary.mini_zombie: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Bestiary.zoh: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Bestiary.arachne: self.HasGoodEnoughCombatLevel(2, self.starting_magic) & Has(Special.ripe_cucumber),
+            Bestiary.headmaster: self.HasGoodEnoughCombatLevel(2, self.starting_magic),
+            Bestiary.harpy: self.HasGoodEnoughCombatLevel(2, self.starting_magic) & Has(Tool.panotty_flute) & Has(Tool.ribbit_boots),
+            Bestiary.skeleton_d: self.HasGoodEnoughCombatLevel(3, self.starting_magic),
+            Bestiary.skeleton_t: self.HasGoodEnoughCombatLevel(3, self.starting_magic),
+            Bestiary.nasu_grave: self.HasGoodEnoughCombatLevel(2, self.starting_magic),
+            Bestiary.leviathan: self.HasGoodEnoughCombatLevel(4, self.starting_magic) & Has(Special.firefly_egg, 2),
             # Shop locations require combat to farm money.
-            Souvenir.dragon_nail: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Souvenir.magic_king_foot: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Souvenir.magic_king_tusk: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Souvenir.magic_king_picture: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Souvenir.magic_king_statue: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Souvenir.waterfall_vase: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Souvenir.wolf_tail: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Souvenir.dark_jug: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Bazaar.bazaar_pass: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
-            Bazaar.elephant: lambda state: self.can_fight_generic_at_level(state, 1, self.world.options),
+            Souvenir.dragon_nail: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Souvenir.magic_king_foot: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Souvenir.magic_king_tusk: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Souvenir.magic_king_picture: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Souvenir.magic_king_statue: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Souvenir.waterfall_vase: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Souvenir.wolf_tail: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Souvenir.dark_jug: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Bazaar.bazaar_pass: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
+            Bazaar.elephant: self.HasGoodEnoughCombatLevel(1, self.starting_magic),
             # Firefly egg is really expensive, so push it a bit later.
-            Bazaar.firefly_egg: lambda state: self.can_fight_generic_at_level(state, 3, self.world.options),
+            Bazaar.firefly_egg: self.HasGoodEnoughCombatLevel(3, self.starting_magic),
         }
 
-    def has_all(self, items: List[str], state: CollectionState):
-        rule = True
-        for item in items:
-            rule = rule & state.has(item, self.player)
-        return rule
+    def has_souvenirs(self):
+        if self.world.options.souvenir_hunt:
+            return HasAll(*Souvenir.souvenirs)
+        return HasAll(*EventItem.shops)
 
-    def has_souvenirs(self, state: CollectionState, options: MadouOptions):
-        if options.souvenir_hunt:
-            return self.has_all(Souvenir.souvenirs, state)
-        return self.has_all(EventItem.shops, state)
-
-    def has_gems(self, state: CollectionState):
-        return self.has_all(Gem.gems, state)
-
-    def can_fight_generic_at_level(self, state: CollectionState, level: int, options: MadouOptions):
-        total_combat_spell_items = state.count_from_list(SpellItem.combat_spells, self.player)
-        if total_combat_spell_items == 0:
-            return False
-        stun_rule = True
-        diacute_count = max(0, level - 1)
-        starting_spells = options.starting_magic.value
-        if "Fire" in starting_spells:
-            total_combat_spell_items += 1
-        if "Ice Storm" in starting_spells:
-            total_combat_spell_items += 1
-        if "Thunder" in starting_spells:
-            total_combat_spell_items += 1
-        average_count = total_combat_spell_items // 3
-        if level > 1:
-            stun_rule = state.has(SpellItem.bayoen, self.player)
-        return (state.has(SpellItem.diacute, self.player, diacute_count) and stun_rule and average_count >= min(4, level)) or state.has(EventItem.glitch, self.player)
-
-    def has_any_flight_path_other_than(self, exception: str, state: CollectionState):
+    def has_any_flight_path_other_than(self, exception: str):
         flights = [FlightUnlocks.magic_village, FlightUnlocks.ancient_village, FlightUnlocks.wolf_town, FlightUnlocks.ruins_town, FlightUnlocks.sage_mountain]
         flights.remove(exception)
-        has_path = False
+        has_path = False_()
         for flight in flights:
-            has_path = has_path or state.has(flight, self.player)
+            has_path = has_path | Has(flight)
         return has_path
+    
+    
+    @dataclasses.dataclass()
+    class HasGoodEnoughCombatLevel(Rule["MadouWorld"], game="Madou Monogatari Hanamaru Daiyouchienji"):
+
+        level: int
+        starting_spells: Tuple[str]
+
+        @override
+        def _instantiate(self, world: "MadouWorld") -> Rule.Resolved:
+            # caching_enabled only needs to be passed in when your world inherits from CachedRuleBuilderWorld
+            return self.Resolved(self.level, self.starting_spells, player=world.player)
+
+        class Resolved(Rule.Resolved):
+            level: int
+            starting_spells: Tuple[str]
+
+            @override
+            def _evaluate(self, state: CollectionState) -> bool:
+                total_combat_spell_items = state.count_from_list(SpellItem.combat_spells, self.player)
+                if total_combat_spell_items == 0:
+                    return False
+                stun_rule = True
+                diacute_count = max(0, self.level - 1)
+                if "Fire" in self.starting_spells:
+                    total_combat_spell_items += 1
+                if "Ice Storm" in self.starting_spells:
+                    total_combat_spell_items += 1
+                if "Thunder" in self.starting_spells:
+                    total_combat_spell_items += 1
+                average_count = total_combat_spell_items // 3
+                if self.level > 1:
+                    stun_rule = state.has(SpellItem.bayoen, self.player)
+                return (state.has(SpellItem.diacute, self.player, diacute_count) and stun_rule and average_count >= min(
+                    4, self.level)) or state.has(EventItem.glitch, self.player)
+
+            @override
+            def item_dependencies(self) -> dict[str, set[int]]:
+                # this function is only required if you have caching enabled
+                return {"Fire": {id(self)},
+                        "Ice Storm": {id(self)},
+                        "Thunder": {id(self)},
+                        "Diacute": {id(self)},}
+
+            @override
+            def explain_json(self, state: CollectionState | None = None) -> list[JSONMessagePart]:
+                # this method can be overridden to display custom explanations
+                return [
+                    {"type": "text", "text": "Has Effective Combat Level "},
+                    {"type": "color", "color": "green" if state and self(state) else "salmon", "text": str(self.level)},
+                ]
+    
 
     def set_madou_rules(self) -> None:
         for region in self.world.get_regions():
-            if region.name in self.region_rules:
-                for entrance in region.entrances:
-                    entrance.access_rule = self.region_rules[region.name]
-                for location in region.locations:
-                    location.access_rule = self.region_rules[region.name]
             for entrance in region.entrances:
                 if entrance.name in self.entrance_rules:
-                    entrance.access_rule = entrance.access_rule and self.entrance_rules[entrance.name]
+                    self.world.set_rule(entrance, self.entrance_rules[entrance.name])
             for loc in region.locations:
                 if loc.name in self.location_rules:
-                    loc.access_rule = loc.access_rule and self.location_rules[loc.name]
+                    self.world.set_rule(loc, self.location_rules[loc.name])

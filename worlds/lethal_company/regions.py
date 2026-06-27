@@ -50,7 +50,7 @@ def create_regions(options: LCOptions, world: "LethalCompanyWorld"):
 
     terminal.connect(company_building, rule=lambda state: (state.has("Company Building", player)
                                                            or options.randomize_company_building == 0))
-    company_building.connect(quotas, rule=lambda state: ((state.has("Inventory Slot", player, 2)
+    company_building.connect(quotas, rule=lambda state: ((state.has("Inventory Slot", player, 2 - options.starting_inventory_slots.value)
                                                           or options.starting_inventory_slots.value >= 2)
                                                          and (state.has("Stamina Bar", player)
                                                               or options.starting_stamina_bars.value > 0)))
@@ -84,7 +84,7 @@ def create_regions(options: LCOptions, world: "LethalCompanyWorld"):
                                                                         or options.starting_stamina_bars.value > 0)
                                                                         and ((check_item_accessible(state, "Shovel",
                                                                                                   player, options)
-                                                                                and (state.has("Stamina Bar", player, 3)
+                                                                                and (state.has("Stamina Bar", player, 3 - options.starting_stamina_bars.value)    # we eventually need to put 4 stamina and 4 slots in the item pool and grant them as starting items so we don't have to do this jank
                                                                                     or options.starting_stamina_bars.value >= 3
                                                                                     or (s_name != "Sapsucker Egg")))
                                                                             or (s_name != "Shotgun"
@@ -97,16 +97,16 @@ def create_regions(options: LCOptions, world: "LethalCompanyWorld"):
                                                                     or options.starting_stamina_bars.value > 0)
                                                                     and ((check_item_accessible(state, "Shovel",
                                                                                                 player, options)
-                                                                            and (state.has("Stamina Bar", player, 3)
+                                                                            and (state.has("Stamina Bar", player, 3 - options.starting_stamina_bars.value)
                                                                                 or options.starting_stamina_bars.value >= 3
                                                                                 or (s_name != "Sapsucker Egg")))
                                                                         or (s_name != "Shotgun"
                                                                             and s_name != "Kitchen knife"
                                                                             and s_name != "Sapsucker Egg"))))
 
-    logs.append(Region("Sound Behind the Wall", player, multiworld))
+    logs.append(Region("Behind the Wall", player, multiworld))
     multiworld.regions.append(logs[-1])
-    company_building.connect(logs[0])
+    multiworld.get_region("61 March", player).connect(logs[0])
     logs.append(Region("Mummy", player, multiworld))
     multiworld.regions.append(logs[-1])
     multiworld.get_region("220 Assurance", player).connect(logs[1])
@@ -123,39 +123,42 @@ def create_regions(options: LCOptions, world: "LethalCompanyWorld"):
     multiworld.get_region("85 Rend", player).connect(logs[4])
     logs.append(Region("Goodbye", player, multiworld))
     multiworld.regions.append(logs[-1])
-    multiworld.get_region("61 March", player).connect(logs[5])
+    multiworld.get_region("21 Offense", player).connect(logs[5])
     logs.append(Region("Screams", player, multiworld))
     multiworld.regions.append(logs[-1])
-    multiworld.get_region("56 Vow", player).connect(logs[6])
+    multiworld.get_region("220 Assurance", player).connect(logs[6],
+                                                             rule=lambda state: (state.has("Stamina Bar", player)
+                                                                                 or options.starting_stamina_bars > 0))
     logs.append(Region("Idea", player, multiworld))
     multiworld.regions.append(logs[-1])
-    multiworld.get_region("85 Rend", player).connect(logs[7])
+    multiworld.get_region("20 Adamance", player).connect(logs[7])
     logs.append(Region("Nonsense", player, multiworld))
     multiworld.regions.append(logs[-1])
     multiworld.get_region("85 Rend", player).connect(logs[8])
     logs.append(Region("Hiding", player, multiworld))
     multiworld.regions.append(logs[-1])
-    multiworld.get_region("7 Dine", player).connect(logs[9])
+    company_building.connect(logs[9])
     logs.append(Region("Real Job", player, multiworld))
     multiworld.regions.append(logs[-1])
-    multiworld.get_region("8 Titan", player).connect(logs[10],
-                                                   rule=lambda state:
-                                                   ((state.has("Stamina Bar", player)
-                                                        or options.starting_stamina_bars > 0)  
-                                                    and (state.has("Terminal", player)
-                                                         or options.randomize_terminal == 0)))
+    multiworld.get_region("56 Vow", player).connect(logs[10])
     logs.append(Region("Desmond", player, multiworld))
     multiworld.regions.append(logs[-1])
-    multiworld.get_region("8 Titan", player).connect(logs[11],
+    multiworld.get_region("7 Dine", player).connect(logs[11],
                                                    rule=lambda state:
-                                                   (state.has("Jetpack", player)  
-                                                    and can_buy(state, player, options)))
+                                                   (state.has("Stamina Bar", player)
+                                                        or options.starting_stamina_bars > 0))
     logs.append(Region("Team Synergy", player, multiworld))
     multiworld.regions.append(logs[-1])
     multiworld.get_region("20 Adamance", player).connect(logs[12])
     logs.append(Region("Letter of Resignation", player, multiworld))
     multiworld.regions.append(logs[-1])
-    multiworld.get_region("68 Artifice", player).connect(logs[13])
+    multiworld.get_region("8 Titan", player).connect(logs[13],
+                                                   rule=lambda state:
+                                                   (state.has("Stamina Bar", player)
+                                                        or options.starting_stamina_bars > 0))
+    logs.append(Region("Work", player, multiworld))
+    multiworld.regions.append(logs[-1])
+    multiworld.get_region("68 Artifice", player).connect(logs[14])
 
     # Generate locations
     for i in range(options.checks_per_moon.value):

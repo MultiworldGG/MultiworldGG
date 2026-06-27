@@ -75,6 +75,7 @@
                                     <div class="settings-tip-content">
                                         <div>Release: {{ s.get('release_mode', 'auto') }}</div>
                                         <div>Collect: {{ s.get('collect_mode', 'auto') }}</div>
+                                        <div>Threshold: {{ s.get('release_threshold', 0) }}%</div>
                                         <div>Remaining: {{ s.get('remaining_mode', 'goal') }}</div>
                                         <div>Hints: {% if hm == 'default' %}Full{% elif hm == 'own' %}Hide Own{% elif hm == 'all' %}Hide All{% else %}{{ hm }}{% endif %} @ {% if hc > 100 %}Off{% else %}{{ hc }}%{% endif %}</div>
                                         <div>Item Cheat: {{ 'On' if s.get('item_cheat', True) else 'Off' }}</div>
@@ -141,6 +142,7 @@
                                         <div class="settings-tip-content">
                                             <div>Release: {{ s.get('release_mode', 'auto') }}</div>
                                             <div>Collect: {{ s.get('collect_mode', 'auto') }}</div>
+                                            <div>Threshold: {{ s.get('release_threshold', 0) }}%</div>
                                             <div>Remaining: {{ s.get('remaining_mode', 'goal') }}</div>
                                             <div>Hints: {% if hm == 'default' %}Full{% elif hm == 'own' %}Hide Own{% elif hm == 'all' %}Hide All{% else %}{{ hm }}{% endif %} @ {% if hc > 100 %}Off{% else %}{{ hc }}%{% endif %}</div>
                                             <div>Item Cheat: {{ 'On' if s.get('item_cheat', True) else 'Off' }}</div>

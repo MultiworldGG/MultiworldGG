@@ -1,4 +1,5 @@
 # Expansion Names
+base = "base"
 get_to_work = "Get to Work"
 get_together = "Get Together"
 city_living = "City Living"
@@ -15,3 +16,6 @@ horse_ranch = "Horse Ranch"
 for_rent = "For Rent"
 lovestruck = "Lovestruck"
 life_and_death = "Life and Death"
+business_and_hobbies = "Business and Hobbies"
+enchanted_by_nature = "Enchanted by Nature"
+cottage_living = "Cottage Living"

@@ -948,15 +948,24 @@ def get_pool_core(world):
             world.remove_from_start_inventory.append(button)
 
     if world.add_random_starting_items:
-        world.randomized_starting_items = {}
-        for _ in range(world.random_starting_items_count):
-            random_starting_items_pool = configure_random_starting_items_pool(world, pool)
-            if random_starting_items_pool:
-                selected_item = world.random.choice(random_starting_items_pool)
-                world.randomized_starting_items[selected_item] = \
-                    world.randomized_starting_items.get(selected_item, 0) + 1
-                pool.remove(selected_item)
-                pool.extend(get_junk_item(world.random))
+        replay_starting_items = getattr(world, 'ut_replay_results', {}).get('randomized_starting_items')
+        if replay_starting_items is not None:
+            world.randomized_starting_items = dict(replay_starting_items)
+            for item_name, count in world.randomized_starting_items.items():
+                for _ in range(count):
+                    if item_name in pool:
+                        pool.remove(item_name)
+                        pool.extend(get_junk_item(world.random))
+        else:
+            world.randomized_starting_items = {}
+            for _ in range(world.random_starting_items_count):
+                random_starting_items_pool = configure_random_starting_items_pool(world, pool)
+                if random_starting_items_pool:
+                    selected_item = world.random.choice(random_starting_items_pool)
+                    world.randomized_starting_items[selected_item] = \
+                        world.randomized_starting_items.get(selected_item, 0) + 1
+                    pool.remove(selected_item)
+                    pool.extend(get_junk_item(world.random))
         reward_names = world.item_name_groups['rewards']
         for item_name, count in world.randomized_starting_items.items():
             if item_name in reward_names and count > 0:
