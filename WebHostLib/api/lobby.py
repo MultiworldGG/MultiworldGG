@@ -424,7 +424,7 @@ def _apworld_package_root(apworld_data: bytes) -> str | None:
         return None
 
     if len(roots_with_init) == 1:
-        return roots_with_init[0]
+        return next(iter(roots_with_init))
     return None
 
 
