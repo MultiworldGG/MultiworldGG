@@ -2708,6 +2708,9 @@ class ServerCommandProcessor(CommonCommandProcessor):
             if option_value.lower() not in valid_values:
                 self.output(f"Unrecognized {option_name} value '{option_value}', known: {', '.join(valid_values)}")
                 return False
+        elif option_name == "release_threshold":
+            def value_type(input_text: str):
+                return max(0, min(int(input_text), 100))
         elif value_type == str and option_name.endswith("mode"):
             valid_values = {"goal", "enabled", "disabled"}
             valid_values.update(("auto", "auto_enabled") if option_name != "remaining_mode" else [])
@@ -2719,7 +2722,7 @@ class ServerCommandProcessor(CommonCommandProcessor):
         self.output(f"Set option {option_name} to {getattr(self.ctx, option_name)}")
         if option_name in {"release_mode", "remaining_mode", "collect_mode"}:
             self.ctx.broadcast_all([{"cmd": "RoomUpdate", 'permissions': get_permissions(self.ctx)}])
-        elif option_name in {"hint_mode", "hint_cost", "location_check_points"}:
+        elif option_name in {"hint_mode", "hint_cost", "location_check_points", "release_threshold"}:
             self.ctx.broadcast_all([{"cmd": "RoomUpdate", option_name: getattr(self.ctx, option_name)}])
         return True
 

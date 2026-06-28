@@ -408,12 +408,40 @@ def _is_manual_apworld(original_filename: str, apworld_data: bytes) -> bool:
         return False
 
 
-def _apworld_package_filename(apworld: LobbyApworld) -> str:
-    """Name APWorlds in host packages by game, except manuals keep their uploaded filename."""
+def _apworld_package_root(apworld_data: bytes) -> str | None:
+    """Return the top-level package folder an APWorld expects its filename to match."""
+    try:
+        with zipfile.ZipFile(io.BytesIO(apworld_data)) as apzip:
+            roots_with_init: set[str] = set()
+            for name in apzip.namelist():
+                parts = [part for part in name.replace("\\", "/").split("/") if part]
+                if len(parts) != 2:
+                    continue
+                root, filename = parts
+                if filename == "__init__.py":
+                    roots_with_init.add(root)
+    except Exception:
+        return None
+
+    if len(roots_with_init) == 1:
+        return roots_with_init[0]
+    return None
+
+
+def _apworld_package_filename(apworld: LobbyApworld, apworld_data: bytes | None = None) -> str:
+    """Name APWorlds in host packages by their import package, except manuals keep their uploaded filename."""
     if apworld.game_name.startswith("Manual_"):
         return _safe_zip_name(os.path.basename(apworld.original_filename))
 
-    filename = _safe_zip_name(apworld.game_name)
+    package_root = _apworld_package_root(apworld_data) if apworld_data else None
+    if package_root:
+        filename = _safe_zip_name(package_root)
+    else:
+        original_filename = os.path.basename(apworld.original_filename)
+        if original_filename.lower().endswith(".apworld"):
+            return _safe_zip_name(original_filename)
+        filename = _safe_zip_name(apworld.game_name)
+
     if not filename.lower().endswith(".apworld"):
         filename = f"{filename}.apworld"
     return filename
@@ -2389,16 +2417,17 @@ def lobby_download_package(lobby: UUID):
             if a.game_name in seen_apworld_games:
                 continue
             seen_apworld_games.add(a.game_name)
-            safe_filename = _apworld_package_filename(a)
+            try:
+                with open(a.storage_path, 'rb') as apf:
+                    apworld_data = apf.read()
+            except OSError:
+                continue
+            safe_filename = _apworld_package_filename(a, apworld_data)
             if safe_filename in seen_apworld_filenames:
                 root, ext = os.path.splitext(safe_filename)
                 safe_filename = f"{root}_{a.id}{ext or '.apworld'}"
             seen_apworld_filenames.add(safe_filename)
-            try:
-                with open(a.storage_path, 'rb') as apf:
-                    zf.writestr(f"custom_worlds/{safe_filename}", apf.read())
-            except OSError:
-                pass
+            zf.writestr(f"custom_worlds/{safe_filename}", apworld_data)
 
     zip_buffer.seek(0)
     safe_title = _safe_zip_name(lobby.title)

@@ -26,13 +26,13 @@ from WebHostLib.models import (
 from . import TestBase
 
 
-def _make_apworld_bytes(game_name: str, world_version: str = "1.2.3") -> bytes:
+def _make_apworld_bytes(game_name: str, world_version: str = "1.2.3", package_name: str | None = None) -> bytes:
     payload = io.BytesIO()
     with zipfile.ZipFile(payload, "w", compression=zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr(
-            "archipelago.json",
-            json.dumps({"game": game_name, "world_version": world_version}),
-        )
+        manifest_path = f"{package_name}/archipelago.json" if package_name else "archipelago.json"
+        if package_name:
+            zf.writestr(f"{package_name}/__init__.py", "")
+        zf.writestr(manifest_path, json.dumps({"game": game_name, "world_version": world_version}))
     return payload.getvalue()
 
 
@@ -485,7 +485,7 @@ class TestLobbyApworldQueue(TestBase):
             self.assertIsNotNone(LobbyApworld.get(id=apworld_id))
             self.assertTrue(os.path.exists(apworld_path))
 
-    def test_download_package_names_apworlds_by_game_except_manuals(self) -> None:
+    def test_download_package_names_apworlds_by_package_root_except_manuals(self) -> None:
         ids = self._create_open_lobby()
         with db_session:
             lobby = Lobby.get(id=ids["lobby_id"])
@@ -507,7 +507,7 @@ class TestLobbyApworldQueue(TestBase):
             os.makedirs(apworld_dir, exist_ok=True)
             game_apworld_path = os.path.join(apworld_dir, "uploaded-name.apworld")
             manual_apworld_path = os.path.join(apworld_dir, "manual-upload.apworld")
-            game_apworld_bytes = _make_apworld_bytes("GameX", "2.0.0")
+            game_apworld_bytes = _make_apworld_bytes("GameX", "2.0.0", "gamex")
             manual_apworld_bytes = _make_apworld_bytes("Manual_CoolGame", "2.0.0")
             with open(game_apworld_path, "wb") as apworld_file:
                 apworld_file.write(game_apworld_bytes)
@@ -539,7 +539,8 @@ class TestLobbyApworldQueue(TestBase):
         with zipfile.ZipFile(io.BytesIO(response.get_data())) as package:
             names = set(package.namelist())
 
-        self.assertIn("custom_worlds/GameX.apworld", names)
+        self.assertIn("custom_worlds/gamex.apworld", names)
+        self.assertNotIn("custom_worlds/GameX.apworld", names)
         self.assertNotIn("custom_worlds/uploaded-name.apworld", names)
         self.assertIn("custom_worlds/Manual_Uploaded_Name.apworld", names)
 
