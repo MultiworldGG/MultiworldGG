@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import DKC3World
 
-from .enums import Regions
+from .enums import Regions, Events
 from .constants import *
 
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes, APPatchExtension
@@ -31,6 +31,15 @@ letters_addr = [
     0xABB4,
     0xABB9,
 ]
+
+trade_items_data = {
+    Events.item_shell.value:    (0x04, 0x02),
+    Events.item_mirror.value:   (0x08, 0x03),
+    Events.item_present.value:  (0x10, 0x04),
+    Events.item_ball.value:     (0x20, 0x05),
+    Events.item_flower.value:   (0x40, 0x06),
+    Events.item_wrench.value:   (0x80, 0x07),
+}
 
 def sanitize_save_name(text: str) -> str:
     result = ""
@@ -69,6 +78,84 @@ class DKC3PatchExtension(APPatchExtension):
 
         return bytes(rom)
 
+    @staticmethod
+    def handle_trading(caller: APProcedurePatch, rom: bytes) -> bytes:
+        rom = bytearray(rom)
+        trade_data = base64.b64decode(caller.get_file("trade.bin").decode("UTF-8"))
+        trade_items: dict[str, str] = json.loads(trade_data)
+
+        # Handle Bazaar #1
+        item_name = trade_items[Events.bazaar_1.value]
+        item_value, item_bit = trade_items_data[item_name]
+        bazaar_value_1 = item_value
+        rom[0x349190] = item_value
+
+        # Handle Bazaar #2
+        item_name = trade_items[Events.bazaar_2.value]
+        item_value, item_bit = trade_items_data[item_name]
+        rom[0x3491AA] = item_value
+        rom[0x32D84C] = item_bit
+
+        # Handle showing Bazaar items
+        rom[0x32E1BD] = bazaar_value_1 | item_value
+
+        # Handle Blizzard
+        item_name = trade_items[Events.blizzard.value]
+        item_value, item_bit = trade_items_data[item_name]
+        rom[0x349527] = item_value
+        rom[0x32E1BD+0x10] = item_value
+
+        # Handle Blue
+        item_name = trade_items[Events.blue.value]
+        item_value, item_bit = trade_items_data[item_name]
+        rom[0x3494A5] = item_value
+        rom[0x32E1BD+0x0C] = item_value
+
+        # Handle Flower
+        item_name = trade_items[Events.flower.value]
+        item_value, item_bit = trade_items_data[item_name]
+        rom[0x32E501] = item_value
+
+        # Handle Barter
+        item_name = trade_items[Events.barter.value]
+        item_value, item_bit = trade_items_data[item_name]
+        rom[0x349366] = item_value
+        rom[0x32E1BD+0x06] = item_value
+
+        return bytes(rom)
+
+
+    @staticmethod
+    def write_palettes(caller: APProcedurePatch, rom: bytes) -> bytes:
+        data = json.loads(caller.get_file("data.json").decode("UTF-8"))
+        rom = bytearray(rom)
+
+        selected_palettes = data["palettes"]
+        selected_palette_filters = data["palette_filters"]
+
+        from .aesthetics import palette_set_offsets, get_palette_bytes
+        from .data.palettes import palettes
+
+        for palette_set, offset in palette_set_offsets.items():
+            palette_option = selected_palettes[palette_set]
+            if "Dixie" in palette_set:
+                palette = palettes["Dixie"][palette_option]
+            elif "Kiddy" in palette_set:
+                palette = palettes["Kiddy"][palette_option]
+            else:
+                palette = palettes[palette_set][palette_option]
+            
+            # TODO: Handle custom palettes
+
+            if palette_set in selected_palette_filters:
+                filter_option = selected_palette_filters[palette_set]
+            else:
+                filter_option = 0
+            data = get_palette_bytes(palette, filter_option)
+            rom[offset:offset+0x1E] = data
+
+        return bytes(rom)
+
 
 class DKC3ProcedurePatch(APProcedurePatch, APTokenMixin):
     hash = [HASH_US]
@@ -80,6 +167,8 @@ class DKC3ProcedurePatch(APProcedurePatch, APTokenMixin):
         ("apply_tokens", ["token_patch.bin"]),
         ("apply_bsdiff4", ["dkc3_basepatch.bsdiff4"]),
         ("shuffle_levels", []),
+        ("handle_trading", []),
+        ("write_palettes", []),
     ]
 
     @classmethod
@@ -92,10 +181,13 @@ class DKC3ProcedurePatch(APProcedurePatch, APTokenMixin):
     def write_bytes(self, offset: int, value: typing.Iterable[int]):
         self.write_token(APTokenTypes.WRITE, offset, bytes(value))
 
+
 def patch_rom(world: "DKC3World", patch: DKC3ProcedurePatch):
     # Write additional data for generation
     data_dict = {
         "seed": world.random.getrandbits(64),
+        "palettes": world.options.palettes.value,
+        "palette_filters": world.options.palette_filters.value,
     }
     patch.write_file("data.json", json.dumps(data_dict).encode("UTF-8"))
 
@@ -119,13 +211,16 @@ def patch_rom(world: "DKC3World", patch: DKC3ProcedurePatch):
     patch.write_byte(0x3AFF0B, world.options.required_ridge_levels.value)
     patch.write_byte(0x3AFF0C, world.options.required_kore_levels.value)
     patch.write_byte(0x3AFF0D, world.options.required_krematoa_levels.value)
-    patch.write_byte(0x3AFF0E, world.options.dk_coin_checks.value)
-    patch.write_byte(0x3AFF0F, world.options.kong_checks.value)
-    patch.write_byte(0x3AFF10, world.options.balloon_checks.value)
-    patch.write_byte(0x3AFF11, world.options.banana_checks.value)
-    patch.write_byte(0x3AFF12, world.options.coin_checks.value)
-    patch.write_byte(0x3AFF13, world.options.bird_checks.value)
+    patch.write_byte(0x3AFF0E, world.options.dk_coin_locations.value)
+    patch.write_byte(0x3AFF0F, world.options.kong_locations.value)
+    patch.write_byte(0x3AFF10, world.options.balloon_locations.value)
+    patch.write_byte(0x3AFF11, world.options.banana_locations.value)
+    patch.write_byte(0x3AFF12, world.options.coin_locations.value)
+    patch.write_byte(0x3AFF13, world.options.bird_locations.value)
     patch.write_byte(0x3AFF14, world.options.starting_life_count.value)
+    patch.write_byte(0x3AFF15, world.options.vehicle_unlock.value)
+    patch.write_byte(0x3AFF16, world.options.swanky_locations.value)
+    patch.write_byte(0x3AFF17, world.options.swap_krool.value)
 
     order = [
         Regions.belchas_barn_level,
@@ -189,6 +284,10 @@ def patch_rom(world: "DKC3World", patch: DKC3ProcedurePatch):
             shuffled_level: int = world.rom_connections[map_level][1]
             patch.write_bytes(0x3AFF40+(idx*2), shuffled_level.to_bytes(2, "little"))
 
+    # Move Knautilus RAM if swapped
+    if world.options.swap_krool:
+        patch.write_byte(0x32F339, 0x55)
+
     # Initialize save name
     save_name = world.options.default_save_name.value[:5].upper()
     if len(save_name) == 0:
@@ -206,11 +305,15 @@ def patch_rom(world: "DKC3World", patch: DKC3ProcedurePatch):
     else:
         patch.write_byte(letters_addr[idx], ord(letter) | 0x80)
 
-    # Save shuffled levels data
+    # Save shuffled levels data and trade items
+    json_trade = json.dumps(world.trade_items).encode("UTF-8")
+    patch.write_file("trade.bin", base64.b64encode(json_trade))
+
     json_levels = json.dumps(world.rom_connections).encode("UTF-8")
     patch.write_file("levels.bin", base64.b64encode(json_levels))
     
     patch.write_file("token_patch.bin", patch.get_token_binary())
+
 
 def get_base_rom_bytes(file_name: str = "") -> bytes:
     base_rom_bytes = getattr(get_base_rom_bytes, "base_rom_bytes", None)

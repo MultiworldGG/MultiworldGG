@@ -734,28 +734,37 @@ BOSS_WARP_SCENE_LOOKUP = {
 }
 
 special_respawn_stages = {
-    0x15: (0x14, 1, 1),
-    0x23: (0x14, 1, 1)
+    0x15: (0x14, 1, 1),  # Tower
+    0x23: (0x13, 0x14, 0)  # Staven
 }
 
-TOS_FLOOR_TO_SECTION = {
+TOS_FLOOR_SECTIONS_CANCEL_TEARS: dict[int, int] = {
+    2: 1,
+    6: 2,
+    0xB: 3,
+    0xF: 4,  # 17F
+    0x1d: 6,  # 31F, canceled cause removes tears
+    0x23: 6,  # 24F
+}
+
+TOS_FLOOR_TO_SECTION_SAFE: dict[int, int] = {
     0: 1,
     1: 1,
-    2: 1,
+
     3: 2,
     4: 2,
     5: 2,
-    6: 2,
+
     7: 3,
     8: 3,
     9: 3,
     0xA: 3,
-    0xB: 3,
+
     0xC: 4,
     0xD: 4,
     0xE: 4,
-    0xF: 4,
-    0x10: 4,
+    0x10: 4, # 16F
+
     0x11: 5,
     0x12: 5,
     0x13: 5,
@@ -774,14 +783,14 @@ TOS_FLOOR_TO_SECTION = {
     0x2D: 6,
     0x2E: 5,
 
-    0x1d: 6,  # 31F
     0x1e: 6,  # 30F
     0x1f: 6,  # 29F
     0x20: 6,  # 28F
     0x21: 6,  # 27F
     0x22: 6,  # 26F
-    0x23: 6,  # 24F
     0x24: 6,  # 25F
 }
+
+TOS_FLOOR_TO_SECTION: dict[int, int] = TOS_FLOOR_TO_SECTION_SAFE | TOS_FLOOR_SECTIONS_CANCEL_TEARS
 
 #TREASURE_READ_LIST = {i: (0x1BA5AC + i * 4, 4, "Main RAM") for i in range(8)}

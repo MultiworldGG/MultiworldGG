@@ -229,7 +229,7 @@ class SpiritTracksClient(DSZeldaClient):
         self.oct_bk_offset = None
 
 
-    def print_goal_info(self, ctx):
+    def printl_goal_info(self, ctx):
         slot_data = ctx.slot_data
 
         if slot_data["goal"] != -1:
@@ -266,8 +266,12 @@ class SpiritTracksClient(DSZeldaClient):
     async def check_game_version(self, ctx: "BizHawkClientContext") -> bool:
         rom_name_bytes = await STAddr.game_identifier.read_bytes(ctx)
         rom_name = bytes([byte for byte in rom_name_bytes[0] if byte != 0]).decode("ascii")
-        print(f"Rom Name: {rom_name}")
+        printl(f"Rom Name: {rom_name}")
         if rom_name == "SPIRITTRACKSBKIP":  # EU
+            version = await STAddr.game_version.read(ctx)
+            if version != 0:
+                logger.info(f"Wrong rom version 1.{version}, please use version 1.0")
+                return False
 
             # Set commands
             if "train_speed" not in ctx.command_processor.commands:
@@ -277,6 +281,8 @@ class SpiritTracksClient(DSZeldaClient):
             if "goal" not in ctx.command_processor.commands:
                 ctx.command_processor.commands["goal"] = cmd_goal
             return True
+        elif rom_name == "SPIRITTRACKSBKIE":  # US
+            logger.info(f"The US Version is not supported yet, please use the EU version 1.0")
         return False
 
     async def set_special_starting_flags(self, ctx: "BizHawkClientContext") -> list[tuple[int, list, str]]:
@@ -287,15 +293,15 @@ class SpiritTracksClient(DSZeldaClient):
         return STAddr.link_x, STAddr.link_y, STAddr.link_z
 
     async def get_coords(self, ctx, multi=False):
-        # print(f"Coords: {[self.read_result.get(a, 0) for c, a in zip(['x', 'y', 'z'], self.get_coord_address())]}")
+        # printl(f"Coords: {[self.read_result.get(a, 0) for c, a in zip(['x', 'y', 'z'], self.get_coord_address())]}")
         # return {c: self.read_result.get(a, 0) for c, a in zip(['x', 'y', 'z'], self.get_coord_address())}
         if self.current_stage < 0x13:
             coords = await read_multiple(ctx, STAddr.train_coords, True)
             train_coords = {l: c for c, l in zip(coords.values(), ['x', 'y', 'z'])}
-            # print(f"Train coords: {train_coords}")
+            # printl(f"Train coords: {train_coords}")
             return train_coords
         coords = await read_multiple(ctx, self.get_coord_address(multi=multi), signed=True)
-        # print(f"Coords: {coords}")
+        # printl(f"Coords: {coords}")
         return {
             "x": coords[STAddr.link_x],
             "y": coords[STAddr.link_y],
@@ -308,11 +314,11 @@ class SpiritTracksClient(DSZeldaClient):
             if "dungeons" in data:
                 if ctx.slot_data["dark_realm_access"] != 1:
                     return data["dungeons"]  # Case where dungeons are not required for dark realm
-                print(f"{ctx.slot_data['required_dungeons']}")
+                printl(f"{ctx.slot_data['required_dungeons']}")
                 dungeon_locs = ctx.slot_data["required_dungeons"]
                 has_locs = sum([1 for loc in ctx.checked_locations if loc in dungeon_locs])
                 comp = has_locs >= ctx.slot_data["dungeons_required"]
-                print(f"Checking dungeons: {has_locs} >= {ctx.slot_data['dungeons_required']} for comp {data['dungeons']}")
+                printl(f"Checking dungeons: {has_locs} >= {ctx.slot_data['dungeons_required']} for comp {data['dungeons']}")
                 return comp == data["dungeons"]
             return True
 
@@ -320,7 +326,7 @@ class SpiritTracksClient(DSZeldaClient):
             coord_data = data.get("coords", {})
             if coord_data:
                 coords = await self.get_coords(ctx)
-                print(f"\t\tCoords: {coords} reqs {coord_data}")
+                printl(f"\t\tCoords: {coords} reqs {coord_data}")
                 return all([
                     coord_data.get("x_max", 0xFFFFFFF) > coords['x'] > coord_data.get("x_min", -0xFFFFFFF),
                     coord_data.get("y", coords['y']) + 2000 > coords['y'] >= coord_data.get("y", coords['y']),
@@ -330,10 +336,10 @@ class SpiritTracksClient(DSZeldaClient):
             return True
 
         if not check_dungeon_reqs():
-            print(f"\t{data['name']} does not have dungeon requirements")
+            printl(f"\t{data['name']} does not have dungeon requirements")
             return False
         if not await check_coords():
-            print(f"\t{data['name']} does not have coordinate requirements")
+            printl(f"\t{data['name']} does not have coordinate requirements")
             return False
         return True
 
@@ -341,7 +347,7 @@ class SpiritTracksClient(DSZeldaClient):
     async def full_heal(self, ctx, bonus=0):
 
         hearts = (self.item_count(ctx, "Heart Container") + 3)*4
-        print(f"Full Heal: {hearts}")
+        printl(f"Full Heal: {hearts}")
         await STAddr.health.overwrite(ctx, hearts+bonus)
 
     async def watched_intro_cs(self, ctx):
@@ -355,7 +361,7 @@ class SpiritTracksClient(DSZeldaClient):
             self.health_address = STAddr.train_health
 
             train_speed_thingy = (await STAddr.train_speed_pointer.read(ctx)) - 0x2000000
-            print(f"Train speed thingy {hex(train_speed_thingy)}")
+            printl(f"Train speed thingy {hex(train_speed_thingy)}")
             if 0x400000 > train_speed_thingy > 0:
                 self.train_speed_pointer = train_speed_thingy
                 self.train_gear_addr = Address.from_pointer(self.train_speed_pointer+TRAIN_GEAR_OFFSET)
@@ -369,12 +375,12 @@ class SpiritTracksClient(DSZeldaClient):
             if 0x400000 > potion_addr > 0:
                 self.addr_drinking_potion = Address.from_pointer(potion_addr, size=4)
                 read_keys.append(self.addr_drinking_potion)
-            print(f"Potion pointer {hex(potion_addr)}")
+            printl(f"Potion pointer {hex(potion_addr)}")
 
         self.main_read_list = read_keys
-        # print(f"read keys len: {len(read_keys)}")
-        # print(self.main_read_list, read_keys)
-        # print(f"Slot data {ctx.slot_data}")
+        # printl(f"read keys len: {len(read_keys)}")
+        # printl(self.main_read_list, read_keys)
+        # printl(f"Slot data {ctx.slot_data}")
 
     def process_loading_variable(self, read_result) -> bool:
         mid_load = read_result.get(STAddr.mid_load, True) == 0xFF
@@ -411,24 +417,24 @@ class SpiritTracksClient(DSZeldaClient):
             safe_save = False
             if self.current_stage in range(0x1e, 0x23):
                 safe_save = self.saving_safety == read_result[STAddr.getting_item_safety]
-                # print(f"Checking Safe Save!")
+                # printl(f"Checking Safe Save!")
             self.saving = read_result[STAddr.getting_location] or read_result[STAddr.saving] or safe_save
 
         # Weird scene value on load from menu, set to last saved scene
         if read_result[STAddr.stage] == 0x79 and self.last_saved_scene:
             stage = (self.last_saved_scene & 0xFF00) >> 8
 
-            print(f"Overwriting weird scene: {hex(self.last_saved_scene)}")
+            printl(f"Overwriting weird scene: {hex(self.last_saved_scene)}")
             stage, room = (self.last_saved_scene & 0xFF00) >> 8, self.last_saved_scene & 0xFF
 
             self.current_scene = self.last_saved_scene
             self.current_stage = read_result[STAddr.stage] = stage
             read_result[STAddr.room] = room
-            print(hex(self.current_scene), hex(self.current_stage))
+            printl(hex(self.current_scene), hex(self.current_stage))
             await STAddr.stage.overwrite(ctx, stage)
             await STAddr.room.overwrite(ctx, room)
 
-        # print(f"Goal check {ctx.slot_data['goal']} last {self.last_stage} current {hex(self.current_stage)}")
+        # printl(f"Goal check {ctx.slot_data['goal']} last {self.last_stage} current {hex(self.current_stage)}")
         if ctx.slot_data["goal"] == -1:
             if self.last_stage == 0x27 and self.current_stage == 0x25:
                 self.has_goal_location = True
@@ -443,7 +449,7 @@ class SpiritTracksClient(DSZeldaClient):
         new_potions = list(reads.values())
         res = False
         if new_potions != self.potion_tracker:
-            print(F"New Potions: {new_potions} {spec}")
+            printl(F"New Potions: {new_potions} {spec}")
             res = True
         self.potion_tracker = new_potions
         return res
@@ -478,7 +484,7 @@ class SpiritTracksClient(DSZeldaClient):
     async def update_treasure_tracker(self, ctx: "BizHawkClientContext", last_loc=None):
         read_list = [ITEMS[name].address for name in ITEM_GROUPS["All Treasures"]]
         new_treasure = await read_multiple(ctx, read_list)
-        print(f"Updating Treasure Tracker: {last_loc}")
+        printl(f"Updating Treasure Tracker: {last_loc}")
 
         if last_loc == "no_loc":
             self.treasure_tracker = new_treasure
@@ -486,7 +492,7 @@ class SpiritTracksClient(DSZeldaClient):
             return
         elif not (last_loc == "post_receive" and self.got_item_no_loc):
             self.treasure_tracker = new_treasure
-            print(f"No special treasure")
+            printl(f"No special treasure")
             return
 
         self.got_item_no_loc = False
@@ -497,7 +503,7 @@ class SpiritTracksClient(DSZeldaClient):
             return
 
         single_item = [t for t in diff][0]
-        print(f"Updated Treasure Tracker: {diff}")
+        printl(f"Updated Treasure Tracker: {diff}")
 
         async def remove_treasure():
             reads = await read_multiple(ctx, [ITEMS[i].address for i in diff])
@@ -515,20 +521,24 @@ class SpiritTracksClient(DSZeldaClient):
                             return
 
         # Do stuff with excess treasure
+        if self.delay_reset:
+            await remove_treasure()
+            self.delay_reset = 0
+            return
         if ctx.slot_data["excess_random_treasure"] in [0, 2]:
-            print(f"Removing {diff} from treasures")
+            printl(f"Removing {diff} from treasures")
             await remove_treasure()
             # self.last_vanilla_item.extend([t for t in diff])
         if ctx.slot_data["excess_random_treasure"] == 2:
             rupees = sum([TREASURE_PRICES[treasure]*count for treasure, count in diff.items()])
-            print(f"Getting {rupees} rupees")
+            printl(f"Getting {rupees} rupees")
             await STAddr.rupees.add(ctx, rupees)
 
 
         self.treasure_tracker = new_treasure
 
     async def receive_item_post_processing(self, ctx, item_name, item_data):
-        print(f"Post Processing {item_name}")
+        printl(f"Post Processing {item_name}")
 
         if "Rabbit" in item_name:
             await self.update_rabbit_count(ctx)
@@ -538,7 +548,7 @@ class SpiritTracksClient(DSZeldaClient):
             await STAddr.adv_flags_22.unset_bits(ctx, 2)
 
         if self.reload_on_item:
-            print(f"Reloading dynamic entrances")
+            printl(f"Reloading dynamic entrances")
             self.reload_on_item = False
             await self._set_dynamic_entrances(ctx, self.current_scene)
             await self._set_dynamic_flags(ctx, self.current_scene)
@@ -580,7 +590,7 @@ class SpiritTracksClient(DSZeldaClient):
             else:
                 data = BOSS_KEY_DATA[self.current_scene]
                 if data["dungeon"] in item_name and (self.current_scene & 0xff00 != 0x1300 or self.location_name_to_id[data["location"]] in ctx.checked_locations):
-                    print(f"Opening boss door for {hex(self.current_scene)}")
+                    printl(f"Opening boss door for {hex(self.current_scene)}")
                     await data["door"].overwrite(ctx, 3)
 
         # Complex blocked scenes for sources in boss rooms
@@ -595,7 +605,7 @@ class SpiritTracksClient(DSZeldaClient):
         await self.update_potion_tracker(ctx, "room_load")
         await self.update_rabbit_count(ctx)
 
-        # print(F"Room load goal: {ctx.slot_data['goal']}, {ctx.slot_data['endgame_scope']}, {self.current_stage}")
+        # printl(F"Room load goal: {ctx.slot_data['goal']}, {ctx.slot_data['endgame_scope']}, {self.current_stage}")
         if (ctx.slot_data["goal"] == -1 and ctx.slot_data["endgame_scope"] == 5
                 and self.current_stage in [0xF, 0x10, 0x24, 0x25, 0x27]):
             self.has_goal_location = True
@@ -656,12 +666,12 @@ class SpiritTracksClient(DSZeldaClient):
                     ctx.slot_data["er_pairings"][str(entrance.id)]] if str(entrance.id) in ctx.slot_data[
                     "er_pairings"] else entrance.vanilla_reciprocal
                 respawn_data = reverse_entrance.entrance
-                print(f"Setting ToS respawn room {respawn_data}")
+                printl(f"Setting ToS respawn room {respawn_data}")
                 await write_multiple(ctx, [STAddr.respawn_stage, STAddr.respawn_room, STAddr.respawn_entrance],
                                      respawn_data)
 
         if self.display_goal:
-            self.print_goal_info(ctx)
+            self.printl_goal_info(ctx)
             self.display_goal = False
 
     async def process_fast(self, ctx: "BizHawkClientContext", read_result: dict):
@@ -670,7 +680,7 @@ class SpiritTracksClient(DSZeldaClient):
 
         if self.snurglar_addr in read_result:
             if read_result[self.snurglar_addr] & 0x20:
-                print(f"Opening Mountain Temple! {self.snurglar_addr}")
+                printl(f"Opening Mountain Temple! {self.snurglar_addr}")
                 await self.snurglar_addr.set_bits(ctx, 0x10)
                 self.main_read_list.remove(self.snurglar_addr)
 
@@ -678,7 +688,7 @@ class SpiritTracksClient(DSZeldaClient):
     async def anticipate_location(self, ctx: "BizHawkClientContext", read_result: dict):
         if read_result[STAddr.stage] < 0x13 or self.getting_location:
             return
-        # print(f"Locations in scene: {[l for l in self.locations_in_scene]}")
+        # printl(f"Locations in scene: {[l for l in self.locations_in_scene]}")
         coords = await self.get_coords(ctx)
         valid_locations = []
         priority = 30
@@ -703,7 +713,7 @@ class SpiritTracksClient(DSZeldaClient):
         if self.last_anticipated_locations == valid_locations:
             return
         if not valid_locations:
-            print(f"\tno location")
+            printl(f"\tno location")
         else:
             await self.swap_models(ctx, valid_locations)
         self.last_anticipated_locations = valid_locations
@@ -720,11 +730,11 @@ class SpiritTracksClient(DSZeldaClient):
             bits = split_bits(treasure_model.value, 4) if model is None else split_bits(model, 4)
             bits.reverse()
             write_list.append((STAddr.item_model_table.addr + 4*i, bits, "Main RAM"))
-        print(f"Reseting treasure models")
+        printl(f"Reseting treasure models")
         await bizhawk.write(ctx.bizhawk_ctx, write_list)
 
     async def swap_models(self, ctx, locations: list, treasure_mode=False):
-        print(f"\tMultiple locations: {locations}")
+        printl(f"\tMultiple locations: {locations}")
         generic_model = [
             ITEM_MODEL_LOOKUP["Force Gem 17"].value,
             ITEM_MODEL_LOOKUP["Letter"].value,
@@ -749,11 +759,11 @@ class SpiritTracksClient(DSZeldaClient):
                 item_location_check[item] = loc_data['id']
                 item_priority[item] = priority
 
-        print(f"Items with locations: {[(i, l) for i, l in item_location_check.items()]}")
+        printl(f"Items with locations: {[(i, l) for i, l in item_location_check.items()]}")
 
         model_data = ctx.slot_data.get("model_lookup", {})
         write_list = []
-        print_list = {}
+        printl_list = {}
         # look up locations
         for i, l in item_location_check.items():
             if i not in self.item_data: continue
@@ -779,7 +789,7 @@ class SpiritTracksClient(DSZeldaClient):
                 model_value = OFFSET_TO_MODEL[model_data[str(l)]].value if str(l) in model_data else generic_model
                 model_name = OFFSET_TO_MODEL[model_data[str(l)]].name if model_value != generic_model else "Force Gem"
             else:  # vanilla
-                    print(f"Vanilla item {i}, {l}")
+                    printl(f"Vanilla item {i}, {l}")
                     model_name = ITEMS[i].model
                     model_value = ITEM_MODEL_LOOKUP[model_name].value if model_name else generic_model
 
@@ -789,9 +799,9 @@ class SpiritTracksClient(DSZeldaClient):
             bits.reverse()
             write_list.append((STAddr.item_model_table.addr + 4 * vanilla_model.offset, bits, "Main RAM"))
             if l is not None:
-                print_list[self.location_id_to_name[l]] = model_name
+                printl_list[self.location_id_to_name[l]] = model_name
 
-        print(f"Swapped Models: {print_list}")
+        printl(f"Swapped Models: {printl_list}")
         if write_list:
             await bizhawk.write(ctx.bizhawk_ctx, write_list)
 
@@ -811,7 +821,7 @@ class SpiritTracksClient(DSZeldaClient):
         return False
 
     async def check_location_post_processing(self, ctx, location: dict):
-        print(f"Post processing loc {location}")
+        printl(f"Post processing loc {location}")
         if not location:
             await self.update_treasure_tracker(ctx, "no_loc")
             return
@@ -820,6 +830,7 @@ class SpiritTracksClient(DSZeldaClient):
             from .data.Entrances import goal_event_lookup
             goal = ctx.slot_data.get("goal", -1)
             loc_goal = location["goal"]
+            printl(f"Processing goal locations: {goal_event_lookup[goal]} == {loc_goal}")
             if goal_event_lookup[goal] == loc_goal:
                 await self.store_event(ctx, loc_goal)
                 self.has_goal_location = True
@@ -844,11 +855,11 @@ class SpiritTracksClient(DSZeldaClient):
         if self.current_scene in [0x1309, 0x1318] and isinstance(location.get("vanilla_item", ""), str) and location.get("vanilla_item", "").startswith("Boss Key"):
             section = {0x1309: 3, 0x1318: 5}[self.current_scene]
             if self.item_count(ctx, f"Boss Key (ToS {section})") or (self.item_count(ctx, f"Keyring (ToS {section})") and ctx.slot_data["big_keyrings"]):
-                print("Opening ToS boss door after having key and getting boss key location")
+                printl("Opening ToS boss door after having key and getting boss key location")
                 await self.open_tos_boss_door(ctx, self.current_scene)
 
         if self.snurglar_addr and location["name"] in LOCATION_GROUPS["Snurglars"]:
-            await self.snurglar_addr.unset_bits(ctx, 0xF)
+            await self.snurglar_addr.unset_bits(ctx, 0x0F)
 
     # fixes conflict with bizhawk_UT
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
@@ -867,7 +878,7 @@ class SpiritTracksClient(DSZeldaClient):
             realms = rabbit_realms
             rabbit_counts = [min(sum([ITEMS[i].value*self.item_count(ctx, i) for i in ITEM_GROUPS[f"{realm} Rabbits"]]), 10) for realm in realms]
             rabbit_bits = sum([(2 ** count - 1) << 10*i for i, count in enumerate(rabbit_counts)])
-            print(f"Updating rabbit bits {hex(rabbit_bits)}")
+            printl(f"Updating rabbit bits {hex(rabbit_bits)}")
         await STAddr.rabbits.overwrite(ctx, rabbit_bits)
 
     async def store_rabbit(self, ctx, loc_data):
@@ -886,19 +897,19 @@ class SpiritTracksClient(DSZeldaClient):
                 rabbit_count = 1  # Hope this just works
             plural = "s" if rabbit_count > 1 else ""
             total_loc = f"Catch {rabbit_count} {rabbit_type}{plural}"
-            print(f"Sending rabbit total location {total_loc} {self.rabbit_counter}")
+            printl(f"Sending rabbit total location {total_loc} {self.rabbit_counter}")
             await self._process_checked_locations(ctx, total_loc)
 
     def update_rabbit_tracker(self, ctx):
         rabbit_storage = ctx.stored_data.get(storage_key(ctx, rabbit_storage_key), None)
         rabbit_storage = [0]*7 if rabbit_storage is None else rabbit_storage
-        print(f"\tRabbit storage: {rabbit_storage}")
+        printl(f"\tRabbit storage: {rabbit_storage}")
         self.rabbit_tracker = [s | c for s, c in zip(rabbit_storage, self.rabbit_tracker)]
-        print(f"\trabbit tracker {self.rabbit_tracker}")
+        printl(f"\trabbit tracker {self.rabbit_tracker}")
         all_rabbits = sum([r << 8*i for i, r in enumerate(self.rabbit_tracker)])
-        print(f"\tall rabbits: {hex(all_rabbits)}")
+        printl(f"\tall rabbits: {hex(all_rabbits)}")
         self.rabbit_counter = [count_bits(all_rabbits & (0x3FF << n*10)) for n in range(5)]
-        print(f"Updating Rabbit tracker: {[hex(i) for i in self.rabbit_tracker]} {self.rabbit_counter}")
+        printl(f"Updating Rabbit tracker: {[hex(i) for i in self.rabbit_tracker]} {self.rabbit_counter}")
 
     async def on_connect(self, ctx):
         self.rabbit_tracker = [0]*7
@@ -909,7 +920,7 @@ class SpiritTracksClient(DSZeldaClient):
 
         # Get train settings from host.yaml
         host_settings: SpiritTracksSettings = get_settings().get('tloz_st_options')
-        print(f"SETTINGS: {host_settings.get('train_speed', self.train_speed)}")
+        printl(f"SETTINGS: {host_settings.get('train_speed', self.train_speed)}")
         self.train_speed = host_settings.get("train_speed", self.train_speed)
         self.train_snap_speed = host_settings.get("train_snap_speed", self.train_snap_speed)
         self.train_quick_station = host_settings.get("train_quick_station", self.train_quick_station)
@@ -955,6 +966,10 @@ class SpiritTracksClient(DSZeldaClient):
         if not self.delay_pickup:
             await self.update_treasure_tracker(ctx, "post_receive")  # always update treasure tracker, lots of random treasures on ground!
 
+        if "ammo" in ctx.slot_data["shopsanity"] and self.current_scene in ammo_shop_lookup:
+            await STAddr.bomb_count.overwrite(ctx, 0)
+            await STAddr.arrow_count.overwrite(ctx, 0)
+
     async def set_stage_flags(self, ctx, stage):
         if stage in STAGE_FLAGS:
             stage_address = await STAddr.stage_flag_pointer.read(ctx)
@@ -964,26 +979,25 @@ class SpiritTracksClient(DSZeldaClient):
                     STAGE_FLAGS[stage] = [0x16, 0x00, 0x00, 0x00]
                 elif stage == 0x35:
                     STAGE_FLAGS[stage] = [0x16, 0x04, 0x00, 0x00]
-            print(f"Setting stage flags for stage {hex(stage)} at {stage_flag_address}: {[hex(i) for i in STAGE_FLAGS[stage]]}")
+            printl(f"Setting stage flags for stage {hex(stage)} at {stage_flag_address}: {[hex(i) for i in STAGE_FLAGS[stage]]}")
             await stage_flag_address.set_bits(ctx, STAGE_FLAGS[stage])
         if self.set_train_in_overworld:
             await self.set_starting_train(ctx)
             self.set_train_in_overworld = False
 
-        # Give tears of light when entering ToS
-        if stage == 0x13 and ctx.slot_data["randomize_tears"] != -1:
-            await self.set_tears(ctx)
 
     async def set_tears(self, ctx):
         set_tears = (self.item_count(ctx, "Tear of Light (All Sections)")
                      or self.item_count(ctx, "Big Tear of Light (All Sections)") * 3)
         if not set_tears:
-            section = TOS_FLOOR_TO_SECTION.get(self.current_room, 0)
-            if ctx.slot_data["shuffle_tos_sections"] and ctx.slot_data.get("tear_sections", 2) == 2:
-                print(f"Section {section} is order {ctx.slot_data['tower_section_lookup']}!")
+            section = TOS_FLOOR_TO_SECTION_SAFE.get(self.current_room, 0)
+            if section == 0:  # These rooms remove tears
+                return
+            if section and ctx.slot_data["shuffle_tos_sections"] and ctx.slot_data.get("tear_sections", 2) == 2:
+                printl(f"Section {section} is order {ctx.slot_data['tower_section_lookup']}!")
                 section = ctx.slot_data["tower_section_lookup"][str(section)]
 
-            if section == 6:
+            if section == 6 or section == 0:
                 return
             big_prog_sub = section - 1
             set_tears = (self.item_count(ctx, f"Tear of Light (ToS {section})")
@@ -992,9 +1006,9 @@ class SpiritTracksClient(DSZeldaClient):
                          or max(0, self.item_count(ctx, "Tear of Light (Progressive)") - big_prog_sub * 3)
                          )
             set_tears = min(set_tears, 3)
-            print(f"Setting tears for section {section} tears {set_tears}")
+            printl(f"Setting tears for section {section} tears {set_tears}")
         else:
-            print(f"Setting tears {set_tears}")
+            printl(f"Setting tears {set_tears}")
 
         await STAddr.tears_of_light.overwrite(ctx, set_tears)
 
@@ -1007,7 +1021,7 @@ class SpiritTracksClient(DSZeldaClient):
         self.visited_entrances |= set(get_stored_data(ctx, checked_entrances_key, set()))
         new_data = {detect_data.id, exit_data.id} if not ctx.slot_data.get(
             "decouple_entrances", False) and detect_data.two_way else {detect_data.id}
-        print(f"New Storage Data: {new_data}")
+        printl(f"New Storage Data: {new_data}")
 
         if new_data:
             key = storage_key(ctx, checked_entrances_key)
@@ -1030,7 +1044,7 @@ class SpiritTracksClient(DSZeldaClient):
             await self.reset_snurglar_door(ctx)
 
         if self.current_scene in potion_location_lookup:
-            print(f"Setting shop models")
+            printl(f"Setting shop models")
             await self.set_shop_models(ctx)
 
     async def set_shop_models(self, ctx: "BizHawkClientContext", on_load=True):
@@ -1041,11 +1055,11 @@ class SpiritTracksClient(DSZeldaClient):
         if not on_load:
             valid_locations += list(potion_location_lookup.get(self.current_scene, {}).values())
             valid_locations += [loc for treasures in SHOP_TREASURE_DATA.get(self.current_scene, []) for loc in treasures.get("locations", [])]
-        print(f"Setting shop models {self.current_scene}: {valid_locations}")
+        printl(f"Setting shop models {self.current_scene}: {valid_locations}")
         for loc in valid_locations.copy():
             if self.location_name_to_id[loc] in ctx.checked_locations:
                 valid_locations.remove(loc)
-                print(f"Already checked location {loc}!")
+                printl(f"Already checked location {loc}!")
         await self.swap_models(ctx, valid_locations)
         if on_load:
             await self.reset_treasure_models(ctx)
@@ -1059,7 +1073,7 @@ class SpiritTracksClient(DSZeldaClient):
             else:
                 await write_multiple(ctx, [STAddr.respawn_stage, STAddr.respawn_room, STAddr.respawn_entrance], self.starting_entrance)
                 self.last_saved_scene = self.starting_entrance[0] << 8 | self.starting_entrance[1]
-            print(f"Saving scene {hex(self.last_saved_scene)}")
+            printl(f"Saving scene {hex(self.last_saved_scene)}")
             await self.store_data(ctx, storage_key(ctx, save_key), self.last_saved_scene, "replace", default=0)
             self.save_spam_protection = True
             await self.save_tos_keycount(ctx)
@@ -1069,7 +1083,7 @@ class SpiritTracksClient(DSZeldaClient):
 
     async def save_tos_keycount(self, ctx):
         """ToS keycount is not dependent on stage, so save current count on room change or save"""
-        print(f"Saving Keycount {self.last_stage} {self.last_scene}")
+        printl(f"Saving Keycount {self.last_stage} {self.last_scene}")
         if self.last_stage != 0x13 or self.last_scene is None:
             return
 
@@ -1081,19 +1095,19 @@ class SpiritTracksClient(DSZeldaClient):
             blank_data = key_data & (0xFF - DUNGEON_KEY_DATA[section_key]["filter"])
             new_data = blank_data + DUNGEON_KEY_DATA[section_key]["value"]*current_keys
             if new_data != key_data:
-                print(f"Saving ToS key count: {hex(new_data)}")
+                printl(f"Saving ToS key count: {hex(new_data)}")
                 await STAddr.key_storage_tos.overwrite(ctx, new_data)
 
     async def enter_special_key_room(self, ctx, stage, scene_id):
         if stage == 0x13:
             section = TOS_FLOOR_TO_SECTION[self.current_room]
             key_code = 0x130 + section
-            print(f"Special Keycode: {key_code} {DUNGEON_KEY_DATA.get(key_code)}")
+            printl(f"Special Keycode: {key_code} {DUNGEON_KEY_DATA.get(key_code)}")
             if key_code in DUNGEON_KEY_DATA:
                 key_data = DUNGEON_KEY_DATA[key_code]
                 key_storage = await STAddr.key_storage_tos.read(ctx)
                 current_keys = (key_storage & key_data["filter"]) // key_data["value"]
-                print(f"Current Keys = {current_keys} | {(key_storage & key_data['filter'])} / {key_data['value']}")
+                printl(f"Current Keys = {current_keys} | {(key_storage & key_data['filter'])} / {key_data['value']}")
                 await self.key_address.overwrite(ctx, current_keys)
             else:
                 await self.key_address.overwrite(ctx, 0)
@@ -1109,7 +1123,7 @@ class SpiritTracksClient(DSZeldaClient):
             if not self.event_reads:
                 data = UT_EVENT_DATA[scene]
                 data = [data] if isinstance(data, dict) else data
-                print(f"Event Data {UT_EVENT_DATA} {data}")
+                printl(f"Event Data {UT_EVENT_DATA} {data}")
                 self.event_data = data
                 for i, event in enumerate(data):
                     address = Address.from_pointer(self.stage_flag_address + event.get("offset", 0), size=event.get("size", 1)) if event["address"] == "stage_flags" else event["address"]
@@ -1118,21 +1132,21 @@ class SpiritTracksClient(DSZeldaClient):
 
             read_results = await read_multiple(ctx, self.event_reads)
             for event, res in zip(self.event_data, read_results.values()):
-                # print(read_results)
+                # printl(read_results)
                 if event["value"] & res:
                     if "entrance" in event:
-                        print(f"Event detection Success!, {event['entrance']}")
+                        printl(f"Event detection Success!, {event['entrance']}")
                         entrance = self.entrances[event["entrance"]]
                         await self.store_visited_entrances(ctx, entrance, entrance.vanilla_reciprocal)
                     # elif "event" in event:  # not implemented yet
-                    #     print(f"Event detection Success!, {event['event']}")
+                    #     printl(f"Event detection Success!, {event['event']}")
                     #     key = storage_key(ctx, ut_events_key)
                     #     await self.store_data(ctx, key, [event["event"]])
 
                     self.event_reads.remove(event["address"])
                     self.event_data.remove(event)
             if not self.event_data:
-                print(f"All events sent!")
+                printl(f"All events sent!")
                 self.sent_event = True
 
         else:
@@ -1150,7 +1164,7 @@ class SpiritTracksClient(DSZeldaClient):
         res += [a.get_inner_write_list(train) for a in [
             STAddr.equipped_engine, STAddr.equipped_cannon, STAddr.equipped_car, STAddr.equipped_cart,
         ]]
-        print(f"Setting starting train {res}")
+        printl(f"Setting starting train {res}")
         await bizhawk.write(ctx.bizhawk_ctx, res)
 
     async def get_tos_bk_pointer(self, ctx) -> tuple[Address, int]:
@@ -1158,7 +1172,7 @@ class SpiritTracksClient(DSZeldaClient):
         offset = 1040 + 8  # start of table + tos bk index
         pointer_addr = Address.from_pointer(actor_table + offset, size=3)
         pointer = await pointer_addr.read(ctx)
-        print(f"BK pointer from table read: {pointer_addr} -> {hex(pointer)} actor table: {actor_table}")
+        printl(f"BK pointer from table read: {pointer_addr} -> {hex(pointer)} actor table: {actor_table}")
         return pointer_addr, pointer
 
     async def process_hard_coded_rooms(self, ctx, current_scene):
@@ -1175,21 +1189,25 @@ class SpiritTracksClient(DSZeldaClient):
             self.save_ammo = await read_multiple(ctx, ammo_addresses)
             await write_multiple(ctx, ammo_addresses, [0, 0])
 
+        # Give tears of light when entering ToS
+        if self.current_stage == 0x13 and ctx.slot_data["randomize_tears"] != -1:
+            await self.set_tears(ctx)
+
         # Boss key rando stuff
         if current_scene in BOSS_KEY_DATA and ctx.slot_data.get("randomize_boss_keys", 0):
             data = BOSS_KEY_DATA[self.current_scene]
             # Set key watches
             if self.location_name_to_id[data["location"]] in ctx.checked_locations:
-                print(f"Has found location {data['location']}, deleting boss key")
+                printl(f"Has found location {data['location']}, deleting boss key")
                 await self.delete_boss_key(ctx)
             else:
                 if "search_data" in data:
                     pointer, offset = await self.find_table_object(ctx, *data["search_data"], return_index=True)
                     self.oct_bk_offset = offset
-                    print(f"Found bk in actor loop: {pointer}")
+                    printl(f"Found bk in actor loop: {pointer}")
                 elif "pointer" in data:
                     pointer = await data["pointer"].read(ctx)
-                    print(f"bk pointer: {data['pointer']} -> {hex(pointer)}")
+                    printl(f"bk pointer: {data['pointer']} -> {hex(pointer)}")
                 else:
                     pointer_addr, pointer = await self.get_tos_bk_pointer(ctx)
 
@@ -1197,13 +1215,13 @@ class SpiritTracksClient(DSZeldaClient):
                     offset = 12 if self.current_stage == 0x1c else 8
                     self.boss_key_read = Address.from_pointer(pointer+offset, size=4)
                     self.boss_key_y = data["y"]
-                    print(f"BK Read: {self.boss_key_read}")
-                print(f"Loaded boss key data: {pointer} y: {self.boss_key_y}")
+                    printl(f"BK Read: {self.boss_key_read}")
+                printl(f"Loaded boss key data: {pointer} y: {self.boss_key_y}")
 
             # Open door
             if self.item_count(ctx, f"Boss Key ({data['dungeon']})") or (self.item_count(ctx, f"Keyring ({data['dungeon']})") and ctx.slot_data["big_keyrings"]):
                 if current_scene & 0xff00 != 0x1300:  # or self.location_name_to_id[data["location"]] in ctx.checked_locations:
-                    print(f"Opening boss door for {hex(current_scene)}")
+                    printl(f"Opening boss door for {hex(current_scene)}")
                     if await data["door"].read(ctx) != 0x5:
                         await data["door"].overwrite(ctx, 3)
                 elif any([
@@ -1219,7 +1237,7 @@ class SpiritTracksClient(DSZeldaClient):
 
             snurglar_flags = Address.from_pointer(snurglar_pointer + 0xC0 - 0x2000000)
             self.snurglar_addr = snurglar_flags
-            print(f"Got snurglar flags @ {snurglar_flags}")
+            printl(f"Got snurglar flags @ {snurglar_flags}")
             for color in ["Gold", "Purple", "Orange"]:
                 self.watches[f"Snurglars {color} Key"] = snurglar_flags
 
@@ -1227,10 +1245,10 @@ class SpiritTracksClient(DSZeldaClient):
                 if (not any([self.item_count(ctx, i) for i in ITEM_GROUPS["Tracks: Mountain Temple Tracks"]])
                         or not self.item_count(ctx, "Cannon")
                         or all([LOCATIONS_DATA[i]['id'] in ctx.checked_locations for i in LOCATION_GROUPS["Snurglars"]])):
-                    print(f"Got Snurglar keys, opening mountain temple")
+                    printl(f"Got Snurglar keys, opening mountain temple")
                     await self.snurglar_addr.overwrite(ctx, 0x30)
                 else:
-                    print(f"Got Snurglar keys, adding to main read list")
+                    printl(f"Got Snurglar keys, adding to main read list")
                     self.main_read_list.append(snurglar_flags)
         else:
             self.snurglar_addr = None
@@ -1248,10 +1266,13 @@ class SpiritTracksClient(DSZeldaClient):
             pointer = await STAddr.mtt_b1_heatoise_trigger_pointer.read(ctx)
             await Address.from_pointer(pointer+1384, 4).overwrite(ctx, 70000)
 
+        if current_scene == 0x131e:  # Set tears for ToS 6 on 30F instead of 31F.
+            await self.set_tears(ctx)
+
 
     @staticmethod
     async def open_tos_boss_door(ctx, scene):
-        print(f"Opening ToS boss door")
+        printl(f"Opening ToS boss door")
         door_coords = BOSS_KEY_DATA[scene].get("door_coords", 0)
         if not door_coords:
             return
@@ -1260,11 +1281,11 @@ class SpiritTracksClient(DSZeldaClient):
         test_pointer = 0
         for i in range(32):
             test_pointer = (object_pointer_table & (0xFFFFFF << 32*i)) >> 32*i
-            # print(f"Test Pointer {hex(test_pointer)}")
+            # printl(f"Test Pointer {hex(test_pointer)}")
             if not test_pointer:
                 continue
             coords = await Address.from_pointer(test_pointer+4, size=12).read(ctx, silent=True)
-            # print(f"Coords: {hex(coords)}")
+            # printl(f"Coords: {hex(coords)}")
             if coords == BOSS_KEY_DATA[scene].get("door_coords", 0):
                 break
 
@@ -1301,10 +1322,10 @@ class SpiritTracksClient(DSZeldaClient):
             reverse_exit_id = self.entrances[reverse_exit].id
             pair = ctx.slot_data["er_pairings"].get(f"{reverse_exit_id}", self.entrances[reverse_exit].vanilla_reciprocal.id)
             if pair is None:
-                print(f"Boss Entrance not Randomized")
+                printl(f"Boss Entrance not Randomized")
                 self.boss_warp_entrance = reverse_exit
             self.boss_warp_entrance = self.entrance_id_to_entrance[pair]
-            print(f"Warp Stage: {stage}, current warp {self.boss_warp_entrance}")
+            printl(f"Warp Stage: {stage}, current warp {self.boss_warp_entrance}")
             return self.boss_warp_entrance
 
         return None
@@ -1316,14 +1337,14 @@ class SpiritTracksClient(DSZeldaClient):
             if (bk_read > self.boss_key_y + 10 and self.current_stage != 0x1c) or (self.current_stage == 0x1c and bk_read < self.boss_key_y):
                 loc = BOSS_KEY_DATA[self.current_scene]["location"]
                 await self._process_checked_locations(ctx, loc)
-                print(f"Found boss key location {loc} {bk_read} >< {self.boss_key_y + 10} {hex(self.current_stage)}")
+                printl(f"Found boss key location {loc} {bk_read} >< {self.boss_key_y + 10} {hex(self.current_stage)}")
                 await self.delete_boss_key(ctx)
                 self.boss_key_y, self.boss_key_read = None, None
 
 
     async def delete_boss_key(self, ctx):
         pointer = await STAddr.boss_key_deletion_pointer.read(ctx)
-        print(f"Deleting boss key @ {hex(pointer)}")
+        printl(f"Deleting boss key @ {hex(pointer)}")
         size, offset = BOSS_KEY_DATA[self.current_scene].get("deletion_data", (12, 0))
         if self.current_stage == 0x1b:
             if not self.oct_bk_offset:
@@ -1337,8 +1358,8 @@ class SpiritTracksClient(DSZeldaClient):
         if self.current_stage == 0x13:
             pointer, _ = await self.get_tos_bk_pointer(ctx)
         deletion_address = Address.from_pointer(pointer+offset, size)
-        print(f"Deleting boss key @ {deletion_address} size {size}")
-        # print(f"Deleting boss key @ {STAddr.boss_key_deletion}")
+        printl(f"Deleting boss key @ {deletion_address} size {size}")
+        # printl(f"Deleting boss key @ {STAddr.boss_key_deletion}")
         await deletion_address.overwrite(ctx, 0)
 
     async def update_stamps(self, ctx: "BizHawkClientContext"):
@@ -1381,7 +1402,7 @@ class SpiritTracksClient(DSZeldaClient):
         has_stamps = [s for s in stamps if s != 255]
         stamp_count = len(has_stamps)
 
-        print(f"Has {stamp_count} stamps: {stamps}")
+        printl(f"Has {stamp_count} stamps: {stamps}")
 
 
     async def refill_ammo(self, ctx, text=""):

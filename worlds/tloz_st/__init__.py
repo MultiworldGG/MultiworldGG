@@ -27,9 +27,9 @@ from .Subclasses import EntranceGroups
 try:  # Backwards compatibility yay
     from rule_builder.cached_world import CachedRuleBuilderWorld as WorldParent
     from .LogicRB import create_connections
-    raise ModuleNotFoundError
+    # raise ModuleNotFoundError
 except ModuleNotFoundError:
-    # print(f"Spirit Tracks is using legacy logic")
+    print(f"Spirit Tracks is using legacy logic")
     WorldParent = World
     from .Logic import create_connections
 
@@ -169,6 +169,8 @@ class SpiritTracksWorld(WorldParent):
         self.stamp_pack_order = []
         self.model_lookup = {}
         self.sections_included: int = 6
+        self.tears_included_big: int = 6
+        self.tears_included_small: int = 16
         self.required_rupees = 0
         self.track_items = []
 
@@ -197,8 +199,12 @@ class SpiritTracksWorld(WorldParent):
         else:
             self.required_dungeons = self.pick_required_dungeons()
             self.non_required_sections = [s for s in range(1, 7) if DUNGEON_TO_BOSS_ITEM_LOCATION[f"ToS {s}"] not in self.required_dungeons]
+            db_list = [(s, DUNGEON_TO_BOSS_ITEM_LOCATION[f"ToS {s}"], DUNGEON_TO_BOSS_ITEM_LOCATION[f"ToS {s}"] not in self.required_dungeons) for s in range(1, 7)]
+            # print(f"Req dungs {self.required_dungeons} => {self.non_required_sections} {db_list}")
             if self.options.exclude_sections == "remove":
                 self.sections_included = 6 - len(self.non_required_sections)
+                self.tears_included_small = min(self.sections_included, 5)*3+1
+                self.tears_included_big = min(self.sections_included, 5)+1
             # print(f"Required Dungeons: {self.required_dungeons}")
             self.restrict_non_local_items()
             self.options.compass_shard_count.value = min(self.options.compass_shard_count.value, self.options.compass_shard_total.value)
@@ -263,6 +269,7 @@ class SpiritTracksWorld(WorldParent):
         """Plando ToS Shuffle early so we can use the ordering in logic"""
         if not self.options.shuffle_tos_sections:
             if self.options.exclude_sections == "remove":
+                # print(self.non_required_sections)
                 sections = [s for s in range(1, 7) if s not in self.non_required_sections]
                 self.tower_section_lookup = {s: i for i, s in enumerate(sections, start=1)}
                 self.tower_section_lookup |= {s: 6 for s in self.non_required_sections}
@@ -315,9 +322,11 @@ class SpiritTracksWorld(WorldParent):
         if "shields" in options.shopsanity.value: required_rupees += 610
         if "postcards" in options.shopsanity.value: required_rupees += 500
         if "ammo" in options.shopsanity.value: required_rupees += 500
-        if options.randomize_cargo == "vanilla_abstract":
-            required_rupees += 500
-        # print(f"Required Rupees {required_rupees}")
+        if options.randomize_cargo == "vanilla":
+            required_rupees += 650
+        elif options.randomize_cargo:
+            required_rupees += 550
+        # print(f"Required Rupees (gen) {required_rupees}")
         return required_rupees
 
     def hide_ut_map_stuff(self):
@@ -361,7 +370,7 @@ class SpiritTracksWorld(WorldParent):
 
     def create_item_mappings(self):
         self.item_mapping_collect = {
-            i: ("Rupees", ITEMS[i].value) for i in ITEM_GROUPS["Rupee Items"]
+            i: [("Rupees", ITEMS[i].value), ("Treasure Rupees", ITEMS[i].value)] for i in ITEM_GROUPS["Rupee Items"]
         } | {
             r: ("Grass Rabbit", ITEMS[r].value) for r in grass_rabbits[1:]
         } | {
@@ -373,7 +382,7 @@ class SpiritTracksWorld(WorldParent):
         } | {
             r: ("Sand Rabbit", ITEMS[r].value) for r in sand_rabbits[1:]
         } | {
-            t: ("Treasure", price) for t, price in TREASURE_PRICES.items()
+            t: [("Treasure", price), ("Treasure Rupees", price)] for t, price in TREASURE_PRICES.items()
         } | {
             i: ("Stamp", ITEMS[i].value) for i in ITEM_GROUPS["Stamp Packs"]
         } | {
@@ -405,16 +414,17 @@ class SpiritTracksWorld(WorldParent):
             elif self.options.tos_dungeon_options == "all_sections":
                 required_dungeons += implemented_tos
 
-        self.options.dungeons_required.value = min(self.options.dungeons_required.value, len(required_dungeons))
-        # print(f"Required dungeons: {required_dungeons}")
+        self.options.dungeons_required.value = min(self.options.dungeons_required.value, len(set(required_dungeons + force_require)))
+        if (self.options.exclude_dungeons.value and 4 >= self.options.goal.value >= 0) or (self.options.exclude_sections.value and self.options.goal.value >= 5):
+            self.options.dungeons_required.value = max(1, self.options.dungeons_required.value)
         if not self.options.require_specific_dungeons:
             return list(set(required_dungeons + force_require))
 
         required_dungeons = [i for i in required_dungeons if i not in force_require]
         self.random.shuffle(required_dungeons)
         required_dungeons = force_require + required_dungeons
-        # print(f"Required dungeons: {required_dungeons}")
         required_dungeons = required_dungeons[:self.options.dungeons_required.value]
+        # print(f"Required dungeons: {required_dungeons}")
 
         if self.options.dungeon_hints:
             self.options.start_location_hints.value.update(required_dungeons)
@@ -600,7 +610,7 @@ class SpiritTracksWorld(WorldParent):
             [self.create_event(LOCATIONS_DATA[loc]["region_id"], "_stamp_stand") for loc in LOCATION_GROUPS["Stamp Stands"] if LOCATIONS_DATA[loc].get("dungeon") not in excluded_dungeons]
 
         # Create rupee farming events
-        rupee_farming_regions = ["mayscore whip chest", "mayscore leaves",
+        rupee_farming_regions = ["mayscore whip game", "mayscore leaves",
                                  "hyrule castle sword minigame", "pirate hideout minigame",
                                  "gtr"]
         [self.create_event(reg, "_rupee_farming_spot") for reg in rupee_farming_regions]
@@ -884,6 +894,7 @@ class SpiritTracksWorld(WorldParent):
             self.options.start_inventory_from_pool.value.update({self.random.choice(valid_starting_tracks): 1})
             if self.options.cannon_logic.value in [0, 1]:
                 self.options.start_inventory_from_pool.value.update({"Cannon": 1})
+                # print(self.options.start_inventory_from_pool.value)
 
         return add_items
 
@@ -1067,6 +1078,7 @@ class SpiritTracksWorld(WorldParent):
         for r, s in zip(realms, pack_sizes):
             item_count = math.ceil(10 / s) + self.options.rabbit_extra_items.value
             rabbit_items |= create_items_from_count_list(r, [s]*item_count)
+        # print(f"rabbit items: {rabbit_items}")
         return rabbit_items
 
     def choose_tear_items(self):
@@ -1150,6 +1162,7 @@ class SpiritTracksWorld(WorldParent):
 
         self.filter_confined_dungeon_items_from_pool(items)
         self.multiworld.itempool.extend(items)
+        # print(self.multiworld.itempool)
 
     def get_extra_filler_items(self, item_pool_dict):
         # Create a random list of useful or currency items to turn into filler to satisfy all removed locations
@@ -1389,8 +1402,10 @@ class SpiritTracksWorld(WorldParent):
 
         mapping = self.item_mapping_collect.get(item.name, None)
         if mapping is not None:
+            mapping = mapping if isinstance(mapping, list) else [mapping]
             # print(f"Mapping {mapping} {state.prog_items[self.player][mapping[0]]} for item {item.name}")
-            state.prog_items[self.player][mapping[0]] += mapping[1]
+            for m in mapping:
+                state.prog_items[self.player][m[0]] += m[1]
 
         return True
 
@@ -1401,7 +1416,9 @@ class SpiritTracksWorld(WorldParent):
 
         mapping = self.item_mapping_collect.get(item.name, None)
         if mapping is not None:
-            state.prog_items[self.player][mapping[0]] -= mapping[1]
+            mapping = mapping if isinstance(mapping, list) else [mapping]
+            for m in mapping:
+                state.prog_items[self.player][m[0]] -= m[1]
 
         return True
 

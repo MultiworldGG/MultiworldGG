@@ -517,9 +517,12 @@ class CommonContext:
         Send a `Connect` packet to log in to the server,
         additional keyword args can override any value in the connection packet
         """
+        server_hostname = urllib.parse.urlparse(self.server_address or "").hostname or ""
+        is_multiworld_host = server_hostname == "multiworld.gg" or server_hostname.endswith(".multiworld.gg") or server_hostname == "localhost"
+        connect_version = Utils.version_tuple if is_multiworld_host else Utils.core_version_tuple
         payload = {
             'cmd': 'Connect',
-            'password': self.password, 'name': self.auth, 'version': Utils.version_tuple,
+            'password': self.password, 'name': self.auth, 'version': connect_version,
             'tags': self.tags, 'items_handling': self.items_handling,
             'uuid': Utils.get_unique_identifier(), 'game': self.game, "slot_data": self.want_slot_data,
         }

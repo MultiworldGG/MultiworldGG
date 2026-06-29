@@ -1116,7 +1116,7 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
         "Atai Town - Guard residence mouse": PhoaLocationData(
             region="atai_town",
             address=7676227,
-            rule=lambda state: logic.has_bat(state),
+            rule=lambda state: logic.can_reasonably_kill_mice(state),
             flags=PhoaFlag.SMALLANIMALS,
             vanillaItem="Mystery Meat",
         ),
@@ -1409,7 +1409,10 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
         "Atai Region - Oasis Ouroboros shrine": PhoaLocationData(
             region="atai_region",
             address=7676264,
-            rule=lambda state: state.has_any({"Sonic Spear", "Life Saver"}, player),
+            rule=lambda state: logic.has_music_instrument(state)
+                               and logic.has_sonic_spear(state)
+                               and state.has("Song of Ouroboros", player)
+                               and state.has("Life Saver", player),
             flags=PhoaFlag.OUROBOROS,
             vanillaItem="Ouroboros Scroll",
         ),
@@ -1422,6 +1425,7 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
         "Atai Region - Sand Drifts Access glowing rock item": PhoaLocationData(
             region="sand_drifts_region(access_cave)",
             address=7676266,
+            rule=lambda state: logic.has_explosives(state),
             flags=PhoaFlag.MOONSTONE,
             vanillaItem="Moonstone",
         ),
@@ -1492,7 +1496,7 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
         "Sand Drifts - Shelter mouse": PhoaLocationData(
             region="sand_drifts",
             address=7676276,
-            rule=lambda state: logic.has_bat(state),
+            rule=lambda state: logic.can_reasonably_kill_mice(state),
             flags=PhoaFlag.SMALLANIMALS,
             vanillaItem="Mystery Meat",
         ),
@@ -1577,13 +1581,14 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
         "Forlorn Ruins - Bombable wall room pot": PhoaLocationData(
             region="forlorn_ruins(bombable_wall)",
             address=7676287,
+            rule=lambda state: logic.can_break_big_object_with_tools(state),
             flags=PhoaFlag.MOONSTONE,
             vanillaItem="Moonstone",
         ),
         "Forlorn Ruins - Bombable wall room mouse": PhoaLocationData(
             region="forlorn_ruins(bombable_wall)",
             address=7676288,
-            rule=lambda state: logic.has_bat(state),
+            rule=lambda state: logic.can_reasonably_kill_mice(state),
             flags=PhoaFlag.SMALLANIMALS,
             vanillaItem="Mystery Meat",
         ),
@@ -1752,7 +1757,7 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
         "Ouroboros Hideout - Storage mouse": PhoaLocationData(
             region="ouroboros_hideout(storage_back)",
             address=7676316,
-            rule=lambda state: logic.has_bat(state),
+            rule=lambda state: logic.can_reasonably_kill_mice(state),
             flags=PhoaFlag.SMALLANIMALS,
             vanillaItem="Mystery Meat",
         ),

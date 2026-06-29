@@ -16,6 +16,7 @@ It is a project forked from the 'Archipelago' project.
 Currently, the following games are supported:
 
 * 2048
+* Archipelaballs
 * Adventure
 * Against the Storm
 * A Hat in Time

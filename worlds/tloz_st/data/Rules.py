@@ -1,10 +1,11 @@
 import dataclasses
 
 from .Items import ITEMS
-from .Constants import ITEM_GROUPS, tear_lookup, big_tear_lookup
+from .Constants import ITEM_GROUPS, tear_lookup, big_tear_lookup, rabbit_realms
 from ..Options import *
 
 from rule_builder.rules import *
+from rule_builder.field_resolvers import FromWorldAttr, FromOption
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -22,6 +23,7 @@ has_sword_beam = has_sword & Has("Sword Beam Scroll")
 has_stamp_book = Has("Stamp Book")
 
 has_cannon = Has("Cannon")
+has_wagon = Has("Wagon")
 
 # Songs
 has_spirit_flute = Has("Spirit Flute")
@@ -32,11 +34,18 @@ has_sol = has_spirit_flute & Has("Song of Light")
 has_sod = has_spirit_flute & Has("Song of Discovery")
 
 # Keys
-def has_small_keys(dungeon, count):
-    return Has(f"Small Key ({dungeon})", count)
+def has_small_keys(dungeon, count, _ool=None):
+    _ool = _ool if _ool is not None else count
+    return Or(Has(f"Small Key ({dungeon})", count),
+            ool & Has(f"Small Key ({dungeon})", _ool),
+            Has(f"Keyring ({dungeon})"))
+
+def has_boss_key(dungeon):
+    return (Has(f"Boss Key ({dungeon})")
+            | Has(f"Keyring ({dungeon})", options=[OptionFilter(SpiritTracksBigKeyrings, 1)]))
 
 # Rabbits
-has_net = Has("Rabbit Net")
+has_net = Has("Rabbit Net") & has_cannon
 
 def has_rabbit_items(realm, count):
     return Has(f"{realm} Rabbit", count)
@@ -45,26 +54,38 @@ def caught_rabbits(realm, count):
     return Has(f"_caught_{realm.lower()}_rabbits", count)
 
 def has_total_rabbits(count):
-    return HasFromList("Forest Rabbit", "Snow Rabbit", count=count)
+    return HasFromList("Grass Rabbit", "Snow Rabbit", "Ocean Rabbit", "Mountain Rabbit", "Sand Rabbit", count=count)
 
 rabbit_count_lookup = {r: ITEMS[r].value for r in ITEM_GROUPS["Rabbits"]}
 
+has_all_rabbits = And(
+    Has("Grass Rabbit", 10),
+    Has("Snow Rabbit", 10),
+    Has("Ocean Rabbit", 10),
+    Has("Mountain Rabbit", 10),
+    Has("Sand Rabbit", 10)
+)
+has_all_rabbit_types = HasFromListUnique("Grass Rabbit", "Snow Rabbit", "Ocean Rabbit", "Mountain Rabbit", "Sand Rabbit", count=5)
+
 # Tracks
-has_compass = Has("Compass of Light")
+has_compass = Has("Compass of Light") | Has("Compass of Light Shard", count=FromOption(SpiritTracksCompassShardCount))
 
 def has_glyph(realm):
-    return Has(f"{realm} Glyph")
+    return HasGroup(f"Tracks: {realm} Glyph")
 
 def has_source(realm):
-    return Has(f"{realm} Source")
+    return HasGroup(f"Tracks: {realm} Source")
 
 def has_temple_tracks(temple):
-    return Has(f"{temple} Temple Tracks")
+    return HasGroup(f"Tracks: {temple} Temple Tracks")
+
+def has_tracks(tracks):
+    return HasGroup(f"Tracks: {tracks}")
 
 def has_portal(portal, forward):
     option = SpiritTracksRandomizePortals
     if forward:
-        return ([OptionFilter(option, 1), OptionFilter(option, 0)]
+        return ([OptionFilter(option, 1, operator="le")]
                 | Has(f"Portal Unlock: {portal}", options=[OptionFilter(option, 2)]))
     return ([OptionFilter(option, 1)]
         | Has(f"Portal Unlock: {portal}", options=[OptionFilter(option, 2)]))
@@ -75,40 +96,64 @@ no_tear_items = [OptionFilter(SpiritTracksRandomizeTears, SpiritTracksRandomizeT
 progressive_shuffle = [OptionFilter(SpiritTracksShuffleToSSections, 1), OptionFilter(SpiritTracksTearGroup, 2)]
 not_tower_shuffle = [OptionFilter(SpiritTracksShuffleToSSections, 0), OptionFilter(SpiritTracksTearGroup, 2)]
 
-def has_tears(section: int, _):
-    return Filtered(Or(
-        Has(f"Tear of Light (ToS {section})", 3, options=[OptionFilter(SpiritTracksTearGroup, 0), OptionFilter(SpiritTracksTearSize, 0)]),
-        Has(f"Big Tear of Light (ToS {section})", options=[OptionFilter(SpiritTracksTearGroup, 0), OptionFilter(SpiritTracksTearSize, 1)]),
-        HasShuffledSection(f"Tear of Light (Progressive)", section), # options=progressive_shuffle + [OptionFilter(SpiritTracksTearSize, 0)]),
-        Has(f"Tear of Light (Progressive)", 16, options=[OptionFilter(SpiritTracksTearGroup, 2), OptionFilter(SpiritTracksTearSize, 0)]),
-        Has(f"Tear of Light (Progressive)", section * 3, options=not_tower_shuffle + [OptionFilter(SpiritTracksTearSize, 0)]),
-        HasShuffledSection(f"Big Tear of Light (Progressive)", section), #, options=progressive_shuffle + [OptionFilter(SpiritTracksTearSize, 1)]),
-        Has(f"Big Tear of Light (Progressive)", section, options=not_tower_shuffle + [OptionFilter(SpiritTracksTearSize, 1)]),
-        Has(f"Tear of Light (All Sections)", 3, options=[OptionFilter(SpiritTracksTearGroup, 1), OptionFilter(SpiritTracksTearSize, 0)]),
-        Has(f"Big Tear of Light (All Sections)", options=[OptionFilter(SpiritTracksTearGroup, 1), OptionFilter(SpiritTracksTearSize, 1)]),
+
+
+def has_tears(section: int):
+    return Filtered(
+        Or(
+            Has(f"Tear of Light (ToS {section})", 3, options=[OptionFilter(SpiritTracksTearGroup, 0), OptionFilter(SpiritTracksTearSize, 0)]),
+            Has(f"Big Tear of Light (ToS {section})", options=[OptionFilter(SpiritTracksTearGroup, 0), OptionFilter(SpiritTracksTearSize, 1)]),
+            HasShuffledSection(f"Tear of Light (Progressive)", section), # options=progressive_shuffle + [OptionFilter(SpiritTracksTearSize, 0)]),
+            Has(f"Tear of Light (Progressive)", count=FromWorldAttr("tears_included_small"), options=[OptionFilter(SpiritTracksTearGroup, 2), OptionFilter(SpiritTracksTearSize, 0)]),
+            Has(f"Tear of Light (Progressive)", section * 3, options=not_tower_shuffle + [OptionFilter(SpiritTracksTearSize, 0)]),
+            HasShuffledSection(f"Big Tear of Light (Progressive)", section), #, options=progressive_shuffle + [OptionFilter(SpiritTracksTearSize, 1)]),
+            Has(f"Big Tear of Light (Progressive)", section, options=not_tower_shuffle + [OptionFilter(SpiritTracksTearSize, 1)]),
+            Has(f"Tear of Light (All Sections)", 3, options=[OptionFilter(SpiritTracksTearGroup, 1), OptionFilter(SpiritTracksTearSize, 0)]),
+            Has(f"Big Tear of Light (All Sections)", options=[OptionFilter(SpiritTracksTearGroup, 1), OptionFilter(SpiritTracksTearSize, 1)]),
     ), options=no_tear_items)
 
 has_bow_of_light = Or(
     Has("Bow of Light") & has_bow,
     Filtered(
-        Or(Has(f"Tear of Light (Progressive)", 16),
-           Has(f"Big Tear of Light (Progressive)", 6),
+        Or(Has(f"Tear of Light (Progressive)", count=FromWorldAttr("tears_included_small")),
+           Has(f"Big Tear of Light (Progressive)", count=FromWorldAttr("tears_included_big")),
             Has(f"Tear of Light (All Sections)", 4),
             Has(f"Big Tear of Light (All Sections)", 2)),
         options=no_tear_items))
 
-def can_possess_phantom(floor, lookup):
-    return has_bow_of_light | Has("Sword (Progressive)", 2) | (has_sword & has_tears(floor, lookup))
+def can_possess_phantom(floor):
+    return has_bow_of_light | Has("Sword (Progressive)", 2) | (has_sword & has_tears(floor))
+
+# Passengers, cargo
+def has_passenger(passenger, event):
+    return Has(f"Passenger: {passenger}") | Has(event)
+
+def has_cargo(cargo, event):
+    return has_wagon & (
+            Has(f"Cargo: {cargo}") | Has(event)
+    )
 
 vanilla_tears = Filtered(has_sword, options=[OptionFilter(SpiritTracksRandomizeTears, -1)])
+not_vanilla_tears = [OptionFilter(SpiritTracksRandomizeTears, -1, operator="ne")]
+vanilla_boss_keys = [OptionFilter(SpiritTracksRandomizeBossKeys, 0)]
+randomize_boss_keys = [OptionFilter(SpiritTracksRandomizeBossKeys, 0, "gt")]
+no_passengers = [OptionFilter(SpiritTracksRandomizePassengers, 0)]
+randomize_passengers = [OptionFilter(SpiritTracksRandomizePassengers, 2, operator="ge")]
+no_cargo = [OptionFilter(SpiritTracksRandomizeCargo, 0)]
+not_vanilla_passengers = [OptionFilter(SpiritTracksRandomizePassengers, 1, operator="ne")]
+vanilla_passengers = [OptionFilter(SpiritTracksRandomizePassengers, 1)]
 
 # Isolated options
-hard_logic_filter = [OptionFilter(SpiritTracksLogic, SpiritTracksLogic.option_hard), OptionFilter(SpiritTracksLogic, SpiritTracksLogic.option_glitched)]
-hard_logic = Has("_UT_Glitched_Logic") | hard_logic_filter
+hard_logic_filter = [OptionFilter(SpiritTracksLogic, 1, operator="ge")]
+ool = Has("_UT_Glitched_Logic")
+hard_logic = ool | hard_logic_filter
+glitched_logic = ool | [OptionFilter(SpiritTracksLogic, SpiritTracksLogic.option_glitched)]
+
 
 # Composites
-has_train = has_cannon & has_glyph("Forest")
-has_damage = has_bombs | has_sword | has_bow | has_whip
+has_train = has_glyph("Forest") & (has_cannon | [OptionFilter(SpiritTracksCannonLogic, 1, "gt")] | (ool & [OptionFilter(SpiritTracksCannonLogic, 0, "gt")]))
+has_good_damage = has_bombs | has_sword | has_bow
+has_damage = has_good_damage | has_whip
 can_kill_bat = has_damage | has_boomerang
 can_kill_bat_pit = can_kill_bat | has_whirlwind
 can_kill_bubble = has_bombs | has_bow | has_whip | (has_sword & (has_boomerang | has_whirlwind))
@@ -121,6 +166,10 @@ has_cuccos = has_sob | has_whirlwind
 ct_cuccos = has_sob | (has_whirlwind & hard_logic)
 can_kill_freezards = (has_shield | has_bow_of_light | hard_logic) & has_damage
 can_kill_freezards_torch = (has_boomerang | has_shield | has_bow_of_light | hard_logic) & has_damage
+hard_birds = has_whip & (has_sob | hard_logic)
+can_fight_malladus = has_sword & has_bow_of_light
+
+soft_cannon = has_cannon | ool | [OptionFilter(SpiritTracksCannonLogic, 3)]
 
 can_enter_tos = (
         [OptionFilter(SpiritTracksToSBase, 0)] |
@@ -137,22 +186,58 @@ def can_enter_tos_section(section):
               Has("Progressive ToS Section", section, options=[OptionFilter(SpiritTracksToSSectionUnlocks, 2), OptionFilter(SpiritTracksToSBase, 1)]),
               Has("Progressive ToS Section", section-1, options=[OptionFilter(SpiritTracksToSSectionUnlocks, 2), OptionFilter(SpiritTracksToSBase, 0)]))
 
+tos_15f_glitched = Or(
+    And(
+        has_range | has_sword_beam,
+        has_small_keys("ToS 4", 3, 2)
+    ),
+    And(
+        glitched_logic & has_small_keys("ToS 4", 3, 1),
+        Or(
+            has_range, has_sword_beam,
+            has_bombs & has_whirlwind
+        )
+    )
+)
+
+mtt_center = Or(
+    And(  # 2 Keys, normal
+        has_small_keys("Mountain Temple", 2),
+        Or(
+            has_boomerang, has_bombs,
+            And(  # Harder options
+                hard_logic,
+                has_bow | has_sword_beam | has_whip
+            )
+        )
+    ),
+    And(  # Skip Keys
+        glitched_logic,
+        Or(
+            has_bombs,  # oob
+            And(
+                has_small_keys("Mountain Temple", 2, 1),  # 1 key boomerang clip
+                has_boomerang
+            )
+        )
+    )
+)
+
 # Rupees
 def has_rupees(count):
     wild_rupees = Has("_rupee_farming_spot", options=[OptionFilter(SpiritTracksExcessTreasures, 2), OptionFilter(SpiritTracksRupeeFarming, 1)])
     treasure_farming = HasAll("_rupee_farming_spot", "_can_sell_treasure", options=[OptionFilter(SpiritTracksExcessTreasures, 1), OptionFilter(SpiritTracksRupeeFarming, 1)])
 
-    return Or(Has("_UT_Glitched_Logic"),
+    return Or(ool,
               wild_rupees,
               treasure_farming,
-              Has("Rupees", count),
-              Has("Treasure", count + 2500) & Has("_can_sell_treasure"))
+              Has("Rupees", int(count*0.7)),
+              Has("Treasure Rupees", int(count*0.7) + 2500) & Has("_can_sell_treasure"))
 
-def has_dungeon_rewards(count: int):
-    option = SpiritTracksDarkRealmUnlock
-    return ([
-                OptionFilter(option, option.option_dungeons, operator="ne")]
-            | Has("_dungeon_reward", count, options=[OptionFilter(option, option.option_dungeons)]))
+
+has_dungeon_rewards = ([
+            OptionFilter(SpiritTracksDarkRealmUnlock, SpiritTracksDarkRealmUnlock.option_dungeons, operator="ne")]
+            | Has("_dungeon_reward", count=FromOption(SpiritTracksDungeonCount), options=[OptionFilter(SpiritTracksDarkRealmUnlock, SpiritTracksDarkRealmUnlock.option_dungeons)]))
 
 
 def st_has_dungeon_rewards(state, player):
@@ -178,3 +263,14 @@ class HasShuffledSection(Rule["SpiritTracksWorld"], game="Spirit Tracks"):
 
     def __str__(self):
         return "Has Progressive tears for shuffle level"
+
+class DebugRule(Rule["SpiritTracksWorld"], game="Spirit Tracks"):
+    @override
+    def _instantiate(self, world: "SpiritTracksWorld") -> Rule.Resolved:
+        return self.Resolved(player=world.player)
+
+    class Resolved(Rule.Resolved):
+        @override
+        def _evaluate(self, state: CollectionState) -> bool:
+            # print([(r, state.count(f"{r} Rabbit", self.player)) for r in rabbit_realms])
+            return all([state.has(f"{r} Rabbit", self.player, 10) for r in rabbit_realms])

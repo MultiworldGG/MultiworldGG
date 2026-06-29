@@ -78,7 +78,9 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["w castle town tracks", "snow bridge", True, lambda state: st_has_misc_tracks(state, player, "W Castle Town") and st_has_misc_tracks(state, player, "Snow Realm Bridge") and st_soft_cannon(state, player)],
         ["n castle town tracks", "snow bridge", True, lambda state: st_has_misc_tracks(state, player, "N Castle Town") and st_has_misc_tracks(state, player, "Snow Realm Bridge") and st_soft_cannon(state, player)],
         ["n castle town tracks", "snow realm source", True, lambda state: st_has_misc_tracks(state, player, "N Castle Town") and st_has_source(state, player, "Snow") and st_soft_cannon(state, player)],
-        ["wtt", "snow bridge", True, lambda state: st_has_temple_tracks(state, player, "Wooded") and st_has_misc_tracks(state, player,"Snow Realm Bridge") and st_soft_cannon(state, player)],
+        ["wtt", "snow bridge", True, lambda state: st_has_temple_tracks(state, player, "Wooded")
+                                                   and st_has_misc_tracks(state, player,"Snow Realm Bridge")
+                                                   and st_soft_cannon(state, player)],
         ["snow bridge", "snow realm", True, lambda state: (
             st_has_glyph(state, player, "Snow") and
             st_has_misc_tracks(state, player,"Snow Realm Bridge"))],
@@ -93,13 +95,14 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["forest realm", "castle town", True, None],
         ["castle town", "castle town goron", False, lambda state: st_has_passenger(state, player, "City Goron", "_goron")],
         ["castle town", "pick up alfonzo", False, lambda state: st_has_glyph(state, player, "Snow")],
-        ["castle town", "castle town teacher", False, lambda state: st_has_glyph(state, player, "Snow") or st_has_glyph(state, player, "Ocean")],
+        ["castle town", "castle town teacher", False, lambda state: st_has_glyph(state, player, "Snow") or st_has_glyph(state, player, "Ocean") or st_has_glyph(state, player, "Fire")],
         ["pick up alfonzo", "alfonzo event", False, None],
         ["pick up alfonzo", "castle town mona", False, None],
-        ["castle town wall", "castle town stamp station", False, lambda state: st_has_stamp_book(state, player)],
-        ["castle town", "castle town wall", False, lambda state: st_has_bombs(state, player)],
-        ["castle town wall", "castle town cuccos", False, lambda state: st_castle_town_cuccos(state, player)],
         ["castle town", "castle town fish", False, lambda state: st_has_cargo(state, player, "Fish", "_buy_fish")],
+
+        ["castle town", "castle town wall", False, lambda state: st_has_bombs(state, player)],
+        ["castle town wall", "castle town stamp station", False, lambda state: st_has_stamp_book(state, player)],
+        ["castle town wall", "castle town cuccos", False, lambda state: st_castle_town_cuccos(state, player)],
 
         ["castle town", "teao rupees", False, lambda state: st_has_rupees(state, player, 150) or state.has("_UT_Glitched_Logic", player)],
         ["teao rupees", "teao 1", False, lambda state:
@@ -279,11 +282,13 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["wt 1f enemy chest", "wt 2f enemy chest", False, None],
         ["wt 1f enemy chest", "wt 2f poison chest", False, lambda state: st_has_whirlwind(state, player) or st_option_hard_logic(state, player)],
         ["wt", "wt 1f switch chest", False, lambda state: st_has_whirlwind(state, player) or st_option_hard_logic(state, player)],
+
         ["wt", "wt 2f left", False, lambda state: st_can_kill_bubble(state, player) and st_has_small_keys(state, player, "Wooded Temple", 1)],
         ["wt 2f left", "wt 3f chestnut chest", False, lambda state: st_has_range(state, player) or st_has_beam_sword(state, player) or st_has_whirlwind(state, player)],
         ["wt 2f left", "wt 3f", False, lambda state: st_has_small_keys(state, player, "Wooded Temple", 2)],
         ["wt 3f", "wt 3f se chest", False, lambda state: st_has_whirlwind(state, player) or st_option_hard_logic(state, player)],
-        ["wt 3f", "wt 3f bk", False, lambda state: st_has_whirlwind(state, player) or options.randomize_boss_keys == "vanilla"],
+
+        ["wt 3f", "wt 3f bk", False, lambda state: st_has_whirlwind(state, player)],
         ["wt 3f bk", "wt 4f", False, lambda state: options.randomize_boss_keys == "vanilla"],
         ["wt 3f", "wt 4f", False, lambda state: st_has_boss_key(state, player, "Wooded Temple")],
         ["wt 4f", "wt stagnox", False, lambda state: st_has_sword(state, player) and st_has_whirlwind(state, player)],
@@ -320,7 +325,7 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["rabbit haven", "rabbit haven 50 rabbits", False, lambda state: st_all_types_rabbits(state, player, 10)],
         ["rabbit haven", "rabbit haven mona", False, lambda state: st_has_passenger(state, player, "Mona", "_mona")],
 
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
         # # ============ Snow Realm ===============
 
         ["snow realm fr", "snow realm", True, lambda state: st_soft_cannon(state, player)],
@@ -356,6 +361,7 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["anouki village", "anouki village song statue", False, lambda state: st_has_spirit_flute(state, player)],
         ["anouki village", "anouki village bomb cave chest", False, lambda state: st_has_bombs(state, player)],
         ["anouki village", "anouki village lake chest", False, lambda state: st_has_boomerang(state, player)],
+
         ["anouki village", "av noko", False, lambda state: st_has_temple_tracks(state, player, "Blizzard")],
         ["anouki village", "av fence", False, lambda state:
             (   st_has_passenger(state, player, "Kenzo", "_kenzo_2") or
@@ -513,8 +519,12 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["oct", "oct stamp station", False, lambda state: st_has_stamp_book(state, player) and st_has_whip(state, player) and st_has_bombs(state, player) and st_has_boomerang(state, player)],
         ["oct whip chest", "oct 3f whip", False, lambda state: st_has_whip(state, player)],
         ["oct 3f whip", "oct 6f chest", False, lambda state: st_has_small_keys(state, player, "Marine Temple", 1)],
-        ["oct 6f chest", "oct bk", False, lambda state: st_has_small_keys(state, player, "Marine Temple", 2) or
-         all([st_option_glitched_logic(state, player), st_has_whirlwind(state, player), st_has_bombs(state, player)])],
+        ["oct 6f chest", "oct bk", False, lambda state:
+            st_has_small_keys(state, player, "Marine Temple", 2) or
+            all([
+                st_option_glitched_logic(state, player),
+                st_has_whirlwind(state, player),
+                st_has_bombs(state, player)])],
         ["oct 6f chest", "oct bk loc", False, lambda state: st_has_whirlwind(state, player) and options.randomize_boss_keys.value > 0 and st_option_hard_logic(state, player)],
         ["oct bk", "oct bk loc", False, None],
         ["oct bk", "oct phytops", False, lambda state: options.randomize_boss_keys == "vanilla"],

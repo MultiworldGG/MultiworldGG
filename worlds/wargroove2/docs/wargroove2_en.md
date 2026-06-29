@@ -21,7 +21,7 @@ This should install the mod and campaign for you.
 ## Starting a Multiworld game
 
 1. Start the Wargroove 2 Client and connect to the server. Enter your username from your 
-[options file](/games/Wargroove/player-options).
+[options file](/games/Wargroove%202/player-options).
 2. Start Wargroove 2 and play the Archipelago 2 campaign by going to `Story` &rarr; `Custom` &rarr; `Archipelago 2`.
 
 ## Linux Only: Select AppData equivalent when starting the client
@@ -65,7 +65,7 @@ steps once more.
 
 ### Wargroove 2 crashes or there is a lua error
 Wargroove 2 is finicky, but there could be several causes for this. If it happens often or can be reproduced, 
-please submit a bug report in the bug-reports channel on the [discord](https://discord.gg/archipelago).
+please submit a bug report in the bug-reports channel on the [discord](https://archipelago.gg/discord).
 Wargroove 2 may report an error when retrying a level. This is currently a bug in the game and not the mod.
 
 ### Wargroove 2 crashes when trying to run the Archipelago 2 campaign

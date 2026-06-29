@@ -1978,7 +1978,10 @@ def patch_rom(world, rom):
         item['object_id'] = AP_PROGRESSION_OBJECT if item_id == AP_PROGRESSION else AP_JUNK_OBJECT
         item['graphic_id'] = AP_PROGRESSION_MODEL_GRAPHIC if item_id == AP_PROGRESSION else AP_JUNK_MODEL_GRAPHIC
         item['text_id'] = AP_PROGRESSION_TEXT if item_id == AP_PROGRESSION else AP_JUNK_TEXT
-        item['chest_type'] = GILDED_CHEST if item_id == AP_PROGRESSION else FILLER_CHEST
+        if item_id == AP_PROGRESSION:
+            item['chest_type'] = GILDED_CHEST
+        else:
+            item['chest_type'] = FILLER_CHEST if 'ap_filler' in world.chest_textures_specific else BROWN_CHEST
         write_rom_item(rom, item_id, item)
 
     # Update chest type appearance
@@ -1991,7 +1994,15 @@ def patch_rom(world, rom):
     if world.correct_chest_appearances == 'both':
         symbol = rom.sym('CHEST_SIZE_TEXTURE')
         rom.write_int32(symbol, 0x00000001)
-        # Move Ganon's Castle's Zelda's Lullaby Chest back so is reachable if large
+
+    rom.write_byte(rom.sym('CHEST_GILDED_TEXTURE'), 'major' in world.chest_textures_specific)
+    rom.write_byte(rom.sym('CHEST_GOLD_TEXTURE'), 'bosskeys' in world.chest_textures_specific)
+    rom.write_byte(rom.sym('CHEST_SILVER_TEXTURE'), 'keys' in world.chest_textures_specific)
+    rom.write_byte(rom.sym('CHEST_SKULL_TEXTURE'), 'tokens' in world.chest_textures_specific)
+    rom.write_byte(rom.sym('CHEST_HEART_TEXTURE'), 'hearts' in world.chest_textures_specific)
+    rom.write_byte(rom.sym('SOA_UNLOCKS_CHEST_TEXTURE'), world.soa_unlocks_chest_texture)
+
+    # Move Ganon's Castle's Zelda's Lullaby Chest back so is reachable if large
     if world.correct_chest_appearances == 'classic' or world.correct_chest_appearances == 'both':
         if not world.dungeon_mq['Ganons Castle']:
             chest_name = 'Ganons Castle Light Trial Lullaby Chest'

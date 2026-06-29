@@ -173,8 +173,6 @@ item_table = {
     'Deku Seeds (30)':                                 ('Item',     None,  0x69, {'junk': 5, 'market_price': 30}),
     'Bombchus (5)':                                    ('Item',     True,  0x6A, {'market_price': 60, 'market_price_non_chu_drops_only': True}),
     'Bombchus (20)':                                   ('Item',     True,  0x6B, {'market_price': 180, 'market_price_non_chu_drops_only': True}),
-    'Rupee (Treasure Chest Game)':                     ('Item',     None,  0x72, None),
-    'Piece of Heart (Treasure Chest Game)':            ('Item',     True,  0x76, {'alias': ('Piece of Heart', 1), 'progressive': float('Inf')}),
     'Ice Trap':                                        ('Item',     None,  0x7C, {'junk': 0}),
     'Progressive Hookshot':                            ('Item',     True,  0x80, {'progressive': 2}),
     'Progressive Strength Upgrade':                    ('Item',     True,  0x81, {'progressive': 3}),

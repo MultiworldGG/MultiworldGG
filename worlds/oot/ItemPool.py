@@ -464,6 +464,12 @@ def get_pool_core(world):
                     pending_junk_pool.append(f"Boss Key ({dungeon})")
         if ganon_bk_setting in ['any_dungeon', 'overworld', 'keysanity', 'regional']:
             pending_junk_pool.append('Boss Key (Ganons Castle)')
+        if world.shuffle_silver_rupees in ['any_dungeon', 'overworld', 'anywhere', 'regional']:
+            for puzzle in world.silver_rupee_puzzles():
+                if puzzle in world.silver_rupee_pouches:
+                    pending_junk_pool.append(f"Silver Rupee Pouch ({puzzle})")
+                else:
+                    pending_junk_pool.append(f"Silver Rupee ({puzzle})")
         if world.shuffle_song_items == 'any':
             pending_junk_pool.extend(song_list)
         if world.adult_trade_shuffle:
@@ -820,9 +826,15 @@ def get_pool_core(world):
             elif location.type == 'SilverRupee':
                 shuffle_setting = world.shuffle_silver_rupees
                 dungeon_collection = dungeon.silver_rupees
+                puzzle = location.vanilla_item[:-1].split('(')[1]
                 if shuffle_setting == 'vanilla':
                     shuffle_item = False
                     location.show_in_spoiler = False
+                elif shuffle_setting != 'remove' and puzzle in world.silver_rupee_pouches:
+                    item = f"Silver Rupee Pouch ({puzzle})"
+                    if vanilla_items_processed[location.vanilla_item]:
+                        item = get_junk_item(world.random)[0]
+                        shuffle_item = True
             # Any other item in a dungeon.
             elif location.type in ["Chest", "NPC", "Song", "Collectable", "Cutscene", "BossHeart"]:
                 shuffle_item = True

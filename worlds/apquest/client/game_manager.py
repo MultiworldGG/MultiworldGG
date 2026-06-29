@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+
 # isort: off
 from kvui import GameManager, MDNavigationItemBase
+try:
+    from Utils import instance_name as apname
+except ImportError:
+    apname = "AP"
 
 # isort: on
 from typing import TYPE_CHECKING, Any
@@ -32,7 +37,7 @@ if TYPE_CHECKING:
 
 
 class APQuestManager(GameManager):
-    base_title = "APQuest for AP version"
+    base_title = f"APQuest for {apname} version"
     ctx: APQuestContext
 
     lower_game_grid: GridLayout

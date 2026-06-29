@@ -21,3 +21,5 @@ There are two goals which can be chosen:
 All Bonus Coins, DK Coins, and Banana Birds (if on a `Banana Bird Hunt` goal) are randomized. Additionally, level clears award a location check.
 The Patch and two Skis for upgrading the boat are included. Bear Coins are provided if additional items are needed for the item pool.
 Four of the Five Krematoa Cogs are randomized, but the final one is always in its vanilla location at the Flag of Rocket Rush in Krematoa
+Swanky's Sideshow can be valid locations (beat each 3 per world)
+Bear Brothers' trade sequence can be shuffled

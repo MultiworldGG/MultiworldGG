@@ -647,6 +647,34 @@ class ShuffleChildTrade(OptionSet):
     default = set()
 
 
+adult_trade_items = frozenset({
+    "Pocket Egg",
+    "Pocket Cucco",
+    "Cojiro",
+    "Odd Mushroom",
+    "Odd Potion",
+    "Poachers Saw",
+    "Broken Sword",
+    "Prescription",
+    "Eyeball Frog",
+    "Eyedrops",
+    "Claim Check",
+})
+
+class AdultTradeStart(OptionSet):
+    """Select the adult trade sequence items to shuffle.
+    If Shuffle All Selected Adult Trade Items is off, one selected item starts the adult trade sequence.
+    If Shuffle All Selected Adult Trade Items is on, every selected item is shuffled."""
+    display_name = "Shuffle Adult Trade Sequence Items"
+    valid_keys = adult_trade_items
+    default = adult_trade_items
+
+
+class AdultTradeShuffleOption(Toggle):
+    """Shuffle every selected adult trade sequence item into the item pool."""
+    display_name = "Shuffle All Selected Adult Trade Items"
+
+
 class ShuffleCard(Toggle):
     """Shuffle the Gerudo Membership Card into the item pool."""
     display_name = "Shuffle Gerudo Card"
@@ -807,6 +835,8 @@ shuffle_options: typing.Dict[str, type(Option)] = {
     "tokensanity": TokenShuffle,
     "shuffle_scrubs": ScrubShuffle,
     "shuffle_child_trade": ShuffleChildTrade,
+    "adult_trade_shuffle": AdultTradeShuffleOption,
+    "adult_trade_start": AdultTradeStart,
     "shuffle_freestanding_items": ShuffleFreestanding,
     "shuffle_pots": ShufflePots,
     "shuffle_empty_pots": ShuffleEmptyPots,
@@ -1070,6 +1100,52 @@ class KeyRingList(OptionSet):
     }
 
 
+class SilverRupeePouchesChoice(Choice):
+    """Silver rupee pouches grant all silver rupees for a selected puzzle at once.
+    Choice: Use the option "silver_rupee_pouches" to choose which puzzles use pouches.
+    All: All active silver rupee puzzles use pouches."""
+    display_name = "Silver Rupee Pouches Mode"
+    option_off = 0
+    option_choice = 1
+    option_all = 2
+    option_random_puzzles = 3
+
+    @classmethod
+    def from_any(cls, data) -> "SilverRupeePouchesChoice":
+        if isinstance(data, str) and data.strip().lower() == "random":
+            return cls.from_text("random_puzzles")
+        return super().from_any(data)
+
+
+class SilverRupeePouches(OptionSet):
+    """With silver rupee pouches as Choice: select puzzles that use pouches rather than individual silver rupees."""
+    display_name = "Silver Rupee Pouches"
+    valid_keys = {
+        "Dodongos Cavern Staircase",
+        "Ice Cavern Spinning Scythe",
+        "Ice Cavern Push Block",
+        "Bottom of the Well Basement",
+        "Shadow Temple Scythe Shortcut",
+        "Shadow Temple Invisible Blades",
+        "Shadow Temple Huge Pit",
+        "Shadow Temple Invisible Spikes",
+        "Gerudo Training Ground Slopes",
+        "Gerudo Training Ground Lava",
+        "Gerudo Training Ground Water",
+        "Spirit Temple Child Early Torches",
+        "Spirit Temple Adult Boulders",
+        "Spirit Temple Lobby and Lower Adult",
+        "Spirit Temple Sun Block",
+        "Spirit Temple Adult Climb",
+        "Ganons Castle Spirit Trial",
+        "Ganons Castle Light Trial",
+        "Ganons Castle Fire Trial",
+        "Ganons Castle Shadow Trial",
+        "Ganons Castle Water Trial",
+        "Ganons Castle Forest Trial",
+    }
+
+
 dungeon_items_options: typing.Dict[str, type(Option)] = {
     "shuffle_dungeon_rewards": ShuffleDungeonRewards,
     "shuffle_map": ShuffleMap,
@@ -1086,7 +1162,9 @@ dungeon_items_options: typing.Dict[str, type(Option)] = {
     "ganon_bosskey_hearts": GanonBKHearts,
     "key_rings": KeyRings,
     "key_rings_list": KeyRingList,
-    "keyring_give_bk": KeyRingsGiveBossKeys
+    "keyring_give_bk": KeyRingsGiveBossKeys,
+    "silver_rupee_pouches_choice": SilverRupeePouchesChoice,
+    "silver_rupee_pouches": SilverRupeePouches,
 }
 
 
@@ -1232,6 +1310,24 @@ class CorrectChestAppearance(Choice):
     option_textures = 1
     option_both = 2
     option_classic = 3
+
+
+class ChestTexturesSpecific(OptionSet):
+    """Select which contents use special textures when chest appearance is set to Textures or Both.
+    major: Major items and Archipelago progression items use gilded chests.
+    bosskeys: Boss keys use boss-key chests.
+    keys: Small keys use key chests.
+    tokens: Gold Skulltula tokens use spider-web chests.
+    hearts: Heart items use heart chests.
+    ap_filler: Archipelago filler items use tinted filler chests."""
+    display_name = "Chest Textures"
+    valid_keys = {"major", "bosskeys", "keys", "tokens", "hearts", "ap_filler"}
+    default = {"major", "bosskeys", "keys", "tokens", "hearts", "ap_filler"}
+
+
+class StoneOfAgonyUnlocksChestTexture(Toggle):
+    """Textures for chests will only be correct when Stone of Agony is found."""
+    display_name = "Stone of Agony Unlocks Chest Textures"
 
 
 class MinorInMajor(OptionSet):
@@ -1449,44 +1545,6 @@ class StartingHearts(Range):
     default = 3
 
 
-misc_options: typing.Dict[str, type(Option)] = {
-    "correct_chest_appearances": CorrectChestAppearance,
-    "minor_items_as_major_chest": MinorInMajor,
-    "invisible_chests": InvisibleChests,
-    "correct_potcrate_appearances": CorrectPotCrateAppearance,
-    "potcrate_textures_specific": PotCrateTexturesSpecific,
-    "soa_unlocks_potcrate_texture": StoneOfAgonyUnlocksPotCrateTexture,
-    "key_appearance_match_dungeon": KeyAppearanceMatchesDungeon,
-    "ruto_already_f1_jabu": RutoAlreadyAtF1,
-    "auto_equip_masks": MaintainMaskEquips,
-    "hints": Hints,
-    "misc_hints": MiscHints,
-    "hint_dist": HintDistribution,
-    "text_shuffle": TextShuffle,
-    "damage_multiplier": DamageMultiplier,
-    "deadly_bonks": DeadlyBonks,
-    "no_collectible_hearts": HeroMode,
-    "starting_tod": StartingToD,
-    "blue_fire_arrows": BlueFireArrows,
-    "fix_broken_drops": FixBrokenDrops,
-    "start_with_consumables": ConsumableStart,
-    "start_with_rupees": RupeeStart,
-    "starting_hearts": StartingHearts,
-}
-
-class ItemPoolValue(Choice): 
-    """Changes the number of items available in the game.
-    Plentiful: One extra copy of every major item.
-    Balanced: Original item pool.
-    Scarce: Extra copies of major items are removed. Heart containers are removed.
-    Minimal: All major item upgrades not used for locations are removed. All health is removed."""
-    display_name = "Item Pool"
-    option_plentiful = 0
-    option_balanced = 1
-    option_scarce = 2
-    option_minimal = 3
-    default = 1
-
 
 class IceTraps(Choice): 
     """Adds ice traps to the item pool.
@@ -1531,32 +1589,49 @@ class IceTrapVisual(Choice):
     option_anything = 2
 
 
-adult_trade_items = frozenset({
-    "Pocket Egg",
-    "Pocket Cucco",
-    "Cojiro",
-    "Odd Mushroom",
-    "Odd Potion",
-    "Poachers Saw",
-    "Broken Sword",
-    "Prescription",
-    "Eyeball Frog",
-    "Eyedrops",
-    "Claim Check",
-})
+misc_options: typing.Dict[str, type(Option)] = {
+    "correct_chest_appearances": CorrectChestAppearance,
+    "chest_textures_specific": ChestTexturesSpecific,
+    "soa_unlocks_chest_texture": StoneOfAgonyUnlocksChestTexture,
+    "minor_items_as_major_chest": MinorInMajor,
+    "invisible_chests": InvisibleChests,
+    "correct_potcrate_appearances": CorrectPotCrateAppearance,
+    "potcrate_textures_specific": PotCrateTexturesSpecific,
+    "soa_unlocks_potcrate_texture": StoneOfAgonyUnlocksPotCrateTexture,
+    "key_appearance_match_dungeon": KeyAppearanceMatchesDungeon,
+    "junk_ice_traps": IceTraps,
+    "custom_ice_trap_percent": CustomIceTrapPercent,
+    "custom_ice_trap_count": CustomIceTrapCount,
+    "ice_trap_appearance": IceTrapVisual,
+    "ruto_already_f1_jabu": RutoAlreadyAtF1,
+    "auto_equip_masks": MaintainMaskEquips,
+    "hints": Hints,
+    "misc_hints": MiscHints,
+    "hint_dist": HintDistribution,
+    "text_shuffle": TextShuffle,
+    "damage_multiplier": DamageMultiplier,
+    "deadly_bonks": DeadlyBonks,
+    "no_collectible_hearts": HeroMode,
+    "starting_tod": StartingToD,
+    "blue_fire_arrows": BlueFireArrows,
+    "fix_broken_drops": FixBrokenDrops,
+    "start_with_consumables": ConsumableStart,
+    "start_with_rupees": RupeeStart,
+    "starting_hearts": StartingHearts,
+}
 
-class AdultTradeStart(OptionSet):
-    """Select the adult trade sequence items to shuffle.
-    If Shuffle All Selected Adult Trade Items is off, one selected item starts the adult trade sequence.
-    If Shuffle All Selected Adult Trade Items is on, every selected item is shuffled."""
-    display_name = "Shuffle Adult Trade Sequence Items"
-    valid_keys = adult_trade_items
-    default = adult_trade_items
-
-
-class AdultTradeShuffleOption(Toggle):
-    """Shuffle every selected adult trade sequence item into the item pool."""
-    display_name = "Shuffle All Selected Adult Trade Items"
+class ItemPoolValue(Choice):
+    """Changes the number of items available in the game.
+    Plentiful: One extra copy of every major item.
+    Balanced: Original item pool.
+    Scarce: Extra copies of major items are removed. Heart containers are removed.
+    Minimal: All major item upgrades not used for locations are removed. All health is removed."""
+    display_name = "Item Pool"
+    option_plentiful = 0
+    option_balanced = 1
+    option_scarce = 2
+    option_minimal = 3
+    default = 1
 
 
 class AddRandomStartingItems(Toggle):
@@ -1581,12 +1656,6 @@ class RandomStartingItemsExclude(OptionSet):
 
 itempool_options: typing.Dict[str, type(Option)] = {
     "item_pool_value": ItemPoolValue,
-    "junk_ice_traps": IceTraps,
-    "custom_ice_trap_percent": CustomIceTrapPercent,
-    "custom_ice_trap_count": CustomIceTrapCount,
-    "ice_trap_appearance": IceTrapVisual,
-    "adult_trade_shuffle": AdultTradeShuffleOption,
-    "adult_trade_start": AdultTradeStart,
     "add_random_starting_items": AddRandomStartingItems,
     "random_starting_items_count": RandomStartingItemsCount,
     "random_starting_items_exclude": RandomStartingItemsExclude,
@@ -1881,6 +1950,8 @@ class OoTOptions(PerGameCommonOptions):
     ganon_bosskey_hearts: GanonBKHearts
     key_rings: KeyRings
     key_rings_list: KeyRingList
+    silver_rupee_pouches_choice: SilverRupeePouchesChoice
+    silver_rupee_pouches: SilverRupeePouches
     shuffle_song_items: SongShuffle
     ocarina_songs: OcarinaSongs
     shopsanity: ShopShuffle
@@ -1932,6 +2003,8 @@ class OoTOptions(PerGameCommonOptions):
     fast_shadow_boat: FastShadowBoat
     skip_reward_from_rauru: SkipRewardFromRauru
     correct_chest_appearances: CorrectChestAppearance
+    chest_textures_specific: ChestTexturesSpecific
+    soa_unlocks_chest_texture: StoneOfAgonyUnlocksChestTexture
     minor_items_as_major_chest: MinorInMajor
     invisible_chests: InvisibleChests
     correct_potcrate_appearances: CorrectPotCrateAppearance
@@ -2037,9 +2110,9 @@ oot_option_groups: typing.List[OptionGroup] = [
                 *[option for option in bridge_options.values()]]),
     OptionGroup("Shuffle", [option for option in shuffle_options.values()]),
     OptionGroup("Dungeon Items", [option for option in dungeon_items_options.values()]),
+    OptionGroup("Item Pool", [option for option in itempool_options.values()]),
     OptionGroup("Timesavers", [option for option in timesavers_options.values()]),
     OptionGroup("Misc", [option for option in misc_options.values()]),
-    OptionGroup("Item Pool", [option for option in itempool_options.values()]),
     OptionGroup("Cosmetics", [option for option in cosmetic_options.values()]),
     OptionGroup("SFX", [option for option in sfx_options.values()])
 ]

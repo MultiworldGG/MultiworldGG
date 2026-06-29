@@ -4,7 +4,7 @@ from .enums import Locations, Regions, Events
 from .levels import boss_connections, level_map, regional_events, level_region_data
 from .locations import DKC3Location
 from .items import DKC3Item
-from .options import Goal
+from .options import Goal, VehicleUnlock
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -32,11 +32,11 @@ def create_regions(world: "DKC3World", active_locations):
         Region(Regions.northern_kremisphere_kore.value, player, multiworld),
     ]
 
-    active_kong_checks = world.options.kong_checks.value
-    active_dk_coin_checks = world.options.dk_coin_checks.value
-    active_balloon_checks = world.options.balloon_checks.value
-    active_coin_checks = world.options.coin_checks.value
-    active_banana_checks = world.options.banana_checks.value
+    active_kong_checks = world.options.kong_locations.value
+    active_dk_coin_checks = world.options.dk_coin_locations.value
+    active_balloon_checks = world.options.balloon_locations.value
+    active_coin_checks = world.options.coin_locations.value
+    active_banana_checks = world.options.banana_locations.value
 
     for region_name, region_data in level_region_data.items():
         region = Region(region_name.value, player, multiworld)
@@ -66,7 +66,7 @@ def create_regions(world: "DKC3World", active_locations):
     add_location_to_region(multiworld, player, active_locations, Regions.bleaks_house_level, Locations.defeated_bleak)
     add_location_to_region(multiworld, player, active_locations, Regions.barbos_barrier_level, Locations.defeated_barbos)
 
-    if world.options.bird_checks:
+    if world.options.bird_locations:
         add_location_to_region(multiworld, player, active_locations, Regions.northern_kremisphere_south, Locations.bird_bounty_beach)
         add_location_to_region(multiworld, player, active_locations, Regions.northern_kremisphere_center, Locations.bird_kong_cave)
         add_location_to_region(multiworld, player, active_locations, Regions.northern_kremisphere_north, Locations.bird_undercover_cove)
@@ -76,10 +76,49 @@ def create_regions(world: "DKC3World", active_locations):
         add_location_to_region(multiworld, player, active_locations, Regions.lake_orangatanga, Locations.bird_smugglers_cove)
         add_location_to_region(multiworld, player, active_locations, Regions.kremwood_forest, Locations.bird_arichs_hoard)
         add_location_to_region(multiworld, player, active_locations, Regions.cotton_top_cove, Locations.bird_bounty_bay)
-        #add_location_to_region(multiworld, player, active_locations, Regions.mekanos, Locations.bird_sky_high_secret)
+        add_location_to_region(multiworld, player, active_locations, Regions.mekanos, Locations.bird_sky_high_secret)
         add_location_to_region(multiworld, player, active_locations, Regions.k3, Locations.bird_glacial_grotto)
-        #add_location_to_region(multiworld, player, active_locations, Regions.razor_ridge, Locations.bird_clifftop_cache)
+        add_location_to_region(multiworld, player, active_locations, Regions.razor_ridge, Locations.bird_clifftop_cache)
         add_location_to_region(multiworld, player, active_locations, Regions.kaos_kore, Locations.bird_sewer_stockpile)
+
+        add_location_to_region(multiworld, player, active_locations, Regions.lake_orangatanga, Locations.bird_barnacle)
+        add_location_to_region(multiworld, player, active_locations, Regions.northern_kremisphere_center, Locations.bird_bramble)
+        
+        add_event_to_region(multiworld, player, Regions.northern_kremisphere_south, Events.bazaar_1, world.trade_items[Events.bazaar_1])
+        add_event_to_region(multiworld, player, Regions.northern_kremisphere_south, Events.bazaar_2, world.trade_items[Events.bazaar_2])
+        add_event_to_region(multiworld, player, Regions.k3, Events.blizzard, world.trade_items[Events.blizzard])
+        add_event_to_region(multiworld, player, Regions.cotton_top_cove, Events.blue, world.trade_items[Events.blue])
+        add_event_to_region(multiworld, player, Regions.northern_kremisphere_center, Events.flower, world.trade_items[Events.flower])
+        add_event_to_region(multiworld, player, Regions.northern_kremisphere_north, Events.barter, world.trade_items[Events.barter])
+
+
+    if world.options.vehicle_unlock != VehicleUnlock.option_item:
+        add_location_to_region(multiworld, player, active_locations, Regions.northern_kremisphere_south, Locations.funky_upgrade_1)
+        add_location_to_region(multiworld, player, active_locations, Regions.northern_kremisphere_south, Locations.funky_upgrade_2)
+        add_location_to_region(multiworld, player, active_locations, Regions.northern_kremisphere_south, Locations.funky_upgrade_3)
+    
+    if world.options.swanky_locations:
+        add_location_to_region(multiworld, player, active_locations, Regions.lake_orangatanga, Locations.swanky_lake_game_1)
+        add_location_to_region(multiworld, player, active_locations, Regions.lake_orangatanga, Locations.swanky_lake_game_2)
+        add_location_to_region(multiworld, player, active_locations, Regions.lake_orangatanga, Locations.swanky_lake_game_3)
+        add_location_to_region(multiworld, player, active_locations, Regions.kremwood_forest, Locations.swanky_forest_game_1)
+        add_location_to_region(multiworld, player, active_locations, Regions.kremwood_forest, Locations.swanky_forest_game_2)
+        add_location_to_region(multiworld, player, active_locations, Regions.kremwood_forest, Locations.swanky_forest_game_3)
+        add_location_to_region(multiworld, player, active_locations, Regions.cotton_top_cove, Locations.swanky_cove_game_1)
+        add_location_to_region(multiworld, player, active_locations, Regions.cotton_top_cove, Locations.swanky_cove_game_2)
+        add_location_to_region(multiworld, player, active_locations, Regions.cotton_top_cove, Locations.swanky_cove_game_3)
+        add_location_to_region(multiworld, player, active_locations, Regions.mekanos, Locations.swanky_mekanos_game_1)
+        add_location_to_region(multiworld, player, active_locations, Regions.mekanos, Locations.swanky_mekanos_game_2)
+        add_location_to_region(multiworld, player, active_locations, Regions.mekanos, Locations.swanky_mekanos_game_3)
+        add_location_to_region(multiworld, player, active_locations, Regions.k3, Locations.swanky_k3_game_1)
+        add_location_to_region(multiworld, player, active_locations, Regions.k3, Locations.swanky_k3_game_2)
+        add_location_to_region(multiworld, player, active_locations, Regions.k3, Locations.swanky_k3_game_3)
+        add_location_to_region(multiworld, player, active_locations, Regions.razor_ridge, Locations.swanky_ridge_game_1)
+        add_location_to_region(multiworld, player, active_locations, Regions.razor_ridge, Locations.swanky_ridge_game_2)
+        add_location_to_region(multiworld, player, active_locations, Regions.razor_ridge, Locations.swanky_ridge_game_3)
+        add_location_to_region(multiworld, player, active_locations, Regions.kaos_kore, Locations.swanky_kore_game_1)
+        add_location_to_region(multiworld, player, active_locations, Regions.kaos_kore, Locations.swanky_kore_game_2)
+        add_location_to_region(multiworld, player, active_locations, Regions.kaos_kore, Locations.swanky_kore_game_3)
 
     # Level clears (Events)
     regional_event_count: dict[str, int] = {
@@ -94,7 +133,7 @@ def create_regions(world: "DKC3World", active_locations):
     }
     for map_level, level in world.level_connections.items():
         current_world = level_map[map_level]
-        if map_level in boss_connections.keys():
+        if map_level in boss_connections.keys() or map_level in {Regions.knautilus_map, Regions.kastle_kaos_map}:
             continue
         level_clear = level_region_data[level]["Clear"][0]
         if level_clear in world.options.exclude_locations.value:
@@ -116,10 +155,10 @@ def create_regions(world: "DKC3World", active_locations):
 
     # Goal regions
     # TODO: Banana :b:ird hunt
-    if world.options.goal != Goal.option_krematoa:
+    if world.options.goal != Goal.option_knautilus:
         add_event_to_region(multiworld, player, Regions.kastle_kaos_level, Locations.kastle_kaos_clear, Events.k_rool_at_kore)
 
-    if world.options.goal != Goal.option_kore:
+    if world.options.goal != Goal.option_kastle_kaos:
         add_event_to_region(multiworld, player, Regions.knautilus_level, Locations.knautilus_clear, Events.k_rool_at_knautilus)
 
 
@@ -195,8 +234,6 @@ def connect_regions(world: "DKC3World"):
     connect(world, Regions.krematoa, Regions.rocket_rush_map)
     connect(world, Regions.krematoa, Regions.knautilus_map)
 
-    connect(world, Regions.kastle_kaos_map, Regions.kastle_kaos_level)
-    connect(world, Regions.knautilus_map, Regions.knautilus_level)
     
     for map_level, level in world.level_connections.items():
         connect(world, map_level, level)

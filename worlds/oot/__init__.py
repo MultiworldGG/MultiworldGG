@@ -21,7 +21,7 @@ from .Rules import set_rules, set_shop_rules, set_entrances_based_rules
 from .RuleParser import Rule_AST_Transformer
 from .Options import EmptyDungeonList, EmptyDungeonRewards, OoTOptions, cosmetic_options, oot_option_groups, sfx_options
 from .Utils import data_path, read_json, __version__ as oot_version
-from .LocationList import business_scrubs, dungeon_song_locations, location_sort_order, set_drop_location_names
+from .LocationList import business_scrubs, dungeon_song_locations, location_sort_order, set_drop_location_names, location_table
 from .DungeonList import dungeon_table, create_dungeons
 from .LogicTricks import normalized_name_tricks, normalized_name_advanced_tricks
 from .OcarinaSongs import SONG_TABLE, Song, generate_song_list
@@ -589,6 +589,7 @@ class OOTWorld(World):
         if self.dungeon_shortcuts_choice == 'random_dungeons':
             self.dungeon_shortcuts_choice = 'random'
         self.key_rings_list          = {s.replace("'", "") for s in self.key_rings_list}
+        self.silver_rupee_pouches    = {s.replace("'", "") for s in self.silver_rupee_pouches}
         self.dungeon_shortcuts       = {s.replace("'", "") for s in self.dungeon_shortcuts_list}
         self.mq_dungeons_specific    = {s.replace("'", "") for s in self.mq_dungeons_list}
         self.empty_dungeons_specific = {s.replace("'", "") for s in self.empty_dungeons_list}
@@ -622,6 +623,18 @@ class OOTWorld(World):
         if 'dungeon_mq' in self.ut_replay_results:
             self.dungeon_mq = dict(self.ut_replay_results['dungeon_mq'])
             self.dungeon_mq['Thieves Hideout'] = False
+
+        # Determine which silver rupee puzzles use pouches.
+        if self.silver_rupee_pouches_choice == 'off':
+            self.silver_rupee_pouches = set()
+        elif self.silver_rupee_pouches_choice == 'all':
+            self.silver_rupee_pouches = set(self.silver_rupee_puzzles())
+        elif self.silver_rupee_pouches_choice == 'random_puzzles':
+            silver_rupee_puzzles = self.silver_rupee_puzzles()
+            self.silver_rupee_pouches = set(self.random.sample(silver_rupee_puzzles,
+                self.random.randint(0, len(silver_rupee_puzzles))))
+        if 'silver_rupee_pouches' in self.ut_replay_results:
+            self.silver_rupee_pouches = set(self.ut_replay_results['silver_rupee_pouches'])
 
         # Determine which reward dungeons are pre-completed.
         empty_dungeon_pool = self.get_empty_dungeon_pool()
@@ -1685,6 +1698,9 @@ class OOTWorld(World):
         def empty_dungeon_vanilla_locations(item):
             dungeon_name = self.item_precompleted_dungeon_name(item)
             vanilla_item_names = {item.name}
+            item_alias = getattr(item, 'special', {}).get('alias')
+            if item_alias:
+                vanilla_item_names.add(item_alias[0])
             if item.name.startswith('Small Key Ring ('):
                 vanilla_item_names.add(f"Small Key ({dungeon_name})")
             return [
@@ -1736,9 +1752,41 @@ class OOTWorld(World):
                         single_player_placement=True, lock=True, allow_excluded=True,
                         on_place=lambda loc: placed_prefill_items.append(loc.item))
             else:
+                if fill_stage == 'SilverRupee':
+                    pouch_items = [item for item in stage_items if item.name.startswith('Silver Rupee Pouch (')]
+                    for item in pouch_items:
+                        remove_prefill_item(item)
+                    for item in pouch_items:
+                        dungeon_name = self.item_dungeon_name_from_name(item.name)
+                        if dungeon_name is None:
+                            self.pre_fill_items.append(item)
+                            continue
+                        if self.precompleted_dungeons.get(dungeon_name, False):
+                            locations = [
+                                location for location in self.multiworld.get_unfilled_locations(player=self.player)
+                                if valid_dungeon_item_location(self, 'dungeon', dungeon_name, location)
+                            ]
+                        else:
+                            locations = gather_locations(self.multiworld, fill_stage, self.player, dungeon=dungeon_name)
+                        if not isinstance(locations, list):
+                            self.pre_fill_items.append(item)
+                            continue
+                        self.random.shuffle(locations)
+                        fill_restrictive(self.multiworld, prefill_state(state, excluded_items=stage_items),
+                            locations, [item],
+                            single_player_placement=True, lock=True, swap=False, allow_excluded=True,
+                            on_place=lambda loc: placed_prefill_items.append(loc.item))
+                        if item.location is None:
+                            self.pre_fill_items.append(item)
+                    stage_items = [item for item in stage_items if item in self.pre_fill_items]
+                    if not stage_items:
+                        continue
                 for dungeon_info in dungeon_table:
                     dungeon_name = dungeon_info['name']
-                    dungeon_items = list(filter(lambda item: dungeon_name in item.name, stage_items))
+                    dungeon_items = [
+                        item for item in stage_items
+                        if self.item_dungeon_name_from_name(item.name) == dungeon_name
+                    ]
                     if not dungeon_items:
                         continue
                     if self.precompleted_dungeons.get(dungeon_name, False):
@@ -2184,6 +2232,7 @@ class OOTWorld(World):
             'empty_dungeon_starting_rewards': list(getattr(self, 'empty_dungeon_starting_rewards', [])),
             'dungeon_shortcuts': sorted(self.dungeon_shortcuts),
             'key_rings': sorted(self.key_rings),
+            'silver_rupee_pouches': sorted(self.silver_rupee_pouches),
             'selected_adult_trade_item': self.selected_adult_trade_item,
             'shop_prices': dict(self.shop_prices),
             'scrub_prices': dict(self.scrub_prices),
@@ -2423,6 +2472,31 @@ class OOTWorld(World):
 
     def get_filler_item_name(self) -> str:
         return get_junk_item(self.random, count=1, pool=get_junk_pool(self))[0]
+
+    def silver_rupee_puzzles(self) -> List[str]:
+        puzzles = []
+        seen = set()
+        for location_data in location_table.values():
+            if location_data[0] != 'SilverRupee':
+                continue
+
+            vanilla_item = location_data[4]
+            dungeon_name = self.item_dungeon_name_from_name(vanilla_item)
+            if dungeon_name is None:
+                continue
+
+            tags = location_data[5]
+            dungeon_is_mq = self.dungeon_mq.get(dungeon_name, False)
+            if 'Master Quest' in tags and not dungeon_is_mq:
+                continue
+            if 'Vanilla Dungeons' in tags and dungeon_is_mq:
+                continue
+
+            puzzle = vanilla_item[len('Silver Rupee ('):-1]
+            if puzzle not in seen:
+                puzzles.append(puzzle)
+                seen.add(puzzle)
+        return puzzles
 
 
 def valid_dungeon_item_location(world: OOTWorld, option: str, dungeon: str, loc: OOTLocation) -> bool:

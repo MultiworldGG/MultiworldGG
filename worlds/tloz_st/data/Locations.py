@@ -239,6 +239,8 @@ LOCATIONS_DATA = {
         "vanilla_item": "Red Rupee (20)",
         "stage_id": 0x28,
         "room_id": 2,
+        "x_max": -50000,
+        "z_min": 35000,
         "location_groups": ["Hyrule Castle"],
     },
     "Hyrule Castle 1F Back Chest": {
@@ -900,7 +902,7 @@ LOCATIONS_DATA = {
         "address": STAddr.adv_flags_20,
         "value": 0x1,
         "ut_connect": "EVENT: Defeat Staven",
-        "goal": "Defeat Staven",
+        "goal": "GOAL: Defeat Staven",
         'dungeon': "ToS",
         "tos_section": 5,
         "no_model": True
@@ -1222,7 +1224,7 @@ LOCATIONS_DATA = {
         "stage_id": 0x1E,
         "room_id": 0,
         "dungeon": "Wooded Temple",
-        "goal": True,
+        "goal": "GOAL: Defeat Stagnox",
         "ut_connect": "EVENT: Defeat Stagnox",
         "location_groups": ["Stagnox"],
         "no_model": True
@@ -1231,8 +1233,8 @@ LOCATIONS_DATA = {
     # Rabbit Haven
     "Rabbit Haven Net Gift": {
         "region_id": "rabbit haven",
-        # "item_override": "Rabbit Net",
-        "vanilla_item": "Nothing!",
+        "item_override": "Nothing!",
+        "vanilla_item": "Rabbit Net",
         "stage_id": 0x3E,
         "room_id": 0,
         "address": STAddr.adv_flags_1a,
@@ -1245,10 +1247,10 @@ LOCATIONS_DATA = {
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "stage_id": 0x3E,
         "room_id": 0,
-        "x_min": 11447,
-        "x_max": 23070,
-        "z_min": -18940,
-        "z_max": -9020,
+        "x_min": 10000,
+        "x_max": 25000,
+        "z_min": -20000,
+        "z_max": -5000,
         "location_groups": ["Rabbit Haven"],
     },
     "Rabbit Haven Rescue 5 Rabbits": {
@@ -1270,6 +1272,7 @@ LOCATIONS_DATA = {
         'address': STAddr.adv_flags_51,
         'value': 0x10,
         "conditional": True,
+        "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
         "x_max": -35000
     },
@@ -1281,6 +1284,7 @@ LOCATIONS_DATA = {
         'address': STAddr.adv_flags_51,
         'value': 0x20,
         "conditional": True,
+        "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
         "x_max": -35000
     },
@@ -1292,6 +1296,7 @@ LOCATIONS_DATA = {
         'address': STAddr.adv_flags_51,
         'value': 0x40,
         "conditional": True,
+        "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
         "x_max": -35000
     },
@@ -1303,6 +1308,7 @@ LOCATIONS_DATA = {
         'address': STAddr.adv_flags_51,
         'value': 0x80,
         "conditional": True,
+        "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
         "x_max": -35000
     },
@@ -1314,6 +1320,7 @@ LOCATIONS_DATA = {
         'address': STAddr.adv_flags_52,
         'value': 0x1,
         "conditional": True,
+        "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
         "x_max": -35000
     },
@@ -1325,6 +1332,7 @@ LOCATIONS_DATA = {
         'address': STAddr.adv_flags_52,
         'value': 0x2,
         "conditional": True,
+        "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
         "x_max": -35000
     },
@@ -1337,6 +1345,7 @@ LOCATIONS_DATA = {
         'address': STAddr.adv_flags_53,
         'value': 0x8,
         "conditional": True,
+        "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
         "x_max": -35000
     },
@@ -1588,7 +1597,7 @@ LOCATIONS_DATA = {
         "stage_id": 0x1F,
         "room_id": 0,
         "dungeon": "Blizzard Temple",
-        "goal": True,
+        "goal": "GOAL: Defeat Fraaz",
         "ut_connect": "EVENT: Defeat Fraaz",
         "location_groups": ["Fraaz"],
         "no_model": True
@@ -1940,7 +1949,7 @@ LOCATIONS_DATA = {
         "room_id": 0,
         "dungeon": "Marine Temple",
         "require_item": ["Whip", "Sword (Progressive)", "Small Key (Ocean Temple)"],
-        "goal": True,
+        "goal": "GOAL: Defeat Cactops",
         "location_groups": ["Cactops"],
         "ut_connect": "EVENT: Defeat Cactops",
         "no_model": True
@@ -2415,6 +2424,7 @@ LOCATIONS_DATA = {
         "region_id": "mtt boss",
         "vanilla_item": "Fire Source",
         "ut_connect": "EVENT: Defeat Vulcano",
+        "goal": "GOAL: Defeat Vulcano",
         "dungeon": "Mountain Temple",
         "no_model": True
     },
@@ -2714,6 +2724,7 @@ LOCATIONS_DATA = {
         "region_id": "skeldritch",
         "location_groups": ["Skeldritch"],
         "ut_connect": "EVENT: Defeat Skeldritch",
+        "goal": "GOAL: Defeat Skeldritch",
         "dungeon": "Desert Temple",
         "no_model": True
     },
@@ -2736,7 +2747,8 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_0,
         "value": 1,
         "rabbit": True,
-        "location_groups": ["Unique Grass Rabbits"]
+        "location_groups": ["Unique Grass Rabbits"],
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
     },
     "Rabbit Near Ocean Shortcut": {
         "region_id": "forest ocean shortcut rabbit",
@@ -2745,6 +2757,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_0,
         "value": 2,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Grass Rabbits"]
     },
     "Rabbit E Mayscore": {
@@ -2754,6 +2767,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_0,
         "value": 4,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Grass Rabbits"]
     },
     "Rabbit SW Trading Post": {
@@ -2763,6 +2777,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_0,
         "value": 8,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Grass Rabbits"]
     },
     "Rabbit E Outset": {
@@ -2772,6 +2787,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_0,
         "value": 0x10,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Grass Rabbits"]
     },
     "Rabbit SW Rabbit Haven": {
@@ -2781,6 +2797,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_0,
         "value": 0x20,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Grass Rabbits"]
     },
     "Rabbit Near Wooded Temple": {
@@ -2790,6 +2807,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_0,
         "value": 0x40,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Grass Rabbits"]
     },
     "Rabbit Near Rabbit Haven": {
@@ -2799,6 +2817,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_0,
         "value": 0x80,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Grass Rabbits"]
     },
     "Rabbit Past Wooden Bridge": {
@@ -2808,6 +2827,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_1,
         "value": 1,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Grass Rabbits"]
     },
     "Rabbit S Rabbit Haven": {
@@ -2817,6 +2837,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_1,
         "value": 2,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Grass Rabbits"]
     },
 
@@ -2827,6 +2848,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_1,
         "value": 4,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Snow Rabbits"]
     },
     "Rabbit SE Blizzard": {
@@ -2836,6 +2858,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_1,
         "value": 8,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Snow Rabbits"]
     },
     "Rabbit W Anouki Village": {
@@ -2845,6 +2868,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_1,
         "value": 0x10,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Snow Rabbits"]
     },
     "Rabbit SW Blizzard": {
@@ -2854,6 +2878,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_1,
         "value": 0x20,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Snow Rabbits"]
     },
     "Rabbit E Anouki Village": {
@@ -2863,6 +2888,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_1,
         "value": 0x40,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Snow Rabbits"]
     },
     "Rabbit Near Snowdrift Station": {
@@ -2872,6 +2898,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_1,
         "value": 0x80,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Snow Rabbits"]
     },
     "Rabbit W Icy Spring Station": {
@@ -2881,6 +2908,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_2,
         "value": 1,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Snow Rabbits"]
     },
     "Rabbit N Icy Spring Station": {
@@ -2890,6 +2918,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_2,
         "value": 2,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Snow Rabbits"]
     },
     "Rabbit NW Blizzard": {
@@ -2899,6 +2928,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_2,
         "value": 4,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Snow Rabbits"]
     },
     "Rabbit Central Blizzard": {
@@ -2908,6 +2938,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_2,
         "value": 8,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Snow Rabbits"]
     },
 
@@ -2919,6 +2950,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_2,
         "value": 0x80,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Ocean Rabbits"]
     },
     "Rabbit Near Island Sanctuary": {
@@ -2928,6 +2960,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_2,
         "value": 0x40,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Ocean Rabbits"]
     },
     "Rabbit E Pirate Hideout": {
@@ -2937,6 +2970,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_2,
         "value": 0x20,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Ocean Rabbits"]
     },
     "Rabbit W Pirate Hideout": {
@@ -2946,6 +2980,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_2,
         "value": 0x10,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Ocean Rabbits"]
     },
     "Rabbit N Marine Temple": {
@@ -2955,6 +2990,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_3,
         "value": 0x20,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Ocean Rabbits"]
     },
     "Rabbit N Undersea Entrance": {
@@ -2964,6 +3000,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_3,
         "value": 0x10,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Ocean Rabbits"]
     },
     "Rabbit Near Ocean Portal": {
@@ -2973,6 +3010,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_3,
         "value": 0x8,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Ocean Rabbits"]
     },
     "Rabbit S Undersea Entrance": {
@@ -2982,6 +3020,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_3,
         "value": 0x4,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Ocean Rabbits"]
     },
     "Rabbit E Ocean": {
@@ -2991,6 +3030,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_3,
         "value": 0x2,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Ocean Rabbits"]
     },
     "Rabbit N Lost at Sea": {
@@ -3000,6 +3040,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_3,
         "value": 0x1,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Ocean Rabbits"]
     },
 
@@ -3011,6 +3052,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_4,
         "value": 0x80,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Mountain Rabbits"]
     },
     "Rabbit Near Disorientation Station": {
@@ -3020,6 +3062,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_4,
         "value": 0x40,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Mountain Rabbits"]
     },
     "Rabbit Near Ends of the Earth": {
@@ -3029,6 +3072,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_4,
         "value": 0x20,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Mountain Rabbits"]
     },
     "Rabbit NE Mountain": {
@@ -3038,6 +3082,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_4,
         "value": 0x10,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Mountain Rabbits"]
     },
     "Rabbit NW Mountain": {
@@ -3047,6 +3092,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_4,
         "value": 0x8,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Mountain Rabbits"]
     },
     "Rabbit N Mountain": {
@@ -3056,6 +3102,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_4,
         "value": 0x4,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Mountain Rabbits"]
     },
     "Rabbit S Mountain": {
@@ -3065,6 +3112,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_4,
         "value": 2,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Mountain Rabbits"]
     },
     "Rabbit SE Mountain": {
@@ -3074,6 +3122,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_4,
         "value": 0x1,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Mountain Rabbits"]
     },
     "Rabbit N Fire Glyph": {
@@ -3083,6 +3132,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_3,
         "value": 0x80,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Mountain Rabbits"]
     },
     "Rabbit Near Goron Target Range": {
@@ -3092,6 +3142,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_3,
         "value": 0x40,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Mountain Rabbits"]
     },
 
@@ -3103,6 +3154,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_5,
         "value": 0x8,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Sand Rabbits"]
     },
     "Rabbit N Sand Realm": {
@@ -3112,6 +3164,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_5,
         "value": 0x2,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Sand Rabbits"]
     },
     "Rabbit S Sand Realm": {
@@ -3121,6 +3174,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_5,
         "value": 0x4,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Sand Rabbits"]
     },
     "Rabbit W Sand Realm": {
@@ -3130,6 +3184,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_5,
         "value": 0x1,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Sand Rabbits"]
     },
     "Rabbit W Desert Temple": {
@@ -3139,6 +3194,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_5,
         "value": 0x10,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Sand Rabbits"]
     },
     "Rabbit E Desert Temple": {
@@ -3148,6 +3204,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_5,
         "value": 0x20,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Sand Rabbits"]
     },
     "Rabbit E Sand Maze": {
@@ -3157,6 +3214,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_6,
         "value": 0x2,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Sand Rabbits"]
     },
     "Rabbit Mid Sand Maze": {
@@ -3166,6 +3224,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_6,
         "value": 0x1,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Sand Rabbits"]
     },
     "Rabbit W Sand Maze": {
@@ -3175,6 +3234,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_5,
         "value": 0x80,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Sand Rabbits"]
     },
     "Rabbit Sand Valley": {
@@ -3184,6 +3244,7 @@ LOCATIONS_DATA = {
         "address": STAddr.rabbits_5,
         "value": 0x40,
         "rabbit": True,
+        "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Sand Rabbits"]
     },
 }

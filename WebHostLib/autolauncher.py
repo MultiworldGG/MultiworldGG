@@ -6,6 +6,7 @@ import multiprocessing
 import os
 import queue
 import shutil
+import sys
 import typing
 from datetime import timedelta, datetime
 from threading import Event, Thread
@@ -158,18 +159,19 @@ def init_generator(config: dict[str, Any]) -> None:
 
     setproctitle("Generator (idle)")
 
-    try:
-        import resource
-    except ModuleNotFoundError:
-        pass  # unix only module
-    else:
-        # set soft limit for memory to from config (default 4GiB)
-        soft_limit = config["GENERATOR_MEMORY_LIMIT"]
-        old_limit, hard_limit = resource.getrlimit(resource.RLIMIT_AS)
-        if soft_limit != old_limit:
-            resource.setrlimit(resource.RLIMIT_AS, (soft_limit, hard_limit))
-            logging.debug(f"Changed AS mem limit {old_limit} -> {soft_limit}")
-        del resource, soft_limit, hard_limit
+    if sys.platform != "darwin":
+        try:
+            import resource
+        except ModuleNotFoundError:
+            pass  # unix only module
+        else:
+            # set soft limit for memory to from config (default 4GiB)
+            soft_limit = config["GENERATOR_MEMORY_LIMIT"]
+            old_limit, hard_limit = resource.getrlimit(resource.RLIMIT_AS)
+            if soft_limit != old_limit:
+                resource.setrlimit(resource.RLIMIT_AS, (soft_limit, hard_limit))
+                logging.debug(f"Changed AS mem limit {old_limit} -> {soft_limit}")
+            del resource, soft_limit, hard_limit
 
     pony_config = config["PONY"]
     db.bind(**pony_config)

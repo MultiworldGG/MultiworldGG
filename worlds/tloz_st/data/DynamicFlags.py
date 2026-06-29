@@ -128,7 +128,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "not_has_locations": ["Marine Temple Dungeon Reward"],
         "unset_if_true": [(STAddr.adv_flags_0, 0x40)],
         "on_entrance": [0],
-        "reset_flags": ["RESET Add Ocean source"]
+        "reset_flags": ["RESET Add Ocean source", "RESET Remove Ocean source"]
     },
     "Cragma/Vulcano location": {
         "on_scenes": [0x2100],
@@ -225,6 +225,13 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Castle town teacher ocean": {  # needs a s+q for some reason
         "on_scenes": [0x2900],
         "has_groups": ["Tracks: Ocean Glyph"],
+        "not_has_locations": ["Castle Town Pick Up Teacher"],
+        "set_if_true": [(STAddr.adv_flags_1, 0x4)],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+    },
+    "Castle town teacher fire": {  # needs a s+q for some reason
+        "on_scenes": [0x2900],
+        "has_groups": ["Tracks: Fire Glyph"],
         "not_has_locations": ["Castle Town Pick Up Teacher"],
         "set_if_true": [(STAddr.adv_flags_1, 0x4)],
         "has_slot_data": [("randomize_passengers", [1, 2, 3])],
@@ -678,7 +685,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Close Portal mayscore item tracks": {
         "on_scenes": [0x0400],
-        "not has_groups": ["Tracks: Ocean Portal"],
+        "not_has_groups": ["Tracks: Ocean Portal"],
         "has_slot_data": [("portal_behavior", 2)],
         "unset_if_true": [(STAddr.adv_flags_31, 0x4)]
     },
@@ -1217,7 +1224,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Prevent Kenzo from leaving TP randomize": {
         "on_scenes": [0x3700],
-        "has_slot_data": [("randomize_passengers", 1, 3)],
+        "has_slot_data": [("randomize_passengers", [1, 3])],
         "check_bits": [(STAddr.adv_flags_24, 0x10, "not")],
         "unset_if_true": [(STAddr.adv_flags_3d, 2)],
     },
@@ -1266,6 +1273,10 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "overwrite_if_true": [(STAddr.passenger_goal, 0x1b),
                               (STAddr.passenger_tag_0, 0x544D4E41),
                               (STAddr.has_passenger_0, 0)],
+    },
+    "Reset ferrus": {
+        "on_scenes": [0x1B0a],
+        "has_slot_data": [("randomize_passengers", [2, 3])],
         "reset_flags": ["RESET Passengers"]
     },
     "Spawn Ferrus in forest randomized": {
@@ -1372,13 +1383,13 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "set_if_true": [(STAddr.adv_flags_22, 0x1)],
     },
     "Remove shield from shield shops": {
-        "on_scenes": [0x2a05, 0x290a, 0x3103, 0x370a],
+        "on_scenes": [0x2a05, 0x290a, 0x3103, 0x370a, 0x2e06],
         "unset_if_true": [(STAddr.items_2, 1)],
         "has_slot_data": [("shopsanity", "shields")],
         "reset_flags": ["RESET add shield"]
     },
     "Remove prize postcards in shops": {
-        "on_scenes": [0x2a05, 0x290a, 0x3103, 0x2c02],
+        "on_scenes": [0x2a05, 0x290a, 0x3103, 0x2c02, 0x2e06],
         "unset_if_true": [(STAddr.postcard_count, 0xFF)],
         "has_slot_data": [("shopsanity", "postcards")],
     },
@@ -1538,16 +1549,34 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x2b00],
         "has_slot_data": [("randomize_passengers", [2, 3])],
         "has_items": [("Passenger: Kenzo", 1)],
-        "check_bits": [(STAddr.adv_flags_3c, 0x40, "not")],
-        "set_if_true": [(STAddr.adv_flags_3c, 0x10)],
+        "check_bits": [(STAddr.adv_flags_3c, 0x40, "not"), (STAddr.key_storage_2, 0x80, "not")],
+        "set_if_true": [(STAddr.adv_flags_3c, 0x10), (STAddr.key_storage_2, 0x80)],
         "overwrite_if_true": [(STAddr.passenger_goal, 0x2b),
                               (STAddr.passenger_tag_0, 0x43524654),
                               (STAddr.has_passenger_0, 0)],
         "reset_flags": ["RESET Passengers"]
     },
-    "Bring Goron to AV": {
+    "Has Brought Kenzo to AV": {
         "on_scenes": [0x2b00],
-        "has_items": [("Passenger: Snow Goron", 1)],
+        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "check_bits": [(STAddr.key_storage_2, 0x80)],
+        "set_if_true": [(STAddr.adv_flags_3c, 0x50)] # (STAddr.adv_flags_3d, 0x4)],  in case leave before getting item?
+    },
+    "Bring Goron to AV has kenzo": {
+        "on_scenes": [0x2b00],
+        "has_items": [("Passenger: Snow Goron", 1), ("Passenger: Kenzo", 1)],
+        "check_bits": [(STAddr.key_storage_2, 0x80)],  # Kenzo takes priority. Don't bring goron if have kenzo but not brought kenzo
+        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "not_has_locations": ["Anouki Village Goron Force Gem"],
+        "set_if_true": [(STAddr.adv_flags_38, 0x2)],
+        "overwrite_if_true": [(STAddr.passenger_goal, 0x2b),
+                              (STAddr.passenger_tag_0, 0x474F5250),
+                              (STAddr.has_passenger_0, 0)],
+        "reset_flags": ["RESET Passengers"]
+    },
+    "Bring Goron to AV not has kenzo": {
+        "on_scenes": [0x2b00],
+        "has_items": [("Passenger: Snow Goron", 1), ("Passenger: Kenzo", 0)],
         "has_slot_data": [("randomize_passengers", [2, 3])],
         "not_has_locations": ["Anouki Village Goron Force Gem"],
         "set_if_true": [(STAddr.adv_flags_38, 0x2)],
@@ -1824,8 +1853,10 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x2F00],
         "has_slot_data": [("randomize_passengers", [2, 3])],
         "has_locations": ["Outset Bee Tree"],
+        "not_has_locations": ["Outset Pick Up Joe"],
         "has_groups": ["Tracks: Snow Source"],
         "set_if_true": [(STAddr.adv_flags_0, 0x40)],
+        "unset_if_true": [(STAddr.adv_flags_3c, 0x2)],
         "reset_flags": ["RESET Remove Ocean source"]
     },
     "Can pick up Joe vanilla": {
@@ -1852,7 +1883,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Bring Joe to Beedle": {
         "on_scenes": [0x4503],
         "has_items": [("Passenger: Joe", 1)],
-        "check_bits": [(STAddr.adv_flags_3c, 0x8, "not")],
+        "not_has_locations": ["Beedle Joe's Force Gem"],
         "set_if_true": [(STAddr.adv_flags_3c, 0x2)],
         "overwrite_if_true": [(STAddr.passenger_goal, 0x45),
                               (STAddr.passenger_tag_0, 0x4E434341),
@@ -2192,7 +2223,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Goron Village Ice 2": {
         "on_scenes": [0x2e00],
         "has_items": [("Cargo: Mega Ice", 2), ("Wagon", 1)],
-        "has_slot_data": [("randomize_cargo", 3)],
+        "has_slot_data": [("randomize_cargo", [2, 3])],
         "check_bits": [(STAddr.adv_flags_59, 0x4, "not")],
         "reset_flags": ["RESET Cargo"],
         "overwrite_if_true": [(STAddr.cargo_0, 0), (STAddr.cargo_count_0, 20)],
@@ -2279,7 +2310,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Fire realm prevent ice crash": {
         "on_scenes": [0x700],
         "not_has_groups": ["Tracks: Fire Glyph"],
-        "unset_if_true": [(STAddr.adv_flags_34, 0x20)]
+        "unset_if_true": [(STAddr.adv_flags_20, 0x20)]
     },
     "RESET Passengers": {
         "overwrite_if_true": [(STAddr.passenger_goal, 0xFFFFFFFF),
@@ -2472,6 +2503,14 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "not_has_locations": ["Fire Realm Pick Up Ferrus"],
         "unset_if_true": [(STAddr.adv_flags_3b, 0x4)]
     },
+    "Always spawn evil train under water": {
+        "on_scenes": [0xA00],
+        "unset_if_true": [(STAddr.adv_flags_a, 0x1)]
+    },
+    "Remove Marine Temple Zelda Text": {
+        "on_scenes": [0x1B0A],
+        "set_if_true": [(STAddr.adv_flags_a, 0x1)]
+    }
 }
 
 # for name, data in DYNAMIC_FLAGS.items():

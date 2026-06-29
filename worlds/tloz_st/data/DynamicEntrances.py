@@ -454,6 +454,12 @@ DYNAMIC_ENTRANCES = {
         "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
         "message": "The game crashes here without the blizzard temple tracks. Sorry!"
     },
+    "W Wooded Temple Tracks Bounce N": {
+        "entrance": "Forest Realm North W Wooded Temple",
+        "destination": "Forest Realm North W Wooded Temple",
+        "not_has_groups": ["Tracks: Snow Glyph"],
+        "message": "There are no tracks on the other side!"
+    },
     "Prevent softlock in papuzia south": {
         "entrance": "South Papuzia North",
         "destination": "Papuzia NW House"

@@ -4,16 +4,16 @@ import settings
 import threading
 import pkgutil
 
-from BaseClasses import MultiWorld, Tutorial, ItemClassification
+from BaseClasses import MultiWorld, Tutorial, ItemClassification, Location
 from worlds.AutoWorld import World, WebWorld
 from rule_builder.rules import Rule
 
 from .items import DKC3Item, item_table, misc_table, item_groups
 from .locations import setup_locations, all_locations, location_groups
 from .regions import create_regions, connect_regions
-from .enums import Items, Locations, Regions
-from .options import DKC3Options, Logic, StartingKong, dkc3_option_groups
-from .levels import generate_level_list, level_map
+from .enums import Items, Locations, Regions, Events
+from .options import DKC3Options, Logic, VehicleUnlock, CogPlacement, StartingKong, Goal, dkc3_option_groups
+from .levels import generate_level_list, shuffle_trade_items, level_map, krematoa_levels, level_region_data
 from .rules import DKC3StrictRules, DKC3LooseRules, DKC3ExpertRules
 from .rom import patch_rom, DKC3ProcedurePatch, HASH_US
 from .client import DKC3SNIClient
@@ -173,21 +173,90 @@ class DKC3World(tracker.UTMxin, World):
             else:
                 self.multiworld.push_precollected(self.create_item(item))
 
-        itempool += [self.create_item(Items.vehicle) for _ in range(3)]
-        itempool += [self.create_item(Items.bonus_coin) for _ in range(5)]
-        itempool += [self.create_item(Items.cog) for _ in range(5)]
-
         if self.options.energy_link:
             itempool += [self.create_item(Items.extractinator) for _ in range(3)]
 
         itempool += [self.create_item(Items.radar)]
 
+        if self.options.extra_birds:
+            itempool += [self.create_item(Items.banana_bird) for _ in range(self.options.extra_birds.value)]
+
+        itempool += [self.create_item(Items.bonus_coin) for _ in range(5)]
+        if self.options.extra_bonus_coins:
+            itempool += [self.create_item(Items.bonus_coin) for _ in range(self.options.extra_bonus_coins.value)]
+
+        # Place vehicles
+        if self.options.vehicle_unlock == VehicleUnlock.option_item:
+            itempool += [self.create_item(Items.vehicle) for _ in range(3)]
+        else:
+            classification = ItemClassification.progression_skip_balancing | ItemClassification.useful
+            self.get_location(Locations.funky_upgrade_1.value).place_locked_item(self.create_item(Items.vehicle, classification))
+            self.get_location(Locations.funky_upgrade_2.value).place_locked_item(self.create_item(Items.vehicle, classification))
+            self.get_location(Locations.funky_upgrade_3.value).place_locked_item(self.create_item(Items.vehicle, classification))
+            self.total_required_locations -= 3
+
+        # Place cogs
+        if self.options.swap_krool:
+            goals = {Goal.option_kastle_kaos, Goal.option_kompletionist}
+        else:
+            goals = {Goal.option_knautilus, Goal.option_kompletionist}
+            
+        if self.options.goal in goals:
+            if self.options.cog_placement == CogPlacement.option_anywhere:
+                itempool += [self.create_item(Items.cog) for _ in range(5)]
+                if self.options.extra_cogs.value:
+                    itempool += [self.create_item(Items.cog) for _ in range(self.options.extra_cogs.value)]
+
+            elif self.options.cog_placement == CogPlacement.option_krematoa_level_clear:
+                loc_count = 0
+                location: Location
+                for krematoa_level in krematoa_levels:
+                    level = self.get_region(self.level_connections[krematoa_level])
+                    for location in level.get_locations():
+                        if "- Clear" in location.name and location.name not in self.options.exclude_locations.value:
+                            location.place_locked_item(self.create_item(Items.cog))
+                            self.total_required_locations -= 1
+                            loc_count += 1
+                            break
+                    if loc_count == 5:
+                        break
+                else:
+                    itempool += [self.create_item(Items.cog) for _ in range(5 - loc_count)]
+                    player_name = self.multiworld.get_player_name(self.player)
+                    print (f"[{player_name}] Couldn't place all Cogs in Krematoa. "
+                            f"Falling back to placing {5 - loc_count} Cogs anywhere in the multiworld.")
+                if self.options.extra_cogs.value:
+                    itempool += [self.create_item(Items.cog) for _ in range(self.options.extra_cogs.value)]
+                    
+            elif self.options.cog_placement == CogPlacement.option_krematoa_anywhere:
+                locations: list[Location] = []
+                for krematoa_level in krematoa_levels:
+                    level = self.get_region(self.level_connections[krematoa_level])
+                    locations.extend(level.get_locations())
+                self.random.shuffle(locations)
+                loc_count = 0
+                total_count = 5 + self.options.extra_cogs.value
+                for location in locations:
+                    if location.name in self.options.exclude_locations.value or location.is_event:
+                        continue
+                    if loc_count == total_count:
+                        break
+                    location.place_locked_item(self.create_item(Items.cog))
+                    self.total_required_locations -= 1
+                    loc_count += 1
+                else:
+                    itempool += [self.create_item(Items.cog) for _ in range(total_count - loc_count)]
+                    player_name = self.multiworld.get_player_name(self.player)
+                    print (f"[{player_name}] Couldn't place all Cogs in Krematoa. "
+                            f"Falling back to placing {total_count - loc_count} Cogs anywhere in the multiworld.")
+
         # Add junk items into the pool
         junk_count = self.total_required_locations - len(itempool)
         junk_weights = []
-        junk_weights += ([Items.dk_barrel] * 60)
-        junk_weights += ([Items.bear_coin] * 10)
+        junk_weights += ([Items.dk_barrel] * 70)
         junk_weights += ([Items.balloon] * 30)
+        if self.options.bird_locations:
+            junk_weights += ([Items.bear_coin] * 20)
 
         junk_pool = []
         for _ in range(junk_count):
@@ -197,17 +266,17 @@ class DKC3World(tracker.UTMxin, World):
         itempool += junk_pool
 
         boss_locations = [
-            Locations.defeated_belcha,
-            Locations.defeated_arich,
-            Locations.defeated_squirt,
-            Locations.defeated_kaos,
-            Locations.defeated_bleak,
-            Locations.defeated_barbos,
-            #Locations.defeated_krool_castle,
-            #Locations.defeated_krool_knautilus,
+            Locations.defeated_belcha.value,
+            Locations.defeated_arich.value,
+            Locations.defeated_squirt.value,
+            Locations.defeated_kaos.value,
+            Locations.defeated_bleak.value,
+            Locations.defeated_barbos.value,
+            #Locations.defeated_krool_castle.value,
+            #Locations.defeated_krool_knautilus.value,
         ]
         for location in boss_locations:
-            self.multiworld.get_location(location.value, self.player).place_locked_item(self.create_item(Items.banana_bird))
+            self.get_location(location).place_locked_item(self.create_item(Items.banana_bird))
 
         self.multiworld.itempool += itempool
 
@@ -233,15 +302,19 @@ class DKC3World(tracker.UTMxin, World):
         slot_data = {}
         slot_data["level_connections"] = self.level_connections
         slot_data["boss_connections"] = self.boss_connections
+        slot_data["trade_items"] = self.trade_items
         slot_data["logic"] = self.options.logic.value
         slot_data["goal"] = self.options.goal.value
+        slot_data["swap_krool"] = self.options.swap_krool.value
         slot_data["starting_kong"] = self.options.starting_kong.value
-        slot_data["kong_checks"] = self.options.kong_checks.value
-        slot_data["dk_coin_checks"] = self.options.dk_coin_checks.value
-        slot_data["balloon_checks"] = self.options.balloon_checks.value
-        slot_data["banana_checks"] = self.options.banana_checks.value
-        slot_data["coin_checks"] = self.options.coin_checks.value
-        slot_data["bird_checks"] = self.options.bird_checks.value
+        slot_data["kong_locations"] = self.options.kong_locations.value
+        slot_data["vehicle_unlock"] = self.options.vehicle_unlock.value
+        slot_data["dk_coin_locations"] = self.options.dk_coin_locations.value
+        slot_data["balloon_locations"] = self.options.balloon_locations.value
+        slot_data["banana_locations"] = self.options.banana_locations.value
+        slot_data["coin_locations"] = self.options.coin_locations.value
+        slot_data["bird_locations"] = self.options.bird_locations.value
+        slot_data["swanky_locations"] = self.options.swanky_locations.value
         slot_data["required_birds"] = self.options.required_birds.value
         slot_data["required_lake_levels"] = self.options.required_lake_levels.value
         slot_data["required_forest_levels"] = self.options.required_forest_levels.value
@@ -257,20 +330,13 @@ class DKC3World(tracker.UTMxin, World):
 
 
     def generate_early(self):
-        # Skip shuffling levels
-        #if self.options.shuffle_levels:
-        #    self.options.shuffle_levels.value = False
-        # Place cogs anywhere for now
-        if self.options.cog_placement:
-            self.options.cog_placement.value = 0
-
-
-        # Shuffle levels
         self.level_connections: Dict[str, str] = dict()
         self.boss_connections: Dict[str, str] = dict()
         self.rom_connections: Dict[str, str] = dict()
         self.lost_world_levels: Set[str] = set()
+        self.trade_items: dict[Events, Events] = dict()
         generate_level_list(self)
+        shuffle_trade_items(self)
 
         super().generate_early()
 

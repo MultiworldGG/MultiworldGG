@@ -1,6 +1,6 @@
 
 from typing import TYPE_CHECKING, Awaitable
-from .subclasses import split_bits
+from .subclasses import split_bits, hex_f, printl
 
 if TYPE_CHECKING:
     from BaseClasses import ItemClassification
@@ -22,17 +22,21 @@ async def receive_small_key(client: "DSZeldaClient", ctx: "BizHawkClientContext"
         new_v = prev | bit_filter \
             if (prev & bit_filter) + (key_data["value"]*key_count) > bit_filter \
             else prev + (key_data["value"]*key_count)
-        print(f"Writing {key_data['name']} key to storage: {hex(prev)} -> {hex(new_v)}")
+        printl(f"Writing {key_data['name']} key to storage: {hex(prev)} -> {hex(new_v)}")
         return key_data["address"].get_inner_write_list(new_v)
 
     # Get key in own dungeon
     if client.current_stage == item.dungeon:
-        print("In dungeon! Getting Key")
+        printl("In dungeon! Getting Key")
         # Don't remove vanilla keys
         if client.last_vanilla_item and client.last_vanilla_item[-1] == item.name:
+            printl(f"\tCanceling removal of vanilla key")
             client.last_vanilla_item.pop()
         else:
+            printl(f"\tKey address: {client.key_address}")
+            await client.get_small_key_address(ctx)
             key_value = await client.key_address.read(ctx)
+            printl(f"\tNew Key address: {client.key_address} = {key_value}")
             key_value = 7 if key_value > 7 else key_value
             res += client.key_address.get_write_list(key_value + key_count)
             res += await client.receive_key_in_own_dungeon(ctx, item.name, write_keys_to_storage)  # TODO: Move special operation here too
@@ -43,6 +47,7 @@ async def receive_small_key(client: "DSZeldaClient", ctx: "BizHawkClientContext"
 
     # Extra key operations, in ph writing totok midway keys
     res += await client.received_special_small_keys(ctx, item.name, write_keys_to_storage)
+    printl(f"\tKey Write List: {res}")
     return res
 
 async def receive_refill(client: "DSZeldaClient", ctx: "BizHawkClientContext", item: "DSItem", num_received_items):
@@ -126,8 +131,11 @@ async def remove_vanilla_progressive(client: "DSZeldaClient", ctx: "BizHawkClien
         return res
     address, value = item.progressive[index]
     if hasattr(item, "give_ammo"):
-        ammo_v = item.give_ammo[min(max(index - 1, 0), len(item.give_ammo) - 1)]
-        res += item.ammo_address.get_write_list(ammo_v)
+        if index == 0:
+            res += item.ammo_address.get_write_list(0)
+        else:
+            ammo_v = item.give_ammo[min(max(index - 1, 0), len(item.give_ammo) - 1)]
+            res += item.ammo_address.get_write_list(ammo_v)
     # Progressive overwrite fix
     if "progressive_overwrite" in item.tags and index > 1:
         _, value = item.progressive[index-1]
@@ -135,7 +143,7 @@ async def remove_vanilla_progressive(client: "DSZeldaClient", ctx: "BizHawkClien
     else:
         prev = await address.read(ctx)
         res += address.get_write_list(prev & (~value))
-    print(f"Res rmp {res} {index}")
+    printl(f"Res rmp {hex_f(res)} {index}")
     return res
 
 async def remove_vanilla_normal(client: "DSZeldaClient", ctx: "BizHawkClientContext", item: "DSItem", num_received_items):

@@ -70,6 +70,10 @@ class Items(StrEnum):
         return repr(self.value)
 
 class Locations(StrEnum):
+    funky_upgrade_1 = "Funky's Gift #1"
+    funky_upgrade_2 = "Funky's Gift #2"
+    funky_upgrade_3 = "Funky's Gift #3"
+
     bird_bounty_beach = "Banana Bird - Bounty Beach"
     bird_kong_cave = "Banana Bird - Kong Cave"
     bird_undercover_cove = "Banana Bird - Undercover Cove"
@@ -83,6 +87,30 @@ class Locations(StrEnum):
     bird_glacial_grotto = "Banana Bird - Glacial Grotto"
     bird_clifftop_cache = "Banana Bird - Clifftop Cache"
     bird_sewer_stockpile = "Banana Bird - Sewer Stockpile"
+    bird_bramble = "Banana Bird - Bramble's Bungalow"
+    bird_barnacle = "Banana Bird - Barnacle's Island"
+
+    swanky_lake_game_1 = "Swanky's Sideshow at Lake - Head to Head"
+    swanky_lake_game_2 = "Swanky's Sideshow at Lake - Race to 25"
+    swanky_lake_game_3 = "Swanky's Sideshow at Lake - Endurance"
+    swanky_forest_game_1 = "Swanky's Sideshow at Forest - Head to Head"
+    swanky_forest_game_2 = "Swanky's Sideshow at Forest - Race to 25"
+    swanky_forest_game_3 = "Swanky's Sideshow at Forest - Endurance"
+    swanky_cove_game_1 = "Swanky's Sideshow at Cove - Head to Head"
+    swanky_cove_game_2 = "Swanky's Sideshow at Cove - Race to 25"
+    swanky_cove_game_3 = "Swanky's Sideshow at Cove - Endurance"
+    swanky_mekanos_game_1 = "Swanky's Sideshow at Mekanos - Head to Head"
+    swanky_mekanos_game_2 = "Swanky's Sideshow at Mekanos - Race to 25"
+    swanky_mekanos_game_3 = "Swanky's Sideshow at Mekanos - Endurance"
+    swanky_k3_game_1 = "Swanky's Sideshow at K3 - Head to Head"
+    swanky_k3_game_2 = "Swanky's Sideshow at K3 - Race to 25"
+    swanky_k3_game_3 = "Swanky's Sideshow at K3 - Endurance"
+    swanky_ridge_game_1 = "Swanky's Sideshow at Ridge - Head to Head"
+    swanky_ridge_game_2 = "Swanky's Sideshow at Ridge - Race to 25"
+    swanky_ridge_game_3 = "Swanky's Sideshow at Ridge - Endurance"
+    swanky_kore_game_1 = "Swanky's Sideshow at Kore - Head to Head"
+    swanky_kore_game_2 = "Swanky's Sideshow at Kore - Race to 25"
+    swanky_kore_game_3 = "Swanky's Sideshow at Kore - Endurance"
 
     belchas_barn_clear = "Belcha's Barn - Clear"
     arichs_ambush_clear = "Arich's Ambush - Clear"
@@ -222,15 +250,15 @@ class Locations(StrEnum):
     springing_spiders_coin_2 = "Springin' Spiders - Bear Coin #2 (Behind a green Buzz)" # 77
     springing_spiders_coin_3 = "Springin' Spiders - Bear Coin #3 (In a ledge below a Buzz)" # 76
     springing_spiders_coin_4 = "Springin' Spiders - Bear Coin #4 (In a ledge below a Buzz)" # 120
-    springing_spiders_bananas_2 = "Springin' Spiders - Banana Bunch #1 (Behind Green Buzz before no animal sign)" # 68
+    springing_spiders_bananas_2 = "Springin' Spiders - Banana Bunch #2 (Behind Green Buzz before no animal sign)" # 68
     springing_spiders_coin_5 = "Springin' Spiders - Bear Coin #5 (No animal sign)" # 88
     springing_spiders_coin_6 = "Springin' Spiders - Bear Coin #6 (Above Red Buzz)" # 47
-    springing_spiders_bananas_3 = "Springin' Spiders - Banana Bunch #4 (Above Red Buzz)" # 50
-    springing_spiders_bananas_4 = "Springin' Spiders - Banana Bunch #5 (Below a wooden barrel)" # 101
+    springing_spiders_bananas_3 = "Springin' Spiders - Banana Bunch #3 (Above Red Buzz)" # 50
+    springing_spiders_bananas_4 = "Springin' Spiders - Banana Bunch #4 (Below a wooden barrel)" # 101
     springing_spiders_balloon_2 = "Springin' Spiders - Balloon #2 (In hole between Buzzes)" # 62
     springing_spiders_balloon_3 = "Springin' Spiders - Balloon #3 (Below N)" # 37
-    springing_spiders_bananas_5 = "Springin' Spiders - Banana Bunch #6 (Above a red Buzz)" # 100
-    springing_spiders_bananas_6 = "Springin' Spiders - Banana Bunch #7 (Next to a hole with a single banana below)" # 109
+    springing_spiders_bananas_5 = "Springin' Spiders - Banana Bunch #5 (Above a red Buzz)" # 100
+    springing_spiders_bananas_6 = "Springin' Spiders - Banana Bunch #6 (Next to a hole with a single banana below)" # 109
     springing_spiders_coin_7 = "Springin' Spiders - Bear Coin #7 (Next to Bonus #2)" # 72
 
     bobbing_barrel_brawl_clear = "Bobbing Barrel Brawl - Clear"
@@ -692,6 +720,7 @@ class Locations(StrEnum):
     
     def __repr__(self) -> str:
         return repr(self.value)
+    
 
 
 class Regions(StrEnum):
@@ -818,8 +847,21 @@ class Regions(StrEnum):
         return repr(self.value)
 
 class Events(StrEnum):
-    k_rool_at_kore = "Defeated K. Rool at Kore"
+    k_rool_at_kore = "Defeated K. Rool at Kastle KAOS"
     k_rool_at_knautilus = "Defeated K. Rool at Knautilus"
+
+    bazaar_1 = "Buy cheap item from Bazaar"
+    bazaar_2 = "Buy expensive item from Bazaar"
+    blizzard = "Retrieve gift from Blizzard"
+    blue = "Give present to Blue"
+    flower = "Get flower from map"
+    barter = "Exchange with Barter"
+    item_shell = "Shell"
+    item_mirror = "Mirror"
+    item_present = "Present"
+    item_ball = "Ball"
+    item_flower = "Flower"
+    item_wrench = "Wrench"
 
     lake_level = "Cleared Lake Orangatanga Level"
     forest_level = "Cleared Kremwood Forest Level"

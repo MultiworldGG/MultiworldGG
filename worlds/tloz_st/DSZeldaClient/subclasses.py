@@ -8,6 +8,26 @@ if TYPE_CHECKING:
     except ImportError:
         pass
 
+print_debug: list[str] = []
+
+def hex_f(i):
+    """hex() but can handle all datatype exceptions recursively"""
+    if isinstance(i, int):
+        return hex(i)
+    if isinstance(i, dict):
+        return {hex_f(k): hex_f(v) for k, v in i.items()}
+    if isinstance(i, Iterable) and not isinstance(i, str):
+        return [hex_f(j) for j in i]
+    return i
+
+def printl(s, silent=False) -> None:
+    """Prints to console, but also saves print output in case the client asks for it."""
+    s = str(s)
+    s = s.replace("\t", "  ")
+    if not silent:
+        print(s)
+    print_debug.append(s)
+
 async def read_multiple(ctx, addresses, signed=False, keys=None, offset=0) -> dict["Address", int] or dict[str, int]:
     # print(f"\t reading {list(addresses)}")
     read_list = [a.get_inner_read_list() for a in addresses]
@@ -118,7 +138,7 @@ class Address:
         read_result = await self.read_bytes(ctx)
         res = sum([int.from_bytes(b, "little", signed=signed)<<(8*i) for i, b in enumerate(read_result)])
         if not silent:
-            print(f"\tReading address {self}, got value {res}")
+            printl(f"\tReading address {self}, got value {hex_f(res)}")
         return res
 
     async def read_bytes(self, ctx):
@@ -128,7 +148,7 @@ class Address:
         if isinstance(value, int):
             value = split_bits(value, self.size)
         if not silent:
-            print(f"\tWriting to address {self} with value {value}")
+            printl(f"\tWriting to address {self} with value {hex_f(value)}")
         return await bizhawk.write(ctx.bizhawk_ctx, [(self.addr+offset, value, self.domain)])
 
     async def add(self, ctx, value: int, silent=False, offset=0):
@@ -312,12 +332,12 @@ class DSTransition:
             z_max = self.extra_data.get("z_max", 0x8FFFFFFF)
             z_min = self.extra_data.get("z_min", -0x8FFFFFFF)
             y = self.coords[1] if self.coords else self.extra_data.get("y", coords["y"]) - y_offest
-            print(f"Checking entrance {self.name}")
-            print(f"\tx: {x_max} > {coords['x']} > {x_min}")
-            print(f"\ty: {y + 1000} > {y} > {coords['y'] - y_offest}")
-            print(f"\tz: {z_max} > {coords['z']} > {z_min}")
+            printl(f"Checking entrance {self.name}")
+            printl(f"\tx: {x_max} > {coords['x']} > {x_min}")
+            printl(f"\ty: {y + 1000} > {y} > {coords['y'] - y_offest}")
+            printl(f"\tz: {z_max} > {coords['z']} > {z_min}")
             if y + 2000 > coords["y"] - y_offest >= y and x_max > coords["x"] > x_min and z_max > coords["z"] > z_min:
-                print(f"\tMatch!")
+                printl(f"\tMatch!")
                 return True
         return False
 
@@ -344,11 +364,11 @@ class DSTransition:
         return self.name
 
     def debug_print(self):
-        print(f"Debug print for entrance {self.name}")
-        print(f"\tentrance {self.entrance}")
-        print(f"\texit {self.exit}")
-        print(f"\tcoords {self.coords}")
-        print(f"\textra_data {self.extra_data}")
+        printl(f"Debug print for entrance {self.name}")
+        printl(f"\tentrance {self.entrance}")
+        printl(f"\texit {self.exit}")
+        printl(f"\tcoords {self.coords}")
+        printl(f"\textra_data {self.extra_data}")
 
     @classmethod
     def from_data(cls, entrance_data):

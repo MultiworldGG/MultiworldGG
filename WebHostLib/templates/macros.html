@@ -59,7 +59,10 @@
                                 Join game on apworlds.com/wordipelago</a> 
                             {% elif patch.game == "Yacht Dice" %}
                             <a href="https://yacht-dice-ap.netlify.app/?hostport={{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&name={{ patch.player_name | e}}&go=LS">
-                                Join game on yacht-dice-ap.netlify.app</a>                                   
+                                Join game on yacht-dice-ap.netlify.app</a>         
+                            {% elif patch.game == "Archipelaballs" %}
+                            <a href="https://archipelaballs.shinten.moe/?host={{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&slot={{ patch.player_name | e}}">
+                                Join game on archipelaballs.shinten.moe</a>                             
                             {% else %}
                                 No file to download for this game.
                             {% endif %}

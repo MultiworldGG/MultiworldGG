@@ -187,6 +187,8 @@ class STItem(DSItem):
             return remove_vanilla_bow
         if self.name == "Bow of Light":
             return remove_vanilla_bow_of_light
+        if self.name == "Rabbit Net" or self.name in self.all_item_groups["Snurglar Key"]:
+            return dummy
         if self.name.startswith("Passenger:"):
             return remove_passenger
         if self.name.startswith("Cargo:"):

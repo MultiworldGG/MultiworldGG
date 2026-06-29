@@ -1,6 +1,7 @@
 from BaseClasses import Location
 from .enums import Locations
 from .constants import *
+from .options import VehicleUnlock
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -600,10 +601,42 @@ banana_birds = {
     Locations.bird_smugglers_cove:                BIRD | 0x648 - BIRD_NUM,
     Locations.bird_arichs_hoard:                  BIRD | 0x649 - BIRD_NUM,
     Locations.bird_bounty_bay:                    BIRD | 0x64A - BIRD_NUM,
-    #Locations.bird_sky_high_secret:               BIRD | 0x64B - BIRD_NUM,
+    Locations.bird_sky_high_secret:               BIRD | 0x64B - BIRD_NUM,
     Locations.bird_glacial_grotto:                BIRD | 0x64C - BIRD_NUM,
-    #Locations.bird_clifftop_cache:                BIRD | 0x64D - BIRD_NUM,
+    Locations.bird_clifftop_cache:                BIRD | 0x64D - BIRD_NUM,
     Locations.bird_sewer_stockpile:               BIRD | 0x64E - BIRD_NUM,
+    Locations.bird_bramble:                       BIRD | 0x14004,
+    Locations.bird_barnacle:                      BIRD | 0x10408,
+}
+
+swanky_games = {
+    Locations.swanky_lake_game_1:                 SWANKY | 0x0101,
+    Locations.swanky_lake_game_2:                 SWANKY | 0x0104,
+    Locations.swanky_lake_game_3:                 SWANKY | 0x0102,
+    Locations.swanky_forest_game_1:               SWANKY | 0x0201,
+    Locations.swanky_forest_game_2:               SWANKY | 0x0204,
+    Locations.swanky_forest_game_3:               SWANKY | 0x0202,
+    Locations.swanky_cove_game_1:                 SWANKY | 0x0301,
+    Locations.swanky_cove_game_2:                 SWANKY | 0x0304,
+    Locations.swanky_cove_game_3:                 SWANKY | 0x0302,
+    Locations.swanky_mekanos_game_1:              SWANKY | 0x0401,
+    Locations.swanky_mekanos_game_2:              SWANKY | 0x0404,
+    Locations.swanky_mekanos_game_3:              SWANKY | 0x0402,
+    Locations.swanky_k3_game_1:                   SWANKY | 0x0501,
+    Locations.swanky_k3_game_2:                   SWANKY | 0x0504,
+    Locations.swanky_k3_game_3:                   SWANKY | 0x0502,
+    Locations.swanky_ridge_game_1:                SWANKY | 0x0601,
+    Locations.swanky_ridge_game_2:                SWANKY | 0x0604,
+    Locations.swanky_ridge_game_3:                SWANKY | 0x0602,
+    Locations.swanky_kore_game_1:                 SWANKY | 0x0701,
+    Locations.swanky_kore_game_2:                 SWANKY | 0x0704,
+    Locations.swanky_kore_game_3:                 SWANKY | 0x0702,
+}
+
+funky_gifts = {
+    Locations.funky_upgrade_1:                    UPGRADE | 0x01,
+    Locations.funky_upgrade_2:                    UPGRADE | 0x02,
+    Locations.funky_upgrade_3:                    UPGRADE | 0x04,
 }
 
 all_locations = {
@@ -624,6 +657,8 @@ for loc_name, loc_id in all_locations.items():
     sorted_locations_table[level_num].append(loc_id)
 
 all_locations.update(banana_birds)
+all_locations.update(funky_gifts)
+all_locations.update(swanky_games)
 
 location_groups = {
     "Lakeside Limbo": {location.value for location in all_locations.keys() if "Lakeside Limbo" in location.value},
@@ -667,6 +702,7 @@ location_groups = {
     "Swoopy Salvo": {location.value for location in all_locations.keys() if "Swoopy Salvo" in location.value},
     "Rocket Rush": {location.value for location in all_locations.keys() if "Rocket Rush" in location.value},
     "Banana Birds": {location.value for location in all_locations.keys() if "Banana Bird" in location.value},
+    "Swanky's Sideshow": {location.value for location in all_locations.keys() if "Swanky" in location.value},
     "Bosses": {
         Locations.belchas_barn_clear.value,
         Locations.arichs_ambush_clear.value,
@@ -684,17 +720,21 @@ def setup_locations(world: "DKC3World"):
         **stage_bonus,
     }
 
-    if world.options.kong_checks:
+    if world.options.kong_locations:
         location_table.update(stage_kong)
-    if world.options.dk_coin_checks:
+    if world.options.dk_coin_locations:
         location_table.update(stage_dk_coins)
-    if world.options.balloon_checks:
+    if world.options.balloon_locations:
         location_table.update(stage_balloons)
-    if world.options.banana_checks:
+    if world.options.banana_locations:
         location_table.update(stage_bunches)
-    if world.options.coin_checks:
+    if world.options.coin_locations:
         location_table.update(stage_coins)
-    if world.options.bird_checks:
+    if world.options.bird_locations:
         location_table.update(banana_birds)
+    if world.options.vehicle_unlock != VehicleUnlock.option_item:
+        location_table.update(funky_gifts)
+    if world.options.swanky_locations:
+        location_table.update(swanky_games)
 
     return location_table

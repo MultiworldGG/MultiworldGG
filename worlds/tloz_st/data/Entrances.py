@@ -688,7 +688,7 @@ ENTRANCE_DATA = {
         "entrance": (0x7, 0x0, 0xFD),
         "exit": (0x5, 0x0, 0xFE),
         "type": EntranceGroups.OVERWORLD,
-        "direction": EntranceGroups.NONE,
+        "direction": EntranceGroups.LEFT,
         "island": EntranceGroups.NONE
     },
     "Snow Realm Icy Spring": {
@@ -721,7 +721,19 @@ ENTRANCE_DATA = {
         "type": EntranceGroups.DUNGEON_ENTRANCE,
         "direction": EntranceGroups.INSIDE,
         "island": EntranceGroups.NONE
-    }
+    },
+    "Forest Realm North W Wooded Temple": {
+        "return_name": "Snow Realm South W Wooded Temple",
+        "entrance_region": "w wooded temple tracks",
+        "exit_region": "snow realm fr",
+        "extra_data": {"x_max": -200000, "x_min": -240000},
+        "coords": (-221184, 0, -341845),
+        "entrance": (0x4, 0x0, 0xFB),
+        "exit": (0x5, 0x0, 0xFC),
+        "type": EntranceGroups.OVERWORLD,
+        "direction": EntranceGroups.UP,
+        "island": EntranceGroups.NONE
+    },
 
 
 }

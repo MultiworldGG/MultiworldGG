@@ -7,7 +7,7 @@ from .enums import Regions, Events, Locations
 from .constants import *
 
 
-level_region_data: dict[Regions, dict[Locations, list[str]]] = {
+level_region_data: dict[Regions, dict[str, list[Locations]]] = {
     Regions.lakeside_limbo_level:  {
         "Clear": [
             Locations.lakeside_limbo_clear,
@@ -1280,6 +1280,14 @@ level_region_data: dict[Regions, dict[Locations, list[str]]] = {
     },
 }
 
+krematoa_levels = (
+    Regions.stampede_sprint_map,
+    Regions.criss_kross_cliffs_map,
+    Regions.tyrant_twin_tussle_map,
+    Regions.swoopy_salvo_map,
+    Regions.rocket_rush_map,
+)
+
 level_rom_data = {
     Regions.lakeside_limbo_level: 0x34D19C,
     Regions.doorstop_dash_level: 0x34D1A7,
@@ -1321,6 +1329,10 @@ level_rom_data = {
     Regions.tyrant_twin_tussle_level: 0x34D530,
     Regions.swoopy_salvo_level: 0x34D53B,
     Regions.rocket_rush_level: 0x34D546,
+
+    Regions.kastle_kaos_level: 0x34D4E1,
+    Regions.knautilus_level: 0x34D551,
+
 }
 
 level_list = [
@@ -1489,6 +1501,15 @@ regional_events = {
     Regions.krematoa: Events.krematoa_level,
 }
 
+trade_items = {
+    Events.bazaar_1: Events.item_shell,
+    Events.bazaar_2: Events.item_mirror,
+    Events.blizzard: Events.item_present,
+    Events.blue: Events.item_ball,
+    Events.flower: Events.item_flower,
+    Events.barter: Events.item_wrench,
+}
+
 
 def generate_level_list(world: "DKC3World"):
     shuffled_level_list = level_list.copy()
@@ -1509,3 +1530,59 @@ def generate_level_list(world: "DKC3World"):
 
     # Place locked levels
     world.level_connections[Regions.skiddas_row_map] = Regions.skiddas_row_level
+
+    # Swap K. Rool levels
+    if world.options.swap_krool:
+        world.level_connections[Regions.kastle_kaos_map] = Regions.knautilus_level
+        world.level_connections[Regions.knautilus_map] = Regions.kastle_kaos_level
+        world.rom_connections[Regions.kastle_kaos_level] = [Regions.knautilus_level, L8B >> 24]
+        world.rom_connections[Regions.knautilus_level] = [Regions.kastle_kaos_level, L7B >> 24]
+    else:
+        world.level_connections[Regions.kastle_kaos_map] = Regions.kastle_kaos_level
+        world.level_connections[Regions.knautilus_map] = Regions.knautilus_level
+        world.rom_connections[Regions.kastle_kaos_level] = [Regions.kastle_kaos_level, L7B >> 24]
+        world.rom_connections[Regions.knautilus_level] = [Regions.knautilus_level, L8B >> 24]
+
+possible_blue_items = [
+    Events.item_shell.value,
+    Events.item_mirror.value,
+    #Events.item_present.value,
+    Events.item_ball.value,
+    Events.item_flower.value,
+    Events.item_wrench.value,
+]
+possible_barter_items = [
+    Events.item_shell.value,
+    #Events.item_mirror.value,
+    #Events.item_present.value,
+    Events.item_ball.value,
+    Events.item_flower.value,
+    Events.item_wrench.value,
+]
+
+def shuffle_trade_items(world: "DKC3World"):
+    if world.options.trade_shuffle:
+        world.trade_items = {place.value: None for place, _ in trade_items.items()}
+
+        blue_item = world.random.choice(possible_blue_items)
+        
+        barter_items = possible_barter_items.copy()
+        if blue_item in barter_items:
+            barter_items.remove(blue_item)
+        barter_item = world.random.choice(barter_items)
+
+        world.trade_items[Events.blue.value] = blue_item
+        world.trade_items[Events.barter.value] = barter_item
+
+        item_list = list(trade_items.values())
+        item_list.remove(blue_item)
+        item_list.remove(barter_item)
+        world.random.shuffle(item_list)
+
+        for place in world.trade_items.keys():
+            if world.trade_items[place] is None:
+                world.trade_items[place] = item_list.pop(0)
+
+    else:
+        world.trade_items = {place.value: item.value for place, item in trade_items.items()}
+            

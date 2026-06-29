@@ -222,7 +222,7 @@ class RandomPortSocketCreator:
         """ Get ports from a single process's connections. """
         try:
             return (c.laddr.port for c in p.net_connections("tcp4") if c.laddr)
-        except psutil.AccessDenied:
+        except (psutil.AccessDenied, psutil.NoSuchProcess, psutil.ZombieProcess):
             return ()
 
     @staticmethod

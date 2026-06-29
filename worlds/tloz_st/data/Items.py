@@ -1287,7 +1287,7 @@ ITEMS_DATA |= {
         "value": 0x02,
         'item_groups': ["Misc Keys", "Snurglar Key"],
         "model": "Key", 
-        "id": 162,
+        "id": 162
     },
     "Purple Snurglar Key": {
         'classification': ItemClassification.progression,
@@ -1295,7 +1295,7 @@ ITEMS_DATA |= {
         "value": 0x04,
         'item_groups': ["Misc Keys", "Snurglar Key"],
         "model": "Key", 
-        "id": 163,
+        "id": 163
     },
     "Gold Snurglar Key": {
         'classification': ItemClassification.progression,
@@ -1303,7 +1303,7 @@ ITEMS_DATA |= {
         "value": 0x08,
         'item_groups': ["Misc Keys", "Snurglar Key"],
         "model": "Key", 
-        "id": 164,
+        "id": 164
     },
     "Snurglar Keyring": {
         'classification': ItemClassification.progression,
@@ -2019,7 +2019,7 @@ ITEMS_DATA |= {
         "set_bit": [(STAddr.tracks_1, 0x2), (STAddr.tracks_0, 0x20), (STAddr.source_rails, 0x2),
                     (STAddr.sources, 0x10), ],
         'model': "Forest Glyph",
-        "item_groups": ["Tracks: N Castle Town", "Tracks: Forest Glyph", "Tracks: W Castle Town Tracks",
+        "item_groups": ["Tracks: N Castle Town", "Tracks: Forest Glyph", "Tracks: W Castle Town",
                         "Tracks: Forest Source",
                         "Thematic Track Groupings"],
         "reload_entrances": [0x2f00, 0x1400, 0x1401, 0x1700], 
@@ -2375,6 +2375,7 @@ for i, k in enumerate(ITEMS_DATA.items()):
     item_data["id"] = i + 1
     ITEMS[item_name] = STItem(item_name, item_data, ITEMS)
 
-# track_groups = {t: g for t, g in ITEM_GROUPS.items() if t.startswith("Tracks:")}
+track_groups = {t: g for t, g in ITEM_GROUPS.items() if t.startswith("Tracks:")}
 # for t in track_groups.items():
 #     print(t)
+
