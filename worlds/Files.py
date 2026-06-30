@@ -199,12 +199,12 @@ class APWorldContainer(APContainer):
     maximum_ap_version: "Version | None" = None
 
     def read_contents(self, opened_zipfile: zipfile.ZipFile) -> Dict[str, Any]:
-        from Utils import tuplize_version, core_version_tuple
+        from Utils import tuplize_version, version_tuple
         try:
             manifest = super().read_contents(opened_zipfile)
         except KeyError as e:
-            # Feature gate: archipelago.json is optional for versions < 0.7.0
-            if core_version_tuple < (0, 7, 0):
+            # Feature gate: archipelago.json is optional for versions < 0.7.300
+            if version_tuple < (0, 7, 300):
                 # Return empty manifest, metadata will remain None
                 return {}
             raise
