@@ -92,7 +92,8 @@ class DeltaruneCommandProcessor(ClientCommandProcessor):
             self.output("Patched.")
 
     def _cmd_delete_saves(self):
-        """Delete all archipelago saves and caches"""
+        """Delete all archipelago saves and caches."""
+
         if isinstance(self.ctx, DeltaruneContext):
             path = self.ctx.save_game_folder
             for root, dirs, files in os.walk(path):
@@ -100,14 +101,23 @@ class DeltaruneCommandProcessor(ClientCommandProcessor):
                     shutil.rmtree(os.path.join(root, dir), ignore_errors=False)
                     self.output(f"Deleted {os.path.join(root, dir)}")
 
+    def _cmd_inspect_datastore(self, key: typing.Optional[str] = None):
+        """Inspect the contents of your datastore."""
+        if isinstance(self.ctx, DeltaruneContext):
+            if key is not None:
+                self.output(
+                    f"{self.ctx.get_datastore_prefix() + key}: {self.ctx.stored_data.get(self.ctx.get_datastore_prefix() + key)}"
+                )
+            else:
+                for data in self.ctx.stored_data:
+                    self.output(f"{data}: {self.ctx.stored_data[data]}")
+
     def _cmd_chosen_route(self):
         """Use this to figure out your chosen route, if you don't know or have forgotten."""
         if isinstance(self.ctx, DeltaruneContext):
             if self.ctx.chosen_route == "all_recruits":
-                self.output(
-                    """You're doing "All Recruits" - Progress through the story normally. Recruit Everyone!!!
-Gaining recruits has been turned into checks."""
-                )
+                self.output("""You're doing "All Recruits" - Progress through the story normally. Recruit Everyone!!!
+Gaining recruits has been turned into checks.""")
             elif self.ctx.chosen_route == "weird_route":
                 self.output(
                     """You're doing "Weird Route" - Proceed through the "Weird Route" storyline while losing all possible recruits.
@@ -220,6 +230,9 @@ class DeltaruneContext(SuperContext):
         super().__init__(server_address, password)
         self.game = "DELTARUNE"
 
+    def get_datastore_prefix(self):
+        return f"{self.slot}_{self.team}_"
+
     def patch_game(self):
         with open(Utils.user_path("DELTARUNE", "chapter1_windows", "data.win"), "rb") as f:
             patchedFile = bsdiff4.patch(f.read(), deltarune.data_path("ch1.bsdiff"))
@@ -252,6 +265,9 @@ class DeltaruneContext(SuperContext):
         super().on_package(cmd, args)
         if cmd == "Connected":
             self.game = self.slot_info[self.slot].game
+            self.set_notify(
+                self.get_datastore_prefix() + "completed_chapters", self.get_datastore_prefix() + "current_location"
+            )
         async_start(process_deltarune_cmd(self, cmd, args))
 
     def make_gui(self):
@@ -261,9 +277,11 @@ class DeltaruneContext(SuperContext):
         return ui
 
     async def version_mismatch(self):
-        DeltaruneCommandProcessor.output(self, 
-            """*****\nWARNING: Incompatible DELTARUNEAP version. Unable to connect.\n*****""")
+        DeltaruneCommandProcessor.output(
+            self, """*****\nWARNING: Incompatible DELTARUNEAP version. Unable to connect.\n*****"""
+        )
         await super().disconnect(False)
+
 
 async def process_deltarune_cmd(ctx: DeltaruneContext, cmd: str, args: dict):
     if cmd == "Connected":
@@ -272,6 +290,7 @@ async def process_deltarune_cmd(ctx: DeltaruneContext, cmd: str, args: dict):
         except:
             await ctx.version_mismatch()
             return
+
 
 async def send_testy():
     """i like to test oh yeah."""

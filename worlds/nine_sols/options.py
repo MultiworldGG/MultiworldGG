@@ -145,9 +145,9 @@ class FirstRootNode(Choice):
     no locations would be checkable at the start of the game when you have no items yet.
 
     Some first_root_nodes will force items to be placed early, since the randomizer would be unbeatable otherwise:
-    - galactic_dock early-places one of Nymph or Tai-Chi Kick
     - central_transport_hub early-places Tai-Chi Kick
     - factory_underground early-places one of Air Dash or Cloud Leap
+    - galactic_dock early-places one of Nymph or Tai-Chi Kick
     - inner_warehouse early-places Wall Climb and one of Cloud Leap, Air Dash or Ledge Grab
     - power_reservoir_west early-places one of Cloud Leap, Air Dash or Tai-Chi Kick
     See the descriptions of shuffle_grapple, shuffle_wall_climb and shuffle_ledge_grab for additional cases.
@@ -161,12 +161,12 @@ class FirstRootNode(Choice):
     option_factory_great_hall = 4
     option_factory_underground = 5
     option_galactic_dock = 6
-    option_outer_warehouse = 7
     option_grotto_of_scriptures_entry = 8
     option_grotto_of_scriptures_east = 9
     option_grotto_of_scriptures_west = 10
     option_inner_warehouse = 11
     option_lake_yaochi_ruins = 12
+    option_outer_warehouse = 7
     option_power_reservoir_east = 13
     option_power_reservoir_west = 14
     option_radiant_pagoda = 15
@@ -321,6 +321,46 @@ class RandomizeShops(Toggle):
     """
 
 
+class RandomizeSkillTree(Toggle):
+    """
+    Randomizes the 27 skill tree nodes that you would normally spend skill points to unlock in the vanilla game
+    (i.e., excluding the nodes for starting abilities like Parry or major abilities like Air Dash).
+    Spending skill points on these tree nodes will now check AP locations,
+    and the actual skills are instead granted by 19 new AP item types.
+
+    Item details:
+    - The item and location counts differ because several unique skills become progressive items:
+    Progressive Bullet Deflect, Progressive Water Flow, Progressive Full Control, Qi Boost, Enhanced Talisman,
+    and Enhanced Blade
+    - "Enhanced Qi Blast" remains a regular unique item because basic Qi Blast is always a starting ability.
+    - On logic_difficulty: vanilla, Progressive Bullet Deflect is the only progression item added by this option,
+    because of its use in the Grotto tomb parry challenges.
+    - On logic_difficulty: medium or higher, Swift Runner is also progression.
+    NOTE: "Swift Runner logic" has not yet been implemented
+
+    Location details:
+    - The locations are named after the skills they would unlock in vanilla, e.g. "Skill Tree Node: Bullet Deflect"
+    - For skill names that appear multiple times in the tree, the exact node is disambiguated with a parenthetical, e.g.
+    "Skill Tree Node: Qi Boost (Top Left)" and "Skill Tree Node: Enhanced Talisman (Right)".
+
+    Logic details:
+    - Skill tree locations are grouped into low, medium and high cost.
+    They'll become "in logic" as you gain access to more of the game world.
+    Depending on your first_root_node, low cost locations may be in logic immediately.
+    - For now, a skill tree node is defined as low/medium/high cost if it needs
+    at most 3/9/10 skill points to unlock itself and all of its prerequisite nodes.
+    For example, Enhanced Water Flow takes 15 "total skill points" so it's "high cost",
+    while Swift Runner takes only 1 so it's "low cost".
+    - Like vanilla, some skill tree locations cannot be checked until you have
+    Tai-Chi Kick, or Unbounded Counter, or the bow/any arrow.
+    - The vanilla game has a level cap of 30 so that Tao Fruits are required to complete the skill tree.
+    The randomizer mod raises this level cap to 99, since "Tao Fruit logic" would be more trouble than it's worth.
+
+    Experience can get pretty tight if enough important items land in the skill tree,
+    so be aware there's an "Experience Multiplier" in the mod's F1 settings.
+    """
+
+
 # actual Option Groups are specified in the WebWorld in __init__.py for some reason
 @dataclass
 class NineSolsGameOptions(PerGameCommonOptions):
@@ -361,5 +401,5 @@ class NineSolsGameOptions(PerGameCommonOptions):
 
     # Additional Randomizations
     randomize_shops: RandomizeShops
-    # skill_tree_randomization
+    randomize_skill_tree: RandomizeSkillTree
     # entrance_randomization

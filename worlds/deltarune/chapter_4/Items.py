@@ -22,7 +22,7 @@ chapter4_items = [
     ItemData(ItemIDs.tensiongem, ItemClassification.filler, groups=[ItemGroups.tension_items]),
     ItemData(ItemIDs.dogdollar, ItemClassification.filler, groups=[ItemGroups.currencies], amount=0),
     ItemData(ItemIDs.mysticband, ItemClassification.useful, groups=[ItemGroups.armors]),
-    ItemData(ItemIDs.powerband, ItemClassification.useful, groups=[ItemGroups.armors]),
+    ItemData(ItemIDs.powerband, ItemClassification.useful, groups=[ItemGroups.armors], amount=2),
     ItemData(ItemIDs.princessrbn, ItemClassification.useful, groups=[ItemGroups.armors]),
     ItemData(ItemIDs.goldwidow, ItemClassification.useful, groups=[ItemGroups.armors]),
     ItemData(ItemIDs.scarfmark, ItemClassification.useful, groups=[ItemGroups.weapons, ItemGroups.ralsei_weapons]),

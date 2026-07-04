@@ -52,7 +52,7 @@ class BetterOdds(Toggle):
     """
 
     display_name = "Better Odds"
-    default = 0
+    default = 1
 
 
 class ChosenRoute(Choice):
@@ -170,7 +170,7 @@ class IncludeShadowMantle(Toggle):
     """
     THE SHADOW MANTLE WILL BE IN THE RANDOM ITEM POOL OF THE THIRD CHAPTER.
 
-    - **False** *The Shadow Mantle is the reward for beating the Shadow Mantle/ERAM*
+    - **False** *The Shadow Mantle is the reward for Shadow Mantle/ERAM, but isn't in logic for the knight*
     - **True** *The Shadow Mantle will be in the itempool in logic before Knight fight*
     """
 
@@ -240,7 +240,7 @@ class IncludeSecretBossesItemsRequirement(Toggle):
     """
 
     display_name = "Randomize Items required for Secret Bosses"
-    default = 1
+    default = 0
 
 
 class RemoveStartingEquipment(Toggle):
@@ -292,7 +292,7 @@ class IncludeLoseSwatchling(Toggle):
     WILL LOSING THE SWATCHLING RECRUIT BE A CHECK LOCATION?
 
     *(Since Swatchlings don't normally appear in weird route, enabling this means you have to do Singapore Wrong Warps.)*
-    *(In All Routes, it requires either reloading your save on a regular route or doing the wrong warp again.)*
+    *(In All Routes, it requires either reloading your save on a regular route or doing the wrong warp as well.)*
     """
 
     display_name = "Include Lose Swatchling"
@@ -307,7 +307,7 @@ class ExcludePostChapter2Locations(Toggle):
     - CH2: Castle Town - Ch2 All Stars Challenge
 
     *(Since you "beat" the chapter after sealing the Cyber World fountain,)*
-    *(enabling this means you can just go to the next chapter afterwards.)*
+    *(enabling this means you can just go straight to the next chapter afterwards.)*
     """
 
     display_name = "Exclude Post-Chapter 2 Locations"
@@ -508,7 +508,7 @@ class ProgressiveKrisWeapons(Toggle):
     """
 
     display_name = "Progressive Kris Weapons"
-    default = 1
+    default = 0
 
 
 class ProgressiveSusieWeapons(Toggle):
@@ -517,7 +517,7 @@ class ProgressiveSusieWeapons(Toggle):
     """
 
     display_name = "Progressive Susie Weapons"
-    default = 1
+    default = 0
 
 
 class ProgressiveRalseiWeapons(Toggle):
@@ -526,7 +526,7 @@ class ProgressiveRalseiWeapons(Toggle):
     """
 
     display_name = "Progressive Ralsei Weapons"
-    default = 1
+    default = 0
 
 
 class ProgressiveNoelleWeapons(Toggle):
@@ -535,7 +535,7 @@ class ProgressiveNoelleWeapons(Toggle):
     """
 
     display_name = "Progressive Noelle Weapons"
-    default = 1
+    default = 0
 
 
 class UnlockCharacters(Choice):
@@ -613,7 +613,7 @@ class UnlockFunGangActions(Toggle):
     """
 
     display_name = "Unlock S/R/N-Actions"
-    default = 1
+    default = 0
 
 
 deltarune_option_groups = [

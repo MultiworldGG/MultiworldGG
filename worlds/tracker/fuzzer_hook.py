@@ -1,4 +1,8 @@
-from fuzz import BaseHook, GenOutcome
+
+try:
+    from fuzz import BaseHook, GenOutcome
+except ImportError:
+    from worlds.fuzzer.fuzz import BaseHook, GenOutcome    
 from typing import List, Dict, Set
 import collections
 import logging

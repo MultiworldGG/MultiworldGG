@@ -3,7 +3,9 @@
 ## Required Software
 
 - DELTARUNE from the [Steam page](https://store.steampowered.com/app/1671210/)
+  - Require 1.04 (`download_depot 1671210 1671212 5291565625263756968`)
 - MultiworldGG from the [MultiworldGG Releases Page](https://github.com/MultiworldGG/MultiworldGG/releases)
+  - Require minimum 0.7.100
 - If you want to use AP: DELTARUNE APWorld from the [Releases Page](https://github.com/theemeraldsword85/DELTARUNEAP/releases)
   
 ## Recommended Software
@@ -16,7 +18,13 @@
 
 **Requires DELTARUNE 1.04 vanilla *(last public branch on Steam)***
 
-On AP, Download the APWorld and place it into archipelago/custom_worlds (Double clicking the APWorld will also work!)
+**If you've updated to Chapter 5, do the following to downpatch your base DELTARUNE:**
+
+- Open the steamconsole (Windows + R `steam://nav/console`)
+- Type `download_depot 1671210 1671212 5291565625263756968`
+- Follow the rest of the Setup guide. But use `/auto_patch steamdepot` instead of `/auto_patch steaminstall`
+
+For AP, Download the APWorld and place it into archipelago/custom_worlds (Double clicking the APWorld will also work!)
 
 Run the Archipelago Launcher (Or restart the launcher if it's already running)
 

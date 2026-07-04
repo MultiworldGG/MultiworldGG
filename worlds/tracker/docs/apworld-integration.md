@@ -170,6 +170,15 @@ There is a fourth much less powerful, but still useful override that UT allows w
 
 Unlike the other overrides this one has *two* different special return values, if the function returns None the entrance is skipped in the pathing, if it returns a non-None falsy the normal printing is used
 
+In addition worlds can define `explain_spot` which is similar but lets worlds override the final Location rule in `get_logical_path`
+
+```python
+    def explain_spot(self, location: Location, state: CollectionState) -> list[JSONMessagePart]:
+        l_return = [{"type":"color","color":"purple","text":location.name},{"type":"text","text":" :\n"}]
+        l_return.extend(location.access_rule.explain_json(state))
+        return l_return
+```
+
 ## Custom Sorting
 
 UT allows worlds to define a custom sorting method that can be used in place of UT's default sorting methods when the user sets their `sorting_method` to `apworld` in host.yaml. This is also the default value, so users will get this benefit by default if you implement it. (If you don't, UT will fall back to sorting based on the existing label.) 

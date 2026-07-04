@@ -259,30 +259,32 @@
                         </div>
                     {% endif %}
 
-                    {# Generation controls #}
-                    {% if lobby.state in (0, 3) and is_owner %}
+                    {# Generation controls / package download #}
+                    {% if lobby.state in (0, 3) %}
                         <div id="lobby-generate">
-                            <div id="apworld-queue-panel">
-                                <h3>APWorld Requests</h3>
-                                <div id="apworld-queue-empty">No pending APWorld requests.</div>
-                                <ul id="apworld-queue-list"></ul>
-                            </div>
-                            <div id="generate-standard" {% if force_local_generation %}style="display:none"{% endif %}>
-                                <button id="generate-btn" class="lobby-btn lobby-btn-primary"
-                                        {% if yaml_count == 0 %}disabled{% endif %}>
-                                    Generate Seed
-                                </button>
-                            </div>
+                            {% if is_owner %}
+                                <div id="apworld-queue-panel">
+                                    <h3>APWorld Requests</h3>
+                                    <div id="apworld-queue-empty">No pending APWorld requests.</div>
+                                    <ul id="apworld-queue-list"></ul>
+                                </div>
+                                <div id="generate-standard" {% if force_local_generation %}style="display:none"{% endif %}>
+                                    <button id="generate-btn" class="lobby-btn lobby-btn-primary"
+                                            {% if yaml_count == 0 %}disabled{% endif %}>
+                                        Generate Seed
+                                    </button>
+                                </div>
+                            {% endif %}
                             <div id="generate-custom">
                                 <div id="package-generation-notice" class="custom-disclaimer{% if not force_local_generation %} package-alternative{% endif %}">
                                     <span id="local-generation-required" {% if not force_local_generation %}style="display:none"{% endif %}>
                                         &#9888; This lobby must be generated locally.
                                     </span>
                                     <span id="local-generation-required-text" {% if not force_local_generation %}style="display:none"{% endif %}>
-                                        Download the package, generate locally with the {{ instance_name }} launcher, then upload the result (AP_12345.zip) here.
+                                        Download the package, generate locally with the {{ instance_name }} launcher{% if is_owner %}, then upload the result (AP_12345.zip) here{% endif %}.
                                     </span>
                                     <span id="local-generation-alternative-text" {% if force_local_generation %}style="display:none"{% endif %}>
-                                        Alternatively, download a package of all yamls and generate locally
+                                        {% if is_owner %}Alternatively, {% endif %}download a package of all YAMLs and APWorlds to generate locally
                                     </span>
                                     <span id="large-lobby-local-notice" {% if yaml_count <= 25 %}style="display:none"{% endif %}>
                                         Lobbies with more than 25 YAMLs cannot use server generation.
@@ -301,12 +303,14 @@
                                         {% if yaml_count == 0 %}disabled{% endif %}>
                                     &#x2B07; Download Package
                                 </button>
-                                <div id="upload-game-zone" class="drop-zone" style="margin-top:10px">
-                                    <p>Drop AP_*.zip file here, or
-                                        <label for="game-file-input" class="drop-zone-label">browse...</label>
-                                    </p>
-                                    <input type="file" id="game-file-input" accept=".zip" style="display:none">
-                                </div>
+                                {% if is_owner %}
+                                    <div id="upload-game-zone" class="drop-zone" style="margin-top:10px">
+                                        <p>Drop AP_*.zip file here, or
+                                            <label for="game-file-input" class="drop-zone-label">browse...</label>
+                                        </p>
+                                        <input type="file" id="game-file-input" accept=".zip" style="display:none">
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     {% endif %}

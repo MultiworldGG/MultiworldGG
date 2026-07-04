@@ -59,7 +59,7 @@ class NineSolsWebWorld(WebWorld):
         ]),
         OptionGroup("Additional Randomizations", [
             RandomizeShops,
-            # skill_tree_randomization
+            RandomizeSkillTree,
             # entrance_randomization
         ]),
     ]
@@ -127,6 +127,7 @@ class NineSolsWorld(World):
                     self.options.kuafu_extra_inventory_unlock_sol_seals.value = (
                         slot_data.get('kuafu_extra_inventory_unlock_sol_seals', 0))
                     self.options.randomize_shops.value = slot_data.get('randomize_shops', 0)
+                    self.options.randomize_skill_tree.value = slot_data.get('randomize_skill_tree', 0)
             return
 
         # generate game-specific randomizations separate from AP items/locations
@@ -192,6 +193,7 @@ class NineSolsWorld(World):
             'prevent_annoying_runbacks',
             'prevent_weakened_prison_state',
             'randomize_shops',
+            'randomize_skill_tree',
         )
         slot_data["first_root_node_name"] = self.options.first_root_node.current_key  # we want strings instead of ints
         slot_data["jade_costs"] = self.jade_costs

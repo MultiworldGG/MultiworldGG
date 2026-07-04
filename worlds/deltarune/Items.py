@@ -99,6 +99,9 @@ class ItemIDs(IntEnum):
     sheetmusic = 10030
     claimbclaws = 10031
 
+    pinkcoin = 10032
+    pinkkey = 10033
+
     chapter_1_egg = 10950
     chapter_2_egg = 10951
     chapter_3_egg = 10952
@@ -152,6 +155,16 @@ class ItemIDs(IntEnum):
     blue_ribbon = 20026
     tennatie = 20027
 
+    monarchRBN = 20030
+    truetie = 20031
+    dogwidow = 20032
+    redribbon = 20033
+    netskuehat = 20034
+    sethspecs = 20035
+    yellowhat = 20036
+    ogloves = 20037
+    greenapron = 20038
+
     waferguard = 20050
     mysticband = 20051
     powerband = 20052
@@ -184,6 +197,15 @@ class ItemIDs(IntEnum):
     toxicaxe = 30024
     flexscarf = 30025
     blackshard = 30026
+
+    woodblade2 = 30030
+    thatchet = 30031
+    blueshoes = 30032
+    aquaknife = 30033
+    floweryscarf = 30034
+    brokenscarf = 30035
+    gildedrose = 30036
+    mistlewp = 30037
 
     jingleblade = 30050
     scarfmark = 30051
@@ -394,6 +416,8 @@ items = {
     ItemIDs.tensionbow: "TensionBow",
     ItemIDs.shadowcrystal: "ShadowCrystal",
     ItemIDs.purecrystal: "PureCrystal",
+    ItemIDs.pinkcoin: "Pink Coin",
+    ItemIDs.pinkkey: "MysteryKey",
 }
 
 

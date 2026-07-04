@@ -14,9 +14,9 @@ Please note that player names with most special characters are currently not sup
 
 You'll need the following components to be able to play/generate with Twilight Princess:
 
-- Install [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases) v0.6.1 or higher.\
+- Install [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases) v0.7.0 or higher.\
    **Make sure to install the Generator if you intend to generate multiworlds.**
-- The latest version of the [Twilight Princess APWorld](https://github.com/WritingHusky/Twilight_Princess_apworld/releases/latest).
+- If you want to use AP: The latest version of the [Twilight Princess APWorld](https://github.com/WritingHusky/Twilight_Princess_apworld/releases/latest).
 
 If you're playing Twilight Princess, you'll also need:
 
@@ -33,7 +33,7 @@ If you intend to play under Linux, you will need to consider the following infor
 
 ## Installation
 
-If you're playing Twilight Princess, you must also download the REL loader from https://tprandomizer.com/ and the [custom seed file](https://generator.tprandomizer.com/s/aptest) and place both in the save data of dolphin, alongside the RandomizerAP.US.gci file from the zip folder
+If you're playing Twilight Princess, you must also download the REL loader from https://tprandomizer.com/ and the custom seed file ([US/NTSC](https://cdn.discordapp.com/attachments/1369050080887312506/1497692776610005072/Tpr-E-APTest_APT-aptest.gci?ex=6a48c157&is=6a476fd7&hm=275db3439534cd06314bc3160f2ecbbc667eb306743e20f7a4a9102759187f62&), [EU/PAL](https://cdn.discordapp.com/attachments/1369050080887312506/1497692776287178933/Tpr-P-APTest_APT-aptest.gci?ex=6a48c157&is=6a476fd7&hm=45cb4663dfb2c07321724cc03571039453c18a57117b48de447bda67ed2875b7&), [JP](https://cdn.discordapp.com/attachments/1369050080887312506/1497692775968276640/Tpr-J-APTest_APT-aptest.gci?ex=6a48c157&is=6a476fd7&hm=57a802e104ffa6bef233e4a78c183b1dca5c8420958b4a503f4d3fb18651e7ab&)) and place both in the save data of dolphin, alongside the RandomizerAP.US.gci file from the zip folder
 
 ## Setting Up a YAML
 
@@ -65,7 +65,7 @@ generator does not yet support Twilight Princess. Follow these steps to generate
 
 If you're generating the multiworld, follow the instructions in the previous section. Once you have the zip file
 corresponding to your multiworld, follow
-[these steps](https://multiworld.gg/tutorial/Archipelago/setup/en#hosting-an-archipelago-server) to host a room. Follow
+[these steps](/tutorial/Archipelago/setup/en#hosting-an-archipelago-server) to host a room. Follow
 the instructions for hosting on the website from a locally generated game or on a local machine.
 
 ## Connecting to a Room
@@ -75,7 +75,7 @@ name and port number from the room's host.
 
 Once you do, follow these steps to connect to the room:
 
-1. Visit https://generator.tprandomizer.com/s/aptest to download the seed file needed to run the randomizer, Feel free to randomize cosmetics and audio as you would like
+1. Get the seed file needed to run the randomizer ([US/NTSC](https://cdn.discordapp.com/attachments/1369050080887312506/1497692776610005072/Tpr-E-APTest_APT-aptest.gci?ex=6a48c157&is=6a476fd7&hm=275db3439534cd06314bc3160f2ecbbc667eb306743e20f7a4a9102759187f62&), [EU/PAL](https://cdn.discordapp.com/attachments/1369050080887312506/1497692776287178933/Tpr-P-APTest_APT-aptest.gci?ex=6a48c157&is=6a476fd7&hm=45cb4663dfb2c07321724cc03571039453c18a57117b48de447bda67ed2875b7&), [JP](https://cdn.discordapp.com/attachments/1369050080887312506/1497692775968276640/Tpr-J-APTest_APT-aptest.gci?ex=6a48c157&is=6a476fd7&hm=57a802e104ffa6bef233e4a78c183b1dca5c8420958b4a503f4d3fb18651e7ab&))
 2. If you haven't gotten the REL loader, now is a good time to do that from the randomizer website.
 3. From the zip folder downloaded add the RandomizerAP.US.gci to the dolphin save data. (If you are using a non-US version you will have to use the Randomizer file from tprandomizer website and killing gannon will not auto-complete your world)
 

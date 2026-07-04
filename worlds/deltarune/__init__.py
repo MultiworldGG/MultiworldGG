@@ -450,6 +450,9 @@ class DeltaruneWorld(World):
     def is_t_rank_excluded(self):
         return self.options.exclude_t_rank == 1
 
+    def is_z_rank_excluded(self):
+        return self.options.exclude_z_rank == 1
+
     def get_next_in_order_chapter(self, chapter: int):
         if chapter > max_deltarune_chapter:
             return -1

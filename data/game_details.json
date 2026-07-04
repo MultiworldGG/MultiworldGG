@@ -1584,7 +1584,7 @@
     },
     "DOOM 1993": {
         "igdb_id": "673",
-        "world_name": "DOOM 1993",
+        "world_name": "DOOM 1993 (Beta)",
         "igdb_name": "Doom",
         "us_rating": [
             "16",
@@ -1615,7 +1615,7 @@
     },
     "DOOM II": {
         "igdb_id": "313164",
-        "world_name": "DOOM II",
+        "world_name": "DOOM II (Beta)",
         "igdb_name": "Doom II",
         "us_rating": [],
         "player_perspectives": [
@@ -2318,7 +2318,7 @@
     },
     "Heretic": {
         "igdb_id": "6362",
-        "world_name": "Heretic",
+        "world_name": "Heretic (Beta)",
         "igdb_name": "Heretic",
         "us_rating": [
             "M"

@@ -264,7 +264,7 @@ chapter2_locations = {
             group=LocationGroups.chapter2,
         ),
     ],
-    Regions.ch2_mansion_lobby: [
+    Regions.ch2_mansion_lobby_warp_door: [
         LocationData(
             LocationIDs.ch2_mansion_warp_door,
             group=LocationGroups.chapter2,
@@ -292,7 +292,14 @@ chapter2_locations = {
             group=LocationGroups.chapter2,
         ),
     ],
-    Regions.ch2_mansion: [
+    Regions.ch2_mansion_main_route: [
+        LocationData(
+            LocationIDs.ch2_mansion_platter_chest,
+            should_be_included=lambda world: world.is_not_weird_route_only(),
+            group=LocationGroups.chapter2,
+        ),
+    ],
+    Regions.ch2_mansion_both_route: [
         LocationData(
             LocationIDs.ch2_mansion_painting_chest,
             should_be_included=lambda world: world.is_not_weird_route_only(),
@@ -300,11 +307,6 @@ chapter2_locations = {
         ),
         LocationData(
             LocationIDs.ch2_mansion_sculpture_room_chest,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
-            group=LocationGroups.chapter2,
-        ),
-        LocationData(
-            LocationIDs.ch2_mansion_platter_chest,
             should_be_included=lambda world: world.is_not_weird_route_only(),
             group=LocationGroups.chapter2,
         ),
@@ -328,12 +330,14 @@ chapter2_locations = {
             group=LocationGroups.chapter2,
         ),
     ],
-    Regions.ch2_werewerewire: [
+    Regions.ch2_recruit_werewerewire: [
         LocationData(
             LocationIDs.ch2_recruit_werewerewire,
             should_be_included=lambda world: world.is_all_recruits(),
             group=LocationGroups.chapter2,
         ),
+    ],
+    Regions.ch2_lose_werewerewire: [
         LocationData(
             LocationIDs.ch2_lost_werewerewire,
             should_be_included=lambda world: world.is_weird_route(),
@@ -356,6 +360,8 @@ chapter2_locations = {
             should_be_included=lambda world: world.is_all_recruits(),
             group=LocationGroups.chapter2,
         ),
+    ],
+    Regions.ch2_mansion_losts: [
         LocationData(
             LocationIDs.ch2_lost_swatchlings,
             should_be_included=lambda world: world.is_weird_route()

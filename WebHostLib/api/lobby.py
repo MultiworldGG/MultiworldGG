@@ -2348,6 +2348,8 @@ def lobby_apworld_request_cancel(lobby: UUID, request_id: int):
 
 
 @api_endpoints.route('/lobby/<suuid:lobby>/download-package', methods=['GET'])
+@limiter.limit("20 per hour")
+@limiter.limit("2 per minute")
 def lobby_download_package(lobby: UUID):
     lobby = Lobby.get(id=lobby)
     if not lobby:

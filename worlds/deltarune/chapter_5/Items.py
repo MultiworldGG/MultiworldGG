@@ -18,7 +18,60 @@ chapter5_items = [
         ItemClassification.progression,
         should_be_included=lambda world: world.is_chapters_randomized(),
         groups=[ItemGroups.region_blockers],
-    )
+    ),
+    ItemData(
+        ItemIDs.shadowcrystal,
+        ItemClassification.filler,
+        should_be_included=lambda world: world.is_secret_bosses_randomized(),
+        blacklist_filler=True,
+    ),
+    ItemData(
+        ItemIDs.pinkcoin,
+        ItemClassification.progression,
+        should_be_included=lambda world: world.is_secret_bosses_items_requirement_randomized(),
+        amount=19,
+    ),
+    ItemData(
+        ItemIDs.pinkkey,
+        ItemClassification.progression,
+        should_be_included=lambda world: world.is_secret_bosses_items_requirement_randomized(),
+    ),
+    ItemData(
+        ItemIDs.aquaknife,
+        ItemClassification.useful,
+        should_be_included=lambda world: world.is_secret_bosses_randomized(),
+    ),
+    ItemData(
+        ItemIDs.blueshoes,
+        ItemClassification.useful,
+        should_be_included=lambda world: world.is_secret_bosses_randomized(),
+    ),
+    ItemData(
+        ItemIDs.greenapron,
+        ItemClassification.useful,
+        should_be_included=lambda world: world.is_secret_bosses_randomized(),
+    ),
+    ItemData(
+        ItemIDs.yellowhat,
+        ItemClassification.useful,
+        should_be_included=lambda world: world.is_secret_bosses_randomized(),
+    ),
+    ItemData(
+        ItemIDs.ogloves,
+        ItemClassification.useful,
+        should_be_included=lambda world: world.is_secret_bosses_randomized(),
+    ),
+    ItemData(
+        ItemIDs.sethspecs,
+        ItemClassification.useful,
+        should_be_included=lambda world: world.is_secret_bosses_randomized(),
+    ),
+    ItemData(
+        ItemIDs.floweryscarf,
+        ItemClassification.filler,
+        should_be_included=lambda world: world.is_secret_bosses_randomized(),
+        blacklist_filler=True,
+    ),
 ]
 
 

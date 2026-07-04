@@ -61,7 +61,7 @@ def set_rules(world: "DeltaruneWorld"):
         world.get_location(locations[LocationIDs.ch3_board_1_t_rank]).progress_type = LocationProgressType.EXCLUDED
         world.get_location(locations[LocationIDs.ch3_board_2_t_rank]).progress_type = LocationProgressType.EXCLUDED
 
-    if world.is_t_rank_excluded():
+    if world.is_z_rank_excluded():
         world.get_location(locations[LocationIDs.ch3_board_1_z_rank]).progress_type = LocationProgressType.EXCLUDED
         world.get_location(locations[LocationIDs.ch3_board_2_z_rank]).progress_type = LocationProgressType.EXCLUDED
 

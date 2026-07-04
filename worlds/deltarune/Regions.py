@@ -39,13 +39,18 @@ class Regions(StrEnum):
     ch2_cyber_city = "CH2: Cyber City"
     ch2_cyber_city_spamton_fight = "CH2: Cyber City (Spamton fight)"
     ch2_cyber_city_post_spamton = "CH2: Cyber City (Post-Spamton)"
-    ch2_mansion_lobby = "CH2: Mansion Lobby"
+    ch2_mansion_lobby_main_route = "CH2: Mansion Lobby Main Route"
+    ch2_mansion_lobby_weird_route = "CH2: Mansion Lobby Weird Route"
+    ch2_mansion_lobby_warp_door = "CH2: Mansion Lobby Warp Door"
     ch2_swatch_cafe = "CH2: Swatch's Cafe"
-    ch2_mansion = "CH2: Mansion"
+    ch2_mansion_main_route = "CH2: Mansion Main Route"
+    ch2_mansion_both_route = "CH2: Mansion (Both Route)"
     ch2_mansion_basement = "CH2: Mansion Basement"
     ch2_tunnel_of_love = "CH2: Tunnel of love"
     ch2_mansion_recruits = "CH2: Mansion Recruits"
-    ch2_werewerewire = "CH2: Werewerewire"
+    ch2_mansion_losts = "CH2: Mansion Losts"
+    ch2_recruit_werewerewire = "CH2: Recruit Werewerewire"
+    ch2_lose_werewerewire = "CH2: Lose Werewerewire"
     ch2_spamton_neo = "CH2: Spamton Neo"
     ch2_post_chapter_castle_town = "CH2: Post-Chapter Castle Town"
 
@@ -80,6 +85,9 @@ class Regions(StrEnum):
     ch4_light_world = "CH4: Light World"
 
     chapter_5 = "Chapter 5"
+    ch5_mew_mew_shop = "CH5: Pink Shop"
+    ch5_pink_room = "CH5: Pink Room"
+    ch5_flower_rewards = "CH5: Flower Rewards"
 
 
 def add_location_to_region(region: Region, locations: list[LocationData], world: "DeltaruneWorld"):
