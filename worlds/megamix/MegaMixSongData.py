@@ -2,6 +2,11 @@ from .Items import SongData
 
 
 SONG_DATA: dict[str, SongData] = {
+    # Marking 144 as modded conflicts with player-specific mod IDs (caught by test/test_options) and forcing it is excessive.
+    # Because 144 is provided by the AP mod and required to prevent crashes, categorize it as not a modded song.
+    "-Archipelago Randomizer Enabled- [144]": SongData(1440, 144, {'Hatsune Miku'}, False, False, [8.0, 8.0, 8.0, 8.0, 8.0]),
+    "Ievan Polkka (Tutorial) [700]": SongData(7000, 700, {'Hatsune Miku'}, False, False, [2.0, 2.0, 2.0, 2.0, 2.0]),
+
     "Love is War [1]": SongData(10, 1, {'Hatsune Miku'}, False, False, [2.0, 4.0, 6.0, 8.0, 8.5]),
     "The World is Mine [2]": SongData(20, 2, {'Hatsune Miku'}, False, False, [4.0, 5.5, 6.0, 7.5, 8.0]),
     "That One Second in Slow Motion [3]": SongData(30, 3, {'Hatsune Miku'}, True, False, [4.0, 5.0, 6.5, 7.0, 7.5]),
@@ -255,7 +260,9 @@ SONG_DATA: dict[str, SongData] = {
     "Hand in Hand [832]": SongData(8320, 832, {'Hatsune Miku'}, False, False, [1.0, 3.0, 5.0, 7.5, 0.0]),
 }
 
-base_game_ids = { # Excluded: 700, 701
+base_game_ids = { # Excluded: 701
+    144, 700,
+
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 37, 38,
     39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 79,
     81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 101, 102, 103, 104, 201, 202, 203, 204, 205,
@@ -273,4 +280,14 @@ dlc_ids = {
     3, 4, 6, 11, 15, 17, 18, 20, 21, 23, 24, 25, 29, 63, 64, 84, 101, 203, 204, 205, 206, 208, 209, 210, 211, 214, 216,
     223, 233, 235, 236, 401, 402, 403, 404, 405, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420,
     421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 434, 436, 437, 438, 439, 440, 441, 442, 443, 618
+}
+
+grasssanity = { # Some amount of what can be interpreted as grass is present. Open to interpretation.
+    144,
+
+    3, 7, 9, 10, 12, 15, 17, 18, 21, 24, 31, 38, 39, 42, 45, 46, 47, 48, 49, 50, 51, 53, 55, 61, 63, 65, 83, 87, 88, 90,
+    92, 95, 97, 101, 102, 104, 208, 209, 210, 220, 223, 225, 232, 235, 236, 254, 263, 268, 269, 270, 272, 276, 278, 401,
+    402, 403, 407, 408, 411, 414, 415, 416, 418, 419, 420, 421, 424, 425, 427, 429, 432, 433, 434, 435, 439, 440, 441,
+    443, 604, 609, 610, 612, 613, 618, 619, 622, 624, 627, 629, 637, 641, 710, 722, 725, 727, 729, 730, 731, 733, 736,
+    737, 740,
 }

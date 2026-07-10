@@ -1,5 +1,5 @@
-from Options import Toggle, Range, Choice, DeathLink, ItemSet, OptionSet, PerGameCommonOptions, FreeText, \
-    Visibility, Removed, OptionGroup
+from Options import Toggle, Range, Choice, ItemSet, OptionSet, PerGameCommonOptions, FreeText, Visibility, \
+    OptionGroup, StartInventoryPool
 from dataclasses import dataclass
 
 from .MegaMixCollection import MegaMixCollections
@@ -34,20 +34,13 @@ class DuplicateSongPercentage(Range):
     """
     range_start = 0
     range_end = 100
-    default = 100
+    default = 50
     display_name = "Duplicate Song Percentage"
 
 
 class AllowMegaMixDLCSongs(Toggle):
     """Whether Extra Song Pack DLC Songs can be chosen as randomised songs."""
     display_name = "Allow Extra Song Pack DLC Songs"
-
-
-class AutoRemoveCleared(Toggle):
-    """If true, automatically removes cleared songs from the song list on refresh.
-
-    This can be done later manually with "/remove_cleared" or toggled with "/auto_remove" in the Client."""
-    display_name = "Auto Remove Songs"
 
 
 class DifficultyModeMin(Choice):
@@ -61,14 +54,9 @@ class DifficultyModeMin(Choice):
     default = 0
 
 
-class DifficultyModeMax(Choice):
+class DifficultyModeMax(DifficultyModeMin):
     """Maximum difficulty that a song can be selected from."""
     display_name = "Manual Difficulty Max"
-    option_Easy = 0
-    option_Normal = 1
-    option_Hard = 2
-    option_Extreme = 3
-    option_ExExtreme = 4
     default = 4
 
 
@@ -98,29 +86,10 @@ class DifficultyRatingMin(Choice):
     default = 0
 
 
-class DifficultyRatingMax(Choice):
+class DifficultyRatingMax(DifficultyRatingMin):
     """Ensures that at least one of the song's available difficulties have this star rating or lower
     x5 = .5, Used since _5 causes issues"""
     display_name = "Manual Rating Max"
-    option_one = 0
-    option_1x5 = 1
-    option_two = 2
-    option_2x5 = 3
-    option_three = 4
-    option_3x5 = 5
-    option_four = 6
-    option_4x5 = 7
-    option_five = 8
-    option_5x5 = 9
-    option_six = 10
-    option_6x5 = 11
-    option_seven = 12
-    option_7x5 = 13
-    option_eight = 14
-    option_8x5 = 15
-    option_nine = 16
-    option_9x5 = 17
-    option_ten = 18
     default = 14
 
 
@@ -169,7 +138,7 @@ class GoalSongs(ItemSet):
     - Difficulty options are ignored.
     - If a Goal Song is also in the Starting Inventory, it will not be chosen as a Goal Song.
 
-    Use /item_groups in the Client for a list of available song groups."""
+    Use "Export Datapackage" from the Archipelago Launcher and see the game's section for song item names and groups."""
     display_name = "Goal Song"
 
 
@@ -190,7 +159,7 @@ class IncludeSongs(ItemSet):
     - Difficulty options are ignored for these songs.
     - If you want these songs immediately, use start_inventory instead.
 
-    Use /item_groups in the Client for a list of available song groups."""
+    Use "Export Datapackage" from the Archipelago Launcher and see the game's section for song item names and groups."""
     display_name = "Include Songs"
 
 
@@ -198,42 +167,22 @@ class ExcludeSongs(ItemSet):
     """Songs listed here and not previously chosen as a Goal or Include will be excluded from being a part of the seed.
     This is recommended instead of exclude_locations which would allow songs to appear but with guaranteed filler checks.
 
-    Use /item_groups in the Client for a list of available song groups."""
+    Use "Export Datapackage" from the Archipelago Launcher and see the game's section for song item names and groups."""
     display_name = "Exclude Songs"
+    #default = {"-Archipelago Randomizer Enabled- [144]", "Ievan Polkka (Tutorial) [700]"}
 
 
 class ModData(FreeText):
-    """To play with mod songs, set the output of the Mega Mix JSON Generator here."""
+    """To play with mod songs, set the output of the Mega Mix JSON Generator here.
+    If the line ends with ": 50" or similar, remove it."""
     display_name = "MegaMixModData"
     default = ''
     visibility = Visibility.template | Visibility.spoiler
 
 
-class DivaDeathLink(DeathLink):
-    """When you die on your own or fail to reach Grade Needed (not both), everyone who enabled Death Link dies.
-
-    Received Death Links subtract a percentage of total HP. Adjustable in the game mod's config file.
-    WARNING: Non-lethal Death Link makes it harder to get Life Bonuses and may affect score by up to 2%.
-
-    This can be toggled later in the Client with "/deathlink".
-    """
-    display_name = "Death Link"
-
-
-class DeathLinkAmnesty(Range):
-    """Amount of additional own deaths needed before sending one Death Link. 0 would be every death, 1 every other, etc.
-
-    This can be adjusted later in the Client with "/deathlink #" and no upper limit.
-    """
-    display_name = "Death Link Amnesty"
-    range_start = 0
-    range_end = 10
-    default = 0
-
-
 class TrapsEnabled(OptionSet):
     """Control which Traps can be placed in the item pool.
-    It is highly recommended to add these Traps to non_local_items."""
+    It is highly recommended to add the "Traps" item group to non_local_items."""
     display_name = "Traps Enabled"
     valid_keys = {trap for trap in MegaMixCollections.trap_items.keys()}
     default = valid_keys
@@ -247,7 +196,7 @@ class TrapPercentage(Range):
     display_name = "Trap Percentage"
     range_start = 0
     range_end = 100
-    default = 0
+    default = 50
 
 
 class ProgressiveHP(Range):
@@ -255,7 +204,7 @@ class ProgressiveHP(Range):
     Divide the HP bar into items and start with 1/X HP. The rest go into the item pool.
     - There may be less based on free space after adding Leeks and Songs.
     - Non-lethal Death Link applies to max available HP
-    - For extras use start_inventory
+    - For finer control use "Progressive HP" in start_inventory or start_inventory_from_pool
 
     WARNING: Currently the only logic for this is needing full HP for the Goal Song.
     """
@@ -289,8 +238,6 @@ megamix_option_groups = [
         DifficultyRatingMax,
     ]),
     OptionGroup("Game Modifiers", [
-        DivaDeathLink,
-        DeathLinkAmnesty,
         ProgressiveHP,
         TrapPercentage,
         TrapsEnabled,
@@ -301,7 +248,6 @@ megamix_option_groups = [
 @dataclass
 class MegaMixOptions(PerGameCommonOptions):
     allow_megamix_dlc_songs: AllowMegaMixDLCSongs
-    auto_remove_songs: AutoRemoveCleared
     duplicate_song_percentage: DuplicateSongPercentage
     starting_song_count: StartingSongs
     additional_song_count: AdditionalSongs
@@ -317,11 +263,7 @@ class MegaMixOptions(PerGameCommonOptions):
     include_songs: IncludeSongs
     exclude_songs: ExcludeSongs
     megamix_mod_data: ModData
-    death_link: DivaDeathLink
-    death_link_amnesty: DeathLinkAmnesty
     traps_enabled: TrapsEnabled
     trap_percentage: TrapPercentage
     progressive_hp: ProgressiveHP
-
-    # Deprecated
-    exclude_singers: Removed
+    start_inventory_from_pool: StartInventoryPool

@@ -122,7 +122,7 @@ class TestOptionExcludes(MegaMixTestBase):
         self.assertFalse(world.options.exclude_songs.value.issubset(pool))
 
 
-@classvar_matrix(group=['MikuSongs', 'RinSongs', 'LenSongs', 'LukaSongs', 'KAITOSongs', 'MEIKOSongs', 'BaseSongs', 'DLCSongs'])
+@classvar_matrix(group=['MikuSongs', 'RinSongs', 'LenSongs', 'LukaSongs', 'KAITOSongs', 'MEIKOSongs', 'BaseSongs', 'DLCSongs', 'Grasssanity'])
 class TestOptionExcludeItemGroups(MegaMixTestBase):
     """Set exclude_songs to an item group and test the multiworld item pool for their absence."""
     run_default_tests = False # Greatly speeds up testing time

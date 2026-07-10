@@ -72,6 +72,7 @@ class TrackerCore():
         self.manual_items: list[str] = []
         self.player_folder_override = None
         self.gen_error:str = ""
+        self.tracker_disabled = False
 
         self.ignored_locations: set[int] = set()
         self.missing_locations: set[int] = set()
@@ -83,6 +84,7 @@ class TrackerCore():
         self.re_gen_passthrough = None
         self.player_id = None
         self.multiworld = None
+        self.tracker_disabled = False
         self.manual_items = []
         self.ignored_locations = set()
         self.player_folder_override = None
@@ -409,6 +411,8 @@ class TrackerCore():
         return multiworld
     
     def updateTracker(self) -> CurrentTrackerState:
+        if self.tracker_disabled:
+            return CurrentTrackerState.init_empty_state() #Return nop
         if self.player_id is None or self.multiworld is None:
             self.logger.error("Player YAML not installed or Generator failed")
             error_label: str = f"Check Player YAMLs for error; Tracker {UT_VERSION} for AP version {__version__}"
@@ -565,7 +569,8 @@ class TrackerCore():
     def initalize_tracker_core(self,connected_cls:type[AutoWorld.World],raw_slot_data):
         if getattr(connected_cls, "disable_ut", False):
             disabled_label: str = "World Author has requested UT be disabled on this world, please respect their decision"
-            self.add_log_line(TrackerLogLine(disabled_label, "", TrackerLogLineGroup.UT_STATUS))
+            self.set_page(TrackerLogLine(disabled_label, "", TrackerLogLineGroup.UT_ERROR))
+            self.tracker_disabled = True
             return
         # first check if we don't need a yaml
         if getattr(connected_cls, "ut_can_gen_without_yaml", False):

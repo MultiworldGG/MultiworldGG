@@ -42,6 +42,12 @@ If the default use case for a world using interpret_slot_data is to force a rege
 
 By having a world set the `ut_can_gen_without_yaml` flag and creating a static `interpret_slot_data` UT will not perform the first global generation and will instead use the slot_data on connection to a multiworld to trigger a solo generation that is used for tracking
 
+# Disabling UT
+
+There are cases where the world dev knows that UT will have issues and doesn't have the time/will to add compatability.
+
+By having a world set the `disable_ut` flag to `True`, Universal Tracker will refuse to track that slot and instead display a message saying that the world dev has intentionally disabled UT
+
 # Location Alias
 
 UT provides a way for the world to alias a generically named location to give a more useful name on a slot by slot instance

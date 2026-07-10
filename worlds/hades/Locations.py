@@ -1,4 +1,5 @@
 from BaseClasses import Location
+from .Data import mirror_upgrades
 
 
 hades_base_location_id = 1
@@ -206,6 +207,62 @@ location_table_fates_events = {
     "The Gift of Song Event" : None,
 }
 
+location_table_fish = {
+        "Catch Hellfish": max_number_room_checks + 106,
+        "Catch Knucklehead": max_number_room_checks + 107,
+        "Catch Scyllascion": max_number_room_checks + 108,
+        "Catch Slavug": max_number_room_checks + 109,
+        "Catch Chrustacean": max_number_room_checks + 110,
+        "Catch Flameater": max_number_room_checks + 111,
+        "Catch Chlam": max_number_room_checks + 112,
+        "Catch Charp": max_number_room_checks + 113,
+        "Catch Seamare": max_number_room_checks + 114,
+        "Catch Gupp": max_number_room_checks + 115,
+        "Catch Scuffer": max_number_room_checks + 116,
+        "Catch Stonewhal": max_number_room_checks + 117,
+        "Catch Mati": max_number_room_checks + 118,
+        "Catch Projelly": max_number_room_checks + 119,
+        "Catch Voidskate": max_number_room_checks + 120,
+}
+location_table_surface_fish = {
+        "Catch Trout": max_number_room_checks + 121,
+        "Catch Bass": max_number_room_checks + 122,
+        "Catch Sturgeon": max_number_room_checks + 123,
+}
+
+location_table_troves = {
+        "Infernal Trove in 15 seconds": max_number_room_checks + 124,
+        "Infernal Trove in 30 seconds": max_number_room_checks + 125,
+        "Infernal Trove in 45 seconds": max_number_room_checks + 126,
+        "Infernal Trove in 60 seconds": max_number_room_checks + 127,
+        "First Infernal Trove: Tartarus": max_number_room_checks + 128,
+        "First Infernal Trove: Asphodel": max_number_room_checks + 129,
+        "First Infernal Trove: Elysium": max_number_room_checks + 130,
+        "First Infernal Trove: Styx": max_number_room_checks + 131,
+        "5 Infernal Troves": max_number_room_checks + 132,
+        "10 Infernal Troves": max_number_room_checks + 133,
+}
+
+# Place one mirror upgrade item for each of its levels
+location_table_mirror = {}
+def build_mirror_locations(start_id: int) -> dict:
+    locations = {}
+
+    current_id = start_id
+
+    for upgrade in mirror_upgrades:
+        for level in range(1, upgrade.max_level + 1):
+            locations[
+                f"Mirror {upgrade.name} - Level {level}"
+            ] = current_id
+
+            current_id += 1
+
+    return locations
+
+location_table_mirror = build_mirror_locations(
+    max_number_room_checks + 134
+)
 # ----------------------
 
 location_weapons_subfixes = [
@@ -235,6 +292,10 @@ def give_all_locations_table() -> dict:
         **location_store_diamonds,
         **location_table_fates,
         **location_table_fates_events,
+        **location_table_mirror,
+        **location_table_fish,
+        **location_table_surface_fish,
+        **location_table_troves,
     }
 
 
@@ -296,6 +357,17 @@ def setup_location_table_with_settings(options) -> None:
     
     if options.fatesanity == 1:
         total_table.update(location_table_fates)
+
+    if options.mirrorsanity.value == 1:
+        total_table.update(location_table_mirror)
+
+    if options.fishsanity.value >= 1:
+        total_table.update(location_table_fish)
+    if options.fishsanity.value == 2:
+        total_table.update(location_table_surface_fish)
+
+    if options.trovesanity.value == 1:
+        total_table.update(location_table_troves)
     
     return total_table
             
@@ -459,6 +531,10 @@ group_keepsakes = {"keepsakes": location_keepsakes.keys()}
 group_weapons = {"weapons": location_weapons.keys()}
 group_contractor_gemstones = {"contractor_gems": location_store_gemstones.keys()}
 group_contractor_diamonds = {"contractor_diamonds": location_store_diamonds.keys()}
+group_mirror = {"mirror": location_table_mirror.keys()}
+group_fish = {"fish": location_table_fish.keys()}
+group_surface_fish = {"surface fish": location_table_surface_fish.keys()}
+group_troves = {"troves": location_table_troves.keys()}
 
 location_name_groups = {
     **group_fates,
@@ -466,6 +542,10 @@ location_name_groups = {
     **group_weapons,
     **group_contractor_gemstones,
     **group_contractor_diamonds,
+    **group_mirror,
+    **group_fish,
+    **group_surface_fish,
+    **group_troves,
 }
 
 

@@ -1,15 +1,17 @@
 import random
 import logging
+from collections import defaultdict
 from typing import Dict, Union, ClassVar, Any, Mapping
 from BaseClasses import MultiWorld, Item, ItemClassification, Tutorial
 from worlds.AutoWorld import World, CollectionState, WebWorld
-from worlds.sly1.Items import item_table, create_itempool, create_item, event_item_pairs, sly_episodes
+from worlds.sly1.Items import item_table, create_itempool, create_item, event_item_pairs, sly_episodes, sly_items, bottles, junk_items, ep_to_lvl
 from worlds.sly1.Locations import (get_location_names, get_total_locations,
                                    did_avoid_early_bk, generate_bottle_locations,
-                                   generate_minigame_locations, generate_key_caches)
+                                   generate_minigame_locations, generate_key_caches,
+                                   loc_to_ep, all_minigames, lvl_lookup)
 from worlds.sly1.Options import Sly1Options
 from worlds.sly1.Regions import create_regions
-from worlds.sly1.Types import Sly1Item, EpisodeType, episode_type_to_name, episode_type_to_shortened_name
+from worlds.sly1.Types import Sly1Item, EpisodeType, episode_type_to_unlock
 from worlds.sly1.Rules import set_rules
 from worlds.LauncherComponents import (
     Component,
@@ -29,6 +31,76 @@ def run_client():
 components.append(
     Component("Sly 1 Client", func=run_client, component_type=Type.CLIENT)
 )
+
+def setup_item_groups(items) -> dict[str, set]:
+    item_groups = defaultdict(set)
+    for item in items:
+        if "Progressive" in item:
+            item_groups["Moves (Progressive)"].add(item)
+            item_groups["Moves (All)"].add(item)
+        if item in ["Coin Magnet", "Mine", "Fast", "Decoy", "Hacking"]:  # couldn't think of a good way to rename these for dynamic logic
+            item_groups["Moves (Non-Progressive)"].add(item)
+            item_groups["Moves (All)"].add(item)
+        if item in junk_items and "Trap" not in item:
+            item_groups["All Filler"].add(item)
+        if item in junk_items and "Trap" in item:
+            item_groups["All Traps"].add(item)
+
+        if item.find(":") == -1:  # all remaining items we care about will have a : in them
+            continue
+        ep_or_lvl, item_type = item.split(":")  # unknown at this stage if this is an episode or level item
+
+        if ep_or_lvl in ep_to_lvl.keys():  # if true, this is an episode-based item
+            for group_type in ["Blueprint", "Key", "Episode Unlock"]:
+                if group_type in item_type:
+                    item_groups[f"{ep_or_lvl} (All)"].add(item)
+                    item_groups[f"All {group_type}s"].add(item)
+                    break  # small optimization to stop once found
+        else:  # if else, this is a bottle item (all level-based items are bottle items) and we must find which episode it belongs to
+            for episode in ep_to_lvl:  # could make this a direct lookup if another dict was made for level -> ep, but I didn't find that justified
+                if ep_or_lvl in ep_to_lvl[episode]:  # found the level in an episode's list
+                    item_groups[f"{episode} Bottles"].add(item)
+                    item_groups[f"{episode} (All)"].add(item)
+                    item_groups[f"All Bottles"].add(item)
+                    break  # small optimization to stop once found
+    return item_groups
+
+def setup_location_groups(locations) -> dict[str, set]:
+    location_groups = defaultdict(set)
+    location_groups["All Bosses"] = {"Eye of the Storm", "Last Call", "Deadly Dance", "Flame Fu!"}  # rest of loop is simpler if this is hardcoded here
+
+    # this is SO much better and more efficient now, at the cost of reformatting almost all location names. Worth it 100% imo
+    for loc in locations:
+        if loc.find(":") == -1:  # paris files and boss-related locations intentionally do not have a : and aren't in any groups
+            continue
+
+        # all locations (minus the ones skipped above) have format of "Level: Location Type" e.g. Stealthy Approach: Key or Treasure in the Depths: Minigame Cache #3
+        level, loc_type = loc.split(":")
+        episode = loc_to_ep[level]
+
+        location_groups[f"{episode} (All)"].add(loc)  # everything in an episode
+
+        # generalizing per-level, per-episode, and full-game groups for bottles, keys, minigame caches, vaults, and hourglasses
+        # doing this cuts out a ton of redundancy in lines of code because most groups are similar
+        def helper(single, plural):  # singular and plural form of the group names. All because hourglasses pluralizes weirdly
+            if single in loc_type:  # every location gets checked for if it's a bottle, key, etc. so only continue if there's a match
+                if single in ["Bottle", "Minigame Cache"] or (single == "Key" and level not in all_minigames):  # only do per-level key groups for non-minigames
+                    location_groups[f"{level} {plural}"].add(loc)
+                location_groups[f"{episode} {plural}"].add(loc)
+                location_groups[f"All {plural}"].add(loc)
+
+        for single in ["Bottle", "Key", "Minigame Cache", "Vault", "Hourglass"]:
+            plural = "Hourglasses" if single == "Hourglass" else single + "s"  # hourglass is the only one that can't be pluralized with just adding an s. I hate English
+            helper(single, plural)
+
+        for lvl_string, lvl_list in lvl_lookup.items():
+            if level in lvl_list:
+                location_groups[f"All {lvl_string} Levels"].add(loc)
+
+        if level not in all_minigames:  # minigame levels don't have enough diversity in locations to justify {level} (All) groups
+            location_groups["All Platforming Levels"].add(loc)
+            location_groups[f"{level} (All)"].add(loc)
+    return location_groups
 
 class Sly1Web(WebWorld):
     theme = "ocean"
@@ -65,6 +137,10 @@ class Sly1World(World):
     web = Sly1Web()
     settings: ClassVar[Sly1Settings]
 
+    # set up item and location groups
+    item_name_groups = setup_item_groups(item_name_to_id)
+    location_name_groups = setup_location_groups(location_name_to_id)
+
     # this is how we tell the Universal Tracker we want to use re_gen_passthrough
     @staticmethod
     def interpret_slot_data(slot_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -79,9 +155,8 @@ class Sly1World(World):
 
     def generate_early(self) -> None:
         # implement .yaml-less Universal Tracker support
-        if hasattr(self.multiworld, "generation_is_fake"):
+        if getattr(self.multiworld, "generation_is_fake", False):
             if hasattr(self.multiworld, "re_gen_passthrough"):
-                # I'm doing getattr purely so pylance stops being mad at me
                 re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough")
 
                 if "Sly Cooper and the Thievius Raccoonus" in re_gen_passthrough:
@@ -94,6 +169,7 @@ class Sly1World(World):
                     self.options.StartingEpisode.value = slot_data["StartingEpisode"]
                     self.options.IncludeHourglasses.value = slot_data["IncludeHourglasses"]
                     self.options.HourglassesRequireRoll.value = slot_data["HourglassesRequireRoll"]
+                    self.options.EnableTricks.value = slot_data["EnableTricks"]
                     self.options.AvoidEarlyBK.value = slot_data["AvoidEarlyBK"]
                     self.options.ExcludeMinigames.value = slot_data["ExcludeMinigames"]
                     self.options.MinigameCaches.value = slot_data["MinigameCaches"]
@@ -105,25 +181,35 @@ class Sly1World(World):
                     self.options.SpeedChangeTrapWeight.value = slot_data["SpeedChangeTrapWeight"]
                     self.options.InvisibilityTrapWeight.value = slot_data["InvisibilityTrapWeight"]
                     self.options.BallTrapWeight.value = slot_data["BallTrapWeight"]
+
+                    starting_episode = EpisodeType(self.options.StartingEpisode)
+                    starting_episode_unlock = episode_type_to_unlock[starting_episode]
+                    starting_episode_name = starting_episode_unlock.replace(": Episode Unlock", "")
+
+                    if did_avoid_early_bk(self):
+                        if starting_episode_name == "All":
+                            starting_episode_name = episode_type_to_unlock[EpisodeType(random.randint(1, 4))].replace(
+                                ": Episode Unlock", "")
+                            self.random_episode = starting_episode_name
             return
 
         starting_episode = EpisodeType(self.options.StartingEpisode)
-        starting_episode_long = episode_type_to_name[starting_episode]
-        starting_episode_short = episode_type_to_shortened_name[starting_episode]
+        starting_episode_unlock = episode_type_to_unlock[starting_episode]
+        starting_episode_name = starting_episode_unlock.replace(": Episode Unlock", "")
 
         # Starting Episode - please clean this up oml
-        if starting_episode_long == "All":
+        if starting_episode_name == "All":
             for episode in sly_episodes.keys():
                 self.multiworld.push_precollected(self.create_item(episode))
         else:
-            self.multiworld.push_precollected(self.create_item(starting_episode_long))
+            self.multiworld.push_precollected(self.create_item(starting_episode_unlock))
 
         # Avoid Early BK
         if did_avoid_early_bk(self):
-            if starting_episode_long == "All":
-                starting_episode_short = episode_type_to_shortened_name[EpisodeType(random.randrange(1, 4))]
-                self.random_episode = starting_episode_short
-            self.multiworld.push_precollected(self.create_item(f'{starting_episode_short} Key'))
+            if starting_episode_name == "All":
+                starting_episode_name = episode_type_to_unlock[EpisodeType(random.randint(1, 4))].replace(": Episode Unlock", "")
+                self.random_episode = starting_episode_name
+            self.multiworld.push_precollected(self.create_item(f'{starting_episode_name}: Key'))
 
     def create_regions(self):
         create_regions(self)
@@ -188,6 +274,7 @@ class Sly1World(World):
             "IncludeHourglasses",
             "HourglassesRequireRoll",
             "AvoidEarlyBK",
+            "EnableTricks",
             "LocationCluesanityBundleSize",
             "ItemCluesanityBundleSize",
             "CutsceneSkip",
@@ -211,6 +298,7 @@ class Sly1World(World):
             "IncludeHourglasses": self.options.IncludeHourglasses.value,
             "HourglassesRequireRoll": self.options.HourglassesRequireRoll.value,
             "AvoidEarlyBK": self.options.AvoidEarlyBK.value,
+            "EnableTricks": self.options.EnableTricks.value,
             "LocationCluesanityBundleSize": self.options.LocationCluesanityBundleSize.value,
             "ItemCluesanityBundleSize": self.options.ItemCluesanityBundleSize.value,
             "CutsceneSkip": self.options.CutsceneSkip.value,

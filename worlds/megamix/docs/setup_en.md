@@ -5,35 +5,27 @@
   - [Extra Song Pack](https://store.steampowered.com/app/1887030/Hatsune_Miku_Project_DIVA_Mega_Mix_Extra_Song_Pack/) (optional, recommended, cheaper bundled)
   - The game can be played in MultiworldGG without the Extra Song Pack DLC.
 - Without MWGG: [The APWorld](https://github.com/Cynichill/DivaAPworld/releases/latest)
-- [DivaModLoader](https://github.com/blueskythlikesclouds/DivaModLoader?tab=readme-ov-file#installation)
 - [[GB]](https://gamebanana.com/mods/514140) [[DMA]](https://divamodarchive.com/post/279) Archipelago Mod
 
 ## First Time Setup
-This is a minimal setup to get started. [Mod managers are used at your discretion.](#game-crashes-on-entering-song-list--im-missing-the-archipelago-song)
+This is a minimal mod setup. **Mod managers are used at your discretion.**
 
-1. If not already installed, [follow DivaModLoader's installation steps.](https://github.com/blueskythlikesclouds/DivaModLoader?tab=readme-ov-file#installation)
-   - See below for locating `DivaMegaMix.exe`
+1. [Install DivaModLoader.](https://github.com/blueskythlikesclouds/DivaModLoader?tab=readme-ov-file#installation)
 2. Download and extract the Archipelago Mod listed under [Requirements.](#requirements)
-   - Place the `ArchipelagoMod` folder into the `mods` folder.
-   - Verify `-Archipelago Randomizer Enabled-` is on the song list. [If not, fix it.](#game-crashes-on-entering-song-list--im-missing-the-archipelago-song)
-3. Unless you use MultiworldGG: Install the APWorld listed under [Requirements.](#requirements)
-   - [Archipelago Setup: Playing with custom worlds](/tutorial/Archipelago/setup_en#playing-with-custom-worlds)
-4. Start the **Mega Mix Client** from the MultiworldGG Launcher
-5. If prompted to select `DivaMegaMix.exe`:
-   - **If not prompted, skip this step**
-   - Right-click the game entry in Steam, **Manage > Browse local files**
-   - `DivaMegaMix.exe` (extension may be hidden) is what you will need to navigate to and select
-6. Play! ([MultiworldGG Setup: Generating a game](/tutorial/Archipelago/setup_en#generating-a-game))
+3. Place the extracted `ArchipelagoMod` folder into the `mods` folder. 
 
-### Resulting basic file structure
+If your **mod loader config** (see below) has a `priority` line, add `"ArchipelagoMod",` to it.
+
+#### Resulting mod file structure
 ```
 Hatsune Miku Project DIVA Mega Mix Plus\
-├ DivaMegaMix.exe   <─ game, select if prompted by Client/JSON generator
+├ DivaMegaMix.exe   <─ game, select if prompted by JSON generator
 ├ dinput8.dll       <─ mod loader
 ├ config.toml       <─ mod loader config
 └ mods\
   └ ArchipelagoMod\ <─ AP mod folder
-    └ config.toml   <─ AP mod config
+    ├ ArchipelagoMod.dll
+    └ ...
 ```
 
 ## Optional Quality of Life Mods 
@@ -50,50 +42,50 @@ Please read descriptions before installing. These may not be relevant to you or 
 **Note: Currently, using mod songs requires the seed to be [generated locally](/tutorial/Archipelago/setup_en#generating-a-multiplayer-game), not on the website. Hosting on the website afterwards is fine.**
 
 1. Open the **Mega Mix JSON Generator** from the MultiworldGG Launcher.
-2. Check song packs you would like to appear in your song selection pool.
-3. When done checking packs click **Generate Mod String**.
-4. In your YAML on the line for `megamix_mod_data` paste and format it as such:
+2. If prompted to select `DivaMegaMix.exe`:
+   - **If not prompted, skip this step**
+   - Right-click the game entry in Steam, **Manage > Browse local files**
+   - `DivaMegaMix.exe` (extension may be hidden) is what you will need to navigate to and select
+3. Check song packs you want in your song selection pool.
+4. When done checking packs click **Generate Mod String**.
+5. In your YAML on the line for `megamix_mod_data` paste and format it as such:
    - `megamix_mod_data: '{"MyFirstSongPack":[["MyFirstSong",144,224]]}'`
+   - If the line ends with `: 50` or similar, remove it.
 
 Linux users that experience clipboard issues *may* need to run the MultiworldGG Launcher and JSON Generator through a command line to get the output there.
 
-It is recommended to regenerate the mod string when adding or updating packs.
-
-Individual songs can be excluded from the pool in the YAML's `exclude_songs` section.
-
 ## Troubleshooting
 
-### Checks are not sending
-Make sure the **Mega Mix Client** is open and connected to a room.
+### Determining song names for the YAML
 
-Play `-Archipelago Randomizer Enabled-`. If a success message does not appear in the **Client** on completion try restarting the **Client**.
+To find the names to use for YAML options such as `include_songs`:
+
+1. Create a valid YAML [including mod data if you have it](#mod-songs)
+2. Place the YAML in MultiworldGG's `Players` folder
+3. If running, completely restart MultiworldGG
+4. Open **Export Datapackage** from the MultiworldGG Launcher
+   - If asked, open with a text editor like Notepad 
+5. Locate the game's section then the desired songs
+
+For example, *Love is War* would be `Love is War [1]`.
 
 ### There are songs outside my specified difficulty settings
 Starting (`start_inventory`), Included (`include_songs`), and the Goal Song (`goal_song`) will *always* ignore difficulty settings.
 
-To increase the success of seed generation the difficulty settings are conservatively expanded *until* a minimally viable song pool is found. If you do not like the results of the difficulty expansion consider less restrictive settings.
+To increase the success of seed generation the difficulty settings are conservatively expanded until a minimally viable song pool is found. If you do not like the results of the difficulty expansion consider less restrictive settings.
 
 ### My settings are too long or difficult
 **Note: You can play any available difficulty for the same checks.**
 
-In the [AP mod folder](#resulting-basic-file-structure) open `results.json` with a text editor. If it does not exist play a song first.
-
-Given `Song I Want To Beat [5678]`:
-- Change the number after `pvId` to `5678` 
-- Change the number after `scoreGrade` to `5` (Perfect).
-
-Save the file while the **Mega Mix Client** is open and connected.
+1. Enable **Developer Mode** from the Advanced tab
+2. Switch to the Tracker tab
+3. Right-click the song name
 
 ### Newly received songs are not appearing in game
-While on the song list press ***F7*** or the defined `reload` key in the [mod's config](#resulting-basic-file-structure) to reload the game.
+While on the song list press ***F7***/your defined reload key or use `Client > Reload`.
 
-Switch to the **All** filter in the song list and check each difficulty. Not every song is available on every difficulty.
-
-### Modded songs are not appearing in game
-
-Install [ExPatch](#optional-quality-of-life-mods). Modded songs are commonly Extreme/Extra Extreme only.
-
-Similar to the [mod's config](#resulting-basic-file-structure), ensure `enabled = true` in a pack's `config.toml`.
-
-### Songs still aren't appearing
-Run `/safe_mode` in the **Mega Mix Client** and follow its instructions.
+- Switch to the **All** filter in the song list.
+- Check each difficulty. Not every song is available on every difficulty.
+  - Install [ExPatch](#optional-quality-of-life-mods). Without ExPatch a song's Extreme won't appear until its Hard is cleared.
+  - Mod songs are commonly Extreme only and lack a Hard to clear, **requiring** ExPatch.
+- If using New Classics, check the **All** filter for each gameplay style.

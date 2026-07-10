@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Set
+from typing import TYPE_CHECKING, Set, Optional, Tuple
 import base64
 
 from NetUtils import ClientStatus
@@ -20,11 +20,16 @@ class PaperMarioClient(BizHawkClient):
     patch_suffix = ".appm64"
     local_checked_locations: Set[int]
 
+    current_area_id: Optional[int]
+    current_map_id: Optional[int]
+
     def __init__(self) -> None:
         super().__init__()
         self.local_checked_locations = set()
         self.autohint_stored = set()
         self.autohint_released = set()
+        self.current_area_id = 1 # Toad Town
+        self.current_map_id = 0 # Debug Room
 
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
         from CommonClient import logger
@@ -59,19 +64,25 @@ class PaperMarioClient(BizHawkClient):
         from CommonClient import logger
         try:
 
-            read_state = await bizhawk.read(ctx.bizhawk_ctx, [(MODE_ADDRESS, 1, "RDRAM"),
-                                                              (MF_START_ADDRESS, 0x224, "RDRAM"),
-                                                              (GF_START_ADDRESS, 0x107, "RDRAM"),
-                                                              (ITM_RCV_SEQ, 2, "RDRAM"),
-                                                              (AREA_ADDRESS, 1, "RDRAM"),
-                                                              (MAP_ADDRESS, 1, "RDRAM"),
-                                                              (STAR_SPIRITS_COUNT, 1, "RDRAM"),
-                                                              (UIR_START_ADDRESS, len(item_table), "RDRAM")])
+            read_state = await bizhawk.read(
+                ctx.bizhawk_ctx,
+                [
+                    (MODE_ADDRESS, 1, "RDRAM"),
+                    (MF_START_ADDRESS, 0x224, "RDRAM"),
+                    (GF_START_ADDRESS, 0x107, "RDRAM"),
+                    (ITM_RCV_SEQ, 2, "RDRAM"),
+                    (AREA_ADDRESS, 1, "RDRAM"),
+                    (MAP_ADDRESS, 1, "RDRAM"),
+                    (STAR_SPIRITS_COUNT, 1, "RDRAM"),
+                    (UIR_START_ADDRESS, len(item_table), "RDRAM"),
+                ]
+            )
 
             # check for current state before sending or receiving anything
             game_mode = int.from_bytes(read_state[0], "big")
 
             if game_mode == GAME_MODE_WORLD:
+                # Assign data read
                 mod_flags = read_state[1]
                 game_flags = read_state[2]
                 received_items = int.from_bytes(bytearray(read_state[3]), "big")
@@ -79,6 +90,9 @@ class PaperMarioClient(BizHawkClient):
                                     int.from_bytes(bytearray(read_state[5]), "big"))
                 star_spirits = int.from_bytes(bytearray(read_state[6]), "big")
                 uir_flags = read_state[7]
+
+                # BOUNCE TRACKER DATA
+                await self.handle_tracker_info(ctx, current_location)
 
                 # RECEIVE ITEMS
                 # Add item to buffer as u16 int
@@ -176,3 +190,25 @@ class PaperMarioClient(BizHawkClient):
         except bizhawk.RequestFailedError:
             # Exit handler and return to main loop to reconnect.
             pass
+
+
+    async def handle_tracker_info(
+        self,
+        ctx: "BizHawkClientContext",
+        current_location: Tuple[int, int]
+    ):
+        (current_area_id, current_map_id) = current_location
+
+        if current_area_id != self.current_area_id or current_map_id != self.current_map_id:
+            self.current_area_id = current_area_id
+            self.current_map_id = current_map_id
+
+            await ctx.send_msgs([{
+                "cmd": "Bounce",
+                "slots": [ctx.slot],
+                "data": {
+                    "type": "MapUpdate",
+                    "areaId": current_area_id,
+                    "mapId": current_map_id,
+                },
+            }])

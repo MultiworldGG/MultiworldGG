@@ -2177,6 +2177,36 @@
         ],
         "release_date": 2024
     },
+    "Funi Raccoon Game": {
+        "igdb_id": "333975",
+        "world_name": "Funi Raccoon Game",
+        "igdb_name": "Funi Raccoon Game",
+        "us_rating": [],
+        "player_perspectives": [
+            "First person",
+            "Third person"
+        ],
+        "genres": [
+            "Platform",
+            "Adventure",
+            "Indie"
+        ],
+        "themes": [
+            "Action",
+            "Comedy",
+            "Sandbox"
+        ],
+        "keywords": [
+            "weird",
+            "funny",
+            "explorable world",
+            "trippy",
+            "mascot platformer",
+            "interconnected-world",
+            "raccoon"
+        ],
+        "release_date": 2026
+    },
     "Getting Over It": {
         "igdb_id": "13144",
         "world_name": "Getting Over It",
@@ -3961,6 +3991,32 @@
         ],
         "release_date": 2020
     },
+    "Pikuniku": {
+        "igdb_id": "55190",
+        "world_name": "Pikuniku",
+        "igdb_name": "Pikuniku",
+        "us_rating": [],
+        "player_perspectives": [
+            "Side view"
+        ],
+        "genres": [
+            "Platform",
+            "Puzzle",
+            "Adventure",
+            "Indie"
+        ],
+        "themes": [
+            "Action",
+            "Comedy"
+        ],
+        "keywords": [
+            "weird",
+            "digital distribution",
+            "pax west 2017",
+            "previously on - stadia pro"
+        ],
+        "release_date": 2019
+    },
     "Pinball FX3": {
         "igdb_id": "41051",
         "world_name": "Pinball FX3",
@@ -5017,6 +5073,27 @@
         ],
         "release_date": 2014
     },
+    "Skul: The Hero Slayer": {
+        "igdb_id": "127842",
+        "world_name": "Skul: The Hero Slayer",
+        "igdb_name": "Skul: The Hero Slayer",
+        "us_rating": [],
+        "player_perspectives": [
+            "Side view"
+        ],
+        "genres": [
+            "Platform",
+            "Indie"
+        ],
+        "themes": [
+            "Action"
+        ],
+        "keywords": [
+            "steam cloud",
+            "steam families"
+        ],
+        "release_date": 2021
+    },
     "Skyward Sword": {
         "igdb_id": "534",
         "world_name": "Skyward Sword",
@@ -5683,6 +5760,44 @@
         ],
         "keywords": [],
         "release_date": 2017
+    },
+    "Super Smash Bros. Melee": {
+        "igdb_id": "1627",
+        "world_name": "Super Smash Bros. Melee",
+        "igdb_name": "Super Smash Bros. Melee",
+        "us_rating": [],
+        "player_perspectives": [
+            "Side view"
+        ],
+        "genres": [
+            "Fighting",
+            "Platform"
+        ],
+        "themes": [
+            "Action"
+        ],
+        "keywords": [
+            "pikachu",
+            "mascot",
+            "archery",
+            "brawler",
+            "crossover",
+            "esports",
+            "anti-gravity racing",
+            "super-ness",
+            "special attacks",
+            "animation canceling",
+            "game console",
+            "fan service",
+            "hidden character",
+            "wavedash",
+            "platform fighting",
+            "legendary pokémon",
+            "gamecube",
+            "retroachievements",
+            "player's choice"
+        ],
+        "release_date": 2001
     },
     "Symphony of the Night": {
         "igdb_id": "181156",

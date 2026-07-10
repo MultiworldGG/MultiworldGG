@@ -65,7 +65,6 @@ class Sly1Context(CommonContext):
     openable_vaults: list[str] = []
     opened_vaults: list[str] = []
     current_scene_key = None
-    last_written_moves: int = -1
     first_hideout = False
 
     #Game state

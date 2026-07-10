@@ -46,7 +46,7 @@ upgrade_table = {
     ItemName.progressive_powerup:   ItemData(0xBC000A, ItemClassification.progression | ItemClassification.useful),
     ItemName.p_balloon:             ItemData(0xBC000B, ItemClassification.progression),
     ItemName.super_star_active:     ItemData(0xBC000D, ItemClassification.progression_deprioritized),
-    ItemName.special_world_clear:   ItemData(0xBC001B, ItemClassification.progression),
+    ItemName.special_world_clear:   ItemData(0xBC001B, ItemClassification.progression_deprioritized),
     ItemName.extra_defense:         ItemData(0xBC0020, ItemClassification.useful),
     ItemName.midway_point:          ItemData(0xBC0021, ItemClassification.progression),
     ItemName.better_timer:          ItemData(0xBC0022, ItemClassification.useful),

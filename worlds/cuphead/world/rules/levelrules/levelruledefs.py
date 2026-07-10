@@ -811,7 +811,7 @@ levelrules = LevelRules(
                 Preset(lrp.LrpRungunWeapon) &
                 (
                     Preset(lrp.LrpDash) |
-                    (Preset(lrp.LrpDlcDoublejump) | DepFilter(deps.dep_dlc_chalice, False))
+                    (Preset(lrp.LrpDlcDoublejump) & DepFilter(deps.dep_dlc_chalice))
                 )
             ),
             locations={

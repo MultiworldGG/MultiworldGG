@@ -16,6 +16,7 @@ _slot_data_options: list[str] = [
     "contract_goal_requirements",
     "dlc_boss_chalice_checks",
     "dlc_chalice",
+    "dlc_chess_chalice_checks",
     "dlc_curse_mode",
     "dlc_ingredient_goal_requirements",
     "dlc_kingsleap",

@@ -100,25 +100,8 @@ def replace_symbols(song_name):
     return song_name
 
 
-# These songs have special symbols, they get removed specifically to make a cleaner item name for base game songs.
-# Modded songs don't go through the same replacement as they might comprise only the symbols being removed
-offending_songs = [
-    "Beware of the Miku Miku Germs♪",
-    "I'll Miku-Miku You♪ (For Reals)",
-    "Clover♣Club",
-    "Monochrome∞Blue Sky",
-    "Fire◎Flower",
-    "Sadistic.Music∞Factory",
-]
-
-
 # Function to fix song names, so they don't crash Unity games
 def fix_song_name(song_name):
-
-    # Clean up base game songs specifically
-    if song_name in offending_songs:
-        song_name = replace_symbols(song_name)
-
     # Clean up song names
     cleaned_song_name = unicode_to_plain_text(song_name)  # Try to convert unicode to plain text
     cleaned_song_name = transliterate(cleaned_song_name)

@@ -279,8 +279,17 @@ class DKC2PatchExtension(APPatchExtension):
         rom = bytearray(rom)
 
         import random
-        from worlds.dkc2_trivia.trivia import retrieve_topics
-        from worlds.dkc2_trivia.types import TriviaQuestion, Topic
+
+        try:
+            from worlds.dkc2_trivia.trivia import retrieve_topics
+            from worlds.dkc2_trivia.types import TriviaQuestion, Topic
+        except ImportError:
+            #import webbrowser
+            #webbrowser.open("https://github.com/TheLX5/DKC2-Trivia/releases/latest")
+            raise Exception("Can't find dkc2_trivia.apworld in your custom_worlds folder.\n"
+                            "Please download the apworld and add to your Archipelago install.\n"
+                            "https://github.com/TheLX5/DKC2-Trivia/releases/latest")
+
 
         json_data = json.loads(caller.get_file("data.json").decode("UTF-8"))
         random.seed(json_data["seed"])
@@ -969,8 +978,8 @@ def adjust_palettes(world: "DKC2World", patch: DKC2ProcedurePatch):
         "Squawks": world.options.palette_squawks.current_key,
         "Quawks": world.options.palette_quawks.current_key,
     }
-    custom_palettes = world.options.palettes
-    palette_filters = world.options.palette_filters
+    custom_palettes = world.options.palettes.value
+    palette_filters = world.options.palette_filters.value
     for palette_set, offset in palette_set_offsets.items():
         palette_option = palette_options[palette_set]
         if "Diddy" in palette_set:
@@ -984,7 +993,7 @@ def adjust_palettes(world: "DKC2World", patch: DKC2ProcedurePatch):
             if len(custom_palettes[palette_set]) == 0x0F:
                 palette = custom_palettes[palette_set]
             else:
-                print (f"[{world.multiworld.player_name[world.player]}] Custom palette set for {palette_set} doesn't have exactly 15 colors. Falling back to the selected preset ({palette_option})")
+                print (f"[{world.player_name}] Custom palette set for {palette_set} doesn't have exactly 15 colors. Falling back to the selected preset ({palette_option})")
         
         if palette_set in palette_filters:
             filter_option = palette_filters[palette_set]

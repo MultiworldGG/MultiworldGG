@@ -65,6 +65,30 @@ class WeaponSanity(DefaultOnToggle):
     display_name = "WeaponSanity"
     
 
+class AbilitySanity(Choice):
+    """
+    Shuffles abilities (Special, Dash, Cast, and Call) into the item pool. Boons for each
+    ability will not show up until their item is received.
+    Need to be sent the ability item to use each skill.
+    (1) Weapon-based will add an item for each weapon's attack or special, requiring you to receive its item before the weapon can be used.
+    (2) Default will include all attacks and specials together as one item each. (3) Vanilla will not randomize abilities.
+    """
+    display_name = "AbilitySanity"
+    option_random_abilities_weapon_based = 0
+    option_random_abilities_default = 1
+    option_vanilla_abilities = 2
+    default = 0
+
+class InitialAbility(Choice):
+    """
+    If ability randomization is turned on, choose your initial ability. (1)Attack (2)Special
+    If you chose vanilla AbilitySanity settings above, this does nothing.
+    """
+    display_name = "InitialAbility"
+    option_starting_attack = 0
+    option_starting_special = 1
+    default = 0
+
 class HiddenAspectSanity(DefaultOnToggle):
     """
     Shuffles weapon aspects into the item pool, and makes obtaining each aspect a check 
@@ -88,6 +112,38 @@ class FateSanity(DefaultOnToggle):
     Can make the games significantly longer.
     """
     display_name = "FateSanity"
+
+class MirrorSanity(DefaultOnToggle):
+    """
+    Shuffles upgrades from the Mirror of Night into the item pool, and makes each upgrade
+    level a check. Adds about 150 locations.
+    The first unlocked option in each mirror pair is automatically equipped. Players 
+    can switch between paired upgrades using the normal Mirror of Night interface.
+    """
+    display_name = "MirrorSanity"
+
+class FishSanity(Choice):
+    """
+    Women want you. Fish fear you.
+    Adds locations for catching each fish for the first time.
+
+    Off: No fish locations.
+    Default: Includes all Underworld and Chaos fish
+    Full: Includes Surface fish as well
+    """
+    display_name = "FishSanity"
+
+    option_off = 0
+    option_default = 1
+    option_full = 2
+    default = 1
+
+class TroveSanity(DefaultOnToggle):
+    """
+    Adds locations for opening infernal troves in each Underworld region and completing them at
+    different speeds. Checks for completion under 60 seconds, 45 seconds, 30 seconds, and 15 seconds.
+    """
+    display_name = "TroveSanity" 
 
 # -------------------- Endgame settings
 
@@ -152,6 +208,7 @@ class HeatSystem(Choice):
 class HardLaborPactAmount(Range):
     """
     Choose the amount of Hard Labor pacts in the pool.
+    Each pact increases enemy damage by 20%.
     """
     display_name = "Hard Labor Pact Amount"
     range_start = 0
@@ -162,6 +219,7 @@ class HardLaborPactAmount(Range):
 class LastingConsequencesPactAmount(Range):
     """
     Choose the amount of Lasting Consequences pacts in the pool.
+    Each rank reduces healing by 25%.
     """
     display_name = "Lasting Consequences Pact Amount"
     range_start = 0
@@ -172,6 +230,7 @@ class LastingConsequencesPactAmount(Range):
 class ConvenienceFeePactAmount(Range):
     """
     Choose the amount of Convenience Fee pacts in the pool.
+    Each rank increases prices by 40%.
     """
     display_name = "Convenience Fee Pact Amount"
     range_start = 0
@@ -182,6 +241,7 @@ class ConvenienceFeePactAmount(Range):
 class JurySummonsPactAmount(Range):
     """
     Choose the amount of Jury Summons pacts in the pool.
+    Each rank adds 20% more enemies in normal encounters.
     """
     display_name = "Jury Summons Pact Amount"
     range_start = 0
@@ -192,6 +252,7 @@ class JurySummonsPactAmount(Range):
 class ExtremeMeasuresPactAmount(Range):
     """
     Choose the amount of Extreme Measures pacts in the pool.
+    Each rank gives a new boss new attacks.
     """
     display_name = "Extreme Measures Pact Amount"
     range_start = 0
@@ -202,6 +263,7 @@ class ExtremeMeasuresPactAmount(Range):
 class CalisthenicsProgramPactAmount(Range):
     """
     Choose the amount of Calisthenics Program pacts in the pool.
+    Each rank gives enemies 15% more health.
     """
     display_name = "Calisthenics Program Pact Amount"
     range_start = 0
@@ -212,6 +274,7 @@ class CalisthenicsProgramPactAmount(Range):
 class BenefitsPackagePactAmount(Range):
     """
     Choose the amount of Benefits Package pacts in the pool.
+    Each rank gives armored enemies 1 extra perk.
     """
     display_name = "Benefits Package Pact Amount"
     range_start = 0
@@ -222,6 +285,7 @@ class BenefitsPackagePactAmount(Range):
 class MiddleManagementPactAmount(Range):
     """
     Choose the amount of Middle Management pacts in the pool.
+    Each rank adds 1 Armored Enemy to mini-bosses.
     """
     display_name = "Middle Management Pact Amount"
     range_start = 0
@@ -232,6 +296,7 @@ class MiddleManagementPactAmount(Range):
 class UnderworldCustomsPactAmount(Range):
     """
     Choose the amount of Underworld Customs pacts in the pool.
+    Each rank requires purging 1 Boon when leaving a region.
     """
     display_name = "Underworld Customs Pact Amount"
     range_start = 0
@@ -242,6 +307,7 @@ class UnderworldCustomsPactAmount(Range):
 class ForcedOvertimePactAmount(Range):
     """
     Choose the amount of Forced Overtime pacts in the pool.
+    Each rank makes enemies move and attack 20% faster.
     """
     display_name = "Forced Overtime Pact Amount"
     range_start = 0
@@ -252,6 +318,7 @@ class ForcedOvertimePactAmount(Range):
 class HeightenedSecurityPactAmount(Range):
     """
     Choose the amount of Heightened Security pacts in the pool.
+    Makes traps and magma deal 400% more damage.
     """
     display_name = "Heightened Security Pact Amount"
     range_start = 0
@@ -262,6 +329,7 @@ class HeightenedSecurityPactAmount(Range):
 class RoutineInspectionPactAmount(Range):
     """
     Choose the amount of Routine Inspection pacts in the pool.
+    Each rank deactivates 3 talents from the Mirror of Night.
     """
     display_name = "Routine Inspection Pact Amount"
     range_start = 0
@@ -272,6 +340,7 @@ class RoutineInspectionPactAmount(Range):
 class DamageControlPactAmount(Range):
     """
     Choose the amount of Damage Control pacts in the pool.
+    Each rank gives enemies 1 shield, protecting them from one attack.
     """
     display_name = "Damage Control Pact Amount"
     range_start = 0
@@ -282,6 +351,7 @@ class DamageControlPactAmount(Range):
 class ApprovalProcessPactAmount(Range):
     """
     Choose the amount of Approval Process pacts in the pool.
+    Each rank removes 1 option from boons and upgrades.
     """
     display_name = "Approval Process Pact Amount"
     range_start = 0
@@ -292,6 +362,8 @@ class ApprovalProcessPactAmount(Range):
 class TightDeadlinePactAmount(Range):
     """
     Choose the amount of Tight Deadline pacts in the pool.
+    Each rank reduces the time you have to clear a region by 2 minutes.
+    1 rank gives you 9 minutes.
     """
     display_name = "Tight Deadline Pact Amount"
     range_start = 0
@@ -302,6 +374,7 @@ class TightDeadlinePactAmount(Range):
 class PersonalLiabilityPactAmount(Range):
     """
     Choose the amount of Personal Liability pacts in the pool.
+    Removes brief invulnerability after taking damage.
     """
     display_name = "Personal Liability Pact Amount"
     range_start = 0
@@ -555,6 +628,16 @@ class AutomaticRoomsFinishOnHadesDefeat(Toggle):
     display_name = "Automatic Room Finish On Hades Defeat"
     default = 0
 
+class DeathLinkAmnesty(Range):
+    """
+    Choose the amount of deaths it takes to send a deathlink. 
+    A value of 1 functions as normal deathlink.
+    """
+    display_name = "Death Link Amnesty"
+    range_start = 1
+    range_end = 10
+    default = 1
+
 
 # ------------------------------ Building dictionary ------------------------
 
@@ -566,9 +649,14 @@ class HadesOptions(PerGameCommonOptions):
     score_rewards_amount: ScoreRewardsAmount
     keepsakesanity: KeepsakeSanity
     weaponsanity: WeaponSanity
+    abilitysanity: AbilitySanity
+    initial_ability: InitialAbility
     hidden_aspectsanity: HiddenAspectSanity
     storesanity: StoreSanity
     fatesanity: FateSanity
+    mirrorsanity: MirrorSanity
+    fishsanity: FishSanity
+    trovesanity: TroveSanity
     hades_defeats_needed: HadesDefeatsNeeded
     weapons_clears_needed: WeaponsClearsNeeded
     keepsakes_needed: KeepsakesNeeded
@@ -614,6 +702,7 @@ class HadesOptions(PerGameCommonOptions):
     disable_late_styx : DisableLateStyx
     automatic_rooms_finish_on_hades_defeat: AutomaticRoomsFinishOnHadesDefeat
     death_link: DeathLink
+    death_link_amnesty: DeathLinkAmnesty
 
 # ------------------------------ Options groups
 
@@ -625,10 +714,16 @@ hades_option_groups = [
         ScoreRewardsAmount,
         KeepsakeSanity,
         WeaponSanity,
+        AbilitySanity,
+        InitialAbility,
         HiddenAspectSanity,
         StoreSanity,
         FateSanity,
+        MirrorSanity,
+        FishSanity,
+        TroveSanity,
         DeathLink,
+        DeathLinkAmnesty,
     ]),
     OptionGroup("Goal Options", [
         HadesDefeatsNeeded,
@@ -692,8 +787,13 @@ hades_option_groups = [
 hades_option_presets: Dict[str, Dict[str, Any]] = {
     "Easy": {
         "score_rewards_amount": 100,
+        "abilitysanity": "vanilla_abilities",
+        "initial_ability": "starting_attack",
         "hidden_aspectsanity": False,
         "fatesanity": False,
+        "mirrorsanity": False,
+        "fishsanity": 0,
+        "trovesanity": False,
         "heat_system": "reverse_heat",
         "hard_labor_pact_amount": 2,
         "lasting_consequences_pact_amount": 1,
@@ -727,8 +827,13 @@ hades_option_presets: Dict[str, Dict[str, Any]] = {
     },
     "Normal": {
         "score_rewards_amount": 100,
+        "abilitysanity": "random_abilities_default",
+        "initial_ability": "starting_attack",
         "hidden_aspectsanity": True,
         "fatesanity": False,
+        "mirrorsanity": True,
+        "fishsanity": 1,
+        "trovesanity": True,
         "heat_system": "reverse_heat",
         "hard_labor_pact_amount": 3,
         "lasting_consequences_pact_amount": 2,
@@ -760,8 +865,13 @@ hades_option_presets: Dict[str, Dict[str, Any]] = {
     },
     "Hard": {
         "score_rewards_amount": 100,
+        "abilitysanity": "random_abilities_weapon_based",
+        "initial_ability": "starting_attack",
         "hidden_aspectsanity": True,
         "fatesanity": True,
+        "mirrorsanity": True,
+        "fishsanity": 1,
+        "trovesanity": True,
         "heat_system": "reverse_heat",
         "hard_labor_pact_amount": 5,
         "lasting_consequences_pact_amount": 4,

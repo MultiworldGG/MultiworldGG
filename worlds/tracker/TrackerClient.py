@@ -1350,6 +1350,9 @@ class TrackerGameContext(CommonContext):
                     logger.warning("*****\nWarning: the local datapackage for the connected game does not match the server's datapackage\n*****")
                     logger.error(f"Local checksum = {self.checksums[self.game]} | remote checksum = {connected_cls.get_data_package_data()['checksum']}")
                 self.tracker_core.initalize_tracker_core(connected_cls,args["slot_data"])
+                if self.tracker_core.tracker_disabled:
+                    logger.error("World Author has requested UT be disabled on this world, please respect their decision")
+                    return
                 if not self.tracker_core.multiworld:
                     logger.error("Internal generation failed, something has gone wrong")
                     logger.error("Run the /faris_asked command and post the results in the discord")

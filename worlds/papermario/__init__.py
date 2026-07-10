@@ -63,7 +63,7 @@ class PaperMarioSettings(settings.Group):
 class PaperMarioWeb(WebWorld):
     setup = Tutorial(
         "Multiworld Setup Guide",
-        "A Guide to setting up the Paper Mario 64 randomizer connected to a MultiworldGG world",
+        "A Guide to setting up the Paper Mario randomizer connected to a MultiworldGG Multiworld",
         "English",
         "setup_en.md",
         "setup/en",

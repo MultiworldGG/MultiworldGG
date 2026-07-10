@@ -81,6 +81,7 @@ Currently, the following games are supported:
 * Final Fantasy V (Career Day)
 * Flipwitch
 * Frogmonster
+* Funi Raccoon Game
 * Getting Over It
 * Golden Sun: The Lost Age
 * Hades
@@ -141,6 +142,7 @@ Currently, the following games are supported:
 * Peggle Deluxe
 * Peggle Nights
 * Phoenotopia: Awakening
+* Pikuniku
 * Pinball FX3
 * Placid Plastic Duck Simulator
 * Pokémon Crystal
@@ -170,6 +172,7 @@ Currently, the following games are supported:
 * Secret of Evermore
 * Shapez
 * Shivers
+* Skul The Hero Slayer
 * Slay the Spire
 * Sly Cooper and the Thievius Raccoonus
 * Sonic Adventure 2: Battle
@@ -193,6 +196,7 @@ Currently, the following games are supported:
 * Super Mario World (+ Spicy Mycena Waffles Fork)
 * Super Metroid
 * Super Metroid/A Link to the Past Combo
+* Super Smash Bros. Melee
 * The Binding of Isaac: Rebirth
 * Terraria
 * Tetris Attack

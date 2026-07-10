@@ -9,6 +9,7 @@ from NetUtils import JSONMessagePart
 from Utils import get_fuzzy_results, get_intended_text
 from .Names import ItemName
 from .Locations import all_locations
+from .Rules import Macro
 
 if TYPE_CHECKING:
     from . import DKC2World
@@ -1432,9 +1433,10 @@ class UTMxin(World):
 
     def explain_rule(self, dest_name: str, state: CollectionState, *_: Any, **__: Any) -> list[JSONMessagePart]:
         if not dest_name:
-            return [{"type": "text", "text": "Enter a location or region to get an explanation"}]
+            return [{"type": "text", "text": "Enter a location or macro to get an explanation"}]
 
         types_to_try = {
+            "macro": self._explain_macro,
             "location": self._explain_location,
         }
         attempts = list(types_to_try.keys())
@@ -1497,4 +1499,48 @@ class UTMxin(World):
                     *rule_to_json(location.access_rule, state),
                 ]
             )
+        return messages, True, 100
+
+    def _explain_macro(self, macro_name: str, state: CollectionState) -> tuple[list[JSONMessagePart], bool, int]:
+        all_macro_names = set(self.rule_macros.keys())
+        guess, usable, response = get_intended_text(macro_name, all_macro_names)
+        if not usable:
+            picks = get_fuzzy_results(macro_name, all_macro_names, limit=1)
+            confidence = picks[0][1]
+            return [{"type": "text", "text": response}], False, confidence
+
+        macro_name = guess
+        macro = self.rule_macros[macro_name]
+        assert isinstance(macro, Macro.Resolved)
+        
+        glitched_state = state.copy()
+        glitched_state.collect(self.create_item(ItemName.glitched))
+
+        if macro(glitched_state) and not macro(state):
+            messages: list[JSONMessagePart] = [
+                {"type": "text", "text": "Macro "},
+                {"type": "color", "color": "slateblue" if macro(glitched_state) else "salmon", "text": macro.name},
+            ]
+            if macro.description:
+                messages.append({"type": "text", "text": f"\n{macro.description}"})
+            messages.extend(
+                [
+                    {"type": "text", "text": "\nLogic: "},
+                    *macro.child.explain_json(glitched_state),
+                ]
+            )
+        else:
+            messages: list[JSONMessagePart] = [
+                {"type": "text", "text": "Macro "},
+                {"type": "color", "color": "green" if macro(state) else "salmon", "text": macro.name},
+            ]
+            if macro.description:
+                messages.append({"type": "text", "text": f"\n{macro.description}"})
+            messages.extend(
+                [
+                    {"type": "text", "text": "\nLogic: "},
+                    *macro.child.explain_json(state),
+                ]
+            )
+
         return messages, True, 100

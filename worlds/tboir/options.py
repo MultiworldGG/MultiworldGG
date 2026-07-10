@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, DefaultOnToggle, OptionCounter, OptionSet, Range, PerGameCommonOptions, NamedRange
+from Options import Choice, DeathLink, DefaultOnToggle, OptionCounter, OptionSet, Range, PerGameCommonOptions, NamedRange, Toggle
 
 
 
@@ -95,6 +95,71 @@ class GoalAmount(NamedRange):
         "single": 1
     }
 
+class CharacterGoals(Choice):
+    """
+    Should Goals be tied to specific characters?
+    any: Any character can beat any goal
+    single: Each goal can only be beaten by a single character, which is randomly assigned when generating the game.
+    grouped: Each goal can only be beaten by a group of characters, which is randomly assigned when generating the game. The group size is determined by the Goal Amount.
+    """
+    display_name = "Character Goals"
+    option_any = 0
+    option_single = 1
+    option_grouped = 2
+    default = 0
+
+class ExcludeCharacters(OptionSet):
+    """
+    If character_goals is set to single or grouped, you can exclude certain characters from being assigned to goals here.
+    Valid characters are: ["Isaac", "Magdalene", "Cain", "Judas", "???", "Eve", "Samson", "Azazel", "Lazarus", "Eden", "The Lost",
+                           "Lilith", "Keeper", "Apollyon", "The Forgotten", "Bethany", "Jacob & Esau", "Tainted Isaac", 
+                           "Tainted Magdalene", "Tainted Cain", "Tainted Judas", "Tainted ???", "Tainted Eve", "Tainted Samson", 
+                           "Tainted Azazel", "Tainted Lazarus", "Tainted Eden", "Tainted Lost", "Tainted Lilith", "Tainted Keeper", 
+                           "Tainted Apollyon", "Tainted Forgotten", "Tainted Bethany", "Tainted Jacob"]
+    You can also use "Tainted" or "Non-Tainted" to exclude all tainted or non-tainted characters respectively.
+    """
+    display_name = "Excluded characters"
+
+    valid_keys = frozenset({
+        "Isaac",
+        "Magdalene",
+        "Cain",
+        "Judas",
+        "???",
+        "Eve",
+        "Samson",
+        "Azazel",
+        "Lazarus",
+        "Eden",
+        "The Lost",
+        "Lilith",
+        "Keeper",
+        "Apollyon",
+        "The Forgotten",
+        "Bethany",
+        "Jacob & Esau",
+        "Tainted Isaac",
+        "Tainted Magdalene",
+        "Tainted Cain",
+        "Tainted Judas",
+        "Tainted ???",
+        "Tainted Eve",
+        "Tainted Samson",
+        "Tainted Azazel",
+        "Tainted Lazarus",
+        "Tainted Eden",
+        "Tainted Lost",
+        "Tainted Lilith",
+        "Tainted Keeper",
+        "Tainted Apollyon",
+        "Tainted Forgotten",
+        "Tainted Bethany",
+        "Tainted Jacob",
+        "Tainted",
+        "Non-Tainted"
+    })
+    default = frozenset({})
+
 class ExcludedAreas(OptionSet):
     """
     Entire areas to exclude from the game. By excluding an area, none of the entrance methods to the area will be able to spawn and no location checks will be placed in those areas.
@@ -133,13 +198,15 @@ class UltraSecretRoom(Choice):
     no_progression: This room can contain anything except progression items
     any: This room can containy any sort of item
     any_red_key_logic: This room can containy any sort of item but is only put into logic after unlocking Red Key as a starting item
+    any_soul_of_cain_logic: This room can containy any sort of item but is only put into logic after unlocking Soul of Cain as a reoccuring drop on every floor
     """
     display_name = "Ultra Secret room"
     option_none = 0
     option_no_progression = 1
     option_any = 2
     option_any_red_key_logic = 3
-    default = 3
+    option_any_soul_of_cain_logic = 4
+    default = 4
 
 class ErrorRoom(Choice):
     """
@@ -154,7 +221,7 @@ class ErrorRoom(Choice):
     option_no_progression = 1
     option_any = 2
     option_any_undefined_logic = 3
-    default = 3
+    default = 1
 
 class CrawlSpace(Choice):
     """
@@ -163,13 +230,15 @@ class CrawlSpace(Choice):
     no_progression: This room can contain anything except progression items
     any: This room can containy any sort of item
     any_shovel_logic: This room can containy any sort of item but is only put into logic after unlocking We Need To Go Deeper! as a starting item
+    any_ehwaz_logic: This room can containy any sort of item but is only put into logic after unlocking Ehwaz as a reoccuring drop on every floor
     """
     display_name = "Crawl Space"
     option_none = 0
     option_no_progression = 1
     option_any = 2
     option_any_shovel_logic = 3
-    default = 3
+    option_any_ehwaz_logic = 4
+    default = 4
 
 class Planetarium(Choice):
     """
@@ -185,6 +254,30 @@ class Planetarium(Choice):
     option_any = 2
     option_any_telescope_lense_logic = 3
     default = 3
+
+class PlanetariumChapterFour(DefaultOnToggle):
+    """
+    Should the Planetarium be a check in Chapter 4 (Womb/Utero/Scarred Womb)?
+    """
+    display_name = "Planetarium in Chapter 4"
+
+class ErrorRoomLogic(Toggle):
+    """
+    Should Womb, Sheol, Cathedral, Chest and Dark Room be in logic after Undefined, Red Key or Soul of Cain are unlocked? (Those floors can be reached via Error Rooms)
+    """
+    display_name = "Error Room Logic"
+
+class TrapdoorLogic(DefaultOnToggle):
+    """
+    Should Womb and Sheol be in logic after We need to go deeper! or Ehwaz are unlocked?
+    """
+    display_name = "Trapdoor Logic"
+
+class SacrificeRoomLogic(Toggle):
+    """
+    Should Dark Room always be in logic as it can be reached via Sacrifice Rooms?
+    """
+    display_name = "Sacrifice Room Logic"
 
 class FloorVariations(DefaultOnToggle):
     """
@@ -434,7 +527,7 @@ class RetainOneUpsPercentage(Range):
 class ExcludeItemsAsRewards(OptionSet):
     """
     Actively harmful items can be excluded here from being given as a reward to the player.
-    Valid items are: ["A Pound of Flesh", "Blood Oath", "Blood Puppy", "Cursed Eye", "Curse of the Tower", "Isaac's Heart", "Kidney Stone", "Missing No", "Shard of Glass", "TMTrainer"]
+    Valid items are: ["A Pound of Flesh", "Blood Oath", "Blood Puppy", "Cursed Eye", "Curse of the Tower", "Isaac's Heart", "Kidney Stone", "Missing No", "Shard of Glass", "TMTrainer", "Ipecac", "Dr. Fetus", "Epic Fetus", "Bob's Brain", "Fire Mind"]
     """
     display_name = "Exclude items as rewards"
 
@@ -448,7 +541,12 @@ class ExcludeItemsAsRewards(OptionSet):
         "Kidney Stone",
         "Missing No",
         "Shard of Glass",
-        "TMTrainer"
+        "TMTrainer",
+        "Ipecac",
+        "Dr. Fetus",
+        "Epic Fetus",
+        "Bob's Brain",
+        "Fire Mind"
     })
     default = frozenset({"Missing No", "TMTrainer"})
 
@@ -457,6 +555,12 @@ class ProgressiveMappingUpgrades(DefaultOnToggle):
     Adds three permanent mapping upgrades to the pool of items to be able to receive: Map -> Compass -> Blue Map
     """
     display_name = "Progressive Mapping Upgrades"
+
+class ProgressiveInventoryUpgrades(DefaultOnToggle):
+    """
+    Adds four permanent inventory upgrades to the pool of items to be able to receive: Polydactyly -> Belly Button -> Deep Pockets -> Schoolbag
+    """
+    display_name = "Progressive Inventory Upgrades"
 
 class PermanentStatUpgrades(Range):
     """
@@ -492,6 +596,8 @@ class DeathLinkSeverity(Choice):
 class TboiOptions(PerGameCommonOptions):
     goals: Goals
     goal_amount: GoalAmount
+    character_goals: CharacterGoals
+    exclude_characters: ExcludeCharacters
     excluded_areas: ExcludedAreas
     bad_rng_protection: BadRNGProtection
     rng_rooms: RNGRooms
@@ -499,6 +605,10 @@ class TboiOptions(PerGameCommonOptions):
     error_room: ErrorRoom
     crawl_space: CrawlSpace
     planetarium: Planetarium
+    planetarium_chapter_four: PlanetariumChapterFour
+    error_room_logic: ErrorRoomLogic
+    trapdoor_logic: TrapdoorLogic
+    sacrifice_room_logic: SacrificeRoomLogic
     floor_variations: FloorVariations
     additional_item_locations_per_stage: AdditionalItemLocationsPerStage
     item_location_percentage: ItemLocationPercentage
@@ -515,6 +625,7 @@ class TboiOptions(PerGameCommonOptions):
     retain_one_ups_percentage: RetainOneUpsPercentage
     exclude_items_as_rewards: ExcludeItemsAsRewards
     progressive_mapping_upgrades: ProgressiveMappingUpgrades
+    progressive_inventory_upgrades: ProgressiveInventoryUpgrades
     permanent_stat_upgrades: PermanentStatUpgrades
     start_out_nerfed: StartOutNerfed
     fortune_machine_hint_percentage: FortuneMachineHintPercentage

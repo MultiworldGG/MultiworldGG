@@ -438,10 +438,8 @@ class LuigiPhysics(Toggle):
     """
     Enables SMA2 Luigi physics.
     WARNING: Logic does not account for those physics and probably never will.
-    If you're watching this you're very likely a power user or your front end is revealing a bit too much info lol.
     """
     display_name = "Luigi Physics"
-    visibility = Visibility.none
 
 
 class JunkFillPercentage(Range):

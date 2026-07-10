@@ -52,6 +52,9 @@ class Hook(BaseHook):
 
         self.ut_core.set_slot_params(mw.worlds[1].game,1,mw.player_name[1],1)
         self.ut_core.initalize_tracker_core(mw.worlds[1].__class__,slot_data)
+        if self.ut_core.tracker_disabled:
+            self.status = GenOutcome.OptionError
+            return #If core is disabled it should just be an option error (so it's ignored)
         assert self.ut_core.multiworld, self.ut_core.gen_error
 
         remaining_locations = [location.address for location in mw.worlds[1].get_locations() if location.address is not None]

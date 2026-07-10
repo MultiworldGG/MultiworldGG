@@ -7,11 +7,16 @@ config file.
 
 ## What does randomization do to this game?
 
-Every key, vault, master thief sprint, and episode intro is replaced with an archipelago item.
+Episode access is changed from linear to whenever each "episode unlock" item is received, leading to
+a usually shuffled order of episodes. The goal is always to defeat Clockwerk, but access to his episode
+can be set to be either based on number other bosses beaten, or by collecting an arbitrary number of
+Thievius Raccoonus pages.
 
 ## What items and locations get shuffled?
 
-28 Keys, 19 master thief moves, and 4 episodes can be found at every level end, every time you open the vault, and at every master thief sprint challenge. You can also find some extra 1-ups and charms or various traps.
+Items include 28 keys, all clue bottles, 19 master thief moves, and episode unlock items. You can also be sent filler 1-ups and charms, or various traps.
+Locations are based on the above, and additional locations are enable-able in the YAML, such as including master thief sprints (hourglasses) or adding additional locations
+that get checked when completing minigame levels. This randomizer will also create additional "Key Cache" locations if there are not enough locations to hold required items.
 
 ## Which items can be in another player's world?
 
@@ -20,4 +25,6 @@ certain items to your own world.
 
 ## When the player receives an item, what happens?
 
-You will be able to use the master thief move or open any gate with any keys that you recieve. Murray will always be moved out of the way so you can view any episode but when you recieve an episode as an item, the intro level will be accessible. You may need to view a different episode if you recieve the episode item while viewing said episode.
+You will be able to use the master thief move or open any gate with any keys that you receive.
+Murray will always be moved in front of Cold Heart of Hate so you can view any episode, but access will be restricted until each respective episode unlock item is found, at which point that episode's intro level will be playable.
+You may need to switch view to a different episode if you receive the episode item while viewing said episode.

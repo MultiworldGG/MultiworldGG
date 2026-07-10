@@ -1,0 +1,1 @@
+from .world import FuniRaccoonWorld as FuniRaccoonWorld

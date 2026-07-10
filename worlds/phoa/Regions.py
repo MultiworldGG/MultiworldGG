@@ -29,7 +29,7 @@ def get_exit_data(player: int, options: PhoaOptions) -> list[PhoaExit]:
             name="panselo_gate",
             region="panselo_village",
             connection="panselo_region",
-            rule=lambda state: logic.can_deal_damage(state, exclude_rocket_boots=True)
+            rule=lambda state: logic.can_deal_damage(state)
                                or options.open_panselo_gates > 0,
         ),
         PhoaExit(
@@ -199,12 +199,6 @@ def get_exit_data(player: int, options: PhoaOptions) -> list[PhoaExit]:
             name="atai_region_to_sand_drifts_access_cave",
             region="atai_region",
             connection="sand_drifts_region(access_cave)",
-        ),
-        PhoaExit(
-            name="atai_region_to_sand_drifts_region",
-            region="atai_region",
-            connection="sand_drifts_region",
-            rule=lambda state: logic.has_explosives(state),
         ),
         # adars_house
         PhoaExit(

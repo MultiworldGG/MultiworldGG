@@ -436,49 +436,14 @@ def generate_entrance_rando(world: "WaffleWorld"):
 
     while len(processed_exits) != len(local_region_mapping.keys()):
         if len(next_exits) == 0:
-            # Swap exits if we haven't met the processed exits goal
-            unreached_transitions = [x for x in smw_transition_pairs.values() if x not in local_mapping.values()]
-            unreached_teleports = [x for x in teleport_pairs.values() if x not in local_mapping.values()]
-            unreached_exits = unreached_transitions + unreached_teleports
-            if len(unreached_exits) == 0 or swap_count >= 10:
-                local_mapping = {}
-                for entrance, exit in prefilled_exits.items():
-                    local_mapping[entrance] = exit
-                next_exits = [starting_location]
-                processed_exits = []
-                used_exits = list(prefilled_exits.values())
-                swap_count = 0
-                continue
-            unreached_candidate = world.random.choice(unreached_exits)
-            if "Transition - " in unreached_candidate:
-                candidates = [x for x in processed_exits if "Transition - " in x and x not in prefilled_exits.values()]
-            else:
-                if world.options.map_teleport_shuffle != "on_both_mix":
-                    if "Pipe" in unreached_candidate:
-                        candidates = [x for x in processed_exits if "Transition - " not in x and "Pipe" in x]
-                    else:
-                        candidates = [x for x in processed_exits if "Transition - " not in x and "Star World" in x or x != LocationName.yoshis_house_tile]
-                else:
-                    candidates = [x for x in processed_exits if "Transition - " not in x and x not in prefilled_exits.values()]
-            if len(candidates) == 0:
-                swap_count = 10
-                continue
-            swap_candidate = world.random.choice(candidates)
-            next_exits.append(swap_candidate)
-            processed_exits.remove(swap_candidate)
-            
-            if len(processed_exits) >= 18:
-                swap_count += 1
-
-            # Removes the previous processed entrances from the cache
-            for entrance in local_region_mapping[swap_candidate]:
-                if entrance in local_mapping:
-                    value = local_mapping.pop(entrance)
-                    next_exits.append(value)
-                    if value in processed_exits:
-                        processed_exits.remove(value)
-                    if value in used_exits:
-                        used_exits.remove(value)
+            # Reset generation if stuck
+            local_mapping = {}
+            for entrance, exit in prefilled_exits.items():
+                local_mapping[entrance] = exit
+            next_exits = [starting_location]
+            processed_exits = []
+            used_exits = list(prefilled_exits.values())
+            continue
         
         # Processes the current exits
         for exit in next_exits:
@@ -542,6 +507,7 @@ def generate_entrance_rando(world: "WaffleWorld"):
                     break
 
     for entrance, exit in local_mapping.items():
+        #print (entrance, "->", exit)
         world.local_mapping[entrance] = exit
         if "Transition - " in entrance:
             world.transition_pairs[entrance] = exit

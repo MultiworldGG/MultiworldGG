@@ -291,7 +291,6 @@ class DlcChessChaliceChecks(EnumOption[e.ChaliceCheckMode], Choice, NamedOption)
     name = "dlc_chess_chalice_checks"
     display_name = "[DLC] Chess Chalice Checks"
     enum_type = e.ChaliceCheckMode
-    visibility = Visibility.template | Visibility.spoiler
     option_disabled = 0
     option_enabled = 1
     option_separate = 2

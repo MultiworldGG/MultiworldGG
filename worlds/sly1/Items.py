@@ -1,6 +1,6 @@
 import logging
 from BaseClasses import Item, ItemClassification
-from worlds.sly1.Types import ItemData, Sly1Item, EpisodeType, episode_type_to_name, episode_type_to_shortened_name
+from worlds.sly1.Types import ItemData, Sly1Item, EpisodeType, episode_type_to_unlock
 from worlds.sly1.Locations import get_total_locations, get_bundle_amount_for_level, did_avoid_early_bk, hourglasses_roll, \
     did_include_hourglasses
 from typing import List, Dict, TYPE_CHECKING
@@ -11,13 +11,16 @@ if TYPE_CHECKING:
 
 def create_itempool(world: "Sly1World") -> List[Item]:
     itempool: List[Item] = []
+    all_worlds = False
 
     # Determine if this player has AvoidEarlyBK enabled
     need_to_modify_item_pool = did_avoid_early_bk(world)
-    starting_episode = episode_type_to_name[EpisodeType(world.options.StartingEpisode)]
-    starting_episode_short = episode_type_to_shortened_name[EpisodeType(world.options.StartingEpisode)]
-    if starting_episode == "All" and need_to_modify_item_pool:
-        starting_episode = world.random_episode
+    starting_episode_unlock = episode_type_to_unlock[EpisodeType(world.options.StartingEpisode)]
+    starting_episode_name = starting_episode_unlock.replace(": Episode Unlock", "")
+
+    if starting_episode_name == "All" and need_to_modify_item_pool:
+        starting_episode_name = world.random_episode
+        all_worlds = True
 
     # Create a local copy of item_table to modify only for the current player
     # We won't modify the global item_table directly
@@ -25,7 +28,7 @@ def create_itempool(world: "Sly1World") -> List[Item]:
 
     # If AvoidEarlyBK is enabled, adjust the key count for the starting episode
     if need_to_modify_item_pool:
-        starting_key_name = f"{starting_episode_short} Key"
+        starting_key_name = f"{starting_episode_name}: Key"
         if starting_key_name in final_item_table:
             starting_key = final_item_table[starting_key_name]
             final_item_table[starting_key_name] = starting_key._replace(count=starting_key.count - 1)
@@ -37,9 +40,9 @@ def create_itempool(world: "Sly1World") -> List[Item]:
                 final_item_table[key] = item._replace(classification=ItemClassification.progression)
 
     # Create episodes except for the starting episode as items
-    if not starting_episode == "All":
+    if not starting_episode_name == "All" and all_worlds is False:
         for episode in sly_episodes.keys():
-            if starting_episode == episode:
+            if starting_episode_unlock == episode:
                 continue
             else:
                 itempool.append(create_item(world, episode))
@@ -62,7 +65,7 @@ def create_itempool(world: "Sly1World") -> List[Item]:
             world.options.ItemCluesanityBundleSize.value = location_bundle_size
             item_bundle_size = location_bundle_size
         for name, data in bottles.items():
-            bundle_amount = get_bundle_amount_for_level(name.rsplit(' ', 1)[0], item_bundle_size)
+            bundle_amount = get_bundle_amount_for_level(name.split(':')[0], item_bundle_size)
             itempool += create_multiple_items(world, name, bundle_amount, data.classification)
 
     # Create pages for page hunt
@@ -147,16 +150,16 @@ sly_items = {
     "Hacking": ItemData(10020009, ItemClassification.useful),
 
     # Blueprints
-    "ToT Blueprints": ItemData(10020011, ItemClassification.useful),
-    "SSE Blueprints": ItemData(10020012, ItemClassification.useful),
-    "VV Blueprints": ItemData(10020013, ItemClassification.useful),
-    "FitS Blueprints": ItemData(10020014, ItemClassification.useful),
+    "Tide of Terror: Blueprints": ItemData(10020011, ItemClassification.useful),
+    "Sunset Snake Eyes: Blueprints": ItemData(10020012, ItemClassification.useful),
+    "Vicious Voodoo: Blueprints": ItemData(10020013, ItemClassification.useful),
+    "Fire in the Sky: Blueprints": ItemData(10020014, ItemClassification.useful),
 
     # Keys
-    "ToT Key": ItemData(10020015, ItemClassification.progression, 7),
-    "SSE Key": ItemData(10020016, ItemClassification.progression, 7),
-    "VV Key": ItemData(10020017, ItemClassification.progression, 7),
-    "FitS Key": ItemData(10020018, ItemClassification.progression, 7),
+    "Tide of Terror: Key": ItemData(10020015, ItemClassification.progression, 7),
+    "Sunset Snake Eyes: Key": ItemData(10020016, ItemClassification.progression, 7),
+    "Vicious Voodoo: Key": ItemData(10020017, ItemClassification.progression, 7),
+    "Fire in the Sky: Key": ItemData(10020018, ItemClassification.progression, 7),
 
     # Page Hunt
     "Thievius Raccoonus Page": ItemData(10020049, ItemClassification.progression, 0),
@@ -166,35 +169,35 @@ sly_items = {
 }
 
 sly_episodes = {
-    "Tide of Terror": ItemData(10020021, ItemClassification.progression, 0),
-    "Sunset Snake Eyes": ItemData(10020022, ItemClassification.progression, 0),
-    "Vicious Voodoo": ItemData(10020023, ItemClassification.progression, 0),
-    "Fire in the Sky": ItemData(10020024, ItemClassification.progression, 0),
+    "Tide of Terror: Episode Unlock": ItemData(10020021, ItemClassification.progression, 0),
+    "Sunset Snake Eyes: Episode Unlock": ItemData(10020022, ItemClassification.progression, 0),
+    "Vicious Voodoo: Episode Unlock": ItemData(10020023, ItemClassification.progression, 0),
+    "Fire in the Sky: Episode Unlock": ItemData(10020024, ItemClassification.progression, 0),
 }
 
 bottles = {
-    "Stealthy Approach Bottle(s)": ItemData(10020030, ItemClassification.progression, 0),
-    "Into the Machine Bottle(s)": ItemData(10020031, ItemClassification.progression, 0),
-    "High Class Heist Bottle(s)": ItemData(10020032, ItemClassification.progression, 0),
-    "Fire Down Below Bottle(s)": ItemData(10020033, ItemClassification.progression, 0),
-    "Cunning Disguise Bottle(s)": ItemData(10020034, ItemClassification.progression, 0),
-    "Gunboat Graveyard Bottle(s)": ItemData(10020035, ItemClassification.progression, 0),
+    "Stealthy Approach: Bottle(s)": ItemData(10020030, ItemClassification.progression, 0),
+    "Into the Machine: Bottle(s)": ItemData(10020031, ItemClassification.progression, 0),
+    "High Class Heist: Bottle(s)": ItemData(10020032, ItemClassification.progression, 0),
+    "Fire Down Below: Bottle(s)": ItemData(10020033, ItemClassification.progression, 0),
+    "Cunning Disguise: Bottle(s)": ItemData(10020034, ItemClassification.progression, 0),
+    "Gunboat Graveyard: Bottle(s)": ItemData(10020035, ItemClassification.progression, 0),
 
-    "Rocky Start Bottle(s)": ItemData(10020036, ItemClassification.progression, 0),
-    "Boneyard Casino Bottle(s)": ItemData(10020037, ItemClassification.progression, 0),
-    "Straight to the Top Bottle(s)": ItemData(10020038, ItemClassification.progression, 0),
-    "Two to Tango Bottle(s)": ItemData(10020039, ItemClassification.progression, 0),
-    "Back Alley Heist Bottle(s)": ItemData(10020040, ItemClassification.progression, 0),
+    "Rocky Start: Bottle(s)": ItemData(10020036, ItemClassification.progression, 0),
+    "Boneyard Casino: Bottle(s)": ItemData(10020037, ItemClassification.progression, 0),
+    "Straight to the Top: Bottle(s)": ItemData(10020038, ItemClassification.progression, 0),
+    "Two to Tango: Bottle(s)": ItemData(10020039, ItemClassification.progression, 0),
+    "Back Alley Heist: Bottle(s)": ItemData(10020040, ItemClassification.progression, 0),
 
-    "Dread Swamp Path Bottle(s)": ItemData(10020041, ItemClassification.progression, 0),
-    "Lair of the Beast Bottle(s)": ItemData(10020042, ItemClassification.progression, 0),
-    "Grave Undertaking Bottle(s)": ItemData(10020043, ItemClassification.progression, 0),
-    "Descent into Danger Bottle(s)": ItemData(10020044, ItemClassification.progression, 0),
+    "Dread Swamp Path: Bottle(s)": ItemData(10020041, ItemClassification.progression, 0),
+    "Lair of the Beast: Bottle(s)": ItemData(10020042, ItemClassification.progression, 0),
+    "Grave Undertaking: Bottle(s)": ItemData(10020043, ItemClassification.progression, 0),
+    "Descent into Danger: Bottle(s)": ItemData(10020044, ItemClassification.progression, 0),
 
-    "Perilous Ascent Bottle(s)": ItemData(10020045, ItemClassification.progression, 0),
-    "Flaming Temple of Flame Bottle(s)": ItemData(10020046, ItemClassification.progression, 0),
-    "Unseen Foe Bottle(s)": ItemData(10020047, ItemClassification.progression, 0),
-    "Duel by the Dragon Bottle(s)": ItemData(10020048, ItemClassification.progression, 0)
+    "Perilous Ascent: Bottle(s)": ItemData(10020045, ItemClassification.progression, 0),
+    "Flaming Temple of Flame: Bottle(s)": ItemData(10020046, ItemClassification.progression, 0),
+    "Unseen Foe: Bottle(s)": ItemData(10020047, ItemClassification.progression, 0),
+    "Duel by the Dragon: Bottle(s)": ItemData(10020048, ItemClassification.progression, 0)
 }
 
 junk_items = {
@@ -234,3 +237,11 @@ def from_id(item_id: int) -> ItemData:
         raise ValueError(f"No item data for item id '{item_id}'")
     assert len(matching) < 2, f"Multiple item data with id '{item_id}'. Please report."
     return matching[0]
+
+# used in 2 ways for item groups. Keys serve as episode lookup and level lists find which episode a level belongs to
+ep_to_lvl = {
+    "Tide of Terror": ["Stealthy Approach", "Into the Machine", "High Class Heist", "Fire Down Below", "Cunning Disguise", "Gunboat Graveyard"],
+    "Sunset Snake Eyes": ["Rocky Start", "Boneyard Casino", "Straight to the Top", "Two to Tango", "Back Alley Heist"],
+    "Vicious Voodoo": ["Dread Swamp Path", "Lair of the Beast", "Grave Undertaking", "Descent into Danger"],
+    "Fire in the Sky": ["Perilous Ascent", "Flaming Temple of Flame", "Unseen Foe", "Duel by the Dragon"]
+}

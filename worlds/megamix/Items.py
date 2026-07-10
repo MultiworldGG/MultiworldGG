@@ -6,7 +6,7 @@ class SongData(NamedTuple):
     """Special data container to contain the metadata of each song to make filtering work."""
 
     code: Optional[int]
-    songID: Optional[int]
+    songID: int
     singers: set[str]
     DLC: bool
     modded: bool

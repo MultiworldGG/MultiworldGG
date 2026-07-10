@@ -51,7 +51,8 @@ class DKC3Web(WebWorld):
 
 class DKC3World(tracker.UTMxin, World):
     """
-    Donkey Kong Country 3 is an action platforming game for the SNES. K. Rool is BACK once again, retrieve Banana Birds to open up Kaos Kore or find Knautilus in order to rescue Donkey and Diddy!
+    Donkey Kong Country 3 is an action platforming game for the SNES. 
+    K. Rool is BACK once again, retrieve Banana Birds to open up Kaos Kore or find Knautilus in order to rescue Donkey and Diddy!
     """
     game = GAME_NAME
     web = DKC3Web()
@@ -196,59 +197,60 @@ class DKC3World(tracker.UTMxin, World):
             self.total_required_locations -= 3
 
         # Place cogs
-        if self.options.swap_krool:
-            goals = {Goal.option_kastle_kaos, Goal.option_kompletionist}
-        else:
-            goals = {Goal.option_knautilus, Goal.option_kompletionist}
-            
-        if self.options.goal in goals:
-            if self.options.cog_placement == CogPlacement.option_anywhere:
-                itempool += [self.create_item(Items.cog) for _ in range(5)]
-                if self.options.extra_cogs.value:
-                    itempool += [self.create_item(Items.cog) for _ in range(self.options.extra_cogs.value)]
 
-            elif self.options.cog_placement == CogPlacement.option_krematoa_level_clear:
-                loc_count = 0
-                location: Location
-                for krematoa_level in krematoa_levels:
-                    level = self.get_region(self.level_connections[krematoa_level])
-                    for location in level.get_locations():
-                        if "- Clear" in location.name and location.name not in self.options.exclude_locations.value:
-                            location.place_locked_item(self.create_item(Items.cog))
-                            self.total_required_locations -= 1
-                            loc_count += 1
-                            break
-                    if loc_count == 5:
+        #if self.options.swap_krool:
+        #    goals = {Goal.option_kastle_kaos, Goal.option_kompletionist}
+        #else:
+        #    goals = {Goal.option_knautilus, Goal.option_kompletionist}
+        #if self.options.goal in goals:
+        
+        if self.options.cog_placement == CogPlacement.option_anywhere:
+            itempool += [self.create_item(Items.cog) for _ in range(5)]
+            if self.options.extra_cogs.value:
+                itempool += [self.create_item(Items.cog) for _ in range(self.options.extra_cogs.value)]
+
+        elif self.options.cog_placement == CogPlacement.option_krematoa_level_clear:
+            loc_count = 0
+            location: Location
+            for krematoa_level in krematoa_levels:
+                level = self.get_region(self.level_connections[krematoa_level])
+                for location in level.get_locations():
+                    if "- Clear" in location.name and location.name not in self.options.exclude_locations.value:
+                        location.place_locked_item(self.create_item(Items.cog))
+                        self.total_required_locations -= 1
+                        loc_count += 1
                         break
-                else:
-                    itempool += [self.create_item(Items.cog) for _ in range(5 - loc_count)]
-                    player_name = self.multiworld.get_player_name(self.player)
-                    print (f"[{player_name}] Couldn't place all Cogs in Krematoa. "
-                            f"Falling back to placing {5 - loc_count} Cogs anywhere in the multiworld.")
-                if self.options.extra_cogs.value:
-                    itempool += [self.create_item(Items.cog) for _ in range(self.options.extra_cogs.value)]
-                    
-            elif self.options.cog_placement == CogPlacement.option_krematoa_anywhere:
-                locations: list[Location] = []
-                for krematoa_level in krematoa_levels:
-                    level = self.get_region(self.level_connections[krematoa_level])
-                    locations.extend(level.get_locations())
-                self.random.shuffle(locations)
-                loc_count = 0
-                total_count = 5 + self.options.extra_cogs.value
-                for location in locations:
-                    if location.name in self.options.exclude_locations.value or location.is_event:
-                        continue
-                    if loc_count == total_count:
-                        break
-                    location.place_locked_item(self.create_item(Items.cog))
-                    self.total_required_locations -= 1
-                    loc_count += 1
-                else:
-                    itempool += [self.create_item(Items.cog) for _ in range(total_count - loc_count)]
-                    player_name = self.multiworld.get_player_name(self.player)
-                    print (f"[{player_name}] Couldn't place all Cogs in Krematoa. "
-                            f"Falling back to placing {total_count - loc_count} Cogs anywhere in the multiworld.")
+                if loc_count == 5:
+                    break
+            else:
+                itempool += [self.create_item(Items.cog) for _ in range(5 - loc_count)]
+                player_name = self.multiworld.get_player_name(self.player)
+                print (f"[{player_name}] Couldn't place all Cogs in Krematoa. "
+                        f"Falling back to placing {5 - loc_count} Cogs anywhere in the multiworld.")
+            if self.options.extra_cogs.value:
+                itempool += [self.create_item(Items.cog) for _ in range(self.options.extra_cogs.value)]
+                
+        elif self.options.cog_placement == CogPlacement.option_krematoa_anywhere:
+            locations: list[Location] = []
+            for krematoa_level in krematoa_levels:
+                level = self.get_region(self.level_connections[krematoa_level])
+                locations.extend(level.get_locations())
+            self.random.shuffle(locations)
+            loc_count = 0
+            total_count = 5 + self.options.extra_cogs.value
+            for location in locations:
+                if location.name in self.options.exclude_locations.value or location.is_event:
+                    continue
+                if loc_count == total_count:
+                    break
+                location.place_locked_item(self.create_item(Items.cog))
+                self.total_required_locations -= 1
+                loc_count += 1
+            else:
+                itempool += [self.create_item(Items.cog) for _ in range(total_count - loc_count)]
+                player_name = self.multiworld.get_player_name(self.player)
+                print (f"[{player_name}] Couldn't place all Cogs in Krematoa. "
+                        f"Falling back to placing {total_count - loc_count} Cogs anywhere in the multiworld.")
 
         # Add junk items into the pool
         junk_count = self.total_required_locations - len(itempool)

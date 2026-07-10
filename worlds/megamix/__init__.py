@@ -1,9 +1,10 @@
 #AP
 from worlds.AutoWorld import World, WebWorld
-from worlds.LauncherComponents import Component, components, Type, launch_subprocess
+from worlds.LauncherComponents import Component, components, Type, launch_subprocess, icon_paths
 from BaseClasses import Region, Item, ItemClassification, Tutorial
 from Options import PerGameCommonOptions, OptionError
 import settings
+from rule_builder.rules import Has
 
 #Local
 from .Options import MegaMixOptions, megamix_option_groups
@@ -17,27 +18,17 @@ from typing import ClassVar, TextIO
 from math import floor
 
 
-def launch_client():
-    from .Client import launch
-    launch_subprocess(launch, name="MegaMixClient")
-
-
-components.append(Component(
-    "Mega Mix Client",
-    func=launch_client,
-    component_type=Type.CLIENT
-))
-
-
 def launch_json_generator():
     from .generator_megamix.generator import launch
     launch_subprocess(launch, name="MegaMixJSONGenerator")
 
+icon_paths["generator_megamix"] = f"ap:{__name__}/generator_megamix/icon.webp"
 
 components.append(Component(
     "Mega Mix JSON Generator",
     func=launch_json_generator,
-    component_type=Type.ADJUSTER
+    component_type=Type.ADJUSTER,
+    icon="generator_megamix"
 ))
 
 class MegaMixSettings(settings.Group):
@@ -49,7 +40,7 @@ class MegaMixSettings(settings.Group):
         """
         description = "Hatsune Miku Project DIVA Mega Mix+ game executable"
         is_exe = True
-        md5s = ["813e1befae1776d4fafdf907e509b28b"] # 1.03
+        md5s = ["813e1befae1776d4fafdf907e509b28b"] # 1.03/1.04
 
     game_exe: GameExe = GameExe("C:/Program Files (x86)/Steam/steamapps/common/Hatsune Miku Project DIVA Mega Mix Plus/DivaMegaMix.exe")
 
@@ -96,7 +87,7 @@ class MegaMixWorld(World):
         super().__init__(multiworld, player)
         # Working Data
         self.player_mod_data = {}
-        self.player_mod_ids = {}
+        self.player_mod_ids: set[int] = set()
         self.player_mod_remap = {}
         self.victory_song_name: str = ""
         self.victory_song_id: int = 10
@@ -110,18 +101,14 @@ class MegaMixWorld(World):
         if re_gen_passthrough and self.game in re_gen_passthrough:
             slot_data: dict[str, any] = re_gen_passthrough[self.game]
 
-            self.options.progressive_hp.value = int(slot_data.get("progHP", 0)) + 1
+            self.options.progressive_hp.value = 1 + int(slot_data.get("progHP", 0))
 
             # Inject mod data, remap as needed
             from .SymbolFixer import format_song_name
             from .Items import SongData
             remap = slot_data.get("modRemap", {})
             for pack, items in slot_data.get("modData", {}).items():
-                for item in items: # for name, song_id in items
-                    # Temporary back-compat for testing on older world gens
-                    name = "Modded Song" if isinstance(item, int) else item[0]
-                    song_id = item if isinstance(item, int) else item[-1]
-
+                for name, song_id in items:
                     formatted_name = format_song_name(name, song_id)
                     item_id = remap.get(str(song_id), song_id * 10)
 
@@ -267,13 +254,23 @@ class MegaMixWorld(World):
             return MegaMixFixedItem(name, ItemClassification.trap, self.mm_collection.trap_items.get(name), self.player)
 
         elif name == "Progressive HP":
-            return MegaMixFixedItem(name, ItemClassification.progression | ItemClassification.useful, 3, self.player)
+            return MegaMixFixedItem(name, ItemClassification.progression | ItemClassification.useful, self.mm_collection.PROG_HP_CODE, self.player)
 
         song = self.mm_collection.song_items.get(name)
         self.final_song_ids.add(song.songID)
         return MegaMixSongItem(name, self.player, song)
 
+    def get_filler_item_name(self):
+        traps_enabled = sorted(self.options.traps_enabled.value)
+        if traps_enabled and self.options.trap_percentage > 0:
+            return self.random.choice(traps_enabled)
+
+        return self.mm_collection.FILLER_NAME
+
     def create_items(self) -> None:
+        # There is a rare restrictive start FillError (27/100K) for 100% progression (Leek/Prog HP) seeds
+        # Fuzzer meta.yaml: minimal access, 3 starting, 15 additional (for fuzz speed only), 100 Leek%
+
         items_left = len(self.multiworld.get_unfilled_locations(self.player))
 
         for _ in range(0, self.get_leek_count()):
@@ -286,10 +283,10 @@ class MegaMixWorld(World):
             return
 
         # N-1 prog HP
-        for _ in range(1, min(items_left, self.options.progressive_hp.value)):
-            self.prog_hp_added += 1
+        for _ in range(0, min(items_left, self.options.progressive_hp.value - 1)):
             self.multiworld.itempool.append(self.create_item("Progressive HP"))
-            items_left -= 1
+            self.prog_hp_added += 1
+        items_left -= self.prog_hp_added
 
         # Add duplicates based on user percentage
         dupe_count = items_left * self.options.duplicate_song_percentage // 100
@@ -322,15 +319,17 @@ class MegaMixWorld(World):
 
         # Adds 2 item locations per song to the menu region.
         for name in all_selected_locations:
+            rule = Has(name)
             for j in range(2):
                 loc = MegaMixLocation(self.player, f"{name}-{j}", self.mm_collection.song_locations[f"{name}-{j}"], menu_region)
-                loc.access_rule = lambda state, item=name: state.has(item, self.player)
+                self.set_rule(loc, rule)
                 menu_region.locations.append(loc)
 
     def set_rules(self) -> None:
-        self.multiworld.completion_condition[self.player] = lambda state: \
-            state.has(self.mm_collection.LEEK_NAME, self.player, self.get_leek_win_count()) \
-            and state.has("Progressive HP", self.player, self.prog_hp_added)
+        self.set_completion_rule(
+            Has(self.mm_collection.LEEK_NAME, self.get_leek_win_count())
+            & Has("Progressive HP", self.prog_hp_added)
+        )
 
     def get_leek_count(self) -> int:
         """Number of Leeks to be placed in the item pool based on user option and final song count."""
@@ -349,15 +348,11 @@ class MegaMixWorld(World):
         return max(1, floor(leek_count * multiplier))
 
     def get_difficulty_range(self) -> list[float]:
+        diff_ratings = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10]
+        minimum_difficulty = diff_ratings[self.options.song_difficulty_rating_min.value]
+        maximum_difficulty = diff_ratings[self.options.song_difficulty_rating_max.value]
 
-        # Generate the number_to_option_value dictionary using the formula
-        number_to_option_value = {i: 1 + i * 0.5 if i % 2 != 0 else int(1 + i * 0.5) for i in range(19)}
-
-        minimum_difficulty = number_to_option_value.get(self.options.song_difficulty_rating_min.value, None)
-        maximum_difficulty = number_to_option_value.get(self.options.song_difficulty_rating_max.value, None)
-        difficulty_bounds = [min(minimum_difficulty, maximum_difficulty), max(minimum_difficulty, maximum_difficulty)]
-
-        return difficulty_bounds
+        return [min(minimum_difficulty, maximum_difficulty), max(minimum_difficulty, maximum_difficulty)]
 
     def write_spoiler_header(self, spoiler_handle: TextIO):
         spoiler_handle.write(f"Selected Goal Song:              {self.victory_song_name}\n")
@@ -376,14 +371,11 @@ class MegaMixWorld(World):
 
     def fill_slot_data(self):
         return {
-            "victoryLocation": self.victory_song_name,
             "victoryID": self.victory_song_id,
             "finalSongIDs": self.final_song_ids,
             "leekWinCount": self.get_leek_win_count(),
             "scoreGradeNeeded": self.options.grade_needed.value,
-            "autoRemove": bool(self.options.auto_remove_songs),
-            "deathLink": self.options.death_link.value,
-            "deathLink_Amnesty": self.options.death_link_amnesty.value,
+            "death_link": True, # APCpp requires this key name to set the tag
             "modData": {pack: [[song[0], song[1]] for song in songs if song[1] in self.final_song_ids]
                         for pack, songs in self.player_mod_data.items()},
             "modRemap": self.player_mod_remap,

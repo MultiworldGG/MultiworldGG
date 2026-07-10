@@ -4,13 +4,14 @@ import settings
 
 from BaseClasses import Entrance, Item, MultiWorld, Region, Tutorial
 from .Items import event_item_pairs_weapon_mode, item_table, item_table_pacts, HadesItem, event_item_pairs, \
-    create_pact_pool_amount, item_table_keepsake, item_table_weapons, \
-    item_table_store, item_table_hidden_aspects, create_trap_pool, item_name_groups
+    create_pact_pool_amount, item_table_keepsake, item_table_weapons, item_table_abilities, \
+    item_table_store, item_table_hidden_aspects, item_table_mirror, create_trap_pool, item_name_groups
 from .Locations import setup_location_table_with_settings, give_all_locations_table, HadesLocation, \
     location_table_fates_events, location_name_groups
 from .Options import hades_option_presets, hades_option_groups, HadesOptions
 from .Regions import create_regions
 from .Rules import set_rules
+from .Data import mirror_upgrades
 from worlds.AutoWorld import WebWorld, World
 from worlds.LauncherComponents import icon_paths, Component, components, Type, launch_subprocess
 from Utils import local_path
@@ -20,7 +21,7 @@ def launch_client():
     launch_subprocess(launch, "HadesClient")
 
 
-icon_paths['hades_icon'] = local_path('data', 'hades_icon.png')
+icon_paths['hades_icon'] = f"ap:{__name__}/icons/hades_icon.png"
 
 components.append(Component("Hades Client",
                   func=launch_client, component_type=Type.CLIENT, icon='hades_icon'))
@@ -45,8 +46,8 @@ class HadesWeb(WebWorld):
         ["Naix"]
     )]
     options_presets = hades_option_presets
-
     option_groups = hades_option_groups
+    game = "Hades"
 
 
 class HadesWorld(World):
@@ -63,7 +64,7 @@ class HadesWorld(World):
     web = HadesWeb()
     required_client_version = (0, 6, 4)
 
-    polycosmos_version = "0.15"
+    polycosmos_version = "0.16"
 
     item_name_to_id = {name: data.code for name, data in item_table.items()}
     location_name_to_id = give_all_locations_table()
@@ -100,6 +101,42 @@ class HadesWorld(World):
                 item = HadesItem(name, self.player)
                 pool.append(item)
 
+        # Fill ability items
+        if self.options.abilitysanity.value == 0:
+            for name, (data, category) in item_table_abilities.items():
+                item = HadesItem(name, self.player)
+                if category == "shared":
+                    pool.append(item)
+                elif category == "attack":
+                    if self.options.initial_ability.value == 0:
+                        self.multiworld.push_precollected(item)
+                    else:
+                        pool.append(item)
+                elif category == "special":
+                    if self.options.initial_ability.value == 1:
+                        self.multiworld.push_precollected(item)
+                    else:
+                        pool.append(item)
+        elif self.options.abilitysanity.value == 1:
+            for name, (data, category) in item_table_abilities.items():
+                item = HadesItem(name, self.player)
+                if category == "shared":
+                    pool.append(item)
+                elif category == "generic_attack":
+                    if self.options.initial_ability.value == 0:
+                        self.multiworld.push_precollected(item)
+                    else:
+                        pool.append(item)
+                elif category == "generic_special":
+                    if self.options.initial_ability.value == 1:
+                        self.multiworld.push_precollected(item)
+                    else:
+                        pool.append(item)
+        else:
+            for name, (data, category) in item_table_abilities.items():
+                if category not in("attack", "special"):
+                    self.multiworld.push_precollected(HadesItem(name, self.player))
+                
         # Fill store items
         if self.options.storesanity:
             for name, data in item_table_store.items():
@@ -107,9 +144,16 @@ class HadesWorld(World):
                 pool.append(item)
 
         if self.options.hidden_aspectsanity:
-            for name, date in item_table_hidden_aspects.items():
+            for name, data in item_table_hidden_aspects.items():
                 item = HadesItem(name, self.player)
                 pool.append(item)
+
+        # Fill mirror items
+        if self.options.mirrorsanity:
+            for upgrade in mirror_upgrades:
+                for _ in range(upgrade.max_level):
+                    item = HadesItem(f"{upgrade.name} Level", self.player)
+                    pool.append(item)
 
         # Pair up our event locations with our event items
         if self.options.location_system == "room_weapon_based":
@@ -275,9 +319,9 @@ class HadesWorld(World):
 
     def fill_slot_data(self) -> dict:
         slot_data = self.options.as_dict("initial_weapon", "location_system", "score_rewards_amount", "keepsakesanity",
-                                         "weaponsanity", "hidden_aspectsanity", "storesanity", "fatesanity",
-                                         "hades_defeats_needed", "weapons_clears_needed", "keepsakes_needed", 
-                                         "fates_needed", "heat_system", "hard_labor_pact_amount",
+                                         "weaponsanity", "abilitysanity", "initial_ability", "hidden_aspectsanity", "storesanity", "fatesanity",
+                                         "mirrorsanity", "fishsanity", "trovesanity", "hades_defeats_needed", "weapons_clears_needed", 
+                                         "keepsakes_needed", "fates_needed", "heat_system", "hard_labor_pact_amount",
                                          "lasting_consequences_pact_amount", "convenience_fee_pact_amount",
                                          "jury_summons_pact_amount", "extreme_measures_pact_amount",
                                          "calisthenics_program_pact_amount", "benefits_package_pact_amount",
@@ -290,7 +334,8 @@ class HadesWorld(World):
                                          "nectar_pack_value", "ambrosia_pack_value", "filler_helper_percentage",
                                          "max_health_helper_percentage", "initial_money_helper_percentage",
                                          "filler_trap_percentage", "reverse_order_em", "ignore_greece_deaths",
-                                         "store_give_hints", "automatic_rooms_finish_on_hades_defeat", "disable_late_styx", "death_link")
+                                         "store_give_hints", "automatic_rooms_finish_on_hades_defeat", "disable_late_styx", 
+                                         "death_link", "death_link_amnesty")
         slot_data['seed'] = "".join(self.random.choice(string.ascii_letters) for i in range(16))
         slot_data["version_check"] = self.polycosmos_version
         return slot_data

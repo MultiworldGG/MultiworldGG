@@ -58,6 +58,21 @@ There are 5 categories of items you can receive:
 4. [Optional] Traps
 5. [Optional] 1-Ups
 
+### What Item and Location groups do exist for this?
+#### Item Groups
+* Unlocks
+* Items
+* Junk
+* Traps
+* Stat Ups
+
+#### Location Groups
+* Rooms
+* Boss Rewards
+* AP Items
+* [stage] (e.g. "Basement" would contain all checks on Basement)
+* [room]s (e.g. "Secret Rooms" would contain all secret rooms)
+
 ### What happens to the Items I received when I start a new run?
 Unlocks and 1-Ups are always retained and re-given on each run once you have received them.  
 For items and consumables you are given a percentage of them on each new run. Either at the very beginning or spread across the first 6 floors.  

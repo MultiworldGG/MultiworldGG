@@ -7,6 +7,7 @@ import pkgutil
 from BaseClasses import MultiWorld, Tutorial, ItemClassification
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import launch as launch_component, components, Component, Type
+from rule_builder.rules import Rule
 
 from .Items import DKC2Item, item_table, item_groups, STARTING_ID
 from .Locations import setup_locations, all_locations, location_groups
@@ -100,6 +101,7 @@ class DKC2World(Tracker.UTMxin, World):
     item_name_groups = item_groups
     location_name_groups = location_groups
     origin_region_name = RegionName.crocodile_isle
+    rule_macros: dict[str, Rule.Resolved]
     hint_blacklist = {
         LocationName.krow_defeated,
         LocationName.kleever_defeated,
@@ -110,6 +112,7 @@ class DKC2World(Tracker.UTMxin, World):
 
     def __init__(self, multiworld: MultiWorld, player: int):
         self.rom_name_available_event = threading.Event()
+        self.rule_macros = {}
         super().__init__(multiworld, player)
         
     def create_regions(self) -> None:
@@ -129,8 +132,7 @@ class DKC2World(Tracker.UTMxin, World):
             DKC2ExpertRules(self).set_dkc2_rules()
         else:
             raise ValueError(f"Somehow you have a logic option that's currently invalid."
-                             f" {logic} for {self.multiworld.get_player_name(self.player)}")
-
+                             f" {logic} for {self.player_name}")
 
         # Universal Tracker: If we're using UT, scan the rules again to build "glitched logic" during the regen
         if self.is_ut:
@@ -212,10 +214,9 @@ class DKC2World(Tracker.UTMxin, World):
         if self.options.goal in {Goal.option_kompletionist, Goal.option_lost_world}:
             # Let AP decide where to put the items
             if self.options.lost_world_rock_placement == LostWorldRockPlacement.option_anywhere:
-                for _ in range(self.options.lost_world_rocks.value):
-                    itempool.append(self.create_item(ItemName.lost_world_rock))
-                for _ in range(self.options.extra_lost_world_rocks.value):
-                    itempool.append(self.create_item(ItemName.lost_world_rock, ItemClassification.useful))
+                itempool += [self.create_item(ItemName.lost_world_rock) for _ in range(self.options.lost_world_rocks.value)]
+                if self.options.extra_lost_world_rocks.value:
+                    itempool += [self.create_item(ItemName.lost_world_rock) for _ in range(self.options.extra_lost_world_rocks.value)]
 
             # Try to place them Level clears of Lost World, fallback to AP if there are some excluded locations
             elif self.options.lost_world_rock_placement == LostWorldRockPlacement.option_lost_world_level_clear:
@@ -231,15 +232,11 @@ class DKC2World(Tracker.UTMxin, World):
                     if loc_count == 5:
                         break
                 else:
-                    for c in range(loc_count, 5):
-                        if c < self.options.lost_world_rocks.value:
-                            itempool.append(self.create_item(ItemName.lost_world_rock))
-                        else:  
-                            itempool.append(self.create_item(ItemName.lost_world_rock, ItemClassification.useful))
-                    missing = 5 - loc_count
-                    player_name = self.multiworld.get_player_name(self.player)
-                    print (f"[{player_name}] Couldn't place all Lost World Rocks in Lost World. "
-                           f"Falling back to placing {missing} Lost World Rocks anywhere in the multiworld.")
+                    itempool += [self.create_item(ItemName.lost_world_rock) for _ in range(5 - loc_count)]
+                    print (f"[{self.player_name}] Couldn't place all Lost World Rocks in Lost World. "
+                           f"Falling back to placing {5 - loc_count} Lost World Rocks anywhere in the multiworld.")
+                if self.options.extra_lost_world_rocks.value:
+                    itempool += [self.create_item(ItemName.lost_world_rock) for _ in range(self.options.extra_lost_world_rocks.value)]
 
             # Try to place them anywhere in the Lost World levels, fallback to AP if there are some excluded locations
             elif self.options.lost_world_rock_placement == LostWorldRockPlacement.option_lost_world_anywhere:
@@ -251,26 +248,17 @@ class DKC2World(Tracker.UTMxin, World):
                 loc_count = 0
                 total_count = self.options.lost_world_rocks.value + self.options.extra_lost_world_rocks.value
                 for location in locations:
-                    if location.name in self.options.exclude_locations.value:
+                    if location.name in self.options.exclude_locations.value or location.is_event:
                         continue
                     if loc_count == total_count:
                         break
-                    if loc_count < self.options.lost_world_rocks.value:
-                        location.place_locked_item(self.create_item(ItemName.lost_world_rock))
-                    else:  
-                        location.place_locked_item(self.create_item(ItemName.lost_world_rock, ItemClassification.useful))
+                    location.place_locked_item(self.create_item(ItemName.lost_world_rock))
                     total_required_locations -= 1
                     loc_count += 1
                 else:
-                    for c in range(loc_count, total_count):
-                        if c < self.options.lost_world_rocks.value:
-                            itempool.append(self.create_item(ItemName.lost_world_rock))
-                        else:  
-                            itempool.append(self.create_item(ItemName.lost_world_rock, ItemClassification.useful))
-                    missing = total_count - loc_count
-                    player_name = self.multiworld.get_player_name(self.player)
-                    print (f"[{player_name}] Couldn't place all Lost World Rocks in Lost World. "
-                           f"Falling back to placing {missing} Lost World Rocks anywhere in the multiworld.")
+                    itempool += [self.create_item(ItemName.lost_world_rock) for _ in range(total_count - loc_count)]
+                    print (f"[{self.player_name}] Couldn't place all Lost World Rocks in Lost World. "
+                           f"Falling back to placing {total_count - loc_count} Lost World Rocks anywhere in the multiworld.")
 
         # Add hint currency items into the pool
         itempool += [self.create_item(ItemName.kremkoins) for _ in range(28)]
@@ -432,7 +420,7 @@ class DKC2World(Tracker.UTMxin, World):
 
     def generate_output(self, output_directory: str):
         try:
-            patch = DKC2ProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
+            patch = DKC2ProcedurePatch(player=self.player, player_name=self.player_name)
             patch.write_file("dkc2_basepatch.bsdiff4", pkgutil.get_data(__name__, "data/dkc2_basepatch.bsdiff4"))
             patch_rom(self, patch)
 
@@ -454,4 +442,4 @@ class DKC2World(Tracker.UTMxin, World):
         # we skip in case of error, so that the original error in the output thread is the one that gets raised
         if rom_name:
             new_name = base64.b64encode(bytes(self.rom_name)).decode()
-            multidata["connect_names"][new_name] = multidata["connect_names"][self.multiworld.player_name[self.player]]
+            multidata["connect_names"][new_name] = multidata["connect_names"][self.player_name]

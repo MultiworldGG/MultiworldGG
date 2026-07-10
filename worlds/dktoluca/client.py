@@ -304,7 +304,7 @@ class DKC3SNIClient(SNIClient):
 
                 await ctx.send_msgs([{
                     "cmd": "Set", 
-                    "key": f"dkc2_reached_levels_{ctx.team}_{ctx.slot}", 
+                    "key": f"dkc3_reached_levels_{ctx.team}_{ctx.slot}", 
                     "default": 0,
                     "want_reply": False,
                     "operations":
@@ -313,7 +313,7 @@ class DKC3SNIClient(SNIClient):
 
             await ctx.send_msgs([{
                 "cmd": "Set", 
-                "key": f"dkc2_current_map_{ctx.team}_{ctx.slot}", 
+                "key": f"dkc3_current_map_{ctx.team}_{ctx.slot}", 
                 "default": 0,
                 "want_reply": False,
                 "operations":
@@ -327,7 +327,7 @@ class DKC3SNIClient(SNIClient):
 
             await ctx.send_msgs([{
                     "cmd": "Set", 
-                    "key": f"dkc2_clear_count_{ctx.team}_{ctx.slot}", 
+                    "key": f"dkc3_clear_count_{ctx.team}_{ctx.slot}", 
                     "default": 0,
                     "want_reply": False,
                     "operations":
@@ -467,7 +467,7 @@ class DKC3SNIClient(SNIClient):
         barrels = int.from_bytes(memory_data.get(DKC3Memory.barrel_count), "little")
         
         if self.barrel_request == "place_request":
-            self.barrel_request_tag = f"dkc2-dkbarrel-{ctx.team}-{ctx.slot}-{random.randint(0, 0xFFFFFFFF)}"
+            self.barrel_request_tag = f"dkc3-dkbarrel-{ctx.team}-{ctx.slot}-{random.randint(0, 0xFFFFFFFF)}"
             value = DK_BARREL_BANANA_COST * DKC3_EXCHANGE_RATE * self.barrel_count
             await ctx.send_msgs([{ 
                 "cmd": "Set", 

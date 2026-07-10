@@ -7,12 +7,12 @@ This guide is meant to help you get up and running with Ratchet and Clank 3 in y
 The following are required in order to play Ratchet and Clank 3 in MultiworldGG
 
 - Installed the latest version of [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases).
-- If you do not want to use MWGG: The latest version of the [Ratchet and Clank 3 apworld](https://github.com/Taoshix/Archipelago-RaC3/releases).
+- On AP: The latest version of the [Ratchet and Clank 3 apworld](https://github.com/Taoshix/Archipelago-RaC3/releases).
 - [PCSX2 Emulator](https://pcsx2.net/downloads/). Must be v1.7 or higher for the required PINE support (the latest stable version is recommended).
 - A Ratchet and Clank 3 US ISO (`SCUS-97353`) or EU/AUS ISO (`SCES-52456`) \
 **Note:** To check the other game version's compatibility check the FAQ linked below.
 
-## If you do not want to use MWGG: AP World Installation
+## For Archipelago: AP World Installation
 
 1. Download the Ratchet and Clank 3 apworld file from the [GitHub Releases Page](https://github.com/Taoshix/Archipelago-RaC3/releases)
 2. Double-click the `rac3.apworld` to install it to your local Archipelago instance
@@ -21,8 +21,8 @@ The following are required in order to play Ratchet and Clank 3 in MultiworldGG
 ## PCSX2 Settings
 
 - Enable PINE in PCSX2
-    - In PCSX2, Under Tools, **Check** Show Advanced Settings
-    - In PCSX2, System → Settings → Advanced tab → PINE Settings,
+  - In PCSX2, Under Tools, **Check** Show Advanced Settings
+  - In PCSX2, System → Settings → Advanced tab → PINE Settings,
       **Check** Enable and ensure Slot is set to 28011
 
 Make sure you restart PCSX2 afterwards.
@@ -39,7 +39,7 @@ an experience customized for their taste, and different players in the same mult
 
 You can customize your options by visiting
 the [Ratchet and Clank 3 Options Page](/games/Ratchet%20and%20Clank%203/player-options).
-Alternatively, you can use the "Options Creator" (a GUI tool in the MultiworldGG Launcher) to customize your options and export your YAML file, or use the "Generate Template Options" feature if you prefer editing your YAML in a text editor. Both tools are available in the MultiworldGG Launcher.
+Alternatively, you can use the "Options Creator" (a GUI tool in the MultiworldGG Launcher) to customize your options and export your YAML file. You can also use the "Generate Template Options" feature if you prefer editing your YAML in a text editor. Both tools are available in the MultiworldGG Launcher.
 
 ### Hosting your MultiWorld
 
@@ -61,13 +61,12 @@ This section is for players who want to host a solo or multiplayer game.
 
 2. Launch Ratchet and Clank 3 client in the MultiworldGG Launcher
     - In the address field, enter your MultiworldGG connection address (e.g., multiworld.gg:51780 or localhost:38281). Then, type your player name (as specified in your YAML file, e.g., Player1) into the client.
-    - Start a new save file by choosing "New Game" from the main menu, then select your preferred save slot. Watch/skip the intro cutscene once the game starts. If the client is connected first, items will begin being sent to the player even if you are still on the main menu but you will not receive them until you are actually in-game.
-    - To apply cosmetics, reload the save file by pausing and going into options and then load file with the same slot.
+    - Start a new save file by choosing "New Game" from the main menu, then select your preferred save slot. Watch/skip the intro cutscene once the game starts. If the client connects before you load into the game, your items will be delivered as soon as you are in-game.
+    - To apply cosmetics, reload the save file by pausing and going into options and then load file with the same slot. Alternatively, visit the armor vendor on the Starship Phoenix to have the game reload your cosmetics. If you accidentally overwrite your cosmetics with the skin menu, go visit the ship vendor and then armor vendor on the Starship Phoenix to re-apply cosmetics.
     - To continue a previous session, simply reconnect to the same MultiworldGG connection address and load the save file you used for that session.
 
-
 ## Troubleshooting
+
 For common issues, check the [FAQ](https://github.com/Taoshix/Archipelago-RaC3/blob/staging/worlds/rac3/docs/frequently_asked_questions_Rac3_en.md).
 
 If you need further help, join the [Archipelago Discord](https://discord.gg/archipelago) and visit the `[PS2] Ratchet and Clank 3: Up Your Arsenal` thread in the `future-game-design` forum channel (located at the bottom).
-

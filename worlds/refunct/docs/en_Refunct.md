@@ -45,6 +45,7 @@ All of these troubleshooting steps are for when the mod crashes on launch.
   - Please run Refunct, then open a cmd, and run `powershell -NoProfile -Command "Get-Process -Name 'Refunct-Win32-Shipping'"`. If it shows two or more lines, then this does seem to be the case.
   - Try to kill one of the processes (try the one with the lowest handles/cpu first) using `taskkill /Pid 8132` where `8132` is the ID. If Refunct doesn't crash, you got the correct one
   - Now try to run the mod again.
+  - If it only shows one process, perhaps Windows doesn't trust the process, you can run this line in powershell: `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`
 
 
 ## Refunct TaS Tool

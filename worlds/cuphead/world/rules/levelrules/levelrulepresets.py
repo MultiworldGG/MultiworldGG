@@ -272,7 +272,7 @@ LrpDlcRungunChaliced = PresetData(
 LrpDlcRungunChalicedParry = PresetData(
     Preset(LrpDlcRungunChaliced) &
     # LrpDlcRungunChaliced will require Dash already if chalied_grade_required is on
-    (Preset(LrpDash) | DepFilter(deps.dep_dlc_chaliced_grade_required)),
+    (Preset(LrpDash) | DepFilter(deps.dep_dlc_rungun_chaliced_grade_required)),
     "DLC Run n Gun Chaliced Parry"
 )
 

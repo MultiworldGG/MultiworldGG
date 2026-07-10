@@ -60,10 +60,10 @@ MOVE_NAMES = [
     "Decoy",
     "Hacking",
     "Progressive Invisibility",
-    "ToT Blueprints",
-    "SSE Blueprints",
-    "VV Blueprints",
-    "FitS Blueprints"
+    "Tide of Terror Blueprints",
+    "Sunset Snake Eyes Blueprints",
+    "Vicious Voodoo Blueprints",
+    "Fire in the Sky Blueprints"
 ]
 
 MOVES = {
@@ -77,10 +77,10 @@ MOVES = {
     "Decoy": 512,
     "Hacking": 2048,
     "Progressive Invisibility": [65536, 8192],
-    "ToT Blueprints": 536870912,
-    "SSE Blueprints": 1073741824,
-    "VV Blueprints": 2147483648,
-    "FitS Blueprints": [0x10000000]
+    "Tide of Terror Blueprints": 536870912,
+    "Sunset Snake Eyes Blueprints": 1073741824,
+    "Vicious Voodoo Blueprints": 2147483648,
+    "Fire in the Sky Blueprints": [0x10000000]
 }
 
 ADDRESSES = {

@@ -37,11 +37,11 @@ class LevelData(NamedTuple):
     region: Optional[str]
     bottle_amount: Optional[int]
 
-episode_type_to_name = {
-    EpisodeType.TOT:      "Tide of Terror",
-    EpisodeType.SSE:      "Sunset Snake Eyes",
-    EpisodeType.VV:       "Vicious Voodoo",
-    EpisodeType.FITS:     "Fire in the Sky",
+episode_type_to_unlock = {
+    EpisodeType.TOT:      "Tide of Terror: Episode Unlock",
+    EpisodeType.SSE:      "Sunset Snake Eyes: Episode Unlock",
+    EpisodeType.VV:       "Vicious Voodoo: Episode Unlock",
+    EpisodeType.FITS:     "Fire in the Sky: Episode Unlock",
     EpisodeType.CHOH:     "Cold Heart of Hate",
     EpisodeType.ALL:      "All"
 }

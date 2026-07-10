@@ -487,6 +487,18 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
             rule=lambda state: logic.can_hit_switch_from_a_distance(state, True),
             flags=PhoaFlag.DUNGEONITEM,
             vanillaItem="Anuri Pearlstone",
+        ),"Anuri Temple - First item in narrow crawlspace in tree with prickle fruit room": PhoaLocationData(
+            region="anuri_temple(main)",
+            address=7676134,
+            rule=lambda state: logic.can_hit_switch_from_a_distance(state, True),
+            flags=PhoaFlag.FREESTANDING,
+            vanillaItem="Doki Herb",
+        ),"Anuri Temple - Second item in narrow crawlspace in tree with prickle fruit room": PhoaLocationData(
+            region="anuri_temple(main)",
+            address=7676135,
+            rule=lambda state: logic.can_hit_switch_from_a_distance(state, True),
+            flags=PhoaFlag.FREESTANDING,
+            vanillaItem="Doki Herb",
         ),
         "Anuri Temple - Side entrance room - First Lizard": PhoaLocationData(
             region="anuri_temple(main)",
@@ -1112,6 +1124,12 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
             rule=lambda state: state.has("Lisa's ID Card", player),
             flags=PhoaFlag.SHOPSANITY,
             vanillaItem="Bottle of Wine",
+        ),
+        "Atai Town - Tavern Gustav's gift for filling the item ring": PhoaLocationData(
+            region="atai_town",
+            address=7676133,
+            flags=PhoaFlag.NPCGIFTS,
+            vanillaItem="Pooki Jerky",
         ),
         "Atai Town - Guard residence mouse": PhoaLocationData(
             region="atai_town",

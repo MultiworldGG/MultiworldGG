@@ -57,7 +57,9 @@ class RequiredPages(Range):
 
 class StartingEpisode(Choice):
     """
-    Determines which episode you will have the intro for at the beginning of the game.
+    Determines which episode you will start in. You will be able to do the initial level for it, but
+    will only be able to continue if you receive a key for that episode (or unlock a different episode)
+    from a location within it. Avoid Early BK is suggested if you want to avoid early stuck points.
     """
     display_name = "Starting Episode"
     option_tide_of_terror = 1
@@ -93,7 +95,7 @@ class ExcludeMinigames(OptionSet):
     Crabs: Treasure in the Depths
     Races: At the Dog Track, A Desperate Race
     Turrets: Murray's Big Gamble, The King of the Hill
-    Hover Blasters: A Ghastly Voyage, Rapid Fire Assualt
+    Hover Blasters: A Ghastly Voyage, Rapid Fire Assault
     Chicken Killing: Down Home Cooking
     Swamp Skiff: Piranha Lake
     """
@@ -109,8 +111,9 @@ class ExcludeMinigames(OptionSet):
 
 class MinigameCaches(Range):
     """
-    Determines how many checks minigames send when completed. Ignored if the minigame is excluded.
-    Allows a range from 0-10.
+    Determines how many additional "minigame cache" checks that minigame levels send when completed.
+    Minigame levels will still have a key location even if this is set to 0.
+    This is ignored for any minigame levels excluded above. Allows a range from 0-10.
     """
     display_name = "Minigame Caches"
     range_start = 0
@@ -147,7 +150,7 @@ class CutsceneSkip(Toggle):
 
 class TrapChance(Range):
     """
-    Determines the chance for any junk item to become a trap.
+    Determines the chance for a filler item to become a trap.
     Set it to 0 for no traps.
     """
     display_name = "Include Traps"
@@ -195,6 +198,27 @@ class BallTrapWeight(Range):
     range_end = 100
     default = 25
 
+class EnableTricks(OptionSet):
+    """
+    This option allows you to enable alternative forms of logic to access parts of the game via tricks.
+    Intended for use by people who know speedrun tricks already, but if you would like to learn, watch an
+    Any% run of the game for reference on how to do the below tricks.
+
+    Tide of Terror supports tot_second_half_early and tot_raleigh_early.
+    Sunset Snake Eyes supports sse_second_half_early and sse_muggshot_early.
+    Vicious Voodoo only supports vv_second_half early as Mz. Ruby does not have known methods of early access.
+    Fire in the Sky supports fits_second_half_early and fits_panda_early.
+    Additionally, an 8th trick unseen_foe_invis_skip is supported which puts all Unseen Foe locations into logic
+    without requiring any progressive invisibility items.
+
+    Including any of the tricks below will potentially require you to do those tricks to progress, depending
+    on the randomization.
+    """
+    display_name = "Enable Tricks"
+    default = []
+    valid_keys = ["tot_second_half_early", "tot_raleigh_early", "sse_second_half_early", "sse_muggshot_early",
+                  "vv_second_half_early", "fits_second_half_early", "fits_panda_early", "unseen_foe_invis_skip"]
+
 @dataclass
 class Sly1Options(PerGameCommonOptions):
     UnlockClockwerk:                UnlockClockwerk
@@ -210,6 +234,7 @@ class Sly1Options(PerGameCommonOptions):
     MinigameCaches:                 MinigameCaches
     LocationCluesanityBundleSize:   LocationCluesanityBundleSize
     ItemCluesanityBundleSize:       ItemCluesanityBundleSize
+    EnableTricks:                   EnableTricks
     CutsceneSkip:                   CutsceneSkip
     TrapChance:                     TrapChance
     IcePhysicsTrapWeight:           IcePhysicsTrapWeight
@@ -222,7 +247,7 @@ sly1_option_groups: Dict[str, List[Any]] = {
                          RequiredBosses, MaxPages,
                          RequiredPages, StartingEpisode,
                          IncludeHourglasses, HourglassesRequireRoll,
-                         CutsceneSkip],
+                         EnableTricks, CutsceneSkip],
     "Minigame Options": [ExcludeMinigames, MinigameCaches],
     "Cluesanity Options": [LocationCluesanityBundleSize, ItemCluesanityBundleSize],
     "Trap Options": [TrapChance, IcePhysicsTrapWeight,

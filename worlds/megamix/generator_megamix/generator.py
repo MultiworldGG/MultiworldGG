@@ -16,20 +16,21 @@ from kivymd.uix.snackbar import MDSnackbar, MDSnackbarText
 import Utils
 from .json_megamix import process_mods, ConflictException
 from .. import MegaMixWorld
-from ..DataHandler import restore_originals, game_paths
+from ..DataHandler import game_paths
 
 
 class AssociatedMDLabel(MDLabel):
-    def __init__(self, text, associate):
+    def __init__(self, text: str, cb: CheckBox):
         MDLabel.__init__(self)
         self.text = text
-        self.associate = associate
+        self.checkbox = cb
         self.valign = 'center'
+        self.filtered_out = False
 
     def on_touch_down(self, touch):
         MDLabel.on_touch_down(self, touch)
         if self.collide_point(touch.pos[0], touch.pos[1]):
-            self.associate.active = not self.associate.active
+            self.checkbox.active = not self.checkbox.active
 
 class MDBoxLayoutHover(MDBoxLayout, HoverBehavior):
     pass
@@ -40,8 +41,7 @@ class DivaJSONGenerator(ThemedApp):
     filter_input: MDTextField = ObjectProperty(None)
 
     mods_folder = game_paths().get("mods")
-    self_mod_name = game_paths().get("modname")
-    labels = []
+    labels: list[AssociatedMDLabel] = []
 
     def find_db_folder(self, dbs: set[str]) -> list:
         found = []
@@ -50,11 +50,12 @@ class DivaJSONGenerator(ThemedApp):
             if not any(f in dbs for f in files):
                 continue
 
-            folder_name = str(Path(root).parent.relative_to(Path(self.mods_folder)))
-            if self.self_mod_name and folder_name.startswith(self.self_mod_name):
-                continue
-
-            found.append((root, folder_name))
+            try:
+                folder_name = str(Path(root).parent.relative_to(Path(self.mods_folder)))
+                found.append((root, folder_name))
+            except ValueError as e:
+                # Usually a db file at the root of the mods folder. Would not be loaded anyway.
+                print(e)
 
         return sorted(found)
 
@@ -104,8 +105,10 @@ class DivaJSONGenerator(ThemedApp):
                 dialog_dml.open()
 
         for label in self.labels:
-            # The split may need to be /-aware in the future.
-            if import_dml and label.text.split("\\")[0] not in dml_config:
+            if label.filtered_out:
+                continue
+
+            if import_dml and label.text.split(os.sep)[0] not in dml_config:
                 continue
             elif search:
                 if "/" == search[0] == search[-1]:
@@ -113,7 +116,7 @@ class DivaJSONGenerator(ThemedApp):
                         continue
                 elif search.lower() not in label.text.lower():
                     continue
-            label.associate.active = active
+            label.checkbox.active = active
 
     def toggle_checkbox_from_input(self, active: bool = False):
         if self.filter_input.text:
@@ -124,16 +127,18 @@ class DivaJSONGenerator(ThemedApp):
         self.pack_list_scroll.scroll_y = 1
 
         for label in self.labels:
+            label.filtered_out = True
             if search:
                 if "/" == search[0] == search[-1]:
                     if not re.search(search[1:-1], label.text):
                         continue
                 elif search.lower() not in label.text.lower():
                     continue
+            label.filtered_out = False
             self.pack_list_scroll.layout.add_widget(label.parent)
 
     def process_to_clipboard(self):
-        checked_packs = [str(os.path.join(self.mods_folder, label.text)) for label in self.labels if label.associate.active]
+        checked_packs = [str(os.path.join(self.mods_folder, label.text)) for label in self.labels if label.checkbox.active]
         mod_pv_db_paths_list = [folder_path for folder_path in checked_packs]
 
         if not mod_pv_db_paths_list:
@@ -146,11 +151,12 @@ class DivaJSONGenerator(ThemedApp):
             self.copy(str(e))
 
             dialog_conflict = Factory.DialogGeneric()
-            dialog_conflict.title = "Conflicting IDs prevent generating"
+            dialog_conflict.title = "Conflicting IDs prevent generating mod string"
             dialog_conflict.desc = dedent("""\
                                         [b]This is not for use in the YAML.[/b]
-                                        
-                                        This is common for packs that target the base game or add covers.
+
+                                        The mod string requires that a song ID is only provided by a single pack.
+                                        Conflicts are common for packs that target the base game or add lyrics/covers.
                                         Listed below are conflicting packs and IDs. Uncheck some or all of them.
                                         """)
             dialog_conflict.field = str(e)
@@ -195,14 +201,6 @@ class DivaJSONGenerator(ThemedApp):
 
         with open(path, "w", encoding='utf-8') as file:
             file.write(content + "\n")
-
-    def process_restore_originals(self):
-        mod_pv_dbs = [f"{self.mods_folder}/{pack}/rom/mod_pv_db.txt" for pack in [label.text for label in self.labels]]
-        try:
-            restore_originals(mod_pv_dbs)
-            self.show_snackbar("Song packs restored")
-        except Exception as e:
-            self.show_snackbar(str(e))
 
     def build(self):
         self.title = "Hatsune Miku Project Diva Mega Mix+ JSON Generator"

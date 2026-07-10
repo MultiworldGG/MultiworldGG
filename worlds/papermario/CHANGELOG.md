@@ -1,12 +1,19 @@
 # Changelog
 
+## 0.6.7
+
+### Other
+
+* AP data for trackers
+  * Add bouncing of the player's current location in the game world, so trackers and other tools can access this information live.
+
 ## 0.6.6
 
-### Bugfixes/Corrections
+### Bugfixes/Corrections (0.6.6)
 
 * Fixed packaging mistake of the apworld file, leading to errors during seed generation.
 
-### Other
+### Other (0.6.6)
 
 * Updated the `Ressources and FAQ` docs
   * Swap links to point to the new Github repository

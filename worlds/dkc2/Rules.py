@@ -1,8 +1,9 @@
 from typing import TYPE_CHECKING
+from dataclasses import dataclass
 from typing_extensions import override
 
 from rule_builder.options import OptionFilter
-from rule_builder.rules import Has, HasAll, Rule, True_, False_
+from rule_builder.rules import Has, HasAll, Rule, True_, WrapperRule, Rule
 from NetUtils import JSONMessagePart
 
 if TYPE_CHECKING:
@@ -15,12 +16,54 @@ import dataclasses
 
 GAME_NAME = "Donkey Kong Country 2"
 
+
+@dataclass()
+class Macro(WrapperRule["DKC2World"], game=GAME_NAME):
+    name: str
+    description: str = ""
+
+    @override
+    def _instantiate(self, world: "DKC2World") -> Rule.Resolved:
+        if rule := world.rule_macros.get(self.name):
+            return rule
+        rule = self.Resolved(
+            self.child.resolve(world),
+            self.name,
+            self.description,
+            player=world.player,
+            caching_enabled=getattr(world, "rule_caching_enabled", False),
+        )
+        world.rule_macros[self.name] = rule
+        return rule
+
+    @override
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}[{self.child}]"
+
+    class Resolved(WrapperRule.Resolved):
+        name: str
+        description: str = ""
+
+        @override
+        def explain_json(self, state: CollectionState | None = None) -> list[JSONMessagePart]:
+            if state is None:
+                return [{"type": "text", "text": str(self)}]
+            return [{"type": "color", "color": "green" if self(state) else "salmon", "text": str(self)}]
+
+        @override
+        def explain_str(self, state: CollectionState | None = None) -> str:
+            suffix = ""
+            if state is not None:
+                suffix = " ✓" if self(state) else " ✕"
+            return f"{self.name}{suffix}"
+
+        @override
+        def __str__(self) -> str:
+            return self.name
+
 HasDiddy: Rule = Has(ItemName.diddy)
 HasDixie: Rule = Has(ItemName.dixie)
-HasBothKongs: Rule = HasAll(ItemName.diddy, ItemName.dixie)
-CanTeamAttack: Rule = HasBothKongs & Has(ItemName.team_attack)
 CanClimb: Rule = Has(ItemName.climb)
-CanHover: Rule = HasAll(ItemName.dixie, ItemName.helicopter_spin)
 CanCarry: Rule = Has(ItemName.carry)
 CanCling: Rule = Has(ItemName.cling)
 CanCartwheel: Rule = Has(ItemName.cartwheel)
@@ -36,9 +79,38 @@ CanRideSkullKart: Rule = Has(ItemName.skull_kart)
 CanUseKannons: Rule = Has(ItemName.barrel_kannons)
 CanBeInvincible: Rule = Has(ItemName.barrel_exclamation)
 CanUseControllableBarrels: Rule = Has(ItemName.barrel_control)
-CanUseDiddyBarrels: Rule = HasAll(ItemName.diddy, ItemName.barrel_kong)
-CanUseDixieBarrels: Rule = HasAll(ItemName.dixie, ItemName.barrel_kong)
 CanUseWarpBarrels: Rule = Has(ItemName.barrel_warp)
+
+HasBothKongs = Macro(
+    HasAll(ItemName.diddy, ItemName.dixie),
+    "Has both kongs",
+    "Can use Diddy and Dixie",
+)
+
+CanTeamAttack = Macro(
+    HasBothKongs & Has(ItemName.team_attack),
+    "Can use team attack",
+    "Can perform a team attack with both kongs"
+)
+
+CanHover = Macro(
+    HasAll(ItemName.helicopter_spin, ItemName.dixie),
+    "Can hover",
+    "Can hover with Dixie",
+)
+
+CanUseDiddyBarrels = Macro(
+    HasAll(ItemName.diddy, ItemName.barrel_kong),
+    "Can use Diddy barrels",
+    "Can use barrels with a Diddy face on them",
+)
+
+CanUseDixieBarrels = Macro(
+    HasAll(ItemName.dixie, ItemName.barrel_kong),
+    "Can use Dixie barrels",
+    "Can use barrels with a Dixie face on them",
+)
+
 
 CanAccessGalleon: Rule = Has(ItemName.gangplank_galleon)
 CanAccessCauldron: Rule = Has(ItemName.crocodile_cauldron)
@@ -1479,15 +1551,15 @@ class DKC2StrictRules(DKC2Rules):
 
 
             LocationName.klobber_karnage_clear:
-                CanCarry & CanUseControllableBarrels & 
+                CanCartwheel & CanUseControllableBarrels & 
                     CanUseKannons & CanUseDiddyBarrels & 
                     CanUseDixieBarrels,
             LocationName.klobber_karnage_kong:
-                CanCarry & CanUseControllableBarrels & 
+                CanCartwheel & CanUseControllableBarrels & 
                     CanUseKannons & CanUseDiddyBarrels & 
                     CanUseDixieBarrels,
             LocationName.klobber_karnage_dk_coin:
-                CanCarry & CanUseKannons & CanBeInvincible & 
+                CanCartwheel & CanUseKannons & CanBeInvincible & 
                     CanUseDiddyBarrels & CanUseDixieBarrels & 
                     CanUseControllableBarrels,
             LocationName.klobber_karnage_banana_coin_1:
@@ -1639,17 +1711,13 @@ class DKC2LooseRules(DKC2Rules):
             LocationName.mainbrace_mayhem_dk_coin:
                 CanClimb & CanTeamAttack,
             LocationName.mainbrace_mayhem_bonus_1:
-                CanClimb & (
-                    CanHover | CanCartwheel
-                ),
+                CanClimb & (CanHover | CanCartwheel),
             LocationName.mainbrace_mayhem_bonus_2:
                 CanClimb & CanCarry,
             LocationName.mainbrace_mayhem_bonus_3:
                 CanClimb & CanTeamAttack,
             LocationName.mainbrace_mayhem_banana_bunch_1:
-                CanClimb & (
-                    CanHover | CanCartwheel
-                ),
+                CanClimb & (CanHover | CanCartwheel),
             LocationName.mainbrace_mayhem_banana_coin_1:
                 CanClimb,
             LocationName.mainbrace_mayhem_banana_coin_2:
@@ -2091,9 +2159,9 @@ class DKC2LooseRules(DKC2Rules):
 
 
             LocationName.krockhead_klamber_clear:
-                CanClimb & CanUseKannons,
+                CanClimb,
             LocationName.krockhead_klamber_kong:
-                CanClimb & CanUseKannons,
+                CanClimb,
             LocationName.krockhead_klamber_dk_coin:
                 CanTeamAttack & CanCarry & CanCartwheel,
             LocationName.krockhead_klamber_bonus_1:
@@ -2536,11 +2604,11 @@ class DKC2LooseRules(DKC2Rules):
             LocationName.web_woods_bonus_2:
                 HasSquitter,
             LocationName.web_woods_banana_coin_1:
-                CanTeamAttack,
+                CanTeamAttack | CanCartwheel,
             LocationName.web_woods_banana_coin_2:
-                CanTeamAttack & CanCarry,
+                (CanTeamAttack | CanCartwheel) & CanCarry,
             LocationName.web_woods_green_balloon_1:
-                CanTeamAttack & CanCarry & CanUseKannons,
+                CanCarry & (CanTeamAttack | CanUseKannons),
             LocationName.web_woods_banana_bunch_1:
                 CanTeamAttack | CanCartwheel,
             LocationName.web_woods_banana_bunch_2:
@@ -2933,57 +3001,42 @@ class DKC2LooseRules(DKC2Rules):
 
 
             LocationName.klobber_karnage_clear:
-                CanCarry & CanUseControllableBarrels & 
-                    CanUseKannons & CanUseDiddyBarrels & 
-                    CanUseDixieBarrels,
+                CanUseControllableBarrels & CanUseKannons & (CanUseDiddyBarrels | CanUseDixieBarrels),
             LocationName.klobber_karnage_kong:
-                CanCarry & CanUseControllableBarrels & 
-                    CanUseKannons & CanUseDiddyBarrels & 
-                    CanUseDixieBarrels,
+                CanUseControllableBarrels & CanUseKannons & (CanUseDiddyBarrels | CanUseDixieBarrels),
             LocationName.klobber_karnage_dk_coin:
-                CanCarry & CanUseKannons & CanBeInvincible & 
-                    CanUseDiddyBarrels & CanUseDixieBarrels & 
-                    CanUseControllableBarrels,
+                CanUseControllableBarrels & CanUseKannons & CanBeInvincible &
+                    (CanUseDiddyBarrels | CanUseDixieBarrels),
             LocationName.klobber_karnage_banana_coin_1:
                 True_(),
             LocationName.klobber_karnage_banana_bunch_1:
                 CanCartwheel,
             LocationName.klobber_karnage_banana_bunch_2:
-                CanCartwheel,
+                True_(),
             LocationName.klobber_karnage_banana_coin_2:
                 CanCartwheel,
             LocationName.klobber_karnage_banana_bunch_3:
                 CanCartwheel,
             LocationName.klobber_karnage_banana_coin_3:
-                CanCartwheel & CanUseDiddyBarrels & 
-                    CanUseControllableBarrels,
+                CanUseControllableBarrels & CanUseDiddyBarrels,
             LocationName.klobber_karnage_banana_bunch_4:
-                (HasDiddy & CanCartwheel | CanHover),
+                CanUseControllableBarrels & (CanUseDiddyBarrels | (HasDiddy & CanCartwheel)),
             LocationName.klobber_karnage_banana_bunch_5:
-                (HasDiddy & CanCartwheel | CanHover & CanUseKannons),
+                CanUseControllableBarrels & CanUseDixieBarrels,
             LocationName.klobber_karnage_banana_bunch_6:
-                CanCartwheel & CanUseDiddyBarrels & 
-                    CanUseDixieBarrels & CanUseControllableBarrels & 
-                    CanUseKannons,
+                CanUseControllableBarrels & CanUseKannons & CanUseDiddyBarrels,
             LocationName.klobber_karnage_banana_bunch_7:
-                CanCartwheel & CanUseDiddyBarrels & 
-                    CanUseDixieBarrels & CanUseControllableBarrels & 
-                    CanUseKannons,
+                CanUseControllableBarrels & CanUseKannons & (CanUseDiddyBarrels | CanUseDixieBarrels),
             LocationName.klobber_karnage_banana_coin_4:
-                CanCartwheel & CanUseDiddyBarrels & 
-                    CanUseDixieBarrels & CanUseControllableBarrels & 
-                    CanUseKannons,
+                CanUseControllableBarrels & CanUseKannons & (CanUseDiddyBarrels | CanUseDixieBarrels),
             LocationName.klobber_karnage_red_balloon:
-                CanCartwheel & CanUseDiddyBarrels & 
-                    CanUseDixieBarrels & CanUseControllableBarrels & 
-                    CanUseKannons,
+                CanUseControllableBarrels & CanUseKannons & (CanUseDiddyBarrels | CanUseDixieBarrels),
 
 
             LocationName.fiery_furnace_clear:
                 CanUseControllableBarrels & CanCartwheel,
             LocationName.fiery_furnace_kong:
-                CanUseControllableBarrels & CanCartwheel
-                    & CanTeamAttack,
+                CanUseControllableBarrels & CanCartwheel,
             LocationName.fiery_furnace_dk_coin:
                 CanUseControllableBarrels & CanCartwheel
                     & CanTeamAttack,
@@ -3086,14 +3139,13 @@ class DKC2ExpertRules(DKC2Rules):
             LocationName.mainbrace_mayhem_dk_coin:
                 CanClimb & CanTeamAttack, 
             LocationName.mainbrace_mayhem_bonus_1:
-                CanClimb & (
-                    CanHover | CanCartwheel),
+                CanClimb & (HasDiddy | HasDixie & (CanHover | CanCartwheel)),
             LocationName.mainbrace_mayhem_bonus_2:
                 CanCarry & CanClimb,
             LocationName.mainbrace_mayhem_bonus_3:
                 CanClimb & CanTeamAttack,
             LocationName.mainbrace_mayhem_banana_bunch_1:
-                CanCartwheel,
+                CanCartwheel | CanHover,
             LocationName.mainbrace_mayhem_banana_coin_1:
                 CanClimb | CanTeamAttack,
             LocationName.mainbrace_mayhem_banana_coin_2:
@@ -4092,15 +4144,9 @@ class DKC2ExpertRules(DKC2Rules):
             LocationName.web_woods_bonus_2:
                 HasSquitter,
             LocationName.web_woods_banana_coin_1:
-                CanTeamAttack | 
-                    (HasDiddy & CanCartwheel) |
-                    (HasDixie & CanHover),
+                True_(),
             LocationName.web_woods_banana_coin_2:
-                CanCarry & 
-                    (CanTeamAttack | 
-                    (HasDiddy & CanCartwheel) |
-                    (HasDixie & CanHover)
-                ),
+                CanCarry,
             LocationName.web_woods_green_balloon_1:
                 CanCarry & (CanTeamAttack | CanUseKannons),
             LocationName.web_woods_banana_bunch_1:

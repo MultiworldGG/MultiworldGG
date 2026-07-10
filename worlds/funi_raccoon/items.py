@@ -1,0 +1,465 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from BaseClasses import Item, ItemClassification
+
+
+if TYPE_CHECKING:
+    from .world import FuniRaccoonWorld
+
+# Every item must have a unique integer ID associated with it.
+ITEM_NAME_TO_ID = {
+    "Moai": 1,
+    "Street Lamp": 2,
+    "Dumbbell": 3,
+    "Lama/Alpaca Maybe?": 4,
+    "Gym": 5,
+    "Kei Truck": 6,
+    "Vending Machine (accepts doubloons)": 7,
+    "DOUBLOONS": 8,
+    "Radio": 9,
+    "unregistered firearm": 11,
+    "Under Construction": 16,
+    "Chicken": 17,
+    "Washing Machine": 18,
+    "Michelle": 19,
+    "Brob Energy": 20,
+    "Buisness Man": 21,
+    "Concrete": 22,
+    "Gizmo": 23,
+    "Keksz": 24,
+    "Michi": 25,
+    "boingler": 26,
+    "Paracetamol 650mg": 27,
+    "Heavy Stone Torch": 28,
+    "Computer Monitor (60hz)": 31,
+    "Sign": 37,
+    "Crack Head": 38,
+    "Crayon": 39,
+    "Cricket Bat": 40,
+    "Pirate": 42,
+    "Pirate 2": 43,
+    "Pirate 3": 44,
+    "ROAD NOT DONE": 45,
+    "Microwave": 48,
+    "Toaster": 49,
+    "Logan/Real Knight Left": 50,
+    "Logan/Real Knight Right": 51,
+    "Evil Fish": 52,
+    "Feral Dog": 53,
+    "Windmill": 54,
+    "Marketable Plushie Box": 55,
+    "Goo": 56,
+    "Beenie the Birthday Boy": 57,
+    "Fan": 59,
+    "Letter B": 61,
+    "Beenie, Our Savior": 62,
+    "Candle": 63,
+    "Funi Marketable Plushie": 64,
+    "Patrick O'Hara": 65,
+    "Toastie": 66,
+    "Crisp": 67,
+    "Beautiful Flower": 68,
+    "Divider": 69,
+    "Office Chair": 70,
+    "Desk": 71,
+    "My Favourite Chair": 73,
+    "Cricket": 74,
+    "Crisps Undying Love": 75,
+    "Blimbo Village Sign": 76,
+    "Ougham Stone": 77,
+    '"Cow"': 78,
+    "Old Ass Rusty Ass Key": 80,
+    "Plimbo": 81,
+    "Fridge Key": 82,
+    "Orphan Tyre": 84,
+    "Papa Tyre": 85,
+    "Smoker": 86,
+    "Broken Truck": 87,
+    "CHEESE": 88,
+    "Gas Drum": 89,
+    "Coffee Shop (closed)": 90,
+    "Trolley": 91,
+    "Trasco Sign": 92,
+    "Folding Chair": 93,
+    "Progressive Cooling Rod": 94,
+    "Warning": 95,
+    "Pickaxe": 96,
+    "Broken Wall": 97,
+    "Fone": 98,
+    "Coffee Cup": 99,
+    "Kettle": 100,
+    "Radiator": 101,
+    "Flower Blimbo": 102,
+    "Blimbo City Sign": 103,
+    "Bench": 104,
+    "Evil Raccoon": 105,
+    "Naked Fella": 106,
+    "Bin": 107,
+    "Friend Martin Friendship Statue": 108,
+    "Knifedog": 109,
+    "Suitcase": 110,
+    "Cheeky Pint": 111,
+    "Flowian": 112,
+    "Bomb": 113,
+    "Bell Boy": 114,
+    "Demon Core": 115,
+    "Apple": 116,
+    "Gas Pumpo": 117,
+    "CD Player": 118,
+    "Radio Blimbo": 119,
+    "Binocublo": 120,
+    "Police Car": 121,
+    "Hazelnut": 122,
+    "Anti Sads": 123,
+    '"TV Remote"': 124,
+    "Synthesizer": 125,
+    "Brick": 126,
+    "Lloyd": 127,
+    "Manhole Cover": 128,
+    "Old Sign": 129,
+    "Warning Sign": 130,
+    "Area Sign": 131,
+    "Orb": 132,
+    "Ms. Heel": 134,
+    "Mr. Heel": 135,
+    "Belgium Waffle": 136,
+    "GREENISH ABOMINATION": 137,
+    "Priestess": 138,
+    "Beenie Saves The Orphans": 140,
+    "Eel Can": 141,
+    "Barrel": 142,
+    "BookBlo": 143,
+    "Fridge": 144,
+    "Fridgling": 145,
+    "Snowball": 146,
+    "Leeches!": 147,
+    "Beach Ball": 150,
+    "Milk Klubnika": 151,
+    "Mikk Masive Sign": 152,
+    "Chairapist": 154,
+    "Digital Polaroid Camera": 155,
+    "Yolky": 156,
+    "Pawn": 157,
+    "Rook": 158,
+    "Bishop": 159,
+    "Queen": 160,
+    "King": 161,
+    "Real Gym": 162,
+    "Spoonsweet": 163,
+    "Wriks Celler": 164,
+    "Door": 165,
+    "Funi Raccoon Game Deluxe": 166,
+    "Patrice": 167,
+    "Goo Container": 168,
+    "Butterfly": 169,
+    "Patrick O Bobble": 170,
+    "Dice": 171,
+    "Lughling": 172,
+    "Book Stack": 173,
+    "Average Canadian": 174,
+    "Cheese Wife": 175,
+    "Brazil Knight": 176,
+    "Doggy": 177,
+    "Real Football": 178,
+    "Hintblo": 179,
+    "Funi Raccoon": 180,
+    "Kei Truck Radio": 201,
+    "Kei Truck Toaster": 202,
+    "Kei Truck Boost": 203,
+    "10 Euro": 300,
+    "100 Euro": 301,
+    "Progressive Mystical Dumbbell": 400,
+    "Sun Hat":          501,
+    "Sombrero":         502,
+    "Top Hat":          503,
+    "Jester Hat":       504,
+    "Raccoon Hat":      505,
+    "Media Player Hat": 506,
+    "Fridge Crown":     507,
+    "Patty Hat":        508,
+    "Green Mystical Gem":  601,
+    "Blue Mystical Gem":   602,
+    "Purple Mystical Gem": 603,
+    "Red Mystical Gem":    604,
+    "Police Trap": 701,
+    "Phone Ratio Trap": 702,
+    "Brazil Train Ticket": 800,
+}
+
+# Items should have a defined default classification.
+# In our case, we will make a dictionary from item name to classification.
+DEFAULT_ITEM_CLASSIFICATIONS = {
+    "Moai": ItemClassification.progression_deprioritized_skip_balancing,
+    "Street Lamp": ItemClassification.progression_deprioritized_skip_balancing,
+    "Dumbbell": ItemClassification.progression_deprioritized_skip_balancing,
+    "Lama/Alpaca Maybe?": ItemClassification.progression_deprioritized_skip_balancing,
+    "Gym": ItemClassification.progression_deprioritized_skip_balancing,
+    "Kei Truck": ItemClassification.progression,
+    "Vending Machine (accepts doubloons)": ItemClassification.progression_deprioritized_skip_balancing,
+    "DOUBLOONS": ItemClassification.progression_deprioritized_skip_balancing,
+    "Radio": ItemClassification.progression_deprioritized_skip_balancing,
+    "Pirate": ItemClassification.progression_deprioritized_skip_balancing,
+    "unregistered firearm": ItemClassification.progression_deprioritized_skip_balancing,
+    "Under Construction": ItemClassification.progression_deprioritized_skip_balancing,
+    "Chicken": ItemClassification.progression_deprioritized_skip_balancing,
+    "Washing Machine": ItemClassification.progression_deprioritized_skip_balancing,
+    "Michelle": ItemClassification.progression_deprioritized_skip_balancing,
+    "Brob Energy": ItemClassification.progression,
+    "Buisness Man": ItemClassification.progression_deprioritized_skip_balancing,
+    "Concrete": ItemClassification.progression_deprioritized_skip_balancing,
+    "Gizmo": ItemClassification.progression_deprioritized_skip_balancing,
+    "Keksz": ItemClassification.progression_deprioritized_skip_balancing,
+    "Michi": ItemClassification.progression_deprioritized_skip_balancing,
+    "boingler": ItemClassification.progression_deprioritized_skip_balancing,
+    "Paracetamol 650mg": ItemClassification.progression_deprioritized_skip_balancing,
+    "Heavy Stone Torch": ItemClassification.progression_deprioritized_skip_balancing,
+    "Computer Monitor (60hz)": ItemClassification.progression_deprioritized_skip_balancing,
+    "Sign": ItemClassification.progression_deprioritized_skip_balancing,
+    "Crack Head": ItemClassification.progression_deprioritized_skip_balancing,
+    "Crayon": ItemClassification.progression_deprioritized_skip_balancing,
+    "Cricket Bat": ItemClassification.progression_deprioritized_skip_balancing,
+    "ROAD NOT DONE": ItemClassification.progression_deprioritized_skip_balancing,
+    "Microwave": ItemClassification.progression_deprioritized_skip_balancing,
+    "Toaster": ItemClassification.progression_deprioritized_skip_balancing,
+    "Logan/Real Knight Left": ItemClassification.progression_deprioritized_skip_balancing,
+    "Evil Fish": ItemClassification.progression_deprioritized_skip_balancing,
+    "Feral Dog": ItemClassification.progression_deprioritized_skip_balancing,
+    "Windmill": ItemClassification.progression_deprioritized_skip_balancing,
+    "Marketable Plushie Box": ItemClassification.progression_deprioritized_skip_balancing,
+    "Goo": ItemClassification.progression,
+    "Beenie the Birthday Boy": ItemClassification.progression_deprioritized_skip_balancing,
+    "Fan": ItemClassification.progression_deprioritized_skip_balancing,
+    "Letter B": ItemClassification.progression_deprioritized_skip_balancing,
+    "Beenie, Our Savior": ItemClassification.progression_deprioritized_skip_balancing,
+    "Candle": ItemClassification.progression_deprioritized_skip_balancing,
+    "Funi Marketable Plushie": ItemClassification.progression_deprioritized_skip_balancing,
+    "Patrick O'Hara": ItemClassification.progression_deprioritized_skip_balancing,
+    "Toastie": ItemClassification.progression_deprioritized_skip_balancing,
+    "Crisp": ItemClassification.progression_deprioritized_skip_balancing,
+    "Beautiful Flower": ItemClassification.progression_deprioritized_skip_balancing,
+    "Divider": ItemClassification.progression_deprioritized_skip_balancing,
+    "Office Chair": ItemClassification.progression_deprioritized_skip_balancing,
+    "Desk": ItemClassification.progression_deprioritized_skip_balancing,
+    "My Favourite Chair": ItemClassification.progression_deprioritized_skip_balancing,
+    "Cricket": ItemClassification.progression_deprioritized_skip_balancing,
+    "Crisps Undying Love": ItemClassification.progression_deprioritized_skip_balancing,
+    "Blimbo Village Sign": ItemClassification.progression_deprioritized_skip_balancing,
+    "Ougham Stone": ItemClassification.progression_deprioritized_skip_balancing,
+    '"Cow"': ItemClassification.progression_deprioritized_skip_balancing,
+    "Old Ass Rusty Ass Key": ItemClassification.progression,
+    "Plimbo": ItemClassification.progression_deprioritized_skip_balancing,
+    "Fridge Key": ItemClassification.progression,
+    "Orphan Tyre": ItemClassification.progression_deprioritized_skip_balancing,
+    "Papa Tyre": ItemClassification.progression_deprioritized_skip_balancing,
+    "Smoker": ItemClassification.progression_deprioritized_skip_balancing,
+    "Broken Truck": ItemClassification.progression_deprioritized_skip_balancing,
+    "CHEESE": ItemClassification.progression_deprioritized_skip_balancing,
+    "Gas Drum": ItemClassification.progression_deprioritized_skip_balancing,
+    "Coffee Shop (closed)": ItemClassification.progression_deprioritized_skip_balancing,
+    "Trolley": ItemClassification.progression_deprioritized_skip_balancing,
+    "Trasco Sign": ItemClassification.progression_deprioritized_skip_balancing,
+    "Folding Chair": ItemClassification.progression_deprioritized_skip_balancing,
+    "Progressive Cooling Rod": ItemClassification.progression,
+    "Warning": ItemClassification.progression_deprioritized_skip_balancing,
+    "Pickaxe": ItemClassification.progression,
+    "Broken Wall": ItemClassification.progression_deprioritized_skip_balancing,
+    "Fone": ItemClassification.progression_deprioritized_skip_balancing,
+    "Coffee Cup": ItemClassification.progression_deprioritized_skip_balancing,
+    "Kettle": ItemClassification.progression_deprioritized_skip_balancing,
+    "Radiator": ItemClassification.progression_deprioritized_skip_balancing,
+    "Flower Blimbo": ItemClassification.progression_deprioritized_skip_balancing,
+    "Blimbo City Sign": ItemClassification.progression_deprioritized_skip_balancing,
+    "Bench": ItemClassification.progression_deprioritized_skip_balancing,
+    "Evil Raccoon": ItemClassification.progression_deprioritized_skip_balancing,
+    "Naked Fella": ItemClassification.progression_deprioritized_skip_balancing,
+    "Bin": ItemClassification.progression_deprioritized_skip_balancing,
+    "Friend Martin Friendship Statue": ItemClassification.progression_deprioritized_skip_balancing,
+    "Knifedog": ItemClassification.progression_deprioritized_skip_balancing,
+    "Suitcase": ItemClassification.progression_deprioritized_skip_balancing,
+    "Cheeky Pint": ItemClassification.progression_deprioritized_skip_balancing,
+    "Flowian": ItemClassification.progression_deprioritized_skip_balancing,
+    "Bomb": ItemClassification.progression_deprioritized_skip_balancing,
+    "Bell Boy": ItemClassification.progression_deprioritized_skip_balancing,
+    "Demon Core": ItemClassification.progression_deprioritized_skip_balancing,
+    "Apple": ItemClassification.progression_deprioritized_skip_balancing,
+    "Gas Pumpo": ItemClassification.progression_deprioritized_skip_balancing,
+    "CD Player": ItemClassification.progression_deprioritized_skip_balancing,
+    "Radio Blimbo": ItemClassification.progression_deprioritized_skip_balancing,
+    "Binocublo": ItemClassification.progression_deprioritized_skip_balancing,
+    "Police Car": ItemClassification.progression_deprioritized_skip_balancing,
+    "Hazelnut": ItemClassification.progression_deprioritized_skip_balancing,
+    "Anti Sads": ItemClassification.progression_deprioritized_skip_balancing,
+    '"TV Remote"': ItemClassification.progression_deprioritized_skip_balancing,
+    "Synthesizer": ItemClassification.progression_deprioritized_skip_balancing,
+    "Brick": ItemClassification.progression_deprioritized_skip_balancing,
+    "Lloyd": ItemClassification.progression_deprioritized_skip_balancing,
+    "Manhole Cover": ItemClassification.progression_deprioritized_skip_balancing,
+    "Old Sign": ItemClassification.progression_deprioritized_skip_balancing,
+    "Warning Sign": ItemClassification.progression_deprioritized_skip_balancing,
+    "Area Sign": ItemClassification.progression_deprioritized_skip_balancing,
+    "Orb": ItemClassification.progression,
+    "Ms. Heel": ItemClassification.progression_deprioritized_skip_balancing,
+    "Mr. Heel": ItemClassification.progression_deprioritized_skip_balancing,
+    "Belgium Waffle": ItemClassification.progression,
+    "GREENISH ABOMINATION": ItemClassification.progression,
+    "Priestess": ItemClassification.progression,
+    "Beenie Saves The Orphans": ItemClassification.progression_deprioritized_skip_balancing,
+    "Eel Can": ItemClassification.progression_deprioritized_skip_balancing,
+    "Barrel": ItemClassification.progression_deprioritized_skip_balancing,
+    "BookBlo": ItemClassification.progression_deprioritized_skip_balancing,
+    "Fridge": ItemClassification.progression_deprioritized_skip_balancing,
+    "Fridgling": ItemClassification.progression_deprioritized_skip_balancing,
+    "Snowball": ItemClassification.progression_deprioritized_skip_balancing,
+    "Leeches!": ItemClassification.progression_deprioritized_skip_balancing,
+    "Beach Ball": ItemClassification.progression_deprioritized_skip_balancing,
+    "Milk Klubnika": ItemClassification.progression_deprioritized_skip_balancing,
+    "Mikk Masive Sign": ItemClassification.progression_deprioritized_skip_balancing,
+    "Chairapist": ItemClassification.progression_deprioritized_skip_balancing,
+    "Digital Polaroid Camera": ItemClassification.progression_deprioritized_skip_balancing,
+    "Yolky": ItemClassification.progression_deprioritized_skip_balancing,
+    "Pawn": ItemClassification.progression_deprioritized_skip_balancing,
+    "Rook": ItemClassification.progression_deprioritized_skip_balancing,
+    "Bishop": ItemClassification.progression_deprioritized_skip_balancing,
+    "Queen": ItemClassification.progression_deprioritized_skip_balancing,
+    "King": ItemClassification.progression_deprioritized_skip_balancing,
+    "Real Gym": ItemClassification.progression_deprioritized_skip_balancing,
+    "Spoonsweet": ItemClassification.progression_deprioritized_skip_balancing,
+    "Wriks Celler": ItemClassification.progression_deprioritized_skip_balancing,
+    "Door": ItemClassification.progression_deprioritized_skip_balancing,
+    "Funi Raccoon Game Deluxe": ItemClassification.progression_deprioritized_skip_balancing,
+    "Patrice": ItemClassification.progression_deprioritized_skip_balancing,
+    "Goo Container": ItemClassification.progression_deprioritized_skip_balancing,
+    "Butterfly": ItemClassification.progression,
+    "Patrick O Bobble": ItemClassification.progression_deprioritized_skip_balancing,
+    "Dice": ItemClassification.progression_deprioritized_skip_balancing,
+    "Lughling": ItemClassification.progression_deprioritized_skip_balancing,
+    "Book Stack": ItemClassification.progression_deprioritized_skip_balancing,
+    "Average Canadian": ItemClassification.progression_deprioritized_skip_balancing,
+    "Cheese Wife": ItemClassification.progression_deprioritized_skip_balancing,
+    "Brazil Knight": ItemClassification.progression_deprioritized_skip_balancing,
+    "Doggy": ItemClassification.progression_deprioritized_skip_balancing,
+    "Real Football": ItemClassification.progression_deprioritized_skip_balancing,
+    "Hintblo": ItemClassification.progression_deprioritized_skip_balancing,
+    "Funi Raccoon": ItemClassification.progression_deprioritized_skip_balancing,
+
+    "Pirate 2": ItemClassification.progression_deprioritized_skip_balancing,
+    "Pirate 3": ItemClassification.progression_deprioritized_skip_balancing,
+    "Logan/Real Knight Right": ItemClassification.progression_deprioritized_skip_balancing,
+    "Kei Truck Radio": ItemClassification.filler,
+    "Kei Truck Toaster": ItemClassification.progression,
+    "Kei Truck Boost": ItemClassification.progression,
+    "Progressive Mystical Dumbbell": ItemClassification.progression,
+    "Sun Hat":          ItemClassification.filler,
+    "Sombrero":         ItemClassification.filler,
+    "Top Hat":          ItemClassification.filler,
+    "Jester Hat":       ItemClassification.filler,
+    "Raccoon Hat":      ItemClassification.filler,
+    "Media Player Hat": ItemClassification.filler,
+    "Fridge Crown":     ItemClassification.filler,
+    "Patty Hat":        ItemClassification.filler,
+    "Green Mystical Gem":  ItemClassification.filler,
+    "Blue Mystical Gem":   ItemClassification.filler,
+    "Purple Mystical Gem": ItemClassification.filler,
+    "Red Mystical Gem":    ItemClassification.filler,
+    "100 Euro": ItemClassification.filler,
+    "10 Euro": ItemClassification.filler,
+    "Police Trap": ItemClassification.trap,
+    "Phone Ratio Trap": ItemClassification.trap,
+    "Brazil Train Ticket": ItemClassification.progression,
+}
+
+_LUGH_QUEST_FILLER_ITEMS: frozenset[str] = frozenset({
+    "unregistered firearm",
+    "Flowian",
+    "Anti Sads",
+    "Funi Marketable Plushie",
+})
+
+_GEMS = {
+    "Green Mystical Gem",
+    "Blue Mystical Gem",
+    "Purple Mystical Gem",
+    "Red Mystical Gem",
+}
+
+TRAP_ITEMS = ["Police Trap", "Phone Ratio Trap"]
+
+ITEM_GROUPS: dict[str, set[str]] = {
+    # "Dumpster Items" is populated in world.py from rules.DUMPSTER_ITEMS,
+    # which is derived from the Store-location IDs (not item classification).
+    "Cats": {"Michelle", "Concrete", "Gizmo", "Keksz", "Michi", "boingler"},
+    "Hats": {
+        "Sun Hat", "Sombrero", "Top Hat", "Jester Hat",
+        "Raccoon Hat", "Media Player Hat", "Fridge Crown", "Patty Hat",
+    },
+    "Mystical Gems": set(_GEMS),
+    "Euros": {"10 Euro", "100 Euro"},
+    "Kei Truck Upgrades": {"Kei Truck Radio", "Kei Truck Toaster", "Kei Truck Boost"},
+    "Traps": {"Police Trap", "Phone Ratio Trap"},
+}
+
+
+def is_progression_item(world: FuniRaccoonWorld, name: str) -> bool:
+    if name in _GEMS:
+        return world.options.gemsanity and "lugh" in world.options.goal.value
+    return DEFAULT_ITEM_CLASSIFICATIONS[name] in (
+        ItemClassification.progression,
+        ItemClassification.progression_deprioritized_skip_balancing,
+    )
+
+
+class FuniRaccoonItem(Item):
+    game = "Funi Raccoon Game"
+
+
+def get_random_filler_item_name(world: FuniRaccoonWorld) -> str:
+    if world.options.trap_toggle and world.random.randint(0, 2) == 0:
+        return world.random.choice(TRAP_ITEMS)
+    return "100 Euro" if world.random.randint(0, 9) == 0 else "10 Euro"
+
+
+def create_item_with_correct_classification(world: FuniRaccoonWorld, name: str) -> FuniRaccoonItem:
+    if "lugh" in world.options.goal.value and name in _GEMS:
+        classification = ItemClassification.progression
+    elif world.options.lugh_quest_locking and name in _LUGH_QUEST_FILLER_ITEMS:
+        classification = ItemClassification.progression
+    else:
+        classification = DEFAULT_ITEM_CLASSIFICATIONS[name]
+    return FuniRaccoonItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
+
+
+def create_all_items(world: FuniRaccoonWorld) -> None:
+    # Create one of every progression item.
+    itempool: list[Item] = [
+        world.create_item(name)
+        for name in DEFAULT_ITEM_CLASSIFICATIONS
+        if is_progression_item(world, name)
+    ]
+
+    # Progressive Cooling Rod needs 3 copies total (Victory requires all 3).
+    # The loop above already created 1, so add 2 more.
+    itempool += [world.create_item("Progressive Cooling Rod") for _ in range(2)]
+
+    # Progressive Mystical Dumbbell needs 4 copies total (SMALL needs 1, MEDIUM 2, HEAVY 3; CHUNKY 4).
+    # The loop above already created 1, so add 3 more.
+    itempool += [world.create_item("Progressive Mystical Dumbbell") for _ in range(3)]
+
+    # Always include one of each hat when hat sanity is on.
+    _HATS = ["Sun Hat", "Sombrero", "Top Hat", "Jester Hat",
+             "Raccoon Hat", "Media Player Hat", "Fridge Crown", "Patty Hat"]
+    if world.options.hatsanity:
+        itempool += [world.create_item(name) for name in _HATS]
+
+    # Mystical gems are included as progression items for Lugh,
+    # otherwise only when gem sanity is on.
+    if world.options.gemsanity and "lugh" not in world.options.goal.value:
+        itempool += [world.create_item(name) for name in _GEMS]
+
+    # Fill remaining location slots with filler.
+    number_of_unfilled_locations = len(world.multiworld.get_unfilled_locations(world.player))
+    needed_filler = number_of_unfilled_locations - len(itempool)
+    itempool += [world.create_filler() for _ in range(needed_filler)]
+
+    world.multiworld.itempool += itempool
