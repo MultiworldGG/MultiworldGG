@@ -212,6 +212,9 @@
 # Frogmonster
 /worlds/frogmonster @Rooby-Roo
 
+# Funi Raccoon Game
+/worlds/funi_raccoon/ @robotzurg
+
 # Getting Over It
 /worlds/getting_over_it/ @BlastSlimey
 
@@ -420,6 +423,9 @@
 # Phoenotopia
 /worlds/phoa/ @Amphyros
 
+# Pikuniku
+/worlds/pikuniku/ @@robotzurg
+
 # Pinball FX3
 /worlds/pinball_fx3/ @SerpentAI
 
@@ -513,6 +519,9 @@
 # Sims 4
 /worlds/sims4/ @benny-dreamly
 
+# Skul: The Hero Slayer
+/worlds/skul/ @robotzurg
+
 # Skyward Sword
 /worlds/ss/ @Battlecats59
 
@@ -571,6 +580,9 @@
 
 # Spicy Mycena Waffles (SMW Fork)
 /worlds/waffles/ @TheLX5
+
+# Super Smash Bros. Melee
+/worlds/melee/ @PinkSwitch
 
 # SMZ3
 /worlds/smz3/ @lordlou
