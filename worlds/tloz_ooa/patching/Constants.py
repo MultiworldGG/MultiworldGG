@@ -94,6 +94,7 @@ DEFINES = {
     "DEV_RING":"$40",
     "INTERAC_MULTI_BYTE":"$7f # low byte of struct",
     "INTERACID_TREASURE":"$60",
+    "TEXT_WARP_PROTECTION_MARGIN": "$09",
 
     # TREASURES
     # ---------
@@ -204,6 +205,7 @@ DEFINES = {
     # script commands
     "scriptend":"$00",
     "loadscript":"$83",
+    "generatesecret":"$86", # Secret needs to be between ranges 10 and 19 in order for it to be properly generated.
     "jumptable_memoryaddress":"$87",
     "setcollisionradii":"$8d",
     "setanimation":"$8f",
@@ -224,6 +226,7 @@ DEFINES = {
     "enableinput":"$be",
     "callscript":"$c0",
     "retscript":"$c1",
+    "jumpiftextoptioneq": "$c3",
     "jumpalways":"$c4",
     "jumpifmemoryset":"$c7",
     "jumpifmemoryeq":"$cb",
@@ -252,6 +255,10 @@ DEFINES = {
 
     # wram
     "wSubscreen1CurrentSlotIndex": "$c085",
+    "wOriginalMinimapGroup": "$c09d",  # Custom address
+    "wOriginalDungeonIndex": "$c09e",  # Custom address
+    "wMinimapCycleToNextMode": "$c09f",  # Custom address
+    "wWarpCheck": "$c086",
     "wBigBuffer": "$c300",
     "wKeysPressed":"$c481",
     "wKeysJustPressed":"$c482",
@@ -276,11 +283,17 @@ DEFINES = {
     "wIsLinkedGame":"$cc01",
     "wMenuDisabled":"$cc02",
     "wCutsceneState":"$cc03",
+    "wNumBombs": "$c6b1",
     "wMaxBombs": "$c6b1",
+    "wNumBombchus": "$c6b3",
     "wLinkMaxHealth": "$c6ab",
     "wNumEmberSeeds": "$c6b9",
     "wCutsceneTrigger":"$cc04",
+    "wScrollMode":"$cd00",
     "wScreenTransitionDirection":"$cd02",
+    "wScreenTransitionState":"$cd04",
+    "wScreenTransitionState2":"$cd05",
+    "wScreenTransitionState3":"$cd06",
     "wScreenOffsetY":"$cd08",
     "wScreenShakeCounterY":"$cd18",
     "w1Link.state":"$d004",
@@ -300,6 +313,7 @@ DEFINES = {
     # rom 00
     "interBankCall":"$008a",
     "getNumSetBits":"$0176",
+    "addDecimalToHlRef":"$0181",
     "compareHlToBc":"$01d6",
     "setFlag":"$020e",
     "decHlRef16WithCap":"$0237",
@@ -327,10 +341,13 @@ DEFINES = {
     "wFeatherLevel":"$0 # not present in ages",
     "wRememberedCompanionId":"$cc24",
     "wIntroVar": "$c2e7",
+    "wPaletteThread_mode": "$c4ab",
     "wRickyState":"$c646",
     "wDimitriState":"$c647",
     "wAnimalTutorialFlags":"$c649",
+    "wGashaSpotFlags":"$c64c",
     "wDungeonBossKeys":"$c682",
+    "wDungeonMaps":"$c686",
     "wInventoryB":"$c688",
     "wObtainedTreasureFlags":"$c69a",
     "wNetCountInL":"$c6a8",
@@ -353,25 +370,34 @@ DEFINES = {
     "wMakuTreeState":"$c6e8",
     "wJabuWaterLevel":"$c6e9",
     "wStatusBarNeedsRefresh":"$cbe9",
+    "wMenuActiveState": "$cbcd",
+    "wMapMenuCursorIndex":"$cbb6",
     "wActiveGroup":"$cc2d",
     "wActiveRoom":"$cc30",
     "wAreaFlags":"$cc34",
     "wDungeonIndex":"$cc39",
+    "wMinimapGroup": "$c63a",
+    "wFrameCounter": "$cc00",
     "wWarpDestGroup":"$cc47",
     "wWarpDestRoom":"$cc48",
     "wWarpTransition":"$cc49",
     "wWarpTransition2":"$cc4b",
     "wLinkGrabState":"$cc5a",
-    "wDisableTransitions":"$cc91",
+    "wDisableScreenTransitions":"$cc91",
     "wDisabledObjects":"$cc8a",
-    "wPlayingInstrument1":"$cc8d",
+    "wLinkPlayingInstrument":"$cc8d",
     "wRoomLayout":"$cf00",
     "wLinkObjectIndex":"$cc2c",
     "wMenuLoadState":"$cbcc",
     "wLinkDeathTrigger": "$cdd5",
+    "wDungeonMapScroll": "$cbb4",
+    "wDungeonMapScrollState": "$cbce",
+    "wRoomEdgeY": "$cc86",
+    "wRoomEdgeX": "$cc87",
 
     # rom 00
     "checkFlag": "$0205",
+    "disableLcd": "$02c1",
     "getRandomNumber":"$043e",
     "clearMemory":"$046f",
     "copyMemory":"$0486",
@@ -396,14 +422,17 @@ DEFINES = {
     "objectDelete_useActiveObjectType":"$21e0",
     "objectCopyPosition":"$2242",
     "objectCopyPosition_rawAddress":"$2247",
+    "interactionIncState": "$23e0",
     "objectCreateInteraction":"$24c5",
     "createTreasure":"$27d4",
+    "fastFadeoutToWhite": "$3623",
     "checkGlobalFlag":"$31f3",
     "setGlobalFlag":"$31f9",
-    "fadeInFromWhite":"$3299",
+    "fadeInFromWhite":"$3290", # changed address for faster fades
     "incMakuTreeState":"$3e53",
     "interactionDelete":"$3b05",
     "clearStaticObjects":"$319f",
+    "getFreeInteractionSlot": "$3aef",
 
     # rom 02
     "_closeMenu":"$4fba",
@@ -444,6 +473,7 @@ DEFINES = {
     "GLOBALFLAG_GOT_TUNINUT_FROM_BROTHER":"$48",
     "GLOBALFLAG_WON_LYNNA_SHOOTING_GALLERY":"$49",
     "GLOBALFLAG_GAVE_MYST_SEED":"$4a",
+    
 }
 
 RUPEE_VALUES = {
@@ -468,134 +498,6 @@ RUPEE_VALUES = {
     900: 0x12,
     80: 0x13,
     999: 0x14,
-}
-
-
-DUNGEON_ENTRANCES = {
-    "d0": {
-        "addr": 0x13728,
-        "map_tile": 0x148,
-        "room": 0x48,
-        "group": 0x01,
-        "position": 0x21,
-        "shifted": False,
-        "default":"d0"
-    },
-    "d1": {
-        "addr": 0x13718,
-        "map_tile": 0x08d,
-        "room": 0x8d,
-        "group": 0x00,
-        "position": 0x26,
-        "essence_exit": 0x2874f,
-        "shifted": False,
-        "default":"d1"
-    },
-    "d2 past": {
-        "addr": 0x1372c,
-        "map_tile": 0x183,
-        "room": 0x83,
-        "group": 0x01,
-        "position": 0x25,
-        "shifted": False,
-        "default":"d2"
-    },
-    "d2 present": {
-        "addr": 0x13000,
-        "map_tile": 0x083,
-        "room": 0x83,
-        "group": 0x00,
-        "position": 0x25,
-        "shifted": False,
-        "default":"N/A"
-    },
-    "d3": {
-        "addr": 0x135c8,
-        "map_tile": 0x0ba,
-        "room": 0xba,
-        "group": 0x00,
-        "position": 0x55,
-        "shifted": False,
-        "default":"d3"
-    },
-    "d4": {
-        "addr": 0x135cc,
-        "map_tile": 0x003,
-        "room": 0x03,
-        "group": 0x00,
-        "position": 0x35,
-        "shifted": True,
-        "default":"d4"
-    },
-    "d5": {
-        "addr": 0x136b0,
-        "map_tile": 0x00a,
-        "room": 0x0a,
-        "group": 0x00,
-        "position": 0x17,
-        "shifted": False,
-        "default":"d5"
-    },
-    "d6 present": {
-        "addr": 0x13748,
-        "map_tile": 0x03c,
-        "room": 0x0e,
-        "group": 0x01,
-        "position": 0x16,
-        "shifted": False,
-        "default":"d6 present"
-    },
-    "d7": {
-        "addr": 0x13874,
-        "map_tile": 0x090,
-        "room": 0x90,
-        "group": 0x02,
-        "position": 0x45,
-        "shifted": True,
-        "default":"d7"
-    },
-    "d8": {
-        "addr": 0x13730,
-        "map_tile": 0x15c,
-        "room": 0x5c,
-        "group": 0x01,
-        "position": 0x15,
-        "shifted": True,
-        "default":"d8"
-    },
-    "d11": {
-        "addr": GameboyAddress(0x04, 0x770c).address_in_rom(),
-        "map_tile": 0x048,
-        "room": 0x48,
-        "group": 0x00,
-        "position": 0x28,
-        "shifted": False,
-        "default":"d11"
-    },
-    "d6 past": {
-        "addr": 0x139b4,
-        "map_tile": 0x13c,
-        "room": 0x0f,
-        "group": 0x03,
-        "position": 0x16,
-        "shifted": False,
-        "default":"d6 past"
-    },
-}
-
-DUNGEON_EXITS = {
-    # TODO
-    "d0": 0x13aec,
-    "d1": 0x13ad0,
-    "d2": 0x13ad4,
-    "d3": 0x13ad8,
-    "d4": 0x13adc,
-    "d5": 0x13ae0,
-    "d6 present": 0x13c48,
-    "d7": 0x13c60,
-    "d8": 0x13c74,
-    "d11": 0x13ae4,
-    "d6 past": 0x13c54,
 }
 
 PALETTE_BYTES = {

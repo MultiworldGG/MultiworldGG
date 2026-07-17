@@ -60,11 +60,15 @@ def save_vanilla_text_data(dictionary: dict[str, str],
     dict_file = text_dir.joinpath(f"{game_name}_dict.json")
     text_file = text_dir.joinpath(f"{game_name}_texts_vanilla.json")
 
-    with dict_file.open("w", encoding="utf-8") as f:
-        json.dump(dictionary, f, ensure_ascii=False)
+    with dict_file.open("w", encoding="utf-8") as d:
+        if __debug__:
+            print(f"Dictionary saved in {dict_file}")
+        json.dump(dictionary, d, ensure_ascii=False, indent=4)
 
-    with text_file.open("w", encoding="utf-8") as f:
-        json.dump(texts, f, ensure_ascii=False)
+    with text_file.open("w", encoding="utf-8") as d:
+        if __debug__:
+            print(f"Texts saved in {text_file}")
+        json.dump(texts, d, ensure_ascii=False, indent=4)
 
 
 def get_text_data(rom_data: RomData, get_dictionary: bool, seasons: bool) -> tuple[None | dict[str, str], dict[str, str]]:

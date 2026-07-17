@@ -33,6 +33,7 @@ dropSkillsData:list[list[DropSkill]] = [
 [],
 [],
 [],
+[],
 [DS(5, "Melee: Blaze I"), DS(10, "Melee: Shock I"), DS(10, "Melee: TP Gain Up"), DS(20, "Potential Up I"), DS(30, "Humanoid Criticals Up I"), DS(30, "Mechanoid Criticals Up I"), DS(30, "Theroid Criticals Up I"), DS(100, "Melee Accuracy Up I")],
 [DS(5, "Appendage Crusher"), DS(10, "Weapon Attack Power Up I"), DS(10, "Critical Chance Up I"), DS(20, "Melee: Recover HP I"), DS(30, "Arts: Gain TP I"), DS(30, "Melee: Physical Res Down I"), DS(30, "Melee Attack Boost I"), DS(100, "Melee Attack Up I")],
 [DS(10, "Melee: Blaze I"), DS(15, "Melee: Shock I"), DS(15, "Melee: TP Gain Up"), DS(25, "Potential Up I"), DS(35, "Humanoid Criticals Up I"), DS(35, "Mechanoid Criticals Up I"), DS(35, "Theroid Criticals Up I"), DS(100, "Destabilizer I")],

@@ -1,17 +1,25 @@
 #include <cstddef>
 
 #ifdef V101E
-moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 ; 1.0.1E, 1.0.2U, 1.0.0E
+moduleMatches = 0xF882D5CF, 0x218F6E07 ; 1.0.1E, 1.0.0E
 
 __realloc = 0x03b1af20
 #endif
+
+#ifdef V102U
+moduleMatches = 0x30B6E091 ; 1.0.2U
+
+__realloc = 0x03b1aea0
+#endif
+
+// Parameter from rules.txt
+int curlPort;
 
 int* _uploadHandle = nullptr;
 int* _uploadMultiHandle = nullptr;
 int* _downloadHandle = nullptr;
 int* _downloadMultiHandle = nullptr;
-char _hostUpload[] = "http://localhost:45872/locations";
-char _hostDownload[] = "http://localhost:45872/items";
+
 
 namespace import{
 	namespace nlibcurl{
@@ -30,19 +38,24 @@ namespace import{
 	}
 }
 
+int __sprintf_s(char *buffer, size_t sizeOfBuffer, const char *format, ...);
 void *__realloc(void *memblock, size_t size);
 
 
 // Using https://curl.se/libcurl/c/ but with the multi flow
 void _initCurl(){
 	int curlOptUrl = 10002;
+	int port = curlPort;
+	char hostUrl[40];
 
 	_uploadHandle = import::nlibcurl::curl_easy_init();
-	import::nlibcurl::curl_easy_setopt(_uploadHandle, curlOptUrl, _hostUpload);
+	__sprintf_s(hostUrl, 40, "http://localhost:%d/locations", port);
+	import::nlibcurl::curl_easy_setopt(_uploadHandle, curlOptUrl, hostUrl);
 	_uploadMultiHandle = import::nlibcurl::curl_multi_init();
 
 	_downloadHandle = import::nlibcurl::curl_easy_init();
-	import::nlibcurl::curl_easy_setopt(_downloadHandle, curlOptUrl, _hostDownload);
+	__sprintf_s(hostUrl, 40, "http://localhost:%d/items", port);
+	import::nlibcurl::curl_easy_setopt(_downloadHandle, curlOptUrl, hostUrl);
 	_downloadMultiHandle = import::nlibcurl::curl_multi_init();
 }
 

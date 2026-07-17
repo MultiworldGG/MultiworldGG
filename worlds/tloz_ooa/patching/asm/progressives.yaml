@@ -3,6 +3,7 @@
 # given a treasure id & subid in b & c, if the treasure needs to be upgraded,
 # set hl = the start of the upgraded treasure data + 1 and b = the new
 # treasure ID.
+# NOTE /!\ : Written in the vanilla ring table
 16/562a/getUpgradedTreasure: |
     ; Filter out the fake "Sword spinslash" treasure given at Hero's Cave chest
     ; and while opening Maku Tree gate solely for cosmetic purpose
@@ -197,4 +198,3 @@
     call showText
     xor a
     ret
-#0a/7b93/: call giveTreasureCustom

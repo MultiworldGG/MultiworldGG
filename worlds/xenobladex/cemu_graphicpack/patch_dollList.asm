@@ -165,7 +165,7 @@ _dollList_L2:
 	blr
 
 
-[Archipelago_dollList_V101E]
+[Archipelago_dollList_ALL]
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
 
 GetGarageDollData = 0x027f7104 # ::Util::DollData

@@ -3,6 +3,7 @@ from .common.data.Constants import AGES_ROM_HASH
 from .common.Settings import *
 
 import settings
+from settings import FilePath
 
 class OOASettings(settings.Group):
     class OOARomFile(settings.UserFilePath):
@@ -40,6 +41,10 @@ class OOASettings(settings.Group):
         """
         Defines if you want to skip the intro cinematic scene that plays after the capcom screen is shown.
         """
+        
+    class UTPackPath(FilePath):
+        required = False 
+        ut_dialog_name = "Select Oracle of Ages Archipelago Poptracker pack"
 
     rom_file: OOARomFile = OOARomFile(OOARomFile.copy_to)
     heart_beep_interval: Union[OraclesSettings.OoHeartBeepInterval, str] = "vanilla"
@@ -54,3 +59,4 @@ class OOASettings(settings.Group):
     shuffle_music: Union[OraclesSettings.OoMusicShuffle, bool] = False
     mute_music: Union[OraclesSettings.OoRemoveMusic, bool] = False
     shuffle_sfx: Union[OraclesSettings.OoSfxShuffle, bool] = False
+    ut_pack_path: Union[UTPackPath, str] = UTPackPath()

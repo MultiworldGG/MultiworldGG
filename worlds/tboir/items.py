@@ -1,4 +1,6 @@
-def item_list(data):
+from .game_data import data
+
+def item_list():
     items = []
 
     for name in data['unlocks'].keys():
@@ -9,7 +11,7 @@ def item_list(data):
 
     return items
 
-def item_group_list(data):
+def item_group_list():
     item_name_groups = {}
 
     for name in data['unlocks'].keys():

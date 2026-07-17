@@ -4,7 +4,7 @@ int __sprintf_s(char *buffer, size_t sizeOfBuffer, const char *format, ...);
 
 void _postCurl(char[]);
 
-#ifdef V101E
+#ifdef ALL
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 ; 1.0.1E, 1.0.2U, 1.0.0E
 
 getItemTypeInfo = 0x02361830

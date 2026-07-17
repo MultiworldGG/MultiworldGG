@@ -5,7 +5,7 @@ moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
 _formatFieldSkillText:
 	.string "FS Id=%01x Lv=%01x:"
 _fieldSkillOffset:
-	.long   297752
+	.long   297753
 _postFieldSkillsList:
 	stwu r1,-48(r1)
 	mflr r0
@@ -21,9 +21,9 @@ _postFieldSkillsList:
 	stw r9,8(r31)
 	lis r9,_fieldSkillOffset@ha
 	lwz r9,_fieldSkillOffset@l(r9)
-	mr r10,r9
-	lwz r9,8(r31)
-	add r9,r9,r10
+	addi r9,r9,-1
+	lwz r10,8(r31)
+	add r9,r10,r9
 	stw r9,8(r31)
 	li r9,1
 	stw r9,12(r31)
@@ -82,7 +82,7 @@ _fieldSkills_L2:
 	blr
 
 
-[Archipelago_fieldSkills_V101E]
+[Archipelago_fieldSkills_ALL]
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
 
 fieldSkillBasePtr = 0x1039c288 # from updateStatus::menu::MenuTotalSimpleStatus line 398

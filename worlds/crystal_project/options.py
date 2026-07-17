@@ -167,12 +167,17 @@ class Regionsanity(Choice):
     If Regionsanity is set to Extreme, the Grandmaster won't even let you walk through regions you don't have the pass for.
     Spend more than 10 seconds in a region without a pass and the Grandmaster will teleport you!
 
+    If regionsanity is set to heist, the timer before you are teleported will be cut down to 5 seconds, however you will be allowed
+    to interact with any checks in regions you dont have passes for. Steal the treasure out from under the grandmasters nose.
+    Note that collecting checks outside of regions you have passes for will still be considered out of logic.
+
     You will start the game in a random region with a pass. You will be leveled appropriately.
     """
     display_name = "Regionsanity"
     option_disabled = 0
     option_enabled = 1
     option_extreme = 2
+    option_heist = 3
     default = 0
 
 class RegionsanityStarterRegionMinLevel(Range):
@@ -450,6 +455,12 @@ class FillFullMap(Toggle):
     """
     display_name = "Fill Full Map"
 
+class SkipIntroCrawl(Toggle):
+    """
+    When enabled, the intro text will not display.
+    """
+    display_name = "Skip Intro Crawl"
+
 class IncludeSummonAbilities(DefaultOnToggle):
     """
     When enabled, Summons are added to the item pool.
@@ -568,6 +579,7 @@ class CrystalProjectOptions(PerGameCommonOptions):
     start_with_treasure_finder: StartWithTreasureFinder
     start_with_maps: StartWithMaps
     fill_full_map: FillFullMap
+    skip_intro_crawl: SkipIntroCrawl
     include_summon_abilities: IncludeSummonAbilities
     include_scholar_abilities: IncludeScholarAbilities
     trap_likelihood: TrapLikelihood

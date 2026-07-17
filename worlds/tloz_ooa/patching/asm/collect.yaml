@@ -89,6 +89,7 @@
     dw collectTargetCarts
     dw collectBigBangGame
     dw collectLavaJuiceRoom
+    dw collectTokayCrystalRoom
 
 # maku tree item drops at a specific script pos, otherwise use regular mode.
 06//collectMakuTree: |
@@ -127,4 +128,14 @@
     ld e,COLLECT_PICKUP_NOFLAG
     ret c
     ld e,COLLECT_CHEST
+    ret
+
+# lava juice goron and chest both give items in this room.
+06//collectTokayCrystalRoom: |
+    ld e,$4d
+    ld a,(de) # object x position
+    cp $48
+    ld e,COLLECT_CHEST
+    ret c
+    ld e,COLLECT_PICKUP_NOFLAG
     ret

@@ -1,5 +1,11 @@
 
-04//applyExtraTileSubstitutions: |
+
+# data for applyAllTileSubstitutions: group,room,flags,yx,tile
+38//tileSubTable: |
+    /include tileReplacementsTable
+    db $ff
+
+38//applyExtraTileSubstitutions: |
   push bc
   push de
   call getThisRoomFlags
@@ -19,8 +25,18 @@
   cp c
   jr nz,@roomMismatch
   ldi a,(hl)
+  or a
+  jr z,@valid
+  bit 4,a ; test bit 4 in tile replacement. If true, the condition is reversed
+  jr nz,@negativeTest
+  and e
+  jr z,@flagMismatch
+  jr @valid
+  @negativeTest:
+  sub $10
   and e
   jr nz,@flagMismatch
+  @valid:
   push de
   ld d,$cf
   ldi a,(hl)
@@ -40,15 +56,16 @@
   @done:
   pop de
   pop bc
-  call applyAllTileSubstitutions
   ret
 
-00/38c0/: call applyExtraTileSubstitutions
+04//applyExtraTileSubstitutions_head: |
+    ld e,$38
+    ld hl,applyExtraTileSubstitutions
+    call interBankCall
+    call applyAllTileSubstitutions
+    ret
 
-# data for applyAllTileSubstitutions: group,room,flags,yx,tile
-04//tileSubTable: |
-    /include tileReplacementsTable
-    db $ff
+00/38c0/: call applyExtraTileSubstitutions_head
 
 # burning the first tree in yoll graveyard should set room flag 1 so that it
 # can be gone for good (see tileSubTable).

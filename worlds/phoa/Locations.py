@@ -945,13 +945,15 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
         "Atai Town - Dark tower pot": PhoaLocationData(
             region="atai_town",
             address=7676200,
-            rule=lambda state: logic.can_break_big_object_with_tools(state),
+            rule=lambda state: logic.can_break_big_object_with_tools(state)
+                               and logic.has_light_source(state),
             flags=PhoaFlag.MOONSTONE,
             vanillaItem="Moonstone",
         ),
         "Atai Town - Dark tower chest": PhoaLocationData(
             region="atai_town",
             address=7676201,
+            rule=lambda state: logic.has_light_source(state),
             flags=PhoaFlag.RINCHESTS,
             vanillaItem="30 Rin",
         ),

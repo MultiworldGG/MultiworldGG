@@ -19,12 +19,16 @@
 15/6b23/: dwbe locations.tradeGoronVase
 15/6742/: dwbe locations.bigBangGame
 0c/707a/: dwbe locations.bigBangGame
-15/5285/: dwbe locations.goronShootingGallery
+15/5285/: |
+    dwbe locations.goronShootingGallery
+    db orroomflag,$02,scriptend
 0c/6ee9/: dwbe locations.tradeLavaJuice
 15/54f1/: dwbe locations.rescueNayru
 0c/7ae4/: dwbe locations.kingZora
 15/5db9/: dwbe locations.libraryPresent
-15/5dd8/: dwbe locations.libraryPast
+15/5dd8/: |
+    dwbe locations.libraryPast
+    db orroomflag,$01,setglobalflag,$4f,scriptend
 0c/7c48/: dwbe locations.zoraReward
 15/7969/: dwbe locations.piratianCaptain
 15/4fd3/: dwbe locations.gashaFarmer
@@ -107,18 +111,96 @@
     ld bc,locations.vasuGift
     jp spawnTreasureOnLink
 
+15//vasuAdditionnalRingRewardTable: | # subid, id, roomflag
+    db locations.vasuSlayersRingGift.subid, locations.vasuSlayersRingGift.id, $01
+    db locations.vasuRupeeRingGift.subid, locations.vasuRupeeRingGift.id, $02
+    db locations.vasuVictoryRingGift.subid, locations.vasuVictoryRingGift.id, $04  
+
+# Modify vasu_giveRingInVar3a to give us the proper check instead of a ring here
+15//adaptVasuGiveRing: |
+    ld e,$7a
+    ld a,(de) ; what have been removed
+    sub $34
+    ld hl,vasuAdditionnalRingRewardTable
+    ld b,a
+    rst 10  ; rst_addAToHL
+    ld a,b
+    rst 10  ; rst_addAToHL
+    ld a,b
+    rst 10  ; rst_addAToHL
+    ldi a,(hl)
+    ld c,a
+    ldi a,(hl)
+    ld b,a
+    push hl
+    call spawnTreasureOnLink
+    pop hl
+    ld a,(hl)
+    ld b,a
+    call getThisRoomFlags
+    or b
+    ld (hl),a
+    ret
+
+15/42f5/: jp adaptVasuGiveRing
+
+# Updates enemy kill requirement for vasu slayers ring check.
+00/28a0/: ld bc,option.vasuSlayerRingCheckRequirement
+
+3f//checkRupeeRequirement: |
+    call addDecimalToHlRef
+    jr c,@forceSkip
+    push bc
+    ldi a,(hl)
+    ld c,a
+    ldi a,(hl)
+    ld b,a
+    ld hl,option.vasuRupeeRingCheckRequirement
+    call compareHlToBc
+    pop bc
+    @forceSkip:
+    ret
+
+3f/45da/: call checkRupeeRequirement
+
+15//tokayStolenItem: | # Order is important each item is linked to a subid
+    dw locations.tokaySword
+    dw locations.tokayShovel
+    dw locations.tokayHarp
+    dw locations.tokayFlippers
+    dw locations.tokaySatchel
+
+15/5b52/tokayGiveItemToLink: |
+    push hl
+    ld e,$42  # = ld e,Interaction.var02
+    ld a,(de) # load tokay subid 
+    sub $06
+    ld hl, tokayStolenItem
+    ld c,a
+    rst 10  ; rst_addAToHL
+    ld a,c
+    rst 10  ; twice (cause it's word)
+    ldi a,(hl)
+    ld b,a
+    ldi a,(hl)
+    pop hl
+    ld (hl),a
+    inc l
+    ld a,b
+    ld (hl),a
+    jp $5b73
+
 ##### HIDDEN TOKAY ###################################################
 # make tokay who gives shield upgrade always give the same item, and in a
 # format compatible with lookupItemSprite.
 15/5b35/: |
-    ld bc,$0101
-    ld a,b
-    ld b,c
-    ld c,a
+    ld bc,locations.hiddenTokayCave
     scf
     nop
     nop
-15/5b36/: dwbe locations.hiddenTokayCave
+    nop
+    nop
+    nop
 
 ### GORON TREASURE #####################################################
 # Skip wait for the goron to break the wall

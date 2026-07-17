@@ -1,5 +1,5 @@
 [Archipelago_locationList]
-moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
+moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07, 0xF882D5CF, 0x218F6E07, 0x30B6E091 # 1.0.1E, 1.0.2U, 1.0.0E, 1.0.1E, 1.0.0E, 1.0.2U
 .origin = codecave
 
 _formatLocationText:
@@ -111,12 +111,25 @@ _locationList_L2:
 	blr
 
 
-[Archipelago_locationList_V101E]
+[Archipelago_locationList_ALL]
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
 
 getFP = 0x0229bd4c # ::GameBdat
+
+
+[Archipelago_locationList_V101E]
+moduleMatches = 0xF882D5CF, 0x218F6E07 # 1.0.1E, 1.0.0E
+
 getIdTop = 0x029c23b4 # ::Bdat
 getIdCount = 0x029c23ac # ::Bdat
 getValCheck = 0x029c2630 # ::Bdat
+
+
+[Archipelago_locationList_V102U]
+moduleMatches = 0x30B6E091 # 1.0.2U
+
+getIdTop = 0x029c23a4 # ::Bdat
+getIdCount = 0x029c239c # ::Bdat
+getValCheck = 0x029c2620 # ::Bdat
 
 

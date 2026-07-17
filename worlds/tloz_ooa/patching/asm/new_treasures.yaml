@@ -19,6 +19,20 @@
 ### OTHER ITEMS ###
 16/541e/: db $0a,$00,$37,$5c  # Cracked Tuni Nut (#3b)
 
+
+# Add essences as real items to enable obtaining them elsewhere
+# NOTE : Replace old key and boss key table
+16/56d6/essencesTreasureData: |
+    db $02,$00,$0e,$60
+    db $02,$01,$0f,$61
+    db $02,$02,$10,$62
+    db $02,$03,$11,$63
+    db $02,$04,$12,$64
+    db $02,$05,$13,$65
+    db $02,$06,$14,$66
+    db $02,$07,$15,$67
+16/5433/: dw essencesTreasureData
+
 ############################################################
 #   INVENTORY DISPLAY DATA
 ############################################################

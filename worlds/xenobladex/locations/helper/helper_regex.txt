@@ -1,3 +1,0 @@
-# Convert the raw table from xenoblade.github.io
-^\d+\t(?:\n\d+ refs)?[\n\t](?:.*?\t){3}(.*?)(?:\t.*)?\n
-"$1",\n

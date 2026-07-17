@@ -2207,6 +2207,38 @@
         ],
         "release_date": 2026
     },
+    "Gauntlet Legends": {
+        "igdb_id": "3501",
+        "world_name": "Gauntlet Legends",
+        "igdb_name": "Gauntlet Legends",
+        "us_rating": [],
+        "player_perspectives": [
+            "Bird view / Isometric"
+        ],
+        "genres": [
+            "Role-playing (RPG)",
+            "Hack and slash/Beat 'em up"
+        ],
+        "themes": [
+            "Action",
+            "Fantasy"
+        ],
+        "keywords": [
+            "magic",
+            "death",
+            "brawler",
+            "boss fight",
+            "character select screen",
+            "bow and arrow",
+            "4 player co-op",
+            "treasure chest",
+            "potion",
+            "melee",
+            "temporary invincibility",
+            "invisibility"
+        ],
+        "release_date": 1998
+    },
     "Getting Over It": {
         "igdb_id": "13144",
         "world_name": "Getting Over It",

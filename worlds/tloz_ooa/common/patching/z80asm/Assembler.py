@@ -84,7 +84,7 @@ class GameboyAddress:
 class Z80Block:
     local_labels: Dict[str, GameboyAddress]
 
-    def __init__(self, metalabel: str, contents: str):
+    def __init__(self, metalabel: str, contents: str, file_path: str):
         split_metalabel = metalabel.split("/")
         if len(split_metalabel) != 3:
             raise Exception(f"Invalid metalabel '{metalabel}'")
@@ -106,6 +106,7 @@ class Z80Block:
         self.content_lines = [line for line in stripped_lines if line]
 
         self.local_labels = {}
+        self.file_path = file_path
         self.byte_array = []
         self.precompiled_size = 0
 
@@ -267,11 +268,11 @@ class Z80Assembler:
             try:
                 current_offset += self._evaluate_line_size(line, addr, block)
             except Exception as e:
-                e.add_note(f"line: {line}")
+                e.add_note(f"Line: {line}")
                 block_name = block.label
                 if not block_name:
                     block_name = "unnamed"
-                e.add_note(f"In block {block_name} ({block.addr})")
+                e.add_note(f"In block {block_name} ({block.addr}) inside {block.file_path}")
                 raise e
         assert self.active
         block.precompiled_size = current_offset
@@ -287,7 +288,7 @@ class Z80Assembler:
                 block_name = block.label
                 if not block_name:
                     block_name = "unnamed"
-                e.add_note(f"In block {block_name} ({block.addr})")
+                e.add_note(f"In block {block_name} ({block.addr}) inside {block.file_path}")
                 raise e
 
         if block.precompiled_size != len(block.byte_array):

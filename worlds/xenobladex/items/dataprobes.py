@@ -1,11 +1,12 @@
 from typing import List
+from BaseClasses import ItemClassification as ItCl
 from ..Items import Itm as Data
 
 # https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_BeaconList.html
 # flake8: noqa
 dataprobes_data: List[Data] = [
 Data("Basic Probe", valid=False),
-Data("Mining Probe G1", count=20),
+Data("Mining Probe G1", count=20, progression=ItCl.progression_skip_balancing),
 Data("Mining Probe G2", count=24),
 Data("Mining Probe G3", count=7),
 Data("Mining Probe G4", count=15),
@@ -17,7 +18,7 @@ Data("Mining Probe G9", count=10),
 Data("Mining Probe G10", count=4),
 Data("ITM_BCN_MINE_011_name", valid=False),
 Data("ITM_BCN_MINE_012_name", valid=False),
-Data("Research Probe G1", count=3),
+Data("Research Probe G1", count=3, progression=ItCl.progression_skip_balancing),
 Data("Research Probe G2", count=4),
 Data("Research Probe G3", count=2),
 Data("Research Probe G4", count=6),
@@ -29,7 +30,7 @@ Data("Booster Probe G1", count=3),
 Data("Booster Probe G2", count=3),
 Data("ITM_BCN_RAISE_003_name", valid=False),
 Data("ITM_BCN_RAISE_004_name", valid=False),
-Data("Storage Probe", count=11),
+Data("Storage Probe", count=11, progression=ItCl.progression_skip_balancing),
 Data("ITM_BCN_STORAGE_002_name", valid=False),
 Data("ITM_BCN_STORAGE_003_name", valid=False),
 Data("Duplicator Probe", count=4),

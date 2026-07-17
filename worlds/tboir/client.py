@@ -1,7 +1,6 @@
 from __future__ import annotations
 import asyncio
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
 import time
 from enum import Enum
 import json
@@ -12,7 +11,7 @@ from uuid import uuid4
 import colorama
 
 import ModuleUpdate
-from NetUtils import ClientStatus, HintStatus, NetworkItem
+from NetUtils import ClientStatus, HintStatus
 import settings
 from worlds.tboir import TboiSettings
 ModuleUpdate.update()
@@ -20,13 +19,19 @@ ModuleUpdate.update()
 import Utils
 apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 
+tracker_loaded = False
+try:
+    from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext         #pyright: ignore[reportMissingImports]
+    tracker_loaded = True
+except ModuleNotFoundError:
+    from CommonClient import CommonContext as SuperContext
+
 if __name__ == "__main__":
     Utils.init_logging("Isaac Client", exception_logger="Client")
 
-from CommonClient import logger, ClientCommandProcessor, \
-    CommonContext, server_loop
+from CommonClient import logger, server_loop
 
-class IsaacClientCommandProcessor(ClientCommandProcessor):
+class IsaacClientCommandProcessor(SuperContext.command_processor):
     def _cmd_resync(self):
         """Manually trigger a resync."""
         self.output(f"Syncing items.")
@@ -62,8 +67,10 @@ class IsaacClientCommandProcessor(ClientCommandProcessor):
         self.ctx.mod_viable = False
 
 
-class IsaacContext(CommonContext):
+class IsaacContext(SuperContext):
     settings: TboiSettings = None
+
+    tags={"AP"}
 
     save_data_path: str = ""
     mod_viable: bool = False
@@ -156,6 +163,10 @@ class IsaacContext(CommonContext):
             self.ui.tabs.children[4].trigger_action()
             self.ui.remove_client_tab(self.ui.tabs.children[0])
             self.ui.tracker_tab = None
+            self.options = {}
+            self.scouted_locations = {}
+            self.hintable_locations = {}
+            self.stored_data = {}
 
     async def shutdown(self):
         await super(IsaacContext, self).shutdown()
@@ -168,6 +179,7 @@ class IsaacContext(CommonContext):
        
 
     def on_package(self, cmd: str, args: dict):
+        super().on_package(cmd, args)
         if cmd in {"Connected"}:
             self.current_state = self.State.GATHERING_DATA
             self.options = args['slot_data']['options']
@@ -195,6 +207,8 @@ class IsaacContext(CommonContext):
                 self.options["error_room_logic"] = True
             if "sacrifice_room_logic" not in self.options:
                 self.options["sacrifice_room_logic"] = False
+            if "soul_of_cain_logic" not in self.options:
+                self.options["soul_of_cain_logic"] = False
             if "floor_variations" not in self.options:
                 self.options["floor_variations"] = True
             if "death_link_severity" not in self.options:
@@ -259,6 +273,10 @@ class IsaacContext(CommonContext):
             if "checked_locations" in args:
                 if self.ui.tracker_tab:
                     self.ui.tracker_tab.on_location_update(self.checked_locations)
+                self.commands_to_be_sent.put(IsaacContext.Command(
+                    type="CheckedLocation",
+                    payload=args["checked_locations"]
+                ))
                 self.update_hints()
         if cmd in {"LocationInfo"}:
             if "locations" in args:
@@ -291,22 +309,32 @@ class IsaacContext(CommonContext):
                 self.commands_to_be_sent.put(cmd)
         return super().on_deathlink(data)
     
-    def run_gui(self):
-        """Import kivy UI system and start running it as self.ui_task."""
-        from kvui import GameManager
+    def make_gui(self):
+        ui = super().make_gui()
 
-        class IsaacManager(GameManager):
+        class IsaacManager(ui):
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
             base_title = f"{apname} Isaac Client"
             tracker_tab = None
 
+
             def build(self):
+                from kivy.core.window import Window
+
                 container = super().build()
                 return container
-
-        self.ui = IsaacManager(self)
+            
+            def on_start(self):
+                self.root_window.size = (1080, 600)
+            
+        return IsaacManager
+    
+    def run_gui(self):
+        """Import kivy UI system from make_gui() and start running it as self.ui_task."""
+        ui_class = self.make_gui()
+        self.ui = ui_class(self)
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     commands_to_be_sent = Queue()
@@ -363,6 +391,7 @@ class IsaacContext(CommonContext):
 
         try:
             data = json.loads(open(self.save_data_path).read())
+
             save_data = IsaacContext.SaveData(
                 session_id=data["session_id"],
                 timestamp=data["timestamp"],
@@ -440,7 +469,7 @@ async def game_watcher(ctx: IsaacContext):
                 
                 from worlds.tboir.tracker import TrackerLayout
                 ctx.ui.tracker_tab = TrackerLayout()
-                ctx.ui.add_client_tab("Tracker", ctx.ui.tracker_tab)
+                ctx.ui.add_client_tab("Map Tracker", ctx.ui.tracker_tab)
 
                 ctx.ui.tracker_tab.on_connect(ctx)
                 ctx.ui.tracker_tab.on_runinfo_update(ctx.stored_data[f"isaac_{ctx.team}_{ctx.slot}_run_info"])
@@ -449,8 +478,6 @@ async def game_watcher(ctx: IsaacContext):
                 ctx.ui.tracker_tab.on_item_update(ctx.items_received)
                 ctx.ui.tabs.children[0].trigger_action()
 
-                if ctx.ui._app_window.size == (800, 600):
-                    ctx.ui._app_window.size = (1080, 600)
             if ctx.current_state == ctx.State.CONNECTED:
                 ctx.poll()
         except Exception as e:
@@ -460,6 +487,9 @@ async def game_watcher(ctx: IsaacContext):
 async def main():
     ctx = IsaacContext(None, None)
     ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
+
+    if tracker_loaded:
+        ctx.run_generator()
     if Utils.gui_enabled:
         ctx.run_gui()
     ctx.run_cli()

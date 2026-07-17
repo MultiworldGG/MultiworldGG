@@ -32,19 +32,46 @@ char* _postEquipList(char* stringStartPtr, char* stringCurrentPtr, char* stringE
 char* _postDollList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
 char* _postVeinList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
 
-#ifdef V101E
+#ifdef ALL
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 ; 1.0.1E, 1.0.2U, 1.0.0E
 
 changeTime = 0x022b36f4 #::GameManager
+
+0x022b3bbc = bl _mainArchipelago # replace bl changeTime
+#endif
+
+#ifdef V101E
+moduleMatches = 0xF882D5CF, 0x218F6E07 ; 1.0.1E, 1.0.0E
+
 writeSystemLog = 0x02c74290 #::MenuTask
 
 __sprintf_s = 0x03133354
 __malloc = 0x03b1aeb0
 __free = 0x03b1afe8
 __strtol = 0x03b1b27c
-
-0x022b3bbc = bl _mainArchipelago # replace bl changeTime
 #endif
+
+#ifdef V102U
+moduleMatches = 0x30B6E091 ; 1.0.2U
+
+writeSystemLog = 0x02c74230 #::MenuTask
+
+__sprintf_s = 0x031332d4
+__malloc = 0x03b1ae30
+__free = 0x03b1af68
+__strtol = 0x03b1b1fc
+#endif
+
+#ifdef Unsupported
+moduleMatches = 0x7672271D, 0xAB97DE6B, 0x676EB33E, 0x785CA8A9 ; 1.0.2J, 1.0.1U, 1.0.0U, 1.0.0J
+.origin = codecave
+
+# Error Box for bad game versions
+Unsupported_Game_Version:
+	.int	$Unsupported_Game_Version
+#endif
+
+int Unsupported_Game_Version;
 
 int changeTime(int hour, int minute);
 void writeSystemLog(int* menuBasePtr, char* str1, char* str2);

@@ -3,6 +3,8 @@ import pkgutil
 from typing import Any
 from BaseClasses import CollectionState, Item, ItemClassification, Location, Region, Tutorial
 from Options import Option
+from rule_builder.options import OptionFilter
+from rule_builder.rules import And, CanReachRegion, Has, Or, Rule, True_
 import settings
 from worlds.LauncherComponents import Component, Type, launch_subprocess, icon_paths, components
 from worlds.generic.Rules import add_item_rule, add_rule
@@ -10,6 +12,7 @@ from .locations import location_list, location_group_list
 from .items import item_list, item_group_list
 from .options import TboiOptions
 from worlds.AutoWorld import WebWorld, World
+from .game_data import data
 
 def launch_client():
     from . import client
@@ -62,14 +65,12 @@ class TboiWorld(World):
     topology_present = True
     settings: TboiSettings
 
-    data = json.loads(pkgutil.get_data(__name__, "data.json").decode())
-
     item_name_to_id = {name: id for
-                       id, name in enumerate(item_list(data), 1)}
-    item_name_groups = item_group_list(data)
+                       id, name in enumerate(item_list(), 1)}
+    item_name_groups = item_group_list()
     location_name_to_id = {name: id for
-                           id, name in enumerate(location_list(data), 1)}
-    location_name_groups = location_group_list(data)
+                           id, name in enumerate(location_list(), 1)}
+    location_name_groups = location_group_list()
         
     ut_can_gen_without_yaml = True
 
@@ -88,23 +89,35 @@ class TboiWorld(World):
     def create_event(self, event: str) -> TboiItem:
         return TboiItem(event, ItemClassification.progression, None, self.player)
     
-    def rule_from_data(self, state: CollectionState, rule):
+    def rule_from_data(self, rule) -> Rule:
         if "has" in rule:
+            return Has(rule["has"] + ' Unlock')
             unlock, *conditions = rule["has"].split('&')
-            if (len(conditions) > 0):
-                for condition in conditions:
-                    if not self.options.__dict__[condition].value:
-                        return False
-            return unlock == '' or state.has(f'{unlock} Unlock', self.player)
+            if unlock == '':
+                return True_()
+            return Has(unlock + ' Unlock', options=[OptionFilter(self.options.__dict__[condition].__class__, True) for condition in conditions])
+            #if (len(conditions) > 0):
+            #    for condition in conditions:
+            #        if not self.options.__dict__[condition].value:
+            #            return False
+            #return unlock == '' or state.has(f'{unlock} Unlock', self.player)
+        if "hasIfOption" in rule:
+            unlock = rule["hasIfOption"]["has"]
+            options = rule["hasIfOption"]["options"]
+            return Has(unlock + ' Unlock', options=[OptionFilter(self.options.__dict__[option[0]].__class__, option[1]) for option in options])
+        if "option" in rule:
+            return True_(options=[OptionFilter(self.options.__dict__[rule["option"][0]].__class__, rule["option"][1])])
+        if "reach" in rule:
+            return CanReachRegion(rule["reach"])
         if "or" in rule:
-            return any(self.rule_from_data(state, x) for x in rule["or"])
+            return Or(*[self.rule_from_data(x) for x in rule["or"]])
         if "and" in rule:
-            return all(self.rule_from_data(state, x) for x in rule["and"])
+            return And(*[self.rule_from_data(x) for x in rule["and"]])
         
     def create_regions(self):
         existing_regions = set()
 
-        for name, floor in self.data["regions"].items():
+        for name, floor in data["regions"].items():
             if "type" in floor and floor["type"] == "alt" and "Alt Path" in self.options.excluded_areas.value: continue
             if "type" in floor and floor["type"] == "void" and "The Void" in self.options.excluded_areas.value: continue
             if "type" in floor and floor["type"] == "ascend" and "Ascend" in self.options.excluded_areas.value: continue
@@ -120,7 +133,7 @@ class TboiWorld(World):
                             if not self.options.__dict__[condition].value:
                                 skip_room = True
                     if skip_room: continue
-                    room = self.data["rooms"][room_name]
+                    room = data["rooms"][room_name]
                     if "type" in room and room["type"] == "rng" and self.options.rng_rooms.value == 0: continue
                     if "type" in room and room["type"] == "crawl_space" and self.options.crawl_space.value == 0: continue
                     if "type" in room and room["type"] == "planetarium" and self.options.planetarium.value == 0: continue
@@ -142,8 +155,10 @@ class TboiWorld(World):
                            (room["type"] == "planetarium" and self.options.planetarium.value >= 3) or \
                            (room["type"] == "ultra_secret_room" and self.options.ultra_secret_room.value >= 3) or \
                            (room["type"] == "error_room" and self.options.error_room.value >= 3)):
-                            add_rule(self.get_location(location_name),
-                                    lambda state, rule=room["requires"]: self.rule_from_data(state, rule))
+                            rule = self.rule_from_data(room["requires"])
+                            self.set_rule(self.get_location(location_name), rule)
+                            #add_rule(self.get_location(location_name),
+                            #        lambda state, rule=room["requires"]: self.rule_from_data(state, rule))
             if name in self.options.additional_item_locations_per_stage.keys():
                 for i in range(self.options.additional_item_locations_per_stage[name]):
                     region.add_locations(self.create_location(f'{name} - Item #{i+1}'))
@@ -151,8 +166,8 @@ class TboiWorld(World):
             existing_regions.add(region.name)
         
         for region in self.multiworld.get_regions(self.player):
-            if region.name in self.data["regions"].keys() and "connects_to" in self.data["regions"][region.name]:
-                for connection_condition in self.data["regions"][region.name]["connects_to"]:
+            if region.name in data["regions"].keys() and "connects_to" in data["regions"][region.name]:
+                for connection_condition in data["regions"][region.name]["connects_to"]:
                     skip_connection = False
                     connection, *conditions = connection_condition.split('&')
                     if (len(conditions) > 0):
@@ -162,20 +177,22 @@ class TboiWorld(World):
                     if skip_connection: continue
                     if connection not in existing_regions: continue
                     exit_region = self.multiworld.get_region(connection, self.player)
-                    if exit_region.name in self.data["regions"].keys() and "requires" in self.data["regions"][exit_region.name]:
-                        region.connect(exit_region, None, 
-                                       lambda state, rule=self.data["regions"][exit_region.name]["requires"]: self.rule_from_data(state, rule))
+                    if exit_region.name in data["regions"].keys() and "requires" in data["regions"][exit_region.name]:
+                        self.create_entrance(region, exit_region, self.rule_from_data(data["regions"][exit_region.name]["requires"]), force_creation=True)
+                        #region.connect(exit_region, rule=self.rule_from_data(data["regions"][exit_region.name]["requires"]))
                     else:
-                        region.connect(exit_region)
+                        self.create_entrance(region, exit_region)
+                        #region.connect(exit_region)
 
-        for boss, reward in self.data["boss_rewards"].items():
+        for boss, reward in data["boss_rewards"].items():
             available = False
             boss_region = Region(f'Boss: {boss}', self.player, self.multiworld)
             for region in self.multiworld.get_regions(self.player):
-                if region.name in self.data["regions"].keys():
-                    if "boss" in self.data["regions"][region.name] and boss == self.data["regions"][region.name]["boss"]:
+                if region.name in data["regions"].keys():
+                    if "boss" in data["regions"][region.name] and boss == data["regions"][region.name]["boss"]:
                         available = True
-                        region.connect(boss_region)
+                        self.create_entrance(region, boss_region)
+                        #region.connect(boss_region)
             if available:
                 if self.options.additional_boss_rewards:
                     for i in range(reward["amount"]):
@@ -203,7 +220,7 @@ class TboiWorld(World):
 
     def create_items(self):
         own_items = len(self.goals)
-        for name, unlock in self.data['unlocks'].items():
+        for name, unlock in data['unlocks'].items():
             if "type" in unlock and "alt" in unlock["type"] and "Alt Path" in self.options.excluded_areas.value: continue
             if "type" in unlock and "void" in unlock["type"] and "The Void" in self.options.excluded_areas.value: continue
             if "type" in unlock and "ascend" in unlock["type"] and "Ascend" in self.options.excluded_areas.value: continue
@@ -213,6 +230,7 @@ class TboiWorld(World):
             if "type" in unlock and "telescope_lens" in unlock["type"] and self.options.planetarium.value != 3: continue
             if "type" in unlock and "red_key" in unlock["type"] and self.options.ultra_secret_room.value != 3: continue
             if "type" in unlock and "soul_of_cain" in unlock["type"] and self.options.ultra_secret_room.value != 4: continue
+            if "type" in unlock and "cracked_key" in unlock["type"] and self.options.ultra_secret_room.value != 5: continue
             if "type" in unlock and "undefined" in unlock["type"] and self.options.error_room.value != 3: continue
             if "type" in unlock and "variant" in unlock["type"] and not self.options.floor_variations.value: continue
             self.multiworld.itempool.append(self.create_item(f'{name} Unlock'))
@@ -268,7 +286,8 @@ class TboiWorld(World):
         if goal_amount == 0 or goal_amount > goals:
             goal_amount = goals
 
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory Condition", self.player, goal_amount)
+        self.set_completion_rule(Has("Victory Condition", goal_amount))
+        #self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory Condition", self.player, goal_amount)
         #self.multiworld.completion_condition[self.player] = self.has_location_lambda("Mega Satan - Boss Room")
         
         #visualize_regions(self.multiworld.get_region("Menu", self.player), "my_world.puml")
@@ -309,6 +328,7 @@ class TboiWorld(World):
                 "sacrifice_room_logic",
                 "trapdoor_logic",
                 "error_room_logic",
+                "soul_of_cain_logic",
                 "floor_variations",
                 "death_link_severity",
                 "progressive_mapping_upgrades",
@@ -337,7 +357,7 @@ class TboiWorld(World):
                     setattr(self.options, key, opt.from_any(value))
             self.goals = self.options.goals.value
         else:
-            available_bosses = list(self.data["boss_rewards"].keys())
+            available_bosses = list(data["boss_rewards"].keys())
 
             if "All" in self.options.goals.value:
                 self.goals = available_bosses
@@ -358,7 +378,7 @@ class TboiWorld(World):
                 self.goals.sort()
 
             for excluded_area in self.options.excluded_areas.value:
-                for _, region in self.data["regions"].items():
+                for _, region in data["regions"].items():
                     if "type" in region and "boss" in region:
                         if region["type"] == "alt" and excluded_area == "Alt Path" or \
                             region["type"] == "void" and excluded_area == "The Void" or \
@@ -371,7 +391,7 @@ class TboiWorld(World):
                 self.goals = ['Mom']
 
             if self.options.character_goals.value > 0:
-                available_characters = set(self.data["characters"]) - self.options.exclude_characters.value
+                available_characters = set(data["characters"]) - self.options.exclude_characters.value
                 if "Tainted" in self.options.exclude_characters.value:
                     available_characters = {c for c in available_characters if not c.startswith("Tainted")}
                 if "Non-Tainted" in self.options.exclude_characters.value:

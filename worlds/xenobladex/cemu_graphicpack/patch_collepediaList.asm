@@ -14,19 +14,22 @@ _postCollepediaList:
 	stw r4,28(r31)
 	stw r5,32(r31)
 	stw r6,36(r31)
+	li r9,5483
+	stw r9,12(r31)
 	li r9,1
 	stw r9,8(r31)
 	b _collepediaList_L2
 _collepediaList_L4:
-	lwz r9,8(r31)
-	addi r9,r9,5483
+	lwz r10,8(r31)
+	lwz r9,12(r31)
+	add r9,r10,r9
 	mr r4,r9
 	li r3,1
 	bl getLocal
 	mr r9,r3
-	stw r9,12(r31)
+	stw r9,16(r31)
 	lwz r10,36(r31)
-	lwz r7,12(r31)
+	lwz r7,16(r31)
 	lwz r6,8(r31)
 	lis r9,_formatCollecText@ha
 	addi r5,r9,_formatCollecText@l
@@ -72,7 +75,7 @@ _collepediaList_L2:
 	blr
 
 
-[Archipelago_collepediaList_V101E]
+[Archipelago_collepediaList_ALL]
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
 
 

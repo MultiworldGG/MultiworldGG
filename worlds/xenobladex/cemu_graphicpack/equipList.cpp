@@ -7,19 +7,31 @@ int __sprintf_s(char *buffer, size_t sizeOfBuffer, const char *format, ...);
 void _postCurl(char[]);
 
 #ifdef V101E
-moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 ; 1.0.1E, 1.0.2U, 1.0.0E
+moduleMatches = 0xF882D5CF, 0x218F6E07 ; 1.0.1E, 1.0.0E
 
 getInnerEquipmentData = 0x02cc273c # ::menu::MenuEquipUtil::PCData
 #endif
+
+#ifdef V102U
+moduleMatches = 0x30B6E091 ; 1.0.2U
+
+getInnerEquipmentData = 0x02cc26dc # ::menu::MenuEquipUtil::PCData
+#endif
+
 char _formatEquipText[]="EQ CId=%03x Id=%03x Ix=%01x S1Id=%03x U1=%01x S2Id=%03x U2=%01x S3Id=%03x U3=%01x A1Id=%04x A2Id=%04x A3Id=%04x:";
 
 int * getInnerEquipmentData(char* characterPtr, int equipPosition);
 
 
 // Use  https://xenoblade.github.io/xbx/bdat/common_local_us/TWN_FriendRank.html to match the ids
-// Ranges from 0 to 50, but 32 is already 5 hearts???
+// Ix=0 Ranged Weapon
+// Ix=1 Melee Weapon
+// Ix=2 Armor Head
+// Ix=3 Armor Torso
+// Ix=4 Armor Left Arm
+// Ix=5 Armor Right Arm
+// Ix=6 Armor Legs
 char* _postEquipList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize) {
-	// Do this only for main character for now
     for(int characterId = 0; GetCharaDataPtr(characterId) != 0; characterId++){
 		char* characterPtr = (char*)GetCharaDataPtr(characterId);
 		 

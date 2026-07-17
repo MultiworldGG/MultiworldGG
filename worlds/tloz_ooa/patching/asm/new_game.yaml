@@ -2,7 +2,7 @@
 # at actual file creation.
 
 07//initialGlobalFlags: |
-    db $0a,$0c,$1d,$20,$21,$23,$2b,$33,$3d,$40,$41,$43,$45,$ff
+    db $02,$0a,$0c,GLOBALFLAG_WON_FAIRY_HIDING_GAME,$1d,$20,$21,$23,$2a,$2b,$2e,$33,$3d,$40,$41,$43,$45,$ff
 
 07/4195/startingBomb: db $00
 
@@ -22,16 +22,6 @@
     pop hl
     jr @loop
     @done:
-
-    # linked global flags
-    ld a,(wIsLinkedGame)
-    or a
-    jr z,@unlinked
-    ld a,$38
-    push hl
-    call setGlobalFlag
-    pop hl
-    @unlinked:
 
     # animal vars
     ld a,option.animalCompanion
@@ -61,12 +51,8 @@
     ld ($c739),a # big intro cutscene
 
     # room flag 7
-    ld a,$80
-    ld ($c8bb),a # linked crescent island rosa encounter (1)
-
-    # room flags 5 | 6
-    ld a,$60
-    ld ($c8cb),a # linked crescent island rosa encounter (2)
+    #ld a,$80
+    #ld ($c8bb),a # linked crescent island rosa encounter (1)
 
     # room flag 6
     ld a,$40
@@ -105,9 +91,6 @@
     ld a,$03
     ld (wRingBoxLevel),a
 
-    ld a,GLOBALFLAG_WON_FAIRY_HIDING_GAME
-    call setGlobalFlag
-
     pop hl
     ld hl,$415c  ; initializeChildOnGameStart; this may look useless, but this prevents the game from locking up after file creation.
     ret
@@ -124,6 +107,40 @@
   xor a
   cp $01
 
-# Changes Link's starting point (Postion is unaffected because it doesen't interfere with anything else)
+# Changes Link's starting point
 07/419b/: db option.startingGroup       # Group Number
 07/419d/: db option.startingRoom        # Room Number
+07/419f/: db option.startingXPos         # Position in room (X)
+07/41a1/: db option.startingYPos         # Position in room (Y)
+
+# Make linked game ghini appear in the graveyard
+# 15/7a54/: nop
+# 15/7a57/: nop
+
+# Turn the linked game ghini into a tutorial ghost
+# 0c/7ed9/: |
+    # db initcollisions
+    # @start:
+    # db enableinput
+    # db checkabutton
+    # db disableinput
+    # db showtext,$5a,$25
+    #db jumpiftextoptioneq,$25
+    #dw @startQuestions
+    #db showtext,$5a,$26
+    #db jumpiftextoptioneq,$25
+    #dw @start
+    #db showtext,$5a,$27
+    #dwbe @start
+    #@startQuestions:
+    #db showtext,$5a,$28
+    #db jumpiftextoptioneq,$26
+    #dw @succeeded
+    #db showtext,$5a,$29
+    #dwbe @start
+    #@succeeded:
+    #db showtext,$5a,$2a
+    #db enableinput
+    #db checkabutton
+    #db showtext,$5a,$2b
+    # dwbe @start

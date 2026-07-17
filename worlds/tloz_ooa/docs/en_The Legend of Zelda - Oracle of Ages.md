@@ -31,11 +31,20 @@ Items belonging to other worlds use an easily recognizable Archipelago sprite, w
 
 **Is there a tracker for this game?**
 
-> Yes, you can find it [here](https://github.com/Br00ty/ooa_brooty/releases/latest).
+> Yes, you can find it [here](https://github.com/Dranzior/ooa_brooty/releases/latest).
 
 **How can I warp to start?**
 
 > You need to press A+B while the screen is fading to white into any menu (e.g. after pressing START or SELECT)
+
+**King Zora won't accept my potion, Why ? / Why did I received a blue potion ?**
+
+> King Zora in this randomizer demand a specific Blue Potion key item that you can find like any item. 
+> If you use the tracker, you can see it sharing a space with the fairy powder.
+
+**The tracker say that I can access the Maku tree, but I can't finish the Maku path, how do I get there ?**
+
+> You can also save the Maku Tree by saving Nayru ! Saving Nayru automatically make the Maku Tree whole again.
 
 **Can I do linked games using passwords from Oracle of Seasons?**
 
@@ -44,7 +53,7 @@ Items belonging to other worlds use an easily recognizable Archipelago sprite, w
 **What feature can we expect in a near future ?**
 
 > - Various QOL
-> - Secrets (?)
 > - Deku scrub selling checks
-> - The same Gasha tree madness that got implemented in season x)
+> - Entrance Rando
+> - Owl and birds giving you hint
 > - And more.

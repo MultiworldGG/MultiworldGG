@@ -40,4 +40,6 @@ ASM_FILES = [
     "asm/tokay_market.yaml",
     "asm/compass_chimes.yaml",
     "asm/warp_to_start.yaml",
+    "asm/any_item_on_essence_pedestal.yaml",
+    "asm/gasha_loot.yaml",
 ]

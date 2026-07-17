@@ -1,5 +1,5 @@
 from BaseClasses import Location
-from .Data import mirror_upgrades
+from .Data import mirror_upgrades, mirror_ri_requirements
 
 
 hades_base_location_id = 1
@@ -243,13 +243,15 @@ location_table_troves = {
         "10 Infernal Troves": max_number_room_checks + 133,
 }
 
-# Place one mirror upgrade item for each of its levels
+# Place one mirror upgrade location for each of its levels. On minimal heat, skip any inaccessible rows.
+def mirror_upgrade_accessible(upgrade_name: str, routine_inspection: int) -> bool:
+    return routine_inspection < (5 - mirror_ri_requirements[upgrade_name])
+
 location_table_mirror = {}
 def build_mirror_locations(start_id: int) -> dict:
     locations = {}
-
     current_id = start_id
-
+    
     for upgrade in mirror_upgrades:
         for level in range(1, upgrade.max_level + 1):
             locations[
@@ -260,9 +262,7 @@ def build_mirror_locations(start_id: int) -> dict:
 
     return locations
 
-location_table_mirror = build_mirror_locations(
-    max_number_room_checks + 134
-)
+location_table_mirror = build_mirror_locations(max_number_room_checks + 134)
 # ----------------------
 
 location_weapons_subfixes = [
@@ -359,7 +359,15 @@ def setup_location_table_with_settings(options) -> None:
         total_table.update(location_table_fates)
 
     if options.mirrorsanity.value == 1:
-        total_table.update(location_table_mirror)
+        routine_inspection = 0
+        if options.heat_system.value == 2:
+            routine_inspection = options.routine_inspection_pact_amount.value
+
+        for location_name, location_id in location_table_mirror.items():
+            mirror_name = location_name[len("Mirror "):].split(" - Level ")[0]
+
+            if mirror_upgrade_accessible(mirror_name, routine_inspection):
+                total_table[location_name] = location_id
 
     if options.fishsanity.value >= 1:
         total_table.update(location_table_fish)

@@ -27,9 +27,17 @@
     @refillBombs:
     ld a,TREASURE_BOMBS
     call checkTreasureObtained
-    jr nc,@refillShield
+    jr nc,@refillBombchus
     ld hl,wMaxBombs
     ldd a,(hl)
+    ld (hl),a
+    
+    @refillBombchus:
+    ld a,TREASURE_BOMBCHUS
+    call checkTreasureObtained
+    jr nc,@refillShield
+    ld hl,wNumBombchus
+    ld a,$10
     ld (hl),a
     
     @refillShield:

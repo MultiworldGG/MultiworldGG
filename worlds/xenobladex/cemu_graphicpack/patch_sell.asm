@@ -1,5 +1,5 @@
 [Archipelago_sell]
-moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
+moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07, 0xF882D5CF, 0x218F6E07, 0x30B6E091 # 1.0.1E, 1.0.2U, 1.0.0E, 1.0.1E, 1.0.0E, 1.0.2U
 .origin = codecave
 
 _convertSkellToGhost:
@@ -65,12 +65,23 @@ _sell_L6:
 	blr
 
 
-[Archipelago_sell_V101E]
+[Archipelago_sell_ALL]
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
 dollGarageBasePtr = 0x1039c288
 0x0234ccd0 = bl _convertSkellToGhost # replace EraceGarageDollData
-0x02b79884 = bl _convertItemToGhost # replace reqMenuRemoveItem
 SetGarageDollData = 0x027f88a0 # ::Util::DollData
 reqMenuRemoveItem = 0x0234fba4 # ::CmdReq::ItemInfo
+
+
+[Archipelago_sell_V101E]
+moduleMatches = 0xF882D5CF, 0x218F6E07 # 1.0.1E, 1.0.0E
+
+0x02b79884 = bl _convertItemToGhost # replace reqMenuRemoveItem
+
+
+[Archipelago_sell_V102U]
+moduleMatches = 0x30B6E091 # 1.0.2U
+
+0x02b79874 = bl _convertItemToGhost # replace reqMenuRemoveItem
 
 

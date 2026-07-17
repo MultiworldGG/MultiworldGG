@@ -1,6 +1,4 @@
-
 import io
-import json
 import math
 import pkgutil
 from kivy.core.window import Window
@@ -14,6 +12,7 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.uix.floatlayout import FloatLayout
 
 from worlds.tboir.client import IsaacContext
+from .game_data import data
 
 class TrackerLayout(FloatLayout):
     ctx: IsaacContext
@@ -56,7 +55,6 @@ class TrackerLayout(FloatLayout):
         self.active_tooltip = None
         self.tooltips = []
 
-        self.data = json.loads(pkgutil.get_data(__name__, "data.json").decode())
         self.bind(size=self._update_overlay, pos=self._update_overlay)
         Window.bind(mouse_pos=self._update_tooltip)
         Window.bind(on_mouse_down=self._force_tooltip)
@@ -68,7 +66,7 @@ class TrackerLayout(FloatLayout):
 
         self.run_info = InfoView(size=(232, 1), size_hint=(None, 1))
         self.main.add_widget(self.run_info)
-        #self.main.bind(size=self.run_info._update_graphics, pos=self.run_info._update_graphics)
+        self.main.bind(size=self.run_info._update_graphics, pos=self.run_info._update_graphics)
 
         self.img = self.load_image('tracker/images/tracker.jpg', 'jpg')
         self.main.add_widget(self.img)
@@ -97,12 +95,12 @@ class TrackerLayout(FloatLayout):
             if region_name not in self.regions:
                 x = 0
                 y = 0
-                if region_name in self.data["regions"].keys():
-                    x = self.data["regions"][region_name]["tracker_location"]["x"]
-                    y = self.data["regions"][region_name]["tracker_location"]["y"]
-                if region_name in self.data["boss_rewards"].keys():
-                    x = self.data["boss_rewards"][region_name]["tracker_location"]["x"]
-                    y = self.data["boss_rewards"][region_name]["tracker_location"]["y"]
+                if region_name in data["regions"].keys():
+                    x = data["regions"][region_name]["tracker_location"]["x"]
+                    y = data["regions"][region_name]["tracker_location"]["y"]
+                if region_name in data["boss_rewards"].keys():
+                    x = data["boss_rewards"][region_name]["tracker_location"]["x"]
+                    y = data["boss_rewards"][region_name]["tracker_location"]["y"]
                 region = Region(ox=x, oy=y, osize=30)
                 region.tooltip_anchor = 30
                 self.img.add_widget(region)
@@ -115,15 +113,15 @@ class TrackerLayout(FloatLayout):
 
             region = self.regions[region_name]
             rule = None
-            if icon_name in self.data["rooms"]:
-                room = self.data["rooms"][icon_name]
+            if icon_name in data["rooms"]:
+                room = data["rooms"][icon_name]
                 if "requires" in room:
                     if "type" in room and ( \
                        (room["type"] == "crawl_space" and self.ctx.options["crawl_space"] >= 3) or \
                        (room["type"] == "planetarium" and self.ctx.options["planetarium"] == 3) or \
                        (room["type"] == "ultra_secret_room" and self.ctx.options["ultra_secret_room"] >= 3) or \
                        (room["type"] == "error_room" and self.ctx.options["error_room"] == 3)):
-                        rule = self.data["rooms"][icon_name]["requires"]
+                        rule = data["rooms"][icon_name]["requires"]
             location_box = Location(location_name, rule, self, region, height=26, size_hint=(1, None), spacing=5)
             icon = self.load_image(f'tracker/images/{icon_name}.png')
             icon.size = (24, 24)
@@ -156,8 +154,7 @@ class TrackerLayout(FloatLayout):
 
         for goal in self.ctx.options["goals"]:
             goal, *characters = goal.split('|')
-            extra_cols = -(-len(characters) // 3)
-            goal_box = Goal(size=(48+extra_cols*16,48), size_hint=(None, None))
+            goal_box = Goal(size=(48,48), size_hint=(None, None))
             icon = self.load_image(f'tracker/images/{goal} Goal.png')
             icon.size = (48, 48)
             icon.texture.min_filter = 'nearest'
@@ -167,10 +164,15 @@ class TrackerLayout(FloatLayout):
             icon.tooltip_anchor = 53
             goal_box.add_widget(icon)
             if len(characters) > 0:
-                characters_box = StackLayout(size=(extra_cols*16, 48), size_hint=(None, None), orientation='tb-lr', spacing=0)
+                x = 0
+                y = 0
+                if goal in data["boss_rewards"].keys():
+                    x = data["boss_rewards"][goal]["tracker_location"]["x"]
+                    y = data["boss_rewards"][goal]["tracker_location"]["y"]
+                characters_box = Characters(ox=x, oy=y)
                 for character in characters:
                     char_icon = self.load_image(f'tracker/images/{character.replace("???", "Blue Baby")}.png')
-                    char_icon.size = (16, 16)
+                    char_icon.size = (32, 32)
                     char_icon.texture.min_filter = 'nearest'
                     char_icon.texture.mag_filter = 'nearest'
                     char_icon.size_hint=(None, None)
@@ -186,7 +188,9 @@ class TrackerLayout(FloatLayout):
                     tooltip._update_pos()
                     self.tooltips.append((char_icon, tooltip))
 
-                goal_box.add_widget(characters_box)
+                self.img.add_widget(characters_box)
+                self.img.bind(size=characters_box._update_graphics, pos=characters_box._update_graphics)
+                characters_box._update_graphics()
             self.goals[goal] = goal_box
             self.goals_box.add_widget(goal_box)
             tooltip = TrackerTooltip(padding=(8, 4), size_hint=(None, None))
@@ -200,7 +204,7 @@ class TrackerLayout(FloatLayout):
         self.goals_box.do_layout()
 
         total_goals = len(self.ctx.options["goals"])
-        goals_per_row = max(math.floor((232 - 16) / (52+extra_cols*16)), 1)
+        goals_per_row = max(math.floor((232 - 16) / 52), 1)
         goal_rows = math.ceil(total_goals / goals_per_row)
         self.goals_box.height = goal_rows * 52
 
@@ -215,7 +219,7 @@ class TrackerLayout(FloatLayout):
         self.unlocks_box = StackLayout(size_hint=(1, None), spacing=4)
         self.box_layout.add_widget(self.unlocks_box)
 
-        for unlock_name, unlock in self.data["unlocks"].items():
+        for unlock_name, unlock in data["unlocks"].items():
             if "type" in unlock and "alt" in unlock["type"] and "Alt Path" in self.ctx.options["excluded_areas"]: continue
             if "type" in unlock and "void" in unlock["type"] and "The Void" in self.ctx.options["excluded_areas"]: continue
             if "type" in unlock and "ascend" in unlock["type"] and "Ascend" in self.ctx.options["excluded_areas"]: continue
@@ -225,6 +229,7 @@ class TrackerLayout(FloatLayout):
             if "type" in unlock and "telescope_lens" in unlock["type"] and self.ctx.options["planetarium"] != 3: continue
             if "type" in unlock and "red_key" in unlock["type"] and self.ctx.options["ultra_secret_room"] != 3: continue
             if "type" in unlock and "soul_of_cain" in unlock["type"] and self.ctx.options["ultra_secret_room"] != 4: continue
+            if "type" in unlock and "cracked_key" in unlock["type"] and self.ctx.options["ultra_secret_room"] != 5: continue
             if "type" in unlock and "undefined" in unlock["type"] and self.ctx.options["error_room"] != 3: continue
             if "type" in unlock and "variant" in unlock["type"] and not self.ctx.options["floor_variations"]: continue
             unlock_box = Unlock(size=(32,28), size_hint=(None, None))
@@ -269,7 +274,7 @@ class TrackerLayout(FloatLayout):
         consumables_layout = BoxLayout(size_hint=(1, None), height=0, orientation='vertical')
         self.items_box.add_widget(consumables_layout)
 
-        for item in self.data["items"]:
+        for item in data["items"]:
             if item.endswith('Trap'):
                 continue
             item_box = BoxLayout(height=26, size_hint=(1, None), spacing=5)
@@ -447,19 +452,26 @@ class TrackerLayout(FloatLayout):
         if not rule:
             return True
         if "has" in rule:
-            unlock, *conditions = rule["has"].split('&')
-            if (len(conditions) > 0):
-                for condition in conditions:
-                    if not self.ctx.options[condition]:
+            return rule["has"] in self.unlocks and self.unlocks[rule["has"]].unlocked
+        if "hasIfOption" in rule:
+            unlock = rule["hasIfOption"]["has"]
+            options = rule["hasIfOption"]["options"]
+            if (len(options) > 0):
+                for option in options:
+                    if self.ctx.options[option[0]] != option[1]:
                         return False
-            return unlock == '' or (unlock in self.unlocks and self.unlocks[unlock].unlocked)
+            return unlock in self.unlocks and self.unlocks[unlock].unlocked
+        if "option" in rule:
+            return self.ctx.options[rule["option"][0]] == rule["option"][1]
+        if "reach" in rule:
+            return self.regions[rule["reach"]].reachable
         if "or" in rule:
             return any(self.evaluate_rule(x) for x in rule["or"])
         if "and" in rule:
             return all(self.evaluate_rule(x) for x in rule["and"])
         
     def update_reachability(self, region, prev_reachable):
-        j_region = self.data["regions"][region]
+        j_region = data["regions"][region]
         if region in self.regions:
             rule = None
             if "requires" in j_region:
@@ -528,8 +540,12 @@ class InfoView(ScrollView):
         super().__init__(**kwargs)
 
         with self.canvas.before:
-            Color(0, 0, 0, 0.85)
+            Color(0.15, 0.15, 0.15)
             self.rect = Rectangle(size=self.size, pos=self.pos)
+    
+    def _update_graphics(self, *args):
+        self.height = self.parent.height
+        self.rect.size = (self.width, self.height)
 
 
 class Location(BoxLayout):
@@ -556,6 +572,42 @@ class Location(BoxLayout):
         self.label.texture_update() 
         self.label.size = self.label.texture_size
         self.region.tooltip._recalc_size()
+
+class Characters(StackLayout):
+    def __init__(self, ox, oy, **kwargs):
+        super().__init__(**kwargs)
+        self.ox = ox
+        self.oy = oy
+        with self.canvas.before:
+            Color(0.75, 0.75, 0.75, 0.75)
+            self.rect = Rectangle(size=self.size, pos=self.pos)
+
+    def _update_graphics(self, *args):
+        texture_aspect_ratio = self.parent.texture.width / self.parent.texture.height
+        container_aspect_ratio = self.parent.width / self.parent.height
+        if texture_aspect_ratio > container_aspect_ratio:
+            true_width = self.parent.width
+            true_height = self.parent.width / texture_aspect_ratio
+            true_x = self.parent.x
+            true_y = self.parent.y + (self.parent.height - true_height) / 2
+            scale = self.parent.width / self.parent.texture.width
+        else:
+            true_height = self.parent.height
+            true_width = self.parent.height * texture_aspect_ratio
+            true_x = self.parent.x + (self.parent.width - true_width) / 2
+            true_y = self.parent.y
+            scale = self.parent.height / self.parent.texture.height
+        cols = min(len(self.children), 3)
+        rows = (len(self.children) - 1) // 3 + 1
+        self.size = (48 * cols * scale, 48 * scale * rows)
+        self.pos = (true_x + self.ox * scale - self.width/2, self.parent.height - true_y - (self.oy - 10) * scale)
+        for child in self.children:
+            child.size = (48 * scale, 48 * scale)
+            child.tooltip_anchor = 48 * scale
+
+        self.rect.pos = (self.x, self.y + (3 * scale))
+        self.rect.size = (self.width, self.height - (6 * scale))
+        
 
 class Region(Widget):
     def __init__(self, ox, oy, osize, **kwargs):

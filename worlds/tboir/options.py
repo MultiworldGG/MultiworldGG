@@ -206,7 +206,8 @@ class UltraSecretRoom(Choice):
     option_any = 2
     option_any_red_key_logic = 3
     option_any_soul_of_cain_logic = 4
-    default = 4
+    option_any_cracked_key_logic = 5
+    default = 5
 
 class ErrorRoom(Choice):
     """
@@ -263,7 +264,7 @@ class PlanetariumChapterFour(DefaultOnToggle):
 
 class ErrorRoomLogic(Toggle):
     """
-    Should Womb, Sheol, Cathedral, Chest and Dark Room be in logic after Undefined, Red Key or Soul of Cain are unlocked? (Those floors can be reached via Error Rooms)
+    Should Womb, Sheol, Cathedral, Chest and Dark Room be in logic after Undefined or Red Key are unlocked? (Those floors can be reached via Error Rooms)
     """
     display_name = "Error Room Logic"
 
@@ -278,6 +279,12 @@ class SacrificeRoomLogic(Toggle):
     Should Dark Room always be in logic as it can be reached via Sacrifice Rooms?
     """
     display_name = "Sacrifice Room Logic"
+
+class SoulOfCainLogic(Toggle):
+    """
+    Should Mega Satan, Corpse and Home be in logic after Soul of Cain is unlocked? (These doors can be opened with the rune)
+    """
+    display_name = "Soul of Cain Logic"
 
 class FloorVariations(DefaultOnToggle):
     """
@@ -609,6 +616,7 @@ class TboiOptions(PerGameCommonOptions):
     error_room_logic: ErrorRoomLogic
     trapdoor_logic: TrapdoorLogic
     sacrifice_room_logic: SacrificeRoomLogic
+    soul_of_cain_logic: SoulOfCainLogic
     floor_variations: FloorVariations
     additional_item_locations_per_stage: AdditionalItemLocationsPerStage
     item_location_percentage: ItemLocationPercentage

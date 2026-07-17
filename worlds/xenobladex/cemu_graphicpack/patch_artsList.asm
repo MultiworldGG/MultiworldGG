@@ -70,7 +70,7 @@ _artsList_L4:
 	stw r9,12(r31)
 _artsList_L3:
 	lwz r9,12(r31)
-	cmpwi cr0,r9,156
+	cmpwi cr0,r9,157
 	ble cr0,_artsList_L5
 	lwz r9,8(r31)
 	addi r9,r9,1
@@ -89,7 +89,7 @@ _artsList_L2:
 	blr
 
 
-[Archipelago_artsList_V101E]
+[Archipelago_artsList_ALL]
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
 
 

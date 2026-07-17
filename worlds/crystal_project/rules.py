@@ -112,7 +112,7 @@ class CrystalProjectLogic:
         return self.options.regionsanity.value == self.options.regionsanity.option_disabled
 
     def is_regionsanity_extreme(self) -> bool:
-        return self.options.regionsanity.value == self.options.regionsanity.option_extreme
+        return self.options.regionsanity.value >= self.options.regionsanity.option_extreme
 
     def old_world_requirements(self, state: CollectionState) -> bool:
         if self.options.goal.value == self.options.goal.option_true_astley:

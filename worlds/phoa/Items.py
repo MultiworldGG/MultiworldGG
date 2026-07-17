@@ -183,7 +183,7 @@ def get_item_pool(world: "PhoaWorld", locations: dict[str, PhoaLocationData]) ->
             for item in items:
                 if item in ["Wooden Bat", "Progressive Bat"]:
                     items.remove(item)
-                    precollected_items.append(item)
+                    precollected_items.append("Wooden Bat")
                     break
 
     # Check whether enough locations are available to place all progressive items

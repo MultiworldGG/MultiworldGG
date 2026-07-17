@@ -4,7 +4,7 @@ int __sprintf_s(char *buffer, size_t sizeOfBuffer, const char *format, ...);
 
 void _postCurl(char[]);
 
-#ifdef V101E
+#ifdef ALL
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 ; 1.0.1E, 1.0.2U, 1.0.0E
 
 GetGarageDollData = 0x027f7104 # ::Util::DollData
@@ -15,10 +15,24 @@ char _formatDollText[]="DL GIx=%02x Id=%03x Ix=%01x S1Id=%03x U1=%01x S2Id=%03x 
 int GetGarageDollData(int idx, char* result);
 
 
-// The Equip Item with Ix(Index)=A is the frameId 
+// Ix=0 Left Sidearm
+// Ix=1 Right Sidearm
+// Ix=2 Left Back
+// Ix=3 Right Shoulder
+// Ix=4 Left Shoulder
+// Ix=5 Right Back
+// Ix=6 Left Shield
+// Ix=7 Right Shield
+// Ix=8 Left Spare
+// Ix=9 Right Spare
+// Ix=A frameId
+// Ix=B Skell Armor Head
+// Ix=C Skell Armor Torso
+// Ix=D Skell Armor Right Arm
+// Ix=E Skell Armor Left Arm
+// Ix=F Skell Armor Legs
 // https://xenoblade.github.io/xbx/bdat/common_local_us/CHR_DlList.html
 char* _postDollList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize) {
-	// Do this only for main character for now
     for(int garageIdx = 0; garageIdx < 0x3c; garageIdx++){
 		char dollData[0x174];
 		if(GetGarageDollData(garageIdx, dollData)){

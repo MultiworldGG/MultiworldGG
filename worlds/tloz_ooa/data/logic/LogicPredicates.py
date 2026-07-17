@@ -1,6 +1,6 @@
 from BaseClasses import CollectionState
 from ...Options import *
-from ..Constants import DUNGEON_NAMES, ESSENCES
+from ..Constants import DUNGEON_NAMES, ESSENCES, GASHA_SPOT_REGIONS
 
 
 # Items predicates ############################################################
@@ -200,6 +200,7 @@ def ooa_can_trigger_switch(state: CollectionState, player: int):
     return any([
         ooa_has_boomerang(state, player),
         ooa_has_bombs(state, player),
+        ooa_has_bombchus(state, player),
         ooa_has_seedshooter(state, player),
         all([
             ooa_has_satchel(state, player),
@@ -218,6 +219,7 @@ def ooa_can_trigger_far_switch(state: CollectionState, player: int):
     return any([
         ooa_has_boomerang(state, player),
         ooa_has_bombs(state, player),
+        ooa_has_bombchus(state, player),
         ooa_has_seedshooter(state, player),
         ooa_has_switch_hook(state, player),
         all([
@@ -231,6 +233,12 @@ def ooa_can_trigger_far_switch(state: CollectionState, player: int):
 
 def ooa_has_bombs(state: CollectionState, player: int, amount: int = 1):
     return state.has("Bombs (10)", player, amount)
+
+def ooa_has_bombchus(state: CollectionState, player: int, amount: int = 1):
+    return state.has("Bombchus (10)", player, amount)
+
+def ooa_has_explosives(state: CollectionState, player: int, amount: int = 1):
+    return ooa_has_bombs(state, player, amount) or ooa_has_bombchus(state, player, amount)
 
 
 def ooa_has_flute(state: CollectionState, player: int):
@@ -455,6 +463,7 @@ def ooa_can_break_bush(state: CollectionState, player: int, can_summon_companion
             ooa_option_medium_logic(state, player),
             any([
                 ooa_has_bombs(state, player, 2),
+                ooa_has_bombchus(state, player),
                 ooa_can_use_ember_seeds(state, player, False),
                 (ooa_has_seedshooter(state, player) and ooa_has_gale_seeds(state, player)),
             ])
@@ -472,7 +481,7 @@ def ooa_can_break_tingle_balloon(state: CollectionState, player: int):
 def ooa_can_harvest_regrowing_bush(state: CollectionState, player: int, allow_bombs: bool = True):
     return any([
         ooa_has_sword(state, player),
-        (allow_bombs and ooa_has_bombs(state, player))
+        (allow_bombs and (ooa_has_bombs(state, player) or ooa_has_bombchus(state, player)))
     ])
 
 
@@ -495,6 +504,7 @@ def ooa_can_break_flowers(state: CollectionState, player: int, can_summon_compan
             ooa_option_medium_logic(state, player),
             any([
                 ooa_has_bombs(state, player, 2),
+                ooa_has_bombchus(state, player),
                 ooa_can_use_ember_seeds(state, player, False),
                 (ooa_has_seedshooter(state, player) and ooa_has_gale_seeds(state, player)),
             ])
@@ -509,7 +519,11 @@ def ooa_can_break_crystal(state: CollectionState, player: int):
         ooa_has_bracelet(state, player),
         all([
             ooa_option_medium_logic(state, player),
-            state.has("Expert's Ring", player)
+            any([
+                state.has("Expert's Ring", player),
+                ooa_has_bombchus(state, player),
+                ooa_can_use_ember_seeds(state, player, False)
+            ])
         ])
     ])
 
@@ -774,7 +788,16 @@ def ooa_can_toss_ring(state: CollectionState, player: int):
         ooa_has_bracelet(state, player),
         state.has("Toss Ring", player)
     ])
-
+def ooa_can_harvest_gasha(state: CollectionState, player: int, count: int):
+    reachable_soils = [state.has(f"_reached_{region_name}", player) for region_name in GASHA_SPOT_REGIONS]
+    return all([
+        reachable_soils.count(True) >= count,  # Enough soils are reachable
+        state.has("Gasha Seed", player, count),  # Enough seeds to plant
+        any([
+            # Can actually harvest the nut, and get kills
+            ooa_has_sword(state, player),
+        ])
+    ])
 # Self-locking items helper predicates ##########################################
 
 def ooa_self_locking_item(state: CollectionState, player: int, region_name: str, item_name: str):

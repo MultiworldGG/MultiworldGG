@@ -1,7 +1,5 @@
 from .Constants import *
 
-BASE_LOCATION_ID = 27022002000
-
 LOCATIONS_DATA = {
     ##########################################
     "Forest of Time: Impa's Gift": {
@@ -39,6 +37,17 @@ LOCATIONS_DATA = {
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tingleUpgrade",
     },
+    "Forest of Time: Tingle Secret": {
+        "region_id": "balloon guy's secret",
+        "vanilla_item": "Filler Item",
+        "flag_byte": 0xc779,
+        "bit_mask": 0x40,
+        "secret_location": True,
+        "conditional": True,
+        "room": 0x0079,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "tingleSecret",
+    },
     ##########################################
     "Lynna City: Chest Past Burnt Tree": {
         "region_id": "lynna city chest",
@@ -61,7 +70,7 @@ LOCATIONS_DATA = {
     },
     "Lynna City: Shop Item #2": {
         "region_id": "lynna shop",
-        "vanilla_item": "Bombs (10)",
+        "vanilla_item": "Flute",
         "flag_byte": 0xc643,
         "room": 0x025e,
         "map_tile": 0x68,
@@ -73,7 +82,7 @@ LOCATIONS_DATA = {
     },
     "Lynna City: Shop Item #3": {
         "region_id": "lynna shop",
-        "vanilla_item": "Flute",
+        "vanilla_item": "Gasha Seed",
         "flag_byte": 0xc643,
         "room": 0x025e,
         "map_tile": 0x68,
@@ -82,11 +91,12 @@ LOCATIONS_DATA = {
         "scouting_mask": 0x10,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "lynnaShop3",
+        "conditional": True,
     },
     # -----
     "Lynna City: Hidden Shop Item #1": {
         "region_id": "hidden shop",
-        "vanilla_item": "Gasha Seed",
+        "vanilla_item": "Bombs (10)",
         "flag_byte": 0xc642,
         "room": 0x027e,
         "bit_mask": 0x01,
@@ -108,7 +118,7 @@ LOCATIONS_DATA = {
     },
     "Lynna City: Hidden Shop Item #3": {
         "region_id": "hidden shop",
-        "vanilla_item": "Biggoron's Sword", # That's not the Ring box you're looking for.
+        "vanilla_item": "Bombchus (10)", # That's not the Ring box you're looking for.
         "flag_byte": 0xc642,
         "room": 0x027e,
         "bit_mask": 0x08,
@@ -125,14 +135,54 @@ LOCATIONS_DATA = {
         "map_tile": 0x57,
         "collect": COLLECT_CHEST,
     },
+    "Lynna City: Mayor Plen's Secret": {
+        "region_id": "mayor plen's secret",
+        "vanilla_item": "Filler Item",
+        "flag_byte": 0xc8f8,
+        "conditional": True,
+        "secret_location": True,
+        "room": 0x03f8,
+        "map_tile": 0x57,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "plenSecret",
+    },
     "Lynna City: Vasu's Gift": {
         "region_id":"vasu's gift",
         "vanilla_item": "Friendship Ring",
-        "flag_byte": 0xc615,
+        "flag_byte": 0xc615, # Uses wObtainedRingBox at bank 00 which is why we aren't using a room flag here.
         "bit_mask": 0x01,
         "room": 0x02ee,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "vasuGift",
+    },
+    "Lynna City: Vasu's Slayers Ring Gift": {
+        "region_id":"vasu's slayers ring gift",
+        "vanilla_item": "Slayer's Ring",
+        "flag_byte": 0xc7ee,
+        "conditional": True,
+        "bit_mask": 0x01,
+        "room": 0x02ee,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "vasuSlayersRingGift",
+    },
+    "Lynna City: Vasu's Rupee Ring Gift": {
+        "region_id":"vasu's rupee ring gift",
+        "vanilla_item": "Rupee Ring",
+        "flag_byte": 0xc7ee,
+        "conditional": True,
+        "bit_mask": 0x02,
+        "room": 0x02ee,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "vasuRupeeRingGift",
+    },
+    "Lynna City: Vasu's Victory Ring Gift": {
+        "region_id":"vasu's victory ring gift",
+        "vanilla_item": "Victory Ring",
+        "flag_byte": 0xc7ee,
+        "bit_mask": 0x04,
+        "room": 0x02ee,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "vasuVictoryRingGift",
     },
     "Lynna City: Maku Tree gift": {
         "region_id": "maku tree",
@@ -150,6 +200,17 @@ LOCATIONS_DATA = {
         "room": 0x02e7,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "mamamuYan",
+    },
+    "Lynna City: Mamamu Yan Secret": {
+        "region_id": "mamamu yan secret",
+        "vanilla_item": "Filler Item",
+        "flag_byte": 0xc7e7,
+        "conditional": True,
+        "secret_location": True,
+        "room": 0x02e7,
+        "bit_mask": 0x40,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "mamamuSecret",
     },
     "Lynna City: Comedian Trade": {
         "region_id": "lynna city comedian trade",
@@ -246,6 +307,16 @@ LOCATIONS_DATA = {
         "map_tile": 0x176,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "towerWorker",
+    },
+    "Black Tower (Present): Rescue Zelda": {
+        "region_id": "princess zelda rescue",
+        "vanilla_item": "Filler Item",
+        "flag_byte": 0xcae7,
+        "room": 0x7e7,
+        "conditional": True,
+        "secret_location": True,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "zeldaRescue",
     },
     "Black Tower (Past): Heart Piece": {
         "region_id": "black tower heartpiece",
@@ -362,6 +433,7 @@ LOCATIONS_DATA = {
         "scouting_mask": 0x10,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "syrupShop3",
+        "conditional": True,
     },
     "Yoll Graveyard: Poe's Gift": {
         "region_id": "graveyard poe trade",
@@ -386,6 +458,16 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc784,
         "room": 0x0084,
         "collect": COLLECT_CHEST,
+    },
+    "Fairies' Woods: Fairy Secret": {
+        "region_id": "fairies' woods secret",
+        "vanilla_item": "Heart Container",
+        "flag_byte": 0xc770,
+        "conditional": True,
+        "secret_location": True,
+        "room": 0x0070,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "fairySecret",
     },
     ##########################################
     "Deku Forest: Chest in Central Cave": {
@@ -449,12 +531,53 @@ LOCATIONS_DATA = {
         "symbolic_name": "hiddenTokayCave",
     },
     "Crescent Island (Past): Crystal Cave Chest": {
-        "region_id": "tokay crystal cave",
+        "region_id": "tokay crystal cave chest",
         "vanilla_item": "Gasha Seed",
         "flag_byte": 0xcaca,
         "room": 0x05ca,
         "map_tile": 0x1bb,
-        "collect": COLLECT_CHEST,
+        "collect": COLLECT_TOKAY_CRYSTAL_ROOM,
+    },
+    "Crescent Island (Past): Tokay's Stolen Shovel": {
+        "region_id": "tokay stolen shovel",
+        "vanilla_item": "Filler Item", # Originally you would get your shovel back, but that ain't progressive is it.
+        "flag_byte": 0xc8cb,
+        "room": 0x01cb,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "tokayShovel",
+    },
+    "Crescent Island (Past): Tokay's Stolen Sword": {
+        "region_id": "tokay stolen sword",
+        "vanilla_item": "Filler Item", # Originally the sword
+        "flag_byte": 0xcaca,
+        "bit_mask": 0x40,
+        "room": 0x05ca,
+        "collect": COLLECT_TOKAY_CRYSTAL_ROOM,
+        "symbolic_name": "tokaySword",
+    },
+    "Crescent Island (Past): Tokay's Stolen Satchel": {
+        "region_id": "tokay stolen satchel",
+        "vanilla_item": "Filler Item", # Originally the satchel
+        "flag_byte": 0xc8bb,
+        "room": 0x01bb,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "tokaySatchel",
+    },
+    "Crescent Island (Past): Tokay's Stolen Flippers": {
+        "region_id": "tokay stolen flippers",
+        "vanilla_item": "Filler Item", # Originally the flippers
+        "flag_byte": 0xcacc,
+        "room": 0x05cc,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "tokayFlippers",
+    },
+    "Crescent Island (Past): Tokay's Stolen Harp": {
+        "region_id": "tokay stolen harp",
+        "vanilla_item": "Filler Item", # Originally the flippers
+        "flag_byte": 0xc8da,
+        "room": 0x01da,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "tokayHarp",
     },
     "Crescent Island (Past): Bomb Cave Chest": {
         "region_id": "tokay bomb cave",
@@ -479,6 +602,17 @@ LOCATIONS_DATA = {
         "map_tile": 0x1bd,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "wildTokayGame",
+    },
+    "Crescent Island (Present): Wild Tokay Secret": {
+        "region_id": "wild tokay secret",
+        "vanilla_item": "Filler Item",
+        "flag_byte": 0xc7e5,
+        "conditional": True,
+        "secret_location": True,
+        "room": 0x02e5,
+        "map_tile": 0xbd,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "wildTokaySecret",
     },
     "Crescent Island (Past): Market Item #1": {
         "region_id": "tokay market 1",
@@ -514,6 +648,7 @@ LOCATIONS_DATA = {
     "Nuun Highlands: Southern Cave": {
         "region_id": "nuun highlands cave",
         "vanilla_item": "Light Ring L-1",
+        "id": 0xc7ec00,
         "flag_byte": [0xc7ec, 0xcab8, 0xc7f4],
         "room": [0x02ec, 0x05b8, 0x02f4], # Rick, Dim & Moosh respectively
         "map_tile": 0x37, 
@@ -528,9 +663,21 @@ LOCATIONS_DATA = {
         "symbolic_name": "maskSaleman",
     },
     ##########################################
+    "Symmetry Village: Sisters Secret": {
+        "region_id": "symmetry city secret",
+        "vanilla_item": "Bombchus (10)", # Ring box was a vanila item, but I am using bombchus as a placeholder.
+        "flag_byte": 0xcaf6,
+        "conditional": True,
+        "secret_location": True,
+        "room": 0x5f6,
+        "map_tile": 0x113,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "symmetrySecret",
+    },
     "Symmetry Village: Brothers": {
         "region_id": "symmetry city brother",
         "vanilla_item": "Cracked Tuni Nut",
+        "id": 0xc86e00,
         "flag_byte": [0xc86e, 0xc86f],
         "room": [0x036e, 0x036f],
         "map_tile": 0x104,
@@ -712,7 +859,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x28,
         "collect": COLLECT_CHEST,
     },
-    "Rolling Ridge (Present): Bush Cave Chest": {
+    "Rolling Ridge (Past): Bush Cave Chest": {
         "region_id": "ridge bush cave",
         "vanilla_item": "Rupees (100)",
         "flag_byte": 0xc81f, 
@@ -739,6 +886,18 @@ LOCATIONS_DATA = {
         "map_tile": 0x1d,
         "collect": COLLECT_TARGET_CART,
         "symbolic_name": "targetCart2",
+    },
+    "Rolling Ridge (Present): Troy's Secret": {
+        "region_id": "troy secret",
+        "vanilla_item": "Bombchus (10)",
+        "flag_byte": 0xcad8,
+        "bit_mask": 0x08,
+        "conditional": True,
+        "secret_location": True,
+        "room": 0x05d8,
+        "map_tile": 0x1d,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "troySecret",
     },
     "Rolling Ridge (Present): Big Bang Prize": {
         "region_id": "big bang game",
@@ -802,9 +961,20 @@ LOCATIONS_DATA = {
         "vanilla_item": "Lava Juice",
         "flag_byte": 0xc8e7,
         "room": 0x03e7,
-        "map_tile": 0x11d,
+        "bit_mask": 0x02,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "goronShootingGallery",
+    },
+    "Rolling Ridge (Past): Elder's Secret": {
+        "region_id": "elder secret",
+        "vanilla_item": "Filler Item",
+        "flag_byte": 0xc8e7,
+        "room": 0x03e7,
+        "conditional": True,
+        "secret_location": True,
+        "bit_mask": 0x04,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "elderSecret",
     },
     "Rolling Ridge (Past): Trade With Graceful Goron's Friend": {
         "region_id": "trade lava juice",
@@ -856,6 +1026,18 @@ LOCATIONS_DATA = {
         "collect": COLLECT_TOUCH,
         "symbolic_name": "kingZora",
     },
+    "Zora Village (Present): King Zora's Secret": {
+        "region_id": "king zora's secret",
+        "vanilla_item": "Filler Item",
+        "flag_byte": 0xcaab,
+        "room": 0x05ab,
+        "bit_mask": 0x40,
+        "secret_location": True,
+        "conditional": True,
+        "map_tile": 0xa1,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "kingZoraSecret",
+    },
     "Zora Village (Present): Zora's Reward": {
         "region_id": "zora's reward",
         "vanilla_item": "Zora Scale",
@@ -879,9 +1061,22 @@ LOCATIONS_DATA = {
         "vanilla_item": "Fairy Powder",
         "flag_byte": 0xcae4,
         "room": 0x05e4,
+        "bit_mask": 0x01,
         "map_tile": 0x1a5,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "libraryPast",
+    },
+    "Eyeglass Island Library (Past): Old Man's Secret": {
+        "region_id": "library secret",
+        "vanilla_item": "Filler Item",
+        "flag_byte": 0xcae4,
+        "room": 0x05e4,
+        "bit_mask": 0x02,
+        "conditional": True,
+        "secret_location": True,
+        "map_tile": 0x1a5,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "librarySecret",
     },
     ##########################################
     "Zora Seas (Present): Southeast Island Chest": {
@@ -916,7 +1111,18 @@ LOCATIONS_DATA = {
         "room": 0x03ff,
         "map_tile": 0x1c7,
         "collect": COLLECT_CHEST,
-        "symbolic_name": "seaofstorm",
+        "symbolic_name": "seaofstormpast",
+    },
+    "Sea of Storms (Present): Underwater Cave": {
+        "region_id": "sea of storms present",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": 0xc8e8,
+        "room": 0x3e8,
+        "map_tile": 0xc7,
+        "secret_location": True,
+        "collect": COLLECT_CHEST,
+        "symbolic_name": "seaofstormpresent",
     },
     ##########################################
     "Sea of No Return: Chest Under Statue": {
@@ -1046,6 +1252,16 @@ LOCATIONS_DATA = {
         "collect": COLLECT_DROP,
         "symbolic_name": "d1GhiniDrop",
     },
+    "Spirit's Grave: Miniboss": {
+    	"region_id": "d1 miniboss",
+    	"vanilla_item": "Filler Item",
+    	"dungeon" : 1,
+        "flag_byte": 0xc918,
+        "conditional": True,
+        "room": 0x0418,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "d1Miniboss",
+    },
     "Spirit's Grave: Basement": {
     	"region_id": "d1 basement",
     	"vanilla_item": "Progressive Bracelet",
@@ -1122,6 +1338,16 @@ LOCATIONS_DATA = {
         "room": 0x0442,
         "collect": COLLECT_DROP,
         "symbolic_name": "d2StatuePuzzle",
+    },
+    "Wing Dungeon (1F): Miniboss": {
+    	"region_id": "d2 miniboss",
+    	"vanilla_item": "Filler Item",
+    	"dungeon" : 2,
+        "flag_byte": 0xc934,
+        "room": 0x0434,
+        "conditional": True,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "d2Miniboss",
     },
     "Wing Dungeon (B1F): Thwomp Shelf": {
     	"region_id": "d2 thwomp shelf",
@@ -1244,6 +1470,16 @@ LOCATIONS_DATA = {
         "collect": COLLECT_DROP,
         "symbolic_name": "d3MoldormDrop",
     },
+    "Moonlit Grotto (B1F): Miniboss": {
+    	"region_id": "d3 miniboss",
+    	"vanilla_item": "Filler Item", 
+    	"dungeon" : 3,
+        "flag_byte": 0xc94d,
+        "room": 0x044d,
+        "conditional": True,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "d3Miniboss",
+    },
     "Moonlit Grotto (B1F): East": {
     	"region_id": "d3 B1F east",
     	"vanilla_item": "Boss Key (Moonlit Grotto)",
@@ -1293,6 +1529,16 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc97a,
         "room": 0x047a,
         "collect": COLLECT_CHEST,
+    },
+    'Skull Dungeon (1F): Miniboss': {
+    	"region_id": "d4 miniboss",
+    	"vanilla_item": "Filler Item", 
+    	"dungeon" : 4,
+        "flag_byte": 0xc980,
+        "room": 0x0480,
+        "conditional": True,
+        "collect": COLLECT_TOUCH,
+        "symbolic_name": "d4Miniboss"
     },
     'Skull Dungeon (1F): Small Floor Puzzle': {
     	"region_id": "d4 small floor puzzle",
@@ -1368,6 +1614,16 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc9ad,
         "room": 0x04ad,
         "collect": COLLECT_CHEST,
+    },
+    "Crown Dungeon (1F): Miniboss": {
+    	"region_id": "d5 miniboss",
+    	"vanilla_item": "Filler Item", 
+    	"dungeon" : 5,
+        "flag_byte": 0xc9b4,
+        "room": 0x04b4,
+        "collect": COLLECT_TOUCH,
+        "conditional": True,
+        "symbolic_name": "d5Miniboss"
     },
     "Crown Dungeon (1F): Eyes Chest": {
     	"region_id": "d5 eyes chest",
@@ -1451,6 +1707,16 @@ LOCATIONS_DATA = {
         "symbolic_name": "d5Boss",
     },
     ##########################################
+    "Mermaid's Cave (Present): Miniboss": {
+    	"region_id": "d6 miniboss",
+    	"vanilla_item": "Filler Item", 
+    	"dungeon" : 6,
+        "flag_byte": 0xca12,
+        "room": 0x0512,
+        "collect": COLLECT_TOUCH,
+        "conditional": True,
+        "symbolic_name": "d6Miniboss"
+    },
     "Mermaid's Cave (Present): Vire Chest": {
     	"region_id": "d6 present vire chest",
     	"vanilla_item": "Progressive Flippers",
@@ -1606,8 +1872,18 @@ LOCATIONS_DATA = {
         "room": 0x054e,
         "collect": COLLECT_CHEST,
     },
-    "Jabu-Jabu's Belly (1F): Cane/Diamond Puzzle": {
-    	"region_id": "d7 cane/diamond puzzle",
+    "Jabu-Jabu's Belly (1F): Miniboss": {
+    	"region_id": "d7 miniboss",
+    	"vanilla_item": "Filler Item", 
+    	"dungeon" : 7,
+        "flag_byte": 0xca4a,
+        "room": 0x74a,
+        "collect": COLLECT_TOUCH,
+        "conditional": True,
+        "symbolic_name": "d7Miniboss"
+    },
+    "Jabu-Jabu's Belly (1F): Cane and Diamond Puzzle": {
+    	"region_id": "d7 cane and diamond puzzle",
     	"vanilla_item": "Small Key (Jabu-Jabu's Belly)",
     	"dungeon" : 7,
         "flag_byte": 0xca53,
@@ -1795,6 +2071,16 @@ LOCATIONS_DATA = {
         "room": 0x05a4,
         "collect": COLLECT_CHEST,
     },
+    'Ancient Tomb (B2F): Miniboss': {
+    	"region_id": "d8 miniboss",
+    	"vanilla_item": "Filler Item", 
+    	"dungeon" : 8,
+        "flag_byte": 0xca82,
+        "room": 0x0582,
+        "collect": COLLECT_TOUCH,
+        "conditional": True,
+        "symbolic_name": "d8Miniboss"
+    },
     'Ancient Tomb (B1F): Floor Puzzle': {
     	"region_id": "d8 floor puzzle",
     	"vanilla_item": "Progressive Bracelet",
@@ -1837,6 +2123,7 @@ LOCATIONS_DATA = {
         "collect": COLLECT_POOF,
         "symbolic_name": "d8Boss",
     },
+    ##########################################
     "Linked Hero's Cave (1F): Pots Puzzle": {
         "region_id": "d11 pots puzzle 1",
         "vanilla_item": "Small Key (Linked Hero's Cave)",
@@ -1982,57 +2269,65 @@ LOCATIONS_DATA = {
         "region_id": "d1 boss",
         "flag_byte": 0xc911,
         "vanilla_item": "Eternal Spirit",
-        "randomized": False,
-        "collect": COLLECT_TOUCH,
+        "room": 0x0411,
+        "essence": True,
+        "symbolic_name": "essenceD1",
     },
     "Wing Dungeon: Essence": {
         "region_id": "d2 boss",
         "flag_byte": 0xc938,
         "vanilla_item": "Ancient Wood",
-        "randomized": False,
-        "collect": COLLECT_TOUCH,
+        "room": 0x0438,
+        "essence": True,
+        "symbolic_name": "essenceD2",
     },
     "Moonlit Grotto: Essence": {
         "region_id": "d3 boss",
         "flag_byte": 0xc949,
         "vanilla_item": "Echoing Howl",
-        "randomized": False,
-        "collect": COLLECT_TOUCH,
+        "room": 0x0449,
+        "essence": True,
+        "symbolic_name": "essenceD3",
     },
     "Skull Dungeon: Essence": {
         "region_id": "d4 boss",
         "flag_byte": 0xc969,
         "vanilla_item": "Burning Flame",
-        "randomized": False,
-        "collect": COLLECT_TOUCH,
+        "room": 0x0469,
+        "essence": True,
+        "symbolic_name": "essenceD4",
     },
     "Crown Dungeon: Essence": {
         "region_id": "d5 boss",
         "flag_byte": 0xc9b8,
         "vanilla_item": "Sacred Soil",
-        "randomized": False,
-        "collect": COLLECT_TOUCH,
+        "room": 0x04b8,
+        "essence": True,
+        "symbolic_name": "essenceD5",
     },
     "Mermaid's Cave: Essence": {
         "region_id": "d6 boss",
         "flag_byte": 0xca37,
         "vanilla_item": "Lonely Peak",
-        "randomized": False,
-        "collect": COLLECT_TOUCH,
+        "room": 0x0537,
+        "essence": True,
+        "symbolic_name": "essenceD6",
     },
     "Jabu-Jabu's Belly: Essence": {
         "region_id": "d7 boss",
         "flag_byte": 0xca61,
         "vanilla_item": "Rolling Sea",
-        "randomized": False,
-        "collect": COLLECT_TOUCH,
+        "room": 0x0561,
+        "essence": True,
+        "symbolic_name": "essenceD7",
     },
     "Ancient Tomb: Essence": {
         "region_id": "d8 boss",
         "flag_byte": 0xca77,
         "vanilla_item": "Falling Star",
-        "randomized": False,
-        "collect": COLLECT_TOUCH,
+        "room": 0x0577,
+        "essence": True,
+        "symbolic_name": "essenceD8",
     },
 
     ##########################################
@@ -2040,6 +2335,7 @@ LOCATIONS_DATA = {
     "Lynna City: Seed Tree": {
         "region_id": "south lynna tree",
         "local": True,
+        "id": 0xc77800,
         "flag_byte": [0xc778, 0xc878],
         "room": [0x0078, 0x0178],
         "collect": COLLECT_TOUCH,
@@ -2096,10 +2392,141 @@ LOCATIONS_DATA = {
     "Zora Village: Seed Tree": {
         "region_id": "zora village tree",
         "local": True,
+        "id": 0xc7c100,
         "flag_byte": [0xc7c1, 0xc8c1],
         "room": [0x00c1, 0x01c1],
         "collect": COLLECT_TOUCH,
         "symbolic_name": "zoraTree",
     },
+    ##########################################
+    
+    "Gasha Nut #1": {
+        "region_id": "gasha tree 1",
+        "vanilla_item": "Piece of Heart",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C00,
+        "room": [],
+    },
+    "Gasha Nut #2": {
+        "region_id": "gasha tree 2",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C01,
+        "room": [],
+    },
+    "Gasha Nut #3": {
+        "region_id": "gasha tree 3",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C02,
+        "room": [],
+    },
+    "Gasha Nut #4": {
+        "region_id": "gasha tree 4",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C03,
+        "room": [],
+    },
+    "Gasha Nut #5": {
+        "region_id": "gasha tree 5",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C04,
+        "room": [],
+    },
+    "Gasha Nut #6": {
+        "region_id": "gasha tree 6",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C05,
+        "room": [],
+    },
+    "Gasha Nut #7": {
+        "region_id": "gasha tree 7",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C06,
+        "room": [],
+    },
+    "Gasha Nut #8": {
+        "region_id": "gasha tree 8",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C07,
+        "room": [],
+    },
+    "Gasha Nut #9": {
+        "region_id": "gasha tree 9",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C08,
+        "room": [],
+    },
+    "Gasha Nut #10": {
+        "region_id": "gasha tree 10",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C09,
+        "room": [],
+    },
+    "Gasha Nut #11": {
+        "region_id": "gasha tree 11",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C0A,
+        "room": [],
+    },
+    "Gasha Nut #12": {
+        "region_id": "gasha tree 12",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C0B,
+        "room": [],
+    },
+    "Gasha Nut #13": {
+        "region_id": "gasha tree 13",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C0C,
+        "room": [],
+    },
+    "Gasha Nut #14": {
+        "region_id": "gasha tree 14",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C0D,
+        "room": [],
+    },
+    "Gasha Nut #15": {
+        "region_id": "gasha tree 15",
+        "vanilla_item": "Filler Item",
+        "conditional": True,
+        "flag_byte": None,
+        "id": 0xC64C0E,
+        "room": [],
+    },
+    #"Gasha Nut #16": {
+    #    "region_id": "gasha tree 16",
+    #    "vanilla_item": "Filler Item",
+    #    "conditional": True,
+    #    "flag_byte": None,
+    #    "id": 0xC6490F,
+    #    "room": [],
+    #},
     ##########################################
 }

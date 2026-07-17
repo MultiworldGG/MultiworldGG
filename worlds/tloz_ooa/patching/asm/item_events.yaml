@@ -77,12 +77,7 @@
     ret
 
 09//checkEssencePostSavedWaifu: |
-    push bc
-    ld bc,$3800 # present
-    call compareRoom
-    pop bc
-    ret nz
-    call getThisRoomFlags
+    ld a,($c738) ; Maku Tree Room flags
     bit 7,a
     ret z
     ld a,(wEssencesObtained)
@@ -214,7 +209,13 @@
 0c/67df/: db jumpifglobalflagset,GLOBALFLAG_WON_FIRST_DANCE # goron dance present
 0c/6859/: db jumpifglobalflagset,GLOBALFLAG_WON_FIRST_DANCE # ^
 0c/6982/: db jumpifglobalflagset,GLOBALFLAG_WON_FIRST_DANCE # ^
-0c/7dff/: db jumpifglobalflagset,GLOBALFLAG_GOT_SEACHART # tingle 1
+
+# rework order of tingle a bit for better secret handling
+0c/7dff/: |
+  db jumpifroomflagset,$40
+  dw $7eb4
+  db jumpifglobalflagset,GLOBALFLAG_GOT_SEACHART
+  dw $7e35
 
 0b//mapleTradeHandle: |
     ld a,GLOBALFLAG_TRADE_MAPLE

@@ -22,7 +22,7 @@
 
 # fairy queen cutscene: just fade back in after the fairy leaves the
 # screen, and play the long "puzzle solved" sound.
-0b//skipFairyQueenCutscene: |
+38//skipFairyQueenCutscene: |
     call fadeInFromWhite
     xor a
     ld (wMenuDisabled),a
@@ -32,7 +32,14 @@
     ld a,$30
     call setGlobalFlag
     ret
-0b/7954/: call skipFairyQueenCutscene
+
+0b//skipFairyQueenCutscene_head: |
+    ld e,$38
+    ld hl,skipFairyQueenCutscene
+    call interBankCall
+    ret
+
+0b/7954/: call skipFairyQueenCutscene_head
 
 # edit out most of the nayru cutscene on maku tree screen.
 0c/56e3/: dw $e856 # reverse endian addr

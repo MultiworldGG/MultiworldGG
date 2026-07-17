@@ -1,7 +1,6 @@
 
 
-01//dungeonShuffleOpenFlagTable: |
-    dwbe $0501, drownLinkOnD7Exit # D7 Exit
+17//dungeonShuffleOpenFlagTable: |
     dwbe $0003, setD4EntranceFlag # D4 entrance
     dwbe $0004, setD5EntranceFlag # D5 entrance
     dwbe $0303, setD6PastEntranceFlag # D6 Past entrance
@@ -9,61 +8,73 @@
     dwbe $0200, setD7EntranceFlag # D7 entrance
     db $ff
 
-# Attempting to enter Jabu without mermaid suit will cancel the warp and instead
+17//underwaterRoomWarpTable: /include underwaterWarpTable
+
+# Attempting to enter underwater warp without mermaid suit will cancel the warp and instead
 # cause Link to drown. (Could happen with dungeon entrance randomization.)
 # Credit to Stewmat
-01//drownLinkOnD7Exit: |
+17//drownLinkOnUnderwaterWarp: |
   ld a,TREASURE_MERMAID_SUIT
   call checkTreasureObtained
-  jr c,@passedUnderwaterCheck
-  ; Is leading to jabu. Replace the warp tile with a deep water tile.
+  ret c
+  ; Is leading to underwater map. Replace the warp tile with a deep water tile.
   ld h,$cf
   ld a,($FF8D)
   ld l,a
-  ld (hl),$fc
-  jp $619f ; noWarpInitiated
-  @passedUnderwaterCheck:
-  jp $6163 ; initiateWarp
+  ld (hl),$fc # TILEINDEX_DEEP_WATER
+  ld a, $1 
+  ld (wWarpCheck),a #warp failed
+  ret 
 
-01//setD4EntranceFlag: |
+17//setD4EntranceFlag: |
   ld a,GLOBALFLAG_TUNI_NUT_PLACED
-  call setGlobalFlag
-  ld e,$3f
-  ld hl,$7c95 # setSymmetryVillageRoomFlags
-  call interBankCall
-  jp $6163 ; initiateWarp
+  call checkGlobalFlag
+  ret nz
+  ; Is leading to non-saved symetry city. Replace the warp tile with a lava tile.
+  ld h,$cf
+  ld a,($FF8D)
+  ld l,a
+  ld (hl),$61 # TILEINDEX_DUNGEON_LAVA_1
+  ld a, $1
+  ld (wWarpCheck),a
+  ret
 
-01//setD5EntranceFlag: |
+17//setD5EntranceFlag: |
   ld hl, $c70a
   set 7,(hl)
-  jp $6163 ; initiateWarp
+  ret
 
-01//setD6PastEntranceFlag: |
+17//setD6PastEntranceFlag: |
   ld hl, $c80f
   set 7,(hl)
-  jp $6163 ; initiateWarp
+  ret
 
-01//setD6PresentEntranceFlag: |
+
+17//setD6PresentEntranceFlag: |
   ld hl, $c80e
   set 7,(hl)
-  jp $6163 ; initiateWarp
+  ret
 
-01//setD7EntranceFlag: |
+17//setD7EntranceFlag: |
+  call drownLinkOnUnderwaterWarp # Check the drowning first
+  ret nz
   ld hl, $c790
   set 1,(hl)
-  jp $6163 ; initiateWarp
+  ret
 
-01//checkDungeonWarp_body: |
+17//checkDungeonWarp_body: |
   ld a,(wWarpDestGroup)
   and $7f
   ld b,a
   ld a,(wWarpDestRoom)
   ld c,a
+
+  # ---- Check the flag table ----
   ld hl, dungeonShuffleOpenFlagTable
   @loopStart:
   ldi a,(hl)
   cp $ff 
-  jp z,$6163 ; Not a warp that we are interested in, initiateWarp
+  jp z,@loop2Init ; Not a warp that we are interested in, jump to the second part
   cp b ; Only checking the group number here
   ldi a,(hl)
   jr nz,@loopEnd
@@ -78,18 +89,58 @@
   inc hl
   jr @loopStart
 
+  # ---- Check the underwater table ----
+  @loop2Init:
+  ld hl, underwaterRoomWarpTable
+  @loop2Start:
+  ldi a,(hl)
+  cp $ff 
+  ret z ; Not a warp that we are interested in, go back and call initiateWarp
+  cp b ; Only checking the group number here
+  ldi a,(hl)
+  jr nz,@loop2Start
+  cp c ; Actually checking the "warp dest index" not the room index
+  jr nz,@loop2Start
+  jp drownLinkOnUnderwaterWarp
+
+01//checkDungeonWarp_neck: |
+  ld e,$17
+  ld hl,checkDungeonWarp_body
+  call interBankCall
+  ld a,(wWarpCheck) 
+  cp $1
+  jp nz,$6163 # Warp confirmed (initiateWarp)
+  # ---- abort potential transition ----
+  ld a,$01
+  ld (wScrollMode),a
+  ld a,$02
+  ld (wScreenTransitionState),a # transition state forced to 2
+  xor a
+  ld (wScreenTransitionState2),a
+  ld (wScreenTransitionState3),a
+  # ---- abort transition ----
+  jp $619f   # Warp aborted (noWarpInitiated)
+
 01//checkDungeonWarp_head : |
   ld ($cc49),a
-  jp checkDungeonWarp_body
+  jp checkDungeonWarp_neck
 
 01/6160/ : jp checkDungeonWarp_head
-01/61cf/ : jp checkDungeonWarp_body
+01/61cf/ : jp checkDungeonWarp_neck
+
+01//resetWarpCheck : |
+  ld a,$0
+  ld (wWarpCheck),a
+  ld a,($cc5c) # removed line
+  ret
+
+01/4105/: call resetWarpCheck
 
 
 # prevent surfacing from underwater without the mermaid suit. this is only
 # relevant for the sea of no return if entrances are unrandomized.
 05//checkPreventSurface: |
-    ld a,(wDisableTransitions)
+    ld a,(wDisableScreenTransitions)
     or a
     ret nz
     ld a,($c6a3) # byte in wObtainedTreasureFlags

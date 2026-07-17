@@ -259,7 +259,7 @@ Data("US0830 Dozer_1"),
 Data("US0860 Excavator_1"),
 Data("US0232 Police_2"),
 Data("US0830 Dozer_2"),
-Data("US0860 Excavator_2"),
+Data("US0860 Excavator_2", valid=False),
 Data("DL019600_Name_29", valid=False),
 ]
 

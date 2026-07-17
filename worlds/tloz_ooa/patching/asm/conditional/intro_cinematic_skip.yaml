@@ -1,3 +1,8 @@
 # skip capcom screen and starting cinematic (putting the addresses for title screen and restart first)
 03/4cf9/: |
   db $88,$4d,$1b,$4d
+
+# Removing check for Intro input
+00/0939/ : | 
+  nop
+  nop

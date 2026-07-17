@@ -1160,18 +1160,16 @@ def get_treasure_and_npc_locations(player: int, options: CrystalProjectOptions |
         #Treasure chests
         #Lone Chest Rampart
         LocationData(LONE_CHEST_RAMPART_AP_REGION, CASTLE_RAMPARTS_DISPLAY_NAME + " Chest - Tucked beside eastern turret", 1547 + treasure_index_offset), #(443, 206, -378) Money chest
-        #Peak Ramparts
-        LocationData(PEAK_RAMPARTS_AP_REGION, CASTLE_RAMPARTS_DISPLAY_NAME + " Chest - Below the crystal", 2908 + treasure_index_offset, tags=[PURPLE_CHEST_LOCATION_GROUP]), #(407, 228, -383) Castle Ramparts map chest
-        LocationData(PEAK_RAMPARTS_AP_REGION, CASTLE_RAMPARTS_DISPLAY_NAME + " Chest - Jump down from eastern save point", 2742 + treasure_index_offset), #(440, 227, -386) Conquest chest
-        LocationData(PEAK_RAMPARTS_AP_REGION, CASTLE_RAMPARTS_DISPLAY_NAME + " Chest - Jump down from western save point", 2741 + treasure_index_offset), #(369, 227, -386) Rune Sword chest
+        LocationData(CENTER_RAMPARTS_AP_REGION, CASTLE_RAMPARTS_DISPLAY_NAME + " Chest - Below the crystal", 2908 + treasure_index_offset, tags=[PURPLE_CHEST_LOCATION_GROUP]), #(407, 228, -383) Castle Ramparts map chest
+        LocationData(EAST_RAMPARTS_AP_REGION, CASTLE_RAMPARTS_DISPLAY_NAME + " Chest - Jump down from eastern save point", 2742 + treasure_index_offset), #(440, 227, -386) Conquest chest
+        LocationData(WEST_RAMPARTS_AP_REGION, CASTLE_RAMPARTS_DISPLAY_NAME + " Chest - Jump down from western save point", 2741 + treasure_index_offset), #(369, 227, -386) Rune Sword chest
         #Technically Castle Sequoia but they're in a locked room only accessible from Peak Ramparts
-        LocationData(PEAK_RAMPARTS_AP_REGION, CASTLE_SEQUOIA_DISPLAY_NAME + " Chest - Locked Ramparts storage room 1", 2758 + treasure_index_offset, lambda state: logic.has_key(state, RAMPART_KEY)), #(375, 232, -452) (Skums) Decapitator chest
-        LocationData(PEAK_RAMPARTS_AP_REGION, CASTLE_SEQUOIA_DISPLAY_NAME + " Chest - Locked Ramparts storage room 2", 3657 + treasure_index_offset, lambda state: logic.has_key(state, RAMPART_KEY), tags=[PURPLE_CHEST_LOCATION_GROUP]), #(371, 231, -457) (Skums) Castle Sequoia map chest
+        LocationData(WEST_RAMPARTS_AP_REGION, CASTLE_SEQUOIA_DISPLAY_NAME + " Chest - Locked Ramparts storage room 1", 2758 + treasure_index_offset, lambda state: logic.has_key(state, RAMPART_KEY) and logic.has_horizontal_movement(state) and logic.has_vertical_movement(state)), #(375, 232, -452) (Skums) Decapitator chest
+        LocationData(WEST_RAMPARTS_AP_REGION, CASTLE_SEQUOIA_DISPLAY_NAME + " Chest - Locked Ramparts storage room 2", 3657 + treasure_index_offset, lambda state: logic.has_key(state, RAMPART_KEY) and logic.has_horizontal_movement(state) and logic.has_vertical_movement(state), tags=[PURPLE_CHEST_LOCATION_GROUP]), #(371, 231, -457) (Skums) Castle Sequoia map chest
 
         #NPCs
-        #Peak Ramparts
-        LocationData(PEAK_RAMPARTS_AP_REGION, CASTLE_RAMPARTS_DISPLAY_NAME + " NPC - Western Gold above spikes", 2843 + npc_index_offset, tags=[ORE_LOCATION_GROUP]), #(354, 231, -429) Ingot
-        LocationData(PEAK_RAMPARTS_AP_REGION, CASTLE_RAMPARTS_DISPLAY_NAME + " NPC - Eastern Gold above spikes", 2842 + npc_index_offset, tags=[ORE_LOCATION_GROUP]), #(458, 231, -436) Ore
+        LocationData(WEST_RAMPARTS_AP_REGION, CASTLE_RAMPARTS_DISPLAY_NAME + " NPC - Western Gold above spikes", 2843 + npc_index_offset, tags=[ORE_LOCATION_GROUP]), #(354, 231, -429) Ingot
+        LocationData(EAST_RAMPARTS_AP_REGION, CASTLE_RAMPARTS_DISPLAY_NAME + " NPC - Eastern Gold above spikes", 2842 + npc_index_offset, lambda state: logic.has_horizontal_movement(state), tags=[ORE_LOCATION_GROUP]), #(458, 231, -436) Ore
 
         #The Chalice of Tar
         #Treasure chests

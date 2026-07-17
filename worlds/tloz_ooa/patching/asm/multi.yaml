@@ -6,6 +6,25 @@
     push de
     push hl
     
+    ; Don't spawn the item if Link is too close to the room border, preventing any text-warp from occuring
+    ld a,(wRoomEdgeY)
+    ld b,a
+    ld a,(w1Link.yh)
+    cp TEXT_WARP_PROTECTION_MARGIN
+    jr c,@done
+    add a,TEXT_WARP_PROTECTION_MARGIN
+    sub b
+    jr nc,@done
+    
+    ld a,(wRoomEdgeX)
+    ld b,a
+    ld a,(w1Link.xh)
+    cp TEXT_WARP_PROTECTION_MARGIN
+    jr c,@done
+    add a,TEXT_WARP_PROTECTION_MARGIN
+    sub b
+    jr nc,@done
+
     ld a,(wMenuDisabled)
     and a
     jr nz,@done

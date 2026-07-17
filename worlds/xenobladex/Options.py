@@ -1,5 +1,6 @@
 from dataclasses import asdict, dataclass
-from Options import DeathLink, DefaultOnToggle, Choice, PerGameCommonOptions
+from Options import DeathLink, DefaultOnToggle, Choice, ExcludeLocations, LocalItems, NonLocalItems, Range, \
+    OptionGroup, PerGameCommonOptions, PriorityLocations, StartHints, StartInventory, StartLocationHints, Visibility
 
 
 class CemuChoice(Choice):
@@ -661,9 +662,47 @@ class IncludeEnemyBookLocations(DefaultOnToggle):
     display_name = "Include Enemy Book Locations"
 
 
+class EnemyBookThreshold(CemuChoice):
+    """Sets the required kills to unlock a enemy location. White dot in enemy book appears at 3 for normal enemies.
+    Uniques are fixed at 1"""
+    display_name = "Enemy Book Threshold"
+    default = 3
+    option_discovery = 0
+    option_1 = 1
+    option_2 = 2
+    option_3 = 3
+    cemu_pack = "AP"
+    cemu_option = "EnemyBookThreshold"
+    cemu_selection_names = [
+        "discovery",
+        "1",
+        "2",
+        "3",
+    ]
+
+
 class IncludeLocationLocations(DefaultOnToggle):
     """Allows you to get items from locations and adds those locations to the pool"""
     display_name = "Include Location Locations"
+
+
+class IncludeQuestLocations(DefaultOnToggle):
+    """Allows you to receive items from quests and adds those locations to the pool"""
+    display_name = "Include Quest Locations"
+
+
+class IncludeShopLocations(CemuChoice):
+    """Allows you to receive items from the shop and adds those locations to the pool"""
+    display_name = "Include Shop Locations"
+    default = 1
+    option_off = 0
+    option_on = 1
+    cemu_pack = "AP"
+    cemu_option = "Shops"
+    cemu_selection_names = [
+        "disable",
+        "on",
+    ]
 
 
 class IncludeGroundArmor(CemuChoice):
@@ -673,7 +712,7 @@ class IncludeGroundArmor(CemuChoice):
     option_off = 0
     option_on = 1
     cemu_pack = "AP"
-    cemu_option = "AMR"
+    cemu_option = "GroundArmor"
     cemu_selection_names = [
         "disable",
         "on",
@@ -687,7 +726,7 @@ class IncludeGroundWeapons(CemuChoice):
     option_off = 0
     option_on = 1
     cemu_pack = "AP"
-    cemu_option = "WPN"
+    cemu_option = "GroundWeapons"
     cemu_selection_names = [
         "disable",
         "on",
@@ -701,7 +740,7 @@ class IncludeGroundAugments(CemuChoice):
     option_off = 0
     option_on = 1
     cemu_pack = "AP"
-    cemu_option = "AUG"
+    cemu_option = "GroundAugments"
     cemu_selection_names = [
         "disable",
         "on",
@@ -715,7 +754,7 @@ class IncludeSkellArmor(CemuChoice):
     option_off = 0
     option_on = 1
     cemu_pack = "AP"
-    cemu_option = "SKAMR"
+    cemu_option = "SkellArmor"
     cemu_selection_names = [
         "disable",
         "on",
@@ -729,7 +768,7 @@ class IncludeSkellWeapons(CemuChoice):
     option_off = 0
     option_on = 1
     cemu_pack = "AP"
-    cemu_option = "SKWPN"
+    cemu_option = "SkellWeapons"
     cemu_selection_names = [
         "disable",
         "on",
@@ -743,19 +782,121 @@ class IncludeSkellAugments(CemuChoice):
     option_off = 0
     option_on = 1
     cemu_pack = "AP"
-    cemu_option = "SKAUG"
+    cemu_option = "SkellAugments"
     cemu_selection_names = [
         "disable",
         "on",
     ]
 
 
+class IncludeImportantItems(CemuChoice):
+    """Allows you to receive important items and adds those items to the pool. Increases generation time"""
+    display_name = "Include Important Items"
+    default = 0
+    option_off = 0
+    option_on = 1
+    cemu_pack = "AP"
+    cemu_option = "ImportantItems"
+    cemu_selection_names = [
+        "disable",
+        "on",
+    ]
+
+
+class IncludeBlueprints(CemuChoice):
+    """Allows you to receive blueprints/schematics as items and adds those items to the pool. Has no logic currently"""
+    display_name = "Include Blueprints"
+    default = 0
+    option_off = 0
+    option_on = 1
+    cemu_pack = "AP"
+    cemu_option = "Blueprints"
+    cemu_selection_names = [
+        "disable",
+        "on",
+    ]
+
+
+class LogicLevelSteps(Range):
+    """Defines the individual progress each level logic item provides. Increases generation time a lot.
+     To disable set to 0"""
+    display_name = "Logic Level Steps"
+    default = 5
+    range_start = 0
+    range_end = 20
+
+
+class LogicLevelOvercap(Range):
+    """Adds the specified number of level logic items to increase the chance of progressing"""
+    display_name = "Logic Level Overcap"
+    default = 0
+    range_start = 0
+    range_end = 20
+
+
+class HiddenLocalItems(LocalItems):
+    __doc__ = LocalItems.__doc__
+    visibility = Visibility.template | Visibility.spoiler
+
+
+class HiddenNonLocalItems(NonLocalItems):
+    __doc__ = NonLocalItems.__doc__
+    visibility = Visibility.template | Visibility.spoiler
+
+
+class HiddenStartInventory(StartInventory):
+    __doc__ = StartInventory.__doc__
+    visibility = Visibility.template | Visibility.spoiler
+
+
+class HiddenStartHints(StartHints):
+    __doc__ = StartHints.__doc__
+    visibility = Visibility.template | Visibility.spoiler
+
+
+class HiddenStartLocationHints(StartLocationHints):
+    __doc__ = StartLocationHints.__doc__
+    visibility = Visibility.template | Visibility.spoiler
+
+
+class HiddenExcludeLocations(ExcludeLocations):
+    __doc__ = ExcludeLocations.__doc__
+    visibility = Visibility.template | Visibility.spoiler
+
+
+class HiddenPriorityLocations(PriorityLocations):
+    __doc__ = PriorityLocations.__doc__
+    visibility = Visibility.template | Visibility.spoiler
+
+
 @dataclass
 class XenobladeXOptions(PerGameCommonOptions):
-    clp: IncludeCollectopediaLocations
-    ebk: IncludeEnemyBookLocations
-    loc: IncludeLocationLocations
+    # Game
     death_link: DeathLink
+
+    # Locations
+    clp: IncludeCollectopediaLocations
+    loc: IncludeLocationLocations
+    # shp: IncludeShopLocations
+    # qst: IncludeQuestLocations
+    ebk: IncludeEnemyBookLocations
+    enemy_book_threshold: EnemyBookThreshold
+
+    # Items
+    amr: IncludeGroundArmor
+    wpn: IncludeGroundWeapons
+    aug: IncludeGroundAugments
+    skwpn: IncludeSkellWeapons
+    skamr: IncludeSkellArmor
+    skaug: IncludeSkellAugments
+    impit: IncludeImportantItems
+    # blp: IncludeBlueprints
+
+    # Logic
+    logic_level_steps: LogicLevelSteps
+    logic_level_overcap: LogicLevelOvercap
+
+    # Graphic packs
     enemy_aggro: EnemyAggro
     enemy_stats: EnemyStats
     damage_divisor: DamageDivisor
@@ -787,14 +928,76 @@ class XenobladeXOptions(PerGameCommonOptions):
     moon_jump_height: MoonJumpHeight
     moon_jump_type: MoonJumpType
     run_forrest_run: RunForrestRun
-    amr: IncludeGroundArmor
-    wpn: IncludeGroundWeapons
-    aug: IncludeGroundAugments
-    skwpn: IncludeSkellWeapons
-    skamr: IncludeSkellArmor
-    skaug: IncludeSkellAugments
+
+    # Removed
+    local_items: HiddenLocalItems  # type: ignore[override]
+    non_local_items: HiddenNonLocalItems  # type: ignore[override]
+    start_inventory: HiddenStartInventory  # type: ignore[override]
+    start_hints: HiddenStartHints  # type: ignore[override]
+    start_location_hints: HiddenStartLocationHints  # type: ignore[override]
+    exclude_locations: HiddenExcludeLocations  # type: ignore[override]
+    priority_locations: HiddenPriorityLocations  # type: ignore[override]
 
 
 def generate_cemu_options(options: XenobladeXOptions) -> list[dict[str, str]]:
     return [asdict(XenobladeXOption(option.cemu_pack, option.cemu_option, option.cemu_selection_names[option.value]))
             for option in asdict(options).values() if isinstance(option, CemuChoice)]
+
+
+option_groups: list[OptionGroup] = [
+    OptionGroup("Locations", [
+        IncludeCollectopediaLocations,
+        IncludeLocationLocations,
+        # IncludeQuestLocations,
+        # IncludeShopLocations,
+        IncludeEnemyBookLocations,
+        EnemyBookThreshold,
+    ]),
+    OptionGroup("Items", [
+        IncludeGroundArmor,
+        IncludeGroundWeapons,
+        IncludeGroundAugments,
+        IncludeSkellWeapons,
+        IncludeSkellArmor,
+        IncludeSkellAugments,
+        IncludeImportantItems,
+        # IncludeBlueprints,
+    ]),
+    OptionGroup("Logic", [
+        LogicLevelSteps,
+        LogicLevelOvercap,
+    ]),
+    OptionGroup("Graphic packs", [
+        EnemyAggro,
+        EnemyStats,
+        DamageDivisor,
+        DamageMultiplicator,
+        QteAuto,
+        QteSpeed,
+        QteSkell,
+        CollectionRange,
+        ArmorSlotUpgrades,
+        ArmorTraitsUpgrades,
+        LvPointsModifier,
+        BattlePointsModifier,
+        BladePointsModifier,
+        FrontierNavMiraniumFrequency,
+        FrontierNavMiraniumQuantity,
+        FrontierNavMoneyFrequency,
+        FrontierNavMoneyQuantity,
+        FrontierNavResourcesFrequency,
+        FrontierNavResourcesQuantity,
+        FrontierNavNoMiraniumCap,
+        EquipAlternateRatio,
+        EquipChestCount,
+        EquipQuality,
+        EquipSlots,
+        BrokenEquip,
+        MaterialsDropRatio,
+        TreasureQuality,
+        MoonJumpWidth,
+        MoonJumpHeight,
+        MoonJumpType,
+        RunForrestRun,
+    ])
+]

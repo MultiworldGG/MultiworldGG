@@ -1,9 +1,27 @@
 from .LogicPredicates import *
+from ..Entrances import *
 
 
 def make_overworld_logic(player: int, options: OracleOfAgesOptions):
+    gasha_connections = [
+        ["Menu", "gasha tree 1", False, lambda state: ooa_can_harvest_gasha(state, player, 1)],
+        ["gasha tree 1", "gasha tree 2", False, lambda state: ooa_can_harvest_gasha(state, player, 2)],
+        ["gasha tree 2", "gasha tree 3", False, lambda state: ooa_can_harvest_gasha(state, player, 3)],
+        ["gasha tree 3", "gasha tree 4", False, lambda state: ooa_can_harvest_gasha(state, player, 4)],
+        ["gasha tree 4", "gasha tree 5", False, lambda state: ooa_can_harvest_gasha(state, player, 5)],
+        ["gasha tree 5", "gasha tree 6", False, lambda state: ooa_can_harvest_gasha(state, player, 6)],
+        ["gasha tree 6", "gasha tree 7", False, lambda state: ooa_can_harvest_gasha(state, player, 7)],
+        ["gasha tree 7", "gasha tree 8", False, lambda state: ooa_can_harvest_gasha(state, player, 8)],
+        ["gasha tree 8", "gasha tree 9", False, lambda state: ooa_can_harvest_gasha(state, player, 9)],
+        ["gasha tree 9", "gasha tree 10", False, lambda state: ooa_can_harvest_gasha(state, player, 10)],
+        ["gasha tree 10", "gasha tree 11", False, lambda state: ooa_can_harvest_gasha(state, player, 11)],
+        ["gasha tree 11", "gasha tree 12", False, lambda state: ooa_can_harvest_gasha(state, player, 12)],
+        ["gasha tree 12", "gasha tree 13", False, lambda state: ooa_can_harvest_gasha(state, player, 13)],
+        ["gasha tree 13", "gasha tree 14", False, lambda state: ooa_can_harvest_gasha(state, player, 14)],
+        ["gasha tree 14", "gasha tree 15", False, lambda state: ooa_can_harvest_gasha(state, player, 15)],
+       # ["gasha tree 15", "gasha tree 16", False, lambda state: ooa_can_harvest_gasha(state, player, 16)], #activate once sea of storms present plot is figured out
+    ]
     labrynna_logic = [
-        
         # FOREST OF TIME
         #######################################
         ["Menu", "forest of time", False, None],
@@ -32,7 +50,10 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["lynna city", "mayor plen's house", False, lambda state: ooa_has_long_hook(state, player)],
         ["lynna city", "lynna city comedian trade", False, lambda state: state.has("Cheesy Mustache", player)],
         ["lynna city", "mamamu yan trade", False, lambda state: state.has("Doggie Mask", player)],
-        ["lynna city", "vasu's gift", False, None],
+
+        ["lynna city", OUTSIDE_TAG + "vasu's shop", True, None],
+        [INSIDE_TAG + "vasu's shop", "vasu's gift", False, None],
+        [INSIDE_TAG + "vasu's shop", "vasu's victory ring gift", False, None],
 
         # LYNNA VILLAGE
         #######################################
@@ -72,7 +93,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             state.has("Island Chart", player)
         ])],
         ["rafton's raft", "rafton trade", False, lambda state: state.has("Magic Oar", player)],
-        ["lynna village", "d0 entrance", True, lambda state: ooa_can_remove_dirt(state, player, False)],
+        ["lynna village", OUTSIDE_TAG + "d0", True, lambda state: ooa_can_remove_dirt(state, player, False)],
 
         # MAKU TREE
         #######################################
@@ -82,7 +103,10 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["maku seed", "veran beaten", False, lambda state: all([
             ooa_can_use_mystery_seeds(state, player),
             ooa_has_switch_hook(state, player),
-            ooa_has_bombs(state, player),
+            any([
+                ooa_has_bombs(state, player),
+                ooa_has_bombchus(state, player)
+            ]),
             any([
                 ooa_has_sword(state, player),
                 ooa_can_punch(state, player)
@@ -95,7 +119,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
                 ooa_has_seedshooter(state, player),
                 ooa_can_use_ember_seeds(state, player, False),
                 ooa_can_use_mystery_seeds(state, player),
-                ooa_has_feather(state, player)
+                ooa_has_feather(state, player) # Normally you don't need a feather to defeat ganon, even on casual rules, but it came up on mashy's recent stream that the feather should be marked as a requirement for beating ganon.
             ]),
             all([
                 ooa_option_medium_logic(state, player),
@@ -174,7 +198,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             ooa_has_rupees(state, player, 400)
         ])],
         ["graveyard door", "graveyard poe trade", False, lambda state: ooa_has_bracelet(state, player)],
-        ["graveyard door", "d1 entrance", False, None],
+        ["graveyard door", OUTSIDE_TAG + "d1", False, None],
 
         # FAIRIES' WOODS
         #######################################
@@ -193,7 +217,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ])],
         ["deku forest", "fairies' woods chest", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ["fairies' woods", "happy mask salesman trade", False, lambda state: state.has("Tasty Meat", player)],
-        ["deku forest", "d2 present entrance", False, lambda state: ooa_can_go_back_to_present(state, player)],
+        #["deku forest", "d2 present entrance", False, lambda state: ooa_can_go_back_to_present(state, player)],
 
         # DEKU FOREST
         #######################################
@@ -227,45 +251,109 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["deku forest", "deku forest soldier", False, lambda state: all([
             ooa_can_use_mystery_seeds(state, player)
         ])],
-        ["deku forest", "d2 past entrance", False, lambda state: ooa_has_bombs(state, player)],
+        ["deku forest", OUTSIDE_TAG + "d2", False, lambda state: any([
+            ooa_has_bombs(state, player),
+            ooa_has_bombchus(state, player)
+        ])],
 
         # CRESCENT PAST
         #######################################
-        ["lynna village", "crescent past west", True, lambda state: ooa_can_swim_deepwater(state, player, False)],
-        ["rafton's raft", "crescent past west", False, None],
-        ["crescent present west", "crescent past west", False, lambda state: ooa_can_go_back_to_present(state, player)],
-        ["crescent past west", "tokay crystal cave", False, lambda state: all([
-            any([
-                ooa_has_shovel(state, player),
-                ooa_can_break_crystal(state, player),                    
-            ]),
-            ooa_can_jump_1_wide_pit(state, player, False)
+        ["lynna village", "crescent past waters", True, lambda state: ooa_can_swim_deepwater(state, player, False)],
+        ["rafton's raft", "crescent past waters", False, None],
+        ["crescent past waters", "crescent past west", False, None],
+        ["crescent past waters", "crescent past east", False, None],
+        ["crescent past waters", "tokay stolen harp", False, None],
+        
+        ["crescent past west", "tokay stolen shovel", False, None],
+        ["crescent past west", "tokay stolen sword", False, lambda state: any([
+            ooa_has_shovel(state, player),
+            ooa_can_break_crystal(state, player),                    
         ])],
+        ["tokay stolen sword", "tokay crystal cave chest", False, lambda state: ooa_can_jump_1_wide_pit(state, player, False)],
         ["lynna village", "hidden tokay cave", True, lambda state: ooa_can_dive(state, player)],
+        ["crescent past west", "crescent present west", False, lambda state: ooa_can_go_back_to_present(state, player)],
+        ["crescent present west", "crescent past west", False, lambda state: ooa_can_open_portal(state, player)],
+        
         ["crescent past west", "crescent past east", False, lambda state: ooa_can_break_bush(state, player)],
         ["crescent present west", "crescent past east", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ["crescent past east", "tokay chicken hut", False, lambda state: ooa_has_bracelet(state, player)],
-        ["tokay chicken hut", "tokay bomb cave", False, lambda state: ooa_has_bombs(state, player)],
+        ["tokay chicken hut", "tokay bomb cave", False, lambda state: ooa_has_explosives(state, player)],
         ["crescent past east", "wild tokay game", False, lambda state: all([
             ooa_has_bracelet(state, player),
-            ooa_has_bombs(state, player),
+            ooa_has_explosives(state, player),
         ])],
         ["crescent past east", "tokay pot cave", False, lambda state: ooa_has_long_hook(state, player)],
         ["crescent past east", "tokay market 1", False, lambda state: ooa_has_mystery_seeds(state, player)],
         ["crescent past east", "tokay market 2", False, lambda state: ooa_has_scent_seeds(state, player)],
 
+        ["crescent past east", "crescent past middle", False, lambda state: any([
+            ooa_has_bracelet(state, player),
+            ooa_can_jump_1_wide_pit(state, player, False),
+            ooa_can_switch_past_and_present(state, player),
+        ])],
+        
+        # This one tunnel
+        ["crescent past middle", "tokay stolen harp", False, lambda state: any([
+            ooa_has_switch_hook(state, player),
+            all([
+                any([
+                    ooa_can_jump_1_wide_liquid(state, player, False),
+                    ooa_can_swim(state, player, False),
+                ]),
+                ooa_has_noble_sword(state, player),
+                ooa_option_medium_logic(state, player),
+            ]),
+            all([
+                ooa_can_jump_1_wide_pit(state, player, False),
+                ooa_has_bracelet(state, player),
+                ooa_can_swim(state, player, False),
+            ]),
+            
+        ])],
+        ["tokay stolen harp", "crescent past middle", False, lambda state: all([
+            ooa_can_break_pot(state, player),
+            any([
+                ooa_can_jump_1_wide_liquid(state, player, False),
+                ooa_can_swim(state, player, False),
+            ]),            
+        ])],
+        # /This one tunnel
+
+        ["crescent past middle", "crescent past middle cave", False, lambda state: ooa_has_explosives(state, player)],
+        ["crescent past middle cave", "tokay stolen flippers", False, lambda state: any([
+            ooa_can_swim(state, player, False),
+            all([
+                ooa_has_bombs(state, player), # Not sure this work with bombchus...
+                ooa_can_jump_1_wide_liquid(state, player, False)
+            ])
+        ])],
+
+        ["crescent past middle cave", "tokay stolen satchel", False, lambda state: all([
+            ooa_can_swim(state, player, False),
+            ooa_has_bracelet(state, player)
+        ])],
+        ["tokay stolen satchel", "crescent past middle cave", False, None],
+
+        ["crescent present east", "tokay stolen satchel", False, lambda state: ooa_can_switch_past_and_present(state, player)],
+
         # CRESCENT PRESENT
         #######################################
         ["lynna city", "crescent present west", True, lambda state: ooa_can_swim_deepwater(state, player, True)],
-        ["crescent past west", "crescent present west", False, lambda state: any([
-            ooa_can_go_back_to_present(state, player),
+        ["tokay stolen harp", "crescent present west", False, lambda state: any([
+            ooa_can_go_back_to_present(state, player), # I mean, it's not necessary as it's already covered by the line above, but it make the logic more clear
             all([
                 ooa_has_shovel(state, player),
                 ooa_can_open_portal(state, player)
             ])
         ])],
-        ["crescent present west", "d3 entrance", False, None],
+
+        ["crescent present west", OUTSIDE_TAG + "d3", False, None],
+
         ["lynna city", "under crescent island", True, lambda state: ooa_can_dive(state, player)],
+        
+        ["crescent past east", "crescent present east", True, lambda state: ooa_can_open_portal(state, player)],
+        ["crescent past west", "crescent present east", False, lambda state: ooa_can_go_back_to_present(state, player)],
+
         ["crescent present east", "tokay chef trade", False, lambda state: state.has("Stink Bag", player)],
         ["crescent past west", "crescent island tree", False, lambda state: all([
             any([
@@ -284,8 +372,6 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
                 ])
             ]),
         ])],
-        ["crescent past east", "crescent present east", True, lambda state: ooa_can_open_portal(state, player)],
-        ["crescent past west", "crescent present east", False, lambda state: ooa_can_go_back_to_present(state, player)],
 
         # NUUN
         #######################################
@@ -326,7 +412,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             ])
         ])],
         ["symmetry present", "symmetry city tree", False, lambda state: ooa_can_harvest_tree(state, player, False)],
-        ["symmetry present", "d4 entrance", False, lambda state: all([
+        ["symmetry present", OUTSIDE_TAG + "d4", False, lambda state: all([
             state.has("Tuni Nut", player),
             any([
                 ooa_can_go_back_to_present(state, player),
@@ -421,7 +507,10 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             ooa_has_bracelet(state, player)
             ])
         ])],
-        ["ridge west present", "ridge west heartpiece", False, lambda state: ooa_has_bombs(state, player)],
+        ["ridge west present", "ridge west heartpiece", False, lambda state: any([
+            ooa_has_bombs(state, player),
+            ooa_has_bombchus(state, player)
+        ])],
         ["goron elder", "ridge west past", False, None],
         ["ridge west past", "ridge west past base", False, None],
         ["ridge west past", "ridge west tree", False, lambda state: ooa_can_harvest_tree(state, player, False)],
@@ -445,7 +534,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         #######################################
         ["defeat great moblin", "ridge upper present", False, lambda state: ooa_can_jump_2_wide_pit(state, player, False)],
         ["ridge upper past", "ridge upper present", False, lambda state: ooa_can_go_back_to_present(state, player)],
-        ["ridge upper present", "d5 entrance", False, lambda state: state.has("Crown Key", player)],
+        ["ridge upper present", OUTSIDE_TAG + "d5", False, lambda state: state.has("Crown Key", player)],
         ["ridge mid present", "ridge NE cave present", True, None],
         ["ridge base present", "ridge upper present", False, lambda state: ooa_can_jump_3_wide_pit(state, player, False)],
         ["ridge base past west", "ridge upper past", True, lambda state: all([
@@ -465,7 +554,10 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             ])
 
         ])],
-        ["ridge upper past", "bomb goron head", False, lambda state: ooa_has_bombs(state, player)],
+        ["ridge upper past", "bomb goron head", False, lambda state: any([
+            ooa_has_bombs(state, player),
+            ooa_has_bombchus(state, player)
+        ])],
         ["ridge upper past", "ridge upper heartpiece", False, lambda state: all([
             ooa_can_go_back_to_present(state, player),
             ooa_can_break_bush(state, player)
@@ -476,7 +568,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["ridge upper present", "ridge base present", False, None],
         ["ridge base past east", "ridge base present", False, lambda state: ooa_can_go_back_to_present(state, player)],
         ["ridge base past west", "ridge base present", False, lambda state: ooa_can_go_back_to_present(state, player)],
-        ["ridge base present", "d6 present entrance", False, lambda state: state.has("Old Mermaid Key", player)],
+        ["ridge base present", OUTSIDE_TAG + "d6 present", False, lambda state: state.has("Old Mermaid Key", player)],
         ["ridge base present", "pool in d6 entrance", False, lambda state: ooa_can_dive(state, player)],
         ["ridge base present", "trade rock brisket", False, lambda state: state.has("Rock Brisket", player) and state.has("Brother Emblem", player)],
         ["ridge base present", "first goron dance", False, lambda state: ooa_has_rupees(state, player, 10)],
@@ -495,15 +587,18 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
                 ooa_can_switch_past_and_present(state, player)
             ])
         ])],
-        ["ridge base past west", "ridge base bomb past", False, lambda state: ooa_has_bombs(state, player)],
+        ["ridge base past west", "ridge base bomb past", False, lambda state: any([
+            ooa_has_bombs(state, player),
+            ooa_has_bombchus(state, player)
+        ])],
         ["ridge base past west", "ridge diamonds past", False, lambda state: ooa_has_switch_hook(state, player)],
-        ["ridge base past west", "d6 past entrance", False, lambda state: all([
+        ["ridge base past west", OUTSIDE_TAG + "d6 past", False, lambda state: all([
             ooa_can_swim(state, player, False),
             state.has("Mermaid Key", player)
         ])],
         #########
         ["ridge base past west", "ridge base past east", True, lambda state: ooa_can_swim(state, player, False)],
-        ["ridge base past east", "first goron dance", False, lambda state: ooa_has_rupees(state, player, 10)],
+        #["ridge base past east", "first goron dance", False, lambda state: ooa_has_rupees(state, player, 10)], # temporarly removed as it could create a softlock
         ["ridge base past east", "goron dance, with letter", False, lambda state: ooa_has_rupees(state, player, 10) and state.has("Letter of Introduction", player)],
         ["ridge base past east", "trade goron vase", False, lambda state: state.has("Goron Vase", player) and state.has("Brother Emblem", player)],
         #["ridge base past east", "rolling ridge past old man", False, lambda state: ooa_can_use_ember_seeds(state, player, False)],
@@ -518,7 +613,9 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             ])
         ])],
         ["ridge diamonds past", "ridge mid past", False, None],
+        ["ridge upper past", "ridge mid past", False, None],
         ["ridge mid past", "ridge mid present", False, lambda state: ooa_can_go_back_to_present(state, player)],
+        ["ridge mid past", "ridge move vine seed", False, lambda state: ooa_has_switch_hook(state, player)],
         ["ridge mid present", "target carts", True, lambda state: all([
             ooa_has_switch_hook(state, player),
             state.has("_access_cart", player),
@@ -545,19 +642,21 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             state.has("Brother Emblem", player),
             ooa_can_jump_2_wide_pit(state, player, False),
         ])],
-        ["ridge mid past", "ridge move vine seed", False, lambda state: ooa_has_switch_hook(state, player)],
+
         ["target carts", "goron shooting gallery", False, lambda state: all([
             ooa_can_open_portal(state, player),
             ooa_has_bracelet(state, player),
         ])],
         ["ridge mid present", "goron shooting gallery", False, lambda state: ooa_can_switch_past_and_present(state, player)],
         ["goron shooting gallery", "goron shooting gallery price", False, lambda state: ooa_has_sword(state, player)],
-        ["ridge mid past", "ridge east tree", False, lambda state: any([
+        ["ridge mid past", "ridge east tree", False, lambda state: all([
             ooa_can_harvest_tree(state, player, False),
-            all([
-                ooa_option_medium_logic(state, player),
-                ooa_can_warp_using_gale_seeds(state, player),
-            ])
+            ooa_option_medium_logic(state, player),
+            ooa_can_warp_using_gale_seeds(state, player),
+        ])],
+        ["ridge mid present", "ridge east tree", False, lambda state: any([
+            ooa_can_harvest_tree(state, player, False),
+            ooa_can_switch_past_and_present(state, player),
         ])],
         ["goron shooting gallery", "ridge east tree", False, lambda state: ooa_can_harvest_tree(state, player, False)],
         ["ridge mid past", "trade lava juice", False, lambda state: state.has("Lava Juice", player)],
@@ -576,7 +675,10 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["zora village", "zora village present", False, None],
         ["zora village", "zora palace chest", False, None],
         ["zora village", "zora NW cave", False, lambda state: all([
-            ooa_has_bombs(state, player),
+            any([
+                ooa_has_bombs(state, player),
+                ooa_has_bombchus(state, player)
+            ]),
             ooa_has_glove(state, player),
         ])],
         ["zora village", "fairies' coast chest", False, None],
@@ -586,7 +688,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ["zora village", "zora king gift", False, lambda state: all([
             state.has("King Zora's Potion", player)
         ])],
-        ["zora king gift", "d7 entrance", False, lambda state: all([
+        ["zora king gift", OUTSIDE_TAG + "d7", False, lambda state: all([
             state.has("Fairy Powder", player),
         ])],
         ["zora village", "fisher's island cave", False, lambda state: ooa_has_long_hook(state, player)],
@@ -599,11 +701,14 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             state.has("Zora Scale", player),
         ])],
         ["piratian captain", "sea of storms past", False, None],
-        ["crescent past west", "d8 entrance", False, lambda state: all([
+        ["crescent past waters", OUTSIDE_TAG + "d8", False, lambda state: all([
             state.has("Tokay Eyeball", player),
             ooa_can_break_pot(state, player),
             ooa_can_dive(state, player),
-            ooa_has_bombs(state, player),
+            any([
+                ooa_has_bombs(state, player),
+                ooa_has_bombchus(state, player)
+            ]),
             ooa_can_jump_1_wide_pit(state, player, False),
             ooa_can_kill_normal_enemy(state, player),
             any([
@@ -621,13 +726,160 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
                 ])
             ]),
         ])],
-        ["d8 entrance", "sea of no return", False, lambda state: ooa_has_glove(state, player)],
+        [OUTSIDE_TAG + "d8", "sea of no return", False, lambda state: ooa_has_glove(state, player)],
+
+        
+        #GASHA PLOT LOGIC
+        ##################
+        
+        #Past Gasha Plots
+        ["crescent past waters", "crescent past spot", False, lambda state: all([
+            ooa_has_shovel(state, player)
+        ])],
+        ["symmetry past", "talus lake past spot", False, lambda state: all([
+            ooa_can_switch_past_and_present(state, player),
+            ooa_has_bracelet(state, player)
+        ])],
+        ["restoration wall heartpiece", "talus peak past spot", False, lambda state: all([ #the map still refers to here as talus peak, this is the one accessible right out of D2
+            ooa_has_shovel(state, player),
+            ooa_has_bracelet(state, player)
+        ])],
+        ["zora village", "zora village past spot", False, lambda state: ooa_can_break_bush(state, player)],
+        ["lynna village", "lynna village toilet spot", False, None],
+        ["lynna village", "south shore past spot", False, lambda state: all([
+            ooa_has_shovel(state, player),
+            ooa_can_jump_1_wide_pit(state, player, False),
+            any([
+                ooa_can_swim(state, player, False),
+                ooa_can_jump_2_wide_liquid(state, player)
+            ]),
+        ])],
+        ["ridge west past base", "ridge west base spot", False,lambda state: ooa_can_break_bush(state, player)],
+        ["ridge upper present", "ridge upper past spot", False, lambda state: all([
+            ooa_has_shovel(state, player),
+            any([
+                all([
+                    ooa_can_switch_past_and_present(state, player),
+                    ooa_can_break_bush(state, player, False)
+                    ]),
+                all([
+                    ooa_can_open_portal(state, player),
+                    ooa_has_bracelet(state, player)
+                ]),
+            ]),
+        ])],
+
+        #Present Gasha locations
+        ["yoll graveyard", "yoll graveyard spot", False, None],
+        ["talus peaks", "talus peak present spot", False, lambda state: all([
+            ooa_can_break_bush(state, player, False),
+            ooa_can_switch_past_and_present(state, player)
+        ])],
+        ["deku forest", "fairies woods spot", False, lambda state: all([
+            ooa_can_break_bush(state, player, False),
+            ooa_can_switch_past_and_present(state, player)
+        ])],
+        
+        ["nuun (ricky)", "nuun highlands top", False, lambda state: any([
+            ooa_can_summon_ricky(state, player),
+            ooa_can_go_back_to_present(state, player),
+            all([
+                # Can break bush 1 tile after a holes
+                ooa_can_jump_1_wide_pit(state, player, False),
+                any([
+                    ooa_has_sword(state, player),
+                    ooa_has_switch_hook(state, player),
+                    all([
+                        # Consumables need at least medium logic, since they need a good knowledge of the game
+                        # not to be frustrating
+                        ooa_option_medium_logic(state, player),
+                        any([
+                            ooa_has_bombs(state, player, 2),
+                            ooa_has_bombchus(state, player),
+                            (ooa_has_seedshooter(state, player) and ooa_can_use_ember_seeds(state, player, False)),
+                            (ooa_has_seedshooter(state, player) and ooa_has_gale_seeds(state, player)),
+                        ])
+                    ]),
+                ]),
+            ])
+        ])],
+        ["nuun (moosh)", "nuun highlands top", False, lambda state: any([
+            ooa_can_summon_moosh(state, player),
+            ooa_can_go_back_to_present(state, player),
+            all([
+                ooa_can_break_bush(state, player),
+                ooa_can_jump_3_wide_pit(state, player, False),
+            ])
+        ])],
+        ["nuun (dimitri)", "nuun highlands top", False, lambda state: any([
+            ooa_can_summon_dimitri(state, player),
+            ooa_can_go_back_to_present(state, player),
+            all([
+                state.has("Swimmer's Ring", player),
+                ooa_can_swim(state, player, False),
+                ooa_option_medium_logic(state, player)
+            ])
+        ])],
+        ["nuun highlands top", "nuun highlands spot", False, lambda state: ooa_has_shovel(state, player)],
+        ["ridge mid present", "ridge mid present spot", False, lambda state: ooa_has_bracelet(state, player)],
+        ["lynna city", "crescent present islet spot", False, lambda state: all([
+            ooa_can_break_bush(state, player),
+            ooa_can_swim_deepwater(state, player, True)
+        ])],
+        ["crescent present east", "crescent present vine spot", False, lambda state: ooa_has_bracelet(state, player)],
+
+
+
+        #["nuun (ricky)", "nuun highlands spot", False, lambda state: all([
+        #    ooa_can_jump_1_wide_pit(state, player, True),
+        #    any([
+        #        ooa_has_sword(state, player),
+        #        ooa_has_switch_hook(state, player),
+        #        all([
+        #           ooa_option_medium_logic(state, player),
+        #            any([
+        #                ooa_has_bombs(state, player, 2),
+        #                ooa_can_use_ember_seeds(state, player, False),
+        #                (ooa_has_seedshooter(state, player) and ooa_has_gale_seeds(state, player)),
+        #    ])
+        #])]
 
     ]
 
+    
+
+    for i in range(options.deterministic_gasha_locations):
+        labrynna_logic.append(gasha_connections[i])
+
     if options.linked_heros_cave.value > 0:
         labrynna_logic.extend([
-            ["lynna city", "d11 entrance", False, None]
+            ["lynna city", OUTSIDE_TAG + "d11", False, None]
+        ])
+
+    if options.secret_locations:
+        labrynna_logic.extend([
+            ["lynna city", "mayor plen's secret", False, None],
+            ["mamamu yan trade", "mamamu yan secret", False, lambda state: ooa_has_bracelet(state, player)],
+            ["zora's reward", "king zora's secret", False, None],
+            ["goron shooting gallery", "elder secret", False, None],
+            ["target carts", "troy secret", False, None],
+            ["library past", "library secret", False, None],
+            ["balloon guy's upgrade", "balloon guy's secret", False, None],
+            ["fairies' woods", "fairies' woods secret", False, None],
+            ["crescent present east", "wild tokay secret", False, lambda state: ooa_has_bracelet(state, player)],
+            ["symmetry past", "symmetry city secret", False, lambda state: state.has("Tuni Nut", player)],
+            ["lynna city", "princess zelda rescue", False, lambda state: ooa_has_feather(state, player)],
+            ["piratian captain", "sea of storms present", False, lambda state: ooa_can_go_back_to_present(state, player)],
+            ["sea of storms present", "sea of storms spot", False, lambda state: ooa_has_shovel(state, player)]
+        ])
+
+    if not options.vasu_ring_checks_requirement["disable_entirely"]:
+        labrynna_logic.extend([
+            [INSIDE_TAG + "vasu's shop", "vasu's rupee ring gift", False, lambda state: ooa_has_rupees(state, player, options.vasu_ring_checks_requirement["rupee_requirement_for_rupee_ring_check"])],
+            [INSIDE_TAG + "vasu's shop", "vasu's slayers ring gift", False, lambda state: all([
+                ooa_can_kill_normal_enemy(state, player),
+                ])
+            ]
         ])
 
     return labrynna_logic

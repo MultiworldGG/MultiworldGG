@@ -825,7 +825,7 @@ cx_Freeze.setup(
     ext_modules=cythonize("_speedups.pyx"),
     options={
         "build_exe": {
-            "packages": ["worlds", "kivy", "cymem", "websockets", "kivymd", "werkzeug"],
+            "packages": ["worlds", "kivy", "cymem", "websockets", "kivymd", "werkzeug", "cffi", "pycparser"], # cffi/pycparser relevant for pythonnet
             "includes": ["rule_builder.cached_world"],
             "excludes": ["Cython", "PySide2"],
             "zip_includes": [],

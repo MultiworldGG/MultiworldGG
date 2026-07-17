@@ -1,4 +1,4 @@
-{
+data = {
 	"rooms": {
 		"Treasure Room": {},
 		"Shop": {},
@@ -20,7 +20,7 @@
 		"Crawl Space": {"type": "crawl_space", "requires": {"or": [{"has": "We Need To Go Deeper!"}, {"has": "Ehwaz"}]}},
 		"I AM ERROR": {"type": "error_room", "requires": {"has": "Undefined"}},
 		"Planetarium": {"type": "planetarium", "requires": {"has": "Telescope Lens"}},
-		"Ultra Secret Room": {"type": "ultra_secret_room", "requires": {"or": [{"has": "Red Key"}, {"has": "Soul of Cain"}]}}
+		"Ultra Secret Room": {"type": "ultra_secret_room", "requires": {"or": [{"has": "Red Key"}, {"has": "Soul of Cain"}, {"has": "Cracked Key"}]}}
 	},
 	"items": [
 		"Angel Deal Item",
@@ -124,14 +124,16 @@
 		"Undefined": {"type": ["undefined"]},
 		"Telescope Lens": {"type": ["telescope_lens"]},
 		"Red Key": {"type": ["red_key"]},
-		"Soul of Cain": {"type": ["soul_of_cain"]}
+		"Soul of Cain": {"type": ["soul_of_cain"]},
+		"Cracked Key": {"type": ["cracked_key"]}
 	},
 	"regions": {
 		"Menu": {
-			"connects_to": ["Basement", "Cellar", "Burning Basement", "Dark Room&sacrifice_room_logic"]
+			"connects_to": ["Basement", "Cellar", "Burning Basement"]
 		},
 		"Chapter 1": {
 			"rooms": ["Vault", "Dice Room", "Bedroom", "Library", "Crawl Space", "I AM ERROR", "Planetarium", "Ultra Secret Room"],
+			"connects_to" : ["Dark Room&sacrifice_room_logic"],
 			"tracker_location": {
                 "x": 90,
                 "y": 265
@@ -139,6 +141,7 @@
 		},
 		"Chapter 2": {
 			"rooms": ["Vault", "Dice Room", "Bedroom", "Library", "Crawl Space", "I AM ERROR", "Planetarium", "Ultra Secret Room"],
+			"connects_to" : ["Dark Room&sacrifice_room_logic"],
 			"tracker_location": {
                 "x": 380,
                 "y": 265
@@ -146,6 +149,7 @@
 		},
 		"Chapter 3": {
 			"rooms": ["Vault", "Dice Room", "Bedroom", "Library", "Crawl Space", "I AM ERROR", "Planetarium", "Ultra Secret Room"],
+			"connects_to" : ["Dark Room&sacrifice_room_logic"],
 			"tracker_location": {
                 "x": 670,
                 "y": 265
@@ -153,6 +157,7 @@
 		},
 		"Chapter 4": {
 			"rooms": ["Vault", "Dice Room", "Library", "Crawl Space", "I AM ERROR", "Planetarium&planetarium_chapter_four", "Ultra Secret Room"],
+			"connects_to" : ["Dark Room&sacrifice_room_logic"],
 			"tracker_location": {
                 "x": 960,
                 "y": 85
@@ -269,11 +274,10 @@
 			"requires": {
 				"or": [
 					{"has": "Womb"},
-					{"has": "We Need To Go Deeper!&trapdoor_logic"},
-					{"has": "Ewahz&trapdoor_logic"},
-					{"has": "Undefined&error_room_logic"},
-					{"has": "Soul of Cain&error_room_logic"},
-					{"has": "Red Key&error_room_logic"}
+					{"hasIfOption": {"has" : "We Need To Go Deeper!", "options": [("trapdoor_logic", True), ("crawl_space", 3)]}},
+					{"hasIfOption": {"has" : "Ehwaz", "options": [("trapdoor_logic", True), ("crawl_space", 4)]}},
+					{"hasIfOption": {"has" : "Undefined", "options": [("error_room_logic", True), ("error_room", 3)]}},
+					{"hasIfOption": {"has" : "Red Key", "options": [("error_room_logic", True), ("ultra_secret_room", 3)]}}
 					]},
 			"tracker_location": {
                 "x": 935,
@@ -320,9 +324,8 @@
 			"requires": {
 				"or": [
 					{"has": "Cathedral"},
-					{"has": "Undefined&error_room_logic"},
-					{"has": "Soul of Cain&error_room_logic"},
-					{"has": "Red Key&error_room_logic"}
+					{"hasIfOption": {"has" : "Undefined", "options": [("error_room_logic", True), ("error_room", 3)]}},
+					{"hasIfOption": {"has" : "Red Key", "options": [("error_room_logic", True), ("ultra_secret_room", 3)]}}
 					]},
 			"tracker_location": {
                 "x": 1305,
@@ -336,11 +339,10 @@
 			"requires": {
 				"or": [
 					{"has": "Sheol"},
-					{"has": "We Need To Go Deeper!&trapdoor_logic"},
-					{"has": "Ewahz&trapdoor_logic"},
-					{"has": "Undefined&error_room_logic"},
-					{"has": "Soul of Cain&error_room_logic"},
-					{"has": "Red Key&error_room_logic"}
+					{"hasIfOption": {"has" : "We Need To Go Deeper!", "options": [("trapdoor_logic", True), ("crawl_space", 3)]}},
+					{"hasIfOption": {"has" : "Ehwaz", "options": [("trapdoor_logic", True), ("crawl_space", 4)]}},
+					{"hasIfOption": {"has" : "Undefined", "options": [("error_room_logic", True), ("error_room", 3)]}},
+					{"hasIfOption": {"has" : "Red Key", "options": [("error_room_logic", True), ("ultra_secret_room", 3)]}}
 					]},
 			"tracker_location": {
                 "x": 1305,
@@ -354,9 +356,8 @@
 			"requires": {
 				"or": [
 					{"has": "The Polaroid"},
-					{"has": "Undefined&error_room_logic"},
-					{"has": "Soul of Cain&error_room_logic"},
-					{"has": "Red Key&error_room_logic"}
+					{"hasIfOption": {"has" : "Undefined", "options": [("error_room_logic", True), ("error_room", 3)]}},
+					{"hasIfOption": {"has" : "Red Key", "options": [("error_room_logic", True), ("ultra_secret_room", 3)]}}
 					]},
 			"tracker_location": {
                 "x": 1595,
@@ -370,10 +371,9 @@
 			"requires": {
 				"or": [
 					{"has": "The Negative"},
-					{"has": "Undefined&error_room_logic"},
-					{"has": "Soul of Cain&error_room_logic"},
-					{"has": "Red Key&error_room_logic"},
-					{"has": "&sacrifice_room_logic"}
+					{"hasIfOption": {"has" : "Undefined", "options": [("error_room_logic", True), ("error_room", 3)]}},
+					{"hasIfOption": {"has" : "Red Key", "options": [("error_room_logic", True), ("ultra_secret_room", 3)]}},
+                    {"option": ("sacrifice_room_logic", True)}
 					]},
 			"tracker_location": {
                 "x": 1595,
@@ -385,7 +385,11 @@
 			"rooms": ["Boss Room"],
 			"connects_to": ["The Void"],
 			"boss": "Mega Satan",
-			"requires": {"has": "Key Pieces"},
+			"requires": {
+                "or": [
+                	{"has": "Key Pieces"},
+					{"hasIfOption": {"has" : "Soul of Cain", "options": [("soul_of_cain_logic", True), ("ultra_secret_room", 4)]}},
+				]},
 			"tracker_location": {
                 "x": 1760,
                 "y": 350
@@ -457,13 +461,8 @@
 			"rooms": ["Knife Piece"],
 			"requires": {
 				"and": [
-					{
-						"or": [
-							{"has": "Downpour"},
-							{"has": "Dross"}
-						]
-					},
-					{"has": "Knife Pieces"}
+					{"has": "Knife Pieces"},
+					{"reach": "Mirrorworld"}
 				]
 			},
 			"tracker_location": {
@@ -498,22 +497,10 @@
 			"connects_to": ["Chapter 4"],
 			"boss": "Mother",
 			"requires": {
-				"and": [
-					{"has": "Knife Pieces"},
-					{"or": [
-						{"has": "Dross"},
-						{"has": "Downpour"}
-					]},
-					{"or": [
-						{"has": "Mines"},
-						{"has": "Ashpit"}
-					]},
-					{"or": [
-						{"has": "Mausoleum"},
-						{"has": "Gehenna"}
-					]}
-				]
-			},
+                "or": [
+                	{"reach": "The Escape"},
+					{"hasIfOption": {"has" : "Soul of Cain", "options": [("soul_of_cain_logic", True), ("ultra_secret_room", 4)]}},
+				]},
 			"tracker_location": {
                 "x": 1015,
                 "y": 545
@@ -529,7 +516,8 @@
 					{"has": "Strange Door"},
 					{"or": [
 						{"has": "The Polaroid"},
-						{"has": "The Negative"}
+						{"has": "The Negative"},
+						{"hasIfOption": {"has" : "Soul of Cain", "options": [("soul_of_cain_logic", True), ("ultra_secret_room", 4)]}},
 					]}
 				]
 			},

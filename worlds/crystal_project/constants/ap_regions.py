@@ -308,9 +308,12 @@ SUMMONERS_TOWER_AP_REGION = "Summoner's Tower"
 RAMPART_ATOP_PORTCULLIS_AP_REGION = "Rampart Atop Portcullis"
 LONE_CHEST_RAMPART_AP_REGION = "Lone Chest Rampart"
 RAMPARTS_TALL_TALL_TRAVERSE_AP_REGION = "Ramparts Tall, Tall Traverse"
+EAST_RAMPARTS_AP_REGION = "East Ramparts"
+WEST_RAMPARTS_AP_REGION = "West Ramparts"
 PEAK_RAMPARTS_AP_REGION = "Peak Ramparts"
+CENTER_RAMPARTS_AP_REGION = "Center Ramparts"
 #West Ramparts save point
-PEAK_RAMPARTS_AP_REGION_TELEPORT_LOCATION = "360,234,-392"
+WEST_RAMPARTS_AP_REGION_TELEPORT_LOCATION = "360,234,-392"
 #Castle Ramparts end
 #The Chalice of Tar start
 CHALICE_RIM_AP_REGION = "The Rim of the Chalice of Tar"

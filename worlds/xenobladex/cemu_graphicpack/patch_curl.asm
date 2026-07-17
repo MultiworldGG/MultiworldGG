@@ -1,7 +1,9 @@
 [Archipelago_curl]
-moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
+moduleMatches = 0xF882D5CF, 0x218F6E07, 0x30B6E091 # 1.0.1E, 1.0.0E, 1.0.2U
 .origin = codecave
 
+curlPort:
+	.int    $curlPort
 _uploadHandle:
 	.int    0
 _uploadMultiHandle:
@@ -10,28 +12,46 @@ _downloadHandle:
 	.int    0
 _downloadMultiHandle:
 	.int    0
-_hostUpload:
-	.string "http://localhost:45872/locations"
-_hostDownload:
-	.string "http://localhost:45872/items"
+_curl_LC0:
+	.string "http://localhost:%d/locations"
+_curl_LC1:
+	.string "http://localhost:%d/items"
 _initCurl:
-	stwu r1,-32(r1)
+	stwu r1,-64(r1)
 	mflr r0
-	stw r0,36(r1)
-	stw r31,28(r1)
+	stw r0,68(r1)
+	stw r31,60(r1)
 	mr r31,r1
 	li r9,10002
 	stw r9,8(r31)
+	lis r9,curlPort@ha
+	lwz r9,curlPort@l(r9)
+	stw r9,12(r31)
 	bl import.nlibcurl.curl_easy_init
 	mr r10,r3
 	lis r9,_uploadHandle@ha
 	stw r10,_uploadHandle@l(r9)
-	lis r9,_uploadHandle@ha
-	lwz r10,_uploadHandle@l(r9)
-	lis r9,_hostUpload@ha
-	addi r5,r9,_hostUpload@l
-	lwz r4,8(r31)
+	addi r10,r31,16
+	lwz r6,12(r31)
+	lis r9,_curl_LC0@ha
+	addi r5,r9,_curl_LC0@l
+	li r4,40
 	mr r3,r10
+	crxor 6,6,6
+	lis r12,_after_curl_1__sprintf_s@ha
+	addi r12,r12,_after_curl_1__sprintf_s@l
+	mtlr r12
+	lis r12,__sprintf_s@ha
+	addi r12,r12,__sprintf_s@l
+	mtctr r12
+	bctr
+_after_curl_1__sprintf_s:
+	lis r9,_uploadHandle@ha
+	lwz r9,_uploadHandle@l(r9)
+	addi r10,r31,16
+	mr r5,r10
+	lwz r4,8(r31)
+	mr r3,r9
 	crxor 6,6,6
 	bl import.nlibcurl.curl_easy_setopt
 	bl import.nlibcurl.curl_multi_init
@@ -42,12 +62,27 @@ _initCurl:
 	mr r10,r3
 	lis r9,_downloadHandle@ha
 	stw r10,_downloadHandle@l(r9)
-	lis r9,_downloadHandle@ha
-	lwz r10,_downloadHandle@l(r9)
-	lis r9,_hostDownload@ha
-	addi r5,r9,_hostDownload@l
-	lwz r4,8(r31)
+	addi r10,r31,16
+	lwz r6,12(r31)
+	lis r9,_curl_LC1@ha
+	addi r5,r9,_curl_LC1@l
+	li r4,40
 	mr r3,r10
+	crxor 6,6,6
+	lis r12,_after_curl_2__sprintf_s@ha
+	addi r12,r12,_after_curl_2__sprintf_s@l
+	mtlr r12
+	lis r12,__sprintf_s@ha
+	addi r12,r12,__sprintf_s@l
+	mtctr r12
+	bctr
+_after_curl_2__sprintf_s:
+	lis r9,_downloadHandle@ha
+	lwz r9,_downloadHandle@l(r9)
+	addi r10,r31,16
+	mr r5,r10
+	lwz r4,8(r31)
+	mr r3,r9
 	crxor 6,6,6
 	bl import.nlibcurl.curl_easy_setopt
 	bl import.nlibcurl.curl_multi_init
@@ -55,7 +90,7 @@ _initCurl:
 	lis r9,_downloadMultiHandle@ha
 	stw r10,_downloadMultiHandle@l(r9)
 	nop
-	addi r11,r31,32
+	addi r11,r31,64
 	lwz r0,4(r11)
 	mtlr r0
 	lwz r31,-4(r11)
@@ -144,14 +179,14 @@ _WriteCallback:
 	addi r9,r9,1
 	mr r4,r9
 	mr r3,r8
-	lis r12,_after_curl_1__realloc@ha
-	addi r12,r12,_after_curl_1__realloc@l
+	lis r12,_after_curl_3__realloc@ha
+	addi r12,r12,_after_curl_3__realloc@l
 	mtlr r12
 	lis r12,__realloc@ha
 	addi r12,r12,__realloc@l
 	mtctr r12
 	bctr
-_after_curl_1__realloc:
+_after_curl_3__realloc:
 	mr r9,r3
 	stw r9,16(r31)
 	lwz r9,12(r31)
@@ -295,8 +330,14 @@ _cleanupCurl:
 
 
 [Archipelago_curl_V101E]
-moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
+moduleMatches = 0xF882D5CF, 0x218F6E07 # 1.0.1E, 1.0.0E
 
 __realloc = 0x03b1af20
+
+
+[Archipelago_curl_V102U]
+moduleMatches = 0x30B6E091 # 1.0.2U
+
+__realloc = 0x03b1aea0
 
 

@@ -19,38 +19,45 @@ _postKeyList:
 	li r9,0
 	stw r9,8(r31)
 	b _keyList_L2
-_keyList_L8:
+_keyList_L9:
+	lwz r9,8(r31)
+	cmpwi cr0,r9,9
+	bne cr0,_keyList_L3
+	lwz r9,8(r31)
+	addi r9,r9,4
+	stw r9,8(r31)
+_keyList_L3:
 	li r9,0
 	stw r9,12(r31)
 	lwz r9,8(r31)
 	cmpwi cr0,r9,0
-	bne cr0,_keyList_L3
+	bne cr0,_keyList_L4
 	li r4,1
 	li r3,16
 	bl getLocal
 	mr r9,r3
 	stw r9,12(r31)
-	b _keyList_L4
-_keyList_L3:
+	b _keyList_L5
+_keyList_L4:
 	lwz r9,8(r31)
 	cmpwi cr0,r9,6
-	bne cr0,_keyList_L5
+	bne cr0,_keyList_L6
 	lis r9,_charaHasDied@ha
 	lwz r9,_charaHasDied@l(r9)
 	cmpwi cr0,r9,0
-	beq cr0,_keyList_L10
+	beq cr0,_keyList_L11
 	lis r9,_charaHasDied@ha
 	li r10,0
 	stw r10,_charaHasDied@l(r9)
-	b _keyList_L4
-_keyList_L5:
+	b _keyList_L5
+_keyList_L6:
 	lwz r9,8(r31)
 	addi r9,r9,23
 	mr r3,r9
 	bl _hasPreciousItem
 	mr r9,r3
 	stw r9,12(r31)
-_keyList_L4:
+_keyList_L5:
 	lwz r10,36(r31)
 	lwz r7,12(r31)
 	lwz r6,8(r31)
@@ -75,22 +82,22 @@ _after_keyList_1__sprintf_s:
 	lwz r10,28(r31)
 	lwz r9,32(r31)
 	cmplw cr0,r10,r9
-	ble cr0,_keyList_L7
+	ble cr0,_keyList_L8
 	lwz r3,24(r31)
 	bl _postCurl
 	lwz r9,24(r31)
 	stw r9,28(r31)
-	b _keyList_L7
-_keyList_L10:
+	b _keyList_L8
+_keyList_L11:
 	nop
-_keyList_L7:
+_keyList_L8:
 	lwz r9,8(r31)
 	addi r9,r9,1
 	stw r9,8(r31)
 _keyList_L2:
 	lwz r9,8(r31)
-	cmpwi cr0,r9,5
-	ble cr0,_keyList_L8
+	cmpwi cr0,r9,15
+	ble cr0,_keyList_L9
 	lwz r9,28(r31)
 	mr r3,r9
 	addi r11,r31,48
@@ -115,18 +122,18 @@ _notifyDead:
 	stw r29,24(r31)
 	lwz r9,28(r31)
 	cmpwi cr0,r9,46
-	bne cr0,_keyList_L12
+	bne cr0,_keyList_L13
 	lwz r9,24(r31)
 	lwz r9,0(r9)
 	cmpwi cr0,r9,256
-	bne cr0,_keyList_L12
+	bne cr0,_keyList_L13
 	lis r9,_charaHasDied@ha
 	li r10,1
 	stw r10,_charaHasDied@l(r9)
 	lis r9,_keyList_LC1@ha
 	addi r3,r9,_keyList_LC1@l
 	bl _writeDebug
-_keyList_L12:
+_keyList_L13:
 	lwz r5,32(r31)
 	lwz r4,28(r31)
 	lwz r3,8(r31)
@@ -141,12 +148,9 @@ _keyList_L12:
 	blr
 
 
-[Archipelago_keyList_V101E]
+[Archipelago_keyList_ALL]
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
 
-# IsDollLicense = 0x02a6b81c # menu::MenuArmsCompany
-# IsPermit = 0x021b70a8 # ::Gear::Gear # Overdrive
-# isGameCond = 0x0226747c # ::GameCond
 fnetBasePtr = 0x1039c258 # from getFnetData::fnet::FnetDataAccessor
 
 request = 0x023e0458 # CompoControl::CtrlRequesti

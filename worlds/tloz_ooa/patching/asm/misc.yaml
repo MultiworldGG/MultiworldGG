@@ -2,10 +2,21 @@
 # remove the entire crescent island storm / tokay theft sequence.
 09/5731/: jp $582a             # tokays stealing items
 09/5756/: jp $582a             # ^
-09/57a5/: |                    # ^
-  inc a
-  inc a         
+#09/57a5/: |                    # ^
+#  inc a
+#  inc a         
 0a/4fe1/: jp interactionDelete # ^
+
+# shovel tokay behave like the others
+09/578a/: |
+  nop
+  nop
+  nop
+
+#09/57a9/: | # ^
+#  inc c 
+#  inc c
+#  jp $57c1
 
 0b/52e3/: jp interactionDelete # storm
 
@@ -55,7 +66,7 @@
 
 # allow skipping the capcom screen after one second by pressing start
 03//checkSkipCapcom: |
-    ld hl,$cbb3
+    ld hl,wMapMenu_mode
     ld a,$94
     cp (hl)
     ret c
@@ -138,9 +149,8 @@
 15/6b43/: dw $c71f
 15/6b45/: db $ff
 
-# Sea of storm specific chest. (change if in linked game)
-10/79ab/: dwbe locations.seaofstorm
-10/79ad/: dwbe locations.seaofstorm
+# Sea of storm past chest
+10/79ab/: dwbe locations.seaofstormpast
 
 # Veran is beaten
 10//thatallfolks: |
@@ -263,7 +273,7 @@
   jp z,@present
   ld a,$01
   @present:
-  ld ($cbb3),a ;mapmode
+  ld (wMapMenu_mode),a 
   ld hl,galeCheckAvailableTree_body
   ld e,$02
   call interBankCall

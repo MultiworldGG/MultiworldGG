@@ -1,8 +1,9 @@
 from typing import Dict, Set
 
 from worlds.tboir.options import AdditionalItemLocationsPerStage
+from .game_data import data
 
-def location_list(data):
+def location_list():
     locations = []
 
     for stage, floor in data["regions"].items():
@@ -24,7 +25,7 @@ def location_list(data):
     return locations
 
 
-def location_group_list(data):
+def location_group_list():
     location_name_groups: Dict[str, Set[str]] = {}
 
     for stage, floor in data["regions"].items():

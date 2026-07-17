@@ -39,6 +39,11 @@
     dwbe $4709, locations.syrupShop2
     dwbe $470a, locations.syrupShop3
     dwbe $470b, locations.syrupShop1
+    dwbe $6310, locations.tokaySword
+    dwbe $631b, locations.tokayShovel
+    dwbe $6368, locations.tokayHarp
+    dwbe $6331, locations.tokayFlippers
+    dwbe $6320, locations.tokaySatchel
     dwbe $6314, locations.hiddenTokayCave
     dwbe $6315, locations.hiddenTokayCave
     dwbe $633e, locations.wildTokayGame

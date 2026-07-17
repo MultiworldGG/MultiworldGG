@@ -1,5 +1,5 @@
 [Archipelago_equipList]
-moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
+moduleMatches = 0xF882D5CF, 0x218F6E07, 0x30B6E091 # 1.0.1E, 1.0.0E, 1.0.2U
 .origin = codecave
 
 _formatEquipText:
@@ -161,8 +161,14 @@ _equipList_L2:
 
 
 [Archipelago_equipList_V101E]
-moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
+moduleMatches = 0xF882D5CF, 0x218F6E07 # 1.0.1E, 1.0.0E
 
 getInnerEquipmentData = 0x02cc273c # ::menu::MenuEquipUtil::PCData
+
+
+[Archipelago_equipList_V102U]
+moduleMatches = 0x30B6E091 # 1.0.2U
+
+getInnerEquipmentData = 0x02cc26dc # ::menu::MenuEquipUtil::PCData
 
 

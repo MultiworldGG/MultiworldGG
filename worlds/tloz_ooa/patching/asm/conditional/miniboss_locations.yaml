@@ -1,0 +1,107 @@
+# Data come from ages/mainData.s in the disassembly
+
+# How object data works:
+# The first byte is a type of object. 
+  # F3 specifies that you have other data elsewhere that need on top of the other data at the pointer given in the second and third byte
+  # F4 specifies that like F3, you have other data to load but only if the event flag isn't set (This is mainly used to load the miniboss in our cases)
+  # In the generic case, the first byte is the object ID. In such case :
+    # The second byte is the subid of the object.
+    # The third byte is the object's Y position
+    # The fourth byte is the object's X position
+  # The first of the generic case is always preceed by F2 (offsetting the other bytes)
+
+# WARNING : a object data end with $ff for obj_End, a pointer end with $fe for obj_EndPointer
+# ALSO WARNING : Don't call a pointer in a data already in a pointer. The code don't handle recursivity
+
+#There are other behavior that doesn't concern us here, but can be check in macros.s of the disassembly (search for .MACRO obj_Interaction and look around)
+
+# Here we replace the F4 pointer of the mini boss by our custom one where we add our object and add back the miniboss pointer
+
+
+###### D1
+12/6710/: |
+  db $f3
+  dw additionnalD1MiniBossRoomData
+  db $f4,$95,$47,$ff
+
+12//additionnalD1MiniBossRoomData: |
+  db $f2,$12,$01,$58,$98 # The newly spawn object data
+  db $7e,$00,$58,$78 # Keeping the overrided data.
+  db $fe
+
+###### D2
+12/6844/: |
+  db $f3
+  dw additionnalD2MiniBossRoomData
+  db $d4,$75,$48,$ff
+
+12//additionnalD2MiniBossRoomData: |
+  db $f2,$12,$01,$58,$98 # The newly spawn object data
+  db $7e,$00,$58,$78 # Keeping the overrided data.
+  db $fe
+
+###### D3
+12/6958/: |
+  db $f3
+  dw additionnalD3MiniBossRoomData
+  db $f4,$50,$4a,$ff
+  
+12//additionnalD3MiniBossRoomData: |
+  db $f2,$12,$01,$58,$98 # The newly spawn object data
+  db $20,$00,$58,$78 # Keeping the overrided data.
+  db $fe
+
+##### D4
+12/6b81/: |
+  db $f3
+  dw additionnalD4MiniBossRoomData
+  db $f4,$2d,$4b,$ff
+  
+12//additionnalD4MiniBossRoomData: |
+  db $f2,$12,$01,$58,$98 # The newly spawn object data
+  db $1e,$0a,$a7,$00 # Keeping the overrided data.
+  db $fe
+
+###### D5
+12/6d50/: |
+  db $f3
+  dw additionnalD5MiniBossRoomData
+  db $f4,$bf,$4d,$ff
+  
+12//additionnalD5MiniBossRoomData: |
+  db $f2,$12,$01,$58,$98 # The newly spawn object data
+  db $1e,$08,$07,$00 # Keeping the overrided data.
+  db $fe
+
+###### D6
+12/6f21/: |
+  db $f3
+  dw additionnalD6MiniBossRoomData
+  db $f4,$1b,$4f,$ff
+  
+12//additionnalD6MiniBossRoomData: |
+  db $f2,$12,$01,$58,$98 # The newly spawn object data
+  db $1e,$0a,$a7,$00 # Keeping the overrided data.
+  db $fe
+
+###### D7
+12/70cb/: | 
+  db $f3
+  dw additionnalD7MiniBossRoomData
+  db $f4,$7a,$51,$ff
+
+12//additionnalD7MiniBossRoomData: | 
+  db $f2,$12,$01,$88,$78 ; adds the item
+  db $90,$0b,$08,$d8 # Keeping the overrided data.
+  db $fe
+
+###### D8
+12/7246/: |
+  db $f3
+  dw additionnalD8MiniBossRoomData
+  db $f4,$88,$51,$ff
+  
+12//additionnalD8MiniBossRoomData: |
+  db $f2,$12,$01,$58,$98 # The newly spawn object data
+  db $7e,$00,$58,$78 # Keeping the overrided data.
+  db $fe

@@ -601,6 +601,9 @@ class CrystalProjectWorld(World):
         else:
             excluded_items.add(display_region_name_to_pass_dict[ap_region_to_display_region_dictionary[self.starter_ap_region]])
 
+        if self.options.regionsanity.value != self.options.regionsanity.option_heist:
+            excluded_items.add(REGIONSANITY_TIMER_BOOST)
+
         if self.options.home_point_hustle.value == self.options.home_point_hustle.option_disabled:
             for home_point_item in self.item_name_groups[HOME_POINT]:
                 excluded_items.add(home_point_item)
@@ -847,6 +850,7 @@ class CrystalProjectWorld(World):
             # "moddedLocationsForUT": self.modded_locations,
             # "moddedShopsForUT": self.modded_shops,
             "prefillMap": bool(self.options.fill_full_map.value),
+            "skipIntroCrawl": bool(self.options.skip_intro_crawl),
             "disableSparks": bool(self.options.disable_sparks.value),
             "homePointHustle": self.options.home_point_hustle.value,
             "maximumPassivePoints": self.options.maximum_passive_points.value,

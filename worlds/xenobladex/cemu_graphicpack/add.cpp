@@ -1,3 +1,5 @@
+#include <cstddef>
+
 extern int itemListBase;
 extern int* fnetBasePtr;
 extern char* fieldSkillBasePtr;
@@ -5,7 +7,7 @@ extern int _fieldSkillOffset;
 
 unsigned int** getItemTypeInfo(int*, int);
 
-#ifdef V101E
+#ifdef ALL
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 ; 1.0.1E, 1.0.2U, 1.0.0E
 
 reqMenuAddItemFromId = 0x0234f1a8 # ::CmdReq
@@ -16,7 +18,6 @@ SetFriendRank = 0x027faee0 # ::Util
 GetClassDataPtr = 0x027fa7a0 # ::Util
 
 _reqForceDamagePlayerTargetGoner = 0x021a88e4
-SetDead = 0x0298f2f0
 getCharaHandle = 0x02373b9c
 
 GetCharaDataPtr = 0x027f70ac # ::Util
@@ -25,8 +26,23 @@ changeScenarioFlag = 0x027d5638 # ::FNet
 addGarage = 0x0234c620 # ::CmdCommon::SceneCmdPrm
 #endif
 
+#ifdef V101E
+moduleMatches = 0xF882D5CF, 0x218F6E07 ; 1.0.1E, 1.0.0E
+
+SetDead = 0x0298f2f0
+#endif
+
+#ifdef V102U
+moduleMatches = 0x30B6E091 ; 1.0.2U
+
+SetDead = 0x0298f2e0
+#endif
+
+int _collepediaFlag = 0x1286; // from funcCollepedia
+int _bladeFlag = 0x1288; // from updataStatus::MenuTotalSimpleStatus
+
 void reqMenuAddItemFromId(int type, int id, int count);
-void reqMenuAddItemFromInfo(short* item, int count);
+void reqMenuAddItemFromInfo(unsigned short* item, int count);
 void reqMenuSetArtsLevel(char* characterBasePtr, int id, int lvl, int filler);
 void reqMenuSetSkillLevel(char* characterBasePtr, int id, int lvl, int filler);
 void SetFriendRank(int id, int lvl);
@@ -40,6 +56,9 @@ int * GetCharaDataPtr(int charaId);
 void setLocal(int width, int position, int value);
 void changeScenarioFlag(int* basePtr, int flag);
 void addGarage(int* idPtr);
+
+void* __malloc (size_t size);
+void __free (void* ptr);
 
 
 // 1 = Ground Armor Head			https://xenoblade.github.io/xbx/bdat/common_local_us/AMR_PcList.html
@@ -73,6 +92,7 @@ void addGarage(int* idPtr);
 // 1d = Important Items				https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_PreciousList.html
 // 1e = Appendage Fragments			https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_PieceList.html
 // 1f = Consumeable Items			https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_BattleItem.html
+// 41 = Blueprints                  https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_Blueprint.html
 void _addItem(int type, int id){
 	if(type != 9){
 		reqMenuAddItemFromId(type, id, 1);
@@ -81,17 +101,20 @@ void _addItem(int type, int id){
 	}
 }
 
+short _gearItem[8] = { 0 };
 void _addGear(int type, int id, int affixId1, int affixId2, int affixId3, int slotCount){
-	short item[8];
-	*(int*)item = (id << 19) + (type << 13) + (1 << 3);
-	item[6] = affixId1 << 4;
-	item[7] = affixId2 << 4;
-	item[8] = affixId3 << 4;
+
+	unsigned short* _gearItem = (unsigned short*)__malloc(8 * sizeof(unsigned short));
+	*(int*)_gearItem = (id << 19) + (type << 13) + (1 << 3);
+	_gearItem[6] = affixId1 << 4;
+	_gearItem[7] = affixId2 << 4;
+	_gearItem[8] = affixId3 << 4;
 	for(int i = 0; i < 3; i++){
-		if (i < slotCount) item[9+i] = 0x0;
-		else item[9+i] = 0xFFFF;
+		if (i < slotCount) _gearItem[9+i] = 0x0;
+		else _gearItem[9+i] = 0xFFFF;
 	}
-	reqMenuAddItemFromInfo(item, 1);
+	reqMenuAddItemFromInfo(_gearItem, 1);
+	__free(_gearItem);
 }
 
 int _hasPreciousItem(int id){
@@ -127,7 +150,7 @@ void _addFriend(int id, int lv){
 // 1 = Mechanical, 2 = Biological, 3 = Archeological
 void _addFieldSkill(int id, int lv){
 	char* fieldSkillOffset = fieldSkillBasePtr;
-	fieldSkillOffset += _fieldSkillOffset;
+	fieldSkillOffset += _fieldSkillOffset - 1;
 	fieldSkillOffset += id - 1;
 	*fieldSkillOffset = (char)lv;
 }
@@ -154,28 +177,31 @@ void _addKey(int id, int flag){
 	// but the blade rank exp is unlocked seperately at the start of chapter 3
 	// get setLocal from id from there by trial and error
 
-	if(id == 0) setLocal(0x10, 1, flag);
-	else if(id == 6){
+	if(id == 6){
 		char charaHandle[8];
 		getCharaHandle(charaHandle, 0);
 		SetDead(0, charaHandle);
 	}
+	else if(id == 13) _reqForceDamagePlayerTargetGoner(0);
+	
 	// Only for testing
-	else if(id == 7) _reqForceDamagePlayerTargetGoner(0);
-	else if(id == 8) changeScenarioFlag(fnetBasePtr, flag);
-	else if(id == 9) setLocal(1, flag, 1);
+	else if(id == 0x20) setLocal(0x10, 1, flag);
+	else if(id == 0x21) changeScenarioFlag(fnetBasePtr, flag);
+	else if(id == 0x22) setLocal(1, flag, 1);
 
 	else _addItem(0x1d, 24 + id - 1);
 	
-	if(id == 1) setLocal(1, 0x5e5b, flag);
-	else if(id == 2) setLocal(1, 0x7610, flag);
-	else if(id == 3) setLocal(1, 0x6bc3, flag);
+	int skellLicenseFlag = 0x5e5b; // IsDollLicense
+	int flightModuleFlag = 0x7610; // getFlightUnitFlag
+	int overdriveFlag = 0x6bc3; // IsPermit
+
+	if(id == 1) setLocal(1, skellLicenseFlag, flag);
+	else if(id == 2) setLocal(1, flightModuleFlag, flag);
+	else if(id == 3) setLocal(1, overdriveFlag, flag);
 	else if(id == 4) changeScenarioFlag(fnetBasePtr, flag*3001);
 	else if(id == 5){
-		// collepedia
-		setLocal(2, 0x1286, 3);
-		// bladeLvl
-		setLocal(2, 0x1288, 3);
+		setLocal(2, _collepediaFlag, 3);
+		setLocal(2, _bladeFlag, 3);
 	}
 }
 

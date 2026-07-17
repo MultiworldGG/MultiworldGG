@@ -270,6 +270,8 @@ item_table: Dict[str, ItemData] = {
     THE_OLD_WORLD_PASS: ItemData(PASS, 862 + item_index_offset, ItemClassification.progression, 0, 0, 0, 1),
     THE_NEW_WORLD_PASS: ItemData(PASS, 863 + item_index_offset, ItemClassification.progression, 0, 0, 0, 1),
 
+    REGIONSANITY_TIMER_BOOST: ItemData(ITEM, 798 + item_index_offset, ItemClassification.useful, 5),
+
     #Animal mount summons
     PROGRESSIVE_QUINTAR_WOODWIND: ItemData(MOUNT, 39 + item_index_offset, ItemClassification.progression | ItemClassification.useful, 3), #Quintar Pass ID 7 & Quintar Flute ID 39 & Quintar Ocarina 115
     IBEK_BELL: ItemData(MOUNT, 50 + item_index_offset, ItemClassification.progression | ItemClassification.useful),

@@ -10,6 +10,7 @@ DL = DropLot
 
 # flake8: noqa
 dropLotData: list[DropLot] = [
+DL(0, 0, 0),  # add artifical empty for lookup
 DL(100, 30, 5),
 DL(100, 70, 30),
 DL(100, 10, 0),

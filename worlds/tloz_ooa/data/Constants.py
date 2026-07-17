@@ -1,3 +1,5 @@
+from .ascii_table import ascii_printable_chars_table
+
 COMPANIONS = [
     "Ricky",
     "Dimitri",
@@ -74,20 +76,6 @@ DAMAGE_MODIFIER_VALUES = {
     "insane": 4,
 }
 
-DUNGEON_ENTRANCES = {
-    "d0 entrance": "enter d0",
-    "d1 entrance": "enter d1",
-    "d2 past entrance": "enter d2",
-#    "d2 present entrance": "enter d2",
-    "d3 entrance": "enter d3",
-    "d4 entrance": "enter d4",
-    "d5 entrance": "enter d5",
-    "d6 past entrance": "enter d6 past",
-    "d6 present entrance": "enter d6 present",
-    "d7 entrance": "enter d7",
-    "d8 entrance": "enter d8",
-}
-
 SHOP_PRICES_DIVIDERS = {
     "lynnaShop1": 1,
     "lynnaShop2": 1,
@@ -146,7 +134,7 @@ ITEM_GROUPS = {
         "Dungeon Map (Moonlit Grotto)",
         "Dungeon Map (Skull Dungeon)",
         "Dungeon Map (Crown Dungeon)",
-        "Dungeon Map (Mermaid's Cave Present)"
+        "Dungeon Map (Mermaid's Cave Present)",
         "Dungeon Map (Jabu-Jabu's Belly)",
         "Dungeon Map (Ancient Tomb)",
         "Dungeon Map (Mermaid's Cave Past)",
@@ -168,6 +156,7 @@ ITEM_GROUPS = {
 
 LOCATION_GROUPS = {
     'D0': [
+        "Maku Path: Heart Piece",
         "Maku Path: Key Chest",
         "Maku Path: Basement",
     ],
@@ -206,7 +195,7 @@ LOCATION_GROUPS = {
         "Moonlit Grotto (1F): Pols Voice Chest",
         "Moonlit Grotto (1F): Armos Drop",
         "Moonlit Grotto (1F): Statue Drop",
-        "Moonlit Grotto (1F): Six-Blocs Drop",
+        "Moonlit Grotto (1F): Six Blocs Drop",
         "Moonlit Grotto (B1F): Moldorm Drop",
         "Moonlit Grotto (B1F): East",
         "Moonlit Grotto (B1F): Torch Chest",
@@ -262,7 +251,7 @@ LOCATION_GROUPS = {
         "Jabu-Jabu's Belly (1F): Island Chest",
         "Jabu-Jabu's Belly (1F): Stairway Chest",
         "Jabu-Jabu's Belly (1F): Miniboss Chest",
-        "Jabu-Jabu's Belly (1F): Cane/Diamond Puzzle",
+        "Jabu-Jabu's Belly (1F): Cane and Diamond Puzzle",
         "Jabu-Jabu's Belly (1F): Boxed Chest",
         "Jabu-Jabu's Belly (1F): Flower Room",
         "Jabu-Jabu's Belly (1F): Diamond Puzzle",
@@ -284,12 +273,12 @@ LOCATION_GROUPS = {
         'Ancient Tomb (B2F): SE Slate Chest',
         'Ancient Tomb (B2F): SW Slate Chest',
         'Ancient Tomb (B1F): NW Chest',
-        'Ancient Tomb (1F): Sarcophagus Chest',
+        'Ancient Tomb (B1F): Sarcophagus Chest',
         'Ancient Tomb (B1F): Blade Trap',
         'Ancient Tomb (B1F): Blue Peg Chest',
         'Ancient Tomb (B1F): Floor Puzzle',
         'Ancient Tomb (B2F): Tile Room',
-        'Ancient Tomb (1F): Stalfos',
+        'Ancient Tomb (B1F): Stalfos',
         'Ancient Tomb (B3F): Single Chest',
         'Ancient Tomb (B3F): Boss',
     ],
@@ -311,21 +300,40 @@ LOCATION_GROUPS = {
 
     ],
     'Trade Sequence': [
-        'Yoll Graveyard: Graveyard Poe',
-        'Lynna Village: Postman',
-        'Lynna Village: Toilet Hand',
-        'Crescent Island: Tokay Chef',
-        'Nuun: Happy Mask Salesman',
-        'Lynna Village: Mamamu Yan',
-        'Symmetry City: Middle man',
-        'Lynna City: Comedian',
-        'Lynna Village: Sad boi',
-        'Maple Trade',
-        'Lynna Village Coast: Rafton',
-        'Shore of No Return: Old Zora',
-        'Restoration Wall: Patch',
+        "Yoll Graveyard: Poe's Gift",
+        "Lynna Village: Postman Trade",
+        "Lynna Village: Toilet Hand Trade",
+        "Crescent Island (Present): Tokay Chef Trade",
+        "Nuun Highlands: Happy Mask Salesman Trade",
+        "Lynna City: Mamamu Yan Trade",
+        "Symmetry Village: Skinny Guy Trade",
+        "Lynna City: Comedian Trade",
+        "Lynna Village: Depressed Child Trade",
+        "Maple Trade",
+        "South Shore (Past): Rafton Trade",
+        "Coast of No Return: Old Zora Trade",
+        "Talus Peaks (Past): Broken Sword Restoration",
     ]
 }
+
+GASHA_SPOT_REGIONS = [
+    "crescent past spot",
+    "talus lake past spot",
+    "talus peak past spot",
+    "zora village past spot",
+    "lynna village toilet spot",
+    "south shore past spot",
+    "ridge west base spot",
+    "ridge upper past spot",
+    "yoll graveyard spot",
+    "talus peak present spot",
+    "fairies woods spot",
+    "nuun highlands spot",
+    "ridge mid present spot",
+    "crescent present islet spot",
+    "crescent present vine spot",
+    #"sea of storms spot",
+]
 
 TREASURE_SPAWN_INSTANT = 0x00
 TREASURE_SPAWN_POOF = 0x10
@@ -356,3 +364,4 @@ COLLECT_MAKU_TREE = 0x80
 COLLECT_TARGET_CART = 0x81
 COLLECT_BIGBANG = 0x82
 COLLECT_GORON_BUSH_ROOM = 0x83
+COLLECT_TOKAY_CRYSTAL_ROOM = 0x84
