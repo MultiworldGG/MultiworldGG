@@ -1,4 +1,4 @@
-# [MultiworldGG](https://multiworld.gg) ![Discord Shield](https://discordapp.com/api/guilds/1345801058609270794/widget.png?style=shield) | [Install](https://github.com/MultiworldGG/MultiworldGG/releases)
+# [MultiworldGG](https://multiworld.gg) | [Install](https://github.com/MultiworldGG/MultiworldGG/releases)
 
 MultiworldGG is a cross-game modification system which randomizes different games, then uses the result to build a single unified multi-player game, or, simpler,
 a **Multi-Game Multiworld Randomizer**.
@@ -82,6 +82,7 @@ Currently, the following games are supported:
 * Flipwitch
 * Frogmonster
 * Funi Raccoon Game
+* Gauntlet Legends
 * Getting Over It
 * Golden Sun: The Lost Age
 * Hades
