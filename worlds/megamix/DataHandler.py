@@ -58,8 +58,6 @@ def extract_mod_data_to_json() -> list[dict[str, list[tuple[str,int,int]]]]:
     user_path = Utils.user_path(settings.get_settings().generator.player_files_path)
     folder_path = sys.argv[sys.argv.index("--player_files_path") + 1] if "--player_files_path" in sys.argv else user_path
 
-    logger.debug(f"Checking YAMLs for {mod_data_key} at {folder_path}")
-
     if not os.path.isdir(folder_path):
         logger.debug(f"The path {folder_path} is not a valid directory. Modded songs are unavailable for this path.")
         return []
@@ -90,9 +88,6 @@ def extract_mod_data_to_json() -> list[dict[str, list[tuple[str,int,int]]]]:
             # Delay raising invalid schema otherwise the whole world can brick (JSON Generator)
             # get_player_specific_ids is during generate_early as opposed to on world init
             logger.warning(f"Failed to extract mod data from {item.name}: {e}")
-
-    total = sum(len(pack) for packList in all_mod_data for pack in packList.values())
-    logger.debug(f"Found {total} songs")
 
     return all_mod_data
 

@@ -1,2 +1,6 @@
 #from main AP (tww) dolphin-memory-engine>=1.3.0
 pythonnet>=3.0.4
+# TreZ: clr_loader uses cffi, which imports pycparser dynamically.  Both must be
+# present when cx_Freeze packages the BFBB client.
+cffi>=1.17
+pycparser>=2.21
