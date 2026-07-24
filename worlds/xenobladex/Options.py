@@ -930,13 +930,13 @@ class XenobladeXOptions(PerGameCommonOptions):
     run_forrest_run: RunForrestRun
 
     # Removed
-    local_items: HiddenLocalItems  # type: ignore[override]
-    non_local_items: HiddenNonLocalItems  # type: ignore[override]
-    start_inventory: HiddenStartInventory  # type: ignore[override]
-    start_hints: HiddenStartHints  # type: ignore[override]
-    start_location_hints: HiddenStartLocationHints  # type: ignore[override]
-    exclude_locations: HiddenExcludeLocations  # type: ignore[override]
-    priority_locations: HiddenPriorityLocations  # type: ignore[override]
+    local_items: HiddenLocalItems  # pyright: ignore[reportIncompatibleVariableOverride]
+    non_local_items: HiddenNonLocalItems  # pyright: ignore[reportIncompatibleVariableOverride]
+    start_inventory: HiddenStartInventory  # pyright: ignore[reportIncompatibleVariableOverride]
+    start_hints: HiddenStartHints   # pyright: ignore[reportIncompatibleVariableOverride]
+    start_location_hints: HiddenStartLocationHints  # pyright: ignore[reportIncompatibleVariableOverride]
+    exclude_locations: HiddenExcludeLocations  # pyright: ignore[reportIncompatibleVariableOverride]
+    priority_locations: HiddenPriorityLocations  # pyright: ignore[reportIncompatibleVariableOverride]
 
 
 def generate_cemu_options(options: XenobladeXOptions) -> list[dict[str, str]]:

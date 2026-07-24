@@ -1,4 +1,4 @@
-from ..Items import Itm as Data
+from . import Itm as Data
 
 # flake8: noqa
 field_skills_data: list[Data] = [

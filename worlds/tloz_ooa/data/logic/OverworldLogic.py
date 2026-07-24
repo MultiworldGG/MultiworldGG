@@ -654,7 +654,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
             ooa_option_medium_logic(state, player),
             ooa_can_warp_using_gale_seeds(state, player),
         ])],
-        ["ridge mid present", "ridge east tree", False, lambda state: any([
+        ["ridge mid present", "ridge east tree", False, lambda state: all([
             ooa_can_harvest_tree(state, player, False),
             ooa_can_switch_past_and_present(state, player),
         ])],
@@ -777,7 +777,7 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         ])],
         ["deku forest", "fairies woods spot", False, lambda state: all([
             ooa_can_break_bush(state, player, False),
-            ooa_can_switch_past_and_present(state, player)
+            ooa_can_go_back_to_present(state, player)
         ])],
         
         ["nuun (ricky)", "nuun highlands top", False, lambda state: any([
@@ -860,7 +860,10 @@ def make_overworld_logic(player: int, options: OracleOfAgesOptions):
         labrynna_logic.extend([
             ["lynna city", "mayor plen's secret", False, None],
             ["mamamu yan trade", "mamamu yan secret", False, lambda state: ooa_has_bracelet(state, player)],
-            ["zora's reward", "king zora's secret", False, None],
+            ["zora's reward", "king zora's secret", False, lambda state: all([
+                state.has("King Zora's Potion", player),
+                state.has("Fairy Powder", player)
+            ])],
             ["goron shooting gallery", "elder secret", False, None],
             ["target carts", "troy secret", False, None],
             ["library past", "library secret", False, None],

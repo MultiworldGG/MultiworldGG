@@ -23,11 +23,15 @@ from worlds.generic.Rules import exclusion_rules, locality_rules
 __all__ = ["main"]
 
 
-def main(args, seed=None, baked_server_options: dict[str, object] | None = None):
+def main(args, seed=None, baked_server_options: dict[str, object] | None = None,
+         baked_generator_options: dict[str, object] | None = None):
     worlds.ensure_worlds_loaded()
     if not baked_server_options:
         baked_server_options = get_settings().server_options.as_dict()
     assert isinstance(baked_server_options, dict)
+    if baked_generator_options is None:
+        baked_generator_options = get_settings().generator.as_dict()
+    assert isinstance(baked_generator_options, dict)
     if args.outputpath:
         os.makedirs(args.outputpath, exist_ok=True)
         output_path.cached_path = args.outputpath
@@ -198,7 +202,9 @@ def main(args, seed=None, baked_server_options: dict[str, object] | None = None)
         flood_items(multiworld)  # different algo, biased towards early game progress items
     elif multiworld.algorithm == 'balanced':
         distribute_items_restrictive(
-            multiworld, get_settings().generator.panic_method, get_settings().generator.progression_equalization
+            multiworld,
+            baked_generator_options.get("panic_method", get_settings().generator.panic_method),
+            baked_generator_options.get("progression_equalization", get_settings().generator.progression_equalization),
         )
 
     AutoWorld.call_all(multiworld, 'post_fill')

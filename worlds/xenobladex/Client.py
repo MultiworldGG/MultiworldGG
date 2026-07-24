@@ -15,12 +15,12 @@ import requests
 import Utils
 apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 from NetUtils import ClientStatus, NetworkItem
-from typing import Counter, List, NamedTuple, Optional, Set, cast
+from typing import Any, Counter, List, NamedTuple, Optional, Set, cast, Callable
 from itertools import groupby
 import colorama
 
 # CommonClient import first to trigger ModuleUpdater
-from CommonClient import CommonContext, server_loop, gui_enabled, logger, get_base_parser
+from CommonClient import CommonContext, server_loop, logger, get_base_parser, gui_enabled
 from settings import get_settings
 
 from worlds.xenobladex import XenobladeXWorld
@@ -66,7 +66,7 @@ class XenobladeXHttpServer(HTTPServer):
     upload_count = 0
     upload_limit = 25
 
-    def __init__(self, server_address, bind_and_activate=True, debug: bool = False) -> None:
+    def __init__(self, server_address, bind_and_activate: bool = True, debug: bool = False) -> None:
         self.debug = debug
         self.process_game_event: asyncio.Event = asyncio.Event()
         self.process_server_event: asyncio.Event = asyncio.Event()
@@ -122,7 +122,7 @@ class XenobladeXHttpServer(HTTPServer):
 
         return self.Gear(affixes[0], affixes[1], affixes[2], slot_num)
 
-    def clear_uploaded_items(self):
+    def clear_uploaded_items(self) -> None:
         self.items = ""
         self.upload_count = 0
 
@@ -145,7 +145,7 @@ class XenobladeXHttpServer(HTTPServer):
 
     # Example: Invoke-WebRequest http://localhost:45872/items -Method POST -Body "I Tp=00000007 Id=00000039`n"
     def upload_item(self, item_game_type: int, item_game_id: int, seed_name: Optional[str],
-                    item_name: str, player_name: str, item_game_level: int = 1):
+                    item_name: str, player_name: str, item_game_level: int = 1) -> None:
         if self.upload_count > self.upload_limit:
             return
         self.upload_count += 1
@@ -178,26 +178,26 @@ class XenobladeXHttpServer(HTTPServer):
 
         logger.debug(f"Upload Item: {item_name} Id: {item_game_id} Type: {item_game_type}")
 
-    def _match_line(self, data: list[GameItem], game_type: Optional[int], regex: str, min: int = 1,
-                    max: int = 0xFFFF, has_lvl: bool = False, lvl_change=lambda lvl: lvl):
+    def _match_line(self, data: list["GameItem"], game_type: Optional[int], regex: str, min: int = 1, max: int = 0xFFFF,
+                    has_lvl: bool = False, lvl_change: Callable[[int], int] = lambda lvl: lvl) -> None:
         match = re.findall(regex, self.locations, re.MULTILINE)
         match = [tuple(int(entry_id, 16) for entry_id in entry_tuple) for entry_tuple in match]
         data += [GameItem(game_type if game_type is not None else entry[1], entry[0], 10000 if not has_lvl
                           else lvl_change(entry[1])) for entry in match if min <= entry[1] <= max]
 
-    def upload_death(self):
+    def upload_death(self) -> None:
         self.death_link += f"K Id={6:08x} Fg={1:08x}\n"
 
-    def upload_message(self, heading: str, body: str):
+    def upload_message(self, heading: str, body: str) -> None:
         self.messages += [self._generate_message(heading, body)]
 
     def _sanitize_message(self, message: str) -> str:
         return re.sub(r"[^\w \-_]", "", message)
 
-    def _generate_message(self, heading: str, body: str):
+    def _generate_message(self, heading: str, body: str) -> str:
         return f"M {self._sanitize_message(heading)}\r{(self._sanitize_message(body))[:60]}\n"
 
-    def clear_locations(self):
+    def clear_locations(self) -> None:
         self.locations = ""
 
     def download_locations(self) -> list[GameItem]:
@@ -212,7 +212,7 @@ class XenobladeXHttpServer(HTTPServer):
         return locations
 
     def _match_line_augment(self, data: list[GameItem], game_type: int, regex: str,
-                            lower: int = 0, upper: int = 0xFFFF):
+                            lower: int = 0, upper: int = 0xFFFF) -> None:
         match = re.findall(regex, self.locations, re.MULTILINE)
         match = [tuple(int(entry_id, 16) for entry_id in entry_tuple) for entry_tuple in match]
         data += [GameItem(game_type, entry[i]) for entry in match if lower <= entry[1] <= upper
@@ -242,7 +242,7 @@ class XenobladeXHttpServer(HTTPServer):
         self._match_line(items, 0x20, r'^AT Id=([0-9a-fA-F]{2}) Lv=([0-9a-fA-F]{1})\n')
         self._match_line(items, 0x21, r'^SK Id=([0-9a-fA-F]{2}) Lv=([0-9a-fA-F]{1})\n')
         self._match_line(items, 0x22, r'^FD Id=([0-9a-fA-F]{2}) Lv=([0-9a-fA-F]{2}) Ch=.*\n',
-                         has_lvl=True, lvl_change=lambda lvl: lvl / 10 if lvl else 0)
+                         has_lvl=True, lvl_change=lambda lvl: int(lvl / 10) if lvl else 0)
         self._match_line(items, 0x23, r'^FS Id=([0-9a-fA-F]{1}) Lv=([0-9a-fA-F]{1})\n',
                          has_lvl=True, lvl_change=lambda lvl: lvl - 1)
         self._match_line(items, 0x24, r'^CL Id=([0-9a-fA-F]{2}) Lv=([0-9a-fA-F]{1})\n')
@@ -263,12 +263,12 @@ class XenobladeXHTTPRequestHandler(BaseHTTPRequestHandler):
         self.http_server: XenobladeXHttpServer = cast(XenobladeXHttpServer, server)
         super().__init__(request, client_address, server)
 
-    def respond_success(self):
+    def respond_success(self) -> None:
         self.send_response(200)
         self.send_header("Content-type", "text/plain")
         self.end_headers()
 
-    def get_items(self):
+    def get_items(self) -> None:
         self.respond_success()
         if self.http_server.process_server_event.is_set():
             self.http_server.process_server_event.clear()
@@ -280,9 +280,9 @@ class XenobladeXHTTPRequestHandler(BaseHTTPRequestHandler):
             self.http_server.death_link = ""
             self.wfile.write(items_text.encode())
             if items_text:
-                logger.debug(f"{items_text.encode()}")
+                logger.debug(f"{items_text.encode()!r}")
 
-    def post_locations(self):
+    def post_locations(self) -> None:
         locations = (self.rfile.read(int(self.headers['content-length']))).decode('cp437').replace(":", "\n")
         self.respond_success()
         if "^" in locations[0]:
@@ -296,24 +296,24 @@ class XenobladeXHTTPRequestHandler(BaseHTTPRequestHandler):
             self.http_server.process_game_event.set()
 
     # Silence connection request logging
-    def log_request(self, code='-', size='-'):
+    def log_request(self, code: int | str = '-', size: int | str = '-') -> None:
         return
 
-    def debug_get_locations(self):
+    def debug_get_locations(self) -> None:
         self.respond_success()
         self.wfile.write(self.http_server.locations.encode())
 
-    def debug_post_items(self):
+    def debug_post_items(self) -> None:
         self.http_server.items_debug = (self.rfile.read(int(self.headers['content-length']))).decode('cp437')
         self.respond_success()
 
-    def do_GET(self):
+    def do_GET(self) -> None:
         if self.path == "/items":
             self.get_items()
         if self.path == "/locations" and self.http_server.debug:
             self.debug_get_locations()
 
-    def do_POST(self):
+    def do_POST(self) -> None:
         if self.path == "/locations":
             self.post_locations()
         if self.path == "/items" and self.http_server.debug:
@@ -336,13 +336,13 @@ class XenobladeXContext(CommonContext):
         self.xeno_port = xeno_port
         super().__init__(server_address, password)
 
-    async def server_auth(self, password_requested: bool = False):
+    async def server_auth(self, password_requested: bool = False) -> None:
         if password_requested and not self.password:
             await super(XenobladeXContext, self).server_auth(password_requested)
         await self.get_username()
         await self.send_connect()
 
-    def on_package(self, cmd: str, args: dict):
+    def on_package(self, cmd: str, args: dict[str, Any]) -> None:
         if cmd == "Connected":
             slot_data = args.get('slot_data', None)
             if slot_data:
@@ -354,14 +354,14 @@ class XenobladeXContext(CommonContext):
         if cmd in {"RoomInfo"}:
             self.seed_name = args["seed_name"]
 
-    def on_deathlink(self, data: dict):
+    def on_deathlink(self, data: dict[str, Any]) -> None:
         self.death_link_pending = True
         death_source = data["source"]
         self.http_server.upload_death()
         self.http_server.upload_message(f"From {death_source}", "Death")
         super().on_deathlink(data)
 
-    def on_print_json(self, args: dict):
+    def on_print_json(self, args: dict[str, Any]) -> None:
         print_type = args.get("type", "")
         if print_type in ["ItemSend", "ItemCheat", "Hint"]:
             item: NetworkItem = args["item"]
@@ -383,7 +383,7 @@ class XenobladeXContext(CommonContext):
             self.http_server.upload_message("Reached Goal", self.player_names[args["slot"]])
         super(XenobladeXContext, self).on_print_json(args)
 
-    def run_gui(self):
+    def run_gui(self) -> None:
         from kvui import GameManager
 
         class XenobladeXManager(GameManager):
@@ -486,7 +486,7 @@ class XenobladeXContext(CommonContext):
                     await asyncio.sleep(1)
 
     # region Cemu-Config
-    def prepare_cemu(self, options: list[XenobladeXOption]):
+    def prepare_cemu(self, options: list[XenobladeXOption]) -> None:
         try:
             mod_path = "graphicPacks/downloadedGraphicPacks/XenobladeChroniclesX/Mods/"
             settings_path = "settings.xml"
@@ -521,7 +521,7 @@ class XenobladeXContext(CommonContext):
             self.gui_error(str(e), e)
             self.exit_event.set()
 
-    def copy_cemu_files(self, cemu_mod_path: str):
+    def copy_cemu_files(self, cemu_mod_path: str) -> None:
         archipelago_graphic_pack_path = "worlds/xenobladex/cemu_graphicpack/"
         cemu_ap_path = os.path.join(cemu_mod_path, "AP")
         if not os.path.isdir(cemu_mod_path):
@@ -536,7 +536,7 @@ class XenobladeXContext(CommonContext):
         except Exception:
             raise Exception(CEMU_GRAPHIC_PACK_MISSING)
 
-    def copy_from_apworld(self, cemu_ap_path: str):
+    def copy_from_apworld(self, cemu_ap_path: str) -> None:
         try:
             zip_path = XenobladeXWorld.zip_path
             if not zip_path:
@@ -550,7 +550,8 @@ class XenobladeXContext(CommonContext):
         except Exception:
             raise Exception(CEMU_APWORLD_NOT_FOUND)
 
-    def set_cemu_graphic_packs(self, settings_path: str, mod_path: str, options: list[XenobladeXOption]):
+    def set_cemu_graphic_packs(self, settings_path: str, mod_path: str,
+                               options: list[XenobladeXOption]) -> None:
         try:
             with open(settings_path, "r") as file:
                 filedata = file.read()
@@ -586,7 +587,7 @@ class XenobladeXContext(CommonContext):
         except Exception:
             raise Exception(CEMU_SETTINGS_NOT_FOUND)
 
-    def copy_port(self, cemu_mod_path: str):
+    def copy_port(self, cemu_mod_path: str) -> None:
         cemu_ap_rules = os.path.join(cemu_mod_path, "AP/rules.txt")
         with open(cemu_ap_rules, "r") as rules:
             ruledata = rules.read()
@@ -596,7 +597,7 @@ class XenobladeXContext(CommonContext):
         with open(cemu_ap_rules, "w") as rules:
             rules.write(ruledata)
 
-    def open_cemu(self):
+    def open_cemu(self) -> None:
         try:
             cemu_exe = get_settings()["xenobladex_options"]["executable"]
             if not self.cemu_process or self.cemu_process.poll() is not None:
@@ -606,23 +607,23 @@ class XenobladeXContext(CommonContext):
     # endregion
 
 
-async def main(args) -> None:
+async def main(args: dict[str, Any]) -> None:
     Utils.init_logging("XenobladeXClient", exception_logger="Client")
 
     # handle if launched using the "archipelago://name:pass@host:port" url from webhost
-    if args.url:
-        url = urllib.parse.urlparse(args.url)
+    if args["url"]:
+        url = urllib.parse.urlparse(args["url"])
         if url.scheme == "archipelago":
-            args.connect = url.netloc
+            args["connect"] = url.netloc
             if url.username:
-                args.name = urllib.parse.unquote(url.username)
+                args["name"] = urllib.parse.unquote(url.username)
             if url.password:
-                args.password = urllib.parse.unquote(url.password)
+                args["password"] = urllib.parse.unquote(url.password)
         else:
-            logger.error(f"bad url, found {args.url}, expected url in form of archipelago://archipelago.gg:38281")
+            logger.error(f"bad url, found {args['url']}, expected url in form of archipelago://archipelago.gg:38281")
 
-    ctx = XenobladeXContext(args.connect, args.password, args.xeno_port, args.debug)
-    ctx.auth = args.name
+    ctx = XenobladeXContext(args["connect"], args["password"], args["xeno_port"], args["debug"])
+    ctx.auth = args["name"]
     if ctx.server_task is None:
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="ServerLoop")
 
@@ -641,17 +642,17 @@ async def main(args) -> None:
     ctx.http_server.shutdown()
 
 
-def launch(*args) -> None:
+def launch(*args: str) -> None:
     parser = get_base_parser()
     parser.add_argument("-d", "--debug", action="store_true", help="Enable full server exposure for debugging purposes")
     parser.add_argument("--xeno_port", nargs="?", type=int, default=XENO_DEFAULT_PORT,
                         help="Port of the Xenoblade X server")
     parser.add_argument('--name', default=None, help="Slot Name to connect as.")
     parser.add_argument("url", nargs="?", help="Archipelago connection url")
-    args = parser.parse_args(args)
+    parsed_args = parser.parse_args(args)
 
     colorama.init()
-    asyncio.run(main(args))
+    asyncio.run(main(vars(parsed_args)))
     colorama.deinit()
 
 

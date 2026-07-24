@@ -22,6 +22,8 @@ IsReady = 0x021ccdec
 0x02847fbc = bl _isUnlock
 # join division only if you get blade license, otherwise not
 EntryUnion = 0x0288e3f4
+getMyUnionNo = 0x0288d380
+0x0288e418 = nop
 
 0x022e2c24 = nop # dont set all the arts/skills/classes if you change your Class
 0x020c48c4 = blr # disable Class exp
@@ -116,7 +118,6 @@ moduleMatches = 0xF882D5CF, 0x218F6E07 ; 1.0.1E, 1.0.0E
 
 # join division only if you get blade license
 0x02c20118 = nop
-0x0288e418 = nop
 
 # disable getting skell after skell license quest in doll_present
 0x029cc078 = nop # disable doll creation
@@ -209,6 +210,7 @@ int __strcmp (const char* str1, const char* str2);
 int __sprintf_s(char *buffer, size_t sizeOfBuffer, const char *format, ...);
 
 int IsReady(int value);
+int getMyUnionNo(int* ptr);
 int EntryUnion(int* ptr, int union_id);
 
 int* getFP(const char* bdat);
@@ -282,7 +284,7 @@ int _getDefaultSkellWeapon(int* DEF_DlList_bdat, char weaponColumn[], int skellI
 // Unlock Blade Lvl
 int _isUnlock(int* ptr, int value2){
 	// join division if you havent
-	EntryUnion(ptr, 1);
+	if(getMyUnionNo(ptr) == 0) EntryUnion(ptr, 1);
 	return _hasPreciousItem(24 + 5 - 1);
 }
 

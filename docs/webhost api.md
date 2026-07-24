@@ -146,9 +146,13 @@ If the weighted options are valid, you'll be returned a successful generation re
 Example using the python requests library:
 ```python
 data = {"Test":{"game": "Factorio","name": "Test","Factorio": {}},}
-weights={"weights": data}
+weights={"weights": data, "progression_equalization": 20}
 req = requests.post("https://multiworld.gg/api/generate", json=weights)
 ```
+
+The optional `progression_equalization` field accepts an integer from 0 through 100. It controls how evenly
+progression items are distributed between slots: `0` gives every location an equal chance, while `100` aims to
+give every slot the same number of progression items.
 
 #### Generation Response:
 ##### Successful Generation:

@@ -1,8 +1,6 @@
 # Luigi's Mansion Multiworld Setup Guide
 
-## Required Software
-
-- [MultiworldGG Multiworld Suite](https://github.com/MultiworldGG/MultiworldGG/releases). 
+## Required Software- [MultiworldGG Multiworld Suite](https://github.com/MultiworldGG/MultiworldGG/releases). 
 - [Dolphin Gamecube/Wii Emulator](https://dolphin-emu.org/)
 - Your American ISO file, probably named `Luigi's Mansion (NTSC-U).iso`. Support for the PAL version is planned in the distant future
 
@@ -95,6 +93,7 @@ the background. If it did not, please check the log in your MultiworldGG/logs fo
 3. Once you have loaded into the game, the client should log that Dolphin has been connected. Click the `Connect` button
 at the top of the LMClient. If the port number is correct, you are now connected and ready to play!
    - Unfortunately, due to the nature of some checks, you must be connected to a server while playing
+   - New Game Plus is ***not*** supported. You must use a brand new save after beating King Boo to continue sending checks, supposing you cannot release your game for some reason.
 
 ### Play the game
 

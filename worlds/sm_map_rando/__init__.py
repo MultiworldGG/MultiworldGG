@@ -13,7 +13,7 @@ import threading
 import base64
 import itertools
 import json
-from typing import Any, Dict, Iterable, List, Optional, Set, TextIO, TypedDict
+from typing import Any, Dict, Iterable, List, Optional, Set, TextIO, Tuple, TypedDict
 
 from BaseClasses import LocationProgressType, Region, Entrance, Location, MultiWorld, Item, ItemClassification, CollectionState, Tutorial
 from Fill import fill_restrictive
@@ -26,22 +26,15 @@ logger = logging.getLogger("Super Metroid Map Rando")
 from .Rom import make_ips_patches, SMMapRandoProcedurePatch
 from .ips import IPS_Patch
 from .Client import SMMRSNIClient
-from .ItemMatching import match_item_metroid, match_item_generic
 from importlib.metadata import version, PackageNotFoundError
 
-required_pysmmaprando_version = "0.119.2-beta.3"
-required_pysmmaprando_version_short = "0.119.2b3"
+required_pysmmaprando_version = "0.119.2"
 
 class WrongVersionError(Exception):
     pass
 
-class MapRepositoryError(Exception):
-    """
-    Used when the upstream Map Rando map repository is unreachable for whatever reason
-    """
-
 try:
-    if version("pysmmaprando") != required_pysmmaprando_version_short:
+    if version("pysmmaprando") != required_pysmmaprando_version:
         raise WrongVersionError
     from pysmmaprando import build_app_data, validate_settings_ap, randomize_ap, customize_seed_ap, randomization_to_json, CustomizeRequest, Item as MapRandoItem
 
@@ -59,7 +52,7 @@ except (ImportError, WrongVersionError, PackageNotFoundError) as e:
     elif sys.platform.startswith('darwin'):
         mac_ver = platform.mac_ver()[0].split('.')
         abi_version = f"{python_version}-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2"
-    map_rando_lib_file = f'https://github.com/snowflav-goob/MapRandomizer/releases/download/v{required_pysmmaprando_version}/pysmmaprando-{required_pysmmaprando_version_short}-{python_version}-{abi_version}.whl'
+    map_rando_lib_file = f'https://github.com/lordlou/MapRandomizer/releases/download/v{required_pysmmaprando_version}/pysmmaprando-{required_pysmmaprando_version}-{python_version}-{abi_version}.whl'
     import Utils
     if not Utils.is_frozen():
         import subprocess
@@ -89,9 +82,7 @@ def GetAPWorldPath():
     else:
         return None
 
-map_rando_app_data = build_app_data(GetAPWorldPath())
-
-from .Options import SMMROptions
+from .Options import CommonMap, SMMROptions, UniqueStartLocations
 
 class SMMapRandoWeb(WebWorld):
     tutorials = [Tutorial(
@@ -104,13 +95,6 @@ class SMMapRandoWeb(WebWorld):
     )]
 
 
-locations_start_id = 86000
-items_start_id = 87000
-
-locations_count = 100
-
-location_address_to_id = json.loads(pkgutil.get_data(__name__, "/".join(("data", "loc_address_to_id.json"))).decode("utf-8"))
-
 class SMMapRandoWorld(World):
     """
     After planet Zebes exploded, Mother Brain put it back together again but arranged it differently this time.
@@ -119,24 +103,24 @@ class SMMapRandoWorld(World):
     """
 
     game: str = "Super Metroid Map Rando"
-    author: str = "lordlou & Snowflav_"
     data_version = 0
     options_dataclass = SMMROptions
     options: SMMROptions
 
-    smmr_location_names = map_rando_app_data.game_data.get_location_names()
+    map_rando_app_data = None
+    _map_rando_app_data_lock = threading.Lock()
 
-    item_name_to_id = {item_name: items_start_id + idx for idx, item_name in 
-                                enumerate(itertools.chain(map_rando_app_data.game_data.item_isv.keys,
-                                                          ["ArchipelagoItem", "ArchipelagoProgItem", "ArchipelagoUsefulItem", "ArchipelagoUsefulProgItem",
-                                                           "ProgMissile", "ProgSuper", "ProgPowerBomb"]))}
-    location_name_to_id = {loc_name: locations_start_id + location_address_to_id[str(addr)] for idx, (loc_name, addr) in 
-                                enumerate(itertools.chain(zip(  smmr_location_names, 
-                                                                map_rando_app_data.game_data.get_location_addresses())))}
+    item_name_to_id = json.loads(pkgutil.get_data(__name__, "/".join(("data", "item_name_to_id.json"))).decode("utf-8"))
+    location_name_to_id = json.loads(pkgutil.get_data(__name__, "/".join(("data", "location_name_to_id.json"))).decode("utf-8"))
+
+    locations_start_id = 86000
+    items_start_id = 87000
     
     missile_item_id = 1
     nothing_item_id = 22
     prog_missile_item_id = 27
+
+    seed_groups: Dict[str, List[SMMapRandoWorld]] = {}
 
     web = SMMapRandoWeb()
 
@@ -150,19 +134,93 @@ class SMMapRandoWorld(World):
         
     @classmethod
     def validate_settings(cls, settings_string: str) -> bool:
-        return validate_settings_ap(settings_string, map_rando_app_data) is not None
+        return validate_settings_ap(settings_string, cls.get_map_rando_app_data()) is not None
 
+    @classmethod
+    def get_map_rando_app_data(cls):
+        """Build the native Map Rando data once before it is passed to the bindings."""
+        if cls.map_rando_app_data is None:
+            with cls._map_rando_app_data_lock:
+                if cls.map_rando_app_data is None:
+                    debug = os.getenv("SMMAPRANDO_DEBUG", "0") == "1"
+                    cls.map_rando_app_data = build_app_data(GetAPWorldPath(), debug)
+        return cls.map_rando_app_data
+    
+    @classmethod
+    def stage_generate_early(cls, multiworld: MultiWorld) -> None:
+        app_data = cls.get_map_rando_app_data()
+        cls.seed_groups.clear()
+        maprando_worlds: Tuple[SMMapRandoWorld] = multiworld.get_game_worlds("Super Metroid Map Rando")
+        for maprando in maprando_worlds:
+            # if it's one of the options, then it isn't a custom seed group
+            if maprando.options.common_map.value in CommonMap.options.values():
+                continue
+
+            group = maprando.options.common_map.value
+            if group not in cls.seed_groups:
+                cls.seed_groups[group] = [maprando]
+            else:
+                cls.seed_groups[group].append(maprando)
+
+        for seed, map_rando_worlds in cls.seed_groups.items():
+            # Validate settings for all worlds in the group
+            for map_rando_world in map_rando_worlds:
+                map_rando_world.map_rando_settings = validate_settings_ap(json.dumps(map_rando_world.options.map_rando_options.value), app_data)
+
+            # Determine max attempts for unique start locations (0 disables uniqueness)
+            max_attempts = max((w.options.unique_start_locations.value for w in map_rando_worlds), default=0)
+            # Worlds that require coordination when attempts > 0
+            needs_coordination = [w for w in map_rando_worlds if w.options.unique_start_locations.value > 0]
+
+            group_success = False
+            attempts = 0
+            while not group_success:
+                # If we've exceeded the attempt limit and uniqueness was requested,
+                # fall back to non‑unique generation by clearing coordination.
+                if max_attempts and attempts >= max_attempts:
+                    needs_coordination = []
+                attempts += 1
+                group_first_item_idx = []
+                current_map_seed = (multiworld.random.randrange(9999999999) ^ int.from_bytes(seed.encode())) & 0xFFFFFFFF
+                for map_rando_world in map_rando_worlds:
+                    passed_first_item_idx = [] if map_rando_world not in needs_coordination else group_first_item_idx
+                    map_rando_world.randomizer_ap = randomize_ap(
+                        map_rando_world.map_rando_settings,
+                        map_rando_world.random.randrange(9999999999),
+                        current_map_seed,
+                        (multiworld.seed & 0xFFFFFFFF) if map_rando_world.options.common_door_colors.value else None,
+                        app_data,
+                        passed_first_item_idx)
+                    if map_rando_world.randomizer_ap is None:
+                        break
+                    if map_rando_world in needs_coordination:
+                        group_first_item_idx.extend(map_rando_world.randomizer_ap.randomization.first_item_idx)
+                group_success = all(map_rando_world.randomizer_ap is not None for map_rando_world in map_rando_worlds)
+
+            # Cache spoiler log summary size for all worlds in the group
+            for map_rando_world in map_rando_worlds:
+                map_rando_world.spoiler_log_summary_size = len(map_rando_world.randomizer_ap.spoiler_log.summary)
+
+        # Clear seed_groups to release references and prevent memory leak
+        cls.seed_groups.clear()
+                
     def generate_early(self):
-        self.map_rando_settings = validate_settings_ap(json.dumps(self.options.map_rando_options.value), map_rando_app_data)
-        if map_rando_app_data.map_repositories[self.map_rando_settings.map_layout] is None:
-            raise MapRepositoryError(f"Unable to fetch the {self.map_rando_settings.map_layout} map repository from upstream Map Rando")
-        self.randomizer_ap = randomize_ap(self.map_rando_settings, 
-                                            self.random.randrange(9999999999),
-                                            (self.multiworld.seed & 0xFFFFFFFF) if self.options.common_map.value else None,
-                                            (self.multiworld.seed & 0xFFFFFFFF) if self.options.common_map.value and self.options.common_door_colors.value else None,
-                                            map_rando_app_data)
-        if self.randomizer_ap is None:
-            raise Exception(f"Map Rando failed to randomize for player {self.player_name}")
+        if self.options.common_map.value in CommonMap.options.values():
+            app_data = self.get_map_rando_app_data()
+            self.map_rando_settings = validate_settings_ap(json.dumps(self.options.map_rando_options.value), app_data)
+            group_first_item_idx = []
+            self.randomizer_ap = randomize_ap(self.map_rando_settings, 
+                                                self.random.randrange(9999999999),
+                                                (self.multiworld.seed & 0xFFFFFFFF) if self.options.common_map.value else None,
+                                                (self.multiworld.seed & 0xFFFFFFFF) if self.options.common_map.value and self.options.common_door_colors.value else None,
+                                                app_data,
+                                                group_first_item_idx)
+
+            if self.randomizer_ap is None:
+                raise Exception(f"Map Rando failed to randomize for player {self.player_name}")
+            
+            # cached highly costly operation
+            self.spoiler_log_summary_size = len(self.randomizer_ap.spoiler_log.summary)
 
     def create_region(self, world: MultiWorld, player: int, name: str, locations, exit, items_required = None):
         logger.debug(f"create_region: {name} {locations} {items_required}")
@@ -183,7 +241,7 @@ class SMMapRandoWorld(World):
         remaining_locations = []
         # create locations
         for loc_name, id in SMMapRandoWorld.location_name_to_id.items():
-            self.locations[loc_name] = SMMRLocation(self.player, loc_name, len(self.randomizer_ap.spoiler_log.summary) - 1, id)
+            self.locations[loc_name] = SMMRLocation(self.player, loc_name, self.spoiler_log_summary_size - 1, id)
             remaining_locations.append(loc_name)
 
         # create regions
@@ -215,7 +273,7 @@ class SMMapRandoWorld(World):
                                                         self.player, 
                                                         f"step {spoilerSummary.step}",
                                                         [f"{spoilerItemSummary.location.room} {spoilerItemSummary.location.node}" for spoilerItemSummary in spoilerSummary.items],
-                                                        f"to step {spoilerSummary.step + 1}" if spoilerSummary.step < len(self.randomizer_ap.spoiler_log.summary) else None,
+                                                        f"to step {spoilerSummary.step + 1}" if spoilerSummary.step < self.spoiler_log_summary_size else None,
                                                         cumulative_required_items[:]))
             for spoilerItemSummary in spoilerSummary.items:
                 loc_name = f"{spoilerItemSummary.location.room} {spoilerItemSummary.location.node}"
@@ -223,11 +281,11 @@ class SMMapRandoWorld(World):
                 remaining_locations.remove(loc_name)
 
         # if start location isnt Escape
-        if (len(self.randomizer_ap.spoiler_log.summary) > 0):
+        if (self.spoiler_log_summary_size > 0):
             self.multiworld.regions += self.region_dict
 
             for loc_name in remaining_locations:
-                region = self.multiworld.get_region(f"step {len(self.randomizer_ap.spoiler_log.summary) - 1}", self.player)
+                region = self.multiworld.get_region(f"step {self.spoiler_log_summary_size - 1}", self.player)
                 self.locations[loc_name].parent_region = region
                 region.locations.append(self.locations[loc_name])
 
@@ -250,6 +308,7 @@ class SMMapRandoWorld(World):
     def create_items(self):
         pool = []
         item_placement = [item.to_int() for item in self.randomizer_ap.randomization.item_placement]
+        location_names = list(SMMapRandoWorld.location_name_to_id.keys())
         weaponCount = [0, 0, 0]         
         for spoilerSummary in self.randomizer_ap.spoiler_log.summary:
             for spoilerItemSummary in spoilerSummary.items:
@@ -276,7 +335,7 @@ class SMMapRandoWorld(World):
                 elif new_item_name == 'Nothing':
                     isAdvancement = False
                 new_item_id = SMMapRandoWorld.item_name_to_id[spoilerItemSummary.item]
-                item_placement[SMMapRandoWorld.smmr_location_names.index(f"{spoilerItemSummary.location.room} {spoilerItemSummary.location.node}")] = -1
+                item_placement[location_names.index(f"{spoilerItemSummary.location.room} {spoilerItemSummary.location.node}")] = -1
                 mr_item = SMMRItem(new_item_name,
                             ItemClassification.progression if isAdvancement else ItemClassification.filler, 
                             new_item_id, 
@@ -286,18 +345,18 @@ class SMMapRandoWorld(World):
 
         for i, item_id in enumerate(item_placement):
             if item_id != -1:
-                mr_item = SMMRItem(SMMapRandoWorld.item_id_to_name[item_id + items_start_id], 
+                mr_item = SMMRItem(SMMapRandoWorld.item_id_to_name[item_id + SMMapRandoWorld.items_start_id], 
                                 ItemClassification.filler, 
-                                item_id + items_start_id, 
+                                item_id + SMMapRandoWorld.items_start_id, 
                                 player=self.player,
-                                step=len(self.randomizer_ap.spoiler_log.summary) - 1)
+                                step=self.spoiler_log_summary_size - 1)
                 pool.append(mr_item)
             
         self.multiworld.itempool += pool
         
     def set_rules(self):
-        if (len(self.randomizer_ap.spoiler_log.summary) > 0):     
-            self.multiworld.completion_condition[self.player] = lambda state: state.can_reach(self.multiworld.get_entrance(f"to step {len(self.randomizer_ap.spoiler_log.summary)}", self.player))
+        if ( self.spoiler_log_summary_size> 0):     
+            self.multiworld.completion_condition[self.player] = lambda state: state.can_reach(self.multiworld.get_entrance(f"to step {self.spoiler_log_summary_size}", self.player))
         else:
             self.multiworld.completion_condition[self.player] = lambda state: True
 
@@ -338,22 +397,25 @@ class SMMapRandoWorld(World):
     def generate_output(self, output_directory: str):
         try:
             randomization = self.randomizer_ap.randomization
+
             sorted_item_locs = list(self.locations.values())
             items = []
-            if self.options.item_matching.value == 0: # ItemMatching.option_metroid:
-                match_item = match_item_metroid
-            else:
-                match_item = match_item_generic
-
             for itemLoc in sorted_item_locs:
-                if itemLoc.address is None:
-                    continue
-                if itemLoc.item.player == self.player:
-                    item_code = itemLoc.item.code if itemLoc.item.code - items_start_id < SMMapRandoWorld.prog_missile_item_id else itemLoc.item.code - SMMapRandoWorld.prog_missile_item_id + SMMapRandoWorld.missile_item_id
-                else:
-                    item_code = match_item(self, itemLoc.item)
-                items.append(MapRandoItem(item_code - items_start_id))
-
+                if itemLoc.address is not None:
+                    item_code = SMMapRandoWorld.items_start_id
+                    if isinstance(itemLoc.item, SMMRItem):
+                        item_code = itemLoc.item.code if itemLoc.item.code - SMMapRandoWorld.items_start_id < SMMapRandoWorld.prog_missile_item_id else itemLoc.item.code - SMMapRandoWorld.prog_missile_item_id + SMMapRandoWorld.missile_item_id
+                    elif itemLoc.item.advancement:
+                        if itemLoc.item.useful:
+                            item_code = self.item_name_to_id['ArchipelagoUsefulProgItem']
+                        else:
+                            item_code = self.item_name_to_id['ArchipelagoProgItem']
+                    else:
+                        if itemLoc.item.useful:
+                            item_code = self.item_name_to_id['ArchipelagoUsefulItem']
+                        else:
+                            item_code = self.item_name_to_id['ArchipelagoItem']
+                    items.append(MapRandoItem(item_code - SMMapRandoWorld.items_start_id))
             randomization.item_placement = items
 
             # if start location isnt Escape
@@ -361,7 +423,7 @@ class SMMapRandoWorld(World):
                 spheres: List[Location] = getattr(self.multiworld, "_smmr_spheres", None)
                 summary =  [   (
                                 sphere_idx,
-                                (loc.item.code if loc.item.code - items_start_id < SMMapRandoWorld.prog_missile_item_id else loc.item.code - SMMapRandoWorld.prog_missile_item_id + SMMapRandoWorld.missile_item_id) - items_start_id,
+                                (loc.item.code if loc.item.code - SMMapRandoWorld.items_start_id < SMMapRandoWorld.prog_missile_item_id else loc.item.code - SMMapRandoWorld.prog_missile_item_id + SMMapRandoWorld.missile_item_id) - SMMapRandoWorld.items_start_id,
                                 self.multiworld.get_player_name(loc.player) + " world" if loc.player != self.player else None
                             )
                         for sphere_idx, sphere in enumerate(spheres) for loc in sphere if loc.item.player == self.player and loc.item.name != "Nothing"
@@ -384,7 +446,7 @@ class SMMapRandoWorld(World):
 
             self.randomizer_ap.randomization = randomization
 
-            ips_patches = make_ips_patches(self, match_item)
+            ips_patches = make_ips_patches(self)
 
             customize_settings = self.options.as_dict(
                 "etank_color_red", "etank_color_green", "etank_color_blue",
@@ -437,9 +499,9 @@ class SMMapRandoWorld(World):
     def fill_slot_data(self): 
         slot_data = {}
         if not self.multiworld.is_race:
-            locations_nothing = [itemLoc.address - locations_start_id 
+            locations_nothing = [itemLoc.address - SMMapRandoWorld.locations_start_id 
                                 for itemLoc in self.locations.values()
-                                if itemLoc.address is not None and itemLoc.player == self.player and itemLoc.item.code == items_start_id + self.nothing_item_id ]
+                                if itemLoc.address is not None and itemLoc.player == self.player and itemLoc.item.code == SMMapRandoWorld.items_start_id + self.nothing_item_id ]
         
             slot_data["locations_nothing"] = locations_nothing
                 

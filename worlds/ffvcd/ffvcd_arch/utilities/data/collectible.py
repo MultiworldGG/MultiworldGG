@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 import math
-from progression_translation import *
+from .progression_translation import *
 import logging
 
 

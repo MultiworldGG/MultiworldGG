@@ -1776,6 +1776,12 @@ def lobby_update_settings(lobby: UUID):
         except (ValueError, TypeError):
             pass
 
+    if "progression_equalization" in data:
+        try:
+            gen_opts["progression_equalization"] = max(0, min(int(data["progression_equalization"]), 100))
+        except (ValueError, TypeError):
+            pass
+
     meta["server_options"] = server_opts
     meta["generator_options"] = gen_opts
     lobby.meta = json.dumps(meta)
@@ -2389,6 +2395,7 @@ def lobby_download_package(lobby: UUID):
             "player_files_path": "Players",
             "spoiler": gen_opts.get("spoiler", 3),
             "race": 1 if gen_opts.get("race") else 0,
+            "progression_equalization": gen_opts.get("progression_equalization", 20),
             "plando_options": ", ".join(sorted(plando_opts)),
         },
     }, default_flow_style=False, allow_unicode=True)

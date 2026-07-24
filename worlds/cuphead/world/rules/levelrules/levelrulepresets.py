@@ -233,6 +233,11 @@ LrpDashOrDlcDoublejump = PresetData(
     "Dash or DLC Double Jump"
 )
 
+LrpDashAndDlcDoublejump = PresetData(
+    Preset(LrpDash) & Preset(LrpDlcDoublejump),
+    "Dash and DLC Double Jump"
+)
+
 LrpDlcBossChaliced = PresetData(
     Preset(LrpDlcCookie) &
     Filtered(

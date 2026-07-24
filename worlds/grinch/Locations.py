@@ -1,8 +1,13 @@
-from typing import Optional
+from typing import Optional, NamedTuple
 
 from .RamHandler import GrinchRamData
 from BaseClasses import Location, Region
 
+
+
+class GrinchLocationInfo(NamedTuple):
+    location_access: list[list[str]] = None
+    advanced_location_access: Optional[list[list[str]]] = None
 
 class GrinchLocationData:
     region: str
@@ -1245,70 +1250,164 @@ grinch_locations = {
             GrinchRamData(0x0100C3, binary_bit_pos=6),
         ],
     ),
+
     # Supadow Minigames
-    # "Spin N' Win - Easy": GrinchLocationData(
-    #     "Spin N' Win",
-    #     ["Supadow Minigames", "Spin N' Win"],
-    #     1500,
-    #     [GrinchRamData(0x0100FD, min_count=1, max_count=59)]),
-    # "Spin N' Win - Hard": GrinchLocationData(
-    #     "Spin N' Win",
-    #     ["Supadow Minigames", "Spin N' Win"],
-    #     1501,
-    #     [GrinchRamData(0x0100FD, min_count=1, max_count=44)]),
-    # "Spin N' Win - Real Tough": GrinchLocationData(
-    #     "Spin N' Win",
-    #     ["Supadow Minigames", "Spin N' Win"],
-    #     1502,
-    #     [GrinchRamData(0x0100FD, min_count=1, max_count=29)]),
-    # "Dankamania - 12 Points": GrinchLocationData(
-    #     "Dankamania",
-    #     ["Supadow Minigames", "Dankamania"],
+    "MC - Supadow - Spin N' Win - Easy": GrinchLocationData(
+        "Spin N' Win",
+        ["Supadow Minigames", "Spin N' Win", "Supadow Easy"],
+        1500,
+        [
+                        #GrinchRamData(0x0100B3, min_count=1, max_count=59),
+                        GrinchRamData(0x010000, value=26),
+                        GrinchRamData(0x095346, value=0),
+                        GrinchRamData(0x08F9D0, value=71)]),
+    "MC - Supadow - Spin N' Win - Hard": GrinchLocationData(
+        "Spin N' Win",
+        ["Supadow Minigames", "Spin N' Win", "Supadow Hard"],
+        1501,
+        [
+                        #GrinchRamData(0x0100B3, min_count=1, max_count=44),
+                        GrinchRamData(0x010000, value=26),
+                        GrinchRamData(0x095346, value=1),
+                        GrinchRamData(0x08F9D0, value=71)]),
+    "MC - Supadow - Spin N' Win - Real Tough": GrinchLocationData(
+        "Spin N' Win",
+        ["Supadow Minigames", "Spin N' Win", "Supadow Real Tough"],
+        1502,
+        [
+                        #GrinchRamData(0x0100B3, min_count=1, max_count=29),
+                        GrinchRamData(0x010000, value=26),
+                        GrinchRamData(0x095346, value=2),
+                        GrinchRamData(0x08F9D0, value=71)]),
+    # "MC - Supadow - Pankamania - Easy - 4 Points": GrinchLocationData(
+    #     "Pankamania",
+    #     ["Supadow Minigames", "Pankamania", "Supadow Easy"],
     #     1503,
-    #     [GrinchRamData(0x0100FB, min_count=12)]),
-    # "The Copter Race Contest - Easy": GrinchLocationData(
-    #     "The Copter Race Contest",
-    #     ["Supadow Minigames", "The Copter Race Contest"],
+    #     [
+    #                     GrinchRamData(0x0100EB,value=4, min_count=4, max_count=99),
+    #                     GrinchRamData(0x010000, value=27),
+    #                     GrinchRamData(0x095346, value=0)]),
+    # "MC - Supadow - Pankamania - Easy - 8 Points": GrinchLocationData(
+    #     "Pankamania",
+    #     ["Supadow Minigames", "Pankamania", "Supadow Easy"],
     #     1504,
-    #     [GrinchRamData(0x0100FC, min_count=1, max_count=44)]),
-    # "The Copter Race Contest - Hard": GrinchLocationData(
-    #     "The Copter Race Contest",
-    #     ["Supadow Minigames", "The Copter Race Contest"],
-    #     1505,
-    #     [GrinchRamData(0x0100FC, min_count=1, max_count=34)]),
-    # "The Copter Race Contest - Real Tough": GrinchLocationData(
-    #     "The Copter Race Contest",
-    #     ["Supadow Minigames", "The Copter Race Contest"],
+    #     [
+    #                     GrinchRamData(0x0100EB,value=8, min_count=8, max_count=99),
+    #                     GrinchRamData(0x010000, value=27),
+    #                     GrinchRamData(0x095346, value=0)]),
+    "MC - Supadow - Pankamania - Easy - 12 Points": GrinchLocationData(
+        "Pankamania",
+        ["Supadow Minigames", "Pankamania", "Supadow Easy"],
+        1505,
+        [
+                        GrinchRamData(0x0100EB, value=12, min_count=12, max_count=99),
+                        GrinchRamData(0x010000, value=27),
+                        GrinchRamData(0x095346, value=0)]),
+    # "MC - Supadow - Pankamania - Hard - 4 Points": GrinchLocationData(
+    #     "Pankamania",
+    #     ["Supadow Minigames", "Pankamania", "Supadow Hard"],
     #     1506,
-    #     [GrinchRamData(0x0100FC, min_count=1, max_count=29)]),
-    # "Bike Race - 1st Place":  GrinchLocationData(
-    #     "Bike Race",
-    #     ["Supadow Minigames", "Bike Race"],
+    #     [
+    #                     GrinchRamData(0x0100EB, value=4, min_count=4, max_count=99),
+    #                     GrinchRamData(0x010000, value=27),
+    #                     GrinchRamData(0x095346, value=1)]),
+    # "MC - Supadow - Pankamania - Hard - 8 Points": GrinchLocationData(
+    #     "Pankamania",
+    #     ["Supadow Minigames", "Pankamania", "Supadow Hard"],
+    #     1507,
+    #     [
+    #                     GrinchRamData(0x0100EB, value=8, min_count=8, max_count=99),
+    #                     GrinchRamData(0x010000, value=27),
+    #                     GrinchRamData(0x095346, value=1)]),
+    "MC - Supadow - Pankamania - Hard - 12 Points": GrinchLocationData(
+        "Pankamania",
+        ["Supadow Minigames", "Pankamania", "Supadow Hard"],
+        1508,
+        [
+                        GrinchRamData(0x0100EB, value=12, min_count=12, max_count=99),
+                        GrinchRamData(0x010000, value=27),
+                        GrinchRamData(0x095346, value=1)]),
+    # "MC - Supadow - Pankamania - Real Tough - 4 Points": GrinchLocationData(
+    #     "Pankamania",
+    #     ["Supadow Minigames", "Pankamania", "Supadow Real Tough"],
     #     1509,
     #     [
-    #         GrinchRamData(0x010000, value=0x18),
-    #         GrinchRamData(0x134CA5, value=1)]),
-    # "Bike Race - Top 2": GrinchLocationData(
-    #     "Bike Race",
-    #     ["Supadow Minigames", "Bike Race"],
+    #                     GrinchRamData(0x0100EB, value=4, min_count=4, max_count=99),
+    #                     GrinchRamData(0x010000, value=27),
+    #                     GrinchRamData(0x095346, value=2)]),
+    # "MC - Supadow - Pankamania - Real Tough - 8 Points": GrinchLocationData(
+    #     "Pankamania",
+    #     ["Supadow Minigames", "Pankamania", "Supadow Real Tough"],
     #     1510,
     #     [
-    #         GrinchRamData(0x010000, value=0x18),
-    #         GrinchRamData(0x134CA5, min_count=1, max_count=2)]),
-    # "Bike Race - Top 3": GrinchLocationData(
+    #                     GrinchRamData(0x0100EB, value=8, min_count=8, max_count=99),
+    #                     GrinchRamData(0x010000, value=27),
+    #                     GrinchRamData(0x095346, value=2)]),
+    "MC - Supadow - Pankamania - Real Tough - 12 Points": GrinchLocationData(
+        "Pankamania",
+        ["Supadow Minigames", "Pankamania", "Supadow Real Tough"],
+        1511,
+        [
+                        GrinchRamData(0x0100EB, value=12, min_count=12, max_count=99),
+                        GrinchRamData(0x010000, value=27),
+                        GrinchRamData(0x095346, value=2)]),
+
+    "MC - Supadow - The Copter Race Contest - Easy": GrinchLocationData(
+        "The Copter Race Contest",
+        ["Supadow Minigames", "The Copter Race Contest", "Supadow Easy"],
+        1512,
+        [
+                        #GrinchRamData(0x0100B3, min_count=1, max_count=44),
+                        GrinchRamData(0x095345, value=0),
+                        GrinchRamData(0x010000, value=28),
+                        GrinchRamData(0x08F9D0, value=71)]),
+    "MC - Supadow - The Copter Race Contest - Hard": GrinchLocationData(
+        "The Copter Race Contest",
+        ["Supadow Minigames", "The Copter Race Contest", "Supadow Hard"],
+        1513,
+        [
+                        #GrinchRamData(0x0100B3, min_count=1, max_count=34),
+                        GrinchRamData(0x095345, value=1),
+                        GrinchRamData(0x010000, value=28),
+                        GrinchRamData(0x08F9D0, value=71)]),
+    "MC - Supadow - The Copter Race Contest - Real Tough": GrinchLocationData(
+        "The Copter Race Contest",
+        ["Supadow Minigames", "The Copter Race Contest", "Supadow Real Tough"],
+        1514,
+        [
+                        #GrinchRamData(0x0100B3, min_count=1, max_count=29),
+                        GrinchRamData(0x095345, value=2),
+                        GrinchRamData(0x010000, value=28),
+                        GrinchRamData(0x08F9D0, value=71)]),
+    "MC - Sleigh Room - Bike Race - 1st Place":  GrinchLocationData(
+        "Bike Race",
+        ["Supadow Minigames", "Bike Race", "Supadow Real Tough"],
+        1515,
+        [
+            GrinchRamData(0x010000, value=0x18),
+            GrinchRamData(0x134CA5, value=1)]),
+    "MC - Sleigh Room - Bike Race - Top 2": GrinchLocationData(
+        "Bike Race",
+        ["Supadow Minigames", "Bike Race", "Supadow Hard"],
+        1516,
+        [
+            GrinchRamData(0x010000, value=0x18),
+            GrinchRamData(0x134CA5, min_count=1, max_count=2)]),
+    "MC - Sleigh Room - Bike Race - Top 3": GrinchLocationData(
+        "Bike Race",
+        ["Supadow Minigames", "Bike Race", "Supadow Easy"],
+        1517,
+        [
+            GrinchRamData(0x010000, value=0x18),
+            GrinchRamData(0x134CA5, min_count=1, max_count=3)]),
+    # "MC - Sleigh Room - Bike Race - Top 4": GrinchLocationData(
     #     "Bike Race",
-    #     ["Supadow Minigames", "Bike Race"],
-    #     1511,
-    #     [
-    #         GrinchRamData(0x010000, value=0x18),
-    #         GrinchRamData(0x134CA5, min_count=1, max_count=3)]),
-    # "Bike Race - Top 4": GrinchLocationData(
-    #     "Bike Race",
-    #     ["Supadow Minigames", "Bike Race"],
-    #     1512,
+    #     ["Supadow Minigames", "Bike Race", "Supadow Easy"],
+    #     1518,
     #     [
     #         GrinchRamData(0x010000, value=0x18),
     #         GrinchRamData(0x134CA5, min_count=1, max_count=4)]),
+
     # Sleigh Part Locations
     "WV - Exhaust Pipes": GrinchLocationData(
         "Whoville",
@@ -1316,7 +1415,8 @@ grinch_locations = {
         1600,
         [
             GrinchRamData(0x010000, value=0x07),
-            GrinchRamData(0x0F6B8, value=0),
+            GrinchRamData(0x0101FB, binary_bit_pos=2),
+            # GrinchRamData(0x0F6B8, value=0),
         ],
     ),
     "WF - Skis": GrinchLocationData(
@@ -1325,7 +1425,8 @@ grinch_locations = {
         1601,
         [
             GrinchRamData(0x010000, value=0x0B),
-            GrinchRamData(0x010248, binary_bit_pos=1),
+            # GrinchRamData(0x010248, binary_bit_pos=1),
+            GrinchRamData(0x0101FB, binary_bit_pos=3)
         ],
     ),
     "WD - Tires": GrinchLocationData(
@@ -1334,73 +1435,76 @@ grinch_locations = {
         1602,
         [
             GrinchRamData(0x010000, value=0x0E),
-            GrinchRamData(0x0FC42C, value=176)
+            GrinchRamData(0x0101FB, binary_bit_pos=4)
+            # GrinchRamData(0x0FC42C, value=176),
         ],
     ),
     "WL - Submarine World - Twin-End Tuba": GrinchLocationData(
         "Submarine World",
-        ["Sleigh Ride", "Who Lake", "South Shore", "Sleigh Parts"],
+        ["Sleigh Ride", "Who Lake", "Submarine World", "Sleigh Parts"],
         1603,
         [
             GrinchRamData(0x010000, value=0x17),
-            GrinchRamData(0x095305, value=10),
+            GrinchRamData(0x0101FB, binary_bit_pos=6),
+            # GrinchRamData(0x095305, value=10),
         ],
     ),
     "WL - South Shore - GPS": GrinchLocationData(
         "Who Lake",
-        ["Sleigh Ride", "Who Lake", "Submarine World", "Sleigh Parts"],
+        ["Sleigh Ride", "Who Lake", "South Shore", "Sleigh Parts"],
         1604,
         [
             GrinchRamData(0x010000, value=0x12),
-            GrinchRamData(0x010105, binary_bit_pos=7),
+            GrinchRamData(0x0101FB, binary_bit_pos=5)
+            # GrinchRamData(0x010105, binary_bit_pos=7),
         ],
     ),
     # Mount Crumpit Locations
-    "MC - 1st Crate Squashed": GrinchLocationData(
-        "Mount Crumpit",
-        ["Mount Crumpit"],
-        1700,
-        [
-            GrinchRamData(0x095343, value=1),
-            GrinchRamData(0x010000, value=0x05),
-        ],
-    ),
-    "MC - 2nd Crate Squashed": GrinchLocationData(
-        "Mount Crumpit",
-        ["Mount Crumpit"],
-        1701,
-        [
-            GrinchRamData(0x095343, value=2),
-            GrinchRamData(0x010000, value=0x05),
-        ],
-    ),
-    "MC - 3rd Crate Squashed": GrinchLocationData(
-        "Mount Crumpit",
-        ["Mount Crumpit"],
-        1702,
-        [
-            GrinchRamData(0x095343, value=3),
-            GrinchRamData(0x010000, value=0x05),
-        ],
-    ),
-    "MC - 4th Crate Squashed": GrinchLocationData(
-        "Mount Crumpit",
-        ["Mount Crumpit"],
-        1703,
-        [
-            GrinchRamData(0x095343, value=4),
-            GrinchRamData(0x010000, value=0x05),
-        ],
-    ),
-    "MC - 5th Crate Squashed": GrinchLocationData(
-        "Mount Crumpit",
-        ["Mount Crumpit"],
-        1704,
-        [
-            GrinchRamData(0x095343, value=5),
-            GrinchRamData(0x010000, value=0x05),
-        ],
-    ),
+    # "MC - 1st Crate Squashed": GrinchLocationData(
+    #     "Mount Crumpit",
+    #     ["Mount Crumpit"],
+    #     1700,
+    #     [
+    #         GrinchRamData(0x095343, value=1, min_count=1, max_count=5),
+    #         GrinchRamData(0x010000, value=0x05),
+    #     ],
+    # ),
+    # "MC - 2nd Crate Squashed": GrinchLocationData(
+    #     "Mount Crumpit",
+    #     ["Mount Crumpit"],
+    #     1701,
+    #     [
+    #         GrinchRamData(0x095343, value=2, min_count=2, max_count=5),
+    #         GrinchRamData(0x010000, value=0x05),
+    #     ],
+    # ),
+    # "MC - 3rd Crate Squashed": GrinchLocationData(
+    #     "Mount Crumpit",
+    #     ["Mount Crumpit"],
+    #     1702,
+    #     [
+    #         GrinchRamData(0x095343, value=3, min_count=3, max_count=5),
+    #         GrinchRamData(0x010000, value=0x05),
+    #     ],
+    # ),
+    # "MC - 4th Crate Squashed": GrinchLocationData(
+    #     "Mount Crumpit",
+    #     ["Mount Crumpit"],
+    #     1703,
+    #     [
+    #         GrinchRamData(0x095343, value=4, min_count=4, max_count=5),
+    #         GrinchRamData(0x010000, value=0x05),
+    #     ],
+    # ),
+    # "MC - 5th Crate Squashed": GrinchLocationData(
+    #     "Mount Crumpit",
+    #     ["Mount Crumpit"],
+    #     1704,
+    #     [
+    #         GrinchRamData(0x095343, value=5),
+    #         GrinchRamData(0x010000, value=0x05),
+    #     ],
+    # ),
     "MC - Interact with the Telescope": GrinchLocationData(
         "Mount Crumpit",
         ["Mount Crumpit"],
@@ -2264,88 +2368,88 @@ grinch_locations = {
             GrinchRamData(0x010258, binary_bit_pos=6),
         ],
     ),
-    "WD - Infesting The Mayor's House With Rats - Rat 1": GrinchLocationData(
+    "WD - Infesting The Mayor's House With Rats - Rudolph the Rat": GrinchLocationData(
         "Who Dump",
         ["Who Dump's Missions", "Missionsanity", "Who Dump"],
         2121,
         [
-            # GrinchRamData(0x0100FE, value=1),
+            # GrinchRamData(0x0100FE, value=1, min_count=1, max_count=10),
             GrinchRamData(0x010258, binary_bit_pos=7),
         ],
     ),
-    "WD - Infesting The Mayor's House With Rats - Rat 2": GrinchLocationData(
+    "WD - Infesting The Mayor's House With Rats - Dasher the Rat": GrinchLocationData(
         "Who Dump",
         ["Who Dump's Missions", "Missionsanity", "Who Dump"],
         2122,
         [
-            # GrinchRamData(0x0100FE, value=2),
+            # GrinchRamData(0x0100FE, value=2, min_count=2, max_count=10),
             GrinchRamData(0x010259, binary_bit_pos=0),
         ],
     ),
-    "WD - Infesting The Mayor's House With Rats - Rat 3": GrinchLocationData(
+    "WD - Infesting The Mayor's House With Rats - Dancer the Rat": GrinchLocationData(
         "Who Dump",
         ["Who Dump's Missions", "Missionsanity", "Who Dump"],
         2123,
         [
-            # GrinchRamData(0x0100FE, value=3),
+            # GrinchRamData(0x0100FE, value=3, min_count=3, max_count=10),
             GrinchRamData(0x010259, binary_bit_pos=1),
         ],
     ),
-    "WD - Infesting The Mayor's House With Rats - Rat 4": GrinchLocationData(
+    "WD - Infesting The Mayor's House With Rats - Prancer the Rat": GrinchLocationData(
         "Who Dump",
         ["Who Dump's Missions", "Missionsanity", "Who Dump"],
         2124,
         [
-            # GrinchRamData(0x0100FE, value=4),
+            # GrinchRamData(0x0100FE, value=4, min_count=4, max_count=10),
             GrinchRamData(0x010259, binary_bit_pos=2),
         ],
     ),
-    "WD - Infesting The Mayor's House With Rats - Rat 5": GrinchLocationData(
+    "WD - Infesting The Mayor's House With Rats - Vixen the Rat": GrinchLocationData(
         "Who Dump",
         ["Who Dump's Missions", "Missionsanity", "Who Dump"],
         2125,
         [
-            # GrinchRamData(0x0100FE, value=5),
+            # GrinchRamData(0x0100FE, value=5, min_count=5, max_count=10),
             GrinchRamData(0x010259, binary_bit_pos=3),
         ],
     ),
-    "WD - Infesting The Mayor's House With Rats - Rat 6": GrinchLocationData(
+    "WD - Infesting The Mayor's House With Rats - Comet the Rat": GrinchLocationData(
         "Who Dump",
         ["Who Dump's Missions", "Missionsanity", "Who Dump"],
         2126,
         [
-            # GrinchRamData(0x0100FE, value=6),
+            # GrinchRamData(0x0100FE, value=6, min_count=6 max_count=10),
             GrinchRamData(0x010259, binary_bit_pos=4),
         ],
     ),
-    "WD - Infesting The Mayor's House With Rats - Rat 7": GrinchLocationData(
+    "WD - Infesting The Mayor's House With Rats - Cupid the Rat": GrinchLocationData(
         "Who Dump",
         ["Who Dump's Missions", "Missionsanity", "Who Dump"],
         2127,
         [
-            # GrinchRamData(0x0100FE, value=7),
+            # GrinchRamData(0x0100FE, value=7, min_count=7, max_count=10),
             GrinchRamData(0x010259, binary_bit_pos=5),
         ],
     ),
-    "WD - Infesting The Mayor's House With Rats - Rat 8": GrinchLocationData(
+    "WD - Infesting The Mayor's House With Rats - Donner the Rat": GrinchLocationData(
         "Who Dump",
         ["Who Dump's Missions", "Missionsanity", "Who Dump"],
         2128,
         [
-            # GrinchRamData(0x0100FE, value=8),
+            # GrinchRamData(0x0100FE, value=8, min_count=8, max_count=10),
             GrinchRamData(0x010259, binary_bit_pos=6),
         ],
     ),
-    "WD - Infesting The Mayor's House With Rats - Rat 9": GrinchLocationData(
+    "WD - Infesting The Mayor's House With Rats - Blitzen the Rat": GrinchLocationData(
         "Who Dump",
         ["Who Dump's Missions", "Missionsanity", "Who Dump"],
         2129,
         [
-            # GrinchRamData(0x0100FE, value=9),
+            # GrinchRamData(0x0100FE, value=9, min_count=9, max_count=10),
             GrinchRamData(0x010259, binary_bit_pos=7),
         ],
     ),
-    "WD - Infesting The Mayor's House With Rats - Rat 10": GrinchLocationData(
+    "WD - Infesting The Mayor's House With Rats - Larry the Rat": GrinchLocationData(
         "Who Dump",
         ["Who Dump's Missions", "Missionsanity", "Who Dump"],
         2130,
@@ -3225,8 +3329,9 @@ grinch_locations = {
         ["Whoville", "Mission Specific Item Locations"],
         2700,
         [
-            GrinchRamData(0x010000, value=0x01),
-            GrinchRamData(0x0F05C0, value=0),
+            GrinchRamData(0x010000, value=0x07),
+            # GrinchRamData(0x0F05C0, value=0),
+            GrinchRamData(0x0101F9, binary_bit_pos=1),
         ],
     ),
     "WV - Clock Tower - Who Cloak": GrinchLocationData(
@@ -3235,7 +3340,8 @@ grinch_locations = {
         2701,
         [
             GrinchRamData(0x010000, value=0x09),
-            GrinchRamData(0x095306, value=10),
+            # GrinchRamData(0x095306, value=10),
+            GrinchRamData(0x0101F9, binary_bit_pos=0),
         ],
     ),
     "WV - Clock Tower - Hammer": GrinchLocationData(
@@ -3244,7 +3350,8 @@ grinch_locations = {
         2702,
         [
             GrinchRamData(0x010000, value=0x09),
-            GrinchRamData(0x0F1B39, value=30),
+            # GrinchRamData(0x0F1B39, value=30),
+            GrinchRamData(0x0101F9, binary_bit_pos=3),
         ],
     ),
     "WV - City Hall - Sculpting Tools": GrinchLocationData(
@@ -3253,7 +3360,8 @@ grinch_locations = {
         2703,
         [
             GrinchRamData(0x010000, value=0x08),
-            GrinchRamData(0x0E9859, value=0),
+            # GrinchRamData(0x0E9859, value=0),
+            GrinchRamData(0x0101F9, binary_bit_pos=2),
         ],
     ),
     "WF - Glue Bucket": GrinchLocationData(
@@ -3262,7 +3370,8 @@ grinch_locations = {
         2704,
         [
             GrinchRamData(0x010000, value=0x0B),
-            GrinchRamData(0x0E2C44, value=0),
+            # GrinchRamData(0x0E2C44, value=0),
+            GrinchRamData(0x0101F9, binary_bit_pos=4),
         ],
     ),
     "WF - Cable Car Access Card": GrinchLocationData(
@@ -3271,7 +3380,8 @@ grinch_locations = {
         2705,
         [
             GrinchRamData(0x010000, value=0x0B),
-            GrinchRamData(0x10C114, value=0),
+            # GrinchRamData(0x10C114, value=0),
+            GrinchRamData(0x0101F9, binary_bit_pos=5),
         ],
     ),
     "WD - Minefield - Scissors": GrinchLocationData(
@@ -3280,7 +3390,8 @@ grinch_locations = {
          2706,
          [
              GrinchRamData(0x010000, value=0x11),
-             GrinchRamData(0x095306, value=16),
+             # GrinchRamData(0x095306, value=16),
+             GrinchRamData(0x0101F9, binary_bit_pos=6),
          ],
     ),
     "WL - Scout's Hut - Scout Clothes": GrinchLocationData(
@@ -3289,8 +3400,9 @@ grinch_locations = {
         2707,
         [
             GrinchRamData(0x010000, value=0x13),
-            GrinchRamData(0x095349, binary_bit_pos=2),
-            GrinchRamData(0x095306, value=21),
+            # GrinchRamData(0x095349, binary_bit_pos=2),
+            # GrinchRamData(0x095306, value=21),
+            GrinchRamData(0x0101F9, binary_bit_pos=7),
         ],
     ),
     "WL - North Shore - Drill": GrinchLocationData(
@@ -3299,7 +3411,8 @@ grinch_locations = {
         2708,
         [
             GrinchRamData(0x010000, value=0x14),
-            GrinchRamData(0x0F9472, value=0),
+            # GrinchRamData(0x0F9472, value=0),
+            GrinchRamData(0x0101FA, binary_bit_pos=2),
          ],
     ),
         "WL - Mayor's Villa - Rope": GrinchLocationData(
@@ -3308,7 +3421,8 @@ grinch_locations = {
         2709,
         [
             GrinchRamData(0x010000, value=0x16),
-            GrinchRamData(0x95306, value=19),
+            # GrinchRamData(0x95306, value=19),
+            GrinchRamData(0x0101FA, binary_bit_pos=1),
          ],
     ),
     "WL - Mayor's Villa - Hook": GrinchLocationData(

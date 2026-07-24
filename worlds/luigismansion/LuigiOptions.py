@@ -169,6 +169,13 @@ class Furnisanity(OptionSet):
 
     Different sets of locations can be added within the list. Valid strings are:
 
+    "Full" turns on all furniture locations and will override any other specified groups
+
+    "Random Any" will randomly add furniture to the pool from all available furniture locations and will override any
+    other specified groups besides Full
+
+    "Random Groups" will randomly turn on any groups listed below, in addition to any other specified groups
+
     "Hangables" includes items on walls such as paintings and other decor
 
     "Decor" includes items such as instruments and suits of armor
@@ -189,13 +196,11 @@ class Furnisanity(OptionSet):
 
     "Treasures" turns on only locations that contain treasure (including all plants) in the vanilla game. Does not create duplicate locations
 
-    "Basement, 1st Floor, 2nd Floor, Attic, and Roof can be used to turn on all furniture pieces on that level.
-
-    "Full" turns on all furniture locations and will override any other specified groups
+    "Basement", "1st Floor", "2nd Floor", "Attic", and "Roof" can be used to turn on all furniture pieces on that level.
     """
     display_name = "Furnisanity"
     internal_name = "furnisanity"
-    valid_keys = {"Hangables", "Ceiling", "Candles", "Seating", "Surfaces", "Plants", "Storage", "Drawers", "Decor", "Full", "Treasures", "Basement", "1st Floor", "2nd Floor", "Attic", "Roof"}
+    valid_keys = {"Hangables", "Ceiling", "Candles", "Seating", "Surfaces", "Plants", "Storage", "Drawers", "Decor", "Full", "Treasures", "Basement", "1st Floor", "2nd Floor", "Attic", "Roof", "Random Any", "Random Groups"}
 
 
 class EarlyFirstKey(Toggle):
@@ -653,12 +658,12 @@ class PortraitHealthOption(Choice):
     Choose how Portrait Ghost Health is determined. Gold and Silver border locations will require upgrades if turned on
     and Health is above certain values
 
-    Choice: Use Portrait Health Value to set all boos to the specified value
+    Choice: Use Portrait Health Value to set all portrait ghost health to the specified value
 
-    Random Values: Every Portrait Ghost has a different, randomly chosen health value between 1 and the value set in Boo Health Value
+    Random Values: Every Portrait Ghost has a different, randomly chosen health value between 1 and the value set in Portrait Health Value
 
     Portrait Health by Sphere: Portrait Ghosts will receive health values based on the spheres they are in. Portrait
-    Health Value will determine the highest health a Boo can have - this is capped by Vacuum upgrades in the pool
+    Health Value will determine the highest health a Portrait Ghost can have - this is capped by Vacuum upgrades in the pool
 
     Vanilla: No changes are made to Portrait Ghosts from the base game.
     """
@@ -672,11 +677,11 @@ class PortraitHealthOption(Choice):
 
 class PortraitHealthValue(Range):
     """
-    Choose the health value all Portrait Ghosts will have if the Portrait Health Option is Choice. Range between 1 and 999
+    Choose the health value all Portrait Ghosts will have if the Portrait Health Option is Choice. Range between 1 and 650
     If portrait_health_option is set to random_values, if you set this to "100: 50", the max value used will be 100 instead.
     If you want a custom range, use a random range function: https://archipelago.gg/tutorial/Archipelago/advanced_settings_en#random-numbers
 
-    Higher values will require increasing amounts of vacuum upgrades. These will be forced on
+    Higher values will require increasing amounts of vacuum upgrades with the border checks. These will be forced on
     """
     display_name = "Portrait Health Value"
     internal_name = "portrait_health_value"

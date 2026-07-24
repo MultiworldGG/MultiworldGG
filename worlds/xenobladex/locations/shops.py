@@ -1,4 +1,4 @@
-from ..Locations import Loc as Data
+from . import Loc as Data
 
 # https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_Blueprint.html
 shop_blueprints_data: list[Data] = [

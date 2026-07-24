@@ -2,7 +2,7 @@
 import random
 from abc import ABC, abstractmethod
 from collections import OrderedDict
-from data_manager import DataManager
+from .data_manager import DataManager
 import math
 import logging
 
@@ -15,7 +15,7 @@ new_path = os.path.abspath(os.path.join(os.pardir,os.pardir))
 if new_path not in sys.path:
     sys.path.append(new_path)
     
-import text_parser2 as tp
+from . import text_parser2 as tp
 
 logging.basicConfig(level=logging.ERROR, format="%(asctime)-15s %(message)s")
 

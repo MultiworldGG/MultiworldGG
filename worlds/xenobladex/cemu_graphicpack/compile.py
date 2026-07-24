@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Any
 import requests
 import os
 import sys
@@ -38,7 +38,7 @@ for filename in (os.path.splitext(file)[0] for file in os.listdir() if file.ends
         res.raise_for_status()
     except Exception:
         raise Exception(f"Assembly for {filename}.cpp failed with {res.status_code}")
-    jres: Dict = res.json()
+    jres: Any = res.json()
 
     # Print errors and warnings
     if jres["stderr"]:
@@ -54,7 +54,7 @@ for filename in (os.path.splitext(file)[0] for file in os.listdir() if file.ends
     content = re.sub(r" {4,12}", "\t", content)
 
     # Replace .zero initializers
-    def _generateInitializer(match):
+    def _generateInitializer(match: re.Match[str]) -> str:
         match match.group(1):
             case "1":
                 return ".byte   0"
@@ -80,7 +80,7 @@ for filename in (os.path.splitext(file)[0] for file in os.listdir() if file.ends
     # Handle target out of range error for internal functions
     counter = itertools.count(1)
 
-    def _generateAlternateCall(match):
+    def _generateAlternateCall(match: re.Match[str]) -> str:
         name = match.group(1)
         label = f"_after_{filename}_{next(counter)}{name}"
         return f"lis r12,{label}@ha\n\taddi r12,r12,{label}@l\n\tmtlr r12\n\tlis r12,{name}" \

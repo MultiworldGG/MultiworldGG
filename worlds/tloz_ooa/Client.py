@@ -6,6 +6,7 @@ import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
 from . import LOCATIONS_DATA, ITEMS_DATA, OracleOfAgesGoal, OracleOfAgesEnforcePotionInShop
 from .common.Util import build_item_id_to_name_dict, build_location_name_to_id_dict
+from .patching.Util import *
 
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
@@ -288,9 +289,12 @@ class OracleOfAgesClient(BizHawkClient):
         # fill it with the next item
         if num_received_items < len(ctx.items_received):
             next_item_name = self.item_id_to_name[ctx.items_received[num_received_items].item]
+
+            item_id, item_subid = get_item_id_and_subid(next_item_name)
+
             await bizhawk.write(ctx.bizhawk_ctx, [(0xCBFB, [
-                ITEMS_DATA[next_item_name]["id"],
-                ITEMS_DATA[next_item_name]["subid"] if "subid" in ITEMS_DATA[next_item_name] else 0
+                item_id,
+                item_subid
             ], "System Bus")])
 
     async def process_game_completion(self, ctx: "BizHawkClientContext", flag_bytes, current_room: int):
@@ -345,8 +349,8 @@ class OracleOfAgesClient(BizHawkClient):
             # Check if the seed has been harvested
             flag_mask = 0x01 << flag
             byte_offset = byte_addr - RAM_ADDRS["location_flags"][0]
-            local_tracker[f"Planted {gasha_name}"] = (gasha_seed_bytes & flag_mask) != 0
             local_tracker[f"Harvested {gasha_name}"] = (flag_bytes[byte_offset] & 0x20) != 0
+            local_tracker[f"Planted {gasha_name}"] = (gasha_seed_bytes & flag_mask) != 0 or local_tracker[f"Harvested {gasha_name}"]
 
         # Position tracking
         local_tracker["Current Room"] = current_room

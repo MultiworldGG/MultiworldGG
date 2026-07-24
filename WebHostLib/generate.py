@@ -51,6 +51,9 @@ def get_meta(options_source: dict, race: bool = False) -> dict[str, list[str] | 
     generator_options = {
         "spoiler": int(options_source.get("spoiler", GeneratorOptions.spoiler)),
         "race": race,
+        "progression_equalization": _clamp_int(
+            options_source.get("progression_equalization", GeneratorOptions.progression_equalization),
+            GeneratorOptions.progression_equalization, 0, 100),
     }
 
     if race:
@@ -176,7 +179,8 @@ def gen_game(gen_options: dict, meta: dict[str, Any] | None = None, owner=None, 
             args.name[player] = handle_name(args.name[player], player, name_counter)
         if len(set(args.name.values())) != len(args.name):
             raise Exception(f"Names have to be unique. Names: {Counter(args.name.values())}")
-        ERmain(args, seed, baked_server_options=meta["server_options"])
+        ERmain(args, seed, baked_server_options=meta["server_options"],
+               baked_generator_options=meta["generator_options"])
 
         return upload_to_db(target.name, sid, owner, race)
 

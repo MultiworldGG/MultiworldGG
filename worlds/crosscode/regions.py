@@ -229,7 +229,7 @@ region_packs: typing.Dict[str, RegionsData] = {
             RegionConnection(region_from='openDLC_DungeonMain', region_to='openDLC_DungeonBoss', cond=[ItemCondition(item_name='Heat', amount=1), ItemCondition(item_name='Cold', amount=1), ItemCondition(item_name='Shock', amount=1), ItemCondition(item_name='Wave', amount=1), ItemCondition(item_name="Ku'lero Master Key", amount=1)]),
         ],
         goals = {
-            'creator': Goal(region='open16.1', condition=[ItemCondition(item_name='Heat', amount=1), ItemCondition(item_name='Cold', amount=1), ItemCondition(item_name='Shock', amount=1), ItemCondition(item_name='Wave', amount=1), VariableCondition(name='vtShadeLock')]),
+            'creator': Goal(region='open18', condition=[ItemCondition(item_name='Heat', amount=1), ItemCondition(item_name='Cold', amount=1), ItemCondition(item_name='Shock', amount=1), ItemCondition(item_name='Wave', amount=1), VariableCondition(name='vtShadeLock')]),
             'monkey': Goal(region='open15.3', condition=None),
             'observatory': Goal(region='open2', condition=[LocationCondition(location_name='The Observatory')]),
             'diorbis': Goal(region='openDLC_DungeonBoss', condition=None),

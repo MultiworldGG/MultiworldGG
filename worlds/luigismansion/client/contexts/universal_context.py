@@ -61,6 +61,7 @@ class UniversalContext(CommonContext):
 
 def _check_universal_tracker_version() -> bool:
     import re
+    from Utils import tuplize_version
     if not _tracker_loaded:
         return False
 
@@ -69,9 +70,7 @@ def _check_universal_tracker_version() -> bool:
     match = re.search(r"v\d+.(\d+).(\d+)", UT_VERSION)
     if len(match.groups()) < 2:
         return False
-    if int(match.groups()[0]) < 2:
-        return False
-    if int(match.groups()[1]) < 11:
+    if not tuplize_version(match.string.replace("v", "")) > tuplize_version("0.2.11"):
         return False
 
     return True

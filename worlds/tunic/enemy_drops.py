@@ -4,8 +4,9 @@ from typing import TYPE_CHECKING, NamedTuple
 from worlds.generic.Rules import set_rule, add_rule
 
 from .constants import *
-from .logic_helpers import has_melee, has_sword, can_shop, has_ability, has_enemy_soul, has_ladder
-from .options import ShuffleEnemyDrops
+from .logic_helpers import (has_melee, has_sword, can_shop, has_ability, has_enemy_soul, has_ladder,
+                            has_ice_grapple_logic)
+from .options import ShuffleEnemyDrops, IceGrappling
 
 if TYPE_CHECKING:
     from . import TunicWorld
@@ -868,6 +869,10 @@ def set_enemy_location_rules(world: "TunicWorld") -> None:
             set_rule(location, lambda state: has_enemy_soul(EnemySouls.administrator, state, world) and has_sword(state, player))
         elif enemy_type == EnemyType.boss_scavenger:
             set_rule(location, lambda state: has_enemy_soul(EnemySouls.boss_scavenger, state, world) and has_sword(state, player))
+            if world.options.ice_grappling >= IceGrappling.option_medium:
+                add_rule(world.get_location("Rooted Ziggurat Lower - Defeat Boss Scavenger"),
+                         lambda state: has_ice_grapple_logic(False, IceGrappling.option_medium, state, world,
+                                                             [EnemySouls.boss_scavenger]))
         elif enemy_type == EnemyType.fleemer:
             set_rule(location, lambda state: has_enemy_soul(EnemySouls.fleemers, state, world) and has_melee(state, player))
             if loc_data.er_region == "Cathedral Gauntlet":

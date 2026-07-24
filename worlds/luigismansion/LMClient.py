@@ -23,9 +23,18 @@ from .client.links.energy_link.energy_link_command_processor import EnergyLinkCo
 from .client.constants import *
 from .client.display_in_game import LMDisplayQueue
 
+# Load settings and enforce that LM options exist. If they do, import their name and save for later use.
 from .client.luigismansion_settings import LuigisMansionSettings, DolphinProcessName
 
 DME_DOLPHIN_PROCESS_NAME_ENV_VARIABLE = "DME_DOLPHIN_PROCESS_NAME"
+
+# DME seems to only load the environment variables value once, then after the first hook it never retrieves it again.
+# It is in our best interest to set this up first, then call hook later
+lm_settings: LuigisMansionSettings = get_settings().luigismansion_options
+if lm_settings.dolphin_process_name:
+    os.environ[DME_DOLPHIN_PROCESS_NAME_ENV_VARIABLE] = lm_settings.dolphin_process_name
+elif DME_DOLPHIN_PROCESS_NAME_ENV_VARIABLE in os.environ:
+    del os.environ[DME_DOLPHIN_PROCESS_NAME_ENV_VARIABLE]
 
 # This is the address that holds the player's slot name.
 # This way, the player does not have to manually authenticate their slot name.
@@ -133,6 +142,21 @@ class LMCommandProcessor(EnergyLinkCommandProcessor):
         if isinstance(self.ctx, LMContext):
             Utils.async_start(self.ctx.get_debug_info(), name="Get Luigi's Mansion Debug info")
 
+    def _cmd_breaker_broke(self):
+        """
+        Breaker room broke for you? Run this command and provide the output to the devs.
+        Breaker-fix command will allow you to continue your (a)sync.
+        """
+        if isinstance(self.ctx, LMContext):
+            Utils.async_start(self.ctx.get_breaker_info(), name="Get Luigi's Mansion Breaker info")
+
+    def _cmd_breaker_fix(self):
+        """
+        Fixes your pesty breaker room door being locked on you (please try and use breaker_broke first to report bugs).
+        """
+        if isinstance(self.ctx, LMContext):
+            Utils.async_start(self.ctx.fix_breaker(), name="Fix Luigi's Mansion Breaker")
+
     def _cmd_change_dolphin_process_name(self, process_name: str):
         """Specify the name of the Dolphin process to connect to. "" for system default."""
         self.ctx.hook_check = False
@@ -159,6 +183,7 @@ class LMContext(BaseContext):
         super().__init__(server_address, password)
 
         # Handle various Dolphin connection related tasks
+        self.breaker_should_be_open = False
         self.instance_id = None
         self.dolphin_sync_task: Optional[asyncio.Task[None]] = None
         self.rom_loaded = False
@@ -266,6 +291,9 @@ class LMContext(BaseContext):
                 self.spawn = str(slot_data["spawn_region"])
                 self.boolossus_difficulty = int(slot_data["boolossus_difficulty"])
                 self.send_hints = bool(slot_data["send_hints"])
+
+                # Debug Breaker Door
+                self.breaker_should_be_open = bool(slot_data["door rando list"]["71"])
 
                 # Update Tags for relevant links
                 Utils.async_start(self.network_engine.update_tags_async(bool(slot_data[EnergyLinkConstants.INTERNAL_NAME]),
@@ -426,6 +454,31 @@ class LMContext(BaseContext):
             for flag_bit in range(0,8):
                 flag_val = "True" if (curr_val & (1 << flag_bit)) > 0 else "False"
                 logger.info("Flag #" + str(current_flag_num+flag_bit) + " is set to: " + flag_val)
+        return
+
+    async def get_breaker_info(self):
+        if not (dme.is_hooked() and self.dolphin_status == CONNECTION_CONNECTED_STATUS) or not self.check_ingame():
+            logger.info(f"Unable to use this command until you are in a {RANDOMIZER_NAME} ROM, loaded and connected.")
+            return
+
+        blackout_addr = 0x803D3399 + 8
+        blackout_flag_byte = dme.read_byte(blackout_addr)
+        logger.info(f"Blackout Flag #{str(8 * 8 + 5)} is set to: {"True" if (blackout_flag_byte & (1 << 5)) > 0 else "False"}")
+        logger.info(f"Blackout Door should be closed/open per settings: {str(self.breaker_should_be_open)}")
+
+        blackout_door_byte = dme.read_byte(0x803D5E1C)
+        logger.info(f"Breaker Door Locked State: {"True" if (blackout_door_byte & (1 << 7)) > 0 else "False"}")
+
+        return
+
+    async def fix_breaker(self):
+        if not (dme.is_hooked() and self.dolphin_status == CONNECTION_CONNECTED_STATUS) or not self.check_ingame():
+            logger.info(f"Unable to use this command until you are in a {RANDOMIZER_NAME} ROM, loaded and connected.")
+            return
+
+        blackout_door_byte = dme.read_byte(0x803D5E1C)
+        dme.write_byte(0x803D5E1C, blackout_door_byte | (1 << 7))
+
         return
 
     def check_ram_location(self, loc_data, addr_to_update, curr_map_id, map_to_check) -> bool:
@@ -915,14 +968,6 @@ class LMContext(BaseContext):
 def main(*launch_args: str):
     from .client.dolphin_launcher import DolphinLauncher
     import colorama
-
-    # DME seems to only load the environment variables value once, then after the first hook it never retrieves it again.
-    # It is in our best interest to set this up first, then call hook later
-    lm_settings: LuigisMansionSettings = get_settings().luigismansion_options
-    if lm_settings.dolphin_process_name:
-        os.environ[DME_DOLPHIN_PROCESS_NAME_ENV_VARIABLE] = lm_settings.dolphin_process_name
-    elif DME_DOLPHIN_PROCESS_NAME_ENV_VARIABLE in os.environ:
-        del os.environ[DME_DOLPHIN_PROCESS_NAME_ENV_VARIABLE]
 
     server_address: str = ""
     rom_path: str = ""

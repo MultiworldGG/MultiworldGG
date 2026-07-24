@@ -78,9 +78,10 @@
                                         <div>Threshold: {{ s.get('release_threshold', 0) }}%</div>
                                         <div>Remaining: {{ s.get('remaining_mode', 'goal') }}</div>
                                         <div>Hints: {% if hm == 'default' %}Full{% elif hm == 'own' %}Hide Own{% elif hm == 'all' %}Hide All{% else %}{{ hm }}{% endif %} @ {% if hc > 100 %}Off{% else %}{{ hc }}%{% endif %}</div>
-                                        <div>Item Cheat: {{ 'On' if s.get('item_cheat', True) else 'Off' }}</div>
-                                        <div>Spoiler: {% set sp = g.get('spoiler', 3) %}{% if sp == 0 %}Off{% elif sp == 1 %}On{% elif sp == 2 %}+Playthrough{% else %}Full{% endif %}</div>
-                                        <div>Max YAMLs/player: {{ lobby.max_yamls_per_player }}</div>
+                                         <div>Item Cheat: {{ 'On' if s.get('item_cheat', True) else 'Off' }}</div>
+                                         <div>Spoiler: {% set sp = g.get('spoiler', 3) %}{% if sp == 0 %}Off{% elif sp == 1 %}On{% elif sp == 2 %}+Playthrough{% else %}Full{% endif %}</div>
+                                         <div>Prog. Equal.: {{ g.get('progression_equalization', 20) }}%</div>
+                                         <div>Max YAMLs/player: {{ lobby.max_yamls_per_player }}</div>
                                         <div>Expires: <time class="lobby-expiry-time" datetime="{{ my_lobby_expiries.get(lobby.id, '') }}"></time></div>
                                         <div>Mode: {{ 'Race' if lobby.race else 'Standard' }}</div>
                                     </div>
@@ -145,9 +146,10 @@
                                             <div>Threshold: {{ s.get('release_threshold', 0) }}%</div>
                                             <div>Remaining: {{ s.get('remaining_mode', 'goal') }}</div>
                                             <div>Hints: {% if hm == 'default' %}Full{% elif hm == 'own' %}Hide Own{% elif hm == 'all' %}Hide All{% else %}{{ hm }}{% endif %} @ {% if hc > 100 %}Off{% else %}{{ hc }}%{% endif %}</div>
-                                            <div>Item Cheat: {{ 'On' if s.get('item_cheat', True) else 'Off' }}</div>
-                                            <div>Spoiler: {% set sp = g.get('spoiler', 3) %}{% if sp == 0 %}Off{% elif sp == 1 %}On{% elif sp == 2 %}+Playthrough{% else %}Full{% endif %}</div>
-                                            <div>Max YAMLs/player: {{ lobby.max_yamls_per_player }}</div>
+                                             <div>Item Cheat: {{ 'On' if s.get('item_cheat', True) else 'Off' }}</div>
+                                             <div>Spoiler: {% set sp = g.get('spoiler', 3) %}{% if sp == 0 %}Off{% elif sp == 1 %}On{% elif sp == 2 %}+Playthrough{% else %}Full{% endif %}</div>
+                                             <div>Prog. Equal.: {{ g.get('progression_equalization', 20) }}%</div>
+                                             <div>Max YAMLs/player: {{ lobby.max_yamls_per_player }}</div>
                                             <div>Expires: <time class="lobby-expiry-time" datetime="{{ lobby_expiries.get(lobby.id, '') }}"></time></div>
                                             <div>Mode: {{ 'Race' if lobby.race else 'Standard' }}</div>
                                         </div>

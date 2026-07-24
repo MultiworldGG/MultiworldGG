@@ -286,3 +286,10 @@
   jp $4fb0
 
 07/4fad/: jp galeCheckAvailableTree
+
+
+# ----------------------------------------------------------------------
+
+# prevent the sea of storm to swap past and present
+10/7999/: db $18 ;jr
+10/79c4/: db $18 ;jr

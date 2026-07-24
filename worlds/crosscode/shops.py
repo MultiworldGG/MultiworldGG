@@ -47,7 +47,7 @@ shop_dict: dict[str, ShopData] = {
     'Homestedt Weapons + Azure A. Pass': ShopData(internal_name='homestedtWeapons', name='Homestedt Weapons + Azure A. Pass', metadata={'dlc': True, 'shop': True}, access=AccessInfo(region={'open': 'openDLC1'}, cond=[ItemCondition(item_name='Azure Archipelago Pass', amount=1)])),
     'Beach Weapons': ShopData(internal_name='beachWeapons', name='Beach Weapons', metadata={'dlc': True, 'shop': True}, access=AccessInfo(region={'open': 'openDLC_Beach'})),
     "Goat Zira's Shop": ShopData(internal_name='goatShop', name="Goat Zira's Shop", metadata={'quest': True, 'dlc': True, 'shop': True}, access=AccessInfo(region={'open': 'open20'}, cond=[QuestCondition(quest_name='Wrath of Goat'), VariableCondition(name='canGrind')])),
-    'Rhombus Weapons + DLC': ShopData(internal_name='rhombusWeapons1', name='Rhombus Weapons + DLC', metadata={'dlc': True, 'shop': True}, access=AccessInfo(region={'linear': '33', 'open': 'open20'}, cond=[VariableCondition(name='canGrind')])),
+    'Rhombus Weapons + Azure A. Pass': ShopData(internal_name='rhombusWeapons1', name='Rhombus Weapons + Azure A. Pass', metadata={'dlc': True, 'shop': True}, access=AccessInfo(region={'linear': '33', 'open': 'open20'}, cond=[ItemCondition(item_name='Azure Archipelago Pass', amount=1), VariableCondition(name='canGrind')])),
 }
 
 per_shop_locations: dict[str, dict[int, LocationData]] = {
@@ -363,11 +363,11 @@ per_shop_locations: dict[str, dict[int, LocationData]] = {
         670: locations_dict["Shop Slot: Goat Cheese (Goat Zira's Shop)"],
         671: locations_dict["Shop Slot: Goat Milk (Goat Zira's Shop)"],
     },
-    "Rhombus Weapons + DLC": {
-        568: locations_dict['Shop Slot: Cross Goggles (Rhombus Weapons + DLC)'],
-        567: locations_dict['Shop Slot: Cross Edge (Rhombus Weapons + DLC)'],
-        569: locations_dict['Shop Slot: Cross Mail (Rhombus Weapons + DLC)'],
-        570: locations_dict['Shop Slot: Cross Boots (Rhombus Weapons + DLC)'],
+    "Rhombus Weapons + Azure A. Pass": {
+        568: locations_dict['Shop Slot: Cross Goggles (Rhombus Weapons + Azure A. Pass)'],
+        567: locations_dict['Shop Slot: Cross Edge (Rhombus Weapons + Azure A. Pass)'],
+        569: locations_dict['Shop Slot: Cross Mail (Rhombus Weapons + Azure A. Pass)'],
+        570: locations_dict['Shop Slot: Cross Boots (Rhombus Weapons + Azure A. Pass)'],
     },
     
 }
@@ -778,8 +778,8 @@ shop_unlock_by_shop_and_id = {
     ('goatShop', 366): ItemPoolEntry(item=items_dict["Slot Unlock: Just Water (Goat Zira's Shop)", 1], quantity=1, metadata={'quest': True, 'dlc': True, 'shop': True}),
     ('goatShop', 670): ItemPoolEntry(item=items_dict["Slot Unlock: Goat Cheese (Goat Zira's Shop)", 1], quantity=1, metadata={'quest': True, 'dlc': True, 'shop': True}),
     ('goatShop', 671): ItemPoolEntry(item=items_dict["Slot Unlock: Goat Milk (Goat Zira's Shop)", 1], quantity=1, metadata={'quest': True, 'dlc': True, 'shop': True}),
-    ('rhombusWeapons1', 568): ItemPoolEntry(item=items_dict['Slot Unlock: Cross Goggles (Rhombus Weapons + DLC)', 1], quantity=1, metadata={'dlc': True, 'shop': True}),
-    ('rhombusWeapons1', 567): ItemPoolEntry(item=items_dict['Slot Unlock: Cross Edge (Rhombus Weapons + DLC)', 1], quantity=1, metadata={'dlc': True, 'shop': True}),
-    ('rhombusWeapons1', 569): ItemPoolEntry(item=items_dict['Slot Unlock: Cross Mail (Rhombus Weapons + DLC)', 1], quantity=1, metadata={'dlc': True, 'shop': True}),
-    ('rhombusWeapons1', 570): ItemPoolEntry(item=items_dict['Slot Unlock: Cross Boots (Rhombus Weapons + DLC)', 1], quantity=1, metadata={'dlc': True, 'shop': True}),
+    ('rhombusWeapons1', 568): ItemPoolEntry(item=items_dict['Slot Unlock: Cross Goggles (Rhombus Weapons + Azure A. Pass)', 1], quantity=1, metadata={'dlc': True, 'shop': True}),
+    ('rhombusWeapons1', 567): ItemPoolEntry(item=items_dict['Slot Unlock: Cross Edge (Rhombus Weapons + Azure A. Pass)', 1], quantity=1, metadata={'dlc': True, 'shop': True}),
+    ('rhombusWeapons1', 569): ItemPoolEntry(item=items_dict['Slot Unlock: Cross Mail (Rhombus Weapons + Azure A. Pass)', 1], quantity=1, metadata={'dlc': True, 'shop': True}),
+    ('rhombusWeapons1', 570): ItemPoolEntry(item=items_dict['Slot Unlock: Cross Boots (Rhombus Weapons + Azure A. Pass)', 1], quantity=1, metadata={'dlc': True, 'shop': True}),
 }

@@ -1,4 +1,4 @@
-from ..Items import Itm as Data
+from . import Itm as Data
 
 # https://xenoblade.github.io/xbx/bdat/common_local_us/BTL_SkillClass.html
 # flake8: noqa

@@ -630,8 +630,13 @@ levelrules = LevelRules(
             base=Preset(lrp.LrpRungunWeapon) & Preset(lrp.LrpDash),
             locations={
                 l.loc_level_rungun_forest: LocationDef(),
-                l.loc_level_rungun_forest_agrade: LocationDef(rule=Preset(lrp.LrpRungunTopgrade)),
-                l.loc_level_rungun_forest_pacifist: LocationDef(),
+                l.loc_level_rungun_forest_agrade: LocationDef(
+                    rule=(
+                        Preset(lrp.LrpRungunTopgrade) &
+                        (Preset(lrp.LrpParryOrPSugar) | DepFilter(deps.dep_hard_logic, False))
+                    )
+                ),
+                l.loc_level_rungun_forest_pacifist: LocationDef(rule=Preset(lrp.LrpParryOrPSugar)),
                 l.loc_level_rungun_forest_coin1: LocationDef(inherit=InheritMode.NONE),
                 l.loc_level_rungun_forest_coin2: LocationDef(inherit=InheritMode.NONE),
                 l.loc_level_rungun_forest_coin3: LocationDef(
@@ -660,7 +665,10 @@ levelrules = LevelRules(
                     rule=(Preset(lrp.LrpRungunWeapon) & Preset(lrp.LrpRungunTopgrade))
                 ),
                 l.loc_level_rungun_tree_pacifist: LocationDef(),
-                l.loc_level_rungun_tree_coin1: LocationDef(rule=Preset(lrp.LrpParryOrPSugar), inherit=InheritMode.NONE),
+                l.loc_level_rungun_tree_coin1: LocationDef(
+                    rule=(Preset(lrp.LrpParryOrPSugar) | Preset(lrp.LrpDlcDoublejump)),
+                    inherit=InheritMode.NONE
+                ),
                 l.loc_level_rungun_tree_coin2: LocationDef(inherit=InheritMode.NONE),
                 l.loc_level_rungun_tree_coin3: LocationDef(inherit=InheritMode.NONE),
                 l.loc_level_rungun_tree_coin4: LocationDef(),
@@ -735,7 +743,10 @@ levelrules = LevelRules(
                 l.loc_level_rungun_funhouse_agrade: LocationDef(),
                 l.loc_level_rungun_funhouse_pacifist: LocationDef(),
                 l.loc_level_rungun_funhouse_coin1: LocationDef(
-                    rule=Preset(lrp.LrpParryOrPSugar),
+                    rule=(
+                        Preset(lrp.LrpParryOrPSugar) |
+                        Preset(lrp.LrpDlcDoublejump)
+                    ),
                     inherit=InheritMode.NONE
                 ),
                 l.loc_level_rungun_funhouse_coin2: LocationDef(

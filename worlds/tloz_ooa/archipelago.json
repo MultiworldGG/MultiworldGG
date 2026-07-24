@@ -1,6 +1,6 @@
 {
     "minimum_ap_version": "0.5.1", 
-    "world_version": "1.0.0",
+    "world_version": "1.0.2",
     "authors": ["josephanimate2021", "Glan9", "SenPierre", "FlameStripe"],
     "game": "The Legend of Zelda - Oracle of Ages",
     "version": 7,

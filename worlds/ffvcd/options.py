@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from Options import Toggle, DefaultOnToggle, Choice, PerGameCommonOptions, Range, OptionSet, FreeText
+from Options import Toggle, DefaultOnToggle, Choice, PerGameCommonOptions, Range, OptionSet, FreeText, StartInventoryPool
 
 
 class JobPalettes(Toggle):
@@ -266,8 +266,14 @@ class PianoPercent(Toggle):
     """
     display_name = "Piano Percent"
 
+# making this mixin so we can keep actual game options separate from AP core options that we want enabled
+# not sure why this isn't a mixin in core atm, anyways
 @dataclass
-class ffvcd_options(PerGameCommonOptions):
+class StartInventoryFromPoolMixin:
+    start_inventory_from_pool: StartInventoryPool
+
+@dataclass
+class ffvcd_options(PerGameCommonOptions, StartInventoryFromPoolMixin):
     job_palettes: JobPalettes
     four_job: FourJob
     remove_flashes : RemoveFlashes

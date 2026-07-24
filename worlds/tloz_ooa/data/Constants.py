@@ -332,7 +332,7 @@ GASHA_SPOT_REGIONS = [
     "ridge mid present spot",
     "crescent present islet spot",
     "crescent present vine spot",
-    #"sea of storms spot",
+    "sea of storms spot",
 ]
 
 TREASURE_SPAWN_INSTANT = 0x00

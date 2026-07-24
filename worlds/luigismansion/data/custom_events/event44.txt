@@ -5,7 +5,7 @@
 <CHECKFLAG>(8)"8ON""8OFF"
 -------------------------
 <CASE>"8ON"
-<CHOICE>"BlackoutOFF"(4)"Close"(3)<LISTEND>
+<CHOICE>"BlackoutOFF"(4)"CloseOne"(3)<LISTEND>
 <ANYKEY>
 -------------------------
 <CASE>"8OFF"
@@ -50,7 +50,21 @@
 <FORCEMOVE>(3300)(-550)(-1900)(15)
 <FRAMEEND>
 <FLAGON>(8)
-<RAMDOMJMP>"Close"
+<RAMDOMJMP>"CloseOne"
+-------------------------
+<CASE>"CloseOne"
+<BGM>(7)
+<MENUON>
+<FLAGOFF>(115)
+<WAIT>(60)
+<LUIGISTOP>
+<WAIT>(60)
+<KEYUNLOCK>(71)
+<FLAGON>(120)
+<WAIT>(60)
+<LUIGIFREE>
+<LUIGIFREE2>
+<END>
 -------------------------
 <CASE>"BlackoutOFF"
 <KEYLOCK>(71)
@@ -82,7 +96,6 @@
 <FORCEMOVE>(3300)(-550)(-1900)(15)
 <FRAMEEND>
 <FLAGOFF>(8)
-<FLAGON>(34)
 <RAMDOMJMP>"Close"
 -------------------------
 <CASE>"Close"
@@ -97,4 +110,5 @@
 <WAIT>(60)
 <LUIGIFREE>
 <LUIGIFREE2>
+<FLAGON>(34)
 <END>

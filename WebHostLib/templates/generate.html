@@ -193,6 +193,19 @@ Warning: playthrough can take a significant amount of time for larger multiworld
                                         </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                        <label for="progression_equalization">Progression Equalization:
+                                            <span class="interactive" data-tooltip="Controls how evenly progression items are distributed between slots. 0% gives every location an equal chance; 100% aims for the same number of progression items in each slot.">
+                                                (?)
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="progression_equalization" id="progression_equalization"
+                                               min="0" max="100" step="1" value="20" required>%
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                         </div>

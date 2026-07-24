@@ -132,8 +132,7 @@ class SMMRSNIClient(SNIClient):
         if data is None:
             return
 
-        from . import items_start_id
-        from . import locations_start_id, location_address_to_id
+        from . import SMMapRandoWorld
         if self.use_new_comm:
             message = await snes_read(ctx, SM_ITEM_COLLECTED_PTR, SM_ITEM_COLLECTED_SIZE)
             if message is None:
@@ -142,12 +141,12 @@ class SMMRSNIClient(SNIClient):
             if self.sm_map_rando_cached_message != clean_message:
                 message_nothing_location = await snes_read(ctx, SM_ITEM_NOTHING_BITMASK_PTR, SM_ITEM_COLLECTED_SIZE)
                 location_unchecked = []
-                for location_id in location_address_to_id.values():
-                    if locations_start_id + location_id not in ctx.locations_checked:
+                for location_id in SMMapRandoWorld.location_name_to_id.values():
+                    if location_id not in ctx.locations_checked:
                         location_unchecked.append(location_id)
                 
-                for loc in location_unchecked:
-                    location_id = locations_start_id + loc
+                for location_id in location_unchecked:
+                    loc = location_id - SMMapRandoWorld.locations_start_id
                     if (clean_message[loc//8] & (1 << loc % 8)) and (message_nothing_location[loc//8] & (1 << loc % 8)) == 0: #and loc not in self.locations_nothing
                         ctx.locations_checked.add(location_id)
                         location = ctx.location_names.lookup_in_game(location_id)
@@ -168,8 +167,7 @@ class SMMRSNIClient(SNIClient):
                 snes_buffered_write(ctx, SM_SEND_QUEUE_RCOUNT,
                                     bytes([recv_index & 0xFF, (recv_index >> 8) & 0xFF]))
 
-                from . import locations_start_id
-                location_id = locations_start_id + item_index
+                location_id = SMMapRandoWorld.locations_start_id + item_index
 
                 ctx.locations_checked.add(location_id)
                 location = ctx.location_names[location_id]
@@ -192,9 +190,9 @@ class SMMRSNIClient(SNIClient):
 
         if item_out_ptr < len(ctx.items_received) and (not self.use_new_comm or item_out_ptr == item_out_ptr1):
             item = ctx.items_received[item_out_ptr]
-            item_id = item.item - items_start_id
+            item_id = item.item - SMMapRandoWorld.items_start_id
             if bool(ctx.items_handling & 0b010) or item.location < 0: # item.location < 0 for !getitem to work
-                location_id = (item.location - locations_start_id) if (item.location >= 0 and item.player == ctx.slot) else 0xFF
+                location_id = (item.location - SMMapRandoWorld.locations_start_id) if (item.location >= 0 and item.player == ctx.slot) else 0xFF
             else:
                 location_id = 0x00 #backward compat
 

@@ -86,6 +86,7 @@ Currently, the following games are supported:
 * Getting Over It
 * Golden Sun: The Lost Age
 * Hades
+* Hades II
 * Hatsune Miku: Project Diva Mega Mix+
 * Here comes Niko!
 * Heretic

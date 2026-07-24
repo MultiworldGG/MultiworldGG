@@ -1,9 +1,8 @@
 import json
 import typing
 import logging
-from Options import Choice, OptionSet, PerGameCommonOptions, Range, OptionDict, OptionList, Option, StartInventoryPool, Toggle, DefaultOnToggle
+from Options import Choice, OptionSet, PerGameCommonOptions, Range, OptionDict, OptionList, Option, StartInventoryPool, TextChoice, Toggle, DefaultOnToggle
 from dataclasses import dataclass
-from . import map_rando_app_data
 
 from schema import Schema
 
@@ -21,19 +20,39 @@ class RemoteItems(Toggle):
     """Indicates you get items sent from your own world. This allows coop play of a world."""
     display_name = "Remote Items"
 
-class CommonMap(Toggle):
+class CommonMap(TextChoice):
     """
-    If On, the common multiworld seed will be used to choose the map. This overrides the "random_seed" of "other_settings" from "map_rando_options".
-    All Map Rando worlds having this On will use the same map.
+    This allows multiple Map Rando players in a multiworld to share a common map layout by 
+    setting CommonMap to the same group name
     """
     display_name = "Common Map"
+    alias_false = 0
+    alias_off = 0
+    option_no = 0
+    alias_true = 1
+    alias_on = 1
+    option_yes = 1
+    default = 0
 
 class CommonDoorColors(Toggle):
     """
     If On, the common multiworld seed will be used to choose the doors randomization. This overrides the "random_seed" of "other_settings" from "map_rando_options".
-    All Map Rando worlds having this On will use the same map This setting is ignored if "common_map" is Off.
+    All Map Rando worlds in the same common_map group having this On will use the same door colors. 
+    This setting is ignored if "common_map" is Off.
     """
     display_name = "Common Door Colors"
+
+class UniqueStartLocations(Range):
+    """
+    When Common Map is set to a group name, controls start location uniqueness within the group.
+    The integer value sets the maximum number of attempts to achieve unique start locations.
+    If attempts are exhausted, generation proceeds as if this option were disabled.
+    This setting is ignored if "common_map" is Off.
+    """
+    display_name = "Unique Start Locations"
+    range_start = 0
+    range_end = 10
+    default = 5
 
 class EtankColorRed(Range):
     """
@@ -352,18 +371,7 @@ class Moonwalk(Toggle):
     Moonwalk
     """
     display_name = "Moonwalk"
-    default = 0  
-
-class ItemMatching(Choice):
-    """
-    Changes how items from other worlds appear:
-    - Metroid: Items from other Metroid games will get the closest matching sprite and map item markers.
-    - Generic: All items from other worlds will have an Archipelago sprite, with an arrow to indicate progression
-    """
-    display_name = "Item matching"
     default = 0
-    option_metroid = 0
-    option_generic = 1
 
 class MapRandoOptions(OptionDict):
     """
@@ -498,6 +506,7 @@ class SMMROptions(PerGameCommonOptions):
     death_link: DeathLink
     common_map: CommonMap
     common_door_colors: CommonDoorColors
+    unique_start_locations: UniqueStartLocations
     etank_color_red: EtankColorRed
     etank_color_green: EtankColorGreen
     etank_color_blue: EtankColorBlue
@@ -524,5 +533,4 @@ class SMMROptions(PerGameCommonOptions):
     spin_lock_buttons: SpinLockButtons
     quick_reload_buttons: QuickReloadButtons
     moonwalk: Moonwalk
-    item_matching: ItemMatching
     map_rando_options: MapRandoOptions

@@ -1878,9 +1878,9 @@ def set_er_location_rules(world: "TunicWorld") -> None:
         combat_logic_to_loc("Fortress Arena - Siege Engine/Vault Key Pickup", "Siege Engine", set_instead=True)
         add_rule(world.get_location("Fortress Arena - Siege Engine/Vault Key Pickup"),
                  lambda state: has_enemy_soul(EnemySouls.siege_engine, state, world))
-        set_rule(world.get_location("Librarian - Hexagon Green"),
-                 rule=lambda state: has_combat_reqs("The Librarian", state, player)
-                 and has_ladder("Ladders in Library", state, world)
+        combat_logic_to_loc("Librarian - Hexagon Green", "The Librarian", set_instead=True)
+        add_rule(world.get_location("Librarian - Hexagon Green"),
+                 lambda state: has_ladder("Ladders in Library", state, world)
                  and has_enemy_soul(EnemySouls.librarian, state, world))
         combat_logic_to_loc("Rooted Ziggurat Lower - Hexagon Blue", "Boss Scavenger", set_instead=True)
         add_rule(world.get_location("Rooted Ziggurat Lower - Hexagon Blue"),
@@ -1896,6 +1896,22 @@ def set_er_location_rules(world: "TunicWorld") -> None:
                  and has_enemy_soul(EnemySouls.garden_knight, state, world)
                  and has_enemy_soul(EnemySouls.frogs, state, world)
                  and has_enemy_soul(EnemySouls.rudelings, state, world))
+        if world.options.shuffle_enemy_drops:
+            combat_logic_to_loc("Fortress Arena - Defeat Siege Engine", "Siege Engine", set_instead=True)
+            add_rule(world.get_location("Fortress Arena - Defeat Siege Engine"),
+                     lambda state: has_enemy_soul(EnemySouls.siege_engine, state, world))
+            combat_logic_to_loc("Librarian - Defeat Librarian", "The Librarian", set_instead=True)
+            add_rule(world.get_location("Librarian - Defeat Librarian"),
+                     lambda state: has_ladder("Ladders in Library", state, world)
+                                   and has_enemy_soul(EnemySouls.librarian, state, world))
+            combat_logic_to_loc("Rooted Ziggurat Lower - Defeat Boss Scavenger", "Boss Scavenger", set_instead=True)
+            add_rule(world.get_location("Rooted Ziggurat Lower - Defeat Boss Scavenger"),
+                     lambda state: has_enemy_soul(EnemySouls.boss_scavenger, state, world))
+            if world.options.ice_grappling >= IceGrappling.option_medium:
+                add_rule(world.get_location("Rooted Ziggurat Lower - Defeat Boss Scavenger"),
+                         lambda state: has_ice_grapple_logic(False, IceGrappling.option_medium, state, world,
+                                                             [EnemySouls.boss_scavenger]))
+
 
     if world.options.combat_logic == CombatLogic.option_on:
         combat_logic_to_loc("Overworld - [Northeast] Flowers Holy Cross", "Garden Knight")

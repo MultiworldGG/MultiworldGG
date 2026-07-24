@@ -11,6 +11,7 @@
   - Requires [PopTracker](https://github.com/black-sliver/PopTracker/releases)
 - [TUNIC Randomizer Item Auto-tracker](https://github.com/radicoon/tunic-rando-tracker/releases/latest)
 - [MultiworldGG Text Client](https://github.com/MultiworldGG/MultiworldGG/releases/latest)
+- [Universal Tracker](https://github.com/FarisTheAncient/Archipelago/releases/latest)
 
 ## Installation
 

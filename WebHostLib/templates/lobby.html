@@ -34,7 +34,8 @@
                         {% set hm = server_opts.get('hint_mode', 'default') %}
                         Hints: {% if hm == 'default' %}full{% elif hm == 'own' %}hide own{% elif hm == 'all' %}hide all{% else %}{{ hm }}{% endif %}
                         @ {% set hc = server_opts.get('hint_cost', 10) %}{% if hc > 100 %}off{% else %}{{ hc }}%{% endif %} &mdash;
-                        Item Cheat: {{ 'on' if server_opts.get('item_cheat', True) else 'off' }}
+                        Item Cheat: {{ 'on' if server_opts.get('item_cheat', True) else 'off' }} &mdash;
+                        Prog. Equal.: {{ gen_opts.get('progression_equalization', 20) }}%
                     </p>
                 </div>
                 <div id="lobby-join">
@@ -81,7 +82,8 @@
                         {% set hm = server_opts.get('hint_mode', 'default') %}
                         Hints: {% if hm == 'default' %}full{% elif hm == 'own' %}hide own{% elif hm == 'all' %}hide all{% else %}{{ hm }}{% endif %}
                         @ {% set hc = server_opts.get('hint_cost', 10) %}{% if hc > 100 %}off{% else %}{{ hc }}%{% endif %} &mdash;
-                        Item Cheat: {{ 'on' if server_opts.get('item_cheat', True) else 'off' }}
+                        Item Cheat: {{ 'on' if server_opts.get('item_cheat', True) else 'off' }} &mdash;
+                        Prog. Equal.: {{ gen_opts.get('progression_equalization', 20) }}%
                     </p>
                 </div>
                 <div id="lobby-view-form">
@@ -145,7 +147,8 @@
                             Remaining: {{ server_opts.get('remaining_mode', '?') }} |
                             Hints: {% set hm = server_opts.get('hint_mode', 'default') %}{% if hm == 'default' %}full{% elif hm == 'own' %}hide own{% elif hm == 'all' %}hide all{% else %}{{ hm }}{% endif %} @ {% set hc = server_opts.get('hint_cost', 5) %}{% if hc > 100 %}off{% else %}{{ hc }}%{% endif %} |
                             Item Cheat: {% if server_opts.get('item_cheat') %}on{% else %}off{% endif %} |
-                            Spoiler: {% set sp = gen_opts.get('spoiler', 0) %}{% if sp == 0 %}off{% elif sp == 1 %}on{% elif sp == 2 %}+playthrough{% elif sp == 3 %}full{% endif %}
+                            Spoiler: {% set sp = gen_opts.get('spoiler', 0) %}{% if sp == 0 %}off{% elif sp == 1 %}on{% elif sp == 2 %}+playthrough{% elif sp == 3 %}full{% endif %} |
+                            Prog. Equal.: {{ gen_opts.get('progression_equalization', 20) }}%
                         </span>
                     </div>
                     <div class="lobby-info-row">
@@ -220,7 +223,8 @@
                             Remaining: {{ server_opts.get('remaining_mode', '?') }} |
                             Hints: {% set hm = server_opts.get('hint_mode', 'default') %}{% if hm == 'default' %}full{% elif hm == 'own' %}hide own{% elif hm == 'all' %}hide all{% else %}{{ hm }}{% endif %} @ {% set hc = server_opts.get('hint_cost', 5) %}{% if hc > 100 %}off{% else %}{{ hc }}%{% endif %} |
                             Item Cheat: {% if server_opts.get('item_cheat') %}on{% else %}off{% endif %} |
-                            Spoiler: {% set sp = gen_opts.get('spoiler', 0) %}{% if sp == 0 %}off{% elif sp == 1 %}on{% elif sp == 2 %}+playthrough{% elif sp == 3 %}full{% endif %}
+                            Spoiler: {% set sp = gen_opts.get('spoiler', 0) %}{% if sp == 0 %}off{% elif sp == 1 %}on{% elif sp == 2 %}+playthrough{% elif sp == 3 %}full{% endif %} |
+                            Prog. Equal.: {{ gen_opts.get('progression_equalization', 20) }}%
                         </span>
                     </div>
                     <div class="lobby-info-row">
@@ -505,6 +509,16 @@
                                                     <option value="{{ val }}" {% if lobby.race and val == 0 %}selected{% elif not lobby.race and val == gen_opts.get('spoiler', 0) %}selected{% endif %}>{{ lbl }}</option>
                                                 {% endfor %}
                                             </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="edit-progression-equalization">Progression Equalization:
+                                            <span class="interactive" data-tooltip="Controls how evenly progression items are distributed between slots. 0% gives every location an equal chance; 100% aims for the same number of progression items in each slot.">(?)
+                                            </span>
+                                        </label></td>
+                                        <td>
+                                            {% set edit_progression_equalization = gen_opts.get('progression_equalization', 20) %}
+                                            <input type="number" id="edit-progression-equalization" min="0" max="100" step="1" value="{{ 100 if edit_progression_equalization > 100 else 0 if edit_progression_equalization < 0 else edit_progression_equalization }}" required>%
                                         </td>
                                     </tr>
                                     {% if lobby.race %}<tr><td colspan="2" style="font-size:0.8rem;color:#ffc107;padding-top:4px;">⚠ Remaining, Item Cheat, and Spoiler Log are locked in race mode.</td></tr>{% endif %}

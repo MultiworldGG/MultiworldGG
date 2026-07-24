@@ -25,6 +25,15 @@ from settings import get_settings
 
 apname = instance_name if instance_name else "Archipelago"
 
+tracker_loaded = False
+try:
+    from worlds.tracker.TrackerClient import TrackerGameContext, TrackerCommandProcessor
+    CommonContext = TrackerGameContext
+    ClientCommandProcessor = TrackerCommandProcessor
+    tracker_loaded = True
+except ModuleNotFoundError:
+    pass
+
 def check_stdin() -> None:
     if is_windows and sys.stdin:
         print("WARNING: Console input is not routed reliably on Windows, use the GUI instead.")
@@ -83,6 +92,7 @@ class FactorioContext(CommonContext):
     command_processor = FactorioCommandProcessor
     game = "Factorio - Space Age Without Space"
     items_handling = 0b111  # full remote
+    tags = {"AP"}
 
     # updated by spinup server
     mod_version: Version = Version(0, 0, 0)
@@ -250,19 +260,19 @@ class FactorioContext(CommonContext):
         logger.info(announcement)
         self.print_to_game(announcement)
 
-    def run_gui(self):
-        from kvui import GameManager
+    def make_gui(self) -> type:
+        ui = super().make_gui()
 
-        class FactorioManager(GameManager):
+        class FactorioManager(ui):
             logging_pairs = [
                 ("Client", "Archipelago"),
                 ("FactorioServer", "Factorio Server Log"),
                 ("FactorioWatcher", "Bridge Data Log"),
             ]
-            base_title = f"{apname} Factorio Client"
+            from . import FactorioSAWS
+            base_title = f"{apname} SAWS {FactorioSAWS.world_version.as_simple_string()} Factorio Client"
 
-        self.ui = FactorioManager(self)
-        self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
+        return FactorioManager
 
 
 async def game_watcher(ctx: FactorioContext):

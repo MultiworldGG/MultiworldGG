@@ -10,17 +10,17 @@ import shutil
 
 import Utils
 
+try:
+    from Utils import instance_name as apname
+except ImportError:
+    apname = "Archipelago"
+    
 from NetUtils import NetworkItem, ClientStatus
 from worlds import deltarune
 from MultiServer import mark_raw, Context, Client
 from Utils import async_start
 
-try:
-    from Utils import instance_name as apname
-except ImportError:
-    apname = "Archipelago"
-
-ap_world_version = "v2.0.4"
+ap_world_version = "v2.0.6"
 
 # Try importing gui_enabled in Utils first before trying to import them from CommonClient
 # Core AP will be officially moving it to Utils in the future, so this is in accommodation for that

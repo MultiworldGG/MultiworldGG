@@ -1,4 +1,9 @@
 from dataclasses import dataclass
+from typing import Dict, Any
+
+from BaseClasses import Tutorial
+from worlds.AutoWorld import WebWorld
+
 from Options import (
     FreeText,
     NumericOption,
@@ -115,7 +120,6 @@ class AdvancedLogic(Toggle):
     """
 
     display_name = "Advanced Logic"
-    visibility = Visibility.none
 
 class ExcludeEnvironments(OptionSet):
     """
@@ -154,13 +158,19 @@ class ProgressiveGadgets(Toggle):  # DefaultOnToggle
     visibility = Visibility.none
 
 
-class Supadow(Toggle):
+class Supadow(Choice):
     """
     Enables completing minigames through the Supadows in Mount Crumpit as checks.
+    NOTE: Each difficulty will need to be played separately.
+    These are not mixed with other difficulties for how locations get checked
     """
 
     display_name = "Supadow Minigames"
-    visibility = Visibility.none
+    option_none = 0
+    option_easy = 1
+    option_hard = 2
+    option_real_tough = 3
+    default = 0
 
 
 class Gifts(Toggle):
@@ -194,6 +204,7 @@ class Killsanity(OptionSet):
 class Gadgetrando(DefaultOnToggle):
     """
     Determines whether the Grinch's gadgets will be randomized or not.
+    Disabling this will give you every gadget at the start from gadgets_to_randomize.
     """
 
     display_name = "Randomize Gadgets"
@@ -230,6 +241,7 @@ class ExcludeGC(Toggle):
 class Moverando(Toggle):
     """
     Determines whether the Grinch's moves will be randomized or not.
+    Disabling this will give you every gadget at the start from moves_to_randomize.
     """
 
     display_name = "Randomize Moves"
@@ -253,6 +265,7 @@ class Moverandolist(OptionSet):
 class UnlimitedEggs(Toggle):
     """
     Determine if you run out of rotten eggs when you utilize your gadgets.
+    This will also give 1 nitro egg/thistle per 0.5 seconds if in their respective regions.
     NOTE: Attempting to enable this with ringlink will force generation to stop
     until either option is disabled.
     """
@@ -264,6 +277,8 @@ class RingLinkOption(Toggle):
     """
     Whenever this is toggled, your ammo is linked with other ringlink-compatible
     games that also have this enabled.
+    Due to instability, ringlink will not give you eggs if you are in either the
+    Sleigh Ride or any of the minigames in Mount Crumpit.
     NOTE: Attempting to enable this with unlimited_eggs will force generation
     to stop until either option is enabled.
     """
@@ -373,20 +388,20 @@ class ReducedCutscenes(Toggle):
 class RandomizeMissionItems(DefaultOnToggle):
     """
     Allows mission specific items to be randomized in the itempool.
-    NOTE: Disabling this adds the locations and will still keep the items. But will be
-    forced to their vanilla locations. Enabling this removes these locations.
+    NOTE: Excluding Submarine World from `exclude_environments` will still require
+    you to enter the region to collect the Twin-End Tuba.
+    NOTE: Disabling this adds the locations and will not add their items to the
+    item pool. Enabling this removes these locations and adds the items.
     """
     display_name = "Randomize Mission Specific Items"
-    visibility = Visibility.none
 
 class RandomizeSleighParts(DefaultOnToggle):
     """
     Allows the sleigh parts to be randomized in the itempool.
-    NOTE: Disabling this adds the locations and will still keep the items. But will be
-    forced to their vanilla locations. Enabling this removes these locations.
+    NOTE: Disabling this adds the locations and will not add their items to the
+    item pool. Enabling this removes these locations and adds the items.
     """
     display_name = "Randomize Sleigh Parts"
-    visibility = Visibility.none
 
 class TeleportMultibind(Toggle):
     """
@@ -395,8 +410,17 @@ class TeleportMultibind(Toggle):
     """
     display_name = "Teleport Multibind"
 
+class DeathLinkOption(Toggle):
+    """
+    When you die, everyone who enabled death link dies. Of course, the reverse is true too.
+    NOTE: Due to instability, you will not be able to send or receive deaths if you are in the following areas:
+
+    Mount Crumpit, Sleigh Ride, any minigame in Mount Crumpit, Clock Tower, City Hall, and Post Office
+    """
+    display_name = "Death Link Option"
+
 @dataclass
-class GrinchOptions(DeathLinkMixin, PerGameCommonOptions):
+class GrinchOptions(PerGameCommonOptions):
     progressive_vacuums: ProgressiveVacuums
     starting_area: StartingArea
     missionsanity: Missionsanity
@@ -428,49 +452,144 @@ class GrinchOptions(DeathLinkMixin, PerGameCommonOptions):
     randomize_mission_items: RandomizeMissionItems
     randomize_sleigh_parts: RandomizeSleighParts
     teleport_multibind: TeleportMultibind
+    death_link: DeathLinkOption
 
 
-grinch_option_groups: list[OptionGroup] = [
-    # OptionGroup("Goal", [
-    #     Goal,
-    #     MissionsCompleted,
-    #     MissionCompletedIncludeGiftSquash,
-    # ]),
-    OptionGroup("Item Pool", [
-        ProgressiveVacuums,
-        StartingArea,
-        ProgressiveGadgets,
-        Gadgetrando,
-        Gadgetrandolist,
-        ExcludeGC,
-        Moverando,
-        Moverandolist,
-        RandomizeMissionItems,
-        RandomizeSleighParts,
-    ]),
-    OptionGroup("Location Settings", [
-        Missionsanity,
-        ExcludeEnvironments,
-        Gifts,
-        Supadow,
-        Killsanity,
-        MiscLocations,
-    ]),
-    # OptionGroup("Logic Settings", [
-    #     AdvancedLogic,
-    # ]),
-    OptionGroup("In-Game Tweaks", [
-        UnlimitedEggs,
-        DamageRate,
-        MusicRando,
-        ReducedCutscenes,
-        TeleportMultibind,
-    ]),
-    OptionGroup("Filler/Trap Settings", [
-        FillerWeight,
-        TrapPercentage,
-        TrapWeight,
-        RingLinkOption,
-        TrapLinkOption,
-    ]),
-]
+# Web for option group support
+class GrinchWeb(WebWorld):
+    theme = "ice"
+    option_groups = [
+        # OptionGroup("Goal", [
+        #     Goal,
+        #     MissionsCompleted,
+        #     MissionCompletedIncludeGiftSquash,
+        # ]),
+        OptionGroup("Item Pool", [
+            ProgressiveVacuums,
+            StartingArea,
+            ProgressiveGadgets,
+            Gadgetrando,
+            Gadgetrandolist,
+            ExcludeGC,
+            Moverando,
+            Moverandolist,
+            RandomizeMissionItems,
+            RandomizeSleighParts,
+        ]),
+        OptionGroup("Location Settings", [
+            Missionsanity,
+            ExcludeEnvironments,
+            Gifts,
+            Supadow,
+            Killsanity,
+            MiscLocations,
+        ]),
+        OptionGroup("Logic Settings", [
+            AdvancedLogic,
+        ]),
+        OptionGroup("In-Game Tweaks", [
+            UnlimitedEggs,
+            DamageRate,
+            MusicRando,
+            ReducedCutscenes,
+            TeleportMultibind,
+        ]),
+        OptionGroup("Filler/Trap Settings", [
+            FillerWeight,
+            TrapPercentage,
+            TrapWeight,
+            RingLinkOption,
+            TrapLinkOption,
+            DeathLinkOption,
+        ]),
+    ]
+
+    ## Yaml presets
+    vanilla = {
+        ProgressiveVacuums: "true",
+        StartingArea: "whoville",
+        Missionsanity: "completion",
+        # FillerWeight: "0",
+        RandomizeMissionItems: "false",
+        RandomizeSleighParts: "false",
+        Gadgetrando: "true",
+        Moverando: "false",
+        TeleportMultibind: "false",
+        UnlimitedEggs: "false",
+        MusicRando: "false",
+    }
+    beginner_friendly = {
+        ProgressiveVacuums: "true",
+        Gadgetrando: "false",
+        Moverando: "false",
+        StartingArea: "whoville",
+        TeleportMultibind: "true",
+        RandomizeMissionItems: "false",
+        RandomizeSleighParts: "false",
+        Missionsanity: "none",
+        ExcludeEnvironments: ["Post Office", "Clock Tower", "City Hall", "Ski Resort",
+                              "Civic Center", "Minefield", "Power Plant", "Generator Building",
+                              "Scout's Hut", "North Shore", "Mayor's Villa", "Submarine World"],
+    }
+    dev_settings = {
+        Missionsanity: "both",
+        MusicRando: "true",
+        ReducedCutscenes: "true"
+    }
+    allsanity = {
+        ExcludeEnvironments: [],
+        Gifts: "true",
+        Supadow: 3,
+        MiscLocations: "true",
+        Moverando: "true",
+        Gadgetrando: "true",
+        RandomizeMissionItems: "true",
+        RandomizeSleighParts: "true",
+        Missionsanity: "both",
+        ExcludeGC: "false",
+    }
+    minsanity = {
+        Missionsanity: "none",
+        ExcludeEnvironments: ["Post Office", "Clock Tower", "City Hall", "Ski Resort",
+                              "Civic Center", "Minefield", "Power Plant", "Generator Building",
+                              "Scout's Hut", "North Shore", "Mayor's Villa", "Submarine World"],
+        Gadgetrando: "false",
+        Moverando: "false",
+        MiscLocations: "false",
+        RandomizeMissionItems: "false",
+        RandomizeSleighParts: "false",
+    }
+    sync_viable = {
+        "progression_balancing": 60,
+        Gifts: "false",
+        ReducedCutscenes: "true",
+        TeleportMultibind: "true",
+        Missionsanity: "completion",
+        UnlimitedEggs: "true",
+        ExcludeGC: "false",
+    }
+    async_viable = {
+        "progression_balancing": "disabled",
+        Missionsanity: "full",
+        MiscLocations: "true",
+    }
+    options_presets: Dict[str, Dict[str, Any]] = {
+        "Beginner Friendly": beginner_friendly,
+        "Developer Settings": dev_settings,
+        "Pure Vanilla": vanilla,
+        "Allsanity": allsanity,
+        "Minsanity": minsanity,
+        "Sync Viable": sync_viable,
+        "Async Viable": async_viable,
+    }
+
+    tutorials = [
+        Tutorial(
+            "Multiworld Setup Guide",
+            "A guide to setting up The Grinch randomizer connected to a MultiworldGG Multiworld",
+            "English",
+            "setup_en.md",
+            "setup/en",
+            ["MarioSpore"],
+        )
+    ]

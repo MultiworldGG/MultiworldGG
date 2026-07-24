@@ -331,7 +331,7 @@ def write_chest_contents(rom: RomData, patch_data):
             or 'room' not in location_data 
             or location_data['collect'] != COLLECT_CHEST
             or location_name not in locations_data
-        ) and location_name != "Rolling Ridge (Present): Bush Cave Chest" and location_name != "Crescent Island (Past): Crystal Cave Chest":
+        ) and location_name != "Rolling Ridge (Past): Bush Cave Chest" and location_name != "Crescent Island (Past): Crystal Cave Chest":
             continue
         if location_name == "Nuun Highlands: Southern Cave":
             chest_addr = rom.get_chest_addr(location_data['room'][patch_data["options"]["animal_companion"]], 0x16, 0x5108)

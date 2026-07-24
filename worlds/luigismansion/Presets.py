@@ -23,6 +23,7 @@ all_random_settings = { #TODO: Rename this because FillerWeights and TrapWeights
     LMOptions.PortraitHints.internal_name:             "random",
     LMOptions.HintDistribution.internal_name:          "random",
     LMOptions.SendHints.internal_name:                 "random",
+    LMOptions.Furnisanity.internal_name:               ["Random Any"],
     LMOptions.Toadsanity.internal_name:                "random",
     LMOptions.GoldMice.internal_name:                  "random",
     LMOptions.Boosanity.internal_name:                 "random",

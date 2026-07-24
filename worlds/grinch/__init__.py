@@ -1,7 +1,7 @@
 from BaseClasses import Item, Location
 from .Locations import grinch_locations_to_id, grinch_locations, GrinchLocation, get_location_names_per_category, GrinchLocationData
 from .Items import (grinch_items_to_id, GrinchItem, ALL_ITEMS_TABLE, MISC_ITEMS_TABLE, get_item_names_per_category,
-    TRAPS_TABLE, MOVES_TABLE, USEFUL_ITEMS_TABLE)
+                    TRAPS_TABLE, MOVES_TABLE, USEFUL_ITEMS_TABLE, EVENT_TABLE, SUPADOW_TABLE)
 from .Regions import connect_regions
 from .Rules import set_location_rules
 
@@ -11,8 +11,7 @@ from typing import ClassVar
 from worlds.AutoWorld import World
 from Options import OptionError
 
-from .GrinchOptions import GrinchOptions
-from .Web import GrinchWeb
+from .GrinchOptions import GrinchOptions, GrinchWeb
 
 
 class GrinchWorld(World):
@@ -30,7 +29,8 @@ class GrinchWorld(World):
     item_name_groups = get_item_names_per_category()
     location_name_groups = get_location_names_per_category()
     web = GrinchWeb()
-
+    glitches_item_name = grinch_items.events.GLITCHED_LOGIC_ITEM
+    using_ut: bool  # so we can check if we're using UT only once
     songs_chosen: dict
 
     ut_can_gen_without_yaml = True  # class var that tells it to ignore the player YAML
@@ -46,10 +46,10 @@ class GrinchWorld(World):
             raise OptionError("Cannot enable both unlimited rotten eggs and ring links. You can only enable one of " +
                 f"these at a time. The following player's YAML needs to be fixed: {self.player_name}")
 
-        if not self.options.randomize_sleigh_parts and "Submarine World" in self.options.exclude_environments:
-            self.multiworld.push_precollected(self.create_item("Twin-End Tuba"))
-            raise logger.warning(f"Player {self.player_name} is not randomizing sleigh parts." +
-                "But excluded the Submarine World environment. Giving the player Twin-End Tuba.")
+        # if self.options.randomize_sleigh_parts and "Submarine World" in self.options.exclude_environments:
+        #     self.multiworld.push_precollected(self.create_item("Twin-End Tuba"))
+        #     raise logger.warning(f"Player {self.player_name} is not randomizing sleigh parts." +
+        #         "But excluded the Submarine World environment. Giving the player Twin-End Tuba.")
 
         # Total available weight sum of filler items.
         # If this is 0, it means no filler was provided by the user, which will cause generation errors as there will
@@ -76,24 +76,31 @@ class GrinchWorld(World):
         if hasattr(self.multiworld, "re_gen_passthrough"):
             if self.game in self.multiworld.re_gen_passthrough:
                 slot_data = self.multiworld.re_gen_passthrough[self.game]
-                print(slot_data)
+                self.using_ut = True
+                # print(slot_data)
                 self.options.unlimited_eggs.value = slot_data["unlimited_eggs"]
                 self.options.starting_area.value = slot_data["starting_area"]
                 self.options.exclude_environments.value = ["exclude_environments"]
                 self.options.giftsanity.value = slot_data["giftsanity"]
-                self.options.progressive_vacuums = slot_data["progressive_vacuums"]
-                self.options.missionsanity = slot_data["missionsanity"]
-                self.options.supadow_minigames = slot_data["supadow_minigames"]
-                self.options.move_rando = slot_data["move_rando"]
-                self.options.moves_to_randomize = slot_data["moves_to_randomize"]
-                self.options.gadget_rando = slot_data["gadget_rando"]
-                self.options.gadgets_to_randomize = slot_data["gadgets_to_randomize"]
-                self.options.exclude_gc = slot_data["exclude_gc"]
-                self.options.progressive_gadgets = slot_data["progressive_gadgets"]
-                self.options.killsanity = slot_data["killsanity"]
-                self.options.misc_checks = slot_data["misc_checks"]
-                self.options.randomize_mission_items = slot_data["randomize_mission_items"]
-                self.options.randomize_sleigh_parts = slot_data["randomize_sleigh_parts"]
+                self.options.progressive_vacuums.value = slot_data["progressive_vacuums"]
+                self.options.missionsanity.value = slot_data["missionsanity"]
+                self.options.supadow_minigames.value = slot_data["supadow_minigames"]
+                self.options.move_rando.value = slot_data["move_rando"]
+                self.options.moves_to_randomize.value = slot_data["moves_to_randomize"]
+                self.options.gadget_rando.value = slot_data["gadget_rando"]
+                self.options.gadgets_to_randomize.value = slot_data["gadgets_to_randomize"]
+                self.options.exclude_gc.value = slot_data["exclude_gc"]
+                self.options.progressive_gadgets.value = slot_data["progressive_gadgets"]
+                self.options.killsanity.value = slot_data["killsanity"]
+                self.options.misc_checks.value = slot_data["misc_checks"]
+                self.options.randomize_mission_items.value = slot_data["randomize_mission_items"]
+                self.options.randomize_sleigh_parts.value = slot_data["randomize_sleigh_parts"]
+                self.options.goal.value = slot_data["goal"]
+                self.options.advanced_logic.value = slot_data["advanced_logic"]
+            else:
+                self.using_ut = False
+        else:
+            self.using_ut = False
 
     def create_regions(self):  # Generates all regions for the multiworld
         connect_regions(self, self.multiworld)
@@ -123,7 +130,12 @@ class GrinchWorld(World):
             region = self.get_region(data.region)
 
             if location == "MC - Sleigh Ride - Save Christmas":
+                # Place the "Goal" item in the location as an event
                 region.add_event(location, "Goal", None, Location, Item)
+                continue
+
+            #Exclude bike races for now, since they are not accessible
+            if "Bike Race -" in location:
                 continue
 
             # No .value after self.options because UT no likey
@@ -180,7 +192,15 @@ class GrinchWorld(World):
 
                 if exclude_wl_squash:
                     continue  # Ignores the creation of WL Squashing all Gifts
-
+            if "Supadow Minigames" in data.location_group and self.options.supadow_minigames == 0:
+                continue
+            if "Supadow Minigames" in data.location_group and self.options.supadow_minigames != 0:
+                #Exclude Hard supadow checks if on Easy
+                if "Supadow Hard" in data.location_group and self.options.supadow_minigames < 2:
+                    continue
+                # Exclude Real Tough supadow checks if on Hard and bellow
+                if "Supadow Real Tough" in data.location_group and self.options.supadow_minigames < 3:
+                    continue
             if "Mission Specific Item Locations" in data.location_group and self.options.randomize_mission_items:
                 continue
 
@@ -194,6 +214,11 @@ class GrinchWorld(World):
                 continue
 
             if "Sleigh Parts" in data.location_group and self.options.randomize_sleigh_parts:
+                continue
+
+            if ("WL - Submarine World - Twin-End Tuba" in location
+                    and "Submarine World" in self.options.exclude_environments
+                    and not self.options.randomize_sleigh_parts):
                 continue
 
             # If the region is in the list to be ignored, DON'T create the location and just continue.
@@ -231,37 +256,64 @@ class GrinchWorld(World):
             "Drill": ["North Shore"],
             "Painting Bucket": ["Whoville"],
         }
+        sleigh_pieces: set[str] = {
+            "Exhaust Pipes",
+            "Skis",
+            "Tires",
+            "GPS",
+            "Twin-End Tuba",
+        }
 
         # Precollected items is stored per player. First, we must get the current player's starting inventory.
         # From here, we get an AP item list. But, we only care about the name. So we get a list of strings as a result.
         player_start_inv: list[str] = [item.name for item in self.multiworld.precollected_items[self.player]]
 
+        for option in EVENT_TABLE:
+            #if "AdvancedLogic" in option and self.options.advanced_logic:
+                #self.multiworld.push_precollected(self.create_item(option))
+
+            # if "SleighPartsNotRandomized" in option and not self.options.randomize_sleigh_parts:
+            #     self.multiworld.push_precollected(self.create_item(option))
+
+            # if "MissionItemsNotRandomized" in option and not self.options.randomize_mission_items:
+            #     self.multiworld.push_precollected(self.create_item(option))
+
+            if "BeehivesDoor" in option:
+                continue
+                # self.multiworld.get_location("WF - Putting Beehives In Cabins - Event",
+                # self.player).place_locked_item(self.create_item("BeehivesDoor"))
+
+
         for sleigh_parts in SLEIGH_TABLE:
+            if "Sleigh Room Key" in sleigh_parts:
+                if self.options.goal == 0 and not self.options.randomize_sleigh_parts:
+                    self_itempool.append(self.create_item(sleigh_parts))
+                else:
+                    self_itempool.append(self.set_skip_balancing(sleigh_parts))
 
-            if not self.options.randomize_sleigh_parts:
-                if "Exhaust Pipes" in sleigh_parts:
-                    self.multiworld.get_location("WV - Exhaust Pipes",
-                    self.player).place_locked_item(self.create_item("Exhaust Pipes"))
-                elif "Skis" in sleigh_parts:
-                    self.multiworld.get_location("WF - Skis",
-                    self.player).place_locked_item(self.create_item("Skis"))
-                elif "Tires" in sleigh_parts:
-                    self.multiworld.get_location("WD - Tires",
-                    self.player).place_locked_item(self.create_item("Tires"))
-                elif "Twin-End Tuba" in sleigh_parts:
-                    if not "Submarine World" in self.options.exclude_environments:
-                        self.multiworld.get_location("WL - Submarine World - Twin-End Tuba",
-                        self.player).place_locked_item(self.create_item("Twin-End Tuba"))
-                    else:
-                        self.multiworld.push_precollected(self.create_item("Twin-End Tuba"))
-                elif "GPS" in sleigh_parts:
-                    self.multiworld.get_location("WL - South Shore - GPS",
-                    self.player).place_locked_item(self.create_item("GPS"))
+            if sleigh_parts in sleigh_pieces:
+                if self.options.randomize_sleigh_parts:
+                    self_itempool.append(self.create_item(sleigh_parts))
 
-            if self.options.goal != 0:
-                self_itempool.append(self.set_skip_balancing(sleigh_parts))
-            else:
-                self_itempool.append(self.create_item(sleigh_parts))
+                if not self.options.randomize_sleigh_parts:
+                    if "Exhaust Pipes" in sleigh_parts:
+                        self.multiworld.get_location("WV - Exhaust Pipes",
+                        self.player).place_locked_item(self.create_item("Exhaust Pipes"))
+                    elif "Skis" in sleigh_parts:
+                        self.multiworld.get_location("WF - Skis",
+                        self.player).place_locked_item(self.create_item("Skis"))
+                    elif "Tires" in sleigh_parts:
+                        self.multiworld.get_location("WD - Tires",
+                        self.player).place_locked_item(self.create_item("Tires"))
+                    elif "Twin-End Tuba" in sleigh_parts:
+                        if not "Submarine World" in self.options.exclude_environments:
+                            self.multiworld.get_location("WL - Submarine World - Twin-End Tuba",
+                            self.player).place_locked_item(self.create_item("Twin-End Tuba"))
+                        else:
+                            self.multiworld.push_precollected(self.create_item("Twin-End Tuba"))
+                    elif "GPS" in sleigh_parts:
+                        self.multiworld.get_location("WL - South Shore - GPS",
+                        self.player).place_locked_item(self.create_item("GPS"))
 
         for hearts_added in USEFUL_ITEMS_TABLE:
             if hearts_added == grinch_items.useful_items.HEART_OF_STONE:
@@ -269,29 +321,6 @@ class GrinchWorld(World):
                     self_itempool.append(self.create_item(hearts_added))
 
         for mission_item in MISSION_ITEMS_TABLE:
-            # Only create the item if it doesn't already exist in the player's start inventory.
-
-            # Checks to see if there are any locations in the Sub-area list.
-            sub_area_has_no_locations: bool = False
-
-            if mission_item in sub_area_items:
-                sub_area_has_no_locations = True
-                for grinch_reg in sub_area_items[mission_item]:
-                    if len(self.get_region(grinch_reg).get_locations()) > 0:
-                        sub_area_has_no_locations = False
-
-            # If the item is a sub_area_item that has 0 locations, add it to start inventory
-            if sub_area_has_no_locations:
-                self.multiworld.push_precollected(self.create_item(mission_item))
-            # Else if the player disables missionsanity, add the item into start inventory
-            # No .value after self.options.missionsanity because UT no likey
-            elif self.options.missionsanity == 0:
-                self.multiworld.push_precollected(self.create_item(mission_item))
-            elif self.options.missionsanity == 2:
-                if mission_item in missionsanity_items:
-                    self_itempool.append(self.create_item(mission_item))
-                else:
-                    self.multiworld.push_precollected(self.create_item(mission_item))
 
             if not self.options.randomize_mission_items:
 
@@ -363,26 +392,44 @@ class GrinchWorld(World):
                     else:
                         self.multiworld.push_precollected(self.create_item("Hook"))
 
-            if self.options.goal != 1:
-                self_itempool.append(self.set_skip_balancing(mission_item))
-            # Else, let the multiworld create the item normally.
-            else:
-                self_itempool.append(self.create_item(mission_item))
+            if self.options.randomize_mission_items:
+                # Only create the item if it doesn't already exist in the player's start inventory.
+
+                # Checks to see if there are any locations in the Sub-area list.
+                sub_area_has_no_locations: bool = False
+
+                if mission_item in sub_area_items:
+                    sub_area_has_no_locations = True
+                    for grinch_reg in sub_area_items[mission_item]:
+                        if len(self.get_region(grinch_reg).get_locations()) > 0:
+                            sub_area_has_no_locations = False
+
+                # If the item is a sub_area_item that has 0 locations, add it to start inventory
+                if sub_area_has_no_locations or self.options.missionsanity == 0:
+                    self.multiworld.push_precollected(self.create_item(mission_item))
+                # Else if the player disables missionsanity, add the item into start inventory
+                # No .value after self.options.missionsanity because UT no likey
+                elif self.options.goal == 1:
+                    self_itempool.append(self.create_item(mission_item))
+                # Else, let the multiworld create the item normally.
+                else:
+                    self_itempool.append(self.set_skip_balancing(mission_item))
 
         # Add various moves that the user requested.
         for moves_added in MOVES_TABLE:
             # Only create the item if it doesn't already exist in the player's start inventory.
 
             if self.options.move_rando and moves_added in self.options.moves_to_randomize:
-                if moves_added not in ["Seize", "Pancake", "Max"] and self.options.goal != 0:
-                    self_itempool.append(self.set_skip_balancing(moves_added))
-                else:
+                if moves_added in ["Seize", "Pancake", "Max"] and self.options.goal == 0:
                     self_itempool.append(self.create_item(moves_added))
+                else:
+                    self_itempool.append(self.set_skip_balancing(moves_added))
             else:
                 self.multiworld.push_precollected(self.create_item(moves_added))
 
         # Adds gadgets
         for gadgets_added in GADGETS_TABLE:
+
             if gadgets_added == "Grinch Copter" and self.options.exclude_gc:
                 continue
 
@@ -391,7 +438,20 @@ class GrinchWorld(World):
                 continue
 
             if self.options.gadget_rando and gadgets_added in self.options.gadgets_to_randomize:
-                if gadgets_added not in ["Rotten Egg Launcher", "Rocket Spring", "Marine Mobile", "Binoculars"] and self.options.goal == 0:
+                if gadgets_added in ["Rotten Egg Launcher", "Rocket Spring", "Marine Mobile"]:
+                    if self.options.goal == 0:
+                        self_itempool.append(self.create_item(gadgets_added))
+                    else:
+                        self_itempool.append(self.set_skip_balancing(gadgets_added))
+                elif gadgets_added == "Grinch Copter":
+                    if self.options.advanced_logic and self.options.goal == 0:
+                        self_itempool.append(self.create_item(gadgets_added))
+                    else:
+                        self_itempool.append(self.set_skip_balancing(gadgets_added))
+                elif gadgets_added == "Binoculars":
+                    if not self.options.advanced_logic:
+                        self_itempool.append(self.create_item(gadgets_added))
+                    else:
                         self_itempool.append(self.set_skip_balancing(gadgets_added))
                 else:
                     self_itempool.append(self.create_item(gadgets_added))
@@ -409,7 +469,7 @@ class GrinchWorld(World):
             elif self.options.starting_area == 1:
                 self.multiworld.push_precollected(self.create_item("Who Forest Vacuum Tube"))
                 for vacuums_added in KEYS_TABLE.keys():
-                    if vacuums_added in ["Progressive Vacuum Tube", "Who ForestVacuum Tube"]:
+                    if vacuums_added in ["Progressive Vacuum Tube", "Who Forest Vacuum Tube"]:
                         continue
                     self_itempool.append((self.create_item(vacuums_added)))
             elif self.options.starting_area == 2:
@@ -430,6 +490,9 @@ class GrinchWorld(World):
             for _ in range(3):
                 self_itempool.append((self.create_item("Progressive Vacuum Tube")))
 
+        for supadow_door in SUPADOW_TABLE:
+            if self.options.supadow_minigames > 0:
+                self_itempool.append(self.create_item(supadow_door))
 
         # Get number of current unfilled locations
         unfilled_locations: int = len(self.multiworld.get_unfilled_locations(self.player)) - len(self_itempool)
@@ -482,7 +545,9 @@ class GrinchWorld(World):
                 print(f"{item.name}: {desc}")
 
     def set_rules(self):
+        # Creates an item and make it so it goals the game upon collection
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Goal", self.player)
+        # Point to set_location_rules in Rules.py for reference to rules
         set_location_rules(self)
 
     def get_weighted_filler_item(self, other_filler: list[str], weights_dict: list[int]) -> str:
@@ -518,6 +583,8 @@ class GrinchWorld(World):
             "randomize_mission_items": self.options.randomize_mission_items.value,
             "randomize_sleigh_parts": self.options.randomize_sleigh_parts.value,
             "teleport_multibind": self.options.teleport_multibind.value,
+            "goal": self.options.goal.value,
+            "advanced_logic": self.options.advanced_logic.value,
         }
 
     def generate_output(self, output_directory: str) -> None:

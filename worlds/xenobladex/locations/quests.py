@@ -1,4 +1,4 @@
-from ..Locations import Loc as Data
+from . import Loc as Data
 
 # flake8: noqa
 # https://xenoblade.github.io/xbx/bdat/common_local_us/FLD_questlist.html

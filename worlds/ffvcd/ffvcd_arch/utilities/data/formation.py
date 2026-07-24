@@ -1,5 +1,5 @@
-from data_manager import *
-from enemy import *
+from .data_manager import *
+from .enemy import *
 
 NUM_FORMATIONS = 512
 

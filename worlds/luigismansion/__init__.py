@@ -137,7 +137,26 @@ class LMWorld(World):
                 else:
                     set_element_rules(self, entry, False)
                 region.locations.append(entry)
+        elif "Random Any" in self.options.furnisanity.value:
+            for location, data in FURNITURE_LOCATION_TABLE.items():
+                if self.random.choice([0,1]) == 0:
+                    continue
+                region = self.get_region(data.region)
+                entry = LMLocation(self.player, location, region, data)
+                if data.require_poltergust:
+                    add_rule(entry, lambda state: state.has("Poltergust 3000", self.player), "and")
+                if data.code in (603,604,605,606,607,608,609): #Specifically the Artist's Easels require element rules
+                    set_element_rules(self, entry, True)
+                else:
+                    set_element_rules(self, entry, False)
+                region.locations.append(entry)
         else:
+            if "Random Groups" in self.options.furnisanity.value:
+                # add groups to option randomly
+                for group in sorted(self.options.furnisanity.valid_keys):
+                    if group not in ["Full", "Random All", "Random Groups"]:
+                        if self.random.choice([0,1]) == 1:
+                            self.options.furnisanity.value = set(list(self.options.furnisanity.value) + [group])
             location_dict: dict[str, LMLocationData] = {}
             if self.options.game_mode.value == 1:
                 for name, loc_data in FURNITURE_LOCATION_TABLE.items():

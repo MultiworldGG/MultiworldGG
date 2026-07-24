@@ -17,7 +17,7 @@ from .monster_in_a_box import MonsterInABoxManager
 # from item_randomization import *
 from .misc_features import randomize_default_abilities, randomize_learning_abilities, free_shop_prices
 from typing import Dict
-import patcher
+from . import patcher
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
 
@@ -2703,21 +2703,3 @@ if False:
                 enemy = [i for i in self.EM.enemies if i.idx_hex == enemy_id][0]
                 hp_total += enemy.num_hp
         print("%s|%s|%s " % (formation.idx, formation.enemy_list, hp_total))
-            
-            
-            
-            
-            
-        
-        
-        
-        
-        
-        
-    
-    
-    
-    
-    
-    
-    

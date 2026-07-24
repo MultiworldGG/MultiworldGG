@@ -1,6 +1,6 @@
 from typing import List
 from BaseClasses import ItemClassification as ItCl
-from ..Items import Itm as Data
+from . import Itm as Data
 
 # https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_BeaconList.html
 # flake8: noqa

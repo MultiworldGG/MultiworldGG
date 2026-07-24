@@ -1,4 +1,4 @@
-from ai_parser import *
+from .ai_parser import *
 
 NUM_ENEMIES = 368
 STAT_HEX_MAP = {

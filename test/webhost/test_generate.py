@@ -41,6 +41,16 @@ class TestGenerate(TestBase):
         self.assertEqual(get_meta({"release_threshold": "150"})["server_options"]["release_threshold"], 100)
         self.assertEqual(get_meta({"release_threshold": "bad"})["server_options"]["release_threshold"], 0)
 
+    def test_get_meta_progression_equalization_clamps_invalid_values(self) -> None:
+        from WebHostLib.generate import get_meta
+
+        self.assertEqual(get_meta({"progression_equalization": "37"})["generator_options"]
+                         ["progression_equalization"], 37)
+        self.assertEqual(get_meta({"progression_equalization": "-5"})["generator_options"]
+                         ["progression_equalization"], 0)
+        self.assertEqual(get_meta({"progression_equalization": "150"})["generator_options"]
+                         ["progression_equalization"], 100)
+
     def test_valid_yaml(self) -> None:
         """
         Verify that posting a valid yaml will start generating a game.

@@ -8,6 +8,23 @@ class UpdateMethod(IntEnum, boundary=STRICT):
     SUBTRACT = 3
     FREEZE = 4  # Currently Non-functional
 
+class GrinchRamVariables:
+    SpinNWinDoor = {
+        "OpenTextGiftNum": 0x12AF3C,
+        "AllowInteractGiftNum": 0x12AF54,
+        "LockedTextGiftNum": 0x12AF70
+    }
+    PankamaniaDoor = {
+        "OpenTextGiftNum": 0x12B038,
+        "AllowInteractGiftNum": 0x12B04A,
+        "LockedTextGiftNum": 0x12B066
+    }
+    GCContestDoor = {
+        "OpenTextGiftNum": 0x12AFBC,
+        "AllowInteractGiftNum": 0x12AFCE,
+        "LockedTextGiftNum": 0x12AFEA
+    }
+
 
 class GrinchRamData:
     """A Representation of an update to RAM data for The Grinch.
@@ -71,20 +88,20 @@ class GrinchRamData:
         # Error Handling
         if self.value and self.value > self.max_count:
             raise ValueError(
-                f"Value passed in is greater than max_count.\n\nRAM Address: {self.ram_address}\nValue: {self.value}" +
+                f"Value passed in is greater than max_count.\n\nRAM Address: {hex(self.ram_address)}\nValue: {self.value}" +
                 f"\nMax Count: {self.max_count}"
             )
 
         if self.value and self.value < self.min_count:
             raise ValueError(
-                f"Value passed in is lower than min_count.\n\nRAM Address: {self.ram_address}\nValue: {self.value}" +
-                f"\nMin Count: {self.max_count}"
+                f"Value passed in is lower than min_count.\n\nRAM Address: {hex(self.ram_address)}\nValue: {self.value}" +
+                f"\nMin Count: {self.min_count}"
             )
 
         if self.min_count > self.max_count:
             raise ValueError(
-                f"Max_cout passed in is lower than min_count.\n\nRAM Address: {self.ram_address}\nValue: {self.value}" +
-                f"\nMin Count: {self.max_count}\nMax Count: {self.max_count}"
+                f"Max_count passed in is lower than min_count.\n\nRAM Address: {hex(self.ram_address)}\nValue: {self.value}" +
+                f"\nMin Count: {self.min_count}\nMax Count: {self.max_count}"
             )
 
         if self.binary_bit_pos and self.update_method not in [UpdateMethod.SET, UpdateMethod.FREEZE]:

@@ -2356,6 +2356,54 @@
         ],
         "release_date": 2020
     },
+    "Hades2Rogue": {
+        "igdb_id": "228525",
+        "world_name": "Hades2Rogue",
+        "igdb_name": "Hades II",
+        "us_rating": [],
+        "player_perspectives": [
+            "Bird view / Isometric"
+        ],
+        "genres": [
+            "Role-playing (RPG)",
+            "Hack and slash/Beat 'em up",
+            "Adventure",
+            "Indie"
+        ],
+        "themes": [
+            "Action",
+            "Fantasy"
+        ],
+        "keywords": [
+            "greek mythology",
+            "roguelike",
+            "fast paced",
+            "dark fantasy",
+            "procedural generation",
+            "difficult",
+            "hand-to-hand combat",
+            "supernatural",
+            "stylized",
+            "multiple endings",
+            "combat",
+            "dungeon crawler",
+            "story rich",
+            "boss fight",
+            "loot gathering",
+            "skill tree",
+            "the game awards - best score or music - nominee",
+            "narrative",
+            "roguelite",
+            "the game awards - best action game - winner",
+            "the game awards - best art direction - nominee",
+            "the game awards - best game direction - nominee",
+            "the game awards - best independent game - nominee",
+            "the game awards - game of the year - nominee",
+            "weapons",
+            "action roguelike"
+        ],
+        "release_date": 2025
+    },
     "Hatsune Miku Project Diva Mega Mix+": {
         "igdb_id": "202864",
         "world_name": "Hatsune Miku Project Diva Mega Mix+",

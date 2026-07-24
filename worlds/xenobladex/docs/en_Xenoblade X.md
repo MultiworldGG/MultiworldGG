@@ -145,7 +145,7 @@ You dont need the `KEY: Flight Module` to get on top of `Talon Rock`.
 For the submissions of `The Skell License` you should watch the 15k credits in one Fnet tick,
 which just require a few FN-Nodes and Dataprobes and the slaying of the grexes, with a specific weapon. 
 There are three option available `WPN: Trial Knife` (this is the one in logic), `WPN: Trial Sword` and `WPN: Trial Assault Rifle`
-After that you can start Chapter 12 and finish the game.
+After that you need the `KEY: Flight Module` and a skell to not take a bath at the start of Chapter 12. Now you can finish the game.
 
 ## Advanced Tech
 There are three techniques that are included in logic that you should know about.

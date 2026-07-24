@@ -36,7 +36,7 @@ subareas_list = [
 
 supadow_list = [
     "Spin N' Win Supadow",
-    "Dankamania Supadow",
+    "Pankamania Supadow",
     "The Copter Race Contest Supadow",
     "Bike Race",
 ]
@@ -47,7 +47,7 @@ class GrinchRegionInfo(NamedTuple):
     allow_deathlink: bool = False
     map_table_addr: Optional[int] = None
     allow_music_rando: Optional[bool] = None
-    region_access: Optional[list[list[str]]] = None
+    region_access: list[list[str]] = None
     advanced_region_access: Optional[list[list[str]]] = None
 
 class GrinchRegion(Region):
@@ -89,14 +89,27 @@ ALL_REGIONS_INFO: dict[str, GrinchRegionInfo] = {
             [grinch_items.keys.SLEIGH_ROOM_KEY],
         ],),
 
-    "Spin N' Win": GrinchRegionInfo(0x1A, "Mount Crumpit", False, allow_music_rando=True),
-    "Dankamania": GrinchRegionInfo(0x1B, "Mount Crumpit", False, allow_music_rando=True),
-    "The Copter Race Contest": GrinchRegionInfo(0X1C, "Mount Crumpit", False, allow_music_rando=True),
+    "Spin N' Win": GrinchRegionInfo(0x1A, "Mount Crumpit", False, allow_music_rando=True,
+        region_access = [
+            [grinch_items.supadow.SPIN_N_WIN],
+        ],),
+
+    "Pankamania": GrinchRegionInfo(0x1B, "Mount Crumpit", False, allow_music_rando=True,
+       region_access=[
+           [grinch_items.supadow.PANKAMANIA],
+       ],),
+
+    "The Copter Race Contest": GrinchRegionInfo(0X1C, "Mount Crumpit", False, allow_music_rando=True,
+        region_access=[
+            [grinch_items.supadow.COPTER_RACE],
+        ],),
     "Post Office": GrinchRegionInfo(0x0A, "Whoville", False, 0x0DFB64, True,
         region_access=[
             [grinch_items.level_items.WV_WHO_CLOAK],
         ],
-        advanced_region_access=[],),
+        advanced_region_access=[
+            []
+        ],),
 
     "City Hall": GrinchRegionInfo(0x08, "Whoville", False, 0x0E7090, True,
         region_access=[
@@ -109,7 +122,9 @@ ALL_REGIONS_INFO: dict[str, GrinchRegionInfo] = {
             [grinch_items.gadgets.SLIME_SHOOTER],
             [grinch_items.level_items.WV_WHO_CLOAK],
         ],
-        advanced_region_access=[],),
+        advanced_region_access=[
+            []
+        ],),
 
     "Ski Resort": GrinchRegionInfo(0x0C, "Who Forest", True, 0x0E98C0, True,
         region_access=[
@@ -132,18 +147,12 @@ ALL_REGIONS_INFO: dict[str, GrinchRegionInfo] = {
             grinch_items.moves.PANCAKE],
         ],
         advanced_region_access=[
-            [grinch_items.gadgets.ROTTEN_EGG_LAUNCHER,
-             grinch_items.gadgets.ROCKET_SPRING,
-             grinch_items.moves.PANCAKE],
-            [grinch_items.gadgets.ROTTEN_EGG_LAUNCHER,
-             grinch_items.gadgets.GRINCH_COPTER,
-             grinch_items.moves.PANCAKE],
             [grinch_items.gadgets.SLIME_SHOOTER,
-             grinch_items.gadgets.ROCKET_SPRING,
-             grinch_items.moves.PANCAKE],
+            grinch_items.gadgets.ROCKET_SPRING,
+            grinch_items.moves.PANCAKE],
             [grinch_items.gadgets.SLIME_SHOOTER,
-             grinch_items.gadgets.GRINCH_COPTER,
-             grinch_items.moves.PANCAKE],
+            grinch_items.gadgets.GRINCH_COPTER,
+            grinch_items.moves.PANCAKE],
         ],),
 
     "Power Plant": GrinchRegionInfo(0x10, "Who Dump", True, 0x0E885C, True,
@@ -201,32 +210,17 @@ ALL_REGIONS_INFO: dict[str, GrinchRegionInfo] = {
         region_access=[
             [grinch_items.level_items.WL_SCOUT_CLOTHES],
         ],),
-    "Bike Race": GrinchRegionInfo(0x18, "Sleigh Room", False, allow_music_rando=True),
+    "Bike Race": GrinchRegionInfo(0x18, "Sleigh Room", False, allow_music_rando=True,
+        region_access=[
+            [grinch_items.supadow.BIKE_RACE,
+             grinch_items.keys.SLEIGH_ROOM_KEY],
+        ],),
     "Sleigh Ride": GrinchRegionInfo(0x19, "Sleigh Room", False, allow_music_rando=True,
         region_access=[
-            [
-             grinch_items.sleigh_parts.EXHAUST_PIPES,
-             grinch_items.sleigh_parts.TWIN_END_TUBA,
-             grinch_items.sleigh_parts.SKIS,
-             grinch_items.sleigh_parts.TIRES,
-            ],
-             # grinch_items.gadgets.ROTTEN_EGG_LAUNCHER,
-             # grinch_items.keys.WHOVILLE,
-             # grinch_items.keys.WHO_FOREST,
-             # grinch_items.keys.WHO_DUMP,
-             # grinch_items.keys.WHO_LAKE,
-             # grinch_items.gadgets.ROCKET_SPRING,
-             # grinch_items.gadgets.MARINE_MOBILE,
-             # grinch_items.moves.MAX,
-             # grinch_items.moves.SEIZE,
-             # grinch_items.moves.PANCAKE],
-             # [grinch_items.gadgets.ROTTEN_EGG_LAUNCHER,
-             # "4:" + grinch_items.keys.PROGRESSIVE_VACUUM_TUBE,
-             # grinch_items.gadgets.ROCKET_SPRING,
-             # grinch_items.gadgets.MARINE_MOBILE,
-             # grinch_items.moves.MAX,
-             # grinch_items.moves.SEIZE,
-             # grinch_items.moves.PANCAKE],
+            [grinch_items.sleigh_parts.EXHAUST_PIPES,
+            grinch_items.sleigh_parts.TWIN_END_TUBA,
+            grinch_items.sleigh_parts.SKIS,
+            grinch_items.sleigh_parts.TIRES],
         ],),
 }
 
@@ -241,7 +235,7 @@ def grinchconnect(
     world: "GrinchWorld",
     current_region_name: str,
     connected_region_name: str,
-    access_rules: list[list[str]]
+    access_rules: list[list[str]],
 ):
     current_region = world.get_region(current_region_name)
     connected_region = world.get_region(connected_region_name)
@@ -252,16 +246,20 @@ def grinchconnect(
     connect_entr: Entrance = connected_region.connect(current_region)
 
     for access_rule in rule_list:
+
+        # If the current region has no logic
         if rule_list.index(access_rule) == 0:
             add_rule(curr_entr, access_rule)
 
+        # If the current region has logic
         else:
             add_rule(curr_entr, access_rule, combine="or")
 
-
+        # If the adjacent region has no logic
         if rule_list.index(access_rule) == 0:
             add_rule(connect_entr, access_rule)
 
+        # If the adjacent region has logic
         else:
             add_rule(connect_entr, access_rule, combine="or")
 
@@ -270,7 +268,19 @@ def grinchconnect(
 def connect_regions(world: "GrinchWorld", multiworld: MultiWorld):
     for grinch_region, grinch_data in ALL_REGIONS_INFO.items():
         multiworld.regions.append(GrinchRegion(grinch_region, grinch_data, world.player, multiworld))
+        access_list = grinch_data.region_access
+        if world.options.advanced_logic or world.using_ut:
+            if grinch_data.advanced_region_access is not None:
+                for advanced_rule in grinch_data.advanced_region_access:
+                    # If the glitches_item_name is different than "AdvancedLogic",
+                    # uncomment these line to add it to the regions rules
+                    if world.using_ut and not world.options.advanced_logic:
+                        advanced_rule.append(world.glitches_item_name)
+                    #if (world.using_ut and not world.options.advanced_logic) or (not world.using_ut and world.options.advanced_logic):
+                    access_list.append(advanced_rule)
 
+        # print(f"Region:{grinch_region}")
+        # print(f"Access_rules:{access_list}")
         if grinch_region == "Mount Crumpit":
             continue
-        grinchconnect(world, grinch_region, grinch_data.parent_region, grinch_data.region_access)
+        grinchconnect(world, grinch_region, grinch_data.parent_region, access_list)

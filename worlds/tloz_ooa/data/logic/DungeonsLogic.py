@@ -21,6 +21,7 @@ def make_d1_logic(player: int):
             ooa_can_break_crystal(state, player)
         ])],
         [INSIDE_TAG + "d1", "d1 west terrace", False, lambda state: ooa_can_break_pot(state, player)],
+        ["d1 west terrace", "d1 basement", False, lambda state: ooa_can_use_ember_seeds(state, player, True)],
         [INSIDE_TAG + "d1", "d1 pot chest", False, lambda state: ooa_can_break_pot(state, player)],
 
         # 2 keys => Risk of softlock if we require only one key. 
@@ -32,15 +33,19 @@ def make_d1_logic(player: int):
             ooa_has_bracelet(state, player),
             ooa_generic_boss_and_miniboss_kill(state, player),
         ])],
-
-        # potentially 3 keys w/ vanilla route
-        ["d1 wide room", "d1 miniboss", False, lambda state: all([
-            ooa_can_break_bush(state, player),
-            ooa_generic_boss_and_miniboss_kill(state, player),
-            ooa_has_small_keys(state, player, 1, 3)
+        ["d1 wide room", "d1 miniboss", True, lambda state: all([
+                ooa_can_break_bush(state, player),
+                ooa_generic_boss_and_miniboss_kill(state, player),
+                ooa_has_small_keys(state, player, 1, 2)
         ])],
-        ["d1 west terrace", "d1 miniboss", False, lambda state: ooa_has_small_keys(state, player, 1, 1)],
-        ["d1 miniboss", "d1 basement", False, lambda state: ooa_can_use_ember_seeds(state, player, True)],
+            #coming from entrance with break pot route
+        ["d1 west terrace", "d1 miniboss", False, lambda state: ooa_has_small_keys(state, player, 1, 2)],
+        # potentially 3 keys w/ vanilla route
+
+        ["d1 miniboss", "d1 basement", False, lambda state: all([
+            ooa_has_small_keys(state, player, 1, 3),
+            ooa_can_use_ember_seeds(state, player, True)
+        ])],
     ]
 
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from reward import *
+from .reward import *
 
 NUM_SHOPS = 64
 

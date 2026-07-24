@@ -1,4 +1,14 @@
-from ..Regions import Miranium as Mir
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Mir:
+    st: int = 0
+    dp: int = 0
+    b1: int = 0
+    b2: int = 0
+    mech: int = 1
+
 
 fnet_miranium_data: dict[int, list[Mir]] = {
     9: [

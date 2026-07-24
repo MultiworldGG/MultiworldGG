@@ -1,7 +1,7 @@
 """ Collection of commonly used constants for Luigi's Mansion. """
 from enum import StrEnum
 
-CLIENT_VERSION: str = "V0.6.1"
+CLIENT_VERSION: str = "V0.6.4"
 CLIENT_NAME: str = "Luigi's Mansion Client"
 RANDOMIZER_NAME: str = "Luigi's Mansion"
 

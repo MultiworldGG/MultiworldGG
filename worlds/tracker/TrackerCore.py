@@ -609,19 +609,20 @@ class TrackerCore():
                     self.multiworld = self.launch_multiworld
                     self.player_id = internal_id
                     self.regen_slots(self.get_current_world(), raw_slot_data)
-                elif self.launch_multiworld.worlds[internal_id].game == "Archipelago":
-                    if not self.regen_slots(connected_cls, raw_slot_data):
-                        raise "TODO: add error - something went very wrong with interpret_slot_data"
+                elif False: #For those who came before
+                    raise "We remember o7"
                 else:
                     world_dict = {name: self.launch_multiworld.worlds[slot].game for name, slot in self.launch_multiworld.world_name_lookup.items()}
-                    tb = f"Tried to match game '{self.game}'" + \
-                            f" to slot name '{self.slot_name}'" + \
+                    tb = f"Game missmatch for connected game '{self.game}'" + \
+                            f" and slot name '{self.slot_name}'" + \
                             f" with known slots {world_dict}"
                     self.gen_error = tb
                     self.logger.error(tb)
+                    self.add_log_line(TrackerLogLine("Unable to match game, correct your yamls", "", TrackerLogLineGroup.UT_ERROR))
                     return
             else:
                 known_slots = [f"{slot_name} ({self.launch_multiworld.worlds[slot_id].game})" for slot_name, slot_id in self.launch_multiworld.world_name_lookup.items() if self.launch_multiworld.worlds[slot_id].game != "Archipelago"]
+                self.add_log_line(TrackerLogLine("Unable to find YAML, please install your yaml in the correct folder", "", TrackerLogLineGroup.UT_ERROR))
                 if known_slots:
                     self.logger.error(f"Player's Yaml not in tracker's list. Known players: {known_slots}")
                 else:

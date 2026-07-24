@@ -151,3 +151,32 @@ UT provides the following registers
 * set_glitches_callback : Called with the current in logic locations that are only in logic with the "Glitches" state
 
 All of these functions must be provided with a function (that will be called with the appropriate parameter) that takes in a list of strings (currently expects to return a bool but that isn't used at the moment)
+
+# Tracker Addons
+
+UT Now provides a way to register additional commands, when the user has the "tracker_addons" apworld installed. 
+
+## Adding a Tracker Addon
+
+If you import (safely) `tracker_addons.register_function` you can register a command that *any* user of UT will have access to
+
+
+Here's a simple example of adding an "alias"
+
+```py
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from worlds.tracker.TrackerClient import TrackerCommandProcessor
+
+@mark_raw
+def glp(self: "TrackerCommandProcessor", dest_name: str = ""):
+    """Alias for get_logical_path"""
+    self.commands["get_logical_path"](self,dest_name)
+
+try:
+    from worlds.tracker_addons import register_functions
+    register_function("glp", glp)
+except ImportError:
+    #Do something to tell the poor players they don't have addons installed
+```

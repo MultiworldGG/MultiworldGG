@@ -563,8 +563,9 @@
         const hcLabel = hc > 100 ? 'off' : hc + '%';
         const sp = g.spoiler != null ? g.spoiler : 0;
         const spLabel = sp === 0 ? 'off' : sp === 1 ? 'on' : sp === 2 ? '+playthrough' : 'full';
+        const progressionEqualization = g.progression_equalization != null ? g.progression_equalization : 20;
         const threshold = s.release_threshold != null ? s.release_threshold : 0;
-        return `Release: ${s.release_mode || '?'} | Collect: ${s.collect_mode || '?'} | Threshold: ${threshold}% | Remaining: ${s.remaining_mode || '?'} | Hints: ${hmLabel} @ ${hcLabel} | Item Cheat: ${s.item_cheat ? 'on' : 'off'} | Spoiler: ${spLabel}`;
+        return `Release: ${s.release_mode || '?'} | Collect: ${s.collect_mode || '?'} | Threshold: ${threshold}% | Remaining: ${s.remaining_mode || '?'} | Hints: ${hmLabel} @ ${hcLabel} | Item Cheat: ${s.item_cheat ? 'on' : 'off'} | Spoiler: ${spLabel} | Prog. Equal.: ${progressionEqualization}%`;
     }
 
     function updateStatusDisplay(data) {
@@ -1669,6 +1670,10 @@
                 ),
                 item_cheat: document.getElementById("edit-item-cheat").value === "1",
                 spoiler: parseInt(document.getElementById("edit-spoiler").value),
+                progression_equalization: Math.max(
+                    0,
+                    Math.min(parseInt(document.getElementById("edit-progression-equalization").value, 10) || 0, 100)
+                ),
                 allow_custom_apworlds: allowCustomEl ? allowCustomEl.checked : undefined,
             };
 

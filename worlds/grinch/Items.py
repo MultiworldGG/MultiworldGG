@@ -8,7 +8,7 @@ from BaseClasses import (
 
 
 class GrinchItemData(NamedTuple):
-    item_group: list[str]  # arbitrary that can be whatever it can be, basically the field/property for item groups
+    item_group: Optional[list[str]]  # arbitrary that can be whatever it can be, basically the field/property for item groups
     id: Optional[int]
     classification: IC
     update_ram_addr: Optional[list[GrinchRamData]]
@@ -102,6 +102,20 @@ class grinch_items:
         BEE_TRAP: str = "Bee Trap"
         PUSH_TRAP: str = "Push Trap"
 
+    class supadow:
+        SPIN_N_WIN: str = "Spin N' Win Supadow"
+        PANKAMANIA: str = "Pankamania Supadow"
+        COPTER_RACE: str = "The Copter Race Contest Supadow"
+        PROGRESSIVE_SUPADOW: str = "Progressive Supadow"
+        BIKE_RACE: str = "Bike Race Unlock"
+
+    class events:
+        #ADVANCED_LOGIC: str = "AdvancedLogic"
+        GLITCHED_LOGIC_ITEM: str = "Glitched_Logic_Item"
+        # SLEIGH_PARTS_NOT_RANDOMIZED: str = "SleighPartsNotRandomized"
+        # MISSION_ITEMS_NOT_RANDOMIZED: str = "MissionItemsNotRandomized"
+        BEEHIVES_DOOR: str = "BeehivesDoor"
+
 class grinch_categories:
     FILLER: str = "Filler"
     GADGETS: str = "Gadgets"
@@ -116,6 +130,7 @@ class grinch_categories:
     USEFUL_IC: str = "Useful"
     PROGRESSION_IC: str = "Progression"
     VACUUM_TUBES: str = "Vacuum Tubes"
+    SUPADOW_MINIGAMES: str = "Supadow Door Unlocks"
 
 def get_region_health(region_name: str):
     from .Regions import ALL_REGIONS_INFO
@@ -187,7 +202,7 @@ GADGETS_TABLE: dict[str, GrinchItemData] = {
             grinch_categories.PROGRESSION_IC,
         ],
         103,
-        IC.progression,
+        IC.progression_skip_balancing,
         [
             GrinchRamData(0x0102C7, value=0x40),
             GrinchRamData(0x0102C8, value=0x41),
@@ -208,7 +223,7 @@ GADGETS_TABLE: dict[str, GrinchItemData] = {
             grinch_categories.PROGRESSION_IC,
         ],
         104,
-        IC.progression,
+        IC.progression_skip_balancing,
         [
             GrinchRamData(0x0102D0, value=0x40),
             GrinchRamData(0x0102D1, value=0x41),
@@ -540,20 +555,48 @@ KEYS_TABLE: dict[str, GrinchItemData] = {
 
 
 # Supadow
-# SUPADOW_TABLE: dict[str. GrinchItemData] = {
-# "Progressive Vacuum Tube": GrinchItemData(["Vacuum Tubes"], 404, IC.progression,
-#     [GrinchRamData()]),
-# "Spin N' Win Door Unlock": GrinchItemData(["Supadow Door Unlocks"], 405, IC.progression,
-#     [GrinchRamData()]),
-# "Dankamania Door Unlock": GrinchItemData(["Supadow Door Unlocks"], 406, IC.progression,
-#     [GrinchRamData()]),
-# "The Copter Race Contest Door Unlock": GrinchItemData("Supadow Door Unlocks", 407, IC.progression,
-#     [GrinchRamData()]),
-# "Progressive Supadow Door Unlock": GrinchItemData("Supadow Door Unlocks", 408, IC.progression,
-#     [GrinchRamData()]),
-# "Bike Race Access": GrinchItemData(["Supadow Door Unlocks", 409, IC.progression,
-#     [GrinchRamData()])
-# }
+SUPADOW_TABLE: dict[str, GrinchItemData] = {
+    grinch_items.supadow.SPIN_N_WIN: GrinchItemData(
+        [
+            grinch_categories.SUPADOW_MINIGAMES,
+        ],
+        405,
+        IC.progression_skip_balancing,
+        [],
+    ),
+    grinch_items.supadow.PANKAMANIA: GrinchItemData(
+        [
+            grinch_categories.SUPADOW_MINIGAMES,
+        ],
+        406,
+        IC.progression_skip_balancing,
+        [],
+    ),
+    grinch_items.supadow.COPTER_RACE: GrinchItemData(
+        [
+            grinch_categories.SUPADOW_MINIGAMES,
+        ],
+        407,
+        IC.progression_skip_balancing,
+        [],
+    ),
+    # grinch_items.supadow.BIKE_RACE: GrinchItemData(
+    #     [
+    #         grinch_categories.SUPADOW_MINIGAMES,
+    #     ],
+    #     408,
+    #     IC.progression_skip_balancing,
+    #     [],
+    # ),
+    # grinch_items.supadow.PROGRESSIVE_SUPADOW: GrinchItemData(
+    #     [
+    #         grinch_categories.SUPADOW_MINIGAMES,
+    #     ],
+    #     409,
+    #     IC.progression_skip_balancing,
+    #     [GrinchRamData()],
+    # ),
+}
 
 # Misc Items
 MISC_ITEMS_TABLE: dict[str, GrinchItemData] = {
@@ -683,7 +726,7 @@ MOVES_TABLE: dict[str, GrinchItemData] = {
             grinch_categories.PROGRESSION_IC,
         ],
         700,
-        IC.progression,
+        IC.progression_skip_balancing,
         [
             GrinchRamData(0x0100BB, binary_bit_pos=0),
         ],
@@ -728,7 +771,7 @@ MOVES_TABLE: dict[str, GrinchItemData] = {
             grinch_categories.PROGRESSION_IC,
         ],
         704,
-        IC.progression,
+        IC.progression_skip_balancing,
         [
             GrinchRamData(0x0100BB, binary_bit_pos=4),
         ],
@@ -948,6 +991,39 @@ TRAPS_TABLE: dict[str, GrinchItemData] = {
     # "Child Trap": GrinchItemData(["Traps"], 612, IC.trap,[GrinchRamData()])
     # "Disable Jump Trap": GrinchItemData(["Traps"], 613, IC.trap,[GrinchRamData(0x010026, binary_bit_pos=6)])
 }
+EVENT_TABLE: dict[str, GrinchItemData] = {
+    #grinch_items.events.ADVANCED_LOGIC: GrinchItemData(
+    #    [],
+    #    0,
+    #    IC.progression_skip_balancing,
+    #    [],
+    #),
+    grinch_items.events.GLITCHED_LOGIC_ITEM: GrinchItemData(
+        [],
+        0,
+        IC.progression_skip_balancing,
+        [],
+    ),
+    # grinch_items.events.SLEIGH_PARTS_NOT_RANDOMIZED: GrinchItemData(
+    #     [],
+    #     0,
+    #     IC.progression_skip_balancing,
+    #     [],
+    # ),
+    # grinch_items.events.MISSION_ITEMS_NOT_RANDOMIZED: GrinchItemData(
+    #     [],
+    #     0,
+    #     IC.progression_skip_balancing,
+    #     [],
+    # ),
+    grinch_items.events.BEEHIVES_DOOR: GrinchItemData(
+        [],
+        0,
+        IC.progression_skip_balancing,
+        [],
+    ),
+}
+
 ALL_ITEMS_TABLE: dict[str, GrinchItemData] = {
     **GADGETS_TABLE,
     **MISSION_ITEMS_TABLE,
@@ -957,7 +1033,8 @@ ALL_ITEMS_TABLE: dict[str, GrinchItemData] = {
     **USEFUL_ITEMS_TABLE,
     **SLEIGH_TABLE,
     **MOVES_TABLE,
-    # **SUPADOW_TABLE,
+    **SUPADOW_TABLE,
+    **EVENT_TABLE,
 }
 
 def grinch_items_to_id() -> dict[str, int]:

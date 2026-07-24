@@ -598,6 +598,7 @@ class RandomizeJMPTables:
             elif event_num == 74:
                 event_info["CharacterName"] = "dltelesa"
                 event_info["EventIf"] = 1
+                event_info["EventLoad"] = 0
 
             # Make Van Gogh load more than once
             elif event_num == 38:

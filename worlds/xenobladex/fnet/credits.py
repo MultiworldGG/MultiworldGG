@@ -1,4 +1,20 @@
-from ..Regions import Credits as Crd
+
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Crd:
+    r1: int = 0
+    r2: int = 0
+    r3: int = 0
+    r4: int = 0
+    r5: int = 0
+    r6: int = 0
+    dp: int = 0
+    b1: int = 0
+    b2: int = 0
+    mech: int = 1
+
 
 fnet_credits_data: dict[int, list[Crd]] = {
     15: [

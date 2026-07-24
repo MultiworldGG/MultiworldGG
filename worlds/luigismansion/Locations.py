@@ -1,3 +1,4 @@
+from pickle import FALSE
 from typing import NamedTuple, Optional, List
 from BaseClasses import Location, Region
 from .Helper_Functions import LMRamData
@@ -288,7 +289,7 @@ PLANT_LOCATION_TABLE: dict[str, LMLocationData] = {
         update_ram_addr=[LMRamData(in_game_room_id=62)]),
     "Balcony Plant NW Near Bench": LMLocationData("Balcony", 77, "Plant", 606, ["Water Element Medal"], 3,
         update_ram_addr=[LMRamData(in_game_room_id=62)]),
-    "Balcony Plant NE Corner Near Bench": LMLocationData("Balcony", 78, "Plant", 607, ["Water Element Medal"], 3,
+    "Balcony Plant NW Corner Near Bench": LMLocationData("Balcony", 78, "Plant", 607, ["Water Element Medal"], 3,
         update_ram_addr=[LMRamData(in_game_room_id=62)]),
     "Balcony Plant SW Corner": LMLocationData("Balcony", 81, "Plant", 610, ["Water Element Medal"], 3,
         update_ram_addr=[LMRamData(in_game_room_id=62)]),
@@ -441,7 +442,8 @@ DECOR_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Study Book (on Desk closer to Bookshelves)": LMLocationData("Study", 146, "Furniture", 504, [], 2,
                                                                  update_ram_addr=[LMRamData(in_game_room_id=35)]),
     "Lydia's Vanity (Master Bedroom)": LMLocationData("Master Bedroom", 159, "Furniture", 375, [], 2,
-                                                      update_ram_addr=[LMRamData(in_game_room_id=34)], require_poltergust=False),
+                                                      update_ram_addr=[LMRamData(in_game_room_id=34)], require_poltergust=False,
+                                                      hide_boo=False),
     "Master Bedroom Lamp": LMLocationData("Master Bedroom", 165, "Furniture", 493, [], 2,
                                           update_ram_addr=[LMRamData(in_game_room_id=34)]),
     "Nursery Vase": LMLocationData("Nursery", 166, "Furniture", 488, [], 2,
@@ -963,7 +965,8 @@ SEATING_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Study Chair": LMLocationData("Study", 144, "Furniture", 350, [], 2, remote_only=True,
                                   update_ram_addr=[LMRamData(in_game_room_id=35)], require_poltergust=False),
     "Master Bedroom Stool": LMLocationData("Master Bedroom", 158, "Furniture", 376, [], 2,
-                                           update_ram_addr=[LMRamData(in_game_room_id=34)], require_poltergust=False),
+                                           update_ram_addr=[LMRamData(in_game_room_id=34)], require_poltergust=False,
+                                           hide_boo=False),
     "Nursery Chair L": LMLocationData("Nursery", 170, "Furniture", 365, [], 2,
                                       update_ram_addr=[LMRamData(in_game_room_id=26)], require_poltergust=False),
     "Nursery Chair R": LMLocationData("Nursery", 171, "Furniture", 366, [], 2,
@@ -1702,7 +1705,7 @@ WDYM_LOCATION_TABLE: dict[str, LMLocationData] = {
     "Cellar Fence": LMLocationData("Cellar", 864, "Furniture", 9, [],
         update_ram_addr=[LMRamData(in_game_room_id=66)], require_poltergust=False),
     "Pipe Room Fence": LMLocationData("Pipe Room", 865, "Furniture", 23, [],
-        update_ram_addr=[LMRamData(in_game_room_id=68)], require_poltergust=False),
+        update_ram_addr=[LMRamData(in_game_room_id=68)]),
     "Safari Room L Cheetah Carpet": LMLocationData("Safari Room", 866, "Furniture", 628, [],
         update_ram_addr=[LMRamData(in_game_room_id=55)]),
     "Safari Room R Cheetah Carpet": LMLocationData("Safari Room", 867, "Furniture", 629, [],

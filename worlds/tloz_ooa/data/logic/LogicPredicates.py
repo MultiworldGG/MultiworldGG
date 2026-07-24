@@ -474,7 +474,7 @@ def ooa_can_break_tingle_balloon(state: CollectionState, player: int):
     return any([
         ooa_has_sword(state, player),
         ooa_has_boomerang(state, player),
-        #ooa_can_punch(state, player), ?
+        ooa_can_punch(state, player),
     ]) and ooa_has_feather(state, player)
 
 
@@ -542,11 +542,14 @@ def ooa_can_harvest_tree(state: CollectionState, player: int, can_use_companion:
         ooa_can_use_seeds(state, player),
         any([
             ooa_has_sword(state, player),
-            ooa_can_punch(state, player),
             all([
                 can_use_companion,
                 ooa_option_medium_logic(state, player),
                 ooa_can_summon_dimitri(state, player)
+            ]),
+            all([
+                ooa_can_punch(state, player),
+                ooa_option_medium_logic(state, player),
             ])
         ])
     ])

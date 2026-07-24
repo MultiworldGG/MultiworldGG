@@ -31,7 +31,7 @@ template_load_lock = threading.Lock()
 base_info = {
     "version": Utils.__version__,
     "title": "Archipelago (SAWS)",
-    "author": "Berserker, AlchavX",
+    "author": "Berserker, AlchavX, Silasary",
     "homepage": "https://archipelago.gg",
     "description": "Integration client for the Archipelago Randomizer, designed to work with the Space Age Without Space mod",
     "factorio_version": "2.0",
@@ -113,6 +113,8 @@ def generate_mod(world: "FactorioSAWS", output_directory: str):
                  for location in world.science_locations + world.craftsanity_locations]
     mod_name = f"AP-{multiworld.seed_name}-P{player}-{multiworld.get_file_safe_player_name(player)}"
     base_info["version"] = world.world_version.as_simple_string()
+    base_info["title"] += f" {world.player_name}"
+    base_info["description"] += f"\nFor player {world.player_name} in slot {player} of world {multiworld.seed_name}"
     versioned_mod_name = mod_name + "_" + world.world_version.as_simple_string()
 
     def flop_random(low, high, base=None):
