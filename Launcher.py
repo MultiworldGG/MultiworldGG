@@ -181,7 +181,7 @@ def handle_uri(path: str) -> tuple[list[Component], Component]:
     return client_components, text_client_component
 
 
-def build_uri_popup(component_list: list[Component], launch_args: tuple[str, ...]) -> None:
+def build_uri_popup(component_list: list["Component"], launch_args: tuple[str, ...]) -> None:
     from kvui import ButtonsPrompt
     component_options = {
         component.display_name: component for component in component_list
@@ -335,8 +335,8 @@ def create_shortcut(button: Any, component: Component) -> None:
 refresh_components: Callable[[], None] | None = None
 
 
-def run_gui(launch_components: list[Component], args: Any) -> None:
-    from kvui import (ThemedApp, MDFloatLayout, MDGridLayout, ScrollBox)
+def run_gui(launch_components: list["Component"], args: Any) -> None:
+    from kvui import ThemedApp, MDFloatLayout, MDGridLayout, ScrollBox
     from kivy.properties import ObjectProperty
     from kivy.core.window import Window
     from kivy.metrics import dp
@@ -357,11 +357,11 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
     from kivy.lang.builder import Builder
 
     class LauncherCard(MDCard):
-        component: Component | None
+        component: "Component | None"
         image: str
         context_button: MDIconButton = ObjectProperty(None)
 
-        def __init__(self, *args, component: Component | None = None, image_path: str = "", **kwargs):
+        def __init__(self, *args, component: "Component | None" = None, image_path: str = "", **kwargs):
             self.component = component
             self.image = image_path
             super().__init__(args, kwargs)
@@ -414,7 +414,7 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
                 self.favorites.append(caller.component.display_name)
                 caller.icon = "star"
 
-        def build_card(self, component: Component) -> LauncherCard:
+        def build_card(self, component: "Component") -> LauncherCard:
             """
                 Builds a card widget for a given component.
 
@@ -571,6 +571,7 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
 
         def _refresh_components(self, type_filter: Sequence[str | Type] | None = None) -> None:
             if not type_filter:
+                from worlds.LauncherComponents import Type
                 type_filter = [Type.CLIENT, Type.ADJUSTER, Type.TOOL, Type.MISC]
             favorites = "favorites" in type_filter
 
@@ -601,6 +602,7 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
             if len(name) == 0:
                 self._refresh_components(self.current_filter)
                 return
+            from worlds.LauncherComponents import Type
 
             sub_matches = [
                 card for card in self.cards
@@ -611,12 +613,12 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
                 self.button_layout.layout.add_widget(card)
 
         def build(self):
+            self.set_colors()
             self.top_screen = Builder.load_file(Utils.local_path("data/launcher.kv"))
             self.grid = self.top_screen.ids.grid
             self.navigation = self.top_screen.ids.navigation
             self.button_layout = self.top_screen.ids.button_layout
             self.search_box = self.top_screen.ids.search_box
-            self.set_colors()
             self.top_screen.md_bg_color = self.theme_cls.backgroundColor
 
             global refresh_components
@@ -976,6 +978,7 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
                 return
             from kivymd.uix.dialog import MDDialog, MDDialogIcon, MDDialogHeadlineText, MDDialogContentContainer
             from kivymd.uix.divider import MDDivider
+            from worlds import failed_world_loads
             from kivymd.uix.list import MDListItem, MDListItemHeadlineText, MDListItemSupportingText
             entries = []
             for world, reason in failed_world_loads.items():
@@ -1020,6 +1023,7 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
             super()._stop(*largs)
 
         def on_stop(self):
+            from worlds.LauncherComponents import Type
             Utils.persistent_store("launcher", "favorites", self.favorites)
             Utils.persistent_store("launcher", "filter", ", ".join(filter.name if isinstance(filter, Type) else filter
                                                                    for filter in self.current_filter))
@@ -1035,15 +1039,16 @@ def run_gui(launch_components: list[Component], args: Any) -> None:
     _lc._rebuild_launcher_ui = None
 
 
-def run_component(component: Component, *args):
+def run_component(component: "Component", *args):
+    global refresh_components
     if component.func:
         component.func(*args)
-        if refresh_components:
-            refresh_components()
     elif component.script_name:
         subprocess.run([*get_exe(component.script_name), *args])
     else:
         logging.warning(f"Component {component} does not appear to be executable.")
+    if refresh_components:
+        refresh_components()
 
 
 def main(args: argparse.Namespace | dict | None = None):

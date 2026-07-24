@@ -11,7 +11,7 @@ import sys
 import tempfile
 import time
 import weakref
-from enum import Enum, auto
+from enum import Enum
 from typing import Any, Optional, Callable, Iterable, Tuple
 
 from Utils import local_path, open_filename, is_frozen, is_kivy_running, open_file, user_path, read_apignore
@@ -44,13 +44,12 @@ class APWorldInstallRestartRequired(Exception):
         )
 
 
-class Type(Enum):
-    TOOL = auto()
-    MISC = auto()
-    CLIENT = auto()
-    ADJUSTER = auto()
-    FUNC = auto()  # do not use anymore
-    HIDDEN = auto()
+class Type(str, Enum):
+    TOOL = "TOOL"
+    MISC = "MISC"
+    CLIENT = "CLIENT"
+    ADJUSTER = "ADJUSTER"
+    HIDDEN = "HIDDEN"
 
 
 class Component:
@@ -103,10 +102,6 @@ class Component:
         self.frozen_name = frozen_name or (apname + script_name) if script_name else None
         self.icon = icon
         self.cli = cli
-        if component_type == Type.FUNC:
-            from Utils import deprecate
-            deprecate(f"Launcher Component {self.display_name} is using Type.FUNC Type, which is pending removal.")
-            component_type = Type.MISC
 
         self.type = component_type or (
             Type.CLIENT if "Client" in display_name else
@@ -126,7 +121,6 @@ class Component:
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.display_name})"
-
 
 def _is_worlds_loading() -> bool:
     worlds_module = sys.modules.get("worlds")
@@ -172,14 +166,14 @@ processes = weakref.WeakSet()
 _rebuild_launcher_ui: Optional[Callable[[], None]] = None
 
 
-def launch_subprocess(func: Callable, name: str | None = None, args: Tuple[str, ...] = ()) -> None:
+def launch_subprocess(func: Callable, name: str | None = None, args: tuple[str, ...] = ()) -> None:
     import multiprocessing
     process = multiprocessing.Process(target=func, name=name, args=args)
     process.start()
     processes.add(process)
 
 
-def launch(func: Callable, name: str | None = None, args: Tuple[str, ...] = ()) -> None:
+def launch(func: Callable, name: str | None = None, args: tuple[str, ...] = ()) -> None:
     from Utils import is_kivy_running
     if is_kivy_running():
         launch_subprocess(func, name, args)
@@ -206,7 +200,7 @@ def launch_textclient(*args):
     launch(CommonClient.run_as_textclient, name="TextClient", args=args)
 
 
-def _install_apworld(apworld_src: str = "") -> Optional[Tuple[pathlib.Path, pathlib.Path]]:
+def _install_apworld(apworld_src: str = "") -> Optional[tuple[pathlib.Path, pathlib.Path]]:
     if not apworld_src:
         apworld_src = open_filename('Select APWorld file to install', (('APWorld', ('.apworld',)),))
         if not apworld_src:
@@ -342,7 +336,6 @@ def export_datapackage() -> None:
         json.dump(network_data_package, f, indent=4)
 
     open_file(path)
-
 
 components: ComponentList = ComponentList([
     # Launcher
@@ -894,7 +887,6 @@ if not is_frozen():
         from worlds import AutoWorldRegister
         from worlds import ensure_worlds_loaded
         from worlds.Files import APWorldContainer
-        from Launcher import open_folder
 
         ensure_worlds_loaded()
 

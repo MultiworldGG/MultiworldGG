@@ -39,6 +39,9 @@ __all__ = [
 
 failed_world_loads: dict[str, str] = {}
 
+logger = logging.getLogger("Worlds")
+logger.propagate = False
+logger.setLevel(logging.INFO)
 
 @dataclasses.dataclass(order=True)
 class WorldSource:
@@ -60,7 +63,7 @@ class WorldSource:
     def load(self) -> bool:
         try:
             start = time.perf_counter()
-            importlib.import_module(f".{Path(self.path).stem}", "worlds")
+            importlib.import_module(f".{self.name}", "worlds")
             self.time_taken = time.perf_counter()-start
             return True
 
@@ -77,6 +80,16 @@ class WorldSource:
             failed_world_loads[os.path.basename(self.path).rsplit(".", 1)[0]] = reason
             return False
 
+    @property
+    def name(self) -> str:
+        return Path(self.path).stem
+
+# AP_TEST_WORLDS scopes auto-loading to the named worlds; these are always loaded for the
+# suite's fixtures but aren't themselves worlds under test.
+_SUITE_FIXTURE_WORLDS = {"generic", "apquest"}
+_test_worlds_env = os.environ.get("AP_TEST_WORLDS") if "pytest" in sys.modules or "unittest" in sys.modules else None
+_requested_worlds = {name.strip() for name in _test_worlds_env.split(",") if name.strip()} if _test_worlds_env else None
+test_worlds_filter = _requested_worlds | _SUITE_FIXTURE_WORLDS if _requested_worlds else None
 
 # find potential world containers; custom worlds are .apworld-only, local built-ins may be folders
 def _scan_world_sources() -> List[WorldSource]:
@@ -86,6 +99,8 @@ def _scan_world_sources() -> List[WorldSource]:
         for entry in os.scandir(folder):
             # prevent loading of __pycache__ and allow _* for non-world folders, disable files/folders starting with "."
             if not entry.name.startswith(("_", ".")):
+                if test_worlds_filter is not None and Path(entry.name).stem not in test_worlds_filter:
+                    continue
                 file_name = entry.name if relative else os.path.join(folder, entry.name)
                 if entry.is_dir():
                     if not relative:
@@ -154,7 +169,6 @@ def _load_loose_worlds() -> list[WorldSource]:
 
 
 _apworld_module_specs: dict[str, importlib.machinery.ModuleSpec] = {}
-
 
 class _APWorldModuleFinder(importlib.abc.MetaPathFinder):
     def find_spec(
@@ -261,7 +275,16 @@ def _build_network_data_packages() -> None:
     global network_data_package
     global network_data_package_single_game
 
-    # Build the data package for each game.
+    # Snapshot the worlds under test, excluding fixture worlds unless explicitly requested.
+    if _requested_worlds:
+        AutoWorldRegister.testable_worlds = {
+            game: world for game, world in AutoWorldRegister.world_types.items()
+            if Path(world.__file__).parent.name in _requested_worlds
+        }
+    else:
+        AutoWorldRegister.testable_worlds = dict(AutoWorldRegister.world_types)
+
+    logger.info("Datapackage")
     network_data_package = {
         "games": {world_name: world.get_data_package_data() for world_name, world in AutoWorldRegister.world_types.items()},
     }
