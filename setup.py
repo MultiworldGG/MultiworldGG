@@ -22,7 +22,7 @@ SNI_VERSION = "v0.0.100"  # change back to "latest" once tray icon issues are fi
 
 
 # This is a bit jank. We need cx-Freeze to be able to run anything from this script, so install it
-requirement = 'cx-Freeze==8.4.0'
+requirement = 'cx-Freeze==8.6.4'
 try:
     import pkg_resources
     try:
@@ -43,7 +43,7 @@ if install_cx_freeze:
     # install and import cx_freeze
     if '--yes' not in sys.argv and '-y' not in sys.argv:
         input(f'Requirement {requirement} is not satisfied, press enter to install it')
-    subprocess.call([sys.executable, '-m', 'pip', 'install', requirement, '--upgrade'])
+    subprocess.call([sys.executable, '-m', 'pip', 'install', requirement, '-c', 'setup_constraints.txt'])
     import pkg_resources
 
 import cx_Freeze
