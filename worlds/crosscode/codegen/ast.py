@@ -290,6 +290,19 @@ def create_expression_region_connection(conn: RegionConnection):
         ]
     )
 
+    if conn.metadata is not None:
+        # this will never be none, but it must claim that it can be to satisfy the typing gods
+        keys: list[ast.expr | None] = [ast.Constant(k) for k in conn.metadata.keys()]
+        values: list[ast.expr] = [ast.Constant(k) for k in conn.metadata.values()]
+
+        ast_region.keywords.append(ast.keyword(
+            arg="metadata",
+            value=ast.Dict(
+                keys=keys,
+                values=values,
+            )
+        ))
+
     ast.fix_missing_locations(ast_region)
 
     return ast_region

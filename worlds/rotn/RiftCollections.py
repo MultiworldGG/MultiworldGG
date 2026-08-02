@@ -111,30 +111,37 @@ class RotNCollections:
         #Unbeatable
         "WORN OUT TAPES [tally-ho version]": SongData(130, "WORN OUT TAPES [tally-ho version]", "Free DLC", 5, 12, 16, 25),
         #Rift Anniversary
-        "Portabellohead": SongData(131, "Portabellohead", "Anniversary", 3, 8, 13, 18, False),
-        "March of the Profane": SongData(132, "March of the Profane", "Anniversary", 5, 12, 17, 24, False),
+        "Portabellohead": SongData(131, "Portabellohead", "Anniversary", 3, 8, 13, 18),
+        "March of the Profane": SongData(132, "March of the Profane", "Anniversary", 5, 12, 17, 24),
         #Spin Rhythm
-        "The Magician": SongData(133, "The Magician", "Free DLC", 4, 12, 17, 25, False),
+        "The Magician": SongData(133, "The Magician", "Free DLC", 4, 12, 17, 25),
         #VA-11 HALL-A
-        "Digital Drive": SongData(134, "Digital Drive", "VA-11 HALL-A", 3, 6, 18, 24, False),
-        "Every Day is Night": SongData(135, "Every Day is Night", "VA-11 HALL-A", 3, 8, 14, 22, False),
-        "Drive Me Wild": SongData(136, "Drive Me Wild", "VA-11 HALL-A", 5, 11, 15, 20, False),
-        "YLIAD": SongData(137, "YLIAD", "Free DLC", 4, 8, 14, 20, False),
-        "Welcome to VA-11 HALL-A": SongData(138, "Welcome to VA-11 HALL-A", "VA-11 HALL-A", 2, 8, 13, 21, False),
+        "Digital Drive": SongData(134, "Digital Drive", "VA-11 HALL-A", 3, 6, 18, 24),
+        "Every Day is Night": SongData(135, "Every Day is Night", "VA-11 HALL-A", 3, 8, 14, 22),
+        "Drive Me Wild": SongData(136, "Drive Me Wild", "VA-11 HALL-A", 5, 11, 15, 20),
+        "YLIAD": SongData(137, "YLIAD", "Free DLC", 4, 8, 14, 20),
+        "Welcome to VA-11 HALL-A": SongData(138, "Welcome to VA-11 HALL-A", "VA-11 HALL-A", 2, 8, 13, 21),
         #Undertale
-        "Spider Dance": SongData(139, "Spider Dance", "Free DLC", 2, 6, 13, 18, False),
-        "Hopes and Dreams": SongData(140, "Hopes and Dreams", "Undertale", 3, 9, 15, 19, False),
-        "Death by Glamour": SongData(141, "Death by Glamour", "Undertale", 5, 13, 16, 24, False),
-        "Bergentrückung / Asgore": SongData(142, "Bergentrückung / Asgore", "Undertale", 4, 10, 15, 21, False),
-        "Battle Against a True Hero": SongData(143, "Battle Against a True Hero", "Undertale", 5, 11, 17, 26, False),
-        "MEGALOVANIA": SongData(144, "MEGALOVANIA", "Undertale", 5, 11, 17, 25, False),
+        "Spider Dance": SongData(139, "Spider Dance", "Free DLC", 2, 6, 13, 18),
+        "Hopes and Dreams": SongData(140, "Hopes and Dreams", "Undertale", 3, 9, 15, 19),
+        "Death by Glamour": SongData(141, "Death by Glamour", "Undertale", 5, 13, 16, 24),
+        "Bergentrückung / Asgore": SongData(142, "Bergentrückung / Asgore", "Undertale", 4, 10, 15, 21),
+        "Battle Against a True Hero": SongData(143, "Battle Against a True Hero", "Undertale", 5, 11, 17, 26),
+        "MEGALOVANIA": SongData(144, "MEGALOVANIA", "Undertale", 5, 11, 17, 25),
         #Vol 2
-        "A Banj After Midnight (feat. M Gewehr)": SongData(145, "A Banj After Midnight (feat. M Gewehr)", "Volume 2", 5, 11, 18, 24, False),
-        "Goo": SongData(146, "Goo", "Volume 2", 4, 11, 17, 23, False),
-        "Phantom Funk (feat. Lawrence Ravagnan)": SongData(147, "Phantom Funk (feat. Lawrence Ravagnan)", "Volume 2", 5, 11, 16, 25, False),
-        "The Showdown Throwdown": SongData(148, "The Showdown Throwdown", "Volume 2", 6, 12, 20, 29, False),
-        "Ultra Creepy": SongData(149, "Ultra Creepy", "Free DLC", 5, 10, 15, 26, False),
-        "Inside": SongData(150, "Inside", "Volume 2", 4, 12, 16, 24, False),
+        "A Banj After Midnight (feat. M Gewehr)": SongData(145, "A Banj After Midnight (feat. M Gewehr)", "Volume 2", 5, 11, 18, 24),
+        "Goo": SongData(146, "Goo", "Volume 2", 4, 11, 17, 23),
+        "Phantom Funk (feat. Lawrence Ravagnan)": SongData(147, "Phantom Funk (feat. Lawrence Ravagnan)", "Volume 2", 5, 11, 16, 25),
+        "The Showdown Throwdown": SongData(148, "The Showdown Throwdown", "Volume 2", 6, 12, 20, 29),
+        "Ultra Creepy": SongData(149, "Ultra Creepy", "Free DLC", 5, 10, 15, 26),
+        "Inside": SongData(150, "Inside", "Volume 2", 4, 12, 16, 24),
+        #K/DA
+        "POP/STARS": SongData(151, "POP/STARS", "K/DA", 4, 11, 17, 24),
+        "More": SongData(152, "More", "K/DA", 5, 11, 16, 24),
+        "Villain": SongData(153, "Villain", "K/DA", 4, 10, 15, 23),
+        "The Baddest": SongData(154, "The Baddest", "K/DA", 5, 10, 19, 25),
+        #Among Us
+        "Sought (Among Us - Seek Remix)": SongData(155, "Sought (Among Us - Seek Remix)", "Free DLC", 4, 9, 15, 24),
     }
 
     EXTRA_DATA: Dict[str, ExtraSongData] = {
@@ -176,6 +183,7 @@ class RotNCollections:
         "VA-11 HALL-A",
         "Undertale",
         "Volume 2",
+        "K/DA",
     ]
 
     DLC_SONGS: List[str] = []
@@ -364,7 +372,7 @@ class RotNCollections:
             "Minigame": {name for name, data, in self.song_items.items() if data.type == "Minigame"},
             "Boss Battle": {name for name, data, in self.song_items.items() if data.type == "Boss"},
 
-            "Vanilla": {name for name, data, in self.song_items.items() if data.DLC != "Workshop" or data.DLC != "local"},
+            "Vanilla": {name for name, data, in self.song_items.items() if data.DLC != "Workshop" and data.DLC != "local"},
             "Workshop": {name for name, data, in self.song_items.items() if data.DLC == "Workshop"},
             "Local": {name for name, data, in self.song_items.items() if data.DLC == "Local"},
 
@@ -383,6 +391,7 @@ class RotNCollections:
             "VA-11 HALL-A": {name for name, data, in self.song_items.items() if data.DLC == "VA-11 HALL-A" or "YLIAD" in name},
             "Undertale": {name for name, data, in self.song_items.items() if data.DLC == "Undertale" or "Spider Dance" in name},
             "Volume 2": {name for name, data, in self.song_items.items() if data.DLC == "Volume 2" or "Ultra Creepy" in name},
+            "K/DA": {name for name, data, in self.song_items.items() if data.DLC == "K/DA"},
         }
 
         return groups

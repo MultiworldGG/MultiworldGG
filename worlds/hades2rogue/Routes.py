@@ -22,6 +22,7 @@ ROUTES = {
         "score_id_base": 0,                      # point ids: base + 0..999
         "room_id_base": 7000,                    # room ids: base + 7000..7000+MAX_ROOMS
         "weapon_room_id_base": 10000,            # per-weapon ids: base + 10000 + weapon*stride + depth
+        "aspect_room_id_base": 100000,           # per-aspect ids: base + 100000 + lane*stride + depth
         "room_count": 50,                        # room-based checks for this route (no longer a YAML option)
         "progressive": "Progressive Underworld",
         "final_boss": "Chronos",
@@ -34,6 +35,7 @@ ROUTES = {
         "score_id_base": 2000,                   # point ids: base + 2000..2999
         "room_id_base": 8000,                    # room ids: base + 8000..8000+MAX_ROOMS
         "weapon_room_id_base": 20000,            # per-weapon ids: base + 20000 + weapon*stride + depth
+        "aspect_room_id_base": 130000,           # per-aspect ids: base + 130000 + lane*stride + depth
         "room_count": 50,                        # room-based checks for this route (no longer a YAML option)
         "progressive": "Progressive Surface",
         "final_boss": "Typhon",
@@ -57,6 +59,7 @@ ROUTES = {
         "score_id_base": 4000,                   # point ids: base + 4000..4999
         "room_id_base": 8500,                    # room ids: base + 8500..8500+MAX_ROOMS (slots up to +479)
         "weapon_room_id_base": 40000,            # per-weapon ids: base + 40000 + weapon*stride + depth
+        "aspect_room_id_base": 160000,           # per-aspect ids: base + 160000 + lane*stride + depth
         "room_count": 50,
         "progressive": "Progressive Nightmare",
         "final_boss": "Hades",

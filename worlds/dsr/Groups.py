@@ -83,6 +83,7 @@ item_name_groups = {
     "Spell Tools"       : [item[0] for item in _all_items_base if item[2] == DSRItemCategory.WEAPON and item[3] == DSRWeaponType.SpellTool],
     "Melee Weapons"     : [item[0] for item in _all_items_base if item[2] == DSRItemCategory.WEAPON and item[3] == DSRWeaponType.Melee],
     "Ranged Weapons"    : [item[0] for item in _all_items_base if item[2] == DSRItemCategory.WEAPON and item[3] == DSRWeaponType.Ranged],
+    "Bows"              : [item[0] for item in _all_items_base if item[2] == DSRItemCategory.WEAPON and item[3] == DSRWeaponType.Ranged and "bow" in item[0].lower() and not "cross" in item[0].lower()],
     # Spell Tool types
     "Catalysts"         : [item for item in item_dictionary.keys() if "catalyst" in item.lower()],
     "Talismans"         : [item for item in item_dictionary.keys() if "talisman" in item.lower() and "lloyd" not in item.lower()],
@@ -94,8 +95,32 @@ item_name_groups = {
     "Carvings"          : [item for item in item_dictionary.keys() if "carving" in item.lower()],
     "Multiplayer Items" : [item for item in multiplayer_items],
     "Covenant Items"    : [item for item in covenant_items],
-    "Junk"              : [item for item in item_dictionary.keys() if "carving" in item.lower()] + [item for item in multiplayer_items] + [item for item in covenant_items] + ["Pendant"] + ["Prism Stone x20"]
+    "Junk"              : [item for item in item_dictionary.keys() if "carving" in item.lower()] + [item for item in multiplayer_items] + [item for item in covenant_items] + ["Pendant"] + ["Prism Stone x20"],
+
+    # Following groups are used for skips
+    # These items can be wielded by almost (max needs 5 levels of investment) any character from beginning of the game. 
+
+    # Strength requirement for these is max 10 
+    "Skip Tools - Medium Shields" :  ["Bloodshield","Caduceus Kite Shield","Crest Shield", 
+                                    "Dragon Crest Shield", "East-West Shield", "Grass Crest Shield", "Heater Shield",
+                                    "Knight Shield", "Large Leather Shield", "Sanctus", "Spider Shield", 
+                                    "Spiked Shield", "Tower Kite Shield", "Wooden Shield"],
+
+    # INT requirement for these is max 12
+    "Skip Tools - Catalysts" :       ["Sorcerer's Catalyst", "Beatrice's Catalyst", 'Tin Banishment Catalyst', 
+                                     'Oolacile Ivory Catalyst', "Demon's Catalyst", 'Oolacile Catalyst'],
+
+    # Max requirements DEX 14 STR 11
+    "Skip Tools - Bows" :            ['Short Bow', 'Longbow', 'Composite Bow'],
+    "Skip Tools - Ranged Weapons": ['Short Bow', 'Longbow', 'Composite Bow', "Light Crossbow"],
+
+    # Following are used in runs with disabled item requirement
+    "Medium Shields"    : ["Balder Shield","Black Knight Shield","Bloodshield","Caduceus Kite Shield","Crest Shield", "Crystal Shield", 
+                    "Dragon Crest Shield", "East-West Shield", "Gargoyle's Shield", "Grass Crest Shield", "Heater Shield", "Hollow Soldier Shield", 
+                    "Iron Round Shield", "Knight Shield", "Large Leather Shield","Pierce Shield", "Sanctus", "Silver Knight Shield", "Spider Shield", 
+                    "Spiked Shield", "Sunlight Shield", "Tower Kite Shield", "Wooden Shield"],
 }
+
 
 location_name_groups = {
     "All Doors": set(),
@@ -121,6 +146,8 @@ dlc_regions = [
     "Royal Wood",
     "Royal Wood - Artorias",
     "Royal Wood - After Hawkeye Gough",
+    "Royal Wood - Hawkeye Gough",
+    "Royal Wood - Marvelous Chester",
     "Oolacile Township",
     "Oolacile Township - Behind Light-Dispelled Walls",
     "Oolacile Township - After Crest Key",
@@ -137,6 +164,7 @@ post_os_regions  = [
     "The Duke's Archives - After Archive Prison Extra Key",
     "The Duke's Archives - Out of Cell",
     "The Duke's Archives - After Archive Tower Giant Door Key",
+    "The Duke's Archives - Big Hat Logan",
     "The Duke's Archives - Courtyard",
     "The Duke's Archives - Giant Cell",
     "Crystal Cave",
@@ -157,6 +185,8 @@ post_os_regions  = [
     "Royal Wood",
     "Royal Wood - Artorias",
     "Royal Wood - After Hawkeye Gough",
+    "Royal Wood - Hawkeye Gough",
+    "Royal Wood - Marvelous Chester",
     "Oolacile Township",
     "Oolacile Township - Behind Light-Dispelled Walls",
     "Oolacile Township - After Crest Key",

@@ -41,7 +41,8 @@ SETTING_AUTOMATIC_CHEATS = 0x18
 SETTING_EASY_CANARY = 0x19
 SETTING_JIGGY_REQUIREMENTS_BASE = 0x1A  # u8 [11]
 SETTING_SILO_REQUIREMENTS_BASE = 0x26  # u16 BE [24]
-
+SETTING_GREEN_RELICS_CHAMBER_REQUIREMENT = 0x56
+SETTING_GREEN_RELICS_BOSS_REQUIREMENT = 0x57
 
 # World-name -> jiggy_requirements[] index. Aliases cover both naming
 # variants the seed may emit for the same world.
@@ -183,6 +184,12 @@ def write_slot_settings(
     )
     writer.write_setting_u8(
         SETTING_RANDOMIZE_GREEN_RELICS, opt(options, "randomize_green_relics")
+    )
+    writer.write_setting_u8(
+        SETTING_GREEN_RELICS_CHAMBER_REQUIREMENT, opt(options, "green_relics_chamber_requirement")
+    )
+    writer.write_setting_u8(
+        SETTING_GREEN_RELICS_BOSS_REQUIREMENT, opt(options, "green_relics_boss_requirement")
     )
     writer.write_setting_u8(SETTING_RANDOMIZE_BEANS, opt(options, "randomize_beans"))
     writer.write_setting_u8(SETTING_PUZZLE, opt(options, "skip_puzzles"))
@@ -802,14 +809,13 @@ def apply_preopened_silos(
 
 # Hint signposts
 SIGNPOST_TEXT_SLOT_SIZE = 150
-SKIP_HINT_SUFFIX = b"\nPRESS \x86 TO SKIP"
 
 
 def apply_signpost_hints(
     loader: BTEmuLoaderClient, slot_data: Mapping[str, Any]
 ) -> int:
-    """Write hint text into pc.signposts. Text is uppercased ASCII plus the
-    B-button skip footer, truncated to 149 chars + null terminator."""
+    """Write hint text into pc.signposts. Text is uppercased ASCII,
+    truncated to 149 chars + null terminator."""
     bt_data = slot_data.get("custom_bt_data", {}) or {}
     hints = bt_data.get("hints") or {}
     if not hints:
@@ -837,11 +843,7 @@ def apply_signpost_hints(
         else:
             text = str(hint_payload)
         body = str(text).upper().encode("ascii", errors="ignore")
-        max_body = SIGNPOST_TEXT_SLOT_SIZE - 1 - len(SKIP_HINT_SUFFIX)
-        if max_body < 0:
-            max_body = 0
-        encoded = body[:max_body] + SKIP_HINT_SUFFIX
-        encoded = encoded[: SIGNPOST_TEXT_SLOT_SIZE - 1]
+        encoded = body[: SIGNPOST_TEXT_SLOT_SIZE - 1]
         base = hint_ptr + sign_id * SIGNPOST_TEXT_SLOT_SIZE
         for i, b in enumerate(encoded):
             loader.write_u8(base + i, b)
@@ -1051,7 +1053,7 @@ CHEAT_NAMES: Dict[int, str] = {
 
 
 def format_item_message(
-    item_id: int, item_name: str, sender_name: str, own: bool, dialog_character: int
+    loader: BTEmuLoaderClient, item_id: int, item_name: str, sender_name: str, own: bool, dialog_character: int
 ) -> Optional[str]:
     """Return the dialog text for a single received item, or None if the item
     has no dedicated message (jiggies, notes, traps, etc.)."""
@@ -1144,6 +1146,29 @@ def format_item_message(
             else f"{sender_name} has just sent you the {cname}."
         )
 
+    if item_id == 1230923: #green relic
+        reader = BTHReader(loader)
+        settings_ptr = reader.settings_ptr()
+        if loader.read_u8(settings_ptr + SETTING_RANDOMIZE_GREEN_RELICS) == 1: #if option enabled
+            if reader.current_map() != 376: #if your not in Targitzan temple
+                items_ptr = reader.items_ptr()
+                statue_amt = loader.read_u8(items_ptr + AP_ITEM_INDEX[item_id])
+                sschamber:int = loader.read_u8(settings_ptr + SETTING_GREEN_RELICS_CHAMBER_REQUIREMENT)
+                rschamber:int = loader.read_u8(settings_ptr + SETTING_GREEN_RELICS_BOSS_REQUIREMENT)
+                if statue_amt == sschamber: #relics
+                    if dialog_character in (110, 100):
+                        if sschamber == 1:
+                            return (f"Good Job Mortal. {sschamber} statue gains you entry to my Slightly Sacred Chamber...")
+                        else:
+                            return (f"Good Job Mortal. {sschamber} statues gains you entry to my Slightly Sacred Chamber...")
+                    else:
+                        return (f"Targitzans Slightly Sacred Chamber is now open...")
+                if statue_amt == rschamber: #relics
+                    if dialog_character in (110, 100):
+                        return (f"Good Job Mortal. {rschamber} statues gains you entry to my Really Sacred Chamber...")
+                    else:
+                        return (f"Targitzans Really Sacred Chamber is now open... Lets egg em!")
+
     return None
 
 
@@ -1177,7 +1202,7 @@ def pick_message_icon(item_id: int, dialog_character: int) -> int:
         or 1230782 <= item_id <= 1230785
     ):
         return 7  # Bottles (progressive moves)
-    if item_id == 1230944:
+    if item_id in (1230944, 1230923):
         return 100  # Targitzan -> MT
     if item_id == 1230945:
         return 39  # Old King Coal -> GGM
@@ -1254,7 +1279,7 @@ def drain_item_messages(
         item_id = int(msg.get("item_id", 0))
         item_name = str(msg.get("item", ""))
         sender = str(msg.get("player", ""))
-        text = format_item_message(
+        text = format_item_message(loader,
             item_id, item_name, sender, sender == local_player_name, dialog_character
         )
         if text is None:
@@ -1484,6 +1509,8 @@ def dump_current_settings(loader: BTEmuLoaderClient) -> Dict[str, Any]:
         "cheato_rewards": loader.read_u8(ptr + SETTING_CHEATO_REWARDS),
         "randomize_tickets": loader.read_u8(ptr + SETTING_RANDOMIZE_TICKETS),
         "randomize_green_relics": loader.read_u8(ptr + SETTING_RANDOMIZE_GREEN_RELICS),
+        "green_relics_chamber_requirement": loader.read_u8(ptr + SETTING_GREEN_RELICS_CHAMBER_REQUIREMENT),
+        "green_relics_boss_requirement": loader.read_u8(ptr + SETTING_GREEN_RELICS_BOSS_REQUIREMENT),
         "randomize_beans": loader.read_u8(ptr + SETTING_RANDOMIZE_BEANS),
         "skip_puzzles": loader.read_u8(ptr + SETTING_PUZZLE),
         "backdoors": loader.read_u8(ptr + SETTING_BACKDOORS),

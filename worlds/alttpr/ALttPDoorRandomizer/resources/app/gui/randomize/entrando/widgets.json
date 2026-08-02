@@ -1,0 +1,83 @@
+{
+  "widgets": {
+    "entranceshuffle":  {
+      "type": "selectbox",
+      "options": [
+        "vanilla",
+        "simple",
+        "restricted",
+        "full",
+        "lite",
+        "lean",
+        "district",
+        "swapped",
+        "crossed",
+        "insanity",
+        "dungeonsfull",
+        "dungeonssimple"
+      ]
+    },
+    "shuffleganon": {
+      "type": "checkbox",
+      "default": true,
+      "config": {
+        "padx": [20,0]
+      }
+    },
+    "shufflelinks": {
+      "type": "checkbox",
+      "config": {
+        "padx": [20,0]
+      }
+    },
+    "shuffletavern": {
+      "type": "checkbox",
+      "config": {
+        "padx": [20,0]
+      }
+    },
+    "skullwoods": {
+      "type": "selectbox",
+      "options": [
+        "original",
+        "restricted",
+        "loose",
+        "followlinked"
+      ],
+      "config": {
+        "width": 30
+      }
+    },
+    "linked_drops": {
+      "type": "selectbox",
+      "options": [
+        "unset",
+        "linked",
+        "independent"
+      ]
+    },
+    "openpyramid": {
+      "type": "selectbox",
+      "options": [
+        "auto",
+        "yes",
+        "no"
+      ],
+      "config": {
+        "width": 6,
+        "pady": [20,0]
+      }
+    },
+    "overworld_map": {
+      "type": "selectbox",
+      "options": [
+        "default",
+        "compass",
+        "map"
+      ],
+      "config": {
+        "width": 45
+      }
+    }
+  }
+}

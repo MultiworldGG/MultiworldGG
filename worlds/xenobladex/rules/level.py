@@ -8,9 +8,17 @@ from worlds.AutoWorld import World
 from ..Options import LogicLevelSteps, XenobladeXOptions
 
 
-# Convert the logic level into the required logic count
-def get_logic_level_count(logic_level: int, step_size: int) -> int:
-    return int(min(logic_level, 50) / step_size) + int(min(logic_level - 50, 0) / (step_size + 5))
+# Convert the real level into the required logic count
+def get_logic_level_count(real_level: int, step_size: int) -> int:
+    return 1 + int(min(real_level, 50) / step_size) + int(max(real_level - 50, 0) / (step_size + 5))
+
+
+# Convert the logic level count back into the real level
+def get_upper_real_level_from_logic_count(logic_level: int, step_size: int) -> int:
+    lower_count = int(50 / step_size)
+    if logic_level <= lower_count:
+        return (logic_level * step_size) - 1
+    return 50 - 1 + (logic_level - lower_count) * (step_size + 5)
 
 
 @dataclasses.dataclass(frozen=True)

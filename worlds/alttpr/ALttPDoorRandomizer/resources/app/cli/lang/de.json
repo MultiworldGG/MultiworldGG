@@ -1,0 +1,27 @@
+{
+  "cli": {
+    "app.title": "ALttP Tür Randomisier Version %s - Nummer: %s, Code: %s",
+    "shuffling.world": "Welt wird durchmischt.",
+    "generating.itempool": "Generier Gegenstandsbasis.",
+    "calc.access.rules": "Berechne Zugriffsregeln.",
+    "placing.dungeon.prizes": "Platziere Verliespreise.",
+    "placing.dungeon.items": "Platziere Verliesgegenstände.",
+    "fill.world": "Fülle die Welt.",
+    "balance.multiworld": "Gleiche Multiwelt-Fortschritt aus.",
+    "patching.rom": "Patche ROM.",
+    "calc.playthrough": "Berechne Durschpiellösung.",
+    "done": "Fertig. Viel Spaß.",
+    "total.time": "Gesamtzeit: %s",
+    "building.collection.spheres": "Baue Sammelbereiche auf.",
+    "building.calculating.spheres": "Berechneter Bereich %i, beinhaltet %i von %i Progressionsgegenständen.",
+    "cannot.reach.items": "Die folgenden Gegenstände können nicht erreicht werden: %s",
+    "cannot.reach.item": "%s (Spieler %d) in %s (Spieler %d)",
+    "check.item.location": "Prüfe ob %s (Spieler %d) benötigt wird um das Spiel zu schlagen.",
+    "check.item.location.true": "Ja, Gegenstand wird benötigt um das Spiel zu schlagen.",
+    "check.item.location.false": "Nein, Gegenstand wird nicht benötigt um das Spiel zu schlagen.",
+    "building.final.spheres": "Berechneter Finalbereich %i, beinhaltet, %i von %i Progressionsgegenständen.",
+    "cannot.beat.game": "Spiel is nicht schlagbar.",
+    "cannot.reach.progression": "Nicht alle Progressionsgegenstände erreichbar.",
+    "cannot.reach.required": "Nitch alle benötigten Gegenstände erreichbar."
+  }
+}

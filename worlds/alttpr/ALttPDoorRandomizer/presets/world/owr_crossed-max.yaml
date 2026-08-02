@@ -1,0 +1,7 @@
+settings:
+  1:
+    ow_crossed: unrestricted
+ow-crossed:
+  1:
+    limit_crossed: 9999
+    undefined_chance: 100

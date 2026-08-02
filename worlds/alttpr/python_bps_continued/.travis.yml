@@ -1,0 +1,12 @@
+language: python
+python:
+- '3.8'
+deploy:
+  provider: pypi
+  on:
+    tags: true
+  user: __token__
+  password:
+    secure: fhJ1187GA1lypAS+A2CmZNeGRAsMHFQ/pAzfObQqNaZonaZ1K4INQAYm8rcO4zjQpuI2FE+Fjx4gTMkLQ7n8e9LmZMedT1jS2vJtlhhskhnqm9hq+mkVSXY1f1xOCEFdMxMtGPlhmwCJtVrqh71IFpUKY4L588M1NbmO6ZWR3PMy/xexNTmqKjTrIqnUOX/poC/b27RgC4lftRfH0juIVbIYworYTCNB4x/3GVt6b1OqVWu59AKkHStvVVWSI6cDEeG+Ptgjbl+E9AXXrMj5fn2hzYZ18rF56cMDpSk0zFEYkNgwKVUJfBCgN+k6p/747KtFTjpxvb1T2NLXAOiroUarTTHyZoZAssB0rARyMTkD5b3EJecvieDm87dxTR0ixaG2EsN4hJ27ofLL9n2MlfDIimdOE65odShvqIu8+K10OtDqPHXJHalCKeKDLey78AyqNxoq24r2Rb6LLyAeHGVgj40nYLm+KupwNx6Kbi5UB7QfdXADtlbhmZfmu2mYh9zRAMEJ1qTZvG/9Dwq8F5ZQwmbjiJdl/XtcnnExW2Bkey8TsByFwkIpHuWXRb+iGGPcQ5dtP1Ft8+YcbxN3hJbzrqJdp5IfnKWN8a4zw5wUDEH4n+d3ctPIKwGXUZpldra9uEhq1GWvbbkF2VOZ35n/jsXMpZiaJCnbdYv7Szk=
+script:
+- echo "skipping tests"

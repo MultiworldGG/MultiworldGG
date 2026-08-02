@@ -10,7 +10,6 @@ from . import Rules
 from BaseClasses import Region, Item, Tutorial, ItemClassification
 from Options import OptionError
 from worlds.AutoWorld import World, WebWorld
-import random
 
 
 class InscrypWeb(WebWorld):
@@ -58,8 +57,19 @@ class InscryptionWorld(World):
     item_name_groups = item_groups
     required_epitaph_pieces_count = 9
     required_epitaph_pieces_name = "Epitaph Piece"
+    ut_can_gen_without_yaml = True
 
     def generate_early(self) -> None:
+        passthrough = getattr(self.multiworld, "re_gen_passthrough", None)
+        if passthrough and self.game in passthrough:
+            for option_name, option_value in passthrough[self.game].items():
+                option = getattr(self.options, option_name, None)
+                if option is None:
+                    continue
+                if isinstance(option_value, dict):
+                    option_value = dict(option_value)
+                setattr(self.options, option_name, option.from_any(option_value))
+
         if not self.options.enable_act_1 and not self.options.enable_act_2 and not self.options.enable_act_3:
             raise OptionError(f'{self.player_name} must enable at least one act.')
         if self.options.act_unlocks == ActUnlocks.option_items:
@@ -128,7 +138,7 @@ class InscryptionWorld(World):
     def create_items(self) -> None:
         nb_items_added = 0
         useful_items = self.all_items.copy()
-        included_locations = len(self.all_locations)
+        included_locations = len(self.multiworld.get_unfilled_locations(self.player))
         filler_trap_items = filler_items + trap_items
 
         useful_items = [item for item in useful_items
@@ -154,13 +164,10 @@ class InscryptionWorld(World):
             if self.options.randomize_vessel_upgrades == RandomizeVesselUpgrades.option_vanilla:
                 useful_items.pop(len(act1_items) + len(act2_items) + 16)
                 useful_items.pop(len(act1_items) + len(act2_items) + 15)
-                included_locations -= 4
             if self.options.randomize_shortcuts != RandomizeShortcuts.option_randomize:
                 useful_items.pop(len(act1_items) + len(act2_items) + 14)
                 useful_items.pop(len(act1_items) + len(act2_items) + 13)
                 useful_items.pop(len(act1_items) + len(act2_items) + 12)
-                if self.options.randomize_shortcuts == RandomizeShortcuts.option_vanilla:
-                    included_locations -= 3
         if self.options.enable_act_2:
             if self.options.act2_randomize_bridge == Act2RandomizeBridge.option_disable:
                 useful_items.pop(len(act1_items) + 13)
@@ -195,15 +202,12 @@ class InscryptionWorld(World):
         if not self.options.enable_act_1:
             useful_items = [item for item in useful_items
                             if not any(act1_item["name"] == item["name"] for act1_item in act1_items)]
-            included_locations -= len(act1_locations)
         if not self.options.enable_act_2:
             useful_items = [item for item in useful_items
                             if not any(act2_item["name"] == item["name"] for act2_item in act2_items)]
-            included_locations -= len(act2_locations)
         if not self.options.enable_act_3:
             useful_items = [item for item in useful_items
                             if not any(act3_item["name"] == item["name"] for act3_item in act3_items)]
-            included_locations -= len(act3_locations)
 
         for item in useful_items:
             for _ in range(item["count"]):
@@ -221,7 +225,7 @@ class InscryptionWorld(World):
         if apply_trap_items:
             trap_count = int(filler_count * trap_chance)
             filler_count = filler_count - trap_count
-            trap_list = random.choices (
+            trap_list = self.random.choices (
                 population = list(trap_weights.keys()),
                 weights = list(trap_weights.values()),
                 k = trap_count
@@ -331,5 +335,13 @@ class InscryptionWorld(World):
             "optional_death_card",
             "skip_tutorial",
             "skip_epilogue",
-            "epitaph_pieces_randomization"
+            "epitaph_pieces_randomization",
+            "starting_act",
+            "painting_checks_balancing",
+            "trap_chance",
+            "trap_type_weights"
         )
+
+    @staticmethod
+    def interpret_slot_data(slot_data: Dict[str, Any]) -> Dict[str, Any]:
+        return slot_data

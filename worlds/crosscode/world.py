@@ -492,6 +492,8 @@ class CrossCodeWorld(World):
     def create_shops(self):
         # don't filter the shop pool - the regions must always exist to prevent generation errors
         for shop_name, shop in self.world_data.shops_dict.items():
+            if not self.pools.should_include(shop.metadata):
+                continue
             region = Region(shop_name, self.player, self.multiworld)
             self.multiworld.regions.append(region)
             for mode, from_region in shop.access.region.items():
@@ -511,15 +513,16 @@ class CrossCodeWorld(World):
                 self.add_location(data, self.region_dict["Menu"])
 
     def create_regions(self):
-        self.multiworld.regions.extend(
-            Region(name, self.player, self.multiworld)
-            for name in self.region_pack.region_list
-            if name not in self.region_pack.excluded_regions
-        )
         self.region_dict = self.multiworld.regions.region_cache[self.player]
         self.location_events = {}
 
         for conn in self.region_pack.region_connections:
+            if not self.pools.should_include(conn.metadata):
+                continue
+            if conn.region_to not in self.region_dict:
+                self.region_dict[conn.region_to] = Region(conn.region_to, self.player, self.multiworld)
+            if conn.region_from not in self.region_dict:
+                self.region_dict[conn.region_from] = Region(conn.region_from, self.player, self.multiworld)
             self.region_dict[conn.region_from].connect(
                 self.region_dict[conn.region_to],
                 f"{conn.region_from} => {conn.region_to}",

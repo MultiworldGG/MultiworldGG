@@ -41,10 +41,7 @@ passives_required_for_act = {
 
 def get_ascendancy_amount_for_act(act, world: "PathOfExileWorld"):
     return (
-        min(
-            world.options.ascendancies_available_per_class.value,
-            3 if world.options.starting_character.value != world.options.starting_character.option_scion else 2
-        )
+        min(world.options.ascendancies_available_per_class.value, 3)
     ) if act >= 3 else 0
 
 def get_gear_amount_for_act(act, world: "PathOfExileWorld"):

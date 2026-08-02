@@ -1,3 +1,5 @@
+# The presets here are outdated and lack a lot of options
+
 options_presets = {
     "Moki": {
         "progression_balancing": "normal",

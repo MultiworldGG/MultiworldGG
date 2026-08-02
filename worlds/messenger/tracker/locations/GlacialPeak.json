@@ -93,5 +93,91 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Glacial Peak - Transitions",
+    "children": [
+      {
+        "name": "Glacial Peak - Bottom exit",
+        "sections": [
+          {
+            "name": "Glacial Peak - Bottom exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Glacial Peak",
+            "x": 605,
+            "y": 2912
+          }
+        ]
+      },
+      {
+        "name": "Glacial Peak - Left exit",
+        "sections": [
+          {
+            "name": "Glacial Peak - Left exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Glacial Peak",
+            "x": 383,
+            "y": 1723
+          }
+        ]
+      },
+      {
+        "name": "Glacial Peak - Top exit",
+        "sections": [
+          {
+            "name": "Glacial Peak - Top exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Glacial Peak",
+            "x": 603,
+            "y": 159
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Glacial Peak - Portal",
+    "children": [
+      {
+        "name": "HQ - Glacial Peak Portal",
+        "sections": [
+          {
+            "name": "HQ - Glacial Peak Portal"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overworld",
+            "x": 1205,
+            "y": 228,
+            "size": 30
+          }
+        ]
+      },
+      {
+        "name": "Glacial Peak - Portal unlock",
+        "sections": [
+          {
+            "name": "Glacial Peak - Portal unlock"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Glacial Peak",
+            "x": 682,
+            "y": 584
+          }
+        ]
+      }
+    ]
   }
 ]

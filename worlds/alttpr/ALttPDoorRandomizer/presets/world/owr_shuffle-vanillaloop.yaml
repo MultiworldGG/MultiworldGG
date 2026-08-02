@@ -1,0 +1,44 @@
+settings:
+  1:
+    ow_layout: wild
+ow-edges:
+  1:
+    two-way:
+      Lost Woods EN*: Lumberjack WN*
+      Lost Woods SW*: Lost Woods Pass NW*
+      Skull Woods EN*: Dark Lumberjack WN*
+      Skull Woods SW*: Skull Woods Pass NW*
+      Lumberjack SW*: Mountain Pass NW*
+      Dark Lumberjack SW*: Bumper Cave NW*
+      Mountain Pass SE*: Kakariko Pond NE*
+      Bumper Cave SE*: Outcast Pond NE*
+      Lost Woods Pass SW*: Kakariko NW*
+      Skull Woods Pass SW*: Village of Outcasts NW*
+      Kakariko Pond ES*: Sanctuary WS*
+      Outcast Pond ES*: Dark Chapel WS*
+      Sanctuary EC*: Graveyard WC*
+      Dark Chapel EC*: Dark Graveyard WC*
+      Graveyard EC*: River Bend WC*
+      Dark Graveyard EC*: Qirn Jump WC*
+      River Bend SW*: Wooden Bridge NW*
+      Qirn Jump SW*: Broken Bridge NW*
+      Kakariko SE*: Kakariko Suburb NE*
+      Village of Outcasts SE*: Frog NE*
+      Hyrule Castle SW*: Central Bonk Rocks NW*
+      Hyrule Castle SE*: Links House NE*
+      Pyramid SW*: Dark Bonk Rocks NW*
+      Pyramid SE*: Big Bomb Shop NE*
+      Wooden Bridge SW*: Sand Dunes NW*
+      Broken Bridge SW*: Dark Dunes NW*
+      Sand Dunes SC*: Stone Bridge NC*
+      Dark Dunes SC*: Hammer Bridge NC*
+      Kakariko Suburb ES*: Flute Boy WS*
+      Frog ES*: Stumpy WS*
+      Flute Boy SW*: Flute Boy Approach NW*
+      Stumpy SW*: Stumpy Approach NW*
+      Central Bonk Rocks SW*: C Whirlpool NW*
+      Dark Bonk Rocks SW*: Dark C Whirlpool NW*
+      Links House ES*: Stone Bridge WS*
+      Big Bomb Shop ES*: Hammer Bridge WS*
+      Flute Boy Approach EC*: C Whirlpool WC*
+      Stumpy Approach EC*: Dark C Whirlpool WC*

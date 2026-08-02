@@ -1,0 +1,294 @@
+settings:
+  1:
+    ow_layout: wild
+ow-edges:
+  1:
+    groups:
+      northwest:
+        - Lost Woods NW
+        - Lost Woods EN
+        - Lost Woods SW
+        - Lost Woods SC
+        - Lost Woods SE
+        - Skull Woods EN
+        - Skull Woods SW
+        - Skull Woods SC
+        - Skull Woods SE
+        - Lumberjack WN
+        - Lumberjack SW
+        - Dark Lumberjack WN
+        - Dark Lumberjack SW
+        - Mountain Pass NW
+        - Mountain Pass SE
+        - Bumper Cave NW
+        - Bumper Cave SE
+        - Lost Woods Pass NW
+        - Lost Woods Pass NE
+        - Lost Woods Pass SW
+        - Lost Woods Pass SE
+        - Skull Woods Pass NW
+        - Skull Woods Pass NE
+        - Skull Woods Pass SW
+        - Skull Woods Pass SE
+        - Kakariko Fortune NE
+        - Kakariko Fortune EN
+        - Kakariko Fortune ES
+        - Kakariko Fortune SC
+        - Dark Fortune NE
+        - Dark Fortune EN
+        - Dark Fortune ES
+        - Dark Fortune SC
+        - Kakariko Pond NE
+        - Kakariko Pond WN
+        - Kakariko Pond WS
+        - Kakariko Pond EN
+        - Kakariko Pond ES
+        - Kakariko Pond SW
+        - Kakariko Pond SE
+        - Outcast Pond NE
+        - Outcast Pond WN
+        - Outcast Pond WS
+        - Outcast Pond EN
+        - Outcast Pond ES
+        - Outcast Pond SW
+        - Outcast Pond SE
+        - Sanctuary WN
+        - Sanctuary WS
+        - Kakariko NW
+        - Kakariko NC
+        - Kakariko NE
+        - Dark Chapel WN
+        - Dark Chapel WS
+        - Village of Outcasts NW
+        - Village of Outcasts NC
+        - Village of Outcasts NE
+        - Forgotten Forest NW
+        - Forgotten Forest NE
+        - Forgotten Forest ES
+        - Shield Shop NW
+        - Shield Shop NE
+        - Hyrule Castle WN
+        - Master Sword Meadow SC
+      northeast:
+        - West Death Mountain EN
+        - West Death Mountain ES
+        - West Dark Death Mountain EN
+        - West Dark Death Mountain ES
+        - East Death Mountain WN
+        - East Death Mountain WS
+        - East Death Mountain EN
+        - East Dark Death Mountain WN
+        - East Dark Death Mountain WS
+        - East Dark Death Mountain EN
+        - Death Mountain TR Pegs WN
+        - Turtle Rock WN
+        - Zora Waterfall NE
+        - Zora Waterfall SE
+        - Catfish SE
+        - Graveyard EC
+        - Dark Graveyard EC
+        - River Bend WC
+        - River Bend EN
+        - River Bend EC
+        - River Bend ES
+        - River Bend SW
+        - River Bend SC
+        - River Bend SE
+        - Qirn Jump WC
+        - Qirn Jump EN
+        - Qirn Jump EC
+        - Qirn Jump ES
+        - Qirn Jump SW
+        - Qirn Jump SC
+        - Qirn Jump SE
+        - Potion Shop WN
+        - Potion Shop WC
+        - Potion Shop WS
+        - Potion Shop EN
+        - Potion Shop EC
+        - Dark Witch WN
+        - Dark Witch WC
+        - Dark Witch WS
+        - Dark Witch EN
+        - Dark Witch EC
+        - Zora Approach NE
+        - Zora Approach WN
+        - Zora Approach WC
+        - Catfish Approach NE
+        - Catfish Approach WN
+        - Catfish Approach WC
+        - Wooden Bridge NW
+        - Wooden Bridge NC
+        - Wooden Bridge NE
+        - Broken Bridge NW
+        - Broken Bridge NC
+        - Broken Bridge NE
+        - Zoras Domain SW
+      southwest:
+        - Kakariko ES
+        - Kakariko SE
+        - Village of Outcasts ES
+        - Village of Outcasts SE
+        - Hyrule Castle SW
+        - Pyramid SW
+        - Blacksmith WS
+        - Hammer Pegs WS
+        - Maze Race ES
+        - Dig Game EC
+        - Dig Game ES
+        - Kakariko Suburb NE
+        - Kakariko Suburb WS
+        - Kakariko Suburb ES
+        - Frog NE
+        - Frog WC
+        - Frog WS
+        - Frog ES
+        - Flute Boy WS
+        - Flute Boy SW
+        - Flute Boy SC
+        - Stumpy WS
+        - Stumpy SW
+        - Stumpy SC
+        - Central Bonk Rocks NW
+        - Central Bonk Rocks SW
+        - Dark Bonk Rocks NW
+        - Dark Bonk Rocks SW
+        - Desert EC
+        - Desert ES
+        - Flute Boy Approach NW
+        - Flute Boy Approach NC
+        - Flute Boy Approach EC
+        - Stumpy Approach NW
+        - Stumpy Approach NC
+        - Stumpy Approach EC
+        - C Whirlpool NW
+        - C Whirlpool WC
+        - C Whirlpool SC
+        - Dark C Whirlpool NW
+        - Dark C Whirlpool WC
+        - Dark C Whirlpool SC
+        - Desert Pass WC
+        - Desert Pass WS
+        - Desert Pass EC
+        - Desert Pass ES
+        - Swamp Nook EC
+        - Swamp Nook ES
+        - Dam NC
+        - Dam WC
+        - Dam WS
+        - Swamp NC
+        - Swamp WC
+        - Swamp WS
+      southeast:
+        - Hyrule Castle ES
+        - Hyrule Castle SE
+        - Pyramid ES
+        - Pyramid SE
+        - Eastern Palace SW
+        - Eastern Palace SE
+        - Palace of Darkness SW
+        - Palace of Darkness SE
+        - Sand Dunes WN
+        - Sand Dunes SC
+        - Dark Dunes WN
+        - Dark Dunes SC
+        - Links House NE
+        - Links House SC
+        - Links House ES
+        - Big Bomb Shop NE
+        - Big Bomb Shop SC
+        - Big Bomb Shop ES
+        - Stone Bridge NC
+        - Stone Bridge WC
+        - Stone Bridge WS
+        - Stone Bridge EN
+        - Stone Bridge EC
+        - Stone Bridge SC
+        - Hammer Bridge NC
+        - Hammer Bridge WS
+        - Hammer Bridge EN
+        - Hammer Bridge EC
+        - Hammer Bridge SC
+        - Tree Line NW
+        - Tree Line WN
+        - Tree Line WC
+        - Tree Line SC
+        - Tree Line SE
+        - Dark Tree Line NW
+        - Dark Tree Line WN
+        - Dark Tree Line WC
+        - Dark Tree Line SC
+        - Dark Tree Line SE
+        - Eastern Nook NE
+        - Palace of Darkness Nook NE
+        - Statues NC
+        - Statues SC
+        - Hype Cave NC
+        - Hype Cave SC
+        - Lake Hylia NW
+        - Lake Hylia NC
+        - Lake Hylia NE
+        - Lake Hylia WS
+        - Lake Hylia EC
+        - Lake Hylia ES
+        - Ice Lake NW
+        - Ice Lake NC
+        - Ice Lake NE
+        - Ice Lake WS
+        - Ice Lake EC
+        - Ice Lake ES
+        - Ice Cave SW
+        - Ice Cave SE
+        - Shopping Mall SW
+        - Shopping Mall SE
+        - South Pass NC
+        - South Pass ES
+        - Dark South Pass NC
+        - Dark South Pass ES
+        - Octoballoon NW
+        - Octoballoon NE
+        - Octoballoon WC
+        - Octoballoon WS
+        - Bomber Corner NW
+        - Bomber Corner NE
+        - Bomber Corner WC
+        - Bomber Corner WS
+        - Hobo EC
+      borders:
+        - Sanctuary EC
+        - Dark Chapel EC
+        - Graveyard WC
+        - Dark Graveyard WC
+        - Wooden Bridge SW
+        - Broken Bridge SW
+        - Sand Dunes NW
+        - Dark Dunes NW
+        - Central Bonk Rocks EN
+        - Central Bonk Rocks EC
+        - Central Bonk Rocks ES
+        - Dark Bonk Rocks EN
+        - Dark Bonk Rocks EC
+        - Dark Bonk Rocks ES
+        - Links House WN
+        - Links House WC
+        - Links House WS
+        - Big Bomb Shop WN
+        - Big Bomb Shop WC
+        - Big Bomb Shop WS
+        - C Whirlpool EN
+        - C Whirlpool EC
+        - C Whirlpool ES
+        - C Whirlpool
+        - Dark C Whirlpool EN
+        - Dark C Whirlpool EC
+        - Dark C Whirlpool ES
+        - Statues WN
+        - Statues WC
+        - Statues WS
+        - Hype Cave WN
+        - Hype Cave WC
+        - Hype Cave WS
+        - Dam EC
+        - Swamp EC
+        - South Pass WC
+        - Dark South Pass WC

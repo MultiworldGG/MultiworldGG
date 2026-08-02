@@ -1,0 +1,49 @@
+{
+  "keysanity": {
+    "mapshuffle":       {
+      "type": "selectbox",
+      "options": [
+        "none",
+        "nearby",
+        "wild"
+      ],
+      "config": {
+        "padx": [20,0]
+      }
+    },
+    "compassshuffle":   {
+      "type": "selectbox",
+      "options": [
+        "none",
+        "nearby",
+        "wild"
+      ],
+      "config": {
+        "padx": [20,0]
+      }
+    },
+    "smallkeyshuffle": {
+      "type": "selectbox",
+      "options": [
+        "none",
+        "nearby",
+        "wild",
+        "universal"
+      ],
+      "config": {
+        "padx": [20,0]
+      }
+    },
+    "bigkeyshuffle":    {
+      "type": "selectbox",
+      "options": [
+        "none",
+        "nearby",
+        "wild"
+      ],
+      "config": {
+        "padx": [20,0]
+      }
+    }
+  }
+}

@@ -152,5 +152,41 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Riviere Turquoise - Portal",
+    "children": [
+      {
+        "name": "HQ - Riviere Turquoise Portal",
+        "sections": [
+          {
+            "name": "HQ - Riviere Turquoise Portal"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overworld",
+            "x": 300,
+            "y": 510,
+            "size": 30
+          }
+        ]
+      },
+      {
+        "name": "Riviere Turquoise - Portal unlock",
+        "sections": [
+          {
+            "name": "Riviere Turquoise - Portal unlock"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Riviere Turquoise",
+            "x": 3267,
+            "y": 366
+          }
+        ]
+      }
+    ]
   }
 ]

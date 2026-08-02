@@ -158,6 +158,216 @@
     </div>
 {% endmacro %}
 
+{% macro FreeOptionList(option_name, option) %}
+    {{ OptionTitle(option_name, option) }}
+    <div
+            class="option-container free-form-option free-option-list"
+            data-option-name="{{ option_name }}"
+            data-defaults='{{ option.default|list|tojson }}'
+    >
+        <input type="hidden" name="{{ option_name }}||free-list-marker" value="1" />
+        <div class="free-form-rows">
+            {% for value in option.default %}
+                <div class="option-entry free-form-row">
+                    <input
+                            type="text"
+                            id="{{ option_name }}-free-list-{{ loop.index0 }}"
+                            name="{{ option_name }}||free-list"
+                            value="{{ value }}"
+                            aria-label="{{ option_name }} value"
+                    />
+                    <button type="button" class="free-form-move-up js-required" aria-label="Move value up" title="Move up">&#8593;</button>
+                    <button type="button" class="free-form-move-down js-required" aria-label="Move value down" title="Move down">&#8595;</button>
+                    <button type="button" class="free-form-remove js-required" aria-label="Remove value" title="Remove">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="free-form-add-row js-required">
+            <input type="text" class="free-form-new-value" placeholder="Value" aria-label="New value" />
+            <button type="button" class="free-form-add">Add</button>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro FreeOptionCounter(option_name, option) %}
+    {% set counter_keys = option_counter_keys(option) %}
+    {{ OptionTitle(option_name, option) }}
+    <div
+            class="option-container free-form-option free-option-counter"
+            data-option-name="{{ option_name }}"
+            data-defaults='{{ option.default|tojson }}'
+            data-min="{{ option.min if option.min is not none else '' }}"
+            data-max="{{ option.max if option.max is not none else '' }}"
+    >
+        <input type="hidden" name="{{ option_name }}||free-counter" value="1" />
+        <div class="free-form-rows">
+            {% for key, value in option.default.items() %}
+                <div class="option-entry free-form-row">
+                    <input
+                            type="text"
+                            class="free-form-key"
+                            id="{{ option_name }}-counter-key-{{ loop.index0 }}"
+                            name="{{ option_name }}||counter-key||{{ loop.index0 }}"
+                            value="{{ key }}"
+                            {% if counter_keys %}list="{{ option_name }}-keys"{% endif %}
+                            aria-label="{{ option_name }} key"
+                    />
+                    <input
+                            type="number"
+                            class="free-form-quantity"
+                            id="{{ option_name }}-counter-value-{{ loop.index0 }}"
+                            name="{{ option_name }}||counter-value||{{ loop.index0 }}"
+                            value="{{ value }}"
+                            min="{{ option.min if option.min is not none else '' }}"
+                            max="{{ option.max if option.max is not none else '' }}"
+                            aria-label="{{ option_name }} quantity for {{ key }}"
+                    />
+                    <button type="button" class="free-form-remove js-required" aria-label="Remove entry" title="Remove">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="free-form-add-row js-required">
+            <input
+                    type="text"
+                    class="free-form-key free-form-new-key"
+                    placeholder="Key"
+                    {% if counter_keys %}list="{{ option_name }}-keys"{% endif %}
+                    aria-label="New key"
+            />
+            <input type="number" class="free-form-quantity free-form-new-quantity" value="1" aria-label="Quantity" />
+            <button type="button" class="free-form-add">Add</button>
+        </div>
+        {% if counter_keys %}
+            <datalist id="{{ option_name }}-keys">
+                {% for key in counter_keys %}
+                    <option value="{{ key }}"></option>
+                {% endfor %}
+            </datalist>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro FreeOptionDictValue(option_name, row_id, key, value, value_schema) %}
+    {% if value_schema["choices"] is defined %}
+        <select
+                class="free-form-dict-value"
+                id="{{ option_name }}-dict-value-{{ row_id }}"
+                name="{{ option_name }}||dict-value-{{ value_schema['type'] }}||{{ row_id }}"
+                data-value-type="{{ value_schema['type'] }}"
+                aria-label="{{ option_name }} value for {{ key }}"
+        >
+            {% for choice in value_schema["choices"] %}
+                {% if value_schema["type"] == "boolean" %}
+                    <option value="{{ 'true' if choice else 'false' }}" {% if choice == value %}selected{% endif %}>{{ choice }}</option>
+                {% else %}
+                    <option value="{{ choice }}" {% if choice == value %}selected{% endif %}>{{ choice }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    {% elif value_schema["type"] == "boolean" %}
+        <select
+                class="free-form-dict-value"
+                id="{{ option_name }}-dict-value-{{ row_id }}"
+                name="{{ option_name }}||dict-value-boolean||{{ row_id }}"
+                data-value-type="boolean"
+                aria-label="{{ option_name }} value for {{ key }}"
+        >
+            <option value="true" {% if value is sameas true %}selected{% endif %}>True</option>
+            <option value="false" {% if value is sameas false %}selected{% endif %}>False</option>
+        </select>
+    {% elif value_schema["type"] in ["integer", "number"] %}
+        <input
+                type="number"
+                class="free-form-dict-value"
+                id="{{ option_name }}-dict-value-{{ row_id }}"
+                name="{{ option_name }}||dict-value-{{ value_schema['type'] }}||{{ row_id }}"
+                data-value-type="{{ value_schema['type'] }}"
+                value="{{ value }}"
+                {% if value_schema["type"] == "number" %}step="any"{% endif %}
+                aria-label="{{ option_name }} value for {{ key }}"
+        />
+    {% else %}
+        <input
+                type="text"
+                class="free-form-dict-value"
+                id="{{ option_name }}-dict-value-{{ row_id }}"
+                name="{{ option_name }}||dict-value-string||{{ row_id }}"
+                data-value-type="string"
+                value="{{ value }}"
+                aria-label="{{ option_name }} value for {{ key }}"
+        />
+    {% endif %}
+{% endmacro %}
+
+{% macro FreeOptionDict(option_name, option, dict_schema) %}
+    {{ OptionTitle(option_name, option) }}
+    <div
+            class="option-container free-form-option free-option-dict"
+            data-option-name="{{ option_name }}"
+            data-defaults='{{ option.default|tojson }}'
+            data-schema='{{ dict_schema|tojson }}'
+    >
+        <input type="hidden" name="{{ option_name }}||free-dict" value="1" />
+        <div class="free-form-rows">
+            {% for key, value in option.default.items() %}
+                {% set value_schema = dict_schema["keys"].get(key, dict_schema["additional"]) %}
+                <div class="option-entry free-form-row">
+                    {% if dict_schema["additional"] %}
+                        <input
+                                type="text"
+                                class="free-form-key"
+                                id="{{ option_name }}-dict-key-{{ loop.index0 }}"
+                                name="{{ option_name }}||dict-key||{{ loop.index0 }}"
+                                value="{{ key }}"
+                                {% if dict_schema["keys"] %}list="{{ option_name }}-dict-keys"{% endif %}
+                                aria-label="{{ option_name }} key"
+                        />
+                    {% else %}
+                        <select
+                                class="free-form-key"
+                                id="{{ option_name }}-dict-key-{{ loop.index0 }}"
+                                name="{{ option_name }}||dict-key||{{ loop.index0 }}"
+                                aria-label="{{ option_name }} key"
+                        >
+                            {% for schema_key in dict_schema["keys"] %}
+                                <option value="{{ schema_key }}" {% if schema_key == key %}selected{% endif %}>{{ schema_key }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                    {{ FreeOptionDictValue(option_name, loop.index0, key, value, value_schema) }}
+                    <button type="button" class="free-form-remove js-required" aria-label="Remove entry" title="Remove">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="free-form-add-row js-required">
+            {% if dict_schema["additional"] %}
+                <input
+                        type="text"
+                        class="free-form-key free-form-new-key"
+                        placeholder="Key"
+                        {% if dict_schema["keys"] %}list="{{ option_name }}-dict-keys"{% endif %}
+                        aria-label="New key"
+                />
+            {% else %}
+                <select class="free-form-key free-form-new-key" aria-label="New key">
+                    {% for schema_key in dict_schema["keys"] %}
+                        <option value="{{ schema_key }}">{{ schema_key }}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+            <span class="free-form-new-value"></span>
+            <button type="button" class="free-form-add">Add</button>
+        </div>
+        {% if dict_schema["keys"] and dict_schema["additional"] %}
+            <datalist id="{{ option_name }}-dict-keys">
+                {% for schema_key in dict_schema["keys"] %}
+                    <option value="{{ schema_key }}"></option>
+                {% endfor %}
+            </datalist>
+        {% endif %}
+    </div>
+{% endmacro %}
+
 {% macro LocationSet(option_name, option) %}
     {{ OptionTitle(option_name, option) }}
     <input type="hidden" id="{{ option_name }}-{{ key }}-hidden" name="{{ option_name }}" value="_ensure-empty-list"/>
@@ -296,7 +506,7 @@
         <div class="option-container multi-counter"
             data-option-name="{{ option_name }}"
             data-names='{{ relevant_keys|list|tojson }}'
-            data-defaults='{{ option.default|list|tojson }}'>
+            data-defaults='{{ option.default|tojson }}'>
 
         <input type="text"
                 class="multi-search"
@@ -331,14 +541,23 @@
         {% else %}
             {{ OptionCounter(option_name, option) }}
         {% endif %}
+
+    {% elif issubclass(option, Options.OptionCounter) %}
+        {{ FreeOptionCounter(option_name, option) }}
+
     {% elif issubclass(option, Options.OptionList) and option.valid_keys %}
         {{ OptionList(option_name, option) }}
 
     {% elif issubclass(option, Options.OptionList) %}
-        {{ ManualConfigOption(option_name, option) }}
+        {{ FreeOptionList(option_name, option) }}
 
     {% elif issubclass(option, Options.OptionDict) %}
-        {{ ManualConfigOption(option_name, option) }}
+        {% set dict_schema = option_dict_schema(option) %}
+        {% if dict_schema %}
+            {{ FreeOptionDict(option_name, option, dict_schema) }}
+        {% else %}
+            {{ ManualConfigOption(option_name, option) }}
+        {% endif %}
 
     {% elif issubclass(option, Options.LocationSet) and option.verify_location_name %}
         {% if mass %}

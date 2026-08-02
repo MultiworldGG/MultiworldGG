@@ -619,9 +619,70 @@
 
 {"category":["UtilSkillGem"],"reqLevel":10,"classification":0,"name":"Portal","id":601},
 
+{"category":["MainSkillGem"],"reqLevel":16,"classification":0,"name":"Mana-Infused Staff","reqToUse":["Staff"],"id":602},
+
 {"category":["SupportGem", "Exceptional"],"reqLevel":60,"classification":0,"name":"Enhance Support","id":901},
 {"category":["SupportGem", "Exceptional"],"reqLevel":60,"classification":0,"name":"Empower Support","id":902},
 {"category":["SupportGem", "Exceptional"],"reqLevel":60,"classification":0,"name":"Enlighten Support","id":903},
 
-{"category":["Character Class","Ascendancy","Scion Class"],"classification":1,"name":"Reliquarian","id":1013}
+{"category":["MainSkillGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Pact of Beidat","id":904},
+{"category":["MainSkillGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Pact of Ghorr","id":905},
+{"category":["MainSkillGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Pact of K'Tash","id":906},
+{"category":["MainSkillGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Pact of Lycia","id":907},
+
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Coursing Current Support","id":908},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Crystalfall Support","id":909},
+
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Awakened Empower Support","id":910},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Void Shockwave Support","id":911},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Vaal Temptation Support","id":912},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Pyre Support","id":913},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Bonespire Support","id":914},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Greater Ancestral Call Support","id":915},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Fissure Support","id":916},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Divine Sentinel Support","id":917},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Annihilation Support","id":918},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Overheat Support","id":919},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Greater Multistrike Support","id":920},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Bloodsoaked Banner Support","id":921},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Transfusion Support","id":922},
+
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Awakened Enhance Support","id":923},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Cast on Ward Break Support","id":924},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Machinations Support","id":925},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Cull the Weak Support","id":926},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Greater Fork Support","id":927},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Greater Chain Support","id":928},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Lethal Dose Support","id":929},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Companionship Support","id":930},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Invention Support","id":931},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Voidstorm Support","id":932},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Pacifism Support","id":933},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Unholy Trinity Support","id":934},
+
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Greater Spell Echo Support","id":935},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Awakened Enlighten Support","id":936},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Vaal Sacrifice Support","id":937},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Congregation Support","id":938},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Greater Spell Cascade Support","id":939},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Invert the Rules Support","id":940},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Foulgrasp Support","id":941},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Hiveborn Support","id":942},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Scornful Herald Support","id":943},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Hextoad Support","id":944},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Hexpass Support","id":945},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Greater Kinetic Instability Support","id":946},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Cooldown Recovery Support","id":947},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Eldritch Blasphemy Support","id":948},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Gluttony Support","id":949},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Frostmage Support","id":950},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Greater Devour Support","id":951},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Greater Unleash Support","id":952},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Communion Support","id":953},
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Overloaded Intensity Support","id":954},
+
+{"category":["SupportGem", "Exceptional"],"reqLevel":72,"classification":0,"name":"Eclipse Support","id":955},
+
+{"category":["Character Class","Ascendancy","Scion Class"],"classification":1,"name":"Reliquarian","id":1013},
+{"category":["Character Class","Ascendancy","Scion Class"],"classification":1,"name":"Luminary","id":1014}
 ]

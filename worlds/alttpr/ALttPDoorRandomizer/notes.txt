@@ -1,0 +1,21 @@
+Notes:
+
+Ice Spike Stairs seems to be off and maybe Lonely Freezor
+Pod bk ledge stairs
+
+AgaTower usually doesn't have enough Key Door candidates
+(Testing) Camera spots in Aga Tower: Push Statue, Lone Statue maybe?
+(Testing Waterfall Now) Spiral stairs without keys look funny - change to Incognito instead of Normal
+
+(Can't Fix yet) Key door on Layer 1 not working (Aga Tower)
+(Can't Fix yet) Key door in HC Lobby E door not passable - look into it?
+
+Pairing Notes
+30-34 4f-37 #$18,-24
+30-34 37-1f #$18,-24
+30-34 1f-1f???
+30-35 1f-1f
+30-34 36-1e #$18,-24
+30-34 1e-1f
+
+inconsistencies are caused by $0492 being set wrong

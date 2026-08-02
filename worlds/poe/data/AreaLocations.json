@@ -75,11 +75,6 @@
     "areaName": "The Cavern of Anger"
   },
   {
-    "areaLevel": 13,
-    "act": 1,
-    "areaName": "Merveil's Lair"
-  },
-  {
     "areaLevel": 0,
     "act": 2,
     "areaName": "The Forest Encampment"
@@ -142,7 +137,7 @@
   {
     "areaLevel": 18,
     "act": 2,
-    "areaName": "Weaver's Chambers"
+    "areaName": "The Weaver's Chambers"
   },
   {
     "areaLevel": 18,
@@ -157,7 +152,7 @@
   {
     "areaLevel": 20,
     "act": 2,
-    "areaName": "Vaal Ruins"
+    "areaName": "The Vaal Ruins"
   },
   {
     "areaLevel": 21,
@@ -177,7 +172,7 @@
   {
     "areaLevel": 23,
     "act": 2,
-    "areaName": "Ancient Pyramid"
+    "areaName": "The Ancient Pyramid"
   },
   {
     "areaLevel": 0,
@@ -342,7 +337,7 @@
   {
     "areaLevel": 40,
     "act": 4,
-    "areaName": "The Harvest (area)"
+    "areaName": "The Harvest"
   },
   {
     "areaLevel": 0,
@@ -493,11 +488,6 @@
     "areaLevel": 58,
     "act": 8,
     "areaName": "The High Gardens"
-  },
-  {
-    "areaLevel": 58,
-    "act": 8,
-    "areaName": "The Hidden Underbelly"
   },
   {
     "areaLevel": 58,

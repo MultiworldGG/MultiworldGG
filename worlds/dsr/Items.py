@@ -1,11 +1,9 @@
 from enum import IntEnum
 from typing import NamedTuple
 from BaseClasses import Item
-from worlds.AutoWorld import World
 
 
 class DSRItemCategory(IntEnum):
-    SKIP = 0,
     EVENT = 1,
     CONSUMABLE = 2,
     KEY_ITEM = 3,
@@ -24,7 +22,11 @@ class DSRItemCategory(IntEnum):
     NOTHING = 16,
     BONFIREWARP = 17,
     PROGRESSIVE_MULTIPLIER = 18,
-    FIRE_KEEPER_SOUL = 19
+    FIRE_KEEPER_SOUL = 19,
+    NEEDS_REPLACEMENT = 20, # items for lots that are rolled randomly, like some randomly determined drops (crystal lizards 2nd item)
+    USELESS_KEY = 21, # items that are in the "key items" tab but aren't progression or useful
+    USEFUL_KEY_ITEM = 22, # items that are "key items" but aren't progression, just useful
+    USEFUL_CONSUMABLE = 23
 
 class DSRWeaponType(IntEnum):
     Melee = 1,
@@ -57,7 +59,7 @@ class DSRItem(Item):
         return {item_data.name: (base_id + item_data.dsr_code if item_data.dsr_code is not None else None) for item_data in _all_items}
 
 key_item_names = {
-"Covenant of Artorias","Orange Charred Ring", "Skull Lantern"
+    "Covenant of Artorias","Orange Charred Ring", "Skull Lantern", "Sunlight Maggot"
 }
 
 _all_items_base = [    
@@ -160,10 +162,10 @@ _all_items_base = [
     ("Oolacile - Township lit", 1095, DSRItemCategory.EVENT),
     ("Bell of Awakening #1", 1096, DSRItemCategory.EVENT),
     ("Bell of Awakening #2", 1097, DSRItemCategory.EVENT),
-    ("Dusk Rescued", 1098, DSRItemCategory.EVENT),
+    ("Princess Dusk Rescued", 1098, DSRItemCategory.EVENT),
     ("Lordvessel Placed", 1099, DSRItemCategory.EVENT),
-    ("Undead Merchant Access", 1100, DSRItemCategory.EVENT),
-    ("Andre Access", 1101, DSRItemCategory.EVENT),
+    ("Male Undead Merchant Access", 1100, DSRItemCategory.EVENT),
+    ("Andre of Astora Access", 1101, DSRItemCategory.EVENT),
 
 
 
@@ -346,7 +348,7 @@ _all_items_base = [
     
     # Items with more than 1 quantity below
     ("Firebomb x6", 2100, DSRItemCategory.CONSUMABLE),
-    ("Humanity x3", 2101, DSRItemCategory.CONSUMABLE),
+    ("Humanity x3", 2101, DSRItemCategory.USEFUL_CONSUMABLE),
     ("Cracked Red Eye Orb x4", 2102, DSRItemCategory.CONSUMABLE),
     ("Homeward Bone x6", 2103, DSRItemCategory.CONSUMABLE),
     ("Lloyd's Talisman x4", 2104, DSRItemCategory.CONSUMABLE),
@@ -362,7 +364,15 @@ _all_items_base = [
     ("Prism Stone x20", 2114, DSRItemCategory.CONSUMABLE),
     ("Eye of Death x3", 2115, DSRItemCategory.CONSUMABLE),
     ("Humanity x2", 2116, DSRItemCategory.CONSUMABLE),
-    
+    ("Transient Curse x4", 2117, DSRItemCategory.CONSUMABLE),
+    ("Gold Pine Resin x6", 2118, DSRItemCategory.CONSUMABLE),
+    ("Humanity x13", 2119, DSRItemCategory.CONSUMABLE),
+    ("Purging Stone x5", 2120, DSRItemCategory.CONSUMABLE),
+    ("Ring of Sacrifice x10", 2121, DSRItemCategory.USEFUL_CONSUMABLE),
+    ("Humanity x4", 2122, DSRItemCategory.USEFUL_CONSUMABLE),
+    ("Humanity x10", 2123, DSRItemCategory.USEFUL_CONSUMABLE),
+    ("Twin Humanities x2", 2124, DSRItemCategory.USEFUL_CONSUMABLE),
+
 
     ("Peculiar Doll", 3000, DSRItemCategory.KEY_ITEM),
     ("Basement Key", 3001, DSRItemCategory.KEY_ITEM),
@@ -380,8 +390,8 @@ _all_items_base = [
     ("Key to the Seal", 3013, DSRItemCategory.KEY_ITEM),
     ("Key to Depths", 3014, DSRItemCategory.KEY_ITEM),
     ("Undead Asylum F2 West Key", 3015, DSRItemCategory.KEY_ITEM),
-    ("Mystery Key", 3016, DSRItemCategory.KEY_ITEM),
-    ("Sewer Chamber Key", 3017, DSRItemCategory.KEY_ITEM),
+    ("Mystery Key", 3016, DSRItemCategory.USELESS_KEY),
+    ("Sewer Chamber Key", 3017, DSRItemCategory.USEFUL_KEY_ITEM), # Atm, only a bonfire. Change if we add checks behind it.
     ("Watchtower Basement Key", 3018, DSRItemCategory.KEY_ITEM),
     ("Archive Prison Extra Key", 3019, DSRItemCategory.KEY_ITEM),
     ("Residence Key", 3020, DSRItemCategory.KEY_ITEM),
@@ -393,11 +403,11 @@ _all_items_base = [
     ("Bequeathed Lord Soul Shard (Seath)", 3026, DSRItemCategory.KEY_ITEM),
     ("Lordvessel", 3027, DSRItemCategory.KEY_ITEM),
     ("Broken Pendant", 3028, DSRItemCategory.KEY_ITEM),
-    ("Weapon Smithbox", 3029, DSRItemCategory.KEY_ITEM),
-    ("Armor Smithbox", 3030, DSRItemCategory.KEY_ITEM),
-    ("Repairbox", 3031, DSRItemCategory.KEY_ITEM),
-    ("Rite of Kindling", 3032, DSRItemCategory.KEY_ITEM),
-    ("Bottomless Box", 3033, DSRItemCategory.KEY_ITEM),
+    ("Weapon Smithbox", 3029, DSRItemCategory.USEFUL_KEY_ITEM),
+    ("Armor Smithbox", 3030, DSRItemCategory.USEFUL_KEY_ITEM),
+    ("Repairbox", 3031, DSRItemCategory.USEFUL_KEY_ITEM),
+    ("Rite of Kindling", 3032, DSRItemCategory.USEFUL_KEY_ITEM),
+    ("Bottomless Box", 3033, DSRItemCategory.USEFUL_KEY_ITEM),
     ("Estus Flask", 3034, DSRItemCategory.KEY_ITEM),
     
 
@@ -472,7 +482,18 @@ _all_items_base = [
     ("Large Titanite Shard x2", 5100, DSRItemCategory.UPGRADE_MATERIAL),
     ("Demon Titanite x2", 5101, DSRItemCategory.UPGRADE_MATERIAL),
     ("Green Titanite Shard x2", 5102, DSRItemCategory.UPGRADE_MATERIAL),
+    ("Dragon Scale x2", 5103, DSRItemCategory.UPGRADE_MATERIAL),
+    ("Twinkling Titanite x2", 5104, DSRItemCategory.UPGRADE_MATERIAL),
+    ("Titanite Chunk x2", 5105, DSRItemCategory.UPGRADE_MATERIAL),
+    ("Blue Titanite Chunk x2", 5106, DSRItemCategory.UPGRADE_MATERIAL),
+    ("White Titanite Chunk x2", 5107, DSRItemCategory.UPGRADE_MATERIAL),
+    ("Red Titanite Chunk x2", 5108, DSRItemCategory.UPGRADE_MATERIAL),
 
+    ("Extra Titanite", 5200, DSRItemCategory.NEEDS_REPLACEMENT),
+    ("Extra Red Titanite", 5201, DSRItemCategory.NEEDS_REPLACEMENT),
+    ("Extra Blue Titanite", 5202, DSRItemCategory.NEEDS_REPLACEMENT),
+    ("Extra White Titanite", 5203, DSRItemCategory.NEEDS_REPLACEMENT),
+    ("Extra GH Titanite", 5204, DSRItemCategory.NEEDS_REPLACEMENT),
 
     ("Sorcery: Soul Arrow", 6000, DSRItemCategory.SPELL),
     ("Sorcery: Great Soul Arrow", 6001, DSRItemCategory.SPELL),
@@ -896,6 +917,7 @@ _all_items_base = [
     ("Enchanted Falchion", 8301, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.NotUpgradable),
     ("Occult Club", 8302, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.NotUpgradable),
     ("Crystal Halberd", 8303, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.NotUpgradable),
+    ("Crystal Knight Shield", 8304, DSRItemCategory.SHIELD, DSRWeaponType.Shield, DSRUpgradeType.NotUpgradable),
 
     ("Short Bow", 8096, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.Infusable),
     ("Longbow", 8097, DSRItemCategory.WEAPON, DSRWeaponType.Ranged, DSRUpgradeType.Infusable),
@@ -1013,147 +1035,5 @@ _all_items = [DSRItemData(row[0], row[1], row[2]) for row in _all_items_base]
 item_descriptions = {
 }
 
-# Type, id, max level
-infusion_types = [
-    ("Normal", 0, 15, 0),
-    ("Crystal", 1, 5, 10),
-    ("Lightning", 2, 5, 10),
-    ("Raw", 3, 5, 5),
-    ("Magic", 4, 10, 5),
-    ("Enchanted", 5, 5, 10),
-    ("Divine", 6, 10, 5),
-    ("Occult", 7, 5, 10),
-    ("Fire", 8, 10, 5),
-    ("Chaos", 9, 5, 10)
-    ]
-
-# No raw, occult, enchanted, or chaos (for shields, crossbow, etc)
-restricted_infusion_types = [
-    ("Normal", 0, 15, 0),
-    ("Crystal", 1, 5, 10),
-    ("Lightning", 2, 5, 10),
-    ("Magic", 4, 10, 5),
-    ("Divine", 6, 10, 5),
-    ("Fire", 8, 10, 5),
-    ]
-
-# Unique only
-unique_infusion_types = [
-        ("Normal", 0, 5, 0)
-    ]
-
-
 item_dictionary = {item_data.name: item_data for item_data in _all_items}
 
-def BuildRequiredItemPool(world, count):
-    item_pool = []
-    remaining_count = count
-
-    key_items = [item for item in _all_items if item.name in key_item_names or item.category == DSRItemCategory.KEY_ITEM]
-    for item in key_items:
-        if item.name not in ["Dungeon Cell Key", "Estus Flask", "Undead Asylum F2 East Key", "Big Pilgrim's Key", "Master Key"]:
-            item_pool.append(item)
-            remaining_count = remaining_count - 1
-
-    if(world.options.fogwall_sanity.value == True):
-        fogwalls = [item for item in _all_items if item.category in [DSRItemCategory.FOGWALL] and item.name != "Fog Wall Key - Northern Undead Asylum"]
-        for item in fogwalls:
-            item_pool.append(item)
-            remaining_count = remaining_count - 1
-
-    if (world.options.boss_fogwall_sanity.value == True):
-        bossfogwalls = [item for item in _all_items if item.category in [DSRItemCategory.BOSSFOGWALL]]
-        for item in bossfogwalls:
-            item_pool.append(item)
-            remaining_count = remaining_count - 1
-
-    useful_items = [item for item in _all_items if item.category in [DSRItemCategory.EMBER, DSRItemCategory.FIRE_KEEPER_SOUL] ]
-    for item in useful_items:
-        item_pool.append(item)
-        remaining_count = remaining_count - 1
-
-    if world.options.soul_multiplier_steps > 0:
-        for i in range(world.options.soul_multiplier_steps):
-            item = item_dictionary["Progressive Soul Multiplier"]
-            item_pool.append(item)
-            remaining_count = remaining_count - 1
-
-    if world.options.weight_multiplier_steps > 0:
-        for i in range(world.options.weight_multiplier_steps):
-            item = item_dictionary["Progressive Weight Reducer"]
-            item_pool.append(item)
-            remaining_count = remaining_count - 1
-
-    world.random.shuffle(item_pool)
-    return item_pool
-
-def BuildGuaranteedItemPool(world):
-    item_pool = []
-    if world.options.guaranteed_items.value:
-        for item_name, item_quant in world.options.guaranteed_items.value.items():
-            item = item_dictionary[item_name]
-            item_pool += [item] * item_quant
-    world.random.shuffle(item_pool)
-    return item_pool
-
-def UpgradeEquipment(itemcode, options, world):
-    upg = None
-    if itemcode == None:
-        return upg
-    # Find the weapon by getting matching row from base
-    for row in _all_items_base:
-        if itemcode == row[1] + 11110000: 
-            if (row[2] != DSRItemCategory.WEAPON and row[2] != DSRItemCategory.SHIELD): # Item found but not a weapon
-                break
-            if (world.random.randint(1,100) > options.upgraded_weapons_percentage): # Didn't roll RNG well enough
-                break
-            # print(f'upgrading, itemcode = {itemcode} name={row[0]}')
-            # print(f'row {row[0]} {row[1]} {row[2]}')
-            if row[4] == DSRUpgradeType.Infusable: 
-                itype = world.random.choice([typ for typ in infusion_types if typ[0] in options.upgraded_weapons_allowed_infusions])
-            elif row[4] == DSRUpgradeType.InfusableRestricted:
-                allowed_types = [typ for typ in restricted_infusion_types if typ[0] in options.upgraded_weapons_allowed_infusions]
-                if len(allowed_types) == 0: # Can't upgrade restricted items because none of its types are allowed
-                    break;
-                itype = world.random.choice(allowed_types)
-            elif row[4] == DSRUpgradeType.Unique: 
-                if "Normal" not in options.upgraded_weapons_allowed_infusions:
-                    break
-                itype = unique_infusion_types[0]
-            else:
-                break  # an unhandled infusion type - done with item
-
-            # Normal types - exclude +0 weapon, and don't include name prefix
-            if (itype[0] == "Normal"):
-                minlvl = max(1, options.upgraded_weapons_min_level.value)
-                # If min level > normal max, skip upg (happens for unique items))
-                if options.upgraded_weapons_min_level.value > itype[2]:
-                    break;
-                maxlvl = min(itype[2], options.upgraded_weapons_max_level.value)
-                
-                if maxlvl < minlvl:  # could never use this infusion
-                    break;  #done with item
-
-                lvl = world.random.randint(minlvl, maxlvl)
-                
-                upg = f'{itype[0]}:{lvl}'
-                # print(f"{upg}")
-                return upg
-            # Everything else - Include +0 weapon, and add prefix to name
-            else:
-                adj = options.upgraded_weapons_adjusted_levels
-
-                # Min level is greater of "0" or "user specified min level minus potential adjustment"
-                minlvl = max(0, options.upgraded_weapons_min_level.value - (itype[3] if adj else 0))
-                # Min level is lesser of "type max level" or "user specified max level minus potential adjustment"
-                maxlvl = min(itype[2], options.upgraded_weapons_max_level.value - (itype[3] if adj else 0))
-                
-                if maxlvl < minlvl:  # could never use this infusion
-                    break;  #done with item
-                lvl = world.random.randint(minlvl, maxlvl)
-                
-                upg = f'{itype[0]}:{lvl}'
-                # print(f"{upg}")
-                return upg
-            break;
-    return upg

@@ -368,6 +368,10 @@ class InventorySpillTrapCount(TrapCount):
     """Trap items that when received trigger dropping your main inventory and trash inventory onto the ground."""
     display_name = "Inventory Spill Traps"
 
+class QualityTrapCount(TrapCount):
+    """Trap items that when received hide a Quality Module in one of your machines."""
+    display_name = "Quality Traps"
+
 class FactorioWorldGen(OptionDict):
     """World Generation settings. Overview of options at https://wiki.factorio.com/Map_generator,
     with in-depth documentation at https://lua-api.factorio.com/latest/Concepts.html#MapGenSettings"""
@@ -569,6 +573,7 @@ class FactorioOptions(PerGameCommonOptions):
     atomic_rocket_traps: AtomicRocketTrapCount
     atomic_cliff_remover_traps: AtomicCliffRemoverTrapCount
     inventory_spill_traps: InventorySpillTrapCount
+    quality_traps: QualityTrapCount
     attack_traps: AttackTrapCount
     evolution_traps: EvolutionTrapCount
     evolution_trap_increase: EvolutionTrapIncrease

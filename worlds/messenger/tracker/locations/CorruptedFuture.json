@@ -26,5 +26,26 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Corrupted Future - Transitions",
+    "children": [
+      {
+        "name": "HQ - Artificer's Portal",
+        "sections": [
+          {
+            "name": "HQ - Artificer's Portal"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overworld",
+            "x": 780,
+            "y": 168,
+            "size": 30
+          }
+        ]
+      }
+    ]
   }
 ]

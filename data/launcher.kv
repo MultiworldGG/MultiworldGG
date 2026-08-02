@@ -180,7 +180,7 @@ MDFloatLayout:
             MDTextField:
                 id: search_box
                 mode: "outlined"
-                set_text: app.filter_clients_by_name
+                on_text: app.filter_clients_by_name(self, self.text)
 
                 MDTextFieldLeadingIcon:
                     icon: "magnify"

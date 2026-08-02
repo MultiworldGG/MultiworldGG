@@ -4,7 +4,8 @@ from .Routes import ROUTES, ROUTE_NAMES, UNDERWORLD, SURFACE, NIGHTMARE, MAX_ROO
     WEAPON_ROOM_STRIDE, boss_event, active_routes, NPC_ROUTE_LOCK, NPC_RANDOMIZED_HELPERS, \
     COMBAT_HELPER_NPCS, COMBAT_HELPER_NATIVE_ROUTE, ZJ_RANDOMIZED_ONLY, \
     combat_helper_native_fallback
-from .Items import keepsake_titles, KEEPSAKE_NO_LOCATION, WEAPON_SHORT_NAMES, KEEPSAKE_NPC
+from .Items import keepsake_titles, KEEPSAKE_NO_LOCATION, WEAPON_SHORT_NAMES, KEEPSAKE_NPC, \
+    weapon_aspect_slots
 
 hades2_base_location_id = 1
 
@@ -18,11 +19,17 @@ hades2_base_location_id = 1
 #   Combined per-weapon:      60000 + weapon*WEAPON_ROOM_STRIDE + depth
 #   Combined point checks:    3000 .. 3999      (separate_checks=combine_pools)
 # (Weapon-unlock check ids 4000..4005 are retired -- weapon-shop checks were removed.)
+#   Underworld per-aspect:    100000 + lane*ASPECT_ROOM_STRIDE + depth  (lane = weapon*4 + aspect)
+#   Surface per-aspect:       130000 + lane*ASPECT_ROOM_STRIDE + depth
+#   Nightmare per-aspect:     160000 + lane*ASPECT_ROOM_STRIDE + depth
+#   Combined per-aspect:      190000 + lane*ASPECT_ROOM_STRIDE + depth  (separate_checks=combine_pools)
+# (Each per-aspect block reserves 20000 ids: MAX_LOCATION_MULTIPLIER(8) * ASPECT_ROOM_SLOT_STRIDE(2500).)
 
 # Location-system option values (match Options.LocationSystem).
 POINT_BASED = 0
 ROOM_BASED = 1
 PER_WEAPON_ROOM_BASED = 2
+PER_ASPECT_ROOM_BASED = 3
 
 # separate_checks option value (match Options.SeparateChecks; split_pools is 0).
 COMBINE_POOLS = 1
@@ -37,6 +44,14 @@ COMBINE_POOLS = 1
 MAX_LOCATION_MULTIPLIER = 8
 WEAPON_ROOM_SLOT_STRIDE = 1000
 
+# per_aspect_room_based reserves its own, much bigger per-lane stride: 6 weapons * 4 aspect
+# slots (Items.weapon_aspect_slots) = 24 lanes per route, vs. 6 for the per-weapon systems.
+# ASPECT_ROOM_STRIDE (100) comfortably covers MAX_ROOMS depths per lane, same as
+# WEAPON_ROOM_STRIDE; ASPECT_ROOM_SLOT_STRIDE (2500) covers all 24 lanes with headroom.
+ASPECT_ROOM_STRIDE = 100
+ASPECT_ROOM_SLOT_STRIDE = 2500
+ASPECT_LANES_PER_WEAPON = 4
+
 # Combined (separate_checks=combine_pools) pools use route-agnostic names in their own id
 # space, distinct from the per-route "Underworld Room NNNN" / "Underworld Score NNNN" ids.
 # Combined means ONE shared pool that any route contributes to:
@@ -46,6 +61,7 @@ WEAPON_ROOM_SLOT_STRIDE = 1000
 COMBINED_ROOM_PREFIX = "Room"
 combined_room_id_base = 9000           # "Room NNNN"            -> base + (depth-1)
 combined_weapon_id_base = 60000        # "Room NNNN <Weapon>"   -> base + weapon*stride + (depth-1)
+combined_aspect_id_base = 190000       # "<Aspect> <Weapon> Room NN" -> base + lane*stride + (depth-1)
 COMBINED_SCORE_PREFIX = "Score"
 combined_score_id_base = 3000          # "Score NNNN"           -> base + (n-1); 1000 ids reserved
 MAX_SCORE_CHECKS = 1000                # Options.ScoreRewardsAmount.range_end (id space reserved)
@@ -60,6 +76,10 @@ def _pad(number: int) -> str:
     return f"{number:04d}"
 
 
+def _pad2(number: int) -> str:
+    return f"{number:02d}"
+
+
 def _room_name(prefix: str, depth: int, slot: int, weapon: str = None) -> str:
     """Build a room / per-weapon check name. slot 0 keeps the original name (backward
     compatible with pre-scaling seeds); higher slots append ' +k'. Any weapon stays the
@@ -69,6 +89,17 @@ def _room_name(prefix: str, depth: int, slot: int, weapon: str = None) -> str:
         name += " +" + str(slot)
     if weapon:
         name += " " + weapon
+    return name
+
+
+def _aspect_room_name(prefix: str, depth: int, slot: int, weapon: str, aspect_key: str) -> str:
+    """Build a per_aspect_room_based check name: '<Aspect> <Weapon> <prefix> DD[ +k]'. Unlike
+    _room_name, Aspect+Weapon are a FRONT prefix rather than a trailing token -- Rules.py's
+    per-aspect parser reads the first two space-separated tokens back out as (aspect, weapon).
+    Room number is 2 digits (room_count tops out at 50, no need for 4-digit padding)."""
+    name = f"{aspect_key} {weapon} {prefix} {_pad2(depth)}"
+    if slot > 0:
+        name += " +" + str(slot)
     return name
 
 
@@ -163,6 +194,34 @@ def fill_weapon_room_checks(route: str, count: int, multiplier: int = 1, include
                         id_base + slot * WEAPON_ROOM_SLOT_STRIDE + w * WEAPON_ROOM_STRIDE + i
 
 
+def fill_aspect_room_checks(route: str, count: int, multiplier: int = 1, included_weapons=None,
+                            included_aspects: int = 4) -> None:
+    """per_aspect_room_based: one check per (room-depth, weapon, aspect), depth aligned to
+    zone. A lane's id offset comes from the weapon's fixed WEAPON_SHORT_NAMES position and the
+    aspect's fixed slot within Items.weapon_aspect_slots (0=base Aspect of Melinoe, 1-3=alts in
+    ASPECT_TITLES_BY_WEAPON order), so ids stay stable regardless of which weapons/aspects this
+    seed actually includes. included_weapons=None / included_aspects=4 (give_all_locations_
+    table's datapackage build) means "every weapon, every aspect slot" -- the max universe."""
+    prefix = ROUTES[route]["room_prefix"]
+    id_base = hades2_base_location_id + ROUTES[route]["aspect_room_id_base"]
+    zones = ROUTES[route]["zones"]
+    bounds = _zone_bounds(count)
+    for slot in range(multiplier):
+        for w, weapon in enumerate(WEAPON_SHORT_NAMES):
+            if included_weapons is not None and weapon not in included_weapons:
+                continue
+            for a, (_aspect_key, display_key) in enumerate(weapon_aspect_slots(weapon)):
+                if a >= included_aspects:
+                    continue
+                lane = w * ASPECT_LANES_PER_WEAPON + a
+                for z in range(4):
+                    zone = zones[z]
+                    for i in range(bounds[z], bounds[z + 1]):
+                        name = _aspect_room_name(prefix, i + 1, slot, weapon, display_key)
+                        zone_tables[route][zone][name] = \
+                            id_base + slot * ASPECT_ROOM_SLOT_STRIDE + lane * ASPECT_ROOM_STRIDE + i
+
+
 def combine_active(options) -> bool:
     """combine_pools only does anything when both routes are actually generated; with a
     single route there's nothing to combine, so it behaves like split_pools."""
@@ -224,6 +283,21 @@ def combined_room_table(options, multiplier: int = 1) -> dict:
                     table[_room_name(COMBINED_ROOM_PREFIX, i + 1, slot, weapon)] = \
                         hades2_base_location_id + combined_weapon_id_base \
                         + slot * WEAPON_ROOM_SLOT_STRIDE + w * WEAPON_ROOM_STRIDE + i
+    elif system == PER_ASPECT_ROOM_BASED:
+        included_weapons = options.included_weapons.value
+        included_aspects = int(options.included_aspects.value)
+        for slot in range(multiplier):
+            for w, weapon in enumerate(WEAPON_SHORT_NAMES):
+                if weapon not in included_weapons:
+                    continue
+                for a, (_aspect_key, display_key) in enumerate(weapon_aspect_slots(weapon)):
+                    if a >= included_aspects:
+                        continue
+                    lane = w * ASPECT_LANES_PER_WEAPON + a
+                    for i in range(count):
+                        name = _aspect_room_name(COMBINED_ROOM_PREFIX, i + 1, slot, weapon, display_key)
+                        table[name] = hades2_base_location_id + combined_aspect_id_base \
+                            + slot * ASPECT_ROOM_SLOT_STRIDE + lane * ASPECT_ROOM_STRIDE + i
     return table
 
 
@@ -235,12 +309,16 @@ def fill_route_checks(route: str, options, multiplier: int = 1) -> None:
     system = options.location_system.value
     if combine_active(options):
         return
-    if system in (ROOM_BASED, PER_WEAPON_ROOM_BASED):
+    if system in (ROOM_BASED, PER_WEAPON_ROOM_BASED, PER_ASPECT_ROOM_BASED):
         if system == ROOM_BASED:
             fill_room_checks(route, ROUTES[route]["room_count"], multiplier)
-        else:
+        elif system == PER_WEAPON_ROOM_BASED:
             fill_weapon_room_checks(route, ROUTES[route]["room_count"], multiplier,
                                     options.included_weapons.value)
+        else:
+            fill_aspect_room_checks(route, ROUTES[route]["room_count"], multiplier,
+                                    options.included_weapons.value,
+                                    int(options.included_aspects.value))
     else:
         fill_score_checks(route, _score_count_for(route, options))
 
@@ -676,7 +754,7 @@ def setup_location_table_with_settings(options, multiplier: int = 1) -> dict:
 
     # combine_pools: the shared pools' checks live outside the per-route zone tables.
     if combine_active(options):
-        if options.location_system.value in (ROOM_BASED, PER_WEAPON_ROOM_BASED):
+        if options.location_system.value in (ROOM_BASED, PER_WEAPON_ROOM_BASED, PER_ASPECT_ROOM_BASED):
             total.update(combined_room_table(options, multiplier))
         else:
             total.update(combined_score_table(options))
@@ -719,6 +797,7 @@ def give_all_locations_table() -> dict:
         fill_score_checks(route, 1000)
         fill_room_checks(route, MAX_ROOMS, MAX_LOCATION_MULTIPLIER)
         fill_weapon_room_checks(route, MAX_ROOMS, MAX_LOCATION_MULTIPLIER)
+        fill_aspect_room_checks(route, MAX_ROOMS, MAX_LOCATION_MULTIPLIER)
     table = {}
     for route in ROUTE_NAMES:
         for zone, locs in zone_tables[route].items():
@@ -741,6 +820,12 @@ def give_all_locations_table() -> dict:
                 table[_room_name(COMBINED_ROOM_PREFIX, i + 1, slot, weapon)] = \
                     hades2_base_location_id + combined_weapon_id_base \
                     + slot * WEAPON_ROOM_SLOT_STRIDE + w * WEAPON_ROOM_STRIDE + i
+            for a, (_aspect_key, display_key) in enumerate(weapon_aspect_slots(weapon)):
+                lane = w * ASPECT_LANES_PER_WEAPON + a
+                for i in range(MAX_ROOMS):
+                    name = _aspect_room_name(COMBINED_ROOM_PREFIX, i + 1, slot, weapon, display_key)
+                    table[name] = hades2_base_location_id + combined_aspect_id_base \
+                        + slot * ASPECT_ROOM_SLOT_STRIDE + lane * ASPECT_ROOM_STRIDE + i
     table.update(location_keepsakes)
     table.update(location_enemies)
     table.update(location_npc_crossroads)

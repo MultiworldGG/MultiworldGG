@@ -14,6 +14,18 @@
         "name": "Elemental Skylands - Key of Symbiosis"
       },
       {
+        "name": "Elemental Skylands - Shutdown Air Generator"
+      },
+      {
+        "name": "Elemental Skylands - Shutdown Earth Generator"
+      },
+      {
+        "name": "Elemental Skylands - Shutdown Water Generator"
+      },
+      {
+        "name": "Elemental Skylands - Shutdown Fire Generator"
+      },
+      {
         "name": "Elemental Skylands Seal - Air"
       },
       {
@@ -45,6 +57,67 @@
             "x": 1521,
             "y": 143,
             "size": 64
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Elemental Skylands - Generators",
+    "children": [
+      {
+        "sections": [
+          {
+            "name": "Elemental Skylands - Shutdown Air Generator"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Elemental Skylands",
+            "x": 260,
+            "y": 124
+          }
+        ]
+      },
+      {
+        "sections": [
+          {
+            "name": "Elemental Skylands - Shutdown Earth Generator"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Elemental Skylands",
+            "x": 585,
+            "y": 124
+          }
+        ]
+      },
+      {
+        "sections": [
+          {
+            "name": "Elemental Skylands - Shutdown Water Generator"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Elemental Skylands",
+            "x": 989,
+            "y": 124
+          }
+        ]
+      },
+      {
+        "sections": [
+          {
+            "name": "Elemental Skylands - Shutdown Fire Generator"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Elemental Skylands",
+            "x": 1300,
+            "y": 165
           }
         ]
       }
@@ -128,8 +201,28 @@
         "map_locations": [
           {
             "map": "Elemental Skylands",
-            "x": 902,
+            "x": 904,
             "y": 124
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Elemental Skylands - Transitions",
+    "children": [
+      {
+        "name": "Elemental Skylands - Right exit",
+        "sections": [
+          {
+            "name": "Elemental Skylands - Right exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Elemental Skylands",
+            "x": 1589,
+            "y": 142
           }
         ]
       }

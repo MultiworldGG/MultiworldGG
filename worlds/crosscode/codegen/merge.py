@@ -46,6 +46,17 @@ def merge(original: T, addon: T, patch: bool = True) -> T:
         return original
 
     if isinstance(original, list):
+        if isinstance(addon, dict):
+            for idx, val in addon.items():
+                if idx == "*":
+                    for child in original:
+                        merge(child, val, patch)
+                    continue
+                if not idx.isnumeric():
+                    raise RuntimeError(f"Cannot merge list and dict with non-numeric keys")
+                merge(original[int(idx)], val, patch)
+            return original
+
         if not isinstance(addon, list):
             raise RuntimeError(f"Cannot merge type {type(original)} with {type(addon)}")
         original.extend(addon)

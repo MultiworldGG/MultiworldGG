@@ -140,5 +140,70 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Catacombs - Transitions",
+    "children": [
+      {
+        "name": "Catacombs - Bottom Left exit",
+        "sections": [
+          {
+            "name": "Catacombs - Bottom Left exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Catacombs",
+            "x": 168,
+            "y": 236
+          }
+        ]
+      },
+      {
+        "name": "Catacombs - Right exit",
+        "sections": [
+          {
+            "name": "Catacombs - Right exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Catacombs",
+            "x": 881,
+            "y": 263
+          }
+        ]
+      },
+      {
+        "name": "Catacombs - Top Left exit",
+        "sections": [
+          {
+            "name": "Catacombs - Top Left exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Catacombs",
+            "x": 156,
+            "y": 81
+          }
+        ]
+      },
+      {
+        "name": "Catacombs - Bottom exit",
+        "sections": [
+          {
+            "name": "Catacombs - Bottom exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Catacombs",
+            "x": 553,
+            "y": 422
+          }
+        ]
+      }
+    ]
   }
 ]

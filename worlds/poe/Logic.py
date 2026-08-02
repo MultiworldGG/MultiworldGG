@@ -134,7 +134,6 @@ def setup_early_items(world: "PathOfExileWorld"):
         world.items_to_place.pop(item_id)
 
     # --- Pre-collect gear categories that start unlocked based on gear_upgrades option ---
-    # TODO: handle progressive gear unlocked.
     if options.gear_upgrades != options.gear_upgrades.option_no_gear_unlocked:
         categories = set()
         if options.gear_upgrades in {options.gear_upgrades.option_all_gear_unlocked_at_start,
@@ -148,12 +147,58 @@ def setup_early_items(world: "PathOfExileWorld"):
         if options.gear_upgrades == options.gear_upgrades.option_all_gear_unlocked_at_start:
             categories.add("Magic")
             categories.add("Rare")
-        all_gear_items = Items.get_gear_items(table=world.items_to_place)
-        gear_upgrades = [item for item in all_gear_items if set(item["category"]).intersection(categories)]
-        for item in gear_upgrades:
-            item_objs = world.remove_and_create_items_by_itemdict(item)
-            for item_obj in item_objs:
-                world.precollect(item_obj)
+        # THIS IS AN AI GENERATED BRANCH; a bit untested.
+
+        # cleanup_gear_based_on_progressive_option always falls back to flat
+        # Random Gear (and drops Progressive Gear entirely) whenever gucci_hobo
+        # mode is active, regardless of progressive_gear — the preset-unlock
+        # here must follow that same effective mode, not just progressive_gear,
+        # or the two functions disagree about which item system is in play.
+        gucci_mode = not (options.gucci_hobo_mode.value == options.gucci_hobo_mode.option_disabled)
+        if options.progressive_gear.value != options.progressive_gear.option_disabled and not gucci_mode:
+            # Progressive mode: the preset-unlocked tier must be granted via the
+            # "Progressive X" item itself (and its remaining count reduced by
+            # the tiers already granted), not via the flat Normal/Magic/Rare/
+            # Unique item — otherwise the two systems don't talk to each other
+            # and the first Progressive item received re-derives a tier the
+            # player already has.
+            gear_tiers = ["Normal", "Magic", "Rare", "Unique"]
+            unlocked_tiers = 0
+            for tier in gear_tiers:
+                if tier not in categories:
+                    break
+                unlocked_tiers += 1
+            if unlocked_tiers:
+                progressive_gear_items = Items.get_by_category(category="Progressive Gear", table=world.items_to_place)
+                for item in progressive_gear_items:
+                    if "Flask" in item["category"]:
+                        continue
+                    tiers_to_grant = min(unlocked_tiers, item.get("count", 0))
+                    for _ in range(tiers_to_grant):
+                        world.precollect(world.create_item(item["name"]))
+                    item["count"] -= tiers_to_grant
+                    if item["count"] <= 0:
+                        world.items_to_place.pop(item["id"], None)
+            # A preset-unlocked tier outside that contiguous Normal-first prefix
+            # (e.g. gear_upgrades=all_uniques_unlocked unlocks Unique without
+            # Normal/Magic/Rare) can't be represented by the linear Progressive
+            # counter at all — grant it via the flat Random Gear item instead,
+            # same as non-progressive mode.
+            unrepresented = {c for c in categories if gear_tiers.index(c) >= unlocked_tiers}
+            if unrepresented:
+                all_gear_items = Items.get_gear_items(table=world.items_to_place)
+                gear_upgrades = [item for item in all_gear_items if set(item["category"]).intersection(unrepresented)]
+                for item in gear_upgrades:
+                    item_objs = world.remove_and_create_items_by_itemdict(item)
+                    for item_obj in item_objs:
+                        world.precollect(item_obj)
+        else:
+            all_gear_items = Items.get_gear_items(table=world.items_to_place)
+            gear_upgrades = [item for item in all_gear_items if set(item["category"]).intersection(categories)]
+            for item in gear_upgrades:
+                item_objs = world.remove_and_create_items_by_itemdict(item)
+                for item_obj in item_objs:
+                    world.precollect(item_obj)
 
     # --- Optional pools: flasks, max links, skill gems, support gems ---
     if options.add_flasks_to_item_pool.value == False:
@@ -238,7 +283,7 @@ def setup_character_items(world: "PathOfExileWorld"):
     1. Pre-collect the chosen character class item (removes it from the pool).
     2. Optionally pre-collect starting weapon + link slot, gems, or flask slots.
     3. Remove other character class items if multi-character unlock is disabled.
-    4. Sample ascendancy items (max 2 for Scion, 3 for others) if goal >= act 3,
+    4. Sample ascendancy items (max 3 per class, including Scion as of 3.29) if goal >= act 3,
        then strip all un-selected ascendancies from the pool.
     """
     options: PathOfExileOptions = world.options
@@ -340,8 +385,7 @@ def setup_character_items(world: "PathOfExileWorld"):
                     "Scion"] if options.allow_unlock_of_other_characters.value else [starting_character]
     if world.goal_act >= 3:
         for char_class in char_classes:
-            # Scion has only 2 ascendancy paths so cap at 2; others have 3 paths
-            sample_size = max(min(2 if char_class == "Scion" else 3, options.ascendancies_available_per_class.value), 0)
+            sample_size = max(min(3, options.ascendancies_available_per_class.value), 0)
             logger.debug(
                 f"{sample_size} Adding ascendancy items for {char_class}. "
                 f"There are {len(Items.get_ascendancy_class_items(char_class, table=world.items_to_place))} items available.")

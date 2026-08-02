@@ -78,3 +78,75 @@ class TestVanillaGreenRelicsGlitches(TestVanillaGreenRelics, GlitchesLogic):
         **TestVanillaGreenRelics.options,
         **GlitchesLogic.options,
     }
+
+
+class TestRandomizedGreenRelicsIntendedExtreme(TestRandomizedGreenRelics, IntendedLogic):
+    options = {
+        **TestRandomizedGreenRelics.options,
+        **IntendedLogic.options,
+        "green_relics_chamber_requirement": 24,
+        "green_relics_boss_requirement": 25
+    }
+
+
+class TestRandomizedGreenRelicsEasyTricksExtreme(TestRandomizedGreenRelics, EasyTricksLogic):
+    options = {
+        **TestRandomizedGreenRelics.options,
+        **EasyTricksLogic.options,
+        "green_relics_chamber_requirement": 24,
+        "green_relics_boss_requirement": 25
+    }
+
+
+class TestRandomizedGreenRelicsHardTricksExtreme(TestRandomizedGreenRelics, HardTricksLogic):
+    options = {
+        **TestRandomizedGreenRelics.options,
+        **HardTricksLogic.options,
+        "green_relics_chamber_requirement": 24,
+        "green_relics_boss_requirement": 25
+    }
+
+
+class TestRandomizedGreenRelicsGlitchesExtreme(TestRandomizedGreenRelics, GlitchesLogic):
+    options = {
+        **TestRandomizedGreenRelics.options,
+        **GlitchesLogic.options,
+        "green_relics_chamber_requirement": 24,
+        "green_relics_boss_requirement": 25
+    }
+
+
+class TestRandomizedGreenRelicsIntendedLow(TestRandomizedGreenRelics, IntendedLogic):
+    options = {
+        **TestRandomizedGreenRelics.options,
+        **IntendedLogic.options,
+        "green_relics_chamber_requirement": 1,
+        "green_relics_boss_requirement": 2
+    }
+
+
+class TestRandomizedGreenRelicsEasyTricksLow(TestRandomizedGreenRelics, EasyTricksLogic):
+    options = {
+        **TestRandomizedGreenRelics.options,
+        **EasyTricksLogic.options,
+        "green_relics_chamber_requirement": 1,
+        "green_relics_boss_requirement": 2
+    }
+
+
+class TestRandomizedGreenRelicsHardTricksLow(TestRandomizedGreenRelics, HardTricksLogic):
+    options = {
+        **TestRandomizedGreenRelics.options,
+        **HardTricksLogic.options,
+        "green_relics_chamber_requirement": 1,
+        "green_relics_boss_requirement": 2
+    }
+
+
+class TestRandomizedGreenRelicsGlitchesLow(TestRandomizedGreenRelics, GlitchesLogic):
+    options = {
+        **TestRandomizedGreenRelics.options,
+        **GlitchesLogic.options,
+        "green_relics_chamber_requirement": 1,
+        "green_relics_boss_requirement": 2
+    }

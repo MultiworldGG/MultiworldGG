@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Dark Cave - Transitions",
+    "children": [
+      {
+        "name": "Dark Cave - Left exit",
+        "sections": [
+          {
+            "name": "Dark Cave - Left exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overworld",
+            "x": 415,
+            "y": 484,
+            "size": 30
+          }
+        ]
+      }
+    ]
+  }
+]

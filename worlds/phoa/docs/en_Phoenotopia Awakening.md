@@ -15,6 +15,7 @@ Considering this limitation, the current goal of the randomizer is to defeat Bir
 ## What other adjustments have been made to the Base Game?
 * Some cutscenes have been removed or changed.
 * A story management system is implemented so state dependant locations like Panselo can be accessed in it's pre-abduction state even after defeating the Slargummy boss
+* Through the options menu, you can warp to save points you have visited before.
 
 ## When will Star Illiad release?
 I'll tell you when you finish a run of this randomizer and tell me about any issues you might have encountered.

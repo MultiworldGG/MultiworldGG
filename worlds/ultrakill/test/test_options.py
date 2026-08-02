@@ -37,6 +37,22 @@ class TestUnlockLayers(UltrakillTestBase):
             self.assertNotIn(item, item_names)
 
 
+class TestNotRequireShieldBreak(UltrakillTestBase):
+    options = { "require_gutterman_shield_break": False }
+
+
+class TestRequireShieldBreak(UltrakillTestBase):
+    options = { "require_gutterman_shield_break": True }
+
+
+class TestNotSpeedrunLogic(UltrakillTestBase):
+    options = { "speedrunner_logic": False }
+
+
+class TestSpeedrunLogic(UltrakillTestBase):
+    options = { "speedrunner_logic": True }
+
+
 class TestSecretUnlockExits(UltrakillTestBase):
     options = { "secret_mission_unlock_type": "secret_exits" }
 

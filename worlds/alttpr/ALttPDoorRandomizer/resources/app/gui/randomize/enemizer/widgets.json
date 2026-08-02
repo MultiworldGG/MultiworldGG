@@ -1,0 +1,55 @@
+{
+  "leftEnemizerFrame": {
+    "enemyshuffle": {
+      "type": "selectbox",
+      "options": [
+        "none",
+        "shuffled"
+      ]
+    },
+    "bossshuffle": {
+      "type": "selectbox",
+      "options": [
+        "none",
+        "simple",
+        "full",
+        "unique",
+        "random"
+      ]
+    }
+  },
+  "rightEnemizerFrame": {
+    "enemydamage": {
+      "type": "selectbox",
+      "options": [
+        "default",
+        "shuffled",
+        "random"
+      ]
+    },
+    "enemyhealth": {
+      "type": "selectbox",
+      "options": [
+        "default",
+        "easy",
+        "normal",
+        "hard",
+        "expert"
+      ]
+    }
+  },
+  "bottomEnemizerFrame": {
+    "enemylogic": {
+      "type": "selectbox",
+      "default": "allow_all",
+      "options": [
+        "none",
+        "allow_drops",
+        "allow_all"
+      ],
+      "config": {
+        "width": 32
+      }
+    }
+  }
+}

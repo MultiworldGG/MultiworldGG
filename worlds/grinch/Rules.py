@@ -12,19 +12,17 @@ def set_location_rules(world):
     all_locations = world.get_locations()
     for location in all_locations:
         location_data = ALL_LOCATIONS_INFO[location.name]
-        loc_rules = location_data.location_access
+        loc_rules = [item_set.copy() for item_set in location_data.location_access]
         #print(f"==================================")
         #print(f"Location:{location}")
         #print(f"[B]Access_rules:{loc_rules}")
         if world.options.advanced_logic or world.using_ut:
             if location_data.advanced_location_access is not None:
                 for advanced_rule in location_data.advanced_location_access:
-                    # If the glitches_item_name is different than "AdvancedLogic",
-                    # uncomment these line to add it to the regions rules
+                    advanced_rule = advanced_rule.copy()
                     if world.using_ut and not world.options.advanced_logic:
                         advanced_rule.append(world.glitches_item_name)
                         #print(f"[G]ADDED GLITCHED ITEM to : {advanced_rule}")
-                    # if (world.using_ut and not world.options.advanced_logic) or (not world.using_ut and world.options.advanced_logic):
                     loc_rules.append(advanced_rule)
                 #print(f"[A]Access_rules:{loc_rules}")
         rule_list = interpret_rule(loc_rules, world.player)

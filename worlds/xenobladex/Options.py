@@ -1,6 +1,7 @@
 from dataclasses import asdict, dataclass
-from Options import DeathLink, DefaultOnToggle, Choice, ExcludeLocations, LocalItems, NonLocalItems, Range, \
-    OptionGroup, PerGameCommonOptions, PriorityLocations, StartHints, StartInventory, StartLocationHints, Visibility
+from Options import DeathLink, DefaultOnToggle, Choice, ExcludeLocations, LocalItems, NamedRange, NonLocalItems, \
+    Range, OptionGroup, PerGameCommonOptions, PriorityLocations, StartHints, StartInventory, StartLocationHints, \
+    Visibility
 
 
 class CemuChoice(Choice):
@@ -804,7 +805,7 @@ class IncludeImportantItems(CemuChoice):
 
 
 class IncludeBlueprints(CemuChoice):
-    """Allows you to receive blueprints/schematics as items and adds those items to the pool. Has no logic currently"""
+    """Allows you to receive blueprints/schematics as items and adds those items to the pool."""
     display_name = "Include Blueprints"
     default = 0
     option_off = 0
@@ -817,13 +818,31 @@ class IncludeBlueprints(CemuChoice):
     ]
 
 
-class LogicLevelSteps(Range):
-    """Defines the individual progress each level logic item provides. Increases generation time a lot.
-     To disable set to 0"""
+class IncludeCharacterLevel(CemuChoice):
+    """Connects your logic level to your character level. This disables the normal way to increase your level.
+     Dont enable if Logic Level Steps is disabled."""
+    display_name = "Include Character Level"
+    default = 1
+    option_off = 0
+    option_on = 1
+    cemu_pack = "AP"
+    cemu_option = "IncludeCharacterLevel"
+    cemu_selection_names = [
+        "disable",
+        "on",
+    ]
+
+
+class LogicLevelSteps(NamedRange):
+    """Defines the individual progress each level logic item provides. Higher means bigger ingame level increase
+     per item, but lower item count in the pool"""
     display_name = "Logic Level Steps"
     default = 5
-    range_start = 0
+    range_start = 1
     range_end = 20
+    special_range_names = {
+        "disable": 0,
+    }
 
 
 class LogicLevelOvercap(Range):
@@ -832,6 +851,50 @@ class LogicLevelOvercap(Range):
     default = 0
     range_start = 0
     range_end = 20
+
+
+class DrifterRangedWeaponType(CemuChoice):
+    """Select the ranged weapon starter type for the drifter class"""
+    display_name = "Drifter Ranged Weapon Type"
+    option_assault_rifle_vanilla = 0
+    option_sniper_rifle = 1
+    option_dual_guns = 2
+    option_gatling_gun = 3
+    option_raygun = 4
+    option_psycho_launchers = 5
+    default = "random"  # type: ignore[assignment]
+    cemu_pack = "AP"
+    cemu_option = "DrifterRangedWeapon"
+    cemu_selection_names = [
+        "Assault Rifle",
+        "Sniper Rifle",
+        "Dual Guns",
+        "Gatling Gun",
+        "Raygun",
+        "Psycho Launchers",
+    ]
+
+
+class DrifterMeleeWeaponType(CemuChoice):
+    """Select the melee weapon starter type for the drifter class"""
+    display_name = "Drifter Melee Weapon Type"
+    option_longsword = 0
+    option_javelin = 1
+    option_dual_swords = 2
+    option_shield = 3
+    option_knife_vanilla = 4
+    option_photon_sabre = 5
+    default = "random"  # type: ignore[assignment]
+    cemu_pack = "AP"
+    cemu_option = "DrifterMeleeWeapon"
+    cemu_selection_names = [
+        "Longsword",
+        "Javelin",
+        "Dual Swords",
+        "Shield",
+        "Knife",
+        "Photon Sabre",
+    ]
 
 
 class HiddenLocalItems(LocalItems):
@@ -891,10 +954,15 @@ class XenobladeXOptions(PerGameCommonOptions):
     skaug: IncludeSkellAugments
     impit: IncludeImportantItems
     # blp: IncludeBlueprints
+    character_level: IncludeCharacterLevel
 
     # Logic
     logic_level_steps: LogicLevelSteps
     logic_level_overcap: LogicLevelOvercap
+
+    # Customisation
+    drifter_ranged_weapon_type: DrifterRangedWeaponType
+    drifter_melee_weapon_type: DrifterMeleeWeaponType
 
     # Graphic packs
     enemy_aggro: EnemyAggro
@@ -962,10 +1030,15 @@ option_groups: list[OptionGroup] = [
         IncludeSkellAugments,
         IncludeImportantItems,
         # IncludeBlueprints,
+        IncludeCharacterLevel,
     ]),
     OptionGroup("Logic", [
         LogicLevelSteps,
         LogicLevelOvercap,
+    ]),
+    OptionGroup("Customisation", [
+        DrifterRangedWeaponType,
+        DrifterMeleeWeaponType,
     ]),
     OptionGroup("Graphic packs", [
         EnemyAggro,

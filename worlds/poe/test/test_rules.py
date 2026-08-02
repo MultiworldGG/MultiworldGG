@@ -56,7 +56,7 @@ class TestActRequirementFunctions(unittest.TestCase):
         self.mock_opt.starting_character.value = self.mock_opt.starting_character.option_scion
 
         result = get_ascendancy_amount_for_act(3, self.mock_world)
-        self.assertEqual(result, 2)  # Scion capped at min(ascendancies_per_class=3, scion_max=2) = 2
+        self.assertEqual(result, 3)  # Scion now has 3 ascendancy paths, same cap as other classes
     
     def test_get_gear_amount_for_act(self):
         """Test gear amount calculation"""
@@ -821,17 +821,17 @@ class TestCanReachFunction(PoeTestBase):
             mock_max_links.return_value = self.max_links_items
             mock_skill_gems.return_value = self.skill_gem_items
             
-            # Mock state to return 1 ascendancy item (sufficient for Scion)
+            # Mock state to return enough ascendancy items (sufficient for Scion)
             def mock_count_scion(items, player):
                 item_names = [item["name"] if isinstance(item, dict) else str(item) for item in items]
                 if any("Ascendant" in name for name in item_names):
-                    return 2  # Scion needs min(ascendancies_per_class=3, scion_max=2) = 2
+                    return 3  # Scion needs min(ascendancies_per_class=3, 3) = 3
                 return 5
 
             self.mock_state.count_from_list.side_effect = mock_count_scion
 
             result = can_reach(3, self.mock_world, self.mock_state)
-            self.assertTrue(result)  # Scion needs 2 ascendancies (min of 3 available, 2 max for Scion)
+            self.assertTrue(result)  # Scion needs 3 ascendancies (same cap as other classes now)
     
     def test_can_reach_flask_slots_disabled(self):
         """Test can_reach when flask slots are disabled in options"""

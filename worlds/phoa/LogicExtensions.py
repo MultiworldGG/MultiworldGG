@@ -51,7 +51,12 @@ class PhoaLogic:
                 or state.has("Progressive Crank Lamp", self.player, 1))
 
     def has_anuri_pearlstones(self, amount: int, state: CollectionState) -> bool:
-        return state.has("Anuri Pearlstone", self.player, amount)
+        return (state.has("Anuri Pearlstone", self.player, amount)
+                or state.has("Anuri Pearlstone Necklace", self.player))
+
+    def has_ouro_guard_keys(self, amount: int, state: CollectionState) -> bool:
+        return (state.has("Ouro Guard Key", self.player, amount)
+                or state.has("Ouro Guard Keyring", self.player))
 
     def can_use_spear_bomb(self, state: CollectionState) -> bool:
         return (state.has_all({"Sonic Spear", "Spear Bomb"}, self.player)

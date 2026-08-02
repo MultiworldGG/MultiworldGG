@@ -223,5 +223,61 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Sunken Shrine - Transitions",
+    "children": [
+      {
+        "name": "Sunken Shrine - Left exit",
+        "sections": [
+          {
+            "name": "Sunken Shrine - Left exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Sunken Shrine",
+            "x": 227,
+            "y": 448
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Sunken Shrine - Portal",
+    "children": [
+      {
+        "name": "HQ - Sunken Shrine Portal",
+        "sections": [
+          {
+            "name": "HQ - Sunken Shrine Portal"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overworld",
+            "x": 960,
+            "y": 575,
+            "size": 30
+          }
+        ]
+      },
+      {
+        "name": "Sunken Shrine - Portal unlock",
+        "sections": [
+          {
+            "name": "Sunken Shrine - Portal unlock"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Sunken Shrine",
+            "x": 471,
+            "y": 458
+          }
+        ]
+      }
+    ]
   }
 ]

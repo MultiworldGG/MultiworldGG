@@ -1,0 +1,42 @@
+#!/usr/bin/python3
+
+# This program is free software. It comes without any warranty, to
+# the extent permitted by applicable law. You can redistribute it
+# and/or modify it under the terms of the Do What The Fuck You Want
+# To Public License, Version 2, as published by Sam Hocevar. See
+# the COPYING file included with this distribution or
+# http://sam.zoy.org/wtfpl/COPYING for more details.
+
+import sys
+from bps import operations as ops
+from bps.io import read_bps
+
+iterable = read_bps(open(sys.argv[1], 'rb'))
+
+print("name", sys.argv[1])
+
+def draw_bracket(size):
+	"""
+	Yield glyphs that draw a bracket shape, "size" lines tall.
+	"""
+	if size == 1:
+		yield "═"
+		return
+
+	yield "┐"
+
+	for _ in range(size - 2):
+		yield "│"
+
+	yield "┘"
+
+offset = 0
+for op in iterable:
+	if not op.bytespan or not op.marker:
+		continue
+
+	for bracket_part in draw_bracket(op.bytespan):
+		marker = op.marker
+
+		print("{0:-010} {1} {2}".format(offset, bracket_part, marker))
+		offset += 1

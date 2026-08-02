@@ -1,0 +1,228 @@
+{
+  "checkboxes": {
+    "hints": { "type": "checkbox" },
+    "pseudoboots": { "type": "checkbox" },
+    "mirrorscroll": { "type": "checkbox" },
+    "collection_rate": {"type":  "checkbox"},
+    "race": { "type": "checkbox" }
+  },
+  "worldstateFrame": {
+    "worldstate": {
+      "type": "selectbox",
+      "default": "open",
+      "options": [
+        "standard",
+        "open",
+        "inverted"
+      ],
+      "config": {
+        "width": 13
+      }
+    }
+  },
+  "leftItemFrame": {
+    "logiclevel": {
+      "type": "selectbox",
+      "options": [
+        "noglitches",
+        "minorglitches",
+        "owglitches",
+        "hybridglitches",
+        "nologic"
+      ]
+    },
+    "goal": {
+      "type": "selectbox",
+      "options": [
+        "ganon",
+        "pedestal",
+        "dungeons",
+        "triforcehunt",
+        "trinity",
+        "crystals",
+        "ganonhunt",
+        "completionist"
+      ]
+    },
+    "crystals_gt": {
+      "type": "selectbox",
+      "options": [
+        0, 1, 2, 3, 4, 5, 6, 7,
+        "random"
+      ]
+    },
+    "crystals_ganon": {
+      "type": "selectbox",
+      "options": [
+        0, 1, 2, 3, 4, 5, 6, 7,
+        "random"
+      ]
+    },
+    "weapons": {
+      "type": "selectbox",
+      "options": [
+        "random",
+        "assured",
+        "swordless",
+        "vanilla"
+      ]
+    }
+  },
+  "rightItemFrame": {
+    "sortingalgo": {
+      "type": "selectbox",
+      "default": "balanced",
+      "options": [
+        "balanced",
+        "vanilla_fill",
+        "major_only",
+        "dungeon_only",
+        "district"
+      ]
+    },
+    "accessibility": {
+      "type": "selectbox",
+      "options": [
+        "items",
+        "locations",
+        "none"
+      ]
+    },
+    "restrict_boss_items": {
+      "type": "selectbox",
+      "default": "none",
+      "options": [
+        "none",
+        "mapcompass",
+        "dungeon"
+      ]
+    },
+    "itemfunction": {
+      "type": "selectbox",
+      "options": [
+        "normal",
+        "hard",
+        "expert"
+      ]
+    },
+    "timer": {
+      "type": "selectbox",
+      "options": [
+        "none",
+        "display",
+        "timed",
+        "timed-ohko",
+        "ohko",
+        "timed-countdown"
+      ]
+    }
+  },
+  "leftPoolHeader": {
+    "shopsanity": {
+      "type": "checkbox"
+    },
+    "bonk_drops": {
+      "type": "checkbox",
+      "default": false
+    },
+    "followers": {
+      "type": "checkbox",
+      "default": false
+    }
+  },
+  "leftPoolFrame": {
+    "pottery": {
+      "type": "selectbox",
+      "default": "none",
+      "options": [
+        "none",
+        "keys",
+        "cave",
+        "cavekeys",
+        "reduced",
+        "clustered",
+        "nonempty",
+        "dungeon",
+        "lottery"
+      ],
+      "config": {
+        "width": 35
+      }
+    },
+    "colorizepots": {
+      "type": "checkbox",
+      "default": true,
+      "config": {
+        "padx": [50,0]
+      }
+    },
+    "potshuffle": {
+      "type": "checkbox",
+      "config": {
+        "padx": [50,0]
+      }
+    },
+    "dropshuffle": {
+      "type": "selectbox",
+      "default": "none",
+      "options": [
+        "none",
+        "keys",
+        "underworld"
+    ]}
+  },
+  "leftPoolFrame2": {
+    "keydropshuffle": {
+      "type": "checkbox",
+      "config": {
+        "command": "keydropshuffle"
+      }
+    },
+    "take_any":  {
+      "type": "selectbox",
+      "options": [
+        "none",
+        "random",
+        "fixed"
+      ]
+    }
+  },
+  "rightPoolFrame": {
+    "itempool": {
+      "type": "selectbox",
+      "options": [
+        "normal",
+        "hard",
+        "expert"
+      ]
+    },
+    "flute_mode": {
+      "type": "selectbox",
+      "options": [
+        "normal",
+        "active"
+      ]
+    },
+    "bow_mode": {
+      "type": "selectbox",
+      "options": [
+        "progressive",
+        "silvers",
+        "retro",
+        "retro_silvers"
+      ]
+    },
+    "beemizer": {
+      "type": "selectbox",
+      "options": [
+        "0", "1", "2", "3", "4"
+      ]
+    },
+    "bombbag": {
+      "type": "checkbox",
+      "config": {
+        "padx": [64,0]
+      }
+    }
+  }
+}

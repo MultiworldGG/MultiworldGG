@@ -167,5 +167,91 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Autumn Hills - Transitions",
+    "children": [
+      {
+        "name": "Autumn Hills - Left exit",
+        "sections": [
+          {
+            "name": "Autumn Hills - Left exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Autumn Hills",
+            "x": 79,
+            "y": 109
+          }
+        ]
+      },
+      {
+        "name": "Autumn Hills - Right exit",
+        "sections": [
+          {
+            "name": "Autumn Hills - Right exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Autumn Hills",
+            "x": 917,
+            "y": 52
+          }
+        ]
+      },
+      {
+        "name": "Autumn Hills - Bottom exit",
+        "sections": [
+          {
+            "name": "Autumn Hills - Bottom exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Autumn Hills",
+            "x": 747,
+            "y": 185
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Autumn Hills - Portal",
+    "children": [
+      {
+        "name": "HQ - Autumn Hills Portal",
+        "sections": [
+          {
+            "name": "HQ - Autumn Hills Portal"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overworld",
+            "x": 278,
+            "y": 373,
+            "size": 30
+          }
+        ]
+      },
+      {
+        "name": "Autumn Hills - Portal unlock",
+        "sections": [
+          {
+            "name": "Autumn Hills - Portal unlock"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Autumn Hills",
+            "x": 583,
+            "y": 148
+          }
+        ]
+      }
+    ]
   }
 ]

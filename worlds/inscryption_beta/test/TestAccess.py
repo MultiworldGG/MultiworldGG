@@ -75,7 +75,7 @@ class AccessTestGeneral(InscryptionTestBase):
 
 class AccessTestOrdered(InscryptionTestBase):
     options = {
-        "goal": 0,
+        "act_unlocks": 0,
     }
 
     def test_film_roll(self) -> None:
@@ -174,7 +174,7 @@ class AccessTestOrdered(InscryptionTestBase):
 
 class AccessTestUnordered(InscryptionTestBase):
     options = {
-        "goal": 1,
+        "act_unlocks": 1,
     }
 
     def test_epitaphs_and_forest_items(self) -> None:

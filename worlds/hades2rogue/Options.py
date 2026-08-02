@@ -9,13 +9,25 @@ from Options import Range, DeathLink, Choice, StartInventoryPool, PerGameCommonO
 
 class IncludedWeapons(OptionSet):
     """
-    Which weapons to include in the run. Removing any of these will remove their
-    and their aspects items from the item pool, and any locations requiring that
-    weapon will or it's aspects will be removed.
+    Which weapons can be included in the run.
+    Removing any of these will remove them and their aspects from the pool.
+    These will be the weapons that the below 'weapon_amount' option chooses from.
     """
     display_name = "Included Weapons"
     valid_keys = frozenset({"Staff", "Blades", "Flames", "Axe", "Skull", "Coat"})
     default = frozenset({"Staff", "Blades", "Flames", "Axe", "Skull", "Coat"})
+
+
+class WeaponAmount(Range):
+    """
+    How many of the above weapons should be included?
+    It will randomly select the amount you specify from the pool you listed above.
+    If you set it higher than the amount of weapons you included, it will just add all that you included.
+    """
+    display_name = "Weapon Amount"
+    range_start = 1
+    range_end = 6
+    default = 6
 
 
 class InitialWeapon(Choice):
@@ -55,9 +67,9 @@ class AspectSanity(Choice):
 
 class IncludedAspects(Range):
     """
-    If aspectsanity is set to randomized or per_aspect
-    How many of each weapons aspects should be accessible.
-    Any locations requiring any removed aspects will be removed.
+    How many of each weapon's aspects should be accessible, for every aspectsanity mode
+    (unlocked/randomized/progressive/per_aspect alike). Any locations requiring any removed
+    aspects will be removed.
     """
     display_name = "Included Aspects"
     range_start = 1
@@ -74,11 +86,14 @@ class LocationSystem(Choice):
     to a room's depth when you clear it. Use this for much longer APs, and it will likely
     be quite repetitive.
     Per_Weapon_Room_Based: Like room_based, but there are separate pools for each weapon.
+    Per_Aspect_Room_Based: Like per_weapon_room_based, but instead there's a separate
+    pool for each accessible aspect.
     """
     display_name = "Location System"
     option_point_based = 0
     option_room_based = 1
     option_per_weapon_room_based = 2
+    option_per_aspect_room_based = 3
     default = 1
 
 
@@ -428,14 +443,13 @@ class GoalRequiresZagreus(Toggle):
 
 class GoalMode(Choice):
     """
-    How the toggled-on Goal bosses above combine.
-    all_selected: every toggled-on boss must be defeated.
-    any_selected: defeating any one of the toggled-on bosses is enough.
+    Whether any of the toggled goals must be achieved, or all of them.
+    This means if any_selected is chosen, and you selected underworld and surface, you would only need to do one of the two.
     """
     display_name = "Goal Mode"
     option_all_selected = 0
     option_any_selected = 1
-    default = 1
+    default = 0
 
 
 class ZagreusEncounterMode(Choice):
@@ -798,6 +812,7 @@ class Hades2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     # Weapon Options
     included_weapons: IncludedWeapons
+    weapon_amount: WeaponAmount
     initial_weapon: InitialWeapon
     aspectsanity: AspectSanity
     included_aspects: IncludedAspects
@@ -887,6 +902,7 @@ class Hades2Options(PerGameCommonOptions):
 hades2_option_groups = [
     OptionGroup("Weapon Options", [
         IncludedWeapons,
+        WeaponAmount,
         InitialWeapon,
         AspectSanity,
         IncludedAspects,

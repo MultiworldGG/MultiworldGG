@@ -4,8 +4,9 @@
   "game": "Phoenotopia: Awakening",
   "authors": [
     "Lenamphy",
-    "ET_is_here"
+    "ET_is_here",
+    "fight4day"
   ],
   "minimum_ap_version": "0.6.6",
-  "world_version": "0.3.0"
+  "world_version": "0.4.0"
 }

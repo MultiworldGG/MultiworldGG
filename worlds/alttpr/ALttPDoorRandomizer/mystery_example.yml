@@ -1,0 +1,291 @@
+  description: Example door rando weights
+  overworld_shuffle:
+    vanilla: 0
+    parallel: 2
+    full: 2
+  overworld_terrain:
+    on: 1
+    off: 1
+  overworld_crossed:
+    none: 4
+    polar: 1
+    grouped: 1
+    unrestricted: 1
+  overworld_keepsimilar:
+    on: 1
+    off: 1
+  overworld_swap:
+    on: 1
+    off: 1
+  whirlpool_shuffle:
+    on: 1
+    off: 1
+  flute_shuffle:
+    vanilla: 0
+    balanced: 1
+    random: 1
+  bonk_drops:
+    on: 1
+    off: 1
+  door_shuffle:
+    vanilla: 0
+    basic: 2
+    partitioned: 1
+    crossed: 2
+  intensity:
+    1: 2
+    2: 2
+    3: 4
+  door_type_mode:
+    original: 2
+    big: 2
+    all: 1
+    chaos: 1
+  trap_door_mode:
+    vanilla: 0
+    optional: 1
+    boss: 0
+    oneway: 0
+  key_logic_algorithm:
+    dangerous: 0
+    partial: 1
+    strict: 0
+  decoupledoors: off
+  door_self_loops:
+    on: 1
+    off: 1
+  dropshuffle:
+    none: 4
+    keys: 1
+    underworld: 1
+  pottery:
+    none: 8
+    keys: 1
+    cave: 1
+    dungeon: 1
+    lottery: 1
+    cavekeys: 1
+    reduced: 1
+    clustered: 1
+    nonempty: 1
+  shopsanity:
+    on: 1
+    off: 1
+  pot_shuffle:
+    on: 1
+    off: 3
+  bombbag:
+    on: 1
+    off: 4
+  flute_mode:
+    normal: 3
+    active: 1
+  bow_mode:
+    progressive: 5
+    silvers: 5
+    retro: 1
+    retro_silvers: 1
+  entrance_shuffle:
+    none: 15
+    dungeonssimple: 3
+    dungeonsfull: 2
+    simple: 2
+    restricted: 2
+    full: 2
+    lite: 2
+    lean: 2
+    swapped: 2
+    crossed: 3
+    insanity: 1
+  open_pyramid:
+    auto: 1
+    yes: 0
+    no: 0
+  shufflelinks:
+    on: 1
+    off: 1
+  shuffleganon:
+    on: 1
+    off: 1
+  shuffletavern:
+    on: 1
+    off: 1
+  overworld_map: # control how the overworld map operates when entrance shuffle is on
+    default: 1
+    compass: 10
+    map: 5
+  world_state:
+    standard: 1
+    open: 1
+    inverted: 1
+    retro: 0
+  take_any:
+    random: 1
+    fixed: 3
+    none: 16
+  goals:
+    ganon: 2
+    fast_ganon: 2
+    dungeons: 1
+    pedestal: 2
+    triforce-hunt: 2
+    trinity: 2
+    ganonhunt: 2
+    completionist: 1
+  triforce_goal_min: 10
+  triforce_goal_max: 30
+  triforce_pool_min: 20
+  triforce_pool_max: 40
+  triforce_min_difference: 10
+  triforce_max_difference: 15
+  algorithm:
+    balanced: 12
+    vanilla_fill: 1
+    major_only: 1
+    dungeon_only: 1
+    district: 1
+  restrict_boss_items:
+    none: 1
+    mapcompass: 1
+    dungeon: 1
+  prize_shuffle:
+    none: 1
+    dungeon: 1
+    nearby: 1
+    wild: 1
+  dungeon_items:
+    standard: 10
+    mc: 3
+    mcs: 2
+    full: 5
+    mcu: 1  # map, compass, universal smalls
+  # for use when you aren't using the dungeon_items above
+  # map_shuffle:
+  #   none: 1
+  #   nearby: 1
+  #   wild: 1
+  # compass_shuffle:
+  #   none: 1
+  #   nearby: 1
+  #   wild: 1
+  # smallkey_shuffle:
+  #   none: 5
+  #   nearby: 1
+  #   wild: 1
+  #   universal: 1
+  # bigkey_shuffle:
+  #   none: 1
+  #   nearby: 1
+  #   wild: 1
+  dungeon_counters:
+    on: 5
+    off: 0
+    default: 5
+  experimental:
+    on: 1
+    off: 1
+  glitches_required:
+    none: 1
+    owg: 0
+    no_logic: 0
+  accessibility:
+    items: 1
+    locations: 0
+    none: 0
+  tower_open:
+    "0": 1
+    "1": 2
+    "2": 3
+    "3": 4
+    "4": 4
+    "5": 3
+    "6": 2
+    "7": 1
+    random: 1
+  ganon_open:
+    "0": 1
+    "1": 2
+    "2": 3
+    "3": 4
+    "4": 4
+    "5": 3
+    "6": 2
+    "7": 1
+    random: 1
+  boss_shuffle:
+    none: 3
+    simple: 1
+    full: 1
+    unique: 1
+    random: 1
+  enemy_shuffle:
+    none: 3
+    shuffled: 2
+    random: 1
+  any_enemy_logic:
+    none: 1
+    allow_drops: 2
+    allow_all: 3
+  hints:
+    on: 1
+    off: 1
+  weapons:
+    randomized: 5
+    assured: 3
+    vanilla: 3
+    swordless: 1
+  item_pool:
+    normal: 3
+    hard: 1
+    expert: 0
+  item_functionality:
+    normal: 3
+    hard: 1
+    expert: 0
+  enemy_damage:
+    default: 3
+    shuffled: 1
+    random: 0
+  enemy_health:
+    default: 6
+    easy: 1
+    hard: 1
+    expert: 0
+  pseudoboots:
+    on: 1
+    off: 0
+  startinventory:
+    Pegasus Boots: on
+  rom:
+    sprite:
+      'Link': 1
+      random: 0
+      randomonhit: 0
+    quickswap: on
+    heartcolor:
+      red: 1
+      blue: 1
+      green: 1
+      yellow: 1
+    heartbeep:
+      double: 0
+      normal: 0
+      half: 0
+      quarter: 1
+      off: 0
+    menuspeed:
+      normal: 1
+      double: 0
+      triple: 0
+      quadruple: 0
+      instant: 0
+      half: 0
+    shuffle_sfx:
+      on: 1
+      off: 1
+    shuffle_sfxinstruments:
+      on: 1
+      off: 1
+    shuffle_songinstruments:
+      on: 1
+      off: 1

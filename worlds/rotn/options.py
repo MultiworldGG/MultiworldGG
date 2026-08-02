@@ -8,7 +8,7 @@ class DLCMusicPacks(OptionSet):
     Both individual songs and dlc pack names work.
 
     Current DLC Pack Groups: ["All", "Celeste", "Pizza Tower", "Hatsune Miku", "Hololive", "Everhood", "Monstercat", "Shovel Knight", 
-                              "Friday Night Funkin'", "VA-11 HALL-A", "Undertale", "Volume 2"]
+                              "Friday Night Funkin'", "VA-11 HALL-A", "Undertale", "Volume 2", "K/DA"]
     """
     display_name = "DLC Packs"
     valid_keys = [dlc for dlc in RotNCollections.DLC]

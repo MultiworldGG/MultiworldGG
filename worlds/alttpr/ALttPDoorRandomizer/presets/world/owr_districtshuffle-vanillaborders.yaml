@@ -1,0 +1,299 @@
+settings:
+  1:
+    ow_layout: wild
+    ow_parallel: false
+    ow_keepsimilar: false
+ow-edges:
+  1:
+    two-way:
+      Lost Woods Pass SW*: Kakariko NW*
+      Lost Woods Pass SE*: Kakariko NC*
+      Kakariko Fortune SC*: Kakariko NE*
+      River Bend SW*: Wooden Bridge NW*
+      Forgotten Forest ES: Hyrule Castle WN
+      Hyrule Castle ES*: Sand Dunes WN*
+      Kakariko Suburb ES*: Flute Boy WS*
+      Links House ES*: Stone Bridge WS*
+      Tree Line SE*: Lake Hylia NE*
+      Desert Pass EC*: Dam WC*
+      Desert Pass ES*: Dam WS*
+      Qirn Jump SW*: Broken Bridge NW*
+      Village of Outcasts SE*: Frog NE*
+      Pyramid SW*: Dark Bonk Rocks NW*
+      Pyramid SE*: Big Bomb Shop NE*
+      Dark Tree Line SE*: Ice Lake NE*
+    groups:
+      NorthwestHyrule:
+        - Lost Woods NW
+        - Master Sword Meadow SC
+        - Lost Woods EN*
+        - Lumberjack WN*
+        - Lost Woods SW*
+        - Lost Woods Pass NW*
+        - Lost Woods SC*
+        - Lost Woods Pass NE*
+        - Lost Woods SE*
+        - Kakariko Fortune NE*
+        - Lumberjack SW*
+        - Mountain Pass NW*
+        - Mountain Pass SE*
+        - Kakariko Pond NE*
+        - Kakariko Fortune EN*
+        - Kakariko Pond WN*
+        - Kakariko Fortune ES*
+        - Kakariko Pond WS*
+        - Kakariko Pond EN*
+        - Sanctuary WN*
+        - Kakariko Pond ES*
+        - Sanctuary WS*
+        - Kakariko Pond SW*
+        - Forgotten Forest NW*
+        - Kakariko Pond SE*
+        - Forgotten Forest NE*
+        - Sanctuary EC*
+        - Graveyard WC*
+        - Graveyard EC*
+        - River Bend WC*
+      DeathMountain:
+        - West Death Mountain EN*
+        - East Death Mountain WN*
+        - West Death Mountain ES*
+        - East Death Mountain WS*
+        - East Death Mountain EN*
+        - Death Mountain TR Pegs WN*
+      EasternHyrule:
+        - Zora Waterfall NE
+        - Zoras Domain SW
+        - Zora Waterfall SE*
+        - Zora Approach NE*
+        - River Bend EN*
+        - Potion Shop WN*
+        - River Bend EC*
+        - Potion Shop WC*
+        - River Bend ES*
+        - Potion Shop WS*
+        - River Bend SC*
+        - Wooden Bridge NC*
+        - River Bend SE*
+        - Wooden Bridge NE*
+        - Potion Shop EN*
+        - Zora Approach WN*
+        - Potion Shop EC*
+        - Zora Approach WC*
+        - Wooden Bridge SW*
+        - Sand Dunes NW*
+        - Eastern Palace SW*
+        - Tree Line NW*
+        - Eastern Palace SE*
+        - Eastern Nook NE*
+        - Sand Dunes SC*
+        - Stone Bridge NC*
+        - Stone Bridge EN*
+        - Tree Line WN*
+      Kakariko:
+        - Kakariko ES*
+        - Blacksmith WS*
+        - Kakariko SE*
+        - Kakariko Suburb NE*
+        - Maze Race ES*
+        - Kakariko Suburb WS*
+      CentralHyrule:
+        - Hyrule Castle SW*
+        - Central Bonk Rocks NW*
+        - Hyrule Castle SE*
+        - Links House NE*
+        - Flute Boy SW*
+        - Flute Boy Approach NW*
+        - Flute Boy SC*
+        - Flute Boy Approach NC*
+        - Central Bonk Rocks EN*
+        - Links House WN*
+        - Central Bonk Rocks EC*
+        - Links House WC*
+        - Central Bonk Rocks ES*
+        - Links House WS*
+        - Central Bonk Rocks SW*
+        - C Whirlpool NW*
+        - Links House SC*
+        - Statues NC*
+        - Flute Boy Approach EC*
+        - C Whirlpool WC*
+        - C Whirlpool EN*
+        - Statues WN*
+        - C Whirlpool EC*
+        - Statues WC*
+        - C Whirlpool ES*
+        - Statues WS*
+        - C Whirlpool SC*
+        - Dam NC*
+        - Statues SC*
+        - South Pass NC*
+        - Dam EC*
+        - South Pass WC*
+      LakeHylia:
+        - Stone Bridge WC
+        - Hobo EC
+        - Stone Bridge EC*
+        - Tree Line WC*
+        - Stone Bridge SC*
+        - Lake Hylia NW*
+        - Tree Line SC*
+        - Lake Hylia NC*
+        - Lake Hylia EC*
+        - Octoballoon WC*
+        - Lake Hylia ES*
+        - Octoballoon WS*
+        - Ice Cave SW*
+        - Octoballoon NW*
+        - Ice Cave SE*
+        - Octoballoon NE*
+      Desert:
+        - Desert EC
+        - Desert Pass WC
+        - Desert ES
+        - Desert Pass WS
+      NorthwestDarkWorld:
+        - Skull Woods EN*
+        - Dark Lumberjack WN*
+        - Skull Woods SW*
+        - Skull Woods Pass NW*
+        - Skull Woods SC*
+        - Skull Woods Pass NE*
+        - Skull Woods SE*
+        - Dark Fortune NE*
+        - Dark Lumberjack SW*
+        - Bumper Cave NW*
+        - Bumper Cave SE*
+        - Outcast Pond NE*
+        - Skull Woods Pass SW*
+        - Village of Outcasts NW*
+        - Skull Woods Pass SE*
+        - Village of Outcasts NC*
+        - Dark Fortune EN*
+        - Outcast Pond WN*
+        - Dark Fortune ES*
+        - Outcast Pond WS*
+        - Dark Fortune SC*
+        - Village of Outcasts NE*
+        - Outcast Pond EN*
+        - Dark Chapel WN*
+        - Outcast Pond ES*
+        - Dark Chapel WS*
+        - Outcast Pond SW*
+        - Shield Shop NW*
+        - Outcast Pond SE*
+        - Shield Shop NE*
+        - Dark Chapel EC*
+        - Dark Graveyard WC*
+        - Dark Graveyard EC*
+        - Qirn Jump WC*
+        - Village of Outcasts ES*
+        - Hammer Pegs WS*
+      DarkDeathMountain:
+        - West Dark Death Mountain EN*
+        - East Dark Death Mountain WN*
+        - West Dark Death Mountain ES*
+        - East Dark Death Mountain WS*
+        - East Dark Death Mountain EN*
+        - Turtle Rock WN*
+      EastDarkWorld:
+        - Catfish SE*
+        - Catfish Approach NE*
+        - Dark Witch EN*
+        - Catfish Approach WN*
+        - Dark Witch EC*
+        - Catfish Approach WC*
+        - Qirn Jump EN*
+        - Dark Witch WN*
+        - Qirn Jump EC*
+        - Dark Witch WC*
+        - Qirn Jump ES*
+        - Dark Witch WS*
+        - Qirn Jump SC*
+        - Broken Bridge NC*
+        - Qirn Jump SE*
+        - Broken Bridge NE*
+        - Broken Bridge SW*
+        - Dark Dunes NW*
+        - Pyramid ES*
+        - Dark Dunes WN*
+        - Dark Dunes SC*
+        - Hammer Bridge NC*
+        - Palace of Darkness SW*
+        - Dark Tree Line NW*
+        - Palace of Darkness SE*
+        - Palace of Darkness Nook NE*
+        - Hammer Bridge EN*
+        - Dark Tree Line WN*
+      SouthDarkWorld:
+        - Dig Game EC
+        - Frog WC
+        - Dig Game ES*
+        - Frog WS*
+        - Frog ES*
+        - Stumpy WS*
+        - Stumpy SW*
+        - Stumpy Approach NW*
+        - Stumpy SC*
+        - Stumpy Approach NC*
+        - Dark Bonk Rocks EN*
+        - Big Bomb Shop WN*
+        - Dark Bonk Rocks EC*
+        - Big Bomb Shop WC*
+        - Dark Bonk Rocks ES*
+        - Big Bomb Shop WS*
+        - Dark Bonk Rocks SW*
+        - Dark C Whirlpool NW*
+        - Big Bomb Shop SC*
+        - Hype Cave NC*
+        - Big Bomb Shop ES*
+        - Hammer Bridge WS*
+        - Hammer Bridge EC*
+        - Dark Tree Line WC*
+        - Hammer Bridge SC*
+        - Ice Lake NW*
+        - Dark Tree Line SC*
+        - Ice Lake NC*
+        - Stumpy Approach EC*
+        - Dark C Whirlpool WC*
+        - Dark C Whirlpool EN*
+        - Hype Cave WN*
+        - Dark C Whirlpool EC*
+        - Hype Cave WC*
+        - Dark C Whirlpool ES*
+        - Hype Cave WS*
+        - Dark C Whirlpool SC*
+        - Swamp NC*
+        - Hype Cave SC*
+        - Dark South Pass NC*
+        - Ice Lake WS*
+        - Dark South Pass ES*
+        - Ice Lake EC*
+        - Bomber Corner WC*
+        - Ice Lake ES*
+        - Bomber Corner WS*
+        - Shopping Mall SW*
+        - Bomber Corner NW*
+        - Shopping Mall SE*
+        - Bomber Corner NE*
+        - Swamp Nook EC*
+        - Swamp WC*
+        - Swamp Nook ES*
+        - Swamp WS*
+        - Swamp EC*
+        - Dark South Pass WC*
+ow-tileflips:
+  1:
+    force_no_flips:
+      - 0x30
+      - 0x3a
+    force_together:
+      LostWoodsPedestal:
+        - 0x00
+        - 0x80
+      ZoraWaterfall:
+        - 0x0f
+        - 0x81
+      MazeRaceSuburb:
+        - 0x28
+        - 0x29

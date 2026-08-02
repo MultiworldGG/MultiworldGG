@@ -55,6 +55,7 @@ all_items["Artillery Trap"] = factorio_base_id - 6
 all_items["Atomic Rocket Trap"] = factorio_base_id - 7
 all_items["Atomic Cliff Remover Trap"] = factorio_base_id - 8
 all_items["Inventory Spill Trap"] = factorio_base_id - 9
+all_items["Quality Trap"] = factorio_base_id - 10
 
 class FactorioSAWS(World):
     """
@@ -89,7 +90,7 @@ class FactorioSAWS(World):
     removed_technologies: typing.Set[str]
     settings: typing.ClassVar[FactorioSAWSSettings]
     trap_names: tuple[str] = ("Evolution", "Attack", "Teleport", "Grenade", "Cluster Grenade", "Artillery",
-                              "Atomic Rocket", "Atomic Cliff Remover", "Inventory Spill")
+                              "Atomic Rocket", "Atomic Cliff Remover", "Inventory Spill", "Quality")
     want_progressives: dict[str, bool] = collections.defaultdict(lambda: False)
 
     ut_can_gen_without_yaml = True

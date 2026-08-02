@@ -269,7 +269,7 @@ def get_exit_data(player: int, options: PhoaOptions) -> list[PhoaExit]:
             name="atai_town_metro_to_sand_drifts",
             region="atai_town(metro)",
             connection="sand_drifts(metro_stairwell)",
-            rule=lambda state: state.has("Ouro Guard Key", player, 5),
+            rule=lambda state: logic.has_ouro_guard_keys(5, state),
         ),
         PhoaExit(
             name="atai_metro_to_town",
@@ -385,7 +385,7 @@ def get_exit_data(player: int, options: PhoaOptions) -> list[PhoaExit]:
             name="sand_drifts_metro_stairwell_to_atai_metro",
             region="sand_drifts(metro_stairwell)",
             connection="atai_town(metro)",
-            rule=lambda state: state.has("Ouro Guard Key", player, 5),
+            rule=lambda state: logic.has_ouro_guard_keys(5, state),
         ),
         # ouroboros_hideout(tower_top)
         PhoaExit(
@@ -461,7 +461,7 @@ def get_exit_data(player: int, options: PhoaOptions) -> list[PhoaExit]:
             name="forlorn_ruins_through_key_door_to_obstacle_course",
             region="forlorn_ruins",
             connection="forlorn_ruins(arrow_obstacle_room)",
-            rule=lambda state: state.has("Ouro Guard Key", player, 5),
+            rule=lambda state: logic.has_ouro_guard_keys(5, state),
         ),
         PhoaExit(
             name="forlorn_ruins_to_metal_crates_puzzle_area",
@@ -510,7 +510,7 @@ def get_exit_data(player: int, options: PhoaOptions) -> list[PhoaExit]:
             name="forlorn_ruins_east_key_door_in_basement",
             region="forlorn_ruins(east)",
             connection="forlorn_ruins(dragon_snare_puzzle_room)",
-            rule=lambda state: state.has("Ouro Guard Key", player, 5),
+            rule=lambda state: logic.has_ouro_guard_keys(5, state),
         ),
         PhoaExit(
             name="forlorn_ruins_to_ouroboros_hideout",
@@ -533,13 +533,13 @@ def get_exit_data(player: int, options: PhoaOptions) -> list[PhoaExit]:
             name="ouroboros_hideout_to_prison",
             region="ouroboros_hideout",
             connection="ouroboros_hideout(prison)",
-            rule=lambda state: state.has("Ouro Guard Key", player, 5),
+            rule=lambda state: logic.has_ouro_guard_keys(5, state),
         ),
         PhoaExit(
             name="ouroboros_hideout_to_storage",
             region="ouroboros_hideout",
             connection="ouroboros_hideout(storage)",
-            rule=lambda state: state.has("Ouro Guard Key", player, 5),
+            rule=lambda state: logic.has_ouro_guard_keys(5, state),
         ),
         PhoaExit(
             name="ouroboros_hideout_to_infant_drake_arena",

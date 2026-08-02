@@ -132,5 +132,70 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Quillshroom Marsh - Transitions",
+    "children": [
+      {
+        "name": "Quillshroom Marsh - Bottom Left exit",
+        "sections": [
+          {
+            "name": "Quillshroom Marsh - Bottom Left exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Quillshroom Marsh",
+            "x": 465,
+            "y": 105
+          }
+        ]
+      },
+      {
+        "name": "Quillshroom Marsh - Bottom Right exit",
+        "sections": [
+          {
+            "name": "Quillshroom Marsh - Bottom Right exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Quillshroom Marsh",
+            "x": 712,
+            "y": 167
+          }
+        ]
+      },
+      {
+        "name": "Quillshroom Marsh - Top Left exit",
+        "sections": [
+          {
+            "name": "Quillshroom Marsh - Top Left exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Quillshroom Marsh",
+            "x": 87,
+            "y": 26
+          }
+        ]
+      },
+      {
+        "name": "Quillshroom Marsh - Top Right exit",
+        "sections": [
+          {
+            "name": "Quillshroom Marsh - Top Right exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Quillshroom Marsh",
+            "x": 913,
+            "y": 68
+          }
+        ]
+      }
+    ]
   }
 ]

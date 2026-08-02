@@ -1,0 +1,12 @@
+{
+  "widgets": {
+    "settingsonload": {
+      "type": "selectbox",
+      "options": [
+        "default",
+        "saved",
+        "lastused"
+      ]
+    }
+  }
+}

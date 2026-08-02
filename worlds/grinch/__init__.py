@@ -127,7 +127,13 @@ class GrinchWorld(World):
         }
 
         for location, data in grinch_locations.items():
-            region = self.get_region(data.region)
+            # If a location does not have it's associated region created (Ex.: Supadow minigames when they are off),
+            # skip the location creation entirely for this particular location
+            try:
+                region = self.get_region(data.region)
+            except KeyError:
+                #print(f"Location skipped due to missing region:{location}")
+                continue
 
             if location == "MC - Sleigh Ride - Save Christmas":
                 # Place the "Goal" item in the location as an event

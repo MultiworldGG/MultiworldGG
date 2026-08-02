@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import CollectionState
 from Options import PlandoConnection
+from rule_builder.rules import Has
 
 if TYPE_CHECKING:
     from . import MessengerWorld
@@ -96,10 +97,10 @@ SHOP_POINTS: dict[str, list[str]] = {
         "Air Generator",
         "Earth Intro",
         "Earth Generator",
-        "Fire Intro",
-        "Fire Generator",
         "Water Intro",
         "Water Generator",
+        "Fire Intro",
+        "Fire Generator",
     ],
     "Sunken Shrine": [
         "Above Portal",
@@ -107,7 +108,7 @@ SHOP_POINTS: dict[str, list[str]] = {
         "Sun Path",
         "Tabi Gauntlet",
         "Moon Path",
-    ]
+    ],
 }
 
 CHECKPOINTS: dict[str, list[str]] = {
@@ -301,5 +302,5 @@ def validate_portals(world: "MessengerWorld") -> bool:
 def add_closed_portal_reqs(world: "MessengerWorld") -> None:
     closed_portals = [entrance for entrance in PORTALS if f"{entrance} Portal" not in world.starting_portals]
     for portal in closed_portals:
-        tower_exit = world.multiworld.get_entrance(f"ToTHQ {portal} Portal", world.player)
-        tower_exit.access_rule = lambda state, portal_item=portal: state.has(f"{portal_item} Portal", world.player)
+        tower_exit = world.get_entrance(f"ToTHQ {portal} Portal")
+        world.set_rule(tower_exit, Has(f"{portal} Portal"))

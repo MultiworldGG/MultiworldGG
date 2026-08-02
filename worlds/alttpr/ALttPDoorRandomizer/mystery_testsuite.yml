@@ -1,0 +1,218 @@
+description: A test suite for testing various combinations
+algorithm:
+  major_only: 1
+  dungeon_only: 1
+  vanilla_fill: 1
+  balanced: 10
+  district: 1
+door_shuffle:
+  vanilla: 1
+  basic: 1
+  partitioned: 1
+  crossed: 3  # crossed yield more errors so is preferred
+intensity:
+  1: 1
+  2: 1
+  3: 2  # intensity 3 usually yield more errors
+door_type_mode:
+  original: 2
+  big: 2
+  all: 1
+  chaos: 1
+trap_door_mode:
+  vanilla: 3  # more errors
+  optional: 1
+  boss: 1
+  oneway: 1
+key_logic_algorithm:
+  dangerous: 1
+  partial: 0
+  strict: 0
+decoupledoors:
+  off: 9  # more strict
+  on: 1
+door_self_loops:
+  on: 1
+  off: 1
+dropshuffle:
+  none: 10 # fewer locations
+  keys: 1
+  underworld: 1
+pottery:
+  none: 10 # fewer locations
+  keys: 1
+  cave: 1
+  cavekeys: 1
+  dungeon: 1
+  reduced: 1
+  clustered: 1
+  lottery: 1
+shopsanity:
+  on: 1
+  off: 1
+pot_shuffle:
+  on: 1
+  off: 1
+entrance_shuffle:
+  none: 1
+  dungeonssimple: 1
+  dungeonsfull: 1
+  simple: 1
+  restricted: 1
+  full: 1
+  lite: 1
+  lean: 1
+  swapped: 1
+  crossed: 1
+  insanity: 1
+shufflelinks:
+  on: 1
+  off: 1
+shuffletavern:
+  on: 1
+  off: 1
+skullwoods:
+  original: 1
+  restricted: 1
+  loose: 1
+  followlinked: 1
+linked_drops:
+  unset: 1
+  linked: 1
+  independent: 1
+world_state:
+  standard: 1
+  open: 1
+  inverted: 1
+retro:
+  on: 1
+  off: 1
+goals:
+  ganon: 1
+  fast_ganon: 1
+  dungeons: 3  # this yields more errors so is preferred
+  pedestal: 1
+  triforce-hunt: 1
+  trinity: 1
+triforce_goal_min: 20
+triforce_goal_max: 30
+triforce_pool_min: 30
+triforce_pool_max: 40
+triforce_min_difference: 10
+triforce_max_difference: 12
+map_shuffle:
+  on: 1
+  off: 1
+compass_shuffle:
+  on: 1
+  off: 1
+smallkey_shuffle:
+  wild: 1
+  none: 1
+bigkey_shuffle:
+  on: 1
+  off: 1
+dungeon_counters:
+  on: 1
+  off: 1
+  default: 1
+experimental:
+  on: 1
+  off: 1
+glitches_required:
+  none: 10  # i'm more interest in testing shuffles with more restrictive logic
+  owg: 1
+  no_logic: 1
+accessibility:
+  items: 1
+  locations: 1
+  none: 0  # i'm not really interested in this yet
+restrict_boss_items:
+  none: 1
+#  mapcompass: 1 has confirmed issues
+  dungeon: 1
+tower_open:
+  "0": 1
+  "1": 1
+  "2": 1
+  "3": 1
+  "4": 1
+  "5": 1
+  "6": 1
+  "7": 10  # more restrictions is usually best for testing
+  random: 1
+ganon_open:
+  "0": 1
+  "1": 1
+  "2": 1
+  "3": 1
+  "4": 1
+  "5": 1
+  "6": 1
+  "7": 10 # more restrictions is usually best for testing
+  random: 1
+boss_shuffle:
+  none: 1
+  simple: 1
+  unique: 1
+  full: 1
+  random: 1
+enemy_shuffle:  # shouldn't affect generation
+  none: 1
+  shuffled: 1
+  random: 1
+  legacy: 0
+any_enemy_logic: allow_all  # more interesting logic
+hints:
+  on: 1
+  off: 1
+pseudoboots:  # shouldn't affect generation
+  on: 1
+  off: 1
+weapons:
+  randomized: 1
+  assured: 1
+  vanilla: 1
+  swordless: 1
+item_pool:
+  normal: 1
+  hard: 1
+  expert: 1
+item_functionality: # shouldn't affect generation
+  normal: 1
+  hard: 0
+  expert: 0
+enemy_damage: # shouldn't affect generation
+  default: 1
+  shuffled: 0
+  random: 0
+enemy_health: # shouldn't affect generation
+  default: 1
+  easy: 0
+  hard: 0
+  expert: 0
+rom:
+  quickswap:  # shouldn't affect generation
+    on: 1
+    off: 0
+# reduce_flashing: should affect generation at this point
+  heartcolor:  # shouldn't affect generation
+    red: 1
+    blue: 1
+    green: 1
+    yellow: 1
+  heartbeep:  # shouldn't affect generation
+    double: 0
+    normal: 0
+    half: 0
+    quarter: 1
+    off: 0
+  shuffle_sfx:
+    on: 1
+    off: 1
+  shuffle_sfxinstruments:
+    on: 1
+    off: 1
+  shuffle_songinstruments:
+    on: 1
+    off: 1

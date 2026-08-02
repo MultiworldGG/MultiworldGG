@@ -1,0 +1,124 @@
+settings:
+  1:
+    ow_layout: wild
+    ow_terrain: false
+ow-edges:
+  1:
+    groups:
+      similar_2_left_top:
+        - Lost Woods SW
+        - Skull Woods SW
+        - Lost Woods Pass NW
+        - Lost Woods Pass SW
+        - Skull Woods Pass NW
+        - Skull Woods Pass SW
+        - Kakariko Fortune EN
+        - Dark Fortune EN
+        - Kakariko Pond WN
+        - Kakariko Pond EN
+        - Kakariko Pond SW
+        - Outcast Pond WN
+        - Outcast Pond EN
+        - Outcast Pond SW
+        - Sanctuary WN
+        - Dark Chapel WN
+        - River Bend EC
+        - River Bend SW
+        - Qirn Jump EC
+        - Qirn Jump SW
+        - Potion Shop WC
+        - Dark Witch WC
+        - Kakariko NW
+        - Village of Outcasts NW
+        - Forgotten Forest NW
+        - Shield Shop NW
+        - Wooden Bridge NW
+        - Broken Bridge NW
+        - Dig Game EC
+        - Frog WC
+        - Flute Boy SW
+        - Stumpy SW
+        - Desert EC
+        - Flute Boy Approach NW
+        - Stumpy Approach NW
+        - C Whirlpool EN
+        - Dark C Whirlpool EN
+        - Statues WN
+        - Hype Cave WN
+        - Desert Pass WC
+        - Desert Pass EC
+        - Swamp Nook EC
+        - Dam WC
+        - Swamp WC
+      similar_2_right_bottom:
+        - Lost Woods SC
+        - Skull Woods SC
+        - Lost Woods Pass NE
+        - Lost Woods Pass SE
+        - Skull Woods Pass NE
+        - Skull Woods Pass SE
+        - Kakariko Fortune ES
+        - Dark Fortune ES
+        - Kakariko Pond WS
+        - Kakariko Pond ES
+        - Kakariko Pond SE
+        - Outcast Pond WS
+        - Outcast Pond ES
+        - Outcast Pond SE
+        - Sanctuary WS
+        - Dark Chapel WS
+        - River Bend ES
+        - River Bend SE
+        - Qirn Jump ES
+        - Qirn Jump SE
+        - Potion Shop WS
+        - Dark Witch WS
+        - Kakariko NC
+        - Village of Outcasts NC
+        - Forgotten Forest NE
+        - Shield Shop NE
+        - Wooden Bridge NE
+        - Broken Bridge NE
+        - Dig Game ES
+        - Frog WS
+        - Flute Boy SC
+        - Stumpy SC
+        - Desert ES
+        - Flute Boy Approach NC
+        - Stumpy Approach NC
+        - C Whirlpool ES
+        - Dark C Whirlpool ES
+        - Statues WS
+        - Hype Cave WS
+        - Desert Pass WS
+        - Desert Pass ES
+        - Swamp Nook ES
+        - Dam WS
+        - Swamp WS
+      similar_3_left_top:
+        - Central Bonk Rocks EN
+        - Dark Bonk Rocks EN
+        - Links House WN
+        - Big Bomb Shop WN
+      similar_3_middle:
+        - Central Bonk Rocks EC
+        - Dark Bonk Rocks EC
+        - Links House WC
+        - Big Bomb Shop WC
+      similar_3_right_bottom:
+        - Central Bonk Rocks ES
+        - Dark Bonk Rocks ES
+        - Links House WS
+        - Big Bomb Shop WS
+ow-tileflips:
+  1:
+    force_together:
+      Forest:
+        - 0x1a
+        - 0x1b
+      FrogDig:
+        - 0x28
+        - 0x29
+      Desert:
+        - 0x30
+        - 0x3a

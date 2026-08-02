@@ -1,0 +1,74 @@
+{
+  "topOverworldFrame": {},
+  "leftOverworldFrame": {
+    "layout": {
+      "type": "selectbox",
+      "default": "vanilla",
+      "options": [
+        "vanilla",
+        "grid",
+        "wild"
+      ]
+    },
+    "crossed": {
+      "type": "selectbox",
+      "default": "none",
+      "options": [
+        "none",
+        "grouped",
+        "polar",
+        "unrestricted"
+      ],
+      "config": {
+        "pady": [16,0]
+      }
+    },
+    "mixed": {
+      "type": "checkbox",
+      "default": false,
+      "config": {
+        "padx": [79,0]
+      }
+    },
+    "whirlpool": {
+      "type": "checkbox",
+      "default": false,
+      "config": {
+        "padx": [79,0]
+      }
+    },
+    "overworldflute": {
+      "type": "selectbox",
+      "default": "vanilla",
+      "options": [
+        "vanilla",
+        "balanced",
+        "random"
+      ],
+      "config": {
+        "pady": [20,0]
+      }
+    },
+    "fog": {
+      "type": "checkbox",
+      "default": true,
+      "config": {
+        "pady": [20,0]
+      }
+    }
+  },
+  "rightOverworldFrame": {
+    "parallel": {
+      "type": "checkbox",
+      "default": true
+    },
+    "terrain": {
+      "type": "checkbox",
+      "default": false
+    },
+    "keepsimilar": {
+      "type": "checkbox",
+      "default": false
+    }
+  }
+}

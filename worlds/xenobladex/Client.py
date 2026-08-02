@@ -24,6 +24,7 @@ from CommonClient import CommonContext, server_loop, logger, get_base_parser, gu
 from settings import get_settings
 
 from worlds.xenobladex import XenobladeXWorld
+from worlds.xenobladex.rules.level import get_logic_level_count, get_upper_real_level_from_logic_count
 from .drops.item import dropItemData
 from .drops.lot import dropLotData
 from .drops.skill import dropSkillsData
@@ -145,7 +146,8 @@ class XenobladeXHttpServer(HTTPServer):
 
     # Example: Invoke-WebRequest http://localhost:45872/items -Method POST -Body "I Tp=00000007 Id=00000039`n"
     def upload_item(self, item_game_type: int, item_game_id: int, seed_name: Optional[str],
-                    item_name: str, player_name: str, item_game_level: int = 1) -> None:
+                    item_name: str, player_name: str, item_game_level: int = 1,
+                    logic_level_steps: int = 0) -> None:
         if self.upload_count > self.upload_limit:
             return
         self.upload_count += 1
@@ -154,7 +156,11 @@ class XenobladeXHttpServer(HTTPServer):
             self.upload_message(f"From {player_name}", item_name)
 
         if item_game_type == 0:
-            self.items += f"K Id={item_game_id:08x} Fg={1:08x}\n"
+            if item_name == "Level":
+                if logic_level_steps == 0:
+                    return
+                item_game_level = get_upper_real_level_from_logic_count(item_game_level, logic_level_steps)
+            self.items += f"K Id={item_game_id:08x} Fg={item_game_level:08x}\n"
         elif item_game_type < 0x20:
             gear = self.generate_gear(item_name, seed_name)
             item_game_type = self.adjust_item_type(item_game_type, item_game_id)
@@ -218,10 +224,12 @@ class XenobladeXHttpServer(HTTPServer):
         data += [GameItem(game_type, entry[i]) for entry in match if lower <= entry[1] <= upper
                  for i in range(2, re.compile(regex).groups) if 0 < entry[i] < 0xFFFF]
 
-    def download_items(self) -> list[GameItem]:
+    def download_items(self, logic_level_steps: int) -> list[GameItem]:
         items: list[GameItem] = []
 
-        self._match_line(items, 0, r'^KY Id=([1-9a-fA-F]{1}) Fg=([0-9a-fA-F]{1})\n')
+        self._match_line(items, 0, r'^KY Id=([1-9a-fA-F]{1}) Fg=([0-9a-fA-F]{2})\n')
+        self._match_line(items, 0, r'^KY Id=([eE]{1}) Fg=([0-9a-fA-F]{2})\n', has_lvl=True,
+                         lvl_change=lambda lvl: get_logic_level_count(lvl, logic_level_steps))
         self._match_line(items, None, r'^IT Id=([0-9a-fA-F]{3}) Tp=([0-9a-fA-F]{2})(?:\n| S1Id)')
         self._match_line(items, 0x1c, r'^IT Id=([0-9a-fA-F]{3}) Tp=1[cC] Cn=([0-9a-fA-F]{3})', has_lvl=True)
         self._match_line(items, 0x1d, r'^IT Id=([0-9a-fA-F]{3}) Tp=1[dD] Cn=([0-9a-fA-F]{3})', has_lvl=True)
@@ -329,6 +337,7 @@ class XenobladeXContext(CommonContext):
     locations_checked: Set[int]
     death_link = False
     death_link_pending = False
+    logic_level_steps = 0
 
     def __init__(self, server_address: Optional[str], password: Optional[str], xeno_port: int,
                  debug: bool = False) -> None:
@@ -348,7 +357,10 @@ class XenobladeXContext(CommonContext):
             if slot_data:
                 cemu_options: list[XenobladeXOption] = [XenobladeXOption(**option)
                                                         for option in slot_data["cemu_options"]]
-                self.death_link = slot_data.get("options", {}).get("death_link", 0) != 0
+                options = slot_data.get("options", None)
+                if options:
+                    self.death_link = options.get("death_link", 0) != 0
+                    self.logic_level_steps = options.get("logic_level_steps", 0)
                 self.http_server.clear_locations()
                 self.prepare_cemu(cemu_options)
         if cmd in {"RoomInfo"}:
@@ -424,7 +436,7 @@ class XenobladeXContext(CommonContext):
 
     async def upload_game_items(self) -> None:
         self.http_server.clear_uploaded_items()
-        uploaded_server_items = self.http_server.download_items()
+        uploaded_server_items = self.http_server.download_items(self.logic_level_steps)
         uploaded_items = {self.game_item_to_archipelago_item(itm): itm.level for itm in uploaded_server_items}
         player_item_names = {net_item.item: self.player_names[net_item.player] for net_item in self.items_received}
         server_items = Counter(network_item.item for network_item in self.items_received)
@@ -435,7 +447,8 @@ class XenobladeXContext(CommonContext):
             game_item = self.archipelago_item_to_game_item(item)
             item_name = self.archipelago_item_to_name(item)
             self.http_server.upload_item(game_item.type, game_item.id, self.seed_name,
-                                         item_name, player_item_names[item], level)
+                                         item_name, player_item_names[item], level,
+                                         self.logic_level_steps)
             if item_name == "Victory":
                 await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 

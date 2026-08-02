@@ -39,7 +39,7 @@ char* _postKeyList(char* stringStartPtr, char* stringCurrentPtr, char* stringEnd
 		else 
 			flag = _hasPreciousItem(24 + keyId - 1);
 
-		stringCurrentPtr += __sprintf_s(stringCurrentPtr, maxEntrySize, "KY Id=%01x Fg=%01x:", keyId, flag);
+		stringCurrentPtr += __sprintf_s(stringCurrentPtr, maxEntrySize, "KY Id=%01x Fg=%02x:", keyId, flag);
 
 		// Reset buffer
 		if(stringCurrentPtr > stringEndPtr){

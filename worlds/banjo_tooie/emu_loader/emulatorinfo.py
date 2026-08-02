@@ -75,7 +75,7 @@ class EmulatorInfo:
         extra_offset: int = 0,
         linux_dll_name: Optional[str] = None,
         scan_memory_for_signature: bool = False,
-        signature_alignment: int = 0,
+        signature_alignment: int = 0x10000,
         signature_offset: int = 0x759290,
         signature_value: int = 0x52414D42,
         validation_func: Optional[Callable[["ProcessMemory", int], bool]] = None,
@@ -148,6 +148,29 @@ class EmulatorInfo:
         """Raise an error and log it."""
         logger.debug(msg)
         self.connection_error = msg
+
+    def _scan_for_signature(self, pm: ProcessMemory) -> Optional[int]:
+        """Scan anonymous heap regions for the ROM signature and return the RDRAM base."""
+        signature = self.signature_value.to_bytes(4, "little")
+        signature_offset = self.signature_offset
+        alignment = self.signature_alignment or 0x10000  # 0 is invalid for range() step
+        use_validator = self.validation_func is not None
+        for region_start, region_size in pm.list_writable_regions():
+            max_base = region_size - signature_offset - 4
+            if max_base < 0:
+                continue
+            for base in range(0, max_base + 1, alignment):
+                candidate = region_start + base
+                try:
+                    if use_validator:
+                        if self.validation_func(pm, candidate):
+                            return candidate
+                    else:
+                        if pm.read_bytes(candidate + signature_offset, 4) == signature:
+                            return candidate
+                except Exception:
+                    continue
+        return None
 
     def attach_to_emulator(self) -> Optional[Tuple[ProcessMemory, int]]:
         """Grab memory addresses of where emulated RDRAM is."""
@@ -360,7 +383,7 @@ def _parse_emulator_configs(data: List[Dict[str, Any]]) -> Dict[str, EmulatorInf
             extra_offset=int(entry.get("extra_offset", "0x0"), 16),
             linux_dll_name=entry.get("linux_dll_name"),
             scan_memory_for_signature=entry.get("scan_memory_for_signature", False),
-            signature_alignment=int(entry.get("signature_alignment", "0x0"), 16),
+            signature_alignment=int(entry.get("signature_alignment", "0x10000"), 16),
         )
     return configs
 

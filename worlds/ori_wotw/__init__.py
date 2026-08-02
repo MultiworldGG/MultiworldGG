@@ -1,37 +1,51 @@
-"""AP world for Ori and the Will of the Wisps."""
-
-# TODO Black market ?
-# TODO rename spawn locations and add aliases
-# TODO Check that random is taken from world
+"""Definition of the World class and world structure for Ori and the Will of the Wisps."""
 
 
+# TODO list spawn items:
+# Make the new spawn points
+# Put new spawn locs outside of data files (or add them auto)
+# New spawn options: vanilla, TP, random TP (with weights ?), random anchor
+# UT support for random name + add spawn info to slot data
+# Change KS logic for spawn ? Also add early KS data
+
+from __future__ import annotations
+
+import logging
 from typing import Any, Callable
 from collections import Counter
 
-from entrance_rando import randomize_entrances
-from .Rules import (set_moki_rules, set_gorlek_rules, set_gorlek_glitched_rules, set_kii_rules,
-                    set_kii_glitched_rules, set_unsafe_rules, set_unsafe_glitched_rules)
-from .AdditionalRules import combat_rules, unreachable_rules
-from .Items import item_table
-from .Items_Icons import get_item_iconpath
-from .Locations import loc_table
-from .Quests import quest_table
-from .LocationGroups import loc_sets, location_regions
-from .Events import event_table
-from .Regions import region_table
-from .Entrances import entrance_table
-from .Refills import refill_events
-from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation
-from .SpawnItems import spawn_items, spawn_names, early_items
-from .Presets import options_presets
-from .ItemGroups import item_groups
-from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
-from .DoorData import doors_map, doors_vanilla
-
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
-from BaseClasses import (Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState,
-                         EntranceType, Entrance)
+from BaseClasses import Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState
+
+from .generated_data.Events import event_table
+from .generated_data.Regions import region_table
+from .generated_data.Entrances import entrance_table
+from .generated_data.Refills import refill_events
+from .generated_data.Locations import loc_table
+from .generated_data.Quests import quest_table
+from .generated_data.DoorData import doors_map, doors_vanilla
+from .generated_data.Items import item_table
+from .generated_data.Rules import (
+    set_moki_rules,
+    set_gorlek_rules,
+    set_gorlek_glitched_rules,
+    set_kii_rules,
+    set_kii_glitched_rules,
+    set_unsafe_rules,
+    set_unsafe_glitched_rules
+)
+
+from .data.SpawnData import spawn_data
+from .data.ItemsIcons import get_item_iconpath
+from .data.LocationGroups import loc_sets, location_regions
+from .data.ItemGroups import item_groups
+
+from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation, RandomizeDoors
+from .Presets import options_presets
+from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
+from .AdditionalRules import combat_rules, unreachable_rules
+from .ERGenerator import generate_er_connections
 
 
 class WotWWeb(WebWorld):
@@ -82,10 +96,13 @@ class WotWWorld(World):
         self.filled_locations: list[str] = [] # Locations holding an item
         self.er_door_ids: list[int] = []  # Contain the data of door IDs if ER is enabled
         # The list index corresponds to the exit door ID minus one, and the int in the list is the target door ID
+        self.spawn_region_name: str = "MarshSpawn.Main"
+        self.spawn_area: str = "MarshSpawn"
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
         # Ask to update the max resources and the refills on the next call to `RulesFunctions.has_enough_resources`
+        # or `RulesFunctions.has_enough_max_health`
         if change and item.name in ("Health Fragment",
                                     "Energy Fragment",
                                     "EastHollow.ForestsVoice",
@@ -117,6 +134,7 @@ class WotWWorld(World):
     def remove(self, state: CollectionState, item: Item) -> bool:
         change = super().remove(state, item)
         # Ask to update the max resources and the refills on the next call to `RulesFunctions.has_enough_resources`
+        # or `RulesFunctions.has_enough_max_health`
         if change and item.name in ("Health Fragment",
                                     "Energy Fragment",
                                     "EastHollow.ForestsVoice",
@@ -146,13 +164,14 @@ class WotWWorld(World):
         return change
 
     def generate_early(self) -> None:
+        # TODO Launch on seir + fragments
         options = self.options  # TODO Use option error instead for some cases
         # Options checking
         if options.open_mode:
             options.no_rain.value = True
         # Escaping from Willow require to complete the elevator fight, so a tp is needed to escape.
         if options.spawn.value == StartingLocation.option_willow and not options.tp:
-            options.spawn.value = StartingLocation.option_marsh  # No TP in pool: spawn somewhere else.
+            options.spawn.value = StartingLocation.option_vanilla  # No TP in pool: spawn somewhere else.
         # Without TP in the pool, some random spawn are dead-ends without better random spawn
         if not options.tp and not options.better_spawn:
             options.better_spawn.value = True
@@ -161,7 +180,53 @@ class WotWWorld(World):
         # Spawning on willow usually gives Launch on spawn, which defeats the purpose of the options that affect Launch
         if (options.spawn.value == StartingLocation.option_willow
                 and (options.launch_on_seir or options.launch_fragments)):
-            options.spawn.value = StartingLocation.option_marsh
+            options.spawn.value = StartingLocation.option_vanilla
+
+        # Selection of a random spawn location
+        spawn_dict: dict[str, tuple[int, int]] = {  # Map from TP region name to associated spawn option and weight
+            "MarshSpawn.Main": (StartingLocation.option_vanilla, 3),  # TODO change data structure ?
+            "MidnightBurrows.Teleporter": (StartingLocation.option_burrows, 10),
+            "HowlsDen.Teleporter": (StartingLocation.option_howlsden, 10),
+            "EastHollow.Teleporter": (StartingLocation.option_hollow, 10),
+            "GladesTown.Teleporter": (StartingLocation.option_glades, 10),
+            "InnerWellspring.Teleporter": (StartingLocation.option_wellspring, 10),
+            "WoodsEntry.Teleporter": (StartingLocation.option_westwoods, 7),
+            "WoodsMain.Teleporter": (StartingLocation.option_eastwoods, 7),
+            "LowerReach.Teleporter": (StartingLocation.option_reach, 10),
+            "UpperDepths.Teleporter": (StartingLocation.option_depths, 10),
+            "EastPools.Teleporter": (StartingLocation.option_eastpools, 7),
+            "WestPools.Teleporter": (StartingLocation.option_westpools, 7),
+            "LowerWastes.WestTP": (StartingLocation.option_westwastes, 5),
+            "LowerWastes.EastTP": (StartingLocation.option_eastwastes, 5),
+            "UpperWastes.NorthTP": (StartingLocation.option_outerruins, 5),
+            "WindtornRuins.RuinsTP": (StartingLocation.option_innerruins, 3),
+            "WillowsEnd.InnerTP": (StartingLocation.option_willow, 3),
+            "WillowsEnd.ShriekArena": (StartingLocation.option_shriek, 3),
+        }
+        spawn_dict_reverse: dict[int, str] = {option[0]: region for region, option in spawn_dict.items()}
+
+        if options.spawn.value == StartingLocation.option_random_loc:
+            spawn_regions_candidates: list[str] = []
+            for region_name, region_data in region_table.items():
+                if region_data[0]:
+                    spawn_regions_candidates.append(region_name)
+            self.spawn_region_name = self.random.choice(spawn_regions_candidates)
+        else:  # options.spawn.value != StartingLocation.option_random_loc
+            if options.spawn.value == StartingLocation.option_random_tp:
+                weights = [data[1] for data in spawn_dict.values()]
+                total_weight = sum(weights)
+                # TODO weights depending on difficulty ?
+                for i, weight in enumerate(weights):  # TODO data structure here: option value, weight (don't rely on same order)
+                    if self.random.random() < weight / total_weight:
+                        options.spawn.value = i
+                        break
+                    else:
+                        total_weight -= weight
+                assert options.spawn.value != StartingLocation.option_random_tp  # TODO debug, remove
+            self.spawn_region_name = spawn_dict_reverse[options.spawn.value]
+        self.spawn_area = str.split(self.spawn_region_name, ".")[0]
+        # TODO Debug, remove when generation stable ?
+        logging.info(f"Ori WotW: Spawn {self.spawn_region_name} for player {self.player}")
 
         # Selection of a random goal
         if "random" in options.goal:
@@ -213,32 +278,14 @@ class WotWWorld(World):
                 "Kii": LogicDifficulty.option_kii,
                 "Unsafe": LogicDifficulty.option_unsafe,
             }
-            spawn_dict: dict[str, int] = {
-                "MarshSpawn.Main": StartingLocation.option_marsh,
-                "MidnightBurrows.Teleporter": StartingLocation.option_burrows,
-                "HowlsDen.Teleporter": StartingLocation.option_howlsden,
-                "EastHollow.Teleporter": StartingLocation.option_hollow,
-                "GladesTown.Teleporter": StartingLocation.option_glades,
-                "InnerWellspring.Teleporter": StartingLocation.option_wellspring,
-                "WoodsEntry.Teleporter": StartingLocation.option_westwoods,
-                "WoodsMain.Teleporter": StartingLocation.option_eastwoods,
-                "LowerReach.Teleporter": StartingLocation.option_reach,
-                "UpperDepths.Teleporter": StartingLocation.option_depths,
-                "EastPools.Teleporter": StartingLocation.option_eastpools,
-                "WestPools.Teleporter": StartingLocation.option_westpools,
-                "LowerWastes.WestTP": StartingLocation.option_westwastes,
-                "LowerWastes.EastTP": StartingLocation.option_eastwastes,
-                "UpperWastes.NorthTP": StartingLocation.option_outerruins,
-                "WindtornRuins.RuinsTP": StartingLocation.option_innerruins,
-                "WillowsEnd.InnerTP": StartingLocation.option_willow,
-            }
             goals: set[str] = set()
             combat: set[str] = set()
 
             self.options.difficulty.value = difficulty_dict[slot_data["difficulty"]]
             self.options.glitches.value = slot_data["glitches"]
             self.options.unpopular.value = slot_data["unpopular"]
-            self.options.spawn.value = spawn_dict[slot_data["spawn_anchor"]]
+            # Overrides the random spawn selection done previously in generate_early
+            self.spawn_region_name = slot_data["spawn_anchor"]
             if slot_data["goal_trees"]:
                 goals.add("trees")
             if slot_data["goal_quests"]:
@@ -279,16 +326,20 @@ class WotWWorld(World):
             if slot_data["launch_frag"] != 0:
                 self.options.launch_fragments.value = True
                 self.options.fragments_count.value = slot_data["total_frag"]
-            self.options.door_rando.value = slot_data["door_rando"]
+            if slot_data["door_rando"]:  # The `door_rando` key is associated with a bool
+                # Coupled and decoupled behave the same for UT since the pairings are directly used
+                self.options.door_rando.value = RandomizeDoors.option_coupled
+            else:
+                self.options.door_rando.value = RandomizeDoors.option_disabled
             self.options.free_teleporters.value = slot_data["free_tp"]
-            self.options.regenerate_requirements.value = slot_data["regen"]
+            self.options.free_regenerate.value = slot_data["regen"]
 
     def create_regions(self) -> None:
         mworld = self.multiworld
         player = self.player
         options = self.options
 
-        for region_name in region_table:
+        for region_name in region_table.keys():
             region = Region(region_name, player, mworld)
             mworld.regions.append(region)
 
@@ -299,10 +350,10 @@ class WotWWorld(World):
         menu_region = Region("Menu", player, mworld)
         mworld.regions.append(menu_region)
 
-        spawn_name = spawn_names[options.spawn]
-        spawn_region = self.get_region(spawn_name)  # Links menu with spawn point
+        spawn_region = self.get_region(self.spawn_region_name)  # Links menu with spawn point
         menu_region.connect(spawn_region, rule=lambda state: True)
 
+        # ExternalStates is used in the generated file as a base point to handle the logic for a few options.
         menu_region.connect(self.get_region("ExternalStates"), rule=lambda state: True)
 
         # Create regions on locations, and create a location on top of it if needed
@@ -342,6 +393,28 @@ class WotWWorld(World):
 
         mworld.completion_condition[player] = lambda state: state.has("Victory", player)
 
+        # Universal Tracker support: link all the spawn items for free regardless of the spawn.
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            for i in range(1, 11):
+                name = f"Spawn item {i}"
+                spawn_loc = WotWLocation(player, name, self.location_name_to_id[name], menu_region)
+                menu_region.locations.append(spawn_loc)
+
+        if options.spawn != StartingLocation.option_vanilla:
+            # Spawn items are local, and exclude Launch from them (except in late game areas)
+            if self.spawn_area in ("WillowsEnd", "WeepingRidge"):
+                item_rule = lambda item: item.player == self.player and item.name != "Launch Fragment"
+            else:
+                item_rule = (lambda item: item.player == self.player
+                             and item.name not in ("Launch Fragment", "Launch"))
+            for i in range(1, spawn_data[self.spawn_area].items_amount + 1):  # Create all spawn item locations
+                name = f"Spawn item {i}"
+                spawn_loc = WotWLocation(player, name, self.location_name_to_id[name], menu_region)
+                menu_region.locations.append(spawn_loc)
+                # spawn_loc.progress_type = LocationProgressType.PRIORITY
+                spawn_loc.item_rule = item_rule
+
     def create_event(self, event: str, show_spoiler=False) -> None:
         """Create an event, place the item and attach it to an event region (all with the same name)."""
         event_region = Region(event, self.player, self.multiworld)
@@ -351,7 +424,7 @@ class WotWWorld(World):
         self.multiworld.regions.append(event_region)
         event_region.locations.append(event_location)
 
-    def create_item(self, name: str) -> "WotWItem":
+    def create_item(self, name: str) -> WotWItem:
         return WotWItem(name, item_table[name][1], item_table[name][2], player=self.player)
 
     def create_items(self) -> None:
@@ -362,9 +435,30 @@ class WotWWorld(World):
         removed_items: list[str] = []  # Remove all instances of the item
         pool: list[WotWItem] = []
 
-        for item in spawn_items(self, options.spawn.value, options.difficulty.value):  # Staring items
-            mworld.push_precollected(self.create_item(item))
-            skipped_items.append(item)
+        # Handle the random spawn items and early items
+        items_data = spawn_data[self.spawn_area]
+        # Put keystones in sphere 1
+        if not options.no_ks and items_data.early_ks > 0:
+            self.multiworld.early_items[self.player]["Keystone"] = items_data.early_ks
+        # Give health and regenerate to fulfill the region requirements
+        if options.difficulty == LogicDifficulty.option_moki:
+            spawn_hf = items_data.moki_hf
+            regen_spawn = bool(items_data.require_regen and not options.free_regenerate)
+        elif options.difficulty == LogicDifficulty.option_gorlek:
+            spawn_hf = items_data.gorlek_hf
+            regen_spawn = bool(items_data.require_regen and not options.free_regenerate)
+        elif options.difficulty == LogicDifficulty.option_kii:
+            spawn_hf = items_data.kii_hf
+            regen_spawn = False
+        else:  # options.difficulty == LogicDifficulty.option_unsafe
+            spawn_hf = 0
+            regen_spawn = False
+        for _ in range(spawn_hf):  # Give Health Fragments from the pool
+            mworld.push_precollected(self.create_item("Health Fragment"))
+            skipped_items.append("Health Fragment")
+        if regen_spawn:  # Give Regenerate if needed
+            mworld.push_precollected(self.create_item("Regenerate"))
+            skipped_items.append("Regenerate")
 
         for item, count in options.start_inventory.value.items():
             for _ in range(count):
@@ -479,17 +573,11 @@ class WotWWorld(World):
                 remaining_areas.remove(area)
 
                 relic_location: str = self.random.choice(location_regions[area])
+                # TODO check if location excluded, put a threshold and skip the area if it fails (careful, this changes logic requirements for goal)
                 while relic_location in self.empty_locations:  # Reroll if the location is excluded
                     relic_location = self.random.choice(location_regions[area])
                 self.get_location(relic_location).place_locked_item(self.create_item("Relic"))
                 self.relic_placements.append((area_data[area], self.location_name_to_id[relic_location]))
-
-        # Add some items to sphere 1
-        items, ks_amount = early_items(self, options.spawn.value)
-        for item in items:
-            self.multiworld.early_items[self.player][item] = 1
-        if not options.no_ks and ks_amount > 0:
-            self.multiworld.early_items[self.player]["Keystone"] = ks_amount
 
         # Add filler items to have the same number of items and locations
         extras = len(mworld.get_unfilled_locations(player=self.player)) - len(pool)
@@ -497,7 +585,7 @@ class WotWWorld(World):
 
         mworld.itempool += pool
 
-    def create_event_item(self, event: str) -> "WotWItem":
+    def create_event_item(self, event: str) -> WotWItem:
         return WotWItem(event, ItemClassification.progression, None, self.player)
 
     def get_filler_item_name(self) -> str:
@@ -507,6 +595,9 @@ class WotWWorld(World):
         """Connect the region to menu (if the connection does not already exist)."""
         if not self.multiworld.regions.entrance_cache[self.player].get(f"Menu -> {region}"):
             self.get_region("Menu").connect(self.get_region(region), rule=rule)
+
+    def precollect_event(self, event: str) -> None:
+        self.push_precollected(self.create_event_item(event))
 
     def set_rules(self) -> None:
         player = self.player
@@ -556,7 +647,7 @@ class WotWWorld(World):
                          "LowerWastes.BurrowTree",
                          "WeepingRidge.LaunchTree",
                          ]:
-                add_rule(victory_conn, lambda s, tree=tree: s.can_reach_region(tree, player))
+                add_rule(victory_conn, lambda s, tree_name=tree: s.can_reach_region(tree_name, player))  # TODO check
                 # The entrance checks for regions, so we need to add an indirect condition
                 self.multiworld.register_indirect_condition(self.get_region(tree), victory_conn)
 
@@ -583,13 +674,13 @@ class WotWWorld(World):
 
         # Rules for specific options
         if options.qol:
-            self.connect_to_menu("GladesTown.TuleySpawned")
+            self.precollect_event("GladesTown.TuleySpawned")
             self.get_region("WoodsEntry.LastTreeBranch").connect(self.get_region("WoodsEntry.TreeSeed"))
         if options.better_spawn:
-            self.connect_to_menu("MarshSpawn.HowlBurnt")
-            self.connect_to_menu("HowlsDen.BoneBarrier")
-            self.connect_to_menu("EastPools.EntryLever")
-            self.connect_to_menu("UpperWastes.LeverDoor")
+            self.precollect_event("MarshSpawn.HowlBurnt")
+            self.precollect_event("HowlsDen.BoneBarrier")
+            self.precollect_event("EastPools.EntryLever")
+            self.precollect_event("UpperWastes.LeverDoor")
 
         if "Everything" in options.no_combat or "Bosses" in options.no_combat:
             for entrance in ("ExternalStates -> SkipKwolok",
@@ -613,7 +704,7 @@ class WotWWorld(World):
                 set_rule(self.get_entrance(entrance), lambda s: True)
 
         if options.better_wellspring:
-            self.connect_to_menu("InnerWellspring.TopDoorOpen")
+            self.precollect_event("InnerWellspring.TopDoorOpen")
         if options.no_ks:
             for event in ("MarshSpawn.KeystoneDoor",
                           "HowlsDen.KeystoneDoor",
@@ -627,7 +718,7 @@ class WotWWorld(World):
                           "UpperDepths.CentralKeystoneDoor",
                           "UpperPools.KeystoneDoor",
                           "UpperWastes.KeystoneDoor"):
-                self.connect_to_menu(event)
+                self.precollect_event(event)
         if options.open_mode:
             for event in ("HowlsDen.BoneBarrier",
                           "MarshSpawn.ToOpherBarrier",
@@ -655,14 +746,14 @@ class WotWWorld(World):
                           "EastPools.CentralRoomPurpleWall",
                           "UpperPools.UpperWaterDrained",
                           "UpperPools.ButtonDoorAboveTree",):
-                self.connect_to_menu(event)
+                self.precollect_event(event)
         if options.no_rain:
             for event in ("HowlsDen.UpperLoopExitBarrier",
                           "HowlsDen.UpperLoopEntranceBarrier",
                           "HowlsDen.RainLifted",):
-                self.connect_to_menu(event)
+                self.precollect_event(event)
             if not options.better_spawn:
-                self.connect_to_menu("MarshSpawn.HowlBurnt")
+                self.precollect_event("MarshSpawn.HowlBurnt")
         if options.glades_done:
             for event in ("TuleyShop.LastTreeBranchRejected",
                           "TuleyShop.SelaFlowers",
@@ -671,15 +762,15 @@ class WotWWorld(World):
                           "TuleyShop.BlueMoon",
                           "TuleyShop.SpringPlants",
                           "TuleyShop.LastTree"):
-                self.connect_to_menu(event)
-            # This location is unaccessible without Ore, so it is manually collected in this case
+                self.precollect_event(event)
+            # This location is inaccessible without Ore, so it is manually collected in this case
             self.connect_to_menu("GladesTown.RebuildTheGlades")
             for event in ("GladesTown.BuildHuts",
                           "GladesTown.RoofsOverHeads",
                           "GladesTown.OnwardsAndUpwards",
                           "GladesTown.ClearThorns",
                           "GladesTown.CaveEntrance"):
-                self.connect_to_menu(event)
+                self.precollect_event(event)
 
         if options.quests == Quests.option_none:  # Open locations locked behind NPCs
             # Connecting the other quests is not necessary, as their event don't appear in logic for non-quest locations
@@ -688,22 +779,22 @@ class WotWWorld(World):
                           "GladesTown.FamilyReunionKey"):
                 self.connect_to_menu(quest + ".quest")
         if options.unpopular:
-            self.create_event("Unpopular")
-            self.connect_to_menu("Unpopular")
+            self.precollect_event("Unpopular")
 
         if options.free_teleporters:
-            self.connect_to_menu("RemoveTPLocks")
-        else:
-            self.connect_to_menu("RemoveTPLocks", rule=lambda s: s.has("Victory", player))
+            self.precollect_event("RemoveTPLocks")
+        # The location is connected to menu on victory in any case (for accessibility check, as precollect_event just
+        # grabs the event item and not the location)
+        self.connect_to_menu("RemoveTPLocks", rule=lambda s: s.has("Victory", player))
 
-        if options.regenerate_requirements <= options.difficulty:
-            self.connect_to_menu("RemoveRegionRegen")
-        else:
-            self.connect_to_menu("RemoveRegionRegen", rule=lambda s: s.has("Victory", player))
+        if options.free_regenerate:
+            self.precollect_event("RemoveRegionRegen")
+        # Same as above, the location must be reachable
+        self.connect_to_menu("RemoveRegionRegen", rule=lambda s: s.has("Victory", player))
 
 
     def connect_entrances(self) -> None:
-        if self.options.door_rando:
+        if self.options.door_rando != RandomizeDoors.option_disabled:
 
             # Universal Tracker support
             re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
@@ -712,31 +803,15 @@ class WotWWorld(World):
                 id_to_door_map = {door_id: door_name for door_name, door_id in doors_map.items()}
                 for entry_index, target_index in enumerate(slot_data["door_connections"]):
                     entry, target = id_to_door_map[entry_index + 1], id_to_door_map[target_index]
-                    self.get_region(entry).connect(self.get_region(target))
+                    # Remove ` (Door)` from the region name using the [:-7], to connect to the base region and not the
+                    # door. This matters in decoupled mode, since you cannot always reenter the door you just exited.
+                    self.get_region(entry).connect(self.get_region(target[:-7]))
 
-            else:
-                er_targets: list[Entrance] = []
-                exits: list[Entrance] = []
-                for door in doors_map:
-                    door_region: Region = self.get_region(door)
-                    er_target = door_region.create_er_target(door)
-                    er_target.randomization_type = EntranceType.TWO_WAY
-                    er_targets.append(er_target)
+            else:  # Non-UT: randomize entrances and fetch the output formatted for slot_data
+                coupled = self.options.door_rando == RandomizeDoors.option_coupled
+                self.er_door_ids = generate_er_connections(self, coupled=coupled)
 
-                    exit_entrance = door_region.create_exit(door)
-                    exit_entrance.randomization_type = EntranceType.TWO_WAY
-                    exits.append(exit_entrance)
-
-                er_results = randomize_entrances(self,
-                                                 coupled=True,
-                                                 target_group_lookup={0: [0]},
-                                                 er_targets=er_targets,
-                                                 exits=exits)
-
-                self.er_door_ids = [0] * 32  # This contains the ER results for slot_data
-                for (source_exit, target_entrance) in er_results.pairings:
-                    self.er_door_ids[doors_map[source_exit] - 1] = doors_map[target_entrance]
-        else:
+        else:  # door_rando not used: vanilla connections
             for entry, target in doors_vanilla:
                 self.get_region(entry).connect(self.get_region(target))
 
@@ -744,25 +819,6 @@ class WotWWorld(World):
     def fill_slot_data(self) -> dict[str, Any]:
         options = self.options
         logic_difficulty: list[str] = ["Moki", "Gorlek", "Kii", "Unsafe"]
-        coord: list[list[int | str]] = [
-            [-799, -4310, "MarshSpawn.Main"],
-            [-945, -4582, "MidnightBurrows.Teleporter"],
-            [-328, -4536, "HowlsDen.Teleporter"],
-            [-150, -4238, "EastHollow.Teleporter"],
-            [-307, -4153, "GladesTown.Teleporter"],
-            [-1308, -3675, "InnerWellspring.Teleporter"],
-            [611, -4162, "WoodsEntry.Teleporter"],
-            [1083, -4052, "WoodsMain.Teleporter"],
-            [-259, -3962, "LowerReach.Teleporter"],
-            [513, -4361, "UpperDepths.Teleporter"],
-            [-1316, -4153, "EastPools.Teleporter"],
-            [-1656, -4171, "WestPools.Teleporter"],
-            [1456, -3997, "LowerWastes.WestTP"],
-            [1992, -3902, "LowerWastes.EastTP"],
-            [2044, -3679, "UpperWastes.NorthTP"],
-            [2130, -3984, "WindtornRuins.RuinsTP"],
-            [422, -3864, "WillowsEnd.InnerTP"]
-        ]
         icons_paths: dict[str, str] = {}
         shops: list[str] = ["TwillenShop.Overcharge",
                             "TwillenShop.TripleJump",
@@ -807,19 +863,25 @@ class WotWWorld(World):
         if not options.zone_hints:
             location_flags += 0b100000
 
+        spawn_items_amount = (int(spawn_data[self.spawn_area].items_amount)
+                              if options.spawn != StartingLocation.option_vanilla
+                              else 0)
+
         slot_data: dict[str, Any] = {
             "difficulty": logic_difficulty[options.difficulty.value],
             "glitches": bool(options.glitches.value),
             "unpopular": bool(options.unpopular),
-            "spawn_x": coord[options.spawn.value][0],
-            "spawn_y": coord[options.spawn.value][1],
-            "spawn_anchor": coord[options.spawn.value][2],
+            "spawn_x": region_table[self.spawn_region_name][1],
+            "spawn_y": region_table[self.spawn_region_name][2],
+            "spawn_anchor": self.spawn_region_name,
+            "spawn_amount": spawn_items_amount,
             "goal_trees": bool("trees" in options.goal),
             "goal_quests": bool("quests" in options.goal),
             "goal_wisps": bool("wisps" in options.goal),
             "goal_relics": bool("relics" in options.goal),
             "hard": bool(options.hard_mode.value),
             "qol": bool(options.qol.value),
+            "no_cs": bool(options.skip_cutscenes.value),
             "shrine_hints": bool(options.hints.value and "shrines" not in options.no_combat),
             "trial_hints": bool(options.hints.value and not options.no_trials),
             "zone_hints": bool(options.zone_hints.value),
@@ -840,15 +902,16 @@ class WotWWorld(World):
             "glades_done": bool(options.glades_done),
             "shop_icons": icons_paths,
             "bonus": bool(options.extra_bonus or options.skill_upgrade),
-            "door_rando": bool(options.door_rando),
+            "door_rando": bool(options.door_rando != RandomizeDoors.option_disabled),
             "door_connections": self.er_door_ids,
+            "decoupled": bool(options.door_rando == RandomizeDoors.option_decoupled),
             "relic_locs": self.relic_placements,
             "launch_frag": options.fragments_required.value if options.launch_fragments else 0,
             "total_frag": options.fragments_count.value,  # Only used by UT
-            "free_tp": options.free_teleporters.value,
-            "regen": options.regenerate_requirements.value,
+            "free_tp": bool(options.free_teleporters.value),
+            "regen": bool(options.free_regenerate.value),
             "death_link": int(options.death_link.value),
-            "ap_version": 2,
+            "ap_version": 3,
             "location_flags": location_flags,
         }
 

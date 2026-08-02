@@ -1,0 +1,23 @@
+#!/usr/bin/python3
+
+# This program is free software. It comes without any warranty, to
+# the extent permitted by applicable law. You can redistribute it
+# and/or modify it under the terms of the Do What The Fuck You Want
+# To Public License, Version 2, as published by Sam Hocevar. See
+# the COPYING file included with this distribution or
+# http://sam.zoy.org/wtfpl/COPYING for more details.
+
+import sys
+import os
+from bps.apply import apply_to_files
+
+source = open(sys.argv[1], 'rb')
+target = open(sys.argv[2], 'wb')
+patch = open(sys.argv[3], 'rb')
+
+try:
+	apply_to_files(patch, source, target)
+except:
+	target.close()
+	os.unlink(sys.argv[2])
+	raise

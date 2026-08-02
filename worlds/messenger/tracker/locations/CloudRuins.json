@@ -188,5 +188,25 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Cloud Ruins - Transitions",
+    "children": [
+      {
+        "name": "Cloud Ruins - Left exit",
+        "sections": [
+          {
+            "name": "Cloud Ruins - Left exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Cloud Ruins",
+            "x": 34,
+            "y": 183
+          }
+        ]
+      }
+    ]
   }
 ]

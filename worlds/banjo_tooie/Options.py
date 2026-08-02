@@ -248,6 +248,23 @@ class RandomizeGreenRelics(DefaultOnToggle):
     display_name = "Randomize Green Relics"
 
 
+class GreenRelicsChamberRequirement(Range):
+    """Green relics required to enter Targitzan's Slightly Sacred Chamber."""
+    display_name = "Targitzan Slightly Sacred Chamber Green Relic Requirement"
+    range_start = 1
+    range_end = 24
+    default = 10
+
+
+class GreenRelicsBossRequirement(Range):
+    """Green relics required to enter Targitzan's Boss Chamber.
+    Make sure this value is GREATER than Targitzan's Slightly Sacred Chamber Requirement"""
+    display_name = "Targitzan Boss Green Relic Requirement"
+    range_start = 2
+    range_end = 25
+    default = 20
+
+
 class RandomizeBeans(DefaultOnToggle):
     """CCL Beans are randomized."""
     display_name = "Randomize Beans"
@@ -753,6 +770,8 @@ class BanjoTooieOptions(PerGameCommonOptions):
     honeyb_rewards: EnableHoneyBRewards
     randomize_tickets: RandomizeBigTentTickets
     randomize_green_relics: RandomizeGreenRelics
+    green_relics_chamber_requirement: GreenRelicsChamberRequirement
+    green_relics_boss_requirement: GreenRelicsBossRequirement
     randomize_beans: RandomizeBeans
     randomize_glowbos: RandomizeGlowbos
     randomize_stop_n_swap: RandomizeStopnSwap
@@ -848,6 +867,8 @@ bt_option_groups: List[OptionGroup] = [
         EnableHoneyBRewards,
         RandomizeBigTentTickets,
         RandomizeGreenRelics,
+        GreenRelicsChamberRequirement,
+        GreenRelicsBossRequirement,
         RandomizeBeans,
         RandomizeGlowbos,
         RandomizeStopnSwap,

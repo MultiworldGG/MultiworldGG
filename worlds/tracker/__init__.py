@@ -22,7 +22,7 @@ def launch_client(*args):
 
 from Utils import tuplize_version
 
-UT_VERSION = "v0.3.2"
+UT_VERSION = "v0.3.3"
 
 UT_VERSION_TUPLE = tuplize_version(UT_VERSION[1:].split("-",1)[0])
 
@@ -54,6 +54,12 @@ class DeferredEntranceMode(Enum):
     forced = "on"
     default = "default"
     disabled = "off"
+
+class TrackerException(Exception):
+
+    def __init__(self, *args: object, message:str) -> None:
+        self.message = message
+        super().__init__(*args)
 
 class TrackerSettings(Group):
     class TrackerPlayersPath(UserFolderPath):

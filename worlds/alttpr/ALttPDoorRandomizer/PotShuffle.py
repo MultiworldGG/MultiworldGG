@@ -1,0 +1,1094 @@
+from . import RaceRandom as random
+
+from collections import defaultdict
+
+from .BaseClasses import PotItem, Pot, PotFlags, CrystalBarrier, LocationType, RegionType
+from .Utils import int16_as_bytes, pc_to_snes, snes_to_pc
+
+from .source.dungeon.RoomObject import RoomObject, Shuffled_Pot
+
+movable_switch_rooms = defaultdict(lambda: [],
+                                   {'PoD Stalfos Basement': ['PoD Basement Ledge'],
+                                    'Thieves Attic Switch': ['Thieves Attic Hint'],
+                                    'Mire Hub Switch': ['Mire Hub', 'Mire Hub Right']})
+
+invalid_key_rooms = {
+    'Swamp Big Key Ledge',
+    'Swamp Trench 2 Departure',
+    'Desert Wall Slide',
+    'Skull X Room',  # only required for 100% locations
+    'GT Map Room',
+    'GT Warp Maze - Mid Section'
+}
+
+vanilla_pots = {
+    2: [Pot(80, 6, PotItem.Nothing, 'Sewers Yet More Rats', PotFlags.LowerRegion, obj=RoomObject(0x0A8B57, [0xA3, 0x33, 0xFA])),
+        Pot(80, 8, PotItem.Nothing, 'Sewers Yet More Rats', PotFlags.LowerRegion, obj=RoomObject(0x0A8B5A, [0xA3, 0x43, 0xFA])),
+        Pot(44, 8, PotItem.Nothing, 'Sewers Yet More Rats', PotFlags.LowerRegion, obj=RoomObject(0x0A8B5D, [0x5B, 0x43, 0xFA])),
+        Pot(44, 10, PotItem.Nothing, 'Sewers Yet More Rats', PotFlags.LowerRegion, obj=RoomObject(0x0A8B60, [0x5B, 0x53, 0xFA]))],
+    4: [Pot(162, 25, PotItem.Nothing, 'TR Dash Room', obj=RoomObject(0x1FE220, [0x47, 0xCF, 0xFA])),
+        Pot(152, 25, PotItem.Nothing, 'TR Dash Room', obj=RoomObject(0x1FE21D, [0x33, 0xCF, 0xFA])),
+        Pot(152, 22, PotItem.Nothing, 'TR Dash Room', obj=RoomObject(0x1FE217, [0x33, 0xB7, 0xFA])),
+        Pot(162, 22, PotItem.Nothing, 'TR Dash Room', obj=RoomObject(0x1FE21A, [0x47, 0xB7, 0xFA])),
+        Pot(204, 19, PotItem.Bomb, 'TR Tongue Pull', obj=RoomObject(0x1FE241, [0x9B, 0x9F, 0xFA])),
+        Pot(240, 19, PotItem.Bomb, 'TR Tongue Pull', obj=RoomObject(0x1FE244, [0xE3, 0x9F, 0xFA]))],
+    9: [Pot(12, 4, PotItem.OneRupee, 'PoD Shooter Room', obj=RoomObject(0x1FACEC, [0x1B, 0x23, 0xFA])),
+        Pot(48, 4, PotItem.Heart, 'PoD Shooter Room', obj=RoomObject(0x1FACEF, [0x63, 0x23, 0xFA])),
+        Pot(12, 12, PotItem.Switch, 'PoD Shooter Room', obj=RoomObject(0x1FACF5, [0x1B, 0x63, 0xFA]))],
+    0xa: [Pot(96, 8, PotItem.Heart, 'PoD Stalfos Basement', obj=RoomObject(0x1FA6EC, [0xC3, 0x43, 0xFA])),
+          Pot(104, 8, PotItem.Heart, 'PoD Stalfos Basement', obj=RoomObject(0x1FA6F2, [0xD3, 0x43, 0xFA])),
+          Pot(204, 11, PotItem.Switch, 'PoD Stalfos Basement', obj=RoomObject(0x1FA6FB, [0x9B, 0x5F, 0xFA])),
+          Pot(100, 9, PotItem.Nothing, 'PoD Stalfos Basement', obj=RoomObject(0x1FA6EF, [0xCB, 0x4B, 0xFA])),
+          Pot(100, 7, PotItem.Nothing, 'PoD Stalfos Basement', obj=RoomObject(0x1FA6F5, [0xCB, 0x3B, 0xFA])),
+          Pot(156, 17, PotItem.Bomb, 'PoD Basement Ledge', PotFlags.SwitchLogicChange, obj=RoomObject(0x1FA6E6, [0x3B, 0x8F, 0xFA])),
+          Pot(160, 17, PotItem.FiveArrows, 'PoD Basement Ledge', PotFlags.SwitchLogicChange, obj=RoomObject(0x1FA6E9, [0x43, 0x8F, 0xFA]))],
+    0xb: [Pot(202, 3, PotItem.Bomb, 'PoD Dark Pegs Left', obj=RoomObject(0x1FAB48, [0x97, 0x1F, 0xFA])),
+          Pot(202, 12, PotItem.Bomb, 'PoD Dark Pegs Left', obj=RoomObject(0x1FAB4E, [0x97, 0x67, 0xFA]))],
+    0x11: [Pot(152, 19, PotItem.Nothing, 'Sewers Secret Room', obj=RoomObject(0x0A8C07, [0x33, 0x9F, 0xFA])),
+           Pot(152, 15, PotItem.Nothing, 'Sewers Secret Room', obj=RoomObject(0x0A8BF5, [0x33, 0x7F, 0xFA])),
+           Pot(144, 15, PotItem.Heart, 'Sewers Secret Room', obj=RoomObject(0x0A8BF2, [0x23, 0x7F, 0xFA])),
+           Pot(160, 15, PotItem.Heart, 'Sewers Secret Room', obj=RoomObject(0x0A8BF8, [0x43, 0x7F, 0xFA])),
+           Pot(144, 19, PotItem.Heart, 'Sewers Secret Room', obj=RoomObject(0x0A8C04, [0x23, 0x9F, 0xFA])),
+           Pot(160, 19, PotItem.Heart, 'Sewers Secret Room', obj=RoomObject(0x0A8C0A, [0x43, 0x9F, 0xFA]))],
+    0x15: [Pot(96, 4, PotItem.Bomb, 'TR Pipe Pit', obj=RoomObject(0x1FE551, [0xC3, 0x23, 0xFA])),
+           Pot(100, 4, PotItem.SmallMagic, 'TR Pipe Pit', obj=RoomObject(0x1FE554, [0xCB, 0x23, 0xFA])),
+           Pot(104, 4, PotItem.Heart, 'TR Pipe Pit', obj=RoomObject(0x1FE557, [0xD3, 0x23, 0xFA])),
+           Pot(108, 4, PotItem.SmallMagic, 'TR Pipe Pit', obj=RoomObject(0x1FE55A, [0xDB, 0x23, 0xFA])),
+           Pot(112, 4, PotItem.FiveArrows, 'TR Pipe Pit', obj=RoomObject(0x1FE55D, [0xE3, 0x23, 0xFA])),
+           Pot(12, 6, PotItem.OneRupee, 'TR Pipe Pit', obj=RoomObject(0x1FE548, [0x1B, 0x33, 0xFA])),
+           Pot(16, 6, PotItem.FiveArrows, 'TR Pipe Pit', obj=RoomObject(0x1FE54B, [0x23, 0x33, 0xFA])),
+           Pot(20, 6, PotItem.FiveRupees, 'TR Pipe Pit', obj=RoomObject(0x1FE54E, [0x2B, 0x33, 0xFA])),
+           Pot(70, 11, PotItem.BigMagic, 'TR Pipe Ledge', obj=RoomObject(0x1FE545, [0x8F, 0x5B, 0xFA]))],
+    0x16: [Pot(188, 3, PotItem.Heart, 'Swamp I', obj=RoomObject(0x1FA09C, [0x7B, 0x1F, 0xFA])),
+           Pot(192, 3, PotItem.Heart, 'Swamp I', obj=RoomObject(0x1FA09F, [0x83, 0x1F, 0xFA])),
+           Pot(188, 4, PotItem.SmallMagic, 'Swamp I', obj=RoomObject(0x1FA0A2, [0x7B, 0x27, 0xFA])),
+           Pot(192, 4, PotItem.SmallMagic, 'Swamp I', obj=RoomObject(0x1FA0A5, [0x83, 0x27, 0xFA])),
+           Pot(188, 5, PotItem.FiveArrows, 'Swamp I', obj=RoomObject(0x1FA0A8, [0x7B, 0x2F, 0xFA])),
+           Pot(192, 5, PotItem.FiveArrows, 'Swamp I', obj=RoomObject(0x1FA0AB, [0x83, 0x2F, 0xFA])),
+           Pot(188, 6, PotItem.Bomb, 'Swamp I', obj=RoomObject(0x1FA0AE, [0x7B, 0x37, 0xFA])),
+           Pot(192, 6, PotItem.Bomb, 'Swamp I', obj=RoomObject(0x1FA0B1, [0x83, 0x37, 0xFA])),
+           Pot(240, 19, PotItem.Key, 'Swamp Waterway', obj=RoomObject(0x1FA0D8, [0xE3, 0x9F, 0xFA]))],
+    0x17: [Pot(100, 13, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCCE0, [0xCB, 0x6B, 0xFA])),
+           Pot(100, 14, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCCE3, [0xCB, 0x73, 0xFA])),
+           Pot(100, 15, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCCE6, [0xCB, 0x7B, 0xFA])),
+           Pot(100, 16, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCCE9, [0xCB, 0x83, 0xFA])),
+           Pot(100, 17, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCCEC, [0xCB, 0x8B, 0xFA])),
+           Pot(100, 18, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCCEF, [0xCB, 0x93, 0xFA])),
+           Pot(104, 13, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCCF2, [0xD3, 0x6B, 0xFA])),
+           Pot(104, 14, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCCF5, [0xD3, 0x73, 0xFA])),
+           Pot(104, 15, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCCF8, [0xD3, 0x7B, 0xFA])),
+           Pot(104, 16, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCCFB, [0xD3, 0x83, 0xFA])),
+           Pot(104, 17, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCCFE, [0xD3, 0x8B, 0xFA])),
+           Pot(104, 18, PotItem.Heart, 'Hera 5F Pot Block', obj=RoomObject(0x1FCD01, [0xD3, 0x93, 0xFA]))],
+    0x1A: [Pot(28, 5, PotItem.Bomb, 'PoD Falling Bridge Ledge', obj=RoomObject(0x1FA60D, [0x3B, 0x2B, 0xFA])),
+           Pot(32, 5, PotItem.Bomb, 'PoD Falling Bridge Ledge', obj=RoomObject(0x1FA610, [0x43, 0x2B, 0xFA])),
+           Pot(28, 27, PotItem.Bomb, 'PoD Falling Bridge', obj=RoomObject(0x1FA5F5, [0x3B, 0xDB, 0xFA])),
+           Pot(32, 27, PotItem.Bomb, 'PoD Falling Bridge', obj=RoomObject(0x1FA5F8, [0x43, 0xDB, 0xFA])),
+           Pot(232, 19, PotItem.Nothing, 'PoD Harmless Hellway', obj=RoomObject(0x1FA64C, [0xD3, 0x9F, 0xFA])),
+           Pot(212, 19, PotItem.Nothing, 'PoD Harmless Hellway', obj=RoomObject(0x1FA649, [0xAB, 0x9F, 0xFA]))],
+    0x1B: [Pot(20, 23, PotItem.FiveArrows, 'PoD Mimics 2', obj=RoomObject(0x1FAAFE, [0x2B, 0xBB, 0xFA])),
+           Pot(40, 23, PotItem.FiveArrows, 'PoD Mimics 2', obj=RoomObject(0x1FAB01, [0x53, 0xBB, 0xFA]))],
+    0x1E: [Pot(84, 9, PotItem.Bomb, 'Ice Bomb Drop', obj=RoomObject(0x1FC325, [0xAB, 0x4B, 0xFA]))],
+    0x1F: [Pot(28, 25, PotItem.Switch, 'Ice Pengator Switch', obj=RoomObject(0x1FC38B, [0x3B, 0xCB, 0xFA])),
+           Pot(28, 23, PotItem.Nothing, 'Ice Pengator Switch', obj=RoomObject(0x1FC388, [0x3B, 0xBB, 0xFA])),
+           Pot(86, 26, PotItem.Nothing, 'Ice Big Key', obj=RoomObject(0x1FC397, [0xAF, 0xD3, 0xFA])),
+           Pot(86, 27, PotItem.Nothing, 'Ice Big Key', obj=RoomObject(0x1FC39A, [0xAF, 0xDB, 0xFA]))],
+    0x21: [Pot(160, 20, PotItem.Nothing, 'Sewers Dark Aquabats', obj=RoomObject(0x0A8C71, [0x43, 0xA7, 0xFA])),
+           Pot(168, 24, PotItem.SmallMagic, 'Sewers Dark Aquabats', obj=RoomObject(0x0A8C7A, [0x53, 0xC7, 0xFA])),
+           Pot(48, 28, PotItem.Heart, 'Sewers Dark Aquabats', obj=RoomObject(0x0A8C80, [0x63, 0xE3, 0xFA])),
+           Pot(82, 28, PotItem.SmallMagic, 'Sewers Dark Aquabats', obj=RoomObject(0x0A8C7D, [0xA7, 0xE3, 0xFA])),
+           Pot(100, 28, PotItem.Nothing, 'Sewers Dark Aquabats', obj=RoomObject(0x0A8C74, [0xCB, 0xE3, 0xFA])),
+           Pot(104, 28, PotItem.Nothing, 'Sewers Dark Aquabats', obj=RoomObject(0x0A8C77, [0xD3, 0xE3, 0xFA]))],
+    0x23: [Pot(86, 26, PotItem.OneRupee, 'TR Lazy Eyes', obj=RoomObject(0x1FED09, [0xAF, 0xD3, 0xFA])),
+           Pot(90, 26, PotItem.Heart, 'TR Lazy Eyes', obj=RoomObject(0x1FED0C, [0xB7, 0xD3, 0xFA])),
+           Pot(94, 26, PotItem.OneRupee, 'TR Lazy Eyes', obj=RoomObject(0x1FED0F, [0xBF, 0xD3, 0xFA])),
+           Pot(98, 26, PotItem.Bomb, 'TR Lazy Eyes', obj=RoomObject(0x1FED12, [0xC7, 0xD3, 0xFA])),
+           Pot(102, 26, PotItem.OneRupee, 'TR Lazy Eyes', obj=RoomObject(0x1FED15, [0xCF, 0xD3, 0xFA]))],
+    0x24: [Pot(12, 4, PotItem.FiveRupees, 'TR Twin Pokeys', obj=RoomObject(0x1FE646, [0x1B, 0x23, 0xFA])),
+           Pot(48, 4, PotItem.Heart, 'TR Twin Pokeys', obj=RoomObject(0x1FE649, [0x63, 0x23, 0xFA])),
+           Pot(12, 12, PotItem.SmallMagic, 'TR Twin Pokeys', obj=RoomObject(0x1FE64C, [0x1B, 0x63, 0xFA])),
+           Pot(48, 12, PotItem.OneRupee, 'TR Twin Pokeys', obj=RoomObject(0x1FE64F, [0x63, 0x63, 0xFA]))],
+    0x26: [Pot(28, 4, PotItem.Bomb, 'Swamp Shooters', obj=RoomObject(0x1F9BDD, [0x3B, 0x23, 0xFA])),
+           Pot(12, 8, PotItem.SmallMagic, 'Swamp Shooters', obj=RoomObject(0x1F9BDA, [0x1B, 0x43, 0xFA])),
+           Pot(150, 19, PotItem.Switch, 'Swamp Push Statue', obj=RoomObject(0x1F9C46, [0x2F, 0x9F, 0xFA])),
+           Pot(22, 26, PotItem.FiveRupees, 'Swamp Push Statue', obj=RoomObject(0x1F9C49, [0x2F, 0xD3, 0xFA])),
+           Pot(220, 26, PotItem.FiveArrows, 'Swamp Push Statue', PotFlags.SwitchLogicChange, obj=RoomObject(0x1F9C52, [0xBB, 0xD7, 0xFA]))],
+    0x27: [Pot(214, 19, PotItem.Nothing, 'Hera 4F', obj=RoomObject(0x1FCE19, [0xAF, 0x9F, 0xFA])),
+           Pot(214, 20, PotItem.Nothing, 'Hera 4F', obj=RoomObject(0x1FCE1C, [0xAF, 0xA7, 0xFA])),
+           Pot(166, 20, PotItem.Bomb, 'Hera 4F', obj=RoomObject(0x1FCE28, [0x4F, 0xA7, 0xFA])),
+           Pot(214, 21, PotItem.Heart, 'Hera 4F', obj=RoomObject(0x1FCE1F, [0xAF, 0xAF, 0xFA])),
+           Pot(40, 28, PotItem.OneRupee, 'Hera 4F', obj=RoomObject(0x1FCE4C, [0x53, 0xE3, 0xFA])),
+           Pot(44, 28, PotItem.OneRupee, 'Hera 4F', obj=RoomObject(0x1FCE4F, [0x5B, 0xE3, 0xFA])),
+           Pot(80, 28, PotItem.FiveRupees, 'Hera 4F', obj=RoomObject(0x1FCE52, [0xA3, 0xE3, 0xFA])),
+           Pot(84, 28, PotItem.FiveRupees, 'Hera 4F', obj=RoomObject(0x1FCE55, [0xAB, 0xE3, 0xFA])),
+           Pot(102, 17, PotItem.Nothing, 'Hera 4F', obj=RoomObject(0x1FCE07, [0xCF, 0x8B, 0xFA])),
+           Pot(98, 17, PotItem.Nothing, 'Hera 4F', obj=RoomObject(0x1FCE04, [0xC7, 0x8B, 0xFA])),
+           Pot(106, 17, PotItem.Nothing, 'Hera 4F', obj=RoomObject(0x1FCE0A, [0xD7, 0x8B, 0xFA])),
+           Pot(166, 21, PotItem.Nothing, 'Hera 4F', obj=RoomObject(0x1FCE2B, [0x4F, 0xAF, 0xFA])),
+           Pot(166, 19, PotItem.Nothing, 'Hera 4F', obj=RoomObject(0x1FCE25, [0x4F, 0x9F, 0xFA])),
+           Pot(92, 12, PotItem.Nothing, 'Hera 4F', obj=RoomObject(0x1FCDF8, [0xBB, 0x63, 0xFA])),
+           Pot(160, 12, PotItem.Nothing, 'Hera 4F', obj=RoomObject(0x1FCDE0, [0x43, 0x67, 0xFA]))],
+    0x2A: [Pot(80, 12, PotItem.OneRupee, 'PoD Arena Main', obj=RoomObject(0x1FA57F, [0xA3, 0x63, 0xFA])),
+           Pot(80, 19, PotItem.Heart, 'PoD Arena Main', obj=RoomObject(0x1FA582, [0xA3, 0x9B, 0xFA]))],
+    0x2B: [Pot(16, 5, PotItem.Heart, 'PoD Sexy Statue', obj=RoomObject(0x1FAA14, [0x23, 0x2B, 0xFA])),
+           Pot(44, 5, PotItem.Switch, 'PoD Sexy Statue', obj=RoomObject(0x1FAA1D, [0x5B, 0x2B, 0xFA])),
+           Pot(16, 6, PotItem.Heart, 'PoD Sexy Statue', obj=RoomObject(0x1FAA17, [0x23, 0x33, 0xFA])),
+           Pot(44, 6, PotItem.Bomb, 'PoD Sexy Statue', obj=RoomObject(0x1FAA20, [0x5B, 0x33, 0xFA])),
+           Pot(16, 7, PotItem.Heart, 'PoD Sexy Statue', obj=RoomObject(0x1FAA1A, [0x23, 0x3B, 0xFA])),
+           Pot(44, 7, PotItem.Bomb, 'PoD Sexy Statue', obj=RoomObject(0x1FAA23, [0x5B, 0x3B, 0xFA])),
+           Pot(146, 21, PotItem.Bomb, 'PoD Map Balcony', obj=RoomObject(0x1FAA44, [0x27, 0xAF, 0xFA])),
+           Pot(170, 21, PotItem.FiveArrows, 'PoD Map Balcony', obj=RoomObject(0x1FAA4A, [0x57, 0xAF, 0xFA])),
+           Pot(146, 22, PotItem.Bomb, 'PoD Map Balcony', obj=RoomObject(0x1FAA47, [0x27, 0xB7, 0xFA])),
+           Pot(170, 22, PotItem.FiveArrows, 'PoD Map Balcony', obj=RoomObject(0x1FAA4D, [0x57, 0xB7, 0xFA]))],
+    0x2C: [Pot(108, 24, PotItem.Heart, 'Hookshot Cave (Middle)', obj=RoomObject(0x0A889F, [0xDB, 0xC3, 0xFA])),
+           Pot(112, 24, PotItem.Heart, 'Hookshot Cave (Middle)', obj=RoomObject(0x0A88A2, [0xE3, 0xC3, 0xFA]))],
+    0x2F: [Pot(28, 7, PotItem.Heart, 'Kakariko Well (back)', obj=RoomObject(0x0A8744, [0x3B, 0x3B, 0xFA])),
+           Pot(32, 7, PotItem.Heart, 'Kakariko Well (back)', obj=RoomObject(0x0A8747, [0x43, 0x3B, 0xFA])),
+           Pot(28, 9, PotItem.FiveRupees, 'Kakariko Well (back)', obj=RoomObject(0x0A874A, [0x3B, 0x4B, 0xFA])),
+           Pot(32, 9, PotItem.FiveRupees, 'Kakariko Well (back)', obj=RoomObject(0x0A874D, [0x43, 0x4B, 0xFA])),
+           Pot(172, 19, PotItem.FiveRupees, 'Kakariko Well (top)', obj=RoomObject(0x0A8762, [0x5B, 0x9F, 0xFA])),
+           Pot(180, 19, PotItem.FiveRupees, 'Kakariko Well (top)', obj=RoomObject(0x0A8765, [0x6B, 0x9F, 0xFA])),
+           Pot(104, 27, PotItem.Heart, 'Kakariko Well (bottom)', obj=RoomObject(0x0A8771, [0xD3, 0xDB, 0xFA])),
+           Pot(104, 28, PotItem.Heart, 'Kakariko Well (bottom)', obj=RoomObject(0x0A8774, [0xD3, 0xE3, 0xFA]))],
+    0x31: [Pot(92, 28, PotItem.Bomb, 'Hera Beetles', obj=RoomObject(0x1FCF10, [0xBB, 0xE3, 0xFA])),
+           Pot(96, 28, PotItem.Nothing, 'Hera Beetles', obj=RoomObject(0x1FCF13, [0xC3, 0xE3, 0xFA]))],
+    0x32: [Pot(28, 13, PotItem.SmallMagic, 'Sewers Dark Cross', obj=RoomObject(0x0A8E12, [0x3B, 0x6B, 0xFA]))],
+    0x34: [Pot(78, 8, PotItem.FiveRupees, 'Swamp Barrier Ledge', obj=RoomObject(0x1F98A3, [0x9F, 0x43, 0xFA])),
+           Pot(92, 8, PotItem.FiveRupees, 'Swamp Barrier Ledge', obj=RoomObject(0x1F98A6, [0xBB, 0x43, 0xFA]))],
+    0x35: [Pot(60, 6, PotItem.Key, 'Swamp Trench 2 Alcove', obj=RoomObject(0x1F979A, [0x7B, 0x33, 0xFA])),
+           Pot(20, 8, PotItem.FiveRupees, 'Swamp Big Key Ledge', obj=RoomObject(0x1F9725, [0x2B, 0x43, 0xFA])),
+           Pot(24, 8, PotItem.FiveRupees, 'Swamp Big Key Ledge', obj=RoomObject(0x1F9728, [0x33, 0x43, 0xFA])),
+           Pot(28, 8, PotItem.FiveRupees, 'Swamp Big Key Ledge', obj=RoomObject(0x1F972B, [0x3B, 0x43, 0xFA])),
+           Pot(32, 8, PotItem.FiveRupees, 'Swamp Big Key Ledge', obj=RoomObject(0x1F972E, [0x43, 0x43, 0xFA])),
+           Pot(36, 8, PotItem.FiveRupees, 'Swamp Big Key Ledge', obj=RoomObject(0x1F9731, [0x4B, 0x43, 0xFA])),
+           Pot(48, 20, PotItem.Heart, 'Swamp Trench 2 Departure', obj=RoomObject(0x1F9764, [0x63, 0xA3, 0xFA])),
+           Pot(76, 23, PotItem.Nothing, 'Swamp Trench 2 Pots', obj=RoomObject(0x1F976A, [0x9B, 0xBB, 0xFA])),
+           Pot(88, 23, PotItem.Nothing, 'Swamp Trench 2 Pots', obj=RoomObject(0x1F9776, [0xB3, 0xBB, 0xFA])),
+           Pot(100, 27, PotItem.Nothing, 'Swamp Trench 2 Pots', obj=RoomObject(0x1F9773, [0xCB, 0xDB, 0xFA])),
+           Pot(242, 28, PotItem.Nothing, 'Swamp Trench 2 Pots', obj=RoomObject(0x1F9779, [0xE7, 0xE7, 0xFA])),
+           Pot(240, 22, PotItem.Heart, 'Swamp Trench 2 Pots', obj=RoomObject(0x1F9770, [0xE3, 0xB7, 0xFA])),
+           Pot(76, 28, PotItem.Heart, 'Swamp Trench 2 Pots', obj=RoomObject(0x1F976D, [0x9B, 0xE3, 0xFA]))],
+    0x36: [Pot(108, 4, PotItem.Bomb, 'Swamp Hub Dead Ledge', obj=RoomObject(0x1F9631, [0xDB, 0x23, 0xFA])),
+           Pot(112, 4, PotItem.FiveRupees, 'Swamp Hub Dead Ledge', obj=RoomObject(0x1F9634, [0xE3, 0x23, 0xFA])),
+           Pot(10, 16, PotItem.Heart, 'Swamp Hub Side Ledges', obj=RoomObject(0x1F9625, [0x17, 0x83, 0xFA])),
+           Pot(154, 15, PotItem.Nothing, 'Swamp Hub Side Ledges', obj=RoomObject(0x1F9628, [0x37, 0x7F, 0xFA])),
+           Pot(114, 16, PotItem.Key, 'Swamp Hub Side Ledges', obj=RoomObject(0x1F963A, [0xE7, 0x83, 0xFA])),
+           Pot(222, 15, PotItem.Nothing, 'Swamp Hub Side Ledges', obj=RoomObject(0x1F9637, [0xBF, 0x7F, 0xFA])),
+           Pot(188, 5, PotItem.Nothing, 'Swamp Hub North Ledge', obj=RoomObject(0x1F962B, [0x7B, 0x2F, 0xFA])),
+           Pot(192, 5, PotItem.Nothing, 'Swamp Hub North Ledge', obj=RoomObject(0x1F962E, [0x83, 0x2F, 0xFA]))],
+    0x37: [Pot(60, 6, PotItem.Key, 'Swamp Trench 1 Alcove', obj=RoomObject(0x1F944A, [0x7B, 0x33, 0xFA])),
+           Pot(48, 20, PotItem.Nothing, 'Swamp Trench 1 Key Ledge', obj=RoomObject(0x1F9423, [0x63, 0xA3, 0xFA]))],
+    0x38: [Pot(164, 12, PotItem.Bomb, 'Swamp Pot Row', obj=RoomObject(0x1F933A, [0x4B, 0x67, 0xFA])),
+           Pot(164, 13, PotItem.FiveRupees, 'Swamp Pot Row', obj=RoomObject(0x1F933D, [0x4B, 0x6F, 0xFA])),
+           Pot(164, 18, PotItem.Bomb, 'Swamp Pot Row', obj=RoomObject(0x1F9340, [0x4B, 0x97, 0xFA])),
+           Pot(164, 19, PotItem.Key, 'Swamp Pot Row', obj=RoomObject(0x1F9343, [0x4B, 0x9F, 0xFA]))],
+    0x39: [Pot(12, 20, PotItem.Heart, 'Skull Spike Corner', obj=RoomObject(0x1FC14A, [0x1B, 0xA3, 0xFA])),
+           Pot(48, 28, PotItem.FiveArrows, 'Skull Spike Corner', obj=RoomObject(0x1FC153, [0x63, 0xE3, 0xFA])),
+           Pot(100, 22, PotItem.SmallMagic, 'Skull Final Drop', obj=RoomObject(0x1FC168, [0xCB, 0xB3, 0xFA])),
+           Pot(100, 26, PotItem.FiveArrows, 'Skull Final Drop', obj=RoomObject(0x1FC16B, [0xCB, 0xD3, 0xFA]))],
+    0x3C: [Pot(24, 8, PotItem.SmallMagic, 'Hookshot Cave (Hook Islands)', obj=RoomObject(0x0A8979, [0x33, 0x43, 0xFA])),
+           Pot(64, 12, PotItem.FiveRupees, 'Hookshot Cave (Hook Islands)', obj=RoomObject(0x0A898E, [0x83, 0x63, 0xFA])),
+           Pot(20, 14, PotItem.OneRupee, 'Hookshot Cave (Hook Islands)', obj=RoomObject(0x0A897C, [0x2B, 0x73, 0xFA])),
+           Pot(20, 19, PotItem.Nothing, 'Hookshot Cave (Hook Islands)', obj=RoomObject(0x0A897F, [0x2B, 0x9B, 0xFA])),
+           Pot(68, 18, PotItem.FiveRupees, 'Hookshot Cave (Bonk Islands)', obj=RoomObject(0x0A8994, [0x8B, 0x93, 0xFA])),
+           Pot(96, 19, PotItem.Heart, 'Hookshot Cave (Front)', obj=RoomObject(0x0A8976, [0xC3, 0x9B, 0xFA])),
+           Pot(64, 20, PotItem.FiveRupees, 'Hookshot Cave (Bonk Islands)', obj=RoomObject(0x0A8997, [0x83, 0xA3, 0xFA])),
+           Pot(64, 26, PotItem.FiveRupees, 'Hookshot Cave (Bonk Islands)', obj=RoomObject(0x0A899A, [0x83, 0xD3, 0xFA]))],
+    0x3D: [Pot(76, 12, PotItem.Bomb, 'GT Mini Helmasaur Room', obj=RoomObject(0x1FFC9B, [0x9B, 0x63, 0xFA])),
+           Pot(112, 12, PotItem.Bomb, 'GT Mini Helmasaur Room', obj=RoomObject(0x1FFC9E, [0xE3, 0x63, 0xFA])),
+           Pot(24, 22, PotItem.Heart, 'GT Crystal Inner Circle', obj=RoomObject(0x1FFCE3, [0x33, 0xB3, 0xFA])),
+           Pot(40, 22, PotItem.FiveArrows, 'GT Crystal Inner Circle', obj=RoomObject(0x1FFCE6, [0x53, 0xB3, 0xFA])),
+           Pot(32, 24, PotItem.Heart, 'GT Crystal Inner Circle', obj=RoomObject(0x1FFCF8, [0x43, 0xC3, 0xFA])),
+           Pot(20, 26, PotItem.FiveRupees, 'GT Crystal Inner Circle', obj=RoomObject(0x1FFCFB, [0x2B, 0xD3, 0xFA])),
+           Pot(36, 26, PotItem.BigMagic, 'GT Crystal Inner Circle', obj=RoomObject(0x1FFCFE, [0x4B, 0xD3, 0xFA]))],
+    0x3E: [Pot(96, 6, PotItem.Bomb, 'Ice Stalfos Hint', obj=RoomObject(0x1FC41D, [0xC3, 0x33, 0xFA])),
+           Pot(100, 6, PotItem.SmallMagic, 'Ice Stalfos Hint', obj=RoomObject(0x1FC420, [0xCB, 0x33, 0xFA])),
+           Pot(88, 10, PotItem.Heart, 'Ice Stalfos Hint', obj=RoomObject(0x1FC429, [0xB3, 0x53, 0xFA])),
+           Pot(92, 10, PotItem.SmallMagic, 'Ice Stalfos Hint', obj=RoomObject(0x1FC42C, [0xBB, 0x53, 0xFA]))],
+    0x3F: [Pot(12, 25, PotItem.OneRupee, 'Ice Hammer Block', obj=RoomObject(0x1FC4DC, [0x1B, 0xCB, 0xFA])),
+           Pot(20, 25, PotItem.OneRupee, 'Ice Hammer Block', obj=RoomObject(0x1FC4E5, [0x2B, 0xCB, 0xFA])),
+           Pot(12, 26, PotItem.Bomb, 'Ice Hammer Block', obj=RoomObject(0x1FC4DF, [0x1B, 0xD3, 0xFA])),
+           Pot(20, 26, PotItem.Bomb, 'Ice Hammer Block', obj=RoomObject(0x1FC4E8, [0x2B, 0xD3, 0xFA])),
+           Pot(12, 27, PotItem.Switch, 'Ice Hammer Block', obj=RoomObject(0x1FC4E2, [0x1B, 0xDB, 0xFA])),
+           Pot(20, 27, PotItem.Heart, 'Ice Hammer Block', obj=RoomObject(0x1FC4EB, [0x2B, 0xDB, 0xFA])),
+           Pot(28, 23, PotItem.Key, 'Ice Hammer Block', PotFlags.Block)],
+    0x41: [Pot(100, 10, PotItem.Heart, 'Sewers Behind Tapestry', obj=RoomObject(0x0A8EDC, [0xCB, 0x53, 0xFA])),
+           Pot(52, 15, PotItem.OneRupee, 'Sewers Behind Tapestry', obj=RoomObject(0x0A8EDF, [0x6B, 0x7B, 0xFA])),
+           Pot(52, 16, PotItem.SmallMagic, 'Sewers Behind Tapestry', obj=RoomObject(0x0A8EE2, [0x6B, 0x83, 0xFA])),
+           Pot(148, 22, PotItem.SmallMagic, 'Sewers Behind Tapestry', obj=RoomObject(0x0A8EE5, [0x2B, 0xB7, 0xFA]))],
+    0x43: [Pot(66, 4, PotItem.FiveArrows, 'Desert Wall Slide', obj=RoomObject(0x1F87BC, [0x87, 0x23, 0xFA])),
+           Pot(78, 4, PotItem.SmallMagic, 'Desert Wall Slide', obj=RoomObject(0x1F87BF, [0x9F, 0x23, 0xFA])),
+           Pot(66, 9, PotItem.Heart, 'Desert Wall Slide', obj=RoomObject(0x1F87C2, [0x87, 0x4B, 0xFA])),
+           Pot(78, 9, PotItem.Heart, 'Desert Wall Slide', obj=RoomObject(0x1F87C5, [0x9F, 0x4B, 0xFA])),
+           Pot(112, 28, PotItem.Nothing, 'Desert Tiles 2', obj=RoomObject(0x1F87DA, [0xE3, 0xE3, 0xFA])),
+           Pot(76, 28, PotItem.Nothing, 'Desert Tiles 2', obj=RoomObject(0x1F87D7, [0x9B, 0xE3, 0xFA])),
+           Pot(76, 20, PotItem.Nothing, 'Desert Tiles 2', obj=RoomObject(0x1F87D1, [0x9B, 0xA3, 0xFA])),
+           Pot(112, 20, PotItem.Key, 'Desert Tiles 2', obj=RoomObject(0x1F87D4, [0xE3, 0xA3, 0xFA]))],
+    0x44: [Pot(204, 7, PotItem.Nothing, 'Thieves Conveyor Bridge', PotFlags.Block)],
+    0x45: [Pot(12, 4, PotItem.FiveArrows, 'Thieves Basement Block', obj=RoomObject(0x1FDC2A, [0x1B, 0x23, 0xFA])),
+           Pot(48, 12, PotItem.FiveArrows, 'Thieves Basement Block', obj=RoomObject(0x1FDC2D, [0x63, 0x63, 0xFA])),
+           Pot(92, 11, PotItem.Nothing, "Thieves Blind's Cell Interior", obj=RoomObject(0x1FDC4E, [0xBB, 0x5B, 0xFA])),
+           Pot(108, 11, PotItem.Heart, "Thieves Blind's Cell Interior", obj=RoomObject(0x1FDC51, [0xDB, 0x5B, 0xFA])),
+           Pot(220, 16, PotItem.SmallMagic, "Thieves Blind's Cell Interior", obj=RoomObject(0x1FDC54, [0xBB, 0x87, 0xFA])),
+           Pot(236, 16, PotItem.Heart, "Thieves Blind's Cell Interior", obj=RoomObject(0x1FDC57, [0xDB, 0x87, 0xFA])),
+           Pot(0x9C, 7, PotItem.Nothing, 'Thieves Basement Block', PotFlags.Block)],
+    0x46: [Pot(96, 5, PotItem.Heart, 'Swamp Donut Top', obj=RoomObject(0x1F9B91, [0xC3, 0x2B, 0xFA])),
+           Pot(28, 27, PotItem.Heart, 'Swamp Donut Bottom', obj=RoomObject(0x1F9B94, [0x3B, 0xDB, 0xFA]))],
+    0x49: [Pot(104, 15, PotItem.SmallMagic, 'Skull Torch Room', obj=RoomObject(0x1FC102, [0xD3, 0x7B, 0xFA])),
+           Pot(104, 16, PotItem.SmallMagic, 'Skull Torch Room', obj=RoomObject(0x1FC105, [0xD3, 0x83, 0xFA])),
+           Pot(156, 27, PotItem.Nothing, 'Skull Star Pits', obj=RoomObject(0x1FC063, [0x3B, 0xDF, 0xFA])),
+           Pot(172, 24, PotItem.Nothing, 'Skull Star Pits', obj=RoomObject(0x1FC084, [0x5B, 0xC7, 0xFA])),
+           Pot(172, 23, PotItem.Nothing, 'Skull Star Pits', obj=RoomObject(0x1FC081, [0x5B, 0xBF, 0xFA])),
+           Pot(144, 20, PotItem.Nothing, 'Skull Star Pits', obj=RoomObject(0x1FC04E, [0x23, 0xA7, 0xFA])),
+           Pot(144, 19, PotItem.SmallMagic, 'Skull Star Pits', obj=RoomObject(0x1FC04B, [0x23, 0x9F, 0xFA])),
+           Pot(172, 20, PotItem.Heart, 'Skull Star Pits', obj=RoomObject(0x1FC07E, [0x5B, 0xA7, 0xFA])),
+           Pot(144, 27, PotItem.Heart, 'Skull Star Pits', obj=RoomObject(0x1FC051, [0x23, 0xDF, 0xFA])),
+           Pot(172, 28, PotItem.SmallMagic, 'Skull Star Pits', obj=RoomObject(0x1FC090, [0x5B, 0xE7, 0xFA])),
+           Pot(160, 27, PotItem.Nothing, 'Skull Star Pits', obj=RoomObject(0x1FC066, [0x43, 0xDF, 0xFA]))],
+    0x4A: [Pot(14, 5, PotItem.Switch, 'PoD Left Cage', obj=RoomObject(0x1FA1C2, [0x1F, 0x2B, 0xFA])),
+           Pot(32, 5, PotItem.Bomb, 'PoD Left Cage', obj=RoomObject(0x1FA1C5, [0x43, 0x2B, 0xFA])),
+           Pot(14, 11, PotItem.Heart, 'PoD Left Cage', obj=RoomObject(0x1FA1C8, [0x1F, 0x5B, 0xFA])),
+           Pot(32, 11, PotItem.OneRupee, 'PoD Left Cage', obj=RoomObject(0x1FA1CB, [0x43, 0x5B, 0xFA])),
+           Pot(56, 8, PotItem.Bomb, 'PoD Middle Cage', obj=RoomObject(0x1FA1D1, [0x73, 0x43, 0xFA])),
+           Pot(68, 8, PotItem.Bomb, 'PoD Middle Cage', obj=RoomObject(0x1FA1D4, [0x8B, 0x43, 0xFA])),
+           Pot(92, 5, PotItem.Bomb, 'PoD Middle Cage', obj=RoomObject(0x1FA1DA, [0xBB, 0x2B, 0xFA])),
+           Pot(110, 5, PotItem.Switch, 'PoD Middle Cage', obj=RoomObject(0x1FA1DD, [0xDF, 0x2B, 0xFA])),
+           Pot(92, 11, PotItem.OneRupee, 'PoD Middle Cage', obj=RoomObject(0x1FA1E0, [0xBB, 0x5B, 0xFA])),
+           Pot(110, 11, PotItem.Heart, 'PoD Middle Cage', obj=RoomObject(0x1FA1E3, [0xDF, 0x5B, 0xFA]))],
+    0x4B: [Pot(20, 6, PotItem.FiveArrows, 'PoD Mimics 1', obj=RoomObject(0x1FA83C, [0x2B, 0x33, 0xFA])),
+           Pot(40, 6, PotItem.Heart, 'PoD Mimics 1', obj=RoomObject(0x1FA83F, [0x53, 0x33, 0xFA]))],
+    0x4E: [Pot(140, 7, PotItem.Nothing, 'Ice Bomb Jump Catwalk', obj=RoomObject(0x1FC57E, [0x1B, 0x3F, 0xFA])),
+           Pot(48, 10, PotItem.Nothing, 'Ice Bomb Jump Catwalk', obj=RoomObject(0x1FC587, [0x63, 0x53, 0xFA])),
+           Pot(140, 11, PotItem.Switch, 'Ice Bomb Jump Catwalk', obj=RoomObject(0x1FC581, [0x1B, 0x5F, 0xFA])),
+           Pot(28, 12, PotItem.Heart, 'Ice Bomb Jump Catwalk', obj=RoomObject(0x1FC584, [0x3B, 0x63, 0xFA])),
+           Pot(112, 12, PotItem.SmallMagic, 'Ice Narrow Corridor', obj=RoomObject(0x1FC58A, [0xE3, 0x63, 0xFA]))],
+    0x50: [Pot(96, 0x6, PotItem.Heart, 'Hyrule Castle West Hall', PotFlags.LowerRegion, obj=RoomObject(0x0A9099, [0xC3, 0x33, 0xFA])),
+           Pot(100, 0x6, PotItem.Heart, 'Hyrule Castle West Hall', PotFlags.LowerRegion, obj=RoomObject(0x0A909C, [0xCB, 0x33, 0xFA]))],
+    0x52: [Pot(138, 3, PotItem.Heart, 'Hyrule Castle East Hall', obj=RoomObject(0x0A91C7, [0x17, 0x1F, 0xFA])),
+           Pot(194, 26, PotItem.Heart, 'Hyrule Castle East Hall', obj=RoomObject(0x0A91CA, [0x87, 0xD7, 0xFA]))],
+    0x53: [Pot(92, 11, PotItem.Heart, 'Desert Beamos Hall', obj=RoomObject(0x1F8844, [0xBB, 0x5B, 0xFA])),
+           Pot(96, 11, PotItem.SmallMagic, 'Desert Beamos Hall', obj=RoomObject(0x1F8847, [0xC3, 0x5B, 0xFA])),
+           Pot(100, 11, PotItem.Key, 'Desert Beamos Hall', obj=RoomObject(0x1F884A, [0xCB, 0x5B, 0xFA])),
+           Pot(104, 11, PotItem.Heart, 'Desert Beamos Hall', obj=RoomObject(0x1F884D, [0xD3, 0x5B, 0xFA]))],
+    0x54: [Pot(186, 25, PotItem.FiveRupees, 'Swamp Attic', obj=RoomObject(0x1F9A28, [0x77, 0xCF, 0xFA])),
+           Pot(186, 26, PotItem.Heart, 'Swamp Attic', obj=RoomObject(0x1F9A2B, [0x77, 0xD7, 0xFA])),
+           Pot(186, 27, PotItem.Heart, 'Swamp Attic', obj=RoomObject(0x1F9A2E, [0x77, 0xDF, 0xFA])),
+           Pot(186, 28, PotItem.Heart, 'Swamp Attic', obj=RoomObject(0x1F9A31, [0x77, 0xE7, 0xFA]))],
+    0x55: [Pot(230, 24, PotItem.SmallMagic, 'Hyrule Castle Secret Entrance', obj=RoomObject(0x0A8127, [0xCF, 0xC7, 0xFA])),
+           Pot(230, 25, PotItem.SmallMagic, 'Hyrule Castle Secret Entrance', obj=RoomObject(0x0A812A, [0xCF, 0xCF, 0xFA]))],
+    0x56: [Pot(100, 6, PotItem.Nothing, 'Skull Back Drop', obj=RoomObject(0x1FBADC, [0xCB, 0x33, 0xFA])),
+           Pot(96, 10, PotItem.Nothing, 'Skull Back Drop', obj=RoomObject(0x1FBAEE, [0xC3, 0x53, 0xFA])),
+           Pot(92, 10, PotItem.Nothing, 'Skull Back Drop', obj=RoomObject(0x1FBAEB, [0xBB, 0x53, 0xFA])),
+           Pot(20, 6, PotItem.SmallMagic, 'Skull X Room', obj=RoomObject(0x1FBB1E, [0x2B, 0x33, 0xFA])),
+           Pot(40, 6, PotItem.SmallMagic, 'Skull X Room', obj=RoomObject(0x1FBB27, [0x53, 0x33, 0xFA])),
+           Pot(24, 7, PotItem.SmallMagic, 'Skull X Room', obj=RoomObject(0x1FBB21, [0x33, 0x3B, 0xFA])),
+           Pot(36, 7, PotItem.SmallMagic, 'Skull X Room', obj=RoomObject(0x1FBB24, [0x4B, 0x3B, 0xFA])),
+           Pot(12, 8, PotItem.Heart, 'Skull X Room', obj=RoomObject(0x1FBB12, [0x1B, 0x43, 0xFA])),
+           Pot(48, 8, PotItem.Heart, 'Skull X Room', obj=RoomObject(0x1FBB1B, [0x63, 0x43, 0xFA])),
+           Pot(24, 9, PotItem.SmallMagic, 'Skull X Room', obj=RoomObject(0x1FBB2A, [0x33, 0x4B, 0xFA])),
+           Pot(36, 9, PotItem.SmallMagic, 'Skull X Room', obj=RoomObject(0x1FBB30, [0x4B, 0x4B, 0xFA])),
+           Pot(20, 10, PotItem.FiveRupees, 'Skull X Room', obj=RoomObject(0x1FBB2D, [0x2B, 0x53, 0xFA])),
+           Pot(40, 10, PotItem.FiveRupees, 'Skull X Room', obj=RoomObject(0x1FBB33, [0x53, 0x53, 0xFA])),
+           Pot(12, 20, PotItem.Key, 'Skull 2 West Lobby', obj=RoomObject(0x1FBAC1, [0x1B, 0xA3, 0xFA])),
+           Pot(48, 20, PotItem.Nothing, 'Skull 2 West Lobby', obj=RoomObject(0x1FBAB8, [0x63, 0xA3, 0xFA]))],
+    0x57: [Pot(92, 7, PotItem.BigMagic, 'Skull Lone Pot', obj=RoomObject(0x1FBB6F, [0xBB, 0x3B, 0xFA])),
+           Pot(32, 4, PotItem.Nothing, 'Skull Big Key', obj=RoomObject(0x1FBB72, [0x43, 0x23, 0xFA])),
+           Pot(92, 23, PotItem.Bomb, 'Skull Pot Prison', obj=RoomObject(0x1FBBB4, [0xBB, 0xBB, 0xFA])),
+           Pot(100, 23, PotItem.SmallMagic, 'Skull Pot Prison', obj=RoomObject(0x1FBBB7, [0xCB, 0xBB, 0xFA])),
+           Pot(84, 25, PotItem.FiveRupees, 'Skull Pot Prison', obj=RoomObject(0x1FBBB1, [0xAB, 0xCB, 0xFA])),
+           Pot(76, 27, PotItem.Heart, 'Skull Pot Prison', obj=RoomObject(0x1FBBAE, [0x9B, 0xDB, 0xFA])),
+           Pot(12, 20, PotItem.SmallMagic, 'Skull 2 East Lobby', obj=RoomObject(0x1FBB93, [0x1B, 0xA3, 0xFA])),
+           Pot(48, 20, PotItem.SmallMagic, 'Skull 2 East Lobby', obj=RoomObject(0x1FBB99, [0x63, 0xA3, 0xFA])),
+           Pot(30, 22, PotItem.Switch, 'Skull 2 East Lobby', obj=RoomObject(0x1FBB96, [0x3F, 0xB3, 0xFA]))],
+    0x58: [Pot(12, 7, PotItem.SmallMagic, 'Skull Pull Switch', obj=RoomObject(0x1FBC4B, [0x1B, 0x3B, 0xFA])),
+           Pot(16, 7, PotItem.Nothing, 'Skull Pull Switch', obj=RoomObject(0x1FBC4E, [0x23, 0x3B, 0xFA])),
+           Pot(16, 8, PotItem.SmallMagic, 'Skull Pull Switch', obj=RoomObject(0x1FBC54, [0x23, 0x43, 0xFA])),
+           Pot(12, 12, PotItem.Nothing, 'Skull Pull Switch', obj=RoomObject(0x1FBC51, [0x1B, 0x63, 0xFA])),
+           Pot(96, 9, PotItem.Nothing, 'Skull Pot Circle', obj=RoomObject(0x1FBC90, [0xC3, 0x4B, 0xFA])),
+           Pot(92, 8, PotItem.Nothing, 'Skull Pot Circle', obj=RoomObject(0x1FBC8D, [0xBB, 0x43, 0xFA])),
+           Pot(108, 8, PotItem.Nothing, 'Skull Pot Circle', obj=RoomObject(0x1FBC9F, [0xDB, 0x43, 0xFA])),
+           Pot(108, 6, PotItem.Nothing, 'Skull Pot Circle', obj=RoomObject(0x1FBC99, [0xDB, 0x33, 0xFA])),
+           Pot(104, 5, PotItem.Nothing, 'Skull Pot Circle', obj=RoomObject(0x1FBC84, [0xD3, 0x2B, 0xFA])),
+           Pot(92, 6, PotItem.Nothing, 'Skull Pot Circle', obj=RoomObject(0x1FBC87, [0xBB, 0x33, 0xFA])),
+           Pot(96, 5, PotItem.Bomb, 'Skull Pot Circle', obj=RoomObject(0x1FBC7E, [0xC3, 0x2B, 0xFA])),
+           Pot(100, 5, PotItem.SmallMagic, 'Skull Pot Circle', obj=RoomObject(0x1FBC81, [0xCB, 0x2B, 0xFA])),
+           Pot(92, 7, PotItem.Heart, 'Skull Pot Circle', obj=RoomObject(0x1FBC8A, [0xBB, 0x3B, 0xFA])),
+           Pot(108, 7, PotItem.Heart, 'Skull Pot Circle', obj=RoomObject(0x1FBC9C, [0xDB, 0x3B, 0xFA])),
+           Pot(100, 9, PotItem.SmallMagic, 'Skull Pot Circle', obj=RoomObject(0x1FBC93, [0xCB, 0x4B, 0xFA])),
+           Pot(104, 9, PotItem.Bomb, 'Skull Pot Circle', obj=RoomObject(0x1FBC96, [0xD3, 0x4B, 0xFA]))],
+    0x59: [Pot(26, 0xb, PotItem.Heart, 'Skull 3 Lobby', PotFlags.LowerRegion, obj=RoomObject(0x1FBFC0, [0x37, 0x5B, 0xFA])),
+           Pot(32, 8, PotItem.Nothing, 'Skull 3 Lobby', PotFlags.LowerRegion, obj=RoomObject(0x1FBFBD, [0x43, 0x43, 0xFA])),
+           Pot(76, 28, PotItem.Nothing, 'Skull East Bridge', obj=RoomObject(0x1FBF82, [0x9B, 0xE3, 0xFA])),
+           Pot(112, 28, PotItem.Nothing, 'Skull East Bridge', obj=RoomObject(0x1FBF85, [0xE3, 0xE3, 0xFA]))],
+    0x5B: [Pot(218, 0x5, PotItem.Nothing, 'GT Hidden Spikes', PotFlags.LowerRegion, obj=RoomObject(0x1FF865, [0xB7, 0x2F, 0xFA])),
+           Pot(222, 0x5, PotItem.Switch, 'GT Hidden Spikes', PotFlags.LowerRegion, obj=RoomObject(0x1FF868, [0xBF, 0x2F, 0xFA])),
+           Pot(226, 0x5, PotItem.Nothing, 'GT Hidden Spikes', PotFlags.LowerRegion, obj=RoomObject(0x1FF86B, [0xC7, 0x2F, 0xFA]))],
+    0x5C: [Pot(228, 25, PotItem.Nothing, 'GT Refill', obj=RoomObject(0x1FF964, [0xCB, 0xCF, 0xFA])),
+           Pot(104, 24, PotItem.Nothing, 'GT Refill', obj=RoomObject(0x1FF967, [0xD3, 0xC3, 0xFA])),
+           Pot(228, 22, PotItem.Nothing, 'GT Refill', obj=RoomObject(0x1FF96A, [0xCB, 0xB7, 0xFA])),
+           Pot(216, 25, PotItem.Nothing, 'GT Refill', obj=RoomObject(0x1FF95E, [0xB3, 0xCF, 0xFA])),
+           Pot(84, 24, PotItem.Nothing, 'GT Refill', obj=RoomObject(0x1FF95B, [0xAB, 0xC3, 0xFA])),
+           Pot(216, 22, PotItem.Nothing, 'GT Refill', obj=RoomObject(0x1FF958, [0xB3, 0xB7, 0xFA])),
+           Pot(94, 22, PotItem.Bomb, 'GT Refill', obj=RoomObject(0x1FF955, [0xBF, 0xB3, 0xFA])),
+           Pot(94, 26, PotItem.BigMagic, 'GT Refill', obj=RoomObject(0x1FF961, [0xBF, 0xD3, 0xFA]))],
+    0x5D: [Pot(16, 5, PotItem.Bomb, 'GT Gauntlet 2', obj=RoomObject(0x1FF99F, [0x23, 0x2B, 0xFA])),
+           Pot(44, 5, PotItem.FiveRupees, 'GT Gauntlet 2', obj=RoomObject(0x1FF9A2, [0x5B, 0x2B, 0xFA])),
+           Pot(16, 11, PotItem.OneRupee, 'GT Gauntlet 2', obj=RoomObject(0x1FF9A5, [0x23, 0x5B, 0xFA])),
+           Pot(44, 11, PotItem.FiveArrows, 'GT Gauntlet 2', obj=RoomObject(0x1FF9A8, [0x5B, 0x5B, 0xFA])),
+           Pot(12, 20, PotItem.FiveArrows, 'GT Gauntlet 3', obj=RoomObject(0x1FF9C9, [0x1B, 0xA3, 0xFA])),
+           Pot(48, 20, PotItem.Bomb, 'GT Gauntlet 3', obj=RoomObject(0x1FF9CC, [0x63, 0xA3, 0xFA])),
+           Pot(12, 28, PotItem.SmallMagic, 'GT Gauntlet 3', obj=RoomObject(0x1FF9CF, [0x1B, 0xE3, 0xFA])),
+           Pot(48, 28, PotItem.Bomb, 'GT Gauntlet 3', obj=RoomObject(0x1FF9D2, [0x63, 0xE3, 0xFA]))],
+    0x5E: [Pot(92, 4, PotItem.SmallMagic, 'Ice Falling Square', obj=RoomObject(0x1FC679, [0xBB, 0x23, 0xFA])),
+           Pot(96, 4, PotItem.SmallMagic, 'Ice Falling Square', obj=RoomObject(0x1FC67C, [0xC3, 0x23, 0xFA])),
+           Pot(76, 8, PotItem.Heart, 'Ice Falling Square', obj=RoomObject(0x1FC67F, [0x9B, 0x43, 0xFA])),
+           Pot(112, 8, PotItem.Heart, 'Ice Falling Square', obj=RoomObject(0x1FC688, [0xE3, 0x43, 0xFA]))],
+    0x5F: [Pot(44, 27, PotItem.Switch, 'Ice Spike Room', obj=RoomObject(0x1FC6E8, [0x5B, 0xDB, 0xFA]))],
+    0x60: [Pot(76, 4, PotItem.Heart, 'Hyrule Castle West Lobby', obj=RoomObject(0x0A92B2, [0x9B, 0x23, 0xFA])),
+           Pot(112, 4, PotItem.Heart, 'Hyrule Castle West Lobby', obj=RoomObject(0x0A92AF, [0xE3, 0x23, 0xFA]))],
+    0x62: [Pot(208, 21, PotItem.Heart, 'Hyrule Castle East Lobby', obj=RoomObject(0x0A950E, [0xA3, 0xAF, 0xFA]))],
+    0x63: [Pot(48, 4, PotItem.Nothing, 'Desert Tiles 1', obj=RoomObject(0x1F88C9, [0x63, 0x23, 0xFA])),
+           Pot(12, 4, PotItem.Nothing, 'Desert Tiles 1', obj=RoomObject(0x1F88C6, [0x1B, 0x23, 0xFA])),
+           Pot(12, 8, PotItem.Nothing, 'Desert Tiles 1', obj=RoomObject(0x1F88CC, [0x1B, 0x43, 0xFA])),
+           Pot(48, 12, PotItem.Nothing, 'Desert Tiles 1', obj=RoomObject(0x1F88D2, [0x63, 0x63, 0xFA])),
+           Pot(48, 8, PotItem.Heart, 'Desert Tiles 1', obj=RoomObject(0x1F88CF, [0x63, 0x43, 0xFA])),
+           Pot(12, 12, PotItem.Key, 'Desert Tiles 1', obj=RoomObject(0x1F88D5, [0x1B, 0x63, 0xFA]))],
+    0x64: [Pot(12, 22, PotItem.Bomb, 'Thieves Attic Hint', PotFlags.SwitchLogicChange, obj=RoomObject(0x1FD9F9, [0x1B, 0xB3, 0xFA])),
+           Pot(16, 22, PotItem.Bomb, 'Thieves Attic Hint', PotFlags.SwitchLogicChange, obj=RoomObject(0x1FD9FC, [0x23, 0xB3, 0xFA])),
+           Pot(20, 22, PotItem.Bomb, 'Thieves Attic Hint', PotFlags.SwitchLogicChange, obj=RoomObject(0x1FD9FF, [0x2B, 0xB3, 0xFA])),
+           Pot(36, 28, PotItem.Bomb, 'Thieves Attic Switch', obj=RoomObject(0x1FDA1A, [0x4B, 0xE3, 0xFA])),
+           Pot(40, 28, PotItem.SmallMagic, 'Thieves Attic Switch', obj=RoomObject(0x1FDA1D, [0x53, 0xE3, 0xFA])),
+           Pot(44, 28, PotItem.SmallMagic, 'Thieves Attic Switch', obj=RoomObject(0x1FDA20, [0x5B, 0xE3, 0xFA])),
+           Pot(48, 28, PotItem.Switch, 'Thieves Attic Switch', obj=RoomObject(0x1FDA23, [0x63, 0xE3, 0xFA]))],
+    0x65: [Pot(100, 28, PotItem.Bomb, 'Thieves Attic Window', obj=RoomObject(0x1FDA95, [0xCB, 0xE3, 0xFA])),
+           Pot(104, 28, PotItem.Bomb, 'Thieves Attic Window', obj=RoomObject(0x1FDA98, [0xD3, 0xE3, 0xFA]))],
+    0x66: [Pot(48, 0x5, PotItem.FiveArrows, 'Swamp Refill', PotFlags.LowerRegion, obj=RoomObject(0x1F9F51, [0x63, 0x2B, 0xFA])),
+           Pot(52, 0x5, PotItem.Bomb, 'Swamp Refill', PotFlags.LowerRegion, obj=RoomObject(0x1F9F57, [0x6B, 0x2B, 0xFA])),
+           Pot(56, 0x5, PotItem.FiveRupees, 'Swamp Refill', PotFlags.LowerRegion, obj=RoomObject(0x1F9F5D, [0x73, 0x2B, 0xFA])),
+           Pot(48, 0x6, PotItem.FiveArrows, 'Swamp Refill', PotFlags.LowerRegion, RoomObject(0x1F9F54, [0x63, 0x33, 0xFA])),
+           Pot(52, 0x6, PotItem.Bomb, 'Swamp Refill', PotFlags.LowerRegion, obj=RoomObject(0x1F9F5A, [0x6B, 0x33, 0xFA])),
+           Pot(56, 0x6, PotItem.FiveRupees, 'Swamp Refill', PotFlags.LowerRegion, obj=RoomObject(0x1F9F60, [0x73, 0x33, 0xFA])),
+           Pot(84, 5, PotItem.Heart, 'Swamp Behind Waterfall', obj=RoomObject(0x1F9F07, [0xAB, 0x2B, 0xFA])),
+           Pot(104, 5, PotItem.FiveArrows, 'Swamp Behind Waterfall', obj=RoomObject(0x1F9F0D, [0xD3, 0x2B, 0xFA])),
+           Pot(84, 6, PotItem.Heart, 'Swamp Behind Waterfall', obj=RoomObject(0x1F9F0A, [0xAB, 0x33, 0xFA])),
+           Pot(104, 6, PotItem.Bomb, 'Swamp Behind Waterfall', obj=RoomObject(0x1F9F10, [0xD3, 0x33, 0xFA]))],
+    0x67: [Pot(22, 26, PotItem.Nothing, 'Skull Left Drop', obj=RoomObject(0x1FBDDE, [0x2F, 0xD3, 0xFA])),
+           Pot(18, 22, PotItem.Nothing, 'Skull Left Drop', obj=RoomObject(0x1FBDD2, [0x27, 0xB3, 0xFA])),
+           Pot(12, 7, PotItem.FiveArrows, 'Skull Left Drop', obj=RoomObject(0x1FBDCC, [0x1B, 0x3B, 0xFA])),
+           Pot(48, 7, PotItem.SmallMagic, 'Skull Left Drop', obj=RoomObject(0x1FBDCF, [0x63, 0x3B, 0xFA])),
+           Pot(18, 23, PotItem.SmallMagic, 'Skull Left Drop', obj=RoomObject(0x1FBDD5, [0x27, 0xBB, 0xFA])),
+           Pot(18, 26, PotItem.Heart, 'Skull Left Drop', obj=RoomObject(0x1FBDDB, [0x27, 0xD3, 0xFA])),
+           Pot(96, 19, PotItem.Heart, 'Skull Compass Room', obj=RoomObject(0x1FBDE7, [0xC3, 0x9B, 0xFA])),
+           Pot(74, 20, PotItem.SmallMagic, 'Skull Compass Room', obj=RoomObject(0x1FBDEA, [0x97, 0xA3, 0xFA])),
+           Pot(92, 9, PotItem.Nothing, 'Skull Compass Room', obj=RoomObject(0x1FBDE1, [0xBB, 0x4B, 0xFA])),
+           Pot(84, 28, PotItem.Nothing, 'Skull Compass Room', obj=RoomObject(0x1FBDF0, [0xAB, 0xE3, 0xFA])),
+           Pot(104, 28, PotItem.Heart, 'Skull Compass Room', obj=RoomObject(0x1FBDF3, [0xD3, 0xE3, 0xFA]))],
+    0x68: [Pot(84, 14, PotItem.Nothing, 'Skull Pinball', obj=RoomObject(0x1FBE8A, [0xAB, 0x73, 0xFA])),
+           Pot(84, 13, PotItem.Nothing, 'Skull Pinball', obj=RoomObject(0x1FBE87, [0xAB, 0x6B, 0xFA])),
+           Pot(88, 12, PotItem.Nothing, 'Skull Pinball', obj=RoomObject(0x1FBE84, [0xB3, 0x63, 0xFA])),
+           Pot(88, 6, PotItem.Nothing, 'Skull Pinball', obj=RoomObject(0x1FBE7E, [0xB3, 0x33, 0xFA])),
+           Pot(88, 5, PotItem.Nothing, 'Skull Pinball', obj=RoomObject(0x1FBE7B, [0xB3, 0x2B, 0xFA])),
+           Pot(88, 4, PotItem.Nothing, 'Skull Pinball', obj=RoomObject(0x1FBE78, [0xB3, 0x23, 0xFA])),
+           Pot(64, 17, PotItem.Nothing, 'Skull Pinball', obj=RoomObject(0x1FBEA5, [0x83, 0x8B, 0xFA])),
+           Pot(64, 15, PotItem.Nothing, 'Skull Pinball', obj=RoomObject(0x1FBE9F, [0x83, 0x7B, 0xFA])),
+           Pot(64, 7, PotItem.Heart, 'Skull Pinball', obj=RoomObject(0x1FBE75, [0x83, 0x3B, 0xFA])),
+           Pot(88, 7, PotItem.SmallMagic, 'Skull Pinball', obj=RoomObject(0x1FBE81, [0xB3, 0x3B, 0xFA])),
+           Pot(64, 16, PotItem.Heart, 'Skull Pinball', obj=RoomObject(0x1FBEA2, [0x83, 0x83, 0xFA])),
+           Pot(64, 24, PotItem.SmallMagic, 'Skull Pinball', obj=RoomObject(0x1FBEAB, [0x83, 0xC3, 0xFA])),
+           Pot(64, 25, PotItem.Heart, 'Skull Pinball', obj=RoomObject(0x1FBEAE, [0x83, 0xCB, 0xFA]))],
+    0x6B: [Pot(28, 5, PotItem.Heart, 'GT Crystal Paths', obj=RoomObject(0x1FF7C1, [0x3B, 0x2B, 0xFA])),
+           Pot(44, 5, PotItem.Nothing, 'GT Crystal Paths', obj=RoomObject(0x1FF7C4, [0x5B, 0x2B, 0xFA])),
+           Pot(28, 8, PotItem.Nothing, 'GT Crystal Paths', obj=RoomObject(0x1FF7D0, [0x3B, 0x43, 0xFA])),
+           Pot(44, 8, PotItem.SmallMagic, 'GT Crystal Paths', obj=RoomObject(0x1FF7D3, [0x5B, 0x43, 0xFA])),
+           Pot(28, 11, PotItem.SmallMagic, 'GT Crystal Paths', obj=RoomObject(0x1FF7D6, [0x3B, 0x5B, 0xFA])),
+           Pot(44, 11, PotItem.Nothing, 'GT Crystal Paths', obj=RoomObject(0x1FF7D9, [0x5B, 0x5B, 0xFA])),
+           Pot(90, 25, PotItem.Nothing, 'GT Mimics 2', obj=RoomObject(0x1FF7FD, [0xB7, 0xCB, 0xFA])),
+           Pot(98, 25, PotItem.FiveArrows, 'GT Mimics 2', obj=RoomObject(0x1FF800, [0xC7, 0xCB, 0xFA]))],
+    0x6C: [Pot(20, 6, PotItem.Heart, 'GT Quad Pot', obj=RoomObject(0x1FFA8E, [0x2B, 0x33, 0xFA])),
+           Pot(40, 6, PotItem.FiveArrows, 'GT Quad Pot', obj=RoomObject(0x1FFA91, [0x53, 0x33, 0xFA])),
+           Pot(20, 10, PotItem.Bomb, 'GT Quad Pot', obj=RoomObject(0x1FFA94, [0x2B, 0x53, 0xFA])),
+           Pot(40, 10, PotItem.SmallMagic, 'GT Quad Pot', obj=RoomObject(0x1FFA97, [0x53, 0x53, 0xFA]))],
+    0x6D: [Pot(28, 26, PotItem.Heart, 'GT Gauntlet 5', obj=RoomObject(0x1FFA3C, [0x3B, 0xD3, 0xFA])),
+           Pot(32, 26, PotItem.Heart, 'GT Gauntlet 5', obj=RoomObject(0x1FFA3F, [0x43, 0xD3, 0xFA])),
+           Pot(28, 27, PotItem.SmallMagic, 'GT Gauntlet 5', obj=RoomObject(0x1FFA42, [0x3B, 0xDB, 0xFA])),
+           Pot(32, 27, PotItem.SmallMagic, 'GT Gauntlet 5', obj=RoomObject(0x1FFA45, [0x43, 0xDB, 0xFA]))],
+    0x73: [Pot(154, 21, PotItem.FiveArrows, 'Desert Circle of Pots', obj=RoomObject(0x1F8933, [0x37, 0xAF, 0xFA])),
+           Pot(158, 21, PotItem.OneRupee, 'Desert Circle of Pots', obj=RoomObject(0x1F8936, [0x3F, 0xAF, 0xFA])),
+           Pot(20, 23, PotItem.Switch, 'Desert Circle of Pots', obj=RoomObject(0x1F8939, [0x2B, 0xBB, 0xFA])),
+           Pot(36, 23, PotItem.FiveRupees, 'Desert Circle of Pots', obj=RoomObject(0x1F894E, [0x4B, 0xBB, 0xFA])),
+           Pot(144, 24, PotItem.Heart, 'Desert Circle of Pots', obj=RoomObject(0x1F893C, [0x23, 0xC7, 0xFA])),
+           Pot(168, 24, PotItem.FiveArrows, 'Desert Circle of Pots', obj=RoomObject(0x1F894B, [0x53, 0xC7, 0xFA])),
+           Pot(20, 26, PotItem.SmallMagic, 'Desert Circle of Pots', obj=RoomObject(0x1F893F, [0x2B, 0xD3, 0xFA])),
+           Pot(36, 26, PotItem.Heart, 'Desert Circle of Pots', obj=RoomObject(0x1F8948, [0x4B, 0xD3, 0xFA])),
+           Pot(154, 27, PotItem.OneRupee, 'Desert Circle of Pots', obj=RoomObject(0x1F8942, [0x37, 0xDF, 0xFA])),
+           Pot(158, 27, PotItem.FiveRupees, 'Desert Circle of Pots', obj=RoomObject(0x1F8945, [0x3F, 0xDF, 0xFA]))],
+    0x74: [Pot(30, 5, PotItem.SmallMagic, 'Desert Map Room', obj=RoomObject(0x1F8A39, [0x3F, 0x2B, 0xFA])),
+           Pot(62, 5, PotItem.Switch, 'Desert Map Room', obj=RoomObject(0x1F89FD, [0x7F, 0x2B, 0xFA])),
+           Pot(94, 5, PotItem.SmallMagic, 'Desert Map Room', obj=RoomObject(0x1F8A48, [0xBF, 0x2B, 0xFA])),
+           Pot(14, 11, PotItem.Heart, 'Desert Map Room', obj=RoomObject(0x1F8A3C, [0x1F, 0x5B, 0xFA])),
+           Pot(46, 11, PotItem.FiveArrows, 'Desert Map Room', obj=RoomObject(0x1F8A3F, [0x5F, 0x5B, 0xFA])),
+           Pot(78, 11, PotItem.FiveArrows, 'Desert Map Room', obj=RoomObject(0x1F8A42, [0x9F, 0x5B, 0xFA])),
+           Pot(110, 11, PotItem.Heart, 'Desert Map Room', obj=RoomObject(0x1F8A45, [0xDF, 0x5B, 0xFA]))],
+    0x75: [Pot(148, 22, PotItem.SmallMagic, 'Desert Arrow Pot Corner', obj=RoomObject(0x1F8A89, [0x2B, 0xB7, 0xFA])),
+           Pot(160, 22, PotItem.FiveArrows, 'Desert Arrow Pot Corner', obj=RoomObject(0x1F8A8C, [0x43, 0xB7, 0xFA])),
+           Pot(172, 22, PotItem.Heart, 'Desert Arrow Pot Corner', obj=RoomObject(0x1F8A8F, [0x5B, 0xB7, 0xFA]))],
+    0x76: [Pot(112, 12, PotItem.Heart, 'Swamp Drain Right', obj=RoomObject(0x1F9DCC, [0xE3, 0x63, 0xFA])),
+           Pot(84, 23, PotItem.Heart, 'Swamp Flooded Spot', obj=RoomObject(0x1F9DF3, [0xAB, 0xBB, 0xFA])),
+           Pot(96, 23, PotItem.Heart, 'Swamp Flooded Spot', obj=RoomObject(0x1F9DF6, [0xC3, 0xBB, 0xFA]))],
+    0x7B: [Pot(48, 10, PotItem.Nothing, 'GT Conveyor Star Pits', obj=RoomObject(0x1FEF9B, [0x63, 0x53, 0xFA])),
+           Pot(88, 10, PotItem.Nothing, 'GT Conveyor Star Pits', obj=RoomObject(0x1FEFA1, [0xB3, 0x53, 0xFA])),
+           Pot(76, 7, PotItem.Nothing, 'GT Conveyor Star Pits', obj=RoomObject(0x1FEF9E, [0x9B, 0x3B, 0xFA])),
+           Pot(60, 4, PotItem.Heart, 'GT Conveyor Star Pits', obj=RoomObject(0x1FEFAD, [0x7B, 0x23, 0xFA])),
+           Pot(64, 4, PotItem.Key, 'GT Conveyor Star Pits', obj=RoomObject(0x1FEFB0, [0x83, 0x23, 0xFA]))],
+    0x7C: [Pot(36, 21, PotItem.Nothing, 'GT Falling Bridge', obj=RoomObject(0x1FF0AA, [0x4B, 0xAB, 0xFA])),
+           Pot(24, 11, PotItem.Nothing, 'GT Falling Bridge', obj=RoomObject(0x1FF095, [0x33, 0x5B, 0xFA])),
+           Pot(28, 4, PotItem.Heart, 'GT Falling Bridge', obj=RoomObject(0x1FF08F, [0x3B, 0x23, 0xFA])),
+           Pot(32, 4, PotItem.Heart, 'GT Falling Bridge', obj=RoomObject(0x1FF092, [0x43, 0x23, 0xFA]))],
+    0x7D: [Pot(44, 12, PotItem.Nothing, 'GT Firesnake Room', obj=RoomObject(0x1FF155, [0x5B, 0x63, 0xFA])),
+           Pot(44, 6, PotItem.Nothing, 'GT Firesnake Room', obj=RoomObject(0x1FF152, [0x5B, 0x33, 0xFA])),
+           Pot(112, 6, PotItem.Heart, 'GT Firesnake Room', obj=RoomObject(0x1FF16A, [0xE3, 0x33, 0xFA])),
+           Pot(108, 20, PotItem.FiveArrows, 'GT Warp Maze - Pot Rail', obj=RoomObject(0x1FF1EB, [0xDB, 0xA3, 0xFA])),
+           Pot(114, 20, PotItem.Bomb, 'GT Petting Zoo', obj=RoomObject(0x1FF1EE, [0xE7, 0xA3, 0xFA])),
+           Pot(76, 28, PotItem.Bomb, 'GT Petting Zoo', obj=RoomObject(0x1FF1F1, [0x9B, 0xE3, 0xFA]))],
+    0x7E: [Pot(86, 15, PotItem.Heart, 'Ice Tall Hint', obj=RoomObject(0x1FC77E, [0xAF, 0x7B, 0xFA])),
+           Pot(82, 26, PotItem.SmallMagic, 'Ice Tall Hint', obj=RoomObject(0x1FC781, [0xA7, 0xD3, 0xFA])),
+           Pot(100, 26, PotItem.Switch, 'Ice Tall Hint', obj=RoomObject(0x1FC7A2, [0xCB, 0xD3, 0xFA])),
+           Pot(104, 26, PotItem.Nothing, 'Ice Tall Hint', obj=RoomObject(0x1FC7A5, [0xD3, 0xD3, 0xFA]))],
+    0x80: [Pot(48, 4, PotItem.Heart, 'Hyrule Dungeon Cellblock', obj=RoomObject(0x0AA3CD, [0x63, 0x23, 0xFA])),
+           Pot(52, 4, PotItem.Heart, 'Hyrule Dungeon Cellblock', obj=RoomObject(0x0AA3D3, [0x6B, 0x23, 0xFA])),
+           Pot(56, 4, PotItem.Heart, 'Hyrule Dungeon Cellblock', obj=RoomObject(0x0AA3D6, [0x73, 0x23, 0xFA]))],
+    0x82: [Pot(50, 0x5, PotItem.Nothing, 'Hyrule Dungeon South Abyss', PotFlags.LowerRegion, obj=RoomObject(0x0AA0D5, [0x67, 0x2B, 0xFA])),
+           Pot(50, 0xA, PotItem.Nothing, 'Hyrule Dungeon South Abyss', PotFlags.LowerRegion, obj=RoomObject(0x0AA0D8, [0x67, 0x53, 0xFA])),
+           Pot(76, 0x12, PotItem.Heart, 'Hyrule Dungeon South Abyss', PotFlags.LowerRegion, obj=RoomObject(0x0AA0D2, [0x9B, 0x93, 0xFA]))],
+    0x83: [Pot(76, 4, PotItem.FiveArrows, 'Desert West Wing', obj=RoomObject(0x1F8B54, [0x9B, 0x23, 0xFA])),
+           Pot(80, 4, PotItem.OneRupee, 'Desert West Wing', obj=RoomObject(0x1F8B57, [0xA3, 0x23, 0xFA])),
+           Pot(76, 28, PotItem.FiveRupees, 'Desert West Wing', obj=RoomObject(0x1F8B5A, [0x9B, 0xE3, 0xFA])),
+           Pot(80, 28, PotItem.FiveArrows, 'Desert West Wing', obj=RoomObject(0x1F8B5D, [0xA3, 0xE3, 0xFA]))],
+    0x84: [Pot(64, 17, PotItem.Nothing, 'Desert Main Lobby', obj=RoomObject(0x1F8C90, [0x83, 0x8B, 0xFA])),
+           Pot(60, 17, PotItem.Nothing, 'Desert Main Lobby', obj=RoomObject(0x1F8C8D, [0x7B, 0x8B, 0xFA])),
+           Pot(80, 14, PotItem.Nothing, 'Desert Main Lobby', obj=RoomObject(0x1F8C93, [0xA3, 0x73, 0xFA])),
+           Pot(44, 14, PotItem.Nothing, 'Desert Main Lobby', obj=RoomObject(0x1F8C96, [0x5B, 0x73, 0xFA])),
+           Pot(100, 6, PotItem.Nothing, 'Desert Main Lobby', obj=RoomObject(0x1F8C87, [0xCB, 0x33, 0xFA])),
+           Pot(24, 6, PotItem.Nothing, 'Desert Main Lobby', obj=RoomObject(0x1F8C81, [0x33, 0x33, 0xFA])),
+           Pot(24, 7, PotItem.FiveArrows, 'Desert Main Lobby', obj=RoomObject(0x1F8C84, [0x33, 0x3B, 0xFA])),
+           Pot(100, 7, PotItem.FiveArrows, 'Desert Main Lobby', obj=RoomObject(0x1F8C8A, [0xCB, 0x3B, 0xFA]))],
+    0x85: [Pot(44, 28, PotItem.Heart, 'Desert East Wing', obj=RoomObject(0x1F8D59, [0x5B, 0xE3, 0xFA])),
+           Pot(48, 28, PotItem.FiveArrows, 'Desert East Wing', obj=RoomObject(0x1F8D5C, [0x63, 0xE3, 0xFA]))],
+    0x87: [Pot(12, 11, PotItem.Nothing, 'Hera Tile Room', obj=RoomObject(0x1FD12A, [0x1B, 0x5B, 0xFA])),
+           Pot(16, 12, PotItem.Nothing, 'Hera Tile Room', obj=RoomObject(0x1FD130, [0x23, 0x63, 0xFA])),
+           Pot(40, 12, PotItem.Nothing, 'Hera Tile Room', obj=RoomObject(0x1FD139, [0x53, 0x63, 0xFA])),
+           Pot(32, 12, PotItem.Nothing, 'Hera Tile Room', obj=RoomObject(0x1FD136, [0x43, 0x63, 0xFA])),
+           Pot(24, 12, PotItem.Nothing, 'Hera Tile Room', obj=RoomObject(0x1FD133, [0x33, 0x63, 0xFA])),
+           Pot(16, 11, PotItem.Nothing, 'Hera Tile Room', obj=RoomObject(0x1FD12D, [0x23, 0x5B, 0xFA])),
+           Pot(76, 20, PotItem.SmallMagic, 'Hera Torches', obj=RoomObject(0x1FD18D, [0x9B, 0xA3, 0xFA])),
+           Pot(112, 20, PotItem.BigMagic, 'Hera Torches', obj=RoomObject(0x1FD190, [0xE3, 0xA3, 0xFA]))],
+    0x8B: [Pot(76, 12, PotItem.Nothing, 'GT Conveyor Cross', obj=RoomObject(0x1FF2F7, [0x9B, 0x63, 0xFA])),
+           Pot(112, 12, PotItem.Key, 'GT Conveyor Cross', obj=RoomObject(0x1FF2FA, [0xE3, 0x63, 0xFA])),
+           Pot(32, 23, PotItem.Nothing, 'GT Hookshot South Platform', obj=RoomObject(0x1FF2C7, [0x43, 0xBB, 0xFA])),
+           Pot(28, 23, PotItem.Nothing, 'GT Hookshot South Platform', obj=RoomObject(0x1FF2C4, [0x3B, 0xBB, 0xFA])),
+           Pot(32, 9, PotItem.SmallMagic, 'GT Hookshot Mid Platform', obj=RoomObject(0x1FF2C1, [0x43, 0x4B, 0xFA])),
+           Pot(76, 20, PotItem.Nothing, 'GT Map Room', obj=RoomObject(0x1FF309, [0x9B, 0xA3, 0xFA])),
+           Pot(76, 28, PotItem.Heart, 'GT Map Room', obj=RoomObject(0x1FF30C, [0x9B, 0xE3, 0xFA]))],
+    0x8C: [Pot(76, 12, PotItem.Switch, 'GT Hope Room', obj=RoomObject(0x1FF377, [0x9B, 0x63, 0xFA])),
+           Pot(112, 12, PotItem.SmallMagic, 'GT Hope Room', obj=RoomObject(0x1FF37A, [0xE3, 0x63, 0xFA])),
+           Pot(76, 20, PotItem.Bomb, "GT Bob's Room", obj=RoomObject(0x1FF3B9, [0x9B, 0xA3, 0xFA])),
+           Pot(92, 20, PotItem.Bomb, "GT Bob's Room", obj=RoomObject(0x1FF3BF, [0xBB, 0xA3, 0xFA])),
+           Pot(100, 21, PotItem.FiveArrows, "GT Bob's Room", obj=RoomObject(0x1FF3C2, [0xCB, 0xAB, 0xFA])),
+           Pot(104, 26, PotItem.Bomb, "GT Bob's Room", obj=RoomObject(0x1FF3E0, [0xD3, 0xD3, 0xFA])),
+           Pot(88, 27, PotItem.Bomb, "GT Bob's Room", obj=RoomObject(0x1FF3BC, [0xB3, 0xDB, 0xFA]))],
+    0x8D: [Pot(204, 11, PotItem.Nothing, 'GT Speed Torch Upper', obj=RoomObject(0x1FF492, [0x9B, 0x5F, 0xFA])),
+           Pot(204, 14, PotItem.BigMagic, 'GT Speed Torch Upper', obj=RoomObject(0x1FF495, [0x9B, 0x77, 0xFA])),
+           Pot(28, 23, PotItem.Heart, 'GT Pots n Blocks', obj=RoomObject(0x1FF477, [0x3B, 0xBB, 0xFA])),
+           Pot(36, 23, PotItem.Heart, 'GT Pots n Blocks', obj=RoomObject(0x1FF47D, [0x4B, 0xBB, 0xFA])),
+           Pot(32, 24, PotItem.BigMagic, 'GT Pots n Blocks', obj=RoomObject(0x1FF47A, [0x43, 0xC3, 0xFA]))],
+    0x8E: [Pot(80, 5, PotItem.FiveArrows, 'Ice Lonely Freezor', obj=RoomObject(0x1FC835, [0xA3, 0x2B, 0xFA])),
+           Pot(80, 6, PotItem.Nothing, 'Ice Lonely Freezor', obj=RoomObject(0x1FC838, [0xA3, 0x33, 0xFA]))],
+    0x91: [Pot(84, 4, PotItem.Heart, 'Mire Falling Foes', obj=RoomObject(0x1FB9B0, [0xAB, 0x23, 0xFA])),
+           Pot(104, 4, PotItem.SmallMagic, 'Mire Falling Foes', obj=RoomObject(0x1FB9B3, [0xD3, 0x23, 0xFA]))],
+    0x92: [Pot(86, 23, PotItem.Nothing, 'Mire Tall Dark and Roomy', obj=RoomObject(0x1FB966, [0xAF, 0xBB, 0xFA])),
+           Pot(92, 23, PotItem.Nothing, 'Mire Tall Dark and Roomy', obj=RoomObject(0x1FB969, [0xBB, 0xBB, 0xFA])),
+           Pot(98, 23, PotItem.Nothing, 'Mire Tall Dark and Roomy', obj=RoomObject(0x1FB96C, [0xC7, 0xBB, 0xFA])),
+           Pot(104, 23, PotItem.Nothing, 'Mire Tall Dark and Roomy', obj=RoomObject(0x1FB96F, [0xD3, 0xBB, 0xFA]))],
+    0x93: [Pot(28, 7, PotItem.Switch, 'Mire Dark Shooters', obj=RoomObject(0x1FB85D, [0x3B, 0x3B, 0xFA])),
+           Pot(0x9C, 0x17, PotItem.Nothing, 'Mire Block X', PotFlags.Block),
+           Pot(96, 7, PotItem.Heart, 'Mire Dark Shooters', PotFlags.NoSwitch, obj=RoomObject(0x1FB860, [0xC3, 0x3B, 0xFA]))],
+    0x96: [Pot(14, 18, PotItem.Nothing, 'GT Torch Cross', obj=RoomObject(0x1FFC69, [0x1F, 0x93, 0xFA])),
+           Pot(32, 5, PotItem.Nothing, 'GT Torch Cross', obj=RoomObject(0x1FFC5D, [0x43, 0x2B, 0xFA])),
+           Pot(46, 11, PotItem.Nothing, 'GT Torch Cross', obj=RoomObject(0x1FFC60, [0x5F, 0x5B, 0xFA])),
+           Pot(32, 17, PotItem.SmallMagic, 'GT Torch Cross', obj=RoomObject(0x1FFC63, [0x43, 0x8B, 0xFA])),
+           Pot(32, 24, PotItem.SmallMagic, 'GT Torch Cross', obj=RoomObject(0x1FFC6F, [0x43, 0xC3, 0xFA])),
+           Pot(14, 24, PotItem.Nothing, 'GT Torch Cross', obj=RoomObject(0x1FFC6C, [0x1F, 0xC3, 0xFA])),
+           Pot(76, 21, PotItem.Heart, 'GT Staredown', obj=RoomObject(0x1FFC0F, [0x9B, 0xAB, 0xFA])),
+           Pot(112, 21, PotItem.BigMagic, 'GT Staredown', obj=RoomObject(0x1FFC12, [0xE3, 0xAB, 0xFA]))],
+    0x99: [Pot(40, 20, PotItem.SmallMagic, 'Eastern Darkness', obj=RoomObject(0x0A96F4, [0x53, 0xA3, 0xFA])),
+           Pot(84, 20, PotItem.Heart, 'Eastern Darkness', obj=RoomObject(0x0A96F7, [0xAB, 0xA3, 0xFA]))],
+    0x9B: [Pot(48, 4, PotItem.SmallMagic, 'GT Double Switch Pot Corners', obj=RoomObject(0x1FF509, [0x63, 0x23, 0xFA])),
+           Pot(48, 12, PotItem.Key, 'GT Double Switch Pot Corners', obj=RoomObject(0x1FF50C, [0x63, 0x63, 0xFA])),
+           Pot(28, 24, PotItem.Nothing, 'GT Warp Maze - Mid Section', obj=RoomObject(0x1FF53C, [0x3B, 0xC3, 0xFA])),
+           Pot(32, 24, PotItem.Nothing, 'GT Warp Maze - Mid Section', obj=RoomObject(0x1FF53F, [0x43, 0xC3, 0xFA]))],
+    0x9C: [Pot(56, 8, PotItem.SmallMagic, 'GT Invisible Catwalk', obj=RoomObject(0x1FF693, [0x73, 0x43, 0xFA])),
+           Pot(56, 9, PotItem.FiveArrows, 'GT Invisible Catwalk', obj=RoomObject(0x1FF696, [0x73, 0x4B, 0xFA]))],
+    0x9D: [Pot(76, 4, PotItem.Bomb, 'GT Crystal Conveyor Left', obj=RoomObject(0x1FF6ED, [0x9B, 0x23, 0xFA])),
+           Pot(84, 4, PotItem.SmallMagic, 'GT Crystal Conveyor Left', obj=RoomObject(0x1FF6F0, [0xAB, 0x23, 0xFA])),
+           Pot(32, 7, PotItem.Nothing, 'GT Compass Room', obj=RoomObject(0x1FF6EA, [0x43, 0x3B, 0xFA])),
+           Pot(40, 9, PotItem.Nothing, 'GT Compass Room', obj=RoomObject(0x1FF6E7, [0x53, 0x4B, 0xFA]))],
+    0x9F: [Pot(138, 20, PotItem.Nothing, 'Ice Many Pots', obj=RoomObject(0x1FC904, [0x17, 0xA7, 0xFA])),
+           Pot(138, 19, PotItem.Heart, 'Ice Many Pots', obj=RoomObject(0x1FC901, [0x17, 0x9F, 0xFA])),
+           Pot(178, 19, PotItem.Heart, 'Ice Many Pots', obj=RoomObject(0x1FC913, [0x67, 0x9F, 0xFA])),
+           Pot(40, 21, PotItem.Switch, 'Ice Many Pots', obj=RoomObject(0x1FC928, [0x53, 0xAB, 0xFA])),
+           Pot(138, 21, PotItem.Key, 'Ice Many Pots', obj=RoomObject(0x1FC907, [0x17, 0xAF, 0xFA])),
+           Pot(20, 27, PotItem.Heart, 'Ice Many Pots', obj=RoomObject(0x1FC92B, [0x2B, 0xDB, 0xFA])),
+           Pot(138, 27, PotItem.Heart, 'Ice Many Pots', obj=RoomObject(0x1FC90D, [0x17, 0xDF, 0xFA])),
+           Pot(178, 28, PotItem.Heart, 'Ice Many Pots', obj=RoomObject(0x1FC922, [0x67, 0xE7, 0xFA])),
+           Pot(178, 21, PotItem.Nothing, 'Ice Many Pots', obj=RoomObject(0x1FC919, [0x67, 0xAF, 0xFA])),
+           Pot(178, 20, PotItem.Nothing, 'Ice Many Pots', obj=RoomObject(0x1FC916, [0x67, 0xA7, 0xFA])),
+           Pot(40, 27, PotItem.Nothing, 'Ice Many Pots', obj=RoomObject(0x1FC92E, [0x53, 0xDB, 0xFA])),
+           Pot(178, 27, PotItem.Nothing, 'Ice Many Pots', obj=RoomObject(0x1FC91F, [0x67, 0xDF, 0xFA])),
+           Pot(178, 26, PotItem.Nothing, 'Ice Many Pots', obj=RoomObject(0x1FC91C, [0x67, 0xD7, 0xFA])),
+           Pot(138, 28, PotItem.Nothing, 'Ice Many Pots', obj=RoomObject(0x1FC910, [0x17, 0xE7, 0xFA])),
+           Pot(138, 26, PotItem.Nothing, 'Ice Many Pots', obj=RoomObject(0x1FC90A, [0x17, 0xD7, 0xFA])),
+           Pot(20, 21, PotItem.Nothing, 'Ice Many Pots', obj=RoomObject(0x1FC925, [0x2B, 0xAB, 0xFA]))],
+    0xA1: [Pot(150, 6, PotItem.Key, 'Mire Fishbone', obj=RoomObject(0x1FB7F2, [0x2F, 0x37, 0xFA])),
+           Pot(100, 11, PotItem.SmallMagic, 'Mire Fishbone', obj=RoomObject(0x1FB80D, [0xCB, 0x5B, 0xFA])),
+           Pot(104, 12, PotItem.Heart, 'Mire Fishbone', obj=RoomObject(0x1FB810, [0xD3, 0x63, 0xFA])),
+           Pot(108, 13, PotItem.SmallMagic, 'Mire Fishbone', obj=RoomObject(0x1FB813, [0xDB, 0x6B, 0xFA])),
+           Pot(112, 14, PotItem.Heart, 'Mire Fishbone', obj=RoomObject(0x1FB816, [0xE3, 0x73, 0xFA])),
+           Pot(96, 27, PotItem.Nothing, 'Mire South Fish', obj=RoomObject(0x1FB804, [0xC3, 0xDB, 0xFA])),
+           Pot(92, 21, PotItem.Nothing, 'Mire South Fish', obj=RoomObject(0x1FB7FB, [0xBB, 0xAB, 0xFA])),
+           Pot(96, 23, PotItem.Heart, 'Mire South Fish', obj=RoomObject(0x1FB7FE, [0xC3, 0xBB, 0xFA])),
+           Pot(92, 25, PotItem.Nothing, 'Mire South Fish', obj=RoomObject(0x1FB801, [0xBB, 0xCB, 0xFA])),
+           Pot(76, 28, PotItem.Nothing, 'Mire South Fish', obj=RoomObject(0x1FB807, [0x9B, 0xE3, 0xFA])),
+           Pot(112, 28, PotItem.Nothing, 'Mire South Fish', obj=RoomObject(0x1FB80A, [0xE3, 0xE3, 0xFA]))],
+    0xA2: [Pot(12, 28, PotItem.BigMagic, 'Mire Left Bridge', obj=RoomObject(0x1FB6B1, [0x1B, 0xE3, 0xFA]))],
+    0xA8: [Pot(138, 28, PotItem.Nothing, 'Eastern Stalfos Spawn', obj=RoomObject(0x0A97BB, [0x17, 0xE7, 0xFA])),
+           Pot(178, 28, PotItem.Nothing, 'Eastern Stalfos Spawn', obj=RoomObject(0x0A97BE, [0x67, 0xE7, 0xFA])),
+           Pot(178, 19, PotItem.Nothing, 'Eastern Stalfos Spawn', obj=RoomObject(0x0A97B8, [0x67, 0x9F, 0xFA])),
+           Pot(138, 19, PotItem.Heart, 'Eastern Stalfos Spawn', obj=RoomObject(0x0A97B5, [0x17, 0x9F, 0xFA])),
+           Pot(30, 24, PotItem.OneRupee, 'Eastern Stalfos Spawn', obj=RoomObject(0x0A97C1, [0x3F, 0xC3, 0xFA]))],
+    0xA9: [Pot(144, 0xB, PotItem.FiveArrows, 'Eastern Courtyard', PotFlags.LowerRegion, obj=RoomObject(0x0A9983, [0x23, 0x5F, 0xFA])),
+           Pot(236, 0xB, PotItem.FiveArrows, 'Eastern Courtyard', PotFlags.LowerRegion, obj=RoomObject(0x0A9989, [0xDB, 0x5F, 0xFA])),
+           Pot(144, 0xC, PotItem.FiveArrows, 'Eastern Courtyard', PotFlags.LowerRegion, obj=RoomObject(0x0A9986, [0x23, 0x67, 0xFA])),
+           Pot(236, 0xC, PotItem.Heart, 'Eastern Courtyard', PotFlags.LowerRegion, obj=RoomObject(0x0A998C, [0xDB, 0x67, 0xFA])),
+           Pot(12, 19, PotItem.Nothing, 'Eastern Courtyard Ledge', obj=RoomObject(0x0A994B, [0x1B, 0x9B, 0xFA])),
+           Pot(112, 19, PotItem.Nothing, 'Eastern Courtyard Ledge', obj=RoomObject(0x0A993C, [0xE3, 0x9B, 0xFA])),
+           Pot(16, 20, PotItem.Heart, 'Eastern Courtyard Ledge', obj=RoomObject(0x0A994E, [0x23, 0xA3, 0xFA])),
+           Pot(108, 20, PotItem.Heart, 'Eastern Courtyard Ledge', obj=RoomObject(0x0A9936, [0xDB, 0xA3, 0xFA]))],
+    0xAA: [Pot(212, 10, PotItem.Nothing, 'Eastern Pot Switch', obj=RoomObject(0x0A9AA5, [0xAB, 0x57, 0xFA])),
+           Pot(232, 10, PotItem.Nothing, 'Eastern Pot Switch', obj=RoomObject(0x0A9AA8, [0xD3, 0x57, 0xFA])),
+           Pot(232, 5, PotItem.Nothing, 'Eastern Pot Switch', obj=RoomObject(0x0A9AA2, [0xD3, 0x2F, 0xFA])),
+           Pot(212, 5, PotItem.Heart, 'Eastern Pot Switch', obj=RoomObject(0x0A9A9F, [0xAB, 0x2F, 0xFA])),
+           Pot(94, 8, PotItem.Switch, 'Eastern Pot Switch', obj=RoomObject(0x0A9AAB, [0xBF, 0x43, 0xFA])),
+           Pot(108, 0x17, PotItem.Heart, 'Eastern Map Balcony', PotFlags.LowerRegion, obj=RoomObject(0x0A9AF5, [0xDB, 0xBB, 0xFA])),
+           Pot(108, 0x18, PotItem.Heart, 'Eastern Map Balcony', PotFlags.LowerRegion, obj=RoomObject(0x0A9AF8, [0xDB, 0xC3, 0xFA])),
+           Pot(108, 0x19, PotItem.Heart, 'Eastern Map Balcony', PotFlags.LowerRegion, obj=RoomObject(0x0A9AFB, [0xDB, 0xCB, 0xFA]))],
+    0xAB: [Pot(20, 24, PotItem.Key, 'Thieves Spike Switch', obj=RoomObject(0x1FD99D, [0x2B, 0xC3, 0xFA]))],
+    0xAE: [Pot(76, 12, PotItem.Switch, 'Iced T', obj=RoomObject(0x1FC95D, [0x9B, 0x63, 0xFA]))],
+    0xB0: [Pot(20, 27, PotItem.Nothing, 'Tower Circle of Pots', obj=RoomObject(0x1F8F2C, [0x2B, 0xDB, 0xFA])),
+           Pot(24, 24, PotItem.Nothing, 'Tower Circle of Pots', obj=RoomObject(0x1F8F26, [0x33, 0xC3, 0xFA])),
+           Pot(44, 25, PotItem.Nothing, 'Tower Circle of Pots', obj=RoomObject(0x1F8F38, [0x5B, 0xCB, 0xFA])),
+           Pot(20, 21, PotItem.Bomb, 'Tower Circle of Pots', obj=RoomObject(0x1F8F14, [0x2B, 0xAB, 0xFA])),
+           Pot(28, 21, PotItem.OneRupee, 'Tower Circle of Pots', obj=RoomObject(0x1F8F17, [0x3B, 0xAB, 0xFA])),
+           Pot(32, 21, PotItem.FiveRupees, 'Tower Circle of Pots', obj=RoomObject(0x1F8F1A, [0x43, 0xAB, 0xFA])),
+           Pot(40, 21, PotItem.FiveArrows, 'Tower Circle of Pots', obj=RoomObject(0x1F8F1D, [0x53, 0xAB, 0xFA])),
+           Pot(16, 23, PotItem.FiveRupees, 'Tower Circle of Pots', obj=RoomObject(0x1F8F20, [0x23, 0xBB, 0xFA])),
+           Pot(44, 23, PotItem.OneRupee, 'Tower Circle of Pots', obj=RoomObject(0x1F8F3B, [0x5B, 0xBB, 0xFA])),
+           Pot(36, 24, PotItem.Heart, 'Tower Circle of Pots', obj=RoomObject(0x1F8F29, [0x4B, 0xC3, 0xFA])),
+           Pot(16, 25, PotItem.Heart, 'Tower Circle of Pots', obj=RoomObject(0x1F8F23, [0x23, 0xCB, 0xFA])),
+           Pot(28, 27, PotItem.FiveArrows, 'Tower Circle of Pots', obj=RoomObject(0x1F8F2F, [0x3B, 0xDB, 0xFA])),
+           Pot(40, 27, PotItem.Bomb, 'Tower Circle of Pots', obj=RoomObject(0x1F8F35, [0x53, 0xDB, 0xFA])),
+           Pot(32, 27, PotItem.Nothing, 'Tower Circle of Pots', obj=RoomObject(0x1F8F32, [0x43, 0xDB, 0xFA]))],
+    0xB1: [Pot(76, 4, PotItem.Heart, 'Mire Spike Barrier', obj=RoomObject(0x1FB35A, [0x9B, 0x23, 0xFA])),
+           Pot(112, 4, PotItem.OneRupee, 'Mire Spike Barrier', obj=RoomObject(0x1FB35D, [0xE3, 0x23, 0xFA]))],
+    0xB2: [Pot(48, 0x8, PotItem.OneRupee, 'Mire BK Door Room', PotFlags.LowerRegion, obj=RoomObject(0x1FB467, [0x63, 0x43, 0xFA])),
+           Pot(76, 0x8, PotItem.OneRupee, 'Mire BK Door Room', PotFlags.LowerRegion, obj=RoomObject(0x1FB470, [0x9B, 0x43, 0xFA])),
+           Pot(48, 0x9, PotItem.Nothing, 'Mire BK Door Room', PotFlags.LowerRegion, obj=RoomObject(0x1FB46A, [0x63, 0x4B, 0xFA])),
+           Pot(76, 0x9, PotItem.Heart, 'Mire BK Door Room', PotFlags.LowerRegion, obj=RoomObject(0x1FB473, [0x9B, 0x4B, 0xFA])),
+           Pot(48, 0xA, PotItem.Nothing, 'Mire BK Door Room', PotFlags.LowerRegion, obj=RoomObject(0x1FB46D, [0x63, 0x53, 0xFA])),
+           Pot(76, 0xA, PotItem.Nothing, 'Mire BK Door Room', PotFlags.LowerRegion, obj=RoomObject(0x1FB476, [0x9B, 0x53, 0xFA]))],
+    0xB3: [Pot(12, 20, PotItem.Key, 'Mire Spikes', obj=RoomObject(0x1FB5A2, [0x1B, 0xA3, 0xFA])),
+           Pot(48, 20, PotItem.SmallMagic, 'Mire Spikes', obj=RoomObject(0x1FB5A5, [0x63, 0xA3, 0xFA])),
+           Pot(48, 28, PotItem.Switch, 'Mire Spikes', obj=RoomObject(0x1FB5C0, [0x63, 0xE3, 0xFA]))],
+    0xB4: [Pot(44, 28, PotItem.BigMagic, 'TR Final Abyss Balcony', obj=RoomObject(0x1FE7B6, [0x5B, 0xE3, 0xFA])),
+           Pot(48, 28, PotItem.Heart, 'TR Final Abyss Balcony', obj=RoomObject(0x1FE7B9, [0x63, 0xE3, 0xFA]))],
+    0xB5: [Pot(112, 4, PotItem.FiveRupees, 'TR Dark Ride Ledges', obj=RoomObject(0x1FEA78, [0xE3, 0x23, 0xFA])),
+           Pot(112, 15, PotItem.Heart, 'TR Dark Ride Ledges', obj=RoomObject(0x1FEAD5, [0xE3, 0x7B, 0xFA])),
+           Pot(76, 16, PotItem.Switch, 'TR Dark Ride Ledges', obj=RoomObject(0x1FEA93, [0x9B, 0x83, 0xFA])),
+           Pot(112, 16, PotItem.BigMagic, 'TR Dark Ride Ledges', obj=RoomObject(0x1FEAD8, [0xE3, 0x83, 0xFA])),
+           Pot(112, 17, PotItem.Heart, 'TR Dark Ride Ledges', obj=RoomObject(0x1FEADB, [0xE3, 0x8B, 0xFA])),
+           Pot(112, 28, PotItem.Bomb, 'TR Dark Ride Ledges', obj=RoomObject(0x1FEAF3, [0xE3, 0xE3, 0xFA]))],
+    0xB6: [Pot(94, 9, PotItem.BigMagic, 'TR Refill', obj=RoomObject(0x1FDD29, [0xBF, 0x4B, 0xFA]))],
+    0xB7: [Pot(30, 5, PotItem.SmallMagic, 'TR Roller Room', obj=RoomObject(0x1FDD76, [0x3F, 0x2B, 0xFA]))],
+    0xB8: [Pot(96, 13, PotItem.Switch, 'Eastern Big Key', obj=RoomObject(0x0A9B66, [0xC3, 0x6B, 0xFA])),
+           Pot(88, 16, PotItem.Heart, 'Eastern Big Key', obj=RoomObject(0x0A9B60, [0xB3, 0x83, 0xFA])),
+           Pot(104, 16, PotItem.Heart, 'Eastern Big Key', obj=RoomObject(0x0A9B63, [0xD3, 0x83, 0xFA]))],
+    0xB9: [Pot(92, 18, PotItem.OneRupee, 'Eastern Cannonball', obj=RoomObject(0x0A9C82, [0xBB, 0x93, 0xFA])),
+           Pot(96, 18, PotItem.FiveRupees, 'Eastern Cannonball', obj=RoomObject(0x0A9C85, [0xC3, 0x93, 0xFA])),
+           Pot(104, 18, PotItem.FiveRupees, 'Eastern Cannonball', obj=RoomObject(0x0A9C88, [0xD3, 0x93, 0xFA])),
+           Pot(108, 18, PotItem.OneRupee, 'Eastern Cannonball', obj=RoomObject(0x0A9C8B, [0xDB, 0x93, 0xFA]))],
+    0xBA: [Pot(100, 8, PotItem.Nothing, 'Eastern Dark Pots', obj=RoomObject(0x0A9D3F, [0xCB, 0x43, 0xFA])),
+           Pot(88, 8, PotItem.Nothing, 'Eastern Dark Pots', obj=RoomObject(0x0A9D36, [0xB3, 0x43, 0xFA])),
+           Pot(94, 4, PotItem.OneRupee, 'Eastern Dark Pots', obj=RoomObject(0x0A9D39, [0xBF, 0x23, 0xFA])),
+           Pot(76, 6, PotItem.Heart, 'Eastern Dark Pots', obj=RoomObject(0x0A9D30, [0x9B, 0x33, 0xFA])),
+           Pot(112, 6, PotItem.Key, 'Eastern Dark Pots', obj=RoomObject(0x0A9D42, [0xE3, 0x33, 0xFA])),
+           Pot(76, 10, PotItem.Heart, 'Eastern Dark Pots', obj=RoomObject(0x0A9D33, [0x9B, 0x53, 0xFA])),
+           Pot(112, 10, PotItem.SmallMagic, 'Eastern Dark Pots', obj=RoomObject(0x0A9D45, [0xE3, 0x53, 0xFA])),
+           Pot(94, 12, PotItem.OneRupee, 'Eastern Dark Pots', obj=RoomObject(0x0A9D3C, [0xBF, 0x63, 0xFA]))],
+    0xBC: [Pot(86, 4, PotItem.Heart, 'Thieves Hallway', obj=RoomObject(0x1FD941, [0xAF, 0x23, 0xFA])),
+           Pot(102, 4, PotItem.Key, 'Thieves Hallway', obj=RoomObject(0x1FD944, [0xCF, 0x23, 0xFA])),
+           Pot(138, 3, PotItem.Bomb, 'Thieves Conveyor Maze', obj=RoomObject(0x1FD8DB, [0x17, 0x1F, 0xFA])),
+           Pot(178, 3, PotItem.Switch, 'Thieves Conveyor Maze', obj=RoomObject(0x1FD8DE, [0x67, 0x1F, 0xFA])),
+           Pot(138, 12, PotItem.Heart, 'Thieves Conveyor Maze', obj=RoomObject(0x1FD8E1, [0x17, 0x67, 0xFA])),
+           Pot(178, 12, PotItem.Bomb, 'Thieves Conveyor Maze', obj=RoomObject(0x1FD8F3, [0x67, 0x67, 0xFA])),
+           Pot(12, 20, PotItem.Nothing, 'Thieves Pot Alcove Mid', obj=RoomObject(0x1FD8FF, [0x1B, 0xA3, 0xFA])),
+           Pot(48, 20, PotItem.Bomb, 'Thieves Pot Alcove Mid', obj=RoomObject(0x1FD902, [0x63, 0xA3, 0xFA])),
+           Pot(12, 28, PotItem.Bomb, 'Thieves Pot Alcove Mid', obj=RoomObject(0x1FD905, [0x1B, 0xE3, 0xFA])),
+           Pot(48, 28, PotItem.Bomb, 'Thieves Pot Alcove Mid', obj=RoomObject(0x1FD908, [0x63, 0xE3, 0xFA])),
+           Pot(28, 21, PotItem.FiveRupees, 'Thieves Pot Alcove Top', obj=RoomObject(0x1FD914, [0x3B, 0xAB, 0xFA])),
+           Pot(32, 21, PotItem.FiveRupees, 'Thieves Pot Alcove Top', obj=RoomObject(0x1FD917, [0x43, 0xAB, 0xFA])),
+           Pot(28, 27, PotItem.FiveRupees, 'Thieves Pot Alcove Bottom', obj=RoomObject(0x1FD923, [0x3B, 0xDB, 0xFA])),
+           Pot(32, 27, PotItem.FiveRupees, 'Thieves Pot Alcove Bottom', obj=RoomObject(0x1FD926, [0x43, 0xDB, 0xFA]))],
+    0xBE: [Pot(92, 25, PotItem.Switch, 'Ice Switch Room', obj=RoomObject(0x1FC9E9, [0xBB, 0xCB, 0xFA]))],
+    0xBF: [Pot(40, 20, PotItem.FiveArrows, 'Ice Refill', obj=RoomObject(0x1FCA56, [0x53, 0xA3, 0xFA])),
+           Pot(44, 20, PotItem.Heart, 'Ice Refill', obj=RoomObject(0x1FCA59, [0x5B, 0xA3, 0xFA])),
+           Pot(48, 20, PotItem.Bomb, 'Ice Refill', obj=RoomObject(0x1FCA5C, [0x63, 0xA3, 0xFA])),
+           Pot(40, 28, PotItem.SmallMagic, 'Ice Refill', obj=RoomObject(0x1FCA5F, [0x53, 0xE3, 0xFA])),
+           Pot(44, 28, PotItem.SmallMagic, 'Ice Refill', obj=RoomObject(0x1FCA62, [0x5B, 0xE3, 0xFA])),
+           Pot(48, 28, PotItem.SmallMagic, 'Ice Refill', obj=RoomObject(0x1FCA65, [0x63, 0xE3, 0xFA]))],
+    0xC0: [Pot(48, 10, PotItem.Bomb, 'Tower Dark Pits', obj=RoomObject(0x1F8FE1, [0x63, 0x53, 0xFA])),
+           Pot(12, 14, PotItem.FiveRupees, 'Tower Dark Pits', obj=RoomObject(0x1F8FE7, [0x1B, 0x73, 0xFA])),
+           Pot(12, 26, PotItem.Heart, 'Tower Dark Pits', obj=RoomObject(0x1F8FF0, [0x1B, 0xD3, 0xFA])),
+           Pot(28, 27, PotItem.OneRupee, 'Tower Dark Pits', obj=RoomObject(0x1F8FF3, [0x3B, 0xDB, 0xFA]))],
+    0xC2: [Pot(180, 7, PotItem.Switch, 'Mire Hub Switch', obj=RoomObject(0x1FB0C4, [0x6B, 0x3F, 0xFA])),
+           Pot(100, 0xE, PotItem.SmallMagic, 'Mire Hub Right', PotFlags.LowerRegion, RoomObject(0x1FB071, [0xCB, 0x73, 0xFA])),
+           Pot(68, 0x10, PotItem.OneRupee, 'Mire Hub', PotFlags.LowerRegion, RoomObject(0x1FB086, [0x8B, 0x83, 0xFA])),
+           Pot(64, 0x14, PotItem.FiveArrows, 'Mire Hub', PotFlags.LowerRegion, RoomObject(0x1FB089, [0x83, 0xA3, 0xFA]))],
+    0xC4: [Pot(84, 9, PotItem.Bomb, 'TR Crystal Maze Interior', obj=RoomObject(0x1FEC06, [0xAB, 0x4B, 0xFA])),
+           Pot(24, 14, PotItem.Heart, 'TR Crystal Maze Interior', obj=RoomObject(0x1FEC09, [0x33, 0x73, 0xFA])),
+           Pot(56, 17, PotItem.FiveRupees, 'TR Crystal Maze Interior', obj=RoomObject(0x1FEC0C, [0x73, 0x8B, 0xFA])),
+           Pot(84, 17, PotItem.Bomb, 'TR Crystal Maze Interior', obj=RoomObject(0x1FEC0F, [0xAB, 0x8B, 0xFA])),
+           Pot(12, 21, PotItem.FiveArrows, 'TR Crystal Maze Interior', obj=RoomObject(0x1FEC15, [0x1B, 0xAB, 0xFA])),
+           Pot(76, 23, PotItem.OneRupee, 'TR Crystal Maze Interior', obj=RoomObject(0x1FEC12, [0x9B, 0xBB, 0xFA])),
+           Pot(48, 25, PotItem.SmallMagic, 'TR Crystal Maze Interior', obj=RoomObject(0x1FEC1B, [0x63, 0xCB, 0xFA])),
+           Pot(12, 26, PotItem.Heart, 'TR Crystal Maze Interior', obj=RoomObject(0x1FEC18, [0x1B, 0xD3, 0xFA]))],
+    0xC6: [Pot(12, 7, PotItem.BigMagic, 'TR Hub Ledges', obj=RoomObject(0x1FDF50, [0x1B, 0x3B, 0xFA])),
+           Pot(12, 25, PotItem.Heart, 'TR Hub Ledges', obj=RoomObject(0x1FDF53, [0x1B, 0xCB, 0xFA]))],
+    0xC7: [Pot(12, 10, PotItem.Heart, 'TR Torches', obj=RoomObject(0x1FE080, [0x1B, 0x53, 0xFA])),
+           Pot(12, 11, PotItem.BigMagic, 'TR Torches', obj=RoomObject(0x1FE083, [0x1B, 0x5B, 0xFA])),
+           Pot(12, 22, PotItem.SmallMagic, 'TR Torches Ledge', obj=RoomObject(0x1FE098, [0x1B, 0xB3, 0xFA])),
+           Pot(12, 28, PotItem.FiveArrows, 'TR Torches Ledge', obj=RoomObject(0x1FE095, [0x1B, 0xE3, 0xFA]))],
+    0xC9: [Pot(30, 22, PotItem.OneRupee, 'Eastern Lobby', obj=RoomObject(0x0A9E30, [0x3F, 0xB3, 0xFA])),
+           Pot(94, 22, PotItem.OneRupee, 'Eastern Lobby', obj=RoomObject(0x0A9E36, [0xBF, 0xB3, 0xFA])),
+           Pot(60, 22, PotItem.Switch, 'Eastern Lobby', obj=RoomObject(0x0A9E33, [0x7B, 0xB3, 0xFA]))],
+    0xCB: [Pot(80, 4, PotItem.Nothing, 'Thieves Ambush', obj=RoomObject(0x1FD59A, [0xA3, 0x23, 0xFA])),
+           Pot(80, 28, PotItem.Nothing, 'Thieves Ambush', obj=RoomObject(0x1FD5A3, [0xA3, 0xE3, 0xFA])),
+           Pot(88, 16, PotItem.Heart, 'Thieves Ambush', obj=RoomObject(0x1FD59D, [0xB3, 0x83, 0xFA])),
+           Pot(88, 28, PotItem.FiveRupees, 'Thieves Ambush', obj=RoomObject(0x1FD5A0, [0xB3, 0xE3, 0xFA]))],
+    0xCC: [Pot(36, 4, PotItem.FiveRupees, 'Thieves Rail Ledge', obj=RoomObject(0x1FD6F0, [0x4B, 0x23, 0xFA])),
+           Pot(36, 28, PotItem.FiveRupees, 'Thieves Rail Ledge', obj=RoomObject(0x1FD6F3, [0x4B, 0xE3, 0xFA])),
+           Pot(112, 4, PotItem.Heart, 'Thieves BK Corner', obj=RoomObject(0x1FD6ED, [0xE3, 0x23, 0xFA])),
+           Pot(112, 28, PotItem.Bomb, 'Thieves BK Corner', obj=RoomObject(0x1FD6F6, [0xE3, 0xE3, 0xFA]))],
+    0xCE: [Pot(76, 8, PotItem.SmallMagic, 'Ice Antechamber', obj=RoomObject(0x1FCAA7, [0x9B, 0x43, 0xFA])),
+           Pot(80, 8, PotItem.SmallMagic, 'Ice Antechamber', obj=RoomObject(0x1FCAAA, [0xA3, 0x43, 0xFA])),
+           Pot(108, 12, PotItem.Bomb, 'Ice Antechamber', obj=RoomObject(0x1FCAB9, [0xDB, 0x63, 0xFA])),
+           Pot(112, 12, PotItem.FiveArrows, 'Ice Antechamber', obj=RoomObject(0x1FCABC, [0xE3, 0x63, 0xFA])),
+           Pot(204, 11, PotItem.Hole, 'Ice Antechamber'),
+           Pot(0x6c, 8, PotItem.Nothing, 'Ice Antechamber', PotFlags.Block)],
+    0xD0: [Pot(158, 5, PotItem.SmallMagic, 'Tower Dark Maze', obj=RoomObject(0x1F90A5, [0x3F, 0x2F, 0xFA])),
+           Pot(140, 11, PotItem.OneRupee, 'Tower Dark Maze', obj=RoomObject(0x1F90A8, [0x1B, 0x5F, 0xFA])),
+           Pot(42, 13, PotItem.SmallMagic, 'Tower Dark Maze', obj=RoomObject(0x1F90AE, [0x57, 0x6B, 0xFA])),
+           Pot(48, 16, PotItem.Heart, 'Tower Dark Maze', obj=RoomObject(0x1F90B1, [0x63, 0x83, 0xFA])),
+           Pot(176, 20, PotItem.OneRupee, 'Tower Dark Maze', obj=RoomObject(0x1F90B4, [0x63, 0xA7, 0xFA])),
+           Pot(146, 23, PotItem.FiveRupees, 'Tower Dark Maze', obj=RoomObject(0x1F90B7, [0x27, 0xBF, 0xFA])),
+           Pot(12, 28, PotItem.Heart, 'Tower Dark Maze', obj=RoomObject(0x1F90BA, [0x1B, 0xE3, 0xFA]))],
+    0xD1: [Pot(48, 4, PotItem.BigMagic, 'Mire Conveyor Barrier', obj=RoomObject(0x1FB22C, [0x63, 0x23, 0xFA])),
+           Pot(168, 7, PotItem.OneRupee, 'Mire Conveyor Barrier', obj=RoomObject(0x1FB229, [0x53, 0x3F, 0xFA])),
+           Pot(76, 4, PotItem.OneRupee, 'Mire Neglected Room', obj=RoomObject(0x1FB23B, [0x9B, 0x23, 0xFA])),
+           Pot(112, 4, PotItem.FiveArrows, 'Mire Neglected Room', obj=RoomObject(0x1FB250, [0xE3, 0x23, 0xFA])),
+           Pot(76, 12, PotItem.Nothing, 'Mire Neglected Room', obj=RoomObject(0x1FB232, [0x9B, 0x63, 0xFA])),
+           Pot(112, 12, PotItem.OneRupee, 'Mire Neglected Room', obj=RoomObject(0x1FB235, [0xE3, 0x63, 0xFA]))],
+    0xD6: [Pot(92, 22, PotItem.BigMagic, 'TR Main Lobby', obj=RoomObject(0x1FE0F9, [0xBB, 0xB3, 0xFA])),
+           Pot(96, 22, PotItem.Bomb, 'TR Main Lobby', obj=RoomObject(0x1FE0FC, [0xC3, 0xB3, 0xFA]))],
+    0xD8: [Pot(202, 8, PotItem.Heart, 'Eastern Duo Eyegores', obj=RoomObject(0x0A95C0, [0x97, 0x47, 0xFA])),
+           Pot(242, 8, PotItem.FiveArrows, 'Eastern Duo Eyegores', obj=RoomObject(0x0A95CF, [0xE7, 0x47, 0xFA])),
+           Pot(202, 10, PotItem.FiveArrows, 'Eastern Duo Eyegores', obj=RoomObject(0x0A95C3, [0x97, 0x57, 0xFA])),
+           Pot(242, 10, PotItem.FiveArrows, 'Eastern Duo Eyegores', obj=RoomObject(0x0A95C9, [0xE7, 0x57, 0xFA])),
+           Pot(202, 12, PotItem.FiveArrows, 'Eastern Duo Eyegores', obj=RoomObject(0x0A95C6, [0x97, 0x67, 0xFA])),
+           Pot(242, 12, PotItem.Heart, 'Eastern Duo Eyegores', obj=RoomObject(0x0A95CC, [0xE7, 0x67, 0xFA])),
+           Pot(92, 24, PotItem.Heart, 'Eastern Single Eyegore', obj=RoomObject(0x0A95DB, [0xBB, 0xC3, 0xFA])),
+           Pot(96, 24, PotItem.FiveArrows, 'Eastern Single Eyegore', obj=RoomObject(0x0A95DE, [0xC3, 0xC3, 0xFA]))],
+    0xD9: [Pot(92, 20, PotItem.FiveArrows, 'Eastern False Switches', obj=RoomObject(0x0A965A, [0xBB, 0xA3, 0xFA])),
+           Pot(92, 28, PotItem.Heart, 'Eastern False Switches', obj=RoomObject(0x0A965D, [0xBB, 0xE3, 0xFA]))],
+    0xDA: [Pot(24, 23, PotItem.FiveArrows, 'Eastern Attic Start', obj=RoomObject(0x0A968B, [0x33, 0xBB, 0xFA])),
+           Pot(36, 23, PotItem.FiveArrows, 'Eastern Attic Start', obj=RoomObject(0x0A968E, [0x4B, 0xBB, 0xFA])),
+           Pot(24, 25, PotItem.Switch, 'Eastern Attic Start', obj=RoomObject(0x0A9691, [0x33, 0xCB, 0xFA])),
+           Pot(36, 25, PotItem.Heart, 'Eastern Attic Start', obj=RoomObject(0x0A9694, [0x4B, 0xCB, 0xFA]))],
+    0xDB: [Pot(12, 4, PotItem.Nothing, 'Thieves Lobby', obj=RoomObject(0x1FD2C5, [0x1B, 0x23, 0xFA])),
+           Pot(62, 19, PotItem.Nothing, 'Thieves Lobby', PotFlags.LowerRegion, RoomObject(0x1FD300, [0x7F, 0x9B, 0xFA])),
+           Pot(112, 4, PotItem.FiveRupees, 'Thieves Lobby', obj=RoomObject(0x1FD2C8, [0xE3, 0x23, 0xFA])),
+           Pot(88, 16, PotItem.Heart, 'Thieves Lobby', obj=RoomObject(0x1FD2CB, [0xB3, 0x83, 0xFA]))],
+    0xDC: [Pot(56, 4, PotItem.FiveRupees, 'Thieves Compass Room', obj=RoomObject(0x1FD447, [0x73, 0x23, 0xFA])),
+           Pot(112, 4, PotItem.Bomb, 'Thieves Compass Room', obj=RoomObject(0x1FD44A, [0xE3, 0x23, 0xFA])),
+           Pot(68, 16, PotItem.Heart, 'Thieves Compass Room', obj=RoomObject(0x1FD44D, [0x8B, 0x83, 0xFA])),
+           Pot(12, 28, PotItem.FiveArrows, 'Thieves Compass Room', obj=RoomObject(0x1FD453, [0x1B, 0xE3, 0xFA]))],
+    0xE3: [Pot(88, 0x17, PotItem.Nothing, 'Bat Cave (right)', PotFlags.LowerRegion, RoomObject(0x0A82EE, [0xB3, 0xBB, 0xFA])),
+           Pot(100, 0x19, PotItem.OneRupee, 'Bat Cave (right)', PotFlags.LowerRegion, RoomObject(0x0A82F1, [0xCB, 0xCB, 0xFA]))],
+    0xE4: [Pot(32, 9, PotItem.FiveRupees, 'Old Man House', obj=RoomObject(0x0AB42A, [0x43, 0x4B, 0xFA])),
+           Pot(112, 10, PotItem.OneRupee, 'Old Man House', obj=RoomObject(0x0AB46C, [0xE3, 0x53, 0xFA]))],
+    0xE5: [Pot(48, 4, PotItem.OneRupee, 'Old Man House Back', obj=RoomObject(0x0AB545, [0x63, 0x23, 0xFA])),
+           Pot(76, 4, PotItem.OneRupee, 'Old Man House Back', obj=RoomObject(0x0AB548, [0x9B, 0x23, 0xFA])),
+           Pot(112, 16, PotItem.OneRupee, 'Old Man House Back', obj=RoomObject(0x0AB54B, [0xE3, 0x83, 0xFA])),
+           Pot(64, 18, PotItem.FiveRupees, 'Old Man House Back', obj=RoomObject(0x0AB54E, [0x83, 0x93, 0xFA]))],
+    0xE6: [Pot(108, 12, PotItem.FiveArrows, 'Death Mountain Return Cave (left)', obj=RoomObject(0x0AB29D, [0xDB, 0x63, 0xFA])),
+           Pot(88, 16, PotItem.Heart, 'Death Mountain Return Cave (left)', obj=RoomObject(0x0AB2A0, [0xB3, 0x83, 0xFA])),
+           Pot(72, 20, PotItem.Nothing, 'Death Mountain Return Cave (left)', obj=RoomObject(0x0AB2A3, [0x93, 0xA3, 0xFA])),
+           Pot(56, 24, PotItem.OneRupee, 'Death Mountain Return Cave (left)', obj=RoomObject(0x0AB2A6, [0x73, 0xC3, 0xFA]))],
+    0xE7: [Pot(68, 5, PotItem.OneRupee, 'Death Mountain Return Cave (right)', obj=RoomObject(0x0AB389, [0x8B, 0x2B, 0xFA])),
+           Pot(72, 5, PotItem.OneRupee, 'Death Mountain Return Cave (right)', obj=RoomObject(0x0AB38C, [0x93, 0x2B, 0xFA]))],
+    0xE8: [Pot(96, 4, PotItem.Heart, 'Superbunny Cave (Bottom)', obj=RoomObject(0x0AA98E, [0xC3, 0x23, 0xFA]))],
+    0xEB: [Pot(206, 8, PotItem.FiveRupees, 'Bumper Cave (bottom)', obj=RoomObject(0x0AADE7, [0x9F, 0x47, 0xFA])),
+           Pot(210, 8, PotItem.FiveRupees, 'Bumper Cave (bottom)', obj=RoomObject(0x0AADEA, [0xA7, 0x47, 0xFA])),
+           Pot(88, 14, PotItem.SmallMagic, 'Bumper Cave (bottom)', obj=RoomObject(0x0AADED, [0xB3, 0x73, 0xFA])),
+           Pot(92, 14, PotItem.Heart, 'Bumper Cave (bottom)', obj=RoomObject(0x0AADF0, [0xBB, 0x73, 0xFA])),
+           Pot(96, 14, PotItem.SmallMagic, 'Bumper Cave (bottom)', obj=RoomObject(0x0AADF3, [0xC3, 0x73, 0xFA]))],
+    0xF1: [Pot(64, 5, PotItem.Heart, 'Old Man Cave (East)', obj=RoomObject(0x0AA6B2, [0x83, 0x2B, 0xFA]))],
+    0xF3: [Pot(0x28, 0x14, PotItem.Nothing, 'Elder House', obj=RoomObject(0x0AA76F, [0x53, 0xA3, 0xFA])),
+           Pot(0x2C, 0x14, PotItem.Nothing, 'Elder House', obj=RoomObject(0x0AA772, [0x5B, 0xA3, 0xFA])),
+           Pot(0x30, 0x14, PotItem.Nothing, 'Elder House', obj=RoomObject(0x0AA775, [0x63, 0xA3, 0xFA]))],
+    0xF8: [Pot(242, 13, PotItem.BigMagic, 'Superbunny Cave (Top)', obj=RoomObject(0x0AA8B9, [0xE7, 0x6F, 0xFA]))],
+    0xFD: [Pot(88, 6, PotItem.FiveRupees, 'Fairy Ascension Cave (Top)', obj=RoomObject(0x0AAA51, [0xB3, 0x33, 0xFA])),
+           Pot(100, 6, PotItem.FiveRupees, 'Fairy Ascension Cave (Top)', obj=RoomObject(0x0AAA54, [0xCB, 0x33, 0xFA])),
+           Pot(84, 23, PotItem.FiveRupees, 'Fairy Ascension Cave (Bottom)', obj=RoomObject(0x0AAA57, [0xAB, 0xBB, 0xFA])),
+           Pot(84, 24, PotItem.FiveRupees, 'Fairy Ascension Cave (Bottom)', obj=RoomObject(0x0AAA5A, [0xAB, 0xC3, 0xFA]))],
+    0xFF: [Pot(92, 8, PotItem.Heart, 'Paradox Cave Bomb Area', obj=RoomObject(0x0AAC5B, [0xBB, 0x43, 0xFA])),
+           Pot(96, 8, PotItem.Heart, 'Paradox Cave Bomb Area', obj=RoomObject(0x0AAC5E, [0xC3, 0x43, 0xFA])),
+           Pot(112, 28, PotItem.OneRupee, 'Paradox Cave Front', obj=RoomObject(0x0AAC6A, [0xE3, 0xE3, 0xFA]))],
+    0x101: [Pot(12, 20, PotItem.Heart, 'Snitch Lady (East)', obj=RoomObject(0x03EBE5, [0x1B, 0xA3, 0xFA])),
+            Pot(224, 19, PotItem.Chicken, 'Snitch Lady (West)', obj=RoomObject(0x03EC1E, [0xC3, 0x9F, 0xFA])),
+            Pot(228, 19, PotItem.Heart, 'Snitch Lady (West)', obj=RoomObject(0x03EC21, [0xCB, 0x9F, 0xFA]))],
+    0x102: [Pot(146, 19, PotItem.Heart, 'Sick Kids House', obj=RoomObject(0x03EC81, [0x27, 0x9F, 0xFA])),
+            Pot(150, 19, PotItem.Heart, 'Sick Kids House', obj=RoomObject(0x03EC84, [0x2F, 0x9F, 0xFA]))],
+    0x103: [Pot(140, 7, PotItem.Chicken, 'Tavern', obj=RoomObject(0x03ECDA, [0x1B, 0x3F, 0xFA])),
+            Pot(140, 9, PotItem.Nothing, 'Tavern', obj=RoomObject(0x03ECDD, [0x1B, 0x4F, 0xFA])),
+            Pot(12, 12, PotItem.Heart, 'Tavern (Front)', obj=RoomObject(0x03ECE6, [0x1B, 0x63, 0xFA]))],
+    0x104: [Pot(202, 21, PotItem.Heart, 'Links House', obj=RoomObject(0x0A8017, [0x97, 0xAF, 0xFA])),
+            Pot(202, 22, PotItem.Heart, 'Links House', obj=RoomObject(0x0A801A, [0x97, 0xB7, 0xFA])),
+            Pot(202, 23, PotItem.Heart, 'Links House', obj=RoomObject(0x0A801D, [0x97, 0xBF, 0xFA]))],
+    0x105: [Pot(30, 20, PotItem.Heart, 'Sahasrahlas Hut', obj=RoomObject(0x03EDF2, [0x3F, 0xA3, 0xFA])),
+            Pot(28, 21, PotItem.Heart, 'Sahasrahlas Hut', obj=RoomObject(0x03EDEC, [0x3B, 0xAB, 0xFA])),
+            Pot(32, 21, PotItem.Heart, 'Sahasrahlas Hut', obj=RoomObject(0x03EDEF, [0x43, 0xAB, 0xFA]))],
+    0x106: [Pot(0x6c, 0x1b, PotItem.Nothing, 'Brewery', obj=RoomObject(0x03EEB0, [0xDB, 0xDB, 0xFA]))],
+    0x107: [Pot(214, 23, PotItem.Bomb, 'Light World Bomb Hut', obj=RoomObject(0x03EF49, [0xAF, 0xBF, 0xFA])),
+            Pot(222, 23, PotItem.FiveArrows, 'Light World Bomb Hut', obj=RoomObject(0x03EF4C, [0xBF, 0xBF, 0xFA])),
+            Pot(230, 23, PotItem.Bomb, 'Light World Bomb Hut', obj=RoomObject(0x03EF4F, [0xCF, 0xBF, 0xFA])),
+            Pot(214, 25, PotItem.OneRupee, 'Light World Bomb Hut', obj=RoomObject(0x03EF52, [0xAF, 0xCF, 0xFA])),
+            Pot(222, 25, PotItem.Nothing, 'Light World Bomb Hut', obj=RoomObject(0x03EF55, [0xBF, 0xCF, 0xFA])),
+            Pot(230, 25, PotItem.OneRupee, 'Light World Bomb Hut', obj=RoomObject(0x03EF58, [0xCF, 0xCF, 0xFA])),
+            Pot(214, 27, PotItem.Bomb, 'Light World Bomb Hut', obj=RoomObject(0x03EF5B, [0xAF, 0xDF, 0xFA])),
+            Pot(230, 27, PotItem.Bomb, 'Light World Bomb Hut', obj=RoomObject(0x03EF5E, [0xCF, 0xDF, 0xFA]))],
+    0x108: [Pot(166, 19, PotItem.Chicken, 'Chicken House', obj=RoomObject(0x03EFA9, [0x4F, 0x9F, 0xFA]))],
+    0x10C: [Pot(88, 14, PotItem.Heart, 'Hookshot Fairy', obj=RoomObject(0x03F329, [0xB3, 0x73, 0xFA]))],
+    # note: these addresses got moved thanks to waterfall fairy edit
+    0x114: [Pot(92, 4, PotItem.Heart, 'Mire Hint', obj=RoomObject(0x03F79A, [0xBB, 0x23, 0xFA])),
+            Pot(96, 4, PotItem.Heart, 'Mire Hint', obj=RoomObject(0x03F79D, [0xC3, 0x23, 0xFA])),
+            Pot(92, 5, PotItem.Bomb, 'Mire Hint', obj=RoomObject(0x03F7A0, [0xBB, 0x2B, 0xFA])),
+            Pot(96, 5, PotItem.Bomb, 'Mire Hint', obj=RoomObject(0x03F7A3, [0xC3, 0x2B, 0xFA])),
+            Pot(92, 10, PotItem.FiveArrows, 'Mire Hint', obj=RoomObject(0x03F7A6, [0xBB, 0x53, 0xFA])),
+            Pot(96, 10, PotItem.Heart, 'Mire Hint', obj=RoomObject(0x03F7A9, [0xC3, 0x53, 0xFA]))],
+    0x117: [Pot(138, 3, PotItem.Heart, 'Spike Cave', obj=RoomObject(0x03FCB2, [0x17, 0x1F, 0xFA])),  # 0x38A -> 38A
+            Pot(142, 3, PotItem.Heart, 'Spike Cave', obj=RoomObject(0x03FCB8, [0x1F, 0x1F, 0xFA])),
+            Pot(166, 3, PotItem.Heart, 'Spike Cave', obj=RoomObject(0x03FCC1, [0x4F, 0x1F, 0xFA])),
+            Pot(170, 3, PotItem.Heart, 'Spike Cave', obj=RoomObject(0x03FCC7, [0x57, 0x1F, 0xFA])),
+            Pot(138, 4, PotItem.Heart, 'Spike Cave', obj=RoomObject(0x03FCB5, [0x17, 0x27, 0xFA])),
+            Pot(142, 4, PotItem.Heart, 'Spike Cave', obj=RoomObject(0x03FCBB, [0x1F, 0x27, 0xFA])),
+            Pot(166, 4, PotItem.Heart, 'Spike Cave', obj=RoomObject(0x03FCC4, [0x4F, 0x27, 0xFA])),
+            Pot(170, 4, PotItem.Heart, 'Spike Cave', obj=RoomObject(0x03FCCA, [0x57, 0x27, 0xFA])),
+            Pot(0x18, 0x8, PotItem.Nothing, 'Spike Cave', PotFlags.Block)],
+    0x119: [Pot(44, 28, PotItem.Heart, 'Blinds Hideout', obj=RoomObject(0x03FDFB, [0x5B, 0xE3, 0xFA])),
+            Pot(48, 28, PotItem.OneRupee, 'Blinds Hideout', obj=RoomObject(0x03FDFE, [0x63, 0xE3, 0xFA])),
+            Pot(76, 28, PotItem.Heart, 'Blinds Hideout', obj=RoomObject(0x03FE01, [0x9B, 0xE3, 0xFA])),
+            Pot(80, 28, PotItem.Heart, 'Blinds Hideout', obj=RoomObject(0x03FE04, [0xA3, 0xE3, 0xFA]))],
+    0x11A: [Pot(214, 10, PotItem.Heart, 'Palace of Darkness Hint', obj=RoomObject(0x03F91F, [0xAF, 0x57, 0xFA])),
+            Pot(218, 10, PotItem.Heart, 'Palace of Darkness Hint', obj=RoomObject(0x03F922, [0xB7, 0x57, 0xFA])),
+            Pot(226, 10, PotItem.Heart, 'Palace of Darkness Hint', obj=RoomObject(0x03F925, [0xC7, 0x57, 0xFA])),
+            Pot(230, 10, PotItem.Heart, 'Palace of Darkness Hint', obj=RoomObject(0x03F928, [0xCF, 0x57, 0xFA]))],
+    0x11B: [Pot(24, 0x15, PotItem.Nothing, 'Cave 45', PotFlags.LowerRegion, RoomObject(0x03F416, [0x33, 0xAB, 0xFA])),
+            Pot(24, 0x16, PotItem.Heart, 'Cave 45', PotFlags.LowerRegion, obj=RoomObject(0x03F419, [0x33, 0xB3, 0xFA])),
+            Pot(32, 0x16, PotItem.Heart, 'Cave 45', PotFlags.LowerRegion, obj=RoomObject(0x03F422, [0x43, 0xB3, 0xFA])),
+            Pot(40, 0x16, PotItem.Heart, 'Cave 45', PotFlags.LowerRegion, obj=RoomObject(0x03F425, [0x53, 0xB3, 0xFA])),
+            Pot(24, 0x17, PotItem.Heart, 'Cave 45', PotFlags.LowerRegion, obj=RoomObject(0x03F41C, [0x33, 0xBB, 0xFA])),
+            Pot(28, 0x18, PotItem.Heart, 'Cave 45', PotFlags.LowerRegion, obj=RoomObject(0x03F41F, [0x3B, 0xC3, 0xFA])),
+            Pot(92, 22, PotItem.Bomb, 'Graveyard Cave', obj=RoomObject(0x03F3D8, [0xBB, 0xB3, 0xFA])),
+            Pot(96, 22, PotItem.Heart, 'Graveyard Cave', obj=RoomObject(0x03F3DB, [0xC3, 0xB3, 0xFA])),
+            Pot(92, 23, PotItem.Bomb, 'Graveyard Cave', obj=RoomObject(0x03F3DE, [0xBB, 0xBB, 0xFA])),
+            Pot(96, 23, PotItem.Heart, 'Graveyard Cave', obj=RoomObject(0x03F3E1, [0xC3, 0xBB, 0xFA])),
+            Pot(92, 24, PotItem.Bomb, 'Graveyard Cave', obj=RoomObject(0x03F3E4, [0xBB, 0xC3, 0xFA])),
+            Pot(96, 24, PotItem.Heart, 'Graveyard Cave', obj=RoomObject(0x03F3E7, [0xC3, 0xC3, 0xFA])),
+            Pot(92, 25, PotItem.Bomb, 'Graveyard Cave', obj=RoomObject(0x03F3EA, [0xBB, 0xCB, 0xFA])),
+            Pot(96, 25, PotItem.Heart, 'Graveyard Cave', obj=RoomObject(0x03F3ED, [0xC3, 0xCB, 0xFA]))],
+    0x11D: [Pot(60, 6, PotItem.FiveRupees, 'Blinds Hideout (Top)', obj=RoomObject(0x03FE69, [0x7B, 0x33, 0xFA])),
+            Pot(64, 6, PotItem.FiveRupees, 'Blinds Hideout (Top)', obj=RoomObject(0x03FE6C, [0x83, 0x33, 0xFA])),
+            Pot(60, 7, PotItem.FiveRupees, 'Blinds Hideout (Top)', obj=RoomObject(0x03FE6F, [0x7B, 0x3B, 0xFA])),
+            Pot(64, 7, PotItem.FiveRupees, 'Blinds Hideout (Top)', obj=RoomObject(0x03FE72, [0x83, 0x3B, 0xFA])),
+            Pot(60, 8, PotItem.FiveRupees, 'Blinds Hideout (Top)', obj=RoomObject(0x03FE75, [0x7B, 0x43, 0xFA])),
+            Pot(64, 8, PotItem.FiveRupees, 'Blinds Hideout (Top)', obj=RoomObject(0x03FE78, [0x83, 0x43, 0xFA]))],
+    0x11F: [Pot(174, 28, PotItem.Heart, 'Lumberjack House', obj=RoomObject(0x03FF8A, [0x5F, 0xE7, 0xFA])),
+            Pot(178, 28, PotItem.Heart, 'Lumberjack House', obj=RoomObject(0x03FF8D, [0x67, 0xE7, 0xFA]))],
+    0x124: [Pot(20, 20, PotItem.FiveRupees, '50 Rupee Cave', obj=RoomObject(0x0AB5C2, [0x2B, 0xA3, 0xFA])),
+            Pot(40, 20, PotItem.FiveRupees, '50 Rupee Cave', obj=RoomObject(0x0AB5E3, [0x53, 0xA3, 0xFA])),
+            Pot(20, 21, PotItem.FiveRupees, '50 Rupee Cave', obj=RoomObject(0x0AB5C5, [0x2B, 0xAB, 0xFA])),
+            Pot(40, 21, PotItem.FiveRupees, '50 Rupee Cave', obj=RoomObject(0x0AB5E0, [0x53, 0xAB, 0xFA])),
+            Pot(20, 22, PotItem.FiveRupees, '50 Rupee Cave', obj=RoomObject(0x0AB5C8, [0x2B, 0xB3, 0xFA])),
+            Pot(40, 22, PotItem.FiveRupees, '50 Rupee Cave', obj=RoomObject(0x0AB5DD, [0x53, 0xB3, 0xFA])),
+            Pot(24, 24, PotItem.FiveRupees, '50 Rupee Cave', obj=RoomObject(0x0AB5CE, [0x33, 0xC3, 0xFA])),
+            Pot(28, 24, PotItem.FiveRupees, '50 Rupee Cave', obj=RoomObject(0x0AB5D1, [0x3B, 0xC3, 0xFA])),
+            Pot(32, 24, PotItem.FiveRupees, '50 Rupee Cave', obj=RoomObject(0x0AB5D4, [0x43, 0xC3, 0xFA])),
+            Pot(36, 24, PotItem.FiveRupees, '50 Rupee Cave', obj=RoomObject(0x0AB5D7, [0x4B, 0xC3, 0xFA]))],
+    0x125: [Pot(24, 25, PotItem.FiveRupees, '20 Rupee Cave', obj=RoomObject(0x0AB618, [0x33, 0xCB, 0xFA])),
+            Pot(28, 25, PotItem.FiveRupees, '20 Rupee Cave', obj=RoomObject(0x0AB61B, [0x3B, 0xCB, 0xFA])),
+            Pot(32, 25, PotItem.FiveRupees, '20 Rupee Cave', obj=RoomObject(0x0AB61E, [0x43, 0xCB, 0xFA])),
+            Pot(36, 25, PotItem.FiveRupees, '20 Rupee Cave', obj=RoomObject(0x0AB621, [0x4B, 0xCB, 0xFA])),
+            Pot(88, 22, PotItem.Heart, 'Dark Lake Hylia Ledge Spike Cave', obj=RoomObject(0x0AB627, [0xB3, 0xB3, 0xFA])),
+            Pot(100, 22, PotItem.Heart, 'Dark Lake Hylia Ledge Spike Cave', obj=RoomObject(0x0AB62A, [0xCB, 0xB3, 0xFA])),
+            Pot(88, 28, PotItem.Heart, 'Dark Lake Hylia Ledge Spike Cave', obj=RoomObject(0x0AB633, [0xB3, 0xE3, 0xFA])),
+            Pot(100, 28, PotItem.Heart, 'Dark Lake Hylia Ledge Spike Cave', obj=RoomObject(0x0AB636, [0xCB, 0xE3, 0xFA]))],
+    0x127: [Pot(24, 25, PotItem.Nothing, 'Hammer Peg Cave', obj=RoomObject(0x2B801A, [0x33, 0xCB, 0xFA])),
+            Pot(28, 25, PotItem.Nothing, 'Hammer Peg Cave', obj=RoomObject(0x2B801D, [0x3B, 0xCB, 0xFA])),
+            Pot(32, 25, PotItem.Nothing, 'Hammer Peg Cave', obj=RoomObject(0x2B8020, [0x43, 0xCB, 0xFA])),
+            Pot(36, 25, PotItem.Nothing, 'Hammer Peg Cave', obj=RoomObject(0x2B8023, [0x4B, 0xCB, 0xFA]))],
+}
+
+
+def shuffle_pots(world, player):
+    import RaceRandom as random
+
+    new_pot_contents = PotSecretTable()
+
+    for super_tile in vanilla_pots:
+        old_pots = vanilla_pots[super_tile]
+        new_pots = [Pot(pot.x, pot.y, PotItem.Nothing, pot.room, pot.flags) for pot in old_pots]
+        # sort in the order Hole, Switch, Key, Other, Nothing
+        sort_order = {PotItem.Hole: 4, PotItem.Switch: 3, PotItem.Key: 2, PotItem.Nothing: 0}
+        old_pots = sorted(old_pots, key=lambda pot: sort_order.get(pot.item, 1), reverse=True)
+
+        for old_pot in old_pots:
+            if old_pot.item == PotItem.Nothing:
+                break
+            elif old_pot.item == PotItem.Hole:
+                # Can only go in vanilla position (or the other big rock)
+                available_pots = (pot for pot in new_pots if pot.x == old_pot.x and pot.y == old_pot.y)
+            elif old_pot.item == PotItem.Switch:
+                available_pots = (pot for pot in new_pots if (pot.room == old_pot.room or pot.room in movable_switch_rooms[old_pot.room]) and not (pot.flags & PotFlags.NoSwitch))
+            elif old_pot.item == PotItem.Key:
+                if (world.doorShuffle[player] == 'vanilla' and world.keyshuffle[player] != 'universal'
+                   and world.pottery[player] == 'none' and world.logic[player] != 'nologic'):
+                    available_pots = (pot for pot in new_pots if pot.room not in invalid_key_rooms)
+                else:
+                    available_pots = new_pots
+            else:
+                available_pots = new_pots
+
+            available_pots = [pot for pot in available_pots if pot.item == PotItem.Nothing]
+
+            new_pot = random.choice(available_pots)
+            new_pot.item = old_pot.item
+            if world.bow_mode[player].startswith('retro') and new_pot.item == PotItem.FiveArrows:
+                new_pot.item = PotItem.FiveRupees
+
+            if new_pot.item == PotItem.Key:
+                key = next(location for location in world.get_region(old_pot.room, player).locations if location.name in key_drop_data)
+                key.pot = new_pot
+                if new_pot.room != old_pot.room:
+                    # Move pot key to new room
+                    world.get_region(old_pot.room, player).locations.remove(key)
+                    world.get_region(new_pot.room, player).locations.append(key)
+                    key.parent_region = world.get_region(new_pot.room, player)
+            elif new_pot.item == PotItem.Switch and (new_pot.flags & PotFlags.SwitchLogicChange):
+                if new_pot.room == 'PoD Basement Ledge':
+                    basement = world.get_region(old_pot.room, player)
+                    ledge = world.get_region(new_pot.room, player)
+                    ledge.locations.append(basement.locations.pop())
+                elif new_pot.room == 'Swamp Push Statue':
+                    from Rules import set_rule
+                    set_rule(world.get_entrance('Swamp Push Statue NE', player), lambda state: state.has('Cane of Somaria', player))
+                    world.get_door('Swamp Push Statue NW', player).blocked = True
+                elif new_pot.room == 'Thieves Attic Hint':
+                    # Rule is created based on barrier
+                    world.get_door('Thieves Attic ES', player).barrier(CrystalBarrier.Orange)
+                else:
+                    raise Exception("Switch location in room %s requires logic change" % new_pot.room)
+
+        new_pot_contents.room_map[super_tile] = new_pots
+
+    world.data_tables[player].pot_secret_table = new_pot_contents
+
+
+def shuffle_pot_switches(world, player):
+    import RaceRandom as random
+
+    for super_tile in vanilla_pots:
+        new_pots = world.data_tables[player].pot_secret_table.room_map[super_tile]
+        # sort in the order Hole, Switch, Key, Other, Nothing
+        sort_order = {PotItem.Hole: 4, PotItem.Switch: 3, PotItem.Key: 2, PotItem.Nothing: 0}
+        old_pots = sorted(new_pots, key=lambda pot: sort_order.get(pot.item, 1), reverse=True)
+
+        for old_pot in old_pots:
+            if old_pot.item != PotItem.Switch:
+                break
+            else:
+                available_pots = [pot for pot in new_pots if (pot.room == old_pot.room or pot.room in movable_switch_rooms[old_pot.room]) and not (pot.flags & PotFlags.NoSwitch)]
+
+            new_pot = random.choice(available_pots)
+            new_pot.item, old_pot.item = old_pot.item, new_pot.item
+            if world.bow_mode[player].startswith('retro') and new_pot.item == PotItem.FiveArrows:
+                new_pot.item = PotItem.FiveRupees
+
+            if new_pot.item == PotItem.Switch and (new_pot.flags & PotFlags.SwitchLogicChange):
+                if new_pot.room == 'PoD Basement Ledge':
+                    basement = world.get_region(old_pot.room, player)
+                    ledge = world.get_region(new_pot.room, player)
+                    ledge.locations.append(basement.locations.pop())
+                elif new_pot.room == 'Swamp Push Statue':
+                    from Rules import set_rule
+                    set_rule(world.get_entrance('Swamp Push Statue NE', player), lambda state: state.has('Cane of Somaria', player))
+                    world.get_door('Swamp Push Statue NW', player).blocked = True
+                elif new_pot.room == 'Thieves Attic Hint':
+                    # Rule is created based on barrier
+                    world.get_door('Thieves Attic ES', player).barrier(CrystalBarrier.Orange)
+                else:
+                    raise Exception("Switch location in room %s requires logic change" % new_pot.room)
+    for location in world.get_locations():
+        if location.player == player and location.type == LocationType.Pot and location.pot.item == PotItem.Switch:
+            location.real = False
+            if location in world.dynamic_locations:
+                world.dynamic_locations.remove(location)
+            location.parent_region.locations.remove(location)
+    world.clear_location_cache()
+
+
+def choose_pots(world, player):
+    pot_pool = set()
+    if world.pottery[player] == 'reduced':
+        dungeon_list = []
+        for super_tile, pot_list in vanilla_pots.items():
+            for pot in pot_list:
+                if world.get_region(pot.room, player).type == RegionType.Cave:
+                    pot_pool.add(pot)
+                else:
+                    dungeon_list.append(pot)
+        k = len(dungeon_list) // 4
+        pot_pool.update(random.choices(dungeon_list, k=k))
+    elif world.pottery[player] == 'clustered':
+        dungeon_map = defaultdict(list)
+        dungeon_count = 0
+        for super_tile, pot_list in vanilla_pots.items():
+            for pot in pot_list:
+                if world.get_region(pot.room, player).type == RegionType.Cave:
+                    pot_pool.add(pot)
+                else:
+                    dungeon_map[pot.room].append(pot)
+                    dungeon_count += 1
+        k = dungeon_count // 2
+        options = sorted(list(dungeon_map.keys()))
+        chosen_amt = 0
+        while chosen_amt < k:
+            chosen_section = random.choice(options)
+            pot_pool.update(dungeon_map[chosen_section])
+            chosen_amt += len(dungeon_map[chosen_section])
+            options.remove(chosen_section)
+    return pot_pool
+
+
+key_drop_data = {
+    'Hyrule Castle - Map Guard Key Drop': ['Drop', (0x09E20C, 0x72, 0), 'dropped in Hyrule Castle', 'Small Key (Escape)'],
+    'Hyrule Castle - Boomerang Guard Key Drop': ['Drop', (0x09E204, 0x71, 1), 'dropped in Hyrule Castle', 'Small Key (Escape)'],
+    'Hyrule Castle - Key Rat Key Drop': ['Drop', (0x09DB80, 0x21, 0), 'dropped in Hyrule Castle', 'Small Key (Escape)'],
+    'Hyrule Castle - Big Key Drop': ['Drop', (0x09E327, 0x80, 2), 'dropped in Hyrule Castle', 'Big Key (Escape)'],
+    'Eastern Palace - Dark Square Pot Key': ['Pot', 0xBA, 'in a pot in Eastern Palace', 'Small Key (Eastern Palace)'],
+    'Eastern Palace - Dark Eyegore Key Drop': ['Drop', (0x09E4F8, 0x99, 3), 'dropped in Eastern Palace', 'Small Key (Eastern Palace)'],
+    'Desert Palace - Desert Tiles 1 Pot Key': ['Pot', 0x63, 'in a pot in Desert Palace', 'Small Key (Desert Palace)'],
+    'Desert Palace - Beamos Hall Pot Key': ['Pot', 0x53, 'in a pot in Desert Palace', 'Small Key (Desert Palace)'],
+    'Desert Palace - Desert Tiles 2 Pot Key': ['Pot', 0x43, 'in a pot in Desert Palace', 'Small Key (Desert Palace)'],
+    'Castle Tower - Dark Archer Key Drop': ['Drop', (0x09E7C9, 0xC0, 3), 'dropped in Castle Tower', 'Small Key (Agahnims Tower)'],
+    'Castle Tower - Circle of Pots Key Drop': ['Drop', (0x09E688, 0xB0, 10), 'dropped in Castle Tower', 'Small Key (Agahnims Tower)'],
+    'Swamp Palace - Pot Row Pot Key': ['Pot', 0x38, 'in a pot in Swamp Palace', 'Small Key (Swamp Palace)'],
+    'Swamp Palace - Trench 1 Pot Key': ['Pot', 0x37, 'in a pot in Swamp Palace', 'Small Key (Swamp Palace)'],
+    'Swamp Palace - Hookshot Pot Key': ['Pot', 0x36, 'in a pot in Swamp Palace', 'Small Key (Swamp Palace)'],
+    'Swamp Palace - Trench 2 Pot Key': ['Pot', 0x35, 'in a pot in Swamp Palace', 'Small Key (Swamp Palace)'],
+    'Swamp Palace - Waterway Pot Key': ['Pot', 0x16, 'in a pot in Swamp Palace', 'Small Key (Swamp Palace)'],
+    'Skull Woods - West Lobby Pot Key': ['Pot', 0x56, 'in a pot in Skull Woods', 'Small Key (Skull Woods)'],
+    'Skull Woods - Spike Corner Key Drop': ['Drop', (0x09DD74, 0x39, 2), 'dropped near Mothula', 'Small Key (Skull Woods)'],
+    "Thieves' Town - Hallway Pot Key": ['Pot', 0xBC, "in a pot in Thieves Town", 'Small Key (Thieves Town)'],
+    "Thieves' Town - Spike Switch Pot Key": ['Pot', 0xAB, "in a pot in Thieves Town", 'Small Key (Thieves Town)'],
+    'Ice Palace - Jelly Key Drop': ['Drop', (0x09DA21, 0xE, 3), 'dropped in Ice Palace', 'Small Key (Ice Palace)'],
+    'Ice Palace - Conveyor Key Drop': ['Drop', (0x09DE08, 0x3E, 9), 'dropped in Ice Palace', 'Small Key (Ice Palace)'],
+    'Ice Palace - Hammer Block Key Drop': ['Pot', 0x3F, 'under a block in Ice Palace', 'Small Key (Ice Palace)'],
+    'Ice Palace - Many Pots Pot Key': ['Pot', 0x9F, 'in a pot in Ice Palace', 'Small Key (Ice Palace)'],
+    'Misery Mire - Spikes Pot Key': ['Pot', 0xB3, 'in a pot in Misery Mire', 'Small Key (Misery Mire)'],
+    'Misery Mire - Fishbone Pot Key': ['Pot', 0xA1, 'in a pot in forgotten Mire', 'Small Key (Misery Mire)'],
+    'Misery Mire - Conveyor Crystal Key Drop': ['Drop', (0x09E7FB, 0xC1, 10), 'dropped in Misery Mire', 'Small Key (Misery Mire)'],
+    'Turtle Rock - Pokey 1 Key Drop': ['Drop', (0x09E70D, 0xB6, 5), 'dropped in Turtle Rock', 'Small Key (Turtle Rock)'],
+    'Turtle Rock - Pokey 2 Key Drop': ['Drop', (0x09DA5D, 0x13, 6), 'dropped in Turtle Rock', 'Small Key (Turtle Rock)'],
+    'Ganons Tower - Conveyor Cross Pot Key': ['Pot', 0x8B, "in a pot in Ganon's Tower", 'Small Key (Ganons Tower)'],
+    'Ganons Tower - Double Switch Pot Key': ['Pot', 0x9B, "in a pot in Ganon's Tower", 'Small Key (Ganons Tower)'],
+    'Ganons Tower - Conveyor Star Pits Pot Key': ['Pot', 0x7B, "in a pot in Ganon's Tower", 'Small Key (Ganons Tower)'],
+    'Ganons Tower - Mini Helmasaur Key Drop': ['Drop', (0x09DDC4, 0x3D, 2), "dropped atop Ganon's Tower", 'Small Key (Ganons Tower)']
+}
+
+key_drop_special = {(data[1][1], data[1][2]): name for name, data in key_drop_data.items() if data[0] == 'Drop'}
+
+
+class PotSecretTable(object):
+    def __init__(self):
+        self.room_map = defaultdict(list)
+        self.multiworld_count = 0
+
+    def write_pot_data_to_rom(self, rom, colorize, data_tables):
+        pointer_address = snes_to_pc(0x09D87E)  # pots currently in bank 9
+        data_bank_address = snes_to_pc(0x09DACE)
+        # pointer_offset = 0x128 * 2
+        empty_address = data_bank_address
+        empty_pointer = pc_to_snes(empty_address) & 0xFFFF
+        data_pointer = data_bank_address + 2
+        for room in range(0, 0x128):
+            if room in self.room_map:
+                list_idx = 0
+                collection_rate_mask = 0x00
+                data_address = pc_to_snes(data_pointer) & 0xFFFF
+                rom.write_bytes(pointer_address + room * 2, int16_as_bytes(data_address))
+                for pot in self.room_map[room]:
+                    rom.write_bytes(data_pointer + list_idx * 3, pot.pot_data())
+                    if pot.location is not None and not pot.location.forced_item:
+                        collection_rate_mask |= 1 << (15 - list_idx)
+                        if colorize:
+                            if room in data_tables.room_list:
+                                room_object = data_tables.room_list[room]
+                                target_col = pot.x // 2
+                                target_row = pot.y * 2
+                                matched = next(
+                                    (obj for obj in room_object.find_all_pots()
+                                     if obj.data[0] >> 2 == target_col and obj.data[1] >> 2 == target_row),
+                                    None
+                                )
+                                if matched is not None:
+                                    matched.change_type(Shuffled_Pot)
+                                else:
+                                    room_object.find_all_pots()[list_idx].change_type(Shuffled_Pot)
+                            elif pot.obj_ref:
+                                pot.obj_ref.change_type(Shuffled_Pot)
+                                pot.obj_ref.write_to_rom(rom)
+                    list_idx += 1
+                rom.write_bytes(data_pointer + list_idx * 3, [0xFF, 0xFF])
+                rom.write_bytes(snes_to_pc(0x28AA60) + room * 2, int16_as_bytes(collection_rate_mask))
+                data_pointer += 3 * list_idx + 2
+            else:
+                rom.write_bytes(pointer_address + room * 2, int16_as_bytes(empty_pointer))
+        rom.write_bytes(empty_address, [0xFF, 0xFF])
+
+    def size(self):
+        size = 0x128 * 2
+        for room in range(0, 0x128):
+            if room in self.room_map:
+                pot_list = [p for p in self.room_map[room]]
+                if pot_list:
+                    size += len(pot_list) * 3 + 2
+        return size

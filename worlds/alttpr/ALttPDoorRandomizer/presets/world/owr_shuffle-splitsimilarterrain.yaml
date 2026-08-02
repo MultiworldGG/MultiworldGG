@@ -1,0 +1,176 @@
+settings:
+  1:
+    ow_layout: wild
+    ow_terrain: true
+ow-edges:
+  1:
+    groups:
+      similar_2_left_top:
+        - Lost Woods SW
+        - Skull Woods SW
+        - Lost Woods Pass NW
+        - Lost Woods Pass SW
+        - Skull Woods Pass NW
+        - Skull Woods Pass SW
+        - Kakariko Fortune EN
+        - Dark Fortune EN
+        - Kakariko Pond WN
+        - Kakariko Pond EN
+        - Kakariko Pond SW
+        - Outcast Pond WN
+        - Outcast Pond EN
+        - Outcast Pond SW
+        - Sanctuary WN
+        - Dark Chapel WN
+        - Potion Shop EN
+        - Dark Witch EN
+        - Zora Approach WN
+        - Catfish Approach WN
+        - Kakariko NW
+        - Village of Outcasts NW
+        - Forgotten Forest NW
+        - Shield Shop NW
+        - Dig Game EC
+        - Frog WC
+        - Flute Boy SW
+        - Stumpy SW
+        - Stone Bridge EN
+        - Hammer Bridge EN
+        - Tree Line WN
+        - Tree Line SC
+        - Dark Tree Line WN
+        - Dark Tree Line SC
+        - Desert EC
+        - Flute Boy Approach NW
+        - Stumpy Approach NW
+        - Lake Hylia NC
+        - Lake Hylia EC
+        - Ice Lake NC
+        - Ice Lake EC
+        - Ice Cave SW
+        - Shopping Mall SW
+        - Desert Pass WC
+        - Desert Pass EC
+        - Swamp Nook EC
+        - Dam WC
+        - Swamp WC
+        - Octoballoon NW
+        - Octoballoon WC
+        - Bomber Corner NW
+        - Bomber Corner WC
+      similar_2_right_bottom:
+        - Lost Woods SC
+        - Skull Woods SC
+        - Lost Woods Pass NE
+        - Lost Woods Pass SE
+        - Skull Woods Pass NE
+        - Skull Woods Pass SE
+        - Kakariko Fortune ES
+        - Dark Fortune ES
+        - Kakariko Pond WS
+        - Kakariko Pond ES
+        - Kakariko Pond SE
+        - Outcast Pond WS
+        - Outcast Pond ES
+        - Outcast Pond SE
+        - Sanctuary WS
+        - Dark Chapel WS
+        - Potion Shop EC
+        - Dark Witch EC
+        - Zora Approach WC
+        - Catfish Approach WC
+        - Kakariko NC
+        - Village of Outcasts NC
+        - Forgotten Forest NE
+        - Shield Shop NE
+        - Dig Game ES
+        - Frog WS
+        - Flute Boy SC
+        - Stumpy SC
+        - Stone Bridge EC
+        - Hammer Bridge EC
+        - Tree Line WC
+        - Tree Line SE
+        - Dark Tree Line WC
+        - Dark Tree Line SE
+        - Desert ES
+        - Flute Boy Approach NC
+        - Stumpy Approach NC
+        - Lake Hylia NE
+        - Lake Hylia ES
+        - Ice Lake NE
+        - Ice Lake ES
+        - Ice Cave SE
+        - Shopping Mall SE
+        - Desert Pass WS
+        - Desert Pass ES
+        - Swamp Nook ES
+        - Dam WS
+        - Swamp WS
+        - Octoballoon NE
+        - Octoballoon WS
+        - Bomber Corner NE
+        - Bomber Corner WS
+      similar_3_left_top:
+        - River Bend EN
+        - River Bend SW
+        - Qirn Jump EN
+        - Qirn Jump SW
+        - Potion Shop WN
+        - Dark Witch WN
+        - Wooden Bridge NW
+        - Broken Bridge NW
+        - Central Bonk Rocks EN
+        - Dark Bonk Rocks EN
+        - Links House WN
+        - Big Bomb Shop WN
+        - C Whirlpool EN
+        - Dark C Whirlpool EN
+        - Statues WN
+        - Hype Cave WN
+      similar_3_middle:
+        - River Bend EC
+        - River Bend SC
+        - Qirn Jump EC
+        - Qirn Jump SC
+        - Potion Shop WC
+        - Dark Witch WC
+        - Wooden Bridge NC
+        - Broken Bridge NC
+        - Central Bonk Rocks EC
+        - Dark Bonk Rocks EC
+        - Links House WC
+        - Big Bomb Shop WC
+        - C Whirlpool EC
+        - Dark C Whirlpool EC
+        - Statues WC
+        - Hype Cave WC
+      similar_3_right_bottom:
+        - River Bend ES
+        - River Bend SE
+        - Qirn Jump ES
+        - Qirn Jump SE
+        - Potion Shop WS
+        - Dark Witch WS
+        - Wooden Bridge NE
+        - Broken Bridge NE
+        - Central Bonk Rocks ES
+        - Dark Bonk Rocks ES
+        - Links House WS
+        - Big Bomb Shop WS
+        - C Whirlpool ES
+        - Dark C Whirlpool ES
+        - Statues WS
+        - Hype Cave WS
+ow-tileflips:
+  1:
+    force_together:
+      Forest:
+        - 0x1a
+        - 0x1b
+      FrogDig:
+        - 0x28
+        - 0x29
+      Desert:
+        - 0x30
+        - 0x3a

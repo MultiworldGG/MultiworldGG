@@ -1000,7 +1000,7 @@ EVENT_TABLE: dict[str, GrinchItemData] = {
     #),
     grinch_items.events.GLITCHED_LOGIC_ITEM: GrinchItemData(
         [],
-        0,
+        999,
         IC.progression_skip_balancing,
         [],
     ),

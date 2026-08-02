@@ -1,0 +1,486 @@
+{
+  "cli": {
+    "yes": "Yes",
+    "no": "No",
+    "app.title": "ALttP Overworld Randomizer Version %s : --seed %s --code %s",
+    "version": "Version",
+    "seed": "Seed",
+    "player": "Player",
+    "shuffling.overworld": "Shuffling overworld",
+    "shuffling.world": "Shuffling entrances",
+    "shuffling.prep": "Dungeon and Item prep",
+    "shuffling.dungeons": "Shuffling dungeons",
+    "shuffling.pots": "Shuffling pots",
+    "basic.traversal": "--Basic Traversal",
+    "generating.dungeon": "Generating dungeons",
+    "shuffling.keydoors": "Shuffling Key doors",
+    "lowering.keys.candidates": "Lowering key door count because not enough candidates",
+    "lowering.keys.layouts": "Lowering key door count because no valid layouts",
+    "keydoor.shuffle.time": "Key door shuffle time",
+    "keydoor.shuffle.time.crossed": "Cross Dungeon: Key door shuffle time",
+    "generating.itempool": "Generating Item Pool",
+    "calc.access.rules": "Calculating Access Rules",
+    "placing.dungeon.prizes": "Placing Dungeon Prizes",
+    "placing.dungeon.items": "Placing Dungeon Items",
+    "keylock.detected": "Keylock detected",
+    "fill.world": "Fill the world",
+    "balance.doors": "-Balancing Doors",
+    "re-balancing": "-Re-balancing",
+    "balancing": "--Balancing",
+    "splitting.up": "Splitting Up",
+    "balance.multiworld": "Balancing multiworld progression",
+    "cannot.beat.game": "Cannot beat game! Something went terribly wrong here!",
+    "cannot.reach.items": "The following items could not be reached: %s",
+    "cannot.reach.item": "%s (Player %d) at %s (Player %d)",
+    "check.item.location": "Checking if %s (Player %d) is required to beat the game.",
+    "check.item.location.true": "Yes, item is required.",
+    "check.item.location.false": "No, item is not required.",
+    "cannot.reach.progression": "Not all progression items reachable. Something went terribly wrong here.",
+    "cannot.reach.required": "Not all required items reachable. Something went terribly wrong here.",
+    "patching.rom": "Patching ROM",
+    "patching.spoiler": "Creating Spoiler",
+    "create.meta": "Creating Meta Info",
+    "calc.playthrough": "Calculating Playthrough",
+    "made.rom": "Patched ROM:         %s",
+    "made.playthrough": "Printed Playthrough: %s",
+    "made.spoiler": "Printed Spoiler:     %s",
+    "used.enemizer": "Enemized:            %s",
+    "done": "Done. Enjoy.",
+    "total.time": "Total Time: %s",
+    "finished.run": "Finished run",
+    "generation.failed": "Generation failed",
+    "generation.fail.rate": "Generation fail    rate",
+    "generation.success.rate": "Generation success rate",
+    "enemizer.not.found": "Enemizer not found at",
+    "enemizer.nothing.applied": "No Enemizer options will be applied until this is resolved.",
+    "building.collection.spheres": "Building up collection spheres",
+    "building.calculating.spheres": "Calculated sphere %i, containing %i of %i progress items.",
+    "building.final.spheres": "Calculated final sphere %i, containing %i of %i progress items.",
+    "old.python.version": "Door Rando may have issues with python versions earlier than 3.7.  Detected version: %s",
+    "hybridglitches.door.shuffle": "Hybrid Major Glitches is not currently compatible with Door Shuffle."
+  },
+  "help": {
+    "lang": [ "App Language, if available, defaults to English" ],
+    "spoiler": [
+      "Spoiler File Options. (default: %(default)s)",
+      "None:            No Spoiler",
+      "Meta:            Meta information only about game. Intended for mystery settings",
+      "Settings:        Only settings information",
+      "Semi:            ",
+      "Full:            Full spoiler generated",
+      "Debug:           Includes debug information"
+    ],
+    "bps": [ "Output BPS patches instead of ROMs"],
+    "logic": [
+      "Select Enforcement of Item Requirements. (default: %(default)s)",
+      "No Glitches:           No Glitch knowledge required.",
+      "Minor Glitches:        May require Fake Flippers, Bunny Revival",
+      "                       and Dark Room Navigation.",
+      "Overworld Glitches:    May require overworld clips and teleports.",
+      "Hybrid Major Glitches: May require underworld clips.",
+      "No Logic:              Distribute items without regard for",
+      "                       item requirements."
+    ],
+    "mode": [
+      "Select game mode. (default: %(default)s)",
+      "Open:           World starts with Zelda rescued.",
+      "Standard:       Fixes Hyrule Castle Secret Entrance and Front Door",
+      "                but may lead to weird rain state issues if you exit",
+      "                through the Hyrule Castle side exits before rescuing",
+      "                Zelda in a full shuffle.",
+      "Inverted:       Starting locations are Dark Sanctuary in West Dark",
+      "                World or at Link's House, which is shuffled freely.",
+      "                Requires the moon pearl to be Link in the Light World",
+      "                instead of a bunny.",
+      "Retro:          Keys are universal, shooting arrows costs rupees,",
+      "                and a few other little things make this more like Zelda-1."
+    ],
+    "swords": [
+      "Select sword placement. (default: %(default)s)",
+      "Random:         All swords placed randomly.",
+      "Assured:        Start game with a sword already.",
+      "Swordless:      No swords. Curtains in Skull Woods and Agahnim\\'s",
+      "                Tower are removed, Agahnim\\'s Tower barrier can be",
+      "                destroyed with hammer. Misery Mire and Turtle Rock",
+      "                can be opened without a sword. Hammer damages Ganon.",
+      "                Ether and Bombos Tablet can be activated with Hammer",
+      "                (and Book). Bombos pads have been added in Ice",
+      "                Palace, to allow for an alternative to firerod.",
+      "Vanilla:        Swords are in vanilla locations."
+    ],
+    "goal": [
+      "Select completion goal. (default: %(default)s)",
+      "Ganon:          Collect all crystals, beat Agahnim 2 then",
+      "                defeat Ganon.",
+      "Crystals:       Collect all crystals then defeat Ganon.",
+      "Pedestal:       Places the Triforce at the Master Sword Pedestal.",
+      "All Dungeons:   Collect all crystals, pendants, beat both",
+      "                Agahnim fights and then defeat Ganon.",
+      "Triforce Hunt:  Places 30 Triforce Pieces in the world, collect",
+      "                20 of them to beat the game.",
+      "Trinity:        Can beat the game by defeating Ganon, pulling",
+      "                Pedestal, or delivering Triforce Pieces.",
+      "Ganon Hunt:     Places 30 Triforce Pieces in the world, collect",
+      "                20 of them then defeat Ganon.",
+      "Completionist:  Find everything then defeat Ganon."
+    ],
+    "difficulty": [
+      "Select game difficulty. Affects available itempool. (default: %(default)s)",
+      "Normal:         Normal difficulty.",
+      "Hard:           A harder setting with less equipment and reduced health.",
+      "Expert:         A harder yet setting with minimum equipment and health."
+    ],
+    "item_functionality": [
+      "Select limits on item functionality to increase difficulty. (default: %(default)s)",
+      "Normal:         Normal functionality.",
+      "Hard:           Reduced functionality.",
+      "Expert:         Greatly reduced functionality."
+    ],
+    "flute_mode": [
+      "Determines if you need to wake up the bird or not on flute pickup (default: %(default)s)",
+      "Normal:         Normal functionality.",
+      "Active:         Flute is activated on pickup."
+    ],
+    "bow_mode": [
+      "Determines how the bow acts in the pool (default: %(default)s)",
+      "Progressive:       Two progressive bows placed. First picked up is the bow. Second is silvers.",
+      "Silvers Separate:  Bow and silvers are completely separate items.",
+      "Retro:             Z1 Bow where arrows cost money and the Single Arrow must be bought or found to shoot",
+      "Retro + Silvers:   Bow and silvers are completely separate items."
+    ],
+    "timer": [
+      "Select game timer setting. Affects available itempool. (default: %(default)s)",
+      "None:           No timer.",
+      "Display:        Displays a timer but does not affect",
+      "                the itempool.",
+      "Timed:          Starts with clock at zero. Green Clocks",
+      "                subtract 4 minutes (Total: 20), Blue Clocks",
+      "                subtract 2 minutes (Total: 10), Red Clocks add",
+      "                2 minutes (Total: 10). Winner is player with",
+      "                lowest time at the end.",
+      "Timed OHKO:     Starts clock at 10 minutes. Green Clocks add",
+      "                5 minutes (Total: 25). As long as clock is at 0,",
+      "                Link will die in one hit.",
+      "OHKO:           Like Timed OHKO, but no clock items are present",
+      "                and the clock is permenantly at zero.",
+      "Timed Countdown:Starts with clock at 40 minutes. Same clocks as",
+      "                Timed mode. If time runs out, you lose (but can",
+      "                still keep playing)."
+    ],
+    "progressive": [
+      "Select progressive equipment setting. Affects available itempool. (default: %(default)s)",
+      "On:             Swords, Shields, Armor, and Gloves will",
+      "                all be progressive equipment. Each subsequent",
+      "                item of the same type the player finds will",
+      "                upgrade that piece of equipment by one stage.",
+      "Off:            Swords, Shields, Armor, and Gloves will not",
+      "                be progressive equipment. Higher level items may",
+      "                be found at any time. Downgrades are not possible.",
+      "Random:         Swords, Shields, Armor, and Gloves will, per",
+      "                category, be randomly progressive or not.",
+      "                Link will die in one hit."
+    ],
+    "algorithm": [
+      "Select item filling algorithm. (default: %(default)s)",
+      "balanced:       vt26 derivative that aims to strike a balance between",
+      "                the overworld heavy vt25 and the dungeon heavy vt26",
+      "                algorithm.",
+      "restricted placements: these consider all major items to be special and attempts",
+      "to place items from fixed to semi-random locations. For purposes of these shuffles, all",
+      "Y items, A items, swords (unless vanilla swords), mails, shields, heart containers and",
+      "1/2 magic are considered to be part of a major items pool. Big Keys are added to the pool",
+      "if shuffled. Same for small keys, compasses, maps, keydrops (if small keys are also shuffled),",
+      "1 of each capacity upgrade for shopsanity, the quiver item for retro+shopsanity, and",
+      "triforce pieces for Triforce Hunt. Future modes will add to these as appropriate.",
+      "vanilla_fill    As above, but attempts to place items in their vanilla",
+      "                location first. Major items that cannot be placed that way",
+      "                will attempt to be placed in other failed locations first.",
+      "                Also attempts to place all items in vanilla locations",
+      "major_only      As above, but uses the major items' location preferentially",
+      "                major item location are defined as the group of location where",
+      "                the items are found in the vanilla game.",
+      "dungeon_only    As above, but major items are preferentially placed",
+      "                in dungeons locations first",
+      "district        As above, but groups of locations are chosen randomly",
+      "                from a pool of fixed locations designed to be interesting",
+      "                and give major clues about the location of other",
+      "                advancement items. These fixed groups will be documented."
+    ],
+    "shuffle": [
+      "Select Entrance Shuffling Algorithm. (default: %(default)s)",
+      "Simple:         Shuffle Dungeon Entrances/Exits between each other",
+      "                and keep all 4-entrance dungeons confined to one",
+      "                location. All caves outside of death mountain are",
+      "                shuffled in pairs and matched by original type.",
+      "Restricted:     Use Dungeons shuffling from Simple but freely",
+      "                connect remaining entrances.",
+      "Full:           Mix cave and dungeon entrances freely while limiting",
+      "                multi-entrance caves to one world.",
+      "Lite:           Beginner-friendly. Dungeons/connectors, dropdowns, and",
+      "                item locations are shuffled in separate pools. Non-item",
+      "                locations remain vanilla. Connectors are same-world.",
+      "Lean:           Same as Lite, except connectors can travel cross worlds.",
+      "District:       Entrances are shuffled within their overworld districts.",
+      "Crossed:        Mix cave and dungeon entrances freely while allowing",
+      "                caves to cross between worlds.",
+      "Swapped:        Same as Crossed, but entrances switch places in pairs.",
+      "Insanity:       Decouple entrances and exits from each other and",
+      "                shuffle them freely. Caves that used to be single",
+      "                entrance will still exit to the same location from",
+      "                which they are entered.",
+      "Vanilla:        All entrances are in the same locations they were",
+      "                in the base game.",
+      "The dungeon variants only mix up dungeons and keep the rest of",
+      "the entrances vanilla."
+    ],
+    "ow_shuffle": [
+      "Deprecated, use ow_layout and ow_unparallel instead."
+    ],
+    "ow_layout": [
+      "This shuffles the layout of the overworld.",
+      "Vanilla:        All overworld transitions are connected the same",
+      "                way they were in the base game.",
+      "Grid:           OW Screens are arranged on 8x8 grids and OW Transitions",
+      "                work according to this arrangement.",
+      "Wild:           OW Transitions are shuffled with no respect to geometric coherence."
+    ],
+    "ow_unparallel": [
+      "With OW Layout Shuffle, this no longer forces both worlds to have a matching layout." ],
+    "ow_terrain": [
+      "With OW Layout Shuffle, this allows land and water edges to be connected." ],
+    "ow_crossed": [
+      "This allows cross-world connections to occur on the overworld.",
+      "None:           No transitions are cross-world connections.",
+      "Grouped:        This ensures a two-plane separation so that you cannot", 
+      "                walk around and access the other plane version by walking.",
+      "Polar:          Only used when Tile Flip is enabled. This retains original",
+      "                connections even when overworld tiles are flipped.",
+      "Unrestricted:   Every transition has a 50/50 chance to become a",
+      "                crossworld connection."
+    ],
+    "ow_keepsimilar": [
+      "This keeps similar edge transitions together. ie. the two west edges on",
+      "Sanctuary will be paired with another similar pair." ],
+    "ow_mixed": [
+      "Overworld tiles are randomly chosen to become part of the opposite world."
+    ],
+    "ow_whirlpool": [
+      "Whirlpools will be shuffled and paired together."
+    ],
+    "shuffle_followers": [
+      "Followers like Purple Chest and Old Man are shuffled."
+    ],
+    "bonk_drops": [
+      "Bonk drops from trees, rocks, and statues are shuffled with the item pool."
+    ],
+    "ow_fluteshuffle": [
+      "This randomizes the flute spot destinations.",
+      "Vanilla:        All flute spots remain unchanged.",
+      "Balanced:       New flute spots will be generated but prevents flute",
+      "                spots from being on any adjacent screen.",
+      "Random:         New flute spots will be generated with minimal bias."
+    ],
+    "ow_no_fog": [
+      "With OW Grid Layout Shuffle or Mixed, this disables the fog that prevents",
+      "you from seeing unvisited screens on the overworld map." ],
+    "door_shuffle": [
+      "Select Door Shuffling Algorithm. (default: %(default)s)",
+      "Basic:          Doors are mixed within a single dungeon.",
+      "Paired          Dungeon are paired (with one trio) and only mixed in those groups",
+      "Partitioned     Doors are mixed in 3 partitions: L1-3+HC+AT, D1-4, D5-8",
+      "Crossed:        Doors are mixed between all dungeons.",
+      "Vanilla:        All doors are connected the same way they were in the",
+      "                base game."
+    ],
+    "intensity" : [
+      "Door Shuffle Intensity Level (default: %(default)s)",
+      "1:       Shuffles normal doors and spiral staircases",
+      "2:       And shuffles open edges and both types of straight staircases",
+      "3:       And shuffles dungeon lobbies",
+      "random:  Picks one of those at random"
+    ],
+    "door_type_mode" : [
+      "Door Types to Shuffle (default: %(default)s)",
+      "original: Shuffles key doors, bombable, and dashable doors",
+      "big:      Adds big key doors",
+      "all:      Adds traps doors (and any future supported door types)",
+      "chaos:    Increases the number of door types in all dungeon pools"
+    ],
+    "trap_door_mode" : [
+      "Trap Door Removal (default: %(default)s)",
+      "vanilla:  No trap door removal",
+      "optional: Trap doors removed if blocking",
+      "boss:     Also remove boss traps",
+      "oneway:   Remove all annoying trap doors"
+    ],
+    "key_logic_algorithm": [
+      "Key Logic Algorithm (default: %(default)s)",
+      "dangerous: Key usage must follow logic for safety",
+      "partial: Partial protection when using certain minor glitches",
+      "strict:  Ensure small keys are available"
+    ],
+    "decoupledoors" : [ "Door entrances and exits are decoupled" ],
+    "door_self_loops" : [ "Spiral stairs are allowed to self-loop" ],
+    "experimental": [ "Enable experimental features. (default: %(default)s)" ],
+    "dungeon_counters": [ "Enable dungeon chest counters. (default: %(default)s)" ],
+    "crystals_ganon": [
+      "How many crystals are needed to defeat ganon. Any other",
+      "requirements for ganon for the selected goal still apply.",
+      "This setting does not apply when the all dungeons goal is",
+      "selected. (default: %(default)s)",
+      "Random: Picks a random value between 0 and 7 (inclusive).",
+      "0-7:    Number of crystals needed"
+    ],
+    "crystals_gt": [
+      "How many crystals are needed to open GT. For inverted mode",
+      "this applies to the castle tower door instead. (default: %(default)s)",
+      "Random: Picks a random value between 0 and 7 (inclusive).",
+      "0-7:    Number of crystals needed"
+    ],
+    "openpyramid": [ "Pre-opens the pyramid hole, this removes the Agahnim 2 requirement for it. (default: %(default)s)" ],
+    "rom": [
+      "Path to an ALttP JP (1.0) rom to use as a base." ,
+      "(default: %(default)s)"
+    ],
+    "loglevel": [ "Select level of logging for output. (default: %(default)s)" ],
+    "seed": [ "Define seed number to generate." ],
+    "count": [
+      "Use to batch generate multiple seeds with same settings.",
+      "If --seed is provided, it will be used for the first seed, then",
+      "used to derive the next seed (i.e. generating %(default)s seed(s) with",
+      "--seed given will produce the same %(default)s (different) rom(s) each",
+      "time)."
+    ],
+    "fastmenu": [
+      "Select the rate at which the menu opens and closes. (default: %(default)s)"
+    ],
+    "quickswap": [ "Enable quick item swapping with L and R. (default: %(default)s)" ],
+    "disablemusic": [ "Disables game music including MSU-1. (default: %(default)s)" ],
+    "mapshuffle": [ "Maps are no longer restricted to their dungeons, but can be anywhere. (default: %(default)s)" ],
+    "compassshuffle": [ "Compasses are no longer restricted to their dungeons, but can be anywhere. (default: %(default)s)" ],
+    "keyshuffle": [ "Small Keys are no longer restricted to their dungeons, but can be anywhere. (default: %(default)s)" ],
+    "bigkeyshuffle": [ "Big Keys are no longer restricted to their dungeons, but can be anywhere. (default: %(default)s)" ],
+    "prizeshuffle": [ "Prizes are no longer restricted to the bosses, but can be anywhere. (default: %(default)s)" ],
+    "shopsanity": ["Shop contents are shuffle in the main item pool and other items can take their place. (default: %(default)s)"],
+    "dropshuffle": [ "Controls how enemies drop items (default: %(default)s)",
+      "None:        Enemies drops prize packs or keys as normal",
+      "Keys:        Enemies that drop keys can drop other items and the keys are shuffled into the pool",
+      "Underworld:  All killable enemies in the underworld can drop items"
+    ],
+    "pottery": [ "Controls how items under pots are shuffled and if other items can take their place:",
+      "None:      No pots are changed",
+      "Keys:      Key pots are included in the location pool and other items can take their place",
+      "Cave:      Only pots in houses and caves are included in the location pool",
+      "CaveKeys:  Both pots in houses and caves and keys pots are included in the location pool",
+      "Reduced:   Same as KeyCaves + 25%% of Pots in dungeons (dynamic mode)",
+      "Clustered: Same as KeyCaves + 50%% of Pots in dungeons, chosen by logical group (dynamic mode)",
+      "NonEmpty:  All pots that are not originally empty are included in the location pool",
+      "Dungeon:   Only pots in dungeons are included in the location pool",
+      "Lottery:   All pots are part of the location pool"
+    ],
+    "colorizepots": ["All pots chosen to be in location pool by the pottery setting are different.",
+                     "Forced on in dynamic modes. Forced off in lottery"],
+    "shufflepots": [ "Pots and switches are shuffled on the supertile (legacy potshuffle) (default: %(default)s)"],
+    "mixed_travel": [
+      "How to handle potential traversal between dungeon in Crossed door shuffle",
+      "Prevent:   Rails are placed to prevent bombs jump and hovering from changing dungeon except with glitched logic settings",
+      "Allow:     Take the rails off, \"I know what I'm doing\"",
+      "Force:     Force these troublesome connections to be in the same dungeon (but not in logic). No rails will appear"
+    ],
+    "standardize_palettes": [
+      "In cross dungeon shuffle, we can keep the rooms original palette or attempt to standardize them",
+      "Standardize: Attempts to make the palette the same between dungeons",
+      "Original:    Dungeons rooms retain original palettes"
+    ],
+    "retro": [
+      "Keys are universal, shooting arrows costs rupees,",
+      "and a few other little things make this more like Zelda-1. (default: %(default)s)"
+    ],
+    "take_any": [
+      "Take Any caves from Zelda 1 (default: %(default)s)",
+      "None:           No take any caves",
+      "Random:         Take any caves can replace a random set of un-interesting caves. See documentation for full list",
+      "Fixed:          Take any caves will replace certain location. See documentation for full list"
+    ],
+    "collection_rate": [ "Display collection rate (default: %(default)s)" ],
+    "pseudoboots": [ " Start with pseudo boots that allow dashing but no item checks (default: %(default)s)"],
+    "mirrorscroll": [ " Players starts with mirror scroll that allows mirror in dungeons but not overworld (default: %(default)s"],
+    "bombbag": ["Start with 0 bomb capacity. Two capacity upgrades (+10) are added to the pool (default: %(default)s)" ],
+    "any_enemy_logic": [
+      "How to handle potential traversal between dungeon in Crossed door shuffle",
+      "None:         Enemies that required unusual weaponry are not allowed to logical protect doors, chests, or key drops.",
+      "Allow_Drops:  Drops are okay for those enemies, and a correct weapon is logically required",
+      "Allow_All:    All enemies allowed anywhere. (Logic will be adapted to the placement)"
+    ],
+    "startinventory": [ "Specifies a list of items that will be in your starting inventory (separated by commas). (default: %(default)s)" ],
+    "usestartinventory": [ "Toggle usage of Starting Inventory." ],
+    "customizer": ["Path to a customizer file."],
+    "custom": [ "Not supported." ],
+    "customitemarray": [ "Not supported." ],
+    "accessibility": [
+      "Select Item/Location Accessibility. (default: %(default)s)",
+      "Items:          You can reach all unique inventory items. No guarantees about",
+      "                reaching all locations or all keys.",
+      "Locations:      You will be able to reach every location in the game.",
+      "None:           You will be able to reach enough locations to beat the game."
+    ],
+    "restrict_boss_items": [
+      "Select which dungeon are not allowed on bosses (default: %(default)s)",
+      "None:           All items allowed",
+      "Mapcompass:     Map and Compass are required before you defeat the boss.",
+      "Dungeon:        Same as above and keys too cannot be on the boss. Small key shuffle",
+      "                and big key shuffle override this behavior"
+    ],
+    "hints": [ "Make telepathic tiles and storytellers give helpful hints. (default: %(default)s)" ],
+    "no_shuffleganon": [
+      "Don't include the Ganon's Tower and Pyramid Hole in the",
+      "entrance shuffle pool. (default: %(default)s)"
+    ],
+    "shufflelinks": [
+      "Include Link's House in the entrance shuffle pool. (default: %(default)s)"
+    ],
+    "shuffletavern": [
+      "Include the back of the tavern in the entrance shuffle pool. (default: %(default)s)"
+    ],
+    "skullwoods": [
+      "Select how to shuffle skull woods (default: %(default)s)",
+      "Original:       Skull Woods is shuffled amongst itself",
+      "Restricted:     Drops are vanilla. Entrances stay in skull woods",
+      "Loose:          Drops are vanilla. Entrances go in the main pool",
+      "Followlinked:   If drops are linked, then pinball/left side will be vanilla",
+      "                with other drops paired with an entrance. Otherwise, all go into the main pool"
+    ],
+    "linked_drops": [
+      "Select how drops are treated in entrance shuffle. (default: %(default)s)",
+      "Unset:          The shuffle mode determines the setting.",
+      "Linked:         Dropdowns will be linked with entrance caves",
+      "Independent:    Dropdowns will not be linked"
+    ],
+    "overworld_map": [
+      "Control if and how the overworld map indicators show the locations of dungeons (default: %(default)s)"
+    ],
+    "heartbeep": [
+      "Select the rate at which the heart beep sound is played at",
+      "low health. (default: %(default)s)"
+    ],
+    "heartcolor": [ "Select the color of Link\\'s heart meter. (default: %(default)s)" ],
+    "sprite": [
+      "Path to a sprite sheet to use for Link. Needs to be in",
+      "binary format and have a length of 0x7000 (28672) bytes,",
+      "or 0x7078 (28792) bytes including palette data.",
+      "Alternatively, can be a ALttP Rom patched with a Link",
+      "sprite that will be extracted."
+    ],
+    "reduce_flashing": [ "Reduce some in-game flashing (default: %(default)s)" ],
+    "shuffle_sfx": [ "Shuffle sounds effects (default: %(default)s)" ],
+    "shuffle_sfxinstruments": [ "Shuffle sound instruments (default: %(default)s)" ],
+    "shuffle_songinstruments": [ "Shuffle song instruments (default: %(default)s)" ],
+    "msu_resume": [ "Enable MSU Resume (default: %(default)s)" ],
+    "create_rom": [ "Create an output rom file. (default: %(default)s)" ],
+    "gui": [ "Launch the GUI. (default: %(default)s)" ],
+    "jsonout": [
+      "Output .json patch to stdout instead of a patched rom. Used",
+      "for VT site integration, do not use otherwise. (default: %(default)s)"
+    ]
+  }
+}

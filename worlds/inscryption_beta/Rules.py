@@ -187,7 +187,7 @@ class InscryptionRules:
             for item, value in self.act1_boss_item_values.items():
                 if state.has(item, self.player): enough += value
         if area2:
-            if state.has_all(["Sacrifice Stones", "Goobert Node"], self.player): enough += 1
+            if state.has_all(["Sacrifice Stones Node", "Goobert Node"], self.player): enough += 1
             for item, value in self.act1_area2_values.items():
                 if state.has(item, self.player): enough += value
         if state.has_all(["Squirrel Totem Head", "Woodcarver Node"], self.player): enough += 3
@@ -408,7 +408,7 @@ class InscryptionRules:
 
     def has_resplendent_bastion_requirements(self, state: CollectionState) -> bool:
         if self.world.options.act3_overhaul:
-            return self.has_act3_bridge_requirements(state) and state.has("Respledent Bastion Gate", self.player)
+            return self.has_act3_bridge_requirements(state) and state.has("Resplendent Bastion Gate", self.player)
         return self.has_gems_and_battery(state)
 
     def has_gem_land_access_and_quill(self, state: CollectionState) -> bool:

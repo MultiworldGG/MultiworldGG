@@ -18,7 +18,7 @@ Our implementation also supports the Everdrive 3.0 and X7. (USB Support).
             -   Version **3.0.1** supported
             -   Default settings should work.
             -   enable Input Plugin N-Rage if you are having issues setting up your controller.
-            -   Do not enable debugging in Options > configuration > Debugging
+            -   disable debugging in Options > configuration > Debugging
             -   to reduce lag:
                 1. Open the ROM
                 2. Options > Config: RANDO TOOIE > Counter Factor = 0 or 1
@@ -27,7 +27,7 @@ Our implementation also supports the Everdrive 3.0 and X7. (USB Support).
             -   Interpreter Core needs to be enabled:
                 - Options > configurations > Uncheck Hide Advanced Settings
                 - Options > configurations > Advanced > Always Enable Interpreter Core
-                - Do not enable debugging in Options > configuration > Debugging
+                - disable debugging in Options > configuration > Debugging
             -   to reduce lag:
                 1. Open the ROM
                 2. Options > Config: RANDO TOOIE > Counter Factor = 0 or 1
@@ -35,7 +35,7 @@ Our implementation also supports the Everdrive 3.0 and X7. (USB Support).
             -   Version **3.6.5** tested
             -   Emulate Frame Buffer need to be enabled:
                 - Options > Graphic Settings > Frame Buffer > Emulate Frame Buffer
-                - Do not enable debugging in Options > configuration > Debugging
+                - disable debugging in Options > configuration > Debugging
             -   to reduce lag:
                 1. Open the ROM
                 2. Options > Config: RANDO TOOIE > Counter Factor = 0 or 1

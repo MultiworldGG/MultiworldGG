@@ -1,0 +1,129 @@
+{
+  "widgets": {
+    "prizeshuffle": {
+      "type": "selectbox",
+      "default": "none",
+      "options": [
+        "none",
+        "dungeon",
+        "nearby",
+        "wild"
+      ],
+      "config": {
+        "padx": [20,0]
+      }
+    },
+    "key_logic_algorithm": {
+      "type": "selectbox",
+      "default": "partial",
+      "options": [
+        "partial",
+        "strict",
+        "dangerous"
+      ],
+      "config": {
+        "padx": [20,0],
+        "pady": [0,20]
+      }
+    },
+    "dungeondoorshuffle": {
+      "type": "selectbox",
+      "default": "vanilla",
+      "options": [
+        "vanilla",
+        "basic",
+        "partitioned",
+        "crossed"
+      ]
+    },
+    "dungeonintensity": {
+      "type": "selectbox",
+      "default": "3",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "random"
+      ],
+      "config": {
+        "width": 45,
+        "padx": [20,0]
+      }
+    },
+    "door_type_mode": {
+      "type": "selectbox",
+      "default": "original",
+      "options": [
+        "original",
+        "big",
+        "all",
+        "chaos"
+      ],
+      "config": {
+        "width": 45,
+        "padx": [20,0]
+      }
+    },
+    "trap_door_mode": {
+      "type": "selectbox",
+      "default": "optional",
+      "options": [
+        "vanilla",
+        "optional",
+        "boss",
+        "oneway"
+      ],
+      "config": {
+        "width": 30,
+        "padx": [20,0]
+      }
+    },
+    "decoupledoors": {
+      "type": "checkbox",
+      "config": {
+        "padx": [20,0]
+      }
+    },
+    "door_self_loops": {
+      "type": "checkbox",
+      "config": {
+        "padx": [20,0],
+        "pady": [0,20]
+      }
+    },
+    "experimental": { "type": "checkbox" },
+    "dungeon_counters": {
+      "type": "selectbox",
+      "default": "default",
+      "options": [
+        "default",
+        "off",
+        "on",
+        "pickup"
+      ]
+    },
+    "mixed_travel": {
+      "type" : "selectbox",
+      "default": "prevent",
+      "options": [
+        "prevent",
+        "allow",
+        "force"
+      ],
+      "config": {
+        "width": 35
+      }
+    },
+    "standardize_palettes" : {
+      "type": "selectbox",
+      "default": "standardize",
+      "options": [
+        "standardize",
+        "original"
+      ],
+      "config": {
+        "width": 35
+      }
+    }
+  }
+}

@@ -1,0 +1,57 @@
+  description: Example for subweights
+  glitches_required: none
+  world_state: open
+  goals: ganon
+  weapons: randomized
+  entrance_shuffle: none
+  intensity: 3
+  subweights:
+    vanilla:
+      chance: 25
+      weights:
+        door_shuffle: vanilla
+        keydropshuffle:
+          on: 40
+          off: 60
+    basic:
+      chance: 25
+      weights:
+        door_shuffle: basic
+        keydropshuffle:
+          on: 70
+          off: 30
+    crossed:
+      chance: 25
+      weights:
+        door_shuffle: crossed
+        keydropshuffle:
+          on: 90
+          off: 10
+    chaos:
+      chance: 25
+      weights:
+        door_shuffle: crossed
+        entrance_shuffle:
+          none: 30
+          crossed: 70
+        keydropshuffle:
+          on: 90
+          off: 10
+        shopsanity:
+          on: 50
+          off: 50
+        bombbag:
+          on: 25
+          off: 75
+        subweights:
+          normal:
+            chance: 40
+            weights: {}
+          swordless:
+            chance: 20
+            weights:
+              weapons: swordless
+          keysanity:
+            chance: 40
+            weights:
+              dungeon_items: full

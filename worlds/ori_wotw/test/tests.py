@@ -1,6 +1,6 @@
 from . import WotWTestBase
-from ..LocationGroups import location_regions, loc_sets
-from ..Locations import loc_table
+from ..data.LocationGroups import location_regions, loc_sets
+from ..generated_data.Locations import loc_table
 
 class TestLocations(WotWTestBase):
     def test_location_groups(self) -> None:

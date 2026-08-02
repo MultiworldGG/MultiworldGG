@@ -5,4 +5,4 @@ in https://github.com/Satisha10/APworld_wotw_extractors
 
 The client code is in https://github.com/Satisha10/wotw-rando-client/tree/AP_local
 
-Releases: https://github.com/Satisha10/APwotw_release
+Releases and setup guide: https://github.com/Satisha10/APwotw_release

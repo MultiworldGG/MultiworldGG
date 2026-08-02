@@ -134,5 +134,55 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Forlorn Temple - Transitions",
+    "children": [
+      {
+        "name": "Forlorn Temple - Bottom exit",
+        "sections": [
+          {
+            "name": "Forlorn Temple - Bottom exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Forlorn Temple",
+            "x": 314,
+            "y": 551
+          }
+        ]
+      },
+      {
+        "name": "Forlorn Temple - Left exit",
+        "sections": [
+          {
+            "name": "Forlorn Temple - Left exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Forlorn Temple",
+            "x": 147,
+            "y": 415
+          }
+        ]
+      },
+      {
+        "name": "Forlorn Temple - Right exit",
+        "sections": [
+          {
+            "name": "Forlorn Temple - Right exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Forlorn Temple",
+            "x": 852,
+            "y": 417
+          }
+        ]
+      }
+    ]
   }
 ]

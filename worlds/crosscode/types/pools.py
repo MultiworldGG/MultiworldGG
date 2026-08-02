@@ -69,17 +69,17 @@ class Pools:
         weights = {}
 
         for loc in world_data.pool_locations:
-            if self.__should_include(loc.metadata):
+            if self.should_include(loc.metadata):
                 self.location_pool.append(loc)
 
         for ev in world_data.events_dict.values():
-            if self.__should_include(ev.metadata):
+            if self.should_include(ev.metadata):
                 self.event_pool.append(ev)
 
         for name, pool in world_data.item_pools_template.items():
             counter = defaultdict(lambda: 0)
             for entry in pool:
-                if self.__should_include(entry.metadata):
+                if self.should_include(entry.metadata):
                     counter[entry.item] += entry.quantity
 
             self.item_pools[name] = counter
@@ -92,12 +92,12 @@ class Pools:
         for shop_name, locations in world_data.per_shop_locations.items():
             shop_locations = []
             for loc in locations.values():
-                if self.__should_include(loc.metadata):
+                if self.should_include(loc.metadata):
                     shop_locations.append(loc)
             self.per_shop_location_pool[shop_name] = shop_locations
 
         for loc in world_data.global_shop_locations.values():
-            if self.__should_include(loc.metadata):
+            if self.should_include(loc.metadata):
                 self.global_shop_location_pool.append(loc)
 
         for shop_pool, pool_name in (
@@ -105,14 +105,14 @@ class Pools:
                 (world_data.shop_unlock_by_shop, "shop_unlock_by_shop"),
                 (world_data.shop_unlock_by_shop_and_id, "shop_unlock_by_shop_and_id")
         ):
-            self.item_pools[pool_name] = { entry.item: 1 for entry in shop_pool.values() if self.__should_include(entry.metadata) }
+            self.item_pools[pool_name] = { entry.item: 1 for entry in shop_pool.values() if self.should_include(entry.metadata) }
 
         for chain_name, chain in world_data.progressive_chains.items():
             item_list: list[ItemData] = []
             self.progressive_chains[chain_name] = item_list
             items = self.locate_chain(chain)
             for idx, entry in enumerate(items):
-                if self.__should_include(entry.metadata):
+                if self.should_include(entry.metadata):
                     item_list.append(entry.item)
                     prog_item = world_data.progressive_items[chain_name].name
                     self.item_progressive_replacements[entry.item.name].append((prog_item, idx + 1))
@@ -129,12 +129,12 @@ class Pools:
             for subchain in chain.subchains:
                 if subchain.metadata is None:
                     return subchain.chain
-                if self.__should_include(subchain.metadata):
+                if self.should_include(subchain.metadata):
                     return subchain.chain
 
             return []
 
-    def __should_include(self, metadata: IncludeOptions | None) -> bool:
+    def should_include(self, metadata: IncludeOptions | None) -> bool:
         # Technically the class allows metadata to be None.
         # So we'll assign a local variable and use that instead.
         if metadata is None:

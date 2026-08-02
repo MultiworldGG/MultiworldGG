@@ -215,7 +215,7 @@ act3_items: List[ItemDict] = [
     {'name': "Act 3 Bridge Repair",
      'count': 1,
      'classification': ItemClassification.progression},
-    {'name': "Respledent Bastion Gate",
+    {'name': "Resplendent Bastion Gate",
      'count': 1,
      'classification': ItemClassification.progression},
 ]

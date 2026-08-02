@@ -373,6 +373,17 @@ class Moonwalk(Toggle):
     display_name = "Moonwalk"
     default = 0
 
+class ItemMatching(Choice):
+    """
+    Changes how items from other worlds appear:
+    - Metroid: Items from other Metroid games will get the closest matching sprite and map item markers.
+    - Generic: All items from other worlds will have an Archipelago sprite, with an arrow to indicate progression
+    """
+    display_name = "Item matching"
+    default = 0
+    option_metroid = 0
+    option_generic = 1
+
 class MapRandoOptions(OptionDict):
     """
     Map Rando Settings as defined by maprando.com.
@@ -533,4 +544,5 @@ class SMMROptions(PerGameCommonOptions):
     spin_lock_buttons: SpinLockButtons
     quick_reload_buttons: QuickReloadButtons
     moonwalk: Moonwalk
+    item_matching: ItemMatching
     map_rando_options: MapRandoOptions

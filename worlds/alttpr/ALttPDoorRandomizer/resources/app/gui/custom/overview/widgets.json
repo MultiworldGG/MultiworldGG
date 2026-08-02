@@ -1,0 +1,598 @@
+{
+  "startHeader": {
+    "usestartinventory": {
+      "type": "checkbox",
+      "config": {
+        "padx": [10,0],
+        "pady": [10,10]
+      }
+    }
+  },
+  "customHeader": {
+    "usecustompool": {
+      "type": "checkbox",
+      "config": {
+        "padx": [10,0],
+        "pady": [10,10]
+      }
+    }
+  },
+  "itemList1": {
+    "bow": {
+      "type": "textbox",
+      "label": {
+        "text": "Bow"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "progressivebow": {
+      "type": "textbox",
+      "label": {
+        "text": "Progressive Bow"
+      },
+      "manager": "grid",
+      "default": 2
+    },
+    "boomerang": {
+      "type": "textbox",
+      "label": {
+        "text": "Blue Boomerang"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "redmerang": {
+      "type": "textbox",
+      "label": {
+        "text": "Red Boomerang"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "hookshot": {
+      "type": "textbox",
+      "label": {
+        "text": "Hookshot"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "mushroom": {
+      "type": "textbox",
+      "label": {
+        "text": "Mushroom"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "powder": {
+      "type": "textbox",
+      "label": {
+        "text": "Magic Powder"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "firerod": {
+      "type": "textbox",
+      "label": {
+        "text": "Fire Rod"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "icerod": {
+      "type": "textbox",
+      "label": {
+        "text": "Ice Rod"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "bombos": {
+      "type": "textbox",
+      "label": {
+        "text": "Bombos"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "ether": {
+      "type": "textbox",
+      "label": {
+        "text": "Ether"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "quake": {
+      "type": "textbox",
+      "label": {
+        "text": "Quake"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "lamp": {
+      "type": "textbox",
+      "label": {
+        "text": "Lamp"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "hammer": {
+      "type": "textbox",
+      "label": {
+        "text": "Hammer"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "shovel": {
+      "type": "textbox",
+      "label": {
+        "text": "Shovel"
+      },
+      "manager": "grid",
+      "default": 1
+    }
+  },
+  "itemList2": {
+    "flute": {
+      "type": "textbox",
+      "label": {
+        "text": "Flute"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "bugnet": {
+      "type": "textbox",
+      "label": {
+        "text": "Bug Net"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "book": {
+      "type": "textbox",
+      "label": {
+        "text": "Book"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "bottle": {
+      "type": "textbox",
+      "label": {
+        "text": "Bottle"
+      },
+      "manager": "grid",
+      "default": 4
+    },
+    "somaria": {
+      "type": "textbox",
+      "label": {
+        "text": "Cane of Somaria"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "byrna": {
+      "type": "textbox",
+      "label": {
+        "text": "Cane of Byrna"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "cape": {
+      "type": "textbox",
+      "label": {
+        "text": "Magic Cape"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "mirror": {
+      "type": "textbox",
+      "label": {
+        "text": "Magic Mirror"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "boots": {
+      "type": "textbox",
+      "label": {
+        "text": "Pegasus Boots"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "powerglove": {
+      "type": "textbox",
+      "label": {
+        "text": "Power Glove"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "titansmitt": {
+      "type": "textbox",
+      "label": {
+        "text": "Titan's Mitt"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "progressiveglove": {
+      "type": "textbox",
+      "label": {
+        "text": "Progressive Glove"
+      },
+      "manager": "grid",
+      "default": 2
+    },
+    "flippers": {
+      "type": "textbox",
+      "label": {
+        "text": "Flippers"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "pearl": {
+      "type": "textbox",
+      "label": {
+        "text": "Moon Pearl"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "heartpiece": {
+      "type": "textbox",
+      "label": {
+        "text": "Piece of Heart"
+      },
+      "manager": "grid",
+      "default": 24
+    }
+  },
+  "itemList3": {
+    "heartcontainer": {
+      "type": "textbox",
+      "label": {
+        "text": "Heart Container"
+      },
+      "manager": "grid",
+      "default": 10
+    },
+    "sancheart": {
+      "type": "textbox",
+      "label": {
+        "text": "Sanctuary Heart"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "sword1": {
+      "type": "textbox",
+      "label": {
+        "text": "Fighters' Sword"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "sword2": {
+      "type": "textbox",
+      "label": {
+        "text": "Master Sword"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "sword3": {
+      "type": "textbox",
+      "label": {
+        "text": "Tempered Sword"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "sword4": {
+      "type": "textbox",
+      "label": {
+        "text": "Golden Sword"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "progressivesword": {
+      "type": "textbox",
+      "label": {
+        "text": "Progressive Sword"
+      },
+      "manager": "grid",
+      "default": 4
+    },
+    "shield1": {
+      "type": "textbox",
+      "label": {
+        "text": "Fighters' Shield"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "shield2": {
+      "type": "textbox",
+      "label": {
+        "text": "Fire Shield"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "shield3": {
+      "type": "textbox",
+      "label": {
+        "text": "Mirror Shield"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "progressiveshield": {
+      "type": "textbox",
+      "label": {
+        "text": "Progressive Shield"
+      },
+      "manager": "grid",
+      "default": 3
+    },
+    "mail2": {
+      "type": "textbox",
+      "label": {
+        "text": "Blue Mail"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "mail3": {
+      "type": "textbox",
+      "label": {
+        "text": "Red Mail"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "progressivemail": {
+      "type": "textbox",
+      "label": {
+        "text": "Progressive Mail"
+      },
+      "manager": "grid",
+      "default": 2
+    },
+    "halfmagic": {
+      "type": "textbox",
+      "label": {
+        "text": "Half Magic"
+      },
+      "manager": "grid",
+      "default": 1
+    }
+  },
+  "itemList4": {
+    "quartermagic": {
+      "type": "textbox",
+      "label": {
+        "text": "Quarter Magic"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "bombsplus5": {
+      "type": "textbox",
+      "label": {
+        "text": "Bomb Cap +5"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "bombsplus10": {
+      "type": "textbox",
+      "label": {
+        "text": "Bomb Cap +10"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "arrowsplus5": {
+      "type": "textbox",
+      "label": {
+        "text": "Arrow Cap +5"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "arrowsplus10": {
+      "type": "textbox",
+      "label": {
+        "text": "Arrow Cap +10"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "arrow1": {
+      "type": "textbox",
+      "label": {
+        "text": "Arrow (1)"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "arrow10": {
+      "type": "textbox",
+      "label": {
+        "text": "Arrow (10)"
+      },
+      "manager": "grid",
+      "default": 12
+    },
+    "bomb1": {
+      "type": "textbox",
+      "label": {
+        "text": "Bomb (1)"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "bomb3": {
+      "type": "textbox",
+      "label": {
+        "text": "Bomb (3)"
+      },
+      "manager": "grid",
+      "default": 16
+    },
+    "bomb10": {
+      "type": "textbox",
+      "label": {
+        "text": "Bomb (10)"
+      },
+      "manager": "grid",
+      "default": 1
+    },
+    "rupee1": {
+      "type": "textbox",
+      "label": {
+        "text": "Rupee (1)"
+      },
+      "manager": "grid",
+      "default": 2
+    },
+    "rupee5": {
+      "type": "textbox",
+      "label": {
+        "text": "Rupee (5)"
+      },
+      "manager": "grid",
+      "default": 4
+    },
+    "rupee20": {
+      "type": "textbox",
+      "label": {
+        "text": "Rupee (20)"
+      },
+      "manager": "grid",
+      "default": 28
+    },
+    "rupee50": {
+      "type": "textbox",
+      "label": {
+        "text": "Rupee (50)"
+      },
+      "manager": "grid",
+      "default": 7
+    },
+    "rupee100": {
+      "type": "textbox",
+      "label": {
+        "text": "Rupee (100)"
+      },
+      "manager": "grid",
+      "default": 1
+    }
+  },
+  "itemList5": {
+    "rupee300": {
+      "type": "textbox",
+      "label": {
+        "text": "Rupee (300)"
+      },
+      "manager": "grid",
+      "default": 5
+    },
+    "blueclock": {
+      "type": "textbox",
+      "label": {
+        "text": "Blue Clock"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "greenclock": {
+      "type": "textbox",
+      "label": {
+        "text": "Green Clock"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "redclock": {
+      "type": "textbox",
+      "label": {
+        "text": "Red Clock"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "silversupgrade": {
+      "type": "textbox",
+      "label": {
+        "text": "Silver Arrows Upgrade"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "generickeys": {
+      "type": "textbox",
+      "label": {
+        "text": "Generic Keys"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "triforcepieces": {
+      "type": "textbox",
+      "label": {
+        "text": "Triforce Pieces"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "triforcepiecesgoal": {
+      "type": "textbox",
+      "label": {
+        "text": "Triforce Pieces Goal"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "triforce": {
+      "type": "textbox",
+      "label": {
+        "text": "Triforce (win game)"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "rupoor": {
+      "type": "textbox",
+      "label": {
+        "text": "Rupoor"
+      },
+      "manager": "grid",
+      "default": 0
+    },
+    "rupoorcost": {
+      "type": "textbox",
+      "label": {
+        "text": "Rupoor Cost"
+      },
+      "manager": "grid",
+      "default": 10
+    }
+  }
+}

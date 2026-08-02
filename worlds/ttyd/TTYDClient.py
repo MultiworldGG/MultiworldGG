@@ -66,7 +66,7 @@ def _check_universal_tracker_version() -> bool:
             return False
         if int(match.groups()[0]) < 2:
             return False
-        if int(match.groups()[1]) < 12:
+        if int(match.groups()[0]) == 2 and int(match.groups()[1]) < 12:
             return False
         return True
     return False

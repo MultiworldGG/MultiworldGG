@@ -351,7 +351,12 @@ class JsonParser:
         if "condition" in raw:
             condition = self.parse_condition(raw["condition"])
 
-        return RegionConnection(region_from, region_to, condition)
+        return RegionConnection(
+            region_from=region_from,
+            region_to=region_to,
+            cond=condition,
+            metadata=raw.get("metadata", None)
+        )
 
     def parse_regions_data(self, raw: dict[str, typing.Any]) -> RegionsData:
         """
@@ -377,14 +382,10 @@ class JsonParser:
         if not isinstance(raw_connections, list):
             raise JsonParserError(raw, raw_connections, "regions data", "connection must be list")
 
-        regions_seen: set[str] = set()
-
         connections = []
 
         for raw_conn in raw_connections:
             conn = self.parse_region_connection(raw_conn)
-            regions_seen.add(conn.region_to)
-            regions_seen.add(conn.region_from)
 
             connections.append(conn)
 
@@ -398,11 +399,12 @@ class JsonParser:
         for goal_name, goal in raw["goals"].items():
             goals[goal_name] = self.parse_goal(goal)
 
-        region_list = list(regions_seen)
-
-        region_list.sort()
-
-        return RegionsData(start, exclude, region_list, connections, goals)
+        return RegionsData(
+            starting_region=start,
+            excluded_regions=exclude,
+            region_connections=connections,
+            goals=goals
+        )
 
     def parse_regions_data_list(self, raw: dict[str, dict[str, typing.Any]]) -> dict[str, RegionsData]:
         """

@@ -382,7 +382,7 @@ location_list: List[UKLocation] = [
     UKEnemyLocation("Enemy: Drone", Regions.shop, "e_drone", LocationType.Enemy, "@Hell/Enemies/Enemy: Drone",
         {"1-1", "1-2", "1-3", "2-1", "2-2", "2-3", "3-1", "4-1", "4-2", "4-3", "5-1", "5-2", "5-3", "7-1", "7-S", "8-1", "8-2", "8-3", "0-E", "1-E"}),
     UKEnemyLocation("Enemy: Streetcleaner", Regions.shop, "e_streetcleaner", LocationType.Enemy, "@Hell/Enemies/Enemy: Streetcleaner",
-        {"1-2", "1-3", "2-1", "2-2", "2-3", "3-1", "4-1", "4-3", "5-1", "5-2", "5-3", "6-1", "7-1", "7-3", "7-4", "8-2", "8-3", "0-E", "1-E", "P-2"}),
+        {"1-2", "1-3", "2-1", "2-2", "2-3", "3-1", "4-1", "4-2", "4-3", "5-1", "5-2", "5-3", "6-1", "7-1", "7-3", "7-4", "8-2", "8-3", "0-E", "1-E", "P-2"}),
     UKEnemyLocation("Boss: V2", Regions.l9, "e_v2", LocationType.Boss, "@Hell/Enemies/Boss: V2",
         {"1-4"}),
     UKEnemyLocation("Enemy: Mindflayer", Regions.shop, "e_mindflayer", LocationType.Enemy, "@Hell/Enemies/Enemy: Mindflayer",

@@ -9,10 +9,10 @@ class LogicDifficulty(Choice):
     """
     Difficulty of the logic.
 
-    - **Moki** (or easy): Recommended for beginners, who only played the game casually.
-    - **Gorlek** (or medium): Harder paths that can use sword and hammer as movement options, and damage boosts.
-    - **Kii** (or hard): Hard and precise paths that use energy weapons as movement.
-    - **Unsafe**: Very hard and unverified paths. Warning: some paths are **extremely hard**.
+    - **moki** (or easy): Recommended for beginners, who only played the game casually.
+    - **gorlek** (or medium): Harder paths that can use sword and hammer as movement options, and damage boosts.
+    - **kii** (or hard): Hard and precise paths that use energy weapons as movement.
+    - **unsafe**: Very hard and unverified paths. Warning: some paths are **extremely hard**.
     """
     display_name = "Logic difficulty"
     rich_text_doc = True
@@ -28,9 +28,10 @@ class LogicDifficulty(Choice):
 
 class Glitches(Toggle):
     """
-    Whether the logic includes paths with glitches.
+    Whether the logic includes paths with glitches. The required tricks depend on the logic difficulty.
 
-    - **Gorlek**: includes grounded sentry jumps, sentry as a fire source, breaking walls with Shuriken, and removing the kill plane in Feeding Grounds.
+    - **Gorlek**: includes grounded sentry jumps, sentry as a fire source, breaking walls with Shuriken, and removing
+      the kill plane in Feeding Grounds.
     - **Kii**: glitches are not included in Kii logic yet.
     - **Unsafe**: everything else.
     """
@@ -39,9 +40,20 @@ class Glitches(Toggle):
 
 
 class StartingLocation(Choice):
-    """Choose the starting location."""
+    """
+    Choose the starting location.
+
+    - **vanilla**: spawn in Inkwater Marsh.
+    - Teleporter name: spawn in this teleporter.
+      Possible values: marsh, burrows, howlsden, hollow, glades, wellspring, westwoods, eastwoods,
+      reach, depths, eastpools, westpools, westwastes, eastwastes, outerruins, innerruins, willow, shriek.
+    - **random_tp**: Spawn at a random teleporter (there are weights applied internally for this option).
+    - **random_loc**: Spawn at a random location (usually placed on a checkpoint).
+    """
     display_name = "Starting location"
-    option_marsh = 0
+    rich_text_doc = True
+
+    option_vanilla = 0
     option_burrows = 1
     option_howlsden = 2
     option_hollow = 3
@@ -58,18 +70,32 @@ class StartingLocation(Choice):
     option_outerruins = 14
     option_innerruins = 15
     option_willow = 16
+    option_shriek = 17
+
+    alias_marsh = 0
+    alias_woodsentrance = 6  # TODO check here and in item names that these are the right TP names
+    alias_woodsexit = 7
+    alias_centralluma = 10
+    alias_lumaboss = 11
+    alias_feedinggrounds = 12
+    alias_centralwastes = 12
+
+    option_random_tp = 18
+    option_random_loc = 19  # TODO option name
+
     default = 0
 
 
 class Goal(OptionSet):
-    """Set conditions for entering the final boss. Use the rando wheel (with **V**) to check goal progress.
+    """
+    Set conditions for entering the final boss. Use the rando wheel (with **V**) to check goal progress.
 
     - **trees**: All trees must be collected.
     - **wisps**: All wisps must be collected.
     - **quests**: All quests have to be finished.
     - **relics**: Place relics in some areas, all of them must be collected.
     - **random**: Choose one goal at random among the other selected ones.
-      e.g. [random, trees, wisps] will give trees or wisps.
+      e.g. ['random', 'trees', 'wisps'] will give trees or wisps.
       If only random is selected, it will choose among all goals.
     """
     display_name = "Goal"
@@ -107,22 +133,27 @@ class FragmentsCount(Range):
     default = 5
 
 
-class RandomizeDoors(Toggle):
-    """Enable door randomizer."""
+class RandomizeDoors(Choice):
+    """
+    Randomize entrances between the doors.
+
+    - **disabled** (or false): no randomization.
+    - **coupled** (or enabled or true): randomize doors 2 by 2 (going back will put you where you entered the door).
+    - **decoupled**: the entrances are fully shuffled for both entering and exiting a door.
+    """
     display_name = "Randomize Doors"
+    option_disabled = 0
+    option_coupled = 1
+    option_decoupled = 2
+
+    alias_enabled = 1
+    alias_true = 1
+    alias_false = 0
 
 
-class RegenerateRequirements(Choice):
-    """Set a logic difficulty at and above which Regenerate is ignored in region requirements."""
-    display_name = "Region Requirements"
-    default = 2
-    option_moki = 0
-    option_gorlek = 1
-    option_kii = 2
-    option_unsafe = 3
-    alias_easy = 0
-    alias_medium = 1
-    alias_hard = 2
+class FreeRegenerate(Toggle):
+    """Ignore Regenerate in the region requirements."""
+    display_name = "Free Regenerate"
 
 
 class FreeTeleporters(Toggle):
@@ -150,11 +181,6 @@ class ZoneHints(DefaultOnToggle):
     display_name = "Zone hints"
 
 
-class KnowledgeHints(DefaultOnToggle):
-    """Display useful hints on randomizer knowledge while playing the seed."""
-    display_name = "Knowledge hints"
-
-
 class Unpopular(Toggle):
     """
     Enable unpopular paths for unsafe.
@@ -166,7 +192,7 @@ class Unpopular(Toggle):
 
 class DeathLink(NamedRange):
     """Disable/enable death link. Set this to a non-zero integer to specify how many deaths are needed to trigger it."""
-    display_name = "DeathLink amount"
+    display_name = "DeathLink amnesty"
     range_start = 0
     range_end = 99
     special_range_names = {
@@ -217,7 +243,8 @@ class NoRain(Toggle):
 
 
 class NoCombat(OptionSet):
-    """Skip all combat heavy parts.
+    """
+    Skip all combat heavy parts.
 
     - **everything**: the same as if you include all the following
     - **shrines**: Shrine have their pickup floating above them before the fight
@@ -242,12 +269,15 @@ class NoWillowHearts(Toggle):
 
 
 class Quests(Choice):
-    """Change which quests are in the location pool.
+    """
+    Change which quests are in the location pool.
 
     - **all**: All quests are present.
-    - **no hand**: Remove the Hand-to-hand questline from the locations.
-    - **none**: Remove all quests that involve talking to NPCs. Main quests (e.g. wisps) or rebuilding Glades are still in the pool."""
-    display_name = "Remove Quests"
+    - **no_hand**: Remove the Hand-to-hand questline from the locations.
+    - **none**: Remove all quests that involve talking to NPCs. Main quests (e.g. wisps) or rebuilding Glades are
+      still in the pool.
+    """
+    display_name = "Quests"
     rich_text_doc = True
     option_all = 0
     option_no_hand = 1
@@ -270,14 +300,6 @@ class GladesDone(Toggle):
     display_name = "Glades Done"
 
 
-class ShopKeywordsIcons(Toggle):
-    """Have the non-local items in the shops attempt to use a keyword system to choose icons.
-    For example, item with 'map' in their name will have a map icon.
-    If no keyword fit, then the icon fall back to Classification.
-    """
-    display_name = "Shop Keywords Icons"
-
-
 class SpawnSword(DefaultOnToggle):
     """Choose to have Sword at the beginning."""
     display_name = "Spawn with Sword"
@@ -298,6 +320,25 @@ class LaunchOnSeir(Toggle):
     display_name = "Launch on Seir"
 
 
+class KnowledgeHints(DefaultOnToggle):
+    """Display useful hints on randomizer knowledge while playing the seed."""
+    display_name = "Knowledge hints"
+
+
+class ShopKeywordsIcons(Toggle):
+    """
+    Have the non-local items in the shops attempt to use a keyword system to choose icons.
+    For example, item with 'map' in their name will have a map icon.
+    If no keyword fit, then the icon fall back to Classification.
+    """
+    display_name = "Shop Keywords Icons"
+
+
+class SkipCutscenes(DefaultOnToggle):
+    """Skip most cutscenes, and makes then skippable in the pause menu."""
+    display_name = "Skip cutscenes"
+
+
 option_groups = [
     OptionGroup("Seed Settings", [
         LogicDifficulty,
@@ -310,12 +351,11 @@ option_groups = [
         FragmentsCount,
         HardMode,
         RandomizeDoors,
-        RegenerateRequirements,
+        FreeRegenerate,
         FreeTeleporters,
         QualityOfLife,
         ShrineTrialHints,
         ZoneHints,
-        KnowledgeHints,
         Unpopular,
         DeathLink,
     ]),
@@ -337,14 +377,18 @@ option_groups = [
         NoKeystonesDoors,
         OpenMode,
         GladesDone,
-        ShopKeywordsIcons,
     ]),
     OptionGroup("Item Placements", [
         SpawnSword,
         SpawnRegenerate,
         VanillaShopUpgrades,
         LaunchOnSeir,
-    ])
+    ]),
+    OptionGroup("Miscellaneous", [
+        KnowledgeHints,
+        ShopKeywordsIcons,
+        SkipCutscenes,
+    ]),
 ]
 
 
@@ -359,14 +403,13 @@ class WotWOptions(PerGameCommonOptions):
     fragments_required: FragmentsRequired
     fragments_count: FragmentsCount
     hard_mode: HardMode
-    regenerate_requirements: RegenerateRequirements
+    free_regenerate: FreeRegenerate
     free_teleporters: FreeTeleporters
     door_rando: RandomizeDoors
     qol: QualityOfLife
     hints: ShrineTrialHints
     zone_hints: ZoneHints
     unpopular: Unpopular
-    knowledge_hints: KnowledgeHints
     tp: Teleporters  # Item Pool
     extratp: ExtraTeleporters
     bonus: BonusItems
@@ -382,10 +425,12 @@ class WotWOptions(PerGameCommonOptions):
     no_ks: NoKeystonesDoors
     open_mode: OpenMode
     glades_done: GladesDone
-    shop_keywords: ShopKeywordsIcons
     sword: SpawnSword  # Item Placements
     regenerate: SpawnRegenerate
     vanilla_shop_upgrades: VanillaShopUpgrades
     launch_on_seir: LaunchOnSeir
     start_inventory_from_pool: StartInventoryPool
     death_link: DeathLink
+    knowledge_hints: KnowledgeHints  # Miscellaneous
+    shop_keywords: ShopKeywordsIcons
+    skip_cutscenes: SkipCutscenes

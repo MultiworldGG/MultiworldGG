@@ -1,0 +1,61 @@
+settings:
+  1:
+    ow_layout: wild
+ow-edges:
+  1:
+    two-way:
+      Lost Woods NW: Master Sword Meadow SC
+      Lost Woods EN*: Lumberjack WN*
+      Lost Woods SW*: Lost Woods Pass NW*
+      Lost Woods SC*: Lost Woods Pass NE*
+      Lost Woods SE*: Kakariko Fortune NE*
+      Skull Woods EN*: Dark Lumberjack WN*
+      Skull Woods SW*: Skull Woods Pass NW*
+      Skull Woods SC*: Skull Woods Pass NE*
+      Skull Woods SE*: Dark Fortune NE*
+      West Death Mountain EN*: East Death Mountain WN*
+      West Death Mountain ES*: East Death Mountain WS*
+      West Dark Death Mountain EN*: East Dark Death Mountain WN*
+      West Dark Death Mountain ES*: East Dark Death Mountain WS*
+      East Death Mountain EN*: Death Mountain TR Pegs WN*
+      East Dark Death Mountain EN*: Turtle Rock WN*
+      Zora Waterfall NE: Zoras Domain SW
+      Lost Woods Pass SW*: Kakariko NW*
+      Lost Woods Pass SE*: Kakariko NC*
+      Skull Woods Pass SW*: Village of Outcasts NW*
+      Skull Woods Pass SE*: Village of Outcasts NC*
+      Kakariko Fortune SC*: Kakariko NE*
+      Dark Fortune SC*: Village of Outcasts NE*
+      Kakariko ES*: Blacksmith WS*
+      Kakariko SE*: Kakariko Suburb NE*
+      Village of Outcasts ES*: Hammer Pegs WS*
+      Village of Outcasts SE*: Frog NE*
+      Forgotten Forest ES: Hyrule Castle WN
+      Hyrule Castle ES*: Sand Dunes WN*
+      Hyrule Castle SW*: Central Bonk Rocks NW*
+      Hyrule Castle SE*: Links House NE*
+      Pyramid ES*: Dark Dunes WN*
+      Pyramid SW*: Dark Bonk Rocks NW*
+      Pyramid SE*: Big Bomb Shop NE*
+      Eastern Palace SW*: Tree Line NW*
+      Eastern Palace SE*: Eastern Nook NE*
+      Palace of Darkness SW*: Dark Tree Line NW*
+      Palace of Darkness SE*: Palace of Darkness Nook NE*
+      Stone Bridge SC*: Lake Hylia NW*
+      Hammer Bridge SC*: Ice Lake NW*
+      Tree Line SC*: Lake Hylia NC*
+      Tree Line SE*: Lake Hylia NE*
+      Dark Tree Line SC*: Ice Lake NC*
+      Dark Tree Line SE*: Ice Lake NE*
+      Desert EC: Desert Pass WC
+      Desert ES: Desert Pass WS
+      Lake Hylia WS*: South Pass ES*
+      Lake Hylia EC*: Octoballoon WC*
+      Lake Hylia ES*: Octoballoon WS*
+      Ice Lake WS*: Dark South Pass ES*
+      Ice Lake EC*: Bomber Corner WC*
+      Ice Lake ES*: Bomber Corner WS*
+ow-whirlpools:
+  1:
+    two-way:
+      Zora Whirlpool: Lake Hylia Whirlpool

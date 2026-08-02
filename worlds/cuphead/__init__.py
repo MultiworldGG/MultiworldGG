@@ -56,11 +56,21 @@ class CupheadWorld(CachedRuleBuilderWorld):
     GAME_NAME: ClassVar[str] = "Cuphead"
 
     APWORLD_SEM_VERSION: ClassVar[tuple[int, int, int, int]] = (0, 2, 2, 7)
-    APWORLD_VERSION_POSTFIX: str = ""
-    APWORLD_VERSION_POSTFIX_NO: int = 0
-    APWORLD_VERSION: ClassVar[str] = str(FVersion.from_int_tuple(APWORLD_SEM_VERSION, APWORLD_VERSION_POSTFIX))
+    APWORLD_VERSION_POSTFIX: ClassVar[str] = ""
+    APWORLD_VERSION_POSTFIX_NO: ClassVar[int] = 15
+
+    # For the time being, POSTFIX_NO is also used to indicate release/hotfix number. >10 indicates hotfix.
+    APWORLD_REL_NO: ClassVar[int] = max(0, APWORLD_VERSION_POSTFIX_NO - 10)
+    APWORLD_VERSION: ClassVar[str] = str(
+        FVersion.from_int_tuple(APWORLD_SEM_VERSION, APWORLD_REL_NO, APWORLD_VERSION_POSTFIX)
+    )
 
     AUTHORS: ClassVar[list[str]] = ["JKLeckr"]
+
+    APWORLD_LICENSE: ClassVar[str] = "MPL-2.0"
+    APWORLD_REPO: ClassVar[str] = "https://github.com/JKLeckr/Archipelago-cuphead"
+    APWORLD_FLAGS: ClassVar[list[str]] = ["supports_deathlink"]
+    GAME_IGDB_ID: ClassVar[int] = 9061
 
     SLOT_DATA_VERSION: ClassVar[int] = 6
 

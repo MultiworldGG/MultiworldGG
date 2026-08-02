@@ -230,7 +230,7 @@ class Act3Overhaul(Toggle):
     - Inspectometer Battery will no longer lock you out of the game map,
     and only prevents access to the Foul Backwater area.
     - There'll be an "Act 3 Bridge Repair" item that repairs the bridge.
-    - There'll be a "Respledent Bastion Gate" item that unlocks that gate,
+    - There'll be a "Resplendent Bastion Gate" item that unlocks that gate,
     and the satellite dish that normally unlocks it will be a check."""
     display_name = "Act 3 Overhaul"
 

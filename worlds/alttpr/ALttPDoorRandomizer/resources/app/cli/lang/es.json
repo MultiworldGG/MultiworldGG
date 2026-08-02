@@ -1,0 +1,34 @@
+{
+  "cli": {
+    "app.title": "ALttP Puerta Aleatorizador Versión %s - Número: %s, Código: %s",
+    "player": "Jugador",
+    "shuffling.world": "Barajando el Mundo",
+    "shuffling.dungeons": "Barajando Mazmorras",
+    "basic.traversal": "--Recorrido Básico",
+    "generating.dungeon": "Generando mazmorra",
+    "shuffling.keydoors": "Barajando Puertas Clave para",
+
+    "keylock.detected": "Bloqueo de Teclas detectado",
+    "fill.world": "Llenar el Mundo",
+    "balance.doors": "-Equilibriando Puertas",
+    "re-balancing": "-Reequilibriando",
+    "balancing": "--Equilibriando",
+    "splitting.up": "División",
+
+    "cannot.beat.game": "No se puede vencer el juego. Algo salió terriblemente mal.",
+    "cannot.reach.items": "No se pudo llegar a los siguientes elementos: %s",
+    "cannot.reach.item": "%s (Jugador %d) at %s (Jugador %d)",
+    "check.item.location": "Comprobar si se requiere que %s (Jugador %d) gane el juego.",
+    "check.item.location.true": "Sí, se requiere artículo.",
+    "check.item.location.false": "No, no se requiere artículo.",
+
+    "patching.rom": "Parchear ROM",
+    "calc.playthrough": "Cálculo de Juego",
+    "generation.failed": "Generación Fallida",
+    "enemizer.not.found": "Enemizer no encontrado en",
+
+    "building.collection.spheres": "Construyendo esferas de recolección.",
+    "building.calculating.spheres": "Esfera calculada %i, que contiene %i de %i elementos de progreso.",
+    "building.final.spheres": "Esfera final calculada %i, que contiene %i de %i elementos de progreso."
+  }
+}

@@ -1,0 +1,19 @@
+settings:
+  1:
+    ow_layout: wild
+ow-edges:
+  1:
+    groups:
+      mountain:
+        - West Death Mountain EN
+        - West Death Mountain ES
+        - West Dark Death Mountain EN
+        - West Dark Death Mountain ES
+        - East Death Mountain WN
+        - East Death Mountain WS
+        - East Death Mountain EN
+        - East Dark Death Mountain WN
+        - East Dark Death Mountain WS
+        - East Dark Death Mountain EN
+        - Death Mountain TR Pegs WN
+        - Turtle Rock WN

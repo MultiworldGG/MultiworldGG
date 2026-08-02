@@ -170,5 +170,25 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Underworld - Transitions",
+    "children": [
+      {
+        "name": "Underworld - Left exit",
+        "sections": [
+          {
+            "name": "Underworld - Left exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Underworld",
+            "x": 152,
+            "y": 260
+          }
+        ]
+      }
+    ]
   }
 ]

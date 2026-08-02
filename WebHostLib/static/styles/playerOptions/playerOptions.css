@@ -301,6 +301,110 @@ html {
   min-width: unset;
   display: unset;
 }
+#player-options .free-form-option {
+  gap: 0.25rem;
+  max-height: none;
+  padding: 0.25rem;
+}
+#player-options .free-form-option .free-form-row, #player-options .free-form-option .free-form-add-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+#player-options .free-form-option input[type=text] {
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+}
+#player-options .free-form-option input.free-form-quantity, #player-options .free-form-option .option-entry input.free-form-quantity {
+  box-sizing: border-box;
+  flex: 0 0 3.25rem;
+  margin-left: 0;
+  max-height: 1.5rem;
+  max-width: 3.25rem;
+  width: 3.25rem;
+}
+#player-options .free-form-option button {
+  align-items: center;
+  background: hsl(278 22% 33%);
+  border: 1px solid hsl(278 20% 23%);
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #E6E6E8;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: 0.75rem;
+  height: 1.5rem;
+  justify-content: center;
+  line-height: 1;
+  padding: 0 0.4rem;
+  white-space: nowrap;
+}
+#player-options .free-form-option button:hover {
+  background: hsl(278 25% 42%);
+  border-color: hsl(278 25% 52%);
+}
+#player-options .free-form-option button:focus-visible {
+  outline: 2px solid #E6E6E8;
+  outline-offset: 1px;
+}
+#player-options .free-form-option button:disabled {
+  background: hsl(220 12% 22%);
+  border-color: hsl(220 8% 28%);
+  color: hsl(220 10% 65%);
+  cursor: not-allowed;
+}
+#player-options .free-form-option .free-form-move-up,
+#player-options .free-form-option .free-form-move-down,
+#player-options .free-form-option .free-form-remove {
+  flex: 0 0 1.5rem;
+  font-size: 0.9rem;
+  padding: 0;
+  width: 1.5rem;
+}
+#player-options .free-form-option .free-form-remove {
+  font-size: 1rem;
+}
+#player-options .free-form-option .free-form-add {
+  flex: 0 0 auto;
+  font-weight: 600;
+}
+#player-options .free-form-option.free-option-dict .free-form-key,
+#player-options .free-form-option.free-option-dict .free-form-dict-value {
+  box-sizing: border-box;
+  flex: 1 1 50%;
+  min-width: 0;
+}
+#player-options .free-form-option.free-option-dict select.free-form-key,
+#player-options .free-form-option.free-option-dict select.free-form-dict-value {
+  background: hsl(278 22% 33%);
+  border: 1px solid hsl(278 20% 23%);
+  border-radius: 4px;
+  color: #E6E6E8;
+  height: 1.5rem;
+  padding: 0 0.25rem;
+}
+#player-options .free-form-option.free-option-dict input[type=number].free-form-dict-value {
+  flex: 0 0 4rem;
+  margin-left: 0;
+  max-height: 1.5rem;
+  max-width: 4rem;
+  width: 4rem;
+}
+#player-options .free-form-option.free-option-dict select.free-form-dict-value[data-value-type=boolean] {
+  flex: 0 0 4.5rem;
+  max-width: 4.5rem;
+  width: 4.5rem;
+}
+#player-options .free-form-option.free-option-dict .free-form-new-value {
+  display: flex;
+  flex: 1 1 50%;
+  min-width: 0;
+}
+#player-options .free-form-option.free-option-dict .free-form-new-value .free-form-dict-value {
+  width: 100%;
+}
 #player-options .manual-container{
   font-style: italic;
   font-size: 12px;

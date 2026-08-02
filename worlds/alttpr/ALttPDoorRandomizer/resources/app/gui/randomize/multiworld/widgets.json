@@ -1,0 +1,5 @@
+{
+  "widgets": {
+    "worlds": { "type": "spinbox" }
+  }
+}

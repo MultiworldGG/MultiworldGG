@@ -35,9 +35,9 @@ subareas_list = [
 ]
 
 supadow_list = [
-    "Spin N' Win Supadow",
-    "Pankamania Supadow",
-    "The Copter Race Contest Supadow",
+    "Spin N' Win",
+    "Pankamania",
+    "The Copter Race Contest",
     "Bike Race",
 ]
 
@@ -240,47 +240,35 @@ def grinchconnect(
     current_region = world.get_region(current_region_name)
     connected_region = world.get_region(connected_region_name)
     rule_list = interpret_rule(access_rules, world.player)
-    # Goes from current to connected
+
     curr_entr: Entrance = current_region.connect(connected_region)
-    # Goes from connected to current
     connect_entr: Entrance = connected_region.connect(current_region)
 
-    for access_rule in rule_list:
-
-        # If the current region has no logic
-        if rule_list.index(access_rule) == 0:
-            add_rule(curr_entr, access_rule)
-
-        # If the current region has logic
-        else:
-            add_rule(curr_entr, access_rule, combine="or")
-
-        # If the adjacent region has no logic
-        if rule_list.index(access_rule) == 0:
-            add_rule(connect_entr, access_rule)
-
-        # If the adjacent region has logic
-        else:
-            add_rule(connect_entr, access_rule, combine="or")
+    if rule_list:
+        rule = lambda state, rules=tuple(rule_list): any(rule(state) for rule in rules)
+        add_rule(curr_entr, rule)
+        add_rule(connect_entr, rule)
 
 
-# What regions are connected to each other
 def connect_regions(world: "GrinchWorld", multiworld: MultiWorld):
     for grinch_region, grinch_data in ALL_REGIONS_INFO.items():
+
+        if world.options.supadow_minigames == 0 and grinch_region in supadow_list:
+            #Prevent supadow region being created if supadows are off
+            continue
         multiworld.regions.append(GrinchRegion(grinch_region, grinch_data, world.player, multiworld))
-        access_list = grinch_data.region_access
+
+        access_list = [] if grinch_data.region_access is None else [item_set.copy() for item_set in grinch_data.region_access]
+
         if world.options.advanced_logic or world.using_ut:
             if grinch_data.advanced_region_access is not None:
                 for advanced_rule in grinch_data.advanced_region_access:
-                    # If the glitches_item_name is different than "AdvancedLogic",
-                    # uncomment these line to add it to the regions rules
+                    advanced_rule = advanced_rule.copy()
                     if world.using_ut and not world.options.advanced_logic:
                         advanced_rule.append(world.glitches_item_name)
-                    #if (world.using_ut and not world.options.advanced_logic) or (not world.using_ut and world.options.advanced_logic):
                     access_list.append(advanced_rule)
 
-        # print(f"Region:{grinch_region}")
-        # print(f"Access_rules:{access_list}")
         if grinch_region == "Mount Crumpit":
             continue
+
         grinchconnect(world, grinch_region, grinch_data.parent_region, access_list)

@@ -648,8 +648,9 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
             st_has_whip(state, player),
             state.has("Bombs (Progressive)", player, 2)
         ])],
-        ["mtt boss", "event_vulcano", False, None],
-        ["mtt boss", "goal_vulcano", False, None],
+        ["mtt boss", "defeat vulcano", False, None],
+        ["defeat vulcano", "event_vulcano", False, None],
+        ["defeat vulcano", "goal_vulcano", False, None],
 
         # Disorientation Station
         ["disorientation station", "disorientation bird", False, lambda state: st_hard_birds(state, player)],

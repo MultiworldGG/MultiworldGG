@@ -55,6 +55,7 @@ components.append(Component("Hades 2 Rogue Client",
 
 
 class Hades2Web(WebWorld):
+    display_name = "Hades 2 (Rogue)"
     tutorials = [Tutorial(
         "Multiworld Setup Guide",
         "A guide to setting up Hades 2 for MultiworldGG.",
@@ -94,7 +95,7 @@ class Hades2World(World):
     # mod's manifest.json version_number -- and bump them on any breaking datapackage or
     # protocol change, or the mismatch warning can never fire (it sat at "0.1" for seven
     # releases, spanning a breaking keepsake-id relocation).
-    mod_version = "0.7.2"
+    mod_version = "0.9.0"
 
     item_name_to_id = {name: data.code for name, data in item_table.items() if data.code is not None}
     location_name_to_id = give_all_locations_table()
@@ -114,6 +115,17 @@ class Hades2World(World):
             raise OptionError(
                 "Hades 2 Rogue: no weapon is included (Included Weapons is empty) -- at "
                 "least one weapon must be reachable.")
+
+        # weapon_amount randomly downselects included_weapons to that many entries, writing
+        # the result back so every downstream reader of included_weapons.value (item pool,
+        # Rules.py's weapon-count gates, Client.py's tracker columns, slot_data) sees the
+        # trimmed set automatically. A no-op once len(included) <= amount (also what keeps
+        # this idempotent across UT's passthrough restore, which re-applies the already-
+        # downselected included_weapons before this method runs again).
+        amount = self.options.weapon_amount.value
+        if amount < len(included):
+            included = set(self.random.sample(sorted(included), amount))
+            self.options.included_weapons.value = included
 
         # initial_weapon must be one of the included weapons; an excluded pick (or a
         # resolved "random" that landed on one) snaps to a random included weapon instead.
@@ -699,8 +711,10 @@ class Hades2World(World):
         return weapon_name == starting_weapon or weapon_name not in self.options.included_weapons.value
 
     def set_rules(self) -> None:
+        starting_weapon = INITIAL_WEAPON_BY_VALUE.get(self.options.initial_weapon.value)
         set_rules(self.multiworld, self.player, self.options, self.route_offsets,
-                  self.surface_access_via_progressive, self.nightmare_access_via_progressive)
+                  self.surface_access_via_progressive, self.nightmare_access_via_progressive,
+                  starting_weapon, self.starting_aspect_index)
 
     def create_item(self, name: str) -> Item:
         return Hades2Item(name, self.player)
@@ -717,7 +731,7 @@ class Hades2World(World):
         # yaml-less-generation path regenerates from ONLY this dict, no YAML at all -- an
         # option missing here silently falls back to its default under that path.
         slot_data = self.options.as_dict(
-            "included_weapons", "initial_weapon", "included_aspects", "location_system",
+            "included_weapons", "weapon_amount", "initial_weapon", "included_aspects", "location_system",
             "score_rewards_amount", "enemy_locations", "npc_locations",
             "grasp_intervals", "grasp_count", "arcanasanity",
             "aspectsanity", "keepsakesanity", "petsanity",

@@ -149,6 +149,44 @@ def included_aspect_alts(weapon: str, included_aspects: int) -> List[str]:
     should always prepend the base title themselves."""
     return ASPECT_TITLES_BY_WEAPON.get(weapon, [])[:max(0, included_aspects - 1)]
 
+
+# --- per_aspect_room_based display keys ---------------------------------------
+# Single-word display key per Aspect, used ONLY for per_aspect_room_based location names
+# (Locations.py) -- never for item lookups, which still key on the full title. Every
+# weapon's default Aspect shares the same in-game epithet ("Melinoe"), so it's a flat
+# constant rather than derived per-title like the alternates.
+ASPECT_BASE_DISPLAY_KEY = "Melinoe"
+
+
+def _aspect_display_key(title: str) -> str:
+    """'Aspect of Circe' -> 'Circe', 'Aspect of the Morrigan' -> 'Morrigan' (drops a leading
+    'the' so every key stays a single word -- location names parse the first two
+    space-separated tokens back out as (aspect, weapon), see Rules._set_per_aspect_rules)."""
+    suffix = title[len("Aspect of "):]
+    if suffix.lower().startswith("the "):
+        suffix = suffix[4:]
+    return suffix
+
+
+ASPECT_DISPLAY_KEY_BY_TITLE: Dict[str, str] = {
+    title: _aspect_display_key(title) for title, _weapon in aspect_titles
+}
+
+
+def weapon_aspect_slots(weapon: str) -> List[tuple]:
+    """All 4 fixed (internal_aspect_key, display_key) slots for `weapon`, in stable id order:
+    slot 0 is always the base Aspect of Melinoe ("base", "Melinoe"), slots 1-3 are its
+    alternates in ASPECT_TITLES_BY_WEAPON's fixed order. Every weapon has exactly 4 slots
+    regardless of this seed's IncludedAspects, so a slot's id offset stays stable across seeds
+    -- IncludedAspects only decides whether slots 1..3 actually get locations this seed
+    (mirrors IncludedWeapons/WEAPON_SHORT_NAMES's fixed-position id stability -- see
+    Locations.fill_weapon_room_checks). internal_aspect_key is "base" or the alt's full title
+    (what get_aspect_rank / the per_aspect item tables key on)."""
+    slots = [("base", ASPECT_BASE_DISPLAY_KEY)]
+    for title in ASPECT_TITLES_BY_WEAPON.get(weapon, []):
+        slots.append((title, ASPECT_DISPLAY_KEY_BY_TITLE[title]))
+    return slots
+
 aspect_item_base = hades2_base_item_id + 57           # randomized alternates: +57..+74 (18)
 aspect_base_item_base = hades2_base_item_id + 274     # randomized Aspects of Melinoe: +274..+279 (6)
 item_table_aspects_randomized: Dict[str, ItemData] = {

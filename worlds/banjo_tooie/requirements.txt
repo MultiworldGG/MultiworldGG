@@ -1,1 +1,1 @@
-emu-loader @ git+https://github.com/Killklli/EmuLoader.git#0.1.4
+emu-loader @ git+https://github.com/Killklli/EmuLoader@v0.1.4

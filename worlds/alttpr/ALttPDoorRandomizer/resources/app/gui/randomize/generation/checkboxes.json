@@ -1,0 +1,18 @@
+{
+  "checkboxes": {
+    "createrom":          { "type": "checkbox" },
+    "bps":                { "type": "checkbox" },
+    "spoiler":      {
+      "type": "selectbox",
+      "options": [
+        "none",
+        "settings",
+        "semi",
+        "full",
+        "debug"
+      ]
+    },
+    "calcplaythrough":    { "type": "checkbox" },
+    "print_custom_yaml":  { "type": "checkbox" }
+  }
+}

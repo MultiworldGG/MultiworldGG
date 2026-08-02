@@ -23,6 +23,14 @@ function split(s, sep)
     return fields
 end
 
+local function shuffle_array(t)
+  for i = #t, 2, -1 do
+    local j = math.random(i)
+    t[i], t[j] = t[j], t[i]
+  end
+  return t
+end
+
 function random_offset_position(position, offset)
     return {x=position.x+math.random(-offset, offset), y=position.y+math.random(-offset, offset)}
 end
@@ -151,4 +159,20 @@ function spill_character_inventory(character)
             end
         end
     end
+end
+
+function attempt_to_insert_module_at_random(machines, module_name)
+    local shuffled_machines = shuffle_array(machines)
+
+    for _, machine in ipairs(shuffled_machines) do
+        if machine.valid and machine.get_module_inventory() then
+            local module_inventory = machine.get_module_inventory()
+            if module_inventory.can_insert({name = module_name, count = 1}) then
+                module_inventory.insert({name = module_name, count = 1})
+                return true -- Successfully inserted the module
+            end
+        end
+    end
+
+    return false -- No valid machine found to insert the module
 end

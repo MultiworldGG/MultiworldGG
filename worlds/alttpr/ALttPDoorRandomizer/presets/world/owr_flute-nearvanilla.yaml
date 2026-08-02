@@ -1,0 +1,31 @@
+settings:
+  1:
+    ow_fluteshuffle: balanced
+ow-flutespots:
+  1:
+    forbid:
+      - 0x00 # Lost Woods
+      - 0x02 # Lumberjack
+      - 0x07 # Death Mountain TR Pegs
+      - 0x0A # Mountain Pass
+      - 0x0F # Zora Waterfall
+      - 0x10 # Lost Woods Pass
+      - 0x12 # Kakariko Pond
+      - 0x13 # Sanctuary
+      - 0x14 # Graveyard
+      - 0x17 # Zora Approach
+      - 0x1A # Forgotten Forest
+      - 0x1D # Wooden Bridge
+      - 0x22 # Blacksmith
+      - 0x25 # Sand Dunes
+      - 0x28 # Maze Race
+      - 0x29 # Kakariko Suburb
+      - 0x2A # Flute Boy
+      - 0x2B # Central Bonk Rocks
+      - 0x2D # Stone Bridge
+      - 0x2E # Tree Line
+      - 0x32 # Flute Boy Approach
+      - 0x34 # Statues
+      - 0x37 # Ice Cave
+      - 0x3A # Desert Pass
+      - 0x3C # South Pass

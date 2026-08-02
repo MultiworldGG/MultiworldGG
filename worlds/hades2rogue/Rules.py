@@ -1,21 +1,35 @@
 import math
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from worlds.AutoWorld import LogicMixin
 from worlds.generic.Rules import add_rule
 from .Routes import ROUTES, UNDERWORLD, SURFACE, NIGHTMARE, boss_event, boss_victory, \
     active_routes, NPC_ROUTE_LOCK, NPC_RANDOMIZED_HELPERS, NPC_RANDOMIZED_ZONE_INDEX, \
     GOAL_BOSSES, ALL_SELECTED, goal_includes, COMBAT_HELPER_NPCS, combat_helper_native_fallback
 from .Items import WEAPON_SHORT_NAMES, arcana_titles, keepsake_titles, aspect_titles, \
-    ASPECT_BASE_TITLE_BY_WEAPON, vow_names, ASPECT_MAX_RANK, godsanity_gods, godsanity_shop_gods, \
+    ASPECT_BASE_TITLE_BY_WEAPON, ASPECT_TITLES_BY_WEAPON, vow_names, ASPECT_MAX_RANK, \
+    godsanity_gods, godsanity_shop_gods, \
     helper_story_npcs, helper_story_npcs_nightmare, GOD_KEEPSAKE_COMBINED_GODS, GOD_KEEPSAKE_TITLE, \
-    KEEPSAKE_PROGRESSIVE_COUNT
+    KEEPSAKE_PROGRESSIVE_COUNT, weapon_aspect_slots
 from .Locations import combine_active, _score_count_for, _combined_room_count, \
-    _combined_score_count, COMBINED_SCORE_PREFIX, _zone_bounds, SHARED_ENEMY_ZONES, \
-    ENEMY_BY_ZONE, MINIBOSS_ENEMY_NAMES, MINIBOSS_ZONE_OVERRIDE, \
+    _combined_score_count, COMBINED_SCORE_PREFIX, COMBINED_ROOM_PREFIX, _zone_bounds, \
+    SHARED_ENEMY_ZONES, ENEMY_BY_ZONE, MINIBOSS_ENEMY_NAMES, MINIBOSS_ZONE_OVERRIDE, \
     ZAGREUS_MET_LOCATION, ZAGREUS_DEFEATED_LOCATION, NPC_INTRO
 
 if TYPE_CHECKING:
     from . import Hades2World
+
+# Reverse of Items.weapon_aspect_slots: (weapon, display_key) -> internal_aspect_key ("base"
+# or the alt's full title), for parsing per_aspect_room_based location names back into the
+# aspect they gate (see _set_per_aspect_rules / _set_combined_aspect_rules).
+_ASPECT_INTERNAL_KEY_BY_DISPLAY = {
+    (weapon, display_key): internal_key
+    for weapon in WEAPON_SHORT_NAMES
+    for internal_key, display_key in weapon_aspect_slots(weapon)
+}
+
+
+def _internal_aspect_key(weapon: str, display_key: str) -> Optional[str]:
+    return _ASPECT_INTERNAL_KEY_BY_DISPLAY.get((weapon, display_key))
 
 # Weapons required to beat each of a route's 4 bosses (index 0..2), and to beat the 4th/final
 # boss (FINAL_WEAPONS). These gate the BOSS ITSELF (see BOSS_TIER_PERCENT below), not just the
@@ -32,6 +46,14 @@ FINAL_WEAPONS = 5
 POINT_BASED = 0
 ROOM_BASED = 1
 PER_WEAPON_ROOM_BASED = 2
+PER_ASPECT_ROOM_BASED = 3
+
+# per_aspect_room_based: the rank a location's own (weapon, aspect) pair must be at, indexed
+# by the location's zone (0-3) -- e.g. a zone-2 (3rd area) check needs that Aspect at rank 4.
+# Mirrors KEEPSAKE_HARD_TIER_PCT/BOSS_TIER_PERCENT's shape (a fixed per-tier table), but keyed
+# on a flat rank (1-ASPECT_MAX_RANK) instead of a percentage, since "rank" is already a small,
+# bounded number (Items.ASPECT_MAX_RANK) rather than a pool size that varies with options.
+PER_ASPECT_AREA_RANK = [1, 2, 4, 5]
 
 # --- Keepsakes (July 17 stricter tiers) ---------------------------------------
 # Keepsake check locations are named "<NPC> Keepsake" (see Locations.location_keepsakes), and
@@ -306,6 +328,44 @@ class Hades2Logic(LogicMixin):
             return any(self.has(name, player) for name in names)
         return False
 
+    def _hades2_aspect_rank(self, player: int, options, weapon: str, aspect_key: str,
+                            starting_weapon: str = None, starting_aspect_index: int = None) -> int:
+        """How ranked-up a specific (weapon, aspect) pair is (0..ASPECT_MAX_RANK), across all
+        4 aspectsanity modes. aspect_key is "base" (the weapon's default Aspect of Melinoe) or
+        one of its alt titles (Items.ASPECT_TITLES_BY_WEAPON[weapon]) -- see
+        Items.weapon_aspect_slots. Used by per_aspect_room_based's area-tier gate
+        (PER_ASPECT_AREA_RANK)."""
+        asp = options.aspectsanity.value
+        if asp == 0:
+            # unlocked: not item-gated -- ItemManager.apply_unlocked_modes grants every
+            # included Aspect at full rank directly, so this always satisfies (mirrors
+            # _hades2_grasp_count/_arcana_count/_god_count's "off" sentinel).
+            return ASPECT_MAX_RANK
+        if asp == 2:
+            # progressive: rank is per-WEAPON, not per-aspect -- every Aspect on the weapon
+            # ranks up together (ItemManager.apply_progressive_aspect), so aspect_key doesn't
+            # matter here. Matches _hades2_progressive_weapon_count's item name exactly.
+            return min(self.count(f"Progressive {weapon}", player), ASPECT_MAX_RANK)
+        if asp == 1:
+            name = ASPECT_BASE_TITLE_BY_WEAPON[weapon] if aspect_key == "base" else aspect_key
+            if self.has(name, player):
+                return ASPECT_MAX_RANK
+            # The starting weapon's starting Aspect pick sits at rank 1 for free, without its
+            # item ever being precollected in this mode (__init__._main_pool_item_names's
+            # randomized branch) -- everything else starts at 0.
+            alts = ASPECT_TITLES_BY_WEAPON.get(weapon, [])
+            is_starting_pick = (
+                weapon == starting_weapon and starting_aspect_index is not None
+                and ((starting_aspect_index == 0 and aspect_key == "base")
+                     or (0 < starting_aspect_index <= len(alts)
+                         and aspect_key == alts[starting_aspect_index - 1])))
+            return 1 if is_starting_pick else 0
+        if asp == 3:
+            name = f"Progressive {weapon} Base Aspect" if aspect_key == "base" \
+                else f"Progressive {aspect_key}"
+            return min(self.count(name, player), ASPECT_MAX_RANK)
+        return 0
+
     def _hades2_has_enough_weapons(self, player: int, options, amount: int) -> bool:
         count = 0
         for weapon in ("Staff", "Blades", "Flames", "Axe", "Skull", "Coat"):
@@ -483,7 +543,9 @@ def _tier_requirement_met(state, player: int, options, percent: float, grasp_cap
 
 def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
               surface_access_via_progressive: bool = False,
-              nightmare_access_via_progressive: bool = False) -> None:
+              nightmare_access_via_progressive: bool = False,
+              starting_weapon: str = None,
+              starting_aspect_index: int = None) -> None:
     locked = bool(options.lock_routes)
     routes = active_routes(options)
     system = options.location_system.value
@@ -546,12 +608,19 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
     if combine_active(options):
         if system in (ROOM_BASED, PER_WEAPON_ROOM_BASED):
             _set_combined_room_rules(world, player, options, routes)
+        elif system == PER_ASPECT_ROOM_BASED:
+            _set_combined_aspect_rules(world, player, options, routes,
+                                       starting_weapon, starting_aspect_index)
         else:
             _set_combined_score_rules(world, player, options, routes)
     # per_weapon_room_based (split_pools): each "<Room prefix> NNNN <Weapon>" check
     # additionally needs that specific weapon in hand.
     elif system == PER_WEAPON_ROOM_BASED:
         _set_per_weapon_rules(world, player, options, routes)
+    # per_aspect_room_based (split_pools): each "<Aspect> <Weapon> <Room prefix> NN" check
+    # additionally needs that weapon AND its specific Aspect ranked up for the check's area.
+    elif system == PER_ASPECT_ROOM_BASED:
+        _set_per_aspect_rules(world, player, options, routes, starting_weapon, starting_aspect_index)
 
     # Enemy "Defeated" checks (point 6, narrowed): ONLY mini-boss enemies (MINIBOSS_ENEMY_NAMES
     # -- real secondary mini-bosses plus the handful that are the same fight as the zone's own
@@ -990,6 +1059,82 @@ def _set_per_weapon_rules(world: "Hades2World", player: int, options, routes: li
                 if weapon in WEAPON_SHORT_NAMES:
                     add_rule(location,
                              lambda state, w=weapon: state._hades2_has_weapon(w, player, options))
+
+
+def _set_per_aspect_rules(world: "Hades2World", player: int, options, routes: list,
+                          starting_weapon: str, starting_aspect_index: int) -> None:
+    """Gate each per-aspect room check behind owning the matching weapon AND that weapon's
+    specific Aspect being ranked up enough for the check's own area (PER_ASPECT_AREA_RANK)."""
+    for route in routes:
+        prefix = ROUTES[route]["room_prefix"]
+        zones = ROUTES[route]["zones"]
+        for zi, region_name in enumerate(zones):
+            region = world.get_region(region_name, player)
+            required_rank = PER_ASPECT_AREA_RANK[zi]
+            for location in region.locations:
+                # name: "<Aspect> <Weapon> <prefix> DD[ +k]" -- prefix itself may be multiple
+                # words ("Underworld Room"), so split off just the first two tokens.
+                parts = location.name.split(" ", 2)
+                if len(parts) < 3 or parts[1] not in WEAPON_SHORT_NAMES:
+                    continue
+                if not parts[2].startswith(prefix + " "):
+                    continue
+                aspect_display_key, weapon = parts[0], parts[1]
+                internal_key = _internal_aspect_key(weapon, aspect_display_key)
+                if internal_key is None:
+                    continue
+                add_rule(location,
+                         lambda state, w=weapon, k=internal_key, r=required_rank:
+                             state._hades2_has_weapon(w, player, options)
+                             and state._hades2_aspect_rank(
+                                 player, options, w, k, starting_weapon, starting_aspect_index) >= r)
+
+
+def _set_combined_aspect_rules(world: "Hades2World", player: int, options, routes: list,
+                               starting_weapon: str, starting_aspect_index: int) -> None:
+    """combine_pools + per_aspect_room_based: gate each shared "<Aspect> <Weapon> Room NN"
+    check by depth (same zone_of/Surface-cure-cap shape as _set_combined_room_rules) AND that
+    weapon/aspect pair's own area-tier rank (PER_ASPECT_AREA_RANK)."""
+    try:
+        region = world.get_region("Combined Rooms", player)
+    except KeyError:
+        return
+    count = _combined_room_count()
+    bounds = _zone_bounds(count)
+
+    def zone_of(depth: int) -> int:
+        for z in range(4):
+            if bounds[z] < depth <= bounds[z + 1]:
+                return z
+        return 3
+
+    for location in region.locations:
+        # name: "<Aspect> <Weapon> Room DD[ +k]"
+        parts = location.name.split(" ")
+        if len(parts) < 4 or parts[1] not in WEAPON_SHORT_NAMES or parts[2] != COMBINED_ROOM_PREFIX:
+            continue
+        aspect_display_key, weapon = parts[0], parts[1]
+        internal_key = _internal_aspect_key(weapon, aspect_display_key)
+        if internal_key is None:
+            continue
+        depth = int(parts[3])
+        zi = zone_of(depth)
+        required_rank = PER_ASPECT_AREA_RANK[zi]
+        capped = depth > SURFACE_NO_CURE_ROOM_DEPTH
+        surface_zone = ROUTES[SURFACE]["zones"][zi] if SURFACE in routes else None
+        other_zones = [ROUTES[route]["zones"][zi] for route in routes if route != SURFACE]
+        add_rule(location,
+                 lambda state, sz=surface_zone, others=other_zones, capped=capped:
+                     any(state.can_reach(reg, "Region", player) for reg in others)
+                     or (sz is not None
+                         and state.can_reach(sz, "Region", player)
+                         and (not capped
+                              or state.has("Surface Penalty Cure", player))))
+        add_rule(location,
+                 lambda state, w=weapon, k=internal_key, r=required_rank:
+                     state._hades2_has_weapon(w, player, options)
+                     and state._hades2_aspect_rank(
+                         player, options, w, k, starting_weapon, starting_aspect_index) >= r)
 
 
 def _set_combined_score_rules(world: "Hades2World", player: int, options, routes: list) -> None:

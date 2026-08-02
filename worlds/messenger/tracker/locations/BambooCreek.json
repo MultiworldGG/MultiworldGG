@@ -167,23 +167,38 @@
         "map_locations": [
           {
             "map": "Bamboo Creek",
-            "x": 0,
-            "y": 0
+            "x": 258,
+            "y": 139
           }
         ]
       },
       {
-        "name": "Bamboo Creek - Bottom Right exit",
+        "name": "Bamboo Creek - Bottom Left exit",
         "sections": [
           {
-            "name": "Bamboo Creek - Bottom Right exit"
+            "name": "Bamboo Creek - Bottom Left exit"
           }
         ],
         "map_locations": [
           {
             "map": "Bamboo Creek",
-            "x": 0,
-            "y": 0
+            "x": 142,
+            "y": 226
+          }
+        ]
+      },
+      {
+        "name": "Bamboo Creek - Right exit",
+        "sections": [
+          {
+            "name": "Bamboo Creek - Right exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Bamboo Creek",
+            "x": 878,
+            "y": 371
           }
         ]
       }

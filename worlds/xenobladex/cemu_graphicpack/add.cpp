@@ -10,6 +10,8 @@ unsigned int** getItemTypeInfo(int*, int);
 #ifdef ALL
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 ; 1.0.1E, 1.0.2U, 1.0.0E
 
+countItem = 0x02363648
+
 reqMenuAddItemFromId = 0x0234f1a8 # ::CmdReq
 reqMenuAddItemFromInfo = 0x0234f5ec # ::CmdReq
 reqMenuSetArtsLevel = 0x02347c1c # ::CmdReq
@@ -24,6 +26,9 @@ GetCharaDataPtr = 0x027f70ac # ::Util
 setLocal = 0x0228f008 # ::GameFlag
 changeScenarioFlag = 0x027d5638 # ::FNet
 addGarage = 0x0234c620 # ::CmdCommon::SceneCmdPrm
+getInnerHandle = 0x023727c0 # ::PartyManager
+setLv = 0x027e1510 # ::DataAccessorHuman
+getPropAccessor = 0x023eefb0
 #endif
 
 #ifdef V101E
@@ -38,8 +43,12 @@ moduleMatches = 0x30B6E091 ; 1.0.2U
 SetDead = 0x0298f2e0
 #endif
 
+int characterLevel;
+
 int _collepediaFlag = 0x1286; // from funcCollepedia
 int _bladeFlag = 0x1288; // from updataStatus::MenuTotalSimpleStatus
+
+int countItem(int* basePtr, int type, int id);
 
 void reqMenuAddItemFromId(int type, int id, int count);
 void reqMenuAddItemFromInfo(unsigned short* item, int count);
@@ -56,6 +65,9 @@ int * GetCharaDataPtr(int charaId);
 void setLocal(int width, int position, int value);
 void changeScenarioFlag(int* basePtr, int flag);
 void addGarage(int* idPtr);
+void getInnerHandle(unsigned int* handle, int partyId);
+int* getPropAccessor(int* ptr);
+void setLv(int* ptr, int lv);
 
 void* __malloc (size_t size);
 void __free (void* ptr);
@@ -93,7 +105,7 @@ void __free (void* ptr);
 // 1e = Appendage Fragments			https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_PieceList.html
 // 1f = Consumeable Items			https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_BattleItem.html
 // 41 = Blueprints                  https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_Blueprint.html
-void _addItem(int type, int id){
+void _addItem(int type, int id, int count=1){
 	if(type != 9){
 		reqMenuAddItemFromId(type, id, 1);
 	} else {
@@ -119,15 +131,7 @@ void _addGear(int type, int id, int affixId1, int affixId2, int affixId3, int sl
 
 int _hasPreciousItem(int id){
 	int * basePtr = &itemListBase;
-	unsigned int* itemListPtr = *getItemTypeInfo(basePtr, 0x1d);
-	for(int idx = 0; idx < 300; idx++){
-		unsigned int itemType = itemListPtr[0] << 13 >> 26;
-		if(itemType != 0x1d) break;
-		unsigned int itemId = itemListPtr[0] >> 19;
-		if(id == itemId) return 1;
-		itemListPtr += 3;
-	}
-	return 0;
+	return countItem(basePtr, 0x1d, id);
 }
 
 // https://xenoblade.github.io/xbx/bdat/common_local_us/BTL_ArtsList.html
@@ -155,7 +159,7 @@ void _addFieldSkill(int id, int lv){
 	*fieldSkillOffset = (char)lv;
 }
 
-// 1 = Skell License, 2 = Flight Module, 3 = Overdrive, 4 = FNet, 5=Blade
+// 1 = Skell License, 2 = Flight Module, 3 = Overdrive, 4 = FNet, 5=Blade, 14=Level
 // Some important unlocks are tied to the scenario flag, which is not desired
 // Replace all functions with a call to our own for these items
 // To anchor them in the savedata we use unused items from the "Important Items" Category
@@ -202,6 +206,24 @@ void _addKey(int id, int flag){
 	else if(id == 5){
 		setLocal(2, _collepediaFlag, 3);
 		setLocal(2, _bladeFlag, 3);
+	}
+	else if(id == 14 && characterLevel){
+		// cap max level
+		if(flag > 60) flag = 60;
+		for (int charId = 0; charId < 0x13; charId++)
+			// same as DataAccessorHuman::setLv but that function is broken
+			((char*)GetCharaDataPtr(charId))[0x7a] = flag;
+		for (int partyId = 0; partyId < 4; partyId++){
+			unsigned int innerHandle = 0;
+			getInnerHandle(&innerHandle, partyId);
+			// from addInnerExpChara
+			int** base = (int**)0x10367664;
+			int idx = innerHandle >> 0x13 & 0xfff;
+			int** base_offset = base + idx * 3;
+			if (*base_offset == 0) continue;
+			int* propAccessor = getPropAccessor(*base_offset);
+			setLv(propAccessor, flag);
+		}
 	}
 }
 

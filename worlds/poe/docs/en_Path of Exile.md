@@ -57,8 +57,6 @@ To recover: unequip or stash the offending item, then change zones.
 
 By default, you start with access to one character class and some starting gear (configurable). Everything else — other classes, gear rarities, gems, flask slots, passive points — must be unlocked through checks.
 
-**Scion** is not available as a starting class. She is locked behind her in-game rescue quest in Act 3, and must be unlocked as an AP item.
-
 ## Options
 
 ### Goal

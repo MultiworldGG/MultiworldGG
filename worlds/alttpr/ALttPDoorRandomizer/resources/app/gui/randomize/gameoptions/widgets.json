@@ -1,0 +1,64 @@
+{
+  "checkboxes":   {
+    "nobgm":      { "type": "checkbox" },
+    "msu_resume": { "type": "checkbox" },
+    "quickswap":  { "type": "checkbox" },
+    "reduce_flashing": { "type": "checkbox" },
+    "shuffle_sfx": { "type": "checkbox" },
+    "shuffle_sfxinstruments": { "type": "checkbox" },
+    "shuffle_songinstruments": { "type": "checkbox" }
+  },
+  "leftRomOptionsFrame": {
+    "heartcolor": {
+      "type": "selectbox",
+      "options": [
+        "red",
+        "blue",
+        "green",
+        "yellow",
+        "random"
+      ]
+    },
+    "heartbeep": {
+      "type": "selectbox",
+      "default": "normal",
+      "options": [
+        "double",
+        "normal",
+        "half",
+        "quarter",
+        "off"
+      ]
+    }
+  },
+  "rightRomOptionsFrame": {
+    "menuspeed": {
+      "type": "selectbox",
+      "default": "normal",
+      "options": [
+        "instant",
+        "quadruple",
+        "triple",
+        "double",
+        "normal",
+        "half"
+      ]
+    },
+    "owpalettes": {
+      "type": "selectbox",
+      "options": [
+        "default",
+        "random",
+        "blackout"
+      ]
+    },
+    "uwpalettes": {
+      "type": "selectbox",
+      "options": [
+        "default",
+        "random",
+        "blackout"
+      ]
+    }
+  }
+}

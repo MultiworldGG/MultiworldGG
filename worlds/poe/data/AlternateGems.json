@@ -204,5 +204,10 @@
 "Storm Burst of Repulsion": {"name":"Storm Burst of Repulsion", "baseGem":"Storm Burst"},
 "Siphoning Trap of Pain": {"name":"Siphoning Trap of Pain", "baseGem":"Siphoning Trap"},
 "Creeping Frost of Floes": {"name":"Creeping Frost of Floes", "baseGem":"Creeping Frost"},
-"Searing Bond of Detonation": {"name":"Searing Bond of Detonation", "baseGem":"Searing Bond"}
+"Searing Bond of Detonation": {"name":"Searing Bond of Detonation", "baseGem":"Searing Bond"},
+
+"Divine Blast of Radiance": {"name":"Divine Blast of Radiance", "baseGem":"Divine Blast"},
+"Holy Hammers of Spirals": {"name":"Holy Hammers of Spirals", "baseGem":"Holy Hammers"},
+"Holy Sweep of Hammerfalls": {"name":"Holy Sweep of Hammerfalls", "baseGem":"Holy Sweep"},
+"Reap of Butchery": {"name":"Reap of Butchery", "baseGem":"Reap"}
 }

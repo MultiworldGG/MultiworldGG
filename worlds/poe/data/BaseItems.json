@@ -828,5 +828,6 @@
 {"dropLevel": 84, "act": 11, "baseItem": "Giantslayer Helmet", "name": "Giantslayer Helmet - maps"},
 {"dropLevel": 84, "act": 11, "baseItem": "Majestic Pelt", "name": "Majestic Pelt - maps"},
 {"dropLevel": 84, "act": 11, "baseItem": "Haunted Bascinet", "name": "Haunted Bascinet - maps"},
-{"dropLevel": 84, "act": 11, "baseItem": "Lich's Circlet", "name": "Lich's Circlet - maps"}
+{"dropLevel": 84, "act": 11, "baseItem": "Lich's Circlet", "name": "Lich's Circlet - maps"},
+{"dropLevel": 84, "act": 11, "baseItem": "Pearlescent Amulet", "name": "Pearlescent Amulet - maps"}
 ]

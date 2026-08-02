@@ -59,13 +59,12 @@ class BanjoTooieSettings(settings.Group):
         """
         Arguments to pass to the automatically run program.
         Leave blank to disable.
-        Set to "--lua=" to automatically use the correct path for the lua connector.
         """
 
     rom_path: RomPath | str = ""
     patch_path: PatchPath | str = ""
     program_path: ProgramPath | str = ""
-    program_args: ProgramArgs | str = "--lua="
+    program_args: ProgramArgs | str = ""
 
 
 class BanjoTooieWeb(WebWorld):
@@ -78,7 +77,7 @@ class BanjoTooieWeb(WebWorld):
         ["Beebaleen"])
     setup_fr = Tutorial(
         "Setup Banjo-Tooie",
-        """A guide to setting up MultiworldGG Banjo-Tooie on your computer.""",
+        """A guide to setting up Archipelago Banjo-Tooie on your computer.""",
         "French",
         "setup_fr.md",
         "setup/fr",
@@ -667,6 +666,8 @@ class BanjoTooieWorld(World):
             self.options.open_hag1.value = True
         if self.options.world_requirements.value != WorldRequirements.option_normal and not self.options.skip_puzzles.value:
             raise OptionError("Your world requirements needs to be set to normal if you are not going to skip puzzles.")
+        if self.options.green_relics_chamber_requirement.value >= self.options.green_relics_boss_requirement.value:
+            raise OptionError("Targitzan chamber green relic requirement must be less than the boss requirement.")
 
     def choose_starter_egg(self) -> None:
         if self.options.egg_behaviour.value == EggsBehaviour.option_random_starting_egg or \

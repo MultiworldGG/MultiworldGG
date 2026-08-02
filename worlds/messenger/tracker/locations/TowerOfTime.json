@@ -70,5 +70,26 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Tower of Time - Transitions",
+    "children": [
+      {
+        "name": "HQ - Artificer's Challenge",
+        "sections": [
+          {
+            "name": "HQ - Artificer's Challenge"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Overworld",
+            "x": 624,
+            "y": 168,
+            "size": 30
+          }
+        ]
+      }
+    ]
   }
 ]

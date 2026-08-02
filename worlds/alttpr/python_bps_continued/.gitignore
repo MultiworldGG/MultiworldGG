@@ -1,0 +1,7 @@
+*.pyc
+*.pyo
+.DS_Store
+._*
+MANIFEST
+dist/*
+build/*

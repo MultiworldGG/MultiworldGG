@@ -5,7 +5,7 @@ moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 # 1.0.1E, 1.0.2U, 1.0.0E
 _charaHasDied:
 	.int    0
 _keyList_LC0:
-	.string "KY Id=%01x Fg=%01x:"
+	.string "KY Id=%01x Fg=%02x:"
 _postKeyList:
 	stwu r1,-48(r1)
 	mflr r0

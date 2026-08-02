@@ -1,0 +1,1 @@
+from .World import ALttPRWorld

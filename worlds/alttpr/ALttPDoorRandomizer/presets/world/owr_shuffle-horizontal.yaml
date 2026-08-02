@@ -1,0 +1,79 @@
+settings:
+  1:
+    ow_layout: wild
+ow-edges:
+  1:
+    two-way:
+      Lost Woods NW: Master Sword Meadow SC
+      Lost Woods SW*: Lost Woods Pass NW*
+      Lost Woods SC*: Lost Woods Pass NE*
+      Lost Woods SE*: Kakariko Fortune NE*
+      Skull Woods SW*: Skull Woods Pass NW*
+      Skull Woods SC*: Skull Woods Pass NE*
+      Skull Woods SE*: Dark Fortune NE*
+      Lumberjack SW*: Mountain Pass NW*
+      Dark Lumberjack SW*: Bumper Cave NW*
+      Mountain Pass SE*: Kakariko Pond NE*
+      Bumper Cave SE*: Outcast Pond NE*
+      Zora Waterfall NE: Zoras Domain SW
+      Zora Waterfall SE*: Zora Approach NE*
+      Catfish SE*: Catfish Approach NE*
+      Lost Woods Pass SW*: Kakariko NW*
+      Lost Woods Pass SE*: Kakariko NC*
+      Skull Woods Pass SW*: Village of Outcasts NW*
+      Skull Woods Pass SE*: Village of Outcasts NC*
+      Kakariko Fortune SC*: Kakariko NE*
+      Dark Fortune SC*: Village of Outcasts NE*
+      Kakariko Pond SW*: Forgotten Forest NW*
+      Kakariko Pond SE*: Forgotten Forest NE*
+      Outcast Pond SW*: Shield Shop NW*
+      Outcast Pond SE*: Shield Shop NE*
+      River Bend SW*: Wooden Bridge NW*
+      River Bend SC*: Wooden Bridge NC*
+      River Bend SE*: Wooden Bridge NE*
+      Qirn Jump SW*: Broken Bridge NW*
+      Qirn Jump SC*: Broken Bridge NC*
+      Qirn Jump SE*: Broken Bridge NE*
+      Kakariko SE*: Kakariko Suburb NE*
+      Village of Outcasts SE*: Frog NE*
+      Hyrule Castle SW*: Central Bonk Rocks NW*
+      Hyrule Castle SE*: Links House NE*
+      Pyramid SW*: Dark Bonk Rocks NW*
+      Pyramid SE*: Big Bomb Shop NE*
+      Wooden Bridge SW*: Sand Dunes NW*
+      Broken Bridge SW*: Dark Dunes NW*
+      Eastern Palace SW*: Tree Line NW*
+      Eastern Palace SE*: Eastern Nook NE*
+      Palace of Darkness SW*: Dark Tree Line NW*
+      Palace of Darkness SE*: Palace of Darkness Nook NE*
+      Sand Dunes SC*: Stone Bridge NC*
+      Dark Dunes SC*: Hammer Bridge NC*
+      Flute Boy SW*: Flute Boy Approach NW*
+      Flute Boy SC*: Flute Boy Approach NC*
+      Stumpy SW*: Stumpy Approach NW*
+      Stumpy SC*: Stumpy Approach NC*
+      Central Bonk Rocks SW*: C Whirlpool NW*
+      Dark Bonk Rocks SW*: Dark C Whirlpool NW*
+      Links House SC*: Statues NC*
+      Big Bomb Shop SC*: Hype Cave NC*
+      Stone Bridge SC*: Lake Hylia NW*
+      Hammer Bridge SC*: Ice Lake NW*
+      Tree Line SC*: Lake Hylia NC*
+      Tree Line SE*: Lake Hylia NE*
+      Dark Tree Line SC*: Ice Lake NC*
+      Dark Tree Line SE*: Ice Lake NE*
+      C Whirlpool SC*: Dam NC*
+      Dark C Whirlpool SC*: Swamp NC*
+      Statues SC*: South Pass NC*
+      Hype Cave SC*: Dark South Pass NC*
+      Ice Cave SW*: Octoballoon NW*
+      Ice Cave SE*: Octoballoon NE*
+      Shopping Mall SW*: Bomber Corner NW*
+      Shopping Mall SE*: Bomber Corner NE*
+
+ow-tileflips:
+  1:
+    force_together:
+      Hobo:
+        - 0x2d
+        - 0x80

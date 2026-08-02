@@ -87,6 +87,9 @@ class HadesContext(CommonContext):
         subsume.AddHook(self.send_death, styx_scribe_recieve_prefix + "Zag died", "HadesClient")
         subsume.AddHook(self.send_location_hint_to_server, styx_scribe_recieve_prefix \
             + "Locations hinted:", "HadesClient")
+        
+        subsume.AddHook(self.on_run_status_notification, styx_scribe_recieve_prefix + "On Run", "HadesClient")
+        subsume.AddHook(self.on_house_of_hades_notification, styx_scribe_recieve_prefix + "On House", "HadesClient")
 
     async def server_auth(self, password_requested: bool = False) -> None:
         # This is called to autentificate with the server.
@@ -362,6 +365,26 @@ class HadesContext(CommonContext):
             self.finished_game = True
 
     # -------------game completion section ended --------------------------------
+
+    # -------------methods for notifying tracker--------------------------------
+
+    async def on_run_status_notification(self, message : str):
+        message = [{"cmd": "Bounce", 
+                    "slots": [self.slot],
+                    "data": {"Current Room": "OnRunStarted"}}]
+
+        if self.server and self.server.socket:
+            await self.send_msgs(message)
+
+
+    async def on_house_of_hades_notification(self, message : str):
+        message = [{"cmd": "Bounce", 
+                    "slots": [self.slot],
+                    "data": {"Current Room": "OnHouseOfHades"}}]
+
+        if self.server and self.server.socket:
+            await self.send_msgs(message)
+
 
     # ------------ game connection QoL handling
     def check_for_connection(self) -> bool:

@@ -1,0 +1,29 @@
+towns_temples: [38, 42, 43, 44, 45, 46, 47, 48, 50, 54, 75, 77, 81, 82, 83, 93, 94, 95, 97, 98, 163, 164, 165, 167, 169, 170, 172, 173, 174, 177, 157, 159, 190, 307, 309, 312, 320, 321, 322, 323, 324, 326, 327, 328, 329, 330, 331, 332, 333, 335, 338, 340, 446, 447, 451, 452, 458, 461, 463, 470, 471, 472]
+#entrance_only: [47, 57, 63, 64, 68, 69, 70, 116, 117, 118, 119, 120, 131, 215, 251, 282, 284, 289, 42, 43, 44, 45, 81, 82, 83, 163, 164, 165, 169, 320, 321, 322, 323, 324]
+#forced_deadends: [100, 101, 143, 180, 181, 182, 183, 222, 287, 292, 298, 300]
+priority_exits: [71, 77, 99, 114, 159, 192, 209, 278, 312, 341]
+no_exits: [47, 57, 63, 64, 100, 101, 131, 143, 180, 181, 182, 183, 222, 251, 282, 284, 287, 289, 292, 298, 300] # do we add the towns' houses entrances? 42+
+mac_ship_exclusions: [157, 77, 82, 24, 39, 40, 102, 121, 151] # exclude companions and other key locations from landing in Mac's' Ship
+blocked_oneways:
+  - [101, 100]
+  - [103, 100]
+  - [127, 126]
+  - [168, 166] 
+  - [171, 170]
+  - [190, 193] 
+added_links:
+  - [210, 142, 19]
+forced_links:
+  - [89, 145]                   # Spencer Waterfall
+  - [90, 148]                   # Spencer Waterfall
+  - [143, 150]                  # Spencer Cave
+  - [113, 137]                  # Ice Pyramid Taunt Room to 5F Stairways
+  - [133, 134]                  # Ice Pyramid Taunt Room to 5F Stairways
+  - [136, 141]                  # Ice Pyramid Taunt Room to 5F Stairways
+  - [166, 168]                  # GrenadeMan's House
+  - [251, 253]                  # Lava Dome Escape
+  - [282, 288]                  # Giant Tree 3F>3F
+  - [284, 291]                  # Giant Tree 3F>3F
+  - [289, 290]                  # Giant Tree 3F>3F
+  - [298, 305]                  # Giant Tree 4F>5F
+  - [408, 418]                  # Mac Ship

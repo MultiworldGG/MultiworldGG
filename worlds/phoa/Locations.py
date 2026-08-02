@@ -45,7 +45,7 @@ class PhoaLocationData(NamedTuple):
     vanillaItem: str = ""
 
 
-def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> Dict[str, PhoaLocationData]:
+def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> dict[str, PhoaLocationData]:
     logic = PhoaLogic(player)
 
     locations: Dict[str, PhoaLocationData] = {
@@ -487,13 +487,15 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
             rule=lambda state: logic.can_hit_switch_from_a_distance(state, True),
             flags=PhoaFlag.DUNGEONITEM,
             vanillaItem="Anuri Pearlstone",
-        ),"Anuri Temple - First item in narrow crawlspace in tree with prickle fruit room": PhoaLocationData(
+        ),
+        "Anuri Temple - First item in narrow crawlspace in tree with prickle fruit room": PhoaLocationData(
             region="anuri_temple(main)",
             address=7676134,
             rule=lambda state: logic.can_hit_switch_from_a_distance(state, True),
             flags=PhoaFlag.FREESTANDING,
             vanillaItem="Doki Herb",
-        ),"Anuri Temple - Second item in narrow crawlspace in tree with prickle fruit room": PhoaLocationData(
+        ),
+        "Anuri Temple - Second item in narrow crawlspace in tree with prickle fruit room": PhoaLocationData(
             region="anuri_temple(main)",
             address=7676135,
             rule=lambda state: logic.can_hit_switch_from_a_distance(state, True),
@@ -1038,7 +1040,7 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
             region="atai_town",
             address=7676212,
             flags=PhoaFlag.SHOPSANITY,
-            vanillaItem="Civillian Crossbow",
+            vanillaItem="Civilian Crossbow",
         ),
         "Atai Town - Weapon shop item 3": PhoaLocationData(
             region="atai_town",
@@ -1227,14 +1229,14 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
             region="atai_town",
             address=7676240,
             rule=lambda state: logic.can_hit_switch_from_a_distance(state, exclude_bombs=True),
-            flags=PhoaFlag.MINIGAMES,
+            flags=PhoaFlag.MINIGAMES | PhoaFlag.HEARTRUBY,
             vanillaItem="Heart Ruby",
         ),
         "Atai Town - Shooting range item 3": PhoaLocationData(
             region="atai_town",
             address=7676241,
             rule=lambda state: logic.can_clear_atai_expert_gallery(state),
-            flags=PhoaFlag.MINIGAMES,
+            flags=PhoaFlag.MINIGAMES | PhoaFlag.MOONSTONE,
             vanillaItem="Moonstone",
         ),
         "Atai Town - West residence crate under step up": PhoaLocationData(
@@ -1272,7 +1274,7 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
             region="atai_region",
             address=7676247,
             flags=PhoaFlag.SHOPSANITY,
-            vanillaItem="Chocolates",
+            vanillaItem="Chocolate",
         ),
         "Rhodus Checkpoint - Central shop item 1": PhoaLocationData(
             region="atai_region",
@@ -1889,6 +1891,7 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
         return locations
 
     filters = [
+        (False, PhoaFlag.DUNGEONITEM),  # Dungeon items currently always get placed, even if they're vanilla
         (options.enable_main_quest_locations <= 0, PhoaFlag.MAINQUEST),
         (options.enable_heart_ruby_locations <= 0, PhoaFlag.HEARTRUBY),
         (options.enable_energy_gem_locations <= 0, PhoaFlag.ENERGYGEM),
@@ -1913,10 +1916,13 @@ def get_location_data(player: Optional[int], options: Optional[PhoaOptions]) -> 
         (options.enable_ancient_vault <= 0, PhoaFlag.VAULT),
     ]
 
+    enabled_flags = PhoaFlag.DEFAULT
     for option, flag in filters:
-        if option:
-            locations = {
-                name: data for name, data in locations.items() if data.flags != flag
-            }
+        if not option:
+            enabled_flags |= flag
+
+    locations = {
+        name: data for name, data in locations.items() if (data.flags & enabled_flags) == data.flags
+    }
 
     return locations

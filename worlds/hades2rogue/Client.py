@@ -36,7 +36,7 @@ BRIDGE_PORT = 43055
 
 # Compared against slot_data's version_check (set from Hades2World.mod_version) on connect.
 # KEEP IN STEP with __init__.py's mod_version and the mod's manifest.json on every release.
-MOD_VERSION = "0.7.2"
+MOD_VERSION = "0.9.0"
 
 # Hades 2 tab colors. Routes: 0 (can't enter) -> red .. 4 (all zones open) -> blue.
 ROUTE_LEVEL_COLORS = {

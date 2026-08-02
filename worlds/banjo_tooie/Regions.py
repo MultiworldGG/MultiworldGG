@@ -2182,7 +2182,7 @@ def connect_regions(self):
 
 
             if source == regionName.MTBOSS:
-                source_rule = lambda state: rules.has_green_relics(state, 20)
+                source_rule = lambda state: rules.has_green_relics(state, self.options.green_relics_boss_requirement.value)
             elif source == regionName.JRBOSS:
                 source_rule = lambda state: ((rules.grenade_eggs_item(state) or rules.clockwork_eggs_item(state)) and rules.sub_aqua_egg_aiming(state)) \
                     or rules.humbaJRL(state)\

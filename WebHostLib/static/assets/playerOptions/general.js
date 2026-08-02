@@ -66,6 +66,12 @@ const sanitizeStoredValue = (input, value) => {
 const restoreCollection = (optionName, values) => {
   const selectedValues = new Set(values.map(String));
   let found = false;
+  document.querySelectorAll(".free-option-list").forEach((container) => {
+    if (container.dataset.optionName === optionName && typeof container.restoreValues === "function") {
+      container.restoreValues(values);
+      found = true;
+    }
+  });
   document.querySelectorAll(".multi-selector").forEach((container) => {
     if (container.dataset.optionName === optionName && typeof container.restoreValues === "function") {
       container.restoreValues(values);
@@ -83,6 +89,12 @@ const restoreCollection = (optionName, values) => {
 
 const restoreCounter = (optionName, values) => {
   let found = false;
+  document.querySelectorAll(".free-option-counter, .free-option-dict").forEach((container) => {
+    if (container.dataset.optionName === optionName && typeof container.restoreValues === "function") {
+      container.restoreValues(values);
+      found = true;
+    }
+  });
   document.querySelectorAll(".multi-counter").forEach((container) => {
     if (container.dataset.optionName === optionName && typeof container.restoreValues === "function") {
       container.restoreValues(values);
@@ -257,8 +269,15 @@ const saveSettings = () => {
     inputs: {},
     checkboxes: {},
   };
+  document.querySelectorAll(".free-option-list, .free-option-counter, .free-option-dict").forEach((container) => {
+    if (typeof container.getValues === "function") {
+      options.inputs[container.dataset.optionName] = container.getValues();
+    }
+  });
   document.querySelectorAll("#options-form input, #options-form select").forEach((input) => {
-    if (!input.id || input.type === "submit" || input.type === "button") {
+    if (input.closest(".free-option-list, .free-option-counter, .free-option-dict")) {
+      // Free-form collections are saved as a single array or object above.
+    } else if (!input.id || input.type === "submit" || input.type === "button") {
       // ignore and do not save
     } else if (input.type === "checkbox") {
       options.checkboxes[input.id] = input.checked;

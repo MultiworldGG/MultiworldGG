@@ -1,26 +1,66 @@
 import logging
 from typing import Any, ClassVar, TextIO
 
-from BaseClasses import CollectionState, Entrance, EntranceType, Item, ItemClassification, MultiWorld, Tutorial, \
-    PlandoOptions
+from BaseClasses import (
+    CollectionState,
+    Entrance,
+    EntranceType,
+    Item,
+    ItemClassification,
+    MultiWorld,
+    PlandoOptions,
+    Tutorial,
+)
 from Options import Accessibility
-from Utils import output_path
 from settings import FilePath, Group
+from Utils import output_path
 from worlds.AutoWorld import WebWorld, World
 from worlds.LauncherComponents import Component, Type, components, icon_paths
+
 from .client_setup import launch_game
 from .connections import CONNECTIONS, RANDOMIZED_CONNECTIONS, TRANSITIONS
-from .constants import ALL_ITEMS, ALWAYS_LOCATIONS, BOSS_LOCATIONS, FILLER, NOTES, PHOBEKINS, PROG_ITEMS, TRAPS, \
-    USEFUL_ITEMS
-from .options import AvailablePortals, Goal, Logic, MessengerOptions, NotesNeeded, option_groups, ShuffleTransitions
-from .portals import PORTALS, add_closed_portal_reqs, disconnect_portals, shuffle_portals, validate_portals
-from .regions import LEVELS, MEGA_SHARDS, LOCATIONS, REGION_CONNECTIONS
-from .rules import MessengerHardRules, MessengerOOBRules, MessengerRules
+from .constants import (
+    ALL_ITEMS,
+    ALWAYS_LOCATIONS,
+    BOSS_LOCATIONS,
+    FILLER,
+    NOTES,
+    PHOBEKINS,
+    PROG_ITEMS,
+    TRAPS,
+    USEFUL_ITEMS,
+)
+from .options import (
+    Goal,
+    Logic,
+    MessengerOptions,
+    NotesNeeded,
+    ShuffleTransitions,
+    option_groups,
+)
+from .portals import add_closed_portal_reqs, disconnect_portals, shuffle_portals, validate_portals
+from .regions import LEVELS, MEGA_SHARDS, REGION_CONNECTIONS
+from .rules import MessengerHardRules, MessengerRules
 from .shop import FIGURINES, PROG_SHOP_ITEMS, SHOP_ITEMS, USEFUL_SHOP_ITEMS, shuffle_shop_prices
-from .subclasses import MessengerItem, MessengerRegion, MessengerShopLocation
+from .subclasses import MessengerItem, MessengerRegion
 from .transitions import disconnect_entrances, shuffle_transitions
-from .universal_tracker import reverse_portal_exits_into_portal_plando, reverse_transitions_into_plando_connections, TRACKER_PACK_CONFIG, GLITCHED_ITEM, \
-    add_glitched_rules
+from .universal_tracker import (
+    GLITCHED_ITEM,
+    TRACKER_PACK_CONFIG,
+    MessengerGlitchedRules,
+    connect_visited_entrances,
+    disconnect_deferred_exits,
+    hide_all_entrances_and_events,
+    reverse_portal_exits_into_portal_plando,
+    reverse_shop_prices,
+    reverse_transitions_into_plando_connections,
+    unlock_portals,
+)
+
+__all__ = ("MessengerWorld",)
+
+
+logger = logging.getLogger(__name__)
 
 components.append(
     Component(
@@ -89,8 +129,12 @@ class MessengerWorld(World):
     settings_key = "messenger_settings"
     settings: ClassVar[MessengerSettings]
 
-    tracker_world: ClassVar = TRACKER_PACK_CONFIG
+    tracker_world: ClassVar[dict[str, Any]] = TRACKER_PACK_CONFIG
     glitches_item_name: ClassVar[str] = GLITCHED_ITEM
+    found_entrances_datastorage_key: ClassVar[tuple[str, ...]] = (
+        "Slot:{player}:VisitedEntrances",
+        "Slot:{player}:UnlockedPortals",
+    )
 
     base_offset = 0xADD_000
     item_name_to_id = {item: item_id
@@ -104,6 +148,10 @@ class MessengerWorld(World):
                                *[f"The Shop - {shop_loc}" for shop_loc in SHOP_ITEMS],
                                *FIGURINES,
                                "Money Wrench",
+                               "Elemental Skylands - Shutdown Air Generator",
+                               "Elemental Skylands - Shutdown Earth Generator",
+                               "Elemental Skylands - Shutdown Water Generator",
+                               "Elemental Skylands - Shutdown Fire Generator",
                            ], base_offset)}
     item_name_groups = {
         "Notes": set(NOTES),
@@ -162,9 +210,25 @@ class MessengerWorld(World):
     reachable_locs: bool = False
     filler: dict[str, int]
 
+    deferred_connections: dict[str, str]
+    ut_map_page_hidden_entrances: dict[str, list[str]]
+    ut_map_page_hidden_events: dict[str, list[str]]
+
     @staticmethod
     def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:
         return slot_data
+
+    @property
+    def is_ut(self) -> bool:
+        return bool(getattr(self.multiworld, "re_gen_passthrough", False))
+
+    @property
+    def is_deferred_connections_enabled(self) -> bool:
+        return getattr(self.multiworld, "enforce_deferred_connections", "off") != "off"
+
+    @property
+    def ut_slot_data(self) -> dict[str, Any]:
+        return self.multiworld.re_gen_passthrough.get(self.game)
 
     def generate_early(self) -> None:
         if self.options.goal == Goal.option_power_seal_hunt:
@@ -178,10 +242,10 @@ class MessengerWorld(World):
         if self.options.early_meditation:
             self.multiworld.early_items[self.player]["Meditation"] = 1
 
-        if not hasattr(self.multiworld, "re_gen_passthrough"):
+        if not self.is_ut:
             self.shop_prices, self.figurine_prices = shuffle_shop_prices(self)
         else:
-            if slot_data := self.multiworld.re_gen_passthrough.get(self.game):
+            if slot_data := self.ut_slot_data:
                 self.shop_prices, self.figurine_prices = reverse_shop_prices(slot_data["shop"], slot_data["figures"])
 
         starting_portals = ["Autumn Hills", "Howling Grotto", "Glacial Peak", "Riviere Turquoise", "Sunken Shrine",
@@ -207,9 +271,8 @@ class MessengerWorld(World):
         self.spoiler_portal_mapping = {}
         self.transitions = []
 
-        if hasattr(self.multiworld, "re_gen_passthrough"):
-            slot_data = self.multiworld.re_gen_passthrough.get(self.game)
-            if slot_data:
+        if self.is_ut:
+            if slot_data := self.ut_slot_data:
                 self.starting_portals = slot_data["starting_portals"]
 
     def create_regions(self) -> None:
@@ -222,10 +285,12 @@ class MessengerWorld(World):
                            for reg_name in sub_region]
 
         for region in complex_regions:
-            region_name = region.name.removeprefix(f"{region.parent} - ")
-            connection_data = CONNECTIONS[region.parent][region_name]
+            parent_name = region.parent
+            region_name = region.name.removeprefix(f"{parent_name} - ")
+            connection_data: list[str] = CONNECTIONS[parent_name][region_name]
             for exit_region in connection_data:
-                region.connect(self.get_region(exit_region))
+                connection_name = region.name + " exit" if not exit_region.startswith(parent_name) else None
+                region.connect(self.get_region(exit_region), name=connection_name)
 
         # all regions need to be created before i can do these connections so we create and connect the complex first
         for region in [level for level in simple_regions if level.name in REGION_CONNECTIONS]:
@@ -240,7 +305,7 @@ class MessengerWorld(World):
             for item in self.item_name_to_id
             if item not in {
                 "Power Seal", *NOTES, *FIGURINES, *main_movement_items,
-                *precollected_names, *FILLER, *TRAPS,
+                *precollected_names, *FILLER, *TRAPS, "Progressive Generator Shutdown"
             }
         ]
 
@@ -248,6 +313,10 @@ class MessengerWorld(World):
             itempool.append(self.create_item(self.random.choice(main_movement_items)))
         else:
             itempool += [self.create_item(move_item) for move_item in main_movement_items]
+
+        if self.options.shuffle_skylands_generators:
+            for _ in range(4):
+                itempool.append(self.create_item("Progressive Generator Shutdown"))
 
         if self.options.goal == Goal.option_open_music_box:
             # make a list of all notes except those in the player's defined starting inventory, and adjust the
@@ -289,17 +358,19 @@ class MessengerWorld(World):
 
         self.multiworld.itempool += filler
 
-        if hasattr(self.multiworld, "re_gen_passthrough"):
-            if slot_data := self.multiworld.re_gen_passthrough.get(self.game):
+        if self.is_ut:
+            if slot_data := self.ut_slot_data:
                 self.total_shards = slot_data["max_price"]
 
     def set_rules(self) -> None:
         logic = self.options.logic_level
         if logic == Logic.option_normal:
-            MessengerRules(self).set_messenger_rules()
+            if self.is_ut:
+                messenger_rules = MessengerGlitchedRules(self)
+            else:
+                messenger_rules = MessengerRules(self)
 
-            if hasattr(self.multiworld, "re_gen_passthrough"):
-                add_glitched_rules(self, MessengerHardRules(self))
+            messenger_rules.set_messenger_rules()
 
         elif logic == Logic.option_hard:
             MessengerHardRules(self).set_messenger_rules()
@@ -312,18 +383,15 @@ class MessengerWorld(World):
     def connect_entrances(self) -> None:
         if self.options.shuffle_transitions:
             disconnect_entrances(self)
-            keep_entrance_logic = False
 
-        if hasattr(self.multiworld, "re_gen_passthrough"):
-            slot_data = self.multiworld.re_gen_passthrough.get(self.game)
-            if slot_data:
+        if self.is_ut:
+            if slot_data := self.ut_slot_data:
                 self.multiworld.plando_options |= PlandoOptions.connections
                 if slot_data["portal_exits"]:
                     self.options.portal_plando.value = reverse_portal_exits_into_portal_plando(slot_data["portal_exits"])
                 if slot_data["transitions"]:
                     self.options.plando_connections.value = reverse_transitions_into_plando_connections(self.options.shuffle_transitions,
                                                                                                         slot_data["transitions"])
-                keep_entrance_logic = True
 
         add_closed_portal_reqs(self)
         # i need portal shuffle to happen after rules exist so i can validate it
@@ -341,7 +409,33 @@ class MessengerWorld(World):
                 raise RuntimeError("Unable to generate valid portal output.")
 
         if self.options.shuffle_transitions:
-            shuffle_transitions(self, keep_entrance_logic)
+            shuffle_transitions(self)
+
+    def generate_basic(self) -> None:
+        if self.is_ut:
+            if self.is_deferred_connections_enabled:
+                should_disconnect_exits = bool(self.transitions)
+                should_disconnect_portals = bool(self.portal_mapping)
+
+                self.deferred_connections, self.ut_map_page_hidden_entrances, self.ut_map_page_hidden_events = (
+                    disconnect_deferred_exits(
+                        should_disconnect_exits,
+                        should_disconnect_portals,
+                        self.starting_portals,
+                        self.get_entrance,
+                        self.get_location,
+                    )
+                )
+
+                # Need to reset the entrance cache here, because the entrance names are changed for the tracker.
+                self.multiworld.regions.entrance_cache[self.player] = {
+                    e.name: e for e in self.multiworld.regions.entrance_cache[self.player].values()
+                }
+                self.multiworld.regions.location_cache[self.player] = {
+                    l.name: l for l in self.multiworld.regions.location_cache[self.player].values()
+                }
+            else:
+                self.ut_map_page_hidden_entrances, self.ut_map_page_hidden_events = hide_all_entrances_and_events()
 
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
         if self.options.available_portals < 6:
@@ -369,11 +463,13 @@ class MessengerWorld(World):
                         and (transition.connected_region.name, "both", self.player) in spoiler.entrances):
                     continue
                 spoiler.set_entrance(
-                    transition.name if "->" not in transition.name else transition.parent_region.name,
+                    transition.name if " exit" not in transition.name else transition.parent_region.name,
                     transition.connected_region.name,
-                    "both" if transition.randomization_type == EntranceType.TWO_WAY
-                              and self.options.shuffle_transitions == ShuffleTransitions.option_coupled else "",
-                    self.player
+                    "both"
+                    if transition.randomization_type == EntranceType.TWO_WAY
+                    and self.options.shuffle_transitions == ShuffleTransitions.option_coupled
+                    else "",
+                    self.player,
                 )
 
     def extend_hint_information(self, hint_data: dict[int, dict[int, str]]) -> None:
@@ -415,10 +511,13 @@ class MessengerWorld(World):
             "required_seals": self.required_seals,
             "starting_portals": self.starting_portals,
             "portal_exits": self.portal_mapping,
-            "transitions": [[TRANSITIONS.index("Corrupted Future") if transition.name == "Artificer's Portal"
-                             else TRANSITIONS.index(RANDOMIZED_CONNECTIONS[transition.parent_region.name]),
-                             TRANSITIONS.index(transition.connected_region.name)]
-                            for transition in self.transitions],
+            "transitions": [
+                [
+                    TRANSITIONS.index(RANDOMIZED_CONNECTIONS[transition.name]),
+                    TRANSITIONS.index(transition.connected_region.name),
+                ]
+                for transition in self.transitions
+            ],
             **self.options.as_dict("music_box", "death_link", "logic_level"),
         }
         return slot_data
@@ -467,6 +566,9 @@ class MessengerWorld(World):
         if name in TRAPS:
             return ItemClassification.trap
 
+        if name == "Progressive Generator Shutdown":
+            return ItemClassification.progression
+
         return ItemClassification.filler
 
     @classmethod
@@ -513,3 +615,31 @@ class MessengerWorld(World):
         output = orjson.dumps(data, option=orjson.OPT_NON_STR_KEYS)
         with open(out_path, "wb") as f:
             f.write(output)
+
+    def reconnect_found_entrances(self, storage_key: str, storage_value: list[str] | None) -> None:
+        if not self.is_deferred_connections_enabled:
+            return
+
+        if storage_key.endswith("VisitedEntrances") and (self.transitions or self.portal_mapping):
+            logger.info(f"Reconnecting visited entrances with storage value {storage_value}")
+
+            if not storage_value:
+                return
+
+            connect_visited_entrances(
+                self.deferred_connections,
+                storage_value,
+                self.get_region,
+                self.get_entrance,
+                decoupled=self.options.shuffle_transitions == ShuffleTransitions.option_decoupled,
+            )
+
+        if storage_key.endswith("UnlockedPortals"):
+            logger.info(f"Unlocking portals with storage value {storage_value}")
+
+            if storage_value is None:
+                storage_value = []
+            unlock_portals(
+                set(self.starting_portals + storage_value),
+                lambda location_name: self.multiworld.get_location(location_name, self.player),
+            )

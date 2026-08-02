@@ -2,8 +2,9 @@ from BaseClasses import Tutorial, Item
 from BaseClasses import ItemClassification as IC
 from worlds.AutoWorld import WebWorld, World
 from .Options import PhoaOptions, phoa_option_groups
-from .Locations import PhoaLocation, get_location_data
-from .Items import PhoaItem, item_table, PhoaItemData, get_item_pool
+from .Locations import PhoaLocation, get_location_data, PhoaLocationData
+from .Items import PhoaItem, item_table, PhoaItemData, get_item_pool, dungeon_item_setting_groups, \
+    DungeonItemSettingGroup, filter_dungeon_items, fill_dungeon_items_in_own_dungeon
 from .Regions import create_regions_and_locations
 
 
@@ -13,7 +14,7 @@ class PhoaWebWorld(WebWorld):
         description="A guide to start playing Phoenotopia: Awakening in MultiworldGG",
         language="English",
         file_name="setup_en.md",
-        link="setup/en",
+        link="guide/en",
         authors=["Lenamphy"]
     )]
     option_groups = phoa_option_groups
@@ -30,27 +31,42 @@ class PhoaWorld(World):
     location_name_to_id = {name: data.address for name, data in get_location_data(-1, None).items()}
     item_name_to_id = {name: data.code for name, data in item_table.items()}
 
-    progressive_item_classifications_overrides: list[str] = []
+    own_dungeon_locations: dict[str, list[str]]
+    own_dungeon_keys: dict[str, list[PhoaItem]]
+
+    progression_item_classifications_overrides: list[str]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.own_dungeon_keys = {}
+        self.own_dungeon_locations = {}
+        self.progression_item_classifications_overrides = []
 
     def generate_early(self) -> None:
         self._determine_item_classifications_overrides()
 
     def create_item(self, name: str) -> PhoaItem:
         item_classification = IC.progression \
-            if name in self.progressive_item_classifications_overrides \
+            if name in self.progression_item_classifications_overrides \
             else item_table[name].type
         return PhoaItem(name, item_classification, item_table[name].code, self.player)
 
     def create_items(self):
         self.create_and_assign_event_items()
 
-        item_pool_strings, precollected_items = get_item_pool(self, get_location_data(self.player, self.options))
+        location_data = get_location_data(self.player, self.options)
+        print("Anuri Temple - Skeleton above first gate" in location_data)
+        item_pool_strings, precollected_items = get_item_pool(self, location_data)
 
         for item in precollected_items:
             precollected_item = self.create_item(item)
             if precollected_item.classification != IC.progression:
                 raise Exception(f"Precollected item that is not progression: '{item}'")
             self.multiworld.push_precollected(precollected_item)
+
+        for dungeon_item_setting_group in dungeon_item_setting_groups:
+            filter_dungeon_items(self, location_data, dungeon_item_setting_group, item_pool_strings)
 
         item_pool: list[PhoaItem] = []
 
@@ -83,14 +99,18 @@ class PhoaWorld(World):
         options = self.options
 
         if not options.start_with_wooden_bat:
-            self.progressive_item_classifications_overrides.append("Progressive Bat")
+            self.progression_item_classifications_overrides.append("Progressive Bat")
         if options.enable_fishing_spots:
-            self.progressive_item_classifications_overrides.append("Fishing Rod")
-            self.progressive_item_classifications_overrides.append("Serpent Rod")
-            self.progressive_item_classifications_overrides.append("Progressive Fishing Rod")
+            self.progression_item_classifications_overrides.append("Fishing Rod")
+            self.progression_item_classifications_overrides.append("Serpent Rod")
+            self.progression_item_classifications_overrides.append("Progressive Fishing Rod")
         if (options.enable_rin_locations > 1
                 or options.enable_minigames
                 or options.enable_moonstone_locations
                 or options.enable_fishing_spots
                 or options.enable_ancient_vault):
-            self.progressive_item_classifications_overrides.append("Energy Gem")
+            self.progression_item_classifications_overrides.append("Energy Gem")
+
+    def pre_fill(self) -> None:
+        for dungeon_item_setting_group in dungeon_item_setting_groups:
+            fill_dungeon_items_in_own_dungeon(self, dungeon_item_setting_group)

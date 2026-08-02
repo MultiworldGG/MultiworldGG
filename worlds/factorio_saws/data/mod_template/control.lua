@@ -756,6 +756,12 @@ end,
         spill_character_inventory(player.character)
     end
 end,
+["Quality Trap"] = function ()
+    local machines = game.surfaces["nauvis"].find_entities_filtered{type = "assembling-machine"}
+    if #machines > 0 then
+        attempt_to_insert_module_at_random(machines, "quality-module-3")
+    end
+end
 }
 
 commands.add_command("ap-get-technology", "Grant a technology, used by the Archipelago Client.", function(call)

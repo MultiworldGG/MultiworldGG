@@ -18,11 +18,11 @@ from hashlib import sha3_512
 from pathlib import Path
 
 
-SNI_VERSION = "v0.0.100"  # change back to "latest" once tray icon issues are fixed
+SNI_VERSION = "latest"  # change back to "latest" once tray icon issues are fixed
 
 
 # This is a bit jank. We need cx-Freeze to be able to run anything from this script, so install it
-requirement = 'cx-Freeze==8.6.4'
+requirement = "cx-Freeze==8.6.4"
 try:
     import pkg_resources
     try:
@@ -41,9 +41,9 @@ if install_cx_freeze:
     except ImportError:
         raise RuntimeError("pip not available. Please install pip.")
     # install and import cx_freeze
-    if '--yes' not in sys.argv and '-y' not in sys.argv:
-        input(f'Requirement {requirement} is not satisfied, press enter to install it')
-    subprocess.call([sys.executable, '-m', 'pip', 'install', requirement, '-c', 'setup_constraints.txt'])
+    if "--yes" not in sys.argv and "-y" not in sys.argv:
+        input(f"Requirement {requirement} is not satisfied, press enter to install it")
+    subprocess.call([sys.executable, "-m", "pip", "install", requirement, "-c", "setup_constraints.txt"])
     import pkg_resources
 
 import cx_Freeze
@@ -272,7 +272,7 @@ def build_executables() -> list[cx_Freeze.Executable]:
             script=f"{c.script_name}.py",
             target_name=c.frozen_name + (".exe" if is_windows else ""),
             icon=resolve_icon(c.icon),
-            base="Win32GUI" if is_windows and not c.cli else None
+            base="gui" if is_windows and not c.cli else None
         ) for c in components if c.script_name and c.frozen_name
     ]
 

@@ -73,5 +73,25 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Ninja Village - Transitions",
+    "children": [
+      {
+        "name": "Ninja Village - Right exit",
+        "sections": [
+          {
+            "name": "Ninja Village - Right exit"
+          }
+        ],
+        "map_locations": [
+          {
+            "map": "Ninja Village",
+            "x": 794,
+            "y": 213
+          }
+        ]
+      }
+    ]
   }
 ]

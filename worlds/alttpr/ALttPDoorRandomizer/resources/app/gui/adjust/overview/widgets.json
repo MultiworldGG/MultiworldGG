@@ -1,0 +1,64 @@
+{
+  "checkboxes": {
+    "nobgm":      { "type": "checkbox" },
+    "msu_resume":      { "type": "checkbox" },
+    "quickswap":  { "type": "checkbox" },
+    "reduce_flashing": {"type": "checkbox" },
+    "shuffle_sfx": {"type": "checkbox" },
+    "shuffle_sfxinstruments": {"type": "checkbox" },
+    "shuffle_songinstruments": {"type": "checkbox" }
+  },
+  "leftAdjustFrame": {
+    "heartcolor": {
+      "type": "selectbox",
+      "options": {
+        "Red": "red",
+        "Blue": "blue",
+        "Green": "green",
+        "Yellow": "yellow",
+        "Random": "random"
+      }
+    },
+    "heartbeep": {
+      "type": "selectbox",
+      "default": "Normal",
+      "options": {
+        "Double": "double",
+        "Normal": "normal",
+        "Half": "half",
+        "Quarter": "quarter",
+        "Off": "off"
+      }
+    }
+  },
+  "rightAdjustFrame": {
+    "menuspeed": {
+      "type": "selectbox",
+      "default": "Normal",
+      "options": {
+        "Instant": "instant",
+        "Quadruple": "quadruple",
+        "Triple": "triple",
+        "Double": "double",
+        "Normal": "normal",
+        "Half": "half"
+      }
+    },
+    "owpalettes": {
+      "type": "selectbox",
+      "options": {
+        "Default": "default",
+        "Random": "random",
+        "Blackout": "blackout"
+      }
+    },
+    "uwpalettes": {
+      "type": "selectbox",
+      "options": {
+        "Default": "default",
+        "Random": "random",
+        "Blackout": "blackout"
+      }
+    }
+  }
+}

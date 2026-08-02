@@ -960,7 +960,7 @@ class BanjoTooieRules:
                    or (self.grenade_eggs_item(state) and (self.ice_eggs_item(state) or self.beak_bayonet(state)))
 
     def jiggy_sschamber(self, state: CollectionState) -> bool:
-        return self.has_green_relics(state, 10)
+        return self.has_green_relics(state, self.world.options.green_relics_chamber_requirement.value)
 
     def jiggy_mayahem_kickball(self, state: CollectionState) -> bool:
         return self.humbaMT(state)
@@ -3347,7 +3347,7 @@ class BanjoTooieRules:
             return self.flap_flip(state) and (self.grip_grab(state) or self.beak_buster(state))\
                     or self.TDL_flight_pad(state)\
                     or self.very_long_jump(state)\
-                    or (self.turbo_trainers(state) or self.springy_step_shoes(state)) and (self.flutter(state) or self.air_rat_a_tat_rap(state)) 
+                    or (self.turbo_trainers(state) or self.springy_step_shoes(state)) and (self.flutter(state) or self.air_rat_a_tat_rap(state))
         else:
             return self.flap_flip(state) and (self.grip_grab(state) or self.beak_buster(state))\
                     or self.TDL_flight_pad(state)\

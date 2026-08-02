@@ -103,9 +103,9 @@ class UsableStartingGear(Choice):
 
 class GucciHoboMode(Choice):
     """
-    Specifies if the world should be in Gucci Hobo Mode, this restricts use of any non-unique equipment to only 1 slot.
+    Specifies if the world should be in Gucci Hobo Mode, this restricts use of non-unique equipment.
     This is an extremely difficult challenge intended for experienced players, and will greatly increase the length of your run.
-    Expect a very slow start, involving farming early act 1 zones.
+    Expect a very slow start, involving farming early act 1 zones. (not reccomended)
     """
     display_name = "Gucci Hobo Mode"
     option_disabled = 0
@@ -338,6 +338,7 @@ poe_options_groups = [
 all_characters = {
     "Ascendant" : 1,
     "Reliquarian": 1,
+    "Luminary": 1,
     "Berserker" : 1,
     "Chieftain" : 1,
     "Juggernaut" : 1,

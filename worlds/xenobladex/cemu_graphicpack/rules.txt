@@ -15,6 +15,9 @@ $disableSkellAugments = 0
 $disableImportantItems = 1
 $disableBlueprints = 1
 $enemyBookThreshold = 3
+$characterLevel = 1
+$drifterRangedWeapon = 1;
+$drifterMeleeWeapon = 11;
 $curlPort = 45872
 
 [Preset]
@@ -125,3 +128,76 @@ name = "3"
 category = "EnemyBookThreshold"
 default = 1
 $enemyBookThreshold = 3
+
+[Preset]
+name = "on"
+category = "IncludeCharacterLevel"
+default = 1
+$characterLevel = 1
+
+[Preset]
+name = "disable"
+category = "IncludeCharacterLevel"
+$characterLevel = 0
+
+[Preset]
+name = "Assault Rifle"
+category = "DrifterRangedWeapon"
+default = 1
+$drifterRangedWeapon = 1
+
+[Preset]
+name = "Sniper Rifle"
+category = "DrifterRangedWeapon"
+$drifterRangedWeapon = 2
+
+[Preset]
+name = "Dual Guns"
+category = "DrifterRangedWeapon"
+$drifterRangedWeapon = 3
+
+[Preset]
+name = "Gatling Gun"
+category = "DrifterRangedWeapon"
+$drifterRangedWeapon = 4
+
+[Preset]
+name = "Raygun"
+category = "DrifterRangedWeapon"
+$drifterRangedWeapon = 5
+
+[Preset]
+name = "Psycho Launchers"
+category = "DrifterRangedWeapon"
+$drifterRangedWeapon = 6
+
+[Preset]
+name = "Knife"
+category = "DrifterMeleeWeapon"
+default = 1
+$drifterMeleeWeapon = 11
+
+[Preset]
+name = "Longsword"
+category = "DrifterMeleeWeapon"
+$drifterMeleeWeapon = 7
+
+[Preset]
+name = "Javelin"
+category = "DrifterMeleeWeapon"
+$drifterMeleeWeapon = 8
+
+[Preset]
+name = "Dual Swords"
+category = "DrifterMeleeWeapon"
+$drifterMeleeWeapon = 9
+
+[Preset]
+name = "Shield"
+category = "DrifterMeleeWeapon"
+$drifterMeleeWeapon = 10
+
+[Preset]
+name = "Photon Sabre"
+category = "DrifterMeleeWeapon"
+$drifterMeleeWeapon = 12

@@ -258,7 +258,7 @@ ENTRANCE_DATA = {
     },
     "EVENT: Defeat Vulcano": {
         "two_way": False,
-        "entrance_region": "mtt boss",
+        "entrance_region": "defeat vulcano",
         "exit_region": "event_vulcano",
         "entrance": (0x21, 0x0, 0x0),
         "type": EntranceGroups.EVENT,

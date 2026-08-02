@@ -1,0 +1,114 @@
+settings:
+  1:
+    ow_parallel: false
+    ow_whirlpool: false
+ow-edges:
+  1:
+    two-way:
+      Lost Woods NW: Master Sword Meadow SC
+      Lost Woods EN*: Lumberjack WN*
+      Lost Woods SW*: Lost Woods Pass NW*
+      Lost Woods SC*: Lost Woods Pass NE*
+      Lost Woods SE*: Kakariko Fortune NE*
+      Lumberjack SW*: Mountain Pass NW*
+      West Death Mountain EN*: East Death Mountain WN*
+      West Death Mountain ES*: East Death Mountain WS*
+      East Death Mountain EN*: Death Mountain TR Pegs WN*
+      Mountain Pass SE*: Kakariko Pond NE*
+      Zora Waterfall NE*: Zoras Domain SW*
+      Zora Waterfall SE*: Zora Approach NE*
+      Lost Woods Pass SW*: Kakariko NW*
+      Lost Woods Pass SE*: Kakariko NC*
+      Kakariko Fortune EN*: Kakariko Pond WN*
+      Kakariko Fortune ES*: Kakariko Pond WS*
+      Kakariko Fortune SC*: Kakariko NE*
+      Kakariko Pond EN*: Sanctuary WN*
+      Kakariko Pond ES*: Sanctuary WS*
+      Kakariko Pond SW*: Forgotten Forest NW*
+      Kakariko Pond SE*: Forgotten Forest NE*
+      Sanctuary EC*: Graveyard WC*
+      Graveyard EC*: River Bend WC*
+      River Bend EN*: Potion Shop WN*
+      River Bend EC*: Potion Shop WC*
+      River Bend ES*: Potion Shop WS*
+      River Bend SW*: Wooden Bridge NW*
+      River Bend SC*: Wooden Bridge NC*
+      River Bend SE*: Wooden Bridge NE*
+      Potion Shop EN*: Zora Approach WN*
+      Potion Shop EC*: Zora Approach WC*
+      Kakariko ES*: Blacksmith WS*
+      Kakariko SE*: Kakariko Suburb NE*
+      Forgotten Forest ES: Hyrule Castle WN
+      Hyrule Castle ES*: Sand Dunes WN*
+      Hyrule Castle SW*: Central Bonk Rocks NW*
+      Hyrule Castle SE*: Links House NE*
+      Wooden Bridge SW*: Sand Dunes NW*
+      Eastern Palace SW*: Tree Line NW*
+      Eastern Palace SE*: Eastern Nook NE*
+      Sand Dunes SC*: Stone Bridge NC*
+      Maze Race ES*: Kakariko Suburb WS*
+      Kakariko Suburb ES*: Flute Boy WS*
+      Flute Boy SW*: Flute Boy Approach NW*
+      Flute Boy SC*: Flute Boy Approach NC*
+      Central Bonk Rocks EN*: Links House WN*
+      Central Bonk Rocks EC*: Links House WC*
+      Central Bonk Rocks ES*: Links House WS*
+      Central Bonk Rocks SW*: C Whirlpool NW*
+      Links House SC*: Statues NC*
+      Links House ES*: Stone Bridge WS*
+      Stone Bridge WC: Hobo EC
+      Stone Bridge EN*: Tree Line WN*
+      Stone Bridge EC*: Tree Line WC*
+      Stone Bridge SC*: Lake Hylia NW*
+      Tree Line SC*: Lake Hylia NC*
+      Tree Line SE*: Lake Hylia NE*
+      Desert EC: Desert Pass WC
+      Desert ES: Desert Pass WS
+      Flute Boy Approach EC*: C Whirlpool WC*
+      C Whirlpool EN*: Statues WN*
+      C Whirlpool EC*: Statues WC*
+      C Whirlpool ES*: Statues WS*
+      C Whirlpool SC*: Dam NC*
+      Statues SC*: South Pass NC*
+      Lake Hylia WS*: South Pass ES*
+      Lake Hylia EC*: Octoballoon WC*
+      Lake Hylia ES*: Octoballoon WS*
+      Ice Cave SW*: Octoballoon NW*
+      Ice Cave SE*: Octoballoon NE*
+      Desert Pass EC*: Dam WC*
+      Desert Pass ES*: Dam WS*
+      Dam EC*: South Pass WC*
+ow-grid:
+  1:
+    fixed_arrangements:
+      - arrangement:
+          - 0x00 0x01 0x02 0x03 0x04 0x05 0x06 0x07
+          - 0x08 0x09 0x0A 0x0B 0x0C 0x0D 0x0E 0x0F
+          - 0x10 0x11 0x12 0x13 0x14 0x15 0x16 0x17
+          - 0x18 0x19 0x1A 0x1B 0x1C 0x1D 0x1E 0x1F
+          - 0x20 0x21 0x22 0x23 0x24 0x25 0x26 0x27
+          - 0x28 0x29 0x2A 0x2B 0x2C 0x2D 0x2E 0x2F
+          - 0x30 0x31 0x32 0x33 0x34 0x35 0x36 0x37
+          - 0x38 0x39 0x3A 0x3B 0x3C 0x3D 0x3E 0x3F
+        world: light
+    restricted_positions:
+      - cells:
+          - 0x00
+        positions:
+          - 0x00
+        world: light
+ow-whirlpools:
+  1:
+    two-way:
+      Zora Whirlpool: Lake Hylia Whirlpool
+      Kakariko Pond Whirlpool: Octoballoon Whirlpool
+      River Bend Whirlpool: C Whirlpool
+ow-tileflips:
+  1:
+    force_no_flip:
+      - 0x0f
+      - 0x12
+      - 0x15
+      - 0x33
+      - 0x35
+      - 0x3f

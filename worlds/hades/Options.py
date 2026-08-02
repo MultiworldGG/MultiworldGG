@@ -44,7 +44,7 @@ class ScoreRewardsAmount(Range):
     """
     display_name = "ScoreRewardsAmount"
     range_start = 72
-    range_end = 1000
+    range_end = 400
     default = 150
 
 
@@ -77,7 +77,7 @@ class AbilitySanity(Choice):
     option_random_abilities_weapon_based = 0
     option_random_abilities_default = 1
     option_vanilla_abilities = 2
-    default = 0
+    default = 2
 
 class InitialAbility(Choice):
     """
@@ -112,6 +112,7 @@ class FateSanity(DefaultOnToggle):
     Can make the games significantly longer.
     """
     display_name = "FateSanity"
+    default = 0
 
 class MirrorSanity(DefaultOnToggle):
     """
@@ -121,6 +122,7 @@ class MirrorSanity(DefaultOnToggle):
     can switch between paired upgrades using the normal Mirror of Night interface.
     """
     display_name = "MirrorSanity"
+    default = 0
 
 class FishSanity(Choice):
     """
@@ -136,7 +138,7 @@ class FishSanity(Choice):
     option_off = 0
     option_default = 1
     option_full = 2
-    default = 1
+    default = 0
 
 class TroveSanity(DefaultOnToggle):
     """
@@ -144,6 +146,7 @@ class TroveSanity(DefaultOnToggle):
     different speeds. Checks for completion under 60 seconds, 45 seconds, 30 seconds, and 15 seconds.
     """
     display_name = "TroveSanity" 
+    default = 0
 
 # -------------------- Endgame settings
 

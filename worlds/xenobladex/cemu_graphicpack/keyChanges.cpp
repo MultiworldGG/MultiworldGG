@@ -28,6 +28,10 @@ getMyUnionNo = 0x0288d380
 0x022e2c24 = nop # dont set all the arts/skills/classes if you change your Class
 0x020c48c4 = blr # disable Class exp
 0x020c63d8 = blr # disable friend exp
+# disable character exp
+addInnerExp = 0x020c395c
+0x022953b4 = b _addInnerExpAdjusted
+0x02562504 = bl _addInnerExpAdjusted
 
 # remove all equipment for new playable characters
 0x027e43d0 = nop # replace setupPcArmor
@@ -42,6 +46,9 @@ getMyUnionNo = 0x0288d380
 # remove reequip of assault hammer and flame granade for drifter
 0x022736ec = lis r3, 0
 0x02273734 = lis r3, 0
+# set drifter weapon types
+Create_DataInit = 0x27e2388
+0x027e4768 = bl _Create_DataInit_Adjusted
 
 # remove all equipment for new skells
 # replace setupDollArmor
@@ -93,9 +100,6 @@ addItem = 0x02365934
 # disable field skills
 0x0238e138 = nop
 
-# disable affinity quest arts reward
-0x029c7dc0 = li r3,0
-
 0x02814cf4 = b _prepareBladeTerminal # in loadEnd::ScriptManager
 
 # reconfigure rentalCharTerminal to LShop
@@ -123,6 +127,9 @@ moduleMatches = 0xF882D5CF, 0x218F6E07 ; 1.0.1E, 1.0.0E
 0x029cc078 = nop # disable doll creation
 0x029cc088 = nop # disable doll assign
 
+# bdat changes at startup
+getMember = 0x029c1ddc
+
 # required quest items from equipment disallow sell
 0x02b73a20 = bl _getFlagValAdjusted
 
@@ -131,6 +138,9 @@ moduleMatches = 0xF882D5CF, 0x218F6E07 ; 1.0.1E, 1.0.0E
 0x02b076d4 = b _preItemLoopAdjustment
 _itemLoopStart = 0x02b07584
 _itemLoopEnd = 0x02b076e8
+
+# disable affinity quest arts reward
+0x029c7dc0 = li r3,0
 
 __strcmp = 0x03b16c50
 
@@ -165,6 +175,9 @@ moduleMatches = 0x30B6E091 ; 1.0.2U
 0x029cc068 = nop # disable doll creation
 0x029cc078 = nop # disable doll assign
 
+# bdat changes at startup
+getMember = 0x029c1dcc
+
 # required quest items from equipment disallow sell
 0x02b73a10 = bl _getFlagValAdjusted
 
@@ -180,7 +193,6 @@ _itemLoopEnd = 0x02b076d8
 __strcmp = 0x03b16bd0
 
 # reconfigure BladeTerminal Locks
-# need further testing
 bladeTerminalScenarioFlagPtr = 0x20343604-0xB821D
 shopTerminalScenarioFlagPtr = 0x20343634-0xB821D
 
@@ -199,7 +211,9 @@ chkLv = 0x02af8e6c # ::menu::MenuDollGarage
 #endif
 
 // Parameters from rules.txt
-int disableGroundArmor, disableGroundWeapons, disableSkellArmor, disableSkellWeapons, disableGroundAugments, disableSkellAugments, disableImportantItems, disableBlueprints;
+int disableGroundArmor, disableGroundWeapons, disableSkellArmor, disableSkellWeapons, disableGroundAugments, disableSkellAugments, disableImportantItems, disableBlueprints, drifterRangedWeapon, drifterMeleeWeapon;
+
+extern int characterLevel;
 
 extern int* menuBasePtr;
 extern int bladeTerminalScenarioFlagPtr, shopTerminalScenarioFlagPtr;
@@ -216,12 +230,16 @@ int EntryUnion(int* ptr, int union_id);
 int* getFP(const char* bdat);
 int getValCheck(int* bdatPtr, const char* columnName, int id, int offset);
 
+void Create_DataInit();
+int* getMember(int* bdatPtr, const char* columnName);
+
 void openHudTelop(int* menuBasePtr, int errorIdx);
 int chkLv(int p1, int p2);
 
 int addItemEquipment(int type, int id, int* data, int flag);
 int addNum(int* ptr, int type, int* data, int flag);
 int addItem(int type, int id, int* item);
+void addInnerExp(int* ptr, int exp, int value);
 
 int* getItem(int* ptr, int enemies, int boxes, int items);
 int getItemNum(int* ptr, int enemies, int boxes);
@@ -281,6 +299,33 @@ int _getDefaultSkellWeapon(int* DEF_DlList_bdat, char weaponColumn[], int skellI
 	return 0;
 }
 
+void _SetBdatValue(const char* bdatName, const char* columnName, int rowId, int newValue, int valueSize){
+	int* bdat = getFP(bdatName);
+	int* columnPtr = getMember(bdat, columnName);
+	short columnOffsetBase = *(short*)(columnPtr);
+	// ignore value check for simplicity
+	// char* valCheckPtr = getValCheckSub(bdat, getMember(bdat, columnName), valueSize);
+	int baseOffset = *(short*)((char*)bdat + 0xe);
+	int rowOffset = *(short*)((char*)bdat + 0x8) * (rowId - 1);
+	int columnOffset = *(short*)((char*)bdat + 0x2 + columnOffsetBase);
+	char* valPtr = (char*)bdat + baseOffset + rowOffset + columnOffset;
+	if (valueSize == 1)
+		*valPtr = newValue;
+	else if (valueSize == 2)
+		*(short*)valPtr = newValue;
+	else if (valueSize == 4)
+		*(int*)valPtr = newValue;
+}
+
+void _Create_DataInit_Adjusted(){
+	_SetBdatValue("CHR_ClassInfo", "NearWeapon", 1, drifterMeleeWeapon, 1);
+	_SetBdatValue("CHR_ClassInfo", "FarWeapon", 1, drifterRangedWeapon, 1);
+	_SetBdatValue("CHR_ClassInfo", "defNear", 1, drifterMeleeWeapon, 2);
+	_SetBdatValue("CHR_ClassInfo", "defFar", 1, drifterRangedWeapon, 2);
+
+	Create_DataInit();
+}
+
 // Unlock Blade Lvl
 int _isUnlock(int* ptr, int value2){
 	// join division if you havent
@@ -330,6 +375,12 @@ int _addItemAdjusted(int type, int id, int* item){
 		return addItem(type, id, item);
 	}
 	return 0;
+}
+
+void _addInnerExpAdjusted(int* ptr, int exp, int value){
+	if(!characterLevel){
+		addInnerExp(ptr, exp, value);
+	}
 }
 
 int _getFlagValAdjusted(int* bdatPtr, const char* flagName, int id, const char* columnName){

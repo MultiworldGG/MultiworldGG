@@ -1,64 +1,51 @@
 from . import InscryptionTestBase
 
 
-class GoalTestOrdered(InscryptionTestBase):
+class GoalTestOneAct(InscryptionTestBase):
     options = {
         "goal": 0,
     }
 
     def test_beatable(self) -> None:
-        for item_name in self.required_items_all_acts:
-            item = self.get_item_by_name(item_name)
-            self.collect(item)
-        for i in range(9):
-            item = self.get_item_by_name("Epitaph Piece")
-            self.collect(item)
-        self.assertBeatable(True)
-        for item_name in self.required_items_all_acts:
-            item = self.get_item_by_name(item_name)
-            self.remove(item)
-            self.assertBeatable(False)
-            self.collect(item)
-        item = self.get_item_by_name("Epitaph Piece")
-        self.remove(item)
         self.assertBeatable(False)
-        self.collect(item)
+        self.collect_act_1()
+        self.assertBeatable(True)
 
 
-class GoalTestUnordered(InscryptionTestBase):
+class GoalTestTwoActs(InscryptionTestBase):
     options = {
         "goal": 1,
     }
 
     def test_beatable(self) -> None:
-        for item_name in self.required_items_all_acts:
-            item = self.get_item_by_name(item_name)
-            self.collect(item)
-        for i in range(9):
-            item = self.get_item_by_name("Epitaph Piece")
-            self.collect(item)
-        self.assertBeatable(True)
-        for item_name in self.required_items_all_acts:
-            item = self.get_item_by_name(item_name)
-            self.remove(item)
-            self.assertBeatable(False)
-            self.collect(item)
-        item = self.get_item_by_name("Epitaph Piece")
-        self.remove(item)
+        self.collect_act_1()
         self.assertBeatable(False)
-        self.collect(item)
+        self.collect_act_2()
+        self.assertBeatable(True)
 
 
-class GoalTestAct1(InscryptionTestBase):
+class GoalTestAllActs(InscryptionTestBase):
     options = {
         "goal": 2,
     }
 
     def test_beatable(self) -> None:
+        self.collect_act_1()
+        self.collect_act_2()
         self.assertBeatable(False)
-        film_roll = self.get_item_by_name("Film Roll")
-        self.collect(film_roll)
+        self.collect_act_3()
         self.assertBeatable(True)
+
+    def test_every_act_is_required(self) -> None:
+        self.collect_act_1()
+        self.collect_act_2()
+        self.collect_act_3()
+        self.assertBeatable(True)
+        for item_name in ("Film Roll", "Monocle", "Inspectometer Battery"):
+            item = self.get_item_by_name(item_name)
+            self.remove(item)
+            self.assertBeatable(False)
+            self.collect(item)
 
 
 class GoalTestGroupedEpitaphs(InscryptionTestBase):
@@ -67,18 +54,10 @@ class GoalTestGroupedEpitaphs(InscryptionTestBase):
     }
 
     def test_beatable(self) -> None:
-        for item_name in self.required_items_all_acts:
-            item = self.get_item_by_name(item_name)
-            self.collect(item)
-        for i in range(3):
-            item = self.get_item_by_name("Epitaph Pieces")
-            self.collect(item)
+        self.collect_act_1()
+        self.collect_act_2(epitaph_name="Epitaph Pieces", epitaph_count=3)
+        self.collect_act_3()
         self.assertBeatable(True)
-        for item_name in self.required_items_all_acts:
-            item = self.get_item_by_name(item_name)
-            self.remove(item)
-            self.assertBeatable(False)
-            self.collect(item)
         item = self.get_item_by_name("Epitaph Pieces")
         self.remove(item)
         self.assertBeatable(False)
@@ -91,17 +70,10 @@ class GoalTestEpitaphsAsOne(InscryptionTestBase):
     }
 
     def test_beatable(self) -> None:
-        for item_name in self.required_items_all_acts:
-            item = self.get_item_by_name(item_name)
-            self.collect(item)
-        item = self.get_item_by_name("Epitaph Pieces")
-        self.collect(item)
+        self.collect_act_1()
+        self.collect_act_2(epitaph_name="Epitaph Pieces", epitaph_count=1)
+        self.collect_act_3()
         self.assertBeatable(True)
-        for item_name in self.required_items_all_acts:
-            item = self.get_item_by_name(item_name)
-            self.remove(item)
-            self.assertBeatable(False)
-            self.collect(item)
         item = self.get_item_by_name("Epitaph Pieces")
         self.remove(item)
         self.assertBeatable(False)
