@@ -2722,7 +2722,16 @@ class ServerCommandProcessor(CommonCommandProcessor):
         self.output(f"Set option {option_name} to {getattr(self.ctx, option_name)}")
         if option_name in {"release_mode", "remaining_mode", "collect_mode"}:
             self.ctx.broadcast_all([{"cmd": "RoomUpdate", 'permissions': get_permissions(self.ctx)}])
-        elif option_name in {"hint_mode", "hint_cost", "location_check_points", "release_threshold"}:
+        elif option_name in {"hint_cost", "location_check_points"}:
+            # Update hint point amounts per slot
+            for team, players in self.ctx.clients.items():
+                for slot, clients in players.items():
+                    self.ctx.broadcast(clients, [{
+                        "cmd": "RoomUpdate",
+                        option_name: getattr(self.ctx, option_name),
+                        "hint_points": get_slot_points(self.ctx, team, slot),
+                    }])
+        elif option_name in {"hint_mode", "release_threshold"}:
             self.ctx.broadcast_all([{"cmd": "RoomUpdate", option_name: getattr(self.ctx, option_name)}])
         return True
 
@@ -2880,8 +2889,9 @@ async def main(args: argparse.Namespace):
 
     ctx = Context(args.host, args.port, args.server_password, args.password, args.location_check_points,
                   args.hint_cost, not args.disable_item_cheat, args.release_mode, args.collect_mode,
-                  args.countdown_mode, args.remaining_mode, args.hint_mode, args.release_threshold,
-                  args.auto_shutdown, args.compatibility, args.log_network)
+                  hint_mode=args.hint_mode, countdown_mode=args.countdown_mode, remaining_mode=args.remaining_mode,
+                  release_threshold=args.release_threshold, auto_shutdown=args.auto_shutdown,
+                  compatibility=args.compatibility, log_network=args.log_network)
     data_filename = args.multidata
 
     if not data_filename:
