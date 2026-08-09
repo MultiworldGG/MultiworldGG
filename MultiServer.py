@@ -691,7 +691,8 @@ class Context:
                              "remaining_mode": self.remaining_mode, "collect_mode": self.collect_mode,
                              "countdown_mode": self.countdown_mode, "hint_mode": self.hint_mode, 
                              "release_threshold": self.release_threshold, "item_cheat": self.item_cheat, 
-                             "compatibility": self.compatibility}
+                             "compatibility": self.compatibility},
+            "allow_collecting_from": self.allow_collecting_from
 
         }
 
@@ -739,6 +740,9 @@ class Context:
 
         if "stored_data" in savedata:
             self.stored_data = savedata["stored_data"]
+
+        if "allow_collecting_from" in savedata:
+            self.allow_collecting_from = savedata["allow_collecting_from"]
         # count items and slots from lists for items_handling = remote
         self.logger.info(
             f'Loaded save file with {sum([len(v) for k, v in self.received_items.items() if k[2]])} received items '
