@@ -207,14 +207,6 @@ class SaveHealing(DefaultOnToggle):
     rich_text_doc = True
 
 
-class OpenBodyTongue(Toggle):
-    """
-    Remove the body tongue making the body accessible without going in the sunken city
-    """
-    display_name = "Open the body tongue"
-    rich_text_doc = True
-
-
 class SkipFinalBoss3rdForm(Toggle):
     """
     The Final boss third form (the hide and seek form) can be easy and quite long. So, this option can be used
@@ -223,6 +215,7 @@ class SkipFinalBoss3rdForm(Toggle):
     Note that you will still need to deliver the final blow to the 3rd form in order to activate the 4th form animation.
     """
     display_name = "Skip final boss third form"
+    rich_text_doc = True
 
 
 class MaximumIngredientAmount(Range):
@@ -259,7 +252,7 @@ class UnconfineHomeWater(Choice):
     default = 0
 
 
-class ThroneAsLocation(Toggle):
+class ThroneAsLocation(DefaultOnToggle):
     """
     If enabled, sitting on the Mithalas City Castle throne (with the seal on it) will be a location and opening the
     door to the Mithalas Cathedral will be an item.
@@ -267,6 +260,111 @@ class ThroneAsLocation(Toggle):
     display_name = "Throne as a location"
     rich_text_doc = True
 
+
+class GolemAsLocation(DefaultOnToggle):
+    """
+    If enabled, beating the golem in Sunken City will be a location and opening the
+    body's tongue will be an item.
+    """
+    display_name = "Golem as a location"
+    rich_text_doc = True
+
+
+class TrapsEnabled(Toggle):
+    """
+    If enabled, trap may be added in the item pool.
+    """
+    display_name = "Enable traps"
+    rich_text_doc = True
+
+
+class ProgressiveRecipes(Toggle):
+    """
+    If enabled, the recipe will be learned progressively.
+    For example, hen you learn a soup, you will always learn the hot soup first, then the hearty soup, etc.
+    """
+    display_name = "Progressive Recipes"
+    rich_text_doc = True
+
+class FarAwaySingBulb(Toggle):
+    """
+    If enabled, you may have to obtain sing bulb without the normal requirement by singing
+    from far away. The bulb that can be obtained that way are:
+    Naija's Home, bulb after the energy door;
+    The Veil bottom area, bulb in the spirit path
+    """
+    display_name = "Far away sing bulb"
+    rich_text_doc = True
+
+class SunTempleSaveCristalGlitch(Toggle):
+    """
+    If enabled, the randomizer logic will consider it possible to pass from
+    the Sun Temple left area to the Sun Temple right area by crossing the wall using the
+    save crystal.
+
+    Note: You will have to cross the big dark room without light.
+    """
+    display_name = "Sun Temple save cristal glitch"
+    rich_text_doc = True
+
+class MithalasDarkJellyGlitch(Toggle):
+    """
+    If enabled, the randomizer logic will consider it possible to go through the
+    Mithalas top area current using a Dark Jelly.
+    """
+    display_name = "Mithalas Dark Jelly glitch"
+    rich_text_doc = True
+
+class TridentHeadWithFishFormGlitch(Toggle):
+    """
+    If enabled, the randomizer logic will consider it possible to go through the
+    stream to get the trident head using the fish form.
+    """
+    display_name = "Trident Head with Fish Form Glitch"
+    rich_text_doc = True
+
+class BindRockUrchinCostume(Toggle):
+    """
+    If enabled, the randomizer logic will consider it possible to get to the Urchin Costume
+    by jumping on a binded rock.
+    """
+    display_name = "Bind and Rock to get Urchin Costume"
+    rich_text_doc = True
+
+class GoAroundRocksWithFishForm(Choice):
+    """
+    Using Fish Form, you can sometime go around rocks.
+
+    Easier place to go around rocks with Fish Form are:
+    "Home Waters, rock to access the Transportation turtle",
+    "Home Waters, rock to access the bottom left path",
+    "Home Waters, rock to access the Nautilus Lair",
+    "Energy temple first area, rock bellow the save room exit",
+    "Veil bottom area, rock to access the Verse Egg",
+    "The Veil top left area, Rock blocking a bulb close to the right exit".
+
+    Harder place are:
+    "Home Waters, rock to access the Energy temple",
+    "Song Cave, rock to access the Verse Egg",
+    "Turtle Cave, rocks to access the Turtle Egg",
+    """
+    display_name = "Use Fish Form to go around rocks"
+    rich_text_doc = True
+    option_off = 0
+    alias_false = 0
+    option_easy_only = 1
+    option_all = 2
+    alias_on = 1
+    alias_true = 1
+    default = 0
+
+class SunTempleCliffNatureJumpGlitch(Toggle):
+    """
+    If enabled, the randomizer logic will consider it possible to climb the
+    Sun Temple boss path cliffs using the Nature Form jump glitch
+    """
+    display_name = "Using Nature Form jump to climb Sun Temple cliffs"
+    rich_text_doc = True
 
 class NoProgressionHardOrHiddenLocation(Toggle):
     """
@@ -297,6 +395,7 @@ class NoProgressionKelpForest(Toggle):
     Can be useful to get smaller runs.
     """
     display_name = "No progression in Kelp Forest"
+    rich_text_doc = True
 
 
 class NoProgressionVeil(Toggle):
@@ -387,6 +486,7 @@ class NoProgressionBody(Toggle):
     display_name = "No progression in the Body"
     rich_text_doc = True
 
+
 @dataclass
 class AquariaOptions(PerGameCommonOptions):
     """
@@ -408,11 +508,20 @@ class AquariaOptions(PerGameCommonOptions):
     skip_first_vision: SkipFirstVision
     blind_goal: BlindGoal
     infinite_hot_soup: InfiniteHotSoup
-    open_body_tongue: OpenBodyTongue
     maximum_ingredient_amount: MaximumIngredientAmount
     skip_final_boss_3rd_form: SkipFinalBoss3rdForm
     save_healing: SaveHealing
     throne_as_location: ThroneAsLocation
+    golem_as_location: GolemAsLocation
+    traps_enabled: TrapsEnabled
+    progressive_recipes: ProgressiveRecipes
+    far_away_sing_bulb: FarAwaySingBulb
+    go_around_rocks_with_fish_form: GoAroundRocksWithFishForm
+    sun_temple_cliff_nature_jump_glitch: SunTempleCliffNatureJumpGlitch
+    sun_temple_save_cristal_glitch: SunTempleSaveCristalGlitch
+    mithalas_dark_jelly_glitch:MithalasDarkJellyGlitch
+    trident_head_with_fish_form_glitch:TridentHeadWithFishFormGlitch
+    bind_rock_urchin_costume: BindRockUrchinCostume
     no_progression_hard_or_hidden_locations: NoProgressionHardOrHiddenLocation
     no_progression_simon_says: NoProgressionSimonSays
     no_progression_kelp_forest: NoProgressionKelpForest

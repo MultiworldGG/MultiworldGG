@@ -1,0 +1,8 @@
+{
+    "game": "Super Mario Odyssey",
+    "authors": ["Kgamer77", "Adi"],
+    "minimum_ap_version": "0.6.7",
+    "world_version": "1.7.4",
+    "compatible_version": 7,
+    "version": 7
+}

@@ -78,7 +78,7 @@ class SSLogic(LogicMixin):
 
     def _ss_option_lake_floria_open(self, player: int) -> bool:
         return self.multiworld.worlds[player].options.open_lake_floria == "open"
-
+    
     def _ss_option_lake_floria_yerbal(self, player: int) -> bool:
         return (
             self.multiworld.worlds[player].options.open_lake_floria == "talk_to_yerbal"
@@ -89,6 +89,9 @@ class SSLogic(LogicMixin):
 
     def _ss_option_lmf_open(self, player: int) -> bool:
         return self.multiworld.worlds[player].options.open_lmf == "open"
+    
+    def _ss_option_et_open(self, player: int) -> bool:
+        return self.multiworld.worlds[player].options.open_et == True
 
     def _ss_option_lmf_main_node(self, player: int) -> bool:
         return self.multiworld.worlds[player].options.open_lmf == "main_node"

@@ -3,6 +3,7 @@ from BaseClasses import Location
 class SRB2Location(Location):
     game: str = "Sonic Robo Blast 2"
 
+
 #Bob-omb Battlefield
 GFZ_table = {
     "Greenflower (Act 1) Star Emblem": 1,
@@ -1867,10 +1868,6 @@ annoying_locations = {
 "Aerial Garden Monitor - Near Heart Emblem 4":531,
 
 **ATZ_1UP_monitors,
-
-
-
-
 
 "Aerial Garden Monitor - Near Heart Emblem 5":1079,
 "Aerial Garden Monitor - Near Heart Emblem 6":1080,

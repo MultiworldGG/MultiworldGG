@@ -21,8 +21,8 @@ class SunFormAccessTest(AquariaTestBase):
             AquariaLocationNames.OCTOPUS_CAVE_DUMBO_EGG,
             AquariaLocationNames.BEATING_OCTOPUS_PRIME,
             AquariaLocationNames.SUNKEN_CITY_BULB_ON_TOP_OF_THE_BOSS_AREA,
+            AquariaLocationNames.SUNKEN_CITY_BEATING_GOLEM,
             AquariaLocationNames.BEATING_THE_GOLEM,
-            AquariaLocationNames.SUNKEN_CITY_CLEARED,
             AquariaLocationNames.FINAL_BOSS_AREA_BULB_IN_THE_BOSS_THIRD_FORM_ROOM,
             AquariaLocationNames.OBJECTIVE_COMPLETE
         ]

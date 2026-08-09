@@ -2,7 +2,6 @@ import asyncio
 from typing import Optional
 
 import Utils
-apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 from NetUtils import ClientStatus
 from CommonClient import gui_enabled, logger, get_base_parser, server_loop
 
@@ -36,7 +35,7 @@ BRIDGE_PORT = 43055
 
 # Compared against slot_data's version_check (set from Hades2World.mod_version) on connect.
 # KEEP IN STEP with __init__.py's mod_version and the mod's manifest.json on every release.
-MOD_VERSION = "0.9.0"
+MOD_VERSION = "0.9.3"
 
 # Hades 2 tab colors. Routes: 0 (can't enter) -> red .. 4 (all zones open) -> blue.
 ROUTE_LEVEL_COLORS = {
@@ -877,7 +876,7 @@ class Hades2Context(CommonContext):
         from kivy.uix.scrollview import ScrollView
 
         class Hades2Manager(ui):
-            base_title = f"{apname} Hades 2 Rogue Client"
+            base_title = "Archipelago Hades 2 Rogue Client"
             ctx: "Hades2Context"
 
             def build(self):

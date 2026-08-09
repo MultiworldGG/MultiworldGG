@@ -26,10 +26,10 @@ class BeastOrSoupAccessTest(AquariaTestBase):
             AquariaLocationNames.BUBBLE_CAVE_BULB_IN_THE_RIGHT_CAVE_WALL_BEHIND_THE_ICE_CRYSTAL,
             AquariaLocationNames.BUBBLE_CAVE_VERSE_EGG,
             AquariaLocationNames.BEATING_MANTIS_SHRIMP_PRIME,
+            AquariaLocationNames.SUNKEN_CITY_BEATING_GOLEM,
             AquariaLocationNames.BEATING_THE_GOLEM,
             AquariaLocationNames.BEATING_MERGOG,
             AquariaLocationNames.BEATING_OCTOPUS_PRIME,
-            AquariaLocationNames.SUNKEN_CITY_CLEARED
         ]
         items = [[ItemNames.BEAST_FORM, ItemNames.HOT_SOUP, ItemNames.HOT_SOUP_X_2]]
         self.assertAccessDependency(locations, items)

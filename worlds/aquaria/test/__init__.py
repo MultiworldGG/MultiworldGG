@@ -3,8 +3,9 @@ Author: Louis M
 Date: Thu, 18 Apr 2024 18:45:56 +0000
 Description: Base class for the Aquaria randomizer unit tests
 """
+import typing
 
-
+from BaseClasses import CollectionState
 from test.bases import WorldTestBase
 from ..Locations import AquariaLocationNames
 
@@ -198,6 +199,7 @@ after_home_water_locations = [
     AquariaLocationNames.BEATING_MITHALAN_GOD,
     AquariaLocationNames.BEATING_DRUNIAN_GOD,
     AquariaLocationNames.BEATING_LUMEREAN_GOD,
+    AquariaLocationNames.SUNKEN_CITY_BEATING_GOLEM,
     AquariaLocationNames.BEATING_THE_GOLEM,
     AquariaLocationNames.BEATING_NAUTILUS_PRIME,
     AquariaLocationNames.BEATING_BLASTER_PEG_PRIME,
@@ -210,10 +212,65 @@ after_home_water_locations = [
     AquariaLocationNames.FIRST_SECRET,
     AquariaLocationNames.SECOND_SECRET,
     AquariaLocationNames.THIRD_SECRET,
-    AquariaLocationNames.SUNKEN_CITY_CLEARED,
     AquariaLocationNames.OBJECTIVE_COMPLETE,
 ]
+
 
 class AquariaTestBase(WorldTestBase):
     """Base class for Aquaria unit tests"""
     game = "Aquaria"
+
+    def reachable_spot(self, state: CollectionState, player: int | None = None,
+                       resolution_hint: str = "Location") -> typing.List[str]:
+        """
+        Retrieve a list of spot that can be reached from the current player with the given `state`.
+        The `resolution_hint` parameter specifies which kind of spot to look for. It can take
+        "Location", "Entrance" or "Region" as values. Defaults to "Location".
+        """
+        assert resolution_hint in ("Location", "Region", "Entrance")
+        if resolution_hint == "Region":
+            reachable_spot: typing.List[str] = [location.name for location in
+                                                [region for region in self.multiworld.get_regions(player) if
+                                                 region.can_reach(state)]]
+        elif resolution_hint == "Entrance":
+            reachable_spot: typing.List[str] = [location.name for location in
+                                                [entrance for entrance in self.multiworld.get_entrances(player) if
+                                                 entrance.can_reach(state)]]
+        else:
+            reachable_spot: typing.List[str] = [location.name for location in
+                                                self.multiworld.get_reachable_locations(state, player)]
+        return reachable_spot
+
+    def assertAccessWith(self, spots: typing.List[str], item_names: typing.List[str],
+                         initial_items: typing.List[str] = None, resolution_hint: str = "Location"):
+        """
+        Assert that when the items are not collect, the spots are not reachable, but when
+        the items are collected, the spots are accessible. Also assert that no other new spots can be
+        accessed when the items are collected.
+        The `resolution_hint` parameter specifies which kind of spot to look for. It can take
+        "Location", "Entrance" or "Region" as values. Defaults to "Location".
+        """
+        if initial_items is None:
+            initial_items = []
+        assert resolution_hint in ("Location", "Region", "Entrance")
+        state = CollectionState(self.multiworld)
+        for item in initial_items:
+            state.collect(self.get_item_by_name(item))
+        reachable_spot_before = self.reachable_spot(state, self.player, resolution_hint)
+        for spot in spots:
+            self.assertFalse(state.can_reach(spot, resolution_hint, self.player),
+                             f"{spot} is reachable without {item_names}")
+        items = self.get_items_by_name(item_names)
+        for item in items:
+            state.collect(item)
+        reachable_spot_after = self.reachable_spot(state, self.player, resolution_hint)
+        for spot in reachable_spot_before:
+            reachable_spot_after.remove(spot)
+        for spot in spots:
+            self.assertTrue(state.can_reach(spot, resolution_hint, self.player),
+                            f"{spot} is not reachable with {item_names}")
+            reachable_spot_after.remove(spot)
+        if len(reachable_spot_after) > 0:
+            self.assertTrue(len(reachable_spot_after) == 0,
+                            f"Reachable with {item_names} but not without: {reachable_spot_after}")
+

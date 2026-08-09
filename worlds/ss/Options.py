@@ -359,16 +359,16 @@ class RandomizeEntrances(Choice):
     """
     Shuffles entrances with one another.
     **None**: entrances are vanilla.
-    **Required Dungeons Separately**: required dungeons entrances are only shuffled with each other.
-    **All Surface Dungeons**: all surface dungeons entrances are shuffled with each other.
-    **All Surface Dungeons + Sky Keep** - all surface dungeon entrances AND the Sky Keep entrance are shuffled with each other.
+    **Required Dungeons Only**: only required dungeon entrances are shuffled with each other.
+    **Dungeons Only**: all dungeon entrances are shuffled with each other.
+    **All Entrances**: all shuffle-able entrances are shuffled with each other, with some limitations.
     """
 
     display_name = "Randomize Entrances"
     option_none = 0
-    option_required_dungeons_separately = 1
-    option_all_surface_dungeons = 2
-    option_all_surface_dungeons_and_sky_keep = 3
+    option_required_dungeons_only = 1
+    option_dungeons_only = 2
+    #option_all_entrances = 3
     default = 0
 
 
@@ -789,7 +789,14 @@ class HintDistribution(Choice):
 
     display_name = "Archipelago Hint Distribution"
     option_standard = 0
-    option_junk = 1
+    option_weak = 1
+    option_strong = 2
+    option_funky = 3
+    option_location_and_item_hints_only = 4
+    option_large_multiworld = 5
+    option_standard_with_dungeon_er = 6
+    #option_full_entrance_rando = 7
+    option_junk = 7
     default = 0
 
 class SongHints(Choice):
@@ -848,25 +855,53 @@ class SeparateCubeSotS(Toggle):
     """
     If enabled, when a SotS hint points to a Goddess Chest, the hint will change to indicate this and display
     which of the cube progress regions is SotS.
+
+    If the precise hints option is enabled, it will display the exact Goddess chest and cube.
     """
 
     display_name = "Separate Cube SotS"
 
 
-class PreciseItemHints(Toggle):
+class PreciseItemHints(DefaultOnToggle):
     """
     If enabled, item hints will indicate the exact location within a region that is being hinted.
     If disabled, only the region will be hinted.
+    This applies to item hints ONLY.
     """
 
     display_name = "Precise Item Hints"
+
+
+class PreciseHints(Toggle):
+    """
+    If enabled, hints will indicate the exact location within a region that is being hinted.
+    If disabled, only the region will be hinted.
+    This applies to item hints, SotS hints, path hints, and entrance hints.
+    """
+
+    display_name = "Precise Hints"
+
+
+class ExplicitHints(Toggle):
+    """
+    If enabled, Fi hints and gossip stones hint text will be as explicit as possible.
+    For a more immersive game, keep this off.
+    """
+
+    display_name = "Explicit Hints"
+
 
 class SSProgressionBalancing(ProgressionBalancing):
     """
     Algorithm for moving progression items into earlier spheres to make the gameplay experience a bit smoother.
     The higher the value, the more frontloaded the world is.
     """
-    default = 70
+    default = 65
+
+class BreathLink(Toggle):
+    """When you run out of stamina, everyone with breath link enabled does. Of course, the reverse is true too."""
+    display_name = "Breath Link"
+    rich_text_doc = True
 
 
 @dataclass
@@ -944,9 +979,12 @@ class SSOptions(PerGameCommonOptions):
     chest_dowsing: ChestDowsing
     dungeon_dowsing: AllowDowsingInDungeons
     impa_sot_hint: PastImpaStoneOfTrialsHint
-    #cube_sots: SeparateCubeSotS
-    #precise_item: PreciseItemHints
+    cube_sots: SeparateCubeSotS
+    precise_item_hints: PreciseItemHints
+    precise_hints: PreciseHints
+    explicit_hints: ExplicitHints
     starting_items: StartInventoryPool
     death_link: DeathLink
+    breath_link: BreathLink
     progression_balancing: SSProgressionBalancing
 

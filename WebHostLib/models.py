@@ -81,7 +81,9 @@ class Lobby(db.Entity):
     owner = Required(UUID, index=True)
     password_hash = Optional(str)
     creation_time = Required(datetime, default=lambda: utcnow(), index=True)
-    last_activity = Required(datetime, default=lambda: utcnow(), index=True)
+    # Activity is a high-contention, last-write-wins timestamp.  It must not make
+    # otherwise independent lobby actions fail Pony's optimistic row check.
+    last_activity = Required(datetime, default=lambda: utcnow(), index=True, optimistic=False)
     timeout_minutes = Required(int, default=60)  # max 40320 (4 weeks)
     max_yamls_per_player = Required(int, default=1)
     race = Required(bool, default=False)

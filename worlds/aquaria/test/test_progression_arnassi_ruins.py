@@ -31,7 +31,7 @@ class ProgressionArnassiRuinsTest(AquariaTestBase):
         """
         for location in self.unfillable_locations:
             for item_name in self.world.item_names:
-                item = self.get_item_by_name(item_name)
+                item = self.world.create_item(item_name)
                 self.assertTrue(
                     self.world.get_location(location).can_fill(self.multiworld.state, item, False),
                     "The location \"" + location + "\" cannot be filled with \"" + item_name + "\"")

@@ -30,12 +30,12 @@ class BeastForArnassiArmormAccessTest(AquariaTestBase):
             AquariaLocationNames.THE_VEIL_TOP_RIGHT_AREA_BULB_AT_THE_TOP_OF_THE_WATERFALL,
             AquariaLocationNames.SUNKEN_CITY_BULB_ON_TOP_OF_THE_BOSS_AREA,
             AquariaLocationNames.OCTOPUS_CAVE_DUMBO_EGG,
+            AquariaLocationNames.SUNKEN_CITY_BEATING_GOLEM,
             AquariaLocationNames.BEATING_THE_GOLEM,
             AquariaLocationNames.BEATING_MERGOG,
             AquariaLocationNames.BEATING_CRABBIUS_MAXIMUS,
             AquariaLocationNames.BEATING_OCTOPUS_PRIME,
             AquariaLocationNames.BEATING_MITHALAN_PRIESTS,
-            AquariaLocationNames.SUNKEN_CITY_CLEARED
         ]
         items = [[ItemNames.BEAST_FORM, ItemNames.ARNASSI_ARMOR]]
         self.assertAccessDependency(locations, items)

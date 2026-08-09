@@ -95,9 +95,9 @@ KEEPSAKE_FLAT_TIER1 = {"Charon"}
 # route, so for them the (route, area) columns here are DOCUMENTATION of their native home
 # only: _set_keepsake_rules ignores both and gates on "any active route's earliest hosting
 # zone reachable" (NPC_RANDOMIZED_EARLIEST_ZONE) instead. Only the tier column still applies
-# to everyone. The non-randomized entries (Eris, Orpheus, Achilles -- still in
-# NPC_ROUTE_LOCK) keep the full native (route, area) gate, and their location is dropped
-# entirely when their route isn't in the seed (Locations._route_locked_out).
+# to everyone. The non-randomized entries (Eris, Orpheus -- still in NPC_ROUTE_LOCK) keep
+# the full native (route, area) gate, and their location is dropped entirely when their
+# route isn't in the seed (Locations._route_locked_out).
 # Tiers 1-4 preserve the original relative ordering of each NPC's old flat threshold (0/4/8/10
 # mapped onto tiers 1/2/3/4 in the same order) -- only the actual counts got stricter.
 KEEPSAKE_HARD = {
@@ -121,22 +121,22 @@ KEEPSAKE_HARD = {
     # Orpheus spawns in ZJ's Tartarus rooms (zone 0); "Allow Orpheus to Spawn in Tartarus" used
     # to gate that behind an item (see the old KEEPSAKE_ITEM_GATE note), but it's auto-granted
     # now (Items.INCANTATION_AUTO_GRANTED), so he's simply reachable from zone 0 like everyone
-    # else here. Achilles appears alongside Patroclus's Elysium content (NPC_Achilles_01), so he
-    # mirrors Patroclus's gate.
+    # else here.
     # Megaera isn't here because her keepsake (Skull Earring) is item-only, no keepsake
     # location to gate (Locations.KEEPSAKE_NO_LOCATION) -- her "Met Megaera" location is a
-    # separate NPC_BOSS_MEET entry gated by zone reachability, not this table.
+    # separate NPC_BOSS_MEET entry gated by zone reachability, not this table. Achilles is
+    # no longer here either (July 31): his "Met Achilles"/"Achilles Keepsake" were removed
+    # as locations entirely, and his keepsake (Myrmidon Bracer) is item-only now too.
     "Sisyphus":  (NIGHTMARE, 0, 2),
     "Eurydice":  (NIGHTMARE, 1, 2),
     "Patroclus": (NIGHTMARE, 2, 3),
     "Thanatos":  (NIGHTMARE, 0, 2),
     "Orpheus":   (NIGHTMARE, 0, 2),
-    "Achilles":  (NIGHTMARE, 2, 3),
     # Hades: no "<NPC> Keepsake" location (Jeweled Pom is item-only, KEEPSAKE_NO_LOCATION),
     # so this entry only rules "Met Hades". He used to be the lone multi-route NPC (his own
     # _set_hades_met_rule, Underworld/Nightmare zone 3); now his I_Story01 shuffles across
     # routes like every other story room, so he's a randomized helper with a tier-3 count
-    # for pacing parity with the other deep story NPCs (Patroclus/Achilles).
+    # for pacing parity with the other deep story NPCs (Patroclus).
     "Hades":     (UNDERWORLD, 3, 3),
 }
 KEEPSAKE_HARD_TIER_PCT = {1: 0.10, 2: 0.30, 3: 0.50, 4: 0.75}
@@ -405,7 +405,8 @@ class Hades2Logic(LogicMixin):
         clears the whole pool (tier 3/4 and the boon-god threshold included). Previously a
         flat "* 4" per copy, which topped out at 12 (3 copies) -- short of the tier 3 (20)
         and tier 4 (30) thresholds against the 40-title pool, so KEEPSAKE_HARD's tier-3/4
-        NPCs (Echo/Heracles/Medea/Circe/Icarus/Athena/Dionysus/Patroclus/Hades/Achilles)
+        NPCs (Echo/Heracles/Medea/Circe/Icarus/Athena/Dionysus/Patroclus/Hades -- and
+        Achilles, before his locations were removed July 31)
         had a permanently-unreachable Met+Keepsake rule under keepsakesanity=progressive
         whenever a progression item landed there (generation-breaking, fixed 7/22). Normal
         keepsakes have no check locations, so this is never consulted there."""

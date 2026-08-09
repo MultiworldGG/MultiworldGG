@@ -1,12 +1,17 @@
 <VisualRange>:
     id: this
-    spacing: 15
+    spacing: "12dp"
     orientation: "horizontal"
+    size_hint_y: None
+    height: "48dp"
     slider: slider
     tag: tag
     MDLabel:
         id: tag
         text: str(this.option.default) if not isinstance(this.option.default, str) else str(this.option.range_start)
+        size_hint_x: None
+        width: "52dp"
+        halign: "center"
     MDSlider:
         id: slider
         min: this.option.range_start
@@ -21,6 +26,10 @@
 <VisualChoice>:
     id: this
     text: text
+    size_hint_y: None
+    height: "44dp"
+    theme_height: "Custom"
+    radius: "10dp"
     MDButtonText:
         id: text
         text: this.option.get_option_name(this.option.default if not isinstance(this.option.default, str) else list(this.option.options.values())[0])
@@ -29,13 +38,21 @@
 <VisualNamedRange>:
     id: this
     orientation: "horizontal"
-    spacing: "10dp"
-    padding: (0, 0, "10dp", 0)
+    spacing: "12dp"
+    size_hint_y: None
+    height: "48dp"
     choice: choice
 
     MDButton:
         id: choice
         text: text
+        size_hint_x: None
+        width: "132dp"
+        size_hint_y: None
+        height: "44dp"
+        theme_width: "Custom"
+        theme_height: "Custom"
+        radius: "10dp"
         MDButtonText:
             id: text
             text: this.option.default.title() if this.option.default in this.option.special_range_names else "Custom"
@@ -45,27 +62,30 @@
     font_size: "15sp"
     text: self.option.default if isinstance(self.option.default, str) else ""
     theme_height: "Custom"
-    height: "30dp"
+    height: "44dp"
 
 
 <VisualTextChoice>:
     id: this
     orientation: "horizontal"
-    spacing: "5dp"
-    padding: (0, 0, "10dp", 0)
+    spacing: "10dp"
+    size_hint_y: None
+    height: "48dp"
 
 <VisualToggle>:
     id: this
     button: button
+    size_hint: None, None
+    size: "48dp", "48dp"
     MDIconButton:
         id: button
         icon: "checkbox-outline" if this.option.default else "checkbox-blank-outline"
 
 <VisualListSetEntry@ResizableTextField>:
-    height: "20dp"
+    height: "48dp"
 
 <CounterItemValue>:
-    height: "30dp"
+    height: "42dp"
 
 <VisualListSetCounter>:
     id: this
@@ -74,37 +94,56 @@
     save: save
     input: input
     focus_behavior: False
+    radius: "20dp"
 
     MDDialogHeadlineText:
         text: getattr(this.option, "display_name", this.name)
+        halign: "left"
 
     MDDialogSupportingText:
-        text: "Add or Remove Entries"
+        text: "Add, remove, or update entries"
+        halign: "left"
 
     MDDialogContentContainer:
         orientation: "vertical"
-        spacing: 10
+        spacing: "14dp"
 
         MDBoxLayout:
             orientation: "horizontal"
+            size_hint_y: None
+            height: "52dp"
+            spacing: "10dp"
             VisualListSetEntry:
                 id: input
-                height: "20dp"
 
             MDIconButton:
                 id: add
                 icon: "plus"
+                style: "filled"
                 theme_height: "Custom"
-                height: "20dp"
+                size_hint: None, None
+                size: "48dp", "48dp"
                 on_press: root.validate_add(input)
 
-        ScrollBox:
-            id: scrollbox
+        MDCard:
+            style: "outlined"
+            radius: "12dp"
             size_hint_y: None
-            adapt_minimum: False
+            height: min(dp(440), max(dp(220), app.root.height - dp(390)))
 
+            ScrollBox:
+                id: scrollbox
+                adapt_minimum: False
+
+    MDDialogButtonContainer:
+        Widget:
         MDButton:
             id: save
+            style: "filled"
+            size_hint_y: None
+            height: "44dp"
+            theme_height: "Custom"
+            radius: "10dp"
             MDButtonText:
                 text: "Save Changes"
 
@@ -113,35 +152,57 @@ ContainerLayout:
 
     MainLayout:
         id: main
-        cols: 3
-        padding: 3, 5, 0, 3
-        spacing: "2dp"
+        cols: 2
+        padding: "16dp"
+        spacing: "16dp"
 
-        ScrollBox:
-            id: scrollbox
+        MDCard:
             size_hint_x: None
-            width: "150dp"
-
-        MDDivider:
+            width: "270dp"
             orientation: "vertical"
-            width: "4dp"
+            padding: "14dp"
+            spacing: "12dp"
+            radius: "16dp"
+            style: "elevated"
+
+            MDLabel:
+                text: "Games"
+                adaptive_height: True
+                font_style: "Title"
+                role: "large"
+
+            ResizableTextField:
+                id: world_search
+                multiline: False
+                size_hint_y: None
+                height: "48dp"
+                MDTextFieldHintText:
+                    text: "Search games"
+
+            ScrollBox:
+                id: scrollbox
 
         MainLayout:
             id: player_layout
             rows: 2
-            spacing: "20dp"
+            spacing: "14dp"
 
-            MDBoxLayout:
+            MDCard:
                 id: player_options
                 orientation: "horizontal"
-                height: "75dp"
+                height: "116dp"
                 size_hint_y: None
-                padding: ["10dp", "30dp", "10dp", 0]
-                spacing: "10dp"
+                padding: "18dp"
+                spacing: "18dp"
+                radius: "16dp"
+                style: "elevated"
 
                 ResizableTextField:
                     id: player_name
                     multiline: False
+                    size_hint_y: None
+                    height: "56dp"
+                    pos_hint: {"center_y": 0.5}
 
                     MDTextFieldHintText:
                         text: "Player Name"
@@ -151,22 +212,29 @@ ContainerLayout:
 
                 MDBoxLayout:
                     orientation: "vertical"
-                    spacing: "15dp"
+                    spacing: "8dp"
 
                     MDLabel:
                         id: game
                         text: "Game: None"
-                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                        adaptive_height: True
+                        halign: "center"
+                        font_style: "Title"
+                        role: "medium"
 
                     MDButton:
                         pos_hint: {"center_x": 0.5, "center_y": 0.5}
                         on_press: app.export_options(self)
                         theme_width: "Custom"
-                        size_hint_y: 1
-                        size_hint_x: 1
+                        theme_height: "Custom"
+                        size_hint: None, None
+                        size: "210dp", "44dp"
+                        radius: "10dp"
+                        style: "filled"
 
+                        MDButtonIcon:
+                            icon: "download-outline"
                         MDButtonText:
-                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
                             text: "Export Options"
 
             MainLayout:

@@ -5,8 +5,9 @@ if __name__ == "__main__":
 
 
 from kvui import (ThemedApp, ScrollBox, MainLayout, ContainerLayout, dp, Widget, MDBoxLayout, TooltipLabel, MDLabel,
-                  ToggleButton, MarkupDropdown, ResizableTextField)
+                  ToggleButton, MarkupDropdown, ResizableTextField, MDLinearProgressIndicator)
 from kivy.clock import Clock
+from kivy.core.window import Window
 from kivy.uix.behaviors.button import ButtonBehavior
 from kivymd.uix.behaviors import RotateBehavior
 from kivymd.uix.anchorlayout import MDAnchorLayout
@@ -15,7 +16,7 @@ from kivymd.uix.list import MDListItem, MDListItemTrailingIcon, MDListItemSuppor
 from kivymd.uix.slider import MDSlider
 from kivymd.uix.snackbar import MDSnackbar, MDSnackbarText
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.button import MDButton, MDButtonText, MDIconButton
+from kivymd.uix.button import MDButton, MDButtonIcon, MDButtonText, MDIconButton
 from kivymd.uix.dialog import MDDialog
 from kivy.core.text.markup import MarkupLabel
 from kivy.utils import escape_markup
@@ -27,8 +28,14 @@ import Utils
 import typing
 import webbrowser
 import re
+import json
+import logging
+import os
+import threading
+from zipfile import BadZipFile, ZipFile
 from urllib.parse import urlparse
-from worlds import AutoWorldRegister, ensure_worlds_loaded
+import worlds
+from worlds import AutoWorldRegister
 from worlds.AutoWorld import World
 from Options import (Option, Toggle, TextChoice, Choice, FreeText, NamedRange, Range, OptionSet, OptionList,
                      OptionCounter, Visibility)
@@ -74,7 +81,34 @@ class TrailingPressedIconButton(ButtonBehavior, RotateBehavior, MDListItemTraili
 
 
 class WorldButton(ToggleButton):
-    world_cls: typing.Type[World]
+    world_cls: typing.Type[World] | None = None
+    world_source: worlds.WorldSource
+    game_name: str
+
+
+class OptionRow(MDBoxLayout):
+    pass
+
+
+def _world_source_game_name(source: worlds.WorldSource) -> str:
+    """Read only the tiny world manifest, never the world's Python option modules."""
+    try:
+        if source.is_zip:
+            with ZipFile(source.resolved_path, "r") as archive:
+                manifests = sorted(
+                    (name for name in archive.namelist() if name.lower().endswith("/archipelago.json")),
+                    key=lambda name: (name.count("/"), len(name)),
+                )
+                if manifests:
+                    return json.loads(archive.read(manifests[0])).get("game") or source.name
+        else:
+            manifest_path = os.path.join(source.resolved_path, "archipelago.json")
+            if os.path.isfile(manifest_path):
+                with open(manifest_path, encoding="utf-8") as manifest_file:
+                    return json.load(manifest_file).get("game") or source.name
+    except (BadZipFile, OSError, ValueError, TypeError):
+        logging.debug("Could not read manifest for %s", source.resolved_path, exc_info=True)
+    return source.name
 
 
 class VisualRange(MDBoxLayout):
@@ -180,10 +214,15 @@ class VisualListSetCounter(MDDialog):
         self.name = name
         self.valid_keys = valid_keys
         super().__init__(*args, **kwargs)
+        self.update_width()
         self.dropdown = MarkupDropdown(caller=self.input, border_margin=dp(2),
                                        width=self.input.width, position="bottom")
         self.input.bind(text=self.on_text)
         self.input.bind(on_text_validate=self.validate_add)
+
+    def update_width(self, *args) -> None:
+        """Use the available desktop space instead of MDDialog's narrow mobile-oriented cap."""
+        self.size_hint_max_x = max(dp(640), min(dp(900), Window.width - dp(96)))
 
     def validate_add(self, instance):
         if self.valid_keys:
@@ -208,13 +247,15 @@ class VisualListSetCounter(MDDialog):
     def add_set_item(self, key: str, value: int | None = None):
         text = MDListItemSupportingText(text=key, id="value")
         if issubclass(self.option, OptionCounter):
-            value_txt = CounterItemValue(text=str(value) if value else "1")
+            value_txt = CounterItemValue(text=str(value) if value is not None else "1", size_hint_x=None, width=dp(180))
             item = MDListItem(text,
                               value_txt,
-                              MDIconButton(icon="minus", on_release=self.remove_item), focus_behavior=False)
+                              MDIconButton(icon="delete-outline", on_release=self.remove_item), focus_behavior=False,
+                              size_hint_y=None, height=dp(56))
             item.value = value_txt
         else:
-            item = MDListItem(text, MDIconButton(icon="minus", on_release=self.remove_item), focus_behavior=False)
+            item = MDListItem(text, MDIconButton(icon="delete-outline", on_release=self.remove_item),
+                              focus_behavior=False, size_hint_y=None, height=dp(56))
         item.text = text
         self.scrollbox.layout.add_widget(item)
 
@@ -269,6 +310,8 @@ class OptionsCreator(ThemedApp):
         self.icon = r"data/icon.png"
         self.current_game = ""
         self.options = {}
+        self.world_buttons: list[WorldButton] = []
+        self.selected_world_button: WorldButton | None = None
         super().__init__()
 
     @staticmethod
@@ -477,11 +520,10 @@ class OptionsCreator(ThemedApp):
                 dialog.dismiss()
 
         dialog = VisualListSetCounter(option=option, name=name, valid_keys=valid_keys)
-        dialog.ids.container.spacing = dp(30)
         dialog.scrollbox.layout.theme_bg_color = "Custom"
         dialog.scrollbox.layout.md_bg_color = self.theme_cls.surfaceContainerLowColor
-        dialog.scrollbox.layout.spacing = dp(5)
-        dialog.scrollbox.layout.padding = [0, dp(5), 0, 0]
+        dialog.scrollbox.layout.spacing = dp(4)
+        dialog.scrollbox.layout.padding = [dp(8), dp(8), dp(8), dp(8)]
 
         if issubclass(option, OptionCounter):
             for value in sorted(self.options[name]):
@@ -498,7 +540,8 @@ class OptionsCreator(ThemedApp):
 
     def create_option_set_list_counter(self, option: typing.Type[OptionList] | typing.Type[OptionSet] |
                                        typing.Type[OptionCounter], name: str, world: typing.Type[World]):
-        main_button = MDButton(MDButtonText(text="Edit"), on_release=lambda x: self.create_popup(option, name, world))
+        main_button = MDButton(MDButtonIcon(icon="pencil-outline"), MDButtonText(text="Edit entries"),
+                               on_release=lambda x: self.create_popup(option, name, world))
 
         if name not in self.options:
             # convert from non-mutable to mutable
@@ -513,33 +556,41 @@ class OptionsCreator(ThemedApp):
         return main_button
 
     def create_option(self, option: typing.Type[Option], name: str, world: typing.Type[World]) -> Widget:
-        option_base = MDBoxLayout(orientation="vertical", size_hint_y=None, padding=[0, 0, dp(5), dp(5)])
+        option_base = OptionRow(orientation="horizontal", size_hint_y=None, height=dp(72),
+                                padding=[dp(16), dp(8), dp(12), dp(8)], spacing=dp(16),
+                                theme_bg_color="Custom", md_bg_color=self.theme_cls.surfaceContainerLowColor,
+                                radius=[dp(12), dp(12), dp(12), dp(12)])
 
         tooltip = filter_tooltip(option.__doc__)
-        option_label = TooltipLabel(text=f"[ref=0|{tooltip}]{getattr(option, 'display_name', name)}")
-        label_box = MDBoxLayout(orientation="horizontal")
-        label_anchor = MDAnchorLayout(anchor_x="right", anchor_y="center")
+        option_label = TooltipLabel(text=f"[ref=0|{tooltip}]{getattr(option, 'display_name', name)}",
+                                    halign="left", valign="middle")
+        option_label.bind(size=lambda label, size: setattr(label, "text_size", (size[0], None)))
+        label_box = MDBoxLayout(orientation="horizontal", size_hint_x=0.48, spacing=dp(8))
+        label_anchor = MDAnchorLayout(anchor_x="left", anchor_y="center")
         label_anchor.add_widget(option_label)
         label_box.add_widget(label_anchor)
 
         option_base.add_widget(label_box)
+        control_box = MDAnchorLayout(anchor_x="right", anchor_y="center", size_hint_x=0.52)
         if issubclass(option, NamedRange):
-            option_base.add_widget(self.create_named_range(option, name))
+            option_control = self.create_named_range(option, name)
         elif issubclass(option, Range):
-            option_base.add_widget(self.create_range(option, name))
+            option_control = self.create_range(option, name)
         elif issubclass(option, Toggle):
-            option_base.add_widget(self.create_toggle(option, name))
+            option_control = self.create_toggle(option, name)
         elif issubclass(option, TextChoice):
-            option_base.add_widget(self.create_text_choice(option, name))
+            option_control = self.create_text_choice(option, name)
         elif issubclass(option, Choice):
-            option_base.add_widget(self.create_choice(option, name))
+            option_control = self.create_choice(option, name)
         elif issubclass(option, FreeText):
-            option_base.add_widget(self.create_free_text(option, name))
+            option_control = self.create_free_text(option, name)
         elif any(issubclass(option, cls) for cls in (OptionSet, OptionList, OptionCounter)):
-            option_base.add_widget(self.create_option_set_list_counter(option, name, world))
+            option_control = self.create_option_set_list_counter(option, name, world)
         else:
-            option_base.add_widget(MDLabel(text="This option isn't supported by the option creator.\n"
-                                                "Please edit your yaml manually to set this option."))
+            option_control = MDLabel(text="Unsupported here; edit the exported YAML manually.",
+                                     halign="right", valign="middle")
+        control_box.add_widget(option_control)
+        option_base.add_widget(control_box)
 
         if option_can_be_randomized(option):
             def randomize_option(instance: Widget, value: str):
@@ -553,14 +604,11 @@ class OptionsCreator(ThemedApp):
                     elif self.options[name] in ("True", "False"):
                         self.options[name] = self.options[name] == "True"
 
-                base_object = instance.parent.parent
-                label_object = instance.parent
-                for child in base_object.children:
-                    if child is not label_object:
-                        child.disabled = value
+                option_control.disabled = value
 
             default_random = option.default == "random"
-            random_toggle = ToggleButton(MDButtonText(text="Random?"), size_hint_x=None, width=dp(100),
+            random_toggle = ToggleButton(MDButtonText(text="Random"), size_hint_x=None, width=dp(96),
+                                         theme_width="Custom", size_hint_y=None, height=dp(40), theme_height="Custom",
                                          state="down" if default_random else "normal")
             random_toggle.bind(state=randomize_option)
             label_box.add_widget(random_toggle)
@@ -572,14 +620,18 @@ class OptionsCreator(ThemedApp):
     def create_options_panel(self, world_button: WorldButton):
         self.option_layout.clear_widgets()
         self.options.clear()
-        cls: typing.Type[World] = world_button.world_cls
+        cls = world_button.world_cls
+        assert cls is not None
 
         self.current_game = cls.game
         if not cls.web.options_page:
-            self.current_game = "None"
+            self.current_game = ""
+            self.game_label.text = "Game: None"
+            self.show_panel_status("Options unavailable",
+                                   f"{cls.game} does not provide an Options Creator page.")
             return
         elif isinstance(cls.web.options_page, str):
-            self.current_game = "None"
+            self.current_game = ""
             if validate_url(cls.web.options_page):
                 webbrowser.open(cls.web.options_page)
                 MDSnackbar(MDSnackbarText(text="Launching in default browser..."), y=dp(24), pos_hint={"center_x": 0.5},
@@ -602,8 +654,9 @@ class OptionsCreator(ThemedApp):
         else:
             expansion_box = ScrollBox()
             expansion_box.layout.orientation = "vertical"
-            expansion_box.layout.spacing = dp(3)
-            expansion_box.scroll_type = ["bars"]
+            expansion_box.layout.spacing = dp(10)
+            expansion_box.layout.padding = [dp(16), dp(8), dp(16), dp(24)]
+            expansion_box.scroll_type = ["bars", "content"]
             expansion_box.do_scroll_x = False
             group_names = ["Game Options", *(group.name for group in cls.web.option_groups)]
             groups = {name: [] for name in group_names}
@@ -630,8 +683,10 @@ class OptionsCreator(ThemedApp):
                                                                  self.tap_expansion_chevron(item, x)))
                 group_content = MDExpansionPanelContent(orientation="vertical", theme_bg_color="Custom",
                                                         md_bg_color=self.theme_cls.surfaceContainerLowestColor,
-                                                        padding=[dp(12), dp(100), dp(12), 0],
-                                                        spacing=dp(3))
+                                                        # KivyMD removes 88dp from the measured content height to
+                                                        # reserve its header. Preserve that space plus our 12dp gap.
+                                                        padding=[dp(12), dp(88), dp(12), dp(12)],
+                                                        spacing=dp(8))
                 group_item.add_widget(group_header)
                 group_item.add_widget(group_content)
                 group_box = ScrollBox()
@@ -641,7 +696,7 @@ class OptionsCreator(ThemedApp):
                     group_content.add_widget(self.create_option(option, name, cls))
                 expansion_box.layout.add_widget(group_item)
             self.option_layout.add_widget(expansion_box)
-        self.game_label.text = f"Game: {self.current_game}"
+        self.game_label.text = f"Game: {self.current_game or 'None'}"
 
     @staticmethod
     def tap_expansion_chevron(panel: MDExpansionPanel, chevron: TrailingPressedIconButton | MDListItem):
@@ -654,44 +709,141 @@ class OptionsCreator(ThemedApp):
                 chevron
             ) if not panel.is_open else panel.set_chevron_up(chevron)
 
+    def show_panel_status(self, headline: str, detail: str = "", loading: bool = False) -> None:
+        self.option_layout.clear_widgets()
+        status = MDBoxLayout(orientation="vertical", padding=[dp(72), dp(80), dp(72), dp(40)], spacing=dp(16))
+        status.add_widget(Widget())
+        status.add_widget(MDLabel(text=headline, halign="center", adaptive_height=True,
+                                  font_style="Headline", role="small"))
+        if detail:
+            status.add_widget(MDLabel(text=detail, halign="center", adaptive_height=True,
+                                      theme_text_color="Secondary"))
+        if loading:
+            status.add_widget(MDLinearProgressIndicator(type="indeterminate", size_hint=(0.7, None), height=dp(4),
+                                                        pos_hint={"center_x": 0.5}))
+        status.add_widget(Widget())
+        self.option_layout.add_widget(status)
+
+    def filter_worlds(self, query: str) -> None:
+        query = query.strip().casefold()
+        self.scrollbox.layout.clear_widgets()
+        for button in self.world_buttons:
+            if not query or query in button.game_name.casefold():
+                self.scrollbox.layout.add_widget(button)
+
+    def _finish_world_load(self, world_button: WorldButton, world_cls: typing.Type[World] | None,
+                           error: str | None) -> None:
+        self.scrollbox.disabled = False
+        if error or world_cls is None:
+            world_button.state = "normal"
+            if self.selected_world_button is world_button:
+                self.selected_world_button = None
+            self.current_game = ""
+            self.game_label.text = "Game: None"
+            self.show_panel_status("Could not load this game", error or "The world did not register a playable game.")
+            return
+
+        world_button.world_cls = world_cls
+        world_button.game_name = world_cls.game
+        for child in world_button.children:
+            if isinstance(child, MDButtonText):
+                child.text = world_cls.game
+        self.create_options_panel(world_button)
+
+    def _load_world_background(self, world_button: WorldButton) -> None:
+        source = world_button.world_source
+        try:
+            if source.is_zip:
+                # This performs compatibility and manifest checks, but imports only this apworld.
+                worlds._load_apworlds([source])
+            else:
+                worlds._set_current_loading_world(source.name)
+                if not source.load():
+                    raise RuntimeError(f"The {world_button.game_name} world failed while importing.")
+
+            world_cls = AutoWorldRegister.world_types.get(world_button.game_name)
+            if world_cls is None:
+                module_prefix = f"worlds.{source.name}"
+                candidates = [
+                    cls for cls in AutoWorldRegister.world_types.values()
+                    if cls.__module__ == module_prefix or cls.__module__.startswith(module_prefix + ".")
+                ]
+                world_cls = next((cls for cls in candidates if not cls.hidden), None)
+            if world_cls is None or world_cls.hidden:
+                raise RuntimeError(f"{world_button.game_name} does not expose options in the Options Creator.")
+        except Exception as exc:
+            logging.exception("Could not lazy-load world %s", source.name)
+            Clock.schedule_once(lambda _dt, message=str(exc): self._finish_world_load(world_button, None, message), 0)
+        else:
+            Clock.schedule_once(lambda _dt: self._finish_world_load(world_button, world_cls, None), 0)
+        finally:
+            worlds._set_current_loading_world(None)
+
+    def select_world(self, world_button: WorldButton) -> None:
+        if self.selected_world_button is not None and self.selected_world_button is not world_button:
+            self.selected_world_button.state = "normal"
+        self.selected_world_button = world_button
+        world_button.state = "down"
+
+        if world_button.world_cls is not None:
+            self.create_options_panel(world_button)
+            return
+
+        self.current_game = ""
+        self.options.clear()
+        self.game_label.text = f"Loading: {world_button.game_name}"
+        self.show_panel_status(f"Loading {world_button.game_name}", "Preparing this game's options…", loading=True)
+        self.scrollbox.disabled = True
+        threading.Thread(target=self._load_world_background, args=(world_button,),
+                         name=f"OptionsCreator-{world_button.world_source.name}", daemon=True).start()
+
     def build(self):
-        ensure_worlds_loaded()
         self.set_colors()
+        Window.minimum_width = 900
+        Window.minimum_height = 650
+        Window.size = (1100, 920)
         self.options = {}
         self.container = Builder.load_file(Utils.local_path("data/optionscreator.kv"))
         self.root = self.container
         self.main_layout = self.container.ids.main
         self.scrollbox = self.container.ids.scrollbox
-
-        def world_button_action(world_btn: WorldButton):
-            if self.current_game != world_btn.world_cls.game:
-                old_button = next((button for button in self.scrollbox.layout.children
-                                   if button.world_cls.game == self.current_game), None)
-                if old_button:
-                    old_button.state = "normal"
-            else:
-                world_btn.state = "down"
-            self.create_options_panel(world_btn)
-
-        for world, cls in sorted(AutoWorldRegister.world_types.items(), key=lambda x: x[0]):
-            if cls.hidden:
-                continue
-            world_text = MDButtonText(text=world, size_hint_y=None, width=dp(150),
-                                      pos_hint={"x": 0.03, "center_y": 0.5})
-            world_text.text_size = (world_text.width, None)
-            world_text.bind(width=lambda *x, text=world_text: text.setter('text_size')(text, (text.width, None)),
-                            texture_size=lambda *x, text=world_text: text.setter("height")(text,
-                                                                                           world_text.texture_size[1]))
-            world_button = WorldButton(world_text, size_hint_x=None, width=dp(150), theme_width="Custom",
-                                       radius=(dp(5), dp(5), dp(5), dp(5)))
-            world_button.bind(on_release=world_button_action)
-            world_button.world_cls = cls
-            self.scrollbox.layout.add_widget(world_button)
         self.main_panel = self.container.ids.player_layout
         self.player_options = self.container.ids.player_options
         self.game_label = self.container.ids.game
         self.name_input = self.container.ids.player_name
         self.option_layout = self.container.ids.options
+
+        # Manifests are tiny JSON files. Reading them gives us the catalog without importing
+        # hundreds of Python option modules; the selected module is imported on demand.
+        catalog: dict[str, tuple[str, worlds.WorldSource]] = {}
+        hidden_source_names = {"debug", "generic", "tracker"}
+        for source in worlds.world_sources:
+            if source.name in hidden_source_names:
+                continue
+            game_name = _world_source_game_name(source)
+            key = game_name.casefold()
+            existing = catalog.get(key)
+            if existing is None or (existing[1].is_zip and not source.is_zip):
+                catalog[key] = (game_name, source)
+
+        for game_name, source in sorted(catalog.values(), key=lambda entry: entry[0].casefold()):
+            world_text = MDButtonText(text=game_name, halign="left", valign="middle",
+                                      pos_hint={"center_y": 0.5})
+            world_text.text_size = (world_text.width, None)
+            world_text.bind(width=lambda *x, text=world_text: text.setter('text_size')(text, (text.width, None)),
+                            texture_size=lambda *x, text=world_text: text.setter("height")(text,
+                                                                                           world_text.texture_size[1]))
+            world_button = WorldButton(world_text, size_hint_x=1, size_hint_y=None, height=dp(48),
+                                       theme_width="Custom", theme_height="Custom",
+                                       radius=(dp(10), dp(10), dp(10), dp(10)))
+            world_button.bind(on_release=self.select_world)
+            world_button.world_source = source
+            world_button.game_name = game_name
+            self.world_buttons.append(world_button)
+
+        self.filter_worlds("")
+        self.container.ids.world_search.bind(text=lambda _field, value: self.filter_worlds(value))
+        self.show_panel_status("Choose a game", "Its options will load only when you select it.")
 
         def set_height(instance, value):
             instance.height = value[1]

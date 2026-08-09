@@ -45,9 +45,9 @@ class BossesAvailable(OptionSet):
     This will choose any (including _very_ difficult bosses if none are selected.)
 
     valid choices: [ "hydra", "phoenix", "chimera", "minotaur", "shaper", "uber_shaper", "elder", "uber_elder",
-     "uber_uber_elder", "atziri", "al-hezmin", "baran", "drox", "veritania", "sirus", "uber_sirus", "maven",
-     "uber_maven", "exarch", "uber_exarch", "eater", "uber_eater", "incarnation_of_neglect", "incarnation_of_fear",
-     "incarnation_of_dread", "cortex", "uber_cortex"]
+     "uber_uber_elder", "atziri", "uber_atziri", "al-hezmin", "baran", "drox", "veritania", "sirus", "uber_sirus", "maven",
+     "uber_maven", "exarch", "uber_exarch", "eater", "uber_eater", "incarnation_of_neglect", "uber_incarnation_of_neglect",
+     "incarnation_of_fear", "uber_incarnation_of_fear", "incarnation_of_dread", "uber_incarnation_of_dread", "cortex", "uber_cortex"]
     """
     display_name = "Bosses Available"
     valid_keys = Locations.bosses.keys()

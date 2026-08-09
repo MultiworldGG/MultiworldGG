@@ -96,13 +96,26 @@
     "id": 41310,
     "difficulty": "Pinnacle",
     "drops": [
-      {"name": "The Vertex"},
-      {"name": "Atziri's Splendour"},
-      {"name": "Atziri's Rule"},
+      {"name": "Atziri's Promise"},
       {"name": "Triumvirate Authority"},
+      {"name": "Atziri's Step"},
+      {"name": "Doryani's Invitation"},
+      {"name": "Doryani's Catalyst"},
+      {"name": "Pledge of Hands"}
+    ]
+  },
+  "uber_atziri": {
+    "name": "defeat uber_atziri",
+    "id": 41328,
+    "difficulty": "Uber",
+    "drops": [
+      {"name": "Atziri's Splendour"},
+      {"name": "The Vertex"},
       {"name": "Atziri's Acuity"},
+      {"name": "Triumvirate Authority"},
       {"name": "Atziri's Reflection"},
-      {"name": "Atziri's Disfavour"}
+      {"name": "Atziri's Disfavour"},
+      {"name": "Atziri's Rule"}
     ]
   },
   "al-hezmin": {
@@ -229,9 +242,21 @@
     "id": 41323,
     "difficulty": "Pinnacle",
     "drops": [
+      {"name": "Betrayal's Sting"},
       {"name": "The Arkhon's Tools"},
       {"name": "Venarius' Astrolabe"},
       {"name": "Legacy of the Rose"}
+    ]
+  },
+  "uber_incarnation_of_neglect": {
+    "name": "defeat uber_incarnation_of_neglect",
+    "id": 41329,
+    "difficulty": "Uber",
+    "drops": [
+      {"name": "Refuge in Isolation"},
+      {"name": "Bitter Instinct"},
+      {"name": "Haunting Memories"},
+      {"name": "Festering Resentment"}
     ]
   },
   "incarnation_of_fear": {
@@ -240,8 +265,20 @@
     "difficulty": "Pinnacle",
     "drops": [
       {"name": "Servant of Decay"},
+      {"name": "The Unseen Hue"},
+      {"name": "Enmity's Embrace"},
+      {"name": "Starcaller"}
+    ]
+  },
+  "uber_incarnation_of_fear": {
+    "name": "defeat uber_incarnation_of_fear",
+    "id": 41330,
+    "difficulty": "Uber",
+    "drops": [
+      {"name": "The Caged Mammoth"},
       {"name": "Coiling Whisper"},
-      {"name": "Enmity's Embrace"}
+      {"name": "Wing of the Wyvern"},
+      {"name": "Woespike"}
     ]
   },
   "incarnation_of_dread": {
@@ -249,9 +286,21 @@
     "id": 41325,
     "difficulty": "Pinnacle",
     "drops": [
+      {"name": "Bonemeld"},
       {"name": "The Dark Monarch"},
       {"name": "Seven Teachings"},
       {"name": "Wine of the Prophet"}
+    ]
+  },
+  "uber_incarnation_of_dread": {
+    "name": "defeat uber_incarnation_of_dread",
+    "id": 41331,
+    "difficulty": "Uber",
+    "drops": [
+      {"name": "The Hallowed Monarch"},
+      {"name": "Whispers of Infinity"},
+      {"name": "Wellwater Phylactery"},
+      {"name": "The Golden Charlatan"}
     ]
   },
   "cortex": {

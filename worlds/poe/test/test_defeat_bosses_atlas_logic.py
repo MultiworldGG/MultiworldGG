@@ -7,10 +7,11 @@ Reporter: Erbs, AP After Dark discord, 2026-07-09. Attached yaml (erbs-poe.yaml)
     goal: defeat_bosses
     number_of_bosses: 10
     bosses_available: [hydra, phoenix, chimera, minotaur, shaper, uber_shaper,
-        elder, uber_elder, uber_uber_elder, atziri, al-hezmin, baran, drox,
+        elder, uber_elder, uber_uber_elder, atziri, uber_atziri, al-hezmin, baran, drox,
         veritania, sirus, uber_sirus, maven, uber_maven, exarch, uber_exarch,
-        eater, uber_eater, incarnation_of_neglect, incarnation_of_fear,
-        incarnation_of_dread, cortex, uber_cortex]
+        eater, uber_eater, incarnation_of_neglect, uber_incarnation_of_neglect,
+        incarnation_of_fear, uber_incarnation_of_fear, incarnation_of_dread,
+        uber_incarnation_of_dread, cortex, uber_cortex]
     progression_balancing: 0
     accessibility: full
     death_link: true
@@ -40,10 +41,11 @@ from . import PoeTestBase
 
 ERBS_BOSSES_AVAILABLE = [
     "hydra", "phoenix", "chimera", "minotaur", "shaper", "uber_shaper",
-    "elder", "uber_elder", "uber_uber_elder", "atziri", "al-hezmin", "baran",
+    "elder", "uber_elder", "uber_uber_elder", "atziri", "uber_atziri", "al-hezmin", "baran",
     "drox", "veritania", "sirus", "uber_sirus", "maven", "uber_maven",
     "exarch", "uber_exarch", "eater", "uber_eater", "incarnation_of_neglect",
-    "incarnation_of_fear", "incarnation_of_dread", "cortex", "uber_cortex",
+    "uber_incarnation_of_neglect", "incarnation_of_fear", "uber_incarnation_of_fear",
+    "incarnation_of_dread", "uber_incarnation_of_dread", "cortex", "uber_cortex",
 ]
 
 

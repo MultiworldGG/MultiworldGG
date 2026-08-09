@@ -1,3 +1,5 @@
+from NetUtils import HintStatus
+
 # dAcPy_c::LINK
 LINK_PTR = 0x8057578C
 
@@ -11,6 +13,8 @@ CURR_STATE_OFFSET = 0x59
 # Link's action - make sure he is in a "normal" action (i.e. idle, moving on the ground, etc.)
 # dAcPy_c::mCurrentAction
 LINK_ACTION_OFFSET = 0x36F
+
+CURR_STAMINA_OFFSET = 0x4498
 
 MAX_SAFE_ACTION = 0xD
 ITEM_GET_ACTION = 0x78
@@ -39,15 +43,15 @@ SELECTED_FILE_ADDR = 0x8095FC98
 # The expected index for the following item that should be received. Array of 2 bytes right after the give item array
 # Uses an unused scene index which is 16 bytes wide
 EXPECTED_INDEX_ADDR = 0x80956F28 # HALFWORD
-# WILL BE UPDATED WHEN THE BUILD IS RELEASED
 
 # This address contains the current stage ID.
 CURR_STAGE_ADDR = 0x805B388C  # STRING[16]
 
-# This is an array of length 0x10 where each element is a byte and contains item IDs for items to give the player.
-# 0xFF represents no item. The array is read and cleared every frame.
-ARCHIPELAGO_ARRAY_ADDR = 0x80678770 # ARRAY[16]
-# WILL BE UPDATED WHEN THE BUILD IS RELEASED
+# The patcher will write the AP slot name at this address
+ARCHIPELAGO_SLOT_ADDR = 0x806786A0
+
+# A byte here represents what item ID to give to the player. The game will clear this out and give items whenever possible.
+ARCHIPELAGO_ITEM_SLOT = EXPECTED_INDEX_ADDR + 2
 
 # This is the address that holds the player's file name.
 FILE_NAME_ADDR = 0x80955D38  # ARRAY[16]
@@ -124,7 +128,7 @@ STORYFLAG_START_ADDR = 0x805A9AD8
 SCENEFLAG_START_ADDR = 0x80956EC8
 
 # Boolean used by the patched game to determine whether to use networking & display network info
-NETWORK_USAGE_BOOL = 0x80686871 # Be sure to update if the patcher ever changes something in the assembly!
+NETWORK_USAGE_BOOL = 0x806871F5 # Be sure to update if the patcher ever changes something in the assembly!
 
 # DME Connection Messages for the client
 CONNECTION_REFUSED_GAME_STATUS = "Dolphin failed to connect. Please load a randomized ROM for Skyward Sword. Trying again in 5 seconds..."
@@ -134,3 +138,52 @@ CONNECTION_CONNECTED_STATUS = "Dolphin connected successfully."
 CONNECTION_INITIAL_STATUS = "Dolphin connection has not been initiated."
 
 CONSOLE_CONNECTED_STATUS = "Wii connected successfully."
+
+COLOR_CONTROL_SEQUENCES = {
+    # closest equivalents available in SS
+    "black": "\x0e\x00\x03\x02\x0c",
+    "red": "\x0e\x00\x03\x02\x01",
+    "green": "\x0e\x00\x03\x02\x04",
+    "yellow": "\x0e\x00\x03\x02\x0b",
+    "blue": "\x0e\x00\x03\x02\x03",
+    "magenta": "\x0e\x00\x03\x02\x29", # custom magenta added to the patcher
+    "cyan": "\x0e\x00\x03\x02\x08",
+    "slateblue": "\x0e\x00\x03\x02\x27", # custom slateblue added to the patcher
+    "plum": "\x0e\x00\x03\x02\x06",
+    "salmon": "\x0e\x00\x03\x02\x09",
+    # "white": "\x0e\x00\x03\x02\x0a", # just ignore since text is already white by default
+    "orange": "\x0e\x00\x03\x02\x02",
+    # ">>": "\x0e\x00\x03\x02\uffff",  # end color
+}
+
+class LocationForHint():
+    """
+    Docstring for LocationForHint
+    """
+
+    location: int
+    player: int
+    status: HintStatus
+
+    def __init__(self, loc: int, plr: int, sts: int = 0):
+        self.location = loc
+        self.player = plr
+
+        if sts == 0:
+            self.status = HintStatus.HINT_UNSPECIFIED
+        elif sts == 10:
+            self.status = HintStatus.HINT_NO_PRIORITY
+        elif sts == 20:
+            self.status = HintStatus.HINT_AVOID
+        elif sts == 30:
+            self.status = HintStatus.HINT_PRIORITY
+        else:
+            self.status = HintStatus.HINT_UNSPECIFIED
+
+    def __eq__(self, other):
+        if not isinstance(other, LocationForHint):
+            return False
+        return self.location == other.location and self.player == other.player
+    
+    def __hash__(self):
+        return hash((self.location, self.player))

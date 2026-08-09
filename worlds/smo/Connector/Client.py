@@ -1,21 +1,33 @@
+import random
 import asyncio
 import functools
 import typing
 from copy import deepcopy
+import time
 
 import Utils
 apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 from NetUtils import encode, NetworkPlayer, NetworkItem, JSONtoTextParser, JSONMessagePart, ClientStatus
 from MultiServer import Endpoint
-from CommonClient import get_base_parser, gui_enabled, logger, CommonContext, ClientCommandProcessor
+from CommonClient import get_base_parser, gui_enabled, logger
 from typing import List, Any
 from .Packets import PacketHeader, PacketType, Packet, ItemType
 
 from .Data import inverse_shop_items, shop_items, get_item_type, worlds, world_alias, valid_warps, inverse_worlds, \
     multi_moon_locations, world_prefixes
 from .Player import SMOPlayer
+from ..Locations import locations_table
 
 import traceback
+
+tracker_loaded = False
+try:
+    from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
+    from worlds.tracker.TrackerClient import TrackerCommandProcessor as SuperCommandProcessor
+    tracker_loaded = True
+except ModuleNotFoundError:
+    from CommonClient import CommonContext as SuperContext
+    from CommonClient import ClientCommandProcessor as SuperCommandProcessor
 
 message_types = [
     "ItemSend",
@@ -25,16 +37,18 @@ message_types = [
     "Chat"
 ]
 
-class SMOJSONToTextParser(JSONtoTextParser):
-    def _handle_color(self, node: JSONMessagePart):
-        return self._handle_text(node)  # No colors for the in-game text
-
 # Add Debug Commands like send_to and shine, etc
-class SMOCommandProcessor(ClientCommandProcessor):
+class SMOCommandProcessor(SuperCommandProcessor):
     def _cmd_smo(self):
         """Check SMO Connection State"""
         if isinstance(self.ctx, SMOContext):
             logger.info(f"SMO Status: {self.ctx.get_smo_status()}")
+            if self.ctx.disconnect_timer < 0:
+                time_string = f'{">" if self.ctx.disconnect_timer <= -50 else ""}{int(10-self.ctx.disconnect_timer)}'
+                warn = f"SMO last responded {time_string} seconds ago"
+                logger.debug(warn)
+                if self.ctx.ui:
+                    self.ctx.ui.print_json([{"type": "color", "color": "orange", "text": warn}])
 
     def _cmd_sync(self):
         """Attempt to resync received items"""
@@ -44,9 +58,18 @@ class SMOCommandProcessor(ClientCommandProcessor):
             self.ctx.server_msgs.append({"cmd" : "Sync"})
             # Add the sending locations part here if necessary.
 
-    def _cmd_warp(self, kingdom : str, scenario : int = -1):
+    def _cmd_warp(self, kingdom : str, scenario : str = ""):
         """Warp Mario to another kingdom.
-        Change kingdom scenario only if you know what you're doing as it can break the game."""
+        Change kingdom scenario only if you know what you're doing as it can break the game.
+
+        :param kingdom: The name of the kingdom to warp to, or \"Odyssey\"
+        :param scenario: Optionally specify a specific scenario. Can crash or sequence break the game"""
+        if scenario == "":
+            scenario = "-1"
+        try:
+            scenario = int(scenario)
+        except:
+            logger.error(f"Expected an integer value for `scenario`, got \"{scenario}\"")
         if isinstance(self.ctx, SMOContext):
             while kingdom.lower() in world_alias:
                 kingdom = world_alias[kingdom]
@@ -62,6 +85,39 @@ class SMOCommandProcessor(ClientCommandProcessor):
                 self.ctx.proxy_msgs.append(Packet(guid=self.ctx.proxy_guid, packet_type=PacketType.ChangeStage,
                                                  packet_data=[kingdom, scenario]))
 
+    def _cmd_deathlink(self, enabled = ""):
+        """Enable/Disable deathlink
+
+        :param enabled: (Y)es/(T)rue/On/(E)nable to enable deathlink. Anything else disables deathlink"""
+
+        if not isinstance(self.ctx, SMOContext):
+            logger.info("Can't change Deathlink state right now")
+            return
+
+        enabled = enabled.lower() in ['t', 'true', 'y', 'yes', 'on', 'e', 'enable']
+
+        if enabled:
+            logger.info("Deathlink has been enabled")
+            enabled = True
+        else:
+            logger.info("Deathlink has been disabled")
+            enabled = False
+
+        if enabled != self.ctx.death_link_enabled:
+            tags = ["AP"]
+            tags += ["DeathLink"] if enabled else []
+            self.ctx.server_msgs.append({"cmd" : "ConnectUpdate", "tags" : tags})
+        self.ctx.forced_death_link = enabled
+        self.ctx.death_link_enabled = enabled
+        self.ctx.slot_data["death_link"] = enabled
+
+    def _cmd_die(self):
+        """Mimics receiving a deathlink. Mostly used for testing purposes"""
+        was_deathlink = self.ctx.death_link_enabled
+        self.ctx.death_link_enabled = True
+        self.ctx.on_deathlink({'source': 'Client', 'time': time.time(), 'cause': 'Client issued the "/die" command'})
+        self.ctx.death_link_enabled = was_deathlink
+
     # def _cmd_unlock(self, kingdom : int, scenario : int = -1):
     #     if isinstance(self.ctx, SMOContext):
     #         logger.info(f"Unlocking Kingdom {kingdom}")
@@ -72,7 +128,8 @@ class SMOCommandProcessor(ClientCommandProcessor):
 # Change send message and related calls to send packet and serialize and deserialize using the packet of the respective packet type.
 # Make sure to receive packets on the connection to send checks through to the AP Server from this client.
 
-class SMOContext(CommonContext):
+class SMOContext(SuperContext):
+    tags = {"AP"}
     command_processor = SMOCommandProcessor
     game = "Super Mario Odyssey"
 
@@ -80,7 +137,7 @@ class SMOContext(CommonContext):
         super().__init__(server_address, password)
         self.proxy : asyncio.Server
         self.proxy_chat = None
-        self.gamejsontotext = SMOJSONToTextParser(self)
+        self.gamejsontotext = JSONtoTextParser(self)
         self.autoreconnect_task = None
         self.endpoint = None
         self.items_handling = 0b111
@@ -99,10 +156,13 @@ class SMOContext(CommonContext):
         #self.checked_locations : set
         self.ping_task = None
         self.awaiting_connection : bool = False
-        self.disconnect_timer : int = 120
+        self.disconnect_timer : int = -50
         self.logged_in : bool = False
         self.multi_moon_anim : bool = False
         self.death_link_enabled : bool = False
+        self.forced_death_link = None
+        self.death_link_pause_timer : int = -1
+        self.has_warned = False
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
@@ -119,10 +179,6 @@ class SMOContext(CommonContext):
 
     async def disconnect(self, allow_autoreconnect: bool = False):
         await super().disconnect(allow_autoreconnect)
-
-    async def disconnect_proxy(self):
-        if self.endpoint and not self.endpoint.socket.closed:
-            await self.endpoint.socket.close()
 
     def is_connected(self) -> bool:
         return self.server and self.server.socket.open
@@ -147,11 +203,11 @@ class SMOContext(CommonContext):
         self.server_msgs.append({"cmd": "ReceivedItems", "index": 0, "items": self.full_inventory})
 
     def forward_slot_data(self):
+
         """
         Forwards Slot Data from Archipelago Lobby connection to SMO
         :return:
         """
-        #print(self.slot_data)
         self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.SlotData,
               packet_data=[self.slot_data["counts"]["cascade"],
                            self.slot_data["counts"]["sand"],
@@ -170,33 +226,27 @@ class SMOContext(CommonContext):
         # Games
         for i in range(0, len(self.slot_data["shop_games"]), 3):
             if i + 3 < len(self.slot_data["shop_games"]):
-        #        print(self.slot_data["shop_games"][i:i + 3])
                 self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ApInfo,
                                               packet_data=[0, i, i+1, i+2, self.slot_data["shop_games"][i:i + 3]]))
             else:
-        #        print(self.slot_data["shop_games"][i:i + 3])
                 self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ApInfo,
                                               packet_data=[0, i, i+1, i+2, self.slot_data["shop_games"][
                                                               i:len(self.slot_data["shop_games"])]]))
         # Players
         for i in range(0, len(self.slot_data["shop_players"]), 3):
             if i + 3 < len(self.slot_data["shop_players"]):
-                #print(self.slot_data["shop_players"][i:i + 3])
                 self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ApInfo,
                                               packet_data=[1, i, i+1, i+2, self.slot_data["shop_players"][i:i + 3]]))
             else:
-                #print(self.slot_data["shop_players"][i:i + 3])
                 self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ApInfo,
                                               packet_data=[1, i, i+1, i+2, self.slot_data["shop_players"][
                                                               i:len(self.slot_data["shop_players"])]]))
         # Items
         for i in range(0, len(self.slot_data["shop_ap_items"]), 3):
             if i + 3 < len(self.slot_data["shop_ap_items"]):
-                #print(self.slot_data["shop_ap_items"][i:i + 3])
                 self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ApInfo,
                                               packet_data=[2, i, i+1, i+2, self.slot_data["shop_ap_items"][i:i + 3]]))
             else:
-                #print(self.slot_data["shop_ap_items"][i:i + 3])
                 self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ApInfo,
                                               packet_data=[2, i, i+1, i+2, self.slot_data["shop_ap_items"][
                                                               i:len(self.slot_data["shop_ap_items"])]]))
@@ -214,7 +264,6 @@ class SMOContext(CommonContext):
                 items.append([254,254,254,254])
 
         self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ShopReplace, packet_data=[0, items]))
-        #print(len(items), items)
 
         items = []
         for i in range(2539, 2582):
@@ -223,7 +272,6 @@ class SMOContext(CommonContext):
             else:
                 items.append([254,254,254,254])
         self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ShopReplace, packet_data=[1, items]))
-        #print(len(items), items)
 
         items = []
         for i in range(2582, 2599):
@@ -248,7 +296,10 @@ class SMOContext(CommonContext):
         self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ShopReplace, packet_data=[4, items]))
 
         # Colors
-        print(self.slot_data["shine_colors"])
+        if self.slot_data["colors"] == 6:
+            random.seed(self.seed_name + self.player.name)
+            for shine in self.slot_data["shine_colors"].keys():
+                self.slot_data["shine_colors"][shine] = random.randint(0, 30)
         data = [[]]
         for shine_uid in range(0, 1168):
             if len(data[-1]) == 51:
@@ -257,11 +308,9 @@ class SMOContext(CommonContext):
                 break
             if str(shine_uid) in self.slot_data["shine_colors"]:
                 data[-1].append([shine_uid, self.slot_data["shine_colors"][str(shine_uid)]])
-        print(data)
         for i in data:
             self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ShineColor,
                                           packet_data=[i]))
-            #print(self.proxy_msgs[-1].packet.info)
 
         # Checked locations
         data = [[]]
@@ -279,16 +328,13 @@ class SMOContext(CommonContext):
         self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ShineReplace,
                                          packet_data=[self.slot_data["shine_replace_data"][str(world_id)]]))
         # Items
-        #print(self.slot_data["shine_replace_data"][str(world_id)])
         for i in range(0, len(self.slot_data["shine_items"][str(world_id)]), 3):
             if i + 3 < len(self.slot_data["shine_items"][str(world_id)]):
-                #print(self.slot_data["shine_items"][str(world_id)][i:i + 3])
                 self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ApInfo,
                                              packet_data=[3, i, i + 1, i + 2,
                                                           self.slot_data["shine_items"][str(world_id)][
                                                           i:i + 3]]))
             else:
-                #print(self.slot_data["shine_items"][str(world_id)][i:i + 3])
                 self.proxy_msgs.append(Packet(guid=self.proxy_guid, packet_type=PacketType.ApInfo,
                                              packet_data=[3, i, i + 1, i + 2,
                                                           self.slot_data["shine_items"][str(world_id)][
@@ -296,14 +342,27 @@ class SMOContext(CommonContext):
                                                               self.slot_data["shine_items"][str(world_id)])]]))
 
     def on_deathlink(self, data: typing.Dict[str, typing.Any]) -> None:
-        if self.death_link_enabled:
+        self.death_link_enabled = self.forced_death_link if self.forced_death_link != None else self.death_link_enabled
+
+        if self.death_link_enabled and self.death_link_pause_timer <= 0:
             super().on_deathlink(data)
             death_link_packet : Packet = Packet(guid=self.proxy_guid, packet_type=PacketType.DeathLink)
             self.proxy_msgs.append(death_link_packet)
-            self.last_death_link = data["time"]
+
+            if 'cause' in data and data['cause'] and data['cause'] != "":
+                self.player_data.add_message(f"\x1b[31m{data['cause']}")
+            elif 'source' in data:
+                self.player_data.add_message(f"\x1b[31mReceived deathlink from {data['source']}.")
+            else:
+                self.player_data.add_message("\x1b[31mReceived deathlink from an unknown source.")
+
+            if 'time' in data:
+                self.last_death_link = data['time']
 
     # Handle sending packets to SMO here
     def on_package(self, cmd: str, args: dict):
+        super().on_package(cmd, args)
+
         match cmd:
             case "Connected":
                 json = args
@@ -327,13 +386,12 @@ class SMOContext(CommonContext):
                 self.forward_slot_data()
                 self.player_data.goal = self.slot_data["goal"]
                 self.death_link_enabled = self.slot_data["death_link"]
+                self.death_link_enabled = self.forced_death_link if self.forced_death_link != None else self.death_link_enabled
                 self.logged_in = True
 
                 if self.death_link_enabled:
                     self.server_msgs.append({"cmd" : "ConnectUpdate", "tags" : ["AP", "DeathLink"]})
                 self.server_msgs.append({"cmd" : "Get", "keys" : [f"{self.player.name}_scenarios"]})
-                # if DEBUG:
-                #     print(json)
                 self.connected_msg = encode([json])
                 if self.awaiting_info:
                     self.server_msgs.append(self.room_info)
@@ -369,6 +427,11 @@ class SMOContext(CommonContext):
 
                 for item in args["items"]:
                     net_item = NetworkItem(*item)
+
+                    # Beat the Game shows up as a moon
+                    if net_item.location == 2499:
+                        continue
+
                     self.full_inventory.append(net_item)
 
                     packet = None
@@ -382,7 +445,7 @@ class SMOContext(CommonContext):
                                 packet = Packet(guid=self.proxy_guid, packet_type=PacketType.Check,
                                     packet_data=[next_moon, ItemType.Moon, index, "", "", 0])
                             else:
-                                logger.info(f"Received nonexistent moon. This is either caused by a bug or the use of commands to give"
+                                logger.info(f"Received nonexistent moon ({net_item}). This is either caused by a bug or the use of commands to give"
                                             f" this slot more of a type of moon than can possibly exist.")
                         # Regional Coins
                         case 4:
@@ -396,8 +459,6 @@ class SMOContext(CommonContext):
                             if str(net_item.location) in self.slot_data["coin_values"][str(net_item.player)]:
                                 packet = Packet(guid=self.proxy_guid, packet_type=PacketType.Check,
                                     packet_data=[net_item.item, ItemType.Coins, index, "", "", self.slot_data["coin_values"][str(net_item.player)][str(net_item.location)]])
-                            else:
-                                print(net_item.player, "location id", print(net_item.location))
                         # Flag items
                         case -4:
                             pass
@@ -418,13 +479,10 @@ class SMOContext(CommonContext):
                             packet = Packet(guid=self.proxy_guid, packet_type=PacketType.Check,
                                 packet_data=[net_item.item - 2582, ItemType.Sticker, index, "", "", 0])
 
-                        # case _:
-                        #     internal_name = inverse_shop_items[net_item.item].removesuffix("Cap").removesuffix("Clothes")
-                        #     print(inverse_shop_items[net_item.item])
-                        #     print(internal_name)
-                        #     print(get_item_type(net_item.item))
-                        #     packet = Packet(guid=self.proxy_guid, packet_type=PacketType.Item,
-                        #                     packet_data=[internal_name, get_item_type(net_item.item)])
+                        case _:
+                             internal_name = inverse_shop_items[net_item.item].removesuffix("Cap").removesuffix("Clothes")
+                             packet = Packet(guid=self.proxy_guid, packet_type=PacketType.Item,
+                                             packet_data=[internal_name, get_item_type(net_item.item)])
                     if packet:
                         if packet.header.packet_type == PacketType.Check:
                             if packet.packet.location_id < 0:
@@ -441,6 +499,7 @@ class SMOContext(CommonContext):
                 self.room_info = args
 
             case "Retrieved":
+                #hints = self.stored_data.get(f"_read_hints_{self.team}_{self.slot}", [])
                 pass
                 # if f"{self.player.name}_scenarios" in args["keys"] and args["keys"][f"{self.player.name}_scenarios"] is dict:
                 #     for key in self.player_data.world_scenarios.keys():
@@ -462,35 +521,32 @@ class SMOContext(CommonContext):
                 if cmd != "PrintJSON":
                     self.server_msgs.append(args)
 
-    def run_gui(self):
-        from kvui import GameManager
-
-        class SMOManager(GameManager):
-            logging_pairs = [
-                ("Client", "Archipelago")
-            ]
-            base_title = f"{apname} Super Mario Odyssey Client"
-
-        self.ui = SMOManager(self)
-        self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
+    def make_gui(self):
+        ui = super().make_gui()
+        ui.base_title = f"Adi's Unofficial Super Mario Odyssey {apname} Client"
+        return ui
 
 async def ping_loop(ctx : SMOContext):
     while not ctx.exit_event.is_set():
         if ctx.endpoint:
             if ctx.disconnect_timer == 0:
                 ctx.game_connected = False
-            ctx.disconnect_timer = 1
+            elif ctx.disconnect_timer == -5:
+                ctx.ui.print_json([{"type": "color", "color": "orange", "text": "Client Inactive for 15 Seconds (In a cutscene?)"}])
+            if ctx.disconnect_timer > -50:
+                ctx.disconnect_timer -= 1
+        if ctx.death_link_pause_timer > 0:
+            ctx.death_link_pause_timer -= 1
         await asyncio.sleep(1.0)
-
-
 
 async def proxy_chat(ctx : SMOContext):
     try:
         clear_msgs : bool = False
         while not ctx.exit_event.is_set():
             if (len(ctx.player_data.messages) > 0 or clear_msgs) and ctx.game_connected:
+                next_messages = ctx.player_data.next_messages()
                 msg_packet : Packet = Packet(guid=ctx.proxy_guid, packet_type=PacketType.ArchipelagoChat,
-                                             packet_data=[ctx.player_data.next_messages()])
+                                             packet_data=[next_messages])
                 ctx.proxy_msgs.append(msg_packet)
                 if len(ctx.player_data.messages) == 0 and not clear_msgs:
                     clear_msgs = True
@@ -500,10 +556,8 @@ async def proxy_chat(ctx : SMOContext):
                 await asyncio.sleep(27.0)
                 ctx.multi_moon_anim = False
                 ctx.server_msgs.append({"cmd": "Sync"})
-
-
             else:
-                await asyncio.sleep(5.0)
+                await asyncio.sleep(0.1)
     except Exception as e:
         logger.exception(e)
 
@@ -529,8 +583,9 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
             data = bytearray(await reader.read(packet_size))
             packet.deserialize(data)
 
+            old_disconnect = ctx.disconnect_timer
             if packet.header.packet_type != PacketType.Unknown:
-                ctx.disconnect_timer = 30
+                ctx.disconnect_timer = 10
                 # Prevent appending server message before connected to server.
             match packet.header.packet_type:
                 case PacketType.Connect:
@@ -539,11 +594,22 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
                     init_packet = Packet(guid=ctx.proxy_guid, packet_type=PacketType.Init)
                     # Insert init packet at 0 in queue so other packets added before aren't dropped.
                     ctx.proxy_msgs.insert(0, init_packet)
+
+                    if old_disconnect < -5:
+                        ctx.ui.print_json([{"type": "color", "color": "green", "text": "SMO Connected"}])
+                        if not ctx.has_warned:
+                            ctx.ui.print_json([{"type": "color",
+                                                "color": "blue",
+                                                "text": "This is an unofficial modification of the SMO Archipelago. Please report any issues to @adibtw on Discord!"}])
+                            ctx.has_warned = True
+
+                        ctx.player_data.add_message("\x1b[32mConnected to the AP Client")
+
                     # Only log initial connection
-                    logger.info("SMO Connected")
                     if ctx.awaiting_connection:
                         ctx.awaiting_connection = False
                         ctx.game_connected = True
+
                     needs_slot_data : bool = True
                     for queued_packet in ctx.proxy_msgs:
                         if queued_packet.header.packet_type == PacketType.SlotData:
@@ -556,6 +622,7 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
                     ctx.server_msgs.append({"cmd": "Sync"})
 
                 case PacketType.Disconnect:
+                    ctx.ui.print_json([{"type": "color", "color": "red", "text": "Client Requested Disconnect"}])
                     ctx.game_connected = False
                     break
 
@@ -569,13 +636,13 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
                             ctx.forward_shine_data()
 
                 case PacketType.Check:
-                    print(packet.packet.location_id, packet.packet.item_type)
+                    print(f'Client requested check for location {packet.packet.location_id} with type {packet.packet.item_type}')
                     location_id = packet.packet.location_id
                     item_type : int = packet.packet.item_type.value
                     match item_type:
                         case -1:
                             shine_id: int = packet.packet.location_id
-                            print(f"Got {shine_id}")
+                            print(f"Got Moon {shine_id}")
                             if shine_id in multi_moon_locations:
                                 ctx.multi_moon_anim = True
                             ctx.server_msgs.append({"cmd": "LocationChecks", "locations" : [shine_id]})
@@ -603,9 +670,14 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
                             print(f"Got Capture {location_id}")
                             location_id = packet.packet.location_id + 3701
                             ctx.server_msgs.append({"cmd": "LocationChecks", "locations": [location_id]})
+
+                            if location_id == 3702 and ctx.death_link_pause_timer == -1:
+                                print("Pausing death links for 32 seconds")
+                                ctx.death_link_pause_timer = 32
                         # Add Regional Coin
 
                 case PacketType.DeathLink:
+                    ctx.death_link_enabled = ctx.forced_death_link if ctx.forced_death_link != None else ctx.death_link_enabled
                     if ctx.death_link_enabled:
                         await ctx.send_death()
 
@@ -628,6 +700,7 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
                         #print("Skipping packet cannot be sent now")
                         continue
                     response : Packet = ctx.proxy_msgs.pop(packet_send_offset)
+
                     b = response.serialize()
                     # if response.header.packet_type == PacketType.ShineColor:
                     #     print("This one", b[20:])
@@ -642,10 +715,12 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
                 #await asyncio.sleep(0.25)
 
             if not ctx.game_connected and not ctx.awaiting_connection:
+                ctx.awaiting_connection = True
+                self.ctx.print_json([{"type": "color", "color": "red", "text": "Invalid connection state, not sending more packets"}])
                 break
     except Exception as e:
-        print("Connection Error ", e)
-        traceback.print_exc()
+        self.ctx.print_json([{"type": "color", "color": "red", "text": f"Connection Error {e}"}])
+        self.ctx.print_json([{"type": "color", "color": "red", "text": traceback.format_exc()}])
         ctx.player_data.item_index = 0
         ctx.player_data.current_home_stage = ""
         ctx.awaiting_connection = True
@@ -675,6 +750,8 @@ def launch(*launch_args: str):
         ctx.ping_task = asyncio.create_task(ping_loop(ctx), name="PingLoop")
         ctx.server_comm_task = asyncio.create_task(comm_loop(ctx), name="CommLoop")
 
+        if tracker_loaded:
+            ctx.run_generator()
         if gui_enabled:
             ctx.run_gui()
         ctx.run_cli()
@@ -706,3 +783,4 @@ def launch(*launch_args: str):
     colorama.just_fix_windows_console()
     asyncio.run(main())
     colorama.deinit()
+    logger.info("This is an unofficial modification of the SMO Archipelago. Please report any issues to @adibtw on Discord!")

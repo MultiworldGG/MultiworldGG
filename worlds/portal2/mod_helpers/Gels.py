@@ -71,6 +71,7 @@ map_gel_table: dict[str, list[GelData]] = {
         GelData(object_name="intermediate_chamber_paint_sprayers", object_type="info_paint_sprayer", x=1088.0, y=1280.0, z=-1672.0, gel_item=orange_gel),
         GelData(object_name="intermediate_chamber_paint_sprayers", object_type="info_paint_sprayer", x=1184.0, y=1264.0, z=-1672.0, gel_item=orange_gel),
         GelData(object_name="intermediate_chamber_paint_sprayers", object_type="info_paint_sprayer", x=1264.0, y=1277.0, z=-1672.0, gel_item=orange_gel),
+        GelData(object_name="intermediate_chamber_paint_sprayers", object_type="info_paint_sprayer", x=1272.0, y=1240.0, z=-1704.0, gel_item=orange_gel),
         GelData(object_name="intermediate_chamber_paint_sprayers", object_type="info_paint_sprayer", x=1344.0, y=1266.0, z=-1672.0, gel_item=orange_gel),
         GelData(object_name="intermediate_chamber_paint_sprayers", object_type="info_paint_sprayer", x=1456.0, y=1283.0, z=-1672.0, gel_item=orange_gel),
         GelData(object_name="intermediate_chamber_paint_sprayers", object_type="info_paint_sprayer", x=1568.0, y=1280.0, z=-1672.0, gel_item=orange_gel),

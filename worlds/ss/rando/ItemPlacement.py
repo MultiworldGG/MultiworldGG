@@ -341,6 +341,11 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
 
     ### DUNGEON PLACEMENTS
 
+    # ET Key Pieces
+    if options.open_et == True:
+        for _ in range(5):
+            placed.extend(["Key Piece"])
+
     # Place vanilla keys first to prevent location overlap
     if options.small_key_mode == "vanilla":
         placed.extend(world.dungeons.key_handler.place_small_keys())

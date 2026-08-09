@@ -11,9 +11,10 @@ import threading
 import yaml
 
 from BaseClasses import MultiWorld, Region, Tutorial, LocationProgressType, ItemClassification as IC
+from entrance_rando import randomize_entrances
 from Options import Toggle, OptionError
 from worlds.AutoWorld import WebWorld, World
-from worlds.Files import APPlayerContainer
+from worlds.Files import APPlayerContainer, AutoPatchRegister
 from worlds.generic.Rules import add_item_rule
 from worlds.LauncherComponents import (
     Component,
@@ -31,7 +32,7 @@ from .Locations import LOCATION_TABLE, SSLocation, SSLocFlag
 from .Options import SSOptions
 from .Rules import set_rules
 from .Names import HASH_NAMES
-from .Entrances import AP_ENTRANCE_TABLE
+from .Entrances import EXIT_GRAPH, SSExit, SSEntrance
 from .Utils import restricted_safe_dump
 
 from .rando.DungeonRando import DungeonRando
@@ -42,9 +43,9 @@ from .rando.MiscRando import shuffle_batreaux_counts
 
 from .logic.Requirements import location_requirements, exit_requirements, ALL_REQUIREMENTS
 
-AP_VERSION = [0, 6, 5]
-WORLD_VERSION = [0, 5, 5]
-RANDO_VERSION = [0, 5, 5]
+AP_VERSION = [0, 6, 7]
+WORLD_VERSION = [0, 5, 6]
+RANDO_VERSION = [0, 5, 6]
 
 
 def run_client() -> None:
@@ -129,7 +130,7 @@ class SSWorld(World):
     game: ClassVar[str] = "Skyward Sword"
     topology_present: bool = True
     web = SSWeb()
-    required_client_version: tuple[int, int, int] = (0, 5, 1)
+    required_client_version: tuple[int, int, int] = (0, 5, 6)
     origin_region_name: str = "" # This is set later
     explicit_indirect_conditions = False 
     
@@ -156,7 +157,6 @@ class SSWorld(World):
         self.dungeons = DungeonRando(self)
         self.entrances = EntranceRando(self)
 
-        self.hints_ready = threading.Event()
 
     def determine_progress_and_nonprogress_locations(self) -> tuple[set[str], set[str]]:
         """
@@ -286,8 +286,6 @@ class SSWorld(World):
 
         # Shuffle required dungeons and entrances according to options
         self.dungeons.randomize_required_dungeons()
-        self.entrances.randomize_dungeon_entrances(self.dungeons.required_dungeons)
-        self.entrances.randomize_trial_gates()
 
         self.entrances.randomize_starting_statues()
         self.entrances.randomize_starting_entrance()
@@ -362,6 +360,17 @@ class SSWorld(World):
 
         self.connect_regions(self.origin_region_name)
 
+        self.entrances.randomize_trial_gates()
+
+        # if self.options.randomize_entrances == "all_entrances":
+        #     self.entrances.randomize_entrances()
+        # elif
+        if self.options.randomize_entrances == "dungeons_only" or self.options.randomize_entrances == "required_dungeons_only":
+            self.entrances.randomize_dungeon_entrances_only()
+
+        #for ent in self.get_entrances():
+        #    print(f"{ent.parent_region} -> {ent.name} -> {ent.connected_region}")
+
         # These are checks to make sure all locations were made
         # Batreaux rewards are handled differently, so skip those
 
@@ -391,10 +400,18 @@ class SSWorld(World):
                 exit_full_name = f"{region_name} - {exit_short_name}"
                 if exit_full_name in self.connected_entrances:
                     continue
-                entrance = [ent for ent in AP_ENTRANCE_TABLE if ent.exit_name == exit_full_name].pop()
+                entrance = [ent for ent in EXIT_GRAPH if f"{ent.exit_region} - {ent.exit_name}" == exit_full_name].pop()
                 entrance_region = entrance.entrance_region
-                entrance_full_name = entrance.entrance_name
+                entrance_full_name = f"{entrance.entrance_region} - {entrance.entrance_name}"
+                entrance_short_name = entrance.entrance_name
+                entrance_can_shuffle = entrance.can_shuffle
+
                 region = self.get_region(region_name)
+                ex_hint_region = ALL_REQUIREMENTS[region_name]["hint_region"]
+                ent_hint_region = ALL_REQUIREMENTS[entrance_region]["hint_region"]
+
+                er_option = self.options.randomize_entrances
+                trial_er_option = self.options.randomize_trials
 
                 if entrance.group == 10:
                     if exit_full_name == "Sky - Emerald Pillar":
@@ -407,56 +424,45 @@ class SSWorld(World):
                     entrance_region = statue["apregion"]
                     entrance_full_name = None
 
-                if entrance.group == 2:
-                    dungeon_entrance = exit_short_name.lower().replace(" ", "_")
-                    dungeon = [dun for dun, conn in self.entrances.dungeon_connections.items() if conn == dungeon_entrance].pop()
-                    entrance_region = DUNGEON_INITIAL_REGIONS[dungeon]
-                    entrance_full_name = None
-
-                if entrance.group == 4 or entrance.group == 6:
-                    dungeon = ALL_REQUIREMENTS[region_name]["hint_region"]
-                    dungeon_entrance = self.entrances.dungeon_connections[dungeon]
-                    entrance_region = DUNGEON_ENTRANCE_REGIONS[dungeon_entrance]
-                    entrance_full_name = None
-
-                if entrance.group == 3:
-                    if region_name.endswith(" Silent Realm"):
-                        # exiting silent realm
-                        trial = region_name
-                        trial_gate = self.entrances.trial_connections[trial]
-                        entrance_region = TRIAL_GATE_REGIONS[trial_gate]
-                        entrance_full_name = f"{entrance_region} - {trial_gate}"
-                    else:
-                        # entering silent realm
-                        trial_gate = exit_short_name.lower().replace(" ", "_")
-                        trial = [trl for trl, conn in self.entrances.trial_connections.items() if conn == trial_gate].pop()
-                        entrance_region = trial
-                        entrance_full_name = f"{trial} - Trial Gate"
-
-                # Add exits- with logic if overworld or req dungeon, no logic if unreq dungeon
-                if (
-                    (
-                        ALL_REQUIREMENTS[region_name]["hint_region"] in self.dungeons.banned_dungeons
-                        or ALL_REQUIREMENTS[entrance_region]["hint_region"] in self.dungeons.banned_dungeons
-                        or (
-                            (
-                                ALL_REQUIREMENTS[region_name]["hint_region"] == "Sky Keep"
-                                or ALL_REQUIREMENTS[entrance_region]["hint_region"] == "Sky Keep"
-                            )
-                            and not self.dungeons.sky_keep_required
-                        )
-                    )
-                    and self.options.empty_unrequired_dungeons
-                ):
-                    region.add_exits(
-                        {entrance_region: exit_full_name},
-                        {entrance_region: lambda state: True}
-                    )
+                # This section sets up entrances and exits for randomization, if applicable
+                # It will also connect pre-determined exit/entrance connections (i.e. can_shuffle = False)
+                # if er_option == "all_entrances" and entrance_can_shuffle == True and entrance.group in [1, 3]:
+                #     if entrance_short_name is None:
+                #         raise Exception(f"Randomizable entrance in region {entrance_region} does not have a name")
+                #     self.entrances.regions[region_name]["exits"].append(SSExit(region_name, exit_short_name, world=self))
+                #     self.entrances.regions[entrance_region]["entrances"].append(SSEntrance(entrance_region, entrance_short_name, world=self))
+                # elif
+                if (er_option == "required_dungeons_only" or er_option == "dungeons_only") and entrance_short_name and entrance_can_shuffle == True and entrance.group == 3:
+                    # Dungeons will be placed later
+                    if entrance_short_name is None:
+                        raise Exception(f"Randomizable entrance in region {entrance_region} does not have a name")
+                    self.entrances.regions[region_name]["exits"].append(SSExit(region_name, exit_short_name, world=self))
+                    self.entrances.regions[entrance_region]["entrances"].append(SSEntrance(entrance_region, entrance_short_name, world=self))
+                elif er_option != "none" and entrance.group in [4, 6]:
+                    self.entrances.dungeon_exits_to_place[ex_hint_region].append(SSExit(region_name, exit_short_name))
+                elif entrance.group == 7:
+                    # Trial gates will be placed later
+                    pass
                 else:
-                    region.add_exits(
-                        {entrance_region: exit_full_name},
-                        {entrance_region: exit_requirements(self, exit_full_name)}
-                    )
+                    if entrance_short_name is None:
+                        entrance_short_name = f"Plando entrance from {region_name} ({exit_short_name})"
+                    if (
+                        (
+                            ex_hint_region in self.dungeons.banned_dungeons
+                            or ent_hint_region in self.dungeons.banned_dungeons
+                            or (
+                                (
+                                    ex_hint_region == "Sky Keep"
+                                    or ent_hint_region == "Sky Keep"
+                                )
+                                and not self.dungeons.sky_keep_required
+                            )
+                        )
+                        and self.options.empty_unrequired_dungeons
+                    ):
+                        SSExit(region_name, exit_short_name, world=self).link(SSEntrance(entrance_region, entrance_short_name, world=self), plando=True, no_logic=True)
+                    else:
+                        SSExit(region_name, exit_short_name, world=self).link(SSEntrance(entrance_region, entrance_short_name, world=self), plando=True)
 
                 # if entrance_full_name is None:
                 #     # One way entrance
@@ -491,26 +497,12 @@ class SSWorld(World):
             )
         raise KeyError(f"Invalid item name: {name}")
     
- #   def post_fill(self):
-
-
-    def region_to_hint_region(self, region: Region) -> str:
+    def finalize_multiworld(self):
         """
-        Returns the hint region for a region object.
-
-        :param region: The region object.
-        :return: A string of the hint region.
+        Finalize the multiworld after all worlds have been generated. This is where you can do any final adjustments to the world before it is output.
         """
 
-        return ALL_REQUIREMENTS[region.name]["hint_region"]
-
-    def generate_output(self, output_directory: str) -> None:
-        """
-        Create the output .apssr file that is used to randomize the ISO.
-
-        :param output_directory: The output directory for the .apssr file.
-        """
-                # Fill hint data
+         # Fill hint data
         self.hints = Hints(self)
         self.hints.handle_hints()
 
@@ -520,15 +512,40 @@ class SSWorld(World):
         #     locs[i] = sorted([(loc.name, loc.item.name) for loc in sphere], key=lambda loc: loc[0])
         # with open("./worlds/ss/Playthrough.json", "w") as f:
         #     json.dump(locs, f, indent=2)
-        self.hints_ready.set()
-          
+
+    def region_to_hint_region(self, region: Region | str) -> str:
+        """
+        Returns the hint region for a region object or region name string.
+
+        :param region: The region object or region name string.
+        :return: A string of the hint region.
+        """
+
+        if isinstance(region, str):
+            # Ensure the region exists
+            region_str = self.get_region(region).name
+        else:
+            region_str = region.name
+        return ALL_REQUIREMENTS[region_str]["hint_region"]
+
+    def generate_output(self, output_directory: str) -> None:
+        """
+        Create the output .apssr file that is used to randomize the ISO.
+
+        :param output_directory: The output directory for the .apssr file.
+        """
         multiworld = self.multiworld
         player = self.player
+        worlds = self.multiworld.worlds
+        players = [int(item) for item in worlds]
         player_hash = self.random.sample(HASH_NAMES, 3)
         mw_player_names = [
-            self.multiworld.get_player_name(i + 1)
-            for i in range(self.multiworld.players)
+            self.multiworld.get_player_name(i)
+            for i in players
         ]
+
+        # for loc in self.multiworld.get_locations():
+        #     print(f"{loc.name}: {loc.item.name}")
 
         # seed_name on web adds an additional 'W', making the seed 21 characters long.
         if 'W' in multiworld.seed_name:
@@ -557,8 +574,8 @@ class SSWorld(World):
             "Hints": self.hints.placed_hints,
             "Log Hints": self.hints.placed_hints_log,
             "SoT Location": self.hints.handle_impa_sot_hint(),
-            "Dungeon Entrances": {},
-            "Trial Entrances": {},
+            "Entrances": self.entrances.entrance_mapping.output_entrance_mapping(),
+            "Trial Entrances": {gate: trl for trl, gate in self.entrances.trial_connections.items()},
             "Starting Statues": self.entrances.starting_statues,
             "Starting Entrance": self.entrances.starting_entrance,
         }
@@ -612,30 +629,6 @@ class SSWorld(World):
                 else:
                     output_data["Locations"][location.name] = item_info
 
-        # Fix entrances
-        dunconn = {}
-        trlconn = {}
-        for dun, ent in self.entrances.dungeon_connections.items():
-            rando_friendly_entrance_name_list = []
-            for w in ent.split("_"):
-                if w not in ["in", "on"]:
-                    w = w[0].upper() + w[1:]
-                rando_friendly_entrance_name_list.append(w)
-            rando_friendly_entrance_name = " ".join(rando_friendly_entrance_name_list)
-            dunconn[rando_friendly_entrance_name] = dun
-        for dun in sorted(dunconn.keys(), key=lambda i: DUNGEON_ENTRANCE_LIST.index(i)):
-            output_data["Dungeon Entrances"][dun] = dunconn[dun]
-        for trl, gate in self.entrances.trial_connections.items():
-            rando_friendly_gate_name_list = []
-            for w in gate.split("_"):
-                if w not in ["in", "on"]:
-                    w = w[0].upper() + w[1:]
-                rando_friendly_gate_name_list.append(w)
-            rando_friendly_gate_name = " ".join(rando_friendly_gate_name_list)
-            trlconn[rando_friendly_gate_name] = trl
-        for trl in sorted(trlconn.keys(), key=lambda i: TRIAL_GATE_LIST.index(i)):
-            output_data["Trial Entrances"][trl] = trlconn[trl]
-
         # Output the plando details to file.
         apssr = SSContainer(
             path=os.path.join(
@@ -656,8 +649,6 @@ class SSWorld(World):
 
         :return: A dictionary to be sent to the client when it connects to the server.
         """
-        #Make sure slotdata doesnt fill before hints are ready from generate output 
-        self.hints_ready.wait()
 
         slot_data = {
             "required_dungeon_count": self.options.required_dungeon_count.value,
@@ -722,13 +713,17 @@ class SSWorld(World):
             "chest_dowsing": self.options.chest_dowsing.value,
             "dungeon_dowsing": self.options.dungeon_dowsing.value,
             "impa_sot_hint": self.options.impa_sot_hint.value,
-            "cube_sots": 0, #self.options.cube_sots.value,
-            "precise_item": 1, #self.options.precise_item.value,
+            "cube_sots": self.options.cube_sots.value,
+            "precise_item_hints": self.options.precise_item_hints.value,
+            "precise_hints": self.options.precise_hints.value,
+            "explicit_hints": self.options.explicit_hints.value,
             "starting_items": self.options.starting_items.value,
             "death_link": self.options.death_link.value,
+            "breath_link": self.options.breath_link.value,
             "locations_for_hint": getattr(getattr(self, "hints", None), "locations_for_hint", []),
             "excluded_locations": self.nonprogress_locations,
             "required_dungeons": self.dungeons.required_dungeons,
+            "entrances": self.entrances.entrance_mapping.output_entrance_mapping(),
         }
 
         return slot_data

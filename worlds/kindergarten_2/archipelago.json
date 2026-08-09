@@ -1,0 +1,8 @@
+{
+    "game": "Kindergarten 2",
+    "authors": ["Kaito Kid"],
+    "minimum_ap_version": "0.6.7",
+    "world_version": "1.0.0",
+    "compatible_version": 7,
+    "version": 7
+}

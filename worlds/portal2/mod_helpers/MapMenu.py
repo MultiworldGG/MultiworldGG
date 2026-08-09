@@ -94,6 +94,7 @@ class MapMenuElement(MenuElement):
     def __init__(self, parent, chapter_number, map_number, title, map_code, location_id, required_items, pic):
         self.location_id = location_id
         self.required_items = required_items
+        self.map_code = map_code
         self.sub_location_completion = get_sub_locations(
             title, parent.parent.has_wheatley_monitors, parent.parent.has_ratman_dens, parent.parent.has_vitrified_doors
         )
@@ -101,6 +102,7 @@ class MapMenuElement(MenuElement):
         new_title = title.removesuffix(" Completion")
         super().__init__(parent, f"chapter {chapter_number}.{map_number}", new_title, subtitle, f"map {map_code}", pic)
         self.info_text = indicator_characters["map"] + parse_sub_locations(self.sub_location_completion)
+        self.total_locations = len(self.sub_location_completion) + 1
 
     def refresh_title(self, blocked: bool = False):
         self.info_text = indicator_characters["completed"] if self.completed else indicator_characters["map"]
@@ -131,15 +133,27 @@ class MapMenuElement(MenuElement):
             text = text + self.next_map.get_string(self.completed)
         
         return text
+    
+    def get_chapter_info(self):
+        info = {
+            "completed": self.completed,
+            "sub_locations": self.sub_location_completion,
+            "required_items": [item for item in self.required_items if item in self.parent.parent.client.item_list],
+            "location_id": self.location_id,
+            "title": self.title[2:],
+            "command": self.command,
+            "total_locations": self.total_locations,
+            "finished_locations": (1 if self.completed else 0) + len([name for name, complete in self.sub_location_completion.items() if complete])
+        }
+        return info
 
-    def complete_map(self, map_id: int) -> bool:
+    def complete_map(self, map_id: int) -> str | bool:
         if self.location_id == map_id:
-            if self.completed:
-                return True
             self.completed = True
             self.refresh_title()
             if self.next_map:
                 self.next_map.command = self.next_map.command.replace("command_deactivated", "command")
+                return self.next_map.map_code
             return True
         else:
             if self.next_map:
@@ -151,14 +165,21 @@ class MapMenuElement(MenuElement):
         if sub_location in self.sub_location_completion:
             self.sub_location_completion[sub_location] = True
             self.refresh_title()
+            return True
         elif self.next_map:
-            self.next_map.complete_sub_location_check(sub_location)
+            return self.next_map.complete_sub_location_check(sub_location)
+        return False
 
-    def complete_check(self, location_id: int):
-        if not self.complete_map(location_id):
-            location_name = self.parent.parent.client.location_names.lookup_in_game(location_id)
-            if "Complete" not in location_name:
-                self.complete_sub_location_check(location_name)
+    def complete_check(self, location_id: int) -> str | bool:
+        map_complete = self.complete_map(location_id)
+        if map_complete:
+            return map_complete
+        
+        location_name = self.parent.parent.client.location_names.lookup_in_game(location_id)
+        if "Complete" not in location_name:
+            return self.complete_sub_location_check(location_name)
+        return False
+
 
 blank_map_element = lambda parent, chapter_number: MapMenuElement(parent, chapter_number, 0, "No Maps In This Chapter", "", -1, [], "")
 
@@ -237,12 +258,26 @@ class ChapterMenuElement(MenuElement):
         if self.first_map:
             self.first_map.complete_sub_location_check(sub_location)
         
-    def complete_check(self, location_id: int):
+    def complete_check(self, location_id: int) -> str | bool:
         if self.first_map:
-            self.first_map.complete_check(location_id)
+            return self.first_map.complete_check(location_id)
+        return False
+            
+    def get_chapter_info(self):
+        maps = []
+        current_map = self.first_map
+        while current_map:
+            maps.append(current_map.get_chapter_info())
+            current_map = current_map.next_map
+            
+        info = {
+            "chapter_name": self.title,
+            "maps": maps
+        }
+        return info
 
 
-class Menu:
+class GameMapMenu:
     chapters: list[ChapterMenuElement] = []
 
     def __init__(
@@ -267,6 +302,8 @@ class Menu:
         self.chapter_dict = chapter_dict
 
     def generate_menu(self):
+        if self.chapters:
+            return
         for chapter_number, map_names in self.chapter_dict.items():
             self.chapters.append(ChapterMenuElement(self, chapter_number, map_names))
 
@@ -281,6 +318,17 @@ class Menu:
         for chapter in self.chapters:
             chapter.complete_sub_location_check(sub_location)
 
-    def complete_check(self, location_id: int):
+    def complete_check(self, location_id: int) -> str | bool:
         for chapter in self.chapters:
-            chapter.complete_check(location_id)
+            found_check = chapter.complete_check(location_id)
+            if found_check:
+                return found_check
+        return False
+            
+    def get_menu_info(self) -> dict[str, list]:
+        menu_info = {}
+        for chapter in self.chapters:
+            chapter_info = chapter.get_chapter_info()
+            menu_info[chapter_info["chapter_name"]] = chapter_info["maps"]
+        return menu_info
+    

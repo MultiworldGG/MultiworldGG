@@ -3,10 +3,10 @@ reachable regions count: 133
 reachable node count: 316
 unreachable locations from all_locations count: 0
 vanilla connections: 261
-ledge grab connections: 53
+ledge grab connections: 54
 jump pads connections: 6
 swim connections: 22
-one wall jump connections: 14
+one wall jump connections: 12
 infinite wall jump connections: 22
 pipes connections: 5
 lifts connections: 11

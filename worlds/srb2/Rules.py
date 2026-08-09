@@ -54,47 +54,47 @@ def fix_reg(entrance_map: Dict[SRB2Zones, str], entrance: SRB2Zones, invalid_reg
 def set_rules(world, options: SRB2Options, player: int, area_connections: dict, move_rando_bitvec: int):
 
     #set up info array
-    character_info = {'Sonic': [100,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"midair_speed","roll","badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
-                      'Tails': [1500,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"roll", 'free_flyer','soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
-                      'Knuckles': [80,'weak_walls','spin_walls','strong_walls','climbs_walls', 'fits_under_gaps','instant_speed',"roll",'low_grav',"midair_speed",'soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
-                      'Amy': [115,'weak_walls','spin_walls', 'strong_walls', 'strong_floors', 'breaks_spikes', 'pounds_springs','soft_jump',"badnik_bounce",'can_use_shields','attacks_though_thin_walls'],
-                      'Fang': [200,'strong_floors','lava_immune','soft_jump','downward_projectile','can_use_shields','attacks_though_thin_walls'],
-                      'Metal Sonic': [100,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"can_hover",'breaks_spikes',"roll",'soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
+    character_info = {'Sonic': [100,100,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"midair_speed","roll","badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
+                      'Tails': [1500,1500,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"roll", 'free_flyer','soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
+                      'Knuckles': [80,80,'weak_walls','spin_walls','strong_walls','climbs_walls', 'fits_under_gaps','instant_speed',"roll",'low_grav',"midair_speed",'soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
+                      'Amy': [115,115,'weak_walls','spin_walls', 'strong_walls', 'strong_floors', 'breaks_spikes', 'pounds_springs','soft_jump',"badnik_bounce",'can_use_shields','attacks_though_thin_walls'],
+                      'Fang': [200,200,'strong_floors','lava_immune','soft_jump','downward_projectile','can_use_shields','attacks_though_thin_walls'],
+                      'Metal Sonic': [100,100,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"can_hover",'breaks_spikes',"roll",'soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water"],
 
-                      'Mario': [250,'weak_walls', 'spin_walls',"strong_walls","strong_floors",'roll',"fits_under_gaps","instant_speed","midair_speed","wall_jump","breaks_spikes","pounds_springs","can_use_shields","skims_water","can_stomp","soft_jump","attacks_though_thin_walls","swims"],#
-                      'Luigi': [300,'weak_walls', 'spin_walls',"strong_walls","strong_floors",'roll',"fits_under_gaps","instant_speed","midair_speed","wall_jump","breaks_spikes","pounds_springs","can_use_shields","skims_water","can_stomp","soft_jump","attacks_though_thin_walls","swims"],#
+                      'Mario': [350,250,'weak_walls', 'spin_walls',"strong_walls","strong_floors",'roll',"fits_under_gaps","instant_speed","midair_speed","wall_jump","breaks_spikes","pounds_springs","can_use_shields","skims_water","can_stomp","soft_jump","attacks_though_thin_walls","swims"],#
+                      'Luigi': [400,300,'weak_walls', 'spin_walls',"strong_walls","strong_floors",'roll',"fits_under_gaps","instant_speed","midair_speed","wall_jump","breaks_spikes","pounds_springs","can_use_shields","skims_water","can_stomp","soft_jump","attacks_though_thin_walls","swims"],#
 
-                      'Yoshi': [200,'weak_walls','spin_walls','strong_walls',"strong_floors",'stomp',"free_flyer","downward_projectile","badnik_bounce","breaks_spikes",'pounds_springs'],
-                      'Ray': [250,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"roll", 'free_flyer','soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water","wall_jump","climbs_walls"],#
-                      'Silver': [600,'weak_walls','spin_walls','strong_walls','strong_floors','breaks_spikes',"free_flyer",'soft_jump',"midair_speed","can_hover","downward_projectile","attacks_though_thin_walls"],#
-                      'Shadow': [500,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"midair_speed","roll","badnik_bounce",'can_use_shields',"can_spindash","skims_water"],#
-                      'Modern Sonic': [125,'weak_walls','spin_walls','strong_walls','stronger_walls','strong_floors','fits_under_gaps','instant_speed','midair_speed','free_flyer','wall_jump','breaks_spikes','can_stomp','skims_water'],
-                      'Werehog': [150, 'weak_walls', "free_flyer", "badnik_bounce", "breaks_spikes", 'soft_jump','can_use_shields'],
+                      'Yoshi': [200,200,'weak_walls','spin_walls','strong_walls',"strong_floors",'stomp',"free_flyer","downward_projectile","badnik_bounce","breaks_spikes",'pounds_springs'],
+                      'Ray': [300,250,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"roll", 'free_flyer','soft_jump',"badnik_bounce",'can_use_shields',"can_spindash","skims_water","wall_jump","climbs_walls"],#
+                      'Silver': [600,600,'weak_walls','spin_walls','strong_walls','strong_floors','breaks_spikes',"free_flyer",'soft_jump',"midair_speed","can_hover","downward_projectile","attacks_though_thin_walls"],#
+                      'Shadow': [500,500,'weak_walls','spin_walls', 'fits_under_gaps','instant_speed',"midair_speed","roll","badnik_bounce",'can_use_shields',"can_spindash","skims_water"],#
+                      'Modern Sonic': [250,125,'weak_walls','spin_walls','strong_walls','stronger_walls','strong_floors','fits_under_gaps','instant_speed','midair_speed','free_flyer','wall_jump','breaks_spikes','can_stomp','skims_water'],
+                      'Werehog': [150,150, 'weak_walls', "free_flyer", "badnik_bounce", "breaks_spikes", 'soft_jump','can_use_shields'],
 
-                      'Metal Knuckles': [80,'weak_walls','spin_walls','strong_walls','fits_under_gaps','instant_speed','midair_speed','climbs_walls','breaks_spikes','can_spindash','can_use_shields','badnik_bounce'],
-                      'Tails Doll': [300,'weak_walls','spin_walls','strong_walls','strong_floors','breaks_spikes','pounds_springs','can_use_shields','soft_jump','skims_water','lava_immune'],
+                      'Metal Knuckles': [80,80,'weak_walls','spin_walls','strong_walls','fits_under_gaps','instant_speed','midair_speed','climbs_walls','breaks_spikes','can_spindash','can_use_shields','badnik_bounce'],
+                      'Tails Doll': [300,300,'weak_walls','spin_walls','strong_walls','strong_floors','breaks_spikes','pounds_springs','can_use_shields','soft_jump','skims_water','lava_immune'],
 
-                      'Espio': [125,'weak_walls','spin_walls',"climbs_walls","wall_jump","roll","instant_speed","midair_speed","can_spindash","skims_water","badnik_bounce",'can_use_shields'],#
-                      'Mighty': [100,'weak_walls','spin_walls','strong_floors','fits_under_gaps',"wall_jump","roll","instant_speed","can_spindash","skims_water","badnik_bounce",'can_use_shields',"breaks_spikes","stomp"],#
-                      'Charmy Bee': [1500,'weak_walls','spin_walls','fits_under_gaps',"instant_speed","skims_water","stomp","free_flyer","can_spindash","soft_jump","fits_through_bars"],#
-                      'Vector': [100,'weak_walls','spin_walls','strong_walls',"climbs_walls","roll","instant_speed","midair_speed","breaks_spikes","can_spindash","skims_water","badnik_bounce",'can_use_shields'],#fits under gaps but it sucks
-                      'Heavy': [450,'weak_walls','spin_walls','strong_walls','strong_floors','fits_under_gaps',"breaks_spikes","stomp","attacks_though_thin_walls","lava_immune",'pounds_springs'],#
-                      'Bomb': [250,'weak_walls','spin_walls','fits_under_gaps',"roll","instant_speed","breaks_spikes","skims_water","can_spindash","attacks_though_thin_walls",'soft_jump'],#
+                      'Espio': [1400,125,'weak_walls','spin_walls',"wall_jump","roll","instant_speed","midair_speed","can_spindash","skims_water","badnik_bounce",'can_use_shields'],#
+                      'Mighty': [100,100,'weak_walls','spin_walls','strong_floors','fits_under_gaps',"wall_jump","roll","instant_speed","can_spindash","skims_water","badnik_bounce",'can_use_shields',"breaks_spikes","stomp"],#
+                      'Charmy Bee': [1500,1500,'weak_walls','spin_walls','fits_under_gaps',"instant_speed","skims_water","stomp","free_flyer","can_spindash","soft_jump","fits_through_bars"],#
+                      'Vector': [100,100,'weak_walls','spin_walls','strong_walls',"climbs_walls","roll","instant_speed","midair_speed","breaks_spikes","can_spindash","skims_water","badnik_bounce",'can_use_shields'],#fits under gaps but it sucks
+                      'Heavy': [450,450,'weak_walls','spin_walls','strong_walls','strong_floors','fits_under_gaps',"breaks_spikes","stomp","attacks_though_thin_walls","lava_immune",'pounds_springs'],#
+                      'Bomb': [250,150,'weak_walls','spin_walls','fits_under_gaps',"roll","instant_speed","breaks_spikes","skims_water","can_spindash","attacks_though_thin_walls",'soft_jump'],#
 
-                      'Bean': [400,'weak_walls','spin_walls','strong_walls','strong_floors','strong_floors','free_flyer','breaks_spikes','soft_jump','downward_projectile','attacks_though_thin_walls'],  #700 with wall
-                      'Dr. Eggman': [1200,'weak_walls', 'spin_walls',"strong_walls",'strong_floors','roll','fits_under_gaps','free_flyer','breaks_spikes','can_use_shields','skims_water','downward_projectile',"attacks_though_thin_walls",'water_run'],  #no air strong walls
-                      'Adventure Sonic': [250,'weak_walls','spin_walls','strong_walls','stronger_walls','roll','fits_under_gaps','instant_speed',"breaks_spikes","can_spindash",'can_stomp',"badnik_bounce","skims_water"],  #
-                      'Tangle': [250,'weak_walls', 'spin_walls',"strong_walls",'strong_floors','roll','fits_under_gaps',"climbs_walls","breaks_spikes","soft_jump","downward_projectile"],  #climbs walls
+                      'Bean': [800,400,'weak_walls','spin_walls','strong_walls','strong_floors','strong_floors','free_flyer','breaks_spikes','soft_jump','downward_projectile','attacks_though_thin_walls'],  #700 with wall
+                      'Dr. Eggman': [1200,1200,'weak_walls', 'spin_walls',"strong_walls",'strong_floors','roll','fits_under_gaps','free_flyer','breaks_spikes','can_use_shields','skims_water','downward_projectile',"attacks_though_thin_walls",'water_run'],  #no air strong walls
+                      'Adventure Sonic': [250,250,'weak_walls','spin_walls','strong_walls','stronger_walls','roll','fits_under_gaps','instant_speed',"breaks_spikes","can_spindash",'can_stomp',"badnik_bounce","skims_water"],  #
+                      'Tangle': [250,250,'weak_walls', 'spin_walls',"strong_walls",'strong_floors','roll','fits_under_gaps',"climbs_walls","breaks_spikes","soft_jump","downward_projectile"],  #climbs walls
 
-                      'Blaze': [250,'weak_walls', 'spin_walls',"roll","instant_speed","free_flyer","breaks_spikes","can_spindash",'can_use_shields'],  #
-                      'Marine': [800,'weak_walls', 'spin_walls',"strong_walls",'strong_floors',"fits_under_gaps","free_flyer","breaks_spikes","pounds_springs","soft_jump","attacks_though_thin_walls","badnik_bounce","roll_with_springs"],  #
+                      'Blaze': [250,250,'weak_walls', 'spin_walls',"roll","instant_speed","free_flyer","breaks_spikes","can_spindash",'can_use_shields'],  #
+                      'Marine': [800,800,'weak_walls', 'spin_walls',"strong_walls",'strong_floors',"fits_under_gaps","free_flyer","breaks_spikes","pounds_springs","soft_jump","attacks_though_thin_walls","badnik_bounce","roll_with_springs"],  #
 
-                      'Inazuma': [115,'weak_walls', 'spin_walls',"strong_walls",'strong_floors',"breaks_spikes","soft_jump","attacks_though_thin_walls","skims_water","water_run"],  #
-                      'Aether': [900,'weak_walls', 'spin_walls',"strong_walls",'strong_floors',"free_flyer","breaks_spikes","soft_jump","attacks_though_thin_walls"],  #
+                      'Inazuma': [115,115,'weak_walls', 'spin_walls',"strong_walls",'strong_floors',"breaks_spikes","soft_jump","attacks_though_thin_walls","skims_water","water_run"],  #
+                      'Aether': [900,900,'weak_walls', 'spin_walls',"strong_walls",'strong_floors',"free_flyer","breaks_spikes","soft_jump","attacks_though_thin_walls"],  #
 
 
 
-                      'E-102 Gamma': [],  #breaks
+
 
                       'Kris': [115,'weak_walls', 'spin_walls','roll','fits_under_gaps',"free_flyer","can_use_shields","soft_jump","skims_water","can_spindash"],#
                       'Susie': [250,'weak_walls', 'spin_walls', 'stronger_walls','strong_floors',"breaks_spikes","pounds_springs","soft_jump","can_stomp","attacks_though_thin_walls"],#
@@ -114,11 +114,13 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                       'Kou': [],#
                       'Echoes & Abyss': [],#
 
-
-
+                      'Trip': [150,150,'weak_walls', 'spin_walls','strong_walls','strong_floors','roll',"instant_speed","free_flyer","climbs_walls","can_spindash","can_use_shields","can_stomp","skims_water","badnik_bounce"],
                       'Whisper': [],
 
                       'X Sonic': [115, 'weak_walls', 'spin_walls', 'strong_walls', 'stronger_walls','strong_floors','roll','fits_under_gaps', 'instant_speed','breaks_spikes', 'insane_speed', 'skims_water','badnik_bounce','can_use_shields',"can_spindash"],
+
+                      'E-102 Gamma': [],  # breaks
+                      'Rouge': [],  # breaks
                       }
 
     #skip extra code:
@@ -129,7 +131,9 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
 
 
 #tag descriptions:
-    #jump_height
+    #jump_height with wall [0]
+    #jump_height straight up [1]
+
     #weak_walls (fhz ice)
     #spin_walls (dsz2 heart emblem wall)
     #strong_walls (most knuckles paths)
@@ -169,7 +173,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
 
     #not_hydrophobic (water doesnt kill/ immobilize you) (x sonic)
 
-    def char_needs_tags(state: CollectionState,tag_list,jump_height):
+    def char_needs_tags(state: CollectionState,tag_list,jump_height,straight_up=False):
         for i in character_info:
             if state.has(i,player):
                 if i == "Metal Sonic":
@@ -180,9 +184,12 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                     if state.count("Chaos Emerald", player) > 6 and "can_hover" not in character_info[i]:
                         character_info[i].append("can_hover")
                         character_info[i][0] = 200
-
-                if character_info[i][0] < jump_height:
-                    continue
+                if straight_up == False:
+                    if character_info[i][0] < jump_height:
+                        continue
+                else:
+                    if character_info[i][1] < jump_height:
+                        continue
                 if set(tag_list).issubset(character_info[i]):
                     return True
         return False
@@ -217,7 +224,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
     connect_regions(world, player, "Menu", "Egg Rock Zone 1", lambda state: state.has("Egg Rock Zone", player) or state.has("Egg Rock Zone (Act 1)", player))
     connect_regions(world, player, "Menu", "Egg Rock Zone 2", lambda state: state.has("Egg Rock Zone", player) or state.has("Egg Rock Zone (Act 2)", player))
 
-    if options.bcz_emblem_percent==0 and (options.completion_type == 1 or options.completion_type == 0):
+    if options.bcz_emblem_percent==0 and (options.completion_type == 1 or options.completion_type == 0 or options.completion_type == 3 or options.completion_type == 4):
         connect_regions(world, player, "Menu", "Black Core Zone 1", lambda state: state.has("Black Core Zone", player) or state.has("Black Core Zone (Act 1)", player))
         connect_regions(world, player, "Menu", "Black Core Zone 2", lambda state: state.has("Black Core Zone", player) or state.has("Black Core Zone (Act 2)", player))
         connect_regions(world, player, "Menu", "Black Core Zone 3", lambda state: state.has("Black Core Zone", player) or state.has("Black Core Zone (Act 3)", player))
@@ -295,7 +302,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
 
 
     # TODO add emerald token logic and other zones
-    if options.difficulty <=1:
+    if options.difficulty <= 1:
         # Greenflower
         if options.difficulty == 0:
             add_rule(world.get_location("Greenflower (Act 1) Diamond Emblem", player),
@@ -783,7 +790,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
         add_rule(world.get_location("Deep Sea (Act 2) Spade Emblem", player),
                  lambda state: char_needs_tags(state, ["climbs_walls"], -1) or char_needs_tags(state, [],400))
         add_rule(world.get_location("Deep Sea (Act 2) Heart Emblem", player),
-                 lambda state: (char_needs_tags(state, ['spin_walls'], -1) and state.has("Yellow Springs",player)) or char_needs_tags(state, ['spin_walls'], 400))
+                 lambda state: (char_needs_tags(state, ['spin_walls'], -1) and state.has("Yellow Springs",player)) or char_needs_tags(state, ['spin_walls'], 400) or char_needs_tags(state, ['climbs_walls','spin_walls'], -1))
         add_rule(world.get_location("Deep Sea (Act 2) Diamond Emblem", player),
                  lambda state: char_needs_tags(state, ["strong_walls","climbs_walls"], -1) or
                                (char_needs_tags(state, ['strong_walls','strong_floors',"pounds_springs"], 115) and state.has("Yellow Springs",player) and state.has("Gargoyle Statues",player)) or
@@ -4319,7 +4326,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
 
 
             add_rule(world.get_location("Tidal Palace Monitor - x:-2624 y:-3072", player),
-                     lambda state: char_needs_tags(state, [], 600))
+                     lambda state: char_needs_tags(state, [], 600,True))
             add_rule(world.get_location("Tidal Palace Monitor - x:1504 y:-96", player),
                      lambda state: char_needs_tags(state, [], 250) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], -1)) or char_needs_tags(state, ["climbs_walls"], -1))
             add_rule(world.get_location("Tidal Palace Monitor - x:-224 y:-672", player),
@@ -4419,7 +4426,7 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                      (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 115)))
 
             add_rule(world.get_location("Frost Columns Monitor - x:2112 y:-1088", player),
-                     lambda state: char_needs_tags(state, [], 200) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 100)))
+                     lambda state: char_needs_tags(state, [], 200,True) or (state.has("Whirlwind Shield", player) and char_needs_tags(state, ["can_use_shields"], 100)))
 
 
             add_rule(world.get_location("Frost Columns Monitor - x:832 y:-1376", player),
@@ -4578,10 +4585,18 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
                 rf.assign_rule("Magma Caves Moon Emblem", "PARALOOP")
                 rf.assign_rule("Egg Satellite Sun Emblem", "PARALOOP")
 
+            add_rule(world.get_location("Toxic Plateau Moon Emblem", player),
+                     lambda state: state.has("Buoyant Slime", player))
+
             rf.assign_rule("Black Hole Sun Emblem", "PARALOOP")
             if options.ntime_emblems:
                 rf.assign_rule("Magma Caves Time Emblem", "PARALOOP")
+                add_rule(world.get_location("Toxic Plateau Time Emblem", player),
+                         lambda state: state.has("Buoyant Slime", player))
+
             if options.rank_emblems:
+                add_rule(world.get_location("Toxic Plateau A Rank Emblem", player),
+                         lambda state: state.has("Buoyant Slime", player))
                 rf.assign_rule("Egg Satellite A Rank Emblem", "EXTIME")
                 rf.assign_rule("Black Hole A Rank Emblem", "EXTIME")
 
@@ -4592,8 +4607,12 @@ def set_rules(world, options: SRB2Options, player: int, area_connections: dict, 
         world.completion_condition[player] = lambda state: state.can_reach("Credits", 'Region', player)
     elif options.completion_type == 2:
         world.completion_condition[player] = lambda state: state.can_reach_location("Haunted Heights Clear", player) and state.can_reach_location("Aerial Garden Clear", player) and state.can_reach_location("Azure Temple Clear", player)
-    else:
+    elif options.completion_type == 3:
         world.completion_condition[player] = lambda state: state.can_reach_location("Black Core (Act 3) Clear",player) and state.can_reach_location("Black Core (Act 2) Clear", player) and state.can_reach_location("Black Core (Act 1) Clear", player)and state.can_reach_location("Arid Canyon (Act 3) Clear", player) and state.can_reach_location("Castle Eggman (Act 3) Clear", player)and state.can_reach_location("Deep Sea (Act 3) Clear", player)and state.can_reach_location("Techno Hill (Act 3) Clear", player)and state.can_reach_location("Greenflower (Act 3) Clear", player)
+    else:
+        world.completion_condition[player] = lambda state: state.count("Chaos Emerald", player) > 6 and state.has("Inazuma", player)#lazy but i cba to ensure you can get to the end of acts w/ 50 rings as inazuma
+
+
 
 class RuleFactory:
 
@@ -4738,4 +4757,3 @@ class RuleFactory:
             raise Exception(f"Invalid token: '{item}'")
 
         return item
-

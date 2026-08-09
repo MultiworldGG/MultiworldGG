@@ -605,17 +605,23 @@ ALWAYS_MET_BOSS_LOCATIONS = {"Met " + boss for boss in ALWAYS_MET_BOSSES}
 # the mod doesn't force open -- and his Calling Card keepsake is likewise item-only (see
 # KEEPSAKE_NO_LOCATION), so he has no obtainable check at all. Megaera doesn't need an entry
 # here since she's excluded via _NPC_BOSS_NAMES instead (she has her own "Met Megaera" tuple
-# in NPC_BOSS_MEET above).
-NPC_NO_MEET = {"Zagreus"}
+# in NPC_BOSS_MEET above). Achilles IS meetable in normal play (native Elysium progression)
+# but is excluded here anyway (July 31, user ruling): "Met Achilles" was removed as a
+# location entirely, same as his keepsake (see KEEPSAKE_NPC.values() feeding NPC_CAST below
+# -- without this exclusion he'd fall right back into NPC_CAST since he's no longer in
+# NPC_EXTRA_CAST either).
+NPC_NO_MEET = {"Zagreus", "Achilles"}
 
 # The Crossroads cast: every keepsake-giving character who isn't a route boss (or otherwise
 # unmeetable), plus a few meet-able NPCs who don't give keepsakes. Hypnos (Test Run 5 #5) wasn't
 # in the keepsake cast, so "Met Hypnos" never existed; he's added here (met once he's awake).
-# Thanatos/Orpheus/Achilles (Nightmare cast, re-added July 16 -- see Routes.NPC_ROUTE_LOCK)
-# are deliberately appended at the END, after Hypnos, instead of taking their natural
+# Thanatos/Orpheus (Nightmare cast, re-added July 16 -- see Routes.NPC_ROUTE_LOCK) are
+# deliberately appended at the END, after Hypnos, instead of taking their natural
 # KEEPSAKE_NPC positions: location_npc_meet numbers ids by NPC_CAST order, and slotting them
-# mid-list would shift "Met Hypnos"'s established id.
-NPC_EXTRA_CAST = ["Hypnos", "Thanatos", "Orpheus", "Achilles"]
+# mid-list would shift "Met Hypnos"'s established id. Achilles was in this list too (July 16)
+# but "Met Achilles"/"Achilles Keepsake" were removed as locations July 31 (user ruling);
+# his keepsake item stays in the pool item-only (Items.KEEPSAKE_NO_LOCATION).
+NPC_EXTRA_CAST = ["Hypnos", "Thanatos", "Orpheus"]
 NPC_CAST = [npc for npc in dict.fromkeys(KEEPSAKE_NPC.values())
             if npc not in _NPC_BOSS_NAMES and npc not in NPC_NO_MEET
             and npc not in NPC_EXTRA_CAST]
@@ -658,7 +664,7 @@ def _route_locked_out(npc: str, routes: list, options=None) -> bool:
     off for them (see ItemManager.apply_combat_helper_random, mod side). If that native
     route isn't in the seed at all, there's nowhere they can ever spawn, so their location
     must be dropped instead of left permanently unreachable -- same reasoning NPC_ROUTE_LOCK
-    already uses for Eris/Orpheus/Achilles, just conditioned on this option's mode.
+    already uses for Eris/Orpheus, just conditioned on this option's mode.
     SUB-EXCEPTION (Thanatos/IncludeZagreusJourney, July 22): Routes.combat_helper_native_fallback
     carves Thanatos back out of that native-route lock when IncludeZagreusJourney is still on --
     ItemManager.apply_combat_helper_random forces his foreign-zone (Underworld/Surface) flags on
@@ -668,7 +674,7 @@ def _route_locked_out(npc: str, routes: list, options=None) -> bool:
     EXCEPTION (IncludeZagreusJourney): Routes.ZJ_RANDOMIZED_ONLY (Sisyphus/Eurydice/Patroclus/
     Thanatos) are randomized helpers that nonetheless only exist because Zagreus' Journey is
     installed -- when that option is off they're locked out unconditionally, even though
-    they'd otherwise be exempt as randomized helpers. Orpheus/Achilles/Megaera need no such
+    they'd otherwise be exempt as randomized helpers. Orpheus/Megaera need no such
     exception: they're NPC_ROUTE_LOCK'd (or zone-keyed) to Nightmare already, so they drop for
     free once IncludeZagreusJourney forces Nightmare out of `routes` (__init__.py).
     SUB-EXCEPTION (Sisyphus/Eurydice/Patroclus, HelperRoomSanity native-only, July 22): under

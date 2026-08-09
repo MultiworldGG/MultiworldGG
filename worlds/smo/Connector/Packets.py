@@ -25,6 +25,7 @@ class PacketType(Enum):
     ShopReplace : short = 19
     ShineReplace : short = 20
     ShineColor : short = 21
+    ShineHint : short = 22
     #UDPInit : short = 26
     #HolePunch : short = 27
 
@@ -510,6 +511,41 @@ class ShineColor:
             self.info.append([int.from_bytes(data[offset:offset+2],"little", signed=True), data[offset+3]])
             offset += 3
 
+class ShineHint:
+    hints : dict[str | list[int]] = []
+
+    SIZE : short = 200
+
+    def __init__(self, shine : int):
+        self.shine = shine
+
+    def serialize(self) -> bytearray:
+        data : bytearray = bytearray()
+
+        for i in range(100):
+            if i < len(self.hints):
+                data += self.info[str(i)][0].to_bytes(1,"little", signed=True)
+                data += self.info[str(i)][1].to_bytes(1,"little", signed=False)
+
+            else:
+                filler = 127
+                data += filler.to_bytes(1,"little", signed=True)
+                filler = 255
+                data += filler.to_bytes(1,"little", signed=False)
+
+        if len(data) != self.SIZE:
+            raise f"ShineReplace failed to serialize. bytearray is incorrect size {self.SIZE}."
+        return data
+
+    def deserialize(self, data : bytes | bytearray) -> None:
+        if data is bytes:
+            data = bytearray(data)
+        offset : int = 0
+        for i in range(100):
+            self.hints[str(i)] = [data[offset], data[offset+1]]
+            offset += 2
+
+
 class DeathLinkPacket:
     SIZE : short = 0x0
 
@@ -645,6 +681,8 @@ class Packet:
                     self.packet = ShineReplace(info=packet_data[0])
                 case PacketType.ShineColor:
                     self.packet = ShineColor(info=packet_data[0])
+                case PacketType.ShineHint:
+                    self.packet = ShineHint(shine=packet_data[0])
 
     def serialize(self) -> bytearray:
         self.header.packet_size = self.packet.SIZE

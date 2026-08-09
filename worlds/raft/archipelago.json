@@ -1,0 +1,7 @@
+{
+    "game": "Raft",
+    "authors": ["SunnyBat"],
+    "minimum_ap_version": "0.3.4",
+    "compatible_version": 7,
+    "version": 7
+}

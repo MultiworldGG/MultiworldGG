@@ -238,7 +238,7 @@ def handle_big_bomb_logic(world: ALttPRWorld) -> None:
             # Differs based on whether you got here using connector to Mire + Mirror, or a direct connector
             world.multiworld.register_indirect_condition(world.get_region("Mire Area"), world.get_entrance(bomb_shop_entrance))
             pyramid_crack_rule = lambda state: (
-                state.has("Ocarina (Activated)", player) or (state.has("Magic Mirror", player) and state.can_reach_region("Mire Area"))
+                state.has("Ocarina (Activated)", player) or (state.has("Magic Mirror", player) and state.can_reach_region("Mire Area", player))
             ) and (state.has("Beat Agahnim 1", player) or (state.has("Progressive Glove", player) and state.has("Hammer", player) and state.has("Moon Pearl", player)))
         elif bomb_shop_entrance == "Kings Grave":
             # Whether you reach it with Mitts or DW + Mirror, you have a way to be in the general Light World.
@@ -247,7 +247,6 @@ def handle_big_bomb_logic(world: ALttPRWorld) -> None:
                (state.has("Progressive Glove", player) and state.has("Hammer", player) and state.has("Moon Pearl", player)) or \
                (state.has("Magic Mirror", player) and state.has("Progressive Glove", player, 2))
         elif bomb_shop_entrance == "Dark Potion Shop":
-            print("Setting the pyramid crack rule for Dark Potion Shop")
             pyramid_crack_rule = lambda state: (state.has("Moon Pearl", player) and (state.has("Progressive Glove", player) or state.has("Hammer", player))) or \
                (state.has("Magic Mirror", player) and state.has("Beat Agahnim 1", player))
         elif bomb_shop_entrance in ["Hyrule Castle Entrance (West)", "Hyrule Castle Entrance (East)", "Agahnims Tower"]:

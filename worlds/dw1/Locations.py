@@ -11,6 +11,7 @@ class DigimonWorldLocationCategory(IntEnum):
     SKIP = 3,
     PROSPERITY = 4,
     CARD = 5,
+    CHEST = 6,
 
 
 class DigimonWorldLocationData(NamedTuple):
@@ -45,7 +46,7 @@ class DigimonWorldLocation(Location):
 
         table_order = [
             "Consumable", "Misc", "Cards", "Start Game", "Prosperity",
-            "Digimon"
+            "Digimon", "Chests"
         ]
 
         output = {}
@@ -293,6 +294,73 @@ location_tables = {
     "Consumable": [],
     "Misc": [        
     ],
+    "Chests": [
+        DigimonWorldLocationData(69001000, "Chest 1", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001001, "Chest 2", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001002, "Chest 3", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001003, "Chest 4", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001004, "Chest 5", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001005, "Chest 6", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001006, "Chest 7", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001007, "Chest 8", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001008, "Chest 9", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001009, "Chest 10", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001010, "Chest 11", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001011, "Chest 12", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001012, "Chest 13", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001013, "Chest 14", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001014, "Chest 15", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001015, "Chest 16", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001016, "Chest 17", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001017, "Chest 18", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001018, "Chest 19", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001019, "Chest 20", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001020, "Chest 21", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001021, "Chest 22", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001022, "Chest 23", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001023, "Chest 24", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001024, "Chest 25", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001025, "Chest 26", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001026, "Chest 27", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001027, "Chest 28", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001028, "Chest 29", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001029, "Chest 30", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001030, "Chest 31", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001031, "Chest 32", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001032, "Chest 33", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001033, "Chest 34", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001034, "Chest 35", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001035, "Chest 36", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001036, "Chest 37", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001037, "Chest 38", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001038, "Chest 39", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001039, "Chest 40", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001040, "Chest 41", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001041, "Chest 42", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001042, "Chest 43", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001043, "Chest 44", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001044, "Chest 45", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001045, "Chest 46", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001046, "Chest 47", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001047, "Chest 48", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001048, "Chest 49", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001049, "Chest 50", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001050, "Chest 51", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001051, "Chest 52", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001052, "Chest 53", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001053, "Chest 54", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001054, "Chest: Dragon Eye Lake", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001055, "Chest 56", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001056, "Chest 57", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001057, "Chest 58", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001058, "Chest 59", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001059, "Chest 60", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001060, "Chest 61", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001061, "Chest 62", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001062, "Chest 63", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001063, "Chest 64", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+        DigimonWorldLocationData(69001064, "Chest 65", "1000 Bits", DigimonWorldLocationCategory.CHEST),
+    ]
 }
 location_dictionary: Dict[str, DigimonWorldLocationData] = {}
 for location_table in location_tables.values():

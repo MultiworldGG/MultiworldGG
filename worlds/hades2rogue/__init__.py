@@ -95,7 +95,7 @@ class Hades2World(World):
     # mod's manifest.json version_number -- and bump them on any breaking datapackage or
     # protocol change, or the mismatch warning can never fire (it sat at "0.1" for seven
     # releases, spanning a breaking keepsake-id relocation).
-    mod_version = "0.9.0"
+    mod_version = "0.9.3"
 
     item_name_to_id = {name: data.code for name, data in item_table.items() if data.code is not None}
     location_name_to_id = give_all_locations_table()

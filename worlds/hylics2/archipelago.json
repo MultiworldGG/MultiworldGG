@@ -1,0 +1,7 @@
+{
+    "game": "Hylics 2",
+    "authors": ["TRPG"],
+    "minimum_ap_version": "0.6.7",
+    "compatible_version": 7,
+    "version": 7
+}

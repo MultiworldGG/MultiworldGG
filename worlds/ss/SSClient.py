@@ -8,6 +8,7 @@ import socket
 import struct
 import threading
 from typing import TYPE_CHECKING, Any, List, Optional
+import typing
 
 import dolphin_memory_engine
 
@@ -21,7 +22,7 @@ from CommonClient import (
     logger,
     server_loop,
 )
-from NetUtils import ClientStatus, NetworkItem
+from NetUtils import ClientStatus, NetworkItem, JSONtoTextParser, HintStatus
 
 from .Items import ITEM_TABLE, LOOKUP_ID_TO_NAME
 from .Locations import LOCATION_TABLE, SSLocation, SSLocFlag, SSLocType, SSLocCheckedFlag
@@ -44,9 +45,10 @@ class AsyncUDPProtocol(asyncio.DatagramProtocol):
         self.client.established = False
 
 class CommandRequest:
-    def __init__(self, command: bytes, timeout: float = 10.0):
+    def __init__(self, command: bytes, timeout: float = 10.0, retries: int = 2):
         self.command = command
         self.timeout = timeout
+        self.retries = retries
         self.future = asyncio.Future()
         self.timestamp = time.time()
 
@@ -57,9 +59,13 @@ class AsyncWiiMemoryClient:
         self.transport = None
         self.protocol = None
         self.established = False
-        
+        # Number of additional attempts after the first try (total attempts = retry_count + 1)
+        self.retry_count: int = 2
+        # Base backoff in seconds; exponential backoff will be applied between retries
+        self.retry_backoff: float = 0.2
+
         # Queue for UDP queries to the wii
-        self.command_queue = asyncio.Queue()
+        self.command_queue: asyncio.Queue[CommandRequest] = asyncio.Queue()
         self.current_request: Optional[CommandRequest] = None
         self.queue_processor_task = None
         
@@ -115,53 +121,53 @@ class AsyncWiiMemoryClient:
         else:
             raise Exception(f"Establishing UDP connection failed")
     
-    async def _send_command_queued(self, command: bytes, timeout=2):
-        """Queue up command to read/write to console"""
-            
-        request = CommandRequest(command, timeout)
+    async def _send_command_queued(self, command: bytes, timeout=2, retries: Optional[int] = None):
+        if retries is None:
+            retries = self.retry_count
+
+        request = CommandRequest(command, timeout, retries)
         await self.command_queue.put(request)
-        
-        try:
-            # Wait for wii's response
-            response = await asyncio.wait_for(request.future, timeout=timeout)
-            return response
-        except asyncio.TimeoutError:
-            print(f"Command {command} timed out")
-            self.established = False
-            raise
+        # once the command queue process this, return the result
+        return await request.future
 
     async def _process_command_queue(self):
-        """Process commands from queue with rate limiting"""
         while True:
             try:
                 request = await self.command_queue.get()
-                
-                # Send command to wii
-                if self.transport and not request.future.cancelled():
+                if request.future.cancelled():
+                    continue
+
+                success = False
+                for attempt in range(request.retries + 1):
+                    if request.future.cancelled():
+                        break
+
                     self.current_request = request
                     self.transport.sendto(request.command)
-                    
-                    asyncio.create_task(self._handle_request_timeout(request))
-                elif request.future and not request.future.cancelled():
-                    # Connection lost, cancel the request
-                    request.future.set_exception(ConnectionError("Not connected"))
-                    
+
+                    try:
+                        # Wait for handle_response to fire
+                        await asyncio.wait_for(
+                            asyncio.shield(request.future), 
+                            timeout=request.timeout
+                        )
+                        success = True
+                        break
+                    except asyncio.TimeoutError:
+                        self.current_request = None
+                        if attempt < request.retries:
+                            backoff = self.retry_backoff * (2 ** attempt)
+                            print(f"Timeout attempt {attempt+1}, retrying in {backoff}s")
+                            await asyncio.sleep(backoff)
+
+                if not success and not request.future.done():
+                    request.future.set_exception(asyncio.TimeoutError())
+
             except asyncio.CancelledError:
                 break
             except Exception as e:
-                print(f"Error in command queue: {e}")
-                if self.current_request and not self.current_request.future.cancelled():
+                if self.current_request and not self.current_request.future.done():
                     self.current_request.future.set_exception(e)
-
-    async def _handle_request_timeout(self, request: CommandRequest):
-        """Handle timeout for a specific request"""
-        try:
-            await asyncio.sleep(request.timeout)
-            if self.current_request == request and not request.future.done():
-                request.future.set_exception(asyncio.TimeoutError())
-                self.current_request = None
-        except asyncio.CancelledError:
-            pass
 
     def handle_response(self, data):
         """Handle incoming UDP response"""
@@ -226,6 +232,12 @@ class BatchFlagHandler:
         assert(offset >= 0)
         return self.flags[offset]
 
+class SSIngameJSONParser(JSONtoTextParser):
+    def _handle_color(self, node):
+        codes = node["color"].split(";")
+        buffer = "".join(COLOR_CONTROL_SEQUENCES[code] for code in codes if code in COLOR_CONTROL_SEQUENCES)
+        return buffer + self._handle_text(node) + "\x0e\x00\x03\x02\uffff"
+
 class SSCommandProcessor(ClientCommandProcessor):
     """
     Command Processor for SS client commands.
@@ -272,6 +284,16 @@ class SSCommandProcessor(ClientCommandProcessor):
             else:
                 Utils.async_start(self.ctx.update_death_link(True))
                 logger.info("Deathlink enabled.")
+    
+    def _cmd_breathlink(self) -> None:
+        """Toggle BreathLink."""
+        if isinstance(self.ctx, SSContext):
+            if "BreathLink" in self.ctx.tags:
+                Utils.async_start(self.ctx.update_breath_link(False))
+                logger.info("Breathlink disabled.")
+            else:
+                Utils.async_start(self.ctx.update_breath_link(True))
+                logger.info("Breathlink enabled.")
 
 
 class SSContext(CommonContext):
@@ -300,8 +322,9 @@ class SSContext(CommonContext):
         self.awaiting_rom: bool = False
         self.last_rcvd_index: int = -1
         self.has_send_death: bool = False
+        self.last_breath_link: float = time.time()  # last send/received breath link on AP layer
+        self.has_send_breath: bool = False
         self.locations_for_hint: dict[str, list] = {}
-        self.lost_client_connection: bool = False
 
         self.hints_checked = set()  # local variable
         self.checked_hints = set()  # server variable
@@ -318,6 +341,8 @@ class SSContext(CommonContext):
         self.wii_ip: str = "0.0.0.0"
         self.socket = None # Server socket
         self.client_socket = None # Connection from Wii
+        self.ingame_json_parser = SSIngameJSONParser(self)
+        self.is_text_buffer_empty = True
 
         # Name of the current stage as read from the game's memory. Sent to trackers whenever its value changes to
         # facilitate automatically switching to the map of the current stage.
@@ -330,8 +355,7 @@ class SSContext(CommonContext):
         # It starts as `None` until it has been read from the server.
         self.visited_stage_names: Optional[set[str]] = None
 
-        # Length of the item get array in memory.
-        self.len_give_item_array: int = 0x1  # TODO CHANGE TO 0x10 WHEN GAME IS FIXED
+        self.len_item_buffer = 14 # length of the item ring buffer in-game
 
     async def disconnect(self, allow_autoreconnect: bool = False) -> None:
         """
@@ -361,6 +385,16 @@ class SSContext(CommonContext):
             logger.info("Awaiting connection to the game to get player information.")
             return
         await self.send_connect()
+    
+    async def update_breath_link(self, breath_link: bool):
+        """Helper function to set Breath Link connection tag on/off and update the connection if already connected."""
+        old_tags = self.tags.copy()
+        if breath_link:
+            self.tags.add("BreathLink")
+        else:
+            self.tags -= {"BreathLink"}
+        if old_tags != self.tags and self.server and not self.server.socket.closed:
+            await self.send_msgs([{"cmd": "ConnectUpdate", "tags": self.tags}])
 
     def on_package(self, cmd: str, args: dict[str, Any]) -> None:
         """
@@ -376,6 +410,10 @@ class SSContext(CommonContext):
             if "death_link" in args["slot_data"]:
                 Utils.async_start(
                     self.update_death_link(bool(args["slot_data"]["death_link"]))
+                )
+            if "breath_link" in args["slot_data"]:
+                Utils.async_start(
+                    self.update_breath_link(bool(args["slot_data"]["breath_link"]))
                 )
             # Request the connected slot's dictionary (used as a set) of visited stages.
             visited_stages_key = AP_VISITED_STAGE_NAMES_KEY_FORMAT % self.slot
@@ -412,7 +450,37 @@ class SSContext(CommonContext):
                             self.update_visited_stages(current_stage_name)
                         )
                     self.visited_stage_names = visited_stage_names
+        elif cmd == "Bounced":
+            tags = args.get("tags", [])
+            # we can skip checking "DeathLink" in ctx.tags, as otherwise we wouldn't have been send this
+            if "BreathLink" in tags and self.last_breath_link != args["data"]["time"]:
+                self.on_breathlink(args["data"])
+    
+    def on_breathlink(self, data: typing.Dict[str, typing.Any]) -> None:
+        """Gets dispatched when a new BreathLink is triggered by another linked player."""
+        self.last_breath_link = max(data["time"], self.last_breath_link)
+        text = data.get("cause", "")
+        if text:
+            logger.info(f"BreathLink: {text}")
+        else:
+            logger.info(f"BreathLink: Received from {data['source']}")
+        
+        asyncio.create_task(self._deplete_stamina())
 
+    async def send_breath(self, breath_text: str = ""):
+        """Helper function to send a breathlink using breath_text as the unique breath cause string."""
+        if self.server and self.server.socket:
+            logger.info("BreathLink: Taking your friends' breath away...")
+            self.last_breath_link = time.time()
+            await self.send_msgs([{
+                "cmd": "Bounce", "tags": ["BreathLink"],
+                "data": {
+                    "time": self.last_breath_link,
+                    "source": self.player_names[self.slot],
+                    "cause": breath_text
+                }
+            }])
+    
     def on_deathlink(self, data: dict[str, Any]) -> None:
         """
         Handle a DeathLink event.
@@ -490,7 +558,7 @@ class SSContext(CommonContext):
         self.ingame_client_messages = filtered_msgs
 
         if len(line_list) == 0:
-            await self.write_string_to_buffer("")
+            await self.clear_buffer()
         else:
             # Want to cap it at 16 lines so the text doesn't get too obtrusive
             # (which could happen if each line is quite short)
@@ -500,18 +568,32 @@ class SSContext(CommonContext):
         # Don't show messages in-game for item sends irrelevant to this slot
         if not self.is_uninteresting_item_send(args):
             self.forward_client_message(
-                self.rawjsontotextparser(copy.deepcopy(args["data"]))
+                self.ingame_json_parser(copy.deepcopy(args["data"]))
             )
 
         super().on_print_json(args)
     
     async def write_string_to_buffer(self, text: str):
+        # Truncate text to fit in the buffer, then write to buffer
+        text_bytes = text.encode("utf-8")
+        if len(text_bytes) >= CLIENT_TEXT_BUFFER_SIZE:
+            for i in range(CLIENT_TEXT_BUFFER_SIZE - 7, CLIENT_TEXT_BUFFER_SIZE + 1):
+                if text_bytes[i] == 0x0e: # color control sequence, don't want to truncate!
+                    break
+            text_bytes = text_bytes[: i - 1]
+        
         if self.text_buffer_address != 0x0:
-            # Truncate text to fit in the buffer, then write to buffer
-            text_bytes = text.encode("utf-8")[: CLIENT_TEXT_BUFFER_SIZE - 1].ljust(
-                CLIENT_TEXT_BUFFER_SIZE, b"\x00"
-            )
-            await self.write_bytes(self.text_buffer_address, text_bytes)
+            await self.write_bytes(self.text_buffer_address, text_bytes.ljust(CLIENT_TEXT_BUFFER_SIZE, b'\x00'))
+            self.is_text_buffer_empty = False
+    
+    async def clear_buffer(self):
+        if self.is_text_buffer_empty:
+            return
+        
+        if self.text_buffer_address != 0x0:
+            await self.write_bytes(self.text_buffer_address, b"\x00")
+            self.is_text_buffer_empty = True
+
     
     def start_wii_client(self, ip):
         """Initialize the async Wii client"""
@@ -610,6 +692,17 @@ class SSContext(CommonContext):
             console_address, value.to_bytes(2, byteorder="big")
         )
     
+    async def write_long(self, console_address: int, value: int) -> None:
+        """
+        Write a 4-byte long to the game's memory
+
+        :param console_address: Address to write to.
+        :param value: Value to write.
+        """
+        await self.write_bytes(
+            console_address, value.to_bytes(4, byteorder="big")
+        )
+    
     async def read_string(self, console_address: int, strlen: int) -> str:
         """
         Read a string from the game's memory.
@@ -633,7 +726,7 @@ class SSContext(CommonContext):
 
         :return: The string containing the slot name.
         """
-        slot_bytes = await self.read_bytes(ARCHIPELAGO_ARRAY_ADDR + 0x14, 0x10)
+        slot_bytes = await self.read_bytes(ARCHIPELAGO_SLOT_ADDR, 0x10)
         slot_bytes = slot_bytes.replace(b"\xFF", b"")
 
         return slot_bytes.decode("utf-8")
@@ -678,8 +771,22 @@ class SSContext(CommonContext):
             and self.check_ingame()
             and not await self.check_in_minigame()
         ):
-            self.has_send_death = True
             await self.write_short(CURR_HEALTH_ADDR, 0)
+            self.has_send_death = True
+    
+    async def _deplete_stamina(self) -> None:
+        """
+        Deplete the player's stamina in-game by setting their current stamina to zero.
+        """
+        if (
+            self.slot is not None
+            and self.is_hooked()
+            and self.check_ingame()
+        ):
+            await self.write_short(self.link_ptr + 0x43dc, 0x7f)
+            await self.write_short(self.link_ptr + 0x4379, 0x191e)
+            await self.write_long(self.link_ptr + CURR_STAMINA_OFFSET, 0)
+            self.has_send_breath = True
 
 
     async def _give_item(self, item_name: str) -> bool:
@@ -695,38 +802,18 @@ class SSContext(CommonContext):
 
         item_id = ITEM_TABLE[item_name].item_id  # In game item ID
 
-        # Loop through the item array, placing the item in an empty slot (0xFF).
-        for idx in range(self.len_give_item_array):
-            slot = await self.read_byte(ARCHIPELAGO_ARRAY_ADDR + idx)
-            if slot == 0xFF:
+        # Read the item slot, and place the item here if the slot is empty.
+        # When the game confirms the player received the item, it'll clear out this slot again.
+        slots = await self.read_bytes(ARCHIPELAGO_ITEM_SLOT, self.len_item_buffer)
+        for i, slot in enumerate(slots):
+            if slot == 0:
                 # logger.info(f"DEBUG: Gave item {item_id} to player {ctx.player_names[ctx.slot]}.")
-                await self.write_byte(ARCHIPELAGO_ARRAY_ADDR + idx, item_id)
+                await self.write_byte(ARCHIPELAGO_ITEM_SLOT + i, item_id)
                 await asyncio.sleep(0.25)
                 await self.cache_link_data() # Recalculate State & Action
-                # If this happens, this may be an indicator that the player interrupted the itemget with something like a Fi call
-                # or bed which could delete the item, so we should check for a reload
-                while self.is_link_not_in_action([ITEM_GET_ACTION]):
-                    await asyncio.sleep(0.2)
-                    await self.cache_link_data() # Recalculate State & Action
-                    # While the client won't initiate an item send while the player is swimming, the player
-                    # can still receive items underwater if they're sent one just before entering the water.
-                    # The patched game *will* still give them the item, but it won't put them in the item action,
-                    # so we shouldn't resend the item, or else it will be duplicated.
-                    if self.is_link_in_action(SWIM_ACTIONS):
-                        break
-                    # If state is 0, that means a reload occurred, so we should resend the item.
-                    # However, we shouldn't resend the item if the user immediately enters the item get action anyway
-                    # (which can happen if this reload occurs due to a door, in which case the original item will still be received)
-                    if not self.check_ingame():
-                        # Reset the value at this array index to 0, to avoid duplicating the item if it was never read in the first place
-                        await self.write_byte(ARCHIPELAGO_ARRAY_ADDR + idx, 0xFF)
-                        debug_text = f"DEBUG: A reload deleted {self.player_names[self.slot]}'s {item_name} (ID {item_id}). Resending the item..."
-                        logger.info(debug_text)
-                        self.forward_client_message(debug_text)
-                        return False
                 return True
 
-        # If unable to place the item in the array, return False.
+        # If unable to give the item, return False
         return False
 
 
@@ -811,8 +898,8 @@ class SSContext(CommonContext):
                 checked = bool(flag & flag_value)
 
                 if checked or self.finished_game:
-                    for locname in self.locations_for_hint.get(hint, []):
-                        self.hints_checked.add(SSLocation.get_apid(LOCATION_TABLE[locname].code))
+                    for loc, plr, sts in self.locations_for_hint.get(hint, []):
+                        self.hints_checked.add(LocationForHint(loc, plr, sts))
 
             for i, (name, (flag_bit, flag_value, addr)) in enumerate(cubes_table):
                 flag = storyflags.lookup_byte(addr + flag_bit)
@@ -836,7 +923,8 @@ class SSContext(CommonContext):
             if locations_checked:
                 await self.send_msgs([{"cmd": "LocationChecks", "locations": locations_checked}]) 
             if hints_checked:
-                await self.send_msgs([{"cmd": "LocationScouts", "locations": hints_checked, "create_as_hint": 2}])
+                for hint in hints_checked:
+                    await self.send_msgs([{"cmd": "CreateHints", "locations": [hint.location], "player": hint.player, "status": hint.status}])
 
             self.checked_hints |= hints_checked
 
@@ -909,6 +997,22 @@ class SSContext(CommonContext):
                     await self.send_death(self.player_names[self.slot] + " ran out of hearts.")
             else:
                 self.has_send_death = False
+    
+    async def check_out_of_breath(self) -> None:
+        """
+        Check if the player is out of stamina
+        If BreathLink is on, notify the server of the player's breathlessness.
+
+        :return: `True` if the player is out of stamina, otherwise `False`.
+        """
+        if self.slot is not None and self.check_ingame() and not await self.check_on_title_screen():
+            cur_stamina = await self.read_long(x := self.link_ptr + CURR_STAMINA_OFFSET)
+            if cur_stamina <= 0:
+                if not self.has_send_breath and time.time() >= self.last_breath_link + 3:
+                    self.has_send_breath = True
+                    await self.send_breath(self.player_names[self.slot] + " ran out of stamina.")
+            else:
+                self.has_send_breath = False
 
     def check_ingame(self) -> bool:
         """
@@ -969,7 +1073,7 @@ class SSContext(CommonContext):
         """
         if self.link_ptr == 0x0:
             return False
-        return self.link_action <= MAX_SAFE_ACTION
+        return self.link_action <= MAX_SAFE_ACTION or self.link_action == ITEM_GET_ACTION
 
     def is_link_not_in_action(self, actions: List[int]) -> bool:
         if self.link_ptr == 0x0:
@@ -1001,10 +1105,11 @@ class SSContext(CommonContext):
             self.link_ptr != 0x0
             and await self.can_send_items()
             and await self.check_alive()
-            and self.validate_link_state()
-            and self.validate_link_action()
-            and not await self.check_in_minigame()
-            and self.current_stage_name != DEMISE_STAGE
+            # These are now handled in-game
+            # and self.validate_link_state()
+            # and self.validate_link_action()
+            # and not await self.check_in_minigame()
+            # and self.can_get_items_on_stage(self.current_stage_name)
         )
 
     async def can_send_items(self) -> bool:
@@ -1012,6 +1117,19 @@ class SSContext(CommonContext):
         Link must be on File 1 and not on the tile screen to send items.
         """
         return (not await self.check_on_title_screen()) and await self.check_on_file_1()
+    
+    def can_get_items_on_stage(self, stage_name: str) -> bool:
+        # don't receive items in a boss arena or post-boss arena
+        if stage_name.startswith('B'):
+            return False
+        
+        # don't receive items in sealed temple before getting the Song from Impa
+        # (yes this is hacky)
+        if stage_name == "F402":
+            return SSLocation.get_apid(89) in self.locations_checked
+        
+        return True
+
 
 async def do_sync_task(ctx: SSContext) -> None:
     """
@@ -1034,6 +1152,8 @@ async def do_sync_task(ctx: SSContext) -> None:
                     if ctx.slot is not None:
                         if "DeathLink" in ctx.tags:
                             await ctx.check_death()
+                        if "BreathLink" in ctx.tags:
+                            await ctx.check_out_of_breath()
                         await ctx.give_items()
                         await ctx.check_locations()
                         await ctx.check_current_stage_changed()
@@ -1054,16 +1174,10 @@ async def do_sync_task(ctx: SSContext) -> None:
                         ctx.locations_checked = set()
                         ctx.text_buffer_address = await ctx.read_long(CLIENT_TEXT_BUFFER_PTR)
                         await ctx.cache_link_data()
-                        if ctx.lost_client_connection:
-                            logger.info("Attempting to reconnect to the server.")
-                            await ctx.connect()
-                        
-                        ctx.lost_client_connection = False
                     else:
                         logger.info(
                             "Connection to console failed, attempting again in 5 seconds..."
                         )
-                        await ctx.disconnect()
                         await asyncio.sleep(5)
                         continue
             except TimeoutError:
@@ -1071,9 +1185,7 @@ async def do_sync_task(ctx: SSContext) -> None:
                 ctx.close_wii_client()
                 ctx.start_wii_client(ctx.wii_ip)
                 if not await ctx.wii_memory_client.connect():
-                    ctx.lost_client_connection = True
                     logger.info("Lost packet from console and couldn't reconnect. Attempting again in 5 seconds...")
-                    await ctx.disconnect()
                     await asyncio.sleep(5)
                 else:
                     print("Reconnected successfully.")
@@ -1084,7 +1196,6 @@ async def do_sync_task(ctx: SSContext) -> None:
                     "Connection to console failed, attempting again in 5 seconds..."
                 )
                 logger.error(traceback.format_exc())
-                await ctx.disconnect()
                 await asyncio.sleep(5)
                 continue
         else:
@@ -1098,6 +1209,8 @@ async def do_sync_task(ctx: SSContext) -> None:
                     if ctx.slot is not None:
                         if "DeathLink" in ctx.tags:
                             await ctx.check_death()
+                        if "BreathLink" in ctx.tags:
+                            await ctx.check_out_of_breath()
                         await ctx.give_items()
                         await ctx.check_locations()
                         await ctx.check_current_stage_changed()

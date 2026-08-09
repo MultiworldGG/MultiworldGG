@@ -5,19 +5,14 @@ import sys
 import time
 import typing
 
-tracker_loaded = False
-try:
-    from worlds.tracker.TrackerClient import TrackerGameContext as CommonContext, TrackerCommandProcessor as ClientCommandProcessor
-    tracker_loaded = True
-except ModuleNotFoundError:
-    from CommonClient import CommonContext, ClientCommandProcessor
+from .P2Context import MenuLayout, P2CommonContext as CommonContext, P2ClientCommandProcessor as ClientCommandProcessor, tracker_loaded, HOST, PORT, send_instant_command
 
 from CommonClient import server_loop, logger, gui_enabled
 from NetUtils import ClientStatus, NetworkItem
 from Utils import async_start, init_logging
 
 from ..mod_helpers.ItemHandling import add_ratman_commands, handle_item, handle_map_start, handle_trap, portal_gun_upgrade_not_inplace, potatos_not_inplace
-from ..mod_helpers.MapMenu import Menu
+from ..mod_helpers.MapMenu import GameMapMenu
 from .DeathMessages import get_death_message
 from ..Locations import location_names_to_map_codes, map_codes_to_location_names, wheatley_maps_to_monitor_names, all_locations_table, wheatley_monitor_table, ratman_den_locations_table
 from .. import Portal2World
@@ -36,7 +31,7 @@ class Portal2CommandProcessor(ClientCommandProcessor):
 
     def _cmd_command(self, *command):
         """Sends a command to the game. Should not be used unless you get softlocked"""
-        self.ctx.command_queue.append(' '.join(command) + "\n")
+        async_start(send_instant_command(' '.join(command)), "send_command")
 
     def _cmd_deathlink(self):
         """Toggles death link for this client"""
@@ -74,13 +69,7 @@ class Portal2CommandProcessor(ClientCommandProcessor):
                            f"{"All items acquired" if not requirements_not_collected else "Still needed: \n" + ", ".join(requirements_not_collected)}")
                 break
         self.output(message)
-
-    def _cmd_ping(self):
-        async def player_in_map(compro):
-            is_in_map = await compro.ctx.is_player_in_map()
-            compro.output("pong" if is_in_map else "no pong recieved from server")
-        loop = asyncio.get_event_loop()
-        loop.create_task(player_in_map(self))
+        
 
 class Portal2Context(CommonContext):
     command_processor = Portal2CommandProcessor
@@ -89,9 +78,6 @@ class Portal2Context(CommonContext):
     game = "Portal 2"
     tags = {"AP"}
     items_handling = 0b111  # receive all items for /received
-
-    HOST = "localhost"
-    PORT = int(Portal2World.settings.default_portal2_port)
 
     death_link_active = False
     goal_map_code = ""
@@ -106,7 +92,8 @@ class Portal2Context(CommonContext):
 
     location_name_to_id: dict[str, int] = None
 
-    menu: Menu = None
+    game_map_menu: GameMapMenu = None
+    client_map_menu: MenuLayout = None
 
     def alert_game_connection(self):
         if self.check_game_connection():
@@ -120,15 +107,19 @@ class Portal2Context(CommonContext):
     
     def update_menu(self, location_id: int = None):
         menu_file = Portal2World.settings.menu_file
+        check_completed = False
         if location_id is not None:
-            self.menu.complete_check(location_id)
+            check_completed = self.game_map_menu.complete_check(location_id)
         # Write the menu to that file
         with open(menu_file, "w", encoding='utf-8') as f:
-            f.write(str(self.menu))
+            f.write(str(self.game_map_menu))
+            
+        self.client_map_menu.update_menu(self.game_map_menu.get_menu_info(), location_id)
+        return check_completed
 
     def refresh_menu(self):
         for location_id in self.checked_locations:
-            self.menu.complete_check(location_id)
+            self.game_map_menu.complete_check(location_id)
         self.update_menu()
 
     def add_to_in_game_message_queue(self, message: str, color_string: str = None) -> None:
@@ -139,7 +130,7 @@ class Portal2Context(CommonContext):
         try:
             while True:
                 try:
-                    reader, writer = await asyncio.open_connection(self.HOST, self.PORT)
+                    reader, writer = await asyncio.open_connection(HOST, PORT)
                 except ConnectionRefusedError:
                     self.listener_active = False
                     await asyncio.sleep(self.current_reconnect_delay)
@@ -178,7 +169,7 @@ class Portal2Context(CommonContext):
         try:
             while True:
                 try:
-                    _, writer = await asyncio.open_connection(self.HOST, self.PORT)
+                    _, writer = await asyncio.open_connection(HOST, PORT)
                 except ConnectionRefusedError:
                     self.sender_active = False
                     await asyncio.sleep(self.current_reconnect_delay)
@@ -232,20 +223,24 @@ class Portal2Context(CommonContext):
 
     async def is_player_in_map(self):
         try:
-            reader, writer = await asyncio.open_connection(self.HOST, self.PORT)
+            reader, writer = await asyncio.open_connection(HOST, PORT)
             ping = 'script printl("Pong")\n'
             writer.write(ping.encode())
             await writer.drain()
 
             data = await asyncio.wait_for(reader.read(1000), timeout=0.5)
             pong = data.decode(errors="ignore").replace("\'", "").split('\r\n')
-            writer.close()
-            await writer.wait_closed()
             if pong and pong[0] == "Pong":
                 return True
             return False
+        except asyncio.CancelledError:
+            logger.info("Game pinger closed from cancellation")
+            raise
         except:
             return False
+        finally:
+            writer.close()
+            await writer.wait_closed()
 
     async def handle_message(self, message: str):
         if message.startswith("map_name:"):
@@ -258,13 +253,19 @@ class Portal2Context(CommonContext):
         # For map complete checks
         elif message.startswith("map_complete:"):
             done_map = message.split(':', 1)[1]
-            if done_map == self.goal_map_code:
-                await self.handle_goal_completion()
             
             map_id = self.map_code_to_location_id(done_map)
             if map_id:
                 await self.check_locations([map_id])
-                self.update_menu(map_id)
+                next_map = self.update_menu(map_id)
+                
+                if done_map == self.goal_map_code:
+                    await self.handle_goal_completion()
+                else:
+                    if not self.client_map_menu.return_to_menu and type(next_map) == str:
+                        await send_instant_command(f"changelevel {next_map}")
+                    else:
+                        await send_instant_command("disconnect;startupmenu force")
         
         # All other checks
         # Item checks e.g. portal gun upgrade, potatos
@@ -365,27 +366,30 @@ class Portal2Context(CommonContext):
 
         if "chapter_dict" in slot_data:
             if "logic_difficulty" in slot_data:
-                self.menu = Menu(slot_data["chapter_dict"], self, logic_difficulty=slot_data["logic_difficulty"])
+                self.game_map_menu = GameMapMenu(slot_data["chapter_dict"], self, logic_difficulty=slot_data["logic_difficulty"])                
             else:
-                self.menu = Menu(slot_data["chapter_dict"], self)
+                self.game_map_menu = GameMapMenu(slot_data["chapter_dict"], self)
+                
         else:
             raise Exception("chapter_dict not found in slot data")
         
         if "game_mode" in slot_data:
-            self.menu.is_open_world = slot_data["game_mode"] == GameModeOption.OPEN_WORLD
+            if slot_data["game_mode"] == GameModeOption.OPEN_WORLD:
+                self.game_map_menu.is_open_world = True
+                self.get_menu().set_open_world()
             
         if "wheatley_monitors" in slot_data:
             if slot_data["wheatley_monitors"]:
-                self.menu.has_wheatley_monitors = True
+                self.game_map_menu.has_wheatley_monitors = True
             
         if "ratman_dens" in slot_data:
             if slot_data["ratman_dens"]:
                 add_ratman_commands()
-                self.menu.has_ratman_dens = True
+                self.game_map_menu.has_ratman_dens = True
                 
         if "vitrified_doors" in slot_data:
             if slot_data["vitrified_doors"]:
-                self.menu.has_vitrified_doors = True
+                self.game_map_menu.has_vitrified_doors = True
         
         # Don't remove the portal gun upgrade after pickup
         if "portal_gun_upgrade_inplace" not in slot_data:
@@ -395,8 +399,11 @@ class Portal2Context(CommonContext):
         if "potatos_inplace" not in slot_data:
             potatos_not_inplace()
         
-        self.menu.generate_menu()
+        self.game_map_menu.generate_menu()
+        if not self.client_map_menu:
+            self.client_map_menu = self.get_menu()
         self.refresh_menu()
+        self.client_map_menu.build()
 
     def on_package(self, cmd, args):
         super().on_package(cmd, args)
@@ -463,14 +470,7 @@ class Portal2Context(CommonContext):
 
         self.item_remove_commands = temp_commands
         
-    def make_gui(self):
-        from kvui import GameManager
-        ui = super().make_gui()
-        ui.base_title = "Portal 2 Text Client"
-        ui.icon = r"worlds/portal2/data/Portalpelago.png"
-
-        return ui
-    
+        
     async def shutdown(self):
         self.server_address = ""
         self.username = None

@@ -3,6 +3,7 @@ from ..Items import *
 from ..ItemNames import motion_blur_trap, fizzle_portal_trap, butter_fingers_trap
 from .Gels import *
 from ..Locations import wheatley_monitor_table, LocationType
+from ..LocationNames import *
 
 # Constants
 DELETE_CUBE = ItemTag.CUBE | ItemTag.DELETE
@@ -157,17 +158,17 @@ def potatos_not_inplace():
     
 def portal_gun_upgrade_not_inplace():
     global map_specific_commands
-    map_specific_commands.append(MapCommand("sp_a2_intro", portal_gun_2, ["script InciniratorDisablePortalGun()\n"]))
+    map_specific_commands.append(MapCommand("sp_a2_intro", portal_gun_2, ["script IncineratorDisablePortalGun()\n"]))
 
 # Option based commands
 ratman_den_commands: list[MapCommand] = [
-    MapCommand("sp_a1_intro4", None, ['script CreateAPButton("Ratman Den 1", Vector(847, -703, 320-65), Vector(0,-90,0), 0.8)\n'], LocationType.RATMAN_DEN),
-    MapCommand("sp_a2_dual_lasers", None, ['script CreateAPButton("Ratman Den 2", Vector(438, -636, 827-65), Vector(0,135,0), 0.8)\n'], LocationType.RATMAN_DEN),
-    MapCommand("sp_a2_trust_fling", None, ['script CreateAPButton("Ratman Den 3", Vector(2045, 82, 254-65), Vector(0,-135,0), 0.8)\n'], LocationType.RATMAN_DEN),
-    MapCommand("sp_a2_bridge_intro", None, ['script CreateAPButton("Ratman Den 4", Vector(612, -618, 64-65), Vector(0,-135,0), 0.8)\n'], LocationType.RATMAN_DEN),
-    MapCommand("sp_a2_bridge_the_gap", None, ['script CreateAPButton("Ratman Den 5", Vector(-128, -270, 1756-65), Vector(0,90,0), 0.8)\n'], LocationType.RATMAN_DEN),
-    MapCommand("sp_a2_laser_vs_turret", None, ['script CreateAPButton("Ratman Den 6", Vector(850, -720, 222-65), Vector(0,180,0), 0.8)\n'], LocationType.RATMAN_DEN),
-    MapCommand("sp_a2_pull_the_rug", None, ['script CreateAPButton("Ratman Den 7", Vector(63, -1158, 550-65), Vector(0,45,0), 0.8)\n'], LocationType.RATMAN_DEN)
+    MapCommand("sp_a1_intro4", None, [f'script CreateAPButton("{ratman_den_1_smooth_jazz}", Vector(847, -703, 320-65), Vector(0,-90,0), 0.8)\n'], LocationType.RATMAN_DEN),
+    MapCommand("sp_a2_dual_lasers", None, [f'script CreateAPButton("{ratman_den_2_dual_lasers}", Vector(438, -636, 827-65), Vector(0,135,0), 0.8)\n'], LocationType.RATMAN_DEN),
+    MapCommand("sp_a2_trust_fling", None, [f'script CreateAPButton("{ratman_den_3_trust_fling}", Vector(2045, 82, 254-65), Vector(0,-135,0), 0.8)\n'], LocationType.RATMAN_DEN),
+    MapCommand("sp_a2_bridge_intro", None, [f'script CreateAPButton("{ratman_den_4_bridge_intro}", Vector(612, -618, 64-65), Vector(0,-135,0), 0.8)\n'], LocationType.RATMAN_DEN),
+    MapCommand("sp_a2_bridge_the_gap", None, [f'script CreateAPButton("{ratman_den_5_bridge_the_gap}", Vector(-128, -270, 1756-65), Vector(0,90,0), 0.8)\n'], LocationType.RATMAN_DEN),
+    MapCommand("sp_a2_laser_vs_turret", None, [f'script CreateAPButton("{ratman_den_6_laser_vs_turret}", Vector(850, -720, 222-65), Vector(0,180,0), 0.8)\n'], LocationType.RATMAN_DEN),
+    MapCommand("sp_a2_pull_the_rug", None, [f'script CreateAPButton("{ratman_den_7_pull_the_rug}", Vector(63, -1158, 550-65), Vector(0,45,0), 0.8)\n'], LocationType.RATMAN_DEN)
 ]
 
 def add_ratman_commands():

@@ -83,14 +83,14 @@ ROUTE_NAMES = [UNDERWORLD, SURFACE, NIGHTMARE]
 #     cameo is deliberately not trusted -- see Locations.ALWAYS_MET_BOSSES note).
 #   - Orpheus: spawns only in ZJ's Tartarus rooms (NPC_Orpheus_01, additionally gated on
 #     the "Allow Orpheus to Spawn in Tartarus" item -- Rules.KEEPSAKE_ITEM_GATE).
-#   - Achilles: appears only alongside Patroclus's NATIVE Elysium content once the
-#     Myrmidon-Reunion beats have progressed (NPC_Achilles_01) -- Nightmare-run progression,
-#     not something a borrowed story room provides.
 # Megaera is NOT here -- she's a route boss, not Crossroads cast, so her "Met Megaera"
 # gating comes from her NPC_BOSS_MEET zone tuple instead (Locations.py).
+# Achilles used to be here too (Nightmare-locked, native Elysium content alongside
+# Patroclus) but his "Met Achilles"/"Achilles Keepsake" were removed as locations entirely
+# July 31 (user ruling) -- no route lock needed for a location that no longer exists.
 NPC_ROUTE_LOCK = {
     "Eris": SURFACE,
-    "Orpheus": NIGHTMARE, "Achilles": NIGHTMARE,
+    "Orpheus": NIGHTMARE,
 }
 
 # NPCs whose meet/gift moment is a RANDOMIZED helper appearance, reachable on whatever
@@ -144,7 +144,7 @@ COMBAT_HELPER_NPCS_ALL = COMBAT_HELPER_NPCS + ["Nemesis"]
 # CombatHelperSanity is "unlocked"/"items" (native-only, modes 0/1): if the NPC's native
 # route isn't in the seed at all, they have nowhere to ever spawn, so their "Met"/"Keepsake"
 # locations must be dropped instead of left permanently unreachable (mirrors NPC_ROUTE_LOCK's
-# existing drop-on-excluded-route behavior for Eris/Orpheus/Achilles). Keep in sync with
+# existing drop-on-excluded-route behavior for Eris/Orpheus). Keep in sync with
 # Rules.KEEPSAKE_HARD if either ever changes.
 COMBAT_HELPER_NATIVE_ROUTE = {
     "Artemis": UNDERWORLD, "Heracles": SURFACE, "Icarus": SURFACE, "Athena": SURFACE,

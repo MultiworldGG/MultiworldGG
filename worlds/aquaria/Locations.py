@@ -272,6 +272,7 @@ class AquariaLocationNames:
     SUNKEN_CITY_LEFT_AREA_CRATE_BEFORE_THE_BEDROOM = "Sunken City left area, crate before the bedroom"
     SUNKEN_CITY_LEFT_AREA_GIRL_COSTUME = "Sunken City left area, Girl Costume"
     SUNKEN_CITY_BULB_ON_TOP_OF_THE_BOSS_AREA = "Sunken City, bulb on top of the boss area"
+    SUNKEN_CITY_BEATING_GOLEM = "Sunken City, beating the Golem"
     THE_BODY_CENTER_AREA_BREAKING_LI_S_CAGE = "The Body center area, breaking Li's cage"
     THE_BODY_CENTER_AREA_BULB_ON_THE_MAIN_PATH_BLOCKING_TUBE = \
         "The Body center area, bulb on the main path blocking tube"
@@ -550,7 +551,7 @@ class AquariaLocations:
         AquariaLocationNames.CATHEDRAL_UNDERGROUND_BULB_IN_THE_BOTTOM_RIGHT_PATH: 698118,
     }
 
-    locations_cathedral_boss = {
+    locations_cathedral_boss_l = {
         AquariaLocationNames.MITHALAS_BOSS_AREA_BEATING_MITHALAN_GOD: 698202,
     }
 
@@ -756,7 +757,7 @@ class AquariaLocations:
         AquariaLocationNames.SUNKEN_CITY_RIGHT_AREA_CRATE_IN_THE_LEFT_BOTTOM_ROOM: 698155,
     }
 
-    locations_sunken_city_l = {
+    locations_sunken_city_l_crates = {
         AquariaLocationNames.SUNKEN_CITY_LEFT_AREA_CRATE_IN_THE_LITTLE_PIPE_ROOM: 698151,
         AquariaLocationNames.SUNKEN_CITY_LEFT_AREA_CRATE_CLOSE_TO_THE_SAVE_CRYSTAL: 698152,
         AquariaLocationNames.SUNKEN_CITY_LEFT_AREA_CRATE_BEFORE_THE_BEDROOM: 698153,
@@ -768,6 +769,7 @@ class AquariaLocations:
 
     locations_sunken_city_boss = {
         AquariaLocationNames.SUNKEN_CITY_BULB_ON_TOP_OF_THE_BOSS_AREA: 698043,
+        AquariaLocationNames.SUNKEN_CITY_BEATING_GOLEM: 698219
     }
 
     locations_body_c = {
@@ -856,7 +858,7 @@ location_table = {
     **AquariaLocations.locations_cathedral_top_start_urns,
     **AquariaLocations.locations_cathedral_top_end,
     **AquariaLocations.locations_cathedral_underground,
-    **AquariaLocations.locations_cathedral_boss,
+    **AquariaLocations.locations_cathedral_boss_l,
     **AquariaLocations.locations_forest_tl,
     **AquariaLocations.locations_forest_tl_verse_egg_room,
     **AquariaLocations.locations_forest_tr,
@@ -900,7 +902,7 @@ location_table = {
     **AquariaLocations.locations_mermog_boss,
     **AquariaLocations.locations_octo_cave_t,
     **AquariaLocations.locations_octo_cave_b,
-    **AquariaLocations.locations_sunken_city_l,
+    **AquariaLocations.locations_sunken_city_l_crates,
     **AquariaLocations.locations_sunken_city_r,
     **AquariaLocations.locations_sunken_city_boss,
     **AquariaLocations.locations_sunken_city_l_bedroom,

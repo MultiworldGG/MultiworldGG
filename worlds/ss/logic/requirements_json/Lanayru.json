@@ -88,7 +88,7 @@
   "Lanayru Desert - Temple of Time - Temple": {
     "hint_region": "Lanayru Desert",
     "macros": {
-      "Goddess Cube at Ride near Temple of Time": "Has Goddess Sword & Distance Activator"
+      "Goddess Cube at Ride near Temple of Time": "Has Goddess Sword & Has Hook Beetle"
     },
     "exits": {
       "Fly to Sky": "Nothing",
@@ -269,18 +269,26 @@
   "Lanayru Sand Sea - Skipper's Retreat - Top of Skipper's Retreat": {
     "hint_region": "Lanayru Sand Sea",
     "exits": {
-      "Shack": "Clawshots"
+      "Outside Shack": "Clawshots"
     },
     "locations": {
       "Skipper's Retreat - Chest on top of Cacti Pillar": "Clawshots"
     }
   },
-  "Lanayru Sand Sea - Skipper's Retreat - Shack": {
+  "Lanayru Sand Sea - Skipper's Retreat - Outside Shack": {
     "hint_region": "Lanayru Sand Sea",
     "exits": {
+      "Shack Door": "Nothing",
       "Top of Skipper's Retreat": "Clawshots",
       "After Rock": "Nothing",
       "Skydive": "Nothing"
+    },
+    "locations": {}
+  },
+  "Lanayru Sand Sea - Skipper's Retreat - Inside Shack": {
+    "hint_region": "Lanayru Sand Sea",
+    "exits": {
+      "Door": "Nothing"
     },
     "locations": {
       "Skipper's Retreat - Chest in Shack": "Gust Bellows"
@@ -295,31 +303,73 @@
       "Skipper's Retreat - Skydive Chest": "Nothing"
     }
   },
-  "Lanayru Sand Sea - Shipyard": {
+  "Lanayru Sand Sea - Shipyard - Outside": {
     "hint_region": "Lanayru Sand Sea",
     "exits": {
       "Fly to Sky": "Nothing",
-      "Boat to Sea": "Nothing"
+      "Boat to Sea": "Nothing",
+      "Roller Coaster": "Nothing",
+      "Door": "Nothing"
     },
     "locations": {
-      "Rickety Coaster -- Heart Stopping Track in 1'05": "Gust Bellows & Can Defeat Moldarachs"
+      "Rickety Coaster -- Heart Stopping Track in 1'05": "Can Defeat Shipyard Moldarach"
     }
   },
-  "Lanayru Sand Sea - Pirate Stronghold": {
+  "Lanayru Sand Sea - Shipyard - Past Roller Coaster": {
+    "hint_region": "Lanayru Sand Sea",
+    "exits": {
+      "Roller Coaster": "Impossible",
+      "Door": "Nothing"
+    },
+    "locations": {}
+  },
+  "Lanayru Sand Sea - Shipyard - Construction Bay": {
     "hint_region": "Lanayru Sand Sea",
     "macros": {
-      "Can Open Pirate Stronghold": "Can Defeat Beamos & Can Defeat Armos",
-      "Pirate Stronghold Ancient Flower Farming": "Nothing",
-      "Goddess Cube in Pirate Stronghold": "Has Goddess Sword & Clawshots & Can Open Pirate Stronghold"
+      "Can Defeat Shipyard Moldarach": "Gust Bellows & Can Defeat Moldarachs"
     },
     "exits": {
+      "Upper Door": "Impossible",
+      "Lower Door": "Nothing"
+    },
+    "locations": {}
+  },
+  "Lanayru Sand Sea - Pirate Stronghold - Outside": {
+    "hint_region": "Lanayru Sand Sea",
+    "exits": {
       "Fly to Sky": "Nothing",
-      "Boat to Sea": "Nothing"
+      "Boat to Sea": "Nothing",
+      "Side Door": "Nothing",
+      "Open Jaw": "Can Open Pirate Stronghold"
     },
     "locations": {
       "Pirate Stronghold - Rupee on East Sea Pillar": "Has Quick Beetle",
       "Pirate Stronghold - Rupee on West Sea Pillar": "Has Quick Beetle",
-      "Pirate Stronghold - Rupee on Bird Statue Pillar or Nose": "Has Quick Beetle",
+      "Pirate Stronghold - Rupee on Bird Statue Pillar or Nose": "Has Beetle"
+    }
+  },
+  "Lanayru Sand Sea - Pirate Stronghold - Under Jaw": {
+    "hint_region": "Lanayru Sand Sea",
+    "macros": {
+      "Goddess Cube in Pirate Stronghold": "Has Goddess Sword & Clawshots"
+    },
+    "exits": {
+      "Open Jaw": "Can Open Pirate Stronghold",
+      "Door under Jaw": "Nothing"
+    },
+    "locations": {}
+  },
+  "Lanayru Sand Sea - Pirate Stronghold - Inside": {
+    "hint_region": "Lanayru Sand Sea",
+    "macros": {
+      "Can Open Pirate Stronghold": "Can Defeat Beamos & Can Defeat Armos",
+      "Pirate Stronghold Ancient Flower Farming": "Nothing"
+    },
+    "exits": {
+      "Upper Door": "Nothing",
+      "Lower Door": "Can Open Pirate Stronghold"
+    },
+    "locations": {
       "Pirate Stronghold - First Chest": "Nothing",
       "Pirate Stronghold - Second Chest": "Nothing",
       "Pirate Stronghold - Third Chest": "Nothing"

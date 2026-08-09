@@ -67,7 +67,6 @@ class SMZ3World(World):
      This is allowed as long as we keep features and logic as close as possible as the original.    
     """
     game: str = "SMZ3"
-    author: str = "lordlou"
     topology_present = False
     options_dataclass = SMZ3Options
     options: SMZ3Options

@@ -1,4 +1,4 @@
-# world/dc2/__init__.py
+# world/dw1/__init__.py
 from typing import Dict, Set, List
 
 from BaseClasses import MultiWorld, Region, Item, Entrance, Tutorial, ItemClassification
@@ -42,7 +42,7 @@ class DigimonWorldWorld(World):
     data_version = 0
     base_id = 690000
     enabled_location_categories: Set[DigimonWorldLocationCategory]
-    required_client_version = (0, 5, 0)
+    required_client_version = (0, 6, 2)
     item_name_to_id = DigimonWorldItem.get_name_to_id()
     location_name_to_id = DigimonWorldLocation.get_name_to_id()
     item_name_groups = {
@@ -63,6 +63,7 @@ class DigimonWorldWorld(World):
         self.enabled_location_categories.add(DigimonWorldLocationCategory.EVENT)
         self.enabled_location_categories.add(DigimonWorldLocationCategory.RECRUIT)
         self.enabled_location_categories.add(DigimonWorldLocationCategory.CARD)
+        self.enabled_location_categories.add(DigimonWorldLocationCategory.CHEST)
         
 
 
@@ -73,7 +74,7 @@ class DigimonWorldWorld(World):
         regions.update({region_name: self.create_region(region_name, location_tables[region_name]) for region_name in [
             "Start Game","Consumable", "Cards",
             "Prosperity",
-            "Digimon"
+            "Digimon", "Chests"
         ]})
         
 
@@ -87,6 +88,7 @@ class DigimonWorldWorld(World):
         create_connection("Start Game", "Cards") 
         create_connection("Start Game", "Digimon") 
         create_connection("Start Game", "Prosperity") 
+        create_connection("Start Game", "Chests") 
 
 
         
@@ -178,27 +180,18 @@ class DigimonWorldWorld(World):
     def get_filler_item_name(self) -> str:
         return "1000 Bits"
     
-    def set_rules(self) -> None:  
-        def get_recruited_digimon(self, state, current_digimon = None) -> List[str]:
-            recruited_digimon = []
-            for digimon in recruit_digimon_list: 
-                if current_digimon:
-                    if digimon.name == current_digimon or current_digimon in digimon.digimon_requirements:
-                        continue
-                if state.can_reach_location(f"{digimon.name}", self.player):
-                    recruited_digimon.append(digimon.name)                
-            return recruited_digimon
+    def set_rules(self) -> None:
         def calculate_prosperity(self, state, current_digimon = None) -> int:
             current_prosperity = 1 #agumon always available
             recruit_confirmed = ["Agumon"]
             for iteration in range(10):
                 added_this_round = False
-                for digimon in recruit_digimon_list:  
+                for digimon in recruit_digimon_list:
                     requirements_met = True
                     if digimon.name in recruit_confirmed:
                         requirements_met = False
                         continue
-                    if digimon.name == current_digimon: 
+                    if digimon.name == current_digimon:
                         requirements_met = False
                         continue
                     if digimon.requires_soul:
@@ -219,104 +212,60 @@ class DigimonWorldWorld(World):
                 if not added_this_round:
                     break
             return current_prosperity
-        def has_digimon_requirements(self, state, digimon) -> bool:
-            existing_recruits = get_recruited_digimon(self, state)
-            print("Checking requirements for" + digimon.name)
-            print("Recruited digimon:")
-            for requirement in digimon.digimon_requirements:
-                if requirement not in existing_recruits:
-                    return False
-                print(requirement)
-                current_prosperity = calculate_prosperity(self, state, digimon)
-                print("Have " + str(current_prosperity) + " out of " + str(digimon.prosperity_requirement) + " prosperity") 
-                if not current_prosperity >= digimon.prosperity_requirement:
-                    return False
-                if not digimon.requires_soul:
-                    return True            
-                has_soul = state.has(digimon.name + " Soul", self.player)
-                print("Has required soul: " + str(has_soul))
-                return has_soul
+
         def has_minimum_statcap(self, state, count) -> bool:
             return state.has("Progressive Stat Cap", self.player, count)
-        if self.options.goal.value == 0:
-            self.multiworld.completion_condition[self.player] = lambda state: calculate_prosperity(self, state) >= self.options.required_prosperity.value
-        else:        
-            self.multiworld.completion_condition[self.player] = lambda state: state.can_reach_location("Digitamamon", self.player)
+
         def set_indirect_rule(self, regionName, rule):
             region = self.multiworld.get_region("Digimon", self.player)
             entrance = self.multiworld.get_entrance("Digimon", self.player)
             location = self.multiworld.get_location(regionName, self.player)
             set_rule(location, rule)
             self.multiworld.register_indirect_condition(region, entrance)
-        #for region in self.multiworld.get_regions(self.player):
-        #    for location in region.locations:
-        #            set_rule(location, lambda state: True)
+
+        def build_digimon_rule(d, world):
+            def rule(state):
+                if d.requires_soul and not state.has(f"{d.name} Soul", world.player):
+                    return False
+                if d.min_statcap > 0 and not has_minimum_statcap(world, state, d.min_statcap):
+                    return False
+                for req in d.digimon_requirements:
+                    if not state.can_reach_location(req, world.player):
+                        return False
+                if d.or_digimon_requirements:
+                    if not any(state.can_reach_location(req, world.player) for req in d.or_digimon_requirements):
+                        return False
+                if d.meramon_gate:
+                    if not (state.can_reach_location("Meramon", world.player) or calculate_prosperity(world, state, d.name) >= 6):
+                        return False
+                    if d.prosperity_requirement > 6:
+                        if calculate_prosperity(world, state, d.name) < d.prosperity_requirement:
+                            return False
+                elif d.prosperity_requirement > 1:
+                    if calculate_prosperity(world, state, d.name) < d.prosperity_requirement:
+                        return False
+                return True
+            return rule
+
+        if self.options.goal.value == 0:
+            self.multiworld.completion_condition[self.player] = lambda state: calculate_prosperity(self, state) >= self.options.required_prosperity.value
+        else:
+            self.multiworld.completion_condition[self.player] = lambda state: state.can_reach_location("Digitamamon", self.player)
 
         set_rule(self.multiworld.get_location("Start Game", self.player), lambda state: True)
-        set_rule(self.multiworld.get_entrance(f"Start Game", self.player),lambda state: True)
+        set_rule(self.multiworld.get_entrance(f"Start Game", self.player), lambda state: True)
         set_rule(self.multiworld.get_entrance(f"Digimon", self.player), lambda state: state.has("Agumon Soul", self.player))
-        # print("Setting rules for:")
-        # for digimon in recruit_digimon_list:
-            # print(digimon.name)
-            # if digimon.name != "Agumon":
-                # set_indirect_rule(self, digimon.name, lambda state, s=self, d=digimon: has_digimon_requirements(s, state, d))
-            # else:
-                # print("Skipping agumon")
-        set_indirect_rule(self, f"Betamon", lambda state: state.has("Betamon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Kunemon", lambda state: state.has("Kunemon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Palmon", lambda state: state.has("Palmon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Bakemon", lambda state: state.has("Bakemon Soul", self.player) and calculate_prosperity(self, state, "Bakemon") >= 6 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Centarumon", lambda state: state.has("Centarumon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Coelamon", lambda state: state.has("Coelamon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Gabumon", lambda state: state.has("Gabumon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Greymon", lambda state: state.has("Greymon Soul", self.player) and calculate_prosperity(self, state) >= 15 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Monochromon", lambda state: state.has("Monochromon Soul", self.player) and calculate_prosperity(self, state, "Monochromon") >= 6 and state.can_reach_location("Agumon", self.player))  
-        set_indirect_rule(self, f"Meramon", lambda state: has_minimum_statcap(self, state, 1) and (state.has("Meramon Soul", self.player) and state.can_reach_location("Agumon", self.player) and (state.can_reach_location("Coelamon", self.player) or state.can_reach_location("Betamon", self.player))))
-        set_indirect_rule(self, f"Elecmon", lambda state: state.has("Elecmon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Patamon", lambda state: state.has("Patamon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Biyomon", lambda state: state.has("Biyomon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Sukamon", lambda state: state.has("Sukamon Soul", self.player) and state.can_reach_location("Agumon", self.player) and state.can_reach_location("Meramon", self.player))
-        set_indirect_rule(self, f"Tyrannomon", lambda state: state.has("Tyrannomon Soul", self.player) and state.can_reach_location("Centarumon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Birdramon", lambda state: state.has("Birdramon Soul", self.player) and calculate_prosperity(self, state, "Birdramon") >= 6 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Unimon", lambda state: state.has("Unimon Soul", self.player) and state.can_reach_location("Centarumon", self.player) and state.can_reach_location("Meramon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Penguinmon", lambda state: state.has("Penguinmon Soul", self.player) and calculate_prosperity(self, state, "Penguinmon") >= 6 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Mojyamon", lambda state: state.has("Mojyamon Soul", self.player) and calculate_prosperity(self, state, "Mojyamon") >= 6 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Angemon", lambda state: state.has("Angemon Soul", self.player) and calculate_prosperity(self, state, "Angemon") >= 6 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Vegiemon", lambda state: state.has("Vegiemon Soul", self.player) and state.can_reach_location("Palmon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Shellmon", lambda state: state.has("Shellmon Soul", self.player) and calculate_prosperity(self, state, "Shellmon") >= 6 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Piximon", lambda state: has_minimum_statcap(self, state, 3) and (state.has("Piximon Soul", self.player) and state.can_reach_location("Agumon", self.player)))
-        set_indirect_rule(self, f"Whamon", lambda state: state.has("Whamon Soul", self.player) and calculate_prosperity(self, state, "Whamon") >= 6 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Numemon", lambda state: state.has("Numemon Soul", self.player) and state.can_reach_location("Whamon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Giromon", lambda state: state.has("Giromon Soul", self.player) and state.can_reach_location("Whamon", self.player) and state.can_reach_location("Numemon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Andromon", lambda state: state.has("Andromon Soul", self.player) and state.can_reach_location("Whamon", self.player) and state.can_reach_location("Numemon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Frigimon", lambda state: state.has("Frigimon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Seadramon", lambda state: state.has("Seadramon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Garurumon", lambda state: state.has("Garurumon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Monzaemon", lambda state: state.has("Monzaemon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Kokatorimon", lambda state: state.has("Kokatorimon Soul", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Ogremon", lambda state: state.has("Ogremon Soul", self.player) and calculate_prosperity(self, state, "Ogremon") >= 6 and state.can_reach_location("Whamon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Kuwagamon", lambda state: state.has("Kuwagamon Soul", self.player) and state.can_reach_location("Seadramon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Kabuterimon", lambda state: state.has("Kabuterimon Soul", self.player) and state.can_reach_location("Seadramon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Drimogemon", lambda state: state.has("Drimogemon Soul", self.player) and state.can_reach_location("Meramon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Vademon", lambda state: state.has("Vademon Soul", self.player) and calculate_prosperity(self, state, "Vademon") >= 45 and state.can_reach_location("Meramon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"MetalMamemon", lambda state: state.has("MetalMamemon Soul", self.player) and state.can_reach_location("Whamon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"SkullGreymon", lambda state: state.has("SkullGreymon Soul", self.player) and calculate_prosperity(self, state, "SkullGreymon") >= 50 and state.can_reach_location("Greymon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Mamemon", lambda state: state.has("Mamemon Soul", self.player) and state.can_reach_location("Meramon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Ninjamon", lambda state: state.has("Ninjamon Soul", self.player) and calculate_prosperity(self, state, "Ninjamon") >= 50 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Devimon", lambda state: state.has("Devimon Soul", self.player) and calculate_prosperity(self, state, "Devimon") >= 50 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Leomon", lambda state: state.has("Leomon Soul", self.player) and calculate_prosperity(self, state, "Leomon") >= 50 and state.can_reach_location("Meramon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Nanimon", lambda state: state.has("Nanimon Soul", self.player) and state.can_reach_location("Numemon", self.player) and state.can_reach_location("Leomon", self.player) and state.can_reach_location("Tyrannomon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"MetalGreymon", lambda state: state.has("MetalGreymon Soul", self.player) and calculate_prosperity(self, state, "MetalGreymon") >= 50 and state.can_reach_location("Greymon", self.player) and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Etemon", lambda state: state.has("Etemon Soul", self.player) and calculate_prosperity(self, state, "Etemon") >= 50 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Megadramon", lambda state: state.has("Megadramon Soul", self.player) and calculate_prosperity(self, state, "Megadramon") >= 50 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Airdramon", lambda state: state.has("Airdramon Soul", self.player) and calculate_prosperity(self, state, "Airdramon") >= 50 and state.can_reach_location("Agumon", self.player))
-        set_indirect_rule(self, f"Digitamamon", lambda state: state.has("Digitamamon Soul", self.player) and calculate_prosperity(self, state, "Digitamamon") >= 50 and state.can_reach_location("Agumon", self.player))
-        
+
+        for digimon in recruit_digimon_list:
+            if digimon.name == "Agumon":
+                continue
+            set_indirect_rule(self, digimon.name, build_digimon_rule(digimon, self))
+
         for card in [card for card in self.multiworld.get_locations(self.player) if card.category == DigimonWorldLocationCategory.CARD]:            
             if(card.name == "Machinedramon Card"):
                 set_rule(card, lambda state, s=self: state.has("Digitamamon Soul", s.player) and calculate_prosperity(s, state) >= 50 and state.can_reach_location("Agumon", s.player))
                 continue
-            set_rule(card, lambda state, s=self: state.can_reach_location("Meramon", s.player))
+            set_rule(card, lambda state, s=self: (state.can_reach_location("Meramon", s.player) or calculate_prosperity(s, state) >= 6))
 
         set_rule(self.multiworld.get_location(f"1 Prosperity", self.player), lambda state, s=self: state.can_reach_location("Agumon", s.player))
         for prosperity_location in self.multiworld.get_locations(self.player):   

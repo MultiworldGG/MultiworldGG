@@ -142,6 +142,12 @@ class RotNCollections:
         "The Baddest": SongData(154, "The Baddest", "K/DA", 5, 10, 19, 25),
         #Among Us
         "Sought (Among Us - Seek Remix)": SongData(155, "Sought (Among Us - Seek Remix)", "Free DLC", 4, 9, 15, 24),
+        #Omega Strikers
+        "The Girl Who Glitched (Ai.Mi's Theme)": SongData(156, "The Girl Who Glitched (Ai.Mi's Theme)", "Free DLC", 3, 11, 16, 23),
+        "Thousand Absolutes (Octavia's Theme)": SongData(157, "Thousand Absolutes (Octavia's Theme)", "Omega Strikers", 7, 13, 19, 26),
+        "Curtain Call (Finii's Theme)": SongData(158, "Curtain Call (Finii's Theme)", "Omega Strikers", 5, 11, 18, 25),
+        "Go Strike! (Juliette's Theme)": SongData(159, "Go Strike! (Juliette's Theme)", "Omega Strikers", 6, 12, 17, 21),
+        "Methods of Madness (Kazan's Theme)": SongData(160, "Methods of Madness (Kazan's Theme)", "Omega Strikers", 6, 11, 17, 27),
     }
 
     EXTRA_DATA: Dict[str, ExtraSongData] = {
@@ -184,6 +190,7 @@ class RotNCollections:
         "Undertale",
         "Volume 2",
         "K/DA",
+        "Omega Strikers",
     ]
 
     DLC_SONGS: List[str] = []
@@ -392,6 +399,7 @@ class RotNCollections:
             "Undertale": {name for name, data, in self.song_items.items() if data.DLC == "Undertale" or "Spider Dance" in name},
             "Volume 2": {name for name, data, in self.song_items.items() if data.DLC == "Volume 2" or "Ultra Creepy" in name},
             "K/DA": {name for name, data, in self.song_items.items() if data.DLC == "K/DA"},
+            "Omega Strikers": {name for name, data, in self.song_items.items() if data.DLC == "Omega Strikers" or "The Girl Who Glitched (Ai.Mi's Theme)" in name}
         }
 
         return groups

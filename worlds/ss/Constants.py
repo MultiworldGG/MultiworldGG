@@ -53,21 +53,30 @@ DUNGEON_FINAL_CHECKS = {
     "Fire Sanctuary": "Fire Sanctuary - Din's Flame",
 }
 
+DUNGEON_BOSS_NAMES = {
+    "Skyview": "Ghirahim I",
+    "Earth Temple": "Scaldera",
+    "Lanayru Mining Facility": "Moldarach",
+    "Ancient Cistern": "Koloktos",
+    "Sandship": "Tentalus",
+    "Fire Sanctuary": "Ghirahim II",
+}
+
 VANILLA_DUNGEON_CONNECTIONS = {
-    "Skyview": "dungeon_entrance_in_deep_woods",
-    "Earth Temple": "dungeon_entrance_in_eldin_volcano",
-    "Lanayru Mining Facility": "dungeon_entrance_in_lanayru_desert",
-    "Ancient Cistern": "dungeon_entrance_in_lake_floria",
-    "Sandship": "dungeon_entrance_in_lanayru_sand_sea",
-    "Fire Sanctuary": "dungeon_entrance_in_volcano_summit",
-    "Sky Keep": "dungeon_entrance_on_skyloft",
+    "Skyview": "Dungeon Entrance in Deep Woods",
+    "Earth Temple": "Dungeon Entrance in Eldin Volcano",
+    "Lanayru Mining Facility": "Dungeon Entrance in Lanayru Desert",
+    "Ancient Cistern": "Dungeon Entrance in Lake Floria",
+    "Sandship": "Dungeon Entrance in Lanayru Sand Sea",
+    "Fire Sanctuary": "Dungeon Entrance in Volcano Summit",
+    "Sky Keep": "Dungeon Entrance on Skyloft",
 }
 
 VANILLA_TRIAL_CONNECTIONS = {
-    "Skyloft Silent Realm": "trial_gate_on_skyloft",
-    "Faron Silent Realm": "trial_gate_in_faron_woods",
-    "Eldin Silent Realm": "trial_gate_in_eldin_volcano",
-    "Lanayru Silent Realm": "trial_gate_in_lanayru_desert",
+    "Skyloft Silent Realm": "Trial Gate on Skyloft",
+    "Faron Silent Realm": "Trial Gate in Faron Woods",
+    "Eldin Silent Realm": "Trial Gate in Eldin Volcano",
+    "Lanayru Silent Realm": "Trial Gate in Lanayru Desert",
 }
 
 DUNGEON_INITIAL_REGIONS = {
@@ -81,21 +90,37 @@ DUNGEON_INITIAL_REGIONS = {
 }
 
 DUNGEON_ENTRANCE_REGIONS = {
-    "dungeon_entrance_in_deep_woods": "Faron Woods - Deep Woods after Beehive",
-    "dungeon_entrance_in_eldin_volcano": "Eldin Volcano - Near Temple Entrance",
-    "dungeon_entrance_in_lanayru_desert": "Lanayru Desert - North Desert",
-    "dungeon_entrance_in_lake_floria": "Lake Floria - Ancient Cistern Ledge",
-    "dungeon_entrance_in_lanayru_sand_sea": "Lanayru Sand Sea - Sea",
-    "dungeon_entrance_in_volcano_summit": "Volcano Summit - After Second Frog",
-    "dungeon_entrance_on_skyloft": "Central Skyloft",
+    "Dungeon Entrance in Deep Woods": "Faron Woods - Deep Woods after Beehive",
+    "Dungeon Entrance in Eldin Volcano": "Eldin Volcano - Near Temple Entrance",
+    "Dungeon Entrance in Lanayru Desert": "Lanayru Desert - North Desert",
+    "Dungeon Entrance in Lake Floria": "Lake Floria - Ancient Cistern Ledge",
+    "Dungeon Entrance in Lanayru Sand Sea": "Lanayru Sand Sea - Sea",
+    "Dungeon Entrance in Volcano Summit": "Volcano Summit - After Second Frog",
+    "Dungeon Entrance on Skyloft": "Central Skyloft",
 }
 
 TRIAL_GATE_REGIONS = {
-    "trial_gate_on_skyloft": "Central Skyloft",
-    "trial_gate_in_faron_woods": "Faron Woods - Viewing Platform",
-    "trial_gate_in_eldin_volcano": "Eldin Volcano - Volcano Ascent",
-    "trial_gate_in_lanayru_desert": "Lanayru Desert - North Desert",
+    "Trial Gate on Skyloft": "Central Skyloft",
+    "Trial Gate in Faron Woods": "Faron Woods - Viewing Platform",
+    "Trial Gate in Eldin Volcano": "Eldin Volcano - Volcano Ascent",
+    "Trial Gate in Lanayru Desert": "Lanayru Desert - North Desert",
 }
+
+BED_REGIONS = [
+    "Upper Skyloft - Knight Academy",
+    # "Upper Skyloft - Zelda's Room", # Causes issues
+    "Central Skyloft - Orielle and Parrow's House",
+    "Central Skyloft - Kukiel's House",
+    "Central Skyloft - Piper's House",
+    "Central Skyloft - Peatrice's House",
+    "Skyloft Village - Sparrot's House",
+    "Skyloft Village - Bertie's House",
+    "Skyloft Village - Gondo's House",
+    "Skyloft Village - Pipit's House",
+    "Skyloft Village - Rupin's House",
+    "Beedle's Shop",
+    "Sky - Lumpy Pumpkin - Inside",
+]
 
 BATREAUX_LOCATIONS = [
     # Does not include chest or seventh reward!!
@@ -106,6 +131,41 @@ BATREAUX_LOCATIONS = [
     "Batreaux's House - Fifth Reward",
     "Batreaux's House - Sixth Reward",
     "Batreaux's House - Final Reward",
+]
+
+HINT_REGIONS = [
+    "Upper Skyloft",
+    "Central Skyloft",
+    "Skyloft Village",
+    "Batreaux's House",
+    "Beedle's Shop",
+    "Skyloft Silent Realm",
+    "Sky",
+    "Thunderhead",
+    "Sealed Grounds",
+    "Hylia's Realm",
+    "Faron Woods",
+    "Lake Floria",
+    "Flooded Faron Woods",
+    "Faron Silent Realm",
+    "Eldin Volcano",
+    "Mogma Turf",
+    "Volcano Summit",
+    "Bokoblin Base",
+    "Eldin Silent Realm",
+    "Lanayru Mine",
+    "Lanayru Desert",
+    "Lanayru Caves",
+    "Lanayru Gorge",
+    "Lanayru Sand Sea",
+    "Lanayru Silent Realm",
+    "Skyview",
+    "Earth Temple",
+    "Lanayru Mining Facility",
+    "Ancient Cistern",
+    "Sandship",
+    "Fire Sanctuary",
+    "Sky Keep",
 ]
 
 SWORD_COUNTS = {

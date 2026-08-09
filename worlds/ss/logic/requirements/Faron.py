@@ -4,6 +4,7 @@ FARON_REQUIREMENTS = {
         "exits": {
             "Fly to Sky": "Nothing",
             "Sealed Temple": "Nothing",
+            "Path behind Log": "Nothing",
         },
         "locations": {},
     },
@@ -36,6 +37,7 @@ FARON_REQUIREMENTS = {
         "exits": {
             "Fly to Sky": "Nothing",
             "Sealed Temple": "Nothing",
+            "Path after Vines": "Nothing",
             "Path to Forest": "Nothing",
         },
         "locations": {
@@ -91,7 +93,8 @@ FARON_REQUIREMENTS = {
                 "& ( (Can Talk to Yerbal & Has Goddess Sword) "
                 "| (Can Talk to Yerbal & option_lake_floria_yerbal) "
                 "| (option_lake_floria_open) )"
-            )
+            ),
+            "Shortcut to Floria Waterfall": "Nothing",
         },
         "locations": {
             "Item behind Lower Bombable Rock": "Bomb Bag",
@@ -271,7 +274,7 @@ FARON_REQUIREMENTS = {
     "Flooded Faron Woods": {
         "hint_region": "Flooded Faron Woods",
         "exits": {
-            "Speak to Water Dragon": "Nothing",
+            "Great Tree": "Nothing",
         },
         "locations": {
             "Yellow Tadtone under Lilypad": "Water Dragon's Scale",
@@ -291,6 +294,15 @@ FARON_REQUIREMENTS = {
             "Dark Blue Moving Tadtone inside Small Hollow Tree": "Water Dragon's Scale",
             "4 Yellow Tadtones under Small Hollow Tree": "Water Dragon's Scale",
             "8 Purple Tadtones in Clearing after Small Hollow Tree": "Water Dragon's Scale",
+        },
+    },
+    "Flooded Faron Woods - Great Tree": {
+        "hint_region": "Flooded Faron Woods",
+        "exits": {
+            "Speak to Water Dragon": "Nothing",
+            "Exit Great Tree": "Nothing",
+        },
+        "locations": {
             "Water Dragon's Reward": "Group of Tadtones x17",
         },
     },

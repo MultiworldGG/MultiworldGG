@@ -2,26 +2,26 @@
   "Upper Skyloft": {
     "hint_region": "Upper Skyloft",
     "exits": {
-      "Knight Academy": "Nothing",
-      "Zelda's Room": "Clawshots",
+      "Knight Academy Lower Door": "Nothing",
+      "Knight Academy Upper Door": "Nothing",
+      "Knight Academy Chimney": "Clawshots",
+      "Sparring Hall": "Nothing",
+      "Goddess Statue": "Nothing",
       "Stairs to Central Skyloft": "Nothing",
       "Loftwing Platforms": "Nothing"
     },
     "locations": {
       "Owlan's Gift": "Nothing",
-      "Sparring Hall Chest": "Nothing",
       "Ring Knight Academy Bell": "Distance Activator | Gust Bellows",
       "Chest near Goddess Statue": "Nothing",
-      "First Goddess Sword Item in Goddess Statue": "Nothing",
-      "Second Goddess Sword Item in Goddess Statue": "Nothing",
-      "Pumpkin Archery -- 600 Points": "Has Bow",
-      "Crystal in Sparring Hall": "Has Beetle"
+      "Pumpkin Archery -- 600 Points": "Has Bow"
     }
   },
   "Upper Skyloft - Knight Academy": {
     "hint_region": "Upper Skyloft",
     "exits": {
-      "Upper Skyloft": "Nothing"
+      "Lower Door": "Nothing",
+      "Upper Door": "Nothing"
     },
     "locations": {
       "Fledge's Gift": "Nothing",
@@ -36,11 +36,31 @@
   "Upper Skyloft - Zelda's Room": {
     "hint_region": "Upper Skyloft",
     "exits": {
-      "Knight Academy": "Nothing"
+      "Zelda's Door": "Nothing"
     },
     "locations": {
       "In Zelda's Closet": "Nothing",
       "Crystal in Zelda's Room": "Nothing"
+    }
+  },
+  "Upper Skyloft - Sparring Hall": {
+    "hint_region": "Upper Skyloft",
+    "exits": {
+      "Door": "Nothing"
+    },
+    "locations": {
+      "Sparring Hall Chest": "Nothing",
+      "Crystal in Sparring Hall": "Has Beetle"
+    }
+  },
+  "Upper Skyloft - Goddess Statue": {
+    "hint_region": "Upper Skyloft",
+    "exits": {
+      "Door": "Nothing"
+    },
+    "locations": {
+      "First Goddess Sword Item in Goddess Statue": "Nothing",
+      "Second Goddess Sword Item in Goddess Statue": "Nothing"
     }
   },
   "Central Skyloft": {
@@ -51,53 +71,163 @@
     "exits": {
       "Stairs to Upper Skyloft": "Nothing",
       "Bridge to Skyloft Village": "Nothing",
+      "Bazaar North Entrance": "Nothing",
+      "Bazaar South Entrance": "Nothing",
+      "Bazaar West Entrance": "Nothing",
+      "Orielle and Parrow's House": "Nothing",
+      "Kukiel's House": "Nothing",
+      "Piper's House": "Nothing",
+      "Peatrice's House": "Nothing",
+      "Waterfall Cave": "Can Cut Trees",
       "Ring Beedle's Bell": "Can Ring Beedle's Bell",
       "Loftwing Platforms": "Nothing",
       "Dungeon Entrance on Skyloft": "Stone of Trials & Clawshots",
       "Trial Gate on Skyloft": "Goddess's Harp & Has Song of the Hero"
     },
     "locations": {
-      "Potion Lady's Gift": "Nothing",
-      "Repair Gondo's Junk": "Can Farm Ancient Flowers",
-      "Wryna's Crystals": "Nothing",
-      "Waterfall Cave First Chest": "Can Cut Trees",
-      "Waterfall Cave Second Chest": "Can Cut Trees",
-      "Rupee Waterfall Cave Crawlspace": "Can Cut Trees",
       "Parrow's Gift": "Can Visit Orielle",
       "Parrow's Crystals": "Can Save Orielle",
-      "Peater/Peatrice's Crystals": "Nothing",
       "Item in Bird Nest": "Clawshots & Gust Bellows",
       "Shed Chest": "Water Dragon's Scale",
       "West Cliff Goddess Chest": "Goddess Cube on West Great Tree near Exit",
-      "Bazaar Goddess Chest": "Goddess Cube in Ancient Harbor",
       "Shed Goddess Chest": "Goddess Cube on Sand Slide & Water Dragon's Scale",
       "Floating Island Goddess Chest": "Goddess Cube in Lake Floria & Clawshots",
       "Waterfall Goddess Chest": "Goddess Cube in Pirate Stronghold & Clawshots",
-      "Crystal in Orielle and Parrow's House": "Nothing",
       "Crystal on West Cliff": "Nothing",
       "Crystal between Wooden Planks": "Nothing",
-      "Crystal after Waterfall Cave": "Can Cut Trees | Has Beetle",
-      "Crystal in Loftwing Prison": "Can Cut Trees | Has Beetle",
       "Crystal on Waterfall Island": "Clawshots | Has Quick Beetle",
       "Crystal on Light Tower": "Nothing"
     }
   },
+  "Central Skyloft - Under Waterfall": {
+    "hint_region": "Central Skyloft",
+    "exits": {
+      "Cave Entrance": "Nothing",
+      "Loftwing Platforms": "Nothing"
+    },
+    "locations": {
+      "Crystal after Waterfall Cave": "Nothing",
+      "Crystal in Loftwing Prison": "Nothing"
+    }
+  },
+  "Central Skyloft - Bazaar": {
+    "hint_region": "Central Skyloft",
+    "exits": {
+      "North Exit": "Nothing",
+      "South Exit": "Nothing",
+      "West Exit": "Nothing"
+    },
+    "locations": {
+      "Potion Lady's Gift": "Nothing",
+      "Repair Gondo's Junk": "Can Farm Ancient Flowers",
+      "Bazaar Goddess Chest": "Goddess Cube in Ancient Harbor"
+    }
+  },
+  "Central Skyloft - Orielle and Parrow's House": {
+    "hint_region": "Central Skyloft",
+    "exits": {
+      "Door": "Nothing"
+    },
+    "locations": {
+      "Crystal in Orielle and Parrow's House": "Nothing"
+    }
+  },
+  "Central Skyloft - Kukiel's House": {
+    "hint_region": "Central Skyloft",
+    "exits": {
+      "Door": "Nothing"
+    },
+    "locations": {
+      "Wryna's Crystals": "Nothing"
+    }
+  },
+  "Central Skyloft - Piper's House": {
+    "hint_region": "Central Skyloft",
+    "exits": {
+      "Door": "Nothing"
+    },
+    "locations": {}
+  },
+  "Central Skyloft - Peatrice's House": {
+    "hint_region": "Central Skyloft",
+    "exits": {
+      "Door": "Nothing"
+    },
+    "locations": {
+      "Peater/Peatrice's Crystals": "Nothing"
+    }
+  },
+  "Central Skyloft - Waterfall Cave": {
+    "hint_region": "Central Skyloft",
+    "exits": {
+      "Upper Cave Exit": "Nothing",
+      "Lower Cave Exit": "Nothing"
+    },
+    "locations": {
+      "Waterfall Cave First Chest": "Nothing",
+      "Waterfall Cave Second Chest": "Nothing",
+      "Rupee Waterfall Cave Crawlspace": "Nothing"
+    }
+  },
   "Skyloft Village": {
+    "hint_region": "Skyloft Village",
+    "exits": {
+      "Bridge to Central Skyloft": "Nothing",
+      "Shed Door to Batreaux's House": "Nothing",
+      "Sparrot's House": "Nothing",
+      "Bertie's House": "Nothing",
+      "Gondo's House": "Nothing",
+      "Pipit's House": "Nothing",
+      "Rupin's House": "Nothing",
+      "Loftwing Platforms": "Nothing"
+    },
+    "locations": {
+      "Crystal near Pumpkin Patch": "Nothing"
+    }
+  },
+  "Skyloft Village - Sparrot's House": {
+    "hint_region": "Skyloft Village",
+    "exits": {
+      "Door": "Nothing"
+    },
+    "locations": {
+      "Sparrot's Crystals": "Can Retrieve Crystal Ball"
+    }
+  },
+  "Skyloft Village - Bertie's House": {
+    "hint_region": "Skyloft Village",
+    "exits": {
+      "Door": "Nothing"
+    },
+    "locations": {
+      "Bertie's Crystals": "Baby Rattle"
+    }
+  },
+  "Skyloft Village - Gondo's House": {
+    "hint_region": "Skyloft Village",
+    "exits": {
+      "Door": "Nothing"
+    },
+    "locations": {}
+  },
+  "Skyloft Village - Pipit's House": {
+    "hint_region": "Skyloft Village",
+    "exits": {
+      "Door": "Nothing"
+    },
+    "locations": {
+      "Mallara's Crystals": "Gust Bellows"
+    }
+  },
+  "Skyloft Village - Rupin's House": {
     "hint_region": "Skyloft Village",
     "macros": {
       "Can Sell Treasures": "Nothing"
     },
     "exits": {
-      "Bridge to Central Skyloft": "Nothing",
-      "Shed Door to Batreaux's House": "Nothing",
-      "Loftwing Platforms": "Nothing"
+      "Door": "Nothing"
     },
-    "locations": {
-      "Mallara's Crystals": "Gust Bellows",
-      "Bertie's Crystals": "Baby Rattle",
-      "Sparrot's Crystals": "Can Retrieve Crystal Ball",
-      "Crystal near Pumpkin Patch": "Nothing"
-    }
+    "locations": {}
   },
   "Batreaux's House": {
     "hint_region": "Batreaux's House",
@@ -119,7 +249,8 @@
   "Beedle's Shop": {
     "hint_region": "Beedle's Shop",
     "exits": {
-      "Leave Shop": "Nothing"
+      "Shop Day Exit": "Nothing",
+      "Shop Night Exit": "Nothing"
     },
     "locations": {
       "300 Rupee Item": "Can Afford 300 Rupees & (Has Pouch | option_shopsanity)",

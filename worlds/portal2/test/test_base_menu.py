@@ -2,7 +2,7 @@ from worlds.AutoWorld import call_all
 
 from .bases import Portal2TestBase
 from ..Options import GameModeOption
-from ..mod_helpers.MapMenu import Menu
+from ..mod_helpers.MapMenu import GameMapMenu
 from ..Locations import all_locations_table
 
 class FakeClient:
@@ -28,7 +28,7 @@ class BaseMenuTests(Portal2TestBase):
         
         slot_data = self.world.fill_slot_data()
         
-        menu = Menu(slot_data["chapter_dict"], self.client, is_open_world=slot_data["game_mode"] == GameModeOption.OPEN_WORLD, logic_difficulty=slot_data["logic_difficulty"], wheatley_monitors=slot_data["wheatley_monitors"], ratman_dens=slot_data["ratman_dens"])
+        menu = GameMapMenu(slot_data["chapter_dict"], self.client, is_open_world=slot_data["game_mode"] == GameModeOption.OPEN_WORLD, logic_difficulty=slot_data["logic_difficulty"], wheatley_monitors=slot_data["wheatley_monitors"], ratman_dens=slot_data["ratman_dens"])
         menu.generate_menu()
         # Check menu is generated where the first map of each chapter says "command" and the rest say "command_deactivated"
         menu_string = str(menu)
@@ -36,7 +36,7 @@ class BaseMenuTests(Portal2TestBase):
         self.assertEqual(menu_string.count('"command"'), 18)
     
     def test_menu_no_maps(self) -> None:
-        menu = Menu({1: [], 2: [], 3: []}, self.client)
+        menu = GameMapMenu({1: [], 2: [], 3: []}, self.client)
         menu.generate_menu()
         menu_string = str(menu)
         # Check menu is generated where the first map of each chapter says "No Maps In This Chapter"

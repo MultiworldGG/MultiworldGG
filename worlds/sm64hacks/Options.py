@@ -25,28 +25,24 @@ def _get_json_files_from_github():
         except Exception as e:
             logger.debug(f"Could not read cache: {e}")
     
-    json_files = []
-    api_base = "https://api.github.com/repos/DNVIC/sm64hack-archipelago-jsons/contents"
+    api_tree = "https://api.github.com/repos/DNVIC/sm64hack-archipelago-jsons/git/trees/main"
     
     try:
-        root_response = requests.get(api_base, timeout=10)
-        root_response.raise_for_status()
-        folders = [item['name'] for item in root_response.json() if item.get('type') == 'dir']
-        
-        if not folders:
-            logger.warning("No folders found in GitHub repository")
+        response = requests.get(api_tree, params={"recursive": "1"}, timeout=10)
+        response.raise_for_status()
+        tree_data = response.json()
+        if tree_data.get("truncated"):
+            raise ValueError("GitHub returned a truncated repository tree")
+
+        json_files = [
+            os.path.basename(item["path"])
+            for item in tree_data.get("tree", [])
+            if item.get("type") == "blob" and item.get("path", "").endswith(".json")
+        ]
+
+        if not json_files:
+            logger.warning("No JSON files found in GitHub repository")
             return []
-        
-        for folder in folders:
-            try:
-                response = requests.get(f"{api_base}/{folder}", timeout=10)
-                response.raise_for_status()
-                for item in response.json():
-                    if item.get('type') == 'file' and item.get('name', '').endswith('.json'):
-                        json_files.append(item['name'])
-            except requests.RequestException as e:
-                logger.warning(f"Could not fetch {folder} folder from GitHub: {e}")
-                continue
         
         os.makedirs(os.path.dirname(cache_path), exist_ok=True)
         with open(cache_path, 'w') as f:

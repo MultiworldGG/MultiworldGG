@@ -13,7 +13,7 @@ from ..Options import TurtleRandomizer
 class FishFormAccessTest(AquariaTestBase):
     """Unit test used to test accessibility of locations with and without the fish form"""
     options = {
-        "turtle_randomizer": TurtleRandomizer.option_all,
+        "turtle_randomizer": TurtleRandomizer.option_all
     }
 
     def test_fish_form_location(self) -> None:

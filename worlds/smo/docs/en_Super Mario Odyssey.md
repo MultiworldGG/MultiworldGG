@@ -1,8 +1,8 @@
 # Super Mario Odyssey
-A mod adding MultiworldGG Multi World support to Super Mario Odyssey
+A mod adding MultiworldGG Multi World support to Super Mario Odyssey.
 
 ## Note
-Please note that this is a very early implementation and you are likely to encounter bugs. Please be advised.
+This mod only works on version 1.0.0 of Super Mario Odyssey! Please downgrade your game before installing the mod!
 
 ## Where is the options page?
 The [player options page for this game](../player-options) contains all the options you need to configure and export a config file.

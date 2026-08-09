@@ -52,8 +52,6 @@ ALL_REQUIREMENTS = (
 def location_requirements(world: "SSWorld", loc):
     if loc == "Upper Skyloft - Owlan's Gift":
         return lambda state, player=world.player: True
-    if loc == "Upper Skyloft - Sparring Hall Chest":
-        return lambda state, player=world.player: True
     if loc == "Upper Skyloft - Ring Knight Academy Bell":
         return lambda state, player=world.player: (
             (
@@ -65,17 +63,9 @@ def location_requirements(world: "SSWorld", loc):
         ) or state.has("Gust Bellows", player, 1)
     if loc == "Upper Skyloft - Chest near Goddess Statue":
         return lambda state, player=world.player: True
-    if loc == "Upper Skyloft - First Goddess Sword Item in Goddess Statue":
-        return lambda state, player=world.player: True
-    if loc == "Upper Skyloft - Second Goddess Sword Item in Goddess Statue":
-        return lambda state, player=world.player: True
     if loc == "Upper Skyloft - Pumpkin Archery -- 600 Points":
         return lambda state, player=world.player: (
             state.has("Progressive Bow", player, 1)
-        )
-    if loc == "Upper Skyloft - Crystal in Sparring Hall":
-        return lambda state, player=world.player: (
-            state.has("Progressive Beetle", player, 1)
         )
     if loc == "Upper Skyloft - Fledge's Gift":
         return lambda state, player=world.player: True
@@ -154,87 +144,23 @@ def location_requirements(world: "SSWorld", loc):
         return lambda state, player=world.player: True
     if loc == "Upper Skyloft - Crystal in Zelda's Room":
         return lambda state, player=world.player: True
-    if loc == "Central Skyloft - Potion Lady's Gift":
+    if loc == "Upper Skyloft - Sparring Hall Chest":
         return lambda state, player=world.player: True
-    if loc == "Central Skyloft - Repair Gondo's Junk":
+    if loc == "Upper Skyloft - Crystal in Sparring Hall":
         return lambda state, player=world.player: (
-            (
-                state.can_reach_region("Lanayru Mine - Landing", player)
-                and (
-                    (
-                        (
-                            (
-                                (state.has("Progressive Slingshot", player, 1))
-                                or (state.has("Progressive Beetle", player, 1))
-                                or (state.has("Progressive Bow", player, 1))
-                            )
-                            or state.has("Clawshots", player, 1)
-                        )
-                        or (state.has("Progressive Sword", player, 1))
-                        or state.has("Whip", player, 1)
-                        or state.has("Bomb Bag", player, 1)
-                    )
-                )
-            )
-            or (
-                state.can_reach_region("Lanayru Desert - Desert Entry", player)
-                and (state.has("Bomb Bag", player, 1))
-            )
-            or (
-                state.can_reach_region("Lanayru Desert - North Desert", player)
-                and (
-                    state.has("Bomb Bag", player, 1)
-                    or (state.has("Progressive Beetle", player, 2))
-                )
-            )
-            or (
-                state.can_reach_region("Lanayru Gorge - Gorge", player)
-                and (
-                    (
-                        (
-                            (
-                                (state.has("Progressive Slingshot", player, 1))
-                                or (state.has("Progressive Beetle", player, 1))
-                                or (state.has("Progressive Bow", player, 1))
-                            )
-                            or state.has("Clawshots", player, 1)
-                        )
-                        or (state.has("Progressive Sword", player, 1))
-                        or state.has("Whip", player, 1)
-                        or state.has("Bomb Bag", player, 1)
-                    )
-                    and state.has("Gust Bellows", player, 1)
-                )
-            )
-            or (
-                state.can_reach_region("Lanayru Sand Sea - Pirate Stronghold", player)
-                and (True)
-            )
+            state.has("Progressive Beetle", player, 1)
         )
-    if loc == "Central Skyloft - Wryna's Crystals":
+    if loc == "Upper Skyloft - First Goddess Sword Item in Goddess Statue":
         return lambda state, player=world.player: True
-    if loc == "Central Skyloft - Waterfall Cave First Chest":
-        return lambda state, player=world.player: (
-            (state.has("Progressive Sword", player, 1))
-            or state.has("Bomb Bag", player, 1)
-        )
-    if loc == "Central Skyloft - Waterfall Cave Second Chest":
-        return lambda state, player=world.player: (
-            (state.has("Progressive Sword", player, 1))
-            or state.has("Bomb Bag", player, 1)
-        )
-    if loc == "Central Skyloft - Rupee Waterfall Cave Crawlspace":
-        return lambda state, player=world.player: (
-            (state.has("Progressive Sword", player, 1))
-            or state.has("Bomb Bag", player, 1)
-        )
+    if loc == "Upper Skyloft - Second Goddess Sword Item in Goddess Statue":
+        return lambda state, player=world.player: True
     if loc == "Central Skyloft - Parrow's Gift":
         return lambda state, player=world.player: (
-            state.can_reach_region("Sky", player) and (True)
+            state.can_reach_region("Sky - Orielle's Island", player) and (True)
         )
     if loc == "Central Skyloft - Parrow's Crystals":
         return lambda state, player=world.player: (
-            state.can_reach_region("Sky", player)
+            state.can_reach_region("Sky - Orielle's Island", player)
             and (
                 (
                     (state.has("Progressive Pouch", player, 1))
@@ -242,8 +168,6 @@ def location_requirements(world: "SSWorld", loc):
                 )
             )
         )
-    if loc == "Central Skyloft - Peater/Peatrice's Crystals":
-        return lambda state, player=world.player: True
     if loc == "Central Skyloft - Item in Bird Nest":
         return lambda state, player=world.player: state.has(
             "Clawshots", player, 1
@@ -262,14 +186,6 @@ def location_requirements(world: "SSWorld", loc):
                 )
             )
         )
-    if loc == "Central Skyloft - Bazaar Goddess Chest":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Lanayru Sand Sea - Ancient Harbor", player)
-            and (
-                (state.has("Progressive Sword", player, 2))
-                and state.has("Clawshots", player, 1)
-            )
-        )
     if loc == "Central Skyloft - Shed Goddess Chest":
         return lambda state, player=world.player: (
             state.can_reach_region("Eldin Volcano - Sand Slide", player)
@@ -282,43 +198,18 @@ def location_requirements(world: "SSWorld", loc):
         ) and state.has("Clawshots", player, 1)
     if loc == "Central Skyloft - Waterfall Goddess Chest":
         return lambda state, player=world.player: (
-            state.can_reach_region("Lanayru Sand Sea - Pirate Stronghold", player)
+            state.can_reach_region(
+                "Lanayru Sand Sea - Pirate Stronghold - Under Jaw", player
+            )
             and (
                 (state.has("Progressive Sword", player, 2))
                 and state.has("Clawshots", player, 1)
-                and (
-                    state.can_reach_region(
-                        "Lanayru Sand Sea - Pirate Stronghold", player
-                    )
-                    and (
-                        (
-                            (state.has("Progressive Sword", player, 1))
-                            or (state.has("Progressive Bow", player, 1))
-                        )
-                        and (
-                            state.has("Gust Bellows", player, 1)
-                            and (state.has("Progressive Sword", player, 1))
-                        )
-                    )
-                )
             )
         ) and state.has("Clawshots", player, 1)
-    if loc == "Central Skyloft - Crystal in Orielle and Parrow's House":
-        return lambda state, player=world.player: True
     if loc == "Central Skyloft - Crystal on West Cliff":
         return lambda state, player=world.player: True
     if loc == "Central Skyloft - Crystal between Wooden Planks":
         return lambda state, player=world.player: True
-    if loc == "Central Skyloft - Crystal after Waterfall Cave":
-        return lambda state, player=world.player: (
-            (state.has("Progressive Sword", player, 1))
-            or state.has("Bomb Bag", player, 1)
-        ) or (state.has("Progressive Beetle", player, 1))
-    if loc == "Central Skyloft - Crystal in Loftwing Prison":
-        return lambda state, player=world.player: (
-            (state.has("Progressive Sword", player, 1))
-            or state.has("Bomb Bag", player, 1)
-        ) or (state.has("Progressive Beetle", player, 1))
     if loc == "Central Skyloft - Crystal on Waterfall Island":
         return lambda state, player=world.player: state.has("Clawshots", player, 1) or (
             (
@@ -407,13 +298,13 @@ def location_requirements(world: "SSWorld", loc):
                         )
                         or (
                             state.can_reach_region(
-                                "Lanayru Sand Sea - Pirate Stronghold", player
+                                "Lanayru Sand Sea - Pirate Stronghold - Inside", player
                             )
                             and (True)
                         )
                     )
                     and (
-                        state.can_reach_region("Sky", player)
+                        state.can_reach_region("Sky - Bamboo Island - Inside", player)
                         and ((state.has("Progressive Sword", player, 1)))
                     )
                 )
@@ -422,30 +313,118 @@ def location_requirements(world: "SSWorld", loc):
         )
     if loc == "Central Skyloft - Crystal on Light Tower":
         return lambda state, player=world.player: True
-    if loc == "Skyloft Village - Mallara's Crystals":
-        return lambda state, player=world.player: state.has("Gust Bellows", player, 1)
-    if loc == "Skyloft Village - Bertie's Crystals":
-        return lambda state, player=world.player: state.has("Baby Rattle", player, 1)
+    if loc == "Central Skyloft - Crystal after Waterfall Cave":
+        return lambda state, player=world.player: True
+    if loc == "Central Skyloft - Crystal in Loftwing Prison":
+        return lambda state, player=world.player: True
+    if loc == "Central Skyloft - Potion Lady's Gift":
+        return lambda state, player=world.player: True
+    if loc == "Central Skyloft - Repair Gondo's Junk":
+        return lambda state, player=world.player: (
+            (
+                state.can_reach_region("Lanayru Mine - Landing", player)
+                and (
+                    (
+                        (
+                            (
+                                (state.has("Progressive Slingshot", player, 1))
+                                or (state.has("Progressive Beetle", player, 1))
+                                or (state.has("Progressive Bow", player, 1))
+                            )
+                            or state.has("Clawshots", player, 1)
+                        )
+                        or (state.has("Progressive Sword", player, 1))
+                        or state.has("Whip", player, 1)
+                        or state.has("Bomb Bag", player, 1)
+                    )
+                )
+            )
+            or (
+                state.can_reach_region("Lanayru Desert - Desert Entry", player)
+                and (state.has("Bomb Bag", player, 1))
+            )
+            or (
+                state.can_reach_region("Lanayru Desert - North Desert", player)
+                and (
+                    state.has("Bomb Bag", player, 1)
+                    or (state.has("Progressive Beetle", player, 2))
+                )
+            )
+            or (
+                state.can_reach_region("Lanayru Gorge - Gorge", player)
+                and (
+                    (
+                        (
+                            (
+                                (state.has("Progressive Slingshot", player, 1))
+                                or (state.has("Progressive Beetle", player, 1))
+                                or (state.has("Progressive Bow", player, 1))
+                            )
+                            or state.has("Clawshots", player, 1)
+                        )
+                        or (state.has("Progressive Sword", player, 1))
+                        or state.has("Whip", player, 1)
+                        or state.has("Bomb Bag", player, 1)
+                    )
+                    and state.has("Gust Bellows", player, 1)
+                )
+            )
+            or (
+                state.can_reach_region(
+                    "Lanayru Sand Sea - Pirate Stronghold - Inside", player
+                )
+                and (True)
+            )
+        )
+    if loc == "Central Skyloft - Bazaar Goddess Chest":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Lanayru Sand Sea - Ancient Harbor", player)
+            and (
+                (state.has("Progressive Sword", player, 2))
+                and state.has("Clawshots", player, 1)
+            )
+        )
+    if loc == "Central Skyloft - Crystal in Orielle and Parrow's House":
+        return lambda state, player=world.player: True
+    if loc == "Central Skyloft - Wryna's Crystals":
+        return lambda state, player=world.player: True
+    if loc == "Central Skyloft - Peater/Peatrice's Crystals":
+        return lambda state, player=world.player: True
+    if loc == "Central Skyloft - Waterfall Cave First Chest":
+        return lambda state, player=world.player: True
+    if loc == "Central Skyloft - Waterfall Cave Second Chest":
+        return lambda state, player=world.player: True
+    if loc == "Central Skyloft - Rupee Waterfall Cave Crawlspace":
+        return lambda state, player=world.player: True
+    if loc == "Skyloft Village - Crystal near Pumpkin Patch":
+        return lambda state, player=world.player: True
     if loc == "Skyloft Village - Sparrot's Crystals":
         return lambda state, player=world.player: (
             state.can_reach_region("Eldin Volcano - Near Temple Entrance", player)
             and (state.has("Clawshots", player, 1) and state.has("Scrapper", player, 1))
         )
-    if loc == "Skyloft Village - Crystal near Pumpkin Patch":
-        return lambda state, player=world.player: True
+    if loc == "Skyloft Village - Bertie's Crystals":
+        return lambda state, player=world.player: state.has("Baby Rattle", player, 1)
+    if loc == "Skyloft Village - Mallara's Crystals":
+        return lambda state, player=world.player: state.has("Gust Bellows", player, 1)
     if loc == "Beedle's Shop - 300 Rupee Item":
         return lambda state, player=world.player: (
             (
                 (
                     (
-                        state.can_reach_region("Sky", player)
+                        state.can_reach_region("Sky - Bamboo Island - Inside", player)
                         and ((state.has("Progressive Sword", player, 1)))
                     )
-                    and (state.can_reach_region("Skyloft Village", player) and (True))
+                    and (
+                        state.can_reach_region(
+                            "Skyloft Village - Rupin's House", player
+                        )
+                        and (True)
+                    )
                 )
                 or (
                     (
-                        state.can_reach_region("Sky", player)
+                        state.can_reach_region("Sky - Fun Fun Island", player)
                         and (
                             (
                                 state.can_reach_region(
@@ -474,7 +453,7 @@ def location_requirements(world: "SSWorld", loc):
         return lambda state, player=world.player: (
             (
                 (
-                    state.can_reach_region("Sky", player)
+                    state.can_reach_region("Sky - Fun Fun Island", player)
                     and (
                         (
                             state.can_reach_region(
@@ -504,7 +483,7 @@ def location_requirements(world: "SSWorld", loc):
         return lambda state, player=world.player: (
             (
                 (
-                    state.can_reach_region("Sky", player)
+                    state.can_reach_region("Sky - Fun Fun Island", player)
                     and (
                         (
                             state.can_reach_region(
@@ -538,7 +517,7 @@ def location_requirements(world: "SSWorld", loc):
         return lambda state, player=world.player: (
             (
                 (
-                    state.can_reach_region("Sky", player)
+                    state.can_reach_region("Sky - Fun Fun Island", player)
                     and (
                         (
                             state.can_reach_region(
@@ -569,7 +548,7 @@ def location_requirements(world: "SSWorld", loc):
         return lambda state, player=world.player: (
             (
                 (
-                    state.can_reach_region("Sky", player)
+                    state.can_reach_region("Sky - Fun Fun Island", player)
                     and (
                         (
                             state.can_reach_region(
@@ -603,14 +582,17 @@ def location_requirements(world: "SSWorld", loc):
         return lambda state, player=world.player: (
             (
                 (
-                    state.can_reach_region("Sky", player)
+                    state.can_reach_region("Sky - Bamboo Island - Inside", player)
                     and ((state.has("Progressive Sword", player, 1)))
                 )
-                and (state.can_reach_region("Skyloft Village", player) and (True))
+                and (
+                    state.can_reach_region("Skyloft Village - Rupin's House", player)
+                    and (True)
+                )
             )
             or (
                 (
-                    state.can_reach_region("Sky", player)
+                    state.can_reach_region("Sky - Fun Fun Island", player)
                     and (
                         (
                             state.can_reach_region(
@@ -635,7 +617,7 @@ def location_requirements(world: "SSWorld", loc):
         return lambda state, player=world.player: (
             (
                 (
-                    state.can_reach_region("Sky", player)
+                    state.can_reach_region("Sky - Fun Fun Island", player)
                     and (
                         (
                             state.can_reach_region(
@@ -684,189 +666,10 @@ def location_requirements(world: "SSWorld", loc):
         return lambda state, player=world.player: True
     if loc == "Skyloft Silent Realm - Relic 10":
         return lambda state, player=world.player: True
-    if loc == "Sky - Lumpy Pumpkin - Chandelier":
-        return lambda state, player=world.player: True
-    if loc == "Sky - Lumpy Pumpkin - Harp Minigame":
-        return lambda state, player=world.player: state.has(
-            "Goddess's Harp", player, 1
-        ) and (
-            (state.has("Progressive Pouch", player, 1))
-            and state.has("Empty Bottle", player, 1)
-        )
-    if loc == "Sky - Kina's Crystals":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Mogma Turf - Entry", player)
-            and (state.has("Scrapper", player, 1))
-        ) and (
-            (state.has("Progressive Pouch", player, 1))
-            and state.has("Empty Bottle", player, 1)
-        )
-    if loc == "Sky - Orielle's Crystals":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Sky", player)
-            and (
-                (
-                    (state.has("Progressive Pouch", player, 1))
-                    and state.has("Empty Bottle", player, 1)
-                )
-            )
-        )
-    if loc == "Sky - Beedle's Crystals":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Central Skyloft", player)
-            and (
-                (
-                    (
-                        (state.has("Progressive Slingshot", player, 1))
-                        or (state.has("Progressive Beetle", player, 1))
-                        or (state.has("Progressive Bow", player, 1))
-                    )
-                    or state.has("Clawshots", player, 1)
-                )
-            )
-        ) and state.has("Horned Colossus Beetle", player, 1)
-    if loc == "Sky - Dodoh's Crystals":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Lanayru Desert - Desert Entry", player)
-            and (state.has("Bomb Bag", player, 1) and state.has("Scrapper", player, 1))
-        )
-    if loc == "Sky - Fun Fun Island Minigame -- 500 Rupees":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Lanayru Desert - Desert Entry", player)
-            and (state.has("Bomb Bag", player, 1) and state.has("Scrapper", player, 1))
-        )
     if loc == "Sky - Chest in Breakable Boulder near Fun Fun Island":
         return lambda state, player=world.player: state.has("Spiral Charge", player, 1)
     if loc == "Sky - Chest in Breakable Boulder near Lumpy Pumpkin":
         return lambda state, player=world.player: state.has("Spiral Charge", player, 1)
-    if loc == "Sky - Bamboo Island Goddess Chest":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Eldin Volcano - Near Temple Entrance", player)
-            and (
-                (state.has("Progressive Sword", player, 2))
-                and (state.has("Progressive Mitts", player, 1))
-            )
-        ) or (
-            state.can_reach_region("Bokoblin Base - Top of Volcano", player)
-            and (
-                (state.has("Progressive Sword", player, 2))
-                and (state.has("Progressive Mitts", player, 2))
-                and (
-                    state.can_reach_region("Bokoblin Base - Volcano", player)
-                    and (
-                        state.has("Bomb Bag", player, 1)
-                        or (state.has("Progressive Slingshot", player, 1))
-                        or (state.has("Progressive Bow", player, 1))
-                    )
-                )
-            )
-        )
-    if loc == "Sky - Goddess Chest on Island next to Bamboo Island":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Eldin Volcano - Volcano East", player)
-            and ((state.has("Progressive Sword", player, 2)))
-        ) or (
-            state.can_reach_region("Bokoblin Base - Volcano", player)
-            and ((state.has("Progressive Sword", player, 2)))
-        )
-    if loc == "Sky - Goddess Chest in Cave on Island next to Bamboo Island":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Lanayru Desert - Stone Cache", player)
-            and (
-                (state.has("Progressive Sword", player, 2))
-                and state.has("Clawshots", player, 1)
-                and state.has("Bomb Bag", player, 1)
-            )
-        ) and state.has("Water Dragon's Scale", player, 1)
-    if loc == "Sky - Beedle's Island Goddess Chest":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Lanayru Desert - Temple of Time - Temple", player)
-            and (
-                (state.has("Progressive Sword", player, 2))
-                and (
-                    (
-                        (state.has("Progressive Slingshot", player, 1))
-                        or (state.has("Progressive Beetle", player, 1))
-                        or (state.has("Progressive Bow", player, 1))
-                    )
-                    or state.has("Clawshots", player, 1)
-                )
-            )
-        )
-    if loc == "Sky - Beedle's Island Cage Goddess Chest":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Faron Woods - Deep Woods after Beehive", player)
-            and (
-                (state.has("Progressive Sword", player, 2))
-                and state.has("Clawshots", player, 1)
-            )
-        ) and (
-            state.can_reach_region("Central Skyloft", player)
-            and (
-                (
-                    (
-                        (state.has("Progressive Slingshot", player, 1))
-                        or (state.has("Progressive Beetle", player, 1))
-                        or (state.has("Progressive Bow", player, 1))
-                    )
-                    or state.has("Clawshots", player, 1)
-                )
-            )
-        )
-    if loc == "Sky - Northeast Island Goddess Chest behind Bombable Rocks":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Lanayru Mine - Landing", player)
-            and ((state.has("Progressive Sword", player, 2)))
-        ) and state.has("Bomb Bag", player, 1)
-    if loc == "Sky - Northeast Island Cage Goddess Chest":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Eldin Volcano - Near Temple Entrance", player)
-            and ((state.has("Progressive Sword", player, 2)))
-        ) or (
-            state.can_reach_region("Bokoblin Base - Top of Volcano", player)
-            and ((state.has("Progressive Sword", player, 2)))
-        )
-    if loc == "Sky - Lumpy Pumpkin - Goddess Chest on the Roof":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Skyview - Skyview Spring", player)
-            and ((state.has("Progressive Sword", player, 2)))
-        )
-    if loc == "Sky - Lumpy Pumpkin - Outside Goddess Chest":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Faron Woods - Deep Woods after Beehive", player)
-            and ((state.has("Progressive Sword", player, 2)))
-        )
-    if loc == "Sky - Goddess Chest on Island Closest to Faron Pillar":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Faron Woods - Deep Woods after Beehive", player)
-            and ((state.has("Progressive Sword", player, 2)))
-        )
-    if loc == "Sky - Goddess Chest outside Volcanic Island":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Lanayru Desert - Sand Oasis", player)
-            and ((state.has("Progressive Sword", player, 2)))
-        )
-    if loc == "Sky - Goddess Chest inside Volcanic Island":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Faron Woods - In the Woods", player)
-            and (
-                (state.has("Progressive Sword", player, 2))
-                and (
-                    state.has("Clawshots", player, 1)
-                    or state.can_reach_region(
-                        "Faron Woods - Outside Top of Great Tree", player
-                    )
-                )
-            )
-        ) and state.has("Clawshots", player, 1)
-    if loc == "Sky - Goddess Chest under Fun Fun Island":
-        return lambda state, player=world.player: (
-            state.can_reach_region("Lake Floria - Waterfall", player)
-            and (
-                (state.has("Progressive Sword", player, 2))
-                and state.has("Clawshots", player, 1)
-            )
-        )
     if loc == "Sky - Southwest Triple Island Upper Goddess Chest":
         return lambda state, player=world.player: (
             state.can_reach_region("Eldin Volcano - Volcano Entry", player)
@@ -899,48 +702,172 @@ def location_requirements(world: "SSWorld", loc):
                 and state.has("Clawshots", player, 1)
             )
         ) and state.has("Clawshots", player, 1)
-    if loc == "Sky - Crystal outside Lumpy Pumpkin":
-        return lambda state, player=world.player: True
-    if loc == "Sky - Crystal inside Lumpy Pumpkin":
-        return lambda state, player=world.player: True
-    if loc == "Sky - Crystal on Beedle's Ship":
+    if loc == "Sky - Dodoh's Crystals":
         return lambda state, player=world.player: (
-            state.can_reach_region("Central Skyloft", player)
+            state.can_reach_region("Lanayru Desert - Desert Entry", player)
+            and (state.has("Bomb Bag", player, 1) and state.has("Scrapper", player, 1))
+        )
+    if loc == "Sky - Fun Fun Island Minigame -- 500 Rupees":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Lanayru Desert - Desert Entry", player)
+            and (state.has("Bomb Bag", player, 1) and state.has("Scrapper", player, 1))
+        )
+    if loc == "Sky - Goddess Chest under Fun Fun Island":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Lake Floria - Waterfall", player)
+            and (
+                (state.has("Progressive Sword", player, 2))
+                and state.has("Clawshots", player, 1)
+            )
+        )
+    if loc == "Sky - Orielle's Crystals":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Sky - Orielle's Island", player)
             and (
                 (
-                    (
-                        (state.has("Progressive Slingshot", player, 1))
-                        or (state.has("Progressive Beetle", player, 1))
-                        or (state.has("Progressive Bow", player, 1))
-                    )
-                    or state.has("Clawshots", player, 1)
+                    (state.has("Progressive Pouch", player, 1))
+                    and state.has("Empty Bottle", player, 1)
                 )
             )
-        ) and (state.has("Progressive Beetle", player, 1))
-    if loc == "Thunderhead - Isle of Songs - Strike Crest with Goddess Sword":
-        return lambda state, player=world.player: (
-            state.has("Progressive Sword", player, 2)
         )
-    if loc == "Thunderhead - Isle of Songs - Strike Crest with Longsword":
+    if loc == "Sky - Goddess Chest outside Volcanic Island":
         return lambda state, player=world.player: (
-            state.has("Progressive Sword", player, 3)
+            state.can_reach_region("Lanayru Desert - Sand Oasis", player)
+            and ((state.has("Progressive Sword", player, 2)))
         )
-    if loc == "Thunderhead - Isle of Songs - Strike Crest with White Sword":
+    if loc == "Sky - Goddess Chest inside Volcanic Island":
         return lambda state, player=world.player: (
-            state.has("Progressive Sword", player, 4)
+            state.can_reach_region("Faron Woods - In the Woods", player)
+            and (
+                (state.has("Progressive Sword", player, 2))
+                and (
+                    state.has("Clawshots", player, 1)
+                    or state.can_reach_region(
+                        "Faron Woods - Outside Top of Great Tree", player
+                    )
+                )
+            )
+        ) and state.has("Clawshots", player, 1)
+    if loc == "Sky - Goddess Chest on Island Closest to Faron Pillar":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Faron Woods - Deep Woods after Beehive", player)
+            and ((state.has("Progressive Sword", player, 2)))
+        )
+    if loc == "Sky - Kina's Crystals":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Mogma Turf - Entry", player)
+            and (state.has("Scrapper", player, 1))
+        ) and (
+            (state.has("Progressive Pouch", player, 1))
+            and state.has("Empty Bottle", player, 1)
+        )
+    if loc == "Sky - Lumpy Pumpkin - Goddess Chest on the Roof":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Skyview - Skyview Spring", player)
+            and ((state.has("Progressive Sword", player, 2)))
+        )
+    if loc == "Sky - Lumpy Pumpkin - Outside Goddess Chest":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Faron Woods - Deep Woods after Beehive", player)
+            and ((state.has("Progressive Sword", player, 2)))
+        )
+    if loc == "Sky - Crystal outside Lumpy Pumpkin":
+        return lambda state, player=world.player: True
+    if loc == "Sky - Lumpy Pumpkin - Chandelier":
+        return lambda state, player=world.player: True
+    if loc == "Sky - Lumpy Pumpkin - Harp Minigame":
+        return lambda state, player=world.player: state.has(
+            "Goddess's Harp", player, 1
+        ) and (
+            (state.has("Progressive Pouch", player, 1))
+            and state.has("Empty Bottle", player, 1)
+        )
+    if loc == "Sky - Crystal inside Lumpy Pumpkin":
+        return lambda state, player=world.player: True
+    if loc == "Sky - Northeast Island Goddess Chest behind Bombable Rocks":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Lanayru Mine - Landing", player)
+            and ((state.has("Progressive Sword", player, 2)))
+        ) and state.has("Bomb Bag", player, 1)
+    if loc == "Sky - Northeast Island Cage Goddess Chest":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Eldin Volcano - Near Temple Entrance", player)
+            and ((state.has("Progressive Sword", player, 2)))
+        ) or (
+            state.can_reach_region("Bokoblin Base - Top of Volcano", player)
+            and ((state.has("Progressive Sword", player, 2)))
+        )
+    if loc == "Sky - Beedle's Island Goddess Chest":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Lanayru Desert - Temple of Time - Temple", player)
+            and (
+                (state.has("Progressive Sword", player, 2))
+                and (state.has("Progressive Beetle", player, 2))
+            )
+        )
+    if loc == "Sky - Beedle's Crystals":
+        return lambda state, player=world.player: state.has(
+            "Horned Colossus Beetle", player, 1
+        )
+    if loc == "Sky - Beedle's Island Cage Goddess Chest":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Faron Woods - Deep Woods after Beehive", player)
+            and (
+                (state.has("Progressive Sword", player, 2))
+                and state.has("Clawshots", player, 1)
+            )
+        )
+    if loc == "Sky - Crystal on Beedle's Ship":
+        return lambda state, player=world.player: (
+            state.has("Progressive Beetle", player, 1)
+        )
+    if loc == "Sky - Goddess Chest on Island next to Bamboo Island":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Eldin Volcano - Volcano East", player)
+            and ((state.has("Progressive Sword", player, 2)))
+        ) or (
+            state.can_reach_region("Bokoblin Base - Volcano", player)
+            and ((state.has("Progressive Sword", player, 2)))
+        )
+    if loc == "Sky - Goddess Chest in Cave on Island next to Bamboo Island":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Lanayru Desert - Stone Cache", player)
+            and (
+                (state.has("Progressive Sword", player, 2))
+                and state.has("Clawshots", player, 1)
+                and state.has("Bomb Bag", player, 1)
+            )
+        ) and state.has("Water Dragon's Scale", player, 1)
+    if loc == "Sky - Bamboo Island Goddess Chest":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Eldin Volcano - Near Temple Entrance", player)
+            and (
+                (state.has("Progressive Sword", player, 2))
+                and (state.has("Progressive Mitts", player, 1))
+            )
+        ) or (
+            state.can_reach_region("Bokoblin Base - Top of Volcano", player)
+            and (
+                (state.has("Progressive Sword", player, 2))
+                and (state.has("Progressive Mitts", player, 2))
+                and (
+                    state.can_reach_region("Bokoblin Base - Volcano", player)
+                    and (
+                        state.has("Bomb Bag", player, 1)
+                        or (state.has("Progressive Slingshot", player, 1))
+                        or (state.has("Progressive Bow", player, 1))
+                    )
+                )
+            )
         )
     if loc == "Thunderhead - Song from Levias":
         return lambda state, player=world.player: (
-            state.can_reach_region("Sky", player)
+            state.can_reach_region("Sky - Lumpy Pumpkin - Inside", player)
             and (
                 state.has("Spiral Charge", player, 1)
                 and state.has("Scrapper", player, 1)
             )
         ) and (state.has("Progressive Sword", player, 1))
-    if loc == "Thunderhead - Bug Heaven -- 10 Bugs in 3 Minutes":
-        return lambda state, player=world.player: (
-            state.has("Progressive Bug Net", player, 1)
-        )
     if loc == "Thunderhead - East Island Chest":
         return lambda state, player=world.player: (
             state.has("Progressive Mitts", player, 1)
@@ -968,6 +895,18 @@ def location_requirements(world: "SSWorld", loc):
             state.can_reach_region("Mogma Turf - Entry", player)
             and ((state.has("Progressive Sword", player, 2)))
         )
+    if loc == "Thunderhead - Isle of Songs - Strike Crest with Goddess Sword":
+        return lambda state, player=world.player: (
+            state.has("Progressive Sword", player, 2)
+        )
+    if loc == "Thunderhead - Isle of Songs - Strike Crest with Longsword":
+        return lambda state, player=world.player: (
+            state.has("Progressive Sword", player, 3)
+        )
+    if loc == "Thunderhead - Isle of Songs - Strike Crest with White Sword":
+        return lambda state, player=world.player: (
+            state.has("Progressive Sword", player, 4)
+        )
     if loc == "Thunderhead - First Goddess Chest on Mogma Mitts Island":
         return lambda state, player=world.player: (
             state.has("Progressive Mitts", player, 2)
@@ -975,7 +914,8 @@ def location_requirements(world: "SSWorld", loc):
             (
                 state.can_reach_region("Volcano Summit - Summit", player)
                 and (
-                    (state.has("Progressive Sword", player, 2))
+                    state.has("Fireshield Earrings", player, 1)
+                    and (state.has("Progressive Sword", player, 2))
                     and (
                         (state.has("Progressive Sword", player, 6))
                         or (
@@ -1010,6 +950,10 @@ def location_requirements(world: "SSWorld", loc):
                 )
             )
         ) and (state.has("Progressive Mitts", player, 2))
+    if loc == "Thunderhead - Bug Heaven -- 10 Bugs in 3 Minutes":
+        return lambda state, player=world.player: (
+            state.has("Progressive Bug Net", player, 1)
+        )
     if loc == "Thunderhead - Bug Heaven Goddess Chest":
         return lambda state, player=world.player: (
             state.can_reach_region("Volcano Summit - Waterfall", player)
@@ -1568,13 +1512,16 @@ def location_requirements(world: "SSWorld", loc):
                             )
                             or (
                                 state.can_reach_region(
-                                    "Lanayru Sand Sea - Pirate Stronghold", player
+                                    "Lanayru Sand Sea - Pirate Stronghold - Inside",
+                                    player,
                                 )
                                 and (True)
                             )
                         )
                         and (
-                            state.can_reach_region("Sky", player)
+                            state.can_reach_region(
+                                "Sky - Bamboo Island - Inside", player
+                            )
                             and ((state.has("Progressive Sword", player, 1)))
                         )
                     )
@@ -1655,13 +1602,13 @@ def location_requirements(world: "SSWorld", loc):
                         )
                         or (
                             state.can_reach_region(
-                                "Lanayru Sand Sea - Pirate Stronghold", player
+                                "Lanayru Sand Sea - Pirate Stronghold - Inside", player
                             )
                             and (True)
                         )
                     )
                     and (
-                        state.can_reach_region("Sky", player)
+                        state.can_reach_region("Sky - Bamboo Island - Inside", player)
                         and ((state.has("Progressive Sword", player, 1)))
                     )
                 )
@@ -1845,13 +1792,13 @@ def location_requirements(world: "SSWorld", loc):
                         )
                         or (
                             state.can_reach_region(
-                                "Lanayru Sand Sea - Pirate Stronghold", player
+                                "Lanayru Sand Sea - Pirate Stronghold - Inside", player
                             )
                             and (True)
                         )
                     )
                     and (
-                        state.can_reach_region("Sky", player)
+                        state.can_reach_region("Sky - Bamboo Island - Inside", player)
                         and ((state.has("Progressive Sword", player, 1)))
                     )
                 )
@@ -1946,13 +1893,13 @@ def location_requirements(world: "SSWorld", loc):
                         )
                         or (
                             state.can_reach_region(
-                                "Lanayru Sand Sea - Pirate Stronghold", player
+                                "Lanayru Sand Sea - Pirate Stronghold - Inside", player
                             )
                             and (True)
                         )
                     )
                     and (
-                        state.can_reach_region("Sky", player)
+                        state.can_reach_region("Sky - Bamboo Island - Inside", player)
                         and ((state.has("Progressive Sword", player, 1)))
                     )
                 )
@@ -1968,11 +1915,17 @@ def location_requirements(world: "SSWorld", loc):
     if loc == "Lanayru Sand Sea - Skipper's Retreat - Skydive Chest":
         return lambda state, player=world.player: True
     if loc == "Lanayru Sand Sea - Rickety Coaster -- Heart Stopping Track in 1'05":
-        return lambda state, player=world.player: state.has(
-            "Gust Bellows", player, 1
-        ) and (
-            state.has("Gust Bellows", player, 1)
-            and (state.has("Progressive Sword", player, 1))
+        return lambda state, player=world.player: (
+            state.can_reach_region(
+                "Lanayru Sand Sea - Shipyard - Construction Bay", player
+            )
+            and (
+                state.has("Gust Bellows", player, 1)
+                and (
+                    state.has("Gust Bellows", player, 1)
+                    and (state.has("Progressive Sword", player, 1))
+                )
+            )
         )
     if loc == "Lanayru Sand Sea - Pirate Stronghold - Rupee on East Sea Pillar":
         return lambda state, player=world.player: (
@@ -2062,13 +2015,13 @@ def location_requirements(world: "SSWorld", loc):
                         )
                         or (
                             state.can_reach_region(
-                                "Lanayru Sand Sea - Pirate Stronghold", player
+                                "Lanayru Sand Sea - Pirate Stronghold - Inside", player
                             )
                             and (True)
                         )
                     )
                     and (
-                        state.can_reach_region("Sky", player)
+                        state.can_reach_region("Sky - Bamboo Island - Inside", player)
                         and ((state.has("Progressive Sword", player, 1)))
                     )
                 )
@@ -2163,13 +2116,13 @@ def location_requirements(world: "SSWorld", loc):
                         )
                         or (
                             state.can_reach_region(
-                                "Lanayru Sand Sea - Pirate Stronghold", player
+                                "Lanayru Sand Sea - Pirate Stronghold - Inside", player
                             )
                             and (True)
                         )
                     )
                     and (
-                        state.can_reach_region("Sky", player)
+                        state.can_reach_region("Sky - Bamboo Island - Inside", player)
                         and ((state.has("Progressive Sword", player, 1)))
                     )
                 )
@@ -2181,104 +2134,7 @@ def location_requirements(world: "SSWorld", loc):
         == "Lanayru Sand Sea - Pirate Stronghold - Rupee on Bird Statue Pillar or Nose"
     ):
         return lambda state, player=world.player: (
-            (
-                state.has("Progressive Beetle", player, 3)
-                and state._ss_option_gondo_upgrades(player)
-            )
-            or (
-                (
-                    (state.has("Progressive Beetle", player, 2))
-                    and (
-                        (
-                            state.can_reach_region(
-                                "Faron Woods - Deep Woods Entry", player
-                            )
-                            and (True)
-                        )
-                    )
-                    and (
-                        (
-                            state.can_reach_region("Lanayru Mine - Landing", player)
-                            and (
-                                (
-                                    (
-                                        (
-                                            (
-                                                state.has(
-                                                    "Progressive Slingshot", player, 1
-                                                )
-                                            )
-                                            or (
-                                                state.has(
-                                                    "Progressive Beetle", player, 1
-                                                )
-                                            )
-                                            or (state.has("Progressive Bow", player, 1))
-                                        )
-                                        or state.has("Clawshots", player, 1)
-                                    )
-                                    or (state.has("Progressive Sword", player, 1))
-                                    or state.has("Whip", player, 1)
-                                    or state.has("Bomb Bag", player, 1)
-                                )
-                            )
-                        )
-                        or (
-                            state.can_reach_region(
-                                "Lanayru Desert - Desert Entry", player
-                            )
-                            and (state.has("Bomb Bag", player, 1))
-                        )
-                        or (
-                            state.can_reach_region(
-                                "Lanayru Desert - North Desert", player
-                            )
-                            and (
-                                state.has("Bomb Bag", player, 1)
-                                or (state.has("Progressive Beetle", player, 2))
-                            )
-                        )
-                        or (
-                            state.can_reach_region("Lanayru Gorge - Gorge", player)
-                            and (
-                                (
-                                    (
-                                        (
-                                            (
-                                                state.has(
-                                                    "Progressive Slingshot", player, 1
-                                                )
-                                            )
-                                            or (
-                                                state.has(
-                                                    "Progressive Beetle", player, 1
-                                                )
-                                            )
-                                            or (state.has("Progressive Bow", player, 1))
-                                        )
-                                        or state.has("Clawshots", player, 1)
-                                    )
-                                    or (state.has("Progressive Sword", player, 1))
-                                    or state.has("Whip", player, 1)
-                                    or state.has("Bomb Bag", player, 1)
-                                )
-                                and state.has("Gust Bellows", player, 1)
-                            )
-                        )
-                        or (
-                            state.can_reach_region(
-                                "Lanayru Sand Sea - Pirate Stronghold", player
-                            )
-                            and (True)
-                        )
-                    )
-                    and (
-                        state.can_reach_region("Sky", player)
-                        and ((state.has("Progressive Sword", player, 1)))
-                    )
-                )
-                and not state._ss_option_gondo_upgrades(player)
-            )
+            state.has("Progressive Beetle", player, 1)
         )
     if loc == "Lanayru Sand Sea - Pirate Stronghold - First Chest":
         return lambda state, player=world.player: True
@@ -3125,22 +2981,53 @@ def location_requirements(world: "SSWorld", loc):
 
 
 def exit_requirements(world: "SSWorld", ex):
-    if ex == "Upper Skyloft - Knight Academy":
+    if ex == "Upper Skyloft - Knight Academy Lower Door":
         return lambda state, player=world.player: True
-    if ex == "Upper Skyloft - Zelda's Room":
+    if ex == "Upper Skyloft - Knight Academy Upper Door":
+        return lambda state, player=world.player: True
+    if ex == "Upper Skyloft - Knight Academy Chimney":
         return lambda state, player=world.player: state.has("Clawshots", player, 1)
+    if ex == "Upper Skyloft - Sparring Hall":
+        return lambda state, player=world.player: True
+    if ex == "Upper Skyloft - Goddess Statue":
+        return lambda state, player=world.player: True
     if ex == "Upper Skyloft - Stairs to Central Skyloft":
         return lambda state, player=world.player: True
     if ex == "Upper Skyloft - Loftwing Platforms":
         return lambda state, player=world.player: True
-    if ex == "Upper Skyloft - Knight Academy - Upper Skyloft":
+    if ex == "Upper Skyloft - Knight Academy - Lower Door":
         return lambda state, player=world.player: True
-    if ex == "Upper Skyloft - Zelda's Room - Knight Academy":
+    if ex == "Upper Skyloft - Knight Academy - Upper Door":
+        return lambda state, player=world.player: True
+    if ex == "Upper Skyloft - Zelda's Room - Zelda's Door":
+        return lambda state, player=world.player: True
+    if ex == "Upper Skyloft - Sparring Hall - Door":
+        return lambda state, player=world.player: True
+    if ex == "Upper Skyloft - Goddess Statue - Door":
         return lambda state, player=world.player: True
     if ex == "Central Skyloft - Stairs to Upper Skyloft":
         return lambda state, player=world.player: True
     if ex == "Central Skyloft - Bridge to Skyloft Village":
         return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Bazaar North Entrance":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Bazaar South Entrance":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Bazaar West Entrance":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Orielle and Parrow's House":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Kukiel's House":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Piper's House":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Peatrice's House":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Waterfall Cave":
+        return lambda state, player=world.player: (
+            (state.has("Progressive Sword", player, 1))
+            or state.has("Bomb Bag", player, 1)
+        )
     if ex == "Central Skyloft - Ring Beedle's Bell":
         return lambda state, player=world.player: (
             state.can_reach_region("Central Skyloft", player)
@@ -3169,15 +3056,59 @@ def exit_requirements(world: "SSWorld", ex):
             and state.has("Eldin Song of the Hero Part", player, 1)
             and state.has("Lanayru Song of the Hero Part", player, 1)
         )
+    if ex == "Central Skyloft - Under Waterfall - Cave Entrance":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Under Waterfall - Loftwing Platforms":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Bazaar - North Exit":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Bazaar - South Exit":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Bazaar - West Exit":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Orielle and Parrow's House - Door":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Kukiel's House - Door":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Piper's House - Door":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Peatrice's House - Door":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Waterfall Cave - Upper Cave Exit":
+        return lambda state, player=world.player: True
+    if ex == "Central Skyloft - Waterfall Cave - Lower Cave Exit":
+        return lambda state, player=world.player: True
     if ex == "Skyloft Village - Bridge to Central Skyloft":
         return lambda state, player=world.player: True
     if ex == "Skyloft Village - Shed Door to Batreaux's House":
         return lambda state, player=world.player: True
+    if ex == "Skyloft Village - Sparrot's House":
+        return lambda state, player=world.player: True
+    if ex == "Skyloft Village - Bertie's House":
+        return lambda state, player=world.player: True
+    if ex == "Skyloft Village - Gondo's House":
+        return lambda state, player=world.player: True
+    if ex == "Skyloft Village - Pipit's House":
+        return lambda state, player=world.player: True
+    if ex == "Skyloft Village - Rupin's House":
+        return lambda state, player=world.player: True
     if ex == "Skyloft Village - Loftwing Platforms":
+        return lambda state, player=world.player: True
+    if ex == "Skyloft Village - Sparrot's House - Door":
+        return lambda state, player=world.player: True
+    if ex == "Skyloft Village - Bertie's House - Door":
+        return lambda state, player=world.player: True
+    if ex == "Skyloft Village - Gondo's House - Door":
+        return lambda state, player=world.player: True
+    if ex == "Skyloft Village - Pipit's House - Door":
+        return lambda state, player=world.player: True
+    if ex == "Skyloft Village - Rupin's House - Door":
         return lambda state, player=world.player: True
     if ex == "Batreaux's House - Exit Shed Door":
         return lambda state, player=world.player: True
-    if ex == "Beedle's Shop - Leave Shop":
+    if ex == "Beedle's Shop - Shop Day Exit":
+        return lambda state, player=world.player: True
+    if ex == "Beedle's Shop - Shop Night Exit":
         return lambda state, player=world.player: True
     if ex == "Skyloft Silent Realm - Trial Gate":
         return lambda state, player=world.player: True
@@ -3197,11 +3128,99 @@ def exit_requirements(world: "SSWorld", ex):
         return lambda state, player=world.player: state.has("Ruby Tablet", player, 1)
     if ex == "Sky - Amber Pillar":
         return lambda state, player=world.player: state.has("Amber Tablet", player, 1)
+    if ex == "Sky - Land at Triple Island":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Land at Fun Fun Island":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Land at Orielle's Island":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Land at Volcanic Island":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Land at Island near Faron Pillar":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Land at Lumpy Pumpkin":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Land at Northeast Island":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Land at Beedle's Island":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Land at Island next to Bamboo Island":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Land at Bamboo Island":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Triple Island - Fly to Sky":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Fun Fun Island - Fly to Sky":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Orielle's Island - Fly to Sky":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Volcanic Island - Fly to Sky":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Island near Faron Pillar - Fly to Sky":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Lumpy Pumpkin - Outside - Fly to Sky":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Lumpy Pumpkin - Outside - South Door":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Lumpy Pumpkin - Outside - North Door":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Lumpy Pumpkin - Inside - Front Door":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Lumpy Pumpkin - Inside - Back Door":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Northeast Island - Fly to Sky":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Beedle's Island - Day - Fly to Sky":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Beedle's Island - Night - Airship Door":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Island next to Bamboo Island - Fly to Sky":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Bamboo Island - Outside - Fly to Sky":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Bamboo Island - Outside - Door":
+        return lambda state, player=world.player: True
+    if ex == "Sky - Bamboo Island - Inside - Door":
+        return lambda state, player=world.player: True
     if ex == "Thunderhead - Opening in Clouds":
+        return lambda state, player=world.player: state.has(
+            "Ballad of the Goddess", player, 1
+        )
+    if ex == "Thunderhead - Land at East Island":
+        return lambda state, player=world.player: True
+    if ex == "Thunderhead - Land at Isle of Songs":
+        return lambda state, player=world.player: True
+    if ex == "Thunderhead - Land at Mogma Mitts Island":
+        return lambda state, player=world.player: True
+    if ex == "Thunderhead - Land at Bug Heaven":
+        return lambda state, player=world.player: True
+    if ex == "Thunderhead - Land at Island next to Bug Heaven":
+        return lambda state, player=world.player: True
+    if ex == "Thunderhead - East Island - Fly to Thunderhead":
+        return lambda state, player=world.player: True
+    if ex == "Thunderhead - Isle of Songs - Outside - Fly to Thunderhead":
+        return lambda state, player=world.player: True
+    if ex == "Thunderhead - Isle of Songs - Outside - Crawlspace after Bridge Puzzle":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Thunderhead - Isle of Songs - Outside", player)
+            and ((state.has("Progressive Sword", player, 1)))
+        )
+    if ex == "Thunderhead - Isle of Songs - Inside - Crawlspace":
+        return lambda state, player=world.player: (
+            state.can_reach_region("Thunderhead - Isle of Songs - Outside", player)
+            and ((state.has("Progressive Sword", player, 1)))
+        )
+    if ex == "Thunderhead - Mogma Mitts Island - Fly to Thunderhead":
+        return lambda state, player=world.player: True
+    if ex == "Thunderhead - Bug Heaven - Fly to Thunderhead":
+        return lambda state, player=world.player: True
+    if ex == "Thunderhead - Island next to Bug Heaven - Fly to Thunderhead":
         return lambda state, player=world.player: True
     if ex == "Sealed Grounds - Spiral - Fly to Sky":
         return lambda state, player=world.player: True
     if ex == "Sealed Grounds - Spiral - Sealed Temple":
+        return lambda state, player=world.player: True
+    if ex == "Sealed Grounds - Spiral - Path behind Log":
         return lambda state, player=world.player: True
     if ex == "Sealed Grounds - Sealed Temple - Spiral":
         return lambda state, player=world.player: True
@@ -3232,6 +3251,8 @@ def exit_requirements(world: "SSWorld", ex):
     if ex == "Sealed Grounds - Behind the Temple - Fly to Sky":
         return lambda state, player=world.player: True
     if ex == "Sealed Grounds - Behind the Temple - Sealed Temple":
+        return lambda state, player=world.player: True
+    if ex == "Sealed Grounds - Behind the Temple - Path after Vines":
         return lambda state, player=world.player: True
     if ex == "Sealed Grounds - Behind the Temple - Path to Forest":
         return lambda state, player=world.player: True
@@ -3288,6 +3309,8 @@ def exit_requirements(world: "SSWorld", ex):
             )
             or (state._ss_option_lake_floria_open(player))
         )
+    if ex == "Faron Woods - In the Woods - Shortcut to Floria Waterfall":
+        return lambda state, player=world.player: True
     if ex == "Faron Woods - Viewing Platform - Fly to Sky":
         return lambda state, player=world.player: True
     if ex == "Faron Woods - Viewing Platform - In the Woods":
@@ -3424,7 +3447,11 @@ def exit_requirements(world: "SSWorld", ex):
         return lambda state, player=world.player: True
     if ex == "Lake Floria - Ancient Cistern Ledge - Dungeon Entrance in Lake Floria":
         return lambda state, player=world.player: True
-    if ex == "Flooded Faron Woods - Speak to Water Dragon":
+    if ex == "Flooded Faron Woods - Great Tree":
+        return lambda state, player=world.player: True
+    if ex == "Flooded Faron Woods - Great Tree - Speak to Water Dragon":
+        return lambda state, player=world.player: True
+    if ex == "Flooded Faron Woods - Great Tree - Exit Great Tree":
         return lambda state, player=world.player: True
     if ex == "Faron Silent Realm - Trial Gate":
         return lambda state, player=world.player: True
@@ -3482,11 +3509,21 @@ def exit_requirements(world: "SSWorld", ex):
         )
     if ex == "Eldin Volcano - Near Temple Entrance - Hot Cave":
         return lambda state, player=world.player: True
+    if ex == "Eldin Volcano - Near Temple Entrance - Upper Eldin Cave":
+        return lambda state, player=world.player: True
     if ex == "Eldin Volcano - Near Temple Entrance - Dungeon Entrance in Eldin Volcano":
-        return lambda state, player=world.player: state.has("Key Piece", player, 5)
+        return lambda state, player=world.player: state.has(
+            "Key Piece", player, 5
+        ) or state._ss_option_et_open(player)
     if ex == "Eldin Volcano - Hot Cave - Near Temple Entrance":
         return lambda state, player=world.player: state.can_reach_region(
             "Eldin Volcano - Near Temple Entrance", player
+        ) and (
+            state.can_reach_region("Eldin Volcano - Hot Cave", player)
+            and (
+                state.has("Fireshield Earrings", player, 1)
+                or state._ss_option_damage_multiplier_under_12(player)
+            )
         )
     if ex == "Eldin Volcano - Hot Cave - Sand Slide":
         return lambda state, player=world.player: (
@@ -3506,6 +3543,12 @@ def exit_requirements(world: "SSWorld", ex):
         return lambda state, player=world.player: True
     if ex == "Eldin Volcano - Bottom of Sand Slide - Hot Cave":
         return lambda state, player=world.player: True
+    if ex == "Eldin Volcano - Bottom of Sand Slide - Lower Eldin Cave":
+        return lambda state, player=world.player: True
+    if ex == "Eldin Volcano - Fire Dragon Dummy Room 1 - Cave Exit":
+        return lambda state, player=world.player: True
+    if ex == "Eldin Volcano - Fire Dragon Dummy Room 2 - Cave Exit":
+        return lambda state, player=world.player: True
     if ex == "Mogma Turf - Entry - Use First Air Vent":
         return lambda state, player=world.player: True
     if ex == "Mogma Turf - Entry - Use Digging Air Vent":
@@ -3517,7 +3560,9 @@ def exit_requirements(world: "SSWorld", ex):
     if ex == "Mogma Turf - After Digging Air Vent - Use Last Air Vent":
         return lambda state, player=world.player: True
     if ex == "Volcano Summit - Summit - Path out of Summit before Sandy Slope":
-        return lambda state, player=world.player: True
+        return lambda state, player=world.player: state.has(
+            "Fireshield Earrings", player, 1
+        )
     if ex == "Volcano Summit - Summit - Path out of Summit after Lava Platforms":
         return lambda state, player=world.player: state.has(
             "Fireshield Earrings", player, 1
@@ -3603,10 +3648,33 @@ def exit_requirements(world: "SSWorld", ex):
                 )
             )
         )
+    if ex == "Bokoblin Base - Volcano - Lower Bokoblin Base Cave":
+        return lambda state, player=world.player: state.has(
+            "Clawshots", player, 1
+        ) and (
+            state.has("Bomb Bag", player, 1)
+            or (
+                state.has("Whip", player, 1)
+                and (
+                    state.can_reach_region("Bokoblin Base - Volcano", player)
+                    and (
+                        state.has("Bomb Bag", player, 1)
+                        or (state.has("Progressive Slingshot", player, 1))
+                        or (state.has("Progressive Bow", player, 1))
+                    )
+                )
+            )
+        )
     if ex == "Bokoblin Base - Top of Volcano - Path through Hot Cave":
         return lambda state, player=world.player: state.has(
             "Bomb Bag", player, 1
         ) and state.has("Fireshield Earrings", player, 1)
+    if ex == "Bokoblin Base - Top of Volcano - Upper Bokoblin Base Cave":
+        return lambda state, player=world.player: True
+    if ex == "Bokoblin Base - Fire Dragon Dummy Room 1 - Cave Exit":
+        return lambda state, player=world.player: True
+    if ex == "Bokoblin Base - Fire Dragon Dummy Room 2 - Cave Exit":
+        return lambda state, player=world.player: True
     if ex == "Bokoblin Base - Summit - Dragon's Lair":
         return lambda state, player=world.player: True
     if ex == "Bokoblin Base - Dragon's Lair - Exit Dragon's Lair":
@@ -3868,24 +3936,100 @@ def exit_requirements(world: "SSWorld", ex):
                 or (state.has("Progressive Bow", player, 1))
             )
         )
-    if ex == "Lanayru Sand Sea - Skipper's Retreat - Top of Skipper's Retreat - Shack":
+    if (
+        ex
+        == "Lanayru Sand Sea - Skipper's Retreat - Top of Skipper's Retreat - Outside Shack"
+    ):
         return lambda state, player=world.player: state.has("Clawshots", player, 1)
-    if ex == "Lanayru Sand Sea - Skipper's Retreat - Shack - Top of Skipper's Retreat":
-        return lambda state, player=world.player: state.has("Clawshots", player, 1)
-    if ex == "Lanayru Sand Sea - Skipper's Retreat - Shack - After Rock":
+    if ex == "Lanayru Sand Sea - Skipper's Retreat - Outside Shack - Shack Door":
         return lambda state, player=world.player: True
-    if ex == "Lanayru Sand Sea - Skipper's Retreat - Shack - Skydive":
+    if (
+        ex
+        == "Lanayru Sand Sea - Skipper's Retreat - Outside Shack - Top of Skipper's Retreat"
+    ):
+        return lambda state, player=world.player: state.has("Clawshots", player, 1)
+    if ex == "Lanayru Sand Sea - Skipper's Retreat - Outside Shack - After Rock":
+        return lambda state, player=world.player: True
+    if ex == "Lanayru Sand Sea - Skipper's Retreat - Outside Shack - Skydive":
+        return lambda state, player=world.player: True
+    if ex == "Lanayru Sand Sea - Skipper's Retreat - Inside Shack - Door":
         return lambda state, player=world.player: True
     if ex == "Lanayru Sand Sea - Skipper's Retreat - Skydive - Dock":
         return lambda state, player=world.player: state.has("Clawshots", player, 1)
-    if ex == "Lanayru Sand Sea - Shipyard - Fly to Sky":
+    if ex == "Lanayru Sand Sea - Shipyard - Outside - Fly to Sky":
         return lambda state, player=world.player: True
-    if ex == "Lanayru Sand Sea - Shipyard - Boat to Sea":
+    if ex == "Lanayru Sand Sea - Shipyard - Outside - Boat to Sea":
         return lambda state, player=world.player: True
-    if ex == "Lanayru Sand Sea - Pirate Stronghold - Fly to Sky":
+    if ex == "Lanayru Sand Sea - Shipyard - Outside - Roller Coaster":
         return lambda state, player=world.player: True
-    if ex == "Lanayru Sand Sea - Pirate Stronghold - Boat to Sea":
+    if ex == "Lanayru Sand Sea - Shipyard - Outside - Door":
         return lambda state, player=world.player: True
+    if ex == "Lanayru Sand Sea - Shipyard - Past Roller Coaster - Roller Coaster":
+        return lambda state, player=world.player: state.has("Impossible", player, 1)
+    if ex == "Lanayru Sand Sea - Shipyard - Past Roller Coaster - Door":
+        return lambda state, player=world.player: True
+    if ex == "Lanayru Sand Sea - Shipyard - Construction Bay - Upper Door":
+        return lambda state, player=world.player: state.has("Impossible", player, 1)
+    if ex == "Lanayru Sand Sea - Shipyard - Construction Bay - Lower Door":
+        return lambda state, player=world.player: True
+    if ex == "Lanayru Sand Sea - Pirate Stronghold - Outside - Fly to Sky":
+        return lambda state, player=world.player: True
+    if ex == "Lanayru Sand Sea - Pirate Stronghold - Outside - Boat to Sea":
+        return lambda state, player=world.player: True
+    if ex == "Lanayru Sand Sea - Pirate Stronghold - Outside - Side Door":
+        return lambda state, player=world.player: True
+    if ex == "Lanayru Sand Sea - Pirate Stronghold - Outside - Open Jaw":
+        return lambda state, player=world.player: (
+            state.can_reach_region(
+                "Lanayru Sand Sea - Pirate Stronghold - Inside", player
+            )
+            and (
+                (
+                    (state.has("Progressive Sword", player, 1))
+                    or (state.has("Progressive Bow", player, 1))
+                )
+                and (
+                    state.has("Gust Bellows", player, 1)
+                    and (state.has("Progressive Sword", player, 1))
+                )
+            )
+        )
+    if ex == "Lanayru Sand Sea - Pirate Stronghold - Under Jaw - Open Jaw":
+        return lambda state, player=world.player: (
+            state.can_reach_region(
+                "Lanayru Sand Sea - Pirate Stronghold - Inside", player
+            )
+            and (
+                (
+                    (state.has("Progressive Sword", player, 1))
+                    or (state.has("Progressive Bow", player, 1))
+                )
+                and (
+                    state.has("Gust Bellows", player, 1)
+                    and (state.has("Progressive Sword", player, 1))
+                )
+            )
+        )
+    if ex == "Lanayru Sand Sea - Pirate Stronghold - Under Jaw - Door under Jaw":
+        return lambda state, player=world.player: True
+    if ex == "Lanayru Sand Sea - Pirate Stronghold - Inside - Upper Door":
+        return lambda state, player=world.player: True
+    if ex == "Lanayru Sand Sea - Pirate Stronghold - Inside - Lower Door":
+        return lambda state, player=world.player: (
+            state.can_reach_region(
+                "Lanayru Sand Sea - Pirate Stronghold - Inside", player
+            )
+            and (
+                (
+                    (state.has("Progressive Sword", player, 1))
+                    or (state.has("Progressive Bow", player, 1))
+                )
+                and (
+                    state.has("Gust Bellows", player, 1)
+                    and (state.has("Progressive Sword", player, 1))
+                )
+            )
+        )
     if ex == "Lanayru Silent Realm - Trial Gate":
         return lambda state, player=world.player: True
     if ex == "Skyview - First Room - Dungeon Exit":

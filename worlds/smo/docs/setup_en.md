@@ -1,6 +1,6 @@
 # Super Mario Odyssey Setup Guide
 ## Note
-Please note that this is a very early implementation and you are likely to encounter bugs. Please be advised.
+This mod only works on version 1.0.0 of Super Mario Odyssey! Please downgrade your game before installing the mod!
 
 ## Installation and Usage
 * Install the latest version from the [Github releases page](https://github.com/Kgamer77/SuperMarioOdysseyArchipelago/releases). Either `SMO_Archipelago_Vx.x_Switch.zip` for console or `SMO_Archipelago_Vx.x_Emu.zip` for emulator. The apworld file is usually not needed when using MWGG.

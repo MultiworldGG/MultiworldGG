@@ -1,0 +1,7 @@
+{
+    "game": "Super Metroid",
+    "authors": ["lordlou"],
+    "minimum_ap_version": "0.2.6",
+    "compatible_version": 7,
+    "version": 7
+}

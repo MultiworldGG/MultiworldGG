@@ -1,0 +1,1053 @@
+[
+    {
+        "name": "Greenflower Zone (Act 1)",
+        "sections": [
+{"name": "Greenflower (Act 1) Star Emblem"},
+{"name": "Greenflower (Act 1) Spade Emblem"},
+{"name": "Greenflower (Act 1) Heart Emblem"},
+{"name": "Greenflower (Act 1) Diamond Emblem"},
+{"name": "Greenflower (Act 1) Club Emblem"},
+{"name": "Greenflower (Act 1) Emerald Token - Breakable Wall Near Bridge"},
+{"name": "Greenflower (Act 1) Emerald Token - Midair Top Path"},
+{"name": "Greenflower (Act 1) Time Emblem"},
+{"name": "Greenflower (Act 1) Ring Emblem"},
+{"name": "Greenflower (Act 1) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 442,
+                "y": 231
+            }
+        ]
+    },
+    {
+        "name": "Greenflower Zone (Act 2)",
+        "sections": [
+{"name": "Greenflower (Act 2) Star Emblem"},
+{"name": "Greenflower (Act 2) Spade Emblem"},
+{"name": "Greenflower (Act 2) Heart Emblem"},
+{"name": "Greenflower (Act 2) Diamond Emblem"},
+{"name": "Greenflower (Act 2) Club Emblem"},
+{"name": "Greenflower (Act 2) Emerald Token - Main Path Cave"},
+{"name": "Greenflower (Act 2) Emerald Token - Under Bridge Near End"},
+{"name": "Greenflower (Act 2) Emerald Token - No Spin High on Ledge"},
+{"name": "Greenflower (Act 2) Time Emblem"},
+{"name": "Greenflower (Act 2) Ring Emblem"},
+{"name": "Greenflower (Act 2) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 466,
+                "y": 231
+            }
+        ]
+    },
+    {
+        "name": "Greenflower Zone (Act 3)",
+        "sections": [
+{"name": "Greenflower (Act 3) Time Emblem"},
+{"name": "Greenflower (Act 3) Score Emblem"},
+{"name": "Greenflower (Act 3) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 490,
+                "y": 231
+            }
+        ]
+    },
+    {
+        "name": "Techno Hill Zone (Act 1)",
+        "sections": [
+{"name": "Techno Hill (Act 1) Star Emblem"},
+{"name": "Techno Hill (Act 1) Spade Emblem"},
+{"name": "Techno Hill (Act 1) Heart Emblem"},
+{"name": "Techno Hill (Act 1) Diamond Emblem"},
+{"name": "Techno Hill (Act 1) Club Emblem"},
+{"name": "Techno Hill (Act 1) Emerald Token - On Pipes"},
+{"name": "Techno Hill (Act 1) Emerald Token - Alt Path Under Slime"},
+{"name": "Techno Hill (Act 1) Time Emblem"},
+{"name": "Techno Hill (Act 1) Ring Emblem"},
+{"name": "Techno Hill (Act 1) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 442,
+                "y": 327
+            }
+        ]
+    },
+    {
+        "name": "Techno Hill Zone (Act 2)",
+        "sections": [
+{"name": "Techno Hill (Act 2) Star Emblem"},
+{"name": "Techno Hill (Act 2) Spade Emblem"},
+{"name": "Techno Hill (Act 2) Heart Emblem"},
+{"name": "Techno Hill (Act 2) Diamond Emblem"},
+{"name": "Techno Hill (Act 2) Club Emblem"},
+{"name": "Techno Hill (Act 2) Emerald Token - Deep in Slime"},
+{"name": "Techno Hill (Act 2) Emerald Token - Knuckles Path Backtrack"},
+{"name": "Techno Hill (Act 2) Time Emblem"},
+{"name": "Techno Hill (Act 2) Ring Emblem"},
+{"name": "Techno Hill (Act 2) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 466,
+                "y": 327
+            }
+        ]
+    },
+    {
+        "name": "Techno Hill Zone (Act 3)",
+        "sections": [
+{"name": "Techno Hill (Act 3) Time Emblem"},
+{"name": "Techno Hill (Act 3) Score Emblem"},
+{"name": "Techno Hill (Act 3) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 490,
+                "y": 327
+            }
+        ]
+    },
+    {
+        "name": "Deep Sea Zone (Act 1)",
+        "sections": [
+{"name": "Deep Sea (Act 1) Star Emblem"},
+{"name": "Deep Sea (Act 1) Spade Emblem"},
+{"name": "Deep Sea (Act 1) Heart Emblem"},
+{"name": "Deep Sea (Act 1) Diamond Emblem"},
+{"name": "Deep Sea (Act 1) Club Emblem"},
+{"name": "Deep Sea (Act 1) Emerald Token - V on Right Path"},
+{"name": "Deep Sea (Act 1) Emerald Token - Underwater Air Pocket on Right Path"},
+{"name": "Deep Sea (Act 1) Emerald Token - Yellow Doors"},
+{"name": "Deep Sea (Act 1) Emerald Token - Large Underwater Curve"},
+{"name": "Deep Sea (Act 1) Emerald Token - Waterslide Gargoyles"},
+{"name": "Deep Sea (Act 1) Time Emblem"},
+{"name": "Deep Sea (Act 1) Ring Emblem"},
+{"name": "Deep Sea (Act 1) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 540,
+                "y": 231
+            }
+        ]
+    },
+    {
+        "name": "Deep Sea Zone (Act 2)",
+        "sections": [
+{"name": "Deep Sea (Act 2) Star Emblem"},
+{"name": "Deep Sea (Act 2) Spade Emblem"},
+{"name": "Deep Sea (Act 2) Heart Emblem"},
+{"name": "Deep Sea (Act 2) Diamond Emblem"},
+{"name": "Deep Sea (Act 2) Club Emblem"},
+{"name": "Deep Sea (Act 2) Emerald Token - Near Heart Emblem"},
+{"name": "Deep Sea (Act 2) Emerald Token - Red and Yellow Springs"},
+{"name": "Deep Sea (Act 2) Emerald Token - Down Right From Goal"},
+{"name": "Deep Sea (Act 2) Emerald Token - No Spin Spring Turnaround"},
+{"name": "Deep Sea (Act 2) Time Emblem"},
+{"name": "Deep Sea (Act 2) Ring Emblem"},
+{"name": "Deep Sea (Act 2) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 564,
+                "y": 231
+            }
+        ]
+    },
+    {
+        "name": "Deep Sea Zone (Act 3)",
+        "sections": [
+{"name": "Deep Sea (Act 3) Time Emblem"},
+{"name": "Deep Sea (Act 3) Score Emblem"},
+{"name": "Deep Sea (Act 3) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 588,
+                "y": 231
+            }
+        ]
+    },
+    {
+        "name": "Castle Eggman Zone (Act 1)",
+        "sections": [
+{"name": "Castle Eggman (Act 1) Star Emblem"},
+{"name": "Castle Eggman (Act 1) Spade Emblem"},
+{"name": "Castle Eggman (Act 1) Heart Emblem"},
+{"name": "Castle Eggman (Act 1) Diamond Emblem"},
+{"name": "Castle Eggman (Act 1) Club Emblem"},
+{"name": "Castle Eggman (Act 1) Emerald Token - V on Right Path"},
+{"name": "Castle Eggman (Act 1) Emerald Token - Behind Fence Near Start"},
+{"name": "Castle Eggman (Act 1) Emerald Token - Spring Side Path"},
+{"name": "Castle Eggman (Act 1) Emerald Token - Inside Castle"},
+{"name": "Castle Eggman (Act 1) Time Emblem"},
+{"name": "Castle Eggman (Act 1) Ring Emblem"},
+{"name": "Castle Eggman (Act 1) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 540,
+                "y": 327
+            }
+        ]
+    },
+    {
+        "name": "Castle Eggman Zone (Act 2)",
+        "sections": [
+{"name": "Castle Eggman (Act 2) Star Emblem"},
+{"name": "Castle Eggman (Act 2) Spade Emblem"},
+{"name": "Castle Eggman (Act 2) Heart Emblem"},
+{"name": "Castle Eggman (Act 2) Diamond Emblem"},
+{"name": "Castle Eggman (Act 2) Club Emblem"},
+{"name": "Castle Eggman (Act 2) Emerald Token - First Outside Area"},
+{"name": "Castle Eggman (Act 2) Emerald Token - Corner of Right Courtyard"},
+{"name": "Castle Eggman (Act 2) Emerald Token - Back Window of Left Courtyard"},
+{"name": "Castle Eggman (Act 2) Emerald Token - Spring Near Club Emblem"},
+{"name": "Castle Eggman (Act 2) Emerald Token - High Ledge Before Final Tower"},
+{"name": "Castle Eggman (Act 2) Time Emblem"},
+{"name": "Castle Eggman (Act 2) Ring Emblem"},
+{"name": "Castle Eggman (Act 2) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 564,
+                "y": 327
+            }
+        ]
+    },
+    {
+        "name": "Castle Eggman Zone (Act 3)",
+        "sections": [
+{"name": "Castle Eggman (Act 3) Time Emblem"},
+{"name": "Castle Eggman (Act 3) Score Emblem"},
+{"name": "Castle Eggman (Act 3) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 588,
+                "y": 327
+            }
+        ]
+    },
+    {
+        "name": "Arid Canyon Zone (Act 1)",
+        "sections": [
+{"name": "Arid Canyon (Act 1) Star Emblem"},
+{"name": "Arid Canyon (Act 1) Spade Emblem"},
+{"name": "Arid Canyon (Act 1) Heart Emblem"},
+{"name": "Arid Canyon (Act 1) Diamond Emblem"},
+{"name": "Arid Canyon (Act 1) Club Emblem"},
+{"name": "Arid Canyon (Act 1) Emerald Token - Speed Shoes Central Pillar"},
+{"name": "Arid Canyon (Act 1) Emerald Token - Behind Pillar Before Exploding Ramp"},
+{"name": "Arid Canyon (Act 1) Emerald Token - Behind Wall and Spikes"},
+{"name": "Arid Canyon (Act 1) Time Emblem"},
+{"name": "Arid Canyon (Act 1) Ring Emblem"},
+{"name": "Arid Canyon (Act 1) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 638,
+                "y": 231
+            }
+        ]
+    },
+    {
+        "name": "Arid Canyon Zone (Act 2)",
+        "sections": [
+{"name": "Arid Canyon (Act 2) Star Emblem"},
+{"name": "Arid Canyon (Act 2) Spade Emblem"},
+{"name": "Arid Canyon (Act 2) Heart Emblem"},
+{"name": "Arid Canyon (Act 2) Diamond Emblem"},
+{"name": "Arid Canyon (Act 2) Club Emblem"},
+{"name": "Arid Canyon (Act 2) Emerald Token - Left No Spin Path Minecarts"},
+{"name": "Arid Canyon (Act 2) Emerald Token - Large Arch Cave Right Ledge"},
+{"name": "Arid Canyon (Act 2) Emerald Token - Knuckles Dark Path Around Wall"},
+{"name": "Arid Canyon (Act 2) Time Emblem"},
+{"name": "Arid Canyon (Act 2) Ring Emblem"},
+{"name": "Arid Canyon (Act 2) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 662,
+                "y": 231
+            }
+        ]
+    },
+    {
+        "name": "Arid Canyon Zone (Act 3)",
+        "sections": [
+{"name": "Arid Canyon (Act 3) Time Emblem"},
+{"name": "Arid Canyon (Act 3) Score Emblem"},
+{"name": "Arid Canyon (Act 3) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 686,
+                "y": 231
+            }
+        ]
+    },
+    {
+        "name": "Red Volcano Zone (Act 1)",
+        "sections": [
+{"name": "Red Volcano (Act 1) Star Emblem"},
+{"name": "Red Volcano (Act 1) Spade Emblem"},
+{"name": "Red Volcano (Act 1) Heart Emblem"},
+{"name": "Red Volcano (Act 1) Diamond Emblem"},
+{"name": "Red Volcano (Act 1) Club Emblem"},
+{"name": "Red Volcano (Act 1) Emerald Token - First Outside Area"},
+{"name": "Red Volcano (Act 1) Emerald Token - Hidden Ledge Near 4th Checkpoint"},
+{"name": "Red Volcano (Act 1) Emerald Token - Rollout Rock Lavafall"},
+{"name": "Red Volcano (Act 1) Emerald Token - Behind Ending Rocket"},
+{"name": "Red Volcano (Act 1) Time Emblem"},
+{"name": "Red Volcano (Act 1) Ring Emblem"},
+{"name": "Red Volcano (Act 1) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 638,
+                "y": 327
+            }
+        ]
+    },
+    {
+        "name": "Egg Rock Zone (Act 1)",
+        "sections": [
+{"name": "Egg Rock (Act 1) Star Emblem"},
+{"name": "Egg Rock (Act 1) Spade Emblem"},
+{"name": "Egg Rock (Act 1) Heart Emblem"},
+{"name": "Egg Rock (Act 1) Diamond Emblem"},
+{"name": "Egg Rock (Act 1) Club Emblem"},
+{"name": "Egg Rock (Act 1) Emerald Token - Gravity Conveyor Belts"},
+{"name": "Egg Rock (Act 1) Emerald Token - Moving Platforms"},
+{"name": "Egg Rock (Act 1) Time Emblem"},
+{"name": "Egg Rock (Act 1) Ring Emblem"},
+{"name": "Egg Rock (Act 1) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 662,
+                "y": 327
+            }
+        ]
+    },
+    {
+        "name": "Egg Rock Zone (Act 2)",
+        "sections": [
+{"name": "Egg Rock (Act 2) Star Emblem"},
+{"name": "Egg Rock (Act 2) Spade Emblem"},
+{"name": "Egg Rock (Act 2) Heart Emblem"},
+{"name": "Egg Rock (Act 2) Diamond Emblem"},
+{"name": "Egg Rock (Act 2) Club Emblem"},
+{"name": "Egg Rock (Act 2) Emerald Token - Outside on Metal Beam"},
+{"name": "Egg Rock (Act 2) Emerald Token - Skip Gravity Pad"},
+{"name": "Egg Rock (Act 2) Emerald Token - Disco Room"},
+{"name": "Egg Rock (Act 2) Time Emblem"},
+{"name": "Egg Rock (Act 2) Ring Emblem"},
+{"name": "Egg Rock (Act 2) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 686,
+                "y": 327
+            }
+        ]
+    },
+    {
+        "name": "Black Core Zone (Act 1)",
+        "sections": [
+{"name": "Black Core (Act 1) Time Emblem"},
+{"name": "Black Core (Act 1) Ring Emblem"},
+{"name": "Black Core (Act 1) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 744,
+                "y": 256
+            }
+        ]
+    },
+    {
+        "name": "Black Core Zone (Act 2)",
+        "sections": [
+{"name": "Black Core (Act 2) Time Emblem"},
+{"name": "Black Core (Act 2) Score Emblem"},
+{"name": "Black Core (Act 2) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 744,
+                "y": 280
+            }
+        ]
+    },
+    {
+        "name": "Black Core Zone (Act 3)",
+        "sections": [
+{"name": "Black Core (Act 3) Time Emblem"},
+{"name": "Black Core (Act 3) Score Emblem"},
+{"name": "Black Core (Act 3) Clear"},
+{"name": "Good Ending"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 744,
+                "y": 304
+            }
+        ]
+    },
+    {
+        "name": "Frozen Hillside Zone",
+        "sections": [
+{"name": "Frozen Hillside Star Emblem"},
+{"name": "Frozen Hillside Spade Emblem"},
+{"name": "Frozen Hillside Heart Emblem"},
+{"name": "Frozen Hillside Diamond Emblem"},
+{"name": "Frozen Hillside Club Emblem"},
+{"name": "Frozen Hillside Time Emblem"},
+{"name": "Frozen Hillside Ring Emblem"},
+{"name": "Frozen Hillside Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 314,
+                "y": 172
+            }
+        ]
+    },
+    {
+        "name": "Pipe Towers Zone",
+        "sections": [
+{"name": "Pipe Towers Star Emblem"},
+{"name": "Pipe Towers Spade Emblem"},
+{"name": "Pipe Towers Heart Emblem"},
+{"name": "Pipe Towers Diamond Emblem"},
+{"name": "Pipe Towers Club Emblem"},
+{"name": "Pipe Towers Time Emblem"},
+{"name": "Pipe Towers Ring Emblem"},
+{"name": "Pipe Towers Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 314,
+                "y": 140
+            }
+        ]
+    },
+    {
+        "name": "Forest Fortress Zone",
+        "sections": [
+{"name": "Forest Fortress Star Emblem"},
+{"name": "Forest Fortress Spade Emblem"},
+{"name": "Forest Fortress Heart Emblem"},
+{"name": "Forest Fortress Diamond Emblem"},
+{"name": "Forest Fortress Club Emblem"},
+{"name": "Forest Fortress Time Emblem"},
+{"name": "Forest Fortress Ring Emblem"},
+{"name": "Forest Fortress Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 314,
+                "y": 108
+            }
+        ]
+    },
+    {
+        "name": "Final Demo Zone",
+        "sections": [
+{"name": "Final Demo Emerald Token - Greenflower (Act 1) Breakable Wall Near Bridge"},
+{"name": "Final Demo Emerald Token - Greenflower (Act 2) Underwater Cave"},
+{"name": "Final Demo Emerald Token - Greenflower (Act 2) Under Bridge Near End"},
+{"name": "Final Demo Emerald Token - Techno Hill (Act 1) On Pipes"},
+{"name": "Final Demo Emerald Token - Techno Hill (Act 1) Alt Path Fans"},
+{"name": "Final Demo Emerald Token - Techno Hill (Act 2) Breakable Wall"},
+{"name": "Final Demo Emerald Token - Techno Hill (Act 2) Under Poison Near End"},
+{"name": "Final Demo Emerald Token - Castle Eggman (Act 1) Small Lake Near Start"},
+{"name": "Final Demo Emerald Token - Castle Eggman (Act 1) Tunnel Before Act Clear"},
+{"name": "Final Demo Emerald Token - Castle Eggman (Act 2) Water Flow in Sewers"},
+{"name": "Final Demo Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 362,
+                "y": 64
+            }
+        ]
+    },
+    {
+        "name": "Haunted Heights Zone",
+        "sections": [
+{"name": "Haunted Heights Star Emblem"},
+{"name": "Haunted Heights Spade Emblem"},
+{"name": "Haunted Heights Heart Emblem"},
+{"name": "Haunted Heights Diamond Emblem"},
+{"name": "Haunted Heights Club Emblem"},
+{"name": "Haunted Heights Time Emblem"},
+{"name": "Haunted Heights Ring Emblem"},
+{"name": "Haunted Heights Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 410,
+                "y": 172
+            }
+        ]
+    },
+    {
+        "name": "Aerial Garden Zone",
+        "sections": [
+{"name": "Aerial Garden Star Emblem"},
+{"name": "Aerial Garden Spade Emblem"},
+{"name": "Aerial Garden Heart Emblem"},
+{"name": "Aerial Garden Diamond Emblem"},
+{"name": "Aerial Garden Club Emblem"},
+{"name": "Aerial Garden Emerald Token - First Room High Tower"},
+{"name": "Aerial Garden Emerald Token - Diamond Emblem 1"},
+{"name": "Aerial Garden Emerald Token - Diamond Emblem 2"},
+{"name": "Aerial Garden Emerald Token - Diamond Emblem 3"},
+{"name": "Aerial Garden Emerald Token - Diamond Emblem 4"},
+{"name": "Aerial Garden Emerald Token - Underwater on Pillar"},
+{"name": "Aerial Garden Time Emblem"},
+{"name": "Aerial Garden Ring Emblem"},
+{"name": "Aerial Garden Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 410,
+                "y": 140
+            }
+        ]
+    },
+    {
+        "name": "Azure Temple Zone",
+        "sections": [
+{"name": "Azure Temple Star Emblem"},
+{"name": "Azure Temple Spade Emblem"},
+{"name": "Azure Temple Heart Emblem"},
+{"name": "Azure Temple Diamond Emblem"},
+{"name": "Azure Temple Club Emblem"},
+{"name": "Azure Temple Time Emblem"},
+{"name": "Azure Temple Ring Emblem"},
+{"name": "Azure Temple Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 410,
+                "y": 108
+            }
+        ]
+    },
+    {
+        "name": "Floral Field Zone",
+        "sections": [
+{"name": "Floral Field Moon Emblem"},
+{"name": "Floral Field Sun Emblem"},
+{"name": "Floral Field Time Emblem"},
+{"name": "Floral Field A Rank Emblem"},
+{"name": "Floral Field Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 314,
+                "y": 332
+            }
+        ]
+    },
+    {
+        "name": "Toxic Plateau Zone",
+        "sections": [
+{"name": "Toxic Plateau Moon Emblem"},
+{"name": "Toxic Plateau Sun Emblem"},
+{"name": "Toxic Plateau Time Emblem"},
+{"name": "Toxic Plateau A Rank Emblem"},
+{"name": "Toxic Plateau Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 314,
+                "y": 356
+            }
+        ]
+    },
+    {
+        "name": "Flooded Cove Zone",
+        "sections": [
+{"name": "Flooded Cove Moon Emblem"},
+{"name": "Flooded Cove Sun Emblem"},
+{"name": "Flooded Cove Time Emblem"},
+{"name": "Flooded Cove A Rank Emblem"},
+{"name": "Flooded Cove Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 314,
+                "y": 380
+            }
+        ]
+    },
+    {
+        "name": "Cavern Fortress Zone",
+        "sections": [
+{"name": "Cavern Fortress Moon Emblem"},
+{"name": "Cavern Fortress Sun Emblem"},
+{"name": "Cavern Fortress Time Emblem"},
+{"name": "Cavern Fortress A Rank Emblem"},
+{"name": "Cavern Fortress Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 314,
+                "y": 404
+            }
+        ]
+    },
+    {
+        "name": "Dusty Wasteland Zone",
+        "sections": [
+{"name": "Dusty Wasteland Moon Emblem"},
+{"name": "Dusty Wasteland Sun Emblem"},
+{"name": "Dusty Wasteland Time Emblem"},
+{"name": "Dusty Wasteland A Rank Emblem"},
+{"name": "Dusty Wasteland Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 314,
+                "y": 428
+            }
+        ]
+    },
+    {
+        "name": "Magma Caves Zone",
+        "sections": [
+{"name": "Magma Caves Moon Emblem"},
+{"name": "Magma Caves Sun Emblem"},
+{"name": "Magma Caves Time Emblem"},
+{"name": "Magma Caves A Rank Emblem"},
+{"name": "Magma Caves Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 314,
+                "y": 452
+            }
+        ]
+    },
+    {
+        "name": "Egg Satellite Zone",
+        "sections": [
+{"name": "Egg Satellite Moon Emblem"},
+{"name": "Egg Satellite Sun Emblem"},
+{"name": "Egg Satellite Time Emblem"},
+{"name": "Egg Satellite A Rank Emblem"},
+{"name": "Egg Satellite Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 314,
+                "y": 476
+            }
+        ]
+    },
+    {
+        "name": "Black Hole Zone",
+        "sections": [
+{"name": "Black Hole Moon Emblem"},
+{"name": "Black Hole Sun Emblem"},
+{"name": "Black Hole Time Emblem"},
+{"name": "Black Hole A Rank Emblem"},
+{"name": "Black Hole Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 410,
+                "y": 476
+            }
+        ]
+    },
+    {
+        "name": "Dream Hill Zone",
+        "sections": [
+{"name": "Dream Hill Moon Emblem"},
+{"name": "Dream Hill Sun Emblem"},
+{"name": "Dream Hill Time Emblem"},
+{"name": "Dream Hill A Rank Emblem"},
+{"name": "Dream Hill Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 410,
+                "y": 452
+            }
+        ]
+    },
+    {
+        "name": "Christmas Chime Zone",
+        "sections": [
+{"name": "Christmas Chime Moon Emblem"},
+{"name": "Christmas Chime Sun Emblem"},
+{"name": "Christmas Chime Time Emblem"},
+{"name": "Christmas Chime A Rank Emblem"},
+{"name": "Christmas Chime Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 410,
+                "y": 428
+            }
+        ]
+    },
+    {
+        "name": "Alpine Paradise Zone (Act 1)",
+        "sections": [
+{"name": "Alpine Paradise (Act 1) Moon Emblem"},
+{"name": "Alpine Paradise (Act 1) Sun Emblem"},
+{"name": "Alpine Paradise (Act 1) Time Emblem"},
+{"name": "Alpine Paradise (Act 1) A Rank Emblem"},
+{"name": "Alpine Paradise (Act 1) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 374,
+                "y": 528
+            }
+        ]
+    },
+    {
+        "name": "Alpine Paradise Zone (Act 2)",
+        "sections": [
+{"name": "Alpine Paradise (Act 2) Moon Emblem"},
+{"name": "Alpine Paradise (Act 2) Sun Emblem"},
+{"name": "Alpine Paradise (Act 2) Time Emblem"},
+{"name": "Alpine Paradise (Act 2) A Rank Emblem"},
+{"name": "Alpine Paradise (Act 2) Clear"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 350,
+                "y": 528
+            }
+        ]
+    },
+    {
+        "name": "Jade Valley Zone",
+        "sections": [
+{"name": "Jade Valley Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 246,
+                "y": 364
+            }
+        ]
+    },
+    {
+        "name": "Noxious Factory Zone",
+        "sections": [
+{"name": "Noxious Factory Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 222,
+                "y": 364
+            }
+        ]
+    },
+    {
+        "name": "Tidal Palace Zone",
+        "sections": [
+{"name": "Tidal Palace Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 198,
+                "y": 364
+            }
+        ]
+    },
+    {
+        "name": "Thunder Citadel Zone",
+        "sections": [
+{"name": "Thunder Citadel Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 174,
+                "y": 364
+            }
+        ]
+    },
+    {
+        "name": "Desolate Twilight Zone",
+        "sections": [
+{"name": "Desolate Twilight Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 150,
+                "y": 364
+            }
+        ]
+    },
+    {
+        "name": "Frigid Mountain Zone",
+        "sections": [
+{"name": "Frigid Mountain Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 126,
+                "y": 364
+            }
+        ]
+    },
+    {
+        "name": "Orbital Hangar Zone",
+        "sections": [
+{"name": "Orbital Hangar Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 102,
+                "y": 364
+            }
+        ]
+    },
+    {
+        "name": "Sapphire Falls Zone",
+        "sections": [
+{"name": "Sapphire Falls Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 246,
+                "y": 196
+            }
+        ]
+    },
+    {
+        "name": "Diamond Blizzard Zone",
+        "sections": [
+{"name": "Diamond Blizzard Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 222,
+                "y": 196
+            }
+        ]
+    },
+    {
+        "name": "Celestial Sanctuary Zone",
+        "sections": [
+{"name": "Celestial Sanctuary Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 198,
+                "y": 196
+            }
+        ]
+    },
+    {
+        "name": "Frost Columns Zone",
+        "sections": [
+{"name": "Frost Columns Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 174,
+                "y": 196
+            }
+        ]
+    },
+    {
+        "name": "Meadow Match Zone",
+        "sections": [
+{"name": "Meadow Match Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 150,
+                "y": 196
+            }
+        ]
+    },
+    {
+        "name": "Granite Lake Zone",
+        "sections": [
+{"name": "Granite Lake Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 126,
+                "y": 196
+            }
+        ]
+    },
+    {
+        "name": "Summit Showdown Zone",
+        "sections": [
+{"name": "Summit Showdown Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 102,
+                "y": 196
+            }
+        ]
+    },
+    {
+        "name": "Silver Shiver Zone",
+        "sections": [
+{"name": "Silver Shiver Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 66,
+                "y": 316
+            }
+        ]
+    },
+    {
+        "name": "Uncharted Badlands Zone",
+        "sections": [
+{"name": "Uncharted Badlands Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 66,
+                "y": 292
+            }
+        ]
+    },
+    {
+        "name": "Pristine Shores Zone",
+        "sections": [
+{"name": "Pristine Shores Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 66,
+                "y": 268
+            }
+        ]
+    },
+    {
+        "name": "Crystalline Heights Zone",
+        "sections": [
+{"name": "Crystalline Heights Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 66,
+                "y": 244
+            }
+        ]
+    },
+    {
+        "name": "Starlit Warehouse Zone",
+        "sections": [
+{"name": "Starlit Warehouse Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 42,
+                "y": 402
+            }
+        ]
+    },
+    {
+        "name": "Midnight Abyss Zone",
+        "sections": [
+{"name": "Midnight Abyss Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 42,
+                "y": 378
+            }
+        ]
+    },
+    {
+        "name": "Airborne Temple Zone",
+        "sections": [
+{"name": "Airborne Temple Ring Emblem"}
+],
+        "map_locations": [
+            {
+                "map": "aphub",
+                "x": 42,
+                "y": 354
+            }
+        ]
+    }
+
+
+]

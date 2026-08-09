@@ -160,14 +160,14 @@ class CompletionType(Choice):
     Bad Ending - Beat Black Core Zone Act 3
     Good Ending - Beat Black Core Act 3 with all 7 Chaos Emeralds
     Challenge Levels - Beat Haunted Heights, Aerial Garden and Azure Temple
-    All Bosses - Beat every Act 3 and every act of Black Core Zone"""
-
-
+    All Bosses - Beat every Act 3 and every act of Black Core Zone
+    Inazuma Mindscape - Beat Soul of Facciolo in Mindscape (Requires the Silverhorn addon)"""
     display_name = "Completion Goal"
     option_Bad_Ending = 0
     option_Good_Ending = 1
     option_Challenge_Levels = 2
     option_All_Bosses = 3
+    option_Inazuma_Mindscape = 4
 
 class RingResetZoneExit(DefaultOnToggle):
     """Rings reset locally on zone entry/exit (takes priority over hard ringlink)"""
@@ -185,7 +185,9 @@ class RingLink(Choice):
     option_hard = 3
     display_name = "Ring Link"
 
-
+class AnnoyingLocations(DefaultOnToggle):
+    """Ensure annoying locations such as most of Aerial Garden and Azure Temple only contain filler"""
+    display_name = "Exclude Annoying Locations"
 
 srb2_options_groups = [
     OptionGroup("Emblem Toggles", [
@@ -214,6 +216,7 @@ srb2_options_groups = [
         FillerWeights,
         EmblemNumber,
         RingResetZoneExit,
+        AnnoyingLocations,
         RingLink
 
 
@@ -245,6 +248,8 @@ class SRB2Options(PerGameCommonOptions):
     completion_type: CompletionType
     bcz_emblem_percent:BlackCoreEmblemCost
     trap_percentage:TrapPercentage
+    exclude_annoying:AnnoyingLocations
     ring_link: RingLink
     ring_reset_zone_exit: RingResetZoneExit
     death_link: DeathLink
+

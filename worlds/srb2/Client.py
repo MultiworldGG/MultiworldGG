@@ -111,6 +111,7 @@ class SRB2Context(CommonContext):
         self.ring_link: bool = False
         self.previous_rings = 0
         self.ring_link_rings = 0
+        self.current_map = 0
         self.debug_logging = False
         self.goal_type: int = 0
         self.bcz_emblems: int = 0
@@ -213,7 +214,7 @@ class SRB2Context(CommonContext):
                     self.ring_link = True
             await self.update_tags()
         else:
-            logger.info(f"Couldn't change tag, not yet connected to Archipelago server!")
+            logger.info(f"Couldn't change tag, not yet connected to {apname} server!")
 
     async def update_tags(self):
         await self.send_msgs([{"cmd": "ConnectUpdate", "tags": self.tags}])
@@ -788,7 +789,7 @@ async def item_handler(ctx, file_path):
 
 
 
-            if (ctx.bcz_emblems > 0 and emblems >= ctx.bcz_emblems) and (ctx.goal_type == 0 or ctx.goal_type == 1 or ctx.goal_type == 3):
+            if (ctx.bcz_emblems > 0 and emblems >= ctx.bcz_emblems) and (ctx.goal_type == 0 or ctx.goal_type == 1 or ctx.goal_type == 3 or ctx.goal_type == 4):
                 if not ctx.actsanity and 17 not in locs_received:
                     locs_received.append(17)
                     received_bytes[2] = received_bytes[2] | 32
@@ -916,13 +917,30 @@ async def item_handler(ctx, file_path):
                 print("save file 1 not found, create it to more easily return to the multiworld hub")
 
             # todo handle deathlink traps and 1ups
+            f.seek(0x20)
+            map_id = int.from_bytes(f.read(1), 'little')
+            if map_id != ctx.current_map:
+                ctx.current_map = map_id
+                #logger.info("awaiting map switch with " + f"srb2_map_{ctx.team}_{ctx.slot}")
+                await ctx.send_msgs([{
+                        "cmd": "Set",
+                        "key": f"srb2_map_{ctx.team}_{ctx.slot}",
+                        "default": 0,
+                        "want_reply": False,
+                        "operations": [{
+                            "operation": "replace",
+                            "value": map_id,
+                        }],
+                    }])
 
-            if ctx.death_link == True:
+
+
+            if ctx.death_link:
                 f.seek(0x01)
                 is_dead = f.read(1)
                 if ctx.death_link_lockout + 4 <= time.time():
 
-                    if ctx.activate_death == True:
+                    if ctx.activate_death:
                         if ctx.debug_logging:
                             logger.info("received deathlink")
                         f.seek(0x00)  # received deathlink
@@ -958,7 +976,8 @@ async def item_handler(ctx, file_path):
                     #TODO special code for when rings goes over 9999
 
                 if srb2toclient != 0:
-                    #logger.info("got here with a difference of " + str(difference))
+                    if ctx.debug_logging:
+                        logger.info("sent out: " + str(srb2toclient))
                     msg = {
                         "cmd": "Bounce",
                         "slots": [ctx.slot],
@@ -969,24 +988,32 @@ async def item_handler(ctx, file_path):
                         },
                         "tags":["RingLink"]
                     }
-                    await ctx.send_msgs([msg])
+
                     f.seek(0x1C)
                     f.write(int(0).to_bytes(2, byteorder="little",signed=True))
+                    await ctx.send_msgs([msg])
 
 
                 #here write new ring value back into file
 
 
                 if ctx.ring_link_rings != 0:
+
                     f.seek(0x1A)
-                    clienttosrb2 = int.from_bytes(current_rings_bytes, byteorder="little", signed=True)
+                    send_rings_bytes = f.read(2)
+                    clienttosrb2 = int.from_bytes(send_rings_bytes, byteorder="little", signed=True)
+                    if ctx.debug_logging:
+                        logger.info("in file: " + str(clienttosrb2))
                     clienttosrb2 += ctx.ring_link_rings
+                    f.seek(0x1A)
                     if 32767 >= clienttosrb2 >= -32767:
                         f.write(int(clienttosrb2).to_bytes(2, byteorder="little", signed=True))
                     elif clienttosrb2 <-32767:
                         f.write(int(-32767).to_bytes(2, byteorder="little", signed=True))
                     else:
                         f.write(int(32767).to_bytes(2, byteorder="little", signed=True))
+                    if ctx.debug_logging:
+                        logger.info("recieved: " + str(ctx.ring_link_rings))
                     ctx.ring_link_rings = 0
                     #logger.info("ring link rings is " + str(ctx.ring_link_rings))
 
@@ -1245,15 +1272,15 @@ async def file_watcher(ctx, file_path):
 ##    cfg.write("addfile addons/SL_ArchipelagoSRB2_v134.pk3")
 ##    cfg.close()
 ##    os.chdir(file_path)
-    if os.path.exists(file_path+"/addons/SL_ArchipelagoSRB2_v172.pk3"):
+    if os.path.exists(file_path+"/addons/SL_ArchipelagoSRB2_v173.pk3"):
         try:
-            subprocess.Popen([file_path + "/srb2win.exe", "-file", "/addons/SL_ArchipelagoSRB2_v172.pk3"], cwd=file_path)
+            subprocess.Popen([file_path + "/srb2win.exe", "-file", "/addons/SL_ArchipelagoSRB2_v173.pk3"], cwd=file_path)
         except:
             logger.info('Could not open srb2win.exe. Open the game and load the addon manually')
     else:
         try:
             subprocess.Popen([file_path + "/srb2win.exe"], cwd=file_path)
-            logger.info('Could not find SL_ArchipelagoSRB2_v172.pk3 in the addons folder. You must load the addon manually')
+            logger.info('Could not find SL_ArchipelagoSRB2_v173.pk3 in the addons folder. You must load the addon manually')
         except:
             logger.info('Could not open srb2win.exe. Open the game and load the addon manually')
 
@@ -1455,6 +1482,13 @@ async def file_watcher(ctx, file_path):
                     if lines == i:
                         locs_to_send.add(superringids.index(i) + 570)
                         break
+                if lines == "MindscapeVictory":
+                    if ctx.goal_type == 4:
+                        ctx.finished_game = True
+                        await ctx.send_msgs([{
+                            "cmd": "StatusUpdate",
+                            "status": ClientStatus.CLIENT_GOAL
+                        }])
             g.truncate(0)
             g.close()
         except FileNotFoundError:

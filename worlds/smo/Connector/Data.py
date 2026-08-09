@@ -2923,13 +2923,13 @@ valid_warps = {
 }
 
 goals = {
-    4: 560,
-    5: 424,
-    9: 95,
-    12: 290,
-    14: 2499,
-    17: 1055,
-    18: 1061
+    2: 560,   # Sand - The Hole in the Desert
+    4: 424,   # Lake - Brooadls Over the Lake
+    7: 95,    # Metro - A Traditional Festival!
+    10: 290,  # Luncheon - Cookatile Showdown!
+    13: 2499, # Moon - Beat the Game
+    15: 1055, # Dark - Arrival at Rabbit Ridge!
+    16: 1061  # Darker - A Long Journey's End!
 }
 
 def get_item_type(item : int) -> int:

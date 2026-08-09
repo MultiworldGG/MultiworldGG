@@ -71,15 +71,16 @@ item_table["Clique: Feeling of Satisfaction"] = ItemData(9999902, ItemClassifica
 # item_table[f"Disable Jumppads"] = ItemData(60000010, ItemClassification.filler)
 # item_table[f"DEBUG Goal"] = ItemData(60000015, ItemClassification.filler)
 
-item_table[f"Dark skies"] = ItemData(9999001, ItemClassification.trap)
-item_table[f"No skylight"] = ItemData(9999002, ItemClassification.trap)
+item_table[f"Dark skies"] = ItemData(9999001, ItemClassification.filler)
+item_table[f"No skylight"] = ItemData(9999002, ItemClassification.filler)
+item_table[f"Starry sky"] = ItemData(9999006, ItemClassification.filler)
+item_table[f"Red sky"] = ItemData(9999007, ItemClassification.filler)
+item_table[f"Hurricane"] = ItemData(9999008, ItemClassification.filler)
 item_table[f"Slo-mo"] = ItemData(9999003, ItemClassification.trap)
 item_table[f"Fast-mo"] = ItemData(9999004, ItemClassification.trap)
-# item_table[f"Disco sky"] = ItemData(9999005, ItemClassification.trap)
-item_table[f"Starry sky"] = ItemData(9999006, ItemClassification.trap)
-item_table[f"Red sky"] = ItemData(9999007, ItemClassification.trap)
-item_table[f"Hurricane"] = ItemData(9999008, ItemClassification.trap)
-item_table[f"Blurrrrgh"] = ItemData(9999009, ItemClassification.trap)
+item_table[f"Blurrrgh"] = ItemData(9999009, ItemClassification.trap)
+item_table[f"Ascend"] = ItemData(9999010, ItemClassification.trap)
+item_table[f"Depthless"] = ItemData(9999011, ItemClassification.trap)
 
 english_flowers = [
     "Rose",

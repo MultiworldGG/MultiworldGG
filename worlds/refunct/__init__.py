@@ -11,7 +11,7 @@ from worlds.AutoWorld import WebWorld, World
 
 from .Items import RefunctItem, item_table, item_groups
 from .Locations import location_table, RefunctLocation, starting_platform, platforms_with_button_on_them, platforms_without_button_ids, platforms_with_button_ids, block_brawl_scores, block_blub_scores
-from .Options import Goal, RefunctOptions, RenameGrass, RenameFlowers, Traps, Cubes, ExtraCubes, UnderwaterCubes, refunct_option_groups
+from .Options import Goal, RefunctOptions, RenameGrass, RenameFlowers, Cubes, ExtraCubes, refunct_option_groups
 
 
 class RefunctWeb(WebWorld):
@@ -47,7 +47,7 @@ class RefunctWorld(World):
     
     item_name_groups = item_groups
 
-    ap_world_version = "1.2.2"        
+    ap_world_version = "1.3.2"        
         
     def get_filler_item_name(self) -> str:
         return ":)"
@@ -55,13 +55,9 @@ class RefunctWorld(World):
     def generate_early(self):
         if hasattr(self.multiworld, "re_gen_passthrough"):
             self.regen = self.multiworld.re_gen_passthrough[self.game]
-
-            # setattr(self.options, "just_clique", self.regen["just_clique"])
             
             setattr(self.options, "cubes", self.regen["cubes"])
             setattr(self.options, "extra_cubes", self.regen["extra_cubes"])
-        # self.just_clique = self.just_clique
-        self.just_clique = False
    
 
     def create_items(self):
@@ -69,14 +65,6 @@ class RefunctWorld(World):
         # OG Randomizer Minigame info
         self.set_og_randomizer_order()
         self.set_rando_mountain_order()
-        
-        if self.just_clique:
-            self.minigames = ["Clique"]
-            self.multiworld.itempool.append(self.create_item("Clique: Button Activation"))
-            self.multiworld.itempool.append(self.create_item("Clique: Feeling of Satisfaction"))
-            self.amount_of_grass = 0
-            self.required_grass = 0
-            return
         
         items_to_add = []
         locs_force_filler = []
@@ -281,22 +269,13 @@ class RefunctWorld(World):
         for loc in locs_force_filler:
             items_to_add.append("Flower")
                         
+        
+        effects_and_traps = self.options.effects_and_traps.value
+        
         trap_items = []
-        if self.options.traps == Traps.option_pretty or self.options.traps == Traps.option_all:
-            trap_items = [
-                "Dark skies",
-                "No skylight",
-                # "Disco sky",
-                "Starry sky",
-                "Red sky",
-                "Hurricane",
-            ] * 2
-        if self.options.traps == Traps.option_all:
-            trap_items += [
-                "Slo-mo",
-                "Fast-mo",
-                "Blurrrrgh",
-            ] * 2
+        for thing, value in effects_and_traps.items():
+            name = thing.replace("Effect - ", "").replace("Trap - ", "")
+            trap_items += [name] * value
         
         if trap_items:
             self.multiworld.random.shuffle(trap_items)
@@ -305,27 +284,6 @@ class RefunctWorld(World):
                     items_to_add.remove("Flower")
                     items_to_add.append(item)
                     
-        if self.options.replace_flowers_by_traps.value != 0:
-            number_change = abs((self.options.replace_flowers_by_traps.value * items_to_add.count("Flower")) // 100)
-            trap_items = [
-                "Dark skies",
-                "No skylight",
-                # "Disco sky",
-                "Starry sky",
-                "Red sky",
-                "Hurricane",
-            ]
-            if self.options.replace_flowers_by_traps.value < 0:
-                trap_items += [
-                    "Slo-mo",
-                    "Fast-mo",
-                    "Blurrrrgh",
-                ]
-            # replace flowers by a random trap:
-            for _ in range(number_change):
-                if "Flower" in items_to_add:
-                    items_to_add.remove("Flower")
-                    items_to_add.append([self.multiworld.random.choice(trap_items), "Filler"])
             
         actual_flowers = []        
         if self.options.rename_flowers.value == RenameFlowers.option_english or self.options.rename_flowers.value == RenameFlowers.option_both:
@@ -444,19 +402,6 @@ class RefunctWorld(World):
             all_platforms = platforms_without_button_ids.copy() + platforms_with_button_ids.copy()
             self.seeker_platforms = self.multiworld.random.sample(all_platforms, 10)
             
-            if self.just_clique:
-                self.multiworld.regions.append(Region(self.origin_region_name, self.player, self.multiworld))
-                self.multiworld.regions.append(Region("Clique", self.player, self.multiworld))
-                for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Clique" or 
-                                            b.minigame == "Clique Filler"
-                                           ]:
-                    region_object = self.multiworld.get_region("Clique", self.player)
-                    region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
-                    if "Filler" in loc_name:
-                        self.get_location(loc_name).place_locked_item(
-                            self.create_item("Flower")
-                        )
-                return
             
             minigames_weights = self.options.minigames_likeliness.value
             population = list(minigames_weights.keys())
@@ -822,15 +767,7 @@ class RefunctWorld(World):
 
         self.rando_mountain_order = result
         
-    def set_rules(self):
-        if self.just_clique:
-            region_a = self.multiworld.get_region("10010102", self.player)
-            region_b = self.multiworld.get_region("Clique", self.player)
-            region_a.connect(region_b, f"Enter Clique")
-            location = self.get_location("Clique: The Button")
-            location.access_rule = lambda state: state.has("Clique: Button Activation", self.player)
-            self.multiworld.completion_condition[self.player] = lambda state: state.has("Clique: Button Activation", self.player)
-            return            
+    def set_rules(self):           
             
         def load_json_data_list_of_lists(data_name: str) -> List[List[Any]]:
             return orjson.loads(pkgutil.get_data(__name__, "data/" + data_name).decode("utf-8-sig"))    
@@ -875,6 +812,7 @@ class RefunctWorld(World):
 
         if hasattr(self.multiworld, "re_gen_passthrough"):
             self.goal = [self.regen["goal_t"], (self.regen["goal_c"], self.regen["goal_p"])]
+            self.goal_known = self.regen["goal_known"]
         else:
             self.goal = None
                 # option_button_31_1 = 0
@@ -915,13 +853,19 @@ class RefunctWorld(World):
                     valid_candidates = possible_final_platforms
                     finish_platform_name = self.multiworld.random.choice(valid_candidates)
                     self.goal = ("P", (int(finish_platform_name.split(" ")[1].split("-")[0]), int(finish_platform_name.split(" ")[1].split("-")[1])))
+            self.goal_known = self.options.goal.value not in [Goal.option_random_unknown, Goal.option_random_unknown_button, Goal.option_random_unknown_platform]
 
         victory_location_name = f"{'Button' if self.goal[0] == 'B' else 'Platform'} {self.goal[1][0]}-{self.goal[1][1]}"
         # self.get_location(victory_location_name).address = None
         self.get_location(victory_location_name).place_locked_item(
             self.create_item("Goal Location")
         )
-        self.multiworld.completion_condition[self.player] = lambda state: all([state.has("Goal Location", self.player), state.has_group("Grasses", self.player, self.required_grass)])
+        if self.goal_known:
+            self.multiworld.completion_condition[self.player] = lambda state: \
+                all([state.can_reach_location(victory_location_name, self.player), state.has_group("Grasses", self.player, self.required_grass)])
+        else:
+            self.multiworld.completion_condition[self.player] = lambda state: \
+                all([state.has("Goal Location", self.player), state.has_group("Grasses", self.player, self.required_grass)])
 
         
         
@@ -1048,11 +992,10 @@ class RefunctWorld(World):
         slot_data["amount_grass"] = self.amount_of_grass
         slot_data["required_grass"] = self.required_grass
         
-        if not self.just_clique:
-            slot_data["goal_t"] = self.goal[0]
-            slot_data["goal_c"] = self.goal[1][0]
-            slot_data["goal_p"] = self.goal[1][1]
-            slot_data["goal_known"] = self.options.goal.value not in [Goal.option_random_unknown, Goal.option_random_unknown_button, Goal.option_random_unknown_platform]
+        slot_data["goal_t"] = self.goal[0]
+        slot_data["goal_c"] = self.goal[1][0]
+        slot_data["goal_p"] = self.goal[1][1]
+        slot_data["goal_known"] = self.goal_known
             
         slot_data["cubes"] = self.options.cubes.value
         slot_data["extra_cubes"] = self.options.extra_cubes.value
@@ -1063,12 +1006,13 @@ class RefunctWorld(World):
         slot_data["rando_mountain_order"] = self.rando_mountain_order
             
         slot_data["minigames"] = self.minigames
-        slot_data["just_clique"] = self.just_clique
         slot_data["has_clique"] = "Clique" in self.minigames
 
         slot_data["death_link"] = self.options.death_link.value
         
         slot_data["ap_world_version"] = self.ap_world_version
+        
+        slot_data["see_other_players"] = self.options.see_other_players.value
 
         return slot_data
 

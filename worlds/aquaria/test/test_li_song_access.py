@@ -40,9 +40,9 @@ class LiAccessTest(AquariaTestBase):
             AquariaLocationNames.THE_BODY_BOTTOM_AREA_BULB_IN_THE_NAUTILUS_ROOM,
             AquariaLocationNames.THE_BODY_BOTTOM_AREA_MUTANT_COSTUME,
             AquariaLocationNames.FINAL_BOSS_AREA_BULB_IN_THE_BOSS_THIRD_FORM_ROOM,
+            AquariaLocationNames.SUNKEN_CITY_BEATING_GOLEM,
             AquariaLocationNames.BEATING_THE_GOLEM,
-            AquariaLocationNames.SUNKEN_CITY_CLEARED,
             AquariaLocationNames.OBJECTIVE_COMPLETE
         ]
-        items = [[ItemNames.LI_AND_LI_SONG, ItemNames.BODY_TONGUE_CLEARED]]
+        items = [[ItemNames.LI_AND_LI_SONG, ItemNames.DOOR_TO_BODY]]
         self.assertAccessDependency(locations, items)

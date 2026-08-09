@@ -63,7 +63,7 @@ class LightAccessTest(AquariaTestBase):
             AquariaLocationNames.SUNKEN_CITY_LEFT_AREA_CRATE_BEFORE_THE_BEDROOM,
             AquariaLocationNames.SUNKEN_CITY_LEFT_AREA_GIRL_COSTUME,
             AquariaLocationNames.SUNKEN_CITY_BULB_ON_TOP_OF_THE_BOSS_AREA,
-            AquariaLocationNames.SUNKEN_CITY_CLEARED,
+            AquariaLocationNames.SUNKEN_CITY_BEATING_GOLEM,
             AquariaLocationNames.BEATING_THE_GOLEM,
             AquariaLocationNames.BEATING_OCTOPUS_PRIME,
             AquariaLocationNames.FINAL_BOSS_AREA_BULB_IN_THE_BOSS_THIRD_FORM_ROOM,

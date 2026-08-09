@@ -47,7 +47,7 @@ class AUSWorld(World):
 
     def _get_aus_data(self):
         return {
-            "world_seed": self.multiworld.per_slot_randoms[self.player].getrandbits(32),
+            "world_seed": self.random.getrandbits(32),
             "seed_name": self.multiworld.seed_name,
             "player_name": self.multiworld.get_player_name(self.player),
             "player_id": self.player,

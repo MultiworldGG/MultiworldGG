@@ -5,7 +5,7 @@ from .Options import SMOOptions
 from .Locations import SMOLocation, loc_Cap, loc_Cascade, loc_Cascade_Revisit, \
     loc_Sand, loc_Lake, loc_Wooded, loc_Cloud, loc_Lost, loc_Lost_Revisit, loc_Metro, \
     loc_Snow, loc_Seaside, loc_Luncheon, loc_Ruined, loc_Bowser, loc_Moon, \
-    locations_table, post_game_locations_table, loc_Dark, loc_Darker, special_locations_table, \
+    locations_table, post_game_locations_table, loc_Doctor_Outfit_Moon, loc_Dark, loc_Darker, special_locations_table, \
     loc_Cap_Shop, loc_Cascade_Shop, loc_Sand_Shop, loc_Lake_Shop, loc_Wooded_Shop, \
     loc_Lost_Shop, loc_Metro_Shop, loc_Snow_Shop, loc_Seaside_Shop, loc_Luncheon_Shop, \
     loc_Bowser_Shop, loc_Moon_Shop, loc_Mushroom_Shop, loc_Dark_Outfit, loc_Darker_Outfit, \
@@ -15,7 +15,7 @@ from .Locations import SMOLocation, loc_Cap, loc_Cascade, loc_Cascade_Revisit, \
     loc_Wooded_Peace, loc_Metro_Sewer_Access, loc_Metro_Peace, loc_Snow_Peace, loc_Seaside_Peace, \
     loc_Luncheon_Post_Spewart, loc_Luncheon_Post_Cheese_Rocks, loc_Luncheon_Peace, \
     loc_Bowser_Infiltrate, loc_Bowser_Post_Bombing, loc_Bowser_Peace, loc_Postgame_Shop, loc_Sand_Pyramid, \
-    loc_Sand_Underground, loc_Bowser_Mecha_Broodal, loc_Cap_Captures, loc_Cap_Captures_Revisit, \
+    loc_Sand_Underground, loc_Bowser_Mecha_Broodal, loc_Intro_Captures, loc_Cap_Captures_Revisit, \
     loc_Cascade_Captures, loc_Sand_Captures, loc_Sand_Captures_Underground, loc_Sand_Captures_Peace, \
     loc_Wooded_Captures, loc_Wooded_Captures_Post_Story1, loc_Wooded_Captures_Postgame, \
     loc_Lake_Captures, loc_Cloud_Captures, loc_Lost_Captures, loc_Metro_Captures, \
@@ -77,9 +77,17 @@ def create_regions(self, world, player):
                 world: The MultiWorld instance.
                 player: The index of this player in the multiworld.
     """
+    
+    # Menu
+    regMenu = Region("Menu", player, world, "Menu")
+    world.regions.append(regMenu)
+
+    # Intro Region
+    regIntro = Region("Cap/Cascade Intro", player, world, "Cap/Cascade Intro")
+    world.regions.append(regIntro)
 
     # Cascade Regions
-    regCascade = Region("Menu", player, world, "Cascade Kingdom")
+    regCascade = Region("Cascade First Visit", player, world, "Cascade Kingdom")
     create_locs(regCascade, *loc_Cascade.keys())
     world.regions.append(regCascade)
     regCascadePeace = Region("Cascade Peace", player, world, "Cascade Kingdom")
@@ -229,18 +237,26 @@ def create_regions(self, world, player):
 
     # Moon
     regMoon = Region("Moon", player, world, "Moon Kingdom")
-    if self.options.goal > self.options.goal.option_moon or self.options.capture_sanity.value == self.options.capture_sanity.option_true:
+    if self.options.goal > self.options.goal.option_moon:
         create_locs(regMoon, *loc_Moon.keys())
     world.regions.append(regMoon)
-    regMoonOutfit = Region("Moon Gift Outfit", player, world, "Moon Gift Outfit")
-    if self.options.goal > self.options.goal.option_luncheon:
-        create_locs(regMoonOutfit, *loc_Moon_Outfit.keys())
-    world.regions.append(regMoonOutfit)
+
+    if self.options.shop_sanity != "off":
+        regMoonOutfit = Region("Moon Gift Outfit", player, world, "Moon Gift Outfit")
+        if self.options.goal > self.options.goal.option_luncheon:
+            create_locs(regMoonOutfit, *loc_Moon_Outfit.keys())
+        world.regions.append(regMoonOutfit)
 
     # Post Game
     regPostGame = Region("Post Game", player, world, "Post Game Moons")
     if self.options.goal > self.options.goal.option_moon:
-        create_locs(regPostGame, *post_game_locations_table.keys(), locs_table= post_game_locations_table)
+        post_game_locations_table_dup = {**post_game_locations_table}
+        goal_moons = self.moon_counts["dark"] if self.options.goal == self.options.goal.option_dark else self.moon_counts["darker"]
+    
+        if self.outfit_moon_counts["Doctor Outfit"] < goal_moons:
+            post_game_locations_table_dup = {**post_game_locations_table, **loc_Doctor_Outfit_Moon}
+
+        create_locs(regPostGame, *post_game_locations_table_dup.keys(), locs_table= post_game_locations_table_dup)
     world.regions.append(regPostGame)
 
     # Dark Side
@@ -301,77 +317,78 @@ def create_regions(self, world, player):
     world.regions.append(regMushroomLuncheon)
 
     # Shops
-    regCapShop = Region("Cap Shop", player, world, "Shop")
-    regCascadeShop = Region("Cascade Shop", player, world, "Shop")
-    regSandShop = Region("Sand Shop", player, world, "Shop")
-    regLakeShop = Region("Lake Shop", player, world, "Shop")
-    regWoodedShop = Region("Wooded Shop", player, world, "Shop")
-    regLostShop = Region("Lost Shop", player, world, "Shop")
-    regMetroShop = Region("Metro Shop", player, world, "Shop")
-    regSnowShop = Region("Snow Shop", player, world, "Shop")
-    regSeasideShop = Region("Seaside Shop", player, world, "Shop")
-    regLuncheonShop = Region("Luncheon Shop", player, world, "Shop")
-    regBowserShop = Region("Bowser Shop", player, world, "Shop")
-    regMoonShop = Region("Moon Shop", player, world, "Shop")
-    regMushroomShop = Region("Mushroom Shop", player, world, "Shop")
-    regPostGameShop = Region("Postgame Shop", player, world, "Shop")
-    regDarkOutfit = Region("Dark Outfit", player, world, "Shop")
-    regDarkerOutfit = Region("Darker Outfit", player, world, "Shop")
+    if self.options.shop_sanity != "off":
+        regCapShop = Region("Cap Shop", player, world, "Shop")
+        regCascadeShop = Region("Cascade Shop", player, world, "Shop")
+        regSandShop = Region("Sand Shop", player, world, "Shop")
+        regLakeShop = Region("Lake Shop", player, world, "Shop")
+        regWoodedShop = Region("Wooded Shop", player, world, "Shop")
+        regLostShop = Region("Lost Shop", player, world, "Shop")
+        regMetroShop = Region("Metro Shop", player, world, "Shop")
+        regSnowShop = Region("Snow Shop", player, world, "Shop")
+        regSeasideShop = Region("Seaside Shop", player, world, "Shop")
+        regLuncheonShop = Region("Luncheon Shop", player, world, "Shop")
+        regBowserShop = Region("Bowser Shop", player, world, "Shop")
+        regMoonShop = Region("Moon Shop", player, world, "Shop")
+        regMushroomShop = Region("Mushroom Shop", player, world, "Shop")
+        regPostGameShop = Region("Postgame Shop", player, world, "Shop")
+        regDarkOutfit = Region("Dark Outfit", player, world, "Shop")
+        regDarkerOutfit = Region("Darker Outfit", player, world, "Shop")
 
-    create_locs(regCapShop, *loc_Cap_Shop.keys())
-    create_locs(regCascadeShop, *loc_Cascade_Shop.keys())
-    create_locs(regSandShop, *loc_Sand_Shop.keys())
+        create_locs(regCapShop, *loc_Cap_Shop.keys())
+        create_locs(regCascadeShop, *loc_Cascade_Shop.keys())
+        create_locs(regSandShop, *loc_Sand_Shop.keys())
 
-    if self.options.goal > self.options.goal.option_sand:
-        create_locs(regLakeShop, *loc_Lake_Shop.keys())
+        if self.options.goal > self.options.goal.option_sand:
+            create_locs(regLakeShop, *loc_Lake_Shop.keys())
 
-    if self.options.goal > self.options.goal.option_lake:
-        create_locs(regWoodedShop, *loc_Wooded_Shop.keys())
-        create_locs(regLostShop, *loc_Lost_Shop.keys())
-        create_locs(regMetroShop, *loc_Metro_Shop.keys())
-    if self.options.goal > self.options.goal.option_metro:
-        create_locs(regSnowShop, *loc_Snow_Shop.keys())
-        create_locs(regSeasideShop, *loc_Seaside_Shop.keys())
-        create_locs(regLuncheonShop, *loc_Luncheon_Shop.keys())
-    if self.options.goal > self.options.goal.option_luncheon:
-        create_locs(regBowserShop, *loc_Bowser_Shop.keys())
+        if self.options.goal > self.options.goal.option_lake:
+            create_locs(regWoodedShop, *loc_Wooded_Shop.keys())
+            create_locs(regLostShop, *loc_Lost_Shop.keys())
+            create_locs(regMetroShop, *loc_Metro_Shop.keys())
+        if self.options.goal > self.options.goal.option_metro:
+            create_locs(regSnowShop, *loc_Snow_Shop.keys())
+            create_locs(regSeasideShop, *loc_Seaside_Shop.keys())
+            create_locs(regLuncheonShop, *loc_Luncheon_Shop.keys())
+        if self.options.goal > self.options.goal.option_luncheon:
+            create_locs(regBowserShop, *loc_Bowser_Shop.keys())
 
-    if self.options.goal > self.options.goal.option_moon:
-        create_locs(regMoonShop, *loc_Moon_Shop.keys())
-        create_locs(regMushroomShop, *loc_Mushroom_Shop.keys())
-        for outfit in self.outfit_moon_counts.keys():
-            if self.options.goal == self.options.goal.option_dark:
-                if self.outfit_moon_counts[outfit] < self.moon_counts["dark"]:
-                    create_locs(regPostGameShop, outfit)
-            elif self.options.goal == self.options.goal.option_darker:
-                if self.outfit_moon_counts[outfit] < self.moon_counts["darker"]:
-                    create_locs(regPostGameShop, outfit)
+        if self.options.goal > self.options.goal.option_moon:
+            create_locs(regMoonShop, *loc_Moon_Shop.keys())
+            create_locs(regMushroomShop, *loc_Mushroom_Shop.keys())
+            for outfit in self.outfit_moon_counts.keys():
+                if self.options.goal == self.options.goal.option_dark:
+                    if self.outfit_moon_counts[outfit] < self.moon_counts["dark"]:
+                        create_locs(regPostGameShop, outfit)
+                elif self.options.goal == self.options.goal.option_darker:
+                    if self.outfit_moon_counts[outfit] < self.moon_counts["darker"]:
+                        create_locs(regPostGameShop, outfit)
 
 
-    if self.options.goal > self.options.goal.option_dark:
-        create_locs(regDarkOutfit, *loc_Dark_Outfit.keys())
-    if self.options.goal > self.options.goal.option_darker:
-        create_locs(regDarkerOutfit, *loc_Darker_Outfit.keys())
+        if self.options.goal > self.options.goal.option_dark:
+            create_locs(regDarkOutfit, *loc_Dark_Outfit.keys())
+        if self.options.goal > self.options.goal.option_darker:
+            create_locs(regDarkerOutfit, *loc_Darker_Outfit.keys())
 
-    world.regions.append(regCapShop)
-    world.regions.append(regCascadeShop)
-    world.regions.append(regSandShop)
-    world.regions.append(regLakeShop)
-    world.regions.append(regWoodedShop)
-    world.regions.append(regLostShop)
-    world.regions.append(regMetroShop)
-    world.regions.append(regSnowShop)
-    world.regions.append(regSeasideShop)
-    world.regions.append(regLuncheonShop)
-    world.regions.append(regBowserShop)
-    world.regions.append(regMoonShop)
-    world.regions.append(regMushroomShop)
-    world.regions.append(regPostGameShop)
-    world.regions.append(regDarkOutfit)
-    world.regions.append(regDarkerOutfit)
+        world.regions.append(regCapShop)
+        world.regions.append(regCascadeShop)
+        world.regions.append(regSandShop)
+        world.regions.append(regLakeShop)
+        world.regions.append(regWoodedShop)
+        world.regions.append(regLostShop)
+        world.regions.append(regMetroShop)
+        world.regions.append(regSnowShop)
+        world.regions.append(regSeasideShop)
+        world.regions.append(regLuncheonShop)
+        world.regions.append(regBowserShop)
+        world.regions.append(regMoonShop)
+        world.regions.append(regMushroomShop)
+        world.regions.append(regPostGameShop)
+        world.regions.append(regDarkOutfit)
+        world.regions.append(regDarkerOutfit)
 
     # Captures
-    regCapCaptures = Region("Cap Captures", player, world, "Captures")
+    regIntroCaptures = Region("Intro Sequence Captures", player, world, "Captures")
     regCapRevisitCaptures = Region("Cap Revisit Captures", player, world, "Captures")
     regCascadeCaptures = Region("Cascade Captures", player, world, "Captures")
     regSandCaptures = Region("Sand Captures", player, world, "Captures")
@@ -396,8 +413,9 @@ def create_regions(self, world, player):
     regMoonCaveCaptures = Region("Moon Cave Captures", player, world, "Captures")
     regMushroomCaptures = Region("Mushroom Captures", player, world, "Captures")
 
+    regMenu.connect(regIntro, "Menu")
     if self.options.capture_sanity.value == self.options.capture_sanity.option_true:
-        create_locs(regCapCaptures, *loc_Cap_Captures)
+        create_locs(regIntroCaptures, *loc_Intro_Captures)
         create_locs(regCapRevisitCaptures, *loc_Cap_Captures_Revisit)
         create_locs(regCascadeCaptures, *loc_Cascade_Captures)
         create_locs(regSandCaptures, *loc_Sand_Captures)
@@ -407,6 +425,8 @@ def create_regions(self, world, player):
             create_locs(regSandPeaceCaptures, *loc_Sand_Captures_Peace)
             create_locs(regLakeCaptures, *loc_Lake_Captures)
             create_locs(regWoodedCaptures, *loc_Wooded_Captures)
+
+        if self.options.goal > self.options.goal.option_lake:
             create_locs(regWoodedStory1Captures, *loc_Wooded_Captures_Post_Story1)
             create_locs(regCloudCaptures, *loc_Cloud_Captures)
             create_locs(regLostCaptures, *loc_Lost_Captures)
@@ -430,7 +450,7 @@ def create_regions(self, world, player):
             create_locs(regWoodedPostGameCaptures, *loc_Wooded_Captures_Postgame)
             create_locs(regMetroPostGameCaptures, *loc_Metro_Captures_Postgame)
 
-        world.regions.append(regCapCaptures)
+        world.regions.append(regIntroCaptures)
         world.regions.append(regCapRevisitCaptures)
         world.regions.append(regCascadeCaptures)
         world.regions.append(regSandCaptures)
@@ -456,35 +476,52 @@ def create_regions(self, world, player):
         world.regions.append(regMetroPostGameCaptures)
 
     # Progression Connections
-        regCascade.connect(regCascadePeace, "Menu", lambda state: state.has("Broode's Chain Chomp", player) and (state.has("Big Chain Chomp", self.player) or state.has("T-Rex", self.player)))
+        regIntro.connect(regCascade, "Collect First Moon",
+                         lambda state: (state.has("Frog", self.player) and
+                         state.has("Chain Chomp", self.player)) or
+                         state.has("Glitch Logic", self.player))
+
+        regCascade.connect(regCascadePeace, "Cascade World Peace", lambda state: state.has("Broode's Chain Chomp", player) and (state.has("Big Chain Chomp", self.player) or state.has("T-Rex", self.player) or state.has("Glitch Logic", self.player)))
+        regSand.connect(regSandPyramid, "Sand Pyramid Access",
+                        lambda state: state.has("Glitch Logic", self.player) or state.has("Bullet Bill", self.player))
         regSandUnderground.connect(regSandPeace, "Sand World Peace",
-            lambda state: state.has("Bullet Bill", self.player) and state.has("Knucklotec's Fist", self.player))
+                        lambda state: (state.has("Glitch Logic", self.player) or state.has("Bullet Bill", self.player)) and state.has("Knucklotec's Fist", self.player))
+        regWooded.connect(regWoodedStory1, "Wooded Story 1",
+                        lambda state: (state.has("Uproot", self.player) and state.has("Sherm", self.player)) or state.has("Glitch Logic", self.player))
         regWoodedStory1.connect(regWoodedPeace, "Wooded World Peace",
-                                lambda state: state.has("Uproot", self.player) and state.has("Sherm", self.player))
+                        lambda state: state.has("Uproot", self.player) and (state.has("Sherm", self.player) or state.has("Glitch Logic", self.player)))
         regLost.connect(regNightMetro, "Night Metro Enter",
-                         lambda state: count_moons(self, state, "Lost", player) >= self.moon_counts["lost"] and state.has("Spark Pylon", player))
-        regNightMetro.connect(regMetro, "Metro Enter", lambda state: state.has("Sherm", player))
+                        lambda state: count_moons(self, state, "Lost", player) >= self.moon_counts["lost"] and state.has("Spark Pylon", player))
+        regNightMetro.connect(regMetro, "Metro Enter",
+                        lambda state: state.has("Sherm", player))
 
-        regMetro.connect(regMetroSewer, "Metro Sewer", lambda state: state.has("Manhole", player))
-        regSnow.connect(regSnowPeace, "Snow World Peace", lambda state: state.has("Shiverian Racer", player))
-        regSeaside.connect(regSeasidePeace, "Seaside World Peace", lambda state: state.has("Gushen", player))
-        regLuncheonCheese.connect(regMushroomLuncheon, "Luncheon Mushroom Painting", lambda state: state.has("Lava Bubble", player))
+        regMetro.connect(regMetroSewer, "Metro Sewer",
+                        lambda state: state.has("Manhole", player))
+        regSnow.connect(regSnowPeace, "Snow World Peace",
+                        lambda state: state.has("Shiverian Racer", player))
+        regSeaside.connect(regSeasidePeace, "Seaside World Peace",
+                        lambda state: state.has("Gushen", player))
+        regLuncheonCheese.connect(regMushroomLuncheon, "Luncheon Mushroom Painting",
+                        lambda state: state.has("Lava Bubble", player))
         regLuncheonSpewart.connect(regLuncheonCheese, "Luncheon Meat Plateau",
-                                   lambda state: state.has("Hammer Bro", player))
+                        lambda state: state.has("Hammer Bro", player))
         regLuncheonCheese.connect(regLuncheonPeace, "Luncheon World Peace",
-                                  lambda state: state.has("Lava Bubble", player) and state.has("Meat", player))
+                        lambda state: state.has("Lava Bubble", player) and state.has("Meat", player))
 
-        regBowser.connect(regBowserInfiltrate, "Bowser Infiltrate",lambda state: state.has("Spark Pylon", player)
-                                        and state.has("Pokio", player))
+        regBowser.connect(regBowserInfiltrate, "Bowser Infiltrate",
+                        lambda state: state.has("Spark Pylon", player)
+                                  and state.has("Pokio", player))
         regBowserInfiltrate.connect(regBowserBombing, "Bowser Bombing")
-
         regBowserBombing.connect(regBowserMecha, "Bowser Mecha Fight")
 
         regMoon.connect(regPostMoon, "Post Moon", lambda state: state.has("Bowser", player))
 
     else:
+        regIntro.connect(regCascade, "Collect First Moon")
         regCascade.connect(regCascadePeace)
         regSandUnderground.connect(regSandPeace, "Sand World Peace")
+        regSand.connect(regSandPyramid, "Sand Pyramid Access")
+        regWooded.connect(regWoodedStory1, "Wooded Story 1")
         regWoodedStory1.connect(regWoodedPeace, "Wooded World Peace")
         regLost.connect(regNightMetro, "Night Metro Enter",
                          lambda state: count_moons(self, state, "Lost", player) >= self.moon_counts["lost"])
@@ -505,7 +542,6 @@ def create_regions(self, world, player):
 
 
     regCascadePeace.connect(regSand, "Sand Enter", lambda state: count_moons(self, state, "Cascade", player) >= self.moon_counts["cascade"])
-    regSand.connect(regSandPyramid, "Sand Pyramid Access")
     regSandPyramid.connect(regSandUnderground, "Sand Story Subarea")
 
     regSand.connect(regCap)
@@ -516,7 +552,6 @@ def create_regions(self, world, player):
     regLake.connect(regWooded, "Wooded Enter")
     regLake.connect(regSandRe)
 
-    regWooded.connect(regWoodedStory1, "Wooded Story 1")
 
     regWoodedPeace.connect(regLuncheonWooded)
     regWooded.connect(regPostCloud, "Cloud Bowser", lambda state: count_moons(self, state, "Lake", player) >= self.moon_counts["lake"] and count_moons(self, state, "Wooded", player) >= self.moon_counts["wooded"])
@@ -543,44 +578,45 @@ def create_regions(self, world, player):
 
     regBowserMecha.connect(regBowserPeace, "Bowser World Peace")
     regBowserPeace.connect(regMoon, "Enter Moon", lambda state: count_moons(self, state, "Bowser", player) >= self.moon_counts["bowser"])
-    regBowserPeace.connect(regMoonOutfit, "Obtain Mario Tuxedo", lambda state: count_moons(self, state, "Bowser", player) >= self.moon_counts["bowser"])
+    if self.options.shop_sanity != "off":
+        regBowserPeace.connect(regMoonOutfit, "Obtain Mario Tuxedo", lambda state: count_moons(self, state, "Bowser", player) >= self.moon_counts["bowser"])
 
     regPostMoon.connect(regPostGame)
     regPostGame.connect(regDark, "Dark Access", lambda state: total_moons(self, state, player) >= self.moon_counts["dark"])
     regPostGame.connect(regDarker, "Darker Access", lambda state: total_moons(self, state, player) >= self.moon_counts["darker"])
 
-    if self.options.capture_sanity.value == self.options.capture_sanity.option_true:
-        regMetro.connect(regMetroShop, "Metro Shop", lambda state: state.has("Spark Pylon", player)
-                         and state.has("Sherm", player))
-
-    else:
-        regMetro.connect(regMetroShop)
-
     # Shop Connections
-    regCap.connect(regCapShop)
-    regCascadeRe.connect(regCascadeShop)
-    regSand.connect(regSandShop)
-    regLake.connect(regLakeShop)
-    regWooded.connect(regWoodedShop)
-    regLost.connect(regLostShop)
-    regSnow.connect(regSnowShop)
-    regSeaside.connect(regSeasideShop)
-    regLuncheon.connect(regLuncheonShop)
-    regBowserBombing.connect(regBowserShop)
-    regPostGame.connect(regMoonShop)
-    regPostGame.connect(regMushroomShop)
-    regPostGame.connect(regPostGameShop)
+    if self.options.shop_sanity != "off":
+        if self.options.capture_sanity.value == self.options.capture_sanity.option_true:
+            regMetro.connect(regMetroShop, "Metro Shop", lambda state: state.has("Spark Pylon", player)
+                             and state.has("Sherm", player))
+        else:
+            regMetro.connect(regMetroShop)
 
-    # if self.options.shops == "outfits" or self.options.shops == "all":
-    #     regSand.connect(regPostGameShop)
+        regCap.connect(regCapShop)
+        regCascadeRe.connect(regCascadeShop)
+        regSand.connect(regSandShop)
+        regLake.connect(regLakeShop)
+        regWooded.connect(regWoodedShop)
+        regLost.connect(regLostShop)
+        regSnow.connect(regSnowShop)
+        regSeaside.connect(regSeasideShop)
+        regLuncheon.connect(regLuncheonShop)
+        regBowserBombing.connect(regBowserShop)
+        regPostGame.connect(regMoonShop)
+        regPostGame.connect(regMushroomShop)
+        regPostGame.connect(regPostGameShop)
 
-    regDark.connect(regDarkOutfit)
-    regDarker.connect(regDarkerOutfit)
+        # if self.options.shops == "outfits" or self.options.shops == "all":
+        #     regSand.connect(regPostGameShop)
+
+        regDark.connect(regDarkOutfit)
+        regDarker.connect(regDarkerOutfit)
 
 
     # Capture Connections
     #if self.options.capture_sanity.value == self.options.capture_sanity.option_true:
-    regCascade.connect(regCapCaptures)
+    regIntro.connect(regIntroCaptures)
     regCascade.connect(regCascadeCaptures)
     regSand.connect(regCapRevisitCaptures)
     regSand.connect(regSandCaptures)

@@ -98,6 +98,7 @@ class SM64HackWorld(World):
         create_json_folders(get_settings()["sm64hacks_options"]["auto_update"] and not hasattr(multiworld, "generation_is_fake"))
 
     def generate_early(self):
+        # MWGG adjustment to handle json_file values from web and local yamls
         json_val = self.options.json_file.value
         if isinstance(json_val, int):
             json_val = self.options.json_file.name_lookup[json_val]

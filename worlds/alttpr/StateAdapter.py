@@ -191,7 +191,7 @@ class StateAdapter:
 
 
     def can_melt_things(self, player) -> bool:
-        return self.has_item('Fire Rod') or self.has_item('Bombos')
+        return self.has_item("Fire Rod") or (self.has_item("Bombos") and self.has_item("Progressive Sword"))
 
 
     def can_reach_blue(self, region, player) -> bool:

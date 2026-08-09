@@ -273,7 +273,7 @@ class WLWorld(World):
             player = self.player
 
             rom = Rom(get_base_rom_path())
-            patch_rom(self.multiworld, self.options, rom, self.player)
+            patch_rom(self, rom)
 
             rompath = os.path.join(
                 output_directory,

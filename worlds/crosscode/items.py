@@ -792,7 +792,7 @@ single_items_dict: dict[str, SingleItemData] = {
     'Bluefiber Robe': SingleItemData(item_id=425, name='Bluefiber Robe', classification=ItemClassification.progression_skip_balancing, unique=True),
     'Toggle Test': SingleItemData(item_id=426, name='Toggle Test', classification=ItemClassification.filler, unique=True),
     'Stone Key': SingleItemData(item_id=427, name='Stone Key', classification=ItemClassification.progression, unique=True),
-    'Circuit Override': SingleItemData(item_id=428, name='Circuit Override', classification=ItemClassification.progression, unique=True),
+    'Circuit Override': SingleItemData(item_id=428, name='Circuit Override', classification=ItemClassification.useful, unique=True),
     'F.A.I.R. Device': SingleItemData(item_id=429, name='F.A.I.R. Device', classification=ItemClassification.progression, unique=True),
     'Smelter Parts': SingleItemData(item_id=430, name='Smelter Parts', classification=ItemClassification.progression, unique=True),
     'Marinated Meat': SingleItemData(item_id=431, name='Marinated Meat', classification=ItemClassification.filler, unique=True),

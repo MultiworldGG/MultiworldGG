@@ -1,0 +1,8 @@
+{
+    "game": "SMZ3",
+    "authors": ["lordlou"],
+    "minimum_ap_version": "0.4.4",
+    "world_version": "11.2.0",
+    "compatible_version": 7,
+    "version": 7
+}

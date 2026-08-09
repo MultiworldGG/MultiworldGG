@@ -6,8 +6,8 @@
 The implementation is in a beta state (although stable). Most features are there, but some bugs remain (see the known issues section below).
 ## Source code (you don't need this if you just want to play)
 
-[AP World](https://github.com/Satisha10/Archipelago_wotw/tree/main/worlds/ori_wotw) (installed with MultiworldGG)
-[Client code](https://github.com/ori-community/wotw-rando-client/tree/archipelago)
+[AP World](https://github.com/Satisha10/Archipelago_wotw/tree/main/worlds/ori_wotw) (Also available as a submodule in this repo, pinned to the latest release) (installed with MultiworldGG)
+[Client code](https://github.com/ori-community/wotw-rando-client/tree/main/projects/Randomizer/archipelago)
 
 ## Setup guide
 

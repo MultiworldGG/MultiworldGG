@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, timedelta
 
 from flask import flash, redirect, render_template, request, session, url_for, abort
-from pony.orm import commit, db_session, select, desc, count
+from pony.orm import OptimisticCheckError, commit, db_session, select, desc, count
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from Utils import __version__, utcnow, instance_name
@@ -318,7 +318,9 @@ def lobby_view_auth(lobby: UUID):
 @app.route('/lobby/<suuid:lobby>/join', methods=['POST'])
 @limiter.limit("5 per minute")
 def lobby_join(lobby: UUID):
-    lobby = Lobby.get(id=lobby)
+    lobby_id = lobby
+    # Serialize joins for this lobby so capacity and name checks cannot race.
+    lobby = Lobby.get_for_update(id=lobby_id)
     if not lobby:
         abort(404)
 
@@ -383,7 +385,12 @@ def lobby_join(lobby: UUID):
         content=f"{player_name} joined the lobby.",
     )
     lobby.last_activity = utcnow()
-    commit()
+    try:
+        commit()
+    except OptimisticCheckError:
+        # The failed commit has already rolled back the player and message.
+        flash('The lobby changed while you were joining. Please try again.')
+        return redirect(url_for('lobby_view', lobby=lobby_id))
 
     session.pop(f"lobby_{lobby.id}_viewer", None)
     return redirect(url_for('lobby_view', lobby=lobby.id))

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from . import WotWWorld
 
@@ -10,75 +11,75 @@ from worlds.generic.Rules import set_rule
 
 from .Options import LogicDifficulty
 
+
 def combat_rules(world: WotWWorld):
     """Defines rules for combat and light."""
     player = world.player
     options = world.options
-    menu = world.get_region("Menu")
     diff = options.difficulty
 
     if diff == LogicDifficulty.option_moki:
-        menu.connect(world.get_region("DepthsLight"),
-                     rule=lambda state: state.has_any(("UpperDepths.ForestsEyes", "Flash"), player))
-        menu.connect(world.get_region("Combat.Ranged"),
-                     rule=lambda state: state.has_any(("Bow", "Spear"), player))
-        menu.connect(world.get_region("Combat.Aerial"),
-                     rule=lambda s: s.has_any(("Double Jump", "Launch"), player))
-        menu.connect(world.get_region("Combat.Dangerous"),
-                     rule=lambda s: s.has_any(("Double Jump", "Dash", "Bash", "Launch"), player))
-        menu.connect(world.get_region("Combat.Shielded"),
-                     rule=lambda s: s.has_any(("Hammer", "Launch", "Grenade", "Spear"), player))
-        menu.connect(world.get_region("Combat.Bat"), rule=lambda s: s.has("Bash", player))
-        menu.connect(world.get_region("Combat.Sand"), rule=lambda s: s.has("Burrow", player))
-        menu.connect(world.get_region("BreakCrystal"),
-                     rule=lambda s: s.has_any(("Sword", "Hammer", "Bow"), player))
+        world.connect_to_menu("DepthsLight", rule=lambda s: s.has_any(("UpperDepths.ForestsEyes", "Flash"), player))
+        world.connect_to_menu("Combat.Ranged",
+                              rule=lambda s: s.has_any(("Bow", "Spear"), player))
+        world.connect_to_menu("Combat.Aerial",
+                              rule=lambda s: s.has_any(("Double Jump", "Launch"), player))
+        world.connect_to_menu("Combat.Dangerous",
+                              rule=lambda s: s.has_any(("Double Jump", "Dash", "Bash", "Launch"), player))
+        world.connect_to_menu("Combat.Shielded",
+                              rule=lambda s: s.has_any(("Hammer", "Launch", "Grenade", "Spear"), player))
+        world.connect_to_menu("Combat.Bat", rule=lambda s: s.has("Bash", player))
+        world.connect_to_menu("Combat.Sand", rule=lambda s: s.has("Burrow", player))
+        world.connect_to_menu("BreakCrystal",
+                              rule=lambda s: s.has_any(("Sword", "Hammer", "Bow"), player))
 
     elif diff == LogicDifficulty.option_gorlek:  # Gorlek
-        menu.connect(world.get_region("DepthsLight"),
-                     rule=lambda state: state.has_any(("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
-        menu.connect(world.get_region("Combat.Ranged"),
-                     rule=lambda state: state.has_any(("Grenade", "Bow", "Shuriken", "Sentry", "Spear"), player))
-        menu.connect(world.get_region("Combat.Aerial"),
-                     rule=lambda s: s.has_any(("Double Jump", "Launch", "Bash"), player))
-        menu.connect(world.get_region("Combat.Dangerous"),
-                     rule=lambda s: s.has_any(("Double Jump", "Dash", "Bash", "Launch"), player))
-        menu.connect(world.get_region("Combat.Shielded"),
-                     rule=lambda s: s.has_any(("Hammer", "Launch", "Grenade", "Spear"), player))
-        menu.connect(world.get_region("Combat.Bat"), rule=lambda s: s.has("Bash", player))
-        menu.connect(world.get_region("Combat.Sand"), rule=lambda s: s.has("Burrow", player))
-        menu.connect(world.get_region("BreakCrystal"),
-                     rule=lambda s: s.has_any(("Sword", "Hammer", "Bow", "Shuriken", "Grenade"), player))
+        world.connect_to_menu("DepthsLight",
+                              rule=lambda s: s.has_any(("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
+        world.connect_to_menu("Combat.Ranged",
+                              rule=lambda s: s.has_any(("Grenade", "Bow", "Shuriken", "Sentry", "Spear"), player))
+        world.connect_to_menu("Combat.Aerial",
+                              rule=lambda s: s.has_any(("Double Jump", "Launch", "Bash"), player))
+        world.connect_to_menu("Combat.Dangerous",
+                              rule=lambda s: s.has_any(("Double Jump", "Dash", "Bash", "Launch"), player))
+        world.connect_to_menu("Combat.Shielded",
+                              rule=lambda s: s.has_any(("Hammer", "Launch", "Grenade", "Spear"), player))
+        world.connect_to_menu("Combat.Bat", rule=lambda s: s.has("Bash", player))
+        world.connect_to_menu("Combat.Sand", rule=lambda s: s.has("Burrow", player))
+        world.connect_to_menu("BreakCrystal",
+                              rule=lambda s: s.has_any(("Sword", "Hammer", "Bow", "Shuriken", "Grenade"), player))
 
     elif diff == LogicDifficulty.option_kii:  # Kii
-        menu.connect(world.get_region("DepthsLight"),
-                     rule=lambda state: state.has_any(("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
-        menu.connect(world.get_region("Combat.Ranged"),
-                     rule=lambda state: state.has_any(("Grenade", "Bow", "Shuriken", "Sentry", "Spear"), player))
-        menu.connect(world.get_region("Combat.Aerial"), rule=lambda s: True)
-        menu.connect(world.get_region("Combat.Dangerous"),
-                     rule=lambda s: s.has_any(("Double Jump", "Dash", "Bash", "Launch"), player))
-        menu.connect(world.get_region("Combat.Shielded"),
-                     rule=lambda s: s.has_any(("Hammer", "Launch", "Grenade", "Spear"), player))
-        menu.connect(world.get_region("Combat.Bat"), rule=lambda s: True)
-        menu.connect(world.get_region("Combat.Sand"), rule=lambda s: s.has("Burrow", player))
-        menu.connect(world.get_region("BreakCrystal"),
-                     rule=lambda s: s.has_any(("Sword", "Hammer", "Bow", "Shuriken", "Grenade"), player))
+        world.connect_to_menu("DepthsLight",
+                              rule=lambda s: s.has_any(("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
+        world.connect_to_menu("Combat.Ranged",
+                              rule=lambda s: s.has_any(("Grenade", "Bow", "Shuriken", "Sentry", "Spear"), player))
+        world.connect_to_menu("Combat.Aerial", rule=lambda s: True)
+        world.connect_to_menu("Combat.Dangerous",
+                              rule=lambda s: s.has_any(("Double Jump", "Dash", "Bash", "Launch"), player))
+        world.connect_to_menu("Combat.Shielded",
+                              rule=lambda s: s.has_any(("Hammer", "Launch", "Grenade", "Spear"), player))
+        world.connect_to_menu("Combat.Bat", rule=lambda s: True)
+        world.connect_to_menu("Combat.Sand", rule=lambda s: s.has("Burrow", player))
+        world.connect_to_menu("BreakCrystal",
+                              rule=lambda s: s.has_any(("Sword", "Hammer", "Bow", "Shuriken", "Grenade"), player))
 
     else:  # diff == LogicDifficulty.option_unsafe
-        menu.connect(world.get_region("DepthsLight"),
-                     rule=lambda state: state.has_any(("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
-        menu.connect(world.get_region("Combat.Ranged"),
-                     rule=lambda state:
-                     state.has_any(("Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"), player))
-        menu.connect(world.get_region("Combat.Aerial"), rule=lambda s: True)
-        menu.connect(world.get_region("Combat.Dangerous"),
-                     rule=lambda s: s.has_any(("Double Jump", "Dash", "Bash", "Launch"), player))
-        menu.connect(world.get_region("Combat.Shielded"),
-                     rule=lambda s: s.has_any(("Hammer", "Launch", "Grenade", "Spear"), player))
-        menu.connect(world.get_region("Combat.Bat"), rule=lambda s: True)
-        menu.connect(world.get_region("Combat.Sand"), rule=lambda s: s.has("Burrow", player))
-        menu.connect(world.get_region("BreakCrystal"),
-                     rule=lambda s: s.has_any(("Sword", "Hammer", "Bow", "Shuriken", "Grenade", "Spear"), player))
+        world.connect_to_menu("DepthsLight",
+                              rule=lambda s: s.has_any(("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
+        world.connect_to_menu("Combat.Ranged",
+                              rule=lambda s:
+                              s.has_any(("Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"), player))
+        world.connect_to_menu("Combat.Aerial", rule=lambda s: True)
+        world.connect_to_menu("Combat.Dangerous",
+                              rule=lambda s: s.has_any(("Double Jump", "Dash", "Bash", "Launch"), player))
+        world.connect_to_menu("Combat.Shielded",
+                              rule=lambda s: s.has_any(("Hammer", "Launch", "Grenade", "Spear"), player))
+        world.connect_to_menu("Combat.Bat", rule=lambda s: True)
+        world.connect_to_menu("Combat.Sand", rule=lambda s: s.has("Burrow", player))
+        world.connect_to_menu("BreakCrystal",
+                              rule=lambda s: s.has_any(("Sword", "Hammer", "Bow", "Shuriken", "Grenade", "Spear"),
+                                                       player))
 
 
 def unreachable_rules(world: WotWWorld):
@@ -130,3 +131,75 @@ def unreachable_rules(world: WotWWorld):
 
     for entr in unreach:  # Connect these events when the seed is completed, to make them reachable.
         set_rule(world.get_entrance(entr), lambda s: s.has("Victory", player))
+
+
+def ut_combat_rules(world: WotWWorld, one_level: bool, max_logic: bool):
+    """Defines rules for combat and light, used by UT for glitched logic."""
+    player = world.player
+    options = world.options
+    diff = options.difficulty
+
+    # Gorlek
+    if diff == LogicDifficulty.option_moki and one_level and not max_logic:
+        world.connect_to_menu("DepthsLight",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
+        world.connect_to_menu("Combat.Ranged",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("Grenade", "Bow", "Shuriken", "Sentry", "Spear"), player))
+        world.connect_to_menu("Combat.Aerial",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(("Double Jump", "Launch", "Bash"),
+                                                                                     player))
+        world.connect_to_menu("Combat.Dangerous",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("Double Jump", "Dash", "Bash", "Launch"), player))
+        world.connect_to_menu("Combat.Shielded",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("Hammer", "Launch", "Grenade", "Spear"), player))
+        world.connect_to_menu("Combat.Bat", rule=lambda s: s.has("UTGlitch", player) and s.has("Bash", player))
+        world.connect_to_menu("Combat.Sand", rule=lambda s: s.has("UTGlitch", player) and s.has("Burrow", player))
+        world.connect_to_menu("BreakCrystal",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("Sword", "Hammer", "Bow", "Shuriken", "Grenade"), player))
+
+    # Kii
+    if diff == LogicDifficulty.option_gorlek and one_level and not max_logic:
+        world.connect_to_menu("DepthsLight",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
+        world.connect_to_menu("Combat.Ranged",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("Grenade", "Bow", "Shuriken", "Sentry", "Spear"), player))
+        world.connect_to_menu("Combat.Aerial", rule=lambda s: s.has("UTGlitch", player))
+        world.connect_to_menu("Combat.Dangerous",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("Double Jump", "Dash", "Bash", "Launch"), player))
+        world.connect_to_menu("Combat.Shielded",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("Hammer", "Launch", "Grenade", "Spear"), player))
+        world.connect_to_menu("Combat.Bat", rule=lambda s: s.has("UTGlitch", player))
+        world.connect_to_menu("Combat.Sand", rule=lambda s: s.has("UTGlitch", player) and s.has("Burrow", player))
+        world.connect_to_menu("BreakCrystal",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("Sword", "Hammer", "Bow", "Shuriken", "Grenade"), player))
+
+    # Unsafe
+    if diff == LogicDifficulty.option_kii and one_level or diff != LogicDifficulty.option_unsafe and max_logic:
+        world.connect_to_menu("DepthsLight",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
+        world.connect_to_menu("Combat.Ranged",
+                              rule=lambda s:
+                              s.has_any(("Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"), player))
+        world.connect_to_menu("Combat.Aerial", rule=lambda s: s.has("UTGlitch", player))
+        world.connect_to_menu("Combat.Dangerous",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("Double Jump", "Dash", "Bash", "Launch"), player))
+        world.connect_to_menu("Combat.Shielded",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("Hammer", "Launch", "Grenade", "Spear"), player))
+        world.connect_to_menu("Combat.Bat", rule=lambda s: s.has("UTGlitch", player))
+        world.connect_to_menu("Combat.Sand", rule=lambda s: s.has("UTGlitch", player) and s.has("Burrow", player))
+        world.connect_to_menu("BreakCrystal",
+                              rule=lambda s: s.has("UTGlitch", player) and s.has_any(
+                                  ("Sword", "Hammer", "Bow", "Shuriken", "Grenade", "Spear"), player))

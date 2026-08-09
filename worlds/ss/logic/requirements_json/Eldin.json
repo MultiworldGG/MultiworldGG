@@ -83,7 +83,8 @@
       "Fly to Sky": "Nothing",
       "Thrill Digger Cliff": "can_reach_region Eldin Volcano - Thrill Digger Cliff",
       "Hot Cave": "Nothing",
-      "Dungeon Entrance in Eldin Volcano": "Key Piece x5"
+      "Upper Eldin Cave": "Nothing",
+      "Dungeon Entrance in Eldin Volcano": "Key Piece x5 | option_et_open"
     },
     "locations": {
       "Digging Spot in front of Earth Temple": "Has Digging Mitts",
@@ -97,7 +98,7 @@
       "Can Survive Eldin Hot Cave": "Fireshield Earrings | option_damage_multiplier_under_12"
     },
     "exits": {
-      "Near Temple Entrance": "can_reach_region Eldin Volcano - Near Temple Entrance",
+      "Near Temple Entrance": "can_reach_region Eldin Volcano - Near Temple Entrance & Can Survive Eldin Hot Cave",
       "Sand Slide": "Can Survive Eldin Hot Cave",
       "Upper Path out of Hot Cave": "Fireshield Earrings"
     },
@@ -119,11 +120,26 @@
     "hint_region": "Eldin Volcano",
     "exits": {
       "Volcano Ascent": "Nothing",
-      "Hot Cave": "Nothing"
+      "Hot Cave": "Nothing",
+      "Lower Eldin Cave": "Nothing"
     },
     "locations": {
       "Digging Spot after Draining Lava": "Has Digging Mitts"
     }
+  },
+  "Eldin Volcano - Fire Dragon Dummy Room 1": {
+    "hint_region": "Eldin Volcano",
+    "exits": {
+      "Cave Exit": "Nothing"
+    },
+    "locations": {}
+  },
+  "Eldin Volcano - Fire Dragon Dummy Room 2": {
+    "hint_region": "Eldin Volcano",
+    "exits": {
+      "Cave Exit": "Nothing"
+    },
+    "locations": {}
   },
   "Mogma Turf - Entry": {
     "hint_region": "Mogma Turf",
@@ -155,10 +171,10 @@
   "Volcano Summit - Summit": {
     "hint_region": "Volcano Summit",
     "macros": {
-      "Goddess Cube inside Volcano Summit": "Has Goddess Sword & Upgraded Skyward Strike"
+      "Goddess Cube inside Volcano Summit": "Fireshield Earrings & Has Goddess Sword & Upgraded Skyward Strike"
     },
     "exits": {
-      "Path out of Summit before Sandy Slope": "Nothing",
+      "Path out of Summit before Sandy Slope": "Fireshield Earrings",
       "Path out of Summit after Lava Platforms": "Fireshield Earrings",
       "Upper Path out of Summit after Lava Platforms": "Fireshield Earrings"
     },
@@ -230,7 +246,8 @@
     },
     "exits": {
       "Dig to Prison": "Has Mogma Mitts",
-      "Use Air Vent": "Clawshots & ( Bomb Bag | (Whip & Can Bypass Boko Base Watchtower) )"
+      "Use Air Vent": "Clawshots & ( Bomb Bag | (Whip & Can Bypass Boko Base Watchtower) )",
+      "Lower Bokoblin Base Cave": "Clawshots & ( Bomb Bag | (Whip & Can Bypass Boko Base Watchtower) )"
     },
     "locations": {
       "Chest near Bone Bridge": "Has Mogma Mitts",
@@ -245,12 +262,27 @@
       "Boko Base Goddess Cube West of Earth Temple Entrance": "Has Goddess Sword & Has Mogma Mitts & Can Bypass Boko Base Watchtower"
     },
     "exits": {
-      "Path through Hot Cave": "Bomb Bag & Fireshield Earrings"
+      "Path through Hot Cave": "Bomb Bag & Fireshield Earrings",
+      "Upper Bokoblin Base Cave": "Nothing"
     },
     "locations": {
       "Chest East of Earth Temple Entrance": "Nothing",
       "Chest West of Earth Temple Entrance": "Has Mogma Mitts & Can Bypass Boko Base Watchtower & (Has Slingshot | Has Bow | Bomb Bag | Has Goddess Sword)"
     }
+  },
+  "Bokoblin Base - Fire Dragon Dummy Room 1": {
+    "hint_region": "Bokoblin Base",
+    "exits": {
+      "Cave Exit": "Nothing"
+    },
+    "locations": {}
+  },
+  "Bokoblin Base - Fire Dragon Dummy Room 2": {
+    "hint_region": "Bokoblin Base",
+    "exits": {
+      "Cave Exit": "Nothing"
+    },
+    "locations": {}
   },
   "Bokoblin Base - Summit": {
     "hint_region": "Bokoblin Base",

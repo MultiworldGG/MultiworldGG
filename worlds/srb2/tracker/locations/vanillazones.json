@@ -1,0 +1,144 @@
+[
+{"sections": [{"name": "Greenflower (Act 1) Star Emblem"}], "map_locations": [{"map": "gfz1", "x": 328, "y": 532}]},
+{"sections": [{"name": "Greenflower (Act 1) Spade Emblem"}], "map_locations": [{"map": "gfz1", "x": 531, "y": 202}]},
+{"sections": [{"name": "Greenflower (Act 1) Heart Emblem"}], "map_locations": [{"map": "gfz1", "x": 695, "y": 322}]},
+{"sections": [{"name": "Greenflower (Act 1) Diamond Emblem"}], "map_locations": [{"map": "gfz1", "x": 211, "y": 46}]},
+{"sections": [{"name": "Greenflower (Act 1) Club Emblem"}], "map_locations": [{"map": "gfz1", "x": 569, "y": 332}]},
+{"sections": [{"name": "Greenflower (Act 1) Emerald Token - Breakable Wall Near Bridge"}], "map_locations": [{"map": "gfz1", "x": 161, "y": 284}]},
+{"sections": [{"name": "Greenflower (Act 1) Emerald Token - Midair Top Path"}], "map_locations": [{"map": "gfz1", "x": 250, "y": 532}]},
+    {"sections": [
+{"name": "Greenflower (Act 1) Time Emblem"},
+{"name": "Greenflower (Act 1) Ring Emblem"},
+{"name": "Greenflower (Act 1) Clear"}],"map_locations": [{"map": "gfz1", "x": 683, "y": 587}]},
+        
+{"sections": [{"name": "Greenflower (Act 2) Star Emblem"}], "map_locations": [{"map": "gfz2", "x": 554, "y": 419}]},
+{"sections": [{"name": "Greenflower (Act 2) Spade Emblem"}], "map_locations": [{"map": "gfz2", "x": 42, "y": 516}]},
+{"sections": [{"name": "Greenflower (Act 2) Heart Emblem"}], "map_locations": [{"map": "gfz2", "x": 309, "y": 775}]},
+{"sections": [{"name": "Greenflower (Act 2) Diamond Emblem"}], "map_locations": [{"map": "gfz2", "x": 243, "y": 883}]},
+{"sections": [{"name": "Greenflower (Act 2) Club Emblem"}], "map_locations": [{"map": "gfz2", "x": 1058, "y": 275}]},
+{"sections": [{"name": "Greenflower (Act 2) Emerald Token - Main Path Cave"}], "map_locations": [{"map": "gfz2", "x": 1033, "y": 322}]},
+{"sections": [{"name": "Greenflower (Act 2) Emerald Token - Under Bridge Near End"}], "map_locations": [{"map": "gfz2", "x": 494, "y": 1083}]},
+{"sections": [{"name": "Greenflower (Act 2) Emerald Token - No Spin High on Ledge"}], "map_locations": [{"map": "gfz2", "x": 275, "y": 931}]},
+
+    {"sections": [
+{"name": "Greenflower (Act 2) Time Emblem"},
+{"name": "Greenflower (Act 2) Ring Emblem"},
+{"name": "Greenflower (Act 2) Clear"}],"map_locations": [{"map": "gfz2", "x": 104, "y": 1031}]},
+
+    {"sections": [
+{"name": "Greenflower (Act 3) Time Emblem"},
+{"name": "Greenflower (Act 3) Score Emblem"},
+{"name": "Greenflower (Act 3) Clear"}],"map_locations": [{"map": "gfz3", "x": 68, "y": 68}]},
+
+{"sections": [{"name": "Techno Hill (Act 1) Star Emblem"}], "map_locations": [{"map": "thz1", "x": 306, "y": 103}]},
+{"sections": [{"name": "Techno Hill (Act 1) Spade Emblem"}], "map_locations": [{"map": "thz1", "x": 343, "y": 478}]},
+{"sections": [{"name": "Techno Hill (Act 1) Heart Emblem"}], "map_locations": [{"map": "thz1", "x": 225, "y": 624}]},
+{"sections": [{"name": "Techno Hill (Act 1) Diamond Emblem"}], "map_locations": [{"map": "thz1", "x": 379, "y": 369}]},
+{"sections": [{"name": "Techno Hill (Act 1) Club Emblem"}], "map_locations": [{"map": "gfz1", "x": 105, "y": 396}]},
+{"sections": [{"name": "Techno Hill (Act 1) Emerald Token - On Pipes"}], "map_locations": [{"map": "thz1", "x": 716, "y": 440}]},
+{"sections": [{"name": "Techno Hill (Act 1) Emerald Token - Alt Path Under Slime"}], "map_locations": [{"map": "thz1", "x": 842, "y": 350}]},
+    {"sections": [
+{"name": "Techno Hill (Act 1) Time Emblem"},
+{"name": "Techno Hill (Act 1) Ring Emblem"},
+{"name": "Techno Hill (Act 1) Clear"}],"map_locations": [{"map": "thz1", "x": 910, "y": 458}]},
+
+{"sections": [{"name": "Techno Hill (Act 1) Star Emblem"}], "map_locations": [{"map": "thz1", "x": 306, "y": 103}]},
+{"sections": [{"name": "Techno Hill (Act 1) Spade Emblem"}], "map_locations": [{"map": "thz1", "x": 343, "y": 478}]},
+{"sections": [{"name": "Techno Hill (Act 1) Heart Emblem"}], "map_locations": [{"map": "thz1", "x": 225, "y": 624}]},
+{"sections": [{"name": "Techno Hill (Act 1) Diamond Emblem"}], "map_locations": [{"map": "thz1", "x": 379, "y": 369}]},
+{"sections": [{"name": "Techno Hill (Act 1) Club Emblem"}], "map_locations": [{"map": "thz1", "x": 105, "y": 396}]},
+{"sections": [{"name": "Techno Hill (Act 1) Emerald Token - On Pipes"}], "map_locations": [{"map": "thz1", "x": 716, "y": 440}]},
+{"sections": [{"name": "Techno Hill (Act 1) Emerald Token - Alt Path Under Slime"}], "map_locations": [{"map": "thz1", "x": 842, "y": 350}]},
+    {"sections": [
+{"name": "Techno Hill (Act 1) Time Emblem"},
+{"name": "Techno Hill (Act 1) Ring Emblem"},
+{"name": "Techno Hill (Act 1) Clear"}],"map_locations": [{"map": "thz1", "x": 910, "y": 458}]},
+
+{"sections": [{"name": "Techno Hill (Act 2) Star Emblem"}], "map_locations": [{"map": "thz2", "x": 72, "y": 313}]},
+{"sections": [{"name": "Techno Hill (Act 2) Spade Emblem"}], "map_locations": [{"map": "thz2", "x": 297, "y": 14}]},
+{"sections": [{"name": "Techno Hill (Act 2) Heart Emblem"}], "map_locations": [{"map": "thz2", "x": 839, "y": 710}]},
+{"sections": [{"name": "Techno Hill (Act 2) Diamond Emblem"}], "map_locations": [{"map": "thz2", "x": 718, "y": 532}]},
+{"sections": [{"name": "Techno Hill (Act 2) Club Emblem"}], "map_locations": [{"map": "thz2", "x": 626, "y": 648}]},
+{"sections": [{"name": "Techno Hill (Act 2) Emerald Token - Deep in Slime"}], "map_locations": [{"map": "thz2", "x": 734, "y": 484}]},
+{"sections": [{"name": "Techno Hill (Act 2) Emerald Token - Knuckles Path Backtrack"}], "map_locations": [{"map": "thz2", "x": 208, "y": 457}]},
+    {"sections": [
+{"name": "Techno Hill (Act 2) Time Emblem"},
+{"name": "Techno Hill (Act 2) Ring Emblem"},
+{"name": "Techno Hill (Act 2) Clear"}],"map_locations": [{"map": "thz2", "x": 880, "y": 676}]},
+
+    {"sections": [
+{"name": "Techno Hill (Act 3) Time Emblem"},
+{"name": "Techno Hill (Act 3) Score Emblem"},
+{"name": "Techno Hill (Act 3) Clear"}],"map_locations": [{"map": "thz3", "x": 51, "y": 70}]},
+
+{"sections": [{"name": "Deep Sea (Act 1) Star Emblem"}], "map_locations": [{"map": "dsz1", "x": 245, "y": 89}]},
+{"sections": [{"name": "Deep Sea (Act 1) Spade Emblem"}], "map_locations": [{"map": "dsz1", "x": 86, "y": 109}]},
+{"sections": [{"name": "Deep Sea (Act 1) Heart Emblem"}], "map_locations": [{"map": "dsz1", "x": 309, "y": 65}]},
+{"sections": [{"name": "Deep Sea (Act 1) Diamond Emblem"}], "map_locations": [{"map": "dsz1", "x": 336, "y": 95}]},
+{"sections": [{"name": "Deep Sea (Act 1) Club Emblem"}], "map_locations": [{"map": "dsz1", "x": 168, "y": 173}]},
+{"sections": [{"name": "Deep Sea (Act 1) Emerald Token - V on Right Path"}], "map_locations": [{"map": "dsz1", "x": 157, "y": 269}]},
+{"sections": [{"name": "Deep Sea (Act 1) Emerald Token - Underwater Air Pocket on Right Path"}], "map_locations": [{"map": "dsz1", "x": 240, "y": 177}]},
+{"sections": [{"name": "Deep Sea (Act 1) Emerald Token - Yellow Doors"}], "map_locations": [{"map": "dsz1", "x": 85, "y": 129}]},
+{"sections": [{"name": "Deep Sea (Act 1) Emerald Token - Large Underwater Curve"}], "map_locations": [{"map": "dsz1", "x": 258, "y": 61}]},
+{"sections": [{"name": "Deep Sea (Act 1) Emerald Token - Waterslide Gargoyles"}], "map_locations": [{"map": "dsz1", "x": 219, "y": 269}]},
+
+    {"sections": [
+{"name": "Deep Sea (Act 1) Time Emblem"},
+{"name": "Deep Sea (Act 1) Ring Emblem"},
+{"name": "Deep Sea (Act 1) Clear"}],"map_locations": [{"map": "dsz1", "x": 353, "y": 65}]},
+
+{"sections": [{"name": "Deep Sea (Act 2) Star Emblem"}], "map_locations": [{"map": "dsz2", "x": 466, "y": 367}]},
+{"sections": [{"name": "Deep Sea (Act 2) Spade Emblem"}], "map_locations": [{"map": "dsz2", "x": 291, "y": 146}]},
+{"sections": [{"name": "Deep Sea (Act 2) Heart Emblem"}], "map_locations": [{"map": "dsz2", "x": 813, "y": 909}]},
+{"sections": [{"name": "Deep Sea (Act 2) Diamond Emblem"}], "map_locations": [{"map": "dsz2", "x": 704, "y": 690}]},
+{"sections": [{"name": "Deep Sea (Act 2) Club Emblem"}], "map_locations": [{"map": "dsz2", "x": 563, "y": 454}]},
+{"sections": [{"name": "Deep Sea (Act 2) Emerald Token - Near Heart Emblem"}], "map_locations": [{"map": "dsz2", "x": 793, "y": 962}]},
+{"sections": [{"name": "Deep Sea (Act 2) Emerald Token - Red and Yellow Springs"}], "map_locations": [{"map": "dsz2", "x": 527, "y": 284}]},
+{"sections": [{"name": "Deep Sea (Act 2) Emerald Token - Down Right From Goal"}], "map_locations": [{"map": "dsz2", "x": 370, "y": 749}]},
+{"sections": [{"name": "Deep Sea (Act 2) Emerald Token - No Spin Spring Turnaround"}], "map_locations": [{"map": "dsz2", "x": 277, "y": 391}]},
+    {"sections": [
+{"name": "Deep Sea (Act 2) Time Emblem"},
+{"name": "Deep Sea (Act 2) Ring Emblem"},
+{"name": "Deep Sea (Act 2) Clear"}],"map_locations": [{"map": "dsz3", "x": 379, "y": 714}]},
+
+    {"sections": [
+{"name": "Deep Sea (Act 3) Time Emblem"},
+{"name": "Deep Sea (Act 3) Score Emblem"},
+{"name": "Deep Sea (Act 3) Clear"}],"map_locations": [{"map": "dsz3", "x": 84, "y": 84}]},
+
+{"sections": [{"name": "Castle Eggman (Act 1) Star Emblem"}], "map_locations": [{"map": "cez1", "x": 454, "y": 1022}]},
+{"sections": [{"name": "Castle Eggman (Act 1) Spade Emblem"}], "map_locations": [{"map": "cez1", "x": 621, "y": 630}]},
+{"sections": [{"name": "Castle Eggman (Act 1) Heart Emblem"}], "map_locations": [{"map": "cez1", "x": 424, "y": 556}]},
+{"sections": [{"name": "Castle Eggman (Act 1) Diamond Emblem"}], "map_locations": [{"map": "cez1", "x": 218, "y": 1092}]},
+{"sections": [{"name": "Castle Eggman (Act 1) Club Emblem"}], "map_locations": [{"map": "cez1", "x": 168, "y": 173}]},
+{"sections": [{"name": "Castle Eggman (Act 1) Emerald Token - Behind Fence Near Start"}], "map_locations": [{"map": "cez1", "x": 301, "y": 1240}]},
+{"sections": [{"name": "Castle Eggman (Act 1) Emerald Token - Spring Side Path"}], "map_locations": [{"map": "cez1", "x": 454, "y": 1027}]},
+{"sections": [{"name": "Castle Eggman (Act 1) Emerald Token - Inside Castle"}], "map_locations": [{"map": "cez1", "x": 645, "y": 693}]},
+
+    {"sections": [
+{"name": "Castle Eggman (Act 1) Time Emblem"},
+{"name": "Castle Eggman (Act 1) Ring Emblem"},
+{"name": "Castle Eggman (Act 1) Clear"}],"map_locations": [{"map": "cez1", "x": 478, "y": 47}]},
+
+{"sections": [{"name": "Castle Eggman (Act 2) Star Emblem"}], "map_locations": [{"map": "cez2", "x": 339, "y": 828}]},
+{"sections": [{"name": "Castle Eggman (Act 2) Spade Emblem"}], "map_locations": [{"map": "cez2", "x": 240, "y": 680}]},
+{"sections": [{"name": "Castle Eggman (Act 2) Heart Emblem"}], "map_locations": [{"map": "cez2", "x": 864, "y": 496}]},
+{"sections": [{"name": "Castle Eggman (Act 2) Diamond Emblem"}], "map_locations": [{"map": "cez2", "x": 496, "y": 192}]},
+{"sections": [{"name": "Castle Eggman (Act 2) Club Emblem"}], "map_locations": [{"map": "cez2", "x": 94, "y": 315}]},
+{"sections": [{"name": "Castle Eggman (Act 2) Emerald Token - First Outside Area"}], "map_locations": [{"map": "cez2", "x": 216, "y": 764}]},
+{"sections": [{"name": "Castle Eggman (Act 2) Emerald Token - Corner of Right Courtyard"}], "map_locations": [{"map": "cez2", "x": 669, "y": 534}]},
+{"sections": [{"name": "Castle Eggman (Act 2) Emerald Token - Back Window of Left Courtyard"}], "map_locations": [{"map": "cez2", "x": 344, "y": 720}]},
+{"sections": [{"name": "Castle Eggman (Act 2) Emerald Token - Spring Near Club Emblem"}], "map_locations": [{"map": "cez2", "x": 144, "y": 327}]},
+{"sections": [{"name": "Castle Eggman (Act 2) Emerald Token - High Ledge Before Final Tower"}], "map_locations": [{"map": "cez2", "x": 712, "y": 168}]},
+    {"sections": [
+{"name": "Castle Eggman (Act 2) Time Emblem"},
+{"name": "Castle Eggman (Act 2) Ring Emblem"},
+{"name": "Castle Eggman (Act 2) Clear"}],"map_locations": [{"map": "cez2", "x": 496, "y": 127}]},
+
+    {"sections": [
+{"name": "Castle Eggman (Act 3) Time Emblem"},
+{"name": "Castle Eggman (Act 3) Score Emblem"},
+{"name": "Castle Eggman (Act 3) Clear"}],"map_locations": [{"map": "cez3", "x": 156, "y": 156}]}
+
+
+]

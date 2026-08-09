@@ -10,6 +10,7 @@ from struct import unpack
 from NetUtils import ClientStatus
 from Utils import get_unique_identifier
 from asyncio import sleep
+from typing import Any
 
 victory = False
 
@@ -130,14 +131,15 @@ class SM64HackClient(BizHawkClient):
     #async def fix_star_count(count: int):
     #    pass
     
-    def set_file_2_flags(self, file1data, file2data, ctx) -> None:
-        file2data[9] = file1data[9] if not ctx.slot_data["sr6.25"] else file2data[9]
-        if ctx.slot_data["sr3.5"] or ctx.slot_data["sr6.25"] or ctx.slot_data.get("decadeslater") or "Castle Moat" in ctx.server_locations:
+    def set_file_2_flags(self, file1data, file2data, ctx, fileselect = False) -> list[int]:
+        if not fileselect:
+            file2data[9] = file1data[9] if not ctx.slot_data["sr6.25"] else file2data[9]
             file2data[10] = file1data[10] & 0b11111101
-            file2data[10] |= self.moat << 1 #yellow/black switch is the same flag as moat
+        file2data[10] |= self.moat << 1 #yellow/black switch is the same flag as moat
+        if not fileselect:
+            important_data = file1data[11]
         else:
-            file2data[10] = file1data[10]
-        important_data = file1data[11]
+            important_data = file2data[11] #file1data doesnt exist since we dont know what file will be selected yet
         for i in range(5):
             if self.flags[i]:
                 important_data |= (1 << (5 - i))
@@ -482,7 +484,208 @@ class SM64HackClient(BizHawkClient):
                             "amount": rings_to_send
                         }
                     }])
+
+    async def get_received_items(self, ctx, read: list[Any], file2data: list[int], fileselect: bool):
+        writes = []
+        self.received_items = len(ctx.items_received)
+        self.receive_items = False
+        stars = 0
+        starcount = 0
+        bluestars = 0
+        keyCounter = 0
+        badgeCounter = 0
+        jumps = 0
+        discounts = 0
+        captimerbuffs = 0
+        wallkickframes = 0
+
+        for index, item in enumerate(ctx.items_received):
+            item_name = self.sm64hack_items[item.item - self.base_id]
+            match item_name:
+                case "Power Star":
+                    stars += 1
+                case "Star Bundle":
+                    stars += 2
+                case "Blue Star":
+                    bluestars += 1
+                case "Blue Star Bundle":
+                    bluestars += 2
+                case "Progressive Key":
+                    reversed = ctx.slot_data["ProgressiveKeys"] == 2
+                    if not self.li:
+                        if keyCounter == 1:
+                            self.flags[0 ^ reversed] = True
+                            keyCounter = 2
+                        else:
+                            self.flags[1 ^ reversed] = True
+                            keyCounter = 1
+                    else:
+                        if keyCounter == 1:
+                            cannon = 27 if reversed else 28 
+                            self.cannons[cannon] = True
+                            keyCounter = 2
+                        else:
+                            cannon = 28 if reversed else 27 
+                            self.cannons[cannon] = True
+                            keyCounter = 1
+                case "Key 1":
+                    if not self.li:
+                        self.flags[1] = True
+                    else:
+                        self.cannons[27] = True
+                case "Key 2":
+                    if not self.li:
+                        self.flags[0] = True
+                    else:
+                        self.cannons[28] = True
+                case "Metal Cap":
+                    self.flags[3] = True
+                case "Vanish Cap":
+                    self.flags[2] = True
+                case "Wing Cap":
+                    self.flags[4] = True
+                case "Progressive Stomp Badge":
+                    if badgeCounter == 0:
+                        self.file1Stars[5] |= 16
+                        badgeCounter = 1
+                    else:
+                        self.file1Stars[5] |= 32
+                case "Wall Badge":
+                    self.file1Stars[5] |= 8
+                case "Triple Jump Badge":
+                    self.file1Stars[5] |= 128
+                case "Lava Badge":    
+                    self.file1Stars[5] |= 64
+                case "Yellow Switch":
+                    self.moat = 1
+                case "Black Switch":
+                    self.moat = 1
+                case "Gray Switch":
+                    self.moat = 1
+                case "Castle Moat":
+                    self.moat = 1
+                case "Overworld Cannon Star":
+                    starcount += 1
+                    self.cannons[12] = True
+                case "Bowser 2 Cannon Star":
+                    starcount += 1
+                    self.cannons[29] = True
+                case "5% 100-coin star discount":
+                    discounts += 1
+                case "Cap Timer Extension":
+                    captimerbuffs += 1
+                case "+1 Wallkick Frame":
+                    wallkickframes += 1
+                case s if s.endswith("Ticket"):
+                    self.tickets.add(item_name)
+                case _:
+                    if("Cannon" in item_name):
+                        course = item_name[:-7]
+                        course_num = list(filter(lambda key: courseIndex[key] == course,courseIndex))[0]
+                        if(course_num == 8):
+                            self.cannons[12] = True
+                        else:
+                            self.cannons[course_num + 1] = True
+                    elif item_name in moves:
+                        if item_name == "Progressive Jump":
+                            item_name = jump_names[jumps]
+                            jumps += 1
+                        if item_name in self.moves:
+                            continue
+                        else:
+                            self.moves.add(item_name)
+                            writes.append(self.get_move_num_write())
+                    else:
+                        if(not fileselect): #dont want to receive junk when mario doesn't exist
+                            num = read[18] if item_name == "Coin" else read[22]
+                            write = await self.receive_junk_item(ctx, index, item_name, int.from_bytes(num))
+                            if write:
+                                writes.append(write)
+
         
+
+        starcount += stars
+        cannons = ctx.slot_data["Cannons"]
+        if cannons:
+            if stars > 7:
+                file2data[8] = 127 + (128 if self.cannons[8] else 0)
+                stars -= 7
+            else:
+                file2data[8] = ((2 ** stars) - 1) + (128 if self.cannons[8] else 0)
+                stars = 0
+            for i in range(12,37):
+                if(stars > 7):
+                    stars -= 7
+                    file2data[i] = 127 + (128 if self.cannons[i] else 0)
+                else:
+                    file2data[i] = ((2 ** stars) - 1) + (128 if self.cannons[i] else 0)
+                    stars = 0
+            file2data[37] = file2data[37] | 128 if self.cannons[37] else 0
+        else:
+            if stars > 8:
+                file2data[8] = 255
+                stars -= 8
+            else:
+                file2data[8] = ((2 ** stars) - 1) 
+                stars = 0
+            if ctx.slot_data["sr6.25"]: #extra stars
+                if stars > 8:
+                    file2data[9] = 255
+                    stars -= 8
+                else:
+                    file2data[9] = ((2 ** stars) - 1) 
+                    stars = 0
+            for i in range(12,37):
+                if (i == 12 or i == 29) and ctx.slot_data["sr6.25"]:
+                    if(stars > 7):
+                        stars -= 7
+                        file2data[i] = 127 + (128 if self.cannons[i] else 0)
+                    else:
+                        file2data[i] = ((2 ** stars) - 1) + (128 if self.cannons[i] else 0)
+                        stars = 0
+                else:
+                    if(stars > 8):
+                        stars -= 8
+                        file2data[i] = 255
+                    else:
+                        file2data[i] = ((2 ** stars) - 1)
+                        stars = 0
+
+        if(ctx.slot_data.get("decadeslater")):
+            if bluestars > 7:
+                file2data[8+56] = 127
+                bluestars -= 7
+            else:
+                file2data[8+56] = ((2 ** bluestars) - 1)
+                bluestars = 0
+            for i in range(12, 37):
+                if(bluestars > 7):
+                    bluestars -= 7
+                    file2data[i + 56] = 127
+                else:
+                    file2data[i + 56] = ((2 ** bluestars) - 1)
+                    bluestars = 0
+        else: #decades later seems to update the visual star count on its own :) 
+            writes.append((starsCountPtr, bytearray([starcount]), "RDRAM"))
+
+        if not fileselect: #these things only matter when mario exists
+            if discounts > self.coin_discounts:
+                self.coin_discounts = discounts
+                coins_required = int(self.basecoincount * (0.95 ** discounts))
+                writes.extend(self.get_coin_star_writes(coins_required))
+
+            if captimerbuffs > self.cap_timer_buffs:
+                self.cap_timer_buffs = captimerbuffs
+                writes.extend(self.get_cap_timer_writes())
+
+            if wallkickframes > self.additional_wallkick_frames:
+                self.additional_wallkick_frames = wallkickframes
+                writes.extend(self.get_wallkick_frame_writes())
+
+        file2data = self.set_file_2_flags(self.file1Stars, file2data, ctx, fileselect)
+        file2flag = True
+        return writes, file2data, file2flag
+
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
@@ -638,6 +841,8 @@ class SM64HackClient(BizHawkClient):
                         (lastImpactPtr2, bytes.fromhex("24040002"), "RDRAM")
                     ])
                     self.li = True
+                elif read[12].decode("ascii").startswith("Star Revenge 0"):
+                    writes.append((0x75D6D,bytes.fromhex("161B0B0E0A1C1D9E160E1D1B18191815121CFF"), "RDRAM"))
 
                 if ctx.slot_data.get("moves"):
                     move_patch = pkgutil.get_data(__name__, "asm/move_patch")
@@ -704,35 +909,45 @@ class SM64HackClient(BizHawkClient):
                 }])
             
             if int.from_bytes(read[4]) == 0: #mario doesn't exist yet
+                if(self.received_items != len(ctx.items_received) or self.receive_items):
+                    received_writes, file2data, _ = await self.get_received_items(ctx, read, list(read[1]), True)
+                    writes.extend(received_writes)
+                    writes.append((filesPtr[1], bytearray(file2data), "RDRAM"))
+                
                 for i in range(0, len(writes), 5):
                     await bizhawk.write(ctx.bizhawk_ctx, writes[i:i + 5])
                 return
-            
+
+            if self.loops == 0:
+                self.receive_items = True #should rereceive items since the previous code doesn't receive *every* item since some only work/matter when mario exists
+
+
             self.loops += 1
             self.file_locked = True
             
             file1data = list(read[0])
             if self.file1Stars is not None:
                 if(file1data[5] != self.file1Stars[5]) and ctx.slot_data["Badges"]:
-                    file1data[5] = self.file1Stars[5] #prevent badges from changing the flags, so they can be received correctly.
+                    file1data[5] = self.file1Stars[5] #prevent badges from changing the flags, so they can be received correctly
+                location_id_to_name = dict((value, key) for key, value in self.location_name_to_id.items()) #sync local stars with server, easier coordination if people are sharing a slot
+                index_course = dict((value, key) for key, value in courseIndex.items())
+                if self.checked_locations != ctx.checked_locations:
+                    print("true")
+                    self.checked_locations = ctx.checked_locations.copy()
+                    for location in ctx.checked_locations:
+                        location_name = location_id_to_name[location]
+                        if "Cannon" in location_name:
+                            continue
+                        if location_name in sr6_25_locations[1:]:
+                            file1data[9] |= 1 << sr6_25_locations[1:].index(location_name)
+                        elif location_name[:-7] in index_course:
+                            file1data[index_course[location_name[:-7]]] |= 1 << int(location_name[-1]) - 1
+                        elif location_name in self.items:
+                            file1data[11] |= 1 << self.items.index(location_name) + 1
+                    
+                    writes.append((filesPtr[self.current_file], bytearray(file1data), "RDRAM"))
+                elif (file1data[5] != self.file1Stars[5]) and ctx.slot_data["Badges"]:
                     writes.append((filesPtr[self.current_file] + 0x5, bytearray(file1data[5:6]),"RDRAM"))
-                else:
-                    location_id_to_name = dict((value, key) for key, value in self.location_name_to_id.items()) #sync local stars with server, easier coordination if people are sharing a slot
-                    index_course = dict((value, key) for key, value in courseIndex.items())
-                    if self.checked_locations != ctx.checked_locations:
-                        self.checked_locations = ctx.checked_locations
-                        for location in ctx.checked_locations:
-                            location_name = location_id_to_name[location]
-                            if "Cannon" in location_name:
-                                continue
-                            if location_name in sr6_25_locations[1:]:
-                                file1data[9] |= 1 << sr6_25_locations[1:].index(location_name)
-                            elif location_name[:-7] in index_course:
-                                file1data[index_course[location_name[:-7]]] |= 1 << int(location_name[-1]) - 1
-                            elif location_name in self.items:
-                                file1data[11] |= 1 << self.items.index(location_name) + 1
-                        
-                        writes.append((filesPtr[self.current_file], bytearray(file1data), "RDRAM"))
 
             file2data = list(read[1])
             file2flag = False
@@ -807,201 +1022,8 @@ class SM64HackClient(BizHawkClient):
 
             
             if(self.received_items != len(ctx.items_received) or self.receive_items):
-                self.received_items = len(ctx.items_received)
-                self.receive_items = False
-                stars = 0
-                starcount = 0
-                bluestars = 0
-                keyCounter = 0
-                badgeCounter = 0
-                jumps = 0
-                discounts = 0
-                captimerbuffs = 0
-                wallkickframes = 0
-
-                for index, item in enumerate(ctx.items_received):
-                    item_name = self.sm64hack_items[item.item - self.base_id]
-                    match item_name:
-                        case "Power Star":
-                            stars += 1
-                        case "Star Bundle":
-                            stars += 2
-                        case "Blue Star":
-                            bluestars += 1
-                        case "Blue Star Bundle":
-                            bluestars += 2
-                        case "Progressive Key":
-                            reversed = ctx.slot_data["ProgressiveKeys"] == 2
-                            if not self.li:
-                                if keyCounter == 1:
-                                    self.flags[0 ^ reversed] = True
-                                    keyCounter = 2
-                                else:
-                                    self.flags[1 ^ reversed] = True
-                                    keyCounter = 1
-                            else:
-                                if keyCounter == 1:
-                                    cannon = 27 if reversed else 28 
-                                    self.cannons[cannon] = True
-                                    keyCounter = 2
-                                else:
-                                    cannon = 28 if reversed else 27 
-                                    self.cannons[cannon] = True
-                                    keyCounter = 1
-                        case "Key 1":
-                            if not self.li:
-                                self.flags[1] = True
-                            else:
-                                self.cannons[27] = True
-                        case "Key 2":
-                            if not self.li:
-                                self.flags[0] = True
-                            else:
-                                self.cannons[28] = True
-                        case "Metal Cap":
-                            self.flags[3] = True
-                        case "Vanish Cap":
-                            self.flags[2] = True
-                        case "Wing Cap":
-                            self.flags[4] = True
-                        case "Progressive Stomp Badge":
-                            if badgeCounter == 0:
-                                self.file1Stars[5] |= 16
-                                badgeCounter = 1
-                            else:
-                                self.file1Stars[5] |= 32
-                        case "Wall Badge":
-                            self.file1Stars[5] |= 8
-                        case "Triple Jump Badge":
-                            self.file1Stars[5] |= 128
-                        case "Lava Badge":    
-                            self.file1Stars[5] |= 64
-                        case "Yellow Switch":
-                            self.moat = 1
-                        case "Black Switch":
-                            self.moat = 1
-                        case "Gray Switch":
-                            self.moat = 1
-                        case "Castle Moat":
-                            self.moat = 1
-                        case "Overworld Cannon Star":
-                            starcount += 1
-                            self.cannons[12] = True
-                        case "Bowser 2 Cannon Star":
-                            starcount += 1
-                            self.cannons[29] = True
-                        case "5% 100-coin star discount":
-                            discounts += 1
-                        case "Cap Timer Extension":
-                            captimerbuffs += 1
-                        case "+1 Wallkick Frame":
-                            wallkickframes += 1
-                        case s if s.endswith("Ticket"):
-                            self.tickets.add(item_name)
-                        case _:
-                            if("Cannon" in item_name):
-                                course = item_name[:-7]
-                                course_num = list(filter(lambda key: courseIndex[key] == course,courseIndex))[0]
-                                if(course_num == 8):
-                                    self.cannons[12] = True
-                                else:
-                                    self.cannons[course_num + 1] = True
-                            elif item_name in moves:
-                                if item_name == "Progressive Jump":
-                                    item_name = jump_names[jumps]
-                                    jumps += 1
-                                if item_name in self.moves:
-                                    continue
-                                else:
-                                    self.moves.add(item_name)
-                                    writes.append(self.get_move_num_write())
-                            else:
-                                num = read[18] if item_name == "Coin" else read[22]
-                                write = await self.receive_junk_item(ctx, index, item_name, int.from_bytes(num))
-                                if write:
-                                    writes.append(write)
-
-                
-
-                starcount += stars
-                cannons = ctx.slot_data["Cannons"]
-                if cannons:
-                    if stars > 7:
-                        file2data[8] = 127 + (128 if self.cannons[8] else 0)
-                        stars -= 7
-                    else:
-                        file2data[8] = ((2 ** stars) - 1) + (128 if self.cannons[8] else 0)
-                        stars = 0
-                    for i in range(12,37):
-                        if(stars > 7):
-                            stars -= 7
-                            file2data[i] = 127 + (128 if self.cannons[i] else 0)
-                        else:
-                            file2data[i] = ((2 ** stars) - 1) + (128 if self.cannons[i] else 0)
-                            stars = 0
-                    file2data[37] = file2data[37] | 128 if self.cannons[37] else 0
-                else:
-                    if stars > 8:
-                        file2data[8] = 255
-                        stars -= 8
-                    else:
-                        file2data[8] = ((2 ** stars) - 1) 
-                        stars = 0
-                    if ctx.slot_data["sr6.25"]: #extra stars
-                        if stars > 8:
-                            file2data[9] = 255
-                            stars -= 8
-                        else:
-                            file2data[9] = ((2 ** stars) - 1) 
-                            stars = 0
-                    for i in range(12,37):
-                        if (i == 12 or i == 29) and ctx.slot_data["sr6.25"]:
-                            if(stars > 7):
-                                stars -= 7
-                                file2data[i] = 127 + (128 if self.cannons[i] else 0)
-                            else:
-                                file2data[i] = ((2 ** stars) - 1) + (128 if self.cannons[i] else 0)
-                                stars = 0
-                        else:
-                            if(stars > 8):
-                                stars -= 8
-                                file2data[i] = 255
-                            else:
-                                file2data[i] = ((2 ** stars) - 1)
-                                stars = 0
-
-                if(ctx.slot_data.get("decadeslater")):
-                    if bluestars > 7:
-                        file2data[8+56] = 127
-                        bluestars -= 7
-                    else:
-                        file2data[8+56] = ((2 ** bluestars) - 1)
-                        bluestars = 0
-                    for i in range(12, 37):
-                        if(bluestars > 7):
-                            bluestars -= 7
-                            file2data[i + 56] = 127
-                        else:
-                            file2data[i + 56] = ((2 ** bluestars) - 1)
-                            bluestars = 0
-                else: #decades later seems to update the visual star count on its own :) 
-                    writes.append((starsCountPtr, bytearray([starcount]), "RDRAM"))
-
-                if discounts > self.coin_discounts:
-                    self.coin_discounts = discounts
-                    coins_required = int(self.basecoincount * (0.95 ** discounts))
-                    writes.extend(self.get_coin_star_writes(coins_required))
-
-                if captimerbuffs > self.cap_timer_buffs:
-                    self.cap_timer_buffs = captimerbuffs
-                    writes.extend(self.get_cap_timer_writes())
-
-                if wallkickframes > self.additional_wallkick_frames:
-                    self.additional_wallkick_frames = wallkickframes
-                    writes.extend(self.get_wallkick_frame_writes())
-
-                file2data = self.set_file_2_flags(self.file1Stars, file2data, ctx)
-                file2flag = True
+                received_writes, file2data, file2flag = await self.get_received_items(ctx, read, file2data, False)
+                writes.extend(received_writes)
 
             if(file2flag == True):
                 writes.append((filesPtr[1], bytearray(file2data), "RDRAM"))
@@ -1182,7 +1204,8 @@ class SM64HackClient(BizHawkClient):
                 if random.random() < (2/1731): #approx 1 every 5 minutes
                     trap = random.choice(self.async_traps)
                     self.async_traps.remove(trap)
-                    logger.info(f"A trap has appeared!")
+                    if trap != "1-Up Mushroom":
+                        logger.info(f"A trap has appeared!")
                     await ctx.send_msgs([{
                         "cmd": "Set",
                         "key": f"sm64hack_junk_{ctx.team}_{ctx.slot}_{trap[0]}",

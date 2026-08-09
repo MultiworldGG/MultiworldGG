@@ -32,6 +32,7 @@ The [player options page for this game](../player-options) contains all the opti
 
 You play through a randomised chapters completing maps. Initially the puzzle elements (e.g. Upgraded Portal Gun, Weighted Storage Cube) will be unavailable and you will gain them as you play gaining the ability to complete more levels that require these puzzle elements.
 
+
 ## Locations
 
 The base locations in the game are completing maps, some of these maps are test chambers and some are locations in aperture laboratories, basically each new loading zone in the game is a separate map.
@@ -39,6 +40,7 @@ Additional optional locations include:
 - "Cutscene" maps, those that require no input from the player (removed by default)
 - Breaking **Wheatley Monitors** in Chapter 8 (and one in Chapter 9)
 - Custom buttons in **Ratman Dens**
+
 
 ## Items
 
@@ -53,20 +55,21 @@ Traps are also in the game and can be set and adjusted in the yaml options.
 
 At the moment the only goal is to finish the final level in Chapter 9 (Chapter 9 is not randomised)
 
-# FAQ
+
+## FAQ
 
 **Why do checks not send/ items are usable in game even if I don't have them unlocked?**
 
 This could be due to a few different issues:
 
-1. You are not using the Portal 2 Client from the Archipelago Launcher. The custom client must be open at all times while playing the game
+1. You are not using the Portal 2 Client from the MultiworldGG Launcher. The custom client must be open at all times while playing the game
 2. Your Portal 2 Archipelago Mod has not got the -netconport launch option set. You can check using the `/check_connection` command in the client. See step 7 of [Installation](../setup_en) to set the launch option.
 
 **Why does my map menu not show any of the maps and just says "Connect to game to load levels"?**
 
 You most likely didn't select the correct extras.txt file when joining a game for the first time. 
 
-- Open host.yaml using the "Open host.yaml" button in the Archipelago Client
+- Open host.yaml using the "Open host.yaml" button in the MultiworldGG Client
 - Go down to `portal2` and see if the `menu_file` points to the **mods** extras.txt file as seen in step 4 of [Running](#running)
 
 If you selected another file in the mod e.g. `GameInfo.txt` the game will not run correctly as the file has probably already been overwritten by the client so you will have to replace that file with an original copy or [reinstall the mod from scratch](../setup_en).
@@ -77,16 +80,23 @@ There is a very small chance that for people running another server on their mac
 
 ### Mod Creators
 
+#### Portal 2 Mod
+
+- **GlassToadstool** - Lead Developer
+- **Clone Fighter** - Loading Screens, Logo Graphics, and Cave Johnson Speech
+- **LimeDreaming** - Custom Font and Models
+- **JD** - Icon Graphics
+- **Kit Lemonfoot** - Documenting Gels for Split
+
+#### APWorld
+
 - **GlassToadstool** - Lead Developer
 - **Proplayen** - Initial Logic Design
-- **JD** - Icon Graphics
-- **Kaito Kid** - Answering lots of questions about APWorld development
-- **studkid** - UT Support
-- **Clone Fighter** - Loading Screens, Logo Graphics, and Cave Johnson Speech
+- **Kaito Kid** - Assistance
+- **studkid** - Initial UT Support
 - **Charged_Neon** - Documentation
-- **LimeDreaming** - Custom Font and Models
-- **James** - apworld additions
+- **James** - Major Bug Fixing and UT updates
 
-### Initial Testers
+#### Initial Testers
 
 **22TwentyTwo, ahhh reptar, Bfbfan26, buzzman5001, ChaiMint, Default Miserable, Fewffwa, Fox, Grenhunterr, Kit Lemonfoot, Knux, MarioXTurn, miketizzle411, Pigmaster100, Rya, Scrungip**

@@ -24,7 +24,6 @@ class SunFormFourGodsAccessTest(AquariaTestBase):
             AquariaLocationNames.OCTOPUS_CAVE_DUMBO_EGG,
             AquariaLocationNames.BEATING_OCTOPUS_PRIME,
             AquariaLocationNames.BEATING_THE_GOLEM,
-            AquariaLocationNames.SUNKEN_CITY_CLEARED
         ]
         items = [[ItemNames.SUN_FORM]]
         self.assertAccessDependency(locations, items, True)

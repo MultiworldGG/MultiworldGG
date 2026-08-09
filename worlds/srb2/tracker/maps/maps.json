@@ -1,0 +1,26 @@
+[
+    {
+        "name": "aphub",
+        "img": "images/MAPAP.png",
+        "location_size": 14,
+        "location_border_thickness": 2
+    },
+{"name": "gfz1", "img": "images/MAPGFZ1.png", "location_size": 16, "location_border_thickness": 2},
+{"name": "gfz2", "img": "images/MAPGFZ2.png", "location_size": 16, "location_border_thickness": 2},
+{"name": "gfz3", "img": "images/MAPGFZ3.png", "location_size": 16, "location_border_thickness": 2},
+
+{"name": "thz1", "img": "images/MAPTHZ1.png", "location_size": 16, "location_border_thickness": 2},
+{"name": "thz2", "img": "images/MAPTHZ2.png", "location_size": 16, "location_border_thickness": 2},
+{"name": "thz3", "img": "images/MAPTHZ3.png", "location_size": 16, "location_border_thickness": 2},
+
+{"name": "dsz1", "img": "images/MAPDSZ1.png", "location_size": 8, "location_border_thickness": 2},
+{"name": "dsz2", "img": "images/MAPDSZ2.png", "location_size": 8, "location_border_thickness": 2},
+{"name": "dsz3", "img": "images/MAPDSZ3.png", "location_size": 16, "location_border_thickness": 2},
+
+{"name": "cez1", "img": "images/MAPCEZ1.png", "location_size": 16, "location_border_thickness": 2},
+{"name": "cez2", "img": "images/MAPCEZ2.png", "location_size": 16, "location_border_thickness": 2},
+{"name": "cez3", "img": "images/MAPCEZ3.png", "location_size": 16, "location_border_thickness": 2},
+
+{"name": "acz1", "img": "images/MAPACZ1.png", "location_size": 16, "location_border_thickness": 2},
+{"name": "acz2", "img": "images/MAPACZ2.png", "location_size": 16, "location_border_thickness": 2}
+]

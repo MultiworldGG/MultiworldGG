@@ -3,7 +3,7 @@ from worlds.AutoWorld import call_all
 from .test_base_menu import FakeClient
 from .bases import Portal2TestBase
 from ..Options import GameModeOption
-from ..mod_helpers.MapMenu import Menu
+from ..mod_helpers.MapMenu import GameMapMenu
 from ..ItemNames import portal_gun_1, portal_gun_2, potatos
 from ..mod_helpers.MapMenu import indicator_characters
 
@@ -29,7 +29,7 @@ class AdditionalChecksMenuTests(Portal2TestBase):
         
         slot_data = self.world.fill_slot_data()
         
-        menu = Menu(slot_data["chapter_dict"], self.client, is_open_world=slot_data["game_mode"] == GameModeOption.OPEN_WORLD, logic_difficulty=slot_data["logic_difficulty"], wheatley_monitors=slot_data["wheatley_monitors"], ratman_dens=slot_data["ratman_dens"], vitrified_doors=slot_data["vitrified_doors"])
+        menu = GameMapMenu(slot_data["chapter_dict"], self.client, is_open_world=slot_data["game_mode"] == GameModeOption.OPEN_WORLD, logic_difficulty=slot_data["logic_difficulty"], wheatley_monitors=slot_data["wheatley_monitors"], ratman_dens=slot_data["ratman_dens"], vitrified_doors=slot_data["vitrified_doors"])
         menu.generate_menu()
         menu_string = str(menu)
         # Find map that includes Wheatley Monitors in the title and check it is correct
@@ -51,7 +51,7 @@ class AdditionalChecksMenuTests(Portal2TestBase):
         
         slot_data = self.world.fill_slot_data()
         
-        menu = Menu(slot_data["chapter_dict"], self.client, is_open_world=slot_data["game_mode"] == GameModeOption.OPEN_WORLD, logic_difficulty=slot_data["logic_difficulty"], wheatley_monitors=slot_data["wheatley_monitors"], ratman_dens=slot_data["ratman_dens"])
+        menu = GameMapMenu(slot_data["chapter_dict"], self.client, is_open_world=slot_data["game_mode"] == GameModeOption.OPEN_WORLD, logic_difficulty=slot_data["logic_difficulty"], wheatley_monitors=slot_data["wheatley_monitors"], ratman_dens=slot_data["ratman_dens"])
         menu.generate_menu()
         # Complete a map with a sub location and check the title updates
         menu.complete_map(slot_data["location_name_to_id"]["Portal Gun Completion"])

@@ -43,8 +43,7 @@ from .data.ItemGroups import item_groups
 
 from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation, RandomizeDoors
 from .Presets import options_presets
-from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
-from .AdditionalRules import combat_rules, unreachable_rules
+from .AdditionalRules import combat_rules, unreachable_rules, ut_combat_rules
 from .ERGenerator import generate_er_connections
 
 
@@ -81,6 +80,8 @@ class WotWWorld(World):
     options_dataclass = WotWOptions
     options: WotWOptions
 
+    glitches_item_name = "UTGlitch"
+
     required_client_version = (0, 6, 3)
 
     # Universal tracker support
@@ -98,6 +99,7 @@ class WotWWorld(World):
         # The list index corresponds to the exit door ID minus one, and the int in the list is the target door ID
         self.spawn_region_name: str = "MarshSpawn.Main"
         self.spawn_area: str = "MarshSpawn"
+        self.possible_combat_weapons: list[str] = []  # Energy weapons that can be used in combat
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
@@ -181,6 +183,13 @@ class WotWWorld(World):
         if (options.spawn.value == StartingLocation.option_willow
                 and (options.launch_on_seir or options.launch_fragments)):
             options.spawn.value = StartingLocation.option_vanilla
+
+        if options.difficulty == LogicDifficulty.option_moki:
+            self.possible_combat_weapons = []  # Only use Sword or Hammer in Moki
+        elif options.difficulty  == LogicDifficulty.option_unsafe:
+            self.possible_combat_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"]
+        else:
+            self.possible_combat_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
 
         # Selection of a random spawn location
         spawn_dict: dict[str, tuple[int, int]] = {  # Map from TP region name to associated spawn option and weight
@@ -333,6 +342,7 @@ class WotWWorld(World):
                 self.options.door_rando.value = RandomizeDoors.option_disabled
             self.options.free_teleporters.value = slot_data["free_tp"]
             self.options.free_regenerate.value = slot_data["regen"]
+            self.options.ut_config.value = slot_data["ut_config"]
 
     def create_regions(self) -> None:
         mworld = self.multiworld
@@ -425,6 +435,8 @@ class WotWWorld(World):
         event_region.locations.append(event_location)
 
     def create_item(self, name: str) -> WotWItem:
+        if name == "UTGlitch":
+            return WotWItem(name, ItemClassification.progression, None, player=self.player)
         return WotWItem(name, item_table[name][1], item_table[name][2], player=self.player)
 
     def create_items(self) -> None:
@@ -592,9 +604,15 @@ class WotWWorld(World):
         return self.random.choice(["50 Spirit Light", "100 Spirit Light"])
 
     def connect_to_menu(self, region: str, rule: Callable[[CollectionState], bool] | None = None) -> None:
-        """Connect the region to menu (if the connection does not already exist)."""
+        """Connect the region to menu. If the connection already exists, add the access rule instead."""
         if not self.multiworld.regions.entrance_cache[self.player].get(f"Menu -> {region}"):
             self.get_region("Menu").connect(self.get_region(region), rule=rule)
+        else:
+            entrance = self.get_entrance(f"Menu -> {region}")
+            if rule is None:
+                entrance.access_rule = lambda s: True
+            else:
+                add_rule(entrance, rule, combine="or")
 
     def precollect_event(self, event: str) -> None:
         self.push_precollected(self.create_event_item(event))
@@ -792,6 +810,93 @@ class WotWWorld(World):
         # Same as above, the location must be reachable
         self.connect_to_menu("RemoveRegionRegen", rule=lambda s: s.has("Victory", player))
 
+        # UT Glitched support
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            from .generated_data.RulesUTGlitch import (
+                set_gorlek_rules_ut_glitch,
+                set_gorlek_glitched_rules_ut_glitch,
+                set_kii_rules_ut_glitch,
+                set_kii_glitched_rules_ut_glitch,
+                set_unsafe_rules_ut_glitch,
+                set_unsafe_glitched_rules_ut_glitch
+                )
+            one_level = "one_level" in options.ut_config or "max_logic" in options.ut_config
+            max_logic = "max_logic" in options.ut_config
+            glitches = "glitches" in options.ut_config or "max_logic" in options.ut_config
+
+            # Add the ut_glitched logic that is relevant, and not already included in the base logic.
+            if options.difficulty == LogicDifficulty.option_moki and (one_level or max_logic):
+                set_gorlek_rules_ut_glitch(self)
+
+            if (
+                    options.difficulty == LogicDifficulty.option_moki and (one_level and glitches)
+                    or options.difficulty.value >= LogicDifficulty.option_gorlek and not options.glitches and glitches
+            ):
+                set_gorlek_glitched_rules_ut_glitch(self)
+
+            if (
+                    options.difficulty == LogicDifficulty.option_moki and max_logic
+                    or options.difficulty == LogicDifficulty.option_gorlek and one_level
+            ):
+                set_kii_rules_ut_glitch(self)
+
+            if (
+                    options.difficulty == LogicDifficulty.option_moki and max_logic
+                    or options.difficulty == LogicDifficulty.option_gorlek and (one_level and glitches)
+                    or options.difficulty.value >= LogicDifficulty.option_kii and not options.glitches and glitches
+            ):
+                set_kii_glitched_rules_ut_glitch(self)
+
+            if (
+                    options.difficulty.value <= LogicDifficulty.option_gorlek and max_logic
+                    or options.difficulty == LogicDifficulty.option_kii and one_level
+            ):
+                set_unsafe_rules_ut_glitch(self)
+
+            if (
+                    options.difficulty.value <= LogicDifficulty.option_gorlek and max_logic
+                    or options.difficulty == LogicDifficulty.option_kii and (one_level and glitches)
+                    or options.difficulty == LogicDifficulty.option_unsafe and not options.glitches and glitches
+            ):
+                set_unsafe_glitched_rules_ut_glitch(self)
+
+            if max_logic:
+                menu_region = self.get_region("Menu")
+                unpop_loc = WotWLocation(self.player, "Unpopular", None, menu_region)
+                menu_region.locations.append(unpop_loc)
+                unpop_loc.place_locked_item(self.create_event_item("Unpopular"))
+                unpop_loc.access_rule = lambda s: s.has("UTGlitch", player)
+
+            if ("free_tp" in options.ut_config and not options.free_teleporters) or max_logic:
+                self.connect_to_menu("RemoveTPLocks", lambda s: s.has("UTGlitch", player))
+
+            if "free_region" in options.ut_config or max_logic:
+                for event in (
+                        "danger_MidnightBurrows",
+                        "danger_WestHollow",
+                        "danger_EastHollow",
+                        "danger_WestGlades",
+                        "danger_OuterWellspring",
+                        "danger_InnerWellspring",
+                        "danger_WoodsEntry",
+                        "danger_WoodsMain",
+                        "danger_LowerReach",
+                        "danger_UpperReach",
+                        "danger_UpperDepths",
+                        "danger_LowerDepths",
+                        "danger_PoolsApproach",
+                        "danger_EastPools",
+                        "danger_UpperPools",
+                        "danger_WestPools",
+                        "danger_LowerWastes",
+                        "danger_UpperWastes",
+                        "danger_WeepingRidge",
+                        "danger_WillowsEnd",
+                    ):
+                    self.connect_to_menu(event, lambda s: s.has("UTGlitch", player))
+
+            ut_combat_rules(self, one_level=one_level, max_logic=max_logic)
 
     def connect_entrances(self) -> None:
         if self.options.door_rando != RandomizeDoors.option_disabled:
@@ -913,6 +1018,7 @@ class WotWWorld(World):
             "death_link": int(options.death_link.value),
             "ap_version": 3,
             "location_flags": location_flags,
+            "ut_config": options.ut_config.value,  # Only used by UT
         }
 
         return slot_data

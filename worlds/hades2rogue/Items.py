@@ -295,12 +295,13 @@ CHRONOS_KEEPSAKE = "Time Piece"  # item only, never a check location
 # reliably earned by gifting an NPC: Chronos's Time Piece, Zagreus's Calling Card, and
 # Hades' Jeweled Pom (boss/story-granted). They behave like Time Piece: item-only.
 # Megaera's Skull Earring stays here too -- her gift conditions in-game are still not
-# understood well enough to gate a location reliably. The OTHER Nightmare keepsakes
-# (Thanatos/Orpheus/Achilles) were re-added as locations July 16 once playtests confirmed
-# gifting them via SharedKeepsakePort actually works -- see Routes.NPC_ROUTE_LOCK.
+# understood well enough to gate a location reliably. Thanatos/Orpheus were re-added as
+# locations July 16 once playtests confirmed gifting them via SharedKeepsakePort actually
+# works -- see Routes.NPC_ROUTE_LOCK. Achilles's Myrmidon Bracer went back to item-only
+# July 31 (user ruling -- "Met Achilles"/"Achilles Keepsake" removed as locations).
 # MUST stay in sync with the Lua mod's own KEEPSAKE_NO_LOCATION (ItemManager.lua);
 # tools/sync_check.py enforces that.
-KEEPSAKE_NO_LOCATION = {"Time Piece", "Calling Card", "Jeweled Pom", "Skull Earring"}
+KEEPSAKE_NO_LOCATION = {"Time Piece", "Calling Card", "Jeweled Pom", "Skull Earring", "Myrmidon Bracer"}
 # The original 33 keepsakes keep their historical ids (+90..+122). The 7 Nightmare keepsakes are
 # assigned a SEPARATE, contiguous block at +267..+273 instead of continuing at +123..+129: that
 # continuation collided with Rarity Increase (+125) and the first Progressive Arcana ids

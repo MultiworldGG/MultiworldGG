@@ -8,7 +8,8 @@ from typing import Dict, Optional, Iterable
 from BaseClasses import MultiWorld, Region, Entrance, Item, ItemClassification, CollectionState
 from .Items import AquariaItem, ItemNames
 from .Locations import AquariaLocations, AquariaLocation, AquariaLocationNames
-from .Options import AquariaOptions, UnconfineHomeWater, LightNeededToGetToDarkPlaces, Objective
+from .Options import (AquariaOptions, UnconfineHomeWater, LightNeededToGetToDarkPlaces, GoAroundRocksWithFishForm,
+                      Objective)
 from worlds.generic.Rules import add_rule, set_rule
 
 
@@ -16,12 +17,12 @@ from worlds.generic.Rules import add_rule, set_rule
 
 def _has_hot_soup(state: CollectionState, player: int) -> bool:
     """`player` in `state` has the hotsoup item"""
-    return state.has_any({ItemNames.HOT_SOUP, ItemNames.HOT_SOUP_X_2}, player)
+    return state.has_any({ItemNames.HOT_SOUP, ItemNames.HOT_SOUP_X_2, ItemNames.PROGRESSIVE_SOUP}, player)
 
 
-def _has_tongue_cleared(state: CollectionState, player: int) -> bool:
-    """`player` in `state` has the Body tongue cleared item"""
-    return state.has(ItemNames.BODY_TONGUE_CLEARED, player)
+def _has_door_to_body(state: CollectionState, player: int) -> bool:
+    """`player` in `state` has the door to the body (the tongue) opened event"""
+    return state.has(ItemNames.DOOR_TO_BODY, player)
 
 
 def _has_sun_crystal(state: CollectionState, player: int) -> bool:
@@ -32,7 +33,6 @@ def _has_sun_crystal(state: CollectionState, player: int) -> bool:
 def _has_li(state: CollectionState, player: int) -> bool:
     """`player` in `state` has Li in its team"""
     return state.has(ItemNames.LI_AND_LI_SONG, player)
-
 
 DAMAGING_ITEMS:Iterable[str] = [
     ItemNames.ENERGY_FORM, ItemNames.NATURE_FORM, ItemNames.BEAST_FORM,
@@ -116,6 +116,11 @@ def _has_big_bosses(state: CollectionState, player: int) -> bool:
                           ItemNames.LUMEREAN_GOD_BEATED, ItemNames.THE_GOLEM_BEATED}, player)
 
 
+def _has_golem_beated(state: CollectionState, player: int) -> bool:
+    """`player` in `state` has beated the golem boss"""
+    return state.has(ItemNames.THE_GOLEM_BEATED, player)
+
+
 def _has_four_gods_beated(state: CollectionState, player: int) -> bool:
     """`player` in `state` has beated every big bosses"""
     return state.has_all({ItemNames.FALLEN_GOD_BEATED, ItemNames.MITHALAN_GOD_BEATED, ItemNames.DRUNIAN_GOD_BEATED,
@@ -142,9 +147,11 @@ def _has_secrets(state: CollectionState, player: int) -> bool:
     return state.has_all({ItemNames.FIRST_SECRET_OBTAINED, ItemNames.SECOND_SECRET_OBTAINED,
                           ItemNames.THIRD_SECRET_OBTAINED}, player)
 
+
 def _item_not_advancement(item: Item):
     """The `item` is not an advancement item"""
     return not item.advancement
+
 
 def _is_cathedral_door_opened(state: CollectionState, player: int) -> bool:
     """The door to Mithalas Cathedral has been opened in the `state` of the `player`"""
@@ -237,7 +244,7 @@ class AquariaRegions:
     abyss_r: Region
     abyss_r_transturtle: Region
     ice_cave: Region
-    frozen_feil: Region
+    frozen_veil: Region
     bubble_cave: Region
     bubble_cave_boss: Region
     king_jellyfish_cave: Region
@@ -383,7 +390,7 @@ class AquariaRegions:
         self.cathedral_underground = self.__add_region("Mithalas Cathedral underground",
                                                        AquariaLocations.locations_cathedral_underground)
         self.cathedral_boss_l = self.__add_region("Mithalas Cathedral, after Mithalan God",
-                                                  AquariaLocations.locations_cathedral_boss)
+                                                  AquariaLocations.locations_cathedral_boss_l)
         self.cathedral_boss_r = self.__add_region("Mithalas Cathedral, before Mithalan God", None)
 
     def __create_forest(self) -> None:
@@ -480,7 +487,7 @@ class AquariaRegions:
                                                AquariaLocations.locations_abyss_r_whale if add_locations else None)
         self.ice_cave = self.__add_region("Ice Cavern",
                                           AquariaLocations.locations_ice_cave if add_locations else None)
-        self.frozen_feil = self.__add_region("Frozen Veil", None)
+        self.frozen_veil = self.__add_region("Frozen Veil", None)
         self.bubble_cave = self.__add_region("Bubble Cave",
                                              AquariaLocations.locations_bubble_cave if add_locations else None)
         self.bubble_cave_boss = self.__add_region("Bubble Cave boss area",
@@ -500,7 +507,7 @@ class AquariaRegions:
         """
         self.sunken_city_l = self.__add_region("Sunken City left area", None)
         self.sunken_city_l_crates = self.__add_region("Sunken City left area",
-                                                      AquariaLocations.locations_sunken_city_l
+                                                      AquariaLocations.locations_sunken_city_l_crates
                                                       if add_locations else None)
         self.sunken_city_l_bedroom = self.__add_region("Sunken City left area, bedroom",
                                                        AquariaLocations.locations_sunken_city_l_bedroom
@@ -577,10 +584,10 @@ class AquariaRegions:
         self.__connect_regions(self.home_water_behind_rocks, self.home_water_nautilus,
                                lambda state: _has_energy_attack_item(state, self.player))
         self.__connect_regions(self.home_water, self.home_water_transturtle)
-        self.__connect_regions(self.home_water_behind_rocks, self.energy_temple_1)
+        self.__connect_regions(self.home_water, self.energy_temple_1,
+                               lambda state: _has_bind_song(state, self.player))
         self.__connect_regions(self.home_water_behind_rocks, self.energy_temple_altar,
-                               lambda state: _has_energy_attack_item(state, self.player) and
-                                             _has_bind_song(state, self.player))
+                               lambda state: _has_energy_attack_item(state, self.player))
         self.__connect_regions(self.energy_temple_1, self.energy_temple_2,
                                lambda state: _has_energy_form(state, self.player))
         self.__connect_regions(self.energy_temple_1, self.energy_temple_idol,
@@ -734,7 +741,8 @@ class AquariaRegions:
 
     def __connect_veil_regions(self) -> None:
         """
-        Connect entrances of the different regions around The Veil
+        Connect entrances of the differeself.veil_b, self.veil_b_sc,
+                               lambda state: _has_spirit_form(state, self.player)nt regions around The Veil
         """
         self.__connect_regions(self.veil_b, self.veil_b_fp,
                                lambda state: _has_fish_form(state, self.player) and
@@ -779,7 +787,7 @@ class AquariaRegions:
         self.__connect_regions(self.abyss_lb, self.sunken_city_r,
                                lambda state: _has_li(state, self.player))
         self.__connect_one_way_regions(self.abyss_lb, self.body_c,
-                                       lambda state: _has_tongue_cleared(state, self.player))
+                                       lambda state: _has_door_to_body(state, self.player))
         self.__connect_one_way_regions(self.body_c, self.abyss_lb)
         self.__connect_one_way_regions(self.abyss_l, self.king_jellyfish_cave,
                                        lambda state: _has_dual_form(state, self.player) or
@@ -799,11 +807,11 @@ class AquariaRegions:
                                              _has_energy_attack_item(state, self.player))
         self.__connect_regions(self.abyss_r, self.ice_cave,
                                lambda state: _has_spirit_form(state, self.player))
-        self.__connect_regions(self.ice_cave, self.frozen_feil)
-        self.__connect_one_way_regions(self.frozen_feil, self.bubble_cave,
+        self.__connect_regions(self.ice_cave, self.frozen_veil)
+        self.__connect_one_way_regions(self.frozen_veil, self.bubble_cave,
                                        lambda state: _has_beast_form(state, self.player) or
                                                      _has_hot_soup(state, self.player))
-        self.__connect_one_way_regions(self.bubble_cave, self.frozen_feil)
+        self.__connect_one_way_regions(self.bubble_cave, self.frozen_veil)
         self.__connect_one_way_regions(self.bubble_cave, self.bubble_cave_boss,
                                        lambda state: _has_nature_form(state, self.player) and
                                                      _has_bind_song(state, self.player)
@@ -909,6 +917,8 @@ class AquariaRegions:
         self.__connect_body_regions()
         if self.is_four_gods:
             self.__connect_four_gods_end(options)
+            add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.abyss_lb, self.body_c),
+                                                  self.player), lambda state: True, combine="or")
         self.__connect_transturtles()
 
     def __add_event_location(self, region: Region, name: str, event_name: str) -> None:
@@ -999,9 +1009,6 @@ class AquariaRegions:
                                   AquariaLocationNames.SUN_CRYSTAL,
                                   ItemNames.HAS_SUN_CRYSTAL)
         self.__add_event_big_bosses()
-        self.__add_event_location(self.sunken_city_boss,
-                                  AquariaLocationNames.SUNKEN_CITY_CLEARED,
-                                  ItemNames.BODY_TONGUE_CLEARED)
         if self.is_four_gods:
             self.__add_event_location(self.four_gods_end, AquariaLocationNames.OBJECTIVE_COMPLETE,
                                       ItemNames.VICTORY)
@@ -1026,6 +1033,44 @@ class AquariaRegions:
             self.multiworld.get_location(AquariaLocationNames.THE_VEIL_TOP_RIGHT_AREA_BULB_AT_THE_TOP_OF_THE_WATERFALL,
                                          self.player),
             lambda state: _has_beast_and_soup_form(state, self.player))
+
+    def __adjusting_fish_form_glitch(self, fish_form_glitch_option:GoAroundRocksWithFishForm) -> None:
+        """
+        Modify rules for location that can be access with fish form glitch
+        """
+        add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.home_water, self.home_water_transturtle),
+                                              self.player), lambda state: _has_fish_form(state, self.player),
+                                              combine="or")
+        add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.home_water_transturtle, self.home_water),
+                                              self.player), lambda state: _has_fish_form(state, self.player),
+                                              combine="or")
+        add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.home_water, self.home_water_behind_rocks),
+                                              self.player), lambda state: _has_fish_form(state, self.player),
+                                              combine="or")
+        add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.home_water_behind_rocks, self.home_water),
+                                              self.player), lambda state: _has_fish_form(state, self.player),
+                                              combine="or")
+        add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.veil_b, self.veil_b_fp),
+                                              self.player), lambda state: _has_fish_form(state, self.player),
+                                              combine="or")
+        add_rule(self.multiworld.get_location(
+            AquariaLocationNames.ENERGY_TEMPLE_FIRST_AREA_BULB_IN_THE_BOTTOM_ROOM_BLOCKED_BY_A_ROCK,
+            self.player), lambda state: _has_fish_form(state, self.player), combine="or")
+        add_rule(
+            self.multiworld.get_location(
+                AquariaLocationNames.THE_VEIL_TOP_LEFT_AREA_BULB_HIDDEN_BEHIND_THE_BLOCKING_ROCK, self.player),
+            lambda state: _has_fish_form(state, self.player), combine="or")
+        if fish_form_glitch_option == GoAroundRocksWithFishForm.option_all:
+            add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.home_water, self.energy_temple_1),
+                                                  self.player), lambda state: _has_fish_form(state, self.player),
+                                                  combine="or")
+            add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.energy_temple_1, self.home_water),
+                                                  self.player), lambda state: _has_fish_form(state, self.player),
+                                                  combine="or")
+            add_rule(self.multiworld.get_location(AquariaLocationNames.SONG_CAVE_VERSE_EGG, self.player),
+                     lambda state: _has_fish_form(state, self.player), combine="or")
+            add_rule(self.multiworld.get_location(AquariaLocationNames.TURTLE_CAVE_TURTLE_EGG, self.player),
+                     lambda state: _has_fish_form(state, self.player), combine="or")
 
     def __adjusting_under_rock_location(self, options: AquariaOptions) -> None:
         """
@@ -1153,9 +1198,10 @@ class AquariaRegions:
                      lambda state: _has_fish_form(state, self.player))
             add_rule(
                 self.multiworld.get_location(AquariaLocationNames.THE_BODY_CENTER_AREA_BREAKING_LI_S_CAGE, self.player),
-                lambda state: _has_tongue_cleared(state, self.player))
+                lambda state: _has_golem_beated(state, self.player))
 
     def __no_progression_hard_or_hidden_location(self, options: AquariaOptions) -> None:
+        """Removing advancement (or progression) items from hard to get locations."""
         self.multiworld.get_location(AquariaLocationNames.ENERGY_TEMPLE_BOSS_AREA_FALLEN_GOD_TOOTH,
                                      self.player).item_rule = _item_not_advancement
         self.multiworld.get_location(AquariaLocationNames.MITHALAS_BOSS_AREA_BEATING_MITHALAN_GOD,
@@ -1194,6 +1240,11 @@ class AquariaRegions:
         if not self.is_four_gods:
             self.multiworld.get_location(AquariaLocationNames.SUNKEN_CITY_BULB_ON_TOP_OF_THE_BOSS_AREA,
                                          self.player).item_rule = _item_not_advancement
+            if (options.golem_as_location):
+                self.multiworld.get_location(AquariaLocationNames.SUNKEN_CITY_BEATING_GOLEM,
+                                             self.player).item_rule = _item_not_advancement
+                self.multiworld.get_location(AquariaLocationNames.THE_BODY_CENTER_AREA_BREAKING_LI_S_CAGE,
+                                             self.player).item_rule = _item_not_advancement
             self.multiworld.get_location(AquariaLocationNames.THE_BODY_BOTTOM_AREA_MUTANT_COSTUME,
                                          self.player).item_rule = _item_not_advancement
             self.multiworld.get_location(AquariaLocationNames.FINAL_BOSS_AREA_BULB_IN_THE_BOSS_THIRD_FORM_ROOM,
@@ -1266,7 +1317,7 @@ class AquariaRegions:
         self.__no_progression_area(AquariaLocations.locations_cathedral_top_start_urns)
         self.__no_progression_area(AquariaLocations.locations_cathedral_top_end)
         self.__no_progression_area(AquariaLocations.locations_cathedral_underground)
-        self.__no_progression_area(AquariaLocations.locations_cathedral_boss)
+        self.__no_progression_area(AquariaLocations.locations_cathedral_boss_l)
 
     def __no_progression_energy_temple(self) -> None:
         """Be sure to not put any progression items in the Energy Temple"""
@@ -1305,7 +1356,7 @@ class AquariaRegions:
     def __no_progression_sunken_city(self) -> None:
         """Be sure to not put any progression items in the Sunken City"""
         self.__no_progression_area(AquariaLocations.locations_sunken_city_r)
-        self.__no_progression_area(AquariaLocations.locations_sunken_city_l)
+        self.__no_progression_area(AquariaLocations.locations_sunken_city_l_crates)
         self.__no_progression_area(AquariaLocations.locations_sunken_city_l_bedroom)
         self.__no_progression_area(AquariaLocations.locations_sunken_city_boss)
 
@@ -1343,6 +1394,44 @@ class AquariaRegions:
             if options.no_progression_body:
                 self.__no_progression_body()
 
+    def __adjusting_glitch_rules(self, options: AquariaOptions) -> None:
+        """
+        Modify rules for Glitched
+        """
+        if options.far_away_sing_bulb:
+            add_rule(
+                self.multiworld.get_location(AquariaLocationNames.NAIJA_S_HOME_BULB_AFTER_THE_ENERGY_DOOR, self.player),
+                lambda state: True, combine="or")
+            add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.veil_b, self.veil_b_sc,), self.player),
+                     lambda state: True, combine="or")
+        if options.sun_temple_save_cristal_glitch:
+            add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.sun_temple_l_entrance, self.sun_temple_r),
+                                                      self.player), lambda state: True, combine="or")
+        if options.go_around_rocks_with_fish_form != GoAroundRocksWithFishForm.option_off:
+            self.__adjusting_fish_form_glitch(options.go_around_rocks_with_fish_form)
+        if options.mithalas_dark_jelly_glitch:
+            add_rule(self.multiworld.get_entrance(
+                self.get_entrance_name(self.mithalas_city, self.mithalas_city_top_path), self.player),
+                lambda state: _has_energy_form(state, self.player) and _has_nature_form(state, self.player),
+                combine="or")
+        if options.trident_head_with_fish_form_glitch:
+            add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.mithalas_castle, self.mithalas_castle_sc),
+                                                  self.player),
+                     lambda state: _has_fish_form(state, self.player),combine="or")
+            add_rule(self.multiworld.get_entrance(
+                self.get_entrance_name(self.mithalas_castle_tube, self.mithalas_castle_sc), self.player),
+                     lambda state: _has_fish_form(state, self.player),combine="or")
+        if options.sun_temple_cliff_nature_jump_glitch:
+            add_rule(
+                self.multiworld.get_location(AquariaLocationNames.SUN_TEMPLE_BOSS_PATH_FIRST_CLIFF_BULB, self.player),
+                lambda state: _has_nature_form(state, self.player), combine="or")
+            add_rule(
+                self.multiworld.get_location(AquariaLocationNames.SUN_TEMPLE_BOSS_PATH_SECOND_CLIFF_BULB, self.player),
+                lambda state: _has_nature_form(state, self.player), combine="or")
+        if options.bind_rock_urchin_costume:
+            add_rule(self.multiworld.get_location(AquariaLocationNames.TURTLE_CAVE_URCHIN_COSTUME, self.player),
+                     lambda state: _has_bind_song(state, self.player), combine="or")
+
     def adjusting_rules(self, options: AquariaOptions) -> None:
         """
         Modify rules for single location or optional rules
@@ -1368,6 +1457,8 @@ class AquariaRegions:
                 options.unconfine_home_water.value == UnconfineHomeWater.option_off):
             add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.home_water, self.home_water_transturtle),
                                                   self.player), lambda state: _has_bind_song(state, self.player))
+            add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.home_water_transturtle, self.home_water),
+                                                  self.player), lambda state: _has_bind_song(state, self.player))
         if (options.unconfine_home_water.value == UnconfineHomeWater.option_via_transturtle or
                 options.unconfine_home_water.value == UnconfineHomeWater.option_off):
             add_rule(self.multiworld.get_entrance(self.get_entrance_name(self.home_water, self.openwater_tl),
@@ -1376,6 +1467,7 @@ class AquariaRegions:
                                    _has_energy_attack_item(state, self.player))
         if options.no_progression_hard_or_hidden_locations:
             self.__no_progression_hard_or_hidden_location(options)
+        self.__adjusting_glitch_rules(options)
 
     def __add_home_water_regions_to_world(self) -> None:
         """

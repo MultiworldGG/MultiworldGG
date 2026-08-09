@@ -105,6 +105,9 @@ class SMOPlayer:
         """
         item_name : str = id_to_name[item]
 
+        if item_name == "Beat the Game":
+            return -1
+
 
         if item_name in self.MAX_MOONS:
             if self.moons[item_name] >= self.MAX_MOONS[item_name]:

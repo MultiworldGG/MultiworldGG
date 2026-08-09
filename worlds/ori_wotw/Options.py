@@ -73,7 +73,7 @@ class StartingLocation(Choice):
     option_shriek = 17
 
     alias_marsh = 0
-    alias_woodsentrance = 6  # TODO check here and in item names that these are the right TP names
+    alias_woodsentrance = 6
     alias_woodsexit = 7
     alias_centralluma = 10
     alias_lumaboss = 11
@@ -81,7 +81,7 @@ class StartingLocation(Choice):
     alias_centralwastes = 12
 
     option_random_tp = 18
-    option_random_loc = 19  # TODO option name
+    option_random_loc = 19
 
     default = 0
 
@@ -339,6 +339,21 @@ class SkipCutscenes(DefaultOnToggle):
     display_name = "Skip cutscenes"
 
 
+class UTConfig(OptionSet):
+    """
+    Configuration for Universal Tracker glitched logic. This doesn't affect generation.
+
+    - **one_level**: Add the next logic level.
+    - **glitch**: Add glitches from the current logic level (and one above if `one_level` is also used).
+    - **free_region**: Remove requirements on max health and Regenerate for entering an area.
+    - **free_tp**: Remove skills requirements on some teleporters (same effect as `free_teleporters`).
+    - **max_logic**: Set the logic to unsafe + unpopular + glitches and remove region/tp requirements.
+    """
+    display_name = "UT Glitched Configuration"
+    valid_keys = ["one_level", "glitches", "free_region", "free_tp", "max_logic"]
+    default = frozenset(["one_level"])
+
+
 option_groups = [
     OptionGroup("Seed Settings", [
         LogicDifficulty,
@@ -388,6 +403,7 @@ option_groups = [
         KnowledgeHints,
         ShopKeywordsIcons,
         SkipCutscenes,
+        UTConfig,
     ]),
 ]
 
@@ -434,3 +450,4 @@ class WotWOptions(PerGameCommonOptions):
     knowledge_hints: KnowledgeHints  # Miscellaneous
     shop_keywords: ShopKeywordsIcons
     skip_cutscenes: SkipCutscenes
+    ut_config: UTConfig

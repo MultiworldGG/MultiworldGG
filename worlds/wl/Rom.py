@@ -4,7 +4,6 @@ import math
 import Utils
 import bsdiff4
 from worlds.Files import APDeltaPatch
-from BaseClasses import MultiWorld
 
 WORLDHASH = "d9d957771484ef846d4e8d241f6f2815"
 ROM_PLAYER_LIMIT = 65535
@@ -28,9 +27,10 @@ def get_base_rom_bytes(file_name: str = "") -> bytes:
 
 
 def get_base_rom_path(file_name: str = "") -> str:
-    options = Utils.get_options()
     if not file_name:
-        file_name = options["wl_options"]["rom_file"]
+        from settings import get_settings
+
+        file_name = get_settings().wl_options.rom_file
     if not os.path.exists(file_name):
         file_name = Utils.user_path(file_name)
     return file_name
@@ -836,7 +836,11 @@ def blocksanity(rom):
     rom.write_byte(0x3C35, 0x15)  # 0:3c35
 
 
-def patch_rom(world, options, rom, player):
+def patch_rom(world, rom):
+    multiworld = world.multiworld
+    options = world.options
+    player = world.player
+
     # Starting Life Count, hex equals displayed value directly
     rom.write_byte(0x7B7D, int(str(options.starting_life_count.value), 16))
 
@@ -867,7 +871,7 @@ def patch_rom(world, options, rom, player):
             0x22,
             0x27,
         ]
-        world.per_slot_randoms[player].shuffle(level_music)
+        world.random.shuffle(level_music)
         shuffle_music(rom, level_music)
 
     # TODO: This patch is not required until level shuffle mode exists
@@ -878,13 +882,13 @@ def patch_rom(world, options, rom, player):
     from Utils import __version__
 
     rom.name = bytearray(
-        f'WL{__version__.replace(".", "")[0:3]}_{player}_{world.seed:11}\0', "utf8"
+        f'WL{__version__.replace(".", "")[0:3]}_{player}_{multiworld.seed:11}\0', "utf8"
     )[:21]
     rom.name.extend([0] * (21 - len(rom.name)))
 
     player_name_length = 0
     # Write slot info to ROM
-    for i, byte in enumerate(world.player_name[player].encode("utf-8")):
+    for i, byte in enumerate(multiworld.player_name[player].encode("utf-8")):
         rom.write_byte(0x674B1 + i, byte)
         player_name_length += 1
     rom.write_byte(0x674B0, player_name_length)

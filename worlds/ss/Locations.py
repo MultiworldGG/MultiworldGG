@@ -3,9 +3,6 @@ from typing import TYPE_CHECKING, NamedTuple, Optional
 
 from BaseClasses import Location, Region
 
-from .Hints import SSHintType
-
-
 class SSLocFlag(Flag):
     """
     Flags to categorize checks.
@@ -55,6 +52,15 @@ class SSLocType(Enum):
     EBC = auto()  # Item taken from enemy with whip
 
 
+class SSLocHintType(Enum):
+    """
+    Types of location hints
+    """
+
+    ALWAYS = auto()
+    SOMETIMES = auto()
+
+
 class SSLocCheckedFlag(Flag):
     """
     Either scene flag or story flag. Determines what is checked to see
@@ -83,7 +89,7 @@ class SSLocData(NamedTuple):
     checked_flag: list[
         SSLocCheckedFlag, int, int, any
     ]  # [ Flag_type, flag_bit (0x0-0xF), flag_value (0x01-0x80), scene (string) OR story flag address (ending in zero)]
-    hint: Optional[SSHintType] = None
+    hint: Optional[SSLocHintType] = None
 
 
 class SSLocation(Location):
@@ -206,7 +212,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Gratitude Crystal Pack",
         SSLocType.EVENT,
         [SSLocCheckedFlag.STORY, 0x1, 0x40, 0x805A9B10],  # Flag 482
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Upper Skyloft - Fledge's Crystals": SSLocData(
         9,
@@ -248,7 +254,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Heart Piece",
         SSLocType.EVENT,
         [SSLocCheckedFlag.STORY, 0x0, 0x20, 0x805A9B00],  # Flag 359
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     # Central Skyloft
     "Central Skyloft - Potion Lady's Gift": SSLocData(
@@ -336,7 +342,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
             0x0,
             0x0,
         ],  # SPECIAL - 2 flags, determined later; index 0x1
-        SSHintType.ALWAYS,
+        SSLocHintType.ALWAYS,
     ),
     "Central Skyloft - Item in Bird Nest": SSLocData(
         22,
@@ -346,7 +352,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Baby Rattle",
         SSLocType.ITEM,
         [SSLocCheckedFlag.SCENE, 0x0, 0x20, "Skyloft"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Central Skyloft - Shed Chest": SSLocData(
         23,
@@ -401,7 +407,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Heart Piece",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0x7, 0x01, "Skyloft"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     # Skyloft Village
     "Skyloft Village - Mallara's Crystals": SSLocData(
@@ -494,7 +500,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Gold Rupee",
         SSLocType.EVENT,
         [SSLocCheckedFlag.SCENE, 0x8, 0x08, "Skyloft"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Batreaux's House - Seventh Reward": SSLocData(
         39,
@@ -504,7 +510,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Gold Rupee",
         SSLocType.EVENT,
         [SSLocCheckedFlag.SCENE, 0x8, 0x08, "Skyloft"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Batreaux's House - Final Reward": SSLocData(
         40,
@@ -514,7 +520,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Progressive Wallet",
         SSLocType.EVENT,
         [SSLocCheckedFlag.STORY, 0x0, 0x40, 0x805A9B00],  # Flag 360
-        SSHintType.ALWAYS,
+        SSLocHintType.ALWAYS,
     ),
     # Beedle's Shop
     "Beedle's Shop - 300 Rupee Item": SSLocData(
@@ -543,7 +549,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Progressive Pouch",
         SSLocType.SHOP,
         [SSLocCheckedFlag.STORY, 0x3, 0x04, 0x805A9B40],  # Flag 956
-        SSHintType.ALWAYS,
+        SSLocHintType.ALWAYS,
     ),
     "Beedle's Shop - 800 Rupee Item": SSLocData(
         44,
@@ -562,7 +568,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Heart Piece",
         SSLocType.SHOP,
         [SSLocCheckedFlag.STORY, 0x3, 0x10, 0x805A9B40],  # Flag 958
-        SSHintType.ALWAYS,
+        SSLocHintType.ALWAYS,
     ),
     "Beedle's Shop - First 100 Rupee Item": SSLocData(
         46,
@@ -627,7 +633,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Heart Piece",
         SSLocType.EVENT,
         [SSLocCheckedFlag.STORY, 0xD, 0x04, 0x805A9AF0],  # Flag 296
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Sky - Kina's Crystals": SSLocData(
         53,
@@ -637,7 +643,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Gratitude Crystal Pack",
         SSLocType.EVENT,
         [SSLocCheckedFlag.STORY, 0xE, 0x10, 0x805A9B00],  # Flag 472
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Sky - Orielle's Crystals": SSLocData(
         54,
@@ -674,7 +680,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Heart Piece",
         SSLocType.EVENT,
         [SSLocCheckedFlag.SCENE, 0x3, 0x08, "Sky"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Sky - Chest in Breakable Boulder near Fun Fun Island": SSLocData(
         58,
@@ -729,7 +735,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Heart Piece",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xF, 0x01, "Sky"],
-        SSHintType.ALWAYS,
+        SSLocHintType.ALWAYS,
     ),
     "Sky - Beedle's Island Cage Goddess Chest": SSLocData(
         64,
@@ -876,7 +882,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         None,
         SSLocType.EVENT,
         [SSLocCheckedFlag.STORY, 0xE, 0x10, 0x805A9B30],  # Flag 934
-        SSHintType.ALWAYS,
+        SSLocHintType.ALWAYS,
     ),
     "Thunderhead - Bug Heaven -- 10 Bugs in 3 Minutes": SSLocData(
         80,
@@ -886,7 +892,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Horned Colossus Beetle",
         SSLocType.EVENT,
         [SSLocCheckedFlag.STORY, 0xF, 0x08, 0x805A9B30],  # Flag 925
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Thunderhead - East Island Chest": SSLocData(
         81,
@@ -978,7 +984,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Heart Piece",
         SSLocType.EVENT,
         [SSLocCheckedFlag.SCENE, 0xF, 0x02, "Sealed Grounds"],  # CHECKTHIS
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Sealed Grounds - Zelda's Blessing": SSLocData(
         91,
@@ -1016,7 +1022,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Progressive Slingshot",
         SSLocType.EVENT,
         [SSLocCheckedFlag.STORY, 0xC, 0x10, 0x805A9AD0],  # Flag 57
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Faron Woods - Rupee on Hollow Tree Root": SSLocData(
         95,
@@ -1053,7 +1059,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Red Rupee",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xF, 0x80, "Faron Woods"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Faron Woods - Chest behind Upper Bombable Rock": SSLocData(
         99,
@@ -1072,7 +1078,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Gold Rupee",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xF, 0x20, "Faron Woods"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Faron Woods - Rupee on Great Tree North Branch": SSLocData(
         101,
@@ -1137,7 +1143,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Goddess Plume",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xF, 0x80, "Lake Floria"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Lake Floria - Dragon Lair South Chest": SSLocData(
         108,
@@ -1328,7 +1334,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Faron Song of the Hero Part",
         SSLocType.EVENT,
         [SSLocCheckedFlag.STORY, 0xB, 0x02, 0x805A9AD0],  # Flag 16
-        SSHintType.ALWAYS,
+        SSLocHintType.ALWAYS,
     ),
     # Eldin Volcano
     "Eldin Volcano - Rupee on Ledge before First Room": SSLocData(
@@ -1529,7 +1535,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Silver Rupee",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xF, 0x01, "Eldin Volcano"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     # Volcano Summit
     "Volcano Summit - Chest behind Bombable Wall in Waterfall Area": SSLocData(
@@ -1549,7 +1555,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Heart Piece",
         SSLocType.ITEM,
         [SSLocCheckedFlag.SCENE, 0xC, 0x01, "Boko Base/Volcano Summit"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     # Bokoblin Base
     "Bokoblin Base - Plats' Gift": SSLocData(
@@ -1578,7 +1584,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Clawshots",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0x8, 0x10, "Boko Base/Volcano Summit"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Bokoblin Base - Chest near Drawbridge": SSLocData(
         156,
@@ -1743,7 +1749,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Rare Treasure",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0x7, 0x01, "Lanayru Desert"],
-        SSHintType.ALWAYS,
+        SSLocHintType.ALWAYS,
     ),
     "Lanayru Desert - Secret Passageway Chest": SSLocData(
         174,
@@ -1753,7 +1759,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Heart Piece",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xA, 0x40, "Lanayru Desert"],  # CHECKTHIS
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Lanayru Desert - Fire Node - Shortcut Chest": SSLocData(
         175,
@@ -1763,7 +1769,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Rare Treasure",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xB, 0x04, "Lanayru Desert"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Lanayru Desert - Fire Node - First Small Chest": SSLocData(
         176,
@@ -1856,7 +1862,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Song of the Hero Part",
         SSLocType.EVENT,
         [SSLocCheckedFlag.STORY, 0xB, 0x20, 0x805A9AD0],  # Flag 21
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Lanayru Gorge - Item on Pillar": SSLocData(
         186,
@@ -1875,7 +1881,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Life Tree Fruit", # Since there's no seedling item or check
         SSLocType.SOIL,
         [SSLocCheckedFlag.SCENE, 0x2, 0x40, "Lanayru Gorge"],  # CHECKTHIS
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     # Lanayru Sand Sea
     "Lanayru Sand Sea - Ancient Harbour - Rupee on First Pillar": SSLocData(
@@ -1931,7 +1937,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Sea Chart",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0x3, 0x02, "Lanayru Sand Sea"],
-        SSHintType.ALWAYS,
+        SSLocHintType.ALWAYS,
     ),
     "Lanayru Sand Sea - Skipper's Retreat - Skydive Chest": SSLocData(
         194,
@@ -1950,7 +1956,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Heart Piece",
         SSLocType.EVENT,
         [SSLocCheckedFlag.STORY, 0xE, 0x02, 0x805A9B10],  # Flag 667
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Lanayru Sand Sea - Pirate Stronghold - Rupee on East Sea Pillar": SSLocData(
         196,
@@ -2024,7 +2030,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         None, # Since there's only 2 small keys
         SSLocType.SOIL,
         [SSLocCheckedFlag.SCENE, 0x0, 0x80, "Skyview"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Skyview - Chest behind Two Eyes": SSLocData(
         204,
@@ -2088,7 +2094,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyview Small Key",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xF, 0x40, "Skyview"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Skyview - Chest near Boss Door": SSLocData(
         211,
@@ -2180,7 +2186,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Earth Temple Map",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0x3, 0x02, "Earth Temple"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Earth Temple - Chest after Double Lizalfos Fight": SSLocData(
         221,
@@ -2335,7 +2341,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Mining Facility Boss Key",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0x1, 0x40, "Lanayru Mining Facility"],
-        SSHintType.ALWAYS,
+        SSLocHintType.ALWAYS,
     ),
     "Lanayru Mining Facility - Shortcut Chest in Main Hub": SSLocData(
         238,
@@ -2436,7 +2442,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Ancient Cistern Small Key",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xD, 0x04, "Ancient Cistern"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Ancient Cistern - Chest after Whip Hooks": SSLocData(
         249,
@@ -2500,7 +2506,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Ancient Cistern Boss Key",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xD, 0x20, "Ancient Cistern"],
-        SSHintType.ALWAYS,
+        SSLocHintType.ALWAYS,
     ),
     "Ancient Cistern - Heart Container": SSLocData(
         256,
@@ -2601,7 +2607,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Sandship Small Key",
         SSLocType.EVENT,
         [SSLocCheckedFlag.SCENE, 0xC, 0x10, "Sandship"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Sandship - Chest after Scervo Fight": SSLocData(
         267,
@@ -2611,7 +2617,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Progressive Bow",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xA, 0x10, "Sandship"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Sandship - Boss Key Chest": SSLocData(
         268,
@@ -2621,7 +2627,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Sandship Boss Key",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0x3, 0x04, "Sandship"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Sandship - Heart Container": SSLocData(
         269,
@@ -2713,7 +2719,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Fire Sanctuary Map",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0x8, 0x20, "Fire Sanctuary"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Fire Sanctuary - Chest after Bombable Wall": SSLocData(
         279,
@@ -2723,7 +2729,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Fire Sanctuary Small Key",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xD, 0x02, "Fire Sanctuary"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Fire Sanctuary - Plats' Chest": SSLocData(
         280,
@@ -2733,7 +2739,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Heart Piece",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xC, 0x10, "Fire Sanctuary"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Fire Sanctuary - Chest in Staircase Room": SSLocData(
         281,
@@ -2752,7 +2758,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Fire Sanctuary Boss Key",
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xB, 0x40, "Fire Sanctuary"],
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Fire Sanctuary - Heart Container": SSLocData(
         283,
@@ -2836,7 +2842,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Stone of Trials",
         SSLocType.WPOBJ,
         [SSLocCheckedFlag.STORY, 0xF, 0x01, 0x805A9B30],  # Flag 922
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Faron Silent Realm - Trial Reward": SSLocData(
         292,
@@ -2846,7 +2852,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Water Dragon's Scale",
         SSLocType.WPOBJ,
         [SSLocCheckedFlag.STORY, 0xC, 0x20, 0x805A9B30],  # Flag 919
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Lanayru Silent Realm - Trial Reward": SSLocData(
         293,
@@ -2856,7 +2862,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Clawshots",
         SSLocType.WPOBJ,
         [SSLocCheckedFlag.STORY, 0xC, 0x80, 0x805A9B30],  # Flag 921
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     "Eldin Silent Realm - Trial Reward": SSLocData(
         294,
@@ -2866,7 +2872,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Fireshield Earrings",
         SSLocType.WPOBJ,
         [SSLocCheckedFlag.STORY, 0xC, 0x40, 0x805A9B30],  # Flag 920
-        SSHintType.SOMETIMES,
+        SSLocHintType.SOMETIMES,
     ),
     # Relics
     "Skyloft Silent Realm - Relic 1": SSLocData(

@@ -50,7 +50,7 @@ item_pools_template: dict[str, list[ItemPoolEntry]] = {
         ItemPoolEntry(item=items_dict['Green Leaf Shade', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Green Seed Shade', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Mine Key', 1], quantity=5),
-        ItemPoolEntry(item=items_dict["Faj'ro Key", 1], quantity=9),
+        ItemPoolEntry(item=items_dict["Faj'ro Key", 1], quantity=3),
         ItemPoolEntry(item=items_dict["Zir'vitar Key", 1], quantity=2),
         ItemPoolEntry(item=items_dict["So'najiz Key", 1], quantity=4),
         ItemPoolEntry(item=items_dict["Krys'kajo Key", 1], quantity=2),

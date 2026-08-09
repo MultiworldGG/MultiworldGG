@@ -1,0 +1,7 @@
+{
+    "game": "MegaMan Battle Network 3",
+    "authors": ["digiholic"],
+    "minimum_ap_version": "0.6.7",
+    "compatible_version": 7,
+    "version": 7
+}
