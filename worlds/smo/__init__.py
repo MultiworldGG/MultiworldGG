@@ -49,6 +49,7 @@ class SMOWorld(World):
 
     topology_present = True  # show path to required location checks in spoiler
 
+    web = SMOWebWorld()
     # ID of first item and location, could be hard-coded but code may be easier
     # to read with this as a property.
     # instead of dynamic numbering, IDs could be part of data
