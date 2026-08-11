@@ -10,6 +10,7 @@ DYNAMIC_ENTRANCES = {
     "Exit ToS to snow without source": {
         "entrance": "Tower of Spirits to Snow Realm",
         "destination": "Tower of Spirits to Snow Realm",
+        "has_slot_data": [("shuffle_stations", 0)],
         "not_has_groups": ["Tracks: Snow Source"],
         "message": "You don't have the snow source!"
     },
@@ -17,12 +18,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Tower of Spirits to Ocean Realm",
         "destination": "Tower of Spirits to Ocean Realm",
         "not_has_groups": ["Tracks: Ocean Source"],
+        "has_slot_data": [("shuffle_stations", 0)],
         "message": "You don't have the Ocean source!"
     },
     "Exit ToS to fire without source": {
         "entrance": "Tower of Spirits to Fire Realm",
         "destination": "Tower of Spirits to Fire Realm",
         "not_has_groups": ["Tracks: Fire Source"],
+        "has_slot_data": [("shuffle_stations", 0)],
         "message": "You don't have the Fire source!"
     },
 
@@ -85,43 +88,45 @@ DYNAMIC_ENTRANCES = {
 
     # Outset pre-glyph bounce
     "Bounce Outset without cannon": {
-        "entrance": "Outset to Forest Realm",
-        "destination": "Outset to Forest Realm",
+        "entrance": "Outset Board Train",
+        "destination": "Outset Board Train",
         "has_items": [("Cannon", 0)],
-        "has_slot_data": [("cannon_logic", 0)],
+        "has_slot_data": [("cannon_logic", 0), ("shuffle_stations", 0)],
         "message": "You need Forest Glyph and Cannon to board the train here"
     },
     "Bounce Outset without glyph cannonless": {
-        "entrance": "Outset to Forest Realm",
-        "destination": "Outset to Forest Realm",
+        "entrance": "Outset Board Train",
+        "destination": "Outset Board Train",
         "not_has_groups": ["Tracks: Forest Glyph"],
+        "has_slot_data": [("shuffle_stations", 0)],
         "message": "You need Forest Glyph to board the train here"
     },
     "Bounce Tutorial cannon": {
         "entrance": "Outset to Tutorial",
         "destination": "Outset to Tutorial",
         "has_items": [("Cannon", 0)],
-        "has_slot_data": [("cannon_logic", 0)],
+        "has_slot_data": [("cannon_logic", 0), ("shuffle_stations", 0)],
         "message": "You need Forest Glyph and Cannon to board the train here"
     },
     "Bounce Tutorial cannonless": {
         "entrance": "Outset to Tutorial",
         "destination": "Outset to Tutorial",
         "not_has_groups": ["Tracks: Forest Glyph"],
+        "has_slot_data": [("shuffle_stations", 0)],
         "message": "You need Forest Glyph to board the train here"
     },
     "Bounce Tutorial to rail cannon": {
         "entrance": "Outset to Tutorial",
-        "destination": "Forest Realm to Outset",
-        "has_slot_data": [("cannon_logic", 0)],
+        "destination": "Forest Realm Outset Station",
+        "has_slot_data": [("cannon_logic", 0), ("shuffle_stations", 0)],
         "has_items": [("Cannon", 1)],
         "has_groups": ["Tracks: Forest Glyph"],
     },
     "Bounce Tutorial to rail cannonless": {
         "entrance": "Outset to Tutorial",
-        "destination": "Forest Realm to Outset",
+        "destination": "Forest Realm Outset Station",
         "has_groups": ["Tracks: Forest Glyph"],
-        "has_slot_data": [("cannon_logic", [1, 2, 3])],
+        "has_slot_data": [("cannon_logic", [1, 2, 3]), ("shuffle_stations", 0)],
     },
 
     # Portal Bounces
@@ -129,13 +134,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Forest Realm North Portal",
         "destination": "Forest Realm North Portal",
         "not_has_groups": ["Tracks: Snow Glyph"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Snow Glyph!"
     },
     "Bounce forest portal north item portal": {
         "entrance": "Forest Realm North Portal",
         "destination": "Forest Realm North Portal",
         "has_items": [("Portal Unlock: Hyrule Castle to Anouki Village", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -143,13 +149,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Forest Realm South Portal",
         "destination": "Forest Realm South Portal",
         "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Blizzard Temple Tracks!"
     },
     "Bounce forest portal south item": {
         "entrance": "Forest Realm South Portal",
         "destination": "Forest Realm South Portal",
         "has_items": [("Portal Unlock: Trading Post to E Snow Realm", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -157,13 +164,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Snow Realm East Portal",
         "destination": "Snow Realm East Portal",
         "not_has_groups": ["Tracks: Forest Realm SE Portal"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Forest Realm SE Portal Tracks!"
     },
     "Bounce snow portal east item": {
         "entrance": "Snow Realm East Portal",
         "destination": "Snow Realm East Portal",
         "has_items": [("Portal Unlock: Trading Post to E Snow Realm", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -171,13 +179,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Sand Realm Sanctuary Portal",
         "destination": "Sand Realm Sanctuary Portal",
         "not_has_groups": ["Tracks: Desert Temple Tracks"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Desert Temple Tracks!"
     },
     "Bounce sand portal sanc item": {
         "entrance": "Sand Realm Sanctuary Portal",
         "destination": "Sand Realm Sanctuary Portal",
         "has_items": [("Portal Unlock: Desert Temple to Sand Realm", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -185,13 +194,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Sand Realm Temple Portal",
         "destination": "Sand Realm Temple Portal",
         "not_has_groups": ["Tracks: Sand Realm"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Sand Realm Tracks!"
     },
     "Bounce sand portal temple item": {
         "entrance": "Sand Realm Temple Portal",
         "destination": "Sand Realm Temple Portal",
         "has_items": [("Portal Unlock: Desert Temple to Sand Realm", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -199,13 +209,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Fire Realm Sand Portal",
         "destination": "Fire Realm Sand Portal",
         "not_has_groups": ["Tracks: Marine Temple Tracks"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Marine Temple Tracks!"
     },
     "Bounce sand fire portal item": {
         "entrance": "Fire Realm Sand Portal",
         "destination": "Fire Realm Sand Portal",
         "has_items": [("Portal Unlock: Sand Valley to Marine Temple", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -213,20 +224,21 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Ocean Realm Temple Portal",
         "destination": "Ocean Realm Temple Portal",
         "not_has_groups": ["Tracks: Fire Realm Sand Portal"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Fire Realm Sand Portal Tracks!"
     },
     "Bounce marine temple portal item": {
         "entrance": "Ocean Realm Temple Portal",
         "destination": "Ocean Realm Temple Portal",
         "has_items": [("Portal Unlock: Sand Valley to Marine Temple", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
     "Bounce snow portal west item": {  # No need for other bounce condition, unlocked with forest glyph
         "entrance": "Snow Realm West Portal",
         "destination": "Snow Realm West Portal",
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "has_items": [("Portal Unlock: Hyrule Castle to Anouki Village", 0)],
         "message": "You don't have access to this portal!"
     },
@@ -234,6 +246,7 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Snow Realm West Portal",
         "destination": "Snow Realm West Portal",
         "not_has_groups": ["Tracks: Forest Glyph"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Forest Glyph!"
     },
 
@@ -241,13 +254,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Snow Realm North Portal",
         "destination": "Snow Realm North Portal",
         "not_has_groups": ["Tracks: Mountain Temple Tracks"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Mountain Temple Tracks!"
     },
     "Bounce icyspring item": {
         "entrance": "Snow Realm North Portal",
         "destination": "Snow Realm North Portal",
         "has_items": [("Portal Unlock: Icy Spring to Mountain Temple", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -255,13 +269,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Snow Realm Bridge Portal",
         "destination": "Snow Realm Bridge Portal",
         "not_has_groups": ["Tracks: Marine Temple Tracks"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Marine Temple Tracks!"
     },
     "Bounce snow bridge portal item": {
         "entrance": "Snow Realm Bridge Portal",
         "destination": "Snow Realm Bridge Portal",
         "has_items": [("Portal Unlock: Snow Bridge to Island Sanctuary", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -269,13 +284,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Ocean Realm South Portal",
         "destination": "Ocean Realm South Portal",
         "not_has_groups": ["Tracks: Snow Realm Bridge"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Snow Realm Bridge Tracks!"
     },
     "Bounce island sanc portal item": {
         "entrance": "Ocean Realm South Portal",
         "destination": "Ocean Realm South Portal",
         "has_items": [("Portal Unlock: Snow Bridge to Island Sanctuary", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -283,13 +299,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Ocean Realm West Portal",
         "destination": "Ocean Realm West Portal",
         "not_has_groups": ["Tracks: Ocean Glyph"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Ocean Glyph!"
     },
     "Bounce ocean west portal item": {
         "entrance": "Ocean Realm West Portal",
         "destination": "Ocean Realm West Portal",
         "has_items": [("Portal Unlock: Mayscore to Ocean Portal Tracks", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -297,27 +314,29 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Forest Realm Mayscore Portal",
         "destination": "Forest Realm Mayscore Portal",
         "not_has_groups": ["Tracks: Ocean Portal"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Ocean Portal Tracks!"
     },
     "Bounce mayscore portal item": {
         "entrance": "Forest Realm Mayscore Portal",
         "destination": "Forest Realm Mayscore Portal",
         "has_items": [("Portal Unlock: Mayscore to Ocean Portal Tracks", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
     "Bounce mountain portal": {
-        "entrance": "Mountain Portal",
-        "destination": "Mountain Portal",
+        "entrance": "Fire Realm Mountain Portal",
+        "destination": "Fire Realm Mountain Portal",
         "not_has_groups": ["Tracks: N Icy Spring"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the N Icy Spring Tracks!"
     },
     "Bounce mountain item": {
-        "entrance": "Mountain Portal",
-        "destination": "Mountain Portal",
+        "entrance": "Fire Realm Mountain Portal",
+        "destination": "Fire Realm Mountain Portal",
         "has_items": [("Portal Unlock: Icy Spring to Mountain Temple", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -325,13 +344,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Forest Realm Cave Portal",
         "destination": "Forest Realm Cave Portal",
         "not_has_groups": ["Tracks: Fire Glyph"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Fire Glyph!"
     },
     "Bounce Cave portal item": {
         "entrance": "Forest Realm Cave Portal",
         "destination": "Forest Realm Cave Portal",
         "has_items": [("Portal Unlock: Forest Cave to Goron Village", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -339,13 +359,14 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Fire Realm Portal",
         "destination": "Fire Realm Portal",
         "not_has_groups": ["Tracks: Forest Realm SW Cave"],
+        "has_slot_data": [("shuffle_portals", 0)],
         "message": "You don't have the Forest Realm SW Cave Tracks!"
     },
     "Bounce goron portal item": {
         "entrance": "Fire Realm Portal",
         "destination": "Fire Realm Portal",
         "has_items": [("Portal Unlock: Forest Cave to Goron Village", 0)],
-        "has_slot_data": [["portal_behavior", 2]],
+        "has_slot_data": [["portal_behavior", 2], ("shuffle_portals", 0)],
         "message": "You don't have access to this portal!"
     },
 
@@ -354,7 +375,7 @@ DYNAMIC_ENTRANCES = {
     "Bounce Dark realm missing endgame requirements": {
         "entrance": "Enter Dark Realm Portal",
         "destination": "Enter Dark Realm Portal",
-        "message": "You are missing dark realm requirements",
+        "message": "$goal",
         "dungeons": False
     },
     "Dark realm Skip dark trains": {
@@ -412,8 +433,8 @@ DYNAMIC_ENTRANCES = {
         "message": "You need the Fire Source to enter this section!"
     },
     "Bounce OCT 7F cause crash": {
-        "entrance": "Marine Temple 7F Exit",
-        "destination": "Marine Temple 7F Exit",
+        "entrance": "Marine Temple 7F South Staircase",
+        "destination": "Marine Temple 7F South Staircase",
         "has_locations": ["Marine Temple 6F Boss Key"],
         "message": "Oops you can't do that, it crashes for some reason"
     },
@@ -444,68 +465,72 @@ DYNAMIC_ENTRANCES = {
         "destination": "_connected_dungeon_entrance",
     },
     "Skeldritch avoid post fight stuffs": {
-        "entrance": "Desert Temple Enter Post-Fight",
-        "destination": "Skeldritch Exit",
-        "not_has_locations": ["Desert Temple Dungeon Reward"],
+        "entrance": "Desert Temple B2 North Post-Fight",
+        "destination": "Capbone Exit",
+        "not_has_locations": ["Capbone Boss Reward"],
+        "has_slot_data": [("shuffle_bosses", 0)]
     },
-    "Fire realm bounce snow realm without btt": {
-        "entrance": "Fire Realm East Tower",
-        "destination": "Fire Realm East Tower",
-        "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
-        "message": "The game crashes here without the blizzard temple tracks. Sorry!"
-    },
+    # "Fire realm bounce snow realm without btt": {
+    #     "entrance": "Fire Realm West Fire Glyph",
+    #     "destination": "Fire Realm West Fire Glyph",
+    #     "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
+    #     "message": "The game crashes here without the blizzard temple tracks. Sorry!"
+    # },
     "W Wooded Temple Tracks Bounce N": {
         "entrance": "Forest Realm North W Wooded Temple",
         "destination": "Forest Realm North W Wooded Temple",
         "not_has_groups": ["Tracks: Snow Glyph"],
+        "has_slot_data": [("shuffle_train_transitions", 0)],
         "message": "There are no tracks on the other side!"
     },
     "Prevent softlock in papuzia south": {
-        "entrance": "South Papuzia North",
-        "destination": "Papuzia NW House"
+        "entrance": "Papuzia Archipelago North",
+        "destination": "Papuzia NW House",
+        "has_slot_data": [("shuffle_overworld", 0)]
     },
     "Prevent softlock in icy spring with ferrus": {
-        "entrance": "Icy Spring Train",
-        "destination": "Fire Realm Goron Village",
+        "entrance": "Icy Spring Board Train",
+        "destination": "Fire Realm Goron Village Station",
         "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
+        "has_slot_data": [("shuffle_stations", 0)],
         "message": "You got here with Ferrus, putting you somewhere safe"
     },
     # ToS Shortcuts: Open
     "ToS Staircase shortcut open": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 5",
         "has_slot_data": [("tos_section_unlocks", 0), ("tos_shortcuts", 1)],
     },
     # ToS Shortcuts: Sources
     "ToS Staircase shortcut fire source": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 5",
         "has_slot_data": [("tos_section_unlocks", 1), ("tos_shortcuts", 1)],
         "has_groups": ["Tracks: Fire Source"]
     },
     "ToS Staircase shortcut ocean source": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 4",
         "has_slot_data": [("tos_section_unlocks", 1), ("tos_shortcuts", 1)],
         "not_has_groups": ["Tracks: Fire Source"],
         "has_groups": ["Tracks: Ocean Source"],
     },
     "ToS Staircase shortcut snow source": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 3",
         "has_slot_data": [("tos_section_unlocks", 1), ("tos_shortcuts", 1)],
         "not_has_groups": ["Tracks: Fire Source", "Tracks: Ocean Source"],
         "has_groups": ["Tracks: Snow Source"],
     },
     "ToS Staircase shortcut forest source": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 2",
         "has_slot_data": [("tos_section_unlocks", 1), ("tos_shortcuts", 1)],
         "not_has_groups": ["Tracks: Fire Source", "Tracks: Ocean Source", "Tracks: Snow Source"],
         "has_groups": ["Tracks: Forest Source"],
     },
     "ToS Staircase shortcut no source": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 1",
         "has_slot_data": [("tos_section_unlocks", 1), ("tos_shortcuts", 1)],
         "not_has_groups": ["Tracks: Fire Source", "Tracks: Ocean Source",
@@ -513,62 +538,62 @@ DYNAMIC_ENTRANCES = {
     },
     # ToS Shortcuts: Progressive no base
     "ToS Staircase shortcut progressive nb 4": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 5",
         "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 0), ("tos_shortcuts", 1)],
         "has_items": [("Progressive ToS Section", 4, "has_exact")],
     },
     "ToS Staircase shortcut progressive nb 3": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 4",
         "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 0), ("tos_shortcuts", 1)],
         "has_items": [("Progressive ToS Section", 3, "has_exact")],
     },
     "ToS Staircase shortcut progressive nb 2": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 3",
         "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 0), ("tos_shortcuts", 1)],
         "has_items": [("Progressive ToS Section", 2, "has_exact")],
     },
     "ToS Staircase shortcut progressive nb 1": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 2",
         "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 0), ("tos_shortcuts", 1)],
         "has_items": [("Progressive ToS Section", 1, "has_exact")],
     },
     "ToS Staircase shortcut progressive nb 0": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 1",
         "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 0), ("tos_shortcuts", 1)],
         "has_items": [("Progressive ToS Section", 0)],
     },
     # ToS Shortcuts: Progressive base
     "ToS Staircase shortcut progressive 5": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 5",
         "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 1), ("tos_shortcuts", 1)],
         "has_items": [("Progressive ToS Section", 5, "has_exact")],
     },
     "ToS Staircase shortcut progressive 4": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 4",
         "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 1), ("tos_shortcuts", 1)],
         "has_items": [("Progressive ToS Section", 4, "has_exact")],
     },
     "ToS Staircase shortcut progressive 3": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 3",
         "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 1), ("tos_shortcuts", 1)],
         "has_items": [("Progressive ToS Section", 3, "has_exact")],
     },
     "ToS Staircase shortcut progressive 2": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 2",
         "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 1), ("tos_shortcuts", 1)],
         "has_items": [("Progressive ToS Section", 2, "has_exact")],
     },
     "ToS Staircase shortcut progressive 1": {
-        "entrance": "ToS Staircase Exit",
+        "entrance": "Tower of Spirits Staircase Exit",
         "destination": "Tower of Spirits Enter Section 1",
         "has_slot_data": [("tos_section_unlocks", 2), ("tos_unlock_base_item", 1), ("tos_shortcuts", 1)],
         "has_items": [("Progressive ToS Section", 1, "has_exact")],

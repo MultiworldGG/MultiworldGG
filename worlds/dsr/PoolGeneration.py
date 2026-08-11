@@ -214,7 +214,7 @@ titanite_replacement_weights = {
     "Extra White Titanite" : [3, 5, 1],
     "Extra GH Titanite" : [2, 2, 1, 1, 1, 1, 1],
 }
-def ReplaceItem(name, world):
+def ReplaceItem(world, name):
     if (name in titanite_replacements):
         replacements = titanite_replacements[name]
         weights = titanite_replacement_weights[name]

@@ -5,6 +5,7 @@ import worlds._bizhawk as bizhawk
 if TYPE_CHECKING:
     try:
         from ..Client import PhantomHourglassClient
+        from worlds._bizhawk.context import BizHawkClientContext
     except ImportError:
         pass
 
@@ -41,6 +42,7 @@ async def read_multiple(ctx, addresses, signed=False, keys=None, offset=0) -> di
 
 async def write_multiple(ctx, addresses: Iterable["Address"], values: Iterable[int]):
     writes = [a.get_inner_write_list(v) for a, v in zip(addresses, values)]
+    # print(f"Writing: {hex_f(writes)}")
     await bizhawk.write(ctx.bizhawk_ctx, writes)
 
 
@@ -65,7 +67,8 @@ async def get_address_from_heap(ctx, pointer, offset=0, size=4) -> "Address":
 def storage_key(ctx, key: str):
     return f"{key}_{ctx.slot}_{ctx.team}"
 
-def get_stored_data(ctx, key, default=None):
+def get_stored_data(ctx: "BizHawkClientContext", key, default=None):
+    ctx.set_notify(storage_key(ctx, key))
     store = ctx.stored_data.get(storage_key(ctx, key), default)
     store = store if store is not None else default
     return store
@@ -90,8 +93,6 @@ class Address:
     name: str
 
     def __init__(self, addr_eu, addr_us=None, size=1, domain="Main RAM", name=""):
-        if domain == "Main RAM":
-            assert addr_eu < 0x400000
         self.addr_eu = addr_eu
         self.addr_us = addr_us if addr_us else None
         self.addr_lookup = [self.addr_eu, self.addr_us]
@@ -101,6 +102,25 @@ class Address:
         self.domain = domain
         self.size = size
         self.name = name
+
+        if self.addr:
+            self.validate()
+
+    def set_addr(self, value):
+        self.addr = value
+        self.addr_eu = value
+        self.addr_lookup[0] = value
+
+    def get_address(self, region=None):
+        if region is not None:
+            region = self._region_int(region)
+            return self.addr_lookup[region]
+        return self.addr
+
+    def validate(self):
+        if self.domain == "Main RAM":
+            if not 0 < self.addr_eu < 0x400000:
+                self.set_addr(0)
 
     def set_region(self, region: str or int):
         self.current_region = self._region_int(region)
@@ -114,12 +134,6 @@ class Address:
         assert region in [0, 1]
         return region
 
-    def get_address(self, region=None):
-        if region is not None:
-            region = self._region_int(region)
-            return self.addr_lookup[region]
-        return self.addr
-
     def get_read_list(self):
         return [self.get_inner_read_list()]
 
@@ -129,7 +143,7 @@ class Address:
     def get_write_list(self, value:int or list):
         return [self.get_inner_write_list(value)]
 
-    def get_inner_write_list(self, value:int or list):
+    def get_inner_write_list(self, value: int or list):
         if isinstance(value, int):
             value = split_bits(value, self.size)
         return self.addr, value[:self.size], self.domain
@@ -172,7 +186,7 @@ class Address:
 
 
     def __repr__(self, region="eu"):
-        return f"Address Object {hex(self.get_address(region))} {self.name}"
+        return f"Address Object {hex_f(self.get_address(region))} {self.name}"
 
     def __str__(self):
         name = f"{self.name}: " if self.name else ""
@@ -223,24 +237,39 @@ class Address:
         """When addresses are grabbed from pointers, the address is the same in all versions"""
         return cls(addr, addr, size, domain, name)
 
-class Pointer(Address):
+class AddressLoader(Address):
     """
-    Pointer from Data TCM
-    work towards depreciating, it should have been a classmethod from the start
+    Address who's first argument is a dtcm address, that needs to be loaded before it can be used as an address
     """
+    dtcm_addr: "Address"
+    load_offset: int
 
-    def __init__(self, addr, name=""):
-        super().__init__(addr, addr, 4, "Data TCM", name)
+    def __init__(self, dtcm_addr, size=1, load_offset=0, domain="Main RAM", name=""):
+        self.dtcm_addr = dtcm_addr
+        self.load_offset = load_offset
+        super().__init__(None, None, size, domain, name)
 
+    async def load(self, ctx):
+        self.set_addr(await self.dtcm_addr.read(ctx) + self.load_offset)
 
-class AddrFromPointer(Address):
-    """
-    When addresses are grabbed from pointers, version doesn't matter.
-    work towards depreciating, it should have been a classmethod from the start
-    """
+    async def read_bytes(self, ctx):
+        if not self.addr:
+            await self.load(ctx)
+        return await super().read_bytes(ctx)
 
-    def __init__(self, addr, size=1, domain="Main RAM", name=""):
-        super().__init__(addr, addr, size, domain, name)
+class DoubleAddressLoader(AddressLoader):
+
+    async def load(self, ctx):
+        pointer = Address.from_pointer(await self.dtcm_addr.read(ctx), size=3)
+        self.set_addr(await pointer.read(ctx) + self.load_offset)
+
+async def load_multi(ctx, loader_list: list["AddressLoader"]):
+    """Load multiple address loaders"""
+    read_list: list = [addr.dtcm_addr for addr in loader_list]
+    read_res = await read_multiple(ctx, read_list)
+    for loader in read_list:
+        loader.set_addr(read_res[loader.dtcm_addr] + loader.load_offset)
+
 
 class SRAM(Address):
     """
@@ -268,6 +297,7 @@ class DSTransition:
     """
     entrance_groups: IntEnum | None = None  # set these in game instance or
     opposite_entrance_groups: dict[IntEnum, IntEnum] | None = None
+    y_margin: int = 2000
 
     def __init__(self, name, data):
         self.data = data
@@ -334,9 +364,11 @@ class DSTransition:
             y = self.coords[1] if self.coords else self.extra_data.get("y", coords["y"]) - y_offest
             printl(f"Checking entrance {self.name}")
             printl(f"\tx: {x_max} > {coords['x']} > {x_min}")
-            printl(f"\ty: {y + 1000} > {y} > {coords['y'] - y_offest}")
+            printl(f"\ty: {y + self.y_margin} > {coords['y'] - y_offest} > {y}")
             printl(f"\tz: {z_max} > {coords['z']} > {z_min}")
-            if y + 2000 > coords["y"] - y_offest >= y and x_max > coords["x"] > x_min and z_max > coords["z"] > z_min:
+            if (y + self.y_margin > coords["y"] - y_offest >= y
+                    and x_max > coords["x"] > x_min
+                    and z_max > coords["z"] > z_min):
                 printl(f"\tMatch!")
                 return True
         return False
@@ -422,3 +454,4 @@ class DSTransition:
             counter.setdefault(point, 0)
             counter[point] += 1
         return res
+

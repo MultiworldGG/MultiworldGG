@@ -162,6 +162,11 @@ def register_indirect_connections(world: "TTYDWorld"):
                                                  world.get_entrance("Fahr Outpost"))
     world.multiworld.register_indirect_condition(world.get_region("Rogueport Sewers Westside"),
                                                  world.get_entrance("Fahr Outpost"))
+    if world.options.blue_pipe_toggle:
+        sewers = world.get_region("Rogueport Sewers")
+        for entrance in sewers.exits:
+            if entrance.connected_region is not None and entrance.connected_region.name == "Poshley Heights":
+                world.multiworld.register_indirect_condition(world.get_region("Rogueport (Westside)"), entrance)
 
 
 def create_region(world: "TTYDWorld", name: str, locations: list[LocationData]):

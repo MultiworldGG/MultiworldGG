@@ -1,19 +1,72 @@
-from ..DSZeldaClient.subclasses import Address, Pointer
+from dataclasses import dataclass
+
+from ..DSZeldaClient.subclasses import Address, AddressLoader ,DoubleAddressLoader
 
 addr_null = Address(0)
 
+
+async def load_adv_flags(ctx):
+    print(f"Loading adventure flags")
+    await STAddr.adv_flags_0.load(ctx)
+    for i in range(1, 0x5c):
+        getattr(STAddr, f"adv_flags_{hex(i)[2:]}").set_addr(STAddr.adv_flags_0 + i)
+
+    #     print(f"{getattr(STAddr, f'adv_flags_{hex(i)[2:]}')}")
+    # print(f"{STAddr.adv_flags_30}")
+
+    STAddr.sources.set_addr(STAddr.adv_flags_0.addr)
+    STAddr.restorations.set_addr(STAddr.adv_flags_1.addr)
+    STAddr.glyphs.set_addr(STAddr.adv_flags_2.addr)
+    STAddr.activate_portals.set_addr(STAddr.adv_flags_30.addr)
+
+    STAddr.watched_intro.set_addr(STAddr.adv_flags_12.addr)
+
+    STAddr.key_storage_0.set_addr(STAddr.adv_flags_0 + 0x70)
+    STAddr.key_storage_tos.set_addr(STAddr.adv_flags_0 + 0x71)
+    STAddr.key_storage_2.set_addr(STAddr.adv_flags_0 + 0x72)
+
+@dataclass
 class STAddr:
-    
+    # print(f"Initializing STAddr")
     null = addr_null
     
-    # Fundamentals
+    # Rom identification
     game_identifier = Address(0, 0, 16, "ROM")
     game_version = Address(0x1E, 0x1E, 1, "ROM")
-    
+
+    # DTCM stuff
+    gAdventureFlags = Address(0x09b8, size=3, domain="Data TCM")
+    gMapObjectManager = Address(0x0CE8, size=3, domain="Data TCM")
+    gActorManager = Address(0x0ce4, size=3, domain="Data TCM")
+
+    # Version safe loaders
+    map_object_table = DoubleAddressLoader(gMapObjectManager, 3)
+    actor_table = DoubleAddressLoader(gActorManager, 3)
+    adv_flags_0 = AddressLoader(gAdventureFlags, size=1, load_offset=0x14)
+
+    # async def load_adv_flags(self, ctx):
+    #     print(f"Loading adventure flags")
+    #     await self.adv_flags_0.load(ctx)
+    #     for i in range(1, 0x5c):
+    #         setattr(self, f"adv_flags_{hex(i)[2:]}", Address.from_pointer(self.adv_flags_0 + i))
+    #
+    #     self.sources = self.adv_flags_0
+    #     self.restorations = self.adv_flags_1
+    #     self.glyphs = self.adv_flags_2
+    #     self.activate_portals = self.adv_flags_30
+    #
+    #     self.key_storage_0 = Address.from_pointer(self.adv_flags_0 + 0x70)
+    #     self.key_storage_tos = Address.from_pointer(self.adv_flags_0 + 0x71)
+    #     self.key_storage_2 = self.set_starting_train = Address.from_pointer(self.adv_flags_0 + 0x72)
+
+
+    # Fundamentals
     game_state = Address(0x060C48)
+    # rabbit_blocker = Address(0x2609DF)
+    rabbit_blocker = Address(0x260867)
     loading_room = Address(0x0c2FF0)
     mid_load = Address(0x265190)
-    
+
     received_item_index = Address(0x265780, size=2)
     slot_id = Address(0x265782, size=2)
     
@@ -41,6 +94,7 @@ class STAddr:
     
     menu = Address(0x260958)
     equipped_item = Address(0x265318, size=4)
+    flip_clog = Address(0x04C3DC)
     
     health = Address(0x2651BC)
     heart_count = Address(0x2651BD)
@@ -59,14 +113,15 @@ class STAddr:
     gPlayer = Address.pointer(0x0fec)
     gMapManager = Address.pointer(0x0e60)
     stage_flag_pointer = Address(0x265164, size=4)
+    mobj_table_pointer = Address(0x0499DC, size=3)
     
-    watched_intro = Address(0x265726)
+    watched_intro = Address(0) # Address(0x265726)
 
     train_speed_fast = Address(0x136004, size=4)  # 0xc1 193
     train_speed_med = Address(0x135FFC, size=4)   # 0x73 115
     train_speed_stop = Address(0x135FF4, size=4)  # 0
     train_speed_reverse = Address(0x135FEC, size=4) # -143
-    train_speed_pointer = Address(0x13F578, size=4)  # + 0x94 to get actual train speed
+    train_speed_pointer = Address(0x13F578, size=3)  # + 0x94 to get actual train speed
 
     train_action = Address(0x2CA23C) # forest, but near train speed pointer
     train_gear = Address(0x2CA438)  # forest, find pointer
@@ -115,6 +170,13 @@ class STAddr:
     equipped_cannon = Address(0x26538C, size=4)
     equipped_car = Address(0x265390, size=4)
     equipped_cart = Address(0x265394, size=4)
+    train_part_array = [equipped_engine, equipped_cannon, equipped_car, equipped_cart]
+
+    map_open = Address(0x0BA3D0)
+    selected_station = Address(0x0BA65C)
+    exiting_map = Address(0x260A44)
+    last_x = Address(0x049B36, size=2)
+    quick_pen_coords = Address(0x0B509C, size=3)
 
     # Passenger data
     has_passenger_0 = Address(0x265598, size=4)
@@ -131,40 +193,6 @@ class STAddr:
 
     # Boss key pointers
     boss_key_deletion_pointer = Address(0x265620, size=3)  # points to 3 references, and deleting then deletes the key.
-    boss_key_deletion = Address(0x3251C0, size=12)
-    wt_bk_pointer = Address(0x3251C0, size=3)
-    bt_bk_pointer = Address(0x326C20, size=3)
-    oct_bk_pointer = Address(0x32520C, size=3)
-    mtt_bk_pointer = Address(0x32963C, size=3)
-    dt_bk_pointer = Address(0x3251C8, size=3)
-    tos3_bk_pointer = Address(0x332858, size=3)
-    tos5_bk_pointer = Address(0x332818, size=3)
-    tos_actor_table = Address(0x332810, size=3)
-    tos_bk_pointer = Address(0x332818, size=3)
-
-    tos_actor_table_pointer_0 = Address(0x3329C0, size=3)
-    tos_actor_table_pointer_1 = Address(0x329C3C, size=3)
-    tos_actor_table_pointer_safe = Address(0x25FA48, size=3)  # offset 1032 (header)/1040 (start of pointers)
-
-    oct_actor_table_start = Address(0x3251D8, size=3)
-
-    # Candidates for ToS 3 bk pointers
-    # 332858
-    # 332A20
-    # 332BB4
-    # 332BD4
-    # 332D1C
-    # 33DBFC
-
-    # Boss door openers
-    wt_boss_door = Address(0x3368FE)
-    bt_boss_door = Address(0x33099E)
-    oct_boss_door = Address(0x32F6EE)
-    mtt_boss_door = Address(0x33497E)
-    dt_boss_door = Address(0x332C5E)
-    tos3_boss_door = Address(0x33E482)
-    # tos5_boss_door = Address(0x33E182)
-    tos5_boss_door = Address(0x33E1Ce)
 
     mtt_b1_heatoise_trigger_pointer = Address(0x1231B4, size=3)
 
@@ -172,106 +200,114 @@ class STAddr:
     tos_boss_door_pointer = Address(0x265668, size=4)
 
     snurglin_keys = Address(0x2e986c)
-    snurglar_pointer = Address(0x0499F4, size=4)
+    snurglar_pointer = Address(0x0499F4, size=3)
     mountain_gate = Address(0x2e3640)
 
     # Stamps
     stamp_ids = Address(0x268f8c, size=20)
     stamp_coords = Address(0x268F50, size=40)
 
+    # Zelda
+    zelda_pointer = Address(0x0D34, size=3, domain="Data TCM")
+
     # Adventure Flags
-    adv_flags_0 = sources = Address(0x265714)
-    adv_flags_1 = restorations = Address(0x265715)
-    adv_flags_2 = glyphs = Address(0x265716)
-    adv_flags_3 = Address(0x265717)
-    adv_flags_4 = Address(0x265718)
-    adv_flags_5 = Address(0x265719)
-    adv_flags_6 = Address(0x26571a)
-    adv_flags_7 = Address(0x26571b)
-    adv_flags_8 = Address(0x26571c)
-    adv_flags_9 = Address(0x26571d)
-    adv_flags_a = Address(0x26571e)
-    adv_flags_b = Address(0x26571f)
-    adv_flags_c = Address(0x265720)
-    adv_flags_d = Address(0x265721)
-    adv_flags_e = Address(0x265722)
-    adv_flags_f = Address(0x265723)
-    adv_flags_10 = Address(0x265724)
-    adv_flags_11 = Address(0x265725)
-    adv_flags_12 = Address(0x265726)
-    adv_flags_13 = Address(0x265727)
-    adv_flags_14 = Address(0x265728)
-    adv_flags_15 = Address(0x265729)
-    adv_flags_16 = Address(0x26572a)
-    adv_flags_17 = Address(0x26572b)
-    adv_flags_18 = Address(0x26572c)
-    adv_flags_19 = Address(0x26572d)
-    adv_flags_1a = Address(0x26572e)
-    adv_flags_1b = Address(0x26572f)
-    adv_flags_1c = Address(0x265730)
-    adv_flags_1d = Address(0x265731)
-    adv_flags_1e = Address(0x265732)
-    adv_flags_1f = Address(0x265733)
-    adv_flags_20 = Address(0x265734)
-    adv_flags_21 = Address(0x265735)
-    adv_flags_22 = Address(0x265736)
-    adv_flags_23 = Address(0x265737)
-    adv_flags_24 = Address(0x265738)
-    adv_flags_25 = Address(0x265739)
-    adv_flags_26 = Address(0x26573a)
-    adv_flags_27 = Address(0x26573b)
-    adv_flags_28 = Address(0x26573c)
-    adv_flags_29 = Address(0x26573d)
-    adv_flags_2a = Address(0x26573e)
-    adv_flags_2b = Address(0x26573f)
-    adv_flags_2c = Address(0x265740)
-    adv_flags_2d = Address(0x265741)
-    adv_flags_2e = Address(0x265742)
-    adv_flags_2f = Address(0x265743)
-    adv_flags_30 = activate_portals = Address(0x265744)
-    adv_flags_31 = Address(0x265745)
-    adv_flags_32 = Address(0x265746)
-    adv_flags_33 = Address(0x265747)
-    adv_flags_34 = Address(0x265748)
-    adv_flags_35 = Address(0x265749)
-    adv_flags_36 = Address(0x26574a)
-    adv_flags_37 = Address(0x26574b)
-    adv_flags_38 = Address(0x26574c)
-    adv_flags_39 = Address(0x26574d)
-    adv_flags_3a = Address(0x26574e)
-    adv_flags_3b = Address(0x26574f)
-    adv_flags_3c = Address(0x265750)
-    adv_flags_3d = Address(0x265751)
-    adv_flags_3e = Address(0x265752)
-    adv_flags_3f = Address(0x265753)
-    adv_flags_40 = Address(0x265754)
-    adv_flags_41 = Address(0x265755)
-    adv_flags_42 = Address(0x265756)
-    adv_flags_43 = Address(0x265757)
-    adv_flags_44 = Address(0x265758)
-    adv_flags_45 = Address(0x265759)
-    adv_flags_46 = Address(0x26575a)
-    adv_flags_47 = Address(0x26575b)
-    adv_flags_48 = Address(0x26575c)
-    adv_flags_49 = Address(0x26575d)
-    adv_flags_4a = Address(0x26575e)
-    adv_flags_4b = Address(0x26575f)
-    adv_flags_4c = Address(0x265760)
-    adv_flags_4d = Address(0x265761)
-    adv_flags_4e = Address(0x265762)
-    adv_flags_4f = Address(0x265763)
-    adv_flags_50 = Address(0x265764)
-    adv_flags_51 = Address(0x265765)
-    adv_flags_52 = Address(0x265766)
-    adv_flags_53 = Address(0x265767)
-    adv_flags_54 = Address(0x265768)
-    adv_flags_55 = Address(0x265769)
-    adv_flags_56 = Address(0x26576a)
-    adv_flags_57 = Address(0x26576b)
-    adv_flags_58 = Address(0x26576c)
-    adv_flags_59 = Address(0x26576d)
-    adv_flags_5a = Address(0x26576e)
-    adv_flags_5b = Address(0x26576f)
+    # adv_flags_0: "Address"
+    adv_flags_1: "Address" = Address(0)
+    adv_flags_2: "Address" = Address(0x265716)
+    adv_flags_3: "Address" = Address(0x265717)
+    adv_flags_4: "Address" = Address(0x265718)
+    adv_flags_5: "Address" = Address(0x265719)
+    adv_flags_6: "Address" = Address(0x26571a)
+    adv_flags_7: "Address" = Address(0x26571b)
+    adv_flags_8: "Address" = Address(0x26571c)
+    adv_flags_9: "Address" = Address(0x26571d)
+    adv_flags_a: "Address" = Address(0x26571e)
+    adv_flags_b: "Address" = Address(0x26571f)
+    adv_flags_c: "Address" = Address(0x265720)
+    adv_flags_d: "Address" = Address(0x265721)
+    adv_flags_e: "Address" = Address(0x265722)
+    adv_flags_f: "Address" = Address(0x265723)
+    adv_flags_10: "Address" = Address(0x265724)
+    adv_flags_11: "Address" = Address(0x265725)
+    adv_flags_12: "Address" = Address(0x265726)
+    adv_flags_13: "Address" = Address(0x265727)
+    adv_flags_14: "Address" = Address(0x265728)
+    adv_flags_15: "Address" = Address(0x265729)
+    adv_flags_16: "Address" = Address(0x26572a)
+    adv_flags_17: "Address" = Address(0x26572b)
+    adv_flags_18: "Address" = Address(0x26572c)
+    adv_flags_19: "Address" = Address(0x26572d)
+    adv_flags_1a: "Address" = Address(0x26572e)
+    adv_flags_1b: "Address" = Address(0x26572f)
+    adv_flags_1c: "Address" = Address(0x265730)
+    adv_flags_1d: "Address" = Address(0x265731)
+    adv_flags_1e: "Address" = Address(0x265732)
+    adv_flags_1f: "Address" = Address(0x265733)
+    adv_flags_20: "Address" = Address(0x265734)
+    adv_flags_21: "Address" = Address(0x265735)
+    adv_flags_22: "Address" = Address(0x265736)
+    adv_flags_23: "Address" = Address(0x265737)
+    adv_flags_24: "Address" = Address(0x265738)
+    adv_flags_25: "Address" = Address(0x265739)
+    adv_flags_26: "Address" = Address(0x26573a)
+    adv_flags_27: "Address" = Address(0x26573b)
+    adv_flags_28: "Address" = Address(0x26573c)
+    adv_flags_29: "Address" = Address(0x26573d)
+    adv_flags_2a: "Address" = Address(0x26573e)
+    adv_flags_2b: "Address" = Address(0x26573f)
+    adv_flags_2c: "Address" = Address(0x265740)
+    adv_flags_2d: "Address" = Address(0x265741)
+    adv_flags_2e: "Address" = Address(0x265742)
+    adv_flags_2f: "Address" = Address(0x265743)
+    adv_flags_30: "Address" = Address(0x265744)
+    adv_flags_31: "Address" = Address(0x265745)
+    adv_flags_32: "Address" = Address(0x265746)
+    adv_flags_33: "Address" = Address(0x265747)
+    adv_flags_34: "Address" = Address(0x265748)
+    adv_flags_35: "Address" = Address(0x265749)
+    adv_flags_36: "Address" = Address(0x26574a)
+    adv_flags_37: "Address" = Address(0x26574b)
+    adv_flags_38: "Address" = Address(0x26574c)
+    adv_flags_39: "Address" = Address(0x26574d)
+    adv_flags_3a: "Address" = Address(0x26574e)
+    adv_flags_3b: "Address" = Address(0x26574f)
+    adv_flags_3c: "Address" = Address(0x265750)
+    adv_flags_3d: "Address" = Address(0x265751)
+    adv_flags_3e: "Address" = Address(0x265752)
+    adv_flags_3f: "Address" = Address(0x265753)
+    adv_flags_40: "Address" = Address(0x265754)
+    adv_flags_41: "Address" = Address(0x265755)
+    adv_flags_42: "Address" = Address(0x265756)
+    adv_flags_43: "Address" = Address(0x265757)
+    adv_flags_44: "Address" = Address(0x265758)
+    adv_flags_45: "Address" = Address(0x265759)
+    adv_flags_46: "Address" = Address(0x26575a)
+    adv_flags_47: "Address" = Address(0x26575b)
+    adv_flags_48: "Address" = Address(0x26575c)
+    adv_flags_49: "Address" = Address(0x26575d)
+    adv_flags_4a: "Address" = Address(0x26575e)
+    adv_flags_4b: "Address" = Address(0x26575f)
+    adv_flags_4c: "Address" = Address(0x265760)
+    adv_flags_4d: "Address" = Address(0x265761)
+    adv_flags_4e: "Address" = Address(0x265762)
+    adv_flags_4f: "Address" = Address(0x265763)
+    adv_flags_50: "Address" = Address(0x265764)
+    adv_flags_51: "Address" = Address(0x265765)
+    adv_flags_52: "Address" = Address(0x265766)
+    adv_flags_53: "Address" = Address(0x265767)
+    adv_flags_54: "Address" = Address(0x265768)
+    adv_flags_55: "Address" = Address(0x265769)
+    adv_flags_56: "Address" = Address(0x26576a)
+    adv_flags_57: "Address" = Address(0x26576b)
+    adv_flags_58: "Address" = Address(0x26576c)
+    adv_flags_59: "Address" = Address(0x26576d)
+    adv_flags_5a: "Address" = Address(0x26576e)
+    adv_flags_5b: "Address" = Address(0x26576f)
+
+    sources: "Address" = Address(0)
+    glyphs: "Address" = Address(0)
+    restorations: "Address" = Address(0)
+    activate_portals: "Address" = Address(0)
     
     # Treasure
     all_treasure_count = Address(0x269000, size=32)
@@ -293,6 +329,13 @@ class STAddr:
     regal_ring_count = Address(0x26901e, size=2)
 
     item_model_table = Address(0x0af590)  # size=big
+
+    entrance_animation = Address(0x269108)  # 17 to prevent blue warps working immediately
+    # 9 is the slow culprit
+
+    fade_timer = Address(0x0b5164, size=2)
+
+
 
 #  = Address()
 #  = Address()

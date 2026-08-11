@@ -14,6 +14,7 @@ import logging
 from typing import Any, Callable
 from collections import Counter
 
+from Options import OptionError
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
 from BaseClasses import Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState
@@ -167,16 +168,44 @@ class WotWWorld(World):
 
     def generate_early(self) -> None:
         # TODO Launch on seir + fragments
-        options = self.options  # TODO Use option error instead for some cases
+        options = self.options
         # Options checking
         if options.open_mode:
             options.no_rain.value = True
-        # Escaping from Willow require to complete the elevator fight, so a tp is needed to escape.
-        if options.spawn.value == StartingLocation.option_willow and not options.tp:
-            options.spawn.value = StartingLocation.option_vanilla  # No TP in pool: spawn somewhere else.
-        # Without TP in the pool, some random spawn are dead-ends without better random spawn
-        if not options.tp and not options.better_spawn:
-            options.better_spawn.value = True
+
+        # Prevent combinations that don't generate well on random spawn
+        if not options.better_spawn and options.spawn == StartingLocation.option_outerruins:
+            raise OptionError("Outer Ruins spawn (UpperWastes.NorthTP) behaves poorly without Better random spawn.")
+        if not options.tp:
+            if (options.spawn.value in (
+                    StartingLocation.option_willow,
+                    StartingLocation.option_shriek,
+                    StartingLocation.option_random_loc,
+                    StartingLocation.option_random_tp,
+                    StartingLocation.option_depths,
+                )
+            or (options.difficulty.value == LogicDifficulty.option_moki and options.spawn.value in (
+                    StartingLocation.option_westwoods,
+                    StartingLocation.option_eastwoods,
+                    StartingLocation.option_westwastes,
+                    StartingLocation.option_eastwastes,
+                    StartingLocation.option_outerruins,
+                    StartingLocation.option_innerruins,
+                )
+                    )):
+                raise OptionError("Removing Teleporters from the pool can cause impossible seeds"
+                                  "when spawning in Willow, Depths or at a random location, "
+                                  "or on the east side in Moki.")
+            if not options.better_spawn and options.spawn.value in (
+                StartingLocation.option_burrows,
+                StartingLocation.option_howlsden,
+                StartingLocation.option_eastpools,
+                StartingLocation.option_westpools,  # outerruins already prevented just without better spawn
+                StartingLocation.option_innerruins,  # random loc/tp and willow are already impossible just without tp
+            ):
+                raise OptionError("Removing Teleporters and not having Better random spawn can cause impossible seeds"
+                                  "in most places (apart from glades, wellspring, woods, reach, early wastes).")
+
         if options.fragments_count.value < options.fragments_required.value:
             options.fragments_count.value = options.fragments_required.value
         # Spawning on willow usually gives Launch on spawn, which defeats the purpose of the options that affect Launch
@@ -238,9 +267,9 @@ class WotWWorld(World):
         logging.info(f"Ori WotW: Spawn {self.spawn_region_name} for player {self.player}")
 
         # Selection of a random goal
-        if "random" in options.goal:
+        if "one_random" in options.goal:
             possible_goals = sorted(list(options.goal.value))
-            possible_goals.remove("random")
+            possible_goals.remove("one_random")
             selected_goal: list = []
             if not possible_goals:  # Only random selected, choose among all goals
                 possible_goals = ["trees", "wisps", "quests", "relics"]
@@ -418,7 +447,10 @@ class WotWWorld(World):
             else:
                 item_rule = (lambda item: item.player == self.player
                              and item.name not in ("Launch Fragment", "Launch"))
-            for i in range(1, spawn_data[self.spawn_area].items_amount + 1):  # Create all spawn item locations
+
+            # Create all spawn item locations
+            extra_items = 3 if len(mworld.player_name) <= 1 else 1  # The range starts at 1
+            for i in range(1, spawn_data[self.spawn_area].items_amount + extra_items):
                 name = f"Spawn item {i}"
                 spawn_loc = WotWLocation(player, name, self.location_name_to_id[name], menu_region)
                 menu_region.locations.append(spawn_loc)
@@ -471,6 +503,14 @@ class WotWWorld(World):
         if regen_spawn:  # Give Regenerate if needed
             mworld.push_precollected(self.create_item("Regenerate"))
             skipped_items.append("Regenerate")
+
+        # The generator can have difficulties to find the exit to these areas, so guide it towards the key item
+        if self.spawn_area in ("UpperWastes", "LowerWastes"):
+            self.multiworld.early_items[self.player]["Burrow"] = 1
+        elif self.spawn_area in ("UpperDepths", "LowerDepths"):
+            self.multiworld.early_items[self.player]["Glide"] = 1
+        elif self.spawn_area in ("EastPools", "WestPools", "UpperPools", "PoolsApproach"):
+            self.multiworld.early_items[self.player]["Clean Water"] = 1
 
         for item, count in options.start_inventory.value.items():
             for _ in range(count):
@@ -529,6 +569,15 @@ class WotWWorld(World):
                 loc = self.get_location(location)
                 loc.place_locked_item(self.create_item(item))
                 removed_items.append(item)
+            if (options.difficulty == LogicDifficulty.option_moki
+                and options.door_rando != RandomizeDoors.option_disabled
+                and not options.tp):
+                # Add another water breath in the pool to prevent an impossible seed if the door rando connects
+                # UpperWastes.OutsideRuins (Door) to InnerWellspring.Teleporter (Door).
+                # In that case Wellspring escape is locked behind the Pools Wisp,
+                # which logically requires Water Breath, which requires the escape on vanilla shop upgrades.
+                removed_items.remove("Water Breath")
+
 
         if options.launch_on_seir:
             self.get_location("WindtornRuins.Seir").place_locked_item(self.create_item("Launch"))
@@ -781,14 +830,14 @@ class WotWWorld(World):
                           "TuleyShop.SpringPlants",
                           "TuleyShop.LastTree"):
                 self.precollect_event(event)
-            # This location is inaccessible without Ore, so it is manually collected in this case
-            self.connect_to_menu("GladesTown.RebuildTheGlades")
-            for event in ("GladesTown.BuildHuts",
+            # These locations and events are inaccessible without Ore
+            for event in ("GladesTown.RebuildTheGlades",
+                          "GladesTown.BuildHuts",
                           "GladesTown.RoofsOverHeads",
                           "GladesTown.OnwardsAndUpwards",
                           "GladesTown.ClearThorns",
                           "GladesTown.CaveEntrance"):
-                self.precollect_event(event)
+                self.connect_to_menu(event)
 
         if options.quests == Quests.option_none:  # Open locations locked behind NPCs
             # Connecting the other quests is not necessary, as their event don't appear in logic for non-quest locations

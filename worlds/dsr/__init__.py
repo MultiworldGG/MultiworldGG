@@ -9,7 +9,7 @@ from worlds.generic.Rules import add_rule, add_item_rule
 from rule_builder.rules import Rule, True_, Has, HasAll
 
 from .Items import DSRItem, DSRItemCategory, item_dictionary, key_item_names, item_descriptions 
-from .PoolGeneration import BuildRequiredItemPool, BuildGuaranteedItemPool, UpgradeEquipment, ReplaceItem
+from .PoolGeneration import BuildRequiredItemPool, BuildGuaranteedItemPool, UpgradeEquipment, ReplaceItem, titanite_replacements
 from .Locations import DSRLocation, DSRLocationCategory, location_tables, location_dictionary, location_skip_categories, location_locked_categories
 from .Groups import location_name_groups, item_name_groups
 from .Options import DSROption, option_groups, GoalConditionOption
@@ -216,7 +216,7 @@ class DSRWorld(World):
             "Northern Undead Asylum Second Visit",
             "Northern Undead Asylum Second Visit - F2 West Door",
             "Northern Undead Asylum Second Visit - Behind F2 West Door",
-            "Northern Undead Asylum Second Visit - Snuggly Trades",
+            # "Northern Undead Asylum Second Visit - Snuggly Trades",
             "Undead Burg Basement Door",
             "Lower Undead Burg", 
             "Lower Undead Burg - After Residence Key",
@@ -224,7 +224,7 @@ class DSRWorld(World):
             "Lower Undead Burg - After Capra Demon",
             "Watchtower Basement",
             "Depths", 
-            "Depths - After Sewer Chamber Key",
+            # "Depths - After Sewer Chamber Key",
             "Depths - Gaping Dragon",
             "Depths - After Gaping Dragon",
             "Depths to Blighttown Door",
@@ -370,13 +370,15 @@ class DSRWorld(World):
         
         for location in location_table:
             #print("Creating location: " + location.name)
+            default_item = location.default_item
+            if (default_item in titanite_replacements.keys()):
+                default_item = ReplaceItem(self, default_item)
 
             if (location.category in self.enabled_location_categories and 
                 location.category not in location_skip_categories # [DSRLocationCategory.EVENT, DSRLocationCategory.DOOR]:
                 and location.category not in location_locked_categories
                 and not (self.options.excluded_location_behavior == "do_not_randomize" and location.name in self.all_excluded_locations)): 
                 self.gc = self.gc + 1
-                default_item = location.default_item
                 if (location.category in [DSRLocationCategory.FOG_WALL, DSRLocationCategory.BOSS_FOG_WALL]):
                     default_item = "Fogwall Filler"
                 # print("Adding location: " + location.name + " with default item " + location.default_item)
@@ -407,11 +409,11 @@ class DSRWorld(World):
             #     new_location.place_locked_item(event_item)
             else:
                 self.bc = self.bc + 1
-                default_item = location.default_item
                 if (location.category in [DSRLocationCategory.FOG_WALL, DSRLocationCategory.BOSS_FOG_WALL, 
                                           DSRLocationCategory.DOOR]):
                     default_item = "Nothing"
                     # print("Placing event: " + default_item + " in location: " + location.name)
+
 
                 # Replace non-randomized progression items with events
                 event_item = self.create_item(default_item)
@@ -445,8 +447,11 @@ class DSRWorld(World):
         itempoolSize = 0
         
         # print("Creating items")
-        for location in self.multiworld.get_locations(self.player):            
-            citem = self.create_item(location.default_item_name)
+        for location in self.multiworld.get_locations(self.player):
+            itemname = location.default_item_name
+            if (itemname in titanite_replacements.keys()):
+                itemname = ReplaceItem(self, itemname)
+            citem = self.create_item(itemname)
             
             if (location.category in location_skip_categories 
              or location.category in location_locked_categories): # [DSRLocationCategory.EVENT]:
@@ -473,8 +478,8 @@ class DSRWorld(World):
 
 
 
-        disabled_items = [self.create_item(loc.default_item) for loc in location_dictionary.values() if loc.category not in self.enabled_location_categories]
-        StillRequiredPool = [item for item in crip if item not in itempool and item not in skipitempool and item not in disabled_items]
+        disabled_items = [loc.default_item for loc in location_dictionary.values() if loc.category not in self.enabled_location_categories]
+        StillRequiredPool = [item for item in crip if item not in itempool and item not in skipitempool and item.name not in disabled_items]
         guaranteedpool = BuildGuaranteedItemPool(self)
 
         filler_items = [item for item in itempool if item_dictionary[item.name].category in [DSRItemCategory.FILLER]]
@@ -568,8 +573,6 @@ class DSRWorld(World):
             DSRItemCategory.USEFUL_KEY_ITEM,
             DSRItemCategory.USEFUL_CONSUMABLE,
         ]
-        if (item_dictionary[name].category == DSRItemCategory.NEEDS_REPLACEMENT):
-            name = ReplaceItem(name, self)
 
         data = self.item_name_to_id[name]
 
@@ -700,7 +703,7 @@ class DSRWorld(World):
             "itemsId": items_id,
             "itemsUpgrades": items_upgrades,
             "itemsAddress": items_address,
-            "apworld_api_version" : "0.2.3" # Manually set our apworld api level, for detecting compatibility with client
+            "apworld_api_version" : "0.2.4" # Manually set our apworld api level, for detecting compatibility with client
         }
 
         self.items_id = items_id

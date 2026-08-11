@@ -16,16 +16,18 @@ class Groups(IntEnum):
     OW_1O_2 = 1
     MOKI_HUT = 2
     OW_3 = 3
+    RIDGE = 4
     # Non dead-ends
-    WILLOW = 4
-    IW_1 = 5  # First floor of Inner Wellspring
+    WILLOW = 5
+    IW_1 = 6  # First floor of Inner Wellspring
     # Dead-ends
-    WOODS_HUT = 6
-    IW_2 = 7
-    DEAD = 8
+    WOODS_HUT = 7
+    IW_2 = 8
+    RUINS = 9
+    DEAD = 10
 
 group_lookup: dict[str, Groups] = {
-    "GladesTown.TwillenHome (Door)": Groups.MAIN,
+    "GladesTown.TwillenHome (Door)": Groups.MOKI_HUT,
     "GladesTown.KeyMokiHutInside (Door)": Groups.DEAD,
     "GladesTown.MotayHutDoor (Door)": Groups.MAIN,
     "GladesTown.MotayHutInside (Door)": Groups.DEAD,
@@ -37,7 +39,7 @@ group_lookup: dict[str, Groups] = {
     "GladesTown.StorageHut (Door)": Groups.DEAD,
     "GladesTown.LupoHouse (Door)": Groups.MAIN,
     "GladesTown.InsideLupoHouse (Door)": Groups.DEAD,
-    "GladesTown.HoleHutEntrance (Door)": Groups.MOKI_HUT,
+    "GladesTown.HoleHutEntrance (Door)": Groups.MAIN,
     "GladesTown.InsideHoleHut (Door)": Groups.DEAD,
     "OuterWellspring.EntranceDoor (Door)": Groups.MAIN,
     "OuterWellspring.WestDoor (Door)": Groups.OW_1O_2,
@@ -52,8 +54,8 @@ group_lookup: dict[str, Groups] = {
     "UpperReach.TreeRoom (Door)": Groups.MAIN,
     "UpperReach.SeedHut (Door)": Groups.DEAD,
     "UpperWastes.OutsideRuins (Door)": Groups.MAIN,
-    "WindtornRuins.UpperRuinsDoor (Door)": Groups.DEAD,
-    "WeepingRidge.WillowEntranceLedge (Door)": Groups.MAIN,
+    "WindtornRuins.UpperRuinsDoor (Door)": Groups.RUINS,
+    "WeepingRidge.WillowEntranceLedge (Door)": Groups.RIDGE,
     "WillowsEnd.Entry (Door)": Groups.WILLOW,
     "WillowsEnd.Upper (Door)": Groups.WILLOW,
     "WillowsEnd.ShriekArena (Door)": Groups.DEAD
@@ -66,24 +68,42 @@ forbidden_conn_lookup: dict[Groups, list[Groups]] = {
     # Don't connect the doors opened by the lever in Inner Wellspring 1 to this room
     Groups.OW_1O_2: [Groups.IW_1],
     # Don't connect the Key Moki Hut to the Doll location in the woods hut (as it is required to enter)
-    Groups.MOKI_HUT: [Groups.WOODS_HUT],
+    Groups.MOKI_HUT: [Groups.WOODS_HUT, Groups.WILLOW, Groups.IW_1],
     # Entering the 3rd room in Wellspring requires removing the corruption from Inner Wellspring 2
-    Groups.OW_3: [Groups.IW_2],
-    ### Other rooms that are not dead ends (groups 4, 5)
-    Groups.WILLOW: [],
+    Groups.OW_3: [Groups.IW_2, Groups.WILLOW, Groups.IW_1],
+    # Accessing the Weeping Ridge door requires Seir from the Ruins (without glitches)
+    Groups.RIDGE: [Groups.RUINS, Groups.WILLOW, Groups.IW_1],
+    ### Other rooms that are not dead ends (groups 4, 5): don't connect them to restricted groups or themselves
+    # Example: WeepingRidge-InnerWellspringEntrance + InnerWellspringWest-WindtornRuins must be prevented
+    Groups.WILLOW: [
+        Groups.MOKI_HUT, Groups.OW_3, Groups.RIDGE, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.WILLOW
+    ],
     # No connection with the OW_1O_2 doors
-    Groups.IW_1: [Groups.OW_1O_2],
+    Groups.IW_1: [
+        Groups.OW_1O_2,
+        Groups.MOKI_HUT,
+        Groups.OW_3,
+        Groups.RIDGE,
+        Groups.WOODS_HUT,
+        Groups.IW_2,
+        Groups.RUINS,
+        Groups.IW_1,
+    ],
     ### Dead ends: don't connect these to themselves to not lock the generator (groups 6 to 8)
     # No connection with the Key Moki hut
-    Groups.WOODS_HUT: [Groups.MOKI_HUT, Groups.WOODS_HUT, Groups.IW_2, Groups.DEAD],
+    Groups.WOODS_HUT: [
+        Groups.MOKI_HUT, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD, Groups.WILLOW, Groups.IW_1
+    ],
     # No connection with the top door of Outer Wellspring
-    Groups.IW_2: [Groups.OW_3, Groups.WOODS_HUT, Groups.IW_2, Groups.DEAD],
-    Groups.DEAD: [Groups.WOODS_HUT, Groups.IW_2, Groups.DEAD],
+    Groups.IW_2: [Groups.OW_3, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD, Groups.WILLOW, Groups.IW_1],
+    # No connection with Weeping Ridge
+    Groups.RUINS: [Groups.RIDGE, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD, Groups.WILLOW, Groups.IW_1],
+    Groups.DEAD: [Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD],
 }
 
 groups: dict[Groups, list[str]] = {
     Groups.MAIN: [
-        "GladesTown.TwillenHome (Door)",
+        "GladesTown.HoleHutEntrance (Door)",
         "GladesTown.MotayHutDoor (Door)",
         "GladesTown.UpperWest (Door)",
         "GladesTown.AcornMoki (Door)",
@@ -93,17 +113,19 @@ groups: dict[Groups, list[str]] = {
         "WoodsEntry.FamilyHut (Door)",
         "UpperReach.TreeRoom (Door)",
         "UpperWastes.OutsideRuins (Door)",
-        "WeepingRidge.WillowEntranceLedge (Door)",
     ],
     Groups.OW_1O_2: [
         "OuterWellspring.WestDoor (Door)",
         "OuterWellspring.EastDoor (Door)",
     ],
     Groups.MOKI_HUT: [
-        "GladesTown.HoleHutEntrance (Door)"
+        "GladesTown.TwillenHome (Door)",
     ],
     Groups.OW_3: [
         "OuterWellspring.TopDoor (Door)",
+    ],
+    Groups.RIDGE: [
+        "WeepingRidge.WillowEntranceLedge (Door)",
     ],
     Groups.WILLOW: [
         "WillowsEnd.Entry (Door)",
@@ -119,6 +141,9 @@ groups: dict[Groups, list[str]] = {
     Groups.IW_2: [
         "InnerWellspring.EastDoor (Door)",
     ],
+    Groups.RUINS: [
+        "WindtornRuins.UpperRuinsDoor (Door)",
+    ],
     Groups.DEAD: [
         "GladesTown.KeyMokiHutInside (Door)",
         "GladesTown.MotayHutInside (Door)",
@@ -129,7 +154,6 @@ groups: dict[Groups, list[str]] = {
         "GladesTown.InsideHoleHut (Door)",
         "InnerWellspring.Teleporter (Door)",
         "UpperReach.SeedHut (Door)",
-        "WindtornRuins.UpperRuinsDoor (Door)",
         "WillowsEnd.ShriekArena (Door)",
     ],
 }
@@ -164,7 +188,11 @@ class ERGeneratorWotW:
         self.placements = {}
         # Start the randomization from the main group.
         self.accessible_doors = (
-            groups[Groups.MAIN] + groups[Groups.OW_1O_2] + groups[Groups.MOKI_HUT] + groups[Groups.OW_3]
+            groups[Groups.MAIN]
+            + groups[Groups.OW_1O_2]
+            + groups[Groups.MOKI_HUT]
+            + groups[Groups.OW_3]
+            + groups[Groups.RIDGE]
         )
         self.unlinked_doors = list(group_lookup.keys())
         self.unaccessible_doors = list(group_lookup.keys())
@@ -231,7 +259,7 @@ class ERGeneratorWotW:
 
 def generate_er_connections(world: WotWWorld, coupled: bool) -> list[int]:
     """Randomize and create the entrances between the doors. Return the pairing data to send through slot_data."""
-    max_attempts = 3
+    max_attempts = 5
     current_attempt = 1
     result = True  # Track success of the entrance connection
 

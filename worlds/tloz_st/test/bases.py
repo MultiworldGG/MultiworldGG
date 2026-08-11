@@ -1,10 +1,7 @@
 from BaseClasses import LocationProgressType
 from test.bases import *
 
-
-class TestGeneration(WorldTestBase):
-    game = "Spirit Tracks"
-    options = {
+options_old = {
         "rabbitsanity": "unique_checks",
         "rabbit_max_location_count": 1,
         "rabbit_location_count_distribution": "for_each",
@@ -54,5 +51,61 @@ class TestGeneration(WorldTestBase):
             "Completed Ocean Glyph": 1,
             "Completed Fire Glyph": 1,
         }
-
     }
+
+compass_options = {
+    "dark_realm_access": "both",
+}
+
+er_options = {
+        "progressive_equipment": False,
+        "randomize_shields": False,
+
+        "shuffle_stations": "no_shuffle",
+        "shuffle_train_transitions": "no_shuffle",
+
+        "shuffle_caves": "no_shuffle",
+        "shuffle_houses": "no_shuffle",
+
+        "shuffle_hyrule_castle": "no_shuffle",
+        "shuffle_eote": "no_shuffle",
+        "shuffle_disorientation": "no_shuffle",
+
+        "shuffle_tos_sections": "no_shuffle",
+        "shuffle_tos_staircase": "no_shuffle",
+
+        "shuffle_dungeon_entrances": "no_shuffle",
+        "shuffle_bosses": "no_shuffle",
+        "shuffle_dungeon_rooms": "no_shuffle",
+        "shuffle_warps": "no_shuffle",
+
+        "shuffle_portals": "shuffle_alone",
+        "shuffle_las": "no_shuffle",
+
+        "keyrings": "all",
+        "dungeons_required": 5,
+        "exclude_dungeons": "remove",
+
+        "entrance_directionality": {},
+
+        "randomize_start": {"niko"},
+        "start_with_train": True,
+        "free_starting_items": 2,
+
+        "rabbitsanity": "both",
+
+        "randomize_passengers": "vanilla",
+        "randomize_cargo": "vanilla",
+        "passenger_pickup": "visit"
+
+        # "plando_transitions": [
+        #     {"entrance": "Outset East House",
+        #      "exit": "Tower of Spirits to Forest Realm"},
+        #     {"entrance": "Anouki Village SW House",
+        #      "exit": "Kofu's New House Exit"}
+        # ]
+    }
+
+class TestGeneration(WorldTestBase):
+    game = "Spirit Tracks"
+    options = er_options

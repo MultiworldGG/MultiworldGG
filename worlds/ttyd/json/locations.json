@@ -6609,5 +6609,1580 @@
       "rogueport",
       "dazzle"
     ]
+  },
+  {
+    "name": "Rogueport Eastside: Garf's Trouble Reward",
+    "id": 78780989,
+    "rel": "gor",
+    "offsets": [
+      "0x42970",
+      "0x42AB4"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Center: Garf's House Key",
+    "id": 78780990,
+    "rel": "gor",
+    "offsets": [
+      "0x3C7F0"
+    ],
+    "vanilla_item": 77772231,
+    "tags": [
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Center: McGoomba's Trouble Reward",
+    "id": 78780991,
+    "rel": "gor",
+    "offsets": [
+      "0x3304C"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Center: McGoomba's Box",
+    "id": 78780992,
+    "rel": "gor",
+    "offsets": [
+      "0x32FC4"
+    ],
+    "vanilla_item": 77772232,
+    "tags": [
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Arfur's Trouble Reward",
+    "id": 78780993,
+    "rel": "gor",
+    "offsets": [
+      "0x44054"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Goomther's Trouble Reward",
+    "id": 78780994,
+    "rel": "gor",
+    "offsets": [
+      "0x34698"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Center: Mousimilian's Trouble Reward",
+    "id": 78780995,
+    "rel": "gor",
+    "offsets": [
+      "0x33514"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Docks: Bomberto's Trouble Reward",
+    "id": 78780996,
+    "rel": "gor",
+    "offsets": [
+      "0x22D6C"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Hooktail's Castle Life Shroom Room: Koopook's Trouble Reward",
+    "id": 78780997,
+    "rel": "gon",
+    "offsets": [
+      "0x117F4"
+    ],
+    "vanilla_item": 77772234,
+    "tags": [
+      "chapter_1",
+      "hooktails_castle",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Petalburg Eastside: Kroop's Trouble Reward",
+    "id": 78780998,
+    "rel": "nok",
+    "offsets": [
+      "0x68CC",
+      "0x6988",
+      "0x978C"
+    ],
+    "vanilla_item": 77772201,
+    "tags": [
+      "chapter_1",
+      "petal_right",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Center: Plenn T's Trouble Reward",
+    "id": 78780999,
+    "rel": "gor",
+    "offsets": [
+      "0x3B070"
+    ],
+    "vanilla_item": 77772204,
+    "tags": [
+      "chapter_1",
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Great Tree Entrance: Puni Elder's Trouble Reward",
+    "id": 78781000,
+    "rel": "mri",
+    "offsets": [
+      "0x2DBD0"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "chapter_2",
+      "great_tree",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Lahla's Trouble Reward",
+    "id": 78781001,
+    "rel": "gor",
+    "offsets": [
+      "0x53084"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "chapter_2",
+      "rogueport_westside",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Sewers Pit Entrance: Pine T. Jr's Trouble Reward",
+    "id": 78781002,
+    "rel": "tik",
+    "offsets": [
+      "0x1F5C0"
+    ],
+    "vanilla_item": 77772236,
+    "tags": [
+      "chapter_2",
+      "pit",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 1",
+    "id": 78781003,
+    "rel": "dol",
+    "offsets": [
+      "0xD00"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 2",
+    "id": 78781004,
+    "rel": "dol",
+    "offsets": [
+      "0xD02"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 3",
+    "id": 78781005,
+    "rel": "dol",
+    "offsets": [
+      "0xD04"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 4",
+    "id": 78781006,
+    "rel": "dol",
+    "offsets": [
+      "0xD06"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 5",
+    "id": 78781007,
+    "rel": "dol",
+    "offsets": [
+      "0xD08"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 6",
+    "id": 78781008,
+    "rel": "dol",
+    "offsets": [
+      "0xD0A"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 7",
+    "id": 78781009,
+    "rel": "dol",
+    "offsets": [
+      "0xD0C"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 8",
+    "id": 78781010,
+    "rel": "dol",
+    "offsets": [
+      "0xD0E"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 9",
+    "id": 78781011,
+    "rel": "dol",
+    "offsets": [
+      "0xD10"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 10",
+    "id": 78781012,
+    "rel": "dol",
+    "offsets": [
+      "0xD12"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 11",
+    "id": 78781013,
+    "rel": "dol",
+    "offsets": [
+      "0xD14"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 12",
+    "id": 78781014,
+    "rel": "dol",
+    "offsets": [
+      "0xD16"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 13",
+    "id": 78781015,
+    "rel": "dol",
+    "offsets": [
+      "0xD18"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 14",
+    "id": 78781016,
+    "rel": "dol",
+    "offsets": [
+      "0xD1A"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 15",
+    "id": 78781017,
+    "rel": "dol",
+    "offsets": [
+      "0xD1C"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 16",
+    "id": 78781018,
+    "rel": "dol",
+    "offsets": [
+      "0xD1E"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 17",
+    "id": 78781019,
+    "rel": "dol",
+    "offsets": [
+      "0xD20"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 18",
+    "id": 78781020,
+    "rel": "dol",
+    "offsets": [
+      "0xD22"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 19",
+    "id": 78781021,
+    "rel": "dol",
+    "offsets": [
+      "0xD24"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Storage Room: Battle Trunks 20",
+    "id": 78781022,
+    "rel": "dol",
+    "offsets": [
+      "0xD26"
+    ],
+    "vanilla_item": 77772237,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Promoter's Office: Jolene's Trouble Reward",
+    "id": 78781023,
+    "rel": "tou",
+    "offsets": [
+      "0x2E434"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "chapter_3",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Sewers Merlee's House: Merlee's Trouble Reward",
+    "id": 78781024,
+    "rel": "tik",
+    "offsets": [
+      "0x2403C"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "chapter_3",
+      "sewers_westside",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Petalburg Westside: Bub-ulber's Trouble Reward",
+    "id": 78781025,
+    "rel": "nok",
+    "offsets": [
+      "0x3018"
+    ],
+    "vanilla_item": 77772224,
+    "tags": [
+      "chapter_3",
+      "petal_right",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Center: Ms. Mowz's Trouble Reward",
+    "id": 78781026,
+    "rel": "gor",
+    "offsets": [
+      "0x3B3E8",
+      "0x3B62C"
+    ],
+    "vanilla_item": 77772220,
+    "tags": [
+      "chapter_4",
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Center: Ms. Mowz",
+    "id": 78781027,
+    "rel": "gor",
+    "offsets": [
+      "0x3B818"
+    ],
+    "vanilla_item": 77772222,
+    "tags": [
+      "chapter_4",
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Hooktail's Castle Hooktail's Room: Elusive Badge Chest",
+    "id": 78781028,
+    "rel": "gon",
+    "offsets": [
+      "0x148D4"
+    ],
+    "vanilla_item": 77772239,
+    "tags": [
+      "chapter_4",
+      "hooktails_castle",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Twilight Town Leftside: Routing Slip",
+    "id": 78781029,
+    "rel": "usu",
+    "offsets": [
+      "0x71F8"
+    ],
+    "vanilla_item": 77772240,
+    "tags": [
+      "chapter_4",
+      "twilight_town",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Twilight Town Leftside: Mayor Dour's Trouble Reward",
+    "id": 78781030,
+    "rel": "usu",
+    "offsets": [
+      "0x72F8"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "chapter_4",
+      "twilight_town",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Center: Zess T.'s Trouble Reward",
+    "id": 78781031,
+    "rel": "gor",
+    "offsets": [
+      "0x3E2E4",
+      "0x3E370"
+    ],
+    "vanilla_item": 77772225,
+    "tags": [
+      "chapter_4",
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Eastside: Wedding Ring",
+    "id": 78781032,
+    "rel": "gor",
+    "offsets": [
+      "0x4D0B4"
+    ],
+    "vanilla_item": 77772211,
+    "tags": [
+      "chapter_6",
+      "rogueport",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Frankie's Trouble Reward",
+    "id": 78781033,
+    "rel": "gor",
+    "offsets": [
+      "0x51980"
+    ],
+    "vanilla_item": 77772241,
+    "tags": [
+      "chapter_6",
+      "rogueport_westside",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Twilight Town Rightside: Eve's Trouble Reward",
+    "id": 78781034,
+    "rel": "usu",
+    "offsets": [
+      "0x118DC",
+      "0x11990",
+      "0x16EAC"
+    ],
+    "vanilla_item": 77772227,
+    "tags": [
+      "chapter_5",
+      "twilight_town",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Pirate's Grotto Storeroom: Goom Goom's Trouble Reward",
+    "id": 78781035,
+    "rel": "dou",
+    "offsets": [
+      "0xA094",
+      "0xAAC0"
+    ],
+    "vanilla_item": 77772223,
+    "tags": [
+      "chapter_5",
+      "pirates_grotto",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Excess Express Dining Car: Chef Shimi's Trouble Reward",
+    "id": 78781036,
+    "rel": "rsh",
+    "offsets": [
+      "0x215E8"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "chapter_6",
+      "excess_express",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Poshley Heights Downtown: Toodles' Trouble Reward",
+    "id": 78781037,
+    "rel": "pik",
+    "offsets": [
+      "0x70AC"
+    ],
+    "vanilla_item": 77772242,
+    "tags": [
+      "chapter_6",
+      "poshley_heights",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Main Square: Wrestling Mag",
+    "id": 78781038,
+    "rel": "tou",
+    "offsets": [
+      "0x2E89C"
+    ],
+    "vanilla_item": 77772243,
+    "tags": [
+      "chapter_6",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Glitzville Main Square: Businessman's Trouble Reward",
+    "id": 78781039,
+    "rel": "tou",
+    "offsets": [
+      "0x1D72C",
+      "0x1D78C",
+      "0x21BCC"
+    ],
+    "vanilla_item": 77772226,
+    "tags": [
+      "chapter_6",
+      "glitzville",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Poshley Heights Downtown: Package",
+    "id": 78781040,
+    "rel": "pik",
+    "offsets": [
+      "0x66D8"
+    ],
+    "vanilla_item": 77772244,
+    "tags": [
+      "chapter_7",
+      "poshley_heights",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Poshley Heights Downtown: Goldbob's Trouble Reward",
+    "id": 78781041,
+    "rel": "pik",
+    "offsets": [
+      "0x67BC"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "chapter_7",
+      "poshley_heights",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Fahr Outpost Town: Gob's Trouble Reward",
+    "id": 78781042,
+    "rel": "bom",
+    "offsets": [
+      "0xF740"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "chapter_7",
+      "fahr_outpost",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Poshley Heights Station: Toadia's Trouble Reward",
+    "id": 78781043,
+    "rel": "pik",
+    "offsets": [
+      "0x8FE0",
+      "0x90C0",
+      "0xBC94"
+    ],
+    "vanilla_item": 77772221,
+    "tags": [
+      "chapter_7",
+      "poshley_heights",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Boggly Woods Shadow Sirens Room: Doe T.'s Trouble Reward",
+    "id": 78781044,
+    "rel": "win",
+    "offsets": [
+      "0x9510"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "chapter_8",
+      "boggly_woods",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Poshley Heights Station: Present",
+    "id": 78781045,
+    "rel": "pik",
+    "offsets": [
+      "0x9750",
+      "0x983C",
+      "0x9928"
+    ],
+    "vanilla_item": 77772246,
+    "tags": [
+      "chapter_8",
+      "poshley_heights",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Poshley Heights Station: Bub's Trouble Reward",
+    "id": 78781046,
+    "rel": "pik",
+    "offsets": [
+      "0x99E4"
+    ],
+    "vanilla_item": 77772000,
+    "tags": [
+      "chapter_8",
+      "poshley_heights",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Fahr Outpost Town: Swob's Trouble Reward",
+    "id": 78781047,
+    "rel": "bom",
+    "offsets": [
+      "0xF1A4",
+      "0xF250",
+      "0x121B0"
+    ],
+    "vanilla_item": 77772228,
+    "tags": [
+      "chapter_8",
+      "fahr_outpost",
+      "trouble"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Shroom Fry",
+    "id": 78781048,
+    "rel": "dol",
+    "offsets": [
+      "0x500"
+    ],
+    "vanilla_item": 77772247,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Shroom Roast",
+    "id": 78781049,
+    "rel": "dol",
+    "offsets": [
+      "0x502"
+    ],
+    "vanilla_item": 77772248,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Shroom Steak",
+    "id": 78781050,
+    "rel": "dol",
+    "offsets": [
+      "0x504"
+    ],
+    "vanilla_item": 77772249,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Mistake",
+    "id": 78781051,
+    "rel": "dol",
+    "offsets": [
+      "0x506"
+    ],
+    "vanilla_item": 77772250,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Honey Shroom",
+    "id": 78781052,
+    "rel": "dol",
+    "offsets": [
+      "0x508"
+    ],
+    "vanilla_item": 77772225,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Maple Shroom",
+    "id": 78781053,
+    "rel": "dol",
+    "offsets": [
+      "0x50A"
+    ],
+    "vanilla_item": 77772251,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Jelly Shroom",
+    "id": 78781054,
+    "rel": "dol",
+    "offsets": [
+      "0x50C"
+    ],
+    "vanilla_item": 77772252,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Honey Super",
+    "id": 78781055,
+    "rel": "dol",
+    "offsets": [
+      "0x50E"
+    ],
+    "vanilla_item": 77772253,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Maple Super",
+    "id": 78781056,
+    "rel": "dol",
+    "offsets": [
+      "0x510"
+    ],
+    "vanilla_item": 77772254,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Jelly Super",
+    "id": 78781057,
+    "rel": "dol",
+    "offsets": [
+      "0x512"
+    ],
+    "vanilla_item": 77772255,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Honey Ultra",
+    "id": 78781058,
+    "rel": "dol",
+    "offsets": [
+      "0x514"
+    ],
+    "vanilla_item": 77772256,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Maple Ultra",
+    "id": 78781059,
+    "rel": "dol",
+    "offsets": [
+      "0x516"
+    ],
+    "vanilla_item": 77772257,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Jelly Ultra",
+    "id": 78781060,
+    "rel": "dol",
+    "offsets": [
+      "0x518"
+    ],
+    "vanilla_item": 77772258,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Spicy Soup",
+    "id": 78781061,
+    "rel": "dol",
+    "offsets": [
+      "0x51A"
+    ],
+    "vanilla_item": 77772259,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Zess Dinner",
+    "id": 78781062,
+    "rel": "dol",
+    "offsets": [
+      "0x51C"
+    ],
+    "vanilla_item": 77772260,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Zess Special",
+    "id": 78781063,
+    "rel": "dol",
+    "offsets": [
+      "0x51E"
+    ],
+    "vanilla_item": 77772230,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Zess Deluxe",
+    "id": 78781064,
+    "rel": "dol",
+    "offsets": [
+      "0x520"
+    ],
+    "vanilla_item": 77772261,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Zess Dynamite",
+    "id": 78781065,
+    "rel": "dol",
+    "offsets": [
+      "0x522"
+    ],
+    "vanilla_item": 77772229,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Zess Tea",
+    "id": 78781066,
+    "rel": "dol",
+    "offsets": [
+      "0x524"
+    ],
+    "vanilla_item": 77772262,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Space Food",
+    "id": 78781067,
+    "rel": "dol",
+    "offsets": [
+      "0x526"
+    ],
+    "vanilla_item": 77772173,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Icicle Pop",
+    "id": 78781068,
+    "rel": "dol",
+    "offsets": [
+      "0x528"
+    ],
+    "vanilla_item": 77772263,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Zess Frappe",
+    "id": 78781069,
+    "rel": "dol",
+    "offsets": [
+      "0x52A"
+    ],
+    "vanilla_item": 77772264,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Snow Bunny",
+    "id": 78781070,
+    "rel": "dol",
+    "offsets": [
+      "0x52C"
+    ],
+    "vanilla_item": 77772228,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Coconut Bomb",
+    "id": 78781071,
+    "rel": "dol",
+    "offsets": [
+      "0x52E"
+    ],
+    "vanilla_item": 77772265,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Courage Meal",
+    "id": 78781072,
+    "rel": "dol",
+    "offsets": [
+      "0x530"
+    ],
+    "vanilla_item": 77772266,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Shroom Cake",
+    "id": 78781073,
+    "rel": "dol",
+    "offsets": [
+      "0x532"
+    ],
+    "vanilla_item": 77772267,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Shroom Crepe",
+    "id": 78781074,
+    "rel": "dol",
+    "offsets": [
+      "0x534"
+    ],
+    "vanilla_item": 77772268,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Mousse Cake",
+    "id": 78781075,
+    "rel": "dol",
+    "offsets": [
+      "0x536"
+    ],
+    "vanilla_item": 77772269,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Fried Egg",
+    "id": 78781076,
+    "rel": "dol",
+    "offsets": [
+      "0x538"
+    ],
+    "vanilla_item": 77772270,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Fruit Parfait",
+    "id": 78781077,
+    "rel": "dol",
+    "offsets": [
+      "0x53A"
+    ],
+    "vanilla_item": 77772271,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Egg Bomb",
+    "id": 78781078,
+    "rel": "dol",
+    "offsets": [
+      "0x53C"
+    ],
+    "vanilla_item": 77772272,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Ink Pasta",
+    "id": 78781079,
+    "rel": "dol",
+    "offsets": [
+      "0x53E"
+    ],
+    "vanilla_item": 77772273,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Spaghetti",
+    "id": 78781080,
+    "rel": "dol",
+    "offsets": [
+      "0x540"
+    ],
+    "vanilla_item": 77772274,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Shroom Broth",
+    "id": 78781081,
+    "rel": "dol",
+    "offsets": [
+      "0x542"
+    ],
+    "vanilla_item": 77772275,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Poison Shroom",
+    "id": 78781082,
+    "rel": "dol",
+    "offsets": [
+      "0x544"
+    ],
+    "vanilla_item": 77772276,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Choco Cake",
+    "id": 78781083,
+    "rel": "dol",
+    "offsets": [
+      "0x546"
+    ],
+    "vanilla_item": 77772221,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Mango Delight",
+    "id": 78781084,
+    "rel": "dol",
+    "offsets": [
+      "0x548"
+    ],
+    "vanilla_item": 77772277,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Love Pudding",
+    "id": 78781085,
+    "rel": "dol",
+    "offsets": [
+      "0x54A"
+    ],
+    "vanilla_item": 77772278,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Meteor Meal",
+    "id": 78781086,
+    "rel": "dol",
+    "offsets": [
+      "0x54C"
+    ],
+    "vanilla_item": 77772227,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Trial Stew",
+    "id": 78781087,
+    "rel": "dol",
+    "offsets": [
+      "0x54E"
+    ],
+    "vanilla_item": 77772279,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Couple's Cake",
+    "id": 78781088,
+    "rel": "dol",
+    "offsets": [
+      "0x550"
+    ],
+    "vanilla_item": 77772223,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Inky Sauce",
+    "id": 78781089,
+    "rel": "dol",
+    "offsets": [
+      "0x552"
+    ],
+    "vanilla_item": 77772280,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Omelette Meal",
+    "id": 78781090,
+    "rel": "dol",
+    "offsets": [
+      "0x554"
+    ],
+    "vanilla_item": 77772125,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Koopa Tea",
+    "id": 78781091,
+    "rel": "dol",
+    "offsets": [
+      "0x556"
+    ],
+    "vanilla_item": 77772281,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Koopasta",
+    "id": 78781092,
+    "rel": "dol",
+    "offsets": [
+      "0x558"
+    ],
+    "vanilla_item": 77772282,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Spicy Pasta",
+    "id": 78781093,
+    "rel": "dol",
+    "offsets": [
+      "0x55A"
+    ],
+    "vanilla_item": 77772283,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Heartful Cake",
+    "id": 78781094,
+    "rel": "dol",
+    "offsets": [
+      "0x55C"
+    ],
+    "vanilla_item": 77772284,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Peach Tart",
+    "id": 78781095,
+    "rel": "dol",
+    "offsets": [
+      "0x55E"
+    ],
+    "vanilla_item": 77772285,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Electro Pop",
+    "id": 78781096,
+    "rel": "dol",
+    "offsets": [
+      "0x560"
+    ],
+    "vanilla_item": 77772286,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Fire Pop",
+    "id": 78781097,
+    "rel": "dol",
+    "offsets": [
+      "0x562"
+    ],
+    "vanilla_item": 77772287,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Honey Candy",
+    "id": 78781098,
+    "rel": "dol",
+    "offsets": [
+      "0x564"
+    ],
+    "vanilla_item": 77772245,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Coco Candy",
+    "id": 78781099,
+    "rel": "dol",
+    "offsets": [
+      "0x566"
+    ],
+    "vanilla_item": 77772288,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Jelly Candy",
+    "id": 78781100,
+    "rel": "dol",
+    "offsets": [
+      "0x568"
+    ],
+    "vanilla_item": 77772289,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Zess Cookie",
+    "id": 78781101,
+    "rel": "dol",
+    "offsets": [
+      "0x56A"
+    ],
+    "vanilla_item": 77772290,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Healthy Salad",
+    "id": 78781102,
+    "rel": "dol",
+    "offsets": [
+      "0x56C"
+    ],
+    "vanilla_item": 77772291,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Koopa Bun",
+    "id": 78781103,
+    "rel": "dol",
+    "offsets": [
+      "0x56E"
+    ],
+    "vanilla_item": 77772292,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
+  },
+  {
+    "name": "Rogueport Westside: Cook Fresh Juice",
+    "id": 78781104,
+    "rel": "dol",
+    "offsets": [
+      "0x570"
+    ],
+    "vanilla_item": 77772293,
+    "tags": [
+      "rogueport_westside",
+      "cooking"
+    ]
   }
 ]

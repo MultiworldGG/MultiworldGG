@@ -3,7 +3,7 @@ A list of all tricks included in the randomizer, with video links when available
 A lot of hard logic stuff is just annoying, slow, random, requires damage boosting or skips part of a puzzle.
 
 ## Castle Town/Hyrule Castle
-- Pushing the block in Tunnel to Tower wihout items (enemies are annoying) (Hard Logic)
+- Pushing the block in Tunnel to Tower without items (enemies are annoying) (Hard Logic)
 - You can use the whirlwind to know a cucco off the left house roof without song of birds [(Hard Logic)](https://youtu.be/5l6n-FZas70?si=qgaoQXScE_IfO0Dn&t=922)
 
 ## Tower of Spirits
@@ -22,6 +22,7 @@ A lot of hard logic stuff is just annoying, slow, random, requires damage boosti
 
 ### ToS 5
 - You can block clip to skip the block pushing puzzle in the middle of 18F [(Doesn't affect logic)](https://youtu.be/ycAbPvbO-io?si=MXOnRH2pwCt4k1PE)
+- If you get a normal phantom on 21F, you can ride it over the spikes on 19F to reach that area without bow (normal logic, randomized tears only cause you need to save & quit to escape)
 - You can hit the left arrow repeater on SW 20F from the switch top left (doesn't affect logic)
   - You can rotate the sw repeater with boomerang or beam sword (Normal Logic)
   - you can jump on the pushable block in that room to reach it with whip [(Hard logic)](https://youtu.be/19uhFu6TVK8)
@@ -38,16 +39,19 @@ A lot of hard logic stuff is just annoying, slow, random, requires damage boosti
 ## Wooded Temple
 - You can damage boost through the poison to reach the stamp stand and switch on 1F (Hard logic)
 - You can damage boost through the poison to reach the chest on Right 2F (Hard logic)
+- You can exit the arena to the ne of 2F without killing the enemies by activating the windmill and running off-screen (hard logic)
 - You can damage boost through the poison to reach the switch and chest on SE 3F (Hard logic)
+- You can reach the boss key without whirlwind with a well timed bomb throw to the sw (hard logic)
 
 ## Anouki Village
 - You can skip the block pushing puzzle with a block clip (doesn't affect logic)
 
 ## Icy Spring
-- You can reach icy spring early by picking up ferrus in Fire Realm with vanilla passengers, failing on purpose and clicking yes when the game asks you if you want to follow him. Exiting icy spring will take you back to the fire realm. (Not in logic due to repeatablility)
+- You can reach icy spring early by picking up ferrus in Fire Realm with vanilla passengers, failing on purpose and clicking yes when the game asks you if you want to follow him. Exiting icy spring will take you back to the fire realm. (Not in logic due to repeatability)
 
 ## Blizzard Temple
 - you can block clip to skip the first block pushing puzzle (doesn't affect logic)
+- You can light the ice torch to spawn the chest on 1F with the ice keese to the NE (not in logic cause the keese don't respawn).
 - Killing the freezards in B1 without the boomerang logically requires:
   - (Shield or Bow of Light) and any damage (Normal Logic)
   - Any damage (Hard Logic)
@@ -60,7 +64,7 @@ A lot of hard logic stuff is just annoying, slow, random, requires damage boosti
   - any damage (Hard Logic)
 
 ## Trading Post
-- You dig up the buriend chest in the NE cave without Song of Light (Hard Logic)
+- You dig up the buried chest in the NE cave without Song of Light (Hard Logic)
 
 ## Papuzia Village
 - You can reach south papuzia without song of birds with good timing (Hard Logic)
@@ -71,10 +75,11 @@ A lot of hard logic stuff is just annoying, slow, random, requires damage boosti
 
 ## Marine Temple
 - You can damage boost through the boulders to reach the right side of 1F (Hard Logic)
+- You can kill the snapper on 3F without the sword by setting up various items to damage it before entering the arena. Items that work are boomerang, bombs + whirlwind (hard logic), or just bombs (glitched logic). Failing the trick requires a save and quit to escape.
+- You can enter the arena on 3F from any side (hard logic)
 - You can trigger the boss key location on 6F if boss keys are randomized with the whirwind early (Hard Logic)
 - You can use a jumpslash bomb boost (with whirlwind) to damage boost across the gap to the boss key on 6F [(Glitched Logic)](https://youtu.be/LSim_sYBBw4)
-- Failing to take ferrus to the marine temple with vanilla passengers without access to icy spring can cause him to get stuck there. So don't fail. (Ferrus marine temple logically requires icy spring access)
-
+- Failing to take ferrus to the marine temple with vanilla passengers warps you to icy spring, letting you get there early.
 
 ## Lost at Sea Station
 - You can dig up the buried chest without song of light (Hard Logic)

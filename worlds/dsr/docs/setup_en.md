@@ -3,18 +3,20 @@
 ## Required Software
 
 - [Dark Souls: Remastered](https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/)
-- [dsr.apworld - Dark Souls: Remastered Apworld](https://github.com/ArsonAssassin/DSAP/releases/latest) (unless you use MultiworldGG)
-- [DSAP - Dark Souls: Remastered AP client](https://github.com/ArsonAssassin/DSAP/releases/latest)
-- [MultiworldGG Launcher](https://github.com/MultiworldGG/MultiworldGG/releases/latest)
+- [dsr.apworld - Dark Souls: Remastered Apworld](https://github.com/tathxo/DSAP/releases/latest) (not needed wiht MultiworldGG)
+- [DSAP - Dark Souls: Remastered AP client](https://github.com/tathxo/DSAP/releases/latest)
+- [MultiworldGG Launcher (v0.7.220 or above REQUIRED)](https://github.com/MultiworldGG/MultiworldGG/releases/latest)
 
 ## Optional Software
+- [PopTracker](https://poptracker.github.io/)
+- [DSR PopTracker Pack with maps](https://github.com/routhken/Dark_Souls_Remastered_tracker/releases)
+- [Matt's DS1 Enemy Randomizer](https://www.nexusmods.com/darksoulsremastered/mods/922)
 
-- [Poptracker pack with maps](https://github.com/routhken/Dark_Souls_Remastered_tracker/releases)
 
 ## Setting Up
 
-1. Only if you use vanilla AP: Download the latest APWorld (`dsr.apworld`) and DSAP Desktop Client zip (`dsr-Windows-x64.zip`) from the pages linked above.
-2. Only if you use vanilla AP: Double click on the APWorld to install it to your Archipelago installation.
+1. Download the latest APWorld (`dsr.apworld`) and DSAP Desktop Client zip (`dsr-Windows-x64.zip`) from the pages linked above.
+2. Double click on the APWorld to install it to your Archipelago installation.
 3. Extract the DSAP Desktop Client zip. It is recommended to not extract it to Program Files / your game install directory, due to potential read/write issues.
 
 ### Creating your Options File (yaml)
@@ -79,9 +81,11 @@ See [the Game Page](./en_Dark%20Souls%20Remastered.md).
 Linux has preliminary support via Proton as of release v0.1.0 of the Client.
 There are two primary ways of running under Linux. 
 1. First method: Add `PROTON_REMOTE_DEBUG_CMD="/full/path/to/DSAP.Desktop.exe" %command%` to your steam Launch Options to run both DSAP and DS:R in the same environment.
-* The path should include `\` (backslash) escape character before any spaces.
-2. Second method: Download the `launch_dsr.sh` batch file from the main directory of the repo. Put it and `DSAP.Desktop.exe` into the same folder as the `DarkSoulsRemastered.exe`. Then, add it to steam as a non-steam game, using `Proton GE Latest`, and run it.
-**Whichever method you use, please test before running this in a public or group multiworld!**
+  * The path may require `\` (backslash) escape character before any spaces.  
+  **Yes, even though it is wrapped in quotation marks.** It seems to be distro-specific on whether it is required or not.
+2. Second method: Download the `launch_dsr.sh` batch file from the main directory of the repo. Put it and `DSAP.Desktop.exe` into the same folder as the `DarkSoulsRemastered.exe`. Then, add it to steam as a non-steam game, using `Proton GE Latest`, and run it.  
+
+**Whichever method you use, please test before running this in a public or group multiworld!**  
 * For unknown reasons, for some players the first method does not work, but the second does.
 * The overlay probably will not work, and instead show a solid black box. It is recommended to toggle it off before connecting.
 * Because the support has not been thoroughly tested, you should 1) consider it unstable, 2) let us know how it plays/runs (whether well or badly), and 3) Please report any issues.
@@ -90,10 +94,15 @@ There are two primary ways of running under Linux.
 No, The current release only works with Dark Souls Remastered. There may be potential to make it compatible with PTDE but not until we are feature-complete on _Remastered_, as there isn't a way to legally obtain a new copy of PTDE anymore.
 
 ### Can I use this to randomize enemies?
-This mod will not randomize enemies, but some players have had success with external enemy and boss randomizers. That said, we cannot guarantee they will continue to work, and that future updates won't break compatibility.
+This mod will **not** randomize enemies.  
+However, many players have had success with external enemy and boss randomizers. That said, we cannot guarantee they will continue to work, and that future updates won't break compatibility, though we do want to support it.  
+Instructions for using Matt's DS1 Enemy Randomizer (linked above in Optional Software):
+1. Follow Matt's DS1 Enemy Randomizer's instructions (in its README.txt file) for randomizing and launching the game.
+2. Follow DSAP's ["Running and Connecting the Game" instructions above](#Running-and-Connecting-the-Game). This mod does not modify the game files, so it does not need to be run before Matt's DS1 Enemy Randomizer.
 
 ### Can I use this with seamless co-op?
-Toleration has been added for multiple players, but not thoroughly tested. 
+Toleration has been added for multiple players, but not thoroughly tested. There are some known issues (see [the README](../../../README.md#Current-Known-Issues)).
+
 As of v0.0.22.0, using the Seamless Co-op mod may work with DSAP. It has not been very thoroughly tested, and if there are any crashes or instability caused by the Seamless Co-op mod itself, we cannot do much about it. Please read the information below.
 * Q: How to set it up?
   * A: **Both players should always connect with the DSAP client to the same slot** once they load into the game after creating their characters.
@@ -111,12 +120,16 @@ Check your DS:R version on the title menu. It should show the text "App ver. 1.0
 If it does not, update your game; you can force Steam to do so by Verifying Game files:
 Right click game in library -> Properties -> Installed Files -> Verify integrity of game files
 
+### DSAP client crashes on connect
+Try running DSAP.Desktop.exe as Administrator. If it still crashes, try disabling your antivirus.  
+If disabling antivirus fixes it, you can reduce security risk by adding an exception for DSAP specifically, instead.
+
 ### Not receiving items, or receiving double items.
 Try running DSAP.Desktop.exe as Administrator.
 
 ### Save Corrupted (usually upon quitting to menu), and progress lost
 Because DSAP modifies DS:R memory and code directly, some antivirus software may see it or DS:R as malware when running in this mode. As a result, they restrict the ability of DS:R to make its save.
-We have not had the opportunity to communicate directly with players who encountered this issue, but expect that adding DSAP, DS:R, or the .sl2 save file extension type to the antivirus' exceptions list may help to resolve the issue. If this works for you, please let us know in the dark-souls-1 channel in the AP discord.
+Adding DSAP, DS:R, or the .sl2 save file extension type to the antivirus' exceptions list resolved the issue for at least one user who saw this issue. If this works for you, please let us know in the dark-souls-1 channel in the AP discord.
 
 ### Placing Lord Souls at Firelink Altar does not open the door
 This seems to be due to not having received some number of the Lord Souls or Lordvessel. If you see this, please run the /lordvessel command, which will both provide diagnostic information & the missing items. To help us debug this issue, please provide a screenshot of the output with any additional context you can provide about the missing items to the dark-souls-1 channel in the AP discord. Additional context that would be useful includes: did the items come in while you were offline, was it with other items, etc.

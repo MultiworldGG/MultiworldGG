@@ -25,7 +25,7 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["outset village stamp book", "outset 10 stamps", False, lambda state: state.has("Stamp", player, 10)],
         ["outset village stamp book", "outset 15 stamps", False, lambda state: state.has("Stamp", player, 15)],
         ["outset village stamp book", "outset 20 stamps", False, lambda state: state.has("Stamp", player, 20)],
-        ["outset village", "outset village stamp station", False, lambda state: st_has_stamp_book(state, player)],
+        ["outset village", "outset stamp station", False, lambda state: st_has_stamp_book(state, player)],
         ["outset village", "outset village trees", False, lambda state: st_has_discovery_song(state, player)],
         ["outset village", "outset joe", False, lambda state: st_has_source(state, player, "Snow")],
         ["outset village", "outset cuccos", False, lambda state: st_has_cargo(state, player, "Cuccos", "_buy_cuccos")]
@@ -45,22 +45,22 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["forest realm", "forest source", False, lambda state: st_has_source(state, player, "Forest")],
         ["forest realm", "w castle town tracks", False, lambda state: st_has_misc_tracks(state, player, "W Castle Town")],
         ["forest realm", "n castle town tracks", False, lambda state: st_has_misc_tracks(state, player, "N Castle Town")],
-        ["wtt", "snow realm fr", True, lambda state: st_has_temple_tracks(state, player, "Wooded") and st_has_glyph(state, player, "Snow") and st_has_cannon(state, player)],
-        ["forest realm", "snow realm fr portal", False, lambda state: st_has_portal(state, player, "Hyrule Castle to Anouki Village", False) and st_has_glyph(state, player, "Snow")],
-        ["snow realm fr portal", "snow realm fr", False, None],
-        ["snow realm fr portal", "snow realm", False, None],
+        ["wtt", "snow realm south", True, lambda state: st_has_temple_tracks(state, player, "Wooded") and st_has_glyph(state, player, "Snow") and st_has_cannon(state, player)],
+        ["forest realm", "snow realm south portal", False, lambda state: st_has_portal(state, player, "Hyrule Castle to Anouki Village", False) and st_has_glyph(state, player, "Snow")],
+        ["snow realm south portal", "snow realm south", False, None],
+        ["snow realm south portal", "snow realm", False, None],
         ["forest realm", "dark realm portal", True, lambda state: st_has_compass_of_light(state, player)],
 
         # cave
         ["forest realm", "forest cave tracks", True, lambda state: st_has_misc_tracks(state, player, "Forest Realm SW Cave")],
         ["forest cave tracks", "forest cave portal", False, lambda state: st_has_cannon(state, player)],
         ["forest cave tracks", "w forest tracks", True, lambda state: st_has_misc_tracks(state, player, "Forest Realm SW Cave") and st_has_misc_tracks(state, player,"W Forest Realm") and st_soft_cannon(state, player)],
-        ["w forest tracks", "snow realm fr", True, lambda state: st_has_glyph(state, player, "Snow") and st_has_misc_tracks(state, player, "W Forest Realm")],
+        ["w forest tracks", "snow realm south", True, lambda state: st_has_glyph(state, player, "Snow") and st_has_misc_tracks(state, player, "W Forest Realm")],
         ["w forest tracks", "wtt", True, lambda state: st_has_temple_tracks(state, player, "Wooded") and st_has_misc_tracks(state, player, "W Forest Realm")],
 
         # W Wooded temple
         ["wtt", "w wooded temple tracks", True, lambda state: st_has_misc_tracks(state, player, "W Wooded Temple") and st_has_temple_tracks(state, player, "Wooded")],
-        ["w wooded temple tracks", "snow realm fr", True, lambda state: st_has_misc_tracks(state, player, "W Wooded Temple") and st_has_glyph(state, player, "Snow")],
+        ["w wooded temple tracks", "snow realm south", True, lambda state: st_has_misc_tracks(state, player, "W Wooded Temple") and st_has_glyph(state, player, "Snow")],
         ["w wooded temple tracks", "snow realm", True,
          lambda state: st_has_misc_tracks(state, player, "W Wooded Temple") and st_has_glyph(state, player, "Snow")],
 
@@ -237,7 +237,7 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
 
         ["tos staven", "tos summit lower", True, None],
         ["tos summit lower", "tos summit", True, None],
-        ["tos summit", "tos stamp stand", False, lambda state: st_has_stamp_book(state, player)],
+        ["tos summit", "tos stamp station", False, lambda state: st_has_stamp_book(state, player)],
         ["tos summit", "tos 6", False, lambda state: st_has_bow_of_light(state, player)],
         ["tos 30f", "tos 6", True, None],
 
@@ -266,10 +266,10 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
 
         # # ======== Forest Sanctuary =========
 
-        ["forest realm", "fos", False, None],
-        ["fos", "fos stamp station", False, lambda state: st_has_stamp_book(state, player)],
-        ["fos", "fos song statue", False, lambda state: st_has_spirit_flute(state, player)],
-        ["fos", "fos chest", False, lambda state: st_has_whirlwind(state, player) or st_has_birds_song(state, player)],
+        ["forest realm", "woodland sanc", False, None],
+        ["woodland sanc", "woodland sanc stamp station", False, lambda state: st_has_stamp_book(state, player)],
+        ["woodland sanc", "woodland sanc song statue", False, lambda state: st_has_spirit_flute(state, player)],
+        ["woodland sanc", "woodland sanc chest", False, lambda state: st_has_whirlwind(state, player) or st_has_birds_song(state, player)],
 
         # # ======== Wooded Temple =========
 
@@ -314,7 +314,7 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["linebeck trading", "linebeck event", False, None],
     ]
     overworld_logic += [
-        ["snow realm fr", "rabbit haven", True, lambda state: st_has_glyph(state, player, "Snow")],
+        ["snow realm south", "rabbit haven", True, lambda state: st_has_glyph(state, player, "Snow")],
         ["rabbit haven", "rabbit haven 5 rabbits", False, lambda state: st_has_total_rabbits(state, player, 5)],
         ["rabbit haven", "rabbit haven 1 of each rabbits", False, lambda state: st_all_types_rabbits(state, player, 1)],
         ["rabbit haven", "rabbit haven 10 forest rabbits", False, lambda state: st_has_rabbit_items(state, player, "Grass")],
@@ -328,8 +328,8 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
 
         # # ============ Snow Realm ===============
 
-        ["snow realm fr", "snow realm", True, lambda state: st_soft_cannon(state, player)],
-        ["snow realm fr", "anouki portal", False, lambda state: st_has_cannon(state, player)],
+        ["snow realm south", "snow realm", True, lambda state: st_soft_cannon(state, player)],
+        ["snow realm south", "anouki portal", False, lambda state: st_has_cannon(state, player)],
         ["snow realm", "blizzard temple tracks", True, lambda state: st_has_temple_tracks(state, player, "Blizzard") and st_has_glyph(state, player, "Snow")],
         ["snow realm", "snow realm rabbits", False, lambda state: st_has_net(state, player)],
         ["blizzard temple tracks", "blizzard temple tracks rabbits", False, lambda state: st_has_net(state, player)],
@@ -375,12 +375,12 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
 
         # =========== Snow Sanctuary ==========
 
-        ["snow realm", "ss", False, lambda state: st_has_temple_tracks(state, player, "Blizzard") or (state.has("Snowfall Sanctuary Cave Key", player) and st_has_cannon(state, player))],
-        ["ss", "ss stamp station", False, lambda state: st_has_stamp_book(state, player)],
-        ["ss", "ss song", False, lambda state: st_has_spirit_flute(state, player)],
-        ["ss song", "steem gift", False, lambda state: st_has_source(state, player, "Snow")],
-        ["ss", "steem gift", False, lambda state: st_has_source(state, player, "Snow") and options.randomize_minigames == "no_minigames"],
-        ["ss", "snow sanc vessel", False, lambda state: st_has_cargo(state, player, "Vessel", "_buy_fish")],
+        ["snow realm", "snow sanc", False, lambda state: st_has_temple_tracks(state, player, "Blizzard") or (state.has("Snowfall Sanctuary Cave Key", player) and st_has_cannon(state, player))],
+        ["snow sanc", "snow sanc stamp station", False, lambda state: st_has_stamp_book(state, player)],
+        ["snow sanc", "snow sanc song", False, lambda state: st_has_spirit_flute(state, player)],
+        ["snow sanc song", "steem gift", False, lambda state: st_has_source(state, player, "Snow")],
+        ["snow sanc", "steem gift", False, lambda state: st_has_source(state, player, "Snow") and options.randomize_minigames == "no_minigames"],
+        ["snow sanc", "snow sanc vessel", False, lambda state: st_has_cargo(state, player, "Vessel", "_buy_fish")],
 
         ## ========== Blizzard Temple =========
 
@@ -469,22 +469,22 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["forest ocean shortcut rabbit", "pirate rabbit", False, None],
 
         # ========== Island Sanctuary =============
-        ["ocean realm", "ocs", False, None],
-        ["ocs", "ocs north", False, lambda state: st_has_boomerang(state, player)
+        ["ocean realm", "island sanc", False, None],
+        ["island sanc", "island sanc north", False, lambda state: st_has_boomerang(state, player)
                                                   or (st_has_birds_song(state, player) and st_has_whip(state, player) and st_option_hard_logic(state, player))], # Spreadsheet shows Whirlwind needed too,
                                                                                   # but not sure why looking at walkthrough
                                                                                   # probably wants you to whirlwind a bomb in the cave, but you can make the throw.
-        ["ocs north", "ocs stamp station", False, lambda state: st_has_stamp_book(state, player)
+        ["island sanc north", "island sanc stamp station", False, lambda state: st_has_stamp_book(state, player)
                                                          and st_has_birds_song(state, player) and st_has_whip(state, player)],
 
-        ["ocs", "ocs S island chest", False, lambda state: st_hard_birds(state, player)],  # borderline if it should count as hard logic
-        ["ocs north", "ocs nw chest", False, lambda state: st_hard_birds(state, player)],
-        ["ocs north", "ocs song", False, lambda state: st_has_spirit_flute(state, player)]
+        ["island sanc", "island sanc S island chest", False, lambda state: st_hard_birds(state, player)],  # borderline if it should count as hard logic
+        ["island sanc north", "island sanc nw chest", False, lambda state: st_hard_birds(state, player)],
+        ["island sanc north", "island sanc song", False, lambda state: st_has_spirit_flute(state, player)]
             if options.randomize_passengers == "no_passengers" else
-        ["ocs carben", "ocs song", False, lambda state: st_has_spirit_flute(state, player)
+        ["island sanc carben", "island sanc song", False, lambda state: st_has_spirit_flute(state, player)
                                                         and (st_has_boomerang(state, player)
                                                              or (st_has_birds_song(state, player) and st_has_whip(state, player) and st_option_hard_logic(state, player)))],
-        ["ocs", "ocs carben", False, lambda state: st_has_passenger(state, player, "Carben", "_carben")
+        ["island sanc", "island sanc carben", False, lambda state: st_has_passenger(state, player, "Carben", "_carben")
                                                    and (options.randomize_passengers.value != 1
                                                         or st_has_sword(state, player)  # Fight off the blins
                                                         or st_has_whip(state, player)
@@ -492,19 +492,19 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
                                                         or state.has("_UT_Glitched_Logic", player))],  # or train speed past
 
         # ========== Papuchia Village =============
-        ["ocean realm", "papuchia village", False, None],
-        ["papuchia village", "papuchia village song statue", False, lambda state: st_has_discovery_song(state, player)],
-        ["papuchia village", "pv dovok", False, lambda state: st_has_passenger(state, player, "Dovok", "_dovok")],
-        ["papuchia village south", "papuchia village stamp station", False, lambda state: st_has_stamp_book(state, player) and st_has_birds_song(state, player)],
+        ["ocean realm", "papuzia village", False, None],
+        ["papuzia village", "papuzia village song statue", False, lambda state: st_has_discovery_song(state, player)],
+        ["papuzia village", "pv dovok", False, lambda state: st_has_passenger(state, player, "Dovok", "_dovok")],
+        ["papuzia village south", "papuzia village stamp station", False, lambda state: st_has_stamp_book(state, player) and st_has_birds_song(state, player)],
 
-        ["papuchia village", "pv carben", False, lambda state: st_has_discovery_song(state, player)],
-        ["papuchia village", "pv wadatsumi", False, lambda state: st_has_passenger(state, player, "Wadatsumi", "_wadatsumi")],
-        ["papuchia village song statue", "papuchia village south", False, lambda state: st_hard_birds(state, player)],  # You need a warp to start to return without bird song, patched with a dynaentrance
+        ["papuzia village", "pv carben", False, lambda state: st_has_discovery_song(state, player)],
+        ["papuzia village", "pv wadatsumi", False, lambda state: st_has_passenger(state, player, "Wadatsumi", "_wadatsumi")],
+        ["papuzia village song statue", "papuzia village south", False, lambda state: st_hard_birds(state, player)],  # You need a warp to start to return without bird song, patched with a dynaentrance
         # I don't like that this is locked behind song statue, but flags might not let us get there earlier
 
-        ["papuchia village", "papuzia ice", False, lambda state: st_has_cargo(state, player, "Mega Ice", "_buy_ice")]
+        ["papuzia village", "papuzia ice", False, lambda state: st_has_cargo(state, player, "Mega Ice", "_buy_ice")]
         if options.randomize_cargo.value in [1, 2] else
-        ["papuchia village", "papuzia ice", False, lambda state: state.has("Wagon", player) and (state.has("Cargo: Mega Ice", player, 3)
+        ["papuzia village", "papuzia ice", False, lambda state: state.has("Wagon", player) and (state.has("Cargo: Mega Ice", player, 3)
                                                                  or (state.has("Cargo: Mega Ice", player, 1) and state.has("_UT_Glitched_Logic", player)))],
 
         # ========= Marine Temple ==================
@@ -597,12 +597,12 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["fire realm", "goron village", False, None],
         ["fire source", "goron village", False, None],
         ["goron village", "goron whip", False, lambda state: st_has_whip(state, player)],
-        ["goron whip", "goron village stamp", False, lambda state: st_has_stamp_book(state, player)],
+        ["goron whip", "goron field stamp station", False, lambda state: st_has_stamp_book(state, player)],
         ["goron ice event", "valley sanc tunnel", False, lambda state: st_has_whip(state, player)],
         ["valley sanc tunnel", "valley sanc", False, lambda state: st_has_boomerang(state, player)],
-        ["valley sanc", "valley sanc stamp", False, lambda state: st_has_stamp_book(state, player)],
+        ["valley sanc", "valley sanc stamp station", False, lambda state: st_has_stamp_book(state, player)],
         ["valley sanc", "valley sanc song", False, lambda state: st_has_light_song(state, player)],
-        ["goron ice event", "pick up gorons", False, lambda state: st_has_glyph(state, player, "Snow")],
+        ["goron ice event", "pick up snow goron", False, lambda state: st_has_glyph(state, player, "Snow")],
         ["goron ice event", "gv kofu", False, lambda state: st_has_passenger(state, player, "Kofu", "_kofu")],
 
         ["goron village", "goron ice", False, None] if options.randomize_cargo == "no_cargo" else (
@@ -648,9 +648,8 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
             st_has_whip(state, player),
             state.has("Bombs (Progressive)", player, 2)
         ])],
-        ["mtt boss", "defeat vulcano", False, None],
-        ["defeat vulcano", "event_vulcano", False, None],
-        ["defeat vulcano", "goal_vulcano", False, None],
+        ["mtt boss", "event_vulcano", False, None],
+        ["mtt boss", "goal_vulcano", False, None],
 
         # Disorientation Station
         ["disorientation station", "disorientation bird", False, lambda state: st_hard_birds(state, player)],
@@ -679,7 +678,7 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         # ===== Sand Sanc =====
         ["sand realm", "sand sanc", False, None],
         ["sand sanc", "sand sanc song", False, lambda state: st_has_spirit_flute(state, player)],
-        ["sand sanc cuccos", "sand sanc stamp stand", False, lambda state: st_has_stamp_book(state, player)],
+        ["sand sanc cuccos", "sand sanc stamp station", False, lambda state: st_has_stamp_book(state, player)],
         ["sand sanc", "sand sanc cuccos", False, None] if options.randomize_cargo.value == 0
         else (
             ["sand sanc", "sand sanc cuccos", False, lambda state: st_has_cargo(state, player, "Cuccos", "_buy_cuccos")]
@@ -702,7 +701,7 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["dt 2f", "dt 3f", False, lambda state: st_has_damage(state, player)],
 
         ["dt sw", "dt b1", False, lambda state: st_desert_temple_keys(state, player)],
-        ["dt b1", "dt stamp stand", False, lambda state: st_has_stamp_book(state, player)],
+        ["dt b1", "dt stamp station", False, lambda state: st_has_stamp_book(state, player)],
         ["dt b1", "dt b1 2", False, lambda state: st_has_range(state, player) or st_has_bombs(state, player)],
         ["dt b1 2", "dt b1 damage", False, lambda state: st_has_damage(state, player)],
         ["dt b1", "dt b2", False, lambda state: st_option_glitched_logic(state, player) and st_has_bombs(state, player) and st_has_sword(state, player)],
@@ -748,14 +747,14 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
 
     overworld_logic += [
         # Shops
-        ["ss", "snow sanc shop", False, lambda state: st_has_rupees(state, player, required_rupees)],
+        ["snow sanc", "snow sanc shop", False, lambda state: st_has_rupees(state, player, required_rupees)],
 
         ["beedle", "beedle shop", False, lambda state: st_has_rupees(state, player, required_rupees)],
         ["beedle shop", "beedle shop bombs", False, lambda state: st_has_bombs(state, player)],
 
         ["mayscore", "mayscore shop", False, lambda state: st_has_rupees(state, player, required_rupees)],
         ["castle town", "castle town shop", False, lambda state: st_has_rupees(state, player, required_rupees)],
-        ["papuchia village", "papuzia shop", False, lambda state: st_has_rupees(state, player, required_rupees)],
+        ["papuzia village", "papuzia shop", False, lambda state: st_has_rupees(state, player, required_rupees)],
         ["papuzia shop", "papuzia shop arrows", False, lambda state: st_has_bow(state, player)],
         ["papuzia shop", "papuzia shop bombs", False, lambda state: st_has_bombs(state, player)],
         ["trading post", "trading post shield", False, lambda state: st_has_rupees(state, player, required_rupees)],
@@ -768,7 +767,7 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
         ["icyspring noko", "icyspring ice", False, lambda state: st_has_wagon(state, player)]
             if options.randomize_cargo in [2, 3] else
         ["icyspring noko", "icyspring ice", False, lambda state: st_has_wagon(state, player) and st_has_rupees(state, player, required_rupees)], #  You can bully noko for free ice
-        ["papuchia village", "papuzia buy cargo", False, lambda state: st_has_wagon(state, player) and st_has_rupees(state, player, required_rupees)],
+        ["papuzia village", "papuzia buy fish", False, lambda state: st_has_wagon(state, player) and st_has_rupees(state, player, required_rupees)],
         ["goron ice event", "goron steel", False, lambda state: st_has_wagon(state, player) and st_has_rupees(state, player, required_rupees)],
         ["dark ore mine", "dark ore mine ore", False, lambda state: st_has_wagon(state, player) and st_has_rupees(state, player, required_rupees)],
     ]

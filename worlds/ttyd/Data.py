@@ -3,6 +3,12 @@ from enum import Enum
 
 from BaseClasses import ItemClassification
 
+# XOR key for the seed name stored in the ISO at 0x80003210 (mod protocol >= 2), so the
+# seed can't be casually read out of RAM until the mod reveals it on the credits.
+# Keep in sync with kSeedObfuscationKey in the mod's rel/source/OWR.cpp.
+SEED_OBFUSCATION_KEY = bytes([0xA5, 0x1C, 0x7E, 0x33, 0xC9, 0x58, 0xE2, 0x0F,
+                              0x96, 0x41, 0xDB, 0x6A, 0x24, 0xB7, 0x5D, 0xF0])
+
 
 class Rels(Enum):
     aaa = "aaa"
@@ -729,6 +735,179 @@ location_gsw_info = {
     78780986: (GSWType.GSW, 1726, 13),   # Dazzle Item 13
     78780987: (GSWType.GSW, 1726, 14),   # Dazzle Item 14
     78780988: (GSWType.GSW, 1726, 15),   # Dazzle Item 15
+    # Troubles
+    78780989: (GSWType.GSW, 1731, 2), # Garf's Reward
+    78780990: (GSWType.GSWF, 6331, 1), # Garf's House Key
+    78780991: (GSWType.GSW, 1732, 2), # McGoomba's Reward
+    78780992: (GSWType.GSW, 1762, 1), # McGoomba's Box
+    78780993: (GSWType.GSW, 1733, 2), # Arfur's Reward
+    78780994: (GSWType.GSW, 1734, 2), # Goomther's Reward
+    78780995: (GSWType.GSW, 1735, 2), # Mousimilian's Reward
+    78780996: (GSWType.GSW, 1736, 2), # Bomberto's Reward
+    78780997: (GSWType.GSW, 1737, 2), # Koopook's Reward
+    78780998: (GSWType.GSWF, 1629, 1), # Kroop's Reward
+    78780999: (GSWType.GSW, 1739, 2), # Plenn T's Reward
+    78781000: (GSWType.GSW, 1740, 2), # Puni Elder's Reward
+    78781001: (GSWType.GSW, 1741, 2), # Lahla's Reward
+    78781002: (GSWType.GSW, 1742, 2), # Pine. T's Reward
+    78781003: (GSWType.GSWF, 6333, 2), # Battle Trunks 1
+    78781004: (GSWType.GSWF, 6334, 2), # Battle Trunks 2
+    78781005: (GSWType.GSWF, 6335, 2), # Battle Trunks 3
+    78781006: (GSWType.GSWF, 6336, 2), # Battle Trunks 4
+    78781007: (GSWType.GSWF, 6337, 2), # Battle Trunks 5
+    78781008: (GSWType.GSWF, 6338, 2), # Battle Trunks 6
+    78781009: (GSWType.GSWF, 6339, 2), # Battle Trunks 7
+    78781010: (GSWType.GSWF, 6340, 2), # Battle Trunks 8
+    78781011: (GSWType.GSWF, 6341, 2), # Battle Trunks 9
+    78781012: (GSWType.GSWF, 6342, 2), # Battle Trunks 10
+    78781013: (GSWType.GSWF, 6343, 2), # Battle Trunks 11
+    78781014: (GSWType.GSWF, 6344, 2), # Battle Trunks 12
+    78781015: (GSWType.GSWF, 6345, 2), # Battle Trunks 13
+    78781016: (GSWType.GSWF, 6346, 2), # Battle Trunks 14
+    78781017: (GSWType.GSWF, 6347, 2), # Battle Trunks 15
+    78781018: (GSWType.GSWF, 6348, 2), # Battle Trunks 16
+    78781019: (GSWType.GSWF, 6349, 2), # Battle Trunks 17
+    78781020: (GSWType.GSWF, 6350, 2), # Battle Trunks 18
+    78781021: (GSWType.GSWF, 6351, 2), # Battle Trunks 19
+    78781022: (GSWType.GSWF, 6352, 2), # Battle Trunks 20
+    78781023: (GSWType.GSW, 1743, 2), # Jolene's Reward
+    78781024: (GSWType.GSW, 1744, 2), # Merlee's Reward
+    78781025: (GSWType.GSW, 1745, 2), # Bub-ulber's Reward
+    78781026: (GSWType.GSW, 1746, 2), # Ms. Mowz's Reward
+    78781027: (GSWType.GSWF, 6353, 1), # Ms. Mowz
+    78781028: (GSWType.GSWF, 6354, 1), # Elusive Badge Chest
+    78781029: (GSWType.GSW, 1777, 1), # Routing Slip
+    78781030: (GSWType.GSW, 1747, 2), # Mayor Dour's Reward
+    78781031: (GSWType.GSW, 1748, 2), # Zess T.'s Reward
+    78781032: (GSWType.GSWF, 6356, 1), # Wedding Ring (Trouble)
+    78781033: (GSWType.GSW, 1749, 2), # Frankie's Reward
+    78781034: (GSWType.GSW, 1750, 2), # Eve's Reward
+    78781035: (GSWType.GSW, 1751, 2), # Goom Goom's Reward
+    78781036: (GSWType.GSW, 1752, 2), # Chef Shimi's Reward
+    78781037: (GSWType.GSW, 1753, 2), # Toodles' Reward
+    78781038: (GSWType.GSW, 1783, 1), # Wrestling Mag
+    78781039: (GSWType.GSW, 1754, 2), # Businessman's Reward
+    78781040: (GSWType.GSW, 1785, 1), # Package
+    78781041: (GSWType.GSW, 1755, 2), # Goldbob's Reward
+    78781042: (GSWType.GSW, 1756, 2), # Gob's Reward
+    78781043: (GSWType.GSW, 1757, 2), # Toadia's Reward
+    78781044: (GSWType.GSW, 1758, 2), # Doe T.'s Reward
+    78781045: (GSWType.GSW, 1789, 2), # Present
+    78781046: (GSWType.GSW, 1759, 2), # Bub's Reward
+    78781047: (GSWType.GSW, 1760, 2), # Swob's Reward
+    78781048: (GSWType.GSWF, 6400, 1), # Cook Shroom Fry
+    78781049: (GSWType.GSWF, 6401, 1), # Cook Shroom Roast
+    78781050: (GSWType.GSWF, 6402, 1), # Cook Shroom Steak
+    78781051: (GSWType.GSWF, 6403, 1), # Cook Mistake
+    78781052: (GSWType.GSWF, 6404, 1), # Cook Honey Shroom
+    78781053: (GSWType.GSWF, 6405, 1), # Cook Maple Shroom
+    78781054: (GSWType.GSWF, 6406, 1), # Cook Jelly Shroom
+    78781055: (GSWType.GSWF, 6407, 1), # Cook Honey Super
+    78781056: (GSWType.GSWF, 6408, 1), # Cook Maple Super
+    78781057: (GSWType.GSWF, 6409, 1), # Cook Jelly Super
+    78781058: (GSWType.GSWF, 6410, 1), # Cook Honey Ultra
+    78781059: (GSWType.GSWF, 6411, 1), # Cook Maple Ultra
+    78781060: (GSWType.GSWF, 6412, 1), # Cook Jelly Ultra
+    78781061: (GSWType.GSWF, 6413, 1), # Cook Spicy Soup
+    78781062: (GSWType.GSWF, 6414, 1), # Cook Zess Dinner
+    78781063: (GSWType.GSWF, 6415, 1), # Cook Zess Special
+    78781064: (GSWType.GSWF, 6416, 1), # Cook Zess Deluxe
+    78781065: (GSWType.GSWF, 6417, 1), # Cook Zess Dynamite
+    78781066: (GSWType.GSWF, 6418, 1), # Cook Zess Tea
+    78781067: (GSWType.GSWF, 6419, 1), # Cook Space Food
+    78781068: (GSWType.GSWF, 6420, 1), # Cook Icicle Pop
+    78781069: (GSWType.GSWF, 6421, 1), # Cook Zess Frappe
+    78781070: (GSWType.GSWF, 6422, 1), # Cook Snow Bunny
+    78781071: (GSWType.GSWF, 6423, 1), # Cook Coconut Bomb
+    78781072: (GSWType.GSWF, 6424, 1), # Cook Courage Meal
+    78781073: (GSWType.GSWF, 6425, 1), # Cook Shroom Cake
+    78781074: (GSWType.GSWF, 6426, 1), # Cook Shroom Crepe
+    78781075: (GSWType.GSWF, 6427, 1), # Cook Mousse Cake
+    78781076: (GSWType.GSWF, 6428, 1), # Cook Fried Egg
+    78781077: (GSWType.GSWF, 6429, 1), # Cook Fruit Parfait
+    78781078: (GSWType.GSWF, 6430, 1), # Cook Egg Bomb
+    78781079: (GSWType.GSWF, 6431, 1), # Cook Ink Pasta
+    78781080: (GSWType.GSWF, 6432, 1), # Cook Spaghetti
+    78781081: (GSWType.GSWF, 6433, 1), # Cook Shroom Broth
+    78781082: (GSWType.GSWF, 6434, 1), # Cook Poison Shroom
+    78781083: (GSWType.GSWF, 6435, 1), # Cook Choco Cake
+    78781084: (GSWType.GSWF, 6436, 1), # Cook Mango Delight
+    78781085: (GSWType.GSWF, 6437, 1), # Cook Love Pudding
+    78781086: (GSWType.GSWF, 6438, 1), # Cook Meteor Meal
+    78781087: (GSWType.GSWF, 6439, 1), # Cook Trial Stew
+    78781088: (GSWType.GSWF, 6440, 1), # Cook Couple's Cake
+    78781089: (GSWType.GSWF, 6441, 1), # Cook Inky Sauce
+    78781090: (GSWType.GSWF, 6442, 1), # Cook Omelette Meal
+    78781091: (GSWType.GSWF, 6443, 1), # Cook Koopa Tea
+    78781092: (GSWType.GSWF, 6444, 1), # Cook Koopasta
+    78781093: (GSWType.GSWF, 6445, 1), # Cook Spicy Pasta
+    78781094: (GSWType.GSWF, 6446, 1), # Cook Heartful Cake
+    78781095: (GSWType.GSWF, 6447, 1), # Cook Peach Tart
+    78781096: (GSWType.GSWF, 6448, 1), # Cook Electro Pop
+    78781097: (GSWType.GSWF, 6449, 1), # Cook Fire Pop
+    78781098: (GSWType.GSWF, 6450, 1), # Cook Honey Candy
+    78781099: (GSWType.GSWF, 6451, 1), # Cook Coco Candy
+    78781100: (GSWType.GSWF, 6452, 1), # Cook Jelly Candy
+    78781101: (GSWType.GSWF, 6453, 1), # Cook Zess Cookie
+    78781102: (GSWType.GSWF, 6454, 1), # Cook Healthy Salad
+    78781103: (GSWType.GSWF, 6455, 1), # Cook Koopa Bun
+    78781104: (GSWType.GSWF, 6456, 1), # Cook Fresh Juice
+}
+
+INGREDIENT_UNLOCK_FLAGS = {
+    126: 6460,  # Gold Bar
+    127: 6461,  # Gold Bar x3
+    128: 6462,  # Thunder Bolt
+    129: 6463,  # Thunder Rage
+    130: 6464,  # Shooting Star
+    131: 6465,  # Ice Storm
+    132: 6466,  # Fire Flower
+    133: 6467,  # Earth Quake
+    134: 6468,  # Boo's Sheet
+    135: 6469,  # Volt Shroom
+    136: 6470,  # Repel Cape
+    137: 6471,  # Ruin Powder
+    138: 6472,  # Sleepy Sheep
+    142: 6473,  # Power Punch
+    143: 6474,  # Courage Shell
+    146: 6475,  # Mini Mr. Mini
+    147: 6476,  # Mr. Softener
+    148: 6477,  # Mushroom
+    149: 6478,  # Super Shroom
+    150: 6479,  # Ultra Shroom
+    151: 6480,  # Life Shroom
+    152: 6481,  # Dried Shroom
+    153: 6482,  # Tasty Tonic
+    154: 6483,  # Honey Syrup
+    155: 6484,  # Maple Syrup
+    156: 6485,  # Jammin' Jelly
+    157: 6486,  # Slow Shroom
+    158: 6487,  # Gradual Syrup
+    159: 6488,  # Hot Dog
+    161: 6489,  # Point Swap
+    165: 6490,  # Whacka Bump
+    166: 6491,  # Coconut
+    167: 6492,  # Dried Bouquet
+    168: 6493,  # Mystic Egg
+    169: 6494,  # Golden Leaf
+    170: 6495,  # Keel Mango
+    171: 6496,  # Fresh Pasta
+    172: 6497,  # Cake Mix
+    173: 6498,  # Hot Sauce
+    174: 6499,  # Turtley Leaf
+    175: 6500,  # Horsetail
+    176: 6501,  # Peachy Peach
+    177: 6502,  # Spite Pouch
+    179: 6503,  # Shroom Fry
+    192: 6504,  # Spicy Soup
+    193: 6505,  # Zess Dinner
+    201: 6506,  # Snow Bunny
+    202: 6507,  # Coconut Bomb
+    209: 6508,  # Egg Bomb
+    213: 6509,  # Poison Shroom
+    215: 6510,  # Mango Delight
+    219: 6511,  # Couple's Cake
+    220: 6512,  # Inky Sauce
 }
 
 item_prices = {
@@ -783,7 +962,7 @@ item_prices = {
     77772047: 50,  # Double Dip P - 50 buy price
     77772048: 20,  # Double Pain - 20 buy price
     77772224: 8,  # Dried Bouquet
-    77772049: 1,  # Dried Shroom
+    77772049: 2,  # Dried Shroom (vanilla buy; sell floors at 1)
     77772051: 10,  # Earth Quake
     77772052: 30,  # Elevator Key (Station)
     77772053: 30,  # Elevator Key 1
@@ -849,7 +1028,7 @@ item_prices = {
     77772112: 10,  # Maple Syrup
     77772113: 30,  # Mega Rush - 30 buy price
     77772114: 30,  # Mega Rush P - 30 buy price
-    77772227: 40,  # Meteor Meal
+    77772227: 60,  # Meteor Meal (sells for 40; keep buy above sell)
     77772115: 10,  # Mini Mr. Mini
     77772116: 90,  # Money Money - 90 buy price
     77772117: 30,  # Moon Stone
@@ -951,6 +1130,59 @@ item_prices = {
     77772214: 50,  # Zap Tap - 50 buy price
     77772229: 40,  # Zess Dynamite
     77772230: 50,  # Zess Special
+    # Cooksanity dishes: shops default unlisted items to a 10-coin buy price, and
+    # under the default shop_purchase_limit consumables (rom 0x80-0xEB, which
+    # includes every dish) are infinitely repurchasable. Rom.py lowers every
+    # AP-priced item's SELL price to buy // 2 (the vanilla badge curve, never
+    # raising), so buy prices here just need to reflect item value, capped at 100.
+    77772245: 25,  # Honey Candy
+    77772247: 15,  # Shroom Fry
+    77772248: 25,  # Shroom Roast
+    77772249: 70,  # Shroom Steak
+    77772250: 15,  # Mistake
+    77772251: 40,  # Maple Shroom
+    77772252: 100, # Jelly Shroom
+    77772253: 30,  # Honey Super
+    77772254: 55,  # Maple Super
+    77772255: 100, # Jelly Super
+    77772256: 100, # Honey Ultra
+    77772257: 100, # Maple Ultra
+    77772258: 100, # Jelly Ultra
+    77772259: 15,  # Spicy Soup
+    77772260: 15,  # Zess Dinner
+    77772261: 90,  # Zess Deluxe
+    77772262: 15,  # Zess Tea
+    77772263: 25,  # Icicle Pop
+    77772264: 45,  # Zess Frappe
+    77772265: 15,  # Coconut Bomb
+    77772266: 15,  # Courage Meal
+    77772267: 30,  # Shroom Cake
+    77772268: 100, # Shroom Crepe
+    77772269: 15,  # Mousse Cake
+    77772270: 15,  # Fried Egg
+    77772271: 15,  # Fruit Parfait
+    77772272: 15,  # Egg Bomb
+    77772273: 100, # Ink Pasta
+    77772274: 45,  # Spaghetti
+    77772275: 30,  # Shroom Broth
+    77772276: 30,  # Poison Shroom
+    77772277: 15,  # Mango Delight
+    77772278: 15,  # Love Pudding
+    77772279: 15,  # Trial Stew
+    77772280: 15,  # Inky Sauce
+    77772281: 15,  # Koopa Tea
+    77772282: 90,  # Koopasta
+    77772283: 45,  # Spicy Pasta
+    77772284: 15,  # Heartful Cake
+    77772285: 15,  # Peach Tart
+    77772286: 40,  # Electro Pop
+    77772287: 30,  # Fire Pop
+    77772288: 20,  # Coco Candy
+    77772289: 100, # Jelly Candy
+    77772290: 30,  # Zess Cookie
+    77772291: 15,  # Healthy Salad
+    77772292: 15,  # Koopa Bun
+    77772293: 15,  # Fresh Juice
 }
 
 location_to_unit = {
@@ -1071,7 +1303,10 @@ location_to_unit = {
     78780965: [0x93],  # Tattle: Grodus X -> unit_boss_batten_satellite
     78780966: [0x22, 0x23],  # Tattle: Magnus von Grapple -> unit_boss_magnum_battender
     78780967: [0x79, 0x7A],  # Tattle: Magnus von Grapple 2.0 -> unit_boss_magnum_battender_mkII
-    78780968: [0x06],  # Tattle: Lord Crump -> unit_boss_kanbu1
+    # Prologue Crump (0x06) and Keelhaul deck Crump (0x63) are NOT vanilla-aliased
+    # (battleSetUnitMonosiriFlag's alias table has no group for them), so the
+    # location must fire on either kind's tattle flag.
+    78780968: [0x06, 0x63],  # Tattle: Lord Crump -> unit_boss_kanbu1 / unit_kanbu2
     78780969: [0x92],  # Tattle: Sir Grodus -> unit_boss_batten_leader
     78780970: [0x1f, 0xBD, 0xC0, 0x85],  # Tattle: Beldam -> unit_boss_majolyne
     78780971: [0x20, 0xBE, 0xC1, 0x86],  # Tattle: Marilyn -> unit_boss_marilyn

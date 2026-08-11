@@ -400,6 +400,11 @@ class openRCT2DeathLink(DeathLink):
         + "Fix that coaster quickly!\n This option can be enabled/disabled in game as well by typing !!toggledeathlink"
         + " in the chat tab of the unlock shop.")
 
+class openRCT2TrapLink(Toggle):
+    """When your friends recieve a trap, you get it too! Of course the same is true the other direction. Works with comatible games."""
+    display_name = "Trap Link"
+
+
 class SelectedVisibility(Choice):
     """Choose how much the unlock shop displays. 
 
@@ -421,7 +426,7 @@ class SelectedVisibility(Choice):
     option_full = Visibility.full.value
     default = Visibility.recipient.value
 
-class Awards(Choice):
+class SelectedAwards(Choice):
     """Choose what types (if any) of awards will have checks behind them. 
     Negative awards will always reward a trap item, even if they're otherwise disabled!
 
@@ -441,9 +446,10 @@ class ExcludeSafestPark(Toggle):
     """Exclude the Safest Park Award from having a check. This may be useful depending on deathlink settings."""
     display_name = "Exclude Safest Park Award"
 
+
 class SelectedDifficulty(Choice):
     """Choose a difficulty for the randomization. This will make rides have more difficult stat results (If that's enabled), as well as affect
-    things like the loan interest rate.
+    things such as the loan interest rate.
     """
     display_name = "Difficulty"
     option_very_easy = Difficulty.very_easy.value
@@ -702,6 +708,74 @@ class ShopMaximumTotalCustomers(Range):
     range_end = 1000
     default = 400
 
+class ShopMaximumRollerCoasters(Range):
+    """When the shop requires multiple roller coasters, sets the maximum 
+    it can ask for. The default is the reccomended value.
+    """
+    display_name = "Maximum Roller Coasters Required"
+    range_start = 1
+    range_end = 10
+    default = 3
+
+class ShopMaximumTrackedRides(Range):
+    """When the shop requires multiple tracked rides, sets the maximum 
+    it can ask for. The default is the reccomended value.
+    """
+    display_name = "Maximum Tracked Rides Required"
+    range_start = 1
+    range_end = 10
+    default = 4
+
+class ShopMaximumSpecificRidesEarly(Range):
+    """When the shop requires a specific, trackless ride 
+    early in the game, sets the maximum it can ask for. The 
+    default is the reccomended value.
+    """
+    display_name = "Maximum Specific Rides (Early) Required"
+    range_start = 1
+    range_end = 10
+    default = 3
+
+class ShopMaximumSpecificRides(Range):
+    """When the shop requires a specific, trackless ride 
+    later in the game, sets the maximum it can ask for. 
+    The default is the reccomended value.
+    """
+    display_name = "Maximum Specific Rides Required"
+    range_start = 1
+    range_end = 10
+    default = 7
+
+class ShopMaximumTransportWater(Range):
+    """When the shop requires transport rides, water rides, 
+    and unwieldy roller coasters, sets the maximum it can ask 
+    for. The default is the reccomended value.
+    """
+    display_name = "Maximum Transport/Water Rides Required"
+    range_start = 1
+    range_end = 10
+    default = 3
+
+class ShopMaximumStalls(Range):
+    """When the shop requires shops and stalls, sets the 
+    maximum it can ask for. The default is the 
+    reccomended value.
+    """
+    display_name = "Maximum Stalls Required"
+    range_start = 1
+    range_end = 10
+    default = 10
+
+class ShopMaximumOtherRides(Range):
+    """When the shop requires other rides and categories, 
+    (Mostly flat rides) sets the maximum it can ask for. 
+    The default is the reccomended value.
+    """
+    display_name = "Maximum Other Rides Required"
+    range_start = 1
+    range_end = 10
+    default = 10
+
 class BalanceGuestCounts(DefaultOnToggle):
     """Attempts to balance the minimum guest requirements to the ride they're attached to. Low throughput rides
     like Spiral Slides will tend towards the minimum, while high throughput rides like roller coasters will 
@@ -714,8 +788,13 @@ class RequiredUniqueRides(Range):
     It's highly recommended to have this set to at least 1!"""
     display_name = "Unique Ride Requirement"
     range_start = 0
-    range_end = 10
+    range_end = 20
     default = 5
+
+class IncludeStalls(DefaultOnToggle):
+    """Select whether shops and stalls should elligible to be included in the required rides list for completion.
+    """
+    display_name = "Include Shops for Goal"
 
 class LocalityOfUniqueRides(Choice):
     """No-op; still here to prevent old YAMLs from breaking"""
@@ -741,6 +820,34 @@ class MonopolyMode(Toggle):
     """Monopoly Mode is a new objective type. Every unowned tile will be set to purchasable (Or purchasable construction rights for any unowned tile with a grounded path. Elevated paths will not be purchasable). To complete the objective, all tiles on the map must be purchased. Multiple Objectives can be enabled!"""
     display_name = "Monopoly Mode"
 
+class LandPrice(Range):
+    """Sets the base price of land. Setting this to 201 will keep the default land price in the scenario, which will then be randomized based on randomization range. Monopoly mode overrides this setting."""
+    display_name = "Base Land Price"
+    range_start = 10
+    range_end = 201
+    default = 201
+
+
+class ConstructionRightsPrice(Range):
+    """Sets the base price of construction rights. Setting this to 201 will keep the default construction rights price in the scenario, which will then be randomized based on randomization range. Monopoly mode overrides this setting."""
+    display_name = "Base Construction Rights Price"
+    range_start = 10
+    range_end = 201
+    default = 201
+
+class LandDiscounts(Range):
+    """Adds Land Discounts to the pool. 0 means no discounts will be included in the pool. More discounts will make individual discounts easier to find, but less effective. Monopoly mode will raise the minimum to 20."""
+    display_name = "Land Discounts"
+    range_start = 0
+    range_end = 50
+    default = 0
+
+class ConstructionRightsDiscounts(Range):
+    """Adds Construction Rights Discounts to the pool. 0 means no discounts will be included in the pool. More discounts will make individual discounts easier to find, but less effective. Monopoly mode will raise the minimum to 20."""
+    display_name = "Construction Rights Discounts"
+    range_start = 0
+    range_end = 50
+    default = 0
 class Fireworks(DefaultOnToggle):
     """Have an explosive firework display on victory! Strongly discouraged if you intend to keep playing after victory or if you expect to have a huge park."""
     display_name = "Fireworks"
@@ -751,35 +858,35 @@ class IncludeGamespeedItems(DefaultOnToggle):
 
 class FurryConventionTraps(Range):
     """When found, instantly hosts a furry convention in your park! Adding traps will increase the total number of items in the world."""
-    display_name = "Furry Convention Trap"
+    display_name = "Furry Convention Traps"
     range_start = 0
     range_end = 20
     default = 5
 
 class BathroomTraps(Range):
     """When found, instantly maxes out the bathroom stat of every guest! Adding traps will increase the total number of items in the world."""
-    display_name = "Bathroom Trap"
+    display_name = "Bathroom Traps"
     range_start = 0
     range_end = 20
     default = 5
 
 class SpamTraps(Range):
     """When found, spams ads all over the screen! Adding traps will increase the total number of items in the world."""
-    display_name = "Spam Trap"
+    display_name = "Spam Traps"
     range_start = 0
     range_end = 20
     default = 5
 
 class LoanSharkTraps(Range):
     """When found, increases your loan! Adding traps will increase the total number of items in the world."""
-    display_name = "Loan Shark Trap"
+    display_name = "Loan Shark Traps"
     range_start = 0
     range_end = 20
     default = 5
 
-class FoodPoisioningTraps(Range):
+class FoodpoisoningTraps(Range):
     """When found, gives everybody with food in the park Norovirus! Adding traps will increase the total number of items in the world."""
-    display_name = "Food Poisioning Trap"
+    display_name = "Food poisoning Traps"
     range_start = 0
     range_end = 20
     default = 5
@@ -823,8 +930,11 @@ openrct2_option_groups = [
         SelectedScenarioLength,
         SelectedRandomizationRange,
         RandomizeParkValues,
+        LandPrice,
+        ConstructionRightsPrice,
         SelectedIntensity,
         SelectedStatReRolls,
+        IgnoreRideStatChanges
     ]),
     OptionGroup("Goal Options", [
         GuestObjective,
@@ -834,6 +944,7 @@ openrct2_option_groups = [
         RollerCoasterIntensity,
         RollerCoasterNausea,
         RequiredUniqueRides,
+        IncludeStalls,
         LocalityOfUniqueRides,
         ParkRatingObjective,
         PayOffLoan,
@@ -849,6 +960,10 @@ openrct2_option_groups = [
         SelectedForbidTreeRemoval
     ]),
     OptionGroup("Shop Options", [
+        BalanceGuestCounts,
+        SelectedVisibility,
+        SelectedAwards,
+        ExcludeSafestPark,
         ShopMinimumExcitement,
         ShopMaximumExcitement,
         ShopMinimumIntensity,
@@ -859,10 +974,13 @@ openrct2_option_groups = [
         ShopMaximumLength,
         ShopMinimumTotalCustomers,
         ShopMaximumTotalCustomers,
-        BalanceGuestCounts,
-        SelectedVisibility,
-        Awards,
-        ExcludeSafestPark
+        ShopMaximumRollerCoasters,
+        ShopMaximumTrackedRides,
+        ShopMaximumSpecificRidesEarly,
+        ShopMaximumSpecificRides,
+        ShopMaximumTransportWater,
+        ShopMaximumStalls,
+        ShopMaximumOtherRides
     ]),
     OptionGroup("Item & Trap Options", [
         Filler,
@@ -870,11 +988,14 @@ openrct2_option_groups = [
         IncludeFirstAid,
         IncludeGamespeedItems,
         Skips,
+        LandDiscounts,
+        ConstructionRightsDiscounts,
         FurryConventionTraps,
         BathroomTraps,
         SpamTraps,
         LoanSharkTraps,
-        FoodPoisioningTraps,
+        FoodpoisoningTraps,
+        openRCT2TrapLink,
         AllRidesAndSceneryBase,
         AllRidesAndSceneryExpansion
     ]),
@@ -882,48 +1003,23 @@ openrct2_option_groups = [
 
 @dataclass
 class openRCT2Options(PerGameCommonOptions):
-    # generator options
-    # location_balancing: LocationBalancing
-    difficulty: SelectedDifficulty
-    shop_minimum_excitement: ShopMinimumExcitement
-    shop_maximum_excitement: ShopMaximumExcitement
-    shop_minimum_intensity: ShopMinimumIntensity
-    shop_maximum_intensity: ShopMaximumIntensity
-    shop_minimum_nausea: ShopMinimumNausea
-    shop_maximum_nausea: ShopMaximumNausea
-    shop_minimum_length: ShopMinimumLength
-    shop_maximum_length: ShopMaximumLength
-    shop_minimum_total_customers: ShopMinimumTotalCustomers
-    shop_maximum_total_customers: ShopMaximumTotalCustomers
-    balance_guest_counts: BalanceGuestCounts
-    awards: Awards
-    exclude_safest_park: ExcludeSafestPark
-    ignore_ride_stat_changes: IgnoreRideStatChanges
-    scenario_length: SelectedScenarioLength
-    scenario: SelectedScenario
-    filler: Filler
-    include_atm: IncludeATM
-    include_first_aid: IncludeFirstAid
-    all_rides_and_scenery_base: AllRidesAndSceneryBase
-    all_rides_and_scenery_expansion: AllRidesAndSceneryExpansion
-    skips: Skips
-
-    # deathlink
+    #Game Options
     death_link: openRCT2DeathLink
+    trap_link: openRCT2TrapLink
 
-    # traps
-    furry_convention_traps: FurryConventionTraps
-    bathroom_traps: BathroomTraps
-    spam_traps: SpamTraps
-    loan_shark_traps: LoanSharkTraps
-    food_poisioning_traps: FoodPoisioningTraps
-
-    # in-game options. All Archipelago needs to do with these is pass them to OpenRCT2. The game will handle the rest
+    #Scenario Options
+    scenario: SelectedScenario
+    difficulty: SelectedDifficulty
+    scenario_length: SelectedScenarioLength
     randomization_range: SelectedRandomizationRange
-    stat_rerolls: SelectedStatReRolls
     randomize_park_values: RandomizeParkValues
-    visibility: SelectedVisibility
+    land_price: LandPrice
+    construction_rights_price: ConstructionRightsPrice
     preferred_intensity: SelectedIntensity
+    stat_rerolls: SelectedStatReRolls
+    ignore_ride_stat_changes: IgnoreRideStatChanges
+
+    #Goal Options
     # include_guest_objective: Include_Guest_Objective
     guest_objective: GuestObjective
     # include_park_value_objective: Include_Park_Value_Objective
@@ -934,14 +1030,15 @@ class openRCT2Options(PerGameCommonOptions):
     roller_coaster_intensity: RollerCoasterIntensity
     roller_coaster_nausea: RollerCoasterNausea
     required_unique_rides: RequiredUniqueRides
+    include_stalls: IncludeStalls
     unique_rides_placement: LocalityOfUniqueRides
     # include_park_rating_objective: Include_Park_Rating_Objective
     park_rating_objective: ParkRatingObjective
     pay_off_loan: PayOffLoan
     monopoly_mode: MonopolyMode
     fireworks: Fireworks
-    include_gamespeed_items: IncludeGamespeedItems
-    # park rules. Depending on the option, these may affect which items are created
+
+    #Rules
     difficult_guest_generation: SelectedDifficultGuestGeneration
     difficult_park_rating: SelectedDifficultParkRating
     forbid_high_construction: SelectedForbidHighConstruction
@@ -949,3 +1046,42 @@ class openRCT2Options(PerGameCommonOptions):
     forbid_marketing_campaigns: SelectedForbidMarketingCampaigns
     forbid_tree_removal: SelectedForbidTreeRemoval
 
+    #Shop Options
+    balance_guest_counts: BalanceGuestCounts
+    visibility: SelectedVisibility
+    selected_awards: SelectedAwards
+    exclude_safest_park: ExcludeSafestPark
+    shop_minimum_excitement: ShopMinimumExcitement
+    shop_maximum_excitement: ShopMaximumExcitement
+    shop_minimum_intensity: ShopMinimumIntensity
+    shop_maximum_intensity: ShopMaximumIntensity
+    shop_minimum_nausea: ShopMinimumNausea
+    shop_maximum_nausea: ShopMaximumNausea
+    shop_minimum_length: ShopMinimumLength
+    shop_maximum_length: ShopMaximumLength
+    shop_minimum_total_customers: ShopMinimumTotalCustomers
+    shop_maximum_total_customers: ShopMaximumTotalCustomers
+    shop_maximum_roller_coasters: ShopMaximumRollerCoasters
+    shop_maximum_tracked_rides: ShopMaximumTrackedRides
+    shop_maximum_specific_rides_early: ShopMaximumSpecificRidesEarly
+    shop_maximum_specific_rides: ShopMaximumSpecificRides
+    shop_maximum_transport_water_rides: ShopMaximumTransportWater
+    shop_maximum_stalls: ShopMaximumStalls
+    shop_maximum_other_rides: ShopMaximumOtherRides
+    
+
+    #Item and Trap Options
+    filler: Filler
+    include_atm: IncludeATM
+    include_first_aid: IncludeFirstAid
+    include_gamespeed_items: IncludeGamespeedItems
+    skips: Skips
+    land_discounts: LandDiscounts
+    construction_rights_discounts: ConstructionRightsDiscounts
+    furry_convention_traps: FurryConventionTraps
+    bathroom_traps: BathroomTraps
+    spam_traps: SpamTraps
+    loan_shark_traps: LoanSharkTraps
+    food_poisoning_traps: FoodpoisoningTraps
+    all_rides_and_scenery_base: AllRidesAndSceneryBase
+    all_rides_and_scenery_expansion: AllRidesAndSceneryExpansion

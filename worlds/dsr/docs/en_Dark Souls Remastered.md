@@ -43,8 +43,11 @@ Check the options for more.
 
 ## What's the goal?
 
-Your goal is to find the Lordvessel, two "Lord Soul" items, and two Bequeathed Lord Soul Shards items randomized into the
-multiworld, and defeat the boss in the Kiln of the First Flame.
+That depends on your choice of `goal_condition`.
+If you choose `gwyn`, it is to defeat Gwyn, which will require opening the path to his arena (by finding the lordvessel & 4 lord souls, which are randomized into the pool) and defeating him.
+If you choose `all_bosses`, it is to defeat all 26 bosses.
+If you choose `manus`, it is to defeat Manus, Father of the Abyss in the Artorias of the Abyss DLC (which is included in Remastered).
+If you choose `ornstein_and_smough`, it is to defeat Ornstein and Smough in Anor Londo (recommended for short syncs). Note: You should exclude at least the `After O+S` location group if choosing this option. This will exclude all post-lordvessel checks, and the DLC.
 
 ## Isn't the game extremely open from the start? What is fogwall sanity?
 

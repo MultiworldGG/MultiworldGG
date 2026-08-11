@@ -2,7 +2,6 @@ from typing import Dict
 from .data.Locations import LOCATIONS_DATA
 from .data.Items import ITEMS, ITEM_GROUPS
 from .data.DynamicFlags import DYNAMIC_FLAGS
-from .data.Constants import HINTS_ON_SCENE
 from .data.Hints import HINT_DATA
 from .data.Entrances import ENTRANCES
 from .data.DynamicEntrances import DYNAMIC_ENTRANCES
@@ -33,14 +32,6 @@ def build_location_room_to_watches() -> Dict[int, dict[str, dict]]:
         for room_id in room_ids:
             location_room_to_watches.setdefault(room_id, {})
             location_room_to_watches[room_id][loc_name] = location
-
-            # Build Island shops
-            if "island_shop" in location:
-                for shop_id, shop in HINTS_ON_SCENE.items():
-                    if shop_id not in location_room_to_watches:
-                        location_room_to_watches[shop_id] = {}
-                    if "island_shop" in shop:
-                        location_room_to_watches[shop_id][loc_name] = location
             # Add location to multiple rooms
             if "additional_rooms" in location:
                 for room in location["additional_rooms"]:
@@ -83,8 +74,12 @@ def _check_slot_data(ctx, data):
                     if value not in slot_value:
                         return False
             else:
-                if slot_value != value:
-                    return False
+                if args and args[0] == "not":
+                    if slot_value == value:
+                        return False
+                else:
+                    if slot_value != value:
+                        return False
     return True
 
 def build_scene_to_dynamic_flag(ctx) -> Dict[int, list[dict]]:
@@ -169,4 +164,48 @@ def build_location_to_goal():
         if location.get("goal"):
             goal_locations.append(loc_name)
     return goal_locations
+
+def build_item_name_to_reconnected_entrances() -> tuple[dict, dict]:
+    """Creates 2 lookups, one from items to the entrance that depend on them, and one for if they get anded as well"""
+    res: dict[str, set[int]] = {}
+    and_groups: dict[str, dict[str, set[int]]] = {}
+    for entrance in ENTRANCES.values():
+        if not entrance.required_groups:
+            continue
+        if len(entrance.required_groups) > 1:
+            g1, g2 = entrance.required_groups[:2]
+            for item in ITEM_GROUPS[g1]:
+                if item in ITEM_GROUPS[g2]:
+                    res.setdefault(item, set()).add(entrance.id)
+                else:
+                    and_groups.setdefault(item, dict())
+                    and_groups[item].setdefault(g2, set()).add(entrance.id)
+            for item in ITEM_GROUPS[g2]:
+                if item in ITEM_GROUPS[g1]:
+                    res.setdefault(item, set()).add(entrance.id)
+                else:
+                    and_groups.setdefault(item, dict())
+                    and_groups[item].setdefault(g1, set()).add(entrance.id)
+            continue
+        groups = entrance.required_groups[0] if isinstance(entrance.required_groups[0], tuple) else {entrance.required_groups[0]}
+        for group in groups:
+            for item in ITEM_GROUPS[group]:
+                res.setdefault(item, set()).add(entrance.id)
+
+    # Debug printout
+    # e_id_to_e = build_entrance_id_to_data()
+    # for i, e_set in res.items():
+    #     print(f"{i}")
+    #     for e in e_set:
+    #         print(f"\t{e_id_to_e[e]}")
+    # print(f"\n")
+    # for i, a_dict in and_groups.items():
+    #     print(f"{i}")
+    #     for a, e_set in a_dict.items():
+    #         print(f"\t{a}")
+    #         for e in e_set:
+    #             print(f"\t\t{e_id_to_e[e]}")
+
+    return res, and_groups
+
 

@@ -23,7 +23,6 @@ class DSRItemCategory(IntEnum):
     BONFIREWARP = 17,
     PROGRESSIVE_MULTIPLIER = 18,
     FIRE_KEEPER_SOUL = 19,
-    NEEDS_REPLACEMENT = 20, # items for lots that are rolled randomly, like some randomly determined drops (crystal lizards 2nd item)
     USELESS_KEY = 21, # items that are in the "key items" tab but aren't progression or useful
     USEFUL_KEY_ITEM = 22, # items that are "key items" but aren't progression, just useful
     USEFUL_CONSUMABLE = 23
@@ -488,12 +487,6 @@ _all_items_base = [
     ("Blue Titanite Chunk x2", 5106, DSRItemCategory.UPGRADE_MATERIAL),
     ("White Titanite Chunk x2", 5107, DSRItemCategory.UPGRADE_MATERIAL),
     ("Red Titanite Chunk x2", 5108, DSRItemCategory.UPGRADE_MATERIAL),
-
-    ("Extra Titanite", 5200, DSRItemCategory.NEEDS_REPLACEMENT),
-    ("Extra Red Titanite", 5201, DSRItemCategory.NEEDS_REPLACEMENT),
-    ("Extra Blue Titanite", 5202, DSRItemCategory.NEEDS_REPLACEMENT),
-    ("Extra White Titanite", 5203, DSRItemCategory.NEEDS_REPLACEMENT),
-    ("Extra GH Titanite", 5204, DSRItemCategory.NEEDS_REPLACEMENT),
 
     ("Sorcery: Soul Arrow", 6000, DSRItemCategory.SPELL),
     ("Sorcery: Great Soul Arrow", 6001, DSRItemCategory.SPELL),

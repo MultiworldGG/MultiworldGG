@@ -19,7 +19,8 @@ LOCATIONS_DATA = {
 
         "x_min": -5000,
         "z_min": 10000,
-        "x_max": 25000
+        "x_max": 25000,
+        "hint_entrance": ["Outset Board Train", "Outset West House", "Outset East House", "Outset Alfonzo's Workshop"],
     },
     "Outset Bee Tree": {
         "region_id": "outset village",
@@ -32,16 +33,19 @@ LOCATIONS_DATA = {
         "z_min": -34890,
         "z_max": -10024,
         "location_groups": ["Outset Village"],
+        "hint_entrance": ["Outset Board Train", "Outset West House", "Outset East House", "Outset Alfonzo's Workshop"],
     },
     "Outset Stamp Station": {
-        "region_id": "outset village stamp station",
+        "region_id": "outset stamp station",
         "vanilla_item": "Stamp: Outset Village",
         "stage_id": 0x2F,
         "room_id": 0,
         "stamp": 2,
         "require_item": ["Stamp Book"],
         "location_groups": ["Outset Village"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Outset Stamp Station",
+        "hint_entrance": ["Outset Board Train", "Outset West House", "Outset East House", "Outset Alfonzo's Workshop"],
     },
     "Outset Beach Tree Buried Chest": {
         "region_id": "outset village trees",
@@ -53,6 +57,7 @@ LOCATIONS_DATA = {
         "z_min": 11490,
         "z_max": 33968,
         "location_groups": ["Outset Village"],
+        "hint_entrance": ["Outset Board Train", "Outset West House", "Outset East House", "Outset Alfonzo's Workshop"],
     },
     "Outset Niko's House Tree Buried Chest": {
         "region_id": "outset village trees",
@@ -64,15 +69,18 @@ LOCATIONS_DATA = {
         "z_min": 10523,
         "z_max": 28762,
         "location_groups": ["Outset Village"],
+        "hint_entrance": ["Outset Board Train", "Outset West House", "Outset East House", "Outset Alfonzo's Workshop"],
     },
     "Outset Niko Stamp Book": {
-        "region_id": "outset village stamp book",
+        "region_id": "niko's stamp book",
         "vanilla_item": "Stamp Book",
         "stage_id": 0x2F,
         "room_id": 0x0A,
         "address": STAddr.adv_flags_25,
         "value": 0x2,
         "location_groups": ["Outset Village", "Niko"],
+        "hint_entrance": ["Niko's House Exit"],
+        "hint_entrance_secondary": ["Outset Board Train"],
     },
     "Outset Niko 10 Stamps Reward": {
         "region_id": "outset 10 stamps",
@@ -84,6 +92,8 @@ LOCATIONS_DATA = {
         "value": 0x4,
         "location_groups": ["Outset Village", "Niko"],
         "conditional": True,
+        "hint_entrance": ["Niko's House Exit"],
+        "hint_entrance_secondary": ["Outset Board Train"],
     },
     "Outset Niko 15 Stamps Reward": {
         "region_id": "outset 15 stamps",
@@ -95,6 +105,8 @@ LOCATIONS_DATA = {
         "value": 0x8,
         "location_groups": ["Outset Village", "Niko"],
         "conditional": True,
+        "hint_entrance": ["Niko's House Exit"],
+        "hint_entrance_secondary": ["Outset Board Train"],
     },
     "Outset Niko 20 Stamps Reward": {
         "region_id": "outset 20 stamps",
@@ -106,6 +118,8 @@ LOCATIONS_DATA = {
         "value": 0x10,
         "location_groups": ["Outset Village", "Niko"],
         "conditional": True,
+        "hint_entrance": ["Niko's House Exit"],
+        "hint_entrance_secondary": ["Outset Board Train"],
     },
 
     # Castle Town
@@ -114,9 +128,11 @@ LOCATIONS_DATA = {
         "stage_id": 0x29,
         "room_id": 0,
         "stamp": 1,
+        "ut_connect": "EVENT: Castle Town Stamp Station",
         "vanilla_item": "Stamp: Castle Town",
         "location_groups": ["Castle Town"],
-        "conditional": True
+        "conditional": True,
+        "hint_entrance": ["Castle Town Board Train", "Castle Town North"],
     },
     "Castle Town Left Wall Chest": {
         "region_id": "castle town wall",
@@ -128,6 +144,7 @@ LOCATIONS_DATA = {
         "z_min": 46694,
         "z_max": 59802,
         "location_groups": ["Castle Town"],
+        "hint_entrance": ["Castle Town Board Train", "Castle Town North"],
     },
     "Castle Town Right Wall Chest": {
         "region_id": "castle town wall",
@@ -139,45 +156,50 @@ LOCATIONS_DATA = {
         "z_min": 46694,
         "z_max": 59802,
         "location_groups": ["Castle Town"],
+        "hint_entrance": ["Castle Town Board Train", "Castle Town North"],
     },
     "Castle Town Minigame Roof": {
         "region_id": "castle town cuccos",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "stage_id": 0x29,
         "room_id": 0,
-        "x_min": 69100,
-        "x_max": 74138,
-        "z_min": 13914,
-        "z_max": 24835,
+        "x_min": 60000,
+        "x_max": 76000,
+        "z_min": 10000,
+        "z_max": 28000,
         "location_groups": ["Castle Town"],
+        "hint_entrance": ["Castle Town Board Train", "Castle Town North"],
     },
     "Castle Town Ramp House Chest": {
         "region_id": "castle town cuccos",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
         "stage_id": 0x29,
         "room_id": 0,
-        "x_min": -76411,
-        "x_max": -66503,
-        "z_min": 18672,
-        "z_max": 28116,
+        "x_min": -80000,
+        "x_max": -60000,
+        "z_min": 15000,
+        "z_max": 30000,
         "location_groups": ["Castle Town"],
+        "hint_entrance": ["Castle Town Board Train", "Castle Town North"],
     },
-    "Castle Town Empty House Roof Chest": {
+    "Castle Town Lucia's House Roof Chest": {
         "region_id": "castle town cuccos",
         "vanilla_item": ITEM_GROUPS["Rare Treasures"],
         "stage_id": 0x29,
         "room_id": 0,
-        "x_min": -43484,
-        "x_max": -32916,
-        "z_min": -43563,
-        "z_max": -33114,
+        "x_min": -45000,
+        "x_max": -30000,
+        "z_min": -45000,
+        "z_max": -30000,
         "location_groups": ["Castle Town"],
+        "hint_entrance": ["Castle Town Board Train", "Castle Town North"],
     },
     "Castle Town Take 'em All On Level 1": {
         "region_id": "teao 1",
         "vanilla_item": "Heart Container",
         "minigame": [1, 3, 4],
         "conditional": True,
+        "delay_reset": True,
         "stage_id": 0x29,
         "room_id": 0xB,
         "address": STAddr.adv_flags_2a,
@@ -185,12 +207,15 @@ LOCATIONS_DATA = {
         "location_groups": ["Castle Town", "Take 'em All On"],
         "slot_data": [("randomize_minigames", [1, 3, 4])],
         "from_entrances": [1],  # Only load if the current entrance matches
+        "hint_entrance": ["Take 'em all On Lobby Exit"],
+        "hint_entrance_secondary": ["Castle Town Board Train", "Castle Town North"],
     },
     "Castle Town Take 'em All On Level 2": {
         "region_id": "teao 2",
         "vanilla_item": "Bombs (Progressive)",
         "minigame": [2, 3, 4],
         "conditional": True,
+        "delay_reset": True,
         "stage_id": 0x29,
         "room_id": 0xB,
         "address": STAddr.adv_flags_2a,
@@ -198,20 +223,24 @@ LOCATIONS_DATA = {
         "location_groups": ["Castle Town", "Take 'em All On"],
         "slot_data": [("randomize_minigames", [2, 3, 4])],
         "from_entrances": [1],
+        "hint_entrance": ["Take 'em all On Lobby Exit"],
+        "hint_entrance_secondary": ["Castle Town Board Train", "Castle Town North"],
     },
     "Castle Town Take 'em All On Level 3": {
         "region_id": "teao 3",
         "vanilla_item": ITEM_GROUPS["Rare Treasures"],
         "minigame": [4, 5],
         "conditional": True,
+        "delay_reset": True,
         "stage_id": 0x29,
         "room_id": 0xB,
         "address": STAddr.adv_flags_2a,
         "value": 0x10,
         "location_groups": ["Castle Town", "Take 'em All On"],
-        "slot_data": [("randomize_minigames", [4, 5])],
         "ut_connect": "EVENT: Complete Take 'em All On 3",
         "from_entrances": [1],
+        "hint_entrance": ["Take 'em all On Lobby Exit"],
+        "hint_entrance_secondary": ["Castle Town Board Train", "Castle Town North"],
     },
     "Castle Town Take 'em All On Level 3 Capbone Chest": {
         "region_id": "teao 3",
@@ -221,11 +250,13 @@ LOCATIONS_DATA = {
         "stage_id": 0x4F,
         "room_id": 0x1,
         "location_groups": ["Castle Town", "Take 'em All On"],
+        "hint_entrance": ["Take 'em all On Lobby Exit"],
+        "hint_entrance_secondary": ["Castle Town Board Train", "Castle Town North"],
     },
 
     # Hyrule Castle
     "Hyrule Castle Exterior NW Chest": {
-        "region_id": "hyrule castle",
+        "region_id": "hyrule castle nw ledge",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
         "stage_id": 0x28,
         "room_id": 0,
@@ -233,18 +264,26 @@ LOCATIONS_DATA = {
         "y": 9830,
         "x_max": -70000,
         "location_groups": ["Hyrule Castle"],
+        "hint_entrance": ["Hyrule Castle Roof NW"],
+        "hint_entrance_secondary": ["Hyrule Castle Courtyard South", "Hyrule Castle Backyard Cave"],
+        "hint_entrance_tertiary": ["Castle Town Board Train"],
     },
     "Hyrule Castle 2F Indoors Chest": {
-        "region_id": "hyrule castle",
+        "region_id": "hyrule castle 2f",
         "vanilla_item": "Red Rupee (20)",
         "stage_id": 0x28,
         "room_id": 2,
         "x_max": -50000,
         "z_min": 35000,
         "location_groups": ["Hyrule Castle"],
+        "hint_entrance": ["Hyrule Castle 2F Central Exit",
+                          "Hyrule Castle 2F NE Exit", "Hyrule Castle 2F NE Staircase", "Hyrule Castle 2F NE Door",
+                          "Hyrule Castle 2F NW Exit", "Hyrule Castle 2F NW Door", "Hyrule Castle 2F NW Staircase"],
+        "hint_entrance_secondary": ["Hyrule Castle Courtyard South", "Hyrule Castle Backyard Cave"],
+        "hint_entrance_tertiary": ["Castle Town Board Train"],
     },
     "Hyrule Castle 1F Back Chest": {
-        "region_id": "hyrule castle",
+        "region_id": "hyrule castle backdoor",
         "vanilla_item": "Red Rupee (20)",
         "stage_id": 0x28,
         "room_id": 1,
@@ -254,15 +293,21 @@ LOCATIONS_DATA = {
         "z_min": -55000,
         "z_max": -35000,
         "location_groups": ["Hyrule Castle"],
+        "hint_entrance": ["Hyrule Castle 1F Back Staircase", "Hyrule Castle 1F Back Exit"],
+        "hint_entrance_secondary": ["Hyrule Castle Courtyard South", "Hyrule Castle Backyard Cave"],
+        "hint_entrance_tertiary": ["Castle Town Board Train"],
     },
     "Hyrule Castle 3F Spirit Flute": {
-        "region_id": "hyrule castle",
+        "region_id": "zelda's room",
         "vanilla_item": "Spirit Flute",
         "stage_id": 0x28,
         "room_id": 5,
         "address": STAddr.adv_flags_6,
         "value": 0x10,
         "location_groups": ["Hyrule Castle"],
+        "hint_entrance": ["Hyrule Castle Zelda's Room Exit"],
+        "hint_entrance_secondary": ["Hyrule Castle Courtyard South", "Hyrule Castle Backyard Cave"],
+        "hint_entrance_tertiary": ["Castle Town Board Train"],
     },
     "Hyrule Castle 1F Sword Minigame 60 Points": {
         "region_id": "hyrule castle sword minigame",
@@ -274,6 +319,9 @@ LOCATIONS_DATA = {
         "address": STAddr.adv_flags_24,
         "value": 0x40,
         "location_groups": ["Hyrule Castle", "Sword Minigame", "Hyrule Castle Sword Minigame"],
+        "hint_entrance": ["Hyrule Castle Barracks Exit"],
+        "hint_entrance_secondary": ["Hyrule Castle Courtyard South", "Hyrule Castle Backyard Cave"],
+        "hint_entrance_tertiary": ["Castle Town Board Train"],
     },
 
     # Tunnel to Tower
@@ -283,13 +331,15 @@ LOCATIONS_DATA = {
         "stage_id": 0x18,
         "room_id": 0,
         'dungeon': "Tunnel to ToS",
+        "hint_entrance": ["Tunnel to the Tower 1F Exit", "Tunnel to the Tower 1F Staircase"],
     },
     "Tunnel to ToS 2F Chest": {
-        "region_id": "tower tunnel 2f chest",
+        "region_id": "tower tunnel 2f",
         "vanilla_item": "Red Rupee (20)",
         "stage_id": 0x18,
         "room_id": 1,
         'dungeon': "Tunnel to ToS",
+        "hint_entrance": ["Tunnel to the Tower 2F Exit", "Tunnel to the Tower 2F Staircase"],
     },
 
     # # ========== Tower of Spirits ==============
@@ -305,8 +355,10 @@ LOCATIONS_DATA = {
         "z_max": -55000,
         'dungeon': "ToS",
         "conditional": "tears",
+        "always_exist": True,
         "delay_pickup": "ToS 1F Chest",
-        "tos_section": 1
+        "tos_section": 1,
+        "hint_entrance": ["ToS 1F Exit"],
     },
     "ToS 1F W Tear of Light": {
         "region_id": "tos 1f",
@@ -317,6 +369,7 @@ LOCATIONS_DATA = {
         "tos_section": 1,
         "x_max": -45000,
         "conditional": "tears",
+        "hint_entrance": ["ToS 1F Exit"],
     },
     "ToS 1F E Tear of Light": {
         "region_id": "tos 1f switch",
@@ -327,6 +380,7 @@ LOCATIONS_DATA = {
         "tos_section": 1,
         "x_min": 50000,
         "conditional": "tears",
+        "hint_entrance": ["ToS 1F Exit"],
     },
     "ToS 1F Chest": {
         "region_id": "tos 1f chest",
@@ -339,7 +393,8 @@ LOCATIONS_DATA = {
         "z_max": -59101,
         'dungeon': "ToS",
         "delay_pickup": "Tear 1F Top",
-        "tos_section": 1
+        "tos_section": 1,
+        "hint_entrance": ["ToS 1F Exit"],
     },
     "ToS 2F Raised Chest": {
         "region_id": "tos 2f raised chests",
@@ -351,7 +406,8 @@ LOCATIONS_DATA = {
         "z_min": -39322,
         "z_max": -29710,
         'dungeon': "ToS",
-        "tos_section": 1
+        "tos_section": 1,
+        "hint_entrance": ["ToS 1F Exit"],
     },
     "ToS 2F Whirlwind Chest": {
         "region_id": "tos 2f raised chests",
@@ -363,7 +419,8 @@ LOCATIONS_DATA = {
         "z_min": -63898,
         "z_max": -54886,
         'dungeon': "ToS",
-        "tos_section": 1
+        "tos_section": 1,
+        "hint_entrance": ["ToS 1F Exit"],
     },
     "ToS 2F Bomb Wall Chest": {
         "region_id": "tos 2f bomb wall",
@@ -375,7 +432,8 @@ LOCATIONS_DATA = {
         "z_min": -18842,
         "z_max": 10650,
         'dungeon': "ToS",
-        "tos_section": 1
+        "tos_section": 1,
+        "hint_entrance": ["ToS 1F Exit"],
     },
     "ToS 3F Forest Rail Glyph": {
         "region_id": "tos 3f rail map",
@@ -389,7 +447,8 @@ LOCATIONS_DATA = {
         "z_max": 4506,
         'dungeon': "ToS",
         "ut_connect": "EVENT: Reach ToS 3F",
-        "tos_section": 1
+        "tos_section": 1,
+        "hint_entrance": ["ToS 1F Exit"],
     },
 
     # ToS 2
@@ -403,7 +462,8 @@ LOCATIONS_DATA = {
         "z_min": 1600,
         "z_max": 10670,
         'dungeon': "ToS",
-        "tos_section": 2
+        "tos_section": 2,
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 4F Lava Tear": {
         "region_id": "tos 4f whirlwind",
@@ -415,6 +475,7 @@ LOCATIONS_DATA = {
         "x_min": -75000,
         "x_max": -10000,
         "conditional": "tears",
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 4F W Tear of Light": {
         "region_id": "tos 4f",
@@ -425,6 +486,7 @@ LOCATIONS_DATA = {
         "tos_section": 2,
         "x_max": -75000,
         "conditional": "tears",
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 4F E Tear of Light": {
         "region_id": "tos 4f",
@@ -437,6 +499,7 @@ LOCATIONS_DATA = {
         "z_max": -20000,
         "x_max": 10000,
         "conditional": "tears",
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 4F NE Chest": {
         "region_id": "tos 4f ne chest",
@@ -449,7 +512,8 @@ LOCATIONS_DATA = {
         "z_min": -55720,
         "z_max": -42600,
         'dungeon': "ToS",
-        "tos_section": 2
+        "tos_section": 2,
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 5F Island Chest": {
         "region_id": "tos 5f phantom",
@@ -461,7 +525,8 @@ LOCATIONS_DATA = {
         "z_min": 35000,
         "z_max": 52230,
         'dungeon': "ToS",
-        "tos_section": 2
+        "tos_section": 2,
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 5F Spinnit Key": {
         "region_id": "tos 5f spinnit key",
@@ -472,7 +537,8 @@ LOCATIONS_DATA = {
         "x_max": -45000,
         "z_min": 0,
         'dungeon': "ToS",
-        "tos_section": 2
+        "tos_section": 2,
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 5F Bomb Wall Chest": {
         "region_id": "tos 5f secret chest",
@@ -484,7 +550,8 @@ LOCATIONS_DATA = {
         "z_min": -17693,
         "z_max": 8481,
         'dungeon': "ToS",
-        "tos_section": 2
+        "tos_section": 2,
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 6F Enemy Chest 1": {
         "region_id": "tos 6f chests",
@@ -498,7 +565,8 @@ LOCATIONS_DATA = {
         "z_max": -4354,
         "delay_pickup": ["ToS 6F Enemy Big Chest"],
         'dungeon': "ToS",
-        "tos_section": 2
+        "tos_section": 2,
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 6F Enemy Chest 2": {
         "region_id": "tos 6f chests",
@@ -511,7 +579,8 @@ LOCATIONS_DATA = {
         "z_min": -4151,
         "z_max": 6570,
         'dungeon': "ToS",
-        "tos_section": 2
+        "tos_section": 2,
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 6F Enemy Chest 3": {
         "region_id": "tos 6f chests",
@@ -524,7 +593,8 @@ LOCATIONS_DATA = {
         "z_min": -10660,
         "z_max": -4152,
         'dungeon': "ToS",
-        "tos_section": 2
+        "tos_section": 2,
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 6F Enemy Big Chest": {
         "region_id": "tos 6f chests",
@@ -539,7 +609,8 @@ LOCATIONS_DATA = {
         "z_max": 6560,
         "delay_pickup": ["ToS 6F Enemy Chest 1"],
         'dungeon': "ToS",
-        "tos_section": 2
+        "tos_section": 2,
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 6F Key": {
         "region_id": "tos 6f key",
@@ -552,7 +623,8 @@ LOCATIONS_DATA = {
         "z_min": 26220,
         "z_max": 68000,
         'dungeon': "ToS",
-        "tos_section": 2
+        "tos_section": 2,
+        "hint_entrance": ["ToS 4F Exit"],
     },
     "ToS 7F Snow Rail Glyph": {
         "region_id": "tos 7f rail map",
@@ -566,7 +638,8 @@ LOCATIONS_DATA = {
         'dungeon': "ToS",
         "goal": "GOAL: Reach ToS 7F",
         "ut_connect": "EVENT: Reach ToS 7F",
-        "tos_section": 2
+        "tos_section": 2,
+        "hint_entrance": ["ToS 4F Exit"],
     },
 
     # ToS 3
@@ -577,6 +650,7 @@ LOCATIONS_DATA = {
         "region_id": "tos 8f",
         'dungeon': "ToS",
         "tos_section": 3,
+        "hint_entrance": ["ToS 8F Exit"],
     },
     "ToS 8F S Bombable Wall Chest": {
         "stage_id": 0x13,
@@ -585,6 +659,7 @@ LOCATIONS_DATA = {
         "region_id": "tos 8f bombs",
         'dungeon': "ToS",
         "tos_section": 3,
+        "hint_entrance": ["ToS 8F Exit"],
     },
     "ToS 9F NE Tear of Light": {
         "stage_id": 0x13,
@@ -598,6 +673,7 @@ LOCATIONS_DATA = {
         'dungeon': "ToS",
         "tos_section": 3,
         "conditional": "tears",
+        "hint_entrance": ["ToS 8F Exit"],
     },
     "ToS 9F NW Tear of Light": {
         "stage_id": 0x13,
@@ -610,7 +686,8 @@ LOCATIONS_DATA = {
         "x_max": -60000,
         "x_min": -78000,
         "z_max": -10000,
-        "z_min": -30000
+        "z_min": -30000,
+        "hint_entrance": ["ToS 8F Exit"],
     },
     "ToS 9F NE Bombable Wall Tear": {
         "stage_id": 0x13,
@@ -620,6 +697,7 @@ LOCATIONS_DATA = {
         'dungeon': "ToS",
         "tos_section": 3,
         "conditional": "tears",
+        "hint_entrance": ["ToS 8F Exit"],
     },
     "ToS 9F NW Secret Chest": {
         "stage_id": 0x13,
@@ -630,6 +708,7 @@ LOCATIONS_DATA = {
         "region_id": "tos 9f nw",
         'dungeon': "ToS",
         "tos_section": 3,
+        "hint_entrance": ["ToS 8F Exit"],
     },
     "ToS 10F NW Chest": {
         "stage_id": 0x13,
@@ -640,13 +719,15 @@ LOCATIONS_DATA = {
         "region_id": "tos 9f phantom",
         'dungeon': "ToS",
         "tos_section": 3,
+        "hint_entrance": ["ToS 8F Exit"],
     },
     "ToS 10F Boss Key": {
         "vanilla_item": "Boss Key (ToS 3)",
         "region_id": "tos 9f phantom",
         'dungeon': "ToS",
         "tos_section": 3,
-        "conditional": True
+        "conditional": True,
+        "hint_entrance": ["ToS 8F Exit"],
     },
     "ToS 11F Chest": {
         "stage_id": 0x13,
@@ -655,6 +736,7 @@ LOCATIONS_DATA = {
         "region_id": "tos 11f",
         'dungeon': "ToS",
         "tos_section": 3,
+        "hint_entrance": ["ToS 8F Exit"],
     },
     "ToS 12F Ocean Rail Glyph": {
         "stage_id": 0x13,
@@ -665,6 +747,7 @@ LOCATIONS_DATA = {
         "goal": "GOAL: Reach ToS 12F",
         "tos_section": 3,
         "ut_connect": "EVENT: Reach ToS 12F",
+        "hint_entrance": ["ToS 8F Exit"],
     },
 
     # ToS 4
@@ -680,6 +763,7 @@ LOCATIONS_DATA = {
         "x_min": 50000,
         "y": 0,
         "z_min": 5000,
+        "hint_entrance": ["ToS 13F Exit"],
     },
     "ToS 13F Central Tear of Light": {
         "stage_id": 0x13,
@@ -693,7 +777,8 @@ LOCATIONS_DATA = {
         "z_min": -25000,
         "z_max": -15000,
         "x_min": -45000,
-        "y": 4915
+        "y": 4915,
+        "hint_entrance": ["ToS 13F Exit"],
     },
     "ToS 13F SW Raised Chest": {
         "stage_id": 0x13,
@@ -703,7 +788,8 @@ LOCATIONS_DATA = {
         "region_id": "tos 13f whip",
         'dungeon': "ToS",
         "tos_section": 4,
-        "y": 9830
+        "y": 9830,
+        "hint_entrance": ["ToS 13F Exit"],
     },
     "ToS 13F N Chest": {
         "stage_id": 0x13,
@@ -716,7 +802,8 @@ LOCATIONS_DATA = {
         "x_min": 15000,
         "z_max": -20000,
         "x_max": 35000,
-        "y": 0
+        "y": 0,
+        "hint_entrance": ["ToS 13F Exit"],
     },
     "ToS 14F Tear of Light": {
         "stage_id": 0x13,
@@ -728,6 +815,7 @@ LOCATIONS_DATA = {
         "conditional": "tears",
         "z_max": -50000,
         "x_min": 30000,
+        "hint_entrance": ["ToS 13F Exit"],
     },
     "ToS 14F SE Chest": {
         "stage_id": 0x13,
@@ -738,6 +826,7 @@ LOCATIONS_DATA = {
         "tos_section": 4,
         "z_min": 15000,
         "x_min": 50000,
+        "hint_entrance": ["ToS 13F Exit"],
     },
     "ToS 13F SE Raised Chest": {
         "stage_id": 0x13,
@@ -749,7 +838,8 @@ LOCATIONS_DATA = {
         "x_min": 3000,
         "z_min": 25000,
         "x_max": 50000,
-        "y": 4915
+        "y": 4915,
+        "hint_entrance": ["ToS 13F Exit"],
     },
     "ToS 13F E Swing Chest": {
         "stage_id": 0x13,
@@ -760,7 +850,8 @@ LOCATIONS_DATA = {
         "tos_section": 4,
         "x_min": 85000,
         "z_max": -10000,
-        "y": 4915
+        "y": 4915,
+        "hint_entrance": ["ToS 13F Exit"],
     },
     "ToS 15F NE Chest": {
         "stage_id": 0x13,
@@ -772,6 +863,7 @@ LOCATIONS_DATA = {
         "tos_section": 4,
         "x_min": 65000,
         "z_max": -45000,
+        "hint_entrance": ["ToS 13F Exit"],
     },
     "ToS 16F Bombable Wall Chest": {
         "stage_id": 0x13,
@@ -780,6 +872,7 @@ LOCATIONS_DATA = {
         "region_id": "tos 16f bombs",
         'dungeon': "ToS",
         "tos_section": 4,
+        "hint_entrance": ["ToS 13F Exit"],
     },
     "ToS 17F Fire Rail Glyph": {
         "stage_id": 0x13,
@@ -790,6 +883,7 @@ LOCATIONS_DATA = {
         "tos_section": 4,
         "ut_connect": "EVENT: Reach ToS 17F",
         "goal": "GOAL: Reach ToS 17F",
+        "hint_entrance": ["ToS 13F Exit"],
     },
 
     # ToS 5
@@ -802,7 +896,8 @@ LOCATIONS_DATA = {
         'dungeon': "ToS",
         "tos_section": 5,
         "z_max": -50000,
-        "x_min": 10000
+        "x_min": 10000,
+        "hint_entrance": ["ToS 18F Exit"],
     },
     "ToS 18F SE Tear of Light": {
         "stage_id": 0x13,
@@ -814,6 +909,7 @@ LOCATIONS_DATA = {
         "tos_section": 5,
         "z_min": -60000,
         "x_min": 75000,
+        "hint_entrance": ["ToS 18F Exit"],
     },
     "ToS 19F S Tear of Light": {
         "stage_id": 0x13,
@@ -826,6 +922,7 @@ LOCATIONS_DATA = {
         "z_min": 30000,
         "x_max": 70000,
         "x_min": -15000,
+        "hint_entrance": ["ToS 18F Exit"],
     },
     "ToS 20F SW Tear of Light": {
         "stage_id": 0x13,
@@ -839,6 +936,7 @@ LOCATIONS_DATA = {
         "x_max": -60000,
         "z_min": -10000,
         "x_min": -75000,
+        "hint_entrance": ["ToS 18F Exit"],
     },
     "ToS 19F Center W Chest": {
         "stage_id": 0x13,
@@ -851,6 +949,7 @@ LOCATIONS_DATA = {
         "x_max": 10000,
         "z_min": -15000,
         "x_min": -5000,
+        "hint_entrance": ["ToS 18F Exit"],
     },
     "ToS 18F Center Chest": {
         "stage_id": 0x13,
@@ -864,6 +963,7 @@ LOCATIONS_DATA = {
         "x_max": 0,
         "z_min": 20000,
         "x_min": -15000,
+        "hint_entrance": ["ToS 18F Exit"],
     },
     "ToS 18F SW Chest": {
         "stage_id": 0x13,
@@ -875,6 +975,7 @@ LOCATIONS_DATA = {
         "x_max": -15000,
         "z_min": -55000,
         "x_min": -35000,
+        "hint_entrance": ["ToS 18F Exit"],
     },
     "ToS 19F Center E Chest": {
         "stage_id": 0x13,
@@ -887,6 +988,16 @@ LOCATIONS_DATA = {
         "x_max": 35000,
         "z_min": -15000,
         "x_min": 10000,
+        "hint_entrance": ["ToS 18F Exit"],
+    },
+    "ToS 21F Bomb Wall Chest": {
+        "stage_id": 0x13,
+        "room_id": 0x2E,
+        "vanilla_item": ITEM_GROUPS["Rare Treasures"],
+        "region_id": "tos 21f bombs",
+        'dungeon': "ToS",
+        "tos_section": 5,
+        "hint_entrance": ["ToS 18F Exit"],
     },
     "ToS 22F Boss Key": {
         "vanilla_item": "Boss Key (ToS 5)",
@@ -894,6 +1005,7 @@ LOCATIONS_DATA = {
         'dungeon': "ToS",
         "tos_section": 5,
         "conditional": True,
+        "hint_entrance": ["ToS 18F Exit"],
     },
     "ToS 23F Defeat Staven": {
         "stage_id": 0x23,
@@ -905,17 +1017,20 @@ LOCATIONS_DATA = {
         "goal": "GOAL: Defeat Staven",
         'dungeon': "ToS",
         "tos_section": 5,
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["ToS 18F Exit"],
     },
     "ToS Summit Stamp Station": {
         "vanilla_item": "Stamp: Tower of Spirits",
         "stage_id": 0x15,
         "room_id": 0x0,
-        "region_id": "tos stamp stand",
+        "ut_connect": "EVENT: Tower of Spirits Summit Stamp Station",
+        "region_id": "tos stamp station",
         'dungeon': "ToS",
         "tos_section": "summit",
         "stamp": 0,
-        "conditional": True
+        "conditional": True,
+        "hint_entrance": ["ToS Summit Lower Exit", "Tower of Spirits Summit Enter Altar"],
     },
     # ToS 6
     "ToS 30F W Chest": {
@@ -926,7 +1041,8 @@ LOCATIONS_DATA = {
         'dungeon': "ToS",
         "tos_section": 6,
         "x_max": -90000,
-        "z_max": 25000
+        "z_max": 25000,
+        "hint_entrance": ["ToS 31F Exit"],
     },
     "ToS 28F W Raised Chest": {
         "stage_id": 0x13,
@@ -937,7 +1053,8 @@ LOCATIONS_DATA = {
         "tos_section": 6,
         "x_max": -80000,
         "z_min": 40000,
-        "delay_pickup": ["ToS 28F Stalfos"]
+        "delay_pickup": ["ToS 28F Stalfos"],
+        "hint_entrance": ["ToS 31F Exit"],
     },
     "ToS 28F E Raised Chest": {
         "stage_id": 0x13,
@@ -950,7 +1067,8 @@ LOCATIONS_DATA = {
         "x_max": -20000,
         "x_min": -40000,
         "z_min": 25000,
-        "delay_pickup": ["ToS 28F Stalfos"]
+        "delay_pickup": ["ToS 28F Stalfos"],
+        "hint_entrance": ["ToS 31F Exit"],
     },
     "ToS 29F SE Eyes in the Dark Chest": {
         "stage_id": 0x13,
@@ -962,7 +1080,20 @@ LOCATIONS_DATA = {
         "tos_section": 6,
         "x_min": 80000,
         "z_min": 20000,
-        "delay_pickup": ["ToS 29F SE Extinguish Torches Chest"]
+        "delay_pickup": ["ToS 29F SE Extinguish Torches Chest"],
+        "hint_entrance": ["ToS 31F Exit"],
+    },
+    "ToS 29F SE Extinguish Torches Chest": {
+        "stage_id": 0x13,
+        "room_id": 0x1F,
+        "region_id": "tos 29f se",
+        "vanilla_item": ITEM_GROUPS["Rare Treasures"],
+        'dungeon': "ToS",
+        "tos_section": 6,
+        "x_min": 80000,
+        "z_min": 20000,
+        "delay_pickup": ["ToS 29F SE Eyes in the Dark Chest"],
+        "hint_entrance": ["ToS 31F Exit"],
     },
     "ToS 30F SE Wrecker Chest": {
         "stage_id": 0x13,
@@ -974,7 +1105,8 @@ LOCATIONS_DATA = {
         "tos_section": 6,
         "x_min": 60000,
         "z_min": 5000,
-        "z_max": 25000
+        "z_max": 25000,
+        "hint_entrance": ["ToS 31F Exit"],
     },
     "ToS 24F Final Chest": {
         "stage_id": 0x13,
@@ -984,7 +1116,8 @@ LOCATIONS_DATA = {
         'dungeon': "ToS",
         "tos_section": 6,
         "ut_connect": "EVENT: Reach ToS 24F",
-        "goal": "GOAL: Reach ToS 24F"
+        "goal": "GOAL: Reach ToS 24F",
+        "hint_entrance": ["ToS 31F Exit"],
     },
 
     # =============================================
@@ -997,8 +1130,11 @@ LOCATIONS_DATA = {
         "room_id": 0,
         "stamp": 3,
         "require_item": ["Stamp Book"],
-        "location_groups": ["Mayscore"],
-        "conditional": True
+        "location_groups": ["Mayscore",  "Mayscore Forest"],
+        "ut_connect": "EVENT: Mayscore Forest Stamp Station",
+        "conditional": True,
+        "hint_entrance": ["Mayscore Forest South"],
+        "hint_entrance_secondary": ["Mayscore Board Train"],
     },
     "Mayscore Whip Chest": {
         "region_id": "mayscore whip chest",
@@ -1009,7 +1145,9 @@ LOCATIONS_DATA = {
         "x_max": -46389,
         "z_min": -59335,
         "z_max": -41068,
-        "location_groups": ["Mayscore"],
+        "location_groups": ["Mayscore", "Mayscore Forest"],
+        "hint_entrance": ["Mayscore Forest South"],
+        "hint_entrance_secondary": ["Mayscore Board Train"],
     },
     "Mayscore Whip Race 1:15-1:30": {
         "region_id": "mayscore whip game",
@@ -1020,12 +1158,14 @@ LOCATIONS_DATA = {
         "room_id": 0,
         "address": STAddr.adv_flags_26,
         "value": 1,
-        "location_groups": ["Mayscore""Mayscore Whip Race", "Mayscore Whip Game",
+        "location_groups": ["Mayscore""Mayscore Whip Race", "Mayscore Whip Game", "Mayscore Forest",
                             "Mayscore Whip Game Easy", "Mayscore Whip Race Easy"],
         "slot_data": [("randomize_minigames", [1, 3, 4])],
 
         "x_min": 55000,
         "z_max": -45000,
+        "hint_entrance": ["Mayscore Forest South"],
+        "hint_entrance_secondary": ["Mayscore Board Train"],
     },
     "Mayscore Whip Race 1:05-1:15": {
         "region_id": "mayscore whip game",
@@ -1036,12 +1176,14 @@ LOCATIONS_DATA = {
         "room_id": 0,
         "address": STAddr.adv_flags_26,
         "value": 2,
-        "location_groups": ["Mayscore", "Mayscore Whip Race", "Mayscore Whip Game",
+        "location_groups": ["Mayscore", "Mayscore Whip Race", "Mayscore Whip Game", "Mayscore Forest",
                             "Mayscore Whip Game Hard", "Mayscore Whip Race Hard"],
         "slot_data": [("randomize_minigames", [2, 3, 4])],
 
         "x_min": 55000,
         "z_max": -45000,
+        "hint_entrance": ["Mayscore Forest South"],
+        "hint_entrance_secondary": ["Mayscore Board Train"],
     },
     "Mayscore Whip Race Sub 1:05": {
         "region_id": "mayscore whip game",
@@ -1053,26 +1195,30 @@ LOCATIONS_DATA = {
         "address": STAddr.adv_flags_10,
         "delay_reset": True,
         "value": 0x80,
-        "location_groups": ["Mayscore""Mayscore Whip Race", "Mayscore Whip Game",
+        "location_groups": ["Mayscore", "Mayscore Whip Race", "Mayscore Whip Game", "Mayscore Forest",
                             "Mayscore Whip Game Expert", "Mayscore Whip Race Expert"],
         "slot_data": [("randomize_minigames", [4, 5])],
 
         "x_min": 55000,
         "z_max": -45000,
+        "hint_entrance": ["Mayscore Forest South"],
+        "hint_entrance_secondary": ["Mayscore Board Train"],
     },
 
     # Woodland Sanctuary
     "Woodland Sanctuary Stamp Station": {
-        "region_id": "fos stamp station",
+        "region_id": "woodland sanc stamp station",
         "vanilla_item": "Stamp: Woodland Sanctuary",
         "stage_id": 0x30,
         "room_id": 0,
         "stamp": 4,
         "location_groups": ["Woodland Sanctuary"],
-        "conditional": True
+        "ut_connect": "EVENT: Woodland Sanctuary Stamp Station",
+        "conditional": True,
+        "hint_entrance": ["Woodland Sanctuary Board Train"],
     },
     "Woodland Sanctuary Song Statue": {
-        "region_id": "fos song statue",
+        "region_id": "woodland sanc song statue",
         "vanilla_item": "Song of Awakening",
         "stage_id": 0x30,
         "room_id": 0,
@@ -1081,9 +1227,10 @@ LOCATIONS_DATA = {
         "z_min": 5734,
         "z_max": 18842,
         "location_groups": ["Woodland Sanctuary", "Song Statue"],
+        "hint_entrance": ["Woodland Sanctuary Board Train"],
     },
     "Woodland Sanctuary Chest": {
-        "region_id": "fos chest",
+        "region_id": "woodland sanc chest",
         "vanilla_item": "Big Red Rupee (200)",
         "x_min": 9228,
         "x_max": 18778,
@@ -1092,22 +1239,25 @@ LOCATIONS_DATA = {
         "stage_id": 0x30,
         "room_id": 0,
         "location_groups": ["Woodland Sanctuary"],
+        "hint_entrance": ["Woodland Sanctuary Board Train"],
     },
     "Woodland Sanctuary Song of Restoration": {
         "stage_id": 0x30,
         "room_id": 0x1,
-        "region_id": "fos song statue",
+        "region_id": "woodland sanc duet",
         "address": STAddr.rail_restorations,
         "vanilla_item": "Wooded Temple Tracks",
         "value": 2,
         "minigame": [1, 2, 3, 4, 5, 6],
         "conditional": True,
         "location_groups": ["Woodland Sanctuary", "Restoration Duets"],
+        "hint_entrance": ["Gage's Sanctuary Exit"],
+        "hint_entrance_secondary": ["Woodland Sanctuary Board Train"],
     },
 
     # Wooded Temple
 
-    "Wooded Temple Song Statue": {
+    "Wooded Temple Lobby Song Statue": {
         "region_id": "wt song statue",
         "vanilla_item": "Song of Healing",
         "stage_id": 0x19,
@@ -1116,8 +1266,9 @@ LOCATIONS_DATA = {
         "x_max": -14885,
         "z_min": -51620,
         "z_max": -39275,
-        "dungeon": "Wooded Temple",
-        "location_groups": ["Song Statue"]
+        "post_dungeon": "Wooded Temple",
+        "location_groups": ["Song Statue"],
+        "hint_entrance": ["Wooded Temple Lobby Board Train", "Wooded Temple Lobby Enter Dungeon", "Wooded Temple Lobby Blue Warp"],
     },
     "Wooded Temple 1F Stamp Station": {
         "region_id": "wt stamp station",
@@ -1126,7 +1277,10 @@ LOCATIONS_DATA = {
         "room_id": 0,
         "stamp": 0xc,
         "dungeon": "Wooded Temple",
-        "conditional": True
+        "ut_connect": "EVENT: Wooded Temple Stamp Station",
+        "conditional": True,
+        "hint_entrance": ["Wooded Temple 1F Exit", "Wooded Temple 1F SE Staircase", "Wooded Temple 1F NW Staircase", "Wooded Temple 1F SW Staircase"],
+        "hint_entrance_secondary": ["Wooded Temple Lobby Board Train", "Wooded Temple 4F N Staircase", "Wooded Temple 4F Blue Warp"],
     },
     "Wooded Temple 1F Enemy Chest": {
         "region_id": "wt 1f enemy chest",
@@ -1138,6 +1292,9 @@ LOCATIONS_DATA = {
         "z_min": 30310,
         "z_max": 39600,
         "dungeon": "Wooded Temple",
+        "hint_entrance": ["Wooded Temple 1F Exit", "Wooded Temple 1F SE Staircase", "Wooded Temple 1F NW Staircase",
+                          "Wooded Temple 1F SW Staircase"],
+        "hint_entrance_secondary": ["Wooded Temple Lobby Board Train", "Wooded Temple 4F N Staircase", "Wooded Temple 4F Blue Warp"],
     },
     "Wooded Temple 1F Key": {
         "region_id": "wt 1f key",
@@ -1148,6 +1305,9 @@ LOCATIONS_DATA = {
         "z_min": -63898,
         "z_max": -20000,
         "dungeon": "Wooded Temple",
+        "hint_entrance": ["Wooded Temple 1F NW Staircase"],
+        "hint_entrance_secondary": ["Wooded Temple 1F Exit", "Wooded Temple 4F N Staircase", "Wooded Temple 4F Blue Warp"],
+        "hint_entrance_tertiary": ["Wooded Temple Lobby Board Train"],
     },
     "Wooded Temple 1F Switch Chest": {
         "region_id": "wt 1f switch chest",
@@ -1159,6 +1319,9 @@ LOCATIONS_DATA = {
         "z_min": -39322,
         "z_max": -30077,
         "dungeon": "Wooded Temple",
+        "hint_entrance": ["Wooded Temple 1F Exit", "Wooded Temple 1F SE Staircase", "Wooded Temple 1F NW Staircase",
+                          "Wooded Temple 1F SW Staircase"],
+        "hint_entrance_secondary": ["Wooded Temple Lobby Board Train", "Wooded Temple 4F N Staircase", "Wooded Temple 4F Blue Warp"],
     },
     "Wooded Temple 2F Enemy Chest": {
         "region_id": "wt 2f enemy chest",
@@ -1168,6 +1331,9 @@ LOCATIONS_DATA = {
         "x_min": 63078,
         "z_max": -53204,
         "dungeon": "Wooded Temple",
+        "hint_entrance": ["Wooded Temple 2F SE Staircase"],
+        "hint_entrance_secondary": ["Wooded Temple 1F Exit", "Wooded Temple 4F N Staircase", "Wooded Temple 4F Blue Warp"],
+        "hint_entrance_tertiary": ["Wooded Temple Lobby Board Train"],
     },
     "Wooded Temple 2F Poison Chest": {
         "region_id": "wt 2f poison chest",
@@ -1179,6 +1345,9 @@ LOCATIONS_DATA = {
         "z_min": -14900,
         "z_max": -258,
         "dungeon": "Wooded Temple",
+        "hint_entrance": ["Wooded Temple 2F SE Staircase"],
+        "hint_entrance_secondary": ["Wooded Temple 1F Exit", "Wooded Temple 4F N Staircase", "Wooded Temple 4F Blue Warp"],
+        "hint_entrance_tertiary": ["Wooded Temple Lobby Board Train"],
     },
     "Wooded Temple 3F Chestnut Chest": {
         "region_id": "wt 3f chestnut chest",
@@ -1190,6 +1359,9 @@ LOCATIONS_DATA = {
         "z_min": -59820,
         "z_max": -52296,
         "dungeon": "Wooded Temple",
+        "hint_entrance": ["Wooded Temple 3F W Staircase"],
+        "hint_entrance_secondary": ["Wooded Temple 1F Exit", "Wooded Temple 4F N Staircase", "Wooded Temple 4F Blue Warp"],
+        "hint_entrance_tertiary": ["Wooded Temple Lobby Board Train"],
     },
     "Wooded Temple 3F SE Chest": {
         "region_id": "wt 3f se chest",
@@ -1201,33 +1373,45 @@ LOCATIONS_DATA = {
         "z_min": -2458,
         "z_max": 7485,
         "dungeon": "Wooded Temple",
+        "hint_entrance": ["Wooded Temple 3F N Staircase", "Wooded Temple 3F S Staircase"],
+        "hint_entrance_secondary": ["Wooded Temple 1F Exit", "Wooded Temple 4F N Staircase", "Wooded Temple 4F Blue Warp"],
+        "hint_entrance_tertiary": ["Wooded Temple Lobby Board Train"],
     },
     "Wooded Temple 3F Boss Key": {
         "region_id": "wt 3f bk",
         "vanilla_item": "Boss Key (Wooded Temple)",
         "dungeon": "Wooded Temple",
         "conditional": True,
+        "hint_entrance": ["Wooded Temple 3F N Staircase", "Wooded Temple 3F S Staircase"],
+        "hint_entrance_secondary": ["Wooded Temple 1F Exit", "Wooded Temple 4F N Staircase", "Wooded Temple 4F Blue Warp"],
+        "hint_entrance_tertiary": ["Wooded Temple Lobby Board Train"],
     },
-    "Wooded Temple Boss Heart Container": {
+    "Stagnox Heart Container": {
         "region_id": "wt stagnox",
         "vanilla_item": "Heart Container",
         "stage_id": 0x1E,
         "room_id": 0,
-        "dungeon": "Wooded Temple",
+        "post_dungeon": "Wooded Temple",
         "location_groups": ["Stagnox"],
+        "hint_entrance": ["Stagnox Exit"],
+        "hint_entrance_secondary": ["Wooded Temple 4F S Staircase", "Wooded Temple 4F Blue Warp"],
+        "hint_entrance_tertiary": ["Wooded Temple Lobby Board Train", "Wooded Temple 1F Exit"],
     },
-    "Wooded Temple Dungeon Reward": {
+    "Stagnox Boss Reward": {
         "region_id": "wt stagnox",
         "vanilla_item": "Forest Source",
         "address": STAddr.adv_flags_0,
         "value": 0x10,
         "stage_id": 0x1E,
         "room_id": 0,
-        "dungeon": "Wooded Temple",
+        "post_dungeon": "Wooded Temple",
         "goal": "GOAL: Defeat Stagnox",
         "ut_connect": "EVENT: Defeat Stagnox",
         "location_groups": ["Stagnox"],
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Stagnox Exit"],
+        "hint_entrance_secondary": ["Wooded Temple 4F S Staircase", "Wooded Temple 4F Blue Warp"],
+        "hint_entrance_tertiary": ["Wooded Temple Lobby Board Train", "Wooded Temple 1F Exit"],
     },
 
     # Rabbit Haven
@@ -1240,7 +1424,8 @@ LOCATIONS_DATA = {
         "address": STAddr.adv_flags_1a,
         "value": 0x40,
         "location_groups": ["Rabbit Haven"],
-        "x_max": -35000
+        "x_max": -35000,
+        "hint_entrance": ["Rabbit Haven Board Train"],
     },
     "Rabbit Haven Island Chest": {
         "region_id": "rabbit haven",
@@ -1252,6 +1437,7 @@ LOCATIONS_DATA = {
         "z_min": -20000,
         "z_max": -5000,
         "location_groups": ["Rabbit Haven"],
+        "hint_entrance": ["Rabbit Haven Board Train"],
     },
     "Rabbit Haven Rescue 5 Rabbits": {
         "region_id": "rabbit haven 5 rabbits",
@@ -1262,7 +1448,8 @@ LOCATIONS_DATA = {
         'value': 0x8,
         "conditional": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
-        "x_max": -35000
+        "x_max": -35000,
+        "hint_entrance": ["Rabbit Haven Board Train"],
     },
     "Rabbit Haven Rescue 1 of Each Rabbit": {
         "region_id": "rabbit haven 1 of each rabbits",
@@ -1274,7 +1461,8 @@ LOCATIONS_DATA = {
         "conditional": True,
         "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
-        "x_max": -35000
+        "x_max": -35000,
+        "hint_entrance": ["Rabbit Haven Board Train"],
     },
     "Rabbit Haven Rescue 10 Grass Rabbits": {
         "region_id": "rabbit haven 10 forest rabbits",
@@ -1286,7 +1474,8 @@ LOCATIONS_DATA = {
         "conditional": True,
         "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
-        "x_max": -35000
+        "x_max": -35000,
+        "hint_entrance": ["Rabbit Haven Board Train"],
     },
     "Rabbit Haven Rescue 10 Snow Rabbits": {
         "region_id": "rabbit haven 10 snow rabbits",
@@ -1298,7 +1487,8 @@ LOCATIONS_DATA = {
         "conditional": True,
         "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
-        "x_max": -35000
+        "x_max": -35000,
+        "hint_entrance": ["Rabbit Haven Board Train"],
     },
     "Rabbit Haven Rescue 10 Ocean Rabbits": {
         "region_id": "rabbit haven 10 ocean rabbits",
@@ -1310,7 +1500,8 @@ LOCATIONS_DATA = {
         "conditional": True,
         "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
-        "x_max": -35000
+        "x_max": -35000,
+        "hint_entrance": ["Rabbit Haven Board Train"],
     },
     "Rabbit Haven Rescue 10 Mountain Rabbits": {
         "region_id": "rabbit haven 10 mountain rabbits",
@@ -1322,7 +1513,8 @@ LOCATIONS_DATA = {
         "conditional": True,
         "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
-        "x_max": -35000
+        "x_max": -35000,
+        "hint_entrance": ["Rabbit Haven Board Train"],
     },
     "Rabbit Haven Rescue 10 Sand Rabbits": {
         "region_id": "rabbit haven 10 sand rabbits",
@@ -1334,7 +1526,8 @@ LOCATIONS_DATA = {
         "conditional": True,
         "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
-        "x_max": -35000
+        "x_max": -35000,
+        "hint_entrance": ["Rabbit Haven Board Train"],
     },
     "Rabbit Haven Rescue 10 of Each Rabbit": {
         "region_id": "rabbit haven 50 rabbits",
@@ -1342,12 +1535,13 @@ LOCATIONS_DATA = {
         "item_override": "Nothing!",
         "stage_id": 0x3E,
         "room_id": 0,
-        'address': STAddr.adv_flags_53,
+        'address': STAddr.adv_flags_52,
         'value': 0x8,
         "conditional": True,
         "delay_reset": True,
         "location_groups": ["Rabbit Haven", "Rabbit Rewards"],
-        "x_max": -35000
+        "x_max": -35000,
+        "hint_entrance": ["Rabbit Haven Board Train"],
     },
 
     # Trading Post
@@ -1358,7 +1552,10 @@ LOCATIONS_DATA = {
         "room_id": 0x01,
         "stamp": 0x12,
         "location_groups": ["Trading Post"],
-        "conditional": True
+        "ut_connect": "EVENT: Trading Post Tunnel Stamp Station",
+        "conditional": True,
+        "hint_entrance": ["Like-Like Tunnel South", "Like-Like Tunnel North"],
+        "hint_secondary": ["Trading Post Board Train", "Trading Post Shop"],
     },
     "Trading Post Song Statue": {
         "region_id": "trading post light song statue",
@@ -1370,25 +1567,33 @@ LOCATIONS_DATA = {
         "z_min": -55626,
         "z_max": -35679,
         "location_groups": ["Trading Post", "Song Statue"],
+        "hint_entrance": ["Trading Post North Staircase", "Trading Post Island Cave"],
+        "hint_secondary": ["Trading Post Board Train", "Trading Post Shop"],
     },
     "Trading Post Buried Chest": {
         "region_id": "trading post chest",
         "vanilla_item": "Treasure: Regal Ring",
         "stage_id": 0x37,
         "room_id": 0x02,
-        "address": STAddr.adv_flags_3e,
-        "value": 0x10,
+        "x_max": -25000,
+        "z_max": -20000,
+        # "address": STAddr.adv_flags_3e,
+        # "value": 0x10,
         "location_groups": ["Trading Post"],
+        "hint_entrance": ["Linebeck's Treasure's Cave Exit"],
+        "hint_secondary": ["Trading Post Board Train", "Trading Post Shop"],
     },
 
     # Anouki Village
     "Anouki Village Pair Villagers": {
-        "region_id": "anouki village",
+        "region_id": "honcho's house",
         "vanilla_item": "Red Rupee (20)",
         "item_override": "Snowfall Sanctuary Cave Key",
         "stage_id": 0x2B,
         "room_id": 1,
         "location_groups": ["Anouki Village"],
+        "hint_entrance": ["Honcho's House Exit"],
+        "hint_secondary": ["Anouki Village Board Train", "Anouki Village Bomb Cave"],
     },
     "Anouki Village Stamp Station": {
         "region_id": "anouki village stamp station",
@@ -1397,7 +1602,11 @@ LOCATIONS_DATA = {
         "room_id": 0,
         "stamp": 5,
         "location_groups": ["Anouki Village"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Anouki Village Stamp Station",
+        "hint_entrance": ["Anouki Village Board Train", "Anouki Village Bomb Cave",
+                          "Anouki Village SW House", "Anouki Village S House", "Anouki Village SE House",
+                          "Anouki Village NW House", "Anouki Village N House", "Anouki Village NE House"],
     },
     "Anouki Village Song Statue": {
         "region_id": "anouki village song statue",
@@ -1410,6 +1619,9 @@ LOCATIONS_DATA = {
         "z_max": -40000,
         "delay_pickup": ["Anouki Village Song Statue Chest"],
         "location_groups": ["Anouki Village", "Song Statue"],
+        "hint_entrance": ["Anouki Village Board Train", "Anouki Village Bomb Cave",
+                          "Anouki Village SW House", "Anouki Village S House", "Anouki Village SE House",
+                          "Anouki Village NW House", "Anouki Village N House", "Anouki Village NE House"],
     },
     "Anouki Village Song Statue Chest": { #TODO check if consistently sending check
         "region_id": "anouki village song statue",
@@ -1422,9 +1634,12 @@ LOCATIONS_DATA = {
         "z_max": -40000,
         "delay_pickup": ["Anouki Village Song Statue"],
         "location_groups": ["Anouki Village"],
+        "hint_entrance": ["Anouki Village Board Train", "Anouki Village Bomb Cave",
+                          "Anouki Village SW House", "Anouki Village S House", "Anouki Village SE House",
+                          "Anouki Village NW House", "Anouki Village N House", "Anouki Village NE House"],
     },
     "Anouki Village Bomb Cave Chest": {
-        "region_id": "anouki village bomb cave chest",
+        "region_id": "ice block cave",
         "vanilla_item": "Big Red Rupee (200)",
         "stage_id": 0x2B,
         "room_id": 0x07,
@@ -1433,6 +1648,10 @@ LOCATIONS_DATA = {
         "z_min": -42922,
         "z_max": -19997,
         "location_groups": ["Anouki Village"],
+        "hint_entrance": ["Small Ice Puzzle Cave Exit"],
+        "hint_entrance_secondary": ["Anouki Village Board Train",
+                          "Anouki Village SW House", "Anouki Village S House", "Anouki Village SE House",
+                          "Anouki Village NW House", "Anouki Village N House", "Anouki Village NE House"],
     },
     "Anouki Village Lake Chest": {
         "region_id": "anouki village lake chest",
@@ -1444,17 +1663,22 @@ LOCATIONS_DATA = {
         "z_min": -55900,
         "z_max": -47180,
         "location_groups": ["Anouki Village"],
+        "hint_entrance": ["Anouki Village Board Train", "Anouki Village Bomb Cave",
+                          "Anouki Village SW House", "Anouki Village S House", "Anouki Village SE House",
+                          "Anouki Village NW House", "Anouki Village N House", "Anouki Village NE House"],
     },
 
     # Snowfall Sanctuary
     "Snowfall Sanctuary Stamp Station": {
-        "region_id": "ss stamp station",
+        "region_id": "snow sanc stamp station",
         "vanilla_item": "Stamp: Snowfall Sanctuary",
         "stage_id": 0x31,
         "room_id": 0,
         "stamp": 6,
         "location_groups": ["Snowfall Sanctuary"],
-        "conditional": True
+        "ut_connect": "EVENT: Snowfall Sanctuary Stamp Station",
+        "conditional": True,
+        "hint_entrance": ["Snowfall Sanctuary Board Train", "Snowfall Sanctuary Cave", "Snowfall Sanctuary Shop"],
     },
     "Snowfall Sanctuary Song of Restoration": {
         "stage_id": 0x31,
@@ -1464,8 +1688,10 @@ LOCATIONS_DATA = {
         "value": 4,
         "minigame": [1, 2, 3, 4, 5, 6],
         "conditional": True,
-        "region_id": "ss song",
+        "region_id": "snow sanc song",
         "location_groups": ["Snowfall Sanctuary","Restoration Duets"],
+        "hint_entrance": ["Steem's Sanctuary Exit"],
+        "hint_entrance_secondary": ["Snowfall Sanctuary Board Train", "Snowfall Sanctuary Shop"],
     },
     "Snowfall Sanctuary Steem Gift With Snow Source": {
         "region_id": "steem gift",
@@ -1475,11 +1701,13 @@ LOCATIONS_DATA = {
         "address": STAddr.adv_flags_1a,
         "value": 0x20,
         "location_groups": ["Snowfall Sanctuary"],
+        "hint_entrance": ["Steem's Sanctuary Exit"],
+        "hint_entrance_secondary": ["Snowfall Sanctuary Board Train", "Snowfall Sanctuary Shop"],
     },
 
     # Blizzard Temple
     "Blizzard Temple B1 SE Chest": {
-        "region_id": "bt b1 se",
+        "region_id": "bt b1 e",
         "vanilla_item": "Red Rupee (20)",
         "stage_id": 0x1A,
         "room_id": 1,
@@ -1488,9 +1716,12 @@ LOCATIONS_DATA = {
         "z_min": 35000,
         "z_max": 50000,
         "dungeon": "Blizzard Temple",
+        "hint_entrance": ["Blizzard Temple B1 SE Staircase"],
+        "hint_entrance_secondary": ["Blizzard Temple 1F South Exit", "Blizzard Temple 3F North Staircase", "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple Lobby Blue Warp"],
     },
     "Blizzard Temple B1 E Enemy Chest": {
-        "region_id": "bt b1 e enemy chest",
+        "region_id": "bt b1 e",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "stage_id": 0x1A,
         "room_id": 1,
@@ -1499,6 +1730,10 @@ LOCATIONS_DATA = {
         "z_min": -28212,
         "z_max": -13300,
         "dungeon": "Blizzard Temple",
+        "hint_entrance": ["Blizzard Temple B1 SE Staircase", "Blizzard Temple B1 NE Staircase"],
+        "hint_entrance_secondary": ["Blizzard Temple 1F South Exit", "Blizzard Temple 3F North Staircase",
+                                    "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple Lobby Blue Warp"],
     },
     "Blizzard Temple B1 NE Enemy Chest": {
         "region_id": "bt b1 ne enemy chest",
@@ -1510,6 +1745,10 @@ LOCATIONS_DATA = {
         "z_min": -72090,
         "z_max": -53453,
         "dungeon": "Blizzard Temple",
+        "hint_entrance": ["Blizzard Temple B1 SE Staircase", "Blizzard Temple B1 NE Staircase"],
+        "hint_entrance_secondary": ["Blizzard Temple 1F South Exit", "Blizzard Temple 3F North Staircase",
+                                    "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple Lobby Blue Warp"],
     },
     "Blizzard Temple 1F NE Chest": {
         "region_id": "bt 1f ne chest",
@@ -1521,6 +1760,10 @@ LOCATIONS_DATA = {
         "z_min": -68000,
         "z_max": -58982,
         "dungeon": "Blizzard Temple",
+        "hint_entrance": ["Blizzard Temple 1F NE Staircase"],
+        "hint_entrance_secondary": ["Blizzard Temple 1F South Exit", "Blizzard Temple 3F North Staircase",
+                                    "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple Lobby Blue Warp"],
     },
     "Blizzard Temple B1 SW Chest": {
         "region_id": "bt b1 sw chest",
@@ -1532,18 +1775,27 @@ LOCATIONS_DATA = {
         "z_min": 51643,
         "z_max": 72090,
         "dungeon": "Blizzard Temple",
+        "hint_entrance": ["Blizzard Temple B1 SW Staircase"],
+        "hint_entrance_secondary": ["Blizzard Temple 1F South Exit", "Blizzard Temple 3F North Staircase",
+                                    "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple Lobby Blue Warp"],
     },
     "Blizzard Temple B1 Stamp Station": {
-        "region_id": "bt stamp station",
+        "region_id": "bt b1 stamp station",
         "vanilla_item": "Stamp: Blizzard Temple",
         "stage_id": 0x1A,
         "room_id": 1,
         "stamp": 0xd,
         "dungeon": "Blizzard Temple",
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Blizzard Temple Stamp Station",
+        "hint_entrance": ["Blizzard Temple B1 SW Staircase"],
+        "hint_entrance_secondary": ["Blizzard Temple 1F South Exit", "Blizzard Temple 3F North Staircase",
+                                    "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple Lobby Blue Warp"],
     },
     "Blizzard Temple B1 NW Enemy Chest": {
-        "region_id": "bt west",
+        "region_id": "bt b1 w chest",
         "vanilla_item": "Big Green Rupee (100)",
         "stage_id": 0x1A,
         "room_id": 1,
@@ -1552,9 +1804,13 @@ LOCATIONS_DATA = {
         "z_min": -62715,
         "z_max": -42615,
         "dungeon": "Blizzard Temple",
+        "hint_entrance": ["Blizzard Temple B1 SW Staircase"],
+        "hint_entrance_secondary": ["Blizzard Temple 1F South Exit", "Blizzard Temple 3F North Staircase",
+                                    "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple Lobby Blue Warp"],
     },
     "Blizzard Temple 1F NW Chest": {
-        "region_id": "bt west",
+        "region_id": "bt 1f nw bell",
         "vanilla_item": "Red Rupee (20)",
         "stage_id": 0x1A,
         "room_id": 0,
@@ -1563,9 +1819,13 @@ LOCATIONS_DATA = {
         "z_min": -68000,
         "z_max": -56082,
         "dungeon": "Blizzard Temple",
+        "hint_entrance": ["Blizzard Temple 1F NW Staircase", "Blizzard Temple 1F NW Entrance"],
+        "hint_entrance_secondary": ["Blizzard Temple 1F South Exit", "Blizzard Temple 3F North Staircase",
+                                    "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple Lobby Blue Warp"],
     },
     "Blizzard Temple 1F Torch Chest": {
-        "region_id": "bt west",
+        "region_id": "bt 1f n chest",
         "vanilla_item": "Red Rupee (20)",
         "stage_id": 0x1A,
         "room_id": 0,
@@ -1574,33 +1834,47 @@ LOCATIONS_DATA = {
         "z_min": -68020,
         "z_max": -58982,
         "dungeon": "Blizzard Temple",
+        "hint_entrance": ["Blizzard Temple 1F NW Staircase", "Blizzard Temple 1F NW Entrance"],
+        "hint_entrance_secondary": ["Blizzard Temple 1F South Exit", "Blizzard Temple 3F North Staircase",
+                                    "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple Lobby Blue Warp"],
     },
     "Blizzard Temple 2F Boss Key": {
-        "region_id": "bt west",
+        "region_id": "bt 2f boss key",
         "vanilla_item": "Boss Key (Blizzard Temple)",
         "dungeon": "Blizzard Temple",
-        "conditional": True
+        "conditional": True,
+        "hint_entrance": ["Blizzard Temple 2F North Staircase", "Blizzard Temple 2F South Staircase"],
+        "hint_entrance_secondary": ["Blizzard Temple 1F South Exit", "Blizzard Temple 3F North Staircase",
+                                    "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple Lobby Blue Warp"],
     },
-    "Blizzard Temple Boss Heart Container": {
+    "Fraaz Heart Container": {
         "region_id": "bt fraaz",
         "vanilla_item": "Heart Container",
         "stage_id": 0x1F,
         "room_id": 0,
-        "dungeon": "Blizzard Temple",
+        "post_dungeon": "Blizzard Temple",
         "location_groups": ["Fraaz"],
+        "hint_entrance": ["Fraaz Exit"],
+        "hint_entrance_secondary": ["Blizzard Temple 3F South Staircase", "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple 1F South Exit"],
     },
-    "Blizzard Temple Dungeon Reward": {
+    "Fraaz Boss Reward": {
         "region_id": "bt fraaz",
         "vanilla_item": "Snow Source", #TODO tracks did not get removed, and check sent on room entry
-        "address": STAddr.adv_flags_0,
-        "value": 0x20,
+        "address": STAddr.adv_flags_16,
+        "value": 0x80,
         "stage_id": 0x1F,
         "room_id": 0,
-        "dungeon": "Blizzard Temple",
+        "post_dungeon": "Blizzard Temple",
         "goal": "GOAL: Defeat Fraaz",
         "ut_connect": "EVENT: Defeat Fraaz",
         "location_groups": ["Fraaz"],
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Fraaz Exit"],
+        "hint_entrance_secondary": ["Blizzard Temple 3F South Staircase", "Blizzard Temple 3F Blue Warp"],
+        "hint_entrance_tertiary": ["Blizzard Temple Lobby Board Train", "Blizzard Temple 1F South Exit"],
     },
 
     # Icy Spring
@@ -1614,6 +1888,7 @@ LOCATIONS_DATA = {
         "z_min": -58730,
         "z_max": -42650,
         "location_groups": ["Icy Spring"],
+        "hint_entrance": ["Icy Spring Trailer", "Icy Spring Board Train"],
     },
     "Icy Spring Stamp Station": {
         "region_id": "icyspring stamp station",
@@ -1622,7 +1897,9 @@ LOCATIONS_DATA = {
         "room_id": 0,
         "stamp": 0x13,
         "location_groups": ["Icy Spring"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Icy Spring Stamp Station",
+        "hint_entrance": ["Icy Spring Trailer", "Icy Spring Board Train"],
     },
 
     # Snowdrift Station
@@ -1636,6 +1913,8 @@ LOCATIONS_DATA = {
         "z_min": -55800,
         "z_max": -38083,
         "location_groups": ["Snowdrift Station"],
+        "hint_entrance": ["Snowdrift Cave Exit", "Snowdrift Cave SE", "Snowdrift Cave NE", "Snowdrift Cave SW", "Snowdrift Cave NW"],
+        "hint_entrance_secondary": ["Snowdrift Board Train"],
     },
 
     # Slippery Station
@@ -1652,6 +1931,8 @@ LOCATIONS_DATA = {
         "z_max": -50810,
         "location_groups": ["Slippery Station"],
         "slot_data": [("randomize_minigames", [1, 3, 4])],
+        "hint_entrance": ["Skating Rink Exit"],
+        "hint_entrance_secondary": ["Slippery Station Board Train"],
     },
     "Slippery Station Pro Reward": {
         "region_id": "slippery pro",
@@ -1666,6 +1947,8 @@ LOCATIONS_DATA = {
         "conditional": True,
         "location_groups": ["Slippery Station"],
         "slot_data": [("randomize_minigames", [2, 3, 4])],
+        "hint_entrance": ["Skating Rink Exit"],
+        "hint_entrance_secondary": ["Slippery Station Board Train"],
     },
     "Slippery Station Champion Reward": {
         "region_id": "slippery champion",
@@ -1680,6 +1963,8 @@ LOCATIONS_DATA = {
         "conditional": True,
         "location_groups": ["Slippery Station"],
         "slot_data": [("randomize_minigames", [4, 5])],
+        "hint_entrance": ["Skating Rink Exit"],
+        "hint_entrance_secondary": ["Slippery Station Board Train"],
     },
 
     # Bridge Worker's Home
@@ -1693,91 +1978,95 @@ LOCATIONS_DATA = {
         "z_min": -43618,
         "z_max": -28439,
         "location_groups": ["Bridge Worker's House"],
+        "hint_entrance": ["Bridge Worker's Board Train", "Bridge Worker's House"],
     },
     # ========== Ocean Realm ============
 
     # Island Sanctuary
     "Island Sanctuary Stamp Station": {
-        "region_id": "ocs stamp station",
+        "region_id": "island sanc stamp station",
         "vanilla_item": "Stamp: Island Sanctuary",
         "stage_id": 0x32,
         "room_id": 2,
         "stamp": 8,
-        "require_item": ["Stamp Book", "Song of Birds", "Whip"],
         "location_groups": ["Island Sanctuary"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Island Sanctuary Stamp Station",
+        "hint_entrance": ["Island Sanctuary North Staircase", "Island Sanctuary North Cave", "Island Sanctuary North Peninsula"],
+        "hint_entrance_secondary": ["Island Sanctuary Board Train"]
     },
-
     "Island Sanctuary Cucco Chest": {
-        "region_id": "ocs north",
+        "region_id": "island sanc north",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "stage_id": 0x32,
         "room_id": 2,
         "x_min": 65000,
         "z_min": 15000,
         "location_groups": ["Island Sanctuary"],
-        "require_item": ["Boomerang"], #Possibly also need whirlwind
+        "hint_entrance": ["Island Sanctuary North Staircase", "Island Sanctuary North Cave", "Island Sanctuary North Peninsula"],
+        "hint_entrance_secondary": ["Island Sanctuary Board Train"]
     },
-
     "Island Sanctuary S Island Chest": {
-        "region_id": "ocs S island chest",
+        "region_id": "island sanc S island chest",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
         "stage_id": 0x32,
         "room_id": 0,
         "y": 9830,
-        "require_item": ["Song of Birds", "Whip"],
         "location_groups": ["Island Sanctuary"],
+        "hint_entrance": ["Island Sanctuary Board Train", "Island Sanctuary South Cave", "Island Sanctuary South Peninsula"],
     },
-
     "Island Sanctuary NW Chest": {
-        "region_id": "ocs nw chest",
+        "region_id": "island sanc nw chest",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
         "stage_id": 0x32,
         "room_id": 2,
         "x_max": -90000,
         "z_max": -40000,
-        "require_item": ["Song of Birds", "Whip"],
         "location_groups": ["Island Sanctuary"],
+        "hint_entrance": ["Island Sanctuary North Staircase", "Island Sanctuary North Cave", "Island Sanctuary North Peninsula"],
+        "hint_entrance_secondary": ["Island Sanctuary Board Train"]
     },
-
     "Island Sanctuary Song of Restoration": {
         "stage_id": 0x32,
         "room_id": 0x4,
-        "region_id": "ocs song",
+        "region_id": "island sanc song",
         "vanilla_item": "Marine Temple Tracks",
         "address": STAddr.rail_restorations,
         "value": 0x8,
         "minigame": [1, 2, 3, 4, 5, 6],
         "conditional": True,
         "location_groups": ["Island Sanctuary", "Restoration Duets"],
+        "hint_entrance": ["Carben's Sanctuary Exit"],
+        "hint_entrance_secondary": ["Island Sanctuary Board Train", "Island Sanctuary North Peninsula", "Island Sanctuary South Peninsula"]
     },
 
     # Papuzia (Papuchia) Village
     "Papuzia Village Song Statue": {
-        "region_id": "papuchia village song statue",
+        "region_id": "papuzia village song statue",
         "vanilla_item": "Song of Birds",
         "stage_id": 0x2C,
         "room_id": 0,
         "x_min": 10000,
         "x_max": 30000,
         "z_min": 40000,
-        "require_item": ["Spirit Flute", "Song of Discovery"],
         "location_groups": ["Papuzia Village", "Song Statue"],
+        "hint_entrance": ["Papuzia Board Train", "Papuzia South",
+                          "Papuzia Shop", "Papuzia South House", "Papuzia Wise One's House", "Papuzia NW House"],
     },
-
-    "Papuzia Village Stamp Station": {
-        "region_id": "papuchia village stamp station",
+    "Papuzia Archipelago Stamp Station": {
+        "region_id": "papuzia village stamp station",
         "vanilla_item": "Stamp: Papuzia Village",
         "stage_id": 0x39,
         "room_id": 0,
         "stamp": 7,
-        "require_item": ["Stamp Book", "Song of Birds", "Whip"],
-        "location_groups": ["Papuzia Village"],
-        "conditional": True
+        "location_groups": ["Papuzia Village", "Papuzia Archipelago"],
+        "conditional": True,
+        "ut_connect": "EVENT: Papuzia Archipelago Stamp Station",
+        "hint_entrance": ["Papuzia Archipelago North"],
+        "hint_entrance_secondary": ["Papuzia Board Train", "Papuzia Shop", "Papuzia South House", "Papuzia Wise One's House", "Papuzia NW House"],
     },
-
     "Papuzia Village NE Chest": {
-        "region_id": "papuchia village",
+        "region_id": "papuzia village",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
         "stage_id": 0x2C,
         "room_id": 0,
@@ -1785,35 +2074,36 @@ LOCATIONS_DATA = {
         "x_max": 40000,
         "z_max": -25000,
         "location_groups": ["Papuzia Village"],
+        "hint_entrance": ["Papuzia Board Train", "Papuzia South",
+                          "Papuzia Shop", "Papuzia South House", "Papuzia Wise One's House", "Papuzia NW House"],
     },
-
-    "Papuzia Village SW Chest": {
-        "region_id": "papuchia village south",
+    "Papuzia Archipelago W Chest": {
+        "region_id": "papuzia archipelago",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "stage_id": 0x39,
         "room_id": 0,
         "x_max": -40000,
         "z_min": -20000,
         "z_max": 15000,
-        "require_item": ["Spirit Flute", "Song of Birds", "Whip"],
-        "location_groups": ["Papuzia Village"],
+        "location_groups": ["Papuzia Village", "Papuzia Archipelago"],
+        "hint_entrance": ["Papuzia Archipelago North"],
+        "hint_entrance_secondary": ["Papuzia Board Train", "Papuzia Shop", "Papuzia South House", "Papuzia Wise One's House", "Papuzia NW House"],
     },
-
-    "Papuzia Village S Center Chest": {
-        "region_id": "papuchia village south",
+    "Papuzia Archipelago Center Island Chest": {
+        "region_id": "papuzia archipelago",
         "vanilla_item": "Big Green Rupee (100)",
         "stage_id": 0x39,
         "room_id": 0,
         "x_min": 5000,
         "x_max": 40000,
         "z_max": -45000,
-        "require_item": ["Spirit Flute", "Song of Birds", "Whip"],
-        "location_groups": ["Papuzia Village"],
+        "location_groups": ["Papuzia Village", "Papuzia Archipelago"],
+        "hint_entrance": ["Papuzia Archipelago North"],
+        "hint_entrance_secondary": ["Papuzia Board Train", "Papuzia Shop", "Papuzia South House", "Papuzia Wise One's House", "Papuzia NW House"],
     },
 
-
     # Marine (Ocean) Temple
-    "Marine Temple Song Statue": {
+    "Marine Temple Lobby Song Statue": {
         "region_id": "oct song statue",
         "vanilla_item": "Song of Healing",
         "item_override": "Nothing!",
@@ -1821,11 +2111,12 @@ LOCATIONS_DATA = {
         "room_id": 0xA,
         "x_max": -16000,
         "z_max": -35000,
-        "dungeon": "Marine Temple",
-        "location_groups": ["Song Statue"]
+        "post_dungeon": "Marine Temple",
+        "location_groups": ["Song Statue"],
+        "hint_entrance": ["Marine Temple Lobby Board Train", "Marine Temple Lobby Enter Dungeon", "Marine Temple Lobby Blue Warp"],
     },
     "Marine Temple 3F Whip Chest": {
-        "region_id": "oct whip chest",
+        "region_id": "oct 3f post arena",
         "vanilla_item": "Whip",
         "stage_id": 0x1B,
         "room_id": 2,
@@ -1834,40 +2125,49 @@ LOCATIONS_DATA = {
         "z_min": -25000,
         "z_max": 25000,
         "dungeon": "Marine Temple",
-        "require_item": [],
+        "hint_entrance": ["Marine Temple 3F East Staircase", "Marine Temple 3F North Staircase",
+                          "Marine Temple 3F West Staircase", "Marine Temple 3F South Staircase"],
+        "hint_entrance_secondary": ["Marine Temple 1F Exit", "Marine Temple 7F North Staircase", "Marine Temple 7F Blue Warp"],
+        "hint_entrance_tertiary": ["Marine Temple Lobby Board Train"]
     },
 
-    "Marine Temple 2F Log Chest": {
-        "region_id": "oct whip",
+    "Marine Temple 2F South Chest": {
+        "region_id": "oct 2f logs",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
         "stage_id": 0x1B,
         "room_id": 1,
         "x_min": -40000,
         "z_min": 50000,
         "dungeon": "Marine Temple",
-        "require_item": ["Whip"],
+        "hint_entrance": ["Marine Temple 2F NE Staircase", "Marine Temple 2F East Staircase"],
+        "hint_entrance_secondary": ["Marine Temple 1F Exit", "Marine Temple 7F North Staircase", "Marine Temple 7F Blue Warp"],
+        "hint_entrance_tertiary": ["Marine Temple Lobby Board Train"]
     },
 
     "Marine Temple 1F Vines Chest": {
-        "region_id": "oct whip",
+        "region_id": "oct 1f whip",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
         "stage_id": 0x1B,
         "room_id": 0,
         "x_min": 55000,
         "z_min": -10000,
         "dungeon": "Marine Temple",
-        "require_item": ["Whip"],
+        "hint_entrance": ["Marine Temple 1F Exit", "Marine Temple 1F North Staircase", "Marine Temple 1F East Staircase"],
+        "hint_entrance_secondary": ["Marine Temple 7F North Staircase", "Marine Temple 7F Blue Warp",
+                                    "Marine Temple Lobby Board Train", "Marine Temple Lobby Blue Warp"],
     },
 
     "Marine Temple 1F Lever Chest": {
-        "region_id": "oct whip",
+        "region_id": "oct 1f whip",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "stage_id": 0x1B,
         "room_id": 0,
         "x_min": 0,
         "z_max": -45000,
         "dungeon": "Marine Temple",
-        "require_item": ["Whip"],
+        "hint_entrance": ["Marine Temple 1F Exit", "Marine Temple 1F North Staircase", "Marine Temple 1F East Staircase"],
+        "hint_entrance_secondary": ["Marine Temple 7F North Staircase", "Marine Temple 7F Blue Warp",
+                                    "Marine Temple Lobby Board Train", "Marine Temple Lobby Blue Warp"],
     },
 
     "Marine Temple 2F Stamp Station": {
@@ -1878,81 +2178,102 @@ LOCATIONS_DATA = {
         "stamp": 0xE,
         "dungeon": "Marine Temple",
         "require_item": ["Stamp Book", "Whip"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Marine Temple Stamp Station",
+        "hint_entrance": ["Marine Temple Stamp Room Exit"],
+        "hint_entrance_secondary": ["Marine Temple 1F Exit", "Marine Temple 7F North Staircase", "Marine Temple 7F Blue Warp"],
+        "hint_entrance_tertiary": ["Marine Temple Lobby Board Train"]
     },
 
-    "Marine Temple 3F Puzzle Chest": {
-        "region_id": "oct 3f whip",
+    "Marine Temple 3F South Chest": {
+        "region_id": "oct 3f s chest",
         "vanilla_item": "Small Key (Marine Temple)",
         "stage_id": 0x1B,
         "room_id": 2,
         "x_max": -30000,
         "z_min": 30000,
         "dungeon": "Marine Temple",
-        "require_item": ["Whip"],
+        "hint_entrance": ["Marine Temple 3F South Staircase"],
+        "hint_entrance_secondary": ["Marine Temple 1F Exit", "Marine Temple 7F North Staircase", "Marine Temple 7F Blue Warp"],
+        "hint_entrance_tertiary": ["Marine Temple Lobby Board Train"]
     },
-
     "Marine Temple 3F NE Chest": {
-        "region_id": "oct 3f whip",
+        "region_id": "oct 3f n chest",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "stage_id": 0x1B,
         "room_id": 2,
         "x_min": 50000,
         "z_max": -40000,
         "dungeon": "Marine Temple",
-        "require_item": ["Whip"],
+        "hint_entrance": ["Marine Temple 3F East Staircase", "Marine Temple 3F North Staircase",
+                          "Marine Temple 3F West Staircase", "Marine Temple 3F South Staircase"],
+        "hint_entrance_secondary": ["Marine Temple 1F Exit", "Marine Temple 7F North Staircase", "Marine Temple 7F Blue Warp"],
+        "hint_entrance_tertiary": ["Marine Temple Lobby Board Train"]
     },
     "Marine Temple 6F E Chest": {
-        "region_id": "oct 6f chest",
+        "region_id": "oct 6f e chest",
         "vanilla_item": "Small Key (Marine Temple)",
         "stage_id": 0x1B,
         "room_id": 5,
         "x_min": 75000,
         "z_max": -5000,
         "dungeon": "Marine Temple",
-        "require_item": ["Whip"],
+        "hint_entrance": ["Marine Temple 6F Central Staircase", "Marine Temple 6F NW Staircase", "Marine Temple 6F SE Staircase"],
+        "hint_entrance_secondary": ["Marine Temple 1F Exit", "Marine Temple 7F North Staircase", "Marine Temple 7F Blue Warp"],
+        "hint_entrance_tertiary": ["Marine Temple Lobby Board Train"]
     },
     "Marine Temple 6F W Chest": {
-        "region_id": "oct 6f chest",
+        "region_id": "oct 6f w chest",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "stage_id": 0x1B,
         "room_id": 5,
         "x_max": -50000,
         "z_max": -5000,
         "dungeon": "Marine Temple",
-        "require_item": ["Whip"],
+        "hint_entrance": ["Marine Temple 6F Central Staircase", "Marine Temple 6F NW Staircase", "Marine Temple 6F SE Staircase"],
+        "hint_entrance_secondary": ["Marine Temple 1F Exit", "Marine Temple 7F North Staircase", "Marine Temple 7F Blue Warp"],
+        "hint_entrance_tertiary": ["Marine Temple Lobby Board Train"]
     },
     "Marine Temple 6F Boss Key": {
-        "region_id": "oct bk loc",
+        "region_id": "oct 6f bk loc",
         "vanilla_item": "Boss Key (Marine Temple)",
         "dungeon": "Marine Temple",
-        "conditional": True
+        "conditional": True,
+        "hint_entrance": ["Marine Temple 6F Central Staircase", "Marine Temple 6F NW Staircase", "Marine Temple 6F SE Staircase"],
+        "hint_entrance_secondary": ["Marine Temple 1F Exit", "Marine Temple 7F North Staircase", "Marine Temple 7F Blue Warp"],
+        "hint_entrance_tertiary": ["Marine Temple Lobby Board Train"]
     },
 
-    "Marine Temple Heart Container": {
+    "Cactops Heart Container": {
         "region_id": "oct phytops",
         "vanilla_item": "Heart Container",
         "stage_id": 0x20,
         "room_id": 0,
         "y": 88472,
-        "dungeon": "Marine Temple",
+        "post_dungeon": "Marine Temple",
         "require_item": ["Whip", "Sword (Progressive)", "Small Key (Ocean Temple)"],
         "location_groups": ["Cactops"],
+        "hint_entrance": ["Cactops Exit"],
+        "hint_entrance_secondary": ["Marine Temple 7F South Staircase", "Marine Temple 7F Blue Warp"],
+        "hint_entrance_tertiary": ["Marine Temple Lobby Board Train", "Marine Temple Lobby Enter Dungeon", "Marine Temple 1F Exit"]
     },
 
-    "Marine Temple Dungeon Reward": {
+    "Cactops Boss Reward": {
         "region_id": "oct phytops",
         "vanilla_item": "Ocean Source",
-        "address": STAddr.adv_flags_0,
-        "value": 0x40,
+        "address": STAddr.adv_flags_17,
+        "value": 0x1,
         "stage_id": 0x20,
         "room_id": 0,
-        "dungeon": "Marine Temple",
+        "post_dungeon": "Marine Temple",
         "require_item": ["Whip", "Sword (Progressive)", "Small Key (Ocean Temple)"],
         "goal": "GOAL: Defeat Cactops",
         "location_groups": ["Cactops"],
         "ut_connect": "EVENT: Defeat Cactops",
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Cactops Exit"],
+        "hint_entrance_secondary": ["Marine Temple 7F South Staircase", "Marine Temple 7F Blue Warp"],
+        "hint_entrance_tertiary": ["Marine Temple Lobby Board Train", "Marine Temple Lobby Enter Dungeon", "Marine Temple 1F Exit"]
     },
 
     # Pirate Hideout
@@ -1964,7 +2285,9 @@ LOCATIONS_DATA = {
         "stamp": 0x11,
         "require_item": ["Stamp Book", "Whip", "Song of Birds"],
         "location_groups": ["Pirate Hideout"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Pirate Hideout Stamp Station",
+        "hint_entrance": ["Pirate Hideout Game Cave", "Pirate Hideout Board Train", "Pirate Hideout Bomb Cave"],
     },
 
     "Pirate Hideout Secret Cave Left Treasure": {
@@ -1974,6 +2297,8 @@ LOCATIONS_DATA = {
         "room_id": 1,
         "x_max": -3800,
         "location_groups": ["Pirate Hideout"],
+        "hint_entrance": ["Treasure Cave Exit"],
+        "hint_entrance_secondary": ["Pirate Hideout Board Train"],
     },
 
     "Pirate Hideout Secret Cave Mid Treasure": {
@@ -1984,6 +2309,8 @@ LOCATIONS_DATA = {
         "x_min": -3800,
         "x_max": 10000,
         "location_groups": ["Pirate Hideout"],
+        "hint_entrance": ["Treasure Cave Exit"],
+        "hint_entrance_secondary": ["Pirate Hideout Board Train"],
     },
 
     "Pirate Hideout Secret Cave Right Treasure": {
@@ -1992,6 +2319,8 @@ LOCATIONS_DATA = {
         "stage_id": 0x3A,
         "room_id": 1,
         "x_min": 10000,
+        "hint_entrance": ["Treasure Cave Exit"],
+        "hint_entrance_secondary": ["Pirate Hideout Board Train"],
     },
 
     "Pirate Hideout Minigame 3000-4000": {
@@ -2008,6 +2337,7 @@ LOCATIONS_DATA = {
         "location_groups": ["Pirate Hideout", "Pirate Hideout Minigame",
                             "Pirate Hideout Easy", "Pirate Hideout Minigame Easy"],
         "slot_data": [("randomize_minigames", [1, 3, 4])],
+        "hint_entrance": ["Pirate Hideout Game Cave", "Pirate Hideout Board Train", "Pirate Hideout Bomb Cave"],
       },
 
     "Pirate Hideout Minigame 4000-5000": {
@@ -2024,6 +2354,7 @@ LOCATIONS_DATA = {
         "location_groups": ["Pirate Hideout", "Pirate Hideout Minigame",
                             "Pirate Hideout Hard", "Pirate Hideout Minigame Hard"],
         "slot_data": [("randomize_minigames", [2, 3, 4])],
+        "hint_entrance": ["Pirate Hideout Game Cave", "Pirate Hideout Board Train", "Pirate Hideout Bomb Cave"],
       },
     "Pirate Hideout Minigame 5000+": {
         "region_id": "pirate hideout minigame",
@@ -2038,187 +2369,233 @@ LOCATIONS_DATA = {
         "location_groups": ["Pirate Hideout", "Pirate Hideout Minigame",
                             "Pirate Hideout Expert", "Pirate Hideout Minigame Expert"],
         "slot_data": [("randomize_minigames", [4, 5])],
+        "hint_entrance": ["Pirate Hideout Game Cave", "Pirate Hideout Board Train", "Pirate Hideout Bomb Cave"],
     },
     # Lost at Sea Station
 
     "Lost at Sea Buried Chest": {
         "region_id": "las outside chest",
         "vanilla_item": ITEM_GROUPS["Rare Treasures"],
+        "location_groups": ["Lost at Sea"],
         "stage_id": 0x39,
         "room_id": 0xA,
         "x_min": 0,
         "z_min": 10000,
         "x_max": 25000,
         "z_max": 40000,
-        "require_item": ["Song of Discovery"],  # Song of Light recommended for all checks
+        "hint_entrance": ["Lost at Sea Cave", "Lost at Sea Board Train"],
     },
 
     "Lost at Sea Plain Phantom Chest": {
-        "region_id": "las 1st room chest",
+        "region_id": "las 1",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
+        "location_groups": ["Lost at Sea", "LAS Dungeon"],
         "stage_id": 0x42,
         "room_id": 0x2,
         "x_max": -55000,
-        "farmable": True,
+        "farmable": "remove",  # remove: don't load location. process: load as usual
         "require_item": ["Song of Birds", "Song of Awakening", "Whip"],
+        "hint_entrance": ["Lost at Sea Lobby Exit"],
+        "hint_entrance_secondary": ["Lost at Sea Board Train"],
     },
 
     "Lost at Sea Torch Phantom Chest": {
-        "region_id": "las 2nd room chest",
+        "region_id": "las 2",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
+        "location_groups": ["Lost at Sea", "LAS Dungeon"],
         "stage_id": 0x42,
         "room_id": 0x3,
         "x_min": 50000,
         "require_item": ["Song of Birds", "Song of Awakening", "Whip", "Boomerang"],
+        "hint_entrance": ["Lost at Sea Lobby Exit"],
+        "hint_entrance_secondary": ["Lost at Sea Board Train"],
     },
 
     "Lost at Sea Warp Phantom Chest": {
-        "region_id": "las 3rd room chest",
+        "region_id": "las 3",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
+        "location_groups": ["Lost at Sea", "LAS Dungeon"],
         "stage_id": 0x42,
         "room_id": 4,
         "x_min": -45000,
         "z_max": -15000,
-        "farmable": True,
-        "require_item": ["Song of Birds", "Song of Awakening", "Whip", "Boomerang", "Whirlwind"],
+        "farmable": "remove",
+        "hint_entrance": ["Lost at Sea Lobby Exit"],
+        "hint_entrance_secondary": ["Lost at Sea Board Train"],
     },
 
     "Lost at Sea Wrecker Phantom SW Chest": {
-        "region_id": "las 4th room chest",
+        "region_id": "las 4",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
+        "location_groups": ["Lost at Sea", "LAS Dungeon"],
         "stage_id": 0x42,
         "room_id": 5,
         "x_max": -85000,
-        "farmable": True,
-        "require_item": ["Song of Birds", "Song of Awakening", "Whip", "Boomerang", "Whirlwind"],
+        "farmable": "remove",
+        "hint_entrance": ["Lost at Sea Lobby Exit"],
+        "hint_entrance_secondary": ["Lost at Sea Board Train"],
     },
 
     "Lost at Sea Wrecker Phantom NE Chest": {
-        "region_id": "las 4th room chest",
+        "region_id": "las 4",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
+        "location_groups": ["Lost at Sea", "LAS Dungeon"],
         "stage_id": 0x42,
         "room_id": 5,
         "x_min": 85000,
-        "farmable": True,
-        "require_item": ["Song of Birds", "Song of Awakening", "Whip", "Boomerang", "Whirlwind"],
+        "farmable": "remove",
+        "hint_entrance": ["Lost at Sea Lobby Exit"],
+        "hint_entrance_secondary": ["Lost at Sea Board Train"],
 
     },
     "Lost at Sea Final Challenge SE Chest": {
-        "region_id": "las 5th room",
+        "region_id": "las 5 se",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
+        "location_groups": ["Lost at Sea", "LAS Dungeon"],
         "stage_id": 0x42,
         "room_id": 6,
         "x_min": 40000,
         "z_min": 20000,
-        "farmable": True,
-        "require_item": ["Song of Birds", "Song of Awakening", "Whip", "Boomerang", "Whirlwind"],
-        # bombs recommended for 5th room chests
+        "farmable": "remove",
+        "hint_entrance": ["Lost at Sea Lobby Exit"],
+        "hint_entrance_secondary": ["Lost at Sea Board Train"],
     },
 
     "Lost at Sea Final Challenge NE Chest": {
-        "region_id": "las 5th room",
+        "region_id": "las 5",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
+        "location_groups": ["Lost at Sea", "LAS Dungeon"],
         "stage_id": 0x42,
         "room_id": 6,
         "x_min": 40000,
         "z_max": -20000,
-        "farmable": True,
-        "require_item": ["Song of Birds", "Song of Awakening", "Whip", "Boomerang", "Whirlwind"],
+        "farmable": "remove",
+        "hint_entrance": ["Lost at Sea Lobby Exit"],
+        "hint_entrance_secondary": ["Lost at Sea Board Train"],
     },
 
     "Lost at Sea Final Challenge SW Chest": {
-        "region_id": "las 5th room",
+        "region_id": "las 5 sw",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
+        "location_groups": ["Lost at Sea", "LAS Dungeon"],
         "stage_id": 0x42,
         "room_id": 6,
         "z_min": 5000,
         "x_max": -30000,
-        "farmable": True,
-        "require_item": ["Song of Birds", "Song of Awakening", "Whip", "Boomerang", "Whirlwind"],
+        "farmable": "remove",
+        "hint_entrance": ["Lost at Sea Lobby Exit"],
+        "hint_entrance_secondary": ["Lost at Sea Board Train"],
     },
 
     "Lost at Sea Final Challenge NW Chest": {
-        "region_id": "las 5th room",
+        "region_id": "las 5 nw",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
+        "location_groups": ["Lost at Sea", "LAS Dungeon"],
         "stage_id": 0x42,
         "room_id": 6,
         "x_max": -40000,
         "z_max": -20000,
-        "farmable": True,
-        "require_item": ["Song of Birds", "Song of Awakening", "Whip", "Boomerang", "Whirlwind"],
+        "farmable": "remove",
+        "hint_entrance": ["Lost at Sea Lobby Exit"],
+        "hint_entrance_secondary": ["Lost at Sea Board Train"],
     },
 
     "Lost at Sea Final Chest": {
-        "region_id": "las 5th room",
+        "region_id": "las 6",
         "vanilla_item": "Treasure: Regal Ring",
+        "location_groups": ["Lost at Sea", "LAS Dungeon"],
         "stage_id": 0x42,
         "room_id": 7,
-        "farmable": True,
+        "farmable": "conditional",
         "ut_connect": "EVENT: Complete Lost at Sea Dungeon",
-        "require_item": ["Song of Birds", "Song of Awakening", "Whip", "Boomerang", "Whirlwind"],
+        "hint_entrance": ["Lost at Sea Lobby Exit"],
+        "hint_entrance_secondary": ["Lost at Sea Board Train"],
     },
 
     # ========= Fire Realm ==========
-    # Goron Villaga
-    "Goron Village West Steel Chest": {  # Used for a delay pickup to make sure the key gets removed
+    # Goron Village
+    "Goron Field Steel Chest": {  # Used for a delay pickup to make sure the key gets removed
         "stage_id": 0x2D,
         "room_id": 0x3,
         "z_max": 20000,
         "z_min": 0,
         "x_min": 50000,
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
-        "region_id": "goron village",
-        "location_groups": ["Goron Village"],
+        "region_id": "goron field",
+        "location_groups": ["Goron Village", "Goron Field"],
+        "hint_entrance": ["Goron Field East", "Goron Field North"],
+        "hint_entrance_secondary": ["Goron Village Board Train", "Goron Village Shop",
+            "Goron Village SW House", "Goron Village Center House", "Goron Village SE House",
+            "Goron Village Elder's House", "Goron Village NW House", "Goron Village East Lava House"],
     },
-    "Goron Village West Stamp Station": {
+    "Goron Field Stamp Station": {
         "stage_id": 0x2D,
         "room_id": 0x3,
         "stamp": 0x9,
-        "region_id": "goron village stamp",
+        "region_id": "goron field stamp station",
         "vanilla_item": "Stamp: Goron Village",
         "conditional": True,
-        "location_groups": ["Goron Village"],
+        "ut_connect": "EVENT: Goron Field Stamp Station",
+        "location_groups": ["Goron Village", "Goron Field"],
+        "hint_entrance": ["Goron Field East", "Goron Field North"],
+        "hint_entrance_secondary": ["Goron Village Board Train", "Goron Village Shop",
+            "Goron Village SW House", "Goron Village Center House", "Goron Village SE House",
+            "Goron Village Elder's House", "Goron Village NW House", "Goron Village East Lava House"],
     },
-    "Goron Village West NE Chest": {
+    "Goron Field NE Chest": {
         "stage_id": 0x2D,
         "room_id": 0x3,
         "z_max": -55000,
         "x_min": 95000,
-        "region_id": "goron whip",
+        "region_id": "goron field ne",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
-        "location_groups": ["Goron Village"],
+        "location_groups": ["Goron Village", "Goron Field"],
+        "hint_entrance": ["Goron Field East", "Goron Field North"],
+        "hint_entrance_secondary": ["Goron Village Board Train", "Goron Village Shop",
+            "Goron Village SW House", "Goron Village Center House", "Goron Village SE House",
+            "Goron Village Elder's House", "Goron Village NW House", "Goron Village East Lava House"],
     },
-    "Goron Village West Center Chest": {
+    "Goron Field Center Chest": {
         "stage_id": 0x2D,
         "room_id": 0x3,
         "z_min": 15000,
         "x_max": 20000,
         "x_min": 5000,
-        "region_id": "goron whip",
+        "region_id": "goron field ne",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
-        "location_groups": ["Goron Village"],
+        "location_groups": ["Goron Village", "Goron Field"],
+        "hint_entrance": ["Goron Field East", "Goron Field North"],
+        "hint_entrance_secondary": ["Goron Village Board Train", "Goron Village Shop",
+            "Goron Village SW House", "Goron Village Center House", "Goron Village SE House",
+            "Goron Village Elder's House", "Goron Village NW House", "Goron Village East Lava House"],
     },
     "Goron Village Get Wagon": {
         "stage_id": 0x2E,
         "room_id": 0x0,
         "address": STAddr.adv_flags_21,
         "value": 8,  # Spawn kagoron during cutscene lol
-        "region_id": "goron whip",
+        "region_id": "goron village kagoron",
         "vanilla_item": "Wagon",
         "item_override": "Nothing!",
         "slot_data": [("randomize_cargo", [1, 2, 3])],
         "conditional": True,
         "location_groups": ["Goron Village", "Cargo Locations"],
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Goron Village Board Train", "Goron Village Shop", "Goron Village West",
+            "Goron Village SW House", "Goron Village Center House", "Goron Village SE House",
+            "Goron Village Elder's House", "Goron Village NW House", "Goron Village East Lava House"],
     },
     "Goron Village Chest Above Elder's House": {
         "stage_id": 0x2E,
         "room_id": 0x0,
         "y": 14746,
         "x_max": -45000,
-        "region_id": "goron ice event",
+        "region_id": "goron plaza",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "location_groups": ["Goron Village"],
+        "hint_entrance": ["Goron Village Board Train", "Goron Village Shop", "Goron Village West",
+            "Goron Village SW House", "Goron Village Center House", "Goron Village SE House",
+            "Goron Village Elder's House", "Goron Village NW House", "Goron Village East Lava House"],
     },
 
     # Valley Sanc
@@ -2228,27 +2605,37 @@ LOCATIONS_DATA = {
         "y": 4915,
         "x_max": -15000,
         "x_min": -35000,
-        "region_id": "valley sanc tunnel",
+        "region_id": "valley sanc tunnel east",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "location_groups": ["Valley Sanctuary", "Goron Village"],
+        "hint_entrance": ["Burning Tunnel East Staircase", "Burning Tunnel West Exit"],
+        "hint_entrance_secondary": ["Elder Goron House Exit", "Goron Village Enclave North"],
+        "hint_entrance_tertiary": ["Goron Village Board Train"]
     },
     "Valley Sanctuary NW Chest": {
         "stage_id": 0x33,
         "room_id": 0x0,
         "x_max": -85000,
         "z_max": -50000,
-        "region_id": "valley sanc",
+        "region_id": "valley sanc upper",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "location_groups": ["Valley Sanctuary"],
+        "hint_entrance": ["Valley Sanctuary South"],
+        "hint_entrance_secondary": ["Goron Village Enclave Staircase"],
+        "hint_entrance_tertiary": ["Elder Goron House Exit"]
     },
     "Valley Sanctuary Stamp Station": {
         "stage_id": 0x33,
         "room_id": 0x0,
         "stamp": 0xA,
         "conditional": True,
-        "region_id": "valley sanc stamp",
+        "region_id": "valley sanc stamp station",
+        "ut_connect": "EVENT: Valley Sanctuary Stamp Station",
         "vanilla_item": "Stamp: Valley Sanctuary",
         "location_groups": ["Valley Sanctuary"],
+        "hint_entrance": ["Valley Sanctuary South"],
+        "hint_entrance_secondary": ["Goron Village Enclave Staircase"],
+        "hint_entrance_tertiary": ["Elder Goron House Exit"]
     },
     "Valley Sanctuary Song of Restoration": {
         "stage_id": 0x33,
@@ -2259,7 +2646,9 @@ LOCATIONS_DATA = {
         "value": 0x10,
         "minigame": [1, 2, 3, 4, 5, 6],
         "conditional": True,
-        "location_groups": ["Valley Sanctuary", "Restoration Duets"],
+        "hint_entrance": ["Embrose's Sanctuary Exit"],
+        "hint_entrance_secondary": ["Valley Sanctuary South"],
+        "hint_entrance_tertiary": ["Elder Goron House Exit"]
     },
 
     # Snurglars
@@ -2286,147 +2675,197 @@ LOCATIONS_DATA = {
     },
 
     # Mountain Temple
-    "Mountain Temple Song Statue": {
+    "Mountain Temple Lobby Song Statue": {
         "stage_id": 0x1C,
         "room_id": 0xa,
         "region_id": "mtt song statue",
         "vanilla_item": "Song of Healing",
         "item_override": "Nothing!",
-        "dungeon": "Mountain Temple"
+        "post_dungeon": "Mountain Temple",
+        "hint_entrance": ["Mountain Temple Lobby Board Train", "Mountain Temple Lobby Enter Dungeon",
+                          "Mountain Temple Lobby Blue Warp"],
     },
     "Mountain Temple 2F Left Chest": {
         "stage_id": 0x1C,
         "room_id": 0x6,
-        "region_id": "mtt left",
+        "region_id": "mtt 2f left",
         "vanilla_item": "Small Key (Mountain Temple)",
         "x_max": -50000,
         "z_min": -45000,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "hint_entrance": ["Mountain Temple 2F SW Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple 1F Right Maze Chest": {
         "stage_id": 0x1C,
         "room_id": 0x0,
-        "region_id": "mtt right",
+        "region_id": "mtt 1f right",
         "vanilla_item": ["Red Potion", "Big Green Rupee (100)"],
         "x_min": -50000,
         "z_min": 60000,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "hint_entrance": ["Mountain Temple 1F Exit", "Mountain Temple 1F SW Staircase",
+                          "Mountain Temple 1F SE Staircase", "Mountain Temple 1F Central Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple B4 North Staircase", "Mountain Temple Lobby Blue Warp",
+                                    "Mountain Temple B4 Blue Warp", "Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple 2F Center Chest": {
         "stage_id": 0x1C,
         "room_id": 0x6,
-        "region_id": "mtt 2f right",
+        "region_id": "mtt 2f chest",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
         "x_min": -10000,
         "x_max": 0,
         "z_min": -15000,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "hint_entrance": ["Mountain Temple 2F SE Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple 2F NW Chest": {
         "stage_id": 0x1C,
         "room_id": 0x6,
-        "region_id": "mtt 2f right",
+        "region_id": "mtt 2f chest",
         "vanilla_item": "Small Key (Mountain Temple)",
         "x_max": -45000,
         "z_max": -55000,
         "dungeon": "Mountain Temple",
-        "delay_pickup": ["Mountain Temple 2F Stalfos"]
+        "delay_pickup": ["Mountain Temple 2F Stalfos"],
+        "hint_entrance": ["Mountain Temple 2F SE Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple 2F Heatoise Chest": {
         "stage_id": 0x1C,
-        "room_id": 0x6,
-        "region_id": "mtt heatoise",
+        "room_id": [0x6, 0x1],
+        "region_id": "mtt 2f post arena",
         "vanilla_item": "Bow (Progressive)",
         "item_override": "Nothing!",
         "x_min": -10000,
         "z_max": -55000,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "ut_connect": "EVENT: Mountain Temple 2F Heatoise Arena",
+        "hint_entrance": ["Mountain Temple 2F Central Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple 1F NE Chest": {
         "stage_id": 0x1C,
         "room_id": 0,
-        "region_id": "mtt 1f ne",
+        "region_id": "mtt 1f n chest",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "x_min": 60000,
         "z_max": -40000,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "hint_entrance": ["Mountain Temple 1F North Staircase", "Mountain Temple 1F NE Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple B2 NE Chest": {
         "stage_id": 0x1C,
         "room_id": 3,
-        "region_id": "mtt b2",
+        "region_id": "mtt b2 e",
         "vanilla_item": ITEM_GROUPS["Common Treasures"],
         "x_min": 80000,
         "z_max": -50000,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "hint_entrance": ["Mountain Temple B2 North Staircase", "Mountain Temple B2 West Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple B2 SE Chest": {
         "stage_id": 0x1C,
         "room_id": 3,
-        "region_id": "mtt b2",
+        "region_id": "mtt b2 e",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "x_min": 50000,
         "z_min": 50000,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "hint_entrance": ["Mountain Temple B2 North Staircase", "Mountain Temple B2 West Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple B1 Heatoise Chest": {
         "stage_id": 0x1C,
         "room_id": 2,
-        "region_id": "mtt b1 arena",
+        "region_id": "mtt b1 post arena",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "z_min": 10000,
         "y": 0,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "hint_entrance": ["Mountain Temple B1 East Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple B2 NW Chest": {
         "stage_id": 0x1C,
         "room_id": 3,
-        "region_id": "mtt b1 arena",
+        "region_id": "mtt b2 w",
         "vanilla_item": "Small Key (Mountain Temple)",
         "x_max": -80000,
         "z_max": -50000,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "hint_entrance": ["Mountain Temple B2 West Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple B1 Stamp Station": {
         "stage_id": 0x1C,
         "room_id": 2,
-        "region_id": "mtt stamp",
+        "region_id": "mtt b1 stamp station",
         "vanilla_item": "Stamp: Mountain Temple",
         "stamp": 0xF,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "ut_connect": "EVENT: Mountain Temple Stamp Station",
+        "hint_entrance": ["Mountain Temple B1 North Staircase", "Mountain Temple B1 Central Staircase", "Mountain Temple B1 NE Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple B3 N Chest": {
         "stage_id": 0x1C,
         "room_id": 4,
-        "region_id": "mtt b1 cart",
+        "region_id": "mtt b3 chest",
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "x_max": 25000,
         "z_max": -60000,
-        "dungeon": "Mountain Temple"
+        "dungeon": "Mountain Temple",
+        "hint_entrance": ["Mountain Temple B3 South Staircase", "Mountain Temple B3 North Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
     "Mountain Temple B3 Boss Key": {
-        "region_id": "mtt bk",
+        "region_id": "mtt b3 bk",
         "vanilla_item": "Boss Key (Mountain Temple)",
         "dungeon": "Mountain Temple",
         "conditional": True,
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Mountain Temple B3 South Staircase", "Mountain Temple B3 North Staircase"],
+        "hint_entrance_secondary": ["Mountain Temple 1F Exit", "Mountain Temple B4 North Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train"],
     },
-    "Mountain Temple Boss Heart Container": {
+    "Vulcano Heart Container": {
         "stage_id": 0x21,
-        "region_id": "mtt boss",
+        "region_id": "mtt vulcano",
         "vanilla_item": "Heart Container",
-        "dungeon": "Mountain Temple",
+        "post_dungeon": "Mountain Temple",
+        "hint_entrance": ["Vulcano Exit"],
+        "hint_entrance_secondary": ["Mountain Temple B4 South Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train", "Mountain Temple Lobby Enter Dungeon", "Mountain Temple 1F Exit"],
     },
-    "Mountain Temple Dungeon Reward": {
-        "address": STAddr.adv_flags_0,
-        "value": 0x80,
+    "Vulcano Boss Reward": {
+        "address": STAddr.adv_flags_20,
+        "value": 0x10,
         "stage_id": 0x21,
-        "region_id": "mtt boss",
+        "region_id": "mtt vulcano",
         "vanilla_item": "Fire Source",
         "ut_connect": "EVENT: Defeat Vulcano",
         "goal": "GOAL: Defeat Vulcano",
-        "dungeon": "Mountain Temple",
-        "no_model": True
+        "post_dungeon": "Mountain Temple",
+        "no_model": True,
+        "hint_entrance": ["Vulcano Exit"],
+        "hint_entrance_secondary": ["Mountain Temple B4 South Staircase", "Mountain Temple B4 Blue Warp"],
+        "hint_entrance_tertiary": ["Mountain Temple Lobby Board Train", "Mountain Temple Lobby Enter Dungeon", "Mountain Temple 1F Exit"],
     },
     # Goron Target Range
     "Goron Target Range": {
@@ -2436,7 +2875,8 @@ LOCATIONS_DATA = {
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"] | ITEM_GROUPS["Rare Treasures"] | {"Red Rupee (20)"} | ITEM_GROUPS["Big Rupees"],
         "minigame": [1, 2, 3, 4, 5],
         "location_groups": ["Goron Target Range"],
-        "conditional": True
+        "conditional": True,
+        "hint_entrance": ["Goron Target Range Board Train"],
     },
 
     # Disorientation Station
@@ -2448,99 +2888,125 @@ LOCATIONS_DATA = {
         "z_min": 5000,
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "location_groups": ["Disorientation Station"],
+        "hint_entrance": ["Disorientation Station Board Train", "Disorientation Station Cave"],
     },
     "Disorientation Station Climb Chest": {
         "stage_id": 0x40,
-        "region_id": "disorientation bird",
+        "region_id": "disorientation top",
         "x_max": -85000,
         "z_min": -10000,
         "vanilla_item": "Red Rupee (20)",
         "location_groups": ["Disorientation Station"],
+        "hint_entrance": ["Disorientation Station Board Train", "Disorientation Station Cave"],
     },
     "Disorientation Station Cliff Chest": {
         "stage_id": 0x40,
-        "region_id": "disorientation bird",
+        "region_id": "disorientation top",
         "x_min": 55000,
         "z_max": -40000,
         "vanilla_item": "Big Green Rupee (100)",
         "location_groups": ["Disorientation Station"],
+        "hint_entrance": ["Disorientation Station Board Train", "Disorientation Station Cave"],
     },
     "Disorientation Station Maze Chest": {
         "stage_id": 0x40,
         "room_id": 0x9,
         "region_id": "disorientation sod",
         "vanilla_item": "Treasure: Priceless Stone",
+        "ut_connect": "EVENT: Disorientation Maze Find Chest",
         "location_groups": ["Disorientation Station"],
+        "hint_entrance": ["D9 Down", "D9 Left", "D9 Right"],
+        "hint_entrance_secondary": ["Disorientation 5 Staircase"],
+        "hint_entrance_tertiary": ["Disorientation Station Board Train"],
     },
     "Disorientation Station Guard Gift": {
         "stage_id": 0x40,
         "x_max": -55000,
         "z_max": -30000,
-        "region_id": "disorientation sod",
+        "region_id": "disorientation gift",
         "vanilla_item": "Big Green Rupee (100)",
         "location_groups": ["Disorientation Station"],
+        "hint_entrance": ["Disorientation Station Board Train", "Disorientation Station Cave"],
     },
 
     # Ends of the Earth
     "Ends of the Earth Master Big Chest": {
         "stage_id": 0x41,
         "room_id": 0x4,
-        "region_id": "eote puzzles",
+        "region_id": "eote 4 chest",
         "vanilla_item": ITEM_GROUPS["Rare Treasures"],
-        "location_groups": ["Ends of the Earth"],
+        "location_groups": ["Ends of the Earth", "EotE Master"],
         "minigame": [1, 3, 4],
         "conditional": True,
-        "slot_data": [("randomize_minigames", [1, 3, 4])],
+        "any_slot_data": [("randomize_minigames", [1, 3, 4]), ("shuffle_eote", [1, 2, 3, 4])],
+        "hint_entrance": ["EotE 4 Exit", "EotE 4 Chest Exit"],
+        "hint_entrance_secondary": ["EotE 1 Exit"],
+        "hint_entrance_tertiary": ["Ends of the Earth Board Train"],
     },
     "Ends of the Earth Master Small Chest": {
         "stage_id": 0x41,
         "room_id": 0x1,
-        "region_id": "eote puzzles",
+        "region_id": "eote 1 chest",
         "vanilla_item": "Big Green Rupee (100)",
-        "location_groups": ["Ends of the Earth"],
+        "location_groups": ["Ends of the Earth", "EotE Master"],
         "minigame": [1, 3, 4],
         "conditional": True,
-        "slot_data": [("randomize_minigames", [1, 3, 4])],
+        "any_slot_data": [("randomize_minigames", [1, 3, 4]), ("shuffle_eote", [1, 2, 3, 4])],
+        "hint_entrance": ["EotE 1 Upper Entrance"],
+        "hint_entrance_secondary": ["EotE 1 Exit"],
+        "hint_entrance_tertiary": ["Ends of the Earth Board Train"],
     },
     "Ends of the Earth Tempered Big Chest": {
         "stage_id": 0x41,
         "room_id": 0x8,
-        "region_id": "eote puzzles",
+        "region_id": "eote 8 chest",
         "vanilla_item": "Heart Container",
-        "location_groups": ["Ends of the Earth"],
+        "location_groups": ["Ends of the Earth", "EotE Tempered"],
         "minigame": [2, 3, 4],
         "conditional": True,
-        "slot_data": [("randomize_minigames", [2, 3, 4])],
+        "any_slot_data": [("randomize_minigames", [2, 3, 4]), ("shuffle_eote", [1, 2, 3, 4])],
+        "hint_entrance": ["EotE 8 Exit", "EotE 8 Chest Exit"],
+        "hint_entrance_secondary": ["EotE 5 Exit"],
+        "hint_entrance_tertiary": ["Ends of the Earth Board Train"],
     },
     "Ends of the Earth Tempered Small Chest": {
         "stage_id": 0x41,
         "room_id": 0x5,
-        "region_id": "eote puzzles",
+        "region_id": "eote 5 chest",
         "vanilla_item": "Big Green Rupee (100)",
-        "location_groups": ["Ends of the Earth"],
+        "location_groups": ["Ends of the Earth", "EotE Tempered"],
         "minigame": [2, 3, 4],
         "conditional": True,
-        "slot_data": [("randomize_minigames", [2, 3, 4])],
+        "any_slot_data": [("randomize_minigames", [2, 3, 4]), ("shuffle_eote", [1, 2, 3, 4])],
+        "hint_entrance": ["EotE 5 Upper Entrance"],
+        "hint_entrance_secondary": ["EotE 5 Exit"],
+        "hint_entrance_tertiary": ["Ends of the Earth Board Train"],
     },
     "Ends of the Earth Golden Big Chest": {
         "stage_id": 0x41,
         "room_id": 0xC,
-        "region_id": "eote puzzles",
+        "region_id": "eote c chest",
         "vanilla_item": "Treasure: Regal Ring",
-        "location_groups": ["Ends of the Earth"],
+        "location_groups": ["Ends of the Earth", "EotE Golden"],
         "minigame": [4, 5],
         "conditional": True,
-        "slot_data": [("randomize_minigames", [4, 5])],
+        "any_slot_data": [("randomize_minigames", [4, 5]), ("shuffle_eote", [1, 2, 3, 4])],
+        "hint_entrance": ["EotE C Exit", "EotE C Chest Exit"],
+        "hint_entrance_secondary": ["EotE 9 Exit"],
+        "hint_entrance_tertiary": ["Ends of the Earth Board Train"],
     },
     "Ends of the Earth Golden Small Chest": {
         "stage_id": 0x41,
         "room_id": 0x9,
-        "region_id": "eote puzzles",
+        "region_id": "eote 9 chest",
         "vanilla_item": "Big Green Rupee (100)",
-        "location_groups": ["Ends of the Earth"],
+        "location_groups": ["Ends of the Earth", "EotE Golden"],
         "minigame": [4, 5],
         "conditional": True,
-        "slot_data": [("randomize_minigames", [4, 5])],
+        "any_slot_data": [("randomize_minigames", [4, 5]), ("shuffle_eote", [1, 2, 3, 4])],
+        "hint_entrance": ["EotE 9 Upper Entrance"],
+        "hint_entrance_secondary": ["EotE 9 Exit"],
+        "hint_entrance_tertiary": ["Ends of the Earth Board Train"],
     },
 
     # ========= Sand Realm ==========
@@ -2554,14 +3020,44 @@ LOCATIONS_DATA = {
         "minigame": [1, 2, 3, 4, 5, 6],
         "conditional": True,
         "location_groups": ["Dune Sanctuary", "Restoration Duets"],
+        "hint_entrance": ["Rael's Sanctuary Exit"],
+        "hint_entrance_secondary": ["Dune Sanctuary Board Train"],
     },
     "Dune Sanctuary Stamp Station": {
         "stage_id": 0x34,
-        "region_id": "sand sanc stamp stand",
+        "region_id": "sand sanc stamp station",
         "vanilla_item": "Stamp: Dune Sanctuary",
         "stamp": 0xB,
         "location_groups": ["Dune Sanctuary"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Dune Sanctuary Stamp Station",
+        "hint_entrance": ["Dune Sanctuary Board Train", "Dune Sanctuary Secret Staircase"],
+    },
+    "Dune Sanctuary Dig Rupee N": {
+        "stage_id": 0x34,
+        "x_min": -0,
+        "x_max": 20000,
+        "z_max": -40000,
+        "vanilla_item": "Big Green Rupee (100)",
+        "region_id": "sand sanc sand wand",
+        "hint_entrance": ["Dune Sanctuary Board Train", "Dune Sanctuary Secret Staircase"],
+    },
+    "Dune Sanctuary Dig Rupee NE": {
+        "stage_id": 0x34,
+        "x_min": 85000,
+        "z_max": -45000,
+        "vanilla_item": "Big Green Rupee (100)",
+        "region_id": "sand sanc sand wand",
+        "hint_entrance": ["Dune Sanctuary Board Train", "Dune Sanctuary Secret Staircase"],
+    },
+    "Dune Sanctuary Dig Rupee SE": {
+        "stage_id": 0x34,
+        "x_min": 95000,
+        "z_min": -5000,
+        "z_max": 20000,
+        "vanilla_item": "Big Green Rupee (100)",
+        "region_id": "sand sanc sand wand",
+        "hint_entrance": ["Dune Sanctuary Board Train", "Dune Sanctuary Secret Staircase"],
     },
     # Dark Ore Mine
     "Dark Ore Mine Buried Chest": {
@@ -2572,6 +3068,8 @@ LOCATIONS_DATA = {
         "vanilla_item": ITEM_GROUPS["Rare Treasures"],
         "region_id": "dark ore mine sod",
         "location_groups": ["Dark Ore Mine"],
+        "hint_entrance": ["Dark Ore Tunnels Left Exit", "Dark Ore Tunnels Center Exit", "Dark Ore Tunnels Right Exit"],
+        "hint_entrance_secondary": ["Dark Ore Mine Board Train"],
     },
     # ========= Desert Temple ==========
     "Desert Temple 1F Entrance Chest": {
@@ -2584,6 +3082,9 @@ LOCATIONS_DATA = {
         "vanilla_item": ITEM_GROUPS["Rare Treasures"],
         "region_id": "dt sw",
         "dungeon": "Desert Temple",
+        "hint_entrance": ["Desert Temple 1F Exit", "Desert Temple 1F Lower Staircase", "Desert Temple 1F Upper Staircase"],
+        "hint_entrance_secondary": ["Desert Temple Lobby Board Train", "Desert Temple B2 North Entrance",
+                                    "Desert Temple Lobby Blue Warp", "Desert Temple B2 Blue Warp"],
     },
     "Desert Temple 1F NW Gerune Chest": {
         "stage_id": 0x1D,
@@ -2594,6 +3095,9 @@ LOCATIONS_DATA = {
         "vanilla_item": "Red Rupee (20)",
         "region_id": "dt 1f nw",
         "dungeon": "Desert Temple",
+        "hint_entrance": ["Desert Temple 1F Exit", "Desert Temple 1F Lower Staircase", "Desert Temple 1F Upper Staircase"],
+        "hint_entrance_secondary": ["Desert Temple Lobby Board Train", "Desert Temple B2 North Entrance",
+                                    "Desert Temple Lobby Blue Warp", "Desert Temple B2 Blue Warp"],
     },
     "Desert Temple 1F N Trap Chest": {
         "stage_id": 0x1D,
@@ -2604,6 +3108,9 @@ LOCATIONS_DATA = {
         "vanilla_item": "Green Rupee (1)",
         "region_id": "dt 1f n",
         "dungeon": "Desert Temple",
+        "hint_entrance": ["Desert Temple 1F Exit", "Desert Temple 1F Lower Staircase", "Desert Temple 1F Upper Staircase"],
+        "hint_entrance_secondary": ["Desert Temple Lobby Board Train", "Desert Temple B2 North Entrance",
+                                    "Desert Temple Lobby Blue Warp", "Desert Temple B2 Blue Warp"],
     },
     "Desert Temple 1F N Arena Chest": {
         "stage_id": 0x1D,
@@ -2614,15 +3121,22 @@ LOCATIONS_DATA = {
         "vanilla_item": "Small Key (Desert Temple)",
         "region_id": "dt 1f n",
         "dungeon": "Desert Temple",
-        "delay_pickup": ["Desert Temple 1F N Arena Stalfos Skull"]
+        "delay_pickup": ["Desert Temple 1F N Arena Stalfos Skull"],
+        "hint_entrance": ["Desert Temple 1F Exit", "Desert Temple 1F Lower Staircase",
+                          "Desert Temple 1F Upper Staircase"],
+        "hint_entrance_secondary": ["Desert Temple Lobby Board Train", "Desert Temple B2 North Entrance",
+                                    "Desert Temple Lobby Blue Warp", "Desert Temple B2 Blue Warp"],
     },
     "Desert Temple 3F Chest": {
         "stage_id": 0x1D,
         "room_id": 0x2,
         "vanilla_item": "Sand Wand",
-        "region_id": "dt 3f",
+        "region_id": "dt 3f chest",
         "y": 9830,
         "dungeon": "Desert Temple",
+        "hint_entrance": ["Desert Temple 3F Staircase"],
+        "hint_entrance_secondary": ["Desert Temple 1F Exit", "Desert Temple B2 North Entrance", "Desert Temple B2 Blue Warp"],
+        "hint_entrance_tertiary": ["Desert Temple Lobby Board Train"],
     },
     "Desert Temple 2F Left Chest": {
         "stage_id": 0x1D,
@@ -2632,6 +3146,9 @@ LOCATIONS_DATA = {
         "vanilla_item": "Red Rupee (20)",
         "region_id": "dt 2f sw",
         "dungeon": "Desert Temple",
+        "hint_entrance": ["Desert Temple 2F Right Staircase", "Desert Temple 2F Left Staircase"],
+        "hint_entrance_secondary": ["Desert Temple 1F Exit", "Desert Temple B2 North Entrance", "Desert Temple B2 Blue Warp"],
+        "hint_entrance_tertiary": ["Desert Temple Lobby Board Train"],
     },
     "Desert Temple 2F Right Chest": {
         "stage_id": 0x1D,
@@ -2640,6 +3157,9 @@ LOCATIONS_DATA = {
         "vanilla_item": ITEM_GROUPS["Rare Treasures"],
         "region_id": "dt 2f sw",
         "dungeon": "Desert Temple",
+        "hint_entrance": ["Desert Temple 2F Right Staircase", "Desert Temple 2F Left Staircase"],
+        "hint_entrance_secondary": ["Desert Temple 1F Exit", "Desert Temple B2 North Entrance", "Desert Temple B2 Blue Warp"],
+        "hint_entrance_tertiary": ["Desert Temple Lobby Board Train"],
     },
     "Desert Temple 1F N Ergtorok Chest": {
         "stage_id": 0x1D,
@@ -2650,6 +3170,10 @@ LOCATIONS_DATA = {
         "vanilla_item": "Red Rupee (20)",
         "region_id": "dt 1f n earthquake",
         "dungeon": "Desert Temple",
+        "hint_entrance": ["Desert Temple 1F Exit", "Desert Temple 1F Lower Staircase",
+                          "Desert Temple 1F Upper Staircase"],
+        "hint_entrance_secondary": ["Desert Temple Lobby Board Train", "Desert Temple B2 North Entrance",
+                                    "Desert Temple Lobby Blue Warp", "Desert Temple B2 Blue Warp"],
     },
     "Desert Temple 1F N Buried Key": {
         "stage_id": 0x1D,
@@ -2661,15 +3185,23 @@ LOCATIONS_DATA = {
         "vanilla_item": "Small Key (Desert Temple)",
         "region_id": "dt 1f n earthquake",
         "dungeon": "Desert Temple",
+        "hint_entrance": ["Desert Temple 1F Exit", "Desert Temple 1F Lower Staircase",
+                          "Desert Temple 1F Upper Staircase"],
+        "hint_entrance_secondary": ["Desert Temple Lobby Board Train", "Desert Temple B2 North Entrance",
+                                    "Desert Temple Lobby Blue Warp", "Desert Temple B2 Blue Warp"],
     },
     "Desert Temple B1 Stamp Station": {
         "stage_id": 0x1D,
         "room_id": 0x3,
         "stamp": 0x10,
-        "region_id": "dt stamp stand",
+        "region_id": "dt stamp station",
         "vanilla_item": "Stamp: Desert Temple",
         "dungeon": "Desert Temple",
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Desert Temple Stamp Station",
+        "hint_entrance": ["Desert Temple B1 Boss Door Staircase", "Desert Temple B1 Left Staircase"],
+        "hint_entrance_secondary": ["Desert Temple 1F Exit", "Desert Temple B2 North Entrance", "Desert Temple B2 Blue Warp"],
+        "hint_entrance_tertiary": ["Desert Temple Lobby Board Train"],
     },
     "Desert Temple B1 Near Boss Door Chest": {
         "stage_id": 0x1D,
@@ -2679,8 +3211,11 @@ LOCATIONS_DATA = {
         "z_min": -15000,
         "z_max": 0,
         "vanilla_item": "Red Rupee (20)",
-        "region_id": "dt b1 2",
+        "region_id": "dt b1 s",
         "dungeon": "Desert Temple",
+        "hint_entrance": ["Desert Temple B1 Boss Door Staircase", "Desert Temple B1 Left Staircase"],
+        "hint_entrance_secondary": ["Desert Temple 1F Exit", "Desert Temple B2 North Entrance", "Desert Temple B2 Blue Warp"],
+        "hint_entrance_tertiary": ["Desert Temple Lobby Board Train"],
     },
     "Desert Temple B1 SW Stalfos Chest": {
         "stage_id": 0x1D,
@@ -2690,7 +3225,10 @@ LOCATIONS_DATA = {
         "vanilla_item": ITEM_GROUPS["Uncommon Treasures"],
         "region_id": "dt b1 damage",
         "dungeon": "Desert Temple",
-        "delay_pickup": ["Desert Temple B1 Stalfos"]
+        "delay_pickup": ["Desert Temple B1 Stalfos"],
+        "hint_entrance": ["Desert Temple B1 Boss Door Staircase", "Desert Temple B1 Left Staircase"],
+        "hint_entrance_secondary": ["Desert Temple 1F Exit", "Desert Temple B2 North Entrance", "Desert Temple B2 Blue Warp"],
+        "hint_entrance_tertiary": ["Desert Temple Lobby Board Train"],
     },
     "Desert Temple B1 NW Buried Rupee": {
         "stage_id": 0x1D,
@@ -2700,33 +3238,45 @@ LOCATIONS_DATA = {
         "vanilla_item": "Big Green Rupee (100)",
         "region_id": "dt b1 damage",
         "dungeon": "Desert Temple",
+        "hint_entrance": ["Desert Temple B1 Boss Door Staircase", "Desert Temple B1 Left Staircase"],
+        "hint_entrance_secondary": ["Desert Temple 1F Exit", "Desert Temple B2 North Entrance", "Desert Temple B2 Blue Warp"],
+        "hint_entrance_tertiary": ["Desert Temple Lobby Board Train"],
     },
     "Desert Temple B1 Boss Key": {
         "vanilla_item": "Boss Key (Desert Temple)",
         "region_id": "dt b1 damage",
         "dungeon": "Desert Temple",
-        "conditional": True
+        "conditional": True,
+        "hint_entrance": ["Desert Temple B1 Boss Door Staircase", "Desert Temple B1 Left Staircase"],
+        "hint_entrance_secondary": ["Desert Temple 1F Exit", "Desert Temple B2 North Entrance", "Desert Temple B2 Blue Warp"],
+        "hint_entrance_tertiary": ["Desert Temple Lobby Board Train"],
     },
-    "Desert Temple Boss Heart Container": {
+    "Capbone Heart Container": {
         "stage_id": 0x22,
         "room_id": 0x1,
         "vanilla_item": "Heart Container",
-        "dungeon": "Desert Temple",
-        "region_id": "skeldritch",
+        "post_dungeon": "Desert Temple",
+        "region_id": "dt skeldritch",
         "location_groups": ["Skeldritch"],
+        "hint_entrance": ["Capbone Exit"],
+        "hint_entrance_secondary": ["Desert Temple B2 South Staircase", "Desert Temple B2 Blue Warp"],
+        "hint_entrance_tertiary": ["Desert Temple Lobby Board Train", "Desert Temple 1F Exit", "Desert Temple Lobby Enter Dungeon"],
     },
-    "Desert Temple Dungeon Reward": {
+    "Capbone Boss Reward": {
         "stage_id": 0x22,
         "room_id": 0x1,
         "vanilla_item": "Sand Source",
         "address": STAddr.adv_flags_1a,
         "value": 0x1,
-        "region_id": "skeldritch",
+        "region_id": "dt skeldritch",
         "location_groups": ["Skeldritch"],
-        "ut_connect": "EVENT: Defeat Skeldritch",
+        "ut_connect": "EVENT: Defeat Capbone",
         "goal": "GOAL: Defeat Skeldritch",
-        "dungeon": "Desert Temple",
-        "no_model": True
+        "post_dungeon": "Desert Temple",
+        "no_model": True,
+        "hint_entrance": ["Capbone Exit"],
+        "hint_entrance_secondary": ["Desert Temple B2 South Staircase", "Desert Temple B2 Blue Warp"],
+        "hint_entrance_tertiary": ["Desert Temple Lobby Board Train", "Desert Temple 1F Exit", "Desert Temple Lobby Enter Dungeon"],
     },
     "Desert Temple Bow of Light Chest": {
         "stage_id": 0x1D,
@@ -2734,9 +3284,12 @@ LOCATIONS_DATA = {
         "y": 9830,
         "vanilla_item": "Bow of Light",
         "item_override": "Nothing!",
-        "region_id": "skeldritch",
-        "dungeon": "Desert Temple",
+        "region_id": "dt skeldritch",
+        "post_dungeon": "Desert Temple",
         "location_groups": ["Skeldritch"],
+        "hint_entrance": ["Capbone Exit"],
+        "hint_entrance_secondary": ["Desert Temple B2 South Staircase", "Desert Temple B2 Blue Warp"],
+        "hint_entrance_tertiary": ["Desert Temple Lobby Board Train", "Desert Temple 1F Exit", "Desert Temple Lobby Enter Dungeon"],
     },
 
     # ========= Rabbits ==========
@@ -2943,7 +3496,7 @@ LOCATIONS_DATA = {
     },
 
     # Ocean Rabbits
-    "Rabbit E Lost at Sea": {
+    "Rabbit W Lost at Sea": {
         "region_id": "las rabbit",
         "vanilla_item": "Ocean Rabbit",
         "stage_id": 0x06,
@@ -2974,7 +3527,7 @@ LOCATIONS_DATA = {
         "location_groups": ["Unique Ocean Rabbits"]
     },
     "Rabbit W Pirate Hideout": {
-        "region_id": "forest ocean shortcut rabbit",
+        "region_id": "pirate rabbit",
         "vanilla_item": "Ocean Rabbit",
         "stage_id": 0x06,
         "address": STAddr.rabbits_2,
@@ -2983,7 +3536,7 @@ LOCATIONS_DATA = {
         "slot_data": [("rabbitsanity", [1, 2, 3, 4])],
         "location_groups": ["Unique Ocean Rabbits"]
     },
-    "Rabbit N Marine Temple": {
+    "Rabbit W Marine Temple": {
         "region_id": "ocean rabbits",
         "vanilla_item": "Ocean Rabbit",
         "stage_id": 0x06,
@@ -3188,7 +3741,7 @@ LOCATIONS_DATA = {
         "location_groups": ["Unique Sand Rabbits"]
     },
     "Rabbit W Desert Temple": {
-        "region_id": "sand restoration rabbits",
+        "region_id": "sand restoration south rabbits",
         "vanilla_item": "Sand Rabbit",
         "stage_id": 0x06,
         "address": STAddr.rabbits_5,
@@ -3198,7 +3751,7 @@ LOCATIONS_DATA = {
         "location_groups": ["Unique Sand Rabbits"]
     },
     "Rabbit E Desert Temple": {
-        "region_id": "sand restoration rabbits",
+        "region_id": "sand restoration south rabbits",
         "vanilla_item": "Sand Rabbit",
         "stage_id": 0x06,
         "address": STAddr.rabbits_5,
@@ -3254,6 +3807,7 @@ LOCATIONS_DATA |= {
         "region_id": f"{realm} Rabbit Count 1",
         "rabbit": True,
         "count": 1,
+        "realm": realm,
         "location_groups": [f"Total {realm} Rabbits"]
     } for realm in ["Grass", "Snow", "Ocean", "Mountain", "Sand"]}
 
@@ -3262,6 +3816,7 @@ LOCATIONS_DATA |= {
         "region_id": f"{realm} Rabbit Count {count}",
         "rabbit": True,
         "count": count,
+        "realm": realm,
         "location_groups": [f"Total {realm} Rabbits"]
     } for count in range(2, 11) for realm in ["Grass", "Snow", "Ocean", "Mountain", "Sand"]}
 
@@ -3269,11 +3824,13 @@ LOCATIONS_DATA |= {
     # Portal Checks
     "Forest Realm Shoot Cave Portal": {
         "stage_id": 0x04,
-        "region_id": "forest cave portal",
+        "region_id": "forest cave portal loc",
         "address": STAddr.activate_portals,
         "value": 0x40,
         "location_groups": ["Portal Checks"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Unlock Forest Realm Cave Portal",
+        "always_exist": True,
     },
     "Forest Realm Shoot SE Portal": {
         "stage_id": 0x04,
@@ -3281,7 +3838,9 @@ LOCATIONS_DATA |= {
         "address": STAddr.activate_portals,
         "value": 0x20,
         "location_groups": ["Portal Checks"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Unlock Forest Realm SE Portal",
+        "always_exist": True,
     },
     "Snow Realm Shoot SW Portal": {
         "stage_id": 0x05,
@@ -3289,31 +3848,39 @@ LOCATIONS_DATA |= {
         "address": STAddr.activate_portals,
         "value": 0x8,
         "location_groups": ["Portal Checks"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Unlock Anouki Village Portal",
+        "always_exist": True,
     },
     "Snow Realm Shoot Bridge Portal": {
         "stage_id": 0x05,
-        "region_id": "snow bridge portal",
+        "region_id": "snow bridge portal loc",
         "address": STAddr.activate_portals,
         "value": 0x10,
         "location_groups": ["Portal Checks"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Unlock Snow Bridge Portal",
+        "always_exist": True,
     },
     "Snow Realm Shoot N Portal": {
         "stage_id": 0x05,
-        "region_id": "icyspring portal",
+        "region_id": "icyspring portal loc",
         "address": STAddr.adv_flags_31,
         "value": 0x2,
         "location_groups": ["Portal Checks"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Unlock Icy Spring Portal",
+        "always_exist": True,
     },
     "Ocean Realm Shoot W Portal": {
         "stage_id": 0x06,
-        "region_id": "ocean portal",
+        "region_id": "ocean portal loc",
         "address": STAddr.adv_flags_31,
         "value": 0x4,
         "location_groups": ["Portal Checks"],
-        "conditional": True
+        "conditional": True,
+        "ut_connect": "EVENT: Unlock Ocean Portal",
+        "always_exist": True,
     },
     "Sand Realm Shoot Temple Portal": {
         "stage_id": 0x06,
@@ -3323,15 +3890,19 @@ LOCATIONS_DATA |= {
         "location_groups": ["Portal Checks"],
         "conditional": True,
         "from_entrances": [0xFB, 0xB, 0x7],  # Only load when in right bit of track
-        "from_coords": {"x_min": 80000}
+        "from_coords": {"x_min": 20000},
+        "ut_connect": "EVENT: Unlock Desert Temple Portal",
+        "always_exist": True,
     },
     "Fire Realm Shoot Sand Portal": {
         "stage_id": 0x07,
-        "region_id": "sand connection portal",
+        "region_id": "sand connection portal loc",
         "address": STAddr.adv_flags_30,
         "value": 0x80,
         "location_groups": ["Portal Checks"],
         "conditional": True,
+        "ut_connect": "EVENT: Unlock Sand Connection Portal",
+        "always_exist": True,
     },
 
     # Shops
@@ -3345,6 +3916,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Unique Locations", "Snowfall Sanctuary", "Snowfall Supermarket"],
         "conditional": True,
         "slot_data": [("shopsanity", "uniques")],
+        "hint_entrance": ["Snowfall Supermarket Exit"],
+        "hint_entrance_secondary": ["Snowfall Sanctuary Board Train", "Snowfall Sanctuary Cave"]
     },
     "Snowfall Supermarket Red Potion": {
         "region_id": "snow sanc shop",
@@ -3352,6 +3925,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Potion Locations", "Snowfall Sanctuary", "Snowfall Supermarket"],
         "conditional": True,
         "slot_data": [("shopsanity", "potions")],
+        "hint_entrance": ["Snowfall Supermarket Exit"],
+        "hint_entrance_secondary": ["Snowfall Sanctuary Board Train", "Snowfall Sanctuary Cave"]
     },
     "Snowfall Supermarket Purple Potion": {
         "region_id": "snow sanc shop",
@@ -3359,6 +3934,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Potion Locations", "Snowfall Sanctuary", "Snowfall Supermarket"],
         "conditional": True,
         "slot_data": [("shopsanity", "potions")],
+        "hint_entrance": ["Snowfall Supermarket Exit"],
+        "hint_entrance_secondary": ["Snowfall Sanctuary Board Train", "Snowfall Sanctuary Cave"]
     },
     "Snowfall Supermarket Shield": {
         "stage_id": 0x31,
@@ -3370,12 +3947,16 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Shield Locations", "Snowfall Sanctuary", "Snowfall Supermarket"],
         "conditional": True,
         "slot_data": [("shopsanity", "shields")],
+        "hint_entrance": ["Snowfall Supermarket Exit"],
+        "hint_entrance_secondary": ["Snowfall Sanctuary Board Train", "Snowfall Sanctuary Cave"]
     },
     "Snowfall Supermarket Treasure": {
         "region_id": "snow sanc shop",
         "location_groups": ["Shop Treasure Locations", "Snowfall Sanctuary", "Snowfall Supermarket", "Shop Restock Locations"],
         "conditional": True,
         "slot_data": [("shopsanity", "treasure"), ("shopsanity", "uniques", "not")],
+        "hint_entrance": ["Snowfall Supermarket Exit"],
+        "hint_entrance_secondary": ["Snowfall Sanctuary Board Train", "Snowfall Sanctuary Cave"]
     },
     "Beedle Shop Bomb Bag": {
         "stage_id": 0x45,
@@ -3423,7 +4004,9 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Treasure Locations", "Mayscore", "Mayscore Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "treasure")],
-        "priority": 1
+        "priority": 1,
+        "hint_entrance": ["Uriko's Shop Exit"],
+        "hint_entrance_secondary": ["Mayscore Board Train", "Maycsore North"]
     },
     "Mayscore Shop Treasure 2": {
         "region_id": "mayscore shop",
@@ -3431,7 +4014,9 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Treasure Locations", "Mayscore", "Mayscore Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "treasure")],
-        "priority": 2
+        "priority": 2,
+        "hint_entrance": ["Uriko's Shop Exit"],
+        "hint_entrance_secondary": ["Mayscore Board Train", "Maycsore North"]
     },
     "Mayscore Shop Red Potion": {
         "region_id": "mayscore shop",
@@ -3439,6 +4024,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Potion Locations", "Mayscore", "Mayscore Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "potions")],
+        "hint_entrance": ["Uriko's Shop Exit"],
+        "hint_entrance_secondary": ["Mayscore Board Train", "Maycsore North"]
     },
     "Mayscore Shop Shield": {
         "stage_id": 0x2a,
@@ -3450,6 +4037,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Shield Locations", "Mayscore", "Mayscore Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "shields")],
+        "hint_entrance": ["Uriko's Shop Exit"],
+        "hint_entrance_secondary": ["Mayscore Board Train", "Mayscsore North"]
     },
     "Castle Town Shop Treasure 1": {
         "region_id": "castle town shop",
@@ -3457,7 +4046,9 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Treasure Locations", "Castle Town", "Castle Town Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "treasure")],
-        "priority": 1
+        "priority": 1,
+        "hint_entrance": ["Shitate's Shop Exit"],
+        "hint_entrance_secondary": ["Castle Town Board Train", "Castle Town North"]
     },
     "Castle Town Shop Treasure 2": {
         "region_id": "castle town shop",
@@ -3466,6 +4057,8 @@ LOCATIONS_DATA |= {
         "conditional": True,
         "slot_data": [("shopsanity", "treasure")],
         "priority": 2,
+        "hint_entrance": ["Shitate's Shop Exit"],
+        "hint_entrance_secondary": ["Castle Town Board Train", "Castle Town North"]
     },
     "Castle Town Shop Red Potion": {
         "region_id": "castle town shop",
@@ -3473,6 +4066,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Potion Locations", "Castle Town", "Castle Town Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "potions")],
+        "hint_entrance": ["Shitate's Shop Exit"],
+        "hint_entrance_secondary": ["Castle Town Board Train", "Castle Town North"]
     },
     "Castle Town Shop Shield": {
         "stage_id": 0x29,
@@ -3484,6 +4079,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Shield Locations", "Castle Town", "Castle Town Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "shields")],
+        "hint_entrance": ["Shitate's Shop Exit"],
+        "hint_entrance_secondary": ["Castle Town Board Train", "Castle Town North"]
     },
     "Mayscore Shop Postcards": {
         "stage_id": 0x2a,
@@ -3495,6 +4092,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Postcard Locations", "Mayscore", "Mayscore Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "postcards")],
+        "hint_entrance": ["Shitate's Shop Exit"],
+        "hint_entrance_secondary": ["Castle Town Board Train", "Castle Town North"]
     },
     "Castle Town Shop Postcards": {
         "stage_id": 0x29,
@@ -3506,6 +4105,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Postcard Locations", "Castle Town", "Castle Town Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "postcards")],
+        "hint_entrance": ["Shitate's Shop Exit"],
+        "hint_entrance_secondary": ["Castle Town Board Train", "Castle Town North"]
     },
     "Snowfall Supermarket Postcards": {
         "stage_id": 0x31,
@@ -3517,20 +4118,26 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Postcard Locations", "Snowfall Sanctuary", "Snowfall Supermarket"],
         "conditional": True,
         "slot_data": [("shopsanity", "postcards")],
+        "hint_entrance": ["Snowfall Supermarket Exit"],
+        "hint_entrance_secondary": ["Snowfall Sanctuary Board Train", "Snowfall Sanctuary Cave"]
     },
     "Papuzia Shop Purple Potion": {
         "region_id": "papuzia shop",
         "vanilla_item": "Purple Potion",
         "location_groups": ["Shop Potion Locations", "Papuzia Shop", "Papuzia Village"],
         "conditional": True,
-        "slot_data": [("shopsanity", "potions")]
+        "slot_data": [("shopsanity", "potions")],
+        "hint_entrance": ["Kogane's Shop Exit"],
+        "hint_entrance_secondary": ["Papuzia Board Train", "Papuzia South"]
     },
     "Papuzia Shop Yellow Potion": {
         "region_id": "papuzia shop",
         "vanilla_item": "Yellow Potion",
         "location_groups": ["Shop Potion Locations", "Papuzia Shop", "Papuzia Village"],
         "conditional": True,
-        "slot_data": [("shopsanity", "potions")]
+        "slot_data": [("shopsanity", "potions")],
+        "hint_entrance": ["Kogane's Shop Exit"],
+        "hint_entrance_secondary": ["Papuzia Board Train", "Papuzia South"]
     },
     "Papuzia Shop Postcards": {
         "stage_id": 0x2c,
@@ -3542,6 +4149,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Postcard Locations", "Papuzia Village", "Papuzia Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "postcards")],
+        "hint_entrance": ["Kogane's Shop Exit"],
+        "hint_entrance_secondary": ["Papuzia Board Train", "Papuzia South"]
     },
     "Papuzia Shop Bombs": {
         "stage_id": 0x2c,
@@ -3553,6 +4162,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Ammo Locations", "Papuzia Village", "Papuzia Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "ammo")],
+        "hint_entrance": ["Kogane's Shop Exit"],
+        "hint_entrance_secondary": ["Papuzia Board Train", "Papuzia South"]
     },
     "Papuzia Shop Arrows": {
         "stage_id": 0x2c,
@@ -3564,6 +4175,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Ammo Locations", "Papuzia Village", "Papuzia Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "ammo")],
+        "hint_entrance": ["Kogane's Shop Exit"],
+        "hint_entrance_secondary": ["Papuzia Board Train", "Papuzia South"]
     },
     "Beedle Shop Bomb Refill": {
         "stage_id": 0x45,
@@ -3586,6 +4199,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Shield Locations", "Trading Post"],
         "conditional": True,
         "slot_data": [("shopsanity", "shields")],
+        "hint_entrance": ["Linebeck III's Shop Exit"],
+        "hint_entrance_secondary": ["Trading Post Board Train", "Trading Post South Cave"]
     },
 
     # Goron Shop
@@ -3599,6 +4214,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Ammo Locations", "Goron Shop", "Goron Village"],
         "conditional": True,
         "slot_data": [("shopsanity", "ammo")],
+        "hint_entrance": ["Goron Shop Exit"],
+        "hint_entrance_secondary": ["Goron Village Board Train", "Goron Village West"]
     },
     "Goron Shop Shield": {
         "stage_id": 0x2E,
@@ -3610,20 +4227,26 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Shield Locations", "Goron Town", "Goron Shop"],
         "conditional": True,
         "slot_data": [("shopsanity", "shields")],
+        "hint_entrance": ["Goron Shop Exit"],
+        "hint_entrance_secondary": ["Goron Village Board Train", "Goron Village West"]
     },
     "Goron Shop Purple Potion": {
         "region_id": "goron shop",
         "vanilla_item": "Purple Potion",
         "location_groups": ["Shop Potion Locations", "Goron Shop", "Goron Village"],
         "conditional": True,
-        "slot_data": [("shopsanity", "potions")]
+        "slot_data": [("shopsanity", "potions")],
+        "hint_entrance": ["Goron Shop Exit"],
+        "hint_entrance_secondary": ["Goron Village Board Train", "Goron Village West"]
     },
     "Goron Shop Yellow Potion": {
         "region_id": "goron shop",
         "vanilla_item": "Yellow Potion",
         "location_groups": ["Shop Potion Locations", "Goron Shop", "Goron Village"],
         "conditional": True,
-        "slot_data": [("shopsanity", "potions")]
+        "slot_data": [("shopsanity", "potions")],
+        "hint_entrance": ["Goron Shop Exit"],
+        "hint_entrance_secondary": ["Goron Village Board Train", "Goron Village West"]
     },
     "Goron Shop Quiver": {
         "stage_id": 0x2E,
@@ -3636,6 +4259,8 @@ LOCATIONS_DATA |= {
         "conditional": True,
         "delay_reset": True,
         "slot_data": [("shopsanity", "uniques")],
+        "hint_entrance": ["Goron Shop Exit"],
+        "hint_entrance_secondary": ["Goron Village Board Train", "Goron Village West"]
     },
     "Goron Shop Postcards": {
         "stage_id": 0x2e,
@@ -3647,6 +4272,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Shop Postcard Locations", "Goron Village", "Goron Shop", "Shop Restock Locations"],
         "conditional": True,
         "slot_data": [("shopsanity", "postcards"), ("shopsanity", "uniques", "not")],
+        "hint_entrance": ["Goron Shop Exit"],
+        "hint_entrance_secondary": ["Goron Village Board Train", "Goron Village West"]
     },
 
     # Passenger locations
@@ -3666,6 +4293,7 @@ LOCATIONS_DATA |= {
         "persistent": True,
         "exact_read": True,
         "region_id": "icyspring ice",
+        "hint_entrance": ["Icy Spring Trailer", "Icy Spring Board Train"],
 
         "no_model": True
     },
@@ -3681,6 +4309,8 @@ LOCATIONS_DATA |= {
         "persistent": True,
         "exact_read": True,
         "region_id": "mayscore lumber",
+        "hint_entrance": ["Mayscore Board Train", "Mayscore North", "Mayscore Shop",
+                          "Mayscore NE House", "Mayscore NW House", "Mayscore North House"],
 
         "no_model": True
     },
@@ -3696,7 +4326,8 @@ LOCATIONS_DATA |= {
         "persistent": True,
         "exact_read": True,
         "region_id": "castle town buy cuccos",
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Castle Town Board Train", "Castle Town North"],
     },
     "Papuzia Village Buy Fish": {
         "stage_id": 0x2C,
@@ -3709,7 +4340,9 @@ LOCATIONS_DATA |= {
         "conditional": True,
         "persistent": True,
         "exact_read": True,
-        "region_id": "papuzia buy cargo",
+        "region_id": "papuzia buy fish",
+        "hint_entrance": ["Papuzia Board Train", "Papuzia South",
+                          "Papuzia Shop", "Papuzia South House", "Papuzia Wise One's House", "Papuzia NW House"],
 
         "no_model": True
     },
@@ -3724,11 +4357,13 @@ LOCATIONS_DATA |= {
         "conditional": True,
         "persistent": True,
         "exact_read": True,
-        "region_id": "papuzia buy cargo",
+        "region_id": "wise one buy vessel",
+        "hint_entrance": ["Wise One's House Exit"],
+        "hint_entrance_secondary": ["Papuzia Board Train", "Papuzia South"],
 
         "no_model": True
     },
-    "Goron Village West Buy Steel": {
+    "Goron Field Buy Steel": {
         "stage_id": 0x2D,
         "room_id": 0x3,
         "address": STAddr.cargo_0,
@@ -3740,7 +4375,11 @@ LOCATIONS_DATA |= {
         "persistent": True,
         "exact_read": True,
         "region_id": "goron steel",
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Goron Field East", "Goron Field North"],
+        "hint_entrance_secondary": ["Goron Village Board Train", "Goron Village Shop",
+            "Goron Village SW House", "Goron Village Center House", "Goron Village SE House",
+            "Goron Village Elder's House", "Goron Village NW House", "Goron Village East Lava House"],
     },
     "Dark Ore Mine Buy Ore": {
         "stage_id": 0x3D,
@@ -3754,6 +4393,8 @@ LOCATIONS_DATA |= {
         "persistent": True,
         "exact_read": True,
         "region_id": "dark ore mine ore",
+        "hint_entrance": ["Dark Ore Tunnels Left Exit", "Dark Ore Tunnels Center Exit", "Dark Ore Tunnels Right Exit"],
+        "hint_entrance_secondary": ["Dark Ore Mine Board Train"],
 
         "no_model": True
     },
@@ -3769,7 +4410,10 @@ LOCATIONS_DATA |= {
         "location_groups": ["Bridge Worker's House", "Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
-        "region_id": "pick up bridge worker"
+        "region_id": "pick up bridge worker",
+
+        "hint_entrance": ["Kenzo's House Exit"],
+        "hint_entrance_secondary": ["Bridge Worker's Board Train"],
     },
     "Trading Post Repair Bridge": {
         "stage_id": 0x37,
@@ -3782,7 +4426,9 @@ LOCATIONS_DATA |= {
         "slot_data": [("randomize_passengers", [1, 2, 3])],
         "conditional": True,
         "region_id": "trading post bridge worker",
-        "no_model": True
+        "no_model": True,
+        "ut_connect": "EVENT: Trading Post Drop Off Kenzo",
+        "hint_entrance": ["Trading Post Board Train", "Trading Post South Cave", "Trading Post Shop"],
     },
     "Trading Post Pick Up Kenzo": {
         "stage_id": 0x37,
@@ -3795,7 +4441,8 @@ LOCATIONS_DATA |= {
         "slot_data": [("randomize_passengers", 3)],
         "conditional": True,
         "region_id": "trading post pick up kenzo",
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Trading Post Board Train", "Trading Post South Cave", "Trading Post Shop"],
     },
     "Anouki Village Pick Up Noko": {
         "stage_id": 0x2B,
@@ -3819,7 +4466,9 @@ LOCATIONS_DATA |= {
         "location_groups": ["Icy Spring", "Deliver Passengers"],
         "slot_data": [("randomize_passengers", [1, 2, 3])],
         "conditional": True,
-        "region_id": "icyspring noko"
+        "hint_entrance": ["Icy Spring Trailer", "Icy Spring Board Train"],
+        "region_id": "icyspring noko",
+        "ut_connect": "EVENT: Icy Spring Drop Off Noko"
     },
     "Anouki Village Repair Fence": {
         "stage_id": 0x2B,
@@ -3829,7 +4478,10 @@ LOCATIONS_DATA |= {
         "vanilla_item": "Snowdrift Station Tracks",
         "location_groups": ["Anouki Village", "Deliver Passengers", "Deliver Cargo"],
         "conditional": True,
-        "region_id": "av fence"
+        "region_id": "av fence",
+        "hint_entrance": ["Anouki Village Board Train", "Anouki Village Bomb Cave",
+                          "Anouki Village SW House", "Anouki Village S House", "Anouki Village SE House",
+                          "Anouki Village NW House", "Anouki Village N House", "Anouki Village NE House"],
     },
     "Anouki Village Fence Progress Gift": {
         "stage_id": 0x2B,
@@ -3841,18 +4493,23 @@ LOCATIONS_DATA |= {
         "location_groups": ["Anouki Village", "Deliver Passengers", "Deliver Cargo"],
         "slot_data": [("randomize_cargo", [1, 2, 3]), ("randomize_passengers", [1, 2, 3])],
         "conditional": True,
-        "region_id": "av kenzo"
+        "region_id": "av kenzo",
+        "hint_entrance": ["Anouki Village Board Train", "Anouki Village Bomb Cave",
+                          "Anouki Village SW House", "Anouki Village S House", "Anouki Village SE House",
+                          "Anouki Village NW House", "Anouki Village N House", "Anouki Village NE House"],
     },
     "Castle Town Pick Up Mona": {
         "stage_id": 0x29,
         "room_id": 0xc,
         "address": STAddr.adv_flags_3b,
         "value": 0x20,
-        "region_id": "castle town mona",  # Same Req
+        "region_id": "castle town mona",
         "vanilla_item": "Passenger: Mona",
         "location_groups": ["Castle Town", "Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
+        "hint_entrance": ["Mona's House Exit"],
+        "hint_entrance_secondary": ["Castle Town Board Train", "Castle Town North"],
 
         "no_model": True
     },
@@ -3865,7 +4522,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Rabbit Haven", "Deliver Passengers"],
         "slot_data": [("randomize_passengers", [1, 2, 3])],
         "conditional": True,
-        "region_id": "rabbit haven mona"
+        "region_id": "rabbit haven mona",
+        "hint_entrance": ["Rabbit Haven Board Train"],
     },
     "Castle Town Pick Up Alfonzo": {
         "stage_id": 0x29,
@@ -3877,6 +4535,7 @@ LOCATIONS_DATA |= {
         "location_groups": ["Castle Town", "Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
+        "hint_entrance": ["Castle Town Board Train", "Castle Town North"],
 
         "no_model": True
     },
@@ -3890,6 +4549,7 @@ LOCATIONS_DATA |= {
         "location_groups": ["Outset Village", "Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
+        "hint_entrance": ["Outset Board Train", "Outset West House", "Outset East House", "Outset Alfonzo's Workshop"],
 
         "no_model": True
     },
@@ -3916,6 +4576,7 @@ LOCATIONS_DATA |= {
         "region_id": "outset cuccos",
         "x_max": -45000,
         "z_max": -5000,
+        "hint_entrance": ["Outset Board Train", "Outset West House", "Outset East House", "Outset Alfonzo's Workshop"],
     },
     "Mayscore Pick Up Dovok": {
         "stage_id": 0x2A,
@@ -3927,7 +4588,9 @@ LOCATIONS_DATA |= {
         "location_groups": ["Mayscore", "Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Dovok's House Exit"],
+        "hint_entrance_secondary": ["Mayscore Board Train", "Mayscore North", "Mayscore Shop"],
     },
     "Papuzia Village Orca's Force Gem": {
         "stage_id": 0x2C,
@@ -3939,6 +4602,8 @@ LOCATIONS_DATA |= {
         "slot_data": [("randomize_passengers", [1, 2, 3])],
         "conditional": True,
         "region_id": "pv dovok",
+        "hint_entrance": ["Papuzia Board Train", "Papuzia South",
+                          "Papuzia Shop", "Papuzia South House", "Papuzia Wise One's House", "Papuzia NW House"],
     },
     "Papuzia Village Pick Up Carben":{
         "stage_id": 0x2C,
@@ -3951,7 +4616,9 @@ LOCATIONS_DATA |= {
         "location_groups": ["Papuzia Village", "Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [0, 2, 3])],
         "conditional": True,
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Papuzia Board Train", "Papuzia South",
+                          "Papuzia Shop", "Papuzia South House", "Papuzia Wise One's House", "Papuzia NW House"],
     },
     "Island Sanctuary Carben's Force Gem": {
         "stage_id": 0x32,
@@ -3961,8 +4628,10 @@ LOCATIONS_DATA |= {
         "vanilla_item": "Forest Realm SE Portal Tracks",
         "location_groups": ["Island Sanctuary", "Deliver Passengers"],
         "slot_data": [("randomize_passengers", [1, 2, 3])],
+        "ut_connect": "EVENT: Island Sanctuary Drop Off Carben",
         "conditional": True,
-        "region_id": "ocs carben",
+        "region_id": "island sanc carben",
+        "hint_entrance": ["Island Sanctuary Board Train", "Island Sanctuary South Cave", "Island Sanctuary South Peninsula"],
     },
     "Pirate Hideout Pick Up Wadatsumi": {
         "stage_id": 0x3a,
@@ -3975,7 +4644,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Pirate Hideout", "Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Pirate Hideout Game Cave", "Pirate Hideout Board Train", "Pirate Hideout Bomb Cave"],
     },
     "Papuzia Village Wadatsumi's Force Gem":{
         "stage_id": 0x2C,
@@ -3987,7 +4657,9 @@ LOCATIONS_DATA |= {
         "slot_data": [("randomize_passengers", [1, 2, 3])],
         "conditional": True,
         "region_id": "pv wadatsumi",
-        "z_max": -15000
+        "z_max": -15000,
+        "hint_entrance": ["Papuzia Board Train", "Papuzia South",
+                          "Papuzia Shop", "Papuzia South House", "Papuzia Wise One's House", "Papuzia NW House"],
     },
 
     "Castle Town Deliver Fish": {
@@ -3999,7 +4671,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Castle Town", "Deliver Cargo"],
         "slot_data": [("randomize_cargo", [1, 2, 3])],
         "conditional": True,
-        "region_id": "castle town fish"
+        "region_id": "castle town fish",
+        "hint_entrance": ["Castle Town Board Train", "Castle Town North"],
     },
     "Mayscore Deliver Steel": {
         "stage_id": 0x2A,
@@ -4010,7 +4683,9 @@ LOCATIONS_DATA |= {
         "location_groups": ["Mayscore", "Deliver Cargo"],
         "slot_data": [("randomize_cargo", [1, 2, 3])],
         "conditional": True,
-        "region_id": "mayscore steel"
+        "region_id": "mayscore steel",
+        "hint_entrance": ["Mayscore Board Train", "Mayscore North", "Mayscore Shop",
+                          "Mayscore NE House", "Mayscore NW House", "Mayscore North House"],
     },
     "Snowfall Sanctuary Deliver Vessel": {
         "stage_id": 0x31,
@@ -4021,7 +4696,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Snowfall Sanctuary", "Deliver Cargo"],
         "slot_data": [("randomize_cargo", [1, 2, 3])],
         "conditional": True,
-        "region_id": "snow sanc vessel"
+        "region_id": "snow sanc vessel",
+        "hint_entrance": ["Snowfall Sanctuary Board Train", "Snowfall Sanctuary Cave", "Snowfall Sanctuary Shop"],
     },
     "Papuzia Village Deliver Ice": {
         "stage_id": 0x2c,
@@ -4033,7 +4709,9 @@ LOCATIONS_DATA |= {
         "slot_data": [("randomize_cargo", [1, 2, 3])],
         "conditional": True,
         "region_id": "papuzia ice",
-        "x_max": -50000
+        "x_max": -50000,
+        "hint_entrance": ["Papuzia Board Train", "Papuzia South",
+                          "Papuzia Shop", "Papuzia South House", "Papuzia Wise One's House", "Papuzia NW House"],
     },
     "Trading Post Deliver Dark Ore": {
         "stage_id": 0x37,
@@ -4044,7 +4722,9 @@ LOCATIONS_DATA |= {
         "location_groups": ["Trading Post", "Deliver Cargo"],
         "slot_data": [("randomize_cargo", [1, 2, 3])],
         "conditional": True,
-        "region_id": "linebeck dark ore"
+        "region_id": "linebeck dark ore",
+        "hint_entrance": ["Linebeck III's Shop Exit"],
+        "hint_entrance_secondary": ["Trading Post Board Train", "Trading Post South Cave"]
     },
     "Dune Sanctuary Deliver Cuccos": {
         "stage_id": 0x34,
@@ -4055,7 +4735,9 @@ LOCATIONS_DATA |= {
         "location_groups": ["Dune Sanctuary", "Deliver Cargo"],
         "slot_data": [("randomize_cargo", [0, 1, 2, 3])],
         "conditional": True,
-        "region_id": "sand sanc cuccos"
+        "region_id": "sand sanc cuccos",
+        "hint_entrance": ["Dune Sanctuary Board Train", "Dune Sanctuary Secret Staircase"],
+        "ut_connect": "EVENT: Dune Sanctuary Deliver Cuccos",
     },
     "Desert Temple 1F N Arena Stalfos Skull": {  # Used for a delay pickup to make sure the key gets removed
         "stage_id": 0x1D,
@@ -4077,7 +4759,10 @@ LOCATIONS_DATA |= {
         "location_groups": ["Goron Village", "Deliver Cargo"],
         "slot_data": [("randomize_cargo", [1, 2, 3])],
         "conditional": True,
-        "region_id": "goron ice 2"
+        "region_id": "goron ice 2",
+        "hint_entrance": ["Goron Village Board Train", "Goron Village Shop", "Goron Village West",
+            "Goron Village SW House", "Goron Village Center House", "Goron Village SE House",
+            "Goron Village Elder's House", "Goron Village NW House", "Goron Village East Lava House"],
     },
 
     "Goron Village Pick Up Snow Goron": {
@@ -4090,8 +4775,11 @@ LOCATIONS_DATA |= {
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
         "exact_read": True,
-        "region_id": "pick up gorons",
-        "no_model": True
+        "region_id": "pick up snow goron",
+        "no_model": True,
+        "hint_entrance": ["Goron Village Board Train", "Goron Village Shop", "Goron Village West",
+            "Goron Village SW House", "Goron Village Center House", "Goron Village SE House",
+            "Goron Village Elder's House", "Goron Village NW House", "Goron Village East Lava House"],
     },
     "Goron Village Pick Up City Goron": {
         "stage_id": 0x2e,
@@ -4102,8 +4790,11 @@ LOCATIONS_DATA |= {
         "location_groups": ["Goron Village", "Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
-        "region_id": "goron ice event",
-        "no_model": True
+        "region_id": "pick up city goron",
+        "no_model": True,
+        "hint_entrance": ["Goron Village Board Train", "Goron Village Shop", "Goron Village West",
+            "Goron Village SW House", "Goron Village Center House", "Goron Village SE House",
+            "Goron Village Elder's House", "Goron Village NW House", "Goron Village East Lava House"],
     },
     "Castle Town Goron Force Gem": {
         "stage_id": 0x29,
@@ -4114,7 +4805,8 @@ LOCATIONS_DATA |= {
         "location_groups": ["Castle Town", "Deliver Passengers"],
         "slot_data": [("randomize_passengers", [1, 2, 3])],
         "conditional": True,
-        "region_id": "castle town goron"
+        "region_id": "castle town goron",
+        "hint_entrance": ["Castle Town Board Train", "Castle Town North"],
     },
     "Castle Town Pick Up Teacher": {
         "stage_id": 0x29,
@@ -4128,7 +4820,8 @@ LOCATIONS_DATA |= {
         # "delay_reset": True,
         "exact_read": True,
         "region_id": "castle town teacher",
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Castle Town Board Train", "Castle Town North"],
     },
     "Anouki Village Goron Force Gem": {
         "stage_id": 0x2b,
@@ -4138,8 +4831,12 @@ LOCATIONS_DATA |= {
         "vanilla_item": "N Icy Spring Tracks",
         "location_groups": ["Anouki Village", "Deliver Passengers"],
         "slot_data": [("randomize_passengers", [1, 2, 3])],
+        "ut_connect": "EVENT: Anouki Village Drop Off Goron",
         "conditional": True,
-        "region_id": "av goron"
+        "region_id": "av goron",
+        "hint_entrance": ["Anouki Village Board Train", "Anouki Village Bomb Cave",
+                          "Anouki Village SW House", "Anouki Village S House", "Anouki Village SE House",
+                          "Anouki Village NW House", "Anouki Village N House", "Anouki Village NE House"],
     },
     "Anouki Village Pick Up Kofu": {
         "stage_id": 0x2b,
@@ -4152,7 +4849,9 @@ LOCATIONS_DATA |= {
         "conditional": True,
         "exact_read": True,
         "region_id": "av kofu",
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Honcho's House Exit"],
+        "hint_secondary": ["Anouki Village Board Train", "Anouki Village Bomb Cave"],
     },
     "Goron Village Kofu Force Gem": {
         "stage_id": 0x2e,
@@ -4163,10 +4862,14 @@ LOCATIONS_DATA |= {
         "location_groups": ["Goron Village", "Deliver Passengers"],
         "slot_data": [("randomize_passengers", [1, 2, 3])],
         "conditional": True,
-        "region_id": "gv kofu"
+        "region_id": "gv kofu",
+        "hint_entrance": ["Goron Village Board Train", "Goron Village Shop", "Goron Village West",
+            "Goron Village SW House", "Goron Village Center House", "Goron Village SE House",
+            "Goron Village Elder's House", "Goron Village NW House", "Goron Village East Lava House"],
     },
     "Snow Realm Pick Up Ferrus": {
         "stage_id": 0x5,
+        "from_entrances": [0xFA],
         "address": STAddr.passenger_tag_0,
         "value": 0x544D4E51,  # bitand of the two ferrus IDs
         # "exact_read": True,
@@ -4174,7 +4877,9 @@ LOCATIONS_DATA |= {
         "location_groups": ["Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
-        "region_id": "snow realm ferrus"
+        "always_exist": True,
+        "region_id": "snow realm ferrus",
+        "ut_connect": "EVENT: Snow Realm Pick Up Ferrus"
     },
     "Outset Ferrus Force Gem": {
         "stage_id": 0x2F,
@@ -4185,10 +4890,13 @@ LOCATIONS_DATA |= {
         "location_groups": ["Goron Village", "Deliver Passengers"],
         "slot_data": [("randomize_passengers", [1, 2, 3])],
         "conditional": True,
-        "region_id": "outset ferrus"
+        "region_id": "outset ferrus",
+        "hint_entrance": ["Alfonzo's Workshop Exit"],
+        "hint_entrance_secondary": ["Outset Board Train"]
     },
     "Fire Realm Pick Up Ferrus": {
         "stage_id": 0x7,
+        "from_entrances": [0xFA],
         "address": STAddr.passenger_tag_0,
         "value": 0x544D4E51,  # bitand of the two ferrus IDs
         # "exact_read": True,
@@ -4197,9 +4905,11 @@ LOCATIONS_DATA |= {
         "location_groups": ["Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
-        "region_id": "fire realm ferrus"
+        "always_exist": True,
+        "region_id": "fire realm ferrus",
+        "ut_connect": "EVENT: Fire Realm Pick Up Ferrus"
     },
-    "Marine Temple Ferrus Force Gem": {
+    "Marine Temple Lobby Ferrus Force Gem": {
         "stage_id": 0x1B,
         "room_id": 0xa,
         "address": STAddr.adv_flags_f,
@@ -4208,8 +4918,10 @@ LOCATIONS_DATA |= {
         "location_groups": ["Deliver Passengers"],
         "slot_data": [("randomize_passengers", [1, 2, 3])],
         "conditional": True,
-        "dungeon": "Marine Temple",  # Yas allow it to have local dungeon items!
-        "region_id": "oct ferrus"
+        # "dungeon": "Marine Temple",  # Yas allow it to have local dungeon items!
+        "region_id": "oct ferrus",
+        "ut_connect": "EVENT: Marine Temple Lobby Drop Off Ferrus",
+        "hint_entrance": ["Marine Temple Lobby Board Train", "Marine Temple Lobby Enter Dungeon", "Marine Temple Lobby Blue Warp"],
     },
     "Forest Realm Ferrus Gift": {
         "stage_id": 0x45,
@@ -4225,36 +4937,42 @@ LOCATIONS_DATA |= {
         "room_id": 0x3,
         "address": STAddr.adv_flags_35,
         "value": 0x80,
-        "region_id": "mayscore dovok",
+        "region_id": "mayscore morris",
         "vanilla_item": "Passenger: Morris",
         "location_groups": ["Mayscore", "Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Morris' House Exit"],
+        "hint_entrance_secondary": ["Mayscore Board Train", "Mayscore North"]
     },
     "Mayscore Pick Up Yamahiko": {
         "stage_id": 0x2A,
         "room_id": 0x0,
         "address": STAddr.adv_flags_35,
         "value": 0x40,
-        "region_id": "mayscore dovok",
+        "region_id": "mayscore quest",
         "vanilla_item": "Passenger: Yamahiko",
         "location_groups": ["Mayscore", "Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Mayscore Board Train", "Mayscore North", "Mayscore Shop",
+                          "Mayscore NE House", "Mayscore NW House", "Mayscore North House"],
     },
     "Mayscore Pick Up Mash": {
         "stage_id": 0x2A,
         "room_id": 0x0,
         "address": STAddr.adv_flags_36,
         "value": 0x1,
-        "region_id": "mayscore dovok",
+        "region_id": "mayscore quest",
         "vanilla_item": "Passenger: Mash",
         "location_groups": ["Mayscore", "Pick Up Passengers"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
-        "no_model": True
+        "no_model": True,
+        "hint_entrance": ["Mayscore Board Train", "Mayscore North", "Mayscore Shop",
+                          "Mayscore NE House", "Mayscore NW House", "Mayscore North House"],
     },
     "Mayscore Pick Up Wood": {
         "stage_id": 0x38,
@@ -4263,18 +4981,13 @@ LOCATIONS_DATA |= {
         "value": 0x2,
         "region_id": "mayscore wood",
         "vanilla_item": "Passenger: Mash",
-        "location_groups": ["Mayscore", "Pick Up Passengers"],
+        "location_groups": ["Mayscore", "Pick Up Passengers", "Mayscore Forest"],
         "slot_data": [("randomize_passengers", [2, 3])],
         "conditional": True,
-        "no_model": True
-    },
-    "ToS 21F Bomb Wall Chest": {
-        "stage_id": 0x13,
-        "room_id": 0x2E,
-        "vanilla_item": ITEM_GROUPS["Rare Treasures"],
-        "region_id": "tos 21f bombs",
-        'dungeon': "ToS",
-        "tos_section": 5,
+        "no_model": True,
+
+        "hint_entrance": ["Mayscore Forest South"],
+        "hint_entrance_secondary": ["Mayscore Board Train"],
     },
     "Mountain Temple 2F Stalfos": {  # Dummy location for stalfos treasure drop conflict
         "stage_id": 0x1C,
@@ -4293,17 +5006,6 @@ LOCATIONS_DATA |= {
         "conditional": True,
         "x_max": -20000,
     },
-    "ToS 29F SE Extinguish Torches Chest": {
-        "stage_id": 0x13,
-        "room_id": 0x1F,
-        "region_id": "tos 29f se",
-        "vanilla_item": ITEM_GROUPS["Rare Treasures"],
-        'dungeon': "ToS",
-        "tos_section": 6,
-        "x_min": 80000,
-        "z_min": 20000,
-        "delay_pickup": ["ToS 29F SE Eyes in the Dark Chest"]
-    },
     "Desert Temple B1 Stalfos": {
         "stage_id": 0x1D,
         "room_id": 0x3,
@@ -4312,8 +5014,15 @@ LOCATIONS_DATA |= {
         "vanilla_item": "Treasure: Stalfos Skull",
         "region_id": "dt b1 damage",
         "conditional": True
-    },
+    }
+}
 
+LOCATIONS_DATA |= {
+    f"Bonus Starting Item {i}": {
+        "region_id": "menu",
+        "conditional": True,
+        "value": i
+    } for i in range(1, 11)
 }
 
 # Create location groups from loc data
@@ -4348,10 +5057,19 @@ LOCATION_GROUPS["Shop Locations"] = (LOCATION_GROUPS["Shop Treasure Locations"] 
                                      LOCATION_GROUPS["Shop Shield Locations"] |
                                      LOCATION_GROUPS["Shop Ammo Locations"] |
                                      LOCATION_GROUPS["Shop Postcard Locations"])
-LOCATION_GROUPS["Unique Rabbits"] = LOCATION_GROUPS["Unique Grass Rabbits"] | LOCATION_GROUPS["Unique Snow Rabbits"] | LOCATION_GROUPS["Unique Mountain Rabbits"]  | LOCATION_GROUPS["Unique Sand Rabbits"]
-LOCATION_GROUPS["Total Rabbits"] = LOCATION_GROUPS["Total Grass Rabbits"] | LOCATION_GROUPS["Total Snow Rabbits"]  | LOCATION_GROUPS["Total Mountain Rabbits"]  | LOCATION_GROUPS["Total Sand Rabbits"]
+LOCATION_GROUPS["Unique Rabbits"] = (LOCATION_GROUPS["Unique Grass Rabbits"] |
+                                     LOCATION_GROUPS["Unique Snow Rabbits"] |
+                                     LOCATION_GROUPS["Unique Ocean Rabbits"] |
+                                     LOCATION_GROUPS["Unique Mountain Rabbits"] |
+                                     LOCATION_GROUPS["Unique Sand Rabbits"])
+LOCATION_GROUPS["Total Rabbits"] = (LOCATION_GROUPS["Total Grass Rabbits"] |
+                                    LOCATION_GROUPS["Total Snow Rabbits"] |
+                                    LOCATION_GROUPS["Total Ocean Rabbits"] |
+                                    LOCATION_GROUPS["Total Mountain Rabbits"] |
+                                    LOCATION_GROUPS["Total Sand Rabbits"])
 LOCATION_GROUPS["Grass Rabbits"] = LOCATION_GROUPS["Total Grass Rabbits"] | LOCATION_GROUPS["Unique Grass Rabbits"]
 LOCATION_GROUPS["Snow Rabbits"] = LOCATION_GROUPS["Total Snow Rabbits"] | LOCATION_GROUPS["Unique Snow Rabbits"]
+LOCATION_GROUPS["Ocean Rabbits"] = LOCATION_GROUPS["Total Ocean Rabbits"] | LOCATION_GROUPS["Unique Ocean Rabbits"]
 LOCATION_GROUPS["Mountain Rabbits"] = LOCATION_GROUPS["Total Mountain Rabbits"] | LOCATION_GROUPS["Unique Mountain Rabbits"]
 LOCATION_GROUPS["Sand Rabbits"] = LOCATION_GROUPS["Total Sand Rabbits"] | LOCATION_GROUPS["Unique Sand Rabbits"]
 LOCATION_GROUPS["Rabbit Locations"] = LOCATION_GROUPS["Unique Rabbits"] | LOCATION_GROUPS["Total Rabbits"]

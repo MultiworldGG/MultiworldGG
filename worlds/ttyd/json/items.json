@@ -56,6 +56,13 @@
     "frequency": 1
   },
   {
+    "item_name": "Briefcase",
+    "id": 77772018,
+    "progression": "progression",
+    "rom_id": 336,
+    "frequency": 1
+  },
+  {
     "item_name": "Black Key (Plane)",
     "id": 77772008,
     "progression": "progression",
@@ -126,13 +133,6 @@
     "frequency": 4
   },
   {
-    "item_name": "Briefcase",
-    "id": 77772018,
-    "progression": "progression",
-    "rom_id": 81,
-    "frequency": 1
-  },
-  {
     "item_name": "Bump Attack",
     "id": 77772019,
     "progression": "useful",
@@ -142,7 +142,7 @@
   {
     "item_name": "Cake Mix",
     "id": 77772020,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 172,
     "frequency": 1
   },
@@ -261,21 +261,21 @@
   {
     "item_name": "Cookbook",
     "id": 77772037,
-    "progression": "useful",
+    "progression": "progression",
     "rom_id": 60,
     "frequency": 1
   },
   {
     "item_name": "Couple's Cake",
     "id": 77772223,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 219,
     "frequency": 1
   },
   {
     "item_name": "Courage Shell",
     "id": 77772038,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 143,
     "frequency": 3
   },
@@ -352,7 +352,7 @@
   {
     "item_name": "Dried Bouquet",
     "id": 77772224,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 167,
     "frequency": 2
   },
@@ -382,6 +382,13 @@
     "id": 77772052,
     "progression": "progression",
     "rom_id": 26,
+    "frequency": 1
+  },
+  {
+    "item_name": "Elusive Badge",
+    "id": 77772239,
+    "progression": "progression",
+    "rom_id": 110,
     "frequency": 1
   },
   {
@@ -429,7 +436,7 @@
   {
     "item_name": "Fire Flower",
     "id": 77772059,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 132,
     "frequency": 7
   },
@@ -485,7 +492,7 @@
   {
     "item_name": "Fresh Pasta",
     "id": 77772067,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 171,
     "frequency": 1
   },
@@ -532,6 +539,13 @@
     "frequency": 1
   },
   {
+    "item_name": "Gold Card",
+    "id": 77772241,
+    "progression": "useful",
+    "rom_id": 93,
+    "frequency": 1
+  },
+  {
     "item_name": "Gold Ring",
     "id": 77772074,
     "progression": "progression",
@@ -555,7 +569,7 @@
   {
     "item_name": "Golden Leaf",
     "id": 77772077,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 169,
     "frequency": 1
   },
@@ -630,6 +644,13 @@
     "frequency": 1
   },
   {
+    "item_name": "Honey Candy",
+    "id": 77772245,
+    "progression": "progression",
+    "rom_id": 229,
+    "frequency": 1
+  },
+  {
     "item_name": "Honey Shroom",
     "id": 77772225,
     "progression": "filler",
@@ -639,7 +660,7 @@
   {
     "item_name": "Honey Syrup",
     "id": 77772088,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 154,
     "frequency": 7
   },
@@ -660,7 +681,7 @@
   {
     "item_name": "Hot Sauce",
     "id": 77772226,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 173,
     "frequency": 2
   },
@@ -716,7 +737,7 @@
   {
     "item_name": "Ice Storm",
     "id": 77772098,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 131,
     "frequency": 5
   },
@@ -737,7 +758,7 @@
   {
     "item_name": "Jammin' Jelly",
     "id": 77772101,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 156,
     "frequency": 9
   },
@@ -751,7 +772,7 @@
   {
     "item_name": "Keel Mango",
     "id": 77772103,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 170,
     "frequency": 1
   },
@@ -765,7 +786,7 @@
   {
     "item_name": "L Emblem",
     "id": 77772105,
-    "progression": "useful",
+    "progression": "progression",
     "rom_id": 327,
     "frequency": 1
   },
@@ -786,7 +807,7 @@
   {
     "item_name": "Life Shroom",
     "id": 77772108,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 151,
     "frequency": 10
   },
@@ -807,7 +828,7 @@
   {
     "item_name": "Maple Syrup",
     "id": 77772112,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 155,
     "frequency": 5
   },
@@ -877,7 +898,7 @@
   {
     "item_name": "Mushroom",
     "id": 77772120,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 148,
     "frequency": 13
   },
@@ -891,7 +912,7 @@
   {
     "item_name": "Mystic Egg",
     "id": 77772122,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 168,
     "frequency": 1
   },
@@ -945,6 +966,20 @@
     "frequency": 1
   },
   {
+    "item_name": "Package",
+    "id": 77772244,
+    "progression": "progression",
+    "rom_id": 109,
+    "frequency": 1
+  },
+  {
+    "item_name": "Present",
+    "id": 77772246,
+    "progression": "progression",
+    "rom_id": 100,
+    "frequency": 1
+  },
+  {
     "item_name": "Palace Key",
     "id": 77772130,
     "progression": "progression",
@@ -968,7 +1003,7 @@
   {
     "item_name": "Peachy Peach",
     "id": 77772133,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 176,
     "frequency": 1
   },
@@ -1001,9 +1036,16 @@
     "frequency": 1
   },
   {
+    "item_name": "Platinum Card",
+    "id": 77772242,
+    "progression": "useful",
+    "rom_id": 92,
+    "frequency": 1
+  },
+  {
     "item_name": "Point Swap",
     "id": 77772138,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 161,
     "frequency": 2
   },
@@ -1141,6 +1183,13 @@
     "frequency": 1
   },
   {
+    "item_name": "Routing Slip",
+    "id": 77772240,
+    "progression": "progression",
+    "rom_id": 98,
+    "frequency": 1
+  },
+  {
     "item_name": "Ruby Star",
     "id": 77772158,
     "progression": "progression",
@@ -1150,7 +1199,7 @@
   {
     "item_name": "Ruin Powder",
     "id": 77772159,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 137,
     "frequency": 3
   },
@@ -1178,7 +1227,7 @@
   {
     "item_name": "Shooting Star",
     "id": 77772164,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 130,
     "frequency": 6
   },
@@ -1234,14 +1283,14 @@
   {
     "item_name": "Slow Shroom",
     "id": 77772171,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 157,
     "frequency": 2
   },
   {
     "item_name": "Snow Bunny",
     "id": 77772228,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 201,
     "frequency": 1
   },
@@ -1367,7 +1416,7 @@
   {
     "item_name": "Super Shroom",
     "id": 77772191,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 149,
     "frequency": 11
   },
@@ -1381,7 +1430,7 @@
   {
     "item_name": "Tasty Tonic",
     "id": 77772193,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 153,
     "frequency": 2
   },
@@ -1437,7 +1486,7 @@
   {
     "item_name": "Turtley Leaf",
     "id": 77772201,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 174,
     "frequency": 2
   },
@@ -1451,7 +1500,7 @@
   {
     "item_name": "Ultra Shroom",
     "id": 77772204,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 150,
     "frequency": 12
   },
@@ -1486,7 +1535,7 @@
   {
     "item_name": "Volt Shroom",
     "id": 77772209,
-    "progression": "filler",
+    "progression": "progression",
     "rom_id": 135,
     "frequency": 3
   },
@@ -1502,12 +1551,19 @@
     "id": 77772211,
     "progression": "progression",
     "rom_id": 73,
+    "frequency": 2
+  },
+  {
+    "item_name": "Wrestling Mag",
+    "id": 77772243,
+    "progression": "progression",
+    "rom_id": 99,
     "frequency": 1
   },
   {
     "item_name": "Whacka Bump",
     "id": 77772212,
-    "progression": "useful",
+    "progression": "progression",
     "rom_id": 165,
     "frequency": 8
   },
@@ -1537,6 +1593,391 @@
     "id": 77772230,
     "progression": "filler",
     "rom_id": 194,
+    "frequency": 1
+  },
+  {
+    "item_name": "House Key",
+    "id": 77772231,
+    "progression": "progression",
+    "rom_id": 49,
+    "frequency": 1
+  },
+  {
+    "item_name": "Box",
+    "id": 77772232,
+    "progression": "progression",
+    "rom_id": 95,
+    "frequency": 1
+  },
+  {
+    "item_name": "Walrus Whiskers",
+    "id": 77772233,
+    "progression": "progression",
+    "rom_id": 105,
+    "frequency": 1
+  },
+  {
+    "item_name": "Special Card",
+    "id": 77772234,
+    "progression": "useful",
+    "rom_id": 91,
+    "frequency": 1
+  },
+  {
+    "item_name": "Courage Shell Pack",
+    "id": 77772235,
+    "progression": "progression",
+    "rom_id": 90,
+    "frequency": 1
+  },
+  {
+    "item_name": "Silver Card",
+    "id": 77772236,
+    "progression": "useful",
+    "rom_id": 94,
+    "frequency": 1
+  },
+  {
+    "item_name": "Battle Trunks",
+    "id": 77772237,
+    "progression": "progression",
+    "rom_id": 107,
+    "frequency": 0
+  },
+  {
+    "item_name": "Battle Trunk Pack",
+    "id": 77772238,
+    "progression": "progression",
+    "rom_id": 81,
+    "frequency": 1
+  },
+  {
+    "item_name": "Shroom Fry",
+    "id": 77772247,
+    "progression": "progression",
+    "rom_id": 179,
+    "frequency": 1
+  },
+  {
+    "item_name": "Shroom Roast",
+    "id": 77772248,
+    "progression": "filler",
+    "rom_id": 180,
+    "frequency": 1
+  },
+  {
+    "item_name": "Shroom Steak",
+    "id": 77772249,
+    "progression": "filler",
+    "rom_id": 181,
+    "frequency": 1
+  },
+  {
+    "item_name": "Mistake",
+    "id": 77772250,
+    "progression": "filler",
+    "rom_id": 182,
+    "frequency": 1
+  },
+  {
+    "item_name": "Maple Shroom",
+    "id": 77772251,
+    "progression": "filler",
+    "rom_id": 184,
+    "frequency": 1
+  },
+  {
+    "item_name": "Jelly Shroom",
+    "id": 77772252,
+    "progression": "filler",
+    "rom_id": 185,
+    "frequency": 1
+  },
+  {
+    "item_name": "Honey Super",
+    "id": 77772253,
+    "progression": "filler",
+    "rom_id": 186,
+    "frequency": 1
+  },
+  {
+    "item_name": "Maple Super",
+    "id": 77772254,
+    "progression": "filler",
+    "rom_id": 187,
+    "frequency": 1
+  },
+  {
+    "item_name": "Jelly Super",
+    "id": 77772255,
+    "progression": "filler",
+    "rom_id": 188,
+    "frequency": 1
+  },
+  {
+    "item_name": "Honey Ultra",
+    "id": 77772256,
+    "progression": "filler",
+    "rom_id": 189,
+    "frequency": 1
+  },
+  {
+    "item_name": "Maple Ultra",
+    "id": 77772257,
+    "progression": "filler",
+    "rom_id": 190,
+    "frequency": 1
+  },
+  {
+    "item_name": "Jelly Ultra",
+    "id": 77772258,
+    "progression": "filler",
+    "rom_id": 191,
+    "frequency": 1
+  },
+  {
+    "item_name": "Spicy Soup",
+    "id": 77772259,
+    "progression": "progression",
+    "rom_id": 192,
+    "frequency": 1
+  },
+  {
+    "item_name": "Zess Dinner",
+    "id": 77772260,
+    "progression": "progression",
+    "rom_id": 193,
+    "frequency": 1
+  },
+  {
+    "item_name": "Zess Deluxe",
+    "id": 77772261,
+    "progression": "filler",
+    "rom_id": 195,
+    "frequency": 1
+  },
+  {
+    "item_name": "Zess Tea",
+    "id": 77772262,
+    "progression": "filler",
+    "rom_id": 197,
+    "frequency": 1
+  },
+  {
+    "item_name": "Icicle Pop",
+    "id": 77772263,
+    "progression": "filler",
+    "rom_id": 199,
+    "frequency": 1
+  },
+  {
+    "item_name": "Zess Frappe",
+    "id": 77772264,
+    "progression": "filler",
+    "rom_id": 200,
+    "frequency": 1
+  },
+  {
+    "item_name": "Coconut Bomb",
+    "id": 77772265,
+    "progression": "progression",
+    "rom_id": 202,
+    "frequency": 1
+  },
+  {
+    "item_name": "Courage Meal",
+    "id": 77772266,
+    "progression": "filler",
+    "rom_id": 203,
+    "frequency": 1
+  },
+  {
+    "item_name": "Shroom Cake",
+    "id": 77772267,
+    "progression": "filler",
+    "rom_id": 204,
+    "frequency": 1
+  },
+  {
+    "item_name": "Shroom Crepe",
+    "id": 77772268,
+    "progression": "filler",
+    "rom_id": 205,
+    "frequency": 1
+  },
+  {
+    "item_name": "Mousse Cake",
+    "id": 77772269,
+    "progression": "filler",
+    "rom_id": 206,
+    "frequency": 1
+  },
+  {
+    "item_name": "Fried Egg",
+    "id": 77772270,
+    "progression": "filler",
+    "rom_id": 207,
+    "frequency": 1
+  },
+  {
+    "item_name": "Fruit Parfait",
+    "id": 77772271,
+    "progression": "filler",
+    "rom_id": 208,
+    "frequency": 1
+  },
+  {
+    "item_name": "Egg Bomb",
+    "id": 77772272,
+    "progression": "progression",
+    "rom_id": 209,
+    "frequency": 1
+  },
+  {
+    "item_name": "Ink Pasta",
+    "id": 77772273,
+    "progression": "filler",
+    "rom_id": 210,
+    "frequency": 1
+  },
+  {
+    "item_name": "Spaghetti",
+    "id": 77772274,
+    "progression": "filler",
+    "rom_id": 211,
+    "frequency": 1
+  },
+  {
+    "item_name": "Shroom Broth",
+    "id": 77772275,
+    "progression": "filler",
+    "rom_id": 212,
+    "frequency": 1
+  },
+  {
+    "item_name": "Poison Shroom",
+    "id": 77772276,
+    "progression": "progression",
+    "rom_id": 213,
+    "frequency": 1
+  },
+  {
+    "item_name": "Mango Delight",
+    "id": 77772277,
+    "progression": "progression",
+    "rom_id": 215,
+    "frequency": 1
+  },
+  {
+    "item_name": "Love Pudding",
+    "id": 77772278,
+    "progression": "filler",
+    "rom_id": 216,
+    "frequency": 1
+  },
+  {
+    "item_name": "Trial Stew",
+    "id": 77772279,
+    "progression": "filler",
+    "rom_id": 218,
+    "frequency": 1
+  },
+  {
+    "item_name": "Inky Sauce",
+    "id": 77772280,
+    "progression": "progression",
+    "rom_id": 220,
+    "frequency": 1
+  },
+  {
+    "item_name": "Koopa Tea",
+    "id": 77772281,
+    "progression": "filler",
+    "rom_id": 222,
+    "frequency": 1
+  },
+  {
+    "item_name": "Koopasta",
+    "id": 77772282,
+    "progression": "filler",
+    "rom_id": 223,
+    "frequency": 1
+  },
+  {
+    "item_name": "Spicy Pasta",
+    "id": 77772283,
+    "progression": "filler",
+    "rom_id": 224,
+    "frequency": 1
+  },
+  {
+    "item_name": "Heartful Cake",
+    "id": 77772284,
+    "progression": "filler",
+    "rom_id": 225,
+    "frequency": 1
+  },
+  {
+    "item_name": "Peach Tart",
+    "id": 77772285,
+    "progression": "filler",
+    "rom_id": 226,
+    "frequency": 1
+  },
+  {
+    "item_name": "Electro Pop",
+    "id": 77772286,
+    "progression": "filler",
+    "rom_id": 227,
+    "frequency": 1
+  },
+  {
+    "item_name": "Fire Pop",
+    "id": 77772287,
+    "progression": "filler",
+    "rom_id": 228,
+    "frequency": 1
+  },
+  {
+    "item_name": "Coco Candy",
+    "id": 77772288,
+    "progression": "filler",
+    "rom_id": 230,
+    "frequency": 1
+  },
+  {
+    "item_name": "Jelly Candy",
+    "id": 77772289,
+    "progression": "filler",
+    "rom_id": 231,
+    "frequency": 1
+  },
+  {
+    "item_name": "Zess Cookie",
+    "id": 77772290,
+    "progression": "filler",
+    "rom_id": 232,
+    "frequency": 1
+  },
+  {
+    "item_name": "Healthy Salad",
+    "id": 77772291,
+    "progression": "filler",
+    "rom_id": 233,
+    "frequency": 1
+  },
+  {
+    "item_name": "Koopa Bun",
+    "id": 77772292,
+    "progression": "filler",
+    "rom_id": 234,
+    "frequency": 1
+  },
+  {
+    "item_name": "Fresh Juice",
+    "id": 77772293,
+    "progression": "filler",
+    "rom_id": 235,
     "frequency": 1
   }
 ]

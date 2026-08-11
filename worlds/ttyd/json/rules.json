@@ -1920,14 +1920,14 @@
         "has": "Yoshi"
       },
       {
-      "or": [
-         {
+        "or": [
+          {
             "has": "Bobbery"
           },
           {
             "has": "Koops"
           }
-      ]
+        ]
       },
       {
         "function": "ultra_boots"
@@ -3131,5 +3131,1455 @@
   "Rogueport Sewers Town: Dazzle Item 15": {
     "has": "Star Piece",
     "count": 100
+  },
+  "Rogueport Eastside: Garf's Trouble Reward": {
+    "has": "House Key"
+  },
+  "Rogueport Center: McGoomba's Trouble Reward": {
+    "has": "Box"
+  },
+  "Rogueport Docks: Bomberto's Trouble Reward": {
+    "has": "Walrus Whiskers"
+  },
+  "Hooktail's Castle Life Shroom Room: Koopook's Trouble Reward": {
+    "can_reach": "Hooktail's Castle Hooktail's Room: Diamond Star"
+  },
+  "Petalburg Eastside: Kroop's Trouble Reward": {
+    "can_reach": "Hooktail's Castle Hooktail's Room: Diamond Star"
+  },
+  "Rogueport Center: Plenn T's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Hooktail's Castle Hooktail's Room: Diamond Star"
+      },
+      {
+        "has": "Courage Shell Pack"
+      }
+    ]
+  },
+  "Great Tree Entrance: Puni Elder's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Great Tree Entrance: Emerald Star"
+      },
+      {
+        "has": "Life Shroom"
+      }
+    ]
+  },
+  "Rogueport Westside: Lahla's Trouble Reward": {
+    "can_reach": "Great Tree Entrance: Emerald Star"
+  },
+  "Rogueport Sewers Pit Entrance: Pine T. Jr's Trouble Reward": {
+    "can_reach": "Great Tree Entrance: Emerald Star"
+  },
+  "Glitzville Storage Room: Battle Trunks 1": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 2": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 3": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 4": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 5": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 6": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 7": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 8": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 9": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 10": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 11": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 12": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 13": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 14": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 15": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 16": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 17": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 18": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 19": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Storage Room: Battle Trunks 20": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      }
+    ]
+  },
+  "Glitzville Promoter's Office: Jolene's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "has": "Storage Key 1"
+      },
+      {
+        "has": "Battle Trunk Pack"
+      }
+    ]
+  },
+  "Rogueport Sewers Merlee's House: Merlee's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Glitzville Arena: Gold Star"
+      },
+      {
+        "can_reach": "Petalburg Eastside: Turtley Leaf"
+      },
+      {
+        "has": "Paper Mode"
+      }
+    ]
+  },
+  "Petalburg Westside: Bub-ulber's Trouble Reward": {
+    "can_reach": "Glitzville Arena: Gold Star"
+  },
+  "Rogueport Center: Ms. Mowz's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Elusive Badge"
+      }
+    ]
+  },
+  "Rogueport Center: Ms. Mowz": {
+    "and": [
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Elusive Badge"
+      }
+    ]
+  },
+  "Hooktail's Castle Hooktail's Room: Elusive Badge Chest": {
+    "and": [
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "can_reach": "Hooktail's Castle Hooktail's Room: Diamond Star"
+      }
+    ]
+  },
+  "Twilight Town Leftside: Routing Slip": {
+    "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+  },
+  "Twilight Town Leftside: Mayor Dour's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "can_reach": "Great Tree Entrance: Coin"
+      },
+      {
+        "can_reach": "Petalburg Eastside: Turtley Leaf"
+      },
+      {
+        "has": "Routing Slip"
+      }
+    ]
+  },
+  "Rogueport Center: Zess T.'s Trouble Reward": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Eastside: Wedding Ring": {
+    "and": [
+      {
+        "can_reach": "Poshley Heights Sanctum Altar: Garnet Star"
+      },
+      {
+        "can_reach": "Rogueport Westside: Train Ticket"
+      },
+      {
+        "has": "Yoshi"
+      }
+    ]
+  },
+  "Rogueport Westside: Frankie's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Poshley Heights Sanctum Altar: Garnet Star"
+      },
+      {
+        "can_reach": "Rogueport Westside: Train Ticket"
+      },
+      {
+        "has": "Wedding Ring",
+        "count": 2
+      }
+    ]
+  },
+  "Twilight Town Rightside: Eve's Trouble Reward": {
+    "can_reach": "Pirate's Grotto Cortez' Hoard: Sapphire Star"
+  },
+  "Pirate's Grotto Storeroom: Goom Goom's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Pirate's Grotto Cortez' Hoard: Sapphire Star"
+      },
+      {
+        "has": "Goombella"
+      }
+    ]
+  },
+  "Excess Express Dining Car: Chef Shimi's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Poshley Heights Sanctum Altar: Garnet Star"
+      },
+      {
+        "has": "Golden Leaf"
+      },
+      {
+        "has": "Mystic Egg"
+      },
+      {
+        "has": "Keel Mango"
+      }
+    ]
+  },
+  "Poshley Heights Downtown: Toodles' Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Poshley Heights Sanctum Altar: Garnet Star"
+      },
+      {
+        "has": "Wrestling Mag"
+      }
+    ]
+  },
+  "Glitzville Main Square: Wrestling Mag": {
+    "can_reach": "Poshley Heights Sanctum Altar: Garnet Star"
+  },
+  "Glitzville Main Square: Businessman's Trouble Reward": {
+    "can_reach": "Poshley Heights Sanctum Altar: Garnet Star"
+  },
+  "Poshley Heights Downtown: Package": {
+    "can_reach": "X-Naut Fortress Boss Room: Crystal Star"
+  },
+  "Poshley Heights Downtown: Goldbob's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "X-Naut Fortress Boss Room: Crystal Star"
+      },
+      {
+        "can_reach": "Glitzville Main Square: Hot Dog"
+      },
+      {
+        "has": "Package"
+      }
+    ]
+  },
+  "Fahr Outpost Town: Gob's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "X-Naut Fortress Boss Room: Crystal Star"
+      },
+      {
+        "has": "Honey Candy"
+      }
+    ]
+  },
+  "Poshley Heights Station: Toadia's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "X-Naut Fortress Boss Room: Crystal Star"
+      },
+      {
+        "has": "L Emblem"
+      }
+    ]
+  },
+  "Boggly Woods Shadow Sirens Room: Doe T.'s Trouble Reward": {
+    "can_reach": "Palace of Shadow Final Staircase: Jammin' Jelly"
+  },
+  "Poshley Heights Station: Present": {
+    "can_reach": "Palace of Shadow Final Staircase: Jammin' Jelly"
+  },
+  "Poshley Heights Station: Bub's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Palace of Shadow Final Staircase: Jammin' Jelly"
+      },
+      {
+        "has": "Present"
+      }
+    ]
+  },
+  "Fahr Outpost Town: Swob's Trouble Reward": {
+    "and": [
+      {
+        "can_reach": "Palace of Shadow Final Staircase: Jammin' Jelly"
+      },
+      {
+        "can_reach": "Pit of 100 Trials Floor 50: Strange Sack"
+      },
+      {
+        "has": "Bobbery"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Shroom Fry": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Volt Shroom"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Shroom Roast": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Life Shroom"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Shroom Steak": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Ultra Shroom"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Mistake": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Point Swap"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Honey Shroom": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Honey Syrup"
+      },
+      {
+        "has": "Volt Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Maple Shroom": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Maple Syrup"
+      },
+      {
+        "has": "Volt Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Jelly Shroom": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Jammin' Jelly"
+      },
+      {
+        "has": "Volt Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Honey Super": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Honey Syrup"
+      },
+      {
+        "has": "Super Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Maple Super": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Maple Syrup"
+      },
+      {
+        "has": "Super Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Jelly Super": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Jammin' Jelly"
+      },
+      {
+        "has": "Super Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Honey Ultra": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Honey Syrup"
+      },
+      {
+        "has": "Ultra Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Maple Ultra": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Maple Syrup"
+      },
+      {
+        "has": "Ultra Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Jelly Ultra": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Jammin' Jelly"
+      },
+      {
+        "has": "Ultra Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Spicy Soup": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Fire Flower"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Zess Dinner": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Super Shroom"
+      },
+      {
+        "has": "Fire Flower"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Zess Special": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Whacka Bump"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Zess Deluxe": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Fresh Pasta"
+      },
+      {
+        "has": "Ultra Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Zess Dynamite": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Coconut Bomb"
+      },
+      {
+        "has": "Egg Bomb"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Zess Tea": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Golden Leaf"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Space Food": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Dried Bouquet"
+      },
+      {
+        "has": "Mushroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Icicle Pop": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Honey Syrup"
+      },
+      {
+        "has": "Ice Storm"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Zess Frappe": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Maple Syrup"
+      },
+      {
+        "has": "Ice Storm"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Snow Bunny": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Golden Leaf"
+      },
+      {
+        "has": "Ice Storm"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Coconut Bomb": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Coconut"
+      },
+      {
+        "has": "Fire Flower"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Courage Meal": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Zess Dinner"
+      },
+      {
+        "has": "Courage Shell"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Shroom Cake": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "has": "Mushroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Shroom Crepe": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "has": "Ultra Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Mousse Cake": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Cake Mix"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Fried Egg": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Mystic Egg"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Fruit Parfait": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Keel Mango"
+      },
+      {
+        "has": "Honey Syrup"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Egg Bomb": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Mystic Egg"
+      },
+      {
+        "has": "Fire Flower"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Ink Pasta": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Inky Sauce"
+      },
+      {
+        "has": "Fresh Pasta"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Spaghetti": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Fresh Pasta"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Shroom Broth": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Golden Leaf"
+      },
+      {
+        "has": "Slow Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Poison Shroom": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Point Swap"
+      },
+      {
+        "has": "Slow Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Choco Cake": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Inky Sauce"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Mango Delight": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "has": "Keel Mango"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Love Pudding": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Mango Delight"
+      },
+      {
+        "has": "Mystic Egg"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Meteor Meal": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Shroom Fry"
+      },
+      {
+        "has": "Shooting Star"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Trial Stew": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Couple's Cake"
+      },
+      {
+        "has": "Poison Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Couple's Cake": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Snow Bunny"
+      },
+      {
+        "has": "Spicy Soup"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Inky Sauce": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Hot Sauce"
+      },
+      {
+        "has": "Tasty Tonic"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Omelette Meal": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Mystic Egg"
+      },
+      {
+        "has": "Mushroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Koopa Tea": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Turtley Leaf"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Koopasta": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Turtley Leaf"
+      },
+      {
+        "has": "Fresh Pasta"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Spicy Pasta": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Hot Sauce"
+      },
+      {
+        "has": "Fresh Pasta"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Heartful Cake": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "has": "Ruin Powder"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Peach Tart": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Peachy Peach"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Electro Pop": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "has": "Volt Shroom"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Fire Pop": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "has": "Fire Flower"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Honey Candy": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "has": "Honey Syrup"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Coco Candy": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Coconut"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Jelly Candy": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "has": "Jammin' Jelly"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Zess Cookie": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Cake Mix"
+      },
+      {
+        "has": "Maple Syrup"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Healthy Salad": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Turtley Leaf"
+      },
+      {
+        "has": "Golden Leaf"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Koopa Bun": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Turtley Leaf"
+      },
+      {
+        "has": "Keel Mango"
+      },
+      {
+        "can_reach": "Creepy Steeple Upper Room: Ruby Star"
+      },
+      {
+        "has": "Cookbook"
+      }
+    ]
+  },
+  "Rogueport Westside: Cook Fresh Juice": {
+    "and": [
+      {
+        "has": "Contact Lens"
+      },
+      {
+        "has": "Honey Syrup"
+      }
+    ]
   }
 }

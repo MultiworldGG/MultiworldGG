@@ -2,10 +2,11 @@ import json
 import pkgutil
 import typing
 
-from worlds.generic.Rules import add_rule, forbid_items_for_player
+from worlds.generic.Rules import add_rule, add_item_rule, forbid_items_for_player
 from . import StateLogic, location_table, EnemyRandomizer
-from .Options import Goal, PitItems
-from .Data import stars, pit_exclusive_tattle_stars_required, location_to_unit
+from .Boss import parse_json_bosses
+from .Options import Goal, PitItems, BossRandomizer
+from .Data import stars, pit_exclusive_tattle_stars_required, location_to_unit, dazzle_location_names, dazzle_counts
 from .Locations import get_location_ids, get_locations_by_tags, location_id_to_name
 from .Options import PalaceSkip
 
@@ -16,6 +17,9 @@ if typing.TYPE_CHECKING:
 def set_rules(world: "TTYDWorld"):
     for location, rule in create_lambda_from_json(pkgutil.get_data(__name__, "json/rules.json").decode(), world).items():
         if location not in world.disabled_locations:
+            if location == "Glitzville Promoter's Office: Jolene's Trouble Reward" and not world.options.troublesanity:
+                add_rule(world.multiworld.get_location(location, world.player), lambda state: state.has("Battle Trunks", world.player, 20))
+                continue
             add_rule(world.multiworld.get_location(location, world.player), rule)
 
     for location in ["Palace of Shadow Final Staircase: Ultra Shroom", "Palace of Shadow Final Staircase: Jammin' Jelly"]:
@@ -32,6 +36,20 @@ def set_rules(world: "TTYDWorld"):
             continue
         forbid_items_for_player(world.get_location(location.name), {"Star Piece"}, world.player)
 
+    available_pieces = len(get_locations_by_tags(["star_piece", "panel"])) - world.unavailable_star_pieces
+    for i, location_name in enumerate(dazzle_location_names):
+        if location_name in world.disabled_locations:
+            continue
+        if dazzle_counts[i] > available_pieces // 2:
+            add_item_rule(world.get_location(location_name), lambda item: not item.advancement)
+
+    if world.limited_chapters:
+        limited_gate_tags = [f"chapter_{chapter}" for chapter in world.limited_chapters]
+        for location in get_locations_by_tags(limited_gate_tags):
+            if location.name in world.disabled_locations:
+                continue
+            forbid_items_for_player(world.get_location(location.name), {"Star Piece"}, world.player)
+
 def set_tattle_rules(world: "TTYDWorld"):
     for location in get_locations_by_tags("tattle"):
         if location.name in world.disabled_locations:
@@ -39,6 +57,7 @@ def set_tattle_rules(world: "TTYDWorld"):
         add_rule(world.get_location(location.name), lambda state: state.has("Goombella", world.player))
     rules_dict = get_random_enemy_tattle_rules_dict(world) \
         if world.options.enemy_randomizer != EnemyRandomizer.option_vanilla \
+        or world.options.boss_randomizer != BossRandomizer.option_vanilla \
         else get_tattle_rules_dict()
     for location_name, locations in rules_dict.items():
         if location_name in world.disabled_locations:
@@ -52,18 +71,15 @@ def set_tattle_rules(world: "TTYDWorld"):
             else:
                 extra_condition = lambda state: state.can_reach("Palace of Shadow Final Staircase: Ultra Shroom", "Location", world.player)
         else:
-            # Require access to any of the listed locations
+            locations = [loc for loc in locations if location_id_to_name[loc] not in world.disabled_locations]
+            if len(locations) == 0:
+                continue
             pit_exclusive_names = {name for names in pit_exclusive_tattle_stars_required.values() for name in names}
             if world.options.pit_items != PitItems.option_all and location_name not in pit_exclusive_names:
-                locations = [loc for loc in locations if loc not in get_location_ids(get_locations_by_tags("pit_floor"))]
-                if len(locations) == 0:
-                    continue
-            valid_locations = [
-                location_id_to_name[loc] for loc in locations
-                if location_id_to_name[loc] not in world.disabled_locations
-            ]
-            if len(valid_locations) == 0:
-                continue
+                non_pit = [loc for loc in locations if loc not in get_location_ids(get_locations_by_tags("pit_floor"))]
+                if non_pit:
+                    locations = non_pit
+            valid_locations = [location_id_to_name[loc] for loc in locations]
             extra_condition = lambda state, locs=valid_locations: any(
                 state.can_reach(loc, "Location", world.player) for loc in locs
             )
@@ -150,7 +166,10 @@ def get_tattle_rules_dict() -> dict[str, typing.List[int]]:
         "Tattle: Spania": [78780145, 78780267, 78780638],
         "Tattle: Fuzzy": [78780170, 78780296, 78780638],
         "Tattle: Koopa Troopa": [78780193, 78780170],
-        "Tattle: Blooper": [78780184],
+        # Proxy is the sewers-side Shine Sprite in the pipe room (the fight is on the
+        # sewers side); piece locations make bad proxies — they get DISABLED under
+        # limited chapters, which would remove the tattle entirely.
+        "Tattle: Blooper": [78780133],
         "Tattle: Lord Crump": [78780511],
         "Tattle: Cleft": [78780216, 78780639],
         "Tattle: Bald Cleft": [78780165],
@@ -213,13 +232,13 @@ def get_tattle_rules_dict() -> dict[str, typing.List[int]]:
         "Tattle: Ember": [78780503],
         "Tattle: Putrid Piranha": [78780470],
         "Tattle: Lava Bubble": [78780495, 78780642],
-        "Tattle: Bullet Bill": [78780497],
-        "Tattle: Bill Blaster": [78780497],
-        "Tattle: Bulky Bob-omb": [78780497, 78780642],
+        "Tattle: Bullet Bill": [78780495],
+        "Tattle: Bill Blaster": [78780495],
+        "Tattle: Bulky Bob-omb": [78780495, 78780642],
         "Tattle: Parabuzzy": [78780503],
         "Tattle: Cortez": [78780511],
         "Tattle: Smorg": [78780554],
-        "Tattle: Ruff Puff": [78780538],
+        "Tattle: Ruff Puff": [78780539],
         "Tattle: Poison Pokey": [78780541, 78780642],
         "Tattle: Spiky Parabuzzy": [78780543, 78780642],
         "Tattle: Ice Puff": [78780562, 78780643],
@@ -267,27 +286,86 @@ def get_tattle_rules_dict() -> dict[str, typing.List[int]]:
         "Tattle: Bonetail": [78780647]
     }
 
+BOSS_ARENA_INFO: dict[str, tuple[typing.Optional[int], list[str]]] = {
+    "btlgrp_aji_aji_mbmkII":           (78780604, ["Tattle: Magnus von Grapple 2.0"]),
+    "btlgrp_gon_gon_11_01_off_1":      (78780209, ["Tattle: Hooktail"]),
+    "btlgrp_gor_gor_00_01_off_1":      (78780000, ["Tattle: Lord Crump"]),
+    "btlgrp_gor_gor_02_01_off_1":      (78780047, ["Tattle: Gus"]),
+    "btlgrp_hei_hei_10_01_off_1":      (78780170, ["Tattle: Gold Fuzzy"]),
+    "btlgrp_jin_jin_00_atmic_teresa":  (78780434, ["Tattle: Atomic Boo"]),
+    "btlgrp_jin_jin_01_faker_mario":   (78780437, ["Tattle: Doopliss"]),
+    "btlgrp_jin_jin_04_ramper":        (78780437, ["Tattle: Doopliss"]),
+    "btlgrp_jon_jon_100_01_off_1":     (78780647, ["Tattle: Bonetail"]),
+    "btlgrp_las_las_09_rampell":       (78780622, ["Tattle: Doopliss", "Tattle: Beldam", "Tattle: Marilyn"]),
+    "btlgrp_las_las_bunbaba":          (78780634, ["Tattle: Gloomtail"]),
+    "btlgrp_las_las_28_koopa":         (78780634, ["Tattle: Bowser", "Tattle: Kammy Koopa"]),
+    "btlgrp_las_las_28_batten_leader": (78780634, ["Tattle: Sir Grodus", "Tattle: Grodus X"]),
+    "btlgrp_las_las_29_black_peach_1": (None, ["Tattle: Shadow Queen"]),
+    "btlgrp_las_las_29_black_peach_2": (None, ["Tattle: Shadow Queen", "Tattle: Beldam", "Tattle: Marilyn",
+                                               "Tattle: Vivian"]),
+    "btlgrp_mri_mri_mb":               (78780232, ["Tattle: Magnus von Grapple"]),
+    "btlgrp_muj_muj_kanbu":            (78780511, ["Tattle: Lord Crump", "Tattle: Koopatrol", "Tattle: Magikoopa"]),
+    "btlgrp_muj_muj_cortez":           (78780511, ["Tattle: Cortez"]),
+    "btlgrp_rsh_rsh_06_01_off_1":      (78780554, ["Tattle: Smorg"]),
+    "btlgrp_tik_tik_gesso":            (78780133, ["Tattle: Blooper"]),
+    "btlgrp_tou_tou_boss":             (78780287, ["Tattle: Macho Grubba"]),
+    "btlgrp_tou_tou_champ":            (78780295, ["Tattle: Rawk Hawk"]),
+    "btlgrp_tou_tou_koopa":            (78780287, ["Tattle: Bowser"]),
+    "btlgrp_win_win_00_04_off_1":      (78780215, ["Tattle: Vivian", "Tattle: Beldam", "Tattle: Marilyn"]),
+}
+
+
 def get_random_enemy_tattle_rules_dict(world: "TTYDWorld") -> dict[str, list[int]]:
     base_rules = get_tattle_rules_dict()
+
+    enemy_random = world.options.enemy_randomizer != EnemyRandomizer.option_vanilla
+    boss_random = world.options.boss_randomizer != BossRandomizer.option_vanilla
 
     encounter_enemy_sets = [
         (enc.location_id, set(enc.enemy_ids))
         for enc in world.encounters
-    ]
+    ] if enemy_random else []
+
+    boss_overrides: dict[str, list[int]] = {}
+    boss_keys: set[str] = set()
+    if boss_random:
+        for _, arena_keys in BOSS_ARENA_INFO.values():
+            boss_keys.update(arena_keys)
+        group_source = {tuple(sorted(b.enemy_ids)): b.name for b in parse_json_bosses()}
+        for arena in world.bosses:
+            source_name = group_source.get(tuple(sorted(arena.enemy_ids)))
+            if source_name is None:
+                continue
+            arena_proxy = BOSS_ARENA_INFO[arena.name][0]
+            for key in BOSS_ARENA_INFO[source_name][1]:
+                boss_overrides.setdefault(key, [])
+                if arena_proxy is not None:
+                    boss_overrides[key].append(arena_proxy)
 
     result: dict[str, list[int]] = {}
 
     for key in base_rules:
-        tattle_ids = set(location_to_unit[location_table[key]])  # <-- FIX
+        tattle_ids = set(location_to_unit[location_table[key]])
+        is_boss = key in boss_keys
 
-        matching_locations = [
-            loc_id
-            for loc_id, enemy_set in encounter_enemy_sets
-            if enemy_set & tattle_ids
-        ]
-
-        # fallback to base rule if random finds nothing
-        result[key] = matching_locations if matching_locations else list(base_rules[key])
+        if is_boss:
+            matching_locations = [
+                loc_id
+                for loc_id, enemy_set in encounter_enemy_sets
+                if enemy_set & tattle_ids
+            ]
+            matching_locations += boss_overrides.get(key, [])
+            result[key] = list(dict.fromkeys(matching_locations))
+        elif enemy_random:
+            matching_locations = [
+                loc_id
+                for loc_id, enemy_set in encounter_enemy_sets
+                if enemy_set & tattle_ids
+            ]
+            # fallback to base rule if random finds nothing
+            result[key] = matching_locations if matching_locations else list(base_rules[key])
+        else:
+            result[key] = list(base_rules[key])
 
         if key == "Tattle: Mini-Yux":
             result[key] = result["Tattle: Yux"]
@@ -295,6 +373,8 @@ def get_random_enemy_tattle_rules_dict(world: "TTYDWorld") -> dict[str, list[int
             result[key] = result["Tattle: Z-Yux"]
         elif key == "Tattle: Mini-X-Yux":
             result[key] = result["Tattle: X-Yux"]
+        elif key == "Tattle: Sky-Blue Spiny":
+            result[key] = result["Tattle: Dark Lakitu"]
 
     return result
 

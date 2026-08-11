@@ -94,13 +94,13 @@ class Goal(OptionSet):
     - **wisps**: All wisps must be collected.
     - **quests**: All quests have to be finished.
     - **relics**: Place relics in some areas, all of them must be collected.
-    - **random**: Choose one goal at random among the other selected ones.
-      e.g. ['random', 'trees', 'wisps'] will give trees or wisps.
-      If only random is selected, it will choose among all goals.
+    - **one_random**: Choose one goal at random among the other selected ones.
+      e.g. ['one_random', 'trees', 'wisps'] will give trees or wisps.
+      If only one_random is selected, it will choose among all goals.
     """
     display_name = "Goal"
     rich_text_doc = True
-    valid_keys = ["trees", "wisps", "quests", "relics", "random"]
+    valid_keys = ["trees", "wisps", "quests", "relics", "one_random"]
     default = frozenset(["trees"])
 
 

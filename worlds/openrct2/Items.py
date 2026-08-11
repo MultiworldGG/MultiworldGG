@@ -2,7 +2,7 @@ from BaseClasses import Item
 import copy
 from .Constants import Scenario_Items
 from .data.item_info import item_info
-from .Options import *
+from . import Options
 from random import Random
 from typing import Tuple
 
@@ -11,15 +11,11 @@ class OpenRCT2Item(Item):
     game: str = "OpenRCT2"
 
 
-def set_openRCT2_items(options: openRCT2Options, random: Random) -> tuple[list[str],str]:
-    # print("\nThis is the selected scenario:")
-    # print(scenario)
-    # print("And these items will be randomized:")
-    # print(Scenario_Items[scenario])
+def set_openRCT2_items(options: Options.openRCT2Options, random: Random) -> tuple[list[str],str]:
     if(options.all_rides_and_scenery_expansion):
-        openRCT2_items = copy.deepcopy(Scenario_Items[152]) # Archipelago Madness has every ride in the game. We can go off that
+        openRCT2_items = copy.deepcopy(Scenario_Items[Options.Scenario.archipelago_madness_expansions]) # Archipelago Madness has every ride in the game. We can go off that
     elif(options.all_rides_and_scenery_base):
-        openRCT2_items = copy.deepcopy(Scenario_Items[151]) # Archipelago Madness, but without the expansion stuff
+        openRCT2_items = copy.deepcopy(Scenario_Items[Options.Scenario.archipelago_madness_vanilla]) # Archipelago Madness, but without the expansion stuff
     else:
         openRCT2_items = copy.deepcopy(Scenario_Items[options.scenario.value])
     rules = [options.difficult_guest_generation.value,
@@ -29,9 +25,7 @@ def set_openRCT2_items(options: openRCT2Options, random: Random) -> tuple[list[s
                  options.forbid_marketing_campaigns.value,
                  options.forbid_tree_removal.value]
 
-    locked = 2 # For clarity in the next if statement
-
-    if options.forbid_high_construction == locked:
+    if options.forbid_high_construction == Options.ForbidHighConstruction.on:
         for item in openRCT2_items:
             if item in item_info["requires_height"]:
                 openRCT2_items.remove(item)
@@ -50,9 +44,22 @@ def set_openRCT2_items(options: openRCT2Options, random: Random) -> tuple[list[s
     if ("Merry Go Round" not in openRCT2_items): # Necessary to not break the Best Gentle Rides location
         openRCT2_items.append("Merry Go Round")
 
-    if options.monopoly_mode.value:
-        for each in range(20):
+    if ("Burger Bar" not in openRCT2_items): # Necessary to not break the Best Food Stalls location
+        openRCT2_items.append("Burger Bar")
+
+    if ("Pizza Stall" not in openRCT2_items): # Necessary to not break the Best Food Stalls location
+        openRCT2_items.append("Pizza Stall")
+
+    for each in range(options.land_discounts.value):
+        openRCT2_items.append("Land Discount")
+    
+    for each in range (options.construction_rights_discounts.value):
+        openRCT2_items.append("Construction Rights Discount")
+
+    if options.monopoly_mode.value: #Need at least 20 for Monopoly mode.
+        while openRCT2_items.count("Land Discount") < 20:
             openRCT2_items.append("Land Discount")
+        while openRCT2_items.count("Construction Rights Discount") < 20:
             openRCT2_items.append("Construction Rights Discount")
                       
     if options.include_gamespeed_items.value:
@@ -71,8 +78,8 @@ def set_openRCT2_items(options: openRCT2Options, random: Random) -> tuple[list[s
     for each in range(options.loan_shark_traps.value):
         openRCT2_items.append("Loan Shark Trap")
 
-    for each in range(options.food_poisioning_traps.value):
-        openRCT2_items.append("Food Poisioning Trap")
+    for each in range(options.food_poisoning_traps.value):
+        openRCT2_items.append("Food poisoning Trap")
 
     for each in range(options.skips.value):
         openRCT2_items.append("Skip")
@@ -90,12 +97,12 @@ def set_openRCT2_items(options: openRCT2Options, random: Random) -> tuple[list[s
         count += 1
 
     # Add extra traps if there's not enough for the negative awards.
-    if options.awards == 0: # 0: all awards
+    if options.selected_awards == Options.Awards.all_awards: # 0: all awards
         #Add extra traps if there's fewer than 5.
         if(sum(1 for item in openRCT2_items if item in item_info["trap_items"]) < 5):
             openRCT2_items.append("Bathroom Trap")
             openRCT2_items.append("Furry Convention Trap")
-            openRCT2_items.append("Food Poisioning Trap")
+            openRCT2_items.append("Food poisoning Trap")
             openRCT2_items.append("Spam Trap")
             openRCT2_items.append("Loan Shark Trap")
 

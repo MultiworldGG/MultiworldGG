@@ -168,8 +168,8 @@ class CrystalLizardShuffle(Toggle):
     This adds 2 locations per lizard: 1 for their Twinkling Titanite, and 1 for an additional drop - which is made guaranteed.
     
     There are 25 total crystal lizards, 10 of which are in the Great Hollow, and 5 of which are in the DLC.
-    If one escapes, typically you can quit out and reload to respawn it.
-    Great Hollow lizards may each require several reloads, because they only have a 1 in 3 chance to activate each time."""
+    If one escapes, you can quit out and reload to respawn it.
+    Great Hollow lizards are forced to spawn on every load instead of their vanilla 1/3 chance per load."""
     display_name = "Crystal Lizard Shuffle"
 
 class LimitedShopItemShuffle(DefaultOnToggle):
@@ -186,6 +186,7 @@ class LimitedShopItemShuffle(DefaultOnToggle):
     Giant Blacksmith (shared Repairbox and Blacksmith Giant Hammer)
     Griggs of Vinheim
     Hawkeye Gough
+    Laurentius of the Great Swamp - The client will prevent him from moving on to Blighttown until you have bought out his shop.
     Male Undead Merchant
     Marvelous Chester
     Oswald of Carim

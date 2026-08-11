@@ -1,25 +1,31 @@
 from .Addresses import STAddr
-from .Items import ITEM_GROUPS
 from typing import Any
+from .Constants import OPEN_WARPS
+from .Locations import LOCATIONS_DATA
 
 DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Outset Rei": {
         "on_scenes": [0x2F00],
         "not_has_locations": ["Outset Clear Rocks"],
-        "unset_if_true": [(STAddr.adv_flags_0, 0x04), (STAddr.adv_flags_1, 0x80)],
-        "reset_flags": ["RESET forest glyph"]
+        "unset_if_true": [(STAddr.adv_flags_0, 0x04), (STAddr.adv_flags_1, 0x82)],
+        "reset_flags": ["RESET forest glyph", "RESET map warp forest glyph", "RESET Add Snow Source"]
     },
     "Outset Bee Boy": {
         "on_scenes": [0x2F00],
         "not_has_locations": ["Outset Bee Tree"],
         "unset_if_true": [(STAddr.adv_flags_0, 0x44), (STAddr.adv_flags_1, 0x80)],
-        "reset_flags": ["RESET forest glyph", "RESET Remove Ocean source"]
+        "reset_flags": ["RESET forest glyph", "RESET Remove Ocean source", "RESET map warp forest glyph"]
     },
     "Allow leaving Outset": {
         "on_scenes": [0x2F00],
         "has_locations": ["Outset Clear Rocks", "Outset Bee Tree"],
-        "has_groups": ["Tracks: Forest Glyph"],
-        "set_if_true": [(STAddr.adv_flags_0, 0x04), (STAddr.adv_flags_1, 0x80)]
+        "set_if_true": [(STAddr.adv_flags_0, 0x04), (STAddr.adv_flags_1, 0x80)],
+        "reset_flags": ["RESET remove forest glyph"]
+    },
+    "RESET remove forest glyph": {
+        "not_has_groups": ["Tracks: Forest Glyph"],
+        "has_slot_data": [("enable_map_warp", 0)],
+        "unset_if_true": [(STAddr.adv_flags_1, 0x80)],
     },
     "Allow keep door open": {
         "on_scenes": [0x2F00],
@@ -47,11 +53,11 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_groups": ["Tracks: Forest Glyph"],
         "set_if_true": [(STAddr.adv_flags_1, 0x80), (STAddr.adv_flags_0, 0x04)]
     },
-    "Safety forest glyph on forest glyph map": {
-        "on_scenes": [0x400],
-        "has_groups": ["Tracks: Forest Glyph"],
-        "set_if_true": [(STAddr.adv_flags_1, 0x81), (STAddr.adv_flags_0, 0x04)]  # also prevents tree maze to fs
-    },
+    # "Safety forest glyph on forest glyph map": {
+    #     "on_scenes": [0x400],
+    #     "has_groups": ["Tracks: Forest Glyph"],
+    #     "set_if_true": [(STAddr.adv_flags_1, 0x81), (STAddr.adv_flags_0, 0x04)]  # also prevents tree maze to fs
+    # },
     "Allow learning awakening song": {
         "on_scenes": [0x3000],
         "not_has_locations": ["Woodland Sanctuary Song Statue"],
@@ -68,7 +74,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Allow learning healing song": {
         "on_scenes": [0x190A],
-        "not_has_locations": ["Wooded Temple Song Statue"],
+        "not_has_locations": ["Wooded Temple Lobby Song Statue"],
         "unset_if_true": [(STAddr.songs, 0x02)],
     },
     "reset soh": {
@@ -77,12 +83,12 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Allow learning healing song oct": {
         "on_scenes": [0x1b0a],
-        "not_has_locations": ["Marine Temple Song Statue"],
+        "not_has_locations": ["Marine Temple Lobby Song Statue"],
         "unset_if_true": [(STAddr.songs, 0x02)],
     },
     "Allow learning healing song mtt": {
         "on_scenes": [0x1c0A],
-        "not_has_locations": ["Mountain Temple Song Statue"],
+        "not_has_locations": ["Mountain Temple Lobby Song Statue"],
         "unset_if_true": [(STAddr.songs, 0x02)],
     },
     "RESET soh statue": {
@@ -119,26 +125,31 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Stagnox location": {
         "on_scenes": [0x1E00], #TODO seems this can also be 0x1900 instead? or maybe not taking away source fast enough?
-        "not_has_locations": ["Wooded Temple Dungeon Reward"],
+        "not_has_locations": ["Stagnox Boss Reward"],
         "unset_if_true": [(STAddr.adv_flags_0, 0x10)],
         "reset_flags": ["RESET stagnox reward"]
     },
     "Cactops location": {
         "on_scenes": [0x2000],
-        "not_has_locations": ["Marine Temple Dungeon Reward"],
+        "not_has_locations": ["Cactops Boss Reward"],
         "unset_if_true": [(STAddr.adv_flags_0, 0x40)],
         "on_entrance": [0],
         "reset_flags": ["RESET Add Ocean source", "RESET Remove Ocean source"]
     },
+    "Reset cactops room": {
+        "on_scenes": [0x2000],
+        "not_on_entrance": [0],
+        "reset_flags": ["RESET Add Ocean source", "RESET Remove Ocean source"]
+    },
     "Cragma/Vulcano location": {
         "on_scenes": [0x2100],
-        "not_has_locations": ["Mountain Temple Dungeon Reward"],
+        "not_has_locations": ["Vulcano Boss Reward"],
         "unset_if_true": [(STAddr.adv_flags_0, 0x80)],
         "reset_flags": ["RESET Add Fire source", "RESET Remove Fire source"]
     },
     "Skeldritch location": {
         "on_scenes": [0x2200],
-        "not_has_locations": ["Desert Temple Dungeon Reward"],
+        "not_has_locations": ["Capbone Boss Reward"],
         "unset_if_true": [(STAddr.adv_flags_1a, 0x01)],
     },
     "Reset skeldritch flags post fight": {
@@ -164,7 +175,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Remove Forest Source": {
         "on_scenes": [0x1E03, 0x1E0A],
-        "has_locations": ["Wooded Temple Dungeon Reward"],
+        "has_locations": ["Stagnox Boss Reward"],
         "not_has_groups": ["Tracks: Forest Source"],
         "unset_if_true": [(STAddr.adv_flags_0, 0x10)],
     },
@@ -190,51 +201,77 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Prevent early alfonzo": {
         "on_scenes": [0x2900],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
+        "not_has_groups": ["Tracks: Snow Glyph", "Tracks: Forest Glyph"],
+        "not_has_locations": ["Castle Town Pick Up Alfonzo"],
+        "unset_if_true": [(STAddr.adv_flags_11, 0x40)],
+    },
+    "Prevent early alfonzo visit": {
+        "on_scenes": [0x2900],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
+        "not_visited_scenes": [0x2f00],
         "not_has_locations": ["Castle Town Pick Up Alfonzo"],
         "unset_if_true": [(STAddr.adv_flags_11, 0x40)],
     },
     "Move Alfonso to castle town station": {
         "on_scenes": [0x2900],
         "not_has_locations": ["Outset Niko Stamp Book"],
-        "has_groups": ["Tracks: Snow Glyph"],
+        "has_groups": ["Tracks: Snow Glyph", "Tracks: Forest Glyph"],
         "set_if_true": [(STAddr.adv_flags_11, 0x20)],
         "check_bits": [(STAddr.adv_flags_11, 0x40, "not")],
-        "has_slot_data": [("randomize_passengers", 1)],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 0)],
     },
     "Move Alfonso to castle town station randomized": {
         "on_scenes": [0x2900],
         "not_has_locations": ["Castle Town Pick Up Alfonzo"],
-        "has_groups": ["Tracks: Snow Glyph"],
+        "has_groups": ["Tracks: Snow Glyph", "Tracks: Forest Glyph"],
         "set_if_true": [(STAddr.adv_flags_11, 0x20)],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
-        # "reset_flags": ["RESET Alfonso"]
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
+
     },
-    # "RESET Alfonso": {
-    #     "has_locations": ["Outset Niko Stamp Book"],
-    #     "unset_if_true": [(STAddr.adv_flags_11, 0x60)],
-    #     "set_if_true": [(STAddr.adv_flags_1b, 0x02)],
-    # },
+    "Move Alfonso to castle town station visit": {
+        "on_scenes": [0x2900],
+        "not_has_locations": ["Outset Niko Stamp Book"],
+        "visited_scenes": [0x2f00],
+        "set_if_true": [(STAddr.adv_flags_11, 0x20)],
+        "check_bits": [(STAddr.adv_flags_11, 0x40, "not")],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 1)],
+    },
+    "Move Alfonso to castle town station randomized visit": {
+        "on_scenes": [0x2900],
+        "not_has_locations": ["Castle Town Pick Up Alfonzo"],
+        "visited_scenes": [0x2f00],
+        "set_if_true": [(STAddr.adv_flags_11, 0x20)],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
+    },
+
     "Castle town teacher snow": {  # needs a s+q for some reason
         "on_scenes": [0x2900],
         "has_groups": ["Tracks: Snow Glyph"],
         "not_has_locations": ["Castle Town Pick Up Teacher"],
         "set_if_true": [(STAddr.adv_flags_1, 0x4)],
-        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 0)],
     },
     "Castle town teacher ocean": {  # needs a s+q for some reason
         "on_scenes": [0x2900],
         "has_groups": ["Tracks: Ocean Glyph"],
         "not_has_locations": ["Castle Town Pick Up Teacher"],
         "set_if_true": [(STAddr.adv_flags_1, 0x4)],
-        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 0)],
     },
     "Castle town teacher fire": {  # needs a s+q for some reason
         "on_scenes": [0x2900],
-        "has_groups": ["Tracks: Fire Glyph"],
+        "any_has_groups": ["Tracks: Fire Glyph", "Tracks: Fire Source"],
         "not_has_locations": ["Castle Town Pick Up Teacher"],
         "set_if_true": [(STAddr.adv_flags_1, 0x4)],
-        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 0)],
+    },
+    "Castle town teacher visit": {  # needs a s+q for some reason
+        "on_scenes": [0x2900],
+        "visited_scenes": [0x2b00, 0x2c00, 0x2e00],
+        "not_has_locations": ["Castle Town Pick Up Teacher"],
+        "set_if_true": [(STAddr.adv_flags_1, 0x4)],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 1)],
     },
     "Castle town prevent teacher from respawning": {
         "has_locations": ["Castle Town Pick Up Teacher"],
@@ -284,7 +321,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Fraaz location": {
         "on_scenes": [0x1F00],
-        "not_has_locations": ["Blizzard Temple Dungeon Reward"],
+        "not_has_locations": ["Fraaz Boss Reward"],
         "unset_if_true": [(STAddr.adv_flags_0, 0x20)],
         "reset_flags": ["RESET Add Snow Source", "RESET fraaz don't have source"]
     },
@@ -294,7 +331,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Remove Snow Source": {
         "on_scenes": [0x1F03, 0x1F04], #TODO check
-        "has_locations": ["Blizzard Temple Dungeon Reward"],
+        "has_locations": ["Fraaz Boss Reward"],
         "not_has_groups": ["Tracks: Snow Source"],
         "unset_if_true": [(STAddr.adv_flags_0, 0x20)],
     },
@@ -303,27 +340,27 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_groups": ["Tracks: Ocean Glyph"],
         "set_if_true": [(STAddr.adv_flags_17, 0x20)]
     },
-    "Snow realm crashes with snow source and no blizzard tracks": {
-        "on_scenes": [0x500],
-        "has_groups": ["Tracks: Snow Source"],
-        "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
-        "unset_if_true": [(STAddr.adv_flags_0, 0x20)],
-        "reset_flags": ["RESET Add Snow Source"]
-    },
-    "Snow realm crashes fire glyph and no blizzard tracks": {
-        "on_scenes": [0x500],
-        "has_groups": ["Tracks: Fire Glyph"],
-        "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
-        "unset_if_true": [(STAddr.adv_flags_2, 0x04)],
-        "reset_flags": ["RESET fire glyph"]
-    },
-    "Forest realm crashes fire glyph and no ocean glyph": {
-        "on_scenes": [0x400],
-        "has_groups": ["Tracks: Fire Glyph"],
-        "not_has_groups": ["Tracks: Ocean Glyph"],
-        "unset_if_true": [(STAddr.adv_flags_2, 0x04)],
-        "reset_flags": ["RESET fire glyph"]
-    },
+    # "Snow realm crashes with snow source and no blizzard tracks": {
+    #     "on_scenes": [0x500],
+    #     "has_groups": ["Tracks: Snow Source"],
+    #     "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
+    #     "unset_if_true": [(STAddr.adv_flags_0, 0x20)],
+    #     "reset_flags": ["RESET Add Snow Source"]
+    # },
+    # "Snow realm crashes fire glyph and no blizzard tracks": {
+    #     "on_scenes": [0x500],
+    #     "has_groups": ["Tracks: Fire Glyph"],
+    #     "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
+    #     "unset_if_true": [(STAddr.adv_flags_2, 0x04)],
+    #     "reset_flags": ["RESET fire glyph"]
+    # },
+    # "Forest realm crashes fire glyph and no ocean glyph": {
+    #     "on_scenes": [0x400],
+    #     "has_groups": ["Tracks: Fire Glyph"],
+    #     "not_has_groups": ["Tracks: Ocean Glyph"],
+    #     "unset_if_true": [(STAddr.adv_flags_2, 0x04)],
+    #     "reset_flags": ["RESET fire glyph"]
+    # },
     "Forest realm crashes fire glyph and no forest source tracks": {
         "on_scenes": [0x400],
         "has_groups": ["Tracks: Fire Glyph"],
@@ -344,7 +381,18 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Allow Portal near castle town always open": {
         "on_scenes": [0x0400],
         "has_groups": ["Tracks: Snow Glyph"],
-        "has_slot_data": [("portal_behavior", 1)],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.adv_flags_30, 0x08)]  # activates portal to sw snow realm
+    },
+    "Backup open Portal near castle town": {
+        "on_scenes": [0x0400],
+        "has_slot_data": [("portal_behavior", 0)],
+        "has_traversed_entrances": ["EVENT: Unlock Anouki Village Portal"],
+        "set_if_true": [(STAddr.adv_flags_30, 0x08)]  # activates portal to sw snow realm
+    },
+    "Allow Portal near castle town always open shuffle": {
+        "on_scenes": [0x0400],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0, "not")],
         "set_if_true": [(STAddr.adv_flags_30, 0x08)]  # activates portal to sw snow realm
     },
     "Allow Portal near castle town item": {
@@ -377,8 +425,13 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Open anouki portal open portals": {
         "on_scenes": [0x0500],
-        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1]],
+        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1], ["shuffle_portals", 0]],
         "has_groups": ["Tracks: Forest Glyph"],
+        "set_if_true": [(STAddr.adv_flags_30, 0x08)]
+    },
+    "Open anouki portal open portals shuffle": {
+        "on_scenes": [0x0500],
+        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1], ["shuffle_portals", 0, "not"]],
         "set_if_true": [(STAddr.adv_flags_30, 0x08)]
     },
     "Open anouki portal item": {
@@ -392,7 +445,18 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Allow portal snow realm E to Forest S always open": {
         "on_scenes": [0x500],
         "has_groups": ["Tracks: Forest Realm SE Portal"],
-        "has_slot_data": [("portal_behavior", 1)],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.adv_flags_30, 0x20)]
+    },
+    "Allow portal snow realm E to Forest S always open shuffle": {
+        "on_scenes": [0x500],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0, "not")],
+        "set_if_true": [(STAddr.adv_flags_30, 0x20)]
+    },
+    "Backup open portal snow realm E to Forest S": {
+        "on_scenes": [0x500],
+        "has_slot_data": [("portal_behavior", 0)],
+        "has_traversed_entrances": ["EVENT: Unlock Forest Realm SE Portal"],
         "set_if_true": [(STAddr.adv_flags_30, 0x20)]
     },
     "Allow portal snow realm E to Forest S item": {
@@ -424,7 +488,12 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "open portals s trading post": {
         "on_scenes": [0x400],
         "has_groups": ["Tracks: Blizzard Temple Tracks"],
-        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1]],
+        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1], ["shuffle_portals", 0]],
+        "set_if_true": [(STAddr.adv_flags_30, 0x20)]
+    },
+    "open portals s trading post shuffle": {
+        "on_scenes": [0x400],
+        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1], ["shuffle_portals", 0, "not"]],
         "set_if_true": [(STAddr.adv_flags_30, 0x20)]
     },
     "open portal s trading post item": {
@@ -447,7 +516,18 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Allow Portal near marine temple always open": {
         "on_scenes": [0x600],
         "has_groups": ["Tracks: Fire Realm Sand Portal"],
-        "has_slot_data": [("portal_behavior", 1)],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.adv_flags_30, 0x80)]
+    },
+    "Allow Portal near marine temple always open shuffle": {
+        "on_scenes": [0x600],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0, "not")],
+        "set_if_true": [(STAddr.adv_flags_30, 0x80)]
+    },
+    "Backup open Portal near marine temple": {
+        "on_scenes": [0x600],
+        "has_slot_data": [("portal_behavior", 0)],
+        "has_traversed_entrances": ["EVENT: Unlock Sand Connection Portal"],
         "set_if_true": [(STAddr.adv_flags_30, 0x80)]
     },
     "Allow Portal near marine temple item": {
@@ -479,7 +559,12 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Open Portal sand connection to marine always open": {
         "on_scenes": [0x700],
         "has_groups": ["Tracks: Fire Realm Sand Portal"],
-        "has_slot_data": [("portal_checks", 0), ("portal_behavior", 1)],
+        "has_slot_data": [("portal_checks", 0), ("portal_behavior", 1), ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.adv_flags_30, 0x80)]
+    },
+    "Open Portal sand connection to marine always open shuffle": {
+        "on_scenes": [0x700],
+        "has_slot_data": [("portal_checks", 0), ("portal_behavior", 1), ("shuffle_portals", 0, "not")],
         "set_if_true": [(STAddr.adv_flags_30, 0x80)]
     },
     "Open Portal sand connection to marine items": {
@@ -493,17 +578,45 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Allow Portal sand temple shortcut always open": {
         "on_scenes": [0x600],
         "has_groups": ["Tracks: Sand Realm", "Tracks: Desert Temple Tracks"],
-        "has_slot_data": [("portal_behavior", 1), ("portal_checks", 1)],
+        "has_slot_data": [("portal_behavior", 1), ("portal_checks", 1), ("shuffle_portals", 0)],
         "set_if_true": [(STAddr.adv_flags_31, 0x01)],
         "not_on_entrance": [0x7, 0xB, 0xFB],
+    },
+    "Allow Portal sand temple shortcut always open shuffle": {
+        "on_scenes": [0x600],
+        "has_slot_data": [("portal_behavior", 1), ("portal_checks", 1), ("shuffle_portals", 0, "not")],
+        "set_if_true": [(STAddr.adv_flags_31, 0x01)],
+        "not_on_entrance": [0x7, 0xB, 0xFB],
+    },
+    "Backup open Portal sand temple shortcut always open shuffle": {
+        "on_scenes": [0x600],
+        "has_slot_data": [("portal_behavior", 0)],
+        "set_if_true": [(STAddr.adv_flags_31, 0x01)],
+        "has_traversed_entrances": ["EVENT: Unlock Desert Temple Portal"],
+        "not_on_entrance": [0x7, 0xB, 0xFB],
+    },
+    "Backup open Portal sand temple shortcut": {
+        "on_scenes": [0x600],
+        "has_slot_data": [("portal_behavior", 0)],
+        "set_if_true": [(STAddr.adv_flags_31, 0x01)],
+        "has_traversed_entrances": ["EVENT: Unlock Desert Temple Portal"],
+        "on_entrance": [0xFB],
+        "coords": {"x_max": 20000},
     },
     "Allow Portal sand temple shortcut always open from top": {
         "on_scenes": [0x600],
         "has_groups": ["Tracks: Sand Realm", "Tracks: Desert Temple Tracks"],
-        "has_slot_data": [("portal_behavior", 1), ("portal_checks", 1)],
+        "has_slot_data": [("portal_behavior", 1), ("portal_checks", 1), ("shuffle_portals", 0)],
         "set_if_true": [(STAddr.adv_flags_31, 0x01)],
         "on_entrance": [0xFB],
-        "coords": {"x_max": 80000},
+        "coords": {"x_max": 20000},
+    },
+    "Allow Portal sand temple shortcut always open from top shuffle": {
+        "on_scenes": [0x600],
+        "has_slot_data": [("portal_behavior", 1), ("portal_checks", 1), ("shuffle_portals", 0, "not")],
+        "set_if_true": [(STAddr.adv_flags_31, 0x01)],
+        "on_entrance": [0xFB],
+        "coords": {"x_max": 20000},
     },
     "Allow Portal sand temple shortcut with item": {
         "on_scenes": [0x600],
@@ -520,7 +633,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_slot_data": [("portal_behavior", 2), ("portal_checks", 1)],
         "on_entrance": [0xFB],
         "set_if_true": [(STAddr.adv_flags_31, 0x01)],
-        "coords": {"x_max": 80000},
+        "coords": {"x_max": 20000},
     },
     "Close sand portal no item realm tracks": {
         "on_scenes": [0x600],
@@ -555,13 +668,18 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_slot_data": [("portal_checks", 1)],
         "not_has_locations": ["Sand Realm Shoot Temple Portal"],
         "on_entrance": [0xFB],
-        "coords": {"x_min": 80000},
+        "coords": {"x_min": 20000},
         "unset_if_true": [(STAddr.adv_flags_31, 0x01)]
     },
     "Open Portal sand temple shortcut always open": {
         "on_scenes": [0x600],
         "has_groups": ["Tracks: Desert Temple Tracks", "Tracks: Sand Realm"],
-        "has_slot_data": [("portal_checks", 0), ("portal_behavior", 1)],
+        "has_slot_data": [("portal_checks", 0), ("portal_behavior", 1), ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.adv_flags_31, 0x01)]
+    },
+    "Open Portal sand temple shortcut always open shuffle": {
+        "on_scenes": [0x600],
+        "has_slot_data": [("portal_checks", 0), ("portal_behavior", 1), ("shuffle_portals", 0, "not")],
         "set_if_true": [(STAddr.adv_flags_31, 0x01)]
     },
     "Open Portal sand temple shortcut item": {
@@ -581,7 +699,12 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Allow Portal icy spring always open": {
         "on_scenes": [0x0500],
         "has_groups": ["Tracks: Mountain Temple Tracks"],
-        "has_slot_data": [("portal_behavior", 1), ["portal_checks", 0]],
+        "has_slot_data": [("portal_behavior", 1), ["portal_checks", 0], ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.adv_flags_31, 0x02)],
+    },
+    "Allow Portal icy spring always open shuffle": {
+        "on_scenes": [0x0500],
+        "has_slot_data": [("portal_behavior", 1), ["portal_checks", 0], ("shuffle_portals", 0, "not")],
         "set_if_true": [(STAddr.adv_flags_31, 0x02)],
     },
     "Allow Portal icy spring with item": {
@@ -595,7 +718,18 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Allow Portal mountain always open": {
         "on_scenes": [0x0700],
         "has_groups": ["Tracks: N Icy Spring"],
-        "has_slot_data": [("portal_behavior", 1)],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.adv_flags_31, 0x02)],
+    },
+    "Allow Portal mountain always open shuffle": {
+        "on_scenes": [0x0700],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0, "not")],
+        "set_if_true": [(STAddr.adv_flags_31, 0x02)],
+    },
+    "Backup open Portal mountain": {
+        "on_scenes": [0x0700],
+        "has_slot_data": [("portal_behavior", 0)],
+        "has_traversed_entrances": ["EVENT: Unlock Icy Spring Portal"],
         "set_if_true": [(STAddr.adv_flags_31, 0x02)],
     },
     "Allow Portal mountain with item": {
@@ -621,7 +755,18 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Allow Portal goron village open portals": {
         "on_scenes": [0x0700],
         "has_groups": ["Tracks: Forest Realm SW Cave"],
-        "has_slot_data": [("portal_behavior", 1)],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.activate_portals, 0x40)]
+    },
+    "Allow Portal goron village open portals shuffle": {
+        "on_scenes": [0x0700],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0, "not")],
+        "set_if_true": [(STAddr.activate_portals, 0x40)]
+    },
+    "Backup open Portal goron village": {
+        "on_scenes": [0x0700],
+        "has_slot_data": [("portal_behavior", 0)],
+        "has_traversed_entrances": ["EVENT: Unlock Forest Realm Cave Portal"],
         "set_if_true": [(STAddr.activate_portals, 0x40)]
     },
     "Allow Portal goron village item": {
@@ -647,7 +792,12 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Open cave portal open portals": {
         "on_scenes": [0x0400],
         "has_groups": ["Tracks: Fire Glyph"],
-        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1]],
+        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1], ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.activate_portals, 0x40)]
+    },
+    "Open cave portal open portals shuffle": {
+        "on_scenes": [0x0400],
+        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1], ("shuffle_portals", 0, "not")],
         "set_if_true": [(STAddr.activate_portals, 0x40)]
     },
     "Open cave portal item": {
@@ -667,7 +817,18 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Allow Portal mayscore open portals": {
         "on_scenes": [0x0400],
         "has_groups": ["Tracks: Ocean Portal"],
-        "has_slot_data": [("portal_behavior", 1)],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.adv_flags_31, 0x4)]
+    },
+    "Allow Portal mayscore open portals shuffle": {
+        "on_scenes": [0x0400],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0, "not")],
+        "set_if_true": [(STAddr.adv_flags_31, 0x4)]
+    },
+    "Backup open Portal mayscore": {
+        "on_scenes": [0x0400],
+        "has_slot_data": [("portal_behavior", 0)],
+        "has_traversed_entrances": ["EVENT: Unlock Ocean Portal"],
         "set_if_true": [(STAddr.adv_flags_31, 0x4)]
     },
     "Allow Portal mayscore item": {
@@ -693,7 +854,12 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Open ocean portal open portals": {
         "on_scenes": [0x0600],
         "has_groups": ["Tracks: Ocean Glyph"],
-        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1]],
+        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1], ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.adv_flags_31, 0x4)]
+    },
+    "Open ocean portal open portals shuffle": {
+        "on_scenes": [0x0600],
+        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1], ("shuffle_portals", 0, "not")],
         "set_if_true": [(STAddr.adv_flags_31, 0x4)]
     },
     "Open ocean portal": {
@@ -713,7 +879,18 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Allow Portal island sanctuary open portals": {
         "on_scenes": [0x0600],
         "has_groups": ["Tracks: Snow Realm Bridge"],
-        "has_slot_data": [("portal_behavior", 1)],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.adv_flags_30, 0x10)]
+    },
+    "Allow Portal island sanctuary open portals shuffle": {
+        "on_scenes": [0x0600],
+        "has_slot_data": [("portal_behavior", 1), ("shuffle_portals", 0, "not")],
+        "set_if_true": [(STAddr.adv_flags_30, 0x10)]
+    },
+    "Backup open Portal island sanctuary": {
+        "on_scenes": [0x0600],
+        "has_slot_data": [("portal_behavior", 0)],
+        "has_traversed_entrances": ["EVENT: Unlock Snow Bridge Portal"],
         "set_if_true": [(STAddr.adv_flags_30, 0x10)]
     },
     "Allow Portal island sanctuary item": {
@@ -739,7 +916,12 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Open snow bridge portal open portals": {
         "on_scenes": [0x0500],
         "has_groups": ["Tracks: Ocean Portal"],
-        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1]],
+        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1], ("shuffle_portals", 0)],
+        "set_if_true": [(STAddr.adv_flags_30, 0x10)]
+    },
+    "Open snow bridge portal open portals shuffle": {
+        "on_scenes": [0x0500],
+        "has_slot_data": [["portal_checks", 0], ["portal_behavior", 1], ("shuffle_portals", 0, "not")],
         "set_if_true": [(STAddr.adv_flags_30, 0x10)]
     },
     "Open snow bridge portal": {
@@ -819,6 +1001,10 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "set_if_true": [(STAddr.rail_restorations, 0x10)]
     },
 
+    "Woodland sanctuary allow leaving": {
+        "on_scenes": [0x3000, 0x400],
+        "set_if_true": [(STAddr.adv_flags_1, 1)]
+    },
     "Gage don't have spirit flute": {
         "on_scenes": [0x3001],
         "has_items": [("Spirit Flute", 0)],
@@ -1111,23 +1297,32 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "not_has_locations": ["Beedle Shop Bomb Bag"],
         "has_slot_data": [("shopsanity", "uniques")],
         "unset_if_true": [(STAddr.adv_flags_22, 0x02), (STAddr.bomb_capacity, 3)],
-        "reset_flags": ["RESET beedle bomb bag flag"]
+        "reset_flags": ["RESET beedle bomb bag flag", "RESET beedle bomb bag flag progressive"]
     },
-    "RESET beedle bomb bag flag": {
+    "RESET beedle bomb bag flag progressive": {
         "has_items": [("Bombs (Progressive)", 1)],
         "set_if_true": [(STAddr.adv_flags_22, 0x02)],
         "overwrite_if_true": [(STAddr.bomb_capacity, "Bombs (Progressive)", -1)]
+    },
+    "RESET beedle bomb bag flag": {
+        "has_items": [("Bomb Bag Upgrade", 1)],
+        "set_if_true": [(STAddr.adv_flags_22, 0x02)],
+        "overwrite_if_true": [(STAddr.bomb_capacity, "Bomb Bag Upgrade")]
     },
     "Remove Goron Quiver count": {
         "on_scenes": [0x2e06],
         "not_has_locations": ["Goron Shop Quiver"],
         "has_slot_data": [("shopsanity", "uniques")],
         "unset_if_true": [(STAddr.arrow_capacity, 3)],
-        "reset_flags": ["RESET Goron Quiver count"]
+        "reset_flags": ["RESET Goron Quiver count", "RESET Goron Quiver count progressive"]
     },
-    "RESET Goron Quiver count": {
+    "RESET Goron Quiver count progressive": {
         "has_items": [("Bow (Progressive)", 1)],
         "overwrite_if_true": [(STAddr.arrow_capacity, "Bow (Progressive)", -1)]
+    },
+    "RESET Goron Quiver count": {
+        "has_items": [("Quiver Upgrade", 1)],
+        "overwrite_if_true": [(STAddr.arrow_capacity, "Quiver Upgrade")]
     },
     "Add beedle bomb flag": {
         "on_scenes": [0x4503],
@@ -1210,7 +1405,14 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "check_bits": [(STAddr.adv_flags_24, 0x10)],
         "set_if_true": [(STAddr.adv_flags_3d, 2)],
         "has_groups": ["Tracks: Snow Glyph"],
-        "has_slot_data": [("randomize_passengers", [1, 3])],
+        "has_slot_data": [("randomize_passengers", [1, 3]), ("passenger_pickup", 0)],
+    },
+    "Allow Kenzo to leave for AV visit": {
+        "on_scenes": [0x3700],
+        "check_bits": [(STAddr.adv_flags_24, 0x10)],
+        "set_if_true": [(STAddr.adv_flags_3d, 2)],
+        "visited_scenes": [0x2b00],
+        "has_slot_data": [("randomize_passengers", [1, 3]), ("passenger_pickup", 1)],
     },
     "Prevent Kenzo from leaving TP": {
         "on_scenes": [0x3700],
@@ -1220,6 +1422,13 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Prevent Kenzo from leaving TP snow glyph": {
         "on_scenes": [0x3700],
         "not_has_groups": ["Tracks: Snow Glyph"],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 0)],
+        "unset_if_true": [(STAddr.adv_flags_3d, 2)],
+    },
+    "Prevent Kenzo from leaving TP visit": {
+        "on_scenes": [0x3700],
+        "not_visited_scenes": [0x2b00],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 1)],
         "unset_if_true": [(STAddr.adv_flags_3d, 2)],
     },
     "Prevent Kenzo from leaving TP randomize": {
@@ -1263,20 +1472,39 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
                               (STAddr.has_passenger_0, 0)],
         "reset_flags": ["RESET Passengers"]
     },
+    "Ferrus in alfonzo's": {
+        "on_scenes": [0x2F0B],
+        "has_traversed_entrances": ["EVENT: Outset Drop Off Ferrus"],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+        "not_has_locations": ["Outset Ferrus Force Gem"],
+        "set_if_true": [(STAddr.adv_flags_3a, 0x80), (STAddr.adv_flags_1, 0x4), (STAddr.adv_flags_3b, 0x2)],
+    },
     "Bring Ferrus to Marine Temple": {
         "on_scenes": [0x1B0a],
         "has_items": [("Passenger: Ferrus", 1)],
         "has_slot_data": [("randomize_passengers", [2, 3])],
-        "not_has_locations": ["Marine Temple Ferrus Force Gem"],
+        "not_has_locations": ["Marine Temple Lobby Ferrus Force Gem"],
         "set_if_true": [(STAddr.adv_flags_3b, 0x4)],
         "unset_if_true": [(STAddr.adv_flags_3b, 0x12)],
         "overwrite_if_true": [(STAddr.passenger_goal, 0x1b),
-                              (STAddr.passenger_tag_0, 0x544D4E41),
+                              (STAddr.passenger_tag_0, 0x544D4E50),
                               (STAddr.has_passenger_0, 0)],
     },
-    "Reset ferrus": {
+    "Reset ferrus marine temple": {
         "on_scenes": [0x1B0a],
         "has_slot_data": [("randomize_passengers", [2, 3])],
+        "reset_flags": ["RESET Passengers"]
+    },
+    "Ferrus outset backup vanilla": {
+        "on_scenes": [0x2f00],
+        "has_slot_data": [("randomize_passengers", 1)],
+        "check_bits": [(STAddr.passenger_goal, 0x2f, "exact")],
+        "set_if_true": [(STAddr.adv_flags_3a, 0x80)],
+    },
+    "Reset ferrus marine temple vanilla": {
+        "on_scenes": [0x1B0a],
+        "has_slot_data": [("randomize_passengers", [1])],
+        "check_bits": [(STAddr.passenger_goal, 0x1b)],
         "reset_flags": ["RESET Passengers"]
     },
     "Spawn Ferrus in forest randomized": {
@@ -1288,7 +1516,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Spawn Ferrus in forest vanilla": {
         "on_scenes": [0x400],
         "has_slot_data": [("randomize_passengers", 1)],
-        "has_locations": ["Marine Temple Ferrus Force Gem"],
+        "has_locations": ["Marine Temple Lobby Ferrus Force Gem"],
         "set_if_true": [(STAddr.adv_flags_52, 0x10)]
     },
     # Anouki chief location
@@ -1310,7 +1538,15 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x2b01],
         "not_has_locations": ["Anouki Village Pick Up Kofu"],
         "not_has_groups": ["Tracks: Fire Glyph", "Tracks: Fire Source"],
-        "has_slot_data": [("randomize_passengers", 3)],
+        "has_slot_data": [("randomize_passengers", 3), ("passenger_pickup", 0)],
+        "set_if_true": [(STAddr.adv_flags_37, 0x20)],
+        "reset_flags": ["RESET Kofu"]
+    },
+    "Anouki chief stop kofu visit": {
+        "on_scenes": [0x2b01],
+        "not_has_locations": ["Anouki Village Pick Up Kofu"],
+        "not_visited_scenes": [0x2e00],
+        "has_slot_data": [("randomize_passengers", 3), ("passenger_pickup", 1)],
         "set_if_true": [(STAddr.adv_flags_37, 0x20)],
         "reset_flags": ["RESET Kofu"]
     },
@@ -1319,7 +1555,16 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "any_has_groups": ["Tracks: Fire Glyph", "Tracks: Fire Source"],
         "not_has_locations": ["Anouki Village Pick Up Kofu"],
         "has_locations": ["Anouki Village Goron Force Gem"],
-        "has_slot_data": [("randomize_passengers", 3)],
+        "has_slot_data": [("randomize_passengers", 3), ("passenger_pickup", 0)],
+        "unset_if_true": [(STAddr.adv_flags_37, 0x20)],
+        "reset_flags": ["RESET Kofu"]
+    },
+    "Anouki chief spawn kofu visit": {
+        "on_scenes": [0x2b01],
+        "visited_scenes": [0x2e00],
+        "not_has_locations": ["Anouki Village Pick Up Kofu"],
+        "has_locations": ["Anouki Village Goron Force Gem"],
+        "has_slot_data": [("randomize_passengers", 3), ("passenger_pickup", 1)],
         "unset_if_true": [(STAddr.adv_flags_37, 0x20)],
         "reset_flags": ["RESET Kofu"]
     },
@@ -1351,6 +1596,14 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_slot_data": [("randomize_cargo", [1, 2, 3])],
         "check_bits": [(STAddr.adv_flags_59, 0x4, "not")],
         "unset_if_true": [(STAddr.adv_flags_1f, 0x80)],
+    },
+    "Backup gv kagoron": {
+        "on_scenes": [0x2e00],
+        "has_slot_data": [("randomize_cargo", [1, 2, 3])],
+        "check_bits": [(STAddr.adv_flags_59, 0x4, "not")],
+        "has_locations": ["Goron Village Get Wagon"],
+        "set_if_true": [(STAddr.adv_flags_21, 0x8)],
+        "unset_if_true": [(STAddr.adv_flags_21, 0x2)],
     },
     "RESET Wagon": {
         "has_items": [("Wagon", 1)],
@@ -1410,6 +1663,14 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x290B],
         "has_groups": ["Tracks: Sand Source"],
         "has_slot_data": [("randomize_minigames", [4, 5])],
+        "set_if_true": [(STAddr.adv_flags_2a, 0xC)],
+        "on_entrance": [0],
+        "reset_flags": ["RESET TEAO 1", "RESET TEAO 2"]
+    },
+    "TEAO Unlock goal": {
+        "on_scenes": [0x290B],
+        "has_groups": ["Tracks: Sand Source"],
+        "has_slot_data": [("required_boss_locs", LOCATIONS_DATA["Castle Town Take 'em All On Level 3"]['id'])],
         "set_if_true": [(STAddr.adv_flags_2a, 0xC)],
         "on_entrance": [0],
         "reset_flags": ["RESET TEAO 1", "RESET TEAO 2"]
@@ -1478,7 +1739,16 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Can pick up Kenzo": {
         "on_scenes": [0x3601],
         "has_groups": ["Tracks: Ocean Glyph"],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
+        "not_has_locations": ["Bridge Worker's Home Pick Up Kenzo"],
+        "set_if_true": [(STAddr.adv_flags_c, 0x80)],  # allow him to travel
+        "unset_if_true": [(STAddr.adv_flags_18, 0x20)],  # make sure he spawns
+        "reset_flags": ["RESET abstract kenzo on train"]
+    },
+    "Can pick up Kenzo visit": {
+        "on_scenes": [0x3601],
+        "visited_scenes": [0x3700],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
         "not_has_locations": ["Bridge Worker's Home Pick Up Kenzo"],
         "set_if_true": [(STAddr.adv_flags_c, 0x80)],  # allow him to travel
         "unset_if_true": [(STAddr.adv_flags_18, 0x20)],  # make sure he spawns
@@ -1487,14 +1757,35 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Can pick up Kenzo vanilla": {
         "on_scenes": [0x3601],
         "has_groups": ["Tracks: Ocean Glyph"],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 0)],
+        "check_bits": [(STAddr.adv_flags_18, 0x20, "not")],
+        "set_if_true": [(STAddr.adv_flags_c, 0x80)],  # allow him to travel
+    },
+    "Respawn kenzo vanilla": {
+        "on_scenes": [0x3601],
+        "not_has_locations": ["Trading Post Repair Bridge"],
         "has_slot_data": [("randomize_passengers", 1)],
+        "check_bits": [(STAddr.adv_flags_18, 0x20), (STAddr.passenger_tag_0, 0x43524654, "not")],
+        "unset_if_true": [(STAddr.adv_flags_18, 0x20)],
+        "set_if_true": [(STAddr.adv_flags_c, 0x80)],
+    },
+    "Can pick up Kenzo vanilla visit": {
+        "on_scenes": [0x3601],
+        "visited_scenes": [0x3700],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 1)],
         "check_bits": [(STAddr.adv_flags_18, 0x20, "not")],
         "set_if_true": [(STAddr.adv_flags_c, 0x80)],  # allow him to travel
     },
     "Can't pick up kenzo": {
         "on_scenes": [0x3601],
         "not_has_groups": ["Tracks: Ocean Glyph"],
-        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 0)],
+        "unset_if_true": [(STAddr.adv_flags_c, 0x80)]
+    },
+    "Can't pick up kenzo visit": {
+        "on_scenes": [0x3601],
+        "not_visited_scenes": [0x3700],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 1)],
         "unset_if_true": [(STAddr.adv_flags_c, 0x80)]
     },
     "No randomized kenzo": {
@@ -1517,7 +1808,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Can pick up noko": {
         "on_scenes": [0x2b00],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
         "has_groups": ["Tracks: Blizzard Temple Tracks"],
         # "check_bits": [(STAddr.adv_flags_3a, 0x10, "not")],
         "not_has_locations": ["Anouki Village Pick Up Noko"],
@@ -1525,13 +1816,33 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Can pick up noko vanilla": {
         "on_scenes": [0x2b00],
-        "has_slot_data": [("randomize_passengers", 1)],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 0)],
         "has_groups": ["Tracks: Blizzard Temple Tracks"],
         "check_bits": [(STAddr.adv_flags_3a, 0x10, "not")],
     },
     "Can't pick up Noko glyph": {
         "on_scenes": [0x2b00],
+        "has_slot_data": [("passenger_pickup", 0)],
         "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
+        "set_if_true": [(STAddr.adv_flags_3a, 0x10)],
+    },
+    "Can pick up noko visit": {
+        "on_scenes": [0x2b00],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
+        "visited_scenes": [0x3500],
+        "not_has_locations": ["Anouki Village Pick Up Noko"],
+        "unset_if_true": [(STAddr.adv_flags_3a, 0x10)],
+    },
+    "Can pick up noko vanilla visit": {
+        "on_scenes": [0x2b00],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 1)],
+        "visited_scenes": [0x3500],
+        "check_bits": [(STAddr.adv_flags_3a, 0x10, "not")],
+    },
+    "Can't pick up Noko visit": {
+        "on_scenes": [0x2b00],
+        "has_slot_data": [("passenger_pickup", 1), ("randomize_passengers", [2, 3])],
+        "not_visited_scenes": [0x3500],
         "set_if_true": [(STAddr.adv_flags_3a, 0x10)],
     },
     "Can't pick up Noko": {
@@ -1587,10 +1898,17 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Keep goron spawned in chief's house": {
         "on_scenes": [0x2b01],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
         "has_locations": ["Anouki Village Goron Force Gem"],
         "set_if_true": [(STAddr.adv_flags_38, 0x10)],
         "any_has_groups": ["Tracks: Fire Glyph", "Tracks: Fire Source"]
+    },
+    "Keep goron spawned in chief's house visit": {
+        "on_scenes": [0x2b01],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
+        "has_locations": ["Anouki Village Goron Force Gem"],
+        "set_if_true": [(STAddr.adv_flags_38, 0x10)],
+        "visited_scenes": [0x2e00]
     },
     "Bring Kofu to GV": {
         "on_scenes": [0x2e00],
@@ -1620,23 +1938,25 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x3500],
         "has_locations": ["Icy Spring Noko's Force Gem"],
         "has_slot_data": [("randomize_passengers", [1, 2, 3])],
-        "set_if_true": [(STAddr.adv_flags_3a, 0x50)],
+        "set_if_true": [(STAddr.adv_flags_3a, 0x50), (STAddr.adv_flags_3d, 0x10)],
+        "update_stage_flags": [0x4, 0, 0, 0]
     },
     "No passengers icyspring": {
         "on_scenes": [0x3500],
         "has_slot_data": [("randomize_passengers", 0)],
         "set_if_true": [(STAddr.adv_flags_3a, 0x50), (STAddr.adv_flags_3d, 0x10)],
+        "update_stage_flags": [0x16, 0x00, 0x00, 0x00]
     },
     "Can pick up Mona": {
         "on_scenes": [0x290c],
-        "has_slot_data": [("randomize_passengers", 1)],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 0)],
         "has_groups": ["Tracks: Snow Glyph"],
         "set_if_true": [(STAddr.adv_flags_0, 0x40)],
         "reset_flags": ["RESET Remove Ocean source"]
     },
     "Can pick up Mona randomize": {
         "on_scenes": [0x290c],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
         "not_has_locations": ["Castle Town Pick Up Mona"],
         "has_groups": ["Tracks: Snow Glyph"],
         "set_if_true": [(STAddr.adv_flags_0, 0x40)],
@@ -1645,7 +1965,31 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Mona missing glyph": {
         "on_scenes": [0x290c],
+        "has_slot_data": [("passenger_pickup", 0)],
         "not_has_groups": ["Tracks: Snow Glyph"],
+        "unset_if_true": [(STAddr.adv_flags_0, 0x40)],
+        "reset_flags": ["RESET Add Ocean source"]
+    },
+    "Can pick up Mona visit": {
+        "on_scenes": [0x290c],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 1)],
+        "visited_scenes": [0x3e00],
+        "set_if_true": [(STAddr.adv_flags_0, 0x40)],
+        "reset_flags": ["RESET Remove Ocean source"]
+    },
+    "Can pick up Mona randomize visit": {
+        "on_scenes": [0x290c],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
+        "not_has_locations": ["Castle Town Pick Up Mona"],
+        "visited_scenes": [0x3e00],
+        "set_if_true": [(STAddr.adv_flags_0, 0x40)],
+        "unset_if_true": [(STAddr.adv_flags_3b, 0x20)],
+        "reset_flags": ["RESET Remove Ocean source"]
+    },
+    "Mona missing visit": {
+        "on_scenes": [0x290c],
+        "has_slot_data": [("passenger_pickup", 1)],
+        "not_visited_scenes": [0x3e00],
         "unset_if_true": [(STAddr.adv_flags_0, 0x40)],
         "reset_flags": ["RESET Add Ocean source"]
     },
@@ -1669,7 +2013,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Can pick up Dovok or Morris": {
         "on_scenes": [0x2A04, 0x2a03],
-        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 0)],
         "has_groups": ["Tracks: Ocean Glyph"],
         "set_if_true": [(STAddr.adv_flags_4f, 0x10)],
         "unset_if_true": [(STAddr.adv_flags_36, 0x8)],
@@ -1677,7 +2021,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Can pick up Mayscore ow npcs": {
         "on_scenes": [0x2a00],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
         "has_groups": ["Tracks: Ocean Glyph"],
         "any_not_has_locations": ["Mayscore Pick Up Mash", "Mayscore Pick Up Yamahiko"],
         "set_if_true": [(STAddr.adv_flags_4f, 0x10)],
@@ -1685,9 +2029,35 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "reset_flags": ["RESET Dovok Flag"]
     },
     "Cancel npcs vanilla": {
-        "on_scenes": [0x2a00],
-        "has_slot_data": [("randomize_passengers", 1)],
+        "on_scenes": [0x2a00, 0x2A04, 0x2a03],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 0)],
         "has_groups": ["Tracks: Ocean Glyph"],
+        "not_has_locations": ["Papuzia Village Orca's Force Gem"],
+        "set_if_true": [(STAddr.adv_flags_4f, 0x10)],
+        "unset_if_true": [(STAddr.adv_flags_36, 0x8)],
+        "reset_flags": ["RESET Dovok Flag"]
+    },
+    "Can pick up Dovok or Morris visit": {
+        "on_scenes": [0x2A04, 0x2a03],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 1)],
+        "visited_scenes": [0x2c00],
+        "set_if_true": [(STAddr.adv_flags_4f, 0x10)],
+        "unset_if_true": [(STAddr.adv_flags_36, 0x8)],
+        "reset_flags": ["RESET Dovok Flag"]
+    },
+    "Can pick up Mayscore ow npcs visit": {
+        "on_scenes": [0x2a00],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
+        "visited_scenes": [0x2c00],
+        "any_not_has_locations": ["Mayscore Pick Up Mash", "Mayscore Pick Up Yamahiko"],
+        "set_if_true": [(STAddr.adv_flags_4f, 0x10)],
+        "unset_if_true": [(STAddr.adv_flags_36, 0x8)],
+        "reset_flags": ["RESET Dovok Flag"]
+    },
+    "Cancel npcs vanilla visit": {
+        "on_scenes": [0x2a00, 0x2A04, 0x2a03],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 1)],
+        "visited_scenes": [0x2c00],
         "not_has_locations": ["Papuzia Village Orca's Force Gem"],
         "set_if_true": [(STAddr.adv_flags_4f, 0x10)],
         "unset_if_true": [(STAddr.adv_flags_36, 0x8)],
@@ -1695,7 +2065,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Can pick up Wood": {
         "on_scenes": [0x3800],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
         "has_groups": ["Tracks: Ocean Glyph"],
         "not_has_locations": ["Mayscore Pick Up Wood"],
         "set_if_true": [(STAddr.adv_flags_4f, 0x10)],
@@ -1704,8 +2074,26 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Can pick up Wood Vanilla": {
         "on_scenes": [0x3800],
-        "has_slot_data": [("randomize_passengers", 1)],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 0)],
         "has_groups": ["Tracks: Ocean Glyph"],
+        "not_has_locations": ["Papuzia Village Orca's Force Gem"],
+        "set_if_true": [(STAddr.adv_flags_4f, 0x10)],
+        "unset_if_true": [(STAddr.adv_flags_36, 0x8)],
+        "reset_flags": ["RESET Dovok Flag"]
+    },
+    "Can pick up Wood visit": {
+        "on_scenes": [0x3800],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
+        "visited_scenes": [0x2c00],
+        "not_has_locations": ["Mayscore Pick Up Wood"],
+        "set_if_true": [(STAddr.adv_flags_4f, 0x10)],
+        "unset_if_true": [(STAddr.adv_flags_36, 0x8)],
+        "reset_flags": ["RESET Dovok Flag"]
+    },
+    "Can pick up Wood Vanilla visit": {
+        "on_scenes": [0x3800],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 1)],
+        "visited_scenes": [0x2c00],
         "not_has_locations": ["Papuzia Village Orca's Force Gem"],
         "set_if_true": [(STAddr.adv_flags_4f, 0x10)],
         "unset_if_true": [(STAddr.adv_flags_36, 0x8)],
@@ -1714,6 +2102,14 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Dovok missing glyph": {
         "on_scenes": [0x2A04],
         "not_has_groups": ["Tracks: Ocean Glyph"],
+        "has_slot_data": [("passenger_pickup", 0)],
+        "unset_if_true": [(STAddr.adv_flags_4f, 0x10)],
+        "reset_flags": ["RESET Dovok Flag"]
+    },
+    "Dovok missing visit": {
+        "on_scenes": [0x2A04],
+        "not_visited_scenes": [0x2c00],
+        "has_slot_data": [("passenger_pickup", 1)],
         "unset_if_true": [(STAddr.adv_flags_4f, 0x10)],
         "reset_flags": ["RESET Dovok Flag"]
     },
@@ -1820,12 +2216,6 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_slot_data": [("randomize_passengers", [2, 3])],
         "set_if_true": [(STAddr.adv_flags_9, 0x30)],
     },
-    # "Papuzia carben post both": {  # Spawns birds again
-    #     "on_scenes": [0x2c00],
-    #     "has_locations": ["Papuzia Village Orca's Force Gem", "Papuzia Village Pick Up Carben"],
-    #     "has_slot_data": [("randomize_passengers", [2, 3])],
-    #     "set_if_true": [(STAddr.adv_flags_9, 0x30)],
-    # },
     "Papuzia no passengers spawn birds": {  # Spawns birds again
         "on_scenes": [0x2c00],
         "has_locations": ["Papuzia Village Song Statue"],
@@ -1842,7 +2232,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Papuzia vanilla passengers spawn birds": {  # Spawns birds again
         "on_scenes": [0x2c00],
-        "has_locations": ["Island Sanctuary Carben's Force Gem"],
+        "has_locations": ["Island Sanctuary Carben's Force Gem"],  # Carben ignores visit/glyph cause he triggers off song of birds statue
         "has_slot_data": [("randomize_passengers", 1)],
         "set_if_true": [(STAddr.adv_flags_9, 0x30)],
     },
@@ -1851,7 +2241,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Can pick up Joe": {
         "on_scenes": [0x2F00],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "has_slot_data": [("randomize_passengers", [2, 3])],  # Joe visit just requires beedle access.
         "has_locations": ["Outset Bee Tree"],
         "not_has_locations": ["Outset Pick Up Joe"],
         "has_groups": ["Tracks: Snow Source"],
@@ -1919,6 +2309,12 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
                               (STAddr.passenger_tag_0, 0x53595741),
                               (STAddr.has_passenger_0, 0)],
     },
+    "Carben Sanc backup": {
+        "on_scenes": [0x3204],
+        "has_locations": ["Island Sanctuary Carben's Force Gem"],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+        "set_if_true": [(STAddr.adv_flags_9, 0x30)],
+    },
     "Remove Carben OCS": {
         "on_scenes": [0x3200],
         "has_slot_data": [("randomize_passengers", [2, 3])],
@@ -1941,15 +2337,29 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     #Spawn Wadatsumi without doing minigame if random passenger, but no minigames
     "Can pick up Wadatsumi": {
         "on_scenes": [0x3A00],
-        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("randomize_minigames", [0])],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("randomize_minigames", [0]), ("passenger_pickup", 0)],
         "has_groups": ["Tracks: Ocean Glyph"],
         "set_if_true": [(STAddr.adv_flags_34, 0x20)],
         "reset_flags": ["RESET Pirate Minigame Access"],
     },
     "Prepare for wadatsumi": {
         "on_scenes": [0x3A00],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
         "has_groups": ["Tracks: Ocean Glyph"],
+        "not_has_locations": ["Pirate Hideout Pick Up Wadatsumi"],
+        "unset_if_true": [(STAddr.adv_flags_34, 0x40)]
+    },
+    "Can pick up Wadatsumi visit": {
+        "on_scenes": [0x3A00],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("randomize_minigames", [0]), ("passenger_pickup", 1)],
+        "visited_scenes": [0x2c00],
+        "set_if_true": [(STAddr.adv_flags_34, 0x20)],
+        "reset_flags": ["RESET Pirate Minigame Access"],
+    },
+    "Prepare for wadatsumi visit": {
+        "on_scenes": [0x3A00],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
+        "visited_scenes": [0x2c00],
         "not_has_locations": ["Pirate Hideout Pick Up Wadatsumi"],
         "unset_if_true": [(STAddr.adv_flags_34, 0x40)]
     },
@@ -1965,7 +2375,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     #Prevent minigame from being played if no bow has been found
     "Pirate Hideout Minigame Missing Bow": {
         "on_scenes": [0x3A00],
-        "has_items": [("Bow (Progressive)", 0)],
+        "has_items": [("Bow (Progressive)", 0), ("Bow", 0)],
     #   "unset_if_true": [(STAddr.adv_flags_34, 0xE0), (STAddr.adv_flags_24, 0xA), (STAddr.adv_flags_4f, 0x6)],
         "set_if_true": [(STAddr.adv_flags_24, 0x2)], #Should remove Wadatsumi from area and not let minigame be played?
         "reset_flags": ["RESET Pirate Minigame Access"],
@@ -2007,14 +2417,14 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "No Passenger Wadatsumi Pirate Hideout": {
         "on_scenes": [0x3A00],
         "has_slot_data": [("randomize_passengers", [0])],
-        #Below should set all flags to get Gorons to appear, I think (only one way to find out!)
+        # Below should set all flags to get Gorons to appear, I think (only one way to find out!)
         "set_if_true": [(STAddr.adv_flags_24, 0x2), (STAddr.adv_flags_34, 0xE0), (STAddr.adv_flags_4f, 0x6)],
     },
 
     #Check for Wadatsumi being delivered previously, and then set Gorons to appear
     "Wadatsumi Saved Already": {
         "on_scenes": [0x3A00],
-        "has_items": [("Bow (Progressive)", 1)],
+        "any_has_items": [("Bow (Progressive)", 1), ("Bow", 1)],
         "has_slot_data": [("randomize_passengers", [2, 3])],
         "has_locations": ["Pirate Hideout Pick Up Wadatsumi"],
         # "check_bits": [(STAddr.adv_flags_34, 0x20)],
@@ -2022,16 +2432,24 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Wadatsumi Saved Already vanilla": {
         "on_scenes": [0x3A00],
-        "has_items": [("Bow (Progressive)", 1)],
+        "any_has_items": [("Bow (Progressive)", 1), ("Bow", 1)],
         "has_slot_data": [("randomize_passengers", 1)],
         "has_locations": ["Papuzia Village Wadatsumi's Force Gem"],
         "set_if_true": [(STAddr.adv_flags_24, 0x2), (STAddr.adv_flags_34, 0xE0), (STAddr.adv_flags_4f, 0x6)],
     },
-    "Wadatsumi Saved Already no papuzia": {
+    "Wadatsumi block no ocean glyph": {
         "on_scenes": [0x3A00],
-        "has_items": [("Bow (Progressive)", 1)],
-        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+        "any_has_items": [("Bow (Progressive)", 1), ("Bow", 1)],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 0)],
         "not_has_groups": ["Tracks: Ocean Glyph"],
+        "set_if_true": [(STAddr.adv_flags_24, 0x2), (STAddr.adv_flags_34, 0xE0), (STAddr.adv_flags_4f, 0x6)],
+        "reset_flags": ["RESET Pirate Minigame Access"],
+    },
+    "Wadatsumi block no visit": {
+        "on_scenes": [0x3A00],
+        "any_has_items": [("Bow (Progressive)", 1), ("Bow", 1)],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 1)],
+        "not_visited_scenes": [0x2c00],
         "set_if_true": [(STAddr.adv_flags_24, 0x2), (STAddr.adv_flags_34, 0xE0), (STAddr.adv_flags_4f, 0x6)],
         "reset_flags": ["RESET Pirate Minigame Access"],
     },
@@ -2256,7 +2674,8 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Goron Village no cargo": {
         "on_scenes": [0x2e00],
         "has_slot_data": [("randomize_cargo", [0])],
-        "set_if_true": [(STAddr.adv_flags_1f, 0x80), (STAddr.adv_flags_59, 0x6), (STAddr.adv_flags_f, 0x01)]
+        "set_if_true": [(STAddr.adv_flags_1f, 0x80), (STAddr.adv_flags_59, 0x6),
+                        (STAddr.adv_flags_f, 0x01),(STAddr.adv_flags_2b, 0x4)]
     },
     # Papuzia
     "Allow SoB statue": {
@@ -2367,6 +2786,13 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "on_scenes": [0x1400, 0x1401],
         "has_groups": ["Tracks: Fire Source"],
         "set_if_true": [(STAddr.adv_flags_2, 4)],
+        "has_slot_data": [("shuffle_stations", 0)],
+        "reset_flags": ["RESET not has fire glyph"]
+    },
+    "Add fire glyph in tos lobby if station shuffle": {
+        "on_scenes": [0x1400, 0x1401],
+        "has_slot_data": [("shuffle_stations", 0, "not")],
+        "set_if_true": [(STAddr.adv_flags_2, 4), (STAddr.adv_flags_0, 0x80)],
         "reset_flags": ["RESET not has fire glyph"]
     },
     "Add fire restoration flag in fire overworld": {
@@ -2395,14 +2821,14 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "GV remove snow goron no snow glyph": {
         "on_scenes": [0x2E00],
         "not_has_groups": ["Tracks: Snow Glyph"],
-        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 0)],
         "set_if_true": [(STAddr.adv_flags_38, 2)],
     },
     "GV add snow goron snow glyph": {
         "on_scenes": [0x2E00],
         "has_groups": ["Tracks: Snow Glyph"],
         "not_has_locations": ["Goron Village Pick Up Snow Goron"],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
         "unset_if_true": [(STAddr.adv_flags_38, 2)],
     },
     "GV add snow goron snow glyph vanilla": {
@@ -2410,10 +2836,95 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_groups": ["Tracks: Snow Glyph"],
         "check_bits": [(STAddr.adv_flags_59, 0x4)],
         "unset_if_true": [(STAddr.adv_flags_38, 2)],
-        "has_slot_data": [("randomize_passengers", 1)],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 0)],
     },
+    "GV remove snow goron no visit": {
+        "on_scenes": [0x2E00],
+        "not_visited_scenes": [0x2b00],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 1)],
+        "set_if_true": [(STAddr.adv_flags_38, 2)],
+    },
+    "GV remove snow goron quest done vanilla": {
+        "on_scenes": [0x2E00],
+        "has_slot_data": [("randomize_passengers", [1])],
+        "has_locations": ["Anouki Village Goron Force Gem"],
+        "set_if_true": [(STAddr.adv_flags_38, 2)],
+    },
+    "GV add snow goron visit": {
+        "on_scenes": [0x2E00],
+        "visited_scenes": [0x2b00],
+        "not_has_locations": ["Goron Village Pick Up Snow Goron"],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
+        "unset_if_true": [(STAddr.adv_flags_38, 2)],
+    },
+    "GV add snow goron visit vanilla": {
+        "on_scenes": [0x2E00],
+        "visited_scenes": [0x2b00],
+        "not_has_locations": ["Anouki Village Goron Force Gem"],
+        "check_bits": [(STAddr.adv_flags_59, 0x4)],
+        "unset_if_true": [(STAddr.adv_flags_38, 2)],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 1)],
+    },
+
+    "GV remove city goron no forest glyph": {
+        "on_scenes": [0x2E00],
+        "not_has_groups": ["Tracks: Forest Glyph"],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 0)],
+        "set_if_true": [(STAddr.adv_flags_3a, 1)],
+    },
+    "GV add city goron forest glyph": {
+        "on_scenes": [0x2E00],
+        "has_groups": ["Tracks: Forest Glyph"],
+        "not_has_locations": ["Goron Village Pick Up City Goron"],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
+        "unset_if_true": [(STAddr.adv_flags_3a, 1)],
+    },
+    "GV add City goron forest glyph vanilla": {
+        "on_scenes": [0x2E00],
+        "has_groups": ["Tracks: Forest Glyph"],
+        "check_bits": [(STAddr.adv_flags_59, 0x4)],
+        "unset_if_true": [(STAddr.adv_flags_3a, 1)],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 0)],
+    },
+    "GV remove City goron quest done vanilla": {
+        "on_scenes": [0x2E00],
+        "has_slot_data": [("randomize_passengers", 1)],
+        "has_locations": ["Castle Town Goron Force Gem"],
+        "set_if_true": [(STAddr.adv_flags_3a, 1)],
+    },
+    "GV remove City goron no visit": {
+        "on_scenes": [0x2E00],
+        "not_visited_scenes": [0x2900],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 1)],
+        "set_if_true": [(STAddr.adv_flags_3a, 1)],
+    },
+    "GV add City goron visit": {
+        "on_scenes": [0x2E00],
+        "visited_scenes": [0x2900],
+        "not_has_locations": ["Goron Village Pick Up City Goron"],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
+        "unset_if_true": [(STAddr.adv_flags_3a, 1)],
+    },
+    "GV add City goron visit vanilla": {
+        "on_scenes": [0x2E00],
+        "visited_scenes": [0x2900],
+        "not_has_locations": ["Castle Town Goron Force Gem"],
+        "check_bits": [(STAddr.adv_flags_59, 0x4)],
+        "unset_if_true": [(STAddr.adv_flags_3a, 1)],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 1)],
+    },
+
     "ToS Force spawn train": {
         "on_scenes": [0x1401, 0x1400],
+        "set_if_true": [(STAddr.adv_flags_4, 0x4)]
+    },
+    "Goron village remove wagon": {
+        "on_scenes": [0x2e00],
+        "reset_flags": ["RESET remove wagon"]
+    },
+    "RESET remove wagon": {
+        "has_items": [("Wagon", 0)],
+        "unset_if_true": [(STAddr.adv_flags_4, 0x2)],
         "set_if_true": [(STAddr.adv_flags_4, 0x4)]
     },
     "GTR Easy": {
@@ -2433,24 +2944,52 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_slot_data": [("randomize_cargo", 0)],
         "set_if_true": [(STAddr.adv_flags_1f, 0x80)]
     },
-    "Spawn Ferrus Bliz Temple": {
+    "Spawn Ferrus Bliz Temple vanilla": {
         "on_scenes": [0x500],
-        "has_slot_data": [("randomize_passengers", 1)],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 0)],
         "check_bits": [(STAddr.adv_flags_11, 0x40)],
-        "has_groups": ["Tracks: Blizzard Temple Tracks"],
+        "has_groups": ["Tracks: Blizzard Temple Tracks", "Tracks: Forest Glyph"],
         "set_if_true": [(STAddr.adv_flags_1f, 0x80)]
     },
     "Spawn Ferrus Bliz Temple item": {
         "on_scenes": [0x500],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
+        "has_items": [("Passenger: Alfonzo", 1)],
+        "has_groups": ["Tracks: Blizzard Temple Tracks", "Tracks: Forest Glyph"],
+        "set_if_true": [(STAddr.adv_flags_1f, 0x80)]
+    },
+    "Spawn Ferrus Bliz Temple vanilla visit": {
+        "on_scenes": [0x500],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 1)],
+        "check_bits": [(STAddr.adv_flags_11, 0x40)],
+        "has_groups": ["Tracks: Blizzard Temple Tracks"],
+        "visited_scenes": [0x2f00],
+        "set_if_true": [(STAddr.adv_flags_1f, 0x80)]
+    },
+    "Spawn Ferrus Bliz Temple item visit": {
+        "on_scenes": [0x500],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
         "has_items": [("Passenger: Alfonzo", 1)],
         "has_groups": ["Tracks: Blizzard Temple Tracks"],
+        "visited_scenes": [0x2f00],
         "set_if_true": [(STAddr.adv_flags_1f, 0x80)]
     },
     "Despawn Ferrus Bliz Temple without alfonzo item": {
         "on_scenes": [0x500],
         "has_slot_data": [("randomize_passengers", [2, 3])],
         "has_items": [("Passenger: Alfonzo", 0)],
+        "unset_if_true": [(STAddr.adv_flags_1f, 0x80)]
+    },
+    "Despawn Ferrus Bliz Temple without forest glyph": {
+        "on_scenes": [0x500],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 0)],
+        "not_has_groups": ["Tracks: Forest Glyph"],
+        "unset_if_true": [(STAddr.adv_flags_1f, 0x80)]
+    },
+    "Despawn Ferrus Bliz Temple without visit": {
+        "on_scenes": [0x500],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 1)],
+        "not_visited_scenes": [0x2f00],
         "unset_if_true": [(STAddr.adv_flags_1f, 0x80)]
     },
     "Despawn Ferrus Bliz Temple without alfonzo": {
@@ -2473,16 +3012,32 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Spawn Ferrus Fire Realm": {
         "on_scenes": [0x700],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
-        "has_groups": ["Tracks: Marine Temple Tracks"],  # TODO: figure out when ocean source is enough for oct
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 0)],
+        "any_has_groups": ["Tracks: Marine Temple Tracks", "Tracks: Ocean Source"],
         "set_if_true": [(STAddr.adv_flags_42, 0x8), # Allow spawning, set in ToS after dt in vanilla
                         (STAddr.adv_flags_3b, 0x2)],  # Brought Ferrus to Outset
         "reset_flags": ["RESET ferrus outset flag"]
     },
     "Spawn Ferrus Fire Realm vanilla": {
         "on_scenes": [0x700],
-        "has_slot_data": [("randomize_passengers", 1)],
-        "has_groups": ["Tracks: Marine Temple Tracks"],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 0)],
+        "any_has_groups": ["Tracks: Marine Temple Tracks", "Tracks: Ocean Source"],
+        "set_if_true": [(STAddr.adv_flags_42, 0x8),  # Allow spawning, set in ToS after dt in vanilla
+                        (STAddr.adv_flags_3b, 0x2)],  # Brought Ferrus to Outset
+        "reset_flags": ["RESET ferrus outset flag"]
+    },
+    "Spawn Ferrus Fire Realm visit": {
+        "on_scenes": [0x700],
+        "has_slot_data": [("randomize_passengers", [2, 3]), ("passenger_pickup", 1)],
+        "visited_scenes": [0x1b0a],
+        "set_if_true": [(STAddr.adv_flags_42, 0x8),  # Allow spawning, set in ToS after dt in vanilla
+                        (STAddr.adv_flags_3b, 0x2)],  # Brought Ferrus to Outset
+        "reset_flags": ["RESET ferrus outset flag"]
+    },
+    "Spawn Ferrus Fire Realm vanilla visit": {
+        "on_scenes": [0x700],
+        "has_slot_data": [("randomize_passengers", 1), ("passenger_pickup", 1)],
+        "visited_scenes": [0x1b0a],
         "set_if_true": [(STAddr.adv_flags_42, 0x8),  # Allow spawning, set in ToS after dt in vanilla
                         (STAddr.adv_flags_3b, 0x2)],  # Brought Ferrus to Outset
         "reset_flags": ["RESET ferrus outset flag"]
@@ -2493,8 +3048,14 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Despawn ferrus fire realm": {
         "on_scenes": [0x700],
-        "has_slot_data": [("randomize_passengers", [1, 2, 3])],
-        "not_has_groups": ["Tracks: Marine Temple Tracks"],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 0)],
+        "not_has_groups": ["Tracks: Marine Temple Tracks", "Tracks: Ocean Source"],
+        "unset_if_true": [(STAddr.adv_flags_42, 0x8)]
+    },
+    "Despawn ferrus fire realm visit": {
+        "on_scenes": [0x700],
+        "has_slot_data": [("randomize_passengers", [1, 2, 3]), ("passenger_pickup", 1)],
+        "not_visited_scenes": [0x1b0a],
         "unset_if_true": [(STAddr.adv_flags_42, 0x8)]
     },
     "Remove fire ferrus flag until picked up": {
@@ -2510,32 +3071,220 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Remove Marine Temple Zelda Text": {
         "on_scenes": [0x1B0A],
         "set_if_true": [(STAddr.adv_flags_a, 0x1)]
-    }
+    },
+    "Remove rock in tunnel to tower": {
+        "on_scenes": [0x1802],
+        "unset_if_true": [(STAddr.adv_flags_0, 0x4)],
+        "reset_flags": ["RESET anjean cs"]
+    },
+    "RESET anjean cs": {
+        "set_if_true": [(STAddr.adv_flags_0, 0x4)],
+    },
+    "Prevent zelda warp": {
+        "on_scenes": [0x2802, 0x2805],
+        "has_slot_data": [("shuffle_hyrule_castle", 0, "not")],
+        "set_if_true": [(STAddr.adv_flags_6, 0x10)],
+    },
+    "Remove forest glyph on train map warp": {
+        "on_scenes": [0x400, 0x500, 0x600, 0x700],
+        "has_slot_data": [("enable_map_warp", 1)],
+        "not_has_groups": ["Tracks: Forest Glyph"],
+        "unset_if_true": [(STAddr.adv_flags_1, 0x80)],
+        "reset_flags": ["RESET map warp forest glyph"]
+    },
+    "ToS 3f reset map": {
+        "on_scenes": [0x1302],
+        "has_slot_data": [("enable_map_warp", 1)],
+        "reset_flags": ["RESET map warp forest glyph"]
+    },
+    "RESET map warp forest glyph": {
+        "has_slot_data": [("enable_map_warp", 1)],
+        "set_if_true": [(STAddr.adv_flags_1, 0x80)]
+    },
+    # Set stage flaggy bits
+    "Open Blizzard Temple": {
+        "on_scenes": [0x1A00],
+        "has_slot_data": [("open_blizzard_temple", 1)],
+        "update_stage_flags": [0x20, 0x22, 0, 0]
+    },
+    "Open Blizzard Temple warp": {
+        "on_scenes": [0x1A04],
+        "has_slot_data": [("open_blue_warps", 1)],
+        "update_stage_flags": OPEN_WARPS[1]
+    },
+    "Open Wooded Temple warp backup": {
+        "on_scenes": [0x190a, 0x1903],
+        "has_slot_data": [("open_blue_warps", 0)],
+        "has_traversed_entrances": ["EVENT: Wooded Temple Open Blue Warp"],
+        "update_stage_flags": OPEN_WARPS[0]
+    },
+    "Open Blizzard Temple warp backup": {
+        "on_scenes": [0x1a04, 0x1a03],
+        "has_slot_data": [("open_blue_warps", 0)],
+        "has_traversed_entrances": ["EVENT: Blizzard Temple Open Blue Warp"],
+        "update_stage_flags": OPEN_WARPS[1]
+    },
+    "Open Marine Temple warp backup": {
+        "on_scenes": [0x1b0a, 0x1b06],
+        "has_slot_data": [("open_blue_warps", 0)],
+        "has_traversed_entrances": ["EVENT: Marine Temple Open Blue Warp"],
+        "update_stage_flags": OPEN_WARPS[2]
+    },
+    "Open Mountain Temple warp backup": {
+        "on_scenes": [0x1c0a, 0x1c05],
+        "has_slot_data": [("open_blue_warps", 0)],
+        "has_traversed_entrances": ["EVENT: Mountain Temple Open Blue Warp"],
+        "update_stage_flags": OPEN_WARPS[3]
+    },
+    "Open Desert Temple warp backup": {
+        "on_scenes": [0x1d06, 0x1d04],
+        "has_slot_data": [("open_blue_warps", 0)],
+        "has_traversed_entrances": ["EVENT: Desert Temple Open Blue Warp"],
+        "update_stage_flags": OPEN_WARPS[4]
+    },
+
+    # GLP shortcut backups
+    "WT 1f shortcut door": {
+        "on_scenes": [0x1900],
+        "has_traversed_entrances": ["EVENT: Wooded Temple 1F Shortcut"],
+        "update_stage_flags": [0x80]
+    },
+    "WT 2f windmill door": {
+        "on_scenes": [0x1901],
+        "has_traversed_entrances": ["EVENT: Wooded Temple 2F Windmill"],
+        "update_stage_flags": [0, 0x4]
+    },
+    "BT 1f bell door 1": {
+        "on_scenes": [0x1a00],
+        "has_slot_data": [("open_blizzard_temple", 0)],
+        "has_traversed_entrances": ["EVENT: Blizzard Temple 1F Bell Door 1"],
+        "update_stage_flags": [0x20]
+    },
+    "BT 1f bell door 2": {
+        "on_scenes": [0x1a00],
+        "has_slot_data": [("open_blizzard_temple", 0)],
+        "has_traversed_entrances": ["EVENT: Blizzard Temple 1F Bell Door 2"],
+        "update_stage_flags": [0x20, 0x2]
+    },
+    "BT 1f bell door 3": {
+        "on_scenes": [0x1a00],
+        "has_slot_data": [("open_blizzard_temple", 0)],
+        "has_traversed_entrances": ["EVENT: Blizzard Temple 1F Bell Door 3"],
+        "update_stage_flags": [0x20, 0x22]
+    },
+    "BT 1f ne door": {
+        "on_scenes": [0x1a00],
+        "has_traversed_entrances": ["EVENT: Blizzard Temple 1F NE Door"],
+        "update_stage_flags": [0x80]
+    },
+    "BT 1f nw door": {
+        "on_scenes": [0x1a00],
+        "has_traversed_entrances": ["EVENT: Blizzard Temple 1F NW Door"],
+        "update_stage_flags": [0, 0x8]
+    },
+    "BT b1 se windmill": {
+        "on_scenes": [0x1a01],
+        "has_traversed_entrances": ["EVENT: Blizzard Temple B1 SE Windmill"],
+        "update_stage_flags": [0, 0x80]
+    },
+    "OCT 3f s shortcut": {
+        "on_scenes": [0x1b02],
+        "has_traversed_entrances": ["EVENT: Marine Temple 3F South Branch"],
+        "update_stage_flags": [0x4]
+    },
+    "OCT 4f w shortcut": {
+        "on_scenes": [0x1b03],
+        "has_traversed_entrances": ["EVENT: Marine Temple 4F West Door"],
+        "update_stage_flags": [0x8]
+    },
+    "OCT 4f s bridge": {
+        "on_scenes": [0x1b03],
+        "has_traversed_entrances": ["EVENT: Marine Temple 4F South Bridge"],
+        "update_stage_flags": [0x60]
+    },
+    "OCT 5f n branches": {
+        "on_scenes": [0x1b04],
+        "has_traversed_entrances": ["EVENT: Marine Temple 5F North Branches"],
+        "update_stage_flags": [0, 0x4]
+    },
+    "OCT 5f se door": {
+        "on_scenes": [0x1b04],
+        "has_traversed_entrances": ["EVENT: Marine Temple 5F SE Door"],
+        "update_stage_flags": [0, 0x8]
+    },
+    "OCT 6f sw arena": {
+        "on_scenes": [0x1b05],
+        "has_traversed_entrances": ["EVENT: Marine Temple 6F Arena"],
+        "update_stage_flags": [0, 0x20]
+    },
+    "OCT stamp room switch": {
+        "on_scenes": [0x1b07],
+        "has_traversed_entrances": ["EVENT: Marine Temple Stamp Room Switch"],
+        "update_stage_flags": [0, 0, 0x1]
+    },
+    "MTT 1f blue platform": {
+        "on_scenes": [0x1c00],
+        "has_traversed_entrances": ["EVENT: Mountain Temple 1F SW Switch"],
+        "update_stage_flags": [0, 0x4]
+    },
+    "MTT 1f main door": {
+        "on_scenes": [0x1c00],
+        "has_traversed_entrances": ["EVENT: Mountain Temple 1F Main Door"],
+        "update_stage_flags": [0x4]
+    },
+    "MTT 2f heatoise arena": {
+        "on_scenes": [0x1c06, 0x1c01],
+        "has_traversed_entrances": ["EVENT: Mountain Temple 2F Heatoise Arena"],
+        "update_stage_flags": [0x8]
+    },
+    "MTT b1 heatoise arena": {
+        "on_scenes": [0x1c02],
+        "has_traversed_entrances": ["EVENT: Mountain Temple B1 Arena"],
+        "update_stage_flags": [0x40]
+    },
+    "MTT b2 stalfos arena": {
+        "on_scenes": [0x1c03],
+        "has_traversed_entrances": ["EVENT: Mountain Temple B2 Stalfos Arena"],
+        "update_stage_flags": [0x20]
+    },
+    "MTT b2 light torches": {
+        "on_scenes": [0x1c03],
+        "has_traversed_entrances": ["EVENT: Mountain Temple B2 SE Torches"],
+        "update_stage_flags": [0x80]
+    },
+    "MTT b2 w shortcut": {
+        "on_scenes": [0x1c03],
+        "has_traversed_entrances": ["EVENT: Mountain Temple B2 W Branch"],
+        "update_stage_flags": [0, 0x40]
+    },
+    "DT b1 shortcut door": {
+        "on_scenes": [0x1d03],
+        "has_traversed_entrances": ["EVENT: Desert Temple B1 Shortcut"],
+        "update_stage_flags": [0, 0, 0, 0x8]
+    },
+    "DT b1 red door": {
+        "on_scenes": [0x1d03],
+        "has_traversed_entrances": ["EVENT: Desert Temple B1 Red Door"],
+        "update_stage_flags": [0, 0, 0x80]
+    },
+    "Tunnel to ToS 2f door": {
+        "on_scenes": [0x1801],
+        "has_traversed_entrances": ["EVENT: Tunnel to the Tower 2F Door"],
+        "update_stage_flags": [0x2]
+    },
+    "Island Sanc bridge": {
+        "on_scenes": [0x3200],
+        "has_traversed_entrances": ["EVENT: Island Sanctuary Bridge"],
+        "update_stage_flags": [0, 0x8]
+    },
+    "Valley Sanc door": {
+        "on_scenes": [0x3300],
+        "has_traversed_entrances": ["EVENT: Valley Sanctuary Door"],
+        "update_stage_flags": [0, 0x1]
+    },
 }
 
-# for name, data in DYNAMIC_FLAGS.items():
-#     if "has_groups" in data:
-#         groups = data["has_groups"]
-#         data["any_has_items"] = data.get("any_has_items", []) + [(i, 1) for i in ITEM_GROUPS[groups[0]]]
-#         # print(data["any_has_items"])
-#         # print(f"{DYNAMIC_FLAGS[name]}")
-#         if len(groups) > 1:
-#             data["any_has_items2"] = [(i, 1) for i in ITEM_GROUPS[groups[1]]]
-#             # print(data["any_has_items2"])
-#     if "any_has_groups" in data:
-#         items = []
-#         for group in data["any_has_groups"]:
-#             items.extend(ITEM_GROUPS[group])
-#         data["any_has_items"] = data.get("any_has_items", []) + [(i, 1) for i in items]
-#         # print(data["any_has_items"])
-#     if "not_has_groups" in data:
-#         items = []
-#         for group in data["not_has_groups"]:
-#             items.extend(ITEM_GROUPS[group])
-#         data["has_items"] = data.get("has_items", []) + [(i, 0) for i in items]
-#         # print(data["has_items"])
-#     DYNAMIC_FLAGS[name] = data
-#     # print(DYNAMIC_FLAGS[name])
+
 """
 "Dynamic Flag Name": {
     "on_scenes": list[int],

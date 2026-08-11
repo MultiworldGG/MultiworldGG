@@ -81,7 +81,7 @@ class DSRLocation(Location):
             "Northern Undead Asylum Second Visit",
             "Northern Undead Asylum Second Visit - F2 West Door",
             "Northern Undead Asylum Second Visit - Behind F2 West Door",
-            "Northern Undead Asylum Second Visit - Snuggly Trades",
+            # "Northern Undead Asylum Second Visit - Snuggly Trades",
             "Undead Burg Basement Door",
             "Lower Undead Burg", 
             "Lower Undead Burg - After Residence Key",
@@ -89,7 +89,7 @@ class DSRLocation(Location):
             "Lower Undead Burg - After Capra Demon",
             "Watchtower Basement",
             "Depths", 
-            "Depths - After Sewer Chamber Key",
+            # "Depths - After Sewer Chamber Key",
             "Depths - Gaping Dragon",
             "Depths - After Gaping Dragon",
             "Depths to Blighttown Door",
@@ -328,11 +328,11 @@ location_tables = {
 ],
 "Firelink Shrine - Laurentius of the Great Swamp": [
     # DSRLocationData(11110xxx, f"FS: Laurentius of the Great Swamp", f"Laurentius of the Great Swamp Access", DSRLocationCategory.EVENT),
-    DSRLocationData(11110914, f"Laurentius of the Great Swamp: Pyromancy: Fireball", f"Pyromancy: Fireball", DSRLocationCategory.MISSABLE_SHOP_ITEM),
-    DSRLocationData(11110915, f"Laurentius of the Great Swamp: Pyromancy: Fire Orb", f"Pyromancy: Fire Orb", DSRLocationCategory.MISSABLE_SHOP_ITEM),
-    DSRLocationData(11110916, f"Laurentius of the Great Swamp: Pyromancy: Combustion", f"Pyromancy: Combustion", DSRLocationCategory.MISSABLE_SHOP_ITEM),
-    DSRLocationData(11110917, f"Laurentius of the Great Swamp: Pyromancy: Iron Flesh", f"Pyromancy: Iron Flesh", DSRLocationCategory.MISSABLE_SHOP_ITEM),
-    DSRLocationData(11110918, f"Laurentius of the Great Swamp: Pyromancy: Flash Sweat", f"Pyromancy: Flash Sweat", DSRLocationCategory.MISSABLE_SHOP_ITEM),
+    DSRLocationData(11110914, f"Laurentius of the Great Swamp: Pyromancy: Fireball", f"Pyromancy: Fireball", DSRLocationCategory.SHOP_ITEM),
+    DSRLocationData(11110915, f"Laurentius of the Great Swamp: Pyromancy: Fire Orb", f"Pyromancy: Fire Orb", DSRLocationCategory.SHOP_ITEM),
+    DSRLocationData(11110916, f"Laurentius of the Great Swamp: Pyromancy: Combustion", f"Pyromancy: Combustion", DSRLocationCategory.SHOP_ITEM),
+    DSRLocationData(11110917, f"Laurentius of the Great Swamp: Pyromancy: Iron Flesh", f"Pyromancy: Iron Flesh", DSRLocationCategory.SHOP_ITEM),
+    DSRLocationData(11110918, f"Laurentius of the Great Swamp: Pyromancy: Flash Sweat", f"Pyromancy: Flash Sweat", DSRLocationCategory.SHOP_ITEM),
 ],
 "Firelink Shrine - Petrus of Thorolund": [
     DSRLocationData(11111062, f"Petrus of Thorolund: Copper Coin", f"Copper Coin", DSRLocationCategory.SHOP_ITEM), # Gift for talking to him
@@ -509,7 +509,7 @@ location_tables = {
 "Northern Undead Asylum Second Visit - Behind F2 West Door": [    
     DSRLocationData(11110078, f"UA2: Rusted Iron Ring", f"Rusted Iron Ring", DSRLocationCategory.ITEM_LOT),
 ],
-"Northern Undead Asylum Second Visit - Snuggly Trades": [
+# "Northern Undead Asylum Second Visit - Snuggly Trades": [
     # DSRLocationData(11110081, f"Snuggly: Pendant -> Souvenir of Reprisal", f"Souvenir of Reprisal", DSRLocationCategory.ITEM_LOT),
     # DSRLocationData(11110082, f"Snuggly: Rubbish -> Titanite Chunk", f"Titanite Chunk", DSRLocationCategory.ITEM_LOT),
     # DSRLocationData(11110083, f"Snuggly: Sunlight Medal -> White Titanite Chunk", f"White Titanite Chunk", DSRLocationCategory.ITEM_LOT),
@@ -530,7 +530,7 @@ location_tables = {
     # DSRLocationData(11110098, f"Snuggly: Ring of the Sun Princess -> Divine Blessing x2", f"Divine Blessing x2", DSRLocationCategory.ITEM_LOT),
     # DSRLocationData(11110099, f"Snuggly: Xanthous Crown -> Ring of Favor and Protection", f"Ring of Favor and Protection", DSRLocationCategory.ITEM_LOT),
     # DSRLocationData(11110100, f"Snuggly: Soul of Manus -> Sorcery: Pursuers", f"Sorcery: Pursuers", DSRLocationCategory.ITEM_LOT),
-],  
+# ],
 "Undead Burg Basement Door": [
     DSRLocationData(11110101, f"UB: Undead Burg Basement opened", f"Door Filler", DSRLocationCategory.DOOR),
 ],
@@ -606,10 +606,10 @@ location_tables = {
     DSRLocationData(11110978, f"DE: Twin Humanities - Gaping Dragon Drop", f"Twin Humanities",  DSRLocationCategory.BOSS_HUMANITY),
     DSRLocationData(11110979, f"DE: Homeward Bone - Gaping Dragon Drop", f"Homeward Bone",  DSRLocationCategory.BOSS_BONE),
 ],
-"Depths - After Sewer Chamber Key": [
+# "Depths - After Sewer Chamber Key": [ # omit while there are no checks here
     # DSRLocationData(11110131, f"DE: Depths Bonfire Room opened", f"Door Filler", DSRLocationCategory.DOOR),
     # DSRLocationData(11110834, f"DE: Depths Bonfire", f"Bonfire Warp Unlock - Depths", DSRLocationCategory.BONFIRE),
-],
+# ],
 "Depths to Blighttown Door": [
     DSRLocationData(11110130, f"DE: Depths -> Blighttown opened", f"Door Filler", DSRLocationCategory.DOOR),
 ],

@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from datetime import datetime
+
 
 from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, \
-   ItemDict, ItemsAccessibility, ItemSet, Visibility, NamedRange, OptionGroup, OptionSet
-from worlds.tloz_st.data.Items import ITEMS_DATA
-from .data.Constants import DUNGEON_TO_BOSS_ITEM_LOCATION
+    ItemDict, ItemsAccessibility, ItemSet, Visibility, NamedRange, OptionGroup, OptionSet, PlandoConnections
+
+from .data.Constants import DUNGEON_TO_BOSS_ITEM_LOCATION, directionality_etype_lookup, pool_name_lookup
+from.data.Entrances import valid_starts, ENTRANCES
 
 # YAML options
 
@@ -96,11 +97,12 @@ class SpiritTracksDungeonPoolPlando(OptionSet):
     Special Options include:
     - Lost At Sea
     - Take 'em All On 3
+    - all (includes lost at sea and teao3)
     Overrides tos_dungeon_options.
     """
     display_name = "Plando Dungeon Pool"
     default = set()
-    valid_keys = list(DUNGEON_TO_BOSS_ITEM_LOCATION.keys())
+    valid_keys = list(DUNGEON_TO_BOSS_ITEM_LOCATION.keys()) + ["all"]
 
 
 class SpiritTracksEndgameScope(Choice):
@@ -125,6 +127,7 @@ class SpiritTracksEndgameScope(Choice):
 class SpiritTracksRequireSpecificDungeons(Toggle):
     """
     Specific dungeons are required to enter the dark realm.
+    If false, all dungeons and tos sections (depending on tos_dungeon_options) count towards the dungeon goal.
     """
     display_name = "Require Specific Dungeons"
     default = 1
@@ -151,7 +154,7 @@ class SpiritTracksLogic(Choice):
     Logic Difficulty.
     - normal: Glitches and tricky tricks are not in logic.
     - hard: More difficult combat, obscure strategies, certain puzzles without their solutions and slow cycles are in logic.
-    - glitched: not implemented.
+    - glitched: more difficult tricks like bomb boosts and block clips are in logic.
     """
     display_name = "Logic Difficulty"
     option_normal = 0
@@ -289,9 +292,10 @@ class SpiritTracksExtraRabbits(Range):
 class SpiritTracksRandomizePortals(Choice):
     """
     How to handle the train portals.
-    - always_open: You can always take the portals, as long as you have the tracks on both sides
-    - open_one_way: You can always take the portals, but you have to unlock them from the side with the gem first
-    - open_with_items: creates an item for each portal pair, that is required to use each portal.
+    - always_open: You can always take the portals, as long as you have the tracks/entrances on both sides
+    - open_one_way: You can always take the portals, but you have to unlock them from the side with the gem first.
+    Opening a one-way portal opens it's vanilla counterpart, even when shuffled.
+    - open_with_items: creates an item for each portal pair, that is required to use each portal. Does not work with shuffle_portals.
     """
     display_name = "Portal Behavior"
     option_open_one_way = 0
@@ -301,9 +305,9 @@ class SpiritTracksRandomizePortals(Choice):
 
 class SpiritTracksPortalLocations(Toggle):
     """
-    Creates locations for shooting the gem on each portal.
+    Creates randomized locations for shooting the gem on each train portal.
     """
-    display_name = "Portal Checks"
+    display_name = "Portal Locations"
     default = 0
 
 class SpiritTracksDeathLink(DeathLink):
@@ -315,7 +319,8 @@ class SpiritTracksDeathLink(DeathLink):
 class SpiritTracksStartWithTrain(Toggle):
     """
     Starts you with a forest glyph including track and cannon depending on cannon logic, giving you train access from the start.
-    On by default to give people more checks in the beginning
+    On by default to give people more checks in the beginning.
+    If stations are shuffled or randomized start is on, if your starting entrance links to a track it will give you those tracks from your track pool.
     """
     display_name = "Start With Train"
     default = 1
@@ -325,10 +330,10 @@ class SpiritTracksRandomizeTears(Choice):
     Randomize Tears of Light
     - vanilla: tears of light are not randomized
     - vanilla_items: tears of light are vanilla, but you don't need to collect them more than once and they count as archipelago locations for hint costs.
-    - in_own_section: tears of light are randomized in their own tower sections. progressive and global tears count towards all sections
+    - in_own_section: tears of light are randomized in their own tower sections. progressive and global tears can be in any section
     - in_tos: tears of light are randomized anywhere in Tower of Spirits
     - anywhere: tears of light are randomized anywhere
-    - no_tears: you need to find either two swords or bow of light + bow to possess phantoms, tears are still randomized locations.
+    - no_tears: you need to find either the lokomo sword or bow of light + bow to possess phantoms, tears are still randomized locations.
     """
     display_name = "Randomize Tears of Light"
     option_vanilla = -1
@@ -348,6 +353,7 @@ class SpiritTracksTearSize(Choice):
     display_name = "Tears of Light Size"
     option_small = 0
     option_large = 1
+    alias_big = 1
     default = 0
 
 class SpiritTracksTearGroup(Choice):
@@ -356,6 +362,7 @@ class SpiritTracksTearGroup(Choice):
     - unique_sections: tears of light only work in one section
     - all_sections: tears work globally for all sections.
     - progressive: tears fill each section from bottom to top. Works with shuffle_tos_section.
+    If ToS entrances are shuffled, the order is decided randomly.
     """
     display_name = "Tears of Light Sectionality"
     option_unique_sections = 0
@@ -366,7 +373,7 @@ class SpiritTracksSpiritItems(Choice):
     """
     Lokomo Sword and Bow of Light can be combined with certain tear of light groupings
     - items: Lokomo Sword is the second progressive sword; and Bow of Light is its own item, but requires a progressive bow to use.
-    - final_tear: if tear_group is all_sections or progressive, an extra final tear item is added that unlocks both the Lokomo Sword and the Bow of Light.
+    - final_tear: if tear_group is all_sections or progressive, an extra tear item is added and collecting them all unlocks both the Lokomo Sword and the Bow of Light.
     """
     display_name = "Spirit Item Options"
     option_items = 0
@@ -426,9 +433,10 @@ class SpiritTracksMinigameHints(Toggle):
 class SpiritTracksToSSectionUnlocks(Choice):
     """
     What unlocks Tower of Spirits sections?
+    If you have access to a higher tower entrance, a ramp will be created, but you can't enter/exit sections on the way without their requirements.
     open: all sections are open from the start
     sources: each source unlocks a new section
-    progressive: adds "Progressive Tower Section" items, that unlock sections one at a time. ToS 1 is always available.
+    progressive: adds "Progressive Tower Section" items, that unlock sections one at a time.
     """
     display_name = "ToS Section Unlocks"
     option_open = 0
@@ -440,6 +448,7 @@ class SpiritTracksToSBase(Toggle):
     """
     If True, Prevents Tower of Spirit access until you have the `Tower of Spirits Base` item
     Creates an additional progressive tower section item instead if you play with progressive tower sections.
+    Currently not compatible with station shuffle
     """
     display_name = "ToS Unlock Base Item"
     default = 0
@@ -448,11 +457,253 @@ class SpiritTracksShuffleToSSections(Choice):
     """
     Shuffle Tower of Spirits Sections.
     Also includes the summit as its own section.
-    Progressive tears will respect the new ordering.
+    Progressive tears will respect the new ordering if shuffled alone, otherwise sections are assigned randomly.
+    Adds 14 (unpaired) entrances.
     """
     display_name = "Shuffle ToS Sections"
     option_no_shuffle = 0
-    option_shuffle = 1
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+    # option_shuffle_with_dungeons = 6  adding them to the dungeon pool requires me being in a better headspace
+
+class SpiritTracksShuffleStations(Choice):
+    """
+    Shuffle Stations.
+    Adds 62 (unpaired) entrances.
+    """
+    display_name = "Shuffle Stations"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+    # 5 can be own station?
+
+class SpiritTracksShuffleTrainTransitions(Choice):
+    """
+    Shuffle the transitions between different realms, and the entrance to the underwater tracks.
+    Adds 24 (unpaired) entrances.
+    """
+    display_name = "Shuffle Train Transitions"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+
+class SpiritTracksShuffleHouses(Choice):
+    """
+    Shuffle entrances to houses. Hyrule castle is shuffled separately.
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    Adds 66 (unpaired) entrances.
+    """
+    display_name = "Shuffle Houses"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+
+class SpiritTracksShuffleCaves(Choice):
+    """
+    Shuffle cave entrances. Disorientation Station and Ends of the Earth internals are shuffled separately.
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    Adds 68 (unpaired) entrances.
+    """
+    display_name = "Shuffle Caves"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+
+class SpiritTracksShuffleTransitions(Choice):
+    """
+    Shuffle overworld transitions (for link).
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    """
+    display_name = "Shuffle Overworld Transitions"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+
+class SpiritTracksShuffleHyruleCastle(Choice):
+    """
+    Shuffle hyrule castle entrances.
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    Adds 28 (unpaired) entrances.
+    """
+    display_name = "Shuffle Hyrule Castle"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+
+class SpiritTracksShuffleDisorientationStation(Choice):
+    """
+    Shuffle the inside of Disorientation Station.
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    The entrance stairs are still in the cave pool.
+    Adds 32 (unpaired) entrances.
+    """
+    display_name = "Shuffle Disorientation Station Interior"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+
+class SpiritTracksShuffleEotE(Choice):
+    """
+    Shuffle the inside of Ends of the Earth.
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    The entrances to each difficulty are still in the cave pool.
+    Always includes the EotE chests, no matter the minigame option.
+    Adds 24 (unpaired) entrances.
+    """
+    display_name = "Shuffle Ends of the Earth Interior"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+
+class SpiritTracksShufflePortals(Choice):
+    """
+    Shuffle train portals.
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    Always disables portal items.
+    Other portal options still work!
+    Opening a one-way portal unlocks it's vanilla counterpart, even when shuffled.
+    Adds 16 (unpaired) entrances.
+    """
+    display_name = "Shuffle Train Portals"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+
+class SpiritTracksShuffleLas(Choice):
+    """
+    Shuffle lost at sea dungeon.
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    When shuffled, the two one way entrances are linked to a single entrance in a decoupled manner.
+    Puzzles reset after leaving.
+    Adds 12 (unpaired) entrances.
+    """
+    display_name = "Shuffle Lost at Sea Dungeon"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+
+class SpiritTracksShuffleToSStaircase(Choice):
+    """
+    Shuffle the single entrance pair between the ToS lobby and staircase.
+    All entrance shuffle options allow you to mix and match them in 3 pools.
+    Adds 2 (unpaired) entrances.
+    """
+    display_name = "Shuffle ToS Staircase"
+    option_no_shuffle = 0
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+
+class SpiritTracksShuffleDungeonRooms(Choice):
+    """
+    Shuffle the entrances inside dungeons.
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    Has special option `shuffle in own dungeon`, that doesn't mix rooms from different dungeons.
+    Adds 88 (unpaired) entrances.
+    """
+    display_name = "Shuffle Dungeon Interiors"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+    option_shuffle_in_own_dungeon = 5
+
+class SpiritTracksShuffleWarps(Choice):
+    """
+    Shuffles 2-way blue warps.
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    Has special option `shuffle in own dungeon`, that keeps them connecting in their local dungeon.
+    Acts as a mixed pool with other options that pick it.
+    Opening a blue warp unlocks the vanilla lobby portal, even when shuffled elsewhere.
+    If dungeon entrances are shuffled alone, shuffle_in_own_dungeon for warps follow the new dungeon.
+    Adds 10 (unpaired) entrances.
+    """
+    display_name = "Shuffle Blue Warps"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+    option_shuffle_in_own_dungeon = 5
+
+class SpiritTracksShuffleDungeonEntrances(Choice):
+    """
+    Shuffles the entrances between dungeon stations and the start of dungeons.
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    - shuffle_in_own_dungeon_vanilla: the dungeon entrance will only shuffle to its own dungeon,
+        but to any entrance in that dungeon that's also in the in_own_dungeon pool
+    - shuffle_in_own_dungeon_shuffle: the game pre-picks what dungeon goes to what dungeon entrance,
+        and that entrance can shuffle to any entrance in that dungeon also in the in_own_dungeon pool.
+    Adds 10 (unpaired) entrances.
+    """
+    display_name = "Shuffle Dungeon Entrances"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+    option_shuffle_in_own_dungeon_vanilla = 5
+    option_shuffle_in_own_dungeon_shuffle = 6
+
+class SpiritTracksShuffleBosses(Choice):
+    """
+    Shuffles the entrances to the five main dungeon bosses.
+    All entrance shuffle options allow you to mix and match them in 3 pools, or keep them separate.
+    - shuffle_in_own_dungeon_vanilla: the boss will only shuffle to its vanilla dungeon,
+        but to any entrance in that dungeon that's also in the in_own_dungeon pool
+    - shuffle_in_own_dungeon_shuffle: the game pre-picks what boss goes to what dungeon entrance,
+        and that entrance can shuffle to any entrance in that dungeon also in the in_own_dungeon pool.
+    Adds 10 (unpaired) entrances.
+    """
+    display_name = "Shuffle Bosses"
+    option_no_shuffle = 0
+    option_shuffle_alone = 1
+    option_shuffle_pool_a = 2
+    option_shuffle_pool_b = 3
+    option_shuffle_pool_c = 4
+    option_shuffle_in_own_dungeon_vanilla = 5
+    option_shuffle_in_own_dungeon_shuffle = 6
+
+class SpiritTracksEntranceDirectionality(OptionSet):
+    """
+    Choose what entrance groups care about directionality (left entrance leads to right, house exterior leads to interior etc.).
+    Pool options override individuals, individuals only count for shuffle_alone.
+    Valid options are: houses, caves, stations, overworld, train, portals,
+      dungeon_entrances, bosses, dungeon_rooms, blue_warps,
+      tos_sections, tos_staircase,
+      castle, disorientation, eote, las,
+      pool_a, pool_b, pool_c, in_own_dungeon, all
+    Pools with lots of dead ends have a high chance to cause gen errors.
+    Staircases do not have directionality.
+    """
+    display_name = "Entrance Directionality"
+    default = {"houses", "stations", "dungeon_entrances", "tos_sections", "bosses"}
+    # supports_weighting = True
+    valid_keys = list(directionality_etype_lookup.values()) + list(pool_name_lookup.values()) + ["all"]
+
 
 class SpiritTracksShopsanity(OptionSet):
     """
@@ -523,13 +774,13 @@ class SpiritTracksExcessTreasures(Choice):
 class SpiritTracksRandomizePassengers(Choice):
     """
     Randomize the sidequests involving moving passengers from one station to another.
-    NPCs can be picked up if you have access to their destination station.
+    The requirements for picking up passengers is determined by the `passenger_pickup` option.
     - no_passengers: passengers are not randomized, and quests that affect future stuff are in their most convenient state.
     - vanilla: passengers are picked up in their vanilla locations, and only a successful delivery is a randomized location.
     You can carry 1 NPC at a time and have to keep them happy.
     - vanilla_abstract: same as above, but NPCs give themselves as items, and you don't need to care about their comfort.
     You can pick up multiple NPCs at the same time.
-    - randomize: NPCs are items, and both picking them up and reaching their destinations are locations.
+    - randomize: NPCs are items, and both picking them up and reaching their destinations are randomized locations.
     """
     display_name = "Randomize Passengers"
     option_no_passengers = 0
@@ -543,11 +794,11 @@ class SpiritTracksRandomizeCargo(Choice):
     Randomize transporting cargo from one station to another. You need the wagon to buy cargo.
     - no_cargo: Cargo deliveries are not randomized, and places affected are in their most convenient state, ex. Goron lava geyser are down.
     - vanilla: cargo can be bought at their vanilla locations, and only a successful delivery is a randomized location.
-    You can carry 1 type of cargo at a time, perishables perish with time and taking damage decrements your cargo count.
+    You can carry 1 type of cargo at a time, perishables perish with time and temperature, and taking damage decrements your cargo count.
     - vanilla_abstract: same as above, but buying cargo gives an unlimited cargo item that unlocks all deliveries.
     You can pick up multiple cargo at the same time and don't have to worry about transport complications.
     - randomize: Cargo become items, and buying cargo/delivering cargo are both randomized locations.
-    There are multiple cargo items when used in multiple places, and the items are used up on getting the locations.
+    There are multiple cargo items when used in multiple places, and the items are used up on delivery.
     """
     display_name = "Randomize Cargo"
     option_no_cargo = 0
@@ -624,7 +875,7 @@ class SpiritTracksExcludeDungeons(Choice):
 
 class SpiritTracksExcludeSections(Choice):
     """
-    Exclude or remove locations from non-required Tower of Spirits Section.
+    Exclude or remove locations from non-required Tower of Spirits Sections.
     Will spawn the blue warp in the tower early if section 5 is excluded, you'll still need to defeat Staven (Byrne) to reach the room behind it.
     The Stamp Stand is active as long as stamps are.
     - include: non-required sections are included
@@ -695,6 +946,143 @@ class SpiritTracksToSShortcuts(Toggle):
     display_name = "Tower of Spirits Shortcuts"
     default = 0
 
+class SpiritTracksMapWarp(Toggle):
+    """
+    Enable warping to any previously visited station or realm by opening the rail map and tapping a station.
+    You can always warp to start by flipping the collection screen.
+    """
+    display_name = "Enable Map Warp"
+    default = 0
+
+class SpiritTracksEntrancePlando(PlandoConnections):
+    """
+    Plando entrance connections. Format is a list of dictionaries:
+    - entrance: "Entrance Name"
+      exit: "Exit Name"
+      direction: "Direction"
+      percentage: 100
+    Direction must be one of 'entrance', 'exit', or 'both', and defaults to 'both' if omitted.
+    Percentage is an integer from 1 to 100, and defaults to 100 when omitted.
+    Will disconnect entrances for you, and randomize their dangling entrances with each other, even if their entrance pools don't allow it.
+    """
+    display_name = "Entrance Plando"
+    entrances = frozenset(ENTRANCES.keys())
+    exits = frozenset(ENTRANCES.keys())
+
+class SpiritTracksUTBlockedEntrances(Choice):
+    """
+    How UT handles entrances if you check an entrance that is blocked, for example entering the overworld without the right tracks.
+    - mark_on_check: checking a blocked entrance will mark it as checked, even if you can't pass it.
+    - mark_on_pass: checking a blocked entrance will not mark as checked, you have to actually pass it to mark it.
+    - unmark_when_opened: checking a blocked entrance will mark it as checked, but once you unlock the requirements for traversing it the entrance will be unchecked.
+    """
+    display_name = "UT Blocked Entrances Behaviour"
+    option_mark_on_check = 0
+    option_mark_on_pass = 1
+    option_unmark_when_opened = 2
+    default = 0
+
+class SpiritTracksProgressiveEquipment(Toggle):
+    """
+    Toggle if bow, bombs and sword have progressive items (true) or a main item and capacity upgrades (false).
+    You cannot use the lokomo sword without the normal sword.
+    """
+    display_name = "Progressive Equipment"
+    default = 1
+
+class SpiritTracksShields(Toggle):
+    """
+    Toggle if shields are in the item pool.
+    You can always buy shields in shops after buying the randomized item on that slot.
+    Shields ruin speedrunning strats so that's why this is an option~
+    """
+    display_name = "Shields in Pool"
+    default = 1
+
+class SpiritTracksOpenBlizzardTemple(Toggle):
+    """
+    The bell doors in Blizzard Temple are open from the start.
+    """
+    display_name = "Open Blizzard Temple"
+    default = 0
+
+class SpiritTracksOpenBlueWarps(Toggle):
+    """
+    2-directional blue warps are open from the start.
+    Nice if their entrances are shuffled.
+    Opening a blue warp opens the matching lobby portal even when entrances are shuffled.
+    """
+    display_name = "Open Blue Warps"
+    default = 0
+
+class SpiritTracksERRetries(Range):
+    """
+    How many times the entrance shuffle tries again if it fails before giving up.
+    Default is 10
+    """
+    range_start = 0
+    range_end = 100
+    default = 10
+    display_name = "Entrance Shuffle Retries"
+
+class SpiritTracksDecoupleEntrances(Toggle):
+    """
+    Decouple shuffled entrances, so entrances are no longer bidirectional.
+    """
+    default = 0
+    display_name = "Decouple Shuffled Entrances"
+
+class SpiritTracksRandomizeStart(OptionSet):
+    """
+    Where you start the game.
+    Is a set of entrances it will roll from. You cannot start on the train.
+    Special options include:
+    - niko: the vanilla start.
+    - tos: start in Tower of Spirits
+    - towns: start in one of the six major settlements
+    - stations: adds all stations to the pool. Note that most stations have zero sphere 0 locations
+    """
+    default = {'niko'}
+    display_name = "Randomize Start"
+    valid_keys = frozenset(valid_starts | {"niko", "tos", "stations", "towns"})
+
+class SpiritTracksFreeStartingItems(Range):
+    """
+    Gives you this many free items on starting the game.
+    Useful with random start on solo seeds, to ensure that starting is possible.
+    """
+    range_start = 0
+    range_end = 10
+    default = 0
+    display_name = "Free Starting Items"
+
+class SpiritTracksPassengerPickupRequirement(Choice):
+    """
+    What is required to pick up passengers with passenger rando.
+    - tracks: you need any tracks that lead to their destination station, even if the tracks are unreachable or the station is shuffled.
+    - visit: you need to have visited the passenger's destination to pick them up.
+    """
+    display_name = "Passenger Pickup Requirement"
+    option_tracks = 0
+    option_visit = 1
+
+class SpiritTracksExtraEvents(OptionSet):
+    """
+    Enable/disable extra UT events for certain settings.
+    - portals: show events for opening train portals if they open one-way
+    - stamps: show events for stamp stations if playing with vanilla stamps
+    - visits: show events for visiting stations if playing with that passenger pickup requirement
+    - rabbits: shows events for individual rabbits if playing with total rabbits, that all fill out once you get your final total location of that type.
+    - warps: shows events for unlocking blue warps in dungeons.
+    - passengers: shows picking up and other triggers for vanilla passengers
+    - cargo: shows buying vanilla cargo for the first time
+    - shortcuts: adds events for unlockable shortcuts, that don't progress logic. these are unlocked for /get_logical_path even if the event is disabled,
+    and auto-unlock if save file progress is lost.
+    """
+    display_name = "Toggle Events"
+    default = {"portals", "stamps", "visits", "rabbits", "warps", "passengers", "cargo"}
+    valid_keys = ["portals", "stamps", "visits", "rabbits", "warps", "passengers", "cargo", "shortcuts"]
+
 @dataclass
 class SpiritTracksOptions(PerGameCommonOptions):
     # Accessibility
@@ -723,24 +1111,26 @@ class SpiritTracksOptions(PerGameCommonOptions):
     randomize_boss_keys: SpiritTracksRandomizeBossKeys
     keyrings: SpiritTracksKeyrings
     big_keyrings: SpiritTracksBigKeyrings
+    open_blizzard_temple: SpiritTracksOpenBlizzardTemple
+    open_blue_warps: SpiritTracksOpenBlueWarps
 
+    progressive_equipment: SpiritTracksProgressiveEquipment
     track_pool: SpiritTracksTrackGroupings
+    shields_in_pool: SpiritTracksShields
 
     randomize_minigames: SpiritTracksRandomizeMinigames
     minigame_hints: SpiritTracksMinigameHints
-
-    start_with_train: SpiritTracksStartWithTrain
 
     randomize_stamps: SpiritTracksStampItems
     stamp_pack_sizes: SpiritTracksStampItemPacks
 
     randomize_passengers: SpiritTracksRandomizePassengers
+    passenger_pickup: SpiritTracksPassengerPickupRequirement
     randomize_cargo: SpiritTracksRandomizeCargo
 
     # ToS stuff
     tos_section_unlocks: SpiritTracksToSSectionUnlocks
     tos_unlock_base_item: SpiritTracksToSBase
-    shuffle_tos_sections: SpiritTracksShuffleToSSections
     tos_shortcuts: SpiritTracksToSShortcuts
 
     randomize_tears: SpiritTracksRandomizeTears
@@ -767,6 +1157,40 @@ class SpiritTracksOptions(PerGameCommonOptions):
     rabbit_pack_size: SpiritTracksRabbitPackSize
     rabbit_extra_items: SpiritTracksExtraRabbits
     # rabbit_hints: SpiritTracksRabbitHints
+
+    # Start Options
+    randomize_start: SpiritTracksRandomizeStart
+    free_starting_items: SpiritTracksFreeStartingItems
+    start_with_train: SpiritTracksStartWithTrain
+
+    # Entrance Rando
+    shuffle_houses: SpiritTracksShuffleHouses
+    shuffle_caves: SpiritTracksShuffleCaves
+    shuffle_overworld: SpiritTracksShuffleTransitions
+    shuffle_stations: SpiritTracksShuffleStations
+    shuffle_train_transitions: SpiritTracksShuffleTrainTransitions
+    shuffle_portals: SpiritTracksShufflePortals
+    shuffle_dungeon_entrances: SpiritTracksShuffleDungeonEntrances
+    shuffle_bosses: SpiritTracksShuffleBosses
+    shuffle_dungeon_rooms: SpiritTracksShuffleDungeonRooms
+    shuffle_tos_sections: SpiritTracksShuffleToSSections
+    shuffle_tos_staircase: SpiritTracksShuffleToSStaircase
+    # shuffle_glyph_rooms
+    shuffle_warps: SpiritTracksShuffleWarps
+    shuffle_hyrule_castle: SpiritTracksShuffleHyruleCastle
+    shuffle_disorientation: SpiritTracksShuffleDisorientationStation
+    shuffle_eote: SpiritTracksShuffleEotE
+    shuffle_las: SpiritTracksShuffleLas
+
+    plando_transitions: SpiritTracksEntrancePlando
+    entrance_directionality: SpiritTracksEntranceDirectionality
+    decouple_shuffled_entrances: SpiritTracksDecoupleEntrances
+    entrance_shuffle_retries: SpiritTracksERRetries
+
+    # QoL
+    ut_blocked_entrances_behaviour: SpiritTracksUTBlockedEntrances
+    enable_map_warp: SpiritTracksMapWarp
+    extra_events: SpiritTracksExtraEvents
 
     # Cosmetic
     starting_train: SpiritTracksStartingTrain
@@ -803,22 +1227,24 @@ st_option_groups = [
         SpiritTracksKeyrings,
         SpiritTracksBigKeyrings,
     ]),
-    OptionGroup("Randomization Options", [
+    OptionGroup("Item Options", [
+        SpiritTracksProgressiveEquipment,
         SpiritTracksTrackGroupings,
+        SpiritTracksShields
+    ]),
+    OptionGroup("More Randomization", [
         SpiritTracksRandomizeMinigames,
         SpiritTracksMinigameHints,
         SpiritTracksStampItems,
         SpiritTracksStampItemPacks,
-        SpiritTracksRandomizePortals,
-        SpiritTracksPortalLocations,
         SpiritTracksRandomizePassengers,
+        SpiritTracksPassengerPickupRequirement,
         SpiritTracksRandomizeCargo,
-        SpiritTracksStartWithTrain,
+        SpiritTracksPortalLocations,
     ]),
     OptionGroup("ToS Options", [
         SpiritTracksToSSectionUnlocks,
         SpiritTracksToSBase,
-        SpiritTracksShuffleToSSections,
         SpiritTracksToSShortcuts,
         SpiritTracksRandomizeTears,
         SpiritTracksTearSize,
@@ -838,6 +1264,46 @@ st_option_groups = [
         SpiritTracksRabbitPackSize,
         SpiritTracksExtraRabbits,
         SpiritTracksRabbitHints
+    ]),
+    OptionGroup("World Options", [
+        SpiritTracksRandomizePortals,
+        SpiritTracksOpenBlueWarps,
+        SpiritTracksOpenBlizzardTemple,
+    ]),
+    OptionGroup("Starting Options", [
+       SpiritTracksRandomizeStart,
+        SpiritTracksFreeStartingItems,
+        SpiritTracksStartWithTrain,
+    ]),
+    OptionGroup("Entrance Randomizer Options", [
+        SpiritTracksShuffleHouses,
+        SpiritTracksShuffleCaves,
+        SpiritTracksShuffleTransitions,
+        SpiritTracksShuffleStations,
+        SpiritTracksShuffleTrainTransitions,
+        SpiritTracksShufflePortals,
+
+        SpiritTracksShuffleDungeonEntrances,
+        SpiritTracksShuffleToSSections,
+        SpiritTracksShuffleBosses,
+        SpiritTracksShuffleDungeonRooms,
+        SpiritTracksShuffleWarps,
+        SpiritTracksShuffleToSStaircase,
+
+        SpiritTracksShuffleHyruleCastle,
+        SpiritTracksShuffleDisorientationStation,
+        SpiritTracksShuffleEotE,
+        SpiritTracksShuffleLas,
+
+        SpiritTracksEntrancePlando,
+        SpiritTracksEntranceDirectionality,
+        SpiritTracksDecoupleEntrances,
+        SpiritTracksERRetries,
+    ]),
+    OptionGroup("QoL Options", [
+        SpiritTracksMapWarp,
+        SpiritTracksUTBlockedEntrances,
+        SpiritTracksExtraEvents
     ]),
     OptionGroup("Cosmetic Options", [
         SpiritTracksStartingTrain,

@@ -10,10 +10,11 @@ from .Data import starting_partners, stars, limit_pit, \
     pit_exclusive_tattle_stars_required, dazzle_counts, dazzle_location_names, chapter_keysanity_tags, \
     chapter_keys, limited_tags, limited_tag_items
 from .Enemy import Encounter, parse_json_encounters, randomize_encounters
+from .Boss import BossEncounter, parse_json_bosses, randomize_bosses
 from .Locations import all_locations, location_table, location_id_to_name, TTYDLocation, locationName_to_data, \
     get_locations_by_tags, get_vanilla_item_names, get_location_names, LocationData
 from .Options import Piecesanity, TTYDOptions, YoshiColor, StartingPartner, PitItems, LimitChapterEight, Goal, \
-    DazzleRewards, StarShuffle, EnemyRandomizer
+    DazzleRewards, StarShuffle, EnemyRandomizer, BossRandomizer
 from .Items import TTYDItem, itemList, item_table, ItemData, items_by_id
 from .Regions import create_regions, connect_regions, get_regions_dict, register_indirect_connections
 from .Rom import TTYDProcedurePatch, write_files
@@ -23,7 +24,7 @@ from worlds.LauncherComponents import Component, SuffixIdentifier, Type, compone
 
 def launch_client(*args):
     from .TTYDClient import launch
-    launch_subprocess(launch, name="TTYD Client", args=args)
+    launch_subprocess(launch, name="TTYDClient", args=args)
 
 
 components.append(
@@ -96,8 +97,11 @@ class TTYDWorld(World):
     limited_items: Dict[int, Dict[str, List[Item]]]
     limited_state: CollectionState = None
     locked_item_frequencies: Dict[str, int]
+    rom_fallback_locations: Dict[str, int]
+    unavailable_star_pieces: int
     in_pre_fill: bool
     encounters: list[Encounter] = None
+    bosses: list[BossEncounter] = None
     ut_can_gen_without_yaml = True
 
 
@@ -112,7 +116,10 @@ class TTYDWorld(World):
         self.limited_items = {chapter: {tag: list() for tag in limited_tags[chapter]} for chapter in range(1, 9)}
         self.limited_misc_locations = set()
         self.locked_item_frequencies = {}
+        self.rom_fallback_locations = {}
+        self.unavailable_star_pieces = 0
         self.encounters = parse_json_encounters()
+        self.bosses = parse_json_bosses()
         # implementing yaml-less UT support
         if hasattr(self.multiworld, "re_gen_passthrough"):
             if self.game in self.multiworld.re_gen_passthrough:
@@ -130,9 +137,13 @@ class TTYDWorld(World):
                 self.options.star_shuffle.value = slot_data["star_shuffle"]
                 self.options.disable_intermissions.value = slot_data["disable_intermissions"]
                 self.options.piecesanity.value = slot_data["piecesanity"]
+                self.options.cooksanity.value = slot_data["cooksanity"]
                 self.options.shinesanity.value = slot_data["shinesanity"]
                 self.options.blue_pipe_toggle.value = slot_data["blue_pipe_toggle"]
                 self.options.enemy_randomizer.value = slot_data["enemy_randomizer"]
+                self.options.boss_randomizer.value = slot_data["boss_randomizer"]
+                self.options.cooksanity.value = slot_data["cooksanity"]
+                self.options.troublesanity.value = slot_data["troublesanity"]
                 return
         if self.options.limit_chapter_eight and self.options.palace_skip:
             logging.warning(f"{self.player_name}'s has enabled both Palace Skip and Limit Chapter 8. "
@@ -146,6 +157,10 @@ class TTYDWorld(World):
             logging.warning(f"{self.player_name}'s has more palace stars required than goal stars. "
                             f"Reducing number of stars required to enter the palace of shadow for accessibility.")
             self.options.palace_stars.value = self.options.goal_stars.value
+        if self.options.goal == Goal.option_recipes and not self.options.cooksanity:
+            logging.warning(f"{self.player_name} has the recipes goal with Cooksanity disabled. "
+                            f"Enabling Cooksanity so the goal is completable.")
+            self.options.cooksanity.value = 1
         chapters = [i for i in range(1, 8)]
         if not self.options.required_stars_toggle:
             for i in range(self.options.goal_stars.value):
@@ -162,8 +177,36 @@ class TTYDWorld(World):
             self.limited_chapters += [chapter for chapter in chapters if chapter not in self.required_chapters]
         if self.options.limit_chapter_eight:
             self.limited_chapters += [8]
+        if self.limited_chapters:
+            limited_area_tags = set()
+            for chapter in self.limited_chapters:
+                limited_area_tags.add(f"chapter_{chapter}")
+                limited_area_tags.update(limited_tags[chapter])
+            all_piece_locations = get_locations_by_tags(["star_piece", "panel"])
+            limited_piece_locations = [location for location in all_piece_locations
+                                       if limited_area_tags & set(location.tags)]
+            for location in limited_piece_locations:
+                self.disabled_locations.add(location.name)
+                self.rom_fallback_locations[location.name] = location.vanilla_item
+            self.unavailable_star_pieces = len(limited_piece_locations)
+            self.locked_item_frequencies["Star Piece"] = (
+                self.locked_item_frequencies.get("Star Piece", 0) + self.unavailable_star_pieces)
+            available_pieces = len(all_piece_locations) - self.unavailable_star_pieces
+            for i, location_name in enumerate(dazzle_location_names):
+                if dazzle_counts[i] > available_pieces:
+                    self.disabled_locations.add(location_name)
+                    self.rom_fallback_locations[location_name] = locationName_to_data[location_name].vanilla_item
         if self.options.palace_skip:
             self.excluded_regions.update(["Palace of Shadow", "Palace of Shadow (Post-Riddle Tower)"])
+            self.disabled_locations.update([
+                "Boggly Woods Shadow Sirens Room: Doe T.'s Trouble Reward",
+                "Poshley Heights Station: Present",
+                "Poshley Heights Station: Bub's Trouble Reward",
+                "Fahr Outpost Town: Swob's Trouble Reward",
+            ])
+        if not self.options.cooksanity:
+            self.disabled_locations.update(
+                location.name for location in get_locations_by_tags("cooking"))
         if not self.options.tattlesanity:
             self.excluded_regions.update(["Tattlesanity"])
         if self.options.goal != Goal.option_shadow_queen:
@@ -174,21 +217,28 @@ class TTYDWorld(World):
             self.disabled_locations.update(["Tattle: Lord Crump"])
         if self.options.enemy_randomizer != EnemyRandomizer.option_vanilla:
             randomize_encounters(self)
+        if self.options.boss_randomizer != BossRandomizer.option_vanilla:
+            randomize_bosses(self)
         if self.options.tattlesanity:
             extra_disabled = [location.name for name, locations in get_regions_dict().items()
                               if name in self.excluded_regions for location in locations]
             rules_dict = (
                 get_random_enemy_tattle_rules_dict(self)
                 if self.options.enemy_randomizer != EnemyRandomizer.option_vanilla
+                or self.options.boss_randomizer != BossRandomizer.option_vanilla
                 else get_tattle_rules_dict()
             )
+            # With pit items vanilla/filler the pit is out of logic entirely, so a tattle
+            # whose every source requires entering the pit must not be a location at all.
+            pit_out_of_logic = self.options.pit_items != PitItems.option_all
             for location_name, locations in rules_dict.items():
                 if len(locations) == 0:
                     if "Palace of Shadow (Post-Riddle Tower)" in self.excluded_regions:
                         self.disabled_locations.update([location_name])
                 else:
                     if all([location_id_to_name[location] in self.disabled_locations or location_id_to_name[
-                        location] in extra_disabled for location in locations]):
+                        location] in extra_disabled or (pit_out_of_logic and location in limit_pit)
+                            for location in locations]):
                         self.disabled_locations.update([location_name])
 
     def create_regions(self) -> None:
@@ -228,30 +278,35 @@ class TTYDWorld(World):
             self.lock_vanilla_items_remove_from_pool(get_locations_by_tags("shine"))
         if not self.options.shopsanity:
             self.lock_vanilla_items_remove_from_pool(get_locations_by_tags("shop"))
+        if not self.options.troublesanity:
+            self.lock_vanilla_items_remove_from_pool(get_locations_by_tags("trouble"))
         if self.options.pit_items == PitItems.option_filler:
             self.lock_filler_items_remove_from_pool(get_locations_by_tags("pit_floor"))
         if self.options.dazzle_rewards == DazzleRewards.option_vanilla:
             self.lock_vanilla_items_remove_from_pool(get_locations_by_tags("dazzle"))
         elif self.options.dazzle_rewards == DazzleRewards.option_filler:
             self.lock_filler_items_remove_from_pool(get_locations_by_tags("dazzle"))
-        else:
-            for i, location in enumerate(dazzle_location_names):
-                if dazzle_counts[i] > 100 - self.locked_item_frequencies.get("Star Piece", 0):
-                    self.lock_item(location, self.get_filler_item_name())
-        for chapter in self.limited_chapters:
-            self.lock_vanilla_items_remove_from_pool(
-                [location for location in get_locations_by_tags(f"chapter_{chapter}")
-                 if items_by_id[location.vanilla_item].item_name == "Star Piece" and self.get_location(
-                    location.name).item is None])
+        if self.options.pit_items != PitItems.option_all:
+            # These troubles require pit dives to complete (Pine T. is rescued on floor 18,
+            # Swob's rule needs floor 50), so with the pit out of logic they carry filler.
+            for location_name in ("Rogueport Sewers Pit Entrance: Pine T. Jr's Trouble Reward",
+                                  "Fahr Outpost Town: Swob's Trouble Reward"):
+                if location_name in self.disabled_locations:
+                    continue
+                location = self.get_location(location_name)
+                if location.item is None:
+                    self.limited_misc_locations.add(location)
         for chapter in self.limited_chapters:
             for tag in limited_tags[chapter]:
-                locations = [self.get_location(location.name) for location in get_locations_by_tags(tag)
-                             if location.name not in self.disabled_locations]
+                location_data = [location for location in get_locations_by_tags(tag)
+                                 if location.name not in self.disabled_locations]
+                misc = [self.get_location(location.name) for location in location_data
+                        if "trouble" in location.tags or "cooking" in location.tags]
+                self.limited_misc_locations.update(loc for loc in misc if loc.item is None)
+                locations = [self.get_location(location.name) for location in location_data
+                             if "trouble" not in location.tags and "cooking" not in location.tags]
                 locations = [location for location in locations if location.item is None]
                 self.limited_chapter_locations[chapter][tag].update(locations)
-        if 3 in self.limited_chapters and self.options.limit_chapter_logic:
-            if self.get_location("Rogueport Blimp Room: Star Piece 1").item is None:
-                self.lock_item_remove_from_pool("Rogueport Blimp Room: Star Piece 1", self.get_filler_item_name())
         if 5 in self.limited_chapters and self.options.limit_chapter_logic:
             self.lock_item_remove_from_pool("Rogueport Westside: Train Ticket", self.get_filler_item_name())
         if not self.options.keysanity:
@@ -260,7 +315,8 @@ class TTYDWorld(World):
                     continue
                 tags = [chapter_keysanity_tags[i]] + (["riddle_tower"] if i == 8 else [])
                 locations = [self.get_location(location.name) for location in get_locations_by_tags(tags) if
-                             location.name not in self.disabled_locations]
+                             location.name not in self.disabled_locations
+                             and "trouble" not in location.tags and "cooking" not in location.tags]
                 locations = [location for location in locations if location.item is None]
                 self.limited_chapter_locations[i][chapter_keysanity_tags[i]].update(locations)
         if self.options.tattlesanity:
@@ -289,6 +345,7 @@ class TTYDWorld(World):
         rules_dict = (
             get_random_enemy_tattle_rules_dict(self)
             if self.options.enemy_randomizer != EnemyRandomizer.option_vanilla
+            or self.options.boss_randomizer != BossRandomizer.option_vanilla
             else base_rules
         )
 
@@ -322,6 +379,25 @@ class TTYDWorld(World):
                 if all(loc_id in all_limited_locations for loc_id in enabled_locations):
                     self.limited_misc_locations.add(self.get_location(location_name))
 
+    single_progression_copy_consumables = frozenset({
+        "Coconut", "Courage Shell", "Dried Bouquet", "Fire Flower", "Honey Syrup",
+        "Hot Sauce", "Ice Storm", "Jammin' Jelly", "Life Shroom", "Maple Syrup",
+        "Mushroom", "Point Swap", "Ruin Powder", "Shooting Star", "Slow Shroom",
+        "Super Shroom", "Tasty Tonic", "Turtley Leaf", "Ultra Shroom", "Volt Shroom",
+        "Whacka Bump",
+    })
+
+    cooking_only_progression = frozenset({
+        # dishes
+        "Coconut Bomb", "Egg Bomb", "Inky Sauce", "Mango Delight", "Poison Shroom",
+        "Shroom Fry", "Spicy Soup", "Zess Dinner",
+        # ingredients referenced by no non-cooking rule
+        "Courage Shell", "Dried Bouquet", "Fire Flower", "Honey Syrup", "Hot Sauce",
+        "Ice Storm", "Jammin' Jelly", "Maple Syrup", "Mushroom", "Point Swap",
+        "Ruin Powder", "Shooting Star", "Slow Shroom", "Super Shroom", "Tasty Tonic",
+        "Turtley Leaf", "Ultra Shroom", "Volt Shroom", "Whacka Bump",
+    })
+
     def create_items(self) -> None:
         required_items = []
         useful_items = []
@@ -333,8 +409,16 @@ class TTYDWorld(World):
         item_names = [item.item_name for item in itemList for _ in
                       range(max(item.frequency - self.locked_item_frequencies.get(item.item_name, 0), 0))]
 
+        single_progression_seen = set()
         for item_name in item_names:
             item = self.create_item(item_name)
+            if not self.options.cooksanity and item_name in self.cooking_only_progression:
+                item.classification = ItemClassification.filler
+            elif item_name in self.single_progression_copy_consumables:
+                if item_name in single_progression_seen:
+                    item.classification = ItemClassification.filler
+                else:
+                    single_progression_seen.add(item_name)
             if item_name in precollected_item_names:
                 precollected_item_names.remove(item_name)
                 continue
@@ -418,14 +502,31 @@ class TTYDWorld(World):
         self.in_pre_fill = False
         fast_fill(self.multiworld, self.limited_misc_items, list(self.limited_misc_locations))
 
+    def fill_hook(self, progitempool: List[Item], usefulitempool: List[Item],
+                  filleritempool: List[Item], fill_locations: List[Location]) -> None:
+        progitempool.sort(key=lambda item: 1 if item.player == self.player and item.name == "Star Piece" else 0)
+
     def set_rules(self) -> None:
         set_rules(self)
         set_tattle_rules(self)
         if self.options.goal == Goal.option_shadow_queen:
             self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
         elif self.options.goal == Goal.option_crystal_stars:
-            self.multiworld.completion_condition[self.player] = lambda state: state.has("required_stars", self.player,
-                                                                                        self.options.goal_stars.value)
+            self.multiworld.completion_condition[self.player] = lambda state: state.has("required_stars", self.player, self.options.goal_stars.value)
+        elif self.options.goal == Goal.option_recipes:
+            cook_location_names = [location.name for location in get_locations_by_tags("cooking")]
+
+            def recipes_reachable(state, names=cook_location_names,
+                                  needed=self.options.goal_recipes_range.value, player=self.player):
+                count = 0
+                for name in names:
+                    if state.can_reach(name, "Location", player):
+                        count += 1
+                        if count >= needed:
+                            return True
+                return False
+
+            self.multiworld.completion_condition[self.player] = recipes_reachable
         else:
             self.multiworld.completion_condition[self.player] = lambda state: state.can_reach(
                 "Pit of 100 Trials Floor 100: Return Postage", "Location", self.player)
@@ -434,6 +535,7 @@ class TTYDWorld(World):
         return {
             "goal": self.options.goal.value,
             "goal_stars": self.options.goal_stars.value,
+            "goal_recipes_range": self.options.goal_recipes_range.value,
             "palace_stars": self.options.palace_stars.value,
             "pit_items": self.options.pit_items.value,
             "limit_chapter_logic": self.options.limit_chapter_logic.value,
@@ -448,19 +550,25 @@ class TTYDWorld(World):
             "cutscene_skip": self.options.cutscene_skip.value,
             "death_link": self.options.death_link.value,
             "piecesanity": self.options.piecesanity.value,
+            "cooksanity": self.options.cooksanity.value,
             "shinesanity": self.options.shinesanity.value,
             "blue_pipe_toggle": self.options.blue_pipe_toggle.value,
             "enemy_randomizer": self.options.enemy_randomizer.value,
+            "boss_randomizer": self.options.boss_randomizer.value,
             "tattle_rules": get_random_enemy_tattle_rules_dict(self)
             if self.options.enemy_randomizer != EnemyRandomizer.option_vanilla
+            or self.options.boss_randomizer != BossRandomizer.option_vanilla
             else get_tattle_rules_dict(),
             "multiplayer": self.options.multiplayer.value,
             "remote_items": self.options.remote_items.value,
+            "troublesanity": self.options.troublesanity.value,
         }
 
     def create_item(self, name: str) -> TTYDItem:
         item = item_table.get(name, ItemData(None, name, "progression"))
-        progression = (ItemClassification.useful if (item.item_name == "Goombella" and not self.options.tattlesanity) else item.progression)
+        # Goombella used to be downgraded to useful without tattlesanity, but the
+        # Goom Goom trouble rule requires her unconditionally now.
+        progression = item.progression
         return TTYDItem(item.item_name, progression, item.id, self.player)
 
     def lock_item(self, location: str, item_name: str):

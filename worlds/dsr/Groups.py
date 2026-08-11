@@ -56,7 +56,6 @@ progression_items = [
     "Lordvessel",
     "Peculiar Doll",
     "Residence Key",
-    "Sewer Chamber Key",
     "Skull Lantern",
     "Undead Asylum F2 East Key",
     "Undead Asylum F2 West Key",
@@ -243,7 +242,12 @@ for group in list(location_name_groups.keys()):
         if location_dictionary[location].category in location_skip_categories:
             location_name_groups[group].remove(location)
 
-# # Print loc groups and how many elements they have
+# Finally, remove any empty groups (e.g. Firelink Altar
+for group in list(location_name_groups.keys()):
+    if len(list(location_name_groups[group])) == 0:
+        location_name_groups.pop(group)
+
+# Print loc groups and how many elements they have
 # for group in location_name_groups.keys():
 #     print (f'Location Group {group} has {len(location_name_groups[group])} elements')
 # # Print item groups and how many elements they have

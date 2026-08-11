@@ -151,8 +151,8 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
   "Northern Undead Asylum Second Visit - Behind F2 West Door": [
     DsrEntranceRule("Northern Undead Asylum Second Visit - F2 West Door", True_()),
   ],
-  "Northern Undead Asylum Second Visit - Snuggly Trades": [ # none yet
-  ],
+  # "Northern Undead Asylum Second Visit - Snuggly Trades": [ # none yet
+  # ],
   "Undead Burg Basement Door": [
     DsrEntranceRule("Upper Undead Burg - Hellkite Bridge", Has("Basement Key")),
     # DsrEntranceRule("Lower Undead Burg", Has("Basement Key")),
@@ -179,9 +179,9 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
   "Depths": [
     DsrEntranceRule("Lower Undead Burg", Has("Key to Depths")),
   ],
-  "Depths - After Sewer Chamber Key": [
-    DsrEntranceRule("Depths", Has("Sewer Chamber Key")), # temporarily ignored - no checks here
-  ],
+  # "Depths - After Sewer Chamber Key": [
+  #   DsrEntranceRule("Depths", Has("Sewer Chamber Key")), # temporarily ignored - no checks here
+  # ],
   "Depths - Gaping Dragon": [
     DsrEntranceRule("Depths", Has("Boss Fog Wall Key - Gaping Dragon") | bossfogwall_sanity_off),
   ],
@@ -378,10 +378,10 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
     DsrEntranceRule("The Duke's Archives", Has("Boss Fog Wall Key - Seath First Encounter") | bossfogwall_sanity_off),
   ],
   "The Duke's Archives - After Archive Tower Cell Key": [
-    DsrEntranceRule("The Duke's Archives", Has("Archive Tower Cell Key")),
+    DsrEntranceRule("The Duke's Archives - After First Seath Encounter", Has("Archive Tower Cell Key")),
   ],
   "The Duke's Archives - After Archive Prison Extra Key": [
-    DsrEntranceRule("The Duke's Archives", Has("Archive Prison Extra Key")),
+    DsrEntranceRule("The Duke's Archives - After First Seath Encounter", Has("Archive Prison Extra Key")),
   ],
   "The Duke's Archives - Out of Cell": [
     DsrEntranceRule("The Duke's Archives - After Archive Prison Extra Key", True_()),

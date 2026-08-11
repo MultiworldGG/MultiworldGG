@@ -1,0 +1,242 @@
+[
+  {
+    "name": "btlgrp_aji_aji_mbmkII",
+    "rel": "aji",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x79"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_gon_gon_11_01_off_1",
+    "rel": "gon",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x17"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_gor_gor_00_01_off_1",
+    "rel": "gor",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x06"
+    ],
+    "boss_type": "mini"
+  },
+  {
+    "name": "btlgrp_gor_gor_02_01_off_1",
+    "rel": "gor",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x07"
+    ],
+    "boss_type": "mini"
+  },
+  {
+    "name": "btlgrp_hei_hei_10_01_off_1",
+    "rel": "hei",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x14"
+    ],
+    "boss_type": "mini"
+  },
+  {
+    "name": "btlgrp_jin_jin_00_atmic_teresa",
+    "rel": "jin",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x4C"
+    ],
+    "boss_type": "mini"
+  },
+  {
+    "name": "btlgrp_jin_jin_01_faker_mario",
+    "rel": "jin",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x4F"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_jin_jin_04_ramper",
+    "rel": "jin",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x4D"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_jon_jon_100_01_off_1",
+    "rel": "jon",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0xAB"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_las_las_09_rampell",
+    "rel": "las",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x87"
+    ],
+    "boss_type": "mini"
+  },
+  {
+    "name": "btlgrp_las_las_bunbaba",
+    "rel": "las",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x84"
+    ],
+    "boss_type": "mini"
+  },
+  {
+    "name": "btlgrp_las_las_28_koopa",
+    "rel": "las",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x90"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_las_las_28_batten_leader",
+    "rel": "las",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x92"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_las_las_29_black_peach_1",
+    "rel": "las",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x94"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_las_las_29_black_peach_2",
+    "rel": "las",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x95"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_mri_mri_mb",
+    "rel": "mri",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x22"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_muj_muj_kanbu",
+    "rel": "muj",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x63"
+    ],
+    "boss_type": "mini"
+  },
+  {
+    "name": "btlgrp_muj_muj_cortez",
+    "rel": "muj",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x5D"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_rsh_rsh_06_01_off_1",
+    "rel": "rsh",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x6B"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_tik_tik_gesso",
+    "rel": "tik",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x08"
+    ],
+    "boss_type": "mini"
+  },
+  {
+    "name": "btlgrp_tou_tou_boss",
+    "rel": "tou",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x41"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_tou_tou_champ",
+    "rel": "tou",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x40"
+    ],
+    "boss_type": "chapter"
+  },
+  {
+    "name": "btlgrp_tou_tou_koopa",
+    "rel": "tou",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x3F"
+    ],
+    "boss_type": "mini"
+  },
+  {
+    "name": "btlgrp_win_win_00_04_off_1",
+    "rel": "win",
+    "location_id": null,
+    "enemy_count": 1,
+    "enemy_ids": [
+      "0x21"
+    ],
+    "boss_type": "mini"
+  }
+]

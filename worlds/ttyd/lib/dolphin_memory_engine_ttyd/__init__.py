@@ -1,3 +1,9 @@
+import os as _os
+import sys as _sys
+
+if _sys.platform == "win32" and hasattr(_os, "add_dll_directory"):
+    _os.add_dll_directory(_os.path.dirname(__file__))
+
 from ._dolphin_memory_engine import (
     MemWatch,
     assert_hooked,

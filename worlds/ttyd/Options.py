@@ -9,11 +9,13 @@ class Goal(Choice):
     shadow_queen: Defeat the Shadow Queen.
     crystal_stars: Collect a specified amount of Crystal Stars.
     bonetail: Defeat Bonetail.
+    recipes: Cook a specified amount of Zess T.'s recipes (requires Cooksanity).
     """
     display_name = "Goal"
     option_shadow_queen = 1
     option_crystal_stars = 2
     option_bonetail = 3
+    option_recipes = 4
     default = 1
 
 
@@ -26,6 +28,16 @@ class GoalStars(Range):
     range_start = 1
     range_end = 7
     default = 7
+
+
+class GoalRecipesRange(Range):
+    """
+    This determines how many recipes must be cooked to goal with the recipes goal selected.
+    """
+    display_name = "Goal Recipes"
+    range_start = 12
+    range_end = 57
+    default = 30
 
 
 class PalaceStars(Range):
@@ -105,6 +117,15 @@ class TattleSanityOption(Toggle):
     display_name = "Tattlesanity"
 
 
+class Cooksanity(Toggle):
+    """
+    Zess T.'s 57 recipes become locations: cooking a recipe from the unlocked-ingredient menu awards its check.
+    Her vanilla inventory cooking stays available.
+    Disabling this removes the recipe locations and Zess T. cooks fully vanilla.
+    """
+    display_name = "Cooksanity"
+
+
 class Piecesanity(Choice):
     """
     Determines if Star Piece locations will be randomized.
@@ -156,6 +177,14 @@ class Keysanity(DefaultOnToggle):
     Disabling this will place the keys in their own chapters dungeon.
     """
     display_name = "Keysanity"
+
+
+class Troublesanity(Toggle):
+    """
+    The trouble center will have their items randomized.
+    Disabling this will keep the trouble center items in their original locations.
+    """
+    display_name = "Troublesanity"
 
 
 class DazzleRewards(Choice):
@@ -227,6 +256,14 @@ class CutsceneSkip(Toggle):
     display_name = "Skip Cutscenes"
 
 
+class EpilogueSkip(Toggle):
+    """
+    After the final boss, warp straight to the credits instead of
+    playing the Rogueport epilogue.
+    """
+    display_name = "Skip Epilogue"
+
+
 class OpenWestside(Toggle):
     """
     Rogueport Westside is open from the start.
@@ -289,8 +326,9 @@ class EncounterShuffleType(Choice):
 
 class EnemyStatScaling(Toggle):
     """
-    Enemies will have their stats scaled based on the chapter they appear in.
-    This option is independent of the Enemy Randomizer option, and will scale enemies even if they are not randomized.
+    With Enemy Randomizer on, randomized enemies replicate the vanilla HP, Defense and Attack
+    of the enemy that originally occupied that fight.
+    Encounters left unrandomized are instead scaled to the chapter they appear in.
     """
     display_name = "Enemy Stat Scaling"
 
@@ -303,6 +341,47 @@ class ShuffleChapterStats(Toggle):
     Chapter 2 enemies could have scaled stats based on chapter 3, etc.
     """
     display_name = "Shuffle Chapter Stats"
+
+
+class BossRandomizer(Choice):
+    """
+    Shuffles bosses amongst each other.
+    vanilla: Bosses will be the same as the original game.
+    chapter_bosses: Only end-of-chapter bosses will be shuffled amongst each other.
+    mini_bosses: Only mini-bosses will be shuffled amongst each other.
+    full: All bosses and mini-bosses will be shuffled together.
+    """
+    display_name = "Boss Randomizer"
+    option_vanilla = 0
+    option_chapter_bosses = 1
+    option_mini_bosses = 2
+    option_full = 3
+    default = 0
+
+
+class BossStatScaling(DefaultOnToggle):
+    """
+    Scales randomized bosses to replicate the exact HP and level of the boss that originally occupied that fight.
+    This is independent of Enemy Stat Scaling and only affects bosses; when disabled, bosses are never scaled.
+    """
+    display_name = "Boss Stat Scaling"
+
+
+class BossScalingNerfs(DefaultOnToggle):
+    """
+    With this enabled, some bosses will be nerfed with Boss Stat Scaling enabled for balancing.
+    Currently: Cortez's HP scales to a third of the replaced boss's HP, so his three phases
+    add up to the fight's intended total.
+    Has no effect unless Boss Stat Scaling is enabled.
+    """
+    display_name = "Boss Scaling Nerfs"
+
+
+class NormalMoonSpeed(Toggle):
+    """
+    Mario's walking speed on the moon will be the same as his normal walking speed.
+    """
+    display_name = "Normal Moon Speed"
 
 
 class PermanentPeekaboo(Toggle):
@@ -534,22 +613,24 @@ class RemoteItems(Toggle):
 @dataclass
 class TTYDOptions(PerGameCommonOptions):
     death_link: DeathLink
-    start_inventory_from_pool: StartInventoryPool
     console_mode: ConsoleMode
     multiplayer: MultiplayerToggle
     remote_items: RemoteItems
     goal: Goal
     goal_stars: GoalStars
+    goal_recipes_range: GoalRecipesRange
     palace_stars: PalaceStars
     required_stars_toggle: RequiredStarsToggle
     required_stars: RequiredStars
     star_shuffle: StarShuffle
     tattlesanity: TattleSanityOption
     piecesanity: Piecesanity
+    cooksanity: Cooksanity
     shopsanity: Shopsanity
     shop_purchase_limit: ShopPurchaseLimit
     shinesanity: Shinesanity
     keysanity: Keysanity
+    troublesanity: Troublesanity
     dazzle_rewards: DazzleRewards
     pit_items: PitItems
     limit_chapter_logic: LimitChapterLogic
@@ -557,6 +638,7 @@ class TTYDOptions(PerGameCommonOptions):
     blue_pipe_toggle: BluePipeToggle
     palace_skip: PalaceSkip
     cutscene_skip: CutsceneSkip
+    epilogue_skip: EpilogueSkip
     disable_intermissions: DisableIntermissions
     fast_travel: FastTravel
     succeed_conditions: AlwaysSucceedConditions
@@ -567,6 +649,10 @@ class TTYDOptions(PerGameCommonOptions):
     encounter_shuffle_type: EncounterShuffleType
     enemy_stat_scaling: EnemyStatScaling
     shuffle_chapter_stats: ShuffleChapterStats
+    boss_randomizer: BossRandomizer
+    boss_stat_scaling: BossStatScaling
+    boss_scaling_nerfs: BossScalingNerfs
+    moon_speed: NormalMoonSpeed
     permanent_peekaboo: PermanentPeekaboo
     full_run_bar: FullRunBar
     first_attack: ZeroBPFirstAttack

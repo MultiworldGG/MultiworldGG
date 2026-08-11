@@ -10,10 +10,10 @@ class SpawnItems(NamedTuple):
 
 
 spawn_data: dict[str, SpawnItems] = {
-    "MarshSpawn": SpawnItems(0, 0, 0, False, 2, 4),
-    "HowlsDen": SpawnItems(0, 0, 0, False, 2, 4),
-    "MarshPastOpher": SpawnItems(0, 0, 0, False, 0, 3),
-    "MidnightBurrows": SpawnItems(0, 0, 0, False, 0, 3),
+    "MarshSpawn": SpawnItems(0, 0, 0, False, 2, 5),
+    "HowlsDen": SpawnItems(0, 0, 0, False, 2, 5),
+    "MarshPastOpher": SpawnItems(0, 0, 0, False, 0, 4),
+    "MidnightBurrows": SpawnItems(0, 0, 0, False, 0, 4),
     "WestHollow": SpawnItems(0, 0, 0, False, 0, 4),
     "EastHollow": SpawnItems(0, 0, 0, False, 0, 4),
     "GladesTown": SpawnItems(0, 0, 0, False, 0, 4),
@@ -32,7 +32,7 @@ spawn_data: dict[str, SpawnItems] = {
     "WestPools": SpawnItems(1, 0, 0, True, 0, 5),
     "LowerWastes": SpawnItems(5, 1, 1, True, 4, 7),
     "UpperWastes": SpawnItems(5, 1, 1, True, 2, 5),
-    "WindtornRuins": SpawnItems(0, 0, 0, False, 0, 7),
+    "WindtornRuins": SpawnItems(5, 1, 1, True, 2, 7),  # Copied from Wastes, since you usually end up there after escape
     "WeepingRidge": SpawnItems(7, 3, 3, True, 0, 6),
     "WillowsEnd": SpawnItems(7, 3, 3, True, 0, 7),
 }

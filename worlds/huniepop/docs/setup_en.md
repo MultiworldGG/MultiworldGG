@@ -3,7 +3,7 @@
 ## Required Software
 * HuniePop
 * [Visual C++ Redistributable x86](Microsoft Visual C++ Redistributable x86) (v14.42.34433.0+)
-* [HuniePop AP Plugin](https://github.com/DotsofdarknessArchipelago/HuniePop-Archiepelago-Client/releases)
+* [HuniePop AP Plugin](https://github.com/DotsofdarknessArchipelago/HuniePopArchipelago/releases/)
 
 ## How to join a Multiworld Room
 * Extract and copy the contents of "Hunie Pop Archipelago plugin.zip" to the directory where "HuniePop.exe" is if it asks you to overwrite files click yes
