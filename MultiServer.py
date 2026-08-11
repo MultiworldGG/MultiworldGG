@@ -34,12 +34,6 @@ if typing.TYPE_CHECKING:
 import colorama
 import websockets
 from websockets.extensions.permessage_deflate import PerMessageDeflate, ServerPerMessageDeflateFactory
-try:
-    # ponyorm is a requirement for webhost, not default server, so may not be importable
-    from pony.orm.dbapiprovider import OperationalError
-except ImportError:
-    OperationalError = ConnectionError
-
 import NetUtils
 import Utils
 from Utils import version_tuple, restricted_loads, Version, async_start, get_intended_text
@@ -635,31 +629,36 @@ class Context:
                 self.logger.exception(e)
             self._start_async_saving()
 
-    def _start_async_saving(self, atexit_save: bool = True):
-        if not self.auto_saver_thread:
-            def save_regularly():
-                # time.time() is platform dependent, so using the expensive datetime method instead
-                def get_datetime_second():
-                    now = datetime.datetime.now()
-                    return now.second + now.microsecond * 0.000001
+    def _save_regularly(self, atexit_save: bool) -> None:
+        # time.time() is platform dependent, so using the expensive datetime method instead
+        def get_datetime_second() -> float:
+            now = datetime.datetime.now()
+            return now.second + now.microsecond * 0.000001
 
-                second = get_saving_second(self.seed_name, self.auto_save_interval)
-                while not self.exit_event.is_set():
-                    try:
-                        next_wakeup = (second - get_datetime_second()) % self.auto_save_interval
-                        time.sleep(max(1.0, next_wakeup))
-                        if self.save_dirty:
-                            self.logger.debug("Saving via thread.")
-                            self._save()
-                    except OperationalError as e:
-                        self.logger.exception(e)
+        second = get_saving_second(self.seed_name, self.auto_save_interval)
+        while not self.exit_event.is_set():
+            next_wakeup = (second - get_datetime_second()) % self.auto_save_interval
+            time.sleep(max(1.0, next_wakeup))
+            if self.save_dirty:
+                self.logger.debug("Saving via thread.")
+                # Clear this before saving so activity during the save leaves the context dirty.
+                self.save_dirty = False
+                try:
+                    if not self._save():
+                        self.save_dirty = True
                         self.logger.info(f"Saving failed. Retry in {self.auto_save_interval} seconds.")
-                    else:
-                        self.save_dirty = False
-                if not atexit_save:  # if atexit is used, that keeps a reference anyway
-                    queue_gc()
+                except Exception as e:
+                    # A failed save must not terminate the autosaver or discard pending progress.
+                    self.save_dirty = True
+                    self.logger.exception(e)
+                    self.logger.info(f"Saving failed. Retry in {self.auto_save_interval} seconds.")
+        if not atexit_save:  # if atexit is used, that keeps a reference anyway
+            queue_gc()
 
-            self.auto_saver_thread = threading.Thread(target=save_regularly, daemon=True)
+    def _start_async_saving(self, atexit_save: bool = True) -> None:
+        if not self.auto_saver_thread:
+            self.auto_saver_thread = threading.Thread(
+                target=self._save_regularly, args=(atexit_save,), daemon=True)
             self.auto_saver_thread.start()
 
             if atexit_save:
