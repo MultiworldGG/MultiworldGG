@@ -2,6 +2,7 @@ import asyncio
 import logging
 import traceback
 from collections.abc import Callable
+
 from CommonClient import CommonContext, get_base_parser, server_loop, ClientCommandProcessor, handle_url_arg
 import os
 import sys
@@ -16,7 +17,7 @@ from . import TrackerWorld, UTMapTabData, CurrentTrackerState, UT_VERSION
 from .TrackerCore import TrackerCore
 from collections import Counter, defaultdict
 from MultiServer import mark_raw
-from NetUtils import NetworkItem, JSONMessagePart
+from NetUtils import NetworkItem, JSONMessagePart, HintStatus
 
 try:
     from Utils import gui_enabled
@@ -1199,16 +1200,35 @@ class TrackerGameContext(CommonContext):
             base_title = f"Tracker {UT_VERSION}{' Addons ' if UT_ADDONS_VERSION else ' '}{UT_ADDONS_VERSION if UT_ADDONS_VERSION else '' } for {apname} version"  # core appends ap version so this works
 
             def build(self):
+                def check_logic(data) -> tuple[bool, bool]:
+                    ctx = ui.get_running_app().ctx
+                    found = data["status"]["hint"]["status"] == HintStatus.HINT_FOUND
+                    in_logic = data["status"]["hint"]["location"] in ctx.tracker_core.locations_available
+                    return found, in_logic
+
+                def get_logic_string(found: bool, in_logic: bool) -> str:
+                    return "Found" if found else "In Logic" if in_logic else "Not Found"
+
+                def sort_hint_by_logic(data: dict) -> int:
+                    found, in_logic = check_logic(data)
+                    if found:
+                        return 2
+                    if in_logic:
+                        return 0
+                    return 1
+
                 class TrackerHintLabel(HintLabel):
                     logic_text = StringProperty("")
 
                     def __init__(self, *args, **kwargs):
                         super().__init__(*args, **kwargs)
                         logic = TooltipLabel(
-                            sort_key="finding",  # is lying to computer and player but fixing it will need core changes
+                            sort_key="in_logic",
                             text="", halign='center', valign='center', pos_hint={"center_y": 0.5},
                             )
                         self.add_widget(logic)
+                        from kivy.weakproxy import WeakProxy
+                        self.ids["in_logic"] = WeakProxy(logic)
 
                         def set_text(_, value):
                             logic.text = value
@@ -1220,23 +1240,12 @@ class TrackerGameContext(CommonContext):
                             self.logic_text = "[u]In Logic[/u]"
                             return
                         ctx = ui.get_running_app().ctx
-                        if "status" in data:
-                            loc = data["status"]["hint"]["location"]
-                            from NetUtils import HintStatus
-                            found = data["status"]["hint"]["status"] == HintStatus.HINT_FOUND
-                        else:
-                            prefix = len("[color=00FF7F]")
-                            suffix = len("[/color]")
-                            loc_name = data["location"]["text"][prefix:-1*suffix]
-                            loc = AutoWorld.AutoWorldRegister.world_types[ctx.game].location_name_to_id.get(loc_name)
-                            found = "Not Found" not in data["found"]["text"]
+                        found, in_logic = check_logic(data)
 
-                        in_logic = loc in ctx.tracker_core.locations_available
                         self.logic_text = rv.parser.handle_node({
-                            "type": "color", "color": "green" if found else
-                            "orange" if in_logic else "red",
-                            "text": "Found" if found else "In Logic" if in_logic
-                            else "Not Found"})
+                            "type": "color",
+                            "color": "green" if found else "orange" if in_logic else "red",
+                            "text": get_logic_string(found, in_logic)})
 
                 def kv_post(self, base_widget):
                     self.viewclass = TrackerHintLabel
@@ -1244,6 +1253,17 @@ class TrackerGameContext(CommonContext):
 
                 container = super().build()
                 self.ctx.build_gui(self)
+
+                from kvui import ColumnSorter, ColumnFilter
+                self.hint_log.column_sorters.append(ColumnSorter(
+                    "in_logic",
+                    sort_hint_by_logic,
+                    False
+                ))
+                hint_filt = ColumnFilter("in_logic",
+                                         lambda element: get_logic_string(*check_logic(element)))
+                hint_filt.option_list = {"Found", "In Logic", "Not Found"}
+                self.hint_log.column_filters.append(hint_filt)
 
                 return container
 
