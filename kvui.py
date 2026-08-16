@@ -478,7 +478,57 @@ class MarkupDropdownTextItem(MDDropdownTextItem):
     # Create new TextItems as needed
 
 
-class MarkupDropdown(MDDropdownMenu):
+class FixedMDDropdownMenu(MDDropdownMenu):
+    def check_ver_growth(self) -> None:
+        """
+        Checks whether the height of the lower/upper borders of the menu
+        exceeds the limits borders of the parent window.
+        """
+        # The MDDropdownMenu version handles the case of both up and down being bad poorly.
+
+        bad_down = self.target_height > self._start_coords[1] - self.border_margin
+        bad_up = self._start_coords[1] > Window.height - self._start_coords[1]
+        if bad_down and bad_up:
+            self.ver_growth = None  # try to stay centered if both ends are bad
+        elif bad_down:
+            self.ver_growth = "up"
+        elif bad_up:
+            self.ver_growth = "down"
+
+    def check_hor_growth(self) -> None:
+        """
+        Checks whether the width of the left/right menu borders exceeds the
+        boundaries of the parent window.
+        """
+        # The MDDropdownMenu version handles the case of both left and right being bad poorly.
+
+        bad_right = Window.width - (self._start_coords[0] + self.border_margin) <= self.width
+        bad_left = self.width >= self._start_coords[0] + self.border_margin
+        if bad_right and bad_left:
+            self.hor_growth = None  # try to stay centered if both ends are bad
+        elif bad_right:
+            self.hor_growth = "left"
+        elif bad_left:
+            self.hor_growth = "right"
+
+    def get_target_pos(self) -> tuple[float, float]:
+        # The MDDropdownMenu version doesn't handle a centered axis properly (it treats centered as down/right instead)
+        self._tar_x, self._tar_y = self._start_coords
+
+        if self.ver_growth == "up":
+            self._tar_y = self._start_coords[1] + self.height
+        elif not self.ver_growth:
+            self._tar_y = self._start_coords[1] + self.height / 2
+
+        if self.hor_growth == "left":
+            self._tar_x = self._start_coords[0] - self.width
+        elif not self.hor_growth:
+            self._tar_x = self._start_coords[0] - self.width / 2
+
+        return self._tar_x, self._tar_y
+
+
+class MarkupDropdown(FixedMDDropdownMenu):
     def on_items(self, instance, value: list) -> None:
         """
         The method sets the class that will be used to create the menu item.
@@ -553,16 +603,19 @@ class MarkupDropdown(MDDropdownMenu):
 
 class AutocompleteHintInput(ResizableTextField):
     min_chars = NumericProperty(3)
+    show_groups = BooleanProperty(False)
+    show_locations = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.dropdown = MarkupDropdown(caller=self, position="bottom", border_margin=dp(2), width=self.width)
+        self.dropdown = MarkupDropdown(caller=self, border_margin=dp(2), width=self.width)
         self.bind(on_text_validate=self.on_message)
         self.bind(width=lambda instance, x: setattr(self.dropdown, "width", x))
 
     def on_message(self, instance):
-        MDApp.get_running_app().commandprocessor("!hint "+instance.text)
+        pref = "!hint_location " if self.show_locations else "!hint "
+        MDApp.get_running_app().commandprocessor(pref + instance.text)
 
     def on_text(self, instance, value):
         if len(value) >= self.min_chars:
@@ -570,30 +623,46 @@ class AutocompleteHintInput(ResizableTextField):
             ctx: context_type = MDApp.get_running_app().ctx
             if not ctx.game:
                 return
-            item_names = ctx.item_names._game_store[ctx.game].values()
+            if self.show_groups:
+                lookup = (Utils.persistent_load()
+                          .get("groups_by_checksum", {})
+                          .get(ctx.checksums[ctx.game], {})
+                          .get(ctx.game, {}))
+                if self.show_locations:
+                    autofill_names = lookup.get("location_name_groups", {}).keys()
+                else:
+                    autofill_names = lookup.get("item_name_groups", {}).keys()
+            else:
+                if self.show_locations:
+                    # noinspection PyProtectedMember
+                    autofill_names = ctx.location_names._game_store[ctx.game].values()
+                else:
+                    # noinspection PyProtectedMember
+                    autofill_names = ctx.item_names._game_store[ctx.game].values()
 
-            def on_press(text):
-                split_text = MarkupLabel(text=text).markup
+            def on_press(txt):
+                split_text = MarkupLabel(text=txt).markup
                 self.set_text(self, "".join(text_frag for text_frag in split_text
                                             if not text_frag.startswith("[")))
                 self.dropdown.dismiss()
                 self.focus = True
 
             lowered = value.lower()
-            for item_name in item_names:
+            for name in autofill_names:
                 try:
-                    index = item_name.lower().index(lowered)
+                    index = name.lower().index(lowered)
                 except ValueError:
                     pass  # substring not found
                 else:
-                    text = escape_markup(item_name)
+                    text = escape_markup(name)
                     text = text[:index] + "[b]" + text[index:index+len(value)]+"[/b]"+text[index+len(value):]
                     self.dropdown.items.append({
                         "text": text,
                         "on_release": lambda txt=text: on_press(txt),
-                        "markup": True
+                        "markup": True,
+                        "padding": (15, 0),
                     })
-            if not self.dropdown.parent:
+            if not self.dropdown.parent and self.dropdown.items:
                 self.dropdown.open()
         else:
             self.dropdown.dismiss()
@@ -1206,7 +1275,24 @@ class HintLayout(MDBoxLayout):
         boxlayout = MDBoxLayout(orientation="horizontal", size_hint_y=None, height=dp(40))
         boxlayout.add_widget(MDLabel(text="New Hint:", size_hint_x=None, size_hint_y=None,
                                      height=dp(40), width=dp(75), halign="center", valign="center"))
-        boxlayout.add_widget(AutocompleteHintInput())
+
+        hint_autocomplete = AutocompleteHintInput()
+        boxlayout.add_widget(hint_autocomplete)
+
+        def toggle_groups(instance: Widget, value: str):
+            hint_autocomplete.show_groups = value == "down"
+
+        def toggle_locations(instance: Widget, value: str):
+            hint_autocomplete.show_locations = value == "down"
+
+        groups_toggle = ToggleButton(MDButtonText(text="Groups"), size_hint_x=None, size_hint_y=None)
+        groups_toggle.bind(state=toggle_groups)
+        boxlayout.add_widget(groups_toggle)
+
+        locations_toggle = ToggleButton(MDButtonText(text="Locations"), size_hint_x=None, size_hint_y=None)
+        locations_toggle.bind(state=toggle_locations)
+        boxlayout.add_widget(locations_toggle)
+
         self.add_widget(boxlayout)
 
     def fix_heights(self):
@@ -1214,6 +1300,7 @@ class HintLayout(MDBoxLayout):
             fix_func = getattr(child, "fix_heights", None)
             if fix_func:
                 fix_func()
+
 
 status_names: typing.Dict[HintStatus, str] = {
     HintStatus.HINT_FOUND: "Found",
