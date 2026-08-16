@@ -18,8 +18,9 @@ typedef union override_value_base_t {
     uint32_t all;
     struct {
         uint16_t item_id;
-        uint8_t player;
-        uint8_t _pad;
+        // Full AP player id. This uses the former pad byte so override_t stays
+        // the same size while supporting multiworlds larger than 255 slots.
+        uint16_t player;
     };
 } override_value_base_t;
 

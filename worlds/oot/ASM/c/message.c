@@ -4,6 +4,7 @@
 #include "save.h"
 #include "dungeon_info.h"
 #include "ap_item_names.h"
+#include "ap_player.h"
 
 // no support for kana since they're not part of the message charset
 char FILENAME_ENCODING[256] = {
@@ -25,8 +26,10 @@ char FILENAME_ENCODING[256] = {
     '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?',
 };
 
-extern uint8_t PLAYER_NAMES[256][8];
-extern uint8_t PLAYER_NAME_ID;
+// Player names are indexed by full AP player id so item text remains correct
+// for multiworlds larger than 255 slots.
+extern uint8_t PLAYER_NAMES[AP_PLAYER_TABLE_SIZE][8];
+extern uint16_t PLAYER_NAME_ID;
 
 uint16_t current_textbox_id;
 
@@ -131,6 +134,7 @@ bool Message_Decode_Additional_Control_Codes(uint8_t currChar, uint32_t* pDecode
         }
         case 0xF2: {
             // Outgoing item filename
+            // AP large multiworld: PLAYER_NAME_ID can be above 255.
             Message_AddFileName(msgCtx, pFont, pDecodedBufPos, pCharTexIdx, PLAYER_NAMES[PLAYER_NAME_ID]);
             (*pDecodedBufPos)--;
             return true;

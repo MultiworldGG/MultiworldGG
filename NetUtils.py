@@ -410,6 +410,15 @@ def add_json_hint_status(parts: list, hint_status: HintStatus, text: typing.Opti
                   "hint_status": hint_status, "type": JSONTypes.hint_status, **kwargs})
 
 
+def get_item_classification_label(item_flags: int) -> str:
+    """Return a player-facing label for the classification bits sent over the network."""
+    labels = [
+        label for flag, label in ((0b001, "progression"), (0b010, "useful"), (0b100, "trap"))
+        if item_flags & flag
+    ]
+    return ", ".join(labels) if labels else "filler"
+
+
 class Hint(typing.NamedTuple):
     receiving_player: int
     finding_player: int
@@ -419,14 +428,17 @@ class Hint(typing.NamedTuple):
     entrance: str = ""
     item_flags: int = 0
     status: HintStatus = HintStatus.HINT_UNSPECIFIED
+    # Item hints can conceal their exact location. Location hints use the inverse
+    # and conceal the exact item, since the location is already known.
     hidden: bool = False
+    item_hidden: bool = False
 
     def re_check(self, ctx, team) -> Hint:
-        if self.found and self.status == HintStatus.HINT_FOUND:
+        if self.found and self.status == HintStatus.HINT_FOUND and not self.hidden and not self.item_hidden:
             return self
         found = self.location in ctx.location_checks[team, self.finding_player]
         if found:
-            return self._replace(found=found, status=HintStatus.HINT_FOUND)
+            return self._replace(found=found, status=HintStatus.HINT_FOUND, hidden=False, item_hidden=False)
         return self
     
     def re_prioritize(self, ctx, status: HintStatus) -> Hint:
@@ -442,6 +454,33 @@ class Hint(typing.NamedTuple):
     def as_network_message(self) -> dict:
         parts = []
         add_json_text(parts, "[Hint]: ")
+
+        if self.item_hidden:
+            add_json_location(parts, self.location, self.finding_player)
+            add_json_text(parts, " in ")
+            add_json_text(parts, self.finding_player, type="player_id")
+            if self.entrance:
+                add_json_text(parts, "'s World at ")
+                add_json_text(parts, self.entrance, type="entrance_name")
+            else:
+                add_json_text(parts, "'s World")
+            add_json_text(parts, " contains ")
+            if self.local:
+                add_json_text(parts, "one of your items")
+            else:
+                add_json_text(parts, "one of ")
+                add_json_text(parts, self.receiving_player, type="player_id")
+                add_json_text(parts, "'s items")
+            add_json_text(parts, f" ({self.item_classification})")
+            add_json_text(parts, ". ")
+            add_json_text(parts, status_names.get(self.status, "(unknown)"), type="color",
+                          color=status_colors.get(self.status, "red"))
+            return {"cmd": "PrintJSON", "data": parts, "type": "Hint",
+                    "receiving": self.receiving_player,
+                    "item": NetworkItem(self.item, self.location, self.finding_player, self.item_flags),
+                    "found": self.found,
+                    "item_hidden": True}
+
         add_json_text(parts, self.receiving_player, type="player_id")
         add_json_text(parts, "'s ")
         add_json_item(parts, self.item, self.receiving_player, self.item_flags)
@@ -476,6 +515,10 @@ class Hint(typing.NamedTuple):
     @property
     def local(self):
         return self.receiving_player == self.finding_player
+
+    @property
+    def item_classification(self) -> str:
+        return get_item_classification_label(self.item_flags)
 
 
 class _LocationStore(dict, typing.MutableMapping[int, typing.Dict[int, typing.Tuple[int, int, int]]]):

@@ -2,7 +2,7 @@ from .Options import InscryptionOptions, ActUnlocks, EpitaphPiecesRandomization,
     RandomizeHammer, Act2RandomizeBridge, RandomizeShortcuts, RandomizeVesselUpgrades, StartingAct, \
     RandomizeChallenges, inscryption_option_groups
 from .Items import act1_items, act2_items, act3_items, act2_3_items, act_items, filler_items, \
-    trap_items, item_groups, base_id, InscryptionItem, ItemDict
+    filler_items_by_act, trap_items, item_groups, base_id, InscryptionItem, ItemDict
 from .Locations import act1_locations, act2_locations, act3_locations, regions_to_locations
 from .Regions import inscryption_regions_all
 from typing import Dict, Any, List
@@ -125,10 +125,21 @@ class InscryptionWorld(World):
             elif self.options.starting_act == StartingAct.option_act_3: 
                 self.multiworld.push_precollected(self.create_item("Act 3"))
 
+    # Filler only has an effect in its own act, so a seed with an act disabled must never
+    # generate that act's currency or packs.
+    def enabled_filler_item_names(self) -> List[str]:
+        enabled_acts = {
+            1: bool(self.options.enable_act_1),
+            2: bool(self.options.enable_act_2),
+            3: bool(self.options.enable_act_3)
+        }
+        return [name for act, names in filler_items_by_act.items() if enabled_acts[act]
+                for name in names]
+
     def get_filler_item_name(self) -> str:
         if self.options.trap_chance == 100 and any(v > 0 for v in self.options.trap_type_weights.values()):
             return self.random.choice(trap_items)["name"]
-        return self.random.choice(filler_items)["name"]
+        return self.random.choice(self.enabled_filler_item_names())
 
     def create_item(self, name: str) -> Item:
         item_id = self.item_name_to_id[name]
@@ -234,10 +245,9 @@ class InscryptionWorld(World):
                 new_item = self.create_item(i)
                 self.multiworld.itempool.append(new_item)
 
+        enabled_filler = self.enabled_filler_item_names()
         for i in range(filler_count):
-            index = i % len(filler_items)
-            filler_item = filler_items[index]
-            new_item = self.create_item(filler_item["name"])
+            new_item = self.create_item(enabled_filler[i % len(enabled_filler)])
             self.multiworld.itempool.append(new_item)
 
     def create_regions(self) -> None:
@@ -313,7 +323,7 @@ class InscryptionWorld(World):
         Rules.InscryptionRules(self).set_all_rules()
 
     def fill_slot_data(self) -> Dict[str, Any]:
-        return self.options.as_dict(
+        data = self.options.as_dict(
             "death_link",
             "act1_death_link_behaviour",
             "enable_act_1",
@@ -333,6 +343,7 @@ class InscryptionWorld(World):
             "randomize_shortcuts",
             "randomize_vessel_upgrades",
             "optional_death_card",
+            "release_on_act_completion",
             "skip_tutorial",
             "skip_epilogue",
             "epitaph_pieces_randomization",
@@ -341,6 +352,15 @@ class InscryptionWorld(World):
             "trap_chance",
             "trap_type_weights"
         )
+
+        # Location ids are assigned by position across the three acts. The range each act owns
+        # is worked out here, where that ordering is defined, rather than rebuilt in the mod.
+        counts = [len(act1_locations), len(act2_locations), len(act3_locations)]
+        for act, count in enumerate(counts, start=1):
+            data[f"act{act}_location_start"] = sum(counts[:act - 1])
+            data[f"act{act}_location_count"] = count
+
+        return data
 
     @staticmethod
     def interpret_slot_data(slot_data: Dict[str, Any]) -> Dict[str, Any]:

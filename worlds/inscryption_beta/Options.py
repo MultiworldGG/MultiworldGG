@@ -267,6 +267,16 @@ class PaintingChecksBalancing(Choice):
     default = 1
 
 
+class ReleaseOnActCompletion(Toggle):
+    """
+    Hands over every remaining check in an act as soon as you finish that act, so nothing is left
+    behind in an act you are done with.
+    Logic accounts for this: a check is expected either where it normally is, or as soon as its
+    act can be beaten, whichever comes first.
+    """
+    display_name = "Release On Act Completion"
+
+
 class TrapChance(Range):
     """The probability for each filler item to be replaced with a trap item.
     If you don't want any traps, set this to 0."""
@@ -314,6 +324,7 @@ class InscryptionOptions(PerGameCommonOptions):
     act_unlocks: ActUnlocks
     starting_act: StartingAct
     goal: Goal
+    release_on_act_completion: ReleaseOnActCompletion
     death_link: DeathLink
     act1_death_link_behaviour: Act1DeathLinkBehaviour
     optional_death_card: OptionalDeathCard

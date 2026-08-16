@@ -119,7 +119,7 @@ CFG_CUSTOM_MESSAGE_2:
 VERSION_STRING_TXT:
 .endarea
 
-; World string (max length "255 of 255" = 10 chars)
+; World string (max length "1024 of 1024" = 12 chars)
 .area 0x10, 0
 WORLD_STRING_TXT:
 .endarea
@@ -243,7 +243,8 @@ SOA_UNLOCKS_POTCRATE_TEXTURE:
 .byte 0x00
 CFG_DUNGEON_INFO_REWARD_WORLDS_ENABLE:
 .byte 0x00
-.area 9, 0
+.align 2
+.area 9*2, 0
 CFG_DUNGEON_REWARD_WORLDS:
 .endarea
 .align 8

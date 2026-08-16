@@ -1,6 +1,12 @@
 from BaseClasses import Location
 from typing import TYPE_CHECKING
 
+from worlds.deltarune.LogicHelper import (
+    include_lose_recruits,
+    include_mike_battle,
+    include_mike_games,
+    include_recruits,
+)
 from worlds.deltarune.Locations import LocationData, LocationGroups, LocationIDs
 from worlds.deltarune.Regions import Regions
 
@@ -13,6 +19,7 @@ chapter4_locations = {
             LocationIDs.ch4_castle_town_top_chef_gift,
             group=LocationGroups.chapter4,
         ),
+        LocationData(LocationIDs.ch4_castle_town_mike_chest, group=LocationGroups.chapter4),
     ],
     Regions.ch4_dojo: [
         LocationData(
@@ -23,67 +30,67 @@ chapter4_locations = {
     Regions.ch4_mike_room: [
         LocationData(
             LocationIDs.ch4_castle_town_mike_defeat,
-            should_be_included=lambda world: world.is_mike_battle_included(),
+            should_be_included=include_mike_battle,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_battat_bronze,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_battat_silver,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_battat_gold,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_battat_platinum,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_jongler_bronze,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_jongler_silver,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_jongler_gold,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_jongler_platinum,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_pluey_bronze,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_pluey_silver,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_pluey_gold,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_mike_pluey_platinum,
-            should_be_included=lambda world: world.is_mike_games_included(),
+            should_be_included=include_mike_games,
             group=LocationGroups.chapter4,
         ),
     ],
@@ -114,42 +121,42 @@ chapter4_locations = {
         ),
         LocationData(
             LocationIDs.ch4_recruit_guei,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_recruit_balthizard,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_recruit_bibliox,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_recruit_mizzle,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_lost_guei,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_lost_balthizard,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_lost_bibliox,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_lost_mizzle,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter4,
         ),
     ],
@@ -186,12 +193,12 @@ chapter4_locations = {
         ),
         LocationData(
             LocationIDs.ch4_recruit_miss_mizzle,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_lost_miss_mizzle,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter4,
         ),
     ],
@@ -227,6 +234,32 @@ chapter4_locations = {
             group=LocationGroups.chapter4,
         ),
         LocationData(
+            LocationIDs.ch4_second_sanctuary_destroyed_piano_block_chest,
+            group=LocationGroups.chapter4,
+        ),
+        LocationData(
+            LocationIDs.ch4_recruit_winglade,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter4,
+        ),
+        LocationData(
+            LocationIDs.ch4_recruit_organikk,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter4,
+        ),
+        LocationData(
+            LocationIDs.ch4_lost_winglade,
+            should_be_included=include_lose_recruits,
+            group=LocationGroups.chapter4,
+        ),
+        LocationData(
+            LocationIDs.ch4_lost_organikk,
+            should_be_included=include_lose_recruits,
+            group=LocationGroups.chapter4,
+        ),
+    ],
+    Regions.ch4_second_sanctuary_post_wicabel: [
+        LocationData(
             LocationIDs.ch4_second_sanctuary_gallery_prophecy_chest,
             group=LocationGroups.chapter4,
         ),
@@ -235,37 +268,13 @@ chapter4_locations = {
             group=LocationGroups.chapter4,
         ),
         LocationData(
-            LocationIDs.ch4_second_sanctuary_destroyed_piano_block_chest,
-            group=LocationGroups.chapter4,
-        ),
-        LocationData(
             LocationIDs.ch4_recruit_wicabel,
-            should_be_included=lambda world: world.is_all_recruits(),
-            group=LocationGroups.chapter4,
-        ),
-        LocationData(
-            LocationIDs.ch4_recruit_winglade,
-            should_be_included=lambda world: world.is_all_recruits(),
-            group=LocationGroups.chapter4,
-        ),
-        LocationData(
-            LocationIDs.ch4_recruit_organikk,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter4,
         ),
         LocationData(
             LocationIDs.ch4_lost_wicabel,
-            should_be_included=lambda world: world.is_weird_route(),
-            group=LocationGroups.chapter4,
-        ),
-        LocationData(
-            LocationIDs.ch4_lost_winglade,
-            should_be_included=lambda world: world.is_weird_route(),
-            group=LocationGroups.chapter4,
-        ),
-        LocationData(
-            LocationIDs.ch4_lost_organikk,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter4,
         ),
     ],

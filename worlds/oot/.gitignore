@@ -19,3 +19,6 @@ oot.apworld
 __MACOSX/
 .AppleDouble
 .LSOverride
+
+# development agent guides for parity checks with upstream
+AGENTS.md

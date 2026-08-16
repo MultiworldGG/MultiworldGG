@@ -5,6 +5,7 @@ from rule_builder.field_resolvers import FromOption
 from rule_builder.options import OptionFilter
 from rule_builder.rules import CanReachLocation, Has
 from worlds.deltarune.Items import ItemIDs, items, glitched_item_name
+from worlds.deltarune.LogicHelper import all_recruits_route, include_recruits_chapter1
 from worlds.deltarune.Options import MacGuffinChapter1, RandomizeSecretBosses
 from worlds.deltarune.Regions import add_location_to_region, Regions, get_entrance_name
 from worlds.deltarune.Rules import have_kris_or_ralsei, have_kris_susie_or_ralsei, have_kris
@@ -90,9 +91,28 @@ def create_regions(world: "DeltaruneWorld"):
         RandomizeSecretBosses, RandomizeSecretBosses.option_mandatory, operator="ne"
     )
 
-    card_castle.connect(
-        light_world,
-        rule=secret_boss_mandatory
-        & Has(items[ItemIDs.king_shape_key_piece], FromOption(MacGuffinChapter1))
-        & have_kris,
-    )
+    if all_recruits_route(world) and include_recruits_chapter1(world):
+        all_recruits = (
+            CanReachLocation(locations[LocationIDs.ch1_recruit_rudinn])
+            & CanReachLocation(locations[LocationIDs.ch1_recruit_hathy])
+            & CanReachLocation(locations[LocationIDs.ch1_recruit_jigsawry])
+            & CanReachLocation(locations[LocationIDs.ch1_recruit_ponman])
+            & CanReachLocation(locations[LocationIDs.ch1_recruit_rabbick])
+            & CanReachLocation(locations[LocationIDs.ch1_recruit_bloxer])
+            & CanReachLocation(locations[LocationIDs.ch1_recruit_head_hathy])
+            & CanReachLocation(locations[LocationIDs.ch1_recruit_rudinn_ranger])
+        )
+        card_castle.connect(
+            light_world,
+            rule=secret_boss_mandatory
+            & all_recruits
+            & Has(items[ItemIDs.king_shape_key_piece], FromOption(MacGuffinChapter1))
+            & have_kris,
+        )
+    else:
+        card_castle.connect(
+            light_world,
+            rule=secret_boss_mandatory
+            & Has(items[ItemIDs.king_shape_key_piece], FromOption(MacGuffinChapter1))
+            & have_kris,
+        )

@@ -249,7 +249,16 @@ def run_component_callable(module_name: str, qualname: str, *args: str) -> None:
     # Reset sys.argv so client launch functions that call parse_args() without
     # explicit args don't see the --run_component_callable launcher flags.
     sys.argv = [sys.argv[0], *args]
+    existing_threads = set(threading.enumerate())
     target(*args)
+
+    # Cached callables run in a short-lived helper process. Preserve daemon
+    # threads started by the callable so wrappers that use them to keep the
+    # launcher responsive have the same lifetime as in the launcher process.
+    current_thread = threading.current_thread()
+    for thread in threading.enumerate():
+        if thread not in existing_threads and thread is not current_thread and thread.daemon:
+            thread.join()
 
 
 def launch_component_callable(module_name: str, qualname: str, launch_args: Sequence[str] = ()) -> subprocess.Popen[Any] | None:

@@ -238,14 +238,34 @@ act_items: List[ItemDict] = [
      'classification': ItemClassification.progression},
 ]
 
+# Currency and card packs only have an effect in their own act, so each act draws from its own
+# pool: one act's progress stays restorable, and its spending cannot consume another's.
 filler_items: List[ItemDict] = [
-    {'name': "Currency",
+    {'name': "Act 1 Currency",
      'count': 1,
      'classification': ItemClassification.filler},
-    {'name': "Card Pack",
+    {'name': "Act 2 Currency",
+     'count': 1,
+     'classification': ItemClassification.filler},
+    {'name': "Act 3 Currency",
+     'count': 1,
+     'classification': ItemClassification.filler},
+    {'name': "Act 1 Card Pack",
+     'count': 1,
+     'classification': ItemClassification.filler},
+    {'name': "Act 2 Card Pack",
+     'count': 1,
+     'classification': ItemClassification.filler},
+    {'name': "Act 3 Card Pack",
      'count': 1,
      'classification': ItemClassification.filler}
 ]
+
+filler_items_by_act: Dict[int, List[str]] = {
+    1: ["Act 1 Currency", "Act 1 Card Pack"],
+    2: ["Act 2 Currency", "Act 2 Card Pack"],
+    3: ["Act 3 Currency", "Act 3 Card Pack"]
+}
 
 trap_items: List[ItemDict] = [
     {'name': "Bleach Trap",

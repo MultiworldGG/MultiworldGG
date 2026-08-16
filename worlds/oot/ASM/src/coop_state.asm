@@ -1,12 +1,10 @@
 COOP_CONTEXT:
 
 COOP_VERSION:
-.word 7 ; Increment this if layout of co-op state changes
+.word 8 ; Increment this if layout of co-op state changes
 
 PLAYER_ID:
-.byte 0x00 ; Written by frontend
-PLAYER_NAME_ID:
-.byte 0x00
+.halfword 0x0000 ; Written by frontend
 INCOMING_PLAYER:
 .halfword 0x0000
 INCOMING_ITEM:
@@ -27,7 +25,12 @@ OUTGOING_ITEM:
 OUTGOING_PLAYER:
 .halfword 0x0000
 
-.area 8*256, 0xDF
+PLAYER_NAME_ID:
+.halfword 0x0000
+.align 4
+
+; Indexed by AP player id. Supports player ids 0..1024 inclusive.
+.area 8*1025, 0xDF
 PLAYER_NAMES:
 .endarea
 
@@ -36,7 +39,8 @@ CFG_FILE_SELECT_HASH:
 .endarea
 .align 4
 
-.area 4*256, 0x00
+; Indexed by AP player id. Supports player ids 0..1024 inclusive.
+.area 4*1025, 0x00
 MW_PROGRESSIVE_ITEMS_STATE:
 .endarea
 

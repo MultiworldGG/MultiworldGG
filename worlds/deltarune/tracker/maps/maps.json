@@ -10,5 +10,17 @@
     "location_size": 10,
     "location_border_thickness": 1,
     "img": "images/maps/ch1_field_map.png"
+  },
+  {
+    "name": "Chapter 1 - Forest",
+    "location_size": 7,
+    "location_border_thickness": 1,
+    "img": "images/maps/ch1_forest_map.png"
+  },
+  {
+    "name": "Chapter 4 - First Sanctuary",
+    "location_size": 10,
+    "location_border_thickness": 1,
+    "img": "images/maps/ch4_dark_sanctuary_map.png"
   }
 ]

@@ -75,7 +75,9 @@ extern uint8_t SHUFFLE_CHEST_GAME;
 
 extern int8_t CFG_DUNGEON_REWARDS[14];
 extern char CFG_DUNGEON_REWARD_AREAS[9][0x17];
-extern uint8_t CFG_DUNGEON_REWARD_WORLDS[9];
+// Dungeon reward source worlds are full AP player ids so large multiworlds can
+// display slots above 255 correctly.
+extern uint16_t CFG_DUNGEON_REWARD_WORLDS[9];
 
 extern uint8_t CFG_DUNGEON_INFO_SILVER_RUPEES;
 
@@ -950,28 +952,19 @@ void draw_dungeon_info(z64_disp_buf_t* db) {
                 if (!display_area) {
                     continue;
                 }
-                uint8_t world = CFG_DUNGEON_REWARD_WORLDS[i];
-                char world_text[5] = "WOOO"; // we use O instead of 0 because it's easier to distinguish from 8
-                if (world < 100) {
-                    world_text[0] = ' ';
-                    world_text[1] = 'W';
-                }
-                if (world < 10) {
-                    world_text[1] = ' ';
-                    world_text[2] = 'W';
-                }
-                if (world / 100) {
-                    world_text[1] = world / 100 + '0';
-                }
-                if ((world % 100) / 10) {
-                    world_text[2] = (world % 100) / 10 + '0';
-                }
-                if (world % 10) {
-                    world_text[3] = world % 10 + '0';
-                }
+                uint16_t world = CFG_DUNGEON_REWARD_WORLDS[i];
+                // Format up to "W1024"; the old 3-digit formatter could not
+                // display AP player ids above 255 in large multiworlds.
+                char world_text[6] = { 'W', ' ', ' ', ' ', ' ', 0 };
+                int digit_pos = 4;
+                do {
+                    world_text[digit_pos--] = (world % 10) + '0';
+                    world /= 10;
+                } while (world != 0 && digit_pos > 0);
                 int top = start_top + ((icon_size + padding) * i) + 1;
                 text_print(db, world_text, left, top);
             }
+            // AP large multiworld: "W1024" needs one more digit than "W255".
             left += 5 * font_sprite.tile_w;
         }
 

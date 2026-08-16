@@ -3,6 +3,7 @@
 #include "get_items.h"
 #include "item_table.h"
 #include "z64.h"
+#include "ap_player.h"
 
 extern uint32_t FREE_BOMBCHU_DROPS;
 extern uint8_t SHUFFLE_CHEST_GAME;
@@ -26,10 +27,11 @@ typedef struct {
     uint8_t hookshot : 2;  // 0 = no hookshot, 1 = hookshot, 2 = longshot
 } mw_progressive_items_state_t;
 
-// Co-op state
-extern uint8_t PLAYER_ID;
+// Co-op state. Progressive state is indexed by AP player id, so it has to use
+// the widened player table for multiworlds larger than 255 slots.
+extern uint16_t PLAYER_ID;
 extern uint8_t MW_PROGRESSIVE_ITEMS_ENABLE;
-extern mw_progressive_items_state_t MW_PROGRESSIVE_ITEMS_STATE[256];
+extern mw_progressive_items_state_t MW_PROGRESSIVE_ITEMS_STATE[AP_PLAYER_TABLE_SIZE];
 
 
 uint16_t no_upgrade(z64_file_t* save, override_t override) {

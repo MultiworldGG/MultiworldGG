@@ -11,8 +11,10 @@
 #define SCENE_VOLVAGIA_BOSS_ROOM 0x0015
 #define SCENE_MORPHA_BOSS_ROOM 0x0016
 
-extern uint8_t PLAYER_ID;
-extern uint8_t PLAYER_NAME_ID;
+// Reward item ownership uses full AP player ids for multiworlds larger than
+// 255 slots.
+extern uint16_t PLAYER_ID;
+extern uint16_t PLAYER_NAME_ID;
 extern bool REWARDS_AS_ITEMS;
 extern uint8_t MW_SEND_OWN_ITEMS;
 
@@ -46,6 +48,7 @@ int32_t DoorWarp1_PlayerInRange_Overwrite(z64_actor_t* actor, z64_game_t* game) 
                     push_outgoing_override(&override);
                 }
                 call_effect_function(item_row);
+                // AP large multiworld: keep the full player id for reward text.
                 PLAYER_NAME_ID = override.value.base.player;
                 ap_item_names_set_active_from_override(&override);
                 z64_DisplayTextbox(&z64_game, resolve_item_text_id(item_row, PLAYER_NAME_ID != PLAYER_ID), 0);

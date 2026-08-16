@@ -1,5 +1,12 @@
 from typing import TYPE_CHECKING
 from BaseClasses import ItemClassification
+from worlds.deltarune.LogicHelper import (
+    include_hidden_items,
+    include_secret_bosses_items_reward,
+    include_shadow_mantle,
+    randomized_chapters,
+    randomized_mantle,
+)
 from worlds.deltarune.Items import (
     DeltaruneItem,
     ItemData,
@@ -14,12 +21,9 @@ if TYPE_CHECKING:
 
 chapter3_items = [
     ItemData(ItemIDs.flatsoda, ItemClassification.filler, groups=[ItemGroups.healing_item], amount=0),
-    ItemData(ItemIDs.tvslop, ItemClassification.filler, groups=[ItemGroups.healing_item], amount=3),
     ItemData(ItemIDs.deluxedinner, ItemClassification.filler, groups=[ItemGroups.healing_item]),
-    ItemData(ItemIDs.tvdinner, ItemClassification.filler, groups=[ItemGroups.healing_item], amount=3),
     ItemData(ItemIDs.revivemint, ItemClassification.filler, groups=[ItemGroups.healing_item], amount=2),
     ItemData(ItemIDs.execbuffet, ItemClassification.filler, groups=[ItemGroups.healing_item]),
-    ItemData(ItemIDs.dogdollar, ItemClassification.filler, groups=[ItemGroups.currencies], amount=0),
     ItemData(ItemIDs.point_1, ItemClassification.filler, groups=[ItemGroups.currencies]),
     ItemData(ItemIDs.points_2, ItemClassification.filler, groups=[ItemGroups.currencies]),
     ItemData(ItemIDs.points_10, ItemClassification.filler, groups=[ItemGroups.currencies]),
@@ -37,14 +41,37 @@ chapter3_items = [
     ItemData(ItemIDs.flexscarf, ItemClassification.useful, groups=[ItemGroups.weapons, ItemGroups.ralsei_weapons]),
     ItemData(ItemIDs.execbuffet, ItemClassification.useful, groups=[ItemGroups.healing_item]),
     ItemData(
+        ItemIDs.tvdinner,
+        ItemClassification.filler,
+        groups=[ItemGroups.healing_item, ItemGroups.fusion_ingredient],
+        amount=3,
+        changing_classification=True,
+    ),
+    ItemData(
+        ItemIDs.dogdollar,
+        ItemClassification.filler,
+        groups=[ItemGroups.currencies, ItemGroups.fusion_ingredient],
+        amount=1,
+        changing_classification=True,
+    ),
+    ItemData(
+        ItemIDs.tvslop,
+        ItemClassification.filler,
+        groups=[ItemGroups.healing_item, ItemGroups.fusion_ingredient],
+        amount=5,
+        changing_classification=True,
+    ),
+    ItemData(
         ItemIDs.white_ribbon,
-        ItemClassification.progression,
+        ItemClassification.useful,
         groups=[ItemGroups.armors, ItemGroups.fusion_ingredient],
+        changing_classification=True,
     ),
     ItemData(
         ItemIDs.pink_ribbon,
-        ItemClassification.progression,
+        ItemClassification.useful,
         groups=[ItemGroups.armors, ItemGroups.fusion_ingredient],
+        changing_classification=True,
     ),
     ItemData(ItemIDs.board_2_cartridge, ItemClassification.progression, groups=[ItemGroups.region_blockers]),
     ItemData(ItemIDs.vip_pass, ItemClassification.progression, groups=[ItemGroups.region_blockers]),
@@ -53,82 +80,81 @@ chapter3_items = [
         ItemClassification.progression_skip_balancing,
         groups=[ItemGroups.region_blockers],
         amount=0,
+        changing_classification=True,
     ),
     ItemData(
         ItemIDs.tennatie,
         ItemClassification.useful,
-        should_be_included=lambda world: world.is_hidden_items_randomized(),
+        should_be_included=include_hidden_items,
         groups=[ItemGroups.armors],
+        changing_classification=True,
     ),
     ItemData(
         ItemIDs.blue_ribbon,
         ItemClassification.useful,
-        should_be_included=lambda world: world.is_hidden_items_randomized(),
+        should_be_included=include_hidden_items,
         groups=[ItemGroups.armors],
     ),
     ItemData(
         ItemIDs.shadowmantle,
         ItemClassification.progression,
-        should_be_included=lambda world: world.is_shadow_mantle_included()
-        and (world.is_mantle_randomized() or world.is_mantleless()),
+        should_be_included=include_shadow_mantle,
         groups=[ItemGroups.armors],
     ),
     ItemData(
         ItemIDs.blackshard,
         ItemClassification.useful,
-        should_be_included=lambda world: world.is_secret_bosses_randomized(),
+        should_be_included=include_secret_bosses_items_reward,
         groups=[ItemGroups.weapons, ItemGroups.kris_weapons],
     ),
     ItemData(
         ItemIDs.shadowcrystal,
         ItemClassification.filler,
-        should_be_included=lambda world: world.is_secret_bosses_randomized(),
+        should_be_included=include_secret_bosses_items_reward,
         blacklist_filler=True,
     ),
     ItemData(
         ItemIDs.chapter_3_egg,
         ItemClassification.filler,
-        should_be_included=lambda world: world.is_hidden_items_randomized(),
+        should_be_included=include_secret_bosses_items_reward,
         groups=[ItemGroups.eggs],
         blacklist_filler=True,
     ),
     ItemData(
         ItemIDs.board_moss,
         ItemClassification.filler,
-        should_be_included=lambda world: world.is_hidden_items_randomized()
-        and ((not world.is_weird_route()) or world.is_all_routes()),
+        should_be_included=include_hidden_items,
         groups=[ItemGroups.moss],
         blacklist_filler=True,
     ),
     ItemData(
         ItemIDs.chapter_3_unlock,
         ItemClassification.progression,
-        should_be_included=lambda world: world.is_chapters_randomized(),
+        should_be_included=randomized_chapters,
         groups=[ItemGroups.region_blockers],
     ),
     ItemData(
         ItemIDs.odd_controller,
         ItemClassification.progression,
-        should_be_included=lambda world: world.is_mantle_randomized() or world.is_mantleless(),
+        should_be_included=randomized_mantle,
         groups=[ItemGroups.mantle_items],
     ),
     ItemData(
         ItemIDs.ice_key,
         ItemClassification.progression,
-        should_be_included=lambda world: world.is_mantle_randomized() or world.is_mantleless(),
+        should_be_included=randomized_mantle,
         groups=[ItemGroups.mantle_items],
     ),
     ItemData(
         ItemIDs.shelter_key,
         ItemClassification.progression,
-        should_be_included=lambda world: world.is_mantle_randomized() or world.is_mantleless(),
+        should_be_included=randomized_mantle,
         groups=[ItemGroups.mantle_items],
     ),
     ItemData(
         ItemIDs.tripticket,
         ItemClassification.progression,
-        should_be_included=lambda world: world.is_hidden_items_randomized()
-        and ((not world.is_weird_route()) or world.is_all_routes()),
+        should_be_included=include_hidden_items,
         groups=[ItemGroups.mantle_items],
     ),
 ]

@@ -55,7 +55,6 @@ class TetrisAttackWorld(World):
     In Puzzle, all panels in each board must be fully cleared out using limited moves.
     In Vs, perform Chains and Combos to attack."""
     game = "Tetris Attack"  # name of the game/world
-    author: str = "AgStarRay"
     options_dataclass = TetrisAttackOptions  # options the player can set
     options: TetrisAttackOptions  # typing hints for option results
     settings: typing.ClassVar[TetrisAttackSettings]  # will be automatically assigned from type hint

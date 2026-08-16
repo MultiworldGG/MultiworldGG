@@ -23,7 +23,7 @@ versus_stage_names = ["BREEZE STAGE - Lakitu and Goonie",
                       "CAVE OF WICKEDNESS - Hookbill The Koopa!",
                       "CAVE OF WICKEDNESS - Naval Piranha!!",
                       "CAVE OF WICKEDNESS - Kamek and Kamek's Toadies!!!",
-                      "LAST STAGE Bowser!!!!"]
+                      "LAST STAGE - Bowser!!!!"]
 versus_clear_prefixes = ["Vs. Breeze Stage",
                          "Vs. Glacial Stage",
                          "Vs. Forest Stage",

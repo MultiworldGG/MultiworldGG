@@ -3,34 +3,35 @@
 ## Required Software
 
 - DELTARUNE from the [Steam page](https://store.steampowered.com/app/1671210/)
-  - Require 1.04 (`download_depot 1671210 1671212 5291565625263756968`)
+  - If you want to use a Steam depot instead of a Steam install, use (`download_depot 1671210 1671212 2054633419585385858`)
 - MultiworldGG from the [MultiworldGG Releases Page](https://github.com/MultiworldGG/MultiworldGG/releases)
-  - Require minimum 0.7.100
+  - Require minimum 0.7.200
 - If you want to use AP: DELTARUNE APWorld from the [Releases Page](https://github.com/theemeraldsword85/DELTARUNEAP/releases)
+- DELTARUNE Archipelago mod from [GameBanana Page](https://gamebanana.com/mods/699556) or [Releases Page](https://github.com/Tenebrosful/DeltaruneAP-mod/releases)
   
-## Recommended Software
+## HIGHLY Recommended Software
 
-- If you are using AP: Universal Tracker APWorld from the [UT Releases Page](https://github.com/FarisTheAncient/Archipelago/releases)
+- If you are using AP:  Universal Tracker APWorld from the [UT Releases Page](https://github.com/FarisTheAncient/Archipelago/releases)
 
 ## Installation
 
-### Patching the game
+### Patching the game (With ModLoader)
 
-**Requires DELTARUNE 1.04 vanilla *(last public branch on Steam)***
+Download the mod from [GameBanana](https://gamebanana.com/mods/699556) with either G3M or DeltaMod (Recommend to use the xdelta version it patch in 6s vs csx that patch in 2 minutes)
 
-**If you've updated to Chapter 5, do the following to downpatch your base DELTARUNE:**
+If you don't use mod loader, you can also patch your game with DeltaPatcher
 
-- Open the steamconsole (Windows + R `steam://nav/console`)
-- Type `download_depot 1671210 1671212 5291565625263756968`
-- Follow the rest of the Setup guide. But use `/auto_patch steamdepot` instead of `/auto_patch steaminstall`
+### Patching the game (With the apworld)
 
-For AP, Download the APWorld and place it into archipelago/custom_worlds (Double clicking the APWorld will also work!)
+On AP: Download the APWorld and place it into archipelago/custom_worlds (Double clicking the APWorld will also work!)
 
-Run the Archipelago Launcher (Or restart the launcher if it's already running)
+Download the bsdiff files from the mod [Releases Page](https://github.com/Tenebrosful/DeltaruneAP-mod/releases) and place it in a folder named `DELTARUNE_PATCH` at the root of Archipelago folder.
 
-Start the DELTARUNE client from your MultiworldGG app and input `/auto_patch <Your DELTARUNE Install Directory>` at the bottom.
+Run the MultiworldGG Launcher (Or restart the launcher if it's already running)
 
-If you game is a installed on your `C:` drive through Steam, you can use `/auto_patch steaminstall` or if it's a downloaded depot `/auto_patch steamdepot`
+Start the DELTARUNE client from the MultiworldGG app and input `/auto_patch <Your DELTARUNE Install Directory>` at the bottom.
+
+If you game is a installed on your `C:` drive through Steam, you can use `/auto_patch steaminstall` or if it's a downloaded depot `/auto_patch steamdepot` (`/auto_patch linux` or `/auto_patch linuxdepot` for linux)
 
 If you're not sure, you can easily find the directory by opening the DELTARUNE directory through Steam by right-clicking DELTARUNE in your library and selecting `Manage > Browse local files`. Then, on Windows you can see the directory you need at the top of the window.
 
@@ -38,10 +39,7 @@ Next, go to your MultiworldGG folder either by finding it yourself or by clickin
 
 #### Linux users
 
-**Linux is currently not supported as it will disconnect you from the server few seconds after connection**
-
-The Linux installation is mostly similar, however, DELTARUNE will be installed on Steam as the Linux 
-variant.
+The Linux installation is mostly similar, however, DELTARUNE will be installed on Steam as the Linux variant.
 
 Since this randomizer only supports the Windows version, we must fix this, by right-click the game in Steam, going to `Properties -> Compatibility`, and checking `Force the use of a specific Steam Play compatibility tool`.
 
@@ -65,9 +63,10 @@ Not required, but you can also open the DELTARUNE Text Client in the MultiworldG
 
 #### Linux users
 
-**On Steam (via Proton)**: This assumes the game is in a Steam Library folder.  Right-click DELTARUNE, go to `Manage -> 
-Browse Local Files`. Go up the directories to the `steamapps` folder, open `compatdata/1671210` (1671210 is the "magic number" for
-DELTARUNE in Steam).  Save data from here is at `/pfx/drive_c/users/steamuser/AppData/Local/DELTARUNE`.
+Linux users require the usage of a proxy. Start the Archipelago Deltarune Client, then connect to the room and use the command `/linux_proxy`. You should now be able to connect with the window method with `localhost` for host and `1225` as port.
 
-**Through WINE directly**: This depends on the prefix used.  If it is default, then the save data is located at
+**On Steam (via Proton)**: This assumes the game is in a Steam Library folder.  Right-click DELTARUNE, go to `Manage -> Browse Local Files`. Go up the directories to the `steamapps` folder, open `compatdata/1671210` (1671210 is the "magic number" for
+DELTARUNE in Steam). Save data from here is at `/pfx/drive_c/users/steamuser/AppData/Local/DELTARUNE`.
+
+**Through WINE directly**: This depends on the prefix used. If it is default, then the save data is located at
 `/home/USERNAME/.wine/drive_c/users/USERNAME/AppData/Local/DELTARUNE`.

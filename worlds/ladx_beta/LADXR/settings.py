@@ -237,6 +237,7 @@ If random start location and/or dungeon shuffle is enabled, then these will be s
                 options=[('guessbyname', 'g', 'Guess By Name'), ('indicateprogression', 'p', 'Indicate Progression')], default="guessbyname", aesthetic=True),
             Setting('aptitlescreen', 'User options', 'a', 'AP Title Screen', description="", default=True),
             Setting('textshuffle', 'User options', 'a', 'Text Shuffle', description="", default=False),
+            Setting('blockfreepowder', 'User options', 'a', 'Block Free Powder', description="", default=False),
         ]
         self.__by_key = {s.key: s for s in self.__all}
 

@@ -4,7 +4,7 @@ import json
 from Options import PerGameCommonOptions
 
 from . import InscryptionTestBase
-from ..Items import trap_items
+from ..Items import filler_items_by_act, trap_items
 from ..Options import InscryptionOptions
 
 
@@ -28,6 +28,16 @@ class OptionTestBase(InscryptionTestBase):
     def assert_pool_matches_locations(self) -> None:
         self.assertEqual(len(self.pool_names()), len(self.location_names()))
 
+    # Currency and card packs only have an effect in their own act, so a disabled act's
+    # filler would be dead weight in the pool.
+    def assert_filler_only_for_acts(self, *acts: int) -> None:
+        pool = set(self.pool_names())
+        allowed = {name for act in acts for name in filler_items_by_act[act]}
+        forbidden = {name for act, names in filler_items_by_act.items() if act not in acts
+                     for name in names}
+        self.assertTrue(pool & allowed)
+        self.assertEqual(pool & forbidden, set())
+
 
 class TestActOneOnly(OptionTestBase):
     options = {"enable_act_2": 0, "enable_act_3": 0}
@@ -35,6 +45,7 @@ class TestActOneOnly(OptionTestBase):
     def test_only_act_1_is_generated(self) -> None:
         self.assert_only_acts("Act 1")
         self.assert_pool_matches_locations()
+        self.assert_filler_only_for_acts(1)
 
 
 class TestActTwoOnly(OptionTestBase):
@@ -43,6 +54,7 @@ class TestActTwoOnly(OptionTestBase):
     def test_only_act_2_is_generated(self) -> None:
         self.assert_only_acts("Act 2")
         self.assert_pool_matches_locations()
+        self.assert_filler_only_for_acts(2)
 
 
 class TestActThreeOnly(OptionTestBase):
@@ -51,6 +63,7 @@ class TestActThreeOnly(OptionTestBase):
     def test_only_act_3_is_generated(self) -> None:
         self.assert_only_acts("Act 3")
         self.assert_pool_matches_locations()
+        self.assert_filler_only_for_acts(3)
 
 
 class TestTwoActsEnabled(OptionTestBase):
@@ -59,6 +72,32 @@ class TestTwoActsEnabled(OptionTestBase):
     def test_only_enabled_acts_are_generated(self) -> None:
         self.assert_only_acts("Act 1", "Act 2")
         self.assert_pool_matches_locations()
+        self.assert_filler_only_for_acts(1, 2)
+
+
+class ReleaseTestBase(OptionTestBase):
+    # The release rule wraps each location's own rule in a lambda carrying both as defaults, which
+    # is what distinguishes it from Archipelago's own default "always reachable" lambda.
+    def release_wrapped_locations(self):
+        return [loc for loc in self.multiworld.get_locations(self.player)
+                if len(getattr(loc.access_rule, "__defaults__", None) or ()) == 2]
+
+
+class TestReleaseOnActCompletion(ReleaseTestBase):
+    options = {"release_on_act_completion": 1}
+
+    def test_option_reaches_the_mod(self) -> None:
+        self.assertEqual(self.world.fill_slot_data()["release_on_act_completion"], 1)
+
+    def test_every_act_location_gains_the_release_rule(self) -> None:
+        self.assertEqual(len(self.release_wrapped_locations()), len(self.location_names()))
+
+
+class TestReleaseOnActCompletionDisabled(ReleaseTestBase):
+    options = {"release_on_act_completion": 0}
+
+    def test_locations_keep_their_own_rules(self) -> None:
+        self.assertEqual(self.release_wrapped_locations(), [])
 
 
 class TestActUnlocksOpen(OptionTestBase):

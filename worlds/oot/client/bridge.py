@@ -16,7 +16,8 @@ from .emu_loader import EmuLoaderClient
 from ..LocationList import business_scrubs, location_table
 from ..Utils import OOT_PLAYER_NAME_LENGTH, encode_oot_player_name
 
-SCRIPT_VERSION = 8
+SCRIPT_VERSION = 9
+AP_MAX_PLAYER_ID = 1024
 CONNECT_PORT   = 28921
 OUTGOING_KEY_POLL_FRAMES = 6
 PROTOCOL_EXCHANGE_FRAMES = 10
@@ -24,14 +25,14 @@ FULL_STATE_FRAMES = 30
 CACHE_RESYNC_FRAMES = 1800
 
 # COOP_CONTEXT layout at 0x80400020 (RDRAM 0x00400020)
-COOP_VERSION_ADDR       = 0x00400020   # u32 = 7
-PLAYER_ID_ADDR          = 0x00400024   # u8
+COOP_VERSION_ADDR       = 0x00400020   # u32 = 8
+PLAYER_ID_ADDR          = 0x00400024   # u16
 INCOMING_PLAYER_ADDR    = 0x00400026   # u16
 INCOMING_ITEM_ADDR      = 0x00400028   # u16
 DEATH_LINK_ADDR         = 0x0040002B   # u8  (MW_PROGRESSIVE_ITEMS_ENABLE / DEATH_LINK)
-PLAYER_NAMES_ADDR       = 0x00400034   # 256 × 8 bytes
-FILE_HASH_ADDR          = 0x00400834   # 5 bytes  (CFG_FILE_SELECT_HASH)
-OUTGOING_KEY_ADDR       = 0x00400C3C   # 8 bytes  (override_key_t)
+PLAYER_NAMES_ADDR       = 0x00400038   # 1025 × 8 bytes
+FILE_HASH_ADDR          = 0x00402040   # 5 bytes  (CFG_FILE_SELECT_HASH)
+OUTGOING_KEY_ADDR       = 0x0040304C   # 8 bytes  (override_key_t)
 DUNGEON_IS_MQ_PTR_ADDR  = 0x00400010   # N64 pointer to MQ dungeon table
 BIG_POE_COUNT_ADDR      = 0x0040001E   # u8
 
@@ -157,7 +158,7 @@ def _is_game_complete(emu: EmuLoaderClient, state: OoTBridgeState) -> bool:
 
 
 def _get_player_name(emu: EmuLoaderClient) -> str:
-    pid = emu.read_u8(PLAYER_ID_ADDR)
+    pid = emu.read_u16(PLAYER_ID_ADDR)
     h   = [emu.read_u8(FILE_HASH_ADDR + i) for i in range(5)]
     return f"OOT{pid:03d}-{h[0]:02x}{h[1]:02x}{h[2]:02x}{h[3]:02x}{h[4]:02x}"
 
@@ -199,6 +200,8 @@ def _check_temp_context(state: OoTBridgeState, scene: int, loc_type: int, flag: 
 
 
 def _set_player_name(emu: EmuLoaderClient, player_id: int, name: str) -> None:
+    if not 0 <= player_id <= AP_MAX_PLAYER_ID:
+        return
     addr    = PLAYER_NAMES_ADDR + player_id * PLAYER_NAME_LENGTH
     data = bytes(encode_oot_player_name(name, PLAYER_NAME_LENGTH))
     # Player name slots are 8-byte/4-byte aligned; write as words to avoid
@@ -867,9 +870,14 @@ def _process_block(emu: EmuLoaderClient, st: OoTBridgeState, block: dict) -> Non
         st.first_connect = False
         st.player_names_initialized = True
         _resolve_mq_table(emu, st)
-        for idx, name in enumerate(block["playerNames"][:254], start=1):
-            _set_player_name(emu, idx, name)
-        _set_player_name(emu, 255, "a player")
+        player_names = block["playerNames"]
+        if isinstance(player_names, dict):
+            for idx, name in player_names.items():
+                _set_player_name(emu, int(idx), name)
+        else:
+            for idx, name in enumerate(player_names[:AP_MAX_PLAYER_ID], start=1):
+                _set_player_name(emu, idx, name)
+        _set_player_name(emu, 0, "a player")
 
     if block.get("triggerDeath"):
         _kill_link(emu)
@@ -878,7 +886,7 @@ def _process_block(emu: EmuLoaderClient, st: OoTBridgeState, block: dict) -> Non
     st.item_queue = block.get("items", [])
     received = emu.read_u16(INTERNAL_COUNT_ADDR)
     if received < len(st.item_queue) and _item_receivable(emu):
-        pid = emu.read_u8(PLAYER_ID_ADDR)
+        pid = emu.read_u16(PLAYER_ID_ADDR)
         emu.write_u16(INCOMING_PLAYER_ADDR, pid)
         emu.write_u16(INCOMING_ITEM_ADDR, st.item_queue[received])
         

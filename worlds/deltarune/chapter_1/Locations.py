@@ -1,6 +1,5 @@
-from enum import StrEnum
-
 from worlds.deltarune.Locations import LocationData, LocationData, LocationGroups, LocationIDs
+from worlds.deltarune.LogicHelper import include_lose_recruits_chapter1, include_recruits_chapter1
 from worlds.deltarune.Regions import Regions
 
 chapter1_locations = {
@@ -41,32 +40,32 @@ chapter1_locations = {
         ),
         LocationData(
             LocationIDs.ch1_recruit_rudinn,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_all_recruits(),
+            should_be_included=include_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
         LocationData(
             LocationIDs.ch1_recruit_hathy,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_all_recruits(),
+            should_be_included=include_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
         LocationData(
             LocationIDs.ch1_recruit_jigsawry,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_all_recruits(),
+            should_be_included=include_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
         LocationData(
             LocationIDs.ch1_lost_rudinn,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_weird_route(),
+            should_be_included=include_lose_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
         LocationData(
             LocationIDs.ch1_lost_hathy,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_weird_route(),
+            should_be_included=include_lose_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
         LocationData(
             LocationIDs.ch1_lost_jigsawry,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_weird_route(),
+            should_be_included=include_lose_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
     ],
@@ -83,12 +82,12 @@ chapter1_locations = {
     Regions.ch1_great_board: [
         LocationData(
             LocationIDs.ch1_recruit_ponman,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_all_recruits(),
+            should_be_included=include_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
         LocationData(
             LocationIDs.ch1_lost_ponman,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_weird_route(),
+            should_be_included=include_lose_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
     ],
@@ -101,18 +100,18 @@ chapter1_locations = {
         ),
         LocationData(
             LocationIDs.ch1_recruit_rabbick,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_all_recruits(),
+            should_be_included=include_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
         LocationData(
             LocationIDs.ch1_recruit_bloxer,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_all_recruits(),
+            should_be_included=include_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
         # lost Rabbick is in cross chapter
         LocationData(
             LocationIDs.ch1_lost_bloxer,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_weird_route(),
+            should_be_included=include_lose_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
     ],
@@ -178,22 +177,22 @@ chapter1_locations = {
         ),
         LocationData(
             LocationIDs.ch1_recruit_rudinn_ranger,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_all_recruits(),
+            should_be_included=include_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
         LocationData(
             LocationIDs.ch1_recruit_head_hathy,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_all_recruits(),
+            should_be_included=include_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
         LocationData(
             LocationIDs.ch1_lost_rudinn_ranger,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_weird_route(),
+            should_be_included=include_lose_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
         LocationData(
             LocationIDs.ch1_lost_head_hathy,
-            should_be_included=lambda world: world.is_chapter_1_recruit_system_enabled() and world.is_weird_route(),
+            should_be_included=include_lose_recruits_chapter1,
             group=LocationGroups.chapter1,
         ),
     ],

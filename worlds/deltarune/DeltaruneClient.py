@@ -2,25 +2,31 @@ from __future__ import annotations
 import os
 import asyncio
 import typing
+import webbrowser
 import bsdiff4
 import shutil
 import json
 import hashlib
+import websockets
+import functools
 import shutil
 
 import Utils
-
 try:
     from Utils import instance_name as apname
 except ImportError:
     apname = "Archipelago"
-    
+
 from NetUtils import NetworkItem, ClientStatus
 from worlds import deltarune
-from MultiServer import mark_raw, Context, Client
-from Utils import async_start
+from MultiServer import mark_raw, Context, Client, Endpoint
+from Utils import async_start, logging
+from worlds.deltarune.LinuxProxy import encode, proxy, proxy_loop
 
-ap_world_version = "v2.0.6"
+ap_world_version = "v2.1.2"
+deltarune_mod_github = "https://github.com/Tenebrosful/DeltaruneAP-mod/releases"
+
+DEBUG = True
 
 # Try importing gui_enabled in Utils first before trying to import them from CommonClient
 # Core AP will be officially moving it to Utils in the future, so this is in accommodation for that
@@ -51,6 +57,7 @@ except ModuleNotFoundError:
     if not gui_loaded_from_utils:
         from CommonClient import gui_enabled
 
+
 def guess_deltarune_path(path: str | None):
     tempInstall = ""
     if path == "steaminstall" or path == None:
@@ -71,6 +78,16 @@ def guess_deltarune_path(path: str | None):
             if os.path.exists(tempInstall):
                 return tempInstall
 
+    if path == "linux":
+        tempInstall = "~/.local/share/Steam/steamapps/common/DELTARUNE"
+        if os.path.exists(os.path.expanduser(tempInstall)):
+            return tempInstall
+
+    if path == "linuxdepot":
+        tempInstall = "~/.local/share/Steam/steamapps/content/app_1671210/depot_1671212"
+        if os.path.exists(os.path.expanduser(tempInstall)):
+            return tempInstall
+
     return path
 
 
@@ -90,6 +107,21 @@ class DeltaruneCommandProcessor(ClientCommandProcessor):
             os.makedirs(name=Utils.user_path("DELTARUNE"), exist_ok=True)
             self.ctx.patch_game()
             self.output("Patched.")
+
+    async def _cmd_linux_proxy(self):
+        """Use this if you're a linux user to create a proxy between Archipelago Server and your game"""
+        self.ctx.proxy = websockets.serve(
+            functools.partial(proxy, ctx=self.ctx),
+            host="localhost",
+            port=1225,
+            ping_timeout=999999,
+            ping_interval=999999,
+        )
+        self.ctx.proxy_task = asyncio.create_task(proxy_loop(self.ctx), name="ProxyLoop")
+
+        await self.ctx.proxy
+        self.output("You should now be able to connect to localhost:1225 in game")
+        await self.ctx.proxy_task
 
     def _cmd_delete_saves(self):
         """Delete all archipelago saves and caches."""
@@ -150,7 +182,16 @@ Both gaining and losing recruits have been turned into checks."""
                 )
             else:
                 error = False
+                opened_browsers = False
                 matching_hash = [
+                    "83A5A14F9B92A20F21FB9EC6C8528469",
+                    "0CCBFD7C4F9FB1B86DE1E2AAEC0BACC9",
+                    "1592C9BFFA2D9E53DDEEDC0C4F9A07D6",
+                    "B43158DB2E958E767EBB1AAE72FB05A1",
+                    "27E36F883F4ADE21707DC8261072D416",
+                    "9C80E6300E0548D933CC006F3C22760D",
+                ]
+                matching_hash_04 = [
                     "9D1FEA9DE81219EA7304F32F1AE7A878",
                     "276441245F2F9C11061E36370E6E9C9D",
                     "F0ECF91309E55E93C1A9D6E10AF1064F",
@@ -185,10 +226,12 @@ Both gaining and losing recruits have been turned into checks."""
 
                     if hash != matching_hash[chapter]:
                         self.output(
-                            f"{pathInstall}/{additional_path}{file_name} is not DELTARUNE 1.04 Vanilla. (Is your game 1.05 or modded ?)"
+                            f"{pathInstall}/{additional_path}{file_name} is not DELTARUNE Vanilla. (Manifest 2054633419585385858)"
                         )
                         if hash == matching_hash_1_05[chapter]:
                             self.output("Detected as 1.05")
+                        elif hash == matching_hash_04[chapter]:
+                            self.output("Dectected as 1.04")
                         elif hash == matching_hash_1_05_30TBPS[chapter]:
                             self.output("Are you a speedrunner ? Because 1.05 30TBPS is detected")
                         else:
@@ -196,10 +239,33 @@ Both gaining and losing recruits have been turned into checks."""
 
                         error = True
 
+                if not os.path.exists(Utils.user_path("DELTARUNE_PATCH")):
+                    error = True
+                    self.output(
+                        "ERROR: DELTARUNE_PATCH folder is missing. Please download the patch files and deposit them in the DELTARUNE_PATCH folder at the root of your Archipelago installation."
+                    )
+                    os.makedirs(name=Utils.user_path("DELTARUNE_PATCH"), exist_ok=True)
+                    os.startfile(Utils.user_path("DELTARUNE_PATCH"))
+                    opened_browsers = True
+                    webbrowser.open(deltarune_mod_github, new=2, autoraise=True)
+                for i in range(0, 6):
+                    if not os.path.exists(Utils.user_path("DELTARUNE_PATCH", f"chapter_{i}.bsdiff")):
+                        error = True
+                        self.output(
+                            f"ERROR: DELTARUNE_PATCH/chapter_{i}.bsdiff is missing. Please download the patch files and deposit them in the DELTARUNE_PATCH folder at the root of your Archipelago installation."
+                        )
+                        if not opened_browsers:
+                            os.startfile(Utils.user_path("DELTARUNE_PATCH"))
+                            opened_browsers = True
+                            webbrowser.open(deltarune_mod_github, new=2, autoraise=True)
+
                 if not error:
+                    self.output(
+                        f"Your game will now be patched. Please wait... it might take a while and make your client not respond but that's normal."
+                    )
                     shutil.copytree(pathInstall, Utils.user_path("DELTARUNE"), dirs_exist_ok=True)
                     self.ctx.patch_game()
-                    self.output("Patching successful!")
+                    self.output(f"Patching successful! You can now start {Utils.user_path("DELTARUNE")}/DELTARUNE.exe")
 
 
 class DeltaruneContext(SuperContext):
@@ -207,51 +273,73 @@ class DeltaruneContext(SuperContext):
     game = "DELTARUNE"
     command_processor = DeltaruneCommandProcessor
     items_handling = 0b111
-    chapters = None
-    chapter1 = 0
-    chapter2 = 0
-    chapter3 = 0
-    chapter4 = 0
-    completechapter1 = 0
-    completechapter2 = 0
-    completechapter3 = 0
-    completechapter4 = 0
-    ranchapters = 0
-    item_balancing = 0
-    goal_macguffin_amount = 1
-    chosen_route = 0
-    mandatoryboss = 0
-    mandatorymantle = 0
-    receivingtype = 0
-    unused_items = 0
     save_game_folder = os.path.expandvars(r"%localappdata%/DELTARUNEAP")
+    proxy = None
+    connected = False
+    authenticated = False
+    proxy_endpoint: Endpoint = None
+    proxy_task = None
+    proxy_autoreconnect_task = None
+    proxy_server_msgs = []
+    proxy_message_queue = []
+    room_info = {}
+    connected_msg = {}
+    is_processing_outgoing_messages = False
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
         self.game = "DELTARUNE"
+
+    def is_connected(self) -> bool:
+        return self.server and self.server.socket.open
+
+    def is_proxy_connected(self) -> bool:
+        return self.proxy_endpoint and self.proxy_endpoint.socket.open
+
+    async def disconnect_proxy(self):
+        if self.proxy_endpoint and not self.proxy_endpoint.socket.closed:
+            await self.proxy_endpoint.socket.close()
+        if self.proxy_task is not None:
+            await self.proxy_task
 
     def get_datastore_prefix(self):
         return f"{self.slot}_{self.team}_"
 
     def patch_game(self):
         with open(Utils.user_path("DELTARUNE", "chapter1_windows", "data.win"), "rb") as f:
-            patchedFile = bsdiff4.patch(f.read(), deltarune.data_path("ch1.bsdiff"))
+            with open(Utils.user_path("DELTARUNE_PATCH", "chapter_1.bsdiff"), "rb") as patch_file:
+                logging.info(f"Patching Chapter 1...")
+                patchedFile = bsdiff4.patch(f.read(), patch_file.read())
         with open(Utils.user_path("DELTARUNE", "chapter1_windows", "data.win"), "wb") as f:
             f.write(patchedFile)
         with open(Utils.user_path("DELTARUNE", "chapter2_windows", "data.win"), "rb") as f:
-            patchedFile = bsdiff4.patch(f.read(), deltarune.data_path("ch2.bsdiff"))
+            with open(Utils.user_path("DELTARUNE_PATCH", "chapter_2.bsdiff"), "rb") as patch_file:
+                logging.info(f"Patching Chapter 2...")
+                patchedFile = bsdiff4.patch(f.read(), patch_file.read())
         with open(Utils.user_path("DELTARUNE", "chapter2_windows", "data.win"), "wb") as f:
             f.write(patchedFile)
         with open(Utils.user_path("DELTARUNE", "chapter3_windows", "data.win"), "rb") as f:
-            patchedFile = bsdiff4.patch(f.read(), deltarune.data_path("ch3.bsdiff"))
+            with open(Utils.user_path("DELTARUNE_PATCH", "chapter_3.bsdiff"), "rb") as patch_file:
+                logging.info(f"Patching Chapter 3...")
+                patchedFile = bsdiff4.patch(f.read(), patch_file.read())
         with open(Utils.user_path("DELTARUNE", "chapter3_windows", "data.win"), "wb") as f:
             f.write(patchedFile)
         with open(Utils.user_path("DELTARUNE", "chapter4_windows", "data.win"), "rb") as f:
-            patchedFile = bsdiff4.patch(f.read(), deltarune.data_path("ch4.bsdiff"))
+            with open(Utils.user_path("DELTARUNE_PATCH", "chapter_4.bsdiff"), "rb") as patch_file:
+                logging.info(f"Patching Chapter 4...")
+                patchedFile = bsdiff4.patch(f.read(), patch_file.read())
         with open(Utils.user_path("DELTARUNE", "chapter4_windows", "data.win"), "wb") as f:
             f.write(patchedFile)
+        with open(Utils.user_path("DELTARUNE", "chapter5_windows", "data.win"), "rb") as f:
+            with open(Utils.user_path("DELTARUNE_PATCH", "chapter_5.bsdiff"), "rb") as patch_file:
+                logging.info(f"Patching Chapter 5...")
+                patchedFile = bsdiff4.patch(f.read(), patch_file.read())
+        with open(Utils.user_path("DELTARUNE", "chapter5_windows", "data.win"), "wb") as f:
+            f.write(patchedFile)
         with open(Utils.user_path("DELTARUNE", "data.win"), "rb") as f:
-            patchedFile = bsdiff4.patch(f.read(), deltarune.data_path("deltarune.bsdiff"))
+            with open(Utils.user_path("DELTARUNE_PATCH", "chapter_0.bsdiff"), "rb") as patch_file:
+                logging.info(f"Patching Chapter Select...")
+                patchedFile = bsdiff4.patch(f.read(), patch_file.read())
         with open(Utils.user_path("DELTARUNE", "data.win"), "wb") as f:
             f.write(patchedFile)
 
@@ -263,11 +351,22 @@ class DeltaruneContext(SuperContext):
 
     def on_package(self, cmd: str, args: dict):
         super().on_package(cmd, args)
+        if self.proxy != None:
+            logging.info(f"Server -> Proxy | {args}")
         if cmd == "Connected":
             self.game = self.slot_info[self.slot].game
             self.set_notify(
                 self.get_datastore_prefix() + "completed_chapters", self.get_datastore_prefix() + "current_location"
             )
+            self.connected_msg = args
+            self.connected = True
+            self.authenticated = True
+        elif cmd == "RoomInfo":
+            self.room_info = args
+            logging.info(f"Room info received: {args}")
+        elif self.proxy != None:
+            if cmd != "PrintJSON":
+                self.proxy_server_msgs.append(args)
         async_start(process_deltarune_cmd(self, cmd, args))
 
     def make_gui(self):
@@ -290,11 +389,6 @@ async def process_deltarune_cmd(ctx: DeltaruneContext, cmd: str, args: dict):
         except:
             await ctx.version_mismatch()
             return
-
-
-async def send_testy():
-    """i like to test oh yeah."""
-    logger.info("I am testing yippeee...")
 
 
 def main():

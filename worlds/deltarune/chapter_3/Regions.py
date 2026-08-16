@@ -4,7 +4,9 @@ from BaseClasses import Region
 from rule_builder.field_resolvers import FromOption
 from rule_builder.options import OptionFilter
 from rule_builder.rules import CanReachLocation, Has
+from worlds.deltarune.LogicHelper import all_recruits_route
 from worlds.deltarune.Options import (
+    AllowDoomBoardWithoutAllCharacters,
     IncludeShadowMantle,
     MacGuffinChapter3,
     RandomizeMANTLE,
@@ -59,7 +61,7 @@ def create_regions(world: "DeltaruneWorld"):
     world.get_region(Regions.chapter_3).connect(couch_cliffs)
 
     # Require at least one character for Elnina Lanino and shadowguy fights
-    couch_cliffs.connect(board_1, rule=have_kris | (have_susie_or_ralsei & have_actions))
+    couch_cliffs.connect(board_1, rule=have_kris | (have_susie_or_ralsei & (have_actions | Has(glitched_item_name))))
 
     board_1.connect(green_room)
     board_1.connect(sword_1, rule=Has(items[ItemIDs.odd_controller]))
@@ -67,14 +69,23 @@ def create_regions(world: "DeltaruneWorld"):
     green_room.connect(board_2, rule=Has(items[ItemIDs.board_2_cartridge]))
 
     # Require all characters for Turning off Zapper during Doom Board
-    board_2.connect(doom_board, rule=have_kris_susie_and_ralsei)
+    board_2.connect(
+        doom_board,
+        rule=have_kris_susie_and_ralsei
+        | OptionFilter(AllowDoomBoardWithoutAllCharacters, AllowDoomBoardWithoutAllCharacters.option_true),
+    )
     board_2.connect(sword_2, rule=Has(items[ItemIDs.ice_key]) & Has(items[ItemIDs.odd_controller]))
 
     doom_board.connect(tv_world, rule=Has(items[ItemIDs.vip_pass]))
 
     tv_world.connect(
         sword_3,
-        rule=Has(items[ItemIDs.shelter_key]) & Has(items[ItemIDs.ice_key]) & Has(items[ItemIDs.odd_controller]),
+        rule=(
+            Has(items[ItemIDs.shelter_key])
+            & Has(items[ItemIDs.ice_key])
+            & Has(items[ItemIDs.odd_controller])
+            & have_kris
+        ),
     )
     tv_world.connect(world.get_region(Regions.lost_rabbick))
 
@@ -94,7 +105,24 @@ def create_regions(world: "DeltaruneWorld"):
         | Has(glitched_item_name)
     )
 
-    tv_world.connect(
-        cold_place,
-        rule=mantle_mandatory & shadow_mantle & Has(items[ItemIDs.remote_battery], FromOption(MacGuffinChapter3)),
-    )
+    if all_recruits_route(world):
+        all_recruits = (
+            CanReachLocation(locations[LocationIDs.ch3_recruit_shadowguy])
+            & CanReachLocation(locations[LocationIDs.ch3_recruit_pippins])
+            & CanReachLocation(locations[LocationIDs.ch3_recruit_shuttah])
+            & CanReachLocation(locations[LocationIDs.ch3_recruit_water_cooler])
+            & CanReachLocation(locations[LocationIDs.ch3_recruit_zapper])
+            & CanReachLocation(locations[LocationIDs.ch3_recruit_ribbick])
+        )
+        tv_world.connect(
+            cold_place,
+            rule=mantle_mandatory
+            & all_recruits
+            & shadow_mantle
+            & Has(items[ItemIDs.remote_battery], FromOption(MacGuffinChapter3)),
+        )
+    else:
+        tv_world.connect(
+            cold_place,
+            rule=mantle_mandatory & shadow_mantle & Has(items[ItemIDs.remote_battery], FromOption(MacGuffinChapter3)),
+        )

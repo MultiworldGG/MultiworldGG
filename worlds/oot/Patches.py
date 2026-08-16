@@ -50,12 +50,23 @@ AP_JUNK_TEXT = 0x90B7
 AP_ITEM_NAME_TABLE_SIZE = 2201
 AP_ITEM_NAME_TEXT_SIZE = 0xFFFF
 AP_ACTIVE_ITEM_NAME_SIZE = 49
+AP_MAX_PLAYER_ID = 1024
+AP_PLAYER_TABLE_SIZE = AP_MAX_PLAYER_ID + 1
 AP_TRIFORCE_RAINBOW_PATCHES = (
     (0x0AD0, [0xE7, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
 )
 AP_TRIFORCE_GREY_PATCHES = (
     (0x0AD0, [0xE7, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
 )
+
+
+def require_symbol_length(rom, symbol, min_length):
+    actual_length = rom.sym_length(symbol)
+    if actual_length < min_length:
+        raise RuntimeError(
+            f'{symbol} is too small ({actual_length} bytes, need {min_length}). '
+            'Rebuild the OoT ASM bundle and generated symbols.'
+        )
 
 
 class OoTContainer(APPatch):
@@ -75,6 +86,16 @@ class OoTContainer(APPatch):
 
 
 def patch_rom(world, rom):
+    if world.multiworld.players > AP_MAX_PLAYER_ID:
+        raise RuntimeError(
+            f'Ocarina of Time ROM output supports up to {AP_MAX_PLAYER_ID} AP players, '
+            f'but this multiworld has {world.multiworld.players}.'
+        )
+    require_symbol_length(rom, 'PLAYER_ID', 2)
+    require_symbol_length(rom, 'PLAYER_NAMES', AP_PLAYER_TABLE_SIZE * 8)
+    require_symbol_length(rom, 'MW_PROGRESSIVE_ITEMS_STATE', AP_PLAYER_TABLE_SIZE * 4)
+    require_symbol_length(rom, 'CFG_DUNGEON_REWARD_WORLDS', 9 * 2)
+
     with open(data_path('generated/rom_patch.txt'), 'r') as stream:
         for line in stream:
             address, value = [int(x, 16) for x in line.split(',')]
@@ -404,6 +425,9 @@ def patch_rom(world, rom):
 
     # show seed info on file select screen
     def makebytes(txt, size):
+        # AP player names may contain Unicode, but this file-select renderer only
+        # supports printable single-byte ASCII glyphs.
+        txt = ''.join(c if ' ' <= c <= '~' else '?' for c in txt)
         _bytes = list(ord(c) for c in txt[:size-1]) + [0] * size
         return _bytes[:size]
 
@@ -1574,13 +1598,17 @@ def patch_rom(world, rom):
         raise RuntimeError(f'Exceeded override table size: {len(override_table)}')
     rom.write_bytes(rom.sym('cfg_item_overrides'), override_table_bytes)
     write_ap_item_name_table(world, rom)
-    rom.write_byte(rom.sym('PLAYER_ID'), min(world.player, 255)) # Write player ID
+    rom.write_int16(rom.sym('PLAYER_ID'), world.player) # Write player ID
     placeholder_name = encode_oot_player_name('a player')
     all_player_names = bytearray()
-    for _ in range(256):
+    for _ in range(AP_PLAYER_TABLE_SIZE):
         all_player_names.extend(placeholder_name)
+    for player in range(1, world.multiworld.players + 1):
+        player_name = encode_oot_player_name(world.multiworld.get_player_name(player))
+        player_slot = player * 8
+        all_player_names[player_slot:player_slot + 8] = player_name
     own_name = encode_oot_player_name(world.multiworld.get_player_name(world.player))
-    own_slot = min(world.player, 255) * 8
+    own_slot = world.player * 8
     all_player_names[own_slot:own_slot + 8] = own_name
     rom.write_bytes(rom.sym('PLAYER_NAMES'), all_player_names)
 
@@ -2425,7 +2453,7 @@ def get_override_table(world):
 
 
 override_key_struct = struct.Struct('>BBxxI')  # match override_key_t in get_items.h
-override_struct = struct.Struct('>BBxxIHBxHH')  # match override_t in get_items.h
+override_struct = struct.Struct('>BBxxIHHHH')  # match override_t in get_items.h
 
 def get_override_table_bytes(override_table):
     return b''.join(sorted(itertools.starmap(override_struct.pack, override_table)))
@@ -2446,7 +2474,7 @@ def get_override_entry(ootworld, location):
 
     scene = location.scene
     default = location.default
-    player_id = max(1, min(int(location.item.player), 255))
+    player_id = int(location.item.player)
     ap_item_name_id = 0
     if location.item.game != 'Ocarina of Time': 
         # This is an AP sendable. It's guaranteed to not be None. 
@@ -2873,7 +2901,7 @@ def configure_dungeon_info(rom, world):
 
     dungeon_rewards = [0xff] * 14
     dungeon_reward_areas = bytearray()
-    dungeon_reward_worlds = []
+    dungeon_reward_worlds = bytearray()
     for reward in ('Kokiri Emerald', 'Goron Ruby', 'Zora Sapphire', 'Light Medallion', 'Forest Medallion', 'Fire Medallion', 'Water Medallion', 'Shadow Medallion', 'Spirit Medallion'):
         sentinel = object()
         location = world.hinted_dungeon_reward_locations.get(reward, sentinel)
@@ -2889,7 +2917,7 @@ def configure_dungeon_info(rom, world):
         if location is None:
             # Reward is in starting inventory (Rauru free/free_forced) or could not be found.
             dungeon_reward_areas += HintArea.ROOT.short_name.encode('ascii').ljust(0x16) + b'\0'
-            dungeon_reward_worlds.append(world.player)
+            dungeon_reward_worlds += int(world.player).to_bytes(2, 'big')
             continue
         try:
             area = HintArea.at(location)
@@ -2901,7 +2929,7 @@ def configure_dungeon_info(rom, world):
             is_dungeon = False
             dungeon_name = None
         dungeon_reward_areas += area_name.encode('ascii').ljust(0x16) + b'\0'
-        dungeon_reward_worlds.append(location.player)
+        dungeon_reward_worlds += int(location.player).to_bytes(2, 'big')
         if is_dungeon and location.player == world.player:
             dungeon_rewards[codes.index(dungeon_name)] = boss_reward_index(location.item)
 

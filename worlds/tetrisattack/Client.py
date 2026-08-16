@@ -7,12 +7,11 @@ from struct import pack
 
 from NetUtils import ClientStatus, color
 from worlds.AutoSNIClient import SNIClient
-from worlds.tetrisattack import item_table, location_table
-from worlds.tetrisattack.Items import progressive_items
-from worlds.tetrisattack.Locations import CLEARED_SHOCK_PANELS, VS_CLEARS_START
-from worlds.tetrisattack.Rom import GOALS_POSITION, DEATHLINKHINT, MASKED_VERSION, SRAM_FACTOR, SCSHOCKPANELS_PER_CHECK, \
+from . import item_table, location_table
+from .Items import progressive_items
+from .Rom import GOALS_POSITION, DEATHLINKHINT, MASKED_VERSION, SRAM_FACTOR, SCSHOCKPANELS_PER_CHECK, \
     WORLD_VERSION, STRING_DATA, STRING_DATA_SIZE
-from worlds.tetrisattack.data.Constants import VS_CLEARS_END
+from .data.Constants import VS_CLEARS_END, CLEARED_SHOCK_PANELS, VS_CLEARS_START
 
 if typing.TYPE_CHECKING:
     from SNIClient import SNIContext
@@ -48,7 +47,7 @@ SRAM_SNI_MESSAGE = SRAM_START + 0x0412
 STAGECLEARLASTSTAGE_COMPLETED = SRAM_START + location_table["Stage Clear Last Stage Clear"].code
 PUZZLEL6_COMPLETED = SRAM_START + location_table["Puzzle Round 6 Clear"].code
 EXTRAPUZZLEL6_COMPLETED = SRAM_START + location_table["Extra Puzzle Round 6 Clear"].code
-STAGECLEARSHOCKPANEL_ID = SRAM_START + item_table["Stage Clear ! Panels"].code
+STAGECLEARSHOCKPANEL_ID = SRAM_START + item_table["Stage Clear ! Panel Bundle"].code
 VSSTAGES_COMPLETED = SRAM_START + 0x225
 SRAM_AP_REGION_OFFSET = 0x020
 SRAM_AP_REGION_END = pow(2, SRAM_FACTOR)
@@ -90,7 +89,7 @@ class TetrisAttackSNIClient(SNIClient):
         if rom_prefix is None:
             return False
         rom_hash = await snes_read(ctx, TETRISATTACK_ROMHASH_START, ROMHASH_SIZE)
-        expected_hash = f'{format(MASKED_VERSION, 'X')}'
+        expected_hash = f'{format(MASKED_VERSION, "X")}'
         hash_bytes = bytearray(expected_hash, 'utf8')
         if rom_hash is None:
             snes_logger.error(f'Failed to read ROM name hash')
@@ -445,7 +444,7 @@ def get_progressive_item_addr_range(item_id) -> (int, int):
 
 
 def evaluate_stage_clear(location, loc_id):
-    if "Stage Clear ! Panels" in location:
+    if "Stage Clear ! Panels Check" in location:
         return None
     if "Stage Clear Round " in location:
         return f"SC Round {location[18]}"

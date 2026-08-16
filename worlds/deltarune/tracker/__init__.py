@@ -5,6 +5,11 @@ from worlds.deltarune.tracker.autotracker.chapter1 import (
     handle_player_icon_position as chapter1_handle_player_icon_position,
 )
 
+from worlds.deltarune.tracker.autotracker.chapter4 import (
+    handle_auto_tracking as chapter4_handle_auto_tracking,
+    handle_player_icon_position as chapter4_handle_player_icon_position,
+)
+
 map_without_position_icon = [MapIndex.overview]
 
 
@@ -15,6 +20,8 @@ def handle_auto_tracking(data: dict[str, any]):
     match data.get("current_chapter", -1):
         case 1:
             return chapter1_handle_auto_tracking(data)
+        case 4:
+            return chapter4_handle_auto_tracking(data)
         case _:
             return MapIndex.overview
 
@@ -29,5 +36,7 @@ def handle_player_icon_position(map_index: int, data: dict[str, any]):
     match data.get("current_chapter", -1):
         case 1:
             return chapter1_handle_player_icon_position(map_index, data)
+        case 4:
+            return chapter4_handle_player_icon_position(map_index, data)
         case _:
             return None

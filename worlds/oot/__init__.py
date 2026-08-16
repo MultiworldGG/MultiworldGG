@@ -26,13 +26,13 @@ from .DungeonList import dungeon_table, create_dungeons
 from .LogicTricks import normalized_name_tricks, normalized_name_advanced_tricks
 from .OcarinaSongs import SONG_TABLE, Song, generate_song_list
 from .Rom import Rom
-from .Patches import OoTContainer, patch_rom
+from .Patches import AP_MAX_PLAYER_ID, OoTContainer, patch_rom
 from .N64Patch import create_patch_file
 from .Cosmetics import patch_cosmetics
 
 from BaseClasses import MultiWorld, CollectionState, Tutorial
 from Options import Range, Toggle, VerifyKeys, Accessibility, PlandoConnections, PlandoItems
-from Fill import fill_restrictive, fast_fill, FillError
+from Fill import fill_restrictive, fast_fill, FillError, sweep_from_pool
 from worlds.generic.Rules import exclusion_rules, add_item_rule
 from worlds.AutoWorld import World, AutoLogicRegister, WebWorld
 from worlds.LauncherComponents import launch as launch_component, components, Component, Type, SuffixIdentifier, icon_paths
@@ -254,7 +254,9 @@ class OOTWorld(World):
     settings: typing.ClassVar[OOTSettings]
     topology_present: bool = True
     ut_can_gen_without_yaml = True
-    ut_omitted_slot_options = {'plando_connections', *cosmetic_options, *sfx_options}
+    # APWorld-specific: generic plando items are generation-only data and contain
+    # PlandoItem objects, which cannot be serialized into slot_data.
+    ut_omitted_slot_options = {'plando_connections', 'plando_items', *cosmetic_options, *sfx_options}
     item_name_to_id = {item_name: oot_data_to_ap_id(data, False) for item_name, data in item_table.items() if
                        oot_data_to_ap_id(data, False) is not None and item_name not in {
                         'Buy Magic Bean', 'Milk',
@@ -361,6 +363,12 @@ class OOTWorld(World):
 
     # Option parsing, handling incompatible options, building useful-item table
     def generate_early(self):
+        if self.multiworld.players > AP_MAX_PLAYER_ID:
+            raise Exception(
+                f'Ocarina of Time supports up to {AP_MAX_PLAYER_ID} AP players, '
+                f'but this multiworld has {self.multiworld.players}.'
+            )
+
         self.parser = Rule_AST_Transformer(self, self.player)
         self.ut_replay_slot_data = self.get_ut_replay_slot_data()
         self.ut_replay_results = self.get_generation_results_from_slot_data(self.ut_replay_slot_data)
@@ -383,6 +391,18 @@ class OOTWorld(World):
                 option_value = result.current_key
             setattr(self, option_name, option_value)
 
+        # Match upstream's option dependencies: Hideout entrances are part of
+        # interior ER, and the GF child heart piece option only applies when
+        # Hideout entrances are actually shuffled.
+        if self.shuffle_interior_entrances == 'off':
+            self.shuffle_hideout_entrances = False
+            self.options.shuffle_hideout_entrances.value = 0
+        if not self.shuffle_hideout_entrances:
+            self.shuffle_gerudo_fortress_heart_piece = 'vanilla'
+            self.options.shuffle_gerudo_fortress_heart_piece.value = (
+                type(self.options.shuffle_gerudo_fortress_heart_piece).option_vanilla
+            )
+
         self.regions = []  # internal caches of regions for this world, used later
         self._regions_cache = {}
 
@@ -397,10 +417,9 @@ class OOTWorld(World):
             self.file_hash = [self.random.randint(0, 31) for i in range(5)]
         else:
             self.file_hash = list(self.file_hash)
-        player_id = min(self.player, 255)
         self.connect_name = self.ut_replay_results.get(
             'connect_name',
-            f"OOT{player_id:03d}-" + ''.join(f"{value:02x}" for value in self.file_hash),
+            f"OOT{self.player:03d}-" + ''.join(f"{value:02x}" for value in self.file_hash),
         )
         self.collectible_flag_addresses = {}
         self.song_notes = {name: notes for name, (_, _, notes) in SONG_TABLE.items()}
@@ -992,7 +1011,7 @@ class OOTWorld(World):
                 self._claim_rauru_starting(reward_name, rauru_location)
                 return
             if self.ut_replay_results.get('rauru_free_post_fill', False):
-                self.rauru_free_post_fill = True
+                self._enable_rauru_free_post_fill(rauru_location)
                 return
 
         if mode == 'vanilla':
@@ -1010,7 +1029,7 @@ class OOTWorld(World):
 
         if mode in ('dungeon', 'regional'):
             if self.skip_reward_from_rauru == 'free':
-                self.rauru_free_post_fill = True
+                self._enable_rauru_free_post_fill(rauru_location)
                 return
 
             self.rauru_starting_item = 'Light Medallion'
@@ -1025,7 +1044,11 @@ class OOTWorld(World):
             self._claim_rauru_starting(chosen, rauru_location)
             return
 
+        self._enable_rauru_free_post_fill(rauru_location)
+
+    def _enable_rauru_free_post_fill(self, rauru_location):
         self.rauru_free_post_fill = True
+        add_item_rule(rauru_location, self._can_be_rauru_starting_item)
 
     def _claim_rauru_starting(self, reward_name: str, rauru_location):
         """Push a chosen reward as starting inventory and mark Rauru as a non-sendable check."""
@@ -1035,6 +1058,33 @@ class OOTWorld(World):
         rauru_location.show_in_spoiler = False
         if rauru_location in rauru_location.parent_region.locations:
             rauru_location.parent_region.locations.remove(rauru_location)
+
+    def _can_be_rauru_starting_item(self, item) -> bool:
+        if item.name == 'Nothing':
+            return True
+        target_world = self.multiworld.worlds[item.player]
+        if getattr(target_world, 'game', None) != self.game:
+            return True
+        return self._can_grant_starting_item_name(item.name)
+
+    @staticmethod
+    def _can_grant_starting_item_name(item_name: str) -> bool:
+        from .SaveContext import SaveContext
+        from .ItemPool import IGNORE_LOCATION
+
+        if item_name.endswith(')') and ' (' in item_name:
+            item_base, implicit_count = item_name[:-1].rsplit(' (', 1)
+            if implicit_count.isdigit():
+                item_name = item_base
+
+        return (
+            item_name in SaveContext.bottle_types
+            or item_name in ["Piece of Heart", "Piece of Heart (Treasure Chest Game)"]
+            or item_name == "Heart Container"
+            or item_name == "Bombchu Item"
+            or item_name == IGNORE_LOCATION
+            or item_name in SaveContext.save_writes_table
+        )
 
     @staticmethod
     def item_dungeon_name_from_name(item_name: str) -> Optional[str]:
@@ -1454,8 +1504,9 @@ class OOTWorld(World):
         if not self.shuffle_100_skulltula_rupee:
             loc = self.multiworld.get_location("Kak 100 Gold Skulltula Reward", self.player)
             loc.parent_region.locations.remove(loc)
-        if self.shuffle_gerudo_fortress_heart_piece != 'shuffle':
-            loc = self.multiworld.get_location("GF Freestanding PoH", self.player)
+        # Hideout ER can still leave the child-only balcony path unreachable.
+        loc = self.multiworld.get_location("GF Freestanding PoH", self.player)
+        if self.shuffle_gerudo_fortress_heart_piece != 'shuffle' or loc not in reachable:
             loc.parent_region.locations.remove(loc)
 
         # Exclude locations in Ganon's Castle proportional to the number of items required to make the bridge
@@ -1498,6 +1549,43 @@ class OOTWorld(World):
 
 
     def fill_hook(self, progitempool, usefulitempool, filleritempool, fill_locations):
+        any_dungeon_silver_rupees = [
+            item for item in progitempool
+            if item.player == self.player
+            and item.type == 'SilverRupee'
+            and self.shuffle_silver_rupees == 'any_dungeon'
+        ]
+        if any_dungeon_silver_rupees:
+            candidate_locations = [
+                location for location in fill_locations
+                if location.player == self.player
+                and valid_dungeon_item_location(self, 'any_dungeon', '', location)
+            ]
+            if candidate_locations:
+                other_progression = [
+                    item for item in progitempool
+                    if item not in any_dungeon_silver_rupees
+                ]
+                self.random.shuffle(candidate_locations)
+                placement_items = any_dungeon_silver_rupees[:]
+                fill_restrictive(
+                    self.multiworld,
+                    sweep_from_pool(self.multiworld.state, other_progression),
+                    candidate_locations,
+                    placement_items,
+                    single_player_placement=True,
+                    lock=True,
+                    allow_excluded=True,
+                    name=f"OoT Any Dungeon Silver Rupees P{self.player}",
+                )
+                for item in any_dungeon_silver_rupees:
+                    if item.location is None:
+                        continue
+                    if item in progitempool:
+                        progitempool.remove(item)
+                    if item.location in fill_locations:
+                        fill_locations.remove(item.location)
+
         if self.empty_dungeons_mode == 'none':
             return
 
@@ -1673,6 +1761,38 @@ class OOTWorld(World):
                     return
             raise ValueError(f"Could not remove prefill item by identity: {item}")
 
+        def place_shop_items():
+            if self.shopsanity == 'off':
+                return
+
+            # Place shops before other restricted prefill, matching upstream's
+            # order so wallet/bottle/adult shop rules are live for later fills.
+            shop_prog = list(filter(lambda item: item.type == 'Shop' and item.advancement, self.pre_fill_items))
+            shop_junk = list(filter(lambda item: item.type == 'Shop' and not item.advancement, self.pre_fill_items))
+            shop_locations = list(
+                filter(lambda location: location.type == 'Shop' and location.name not in self.shop_prices,
+                       self.multiworld.get_unfilled_locations(player=self.player)))
+            shop_locations_to_hide = shop_locations.copy()
+            shop_prog.sort(key=lambda item: {
+                'Buy Deku Shield': 2 * int(self.open_forest == 'closed'),
+                'Buy Goron Tunic': 1,
+                'Buy Zora Tunic': 1,
+            }.get(item.name, 0))  # place Deku Shields if needed, then tunics, then other advancement
+
+            for item in shop_prog + shop_junk:
+                remove_prefill_item(item)
+            self.random.shuffle(shop_locations)
+            fill_restrictive(self.multiworld, prefill_state(state), shop_locations, shop_prog,
+                single_player_placement=True, lock=True, allow_excluded=True)
+            fast_fill(self.multiworld, shop_junk, shop_locations)
+            for loc in shop_locations_to_hide:
+                loc.locked = True
+                loc.address = None
+                loc.show_in_spoiler = False
+
+        place_shop_items()
+        set_shop_rules(self)
+
         # Pre-completed dungeons remain beatable but barren. Their traversal
         # items are still placed in the dungeon; non-required dungeon items are
         # discarded and replaced with green rupees in fill_hook.
@@ -1686,39 +1806,9 @@ class OOTWorld(World):
             remove_prefill_item(item)
             self.empty_dungeon_free_junk_count += 1
 
-        # Empty dungeons keep the traversal layout vanilla. This avoids making a
-        # live-but-barren dungeon fail full accessibility because a key or
-        # silver rupee puzzle item was shuffled behind itself.
-        empty_dungeon_required_items = [
-            item for item in self.pre_fill_items
-            if (self.item_precompleted_dungeon_name(item) is not None
-                and item.type in {'SmallKey', 'BossKey', 'SilverRupee'})
-        ]
-
-        def empty_dungeon_vanilla_locations(item):
-            dungeon_name = self.item_precompleted_dungeon_name(item)
-            vanilla_item_names = {item.name}
-            item_alias = getattr(item, 'special', {}).get('alias')
-            if item_alias:
-                vanilla_item_names.add(item_alias[0])
-            if item.name.startswith('Small Key Ring ('):
-                vanilla_item_names.add(f"Small Key ({dungeon_name})")
-            return [
-                location for location in self.multiworld.get_unfilled_locations(player=self.player)
-                if (getattr(location.parent_region, 'dungeon', None) is not None
-                    and location.parent_region.dungeon.name == dungeon_name
-                    and location.vanilla_item in vanilla_item_names)
-            ]
-
-        for item in empty_dungeon_required_items:
-            locations = empty_dungeon_vanilla_locations(item)
-            if not locations:
-                continue
-            location = locations[0]
-            remove_prefill_item(item)
-            self.multiworld.push_item(location, item, collect=False)
-            location.locked = True
-            placed_prefill_items.append(item)
+        # Required traversal items from pre-completed dungeons remain in
+        # pre_fill_items. The dungeon-item fill below restricts them to their
+        # own dungeon while still respecting the active logic graph.
 
         # Place dungeon items
         special_fill_types = [
@@ -1823,6 +1913,7 @@ class OOTWorld(World):
 
             songs = list(filter(lambda item: item.type == 'Song', self.pre_fill_items))
             for song in songs:
+                song.song_main_pool_fallback = False
                 self.pre_fill_items.remove(song)
             song_of_time = next((song for song in songs if song.name == 'Song of Time'), None)
             song_of_time_opens_door = (
@@ -1830,47 +1921,160 @@ class OOTWorld(World):
                 and self.open_door_of_time not in ('open', 'stones')
             )
 
-            important_warps = (self.shuffle_special_interior_entrances or self.shuffle_overworld_entrances or
-                               self.warp_songs or self.spawn_positions)
-            song_order = {
-                'Zeldas Lullaby': 1,
-                'Eponas Song': 1,
-                'Sarias Song': 3 if important_warps else 0,
-                'Suns Song': 0,
-                'Song of Time': 0,
-                'Song of Storms': 3,
-                'Minuet of Forest': 2 if important_warps else 0,
-                'Bolero of Fire': 2 if important_warps else 0,
-                'Serenade of Water': 2 if important_warps else 0,
-                'Requiem of Spirit': 2,
-                'Nocturne of Shadow': 2,
-                'Prelude of Light': 2 if important_warps else 0,
-            }
-            songs.sort(key=lambda song: song_order.get(song.name, 0))
+            def place_songs(song_state, available_locations, songs_to_place, allow_main_pool_fallback=False):
+                remaining_locations = [location for location in available_locations if location.item is None]
+
+                fallback_songs = []
+
+                def defer_to_main_pool(song):
+                    song.song_main_pool_fallback = True
+                    fallback_songs.append(song)
+
+                while True:
+                    remaining_songs = [
+                        song for song in songs_to_place
+                        if song.location is None and song not in fallback_songs
+                    ]
+                    working_state = song_state.copy()
+                    for song in fallback_songs:
+                        self.collect(working_state, song)
+                    if fallback_songs:
+                        working_state.sweep_for_advancements(locations=self.get_locations())
+
+                    song_candidates = {}
+                    placement_error = None
+                    for song in remaining_songs:
+                        assumed_songs = [other for other in remaining_songs if other is not song]
+                        max_state = sweep_from_pool(
+                            working_state,
+                            assumed_songs,
+                            self.multiworld.get_filled_locations(song.player),
+                        )
+                        candidates = [
+                            location for location in remaining_locations
+                            if location.player == song.player and location.can_fill(max_state, song, True)
+                        ]
+                        if not candidates:
+                            placement_error = FillError(
+                                f"No valid song locations for {song} among "
+                                f"{', '.join(str(location) for location in remaining_locations)}"
+                            )
+                            break
+                        self.random.shuffle(candidates)
+                        song_candidates[song] = candidates
+
+                    location_to_song = {}
+
+                    def assign_song(song, seen_locations):
+                        for location in song_candidates[song]:
+                            if location in seen_locations:
+                                continue
+                            seen_locations.add(location)
+                            previous_song = location_to_song.get(location)
+                            if previous_song is None or assign_song(previous_song, seen_locations):
+                                location_to_song[location] = song
+                                return True
+                        return False
+
+                    if placement_error is None:
+                        for song in sorted(remaining_songs, key=lambda candidate_song: len(song_candidates[candidate_song])):
+                            if not assign_song(song, set()):
+                                candidate_summary = '; '.join(
+                                    f"{song.name}: {len(candidates)}"
+                                    for song, candidates in sorted(song_candidates.items(), key=lambda entry: entry[0].name)
+                                )
+                                location_summary = '; '.join(
+                                    f"{location.name}: {sum(location in candidates for candidates in song_candidates.values())}"
+                                    for location in remaining_locations
+                                )
+                                placement_error = FillError(
+                                    f"No valid song matching for {', '.join(str(song) for song in remaining_songs)} "
+                                    f"among {', '.join(str(location) for location in remaining_locations)}. "
+                                    f"Candidate counts: {candidate_summary}. "
+                                    f"Location counts: {location_summary}"
+                                )
+                                break
+
+                    if placement_error is not None:
+                        if allow_main_pool_fallback and remaining_songs:
+                            fallback_song = max(
+                                remaining_songs,
+                                key=lambda song: (len(song_candidates.get(song, [])), self.random.random()),
+                            )
+                            defer_to_main_pool(fallback_song)
+                            logger.debug(
+                                f"Deferring {fallback_song} for player {self.player} to AP main fill "
+                                f"after song-location matching failed: {placement_error}"
+                            )
+                            continue
+                        raise placement_error
+
+                    placements = list(location_to_song.items())
+                    for location, song in placements:
+                        self.multiworld.push_item(location, song, False)
+                        location.locked = True
+
+                    validation_state = sweep_from_pool(
+                        working_state,
+                        [],
+                        self.multiworld.get_filled_locations(self.player),
+                    )
+                    invalid_locations = [location for location, _ in placements if not location.can_reach(validation_state)]
+                    if invalid_locations:
+                        for location, song in placements:
+                            location.item = None
+                            location.locked = False
+                            song.location = None
+                            song.world = None
+                        if allow_main_pool_fallback:
+                            invalid_songs = [
+                                song for location, song in placements
+                                if location in invalid_locations
+                            ]
+                            fallback_song = max(
+                                invalid_songs or remaining_songs,
+                                key=lambda song: (len(song_candidates.get(song, [])), self.random.random()),
+                            )
+                            defer_to_main_pool(fallback_song)
+                            logger.debug(
+                                f"Deferring {fallback_song} for player {self.player} to AP main fill "
+                                f"after song placement validation failed"
+                            )
+                            continue
+                        raise FillError(
+                            f"Song placement left unreachable locations: "
+                            f"{', '.join(str(location) for location in invalid_locations)}"
+                        )
+
+                    for song in fallback_songs:
+                        self.itempool.append(song)
+                        self.multiworld.itempool.append(song)
+                        self.collect(state, song)
+                    if fallback_songs:
+                        state.sweep_for_advancements(locations=self.get_locations())
+                    placed_prefill_items.extend(item for _, item in placements)
+                    return
 
             while tries:
                 placed_prefill_item_count = len(placed_prefill_items)
                 try:
+                    attempt_songs = songs[:]
+                    self.random.shuffle(attempt_songs)
                     self.random.shuffle(song_locations)
                     if self.shuffle_song_items == 'dungeon':
                         song_locations.sort(key=lambda location: 0 if location.name == 'Sheik in Ice Cavern' else 1)
-                    song_base_state = base_prefill_state(assume_dungeon_rewards=False)
+                    song_base_state = base_prefill_state()
                     if song_of_time_opens_door:
                         song_of_time_state = prefill_state(base_prefill_state(
                             assume_song_of_time=False,
                             assume_time_travel=False,
-                            assume_dungeon_rewards=False,
                         ))
-                        fill_restrictive(self.multiworld, song_of_time_state, song_locations[:], [song_of_time],
-                            single_player_placement=True, lock=True, allow_excluded=True,
-                            on_place=lambda loc: placed_prefill_items.append(loc.item))
+                        place_songs(song_of_time_state, song_locations, [song_of_time])
                     song_state = prefill_state(song_base_state)
-                    remaining_songs = [song for song in songs if song.location is None]
+                    remaining_songs = [song for song in attempt_songs if song.location is None]
                     remaining_song_locations = [location for location in song_locations if location.item is None]
 
-                    fill_restrictive(self.multiworld, song_state, remaining_song_locations, remaining_songs,
-                                     single_player_placement=True, lock=True, allow_excluded=True,
-                                     on_place=lambda loc: placed_prefill_items.append(loc.item))
+                    place_songs(song_state, remaining_song_locations, remaining_songs, allow_main_pool_fallback=True)
                     logger.debug(
                         f"Successfully placed songs for player {self.player} "
                         f"after {max_song_tries + 1 - tries} attempt(s)")
@@ -1920,36 +2124,15 @@ class OOTWorld(World):
                     on_place=lambda loc: placed_prefill_items.append(loc.item))
                 self.hinted_dungeon_reward_locations[reward.name] = reward.location
 
-        # Place shop items
-        # fast fill will fail because there is some logic on the shop items. we'll gather them up and place the shop items
-        if self.shopsanity != 'off':
-            shop_prog = list(filter(lambda item: item.type == 'Shop' and item.advancement, self.pre_fill_items))
-            shop_junk = list(filter(lambda item: item.type == 'Shop' and not item.advancement, self.pre_fill_items))
-            shop_locations = list(
-                filter(lambda location: location.type == 'Shop' and location.name not in self.shop_prices,
-                       self.multiworld.get_unfilled_locations(player=self.player)))
-            shop_locations_to_hide = shop_locations.copy()
-            shop_prog.sort(key=lambda item: {
-                'Buy Deku Shield': 2 * int(self.open_forest == 'closed'),
-                'Buy Goron Tunic': 1,
-                'Buy Zora Tunic': 1,
-            }.get(item.name, 0))  # place Deku Shields if needed, then tunics, then other advancement
-            self.random.shuffle(shop_locations)
-            self.pre_fill_items = []  # all prefill should be done
-            fill_restrictive(self.multiworld, prefill_state(state), shop_locations, shop_prog,
-                single_player_placement=True, lock=True, allow_excluded=True)
-            fast_fill(self.multiworld, shop_junk, shop_locations)
-            for loc in shop_locations_to_hide:
-                loc.locked = True
-                loc.address = None
-                loc.show_in_spoiler = False
-        set_shop_rules(self)  # sets wallet requirements on shop items, must be done after they are filled
-
     def post_fill(self):
         if self.rauru_free_post_fill:
             rauru_loc = self.multiworld.get_location('ToT Reward from Rauru', self.player)
             extracted = rauru_loc.item
             if extracted is not None:
+                if not self._can_be_rauru_starting_item(extracted):
+                    raise FillError(
+                        f'ToT Reward from Rauru received {extracted.name}, which cannot be granted as '
+                        'starting inventory. This should have been prevented by the Rauru item rule.')
                 if extracted.location is rauru_loc:
                     extracted.location = None
                 rauru_loc.item = None
@@ -2058,11 +2241,18 @@ class OOTWorld(World):
         oot_worlds = list(multiworld.get_game_worlds(cls.game))
 
         def hint_type_players(hint_type: str) -> set:
-            return {autoworld.player for autoworld in oot_worlds
-                    if autoworld.hints != 'none' 
-                    and autoworld.hint_dist_user['distribution'][hint_type]['copies'] > 0
-                    and (autoworld.hint_dist_user['distribution'][hint_type]['fixed'] > 0 
-                      or autoworld.hint_dist_user['distribution'][hint_type]['weight'] > 0)}
+            def hint_enabled(autoworld) -> bool:
+                if autoworld.hints == 'none':
+                    return False
+                hint_dist = autoworld.hint_dist_user.get('distribution', {}).get(hint_type)
+                if not hint_dist:
+                    return False
+                return (
+                    hint_dist.get('copies', 0) > 0
+                    and (hint_dist.get('fixed', 0) > 0 or hint_dist.get('weight', 0) > 0)
+                )
+
+            return {autoworld.player for autoworld in oot_worlds if hint_enabled(autoworld)}
 
         try:
             item_hint_players = hint_type_players('item')

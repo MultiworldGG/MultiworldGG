@@ -238,6 +238,8 @@
                 (logic_water_dragon_jump_dive and (can_use(Bow) or can_use(Longshot) or can_use(Slingshot)))
                 or (is_adult and glitch_ledge_clip))
                 or
+                (is_adult and Iron_Boots and Hookshot)
+                or
                 (is_child and (Slingshot or has_bombchus or Boomerang) and (logic_water_dragon_child or glitch_water_dragon_cs_dive))
                 or
                 (is_adult and (Bow or has_bombchus or can_use(Boomerang) or Hookshot) and (logic_water_dragon_adult or glitch_water_dragon_cs_dive))"

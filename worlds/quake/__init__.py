@@ -51,7 +51,6 @@ class Q1World(World):
     """
 
     game = "Quake 1"
-    author: str = "rand(0)"
     game_id = GAME_ID
     game_full_name = "Quake 1"
 

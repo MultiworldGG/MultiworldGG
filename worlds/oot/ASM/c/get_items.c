@@ -12,6 +12,7 @@
 #include "save.h"
 #include "models.h"
 #include "ap_item_names.h"
+#include "ap_player.h"
 
 extern uint8_t SHUFFLE_CHEST_GAME;
 extern uint8_t FAST_CHESTS;
@@ -23,9 +24,10 @@ int item_overrides_count = 0;
 
 z64_actor_t* dummy_actor = NULL;
 
-// Co-op state
-extern uint8_t PLAYER_ID;
-extern uint8_t PLAYER_NAME_ID;
+// Co-op state. Player ids are 16-bit so AP worlds above slot 255 still compare
+// and route correctly when items are collected or sent to the bridge.
+extern uint16_t PLAYER_ID;
+extern uint16_t PLAYER_NAME_ID;
 extern uint16_t INCOMING_PLAYER;
 extern uint16_t INCOMING_ITEM;
 extern uint8_t MW_SEND_OWN_ITEMS;
@@ -55,7 +57,7 @@ const uint8_t REQUIRED_PENDING_FRAMES = 6;
 // xlflag_room_blob contains a compressed table of actor bit assignments for each scene/room/setup.
 // Call get_xflag_bit_offset to retrieve the desired offset for a flag.
 uint16_t xflag_scene_table[101];
-uint8_t xflag_room_table[700];
+uint8_t xflag_room_table[1024];
 uint8_t xflag_room_blob[3000];
 alt_override_t alt_overrides[200];
 
@@ -244,6 +246,7 @@ void activate_override(override_t override) {
         item_row = get_item_row(override.value.looks_like_item_id);
     }
     active_item_fast_chest = item_row->chest_type == BROWN_CHEST || item_row->chest_type == SILVER_CHEST || item_row->chest_type == SKULL_CHEST_SMALL || item_row->chest_type == HEART_CHEST_SMALL;
+    // AP large multiworld: keep the full player id for name lookup.
     PLAYER_NAME_ID = override.value.base.player;
 }
 
@@ -891,7 +894,8 @@ int16_t get_override_drop_id(int16_t dropId) {
     return dropId;
 }
 
-void dispatch_item(uint16_t resolved_item_id, uint8_t player, override_t* override, item_row_t* item_row) {
+// AP large multiworld: player is a full AP slot id, not an 8-bit ROM-local id.
+void dispatch_item(uint16_t resolved_item_id, uint16_t player, override_t* override, item_row_t* item_row) {
     // Give the item to the right place
     if (resolved_item_id == GI_TRIFORCE_PIECE) {
         // ### AP SPECIFIC CHANGE ###
@@ -948,8 +952,10 @@ uint8_t item_give_collectible(uint8_t item, z64_link_t* link, z64_actor_t* from_
         //    z64_SetCollectibleFlags(&z64_game, pItem->collectibleFlag);
         //}
         item_id = collectible_override.value.base.item_id;
-        uint8_t player = collectible_override.value.base.player;
+        // AP large multiworld: preserve player ids above 255 from overrides.
+        uint16_t player = collectible_override.value.base.player;
 
+        // AP large multiworld: PLAYER_NAME_ID indexes the widened name table.
         PLAYER_NAME_ID = player;
 
         // If it's a collectible item don't do the fanfare music/message box.
@@ -1006,7 +1012,8 @@ uint8_t item_give_collectible(uint8_t item, z64_link_t* link, z64_actor_t* from_
 void get_skulltula_token(z64_actor_t* token_actor) {
     override_t override = lookup_override(token_actor, 0, 0);
     uint16_t item_id;
-    uint8_t player;
+    // AP large multiworld: skulltula overrides can belong to slots above 255.
+    uint16_t player;
     if (override.key.all == 0) {
         // Give a skulltula token if there is no override
         item_id = GI_SKULL_TOKEN;
@@ -1021,6 +1028,7 @@ void get_skulltula_token(z64_actor_t* token_actor) {
 
     token_actor->draw_proc = NULL;
 
+    // AP large multiworld: PLAYER_NAME_ID indexes the widened name table.
     PLAYER_NAME_ID = player;
     ap_item_names_set_active_from_override(&override);
     z64_DisplayTextbox(&z64_game, resolve_item_text_id(item_row, player != PLAYER_ID), 0);
@@ -1055,6 +1063,7 @@ void fairy_ocarina_getitem() {
         }
     }
     item_row_t* item_row = get_item_row(resolved_item_id);
+    // AP large multiworld: keep the full player id for name lookup.
     PLAYER_NAME_ID = override.value.base.player;
     ap_item_names_set_active_from_override(&override);
     z64_DisplayTextbox(&z64_game, resolve_item_text_id(item_row, PLAYER_NAME_ID != PLAYER_ID), 0);

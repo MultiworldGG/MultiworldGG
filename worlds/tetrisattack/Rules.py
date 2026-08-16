@@ -29,7 +29,7 @@ def set_stage_clear_rules(world: "TetrisAttackWorld") -> None:
                  lambda state: stage_clear_able_to_win(world, state))
 
     for i in range(1, 101):
-        try_set_rule(world, f"Stage Clear ! Panels #{i}",
+        try_set_rule(world, f"Stage Clear ! Panels Check #{i}",
                      lambda state, c=i: stage_clear_can_clear_shock_panels(world, state, c))
 
 

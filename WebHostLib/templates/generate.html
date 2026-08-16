@@ -180,16 +180,16 @@ Warning: playthrough can take a significant amount of time for larger multiworld
                                 <tr>
                                     <td>
                                         <label for="hint_mode">Hint Mode:
-                                            <span class="interactive" data-tooltip="Decide if hints include exact location data or just reference the respective world.">
+                                            <span class="interactive" data-tooltip="Item hints can conceal exact locations; location hints instead conceal exact items. Rehint to reveal the hidden detail.">
                                                 (?)
                                             </span>
                                         </label>
                                     </td>
                                     <td>
                                         <select name="hint_mode" id="hint_mode">
-                                                <option value="all">Hide All (hide full location in all worlds unless rehinted)</option>
-                                                <option value="own">Hide Own (hide full location in own world unless rehinted)</option>
-                                                <option selected="selected" value="default">Default (show full location)</option>
+                                                <option value="all">Hide All (hide details for all placements)</option>
+                                                <option value="own">Hide Own (hide details for local placements)</option>
+                                                <option selected="selected" value="default">Default (show full details)</option>
                                         </select>
                                     </td>
                                 </tr>

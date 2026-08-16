@@ -2,11 +2,25 @@ from typing import TYPE_CHECKING
 from rule_builder.rules import CanReachRegion, Has
 from worlds.deltarune.Items import ItemIDs, items
 from worlds.deltarune.Locations import LocationIDs, locations
+from worlds.deltarune.LogicHelper import (
+    doorkey_from_broken_keys,
+    include_hidden_items,
+    include_lose_recruits_chapter1,
+    include_recruits_chapter1,
+    include_secret_bosses_items_requirement,
+    include_secret_bosses_items_reward,
+)
 from worlds.deltarune.Regions import Regions
 from worlds.deltarune.Rules import (
-    can_recruit_chapter1,
-    have_kris_susie_or_ralsei,
-    can_lost_chapter1_pre_castle,
+    can_recruit_ruddin,
+    can_recruit_hathy,
+    can_recruit_jigsawry,
+    can_recruit_ponman,
+    can_recruit_rabbick,
+    can_recruit_bloxer,
+    can_recruit_head_hathy,
+    can_recruit_rudinn_ranger,
+    can_lose_chapter1,
 )
 
 if TYPE_CHECKING:
@@ -35,30 +49,29 @@ def set_rules(world: "DeltaruneWorld"):
         world.get_location(locations[LocationIDs.ch1_throw_away_manual_again]), Has(items[ItemIDs.manual], 2)
     )
 
-    if world.is_chapter_1_recruit_system_enabled():
-        if world.is_all_recruits():
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_rudinn]), can_recruit_chapter1)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_hathy]), can_recruit_chapter1)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_jigsawry]), can_recruit_chapter1)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_ponman]), can_recruit_chapter1)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_rabbick]), can_recruit_chapter1)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_bloxer]), can_recruit_chapter1)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_head_hathy]), can_recruit_chapter1)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_rudinn_ranger]), can_recruit_chapter1)
+    if include_recruits_chapter1(world):
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_rudinn]), can_recruit_ruddin)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_hathy]), can_recruit_hathy)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_jigsawry]), can_recruit_jigsawry)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_ponman]), can_recruit_ponman)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_rabbick]), can_recruit_rabbick)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_bloxer]), can_recruit_bloxer)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_head_hathy]), can_recruit_head_hathy)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_recruit_rudinn_ranger]), can_recruit_rudinn_ranger)
 
-        if world.is_weird_route():
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_rudinn]), can_lost_chapter1_pre_castle)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_hathy]), can_lost_chapter1_pre_castle)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_jigsawry]), can_lost_chapter1_pre_castle)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_ponman]), can_lost_chapter1_pre_castle)
-            world.set_rule(world.get_location(locations[LocationIDs.cc_lost_rabbick]), can_lost_chapter1_pre_castle)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_bloxer]), can_lost_chapter1_pre_castle)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_head_hathy]), have_kris_susie_or_ralsei)
-            world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_rudinn_ranger]), have_kris_susie_or_ralsei)
+    if include_lose_recruits_chapter1(world):
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_rudinn]), can_lose_chapter1)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_hathy]), can_lose_chapter1)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_jigsawry]), can_lose_chapter1)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_ponman]), can_lose_chapter1)
+        world.set_rule(world.get_location(locations[LocationIDs.cc_lost_rabbick]), can_lose_chapter1)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_bloxer]), can_lose_chapter1)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_head_hathy]), can_lose_chapter1)
+        world.set_rule(world.get_location(locations[LocationIDs.ch1_lost_rudinn_ranger]), can_lose_chapter1)
 
 
 def handle_locked_items(world: "DeltaruneWorld"):
-    if not world.is_secret_bosses_randomized():
+    if not include_secret_bosses_items_reward(world):
         world.get_location(locations[LocationIDs.ch1_card_castle_jevil_1]).place_locked_item(
             world.create_item(items[ItemIDs.jevilstail])
         )
@@ -70,7 +83,7 @@ def handle_locked_items(world: "DeltaruneWorld"):
         )
 
     # Hidden items
-    if not world.is_hidden_items_randomized():
+    if not include_hidden_items(world):
         world.get_location(locations[LocationIDs.ch1_forest_man]).place_locked_item(
             world.create_item(items[ItemIDs.chapter_1_egg])
         )
@@ -78,7 +91,7 @@ def handle_locked_items(world: "DeltaruneWorld"):
             world.create_item(items[ItemIDs.castle_moss])
         )
 
-    if not world.is_secret_bosses_items_requirement_randomized():
+    if not include_secret_bosses_items_requirement(world):
         world.get_location(locations[LocationIDs.ch1_seam_seap_talk_about_strange_prisoner]).place_locked_item(
             world.create_item(items[ItemIDs.broken_key_a])
         )
@@ -91,3 +104,8 @@ def handle_locked_items(world: "DeltaruneWorld"):
         world.get_location(locations[LocationIDs.ch1_bake_sale_repair_door_key]).place_locked_item(
             world.create_item(items[ItemIDs.door_key])
         )
+    else: 
+        if doorkey_from_broken_keys(world):
+            world.get_location(locations[LocationIDs.ch1_bake_sale_repair_door_key]).place_locked_item(
+                world.create_item(items[ItemIDs.door_key])
+            )

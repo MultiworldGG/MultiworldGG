@@ -587,10 +587,10 @@ class ServerOptions(Group):
     class HintMode(str):
         """
         Hint modes
-        Decides if hints pointing towards a player's own world display the exact location
-        "default" -> hints are shown in full no matter which world
-        "own" -> hints pointing towards the hinting player's world do not expose the exact location unless hinted and paid for again.
-        "all" -> hints do not expose the exact location unless hinted and paid for again.
+        Controls whether item hints expose exact locations and location hints expose exact items.
+        "default" -> hints are shown in full
+        "own" -> conceal details for items placed in their owner's world unless rehinted and paid for again
+        "all" -> conceal details for all placements unless rehinted and paid for again
         """
 
     class RemainingMode(str):

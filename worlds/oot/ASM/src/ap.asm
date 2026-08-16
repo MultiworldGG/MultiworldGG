@@ -13,4 +13,4 @@
 .definelabel BIG_POE_COUNT,                0x8040001E
 .definelabel DEATH_LINK,                   0x8040002B
 
-.definelabel AP_PLAYER_NAME,               0x80400839
+.definelabel AP_PLAYER_NAME,               0x80402045

@@ -1310,7 +1310,7 @@ def collect_hint_location_id(ctx: Context, team: int, slot: int, seeked_location
 
         found = seeked_location in ctx.location_checks[team, slot]
         entrance = ctx.er_hint_data.get(slot, {}).get(seeked_location, "")
-        hidden_display = (
+        hidden_item = (
             allow_hidden
             and ((ctx.hint_mode == "own" and slot == receiving_player) or ctx.hint_mode == "all")
             and not found
@@ -1324,7 +1324,8 @@ def collect_hint_location_id(ctx: Context, team: int, slot: int, seeked_location
             else:
                 status = HintStatus.HINT_PRIORITY
 
-        return [Hint(receiving_player, slot, seeked_location, item_id, found, entrance, item_flags, status, hidden_display)]
+        return [Hint(receiving_player, slot, seeked_location, item_id, found, entrance, item_flags, status,
+                     item_hidden=hidden_item)]
     return []
 
 
@@ -1336,13 +1337,26 @@ status_names: typing.Dict[HintStatus, str] = {
     HintStatus.HINT_PRIORITY: "(priority)",
 }
 def format_hint(ctx: Context, team: int, hint: Hint) -> str:
-    text = f"[Hint]: {ctx.player_names[team, hint.receiving_player]}'s " \
-           f"{ctx.item_names[ctx.slot_info[hint.receiving_player].game][hint.item]} is " \
-           f"at {ctx.location_names[ctx.slot_info[hint.finding_player].game][hint.location]} " \
-           f"in {ctx.player_names[team, hint.finding_player]}'s World"
+    receiving_name = ctx.player_names[team, hint.receiving_player]
+    finding_name = ctx.player_names[team, hint.finding_player]
+    item_name = ctx.item_names[ctx.slot_info[hint.receiving_player].game][hint.item]
+    location_name = ctx.location_names[ctx.slot_info[hint.finding_player].game][hint.location]
 
-    if hint.entrance:
-        text += f" at {hint.entrance}"
+    if hint.item_hidden:
+        item_display = f"one of {finding_name}'s items" if hint.local else f"one of {receiving_name}'s items"
+        text = f"[Hint]: {location_name} in {finding_name}'s World"
+        if hint.entrance:
+            text += f" at {hint.entrance}"
+        text += f" contains {item_display} ({hint.item_classification})"
+    else:
+        text = f"[Hint]: {receiving_name}'s {item_name}"
+        if hint.hidden:
+            world_display = f"{receiving_name}'s own World" if hint.local else f"{finding_name}'s World"
+            text += f" is in {world_display}"
+        else:
+            text += f" is at {location_name} in {finding_name}'s World"
+            if hint.entrance:
+                text += f" at {hint.entrance}"
 
     return text + ". " + status_names.get(hint.status, "(unknown)")
 
@@ -1842,15 +1856,15 @@ class ClientMessageProcessor(CommonCommandProcessor):
         if hints:
             new_hints = set(hints) - self.ctx.hints[self.client.team, self.client.slot]
             old_hints = list(set(hints) - new_hints)
-            hidden_old_hints = [hint for hint in old_hints if hint.hidden]
-            truly_old_hints = [hint for hint in old_hints if not hint.hidden]
+            hidden_old_hints = [hint for hint in old_hints if hint.hidden or hint.item_hidden]
+            truly_old_hints = [hint for hint in old_hints if not hint.hidden and not hint.item_hidden]
             if new_hints or hidden_old_hints:
                 # Remove hidden old hints from store so they can be re-added as fully revealed
                 for hint in hidden_old_hints:
                     self.ctx.hints[self.client.team, hint.finding_player].discard(hint)
                     for player in self.ctx.slot_set(hint.receiving_player):
                         self.ctx.hints[self.client.team, player].discard(hint)
-                revealed_hints = [hint._replace(hidden=False) for hint in hidden_old_hints]
+                revealed_hints = [hint._replace(hidden=False, item_hidden=False) for hint in hidden_old_hints]
 
                 found_hints = [hint for hint in new_hints if hint.found]
                 not_found_hints = [hint for hint in new_hints if not hint.found] + revealed_hints
@@ -2829,11 +2843,11 @@ def parse_args() -> argparse.Namespace:
                              ''')
     parser.add_argument('--hint_mode', default=defaults["hint_mode"], nargs='?',
                     choices=['default', 'own', 'all'], help='''\
-                            Select hint detail display for hints (default: %(default)s)
-                            default: hints show up in full, no matter the world
-                            own: hints in the hinting player's world do not display their full location
-                            all: hints in all worlds do not display their full location
-                            ''')
+                             Select hint detail display for hints (default: %(default)s)
+                             default: hints show up in full
+                             own: hide locations from item hints and items from location hints for local placements
+                             all: hide locations from item hints and items from location hints for all placements
+                             ''')
     parser.add_argument('--auto_shutdown', default=defaults["auto_shutdown"], type=int,
                         help="automatically shut down the server after this many seconds without new location checks. "
                              "0 to keep running.")

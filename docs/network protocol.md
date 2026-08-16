@@ -707,6 +707,8 @@ class Hint(NamedTuple):
     entrance: str = ""
     item_flags: int = 0
     status: HintStatus = HintStatus.HINT_UNSPECIFIED
+    hidden: bool = False       # exact location is concealed
+    item_hidden: bool = False  # exact item is concealed for a location hint
 ```
 
 ### Data Package Contents

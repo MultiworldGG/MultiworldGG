@@ -15,7 +15,6 @@ from ..mod_helpers.ItemHandling import add_ratman_commands, handle_item, handle_
 from ..mod_helpers.MapMenu import GameMapMenu
 from .DeathMessages import get_death_message
 from ..Locations import location_names_to_map_codes, map_codes_to_location_names, wheatley_maps_to_monitor_names, all_locations_table, wheatley_monitor_table, ratman_den_locations_table
-from .. import Portal2World
 from ..Options import GameModeOption
 
 if __name__ == "__main__":
@@ -106,13 +105,9 @@ class Portal2Context(CommonContext):
         return f"{';'.join(self.item_remove_commands)}\n"
     
     def update_menu(self, location_id: int = None):
-        menu_file = Portal2World.settings.menu_file
         check_completed = False
         if location_id is not None:
             check_completed = self.game_map_menu.complete_check(location_id)
-        # Write the menu to that file
-        with open(menu_file, "w", encoding='utf-8') as f:
-            f.write(str(self.game_map_menu))
             
         self.client_map_menu.update_menu(self.game_map_menu.get_menu_info(), location_id)
         return check_completed

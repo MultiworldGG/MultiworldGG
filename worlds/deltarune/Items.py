@@ -1,11 +1,23 @@
+from copy import copy
+
 from BaseClasses import Item, ItemClassification
 from enum import IntEnum, Enum
-from typing import TYPE_CHECKING, NamedTuple, Callable
+from typing import TYPE_CHECKING, NamedTuple, Callable, Optional
+
+from worlds.deltarune.LogicHelper import (
+    can_access_fusion_post_chapter_5,
+    include_spike_band_fusion,
+    include_tensionbow_fusion,
+    include_truetie_fusion,
+    include_twin_ribbon_fusion,
+    included_chapter,
+)
 
 if TYPE_CHECKING:
     from . import DeltaruneWorld, DeltaruneOptions
 
 glitched_item_name = "Glitches"
+
 
 class ItemGroups(str, Enum):
     healing_item = "Healing Items"
@@ -27,10 +39,23 @@ class ItemGroups(str, Enum):
     unused_items = "Unused Items"
     traps = "Traps"
     characters = "Characters"
+    progressive_weapons = "Progressive Weapons"
 
 
 class DeltaruneItem(Item):
     game: str = "Deltarune"
+    changing_classification: bool = False
+
+    def __init__(
+        self,
+        name: str,
+        classification: ItemClassification,
+        code: Optional[int],
+        player: int,
+        changing_classification: bool = False,
+    ):
+        super().__init__(name, classification, code, player)
+        self.changing_classification = changing_classification
 
 
 class ItemIDs(IntEnum):
@@ -74,11 +99,22 @@ class ItemIDs(IntEnum):
     tvslop = 37
     execbuffet = 38
     deluxedinner = 39
+    punchbowl = 40
+    flavinge = 41
+    greentea = 42
+    orangejuice = 43
 
     ancientsweet = 60
     rhapsotea = 61
     scarlixir = 62
     bittertear = 63
+    schadenbrot = 64
+    treecake = 65
+    s_potion = 66
+    raw_moon = 67
+    phanta = 68
+    flowerysoda = 69
+    shikacola = 70
 
     brokencake = 10003
     broken_key_a = 10004
@@ -95,17 +131,30 @@ class ItemIDs(IntEnum):
     odd_controller = 10016
     # nothing
     tripticket = 10018
+    # lancercon = 10019
+
+    # scissors = 10020
+    # yellowshred = 10021
+    # bootoil = 10022
+    # redsplatter = 10023
+    bromider = 10024
+    petalfeather = 10025
+    # perpbook = 10026
+    # bluestring = 10027
+    # trainplan = 10028
+    # yellowkey = 10029
 
     sheetmusic = 10030
     claimbclaws = 10031
 
-    pinkcoin = 10032
-    pinkkey = 10033
+    pinkkey = 10032
+    bromidef = 10033
 
     chapter_1_egg = 10950
     chapter_2_egg = 10951
     chapter_3_egg = 10952
     chapter_4_egg = 10953
+    chapter_5_egg = 10954
 
     # great_door_key = 11000
     bake_sale_ticket = 11001
@@ -126,6 +175,9 @@ class ItemIDs(IntEnum):
     ice_key = 11018
     shelter_key = 11019
     sacred_moss = 11020
+    pinkcoin = 11021
+    compliment_list_yellow = 11022
+    compliment_list_green = 11023
 
     amber_card = 20001
     dice_brace = 20002
@@ -155,11 +207,11 @@ class ItemIDs(IntEnum):
     blue_ribbon = 20026
     tennatie = 20027
 
-    monarchRBN = 20030
+    monarchrbn = 20030
     truetie = 20031
     dogwidow = 20032
     redribbon = 20033
-    netskuehat = 20034
+    netskiehat = 20034
     sethspecs = 20035
     yellowhat = 20036
     ogloves = 20037
@@ -202,7 +254,7 @@ class ItemIDs(IntEnum):
     thatchet = 30031
     blueshoes = 30032
     aquaknife = 30033
-    floweryscarf = 30034
+    # floweryscarf = 30034
     brokenscarf = 30035
     gildedrose = 30036
     mistlewp = 30037
@@ -236,6 +288,7 @@ class ItemIDs(IntEnum):
     keygen_2_segment = 70001
     remote_battery = 70002
     combination_lock_digit = 70003
+    jarona_lesson = 70004
 
     point_1 = 80001
     points_2 = 80002
@@ -252,6 +305,12 @@ class ItemIDs(IntEnum):
     chapter_5_unlock = 90005
 
     s_r_n_actions = 100000
+    susie_can_wear_ribbons = 100001
+
+    flowerydollars_10 = 110010
+    flowerydollars_25 = 110025
+    flowerydollars_50 = 110050
+    flowerydollars_100 = 110100
 
 
 items = {
@@ -322,7 +381,6 @@ items = {
     ItemIDs.chapter_2_egg: "CH2 Egg",
     ItemIDs.joe_life_savings: "Jigsaw Joe's Life Savings",
     ItemIDs.city_moss: "City Moss",
-    ItemIDs.dogdollar: "DogDollar",
     ItemIDs.emptydisk: "EmptyDisk",
     ItemIDs.keygen: "KeyGen",
     ItemIDs.safety_vest: "Safety Vest",
@@ -373,6 +431,7 @@ items = {
     ItemIDs.scarfmark: "ScarfMark",
     ItemIDs.absorbax: "AbsorbAx",
     ItemIDs.wingblade: "Winglade",
+    ItemIDs.jingleblade: "JingleBlade",
     ItemIDs.justiceaxe: "JusticeAxe",
     ItemIDs.combination_lock_digit: "Combination Lock Digit",
     ItemIDs.claimbclaws: "ClaimbClaws",
@@ -388,6 +447,7 @@ items = {
     ItemIDs.dark_burger: "Dark Burger",
     ItemIDs.dd_burger: "DD-Burger",
     ItemIDs.lancer_cookie: "Lancer Cookie",
+    ItemIDs.ancientsweet: "AncientSweet",
     ItemIDs.spincake: "Spincake",
     ItemIDs.revivemint: "Revive Mint",
     ItemIDs.execbuffet: "ExecBuffet",
@@ -418,6 +478,89 @@ items = {
     ItemIDs.purecrystal: "PureCrystal",
     ItemIDs.pinkcoin: "Pink Coin",
     ItemIDs.pinkkey: "MysteryKey",
+    ItemIDs.chapter_5_unlock: "Chapter 5 Unlock",
+    ItemIDs.punchbowl: "PunchBowl",
+    ItemIDs.flavinge: "Flavinge",
+    ItemIDs.greentea: "GreenTea",
+    ItemIDs.orangejuice: "OrangeJuice",
+    ItemIDs.schadenbrot: "SchadenBrot",
+    ItemIDs.treecake: "TreeCake",
+    ItemIDs.s_potion: "S. Potion",
+    ItemIDs.raw_moon: "Raw Moon",
+    ItemIDs.phanta: "Phanta",
+    ItemIDs.flowerysoda: "FlowerySoda",
+    ItemIDs.shikacola: "Shikacola",
+    ItemIDs.bromider: "Bromide R",
+    ItemIDs.petalfeather: "PetalFeather",
+    ItemIDs.bromidef: "Bromide F",
+    ItemIDs.netskiehat: "NetskieHat",
+    ItemIDs.sethspecs: "SethSpecs",
+    ItemIDs.yellowhat: "YellowHat",
+    ItemIDs.ogloves: "O. Gloves",
+    ItemIDs.greenapron: "Green Apron",
+    ItemIDs.woodblade2: "Wood Blade 2",
+    ItemIDs.thatchet: "Thatchet",
+    ItemIDs.blueshoes: "BlueShoes",
+    ItemIDs.aquaknife: "AquaKnife",
+    # ItemIDs.floweryscarf: "FloweryScarf",
+    ItemIDs.brokenscarf: "BrokenScarf",
+    ItemIDs.gildedrose: "GildedRose",
+    ItemIDs.mistlewp: "MistleWP",
+    ItemIDs.monarchrbn: "MonarchRBN",
+    ItemIDs.truetie: "TrueTie",
+    ItemIDs.dogwidow: "DogWidow",
+    ItemIDs.redribbon: "RedRibbon",
+    ItemIDs.flowerydollars_10: "10 Flowery Dollars",
+    ItemIDs.flowerydollars_25: "25 Flowery Dollars",
+    ItemIDs.flowerydollars_50: "50 Flowery Dollars",
+    ItemIDs.flowerydollars_100: "100 Flowery Dollars",
+    ItemIDs.chapter_5_egg: "CH5 Egg",
+    ItemIDs.compliment_list_yellow: "Yellow Compliment List",
+    ItemIDs.compliment_list_green: "Green Compliment List",
+    ItemIDs.jarona_lesson: "Jarona Lesson",
+    ItemIDs.susie_can_wear_ribbons: "Susie can wear Ribbons",
+}
+
+progressive_weapon_order: dict[ItemGroups, list[ItemIDs]] = {
+    ItemGroups.kris_weapons: [
+        ItemIDs.spookysword,
+        ItemIDs.bounceblade,
+        ItemIDs.mechasaber,
+        ItemIDs.trefoil,
+        ItemIDs.saber10,
+        ItemIDs.jingleblade,
+        ItemIDs.wingblade,
+        ItemIDs.woodblade2,
+        ItemIDs.aquaknife,
+        ItemIDs.twistedswd,
+        ItemIDs.blackshard,
+        ItemIDs.everybodyweapon,
+    ],
+    ItemGroups.susie_weapons: [
+        ItemIDs.brave_ax,
+        ItemIDs.autoaxe,
+        ItemIDs.toxicaxe,
+        ItemIDs.devilsknife,
+        ItemIDs.absorbax,
+        ItemIDs.thatchet,
+        ItemIDs.justiceaxe,
+        ItemIDs.everybodyweapon,
+    ],
+    ItemGroups.ralsei_weapons: [
+        ItemIDs.daintyscarf,
+        ItemIDs.cheerscarf,
+        ItemIDs.ragger,
+        ItemIDs.fiberscarf,
+        ItemIDs.flexscarf,
+        ItemIDs.scarfmark,
+        ItemIDs.ragger2,
+        ItemIDs.mistlewp,
+        ItemIDs.blueshoes,
+        ItemIDs.puppetscarf,
+        ItemIDs.brokenscarf,
+        ItemIDs.everybodyweapon,
+    ],
+    ItemGroups.noelle_weapons: [ItemIDs.freezering, ItemIDs.gildedrose, ItemIDs.thornring, ItemIDs.everybodyweapon],
 }
 
 
@@ -428,6 +571,7 @@ class ItemData(NamedTuple):
     groups: list[ItemGroups] = []
     amount: int = 1
     blacklist_filler: bool = False
+    changing_classification: bool = False
 
 
 def generic_create_items(world: "DeltaruneWorld", items: list[ItemData]) -> list[ItemData]:
@@ -500,6 +644,149 @@ def get_item_groups(items_data: list[ItemData]):
 
     for item_data in items_data:
         for group_name in item_data.groups:
-            groups.setdefault(group_name.value, set()).add(items[ItemIDs(item_data.code)])
+            groups.setdefault(group_name.value, set()).add(items[item_data.code])
 
     return groups
+
+
+def change_progression_type(world: "DeltaruneWorld", item: ItemData):
+    if not item.changing_classification:
+        return item
+
+    new_classification = item.classification
+
+    match (item.code):
+        case ItemIDs.ironshackle | ItemIDs.glowwrist:
+            if item.code not in world.already_changed_classification_item and include_spike_band_fusion(world):
+                world.already_changed_classification_item[item.code] = 1
+                new_classification = ItemClassification.progression | ItemClassification.useful
+
+        case ItemIDs.white_ribbon | ItemIDs.pink_ribbon:
+            if item.code not in world.already_changed_classification_item and include_twin_ribbon_fusion(world):
+                world.already_changed_classification_item[item.code] = 1
+                new_classification = ItemClassification.progression | ItemClassification.useful
+
+        case ItemIDs.bshotbowtie | ItemIDs.tensionbit:
+            if item.code not in world.already_changed_classification_item and include_tensionbow_fusion(world):
+                world.already_changed_classification_item[item.code] = 1
+                if item.code == ItemIDs.bshotbowtie:
+                    new_classification = ItemClassification.progression | ItemClassification.useful
+                else:
+                    new_classification = ItemClassification.progression
+
+        case ItemIDs.scarfmark | ItemIDs.progressive_ralsei_weapons | ItemIDs.princessrbn:
+            if can_access_fusion_post_chapter_5(world) and included_chapter(world, 4):
+                if ItemIDs.progressive_ralsei_weapons:
+                    if (
+                        item.code not in world.already_changed_classification_item
+                        or world.already_changed_classification_item[item.code]
+                        < world.get_weapon_progression_index(ItemGroups.ralsei_weapons, ItemIDs.scarfmark)
+                    ):
+                        if item.code not in world.already_changed_classification_item:
+                            world.already_changed_classification_item[item.code] = 1
+                        else:
+                            world.already_changed_classification_item[item.code] += 1
+
+                        new_classification = ItemClassification.progression | ItemClassification.useful
+                else:
+                    if item.code not in world.already_changed_classification_item:
+                        world.already_changed_classification_item[item.code] = 1
+                        new_classification = ItemClassification.progression | ItemClassification.useful
+
+        case ItemIDs.tennatie | ItemIDs.frayedbowtie:
+            if item.code not in world.already_changed_classification_item and include_truetie_fusion(world):
+                world.already_changed_classification_item[item.code] = 1
+                new_classification = ItemClassification.progression | ItemClassification.useful
+
+        case ItemIDs.tvdinner | ItemIDs.tvslop:
+            if can_access_fusion_post_chapter_5(world) and included_chapter(world, 3):
+                if (
+                    item.code not in world.already_changed_classification_item
+                    or world.already_changed_classification_item[item.code] < 2
+                ):
+                    if item.code not in world.already_changed_classification_item:
+                        world.already_changed_classification_item[item.code] = 1
+                    else:
+                        world.already_changed_classification_item[item.code] += 1
+
+                    new_classification = ItemClassification.progression
+
+        case ItemIDs.scarlixir:
+            if can_access_fusion_post_chapter_5(world) and included_chapter(world, 4):
+                if (
+                    item.code not in world.already_changed_classification_item
+                    or world.already_changed_classification_item[item.code] < 4
+                ):
+                    if item.code not in world.already_changed_classification_item:
+                        world.already_changed_classification_item[item.code] = 1
+                    else:
+                        world.already_changed_classification_item[item.code] += 1
+
+                    new_classification = ItemClassification.progression
+
+        case ItemIDs.powerband | ItemIDs.mysticband | ItemIDs.goldwidow | ItemIDs.dogdollar:
+            if (
+                item.code not in world.already_changed_classification_item
+                and can_access_fusion_post_chapter_5(world)
+                and included_chapter(world, 4)
+            ):
+                world.already_changed_classification_item[item.code] = 1
+
+                if item.code == ItemIDs.dogdollar:
+                    new_classification = ItemClassification.progression
+                else:
+                    new_classification = ItemClassification.progression | ItemClassification.useful
+
+        case (
+            ItemIDs.king_shape_key_piece
+            | ItemIDs.keygen_2_segment
+            | ItemIDs.remote_battery
+            | ItemIDs.combination_lock_digit
+            | ItemIDs.jarona_lesson
+        ):
+            if world.options.macguffin_extra > 0 and (
+                item.code not in world.already_changed_classification_item
+                or world.already_changed_classification_item[item.code] < world.options.macguffin_extra
+            ):
+                if item.code not in world.already_changed_classification_item:
+                    world.already_changed_classification_item[item.code] = 1
+                else:
+                    world.already_changed_classification_item[item.code] += 1
+
+                new_classification = ItemClassification.useful
+
+    return ItemData(
+        item.code,
+        new_classification,
+        item.should_be_included,
+        item.groups,
+        item.amount,
+        item.blacklist_filler,
+        item.changing_classification,
+    )
+
+
+def custom_print_itempool(itempool: list[DeltaruneItem], filled_location_items: list[DeltaruneItem]):
+    for item in itempool:
+        print(f"{item.name} ({flag_into_string(item.flags)})")
+
+    print("=====")
+
+    for item in filled_location_items:
+        print(f"{item.name} ({flag_into_string(item.flags)})")
+
+
+def flag_into_string(flag: int):
+    final = []
+
+    if flag & ItemClassification.useful:
+        final.append("useful")
+    if flag & ItemClassification.progression:
+        final.append("progression")
+    if flag & ItemClassification.trap:
+        final.append("trap")
+
+    if len(final) == 0:
+        final.append("filler")
+
+    return ",".join(final)

@@ -22,12 +22,6 @@ class Portal2Settings(settings.Group):
         """The file path of the extras.txt file (used to generate the menu in game)"""
         description = "Portal 2 extras.txt file inside the mod"
 
-    is_windows = sys.platform == "win32"
-    is_linux = sys.platform == "linux"
-    extras_path = "C:/Program Files (x86)/Steam/steamapps/sourcemods/Portal2Archipelago/scripts/extras.txt" if is_windows else \
-                    "$HOME/.local/share/Steam/steamapps/sourcemods/Portal2Archipelago/scripts/extras.txt" if is_linux else "" # May may be user specific so cannot auto select
-    menu_file: Portal2ExtrasFilePath = Portal2ExtrasFilePath(extras_path)
-
     class Portal2NetConPort(int):
         """The port set in the portal 2 launch options e.g. 3000"""
 

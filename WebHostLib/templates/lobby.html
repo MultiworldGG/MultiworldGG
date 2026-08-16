@@ -479,7 +479,7 @@
                                         <td><label for="edit-hint-mode">Hint Mode:</label></td>
                                         <td>
                                             <select id="edit-hint-mode">
-                                                {% for val, lbl in [('default','Default (full location)'),('own','Hide Own'),('all','Hide All')] %}
+                                                {% for val, lbl in [('default','Default (full details)'),('own','Hide Own'),('all','Hide All')] %}
                                                     <option value="{{ val }}" {% if val == server_opts.get('hint_mode', 'default') %}selected{% endif %}>{{ lbl }}</option>
                                                 {% endfor %}
                                             </select>

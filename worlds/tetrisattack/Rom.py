@@ -19,8 +19,8 @@ from .Options import StarterPack, StageClearMode, PuzzleMode, PuzzleGoal, Versus
 if TYPE_CHECKING:
     from . import TetrisAttackWorld
 
-WORLD_VERSION: str = "0.4.2"
-MASKED_VERSION: int = 5
+WORLD_VERSION: str = "0.4.3"
+MASKED_VERSION: int = 6
 
 USAHASH = "44bb94606356f1c0965e12bbc50866b3"
 
@@ -137,15 +137,13 @@ def patch_rom(world: "TetrisAttackWorld", patch: TATKProcedurePatch) -> None:
     vs_goals = 0b00000
     match world.options.versus_goal:
         case VersusGoal.option_easy:
-            vs_goals |= 0b00100
+            vs_goals |= 0b01100 if world.options.versus_easy_bowser else 0b00100
         case VersusGoal.option_normal:
-            vs_goals |= 0b01001
+            vs_goals |= 0b01101 if world.options.versus_easy_bowser else 0b01001
         case VersusGoal.option_hard:
             vs_goals |= 0b01110
         case VersusGoal.option_very_hard:
             vs_goals |= 0b01111
-    # if world.options.versus_easy_bowser:
-    #     vs_goals |= 0b01100
     patch.write_bytes(GOALS_POSITION, [int(world.options.stage_clear_goal), puzzle_goals, vs_goals])
     patch.write_byte(DEATHLINKHINT, 1 if world.options.death_link else 0)
     patch.write_bytes(STRING_DATA, (WORLD_VERSION + '\0').encode('ascii')[:8])
@@ -277,15 +275,18 @@ def patch_rom(world: "TetrisAttackWorld", patch: TATKProcedurePatch) -> None:
             case VersusGoal.option_very_hard:
                 goal_diff = 3
         goal_stage = 12
-        # if world.options.versus_easy_bowser:
-        #     patch.write_bytes(VS_LAST_STAGES, [11, 11, 11, 11])
-        # else:
-        patch.write_bytes(VS_LAST_STAGES, [9, 10, 11, 11])
-        match world.options.versus_goal:
-            case VersusGoal.option_easy:
-                goal_stage = 10
-            case VersusGoal.option_normal:
-                goal_stage = 11
+        if world.options.versus_easy_bowser:
+            patch.write_bytes(VS_LAST_STAGES, [11, 11, 11, 11])
+        else:
+            match world.options.versus_goal:
+                case VersusGoal.option_no_vs | VersusGoal.option_easy:
+                    goal_stage = 10
+                    patch.write_bytes(VS_LAST_STAGES, [9, 9, 9, 9])
+                case VersusGoal.option_normal:
+                    goal_stage = 11
+                    patch.write_bytes(VS_LAST_STAGES, [9, 10, 10, 10])
+                case _:
+                    patch.write_bytes(VS_LAST_STAGES, [9, 10, 11, 11])
         total_checks = 1
         for x in range(0, goal_stage):
             sc_checks = 0b00000001
@@ -300,11 +301,11 @@ def patch_rom(world: "TetrisAttackWorld", patch: TATKProcedurePatch) -> None:
                     or world.options.versus_mode == VersusMode.option_goal_difficulty
                     or world.options.versus_mode == VersusMode.option_goal_progressive):
                 diff = goal_diff
-            # if not world.options.versus_easy_bowser:
-            if x == 10:
-                diff = max(diff, 1)
-            if x == 11:
-                diff = max(diff, 2)
+            if not world.options.versus_easy_bowser:
+                if x == 10:
+                    diff = max(diff, 1)
+                if x == 11:
+                    diff = max(diff, 2)
             patch.write_byte(VS_MIN_DIFFICULTIES + x, diff)
         patch.write_byte(VSFRIENDSNORMAL_CHECKS, 0b1)
         patch.write_byte(VSTOTAL_CHECKS, total_checks)
@@ -392,7 +393,7 @@ def patch_rom(world: "TetrisAttackWorld", patch: TATKProcedurePatch) -> None:
     from Utils import __version__
     rom_prefix = bytearray(f'ATK{__version__.replace(".", "")[0:3]}', 'utf8')
     patch.name = bytearray(
-        f'{format(MASKED_VERSION, 'X')}|{world.player}{world.multiworld.seed:11}\0',
+        f'{format(MASKED_VERSION, "X")}|{world.player}{world.multiworld.seed:11}\0',
         'utf8')[:21]
     patch.name.extend([0] * (21 - len(patch.name)))
     patch.write_bytes(0x007FB0, rom_prefix)

@@ -30,6 +30,7 @@ from .patches import softlock as _
 from .patches import maptweaks as _
 from .patches import chest as _
 from .patches import bomb as _
+from .patches import powder as _
 from .patches import rooster as _
 from .patches import shop as _
 from .patches import trendy as _
@@ -241,6 +242,8 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
     # patches.reduceRNG.slowdownThreeOfAKind(rom)
     patches.reduceRNG.fixHorseHeads(rom)
     patches.bomb.onlyDropBombsWhenHaveBombs(rom)
+    if ladxr_settings.blockfreepowder:
+        patches.powder.onlyGivePowderWhenHavePowder(rom)
     if ladxr_settings.musicchange == 'always':
         patches.aesthetics.noSwordMusic(rom)
     patches.aesthetics.reduceMessageLengths(rom, random)

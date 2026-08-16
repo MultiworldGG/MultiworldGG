@@ -28,7 +28,8 @@ from .Locations import (LinksAwakeningLocation,
                         create_regions_from_ladxr,
                         links_awakening_location_name_to_id,
                         links_awakening_location_name_groups)
-from .Options import DungeonItemShuffle, ShuffleInstruments, LinksAwakeningOptions, ladx_option_groups
+from .Options import (DungeonItemShuffle, ShuffleInstruments, LinksAwakeningOptions, ladx_option_groups,
+                      convert_ap_options_to_ladxr)
 from .Rom import LADXProcedurePatch, write_patch_data
 
 DEVELOPER_MODE = False
@@ -86,9 +87,7 @@ class LinksAwakeningSettings(settings.Group):
     class OptionOverrides(str):
         """
         Provided options will be used as overrides when patching.
-        Pass the options as you would in an options yaml.
-        Always available option overrides: gfxmod, link_palette, music, music_change_condition, palette
-        Non-race option overrides: ap_title_screen, boots_controls, nag_messages, text_shuffle, trendy_game, warps
+        Aesthetic/QoL settings with no logic implications can be overriden. Some overrides are disabled for races.
         Example:
         option_overrides: { palette: { normal: 50, inverted: 50}, boots_controls: bracelet }
         """
@@ -200,25 +199,6 @@ class LinksAwakeningWorld(World):
         ItemName.RUPEES_500: 500,
     }
 
-    def convert_ap_options_to_ladxr_logic(self):
-        # store a dict of ladxr settings as a middle step so that we can also create a
-        # ladxr settings object on the other side of the patch
-        options_dict = dataclasses.asdict(self.options)
-        self.ladxr_settings_dict = {}
-        for option in options_dict.values():
-            if not hasattr(option, 'to_ladxr_option'):
-                continue
-            name, value = option.to_ladxr_option(options_dict)
-            if name:
-                self.ladxr_settings_dict[name] = value
-        self.ladxr_settings = LADXRSettings(self.ladxr_settings_dict)
-
-        self.ladxr_settings.validate()
-        world_setup = LADXRWorldSetup()
-        world_setup.randomize(self.ladxr_settings, self.random, self.options)
-        self.ladxr_logic = LADXRLogic(configuration_options=self.ladxr_settings, world_setup=world_setup)
-        self.ladxr_itempool = LADXRItemPool(self.ladxr_logic, self.ladxr_settings, self.random, bool(self.options.more_filler)).toDict()
-
 
     filler_choices = ("Nothing",)
     filler_weights = (1,)
@@ -258,7 +238,15 @@ class LinksAwakeningWorld(World):
 
     def create_regions(self) -> None:
         # Initialize
-        self.convert_ap_options_to_ladxr_logic()
+        self.ladxr_settings_dict = convert_ap_options_to_ladxr(self.options)
+        self.ladxr_settings = LADXRSettings(self.ladxr_settings_dict)
+
+        self.ladxr_settings.validate()
+        world_setup = LADXRWorldSetup()
+        world_setup.randomize(self.ladxr_settings, self.random, self.options)
+        self.ladxr_logic = LADXRLogic(configuration_options=self.ladxr_settings, world_setup=world_setup)
+        self.ladxr_itempool = LADXRItemPool(self.ladxr_logic, self.ladxr_settings, self.random, bool(self.options.stabilize_item_pool)).toDict()
+
         regions = create_regions_from_ladxr(self.player, self.multiworld, self.ladxr_logic)
         self.multiworld.regions += regions
 

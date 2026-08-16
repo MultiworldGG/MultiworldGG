@@ -15,7 +15,13 @@
         "name": "CH1: Bake Sale - Diamond Stand"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 43,
+        "y": 81
+      }
+    ]
   },
   {
     "name": "CH1: Bake Sale - Heart Stand",
@@ -24,23 +30,35 @@
         "name": "CH1: Bake Sale - Heart Stand"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 51,
+        "y": 81
+      }
+    ]
   },
   {
-    "name": "CH1: Bake Sale - Repair Door Key",
+    "name": "CH1: Bake Sale - ¨Malius",
     "sections": [
       {
         "name": "CH1: Bake Sale - Repair Door Key"
+      },
+      {
+        "name": "CH1: Bake Sale - Repair Top Cake"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 24,
+        "y": 55
+      }
+    ]
   },
   {
     "name": "CH1: Bake Sale - Cake Quest",
     "sections": [
-      {
-        "name": "CH1: Bake Sale - Repair Top Cake"
-      },
       {
         "name": "CH1: Fields - BrokenCake"
       },
@@ -63,7 +81,13 @@
         "name": "CH1: Bake Sale - Spade Stand"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 59,
+        "y": 81
+      }
+    ]
   },
   {
     "name": "CH1: Bake Sale - Warp Door",
@@ -72,7 +96,13 @@
         "name": "CH1: Bake Sale - Warp Door"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 13,
+        "y": 84
+      }
+    ]
   },
   {
     "name": "CH1: Card Castle - 2F Chest",
@@ -415,7 +445,13 @@
         "name": "CH1: Forest - Chest Near Worm"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 128,
+        "y": 63
+      }
+    ]
   },
   {
     "name": "CH1: Forest - Coat Rack's Chest",
@@ -424,7 +460,13 @@
         "name": "CH1: Forest - Coat Rack's Chest"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 185,
+        "y": 210
+      }
+    ]
   },
   {
     "name": "CH1: Forest - Hidden Chest Near Dancers",
@@ -433,7 +475,13 @@
         "name": "CH1: Forest - Hidden Chest Near Dancers"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 218,
+        "y": 123
+      }
+    ]
   },
   {
     "name": "CH1: Forest - Letter Block Chest",
@@ -442,16 +490,41 @@
         "name": "CH1: Forest - Letter Block Chest"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 308,
+        "y": 215
+      }
+    ]
   },
   {
-    "name": "CH1: Forest - Lost Bloxer",
+    "name": "CH1: Forest - Recruit Bloxer",
     "sections": [
+      {
+        "name": "CH1: Forest - Recruit Bloxer"
+      },
       {
         "name": "CH1: Forest - Lost Bloxer"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 355,
+        "y": 247
+      },
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 107,
+        "y": 75
+      },
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 520,
+        "y": 78
+      }
+    ]
   },
   {
     "name": "CH1: Forest - Man",
@@ -460,25 +533,46 @@
         "name": "CH1: Forest - Man"
       }
     ],
-    "map_locations": []
-  },
-  {
-    "name": "CH1: Forest - Recruit Bloxer",
-    "sections": [
+    "map_locations": [
       {
-        "name": "CH1: Forest - Recruit Bloxer"
+        "map": "Chapter 1 - Forest",
+        "x": 410,
+        "y": 106
       }
-    ],
-    "map_locations": []
+    ]
   },
   {
     "name": "CH1: Forest - Recruit Rabbick",
     "sections": [
       {
         "name": "CH1: Forest - Recruit Rabbick"
+      },
+      {
+        "name": "Cross Chapter  - Lost Rabbick"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 77,
+        "y": 240
+      },
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 112,
+        "y": 260
+      },
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 198,
+        "y": 175
+      },
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 520,
+        "y": 90
+      }
+    ]
   },
   {
     "name": "CH1: Forest - Scissor Dancers Chest",
@@ -487,7 +581,13 @@
         "name": "CH1: Forest - Scissor Dancers Chest"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 155,
+        "y": 123
+      }
+    ]
   },
   {
     "name": "CH1: Forest - Warp Door",
@@ -496,7 +596,13 @@
         "name": "CH1: Forest - Warp Door"
       }
     ],
-    "map_locations": []
+    "map_locations": [
+      {
+        "map": "Chapter 1 - Forest",
+        "x": 36,
+        "y": 230
+      }
+    ]
   },
   {
     "name": "CH1: Great Board - Lost Ponman",

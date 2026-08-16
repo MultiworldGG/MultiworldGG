@@ -1,11 +1,5 @@
 # DELTARUNE
 
-## I'm a Linux Player
-
-Sadly for now, Linux last working version is 1.2.1 because of the lack of Proton/Wine implementation of winhttp that gamemaker use.
-
-A future update will provide a solution for Linux players.
-
 ## What is considered a location check in DELTARUNE?
 
 Location checks in DELTARUNE are all the spots in the game where you can get an item, and some extra events (Like getting the Moss). Exceptions are anything you cannot get on your chosen route and also some things that become unobtainable later on (Like Sweet Cap'n Cakes overworld shops) or things that only appear if certain choices are made (Like Chapter 3's Pipis item).
@@ -26,7 +20,7 @@ This does not mean it'll be as simple as that, choosing certain options will add
 
 ## What is different from the vanilla game?
 
-There are some major differences between vanilla and the randomizer. 
+There are some major differences between vanilla and the randomizer.
 
 All locations will require their own "key" to enter (Using the term key lightly as only one of these are actually traditional keys).
 
@@ -61,6 +55,7 @@ Chapter 4:
 Third Sanctuary Ending - Combination Lock Digits
 
 ### Chapter 3
+
 For Chapter 3, getting S-Rank on each board is expected. If you don't get S-Rank, you can either try the board again or buy it from a Pippins in the green room. If somehow the checks for the board didn't send, you can talk to the Zapper in the Ranking room about "My Rank, My Rewards?" to resend them.
 
 You can also replay any board at any time with a new Pippins in the green room.
@@ -96,7 +91,6 @@ Each Recruit counts as a check. Some checks are available in this route that are
 It combines both Weird Route and All Recruits as explained above. Remember that losing a recruit will prevent you from recruiting it. If you want to do both on the main savefile, you should recruit before losing.
 
 Also, Chapter 2 has Tasque Manager Challenge and All Stars Challenge that require recruits. It's strongly recommended to remove them if you're planning on playing on the same save file.
-
 
 ## Universal Tracker Support
 

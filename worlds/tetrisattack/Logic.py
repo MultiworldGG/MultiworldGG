@@ -216,7 +216,7 @@ def shock_panels_lead_to_traps(options: "TetrisAttackOptions"):
 
 
 def stage_clear_can_clear_shock_panels(world: "TetrisAttackWorld", state, group_count: int):
-    if not state.has("Stage Clear ! Panels", world.player, group_count):
+    if not state.has("Stage Clear ! Panel Bundle", world.player, group_count):
         return False
     for s in range(1, 6):
         for r in range(1, 7):
@@ -463,10 +463,10 @@ def cave_of_wickedness_accessible(world: "TetrisAttackWorld", state):
 def versus_able_to_win(world: "TetrisAttackWorld", state):
     # TODO: Implement multiple difficulty levels
     match world.options.versus_goal:
-        case VersusGoal.option_easy:
-            return versus_stage_completable(world, state, 10, 1)
+        case VersusGoal.option_no_vs | VersusGoal.option_easy:
+            return versus_stage_completable(world, state, 12 if world.options.versus_easy_bowser else 10, 1)
         case VersusGoal.option_normal:
-            return versus_stage_completable(world, state, 11, 2)
+            return versus_stage_completable(world, state, 12 if world.options.versus_easy_bowser else 11, 2)
         case VersusGoal.option_hard:
             return versus_stage_completable(world, state, 12, 3)
         case VersusGoal.option_very_hard:

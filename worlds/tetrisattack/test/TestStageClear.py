@@ -14,14 +14,14 @@ class TestStageClearShockPanelsRun(TetrisAttackTestBase):
     }
 
     def test_shock_panels(self) -> None:
-        locations = ["Stage Clear ! Panels #7"]
-        items = [["Stage Clear ! Panels",
-                  "Stage Clear ! Panels",
-                  "Stage Clear ! Panels",
-                  "Stage Clear ! Panels",
-                  "Stage Clear ! Panels",
-                  "Stage Clear ! Panels",
-                  "Stage Clear ! Panels"]]
+        locations = ["Stage Clear ! Panels Check #7"]
+        items = [["Stage Clear ! Panel Bundle",
+                  "Stage Clear ! Panel Bundle",
+                  "Stage Clear ! Panel Bundle",
+                  "Stage Clear ! Panel Bundle",
+                  "Stage Clear ! Panel Bundle",
+                  "Stage Clear ! Panel Bundle",
+                  "Stage Clear ! Panel Bundle"]]
         self.assertAccessDependency(locations, items, only_check_listed=True)
 
 
@@ -103,6 +103,6 @@ class TestStageClearMaxFiller(TetrisAttackTestBase):
                    self.multiworld.itempool))
         self.assertEqual(len(all_traps), 30)
         all_shock_panels = list(
-            filter(lambda item: item.name == "Stage Clear ! Panels" and item.player == self.player,
+            filter(lambda item: item.name == "Stage Clear ! Panel Bundle" and item.player == self.player,
                    self.multiworld.itempool))
         self.assertEqual(len(all_shock_panels), 100)

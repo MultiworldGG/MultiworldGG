@@ -333,7 +333,7 @@ def get_base_rom_bytes(file_name: str = "") -> bytes:
 def get_base_rom_path(file_name: str = "") -> str:
     options: settings.Settings = settings.get_settings()
     if not file_name:
-        file_name = options["dkc3_options"]["rom_file"]
+        file_name = options["dktoluca_options"]["rom_file"]
     if not os.path.exists(file_name):
         file_name = Utils.user_path(file_name)
     return file_name

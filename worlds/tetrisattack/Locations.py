@@ -48,7 +48,6 @@ location_table: Dict[str, LocationData] = {
     "All Friends Normal Again": LocationData("Overworld", VS_FREE, 0x235),
 }
 
-
 for n in range(1, 7):
     sc_base_loc = SC_CLEARS_START + (n - 1) * 6
     pz_base_loc = PZ_CLEARS_START + (n - 1) * 11
@@ -59,12 +58,14 @@ for n in range(1, 7):
     for s in range(1, 6):
         location_table[f"Stage Clear {n}-{s} Clear"] = LocationData(f"SC Round {n}", SC_STAGE_CLEAR, sc_base_loc + s)
         location_table[f"Stage Clear {n}-{s} Special"] = LocationData(f"SC Round {n}", SC_SPECIAL,
-                                                                    sc_base_loc + s + (1 << SRAM_FACTOR))
+                                                                      sc_base_loc + s + (1 << SRAM_FACTOR))
     location_table[f"Puzzle Round {n} Clear"] = LocationData(f"Puzzle L{n}", PZ_ROUND_CLEAR, pz_base_loc)
     location_table[f"Extra Puzzle Round {n} Clear"] = LocationData(f"Extra L{n}", EXTRA_ROUND_CLEAR, extra_base_loc)
     for s in range(1, 11):
-        location_table[f"Puzzle {n}-{str(s).zfill(2)} Clear"] = LocationData(f"Puzzle L{n}", PZ_STAGE_CLEAR, pz_base_loc + s)
-        location_table[f"Extra Puzzle {n}-{str(s).zfill(2)} Clear"] = LocationData(f"Extra L{n}", EXTRA_CLEAR, extra_base_loc + s)
+        location_table[f"Puzzle {n}-{str(s).zfill(2)} Clear"] = LocationData(f"Puzzle L{n}", PZ_STAGE_CLEAR,
+                                                                             pz_base_loc + s)
+        location_table[f"Extra Puzzle {n}-{str(s).zfill(2)} Clear"] = LocationData(f"Extra L{n}", EXTRA_CLEAR,
+                                                                                   extra_base_loc + s)
 for n in range(0, 12):
     if n < 8:
         region = "Overworld"
@@ -80,7 +81,7 @@ for n in range(0, 12):
                                                                               VS_CLEARS_START + n + (5 << SRAM_FACTOR))
 for n in range(1, 101):
     loc_id = CLEARED_SHOCK_PANELS + n * (1 << SRAM_FACTOR)
-    location_table[f"Stage Clear ! Panels #{n}"] = LocationData("Stage Clear", SHOCK_PANEL, loc_id)
+    location_table[f"Stage Clear ! Panels Check #{n}"] = LocationData("Stage Clear", SHOCK_PANEL, loc_id)
 for n in range(0, 12):
     # TODO: Simplify the above table to loops
     pass
@@ -156,19 +157,24 @@ def get_locations(world: Optional["TetrisAttackWorld"]) -> Dict[str, LocationDat
         for s in range(1, 6):
             if not stage_clear_has_special(r, s, special_stage_trap_count):
                 excluded_locations.add(f"Stage Clear {r}-{s} Special")
-    if world.options.versus_goal == VersusGoal.option_easy:
+    if ((world.options.versus_goal == VersusGoal.option_easy
+         or world.options.versus_goal == VersusGoal.option_no_vs)
+            and not world.options.versus_easy_bowser):
         excluded_locations.add(versus_stage_names[10])
         excluded_locations.add(f"{versus_clear_prefixes[10]} Normal Clear")
         excluded_locations.add(f"{versus_clear_prefixes[10]} Hard Clear")
         excluded_locations.add(f"{versus_clear_prefixes[10]} V.Hard Clear")
-    if world.options.versus_goal == VersusGoal.option_easy or world.options.versus_goal == VersusGoal.option_normal:
+    if ((world.options.versus_goal == VersusGoal.option_easy
+         or world.options.versus_goal == VersusGoal.option_normal
+         or world.options.versus_goal == VersusGoal.option_no_vs)
+            and not world.options.versus_easy_bowser):
         excluded_locations.add(versus_stage_names[11])
         excluded_locations.add(f"{versus_clear_prefixes[11]} Normal Clear")
         excluded_locations.add(f"{versus_clear_prefixes[11]} Hard Clear")
         excluded_locations.add(f"{versus_clear_prefixes[11]} V.Hard Clear")
     excluded_locations.add(f"{versus_clear_prefixes[11]} Normal Clear")
     for i in range(shock_panel_group_count + 1, 101):
-        excluded_locations.add(f"Stage Clear ! Panels #{i}")
+        excluded_locations.add(f"Stage Clear ! Panels Check #{i}")
 
     new_locations = dict(
         filter(lambda item: item[1].location_class in included_classes and item[0] not in excluded_locations,

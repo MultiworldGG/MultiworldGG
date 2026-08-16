@@ -1,4 +1,15 @@
 from worlds.deltarune.Locations import LocationData, LocationGroups, LocationIDs
+from worlds.deltarune.LogicHelper import (
+    include_freeze_recruits_chapter2,
+    normal_route,
+    weird_route,
+    include_lose_recruits,
+    include_lose_swatchlings_weird_route,
+    include_recruit_swatchlings_weird_route,
+    include_recruits,
+    include_recruits_chapter2_weird_route_exclusion,
+    all_recruits_route,
+)
 from worlds.deltarune.Regions import Regions
 from typing import TYPE_CHECKING
 
@@ -53,32 +64,32 @@ chapter2_locations = {
         ),
         LocationData(
             LocationIDs.ch2_recruit_werewire,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_recruit_tasque,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_recruit_virovirokun,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_lost_werewire,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_freeze_recruits_chapter2,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_lost_tasque,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_freeze_recruits_chapter2,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_lost_virovirokun,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_freeze_recruits_chapter2,
             group=LocationGroups.chapter2,
         ),
     ],
@@ -118,7 +129,7 @@ chapter2_locations = {
             group=LocationGroups.chapter2,
         ),
     ],
-    Regions.ch2_trash_zone: [
+    Regions.ch2_trash_zone_no_character_required: [
         LocationData(
             LocationIDs.ch2_trash_zone_warp_door,
             group=LocationGroups.chapter2,
@@ -127,40 +138,42 @@ chapter2_locations = {
             LocationIDs.ch2_trash_zone_trash_can,
             group=LocationGroups.chapter2,
         ),
+    ],
+    Regions.ch2_trash_zone: [
         LocationData(
             LocationIDs.ch2_cyber_city_trash_can_2,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_recruit_poppup,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_lost_poppup,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_freeze_recruits_chapter2,
             group=LocationGroups.chapter2,
         ),
     ],
     Regions.ch2_spamton_shop: [
         LocationData(
             LocationIDs.ch2_spamton_shop_1,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_spamton_shop_2,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_spamton_shop_3,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_spamton_shop_4,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
     ],
@@ -195,72 +208,72 @@ chapter2_locations = {
         ),
         LocationData(
             LocationIDs.ch2_cyber_city_purchase_mannequin,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_cyber_city_annoying_dog,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_cyber_city_man,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_cyber_city_moss,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_cyber_city_purchase_kris_tea,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_cyber_city_purchase_noelle_tea,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_cyber_city_purchase_susie_tea,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_cyber_city_purchase_ralsei_tea,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_recruit_ambyu_lance,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits_chapter2_weird_route_exclusion,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_recruit_maus,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits_chapter2_weird_route_exclusion,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_lost_ambyu_lance,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_freeze_recruits_chapter2,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_lost_maus,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_freeze_recruits_chapter2,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_cyber_city_purchase_freezering,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=weird_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_cyber_city_purchase_thornring,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=weird_route,
             group=LocationGroups.chapter2,
         ),
     ],
@@ -273,109 +286,108 @@ chapter2_locations = {
     Regions.ch2_swatch_cafe: [
         LocationData(
             LocationIDs.ch2_swatchs_cafe_1,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_swatchs_cafe_2,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_swatchs_cafe_3,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_swatchs_cafe_4,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
     ],
     Regions.ch2_mansion_main_route: [
         LocationData(
             LocationIDs.ch2_mansion_platter_chest,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
     ],
     Regions.ch2_mansion_both_route: [
         LocationData(
             LocationIDs.ch2_mansion_painting_chest,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_mansion_sculpture_room_chest,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
     ],
     Regions.ch2_mansion_basement: [
         LocationData(
             LocationIDs.ch2_mansion_basement_chest,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_mansion_basement_mechanism,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
     ],
     Regions.ch2_tunnel_of_love: [
         LocationData(
             LocationIDs.ch2_mansion_tunnel_of_love_chest,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
     ],
     Regions.ch2_recruit_werewerewire: [
         LocationData(
             LocationIDs.ch2_recruit_werewerewire,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter2,
         ),
     ],
     Regions.ch2_lose_werewerewire: [
         LocationData(
             LocationIDs.ch2_lost_werewerewire,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter2,
         ),
     ],
     Regions.ch2_mansion_recruits: [
         LocationData(
             LocationIDs.ch2_recruit_swatchling,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruit_swatchlings_weird_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_recruit_tasque_manager,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_recruit_mauswheel,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter2,
         ),
     ],
     Regions.ch2_mansion_losts: [
         LocationData(
             LocationIDs.ch2_lost_swatchlings,
-            should_be_included=lambda world: world.is_weird_route()
-            and world.options.include_lose_swatchling.value == 1,
+            should_be_included=include_lose_swatchlings_weird_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_lost_tasque_manager,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_lost_mauswheel,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter2,
         ),
     ],
@@ -390,24 +402,29 @@ chapter2_locations = {
         ),
         LocationData(
             LocationIDs.ch2_mansion_spamton_neo_defeat_item_3,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
+            should_be_included=normal_route,
             group=LocationGroups.chapter2,
         ),
     ],
     Regions.ch2_post_chapter_castle_town: [
         LocationData(
-            LocationIDs.ch2_fountain_sealed,
-            group=LocationGroups.chapter2,
-        ),
-        LocationData(
             LocationIDs.ch2_castle_town_tasque_manager_says_challenge,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=all_recruits_route,
             group=LocationGroups.chapter2,
         ),
         LocationData(
             LocationIDs.ch2_castle_town_all_stars_challenge,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=all_recruits_route,
             group=LocationGroups.chapter2,
         ),
+    ],
+    Regions.ch2_fountain: [
+        LocationData(
+            LocationIDs.ch2_fountain_sealed,
+            group=LocationGroups.chapter2,
+        ),
+    ],
+    Regions.ch2_fountain_weird_route: [
+        LocationData(LocationIDs.ch2_fountain_sealed_weird_route, group=LocationGroups.chapter2)
     ],
 }

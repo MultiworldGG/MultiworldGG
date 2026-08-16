@@ -2,6 +2,21 @@ from enum import StrEnum
 from typing import TYPE_CHECKING
 
 from worlds.deltarune.Locations import LocationData, LocationGroups, LocationIDs
+from worlds.deltarune.LogicHelper import (
+    can_access_fusion,
+    include_deluxedinner_fusion,
+    include_dogwidow_fusion,
+    include_lost_rabbick,
+    include_monarchrbn_fusion,
+    include_punchbowl_fusion,
+    include_spike_band_fusion,
+    include_tensionbow_fusion,
+    include_tensionmax_fusion,
+    include_truetie_fusion,
+    include_tvdinner_fusion,
+    include_twin_ribbon_fusion,
+    include_twistedsword_fusion,
+)
 from worlds.deltarune.Regions import Regions
 
 if TYPE_CHECKING:
@@ -12,59 +27,77 @@ cross_chapter_locations: dict = {
     Regions.fusion: [
         LocationData(
             LocationIDs.cc_castle_town_dd_burger_fusion,
-            should_be_included=lambda world: world.can_access_fusion(),
+            should_be_included=can_access_fusion,
             group=LocationGroups.castle_town,
         ),
         LocationData(
             LocationIDs.cc_castle_town_silver_card_fusion,
-            should_be_included=lambda world: world.can_access_fusion(),
+            should_be_included=can_access_fusion,
             group=LocationGroups.castle_town,
         ),
         LocationData(
             LocationIDs.cc_castle_town_twin_ribbon_fusion,
-            should_be_included=lambda world: world.can_access_fusion()
-            and world.has_at_least_one_chapter_included([2, 3])
-            and (
-                (world.is_starting_equipment_removed() and world.has_at_least_one_chapter_included([1, 3]))
-                or (not world.is_starting_equipment_removed() and world.has_at_least_one_chapter_included([1, 2, 3]))
-            ),
+            should_be_included=include_twin_ribbon_fusion,
             group=LocationGroups.castle_town,
         ),
         LocationData(
             LocationIDs.cc_castle_town_spike_band_fusion,
-            should_be_included=lambda world: world.can_access_fusion()
-            and world.include_chapter(1)
-            and (
-                world.include_chapter(2)
-                or (
-                    not world.is_starting_equipment_removed()
-                    and (world.include_chapter(4) or world.have_all_chapters_included([3, 4]))
-                )
-            ),
+            should_be_included=include_spike_band_fusion,
             group=LocationGroups.castle_town,
         ),
         LocationData(
             LocationIDs.cc_castle_town_tensionbow_fusion,
-            should_be_included=lambda world: world.can_access_fusion()
-            and world.include_chapter(2)
-            and (not world.is_weird_route() or world.is_all_routes()),
+            should_be_included=include_tensionbow_fusion,
             group=LocationGroups.castle_town,
         ),
         LocationData(
             LocationIDs.cc_castle_town_twistedsword_fusion,
-            should_be_included=lambda world: world.can_access_fusion()
-            and world.include_chapter(2)
-            and world.is_unused_items_included()
-            and world.is_weird_route(),
+            should_be_included=include_twistedsword_fusion,
             group=LocationGroups.castle_town,
         ),
     ],
     Regions.lost_rabbick: [
         LocationData(
             LocationIDs.cc_lost_rabbick,
-            should_be_included=lambda world: (world.include_chapter(3) and world.is_all_routes())
-            or (world.include_chapter(1) and world.is_weird_route() and world.is_chapter_1_recruit_system_enabled()),
+            should_be_included=include_lost_rabbick,
             group=LocationGroups.cross_chapter,
+        ),
+    ],
+    Regions.ch5_fusion: [
+        LocationData(
+            LocationIDs.cc_castle_town_monarchrbn_fusion,
+            should_be_included=include_monarchrbn_fusion,
+            group=LocationGroups.castle_town,
+        ),
+        LocationData(
+            LocationIDs.cc_castle_town_truetie_fusion,
+            should_be_included=include_truetie_fusion,
+            group=LocationGroups.castle_town,
+        ),
+        LocationData(
+            LocationIDs.cc_castle_town_tvdinner_fusion,
+            should_be_included=include_tvdinner_fusion,
+            group=LocationGroups.castle_town,
+        ),
+        LocationData(
+            LocationIDs.cc_castle_town_deluxedinner_fusion,
+            should_be_included=include_deluxedinner_fusion,
+            group=LocationGroups.castle_town,
+        ),
+        LocationData(
+            LocationIDs.cc_castle_town_punchbowl_fusion,
+            should_be_included=include_punchbowl_fusion,
+            group=LocationGroups.castle_town,
+        ),
+        LocationData(
+            LocationIDs.cc_castle_town_tensionmax_fusion,
+            should_be_included=include_tensionmax_fusion,
+            group=LocationGroups.castle_town,
+        ),
+        LocationData(
+            LocationIDs.cc_castle_town_dogwidow_fusion,
+            should_be_included=include_dogwidow_fusion,
+            group=LocationGroups.castle_town,
         ),
     ],
 }

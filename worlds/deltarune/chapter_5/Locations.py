@@ -3,12 +3,231 @@ from typing import TYPE_CHECKING
 
 from worlds.deltarune.Locations import LocationData, LocationGroups, LocationIDs
 from worlds.deltarune.Regions import Regions
+from worlds.deltarune.LogicHelper import all_recruits_route, include_lose_recruits, include_recruits, weird_route
 
 if TYPE_CHECKING:
     from .. import DeltaruneWorld
 
 chapter5_locations = {
-    Regions.ch5_mew_mew_shop: [
+    Regions.ch5_castle_town: [
+        LocationData(
+            id=LocationIDs.ch5_castle_town_top_chef_gift,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_dojo: [
+        LocationData(
+            LocationIDs.ch5_castle_town_trashy_trio_challenge,
+            should_be_included=all_recruits_route,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_garden_no_character_required: [
+        LocationData(
+            id=LocationIDs.ch5_garden_first_chest,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(id=LocationIDs.ch5_garden_first_chest_susie_accepting_herself, group=LocationGroups.chapter5),
+        LocationData(
+            id=LocationIDs.ch5_garden_netskie_chest,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_garden_hopschef_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_garden: [
+        LocationData(
+            id=LocationIDs.ch5_garden_chest_past_waterfall,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_garden_shears_chest,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_garden_water_can_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_garden_chest_under_flowery_face_1,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_garden_chest_under_flowery_face_2,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_recruit_floradinn,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_recruit_sheary,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_recruit_netskie,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_lost_floradinn,
+            should_be_included=include_lose_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_lost_sheary,
+            should_be_included=include_lose_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_lost_netskie,
+            should_be_included=include_lose_recruits,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_greens_cafe: [
+        LocationData(
+            id=LocationIDs.ch5_greens_cafe_1,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_greens_cafe_2,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_greens_cafe_3,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_greens_cafe_4,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_dark_garden: [
+        LocationData(
+            id=LocationIDs.ch5_dark_garden_watering_can_maze_chest,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_dark_garden_hidden_heart_chest,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_dark_garden_end_of_garden_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_garden_aqua: [
+        LocationData(
+            id=LocationIDs.ch5_dark_garden_aquas_gift,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_dark_garden_near_shrine_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_garden_petal_feather: [
+        LocationData(
+            id=LocationIDs.ch5_garden_pink_coin_near_tropical_starwalker,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_garden_hopschef_gift,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_dark_garden_petal_feather: [
+        LocationData(
+            id=LocationIDs.ch5_dark_garden_pink_coin_above_shrine,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_dark_garden_pink_coin_left_of_running_area,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_cliffs: [
+        LocationData(
+            id=LocationIDs.ch5_cliffs_chest_near_climbing_vines,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_cliffs_chest_next_to_horns,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_cliffs_first_climb_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_cliffs_item_near_umbrellas,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_cliffs_man,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_cliffs_netskie_climb_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_cliffs_pink_coin_by_rising_vine,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_cliffs_pink_coin_under_falling_water,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_cliffs_running_challenge_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_cliffs_wind_platforming_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_cliffs_shop_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_recruit_shi,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_recruit_kawkaw,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_recruit_leafling,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_lost_shi,
+            should_be_included=include_lose_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_lost_kawkaw,
+            should_be_included=include_lose_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_lost_leafling,
+            should_be_included=include_lose_recruits,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_pinks_shop: [
         LocationData(
             id=LocationIDs.ch5_pinks_shop_1,
             group=LocationGroups.chapter5,
@@ -23,6 +242,154 @@ chapter5_locations = {
         ),
         LocationData(
             id=LocationIDs.ch5_pinks_shop_4,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_flower_castle: [
+        LocationData(
+            id=LocationIDs.ch5_castle_foyer_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_moss,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_vending_machine: [
+        LocationData(
+            id=LocationIDs.ch5_vending_machine_1,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_vending_machine_2,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_vending_machine_3,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_vending_machine_4,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_vending_machine_flowerys_secret,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_castle_west: [
+        LocationData(
+            id=LocationIDs.ch5_castle_west_blues_room_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_west_hidden_zen_garden_chest,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_west_shinobeetle_shuriken_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_west_yellow_flower_platforming_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_west_shinobeetle_chest_behind_tree,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_recruit_shinobeetle,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_lost_shinobeetle,
+            should_be_included=include_lose_recruits,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_castle_east: [
+        LocationData(
+            id=LocationIDs.ch5_castle_east_chest_past_paws,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_east_difficult_shadow_puzzle_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_east_fox_collecting_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_east_fox_race_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_east_mysterious_puzzle_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_east_mysterious_puzzle_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_east_pink_coin_behind_paper_wall,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_east_pink_lantern_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_east_terakota_buttons_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_recruit_terakota,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_lost_terakota,
+            should_be_included=include_lose_recruits,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_castle_top: [
+        LocationData(
+            id=LocationIDs.ch5_castle_top_annoying_dog,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_top_painting_room_item,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_top_yellow_flower_platforming_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_top_pink_door_pink_coin,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_top_greens_shop_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_top_pink_door_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_castle_top_last_room_warp_door,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_pink_room: [
+        LocationData(
+            id=LocationIDs.ch5_castle_top_pink_defeat,
             group=LocationGroups.chapter5,
         ),
     ],
@@ -54,6 +421,26 @@ chapter5_locations = {
         LocationData(
             id=LocationIDs.ch5_castle_top_flowerys_gift,
             group=LocationGroups.chapter5,
+        ),
+    ],
+    Regions.ch5_fountains: [
+        LocationData(
+            id=LocationIDs.ch5_fountain_sealed_1,
+            group=LocationGroups.chapter5,
+        ),
+        LocationData(
+            id=LocationIDs.ch5_fountain_sealed_2,
+            group=LocationGroups.chapter5,
+        ),
+    ],
+}
+
+chapter5_weird_route_locations = {
+    Regions.ch5_weird_route: [
+        LocationData(
+            id=LocationIDs.ch5_weird_route_sinking,
+            group=LocationGroups.chapter5,
+            should_be_included=weird_route,
         ),
     ],
 }

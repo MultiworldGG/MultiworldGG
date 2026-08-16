@@ -3,6 +3,12 @@ from typing import TYPE_CHECKING
 
 from worlds.deltarune.Locations import LocationData, LocationGroups, LocationIDs
 from worlds.deltarune.Regions import Regions
+from worlds.deltarune.LogicHelper import (
+    include_lose_recruits,
+    include_recruits,
+    include_mantle,
+    not_include_lose_recruits,
+)
 
 if TYPE_CHECKING:
     from .. import DeltaruneWorld
@@ -29,8 +35,13 @@ chapter3_locations = {
             group=LocationGroups.chapter3,
         ),
         LocationData(
+            LocationIDs.ch3_recruit_shadowguy,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter3,
+        ),
+        LocationData(
             LocationIDs.ch3_lost_shadowguy,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter3,
         ),
     ],
@@ -114,12 +125,12 @@ chapter3_locations = {
         LocationData(LocationIDs.ch3_green_room_warp_door, group=LocationGroups.chapter3),
         LocationData(
             LocationIDs.ch3_recruit_water_cooler,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter3,
         ),
         LocationData(
             LocationIDs.ch3_lost_water_cooler,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter3,
         ),
     ],
@@ -135,17 +146,22 @@ chapter3_locations = {
         LocationData(LocationIDs.ch3_green_room_board_2_ramb_gift, group=LocationGroups.chapter3),
         LocationData(
             LocationIDs.ch3_recruit_pippins,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter3,
         ),
         LocationData(
             LocationIDs.ch3_lost_pippins,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
+            group=LocationGroups.chapter3,
+        ),
+        LocationData(
+            LocationIDs.ch3_recruit_shuttah,
+            should_be_included=include_recruits,
             group=LocationGroups.chapter3,
         ),
         LocationData(
             LocationIDs.ch3_lost_shuttah,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter3,
         ),
     ],
@@ -155,7 +171,7 @@ chapter3_locations = {
     Regions.ch3_doom_board: [
         LocationData(
             LocationIDs.ch3_lost_zapper,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter3,
         ),
         LocationData(
@@ -199,59 +215,45 @@ chapter3_locations = {
         LocationData(LocationIDs.ch3_tv_world_water_cooler_chest, group=LocationGroups.chapter3),
         LocationData(
             LocationIDs.ch3_tv_world_man,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
             group=LocationGroups.chapter3,
         ),
         LocationData(
             LocationIDs.ch3_tv_world_tripticket,
-            should_be_included=lambda world: world.is_not_weird_route_only(),
-            group=LocationGroups.chapter3,
-        ),
-        LocationData(
-            LocationIDs.ch3_recruit_shuttah,
-            should_be_included=lambda world: world.is_all_recruits(),
-            group=LocationGroups.chapter3,
-        ),
-        LocationData(
-            LocationIDs.ch3_recruit_shadowguy,
-            should_be_included=lambda world: world.is_all_recruits(),
             group=LocationGroups.chapter3,
         ),
         LocationData(
             LocationIDs.ch3_recruit_zapper,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter3,
         ),
         LocationData(
             LocationIDs.ch3_recruit_ribbick,
-            should_be_included=lambda world: world.is_all_recruits(),
+            should_be_included=include_recruits,
             group=LocationGroups.chapter3,
         ),
         LocationData(
             LocationIDs.ch3_recruit_lanino,
-            should_be_included=lambda world: world.is_all_recruits(),
             group=LocationGroups.chapter3,
         ),
         LocationData(
             LocationIDs.ch3_recruit_elnina,
-            should_be_included=lambda world: world.is_all_recruits(),
             group=LocationGroups.chapter3,
         ),
         LocationData(
             LocationIDs.ch3_lost_ribbick,
-            should_be_included=lambda world: world.is_weird_route(),
+            should_be_included=include_lose_recruits,
             group=LocationGroups.chapter3,
         ),
     ],
     Regions.ch3_sword_3: [
         LocationData(
             LocationIDs.ch3_mantle_defeat,
-            should_be_included=lambda world: not world.is_mantleless(),
+            should_be_included=include_mantle,
             group=LocationGroups.chapter3,
         ),
         LocationData(
             LocationIDs.ch3_mantle_susie_gift,
-            should_be_included=lambda world: not world.is_mantleless(),
+            should_be_included=include_mantle,
             group=LocationGroups.chapter3,
         ),
     ],

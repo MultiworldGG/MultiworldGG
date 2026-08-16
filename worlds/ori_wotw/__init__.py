@@ -267,9 +267,9 @@ class WotWWorld(World):
         logging.info(f"Ori WotW: Spawn {self.spawn_region_name} for player {self.player}")
 
         # Selection of a random goal
-        if "one_random" in options.goal:
+        if "random" in options.goal:
             possible_goals = sorted(list(options.goal.value))
-            possible_goals.remove("one_random")
+            possible_goals.remove("random")
             selected_goal: list = []
             if not possible_goals:  # Only random selected, choose among all goals
                 possible_goals = ["trees", "wisps", "quests", "relics"]

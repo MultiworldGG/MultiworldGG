@@ -290,6 +290,6 @@ class TetrisAttackOptions(PerGameCommonOptions):
     puzzle_mode: PuzzleMode
     puzzle_filler: PuzzleFiller
     # extra_puzzle_behind_regular: ExtraPuzzleBehindRegular
-    # versus_easy_bowser: EasyBowser
     versus_mode: VersusMode
+    versus_easy_bowser: EasyBowser
     music_filter: MusicFilter

@@ -4,6 +4,7 @@ from BaseClasses import Region
 from rule_builder.field_resolvers import FromOption
 from rule_builder.options import OptionFilter
 from rule_builder.rules import CanReachLocation, Has
+from worlds.deltarune.LogicHelper import all_recruits_route
 from worlds.deltarune.Options import (
     ChosenRoute,
     MacGuffinChapter4,
@@ -17,7 +18,7 @@ from worlds.deltarune.Rules import (
     have_kris,
     have_kris_and_susie,
     have_susie,
-    can_recruit,
+    can_recruit_guei,
 )
 from worlds.deltarune.Items import items, ItemIDs, glitched_item_name
 from worlds.deltarune.Locations import locations, LocationIDs
@@ -35,6 +36,7 @@ def create_regions(world: "DeltaruneWorld"):
     dark_sanctuary_claimbclaws = Region(Regions.ch4_dark_sanctuary_claimbclaws, world.player, world.multiworld)
     gerson = Region(Regions.ch4_gerson, world.player, world.multiworld)
     second_sanctuary = Region(Regions.ch4_second_sanctuary, world.player, world.multiworld)
+    second_sanctuary_post_wicabel = Region(Regions.ch4_second_sanctuary_post_wicabel, world.player, world.multiworld)
     third_sanctuary = Region(Regions.ch4_third_sanctuary, world.player, world.multiworld)
     titan_fight = Region(Regions.ch4_titan_fight, world.player, world.multiworld)
     light_world = Region(Regions.ch4_light_world, world.player, world.multiworld)
@@ -48,6 +50,7 @@ def create_regions(world: "DeltaruneWorld"):
         dark_sanctuary_claimbclaws,
         gerson,
         second_sanctuary,
+        second_sanctuary_post_wicabel,
         third_sanctuary,
         titan_fight,
         light_world,
@@ -66,11 +69,9 @@ def create_regions(world: "DeltaruneWorld"):
     # Require at least one character for Guei fight
     castle_town.connect(
         dark_sanctuary,
-        rule=can_recruit
+        rule=can_recruit_guei
         | have_kris_susie_or_ralsei
-        & [
-            OptionFilter(ChosenRoute, [ChosenRoute.option_weird_route, ChosenRoute.option_neutral_route], operator="in")
-        ],
+        & [OptionFilter(ChosenRoute, [ChosenRoute.option_weird_route, ChosenRoute.option_normal_route], operator="in")],
     )
     # If you get the claimbclaws, you can recreate a save to skip Dark Sanctuary but require Kris or Susie for Wingblade fight
     castle_town.connect(
@@ -94,7 +95,9 @@ def create_regions(world: "DeltaruneWorld"):
     )
     dark_sanctuary_claimbclaws.connect(gerson, rule=have_susie | Has(glitched_item_name))
 
-    second_sanctuary.connect(third_sanctuary, rule=have_susie | Has(glitched_item_name))
+    second_sanctuary.connect(second_sanctuary_post_wicabel, rule=have_kris)
+
+    second_sanctuary_post_wicabel.connect(third_sanctuary, rule=have_susie | Has(glitched_item_name))
 
     third_sanctuary.connect(gerson, rule=have_susie | Has(glitched_item_name))
 
@@ -102,12 +105,32 @@ def create_regions(world: "DeltaruneWorld"):
         locations[LocationIDs.ch4_dark_sanctuary_hammer_of_justice_defeat_item_1]
     ) | [OptionFilter(RandomizeSecretBosses, RandomizeSecretBosses.option_mandatory, operator="ne")]
 
-    # As you can access Third Sanctuary out of logic without any character, it's required for Titan
-    third_sanctuary.connect(
-        titan_fight,
-        rule=secret_boss_mandatory
-        & Has(items[ItemIDs.combination_lock_digit], FromOption(MacGuffinChapter4))
-        & have_kris_and_susie,
-    )
+    if all_recruits_route(world):
+        all_recruits = (
+            CanReachLocation(locations[LocationIDs.ch4_recruit_guei])
+            & CanReachLocation(locations[LocationIDs.ch4_recruit_balthizard])
+            & CanReachLocation(locations[LocationIDs.ch4_recruit_bibliox])
+            & CanReachLocation(locations[LocationIDs.ch4_recruit_mizzle])
+            & CanReachLocation(locations[LocationIDs.ch4_recruit_miss_mizzle])
+            & CanReachLocation(locations[LocationIDs.ch4_recruit_winglade])
+            & CanReachLocation(locations[LocationIDs.ch4_recruit_organikk])
+            & CanReachLocation(locations[LocationIDs.ch4_recruit_wicabel])
+        )
+        # As you can access Third Sanctuary out of logic without any character, it's required for Titan
+        third_sanctuary.connect(
+            titan_fight,
+            rule=secret_boss_mandatory
+            & all_recruits
+            & Has(items[ItemIDs.combination_lock_digit], FromOption(MacGuffinChapter4))
+            & have_kris_and_susie,
+        )
+    else:
+        # As you can access Third Sanctuary out of logic without any character, it's required for Titan
+        third_sanctuary.connect(
+            titan_fight,
+            rule=secret_boss_mandatory
+            & Has(items[ItemIDs.combination_lock_digit], FromOption(MacGuffinChapter4))
+            & have_kris_and_susie,
+        )
 
     titan_fight.connect(light_world)

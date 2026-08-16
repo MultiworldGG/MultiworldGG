@@ -56,7 +56,7 @@ item_table: Dict[str, ItemData] = {
     "Versus Completion": ItemData("Versus", None, VS_GOAL, ItemClassification.progression),
     "Mt. Wickedness Gate": ItemData("Overworld", 0x05A, VS_GATE, ItemClassification.progression),
 
-    "Stage Clear ! Panels": ItemData("Stage Clear", 0x0EA, SHOCK_PANEL,
+    "Stage Clear ! Panel Bundle": ItemData("Stage Clear", 0x0EA, SHOCK_PANEL,
                                      ItemClassification.progression_deprioritized_skip_balancing),
 
     # "50 Points": ItemData("Stage Clear", 0x100, FILLER, ItemClassification.filler),
@@ -246,22 +246,22 @@ def get_items(world: Optional["TetrisAttackWorld"]) -> Dict[str, ItemData]:
                 special_stage_trap_count)
         else:
             del new_items["Stage Clear Special Stage Trap"]
-    if "Vs. Progressive Stage Unlock" in new_items:
+    if "Vs. Progressive Stage Unlock" in new_items and not world.options.versus_easy_bowser:
         old_item = new_items["Vs. Progressive Stage Unlock"]
         unlock_count = old_item.amount
-        if world.options.versus_goal == VersusGoal.option_easy:
+        if world.options.versus_goal == VersusGoal.option_easy or world.options.versus_goal == VersusGoal.option_no_vs:
             unlock_count -= 2
         elif world.options.versus_goal == VersusGoal.option_normal:
             unlock_count -= 1
         new_items["Vs. Progressive Stage Unlock"] = modify_item_amount(old_item, unlock_count)
-    if "Stage Clear ! Panels" in new_items:
-        old_item = new_items["Stage Clear ! Panels"]
+    if "Stage Clear ! Panel Bundle" in new_items:
+        old_item = new_items["Stage Clear ! Panel Bundle"]
         new_classification = old_item.classification
         if shock_panels_lead_to_traps(world.options):
             new_classification |= ItemClassification.trap
         else:
             new_classification |= ItemClassification.useful
-        new_items["Stage Clear ! Panels"] = ItemData(old_item.category, old_item.code, old_item.item_class,
+        new_items["Stage Clear ! Panel Bundle"] = ItemData(old_item.category, old_item.code, old_item.item_class,
                                                      new_classification, shock_panel_group_count, old_item.starting_id)
     return new_items
 

@@ -852,6 +852,14 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
         logger = logging.getLogger('')
         logger.info("Named item hint requested, but pool is empty.")
         return None
+    required_named_items = world.hint_dist_user['named_items_required']
+
+    def can_hint_locked_location(location):
+        return (
+            not location.locked
+            or (required_named_items and getattr(location.item, 'type', None) == 'Song')
+        )
+
     oot_world_count = len([p for p in world.multiworld.get_all_ids() if world.multiworld.worlds[p].game == "Ocarina of Time"])
     if oot_world_count == 1:
         while True:
@@ -862,7 +870,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
                     if (not is_checked([location], checked)
                         and location.name not in world.hint_exclusions
                         and location.item.name in bingoBottlesForHints
-                        and not location.locked
+                        and can_hint_locked_location(location)
                         and location.name not in world.hint_type_overrides['named-item']
                         )
                 ]
@@ -872,7 +880,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
                     if (not is_checked([location], checked)
                         and location.name not in world.hint_exclusions
                         and location.item.name == itemname
-                        and not location.locked
+                        and can_hint_locked_location(location)
                         and location.name not in world.hint_type_overrides['named-item']
                         )
                 ]
@@ -880,7 +888,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
             if len(locations) > 0:
                 break
 
-            elif world.hint_dist_user['named_items_required']:
+            elif required_named_items:
                 raise Exception("Unable to hint item {}".format(itemname))
 
             else:
@@ -939,7 +947,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
                         and location.item.player == world.player
                         and location.name not in world.hint_exclusions
                         and location.item.name in bingoBottlesForHints
-                        and not location.locked
+                        and can_hint_locked_location(location)
                         and (itemname, world.player) not in always_locations
                         and location.name not in world.hint_type_overrides['named-item'])
                 ]
@@ -950,7 +958,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
                         and location.item.player == world.player
                         and location.name not in world.hint_exclusions
                         and location.item.name == itemname
-                        and not location.locked
+                        and can_hint_locked_location(location)
                         and (itemname, world.player) not in always_locations
                         and location.name not in world.hint_type_overrides['named-item'])
                 ]
@@ -958,7 +966,7 @@ def get_specific_item_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
             if len(locations) > 0:
                 break
 
-            elif world.hint_dist_user['named_items_required'] and (itemname, world.player) not in always_locations:
+            elif required_named_items and (itemname, world.player) not in always_locations:
                 raise Exception("Unable to hint item {} in world {}".format(itemname, world.player))
 
             else:
@@ -1682,7 +1690,10 @@ def build_world_gossip_hints(world: 'OOTWorld', checked_locations: Optional[set[
                 else:
                     logging.getLogger('').debug('Placed %s hint for %s.', hint_type, ', '.join([location.name for location in locations]))
             if not place_ok and custom_fixed:
-                logging.getLogger('').debug('Failed to place %s fixed hint for %s.', hint_type, ', '.join([location.name for location in locations]))
+                if locations is None:
+                    logging.getLogger('').debug('Failed to place %s fixed hint.', hint_type)
+                else:
+                    logging.getLogger('').debug('Failed to place %s fixed hint for %s.', hint_type, ', '.join([location.name for location in locations]))
                 fixed_hint_types.insert(0, hint_type)
 
 

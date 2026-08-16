@@ -139,8 +139,9 @@ class SelectableButton(ButtonBehavior, MDBoxLayout):
         )
 
         self.name_label = MDLabel(
-            text=name_text, width=dp(150), size_hint_x=None, halign="left"
+            text=name_text, width=dp(130), size_hint_x=None, halign="left", shorten=True, shorten_from="right"
         )
+        
         self.count_label = MDLabel(
             text=count_text,
             halign="right",

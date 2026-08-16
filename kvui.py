@@ -122,7 +122,7 @@ from kivymd.uix.tooltip import MDTooltip, MDTooltipPlain
 
 fade_in_animation = Animation(opacity=0, duration=0) + Animation(opacity=1, duration=0.25)
 
-from NetUtils import JSONtoTextParser, JSONMessagePart, SlotType, HintStatus
+from NetUtils import JSONtoTextParser, JSONMessagePart, SlotType, HintStatus, get_item_classification_label
 from Utils import async_start, get_input_text_from_response
 
 if typing.TYPE_CHECKING:
@@ -1743,6 +1743,17 @@ class HintLog(MDRecycleView, ColumnSortMixin, ColumnFilterMixin):
         for hint in hints:
             if not hint.get("status"): # Allows connecting to old servers
                 hint["status"] = HintStatus.HINT_FOUND if hint["found"] else HintStatus.HINT_UNSPECIFIED
+            if hint.get("item_hidden"):
+                item_flags = hint["item_flags"]
+                item_text = f"Hidden ({get_item_classification_label(item_flags)})"
+            else:
+                item_text = self.parser.handle_node({
+                    "type": "item_id",
+                    "text": hint["item"],
+                    "flags": hint["item_flags"],
+                    "player": hint["receiving_player"],
+                })
+                item_flags = hint["item_flags"]
             hint_status_node = self.parser.handle_node({"type": "color",
                                                         "color": status_colors.get(hint["status"], "red"),
                                                         "text": status_names.get(hint["status"], "Unknown")})
@@ -1751,13 +1762,8 @@ class HintLog(MDRecycleView, ColumnSortMixin, ColumnFilterMixin):
             data.append({
                 "receiving": {"text": self.parser.handle_node({"type": "player_id", "text": hint["receiving_player"]})},
                 "item": {
-                    "text": self.parser.handle_node({
-                        "type": "item_id",
-                        "text": hint["item"],
-                        "flags": hint["item_flags"],
-                        "player": hint["receiving_player"],
-                    }),
-                    "flags": hint["item_flags"]
+                    "text": item_text,
+                    "flags": item_flags,
                 },
                 "finding": {"text": self.parser.handle_node({"type": "player_id", "text": hint["finding_player"]})},
                 "location": {"text": self.parser.handle_node({

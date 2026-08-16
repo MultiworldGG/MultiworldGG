@@ -779,8 +779,8 @@ def patch_instrument(rom, ootworld, symbols):
            #'another_ocarina': 0x07,
     }
 
-    choice = ootworld.sfx_ocarina.replace('_', '-')
-    if choice == 'random-choice':
+    choice = ootworld.sfx_ocarina
+    if choice == 'random_choice':
         choice = ootworld.random.choice(list(instruments.keys()))
 
     rom.write_byte(0x00B53C7B, instruments[choice])
