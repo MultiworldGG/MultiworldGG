@@ -1,2 +1,1 @@
-PyMemoryEditor==1.6.0
-numpy<2.4
+PyMemoryEditor>=2.0.1
