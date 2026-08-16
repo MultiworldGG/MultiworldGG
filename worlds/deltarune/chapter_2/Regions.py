@@ -114,7 +114,6 @@ def create_regions(world: "DeltaruneWorld"):
         mansion_main_route = Region(Regions.ch2_mansion_main_route, world.player, world.multiworld)
         mansion_basement = Region(Regions.ch2_mansion_basement, world.player, world.multiworld)
         tunnel_of_love = Region(Regions.ch2_tunnel_of_love, world.player, world.multiworld)
-        post_chapter_castle_town = Region(Regions.ch2_post_chapter_castle_town, world.player, world.multiworld)
         fountain = Region(Regions.ch2_fountain, world.player, world.multiworld)
 
         regions_normal_route = [
@@ -126,7 +125,6 @@ def create_regions(world: "DeltaruneWorld"):
             mansion_main_route,
             mansion_basement,
             tunnel_of_love,
-            post_chapter_castle_town,
             fountain,
         ]
 
@@ -214,8 +212,6 @@ def create_regions(world: "DeltaruneWorld"):
                 fountain,
                 rule=secret_boss_mandatory & Has(items[ItemIDs.keygen_2_segment], FromOption(MacGuffinChapter2)),
             )
-
-        fountain.connect(post_chapter_castle_town)
 
     if weird_route(world):
         mansion_lobby_weird_route = Region(Regions.ch2_mansion_lobby_weird_route, world.player, world.multiworld)

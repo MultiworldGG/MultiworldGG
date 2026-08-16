@@ -23,7 +23,7 @@ from MultiServer import mark_raw, Context, Client, Endpoint
 from Utils import async_start, logging
 from worlds.deltarune.LinuxProxy import encode, proxy, proxy_loop
 
-ap_world_version = "v2.1.2"
+ap_world_version = "v2.1.3"
 deltarune_mod_github = "https://github.com/Tenebrosful/DeltaruneAP-mod/releases"
 
 DEBUG = True
@@ -164,7 +164,7 @@ Both gaining and losing recruits have been turned into checks."""
                 self.output("You'll need to connect to a Multiworld, first.")
 
     @mark_raw
-    def _cmd_auto_patch(self, path: typing.Optional[str] = None):
+    async def _cmd_auto_patch(self, path: typing.Optional[str] = None):
         """Patch the game automatically."""
         if isinstance(self.ctx, DeltaruneContext):
             os.path.exists("DELTARUNE")
@@ -263,9 +263,10 @@ Both gaining and losing recruits have been turned into checks."""
                     self.output(
                         f"Your game will now be patched. Please wait... it might take a while and make your client not respond but that's normal."
                     )
+                    await asyncio.sleep(0.1)
                     shutil.copytree(pathInstall, Utils.user_path("DELTARUNE"), dirs_exist_ok=True)
                     self.ctx.patch_game()
-                    self.output(f"Patching successful! You can now start {Utils.user_path("DELTARUNE")}/DELTARUNE.exe")
+                    self.output(f"Patching successful! You can now start {Utils.user_path("DELTARUNE")}\\DELTARUNE.exe")
 
 
 class DeltaruneContext(SuperContext):
@@ -371,7 +372,7 @@ class DeltaruneContext(SuperContext):
 
     def make_gui(self):
         ui = super().make_gui()
-        ui.base_title = "DELTARUNE Client " + ap_world_version + " - " + apname + " version"
+        ui.base_title = f"{apname} DELTARUNE Client " + ap_world_version + f" - {apname} version"
         ui.logging_pairs = [("Client", "Archipelago")]
         return ui
 
@@ -385,7 +386,11 @@ class DeltaruneContext(SuperContext):
 async def process_deltarune_cmd(ctx: DeltaruneContext, cmd: str, args: dict):
     if cmd == "Connected":
         try:
-            options = args["slot_data"]["options"]
+            options = args["slot_data"]["options"]   
+            DeltaruneCommandProcessor.output(
+                ctx, """*****\nRemember that you are only connected to a text client.
+To connect in-game, make sure to patch DELTARUNE using the setup guide and put the connection details there.\n*****"""
+            )
         except:
             await ctx.version_mismatch()
             return

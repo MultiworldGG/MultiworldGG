@@ -36,6 +36,16 @@ chapter2_locations = {
             LocationIDs.ch2_castle_town_clover_rematch_challenge,
             group=LocationGroups.chapter2,
         ),
+        LocationData(
+            LocationIDs.ch2_castle_town_tasque_manager_says_challenge,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter2,
+        ),
+        LocationData(
+            LocationIDs.ch2_castle_town_all_stars_challenge,
+            should_be_included=include_recruits,
+            group=LocationGroups.chapter2,
+        ),
     ],
     Regions.ch2_cyber_field: [
         LocationData(
@@ -403,18 +413,6 @@ chapter2_locations = {
         LocationData(
             LocationIDs.ch2_mansion_spamton_neo_defeat_item_3,
             should_be_included=normal_route,
-            group=LocationGroups.chapter2,
-        ),
-    ],
-    Regions.ch2_post_chapter_castle_town: [
-        LocationData(
-            LocationIDs.ch2_castle_town_tasque_manager_says_challenge,
-            should_be_included=all_recruits_route,
-            group=LocationGroups.chapter2,
-        ),
-        LocationData(
-            LocationIDs.ch2_castle_town_all_stars_challenge,
-            should_be_included=all_recruits_route,
             group=LocationGroups.chapter2,
         ),
     ],

@@ -83,7 +83,6 @@ chapter4_items = [
         ItemClassification.progression_skip_balancing,
         groups=[ItemGroups.region_blockers],
         amount=0,
-        changing_classification=True,
     ),
     ItemData(
         ItemIDs.justiceaxe,

@@ -706,7 +706,7 @@ locations = {
     LocationIDs.ch4_mike_pluey_silver: "CH4: Mike - Pluey (Silver Rank)",
     LocationIDs.ch4_mike_pluey_gold: "CH4: Mike - Pluey (Gold Rank)",
     LocationIDs.ch4_mike_pluey_platinum: "CH4: Mike - Pluey (Platinum Rank)",
-    LocationIDs.ch5_castle_town_top_chef_gift: "CH5: Castle Town - TopChef Gift",
+    LocationIDs.ch5_castle_town_top_chef_gift: "CH5: Castle Town - Top Chef Gift",
     LocationIDs.cc_castle_town_monarchrbn_fusion: "CC: Castle Town - MonarchRBN Fusion",
     LocationIDs.cc_castle_town_truetie_fusion: "CC: Castle Town - TrueTie Fusion",
     LocationIDs.cc_castle_town_tvdinner_fusion: "CC: Castle Town - TVDinner Fusion",

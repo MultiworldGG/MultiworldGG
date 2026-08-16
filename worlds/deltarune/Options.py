@@ -347,21 +347,6 @@ class IncludeSwatchlingWeirdRoute(Toggle):
     default = 0
 
 
-class ExcludePostChapter2Locations(Toggle):
-    """
-    WILL LOCATIONS EXCLUSIVE TO THE END OF CHAPTER 2 BE KEPT AWAY FROM HOLDING IMPORTANT ITEMS?
-
-    - CH2: Castle Town - Tasque Manager Says Challenge
-    - CH2: Castle Town - Ch2 All Stars Challenge
-
-    *(Since you "beat" the chapter after sealing the Cyber World fountain,)*
-    *(enabling this means you can just go straight to the next chapter afterwards.)*
-    """
-
-    display_name = "Exclude Post-Chapter 2 Locations"
-    default = 0
-
-
 class IncludeChapter3(Toggle):
     """
     DO YOU WISH TO PLAY CHAPTER 3?
@@ -741,9 +726,7 @@ deltarune_option_groups = [
         ],
     ),
     OptionGroup("Chapter 1", [IncludeChapter1, MacGuffinChapter1, Chapter1Recruit]),
-    OptionGroup(
-        "Chapter 2", [IncludeChapter2, MacGuffinChapter2, IncludeSwatchlingWeirdRoute, ExcludePostChapter2Locations]
-    ),
+    OptionGroup("Chapter 2", [IncludeChapter2, MacGuffinChapter2, IncludeSwatchlingWeirdRoute]),
     OptionGroup(
         "Chapter 3",
         [
@@ -753,6 +736,7 @@ deltarune_option_groups = [
             IncludeShadowMantle,
             ExcludeTRank,
             ExcludeZRank,
+            AllowDoomBoardWithoutAllCharacters,
         ],
     ),
     OptionGroup("Chapter 4", [IncludeChapter4, MacGuffinChapter4, IncludeMike, ExcludeMikePlatinum]),
@@ -804,7 +788,6 @@ class DeltaruneOptions(PerGameCommonOptions):
     recruits_sanity: RecruitsSanity
     lose_recruits_sanity: LoseRecruitsSanity
     include_swatchling_during_weird_route: IncludeSwatchlingWeirdRoute
-    exclude_post_chapter_2_locations: ExcludePostChapter2Locations
     item_balancing: ItemBalancing
     macguffin_chapter_1: MacGuffinChapter1
     macguffin_chapter_2: MacGuffinChapter2

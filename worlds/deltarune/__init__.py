@@ -228,7 +228,6 @@ class DeltaruneWorld(World):
 
         self.cached_filler_and_trap_weights: dict[int, float] = None
         self.weapon_to_progressive_weapon_index: dict[ItemGroups, dict[ItemIDs, int]] = {}
-        self.already_changed_classification_item: dict[ItemIDs, int] = {}
         self.included_chapters: list[int] = []
 
     # region Archipelago Functions
@@ -274,7 +273,6 @@ class DeltaruneWorld(World):
                 "recruits_sanity",
                 "lose_recruits_sanity",
                 "include_swatchling_during_weird_route",
-                "exclude_post_chapter_2_locations",
                 "randomize_chapters",
                 "include_hidden_items",
                 "include_secret_bosses_items_requirement",
@@ -295,6 +293,18 @@ class DeltaruneWorld(World):
                 "have_starwalker",
                 "unlock_fun_gang_actions",
                 "chapter_1_recruit",
+                "random_safety_chapter_inclusion",
+                "starting_chapter",
+                "filler_healing_weight",
+                "filler_currency_weight",
+                "trap_weight",
+                "filler_armor_weight",
+                "filler_tension_weight",
+                "filler_smile_weight",
+                "progressive_kris_weapons",
+                "progressive_susie_weapons",
+                "progressive_ralsei_weapons",
+                "progressive_noelle_weapons",
                 toggles_as_bools=True,
             ),
             "world_seed": self.random.getrandbits(32),

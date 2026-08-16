@@ -657,18 +657,15 @@ def change_progression_type(world: "DeltaruneWorld", item: ItemData):
 
     match (item.code):
         case ItemIDs.ironshackle | ItemIDs.glowwrist:
-            if item.code not in world.already_changed_classification_item and include_spike_band_fusion(world):
-                world.already_changed_classification_item[item.code] = 1
+            if include_spike_band_fusion(world):
                 new_classification = ItemClassification.progression | ItemClassification.useful
 
         case ItemIDs.white_ribbon | ItemIDs.pink_ribbon:
-            if item.code not in world.already_changed_classification_item and include_twin_ribbon_fusion(world):
-                world.already_changed_classification_item[item.code] = 1
+            if include_twin_ribbon_fusion(world):
                 new_classification = ItemClassification.progression | ItemClassification.useful
 
         case ItemIDs.bshotbowtie | ItemIDs.tensionbit:
-            if item.code not in world.already_changed_classification_item and include_tensionbow_fusion(world):
-                world.already_changed_classification_item[item.code] = 1
+            if include_tensionbow_fusion(world):
                 if item.code == ItemIDs.bshotbowtie:
                     new_classification = ItemClassification.progression | ItemClassification.useful
                 else:
@@ -677,83 +674,28 @@ def change_progression_type(world: "DeltaruneWorld", item: ItemData):
         case ItemIDs.scarfmark | ItemIDs.progressive_ralsei_weapons | ItemIDs.princessrbn:
             if can_access_fusion_post_chapter_5(world) and included_chapter(world, 4):
                 if ItemIDs.progressive_ralsei_weapons:
-                    if (
-                        item.code not in world.already_changed_classification_item
-                        or world.already_changed_classification_item[item.code]
-                        < world.get_weapon_progression_index(ItemGroups.ralsei_weapons, ItemIDs.scarfmark)
-                    ):
-                        if item.code not in world.already_changed_classification_item:
-                            world.already_changed_classification_item[item.code] = 1
-                        else:
-                            world.already_changed_classification_item[item.code] += 1
-
-                        new_classification = ItemClassification.progression | ItemClassification.useful
+                    new_classification = ItemClassification.progression | ItemClassification.useful
                 else:
-                    if item.code not in world.already_changed_classification_item:
-                        world.already_changed_classification_item[item.code] = 1
-                        new_classification = ItemClassification.progression | ItemClassification.useful
+                    new_classification = ItemClassification.progression | ItemClassification.useful
 
         case ItemIDs.tennatie | ItemIDs.frayedbowtie:
-            if item.code not in world.already_changed_classification_item and include_truetie_fusion(world):
-                world.already_changed_classification_item[item.code] = 1
+            if include_truetie_fusion(world):
                 new_classification = ItemClassification.progression | ItemClassification.useful
 
         case ItemIDs.tvdinner | ItemIDs.tvslop:
             if can_access_fusion_post_chapter_5(world) and included_chapter(world, 3):
-                if (
-                    item.code not in world.already_changed_classification_item
-                    or world.already_changed_classification_item[item.code] < 2
-                ):
-                    if item.code not in world.already_changed_classification_item:
-                        world.already_changed_classification_item[item.code] = 1
-                    else:
-                        world.already_changed_classification_item[item.code] += 1
-
-                    new_classification = ItemClassification.progression
+                new_classification = ItemClassification.progression
 
         case ItemIDs.scarlixir:
             if can_access_fusion_post_chapter_5(world) and included_chapter(world, 4):
-                if (
-                    item.code not in world.already_changed_classification_item
-                    or world.already_changed_classification_item[item.code] < 4
-                ):
-                    if item.code not in world.already_changed_classification_item:
-                        world.already_changed_classification_item[item.code] = 1
-                    else:
-                        world.already_changed_classification_item[item.code] += 1
-
-                    new_classification = ItemClassification.progression
+                new_classification = ItemClassification.progression
 
         case ItemIDs.powerband | ItemIDs.mysticband | ItemIDs.goldwidow | ItemIDs.dogdollar:
-            if (
-                item.code not in world.already_changed_classification_item
-                and can_access_fusion_post_chapter_5(world)
-                and included_chapter(world, 4)
-            ):
-                world.already_changed_classification_item[item.code] = 1
-
+            if can_access_fusion_post_chapter_5(world) and included_chapter(world, 4):
                 if item.code == ItemIDs.dogdollar:
                     new_classification = ItemClassification.progression
                 else:
                     new_classification = ItemClassification.progression | ItemClassification.useful
-
-        case (
-            ItemIDs.king_shape_key_piece
-            | ItemIDs.keygen_2_segment
-            | ItemIDs.remote_battery
-            | ItemIDs.combination_lock_digit
-            | ItemIDs.jarona_lesson
-        ):
-            if world.options.macguffin_extra > 0 and (
-                item.code not in world.already_changed_classification_item
-                or world.already_changed_classification_item[item.code] < world.options.macguffin_extra
-            ):
-                if item.code not in world.already_changed_classification_item:
-                    world.already_changed_classification_item[item.code] = 1
-                else:
-                    world.already_changed_classification_item[item.code] += 1
-
-                new_classification = ItemClassification.useful
 
     return ItemData(
         item.code,

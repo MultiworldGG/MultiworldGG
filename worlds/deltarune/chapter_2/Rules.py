@@ -86,16 +86,25 @@ def set_rules(world: "DeltaruneWorld"):
         world.set_rule(
             world.get_location(locations[LocationIDs.ch2_recruit_tasque_manager]), can_recruit_tasque_manager
         )
+        world.set_rule(
+            world.get_location(locations[LocationIDs.ch2_castle_town_tasque_manager_says_challenge]),
+            can_recruit_tasque_manager,
+        )
         world.set_rule(world.get_location(locations[LocationIDs.ch2_recruit_mauswheel]), can_recruit_mauswheel)
         world.set_rule(world.get_location(locations[LocationIDs.ch2_recruit_werewerewire]), can_recruit_werewerewire)
-
-        if all_recruits_route(world) and world.options.exclude_post_chapter_2_locations.value == 1:
-            world.get_location(locations[LocationIDs.ch2_castle_town_tasque_manager_says_challenge]).progress_type = (
-                LocationProgressType.EXCLUDED
-            )
-            world.get_location(locations[LocationIDs.ch2_castle_town_all_stars_challenge]).progress_type = (
-                LocationProgressType.EXCLUDED
-            )
+        world.set_rule(
+            world.get_location(locations[LocationIDs.ch2_castle_town_all_stars_challenge]),
+            can_recruit_werewire
+            & can_recruit_tasque
+            & can_recruit_virovirokun
+            & can_recruit_poppup
+            & can_recruit_ambuy_lance
+            & can_recruit_maus
+            & can_recruit_swatchling
+            & can_recruit_tasque_manager
+            & can_recruit_mauswheel
+            & can_recruit_werewerewire,
+        )
 
 
 def handle_locked_items(world: "DeltaruneWorld"):

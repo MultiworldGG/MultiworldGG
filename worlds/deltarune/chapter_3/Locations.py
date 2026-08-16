@@ -266,6 +266,8 @@ chapter3_locations = {
             LocationIDs.ch3_cold_place_knight_defeat_item_2,
             group=LocationGroups.chapter3,
         ),
+    ],
+    Regions.ch3_fountain: [
         LocationData(LocationIDs.ch3_fountain_sealed, group=LocationGroups.chapter3),
     ],
 }

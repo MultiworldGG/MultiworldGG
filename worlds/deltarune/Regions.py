@@ -54,7 +54,6 @@ class Regions(StrEnum):
     ch2_recruit_werewerewire = "CH2: Recruit Werewerewire"
     ch2_lose_werewerewire = "CH2: Lose Werewerewire"
     ch2_spamton_neo = "CH2: Spamton Neo"
-    ch2_post_chapter_castle_town = "CH2: Post-Chapter Castle Town"
     ch2_fountain = "CH2: Fountain"
     ch2_fountain_weird_route = "CH2: Fountain (Weird Route)"
 
@@ -73,7 +72,9 @@ class Regions(StrEnum):
     ch3_doom_board = "CH3: Doom Board"
     ch3_tv_world = "CH3: TV World"
     ch3_sword_3 = "CH3: Sword 3"
+    ch3_knight = "CH3: Roaring Knight Fight"
     ch3_cold_place = "CH3: Cold Place"
+    ch3_fountain = "CH3: Fountain"
 
     chapter_4 = "Chapter 4"
     ch4_castle_town = "CH4: Castle Town"

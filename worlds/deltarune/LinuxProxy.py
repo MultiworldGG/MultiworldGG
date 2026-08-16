@@ -39,8 +39,7 @@ async def proxy(websocket, path: str = "/", ctx: "DeltaruneContext" = None):
         if ctx.is_proxy_connected():
             async for data in websocket:
                 if not ctx.is_connected() and ctx.authenticated:
-                    text = encode([{"cmd": "ProxyDisconnect"}])
-                    await send_msgs_proxy(ctx, text)
+                    await send_msgs_proxy(ctx, {"cmd": "ProxyDisconnect"})
                     ctx.authenticated = False
                 await parse_game_packets(ctx, data)
     except Exception as e:
@@ -54,6 +53,8 @@ async def on_client_connected(ctx: "DeltaruneContext"):
     logging.info(f"Proxy client connected")
     if ctx.room_info and ctx.connected:
         await send_msgs_proxy(ctx, ctx.room_info)
+    else:
+        await send_msgs_proxy(ctx, {"cmd": "ProxyDisconnect"})
 
 
 async def parse_game_packets(ctx: "DeltaruneContext", data):
