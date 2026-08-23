@@ -173,27 +173,27 @@
   },
   "CELADON_PRIZE_POKEMON_1": {
     "name": "Celadon Game Corner Prize Room - Prize Pokemon 1",
-    "item": "Pokemon",
+    "item": "Static Pokemon",
     "category": "EVENT_STATIC_POKEMON"
   },
   "CELADON_PRIZE_POKEMON_2": {
     "name": "Celadon Game Corner Prize Room - Prize Pokemon 2",
-    "item": "Pokemon",
+    "item": "Static Pokemon",
     "category": "EVENT_STATIC_POKEMON"
   },
   "CELADON_PRIZE_POKEMON_3": {
     "name": "Celadon Game Corner Prize Room - Prize Pokemon 3",
-    "item": "Pokemon",
+    "item": "Static Pokemon",
     "category": "EVENT_STATIC_POKEMON"
   },
   "CELADON_PRIZE_POKEMON_4": {
     "name": "Celadon Game Corner Prize Room - Prize Pokemon 4",
-    "item": "Pokemon",
+    "item": "Static Pokemon",
     "category": "EVENT_STATIC_POKEMON"
   },
   "CELADON_PRIZE_POKEMON_5": {
     "name": "Celadon Game Corner Prize Room - Prize Pokemon 5",
-    "item": "Pokemon",
+    "item": "Static Pokemon",
     "category": "EVENT_STATIC_POKEMON"
   },
   "GIFT_POKEMON_EEVEE": {

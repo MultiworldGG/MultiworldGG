@@ -897,6 +897,14 @@ class DrifterMeleeWeaponType(CemuChoice):
     ]
 
 
+class CombatStartingItems(Range):
+    """Start with the number of specified useful arts/skills/classes"""
+    display_name = "Combat Starting Items"
+    default = 0
+    range_start = 0
+    range_end = 252
+
+
 class HiddenLocalItems(LocalItems):
     __doc__ = LocalItems.__doc__
     visibility = Visibility.template | Visibility.spoiler
@@ -963,6 +971,7 @@ class XenobladeXOptions(PerGameCommonOptions):
     # Customisation
     drifter_ranged_weapon_type: DrifterRangedWeaponType
     drifter_melee_weapon_type: DrifterMeleeWeaponType
+    combat_starting_items: CombatStartingItems
 
     # Graphic packs
     enemy_aggro: EnemyAggro
@@ -1039,6 +1048,7 @@ option_groups: list[OptionGroup] = [
     OptionGroup("Customisation", [
         DrifterRangedWeaponType,
         DrifterMeleeWeaponType,
+        CombatStartingItems
     ]),
     OptionGroup("Graphic packs", [
         EnemyAggro,

@@ -6617,6 +6617,28 @@
         ],
         "release_date": 2020
     },
+    "Uncanny": {
+        "igdb_id": "323318",
+        "world_name": "Uncanny",
+        "igdb_name": "Uncanny Cat Golf",
+        "us_rating": [],
+        "player_perspectives": [
+            "Bird view / Isometric"
+        ],
+        "genres": [
+            "Sport"
+        ],
+        "themes": [
+            "Action",
+            "Comedy"
+        ],
+        "keywords": [
+            "golf",
+            "memes",
+            "cat"
+        ],
+        "release_date": 2026
+    },
     "Undertale": {
         "igdb_id": "12517",
         "world_name": "Undertale",

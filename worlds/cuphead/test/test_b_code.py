@@ -4,11 +4,14 @@
 import unittest
 from collections.abc import Sequence
 from pathlib import Path
+from random import Random
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, cast
 
 from ..tools import gentemplateyaml
-from ..world.levels import levelids
+from ..world.enums import LevelShuffleMode
+from ..world.levels import levelids, levelshuffle
+from ..world.names import regionnames
 from ..world.options import optionresolver
 from ..world.options.optionbase import _levelset
 
@@ -106,6 +109,30 @@ class TestCodeOptionResolver(unittest.TestCase):
         self.assertEqual(rand.pools, [(*range(0, 9), 127)])
         self.assertEqual(options.start_weapon.value, 127)
 
+class TestCodeLevelShuffle(unittest.TestCase):
+    def _check_level_shuffle_map(self, shuffle_map: dict[int, int]):
+        used_k: set[int] = set()
+        used_v: set[int] = set()
+
+        for k, v in shuffle_map.items():
+            self.assertNotIn(k, used_k)
+            self.assertNotIn(v, used_v)
+
+            used_k.add(k)
+            used_v.add(v)
+
+    def test_level_shuffle_no_dupes(self):
+        rand = Random(655)
+        shuffle_map = levelshuffle.get_level_shuffle_map(rand, True, LevelShuffleMode.ENABLED, True)
+
+        self._check_level_shuffle_map(shuffle_map)
+
+    def test_level_shuffle_w_level_placements(self):
+        rand = Random(655)
+        level_placements = {regionnames.level_boss_clown: regionnames.level_boss_clown}
+        shuffle_map = levelshuffle.get_level_shuffle_map(rand, True, LevelShuffleMode.ENABLED, True, level_placements)
+
+        self._check_level_shuffle_map(shuffle_map)
 
 class TestCodeGenTemplateYaml(unittest.TestCase):
     def test_start_weapon_keeps_negative_option_values(self) -> None:

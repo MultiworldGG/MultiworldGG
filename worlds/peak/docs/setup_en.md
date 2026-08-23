@@ -1,20 +1,5 @@
 # Guide for PEAK in MultiworldGG
 
-## Downpatching is currently required
-
-After the Citadel update, the APWorld currently requires downpatching.
-- Open your Steam console (Windows: Win+R and enter steam://open/console, Linux: open command line and enter steam steam://open/console) OR use a GUI such as mmvanheusden's SteamDepotDownloaderGUI
-- Go to PEAK's SteamDB page, and note the following IDs: App ID (3527290), Depot ID (3527291) and Manifest ID (scroll down and click the Depots tab, then the first option under the Depots header (3527291). This will bring you to the Manifests page. Click on the Manifests tab and note the ID of the version you want (ex, last update from 26 July 2026: 970190337128155317)).
-- In the Steam console, run the following command: 
-  - ``download_depot 3527290 3527291 <manifestID>`` (replace <manifestID> accordingly). 
-  - This will download into your Steam directory at ..\Steam\steamapps\content\app_3527290\depot_3527291\<manifestID>. If you use the GUI, fill out the ID fields as required, and optionally set what directory the depot will download into (it will download as ..\<customFolder>\<manifestID>).
-- EXIT STEAM. 
-- Go to ..\Steam\steamapps\common\PEAK and delete everything in the folder. Copy all the files from the depot you just downloaded (NOT the <manifestID> folder but the files WITHIN it) into the now empty PEAK folder.
-- WITH STEAM STILL CLOSED go back up to ..\Steam\steamapps\ and look for a file called appmanifest_3527290.acf. Open this up in any text editor and locate the line that says "StateFlags" and set the number next to it to "4". Save and close.
-- You may now reopen Steam. In r2modman (or the mod manager of your choice), be sure you have the mod PeakVersionBypass by kirigiri as that will allow you to play on the older version.
-- If you want to return to the current version, simply go to the game properties in Steam and verify file integrity, which will automatically update you to the most recent version. You will need to follow the instructions above if you need to downpatch again. The badges/achievements from Citadel/Gloom should not be lost.
-- Steam may still ask to update your PEAK install while it's downgraded. Simply go to Steam > Go Offline and play from there
-
 ## Required Software
 
 - [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases)

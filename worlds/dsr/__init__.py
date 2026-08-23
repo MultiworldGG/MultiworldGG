@@ -703,7 +703,7 @@ class DSRWorld(World):
             "itemsId": items_id,
             "itemsUpgrades": items_upgrades,
             "itemsAddress": items_address,
-            "apworld_api_version" : "0.2.4" # Manually set our apworld api level, for detecting compatibility with client
+            "apworld_api_version" : "0.2.5" # Manually set our apworld api level, for detecting compatibility with client
         }
 
         self.items_id = items_id

@@ -1719,7 +1719,7 @@
     }
   },
   "TRAINER_SCALING_ROUTE21/MAIN": {
-    "region": "Route 21",
+    "region": "Route 21 (Water)",
     "kanto": true,
     "connections": [],
     "category": "EVENT_TRAINER_SCALING",

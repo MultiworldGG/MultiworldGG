@@ -13,7 +13,7 @@ class CupheadSettings(settings.Group):
         """Debug mode."""
 
     ## A bitwise integer that sets specific debug flags.
-    debug: Union[Debug, int] = 0 # type: ignore
+    debug: Union[Debug, int] = 0  # type: ignore  # noqa: UP007
 
     def is_debug_bit_on(self, bit: int) -> bool:
         """

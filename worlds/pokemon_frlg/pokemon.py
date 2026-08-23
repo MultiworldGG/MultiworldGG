@@ -15,7 +15,7 @@ from .util import bool_array_to_int, bound, int_to_bool_array, HM_TO_COMPATIBILI
 
 if TYPE_CHECKING:
     from random import Random
-    from . import PokemonFRLGWorld
+    from .world import PokemonFRLGWorld
 
 _DAMAGING_MOVES = frozenset({
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10,

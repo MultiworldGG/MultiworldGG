@@ -106,6 +106,10 @@ er_options = {
         # ]
     }
 
+basic = {
+        "start_with_train": True
+}
+
 class TestGeneration(WorldTestBase):
     game = "Spirit Tracks"
-    options = er_options
+    options = basic

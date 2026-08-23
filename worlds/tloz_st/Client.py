@@ -4,7 +4,7 @@ from .DSZeldaClient.DSZeldaClient import *
 from .DSZeldaClient.subclasses import storage_key, split_bits
 from .data.Addresses import STAddr
 from .data.Items import ITEMS
-from .data.Entrances import ENTRANCES, entrance_tuple_to_entrance
+from .data.Entrances import ENTRANCES, entrance_tuple_to_entrance, entrances_per_scene
 from settings import get_settings
 from typing import Literal
 from .Subclasses import EntranceGroups
@@ -12,7 +12,7 @@ from .Subclasses import EntranceGroups
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext, BizHawkClientCommandProcessor
     from . import SpiritTracksSettings
-    from .Subclasses import STTransition
+    from .Subclasses import STTransition, STItem
 
 # gMapManager -> mCourse -> mSmallKeys
 SMALL_KEY_OFFSET = 0x260
@@ -286,7 +286,6 @@ class SpiritTracksClient(DSZeldaClient):
 
         self.key_door_watches: list["Address"] = []
         self.boss_door_addr = None
-        self.reload_stage_flags: bool = False
         self.reload_map_objects: int = 0
         self.was_in_clog: bool = False
         self.on_train = False
@@ -404,37 +403,6 @@ class SpiritTracksClient(DSZeldaClient):
         }
 
     @staticmethod
-    async def get_table_data(ctx, array_start, comp_offset, size:int or list=4, table_label=True, table_size=128) -> dict["Address", int | list[int]]:
-        """
-        Collect data from a table of pointers at a given offset.
-        """
-
-        rl = []
-        for i in range(table_size):
-            rl.append(Address.from_pointer(array_start + i * 4, size=3))
-        actors = await read_multiple(ctx, rl)
-        # print(f"Objects: {hex_f(actors)}")
-
-        if table_label:
-            labels = [k for k, v in actors.items() if v]
-        else: labels = None
-
-        # Multiple offsets at once
-        if isinstance(comp_offset, Iterable):
-            actors_start = [[Address.from_pointer(v, size=i) for v in actors.values() if 0 < v < 0x400000] for i in size]
-            reads: dict["Address", list[int]] = {}
-            for i, offset in enumerate(comp_offset):
-                reads_2 = await read_multiple(ctx, actors_start[i], offset=offset * 4, keys=labels)
-                for r, v in reads_2.items():
-                    reads.setdefault(r, [0]*len(comp_offset))[i] = v
-            return reads
-
-        # single offset
-        actors_start = [Address.from_pointer(v, size=size) for v in actors.values() if 0 < v < 0x400000]
-        reads_2 = await read_multiple(ctx, actors_start, offset=comp_offset * 4, keys=labels)
-        return reads_2
-
-    @staticmethod
     async def get_actor_table(ctx):
         await STAddr.actor_table.load(ctx)
         return STAddr.actor_table
@@ -501,19 +469,6 @@ class SpiritTracksClient(DSZeldaClient):
                     return False
             return True
 
-        def check_traversed_entrances():
-            entrances = data.get("has_traversed_entrances", [])
-            if not entrances:
-                return True
-            if not self.traversed_entrances:
-                return False
-
-            for e in entrances:
-                if ENTRANCES[e].id not in self.traversed_entrances:
-                    return False
-            return True
-
-
         if not check_dungeon_reqs():
             printl(f"\t{data['name']} does not have dungeon requirements")
             return False
@@ -524,14 +479,6 @@ class SpiritTracksClient(DSZeldaClient):
             return False
         if not check_unvisited_scenes():
             return False
-        if not check_traversed_entrances():
-            printl(f"\t{data['name']} has not traversed entrances")
-            return False
-
-        # Update stage flags
-        if "update_stage_flags" in data and "on_scenes" in data:
-            printl(f"\t{data['name']} is setting stage flags")
-            self.update_stage_flag((data["on_scenes"][0] & 0xFF00) >> 8, data["update_stage_flags"])
 
         return True
 
@@ -817,6 +764,7 @@ class SpiritTracksClient(DSZeldaClient):
         self.event_reads = []
         self.sent_event = False
         self.boss_key_y = None
+        self.key_door_watches.clear()
         self.boss_door_addr = None
         if self.last_scene == 0x700:
             await self.reset_snurglar_door(ctx)
@@ -844,8 +792,6 @@ class SpiritTracksClient(DSZeldaClient):
             self.has_goal_location = True
             await self.store_event(ctx, "GOAL: Enter Dark Realm")
 
-        if self.reload_stage_flags:
-            await self.set_stage_flags(ctx, self.current_stage)
 
     async def process_hard_coded_rooms(self, ctx, current_scene):
         printl(f"Processing hard coded room stuff")
@@ -1049,7 +995,7 @@ class SpiritTracksClient(DSZeldaClient):
 
     # Misc item handling
 
-    async def receive_item_post_processing(self, ctx, item_name, item_data):
+    async def receive_item_post_processing(self, ctx, item_name, item_data: "STItem"):
         printl(f"Post Processing {item_name}")
 
         if "Rabbit" in item_name:
@@ -1100,7 +1046,7 @@ class SpiritTracksClient(DSZeldaClient):
 
         # Complex blocked scenes for sources in boss rooms
         if (self.current_scene in BOSS_ROOM_TO_BLOCKED_ITEM_GROUP and
-            BOSS_ROOM_TO_BLOCKED_ITEM_GROUP[self.current_scene] in item_data.item_groups):
+            BOSS_ROOM_TO_BLOCKED_ITEM_GROUP[self.current_scene] in item_data.all_item_groups):
             bit = 2 ** (self.current_stage-0x1a)
             await STAddr.sources.unset_bits(ctx, bit)
 
@@ -1710,7 +1656,6 @@ class SpiritTracksClient(DSZeldaClient):
         return self.stage_flag_address
 
     async def set_stage_flags(self, ctx, stage):
-        self.reload_stage_flags = False
         if stage in self.stage_flags:
             stage_flag_address = await self.get_stage_flags(ctx)
 
@@ -1719,11 +1664,6 @@ class SpiritTracksClient(DSZeldaClient):
         if self.set_train_in_overworld and stage <= 0xA:
             await self.set_starting_train(ctx)
             self.set_train_in_overworld -= 1
-
-    def update_stage_flag(self, stage: int, new: list[int]):
-        self.stage_flags[stage] = [o | n for o, n in itertools.zip_longest(STAGE_FLAGS.get(stage, [0,0,0,0]), new, fillvalue=0)]
-        print(f"Updating Stage Flags: {hex_f(stage)} {hex_f(new)} : {hex_f(self.stage_flags[stage])}")
-        self.reload_stage_flags = True
 
 
     # Snurglars
@@ -1966,7 +1906,10 @@ class SpiritTracksClient(DSZeldaClient):
             0x137b70: "?",
             0x138580: "Tank spawner",
             0x13784c: "Demon Train",
-            0x138b10: "Purple Train"
+            0x138b10: "Purple Train",
+        }
+        crash_causers_post_fg = {
+            0x2d99c8: "Crasher post forest glyph"  # fire glyph no ocean glyph
         }
 
         crash_causers = {
@@ -2001,8 +1944,13 @@ class SpiritTracksClient(DSZeldaClient):
         return None
 
     async def conditional_bounce(self, ctx, scene: int, entrance: int) -> "STTransition" or None:
-        e_tuple = ((scene & 0xFF00) >> 8, scene & 0xFF, entrance)
-        current_destination = entrance_tuple_to_entrance.get(e_tuple)
+        coords = await self.get_coords(ctx)
+        current_destination = None
+        for e in entrances_per_scene.get(self.last_scene, []):
+            if e.detect_exit(scene, entrance, coords, self.er_y_offest):
+                current_destination = e
+                break
+        print(f"Bounce detected entrance: {current_destination} from {entrances_per_scene.get(self.last_scene, [])}")
         if current_destination and not await self.conditional_er(ctx, current_destination, detect_data=current_destination.vanilla_reciprocal):
             return current_destination.vanilla_reciprocal
         return None
@@ -2367,6 +2315,7 @@ class SpiritTracksClient(DSZeldaClient):
         identifiers = map_object_identifiers
 
         write_list = []
+        last_len = 0
         for addr, i in actor_idents.items():
             if addr == 0x5544:
                 printl("Map Object Overflow!")
@@ -2406,6 +2355,9 @@ class SpiritTracksClient(DSZeldaClient):
 
             # if identifiers.get(i) in ["Flames"]:
             #     write_list.append(Address.from_pointer(addr + 33 * 4 + 2, size=1).get_inner_write_list(0))
+            if len(write_list) > last_len:
+                print(f"deleting: {identifiers.get(i)} @ {addr}")
+            last_len = len(write_list)
 
         if write_list:
             printl(f"Deleting Cutscenes: {hex_f(write_list)}")

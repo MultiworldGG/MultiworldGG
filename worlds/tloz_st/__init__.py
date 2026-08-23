@@ -229,6 +229,9 @@ class SpiritTracksWorld(WorldParent):
             self.non_required_sections = [s for s in range(1, 7) if DUNGEON_TO_BOSS_ITEM_LOCATION[f"ToS {s}"] not in self.required_boss_locs]
         else:
             self.choose_starting_entrance()
+            self.track_items = self.choose_track_items()
+            self.choose_starting_tracks()
+
             self.required_boss_locs = self.pick_required_dungeons()
             self.non_required_sections = [s for s in range(1, 7) if DUNGEON_TO_BOSS_ITEM_LOCATION[f"ToS {s}"] not in self.required_boss_locs]
             # db_list = [(s, DUNGEON_TO_BOSS_ITEM_LOCATION[f"ToS {s}"], DUNGEON_TO_BOSS_ITEM_LOCATION[f"ToS {s}"] not in self.required_boss_locs) for s in range(1, 7)]
@@ -252,7 +255,6 @@ class SpiritTracksWorld(WorldParent):
                 self.options.entrance_directionality.value = set(self.options.entrance_directionality.valid_keys)
             self.plando_tos_sections()
             # print(f"Tower Sections: {self.tower_section_lookup}")
-            self.track_items = self.choose_track_items()
             # Keyrings don't work with vanilla key locations
             if self.options.keysanity.value == 0:
                 self.options.keyrings.value = min(self.options.keyrings.value, 1)
@@ -1896,7 +1898,6 @@ class SpiritTracksWorld(WorldParent):
         return self.pre_fill_items
 
     def pre_fill(self) -> None:
-        self.choose_starting_tracks()
         self.pre_fill_tos_sections()
         self.pre_fill_dungeon_items()
 

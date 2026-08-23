@@ -676,10 +676,10 @@ def set_transitions(self, logic):
                         lambda state: HasFlyer(state, self) or IJ(state, self))
     connect_regions(self, AEDoor.SF_FACTORY_WHEEL_TOP.value, AEDoor.SF_FACTORY_RC_CAR.value,
                         lambda state: True)
-    if logic == "normal" or logic == "expert":
+    if logic == "normal":
         connect_regions(self, AEDoor.SF_FACTORY_WHEEL_TOP.value, AEDoor.SF_FACTORY_MECH.value, 
-                        lambda state: CanHitWheel(state, self))
-    else: # This is correct as CanHitWheel includes Flyer only on expert, making hard the unique.
+                        lambda state: HasClub(state, self) or HasSling(state, self))
+    else:
         connect_regions(self, AEDoor.SF_FACTORY_WHEEL_TOP.value, AEDoor.SF_FACTORY_MECH.value, 
                         lambda state: CanHitWheel(state, self) or SuperFlyer(state, self, AEDoor.SF_FACTORY_WHEEL_TOP.value))
     connect_regions(self, AEDoor.SF_FACTORY_MECH.value, AEDoor.SF_FACTORY_WHEEL_TOP.value, 
@@ -1415,7 +1415,11 @@ def set_locations(self, logic):
     # Second
     connect_regions(self, AEDoor.CB_SECOND_ROOM_ENTRY.value, AELocation.W4L1Shaka.value, 
                         lambda state: HasNet(state, self))
-    connect_regions(self, AEDoor.CB_SECOND_ROOM_ENTRY.value, AELocation.W4L1Puka.value, 
+    if logic == "normal":
+        connect_regions(self, AEDoor.CB_SECOND_ROOM_ENTRY.value, AELocation.W4L1Puka.value, 
+                        lambda state: (HasFlyer(state, self) or HasClub(state, self) or HasSling(state, self) or (HasPunch(state, self) and HasHoop(state, self))) and HasNet(state, self))
+    else:
+        connect_regions(self, AEDoor.CB_SECOND_ROOM_ENTRY.value, AELocation.W4L1Puka.value, 
                         lambda state: (HasFlyer(state, self) or CanHitMultiple(state, self)) and HasNet(state, self))
     if logic == "normal":
         connect_regions(self, AEDoor.CB_SECOND_ROOM_ENTRY.value, AELocation.W4L1MaxMahalo.value, 

@@ -21,6 +21,13 @@ class DepFilter(OptionFilter):
     any: bool
     _dep_names: tuple[str, ...]
 
+    def _populate_deps(self, deps: tuple[Dep, ...]) -> tuple[str, ...]:
+        return tuple(
+            dep_name
+            for dep in deps
+            if (dep_name := getattr(dep, "__name__", "").removeprefix("dep_"))
+        )
+
     def __init__(self, fns: Dep | tuple[Dep, ...], value: bool = True, any: bool = False):
         dep_args: tuple[Dep, ...]
         if isinstance(fns, tuple):
@@ -32,11 +39,16 @@ class DepFilter(OptionFilter):
             raise ValueError("DepFilter requires at least one dep.")
         if not all(callable(dep) for dep in dep_args):
             raise ValueError("DepFilter deps must be callable.")
-        super().__init__(None, None)  # pyright: ignore[reportArgumentType]
+
+        super().__init__(None, None)  # pyright: ignore[reportArgumentType]  # ty: ignore[invalid-argument-type]
         object.__setattr__(self, "fns", dep_args)
         object.__setattr__(self, "value", value)
         object.__setattr__(self, "any", any)
-        object.__setattr__(self, "_dep_names", tuple(dep.__name__.removeprefix("dep_") for dep in dep_args))
+        object.__setattr__(
+            self,
+            "_dep_names",
+            self._populate_deps(dep_args)
+        )
 
     def _eval(self, c: CupheadOptions) -> bool:
         dep_matches = (fn(c) == self.value for fn in self.fns)

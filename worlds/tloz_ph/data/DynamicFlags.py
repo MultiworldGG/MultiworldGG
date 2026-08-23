@@ -1,4 +1,5 @@
 from .Addresses import *
+from .Constants import SKIP_OCEAN_FIGHTS_FLAGS, SPAWN_B3_REAPLING_FLAGS
 
 """
 "Dynamic Flag Name": {
@@ -415,6 +416,11 @@ DYNAMIC_FLAGS = {
         # "on_scenes": [0x2600, 0x2507],
         "has_items": [("Courage Crest", 0)],
         "unset_if_true": [(PHAddr.adv_flags_16, 0x04)]
+    },
+    "Prevent early courage crest location": {
+        "on_scenes": [0],
+        "not_has_locations": ['Ocean SW Salvage Courage Crest'],
+        "unset_if_true": [(PHAddr.adv_flags_2, 0x40)]
     },
     # Endgame
     "Spawn Phantoms in Totok B13": {
@@ -1154,6 +1160,11 @@ DYNAMIC_FLAGS = {
         "check_bits": [(PHAddr.flags_clear_fog, 0x10)],
         "set_if_true": [(PHAddr.adv_flags_7, 0x40)]
     },
+    "Ghost ship block warp": {
+        "on_scenes": [0x2900],
+        "check_bits": [(PHAddr.flags_clear_fog, 0x10, "not")],
+        "unset_if_true": [(PHAddr.adv_flags_7, 0x40)]
+    },
     # Vanilla frogs
     "Frogs show glyph": {
         "on_scenes": [0, 1, 2, 3],
@@ -1456,6 +1467,18 @@ DYNAMIC_FLAGS = {
         "on_scenes": [0, 1, 2, 3],
         "has_items": [("NE Sea Chart", 0)],
         "unset_if_true": [(PHAddr.inventory_5, 0x10)]
+    },
+
+    # Stage Flaggery
+    "Skip ocean fights": {
+        "on_scenes": [0, 1, 2, 3],
+        "has_slot_data": [("skip_ocean_fights", 1)],
+        "update_stage_flags": SKIP_OCEAN_FIGHTS_FLAGS
+    },
+    "Spawn gs b3 reapling": {
+        "on_scenes": [0x4102],
+        "has_slot_data": [("logic", 0, "not")],
+        "update_stage_flags": SPAWN_B3_REAPLING_FLAGS
     },
 }
 

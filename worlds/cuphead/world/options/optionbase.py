@@ -68,7 +68,7 @@ class ChoiceEx(Choice):
 
 class ConstOption(Option[Any], Generic[T]):
     value: T
-    default: Any = 0
+    default: Any = 0  # ty: ignore[invalid-attribute-override]
     visibility = Visibility.none
 
     def __init__(self):
@@ -84,7 +84,7 @@ class ConstOption(Option[Any], Generic[T]):
 
 class ConstNumericOption(NumericOption):
     value: int
-    default: int = 0
+    default: int = 0  # ty: ignore[invalid-attribute-override]
     visibility = Visibility.none
 
     def __init__(self):

@@ -3,6 +3,7 @@ from enum import StrEnum
 from typing import TYPE_CHECKING, NamedTuple
 
 from BaseClasses import Item, ItemClassification
+from .locations import extra_location_count
 
 if TYPE_CHECKING:
     from . import CandyBox2World
@@ -97,11 +98,12 @@ class CandyBox2ItemName(StrEnum):
     THORNS_SHIELD_SPELL = "Thorns Shield Spell"
     OBSIDIAN_WALL_SPELL = "Obsidian Wall Spell"
     BLACK_DEMONS_SPELL = "Black Demons Spell"
+    TALKING_CANDY = "Talking Candy"
     FONT_TRAP = "Font Trap"
 
 
 items: dict[CandyBox2ItemName, CandyBox2ItemData] = {
-    CandyBox2ItemName.CANDY: CandyBox2ItemData(candy_box_2_base_id + 0, lambda _: 0, ItemClassification.skip_balancing),
+    CandyBox2ItemName.CANDY: CandyBox2ItemData(candy_box_2_base_id + 0, lambda _: 0, ItemClassification.skip_balancing | ItemClassification.filler),
     CandyBox2ItemName.LOLLIPOP: CandyBox2ItemData(candy_box_2_base_id + 1, lambda _: 8, ItemClassification.progression),
     CandyBox2ItemName.CHOCOLATE_BAR: CandyBox2ItemData(
         candy_box_2_base_id + 2, lambda _: 3, ItemClassification.progression
@@ -253,13 +255,13 @@ items: dict[CandyBox2ItemName, CandyBox2ItemData] = {
         candy_box_2_base_id + 46, lambda _: 1, ItemClassification.progression
     ),
     CandyBox2ItemName.TWENTY_CANDIES: CandyBox2ItemData(
-        candy_box_2_base_id + 47, lambda _: 1, ItemClassification.skip_balancing
+        candy_box_2_base_id + 47, lambda _: 1, ItemClassification.skip_balancing | ItemClassification.filler
     ),
     CandyBox2ItemName.ONE_HUNDRED_CANDIES: CandyBox2ItemData(
-        candy_box_2_base_id + 48, lambda _: 1, ItemClassification.skip_balancing
+        candy_box_2_base_id + 48, lambda _: 1, ItemClassification.skip_balancing | ItemClassification.filler
     ),
     CandyBox2ItemName.FIVE_HUNDRED_CANDIES: CandyBox2ItemData(
-        candy_box_2_base_id + 49, lambda _: 1, ItemClassification.skip_balancing
+        candy_box_2_base_id + 49, lambda _: 1, ItemClassification.skip_balancing | ItemClassification.filler
     ),
     CandyBox2ItemName.THREE_LOLLIPOPS: CandyBox2ItemData(
         candy_box_2_base_id + 50, lambda _: 1, ItemClassification.progression
@@ -351,9 +353,12 @@ items: dict[CandyBox2ItemName, CandyBox2ItemData] = {
     CandyBox2ItemName.FONT_TRAP: CandyBox2ItemData(
         candy_box_2_base_id + 73, lambda world: font_trap_count(world), ItemClassification.trap
     ),
+
+    # The talking candy is always locked to the talking candy location if required
+    CandyBox2ItemName.TALKING_CANDY: CandyBox2ItemData(candy_box_2_base_id + 74, lambda world: 0, ItemClassification.progression),
 }
 
-filler_items: list[str] = [CandyBox2ItemName.CANDY, CandyBox2ItemName.TWENTY_CANDIES]
+filler_items: list[str] = [CandyBox2ItemName.CANDY.value, CandyBox2ItemName.TWENTY_CANDIES.value]
 
 item_groups = {
     "Chocolate Bars": {
@@ -449,3 +454,15 @@ def pain_au_chocolat_count(world: "CandyBox2World", value: int):
 
 def font_trap_count(world: "CandyBox2World"):
     return world.font_traps
+
+def create_items(world: "CandyBox2World"):
+    for name, data in items.items():
+        required_amount = data.required_amount(world)
+        for _ in range(required_amount):
+            world.multiworld.itempool.append(world.create_item(name.value))
+
+    extra_location_num = -extra_location_count(world)
+    if extra_location_num > 0:
+        # Generate the required number of filler items
+        for i in range(extra_location_num):
+            world.multiworld.itempool.append(world.create_filler())

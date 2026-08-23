@@ -333,7 +333,6 @@ STAGE_LOCATION_GROUPS = {
         "TotOK B12 Kill Everything Chest",
         "TotOK B12 Phantom Chest",
         "TotOK B13 Sea Chart Chest",
-        "GOAL: Triforce Door",
     ],
     "Ocean": [
         "Ocean SW Salvage Courage Crest",
@@ -1282,7 +1281,8 @@ BOSS_EVENT_TO_LOCATION = {
     "EVENT: Defeat Blaaz": "Blaaz Boss Reward",
     "EVENT: Defeat Cyclok": "Cyclok Boss Reward",
     "EVENT: Defeat Crayk": "Crayk Boss Reward",
-    "EVENT: Rescue Tetra": ["Ghost Ship Rescue Tetra", "Cubus Sisters Ghost Key"],
+    "EVENT: Rescue Tetra": "Ghost Ship Rescue Tetra",
+    "EVENT: Defeat Cubus Sisters": "Cubus Sisters Ghost Key",
     "EVENT: Defeat Dongorongo": "Dongorongo Boss Reward",
     "EVENT: Defeat Gleeok": "Gleeok Boss Reward",
     "EVENT: Defeat Eox": "Eox Boss Reward",
@@ -1938,6 +1938,125 @@ dig_spot_data_water = {
     #                                               0x0225B1A0, dangerous_reset=True),
 }
 
+idents_0: dict[int, str] = {
+    0x17A864: "Spirit Door",
+    0x15667C: "Key Door",
+    0x156498: "Blue Door",
+    0x15a3c0: "Arena Door",
+    0x17ad60: "Blue Door",  # Phantom Door
+    0x16badc: "Boss Door",
+    0x159c10: "Ghost Door",
+    0x17930c: "Door",  # ToF Door
+    0x1568c0: "Tap Door",
+    0x170ff0: "Door",  # Sun door
+    0x185ce8: "Door", # Courage temple
+    0x263d20: "Door",  # Man of smiles arena door
+    0x16c188: "Door",  # Wireframe, in gt
+    0x17a9b8: "Door",  # Dongorongo's room
+    0x17aa70: "Door", # Dongorongo's room
+
+    0x157340: "Spikes",
+    0x179104: "Ice Spikes",
+    0x157288: "Flames",
+
+    0x155fd4: "Small Chest",
+    0x1562AC: "Big Chest",
+    0x1563f4: "Unspawned Big Chest",
+    0x156350: "Unspawned Big Chest",  # Boomerang chest enables item menu
+    0x156208: "Unspawned Small Chest",  # totok
+    0x15611c: "Unspawned Small Chest",  # tof
+    0x159254: "Bridge Spawner",
+    0x17a924: "Bridge",  # Dongorong's room
+
+    0x156fc0: "Stone Tablet",
+    0x16c47c: "Tongue Statue",
+    0x1592e8: "Gossip Stone (chest count)",
+    0x157640: "Torch",
+    0x157160: "Map",
+
+    0x15759C: "Switch",
+    0x16c3d4: "Color Switch",
+    0x16c2f0: "Lever",
+    0x1574b0: "Pressure Pad",
+    0x16c528: "Hammer Switch",
+    0x15a628: "Eye Switch",
+    0x185c44: "Lazer Statue",
+    0x178e3c: "Candle",
+
+    0x156CF8: "Pot (Hearts)",
+    0x156c60: "Pot",
+    0x156d90: "Pot (Safe Zone)",
+    0x17a1a8: "Barrel",
+    0x157054: "Bomb Flower",
+    0x15aaac: "Chestnut",
+
+    0x15741c: "Peg",
+    0x1576d4: "Dirt Pile",
+    0x17a92c: "Force Gem Pedestal",
+    0x16bbb8: "Pedestal",
+
+    0x16CB04: "Staircase",
+    0xe2d44: "Staircase",
+    0x156B34: "Cave Exit",
+    0x156a0c: "Cave",
+    0x156978: "Indoor Cave",
+    0x156aa0: "Bombable Cave",
+    0x15a8d0: "Dungeon Entrance",
+
+    0x179198: "Ice Bridge",
+    0x16c614: "Color Block",
+    0x25e448: "Separator",
+    0x25a308: "Separator (Corner)",
+    0xe4e04: "Separator",
+    0xe289c: "Offscreen",
+    0x15a328: "Bombable Wall",
+    0x15a294: "Bombable Block",
+    0x15a114: "Block",
+    0x157790: "Bombable Rock",
+    0x16cbac: "Tree",
+    0x15a080: "Column",
+    0x15a534: "Bridge",
+
+    0x16cc40: "Grass",
+    0x16ccd4: "Grass",
+    0x16c9dc: "Pit Trap",
+    0x16cc74: "Hammer Catapult"
+}
+
+map_object_idents: dict[int, str] = {
+    1: "Unspawned",
+    0x5: "House Entrance",
+    0x2D: "Closed Chest",
+    0x29: "Open Chest",
+    0x819: "Door",
+    0x9: "Solid",
+    0x6F: "Throwable",
+    0xD: "Readable or Entrance",
+    0xF: "Barrel in Cave",
+    0x19: "House",
+    0x49: "Grass",
+    0x80D: "Cave Exit",
+    0x44D: "Switch",
+    0x801: "Buried Laser Statue",
+    0x809: "Staircase",
+    0x81D: "Tap Door, lit Laser Statue",
+    0x4D: "Hammer Switch",
+    0xC1D: "Unlit Laser Statue",
+    0x4F: "Bomb Flower",
+    0x20D: "Updraft",
+    0x209: "Dirt Pile",
+    0x429: "Lit Torch",
+    0x11d: "Pedestal",
+    0x40d: "Repeater"
+}
+
+pedestal_rooms: list[int] = [
+    0x2900,
+    0x1E00,
+    0x2503,
+    0x250C,
+    0x2510
+]
 
 if __name__ == "__main__":
     for cat, value in CATEGORY_LOCATION_GROUPS.items():

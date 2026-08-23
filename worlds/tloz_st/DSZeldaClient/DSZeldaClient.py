@@ -1,6 +1,7 @@
 
 import time
 import logging
+import itertools
 from typing import TYPE_CHECKING, Set, Dict, Any, Iterable
 
 from NetUtils import ClientStatus
@@ -9,6 +10,7 @@ from worlds._bizhawk.client import BizHawkClient
 from ..data.Constants import *
 from ..Util import *
 from .subclasses import read_multiple, write_multiple, storage_key, get_stored_data, hex_f, printl, print_debug
+from ..data.Items import ITEM_GROUPS
 
 from ..data.Addresses import *
 
@@ -69,6 +71,7 @@ class DSZeldaClient(BizHawkClient):
 
     stage_flag_offset: int
     er_y_offest: int # In ph i use coords who's y is 164 off the entrance y
+    map_warp: "DSTransition" or None
 
     def __init__(self) -> None:
         super().__init__()
@@ -79,7 +82,7 @@ class DSZeldaClient(BizHawkClient):
         self.scene_to_dynamic_flag: dict[int, list[dict]] = {}
         self.hint_scene_to_watches = build_hint_scene_to_watches()
         self.entrance_id_to_entrance = build_entrance_id_to_data()
-        self.dynamic_entrances_by_scene = None
+        self.dynamic_entrances_by_scene: dict[int, dict] = {}
 
         self.entrances = {}
         self.hint_data = {}
@@ -102,7 +105,7 @@ class DSZeldaClient(BizHawkClient):
         self.watches: dict[str, Address] = {}
         self.receiving_location = False
         self.last_vanilla_item: list[str | list[tuple[str, int]]] = []
-        self.delay_reset = False
+        self.delay_reset = 0
         self.getting_location = False
 
         self._previous_game_state = False  # Updated every successful cycle
@@ -157,6 +160,9 @@ class DSZeldaClient(BizHawkClient):
         self.set_starting_flags = False
         self.delay_pickup_remove_vanilla = False
         self._delay_room_action: int = 3
+
+        self.reload_stage_flags: bool = False
+        self.stage_flags: dict[int, list[int]] = {}
 
     def item_count(self, ctx, item_name, items_received=-1) -> int:
         return self.item_data[item_name].get_count(ctx, items_received)
@@ -496,6 +502,10 @@ class DSZeldaClient(BizHawkClient):
                 for i, v in self.er_in_scene.items():
                     printl(f"\t{i} => {v} {i.exit}")
 
+                if self.reload_stage_flags:
+                    self.reload_stage_flags = False
+                    await self.set_stage_flags(ctx, self.current_stage)
+
                 await self.process_on_room_load(ctx, current_scene, read_result)
                 await self._load_local_locations(ctx, self.current_scene)
                 await self._process_scouted_locations(ctx, current_scene)
@@ -581,11 +591,11 @@ class DSZeldaClient(BizHawkClient):
                     res = self.add_special_er_data(ctx, res, data.scene, data, exit_data)
 
             self.er_map = res
-            # printl(f"ER Map:")
-            # for scene, data in self.er_map.items():
-            #     printl(f"\t{hex(scene)}")
-            #     for d2, d3 in data.items():
-            #         printl(f"\t\t{d2} => {d3}")
+            printl(f"ER Map:")
+            for scene, data in self.er_map.items():
+                printl(f"\t{hex(scene)}")
+                for d2, d3 in data.items():
+                    printl(f"\t\t{d2} => {d3}")
 
 
 
@@ -694,9 +704,7 @@ class DSZeldaClient(BizHawkClient):
 
         # Map warp
         elif getattr(self, "map_warp", None):
-            if res[0] == 0x25 and self.last_stage != 0x25:
-                logger.info(f"Canceling map warp, you can't warp while entering TotOK")
-            else:
+            if not self.cancel_map_warp(ctx, res):
                 logger.info(f"Map warping to {self.map_warp.name}")
                 e_write_list, res = post_process(self.map_warp)
             self.map_warp = None
@@ -740,6 +748,10 @@ class DSZeldaClient(BizHawkClient):
             await self.store_visited_entrances(ctx, detect_data, exit_data, defer_entrance)
 
         return res
+
+    def cancel_map_warp(self, ctx, going_to: tuple):
+        """Test if warping in an illegal way, to prevent it. Return True if canceling"""
+        return False
 
     def custom_er_message(self, ctx, message: str):
         """
@@ -818,6 +830,11 @@ class DSZeldaClient(BizHawkClient):
             if not await self._has_dynamic_requirements(ctx, data):
                 continue
 
+            # Update stage flags
+            if "update_stage_flags" in data and "on_scenes" in data:
+                printl(f"\t{data['name']} is setting stage flags")
+                self.update_stage_flag((data["on_scenes"][0] & 0xFF00) >> 8, data["update_stage_flags"])
+
             # Create read/write lists
             for a, v in data.get("set_if_true", []):
                 read_addr.add(a)
@@ -867,7 +884,7 @@ class DSZeldaClient(BizHawkClient):
         return write_list
 
     async def _set_dynamic_entrances(self, ctx, scene):
-        self.er_in_scene = self.er_map.get(scene, dict())
+        self.er_in_scene = self.er_map.get(scene, dict()).copy()
         self.er_messages.clear()
         if not self.dynamic_entrances_by_scene:
             self.dynamic_entrances_by_scene = build_scene_to_dynamic_entrance(ctx)
@@ -891,6 +908,11 @@ class DSZeldaClient(BizHawkClient):
                 if "message" in data:
                     self.er_messages[detect_data] = data.get("message", None)
             printl(f"\t{detect_data} => {data['exit_data']}")
+
+    def update_stage_flag(self, stage: int, new: list[int]):
+        self.stage_flags[stage] = [o | n for o, n in itertools.zip_longest(self.stage_flags.get(stage, [0,0,0,0]), new, fillvalue=0)]
+        print(f"Updating Stage Flags: {hex_f(stage)} {hex_f(new)} : {hex_f(self.stage_flags[stage])}")
+        self.reload_stage_flags = True
 
     async def _has_dynamic_requirements(self, ctx, data) -> bool:
         def check_items(d):
@@ -1042,6 +1064,18 @@ class DSZeldaClient(BizHawkClient):
                     return False
             return True
 
+        def check_traversed_entrances():
+            entrances = data.get("has_traversed_entrances", [])
+            if not entrances:
+                return True
+            if not self.traversed_entrances:
+                return False
+
+            for e in entrances:
+                if ENTRANCES[e].id not in self.traversed_entrances:
+                    return False
+            return True
+
         if not check_items(data):
             printl(f"\t{data['name']} does not have item reqs")
             return False
@@ -1060,8 +1094,12 @@ class DSZeldaClient(BizHawkClient):
         if not has_entrance(data):
             printl(f"\t{data['name']} has the wrong entrance")
             return False
+        if not check_traversed_entrances():
+            printl(f"\t{data['name']} has not traversed entrances")
+            return False
         if not await self.has_special_dynamic_requirements(ctx, data):
             return False
+
 
 
         return True
@@ -1908,11 +1946,11 @@ class DSZeldaClient(BizHawkClient):
 
     @staticmethod
     async def find_table_object(ctx: "BizHawkClientContext", start_offset: int,
-                                check_offset, comp_value: int | list,
-                                size=4,
+                                check_offset: int, comp_value: int | list,
+                                size:int=4,
                                 table_addr: Address = None,
-                                return_index=False, max_search: int = 35,
-                                reverse=True) -> Address | tuple[Address, int] | None:
+                                return_index: bool=False, max_search: int = 35,
+                                reverse: bool=True) -> Address | tuple[Address, int] | None:
         """
         Find a specific object from a pointer table.
         Loops backwards from start_offset until the validation check matches.
@@ -1924,7 +1962,7 @@ class DSZeldaClient(BizHawkClient):
         :param size: size of the comp value read
         :param return_index: return the table index that the correct object was found at along with the object data address
         :param max_search: How far to search. -1 checks the entire table
-        :param reverse: Start backwards for effieciency
+        :param reverse: Start backwards for efficiency
         :return: Address of valid object, or tuple of Address and table index
         """
 
@@ -2012,3 +2050,34 @@ class DSZeldaClient(BizHawkClient):
     async def frame_advance(ctx):
         await bizhawk.unlock(ctx.bizhawk_ctx)
         await bizhawk.lock(ctx.bizhawk_ctx)
+
+    @staticmethod
+    async def get_table_data(ctx, array_start, comp_offset, size:int or list=4, table_label=True, table_size=128) -> dict["Address", int | list[int]]:
+        """
+        Collect data from a table of pointers at a given offset.
+        """
+
+        rl = []
+        for i in range(table_size):
+            rl.append(Address.from_pointer(array_start + i * 4, size=3))
+        actors = await read_multiple(ctx, rl)
+        # print(f"Objects: {hex_f(actors)}")
+
+        if table_label:
+            labels = [k for k, v in actors.items() if v]
+        else: labels = None
+
+        # Multiple offsets at once
+        if isinstance(comp_offset, Iterable):
+            actors_start = [[Address.from_pointer(v, size=i) for v in actors.values() if 0 < v < 0x400000] for i in size]
+            reads: dict["Address", list[int]] = {}
+            for i, offset in enumerate(comp_offset):
+                reads_2 = await read_multiple(ctx, actors_start[i], offset=offset * 4, keys=labels)
+                for r, v in reads_2.items():
+                    reads.setdefault(r, [0]*len(comp_offset))[i] = v
+            return reads
+
+        # single offset
+        actors_start = [Address.from_pointer(v, size=size) for v in actors.values() if 0 < v < 0x400000]
+        reads_2 = await read_multiple(ctx, actors_start, offset=comp_offset * 4, keys=labels)
+        return reads_2

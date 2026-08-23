@@ -11,9 +11,11 @@ from .data.Addresses import STAddr
 async def receive_tos_key(client: "SpiritTracksClient", ctx, item: "STItem", rii):
     key_count = item.value if item.name.startswith("Keyring") else 1
 
-    async def write_keys_to_storage(dungeon) -> tuple[int, list, str]:
+    async def write_keys_to_storage(dungeon) -> tuple[int, list, str] or False:
         from .data.Constants import DUNGEON_KEY_DATA
-        key_data = DUNGEON_KEY_DATA[dungeon]
+        key_data = DUNGEON_KEY_DATA.get(dungeon, {})
+        if not key_data:
+            return False
         prev = await key_data["address"].read(ctx)
         bit_filter = key_data["filter"]
         new_v = prev | bit_filter \
@@ -33,7 +35,9 @@ async def receive_tos_key(client: "SpiritTracksClient", ctx, item: "STItem", rii
             await client.key_address.add(ctx, key_count)
     else:
         dungeon_key = 0x130 + item.section
-        res.append(await write_keys_to_storage(dungeon_key))
+        storage_data = await write_keys_to_storage(dungeon_key)
+        if storage_data:
+            res.append(storage_data)
     return res
 
 async def receive_tear_of_light(client: "SpiritTracksClient", ctx, item: "STItem", rii):

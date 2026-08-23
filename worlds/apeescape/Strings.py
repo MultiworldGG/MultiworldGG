@@ -655,4 +655,5 @@ Commands_Dict = {
     "auto_equip": "cmd_auto_equip",
     "syncprogress": "cmd_syncprogress",
     "spikecolor": "cmd_spikecolor",
+    #"test_bounce": "cmd_test_bounce"
 }

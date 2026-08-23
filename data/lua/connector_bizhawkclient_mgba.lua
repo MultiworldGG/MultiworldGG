@@ -123,7 +123,6 @@ request_handlers = {
 
         res["type"] = "MEMORY_SIZE_RESPONSE"
         res["value"] = memory_domains[req["domain"]]:size()
-
         return res
     end,
 
@@ -315,6 +314,7 @@ function tick()
                 ["ROM"] = emu.memory.cart0,
                 ["VRAM"] = emu.memory.vram,
                 ["SRAM"] = emu.memory.sram,
+                ["CartRAM"] = emu.memory.sram,
                 ["WRAM"] = emu.memory.wram,
                 ["OAM"] = emu.memory.oam,
                 ["IO"] = emu.memory.io,

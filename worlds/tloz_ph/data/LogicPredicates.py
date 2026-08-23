@@ -64,9 +64,11 @@ def ph_has_spirit(state: CollectionState, player: int, spirit: str, count: int =
 
 
 def ph_has_spirit_gems(state: CollectionState, player: int, spirit: str, count: int = 1):
-    pack_size = state.multiworld.worlds[player].options.spirit_gem_packs
+    pack_size = state.multiworld.worlds[player].options.spirit_gem_packs.value
+    spirits = ["Power", "Wisdom", "Courage"]
+    spirit_index = spirits.index(spirit)
     return all([
-        ph_has_spirit(state, player, spirit),
+        any([ph_has_spirit(state, player, s) for s in spirits[spirit_index:]]),
         any([
             state.has(f"{spirit} Gem", player, count),
             state.has(f"{spirit} Gem Pack", player, ceil(count / pack_size)),

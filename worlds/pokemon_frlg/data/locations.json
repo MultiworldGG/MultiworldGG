@@ -2321,13 +2321,13 @@
     "include": ["Hidden Items"]
   },
   "HIDDEN_ITEM_SILPH_CO_9F_CALCIUM": {
-    "name": "Silph Co. 9F - West Room Plant Hidden Item",
+    "name": "Silph Co. 9F - Southwest Room Plant Hidden Item",
     "tags": ["Hidden Items", "Kanto", "Silph Co."],
     "category": "HIDDEN_ITEM",
     "include": ["Hidden Items"]
   },
   "HIDDEN_ITEM_SILPH_CO_9F_MAX_POTION": {
-    "name": "Silph Co. 9F - West Room Hidden Item Near Boxes",
+    "name": "Silph Co. 9F - Southwest Room Hidden Item Near Boxes",
     "tags": ["Hidden Items", "Kanto", "Silph Co."],
     "category": "HIDDEN_ITEM",
     "include": ["Hidden Items"]
@@ -2658,7 +2658,7 @@
   },
 
   "PC_ITEM_POTION": {
-    "name": "Player's PC - PC Item",
+    "name": "Player's PC - Item",
     "tags": ["Starting Items"],
     "category": "NPC_GIFT",
     "include": []

@@ -43,7 +43,7 @@ chapter2_locations = {
         ),
         LocationData(
             LocationIDs.ch2_castle_town_all_stars_challenge,
-            should_be_included=include_recruits,
+            should_be_included=include_recruits_chapter2_weird_route_exclusion,
             group=LocationGroups.chapter2,
         ),
     ],

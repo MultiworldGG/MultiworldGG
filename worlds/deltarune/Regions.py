@@ -122,7 +122,7 @@ def add_location_to_region(region: Region, locations: list[LocationData], world:
 
 
 def get_entrance_name(origin: Region, destination: Region, complement: str = None):
-    text = f"{origin.name.replace(":", "")} -> {destination.name.replace(":", "")}"
+    text = f"{origin.name.replace(':', '')} -> {destination.name.replace(':', '')}"
 
     if complement != None:
         text += f" ({complement})"

@@ -239,6 +239,9 @@ location_table = {
        for i in range(1, 32) for j in range(1, number_buttons_per_cluster[i] + 1)},
     **{f"Rando Mountain Minigame: Button {i}-{j}": LocData(10120000 + i * 100 + j, i, j, "Minigame", "Rando Mountain")
        for i in range(1, 32) for j in range(1, number_buttons_per_cluster[i] + 1)},   
+    
+    **{f"Custom Minigame: Button {i}-{j}": LocData(10130000 + i * 100 + j, i, j, "Minigame", "Custom")
+       for i in range(1, 32) for j in range(1, number_buttons_per_cluster[i] + 1)},
 }
 location_table["Funny Bridge Game Minigame: Cube"] = LocData(10130000, None, None, "Minigame", "Funny Bridge Game")
 location_table["Clique: The Button"] = LocData(10130001, None, None, "Minigame", "Clique")

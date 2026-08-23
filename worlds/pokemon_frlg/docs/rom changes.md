@@ -51,11 +51,6 @@ predetermined priority
 * Talking to the Wireless Club Attendant (left) on the 2nd floor of any Pokémon Center will let you fight a random uncatchable Pokémon in order to grind exp and money
 * Talking to the Direct Corner Attendant (right) on the 2nd floor of any Pokémon Center will allow you to purchase various consumable items you have already found
 * The Pikachu tutorial in the intro is skipped
-* The intro sequence of the game has been changed:
-  * You now choose your starter Pokémon in the intro after you name your rival
-  * Your spawn point is in front of your house in Pallet Town instead of in your room
-  * The Professor Oak scene in Pallet Town where he takes you to his lab in removed
-  * Professor Oak's Lab starts at the point where you need to do the first rival battle. The trigger for the rival battle has been removed and the battle can be initiated by talking to him
 * The Old Man catching tutorial is skipped
 * Miguel's position in Mt. Moon will change based on which side you enter from
 * Both fossils in Mt. Moon will give you the same item so it doesn't matter which one you pick up. The second fossil can be obtained in the Pokémon Lab after you have revived a certain number of fossils

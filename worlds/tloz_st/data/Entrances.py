@@ -3044,6 +3044,9 @@ ENTRANCES: dict[str, STTransition] = STTransition.from_data(ENTRANCE_DATA)
 entrance_id_to_entrance = {e.id: e for e in ENTRANCES.values()}
 entrance_id_to_region = {e.id: e.entrance_region for e in ENTRANCES.values()}
 entrance_tuple_to_entrance: dict[tuple, STTransition] = {e.entrance: e for e in ENTRANCES.values()}
+entrances_per_scene: dict[int, list[STTransition]] = {}
+for e in ENTRANCES.values():
+    entrances_per_scene.setdefault(e.scene, []).append(e)
 
 location_event_lookup = {"Stagnox Boss Reward": "EVENT: Defeat Stagnox",
                          "Fraaz Boss Reward": "EVENT: Defeat Fraaz",

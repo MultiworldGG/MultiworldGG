@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from BaseClasses import Entrance, Region
 from enum import IntEnum
 
-from .DSZeldaClient.subclasses import DSTransition, split_bits, AddrFromPointer
+from .DSZeldaClient.subclasses import DSTransition, split_bits, Address
 from .DSZeldaClient.ItemClass import DSItem, remove_vanilla_normal
 from .data.SwitchLogic import *
 from .data.Constants import EQUIPPED_SHIP_PARTS_ADDR, BOSS_DOOR_DATA
@@ -104,7 +104,7 @@ async def remove_vanilla_throwable_keys(client: "PhantomHourglassClient", ctx: "
         return []
 
     # Get the actor table
-    actor_table_addr =  AddrFromPointer(await PHAddr.actor_table_pointer.read(ctx, silent=True), size=256)
+    actor_table_addr =  Address.from_pointer(await PHAddr.actor_table_pointer.read(ctx, silent=True), size=256)
     actor_table = hex(await actor_table_addr.read(ctx, silent=True))
     actor_table = "0" + actor_table[2:]
     print(f"Removing throwable key {item.name} with bk_id {bk_id}")
@@ -115,11 +115,11 @@ async def remove_vanilla_throwable_keys(client: "PhantomHourglassClient", ctx: "
         if actor_data[1] == "0":  # filter out empty slots
             continue
         print(actor_data)
-        actor_id_addr = AddrFromPointer(int(actor_data, 16) + 8 - 0x2000000, size=4)
+        actor_id_addr = Address.from_pointer(int(actor_data, 16) + 8 - 0x2000000, size=4)
         actor_id = await actor_id_addr.read(ctx, silent=True)
         # If you find the boss key, delete its pointer
         if actor_id == bk_id:
-            little_endian_lol = AddrFromPointer(actor_table_addr + len(actor_table) // 2 - (_i + 1) * 4, size=4)
+            little_endian_lol = Address.from_pointer(actor_table_addr + len(actor_table) // 2 - (_i + 1) * 4, size=4)
             print(f"Found bk pointer: {actor_table_addr} at index {_i}")
             await little_endian_lol.overwrite(ctx, 0, silent=True)
             break
@@ -463,3 +463,55 @@ def update_switch_logic(old_ex: "PHEntrance", entr: "PHEntrance", er_state, logi
         ex.global_switch_state = old_ex.global_switch_state
         ex.switch_state = old_ex.switch_state
 
+class PairedObjects:
+    name: str
+    trigger: "Address"
+    to_activate: list["Address"]
+    overwrite: int
+    comp: int
+    trigger_2: "Address"
+
+    def __init__(self, name):
+        self.name = name
+        self.to_activate = []
+        self.comp = 1
+        self.overwrite = 0
+        self.comp_exact = True
+
+        self.always_active: bool = False
+        self.state: bool = False  # toggle state when always active
+        self.reset_write: int = 0  # What to write to reset
+
+    def __repr__(self):
+        return f"{self.name}: {self.trigger} = {self.comp}, {self.to_activate} = {self.overwrite}"
+
+    def validate(self):
+        return self.to_activate and hasattr(self, "trigger")
+
+    def get_writes(self, reset=False):
+        res = []
+        v = self.reset_write if reset else self.overwrite
+        for addr in self.to_activate:
+            res.append(addr.get_inner_write_list(v))
+        return res
+
+    def set_detection(self, trigger, comp=1, comp_exact=True, always_active=False):
+        if not hasattr(self, "trigger"):
+            self.trigger = trigger
+            self.comp = comp
+            self.comp_exact = comp_exact
+            self.always_active = always_active
+        else:
+            self.trigger_2 = trigger
+
+    def set_action(self, activate, w, r):
+        self.to_activate.append(activate)
+        self.overwrite = w
+        self.reset_write = r
+
+    def compare(self, value):
+        if self.comp_exact:
+            if isinstance(self.comp, int):
+                return value == self.comp
+            return value in self.comp
+        return value & self.comp

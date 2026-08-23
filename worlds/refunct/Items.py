@@ -59,6 +59,8 @@ item_table["Funny Bridge Game Minigame"] = ItemData(9999900, ItemClassification.
 item_table["Clique: Button Activation"] = ItemData(9999901, ItemClassification.progression)
 item_table["Clique: Feeling of Satisfaction"] = ItemData(9999902, ItemClassification.filler)
 
+item_table["Custom Minigame"] = ItemData(9999890, ItemClassification.progression)
+
 
 # for i in range(0, 101):
 #     item_table[f"DEBUGA {i}"] = ItemData(20000000 + i, ItemClassification.filler)
@@ -71,16 +73,16 @@ item_table["Clique: Feeling of Satisfaction"] = ItemData(9999902, ItemClassifica
 # item_table[f"Disable Jumppads"] = ItemData(60000010, ItemClassification.filler)
 # item_table[f"DEBUG Goal"] = ItemData(60000015, ItemClassification.filler)
 
-item_table[f"Dark skies"] = ItemData(9999001, ItemClassification.filler)
-item_table[f"No skylight"] = ItemData(9999002, ItemClassification.filler)
-item_table[f"Starry sky"] = ItemData(9999006, ItemClassification.filler)
-item_table[f"Red sky"] = ItemData(9999007, ItemClassification.filler)
+item_table[f"Dark Skies"] = ItemData(9999001, ItemClassification.filler)
+item_table[f"No Skylight"] = ItemData(9999002, ItemClassification.filler)
+item_table[f"Starry Sky"] = ItemData(9999006, ItemClassification.filler)
+item_table[f"Red Sky"] = ItemData(9999007, ItemClassification.filler)
 item_table[f"Hurricane"] = ItemData(9999008, ItemClassification.filler)
-item_table[f"Slo-mo"] = ItemData(9999003, ItemClassification.trap)
-item_table[f"Fast-mo"] = ItemData(9999004, ItemClassification.trap)
-item_table[f"Blurrrgh"] = ItemData(9999009, ItemClassification.trap)
-item_table[f"Ascend"] = ItemData(9999010, ItemClassification.trap)
-item_table[f"Depthless"] = ItemData(9999011, ItemClassification.trap)
+item_table[f"Slo-mo Trap"] = ItemData(9999003, ItemClassification.trap)
+item_table[f"Fast-mo Trap"] = ItemData(9999004, ItemClassification.trap)
+item_table[f"Blurrrgh Trap"] = ItemData(9999009, ItemClassification.trap)
+item_table[f"Ascend Trap"] = ItemData(9999010, ItemClassification.trap)
+item_table[f"Depthless Trap"] = ItemData(9999011, ItemClassification.trap)
 
 english_flowers = [
     "Rose",
@@ -200,6 +202,7 @@ item_groups = {
         "Block Blub Minigame Yellows",
         "Refunct Mountain Minigame",
         "Rando Mountain Minigame",
+        "Custom Minigame",
     },
     "Abilities": {
         "Ledge Grab",

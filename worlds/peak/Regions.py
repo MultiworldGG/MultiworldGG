@@ -22,7 +22,8 @@ def create_peak_regions(world: "PeakWorld"):
 
     # Determine which ascent levels should be excluded based on goal settings
     required_ascent = world.options.ascent_count.value
-    goal_type = world.options.goal.value
+    goals = world.options.goals.value
+    wants_peak = "Reach Peak" in goals
 
     multiplayer_badges = {
         "Ultimate Badge",
@@ -34,6 +35,9 @@ def create_peak_regions(world: "PeakWorld"):
         "Disaster Response Badge",
         "Applied Esoterica Badge",
         "Needlepoint Badge",
+        "Happy Camper Badge",
+        "Mentorship Badge",
+        "Last Resort Badge"
     }
 
     biome_badges = {
@@ -54,27 +58,37 @@ def create_peak_regions(world: "PeakWorld"):
         "Lone Wolf Badge",
         "Balloon Badge",
         "Bing Bong Badge",
+        "Medieval History Badge",
+        "Hang Gliding Badge",
+        "Exorcist Badge",
         "Competitive Eating Badge"
     }
     
-    logging.info(f"[Player {world.multiworld.player_name[world.player]}] Goal Type: {goal_type}, Required Ascent: {required_ascent}")
+    logging.info(f"[Player {world.multiworld.player_name[world.player]}] Goals: {sorted(goals)}, Required Ascent: {required_ascent}")
     
     # If goal is "Reach Peak" (0), exclude ascent badges above the required level
     excluded_ascent_levels = set()
-    if goal_type == 0 or goal_type == 3:  # Reach Peak goal or Peak and Badges goal
-        for ascent_level in range(required_ascent + 1, 8):  # Ascents above required level
+    if wants_peak:  # Ascent locations above the required level are unreachable
+        for ascent_level in range(required_ascent + 1, 9):  # Ascents above required level
             excluded_ascent_levels.add(ascent_level)
     
     logging.info(f"[Player {world.multiworld.player_name[world.player]}] Excluded ascent levels: {excluded_ascent_levels}")
+
     
     excluded_location_count = 0
     created_location_count = 0
 
     # Add all regular locations from LOCATION_TABLE
+    yaml_excluded = set(world.options.exclude_locations.value)
+
     for name, loc_id in LOCATION_TABLE.items():
-        # Skip creating locations that should be excluded
         should_skip = False
-        # Check if multiplayer badges should be excluded
+
+        if name in yaml_excluded:
+            should_skip = True
+            excluded_location_count += 1
+            logging.info(f"[Player {world.multiworld.player_name[world.player]}] SKIPPING (exclude_locations): {name}")
+
         if world.options.disable_multiplayer_badges.value and name in multiplayer_badges:
             should_skip = True
             excluded_location_count += 1
@@ -90,7 +104,7 @@ def create_peak_regions(world: "PeakWorld"):
             excluded_location_count += 1
             logging.info(f"[Player {world.multiworld.player_name[world.player]}] SKIPPING HARD BADGE: {name}")
         
-        if goal_type == 0 or goal_type == 3:  # Only skip if goal is Reach Peak or Peak and Badges
+        if wants_peak:  # Only skip if Reach Peak limits the relevant ascents
             for level in excluded_ascent_levels:
                 if f"(Ascent {level})" in name:
                     should_skip = True
@@ -110,7 +124,7 @@ def create_peak_regions(world: "PeakWorld"):
         mountain_region.locations.append(loc)
         created_location_count += 1
 
-    # Add event locations (no numeric ID) — become progression items when checked
+    # Add event locations (no numeric ID) - become progression items when checked
     event_locations = [
         ("Ascent 1 Completed", "Ascent 1 Completed"),
         ("Ascent 2 Completed", "Ascent 2 Completed"),
@@ -119,6 +133,7 @@ def create_peak_regions(world: "PeakWorld"):
         ("Ascent 5 Completed", "Ascent 5 Completed"),
         ("Ascent 6 Completed", "Ascent 6 Completed"),
         ("Ascent 7 Completed", "Ascent 7 Completed"),
+        ("Ascent 8 Completed", "Ascent 8 Completed"),
         ("Idol Dunked", "Idol Dunked"),
         ("All Badges Collected", "All Badges Collected"),
         ("Mesa Access", "Mesa Access"),
@@ -132,7 +147,7 @@ def create_peak_regions(world: "PeakWorld"):
     for loc_name, item_name in event_locations:
         # Skip creating event locations for excluded ascents
         should_skip_event = False
-        if goal_type == 0 or goal_type == 3:
+        if wants_peak:
             for level in excluded_ascent_levels:
                 if f"Ascent {level} Completed" == loc_name:
                     should_skip_event = True

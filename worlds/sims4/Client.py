@@ -3,23 +3,26 @@ from __future__ import annotations
 import asyncio
 import json
 import os
-import urllib.parse
 import re
+import urllib.parse
 from pathlib import Path
 
 import Utils
-from CommonClient import ClientCommandProcessor, gui_enabled, get_base_parser, server_loop, logger, ClientStatus
+from CommonClient import ClientCommandProcessor, ClientStatus, get_base_parser, gui_enabled, logger, server_loop
 from MultiServer import mark_raw
-apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 
+from . import Sims4World
+
+apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 tracker_loaded = False
 try:
+    from worlds.tracker.TrackerClient import TrackerCommandProcessor
     from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
+    ClientCommandProcessor = TrackerCommandProcessor
     tracker_loaded = True
 except ModuleNotFoundError:
     from CommonClient import CommonContext as SuperContext
 
-from . import Sims4World
 
 # Gets the sims 4 mods folder
 
@@ -39,9 +42,9 @@ def print_json(obj: object, name: str, ctx: SimsContext):
     full_path = os.path.join(mod_data_path, name)
     if not os.path.exists(mod_data_path):
         ctx.gui_error(title="Sims 4 files not found.",
-                      text=f"Could not find sims 4 mod files, make sure you installed the mod correctly and have ran sims 4.")
+                      text="Could not find sims 4 mod files, make sure you installed the mod correctly and have ran sims 4.")
     else:
-        with open(full_path, 'w') as f:
+        with open(full_path, "w") as f:
             json.dump(obj, f)
 
 mtime = None
@@ -173,7 +176,6 @@ class SimsContext(SuperContext):
                     Utils.async_start(self.disconnect(False))
                     return
             else:
-                from CommonClient import logger
                 # Older APWorlds don't have the version string
                 logger.info("Warning: slot data has no version information; compatibility not checked.")
 

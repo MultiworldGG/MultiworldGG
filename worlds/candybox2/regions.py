@@ -25,10 +25,14 @@ class CandyBox2Entrance(Entrance):
         player: int,
         name: str = "",
         parent: Region | None = None,
-        randomization_group: int = 0,
+        randomization_group: int | CandyBox2RandomizationGroup = 0,
         randomization_type: EntranceType = EntranceType.ONE_WAY,
     ) -> None:
-        super().__init__(player, name, parent, randomization_group, randomization_type)
+        try:
+            rando_group = randomization_group.value
+        except AttributeError:
+            rando_group = randomization_group
+        super().__init__(player, name, parent, rando_group, randomization_type)
         self.is_exit = False
 
     def configure_for_exit(self):
@@ -122,10 +126,10 @@ def mark_room_entrance(world: "CandyBox2World", entrance: Entrance):
         return
 
     entrance.name = name
-    entrance.randomization_group = entrance.connected_region.randomization_group
+    entrance.randomization_group = entrance.connected_region.randomization_group.value
 
     if entrance_participates_in_er(world, entrance):
-        disconnect_entrance_for_randomization(entrance, entrance.connected_region.randomization_group, name)
+        disconnect_entrance_for_randomization(entrance, entrance.connected_region.randomization_group.value, name)
 
 
 def entrance_participates_in_er(world: "CandyBox2World", entrance: Entrance):
@@ -144,7 +148,17 @@ def connect_entrances(world: "CandyBox2World"):
 
     if world.is_ut_regen():
         placements = world.multiworld.re_gen_passthrough["Candy Box 2"]["entranceInformation"]
-        placement_state = ERPlacementState(world, EntranceLookup(world.random, False, set(), []), False)
+
+        initial_state_er_targets = sorted([entrance for region in world.multiworld.get_regions(world.player)
+                             for entrance in region.entrances if not entrance.parent_region], key=lambda x: x.name)
+        initial_state_exits = sorted([ex for region in world.multiworld.get_regions(world.player)
+                        for ex in region.exits if not ex.connected_region], key=lambda x: x.name)
+
+        placement_state = ERPlacementState(
+            world,
+            EntranceLookup(world.random, False, set(initial_state_exits), initial_state_er_targets),
+            False
+        )
 
         er_targets = {
             entrance.name: entrance
@@ -185,7 +199,7 @@ def connect_entrances(world: "CandyBox2World"):
                     CandyBox2RandomizationGroup.ROOM.value,
                     CandyBox2RandomizationGroup.LOLLIPOP_FARM.value,
                 ],
-                CandyBox2RandomizationGroup.LOLLIPOP_FARM: [
+                CandyBox2RandomizationGroup.LOLLIPOP_FARM.value: [
                     CandyBox2RandomizationGroup.ROOM.value,
                     CandyBox2RandomizationGroup.LOLLIPOP_FARM.value,
                 ],

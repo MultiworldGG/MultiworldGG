@@ -1,14 +1,15 @@
+import re
 from typing import TYPE_CHECKING, Dict, List, Set
 from BaseClasses import CollectionState, Location, LocationProgressType, Region, ItemClassification
 from Fill import FillError, fill_restrictive
 from .data import data, LocationCategory, fly_blacklist_map, TRAINER_REMATCH_MAP
 from .groups import location_groups
 from .items import PokemonFRLGItem, get_random_item, update_renewable_to_progression
-from .options import (CardKey, Dexsanity, Goal, IslandPasses, ShuffleFlyUnlocks, ShuffleHiddenItems, ShufflePokedex,
-                      ShuffleRunningShoes, Trainersanity)
+from .options import (CardKey, Dexsanity, Goal, IslandPasses, KantoTrainersanity, SeviiTrainersanity, ShuffleFlyUnlocks,
+                      ShuffleHiddenItems, ShufflePokedex, ShuffleRunningShoes)
 
 if TYPE_CHECKING:
-    from . import PokemonFRLGWorld
+    from .world import PokemonFRLGWorld
 
 fly_item_id_map = {
     "ITEM_FLY_NONE": 0,
@@ -59,8 +60,9 @@ fly_item_map = {
 
 
 class PokemonFRLGLocation(Location):
-    game: str = "Pokemon FireRed and LeafGreen"
+    game: str = data.get_game()
     item_address = Dict[str, int | List[int]] | None
+    graphic_address = Dict[str, int] | None
     default_item_id: int | None
     category: LocationCategory
     location_id: str | None
@@ -77,6 +79,7 @@ class PokemonFRLGLocation(Location):
             category: LocationCategory,
             parent: Region | None = None,
             item_address: Dict[str, int | List[int]] | None = None,
+            graphic_address: Dict[str, int] | None = None,
             default_item_id: int | None = None,
             location_id: str | None = None,
             scaling_ids: List[str] | None = None,
@@ -85,6 +88,7 @@ class PokemonFRLGLocation(Location):
         super().__init__(player, name, address, parent)
         self.default_item_id = default_item_id
         self.item_address = item_address
+        self.graphic_address = graphic_address
         self.category = category
         self.location_id = location_id
         self.scaling_ids = scaling_ids
@@ -124,6 +128,7 @@ def create_locations(world: "PokemonFRLGWorld", regions: Dict[str, Region]) -> N
             location_data.category,
             region,
             location_data.address,
+            location_data.graphic_address,
             default_item,
             location_id
         )
@@ -156,8 +161,7 @@ def create_locations(world: "PokemonFRLGWorld", regions: Dict[str, Region]) -> N
         if not world.options.post_goal_locations and world.options.goal == Goal.option_champion:
             if location_id in post_champion_locations:
                 return True
-            if ("Early Gossipers" not in world.options.modify_world_state.value and
-                    location_id in post_champion_gossiper_locations):
+            if not world.options.early_gossipers and location_id in post_champion_gossiper_locations:
                 return True
         return False
 
@@ -169,7 +173,8 @@ def create_locations(world: "PokemonFRLGWorld", regions: Dict[str, Region]) -> N
         included_types.add("Hidden Items")
     if world.options.extra_key_items:
         included_types.add("Extra Key Items")
-    if world.options.trainersanity != Trainersanity.special_range_names["none"]:
+    if (world.options.kanto_trainersanity != KantoTrainersanity.special_range_names["none"]
+            or world.options.sevii_trainersanity != SeviiTrainersanity.special_range_names["none"]):
         included_types.add("Trainersanity")
         if world.options.rematchsanity:
             included_types.add("Rematchsanity")
@@ -211,33 +216,117 @@ def create_locations(world: "PokemonFRLGWorld", regions: Dict[str, Region]) -> N
             region.locations.append(create_location(location_id))
 
     # Remove trainersanity locations if there are more than the amount specified in the settings
-    if world.options.trainersanity != Trainersanity.special_range_names["none"] and not world.is_universal_tracker:
+    if ((world.options.kanto_trainersanity != KantoTrainersanity.special_range_names["none"]
+         or world.options.sevii_trainersanity != SeviiTrainersanity.special_range_names["none"])
+            and not world.is_universal_tracker):
         locations: List[PokemonFRLGLocation] = world.get_locations()
         trainer_locations = [loc for loc in locations if loc.category == LocationCategory.TRAINER]
-        locs_to_remove = len(trainer_locations) - world.options.trainersanity.value
-        if locs_to_remove > 0:
+        kanto_trainer_locations = [loc for loc in trainer_locations
+                                   if loc.name in world.location_name_groups["Kanto"]]
+        sevii_trainer_locations = [loc for loc in trainer_locations
+                                   if loc.name in world.location_name_groups["Sevii Islands"]]
+        kanto_locs_to_remove = len(kanto_trainer_locations) - world.options.kanto_trainersanity.value
+        sevii_locs_to_remove = len(sevii_trainer_locations) - world.options.sevii_trainersanity.value
+
+        if kanto_locs_to_remove > 0:
             rematchsanity = world.options.rematchsanity
-            priority_trainer_locations = [loc for loc in trainer_locations
+            priority_trainer_locations = [loc for loc in kanto_trainer_locations
                                           if loc.name in world.options.priority_locations.value]
-            non_priority_trainer_locations = [loc for loc in trainer_locations
+            non_priority_trainer_locations = [loc for loc in kanto_trainer_locations
                                               if loc.name not in world.options.priority_locations.value]
             world.random.shuffle(priority_trainer_locations)
             world.random.shuffle(non_priority_trainer_locations)
-            trainer_locations = non_priority_trainer_locations + priority_trainer_locations
-            for location in trainer_locations:
+            kanto_trainer_locations = non_priority_trainer_locations + priority_trainer_locations
+            for location in kanto_trainer_locations:
                 region = location.parent_region
                 region.locations.remove(location)
                 if rematchsanity and location.location_id in TRAINER_REMATCH_MAP:
                     for location_id in TRAINER_REMATCH_MAP[location.location_id]:
                         region.locations.remove(world.get_location(data.locations[location_id].name))
-                locs_to_remove -= 1
-                if locs_to_remove <= 0:
+                kanto_locs_to_remove -= 1
+                if kanto_locs_to_remove <= 0:
+                    break
+
+        if sevii_locs_to_remove > 0:
+            rematchsanity = world.options.rematchsanity
+            priority_trainer_locations = [loc for loc in sevii_trainer_locations
+                                          if loc.name in world.options.priority_locations.value]
+            non_priority_trainer_locations = [loc for loc in sevii_trainer_locations
+                                              if loc.name not in world.options.priority_locations.value]
+            world.random.shuffle(priority_trainer_locations)
+            world.random.shuffle(non_priority_trainer_locations)
+            sevii_trainer_locations = non_priority_trainer_locations + priority_trainer_locations
+            for location in sevii_trainer_locations:
+                region = location.parent_region
+                region.locations.remove(location)
+                if rematchsanity and location.location_id in TRAINER_REMATCH_MAP:
+                    for location_id in TRAINER_REMATCH_MAP[location.location_id]:
+                        region.locations.remove(world.get_location(data.locations[location_id].name))
+                sevii_locs_to_remove -= 1
+                if sevii_locs_to_remove <= 0:
+                    break
+
+    # Add evolutions that are possible based on the wild Pokémon that exist
+    evolution_region = regions["Evolutions"]
+    evolution_added = True
+    evolutions_added: Set[str] = set()
+    while evolution_added:
+        evolution_added = False
+        for event in data.regions["REGION_EVOLUTION"].events:
+            event_data = data.events[event]
+            if event_data.name not in evolutions_added:
+                pokemon = event_data.name.split(" - ")[1].strip()
+                pokemon_name = re.sub(r' \d+', '', pokemon)
+                evo_data = data.evolutions[pokemon]
+                if (evo_data.method in world.logic.evo_methods_required
+                        and (pokemon_name in world.logic.wild_pokemon
+                             or pokemon_name in world.logic.evolved_pokemon)):
+                    event = PokemonFRLGLocation(world.player,
+                                                event_data.name,
+                                                None,
+                                                event_data.category,
+                                                evolution_region)
+                    event.place_locked_item(PokemonFRLGItem(event_data.item,
+                                                            ItemClassification.progression,
+                                                            None,
+                                                            world.player))
+                    event.show_in_spoiler = False
+                    evolution_region.locations.append(event)
+                    evolution_name = event_data.item.replace("Evolved ", "")
+                    if evolution_name not in world.logic.evolved_pokemon:
+                        world.logic.evolved_pokemon.append(evolution_name)
+                    evolution_added = True
+                    evolutions_added.add(event_data.name)
+
+    if world.options.dexsanity != Dexsanity.special_range_names["none"] and not world.is_universal_tracker:
+        # Delete dexsanity locations that are not in logic in an all state since they aren't accessible
+        pokedex_region = regions["Pokedex"]
+        for location in pokedex_region.locations.copy():
+            pokemon_name = location.name.split(" - ")[1]
+            if (pokemon_name not in world.logic.wild_pokemon
+                    and pokemon_name not in world.logic.static_pokemon
+                    and (pokemon_name not in world.logic.evolved_pokemon or not world.logic.dexsanity_requires_evos)):
+                pokedex_region.locations.remove(location)
+
+        # Delete dexsanity locations if there are more than the amount specified in the settings
+        if len(pokedex_region.locations) > world.options.dexsanity.value:
+            pokedex_locations = pokedex_region.locations.copy()
+            priority_pokedex_locations = [loc for loc in pokedex_locations
+                                          if loc.name in world.options.priority_locations.value]
+            non_priority_pokedex_locations = [loc for loc in pokedex_locations
+                                              if loc.name not in world.options.priority_locations.value]
+            world.random.shuffle(priority_pokedex_locations)
+            world.random.shuffle(non_priority_pokedex_locations)
+            pokedex_locations = non_priority_pokedex_locations + priority_pokedex_locations
+            for location in pokedex_locations:
+                pokedex_region.locations.remove(location)
+                if len(pokedex_region.locations) <= world.options.dexsanity.value:
                     break
 
 
 def place_unrandomized_items(world: "PokemonFRLGWorld") -> None:
     def fill_unrandomized_location(location: Location,
-                                            as_event: bool) -> None:
+                                   as_event: bool) -> None:
         item = world.create_item_by_id(location.default_item_id)
         if as_event:
             item.code = None
@@ -303,7 +392,6 @@ def place_shop_items(world: "PokemonFRLGWorld") -> None:
             if (index >= world.options.shop_slots.value and
                     not world.get_location(data.locations[location_id].name).is_event):
                 non_progression_shop_locations.append(world.get_location(data.locations[location_id].name))
-
 
     renewable_items = []
     if world.options.vending_machines:
@@ -402,9 +490,7 @@ def set_free_fly(world: "PokemonFRLGWorld") -> None:
             "Free Fly Location",
             None,
             LocationCategory.EVENT,
-            start_region,
-            None,
-            None
+            start_region
         )
         item_id = data.constants[free_fly_location_id]
         free_fly_location.place_locked_item(PokemonFRLGItem(data.items[item_id].name,
@@ -428,18 +514,17 @@ def set_free_fly(world: "PokemonFRLGWorld") -> None:
             "Town Map Fly Location",
             None,
             LocationCategory.EVENT,
-            start_region,
-            None,
-            None
+            start_region
         )
         item_id = data.constants[town_map_fly_location_id]
         town_map_fly_location.place_locked_item(PokemonFRLGItem(data.items[item_id].name,
-                                                                 ItemClassification.progression,
-                                                                 None,
-                                                                 world.player))
+                                                                ItemClassification.progression,
+                                                                None,
+                                                                world.player))
         town_map_fly_location.access_rule = lambda state: state.has("Town Map", world.player)
         town_map_fly_location.show_in_spoiler = False
         start_region.locations.append(town_map_fly_location)
+
 
 def shuffle_badges(world: "PokemonFRLGWorld") -> None:
     if world.is_universal_tracker:
@@ -454,7 +539,7 @@ def shuffle_badges(world: "PokemonFRLGWorld") -> None:
             loc for loc in locations if loc.name in location_groups["Gym Prizes"] and loc.item is None
         ]
         state = world.get_world_collection_state()
-        # Try to place badges with current Pokemon and HM access
+        # Try to place badges with current Pokémon and HM access
         # If it can't, try with guaranteed HM access and fix it later
         if attempt > 1:
             world.logic.guaranteed_hm_access = True

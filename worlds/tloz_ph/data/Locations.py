@@ -178,6 +178,7 @@ LOCATIONS_DATA = {
         "address": PHAddr.adv_flags_41,
         "value": 0x2,
         "delay_reset": True,
+        "conditional": True,  # Removed until fixed
         "id": 15,
         "hint_entrance": "Oshus' Exit",
         "gift_addr": Address(0x2153FC)  # Resets after getting phantom sword, annoying...
@@ -2375,6 +2376,8 @@ LOCATIONS_DATA = {
         "vanilla_item": "Ghost Key",
         "boss_room": "Ghost Ship",
         "id": 184,
+        "do_special": {"event_type": "ut_connect",
+                       "event_name": "EVENT: Defeat Cubus Sisters"},
         "hint_entrance": "Cubus Sisters Blue Warp",
         "hint_entrance_secondary": "GS Exit"
     },
@@ -3244,6 +3247,7 @@ LOCATIONS_DATA = {
         "vanilla_item": "Power Gem",
         "stage_id": 0x12,
         "floor_id": 0x1,
+        "additional_rooms": [0x1101],
         "y": 0x0,
         "id": 254,
         "chest_offset": 15
@@ -3303,6 +3307,7 @@ LOCATIONS_DATA = {
         "vanilla_item": "Big Red Rupee (200)",
         "stage_id": 0x12,
         "floor_id": 0x1,
+        "additional_rooms": [0x1101],
         "y": 4915,
         "x_min": -44500,
         "z_min": -35000,

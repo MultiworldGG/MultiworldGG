@@ -1,15 +1,18 @@
-from abc import ABC, abstractmethod
+import dataclasses
 from enum import IntEnum
 from json import JSONEncoder
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from BaseClasses import CollectionState
-
-from worlds.generic.Rules import add_rule
+from NetUtils import JSONMessagePart
+from rule_builder.rules import Has, Rule, True_, CanReachLocation, False_, CanReachRegion
 
 from .expected_client_version import EXPECTED_CLIENT_VERSION
 from .items import CandyBox2ItemName, candy_box_2_base_id, items
-from .locations import CandyBox2Location, CandyBox2LocationData, CandyBox2LocationName, locations
+from .locations import CandyBox2Location, CandyBox2LocationData, CandyBox2LocationName, locations, filler_locations, \
+    extra_location_count, lollipop_farm_filler_locations, the_sea_filler_locations, \
+    generate_filter_categories
+from .options import GoalCondition, GoalConditions
 from .regions import CandyBox2Region, CandyBox2RoomRegion
 from .rooms import CandyBox2Room, entrance_friendly_names
 
@@ -96,222 +99,130 @@ room_parents = {
     CandyBox2Room.QUEST_THE_X_POTION: "MENU",
 }
 
-
-class CandyBox2RulesPackageRuleExpression(ABC):
-    @abstractmethod
-    def default(self):
-        pass
-
-    @abstractmethod
-    def evaluate(self, world: "CandyBox2World", state: CollectionState, player: int) -> bool:
-        pass
-
-    def indirection_required(self) -> set["CandyBox2Room"]:
-        return set()
-
-    def __and__(self, other):
-        return CandyBox2RulesPackageRuleBooleanExpression("and", self, other)
-
-    def __or__(self, other):
-        return CandyBox2RulesPackageRuleBooleanExpression("or", self, other)
-
-    def __invert__(self):
-        return CandyBox2RulesPackageRuleUnaryExpression("not", self)
-
-
-class CandyBox2RulesPackageRuleConstantExpression(CandyBox2RulesPackageRuleExpression):
-    constant: bool
-
-    def __init__(self, constant: bool):
-        super().__init__()
-        self.constant = constant
-
-    def __and__(self, other):
-        return self if self.constant == False else other  # noqa: E712
-
-    def __or__(self, other):
-        return self if self.constant == True else other  # noqa: E712
-
-    def evaluate(self, world: "CandyBox2World", state: CollectionState, player: int) -> bool:
-        return self.constant
-
-    def default(self):
-        return ["constant", self.constant]
-
-
-class CandyBox2RulesPackageRuleItemExpression(CandyBox2RulesPackageRuleExpression):
-    item: "CandyBox2ItemName"
-    count: int
-
-    def __init__(self, item: "CandyBox2ItemName", count: int):
-        super().__init__()
-        self.item = item
-        self.count = count
-
-    def evaluate(self, world: "CandyBox2World", state: CollectionState, player: int) -> bool:
-        if self.item == CandyBox2ItemName.PROGRESSIVE_WEAPON:
-            # Special case Progressive Weapon
-            # This check becomes false if progressive weapons aren't enabled
-            if world.starting_weapon != -1:
-                return False
-
-        return state.has(self.item, player, self.count)
-
-    def default(self):
-        return ["item", items[self.item].code, self.count]
-
-
-class CandyBox2RulesPackageRuleRoomExpression(CandyBox2RulesPackageRuleExpression):
-    room: "CandyBox2Room"
-
-    def __init__(self, room: "CandyBox2Room"):
-        super().__init__()
-        self.room = room
-
-    def evaluate(self, world: "CandyBox2World", state: CollectionState, player: int) -> bool:
-        return state.can_reach_region(entrance_friendly_names[self.room], player)
-
-    def indirection_required(self):
-        return [self.room]
-
-    def default(self):
-        return ["room", self.room.value]
-
-
-class CandyBox2RulesPackageRuleLocationExpression(CandyBox2RulesPackageRuleExpression):
-    location: "CandyBox2LocationName"
-    id: int
-
-    def __init__(self, location: "CandyBox2LocationName"):
-        super().__init__()
-        self.location = location
-
-    def evaluate(self, world: "CandyBox2World", state: CollectionState, player: int) -> bool:
-        return state.can_reach_location(self.location, player)
-
-    def default(self):
-        return ["location", locations[self.location].id]
-
-
-class CandyBox2RulesPackageRuleCountExpression(CandyBox2RulesPackageRuleExpression):
-    class RuleCountInequality(IntEnum):
-        LESS_THAN = 0
-        LESS_THAN_OR_EQUAL_TO = 1
-        EQUAL_TO = 2
-        GREATER_THAN_OR_EQUAL_TO = 3
-        GREATER_THAN = 4
-
-    item: str
-    required: int
-    inquality: RuleCountInequality
-
-    def __init__(self, item: str, inequality: RuleCountInequality, required: int):
-        super().__init__()
-        self.item = item
-        self.required = required
-        self.inequality = inequality
-
-    def evaluate(self, world: "CandyBox2World", state: CollectionState, player: int) -> bool:
-        if self.inequality == CandyBox2RulesPackageRuleCountExpression.RuleCountInequality.EQUAL_TO:
-            return self.item_count(state, player) == self.required
-        if self.inequality == CandyBox2RulesPackageRuleCountExpression.RuleCountInequality.LESS_THAN:
-            return self.item_count(state, player) < self.required
-        if self.inequality == CandyBox2RulesPackageRuleCountExpression.RuleCountInequality.LESS_THAN_OR_EQUAL_TO:
-            return self.item_count(state, player) <= self.required
-        if self.inequality == CandyBox2RulesPackageRuleCountExpression.RuleCountInequality.GREATER_THAN:
-            return self.item_count(state, player) > self.required
-        if self.inequality == CandyBox2RulesPackageRuleCountExpression.RuleCountInequality.GREATER_THAN_OR_EQUAL_TO:
-            return self.item_count(state, player) >= self.required
-        raise Exception("Tried to evaluate a count expression with invalid inequality operator")
-
-    def item_count(self, state: CollectionState, player: int):
-        if self.item == "chocolate":
-            return (
-                state.count(CandyBox2ItemName.CHOCOLATE_BAR, player)
-                + (4 * state.count(CandyBox2ItemName.FOUR_CHOCOLATE_BARS, player))
-                + (3 * state.count(CandyBox2ItemName.THREE_CHOCOLATE_BARS, player))
-            )
-        if self.item == "lollipop":
-            return state.count(CandyBox2ItemName.THREE_LOLLIPOPS, player) * 3 + state.count(
-                CandyBox2ItemName.LOLLIPOP, player
-            )
-        raise Exception("Tried to evaluate a count expression with invalid item name")
-
-    def default(self):
-        return ["count", self.item, self.inequality, self.required]
-
-
-class CandyBox2RulesPackageRuleStartWeaponExpression(CandyBox2RulesPackageRuleExpression):
+@dataclasses.dataclass()
+class HasStartWeapon(Rule["CandyBox2World"], game="Candy Box 2"):
     weapon: "CandyBox2ItemName"
 
-    def __init__(self, weapon: "CandyBox2ItemName"):
-        super().__init__()
-        self.weapon = weapon
+    @override
+    def _instantiate(self, world: "CandyBox2World") -> Rule.Resolved:
+        return self.Resolved(weapon=self.weapon, starting_weapon=world.starting_weapon, player=world.player, caching_enabled=getattr(world, "rule_caching_enabled", False))
 
-    def evaluate(self, world: "CandyBox2World", state: CollectionState, player: int) -> bool:
-        for item in items:
-            if items[item].code - candy_box_2_base_id == world.starting_weapon and item == self.weapon:
-                return True
-        return False
+    class Resolved(Rule.Resolved):
+        weapon: "CandyBox2ItemName"
+        starting_weapon: int
 
-    def default(self):
-        return ["startWeapon", items[self.weapon].code]
+        @override
+        def _evaluate(self, state: CollectionState) -> bool:
+            for item in items:
+                if items[item].code - candy_box_2_base_id == self.starting_weapon and item == self.weapon:
+                    return True
+            return False
 
+        @override
+        def item_dependencies(self) -> dict[str, set[int]]:
+            return {self.weapon: {id(self)}}
 
-class CandyBox2RulesPackageRuleBooleanExpression(CandyBox2RulesPackageRuleExpression):
-    op1: CandyBox2RulesPackageRuleExpression
-    op2: CandyBox2RulesPackageRuleExpression
-    expr: str
+        @override
+        def explain_json(self, state: CollectionState | None = None) -> list[JSONMessagePart]:
+            # this method can be overridden to display custom explanations
+            return [
+                {"type": "text", "text": "Has start weapon "},
+                {"type": "color", "color": "green", "text": str(self.weapon)},
+            ]
 
-    def __init__(self, expr: str, op1: CandyBox2RulesPackageRuleExpression, op2: CandyBox2RulesPackageRuleExpression):
-        super().__init__()
-        self.op1 = op1
-        self.op2 = op2
-        self.expr = expr
+class RuleCountInequality(IntEnum):
+    LESS_THAN = 0
+    LESS_THAN_OR_EQUAL_TO = 1
+    EQUAL_TO = 2
+    GREATER_THAN_OR_EQUAL_TO = 3
+    GREATER_THAN = 4
 
-    def evaluate(self, world: "CandyBox2World", state: CollectionState, player: int) -> bool:
-        if self.expr == "and":
-            return self.op1.evaluate(world, state, player) and self.op2.evaluate(world, state, player)
-        if self.expr == "or":
-            return self.op1.evaluate(world, state, player) or self.op2.evaluate(world, state, player)
-        raise Exception("Tried to evaluate a boolean expression with invalid operator")
+@dataclasses.dataclass()
+class HasCount(Rule["CandyBox2World"], game="Candy Box 2"):
+    item: str
+    required: int
+    inequality: RuleCountInequality
 
-    def default(self):
-        return [self.expr, self.op1.default(), self.op2.default()]
+    @override
+    def _instantiate(self, world: "CandyBox2World") -> Rule.Resolved:
+        return self.Resolved(item=self.item, required=self.required, inequality=self.inequality, player=world.player,
+                             caching_enabled=getattr(world, "rule_caching_enabled", False))
 
-    def indirection_required(self):
-        return {*self.op1.indirection_required(), *self.op2.indirection_required()}
+    class Resolved(Rule.Resolved):
+        item: str
+        required: int
+        inequality: RuleCountInequality
 
+        @override
+        def _evaluate(self, state: CollectionState) -> bool:
+            if self.inequality == RuleCountInequality.EQUAL_TO:
+                return self.item_count(state, self.player) == self.required
+            if self.inequality == RuleCountInequality.LESS_THAN:
+                return self.item_count(state, self.player) < self.required
+            if self.inequality == RuleCountInequality.LESS_THAN_OR_EQUAL_TO:
+                return self.item_count(state, self.player) <= self.required
+            if self.inequality == RuleCountInequality.GREATER_THAN:
+                return self.item_count(state, self.player) > self.required
+            if self.inequality == RuleCountInequality.GREATER_THAN_OR_EQUAL_TO:
+                return self.item_count(state, self.player) >= self.required
+            raise Exception("Tried to evaluate a count expression with invalid inequality operator")
 
-class CandyBox2RulesPackageRuleUnaryExpression(CandyBox2RulesPackageRuleExpression):
-    op: CandyBox2RulesPackageRuleExpression
-    expr: str
+        def item_count(self, state: CollectionState, player: int):
+            if self.item == "chocolate":
+                return (
+                    state.count(CandyBox2ItemName.CHOCOLATE_BAR, player)
+                    + (4 * state.count(CandyBox2ItemName.FOUR_CHOCOLATE_BARS, player))
+                    + (3 * state.count(CandyBox2ItemName.THREE_CHOCOLATE_BARS, player))
+                )
+            if self.item == "lollipop":
+                return state.count(CandyBox2ItemName.THREE_LOLLIPOPS, player) * 3 + state.count(
+                    CandyBox2ItemName.LOLLIPOP, player
+                )
+            raise Exception("Tried to evaluate a count expression with invalid item name")
 
-    def __init__(self, expr: str, op: CandyBox2RulesPackageRuleExpression):
-        super().__init__()
-        self.op = op
-        self.expr = expr
+        @override
+        def item_dependencies(self) -> dict[str, set[int]]:
+            return {
+                CandyBox2ItemName.CHOCOLATE_BAR: {id(self)},
+                CandyBox2ItemName.FOUR_CHOCOLATE_BARS: {id(self)},
+                CandyBox2ItemName.THREE_CHOCOLATE_BARS: {id(self)},
+                CandyBox2ItemName.THREE_LOLLIPOPS: {id(self)},
+                CandyBox2ItemName.LOLLIPOP: {id(self)},
+            }
 
-    def evaluate(self, world: "CandyBox2World", state: CollectionState, player: int) -> bool:
-        if self.expr == "not":
-            return not self.op.evaluate(world, state, player)
-        raise Exception("Tried to evaluate a unary expression with invalid operator")
+        @override
+        def explain_json(self, state: CollectionState | None = None) -> list[JSONMessagePart]:
+            return [
+                {"type": "text", "text": "Has "},
+                self.json_ineq(),
+                {"type": "color", "color": "salmon", "text": str(self.required)},
+                {"type": "text", "text": " "},
+                {"type": "color", "color": "blue", "text": self.item},
+            ]
 
-    def indirection_required(self):
-        return self.op.indirection_required()
-
-    def default(self):
-        return [self.expr, self.op.default()]
-
+        def json_ineq(self) -> JSONMessagePart:
+            match self.inequality:
+                case RuleCountInequality.LESS_THAN:
+                    return {"type": "text", "color": "green", "text": "less than "}
+                case RuleCountInequality.LESS_THAN_OR_EQUAL_TO:
+                    return {"type": "text", "color": "green", "text": "less than or equal to "}
+                case RuleCountInequality.GREATER_THAN:
+                    return {"type": "text", "color": "green", "text": "greater than "}
+                case RuleCountInequality.GREATER_THAN_OR_EQUAL_TO:
+                    return {"type": "text", "color": "green", "text": "greater than or equal to "}
+                case RuleCountInequality.EQUAL_TO:
+                    return {"type": "text", "color": "green", "text": "exactly "}
 
 class CandyBox2RulesPackage(JSONEncoder):
     expected_client_version: str
     locations: dict["CandyBox2LocationName", "CandyBox2LocationData"]
-    location_rules: dict["CandyBox2LocationName", CandyBox2RulesPackageRuleExpression]
-    room_rules: dict["CandyBox2Room", CandyBox2RulesPackageRuleExpression]
+    location_rules: dict["CandyBox2LocationName", Rule]
+    room_rules: dict["CandyBox2Room", Rule]
     location_parents: dict["CandyBox2LocationName", CandyBox2Room]
     room_exits: dict["CandyBox2Room", list["CandyBox2Room"]]
-    goal_rule: CandyBox2RulesPackageRuleExpression
+    items: dict[str, str]
+    regions: dict[str, str]
+    goal_rules: dict[str, Rule]
 
     def __init__(
         self,
@@ -342,22 +253,24 @@ class CandyBox2RulesPackage(JSONEncoder):
         self.room_rules = {}
         self.location_parents = {}
         self.room_exits = {}
-        self.goal_rule = CandyBox2RulesPackageRuleConstantExpression(True)
+        self.items = {}
+        self.regions = {}
+        self.goal_rules = {}
 
-    def set_goal_rule(self, goal_rule: CandyBox2RulesPackageRuleExpression):
-        self.goal_rule = goal_rule
+    def set_goal_rule(self, rule_name: str, goal_rule: Rule):
+        self.goal_rules[rule_name] = goal_rule
 
     def add_location_rule(
         self,
         location: "CandyBox2LocationName",
-        rule: CandyBox2RulesPackageRuleExpression | None,
+        rule: Rule | None,
         parent: CandyBox2Room | None,
     ):
         if rule is not None:
             self.location_rules[location] = rule
         self.location_parents[location] = parent
 
-    def add_room_rule(self, room: "CandyBox2Room", rule: CandyBox2RulesPackageRuleExpression):
+    def add_room_rule(self, room: "CandyBox2Room", rule: Rule):
         self.room_rules[room] = rule
 
     def assign_room_exits(self, room: "CandyBox2Room", exits: list["CandyBox2Room"]):
@@ -374,27 +287,49 @@ class CandyBox2RulesPackage(JSONEncoder):
             },
             "roomExits": {room.value: [exit.value for exit in exits] for room, exits in o.room_exits.items()},
             "rules": {
-                "locations": {o.locations[location].id: rule.default() for location, rule in o.location_rules.items()},
-                "rooms": {room: rule.default() for room, rule in o.room_rules.items()},
+                "locations": {o.locations[location].id: rule.to_dict() for location, rule in o.location_rules.items()},
+                "rooms": {room: rule.to_dict() for room, rule in o.room_rules.items()},
             },
-            "goal": o.goal_rule.default(),
+            "goal": {rule_name: rule.to_dict() for rule_name, rule in o.goal_rules.items()},
+            "items": o.items,
+            "regions": o.regions,
         }
 
     def apply_location_rules(self, world: "CandyBox2World", player: int):
         for target, rule in self.location_rules.items():
             try:
-                add_rule(
+                world.set_rule(
                     world.get_location(target),
-                    lambda state, r=rule, w=world, p=player: True if r is None else r.evaluate(w, state, p),
+                    rule,
                 )
             except KeyError:
                 pass
 
     def apply_room_rules(self, rooms: dict[str, CandyBox2Region], world: "CandyBox2World", player: int):
         generated_entrances = []
+        selected_filler_locations = []
+
+        # Add filler locations
+        extra_location_num = extra_location_count(world)
+        if extra_location_num > 0:
+            current_filter_categories = generate_filter_categories()
+
+            for i in range(extra_location_num):
+                non_empty_filler_categories = [category for category in current_filter_categories if len(category) > 0]
+                if len(non_empty_filler_categories) == 0:
+                    world.raise_error("Not enough filler locations available. Please raise a bug in the Candy Box 2 channel. Include the YAML file for this player.")
+
+                # Select a random category
+                selected_filter_category = world.random.choice(non_empty_filler_categories)
+                selected_location = world.random.choice(selected_filter_category)
+                selected_filter_category.remove(selected_location)
+                selected_filler_locations.append(selected_location)
 
         for target, region in rooms.items():
             rule = self.room_rules.get(target)
+            if rule is None:
+                rule = True_()
+
             region.locations += [
                 CandyBox2Location(player, location_name.value, self.locations[location_name].id, region)
                 for location_name in [
@@ -402,7 +337,7 @@ class CandyBox2RulesPackage(JSONEncoder):
                     for location, room in self.location_parents.items()
                     if room == (None if target == "MENU" else target)
                 ]
-                if self.locations[location_name].is_included(world)
+                if location_name in selected_filler_locations or (self.locations[location_name].is_included(world) and location_name not in filler_locations)
             ]
 
             parent = room_parents.get("MENU" if target is None else target)
@@ -410,13 +345,13 @@ class CandyBox2RulesPackage(JSONEncoder):
                 entrance = rooms[parent].connect(
                     region,
                     None,
-                    lambda state, r=rule, w=world, p=player: True if r is None else r.evaluate(w, state, p),
                 )
+                world.set_rule(entrance, rule)
                 if type(region) is CandyBox2RoomRegion:
                     generated_entrances.append(entrance)
-                if rule is not None:
-                    for indirect_region in rule.indirection_required():
-                        world.multiworld.register_indirect_condition(rooms[indirect_region], entrance)
+                # if rule is not None:
+                #     for indirect_region in rule.indirection_required():
+                #         world.multiworld.register_indirect_condition(rooms[indirect_region], entrance)
 
         return generated_entrances
 
@@ -433,38 +368,38 @@ class CandyBox2Castable(IntEnum):
 
 
 def rule_item(item: "CandyBox2ItemName", count: int = 1):
-    return CandyBox2RulesPackageRuleItemExpression(item, count)
+    return Has(item.value, count)
 
 
 def rule_room(room: "CandyBox2Room"):
-    return CandyBox2RulesPackageRuleRoomExpression(room)
+    return CanReachRegion(entrance_friendly_names[room])
 
 
 def rule_location(location: "CandyBox2LocationName"):
-    return CandyBox2RulesPackageRuleLocationExpression(location)
+    return CanReachLocation(location.value)
 
 
-def no_conditions():
-    return None
+def no_conditions() -> Rule:
+    return True_()
 
 
 def has_weapon(weapon: CandyBox2ItemName):
     return (
         rule_item(weapon)
         | rule_item(CandyBox2ItemName.PROGRESSIVE_WEAPON, weapons.index(weapon))
-        | CandyBox2RulesPackageRuleStartWeaponExpression(weapon)
+        | HasStartWeapon(weapon=weapon)
     )
 
 
 def weapon_is_at_least(minimum_weapon: CandyBox2ItemName):
-    condition = CandyBox2RulesPackageRuleConstantExpression(False)
+    condition: Rule = False_()
     for weapon in weapon_strength[weapon_strength.index(minimum_weapon) :]:
         condition = condition | has_weapon(weapon)
     return condition
 
 
 def armor_is_at_least(minimum_armor: CandyBox2ItemName):
-    condition = CandyBox2RulesPackageRuleConstantExpression(False)
+    condition: Rule = False_()
     for armor in armors[armors.index(minimum_armor) :]:
         condition = condition | rule_item(armor)
     return condition
@@ -520,8 +455,8 @@ def can_cast(castable: CandyBox2Castable):
 
 
 def has_at_least_chocolates(chocolates: int):
-    return CandyBox2RulesPackageRuleCountExpression(
-        "chocolate", CandyBox2RulesPackageRuleCountExpression.RuleCountInequality.GREATER_THAN_OR_EQUAL_TO, chocolates
+    return HasCount(
+        "chocolate", chocolates, RuleCountInequality.GREATER_THAN_OR_EQUAL_TO
     )
 
 
@@ -532,10 +467,9 @@ def has_all_chocolates():
 # Allows the player to plant enough lollipops at the farm for 1/minute
 def can_grow_lollipops():
     return (
-        CandyBox2RulesPackageRuleCountExpression(
-            "lollipop", CandyBox2RulesPackageRuleCountExpression.RuleCountInequality.GREATER_THAN_OR_EQUAL_TO, 9
+        HasCount(
+            "lollipop", 9, RuleCountInequality.GREATER_THAN_OR_EQUAL_TO
         )
-        & rule_room(CandyBox2Room.LOLLIPOP_FARM)
         & rule_room(CandyBox2Room.LOLLIPOP_FARM)
     )
 
@@ -608,7 +542,10 @@ def generate_rules_package():
     generate_rules_package_location_rules(rules_package)
     generate_rules_package_room_rules(rules_package)
     generate_rules_package_exits(rules_package)
-    generate_rules_package_goal_rule(rules_package)
+    generate_rules_package_constants(rules_package)
+
+    for condition in GoalConditions:
+        rules_package.set_goal_rule(condition.name, generate_rules_package_rule_segment(condition))
 
     return rules_package
 
@@ -750,12 +687,12 @@ def generate_rules_package_location_rules(rules_package: CandyBox2RulesPackage):
     # Bridge rules
     rules_package.add_location_rule(
         CandyBox2LocationName.TROLL_DEFEATED,
-        weapon_is_at_least(CandyBox2ItemName.POLISHED_SILVER_SWORD),
+        weapon_is_at_least(CandyBox2ItemName.POLISHED_SILVER_SWORD) | rule_item(CandyBox2ItemName.PURPLE_FIN),
         CandyBox2Room.QUEST_THE_BRIDGE,
     )
     rules_package.add_location_rule(
         CandyBox2LocationName.THE_TROLLS_BLUDGEON_ACQUIRED,
-        weapon_is_at_least(CandyBox2ItemName.POLISHED_SILVER_SWORD),
+        weapon_is_at_least(CandyBox2ItemName.POLISHED_SILVER_SWORD) | rule_item(CandyBox2ItemName.PURPLE_FIN),
         CandyBox2Room.QUEST_THE_BRIDGE,
     )
 
@@ -765,18 +702,18 @@ def generate_rules_package_location_rules(rules_package: CandyBox2RulesPackage):
     rules_package.add_location_rule(CandyBox2LocationName.CAVE_EXIT, no_conditions(), CandyBox2Room.CAVE)
     rules_package.add_location_rule(
         CandyBox2LocationName.OCTOPUS_KING_DEFEATED,
-        rule_item(CandyBox2ItemName.SORCERESS_CAULDRON)
+        (rule_item(CandyBox2ItemName.SORCERESS_CAULDRON)
         & weapon_is_at_least(CandyBox2ItemName.TROLLS_BLUDGEON)
-        & armor_is_at_least(CandyBox2ItemName.LIGHTWEIGHT_BODY_ARMOUR),
+        & armor_is_at_least(CandyBox2ItemName.LIGHTWEIGHT_BODY_ARMOUR) | rule_item(CandyBox2ItemName.PURPLE_FIN)),
         CandyBox2Room.QUEST_THE_OCTOPUS_KING,
     )
     rules_package.add_location_rule(
         CandyBox2LocationName.MONKEY_WIZARD_DEFEATED,
-        rule_item(CandyBox2ItemName.BOOTS_OF_INTROSPECTION)
+        (rule_item(CandyBox2ItemName.BOOTS_OF_INTROSPECTION)
         & can_cast(CandyBox2Castable.TELEPORT)
         & rule_item(CandyBox2ItemName.OCTOPUS_KING_CROWN_WITH_JASPERS)
         & weapon_is_at_least(CandyBox2ItemName.TROLLS_BLUDGEON)
-        & armor_is_at_least(CandyBox2ItemName.LIGHTWEIGHT_BODY_ARMOUR),
+        & armor_is_at_least(CandyBox2ItemName.LIGHTWEIGHT_BODY_ARMOUR) | rule_item(CandyBox2ItemName.PURPLE_FIN)),
         CandyBox2Room.QUEST_THE_NAKED_MONKEY_WIZARD,
     )
 
@@ -790,18 +727,8 @@ def generate_rules_package_location_rules(rules_package: CandyBox2RulesPackage):
         CandyBox2Room.QUEST_THE_HOLE,
     )
     rules_package.add_location_rule(
-        CandyBox2LocationName.THE_HOLE_BLACK_MAGIC_GRIMOIRE_ACQUIRED_OBSIDIAN_WALL,
-        can_escape_hole() & rule_item(CandyBox2ItemName.SPONGE),
-        CandyBox2Room.QUEST_THE_HOLE,
-    )
-    rules_package.add_location_rule(
-        CandyBox2LocationName.THE_HOLE_BLACK_MAGIC_GRIMOIRE_ACQUIRED_BLACK_DEMONS,
-        can_escape_hole() & rule_item(CandyBox2ItemName.SPONGE),
-        CandyBox2Room.QUEST_THE_HOLE,
-    )
-    rules_package.add_location_rule(
         CandyBox2LocationName.THE_HOLE_DESERT_FORTRESS_KEY_ACQUIRED,
-        can_escape_hole() & ((rule_item(CandyBox2ItemName.SPONGE) & can_jump()) | (can_brew(False))),
+        can_escape_hole() & (can_fly() | (can_brew(False) & rule_item(CandyBox2ItemName.SPONGE))),
         CandyBox2Room.QUEST_THE_HOLE,
     )
     rules_package.add_location_rule(
@@ -871,6 +798,16 @@ def generate_rules_package_location_rules(rules_package: CandyBox2RulesPackage):
         CandyBox2Room.QUEST_THE_CASTLE_EGG_ROOM,
     )
 
+    # The Tower
+    rules_package.add_location_rule(
+        CandyBox2LocationName.TALKING_CANDY,
+        rule_item(CandyBox2ItemName.P_STONE) &
+            rule_item(CandyBox2ItemName.L_STONE) &
+            rule_item(CandyBox2ItemName.A_STONE) &
+            rule_item(CandyBox2ItemName.Y_STONE),
+        CandyBox2Room.TOWER,
+    )
+
     # The Desert Fortress
     rules_package.add_location_rule(
         CandyBox2LocationName.XINOPHERYDON_DEFEATED,
@@ -910,21 +847,31 @@ def generate_rules_package_location_rules(rules_package: CandyBox2RulesPackage):
     )
 
     # Lollipop Farm rules
-    rules_package.add_location_rule(
-        CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_1, can_farm_lollipops(), CandyBox2Room.LOLLIPOP_FARM
-    )
-    rules_package.add_location_rule(
-        CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_2, can_farm_lollipops(), CandyBox2Room.LOLLIPOP_FARM
-    )
-    rules_package.add_location_rule(
-        CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_3, can_farm_lollipops(), CandyBox2Room.LOLLIPOP_FARM
-    )
-    rules_package.add_location_rule(
-        CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_4, can_farm_lollipops(), CandyBox2Room.LOLLIPOP_FARM
-    )
-    rules_package.add_location_rule(
-        CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_5, can_farm_lollipops(), CandyBox2Room.LOLLIPOP_FARM
-    )
+    for location in lollipop_farm_filler_locations:
+        match location:
+            case CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_1:
+                rules_package.add_location_rule(location, HasCount("lollipop", 1, RuleCountInequality.GREATER_THAN_OR_EQUAL_TO), CandyBox2Room.LOLLIPOP_FARM)
+            case CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_2:
+                rules_package.add_location_rule(location, HasCount("lollipop", 2, RuleCountInequality.GREATER_THAN_OR_EQUAL_TO), CandyBox2Room.LOLLIPOP_FARM)
+            case CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_3:
+                rules_package.add_location_rule(location, HasCount("lollipop", 3, RuleCountInequality.GREATER_THAN_OR_EQUAL_TO), CandyBox2Room.LOLLIPOP_FARM)
+            case CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_4:
+                rules_package.add_location_rule(location, HasCount("lollipop", 4, RuleCountInequality.GREATER_THAN_OR_EQUAL_TO), CandyBox2Room.LOLLIPOP_FARM)
+            case CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_5:
+                rules_package.add_location_rule(location, HasCount("lollipop", 5, RuleCountInequality.GREATER_THAN_OR_EQUAL_TO), CandyBox2Room.LOLLIPOP_FARM)
+            case CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_6:
+                rules_package.add_location_rule(location, HasCount("lollipop", 6, RuleCountInequality.GREATER_THAN_OR_EQUAL_TO), CandyBox2Room.LOLLIPOP_FARM)
+            case CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_7:
+                rules_package.add_location_rule(location, HasCount("lollipop", 7, RuleCountInequality.GREATER_THAN_OR_EQUAL_TO), CandyBox2Room.LOLLIPOP_FARM)
+            case CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_8:
+                rules_package.add_location_rule(location, HasCount("lollipop", 8, RuleCountInequality.GREATER_THAN_OR_EQUAL_TO), CandyBox2Room.LOLLIPOP_FARM)
+            case CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_9:
+                rules_package.add_location_rule(location, HasCount("lollipop", 9, RuleCountInequality.GREATER_THAN_OR_EQUAL_TO), CandyBox2Room.LOLLIPOP_FARM)
+            case _:
+                if lollipop_farm_filler_locations.index(location) < lollipop_farm_filler_locations.index(CandyBox2LocationName.LOLLIPOP_FARM_EXTRA_100):
+                    rules_package.add_location_rule(location, can_grow_lollipops(), CandyBox2Room.LOLLIPOP_FARM)
+                else:
+                    rules_package.add_location_rule(location, can_farm_lollipops(), CandyBox2Room.LOLLIPOP_FARM)
 
     # Hell rules
     rules_package.add_location_rule(
@@ -973,9 +920,28 @@ def generate_rules_package_location_rules(rules_package: CandyBox2RulesPackage):
         & can_cast(CandyBox2Castable.ERASE_MAGIC)
         & rule_item(CandyBox2ItemName.PINK_ENCHANTED_GLOVES)
         & rule_item(CandyBox2ItemName.OCTOPUS_KING_CROWN_WITH_JASPERS)
-        & rule_item(CandyBox2ItemName.UNICORN_HORN),
+        & rule_item(CandyBox2ItemName.UNICORN_HORN)
+        & rule_item(CandyBox2ItemName.SPONGE),
         CandyBox2Room.QUEST_THE_SEA,
     )
+
+    # Based off an initial distance of 1000m
+    # Red fin appears at about 150m
+    red_fin_appears_at = the_sea_filler_locations.index(CandyBox2LocationName.THE_SEA_EXTRA_22)
+    # Green fin appears at about 700m
+    green_fin_appears_at = the_sea_filler_locations.index(CandyBox2LocationName.THE_SEA_EXTRA_33)
+    # Purple fin appears at about 2500m
+    purple_fin_appears_at = the_sea_filler_locations.index(CandyBox2LocationName.THE_SEA_EXTRA_69)
+    for location in the_sea_filler_locations:
+        index = the_sea_filler_locations.index(location)
+        if index > (purple_fin_appears_at - green_fin_appears_at) / 2:
+            rules_package.add_location_rule(location, rule_location(CandyBox2LocationName.THE_PURPLE_FIN_ACQUIRED), CandyBox2Room.QUEST_THE_SEA)
+        elif index > (green_fin_appears_at - red_fin_appears_at) / 2:
+            rules_package.add_location_rule(location, rule_location(CandyBox2LocationName.THE_GREEN_FIN_ACQUIRED), CandyBox2Room.QUEST_THE_SEA)
+        elif index > red_fin_appears_at / 2:
+            rules_package.add_location_rule(location, rule_location(CandyBox2LocationName.THE_RED_FIN_ACQUIRED), CandyBox2Room.QUEST_THE_SEA)
+        else:
+            rules_package.add_location_rule(location, sea_entrance(), CandyBox2Room.QUEST_THE_SEA)
 
     # Cyclops Puzzle
     rules_package.add_location_rule(
@@ -1011,32 +977,7 @@ def generate_rules_package_location_rules(rules_package: CandyBox2RulesPackage):
         CandyBox2LocationName.SORCERESS_HUT_BEGINNERS_GRIMOIRE, can_grow_lollipops(), CandyBox2Room.SORCERESS_HUT
     )
     rules_package.add_location_rule(
-        CandyBox2LocationName.SORCERESS_HUT_BEGINNERS_GRIMOIRE_ACID_RAIN,
-        can_grow_lollipops(),
-        CandyBox2Room.SORCERESS_HUT,
-    )
-    rules_package.add_location_rule(
-        CandyBox2LocationName.SORCERESS_HUT_BEGINNERS_GRIMOIRE_FIREBALL,
-        can_grow_lollipops(),
-        CandyBox2Room.SORCERESS_HUT,
-    )
-    rules_package.add_location_rule(
-        CandyBox2LocationName.SORCERESS_HUT_BEGINNERS_GRIMOIRE_TELEPORT,
-        can_grow_lollipops(),
-        CandyBox2Room.SORCERESS_HUT,
-    )
-    rules_package.add_location_rule(
         CandyBox2LocationName.SORCERESS_HUT_ADVANCED_GRIMOIRE, can_grow_lollipops(), CandyBox2Room.SORCERESS_HUT
-    )
-    rules_package.add_location_rule(
-        CandyBox2LocationName.SORCERESS_HUT_ADVANCED_GRIMOIRE_THORNS_SHIELD,
-        can_grow_lollipops(),
-        CandyBox2Room.SORCERESS_HUT,
-    )
-    rules_package.add_location_rule(
-        CandyBox2LocationName.SORCERESS_HUT_ADVANCED_GRIMOIRE_ERASE_MAGIC,
-        can_grow_lollipops(),
-        CandyBox2Room.SORCERESS_HUT,
     )
     rules_package.add_location_rule(
         CandyBox2LocationName.SORCERESS_HUT_HAT, can_farm_lollipops(), CandyBox2Room.SORCERESS_HUT
@@ -1162,12 +1103,33 @@ def generate_rules_package_exits(rules_package: CandyBox2RulesPackage):
     )
     rules_package.assign_room_exits(CandyBox2Room.DRAGON, [CandyBox2Room.QUEST_THE_DEVELOPER, CandyBox2Room.QUEST_HELL])
 
-def generate_rules_package_goal_rule(rules_package: CandyBox2RulesPackage):
-    rules_package.set_goal_rule(
-        rule_room(CandyBox2Room.TOWER) &
-        rule_item(CandyBox2ItemName.P_STONE) &
-        rule_item(CandyBox2ItemName.L_STONE) &
-        rule_item(CandyBox2ItemName.A_STONE) &
-        rule_item(CandyBox2ItemName.Y_STONE) &
-        rule_item(CandyBox2ItemName.LOCKED_CANDY_BOX)
-    )
+def generate_rules_package_goal_rule(world: "CandyBox2World | None"):
+    goal_rule = True_()
+
+    goal_conditions = GoalCondition(GoalCondition.default)
+
+    if world is not None:
+        goal_conditions = world.options.goal_conditions
+
+    for condition in GoalConditions:
+        if goal_conditions.value[condition.value] == 1:
+            goal_rule &= generate_rules_package_rule_segment(condition)
+
+    return goal_rule
+
+def generate_rules_package_rule_segment(rule_segment: GoalConditions):
+    match rule_segment:
+        case GoalConditions.PLAY_STONES:
+            return rule_item(CandyBox2ItemName.TALKING_CANDY) & \
+                rule_item(CandyBox2ItemName.LOCKED_CANDY_BOX)
+        case GoalConditions.DIE_TO_CASTLE_TRAP_ROOM:
+            return rule_room(CandyBox2Room.QUEST_THE_CASTLE_TRAP_ROOM) & \
+                rule_item(CandyBox2ItemName.LOCKED_CANDY_BOX)
+        case GoalConditions.SWIM_3000_METERS:
+            return rule_room(CandyBox2Room.QUEST_THE_SEA) & \
+                rule_location(CandyBox2LocationName.THE_PURPLE_FIN_ACQUIRED) & \
+                rule_item(CandyBox2ItemName.LOCKED_CANDY_BOX)
+
+def generate_rules_package_constants(rules_package: CandyBox2RulesPackage):
+    rules_package.items = {item_data.code: item for item, item_data in items.items()}
+    rules_package.regions = {code: name for code, name in entrance_friendly_names.items()}

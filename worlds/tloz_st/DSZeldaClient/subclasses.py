@@ -1,6 +1,7 @@
 from enum import IntEnum
 from typing import TYPE_CHECKING, Iterable
 import worlds._bizhawk as bizhawk
+from math import ceil
 
 if TYPE_CHECKING:
     try:
@@ -34,7 +35,12 @@ async def read_multiple(ctx, addresses, signed=False, keys=None, offset=0) -> di
     read_list = [a.get_inner_read_list() for a in addresses]
     if offset:
         read_list = [(a+offset, *args) for a, *args in read_list]
-    reads = await bizhawk.read(ctx.bizhawk_ctx, read_list)
+    reads = []
+    chunk_size = 128
+    for i in range(ceil(len(read_list)/chunk_size)):
+        reads += await bizhawk.read(ctx.bizhawk_ctx, read_list[chunk_size*i:chunk_size*(i+1)])
+
+    # reads = await bizhawk.read(ctx.bizhawk_ctx, read_list)
     reads = [int.from_bytes(r, "little", signed=signed) for r in reads]
     if keys:
         return {k: r for k, r in zip(keys, reads)}
@@ -59,10 +65,10 @@ async def get_address_from_heap(ctx, pointer, offset=0, size=4) -> "Address":
     m_course = 0
     while m_course == 0:
         m_course = await pointer.read(ctx)
-    m_course = Address.from_pointer(m_course - 0x02000000, size=4)
+    m_course = Address.from_pointer(m_course, size=3)
     read = await m_course.read(ctx)
-    print(f"Got map address @ {hex(read + offset - 0x02000000)}")
-    return Address.from_pointer(read + offset - 0x02000000, size=size)
+    print(f"Got map address @ {hex(read + offset)}")
+    return Address.from_pointer(read + offset, size=size)
 
 def storage_key(ctx, key: str):
     return f"{key}_{ctx.slot}_{ctx.team}"
@@ -143,10 +149,11 @@ class Address:
     def get_write_list(self, value:int or list):
         return [self.get_inner_write_list(value)]
 
-    def get_inner_write_list(self, value: int or list):
+    def get_inner_write_list(self, value: int or list, offset: int=0, size: int=0):
         if isinstance(value, int):
             value = split_bits(value, self.size)
-        return self.addr, value[:self.size], self.domain
+        size = self.size if not size else size
+        return self.addr+offset, value[:size], self.domain
 
     async def read(self, ctx, signed=False, silent=False):
         read_result = await self.read_bytes(ctx)
@@ -236,6 +243,10 @@ class Address:
     def from_pointer(cls, addr, size=1, domain="Main RAM", name=""):
         """When addresses are grabbed from pointers, the address is the same in all versions"""
         return cls(addr, addr, size, domain, name)
+
+class DTCM(Address):
+    def __init__(self, addr):
+        super().__init__(addr, addr, 3, "Data TCM")
 
 class AddressLoader(Address):
     """
@@ -394,6 +405,9 @@ class DSTransition:
 
     def __str__(self):
         return self.name
+
+    def __repr__(self):
+        return f"{self.__class__} {self.name} {hex_f(self.entrance)} => {hex_f(self.exit)} | {self.extra_data}"
 
     def debug_print(self):
         printl(f"Debug print for entrance {self.name}")

@@ -36,6 +36,13 @@ EXPECTED_ROM_NAME = "ape escape / AP 2"
 
 logger = logging.getLogger("Client")
 
+
+#def cmd_test_bounce(self: "BizHawkClientCommandProcessor") -> None:
+#    logger.info(f"Sent Empty Bounce? to self:{self.ctx.slot}")
+#    Utils.async_start(self.ctx.send_msgs([{
+#        "cmd": "Bounce", 'games': [] , 'tags': [],"slots":[1],'data': None
+#    }]))
+
 def cmd_ae_commands(self: "BizHawkClientCommandProcessor") -> None:
     """Show what commands are available for Ape Escape Archipelago"""
     from worlds._bizhawk.context import BizHawkClientContext
@@ -520,10 +527,14 @@ class ApeEscapeClient(BizHawkClient):
         if cmd == "Bounced":
             if "tags" in args:
                 assert ctx.slot is not None
-                source_name = args["data"]["source"]
-                if "DeathLink" in args["tags"] and args["data"]["source"] != ctx.slot_info[ctx.slot].name:
+                data = args.get("data")
+                if not data:
+                    #If there is no data, skip the bounce packet
+                    return
+                source_name = data["source"]
+                if "DeathLink" in args["tags"] and source_name != ctx.slot_info[ctx.slot].name:
                     self.on_deathlink(ctx)
-                if "TrapLink" in args["tags"] and args["data"]["source"] != ctx.slot_info[ctx.slot].name:
+                if "TrapLink" in args["tags"] and source_name != ctx.slot_info[ctx.slot].name:
                     trap_name: str = args["data"]["trap_name"]
 
                     if trap_name not in trap_to_local_traps:

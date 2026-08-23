@@ -1,0 +1,19 @@
+## ty.toml
+
+[src]
+include = ["**/*.py"]
+exclude = ["**/__pycache__"]
+
+[analysis]
+respect-type-ignore-comments = false
+
+[rules]
+missing-override-decorator = "error"
+deprecated = "error"
+missing-type-argument = "error"
+
+[environment]
+python-version = "3.11"
+python-platform = "win32"
+extra-paths = ["../../typings"]
+root = ["../.."]

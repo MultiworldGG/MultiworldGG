@@ -21,10 +21,8 @@ class UTMixin:
         if hasattr(world.multiworld, "re_gen_passthrough"):
             if "The Sims 4" in world.multiworld.re_gen_passthrough:
                 self.passthrough = world.multiworld.re_gen_passthrough["The Sims 4"]
-                world.options.goal.value = self.passthrough["goal_value"]
-                world.options.career.value = self.passthrough["career_value"]
-                world.options.expansion_packs.value = self.passthrough["expansion_packs"]
-                world.options.game_packs.value = self.passthrough["game_packs"]
-                world.options.stuff_packs.value = self.passthrough["stuff_packs"]
-                world.options.cas_kits.value = self.passthrough["cas_kits"]
-                world.options.build_kits.value = self.passthrough["build_kits"]
+
+                for key, value in self.passthrough.items():
+                    if hasattr(world.options, key):
+                        opt = getattr(world.options, key)
+                        opt.value = opt.from_any(value).value

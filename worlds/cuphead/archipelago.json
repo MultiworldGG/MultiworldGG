@@ -8,6 +8,6 @@
   "flags": ["supports_deathlink"],
   "igdb_id": 9061,
   "minimum_ap_version": "0.6.7",
-  "world_version": "0.2.20020715",
-  "world_friendly_version": "alpha03h.5"
+  "world_version": "0.2.20020810",
+  "world_friendly_version": "alpha03i"
 }

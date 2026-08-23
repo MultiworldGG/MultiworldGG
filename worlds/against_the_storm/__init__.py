@@ -253,7 +253,9 @@ class AgainstTheStormWorld(World):
         menu_region.connect(main_region)
 
     def can_goal(self, state: CollectionState) -> bool:
-        if self.options.seal_items and not state.has_all(["Sealed Forest",
+        if self.options.enable_biome_keys and not state.has("Sealed Forest", self.player):
+            return False
+        if self.options.seal_items and not state.has_all([
                 "Guardian Heart", "Guardian Blood", "Guardian Feathers", "Guardian Essence"], self.player):
             return False
 

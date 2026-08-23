@@ -2189,6 +2189,16 @@ EVENT_DATA = {
         "direction": EntranceGroups.NONE,
         "island": EntranceGroups.NONE,
     },
+    "EVENT: Defeat Cubus Sisters": {
+        "two_way": False,
+        "entrance_region": "Post Cubus Sisters",
+        "exit_region": "Post Cubus Sisters Event",
+        "extra_data": {"shared_event": True},
+        "entrance": (0x4, 0x0, 0x0),
+        "type": EntranceGroups.EVENT,
+        "direction": EntranceGroups.NONE,
+        "island": EntranceGroups.NONE,
+    }
 }
 
 

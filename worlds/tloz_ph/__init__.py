@@ -249,7 +249,8 @@ class PhantomHourglassWorld(World):
                         continue
                     if "Unnamed Entrance" in event.name:
                         continue
-                    if self.options.dungeon_hint_type.value == 2 and event.name in BOSS_EVENT_TO_LOCATION and BOSS_EVENT_TO_LOCATION[event.name] not in required_dungeon_locations:
+                    if (self.options.dungeon_hint_type.value == 2 and event.name in BOSS_EVENT_TO_LOCATION
+                            and BOSS_EVENT_TO_LOCATION[event.name] not in required_dungeon_locations):
                         continue
 
                     print(f"Adding Event: {event.name} {event.id} => {event.vanilla_reciprocal.id}")
@@ -1009,6 +1010,7 @@ class PhantomHourglassWorld(World):
                 continue
 
             item_name = loc_data.get("item_override", loc_data["vanilla_item"])
+            # print(f"item: {item_name} from {loc_name}")
             if item_name == "Filler Item":
                 filler_item_count += 1
                 continue
@@ -1128,6 +1130,7 @@ class PhantomHourglassWorld(World):
                     random_filler_item = self.get_filler_item_name()
                     item_pool_dict[random_filler_item] = item_pool_dict.get(random_filler_item, 0) + 1
 
+        # print(item_pool_dict)
         return item_pool_dict
 
     def create_items(self):
@@ -1395,7 +1398,7 @@ class PhantomHourglassWorld(World):
             # PH settings
             "ph_time_logic", "ph_starting_time", "ph_time_increment", "ph_heart_time", "ph_required",
             # Cosmetic
-            "additional_metal_names",
+            "additional_metal_names", "chest_cutscene_skips",
             # ER
             "shuffle_dungeon_entrances", "shuffle_ports", "shuffle_caves", "shuffle_houses",
             "shuffle_overworld_transitions", "shuffle_bosses",

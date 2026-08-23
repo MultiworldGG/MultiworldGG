@@ -454,7 +454,7 @@ def make_overworld_logic():
         ["ToW B2", "ToW B2 Dig", False, "shovel"],
         ["ToW B2", "ToW B2 Bombs", False, "explosives"],
         ["ToW B2", "ToW B2 Key", False, "tow_key"],
-        ["ToW B2 Bombs", "ToW 1F NE", False, "chus"],
+        ["ToW B2 Bombs", "ToW 1F NE", False, "bombs"],
         ["ToW 1F", "ToW 2F", False, "tow_cyclok"],
         ["ToW 2F", "Cyclok", True, None],
         ["ToW 2F", "ToW 1F", False, None],

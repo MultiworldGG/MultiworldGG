@@ -1,6 +1,59 @@
+# 1.1.0
+## Game Updates
+* Using Teleport on the field will return you to the interior of the last Pokémon Center you visited if Pokémon Centers are shuffled 
+* Increased the amount of coins that you can hold to 50000
+* Added 3000 coins and 5000 coins purchase options at the Celadon Game Corner
+* Dexsanity rewards for Pokémon you catch before getting the Pokédex will now be given to you immediately upon getting the Pokédex. You no longer need to get the Pokédex rated by Oak or at a PC
+## Apworld Updates
+* Converted logic to use Rule Builder (requires AP version 0.6.7 or higher)
+* Updated several region and entrance names for better clarity in the spoiler log and when using UT
+* Option groups have been added
+* New option `skip_intro`
+  * Set whether the vanilla intro sequence where you get your starter Pokémon from Oak's Lab should be skipped or not. If the intro is skipped then you will be prompted to select your starter Pokémon during Oak's initial speech
+  * This setting is forced on if Random Starting Town or any type of Entrance Randomization is on
+* Updated option `shuffle_pokemon_centers`
+  * Now includes the Player's House though your starting town's Pokémon Center entrance will never lead there
+* Updated option `mix_entrance_warp_pools`
+  * Added `Pokemon Centers` as an option
+    * Your starting town's Pokémon Center entrance is guaranteed to lead to a Pokémon Center
+  * Added `Warp Tiles` as an option
+    * Warp Tiles will only be mixed if using `full` Warp Tiles shuffle
+  * Added `Dropdowns` as an option
+    * Dropdowns will only be mixed is using `full` Dropdown shuffle and entrances/warps are decoupled
+* Updated option `prizesanity`
+  * The coin price for purchasing items at the Game Corner Prize Room will now be determined by what item it is
+* Updated option `shop_prices` and `consistent_shop_prices`
+  * Now applies to Game Corner Prize Room item purchases as well
+* Updated option `trainersanity`
+  * Split into `kanto_trainersanity` and `sevii_trainersanity` options
+* New option `item_appearance_matches_contents`
+  * Changes the color of item balls to match their contents. Green balls contain progression items, blue balls contain useful items, and red balls contain filler or trap items
+* Removed option `modify_world_state`
+  * The options that were originally under this have been broken into individual options to allow greater control over them
+* New option `elevators_condition`
+  * Sets the conditions the Celadon Department Store and Silph Co. elevators are in. Has no logical implications unless interior warps are shuffled
+    * Open: The elevators can be used normally
+    * Locked: The elevators will require the Lift Key before they can be used
+    * Disabled: The elevators are completely unusable
+* Updated option `modify_world_state`
+  * Removed `All Elevators Locked` option
+* New option `elite_four_rematch_requirement`
+  * Sets the requirement for challenging the Elite Four Rematch between badges or gyms
+* New option `cheaper_coins`
+  * Reduces the cost of buying coins from the Celadon Game Corner by 90%
+* Update option `game_option`
+  * Added new option `Encounter Mode`
+    * Random: Encounters are chosen randomly based on the encounter rates
+    * Boost: Encounters are chosen based on the encounter rates with a higher chance for Pokémon that haven't already been caught
+    * Rotate: Encounters are chosen by rotating through the encounter slots in an area (multiple slots in a row can be the same Pokémon)
+## Bug Fixes
+* Fixed an issue where the Pokédex was accessible in the Safari Zone even when you didn't have it
+* Fixed an issue where items that should only be purchasable once could be purchased multiple times at the Celadon Game Corner Prize Room Shops
+* Fixed an issue where logic could expect you to board the Seagallop from the harbor side of Vermilion City and sail to the main part of the city without any tickets/passes
+
 # 1.0.4
 ## Bug Fixes
-* Fixed an accessibility  option that could occur with randomized wild Pokémon and Pokémon request locations (credit to [Eijebong](https://github.com/Eijebong))
+* Fixed an accessibility option that could occur with randomized wild Pokémon and Pokémon request locations (credit to [Eijebong](https://github.com/Eijebong))
 
 # 1.0.3
 ## Bug Fixes
@@ -65,7 +118,7 @@
   * Shuffles the interior warps of buildings and dungeons amongst each other
   * The Safari Zone will behave like a normal dungeon when interiors are shuffled
   * The elevator warps in the Celadon Department Store, Rocket Hideout, and Silph Co. are not shuffled
-  * The Safari Zone Entrance <-> Safari Zone Center warp is not shuffled
+  * The Safari Zone Entrance ↔ Safari Zone Center warp is not shuffled
   * The only warps in Lost Cave that are shuffled are the two ladders
 * New option `shuffle_warp_tiles`
   * Shuffles the warp tiles in buildings and dungeons amongst each other
@@ -380,7 +433,7 @@
 * Increased the rate at which a Pokémon's HP drains in battle to be proportional to their max HP
 * Changed the purchase 50 coins option at the Celadon Game Corner to purchase 100 coins and added a new option the purchase 1000 coins
 * All evolution items (Moon Stone, Dragon Scale, etc.) have been turned into key items that can be used repeatadly. The items that have a held effect (Metal Coat, Deep Sea Scale, etc.) will give you both a held item version and key item version of the item when you get them
-* The HMs that a Pokémon can use will now be displayed in the Pokedex if you have seen the Pokémon already
+* The HMs that a Pokémon can use will now be displayed in the Pokédex if you have seen the Pokémon already
 * Talking to the Mystery Gift Man on the 2nd floor of any Pokémon Center will allow you to respawn any static encounters you haven't caught yet
 * Talking to the Wireless Club Attendant (left) on the 2nd floor of any Pokémon Center will let you fight a random uncatchable Pokémon in order to grind exp and money
 * You no longer need to have a max friendship Pokémon in order to get the Togepi Egg from the Gentleman in the Water Labyrinth
@@ -396,9 +449,9 @@
   * You can now specify how many trainers will have checks from 1 to 456
 * New option `dexsanity`
   * Adds Pokedex entries as locations
-  * You can specify how many Pokedex entries you want to be checks from 1 to 386
-  * Wild/Gift/Static Pokémon and Evolutions are all considered to be logical ways to obtain Pokedex entries
-  * Defeating a gym leader provides seen info on 1/8th of the Pokedex
+  * You can specify how many Pokédex entries you want to be checks from 1 to 386
+  * Wild/Gift/Static Pokémon and Evolutions are all considered to be logical ways to obtain Pokédex entries
+  * Defeating a gym leader provides seen info on 1/8th of the Pokédex
 * Updated option `card_key`
   * Changed the new locations for when the Card Key is split to be newly added item balls in Silph Co. instead of being given by NPCs in Silph Co.
 * Updated option `island_passes`
@@ -418,7 +471,7 @@
 * New option `normalize_encounter_rates`
   * Sets every encounter slot to (almost) equal probability
 * New option `all_Pokémon_seen`
-  * Makes it so that all Pokémon will already be considered as seen in the Pokedex. This allows you to see where you can encounter them
+  * Makes it so that all Pokémon will already be considered as seen in the Pokédex. This allows you to see where you can encounter them
 * New option `randomize_music`
   * Shuffles music played in any situation where it loops
 * New option `randomize_fanfares`
@@ -591,7 +644,7 @@
 * The game will no longer force the player off the bike when going up/down sideways staircases
 
 ## Bug Fixes
-* Running away from ghost Pokemon will always be successful (this is the Pokemon that are unidentifiable in the Pokemon Tower not ghost type Pokemon)
+* Running away from ghost Pokémon will always be successful (this is the Pokémon that are unidentifiable in the Pokémon Tower not ghost type Pokémon)
 * The Cerulean Cave guard will now correctly check for Badges vs. Gyms when the requirement is set to those
 
 # 0.3.0

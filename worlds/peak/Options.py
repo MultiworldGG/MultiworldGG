@@ -1,36 +1,33 @@
 from dataclasses import dataclass
-from Options import Choice, PerGameCommonOptions, Range, Toggle, DeathLink, OptionGroup
+from Options import Choice, FreeText, OptionSet, PerGameCommonOptions, Range, Toggle, DeathLink, OptionGroup
 
 
-class Goal(Choice):
+class Goals(OptionSet):
     """
-    Determines the goal of the seed
+    The goals of the seed. Every selected goal must be completed.
 
-    Reach Peak: Reach the peak on the specified ascent level
+    Reach Peak: Reach the peak on the ascent level specified by Required Ascent Count
 
-    Complete All Badges: Collect the specified number of badges
+    Collect Badges: Collect the number of badges specified by Required Badge Count
 
-    24 Karat Badge: Toss the Ancient Idol into The Kiln's lava.
+    24 Karat Badge: Toss the Ancient Idol into The Kiln's lava
 
-    Peak and Badges: Reach the peak on the specified ascent level and collect the specified number of badges
+    Free The Soul: Free the Scoutmaster's soul in [REDACTED]
     """
-    display_name = "Goal"
-    option_reach_peak = 0
-    option_complete_all_badges = 1
-    option_24_karat_badge = 2
-    option_peak_and_badges = 3
-    default = 0
+    display_name = "Goals"
+    valid_keys = ["Reach Peak", "Collect Badges", "24 Karat Badge", "Free The Soul"]
+    default = {"Reach Peak"}
 
 
 class AscentCount(Range):
     """
-    The ascent level required to complete the Reach Peak goal (0-7)
-    
+    The ascent level required to complete the Reach Peak goal (0-8)
+
     Higher ascents add more difficulty modifiers and challenges
     """
     display_name = "Required Ascent Count"
     range_start = 0
-    range_end = 7
+    range_end = 8
     default = 4
 
 
@@ -45,6 +42,82 @@ class BadgeCount(Range):
     range_end = 54
     default = 20
 
+class ItemSanity(Toggle):
+    """
+    Controls whether items need to be unlocked before they can appear in loot pools.
+
+    When enabled, each item type has a corresponding "Unlock" item in the Archipelago pool.
+    You must receive that unlock before the item can spawn in-game.
+    "Acquire" checks also require having the unlock item.
+
+    When disabled, all items are available from the start.
+    "Acquire" checks only require biome access.
+
+    This option works independently from Loot Sanity - Item Sanity controls the unlock gating,
+    while Loot Sanity controls which pools the items get shuffled into.
+    """
+    display_name = "Item Sanity"
+
+class LootSanity(Choice):
+    """
+    Controls which loot pools have their contents shuffled with all available items.
+
+    Affected pools will have every AP-tracked item added at equal weight,
+    meaning any item can drop from any affected source.
+    Items not yet unlocked (when Item Sanity is on) are excluded.
+
+    None: Loot pools are unchanged. Items only appear in their vanilla pools.
+
+    Luggage: Luggage (suitcases) across all biomes have their contents shuffled.
+
+    Trees and Bushes: Natural sources (berry bushes, mushroom clusters, coconut trees,
+    willow trees, vines, winterberry trees, nests, cacti, redwoods) have their drops shuffled.
+
+    All: Both luggage and natural source pools are shuffled.
+
+    The Scout Statue is never affected by this option - see Logical Scout Statue instead.
+    """
+    display_name = "Loot Sanity"
+    option_none = 0
+    option_luggage = 1
+    option_trees_and_bushes = 2
+    option_all = 3
+    default = 0
+
+class ScoutAmuletSanity(Toggle):
+    """
+    When enabled, the four Scout amulets (Tenacity, Generosity, Ambition, Initiative) and
+    Scout's Honor take part in Item Sanity and Loot Sanity like any other item: their Unlock
+    items join the pool and Loot Sanity may redistribute them.
+
+    When disabled they spawn exactly as they do in vanilla, and their Acquire checks only
+    require reaching the biome they are normally found in.
+
+    Their Acquire checks exist either way.
+    """
+    display_name = "Scout Amulet Sanity"
+
+class TrackerItemSpawning(Toggle):
+    """
+    When enabled, clicking an unlocked item in the in-game tracker spawns it in front of you
+    (with a cooldown). When disabled, the tracker is display-only.
+    """
+    display_name = "Tracker Item Spawning"
+
+class LogicalScoutStatue(Toggle):
+    """
+    When enabled, the Scout Statue will only drop items that
+    you haven't sent an "Acquire" check for yet.
+
+    The available items are filtered by your current biome access (Progressive Mountain count)
+    and item unlock status (if Item Sanity is enabled).
+
+    As you pick up new items and send Acquire checks, the Scout Statue's pool shrinks,
+    guiding you toward items you still need.
+
+    When disabled, the Scout Statue uses the default game loot table.
+    """
+    display_name = "Logical Scout Statue"
 
 class ProgressiveStamina(Toggle):
     """
@@ -98,6 +171,47 @@ class TrapLink(Toggle):
     if you have a weight above "none" set for that trap
     """
     display_name = "Trap Link"
+
+
+class BreathLink(Toggle):
+    """
+    When enabled, if any player in the lobby runs out of stamina, all players with Breath Link enabled get their stamina fully depleted.
+    """
+    display_name = "Breath Link"
+
+
+class DamageLink(Toggle):
+    """
+    When enabled, taking Injury damage sends a Damage Link to other games with Damage Link enabled.
+
+    Receiving a Damage Link applies Injury to all players in the lobby.
+    """
+    display_name = "Damage Link"
+
+
+class DamageLinkGroup(FreeText):
+    """Damage Link only applies to players with an identical Group name.
+    Games that don't support the Group option count as having an empty group name."""
+    display_name = "Damage Link Group"
+    rich_text_doc = True
+    default = ""
+
+
+class KnockbackLink(Toggle):
+    """
+    When enabled, strong knockback taken by any player is sent to other games with Knockback Link enabled.
+
+    Receiving a Knockback Link knocks back all players in the lobby.
+    """
+    display_name = "Knockback Link"
+
+
+class DeathLinkGroup(FreeText):
+    """Death Link only applies to players with an identical Group name.
+    Games that don't support the Group option count as having an empty group name."""
+    display_name = "Death Link Group"
+    rich_text_doc = True
+    default = ""
 
 
 class DeathLinkBehavior(Choice):
@@ -267,6 +381,11 @@ class FungalInfectionTrapWeight(BaseTrapWeight):
     Likelihood of receiving a trap which applies a Spores Affliction over time to a player
     """
     display_name = "Fungal Infection Trap Weight"
+class TurnToStoneTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which slowly turns a player to stone
+    """
+    display_name = "Turn To Stone Trap Weight"
 class FearTrapWeight(BaseTrapWeight):
     """
     Likelihood of receiving a spooky trap
@@ -313,6 +432,110 @@ class CustomTriviaTrapWeight(BaseTrapWeight):
     Likelihood of receiving a trap which quizzes the player with custom trivia questions
     """
     display_name = "Custom Trivia Trap Weight"
+class PokemonCountTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap where Pokemon stroll across the screen and the player must count how many of a specific Pokemon appeared
+    """
+    display_name = "Pokemon Count Trap Weight"
+class InvertedMouseTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which inverts a player's mouse controls for 10 seconds
+    """
+    display_name = "Inverted Mouse Trap Weight"
+class StaminaDrainTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which slowly drains a player's stamina over 15 seconds
+    """
+    display_name = "Stamina Drain Trap Weight"
+class ChaosControlTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which inverts screen colors, freezes the player in midair, and displays a 10 second countdown
+    """
+    display_name = "Chaos Control Trap Weight"
+
+class EmergencyRescueTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which summons the run-ending helicopter, immediately ending the current run for all players
+    """
+    display_name = "Emergency Rescue Trap Weight"
+
+class ExplosionTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which spawns an explosion on a random player
+    """
+    display_name = "Explosion Trap Weight"
+
+class FrogTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which spawns a frog that drags players around with its tongue
+    """
+    display_name = "Frog Trap Weight"
+
+class GhostTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which spawns a ghost that hunts a player
+    """
+    display_name = "Ghost Trap Weight"
+
+class RainTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which makes it rain for a while
+    """
+    display_name = "Rain Trap Weight"
+
+class PoisonCloudTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which pops a poisonous pink cloud on a player
+    """
+    display_name = "Poison Cloud Trap Weight"
+
+class FrostCloudTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which pops a freezing frost cloud on a player
+    """
+    display_name = "Frost Cloud Trap Weight"
+
+class SleepTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which pops a drowsy purple cloud on a player
+    """
+    display_name = "Sleep Trap Weight"
+
+class WellDoneTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which cooks every item players are carrying
+    """
+    display_name = "Well Done Trap Weight"
+
+class InstantCrystalTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which instantly petrifies a random player
+    """
+    display_name = "Instant Crystal Trap Weight"
+
+class CurseTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which pops a black curse cloud on a player
+    """
+    display_name = "Curse Trap Weight"
+
+class CursedBallTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which pops a black curse cloud with a heavy blast on a player
+    """
+    display_name = "Cursed Ball Trap Weight"
+
+class StormTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which unleashes a full wind and rain storm for a while
+    """
+    display_name = "Storm Trap Weight"
+
+class SkeletonTrapWeight(BaseTrapWeight):
+    """
+    Likelihood of receiving a trap which permanently turns a random player into a living skeleton
+    """
+    display_name = "Skeleton Trap Weight"
 
 class TrapPercentage(Range):
     """
@@ -322,6 +545,9 @@ class TrapPercentage(Range):
     range_start = 0
     range_end = 100
     default = 10
+
+
+
 
 class DisableMultiplayerBadges(Toggle):
     """
@@ -336,6 +562,7 @@ class DisableMultiplayerBadges(Toggle):
         Disaster Response Badge
         Applied Esoterica Badge
         Needlepoint Badge
+        Happy Camper Badge
     """
     display_name = "Disable Multiplayer Badges"
 class DisableHardBadges(Toggle):
@@ -369,9 +596,16 @@ class DisableBiomeBadges(Toggle):
 # Option Groups for better organization in the web UI
 peak_option_groups = [
     OptionGroup("General Options", [
-        Goal,
+        Goals,
         AscentCount,
         BadgeCount,
+    ]),
+    OptionGroup("Item Settings", [
+        ItemSanity,
+        LootSanity,
+        LogicalScoutStatue,
+        ScoutAmuletSanity,
+        TrackerItemSpawning,
     ]),
     OptionGroup("Stamina", [
         ProgressiveStamina,
@@ -382,7 +616,12 @@ peak_option_groups = [
         HardRingLink,
         EnergyLink,
         TrapLink,
+        BreathLink,
+        DamageLink,
+        DamageLinkGroup,
+        KnockbackLink,
         DeathLink,
+        DeathLinkGroup,
         DeathLinkBehavior,
         DeathLinkSendBehavior,
     ]),
@@ -414,6 +653,7 @@ peak_option_groups = [
         GustTrapWeight,
         MandrakeTrapWeight,
         FungalInfectionTrapWeight,
+        TurnToStoneTrapWeight,
         FearTrapWeight,
         ScoutmasterTrapWeight,
         ZoomTrapWeight,
@@ -423,6 +663,24 @@ peak_option_groups = [
         EruptionTrapWeight,
         BeetleHordeTrapWeight,
         CustomTriviaTrapWeight,
+        PokemonCountTrapWeight,
+        InvertedMouseTrapWeight,
+        StaminaDrainTrapWeight,
+        ChaosControlTrapWeight,
+        EmergencyRescueTrapWeight,
+        ExplosionTrapWeight,
+        FrogTrapWeight,
+        GhostTrapWeight,
+        RainTrapWeight,
+        PoisonCloudTrapWeight,
+        FrostCloudTrapWeight,
+        SleepTrapWeight,
+        WellDoneTrapWeight,
+        InstantCrystalTrapWeight,
+        CurseTrapWeight,
+        CursedBallTrapWeight,
+        StormTrapWeight,
+        SkeletonTrapWeight,
     ]),
     OptionGroup("Badge Settings", [
         DisableMultiplayerBadges,
@@ -434,17 +692,32 @@ peak_option_groups = [
 
 @dataclass
 class PeakOptions(PerGameCommonOptions):
-    goal: Goal
+    goals: Goals
     ascent_count: AscentCount
     badge_count: BadgeCount
     progressive_stamina: ProgressiveStamina
     additional_stamina_bars: AdditionalStaminaBars
 
+    item_sanity: ItemSanity
+    loot_sanity: LootSanity
+    logical_scout_statue: LogicalScoutStatue
+    scout_amulet_sanity: ScoutAmuletSanity
+    tracker_item_spawning: TrackerItemSpawning
+
+    disable_multiplayer_badges: DisableMultiplayerBadges
+    disable_hard_badges: DisableHardBadges
+    disable_biome_badges: DisableBiomeBadges
+
     ring_link: RingLink
     hard_ring_link: HardRingLink
     energy_link: EnergyLink
     trap_link: TrapLink
+    breath_link: BreathLink
+    damage_link: DamageLink
+    damage_link_group: DamageLinkGroup
+    knockback_link: KnockbackLink
     death_link: DeathLink
+    death_link_group: DeathLinkGroup
     death_link_behavior: DeathLinkBehavior
     death_link_send_behavior: DeathLinkSendBehavior
 
@@ -475,6 +748,7 @@ class PeakOptions(PerGameCommonOptions):
     gust_trap_weight: GustTrapWeight
     mandrake_trap_weight: MandrakeTrapWeight
     fungal_infection_trap_weight: FungalInfectionTrapWeight
+    turn_to_stone_trap_weight: TurnToStoneTrapWeight
     fear_trap_weight: FearTrapWeight
     scoutmaster_trap_weight: ScoutmasterTrapWeight
     zoom_trap_weight: ZoomTrapWeight
@@ -484,7 +758,21 @@ class PeakOptions(PerGameCommonOptions):
     eruption_trap_weight: EruptionTrapWeight
     beetle_horde_trap_weight: BeetleHordeTrapWeight
     custom_trivia_trap_weight: CustomTriviaTrapWeight
-
-    disable_multiplayer_badges: DisableMultiplayerBadges
-    disable_hard_badges: DisableHardBadges
-    disable_biome_badges: DisableBiomeBadges
+    pokemon_count_trap_weight: PokemonCountTrapWeight
+    inverted_mouse_trap_weight: InvertedMouseTrapWeight
+    stamina_drain_trap_weight: StaminaDrainTrapWeight
+    chaos_control_trap_weight: ChaosControlTrapWeight
+    emergency_rescue_trap_weight: EmergencyRescueTrapWeight
+    explosion_trap_weight: ExplosionTrapWeight
+    frog_trap_weight: FrogTrapWeight
+    ghost_trap_weight: GhostTrapWeight
+    rain_trap_weight: RainTrapWeight
+    poison_cloud_trap_weight: PoisonCloudTrapWeight
+    frost_cloud_trap_weight: FrostCloudTrapWeight
+    sleep_trap_weight: SleepTrapWeight
+    well_done_trap_weight: WellDoneTrapWeight
+    instant_crystal_trap_weight: InstantCrystalTrapWeight
+    curse_trap_weight: CurseTrapWeight
+    cursed_ball_trap_weight: CursedBallTrapWeight
+    storm_trap_weight: StormTrapWeight
+    skeleton_trap_weight: SkeletonTrapWeight

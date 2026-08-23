@@ -1648,6 +1648,7 @@ map_object_identifiers = {
     0x341aec: "Sand Bridge",
     0x14ef4c: "Spikes",
     0x14f480: "Flames",
+    0x14efb0: "Permanent Spikes",
 
     0x33ed6c: "Switch",
     0x1156cc: "Switch",  # Are all switches unique?
@@ -1668,6 +1669,8 @@ map_object_identifiers = {
     0x162dac: "Pillar",
     0x163888: "Head Statue",
     0x155860: "Tree",
+    0x1781e0: "Pillar", # MTT
+0x14ee84: "Block", # MTT
 
     0x11565c: "Grass",
     0x155d50: "Long Grass",

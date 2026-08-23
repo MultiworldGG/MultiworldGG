@@ -2084,7 +2084,7 @@ class RAM:
         7: AEDoor.TJ_MUSHROOM_ENTRY.value,
         8: AEDoor.TJ_FISH_ENTRY.value,
         9: AEDoor.TJ_TENT_FISH.value,
-        10: AEDoor.TJ_BOULDER_ENTRY.value,
+        10: AEDoor.TJ_BOULDER_TENT.value,
         11: AEDoor.DR_ENTRY.value,
         12: AEDoor.DR_FAN_OUTSIDE_HOLE.value,
         13: AEDoor.DR_OBELISK_BOTTOM.value,
@@ -2660,12 +2660,12 @@ class RAM:
         "Demo": 0x24
     }
 
-    currentRoomIdAddress = 0x0F4476
     currentLevelAddress = 0x0F4474
+    currentRoomIdAddress = 0x0F4476
 
     gameRunningAddress = 0x0B01C0
     newGameAddress = 0x137734
-    loadGameAddress = 0x137734
+    loadGameAddress = 0x137738
 
     currentLoadedSave = 0x0E0034  # Not used for now, but could be used somehow
     menuStateAddress = 0x0A9A1B

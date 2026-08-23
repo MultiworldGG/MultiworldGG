@@ -4,6 +4,7 @@
 import unittest
 from typing import Any, cast
 
+from Options import CommonOptions
 from rule_builder.rules import Has, Rule
 
 from ..world.rules.dep import deps
@@ -26,19 +27,19 @@ class TestDepFilter(unittest.TestCase):
         true_dep: Dep = cast(Dep, self._dep_true)
         false_dep: Dep = cast(Dep, self._dep_false)
 
-        self.assertTrue(DepFilter((true_dep, true_dep), value=True, any=False)(object()))  # type: ignore[arg-type]
-        self.assertFalse(DepFilter((true_dep, false_dep), value=True, any=False)(object()))  # type: ignore[arg-type]
-        self.assertFalse(DepFilter((true_dep, false_dep), value=False, any=False)(object()))  # type: ignore[arg-type]
-        self.assertTrue(DepFilter((false_dep, false_dep), value=False, any=False)(object()))  # type: ignore[arg-type]
+        self.assertTrue(DepFilter((true_dep, true_dep), value=True, any=False)(object()))  # type: ignore[arg-type]  # ty: ignore[invalid-argument-type]
+        self.assertFalse(DepFilter((true_dep, false_dep), value=True, any=False)(object()))  # type: ignore[arg-type]  # ty: ignore[invalid-argument-type]
+        self.assertFalse(DepFilter((true_dep, false_dep), value=False, any=False)(object()))  # type: ignore[arg-type]  # ty: ignore[invalid-argument-type]
+        self.assertTrue(DepFilter((false_dep, false_dep), value=False, any=False)(object()))  # type: ignore[arg-type]  # ty: ignore[invalid-argument-type]
 
     def test_depfilter_any_mode(self):
         true_dep: Dep = cast(Dep, self._dep_true)
         false_dep: Dep = cast(Dep, self._dep_false)
 
-        self.assertTrue(DepFilter((false_dep, true_dep), value=True, any=True)(object()))  # type: ignore[arg-type]
-        self.assertFalse(DepFilter((false_dep, false_dep), value=True, any=True)(object()))  # type: ignore[arg-type]
-        self.assertTrue(DepFilter((true_dep, false_dep), value=False, any=True)(object()))  # type: ignore[arg-type]
-        self.assertTrue(DepFilter((false_dep, false_dep), value=False, any=True)(object()))  # type: ignore[arg-type]
+        self.assertTrue(DepFilter((false_dep, true_dep), value=True, any=True)(object()))  # type: ignore[arg-type]  # ty: ignore[invalid-argument-type]
+        self.assertFalse(DepFilter((false_dep, false_dep), value=True, any=True)(object()))  # type: ignore[arg-type]  # ty: ignore[invalid-argument-type]
+        self.assertTrue(DepFilter((true_dep, false_dep), value=False, any=True)(object()))  # type: ignore[arg-type]  # ty: ignore[invalid-argument-type]
+        self.assertTrue(DepFilter((false_dep, false_dep), value=False, any=True)(object()))  # type: ignore[arg-type]  # ty: ignore[invalid-argument-type]
 
     def test_depfilter_dict_roundtrip(self):
         single = DepFilter(deps.dep_hard_logic)
@@ -96,7 +97,7 @@ class TestDepFilter(unittest.TestCase):
 
     def test_depfilter_check_invalid_options(self):
         with self.assertRaisesRegex(ValueError, "^DepFilter options is invalid\\.$"):
-            DepFilter(deps.dep_hard_logic).check(cast(object, object()))  # type: ignore[arg-type]
+            DepFilter(deps.dep_hard_logic).check(cast(CommonOptions, object()))
 
     def test_depfilter_str(self):
         self.assertEqual(str(DepFilter(deps.dep_hard_logic)), "hard_logic")

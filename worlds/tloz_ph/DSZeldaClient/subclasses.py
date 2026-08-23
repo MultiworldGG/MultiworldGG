@@ -1,19 +1,46 @@
 from enum import IntEnum
 from typing import TYPE_CHECKING, Iterable
 import worlds._bizhawk as bizhawk
+from math import ceil
 
 if TYPE_CHECKING:
     try:
         from ..Client import PhantomHourglassClient
+        from worlds._bizhawk.context import BizHawkClientContext
     except ImportError:
         pass
+
+print_debug: list[str] = []
+
+def hex_f(i):
+    """hex() but can handle all datatype exceptions recursively"""
+    if isinstance(i, int):
+        return hex(i)
+    if isinstance(i, dict):
+        return {hex_f(k): hex_f(v) for k, v in i.items()}
+    if isinstance(i, Iterable) and not isinstance(i, str):
+        return [hex_f(j) for j in i]
+    return i
+
+def printl(s, silent=False) -> None:
+    """Prints to console, but also saves print output in case the client asks for it."""
+    s = str(s)
+    s = s.replace("\t", "  ")
+    if not silent:
+        print(s)
+    print_debug.append(s)
 
 async def read_multiple(ctx, addresses, signed=False, keys=None, offset=0) -> dict["Address", int] or dict[str, int]:
     # print(f"\t reading {list(addresses)}")
     read_list = [a.get_inner_read_list() for a in addresses]
     if offset:
         read_list = [(a+offset, *args) for a, *args in read_list]
-    reads = await bizhawk.read(ctx.bizhawk_ctx, read_list)
+    reads = []
+    chunk_size = 128
+    for i in range(ceil(len(read_list)/chunk_size)):
+        reads += await bizhawk.read(ctx.bizhawk_ctx, read_list[chunk_size*i:chunk_size*(i+1)])
+
+    # reads = await bizhawk.read(ctx.bizhawk_ctx, read_list)
     reads = [int.from_bytes(r, "little", signed=signed) for r in reads]
     if keys:
         return {k: r for k, r in zip(keys, reads)}
@@ -21,6 +48,7 @@ async def read_multiple(ctx, addresses, signed=False, keys=None, offset=0) -> di
 
 async def write_multiple(ctx, addresses: Iterable["Address"], values: Iterable[int]):
     writes = [a.get_inner_write_list(v) for a, v in zip(addresses, values)]
+    # print(f"Writing: {hex_f(writes)}")
     await bizhawk.write(ctx.bizhawk_ctx, writes)
 
 
@@ -37,15 +65,16 @@ async def get_address_from_heap(ctx, pointer, offset=0, size=4) -> "Address":
     m_course = 0
     while m_course == 0:
         m_course = await pointer.read(ctx)
-    m_course = Address.from_pointer(m_course - 0x02000000, size=4)
+    m_course = Address.from_pointer(m_course, size=3)
     read = await m_course.read(ctx)
-    print(f"Got map address @ {hex(read + offset - 0x02000000)}")
-    return Address.from_pointer(read + offset - 0x02000000, size=size)
+    print(f"Got map address @ {hex(read + offset)}")
+    return Address.from_pointer(read + offset, size=size)
 
 def storage_key(ctx, key: str):
     return f"{key}_{ctx.slot}_{ctx.team}"
 
-def get_stored_data(ctx, key, default=None):
+def get_stored_data(ctx: "BizHawkClientContext", key, default=None):
+    ctx.set_notify(storage_key(ctx, key))
     store = ctx.stored_data.get(storage_key(ctx, key), default)
     store = store if store is not None else default
     return store
@@ -70,8 +99,6 @@ class Address:
     name: str
 
     def __init__(self, addr_eu, addr_us=None, size=1, domain="Main RAM", name=""):
-        if domain == "Main RAM":
-            assert addr_eu < 0x400000
         self.addr_eu = addr_eu
         self.addr_us = addr_us if addr_us else None
         self.addr_lookup = [self.addr_eu, self.addr_us]
@@ -81,6 +108,25 @@ class Address:
         self.domain = domain
         self.size = size
         self.name = name
+
+        if self.addr:
+            self.validate()
+
+    def set_addr(self, value):
+        self.addr = value
+        self.addr_eu = value
+        self.addr_lookup[0] = value
+
+    def get_address(self, region=None):
+        if region is not None:
+            region = self._region_int(region)
+            return self.addr_lookup[region]
+        return self.addr
+
+    def validate(self):
+        if self.domain == "Main RAM":
+            if not 0 < self.addr_eu < 0x400000:
+                self.set_addr(0)
 
     def set_region(self, region: str or int):
         self.current_region = self._region_int(region)
@@ -94,12 +140,6 @@ class Address:
         assert region in [0, 1]
         return region
 
-    def get_address(self, region=None):
-        if region is not None:
-            region = self._region_int(region)
-            return self.addr_lookup[region]
-        return self.addr
-
     def get_read_list(self):
         return [self.get_inner_read_list()]
 
@@ -109,16 +149,17 @@ class Address:
     def get_write_list(self, value:int or list):
         return [self.get_inner_write_list(value)]
 
-    def get_inner_write_list(self, value:int or list):
+    def get_inner_write_list(self, value: int or list, offset: int=0, size: int=0):
         if isinstance(value, int):
             value = split_bits(value, self.size)
-        return self.addr, value[:self.size], self.domain
+        size = self.size if not size else size
+        return self.addr+offset, value[:size], self.domain
 
     async def read(self, ctx, signed=False, silent=False):
         read_result = await self.read_bytes(ctx)
         res = sum([int.from_bytes(b, "little", signed=signed)<<(8*i) for i, b in enumerate(read_result)])
         if not silent:
-            print(f"\tReading address {self}, got value {res}")
+            printl(f"\tReading address {self}, got value {hex_f(res)}")
         return res
 
     async def read_bytes(self, ctx):
@@ -128,7 +169,7 @@ class Address:
         if isinstance(value, int):
             value = split_bits(value, self.size)
         if not silent:
-            print(f"\tWriting to address {self} with value {value}")
+            printl(f"\tWriting to address {self} with value {hex_f(value)}")
         return await bizhawk.write(ctx.bizhawk_ctx, [(self.addr+offset, value, self.domain)])
 
     async def add(self, ctx, value: int, silent=False, offset=0):
@@ -152,7 +193,7 @@ class Address:
 
 
     def __repr__(self, region="eu"):
-        return f"Address Object {hex(self.get_address(region))} {self.name}"
+        return f"Address Object {hex_f(self.get_address(region))} {self.name}"
 
     def __str__(self):
         name = f"{self.name}: " if self.name else ""
@@ -203,24 +244,43 @@ class Address:
         """When addresses are grabbed from pointers, the address is the same in all versions"""
         return cls(addr, addr, size, domain, name)
 
-class Pointer(Address):
-    """
-    Pointer from Data TCM
-    work towards depreciating, it should have been a classmethod from the start
-    """
+class DTCM(Address):
+    def __init__(self, addr):
+        super().__init__(addr, addr, 3, "Data TCM")
 
-    def __init__(self, addr, name=""):
-        super().__init__(addr, addr, 4, "Data TCM", name)
-
-
-class AddrFromPointer(Address):
+class AddressLoader(Address):
     """
-    When addresses are grabbed from pointers, version doesn't matter.
-    work towards depreciating, it should have been a classmethod from the start
+    Address who's first argument is a dtcm address, that needs to be loaded before it can be used as an address
     """
+    dtcm_addr: "Address"
+    load_offset: int
 
-    def __init__(self, addr, size=1, domain="Main RAM", name=""):
-        super().__init__(addr, addr, size, domain, name)
+    def __init__(self, dtcm_addr, size=1, load_offset=0, domain="Main RAM", name=""):
+        self.dtcm_addr = dtcm_addr
+        self.load_offset = load_offset
+        super().__init__(None, None, size, domain, name)
+
+    async def load(self, ctx):
+        self.set_addr(await self.dtcm_addr.read(ctx) + self.load_offset)
+
+    async def read_bytes(self, ctx):
+        if not self.addr:
+            await self.load(ctx)
+        return await super().read_bytes(ctx)
+
+class DoubleAddressLoader(AddressLoader):
+
+    async def load(self, ctx):
+        pointer = Address.from_pointer(await self.dtcm_addr.read(ctx), size=3)
+        self.set_addr(await pointer.read(ctx) + self.load_offset)
+
+async def load_multi(ctx, loader_list: list["AddressLoader"]):
+    """Load multiple address loaders"""
+    read_list: list = [addr.dtcm_addr for addr in loader_list]
+    read_res = await read_multiple(ctx, read_list)
+    for loader in read_list:
+        loader.set_addr(read_res[loader.dtcm_addr] + loader.load_offset)
+
 
 class SRAM(Address):
     """
@@ -248,6 +308,7 @@ class DSTransition:
     """
     entrance_groups: IntEnum | None = None  # set these in game instance or
     opposite_entrance_groups: dict[IntEnum, IntEnum] | None = None
+    y_margin: int = 2000
 
     def __init__(self, name, data):
         self.data = data
@@ -312,12 +373,14 @@ class DSTransition:
             z_max = self.extra_data.get("z_max", 0x8FFFFFFF)
             z_min = self.extra_data.get("z_min", -0x8FFFFFFF)
             y = self.coords[1] if self.coords else self.extra_data.get("y", coords["y"]) - y_offest
-            print(f"Checking entrance {self.name}")
-            print(f"\tx: {x_max} > {coords['x']} > {x_min}")
-            print(f"\ty: {y + 1000} > {y} > {coords['y'] - y_offest}")
-            print(f"\tz: {z_max} > {coords['z']} > {z_min}")
-            if y + 2000 > coords["y"] - y_offest >= y and x_max > coords["x"] > x_min and z_max > coords["z"] > z_min:
-                print(f"\tMatch!")
+            printl(f"Checking entrance {self.name}")
+            printl(f"\tx: {x_max} > {coords['x']} > {x_min}")
+            printl(f"\ty: {y + self.y_margin} > {coords['y'] - y_offest} > {y}")
+            printl(f"\tz: {z_max} > {coords['z']} > {z_min}")
+            if (y + self.y_margin > coords["y"] - y_offest >= y
+                    and x_max > coords["x"] > x_min
+                    and z_max > coords["z"] > z_min):
+                printl(f"\tMatch!")
                 return True
         return False
 
@@ -344,11 +407,11 @@ class DSTransition:
         return self.name
 
     def debug_print(self):
-        print(f"Debug print for entrance {self.name}")
-        print(f"\tentrance {self.entrance}")
-        print(f"\texit {self.exit}")
-        print(f"\tcoords {self.coords}")
-        print(f"\textra_data {self.extra_data}")
+        printl(f"Debug print for entrance {self.name}")
+        printl(f"\tentrance {self.entrance}")
+        printl(f"\texit {self.exit}")
+        printl(f"\tcoords {self.coords}")
+        printl(f"\textra_data {self.extra_data}")
 
     @classmethod
     def from_data(cls, entrance_data):
@@ -402,3 +465,4 @@ class DSTransition:
             counter.setdefault(point, 0)
             counter[point] += 1
         return res
+

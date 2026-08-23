@@ -5,7 +5,7 @@ from .groups import item_groups
 from .options import ShufflePokedex, ShuffleRunningShoes
 
 if TYPE_CHECKING:
-    from . import PokemonFRLGWorld
+    from .world import PokemonFRLGWorld
 
 
 RENEWABLE_PROGRESSION_ITEMS = ("Fresh Water", "Soda Pop", "Lemonade", "King's Rock", "Metal Coat", "Dragon Scale",
@@ -13,14 +13,14 @@ RENEWABLE_PROGRESSION_ITEMS = ("Fresh Water", "Soda Pop", "Lemonade", "King's Ro
 
 
 class PokemonFRLGItem(Item):
-    game: str = "Pokemon FireRed and LeafGreen"
+    game: str = data.get_game()
 
     def __init__(self, name: str, classification: ItemClassification, code: int | None, player: int) -> None:
         super().__init__(name, classification, code, player)
 
 
 class PokemonFRLGGlitchedToken(PokemonFRLGItem):
-    game: str = "Pokemon FireRed and LeafGreen"
+    game: str = data.get_game()
     TOKEN_NAME = "GLITCHED_TOKEN"
 
     def __init__(self, player) -> None:
@@ -62,6 +62,7 @@ def add_starting_items(world: "PokemonFRLGWorld") -> None:
         world.options.start_inventory.value["Jumping Shoes"] = 1
         world.multiworld.push_precollected(world.create_item("Jumping Shoes"))
 
+
 def get_random_item(world: "PokemonFRLGWorld", item_classification: ItemClassification = None) -> str:
     if item_classification is None:
         item_classification = ItemClassification.useful if world.random.random() < 0.20 else ItemClassification.filler
@@ -69,9 +70,11 @@ def get_random_item(world: "PokemonFRLGWorld", item_classification: ItemClassifi
              if item.classification == item_classification and item.name not in item_groups["Unique Items"]]
     return world.random.choice(items).name
 
+
 def update_renewable_to_progression(item: PokemonFRLGItem) -> None:
     if item.name in RENEWABLE_PROGRESSION_ITEMS:
         item.classification = ItemClassification.progression
+
 
 def is_single_purchase_item(item: PokemonFRLGItem) -> bool:
     if (item.name in item_groups["Key Items"]

@@ -1,7 +1,29 @@
 from dataclasses import dataclass
+from enum import StrEnum
 
-from Options import Choice, DeathLink, DefaultOnToggle, OptionGroup, PerGameCommonOptions, Range, Toggle
+from Options import Choice, DeathLink, DefaultOnToggle, OptionGroup, PerGameCommonOptions, Range, Toggle, OptionCounter
 
+class GoalConditions(StrEnum):
+    PLAY_STONES = "Obtain the PLAY Stones"
+    DIE_TO_CASTLE_TRAP_ROOM = "Die to the Castle Trap Room at least once"
+    SWIM_3000_METERS = "Swim 3000 meters"
+
+class GoalCondition(OptionCounter):
+    """
+    The conditions required to complete the game.
+
+    At least one condition must be set.
+    Regardless of your goal condition, you still need the Locked Candy Box.
+    """
+    display_name = "Goal Conditions"
+    min = 0
+    max = 1
+    default = {
+        GoalConditions.PLAY_STONES.value: 1,
+        GoalConditions.DIE_TO_CASTLE_TRAP_ROOM.value: 0,
+        GoalConditions.SWIM_3000_METERS.value: 0
+    }
+    valid_keys = [condition.value for condition in GoalConditions]
 
 class QuestRandomisation(Choice):
     """
@@ -187,7 +209,7 @@ class FontTrap(Range):
 
     display_name = "Font Traps"
     range_start = 0
-    range_end = 5
+    range_end = 20
     default = 0
 
 
@@ -229,6 +251,7 @@ candy_box_2_options_groups = [
 
 @dataclass
 class CandyBox2Options(PerGameCommonOptions):
+    goal_conditions: GoalCondition
     quest_randomisation: QuestRandomisation
     randomise_tower: RandomiseTowerEntrance
     randomise_x_potion: RandomiseXPotion

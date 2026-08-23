@@ -14,6 +14,8 @@ GetEnBookDiscovery = 0x027fcab4 # ::Util
 #ifdef V101E
 moduleMatches = 0xF882D5CF, 0x218F6E07 ; 1.0.1E, 1.0.0E
 
+0x02c123c4 = bl _setCrownMarker
+
 getVal = 0x029c2120 # ::bdat
 getFlagVal = 0x029c254c # ::bdat
 #endif
@@ -21,12 +23,16 @@ getFlagVal = 0x029c254c # ::bdat
 #ifdef V102U
 moduleMatches = 0x30B6E091 ; 1.0.2U
 
+0x02c123b4 = bl _setCrownMarker
+
 getVal = 0x029c2110 # ::bdat
 getFlagVal = 0x029c253c # ::bdat
 #endif
 
 // Parameter from rules.txt
 int enemyBookThreshold;
+
+extern void* _setCrownMarkerEnd;
 
 char _formatEnemyText[] = "EN Id=%03x Fg=%01x:";
 
@@ -38,6 +44,25 @@ int getVal(int* bdatPtr, const char* columnName, int id);
 int getValCheck(int* bdatPtr, const char* columnName, int id, int offset);
 int getFlagVal(int* bdatPtr, const char* flagName, int id, const char* columnName);
 
+int _calcEnemyFlag(int enemyId, int* chrBdatPtr, int* btlBdatPtr, int enemyThreshold){
+	if(enemyThreshold > 0){
+		int defeat = GetEnBookDefeat(enemyId);
+		if (defeat >= 1){
+			int enemyBaseId = getVal(btlBdatPtr, "BaseEnemyID", enemyId) >> 0x10;
+			int isBoss = getFlagVal(chrBdatPtr, "Flag", enemyBaseId, "mBoss");
+			int isNamed = getFlagVal(chrBdatPtr, "Flag", enemyBaseId, "Named");
+			int enBook = getFlagVal(chrBdatPtr, "Flag", enemyBaseId, "enBook");
+			if(defeat >= enemyThreshold || isBoss || isNamed || enBook) return 3;  // exactly what game does in getOpenType
+			else return defeat;
+		} 
+	}
+	else {
+		int discovery = GetEnBookDiscovery(enemyId);
+		if(discovery >= 1) return 3;
+	}
+	return 0;
+}
+
 // Use  https://xenoblade.github.io/xbx/bdat/common_local_us/BTL_EnBook.html to match the ids
 // Defeat: Number of enemies you defeated
 char* _postEnemyList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize) {
@@ -46,21 +71,7 @@ char* _postEnemyList(char* stringStartPtr, char* stringCurrentPtr, char* stringE
 	int* chrBdatPtr = getFP("CHR_EnList");
 	int* btlBdatPtr = getFP("BTL_EnBook");
     for(int enemyId = 1; enemyId < enemyCount; enemyId++){
-		int flag = 0;
-		if(enemyThreshold > 0){
-			int defeat = GetEnBookDefeat(enemyId);
-			if (defeat >= 1){
-				int enemyBaseId = getVal(btlBdatPtr, "BaseEnemyID", enemyId) >> 0x10;
-				int isBoss = getFlagVal(chrBdatPtr, "Flag", enemyBaseId, "mBoss");
-				int isNamed = getFlagVal(chrBdatPtr, "Flag", enemyBaseId, "Named");
-				int enBook = getFlagVal(chrBdatPtr, "Flag", enemyBaseId, "enBook");
-				if(defeat >= enemyThreshold || isBoss || isNamed || enBook) flag = 1;  // exactly what game does in getOpenType
-			} 
-		}
-		else {
-			int discovery = GetEnBookDiscovery(enemyId);
-			if(discovery >= 1) flag = 1;
-		}
+		int flag = _calcEnemyFlag(enemyId, chrBdatPtr, btlBdatPtr, enemyThreshold) == 3;
 
 		stringCurrentPtr += __sprintf_s(stringCurrentPtr, maxEntrySize, _formatEnemyText, enemyId, flag);
 
@@ -71,4 +82,16 @@ char* _postEnemyList(char* stringStartPtr, char* stringCurrentPtr, char* stringE
 		}
     }
 	return stringCurrentPtr;
+}
+
+void _setCrownMarker(){
+    register int* menuPtr asm("r28");
+    register int crownId asm("r3");
+	int enemyId = (int)*(short*)((char*)menuPtr + 0xb0e);
+	int enemyThreshold = enemyBookThreshold;
+	int* chrBdatPtr = getFP("CHR_EnList");
+	int* btlBdatPtr = getFP("BTL_EnBook");
+	crownId = _calcEnemyFlag(enemyId, chrBdatPtr, btlBdatPtr, enemyThreshold);
+	// original instruction from 0x02c123c4
+	asm("cmplwi cr0, r3, 0x1");
 }

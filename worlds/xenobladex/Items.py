@@ -96,44 +96,20 @@ xenobladeXItems: dict[str, Itm] = {
 }
 
 
-def create_items(world: "XenobladeXWorld") -> None:
-    """Create all items"""
-    options = cast(Options.XenobladeXOptions, world.options)
-    logic_level_steps = options.logic_level_steps.value
-    logic_level_overcap = options.logic_level_overcap.value
-    logic_levels = 0
-    if logic_level_steps > 0:
-        logic_levels = get_logic_level_count(99, logic_level_steps) + logic_level_overcap
-
-    itempool: list[Item] = []
-    requiredOptionalItems = [itm for itm in xenobladeXItems.values() if itm.required]
-    optionalFullItems = [itm for itm in xenobladeXOptionalFullItems
-                         if itm.prefix and getattr(world.options, itm.prefix.lower()).value]
-    # Add all important Items, these are always added to the item pool
-    for item in xenobladeXImportantItems + requiredOptionalItems + optionalFullItems:
-        item_count = item.count if not item.get_item() == "KEY: Level" else logic_levels
-        for idx in range(item_count):
-            assert item.id is not None, f"{item.get_item()} has no id"
-            xeno_item = XenobladeXItem(item.get_item(), item.progression, world.base_id + item.id, world.player)
-            if idx < item_count - world.multiworld.precollected_items[world.player].count(xeno_item):
-                itempool += [xeno_item]
-
+def create_optional_items(world: "XenobladeXWorld", count: int) -> list[XenobladeXItem]:
     # Add all optional Items to the item pool, these are selected at random,
     # depending on how many slots are left in the location pool
     optional_items: list[Itm] = []
 
-    # Keep enough space for the victory item_event
-    total_locations = len(world.multiworld.get_unfilled_locations(world.player)) - 1
     optionals_data = {prefix: len(category) for prefix, category in xenobladeXOptionalItems.items()
                       if prefix and getattr(world.options, prefix.lower()).value}
     optionals_length: int = sum(optionals_data.values())
-    missing_item_count: int = min(total_locations - len(itempool), optionals_length)
+    missing_item_count: int = min(count, optionals_length)
     # Throw error if overfilled. Make more graceful in future
     assert missing_item_count >= 0, f"{world.get_player_name()} overfilled locations. " \
         "Please select more locations or less items"
 
     if len(optionals_data) > 0:
-        world.random.seed(world.multiworld.seed)
         max_category_size = 950  # -49 for shop item buffer
         maxed_categories: list[str] = []
         optionals_counter: Counter[str] = Counter()
@@ -164,15 +140,48 @@ def create_items(world: "XenobladeXWorld") -> None:
                     count = min(count, len(xenobladeXOptionalItems[prefix]))
                     optional_items += world.random.sample(xenobladeXOptionalItems[prefix], count)
                 break
+    return [world.create_item(itm.get_item()) for itm in optional_items]
 
-    for item in optional_items:
-        assert item.id is not None, f"{item.get_item()} has no id"
-        xeno_item = XenobladeXItem(item.get_item(), item.progression, world.base_id + item.id, world.player)
+
+def create_items(world: "XenobladeXWorld") -> None:
+    """Create all items"""
+    options = cast(Options.XenobladeXOptions, world.options)
+    logic_level_steps = options.logic_level_steps.value
+    logic_level_overcap = options.logic_level_overcap.value
+    logic_levels = 0
+    if logic_level_steps > 0:
+        logic_levels = get_logic_level_count(99, logic_level_steps) + logic_level_overcap
+
+    # Keep enough space for the victory item_event
+    total_locations = len(world.multiworld.get_unfilled_locations(world.player)) - 1
+
+    # Add starting inventory items
+    world.random.seed(world.multiworld.seed)
+    combat_starting_items = options.combat_starting_items.value
+    if combat_starting_items > 0:
+        combat_items = [itm for itm in xenobladeXImportantItems if itm.prefix in ["ART", "SKL", "CL"]]
+        for combat_itm in world.random.sample(combat_items, combat_starting_items):
+            world.push_precollected(world.create_item(combat_itm.get_item()))
+
+    itempool: list[Item] = []
+    requiredOptionalItems = [itm for itm in xenobladeXItems.values() if itm.required]
+    optionalFullItems = [itm for itm in xenobladeXOptionalFullItems
+                         if itm.prefix and getattr(world.options, itm.prefix.lower()).value]
+    # Add all important Items, these are always added to the item pool
+    for item in xenobladeXImportantItems + requiredOptionalItems + optionalFullItems:
+        item_count = item.count if not item.get_item() == "KEY: Level" else logic_levels
+        for idx in range(item_count):
+            xeno_item = world.create_item(item.get_item())
+            if idx < item_count - world.multiworld.precollected_items[world.player].count(xeno_item):
+                itempool += [xeno_item]
+
+    for xeno_item in create_optional_items(world, total_locations - len(itempool)):
         if xeno_item not in world.multiworld.precollected_items[world.player]:
             itempool += [xeno_item]
     world.multiworld.itempool += itempool
 
-    world.multiworld.itempool += [create_filler(world) for _ in range(total_locations - len(itempool))]
+    world.multiworld.itempool += [world.create_item(world.get_filler_item_name())
+                                  for _ in range(total_locations - len(itempool))]
 
 
 def create_item(world:  "XenobladeXWorld", item_name: str) -> XenobladeXItem:

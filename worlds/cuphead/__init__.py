@@ -55,9 +55,9 @@ class CupheadWorld(CachedRuleBuilderWorld):
 
     GAME_NAME: ClassVar[str] = "Cuphead"
 
-    APWORLD_SEM_VERSION: ClassVar[tuple[int, int, int, int]] = (0, 2, 2, 7)
+    APWORLD_SEM_VERSION: ClassVar[tuple[int, int, int, int]] = (0, 2, 2, 8)
     APWORLD_VERSION_POSTFIX: ClassVar[str] = ""
-    APWORLD_VERSION_POSTFIX_NO: ClassVar[int] = 15
+    APWORLD_VERSION_POSTFIX_NO: ClassVar[int] = 10
 
     # For the time being, POSTFIX_NO is also used to indicate release/hotfix number. >10 indicates hotfix.
     APWORLD_REL_NO: ClassVar[int] = max(0, APWORLD_VERSION_POSTFIX_NO - 10)
@@ -91,7 +91,7 @@ class CupheadWorld(CachedRuleBuilderWorld):
     item_names: ClassVar[set[str]] = set(idef.items_all.keys())
     location_names: ClassVar[set[str]] = set(ld.locations_all.keys())
 
-    settings: CupheadSettings # type: ignore
+    settings: CupheadSettings # type: ignore  # ty: ignore[invalid-attribute-override]
 
     item_mapping: ClassVar[dict[str, str]] = {
         itemnames.item_coin2: itemnames.item_coin,
@@ -130,8 +130,8 @@ class CupheadWorld(CachedRuleBuilderWorld):
                 self.GAME_NAME in _ut and
                 isinstance(_ut[self.GAME_NAME], dict)
             ):
-                self.multiworld.re_gen_passthrough = _ut  # pyright: ignore[reportAttributeAccessIssue]
-                self.multiworld.generation_is_fake = True  # pyright: ignore[reportAttributeAccessIssue]
+                setattr(self.multiworld, "re_gen_passthrough", _ut)  # noqa: B010
+                setattr(self.multiworld, "generation_is_fake", True)  # noqa: B010
 
     def set_early_items(self):
         if self.options.early_parry.bvalue:

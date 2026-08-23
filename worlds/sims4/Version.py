@@ -1,4 +1,4 @@
-VERSION: tuple[int, int, int] | tuple[int, int, int, str] = (2, 0, 0)
+VERSION: tuple[int, int, int] | tuple[int, int, int, str] = (2, 0, 1)
 
 
 class Sims4Version:

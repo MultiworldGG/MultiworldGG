@@ -218,19 +218,25 @@ class OptionSanitizer:
             for x in y[0] if x not in y[1]
         }
 
-        invalid_level_reason = "Invalid level"
-        invalid_level_combo_reason = "Invalid level combination"
-
         nlpvalue: dict[str, str] = {}
+        invlpvalues: dict[str, str] = {}
         for k,v in lpvalue.items():
             drop = False
             drop_reason = ""
+
             if k not in valid_levels or v not in valid_levels:
                 drop = True
-                drop_reason = invalid_level_reason
+                drop_reason = "Invalid level"
             elif leveltype.get_level_type(k) != leveltype.get_level_type(v):
                 drop = True
-                drop_reason = invalid_level_combo_reason
+                drop_reason = "Invalid level combination"
+            elif v in invlpvalues:
+                drop = True
+                drop_reason = f"Value already used by {invlpvalues[v]}"
+            elif k in nlpvalue:
+                drop = True
+                drop_reason = "Key already assigned"
+
             if drop:
                 string = f"level_placements: '{k}: {v}' removed from dict. Reason: {drop_reason}."
                 self.option_overrides.append(string)
@@ -240,6 +246,7 @@ class OptionSanitizer:
                     self.print_warning(f"{msg} {msg_reason}")
             else:
                 nlpvalue[k] = v
+                invlpvalues[v] = k
         options.level_placements.value = nlpvalue
 
     def _is_minimal_accessibility(self) -> bool:

@@ -1,4 +1,4 @@
-from ..DSZeldaClient.subclasses import Address, Pointer, SRAM
+from ..DSZeldaClient.subclasses import Address, SRAM, DTCM
 
 addr_null = Address(0, 0)
 
@@ -78,12 +78,12 @@ class PHAddr:
     actor_table_pointer = Address(0x1BA8C4, size=3)
 
     # Pointers
-    gItemManager = Pointer(0x0fb4)
-    gPlayerManager = Pointer(0x0fbc)
-    gAdventureFlags = Pointer(0x0f74)
-    gPlayer = Pointer(0x0f90)
-    # gOverlayManager_mLoadedOverlays_4 = Pointer(0x0910)
-    gMapManager = Pointer(0x0e60)
+    gItemManager = DTCM(0x0fb4)
+    gPlayerManager = DTCM(0x0fbc)
+    gAdventureFlags = DTCM(0x0f74)
+    gPlayer = DTCM(0x0f90)
+    # gOverlayManager_mLoadedOverlays_4 = DTCM(0x0910)
+    gMapManager = DTCM(0x0e60)
     
     # Adventure flags
     adv_flags = Address(0x1B557C, size=52)
@@ -272,7 +272,8 @@ class PHAddr:
     # island_visible_ = Address()
     # island_visible_ = Address()
 
-    map_obj_table = Address(0x1B8968)  # size biig
+    map_obj_table = Address(0x1B8968)  # size biig, manager @ 0xF68 -> 0x1B853C + 3
+    map_obj_table_size = Address(0x1B854C, size=2)
 
     defeated_bellum = Address(0x1b5774)
     potion_protector = Address(0x1BA70a)

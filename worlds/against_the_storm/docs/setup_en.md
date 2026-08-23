@@ -1,4 +1,4 @@
-# Against the Storm for MultiworldGG Setup and Usage Guide
+# Against the Storm for Archipelago Setup and Usage Guide
 
 ## Required Software
 * Latest release of [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases). Currently tested/working on version 0.7.195.
@@ -14,6 +14,7 @@
     - Optional: Create a new modding profile and name, if you don't want to use the Default
 4. Click the Get Mods tab.
 5. Find the Against The Storm for Archipelago mod, and download it.
+* **Note:** ATS_API is a dependency of the mod. There have been some reports of the game getting stuck on the loading screen. If this happens, try manually downgrading the API to v3.5.0.
 
 ## **If you just want to play recipe shuffle without setting up MultiworldGG**
 1. Just run the modded game through Thunderstore.
@@ -38,6 +39,7 @@
     * Optional: from the main menu, start a separate profile in the top right if you already have data in your default profile.
     * Optional: especially if you started a new profile from above, you will almost certainly want to run `meta.addAll` from the dev console, as the mod will assume you have all meta progression unlocked, and probably `goals.unlockAll` as well (these are the deeds, which have things like certain traders, decorations, and Big Shelter. **WARNING**: goals.unlockAll will grant you all the steam achievements unless you are on mod version v0.9.4 or later). The dev console is opened with \` (backtick, to the left of 1) by default, and at least for me only opens in the world map or settlements.
         * If you run `meta.addAll` on a fresh profile, the Training Expedition will still appear locked. This is an issue with the game's UI. Just enter and leave the Smoldering Citadel, and you should now see the Training Expedition available.
+* Note: if you started a new profile, you will probably want to finish/skip the tutorial before proceeding.
 2. From the world map, open the dev console (default \` (backtick, to the left of 1)) and type `ap.connect <url>:<port> "<slotName>" [password]`.
     * If you uploaded `AP_#######.zip` to MultiworldGG, then the room you generated should have the url: `multiworld.gg:#####`
     * slotName is the name from the `AgainstTheStorm.yaml`. The default was `ATSPlayer` if you didn't change it. The quotes are only necessary if the name you set has spaces.

@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING, Dict, List, Optional
 
 from Options import Option
 from .data import data, NATIONAL_ID_TO_SPECIES_ID, EncounterType, EventData
-from .options import ShuffleBuildingEntrances, ShuffleDungeonEntrances
+from .options import DiglettsCaveRoadblock, Route9Roadblock, ShuffleBuildingEntrances, ShuffleDungeonEntrances
 
 if TYPE_CHECKING:
-    from . import PokemonFRLGWorld
+    from .world import PokemonFRLGWorld
 
 
 def ut_set_options(world: "PokemonFRLGWorld") -> None:
@@ -20,52 +20,52 @@ def ut_set_options(world: "PokemonFRLGWorld") -> None:
 
 def ut_set_maps(world: "PokemonFRLGWorld") -> None:
     extra_key_items = world.options.extra_key_items
-    route_10_modified = "Modify Route 10" in world.options.modify_world_state.value
-    route_12_boulders = "Route 12 Boulders" in world.options.modify_world_state.value
-    route_12_modified = "Modify Route 12" in world.options.modify_world_state.value
-    route_23_trees = "Route 23 Trees" in world.options.modify_world_state.value
-    route_23_modified = "Modify Route 23" in world.options.modify_world_state.value
-    if "Modify Route 2" in world.options.modify_world_state.value:
-        world.tracker_world["map_page_maps"].append("maps/maps_route_2_modified.json")
+    route_10_waterfall = world.options.route_10_waterfall
+    route_12_boulders = world.options.route_12_boulders
+    route_12_rocks = world.options.route_12_rocks
+    route_23_trees = world.options.route_23_trees
+    route_23_waterfall = world.options.route_23_waterfall
+    if world.options.digletts_cave_roadblock == DiglettsCaveRoadblock.option_rock_smash:
+        world.tracker_world["map_page_maps"].append("maps/maps_route_2_rock.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_route_2_vanilla.json")
-    if "Block Tunnels" in world.options.modify_world_state.value:
-        world.tracker_world["map_page_maps"].append("maps/maps_tunnels_blocked.json")
+    if world.options.block_underground_paths:
+        world.tracker_world["map_page_maps"].append("maps/maps_paths_blocked.json")
     else:
-        world.tracker_world["map_page_maps"].append("maps/maps_tunnels_vanilla.json")
-    if "Modify Route 9" in world.options.modify_world_state.value:
+        world.tracker_world["map_page_maps"].append("maps/maps_paths_vanilla.json")
+    if world.options.route_9_roadblock == Route9Roadblock.option_rock_smash:
         world.tracker_world["map_page_maps"].append("maps/maps_route_9_modified.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_route_9_vanilla.json")
-    if extra_key_items and route_10_modified:
+    if extra_key_items and route_10_waterfall:
         world.tracker_world["map_page_maps"].append("maps/maps_route_10_all.json")
     elif extra_key_items:
         world.tracker_world["map_page_maps"].append("maps/maps_route_10_extra_items.json")
-    elif route_10_modified:
+    elif route_10_waterfall:
         world.tracker_world["map_page_maps"].append("maps/maps_route_10_modified.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_route_10_vanilla.json")
-    if route_12_boulders and route_12_modified:
+    if route_12_boulders and route_12_rocks:
         world.tracker_world["map_page_maps"].append("maps/maps_route_12_all.json")
     elif route_12_boulders:
         world.tracker_world["map_page_maps"].append("maps/maps_route_12_boulders.json")
-    elif route_12_modified:
+    elif route_12_rocks:
         world.tracker_world["map_page_maps"].append("maps/maps_route_12_modified.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_route_12_vanilla.json")
-    if "Modify Route 16" in world.options.modify_world_state.value:
+    if world.options.route_16_rock:
         world.tracker_world["map_page_maps"].append("maps/maps_route_16_modified.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_route_16_vanilla.json")
-    if route_23_trees and route_23_modified:
+    if route_23_trees and route_23_waterfall:
         world.tracker_world["map_page_maps"].append("maps/maps_route_23_all.json")
     elif route_23_trees:
         world.tracker_world["map_page_maps"].append("maps/maps_route_23_trees.json")
-    elif route_23_modified:
+    elif route_23_waterfall:
         world.tracker_world["map_page_maps"].append("maps/maps_route_23_modified.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_route_23_vanilla.json")
-    if "Victory Road Rocks" in world.options.modify_world_state.value:
+    if world.options.victory_road_rocks:
         world.tracker_world["map_page_maps"].append("maps/maps_victory_road_rocks.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_victory_road_vanilla.json")
@@ -1273,7 +1273,7 @@ MAP_PAGE_LOCATIONS: List[str] = [
     "ut_locations/routes/route_25.json"
 ]
 
-POPTRACKER_LOCATIONS: Dict[str, int] = {
+POPTRACKER_LOCATIONS: Dict[str, str] = {
     "Pallet Town/Unlock Fly Destination": "FLY_UNLOCK_VISITED_PALLET_TOWN",
     "Visit Pallet Town/Unlock Fly Destination": "FLY_UNLOCK_VISITED_PALLET_TOWN",
     "Pallet Town/PC Item": "PC_ITEM_POTION",

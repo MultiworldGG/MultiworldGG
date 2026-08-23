@@ -74,7 +74,7 @@ async def receive_normal(client: "DSZeldaClient", ctx: "BizHawkClientContext", i
     res = []
     if hasattr(item, "progressive"):
         prog_received = min(client.item_count(ctx, item.name, num_received_items),
-                            len(item.progressive) - 1)
+                            len(item.progressive))
         item_address, item_value = item.progressive[prog_received]
     else:
         item_address = item.address
@@ -162,7 +162,9 @@ async def remove_vanilla_progressive(client: "DSZeldaClient", ctx: "BizHawkClien
 
     # Progressive overwrite fix
     if "progressive_overwrite" in item.tags and index > 1:
-        res += address.get_write_list(value)  # overwrite upgrade
+        # current index is -1, index is removal index
+        address, value = item.progressive[index-1]
+        res += address.get_write_list(value)  # overwrite upgrade with current stage
     else:
         prev = await address.read(ctx)
         res += address.get_write_list(prev & (~value))
@@ -181,8 +183,14 @@ async def remove_vanilla_normal(client: "DSZeldaClient", ctx: "BizHawkClientCont
     if "incremental" or "monotone_incremental" in item.tags:
         if hasattr(item, "max") and prev_value >= item.max:
             return []
-
-        value = max(prev_value - value, 0)
+        if "monotone_incremental" in item.tags:
+            item_value = item.value
+            if type(item_value) is str:
+                value = await client.received_special_incremental(ctx, item)  # TODO: hook into this somehow?
+            else:
+                value = item.value * client.item_count(ctx, item.name) + getattr(item, "base_count", 0)
+        else:
+            value = max(prev_value - value, 0)
     else:
         value = prev_value & (~value)
 

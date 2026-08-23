@@ -499,7 +499,7 @@ class LevelPlacements(LevelDict, NamedOption):
     name = "level_placements"
     display_name = "Level Placements"
     visibility = Visibility.spoiler | Visibility.template | Visibility.complex_ui
-    default: Mapping[str, str] = {}
+    default: Mapping[str, str] = {}  # ty: ignore[invalid-attribute-override]
 
 
 class LevelShuffle(EnumOption[e.LevelShuffleMode], Choice, NamedOption):

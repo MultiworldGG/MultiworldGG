@@ -44,13 +44,13 @@
     "exits": {
       "REGION_ONE_ISLAND/WATER": "One Island Town Surfing Spot",
       "REGION_ONE_ISLAND/VISIT": "Visit One Island Town",
-      "REGION_ONE_ISLAND_KINDLE_ROAD/SOUTH": "One Island Town Exit (East)"
+      "REGION_ONE_ISLAND_KINDLE_ROAD/SOUTH": "One Island Town East Exit"
     },
     "warps": {
-      "MAP_ONE_ISLAND:0/MAP_ONE_ISLAND_POKEMON_CENTER_1F:0": "One Island Pokemon Center",
-      "MAP_ONE_ISLAND:1/MAP_ONE_ISLAND_HOUSE1:0": "One Island Old Couple's House",
-      "MAP_ONE_ISLAND:2/MAP_ONE_ISLAND_HOUSE2:0": "One Island Lass' House",
-      "MAP_ONE_ISLAND:3/MAP_ONE_ISLAND_HARBOR:0": "One Island Harbor"
+      "MAP_ONE_ISLAND:0/MAP_ONE_ISLAND_POKEMON_CENTER_1F:0": "One Island Pokemon Center Entrance",
+      "MAP_ONE_ISLAND:1/MAP_ONE_ISLAND_HOUSE1:0": "One Island Old Couple's House Entrance",
+      "MAP_ONE_ISLAND:2/MAP_ONE_ISLAND_HOUSE2:0": "One Island Lass' House Entrance",
+      "MAP_ONE_ISLAND:3/MAP_ONE_ISLAND_HARBOR:0": "One Island Harbor Entrance"
     }
   },
   "REGION_ONE_ISLAND/WATER": {
@@ -64,7 +64,7 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_ONE_ISLAND_TREASURE_BEACH/WATER": "One Island Town Exit (South)"
+      "REGION_ONE_ISLAND_TREASURE_BEACH/WATER": "One Island Town South Exit"
     },
     "warps": {}
   },
@@ -189,8 +189,8 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_ONE_ISLAND_KINDLE_ROAD/SOUTH_WATER": "Kindle Road (South) Surfing Spot",
-      "REGION_ONE_ISLAND/MAIN": "Kindle Road Exit (West)"
+      "REGION_ONE_ISLAND_KINDLE_ROAD/SOUTH_WATER": "Kindle Road South Surfing Spot (South)",
+      "REGION_ONE_ISLAND/MAIN": "Kindle Road West Exit"
     },
     "warps": {}
   },
@@ -208,8 +208,8 @@
     ],
     "events": [],
     "exits": {
-      "REGION_ONE_ISLAND_KINDLE_ROAD/SOUTH": "Kindle Road (South) Landing Spot",
-      "REGION_ONE_ISLAND_KINDLE_ROAD/CENTER": "Kindle Road (Center) Landing Spot (Bottom)"
+      "REGION_ONE_ISLAND_KINDLE_ROAD/SOUTH": "Kindle Road South Landing Spot (South)",
+      "REGION_ONE_ISLAND_KINDLE_ROAD/CENTER": "Kindle Road South Landing Spot (Center)"
     },
     "warps": {}
   },
@@ -245,11 +245,11 @@
     ],
     "events": [],
     "exits": {
-      "REGION_ONE_ISLAND_KINDLE_ROAD/SOUTH_WATER": "Kindle Road (Center) Surfing Spot (Bottom)",
-      "REGION_ONE_ISLAND_KINDLE_ROAD/NORTH_WATER": "Kindle Road (Center) Surfing Spot (Top)"
+      "REGION_ONE_ISLAND_KINDLE_ROAD/SOUTH_WATER": "Kindle Road South Surfing Spot (Center)",
+      "REGION_ONE_ISLAND_KINDLE_ROAD/NORTH_WATER": "Kindle Road North Surfing Spot (Center)"
     },
     "warps": {
-      "MAP_ONE_ISLAND_KINDLE_ROAD:2/MAP_ONE_ISLAND_KINDLE_ROAD_EMBER_SPA:0": "Ember Spa"
+      "MAP_ONE_ISLAND_KINDLE_ROAD:2/MAP_ONE_ISLAND_KINDLE_ROAD_EMBER_SPA:0": "Ember Spa Entrance"
     }
   },
   "REGION_ONE_ISLAND_KINDLE_ROAD/NORTH_WATER": {
@@ -268,8 +268,8 @@
     ],
     "events": [],
     "exits": {
-      "REGION_ONE_ISLAND_KINDLE_ROAD/CENTER": "Kindle Road (Center) Landing Spot (Top)",
-      "REGION_ONE_ISLAND_KINDLE_ROAD/NORTH": "Kindle Road (North) Landing Spot"
+      "REGION_ONE_ISLAND_KINDLE_ROAD/CENTER": "Kindle Road North Landing Spot (Center)",
+      "REGION_ONE_ISLAND_KINDLE_ROAD/NORTH": "Kindle Road North Landing Spot (North)"
     },
     "warps": {}
   },
@@ -284,10 +284,10 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_ONE_ISLAND_KINDLE_ROAD/NORTH_WATER": "Kindle Road (North) Surfing Spot"
+      "REGION_ONE_ISLAND_KINDLE_ROAD/NORTH_WATER": "Kindle Road North Surfing Spot (North)"
     },
     "warps": {
-      "MAP_ONE_ISLAND_KINDLE_ROAD:0,1/MAP_MT_EMBER_EXTERIOR:0,1": "Mt. Ember"
+      "MAP_ONE_ISLAND_KINDLE_ROAD:0,1/MAP_MT_EMBER_EXTERIOR:0,1": "Mt. Ember Entrance"
     }
   },
   "REGION_ONE_ISLAND_KINDLE_ROAD_EMBER_SPA/MAIN": {
@@ -364,13 +364,13 @@
     "events": [],
     "exits": {
       "REGION_TWO_ISLAND/VISIT": "Visit Two Island Town",
-      "REGION_TWO_ISLAND_CAPE_BRINK/MAIN": "Two Island Town Exit (North)"
+      "REGION_TWO_ISLAND_CAPE_BRINK/MAIN": "Two Island Town North Exit"
     },
     "warps": {
-      "MAP_TWO_ISLAND:0/MAP_TWO_ISLAND_JOYFUL_GAME_CORNER:0": "Two Island Game Corner",
-      "MAP_TWO_ISLAND:1/MAP_TWO_ISLAND_HOUSE:0": "Move Maniac's House",
-      "MAP_TWO_ISLAND:2/MAP_TWO_ISLAND_POKEMON_CENTER_1F:0": "Two Island Pokemon Center",
-      "MAP_TWO_ISLAND:3/MAP_TWO_ISLAND_HARBOR:0": "Two Island Harbor"
+      "MAP_TWO_ISLAND:0/MAP_TWO_ISLAND_JOYFUL_GAME_CORNER:0": "Two Island Game Corner Entrance",
+      "MAP_TWO_ISLAND:1/MAP_TWO_ISLAND_HOUSE:0": "Move Maniac's House Entrance",
+      "MAP_TWO_ISLAND:2/MAP_TWO_ISLAND_POKEMON_CENTER_1F:0": "Two Island Pokemon Center Entrance",
+      "MAP_TWO_ISLAND:3/MAP_TWO_ISLAND_HARBOR:0": "Two Island Harbor Entrance"
     }
   },
   "REGION_TWO_ISLAND_JOYFUL_GAME_CORNER/MAIN": {
@@ -452,10 +452,10 @@
     "events": [],
     "exits": {
       "REGION_TWO_ISLAND_CAPE_BRINK/WATER": "Cape Brink Surfing Spot",
-      "REGION_TWO_ISLAND/MAIN": "Cape Brink Exit (South)"
+      "REGION_TWO_ISLAND/MAIN": "Cape Brink South Exit"
     },
     "warps": {
-      "MAP_TWO_ISLAND_CAPE_BRINK:0/MAP_TWO_ISLAND_CAPE_BRINK_HOUSE:0": "Starter Tutor's House"
+      "MAP_TWO_ISLAND_CAPE_BRINK:0/MAP_TWO_ISLAND_CAPE_BRINK_HOUSE:0": "Starter Tutor's House Entrance"
     }
   },
   "REGION_TWO_ISLAND_CAPE_BRINK/WATER": {
@@ -516,11 +516,11 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_THREE_ISLAND/SOUTH": "Three Isle Port Exit (North)"
+      "REGION_THREE_ISLAND/SOUTH": "Three Isle Port North Exit"
     },
     "warps": {
-      "MAP_THREE_ISLAND_PORT:0/MAP_THREE_ISLAND_DUNSPARCE_TUNNEL:0": "Three Isle Path (West)",
-      "MAP_THREE_ISLAND_PORT:2/MAP_THREE_ISLAND_HARBOR:0": "Three Island Harbor"
+      "MAP_THREE_ISLAND_PORT:0/MAP_THREE_ISLAND_DUNSPARCE_TUNNEL:0": "Three Isle Path West Entrance",
+      "MAP_THREE_ISLAND_PORT:2/MAP_THREE_ISLAND_HARBOR:0": "Three Island Harbor Entrance"
     }
   },
   "REGION_THREE_ISLAND_PORT/EAST": {
@@ -535,7 +535,7 @@
     "events": [],
     "exits": {},
     "warps": {
-      "MAP_THREE_ISLAND_PORT:1/MAP_THREE_ISLAND_DUNSPARCE_TUNNEL:1": "Three Isle Path (East)"
+      "MAP_THREE_ISLAND_PORT:1/MAP_THREE_ISLAND_DUNSPARCE_TUNNEL:1": "Three Isle Path East Entrance"
     }
   },
   "REGION_THREE_ISLAND_DUNSPARCE_TUNNEL/MAIN": {
@@ -553,8 +553,8 @@
     "events": [],
     "exits": {},
     "warps": {
-      "MAP_THREE_ISLAND_DUNSPARCE_TUNNEL:0/MAP_THREE_ISLAND_PORT:0": "Three Isle Path Exit (West)",
-      "MAP_THREE_ISLAND_DUNSPARCE_TUNNEL:1/MAP_THREE_ISLAND_PORT:1": "Three Isle Path Exit (East)"
+      "MAP_THREE_ISLAND_DUNSPARCE_TUNNEL:0/MAP_THREE_ISLAND_PORT:0": "Three Isle Path West Exit",
+      "MAP_THREE_ISLAND_DUNSPARCE_TUNNEL:1/MAP_THREE_ISLAND_PORT:1": "Three Isle Path East Exit"
     }
   },
   "REGION_THREE_ISLAND/VISIT": {
@@ -589,13 +589,13 @@
     ],
     "events": [],
     "exits": {
-      "REGION_THREE_ISLAND/VISIT": "Visit Three Island Town (South)",
       "REGION_THREE_ISLAND/NORTH": "Three Island Town Biker Blockade",
-      "REGION_THREE_ISLAND_PORT/WEST": "Three Island Town Exit (South)"
+      "REGION_THREE_ISLAND/VISIT": "Visit Three Island Town (South)",
+      "REGION_THREE_ISLAND_PORT/WEST": "Three Island Town South Exit"
     },
     "warps": {
-      "MAP_THREE_ISLAND:0/MAP_THREE_ISLAND_HOUSE1:0": "Lostelle's House",
-      "MAP_THREE_ISLAND:1/MAP_THREE_ISLAND_POKEMON_CENTER_1F:0": "Three Island Pokemon Center"
+      "MAP_THREE_ISLAND:0/MAP_THREE_ISLAND_HOUSE1:0": "Lostelle's House Entrance",
+      "MAP_THREE_ISLAND:1/MAP_THREE_ISLAND_POKEMON_CENTER_1F:0": "Three Island Pokemon Center Entrance"
     }
   },
   "REGION_THREE_ISLAND/NORTH": {
@@ -613,14 +613,14 @@
     "events": [],
     "exits": {
       "REGION_THREE_ISLAND/VISIT": "Visit Three Island Town (North)",
-      "REGION_THREE_ISLAND_BOND_BRIDGE/MAIN": "Three Island Town Exit (West)"
+      "REGION_THREE_ISLAND_BOND_BRIDGE/MAIN": "Three Island Town West Exit"
     },
     "warps": {
-      "MAP_THREE_ISLAND:2/MAP_THREE_ISLAND_MART:0": "Three Island Poke Mart",
-      "MAP_THREE_ISLAND:3/MAP_THREE_ISLAND_HOUSE2:0": "Sabrina Fan's House",
-      "MAP_THREE_ISLAND:4/MAP_THREE_ISLAND_HOUSE3:0": "Three Island Beauty's House",
-      "MAP_THREE_ISLAND:5/MAP_THREE_ISLAND_HOUSE4:0": "Three Island Worried Father's House",
-      "MAP_THREE_ISLAND:6/MAP_THREE_ISLAND_HOUSE5:0": "Lostelle's Friend's House"
+      "MAP_THREE_ISLAND:2/MAP_THREE_ISLAND_MART:0": "Three Island Poke Mart Entrance",
+      "MAP_THREE_ISLAND:3/MAP_THREE_ISLAND_HOUSE2:0": "Sabrina Fan's House Entrance",
+      "MAP_THREE_ISLAND:4/MAP_THREE_ISLAND_HOUSE3:0": "Three Island Beauty's House Entrance",
+      "MAP_THREE_ISLAND:5/MAP_THREE_ISLAND_HOUSE4:0": "Three Island Worried Father's House Entrance",
+      "MAP_THREE_ISLAND:6/MAP_THREE_ISLAND_HOUSE5:0": "Lostelle's Friend's House Entrance"
     }
   },
   "REGION_THREE_ISLAND_HOUSE1/MAIN": {
@@ -778,10 +778,10 @@
     "events": [],
     "exits": {
       "REGION_THREE_ISLAND_BOND_BRIDGE/WATER": "Bond Bridge Surfing Spot",
-      "REGION_THREE_ISLAND/NORTH": "Bond Bridge Exit (East)"
+      "REGION_THREE_ISLAND/NORTH": "Bond Bridge East Exit"
     },
     "warps": {
-      "MAP_THREE_ISLAND_BOND_BRIDGE:0,1/MAP_THREE_ISLAND_BERRY_FOREST:0": "Berry Forest"
+      "MAP_THREE_ISLAND_BOND_BRIDGE:0,1/MAP_THREE_ISLAND_BERRY_FOREST:0": "Berry Forest Entrance"
     }
   },
   "REGION_THREE_ISLAND_BOND_BRIDGE/WATER": {
@@ -852,13 +852,13 @@
       "REGION_FOUR_ISLAND/VISIT": "Visit Four Island Town"
     },
     "warps": {
-      "MAP_FOUR_ISLAND:0/MAP_FOUR_ISLAND_POKEMON_CENTER_1F:0": "Four Island Pokemon Center",
-      "MAP_FOUR_ISLAND:1/MAP_FOUR_ISLAND_POKEMON_DAY_CARE:0": "Four Island Pokemon Day Care",
-      "MAP_FOUR_ISLAND:2/MAP_FOUR_ISLAND_HOUSE1:0": "Move Tutor's House",
-      "MAP_FOUR_ISLAND:4/MAP_FOUR_ISLAND_LORELEIS_HOUSE:0": "Lorelei's House",
-      "MAP_FOUR_ISLAND:5/MAP_FOUR_ISLAND_HOUSE2:0": "Sticker Man's House",
-      "MAP_FOUR_ISLAND:6/MAP_FOUR_ISLAND_HARBOR:0": "Four Island Harbor",
-      "MAP_FOUR_ISLAND:7/MAP_FOUR_ISLAND_MART:0": "Four Island Poke Mart"
+      "MAP_FOUR_ISLAND:0/MAP_FOUR_ISLAND_POKEMON_CENTER_1F:0": "Four Island Pokemon Center Entrance",
+      "MAP_FOUR_ISLAND:1/MAP_FOUR_ISLAND_POKEMON_DAY_CARE:0": "Four Island Pokemon Day Care Entrance",
+      "MAP_FOUR_ISLAND:2/MAP_FOUR_ISLAND_HOUSE1:0": "Move Tutor's House Entrance",
+      "MAP_FOUR_ISLAND:4/MAP_FOUR_ISLAND_LORELEIS_HOUSE:0": "Lorelei's House Entrance",
+      "MAP_FOUR_ISLAND:5/MAP_FOUR_ISLAND_HOUSE2:0": "Sticker Man's House Entrance",
+      "MAP_FOUR_ISLAND:6/MAP_FOUR_ISLAND_HARBOR:0": "Four Island Harbor Entrance",
+      "MAP_FOUR_ISLAND:7/MAP_FOUR_ISLAND_MART:0": "Four Island Poke Mart Entrance"
     }
   },
   "REGION_FOUR_ISLAND/WATER": {
@@ -875,7 +875,7 @@
     "events": [],
     "exits": {
       "REGION_FOUR_ISLAND/MAIN": "Four Island Town Landing Spot",
-      "REGION_FOUR_ISLAND/NEAR_CAVE": "Four Island Town (Near Cave) Landing Spot"
+      "REGION_FOUR_ISLAND/NEAR_CAVE": "Four Island Town Landing Spot (Near Cave)"
     },
     "warps": {}
   },
@@ -890,11 +890,11 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_FOUR_ISLAND/WATER": "Four Island Town (Near Cave) Surfing Spot",
+      "REGION_FOUR_ISLAND/WATER": "Four Island Town Surfing Spot (Near Cave)",
       "REGION_FOUR_ISLAND/VISIT": "Visit Four Island Town (Near Cave)"
     },
     "warps": {
-      "MAP_FOUR_ISLAND:3/MAP_FOUR_ISLAND_ICEFALL_CAVE_ENTRANCE:0": "Icefall Cave"
+      "MAP_FOUR_ISLAND:3/MAP_FOUR_ISLAND_ICEFALL_CAVE_ENTRANCE:0": "Icefall Cave Entrance"
     }
   },
   "REGION_FOUR_ISLAND_POKEMON_CENTER_1F/MAIN": {
@@ -1060,13 +1060,13 @@
     "exits": {
       "REGION_FIVE_ISLAND/WATER": "Five Island Town Surfing Spot",
       "REGION_FIVE_ISLAND/VISIT": "Visit Five Island Town",
-      "REGION_FIVE_ISLAND_MEADOW/MAIN": "Five Island Town Exit (East)"
+      "REGION_FIVE_ISLAND_MEADOW/MAIN": "Five Island Town East Exit"
     },
     "warps": {
-      "MAP_FIVE_ISLAND:0/MAP_FIVE_ISLAND_HARBOR:0": "Five Island Harbor",
-      "MAP_FIVE_ISLAND:1/MAP_FIVE_ISLAND_POKEMON_CENTER_1F:0": "Five Island Pokemon Center",
-      "MAP_FIVE_ISLAND:2/MAP_FIVE_ISLAND_HOUSE1:0": "Five Island Couple's House",
-      "MAP_FIVE_ISLAND:3/MAP_FIVE_ISLAND_HOUSE2:0": "Five Island Old Man's House"
+      "MAP_FIVE_ISLAND:0/MAP_FIVE_ISLAND_HARBOR:0": "Five Island Harbor Entrance",
+      "MAP_FIVE_ISLAND:1/MAP_FIVE_ISLAND_POKEMON_CENTER_1F:0": "Five Island Pokemon Center Entrance",
+      "MAP_FIVE_ISLAND:2/MAP_FIVE_ISLAND_HOUSE1:0": "Five Island Couple's House Entrance",
+      "MAP_FIVE_ISLAND:3/MAP_FIVE_ISLAND_HOUSE2:0": "Five Island Old Man's House Entrance"
     }
   },
   "REGION_FIVE_ISLAND/WATER": {
@@ -1081,7 +1081,7 @@
     "events": [],
     "exits": {
       "REGION_FIVE_ISLAND/MAIN": "Five Island Town Landing Spot",
-      "REGION_FIVE_ISLAND_WATER_LABYRINTH/WATER": "Five Island Town Exit (North)"
+      "REGION_FIVE_ISLAND_WATER_LABYRINTH/WATER": "Five Island Town North Exit"
     },
     "warps": {}
   },
@@ -1165,10 +1165,10 @@
     "events": [],
     "exits": {
       "REGION_FIVE_ISLAND_MEADOW/WATER": "Five Isle Meadow Surfing Spot",
-      "REGION_FIVE_ISLAND/MAIN": "Five Isle Meadow Exit (West)"
+      "REGION_FIVE_ISLAND/MAIN": "Five Isle Meadow West Exit"
     },
     "warps": {
-      "MAP_FIVE_ISLAND_MEADOW:0/MAP_FIVE_ISLAND_ROCKET_WAREHOUSE:0": "Rocket Warehouse"
+      "MAP_FIVE_ISLAND_MEADOW:0/MAP_FIVE_ISLAND_ROCKET_WAREHOUSE:0": "Rocket Warehouse Entrance"
     }
   },
   "REGION_FIVE_ISLAND_MEADOW/WATER": {
@@ -1184,7 +1184,7 @@
     ],
     "events": [],
     "exits": {
-      "REGION_FIVE_ISLAND_MEMORIAL_PILLAR/WATER": "Five Isle Meadow Exit (East)"
+      "REGION_FIVE_ISLAND_MEMORIAL_PILLAR/WATER": "Five Isle Meadow East Exit"
     },
     "warps": {}
   },
@@ -1241,8 +1241,8 @@
     "events": [],
     "exits": {
       "REGION_FIVE_ISLAND_WATER_LABYRINTH/MAIN": "Water Labyrinth Landing Spot",
-      "REGION_FIVE_ISLAND/WATER": "Water Labyrinth Exit (South)",
-      "REGION_FIVE_ISLAND_RESORT_GORGEOUS/WATER": "Water Labyrinth Exit (North)"
+      "REGION_FIVE_ISLAND/WATER": "Water Labyrinth South Exit",
+      "REGION_FIVE_ISLAND_RESORT_GORGEOUS/WATER": "Water Labyrinth North Exit"
     },
     "warps": {}
   },
@@ -1281,9 +1281,9 @@
     ],
     "events": [],
     "exits": {
-      "REGION_FIVE_ISLAND_RESORT_GORGEOUS/NEAR_RESORT": "Resort Gorgeous (Near Resort) Landing Spot",
-      "REGION_FIVE_ISLAND_RESORT_GORGEOUS/NEAR_CAVE": "Resort Gorgeous (Near Cave) Landing Spot",
-      "REGION_FIVE_ISLAND_WATER_LABYRINTH/WATER": "Resort Gorgeous Exit (South)"
+      "REGION_FIVE_ISLAND_RESORT_GORGEOUS/NEAR_RESORT": "Resort Gorgeous Landing Spot (Near Resort)",
+      "REGION_FIVE_ISLAND_RESORT_GORGEOUS/NEAR_CAVE": "Resort Gorgeous Landing Spot (Near Cave)",
+      "REGION_FIVE_ISLAND_WATER_LABYRINTH/WATER": "Resort Gorgeous South Exit"
     },
     "warps": {}
   },
@@ -1308,10 +1308,10 @@
     ],
     "events": [],
     "exits": {
-      "REGION_FIVE_ISLAND_RESORT_GORGEOUS/WATER": "Resort Gorgeous (Near Resort) Surfing Spot"
+      "REGION_FIVE_ISLAND_RESORT_GORGEOUS/WATER": "Resort Gorgeous Surfing Spot (Near Resort)"
     },
     "warps": {
-      "MAP_FIVE_ISLAND_RESORT_GORGEOUS:1/MAP_FIVE_ISLAND_RESORT_GORGEOUS_HOUSE:0": "Selphy's House"
+      "MAP_FIVE_ISLAND_RESORT_GORGEOUS:1/MAP_FIVE_ISLAND_RESORT_GORGEOUS_HOUSE:0": "Selphy's House Entrance"
     }
   },
   "REGION_FIVE_ISLAND_RESORT_GORGEOUS/NEAR_CAVE": {
@@ -1325,10 +1325,10 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_FIVE_ISLAND_RESORT_GORGEOUS/WATER": "Resort Gorgeous (Near Cave) Surfing Spot"
+      "REGION_FIVE_ISLAND_RESORT_GORGEOUS/WATER": "Resort Gorgeous Surfing Spot (Near Cave)"
     },
     "warps": {
-      "MAP_FIVE_ISLAND_RESORT_GORGEOUS:0/MAP_FIVE_ISLAND_LOST_CAVE_ENTRANCE:0": "Lost Cave"
+      "MAP_FIVE_ISLAND_RESORT_GORGEOUS:0/MAP_FIVE_ISLAND_LOST_CAVE_ENTRANCE:0": "Lost Cave Entrance"
     }
   },
   "REGION_FIVE_ISLAND_RESORT_GORGEOUS_HOUSE/MAIN": {
@@ -1395,13 +1395,13 @@
     "events": [],
     "exits": {
       "REGION_SIX_ISLAND/VISIT": "Visit Six Island Town",
-      "REGION_SIX_ISLAND_WATER_PATH/SOUTH": "Six Island Town Exit (East)"
+      "REGION_SIX_ISLAND_WATER_PATH/SOUTH": "Six Island Town East Exit"
     },
     "warps": {
-      "MAP_SIX_ISLAND:0/MAP_SIX_ISLAND_HARBOR:0": "Six Island Harbor",
-      "MAP_SIX_ISLAND:1/MAP_SIX_ISLAND_POKEMON_CENTER_1F:0": "Six Island Pokemon Center",
-      "MAP_SIX_ISLAND:2/MAP_SIX_ISLAND_HOUSE:0": "Six Island Old Man's House",
-      "MAP_SIX_ISLAND:3/MAP_SIX_ISLAND_MART:0": "Six Island Poke Mart"
+      "MAP_SIX_ISLAND:0/MAP_SIX_ISLAND_HARBOR:0": "Six Island Harbor Entrance",
+      "MAP_SIX_ISLAND:1/MAP_SIX_ISLAND_POKEMON_CENTER_1F:0": "Six Island Pokemon Center Entrance",
+      "MAP_SIX_ISLAND:2/MAP_SIX_ISLAND_HOUSE:0": "Six Island Old Man's House Entrance",
+      "MAP_SIX_ISLAND:3/MAP_SIX_ISLAND_MART:0": "Six Island Poke Mart Entrance"
     }
   },
   "REGION_SIX_ISLAND_POKEMON_CENTER_1F/MAIN": {
@@ -1492,9 +1492,9 @@
     ],
     "events": [],
     "exits": {
-      "REGION_SIX_ISLAND_WATER_PATH/SOUTH_WATER": "Water Path (South) Surfing Spot",
-      "REGION_SIX_ISLAND/MAIN": "Water Path Exit (West)",
-      "REGION_SIX_ISLAND_RUIN_VALLEY/MAIN": "Water Path Exit (Southwest)"
+      "REGION_SIX_ISLAND_WATER_PATH/SOUTH_WATER": "Water Path South Surfing Spot (South)",
+      "REGION_SIX_ISLAND/MAIN": "Water Path West Exit",
+      "REGION_SIX_ISLAND_RUIN_VALLEY/MAIN": "Water Path Southwest Exit"
     },
     "warps": {}
   },
@@ -1514,8 +1514,8 @@
     ],
     "events": [],
     "exits": {
-      "REGION_SIX_ISLAND_WATER_PATH/SOUTH": "Water Path (South) Landing Spot",
-      "REGION_SIX_ISLAND_WATER_PATH/NORTH": "Water Path (North) Landing Spot"
+      "REGION_SIX_ISLAND_WATER_PATH/SOUTH": "Water Path South Landing Spot (South)",
+      "REGION_SIX_ISLAND_WATER_PATH/NORTH": "Water Path South Landing Spot (North)"
     },
     "warps": {}
   },
@@ -1534,13 +1534,13 @@
     ],
     "events": [],
     "exits": {
-      "REGION_SIX_ISLAND_WATER_PATH/SOUTH_WATER": "Water Path (North) Surfing Spot (Bottom)",
-      "REGION_SIX_ISLAND_WATER_PATH/NORTH_WATER": "Water Path (North) Surfing Spot (Top)",
-      "REGION_SIX_ISLAND_GREEN_PATH/EAST": "Water Path Exit (Northwest)"
+      "REGION_SIX_ISLAND_WATER_PATH/SOUTH_WATER": "Water Path South Surfing Spot (North)",
+      "REGION_SIX_ISLAND_WATER_PATH/NORTH_WATER": "Water Path North Surfing Spot",
+      "REGION_SIX_ISLAND_GREEN_PATH/EAST": "Water Path Northwest Exit"
     },
     "warps": {
-      "MAP_SIX_ISLAND_WATER_PATH:0/MAP_SIX_ISLAND_WATER_PATH_HOUSE1:0": "Water Path Heracross Woman's House",
-      "MAP_SIX_ISLAND_WATER_PATH:1/MAP_SIX_ISLAND_WATER_PATH_HOUSE2:0": "Water Path Man's House"
+      "MAP_SIX_ISLAND_WATER_PATH:0/MAP_SIX_ISLAND_WATER_PATH_HOUSE1:0": "Water Path Heracross Woman's House Entrance",
+      "MAP_SIX_ISLAND_WATER_PATH:1/MAP_SIX_ISLAND_WATER_PATH_HOUSE2:0": "Water Path Man's House Entrance"
     }
   },
   "REGION_SIX_ISLAND_WATER_PATH/NORTH_WATER": {
@@ -1613,10 +1613,10 @@
     "events": [],
     "exits": {
       "REGION_SIX_ISLAND_RUIN_VALLEY/WATER": "Ruin Valley Surfing Spot",
-      "REGION_SIX_ISLAND_WATER_PATH/SOUTH": "Ruin Valley Exit (East)"
+      "REGION_SIX_ISLAND_WATER_PATH/SOUTH": "Ruin Valley East Exit"
     },
     "warps": {
-      "MAP_SIX_ISLAND_RUIN_VALLEY:0/MAP_SIX_ISLAND_DOTTED_HOLE_1F:0": "Dotted Hole"
+      "MAP_SIX_ISLAND_RUIN_VALLEY:0/MAP_SIX_ISLAND_DOTTED_HOLE_1F:0": "Dotted Hole Entrance"
     }
   },
   "REGION_SIX_ISLAND_RUIN_VALLEY/WATER": {
@@ -1643,10 +1643,10 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_SIX_ISLAND_WATER_PATH/NORTH": "Green Path Exit (East)"
+      "REGION_SIX_ISLAND_WATER_PATH/NORTH": "Green Path East Exit"
     },
     "warps": {
-      "MAP_SIX_ISLAND_GREEN_PATH:0,1/MAP_SIX_ISLAND_PATTERN_BUSH:1": "Pattern Bush (East)"
+      "MAP_SIX_ISLAND_GREEN_PATH:0,1/MAP_SIX_ISLAND_PATTERN_BUSH:1": "Pattern Bush East Entrance"
     }
   },
   "REGION_SIX_ISLAND_GREEN_PATH/WEST": {
@@ -1663,7 +1663,7 @@
       "REGION_SIX_ISLAND_GREEN_PATH/WATER": "Green Path Surfing Spot"
     },
     "warps": {
-      "MAP_SIX_ISLAND_GREEN_PATH:2,3/MAP_SIX_ISLAND_PATTERN_BUSH:4": "Pattern Bush (West)"
+      "MAP_SIX_ISLAND_GREEN_PATH:2,3/MAP_SIX_ISLAND_PATTERN_BUSH:4": "Pattern Bush West Entrance"
     }
   },
   "REGION_SIX_ISLAND_GREEN_PATH/WATER": {
@@ -1682,7 +1682,7 @@
     "events": [],
     "exits": {
       "REGION_SIX_ISLAND_GREEN_PATH/WEST": "Green Path Landing Spot",
-      "REGION_SIX_ISLAND_OUTCAST_ISLAND/WATER": "Green Path Exit (North)"
+      "REGION_SIX_ISLAND_OUTCAST_ISLAND/WATER": "Green Path North Exit"
     },
     "warps": {}
   },
@@ -1706,7 +1706,7 @@
     "events": [],
     "exits": {
       "REGION_SIX_ISLAND_OUTCAST_ISLAND/MAIN": "Outcast Island Landing Spot",
-      "REGION_SIX_ISLAND_GREEN_PATH/WATER": "Outcast Island Exit (South)"
+      "REGION_SIX_ISLAND_GREEN_PATH/WATER": "Outcast Island South Exit"
     },
     "warps": {}
   },
@@ -1727,7 +1727,7 @@
       "REGION_SIX_ISLAND_OUTCAST_ISLAND/WATER": "Outcast Island Surfing Spot"
     },
     "warps": {
-      "MAP_SIX_ISLAND_OUTCAST_ISLAND:0/MAP_SIX_ISLAND_ALTERING_CAVE:0": "Altering Cave"
+      "MAP_SIX_ISLAND_OUTCAST_ISLAND:0/MAP_SIX_ISLAND_ALTERING_CAVE:0": "Altering Cave Entrance"
     }
   },
   "REGION_SEVEN_ISLAND_HARBOR/MAIN": {
@@ -1777,14 +1777,14 @@
     "events": [],
     "exits": {
       "REGION_SEVEN_ISLAND/VISIT": "Visit Seven Island Town",
-      "REGION_SEVEN_ISLAND_SEVAULT_CANYON_ENTRANCE/MAIN": "Seven Island Town Exit (South)",
-      "REGION_SEVEN_ISLAND_TRAINER_TOWER/SOUTH": "Seven Island Town Exit (North)"
+      "REGION_SEVEN_ISLAND_SEVAULT_CANYON_ENTRANCE/MAIN": "Seven Island Town South Exit",
+      "REGION_SEVEN_ISLAND_TRAINER_TOWER/SOUTH": "Seven Island Town North Exit"
     },
     "warps": {
-      "MAP_SEVEN_ISLAND:0/MAP_SEVEN_ISLAND_HOUSE_ROOM1:0": "Seven Island Trainer Battle House",
-      "MAP_SEVEN_ISLAND:1/MAP_SEVEN_ISLAND_MART:0": "Seven Island Poke Mart",
-      "MAP_SEVEN_ISLAND:2/MAP_SEVEN_ISLAND_POKEMON_CENTER_1F:0": "Seven Island Pokemon Center",
-      "MAP_SEVEN_ISLAND:3/MAP_SEVEN_ISLAND_HARBOR:0": "Seven Island Harbor"
+      "MAP_SEVEN_ISLAND:0/MAP_SEVEN_ISLAND_HOUSE_ROOM1:0": "Seven Island Trainer Battle House Entrance",
+      "MAP_SEVEN_ISLAND:1/MAP_SEVEN_ISLAND_MART:0": "Seven Island Poke Mart Entrance",
+      "MAP_SEVEN_ISLAND:2/MAP_SEVEN_ISLAND_POKEMON_CENTER_1F:0": "Seven Island Pokemon Center Entrance",
+      "MAP_SEVEN_ISLAND:3/MAP_SEVEN_ISLAND_HARBOR:0": "Seven Island Harbor Entrance"
     }
   },
   "REGION_SEVEN_ISLAND_HOUSE_ROOM1/MAIN": {
@@ -1881,8 +1881,8 @@
     ],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND/MAIN": "Canyon Entrance Exit (North)",
-      "REGION_SEVEN_ISLAND_SEVAULT_CANYON/MAIN": "Canyon Entrance Exit (East)"
+      "REGION_SEVEN_ISLAND/MAIN": "Canyon Entrance North Exit",
+      "REGION_SEVEN_ISLAND_SEVAULT_CANYON/MAIN": "Canyon Entrance East Exit"
     },
     "warps": {}
   },
@@ -1917,12 +1917,12 @@
     ],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND_SEVAULT_CANYON_ENTRANCE/MAIN": "Sevault Canyon Exit (West)",
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/MAIN": "Sevault Canyon Exit (South)"
+      "REGION_SEVEN_ISLAND_SEVAULT_CANYON_ENTRANCE/MAIN": "Sevault Canyon West Exit",
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/MAIN": "Sevault Canyon South Exit"
     },
     "warps": {
-      "MAP_SEVEN_ISLAND_SEVAULT_CANYON:0/MAP_SEVEN_ISLAND_SEVAULT_CANYON_TANOBY_KEY:0": "Tanoby Key",
-      "MAP_SEVEN_ISLAND_SEVAULT_CANYON:1/MAP_SEVEN_ISLAND_SEVAULT_CANYON_HOUSE:0": "Sevault Canyon Chansey House"
+      "MAP_SEVEN_ISLAND_SEVAULT_CANYON:0/MAP_SEVEN_ISLAND_SEVAULT_CANYON_TANOBY_KEY:0": "Tanoby Key Entrance",
+      "MAP_SEVEN_ISLAND_SEVAULT_CANYON:1/MAP_SEVEN_ISLAND_SEVAULT_CANYON_HOUSE:0": "Sevault Canyon Chansey House Entrance"
     }
   },
   "REGION_SEVEN_ISLAND_SEVAULT_CANYON_TANOBY_KEY": {
@@ -1971,7 +1971,7 @@
     "events": [],
     "exits": {
       "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins Surfing Spot",
-      "REGION_SEVEN_ISLAND_SEVAULT_CANYON/MAIN": "Tanoby Ruins Exit (North)"
+      "REGION_SEVEN_ISLAND_SEVAULT_CANYON/MAIN": "Tanoby Ruins North Exit"
     },
     "warps": {}
   },
@@ -1989,13 +1989,13 @@
     "events": [],
     "exits": {
       "REGION_SEVEN_ISLAND_TANOBY_RUINS/MAIN": "Tanoby Ruins Landing Spot",
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/MONEAN_ISLAND": "Tanoby Ruins (Monean Island) Landing Spot",
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/LIPTOO_ISLAND": "Tanoby Ruins (Liptoo Island) Landing Spot",
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WEEPTH_ISLAND": "Tanoby Ruins (Weepth Island) Landing Spot",
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/DILFORD_ISLAND": "Tanoby Ruins (Dilford Island) Landing Spot",
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/SCUFIB_ISLAND": "Tanoby Ruins (Scufib Island) Landing Spot",
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/RIXY_ISLAND": "Tanoby Ruins (Rixy Island) Landing Spot",
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/VIAPOIS_ISLAND": "Tanoby Ruins (Viapois Island) Landing Spot"
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/MONEAN_ISLAND": "Tanoby Ruins Landing Spot (Monean Island)",
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/LIPTOO_ISLAND": "Tanoby Ruins Landing Spot (Liptoo Island)",
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WEEPTH_ISLAND": "Tanoby Ruins Landing Spot (Weepth Island)",
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/DILFORD_ISLAND": "Tanoby Ruins Landing Spot (Dilford Island)",
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/SCUFIB_ISLAND": "Tanoby Ruins Landing Spot (Scufib Island)",
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/RIXY_ISLAND": "Tanoby Ruins Landing Spot (Rixy Island)",
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/VIAPOIS_ISLAND": "Tanoby Ruins Landing Spot (Viapois Island)"
     },
     "warps": {}
   },
@@ -2013,10 +2013,10 @@
     ],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins (Monean Island) Surfing Spot"
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins Surfing Spot (Monean Island)"
     },
     "warps": {
-      "MAP_SEVEN_ISLAND_TANOBY_RUINS:0/MAP_SEVEN_ISLAND_TANOBY_RUINS_MONEAN_CHAMBER:0": "Monean Chamber"
+      "MAP_SEVEN_ISLAND_TANOBY_RUINS:0/MAP_SEVEN_ISLAND_TANOBY_RUINS_MONEAN_CHAMBER:0": "Monean Chamber Entrance"
     }
   },
   "REGION_SEVEN_ISLAND_TANOBY_RUINS/LIPTOO_ISLAND": {
@@ -2030,10 +2030,10 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins (Liptoo Island) Surfing Spot"
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins Surfing Spot (Liptoo Island)"
     },
     "warps": {
-      "MAP_SEVEN_ISLAND_TANOBY_RUINS:1/MAP_SEVEN_ISLAND_TANOBY_RUINS_LIPTOO_CHAMBER:0": "Liptoo Chamber"
+      "MAP_SEVEN_ISLAND_TANOBY_RUINS:1/MAP_SEVEN_ISLAND_TANOBY_RUINS_LIPTOO_CHAMBER:0": "Liptoo Chamber Entrance"
     }
   },
   "REGION_SEVEN_ISLAND_TANOBY_RUINS/WEEPTH_ISLAND": {
@@ -2051,10 +2051,10 @@
     ],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins (Weepth Island) Surfing Spot"
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins Surfing Spot (Weepth Island)"
     },
     "warps": {
-      "MAP_SEVEN_ISLAND_TANOBY_RUINS:2/MAP_SEVEN_ISLAND_TANOBY_RUINS_WEEPTH_CHAMBER:0": "Weepth Chamber"
+      "MAP_SEVEN_ISLAND_TANOBY_RUINS:2/MAP_SEVEN_ISLAND_TANOBY_RUINS_WEEPTH_CHAMBER:0": "Weepth Chamber Entrance"
     }
   },
   "REGION_SEVEN_ISLAND_TANOBY_RUINS/DILFORD_ISLAND": {
@@ -2068,10 +2068,10 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins (Dilford Island) Surfing Spot"
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins Surfing Spot (Dilford Island)"
     },
     "warps": {
-      "MAP_SEVEN_ISLAND_TANOBY_RUINS:3/MAP_SEVEN_ISLAND_TANOBY_RUINS_DILFORD_CHAMBER:0": "Dilford Chamber"
+      "MAP_SEVEN_ISLAND_TANOBY_RUINS:3/MAP_SEVEN_ISLAND_TANOBY_RUINS_DILFORD_CHAMBER:0": "Dilford Chamber Entrance"
     }
   },
   "REGION_SEVEN_ISLAND_TANOBY_RUINS/SCUFIB_ISLAND": {
@@ -2088,10 +2088,10 @@
     ],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins (Scufib Island) Surfing Spot"
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins Surfing Spot (Scufib Island)"
     },
     "warps": {
-      "MAP_SEVEN_ISLAND_TANOBY_RUINS:4/MAP_SEVEN_ISLAND_TANOBY_RUINS_SCUFIB_CHAMBER:0": "Scufib Chamber"
+      "MAP_SEVEN_ISLAND_TANOBY_RUINS:4/MAP_SEVEN_ISLAND_TANOBY_RUINS_SCUFIB_CHAMBER:0": "Scufib Chamber Entrance"
     }
   },
   "REGION_SEVEN_ISLAND_TANOBY_RUINS/RIXY_ISLAND": {
@@ -2105,10 +2105,10 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins (Rixy Island) Surfing Spot"
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins Surfing Spot (Rixy Island)"
     },
     "warps": {
-      "MAP_SEVEN_ISLAND_TANOBY_RUINS:5/MAP_SEVEN_ISLAND_TANOBY_RUINS_RIXY_CHAMBER:0": "Rixy Chamber"
+      "MAP_SEVEN_ISLAND_TANOBY_RUINS:5/MAP_SEVEN_ISLAND_TANOBY_RUINS_RIXY_CHAMBER:0": "Rixy Chamber Entrance"
     }
   },
   "REGION_SEVEN_ISLAND_TANOBY_RUINS/VIAPOIS_ISLAND": {
@@ -2124,10 +2124,10 @@
     ],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins (Viapois Island) Surfing Spot"
+      "REGION_SEVEN_ISLAND_TANOBY_RUINS/WATER": "Tanoby Ruins Surfing Spot (Viapois Island)"
     },
     "warps": {
-      "MAP_SEVEN_ISLAND_TANOBY_RUINS:6/MAP_SEVEN_ISLAND_TANOBY_RUINS_VIAPOIS_CHAMBER:0": "Viapois Chamber"
+      "MAP_SEVEN_ISLAND_TANOBY_RUINS:6/MAP_SEVEN_ISLAND_TANOBY_RUINS_VIAPOIS_CHAMBER:0": "Viapois Chamber Entrance"
     }
   },
   "REGION_SEVEN_ISLAND_TRAINER_TOWER/SOUTH": {
@@ -2149,8 +2149,8 @@
     ],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND_TRAINER_TOWER/WATER": "Trainer Tower Exterior (South) Surfing Spot",
-      "REGION_SEVEN_ISLAND/MAIN": "Trainer Tower Exterior Exit (South)"
+      "REGION_SEVEN_ISLAND_TRAINER_TOWER/WATER": "Trainer Tower Exterior Surfing Spot (South)",
+      "REGION_SEVEN_ISLAND/MAIN": "Trainer Tower Exterior South Exit"
     },
     "warps": {}
   },
@@ -2165,8 +2165,8 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND_TRAINER_TOWER/SOUTH": "Trainer Tower Exterior (South) Landing Spot",
-      "REGION_SEVEN_ISLAND_TRAINER_TOWER/NORTH": "Trainer Tower Exterior (North) Landing Spot"
+      "REGION_SEVEN_ISLAND_TRAINER_TOWER/SOUTH": "Trainer Tower Exterior Landing Spot (South)",
+      "REGION_SEVEN_ISLAND_TRAINER_TOWER/NORTH": "Trainer Tower Exterior Landing Spot (North)"
     },
     "warps": {}
   },
@@ -2181,10 +2181,10 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_SEVEN_ISLAND_TRAINER_TOWER/WATER": "Trainer Tower Exterior (North) Surfing Spot"
+      "REGION_SEVEN_ISLAND_TRAINER_TOWER/WATER": "Trainer Tower Exterior Surfing Spot (North)"
     },
     "warps": {
-      "MAP_SEVEN_ISLAND_TRAINER_TOWER:0/MAP_TRAINER_TOWER_LOBBY:1": "Trainer Tower"
+      "MAP_SEVEN_ISLAND_TRAINER_TOWER:0/MAP_TRAINER_TOWER_LOBBY:1": "Trainer Tower Entrance"
     }
   },
   "REGION_TRAINER_TOWER_LOBBY/MAIN": {
@@ -2241,8 +2241,8 @@
     "events": [],
     "exits": {},
     "warps": {
-      "MAP_NAVEL_ROCK_EXTERIOR:0/MAP_NAVEL_ROCK_1F:1": "Navel Rock",
-      "MAP_NAVEL_ROCK_EXTERIOR:1/MAP_NAVEL_ROCK_HARBOR:0": "Navel Rock Harbor"
+      "MAP_NAVEL_ROCK_EXTERIOR:0/MAP_NAVEL_ROCK_1F:1": "Navel Rock Entrance",
+      "MAP_NAVEL_ROCK_EXTERIOR:1/MAP_NAVEL_ROCK_HARBOR:0": "Navel Rock Harbor Entrance"
     }
   },
   "REGION_NAVEL_ROCK_1F/MAIN": {
@@ -2601,7 +2601,7 @@
     ],
     "exits": {},
     "warps": {
-      "MAP_BIRTH_ISLAND_EXTERIOR:0/MAP_BIRTH_ISLAND_HARBOR:0": "Birth Island Harbor"
+      "MAP_BIRTH_ISLAND_EXTERIOR:0/MAP_BIRTH_ISLAND_HARBOR:0": "Birth Island Harbor Entrance"
     }
   }
 }

@@ -804,6 +804,15 @@ class PhantomHourglassMapWarp(Choice):
     # option_detailed = 3
     display_name = "Map Warp Options"
 
+class PhantomHourglassSkipChestCutscenes(Toggle):
+    """
+    Chest spawns with cutscene skips have zero feedback,
+    so if you don't know every chest trigger in the game you can turn their cutscene skips off again
+    True is skip cutscenes False is play cutscenes.
+    """
+    display_name = "Skip Chest Cutscenes"
+    default = 1
+
 @dataclass
 class PhantomHourglassOptions(PerGameCommonOptions):
     # Accessibility
@@ -889,6 +898,7 @@ class PhantomHourglassOptions(PerGameCommonOptions):
 
     # Cosmetic
     additional_metal_names: PhantomHourglassAdditionalMetalNames
+    chest_cutscene_skips: PhantomHourglassSkipChestCutscenes
 
     # UT options
     ut_smart_keys: PhantomHourglassUTSmartKeys
@@ -986,7 +996,8 @@ ph_option_groups = [
         PhantomHourglassUTEvents
     ]),
     OptionGroup("Cosmetic Options", [
-        PhantomHourglassAdditionalMetalNames
+        PhantomHourglassAdditionalMetalNames,
+        PhantomHourglassSkipChestCutscenes
     ]),
     OptionGroup("Item & Location Options", [
         PhantomHourglassAddItemsToPool,

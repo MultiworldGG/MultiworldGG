@@ -35,13 +35,14 @@ from test.bases import *
 #                }
 
 options_metal_bug = {
-        "goal_requirements": "defeat_bosses",
-        "bellum_access": "spawn_bellumbeck",
-        "dungeons_required": 7,
-        "require_specific_bosses": False,
-        "exclude_non_required_dungeons": False,
-        "ghost_ship_in_dungeon_pool": False,
-        "totok_in_dungeon_pool": False,
+    "goal_requirements": "defeat_bosses",
+    "bellum_access": "spawn_bellumbeck",
+    "dungeons_required": 7,
+    "require_specific_bosses": False,
+    "exclude_non_required_dungeons": False,
+    "ghost_ship_in_dungeon_pool": False,
+    "totok_in_dungeon_pool": False,
+    "exclude_locations": ["Temple of the Ocean King"],
 
     "keysanity": "in_own_dungeon",
     "randomize_pedestal_items": "vanilla_abstract",

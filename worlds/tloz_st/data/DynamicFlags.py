@@ -354,13 +354,13 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     #     "unset_if_true": [(STAddr.adv_flags_2, 0x04)],
     #     "reset_flags": ["RESET fire glyph"]
     # },
-    # "Forest realm crashes fire glyph and no ocean glyph": {
-    #     "on_scenes": [0x400],
-    #     "has_groups": ["Tracks: Fire Glyph"],
-    #     "not_has_groups": ["Tracks: Ocean Glyph"],
-    #     "unset_if_true": [(STAddr.adv_flags_2, 0x04)],
-    #     "reset_flags": ["RESET fire glyph"]
-    # },
+    "Forest realm crashes fire glyph and no ocean glyph": {
+        "on_scenes": [0x400],
+        "has_groups": ["Tracks: Fire Glyph"],
+        "not_has_groups": ["Tracks: Ocean Glyph"],
+        "unset_if_true": [(STAddr.adv_flags_2, 0x04)],
+        "reset_flags": ["RESET fire glyph"]
+    },
     "Forest realm crashes fire glyph and no forest source tracks": {
         "on_scenes": [0x400],
         "has_groups": ["Tracks: Fire Glyph"],
@@ -2674,8 +2674,7 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     "Goron Village no cargo": {
         "on_scenes": [0x2e00],
         "has_slot_data": [("randomize_cargo", [0])],
-        "set_if_true": [(STAddr.adv_flags_1f, 0x80), (STAddr.adv_flags_59, 0x6),
-                        (STAddr.adv_flags_f, 0x01),(STAddr.adv_flags_2b, 0x4)]
+        "set_if_true": [(STAddr.adv_flags_1f, 0x81), (STAddr.adv_flags_59, 0x6), (STAddr.adv_flags_2b, 0x4)]
     },
     # Papuzia
     "Allow SoB statue": {

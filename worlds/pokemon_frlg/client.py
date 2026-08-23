@@ -3,7 +3,7 @@ from NetUtils import ClientStatus
 from Options import Toggle
 import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
-from .data import data, APWORLD_VERSION
+from .data import data
 from .options import Goal, ProvideHints
 
 if TYPE_CHECKING:
@@ -78,11 +78,11 @@ FLY_UNLOCK_FLAG_MAP = {data.constants[flag_name]: flag_name for flag_name in TRA
 
 TRACKER_STATIC_POKEMON_FLAGS = [
     "FLAG_TALKED_TO_MAGIKARP_SALESMAN",
-    "FLAG_VIEWED_ZYNX_TRADE", # Jynx Trade
-    "FLAG_VIEWED_MS_NIDO_TRADE", # Nidoran M/F Trade
-    "FLAG_VIEWED_CH_DING_TRADE", # Farfetch'd Trade
-    "FLAG_VIEWED_MIMIEN_TRADE", # Mr. Mime Trade
-    "FLAG_VIEWED_NINA_TRADE", # Nidorino/Nidorina Trade,
+    "FLAG_VIEWED_ZYNX_TRADE",  # Jynx Trade
+    "FLAG_VIEWED_MS_NIDO_TRADE",  # Nidoran M/F Trade
+    "FLAG_VIEWED_CH_DING_TRADE",  # Farfetch'd Trade
+    "FLAG_VIEWED_MIMIEN_TRADE",  # Mr. Mime Trade
+    "FLAG_VIEWED_NINA_TRADE",  # Nidorino/Nidorina Trade,
     "FLAG_FOUGHT_POWER_PLANT_ELECTRODE_1",
     "FLAG_FOUGHT_POWER_PLANT_ELECTRODE_2",
     "FLAG_FOUGHT_ZAPDOS",
@@ -90,14 +90,14 @@ TRACKER_STATIC_POKEMON_FLAGS = [
     "FLAG_GOT_EEVEE",
     "FLAG_FOUGHT_ROUTE_12_SNORLAX",
     "FLAG_FOUGHT_ROUTE_16_SNORLAX",
-    "FLAG_VIEWED_MARC_TRADE", # Lickitung Trade
+    "FLAG_VIEWED_MARC_TRADE",  # Lickitung Trade
     "FLAG_VIEWED_HITMONLEE_FROM_DOJO",
     "FLAG_VIEWED_HITMONCHAN_FROM_DOJO",
     "FLAG_GOT_LAPRAS_FROM_SILPH",
     "FLAG_FOUGHT_ARTICUNO",
-    "FLAG_VIEWED_ESPHERE_TRADE", # Electrode Trade
-    "FLAG_VIEWED_TANGENY_TRADE", # Tangela Trade
-    "FLAG_VIEWED_SEELOR_TRADE", # Seel Trade
+    "FLAG_VIEWED_ESPHERE_TRADE",  # Electrode Trade
+    "FLAG_VIEWED_TANGENY_TRADE",  # Tangela Trade
+    "FLAG_VIEWED_SEELOR_TRADE",  # Seel Trade
     "FLAG_REVIVED_DOME",
     "FLAG_REVIVED_HELIX",
     "FLAG_REVIVED_AMBER",
@@ -232,9 +232,9 @@ SECTION_EDGES_MAP = {data.constants[map_name]: map_name for map_name in MAP_SECT
 
 
 class PokemonFRLGClient(BizHawkClient):
-    game = "Pokemon FireRed and LeafGreen"
+    game = data.get_game()
     system = "GBA"
-    patch_suffix = (".apfirered", ".apleafgreen")
+    patch_suffix = (data.get_firered_extension(), data.get_leafgreen_extension())
     game_version: str | None
     goal_flag: int | None
     local_checked_locations: Set[int]
@@ -244,7 +244,7 @@ class PokemonFRLGClient(BizHawkClient):
     local_hints: List[str]
     local_pokemon: Dict[str, List[int]]
     local_pokemon_count: int
-    local_entrances: Dict[str, str]
+    local_entrances: Dict[int, List[int]]
     previous_death_link: float
     ignore_next_death_link: bool
     current_map: Tuple[int, int]
@@ -312,14 +312,16 @@ class PokemonFRLGClient(BizHawkClient):
                 generator_checksum = "{0:x}".format(rom_checksum).upper() if rom_checksum != 0 else "Undefined"
                 client_checksum = "{0:x}".format(data.rom_checksum).upper() if data.rom_checksum != 0 else "Undefined"
                 logger.info("ERROR: The patch file used to create this ROM is not compatible with "
-                            "this client. Double check your pokemon_frlg.apworld against the version being "
+                            "this client. Double check your pokemon_frlg_prerelease.apworld against the version being "
                             "used by the generator.")
-                logger.info(f"Client Apworld Version: {APWORLD_VERSION}, Generator Apworld Version: {ap_version}")
+                logger.info(f"Client Apworld Version: {data.get_version_string()},"
+                            f"Generator Apworld Version: {ap_version}")
                 logger.info(f"Client ROM checksum: {client_checksum}, Generator ROM checksum: {generator_checksum}")
                 return False
 
             options_address = data.rom_addresses["gArchipelagoOptions"][self.game_version]
-            remote_items_bytes = (await bizhawk.read(ctx.bizhawk_ctx, [(options_address + 0x51, 1, "ROM")]))[0]
+            remote_items_bytes = (await bizhawk.read(ctx.bizhawk_ctx,
+                                                     [(options_address + data.ap_offsets["remoteItems"], 1, "ROM")]))[0]
             remote_items = int.from_bytes(remote_items_bytes, "little")
         except UnicodeDecodeError:
             return False
@@ -813,41 +815,42 @@ class PokemonFRLGClient(BizHawkClient):
             entrance_name = data.entrance_name_map[entrance_map_id][entrance_warp_id]
             exit_name = data.entrance_name_map[exit_map_id][exit_warp_id]
 
-            if (entrance_name not in self.local_entrances and
-                    (entrance_name in ctx.slot_data["entrances"] or
-                     exit_name in ctx.slot_data["entrances"])):
-                if ctx.slot_data["decouple_entrances_warps"]:
-                    self.local_entrances[entrance_name] = exit_name
-                else:
-                    self.local_entrances[entrance_name] = exit_name
-                    self.local_entrances[exit_name] = entrance_name
+            if entrance_name in ctx.slot_data["entrances"] or exit_name in ctx.slot_data["entrances"]:
+                if entrance_map_id not in self.local_entrances:
+                    self.local_entrances[entrance_map_id] = []
+                if exit_map_id not in self.local_entrances:
+                    self.local_entrances[exit_map_id] = []
+                if entrance_warp_id not in self.local_entrances[entrance_map_id]:
+                    if ctx.slot_data["decouple_entrances_warps"] or entrance_name == "Pokemon Mansion 1F East Exit":
+                        self.local_entrances[entrance_map_id].append(entrance_warp_id)
+                    else:
+                        self.local_entrances[entrance_map_id].append(entrance_warp_id)
+                        self.local_entrances[exit_map_id].append(exit_warp_id)
 
-                # Send to Poptracker
-                await ctx.send_msgs([{
-                    "cmd": "Set",
-                    "key": f"pokemon_frlg_entrances_{ctx.team}_{ctx.slot}",
-                    "default": {},
-                    "want_reply": False,
-                    "operations": [{"operation": "update", "value": self.local_entrances}]
-                }])
-
-                # Send to Universal Tracker
-                await ctx.send_msgs([{
-                    "cmd": "Set",
-                    "key": f"pokemon_frlg_{ctx.slot}_{entrance_name}",
-                    "default": False,
-                    "want_reply": False,
-                    "operations": [{"operation": "replace", "value": True}]
-                }])
-                if not ctx.slot_data["decouple_entrances_warps"]:
                     await ctx.send_msgs([{
                         "cmd": "Set",
-                        "key": f"pokemon_frlg_{ctx.slot}_{exit_name}",
+                        "key": f"pokemon_frlg_entrances_{ctx.team}_{ctx.slot}",
+                        "default": {},
+                        "want_reply": False,
+                        "operations": [{"operation": "update", "value": self.local_entrances}]
+                    }])
+
+                    # Send to Universal Tracker
+                    await ctx.send_msgs([{
+                        "cmd": "Set",
+                        "key": f"pokemon_frlg_{ctx.slot}_{entrance_name}",
                         "default": False,
                         "want_reply": False,
                         "operations": [{"operation": "replace", "value": True}]
                     }])
-
+                    if not ctx.slot_data["decouple_entrances_warps"]:
+                        await ctx.send_msgs([{
+                            "cmd": "Set",
+                            "key": f"pokemon_frlg_{ctx.slot}_{exit_name}",
+                            "default": False,
+                            "want_reply": False,
+                            "operations": [{"operation": "replace", "value": True}]
+                        }])
 
     async def handle_death_link(self, ctx: "BizHawkClientContext", guards: Dict[str, Tuple[int, bytes, str]]) -> None:
         """
@@ -859,7 +862,6 @@ class PokemonFRLGClient(BizHawkClient):
                 await ctx.update_death_link(True)
                 self.previous_death_link = ctx.last_death_link
 
-            sb1_address = int.from_bytes(guards["SAVE BLOCK 1"][1], "little")
             sb2_address = int.from_bytes(guards["SAVE BLOCK 2"][1], "little")
 
             read_result = await bizhawk.guarded_read(

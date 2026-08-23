@@ -714,7 +714,7 @@ def make_overworld_logic(player: int, origin_name: str, world):
         ["ocean realm source", "pirate hideout tracks", True, has_source("Ocean") & has_tracks("Pirate Hideout")],
         ["ocean realm source", "ocean portal tracks", True, has_source("Ocean") & has_tracks("Ocean Portal")],
         ["ocean temple tracks", "ocean portal tracks", True, has_temple_tracks("Marine") & has_tracks("Ocean Portal")],
-        ["ocean portal tracks", "sand realm", False, has_tracks("Sand Realm") & has_tracks("Ocean Portal")],
+        ["ocean portal tracks", "sand realm", True, has_tracks("Sand Realm") & has_tracks("Ocean Portal")],
         ["ocean portal tracks", "ocean portal loc", False, has_cannon],
         ["ocean portal loc", "ocean portal event", False, None],
 

@@ -10,7 +10,7 @@ from ..locations.locationbase import LocationData
 from ..names import regionnames
 from ..options import CupheadOptions
 from . import leveldefs as ldef
-from . import levelids, levelshuffle
+from . import levelshuffle
 from .levelbase import LevelData
 
 if TYPE_CHECKING:
@@ -63,11 +63,9 @@ def setup_level_map(options: CupheadOptions) -> dict[int,int]:
             rand,
             options.use_dlc.bvalue,
             options.level_shuffle.evalue,
-            options.level_shuffle_kingdice.bvalue
+            options.level_shuffle_kingdice.bvalue,
+            dict(options.level_placements.value.items())
         )
     )
-
-    for k, v in options.level_placements.value.items():
-        level_map[levelids.level_to_id[k]] = levelids.level_to_id[v]
 
     return level_map

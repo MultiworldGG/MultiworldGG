@@ -42,29 +42,53 @@ def get_level_shuffle_lists(
 
     return level_lists
 
-def get_level_shuffle_map(rand: Random, use_dlc: bool, mode: LevelShuffleMode, shuffle_kingdice: bool) -> dict[int,int]:
+def get_level_shuffle_map(
+    rand: Random,
+    use_dlc: bool,
+    mode: LevelShuffleMode,
+    shuffle_kingdice: bool,
+    level_placements: dict[str, str] | None = None
+) -> dict[int,int]:
     level_shuffle_map: dict[int,int] = {}
 
     # level_lists format: (level_list, exclude_list)
     level_lists = get_level_shuffle_lists(use_dlc, mode, shuffle_kingdice)
 
     for level_list in level_lists:
-        _shuffled_levels = shuffle_levels(rand, level_list[0], level_list[1])
+        _shuffled_levels = shuffle_levels(rand, level_list[0], level_list[1], level_placements)
         level_shuffle_map.update(_shuffled_levels)
 
     return level_shuffle_map
 
-def shuffle_levels(rand: Random, level_list: list[str], level_exclude_list: list[str]) -> dict[int, int]:
+def shuffle_levels(
+    rand: Random,
+    level_list: list[str],
+    level_exclude_list: list[str],
+    level_placements: dict[str, str] | None = None
+) -> dict[int, int]:
     res: dict[int, int] = {}
-    _levels = [lmap.level_to_id[x] for x in level_list if (x not in level_exclude_list)]
-    _excluded_levels = [lmap.level_to_id[x] for x in level_list if (x in level_exclude_list)]
+    _level_placements: dict[int, int] = {
+        lmap.level_to_id[k]: lmap.level_to_id[v] for k, v in level_placements.items()
+    } if level_placements is not None else {}
 
-    levels_shuffled = list(_levels)
+    for exlv in level_list:
+        if exlv in level_exclude_list:
+            _level_placements[lmap.level_to_id[exlv]] = lmap.level_to_id[exlv]
+
+    _levels = [
+        lmap.level_to_id[x] for x in level_list if (lmap.level_to_id[x] not in _level_placements.keys())
+    ]
+    levels_shuffled = [
+        lmap.level_to_id[x] for x in level_list if (lmap.level_to_id[x] not in _level_placements.values())
+    ]
+
     rand.shuffle(levels_shuffled)
 
     for i in range(len(_levels)):
         res[_levels[i]] = levels_shuffled[i]
-    if _excluded_levels:
-        res.update({x: x for x in _excluded_levels})
+    for k,v in _level_placements.items():
+        _lname = lmap.level_ids.get(k)
+        if _lname is not None and _lname not in level_exclude_list:
+            res[k] = v
 
     return res

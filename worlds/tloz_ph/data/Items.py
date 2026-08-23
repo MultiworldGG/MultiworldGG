@@ -173,6 +173,7 @@ ITEMS_DATA = {
         "model": 0x2d,
         "model_reset": True,
         "ghost_model": True,
+        "blocked_scenes": [0x1701],
         "item_groups": ["Spirit of Power", "Spirits", "SoP", "Upgrades"],
     },
     "Spirit of Wisdom (Progressive)": {
@@ -182,6 +183,7 @@ ITEMS_DATA = {
         "model": 0x2e,
         "model_reset": True,
         "ghost_model": True,
+        "blocked_scenes": [0x1701],
         "item_groups": ["Spirit of Wisdom", "Spirits", "SoW", "Upgrades"],
     },
     "Spirit of Courage (Progressive)": {
@@ -191,6 +193,7 @@ ITEMS_DATA = {
         "model": 0x2F,
         "model_reset": True,
         "ghost_model": True,
+        "blocked_scenes": [0x1701],
         "item_groups": ["Spirit of Courage", "Spirits", "SoC", "Upgrades"],
     },
     "Spirit of Courage (White)": {  # Used to remove spirit from Temple of Courage
@@ -228,7 +231,7 @@ ITEMS_DATA = {
     "Sand of Hours (Boss)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
         "address": PHAddr.phantom_hourglass_max,
-        "value": 0x1c20,
+        "value": "Sand", # 0x1c20,
         "tags": ["monotone_incremental", "backup_filler"],
         "size": 4,
         "id": 18,
@@ -239,7 +242,7 @@ ITEMS_DATA = {
     "Sand of Hours (Small)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
         "address": PHAddr.phantom_hourglass_max,
-        "value": 0xe10,
+        "value": "Sand", # 0xe10,
         "tags": ["monotone_incremental", "backup_filler"],
         "size": 4,
         "id": 19,
@@ -393,7 +396,7 @@ ITEMS_DATA = {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
         "address": PHAddr.power_gem_count,
         "value": 0x1,
-        "tags": ["incremental"],
+        "tags": ["monotone_incremental"],
         "id": 32,
         "model": 0x2D,
         "item_groups": ["Spirit Gems", "Single Spirit Gems", "Power Gems"],
@@ -402,7 +405,7 @@ ITEMS_DATA = {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
         "address": PHAddr.wisdom_gem_count,
         "value": 0x1,
-        "tags": ["incremental"],
+        "tags": ["monotone_incremental"],
         "id": 33,
         "model": 0x2E,
         "item_groups": ["Spirit Gems", "Single Spirit Gems", "Wisdom Gems"],
@@ -411,7 +414,7 @@ ITEMS_DATA = {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
         "address": PHAddr.courage_gem_count,
         "value": 0x1,
-        "tags": ["incremental"],
+        "tags": ["monotone_incremental"],
         "id": 34,
         "model": 0x2F,
         "item_groups": ["Spirit Gems", "Single Spirit Gems", "Courage Gems"],
@@ -588,7 +591,7 @@ ITEMS_DATA = {
         "dummy": True,
         "id": 53,
         "model": 0x0,
-        "item_groups": ["Technical Items", "Potions"],
+        "item_groups": ["Technical Items"],
     },
     "Refill: Bombs": {
         "classification": ItemClassification.filler,
@@ -1152,7 +1155,8 @@ ITEMS_DATA = {
                                      ("stage_flag", 0x80)]},
         "model": 0x21,
         "model_reset": True,
-        "item_groups": ["Regular Crystal Items", "Square Crystal Items", "Square Crystal ToC"],
+        "item_groups": ["Regular Crystal Items", "Square Crystal Items", "Square Crystal ToC",
+                        "toc_sq_n", "toc_sq_s"],
     },
     "Square Pedestal North (Temple of Courage)": {
         "classification": ItemClassification.progression,
@@ -1162,7 +1166,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x1E00: [(PHAddr.toc_crystal_state, 0x10)]},
         "model": 0x21,
         "model_reset": True,
-        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal ToC"],
+        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal ToC", "toc_sq_n"],
 
     },
     "Square Pedestal South (Temple of Courage)": {
@@ -1173,7 +1177,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x1E00: [("stage_flag", 0x80)]},
         "model": 0x21,
         "model_reset": True,
-        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal ToC"],
+        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal ToC", "toc_sq_s"],
     },
     "Triangle Crystal (Ghost Ship)": {
         "classification": ItemClassification.progression,
@@ -1183,7 +1187,9 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x2900: [("stage_flag", [0, 8])]},
         "model": 0x23,
         "model_reset": True,
-        "item_groups": ["Regular Crystal Items", "Unique Crystal Items", "Triangle Crystal Items", "Triangle Crystal GS"],
+        "item_groups": ["Regular Crystal Items", "Unique Crystal Items", "Triangle Crystal Items",
+                        "Triangle Crystal GS",
+                        "gs_tri"],
     },
     "Round Crystal (Ghost Ship)": {
         "classification": ItemClassification.progression,
@@ -1193,7 +1199,8 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x2900: [("stage_flag", [0, 0, 0, 2])]},
         "model": 0x22,
         "model_reset": True,
-        "item_groups": ["Regular Crystal Items", "Unique Crystal Items", "Round Crystal Items", "Round Crystal GS"],
+        "item_groups": ["Regular Crystal Items", "Unique Crystal Items", "Round Crystal Items",
+                        "Round Crystal GS", "gs_round"],
     },
     "Round Crystal (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1204,7 +1211,8 @@ ITEMS_DATA = {
                             0x250C: [(PHAddr.totok_b9_state, 0x4)]},
         "model": 0x22,
         "model_reset": True,
-        "item_groups": ["Regular Crystal Items", "Round Crystal Items", "Round Crystal TotOK"],
+        "item_groups": ["Regular Crystal Items", "Round Crystal Items",
+                        "Round Crystal TotOK", "totok_round_8", "totok_round_9"],
     },
     "Round Pedestal B8 (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1214,7 +1222,8 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250B: [(PHAddr.totok_b8_state, 0x2)]},
         "model": 0x22,
         "model_reset": True,
-        "item_groups": ["Unique Crystal Items", "Round Crystal Items", "Round Crystal TotOK"],
+        "item_groups": ["Unique Crystal Items", "Round Crystal Items",
+                        "Round Crystal TotOK", "totok_round_8"],
     },
     "Round Pedestal B9 (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1224,7 +1233,8 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250C: [(PHAddr.totok_b9_state, 0x4)]},
         "model": 0x22,
         "model_reset": True,
-        "item_groups": ["Unique Crystal Items", "Round Crystal Items", "Round Crystal TotOK"],
+        "item_groups": ["Unique Crystal Items", "Round Crystal Items",
+                        "Round Crystal TotOK", "totok_round_8", "totok_round_9"],
     },
     "Round Crystals": {
         "classification": ItemClassification.progression,
@@ -1236,7 +1246,8 @@ ITEMS_DATA = {
                             0x2900: [("stage_flag", [0, 0, 0, 2])]},
         "model": 0x22,
         "model_reset": True,
-        "item_groups": ["Global Crystal Items", "Round Crystal Items"],
+        "item_groups": ["Global Crystal Items", "Round Crystal Items",
+                        "totok_round_8", "totok_round_9", "gs_round"],
     },
     "Triangle Crystal (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1247,7 +1258,8 @@ ITEMS_DATA = {
                             0x250C: [(PHAddr.totok_b9_state, 0x8)]},
         "model": 0x23,
         "model_reset": True,
-        "item_groups": ["Regular Crystal Items", "Triangle Crystal Items", "Triangle Crystal TotOK"],
+        "item_groups": ["Regular Crystal Items", "Triangle Crystal Items", "Triangle Crystal TotOK",
+                        "totok_tri_8", "totok_tri_9"],
     },
     "Triangle Pedestal B8 (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1257,7 +1269,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250B: [(PHAddr.totok_b8_state, 0x4)]},
         "model": 0x23,
         "model_reset": True,
-        "item_groups": ["Unique Crystal Items", "Triangle Crystal Items", "Triangle Crystal TotOK"],
+        "item_groups": ["Unique Crystal Items", "Triangle Crystal Items", "Triangle Crystal TotOK", "totok_tri_8"],
     },
     "Triangle Pedestal B9 (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1267,7 +1279,7 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250C: [(PHAddr.totok_b9_state, 0x8)]},
         "model": 0x23,
         "model_reset": True,
-        "item_groups": ["Unique Crystal Items", "Triangle Crystal Items", "Triangle Crystal TotOK"],
+        "item_groups": ["Unique Crystal Items", "Triangle Crystal Items", "Triangle Crystal TotOK", "totok_tri_9"],
     },
     "Triangle Crystals": {
         "classification": ItemClassification.progression,
@@ -1279,7 +1291,8 @@ ITEMS_DATA = {
                             0x2900: [("stage_flag", [0, 8])]},
         "model": 0x23,
         "model_reset": True,
-        "item_groups": ["Global Crystal Items", "Triangle Crystal Items"],
+        "item_groups": ["Global Crystal Items", "Triangle Crystal Items",
+                        "totok_tri_8", "totok_tri_9", "gs_tri"],
     },
     "Square Crystal (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1289,7 +1302,8 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250C: [(PHAddr.totok_b9_state, 0x22)]},
         "model": 0x21,
         "model_reset": True,
-        "item_groups": ["Regular Crystal Items", "Square Crystal Items", "Square Crystal TotOK"],
+        "item_groups": ["Regular Crystal Items", "Square Crystal Items", "Square Crystal TotOK",
+                        "totok_sq_w", "totok_sq_e"],
     },
     "Square Pedestal West (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1299,7 +1313,9 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250C: [(PHAddr.totok_b9_state, 0x20)]},
         "model": 0x21,
         "model_reset": True,
-        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal TotOK"],
+        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal TotOK",
+                        "totok_sq_w"
+                        ],
     },
     "Square Pedestal Center (Temple of the Ocean King)": {
         "classification": ItemClassification.progression,
@@ -1309,7 +1325,8 @@ ITEMS_DATA = {
         "set_bit_in_room": {0x250C: [(PHAddr.totok_b9_state, 0x2)]},
         "model": 0x21,
         "model_reset": True,
-        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal TotOK"],
+        "item_groups": ["Unique Crystal Items", "Square Crystal Items", "Square Crystal TotOK",
+                        "totok_sq_e"],
     },
     "Square Crystals": {
         "classification": ItemClassification.progression,
@@ -1321,7 +1338,8 @@ ITEMS_DATA = {
                                      ("stage_flag", 0x80)]},
         "model": 0x21,
         "model_reset": True,
-        "item_groups": ["Global Crystal Items", "Square Crystal Items"],
+        "item_groups": ["Global Crystal Items", "Square Crystal Items",
+                        "totok_sq_e", "totok_sq_w", "toc_sq_n", "toc_sq_s"],
     },
     "Force Gem (B3)": {
         "classification": ItemClassification.progression,

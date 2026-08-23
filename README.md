@@ -228,6 +228,7 @@ Currently, the following games are supported:
 * UFO 50
 * Ultrakill
 * Undertale
+* Uncanny Cat Golf
 * Vampire Survivors
 * VVVVVV
 * Wargroove

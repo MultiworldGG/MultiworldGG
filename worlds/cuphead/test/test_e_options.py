@@ -25,6 +25,7 @@ class TestOptionNames(unittest.TestCase):
 
         for field in option_fields:
             with self.subTest(field.name):
+                assert hasattr(field.type, "name")
                 assert field.name == field.type.name, f"{field.name} != {field.type.name}" # type: ignore
 
 # Borrowed from Hammerwatch (thx @Parcosmic)
@@ -234,6 +235,7 @@ class TestOptions(CupheadTestBase):
         test_world.world_setup()
         test_world._check_all_items_are_active(option_set_name)
         test_world._check_all_locations_are_active(option_set_name)
+        assert hasattr(self.world.settings, "is_debug_bit_on")
         if self.world.settings.is_debug_bit_on(1024): # type: ignore
             print(f"Seed of '{option_set_name}': {test_world.multiworld.seed}")
         test_world.test_fill()
@@ -246,6 +248,7 @@ class TestOptions(CupheadTestBase):
                 test_world.world_setup()
                 test_world._check_all_items_are_active(option_set)
                 test_world._check_all_locations_are_active(option_set)
+                assert hasattr(self.world.settings, "is_debug_bit_on")
                 if self.world.settings.is_debug_bit_on(1024): # type: ignore
                     print(f"Seed of '{option_set}': {test_world.multiworld.seed}")
                 test_world.test_fill()
@@ -262,13 +265,13 @@ class TestOptionBits(CupheadTestBase):
         }
         test_world.world_setup()
 
-        bitsa = optionbits.bitify(test_world.world.options)  # type: ignore
+        bitsa = optionbits.bitify(test_world.world.options)  # type: ignore  # ty: ignore[invalid-argument-type]
 
         test_worldb = TestOptionBits()
         test_worldb.world_setup()
 
-        optionbits.debitify(test_worldb.world.options, bitsa)  # type: ignore
-        test_worldb.assertEqual(bitsa, optionbits.bitify(test_worldb.world.options))  # type: ignore
+        optionbits.debitify(test_worldb.world.options, bitsa)  # type: ignore  # ty: ignore[invalid-argument-type]
+        test_worldb.assertEqual(bitsa, optionbits.bitify(test_worldb.world.options))  # type: ignore  # ty: ignore[invalid-argument-type]
 
 class TestOptionSanitizer(CupheadTestBase):
     auto_construct = False

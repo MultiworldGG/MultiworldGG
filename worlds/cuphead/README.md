@@ -14,7 +14,7 @@ APWorld: [Archipelago-cuphead](https://github.com/JKLeckr/Archipelago-cuphead) (
 
 This is the Archipelago APWorld for Cuphead.
 
-This apworld is currently in alpha. While it is even better than it ever was since early development, there are still insidious issues lurking about and there still incomplete and/or missing features. If you are wanting to use this for the Ultimate Experience, then you will surely be disappointed! Use at your own risk!
+This apworld is currently in alpha. While it is even better than it ever was since early development, there are still insidious issues lurking about, and there are still incomplete and/or missing features. If you are expecting this to be "the bee's knees", then you will surely be disappointed! Use at your own risk!
 
 ## How to use
 _**NOTE:** This APWorld requires **Archipelago 0.6.7** or newer to work. If there are issues, make sure there aren't existing Cuphead APWorlds installed that are conflicting with the new version._

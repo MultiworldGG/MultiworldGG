@@ -303,5 +303,5 @@ Data("Megajolt Rattle - Caul: Kwarah Cloister", rules=["Blade License"]),
 Data("Superior Scepter - Caul: Kwarah Cloister", rules=["Blade License"]),
 Data("Doom Mask - Caul: Castle", rules=["Blade License"]),
 Data("Savage Sketch - Caul: Kwarah Cloister", rules=["Blade License"]),
-Data("Book of Death and Rebirth - Caul Castle/Distant", rules=["Blade License"]),
+Data("Book of Death and Rebirth - Caul: Castle/Distant", rules=["Blade License"]),
 ]

@@ -38,7 +38,6 @@ def create_regions(world: "DeltaruneWorld"):
     doom_board = Region(Regions.ch3_doom_board, world.player, world.multiworld)
     tv_world = Region(Regions.ch3_tv_world, world.player, world.multiworld)
     sword_3 = Region(Regions.ch3_sword_3, world.player, world.multiworld)
-    knight = Region(Regions.ch3_knight, world.player, world.multiworld)
     cold_place = Region(Regions.ch3_cold_place, world.player, world.multiworld)
     fountain = Region(Regions.ch3_fountain, world.player, world.multiworld)
 
@@ -52,7 +51,6 @@ def create_regions(world: "DeltaruneWorld"):
         doom_board,
         tv_world,
         sword_3,
-        knight,
         cold_place,
         fountain,
     ]

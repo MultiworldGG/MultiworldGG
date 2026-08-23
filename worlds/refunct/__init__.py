@@ -13,6 +13,9 @@ from .Items import RefunctItem, item_table, item_groups
 from .Locations import location_table, RefunctLocation, starting_platform, platforms_with_button_on_them, platforms_without_button_ids, platforms_with_button_ids, block_brawl_scores, block_blub_scores
 from .Options import Goal, RefunctOptions, RenameGrass, RenameFlowers, Cubes, ExtraCubes, refunct_option_groups
 
+from rule_builder.rules import (Rule, CanReachEntrance, Has, HasAll, HasAny, HasFromListUnique, HasGroupUnique,
+                                OptionFilter, True_, CanReachLocation, HasGroup)
+
 
 class RefunctWeb(WebWorld):
     tutorials = [
@@ -47,7 +50,7 @@ class RefunctWorld(World):
     
     item_name_groups = item_groups
 
-    ap_world_version = "1.3.2"        
+    ap_world_version = "1.5.0"        
         
     def get_filler_item_name(self) -> str:
         return ":)"
@@ -94,6 +97,7 @@ class RefunctWorld(World):
             items_to_add.append(["Grass", "Useful"])
         for _ in range(250 - self.amount_of_grass):
             items_to_add.append("Flower")
+            
             
         # cubes
         cube_bags = []
@@ -211,7 +215,13 @@ class RefunctWorld(World):
         if "Clique" in self.minigames:
             items_to_add.append("Clique: Button Activation")
             items_to_add.append("Clique: Feeling of Satisfaction")
-                
+            
+        if "Custom Minigame" in self.minigames:
+            for _ in range(num_unlocks):
+                items_to_add.append("Custom Minigame")
+            for _ in range(37 - num_unlocks):
+                items_to_add.append("Flower")
+                   
         if self.options.nerf_minigame_checks.value:
             if "Vanilla Minigame" in self.minigames:
                 location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Vanilla Minigame" in i.name]
@@ -265,17 +275,21 @@ class RefunctWorld(World):
                         items_to_add.remove("Flower")
                         locs_force_filler.append(loc)
             # Funny Bridge Game Minigame and Clique don't need locked flowers since they have so few checks.
-        
+            if "Custom Minigame" in self.minigames:
+                for _ in range(num_unlocks):
+                    items_to_add.append("Custom Minigame")
+                for _ in range(37 - num_unlocks):
+                    items_to_add.append("Flower")
+                
         for loc in locs_force_filler:
-            items_to_add.append("Flower")
-                        
+            items_to_add.append("Flower")                        
         
         effects_and_traps = self.options.effects_and_traps.value
         
+        
         trap_items = []
         for thing, value in effects_and_traps.items():
-            name = thing.replace("Effect - ", "").replace("Trap - ", "")
-            trap_items += [name] * value
+            trap_items += [thing] * value
         
         if trap_items:
             self.multiworld.random.shuffle(trap_items)
@@ -383,7 +397,6 @@ class RefunctWorld(World):
                 if not locs_force_filler:
                     break
             
-        
         for item in items_to_add:
             if isinstance(item, list):
                 self.multiworld.itempool.append(self.create_item(item[0], force_useful=(item[1]=="Useful")))
@@ -542,7 +555,12 @@ class RefunctWorld(World):
             for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Clique"]:
                 region_object = self.multiworld.get_region("Clique", self.player)
                 region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
-
+            
+        if "Custom Minigame" in self.minigames:
+            self.multiworld.regions.append(Region("Custom Minigame", self.player, self.multiworld))
+            for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Custom"]:
+                region_object = self.multiworld.get_region("Custom Minigame", self.player)
+                region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
         
     def set_og_randomizer_order(self):
         # OG Randomizer Minigame info
@@ -799,13 +817,15 @@ class RefunctWorld(World):
             region_b = self.multiworld.get_region(f"{b}", self.player)
             name = f"{a} to {b} | {abis}"
             
-            region_a.connect(region_b, name,
-                lambda state, c1=c1, c2=c2, abis=abis: all([
-                    state.has(f"Cluster {c1}", self.player),
-                    state.has(f"Cluster {c2}", self.player),
-                    abis[0] is None or state.has(abis[0], self.player, abis[1]),
-                    abis[2] is None or state.has(abis[2], self.player, abis[3])
-                ]))
+            rule = (
+                Has(f"Cluster {c1}")
+                & Has(f"Cluster {c2}")
+            )
+            if abis[0] is not None:
+                rule &= Has(abis[0], count=abis[1])
+            if abis[2] is not None:
+                rule &= Has(abis[2], count=abis[3])
+            self.create_entrance(region_a, region_b, rule, name)
 
                     
         possible_final_platforms = [i for i,j in location_table.items() if j.type_of_check == "Platform"]
@@ -860,13 +880,17 @@ class RefunctWorld(World):
         self.get_location(victory_location_name).place_locked_item(
             self.create_item("Goal Location")
         )
-        if self.goal_known:
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                all([state.can_reach_location(victory_location_name, self.player), state.has_group("Grasses", self.player, self.required_grass)])
-        else:
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                all([state.has("Goal Location", self.player), state.has_group("Grasses", self.player, self.required_grass)])
 
+        if self.goal_known:
+            self.set_completion_rule(
+                CanReachLocation(victory_location_name)
+                & HasGroup("Grasses", count=self.required_grass)
+            )
+        else:
+            self.set_completion_rule(
+                Has("Goal Location")
+                & HasGroup("Grasses", count=self.required_grass)
+            )
         
         
         # minigames
@@ -874,106 +898,108 @@ class RefunctWorld(World):
             region_a = self.multiworld.get_region("10010102", self.player)
             region_b = self.multiworld.get_region("Vanilla Minigame", self.player)
             region_a.connect(region_b, f"Enter Vanilla Minigame", 
-                lambda state: state.has("Vanilla Minigame", self.player))
+                Has("Vanilla Minigame"))
             
         if "Seeker Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             region_b = self.multiworld.get_region("Seeker Minigame", self.player)
             region_a.connect(region_b, f"Enter Seeker Minigame", 
-                lambda state: state.has("Seeker Minigame", self.player))
+                Has("Seeker Minigame"))
             
         if "Button Galore Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             region_b = self.multiworld.get_region("Button Galore Minigame", self.player)
             region_a.connect(region_b, f"Enter Button Galore Minigame", 
-                lambda state: state.has("Button Galore Minigame", self.player))
+                Has("Button Galore Minigame"))
         
         if "OG Randomizer Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             region_b = self.multiworld.get_region("OG Randomizer Minigame", self.player)
             region_a.connect(region_b, f"Enter OG Randomizer Minigame", 
-                lambda state: state.has("OG Randomizer Minigame", self.player))
+                Has("OG Randomizer Minigame"))
             
         if "Block Brawl Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             for color in ["Reds", "Blues", "Greens", "Yellows"]:
                 region_b = self.multiworld.get_region(f"Block Brawl Minigame {color}", self.player)
                 region_a.connect(region_b, f"Enter Block Brawl Minigame {color}", 
-                    lambda state, color=color: state.has(f"Block Brawl Minigame {color}", self.player))
+                    Has(f"Block Brawl Minigame {color}"))
                 for i, score in enumerate(block_brawl_scores):
                     loc_name = f"Block Brawl Minigame: {color} Score {score}"
                     location = self.get_location(loc_name)
                     num_colors_needed = i // 5 + 1
-                    location.access_rule = lambda state, num_colors_needed=num_colors_needed: all([
-                        state.has_group_unique(f"Block Brawl Cubes", self.player, num_colors_needed),
-                    ])
+                    self.set_rule(location, HasGroupUnique(f"Block Brawl Cubes", num_colors_needed))
                                         
         if "Climb Line Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             style = "Line"
             region_b = self.multiworld.get_region(f"Climb {style} Minigame", self.player)
             region_a.connect(region_b, f"Enter Climb {style} Minigame", 
-                lambda state, style=style: state.has(f"Climb {style} Minigame", self.player))
+                Has(f"Climb {style} Minigame"))
                     
         if "Climb Spiral Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             style = "Spiral"
             region_b = self.multiworld.get_region(f"Climb {style} Minigame", self.player)
             region_a.connect(region_b, f"Enter Climb {style} Minigame", 
-                lambda state, style=style: state.has(f"Climb {style} Minigame", self.player))
+                Has(f"Climb {style} Minigame"))
                     
         if "Climb Chaos Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             style = "Chaos"
             region_b = self.multiworld.get_region(f"Climb {style} Minigame", self.player)
             region_a.connect(region_b, f"Enter Climb {style} Minigame", 
-                lambda state, style=style: state.has(f"Climb {style} Minigame", self.player))
+                Has(f"Climb {style} Minigame"))
                      
         if "Climb Narrow Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             style = "Narrow"
             region_b = self.multiworld.get_region(f"Climb {style} Minigame", self.player)
             region_a.connect(region_b, f"Enter Climb {style} Minigame", 
-                lambda state, style=style: state.has(f"Climb {style} Minigame", self.player))
+                Has(f"Climb {style} Minigame"))
                     
         if "Block Blub Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             for color in ["Reds", "Blues", "Greens", "Yellows"]:
                 region_b = self.multiworld.get_region(f"Block Blub Minigame {color}", self.player)
                 region_a.connect(region_b, f"Enter Block Blub Minigame {color}", 
-                    lambda state, color=color: state.has(f"Block Blub Minigame {color}", self.player))
+                    Has(f"Block Blub Minigame {color}"))
                 for i, score in enumerate(block_blub_scores):
                     loc_name = f"Block Blub Minigame: {color} Score {score}"
                     location = self.get_location(loc_name)
                     num_colors_needed = i // 2 + 1
-                    location.access_rule = lambda state, num_colors_needed=num_colors_needed: all([
-                        state.has_group_unique(f"Block Blub Cubes", self.player, num_colors_needed),
-                    ])
+                    self.set_rule(location, HasGroupUnique(f"Block Blub Cubes", num_colors_needed))
             
         if "Refunct Mountain Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             region_b = self.multiworld.get_region("Refunct Mountain Minigame", self.player)
             region_a.connect(region_b, f"Enter Refunct Mountain Minigame", 
-                lambda state: state.has("Refunct Mountain Minigame", self.player))
+                Has("Refunct Mountain Minigame"))
             
         if "Rando Mountain Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             region_b = self.multiworld.get_region("Rando Mountain Minigame", self.player)
             region_a.connect(region_b, f"Enter Rando Mountain Minigame", 
-                lambda state: state.has("Rando Mountain Minigame", self.player))
+                Has("Rando Mountain Minigame"))
             
         if "Funny Bridge Game Minigame" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             region_b = self.multiworld.get_region("Funny Bridge Game Minigame", self.player)
             region_a.connect(region_b, f"Enter Funny Bridge Game Minigame", 
-                lambda state: state.has("Funny Bridge Game Minigame", self.player))
+                Has("Funny Bridge Game Minigame"))
         
         if "Clique" in self.minigames:
             region_a = self.multiworld.get_region("10010102", self.player)
             region_b = self.multiworld.get_region("Clique", self.player)
             region_a.connect(region_b, f"Enter Clique")
             location = self.get_location("Clique: The Button")
-            location.access_rule = lambda state: state.has("Clique: Button Activation", self.player)
+            self.set_rule(location, Has("Clique: Button Activation"))
+            
+        if "Custom Minigame" in self.minigames:
+            region_a = self.multiworld.get_region("10010102", self.player)
+            region_b = self.multiworld.get_region("Custom Minigame", self.player)
+            region_a.connect(region_b, f"Enter Custom Minigame", 
+                Has("Custom Minigame"))
 
     def create_item(self, name: str, force_useful = False) -> Item:
         item_data = item_table[name]

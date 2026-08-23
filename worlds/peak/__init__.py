@@ -5,22 +5,82 @@ import typing
 
 from BaseClasses import ItemClassification, CollectionState, LocationProgressType, Tutorial
 from worlds.AutoWorld import World, WebWorld
-from .Items import PeakItem, item_table, progression_table, useful_table, filler_table, trap_table, lookup_id_to_name, item_groups
+from .Items import PeakItem, item_table, progression_table, useful_table, filler_table, trap_table, unlock_table, lookup_id_to_name, item_groups
 from .Locations import LOCATION_TABLE, EXCLUDED_LOCATIONS
 from .Options import PeakOptions, peak_option_groups
 from .Rules import apply_rules, TROPICS_LOCATIONS, MESA_LOCATIONS, ALPINE_LOCATIONS, ROOTS_LOCATIONS, CALDERA_LOCATIONS, KILN_LOCATIONS
 
+TRAP_DEFINITIONS = [
+    ("Instant Death Trap", "instant_death_trap_weight"),
+    ("Items to Bombs", "items_to_bombs_weight"),
+    ("Pokemon Trivia Trap", "pokemon_trivia_trap_weight"),
+    ("Blackout Trap", "blackout_trap_weight"),
+    ("Spawn Bee Swarm", "spawn_bee_swarm_weight"),
+    ("Banana Peel Trap", "banana_peel_trap_weight"),
+    ("Minor Poison Trap", "minor_poison_trap_weight"),
+    ("Poison Trap", "poison_trap_weight"),
+    ("Deadly Poison Trap", "deadly_poison_trap_weight"),
+    ("Tornado Trap", "tornado_trap_weight"),
+    ("Swap Trap", "swap_trap_weight"),
+    ("Nap Time Trap", "nap_time_trap_weight"),
+    ("Hungry Hungry Camper Trap", "hungry_hungry_camper_trap_weight"),
+    ("Balloon Trap", "balloon_trap_weight"),
+    ("Slip Trap", "slip_trap_weight"),
+    ("Freeze Trap", "freeze_trap_weight"),
+    ("Cold Trap", "cold_trap_weight"),
+    ("Hot Trap", "hot_trap_weight"),
+    ("Injury Trap", "injury_trap_weight"),
+    ("Cactus Ball Trap", "cactus_ball_trap_weight"),
+    ("Yeet Trap", "yeet_trap_weight"),
+    ("Tumbleweed Trap", "tumbleweed_trap_weight"),
+    ("Zombie Horde Trap", "zombie_horde_trap_weight"),
+    ("Gust Trap", "gust_trap_weight"),
+    ("Mandrake Trap", "mandrake_trap_weight"),
+    ("Fungal Infection Trap", "fungal_infection_trap_weight"),
+    ("Turn To Stone Trap", "turn_to_stone_trap_weight"),
+    ("Fear Trap", "fear_trap_weight"),
+    ("Scoutmaster Trap", "scoutmaster_trap_weight"),
+    ("Zoom Trap", "zoom_trap_weight"),
+    ("Screen Flip Trap", "screen_flip_trap_weight"),
+    ("Drop Everything Trap", "drop_everything_trap_weight"),
+    ("Pixel Trap", "pixel_trap_weight"),
+    ("Eruption Trap", "eruption_trap_weight"),
+    ("Beetle Horde Trap", "beetle_horde_trap_weight"),
+    ("Custom Trivia Trap", "custom_trivia_trap_weight"),
+    ("Pokemon Count Trap", "pokemon_count_trap_weight"),
+    ("Inverted Mouse Trap", "inverted_mouse_trap_weight"),
+    ("Stamina Drain Trap", "stamina_drain_trap_weight"),
+    ("Chaos Control Trap", "chaos_control_trap_weight"),
+    ("Emergency Rescue Trap", "emergency_rescue_trap_weight"),
+    ("Explosion Trap", "explosion_trap_weight"),
+    ("Frog Trap", "frog_trap_weight"),
+    ("Ghost Trap", "ghost_trap_weight"),
+    ("Rain Trap", "rain_trap_weight"),
+    ("Poison Cloud Trap", "poison_cloud_trap_weight"),
+    ("Frost Cloud Trap", "frost_cloud_trap_weight"),
+    ("Sleep Trap", "sleep_trap_weight"),
+    ("Well Done Trap", "well_done_trap_weight"),
+    ("Instant Crystal Trap", "instant_crystal_trap_weight"),
+    ("Curse Trap", "curse_trap_weight"),
+    ("Cursed Ball Trap", "cursed_ball_trap_weight"),
+    ("Storm Trap", "storm_trap_weight"),
+    ("Skeleton Trap", "skeleton_trap_weight"),
+]
+
 class PeakWeb(WebWorld):
     theme = "stone"
     option_groups = peak_option_groups
-    tutorials = [Tutorial(
-        tutorial_name="Setup Guide",
-        description="A guide to start playing PEAK in MultiworldGG",
-        language="English",
-        file_name="setup_en.md",
-        link="setup/en",
-        authors=["Mickemoose"]
-    )]
+
+    setup_en = Tutorial(
+        "Multiworld Setup Guide",
+        "A guide to setting up the MultiworldGG randomizer for PEAK.",
+        "English",
+        "setup_en.md",
+        "setup/en",
+        ["Mickemoose"]
+    )
+
+    tutorials = [setup_en]
 
 class PeakWorld(World):
     """
@@ -30,37 +90,15 @@ class PeakWorld(World):
     options_dataclass = PeakOptions
     options: PeakOptions
     topology_present = False
-    web = PeakWeb()
 
     item_name_groups = item_groups
     item_name_to_id = {name: data.code for name, data in item_table.items()}
     location_name_to_id = LOCATION_TABLE.copy()
-    
-    # Add event locations to the mapping
-    event_locations = [
-        "Ascent 1 Completed",
-        "Ascent 2 Completed",
-        "Ascent 3 Completed",
-        "Ascent 4 Completed",
-        "Ascent 5 Completed",
-        "Ascent 6 Completed",
-        "Ascent 7 Completed",
-        "Mesa Access",
-        "Alpine Access",
-        "Roots Access",
-        "Tropics Access",
-        "Caldera Access",
-        "Kiln Access",
-        "Idol Dunked",
-        "All Badges Collected"
 
-    ]
-    for event_loc in event_locations:
-        location_name_to_id[event_loc] = None
+    web = PeakWeb()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.excluded_locations = set()
 
     def validate_ids(self):
         """Ensure that item and location IDs are unique."""
@@ -97,59 +135,33 @@ class PeakWorld(World):
     def create_items(self):
         """Create the initial item pool based on the location table."""
         
-        # Calculate total locations, accounting for excluded ascent levels
-        goal_type = self.options.goal.value
+        goals = self.options.goals.value
+        wants_peak = "Reach Peak" in goals
+        wants_soul = "Free The Soul" in goals
         required_ascent = self.options.ascent_count.value
-        
-        # Start with all locations in LOCATION_TABLE
-        total_locations = len(LOCATION_TABLE)
-        
-        # Add event locations
-        #total_locations += 15  # 7 Ascent Completed + Mesa/Roots/Alpine/Tropics/Caldera/Kiln Access + Idol Dunked + All Badges Collected
-        
-        # Subtract excluded ascent locations if goal is Reach Peak
-        if goal_type == 0 or goal_type == 3: # Reach Peak goal or Peak and Badges goal
-            excluded_ascent_count = 7 - required_ascent  # Number of ascents to exclude
-            # Each excluded ascent has 6 badge locations (Beachcomber, Trailblazer, Alpinist, Volcanology, Nomad, Forestry)
-            # Plus 1 Scout Sashe location
-            # Plus 1 Ascent Completed event
-            locations_per_ascent = 7
-            total_locations -= (excluded_ascent_count * locations_per_ascent)
-            
-            logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Excluding {excluded_ascent_count} ascent levels, removing {excluded_ascent_count * locations_per_ascent} locations")
-        if self.options.disable_multiplayer_badges.value:
-            multiplayer_badge_count = 9
-            total_locations -= multiplayer_badge_count
-            logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Excluding {multiplayer_badge_count} multiplayer badges")
-        
-        if self.options.disable_hard_badges.value:
-            hard_badge_count = 5
-            total_locations -= hard_badge_count
-            logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Excluding {hard_badge_count} hard badges")
 
-        if self.options.disable_biome_badges.value:
-            biome_badge_count = 10
-            total_locations -= biome_badge_count
-            logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Excluding {biome_badge_count} biome specific badges")
-    
-        logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Total locations after exclusions: {total_locations}")
+        total_locations = sum(1 for loc in self.multiworld.get_locations(self.player) if loc.address is not None)
+        logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Total locations from created regions: {total_locations}")
         
         item_pool = []
         
         # Add Progressive Ascent items based on goal requirements
-        if goal_type == 0 or goal_type == 3:  # Reach Peak goal - only add enough Progressive Ascent for the required level
+        if wants_peak:  # Reach Peak goal - only add enough Progressive Ascent for the required level
             for _ in range(required_ascent):
                 item_pool.append(self.create_item("Progressive Ascent"))
             logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Added {required_ascent} Progressive Ascent items (Reach Peak goal)")
-        else:  # Other goals - add all 7 Progressive Ascent items
-            for _ in range(7):
+        else:  # Other goals - add all 8 Progressive Ascent items
+            for _ in range(8):
                 item_pool.append(self.create_item("Progressive Ascent"))
-            logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Added 7 Progressive Ascent items (non-Reach Peak goal)")
+            logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Added 8 Progressive Ascent items (non-Reach Peak goal)")
 
         for _ in range(4):
             item_pool.append(self.create_item("Progressive Mountain"))
-        logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Added 4 Progressive Mountain items")
+        self.multiworld.early_items[self.player]["Progressive Mountain"] = 1
+        logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Added 4 Progressive Mountain items (1 early)")
     
+        item_pool.append(self.create_item("Scoutmaster's Soul"))
+
         for _ in range(8):
             item_pool.append(self.create_item("Progressive Endurance"))
         logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Added 8 Progressive Endurance items")
@@ -157,7 +169,7 @@ class PeakWorld(World):
 
         # Add progressive stamina items if enabled
         if self.options.progressive_stamina.value:
-            max_stamina_upgrades = 4
+            max_stamina_upgrades = 3
             if self.options.additional_stamina_bars.value:
                 max_stamina_upgrades = 7
             
@@ -170,83 +182,39 @@ class PeakWorld(World):
         for item_name in useful_table.keys():
             if item_name != "Progressive Stamina Bar":  # Skip stamina bar since we handled it above
                 item_pool.append(self.create_item(item_name))
-                # Ensure all items needed for acquire locations are in the pool (one each)
-        acquire_required_items = [
-            "Rope Spool", "Rope Cannon", "Anti-Rope Spool", "Anti-Rope Cannon",
-            "Chain Launcher", "Piton", "Rescue Claw", "Scout Cannon", "Flying Disc",
-            "Guidebook", "Portable Stove", "Checkpoint Flag", "Compass", "Pirate's Compass",
-            "Binoculars", "Parasol", "Balloon", "Balloon Bunch",
-            "Lantern", "Flare", "Torch", "Faerie Lantern",
-            "Bandages", "First-Aid Kit", "Antidote", "Heat Pack", "Cure-All",
-            "Remedy Fungus", "Medicinal Root", "Aloe Vera", "Sunscreen",
-            "Marshmallow", "Glizzy", "Fortified Milk", "Trail Mix", "Granola Bar",
-            "Scout Cookies", "Airline Food", "Energy Drink", "Sports Drink", "Big Lollipop",
-            "Big Egg", "Egg", "Cooked Bird", "Honeycomb", "Beehive", "Bing Bong",
-            "Magic Bean", "Blowgun", "Cactus", "Scout Effigy", "Cursed Skull",
-            "Pandora's Lunchbox", "Ancient Idol", "Strange Gem", "Book of Bones",
-            "Bugle of Friendship", "Bugle", "Scoutmaster's Bugle", "Conch", "Dynamite",
-            "Scorpion", "Tick", "Mandrake",
-            "Cloud Fungus", "Shelf Shroom", "Bounce Shroom", "Button Shroom",
-            "Bugle Shroom", "Cluster Shroom", "Chubby Shroom",
-            "Red Crispberry", "Green Crispberry", "Yellow Crispberry",
-            "Coconut", "Coconut Half",
-            "Brown Berrynana", "Blue Berrynana", "Pink Berrynana", "Yellow Berrynana",
-            "Orange Winterberry", "Yellow Winterberry", "Napberry",
-            "Red Prickleberry", "Gold Prickleberry",
-            "Red Shroomberry", "Blue Shroomberry", "Green Shroomberry",
-            "Yellow Shroomberry", "Purple Shroomberry",
-            "Purple Kingberry", "Yellow Kingberry", "Green Kingberry",
-            "Black Clusterberry", "Red Clusterberry", "Yellow Clusterberry",
-        ]
-
-        for item_name in acquire_required_items:
-            if item_name in item_table:
-                item_pool.append(self.create_item(item_name, ItemClassification.progression))
-            else:
-                logging.warning(f"[Player {self.multiworld.player_name[self.player]}] Acquire item '{item_name}' not found in item_table")
-
-        logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Added {len(acquire_required_items)} acquire-required items")
+        # Add unlock items only when ItemSanity is enabled
+        if self.options.item_sanity.value:
+            scout_amulet_unlocks = {
+                "Scout's Tenacity Unlock", "Scout's Generosity Unlock",
+                "Scout's Ambition Unlock", "Scout's Initiative Unlock",
+                "Scout's Honor Unlock",
+            }
+            progressive_amulets = wants_soul and self.options.scout_amulet_sanity.value
+            amulet_chain_unlocks = scout_amulet_unlocks | {"Strange Gem Unlock"}
+            for unlock_name in unlock_table.keys():
+                if unlock_name in scout_amulet_unlocks and not self.options.scout_amulet_sanity.value:
+                    continue
+                if progressive_amulets and unlock_name in amulet_chain_unlocks:
+                    continue
+                item_pool.append(self.create_item(unlock_name))
+            if progressive_amulets:
+                for _ in range(6):
+                    item_pool.append(self.create_item("Progressive Amulet Unlock"))
+                logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Replaced amulet chain unlocks with 6 Progressive Amulet Unlock items (Free The Soul goal)")
+            for _ in range(2):
+                item_pool.append(self.create_item("Progressive Pack"))
+            logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Added 2 Progressive Pack items (Fanny Pack, then Backpack)")
+            logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Added {len(unlock_table)} unlock items (ItemSanity enabled)")
+        else:
+            logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Skipping unlock items (ItemSanity disabled)")
         # Calculate how many slots are left for traps and fillers
         remaining_slots = total_locations - len(item_pool)
         
         # Build trap_weights list based on individual trap weights
         trap_weights = []
-        trap_weights += (["Instant Death Trap"] * self.options.instant_death_trap_weight.value)
-        trap_weights += (["Items to Bombs"] * self.options.items_to_bombs_weight.value)
-        trap_weights += (["Pokemon Trivia Trap"] * self.options.pokemon_trivia_trap_weight.value)
-        trap_weights += (["Blackout Trap"] * self.options.blackout_trap_weight.value)
-        trap_weights += (["Spawn Bee Swarm"] * self.options.spawn_bee_swarm_weight.value)
-        trap_weights += (["Banana Peel Trap"] * self.options.banana_peel_trap_weight.value)
-        trap_weights += (["Minor Poison Trap"] * self.options.minor_poison_trap_weight.value)
-        trap_weights += (["Poison Trap"] * self.options.poison_trap_weight.value)
-        trap_weights += (["Deadly Poison Trap"] * self.options.deadly_poison_trap_weight.value)
-        trap_weights += (["Tornado Trap"] * self.options.tornado_trap_weight.value)
-        trap_weights += (["Swap Trap"] * self.options.swap_trap_weight.value)
-        trap_weights += (["Nap Time Trap"] * self.options.nap_time_trap_weight.value)
-        trap_weights += (["Hungry Hungry Camper Trap"] * self.options.hungry_hungry_camper_trap_weight.value)
-        trap_weights += (["Balloon Trap"] * self.options.balloon_trap_weight.value)
-        trap_weights += (["Slip Trap"] * self.options.slip_trap_weight.value)
-        trap_weights += (["Freeze Trap"] * self.options.freeze_trap_weight.value)
-        trap_weights += (["Cold Trap"] * self.options.cold_trap_weight.value)
-        trap_weights += (["Hot Trap"] * self.options.hot_trap_weight.value)
-        trap_weights += (["Injury Trap"] * self.options.injury_trap_weight.value)
-        trap_weights += (["Cactus Ball Trap"] * self.options.cactus_ball_trap_weight.value)
-        trap_weights += (["Yeet Trap"] * self.options.yeet_trap_weight.value)
-        trap_weights += (["Tumbleweed Trap"] * self.options.tumbleweed_trap_weight.value)
-        trap_weights += (["Zombie Horde Trap"] * self.options.zombie_horde_trap_weight.value)
-        trap_weights += (["Gust Trap"] * self.options.gust_trap_weight.value)
-        trap_weights += (["Mandrake Trap"] * self.options.mandrake_trap_weight.value)
-        trap_weights += (["Fungal Infection Trap"] * self.options.fungal_infection_trap_weight.value)
-        trap_weights += (["Fear Trap"] * self.options.fear_trap_weight.value)
-        trap_weights += (["Scoutmaster Trap"] * self.options.scoutmaster_trap_weight.value)
-        trap_weights += (["Zoom Trap"] * self.options.zoom_trap_weight.value)
-        trap_weights += (["Screen Flip Trap"] * self.options.screen_flip_trap_weight.value)
-        trap_weights += (["Drop Everything Trap"] * self.options.drop_everything_trap_weight.value)
-        trap_weights += (["Pixel Trap"] * self.options.pixel_trap_weight.value)
-        trap_weights += (["Eruption Trap"] * self.options.eruption_trap_weight.value)
-        trap_weights += (["Beetle Horde Trap"] * self.options.beetle_horde_trap_weight.value)
-        trap_weights += (["Custom Trivia Trap"] * self.options.custom_trivia_trap_weight.value)
-        
+        for trap_name, weight_attr in TRAP_DEFINITIONS:
+            trap_weights += [trap_name] * getattr(self.options, weight_attr).value
+
         # Calculate number of trap items based on TrapPercentage
         trap_count = 0 if (len(trap_weights) == 0) else math.ceil(remaining_slots * (self.options.trap_percentage.value / 100.0))
         
@@ -260,6 +228,8 @@ class PeakWorld(World):
         
         # Fill remaining slots with filler items
         filler_items = list(filler_table.keys())
+        if wants_soul:
+            filler_items = [f for f in filler_items if f != "Strange Gem"]
         while len(item_pool) < total_locations:
             filler_name = self.random.choice(filler_items)
             item_pool.append(self.create_item(filler_name))
@@ -268,46 +238,20 @@ class PeakWorld(World):
         logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Total locations: {total_locations}")
         logging.debug(f"[Player {self.multiworld.player_name[self.player]}] Trap items added: {trap_count}")
         
+        if len(item_pool) > total_locations:
+            raise Exception(
+                f"[PEAK] Item pool ({len(item_pool)}) exceeds fillable locations ({total_locations}) for "
+                f"player {self.multiworld.player_name[self.player]}. Too many locations are excluded "
+                f"(exclude_locations / disable_*_badges / low ascent goal); reduce exclusions or disable item_sanity."
+            )
+
         self.multiworld.itempool.extend(item_pool)
     
     def output_active_traps(self) -> typing.Dict[str, int]:
         trap_data = {}
 
-        trap_data["instant_death_trap"] = self.options.instant_death_trap_weight.value
-        trap_data["items_to_bombs"] = self.options.items_to_bombs_weight.value
-        trap_data["pokemon_trivia_trap"] = self.options.pokemon_trivia_trap_weight.value
-        trap_data["blackout_trap"] = self.options.blackout_trap_weight.value
-        trap_data["spawn_bee_swarm"] = self.options.spawn_bee_swarm_weight.value
-        trap_data["banana_peel_trap"] = self.options.banana_peel_trap_weight.value
-        trap_data["minor_poison_trap"] = self.options.minor_poison_trap_weight.value
-        trap_data["poison_trap"] = self.options.poison_trap_weight.value
-        trap_data["deadly_poison_trap"] = self.options.deadly_poison_trap_weight.value
-        trap_data["tornado_trap"] = self.options.tornado_trap_weight.value
-        trap_data["swap_trap"] = self.options.swap_trap_weight.value
-        trap_data["nap_time_trap"] = self.options.nap_time_trap_weight.value
-        trap_data["hungry_hungry_camper_trap"] = self.options.hungry_hungry_camper_trap_weight.value
-        trap_data["balloon_trap"] = self.options.balloon_trap_weight.value
-        trap_data["slip_trap"] = self.options.slip_trap_weight.value
-        trap_data["freeze_trap"] = self.options.freeze_trap_weight.value
-        trap_data["cold_trap"] = self.options.cold_trap_weight.value
-        trap_data["hot_trap"] = self.options.hot_trap_weight.value
-        trap_data["injury_trap"] = self.options.injury_trap_weight.value
-        trap_data["cactus_ball_trap"] = self.options.cactus_ball_trap_weight.value
-        trap_data["yeet_trap"] = self.options.yeet_trap_weight.value
-        trap_data["tumbleweed_trap"] = self.options.tumbleweed_trap_weight.value
-        trap_data["zombie_horde_trap"] = self.options.zombie_horde_trap_weight.value
-        trap_data["gust_trap"] = self.options.gust_trap_weight.value
-        trap_data["mandrake_trap"] = self.options.mandrake_trap_weight.value
-        trap_data["fungal_infection_trap"] = self.options.fungal_infection_trap_weight.value
-        trap_data["fear_trap"] = self.options.fear_trap_weight.value
-        trap_data["scoutmaster_trap"] = self.options.scoutmaster_trap_weight.value
-        trap_data["zoom_trap"] = self.options.zoom_trap_weight.value
-        trap_data["screen_flip_trap"] = self.options.screen_flip_trap_weight.value
-        trap_data["drop_everything_trap"] = self.options.drop_everything_trap_weight.value
-        trap_data["pixel_trap"] = self.options.pixel_trap_weight.value
-        trap_data["eruption_trap"] = self.options.eruption_trap_weight.value
-        trap_data["beetle_horde_trap"] = self.options.beetle_horde_trap_weight.value
-        trap_data["custom_trivia_trap"] = self.options.custom_trivia_trap_weight.value
+        for trap_name, weight_attr in TRAP_DEFINITIONS:
+            trap_data[weight_attr[:-len("_weight")]] = getattr(self.options, weight_attr).value
 
         return trap_data
 
@@ -318,7 +262,7 @@ class PeakWorld(World):
 
         player = self.player
         # Count total Progressive items we're placing
-        prog_ascent_count = 7 if self.options.goal.value != 0 and self.options.goal.value != 3 else self.options.ascent_count.value
+        prog_ascent_count = self.options.ascent_count.value if "Reach Peak" in self.options.goals.value else 8
         prog_stamina_count = 0
         if self.options.progressive_stamina.value:
             prog_stamina_count = 7 if self.options.additional_stamina_bars.value else 4
@@ -345,6 +289,22 @@ class PeakWorld(World):
         
         logging.info(f"[Player {self.multiworld.player_name[player]}] Found {len(shore_accessible_locations)} shore-accessible locations")
         
+        def make_biome_mountain_rule(threshold, loc):
+            def biome_rule(item, loc=loc):
+                if item.player != player:
+                    return True
+                if item.name == "Progressive Mountain":
+                    if "napberry" not in loc.name.lower():
+                        if ("berry" in loc.name.lower() or
+                            "conch" in loc.name.lower() or
+                            "binoculars" in loc.name.lower() or
+                            "guidebook" in loc.name.lower()):
+                            return False
+                    mountains_in_pool = sum(1 for i in self.multiworld.itempool if i.player == player and i.name == "Progressive Mountain")
+                    return mountains_in_pool >= threshold
+                return True
+            return biome_rule
+
         # Set item placement rules
         for location in self.multiworld.get_locations(player):
             if location.progress_type == LocationProgressType.EXCLUDED:
@@ -392,52 +352,17 @@ class PeakWorld(World):
                         location.item_rule = make_rule(required_ascents, 0, 0)
 
             if location.name in TROPICS_LOCATIONS or location.name in ROOTS_LOCATIONS:
-                def biome_rule_1(item):
-                    if item.player != player:
-                        return True
-                    if item.name == "Progressive Mountain":
-                        if "napberry" not in location.name.lower():
-                            if ("berry" in location.name.lower() or 
-                                "conch" in location.name.lower() or 
-                                "binoculars" in location.name.lower() or 
-                                "guidebook" in location.name.lower()):
-                                return False
-                        mountains_in_pool = sum(1 for i in self.multiworld.itempool if i.player == player and i.name == "Progressive Mountain")
-                        return mountains_in_pool >= 2  # Need at least 2 in pool to place 1 here
-                    return True
-                location.item_rule = biome_rule_1
+                location.item_rule = make_biome_mountain_rule(2, location)
 
             elif location.name in ALPINE_LOCATIONS or location.name in MESA_LOCATIONS:
-                def biome_rule_2(item):
-                    if item.player != player:
-                        return True
-
-                    # Can place Progressive Mountain here if at least 2 others exist elsewhere
-                    if item.name == "Progressive Mountain":
-                        if "napberry" not in location.name.lower():
-                            if ("berry" in location.name.lower() or 
-                                "conch" in location.name.lower() or 
-                                "binoculars" in location.name.lower() or 
-                                "guidebook" in location.name.lower()):
-                                return False
-                        mountains_in_pool = sum(1 for i in self.multiworld.itempool if i.player == player and i.name == "Progressive Mountain")
-                        return mountains_in_pool >= 3  # Need at least 3 in pool to place 1 here
-                    return True
-                location.item_rule = biome_rule_2
+                location.item_rule = make_biome_mountain_rule(3, location)
 
             elif location.name in CALDERA_LOCATIONS:
                 def biome_rule_3(item):
                     if item.player != player:
                         return True
-                    if item.name == "Progressive Mountain":
-                        if "napberry" not in location.name.lower():
-                            if ("berry" in location.name.lower() or 
-                                "conch" in location.name.lower() or 
-                                "binoculars" in location.name.lower() or 
-                                "guidebook" in location.name.lower()):
-                                return False
-                        mountains_in_pool = sum(1 for i in self.multiworld.itempool if i.player == player and i.name == "Progressive Mountain")
-                        return mountains_in_pool >= 4  # Need all 4 in pool to place 1 here
+                    if item.classification & ItemClassification.progression:
+                        return False
                     return True
                 location.item_rule = biome_rule_3
 
@@ -445,8 +370,7 @@ class PeakWorld(World):
                 def biome_rule_kiln(item):
                     if item.player != player:
                         return True
-                    # NEVER place Progressive Mountain in Kiln locations
-                    if item.name == "Progressive Mountain":
+                    if item.classification & ItemClassification.progression:
                         return False
                     return True
                 location.item_rule = biome_rule_kiln
@@ -476,49 +400,48 @@ class PeakWorld(World):
                     location.item_rule = shore_mountain_limit
 
         # Access options directly via self.options
-        goal = self.options.goal.value
+        goals = self.options.goals.value
         ascent_num = self.options.ascent_count.value
 
-        # Set completion condition based on goal type
-        if goal == 0:  # Reach Peak
-            if 1 <= ascent_num <= 7:
-                self.multiworld.completion_condition[self.player] = (
-                    lambda state, n=ascent_num: state.has(f"Ascent {n} Completed", self.player)
-                )
-            else:
-                return 
+        # Every selected goal must be completed
+        required_events = []
+        if "Reach Peak" in goals and 1 <= ascent_num <= 8:
+            required_events.append(f"Ascent {ascent_num} Completed")
+        if "Collect Badges" in goals:
+            required_events.append("All Badges Collected")
+        if "24 Karat Badge" in goals:
+            required_events.append("Idol Dunked")
+        if "Free The Soul" in goals:
+            required_events.append("Scoutmaster's Soul")
+            required_events.append("Kiln Access")
 
-        elif goal == 1:  # Complete All Badges
-            self.multiworld.completion_condition[self.player] = (
-                lambda state: state.has("All Badges Collected", self.player)
-            )
+        if not required_events:
+            return
 
-        elif goal == 2:  # 24 Karat Badge
-            self.multiworld.completion_condition[self.player] = (
-                lambda state: state.has("Idol Dunked", self.player)
-            )
-        elif goal == 3:  # Peak and Badges
-            if 1 <= ascent_num <= 7:
-                self.multiworld.completion_condition[self.player] = (
-                    lambda state, n=ascent_num: state.has(f"Ascent {n} Completed", self.player) and state.has("All Badges Collected", self.player)
-                )
-        else:
-            return  # Unsupported goal type, exit early
+        self.multiworld.completion_condition[self.player] = (
+            lambda state, events=tuple(required_events): state.has_all(events, self.player)
+        )
+        return
 
-        # Ensure item pool matches number of locations
-        final_locations = [loc for loc in self.multiworld.get_locations() 
-                   if loc.player == self.player and loc.address is not None]
-        current_items = [item for item in self.multiworld.itempool if item.player == self.player]
-        missing = len(final_locations) - len(current_items)
+    def get_sphere_index(self) -> typing.Dict[typing.Tuple[int, str], int]:
+        """Map (player, location name) to the logical sphere it is reachable in.
 
-        if missing > 0:
-            logging.debug(
-                f"[Player {self.multiworld.player_name[self.player]}] "
-                f"Item pool is short by {missing} items. Adding filler items."
-            )
-            for _ in range(missing):
-                filler_name = self.get_filler_item_name()
-                self.multiworld.itempool.append(self.create_item(filler_name))
+        Cached on the multiworld so a multi-slot PEAK generation only pays for it once.
+        Unreachable locations are absent from the map.
+        """
+        cached = getattr(self.multiworld, "_peak_sphere_index", None)
+        if cached is not None:
+            return cached
+
+        cached = {}
+        for depth, sphere in enumerate(self.multiworld.get_spheres()):
+            if not sphere:
+                break
+            for location in sphere:
+                cached[(location.player, location.name)] = depth
+
+        setattr(self.multiworld, "_peak_sphere_index", cached)
+        return cached
 
     def fill_slot_data(self):
         """Return slot data for this player."""
@@ -533,19 +456,49 @@ class PeakWorld(World):
         requested_badge_count = self.options.badge_count.value
         actual_badge_count = min(requested_badge_count, max_badges_available)
 
-        mountain_hints = []
+        sphere_index = self.get_sphere_index()
+        unreachable_sphere = len(sphere_index) + 1
+
+        mountain_locations = [
+            location for location in self.multiworld.get_locations()
+            if location.item
+            and location.item.name == "Progressive Mountain"
+            and location.item.player == self.player
+        ]
+        mountain_locations.sort(key=lambda loc: (
+            sphere_index.get((loc.player, loc.name), unreachable_sphere),
+            loc.player,
+            loc.name,
+        ))
+
+        mountain_hints = [
+            {
+                "location": location.name,
+                "player": self.multiworld.get_player_name(location.player),
+                "game": self.multiworld.game[location.player],
+                "location_id": location.address,
+                "player_slot": location.player
+            }
+            for location in mountain_locations
+        ]
+
+        soul_hint = None
         for location in self.multiworld.get_locations():
-            if location.item and location.item.name == "Progressive Mountain" and location.item.player == self.player:
-                mountain_hints.append({
+            if (location.item
+                    and location.item.name == "Scoutmaster's Soul"
+                    and location.item.player == self.player
+                    and location.address is not None):
+                soul_hint = {
                     "location": location.name,
                     "player": self.multiworld.get_player_name(location.player),
                     "game": self.multiworld.game[location.player],
                     "location_id": location.address,
                     "player_slot": location.player
-                })
+                }
+                break
         
         slot_data = {
-            "goal": self.options.goal.value,
+            "goals": sorted(self.options.goals.value),
             "ascent_count": self.options.ascent_count.value,
             "badge_count": actual_badge_count,
             "progressive_stamina": self.options.progressive_stamina.value,
@@ -555,12 +508,24 @@ class PeakWorld(World):
             "hard_ring_link": self.options.hard_ring_link.value,
             "energy_link": self.options.energy_link.value,
             "trap_link": self.options.trap_link.value,
+            "breath_link": self.options.breath_link.value,
+            "damage_link": self.options.damage_link.value,
+            "damage_link_group": self.options.damage_link_group.value,
+            "knockback_link": self.options.knockback_link.value,
             "death_link": self.options.death_link.value,
+            "death_link_group": self.options.death_link_group.value,
             "death_link_behavior": self.options.death_link_behavior.value,
             "death_link_send_behavior": self.options.death_link_send_behavior.value,
             "active_traps": self.output_active_traps(),
+            "item_sanity": self.options.item_sanity.value,
+            "loot_sanity": self.options.loot_sanity.value,
+            "logical_scout_statue": self.options.logical_scout_statue.value,
+            "scout_amulet_sanity": self.options.scout_amulet_sanity.value,
+            "tracker_item_spawning": self.options.tracker_item_spawning.value,
             "session_id": session_id,
-            "mountain_hints": mountain_hints
+            "mountain_hints": mountain_hints,
+            "soul_hint": soul_hint,
+            "loot_biome_assignments": getattr(self, "loot_biome_assignments", {})
         }
         
         # Log what we're sending
@@ -572,6 +537,9 @@ class PeakWorld(World):
 
     def get_filler_item_name(self):
         """Randomly select a filler item from the available candidates."""
-        if not filler_table:
+        candidates = list(filler_table.keys())
+        if "Free The Soul" in self.options.goals.value:
+            candidates = [f for f in candidates if f != "Strange Gem"]
+        if not candidates:
             raise Exception("No filler items available in item_table.")
-        return self.random.choice(list(filler_table.keys()))
+        return self.random.choice(candidates)

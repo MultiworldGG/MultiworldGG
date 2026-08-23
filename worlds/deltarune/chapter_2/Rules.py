@@ -1,5 +1,5 @@
 from BaseClasses import LocationProgressType
-from rule_builder.rules import Has
+from rule_builder.rules import CanReachLocation, Has
 
 from typing import TYPE_CHECKING
 from worlds.deltarune.Locations import locations, LocationIDs
@@ -13,6 +13,7 @@ from worlds.deltarune.LogicHelper import (
     include_lose_swatchlings_weird_route,
     include_recruit_swatchlings_weird_route,
     include_recruits,
+    include_recruits_chapter2_weird_route_exclusion,
     include_secret_bosses_items_requirement,
     include_secret_bosses_items_reward,
     not_weird_route_only,
@@ -78,7 +79,7 @@ def set_rules(world: "DeltaruneWorld"):
         world.set_rule(world.get_location(locations[LocationIDs.ch2_recruit_tasque]), can_recruit_tasque)
         world.set_rule(world.get_location(locations[LocationIDs.ch2_recruit_virovirokun]), can_recruit_virovirokun)
         world.set_rule(world.get_location(locations[LocationIDs.ch2_recruit_poppup]), can_recruit_poppup)
-        if not weird_route(world):
+        if include_recruits_chapter2_weird_route_exclusion(world):
             world.set_rule(world.get_location(locations[LocationIDs.ch2_recruit_ambyu_lance]), can_recruit_ambuy_lance)
             world.set_rule(world.get_location(locations[LocationIDs.ch2_recruit_maus]), can_recruit_maus)
         if include_recruit_swatchlings_weird_route(world):
@@ -88,23 +89,24 @@ def set_rules(world: "DeltaruneWorld"):
         )
         world.set_rule(
             world.get_location(locations[LocationIDs.ch2_castle_town_tasque_manager_says_challenge]),
-            can_recruit_tasque_manager,
+            CanReachLocation(locations[LocationIDs.ch2_recruit_tasque_manager]),
         )
         world.set_rule(world.get_location(locations[LocationIDs.ch2_recruit_mauswheel]), can_recruit_mauswheel)
         world.set_rule(world.get_location(locations[LocationIDs.ch2_recruit_werewerewire]), can_recruit_werewerewire)
-        world.set_rule(
-            world.get_location(locations[LocationIDs.ch2_castle_town_all_stars_challenge]),
-            can_recruit_werewire
-            & can_recruit_tasque
-            & can_recruit_virovirokun
-            & can_recruit_poppup
-            & can_recruit_ambuy_lance
-            & can_recruit_maus
-            & can_recruit_swatchling
-            & can_recruit_tasque_manager
-            & can_recruit_mauswheel
-            & can_recruit_werewerewire,
-        )
+        if include_recruits_chapter2_weird_route_exclusion(world):
+            world.set_rule(
+                world.get_location(locations[LocationIDs.ch2_castle_town_all_stars_challenge]),
+                CanReachLocation(locations[LocationIDs.ch2_recruit_werewire])
+                & CanReachLocation(locations[LocationIDs.ch2_recruit_tasque])
+                & CanReachLocation(locations[LocationIDs.ch2_recruit_virovirokun])
+                & CanReachLocation(locations[LocationIDs.ch2_recruit_poppup])
+                & CanReachLocation(locations[LocationIDs.ch2_recruit_ambyu_lance])
+                & CanReachLocation(locations[LocationIDs.ch2_recruit_maus])
+                & CanReachLocation(locations[LocationIDs.ch2_recruit_swatchling])
+                & CanReachLocation(locations[LocationIDs.ch2_recruit_tasque_manager])
+                & CanReachLocation(locations[LocationIDs.ch2_recruit_mauswheel])
+                & CanReachLocation(locations[LocationIDs.ch2_recruit_werewerewire]),
+            )
 
 
 def handle_locked_items(world: "DeltaruneWorld"):

@@ -13,9 +13,9 @@ from pkg_resources import resource_listdir, resource_isdir
 from typing import Dict, List, NamedTuple, Set, FrozenSet, Any, Tuple
 from BaseClasses import ItemClassification
 
-APWORLD_VERSION = "1.0.4"
-POPTRACKER_CHECKSUM = 0x4A497E8F
+POPTRACKER_CHECKSUM = 0x683E63FC
 NUM_REAL_SPECIES = 386
+
 
 @dataclass
 class GameOption:
@@ -23,6 +23,7 @@ class GameOption:
     options: Dict[str | int | bool, int]
     option_group: int
     option_number: int
+
 
 GAME_OPTIONS: Dict[str, GameOption] = {
     "Text Speed": GameOption(3, {"Slow": 0, "Mid": 1, "Fast": 2, "Instant": 3}, 1, 0),
@@ -43,10 +44,12 @@ GAME_OPTIONS: Dict[str, GameOption] = {
     "Guaranteed Catch": GameOption(0, {"Off": 0, False: 0, "On": 1, True: 1}, 2, 1),
     "Guaranteed Run": GameOption(0, {"Off": 0, False: 0, "On": 1, True: 1}, 2, 2),
     "Encounter Rates": GameOption(0, {"Vanilla": 0, "Normalized": 1}, 2, 3),
-    "Blind Trainers": GameOption(0, {"Off": 0, False: 0, "On": 1, True: 1}, 2, 4),
-    "Skip Nicknames": GameOption(0, {"Off": 0, False: 0, "On": 1, True: 1}, 2, 5),
-    "Item Messages": GameOption(1, {"All": 0, "Progression": 1, "None": 2}, 2, 6)
+    "Encounter Mode": GameOption(0, {"Random": 0, "Boost": 1, "Rotate": 2}, 2, 4),
+    "Blind Trainers": GameOption(0, {"Off": 0, False: 0, "On": 1, True: 1}, 2, 6),
+    "Skip Nicknames": GameOption(0, {"Off": 0, False: 0, "On": 1, True: 1}, 2, 7),
+    "Item Messages": GameOption(1, {"All": 0, "Progression": 1, "None": 2}, 2, 8)
 }
+
 
 class Warp:
     """
@@ -137,6 +140,7 @@ class LocationData(NamedTuple):
     parent_region_id: str
     default_item: int
     address: Dict[str, int | List[int]]
+    graphic_address: Dict[str, int]
     flag: int
     category: LocationCategory
     include: FrozenSet[str]
@@ -360,12 +364,23 @@ class FlyData:
     region_map_index: int
 
 
+@dataclass
+class ManifestData:
+    game: str
+    world_version: str
+    pokemon_frlg_version: str
+    firered_extension: str
+    leafgreen_extension: str
+
+
 class PokemonFRLGData:
+    manifest: ManifestData
     rom_names: Dict[str, str]
     rom_checksum: int
     constants: Dict[str, int]
     ram_addresses: Dict[str, Dict[str, int]]
     rom_addresses: Dict[str, Dict[str, int]]
+    ap_offsets: Dict[str, int]
     regions: Dict[str, RegionData]
     locations: Dict[str, LocationData]
     events: Dict[str, EventData]
@@ -413,6 +428,18 @@ class PokemonFRLGData:
         self.scaling = {}
         self.type_damage_categories = []
         self.num_moves_per_damage_category = defaultdict(lambda: 0)
+
+    def get_game(self):
+        return self.manifest.game
+
+    def get_version_string(self) -> str:
+        return self.manifest.pokemon_frlg_version
+
+    def get_firered_extension(self) -> str:
+        return self.manifest.firered_extension
+
+    def get_leafgreen_extension(self) -> str:
+        return self.manifest.leafgreen_extension
 
 
 # Excludes extras like copies of Unown and special species values like SPECIES_EGG
@@ -810,6 +837,10 @@ def load_json_data(data_name: str) -> List[Any] | Dict[str, Any]:
     return orjson.loads(pkgutil.get_data(__name__, "data/" + data_name).decode("utf-8-sig"))
 
 
+def load_manifest_data() -> List[Any] | Dict[str, Any]:
+    return orjson.loads(pkgutil.get_data(__name__, "archipelago.json").decode("utf-8-sig"))
+
+
 def init() -> None:
     extracted_data: Dict[str, Any] = load_json_data("extracted_data.json")
     data.rom_names = extracted_data["rom_names"]
@@ -817,10 +848,21 @@ def init() -> None:
     data.constants = extracted_data["constants"]
     data.ram_addresses = extracted_data["misc_ram_addresses"]
     data.rom_addresses = extracted_data["misc_rom_addresses"]
+    data.ap_offsets = extracted_data["option_offsets"]
 
     location_data = load_json_data("locations.json")
     event_data = load_json_data("events.json")
     item_data = load_json_data("items.json")
+
+    manifest_data = load_manifest_data()
+
+    data.manifest = ManifestData(
+        manifest_data["game"],
+        manifest_data["world_version"],
+        manifest_data["pokemon_frlg_version"],
+        manifest_data["firered_extension"],
+        manifest_data["leafgreen_extension"]
+    )
 
     # Create map data
     for map_name, map_json in extracted_data["maps"].items():
@@ -944,6 +986,7 @@ def init() -> None:
                     region_id,
                     location_json["default_item"],
                     location_address,
+                    location_json["graphic_address"],
                     location_json["flag"],
                     LocationCategory[location_data[location_id]["category"]],
                     frozenset(location_data[location_id]["include"]),
@@ -956,6 +999,7 @@ def init() -> None:
                     region_id,
                     location_json["default_item"],
                     location_json["address"],
+                    location_json["graphic_address"],
                     location_json["flag"],
                     LocationCategory[location_data[location_id]["category"]],
                     frozenset(location_data[location_id]["include"]),
@@ -1164,7 +1208,7 @@ def init() -> None:
         if name not in ["MOVE_NONE", "MOVE_STRUGGLE"]:
             data.num_moves_per_damage_category[move_data["category"]] += 1
 
-    # Load/merge scaling json files
+    # Load/merge scaling JSON files
     scaling_json_list = []
     for file in resource_listdir(__name__, "data/scalings"):
         if not resource_isdir(__name__, "data/scalings/" + file):
