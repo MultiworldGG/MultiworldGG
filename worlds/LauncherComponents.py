@@ -260,7 +260,8 @@ def _install_apworld(apworld_src: str = "") -> Optional[tuple[pathlib.Path, path
     if world_source.is_zip:
         worlds._register_apworld_zip_spec(world_source)
     components_before = len(components)
-    world_source.load()
+    if not world_source.load():
+        raise Exception(f"World was installed, but failed to load. See the Launcher log for details.")
     new_components = list(components[components_before:])
     for component in new_components:
         setattr(component, _COMPONENT_ORIGIN_ATTRIBUTE, _COMPONENT_ORIGIN_WORLD)

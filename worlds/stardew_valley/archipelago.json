@@ -1,1 +1,6 @@
-{"game": "Stardew Valley", "authors": ["Kaito Kid", "Jouramie", "Witchybun (Mod Support)", "Exempt-Medic (Proofreading)"], "minimum_ap_version": "0.6.4", "world_version": "7.4.4", "compatible_version": 7, "version": 7}
+{
+  "game": "Stardew Valley",
+  "authors": ["Kaito Kid", "Jouramie", "Witchybun (Mod Support)", "Exempt-Medic (Proofreading)"],
+  "minimum_ap_version": "0.6.4",
+  "world_version": "7.4.25"
+}
