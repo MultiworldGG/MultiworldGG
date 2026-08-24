@@ -86,7 +86,7 @@ class BounceTarget(typing.NamedTuple):
     def matches_client_operator(self, target: Client, op: typing.Callable[[typing.Any, typing.Any], bool]):
         return reduce(
             op,
-            (self._teams_match(target), self._games_match(target), self._tags_match(target), self._games_match(target)),
+            (self._teams_match(target), self._games_match(target), self._tags_match(target), self._slots_match(target)),
         )
 
 
